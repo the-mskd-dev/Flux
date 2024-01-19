@@ -1,6 +1,7 @@
 package com.kaem.flux.ui.theme
 
 import android.app.Activity
+import android.graphics.Color
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -10,7 +11,6 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
@@ -61,15 +61,10 @@ fun FluxTheme(
     }
     val view = LocalView.current
     if (!view.isInEditMode) {
-
-        val transparent = Color(0xFF00000000)
-
         SideEffect {
             val window = (view.context as Activity).window
-// transparent status and navigation bar
-            window.statusBarColor = transparent.toArgb()
-            window.navigationBarColor = transparent.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
+            window.statusBarColor = Color.TRANSPARENT //colorScheme.primary.toArgb()
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = false//darkTheme
         }
     }
 

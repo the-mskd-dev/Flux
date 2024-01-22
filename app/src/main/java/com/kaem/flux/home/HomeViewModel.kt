@@ -1,6 +1,7 @@
 package com.kaem.flux.home
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -16,6 +17,8 @@ enum class HomeState {
 class HomeViewModel : ViewModel() {
 
     var state by mutableStateOf(HomeState.Loading)
+
+    var shows by mutableStateOf<List<String>>(emptyList())
 
     init {
 

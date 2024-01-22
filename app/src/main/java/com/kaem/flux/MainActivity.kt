@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
+import com.kaem.flux.home.HomeScreen
 import com.kaem.flux.ui.theme.FluxTheme
 
 class MainActivity : ComponentActivity() {
@@ -35,15 +36,7 @@ class MainActivity : ComponentActivity() {
 
             FluxTheme {
 
-                Column(modifier = Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.background)
-                    .systemBarsPadding()
-                ) {
-                    Greeting("Android")
-                    Greeting("Android")
-                    Greeting("Android")
-                }
+                HomeScreen()
 
             }
 
@@ -51,21 +44,4 @@ class MainActivity : ComponentActivity() {
 
     }
 
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        color = MaterialTheme.colorScheme.secondary,
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    FluxTheme {
-        Greeting("Android")
-    }
 }

@@ -25,7 +25,9 @@ import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import com.kaem.flux.home.HomeScreen
 import com.kaem.flux.ui.theme.FluxTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

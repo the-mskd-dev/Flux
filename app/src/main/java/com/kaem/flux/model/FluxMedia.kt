@@ -7,6 +7,8 @@ data class FluxMedia(
     val source: FluxSource
 ) {
 
+    val isMovie: Boolean = season == null && episode == null
+
     companion object {
 
         fun parse(name: String) : Triple<String, Int?, Float?>? {

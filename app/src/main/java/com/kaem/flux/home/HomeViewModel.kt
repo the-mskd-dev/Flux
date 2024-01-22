@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kaem.flux.model.DataState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -29,8 +30,32 @@ class HomeViewModel @Inject constructor(
 
         viewModelScope.launch {
 
-            delay(1000L)
-            state = HomeState.Content
+            repository.getLocalFiles().collect {
+
+                when (it) {
+
+                    is DataState.Loading -> {
+
+                        state = HomeState.Loading
+
+                    }
+
+                    is DataState.Success -> {
+
+                        shows = it.data
+                        state = HomeState.Content
+
+                    }
+
+
+                    is DataState.Error -> {
+
+                        state = HomeState.Content
+
+                    }
+                }
+
+            }
 
         }
 

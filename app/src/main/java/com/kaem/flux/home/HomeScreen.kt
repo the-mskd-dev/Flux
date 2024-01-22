@@ -10,6 +10,8 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -20,19 +22,20 @@ import com.google.accompanist.permissions.rememberPermissionState
 fun HomeScreen() {
 
     val viewModel = viewModel<HomeViewModel>()
+    val state by viewModel.uiState.collectAsState()
 
     Crossfade(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
-        targetState = viewModel.state,
+        targetState = state.isLoading,
         label = "HomeScreenAnimation"
     ) {
 
         when (it) {
 
-            HomeState.Loading -> HomeLoading()
-            HomeState.Content -> HomeContent(shows = viewModel.shows)
+            true -> HomeLoading()
+            false -> HomeContent(shows = state.shows)
 
 
         }

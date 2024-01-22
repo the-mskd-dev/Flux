@@ -4,56 +4,69 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kaem.flux.model.DataState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-enum class HomeState {
-    Loading,
-    Content
-}
+data class HomeUiState(
+    val isLoading: Boolean = true,
+    val shows: List<String> = emptyList()
+)
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val repository: HomeRepository
 ): ViewModel() {
 
-    var state by mutableStateOf(HomeState.Loading)
 
-    var shows by mutableStateOf<List<String>>(emptyList())
+    private val _uiState = MutableStateFlow(HomeUiState())
+    val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
     init {
 
         viewModelScope.launch {
 
-            repository.getLocalFiles().collect {
+            repository.getLocalFiles().collect { data ->
 
-                when (it) {
+                _uiState.update {
 
-                    is DataState.Loading -> {
+                    when (data) {
 
-                        state = HomeState.Loading
+                        is DataState.Loading -> {
+
+                            it.copy(isLoading = true)
+
+                        }
+
+                        is DataState.Success -> {
+
+                            it.copy(
+                                isLoading = false,
+                                shows = data.data
+                            )
+
+                        }
+
+
+                        is DataState.Error -> {
+
+                            it.copy(isLoading = false)
+
+                        }
 
                     }
 
-                    is DataState.Success -> {
-
-                        shows = it.data
-                        state = HomeState.Content
-
-                    }
-
-
-                    is DataState.Error -> {
-
-                        state = HomeState.Content
-
-                    }
                 }
+
 
             }
 

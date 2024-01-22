@@ -8,8 +8,11 @@ import android.provider.MediaStore
 import com.kaem.flux.model.FluxFile
 import com.kaem.flux.model.FluxSource
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
-class LocalLayer(private val context: Context) {
+class LocalLayer @Inject constructor(
+    private val context: Context
+) {
 
     suspend fun getLocalFiles() : List<FluxFile> {
 

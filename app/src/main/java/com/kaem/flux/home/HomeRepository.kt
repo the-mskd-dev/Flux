@@ -1,4 +1,6 @@
 package com.kaem.flux.home
 
-class HomeRepository {
+import javax.inject.Inject
+
+class HomeRepository @Inject constructor() {
 }

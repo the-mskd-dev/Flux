@@ -7,11 +7,17 @@ import android.os.Build
 import android.provider.MediaStore
 import com.kaem.flux.model.FluxFile
 import com.kaem.flux.model.FluxSource
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ActivityContext
+import dagger.hilt.components.SingletonComponent
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
+@Module
+@InstallIn(SingletonComponent::class)
 class LocalLayer @Inject constructor(
-    private val context: Context
+    @ActivityContext private val context: Context
 ) {
 
     suspend fun getLocalFiles() : List<FluxFile> {

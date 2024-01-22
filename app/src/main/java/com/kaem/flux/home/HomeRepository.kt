@@ -11,8 +11,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-@Module
-@InstallIn(ViewModelComponent::class)
 class HomeRepository @Inject constructor(
     private val localLayer: LocalLayer
 ) {

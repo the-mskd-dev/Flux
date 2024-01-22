@@ -14,8 +14,6 @@ import dagger.hilt.components.SingletonComponent
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-@Module
-@InstallIn(SingletonComponent::class)
 class LocalLayer @Inject constructor(
     @ActivityContext private val context: Context
 ) {

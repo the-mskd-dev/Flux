@@ -33,44 +33,19 @@ class MainActivity : ComponentActivity() {
 
         setContent {
 
-                FluxTheme {
+            FluxTheme {
 
-                    Column(modifier = Modifier
-                        .fillMaxSize()
-                        .background(MaterialTheme.colorScheme.background)
-                        .systemBarsPadding()
-                    ) {
-                        Greeting("Android")
-                        Greeting("Android")
-                        Greeting("Android")
-                    }
-
+                Column(modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background)
+                    .systemBarsPadding()
+                ) {
+                    Greeting("Android")
+                    Greeting("Android")
+                    Greeting("Android")
                 }
 
-
-            /*FluxTheme {
-
-                Box(Modifier.safeDrawingPadding()) {
-
-                    // A surface container using the 'background' color from the theme
-                    Surface(
-                        modifier = Modifier.fillMaxSize(),
-                        color = MaterialTheme.colorScheme.background
-                    ) {
-
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                        ) {
-                            Greeting("Android")
-
-                        }
-
-                    }
-
-                }
-
-            }*/
+            }
 
         }
 

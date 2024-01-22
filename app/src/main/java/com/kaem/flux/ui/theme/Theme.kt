@@ -19,7 +19,9 @@ import androidx.core.view.WindowCompat
 private val FluxColorScheme = darkColorScheme(
     primary = Coral, // Most important, like buttons, titles, navigation bars...
     secondary = LightCoral, // Less important, background, borders, texts
-    tertiary = ContrastCoral // Additional color for contrast
+    tertiary = ContrastCoral, // Additional color for contrast,
+    background = DarkSurface,
+    surface = DarkSurface
 )
 
 private val DarkColorScheme = darkColorScheme(
@@ -52,13 +54,13 @@ fun FluxTheme(
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
-        /*dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }*/
+        }
 
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
+        else -> FluxColorScheme
+        //else -> LightColorScheme
     }
     val view = LocalView.current
     if (!view.isInEditMode) {

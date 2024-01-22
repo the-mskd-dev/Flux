@@ -4,5 +4,5 @@ import android.net.Uri
 
 data class FluxFile(
     val name: String,
-    val path: String
+    val source: FluxSource
 )

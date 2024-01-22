@@ -1,5 +1,7 @@
 package com.kaem.flux.model
 
+import android.net.Uri
+
 data class FluxMedia(
     val name: String,
     val season: Int?,
@@ -44,9 +46,4 @@ data class FluxMedia(
         }
 
     }
-}
-
-sealed class FluxSource(val path: String) {
-    class Local(path: String) : FluxSource(path)
-    class GDrive(path: String) : FluxSource(path)
 }

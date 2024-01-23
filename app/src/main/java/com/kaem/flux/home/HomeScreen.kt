@@ -27,6 +27,7 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.accompanist.permissions.rememberPermissionState
 import com.kaem.flux.R
+import com.kaem.flux.data.tmdb.TMDBClient
 import com.kaem.flux.ui.component.FluxButton
 
 @Composable

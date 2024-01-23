@@ -22,6 +22,7 @@ import javax.inject.Singleton
 
 
 class LocalService @Inject constructor(
+    @ApplicationContext val context: Context
 ) {
 
     fun getLocalFiles() : List<String> {
@@ -88,13 +89,6 @@ class LocalService @Inject constructor(
             }
 
         }*/
-
-        files.add("LocalService 1")
-        files.add("LocalService 2")
-        files.add("LocalService 3")
-        files.add("LocalService 4")
-
-        Log.d("TEST", "LocalService(${files.size})")
 
         return files
 

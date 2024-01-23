@@ -15,17 +15,10 @@ class HomeRepository @Inject constructor(
 
     suspend fun getLocalFiles() = flow {
 
-        Log.d("TEST", "start getLocalFiles")
-
         emit(DataState.Loading())
 
-        val test = withContext(Dispatchers.Default) {
+        val test = localService.getLocalFiles()
 
-            localService.getLocalFiles()
-
-        }
-
-        Log.d("TEST", "end getLocalFiles(${test.size})")
 
         emit(DataState.Success(test))
 

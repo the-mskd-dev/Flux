@@ -1,16 +1,17 @@
 package com.kaem.flux.data.source
 
+import android.content.ContentUris
 import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
-import android.util.Log
 import com.kaem.flux.model.FileSource
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 
 class LocalFilesDataSource(
-    val context: Context
+    private val context: Context
 ) : FilesDataSource {
 
     override suspend fun getFiles(): List<FileSource> {
@@ -39,7 +40,7 @@ class LocalFilesDataSource(
         )
 
 
-        /*val query = context.contentResolver.query(
+        val query = context.contentResolver.query(
             collection,
             projection,
             selection,
@@ -76,12 +77,7 @@ class LocalFilesDataSource(
 
             }
 
-        }*/
-
-        files.add(FileSource.Local(name = "TEST 1", uri = Uri.EMPTY))
-        files.add(FileSource.Local(name = "TEST 2", uri = Uri.EMPTY))
-        files.add(FileSource.Local(name = "TEST 3", uri = Uri.EMPTY))
-        files.add(FileSource.Local(name = "TEST 4", uri = Uri.EMPTY))
+        }
 
         return files
 

@@ -1,7 +1,5 @@
 package com.kaem.flux.model
 
-import android.net.Uri
-
 data class FluxMedia(
     val name: String,
     val season: Int?,

@@ -104,7 +104,7 @@ fun HomeContent(
 
                 Text(
                     text = show,
-                    color = MaterialTheme.colorScheme.primary
+                    color = MaterialTheme.colorScheme.onSurface
                 )
 
             }

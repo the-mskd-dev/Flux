@@ -5,7 +5,6 @@ import retrofit2.http.GET
 
 interface TMDBService {
 
-
     @GET("authentication")
     fun authenticate() : TMDBAuthentication
 

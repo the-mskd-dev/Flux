@@ -75,6 +75,7 @@ fun HomeLoading() {
 
 @Composable
 fun HomeContent(
+    viewModel: HomeViewModel = viewModel(),
     shows: List<String>
 ) {
 
@@ -103,6 +104,9 @@ fun HomeContent(
                 .systemBarsPadding()
         ) {
 
+            FluxButton(text = "TEST TMDB") {
+                viewModel.test()
+            }
 
             shows.forEach { show ->
 

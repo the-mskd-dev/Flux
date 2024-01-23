@@ -1,7 +1,10 @@
 package com.kaem.flux.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kaem.flux.data.tmdb.TMDBClient
+import com.kaem.flux.data.tmdb.TMDBService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -49,4 +52,12 @@ class HomeViewModel @Inject constructor(
 
     }
 
+    fun test() = viewModelScope.launch {
+
+        val result = TMDBClient.service.authenticate()
+
+        Log.d("TEST", result.toString())
+
+
+    }
 }

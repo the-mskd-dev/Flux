@@ -7,14 +7,11 @@ import android.os.Build
 import android.provider.MediaStore
 import com.kaem.flux.model.FluxFile
 import com.kaem.flux.model.FluxSource
-import dagger.Module
-import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ActivityContext
-import dagger.hilt.components.SingletonComponent
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class LocalLayer @Inject constructor(
+class LocalService @Inject constructor(
     @ActivityContext private val context: Context
 ) {
 

@@ -20,16 +20,6 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@Module
-@InstallIn(SingletonComponent::class)
-object AppModule {
-
-    @Provides
-    @Singleton
-    fun provideLocalService(@ApplicationContext context: Context) = LocalService(context)
-
-}
-
 class LocalService @Inject constructor(
     val context: Context
 ) {

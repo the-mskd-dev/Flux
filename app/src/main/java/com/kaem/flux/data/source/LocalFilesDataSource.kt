@@ -19,14 +19,7 @@ class LocalFilesDataSource(
 
         val files = mutableListOf<FileSource>()
 
-        val collection =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                MediaStore.Video.Media.getContentUri(
-                    MediaStore.VOLUME_EXTERNAL
-                )
-            } else {
-                MediaStore.Video.Media.EXTERNAL_CONTENT_URI
-            }
+        val collection = MediaStore.Video.Media.getContentUri(MediaStore.VOLUME_EXTERNAL)
 
         val projection = arrayOf(
             MediaStore.Video.Media._ID,

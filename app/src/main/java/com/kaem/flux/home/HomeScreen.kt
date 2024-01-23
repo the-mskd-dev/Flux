@@ -120,26 +120,23 @@ fun HomeContent(
 @Composable
 fun HomePermissionButton(viewModel: HomeViewModel = viewModel()) {
 
-    val permissions = arrayListOf(
+    val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+        android.Manifest.permission.READ_MEDIA_VIDEO
+    else
         android.Manifest.permission.READ_EXTERNAL_STORAGE
-    )
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-        permissions.add(android.Manifest.permission.READ_MEDIA_VIDEO)
+    val permissionsState = rememberPermissionState(
+        permission = permission,
+        onPermissionResult = { result ->
 
-    val permissionsState = rememberMultiplePermissionsState(
-        permissions = permissions,
-        onPermissionsResult = { result ->
-
-            Log.d("TEST", "$result")
-            if (result.all { it.value }) {
+            if (result) {
                 viewModel.refreshFiles()
             }
 
         }
     )
 
-    if (permissionsState.allPermissionsGranted) {
+    if (permissionsState.status.isGranted) {
 
         Text(
             text = "Toutes les permissions sont données",
@@ -150,7 +147,7 @@ fun HomePermissionButton(viewModel: HomeViewModel = viewModel()) {
 
         FluxButton(
             text = "Request permission",
-            onClick = { permissionsState.launchMultiplePermissionRequest() }
+            onClick = { permissionsState.launchPermissionRequest() }
         )
 
     }

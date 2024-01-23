@@ -13,8 +13,9 @@ import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class LocalService @Inject constructor(
-    @ActivityContext private val context: Context
+/*
+class LocalService(
+    private val context: Context
 ) {
 
     suspend fun getLocalFiles() : List<FluxFile> {
@@ -86,3 +87,4 @@ class LocalService @Inject constructor(
 
     }
 }
+*/

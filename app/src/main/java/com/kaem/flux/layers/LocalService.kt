@@ -13,7 +13,7 @@ import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-/*
+
 class LocalService(
     private val context: Context
 ) {
@@ -87,4 +87,3 @@ class LocalService(
 
     }
 }
-*/

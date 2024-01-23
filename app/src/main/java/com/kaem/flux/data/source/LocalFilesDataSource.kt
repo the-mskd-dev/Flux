@@ -7,6 +7,7 @@ import android.os.Build
 import android.provider.MediaStore
 import com.kaem.flux.model.FileSource
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 
@@ -78,6 +79,8 @@ class LocalFilesDataSource(
             }
 
         }
+
+        withContext(Dispatchers.Default) { delay(5000) }
 
         return files
 

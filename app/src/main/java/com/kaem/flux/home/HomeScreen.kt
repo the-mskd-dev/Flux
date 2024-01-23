@@ -117,7 +117,7 @@ fun HomeContent(
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun HomePermissionButton() {
+fun HomePermissionButton(viewModel: HomeViewModel = viewModel()) {
 
     val permissions = arrayListOf(
         android.Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -130,7 +130,16 @@ fun HomePermissionButton() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
         permissions.add(android.Manifest.permission.READ_MEDIA_VIDEO)
 
-    val permissionsState = rememberMultiplePermissionsState(permissions)
+    val permissionsState = rememberMultiplePermissionsState(
+        permissions = permissions,
+        onPermissionsResult = { result ->
+
+            if (result.all { it.value }) {
+                viewModel.refreshFiles()
+            }
+
+        }
+    )
 
     if (permissionsState.allPermissionsGranted) {
 

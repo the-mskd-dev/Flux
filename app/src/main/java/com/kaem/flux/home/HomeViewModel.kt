@@ -24,20 +24,24 @@ class HomeViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
-    init {
+    init { refreshFiles() }
 
-        viewModelScope.launch {
+    fun refreshFiles() = viewModelScope.launch {
 
-            repository.getLocalFiles().collect { result ->
+        _uiState.update {
 
-                _uiState.update {
+            it.copy(isLoading = true)
 
-                    it.copy(
-                        shows = (result.getOrNull() ?: emptyList()).map { it.name },
-                        isLoading = false
-                    )
+        }
 
-                }
+        repository.getLocalFiles().collect { result ->
+
+            _uiState.update {
+
+                it.copy(
+                    shows = (result.getOrNull() ?: emptyList()).map { it.name },
+                    isLoading = false
+                )
 
             }
 

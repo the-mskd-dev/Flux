@@ -56,7 +56,11 @@ class HomeViewModel @Inject constructor(
 
         val result = TMDBClient.service.authenticate()
 
-        Log.d("TEST", result.toString())
+        Log.d("TEST", "authentication : ${result.success}")
+
+        val test = TMDBClient.service.search(name = "naruto")
+
+        Log.d("TEST", "search : ${test.results.size}")
 
 
     }

@@ -2,16 +2,21 @@ package com.kaem.flux.data.tmdb
 
 import com.google.gson.GsonBuilder
 import com.kaem.flux.model.tmdb.TMDBAuthentication
+import com.kaem.flux.model.tmdb.TMDBMediasResult
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Headers
+import retrofit2.http.Query
 
 interface TMDBService {
 
     @GET("authentication")
     suspend fun authenticate() : TMDBAuthentication
+
+    @GET("search/multi")
+    suspend fun search(@Query("query") name: String) : TMDBMediasResult
 
 }
 

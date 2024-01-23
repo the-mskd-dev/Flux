@@ -2,6 +2,7 @@ package com.kaem.flux.home
 
 import android.os.Build
 import android.provider.MediaStore
+import android.util.Log
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -134,6 +135,7 @@ fun HomePermissionButton(viewModel: HomeViewModel = viewModel()) {
         permissions = permissions,
         onPermissionsResult = { result ->
 
+            Log.d("TEST", "$result")
             if (result.all { it.value }) {
                 viewModel.refreshFiles()
             }

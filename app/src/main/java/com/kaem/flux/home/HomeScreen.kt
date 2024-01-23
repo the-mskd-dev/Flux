@@ -134,7 +134,7 @@ fun HomePermissionButton() {
 
     val permissionsState = rememberMultiplePermissionsState(permissions)
 
-    if (permissionsState.permissions.all { it.status.isGranted  }) {
+    if (permissionsState.allPermissionsGranted) {
 
         Text(
             text = "Toutes les permissions sont données",

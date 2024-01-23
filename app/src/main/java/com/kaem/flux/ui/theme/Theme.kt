@@ -60,7 +60,6 @@ fun FluxTheme(
         }
 
         else -> FluxColorScheme
-        //else -> LightColorScheme
     }
     val view = LocalView.current
     if (!view.isInEditMode) {

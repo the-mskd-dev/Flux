@@ -24,6 +24,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.accompanist.permissions.rememberPermissionState
+import com.kaem.flux.ui.component.FluxButton
 
 @Composable
 fun HomeScreen() {
@@ -142,9 +143,10 @@ fun HomePermissionButton() {
 
     } else {
 
-        Button(onClick = { permissionsState.launchMultiplePermissionRequest() }) {
-            Text("Request permission")
-        }
+        FluxButton(
+            text = "Request permission",
+            onClick = { permissionsState.launchMultiplePermissionRequest() }
+        )
 
     }
 

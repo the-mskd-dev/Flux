@@ -22,7 +22,6 @@ import javax.inject.Singleton
 
 
 class LocalService @Inject constructor(
-    private val context: Context
 ) {
 
     fun getLocalFiles() : List<String> {
@@ -51,7 +50,7 @@ class LocalService @Inject constructor(
         )
 
 
-        val query = context.contentResolver.query(
+        /*val query = context.contentResolver.query(
             collection,
             projection,
             selection,
@@ -59,7 +58,7 @@ class LocalService @Inject constructor(
             null
         )
 
-        /*withContext(Dispatchers.Main) {
+        withContext(Dispatchers.Main) {
 
             query?.use { cursor ->
 
@@ -100,18 +99,4 @@ class LocalService @Inject constructor(
         return files
 
     }
-}
-
-@Module
-@InstallIn(SingletonComponent::class)
-object LocalServiceModule {
-
-    @Provides
-    @Singleton
-    fun provideLocalService(
-        @ApplicationContext context: Context
-    ): LocalService {
-        return LocalService(context)
-    }
-
 }

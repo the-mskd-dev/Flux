@@ -1,30 +1,17 @@
-package com.kaem.flux.layers
+package com.kaem.flux.data.source
 
-import android.content.ContentUris
 import android.content.Context
-import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
-import com.kaem.flux.model.FluxFile
-import com.kaem.flux.model.FluxSource
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ActivityContext
-import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.components.SingletonComponent
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-import javax.inject.Singleton
 
-class LocalService @Inject constructor(
+class LocalFilesDataSource(
     val context: Context
-) {
+) : FilesDataSource {
 
-    fun getLocalFiles() : List<String> {
+    override suspend fun getFiles(): List<String> {
 
         val files = mutableListOf<String>()
 
@@ -93,6 +80,7 @@ class LocalService @Inject constructor(
         files.add("TEST_2")
         files.add("TEST_3")
         files.add("TEST_4")
+        files.add("TEST_5")
 
         return files
 

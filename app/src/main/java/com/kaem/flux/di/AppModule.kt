@@ -1,20 +1,43 @@
 package com.kaem.flux.di
 
 import android.content.Context
-import com.kaem.flux.layers.LocalService
+import com.kaem.flux.data.source.FilesDataSource
+import com.kaem.flux.data.source.LocalFilesDataSource
+import com.kaem.flux.home.HomeRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Qualifier
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
+    @Qualifier
+    @Retention(AnnotationRetention.RUNTIME)
+    annotation class LocalFilesDataSource
+
     @Provides
     @Singleton
-    fun provideLocalService(@ApplicationContext context: Context) = LocalService(context)
+    @LocalFilesDataSource
+    fun provideLocalFilesDataSource(
+        @ApplicationContext context: Context
+    ) : FilesDataSource = LocalFilesDataSource(context)
 
 }
+
+@Module
+@InstallIn(SingletonComponent::class)
+object FilesRepositoryModule {
+
+    @Provides
+    @Singleton
+    fun provideFilesRepository(
+        @AppModule.LocalFilesDataSource localFilesDataSource: FilesDataSource
+    ) : HomeRepository = HomeRepository(localFilesDataSource)
+
+}
+

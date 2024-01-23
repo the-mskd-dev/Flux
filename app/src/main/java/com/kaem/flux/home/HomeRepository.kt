@@ -1,5 +1,7 @@
 package com.kaem.flux.home
 
+import android.util.Log
+import com.kaem.flux.layers.LocalService
 import com.kaem.flux.model.DataState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -7,19 +9,23 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class HomeRepository @Inject constructor() {
+class HomeRepository @Inject constructor(
+    private val localService: LocalService
+) {
 
     suspend fun getLocalFiles() = flow {
 
+        Log.d("TEST", "start getLocalFiles")
+
         emit(DataState.Loading())
 
-        withContext(Dispatchers.Default) {
+        val test = withContext(Dispatchers.Default) {
 
-            delay(2000L)
+            localService.getLocalFiles()
 
         }
 
-        val test = listOf("Test 1", "Test 2", "Test 3", "Test 4", "Test 5", "Test 6")
+        Log.d("TEST", "end getLocalFiles(${test.size})")
 
         emit(DataState.Success(test))
 

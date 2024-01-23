@@ -5,22 +5,29 @@ import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import android.util.Log
 import com.kaem.flux.model.FluxFile
 import com.kaem.flux.model.FluxSource
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ActivityContext
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import javax.inject.Singleton
 
 
-class LocalService(
+class LocalService @Inject constructor(
     private val context: Context
 ) {
 
-    suspend fun getLocalFiles() : List<FluxFile> {
+    fun getLocalFiles() : List<String> {
 
-        val files = mutableListOf<FluxFile>()
+        val files = mutableListOf<String>()
 
         val collection =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -52,7 +59,7 @@ class LocalService(
             null
         )
 
-        withContext(Dispatchers.Main) {
+        /*withContext(Dispatchers.Main) {
 
             query?.use { cursor ->
 
@@ -81,9 +88,30 @@ class LocalService(
 
             }
 
-        }
+        }*/
+
+        files.add("LocalService 1")
+        files.add("LocalService 2")
+        files.add("LocalService 3")
+        files.add("LocalService 4")
+
+        Log.d("TEST", "LocalService(${files.size})")
 
         return files
 
     }
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+object LocalServiceModule {
+
+    @Provides
+    @Singleton
+    fun provideLocalService(
+        @ApplicationContext context: Context
+    ): LocalService {
+        return LocalService(context)
+    }
+
 }

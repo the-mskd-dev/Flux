@@ -107,6 +107,7 @@ class LocalService @Inject constructor(
 object LocalServiceModule {
 
     @Provides
+    @Singleton
     fun provideLocalService(
         @ApplicationContext context: Context
     ): LocalService {

@@ -6,7 +6,7 @@ data class FluxMedia(
     val name: String,
     val season: Int?,
     val episode: Float?,
-    val source: FluxSource
+    val source: FileSource
 ) {
 
     val isMovie: Boolean = season == null && episode == null

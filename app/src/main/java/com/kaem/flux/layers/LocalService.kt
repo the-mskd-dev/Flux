@@ -20,9 +20,18 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
+@Module
+@InstallIn(SingletonComponent::class)
+object AppModule {
+
+    @Provides
+    @Singleton
+    fun provideLocalService(@ApplicationContext context: Context) = LocalService(context)
+
+}
 
 class LocalService @Inject constructor(
-    @ApplicationContext val context: Context
+    val context: Context
 ) {
 
     fun getLocalFiles() : List<String> {
@@ -89,6 +98,11 @@ class LocalService @Inject constructor(
             }
 
         }*/
+
+        files.add("TEST_1")
+        files.add("TEST_2")
+        files.add("TEST_3")
+        files.add("TEST_4")
 
         return files
 

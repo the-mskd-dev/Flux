@@ -1,11 +1,15 @@
 package com.kaem.flux.home
 
+import android.os.Build
+import android.provider.MediaStore
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -16,6 +20,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import com.google.accompanist.permissions.rememberPermissionState
 
 @Composable
 fun HomeScreen() {
@@ -67,15 +75,18 @@ fun HomeContent(
 
     if (shows.isEmpty()) {
 
-        Box(
+        Column(
             modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
 
             Text(
                 text = "No content",
                 color = MaterialTheme.colorScheme.primary
             )
+
+            HomePermissionButton()
 
         }
 
@@ -103,10 +114,39 @@ fun HomeContent(
 
 }
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun HomePermissionButton() {
 
+    val permissions = arrayListOf(
+        android.Manifest.permission.READ_EXTERNAL_STORAGE,
+        android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+    )
 
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        permissions.add(android.Manifest.permission.MANAGE_EXTERNAL_STORAGE)
+    }
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        permissions.add(android.Manifest.permission.READ_MEDIA_VIDEO)
+    }
+
+    val permissionsState = rememberMultiplePermissionsState(permissions)
+
+    if (permissionsState.permissions.all { it.status.isGranted  }) {
+
+        Text(
+            text = "Toutes les permissions sont données",
+            color = MaterialTheme.colorScheme.primary
+        )
+
+    } else {
+
+        Button(onClick = { permissionsState.launchMultiplePermissionRequest() }) {
+            Text("Request permission")
+        }
+
+    }
 
 }
 

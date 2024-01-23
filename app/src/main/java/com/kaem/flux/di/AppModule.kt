@@ -31,11 +31,11 @@ object AppModule {
 
 @Module
 @InstallIn(SingletonComponent::class)
-object FilesRepositoryModule {
+object HomeRepositoryModule {
 
     @Provides
     @Singleton
-    fun provideFilesRepository(
+    fun provideHomeRepository(
         @AppModule.LocalFilesDataSource localFilesDataSource: FilesDataSource
     ) : HomeRepository = HomeRepository(localFilesDataSource)
 

@@ -11,7 +11,7 @@ import retrofit2.http.Headers
 interface TMDBService {
 
     @GET("authentication")
-    fun authenticate() : TMDBAuthentication
+    suspend fun authenticate() : TMDBAuthentication
 
 }
 

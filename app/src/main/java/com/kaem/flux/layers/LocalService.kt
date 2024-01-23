@@ -8,6 +8,8 @@ import android.provider.MediaStore
 import com.kaem.flux.model.FluxFile
 import com.kaem.flux.model.FluxSource
 import dagger.hilt.android.qualifiers.ActivityContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -49,30 +51,32 @@ class LocalService @Inject constructor(
             null
         )
 
-        query?.use { cursor ->
+        withContext(Dispatchers.Main) {
 
-            // Cache column indices.
-            val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID)
-            val nameColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME)
-            val durationColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION)
+            query?.use { cursor ->
 
-            while (cursor.moveToNext()) {
-                // Get values of columns for a given video.
-                val id = cursor.getLong(idColumn)
-                val name = cursor.getString(nameColumn)
-                val duration = cursor.getInt(durationColumn)
+                // Cache column indices.
+                val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID)
+                val nameColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME)
 
-                val contentUri: Uri = ContentUris.withAppendedId(
-                    MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
-                    id
-                )
+                while (cursor.moveToNext()) {
+                    // Get values of columns for a given video.
+                    val id = cursor.getLong(idColumn)
+                    val name = cursor.getString(nameColumn)
 
-                // Stores column values and the contentUri in a local object
-                // that represents the media file.
-                files += FluxFile(
-                    name = name,
-                    source = FluxSource.Local(uri = contentUri)
-                )
+                    val contentUri: Uri = ContentUris.withAppendedId(
+                        MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+                        id
+                    )
+
+                    // Stores column values and the contentUri in a local object
+                    // that represents the media file.
+                    files += FluxFile(
+                        name = name,
+                        source = FluxSource.Local(uri = contentUri)
+                    )
+
+                }
 
             }
 

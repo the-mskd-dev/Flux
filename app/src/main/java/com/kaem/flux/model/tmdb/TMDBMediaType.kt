@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 enum class TMDBMediaType {
     @SerializedName("tv")
-    TV,
+    SHOW,
     @SerializedName("movie")
     MOVIE
 }

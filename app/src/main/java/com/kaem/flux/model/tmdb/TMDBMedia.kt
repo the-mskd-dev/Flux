@@ -1,12 +1,16 @@
 package com.kaem.flux.model.tmdb
 
+import com.google.gson.annotations.JsonAdapter
+import com.kaem.flux.utils.EnumDeserializer
+
 data class TMDBMedia(
     val backdrop_path: String,
     val id: Int,
     val name: String,
     val overview: String,
     val poster_path: String,
-    val media_type: String,
+    @JsonAdapter(EnumDeserializer::class)
+    val media_type: TMDBMediaType,
     val genre_ids: List<Int>,
     val popularity: Float,
     val first_air_date: String,

@@ -19,7 +19,7 @@ class LocalFilesDataSource(
 
         val files = mutableListOf<FileSource>()
 
-        val collection = MediaStore.Video.Media.getContentUri(MediaStore.VOLUME_EXTERNAL)
+        val collection = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
 
         val projection = arrayOf(
             MediaStore.Video.Media._ID,
@@ -32,7 +32,6 @@ class LocalFilesDataSource(
         val selectionArgs = arrayOf(
             TimeUnit.MILLISECONDS.convert(5, TimeUnit.MINUTES).toString()
         )
-
 
         val query = context.contentResolver.query(
             collection,

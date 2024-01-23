@@ -1,9 +1,11 @@
 package com.kaem.flux.data.source
 
 import android.content.Context
+import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
+import com.kaem.flux.model.FileSource
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -11,9 +13,9 @@ class LocalFilesDataSource(
     val context: Context
 ) : FilesDataSource {
 
-    override suspend fun getFiles(): List<String> {
+    override suspend fun getFiles(): List<FileSource> {
 
-        val files = mutableListOf<String>()
+        val files = mutableListOf<FileSource>()
 
         val collection =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -76,11 +78,10 @@ class LocalFilesDataSource(
 
         }*/
 
-        files.add("TEST_1")
-        files.add("TEST_2")
-        files.add("TEST_3")
-        files.add("TEST_4")
-        files.add("TEST_5")
+        files.add(FileSource.Local(name = "TEST 1", uri = Uri.EMPTY))
+        files.add(FileSource.Local(name = "TEST 2", uri = Uri.EMPTY))
+        files.add(FileSource.Local(name = "TEST 3", uri = Uri.EMPTY))
+        files.add(FileSource.Local(name = "TEST 4", uri = Uri.EMPTY))
 
         return files
 

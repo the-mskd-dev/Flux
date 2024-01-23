@@ -40,7 +40,7 @@ class HomeViewModel @Inject constructor(
                 _uiState.update {
 
                     it.copy(
-                        shows = result.getOrNull() ?: emptyList(),
+                        shows = (result.getOrNull() ?: emptyList()).map { it.name },
                         isLoading = false
                     )
 

@@ -19,12 +19,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.accompanist.permissions.rememberPermissionState
+import com.kaem.flux.R
 import com.kaem.flux.ui.component.FluxButton
 
 @Composable
@@ -136,17 +138,10 @@ fun HomePermissionButton(viewModel: HomeViewModel = viewModel()) {
         }
     )
 
-    if (permissionsState.status.isGranted) {
-
-        Text(
-            text = "Toutes les permissions sont données",
-            color = MaterialTheme.colorScheme.primary
-        )
-
-    } else {
+    if (!permissionsState.status.isGranted) {
 
         FluxButton(
-            text = "Request permission",
+            text = stringResource(id = R.string.give_permission),
             onClick = { permissionsState.launchPermissionRequest() }
         )
 

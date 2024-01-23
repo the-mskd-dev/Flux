@@ -1,13 +1,5 @@
 package com.kaem.flux.model.tmdb
 
-
-data class TMDBMediasResult(
-    val page: Int,
-    val results: List<TMDBMedia>,
-    val total_pages: Int,
-    val total_results: Int
-)
-
 data class TMDBMedia(
     val backdrop_path: String,
     val id: Int,
@@ -20,4 +12,11 @@ data class TMDBMedia(
     val first_air_date: String,
     val vote_average: Float,
     val vote_count: Int
+)
+
+data class TMDBMediasResult(
+    val page: Int,
+    val results: List<TMDBMedia>,
+    val total_pages: Int,
+    val total_results: Int
 )

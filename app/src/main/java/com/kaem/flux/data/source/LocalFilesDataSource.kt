@@ -67,9 +67,9 @@ class LocalFilesDataSource(
 
                     // Stores column values and the contentUri in a local object
                     // that represents the media file.
-                    files += FluxFile(
+                    files += FileSource.Local(
                         name = name,
-                        source = FluxSource.Local(uri = contentUri)
+                        uri = contentUri
                     )
 
                 }

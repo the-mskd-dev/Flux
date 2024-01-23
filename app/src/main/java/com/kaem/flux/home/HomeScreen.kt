@@ -124,13 +124,11 @@ fun HomePermissionButton() {
         android.Manifest.permission.WRITE_EXTERNAL_STORAGE
     )
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
         permissions.add(android.Manifest.permission.MANAGE_EXTERNAL_STORAGE)
-    }
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
         permissions.add(android.Manifest.permission.READ_MEDIA_VIDEO)
-    }
 
     val permissionsState = rememberMultiplePermissionsState(permissions)
 

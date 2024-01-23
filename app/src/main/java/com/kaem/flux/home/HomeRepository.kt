@@ -12,11 +12,9 @@ class HomeRepository @Inject constructor(
 
     suspend fun getLocalFiles() = flow {
 
-        emit(DataState.Loading())
-
         val test = localFilesDataSource.getFiles()
 
-        emit(DataState.Success(test))
+        emit(Result.success(test))
 
     }
 

@@ -35,38 +35,16 @@ class HomeViewModel @Inject constructor(
 
         viewModelScope.launch {
 
-            repository.getLocalFiles().collect { data ->
+            repository.getLocalFiles().collect { result ->
 
                 _uiState.update {
 
-                    when (data) {
-
-                        is DataState.Loading -> {
-
-                            it.copy(isLoading = true)
-
-                        }
-
-                        is DataState.Success -> {
-
-                            it.copy(
-                                isLoading = false,
-                                shows = data.data
-                            )
-
-                        }
-
-
-                        is DataState.Error -> {
-
-                            it.copy(isLoading = false)
-
-                        }
-
-                    }
+                    it.copy(
+                        shows = result.getOrNull() ?: emptyList(),
+                        isLoading = false
+                    )
 
                 }
-
 
             }
 

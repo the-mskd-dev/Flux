@@ -1,6 +1,10 @@
 package com.kaem.flux.model.tmdb
 
+import com.google.gson.annotations.SerializedName
+
 enum class TMDBMediaType {
-    tv,
-    movie
+    @SerializedName("tv")
+    TV,
+    @SerializedName("movie")
+    MOVIE
 }

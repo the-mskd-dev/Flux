@@ -13,9 +13,9 @@ class HomeRepository @Inject constructor(
 
     suspend fun getArtworks() = flow {
 
-        val test = localFilesDataSource.getFiles()
+        val localFiles = localFilesDataSource.getFiles()
 
-        emit(Result.success(test))
+        emit(Result.success(localFiles))
 
         val result = tmdbService.authenticate()
 

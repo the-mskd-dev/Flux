@@ -18,6 +18,5 @@ data class TMDBMovie(
     @SerializedName("vote_count")
     val voteCount: Int,
     @SerializedName("release_date")
-    val releaseDateString: String,
-    val crew: List<TMDBCrew>,
+    val releaseDateString: String
 )

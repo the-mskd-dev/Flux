@@ -2,7 +2,7 @@ package com.kaem.flux.model.tmdb
 
 import com.google.gson.annotations.SerializedName
 
-data class TMDBMedia(
+data class TMDBArtwork(
     val id: Int,
     @SerializedName("overview")
     val description: String,
@@ -34,12 +34,12 @@ data class TMDBMedia(
 
     // For Persons
     @SerializedName("known_for")
-    val relatedContent: List<TMDBMedia>
+    val relatedContent: List<TMDBArtwork>
 )
 
-data class TMDBMediasResult(
+data class TMDBArtworksResult(
     val page: Int,
-    val results: List<TMDBMedia>,
+    val results: List<TMDBArtwork>,
     @SerializedName("total_pages")
     val pageCount: Int,
     @SerializedName("total_results")

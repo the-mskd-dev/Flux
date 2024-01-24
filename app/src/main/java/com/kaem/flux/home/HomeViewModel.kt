@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kaem.flux.data.tmdb.TMDBClient
-import com.kaem.flux.data.tmdb.TMDBService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -58,17 +57,23 @@ class HomeViewModel @Inject constructor(
 
         Log.d("TEST", "authentication : ${result.success}")
 
-        val naruto = TMDBClient.service.search(name = "naruto")
+        val naruto = TMDBClient.service.getArtworks(name = "naruto")
 
         Log.d("TEST", "search : ${naruto.results.size}")
 
-        val episodeNaruto = TMDBClient.service.episode(
+        val episodeNaruto = TMDBClient.service.getEpisode(
             seriesId = 46260,
             season = 1,
             episode = 1
         )
 
         Log.d("TEST", "episode : $episodeNaruto")
+
+        val spiderman = TMDBClient.service.getMovie(
+            movieId = 315635
+        )
+
+        Log.d("TEST", "spiderman : $spiderman")
 
     }
 }

@@ -1,8 +1,10 @@
 package com.kaem.flux.model.flux
 
 data class FluxShow(
-    val id: Int,
-    val imagePath: String,
-    val bannerPath: String,
+    override val id: Int,
+    override val name: String,
+    override val imagePath: String,
+    override val bannerPath: String,
+    override val releaseDateString: String,
     val episodes: List<FluxEpisode>
-)
+) : FluxArtwork

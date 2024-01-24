@@ -1,6 +1,5 @@
 package com.kaem.flux.model.flux
 
-import com.google.gson.annotations.SerializedName
 import com.kaem.flux.model.tmdb.TMDBCrew
 
 data class FluxEpisode(
@@ -15,6 +14,6 @@ data class FluxEpisode(
     val voteCount: Int,
     val releaseDateString: String,
     val crew: List<TMDBCrew>,
-    val isWatched: Boolean = false,
+    var isWatched: Boolean = false,
     val file: FluxFile
 )

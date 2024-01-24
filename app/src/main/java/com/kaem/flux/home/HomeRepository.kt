@@ -6,6 +6,7 @@ import com.kaem.flux.data.tmdb.TMDBService
 import com.kaem.flux.model.FileNameProperties
 import com.kaem.flux.model.flux.FluxArtwork
 import com.kaem.flux.model.tmdb.TMDBArtwork
+import com.kaem.flux.model.tmdb.TMDBMediaType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
@@ -31,6 +32,24 @@ class HomeRepository @Inject constructor(
 
         emit(Result.success(result))
 
+    }
+
+    private suspend fun tmdbToFluxArtwork(tmdbArtwork: TMDBArtwork) : FluxArtwork? {
+
+        when (tmdbArtwork.type){
+
+            TMDBMediaType.MOVIE -> {
+
+            }
+
+            TMDBMediaType.SHOW -> {
+
+            }
+            else -> {}
+        }
+
+
+        return null
     }
 
 }

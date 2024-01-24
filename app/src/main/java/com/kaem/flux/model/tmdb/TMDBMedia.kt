@@ -23,12 +23,12 @@ data class TMDBMedia(
     val voteCount: Int,
 
     // For TV Shows or Persons
-    val name: String,
+    val name: String?,
     @SerializedName("original_name")
     val originalName: String?,
 
     // For Movies
-    val title: String,
+    val title: String?,
     @SerializedName("original_title")
     val originalTitle: String?,
 

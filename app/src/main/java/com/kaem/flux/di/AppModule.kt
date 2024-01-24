@@ -3,6 +3,7 @@ package com.kaem.flux.di
 import android.content.Context
 import com.kaem.flux.data.source.FilesDataSource
 import com.kaem.flux.data.source.LocalFilesDataSource
+import com.kaem.flux.data.tmdb.TMDBService
 import com.kaem.flux.home.HomeRepository
 import dagger.Module
 import dagger.Provides
@@ -36,8 +37,12 @@ object HomeRepositoryModule {
     @Provides
     @Singleton
     fun provideHomeRepository(
-        @AppModule.LocalFilesDataSource localFilesDataSource: FilesDataSource
-    ) : HomeRepository = HomeRepository(localFilesDataSource)
+        @AppModule.LocalFilesDataSource localFilesDataSource: FilesDataSource,
+        tmdbService: TMDBService
+    ) : HomeRepository = HomeRepository(
+        localFilesDataSource = localFilesDataSource,
+        tmdbService = tmdbService
+    )
 
 }
 

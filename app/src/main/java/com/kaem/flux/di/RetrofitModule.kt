@@ -1,15 +1,11 @@
 package com.kaem.flux.di
 
-import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.kaem.flux.data.source.FilesDataSource
-import com.kaem.flux.data.source.LocalFilesDataSource
 import com.kaem.flux.data.tmdb.TMDBService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit

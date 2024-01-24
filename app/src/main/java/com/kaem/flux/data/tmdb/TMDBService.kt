@@ -1,14 +1,10 @@
 package com.kaem.flux.data.tmdb
 
-import com.google.gson.GsonBuilder
+import com.kaem.flux.model.tmdb.TMDBArtworksResult
 import com.kaem.flux.model.tmdb.TMDBAuthentication
 import com.kaem.flux.model.tmdb.TMDBEpisode
-import com.kaem.flux.model.tmdb.TMDBArtworksResult
 import com.kaem.flux.model.tmdb.TMDBMovie
 import com.kaem.flux.utils.Constants
-import okhttp3.OkHttpClient
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query

@@ -8,7 +8,5 @@ enum class TMDBMediaType {
     @SerializedName("movie")
     MOVIE,
     @SerializedName("person")
-    PERSON,
-    @SerializedName("tv")
-    TV
+    PERSON
 }

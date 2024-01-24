@@ -7,3 +7,12 @@ interface FluxArtwork {
     val bannerPath: String
     val releaseDateString: String
 }
+
+interface FluxArtworkDetails {
+    val description: String
+    val voteAverage: Float
+    val voteCount: Int
+    val duration: Int
+    var isWatched: Boolean
+    val file: FluxFile
+}

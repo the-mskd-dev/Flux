@@ -6,11 +6,11 @@ data class FluxMovie(
     override val imagePath: String,
     override val bannerPath: String,
     override val releaseDateString: String,
-    val description: String,
-    val voteAverage: Float,
-    val voteCount: Int,
+    override val description: String,
+    override val voteAverage: Float,
+    override val voteCount: Int,
+    override val duration: Int,
+    override var isWatched: Boolean = false,
+    override val file: FluxFile,
     val genres: List<String> = listOf(),
-    val duration: Int,
-    var isWatched: Boolean = false,
-    val file: FluxFile
-) : FluxArtwork
+) : FluxArtwork, FluxArtworkDetails

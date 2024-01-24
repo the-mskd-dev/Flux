@@ -72,7 +72,7 @@ class LocalFilesDataSource(
 
         }
 
-        withContext(Dispatchers.Default) { delay(5000) }
+        withContext(Dispatchers.Default) { delay(2000) }
 
         return files
 

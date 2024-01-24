@@ -4,5 +4,6 @@ import com.kaem.flux.model.FileSource
 
 data class FluxFile(
     val name: String,
-    val source: FileSource
+    val source: FileSource,
+    val addedDateString: String
 )

@@ -19,31 +19,52 @@ data class FileNameProperties(
     val title: String,
     val year: String? = null,
     val season: Int? = null,
-    val episode: Float? = null,
+    val episode: Int? = null,
 ) {
 
     companion object {
 
         fun fromFileName(fileName: String): FileNameProperties {
 
-            val regex = Regex("""^(.+?)(?:\s*\((\d{4})\))?(?:_s(\d{1,2})e(\d{1,2}))?.*""")
-            val matchResult = regex.matchEntire(fileName)
+            var name = fileName.substringBeforeLast('.').lowercase()
+            var season: Int? = null
+            var episode: Int? = null
+            var year: String? = null
 
-            return if (matchResult != null) {
-                val (name, year, season, episode) = matchResult.destructured
-                FileNameProperties(
-                    title = name.trim(),
-                    year = year.ifEmpty { null },
-                    season = season.toIntOrNull(),
-                    episode = episode.toFloatOrNull()
-                )
-            } else {
-                // If no match, return FileNameProperties with name only
-                FileNameProperties(title = fileName.trim())
+            val splitName = name.split('_')
+            if (splitName.size == 2) {
+
+                name = splitName[0]
+
+                val seasonAndEpisodeRegex = Regex("s(\\d+)e(\\d+)")
+                val seasonAndEpisodeResult = seasonAndEpisodeRegex.find(splitName[1])
+                seasonAndEpisodeResult?.let {
+                    val (first, last) = it.destructured
+                    season = first.toIntOrNull()
+                    episode = last.toIntOrNull()
+                }
+
             }
+
+            val yearRegex = Regex("\\b\\d{4}\\b")
+            year = yearRegex.find(name)?.value
+
+            return FileNameProperties(
+                title = name,
+                season = season,
+                episode = episode,
+                year = year
+            )
 
         }
 
     }
 
 }
+
+val fileName1 = "spy x family_s02e03.mkv"
+val fileName2 = "spiderman (2002).mkv"
+val fileName3 = "naruto.mkv"
+val fileName4 = "spiderman (2017)_s02e04.mkv"
+val fileName5 = "spiderman_2017.mkv"
+val fileName6 = "2001 : L'odyssée de l'espace.mkv"

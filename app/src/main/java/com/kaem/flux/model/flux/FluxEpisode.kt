@@ -6,7 +6,7 @@ import com.kaem.flux.model.tmdb.TMDBCrew
 data class FluxEpisode(
     val id: Int,
     val name: String,
-    val number: Float,
+    val number: Int,
     val season: Int,
     val imagePath: String,
     val releaseDateString: String,

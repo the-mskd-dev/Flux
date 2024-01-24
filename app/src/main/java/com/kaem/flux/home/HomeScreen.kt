@@ -24,6 +24,7 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.kaem.flux.R
 import com.kaem.flux.model.flux.FluxArtwork
+import com.kaem.flux.model.tmdb.TMDBArtwork
 import com.kaem.flux.ui.component.FluxButton
 
 @Composable
@@ -72,7 +73,7 @@ fun HomeLoading() {
 @Composable
 fun HomeContent(
     viewModel: HomeViewModel = viewModel(),
-    artworks: List<FluxArtwork>
+    artworks: List<TMDBArtwork>
 ) {
 
     if (artworks.isEmpty()) {
@@ -103,7 +104,7 @@ fun HomeContent(
             artworks.forEach { artwork ->
 
                 Text(
-                    text = artwork.file.name,
+                    text = artwork.title ?: artwork.name ?: "test",
                     color = MaterialTheme.colorScheme.onSurface
                 )
 

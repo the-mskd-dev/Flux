@@ -23,6 +23,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.kaem.flux.R
+import com.kaem.flux.model.flux.FluxArtwork
 import com.kaem.flux.ui.component.FluxButton
 
 @Composable
@@ -42,7 +43,7 @@ fun HomeScreen() {
         when (it) {
 
             true -> HomeLoading()
-            false -> HomeContent(shows = state.shows)
+            false -> HomeContent(artworks = state.artworks)
 
 
         }
@@ -71,10 +72,10 @@ fun HomeLoading() {
 @Composable
 fun HomeContent(
     viewModel: HomeViewModel = viewModel(),
-    shows: List<String>
+    artworks: List<FluxArtwork>
 ) {
 
-    if (shows.isEmpty()) {
+    if (artworks.isEmpty()) {
 
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -99,10 +100,10 @@ fun HomeContent(
                 .systemBarsPadding()
         ) {
 
-            shows.forEach { show ->
+            artworks.forEach { artwork ->
 
                 Text(
-                    text = show,
+                    text = artwork.file.name,
                     color = MaterialTheme.colorScheme.onSurface
                 )
 

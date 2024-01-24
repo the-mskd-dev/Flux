@@ -2,6 +2,7 @@ package com.kaem.flux.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kaem.flux.model.flux.FluxArtwork
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -12,7 +13,7 @@ import javax.inject.Inject
 
 data class HomeUiState(
     val isLoading: Boolean = true,
-    val shows: List<String> = emptyList()
+    val artworks: List<FluxArtwork> = emptyList()
 )
 
 @HiltViewModel
@@ -39,7 +40,7 @@ class HomeViewModel @Inject constructor(
             _uiState.update {
 
                 it.copy(
-                    shows = (result.getOrNull() ?: emptyList()).map { it.name },
+                    artworks = result.getOrNull().orEmpty(),
                     isLoading = false
                 )
 

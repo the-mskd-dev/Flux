@@ -1,4 +1,6 @@
-package com.kaem.flux.model
+package com.kaem.flux.model.flux
+
+import com.kaem.flux.model.FileSource
 
 data class FluxMedia(
     val name: String,

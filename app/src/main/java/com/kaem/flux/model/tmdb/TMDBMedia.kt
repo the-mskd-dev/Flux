@@ -9,7 +9,7 @@ data class TMDBMedia(
     @SerializedName("poster_path")
     val posterPath: String,
     @SerializedName("backdrop_path")
-    val backdropPath: String,
+    val bannerPath: String,
     @SerializedName("media_type")
     val type: TMDBMediaType,
     @SerializedName("genre_ids")

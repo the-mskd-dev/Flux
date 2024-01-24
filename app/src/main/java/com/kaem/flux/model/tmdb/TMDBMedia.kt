@@ -4,9 +4,6 @@ import com.google.gson.annotations.SerializedName
 
 data class TMDBMedia(
     val id: Int,
-    val name: String,
-    @SerializedName("original_name")
-    val originalName: String,
     @SerializedName("overview")
     val description: String,
     @SerializedName("poster_path")
@@ -23,7 +20,21 @@ data class TMDBMedia(
     @SerializedName("vote_average")
     val voteAverage: Float,
     @SerializedName("vote_count")
-    val voteCount: Int
+    val voteCount: Int,
+
+    // For TV Shows or Persons
+    val name: String,
+    @SerializedName("original_name")
+    val originalName: String?,
+
+    // For Movies
+    val title: String,
+    @SerializedName("original_title")
+    val originalTitle: String?,
+
+    // For Persons
+    @SerializedName("known_for")
+    val relatedContent: List<TMDBMedia>
 )
 
 data class TMDBMediasResult(

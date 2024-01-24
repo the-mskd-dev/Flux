@@ -1,16 +1,15 @@
 package com.kaem.flux.model.flux
 
-data class FluxMovie(
+data class FluxArtwork(
     val id: Int,
     val name: String,
-    val posterPath: String,
-    val bannerPath: String,
     val description: String,
-    val releaseDateString: String,
+    val duration: Int,
+    val imagePath: String,
+    val bannerPath: String,
     val voteAverage: Float,
     val voteCount: Int,
-    val genres: List<String> = listOf(),
-    val duration: Int,
+    val releaseDateString: String,
     val isWatched: Boolean = false,
     val file: FluxFile
 )

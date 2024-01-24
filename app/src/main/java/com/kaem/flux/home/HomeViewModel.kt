@@ -58,10 +58,17 @@ class HomeViewModel @Inject constructor(
 
         Log.d("TEST", "authentication : ${result.success}")
 
-        val test = TMDBClient.service.search(name = "naruto")
+        val naruto = TMDBClient.service.search(name = "naruto")
 
-        Log.d("TEST", "search : ${test.results.size}")
+        Log.d("TEST", "search : ${naruto.results.size}")
 
+        val episodeNaruto = TMDBClient.service.episode(
+            seriesId = 46260,
+            season = 1,
+            episode = 1
+        )
+
+        Log.d("TEST", "episode : $episodeNaruto")
 
     }
 }

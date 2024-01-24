@@ -5,6 +5,8 @@ import com.google.gson.annotations.SerializedName
 data class TMDBMedia(
     val id: Int,
     val name: String,
+    @SerializedName("original_name")
+    val originalName: String,
     @SerializedName("overview")
     val description: String,
     @SerializedName("poster_path")

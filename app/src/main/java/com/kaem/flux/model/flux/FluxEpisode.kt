@@ -1,5 +1,6 @@
 package com.kaem.flux.model.flux
 
+import com.kaem.flux.model.FileSource
 import com.kaem.flux.model.tmdb.TMDBCrew
 
 data class FluxEpisode(
@@ -15,5 +16,5 @@ data class FluxEpisode(
     override val voteAverage: Float,
     override val voteCount: Int,
     override var isWatched: Boolean = false,
-    override val file: FluxFile
+    override val file: FileSource
 ) : FluxArtwork

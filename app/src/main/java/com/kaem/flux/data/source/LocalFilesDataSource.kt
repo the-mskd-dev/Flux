@@ -23,7 +23,8 @@ class LocalFilesDataSource(
         val projection = arrayOf(
             MediaStore.Video.Media._ID,
             MediaStore.Video.Media.DISPLAY_NAME,
-            MediaStore.Video.Media.DURATION
+            MediaStore.Video.Media.DURATION,
+            MediaStore.Video.Media.DATE_ADDED
         )
 
         // Show only videos that are at least 5 minutes in duration.
@@ -47,11 +48,13 @@ class LocalFilesDataSource(
                 // Cache column indices.
                 val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID)
                 val nameColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME)
+                val dateColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_ADDED)
 
                 while (cursor.moveToNext()) {
                     // Get values of columns for a given video.
                     val id = cursor.getLong(idColumn)
                     val name = cursor.getString(nameColumn)
+                    val date = cursor.getString(dateColumn)
 
                     val contentUri: Uri = ContentUris.withAppendedId(
                         MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
@@ -62,6 +65,7 @@ class LocalFilesDataSource(
                     // that represents the media file.
                     files += FileSource.Local(
                         name = name,
+                        addedDateString = date,
                         uri = contentUri
                     )
 

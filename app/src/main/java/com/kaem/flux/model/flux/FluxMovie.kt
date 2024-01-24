@@ -1,5 +1,7 @@
 package com.kaem.flux.model.flux
 
+import com.kaem.flux.model.FileSource
+
 data class FluxMovie(
     override val id: Int,
     override val name: String,
@@ -11,6 +13,6 @@ data class FluxMovie(
     override val voteCount: Int,
     override val duration: Int,
     override var isWatched: Boolean = false,
-    override val file: FluxFile,
+    override val file: FileSource,
     val genres: List<String> = listOf(),
 ) : FluxArtworkSummary, FluxArtwork

@@ -34,7 +34,7 @@ class HomeViewModel @Inject constructor(
 
         }
 
-        repository.getLocalFiles().collect { result ->
+        repository.getArtworks().collect { result ->
 
             _uiState.update {
 

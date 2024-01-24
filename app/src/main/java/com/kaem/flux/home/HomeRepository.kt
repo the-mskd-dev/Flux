@@ -11,7 +11,7 @@ class HomeRepository @Inject constructor(
     private val tmdbService: TMDBService
 ) {
 
-    suspend fun getLocalFiles() = flow {
+    suspend fun getArtworks() = flow {
 
         val test = localFilesDataSource.getFiles()
 

@@ -20,8 +20,8 @@ private val FluxColorScheme = darkColorScheme(
     primary = Coral, // Most important, like buttons, titles, navigation bars...
     secondary = LightCoral, // Less important, background, borders, texts
     tertiary = ContrastCoral, // Additional color for contrast,
-    background = DarkSurface,
-    surface = DarkSurface,
+    background = Color.Black,
+    surface = Color.Black,
     onSurface = Color.White
 )
 

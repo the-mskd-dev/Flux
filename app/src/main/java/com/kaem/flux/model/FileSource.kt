@@ -11,11 +11,23 @@ sealed class FileSource(
     class Local(name: String, addedDateString: String, val uri: Uri) : FileSource(name, addedDateString)
     class GDrive(name: String, addedDateString: String, val path: String) : FileSource(name, addedDateString)
 
-    val nameProperties: FileNameProperties
-        get() {
+    val nameProperties: FileNameProperties = FileNameProperties.fromFileName(name)
+
+}
+
+data class FileNameProperties(
+    val title: String,
+    val year: String? = null,
+    val season: Int? = null,
+    val episode: Float? = null,
+) {
+
+    companion object {
+
+        fun fromFileName(fileName: String): FileNameProperties {
 
             val regex = Regex("""^(.+?)(?:\s*\((\d{4})\))?(?:_s(\d{1,2})e(\d{1,2}))?.*""")
-            val matchResult = regex.matchEntire(name)
+            val matchResult = regex.matchEntire(fileName)
 
             return if (matchResult != null) {
                 val (name, year, season, episode) = matchResult.destructured
@@ -27,16 +39,11 @@ sealed class FileSource(
                 )
             } else {
                 // If no match, return FileNameProperties with name only
-                FileNameProperties(title = name.trim())
+                FileNameProperties(title = fileName.trim())
             }
 
         }
 
-}
+    }
 
-data class FileNameProperties(
-    val title: String,
-    val year: String? = null,
-    val season: Int? = null,
-    val episode: Float? = null,
-)
+}

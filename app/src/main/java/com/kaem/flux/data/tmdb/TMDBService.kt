@@ -19,7 +19,7 @@ interface TMDBService {
     @GET("search/multi")
     suspend fun search(
         @Query("query") name: String,
-        @Query("language") language: String = Constants.LANGUAGE
+        @Query("language") language: String = Constants.Global.LANGUAGE
     ) : TMDBMediasResult
 
 }

@@ -51,29 +51,4 @@ class HomeViewModel @Inject constructor(
 
     }
 
-    fun test() = viewModelScope.launch {
-
-        val result = TMDBClient.service.authenticate()
-
-        Log.d("TEST", "authentication : ${result.success}")
-
-        val naruto = TMDBClient.service.getArtworks(name = "naruto")
-
-        Log.d("TEST", "search : ${naruto.results.size}")
-
-        val episodeNaruto = TMDBClient.service.getEpisode(
-            seriesId = 46260,
-            season = 1,
-            episode = 1
-        )
-
-        Log.d("TEST", "episode : $episodeNaruto")
-
-        val spiderman = TMDBClient.service.getMovie(
-            movieId = 315635
-        )
-
-        Log.d("TEST", "spiderman : $spiderman")
-
-    }
 }

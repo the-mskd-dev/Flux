@@ -104,10 +104,6 @@ fun HomeContent(
                 .systemBarsPadding()
         ) {
 
-            FluxButton(text = "TEST TMDB") {
-                viewModel.test()
-            }
-
             shows.forEach { show ->
 
                 Text(

@@ -7,4 +7,4 @@ data class FluxShow(
     override val bannerPath: String,
     override val releaseDateString: String,
     val episodes: List<FluxEpisode>
-) : FluxArtwork
+) : FluxArtworkSummary

@@ -13,4 +13,4 @@ data class FluxMovie(
     override var isWatched: Boolean = false,
     override val file: FluxFile,
     val genres: List<String> = listOf(),
-) : FluxArtwork, FluxArtworkDetails
+) : FluxArtworkSummary, FluxArtwork

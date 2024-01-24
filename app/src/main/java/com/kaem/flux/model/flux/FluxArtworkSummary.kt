@@ -1,6 +1,6 @@
 package com.kaem.flux.model.flux
 
-interface FluxArtwork {
+interface FluxArtworkSummary {
     val id: Int
     val name: String
     val imagePath: String
@@ -8,7 +8,7 @@ interface FluxArtwork {
     val releaseDateString: String
 }
 
-interface FluxArtworkDetails {
+interface FluxArtwork {
     val description: String
     val voteAverage: Float
     val voteCount: Int

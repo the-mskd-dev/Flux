@@ -16,4 +16,4 @@ data class FluxEpisode(
     override val voteCount: Int,
     override var isWatched: Boolean = false,
     override val file: FluxFile
-) : FluxArtworkDetails
+) : FluxArtwork

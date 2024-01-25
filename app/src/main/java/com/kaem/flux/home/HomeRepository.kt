@@ -104,6 +104,7 @@ class HomeRepository @Inject constructor(
 
                 FluxEpisode(
                     tmdbEpisode = tmdbEpisode,
+                    showId = tmdbArtwork.id,
                     file = file
                 )
 

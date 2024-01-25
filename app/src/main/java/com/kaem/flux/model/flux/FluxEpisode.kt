@@ -6,6 +6,7 @@ import com.kaem.flux.model.tmdb.TMDBEpisode
 
 data class FluxEpisode(
     val id: Int,
+    val showId: Int,
     val title: String,
     val number: Int,
     val season: Int,
@@ -21,10 +22,12 @@ data class FluxEpisode(
 ) : FluxArtwork {
 
     constructor(
+        showId: Int,
         tmdbEpisode: TMDBEpisode,
         file: FileSource
     ) : this (
         id = tmdbEpisode.id,
+        showId = showId,
         title = tmdbEpisode.title,
         number = tmdbEpisode.number,
         season = tmdbEpisode.season,

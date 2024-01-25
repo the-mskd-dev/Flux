@@ -30,7 +30,6 @@ object DatabaseModule {
     }
 
     @Provides
-    @Singleton
     fun provideDao(fluxDatabase: FluxDatabase) : FluxDao {
         return fluxDatabase.fluxDao()
     }

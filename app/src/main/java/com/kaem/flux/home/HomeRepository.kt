@@ -12,12 +12,15 @@ import com.kaem.flux.model.flux.FluxMovie
 import com.kaem.flux.model.flux.FluxShow
 import com.kaem.flux.model.tmdb.TMDBArtwork
 import com.kaem.flux.model.tmdb.TMDBMediaType
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import okhttp3.internal.wait
 import javax.inject.Inject
 
 class HomeRepository @Inject constructor(
@@ -141,6 +144,31 @@ class HomeRepository @Inject constructor(
         }
 
         return localFiles
+
+    }
+
+    private suspend fun getTMDBArtworks(files: List<FileSource>) : List<TMDBArtwork> {
+
+        var tmdbArtworks: List<TMDBArtwork> = listOf()
+
+        coroutineScope {
+
+            tmdbArtworks = files.map {file ->
+
+                async {
+
+                    getTmdbArtwork(file.nameProperties)
+
+                }
+
+            }
+                .awaitAll()
+                .filterNotNull()
+                .filter { artwork -> databaseArtworks.none { it.id == artwork.id } }
+
+        }
+
+        return tmdbArtworks
 
     }
 

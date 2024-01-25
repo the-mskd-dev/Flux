@@ -218,7 +218,7 @@ fun HomePreview() {
         voteAverage = 0f,
         voteCount = 0,
         duration = 0,
-        file = FileSource.Local("", "", Uri.EMPTY),
+        file = FileSource.Local("", 0L, Uri.EMPTY),
         genres = listOf(),
     )
 

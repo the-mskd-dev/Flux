@@ -21,14 +21,6 @@ object RetrofitModule {
 
     @Provides
     @Singleton
-    fun provideGson() : Gson {
-        return GsonBuilder()
-            .setLenient()
-            .create()
-    }
-
-    @Provides
-    @Singleton
     fun provideHttpClient() : OkHttpClient {
         return OkHttpClient.Builder()
             .addNetworkInterceptor {

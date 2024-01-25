@@ -13,9 +13,18 @@ import androidx.room.RoomDatabase
 import com.kaem.flux.model.flux.FluxArtwork
 import com.kaem.flux.model.flux.FluxArtworkSummary
 import com.kaem.flux.model.flux.FluxEpisode
+import com.kaem.flux.model.flux.FluxMovie
+import com.kaem.flux.model.flux.FluxShow
+
+/*
+@Entity
+data class MovieEntity(
+    @PrimaryKey val id: Int,
+    @ColumnInfo val content: String
+)
 
 @Entity
-data class ArtworkEntity(
+data class ShowEntity(
     @PrimaryKey val id: Int,
     @ColumnInfo val content: String
 )
@@ -31,30 +40,43 @@ data class EpisodeEntity(
 interface DatabaseDao {
 
     @Insert
-    suspend fun insertArtworkSummary(artworkSummary: FluxArtworkSummary)
+    suspend fun insertMovie(movie: FluxMovie)
+
+    @Insert
+    suspend fun insertShow(show: FluxShow)
 
     @Insert
     suspend fun insertEpisode(episode: FluxEpisode)
 
-    @Query("SELECT * FROM artworkEntity")
-    suspend fun getAllArtworkSummaries() : List<FluxArtworkSummary>
+    @Query("SELECT * FROM movieentity")
+    suspend fun getMovies() : List<FluxMovie>
+
+    @Query("SELECT * FROM showentity")
+    suspend fun getShows() : List<FluxShow>
 
     @Query("SELECT * FROM episodeentity")
-    suspend fun getAllEpisodes() : List<FluxArtworkSummary>
+    suspend fun getEpisodes() : List<FluxEpisode>
 
     @Query("SELECT * FROM episodeentity WHERE showId LIKE :showId")
-    suspend fun getAllEpisodesFor(showId: Int) : List<FluxEpisode>
+    suspend fun getEpisodesFor(showId: Int) : List<FluxEpisode>
 
     @Delete
-    suspend fun deleteArtworkSummary(artworkSummary: FluxArtworkSummary)
+    suspend fun deleteMovie(movie: FluxMovie)
+
+    @Delete
+    suspend fun deleteShow(show: FluxShow)
 
     @Delete
     suspend fun deleteEpisode(episode: FluxEpisode)
 
 }
 
-@Database(entities = [ArtworkEntity::class, EpisodeEntity::class], version = 1)
+@Database(entities = [
+    MovieEntity::class,
+    ShowEntity::class,
+    EpisodeEntity::class
+ ], version = 1)
 abstract class FluxDatabase : RoomDatabase() {
     abstract fun fluxDao(): DatabaseDao
 
-}
+}*/

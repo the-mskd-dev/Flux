@@ -1,6 +1,5 @@
 package com.kaem.flux.home
 
-import android.util.Log
 import com.kaem.flux.data.ddb.DatabaseDao
 import com.kaem.flux.data.source.FilesDataSource
 import com.kaem.flux.data.tmdb.TMDBService
@@ -12,15 +11,12 @@ import com.kaem.flux.model.flux.FluxMovie
 import com.kaem.flux.model.flux.FluxShow
 import com.kaem.flux.model.tmdb.TMDBArtwork
 import com.kaem.flux.model.tmdb.TMDBMediaType
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import okhttp3.internal.wait
 import javax.inject.Inject
 
 class HomeRepository @Inject constructor(
@@ -33,18 +29,20 @@ class HomeRepository @Inject constructor(
     private val databaseArtworks = arrayListOf<FluxArtworkSummary>()
     private val databaseEpisodes = arrayListOf<FluxEpisode>()
 
-    private val artworksMutex = Mutex()
-    private val artworks = arrayListOf<FluxArtworkSummary>()
+    private val tmdbArtworksMutex = Mutex()
+    private val tmdbArtworks = arrayListOf<FluxArtworkSummary>()
 
-    private val episodesMutex = Mutex()
-    private val episodes = arrayListOf<FluxEpisode>()
+    private val tmdbEpisodesMutex = Mutex()
+    private val tmdbEpisodes = arrayListOf<FluxEpisode>()
 
     suspend fun getArtworks() : Flow<Result<List<FluxArtworkSummary>>> = flow {
 
         getFromDatabase()
+
         getFromTMDB()
 
-        emit(Result.success(artworks))
+
+        emit(Result.success(databaseArtworks + tmdbArtworks))
 
     }
 
@@ -89,7 +87,7 @@ class HomeRepository @Inject constructor(
 
         coroutineScope {
 
-            artworks.forEach {
+            tmdbArtworks.forEach {
 
                 launch {
 
@@ -102,7 +100,7 @@ class HomeRepository @Inject constructor(
 
             }
 
-            episodes.forEach {
+            tmdbEpisodes.forEach {
 
                 launch {
 
@@ -216,7 +214,7 @@ class HomeRepository @Inject constructor(
 
             TMDBMediaType.MOVIE -> {
 
-                if (artworks.any { it.id ==  tmdbArtwork.id})
+                if (tmdbArtworks.any { it.id ==  tmdbArtwork.id})
                     return
 
                 val tmdbMovie = tmdbService.getMovieDetails(
@@ -234,7 +232,7 @@ class HomeRepository @Inject constructor(
 
             TMDBMediaType.SHOW -> {
 
-                if (artworks.any { it.id == tmdbArtwork.id })
+                if (tmdbArtworks.any { it.id == tmdbArtwork.id })
                     return
 
                 val show = FluxShow(tmdbArtwork = tmdbArtwork)
@@ -253,7 +251,7 @@ class HomeRepository @Inject constructor(
         file: FileSource
     ) {
 
-        if (tmdbArtwork == null || episodes.any { it.file.name == file.name })
+        if (tmdbArtwork == null || tmdbEpisodes.any { it.file.name == file.name })
             return
 
         val tmdbEpisode = tmdbService.getEpisode(
@@ -277,14 +275,14 @@ class HomeRepository @Inject constructor(
     //region Lists
 
     private suspend fun addArtworkSummary(artworkSummary: FluxArtworkSummary) {
-        artworksMutex.withLock {
-            artworks.add(artworkSummary)
+        tmdbArtworksMutex.withLock {
+            tmdbArtworks.add(artworkSummary)
         }
     }
 
     private suspend fun addEpisode(episode: FluxEpisode) {
-        episodesMutex.withLock {
-            episodes.add(episode)
+        tmdbEpisodesMutex.withLock {
+            tmdbEpisodes.add(episode)
         }
     }
 

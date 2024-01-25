@@ -40,37 +40,37 @@ data class EpisodeEntity(
 interface DatabaseDao {
 
     @Insert
-    suspend fun insertMovie(id: Int, content: String)
+    suspend fun insertMovie(movie: FluxMovie)
 
     @Insert
-    suspend fun insertShow(id: Int, content: String)
+    suspend fun insertShow(show: FluxShow)
 
     @Insert
-    suspend fun insertEpisode(id: Int, showId: Int, content: String)
+    suspend fun insertEpisode(episode: FluxEpisode)
 
-    @Query("SELECT * FROM movies")
-    suspend fun getMovies() : List<MovieEntity>
+    @Query("SELECT * FROM fluxmovie")
+    suspend fun getMovies() : List<FluxMovie>
 
-    @Query("SELECT * FROM shows")
-    suspend fun getShows() : List<ShowEntity>
+    @Query("SELECT * FROM fluxshow")
+    suspend fun getShows() : List<FluxShow>
 
-    @Query("SELECT * FROM episodes")
-    suspend fun getEpisodes() : List<EpisodeEntity>
+    @Query("SELECT * FROM fluxepisode")
+    suspend fun getEpisodes() : List<FluxEpisode>
 
-    @Query("SELECT * FROM episodes WHERE showId LIKE :showId")
-    suspend fun getEpisodesFor(showId: Int) : List<EpisodeEntity>
+    @Query("SELECT * FROM fluxepisode WHERE showId LIKE :showId")
+    suspend fun getEpisodesFor(showId: Int) : List<FluxEpisode>
 
-    @Query("DELETE FROM movies WHERE id LIKE :id")
-    suspend fun deleteMovie(id: Int)
+    @Delete
+    suspend fun deleteMovie(fluxMovie: FluxMovie)
 
-    @Query("DELETE FROM episodes WHERE id LIKE :id")
-    suspend fun deleteShow(id: Int)
+    @Delete
+    suspend fun deleteShow(fluxShow: FluxShow)
 
     @Query("DELETE FROM episodes WHERE showId LIKE :showId")
     suspend fun deleteEpisodesForShow(showId: Int)
 
-    @Query("DELETE FROM episodes WHERE id LIKE :id")
-    suspend fun deleteEpisode(id: Int)
+    @Delete
+    suspend fun deleteEpisode(fluxEpisode: FluxEpisode)
 
 }
 

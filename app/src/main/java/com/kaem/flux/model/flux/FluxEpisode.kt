@@ -1,29 +1,35 @@
 package com.kaem.flux.model.flux
 
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.Ignore
+import androidx.room.PrimaryKey
 import com.kaem.flux.model.FileSource
 import com.kaem.flux.model.tmdb.TMDBCrew
 import com.kaem.flux.model.tmdb.TMDBEpisode
 import com.kaem.flux.utils.parseTMDBDate
 import java.util.Date
 
+@Entity
 data class FluxEpisode(
-    val id: Int,
-    val showId: Int,
-    val title: String,
-    val number: Int,
-    val season: Int,
-    val imagePath: String,
-    val releaseDateString: String,
-    val crew: List<TMDBCrew>,
-    override val description: String,
-    override val duration: Int,
-    override val voteAverage: Float,
-    override val voteCount: Int,
-    override var isWatched: Boolean = false,
-    override val file: FileSource
+    @PrimaryKey val id: Int,
+    @ColumnInfo val showId: Int,
+    @ColumnInfo val title: String,
+    @ColumnInfo val number: Int,
+    @ColumnInfo val season: Int,
+    @ColumnInfo val imagePath: String,
+    @ColumnInfo val releaseDateString: String,
+    @ColumnInfo val crew: List<TMDBCrew>,
+    @ColumnInfo override val description: String,
+    @ColumnInfo override val duration: Int,
+    @ColumnInfo override val voteAverage: Float,
+    @ColumnInfo override val voteCount: Int,
+    @ColumnInfo override var isWatched: Boolean = false,
+    @ColumnInfo override val file: FileSource
 ) : FluxArtwork {
 
     @Transient
+    @Ignore
     val releaseDate: Date? = releaseDateString.parseTMDBDate()
 
     constructor(

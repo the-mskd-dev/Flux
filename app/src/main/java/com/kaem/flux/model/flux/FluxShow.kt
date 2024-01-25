@@ -1,10 +1,23 @@
 package com.kaem.flux.model.flux
 
+import com.kaem.flux.model.tmdb.TMDBArtwork
+
 data class FluxShow(
     override val id: Int,
     override val title: String,
     override val imagePath: String,
     override val bannerPath: String,
     override val releaseDateString: String,
-    val episodes: List<FluxEpisode>
-) : FluxArtworkSummary
+    var episodes: List<FluxEpisode>
+) : FluxArtworkSummary {
+
+    constructor(tmdbArtwork: TMDBArtwork) : this(
+        id = tmdbArtwork.id,
+        title = tmdbArtwork.title,
+        imagePath = tmdbArtwork.imagePath,
+        bannerPath = tmdbArtwork.bannerPath,
+        releaseDateString = tmdbArtwork.releaseDateString,
+        episodes = emptyList()
+    )
+
+}

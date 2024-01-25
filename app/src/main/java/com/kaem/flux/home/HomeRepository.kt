@@ -8,6 +8,7 @@ import com.kaem.flux.model.flux.FluxArtwork
 import com.kaem.flux.model.flux.FluxArtworkSummary
 import com.kaem.flux.model.flux.FluxEpisode
 import com.kaem.flux.model.flux.FluxMovie
+import com.kaem.flux.model.flux.FluxShow
 import com.kaem.flux.model.tmdb.TMDBArtwork
 import com.kaem.flux.model.tmdb.TMDBMediaType
 import kotlinx.coroutines.coroutineScope
@@ -16,7 +17,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import java.util.Collections
 import javax.inject.Inject
 
 class HomeRepository @Inject constructor(
@@ -44,18 +44,18 @@ class HomeRepository @Inject constructor(
 
     }
 
-    private suspend fun fileToFluxArtwork(file: FileSource): FluxArtwork? {
+    private suspend fun fileToFluxArtwork(file: FileSource) {
 
-        val tmdbArtwork = fileToTmdbArtwork(file.nameProperties)
+        val tmdbArtwork = getTmdbArtwork(file.nameProperties) ?: return
 
-        return tmdbToFluxArtwork(
+        getFluxArtwork(
             tmdbArtwork = tmdbArtwork,
             file = file
         )
 
     }
 
-    private suspend fun fileToTmdbArtwork(fileNameProperties: FileNameProperties) : TMDBArtwork? {
+    private suspend fun getTmdbArtwork(fileNameProperties: FileNameProperties) : TMDBArtwork? {
 
         return if (fileNameProperties.episode != null && fileNameProperties.season != null) {
 
@@ -79,14 +79,12 @@ class HomeRepository @Inject constructor(
 
     }
 
-    private suspend fun tmdbToFluxArtwork(
-        tmdbArtwork: TMDBArtwork?,
+    private suspend fun getFluxArtwork(
+        tmdbArtwork: TMDBArtwork,
         file: FileSource
-    ) : FluxArtwork? {
+    ) {
 
-        tmdbArtwork ?: return null
-
-        return when (tmdbArtwork.type){
+        when (tmdbArtwork.type){
 
             TMDBMediaType.MOVIE -> {
 
@@ -94,14 +92,23 @@ class HomeRepository @Inject constructor(
                     id = tmdbArtwork.id
                 )
 
-                FluxMovie(
+                val movie = FluxMovie(
                     tmdbMovie = tmdbMovie,
                     file = file,
                 )
 
+                addArtworkSummary(movie)
+
             }
 
             TMDBMediaType.SHOW -> {
+
+                if (artworks.none { it.id == tmdbArtwork.id }) {
+
+                    val show = FluxShow(tmdbArtwork = tmdbArtwork)
+                    addArtworkSummary(show)
+
+                }
 
                 val tmdbEpisode = tmdbService.getEpisode(
                     id = tmdbArtwork.id,
@@ -109,15 +116,17 @@ class HomeRepository @Inject constructor(
                     episode = file.nameProperties.episode!!
                 )
 
-                FluxEpisode(
+                val episode = FluxEpisode(
                     tmdbEpisode = tmdbEpisode,
                     showId = tmdbArtwork.id,
                     file = file
                 )
 
+                addEpisode(episode)
+
             }
 
-            else -> null
+            else -> {}
 
         }
 
@@ -131,7 +140,9 @@ class HomeRepository @Inject constructor(
 
     private suspend fun addEpisode(episode: FluxEpisode) {
         episodesMutex.withLock {
-            episodes.add(episode)
+
+            if (episodes.none { it.id == episode.id })
+                episodes.add(episode)
         }
     }
 

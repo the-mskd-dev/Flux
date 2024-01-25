@@ -7,7 +7,7 @@ data class TMDBArtwork(
     @SerializedName("overview")
     val description: String,
     @SerializedName("poster_path")
-    val posterPath: String,
+    val imagePath: String,
     @SerializedName("backdrop_path")
     val bannerPath: String,
     @SerializedName("media_type")
@@ -22,15 +22,10 @@ data class TMDBArtwork(
     @SerializedName("vote_count")
     val voteCount: Int,
 
-    // For TV Shows or Persons
-    val name: String?,
-    @SerializedName("original_name")
-    val originalName: String?,
-
-    // For Movies
-    val title: String?,
-    @SerializedName("original_title")
-    val originalTitle: String?,
+    @SerializedName(value = "title", alternate = ["name"])
+    val title: String,
+    @SerializedName(value = "original_title", alternate = ["original_name"])
+    val originalTitle: String,
 
     // For Persons
     @SerializedName("known_for")

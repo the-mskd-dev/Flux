@@ -55,6 +55,6 @@ interface DatabaseDao {
 
 @Database(entities = [ArtworkEntity::class, EpisodeEntity::class], version = 1)
 abstract class FluxDatabase : RoomDatabase() {
-    abstract fun userDao(): DatabaseDao
+    abstract fun fluxDao(): DatabaseDao
 
 }

@@ -1,5 +1,6 @@
 package com.kaem.flux.home
 
+import android.util.Log
 import com.kaem.flux.data.ddb.DatabaseDao
 import com.kaem.flux.data.source.FilesDataSource
 import com.kaem.flux.data.tmdb.TMDBService
@@ -25,9 +26,9 @@ class HomeRepository @Inject constructor(
     private val fluxDao: DatabaseDao
 ) {
 
-    private val databaseMutex = Mutex()
-    private val databaseArtworks = arrayListOf<FluxArtworkSummary>()
-    private val databaseEpisodes = arrayListOf<FluxEpisode>()
+    private val dbMutex = Mutex()
+    private val dbArtworks = arrayListOf<FluxArtworkSummary>()
+    private val dbEpisodes = arrayListOf<FluxEpisode>()
 
     private val tmdbArtworksMutex = Mutex()
     private val tmdbArtworks = arrayListOf<FluxArtworkSummary>()
@@ -39,10 +40,15 @@ class HomeRepository @Inject constructor(
 
         getFromDatabase()
 
+        Log.d("TEST", "artworks from db : ${dbArtworks.size}")
+        Log.d("TEST", "episodes from db : ${dbEpisodes.size}")
+
         getFromTMDB()
 
+        Log.d("TEST", "artworks from tmdb : ${tmdbArtworks.size}")
+        Log.d("TEST", "episodes from tmdb : ${tmdbEpisodes.size}")
 
-        emit(Result.success(databaseArtworks + tmdbArtworks))
+        emit(Result.success(dbArtworks + tmdbArtworks))
 
     }
 
@@ -56,8 +62,8 @@ class HomeRepository @Inject constructor(
 
                 val movies = fluxDao.getMovies()
 
-                databaseMutex.withLock {
-                    databaseArtworks.addAll(movies)
+                dbMutex.withLock {
+                    dbArtworks.addAll(movies)
                 }
 
             }
@@ -66,8 +72,8 @@ class HomeRepository @Inject constructor(
 
                 val shows = fluxDao.getShows()
 
-                databaseMutex.withLock {
-                    databaseArtworks.addAll(shows)
+                dbMutex.withLock {
+                    dbArtworks.addAll(shows)
                 }
 
             }
@@ -75,7 +81,7 @@ class HomeRepository @Inject constructor(
             launch {
 
                 val ddbEpisodes = fluxDao.getEpisodes()
-                databaseEpisodes.addAll(ddbEpisodes)
+                dbEpisodes.addAll(ddbEpisodes)
 
             }
 

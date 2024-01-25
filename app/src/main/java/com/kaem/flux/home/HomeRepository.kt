@@ -42,16 +42,7 @@ class HomeRepository @Inject constructor(
     suspend fun getArtworks() : Flow<Result<List<FluxArtworkSummary>>> = flow {
 
         getFromDatabase()
-        val files = getFiles()
-
-        coroutineScope {
-
-            for (file in files)
-                launch { fileToFluxArtwork(file) }
-
-        }
-
-        saveInDatabase()
+        getFromTMDB()
 
         emit(Result.success(artworks))
 
@@ -129,6 +120,14 @@ class HomeRepository @Inject constructor(
 
     //region Sources
 
+    private suspend fun getFromTMDB() {
+
+        val files = getFiles()
+        getArtworks(files = files)
+        saveInDatabase()
+
+    }
+
     private suspend fun getFiles() : List<FileSource> {
 
         val localFiles = arrayListOf<FileSource>()
@@ -147,45 +146,30 @@ class HomeRepository @Inject constructor(
 
     }
 
-    private suspend fun getTMDBArtworks(files: List<FileSource>) : List<TMDBArtwork> {
-
-        var tmdbArtworks: List<TMDBArtwork> = listOf()
+    private suspend fun getArtworks(files: List<FileSource>) {
 
         coroutineScope {
 
-            tmdbArtworks = files.map {file ->
+            files.forEach { file ->
 
-                async {
+                launch {
 
-                    getTmdbArtwork(file.nameProperties)
+                    val tmdbArtwork = getTmdbArtwork(file.nameProperties)
+                    getFluxArtwork(
+                        tmdbArtwork = tmdbArtwork,
+                        file = file
+                    )
+
+                    if (tmdbArtwork?.type == TMDBMediaType.SHOW) {
+                        getFluxEpisode(
+                            tmdbArtwork = tmdbArtwork,
+                            file = file
+                        )
+                    }
 
                 }
 
             }
-                .awaitAll()
-                .filterNotNull()
-                .filter { artwork -> databaseArtworks.none { it.id == artwork.id } }
-
-        }
-
-        return tmdbArtworks
-
-    }
-
-    private suspend fun fileToFluxArtwork(file: FileSource) {
-
-        try {
-
-            val tmdbArtwork = getTmdbArtwork(file.nameProperties) ?: return
-
-            getFluxArtwork(
-                tmdbArtwork = tmdbArtwork,
-                file = file
-            )
-
-        } catch (e: Exception) {
-
-            Log.e("HomeRepository", "Fail while fetching artwork", e)
 
         }
 
@@ -222,9 +206,11 @@ class HomeRepository @Inject constructor(
     }
 
     private suspend fun getFluxArtwork(
-        tmdbArtwork: TMDBArtwork,
+        tmdbArtwork: TMDBArtwork?,
         file: FileSource
     ) {
+
+        tmdbArtwork ?: return
 
         when (tmdbArtwork.type){
 
@@ -248,35 +234,41 @@ class HomeRepository @Inject constructor(
 
             TMDBMediaType.SHOW -> {
 
-                if (artworks.none { it.id == tmdbArtwork.id }) {
-
-                    val show = FluxShow(tmdbArtwork = tmdbArtwork)
-                    addArtworkSummary(show)
-
-                }
-
-                val tmdbEpisode = tmdbService.getEpisode(
-                    id = tmdbArtwork.id,
-                    season = file.nameProperties.season!!,
-                    episode = file.nameProperties.episode!!
-                )
-
-                if (episodes.any { it.id == tmdbEpisode.id })
+                if (artworks.any { it.id == tmdbArtwork.id })
                     return
 
-                val episode = FluxEpisode(
-                    tmdbEpisode = tmdbEpisode,
-                    showId = tmdbArtwork.id,
-                    file = file
-                )
-
-                addEpisode(episode)
+                val show = FluxShow(tmdbArtwork = tmdbArtwork)
+                addArtworkSummary(show)
 
             }
 
             else -> {}
 
         }
+
+    }
+
+    private suspend fun getFluxEpisode(
+        tmdbArtwork: TMDBArtwork?,
+        file: FileSource
+    ) {
+
+        if (tmdbArtwork == null || episodes.any { it.file.name == file.name })
+            return
+
+        val tmdbEpisode = tmdbService.getEpisode(
+            id = tmdbArtwork.id,
+            season = file.nameProperties.season!!,
+            episode = file.nameProperties.episode!!
+        )
+
+        val episode = FluxEpisode(
+            tmdbEpisode = tmdbEpisode,
+            showId = tmdbArtwork.id,
+            file = file
+        )
+
+        addEpisode(episode)
 
     }
 

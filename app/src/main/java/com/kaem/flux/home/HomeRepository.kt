@@ -1,6 +1,7 @@
 package com.kaem.flux.home
 
 import android.util.Log
+import com.kaem.flux.data.ddb.DatabaseDao
 import com.kaem.flux.data.source.FilesDataSource
 import com.kaem.flux.data.tmdb.TMDBService
 import com.kaem.flux.model.FileNameProperties
@@ -22,15 +23,107 @@ import javax.inject.Inject
 
 class HomeRepository @Inject constructor(
     private val localFilesDataSource: FilesDataSource,
-    private val tmdbService: TMDBService
+    private val tmdbService: TMDBService,
+    private val fluxDao: DatabaseDao
 ) {
 
     private val artworksMutex = Mutex()
     private val artworks = arrayListOf<FluxArtworkSummary>()
+
     private val episodesMutex = Mutex()
     private val episodes = arrayListOf<FluxEpisode>()
 
     suspend fun getArtworks() : Flow<Result<List<FluxArtworkSummary>>> = flow {
+
+        getFromDatabase()
+        val files = getFileSources()
+
+        coroutineScope {
+
+            for (file in files)
+                launch { fileToFluxArtwork(file) }
+
+        }
+
+        saveInDatabase()
+
+        val groupedEpisodes = episodes.groupBy { it.showId }
+
+        artworks.filterIsInstance<FluxShow>().forEach { show ->
+            show.episodeIds = groupedEpisodes[show.id]?.map { it.id }.orEmpty()
+        }
+
+        emit(Result.success(artworks))
+
+    }
+
+    private suspend fun getFromDatabase() {
+
+        coroutineScope {
+
+            launch {
+
+                val movies = fluxDao.getMovies()
+
+                artworksMutex.withLock {
+                    artworks.addAll(movies)
+                }
+
+            }
+
+            launch {
+
+                val shows = fluxDao.getShows()
+
+                artworksMutex.withLock {
+                    artworks.addAll(shows)
+                }
+
+            }
+
+            launch {
+
+                val ddbEpisodes = fluxDao.getEpisodes()
+                episodes.addAll(ddbEpisodes)
+
+            }
+
+        }
+
+    }
+
+    private suspend fun saveInDatabase() {
+
+        coroutineScope {
+
+            artworks.forEach {
+
+                launch {
+
+                    when (it) {
+                        is FluxMovie -> fluxDao.insertMovie(it)
+                        is FluxShow -> fluxDao.insertShow(it)
+                    }
+
+                }
+
+            }
+
+            episodes.forEach {
+
+                launch {
+
+                    fluxDao.insertEpisode(it)
+
+                }
+
+            }
+
+        }
+
+    }
+
+    private suspend fun getFileSources() : List<FileSource> {
 
         val localFiles = arrayListOf<FileSource>()
 
@@ -40,24 +133,11 @@ class HomeRepository @Inject constructor(
                 localFiles.addAll(localFilesDataSource.getFiles())
             }
 
-        }
-
-        val files = localFiles
-
-        coroutineScope {
-
-            for (file in files)
-                launch { fileToFluxArtwork(file) }
+            //TODO: Add other sources
 
         }
 
-        val groupedEpisodes = episodes.groupBy { it.showId }
-
-        artworks.filterIsInstance<FluxShow>().forEach { show ->
-            show.episodeIds = groupedEpisodes[show.id]?.map { it.id }.orEmpty()
-        }
-
-        emit(Result.success(artworks))
+        return localFiles
 
     }
 

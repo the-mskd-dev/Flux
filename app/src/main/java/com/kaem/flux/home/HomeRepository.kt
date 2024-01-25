@@ -31,11 +31,21 @@ class HomeRepository @Inject constructor(
 
     suspend fun getArtworks() : Flow<Result<List<FluxArtworkSummary>>> = flow {
 
-        val localFiles = localFilesDataSource.getFiles()
+        val localFiles = arrayListOf<FileSource>()
 
         coroutineScope {
 
-            for (file in localFiles)
+            launch {
+                localFiles.addAll(localFilesDataSource.getFiles())
+            }
+
+        }
+
+        val files = localFiles
+
+        coroutineScope {
+
+            for (file in files)
                 launch { fileToFluxArtwork(file) }
 
         }

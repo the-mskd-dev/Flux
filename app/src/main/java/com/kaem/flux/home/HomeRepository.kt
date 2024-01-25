@@ -27,6 +27,10 @@ class HomeRepository @Inject constructor(
     private val fluxDao: DatabaseDao
 ) {
 
+    private val databaseMutex = Mutex()
+    private val databaseArtworks = arrayListOf<FluxArtworkSummary>()
+    private val databaseEpisodes = arrayListOf<FluxEpisode>()
+
     private val artworksMutex = Mutex()
     private val artworks = arrayListOf<FluxArtworkSummary>()
 
@@ -61,8 +65,8 @@ class HomeRepository @Inject constructor(
 
                 val movies = fluxDao.getMovies()
 
-                artworksMutex.withLock {
-                    artworks.addAll(movies)
+                databaseMutex.withLock {
+                    databaseArtworks.addAll(movies)
                 }
 
             }
@@ -71,8 +75,8 @@ class HomeRepository @Inject constructor(
 
                 val shows = fluxDao.getShows()
 
-                artworksMutex.withLock {
-                    artworks.addAll(shows)
+                databaseMutex.withLock {
+                    databaseArtworks.addAll(shows)
                 }
 
             }
@@ -80,7 +84,7 @@ class HomeRepository @Inject constructor(
             launch {
 
                 val ddbEpisodes = fluxDao.getEpisodes()
-                episodes.addAll(ddbEpisodes)
+                databaseEpisodes.addAll(ddbEpisodes)
 
             }
 

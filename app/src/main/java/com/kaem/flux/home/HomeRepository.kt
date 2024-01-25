@@ -119,6 +119,9 @@ class HomeRepository @Inject constructor(
 
             TMDBMediaType.MOVIE -> {
 
+                if (artworks.any { it.id ==  tmdbArtwork.id})
+                    return
+
                 val tmdbMovie = tmdbService.getMovieDetails(
                     id = tmdbArtwork.id
                 )
@@ -147,6 +150,9 @@ class HomeRepository @Inject constructor(
                     episode = file.nameProperties.episode!!
                 )
 
+                if (episodes.any { it.id == tmdbEpisode.id })
+                    return
+
                 val episode = FluxEpisode(
                     tmdbEpisode = tmdbEpisode,
                     showId = tmdbArtwork.id,
@@ -171,9 +177,7 @@ class HomeRepository @Inject constructor(
 
     private suspend fun addEpisode(episode: FluxEpisode) {
         episodesMutex.withLock {
-
-            if (episodes.none { it.id == episode.id })
-                episodes.add(episode)
+            episodes.add(episode)
         }
     }
 

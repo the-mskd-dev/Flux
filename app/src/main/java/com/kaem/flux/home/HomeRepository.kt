@@ -40,6 +40,12 @@ class HomeRepository @Inject constructor(
 
         }
 
+        val groupedEpisodes = episodes.groupBy { it.showId }
+
+        artworks.filterIsInstance<FluxShow>().forEach {
+            it.episodes = groupedEpisodes[it.id].orEmpty()
+        }
+
         emit(Result.success(artworks))
 
     }

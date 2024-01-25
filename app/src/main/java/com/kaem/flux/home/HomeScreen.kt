@@ -1,5 +1,6 @@
 package com.kaem.flux.home
 
+import android.net.Uri
 import android.os.Build
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
@@ -42,8 +43,10 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.kaem.flux.R
+import com.kaem.flux.model.FileSource
 import com.kaem.flux.model.flux.FluxArtwork
 import com.kaem.flux.model.flux.FluxArtworkSummary
+import com.kaem.flux.model.flux.FluxMovie
 import com.kaem.flux.model.tmdb.TMDBArtwork
 import com.kaem.flux.ui.component.FluxButton
 import com.kaem.flux.utils.Constants
@@ -125,8 +128,8 @@ fun HomeContent(artworks: List<FluxArtworkSummary>) {
                 .fillMaxSize()
                 .padding(horizontal = 12.dp),
             columns = GridCells.Fixed(3),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
 
             item(span = { GridItemSpan(3) }) {
@@ -205,5 +208,29 @@ fun HomePermissionButton(viewModel: HomeViewModel = viewModel()) {
         )
 
     }
+
+}
+
+@Preview
+@Composable
+fun HomePreview() {
+
+    val artwork = FluxMovie(
+        id = 0,
+        title = "preview",
+        imagePath = "/7NAvPYPAu7MeHwP8E9sn81PqsRh.jpg",
+        bannerPath  = "/7NAvPYPAu7MeHwP8E9sn81PqsRh.jpg",
+        releaseDateString = "",
+        description = "",
+        voteAverage = 0f,
+        voteCount = 0,
+        duration = 0,
+        file = FileSource.Local("", "", Uri.EMPTY),
+        genres = listOf(),
+    )
+
+    val list = buildList { repeat(100) { add(artwork) } }
+
+    HomeContent(list)
 
 }

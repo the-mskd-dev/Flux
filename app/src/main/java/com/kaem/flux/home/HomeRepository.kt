@@ -6,7 +6,6 @@ import com.kaem.flux.data.source.FilesDataSource
 import com.kaem.flux.data.tmdb.TMDBService
 import com.kaem.flux.model.FileNameProperties
 import com.kaem.flux.model.FileSource
-import com.kaem.flux.model.flux.FluxArtwork
 import com.kaem.flux.model.flux.FluxArtworkSummary
 import com.kaem.flux.model.flux.FluxEpisode
 import com.kaem.flux.model.flux.FluxMovie
@@ -40,7 +39,7 @@ class HomeRepository @Inject constructor(
     suspend fun getArtworks() : Flow<Result<List<FluxArtworkSummary>>> = flow {
 
         getFromDatabase()
-        val files = getFileSources()
+        val files = getFiles()
 
         coroutineScope {
 
@@ -125,7 +124,9 @@ class HomeRepository @Inject constructor(
 
     //endregion
 
-    private suspend fun getFileSources() : List<FileSource> {
+    //region Sources
+
+    private suspend fun getFiles() : List<FileSource> {
 
         val localFiles = arrayListOf<FileSource>()
 
@@ -251,6 +252,10 @@ class HomeRepository @Inject constructor(
 
     }
 
+    //endregion
+
+    //region Lists
+
     private suspend fun addArtworkSummary(artworkSummary: FluxArtworkSummary) {
         artworksMutex.withLock {
             artworks.add(artworkSummary)
@@ -262,5 +267,7 @@ class HomeRepository @Inject constructor(
             episodes.add(episode)
         }
     }
+
+    //endregion
 
 }

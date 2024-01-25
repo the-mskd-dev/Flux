@@ -10,8 +10,12 @@ import com.kaem.flux.model.flux.FluxEpisode
 import com.kaem.flux.model.flux.FluxMovie
 import com.kaem.flux.model.tmdb.TMDBArtwork
 import com.kaem.flux.model.tmdb.TMDBMediaType
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import java.util.Collections
 import javax.inject.Inject
 
@@ -20,23 +24,23 @@ class HomeRepository @Inject constructor(
     private val tmdbService: TMDBService
 ) {
 
-    val fluxArtworks = Collections.synchronizedCollection()
+    private val artworksMutex = Mutex()
+    private val artworks = arrayListOf<FluxArtworkSummary>()
+    private val episodesMutex = Mutex()
+    private val episodes = arrayListOf<FluxEpisode>()
 
     suspend fun getArtworks() : Flow<Result<List<FluxArtworkSummary>>> = flow {
 
         val localFiles = localFilesDataSource.getFiles()
 
-        val result = buildList {
+        coroutineScope {
 
-            for (file in localFiles) {
-
-                fileToFluxArtwork(file)?.let { add(it) }
-
-            }
+            for (file in localFiles)
+                launch { fileToFluxArtwork(file) }
 
         }
 
-        emit(Result.success(result))
+        emit(Result.success(artworks))
 
     }
 
@@ -117,6 +121,18 @@ class HomeRepository @Inject constructor(
 
         }
 
+    }
+
+    private suspend fun addArtworkSummary(artworkSummary: FluxArtworkSummary) {
+        artworksMutex.withLock {
+            artworks.add(artworkSummary)
+        }
+    }
+
+    private suspend fun addEpisode(episode: FluxEpisode) {
+        episodesMutex.withLock {
+            episodes.add(episode)
+        }
     }
 
 }

@@ -47,12 +47,6 @@ class HomeRepository @Inject constructor(
 
         saveInDatabase()
 
-        val groupedEpisodes = episodes.groupBy { it.showId }
-
-        artworks.filterIsInstance<FluxShow>().forEach { show ->
-            show.episodeIds = groupedEpisodes[show.id]?.map { it.id }.orEmpty()
-        }
-
         emit(Result.success(artworks))
 
     }

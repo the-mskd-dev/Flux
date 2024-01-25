@@ -2,7 +2,7 @@ package com.kaem.flux.di
 
 import android.content.Context
 import androidx.room.Room
-import com.kaem.flux.data.ddb.DatabaseDao
+import com.kaem.flux.data.ddb.FluxDao
 import com.kaem.flux.data.ddb.FluxDatabase
 import dagger.Module
 import dagger.Provides
@@ -31,7 +31,7 @@ object DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideDao(fluxDatabase: FluxDatabase) : DatabaseDao {
+    fun provideDao(fluxDatabase: FluxDatabase) : FluxDao {
         return fluxDatabase.fluxDao()
     }
 

@@ -5,39 +5,16 @@ import androidx.room.Dao
 import androidx.room.Database
 import androidx.room.Delete
 import androidx.room.Entity
-import androidx.room.ForeignKey
 import androidx.room.Insert
 import androidx.room.PrimaryKey
 import androidx.room.Query
 import androidx.room.RoomDatabase
-import com.kaem.flux.model.flux.FluxArtwork
-import com.kaem.flux.model.flux.FluxArtworkSummary
 import com.kaem.flux.model.flux.FluxEpisode
 import com.kaem.flux.model.flux.FluxMovie
 import com.kaem.flux.model.flux.FluxShow
 
-
-@Entity(tableName = "movies")
-data class MovieEntity(
-    @PrimaryKey val id: Int,
-    @ColumnInfo val content: String
-)
-
-@Entity(tableName = "shows")
-data class ShowEntity(
-    @PrimaryKey val id: Int,
-    @ColumnInfo val content: String
-)
-
-@Entity(tableName = "episodes")
-data class EpisodeEntity(
-    @PrimaryKey val id: Int,
-    @ColumnInfo val showId: Int,
-    @ColumnInfo val content: String
-)
-
 @Dao
-interface DatabaseDao {
+interface FluxDao {
 
     @Insert
     suspend fun insertMovie(movie: FluxMovie)
@@ -66,7 +43,7 @@ interface DatabaseDao {
     @Delete
     suspend fun deleteShow(fluxShow: FluxShow)
 
-    @Query("DELETE FROM episodes WHERE showId LIKE :showId")
+    @Query("DELETE FROM fluxepisode WHERE showId LIKE :showId")
     suspend fun deleteEpisodesForShow(showId: Int)
 
     @Delete
@@ -80,6 +57,6 @@ interface DatabaseDao {
     FluxEpisode::class
  ], version = 1)
 abstract class FluxDatabase : RoomDatabase() {
-    abstract fun fluxDao(): DatabaseDao
+    abstract fun fluxDao(): FluxDao
 
 }

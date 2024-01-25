@@ -1,7 +1,7 @@
 package com.kaem.flux.di
 
 import android.content.Context
-import com.kaem.flux.data.ddb.DatabaseDao
+import com.kaem.flux.data.ddb.FluxDao
 import com.kaem.flux.data.source.FilesDataSource
 import com.kaem.flux.data.source.LocalFilesDataSource
 import com.kaem.flux.data.tmdb.TMDBService
@@ -40,7 +40,7 @@ object HomeRepositoryModule {
     fun provideHomeRepository(
         @AppModule.LocalFilesDataSource localFilesDataSource: FilesDataSource,
         tmdbService: TMDBService,
-        fluxDao: DatabaseDao
+        fluxDao: FluxDao
     ) : HomeRepository = HomeRepository(
         localFilesDataSource = localFilesDataSource,
         tmdbService = tmdbService,

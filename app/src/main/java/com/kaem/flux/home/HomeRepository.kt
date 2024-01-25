@@ -1,7 +1,7 @@
 package com.kaem.flux.home
 
 import android.util.Log
-import com.kaem.flux.data.ddb.DatabaseDao
+import com.kaem.flux.data.ddb.FluxDao
 import com.kaem.flux.data.source.FilesDataSource
 import com.kaem.flux.data.tmdb.TMDBService
 import com.kaem.flux.model.FileNameProperties
@@ -23,7 +23,7 @@ import javax.inject.Inject
 class HomeRepository @Inject constructor(
     private val localFilesDataSource: FilesDataSource,
     private val tmdbService: TMDBService,
-    private val fluxDao: DatabaseDao
+    private val fluxDao: FluxDao
 ) {
 
     private val dbMutex = Mutex()

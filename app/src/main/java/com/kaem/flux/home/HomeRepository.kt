@@ -1,5 +1,6 @@
 package com.kaem.flux.home
 
+import android.util.Log
 import com.kaem.flux.data.source.FilesDataSource
 import com.kaem.flux.data.tmdb.TMDBService
 import com.kaem.flux.model.FileNameProperties
@@ -62,12 +63,20 @@ class HomeRepository @Inject constructor(
 
     private suspend fun fileToFluxArtwork(file: FileSource) {
 
-        val tmdbArtwork = getTmdbArtwork(file.nameProperties) ?: return
+        try {
 
-        getFluxArtwork(
-            tmdbArtwork = tmdbArtwork,
-            file = file
-        )
+            val tmdbArtwork = getTmdbArtwork(file.nameProperties) ?: return
+
+            getFluxArtwork(
+                tmdbArtwork = tmdbArtwork,
+                file = file
+            )
+
+        } catch (e: Exception) {
+
+            Log.e("HomeRepository", "Fail while fetching artwork", e)
+
+        }
 
     }
 

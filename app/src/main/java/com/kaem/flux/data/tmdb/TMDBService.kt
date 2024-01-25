@@ -1,5 +1,6 @@
 package com.kaem.flux.data.tmdb
 
+import com.kaem.flux.model.tmdb.TMDBArtwork
 import com.kaem.flux.model.tmdb.TMDBArtworksResult
 import com.kaem.flux.model.tmdb.TMDBAuthentication
 import com.kaem.flux.model.tmdb.TMDBEpisode
@@ -14,9 +15,23 @@ interface TMDBService {
     @GET("authentication")
     suspend fun authenticate() : TMDBAuthentication
 
-    @GET("search/multi")
-    suspend fun getArtworks(
-        @Query("query") name: String,
+    @GET("search/movie")
+    suspend fun getMovie(
+        @Query("query") title: String,
+        @Query("year") year: Int? = null,
+        @Query("language") language: String = Constants.Global.LANGUAGE
+    ) : TMDBArtworksResult
+
+    @GET("movie/{id}")
+    suspend fun getMovieDetails(
+        @Query("id") id: Int,
+        @Query("language") language: String = Constants.Global.LANGUAGE
+    ) : TMDBMovie
+
+    @GET("search/tv")
+    suspend fun getShow(
+        @Query("query") title: String,
+        @Query("year") year: Int? = null,
         @Query("language") language: String = Constants.Global.LANGUAGE
     ) : TMDBArtworksResult
 
@@ -27,11 +42,5 @@ interface TMDBService {
         @Path("episode") episode: Int,
         @Query("language") language: String = Constants.Global.LANGUAGE
     ) : TMDBEpisode
-
-    @GET("movie/{id}")
-    suspend fun getMovie(
-        @Path("id") movieId: Int,
-        @Query("language") language: String = Constants.Global.LANGUAGE
-    ) : TMDBMovie
 
 }

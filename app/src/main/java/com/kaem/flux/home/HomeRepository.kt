@@ -23,14 +23,38 @@ class HomeRepository @Inject constructor(
         val result = buildList {
 
             for (files in localFiles) {
-                val artwork = tmdbService.getArtworks(files.nameProperties.title)
 
-                artwork.results.firstOrNull()?.let { add(it) }
+                fileToTmdbArtwork(files.nameProperties)?.let { add(it) }
+
             }
 
         }
 
         emit(Result.success(result))
+
+    }
+
+    private suspend fun fileToTmdbArtwork(fileNameProperties: FileNameProperties) : TMDBArtwork? {
+
+        return if (fileNameProperties.episode != null && fileNameProperties.season != null) {
+
+            val artworks = tmdbService.getShow(
+                title = fileNameProperties.title,
+                year = fileNameProperties.year
+            )
+
+            artworks.results.maxBy { it.popularity }
+
+        } else {
+
+            val artworks = tmdbService.getMovie(
+                title = fileNameProperties.title,
+                year = fileNameProperties.year
+            )
+
+            artworks.results.firstOrNull()
+
+        }
 
     }
 

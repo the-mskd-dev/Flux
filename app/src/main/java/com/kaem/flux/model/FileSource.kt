@@ -17,7 +17,7 @@ sealed class FileSource(
 
 data class FileNameProperties(
     val title: String,
-    val year: String? = null,
+    val year: Int? = null,
     val season: Int? = null,
     val episode: Int? = null,
 ) {
@@ -29,7 +29,7 @@ data class FileNameProperties(
             var name = fileName.substringBeforeLast('.').lowercase()
             var season: Int? = null
             var episode: Int? = null
-            var year: String? = null
+            var year: Int? = null
 
             val splitName = name.split('_')
             if (splitName.size == 2) {
@@ -47,7 +47,7 @@ data class FileNameProperties(
             }
 
             val yearRegex = Regex("\\b\\d{4}\\b")
-            year = yearRegex.find(name)?.value
+            year = yearRegex.find(name)?.value?.toIntOrNull()
 
             return FileNameProperties(
                 title = name,

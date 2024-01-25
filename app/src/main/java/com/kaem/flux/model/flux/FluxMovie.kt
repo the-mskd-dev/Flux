@@ -20,6 +20,7 @@ data class FluxMovie(
     val genres: List<String> = listOf(),
 ) : FluxArtworkSummary, FluxArtwork {
 
+    @Transient
     val releaseDate: Date? = releaseDateString.parseTMDBDate()
 
     constructor(

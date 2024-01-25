@@ -13,6 +13,7 @@ data class FluxShow(
     var episodes: List<FluxEpisode>
 ) : FluxArtworkSummary {
 
+    @Transient
     val releaseDate: Date? = releaseDateString.parseTMDBDate()
 
     constructor(tmdbArtwork: TMDBArtwork) : this(

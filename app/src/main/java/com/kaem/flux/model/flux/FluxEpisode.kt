@@ -23,6 +23,7 @@ data class FluxEpisode(
     override val file: FileSource
 ) : FluxArtwork {
 
+    @Transient
     val releaseDate: Date? = releaseDateString.parseTMDBDate()
 
     constructor(

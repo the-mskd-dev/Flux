@@ -5,6 +5,7 @@ import com.kaem.flux.data.tmdb.TMDBService
 import com.kaem.flux.model.FileNameProperties
 import com.kaem.flux.model.FileSource
 import com.kaem.flux.model.flux.FluxArtwork
+import com.kaem.flux.model.flux.FluxEpisode
 import com.kaem.flux.model.flux.FluxMovie
 import com.kaem.flux.model.tmdb.TMDBArtwork
 import com.kaem.flux.model.tmdb.TMDBMediaType
@@ -92,7 +93,21 @@ class HomeRepository @Inject constructor(
 
             }
 
-            TMDBMediaType.SHOW -> null
+            TMDBMediaType.SHOW -> {
+
+                val tmdbEpisode = tmdbService.getEpisode(
+                    id = tmdbArtwork.id,
+                    season = file.nameProperties.season!!,
+                    episode = file.nameProperties.episode!!
+                )
+
+                FluxEpisode(
+                    tmdbEpisode = tmdbEpisode,
+                    file = file
+                )
+
+                null
+            }
 
             else -> null
 

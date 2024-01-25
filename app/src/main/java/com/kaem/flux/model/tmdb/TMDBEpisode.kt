@@ -10,7 +10,7 @@ data class TMDBEpisode(
     @SerializedName("runtime")
     val duration: Int,
     @SerializedName("episode_number")
-    val number: Float,
+    val number: Int,
     @SerializedName("season_number")
     val season: Int,
     @SerializedName("still_path")

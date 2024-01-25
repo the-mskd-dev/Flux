@@ -64,7 +64,10 @@ class HomeRepository @Inject constructor(
                 year = fileNameProperties.year
             )
 
-            artworks.results.maxBy { it.popularity }
+            val artwork = artworks.results.maxBy { it.popularity }
+            artwork.type = TMDBMediaType.SHOW
+
+            artwork
 
         } else {
 
@@ -73,7 +76,10 @@ class HomeRepository @Inject constructor(
                 year = fileNameProperties.year
             )
 
-            artworks.results.firstOrNull()
+            val artwork = artworks.results.firstOrNull()
+            artwork?.type = TMDBMediaType.MOVIE
+
+            artwork
 
         }
 

@@ -11,7 +11,7 @@ data class TMDBArtwork(
     @SerializedName("backdrop_path")
     val bannerPath: String,
     @SerializedName("media_type")
-    val type: TMDBMediaType,
+    var type: TMDBMediaType,
     @SerializedName("genre_ids")
     val genres: List<Int>,
     val popularity: Float,

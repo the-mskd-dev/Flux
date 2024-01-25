@@ -12,12 +12,15 @@ import com.kaem.flux.model.tmdb.TMDBArtwork
 import com.kaem.flux.model.tmdb.TMDBMediaType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import java.util.Collections
 import javax.inject.Inject
 
 class HomeRepository @Inject constructor(
     private val localFilesDataSource: FilesDataSource,
     private val tmdbService: TMDBService
 ) {
+
+    val fluxArtworks = Collections.synchronizedCollection()
 
     suspend fun getArtworks() : Flow<Result<List<FluxArtworkSummary>>> = flow {
 

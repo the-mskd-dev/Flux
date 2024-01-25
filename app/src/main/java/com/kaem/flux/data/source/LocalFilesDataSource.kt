@@ -75,6 +75,10 @@ class LocalFilesDataSource(
 
         }
 
+        files.sortByDescending {
+            it.addedDateString.toLong()
+        }
+
         withContext(Dispatchers.Default) { delay(2000) }
 
         return files

@@ -2,12 +2,14 @@ package com.kaem.flux.data.ddb
 
 import androidx.room.ColumnInfo
 import androidx.room.Dao
+import androidx.room.Database
 import androidx.room.Delete
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Insert
 import androidx.room.PrimaryKey
 import androidx.room.Query
+import androidx.room.RoomDatabase
 import com.kaem.flux.model.flux.FluxArtwork
 import com.kaem.flux.model.flux.FluxArtworkSummary
 import com.kaem.flux.model.flux.FluxEpisode
@@ -48,5 +50,11 @@ interface DatabaseDao {
 
     @Delete
     suspend fun deleteEpisode(episode: FluxEpisode)
+
+}
+
+@Database(entities = [ArtworkEntity::class, EpisodeEntity::class], version = 1)
+abstract class FluxDatabase : RoomDatabase() {
+    abstract fun userDao(): DatabaseDao
 
 }

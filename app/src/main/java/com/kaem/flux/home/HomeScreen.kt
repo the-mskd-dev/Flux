@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -112,10 +113,17 @@ fun HomeContent(artworks: List<FluxArtworkSummary>) {
 
     } else {
 
+        val testList = buildList {
+
+            repeat(100) {
+                addAll(artworks)
+            }
+        }
+
         LazyVerticalGrid(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(12.dp),
+                .padding(horizontal = 12.dp),
             columns = GridCells.Fixed(3),
             verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -125,13 +133,13 @@ fun HomeContent(artworks: List<FluxArtworkSummary>) {
 
                 Spacer(
                     modifier = Modifier
-                        .systemBarsPadding()
+                        .statusBarsPadding()
                         .height(20.dp)
                 )
 
             }
 
-            items(artworks) {
+            items(testList) {
 
                 HomeArtwork(artworkSummary = it)
 

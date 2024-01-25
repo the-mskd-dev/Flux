@@ -177,12 +177,6 @@ fun HomeArtwork(artworkSummary: FluxArtworkSummary) {
 
 }
 
-@Preview(showBackground = true)
-@Composable
-fun HomeScreenPreview() {
-    HomeScreen()
-}
-
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun HomePermissionButton(viewModel: HomeViewModel = viewModel()) {

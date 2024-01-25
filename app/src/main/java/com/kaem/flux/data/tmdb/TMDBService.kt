@@ -24,7 +24,7 @@ interface TMDBService {
 
     @GET("movie/{id}")
     suspend fun getMovieDetails(
-        @Query("id") id: Int,
+        @Path("id") id: Int,
         @Query("language") language: String = Constants.Global.LANGUAGE
     ) : TMDBMovie
 

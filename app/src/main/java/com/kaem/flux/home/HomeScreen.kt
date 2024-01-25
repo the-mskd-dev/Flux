@@ -150,6 +150,27 @@ fun HomeContent(artworks: List<FluxArtworkSummary>) {
 
 }
 
+@OptIn(ExperimentalGlideComposeApi::class)
+@Composable
+fun HomeArtwork(artworkSummary: FluxArtworkSummary) {
+
+    GlideImage(
+        modifier = Modifier
+            .clip(RoundedCornerShape(8.dp))
+            .fillMaxWidth()
+            .aspectRatio(.5f),
+        model = Constants.TMDB.IMAGE_SMALL + artworkSummary.imagePath,
+        contentDescription = artworkSummary.title,
+    )
+
+}
+
+@Preview(showBackground = true)
+@Composable
+fun HomeScreenPreview() {
+    HomeScreen()
+}
+
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun HomePermissionButton(viewModel: HomeViewModel = viewModel()) {
@@ -179,25 +200,4 @@ fun HomePermissionButton(viewModel: HomeViewModel = viewModel()) {
 
     }
 
-}
-
-@OptIn(ExperimentalGlideComposeApi::class)
-@Composable
-fun HomeArtwork(artworkSummary: FluxArtworkSummary) {
-
-    GlideImage(
-        modifier = Modifier
-            .clip(RoundedCornerShape(8.dp))
-            .fillMaxWidth()
-            .aspectRatio(.5f),
-        model = Constants.TMDB.IMAGE_SMALL + artworkSummary.imagePath,
-        contentDescription = artworkSummary.title,
-    )
-
-}
-
-@Preview(showBackground = true)
-@Composable
-fun HomeScreenPreview() {
-    HomeScreen()
 }

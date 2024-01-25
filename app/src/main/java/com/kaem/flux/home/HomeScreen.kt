@@ -169,7 +169,7 @@ fun HomeArtwork(artworkSummary: FluxArtworkSummary) {
         modifier = Modifier
             .clip(RoundedCornerShape(8.dp))
             .fillMaxWidth()
-            .aspectRatio(.5f),
+            .aspectRatio(2f/3f),
         model = Constants.TMDB.IMAGE_SMALL + artworkSummary.imagePath,
         contentDescription = artworkSummary.title,
         loading = placeholder(ColorPainter(Color.LightGray))

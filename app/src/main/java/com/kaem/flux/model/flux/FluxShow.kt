@@ -10,7 +10,6 @@ data class FluxShow(
     override val imagePath: String,
     override val bannerPath: String,
     override val releaseDateString: String,
-    var episodes: List<FluxEpisode>,
     var episodeIds: List<Int>
 ) : FluxArtworkSummary {
 
@@ -23,7 +22,6 @@ data class FluxShow(
         imagePath = tmdbArtwork.imagePath,
         bannerPath = tmdbArtwork.bannerPath,
         releaseDateString = tmdbArtwork.releaseDateString,
-        episodes = emptyList(),
         episodeIds = emptyList()
     )
 

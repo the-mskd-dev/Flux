@@ -23,8 +23,8 @@ object DatabaseModule {
 
         return Room.databaseBuilder(
             context = context,
-            FluxDatabase::class.java,
-            "fluxDatabase"
+            klass = FluxDatabase::class.java,
+            name = "fluxDatabase"
         ).build()
 
     }

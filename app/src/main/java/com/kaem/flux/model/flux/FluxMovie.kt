@@ -2,6 +2,8 @@ package com.kaem.flux.model.flux
 
 import com.kaem.flux.model.FileSource
 import com.kaem.flux.model.tmdb.TMDBMovie
+import com.kaem.flux.utils.parseTMDBDate
+import java.util.Date
 
 data class FluxMovie(
     override val id: Int,
@@ -17,6 +19,8 @@ data class FluxMovie(
     override val file: FileSource,
     val genres: List<String> = listOf(),
 ) : FluxArtworkSummary, FluxArtwork {
+
+    val releaseDate: Date? = releaseDateString.parseTMDBDate()
 
     constructor(
         tmdbMovie: TMDBMovie,

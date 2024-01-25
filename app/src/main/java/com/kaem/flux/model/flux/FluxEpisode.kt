@@ -3,6 +3,8 @@ package com.kaem.flux.model.flux
 import com.kaem.flux.model.FileSource
 import com.kaem.flux.model.tmdb.TMDBCrew
 import com.kaem.flux.model.tmdb.TMDBEpisode
+import com.kaem.flux.utils.parseTMDBDate
+import java.util.Date
 
 data class FluxEpisode(
     val id: Int,
@@ -20,6 +22,8 @@ data class FluxEpisode(
     override var isWatched: Boolean = false,
     override val file: FileSource
 ) : FluxArtwork {
+
+    val releaseDate: Date? = releaseDateString.parseTMDBDate()
 
     constructor(
         showId: Int,

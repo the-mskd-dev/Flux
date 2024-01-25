@@ -1,6 +1,8 @@
 package com.kaem.flux.model.flux
 
 import com.kaem.flux.model.tmdb.TMDBArtwork
+import com.kaem.flux.utils.parseTMDBDate
+import java.util.Date
 
 data class FluxShow(
     override val id: Int,
@@ -10,6 +12,8 @@ data class FluxShow(
     override val releaseDateString: String,
     var episodes: List<FluxEpisode>
 ) : FluxArtworkSummary {
+
+    val releaseDate: Date? = releaseDateString.parseTMDBDate()
 
     constructor(tmdbArtwork: TMDBArtwork) : this(
         id = tmdbArtwork.id,

@@ -51,6 +51,8 @@ class HomeRepository @Inject constructor(
 
     }
 
+    //region Database
+
     private suspend fun getFromDatabase() {
 
         coroutineScope {
@@ -116,6 +118,8 @@ class HomeRepository @Inject constructor(
         }
 
     }
+
+    //endregion
 
     private suspend fun getFileSources() : List<FileSource> {
 

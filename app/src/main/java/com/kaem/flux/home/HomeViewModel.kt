@@ -3,6 +3,7 @@ package com.kaem.flux.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kaem.flux.model.flux.FluxArtwork
+import com.kaem.flux.model.flux.FluxArtworkSummary
 import com.kaem.flux.model.tmdb.TMDBArtwork
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,7 +15,7 @@ import javax.inject.Inject
 
 data class HomeUiState(
     val isLoading: Boolean = true,
-    val artworks: List<TMDBArtwork> = emptyList()
+    val artworks: List<FluxArtworkSummary> = emptyList()
 )
 
 @HiltViewModel

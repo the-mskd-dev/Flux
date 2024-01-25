@@ -3,7 +3,8 @@ package com.kaem.flux.model.tmdb
 import com.google.gson.annotations.SerializedName
 
 data class TMDBEpisode(
-    val name: String,
+    @SerializedName("name")
+    val title: String,
     @SerializedName("overview")
     val description: String,
     val id: Int,

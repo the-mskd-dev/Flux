@@ -5,6 +5,7 @@ import com.kaem.flux.data.tmdb.TMDBService
 import com.kaem.flux.model.FileNameProperties
 import com.kaem.flux.model.FileSource
 import com.kaem.flux.model.flux.FluxArtwork
+import com.kaem.flux.model.flux.FluxArtworkSummary
 import com.kaem.flux.model.flux.FluxEpisode
 import com.kaem.flux.model.flux.FluxMovie
 import com.kaem.flux.model.tmdb.TMDBArtwork
@@ -18,7 +19,7 @@ class HomeRepository @Inject constructor(
     private val tmdbService: TMDBService
 ) {
 
-    suspend fun getArtworks() : Flow<Result<List<TMDBArtwork>>> = flow {
+    suspend fun getArtworks() : Flow<Result<List<FluxArtworkSummary>>> = flow {
 
         val localFiles = localFilesDataSource.getFiles()
 
@@ -26,7 +27,7 @@ class HomeRepository @Inject constructor(
 
             for (file in localFiles) {
 
-                fileToTmdbArtwork(file.nameProperties)?.let { add(it) }
+                fileToFluxArtwork(file)?.let { add(it) }
 
             }
 
@@ -36,11 +37,11 @@ class HomeRepository @Inject constructor(
 
     }
 
-    private suspend fun fileToFluxArtwork(file: FileSource) : FluxArtwork? {
+    private suspend fun fileToFluxArtwork(file: FileSource): FluxArtwork? {
 
         val tmdbArtwork = fileToTmdbArtwork(file.nameProperties)
 
-        val fluxArtwork = tmdbToFluxArtwork(
+        return tmdbToFluxArtwork(
             tmdbArtwork = tmdbArtwork,
             file = file
         )
@@ -106,7 +107,6 @@ class HomeRepository @Inject constructor(
                     file = file
                 )
 
-                null
             }
 
             else -> null

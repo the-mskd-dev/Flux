@@ -75,9 +75,9 @@ interface DatabaseDao {
 }
 
 @Database(entities = [
-    MovieEntity::class,
-    ShowEntity::class,
-    EpisodeEntity::class
+    FluxMovie::class,
+    FluxShow::class,
+    FluxEpisode::class
  ], version = 1)
 abstract class FluxDatabase : RoomDatabase() {
     abstract fun fluxDao(): DatabaseDao

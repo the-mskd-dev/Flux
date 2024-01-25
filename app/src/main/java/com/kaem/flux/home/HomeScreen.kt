@@ -116,13 +116,6 @@ fun HomeContent(artworks: List<FluxArtworkSummary>) {
 
     } else {
 
-        val testList = buildList {
-
-            repeat(100) {
-                addAll(artworks)
-            }
-        }
-
         LazyVerticalGrid(
             modifier = Modifier
                 .fillMaxSize()
@@ -142,7 +135,7 @@ fun HomeContent(artworks: List<FluxArtworkSummary>) {
 
             }
 
-            items(testList) {
+            items(artworks) {
 
                 HomeArtwork(artworkSummary = it)
 

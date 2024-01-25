@@ -16,7 +16,7 @@ import com.kaem.flux.model.flux.FluxEpisode
 import com.kaem.flux.model.flux.FluxMovie
 import com.kaem.flux.model.flux.FluxShow
 
-/*
+
 @Entity
 data class MovieEntity(
     @PrimaryKey val id: Int,
@@ -40,34 +40,37 @@ data class EpisodeEntity(
 interface DatabaseDao {
 
     @Insert
-    suspend fun insertMovie(movie: FluxMovie)
+    suspend fun insertMovie(id: Int, content: String)
 
     @Insert
-    suspend fun insertShow(show: FluxShow)
+    suspend fun insertShow(id: Int, content: String)
 
     @Insert
-    suspend fun insertEpisode(episode: FluxEpisode)
+    suspend fun insertEpisode(id: Int, showId: Int, content: String)
 
     @Query("SELECT * FROM movieentity")
-    suspend fun getMovies() : List<FluxMovie>
+    suspend fun getMovies() : List<MovieEntity>
 
     @Query("SELECT * FROM showentity")
-    suspend fun getShows() : List<FluxShow>
+    suspend fun getShows() : List<ShowEntity>
 
     @Query("SELECT * FROM episodeentity")
-    suspend fun getEpisodes() : List<FluxEpisode>
+    suspend fun getEpisodes() : List<EpisodeEntity>
 
     @Query("SELECT * FROM episodeentity WHERE showId LIKE :showId")
-    suspend fun getEpisodesFor(showId: Int) : List<FluxEpisode>
+    suspend fun getEpisodesFor(showId: Int) : List<EpisodeEntity>
 
-    @Delete
-    suspend fun deleteMovie(movie: FluxMovie)
+    @Query("DELETE FROM movieentity WHERE id LIKE :id")
+    suspend fun deleteMovie(id: Int)
 
-    @Delete
-    suspend fun deleteShow(show: FluxShow)
+    @Query("DELETE FROM episodeentity WHERE id LIKE :id")
+    suspend fun deleteShow(id: Int)
 
-    @Delete
-    suspend fun deleteEpisode(episode: FluxEpisode)
+    @Query("DELETE FROM episodeentity WHERE showId LIKE :showId")
+    suspend fun deleteEpisodesForShow(showId: Int)
+
+    @Query("DELETE FROM episodeentity WHERE id LIKE :id")
+    suspend fun deleteEpisode(id: Int)
 
 }
 
@@ -79,4 +82,4 @@ interface DatabaseDao {
 abstract class FluxDatabase : RoomDatabase() {
     abstract fun fluxDao(): DatabaseDao
 
-}*/
+}

@@ -4,7 +4,7 @@ import com.kaem.flux.model.FileSource
 
 interface FluxArtworkSummary {
     val id: Int
-    val name: String
+    val title: String
     val imagePath: String
     val bannerPath: String
     val releaseDateString: String

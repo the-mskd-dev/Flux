@@ -4,10 +4,12 @@ import android.content.ContentUris
 import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
+import android.util.Log
 import com.kaem.flux.model.FileSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
+import java.util.Date
 import java.util.concurrent.TimeUnit
 
 class LocalFilesDataSource(
@@ -51,23 +53,35 @@ class LocalFilesDataSource(
                 val dateColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_ADDED)
 
                 while (cursor.moveToNext()) {
-                    // Get values of columns for a given video.
-                    val id = cursor.getLong(idColumn)
-                    val name = cursor.getString(nameColumn)
-                    val date = cursor.getString(dateColumn)
 
-                    val contentUri: Uri = ContentUris.withAppendedId(
-                        MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
-                        id
-                    )
+                    try {
 
-                    // Stores column values and the contentUri in a local object
-                    // that represents the media file.
-                    files += FileSource.Local(
-                        name = name,
-                        addedDateString = date,
-                        uri = contentUri
-                    )
+                        // Get values of columns for a given video.
+                        val id = cursor.getLong(idColumn)
+                        val name = cursor.getString(nameColumn)
+                        val date = cursor.getLong(dateColumn)
+
+                        Log.d("TEST", "date : $date")
+
+
+                        val contentUri: Uri = ContentUris.withAppendedId(
+                            MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+                            id
+                        )
+
+                        // Stores column values and the contentUri in a local object
+                        // that represents the media file.
+                        files += FileSource.Local(
+                            name = name,
+                            addedDateTime = date,
+                            uri = contentUri
+                        )
+
+                    } catch (e: Exception) {
+
+                        Log.e("LocalFilesDataSource", "Fail to get file", e)
+
+                    }
 
                 }
 
@@ -75,9 +89,7 @@ class LocalFilesDataSource(
 
         }
 
-        files.sortByDescending {
-            it.addedDateString.toLong()
-        }
+        files.sortByDescending { it.addedDateTime }
 
         withContext(Dispatchers.Default) { delay(2000) }
 

@@ -1,6 +1,7 @@
 package com.kaem.flux.home
 
 import android.util.Log
+import com.kaem.flux.data.ddb.DatabaseManager
 import com.kaem.flux.data.ddb.FluxDao
 import com.kaem.flux.data.source.FilesDataSource
 import com.kaem.flux.data.tmdb.TMDBService
@@ -12,21 +13,22 @@ import com.kaem.flux.model.flux.FluxMovie
 import com.kaem.flux.model.flux.FluxShow
 import com.kaem.flux.model.tmdb.TMDBArtwork
 import com.kaem.flux.model.tmdb.TMDBMediaType
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class HomeRepository @Inject constructor(
     private val localFilesDataSource: FilesDataSource,
     private val tmdbService: TMDBService,
-    private val fluxDao: FluxDao
+    private val databaseManager: DatabaseManager
 ) {
 
-    private val dbMutex = Mutex()
     private val dbArtworks = arrayListOf<FluxArtworkSummary>()
     private val dbEpisodes = arrayListOf<FluxEpisode>()
 
@@ -56,32 +58,21 @@ class HomeRepository @Inject constructor(
 
     private suspend fun getFromDatabase() {
 
+        databaseManager.getAllArtworks()
+
         coroutineScope {
 
             launch {
 
-                val movies = fluxDao.getMovies()
-
-                dbMutex.withLock {
-                    dbArtworks.addAll(movies)
-                }
+                val artworks = withContext(Dispatchers.Default) { databaseManager.getAllArtworks() }
+                dbArtworks.addAll(artworks)
 
             }
 
             launch {
 
-                val shows = fluxDao.getShows()
-
-                dbMutex.withLock {
-                    dbArtworks.addAll(shows)
-                }
-
-            }
-
-            launch {
-
-                val ddbEpisodes = fluxDao.getEpisodes()
-                dbEpisodes.addAll(ddbEpisodes)
+                val episodes = withContext(Dispatchers.Default) { databaseManager.getAllEpisodes() }
+                dbEpisodes.addAll(episodes)
 
             }
 
@@ -93,26 +84,15 @@ class HomeRepository @Inject constructor(
 
         coroutineScope {
 
-            tmdbArtworks.forEach {
+            launch {
 
-                launch {
-
-                    when (it) {
-                        is FluxMovie -> fluxDao.insertMovie(it)
-                        is FluxShow -> fluxDao.insertShow(it)
-                    }
-
-                }
+                databaseManager.saveArtworks(tmdbArtworks)
 
             }
 
-            tmdbEpisodes.forEach {
+            launch {
 
-                launch {
-
-                    fluxDao.insertEpisode(it)
-
-                }
+                databaseManager.saveEpisodes(tmdbEpisodes)
 
             }
 

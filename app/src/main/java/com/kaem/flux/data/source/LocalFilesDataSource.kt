@@ -61,9 +61,6 @@ class LocalFilesDataSource(
                         val name = cursor.getString(nameColumn)
                         val date = cursor.getLong(dateColumn)
 
-                        Log.d("TEST", "date : $date")
-
-
                         val contentUri: Uri = ContentUris.withAppendedId(
                             MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
                             id

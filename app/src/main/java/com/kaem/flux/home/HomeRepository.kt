@@ -202,14 +202,9 @@ class HomeRepository @Inject constructor(
 
     private suspend fun getArtworks(files: List<UserFile>) {
 
-        val dbFilePaths = dbEpisodes.map { it.file.path } + dbArtworks.filterIsInstance<FluxMovie>().map { it.file.path }
-
         coroutineScope {
 
-            for (file in files) {
-
-                if (dbFilePaths.contains(file.path))
-                    continue
+            files.forEach { file ->
 
                 launch {
 

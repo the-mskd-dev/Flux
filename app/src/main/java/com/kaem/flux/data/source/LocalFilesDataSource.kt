@@ -2,7 +2,6 @@ package com.kaem.flux.data.source
 
 import android.content.ContentUris
 import android.content.Context
-import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
 import com.kaem.flux.model.FileSource

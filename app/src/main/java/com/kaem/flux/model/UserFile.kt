@@ -1,6 +1,5 @@
 package com.kaem.flux.model
 
-import android.net.Uri
 import java.util.Date
 
 data class UserFile(
@@ -69,10 +68,3 @@ data class FileNameProperties(
     }
 
 }
-
-val fileName1 = "spy x family_s02e03.mkv"
-val fileName2 = "spiderman (2002).mkv"
-val fileName3 = "naruto.mkv"
-val fileName4 = "spiderman (2017)_s02e04.mkv"
-val fileName5 = "spiderman_2017.mkv"
-val fileName6 = "2001 : L'odyssée de l'espace.mkv"

@@ -2,7 +2,6 @@ package com.kaem.flux.di
 
 import android.content.Context
 import com.kaem.flux.data.ddb.DatabaseManager
-import com.kaem.flux.data.ddb.FluxDao
 import com.kaem.flux.data.source.FilesDataSource
 import com.kaem.flux.data.source.LocalFilesDataSource
 import com.kaem.flux.data.tmdb.TMDBService

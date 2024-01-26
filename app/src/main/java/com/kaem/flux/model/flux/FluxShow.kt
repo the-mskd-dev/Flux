@@ -1,9 +1,5 @@
 package com.kaem.flux.model.flux
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.Ignore
-import androidx.room.PrimaryKey
 import com.kaem.flux.model.tmdb.TMDBArtwork
 import com.kaem.flux.utils.parseTMDBDate
 import java.util.Date

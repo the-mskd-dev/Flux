@@ -1,6 +1,5 @@
 package com.kaem.flux.data.tmdb
 
-import com.kaem.flux.model.tmdb.TMDBArtwork
 import com.kaem.flux.model.tmdb.TMDBArtworksResult
 import com.kaem.flux.model.tmdb.TMDBAuthentication
 import com.kaem.flux.model.tmdb.TMDBEpisode

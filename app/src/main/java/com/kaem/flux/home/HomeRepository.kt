@@ -48,6 +48,10 @@ class HomeRepository @Inject constructor(
 
     }
 
+    fun getEpisodesFor(show: FluxShow) : List<FluxEpisode> {
+        return (dbEpisodes + tmdbEpisodes).filter { it.showId == show.id }
+    }
+
     //region Database
 
     private suspend fun getFromDatabase() {

@@ -1,10 +1,7 @@
 package com.kaem.flux.model.flux
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
 import androidx.room.Ignore
-import androidx.room.PrimaryKey
-import com.kaem.flux.model.FileSource
+import com.kaem.flux.model.UserFile
 import com.kaem.flux.model.tmdb.TMDBCrew
 import com.kaem.flux.model.tmdb.TMDBEpisode
 import com.kaem.flux.utils.parseTMDBDate
@@ -24,7 +21,7 @@ data class FluxEpisode(
     override val voteAverage: Float,
     override val voteCount: Int,
     override var isWatched: Boolean = false,
-    override val file: FileSource
+    override val file: UserFile
 ) : FluxArtwork {
 
     @Transient
@@ -34,7 +31,7 @@ data class FluxEpisode(
     constructor(
         showId: Int,
         tmdbEpisode: TMDBEpisode,
-        file: FileSource
+        file: UserFile
     ) : this (
         id = tmdbEpisode.id,
         showId = showId,

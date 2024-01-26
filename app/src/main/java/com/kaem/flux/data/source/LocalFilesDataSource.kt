@@ -6,19 +6,19 @@ import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
 import com.kaem.flux.model.FileSource
+import com.kaem.flux.model.UserFile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
-import java.util.Date
 import java.util.concurrent.TimeUnit
 
 class LocalFilesDataSource(
     private val context: Context
 ) : FilesDataSource {
 
-    override suspend fun getFiles(): List<FileSource> {
+    override suspend fun getFiles(): List<UserFile> {
 
-        val files = mutableListOf<FileSource>()
+        val files = mutableListOf<UserFile>()
 
         val collection = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
 
@@ -61,17 +61,18 @@ class LocalFilesDataSource(
                         val name = cursor.getString(nameColumn)
                         val date = cursor.getLong(dateColumn)
 
-                        val contentUri: Uri = ContentUris.withAppendedId(
+                        val contentPath = ContentUris.withAppendedId(
                             MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
                             id
-                        )
+                        ).toString()
 
                         // Stores column values and the contentUri in a local object
                         // that represents the media file.
-                        files += FileSource.Local(
+                        files += UserFile(
                             name = name,
                             addedDateTime = date,
-                            uri = contentUri
+                            path = contentPath,
+                            source = FileSource.LOCAL
                         )
 
                     } catch (e: Exception) {

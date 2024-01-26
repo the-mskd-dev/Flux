@@ -2,11 +2,10 @@ package com.kaem.flux.home
 
 import android.util.Log
 import com.kaem.flux.data.ddb.DatabaseManager
-import com.kaem.flux.data.ddb.FluxDao
 import com.kaem.flux.data.source.FilesDataSource
 import com.kaem.flux.data.tmdb.TMDBService
 import com.kaem.flux.model.FileNameProperties
-import com.kaem.flux.model.FileSource
+import com.kaem.flux.model.UserFile
 import com.kaem.flux.model.flux.FluxArtworkSummary
 import com.kaem.flux.model.flux.FluxEpisode
 import com.kaem.flux.model.flux.FluxMovie
@@ -112,9 +111,9 @@ class HomeRepository @Inject constructor(
 
     }
 
-    private suspend fun getFiles() : List<FileSource> {
+    private suspend fun getFiles() : List<UserFile> {
 
-        val localFiles = arrayListOf<FileSource>()
+        val localFiles = arrayListOf<UserFile>()
 
         coroutineScope {
 
@@ -130,7 +129,7 @@ class HomeRepository @Inject constructor(
 
     }
 
-    private suspend fun getArtworks(files: List<FileSource>) {
+    private suspend fun getArtworks(files: List<UserFile>) {
 
         coroutineScope {
 
@@ -191,7 +190,7 @@ class HomeRepository @Inject constructor(
 
     private suspend fun getFluxArtwork(
         tmdbArtwork: TMDBArtwork?,
-        file: FileSource
+        file: UserFile
     ) {
 
         tmdbArtwork ?: return
@@ -234,7 +233,7 @@ class HomeRepository @Inject constructor(
 
     private suspend fun getFluxEpisode(
         tmdbArtwork: TMDBArtwork?,
-        file: FileSource
+        file: UserFile
     ) {
 
         if (tmdbArtwork == null || tmdbEpisodes.any { it.file.name == file.name })

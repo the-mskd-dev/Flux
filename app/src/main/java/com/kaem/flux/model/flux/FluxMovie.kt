@@ -1,10 +1,6 @@
 package com.kaem.flux.model.flux
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.Ignore
-import androidx.room.PrimaryKey
-import com.kaem.flux.model.FileSource
+import com.kaem.flux.model.UserFile
 import com.kaem.flux.model.tmdb.TMDBMovie
 import com.kaem.flux.utils.parseTMDBDate
 import java.util.Date
@@ -20,7 +16,7 @@ data class FluxMovie(
     override val voteCount: Int,
     override val duration: Int,
     override var isWatched: Boolean = false,
-    override val file: FileSource,
+    override val file: UserFile,
     val genres: List<String> = listOf(),
 ) : FluxArtworkSummary, FluxArtwork {
 
@@ -29,7 +25,7 @@ data class FluxMovie(
 
     constructor(
         tmdbMovie: TMDBMovie,
-        file: FileSource
+        file: UserFile
     ) : this(
         id = tmdbMovie.id,
         title = tmdbMovie.title,

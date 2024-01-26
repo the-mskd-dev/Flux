@@ -2,21 +2,26 @@ package com.kaem.flux.model
 
 import android.net.Uri
 import java.util.Date
-import java.util.regex.Pattern
 
-sealed class FileSource(
+data class UserFile(
     val name: String,
-    val addedDateTime: Long
+    val addedDateTime: Long,
+    val path: String,
+    val source: FileSource
 ) {
 
-    class Local(name: String, addedDateTime: Long, val uri: Uri) : FileSource(name, addedDateTime)
-    class GDrive(name: String, addedDateTime: Long, val path: String) : FileSource(name, addedDateTime)
-
+    @Transient
     val nameProperties: FileNameProperties = FileNameProperties.fromFileName(name)
 
+    @Transient
     val addedDate: Date = Date(addedDateTime)
 
 }
+
+enum class FileSource {
+    LOCAL, GOOGLE
+}
+
 
 data class FileNameProperties(
     val title: String,

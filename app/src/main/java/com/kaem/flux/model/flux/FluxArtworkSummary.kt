@@ -1,6 +1,6 @@
 package com.kaem.flux.model.flux
 
-import com.kaem.flux.model.FileSource
+import com.kaem.flux.model.UserFile
 
 interface FluxArtworkSummary {
     val id: Int
@@ -16,5 +16,5 @@ interface FluxArtwork {
     val voteCount: Int
     val duration: Int
     var isWatched: Boolean
-    val file: FileSource
+    val file: UserFile
 }

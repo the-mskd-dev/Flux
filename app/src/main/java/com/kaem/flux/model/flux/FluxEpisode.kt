@@ -19,13 +19,14 @@ data class FluxEpisode(
     @ColumnInfo val season: Int,
     @ColumnInfo val imagePath: String,
     @ColumnInfo val releaseDateString: String,
-    @ColumnInfo val crew: List<TMDBCrew>,
+    //@ColumnInfo val crew: List<TMDBCrew>,
     @ColumnInfo override val description: String,
     @ColumnInfo override val duration: Int,
     @ColumnInfo override val voteAverage: Float,
     @ColumnInfo override val voteCount: Int,
     @ColumnInfo override var isWatched: Boolean = false,
-    @ColumnInfo override val file: FileSource
+    @ColumnInfo override val fileName: String,
+    @ColumnInfo override val filePath: String
 ) : FluxArtwork {
 
     @Transient
@@ -44,12 +45,16 @@ data class FluxEpisode(
         season = tmdbEpisode.season,
         imagePath = tmdbEpisode.imagePath,
         releaseDateString = tmdbEpisode.releaseDateString,
-        crew = tmdbEpisode.crew,
+        //crew = tmdbEpisode.crew,
         description = tmdbEpisode.description,
         duration = tmdbEpisode.duration,
         voteAverage = tmdbEpisode.voteAverage,
         voteCount = tmdbEpisode.voteCount,
         isWatched = false,
-        file = file
+        fileName = file.name,
+        filePath = when (file) {
+            is FileSource.Local -> file.uri.toString()
+            is FileSource.GDrive -> file.path
+        }
     )
 }

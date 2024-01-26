@@ -203,27 +203,3 @@ fun HomePermissionButton(viewModel: HomeViewModel = viewModel()) {
     }
 
 }
-
-@Preview
-@Composable
-fun HomePreview() {
-
-    val artwork = FluxMovie(
-        id = 0,
-        title = "preview",
-        imagePath = "/7NAvPYPAu7MeHwP8E9sn81PqsRh.jpg",
-        bannerPath  = "/7NAvPYPAu7MeHwP8E9sn81PqsRh.jpg",
-        releaseDateString = "",
-        description = "",
-        voteAverage = 0f,
-        voteCount = 0,
-        duration = 0,
-        file = FileSource.Local("", 0L, Uri.EMPTY),
-        genres = listOf(),
-    )
-
-    val list = buildList { repeat(100) { add(artwork) } }
-
-    HomeContent(list)
-
-}

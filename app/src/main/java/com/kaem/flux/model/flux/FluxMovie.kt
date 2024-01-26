@@ -21,8 +21,9 @@ data class FluxMovie(
     @ColumnInfo override val voteCount: Int,
     @ColumnInfo override val duration: Int,
     @ColumnInfo override var isWatched: Boolean = false,
-    @ColumnInfo override val file: FileSource,
-    @ColumnInfo val genres: List<String> = listOf(),
+    @ColumnInfo override val fileName: String,
+    @ColumnInfo override val filePath: String,
+    //@ColumnInfo val genres: List<String> = listOf(),
 ) : FluxArtworkSummary, FluxArtwork {
 
     @Transient
@@ -42,7 +43,11 @@ data class FluxMovie(
         voteAverage = tmdbMovie.voteAverage,
         voteCount = tmdbMovie.voteCount,
         duration = tmdbMovie.duration,
-        file = file,
-        genres = emptyList()
+        //genres = emptyList(),
+        fileName = file.name,
+        filePath = when (file) {
+            is FileSource.Local -> file.uri.toString()
+            is FileSource.GDrive -> file.path
+        }
     )
 }

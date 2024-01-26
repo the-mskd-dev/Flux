@@ -6,6 +6,7 @@ import com.kaem.flux.data.source.FilesDataSource
 import com.kaem.flux.data.tmdb.TMDBService
 import com.kaem.flux.model.FileNameProperties
 import com.kaem.flux.model.UserFile
+import com.kaem.flux.model.flux.FluxArtwork
 import com.kaem.flux.model.flux.FluxArtworkSummary
 import com.kaem.flux.model.flux.FluxEpisode
 import com.kaem.flux.model.flux.FluxMovie
@@ -50,6 +51,8 @@ class HomeRepository @Inject constructor(
         Log.d("TEST", "episodes from tmdb : ${tmdbEpisodes.size}")
 
         emit(Result.success(dbArtworks + tmdbArtworks))
+
+        saveInDatabase()
 
     }
 
@@ -107,7 +110,6 @@ class HomeRepository @Inject constructor(
 
         val files = getFiles()
         getArtworks(files = files)
-        saveInDatabase()
 
     }
 
@@ -125,7 +127,10 @@ class HomeRepository @Inject constructor(
 
         }
 
-        return localFiles
+        val dbFiles = dbArtworks.filterIsInstance<FluxMovie>().map { it.file.name } + dbEpisodes.map { it.file.name }
+
+        // Return only needed files
+        return localFiles.filter { !dbFiles.contains(it.name) }
 
     }
 

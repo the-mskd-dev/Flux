@@ -66,10 +66,10 @@ class HomeRepository @Inject constructor(
 
         val seven = (System.currentTimeMillis() - six) / 1000F
 
-        Log.d("TEST", "getFromDatabase : $one ms")
-        Log.d("TEST", "cleanDatabase : $three ms")
-        Log.d("TEST", "getFromTMDB : $five ms")
-        Log.d("TEST", "saveInDatabase : $seven ms")
+        Log.d("TEST", "getFromDatabase : $one s")
+        Log.d("TEST", "cleanDatabase : $three s")
+        Log.d("TEST", "getFromTMDB : $five s")
+        Log.d("TEST", "saveInDatabase : $seven s")
 
     }
 
@@ -202,9 +202,14 @@ class HomeRepository @Inject constructor(
 
     private suspend fun getArtworks(files: List<UserFile>) {
 
+        val dbFilePaths = dbEpisodes.map { it.file.path } + dbArtworks.filterIsInstance<FluxMovie>().map { it.file.path }
+
         coroutineScope {
 
-            files.forEach { file ->
+            for (file in files) {
+
+                if (dbFilePaths.contains(file.path))
+                    continue
 
                 launch {
 

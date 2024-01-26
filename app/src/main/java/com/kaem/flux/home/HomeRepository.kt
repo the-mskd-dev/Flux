@@ -37,7 +37,7 @@ class HomeRepository @Inject constructor(
     private val tmdbEpisodesMutex = Mutex()
     private val tmdbEpisodes = arrayListOf<FluxEpisode>()
 
-    suspend fun getArtworks() : Flow<Result<List<FluxArtworkSummary>>> = flow {
+    suspend fun getLibrary() : Flow<Result<List<FluxArtworkSummary>>> = flow {
 
         getFromDatabase()
 
@@ -195,12 +195,13 @@ class HomeRepository @Inject constructor(
 
         tmdbArtwork ?: return
 
+        if ((tmdbArtworks + dbArtworks).any { it.id ==  tmdbArtwork.id})
+            return
+
         when (tmdbArtwork.type){
 
             TMDBMediaType.MOVIE -> {
 
-                if (tmdbArtworks.any { it.id ==  tmdbArtwork.id})
-                    return
 
                 val tmdbMovie = tmdbService.getMovieDetails(
                     id = tmdbArtwork.id
@@ -216,9 +217,6 @@ class HomeRepository @Inject constructor(
             }
 
             TMDBMediaType.SHOW -> {
-
-                if (tmdbArtworks.any { it.id == tmdbArtwork.id })
-                    return
 
                 val show = FluxShow(tmdbArtwork = tmdbArtwork)
                 addArtworkSummary(show)
@@ -236,7 +234,7 @@ class HomeRepository @Inject constructor(
         file: UserFile
     ) {
 
-        if (tmdbArtwork == null || tmdbEpisodes.any { it.file.name == file.name })
+        if (tmdbArtwork == null || (dbEpisodes + tmdbEpisodes).any { it.file.name == file.name })
             return
 
         val tmdbEpisode = tmdbService.getEpisode(

@@ -2,9 +2,7 @@ package com.kaem.flux.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kaem.flux.model.flux.FluxArtwork
 import com.kaem.flux.model.flux.FluxArtworkSummary
-import com.kaem.flux.model.tmdb.TMDBArtwork
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -37,7 +35,7 @@ class HomeViewModel @Inject constructor(
 
         }
 
-        repository.getArtworks().collect { result ->
+        repository.getLibrary().collect { result ->
 
             _uiState.update {
 

@@ -2,6 +2,7 @@ package com.kaem.flux.data.source
 
 import android.content.ContentUris
 import android.content.Context
+import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
 import com.kaem.flux.model.FileSource
@@ -91,6 +92,30 @@ class LocalFilesDataSource(
         withContext(Dispatchers.Default) { delay(2000) }
 
         return files
+
+    }
+
+    override suspend fun checkIfFileExists(path: String): Boolean {
+
+        val columns = arrayOf(MediaStore.Video.Media._ID)
+        var result = true
+
+        withContext(Dispatchers.Default) {
+
+            val cursor = context.contentResolver.query(
+                Uri.parse(path),
+                columns, // Empty projections are bad for performance
+                null,
+                null,
+                null)
+
+            result = cursor?.moveToFirst() ?: false
+
+            cursor?.close()
+
+        }
+
+        return result
 
     }
 }

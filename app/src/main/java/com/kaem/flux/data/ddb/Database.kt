@@ -65,17 +65,14 @@ interface FluxDao {
     @Query("SELECT * FROM episodeentity WHERE showId LIKE :showId")
     suspend fun getEpisodesFor(showId: Int) : List<EpisodeEntity>
 
-    @Delete
-    suspend fun deleteMovie(fluxMovie: MovieEntity)
+    @Query("DELETE FROM movieentity WHERE id IN (:ids)")
+    suspend fun deleteMovies(ids: List<Int>)
 
-    @Delete
-    suspend fun deleteShow(fluxShow: ShowEntity)
+    @Query("DELETE FROM showentity WHERE id IN (:ids)")
+    suspend fun deleteShows(ids: List<Int>)
 
-    @Query("DELETE FROM EpisodeEntity WHERE showId LIKE :showId")
-    suspend fun deleteEpisodesForShow(showId: Int)
-
-    @Delete
-    suspend fun deleteEpisode(fluxEpisode: EpisodeEntity)
+    @Query("DELETE FROM episodeentity WHERE id IN (:ids)")
+    suspend fun deleteEpisodes(ids: List<Int>)
 
 }
 
@@ -231,6 +228,18 @@ class DatabaseManager(
 
         return episodes
 
+    }
+
+    suspend fun deleteMovies(ids: List<Int>) {
+        withContext(Dispatchers.IO) { fluxDao.deleteMovies(ids) }
+    }
+
+    suspend fun deleteShows(ids: List<Int>) {
+        withContext(Dispatchers.IO) { fluxDao.deleteShows(ids) }
+    }
+
+    suspend fun deleteEpisodes(ids: List<Int>) {
+        withContext(Dispatchers.IO) { fluxDao.deleteEpisodes(ids) }
     }
 
 }

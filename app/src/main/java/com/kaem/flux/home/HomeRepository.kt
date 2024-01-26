@@ -19,6 +19,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
+import java.io.File
 import javax.inject.Inject
 
 class HomeRepository @Inject constructor(
@@ -39,6 +40,8 @@ class HomeRepository @Inject constructor(
     suspend fun getLibrary() : Flow<Result<List<FluxArtworkSummary>>> = flow {
 
         getFromDatabase()
+
+        cleanDatabase()
 
         getFromTMDB()
 
@@ -95,6 +98,51 @@ class HomeRepository @Inject constructor(
             }
 
         }
+
+    }
+
+    private suspend fun cleanDatabase() {
+
+        val episodesToRemove = arrayListOf<FluxEpisode>()
+        val moviesToRemove = arrayListOf<FluxMovie>()
+        val showsToRemove = arrayListOf<FluxShow>()
+
+        dbEpisodes.forEach {
+
+            if (!localFilesDataSource.checkIfFileExists(it.file.path))
+                episodesToRemove.add(it)
+
+        }
+
+        dbEpisodes.removeAll(episodesToRemove.toSet())
+
+        dbArtworks.filterIsInstance<FluxMovie>().forEach {
+
+            if (!localFilesDataSource.checkIfFileExists(it.file.path))
+                moviesToRemove.add(it)
+
+        }
+
+        dbArtworks.filterIsInstance<FluxShow>().forEach { show ->
+
+            if (dbEpisodes.none { it.showId == show.id })
+                showsToRemove.add(show)
+
+        }
+
+        dbArtworks.removeAll(showsToRemove.toSet())
+        dbArtworks.removeAll(showsToRemove.toSet())
+
+        coroutineScope {
+
+            launch { databaseManager.deleteMovies(moviesToRemove.map { it.id }) }
+
+            launch { databaseManager.deleteShows(showsToRemove.map { it.id }) }
+
+            launch { databaseManager.deleteEpisodes(episodesToRemove.map { it.id }) }
+
+        }
+
 
     }
 

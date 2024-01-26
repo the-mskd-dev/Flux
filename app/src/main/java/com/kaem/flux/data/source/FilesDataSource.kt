@@ -6,4 +6,6 @@ interface FilesDataSource {
 
     suspend fun getFiles() : List<UserFile>
 
+    suspend fun checkIfFileExists(path: String) : Boolean
+
 }

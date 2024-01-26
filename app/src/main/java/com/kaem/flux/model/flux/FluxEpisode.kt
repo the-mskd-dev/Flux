@@ -10,23 +10,21 @@ import com.kaem.flux.model.tmdb.TMDBEpisode
 import com.kaem.flux.utils.parseTMDBDate
 import java.util.Date
 
-@Entity
 data class FluxEpisode(
-    @PrimaryKey val id: Int,
-    @ColumnInfo val showId: Int,
-    @ColumnInfo val title: String,
-    @ColumnInfo val number: Int,
-    @ColumnInfo val season: Int,
-    @ColumnInfo val imagePath: String,
-    @ColumnInfo val releaseDateString: String,
-    //@ColumnInfo val crew: List<TMDBCrew>,
-    @ColumnInfo override val description: String,
-    @ColumnInfo override val duration: Int,
-    @ColumnInfo override val voteAverage: Float,
-    @ColumnInfo override val voteCount: Int,
-    @ColumnInfo override var isWatched: Boolean = false,
-    @ColumnInfo override val fileName: String,
-    @ColumnInfo override val filePath: String
+    val id: Int,
+    val showId: Int,
+    val title: String,
+    val number: Int,
+    val season: Int,
+    val imagePath: String,
+    val releaseDateString: String,
+    val crew: List<TMDBCrew>,
+    override val description: String,
+    override val duration: Int,
+    override val voteAverage: Float,
+    override val voteCount: Int,
+    override var isWatched: Boolean = false,
+    override val file: FileSource
 ) : FluxArtwork {
 
     @Transient
@@ -45,16 +43,12 @@ data class FluxEpisode(
         season = tmdbEpisode.season,
         imagePath = tmdbEpisode.imagePath,
         releaseDateString = tmdbEpisode.releaseDateString,
-        //crew = tmdbEpisode.crew,
+        crew = tmdbEpisode.crew,
         description = tmdbEpisode.description,
         duration = tmdbEpisode.duration,
         voteAverage = tmdbEpisode.voteAverage,
         voteCount = tmdbEpisode.voteCount,
         isWatched = false,
-        fileName = file.name,
-        filePath = when (file) {
-            is FileSource.Local -> file.uri.toString()
-            is FileSource.GDrive -> file.path
-        }
+        file = file
     )
 }

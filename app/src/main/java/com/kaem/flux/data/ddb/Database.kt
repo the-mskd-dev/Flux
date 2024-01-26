@@ -10,54 +10,228 @@ import androidx.room.OnConflictStrategy
 import androidx.room.PrimaryKey
 import androidx.room.Query
 import androidx.room.RoomDatabase
+import com.google.gson.Gson
+import com.kaem.flux.model.flux.FluxArtwork
+import com.kaem.flux.model.flux.FluxArtworkSummary
 import com.kaem.flux.model.flux.FluxEpisode
 import com.kaem.flux.model.flux.FluxMovie
 import com.kaem.flux.model.flux.FluxShow
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+
+@Entity
+data class MovieEntity(
+    @PrimaryKey val id: Int,
+    @ColumnInfo val content: String
+)
+
+@Entity
+data class ShowEntity(
+    @PrimaryKey val id: Int,
+    @ColumnInfo val content: String
+)
+
+@Entity
+data class EpisodeEntity(
+    @PrimaryKey val id: Int,
+    @ColumnInfo val showId: Int,
+    @ColumnInfo val content: String
+)
 
 @Dao
 interface FluxDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertMovie(movie: FluxMovie)
+    suspend fun insertMovies(movies: List<MovieEntity>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertShow(show: FluxShow)
+    suspend fun insertShows(shows: List<ShowEntity>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertEpisode(episode: FluxEpisode)
+    suspend fun insertEpisodes(episodes: List<EpisodeEntity>)
 
-    @Query("SELECT * FROM fluxmovie")
-    suspend fun getMovies() : List<FluxMovie>
+    @Query("SELECT * FROM movieentity")
+    suspend fun getMovies() : List<MovieEntity>
 
-    @Query("SELECT * FROM fluxshow")
-    suspend fun getShows() : List<FluxShow>
+    @Query("SELECT * FROM showentity")
+    suspend fun getShows() : List<ShowEntity>
 
-    @Query("SELECT * FROM fluxepisode")
-    suspend fun getEpisodes() : List<FluxEpisode>
+    @Query("SELECT * FROM EpisodeEntity")
+    suspend fun getEpisodes() : List<EpisodeEntity>
 
-    @Query("SELECT * FROM fluxepisode WHERE showId LIKE :showId")
-    suspend fun getEpisodesFor(showId: Int) : List<FluxEpisode>
-
-    @Delete
-    suspend fun deleteMovie(fluxMovie: FluxMovie)
+    @Query("SELECT * FROM episodeentity WHERE showId LIKE :showId")
+    suspend fun getEpisodesFor(showId: Int) : List<EpisodeEntity>
 
     @Delete
-    suspend fun deleteShow(fluxShow: FluxShow)
+    suspend fun deleteMovie(fluxMovie: MovieEntity)
 
-    @Query("DELETE FROM fluxepisode WHERE showId LIKE :showId")
+    @Delete
+    suspend fun deleteShow(fluxShow: ShowEntity)
+
+    @Query("DELETE FROM EpisodeEntity WHERE showId LIKE :showId")
     suspend fun deleteEpisodesForShow(showId: Int)
 
     @Delete
-    suspend fun deleteEpisode(fluxEpisode: FluxEpisode)
+    suspend fun deleteEpisode(fluxEpisode: EpisodeEntity)
 
 }
 
 @Database(entities = [
-    FluxMovie::class,
-    FluxShow::class,
-    FluxEpisode::class
+    MovieEntity::class,
+    ShowEntity::class,
+    EpisodeEntity::class
  ], version = 1)
 abstract class FluxDatabase : RoomDatabase() {
     abstract fun fluxDao(): FluxDao
+
+}
+
+class DatabaseManager(
+    val gson: Gson,
+    val fluxDao: FluxDao
+) {
+
+    suspend fun saveArtworks(artworks: List<FluxArtworkSummary>) {
+
+        val movies = artworks.filterIsInstance<FluxMovie>()
+        val shows = artworks.filterIsInstance<FluxShow>()
+
+        withContext(Dispatchers.Default) {
+
+            launch {
+
+                val movieEntities = movies.map {
+
+                    val content = gson.toJson(it)
+
+                    MovieEntity(
+                        id = it.id,
+                        content = content
+                    )
+
+                }
+
+                withContext(Dispatchers.IO) { fluxDao.insertMovies(movieEntities) }
+
+            }
+
+
+
+            launch {
+
+                val showEntities = shows.map {
+
+                    val content = gson.toJson(it)
+
+                    ShowEntity(
+                        id = it.id,
+                        content = content
+                    )
+
+                }
+
+                withContext(Dispatchers.IO) { fluxDao.insertShows(showEntities) }
+
+            }
+
+        }
+
+    }
+
+    suspend fun saveEpisodes(episodes: List<FluxEpisode>) {
+
+        val episodeEntities = episodes.map {
+
+            val content = withContext(Dispatchers.Default) { gson.toJson(it) }
+
+            EpisodeEntity(
+                id = it.id,
+                showId = it.showId,
+                content = content
+            )
+
+        }
+
+        withContext(Dispatchers.IO) { fluxDao.insertEpisodes(episodeEntities) }
+
+    }
+
+    suspend fun getAllArtworks() : List<FluxArtworkSummary> {
+
+        var movies = listOf<FluxMovie>()
+        var shows = listOf<FluxShow>()
+
+        coroutineScope {
+
+            launch {
+
+                val movieEntities = withContext(Dispatchers.IO) { fluxDao.getMovies() }
+
+                movies = movieEntities.map {
+
+                    async {
+
+                        withContext(Dispatchers.Default) { gson.fromJson(it.content, FluxMovie::class.java) }
+
+                    }
+
+                }.awaitAll()
+
+            }
+
+
+            launch {
+
+                val showEntities = withContext(Dispatchers.IO) { fluxDao.getShows() }
+
+                shows = showEntities.map {
+
+                    async {
+
+                        withContext(Dispatchers.Default) { gson.fromJson(it.content, FluxShow::class.java) }
+
+                    }
+
+                }.awaitAll()
+
+            }
+
+        }
+
+        return movies + shows
+
+    }
+
+    suspend fun getAllEpisodes() : List<FluxEpisode> {
+
+        var episodes = listOf<FluxEpisode>()
+
+        coroutineScope {
+
+            launch {
+
+                val episodeEntities = withContext(Dispatchers.IO) { fluxDao.getEpisodes() }
+
+                episodes = episodeEntities.map {
+
+                    async {
+
+                        withContext(Dispatchers.Default) { gson.fromJson(it.content, FluxEpisode::class.java) }
+
+                    }
+
+                }.awaitAll()
+
+            }
+
+        }
+
+        return episodes
+
+    }
 
 }

@@ -16,6 +16,5 @@ interface FluxArtwork {
     val voteCount: Int
     val duration: Int
     var isWatched: Boolean
-    val fileName: String
-    val filePath: String
+    val file: FileSource
 }

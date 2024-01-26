@@ -257,7 +257,7 @@ class HomeRepository @Inject constructor(
         file: FileSource
     ) {
 
-        if (tmdbArtwork == null || tmdbEpisodes.any { it.fileName == file.name })
+        if (tmdbArtwork == null || tmdbEpisodes.any { it.file.name == file.name })
             return
 
         val tmdbEpisode = tmdbService.getEpisode(

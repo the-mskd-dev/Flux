@@ -1,5 +1,6 @@
 package com.kaem.flux.home
 
+import android.util.Log
 import com.kaem.flux.data.ddb.DatabaseManager
 import com.kaem.flux.data.source.FilesDataSource
 import com.kaem.flux.data.tmdb.TMDBService
@@ -39,15 +40,36 @@ class HomeRepository @Inject constructor(
 
     suspend fun getLibrary() : Flow<Result<List<FluxArtworkSummary>>> = flow {
 
+        val zero = System.currentTimeMillis()
+
         getFromDatabase()
+
+        val one = (System.currentTimeMillis() - zero) / 1000F
+
+        val two = System.currentTimeMillis()
 
         cleanDatabase()
 
+        val three = (System.currentTimeMillis() - two) / 1000F
+
+        val four = System.currentTimeMillis()
+
         getFromTMDB()
+
+        val five = (System.currentTimeMillis() - four) / 1000F
+
+        val six = System.currentTimeMillis()
 
         emit(Result.success(dbArtworks + tmdbArtworks))
 
         saveInDatabase()
+
+        val seven = (System.currentTimeMillis() - six) / 1000F
+
+        Log.d("TEST", "getFromDatabase : $one ms")
+        Log.d("TEST", "cleanDatabase : $three ms")
+        Log.d("TEST", "getFromTMDB : $five ms")
+        Log.d("TEST", "saveInDatabase : $seven ms")
 
     }
 

@@ -48,7 +48,7 @@ class HomeRepository @Inject constructor(
 
     }
 
-    fun getEpisodes(show: FluxShow) : List<FluxEpisode> {
+    fun getEpisodes() : List<FluxEpisode> {
         return (dbEpisodes + tmdbEpisodes)
     }
 

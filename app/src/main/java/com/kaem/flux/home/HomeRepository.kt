@@ -42,13 +42,7 @@ class HomeRepository @Inject constructor(
 
         getFromDatabase()
 
-        Log.d("TEST", "artworks from db : ${dbArtworks.size}")
-        Log.d("TEST", "episodes from db : ${dbEpisodes.size}")
-
         getFromTMDB()
-
-        Log.d("TEST", "artworks from tmdb : ${tmdbArtworks.size}")
-        Log.d("TEST", "episodes from tmdb : ${tmdbEpisodes.size}")
 
         emit(Result.success(dbArtworks + tmdbArtworks))
 

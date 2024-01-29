@@ -4,16 +4,19 @@ import com.kaem.flux.model.tmdb.TMDBArtwork
 import com.kaem.flux.utils.parseTMDBDate
 import java.util.Date
 
-data class FluxShow(
-    override val id: Int,
-    override val title: String,
-    override val imagePath: String,
-    override val bannerPath: String,
-    override val releaseDateString: String
-) : FluxArtworkSummary {
-
-    @Transient
-    val releaseDate: Date? = releaseDateString.parseTMDBDate()
+class FluxShow(
+    id: Int,
+    title: String,
+    imagePath: String,
+    bannerPath: String,
+    releaseDateString: String
+) : FluxArtworkSummary(
+    id = id,
+    title = title,
+    imagePath = imagePath,
+    bannerPath = bannerPath,
+    releaseDateString = releaseDateString
+) {
 
     constructor(tmdbArtwork: TMDBArtwork) : this(
         id = tmdbArtwork.id,

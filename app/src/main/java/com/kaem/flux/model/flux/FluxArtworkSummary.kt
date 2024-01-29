@@ -1,13 +1,19 @@
 package com.kaem.flux.model.flux
 
 import com.kaem.flux.model.UserFile
+import com.kaem.flux.utils.parseTMDBDate
+import java.util.Date
 
-interface FluxArtworkSummary {
-    val id: Int
-    val title: String
-    val imagePath: String
-    val bannerPath: String
-    val releaseDateString: String
+abstract class FluxArtworkSummary(
+    val id: Int,
+    val title: String,
+    val imagePath: String,
+    val bannerPath: String,
+    val releaseDateString: String,
+) {
+
+    val releaseDate: Date? get() = releaseDateString.parseTMDBDate()
+
 }
 
 interface FluxArtwork {

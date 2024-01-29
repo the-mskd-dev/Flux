@@ -5,12 +5,12 @@ import com.kaem.flux.model.tmdb.TMDBMovie
 import com.kaem.flux.utils.parseTMDBDate
 import java.util.Date
 
-data class FluxMovie(
-    override val id: Int,
-    override val title: String,
-    override val imagePath: String,
-    override val bannerPath: String,
-    override val releaseDateString: String,
+class FluxMovie(
+    id: Int,
+    title: String,
+    imagePath: String,
+    bannerPath: String,
+    releaseDateString: String,
     override val description: String,
     override val voteAverage: Float,
     override val voteCount: Int,
@@ -18,10 +18,13 @@ data class FluxMovie(
     override var isWatched: Boolean = false,
     override val file: UserFile,
     val genres: List<String> = listOf(),
-) : FluxArtworkSummary, FluxArtwork {
-
-    @Transient
-    val releaseDate: Date? = releaseDateString.parseTMDBDate()
+) : FluxArtworkSummary(
+    id = id,
+    title = title,
+    imagePath = imagePath,
+    bannerPath = bannerPath,
+    releaseDateString = releaseDateString
+), FluxArtwork {
 
     constructor(
         tmdbMovie: TMDBMovie,

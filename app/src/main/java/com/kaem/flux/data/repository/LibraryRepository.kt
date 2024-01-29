@@ -36,7 +36,7 @@ class LibraryRepository @Inject constructor(
     private val tmdbEpisodesMutex = Mutex()
     private val tmdbEpisodes = arrayListOf<FluxEpisode>()
 
-    suspend fun getLibrary() : Flow<Result<List<FluxArtworkSummary>>> = flow {
+    fun getLibrary() : Flow<List<FluxArtworkSummary>> = flow {
 
         getFromDatabase()
 
@@ -44,9 +44,12 @@ class LibraryRepository @Inject constructor(
 
         getFromTMDB()
 
-        emit(Result.success(dbArtworks + tmdbArtworks))
+        saveInDatabase(
+            artworks = tmdbArtworks,
+            episodes = tmdbEpisodes
+        )
 
-        saveInDatabase()
+        emit(dbArtworks + tmdbArtworks)
 
     }
 
@@ -80,19 +83,22 @@ class LibraryRepository @Inject constructor(
 
     }
 
-    private suspend fun saveInDatabase() {
+    private suspend fun saveInDatabase(
+        artworks: List<FluxArtworkSummary>,
+        episodes: List<FluxEpisode>
+    ) {
 
-        coroutineScope {
+        withContext(Dispatchers.Default) {
 
             launch {
 
-                databaseManager.saveArtworks(tmdbArtworks)
+                databaseManager.saveArtworks(artworks)
 
             }
 
             launch {
 
-                databaseManager.saveEpisodes(tmdbEpisodes)
+                databaseManager.saveEpisodes(episodes)
 
             }
 

@@ -1,10 +1,13 @@
 package com.kaem.flux.home
 
 import android.util.Log
+import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.kaem.flux.data.repository.DataStoreRepository
 import com.kaem.flux.data.repository.LibraryRepository
+import com.kaem.flux.data.repository.SortOrder
 import com.kaem.flux.model.flux.FluxArtworkSummary
 import com.kaem.flux.model.flux.FluxEpisode
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,7 +22,8 @@ import javax.inject.Inject
 data class LibraryUiState(
     val isLoading: Boolean = true,
     val artworks: List<FluxArtworkSummary> = emptyList(),
-    val episodes: List<FluxEpisode> = emptyList()
+    val episodes: List<FluxEpisode> = emptyList(),
+    val sortOrder: SortOrder = SortOrder.RELEASE_DATE
 )
 
 @HiltViewModel
@@ -34,7 +38,35 @@ class LibraryViewModel @Inject constructor(
 
     private val libraryPreferencesFlow = dataStoreRepository.preferencesFlow
 
-    init {
+    private val libraryUiStateFlow = combine(
+        repository.getLibrary(),
+        libraryPreferencesFlow
+    ) { artworks, preferences ->
+        return@combine LibraryUiState(
+            artworks = sortedArtworks(artworks = artworks, sortOrder = preferences.sortOrder),
+            episodes = repository.getEpisodes(),
+            isLoading = false,
+            sortOrder = preferences.sortOrder
+        )
+    }
+    val libraryUiState = libraryUiStateFlow.asLiveData()
+
+    private fun sortedArtworks(
+        artworks: List<FluxArtworkSummary>,
+        sortOrder: SortOrder
+    ) : List<FluxArtworkSummary> {
+
+        return when (sortOrder) {
+            SortOrder.NAME -> artworks.sortedBy { it.title }
+            SortOrder.RELEASE_DATE -> artworks.sortedByDescending { it.releaseDate }
+        }
+
+    }
+
+    fun applySort(sortOrder: SortOrder) {
+        viewModelScope.launch { dataStoreRepository.updateSortOrder(sortOrder) }
+    }
+    /*init {
         refreshFiles()
     }
 
@@ -63,8 +95,6 @@ class LibraryViewModel @Inject constructor(
 
         }
 
-    }
-
-
+    }*/
 
 }

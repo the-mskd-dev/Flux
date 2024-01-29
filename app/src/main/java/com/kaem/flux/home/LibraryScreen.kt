@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,6 +26,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,6 +42,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.kaem.flux.R
+import com.kaem.flux.data.repository.SortOrder
 import com.kaem.flux.model.flux.FluxArtworkSummary
 import com.kaem.flux.ui.component.FluxButton
 import com.kaem.flux.utils.Constants
@@ -48,21 +51,24 @@ import com.kaem.flux.utils.Constants
 fun LibraryScreen() {
 
     val viewModel = viewModel<LibraryViewModel>()
-    val state by viewModel.uiState.collectAsState()
+    //val state by viewModel.uiState.collectAsState()
+    val uiState by viewModel.libraryUiState.observeAsState()
 
     Crossfade(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
-        targetState = state.isLoading,
+        targetState = uiState?.isLoading ?: true,
         label = "HomeScreenAnimation"
     ) {
 
         when (it) {
 
             true -> LibraryLoading()
-            false -> LibraryContent(artworks = state.artworks)
-
+            false -> LibraryContent(
+                artworks = uiState?.artworks.orEmpty(),
+                onSortButtonTap = { s -> viewModel.applySort(s) }
+            )
 
         }
         
@@ -88,7 +94,10 @@ fun LibraryLoading() {
 }
 
 @Composable
-fun LibraryContent(artworks: List<FluxArtworkSummary>) {
+fun LibraryContent(
+    artworks: List<FluxArtworkSummary>,
+    onSortButtonTap: (SortOrder) -> Unit
+) {
 
     if (artworks.isEmpty()) {
 
@@ -128,6 +137,26 @@ fun LibraryContent(artworks: List<FluxArtworkSummary>) {
 
             }
 
+            item(span = { GridItemSpan(3) }) {
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+
+                    FluxButton(text = "Par nom") {
+                        onSortButtonTap(SortOrder.NAME)
+                    }
+
+                    FluxButton(text = "Par date") {
+                        onSortButtonTap(SortOrder.RELEASE_DATE)
+                    }
+
+                }
+
+            }
+
             items(artworks) {
 
                 LibraryArtwork(artworkSummary = it)
@@ -158,7 +187,7 @@ fun LibraryArtwork(artworkSummary: FluxArtworkSummary) {
         modifier = Modifier
             .clip(RoundedCornerShape(8.dp))
             .fillMaxWidth()
-            .aspectRatio(2f/3f),
+            .aspectRatio(2f / 3f),
         model = Constants.TMDB.IMAGE_SMALL + artworkSummary.imagePath,
         contentDescription = artworkSummary.title,
         loading = placeholder(ColorPainter(Color.LightGray))
@@ -180,7 +209,7 @@ fun LibraryPermissionButton(viewModel: LibraryViewModel = viewModel()) {
         onPermissionResult = { result ->
 
             if (result) {
-                viewModel.refreshFiles()
+                //viewModel.refreshFiles()
             }
 
         }

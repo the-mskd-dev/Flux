@@ -35,7 +35,7 @@ class HomeViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
-    init { test(); refreshFiles() }
+    init { refreshFiles() }
 
     fun refreshFiles() = viewModelScope.launch {
 
@@ -58,28 +58,6 @@ class HomeViewModel @Inject constructor(
                     isLoading = false
                 )
 
-            }
-
-        }
-
-    }
-
-    fun test() {
-
-        val EXAMPLE_COUNTER = intPreferencesKey("example_counter")
-
-        viewModelScope.launch {
-
-            val test = dataStore.data.map {
-                it[EXAMPLE_COUNTER] ?: 0
-            }
-
-            test.collect {
-                Log.d("TEST", "test : $it")
-            }
-
-            dataStore.edit {
-                it[EXAMPLE_COUNTER] = 2809
             }
 
         }

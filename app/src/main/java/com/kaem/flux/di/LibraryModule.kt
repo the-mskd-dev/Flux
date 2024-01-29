@@ -2,7 +2,7 @@ package com.kaem.flux.di
 
 import com.kaem.flux.data.ddb.DatabaseManager
 import com.kaem.flux.data.repository.LibraryRepository
-import com.kaem.flux.data.source.FilesDataSource
+import com.kaem.flux.data.source.file.FilesDataSource
 import com.kaem.flux.data.tmdb.TMDBService
 import dagger.Module
 import dagger.Provides

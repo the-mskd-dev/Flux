@@ -2,7 +2,16 @@ package com.kaem.flux.data.repository
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.intPreferencesKey
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
+
+
+data class HomePreferences(
+    val sortOrder: SortOrder = SortOrder.ADDED_DATE
+)
 
 enum class SortOrder {
     NAME,
@@ -11,4 +20,16 @@ enum class SortOrder {
 }
 
 class DataStoreRepository @Inject constructor(private val dataStore: DataStore<Preferences>) {
+
+    private object PreferencesKeys {
+        val SORT_ORDER = intPreferencesKey("sort_order")
+    }
+
+    val preferencesFlow: Flow<HomePreferences> = dataStore.data.map {
+        val sortOrderOrdinal = it[PreferencesKeys.SORT_ORDER] ?: SortOrder.ADDED_DATE.ordinal
+        HomePreferences(
+            sortOrder = SortOrder.entries[sortOrderOrdinal]
+        )
+    }
+
 }

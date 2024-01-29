@@ -1,7 +1,10 @@
 package com.kaem.flux.home
 
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kaem.flux.model.flux.FluxArtworkSummary
@@ -10,6 +13,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -30,7 +35,7 @@ class HomeViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
-    init { refreshFiles() }
+    init { test(); refreshFiles() }
 
     fun refreshFiles() = viewModelScope.launch {
 
@@ -53,6 +58,28 @@ class HomeViewModel @Inject constructor(
                     isLoading = false
                 )
 
+            }
+
+        }
+
+    }
+
+    fun test() {
+
+        val EXAMPLE_COUNTER = intPreferencesKey("example_counter")
+
+        viewModelScope.launch {
+
+            val test = dataStore.data.map {
+                it[EXAMPLE_COUNTER] ?: 0
+            }
+
+            test.collect {
+                Log.d("TEST", "test : $it")
+            }
+
+            dataStore.edit {
+                it[EXAMPLE_COUNTER] = 2809
             }
 
         }

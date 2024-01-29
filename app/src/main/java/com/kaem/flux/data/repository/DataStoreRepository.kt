@@ -11,13 +11,13 @@ import javax.inject.Inject
 
 
 data class HomePreferences(
-    val sortOrder: SortOrder = SortOrder.ADDED_DATE
+    val sortOrder: SortOrder = SortOrder.RELEASE_DATE
 )
 
 enum class SortOrder {
     NAME,
     RELEASE_DATE,
-    ADDED_DATE
+    //ADDED_DATE
 }
 
 class DataStoreRepository @Inject constructor(private val dataStore: DataStore<Preferences>) {
@@ -27,7 +27,7 @@ class DataStoreRepository @Inject constructor(private val dataStore: DataStore<P
     }
 
     val preferencesFlow: Flow<HomePreferences> = dataStore.data.map {
-        val sortOrderOrdinal = it[PreferencesKeys.SORT_ORDER] ?: SortOrder.ADDED_DATE.ordinal
+        val sortOrderOrdinal = it[PreferencesKeys.SORT_ORDER] ?: SortOrder.RELEASE_DATE.ordinal
         HomePreferences(
             sortOrder = SortOrder.entries[sortOrderOrdinal]
         )

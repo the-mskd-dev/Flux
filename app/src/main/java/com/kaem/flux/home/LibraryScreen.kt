@@ -209,7 +209,7 @@ fun LibraryPermissionButton(viewModel: LibraryViewModel = viewModel()) {
         onPermissionResult = { result ->
 
             if (result) {
-                //viewModel.refreshFiles()
+                viewModel.getLibrary()
             }
 
         }
@@ -222,6 +222,8 @@ fun LibraryPermissionButton(viewModel: LibraryViewModel = viewModel()) {
             onClick = { permissionsState.launchPermissionRequest() }
         )
 
+    } else {
+        viewModel.getLibrary()
     }
 
 }

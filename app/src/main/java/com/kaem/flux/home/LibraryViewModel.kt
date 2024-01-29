@@ -39,7 +39,7 @@ class LibraryViewModel @Inject constructor(
     private val libraryPreferencesFlow = dataStoreRepository.preferencesFlow
 
     private val libraryUiStateFlow = combine(
-        repository.getLibrary(),
+        repository.artworks,
         libraryPreferencesFlow
     ) { artworks, preferences ->
         return@combine LibraryUiState(
@@ -65,6 +65,12 @@ class LibraryViewModel @Inject constructor(
 
     fun applySort(sortOrder: SortOrder) {
         viewModelScope.launch { dataStoreRepository.updateSortOrder(sortOrder) }
+    }
+
+    fun getLibrary() {
+        viewModelScope.launch {
+            repository.getLibrary()
+        }
     }
     /*init {
         refreshFiles()

@@ -14,6 +14,9 @@ import com.kaem.flux.model.tmdb.TMDBMediaType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
@@ -36,7 +39,10 @@ class LibraryRepository @Inject constructor(
     private val tmdbEpisodesMutex = Mutex()
     private val tmdbEpisodes = arrayListOf<FluxEpisode>()
 
-    fun getLibrary() : Flow<List<FluxArtworkSummary>> = flow {
+    private val _artworks = MutableStateFlow<List<FluxArtworkSummary>>(emptyList())
+    val artworks: StateFlow<List<FluxArtworkSummary>> = _artworks.asStateFlow()
+
+    suspend fun getLibrary() {
 
         getFromDatabase()
 
@@ -45,11 +51,11 @@ class LibraryRepository @Inject constructor(
         getFromTMDB()
 
         saveInDatabase(
-            artworks = tmdbArtworks,
-            episodes = tmdbEpisodes
+            artworks = tmdbArtworks.toList(),
+            episodes = tmdbEpisodes.toList()
         )
 
-        emit(dbArtworks + tmdbArtworks)
+        _artworks.value = dbArtworks + tmdbArtworks
 
     }
 

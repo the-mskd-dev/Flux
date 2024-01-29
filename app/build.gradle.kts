@@ -89,7 +89,7 @@ dependencies {
     implementation("com.github.bumptech.glide:compose:1.0.0-beta01")
 
     // DataStore
-    val datastoreVersion = "2.6.1"
+    val datastoreVersion = "1.0.0"
     implementation("androidx.datastore:datastore-preferences:$datastoreVersion")
     implementation("androidx.datastore:datastore-preferences-rxjava2:$datastoreVersion")
     implementation("androidx.datastore:datastore-preferences-rxjava3:$datastoreVersion")

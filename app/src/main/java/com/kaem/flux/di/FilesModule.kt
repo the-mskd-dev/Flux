@@ -13,7 +13,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object AppModule {
+object FilesModule {
 
     @Qualifier
     @Retention(AnnotationRetention.RUNTIME)

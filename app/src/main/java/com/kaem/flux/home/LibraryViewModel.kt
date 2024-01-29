@@ -40,11 +40,12 @@ class LibraryViewModel @Inject constructor(
 
     private val libraryUiStateFlow = combine(
         repository.artworks,
+        repository.episodes,
         libraryPreferencesFlow
-    ) { artworks, preferences ->
+    ) { artworks, episodes, preferences ->
         return@combine LibraryUiState(
             artworks = sortedArtworks(artworks = artworks, sortOrder = preferences.sortOrder),
-            episodes = repository.getEpisodes(),
+            episodes = episodes,
             isLoading = false,
             sortOrder = preferences.sortOrder
         )

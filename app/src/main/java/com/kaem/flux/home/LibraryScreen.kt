@@ -45,9 +45,9 @@ import com.kaem.flux.ui.component.FluxButton
 import com.kaem.flux.utils.Constants
 
 @Composable
-fun HomeScreen() {
+fun LibraryScreen() {
 
-    val viewModel = viewModel<HomeViewModel>()
+    val viewModel = viewModel<LibraryViewModel>()
     val state by viewModel.uiState.collectAsState()
 
     Crossfade(
@@ -60,8 +60,8 @@ fun HomeScreen() {
 
         when (it) {
 
-            true -> HomeLoading()
-            false -> HomeContent(artworks = state.artworks)
+            true -> LibraryLoading()
+            false -> LibraryContent(artworks = state.artworks)
 
 
         }
@@ -72,7 +72,7 @@ fun HomeScreen() {
 }
 
 @Composable
-fun HomeLoading() {
+fun LibraryLoading() {
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -88,7 +88,7 @@ fun HomeLoading() {
 }
 
 @Composable
-fun HomeContent(artworks: List<FluxArtworkSummary>) {
+fun LibraryContent(artworks: List<FluxArtworkSummary>) {
 
     if (artworks.isEmpty()) {
 
@@ -103,7 +103,7 @@ fun HomeContent(artworks: List<FluxArtworkSummary>) {
                 color = MaterialTheme.colorScheme.primary
             )
 
-            HomePermissionButton()
+            LibraryPermissionButton()
 
         }
 
@@ -130,7 +130,7 @@ fun HomeContent(artworks: List<FluxArtworkSummary>) {
 
             items(artworks) {
 
-                HomeArtwork(artworkSummary = it)
+                LibraryArtwork(artworkSummary = it)
 
             }
 
@@ -152,7 +152,7 @@ fun HomeContent(artworks: List<FluxArtworkSummary>) {
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun HomeArtwork(artworkSummary: FluxArtworkSummary) {
+fun LibraryArtwork(artworkSummary: FluxArtworkSummary) {
 
     GlideImage(
         modifier = Modifier
@@ -168,7 +168,7 @@ fun HomeArtwork(artworkSummary: FluxArtworkSummary) {
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun HomePermissionButton(viewModel: HomeViewModel = viewModel()) {
+fun LibraryPermissionButton(viewModel: LibraryViewModel = viewModel()) {
 
     val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
         android.Manifest.permission.READ_MEDIA_VIDEO

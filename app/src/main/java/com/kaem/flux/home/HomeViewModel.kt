@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kaem.flux.data.DataStoreRepository
 import com.kaem.flux.model.flux.FluxArtworkSummary
 import com.kaem.flux.model.flux.FluxEpisode
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,7 +29,7 @@ data class HomeUiState(
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val repository: HomeRepository,
-    private val dataStore: DataStore<Preferences>
+    private val dataStoreRepository: DataStoreRepository
 ): ViewModel() {
 
 

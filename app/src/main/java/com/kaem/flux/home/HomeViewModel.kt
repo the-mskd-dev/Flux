@@ -1,5 +1,7 @@
 package com.kaem.flux.home
 
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kaem.flux.model.flux.FluxArtworkSummary
@@ -20,7 +22,8 @@ data class HomeUiState(
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val repository: HomeRepository
+    private val repository: HomeRepository,
+    private val dataStore: DataStore<Preferences>
 ): ViewModel() {
 
 

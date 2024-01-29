@@ -5,7 +5,7 @@ import com.kaem.flux.data.ddb.DatabaseManager
 import com.kaem.flux.data.source.FilesDataSource
 import com.kaem.flux.data.source.LocalFilesDataSource
 import com.kaem.flux.data.tmdb.TMDBService
-import com.kaem.flux.home.HomeRepository
+import com.kaem.flux.data.repository.HomeRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

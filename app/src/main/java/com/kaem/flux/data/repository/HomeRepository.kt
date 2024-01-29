@@ -1,6 +1,5 @@
-package com.kaem.flux.home
+package com.kaem.flux.data.repository
 
-import android.util.Log
 import com.kaem.flux.data.ddb.DatabaseManager
 import com.kaem.flux.data.source.FilesDataSource
 import com.kaem.flux.data.tmdb.TMDBService
@@ -20,7 +19,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
-import java.io.File
 import javax.inject.Inject
 
 class HomeRepository @Inject constructor(

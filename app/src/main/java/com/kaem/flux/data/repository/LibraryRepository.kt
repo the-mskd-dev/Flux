@@ -21,7 +21,7 @@ import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class HomeRepository @Inject constructor(
+class LibraryRepository @Inject constructor(
     private val localFilesDataSource: FilesDataSource,
     private val tmdbService: TMDBService,
     private val databaseManager: DatabaseManager

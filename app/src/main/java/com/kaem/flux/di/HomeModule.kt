@@ -1,7 +1,7 @@
 package com.kaem.flux.di
 
 import com.kaem.flux.data.ddb.DatabaseManager
-import com.kaem.flux.data.repository.HomeRepository
+import com.kaem.flux.data.repository.LibraryRepository
 import com.kaem.flux.data.source.FilesDataSource
 import com.kaem.flux.data.tmdb.TMDBService
 import dagger.Module
@@ -16,11 +16,11 @@ object HomeModule {
 
     @Provides
     @Singleton
-    fun provideHomeRepository(
+    fun provideLibraryRepository(
         @AppModule.LocalFilesDataSource localFilesDataSource: FilesDataSource,
         tmdbService: TMDBService,
         databaseManager: DatabaseManager
-    ) : HomeRepository = HomeRepository(
+    ) : LibraryRepository = LibraryRepository(
         localFilesDataSource = localFilesDataSource,
         tmdbService = tmdbService,
         databaseManager = databaseManager

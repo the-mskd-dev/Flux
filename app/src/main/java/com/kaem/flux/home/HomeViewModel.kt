@@ -3,7 +3,7 @@ package com.kaem.flux.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kaem.flux.data.repository.DataStoreRepository
-import com.kaem.flux.data.repository.HomeRepository
+import com.kaem.flux.data.repository.LibraryRepository
 import com.kaem.flux.model.flux.FluxArtworkSummary
 import com.kaem.flux.model.flux.FluxEpisode
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,7 +22,7 @@ data class HomeUiState(
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val repository: HomeRepository,
+    private val repository: LibraryRepository,
     private val dataStoreRepository: DataStoreRepository
 ): ViewModel() {
 

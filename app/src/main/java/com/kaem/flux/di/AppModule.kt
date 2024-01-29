@@ -31,21 +31,3 @@ object AppModule {
 
 }
 
-@Module
-@InstallIn(SingletonComponent::class)
-object HomeRepositoryModule {
-
-    @Provides
-    @Singleton
-    fun provideHomeRepository(
-        @AppModule.LocalFilesDataSource localFilesDataSource: FilesDataSource,
-        tmdbService: TMDBService,
-        databaseManager: DatabaseManager
-    ) : HomeRepository = HomeRepository(
-        localFilesDataSource = localFilesDataSource,
-        tmdbService = tmdbService,
-        databaseManager = databaseManager
-    )
-
-}
-

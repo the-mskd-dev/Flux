@@ -1,7 +1,5 @@
 package com.kaem.flux.home
 
-import android.util.Log
-import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
@@ -11,11 +9,7 @@ import com.kaem.flux.data.repository.SortOrder
 import com.kaem.flux.model.flux.FluxArtworkSummary
 import com.kaem.flux.model.flux.FluxEpisode
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -32,16 +26,12 @@ class LibraryViewModel @Inject constructor(
     private val dataStoreRepository: DataStoreRepository
 ): ViewModel() {
 
-
-    private val _uiState = MutableStateFlow(LibraryUiState())
-    val uiState: StateFlow<LibraryUiState> = _uiState.asStateFlow()
-
-    private val libraryPreferencesFlow = dataStoreRepository.preferencesFlow
+    private val dataStorePreferencesFlow = dataStoreRepository.preferencesFlow
 
     private val libraryUiStateFlow = combine(
         repository.artworks,
         repository.episodes,
-        libraryPreferencesFlow
+        dataStorePreferencesFlow
     ) { artworks, episodes, preferences ->
         return@combine LibraryUiState(
             artworks = sortedArtworks(artworks = artworks, sortOrder = preferences.sortOrder),

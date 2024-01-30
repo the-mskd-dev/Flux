@@ -31,7 +31,7 @@ class LibraryViewModel @Inject constructor(
     private val dataStoreRepository: DataStoreRepository
 ): ViewModel() {
 
-    var isLoading by mutableStateOf(true)
+    var isLoading by mutableStateOf(false)
         private set
 
     private val dataStorePreferencesFlow = dataStoreRepository.preferencesFlow

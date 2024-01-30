@@ -33,6 +33,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -54,13 +55,13 @@ import com.kaem.flux.R
 import com.kaem.flux.data.repository.SortOrder
 import com.kaem.flux.model.flux.FluxArtworkSummary
 import com.kaem.flux.ui.component.FluxButton
+import com.kaem.flux.ui.component.Loader
 import com.kaem.flux.utils.Constants
 
 @Composable
 fun LibraryScreen() {
 
     val viewModel = viewModel<LibraryViewModel>()
-    //val state by viewModel.uiState.collectAsState()
     val uiState by viewModel.libraryUiState.observeAsState()
 
     Crossfade(
@@ -73,7 +74,7 @@ fun LibraryScreen() {
 
         when (it) {
 
-            true -> LibraryLoading()
+            true -> Loader()
             false -> LibraryContent(
                 artworks = uiState?.artworks.orEmpty(),
                 onSortButtonTap = { s -> viewModel.applySort(s) }
@@ -87,108 +88,107 @@ fun LibraryScreen() {
 }
 
 @Composable
-fun LibraryLoading() {
-
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-
-        CircularProgressIndicator(
-            color = MaterialTheme.colorScheme.primary
-        )
-
-    }
-
-}
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
 fun LibraryContent(
     artworks: List<FluxArtworkSummary>,
     onSortButtonTap: (SortOrder) -> Unit
 ) {
 
-    if (artworks.isEmpty()) {
+    LibraryPermissionButton {
 
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
+        if (artworks.isEmpty()) {
 
-            Text(
-                text = "No content",
-                color = MaterialTheme.colorScheme.primary
-            )
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
 
-            LibraryPermissionButton()
-
-        }
-
-    } else {
-
-        LazyVerticalGrid(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 12.dp),
-            columns = GridCells.Fixed(3),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-
-            item(span = { GridItemSpan(3) }) {
-
-                Spacer(
-                    modifier = Modifier
-                        .statusBarsPadding()
-                        .height(20.dp)
+                Text(
+                    text = "No content",
+                    color = MaterialTheme.colorScheme.primary
                 )
 
             }
 
-            item(span = { GridItemSpan(3) }) {
+        } else {
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceEvenly
-                ) {
+            LibraryGrid(
+                artworks = artworks,
+                onSortButtonTap = onSortButtonTap
+            )
 
-                    FluxButton(text = "Par nom") {
-                        onSortButtonTap(SortOrder.NAME)
-                    }
+        }
 
-                    FluxButton(text = "Par date") {
-                        onSortButtonTap(SortOrder.RELEASE_DATE)
-                    }
+    }
 
-                    FluxButton(text = "Par date d'ajout") {
-                        onSortButtonTap(SortOrder.ADDED_DATE)
-                    }
+}
 
+@Composable
+@OptIn(ExperimentalFoundationApi::class)
+fun LibraryGrid(
+    artworks: List<FluxArtworkSummary>,
+    onSortButtonTap: (SortOrder) -> Unit
+) {
+
+    LazyVerticalGrid(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 12.dp),
+        columns = GridCells.Fixed(3),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+
+        item(span = { GridItemSpan(3) }) {
+
+            Spacer(
+                modifier = Modifier
+                    .statusBarsPadding()
+                    .height(20.dp)
+            )
+
+        }
+
+        item(span = { GridItemSpan(3) }) {
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+
+                FluxButton(text = "Par nom") {
+                    onSortButtonTap(SortOrder.NAME)
+                }
+
+                FluxButton(text = "Par date") {
+                    onSortButtonTap(SortOrder.RELEASE_DATE)
+                }
+
+                FluxButton(text = "Par date d'ajout") {
+                    onSortButtonTap(SortOrder.ADDED_DATE)
                 }
 
             }
 
-            items(items = artworks, key = { it.id }) {
+        }
 
-                LibraryArtwork(
-                    modifier = Modifier.animateItemPlacement(),
-                    artworkSummary = it
-                )
+        items(items = artworks, key = { it.id }) {
 
-            }
+            LibraryArtwork(
+                modifier = Modifier.animateItemPlacement(),
+                artworkSummary = it
+            )
 
-            item(span = { GridItemSpan(3) }) {
+        }
 
-                Spacer(
-                    modifier = Modifier
-                        .navigationBarsPadding()
-                        .height(20.dp)
-                )
+        item(span = { GridItemSpan(3) }) {
 
-            }
+            Spacer(
+                modifier = Modifier
+                    .navigationBarsPadding()
+                    .height(20.dp)
+            )
 
         }
 
@@ -218,7 +218,10 @@ fun LibraryArtwork(
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun LibraryPermissionButton(viewModel: LibraryViewModel = viewModel()) {
+fun LibraryPermissionButton(
+    viewModel: LibraryViewModel = viewModel(),
+    content: @Composable () -> Unit
+) {
 
     val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
         android.Manifest.permission.READ_MEDIA_VIDEO
@@ -227,16 +230,27 @@ fun LibraryPermissionButton(viewModel: LibraryViewModel = viewModel()) {
 
     val permissionsState = rememberPermissionState(permission = permission)
 
+    LaunchedEffect(permissionsState.status.isGranted) {
+        viewModel.getLibrary()
+    }
+
     if (!permissionsState.status.isGranted) {
 
-        FluxButton(
-            text = stringResource(id = R.string.give_permission),
-            onClick = { permissionsState.launchPermissionRequest() }
-        )
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+
+            FluxButton(
+                text = stringResource(id = R.string.give_permission),
+                onClick = { permissionsState.launchPermissionRequest() }
+            )
+
+        }
 
     } else {
 
-        viewModel.getLibrary()
+        content()
 
     }
 

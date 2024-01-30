@@ -1,5 +1,6 @@
 package com.kaem.flux.data.repository
 
+import android.util.Log
 import com.kaem.flux.data.ddb.DatabaseManager
 import com.kaem.flux.data.source.artwork.ArtworkDataSource
 import com.kaem.flux.data.source.file.FilesDataSource
@@ -54,6 +55,17 @@ class LibraryRepository @Inject constructor(
             files = filteredFiles,
             artworkIds = dbIds
         )
+
+        val dbArtworksIds = dbArtworks.map { it.id }
+        val tmdbArtworksIds = tmdbArtworks.map { it.id }
+
+        val dbEpisodesIds = dbEpisodes.map { it.id }
+        val tmdbEpisodesIds = tmdbEpisodes.map { it.id }
+
+        Log.d("TEST", "dbArtworksIds : $dbArtworksIds")
+        Log.d("TEST", "tmdbArtworksIds : $tmdbArtworksIds")
+        Log.d("TEST", "dbEpisodesIds : $dbEpisodesIds")
+        Log.d("TEST", "tmdbEpisodesIds : $tmdbEpisodesIds")
 
         _libraryContent.value = LibraryContent(
             artworks = dbArtworks + tmdbArtworks,

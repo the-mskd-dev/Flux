@@ -34,7 +34,7 @@ class TMDBArtworkDataSource @Inject constructor(
         artworkIds: List<Int>
     ): Pair<List<FluxArtworkSummary>, List<FluxEpisode>> {
 
-        getArtworksFromTMDB(files = files)
+        getArtworksFromFiles(files = files)
 
         artworks.removeAll { artworkIds.contains(it.id) }
         episodes.removeAll { artworkIds.contains(it.id) }
@@ -70,7 +70,7 @@ class TMDBArtworkDataSource @Inject constructor(
 
     }
 
-    private suspend fun getArtworksFromTMDB(files: List<UserFile>) {
+    private suspend fun getArtworksFromFiles(files: List<UserFile>) {
 
         coroutineScope {
 
@@ -79,13 +79,13 @@ class TMDBArtworkDataSource @Inject constructor(
                 launch {
 
                     val tmdbArtwork = getTmdbArtwork(file.nameProperties)
-                    getFluxArtwork(
+                    tmdbToFluxArtwork(
                         tmdbArtwork = tmdbArtwork,
                         file = file
                     )
 
                     if (tmdbArtwork?.type == TMDBMediaType.SHOW) {
-                        getFluxEpisode(
+                        tmdbToFluxEpisode(
                             tmdbArtwork = tmdbArtwork,
                             file = file
                         )
@@ -129,7 +129,7 @@ class TMDBArtworkDataSource @Inject constructor(
 
     }
 
-    private suspend fun getFluxArtwork(
+    private suspend fun tmdbToFluxArtwork(
         tmdbArtwork: TMDBArtwork?,
         file: UserFile
     ) {
@@ -167,7 +167,7 @@ class TMDBArtworkDataSource @Inject constructor(
 
     }
 
-    private suspend fun getFluxEpisode(
+    private suspend fun tmdbToFluxEpisode(
         tmdbArtwork: TMDBArtwork?,
         file: UserFile
     ) {
@@ -196,13 +196,15 @@ class TMDBArtworkDataSource @Inject constructor(
 
     private suspend fun addArtworkSummary(artworkSummary: FluxArtworkSummary) {
         mutexArtworks.withLock {
-            artworks.add(artworkSummary)
+            if (artworks.none { it.id == artworkSummary.id })
+                artworks.add(artworkSummary)
         }
     }
 
     private suspend fun addEpisode(episode: FluxEpisode) {
         mutexEpisodes.withLock {
-            episodes.add(episode)
+            if (episodes.none { it.id == episode.id })
+                episodes.add(episode)
         }
     }
 

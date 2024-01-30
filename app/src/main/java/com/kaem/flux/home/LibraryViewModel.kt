@@ -75,35 +75,5 @@ class LibraryViewModel @Inject constructor(
         }
 
     }
-    /*init {
-        refreshFiles()
-    }
-
-    fun refreshFiles() = viewModelScope.launch {
-
-        _uiState.update {
-
-            it.copy(isLoading = true)
-
-        }
-
-        repository.getLibrary().collect { result ->
-
-            val artworks = result.getOrNull().orEmpty()
-            val episodes = repository.getEpisodes()
-
-            _uiState.update {
-
-                it.copy(
-                    artworks = artworks,
-                    episodes = episodes,
-                    isLoading = false
-                )
-
-            }
-
-        }
-
-    }*/
 
 }

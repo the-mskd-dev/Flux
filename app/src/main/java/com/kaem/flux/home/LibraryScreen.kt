@@ -1,15 +1,7 @@
 package com.kaem.flux.home
 
 import android.os.Build
-import android.util.Log
 import androidx.compose.animation.Crossfade
-import androidx.compose.animation.core.FiniteAnimationSpec
-import androidx.compose.animation.core.keyframes
-import androidx.compose.animation.core.snap
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -29,14 +21,15 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -63,25 +56,36 @@ fun LibraryScreen() {
 
     val viewModel = viewModel<LibraryViewModel>()
     val uiState by viewModel.libraryUiState.observeAsState()
+    var permissionsGranted by remember { mutableStateOf(false) }
 
-    Crossfade(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
-        targetState = viewModel.isLoading,
-        label = "HomeScreenAnimation"
-    ) {
 
-        when (it) {
+    LibraryPermissions(permissionsGranted = {
+        permissionsGranted = it
+        viewModel.getLibrary()
+    })
 
-            true -> Loader()
-            false -> LibraryContent(
-                artworks = uiState?.artworks.orEmpty(),
-                onSortButtonTap = { s -> viewModel.applySort(s) }
-            )
+    if (permissionsGranted) {
+
+        Crossfade(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background),
+            targetState = viewModel.isLoading,
+            label = "HomeScreenAnimation"
+        ) {
+
+            when (it) {
+
+                true -> Loader()
+                false -> LibraryContent(
+                    artworks = uiState?.artworks.orEmpty(),
+                    onSortButtonTap = { s -> viewModel.applySort(s) }
+                )
+
+            }
 
         }
-        
+
     }
 
 
@@ -93,31 +97,27 @@ fun LibraryContent(
     onSortButtonTap: (SortOrder) -> Unit
 ) {
 
-    LibraryPermissionButton {
+    if (artworks.isEmpty()) {
 
-        if (artworks.isEmpty()) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
 
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-
-                Text(
-                    text = "No content",
-                    color = MaterialTheme.colorScheme.primary
-                )
-
-            }
-
-        } else {
-
-            LibraryGrid(
-                artworks = artworks,
-                onSortButtonTap = onSortButtonTap
+            Text(
+                text = "No content",
+                color = MaterialTheme.colorScheme.primary
             )
 
         }
+
+    } else {
+
+        LibraryGrid(
+            artworks = artworks,
+            onSortButtonTap = onSortButtonTap
+        )
 
     }
 
@@ -216,11 +216,10 @@ fun LibraryArtwork(
 
 }
 
-@OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun LibraryPermissionButton(
-    viewModel: LibraryViewModel = viewModel(),
-    content: @Composable () -> Unit
+@OptIn(ExperimentalPermissionsApi::class)
+fun LibraryPermissions(
+    permissionsGranted: (Boolean) -> Unit
 ) {
 
     val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
@@ -230,14 +229,12 @@ fun LibraryPermissionButton(
 
     val permissionsState = rememberPermissionState(permission = permission)
 
-    LaunchedEffect(permissionsState.status.isGranted) {
-        viewModel.getLibrary()
-    }
-
     if (!permissionsState.status.isGranted) {
 
         Box(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .background(MaterialTheme.colorScheme.background)
+                .fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
 
@@ -250,7 +247,7 @@ fun LibraryPermissionButton(
 
     } else {
 
-        content()
+        permissionsGranted(true)
 
     }
 

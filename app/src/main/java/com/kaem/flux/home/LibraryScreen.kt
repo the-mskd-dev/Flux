@@ -3,6 +3,13 @@ package com.kaem.flux.home
 import android.os.Build
 import android.util.Log
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.FiniteAnimationSpec
+import androidx.compose.animation.core.keyframes
+import androidx.compose.animation.core.snap
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

@@ -42,10 +42,6 @@ class LibraryViewModel @Inject constructor(
     ) { libraryContent, preferences ->
 
         isLoading = false
-        Log.d("TEST", "isLoading : $isLoading")
-        Log.d("TEST", "artworks : ${libraryContent.artworks.size}")
-        Log.d("TEST", "episodes : ${libraryContent.episodes.size}")
-        Log.d("TEST", "sortOrder : ${preferences.sortOrder}")
 
         return@combine LibraryUiState(
             artworks = sortedArtworks(

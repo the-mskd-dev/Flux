@@ -1,6 +1,7 @@
 package com.kaem.flux.home
 
 import android.os.Build
+import android.util.Log
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -59,6 +60,7 @@ fun LibraryScreen() {
     var permissionsGranted by remember { mutableStateOf(false) }
 
     LaunchedEffect(permissionsGranted) {
+        Log.d("TEST", "give permissions : $permissionsGranted")
         if (permissionsGranted)
             viewModel.getLibrary()
     }

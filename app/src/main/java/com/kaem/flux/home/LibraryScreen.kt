@@ -154,6 +154,10 @@ fun LibraryContent(
                         onSortButtonTap(SortOrder.RELEASE_DATE)
                     }
 
+                    FluxButton(text = "Par date d'ajout") {
+                        onSortButtonTap(SortOrder.ADDED_DATE)
+                    }
+
                 }
 
             }

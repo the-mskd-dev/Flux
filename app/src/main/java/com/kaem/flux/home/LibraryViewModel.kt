@@ -1,5 +1,6 @@
 package com.kaem.flux.home
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -11,6 +12,8 @@ import com.kaem.flux.data.repository.LibraryRepository
 import com.kaem.flux.data.repository.SortOrder
 import com.kaem.flux.model.flux.FluxArtworkSummary
 import com.kaem.flux.model.flux.FluxEpisode
+import com.kaem.flux.model.flux.FluxMovie
+import com.kaem.flux.model.flux.FluxShow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
@@ -41,7 +44,11 @@ class LibraryViewModel @Inject constructor(
         isLoading = false
 
         return@combine LibraryUiState(
-            artworks = sortedArtworks(artworks = libraryContent.artworks, sortOrder = preferences.sortOrder),
+            artworks = sortedArtworks(
+                artworks = libraryContent.artworks,
+                episodes = libraryContent.episodes,
+                sortOrder = preferences.sortOrder
+            ),
             episodes = libraryContent.episodes,
             sortOrder = preferences.sortOrder
         )
@@ -51,12 +58,38 @@ class LibraryViewModel @Inject constructor(
 
     private fun sortedArtworks(
         artworks: List<FluxArtworkSummary>,
+        episodes: List<FluxEpisode>,
         sortOrder: SortOrder
     ) : List<FluxArtworkSummary> {
 
         return when (sortOrder) {
             SortOrder.NAME -> artworks.sortedBy { it.title }
             SortOrder.RELEASE_DATE -> artworks.sortedByDescending { it.releaseDate }
+            SortOrder.ADDED_DATE -> {
+
+                artworks.sortedByDescending { artwork ->
+
+                    val date = when (artwork) {
+
+                        is FluxMovie -> {
+                            artwork.file.addedDate
+                        }
+
+                        is FluxShow -> {
+                            episodes.filter { artwork.id == it.showId }.maxOf { it.file.addedDate }
+                        }
+
+                        else -> artwork.releaseDate
+                    }
+
+                    if (date == null)
+                        Log.d("TEST", "artwork : $artwork")
+
+                    date
+
+                }
+
+            }
         }
 
     }

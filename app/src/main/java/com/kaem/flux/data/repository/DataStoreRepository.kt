@@ -16,7 +16,7 @@ data class LibraryPreferences(
 enum class SortOrder {
     NAME,
     RELEASE_DATE,
-    //ADDED_DATE
+    ADDED_DATE
 }
 
 class DataStoreRepository @Inject constructor(private val dataStore: DataStore<Preferences>) {

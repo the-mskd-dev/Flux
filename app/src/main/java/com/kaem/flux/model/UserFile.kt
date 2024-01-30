@@ -9,11 +9,11 @@ data class UserFile(
     val source: FileSource
 ) {
 
-    @Transient
-    val nameProperties: FileNameProperties = FileNameProperties.fromFileName(name)
+    val nameProperties: FileNameProperties
+        get() = FileNameProperties.fromFileName(name)
 
-    @Transient
-    val addedDate: Date = Date(addedDateTime)
+    val addedDate: Date
+        get() = Date(addedDateTime)
 
 }
 

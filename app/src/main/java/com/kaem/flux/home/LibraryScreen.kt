@@ -164,7 +164,7 @@ fun LibraryContent(
 
             }
 
-            items(artworks) {
+            items(items = artworks, key = { it.id }) {
 
                 LibraryArtwork(
                     modifier = Modifier.animateItemPlacement(),

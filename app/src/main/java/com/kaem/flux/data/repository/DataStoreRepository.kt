@@ -1,5 +1,6 @@
 package com.kaem.flux.data.repository
 
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -32,16 +33,16 @@ class DataStoreRepository @Inject constructor(
         val LAST_WATCHED_IDS = stringPreferencesKey("last_watched_ids")
     }
 
-    val preferencesFlow: Flow<LibraryPreferences> = dataStore.data.map {
+    val preferencesFlow: Flow<LibraryPreferences> = dataStore.data.map { preferences ->
 
-        val sortOrderOrdinal = it[PreferencesKeys.SORT_ORDER] ?: SortOrder.RELEASE_DATE.ordinal
+        val sortOrderOrdinal = preferences[PreferencesKeys.SORT_ORDER] ?: SortOrder.RELEASE_DATE.ordinal
 
-        val lastWatchedIdsString = it[PreferencesKeys.LAST_WATCHED_IDS] ?: ""
-        val lastWatchedIds = gson.fromJson<ArrayList<Int>>(lastWatchedIdsString, ArrayList::class.java)
+        val lastWatchedIdsString = preferences[PreferencesKeys.LAST_WATCHED_IDS] ?: "[]"
+        val lastWatchedIds = gson.fromJson<List<Double>>(lastWatchedIdsString, List::class.java)
 
         LibraryPreferences(
             sortOrder = SortOrder.entries[sortOrderOrdinal],
-            lastWatchedIds = lastWatchedIds
+            lastWatchedIds = lastWatchedIds.map { it.toInt() }
         )
     }
 
@@ -52,19 +53,19 @@ class DataStoreRepository @Inject constructor(
     }
 
     suspend fun addWatchedArtwork(id: Int) {
-        dataStore.edit {
+        dataStore.edit { preferences ->
 
-            val lastWatchedIdsString = it[PreferencesKeys.LAST_WATCHED_IDS] ?: ""
-            val lastWatchedIds = gson.fromJson<ArrayList<Int>>(lastWatchedIdsString, ArrayList::class.java)
+            val lastWatchedIdsString = preferences[PreferencesKeys.LAST_WATCHED_IDS] ?: "[]"
+            val lastWatchedIds: ArrayList<Int> = gson.fromJson<ArrayList<Int>>(lastWatchedIdsString, ArrayList::class.java)
 
-            if (!lastWatchedIds.contains(id)) {
+            if (lastWatchedIds.none { it == id }) {
 
                 lastWatchedIds.add(0, id)
 
                 if (lastWatchedIds.size > 4)
                     lastWatchedIds.removeLast()
 
-                it[PreferencesKeys.LAST_WATCHED_IDS] = gson.toJson(lastWatchedIds)
+                preferences[PreferencesKeys.LAST_WATCHED_IDS] = gson.toJson(lastWatchedIds)
             }
 
         }

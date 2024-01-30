@@ -88,15 +88,21 @@ class LibraryViewModel @Inject constructor(
 
     }
 
+    fun getLibrary() {
+        viewModelScope.launch {
+            repository.getLibrary()
+        }
+    }
+
     fun applySort(sortOrder: SortOrder) {
         viewModelScope.launch {
             dataStoreRepository.updateSortOrder(sortOrder)
         }
     }
 
-    fun getLibrary() {
+    fun addWatchedArtwork(id: Int) {
         viewModelScope.launch {
-            repository.getLibrary()
+            dataStoreRepository.addWatchedArtwork(id)
         }
     }
 

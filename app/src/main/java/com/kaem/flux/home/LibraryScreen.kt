@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -204,7 +205,8 @@ fun LibraryGrid(
 @Composable
 fun LibraryArtwork(
     modifier: Modifier,
-    artworkSummary: FluxArtworkSummary
+    artworkSummary: FluxArtworkSummary,
+    viewModel: LibraryViewModel = viewModel()
 ) {
 
     GlideImage(
@@ -212,7 +214,12 @@ fun LibraryArtwork(
             .then(modifier)
             .clip(RoundedCornerShape(8.dp))
             .fillMaxWidth()
-            .aspectRatio(2f / 3f),
+            .aspectRatio(2f / 3f)
+            .clickable {
+
+                viewModel.addWatchedArtwork(artworkSummary.id)
+
+            },
         model = Constants.TMDB.IMAGE_SMALL + artworkSummary.imagePath,
         contentDescription = artworkSummary.title,
         loading = placeholder(ColorPainter(Color.LightGray))

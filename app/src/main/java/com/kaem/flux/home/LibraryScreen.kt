@@ -3,6 +3,7 @@ package com.kaem.flux.home
 import android.os.Build
 import android.util.Log
 import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -94,6 +95,7 @@ fun LibraryLoading() {
 
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LibraryContent(
     artworks: List<FluxArtworkSummary>,
@@ -164,7 +166,10 @@ fun LibraryContent(
 
             items(artworks) {
 
-                LibraryArtwork(artworkSummary = it)
+                LibraryArtwork(
+                    modifier = Modifier.animateItemPlacement(),
+                    artworkSummary = it
+                )
 
             }
 
@@ -186,10 +191,14 @@ fun LibraryContent(
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun LibraryArtwork(artworkSummary: FluxArtworkSummary) {
+fun LibraryArtwork(
+    modifier: Modifier,
+    artworkSummary: FluxArtworkSummary
+) {
 
     GlideImage(
         modifier = Modifier
+            .then(modifier)
             .clip(RoundedCornerShape(8.dp))
             .fillMaxWidth()
             .aspectRatio(2f / 3f),

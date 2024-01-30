@@ -1,6 +1,7 @@
 package com.kaem.flux.home
 
 import android.os.Build
+import android.util.Log
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -204,16 +205,7 @@ fun LibraryPermissionButton(viewModel: LibraryViewModel = viewModel()) {
     else
         android.Manifest.permission.READ_EXTERNAL_STORAGE
 
-    val permissionsState = rememberPermissionState(
-        permission = permission,
-        onPermissionResult = { result ->
-
-            if (result) {
-                viewModel.getLibrary()
-            }
-
-        }
-    )
+    val permissionsState = rememberPermissionState(permission = permission)
 
     if (!permissionsState.status.isGranted) {
 
@@ -223,7 +215,9 @@ fun LibraryPermissionButton(viewModel: LibraryViewModel = viewModel()) {
         )
 
     } else {
+
         viewModel.getLibrary()
+
     }
 
 }

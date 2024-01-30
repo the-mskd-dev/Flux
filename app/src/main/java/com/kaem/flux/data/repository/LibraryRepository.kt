@@ -23,24 +23,21 @@ import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
+data class LibraryContent(
+    val artworks: List<FluxArtworkSummary> = emptyList(),
+    val episodes: List<FluxEpisode> = emptyList()
+)
+
 class LibraryRepository @Inject constructor(
     private val localFilesDataSource: FilesDataSource,
     private val localArtworkDataSource: ArtworkDataSource,
     private val tmdbArtworkDataSource: ArtworkDataSource
 ) {
 
-    private val _isLoading = MutableStateFlow(true)
-    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
-
-    private val _artworks = MutableStateFlow<List<FluxArtworkSummary>>(emptyList())
-    val artworks: StateFlow<List<FluxArtworkSummary>> = _artworks.asStateFlow()
-
-    private val _episodes = MutableStateFlow<List<FluxEpisode>>(emptyList())
-    val episodes: StateFlow<List<FluxEpisode>> = _episodes.asStateFlow()
+    private val _libraryContent = MutableStateFlow(LibraryContent())
+    val libraryContent: StateFlow<LibraryContent> = _libraryContent.asStateFlow()
 
     suspend fun getLibrary() {
-
-        _isLoading.value = true
 
         val allFiles = getFiles()
 
@@ -58,9 +55,10 @@ class LibraryRepository @Inject constructor(
             artworkIds = dbIds
         )
 
-        _artworks.value = dbArtworks + tmdbArtworks
-        _episodes.value = dbEpisodes + tmdbEpisodes
-        _isLoading.value = false
+        _libraryContent.value = LibraryContent(
+            artworks = dbArtworks + tmdbArtworks,
+            episodes = dbEpisodes + tmdbEpisodes
+        )
 
     }
 

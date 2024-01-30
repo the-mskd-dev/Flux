@@ -58,7 +58,7 @@ fun LibraryScreen() {
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
-        targetState = uiState?.isLoading ?: true,
+        targetState = viewModel.isLoading,
         label = "HomeScreenAnimation"
     ) {
 

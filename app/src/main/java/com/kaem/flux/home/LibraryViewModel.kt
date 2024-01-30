@@ -1,5 +1,8 @@
 package com.kaem.flux.home
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
@@ -14,7 +17,6 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class LibraryUiState(
-    val isLoading: Boolean = true,
     val artworks: List<FluxArtworkSummary> = emptyList(),
     val episodes: List<FluxEpisode> = emptyList(),
     val sortOrder: SortOrder = SortOrder.RELEASE_DATE
@@ -26,19 +28,24 @@ class LibraryViewModel @Inject constructor(
     private val dataStoreRepository: DataStoreRepository
 ): ViewModel() {
 
+    var isLoading by mutableStateOf(true)
+        private set
+
     private val dataStorePreferencesFlow = dataStoreRepository.preferencesFlow
 
     private val libraryUiStateFlow = combine(
-        repository.artworks,
-        repository.episodes,
+        repository.libraryContent,
         dataStorePreferencesFlow
-    ) { artworks, episodes, preferences ->
+    ) { libraryContent, preferences ->
+
+        isLoading = false
+
         return@combine LibraryUiState(
-            artworks = sortedArtworks(artworks = artworks, sortOrder = preferences.sortOrder),
-            episodes = episodes,
-            isLoading = false,
+            artworks = sortedArtworks(artworks = libraryContent.artworks, sortOrder = preferences.sortOrder),
+            episodes = libraryContent.episodes,
             sortOrder = preferences.sortOrder
         )
+
     }
     val libraryUiState = libraryUiStateFlow.asLiveData()
 
@@ -59,9 +66,14 @@ class LibraryViewModel @Inject constructor(
     }
 
     fun getLibrary() {
+
         viewModelScope.launch {
+
+            isLoading = true
             repository.getLibrary()
+
         }
+
     }
     /*init {
         refreshFiles()

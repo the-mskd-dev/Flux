@@ -58,28 +58,50 @@ fun LibraryScreen() {
     val uiState by viewModel.libraryUiState.observeAsState()
     var permissionsGranted by remember { mutableStateOf(false) }
 
-    LibraryPermissions(permissionsGranted = {
-        permissionsGranted = it
-        viewModel.getLibrary()
-    })
+    LaunchedEffect(permissionsGranted) {
+        if (permissionsGranted)
+            viewModel.getLibrary()
+    }
 
-    if (permissionsGranted) {
+    Crossfade(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background),
+        targetState = permissionsGranted,
+        label = "PermissionsAnimation"
+    ) { permissions ->
 
-        Crossfade(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background),
-            targetState = viewModel.isLoading,
-            label = "HomeScreenAnimation"
-        ) {
+        when (permissions) {
 
-            when (it) {
+            false -> {
 
-                true -> Loader()
-                false -> LibraryContent(
-                    artworks = uiState?.artworks.orEmpty(),
-                    onSortButtonTap = { s -> viewModel.applySort(s) }
-                )
+                LibraryPermissions(permissionsGranted = {
+                    permissionsGranted = it
+                })
+
+            }
+
+            true -> {
+
+                Crossfade(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(MaterialTheme.colorScheme.background),
+                    targetState = viewModel.isLoading,
+                    label = "HomeScreenAnimation"
+                ) {
+
+                    when (it) {
+
+                        true -> Loader()
+                        false -> LibraryContent(
+                            artworks = uiState?.artworks.orEmpty(),
+                            onSortButtonTap = { s -> viewModel.applySort(s) }
+                        )
+
+                    }
+
+                }
 
             }
 

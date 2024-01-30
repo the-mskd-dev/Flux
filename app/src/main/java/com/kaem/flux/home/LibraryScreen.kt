@@ -58,7 +58,6 @@ fun LibraryScreen() {
     val uiState by viewModel.libraryUiState.observeAsState()
     var permissionsGranted by remember { mutableStateOf(false) }
 
-
     LibraryPermissions(permissionsGranted = {
         permissionsGranted = it
         viewModel.getLibrary()

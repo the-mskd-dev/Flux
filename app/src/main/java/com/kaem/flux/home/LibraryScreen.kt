@@ -57,60 +57,8 @@ fun LibraryScreen() {
 
     val viewModel = viewModel<LibraryViewModel>()
     val uiState by viewModel.libraryUiState.observeAsState()
-    var permissionsGranted by remember { mutableStateOf(false) }
 
-    LaunchedEffect(permissionsGranted) {
-        Log.d("TEST", "give permissions : $permissionsGranted")
-        if (permissionsGranted)
-            viewModel.getLibrary()
-    }
-
-    Crossfade(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
-        targetState = permissionsGranted,
-        label = "PermissionsAnimation"
-    ) { permissions ->
-
-        when (permissions) {
-
-            false -> {
-
-                LibraryPermissions(permissionsGranted = {
-                    permissionsGranted = it
-                })
-
-            }
-
-            true -> {
-
-                Crossfade(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(MaterialTheme.colorScheme.background),
-                    targetState = viewModel.isLoading,
-                    label = "HomeScreenAnimation"
-                ) {
-
-                    when (it) {
-
-                        true -> Loader()
-                        false -> LibraryContent(
-                            artworks = uiState?.artworks.orEmpty(),
-                            onSortButtonTap = { s -> viewModel.applySort(s) }
-                        )
-
-                    }
-
-                }
-
-            }
-
-        }
-
-    }
-
+    LibraryPermissions()
 
 }
 
@@ -242,8 +190,10 @@ fun LibraryArtwork(
 @Composable
 @OptIn(ExperimentalPermissionsApi::class)
 fun LibraryPermissions(
-    permissionsGranted: (Boolean) -> Unit
+    viewModel: LibraryViewModel = viewModel()
 ) {
+
+    val uiState by viewModel.libraryUiState.observeAsState()
 
     val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
         android.Manifest.permission.READ_MEDIA_VIDEO
@@ -270,7 +220,29 @@ fun LibraryPermissions(
 
     } else {
 
-        permissionsGranted(true)
+        LaunchedEffect(Unit) {
+            viewModel.getLibrary()
+        }
+
+        Crossfade(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background),
+            targetState = viewModel.isLoading,
+            label = "HomeScreenAnimation"
+        ) {
+
+            when (it) {
+
+                true -> Loader()
+                false -> LibraryContent(
+                    artworks = uiState?.artworks.orEmpty(),
+                    onSortButtonTap = { s -> viewModel.applySort(s) }
+                )
+
+            }
+
+        }
 
     }
 

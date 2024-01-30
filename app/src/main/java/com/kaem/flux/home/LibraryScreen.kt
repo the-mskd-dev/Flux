@@ -43,6 +43,7 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.placeholder
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.kaem.flux.R
@@ -52,13 +53,57 @@ import com.kaem.flux.ui.component.FluxButton
 import com.kaem.flux.ui.component.Loader
 import com.kaem.flux.utils.Constants
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun LibraryScreen() {
 
     val viewModel = viewModel<LibraryViewModel>()
     val uiState by viewModel.libraryUiState.observeAsState()
+    val permissionState = libraryPermissionState()
 
-    LibraryPermissions()
+    if (!permissionState.status.isGranted) {
+
+        Box(
+            modifier = Modifier
+                .background(MaterialTheme.colorScheme.background)
+                .fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+
+            FluxButton(
+                text = stringResource(id = R.string.give_permission),
+                onClick = { permissionState.launchPermissionRequest() }
+            )
+
+        }
+
+    } else {
+
+        LaunchedEffect(Unit) {
+            viewModel.getLibrary()
+        }
+
+        Crossfade(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background),
+            targetState = uiState?.isLoading ?: true,
+            label = "LibraryAnimation"
+        ) {
+
+            when (it) {
+
+                true -> Loader()
+                false -> LibraryContent(
+                    artworks = uiState?.artworks.orEmpty(),
+                    onSortButtonTap = { s -> viewModel.applySort(s) }
+                )
+
+            }
+
+        }
+
+    }
 
 }
 
@@ -189,61 +234,15 @@ fun LibraryArtwork(
 
 @Composable
 @OptIn(ExperimentalPermissionsApi::class)
-fun LibraryPermissions(
+fun libraryPermissionState(
     viewModel: LibraryViewModel = viewModel()
-) {
-
-    val uiState by viewModel.libraryUiState.observeAsState()
+): PermissionState {
 
     val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
         android.Manifest.permission.READ_MEDIA_VIDEO
     else
         android.Manifest.permission.READ_EXTERNAL_STORAGE
 
-    val permissionsState = rememberPermissionState(permission = permission)
-
-    if (!permissionsState.status.isGranted) {
-
-        Box(
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.background)
-                .fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-
-            FluxButton(
-                text = stringResource(id = R.string.give_permission),
-                onClick = { permissionsState.launchPermissionRequest() }
-            )
-
-        }
-
-    } else {
-
-        LaunchedEffect(Unit) {
-            viewModel.getLibrary()
-        }
-
-        Crossfade(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background),
-            targetState = viewModel.isLoading,
-            label = "HomeScreenAnimation"
-        ) {
-
-            when (it) {
-
-                true -> Loader()
-                false -> LibraryContent(
-                    artworks = uiState?.artworks.orEmpty(),
-                    onSortButtonTap = { s -> viewModel.applySort(s) }
-                )
-
-            }
-
-        }
-
-    }
+    return rememberPermissionState(permission = permission)
 
 }

@@ -22,7 +22,8 @@ import javax.inject.Inject
 data class LibraryUiState(
     val artworks: List<FluxArtworkSummary> = emptyList(),
     val episodes: List<FluxEpisode> = emptyList(),
-    val sortOrder: SortOrder = SortOrder.RELEASE_DATE
+    val sortOrder: SortOrder = SortOrder.RELEASE_DATE,
+    val isLoading: Boolean = true
 )
 
 @HiltViewModel
@@ -31,17 +32,12 @@ class LibraryViewModel @Inject constructor(
     private val dataStoreRepository: DataStoreRepository
 ): ViewModel() {
 
-    var isLoading by mutableStateOf(false)
-        private set
-
     private val dataStorePreferencesFlow = dataStoreRepository.preferencesFlow
 
     private val libraryUiStateFlow = combine(
         repository.libraryContent,
         dataStorePreferencesFlow
     ) { libraryContent, preferences ->
-
-        isLoading = false
 
         return@combine LibraryUiState(
             artworks = sortedArtworks(
@@ -50,7 +46,8 @@ class LibraryViewModel @Inject constructor(
                 sortOrder = preferences.sortOrder
             ),
             episodes = libraryContent.episodes,
-            sortOrder = preferences.sortOrder
+            sortOrder = preferences.sortOrder,
+            isLoading = libraryContent.isLoading
         )
 
     }
@@ -92,18 +89,15 @@ class LibraryViewModel @Inject constructor(
     }
 
     fun applySort(sortOrder: SortOrder) {
-        viewModelScope.launch { dataStoreRepository.updateSortOrder(sortOrder) }
+        viewModelScope.launch {
+            dataStoreRepository.updateSortOrder(sortOrder)
+        }
     }
 
     fun getLibrary() {
-
         viewModelScope.launch {
-
-            isLoading = true
             repository.getLibrary()
-
         }
-
     }
 
 }

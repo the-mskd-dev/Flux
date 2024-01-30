@@ -25,6 +25,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 data class LibraryContent(
+    val isLoading: Boolean = true,
     val artworks: List<FluxArtworkSummary> = emptyList(),
     val episodes: List<FluxEpisode> = emptyList()
 )
@@ -39,6 +40,8 @@ class LibraryRepository @Inject constructor(
     val libraryContent: StateFlow<LibraryContent> = _libraryContent.asStateFlow()
 
     suspend fun getLibrary() {
+
+        _libraryContent.value = LibraryContent()
 
         val allFiles = getFiles()
 
@@ -57,6 +60,7 @@ class LibraryRepository @Inject constructor(
         )
 
         _libraryContent.value = LibraryContent(
+            isLoading = false,
             artworks = dbArtworks + tmdbArtworks,
             episodes = dbEpisodes + tmdbEpisodes
         )

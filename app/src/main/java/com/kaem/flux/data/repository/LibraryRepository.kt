@@ -56,17 +56,6 @@ class LibraryRepository @Inject constructor(
             artworkIds = dbIds
         )
 
-        val dbArtworksIds = dbArtworks.map { it.id }
-        val tmdbArtworksIds = tmdbArtworks.map { it.id }
-
-        val dbEpisodesIds = dbEpisodes.map { it.id }
-        val tmdbEpisodesIds = tmdbEpisodes.map { it.id }
-
-        Log.d("TEST", "dbArtworksIds : $dbArtworksIds")
-        Log.d("TEST", "tmdbArtworksIds : $tmdbArtworksIds")
-        Log.d("TEST", "dbEpisodesIds : $dbEpisodesIds")
-        Log.d("TEST", "tmdbEpisodesIds : $tmdbEpisodesIds")
-
         _libraryContent.value = LibraryContent(
             artworks = dbArtworks + tmdbArtworks,
             episodes = dbEpisodes + tmdbEpisodes

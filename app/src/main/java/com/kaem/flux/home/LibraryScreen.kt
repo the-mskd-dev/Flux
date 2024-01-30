@@ -63,19 +63,7 @@ fun LibraryScreen() {
 
     if (!permissionState.status.isGranted) {
 
-        Box(
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.background)
-                .fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-
-            FluxButton(
-                text = stringResource(id = R.string.give_permission),
-                onClick = { permissionState.launchPermissionRequest() }
-            )
-
-        }
+        LibraryPermissionButton(permissionState = permissionState)
 
     } else {
 
@@ -232,11 +220,29 @@ fun LibraryArtwork(
 
 }
 
+@OptIn(ExperimentalPermissionsApi::class)
+@Composable
+fun LibraryPermissionButton(permissionState: PermissionState) {
+
+    Box(
+        modifier = Modifier
+            .background(MaterialTheme.colorScheme.background)
+            .fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+
+        FluxButton(
+            text = stringResource(id = R.string.give_permission),
+            onClick = { permissionState.launchPermissionRequest() }
+        )
+
+    }
+
+}
+
 @Composable
 @OptIn(ExperimentalPermissionsApi::class)
-fun libraryPermissionState(
-    viewModel: LibraryViewModel = viewModel()
-): PermissionState {
+fun libraryPermissionState(): PermissionState {
 
     val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
         android.Manifest.permission.READ_MEDIA_VIDEO

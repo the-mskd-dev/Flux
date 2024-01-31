@@ -219,7 +219,7 @@ fun PromotedArtworks(
     HorizontalPager(
         modifier = Modifier
             .fillMaxWidth()
-            .aspectRatio(3f / 4f),
+            .aspectRatio(8f / 9f),
         state = pagerState,
         key = { artworks[it].id }
     ) { page ->

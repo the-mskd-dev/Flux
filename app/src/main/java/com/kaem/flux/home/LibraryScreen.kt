@@ -1,8 +1,9 @@
 package com.kaem.flux.home
 
 import android.os.Build
-import android.util.Log
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -22,6 +23,8 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -29,14 +32,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -53,6 +54,8 @@ import com.kaem.flux.model.flux.FluxArtworkSummary
 import com.kaem.flux.ui.component.FluxButton
 import com.kaem.flux.ui.component.Loader
 import com.kaem.flux.utils.Constants
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -85,6 +88,7 @@ fun LibraryScreen() {
                 true -> Loader()
                 false -> LibraryContent(
                     artworks = uiState?.artworks.orEmpty(),
+                    promotedArtworkIds = uiState?.promotedArtworkIds.orEmpty(),
                     onSortButtonTap = { s -> viewModel.applySort(s) }
                 )
 
@@ -99,6 +103,7 @@ fun LibraryScreen() {
 @Composable
 fun LibraryContent(
     artworks: List<FluxArtworkSummary>,
+    promotedArtworkIds: List<Int>,
     onSortButtonTap: (SortOrder) -> Unit
 ) {
 
@@ -121,6 +126,7 @@ fun LibraryContent(
 
         LibraryGrid(
             artworks = artworks,
+            promotedArtworkIds = promotedArtworkIds,
             onSortButtonTap = onSortButtonTap
         )
 
@@ -128,17 +134,23 @@ fun LibraryContent(
 
 }
 
-@Composable
 @OptIn(ExperimentalFoundationApi::class)
+@Composable
 fun LibraryGrid(
     artworks: List<FluxArtworkSummary>,
+    promotedArtworkIds: List<Int>,
     onSortButtonTap: (SortOrder) -> Unit
 ) {
 
+    val promotedArtwork = buildList {
+
+        for (id in promotedArtworkIds)
+            add(artworks.find { it.id == id })
+
+    }.filterNotNull()
+
     LazyVerticalGrid(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 12.dp),
+        modifier = Modifier.fillMaxSize(),
         columns = GridCells.Fixed(3),
         verticalArrangement = Arrangement.spacedBy(12.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -146,11 +158,7 @@ fun LibraryGrid(
 
         item(span = { GridItemSpan(3) }) {
 
-            Spacer(
-                modifier = Modifier
-                    .statusBarsPadding()
-                    .height(20.dp)
-            )
+            PromotedArtworks(artworks = promotedArtwork)
 
         }
 
@@ -196,6 +204,35 @@ fun LibraryGrid(
             )
 
         }
+
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class, ExperimentalGlideComposeApi::class)
+@Composable
+fun PromotedArtworks(
+    artworks: List<FluxArtworkSummary>
+) {
+
+    val pagerState = rememberPagerState(pageCount = { artworks.size })
+
+    HorizontalPager(
+        modifier = Modifier
+            .fillMaxWidth()
+            .aspectRatio(3f / 4f),
+        state = pagerState,
+        key = { artworks[it].id }
+    ) { page ->
+
+        val artwork = artworks[page]
+
+        GlideImage(
+            modifier = Modifier.fillMaxSize(),
+            model = Constants.TMDB.IMAGE + artwork.bannerPath,
+            contentDescription = artwork.title,
+            loading = placeholder(ColorPainter(Color.LightGray)),
+            contentScale = ContentScale.Crop
+        )
 
     }
 

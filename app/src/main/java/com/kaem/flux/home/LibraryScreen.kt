@@ -153,7 +153,6 @@ fun LibraryGrid(
         modifier = Modifier.fillMaxSize(),
         columns = GridCells.Fixed(3),
         verticalArrangement = Arrangement.spacedBy(12.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
 
         item(span = { GridItemSpan(3) }) {
@@ -249,6 +248,7 @@ fun LibraryArtwork(
     GlideImage(
         modifier = Modifier
             .then(modifier)
+            .padding(horizontal = 6.dp)
             .clip(RoundedCornerShape(8.dp))
             .fillMaxWidth()
             .aspectRatio(2f / 3f)

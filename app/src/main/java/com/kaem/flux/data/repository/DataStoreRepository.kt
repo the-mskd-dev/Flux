@@ -1,26 +1,28 @@
 package com.kaem.flux.data.repository
 
 import android.util.Log
+import androidx.annotation.StringRes
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.google.gson.Gson
+import com.kaem.flux.R
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 
 data class LibraryPreferences(
-    val sortOrder: SortOrder = SortOrder.RELEASE_DATE,
+    val sortOrder: SortOrder = SortOrder.ADDED_DATE,
     val lastWatchedIds: List<Int> = listOf()
 )
 
-enum class SortOrder {
-    NAME,
-    RELEASE_DATE,
-    ADDED_DATE
+enum class SortOrder(@StringRes val stringResId: Int) {
+    NAME(R.string.sort_by_name),
+    RELEASE_DATE(R.string.sort_by_release_date),
+    ADDED_DATE(R.string.sort_by_added_date)
 }
 
 class DataStoreRepository @Inject constructor(
@@ -35,7 +37,7 @@ class DataStoreRepository @Inject constructor(
 
     val preferencesFlow: Flow<LibraryPreferences> = dataStore.data.map { preferences ->
 
-        val sortOrderOrdinal = preferences[PreferencesKeys.SORT_ORDER] ?: SortOrder.RELEASE_DATE.ordinal
+        val sortOrderOrdinal = preferences[PreferencesKeys.SORT_ORDER] ?: SortOrder.ADDED_DATE.ordinal
 
         val lastWatchedIdsString = preferences[PreferencesKeys.LAST_WATCHED_IDS] ?: "[]"
         val lastWatchedIds = gson.fromJson<List<Double>>(lastWatchedIdsString, List::class.java)

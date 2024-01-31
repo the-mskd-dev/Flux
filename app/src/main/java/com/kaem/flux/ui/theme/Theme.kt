@@ -22,7 +22,8 @@ private val FluxColorScheme = darkColorScheme(
     tertiary = ContrastCoral, // Additional color for contrast,
     background = Color.Black,
     surface = Color.Black,
-    onSurface = Color.White
+    onSurface = Color.White,
+    onBackground = Color.White
 )
 
 private val DarkColorScheme = darkColorScheme(

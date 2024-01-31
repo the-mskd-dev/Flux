@@ -1,6 +1,7 @@
 package com.kaem.flux.home
 
 import android.os.Build
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
@@ -26,12 +27,16 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,6 +44,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
@@ -89,7 +95,7 @@ fun LibraryScreen() {
                 false -> LibraryContent(
                     artworks = uiState?.artworks.orEmpty(),
                     promotedArtworkIds = uiState?.promotedArtworkIds.orEmpty(),
-                    onSortButtonTap = { s -> viewModel.applySort(s) }
+                    sortOrder = uiState?.sortOrder ?: SortOrder.ADDED_DATE
                 )
 
             }
@@ -104,7 +110,7 @@ fun LibraryScreen() {
 fun LibraryContent(
     artworks: List<FluxArtworkSummary>,
     promotedArtworkIds: List<Int>,
-    onSortButtonTap: (SortOrder) -> Unit
+    sortOrder: SortOrder,
 ) {
 
     if (artworks.isEmpty()) {
@@ -127,7 +133,7 @@ fun LibraryContent(
         LibraryGrid(
             artworks = artworks,
             promotedArtworkIds = promotedArtworkIds,
-            onSortButtonTap = onSortButtonTap
+            sortOrder = sortOrder
         )
 
     }
@@ -139,7 +145,7 @@ fun LibraryContent(
 fun LibraryGrid(
     artworks: List<FluxArtworkSummary>,
     promotedArtworkIds: List<Int>,
-    onSortButtonTap: (SortOrder) -> Unit
+    sortOrder: SortOrder,
 ) {
 
     val promotedArtwork = buildList {
@@ -163,25 +169,7 @@ fun LibraryGrid(
 
         item(span = { GridItemSpan(3) }) {
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-
-                FluxButton(text = "Par nom") {
-                    onSortButtonTap(SortOrder.NAME)
-                }
-
-                FluxButton(text = "Par date") {
-                    onSortButtonTap(SortOrder.RELEASE_DATE)
-                }
-
-                FluxButton(text = "Par date d'ajout") {
-                    onSortButtonTap(SortOrder.ADDED_DATE)
-                }
-
-            }
+            LibrarySortOrder(sortOrder = sortOrder)
 
         }
 
@@ -232,6 +220,67 @@ fun PromotedArtworks(
             loading = placeholder(ColorPainter(Color.LightGray)),
             contentScale = ContentScale.Crop
         )
+
+    }
+
+}
+
+@Composable
+fun LibrarySortOrder(
+    sortOrder: SortOrder,
+    viewModel: LibraryViewModel = viewModel()
+) {
+
+    var expanded by remember { mutableStateOf(false) }
+
+    Column(
+        modifier = Modifier
+            .clickable { expanded = !expanded }
+            .padding(horizontal = 6.dp)
+            .fillMaxWidth(),
+        horizontalAlignment = Alignment.Start
+    ) {
+
+        Text(
+            modifier = Modifier
+                .padding(vertical = 8.dp),
+            text = stringResource(id = sortOrder.stringResId),
+            fontWeight = FontWeight.W600,
+            color = MaterialTheme.colorScheme.onBackground
+        )
+
+        AnimatedVisibility(visible = expanded) {
+
+            Column {
+
+                Text(
+                    modifier = Modifier
+                        .clickable { viewModel.applySort(SortOrder.NAME) }
+                        .padding(vertical = 8.dp),
+                    text = stringResource(id = SortOrder.NAME.stringResId),
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+
+                Text(
+                    modifier = Modifier
+                        .clickable { viewModel.applySort(SortOrder.RELEASE_DATE) }
+                        .padding(vertical = 8.dp),
+                    text = stringResource(id = SortOrder.RELEASE_DATE.stringResId),
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+
+                Text(
+                    modifier = Modifier
+                        .clickable { viewModel.applySort(SortOrder.ADDED_DATE) }
+                        .padding(vertical = 8.dp),
+                    text = stringResource(id = SortOrder.ADDED_DATE.stringResId),
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+
+            }
+
+
+        }
 
     }
 

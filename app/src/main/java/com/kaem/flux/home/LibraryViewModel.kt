@@ -23,6 +23,7 @@ data class LibraryUiState(
     val artworks: List<FluxArtworkSummary> = emptyList(),
     val episodes: List<FluxEpisode> = emptyList(),
     val sortOrder: SortOrder = SortOrder.RELEASE_DATE,
+    val promotedArtworkIds: List<Int> = emptyList(),
     val isLoading: Boolean = true
 )
 
@@ -47,6 +48,11 @@ class LibraryViewModel @Inject constructor(
             ),
             episodes = libraryContent.episodes,
             sortOrder = preferences.sortOrder,
+            promotedArtworkIds = getPromotedArtworkIds(
+                artworks = libraryContent.artworks,
+                episodes = libraryContent.episodes,
+                lastWatchedIds = preferences.lastWatchedIds
+            ),
             isLoading = libraryContent.isLoading
         )
 
@@ -62,28 +68,7 @@ class LibraryViewModel @Inject constructor(
         return when (sortOrder) {
             SortOrder.NAME -> artworks.sortedBy { it.title }
             SortOrder.RELEASE_DATE -> artworks.sortedByDescending { it.releaseDate }
-            SortOrder.ADDED_DATE -> {
-
-                artworks.sortedByDescending { artwork ->
-
-                    val date = when (artwork) {
-
-                        is FluxMovie -> {
-                            artwork.file.addedDate
-                        }
-
-                        is FluxShow -> {
-                            episodes.filter { artwork.id == it.showId }.maxOf { it.file.addedDate }
-                        }
-
-                        else -> artwork.releaseDate
-                    }
-
-                    date
-
-                }
-
-            }
+            SortOrder.ADDED_DATE -> getArtworksByAddedDate(artworks = artworks, episodes = episodes)
         }
 
     }
@@ -104,6 +89,43 @@ class LibraryViewModel @Inject constructor(
         viewModelScope.launch {
             dataStoreRepository.addWatchedArtwork(id)
         }
+    }
+
+    private fun getArtworksByAddedDate(
+        artworks: List<FluxArtworkSummary>,
+        episodes: List<FluxEpisode>,
+    ) : List<FluxArtworkSummary> {
+
+        return artworks.sortedByDescending { artwork ->
+
+            val date = when (artwork) {
+
+                is FluxMovie -> {
+                    artwork.file.addedDate
+                }
+
+                is FluxShow -> {
+                    episodes.filter { artwork.id == it.showId }.maxOf { it.file.addedDate }
+                }
+
+                else -> artwork.releaseDate
+            }
+
+            date
+
+        }
+
+    }
+
+    private fun getPromotedArtworkIds(
+        artworks: List<FluxArtworkSummary>,
+        episodes: List<FluxEpisode>,
+        lastWatchedIds: List<Int>
+    ) : List<Int> {
+
+        val byAddedDate = getArtworksByAddedDate(artworks = artworks, episodes = episodes).map { it.id }
+        return (lastWatchedIds + byAddedDate).distinct().take(4)
+
     }
 
 }

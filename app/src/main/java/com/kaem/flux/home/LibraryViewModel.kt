@@ -1,15 +1,10 @@
 package com.kaem.flux.home
 
-import android.util.Log
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.kaem.flux.data.repository.DataStoreRepository
 import com.kaem.flux.data.repository.LibraryRepository
-import com.kaem.flux.data.repository.SortOrder
 import com.kaem.flux.model.flux.FluxArtworkSummary
 import com.kaem.flux.model.flux.FluxEpisode
 import com.kaem.flux.model.flux.FluxMovie
@@ -22,8 +17,7 @@ import javax.inject.Inject
 data class LibraryUiState(
     val artworks: List<FluxArtworkSummary> = emptyList(),
     val episodes: List<FluxEpisode> = emptyList(),
-    val sortOrder: SortOrder = SortOrder.RELEASE_DATE,
-    val promotedArtworkIds: List<Int> = emptyList(),
+    val lastWatchedArtworkIds: List<Int> = emptyList(),
     val isLoading: Boolean = true
 )
 
@@ -41,47 +35,18 @@ class LibraryViewModel @Inject constructor(
     ) { libraryContent, preferences ->
 
         return@combine LibraryUiState(
-            artworks = sortedArtworks(
-                artworks = libraryContent.artworks,
-                episodes = libraryContent.episodes,
-                sortOrder = preferences.sortOrder
-            ),
+            artworks = libraryContent.artworks,
             episodes = libraryContent.episodes,
-            sortOrder = preferences.sortOrder,
-            promotedArtworkIds = getPromotedArtworkIds(
-                artworks = libraryContent.artworks,
-                episodes = libraryContent.episodes,
-                lastWatchedIds = preferences.lastWatchedIds
-            ),
+            lastWatchedArtworkIds = preferences.lastWatchedIds,
             isLoading = libraryContent.isLoading
         )
 
     }
     val libraryUiState = libraryUiStateFlow.asLiveData()
 
-    private fun sortedArtworks(
-        artworks: List<FluxArtworkSummary>,
-        episodes: List<FluxEpisode>,
-        sortOrder: SortOrder
-    ) : List<FluxArtworkSummary> {
-
-        return when (sortOrder) {
-            SortOrder.NAME -> artworks.sortedBy { it.title }
-            SortOrder.RELEASE_DATE -> artworks.sortedByDescending { it.releaseDate }
-            SortOrder.ADDED_DATE -> getArtworksByAddedDate(artworks = artworks, episodes = episodes)
-        }
-
-    }
-
     fun getLibrary() {
         viewModelScope.launch {
             repository.getLibrary()
-        }
-    }
-
-    fun applySort(sortOrder: SortOrder) {
-        viewModelScope.launch {
-            dataStoreRepository.updateSortOrder(sortOrder)
         }
     }
 
@@ -91,7 +56,7 @@ class LibraryViewModel @Inject constructor(
         }
     }
 
-    private fun getArtworksByAddedDate(
+    fun getArtworksByAddedDate(
         artworks: List<FluxArtworkSummary>,
         episodes: List<FluxEpisode>,
     ) : List<FluxArtworkSummary> {
@@ -114,17 +79,6 @@ class LibraryViewModel @Inject constructor(
             date
 
         }
-
-    }
-
-    private fun getPromotedArtworkIds(
-        artworks: List<FluxArtworkSummary>,
-        episodes: List<FluxEpisode>,
-        lastWatchedIds: List<Int>
-    ) : List<Int> {
-
-        val byAddedDate = getArtworksByAddedDate(artworks = artworks, episodes = episodes).map { it.id }
-        return (lastWatchedIds + byAddedDate).distinct().take(4)
 
     }
 

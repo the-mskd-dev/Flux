@@ -2,7 +2,7 @@
     <string name="app_name">Flux</string>
 
     <string name="give_permission">Grant permissions</string>
-    <string name="sort_by_name">By name</string>
-    <string name="sort_by_release_date">By release date</string>
-    <string name="sort_by_added_date">By added date</string>
+    <string name="last_added">Latest additions</string>
+    <string name="movies">Movies</string>
+    <string name="shows">Shows</string>
 </resources>

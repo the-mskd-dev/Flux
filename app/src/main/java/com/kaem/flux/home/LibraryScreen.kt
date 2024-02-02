@@ -162,18 +162,18 @@ fun LibraryGrid(
         )
 
         ArtworkList(
-            name = "Derniers ajouts",
+            name = stringResource(id = R.string.last_added),
             artworks = viewModel.getArtworksByAddedDate(artworks = artworks, episodes = episodes)
         )
 
         ArtworkList(
-            name = "Séries",
-            artworks = artworks.filterIsInstance<FluxMovie>()
+            name = stringResource(id = R.string.shows),
+            artworks = artworks.filterIsInstance<FluxShow>()
         )
 
         ArtworkList(
-            name = "Films",
-            artworks = artworks.filterIsInstance<FluxShow>()
+            name = stringResource(id = R.string.movies),
+            artworks = artworks.filterIsInstance<FluxMovie>()
         )
 
         Spacer(

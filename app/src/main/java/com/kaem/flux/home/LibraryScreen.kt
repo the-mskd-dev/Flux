@@ -62,10 +62,10 @@ import com.kaem.flux.utils.Constants
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun LibraryScreen(
-    navigateToDetails: (Int) -> Unit
+    navigateToDetails: (Int) -> Unit,
+    viewModel: LibraryViewModel = hiltViewModel()
 ) {
 
-    val viewModel = hiltViewModel<LibraryViewModel>()
     val uiState by viewModel.libraryUiState.observeAsState()
     val permissionState = libraryPermissionState()
 
@@ -251,8 +251,7 @@ fun ArtworkList(
 fun LibraryArtwork(
     modifier: Modifier = Modifier,
     artworkSummary: FluxArtworkSummary,
-    largeArtwork: Boolean = false,
-    viewModel: LibraryViewModel = hiltViewModel()
+    largeArtwork: Boolean = false
 ) {
 
     val width = if (largeArtwork) 450.dp else 120.dp
@@ -264,12 +263,7 @@ fun LibraryArtwork(
             .then(modifier)
             .clip(RoundedCornerShape(8.dp))
             .width(width)
-            .aspectRatio(ratio)
-            .clickable {
-
-                viewModel.addWatchedArtwork(artworkSummary.id)
-
-            },
+            .aspectRatio(ratio),
         model = url,
         contentDescription = artworkSummary.title,
         loading = placeholder(ColorPainter(Color.LightGray))

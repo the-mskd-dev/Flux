@@ -16,7 +16,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 object Screen {
     const val LIBRARY = "library"
-    const val DETAILS = "details"
+    const val DETAILS = "details/{artworkId}"
 }
 
 @AndroidEntryPoint
@@ -41,7 +41,12 @@ class MainActivity : ComponentActivity() {
                         )
                     }
 
-                    composable(Screen.DETAILS) { DetailsScreen() }
+                    composable(Screen.DETAILS) { backStackEntry ->
+                        DetailsScreen(
+                            artworkId = backStackEntry.arguments?.getInt("artworkId", -1) ?: -1
+                        )
+
+                    }
 
                 }
 

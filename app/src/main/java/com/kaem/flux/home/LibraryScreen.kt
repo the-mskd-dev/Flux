@@ -41,6 +41,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
@@ -62,7 +63,7 @@ import com.kaem.flux.utils.Constants
 @Composable
 fun LibraryScreen() {
 
-    val viewModel = viewModel<LibraryViewModel>()
+    val viewModel = hiltViewModel<LibraryViewModel>()
     val uiState by viewModel.libraryUiState.observeAsState()
     val permissionState = libraryPermissionState()
 
@@ -239,7 +240,7 @@ fun LibraryArtwork(
     modifier: Modifier = Modifier,
     artworkSummary: FluxArtworkSummary,
     largeArtwork: Boolean = false,
-    viewModel: LibraryViewModel = viewModel()
+    viewModel: LibraryViewModel = hiltViewModel()
 ) {
 
     val width = if (largeArtwork) 450.dp else 120.dp

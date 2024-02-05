@@ -14,8 +14,14 @@ import com.kaem.flux.home.LibraryScreen
 import com.kaem.flux.ui.theme.FluxTheme
 import dagger.hilt.android.AndroidEntryPoint
 
+object Screen {
+    const val LIBRARY = "library"
+    const val DETAILS = "details"
+}
+
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -27,11 +33,11 @@ class MainActivity : ComponentActivity() {
 
                 val navController = rememberNavController()
                 
-                NavHost(navController = navController, startDestination = "library") {
+                NavHost(navController = navController, startDestination = Screen.LIBRARY) {
 
-                    composable("library") { LibraryScreen() }
+                    composable(Screen.LIBRARY) { LibraryScreen() }
 
-                    composable("details") { DetailsScreen() }
+                    composable(Screen.DETAILS) { DetailsScreen() }
 
                 }
 

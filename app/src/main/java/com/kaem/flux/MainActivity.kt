@@ -35,7 +35,11 @@ class MainActivity : ComponentActivity() {
                 
                 NavHost(navController = navController, startDestination = Screen.LIBRARY) {
 
-                    composable(Screen.LIBRARY) { LibraryScreen() }
+                    composable(Screen.LIBRARY) {
+                        LibraryScreen(
+                            navigateToDetails = { navController.navigate(Screen.DETAILS) }
+                        )
+                    }
 
                     composable(Screen.DETAILS) { DetailsScreen() }
 

@@ -61,7 +61,9 @@ import com.kaem.flux.utils.Constants
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun LibraryScreen() {
+fun LibraryScreen(
+    navigateToDetails: (Int) -> Unit
+) {
 
     val viewModel = hiltViewModel<LibraryViewModel>()
     val uiState by viewModel.libraryUiState.observeAsState()
@@ -91,7 +93,8 @@ fun LibraryScreen() {
                 false -> LibraryContent(
                     artworks = uiState?.artworks.orEmpty(),
                     episodes = uiState?.episodes.orEmpty(),
-                    lastWatchedIds = uiState?.lastWatchedArtworkIds.orEmpty()
+                    lastWatchedIds = uiState?.lastWatchedArtworkIds.orEmpty(),
+                    navigateToDetails = { navigateToDetails(it) }
                 )
 
             }
@@ -106,7 +109,8 @@ fun LibraryScreen() {
 fun LibraryContent(
     artworks: List<FluxArtworkSummary>,
     episodes: List<FluxEpisode>,
-    lastWatchedIds: List<Int>
+    lastWatchedIds: List<Int>,
+    navigateToDetails: (Int) -> Unit
 ) {
 
     if (artworks.isEmpty()) {
@@ -129,7 +133,8 @@ fun LibraryContent(
         LibraryGrid(
             artworks = artworks,
             episodes = episodes,
-            lastWatchedIds = lastWatchedIds
+            lastWatchedIds = lastWatchedIds,
+            navigateToDetails = { navigateToDetails(it) }
         )
 
     }
@@ -141,6 +146,7 @@ fun LibraryGrid(
     artworks: List<FluxArtworkSummary>,
     episodes: List<FluxEpisode>,
     lastWatchedIds: List<Int>,
+    navigateToDetails: (Int) -> Unit,
     viewModel: LibraryViewModel = viewModel()
 ) {
 
@@ -159,22 +165,26 @@ fun LibraryGrid(
 
         ArtworkList(
             artworks = artworks.filter { lastWatchedIds.contains(it.id) },
-            largeArtwork = true
+            largeArtwork = true,
+            navigateToDetails = navigateToDetails
         )
 
         ArtworkList(
             name = stringResource(id = R.string.last_added),
-            artworks = viewModel.getArtworksByAddedDate(artworks = artworks, episodes = episodes)
+            artworks = viewModel.getArtworksByAddedDate(artworks = artworks, episodes = episodes),
+            navigateToDetails = navigateToDetails
         )
 
         ArtworkList(
             name = stringResource(id = R.string.shows),
-            artworks = artworks.filterIsInstance<FluxShow>()
+            artworks = artworks.filterIsInstance<FluxShow>(),
+            navigateToDetails = navigateToDetails
         )
 
         ArtworkList(
             name = stringResource(id = R.string.movies),
-            artworks = artworks.filterIsInstance<FluxMovie>()
+            artworks = artworks.filterIsInstance<FluxMovie>(),
+            navigateToDetails = navigateToDetails
         )
 
         Spacer(
@@ -191,7 +201,8 @@ fun LibraryGrid(
 fun ArtworkList(
     name: String? = null,
     largeArtwork: Boolean = false,
-    artworks: List<FluxArtworkSummary>
+    artworks: List<FluxArtworkSummary>,
+    navigateToDetails: (Int) -> Unit
 ) {
 
     if (artworks.isEmpty())
@@ -223,6 +234,7 @@ fun ArtworkList(
             items(artworks, key = { it.id }) {
 
                 LibraryArtwork(
+                    modifier = Modifier.clickable { navigateToDetails(it.id) },
                     artworkSummary = it,
                     largeArtwork = largeArtwork
                 )

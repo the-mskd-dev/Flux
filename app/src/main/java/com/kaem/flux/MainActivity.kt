@@ -6,7 +6,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.kaem.flux.details.DetailsScreen
 import com.kaem.flux.home.LibraryScreen
 import com.kaem.flux.ui.theme.FluxTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -23,8 +26,14 @@ class MainActivity : ComponentActivity() {
             FluxTheme {
 
                 val navController = rememberNavController()
+                
+                NavHost(navController = navController, startDestination = "library") {
 
-                LibraryScreen()
+                    composable("library") { LibraryScreen() }
+
+                    composable("details") { DetailsScreen() }
+
+                }
 
             }
 

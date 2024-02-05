@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.navigation.compose.rememberNavController
 import com.kaem.flux.home.LibraryScreen
 import com.kaem.flux.ui.theme.FluxTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -20,6 +21,8 @@ class MainActivity : ComponentActivity() {
         setContent {
 
             FluxTheme {
+
+                val navController = rememberNavController()
 
                 LibraryScreen()
 

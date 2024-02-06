@@ -67,6 +67,7 @@ dependencies {
     implementation("androidx.compose.runtime:runtime-livedata")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
     implementation("androidx.navigation:navigation-compose:2.7.6")
+    implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
 
     // Accompanist
     implementation("com.google.accompanist:accompanist-permissions:0.32.0")

@@ -55,7 +55,13 @@ class MainActivity : ComponentActivity() {
                         arguments = listOf(navArgument("artworkId") { type = NavType.IntType })
                     ) {
                         DetailsScreen(
-                            artworkId = it.arguments?.getInt("artworkId", -1) ?: -1
+                            artworkId = it.arguments?.getInt("artworkId", -1) ?: -1,
+                            onBackButtonTap = {
+
+                                if (navController.currentBackStackEntry != null)
+                                    navController.popBackStack()
+
+                            }
                         )
                     }
 

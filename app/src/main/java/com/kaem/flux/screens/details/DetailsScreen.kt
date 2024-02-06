@@ -1,9 +1,21 @@
 package com.kaem.flux.screens.details
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -12,12 +24,26 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
+import com.kaem.flux.model.flux.FluxArtworkDetails
 import com.kaem.flux.screens.home.LibraryViewModel
+import com.kaem.flux.ui.component.FluxButton
+import com.kaem.flux.utils.Constants
 
 @Composable
 fun DetailsScreen(
     artworkId: Int,
+    onBackButtonTap: () -> Unit,
     viewModel: DetailsViewModel = hiltViewModel()
 ) {
 
@@ -25,15 +51,105 @@ fun DetailsScreen(
         viewModel.getArtworks(artworkId)
     }
 
+    val uiState = viewModel.uiState
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
 
+        DetailsHeader(
+            imagePath = Constants.TMDB.IMAGE + uiState?.artwork?.bannerPath.orEmpty(),
+            artworkTitle = uiState?.artwork?.title.orEmpty(),
+            onBackButtonTap = { onBackButtonTap() },
+            onLaunchButtonTap = {}
+        )
 
+    }
 
+}
 
+@OptIn(ExperimentalGlideComposeApi::class)
+@Composable
+fun DetailsHeader(
+    imagePath: String,
+    artworkTitle: String,
+    onBackButtonTap: () -> Unit,
+    onLaunchButtonTap: () -> Unit
+) {
+
+    ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
+
+        val (image, back, title, button) = createRefs()
+
+        GlideImage(
+            modifier = Modifier
+                .constrainAs(image) {
+                    top.linkTo(parent.top)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                    width = Dimension.fillToConstraints
+                }
+                .aspectRatio(6f/5f),
+            model = imagePath,
+            contentScale = ContentScale.Crop,
+            contentDescription = artworkTitle
+        )
+
+        Box(
+            modifier = Modifier
+                .statusBarsPadding()
+                .constrainAs(back) {
+                    top.linkTo(parent.top)
+                    start.linkTo(parent.start, 24.dp)
+                }
+                .size(40.dp)
+                .clip(shape = CircleShape)
+                .clickable { onBackButtonTap() }
+                .border(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    shape = CircleShape
+                )
+                .background(color = MaterialTheme.colorScheme.background)
+                .padding(4.dp),
+            contentAlignment = Alignment.Center
+        ) {
+
+            Icon(
+                imageVector = Icons.Rounded.ArrowBack,
+                tint = MaterialTheme.colorScheme.onBackground,
+                contentDescription = "back button"
+            )
+
+        }
+
+        FluxButton(
+            modifier = Modifier
+                .clip(shape = RoundedCornerShape(.5f))
+                .constrainAs(button) {
+                    top.linkTo(image.bottom)
+                    bottom.linkTo(image.bottom)
+                    end.linkTo(parent.end, 24.dp)
+                },
+            text = "Continue",
+            onClick = { onLaunchButtonTap() }
+        )
+
+        Text(
+            modifier = Modifier.constrainAs(title) {
+                top.linkTo(button.bottom, 4.dp)
+                start.linkTo(parent.start, 24.dp)
+                end.linkTo(parent.end, 24.dp)
+                width = Dimension.fillToConstraints
+            },
+            text = artworkTitle,
+            color = MaterialTheme.colorScheme.onBackground,
+            fontWeight = FontWeight.W600,
+            fontSize = 20.sp,
+            textAlign = TextAlign.Start
+        )
 
     }
 

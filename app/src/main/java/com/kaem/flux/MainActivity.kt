@@ -11,8 +11,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.kaem.flux.details.DetailsScreen
-import com.kaem.flux.home.LibraryScreen
+import com.kaem.flux.screens.details.DetailsScreen
+import com.kaem.flux.screens.home.LibraryScreen
 import com.kaem.flux.ui.theme.FluxTheme
 import dagger.hilt.android.AndroidEntryPoint
 

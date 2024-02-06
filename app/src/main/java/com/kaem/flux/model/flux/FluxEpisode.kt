@@ -22,7 +22,7 @@ data class FluxEpisode(
     override val voteCount: Int,
     override var isWatched: Boolean = false,
     override val file: UserFile
-) : FluxArtwork {
+) : FluxArtworkDetails {
 
     @Transient
     @Ignore

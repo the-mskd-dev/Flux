@@ -2,8 +2,6 @@ package com.kaem.flux.model.flux
 
 import com.kaem.flux.model.UserFile
 import com.kaem.flux.model.tmdb.TMDBMovie
-import com.kaem.flux.utils.parseTMDBDate
-import java.util.Date
 
 class FluxMovie(
     id: Int,
@@ -18,13 +16,13 @@ class FluxMovie(
     override var isWatched: Boolean = false,
     override val file: UserFile,
     val genres: List<String> = listOf(),
-) : FluxArtworkSummary(
+) : FluxArtwork(
     id = id,
     title = title,
     imagePath = imagePath,
     bannerPath = bannerPath,
     releaseDateString = releaseDateString
-), FluxArtwork {
+), FluxArtworkDetails {
 
     constructor(
         tmdbMovie: TMDBMovie,

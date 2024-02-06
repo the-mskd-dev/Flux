@@ -2,8 +2,6 @@ package com.kaem.flux.screens.home
 
 import android.os.Build
 import androidx.compose.animation.Crossfade
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,8 +18,6 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -36,7 +32,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -51,7 +46,7 @@ import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.kaem.flux.R
-import com.kaem.flux.model.flux.FluxArtworkSummary
+import com.kaem.flux.model.flux.FluxArtwork
 import com.kaem.flux.model.flux.FluxEpisode
 import com.kaem.flux.model.flux.FluxMovie
 import com.kaem.flux.model.flux.FluxShow
@@ -108,7 +103,7 @@ fun LibraryScreen(
 
 @Composable
 fun LibraryContent(
-    artworks: List<FluxArtworkSummary>,
+    artworks: List<FluxArtwork>,
     episodes: List<FluxEpisode>,
     lastWatchedIds: List<Int>,
     navigateToDetails: (Int) -> Unit
@@ -144,7 +139,7 @@ fun LibraryContent(
 
 @Composable
 fun LibraryGrid(
-    artworks: List<FluxArtworkSummary>,
+    artworks: List<FluxArtwork>,
     episodes: List<FluxEpisode>,
     lastWatchedIds: List<Int>,
     navigateToDetails: (Int) -> Unit,
@@ -202,7 +197,7 @@ fun LibraryGrid(
 fun ArtworkList(
     name: String? = null,
     largeArtwork: Boolean = false,
-    artworks: List<FluxArtworkSummary>,
+    artworks: List<FluxArtwork>,
     navigateToDetails: (Int) -> Unit
 ) {
 
@@ -251,7 +246,7 @@ fun ArtworkList(
 @Composable
 fun LibraryArtwork(
     modifier: Modifier = Modifier,
-    artworkSummary: FluxArtworkSummary,
+    artworkSummary: FluxArtwork,
     largeArtwork: Boolean = false
 ) {
 

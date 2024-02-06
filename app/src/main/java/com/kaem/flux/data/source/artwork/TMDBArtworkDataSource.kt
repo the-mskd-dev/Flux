@@ -4,7 +4,7 @@ import com.kaem.flux.data.ddb.DatabaseManager
 import com.kaem.flux.data.tmdb.TMDBService
 import com.kaem.flux.model.FileNameProperties
 import com.kaem.flux.model.UserFile
-import com.kaem.flux.model.flux.FluxArtworkSummary
+import com.kaem.flux.model.flux.FluxArtwork
 import com.kaem.flux.model.flux.FluxEpisode
 import com.kaem.flux.model.flux.FluxMovie
 import com.kaem.flux.model.flux.FluxShow
@@ -24,7 +24,7 @@ class TMDBArtworkDataSource @Inject constructor(
 ) : ArtworkDataSource {
 
     private val mutexArtworks = Mutex()
-    private val artworks = arrayListOf<FluxArtworkSummary>()
+    private val artworks = arrayListOf<FluxArtwork>()
 
     private val mutexEpisodes = Mutex()
     private val episodes = arrayListOf<FluxEpisode>()
@@ -32,7 +32,7 @@ class TMDBArtworkDataSource @Inject constructor(
     override suspend fun getArtworks(
         files: List<UserFile>,
         artworkIds: List<Int>
-    ): Pair<List<FluxArtworkSummary>, List<FluxEpisode>> {
+    ): Pair<List<FluxArtwork>, List<FluxEpisode>> {
 
         getArtworksFromFiles(files = files)
 
@@ -194,7 +194,7 @@ class TMDBArtworkDataSource @Inject constructor(
 
     //region Lists
 
-    private suspend fun addArtworkSummary(artworkSummary: FluxArtworkSummary) {
+    private suspend fun addArtworkSummary(artworkSummary: FluxArtwork) {
         mutexArtworks.withLock {
             if (artworks.none { it.id == artworkSummary.id })
                 artworks.add(artworkSummary)

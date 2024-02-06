@@ -4,7 +4,7 @@ import com.kaem.flux.model.UserFile
 import com.kaem.flux.utils.parseTMDBDate
 import java.util.Date
 
-abstract class FluxArtworkSummary(
+abstract class FluxArtwork(
     val id: Int,
     val title: String,
     val imagePath: String,
@@ -16,7 +16,7 @@ abstract class FluxArtworkSummary(
 
 }
 
-interface FluxArtwork {
+interface FluxArtworkDetails {
     val description: String
     val voteAverage: Float
     val voteCount: Int

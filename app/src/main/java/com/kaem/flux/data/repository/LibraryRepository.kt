@@ -1,32 +1,21 @@
 package com.kaem.flux.data.repository
 
-import android.util.Log
-import com.kaem.flux.data.ddb.DatabaseManager
 import com.kaem.flux.data.source.artwork.ArtworkDataSource
 import com.kaem.flux.data.source.file.FilesDataSource
-import com.kaem.flux.data.tmdb.TMDBService
-import com.kaem.flux.model.FileNameProperties
 import com.kaem.flux.model.UserFile
-import com.kaem.flux.model.flux.FluxArtworkSummary
+import com.kaem.flux.model.flux.FluxArtwork
 import com.kaem.flux.model.flux.FluxEpisode
 import com.kaem.flux.model.flux.FluxMovie
-import com.kaem.flux.model.flux.FluxShow
-import com.kaem.flux.model.tmdb.TMDBArtwork
-import com.kaem.flux.model.tmdb.TMDBMediaType
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 data class LibraryContent(
     val isLoading: Boolean = true,
-    val artworks: List<FluxArtworkSummary> = emptyList(),
+    val artworks: List<FluxArtwork> = emptyList(),
     val episodes: List<FluxEpisode> = emptyList()
 )
 

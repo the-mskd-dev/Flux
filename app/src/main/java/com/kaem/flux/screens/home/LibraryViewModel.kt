@@ -5,7 +5,7 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.kaem.flux.data.repository.DataStoreRepository
 import com.kaem.flux.data.repository.LibraryRepository
-import com.kaem.flux.model.flux.FluxArtworkSummary
+import com.kaem.flux.model.flux.FluxArtwork
 import com.kaem.flux.model.flux.FluxEpisode
 import com.kaem.flux.model.flux.FluxMovie
 import com.kaem.flux.model.flux.FluxShow
@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class LibraryUiState(
-    val artworks: List<FluxArtworkSummary> = emptyList(),
+    val artworks: List<FluxArtwork> = emptyList(),
     val episodes: List<FluxEpisode> = emptyList(),
     val lastWatchedArtworkIds: List<Int> = emptyList(),
     val isLoading: Boolean = true
@@ -59,9 +59,9 @@ class LibraryViewModel @Inject constructor(
     }
 
     fun getArtworksByAddedDate(
-        artworks: List<FluxArtworkSummary>,
+        artworks: List<FluxArtwork>,
         episodes: List<FluxEpisode>,
-    ) : List<FluxArtworkSummary> {
+    ) : List<FluxArtwork> {
 
         return artworks.sortedByDescending { artwork ->
 

@@ -1,8 +1,6 @@
 package com.kaem.flux.model.flux
 
 import com.kaem.flux.model.tmdb.TMDBArtwork
-import com.kaem.flux.utils.parseTMDBDate
-import java.util.Date
 
 class FluxShow(
     id: Int,
@@ -10,7 +8,7 @@ class FluxShow(
     imagePath: String,
     bannerPath: String,
     releaseDateString: String
-) : FluxArtworkSummary(
+) : FluxArtwork(
     id = id,
     title = title,
     imagePath = imagePath,

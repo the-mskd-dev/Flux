@@ -3,7 +3,6 @@ package com.kaem.flux.data.ddb
 import androidx.room.ColumnInfo
 import androidx.room.Dao
 import androidx.room.Database
-import androidx.room.Delete
 import androidx.room.Entity
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -11,7 +10,7 @@ import androidx.room.PrimaryKey
 import androidx.room.Query
 import androidx.room.RoomDatabase
 import com.google.gson.Gson
-import com.kaem.flux.model.flux.FluxArtworkSummary
+import com.kaem.flux.model.flux.FluxArtwork
 import com.kaem.flux.model.flux.FluxEpisode
 import com.kaem.flux.model.flux.FluxMovie
 import com.kaem.flux.model.flux.FluxShow
@@ -91,7 +90,7 @@ class DatabaseManager(
     val fluxDao: FluxDao
 ) {
 
-    suspend fun saveArtworks(artworks: List<FluxArtworkSummary>) {
+    suspend fun saveArtworks(artworks: List<FluxArtwork>) {
 
         val movies = artworks.filterIsInstance<FluxMovie>()
         val shows = artworks.filterIsInstance<FluxShow>()
@@ -156,7 +155,7 @@ class DatabaseManager(
 
     }
 
-    suspend fun getAllArtworks() : List<FluxArtworkSummary> {
+    suspend fun getAllArtworks() : List<FluxArtwork> {
 
         var movies = listOf<FluxMovie>()
         var shows = listOf<FluxShow>()

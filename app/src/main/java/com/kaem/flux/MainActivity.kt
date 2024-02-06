@@ -43,11 +43,10 @@ class MainActivity : ComponentActivity() {
                     composable(
                         "details/{artworkId}",
                         arguments = listOf(navArgument("artworkId") { type = NavType.IntType })
-                    ) { backStackEntry ->
+                    ) {
                         DetailsScreen(
-                            artworkId = backStackEntry.arguments?.getInt("artworkId", -1) ?: -1
+                            artworkId = it.arguments?.getInt("artworkId", -1) ?: -1
                         )
-
                     }
 
                 }

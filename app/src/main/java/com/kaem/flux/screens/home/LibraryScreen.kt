@@ -83,9 +83,7 @@ fun LibraryScreen(
         }
 
         Crossfade(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background),
+            modifier = Modifier.fillMaxSize(),
             targetState = uiState,
             label = "LibraryAnimation"
         ) {
@@ -279,9 +277,7 @@ fun LibraryArtwork(
 fun LibraryPermissionButton(permissionState: PermissionState) {
 
     Box(
-        modifier = Modifier
-            .background(MaterialTheme.colorScheme.background)
-            .fillMaxSize(),
+        modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
 

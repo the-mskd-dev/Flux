@@ -34,12 +34,14 @@ class LibraryViewModel @Inject constructor(
         dataStorePreferencesFlow
     ) { libraryContent, preferences ->
 
-        return@combine LibraryUiState(
-            artworks = libraryContent.artworks,
-            episodes = libraryContent.episodes,
-            lastWatchedArtworkIds = preferences.lastWatchedIds,
-            isLoading = libraryContent.isLoading
-        )
+        return@combine libraryContent?.let {
+            LibraryUiState(
+                artworks = libraryContent.artworks,
+                episodes = libraryContent.episodes,
+                lastWatchedArtworkIds = preferences.lastWatchedIds,
+                isLoading = libraryContent.isLoading
+            )
+        }
 
     }
     val libraryUiState = libraryUiStateFlow.asLiveData()

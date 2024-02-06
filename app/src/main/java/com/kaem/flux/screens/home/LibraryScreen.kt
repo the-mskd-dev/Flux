@@ -76,25 +76,28 @@ fun LibraryScreen(
     } else {
 
         LaunchedEffect(Unit) {
-            viewModel.getLibrary()
+
+            if (uiState == null)
+                viewModel.getLibrary()
+
         }
 
         Crossfade(
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background),
-            targetState = uiState?.isLoading ?: true,
+            targetState = uiState,
             label = "LibraryAnimation"
         ) {
 
             when (it) {
 
-                true -> Loader()
-                false -> LibraryContent(
-                    artworks = uiState?.artworks.orEmpty(),
-                    episodes = uiState?.episodes.orEmpty(),
-                    lastWatchedIds = uiState?.lastWatchedArtworkIds.orEmpty(),
-                    navigateToDetails = { navigateToDetails(it) }
+                null -> Loader()
+                else -> LibraryContent(
+                    artworks = it.artworks,
+                    episodes = it.episodes,
+                    lastWatchedIds = it.lastWatchedArtworkIds,
+                    navigateToDetails = { id -> navigateToDetails(id) }
                 )
 
             }

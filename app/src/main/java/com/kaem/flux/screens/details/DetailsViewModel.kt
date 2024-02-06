@@ -10,15 +10,8 @@ import javax.inject.Inject
 @HiltViewModel
 class DetailsViewModel @Inject constructor(private val repository: LibraryRepository) : ViewModel() {
 
-    init {
-
-        val artworks = repository.libraryContent.value.artworks
-        Log.d("TEST", "artworks : $artworks")
-
-    }
-
     fun getArtworks(id: Int) : FluxArtworkSummary? {
-        return repository.libraryContent.value.artworks.find { it.id == id }
+        return repository.libraryContent.value?.artworks?.find { it.id == id }
     }
 
 }

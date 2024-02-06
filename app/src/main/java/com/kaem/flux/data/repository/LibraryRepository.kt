@@ -36,12 +36,10 @@ class LibraryRepository @Inject constructor(
     private val tmdbArtworkDataSource: ArtworkDataSource
 ) {
 
-    private val _libraryContent = MutableStateFlow(LibraryContent())
-    val libraryContent: StateFlow<LibraryContent> = _libraryContent.asStateFlow()
+    private val _libraryContent = MutableStateFlow<LibraryContent?>(null)
+    val libraryContent: StateFlow<LibraryContent?> = _libraryContent.asStateFlow()
 
     suspend fun getLibrary() {
-
-        _libraryContent.value = LibraryContent()
 
         val allFiles = getFiles()
 

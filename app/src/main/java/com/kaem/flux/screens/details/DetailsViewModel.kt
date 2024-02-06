@@ -3,6 +3,7 @@ package com.kaem.flux.screens.details
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.kaem.flux.data.repository.LibraryRepository
 import com.kaem.flux.model.flux.FluxArtwork
@@ -19,10 +20,21 @@ data class DetailsUiState(
 )
 
 @HiltViewModel
-class DetailsViewModel @Inject constructor(private val repository: LibraryRepository) : ViewModel() {
+class DetailsViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
+    private val repository: LibraryRepository
+) : ViewModel() {
+
+    private val artworkId: Int = checkNotNull(savedStateHandle["artworkId"])
 
     var uiState by mutableStateOf<DetailsUiState?>(null)
         private set
+
+    init {
+
+        getArtworks(artworkId)
+
+    }
 
     fun getArtworks(id: Int) {
 

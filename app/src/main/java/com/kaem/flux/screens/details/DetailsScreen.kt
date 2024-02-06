@@ -42,14 +42,9 @@ import com.kaem.flux.utils.Constants
 
 @Composable
 fun DetailsScreen(
-    artworkId: Int,
     onBackButtonTap: () -> Unit,
     viewModel: DetailsViewModel = hiltViewModel()
 ) {
-
-    LaunchedEffect(artworkId) {
-        viewModel.getArtworks(artworkId)
-    }
 
     val uiState = viewModel.uiState
 

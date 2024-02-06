@@ -20,9 +20,7 @@ fun DetailsScreen(
     viewModel: DetailsViewModel = hiltViewModel()
 ) {
 
-    val artwork = viewModel.getArtworks(artworkId)
-
-    /*Column(
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
@@ -30,17 +28,7 @@ fun DetailsScreen(
 
 
 
-    }*/
 
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-
-        Text(
-            text = artwork?.title ?: "DetailsScreen",
-            color = MaterialTheme.colorScheme.onBackground
-        )
 
     }
 

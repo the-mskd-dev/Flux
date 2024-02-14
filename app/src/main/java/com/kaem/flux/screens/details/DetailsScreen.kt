@@ -22,9 +22,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -41,6 +43,9 @@ import com.kaem.flux.ui.component.Title
 import com.kaem.flux.ui.theme.FluxFontSize
 import com.kaem.flux.ui.theme.FluxSpace
 import com.kaem.flux.utils.Constants
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.Date
 
 @Composable
 fun DetailsScreen(
@@ -60,6 +65,7 @@ fun DetailsScreen(
         DetailsHeader(
             imagePath = Constants.TMDB.IMAGE + uiState?.artwork?.bannerPath.orEmpty(),
             artworkTitle = uiState?.artwork?.title.orEmpty(),
+            releaseDate = uiState?.artwork?.releaseDate,
             onBackButtonTap = { onBackButtonTap() },
             onLaunchButtonTap = {}
         )
@@ -83,13 +89,14 @@ fun DetailsScreen(
 fun DetailsHeader(
     imagePath: String,
     artworkTitle: String,
+    releaseDate: Date?,
     onBackButtonTap: () -> Unit,
     onLaunchButtonTap: () -> Unit
 ) {
 
     ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
 
-        val (image, back, title, button) = createRefs()
+        val (image, back, title, button, date) = createRefs()
 
         GlideImage(
             modifier = Modifier
@@ -99,7 +106,7 @@ fun DetailsHeader(
                     end.linkTo(parent.end)
                     width = Dimension.fillToConstraints
                 }
-                .aspectRatio(6f/5f),
+                .aspectRatio(6f / 5f),
             model = imagePath,
             contentScale = ContentScale.Crop,
             contentDescription = artworkTitle
@@ -148,13 +155,28 @@ fun DetailsHeader(
 
         Title(
             modifier = Modifier.constrainAs(title) {
-                top.linkTo(button.bottom, 4.dp)
+                top.linkTo(button.bottom, FluxSpace.SMALL)
                 start.linkTo(parent.start, FluxSpace.MEDIUM)
                 end.linkTo(parent.end, FluxSpace.MEDIUM)
                 width = Dimension.fillToConstraints
             },
             text = artworkTitle
         )
+
+        releaseDate?.let {
+            Text(
+                modifier = Modifier
+                    .constrainAs(date) {
+                        top.linkTo(title.bottom, 4.dp)
+                        start.linkTo(title.start)
+                    }
+                    .alpha(.8f),
+                text = DateFormat.getDateInstance().format(it),
+                fontSize = FluxFontSize.SMALL,
+                color = MaterialTheme.colorScheme.onBackground,
+                fontStyle = FontStyle.Italic
+            )
+        }
 
     }
 

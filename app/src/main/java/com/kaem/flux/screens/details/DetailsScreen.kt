@@ -73,20 +73,26 @@ fun DetailsScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
-        verticalArrangement = Arrangement.spacedBy(FluxSpace.LARGE),
         contentPadding = PaddingValues(bottom = 100.dp)
     ) {
 
         item {
-            DetailsHeader(
-                uiState = uiState,
-                onBackButtonTap = { onBackButtonTap() },
-                onLaunchButtonTap = {}
-            )
-        }
 
-        item {
-            DetailsDescription(uiState = uiState)
+            Column(
+                modifier = Modifier.padding(vertical = FluxSpace.LARGE),
+                verticalArrangement = Arrangement.spacedBy(FluxSpace.LARGE)
+            ) {
+
+                DetailsHeader(
+                    uiState = uiState,
+                    onBackButtonTap = { onBackButtonTap() },
+                    onLaunchButtonTap = {}
+                )
+
+                DetailsDescription(uiState = uiState)
+
+            }
+
         }
 
         items(items = uiState.episodes, key = { it.id }, contentType = { it }) {
@@ -275,7 +281,8 @@ fun DetailsEpisode(episode: FluxEpisode) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = FluxSpace.MEDIUM),
+            .padding(horizontal = FluxSpace.MEDIUM)
+            .padding(bottom = FluxSpace.SMALL),
         verticalArrangement = Arrangement.spacedBy(FluxSpace.SMALL)
     ) {
 

@@ -3,6 +3,7 @@ package com.kaem.flux.screens.details
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
@@ -33,6 +34,8 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
+import com.kaem.flux.model.flux.FluxMovie
+import com.kaem.flux.model.flux.FluxShow
 import com.kaem.flux.ui.component.FluxButton
 import com.kaem.flux.ui.theme.FluxFontSize
 import com.kaem.flux.ui.theme.FluxSpace
@@ -49,7 +52,8 @@ fun DetailsScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+            .background(MaterialTheme.colorScheme.background),
+        verticalArrangement = Arrangement.spacedBy(FluxSpace.LARGE)
     ) {
 
         DetailsHeader(
@@ -57,6 +61,18 @@ fun DetailsScreen(
             artworkTitle = uiState?.artwork?.title.orEmpty(),
             onBackButtonTap = { onBackButtonTap() },
             onLaunchButtonTap = {}
+        )
+
+        Text(
+            modifier = Modifier.padding(horizontal = FluxSpace.MEDIUM),
+            text = when (uiState?.artwork) {
+                is FluxMovie -> (uiState.artwork as FluxMovie).description
+                is FluxShow -> uiState.episodes.firstOrNull()?.description.orEmpty()
+                else -> ""
+            },
+            color = MaterialTheme.colorScheme.onBackground,
+            fontSize = FluxFontSize.MEDIUM,
+            textAlign = TextAlign.Start
         )
 
     }

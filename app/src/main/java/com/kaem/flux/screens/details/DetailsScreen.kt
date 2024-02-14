@@ -64,17 +64,15 @@ fun DetailsScreen(
             onLaunchButtonTap = {}
         )
 
-        Text(
-            modifier = Modifier.padding(horizontal = FluxSpace.MEDIUM),
-            text = when (uiState?.artwork) {
-                is FluxMovie -> (uiState.artwork as FluxMovie).description
-                is FluxShow -> uiState.episodes.firstOrNull()?.description.orEmpty()
-                else -> ""
-            },
-            color = MaterialTheme.colorScheme.onBackground,
-            fontSize = FluxFontSize.MEDIUM,
-            textAlign = TextAlign.Start
-        )
+        uiState?.description?.let {
+            Text(
+                modifier = Modifier.padding(horizontal = FluxSpace.MEDIUM),
+                text = it,
+                color = MaterialTheme.colorScheme.onBackground,
+                fontSize = FluxFontSize.MEDIUM,
+                textAlign = TextAlign.Start
+            )
+        }
 
     }
 

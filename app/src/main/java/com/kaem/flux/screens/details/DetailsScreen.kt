@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -23,10 +22,20 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material3.Divider
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -36,10 +45,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -47,16 +54,12 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.placeholder
 import com.kaem.flux.model.flux.FluxEpisode
-import com.kaem.flux.model.flux.FluxMovie
-import com.kaem.flux.model.flux.FluxShow
 import com.kaem.flux.ui.component.FluxButton
 import com.kaem.flux.ui.component.Title
 import com.kaem.flux.ui.theme.FluxFontSize
 import com.kaem.flux.ui.theme.FluxSpace
 import com.kaem.flux.utils.Constants
 import java.text.DateFormat
-import java.text.SimpleDateFormat
-import java.util.Date
 
 @Composable
 fun DetailsScreen(
@@ -68,6 +71,9 @@ fun DetailsScreen(
         onBackButtonTap()
         return
     }
+
+    var selectedSeason by remember { mutableIntStateOf(uiState.currentEpisode?.season ?: -1) }
+    var isExpanded by remember { mutableStateOf(false) }
 
     LazyColumn(
         modifier = Modifier
@@ -95,7 +101,19 @@ fun DetailsScreen(
 
         }
 
-        items(items = uiState.episodes, key = { it.id }, contentType = { it }) {
+        item {
+
+            DetailsSeasonsDropDown(
+                isExpanded = isExpanded,
+                selectedSeason = selectedSeason,
+                seasons = uiState.episodes.map { it.season }.distinct(),
+                onSeasonTap = { selectedSeason = it; isExpanded = false},
+                onExpandedChange = { isExpanded = it }
+            )
+
+        }
+
+        items(items = uiState.episodes.filter { it.season == selectedSeason }, key = { it.id }, contentType = { it }) {
             DetailsEpisode(episode = it)
         }
 
@@ -260,13 +278,49 @@ fun DetailsDescription(uiState: DetailsUiState) {
 
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DetailsEpisodes(uiState: DetailsUiState) {
+fun DetailsSeasonsDropDown(
+    isExpanded: Boolean,
+    selectedSeason: Int,
+    seasons: List<Int>,
+    onSeasonTap: (Int) -> Unit,
+    onExpandedChange: (Boolean) -> Unit
+) {
 
-    if (uiState.episodes.isEmpty())
-        return
+    ExposedDropdownMenuBox(
+        modifier = Modifier.padding(FluxSpace.MEDIUM),
+        expanded = isExpanded,
+        onExpandedChange = { onExpandedChange(it) }
+    ) {
 
+        TextField(
+            value = "Saison $selectedSeason",
+            onValueChange = {},
+            readOnly = true,
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded) },
+            placeholder = { Text(text = "Sélectionnez une saison") },
+            colors = ExposedDropdownMenuDefaults.textFieldColors(),
+            modifier = Modifier.menuAnchor()
+        )
 
+        ExposedDropdownMenu(
+            expanded = isExpanded,
+            onDismissRequest = { onExpandedChange(false) }
+        ) {
+
+            seasons.sorted().forEach {
+                DropdownMenuItem(
+                    text = { Text(text = "Saison $it") },
+                    onClick = {
+                        onSeasonTap(it)
+                    }
+                )
+            }
+
+        }
+
+    }
 
 }
 

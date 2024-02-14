@@ -45,7 +45,7 @@ data class FluxEpisode(
         duration = tmdbEpisode.duration,
         voteAverage = tmdbEpisode.voteAverage,
         voteCount = tmdbEpisode.voteCount,
-        isWatched = false,
+        status = FluxStatus.NOT_WATCHED,
         file = file
     )
 }

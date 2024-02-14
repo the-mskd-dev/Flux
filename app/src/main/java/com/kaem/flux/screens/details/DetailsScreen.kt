@@ -6,17 +6,23 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -26,6 +32,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -37,6 +45,8 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
+import com.bumptech.glide.integration.compose.placeholder
+import com.kaem.flux.model.flux.FluxEpisode
 import com.kaem.flux.model.flux.FluxMovie
 import com.kaem.flux.model.flux.FluxShow
 import com.kaem.flux.ui.component.FluxButton
@@ -59,20 +69,29 @@ fun DetailsScreen(
         return
     }
 
-    Column(
+    LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
-        verticalArrangement = Arrangement.spacedBy(FluxSpace.LARGE)
+        verticalArrangement = Arrangement.spacedBy(FluxSpace.LARGE),
+        contentPadding = PaddingValues(bottom = 100.dp)
     ) {
 
-        DetailsHeader(
-            uiState = uiState,
-            onBackButtonTap = { onBackButtonTap() },
-            onLaunchButtonTap = {}
-        )
+        item {
+            DetailsHeader(
+                uiState = uiState,
+                onBackButtonTap = { onBackButtonTap() },
+                onLaunchButtonTap = {}
+            )
+        }
 
-        DetailsDescription(uiState = uiState)
+        item {
+            DetailsDescription(uiState = uiState)
+        }
+
+        items(items = uiState.episodes, key = { it.id }) {
+            DetailsEpisode(episode = it)
+        }
 
     }
 
@@ -195,25 +214,24 @@ fun DetailsTitle(
 @Composable
 fun DetailsDescription(uiState: DetailsUiState) {
 
-    Column(modifier = Modifier
-        .fillMaxWidth()
-        .padding(horizontal = FluxSpace.MEDIUM)
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = FluxSpace.MEDIUM),
+        verticalArrangement = Arrangement.spacedBy(FluxSpace.SMALL)
     ) {
 
         uiState.currentEpisode?.let {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(FluxSpace.SMALL)
-            ) {
+            Column(modifier = Modifier.fillMaxWidth()) {
                 Text(
-                    modifier = Modifier.alignByBaseline(),
+                    modifier = Modifier.fillMaxWidth(),
                     text = it.title,
                     color = MaterialTheme.colorScheme.onBackground,
                     fontSize = FluxFontSize.LARGE
                 )
                 Text(
-                    modifier = Modifier.alignByBaseline(),
-                    text = "- épisode ${it.number}, saison ${it.season}",
+                    modifier = Modifier.fillMaxWidth(),
+                    text = "Épisode ${it.number}, saison ${it.season}",
                     color = MaterialTheme.colorScheme.onBackground,
                     fontSize = FluxFontSize.MEDIUM
                 )
@@ -230,6 +248,73 @@ fun DetailsDescription(uiState: DetailsUiState) {
                 fontSize = FluxFontSize.MEDIUM,
                 textAlign = TextAlign.Start
             )
+        }
+
+    }
+
+}
+
+@Composable
+fun DetailsEpisodes(uiState: DetailsUiState) {
+
+    if (uiState.episodes.isEmpty())
+        return
+
+
+
+}
+
+@OptIn(ExperimentalGlideComposeApi::class)
+@Composable
+fun DetailsEpisode(episode: FluxEpisode) {
+
+    val height = 120.dp
+    val ratio = 3f/2f
+    val url = Constants.TMDB.IMAGE_SMALL + episode.imagePath
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = FluxSpace.MEDIUM),
+        verticalArrangement = Arrangement.spacedBy(FluxSpace.SMALL)
+    ) {
+
+        Divider(
+            modifier = Modifier
+                .fillMaxWidth()
+                .alpha(.2f),
+            color = MaterialTheme.colorScheme.onBackground
+        )
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(FluxSpace.MEDIUM),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+
+            GlideImage(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(8.dp))
+                    .height(height)
+                    .aspectRatio(ratio),
+                model = url,
+                contentDescription = episode.title,
+                loading = placeholder(ColorPainter(Color.LightGray))
+            )
+
+            Column {
+                Text(
+                    text = episode.title,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    fontSize = FluxFontSize.MEDIUM
+                )
+                Text(
+                    text = "Épisode ${episode.number}",
+                    color = MaterialTheme.colorScheme.onBackground,
+                    fontSize = FluxFontSize.SMALL
+                )
+            }
+
         }
 
     }

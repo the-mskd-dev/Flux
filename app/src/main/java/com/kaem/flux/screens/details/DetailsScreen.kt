@@ -19,12 +19,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -35,8 +33,6 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
-import com.kaem.flux.model.flux.FluxArtworkDetails
-import com.kaem.flux.screens.home.LibraryViewModel
 import com.kaem.flux.ui.component.FluxButton
 import com.kaem.flux.utils.Constants
 
@@ -122,6 +118,7 @@ fun DetailsHeader(
 
         FluxButton(
             modifier = Modifier
+                .scale(1.2f)
                 .clip(shape = RoundedCornerShape(.5f))
                 .constrainAs(button) {
                     top.linkTo(image.bottom)

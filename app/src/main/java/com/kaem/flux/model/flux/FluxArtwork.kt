@@ -21,6 +21,6 @@ interface FluxArtworkDetails {
     val voteAverage: Float
     val voteCount: Int
     val duration: Int
-    var isWatched: Boolean
     val file: UserFile
+    var status: FluxStatus
 }

@@ -89,7 +89,7 @@ fun DetailsScreen(
             DetailsDescription(uiState = uiState)
         }
 
-        items(items = uiState.episodes, key = { it.id }) {
+        items(items = uiState.episodes, key = { it.id }, contentType = { it }) {
             DetailsEpisode(episode = it)
         }
 

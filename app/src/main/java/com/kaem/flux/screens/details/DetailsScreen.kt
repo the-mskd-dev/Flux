@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -53,7 +54,10 @@ fun DetailsScreen(
     viewModel: DetailsViewModel = hiltViewModel()
 ) {
 
-    val uiState = viewModel.uiState
+    val uiState = viewModel.uiState ?: run {
+        onBackButtonTap()
+        return
+    }
 
     Column(
         modifier = Modifier
@@ -63,22 +67,12 @@ fun DetailsScreen(
     ) {
 
         DetailsHeader(
-            imagePath = Constants.TMDB.IMAGE + uiState?.artwork?.bannerPath.orEmpty(),
-            artworkTitle = uiState?.artwork?.title.orEmpty(),
-            releaseDate = uiState?.artwork?.releaseDate,
+            uiState = uiState,
             onBackButtonTap = { onBackButtonTap() },
             onLaunchButtonTap = {}
         )
 
-        uiState?.description?.let {
-            Text(
-                modifier = Modifier.padding(horizontal = FluxSpace.MEDIUM),
-                text = it,
-                color = MaterialTheme.colorScheme.onBackground,
-                fontSize = FluxFontSize.MEDIUM,
-                textAlign = TextAlign.Start
-            )
-        }
+        DetailsDescription(uiState = uiState)
 
     }
 
@@ -87,16 +81,14 @@ fun DetailsScreen(
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun DetailsHeader(
-    imagePath: String,
-    artworkTitle: String,
-    releaseDate: Date?,
+    uiState: DetailsUiState,
     onBackButtonTap: () -> Unit,
     onLaunchButtonTap: () -> Unit
 ) {
 
     ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
 
-        val (image, back, title, button, date) = createRefs()
+        val (image, back, title, button) = createRefs()
 
         GlideImage(
             modifier = Modifier
@@ -107,9 +99,9 @@ fun DetailsHeader(
                     width = Dimension.fillToConstraints
                 }
                 .aspectRatio(6f / 5f),
-            model = imagePath,
+            model = Constants.TMDB.IMAGE + uiState.artwork.bannerPath,
             contentScale = ContentScale.Crop,
-            contentDescription = artworkTitle
+            contentDescription = uiState.artwork.title
         )
 
         Box(
@@ -153,28 +145,90 @@ fun DetailsHeader(
             onClick = { onLaunchButtonTap() }
         )
 
-        Title(
+        DetailsTitle(
             modifier = Modifier.constrainAs(title) {
                 top.linkTo(button.bottom, FluxSpace.SMALL)
                 start.linkTo(parent.start, FluxSpace.MEDIUM)
                 end.linkTo(parent.end, FluxSpace.MEDIUM)
                 width = Dimension.fillToConstraints
             },
-            text = artworkTitle
+            uiState = uiState
         )
 
-        releaseDate?.let {
+    }
+
+}
+
+@Composable
+fun DetailsTitle(
+    modifier: Modifier,
+    uiState: DetailsUiState
+) {
+
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.Start,
+        verticalArrangement = Arrangement.spacedBy(2.dp)
+    ) {
+
+        Title(
+            modifier = Modifier.fillMaxWidth(),
+            text = uiState.artwork.title
+        )
+
+        uiState.currentEpisode?.releaseDate ?: uiState.artwork.releaseDate?.let {
             Text(
                 modifier = Modifier
-                    .constrainAs(date) {
-                        top.linkTo(title.bottom, 4.dp)
-                        start.linkTo(title.start)
-                    }
+                    .fillMaxWidth()
                     .alpha(.8f),
                 text = DateFormat.getDateInstance().format(it),
                 fontSize = FluxFontSize.SMALL,
                 color = MaterialTheme.colorScheme.onBackground,
                 fontStyle = FontStyle.Italic
+            )
+        }
+
+    }
+
+}
+
+@Composable
+fun DetailsDescription(uiState: DetailsUiState) {
+
+    Column(modifier = Modifier
+        .fillMaxWidth()
+        .padding(horizontal = FluxSpace.MEDIUM)
+    ) {
+
+        uiState.currentEpisode?.let {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(FluxSpace.SMALL)
+            ) {
+                Text(
+                    modifier = Modifier.alignByBaseline(),
+                    text = it.title,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    fontSize = FluxFontSize.LARGE
+                )
+                Text(
+                    modifier = Modifier.alignByBaseline(),
+                    text = "- épisode ${it.number}, saison ${it.season}",
+                    color = MaterialTheme.colorScheme.onBackground,
+                    fontSize = FluxFontSize.MEDIUM
+                )
+            }
+        }
+
+        uiState.description?.let {
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .alpha(.8f),
+                text = it,
+                color = MaterialTheme.colorScheme.onBackground,
+                fontSize = FluxFontSize.MEDIUM,
+                textAlign = TextAlign.Start
             )
         }
 

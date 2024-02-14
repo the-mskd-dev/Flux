@@ -52,6 +52,8 @@ import com.kaem.flux.model.flux.FluxMovie
 import com.kaem.flux.model.flux.FluxShow
 import com.kaem.flux.ui.component.FluxButton
 import com.kaem.flux.ui.component.Loader
+import com.kaem.flux.ui.theme.FluxFontSize
+import com.kaem.flux.ui.theme.FluxSpace
 import com.kaem.flux.utils.Constants
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -150,13 +152,13 @@ fun LibraryGrid(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(FluxSpace.MEDIUM)
     ) {
 
         Spacer(
             modifier = Modifier
                 .statusBarsPadding()
-                .height(20.dp)
+                .height(FluxSpace.MEDIUM)
         )
 
         ArtworkList(
@@ -186,7 +188,7 @@ fun LibraryGrid(
         Spacer(
             modifier = Modifier
                 .navigationBarsPadding()
-                .height(20.dp)
+                .height(FluxSpace.LARGE)
         )
 
     }
@@ -206,16 +208,16 @@ fun ArtworkList(
 
     Column(
         modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(FluxSpace.MEDIUM)
     ) {
 
         if (name != null) {
 
             Text(
-                modifier = Modifier.padding(start = 12.dp),
+                modifier = Modifier.padding(start = FluxSpace.MEDIUM),
                 text = name,
                 fontWeight = FontWeight.W600,
-                fontSize = 17.sp,
+                fontSize = FluxFontSize.LARGE,
                 color = MaterialTheme.colorScheme.onBackground
             )
 
@@ -223,8 +225,8 @@ fun ArtworkList(
 
         LazyRow(
             modifier = Modifier.fillMaxWidth(),
-            contentPadding = PaddingValues(horizontal = 12.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+            contentPadding = PaddingValues(horizontal = FluxSpace.MEDIUM),
+            horizontalArrangement = Arrangement.spacedBy(FluxSpace.SMALL)
         ) {
 
             items(artworks, key = { it.id }) {

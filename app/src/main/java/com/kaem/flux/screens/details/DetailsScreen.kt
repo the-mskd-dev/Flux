@@ -34,6 +34,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.kaem.flux.ui.component.FluxButton
+import com.kaem.flux.ui.theme.FluxFontSize
+import com.kaem.flux.ui.theme.FluxSpace
 import com.kaem.flux.utils.Constants
 
 @Composable
@@ -93,7 +95,7 @@ fun DetailsHeader(
                 .statusBarsPadding()
                 .constrainAs(back) {
                     top.linkTo(parent.top)
-                    start.linkTo(parent.start, 24.dp)
+                    start.linkTo(parent.start, FluxSpace.MEDIUM)
                 }
                 .size(40.dp)
                 .clip(shape = CircleShape)
@@ -123,7 +125,7 @@ fun DetailsHeader(
                 .constrainAs(button) {
                     top.linkTo(image.bottom)
                     bottom.linkTo(image.bottom)
-                    end.linkTo(parent.end, 24.dp)
+                    end.linkTo(parent.end, FluxSpace.MEDIUM)
                 },
             text = "Continue",
             onClick = { onLaunchButtonTap() }
@@ -132,14 +134,14 @@ fun DetailsHeader(
         Text(
             modifier = Modifier.constrainAs(title) {
                 top.linkTo(button.bottom, 4.dp)
-                start.linkTo(parent.start, 24.dp)
-                end.linkTo(parent.end, 24.dp)
+                start.linkTo(parent.start, FluxSpace.MEDIUM)
+                end.linkTo(parent.end, FluxSpace.MEDIUM)
                 width = Dimension.fillToConstraints
             },
             text = artworkTitle,
             color = MaterialTheme.colorScheme.onBackground,
             fontWeight = FontWeight.W600,
-            fontSize = 20.sp,
+            fontSize = FluxFontSize.LARGE,
             textAlign = TextAlign.Start
         )
 

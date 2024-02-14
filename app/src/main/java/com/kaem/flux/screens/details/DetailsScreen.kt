@@ -37,6 +37,7 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.kaem.flux.model.flux.FluxMovie
 import com.kaem.flux.model.flux.FluxShow
 import com.kaem.flux.ui.component.FluxButton
+import com.kaem.flux.ui.component.Title
 import com.kaem.flux.ui.theme.FluxFontSize
 import com.kaem.flux.ui.theme.FluxSpace
 import com.kaem.flux.utils.Constants
@@ -147,18 +148,14 @@ fun DetailsHeader(
             onClick = { onLaunchButtonTap() }
         )
 
-        Text(
+        Title(
             modifier = Modifier.constrainAs(title) {
                 top.linkTo(button.bottom, 4.dp)
                 start.linkTo(parent.start, FluxSpace.MEDIUM)
                 end.linkTo(parent.end, FluxSpace.MEDIUM)
                 width = Dimension.fillToConstraints
             },
-            text = artworkTitle,
-            color = MaterialTheme.colorScheme.onBackground,
-            fontWeight = FontWeight.W600,
-            fontSize = FluxFontSize.LARGE,
-            textAlign = TextAlign.Start
+            text = artworkTitle
         )
 
     }

@@ -52,6 +52,7 @@ import com.kaem.flux.model.flux.FluxMovie
 import com.kaem.flux.model.flux.FluxShow
 import com.kaem.flux.ui.component.FluxButton
 import com.kaem.flux.ui.component.Loader
+import com.kaem.flux.ui.component.Title
 import com.kaem.flux.ui.theme.FluxFontSize
 import com.kaem.flux.ui.theme.FluxSpace
 import com.kaem.flux.utils.Constants
@@ -211,17 +212,10 @@ fun ArtworkList(
         verticalArrangement = Arrangement.spacedBy(FluxSpace.MEDIUM)
     ) {
 
-        if (name != null) {
-
-            Text(
-                modifier = Modifier.padding(start = FluxSpace.MEDIUM),
-                text = name,
-                fontWeight = FontWeight.W600,
-                fontSize = FluxFontSize.LARGE,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-
-        }
+        Title(
+            modifier = Modifier.padding(start = FluxSpace.MEDIUM),
+            text = name
+        )
 
         LazyRow(
             modifier = Modifier.fillMaxWidth(),

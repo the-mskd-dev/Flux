@@ -50,7 +50,7 @@ class DetailsViewModel @Inject constructor(
 
     }
 
-    fun getArtworks(id: Int) {
+    private fun getArtworks(id: Int) {
 
         val libraryContent = repository.libraryContent.value
 

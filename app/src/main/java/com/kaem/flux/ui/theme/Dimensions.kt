@@ -7,6 +7,7 @@ object FluxFontSize {
     val SMALL = 12.sp
     val MEDIUM = 15.sp
     val LARGE = 20.sp
+    val TITLE = 24.sp
 }
 
 object FluxSpace {

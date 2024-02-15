@@ -25,8 +25,8 @@ fun Title(
         modifier = Modifier.then(modifier),
         text = text,
         color = MaterialTheme.colorScheme.onBackground,
-        fontWeight = FontWeight.W600,
-        fontSize = FluxFontSize.LARGE,
+        fontWeight = FontWeight.W500,
+        fontSize = FluxFontSize.TITLE,
         textAlign = textAlign
     )
 

@@ -254,20 +254,21 @@ fun DetailsDescription(uiState: DetailsUiState) {
     ) {
 
         uiState.currentEpisode?.let {
-            Column(modifier = Modifier.fillMaxWidth()) {
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = stringResource(id = R.string.season_and_episode, it.season, it.number),
-                    color = MaterialTheme.colorScheme.onBackground,
-                    fontSize = FluxFontSize.LARGE
-                )
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = it.title,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    fontSize = FluxFontSize.MEDIUM
-                )
-            }
+
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(id = R.string.season_and_episode, it.season, it.number),
+                color = MaterialTheme.colorScheme.onBackground,
+                fontSize = FluxFontSize.LARGE
+            )
+
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = it.title,
+                color = MaterialTheme.colorScheme.onBackground,
+                fontSize = FluxFontSize.MEDIUM
+            )
+
         }
 
         uiState.description?.let {

@@ -128,7 +128,11 @@ fun DetailsScreen(
         }
 
         items(items = uiState.episodes.filter { it.season == uiState.currentSeason }, key = { it.id }) {
-            DetailsEpisode(episode = it)
+            DetailsEpisode(
+                episode = it,
+                onWatchTap = {},
+                onIsWatchedTap = {}
+            )
         }
 
     }
@@ -223,7 +227,7 @@ fun DetailsHeader(
             containerColor = MaterialTheme.colorScheme.primary,
             contentColor = MaterialTheme.colorScheme.onPrimary,
             onClick = {  },
-            content = { Icon(imageVector = Icons.Rounded.Done, contentDescription = "play button") }
+            content = { Icon(imageVector = Icons.Rounded.Done, contentDescription = "check if watched button") }
         )
 
         DetailsTitle(
@@ -365,7 +369,11 @@ fun DetailsSeasonsDropDown(
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun DetailsEpisode(episode: FluxEpisode) {
+fun DetailsEpisode(
+    episode: FluxEpisode,
+    onWatchTap: () -> Unit,
+    onIsWatchedTap: () -> Unit
+) {
 
     val isWatched = episode.status == FluxStatus.WATCHED
     var isExpanded by remember { mutableStateOf(false) }
@@ -388,7 +396,10 @@ fun DetailsEpisode(episode: FluxEpisode) {
 
         Row(
             modifier = Modifier
-                .clickable(interactionSource = MutableInteractionSource(), indication = null) { isExpanded = !isExpanded }
+                .clickable(
+                    interactionSource = MutableInteractionSource(),
+                    indication = null
+                ) { isExpanded = !isExpanded }
                 .alpha(if (isWatched) .4f else 1f)
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(FluxSpace.MEDIUM),
@@ -397,9 +408,9 @@ fun DetailsEpisode(episode: FluxEpisode) {
 
             GlideImage(
                 modifier = Modifier
+                    .clip(RoundedCornerShape(8.dp))
                     .height(70.dp)
-                    .aspectRatio(3f / 2f)
-                    .clip(RoundedCornerShape(8.dp)),
+                    .aspectRatio(3f / 2f),
                 model = Constants.TMDB.IMAGE_SMALL + episode.imagePath,
                 contentDescription = episode.title,
                 loading = placeholder(ColorPainter(Color.LightGray))
@@ -422,17 +433,75 @@ fun DetailsEpisode(episode: FluxEpisode) {
         }
 
         AnimatedVisibility(visible = isExpanded) {
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .alpha(.8f),
-                text = episode.description,
-                color = MaterialTheme.colorScheme.onBackground,
-                fontSize = FluxFontSize.MEDIUM,
-                textAlign = TextAlign.Start
+            DetailsEpisodeContent(
+                episode = episode,
+                onCloseExpand = { isExpanded = false },
+                onWatchTap = onWatchTap,
+                onIsWatchedTap = onIsWatchedTap
+            )
+        }
+
+    }
+
+}
+
+@Composable
+fun DetailsEpisodeContent(
+    episode: FluxEpisode,
+    onCloseExpand: () -> Unit,
+    onWatchTap: () -> Unit,
+    onIsWatchedTap: () -> Unit
+) {
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = FluxSpace.MEDIUM),
+        verticalArrangement = Arrangement.spacedBy(FluxSpace.MEDIUM)
+    ) {
+
+        Text(
+            modifier = Modifier
+                .clickable(interactionSource = MutableInteractionSource(), indication = null) { onCloseExpand() }
+                .fillMaxWidth()
+                .alpha(.8f),
+            text = episode.description,
+            color = MaterialTheme.colorScheme.onBackground,
+            fontSize = FluxFontSize.MEDIUM,
+            textAlign = TextAlign.Start
+        )
+
+        Row(
+            modifier = Modifier.align(Alignment.End),
+            horizontalArrangement = Arrangement.spacedBy(FluxSpace.SMALL),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+
+            FloatingActionButton(
+                modifier = Modifier.size(40.dp),
+                shape = CircleShape,
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+                onClick = { onWatchTap() },
+                content = {
+                    Icon(
+                        imageVector = Icons.Rounded.PlayArrow,
+                        contentDescription = "play button"
+                    )
+                }
+            )
+
+            FloatingActionButton(
+                modifier = Modifier.size(30.dp),
+                shape = CircleShape,
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+                onClick = { onIsWatchedTap() },
+                content = { Icon(imageVector = Icons.Rounded.Done, contentDescription = "check if watched button") }
             )
 
         }
+
 
     }
 

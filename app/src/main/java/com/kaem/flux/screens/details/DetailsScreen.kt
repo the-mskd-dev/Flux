@@ -76,9 +76,6 @@ fun DetailsScreen(
         return
     }
 
-    var selectedSeason by remember { mutableIntStateOf(uiState.currentEpisode?.season ?: -1) }
-    var isExpanded by remember { mutableStateOf(false) }
-
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -109,11 +106,13 @@ fun DetailsScreen(
 
             item {
 
+                var isExpanded by remember { mutableStateOf(false) }
+
                 DetailsSeasonsDropDown(
                     isExpanded = isExpanded,
-                    selectedSeason = selectedSeason,
+                    selectedSeason = uiState.currentSeason,
                     seasons = uiState.episodes.map { it.season }.distinct(),
-                    onSeasonTap = { selectedSeason = it; isExpanded = false},
+                    onSeasonTap = { viewModel.selectSeason(it); isExpanded = false},
                     onExpandedChange = { isExpanded = it }
                 )
 
@@ -121,7 +120,7 @@ fun DetailsScreen(
 
         }
 
-        items(items = uiState.episodes.filter { it.season == selectedSeason }, key = { it.id }) {
+        items(items = uiState.episodes.filter { it.season == uiState.currentSeason }, key = { it.id }) {
             DetailsEpisode(episode = it)
         }
 

@@ -19,12 +19,9 @@ import javax.inject.Inject
 data class DetailsUiState(
     val artwork: FluxArtwork,
     val episodes: List<FluxEpisode>,
-    val selectedEpisode: FluxEpisode?
+    val currentEpisode: FluxEpisode?,
+    val currentSeason: Int
 ) {
-
-    val currentEpisode: FluxEpisode? = episodes.lastOrNull { it.status == FluxStatus.IS_WATCHING }
-        ?: episodes.firstOrNull { it.status == FluxStatus.NOT_WATCHED }
-        ?: episodes.firstOrNull()
 
     val artworkDetails: FluxArtworkDetails? = currentEpisode ?: artwork as? FluxMovie
 
@@ -59,13 +56,21 @@ class DetailsViewModel @Inject constructor(
 
         val artwork = libraryContent?.artworks?.find { it.id == id } ?: return
         val episodes = if (artwork is FluxShow)  libraryContent.episodes.filter { it.showId == id } else emptyList()
+        val selectedEpisode = episodes.lastOrNull { it.status == FluxStatus.IS_WATCHING }
+            ?: episodes.firstOrNull { it.status == FluxStatus.NOT_WATCHED }
+            ?: episodes.firstOrNull()
 
         uiState = DetailsUiState(
             artwork = artwork,
             episodes = episodes,
-            selectedEpisode = episodes.firstOrNull()
+            currentEpisode = selectedEpisode,
+            currentSeason = selectedEpisode?.season ?: -1
         )
 
+    }
+
+    fun selectSeason(season: Int) {
+        uiState = uiState?.copy(currentSeason = season)
     }
 
 }

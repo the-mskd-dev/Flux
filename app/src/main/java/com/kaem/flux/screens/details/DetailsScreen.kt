@@ -420,8 +420,7 @@ fun DetailsEpisode(episode: FluxEpisode) {
 
         }
 
-        if (isExpanded) {
-
+        AnimatedVisibility(visible = isExpanded) {
             Text(
                 modifier = Modifier
                     .fillMaxWidth()

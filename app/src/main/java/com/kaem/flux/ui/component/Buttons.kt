@@ -18,7 +18,7 @@ fun FluxButton(
         modifier = modifier,
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = MaterialTheme.colorScheme.surface,
+            contentColor = MaterialTheme.colorScheme.onPrimary,
         ),
         onClick = onClick
     ) {

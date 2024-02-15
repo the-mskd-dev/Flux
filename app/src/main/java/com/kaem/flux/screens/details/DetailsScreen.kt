@@ -1,5 +1,7 @@
 package com.kaem.flux.screens.details
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -124,7 +126,7 @@ fun DetailsScreen(
 
         }
 
-        items(items = uiState.episodes.filter { it.season == uiState.currentSeason }, key = { it.id }, contentType = { true }) {
+        items(items = uiState.episodes.filter { it.season == uiState.currentSeason }, key = { it.id }) {
             DetailsEpisode(episode = it)
         }
 
@@ -365,9 +367,11 @@ fun DetailsSeasonsDropDown(
 fun DetailsEpisode(episode: FluxEpisode) {
 
     val isWatched = episode.status == FluxStatus.WATCHED
+    var isExpanded by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
+            .animateContentSize()
             .fillMaxWidth()
             .padding(horizontal = FluxSpace.MEDIUM)
             .padding(bottom = FluxSpace.SMALL),
@@ -383,6 +387,7 @@ fun DetailsEpisode(episode: FluxEpisode) {
 
         Row(
             modifier = Modifier
+                .clickable { isExpanded = !isExpanded }
                 .alpha(if (isWatched) .4f else 1f)
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(FluxSpace.MEDIUM),
@@ -412,6 +417,20 @@ fun DetailsEpisode(episode: FluxEpisode) {
                     fontSize = FluxFontSize.MEDIUM
                 )
             }
+
+        }
+
+        AnimatedVisibility(visible = isExpanded) {
+
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .alpha(.8f),
+                text = episode.description,
+                color = MaterialTheme.colorScheme.onBackground,
+                fontSize = FluxFontSize.MEDIUM,
+                textAlign = TextAlign.Start
+            )
 
         }
 

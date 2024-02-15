@@ -201,7 +201,7 @@ fun DetailsHeader(
             onClick = { onLaunchButtonTap() },
             content = {
                 Icon(
-                    modifier = Modifier.size(40.dp),
+                    modifier = Modifier.size(50.dp),
                     imageVector = Icons.Rounded.PlayArrow,
                     contentDescription = "play button"
                 )

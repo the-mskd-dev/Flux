@@ -336,7 +336,7 @@ fun DetailsSeasonsDropDown(
 @Composable
 fun DetailsEpisode(episode: FluxEpisode) {
 
-    val height = 120.dp
+    val height = 100.dp
     val ratio = 3f/2f
     val url = Constants.TMDB.IMAGE_SMALL + episode.imagePath
 

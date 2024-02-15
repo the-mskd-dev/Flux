@@ -364,6 +364,8 @@ fun DetailsSeasonsDropDown(
 @Composable
 fun DetailsEpisode(episode: FluxEpisode) {
 
+    val isWatched = episode.status == FluxStatus.WATCHED
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -380,7 +382,9 @@ fun DetailsEpisode(episode: FluxEpisode) {
         )
 
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .alpha(if (isWatched) .4f else 1f)
+                .fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(FluxSpace.MEDIUM),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -399,7 +403,7 @@ fun DetailsEpisode(episode: FluxEpisode) {
                 Text(
                     modifier = Modifier.alpha(.8f),
                     text = stringResource(id = R.string.episode, episode.number),
-                    color = MaterialTheme.colorScheme.onBackground,
+                    color = if (isWatched) MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.primary,
                     fontSize = FluxFontSize.SMALL
                 )
                 Text(

@@ -373,15 +373,15 @@ fun DetailsEpisode(episode: FluxEpisode) {
 
             Column {
                 Text(
-                    text = episode.title,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    fontSize = FluxFontSize.MEDIUM
-                )
-                Text(
                     modifier = Modifier.alpha(.8f),
                     text = stringResource(id = R.string.episode, episode.number),
                     color = MaterialTheme.colorScheme.onBackground,
                     fontSize = FluxFontSize.SMALL
+                )
+                Text(
+                    text = episode.title,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    fontSize = FluxFontSize.MEDIUM
                 )
             }
 

@@ -5,6 +5,7 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -387,7 +388,7 @@ fun DetailsEpisode(episode: FluxEpisode) {
 
         Row(
             modifier = Modifier
-                .clickable { isExpanded = !isExpanded }
+                .clickable(interactionSource = MutableInteractionSource(), indication = null) { isExpanded = !isExpanded }
                 .alpha(if (isWatched) .4f else 1f)
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(FluxSpace.MEDIUM),

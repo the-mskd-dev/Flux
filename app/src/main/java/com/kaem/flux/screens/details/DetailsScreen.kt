@@ -183,17 +183,15 @@ fun DetailsHeader(
 
         }
 
-        FluxButton(
-            modifier = Modifier
-                .scale(1.2f)
-                .clip(shape = RoundedCornerShape(.5f))
-                .constrainAs(button) {
-                    top.linkTo(image.bottom)
-                    bottom.linkTo(image.bottom)
-                    end.linkTo(parent.end, FluxSpace.MEDIUM)
-                },
-            text = stringResource(id = if (uiState.artworkDetails?.status == FluxStatus.IS_WATCHING) R.string.resume else R.string.start),
-            onClick = { onLaunchButtonTap() }
+        DetailsButtons(
+            modifier = Modifier.constrainAs(button) {
+                top.linkTo(image.bottom)
+                bottom.linkTo(image.bottom)
+                end.linkTo(parent.end, FluxSpace.MEDIUM)
+            },
+            artworkStatus = uiState.artworkDetails?.status,
+            onWatchTap = onLaunchButtonTap,
+            onWatchedButtonTap =  {}
         )
 
         DetailsTitle(
@@ -204,6 +202,26 @@ fun DetailsHeader(
                 width = Dimension.fillToConstraints
             },
             uiState = uiState
+        )
+
+    }
+
+}
+
+@Composable
+fun DetailsButtons(
+    modifier: Modifier,
+    artworkStatus: FluxStatus?,
+    onWatchTap: () -> Unit,
+    onWatchedButtonTap: () -> Unit
+) {
+
+    Row(modifier = Modifier.then(modifier)) {
+
+        FluxButton(
+            modifier = Modifier.clip(shape = RoundedCornerShape(.5f)),
+            text = stringResource(id = if (artworkStatus == FluxStatus.IS_WATCHING) R.string.resume else R.string.start),
+            onClick = { onWatchTap() }
         )
 
     }

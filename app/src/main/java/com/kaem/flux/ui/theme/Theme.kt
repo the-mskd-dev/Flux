@@ -29,6 +29,19 @@ private val FluxColorScheme = darkColorScheme(
     onBackground = Color.White,
 )
 
+private val FluxLightColorScheme = lightColorScheme(
+    primary = Coral, // Most important, like buttons, titles, navigation bars...
+    onPrimary = Color.White,
+    primaryContainer = Coral,
+    onPrimaryContainer = Color.White,
+    secondary = LightCoral, // Less important, background, borders, texts
+    tertiary = ContrastCoral, // Additional color for contrast,
+    background = Color.White,
+    surface = Color.White,
+    onSurface = Color.Black,
+    onBackground = Color.Black,
+)
+
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
     secondary = PurpleGrey80,
@@ -65,7 +78,9 @@ fun FluxTheme(
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }*/
 
-        else -> FluxColorScheme
+        darkTheme -> FluxColorScheme
+
+        else -> FluxLightColorScheme
     }
     val view = LocalView.current
     if (!view.isInEditMode) {

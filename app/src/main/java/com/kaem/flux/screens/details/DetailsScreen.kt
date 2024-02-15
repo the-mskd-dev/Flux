@@ -120,7 +120,7 @@ fun DetailsScreen(
 
         }
 
-        items(items = uiState.episodes.filter { it.season == uiState.currentSeason }, key = { it.id }) {
+        items(items = uiState.episodes.filter { it.season == uiState.currentSeason }, key = { it.id }, contentType = { true }) {
             DetailsEpisode(episode = it)
         }
 
@@ -161,7 +161,7 @@ fun DetailsHeader(
                     top.linkTo(parent.top)
                     start.linkTo(parent.start, FluxSpace.MEDIUM)
                 }
-                .size(40.dp)
+                .size(50.dp)
                 .clip(shape = CircleShape)
                 .clickable { onBackButtonTap() }
                 .border(

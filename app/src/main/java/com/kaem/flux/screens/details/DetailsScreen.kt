@@ -46,6 +46,7 @@ import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -86,7 +87,7 @@ fun DetailsScreen(
         item {
 
             Column(
-                modifier = Modifier.padding(vertical = FluxSpace.LARGE),
+                modifier = Modifier.padding(bottom = FluxSpace.MEDIUM),
                 verticalArrangement = Arrangement.spacedBy(FluxSpace.LARGE)
             ) {
 
@@ -142,13 +143,13 @@ fun DetailsHeader(
 
         GlideImage(
             modifier = Modifier
+                .aspectRatio(6f / 5f)
                 .constrainAs(image) {
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                     width = Dimension.fillToConstraints
-                }
-                .aspectRatio(6f / 5f),
+                },
             model = Constants.TMDB.IMAGE + uiState.artwork.bannerPath,
             contentScale = ContentScale.Crop,
             contentDescription = uiState.artwork.title
@@ -336,10 +337,6 @@ fun DetailsSeasonsDropDown(
 @Composable
 fun DetailsEpisode(episode: FluxEpisode) {
 
-    val height = 100.dp
-    val ratio = 3f/2f
-    val url = Constants.TMDB.IMAGE_SMALL + episode.imagePath
-
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -363,10 +360,10 @@ fun DetailsEpisode(episode: FluxEpisode) {
 
             GlideImage(
                 modifier = Modifier
-                    .clip(RoundedCornerShape(8.dp))
-                    .height(height)
-                    .aspectRatio(ratio),
-                model = url,
+                    .height(70.dp)
+                    .aspectRatio(3f/2f)
+                    .clip(RoundedCornerShape(8.dp)),
+                model = Constants.TMDB.IMAGE_SMALL + episode.imagePath,
                 contentDescription = episode.title,
                 loading = placeholder(ColorPainter(Color.LightGray))
             )

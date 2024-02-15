@@ -121,7 +121,7 @@ fun DetailsScreen(
 
         }
 
-        items(items = uiState.episodes.filter { it.season == selectedSeason }, key = { it.id }, contentType = { it }) {
+        items(items = uiState.episodes.filter { it.season == selectedSeason }, key = { it.id }) {
             DetailsEpisode(episode = it)
         }
 

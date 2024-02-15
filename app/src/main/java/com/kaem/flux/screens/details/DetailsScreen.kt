@@ -420,7 +420,7 @@ fun DetailsEpisode(episode: FluxEpisode) {
 
         }
 
-        AnimatedVisibility(visible = isExpanded) {
+        if (isExpanded) {
 
             Text(
                 modifier = Modifier

@@ -105,15 +105,19 @@ fun DetailsScreen(
 
         }
 
-        item {
+        if (uiState.episodes.isNotEmpty()) {
 
-            DetailsSeasonsDropDown(
-                isExpanded = isExpanded,
-                selectedSeason = selectedSeason,
-                seasons = uiState.episodes.map { it.season }.distinct(),
-                onSeasonTap = { selectedSeason = it; isExpanded = false},
-                onExpandedChange = { isExpanded = it }
-            )
+            item {
+
+                DetailsSeasonsDropDown(
+                    isExpanded = isExpanded,
+                    selectedSeason = selectedSeason,
+                    seasons = uiState.episodes.map { it.season }.distinct(),
+                    onSeasonTap = { selectedSeason = it; isExpanded = false},
+                    onExpandedChange = { isExpanded = it }
+                )
+
+            }
 
         }
 
@@ -253,13 +257,13 @@ fun DetailsDescription(uiState: DetailsUiState) {
             Column(modifier = Modifier.fillMaxWidth()) {
                 Text(
                     modifier = Modifier.fillMaxWidth(),
-                    text = it.title,
+                    text = stringResource(id = R.string.season_and_episode, it.season, it.number),
                     color = MaterialTheme.colorScheme.onBackground,
                     fontSize = FluxFontSize.LARGE
                 )
                 Text(
                     modifier = Modifier.fillMaxWidth(),
-                    text = stringResource(id = R.string.season_and_episode, it.season, it.number),
+                    text = it.title,
                     color = MaterialTheme.colorScheme.onBackground,
                     fontSize = FluxFontSize.MEDIUM
                 )

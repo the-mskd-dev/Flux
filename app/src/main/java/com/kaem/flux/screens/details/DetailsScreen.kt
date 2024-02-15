@@ -44,6 +44,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -53,7 +54,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.placeholder
+import com.kaem.flux.R
 import com.kaem.flux.model.flux.FluxEpisode
+import com.kaem.flux.model.flux.FluxMovie
+import com.kaem.flux.model.flux.FluxStatus
 import com.kaem.flux.ui.component.FluxButton
 import com.kaem.flux.ui.component.Title
 import com.kaem.flux.ui.theme.FluxFontSize
@@ -184,7 +188,7 @@ fun DetailsHeader(
                     bottom.linkTo(image.bottom)
                     end.linkTo(parent.end, FluxSpace.MEDIUM)
                 },
-            text = "Continue",
+            text = stringResource(id = if (uiState.artworkDetails?.status == FluxStatus.IS_WATCHING) R.string.resume else R.string.start),
             onClick = { onLaunchButtonTap() }
         )
 
@@ -255,7 +259,7 @@ fun DetailsDescription(uiState: DetailsUiState) {
                 )
                 Text(
                     modifier = Modifier.fillMaxWidth(),
-                    text = "Épisode ${it.number}, saison ${it.season}",
+                    text = stringResource(id = R.string.season_and_episode, it.season, it.number),
                     color = MaterialTheme.colorScheme.onBackground,
                     fontSize = FluxFontSize.MEDIUM
                 )
@@ -295,11 +299,11 @@ fun DetailsSeasonsDropDown(
     ) {
 
         TextField(
-            value = "Saison $selectedSeason",
+            value = stringResource(id = R.string.season, selectedSeason),
             onValueChange = {},
             readOnly = true,
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded) },
-            placeholder = { Text(text = "Sélectionnez une saison") },
+            placeholder = { Text(text = stringResource(id = R.string.select_season)) },
             colors = ExposedDropdownMenuDefaults.textFieldColors(),
             modifier = Modifier.menuAnchor()
         )
@@ -311,7 +315,7 @@ fun DetailsSeasonsDropDown(
 
             seasons.sorted().forEach {
                 DropdownMenuItem(
-                    text = { Text(text = "Saison $it") },
+                    text = { Text(text = stringResource(id = R.string.season, it)) },
                     onClick = {
                         onSeasonTap(it)
                     }
@@ -370,7 +374,7 @@ fun DetailsEpisode(episode: FluxEpisode) {
                     fontSize = FluxFontSize.MEDIUM
                 )
                 Text(
-                    text = "Épisode ${episode.number}",
+                    text = stringResource(id = R.string.episode, episode.number),
                     color = MaterialTheme.colorScheme.onBackground,
                     fontSize = FluxFontSize.SMALL
                 )

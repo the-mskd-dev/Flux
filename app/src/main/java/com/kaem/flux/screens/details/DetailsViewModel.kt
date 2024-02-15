@@ -7,6 +7,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.kaem.flux.data.repository.LibraryRepository
 import com.kaem.flux.model.flux.FluxArtwork
+import com.kaem.flux.model.flux.FluxArtworkDetails
 import com.kaem.flux.model.flux.FluxEpisode
 import com.kaem.flux.model.flux.FluxMovie
 import com.kaem.flux.model.flux.FluxShow
@@ -24,6 +25,8 @@ data class DetailsUiState(
     val currentEpisode: FluxEpisode? = episodes.lastOrNull { it.status == FluxStatus.IS_WATCHING }
         ?: episodes.firstOrNull { it.status == FluxStatus.NOT_WATCHED }
         ?: episodes.firstOrNull()
+
+    val artworkDetails: FluxArtworkDetails? = currentEpisode ?: artwork as? FluxMovie
 
     val description: String? = when (artwork) {
         is FluxShow -> currentEpisode?.description

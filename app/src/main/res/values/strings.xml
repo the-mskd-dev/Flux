@@ -1,8 +1,14 @@
 <resources>
     <string name="app_name">Flux</string>
 
-    <string name="give_permission">Grant permissions</string>
-    <string name="last_added">Latest additions</string>
-    <string name="movies">Movies</string>
-    <string name="shows">Shows</string>
+    <string name="give_permission">Accordez les permissions</string>
+    <string name="last_added">Dreniers ajouts</string>
+    <string name="movies">Films</string>
+    <string name="shows">Séries</string>
+    <string name="select_season">Sélectionnez une saison</string>
+    <string name="season_and_episode">Saison %$1d, épisode %$2d</string>
+    <string name="season">Saison %$1d</string>
+    <string name="episode">Épisode %$1d</string>
+    <string name="start">Commencer</string>
+    <string name="resume">Continuer</string>
 </resources>

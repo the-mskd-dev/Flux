@@ -21,11 +21,14 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.Done
+import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -139,7 +142,7 @@ fun DetailsHeader(
 
     ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
 
-        val (image, back, title, button) = createRefs()
+        val (image, back, title, watchButton, checkButton) = createRefs()
 
         GlideImage(
             modifier = Modifier
@@ -183,45 +186,51 @@ fun DetailsHeader(
 
         }
 
-        DetailsButtons(
-            modifier = Modifier.constrainAs(button) {
+        FloatingActionButton(
+            modifier = Modifier.constrainAs(watchButton) {
                 top.linkTo(image.bottom)
                 bottom.linkTo(image.bottom)
-                end.linkTo(parent.end, FluxSpace.MEDIUM)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+                height = Dimension.value(70.dp)
+                width = Dimension.value(70.dp)
             },
-            artworkStatus = uiState.artworkDetails?.status,
-            onWatchTap = onLaunchButtonTap,
-            onWatchedButtonTap =  {}
+            shape = CircleShape,
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary,
+            onClick = { onLaunchButtonTap() },
+            content = {
+                Icon(
+                    modifier = Modifier.size(40.dp),
+                    imageVector = Icons.Rounded.PlayArrow,
+                    contentDescription = "play button"
+                )
+            }
+        )
+
+        FloatingActionButton(
+            modifier = Modifier.constrainAs(checkButton) {
+                top.linkTo(watchButton.top)
+                bottom.linkTo(watchButton.bottom)
+                start.linkTo(watchButton.end, FluxSpace.LARGE)
+                height = Dimension.value(40.dp)
+                width = Dimension.value(40.dp)
+            },
+            shape = CircleShape,
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary,
+            onClick = {  },
+            content = { Icon(imageVector = Icons.Rounded.Done, contentDescription = "play button") }
         )
 
         DetailsTitle(
             modifier = Modifier.constrainAs(title) {
-                top.linkTo(button.bottom, FluxSpace.SMALL)
+                top.linkTo(watchButton.bottom, FluxSpace.SMALL)
                 start.linkTo(parent.start, FluxSpace.MEDIUM)
                 end.linkTo(parent.end, FluxSpace.MEDIUM)
                 width = Dimension.fillToConstraints
             },
             uiState = uiState
-        )
-
-    }
-
-}
-
-@Composable
-fun DetailsButtons(
-    modifier: Modifier,
-    artworkStatus: FluxStatus?,
-    onWatchTap: () -> Unit,
-    onWatchedButtonTap: () -> Unit
-) {
-
-    Row(modifier = Modifier.then(modifier)) {
-
-        FluxButton(
-            modifier = Modifier.clip(shape = RoundedCornerShape(.5f)),
-            text = stringResource(id = if (artworkStatus == FluxStatus.IS_WATCHING) R.string.resume else R.string.start),
-            onClick = { onWatchTap() }
         )
 
     }
@@ -379,7 +388,7 @@ fun DetailsEpisode(episode: FluxEpisode) {
             GlideImage(
                 modifier = Modifier
                     .height(70.dp)
-                    .aspectRatio(3f/2f)
+                    .aspectRatio(3f / 2f)
                     .clip(RoundedCornerShape(8.dp)),
                 model = Constants.TMDB.IMAGE_SMALL + episode.imagePath,
                 contentDescription = episode.title,

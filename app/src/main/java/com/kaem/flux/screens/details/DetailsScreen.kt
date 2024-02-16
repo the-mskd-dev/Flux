@@ -387,7 +387,8 @@ fun DetailsEpisode(
     onIsWatchedTap: () -> Unit
 ) {
 
-    val isWatched = episode.status == FluxStatus.WATCHED
+    var episodeState by remember { mutableStateOf(episode) }
+    val isWatched = episodeState.status == FluxStatus.WATCHED
     var isExpanded by remember { mutableStateOf(false) }
 
     Column(
@@ -421,13 +422,13 @@ fun DetailsEpisode(
 
             Text(
                 modifier = Modifier.alpha(.8f),
-                text = "${episode.number}",
+                text = "${episodeState.number}",
                 color = if (isWatched) MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.primary,
                 fontSize = FluxFontSize.MEDIUM
             )
 
             Text(
-                text = episode.title,
+                text = episodeState.title,
                 color = MaterialTheme.colorScheme.onBackground,
                 fontSize = FluxFontSize.MEDIUM
             )
@@ -436,10 +437,15 @@ fun DetailsEpisode(
 
         AnimatedVisibility(visible = isExpanded) {
             DetailsEpisodeContent(
-                episode = episode,
+                episode = episodeState,
                 onCloseExpand = { isExpanded = false },
                 onWatchTap = onWatchTap,
-                onIsWatchedTap = onIsWatchedTap
+                onIsWatchedTap = {
+                    episodeState = episode.copy(
+                        status = if (episodeState.status != FluxStatus.WATCHED) FluxStatus.WATCHED else FluxStatus.TO_WATCH
+                    )
+                    //it.status = if (it.status != FluxStatus.WATCHED) FluxStatus.WATCHED else FluxStatus.TO_WATCH
+                }
             )
         }
 

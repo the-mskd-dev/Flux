@@ -1,5 +1,6 @@
 package com.kaem.flux.screens.details
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -72,5 +73,7 @@ class DetailsViewModel @Inject constructor(
     fun selectSeason(season: Int) {
         uiState = uiState?.copy(currentSeason = season)
     }
+
+    fun updateUiState() { uiState = uiState?.copy() }
 
 }

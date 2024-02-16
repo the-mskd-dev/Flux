@@ -1,6 +1,7 @@
 package com.kaem.flux.screens.details
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -127,7 +128,10 @@ fun DetailsScreen(
             DetailsEpisode(
                 episode = it,
                 onWatchTap = {},
-                onIsWatchedTap = {}
+                onIsWatchedTap = {
+                    it.status = if (it.status != FluxStatus.WATCHED) FluxStatus.WATCHED else FluxStatus.TO_WATCH
+                    viewModel.updateUiState()
+                }
             )
         }
 
@@ -495,18 +499,15 @@ fun DetailsEpisodeContent(
                 }
             )
 
-            val containerColor = if (episode.status == FluxStatus.WATCHED) MaterialTheme.colorScheme.background else MaterialTheme.colorScheme.primary
-            val contentColor = if (episode.status == FluxStatus.WATCHED) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onPrimary
+            val containerColor by animateColorAsState(targetValue = if (episode.status == FluxStatus.WATCHED) MaterialTheme.colorScheme.background else MaterialTheme.colorScheme.primary, label = "container color")
+            val contentColor by animateColorAsState(targetValue = if (episode.status == FluxStatus.WATCHED) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onPrimary, label = "content color")
             val icon = if (episode.status == FluxStatus.WATCHED) Icons.Rounded.Done else ImageVector.vectorResource(id = R.drawable.ic_visibility)
             FloatingActionButton(
                 modifier = Modifier.size(30.dp),
                 shape = CircleShape,
                 containerColor = containerColor,
                 contentColor = contentColor,
-                onClick = {
-                    episode.status = if (episode.status != FluxStatus.WATCHED) FluxStatus.WATCHED else FluxStatus.TO_WATCH
-                    //onIsWatchedTap()
-                },
+                onClick = { onIsWatchedTap() },
                 content = { Icon(imageVector = icon, contentDescription = "check if watched button") }
             )
 

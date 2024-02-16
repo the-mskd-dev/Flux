@@ -59,7 +59,6 @@ import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
@@ -78,6 +77,7 @@ import com.kaem.flux.ui.component.Title
 import com.kaem.flux.ui.theme.FluxElevation
 import com.kaem.flux.ui.theme.FluxFontSize
 import com.kaem.flux.ui.theme.FluxSpace
+import com.kaem.flux.ui.theme.FluxWeight
 import com.kaem.flux.utils.Constants
 import java.text.DateFormat
 
@@ -230,7 +230,7 @@ fun DetailsHeader(
                 val textId = if (uiState.artworkDetails?.status == FluxStatus.IS_WATCHING) R.string.resume else R.string.start
                 Text(
                     text = stringResource(id = textId).uppercase(),
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FluxWeight.MEDIUM
                 )
 
             }
@@ -316,14 +316,16 @@ fun DetailsDescription(uiState: DetailsUiState) {
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.season_and_episode, it.season, it.number),
                 color = MaterialTheme.colorScheme.onBackground,
-                fontSize = FluxFontSize.LARGE
+                fontSize = FluxFontSize.LARGE,
+                fontWeight = FluxWeight.MEDIUM
             )
 
             Text(
                 modifier = Modifier.fillMaxWidth(),
                 text = it.title,
                 color = MaterialTheme.colorScheme.onBackground,
-                fontSize = FluxFontSize.MEDIUM
+                fontSize = FluxFontSize.MEDIUM,
+                fontWeight = FluxWeight.MEDIUM
             )
 
         }
@@ -390,7 +392,6 @@ fun DetailsSeasonsDropDown(
 
 }
 
-@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun DetailsEpisode(
     episode: FluxEpisode,
@@ -406,14 +407,15 @@ fun DetailsEpisode(
             .animateContentSize()
             .fillMaxWidth()
             .padding(horizontal = FluxSpace.MEDIUM)
-            .padding(bottom = FluxSpace.SMALL),
-        verticalArrangement = Arrangement.spacedBy(FluxSpace.SMALL)
+            .padding(bottom = FluxSpace.MEDIUM),
+        verticalArrangement = Arrangement.spacedBy(FluxSpace.MEDIUM)
     ) {
 
         Divider(
             modifier = Modifier
                 .fillMaxWidth()
-                .alpha(.2f),
+                .alpha(.1f),
+            thickness = .5.dp,
             color = MaterialTheme.colorScheme.onBackground
         )
 
@@ -425,33 +427,24 @@ fun DetailsEpisode(
                 ) { isExpanded = !isExpanded }
                 .alpha(if (isWatched) .4f else 1f)
                 .fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(FluxSpace.MEDIUM),
+            horizontalArrangement = Arrangement.spacedBy(FluxSpace.SMALL),
             verticalAlignment = Alignment.CenterVertically
         ) {
 
-            GlideImage(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(8.dp))
-                    .height(70.dp)
-                    .aspectRatio(3f / 2f),
-                model = Constants.TMDB.IMAGE_SMALL + episode.imagePath,
-                contentDescription = episode.title,
-                loading = placeholder(ColorPainter(Color.LightGray))
+            Text(
+                modifier = Modifier.alpha(.8f),
+                text = "${episode.number}",
+                color = if (isWatched) MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.primary,
+                fontSize = FluxFontSize.MEDIUM,
+                //fontWeight = FluxWeight.MEDIUM
             )
 
-            Column {
-                Text(
-                    modifier = Modifier.alpha(.8f),
-                    text = stringResource(id = R.string.episode, episode.number),
-                    color = if (isWatched) MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.primary,
-                    fontSize = FluxFontSize.SMALL
-                )
-                Text(
-                    text = episode.title,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    fontSize = FluxFontSize.MEDIUM
-                )
-            }
+            Text(
+                text = episode.title,
+                color = MaterialTheme.colorScheme.onBackground,
+                fontSize = FluxFontSize.MEDIUM,
+                //fontWeight = FluxWeight.MEDIUM
+            )
 
         }
 

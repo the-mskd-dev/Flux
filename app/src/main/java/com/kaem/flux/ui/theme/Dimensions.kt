@@ -5,13 +5,14 @@ import androidx.compose.material3.ButtonElevation
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.FloatingActionButtonElevation
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 object FluxFontSize {
     val SMALL = 12.sp
-    val MEDIUM = 15.sp
+    val MEDIUM = 17.sp
     val LARGE = 20.sp
     val TITLE = 24.sp
 }
@@ -20,6 +21,12 @@ object FluxSpace {
     val SMALL = 8.dp
     val MEDIUM = 16.dp
     val LARGE = 24.dp
+}
+
+object FluxWeight {
+    val LIGHT = FontWeight.W300
+    val MEDIUM = FontWeight.W500
+    val BOLD = FontWeight.W700
 }
 
 object FluxElevation {

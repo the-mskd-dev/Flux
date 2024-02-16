@@ -10,6 +10,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.Dimension
 import com.kaem.flux.ui.theme.FluxFontSize
 import com.kaem.flux.ui.theme.FluxSpace
+import com.kaem.flux.ui.theme.FluxWeight
 
 @Composable
 fun Title(
@@ -25,7 +26,7 @@ fun Title(
         modifier = Modifier.then(modifier),
         text = text,
         color = MaterialTheme.colorScheme.onBackground,
-        fontWeight = FontWeight.W500,
+        fontWeight = FluxWeight.BOLD,
         fontSize = FluxFontSize.TITLE,
         textAlign = textAlign
     )

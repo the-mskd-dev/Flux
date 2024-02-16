@@ -2,7 +2,6 @@ package com.kaem.flux.screens.details
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -15,7 +14,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -28,24 +26,18 @@ import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Done
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ButtonElevation
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.FloatingActionButtonDefaults
-import androidx.compose.material3.FloatingActionButtonElevation
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -53,26 +45,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.ColorPainter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
-import com.bumptech.glide.integration.compose.placeholder
 import com.kaem.flux.R
 import com.kaem.flux.model.flux.FluxEpisode
-import com.kaem.flux.model.flux.FluxMovie
 import com.kaem.flux.model.flux.FluxStatus
-import com.kaem.flux.ui.component.FluxButton
 import com.kaem.flux.ui.component.Title
 import com.kaem.flux.ui.theme.FluxElevation
 import com.kaem.flux.ui.theme.FluxFontSize
@@ -435,15 +422,13 @@ fun DetailsEpisode(
                 modifier = Modifier.alpha(.8f),
                 text = "${episode.number}",
                 color = if (isWatched) MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.primary,
-                fontSize = FluxFontSize.MEDIUM,
-                //fontWeight = FluxWeight.MEDIUM
+                fontSize = FluxFontSize.MEDIUM
             )
 
             Text(
                 text = episode.title,
                 color = MaterialTheme.colorScheme.onBackground,
-                fontSize = FluxFontSize.MEDIUM,
-                //fontWeight = FluxWeight.MEDIUM
+                fontSize = FluxFontSize.MEDIUM
             )
 
         }
@@ -510,13 +495,19 @@ fun DetailsEpisodeContent(
                 }
             )
 
+            val containerColor = if (episode.status == FluxStatus.WATCHED) MaterialTheme.colorScheme.background else MaterialTheme.colorScheme.primary
+            val contentColor = if (episode.status == FluxStatus.WATCHED) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onPrimary
+            val icon = if (episode.status == FluxStatus.WATCHED) Icons.Rounded.Done else ImageVector.vectorResource(id = R.drawable.ic_visibility)
             FloatingActionButton(
                 modifier = Modifier.size(30.dp),
                 shape = CircleShape,
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary,
-                onClick = { onIsWatchedTap() },
-                content = { Icon(imageVector = Icons.Rounded.Done, contentDescription = "check if watched button") }
+                containerColor = containerColor,
+                contentColor = contentColor,
+                onClick = {
+                    episode.status = if (episode.status != FluxStatus.WATCHED) FluxStatus.WATCHED else FluxStatus.TO_WATCH
+                    //onIsWatchedTap()
+                },
+                content = { Icon(imageVector = icon, contentDescription = "check if watched button") }
             )
 
         }

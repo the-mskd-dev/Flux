@@ -14,7 +14,7 @@ class FluxMovie(
     override val voteCount: Int,
     override val duration: Int,
     override val file: UserFile,
-    override var status: FluxStatus = FluxStatus.NOT_WATCHED,
+    override var status: FluxStatus = FluxStatus.TO_WATCH,
     val genres: List<String> = listOf(),
 ) : FluxArtwork(
     id = id,

@@ -57,7 +57,7 @@ class DetailsViewModel @Inject constructor(
         val artwork = libraryContent?.artworks?.find { it.id == id } ?: return
         val episodes = if (artwork is FluxShow)  libraryContent.episodes.filter { it.showId == id } else emptyList()
         val selectedEpisode = episodes.lastOrNull { it.status == FluxStatus.IS_WATCHING }
-            ?: episodes.firstOrNull { it.status == FluxStatus.NOT_WATCHED }
+            ?: episodes.firstOrNull { it.status == FluxStatus.TO_WATCH }
             ?: episodes.firstOrNull()
 
         uiState = DetailsUiState(

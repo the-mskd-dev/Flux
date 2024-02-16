@@ -20,7 +20,7 @@ data class FluxEpisode(
     override val duration: Int,
     override val voteAverage: Float,
     override val voteCount: Int,
-    override var status: FluxStatus = FluxStatus.NOT_WATCHED,
+    override var status: FluxStatus = FluxStatus.TO_WATCH,
     override val file: UserFile
 ) : FluxArtworkDetails {
 
@@ -45,7 +45,7 @@ data class FluxEpisode(
         duration = tmdbEpisode.duration,
         voteAverage = tmdbEpisode.voteAverage,
         voteCount = tmdbEpisode.voteCount,
-        status = FluxStatus.NOT_WATCHED,
+        status = FluxStatus.TO_WATCH,
         file = file
     )
 }

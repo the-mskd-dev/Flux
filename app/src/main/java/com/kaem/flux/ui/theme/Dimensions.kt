@@ -1,5 +1,11 @@
 package com.kaem.flux.ui.theme
 
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ButtonElevation
+import androidx.compose.material3.FloatingActionButtonDefaults
+import androidx.compose.material3.FloatingActionButtonElevation
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -14,4 +20,42 @@ object FluxSpace {
     val SMALL = 8.dp
     val MEDIUM = 16.dp
     val LARGE = 24.dp
+}
+
+object FluxElevation {
+    val Level0 = 0.0.dp
+    val Level1 = 1.0.dp
+    val Level2 = 3.0.dp
+    val Level3 = 6.0.dp
+    val Level4 = 8.0.dp
+    val Level5 = 12.0.dp
+
+    @Composable
+    fun buttonElevation(
+        defaultElevation: Dp = Level1,
+        pressedElevation: Dp = Level1,
+        focusedElevation: Dp = Level1,
+        hoveredElevation: Dp = Level2,
+        disabledElevation: Dp = Level1
+    ): ButtonElevation = ButtonDefaults.elevatedButtonElevation(
+        defaultElevation = defaultElevation,
+        pressedElevation = pressedElevation,
+        focusedElevation = focusedElevation,
+        hoveredElevation = hoveredElevation,
+        disabledElevation = disabledElevation
+    )
+
+    @Composable
+    fun floatingButtonElevation(
+        defaultElevation: Dp = Level1,
+        pressedElevation: Dp = Level1,
+        focusedElevation: Dp = Level1,
+        hoveredElevation: Dp = Level2,
+    ): FloatingActionButtonElevation = FloatingActionButtonDefaults.elevation(
+        defaultElevation = defaultElevation,
+        pressedElevation = pressedElevation,
+        focusedElevation = focusedElevation,
+        hoveredElevation = hoveredElevation,
+    )
+
 }

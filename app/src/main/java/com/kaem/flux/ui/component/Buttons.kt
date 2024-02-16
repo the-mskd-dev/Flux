@@ -17,9 +17,7 @@ fun FluxButton(
 ) {
 
     Button(
-        modifier = Modifier
-            .then(modifier)
-            .height(50.dp),
+        modifier = Modifier.then(modifier),
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.primary,
             contentColor = MaterialTheme.colorScheme.onPrimary,

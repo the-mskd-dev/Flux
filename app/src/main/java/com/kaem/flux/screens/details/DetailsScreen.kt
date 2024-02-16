@@ -2,6 +2,7 @@ package com.kaem.flux.screens.details
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -26,15 +27,21 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Done
 import androidx.compose.material.icons.rounded.PlayArrow
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ButtonElevation
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
+import androidx.compose.material3.FloatingActionButtonElevation
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -54,6 +61,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
@@ -67,6 +75,7 @@ import com.kaem.flux.model.flux.FluxMovie
 import com.kaem.flux.model.flux.FluxStatus
 import com.kaem.flux.ui.component.FluxButton
 import com.kaem.flux.ui.component.Title
+import com.kaem.flux.ui.theme.FluxElevation
 import com.kaem.flux.ui.theme.FluxFontSize
 import com.kaem.flux.ui.theme.FluxSpace
 import com.kaem.flux.utils.Constants
@@ -193,27 +202,40 @@ fun DetailsHeader(
 
         }
 
-        FloatingActionButton(
-            modifier = Modifier.constrainAs(watchButton) {
-                top.linkTo(image.bottom)
-                bottom.linkTo(image.bottom)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-                height = Dimension.value(70.dp)
-                width = Dimension.value(70.dp)
-            },
-            shape = CircleShape,
-            containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = MaterialTheme.colorScheme.onPrimary,
+        Button(
+            modifier = Modifier
+                .constrainAs(watchButton) {
+                    top.linkTo(image.bottom)
+                    bottom.linkTo(image.bottom)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                },
             onClick = { onLaunchButtonTap() },
-            content = {
+            elevation = FluxElevation.buttonElevation(),
+            shape = RoundedCornerShape(8.dp)
+        ) {
+
+            Row(
+                modifier = Modifier.padding(horizontal = FluxSpace.MEDIUM),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(FluxSpace.SMALL, Alignment.CenterHorizontally)
+            ) {
+
                 Icon(
-                    modifier = Modifier.size(50.dp),
+                    modifier = Modifier.size(30.dp),
                     imageVector = Icons.Rounded.PlayArrow,
                     contentDescription = "play button"
                 )
+
+                val textId = if (uiState.artworkDetails?.status == FluxStatus.IS_WATCHING) R.string.resume else R.string.start
+                Text(
+                    text = stringResource(id = textId).uppercase(),
+                    fontWeight = FontWeight.SemiBold
+                )
+
             }
-        )
+
+        }
 
         FloatingActionButton(
             modifier = Modifier.constrainAs(checkButton) {
@@ -226,6 +248,7 @@ fun DetailsHeader(
             shape = CircleShape,
             containerColor = MaterialTheme.colorScheme.primary,
             contentColor = MaterialTheme.colorScheme.onPrimary,
+            elevation = FluxElevation.floatingButtonElevation(),
             onClick = {  },
             content = { Icon(imageVector = Icons.Rounded.Done, contentDescription = "check if watched button") }
         )
@@ -462,7 +485,10 @@ fun DetailsEpisodeContent(
 
         Text(
             modifier = Modifier
-                .clickable(interactionSource = MutableInteractionSource(), indication = null) { onCloseExpand() }
+                .clickable(
+                    interactionSource = MutableInteractionSource(),
+                    indication = null
+                ) { onCloseExpand() }
                 .fillMaxWidth()
                 .alpha(.8f),
             text = episode.description,

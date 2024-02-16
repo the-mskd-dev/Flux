@@ -74,6 +74,4 @@ class DetailsViewModel @Inject constructor(
         uiState = uiState?.copy(currentSeason = season)
     }
 
-    fun updateUiState() { uiState = uiState?.copy() }
-
 }

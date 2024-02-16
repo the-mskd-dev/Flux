@@ -124,14 +124,11 @@ fun DetailsScreen(
 
         }
 
-        items(items = uiState.episodes.filter { it.season == uiState.currentSeason }, key = { it.id }) {
+        items(items = uiState.episodes.filter { it.season == uiState.currentSeason }, key = { Pair(it.id, it.status) }) {
             DetailsEpisode(
                 episode = it,
                 onWatchTap = {},
-                onIsWatchedTap = {
-                    it.status = if (it.status != FluxStatus.WATCHED) FluxStatus.WATCHED else FluxStatus.TO_WATCH
-                    viewModel.updateUiState()
-                }
+                onIsWatchedTap = { it.status = if (it.status != FluxStatus.WATCHED) FluxStatus.WATCHED else FluxStatus.TO_WATCH }
             )
         }
 

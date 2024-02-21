@@ -102,4 +102,10 @@ class DatabaseArtworkDataSource @Inject constructor(
 
     }
 
+    override suspend fun saveEpisode(episode: FluxEpisode) {
+        withContext(Dispatchers.Default) {
+            launch { databaseManager.saveEpisodes(listOf(episode)) }
+        }
+    }
+
 }

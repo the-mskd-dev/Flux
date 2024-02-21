@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.kaem.flux.data.repository.LibraryRepository
 import com.kaem.flux.model.flux.FluxArtwork
 import com.kaem.flux.model.flux.FluxArtworkDetails
@@ -14,6 +15,7 @@ import com.kaem.flux.model.flux.FluxMovie
 import com.kaem.flux.model.flux.FluxShow
 import com.kaem.flux.model.flux.FluxStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
@@ -72,6 +74,11 @@ class DetailsViewModel @Inject constructor(
 
     fun selectSeason(season: Int) {
         uiState = uiState?.copy(currentSeason = season)
+    }
+
+    fun changeWatchStatus(episode: FluxEpisode) {
+        episode.status = if (episode.status != FluxStatus.WATCHED) FluxStatus.WATCHED else FluxStatus.TO_WATCH
+        viewModelScope.launch { repository.saveEpisode(episode) }
     }
 
 }

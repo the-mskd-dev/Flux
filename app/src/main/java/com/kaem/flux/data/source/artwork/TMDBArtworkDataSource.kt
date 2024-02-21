@@ -208,6 +208,10 @@ class TMDBArtworkDataSource @Inject constructor(
         }
     }
 
+    override suspend fun saveEpisode(episode: FluxEpisode) {
+        // Nothing to do here
+    }
+
     //endregion
 
 }

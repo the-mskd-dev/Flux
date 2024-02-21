@@ -125,10 +125,16 @@ fun DetailsScreen(
         }
 
         items(items = uiState.episodes.filter { it.season == uiState.currentSeason }, key = { Pair(it.id, it.status) }) {
+
+            var episodeState by remember { mutableStateOf(it) }
+
             DetailsEpisode(
-                episode = it,
+                episode = episodeState,
                 onWatchTap = {},
-                onWatchStatusChange = { it.status = if (it.status != FluxStatus.WATCHED) FluxStatus.WATCHED else FluxStatus.TO_WATCH }
+                onWatchStatusChange = {
+                    viewModel.changeWatchStatus(it)
+                    episodeState = it
+                }
             )
         }
 
@@ -387,8 +393,7 @@ fun DetailsEpisode(
     onWatchStatusChange: () -> Unit
 ) {
 
-    var episodeState by remember { mutableStateOf(episode) }
-    val isWatched = episodeState.status == FluxStatus.WATCHED
+    val isWatched = episode.status == FluxStatus.WATCHED
     var isExpanded by remember { mutableStateOf(false) }
 
     Column(
@@ -421,13 +426,13 @@ fun DetailsEpisode(
 
             Text(
                 modifier = Modifier.alpha(.8f),
-                text = "${episodeState.number}",
+                text = "${episode.number}",
                 color = if (isWatched) MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.primary,
                 fontSize = FluxFontSize.MEDIUM
             )
 
             Text(
-                text = episodeState.title,
+                text = episode.title,
                 color = MaterialTheme.colorScheme.onBackground,
                 fontSize = FluxFontSize.MEDIUM
             )
@@ -436,16 +441,10 @@ fun DetailsEpisode(
 
         AnimatedVisibility(visible = isExpanded) {
             DetailsEpisodeContent(
-                episode = episodeState,
+                episode = episode,
                 onCloseExpand = { isExpanded = false },
                 onWatchTap = onWatchTap,
-                onWatchStatusChange = {
-                    episodeState = episode.copy(
-                        status = if (episodeState.status != FluxStatus.WATCHED) FluxStatus.WATCHED else FluxStatus.TO_WATCH
-                    )
-                    onWatchStatusChange()
-                    //it.status = if (it.status != FluxStatus.WATCHED) FluxStatus.WATCHED else FluxStatus.TO_WATCH
-                }
+                onWatchStatusChange = { onWatchStatusChange() }
             )
         }
 

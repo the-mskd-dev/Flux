@@ -1,5 +1,6 @@
 package com.kaem.flux.screens.details
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
@@ -46,10 +47,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -128,7 +127,7 @@ fun DetailsScreen(
             DetailsEpisode(
                 episode = it,
                 onWatchTap = {},
-                onIsWatchedTap = { it.status = if (it.status != FluxStatus.WATCHED) FluxStatus.WATCHED else FluxStatus.TO_WATCH }
+                onWatchStatusChange = { it.status = if (it.status != FluxStatus.WATCHED) FluxStatus.WATCHED else FluxStatus.TO_WATCH }
             )
         }
 
@@ -384,7 +383,7 @@ fun DetailsSeasonsDropDown(
 fun DetailsEpisode(
     episode: FluxEpisode,
     onWatchTap: () -> Unit,
-    onIsWatchedTap: () -> Unit
+    onWatchStatusChange: () -> Unit
 ) {
 
     var episodeState by remember { mutableStateOf(episode) }
@@ -439,10 +438,11 @@ fun DetailsEpisode(
                 episode = episodeState,
                 onCloseExpand = { isExpanded = false },
                 onWatchTap = onWatchTap,
-                onIsWatchedTap = {
+                onWatchStatusChange = {
                     episodeState = episode.copy(
                         status = if (episodeState.status != FluxStatus.WATCHED) FluxStatus.WATCHED else FluxStatus.TO_WATCH
                     )
+                    onWatchStatusChange()
                     //it.status = if (it.status != FluxStatus.WATCHED) FluxStatus.WATCHED else FluxStatus.TO_WATCH
                 }
             )
@@ -457,7 +457,7 @@ fun DetailsEpisodeContent(
     episode: FluxEpisode,
     onCloseExpand: () -> Unit,
     onWatchTap: () -> Unit,
-    onIsWatchedTap: () -> Unit
+    onWatchStatusChange: () -> Unit
 ) {
 
     Column(
@@ -481,40 +481,32 @@ fun DetailsEpisodeContent(
             textAlign = TextAlign.Start
         )
 
-        Row(
-            modifier = Modifier.align(Alignment.End),
-            horizontalArrangement = Arrangement.spacedBy(FluxSpace.SMALL),
-            verticalAlignment = Alignment.CenterVertically
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(FluxSpace.MEDIUM),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            FloatingActionButton(
-                modifier = Modifier.size(40.dp),
-                shape = CircleShape,
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary,
-                onClick = { onWatchTap() },
-                content = {
-                    Icon(
-                        imageVector = Icons.Rounded.PlayArrow,
-                        contentDescription = "play button"
-                    )
-                }
-            )
+            AnimatedContent(
+                targetState = episode.status == FluxStatus.WATCHED,
+                label = "button animation"
+            ) { isWatched ->
+                Text(
+                    modifier = Modifier.clickable { onWatchStatusChange() },
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FluxWeight.MEDIUM,
+                    text = stringResource(id = if (isWatched) R.string.mark_as_not_watched else R.string.mark_as_watched).uppercase()
+                )
+            }
 
-            val containerColor by animateColorAsState(targetValue = if (episode.status == FluxStatus.WATCHED) MaterialTheme.colorScheme.background else MaterialTheme.colorScheme.primary, label = "container color")
-            val contentColor by animateColorAsState(targetValue = if (episode.status == FluxStatus.WATCHED) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onPrimary, label = "content color")
-            val icon = if (episode.status == FluxStatus.WATCHED) Icons.Rounded.Done else ImageVector.vectorResource(id = R.drawable.ic_visibility)
-            FloatingActionButton(
-                modifier = Modifier.size(30.dp),
-                shape = CircleShape,
-                containerColor = containerColor,
-                contentColor = contentColor,
-                onClick = { onIsWatchedTap() },
-                content = { Icon(imageVector = icon, contentDescription = "check if watched button") }
+            Text(
+                modifier = Modifier.clickable { onWatchTap() },
+                color = MaterialTheme.colorScheme.primary,
+                fontWeight = FluxWeight.MEDIUM,
+                text = stringResource(id = if (episode.status == FluxStatus.IS_WATCHING) R.string.resume else R.string.start).uppercase()
             )
 
         }
-
 
     }
 

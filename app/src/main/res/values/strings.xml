@@ -11,4 +11,6 @@
     <string name="episode">Épisode %1$d</string>
     <string name="start">Lire</string>
     <string name="resume">Continuer</string>
+    <string name="mark_as_watched">Marquer comme vu</string>
+    <string name="mark_as_not_watched">Marquer comme non vu</string>
 </resources>

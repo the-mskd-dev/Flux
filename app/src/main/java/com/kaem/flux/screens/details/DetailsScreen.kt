@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.animateValueAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -487,17 +488,12 @@ fun DetailsEpisodeContent(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            AnimatedContent(
-                targetState = episode.status == FluxStatus.WATCHED,
-                label = "button animation"
-            ) { isWatched ->
-                Text(
-                    modifier = Modifier.clickable { onWatchStatusChange() },
-                    color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FluxWeight.MEDIUM,
-                    text = stringResource(id = if (isWatched) R.string.mark_as_not_watched else R.string.mark_as_watched).uppercase()
-                )
-            }
+            Text(
+                modifier = Modifier.clickable { onWatchStatusChange() },
+                color = MaterialTheme.colorScheme.primary,
+                fontWeight = FluxWeight.MEDIUM,
+                text = stringResource(id = if (episode.status == FluxStatus.WATCHED) R.string.mark_as_not_watched else R.string.mark_as_watched).uppercase()
+            )
 
             Text(
                 modifier = Modifier.clickable { onWatchTap() },

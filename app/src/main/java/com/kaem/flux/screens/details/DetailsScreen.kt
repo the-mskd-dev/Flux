@@ -403,8 +403,7 @@ fun DetailsEpisode(
         Divider(
             modifier = Modifier
                 .fillMaxWidth()
-                .alpha(.1f),
-            thickness = .5.dp,
+                .alpha(.2f),
             color = MaterialTheme.colorScheme.onBackground
         )
 

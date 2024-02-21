@@ -1,7 +1,10 @@
 package com.kaem.flux.model.tmdb
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class TMDBCrew(
     val job: String,
     val department: String,
@@ -14,4 +17,4 @@ data class TMDBCrew(
     @SerializedName("original_name")
     val originalName: String,
     val popularity: Float
-)
+) : Parcelable

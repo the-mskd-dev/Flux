@@ -124,17 +124,12 @@ fun DetailsScreen(
 
         }
 
-        items(items = uiState.episodes.filter { it.season == uiState.currentSeason }, key = { Pair(it.id, it.status) }) {
-
-            var episodeState by remember { mutableStateOf(it) }
+        items(items = uiState.episodes.filter { it.season == uiState.currentSeason }, key = { it }) {
 
             DetailsEpisode(
-                episode = episodeState,
+                episode = it,
                 onWatchTap = {},
-                onWatchStatusChange = {
-                    viewModel.changeWatchStatus(it)
-                    episodeState = it
-                }
+                onWatchStatusChange = { viewModel.changeWatchStatus(it) }
             )
         }
 

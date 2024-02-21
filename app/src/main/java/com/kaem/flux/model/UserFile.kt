@@ -1,13 +1,16 @@
 package com.kaem.flux.model
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 import java.util.Date
 
+@Parcelize
 data class UserFile(
     val name: String,
     val addedDateTime: Long,
     val path: String,
     val source: FileSource
-) {
+) : Parcelable {
 
     val nameProperties: FileNameProperties
         get() = FileNameProperties.fromFileName(name)

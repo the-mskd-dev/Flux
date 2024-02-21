@@ -1,12 +1,16 @@
 package com.kaem.flux.model.flux
 
+import android.os.Parcelable
 import androidx.room.Ignore
 import com.kaem.flux.model.UserFile
 import com.kaem.flux.model.tmdb.TMDBCrew
 import com.kaem.flux.model.tmdb.TMDBEpisode
 import com.kaem.flux.utils.parseTMDBDate
+import kotlinx.parcelize.IgnoredOnParcel
+import kotlinx.parcelize.Parcelize
 import java.util.Date
 
+@Parcelize
 data class FluxEpisode(
     val id: Int,
     val showId: Int,
@@ -22,8 +26,9 @@ data class FluxEpisode(
     override val voteCount: Int,
     override var status: FluxStatus = FluxStatus.TO_WATCH,
     override val file: UserFile
-) : FluxArtworkDetails {
+) : FluxArtworkDetails, Parcelable {
 
+    @IgnoredOnParcel
     @Transient
     @Ignore
     val releaseDate: Date? = releaseDateString.parseTMDBDate()

@@ -40,6 +40,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -75,62 +76,63 @@ fun DetailsScreen(
     viewModel: DetailsViewModel = hiltViewModel()
 ) {
 
-    val uiState = viewModel.uiState ?: run {
-        onBackButtonTap()
-        return
-    }
+    val uiState by viewModel.uiState.collectAsState()
 
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
-        contentPadding = PaddingValues(bottom = 100.dp)
-    ) {
+    uiState?.let { state ->
 
-        item {
-
-            Column(
-                modifier = Modifier.padding(bottom = FluxSpace.MEDIUM),
-                verticalArrangement = Arrangement.spacedBy(FluxSpace.LARGE)
-            ) {
-
-                DetailsHeader(
-                    uiState = uiState,
-                    onBackButtonTap = { onBackButtonTap() },
-                    onLaunchButtonTap = {}
-                )
-
-                DetailsDescription(uiState = uiState)
-
-            }
-
-        }
-
-        if (uiState.episodes.isNotEmpty()) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background),
+            contentPadding = PaddingValues(bottom = 100.dp)
+        ) {
 
             item {
 
-                var isExpanded by remember { mutableStateOf(false) }
+                Column(
+                    modifier = Modifier.padding(bottom = FluxSpace.MEDIUM),
+                    verticalArrangement = Arrangement.spacedBy(FluxSpace.LARGE)
+                ) {
 
-                DetailsSeasonsDropDown(
-                    isExpanded = isExpanded,
-                    selectedSeason = uiState.currentSeason,
-                    seasons = uiState.episodes.map { it.season }.distinct(),
-                    onSeasonTap = { viewModel.selectSeason(it); isExpanded = false},
-                    onExpandedChange = { isExpanded = it }
-                )
+                    DetailsHeader(
+                        uiState = state,
+                        onBackButtonTap = { onBackButtonTap() },
+                        onLaunchButtonTap = {}
+                    )
+
+                    DetailsDescription(uiState = state)
+
+                }
 
             }
 
-        }
+            if (state.episodes.isNotEmpty()) {
 
-        items(items = uiState.episodes.filter { it.season == uiState.currentSeason }, key = { it }) {
+                item {
 
-            DetailsEpisode(
-                episode = it,
-                onWatchTap = {},
-                onWatchStatusChange = { viewModel.changeWatchStatus(it) }
-            )
+                    var isExpanded by remember { mutableStateOf(false) }
+
+                    DetailsSeasonsDropDown(
+                        isExpanded = isExpanded,
+                        selectedSeason = state.currentSeason,
+                        seasons = state.episodes.map { it.season }.distinct(),
+                        onSeasonTap = { viewModel.selectSeason(it); isExpanded = false},
+                        onExpandedChange = { isExpanded = it }
+                    )
+
+                }
+
+            }
+
+            items(items = state.episodes.filter { it.season == state.currentSeason }, key = { it }) {
+
+                DetailsEpisode(
+                    episode = it,
+                    onWatchTap = {},
+                    onWatchStatusChange = { viewModel.changeWatchStatus(it) }
+                )
+            }
+
         }
 
     }

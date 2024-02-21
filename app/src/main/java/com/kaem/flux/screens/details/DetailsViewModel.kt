@@ -15,6 +15,10 @@ import com.kaem.flux.model.flux.FluxMovie
 import com.kaem.flux.model.flux.FluxShow
 import com.kaem.flux.model.flux.FluxStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -44,8 +48,8 @@ class DetailsViewModel @Inject constructor(
 
     private val artworkId: Int = checkNotNull(savedStateHandle["artworkId"])
 
-    var uiState by mutableStateOf<DetailsUiState?>(null)
-        private set
+    private val _uiState = MutableStateFlow<DetailsUiState?>(null)
+    val uiState: StateFlow<DetailsUiState?> = _uiState.asStateFlow()
 
     init {
 
@@ -63,7 +67,7 @@ class DetailsViewModel @Inject constructor(
             ?: episodes.firstOrNull { it.status == FluxStatus.TO_WATCH }
             ?: episodes.firstOrNull()
 
-        uiState = DetailsUiState(
+        _uiState.value = DetailsUiState(
             artwork = artwork,
             episodes = ArrayList(episodes),
             currentEpisode = selectedEpisode,
@@ -73,22 +77,29 @@ class DetailsViewModel @Inject constructor(
     }
 
     fun selectSeason(season: Int) {
-        uiState = uiState?.copy(currentSeason = season)
+        _uiState.update { currentState ->
+            currentState?.copy(currentSeason = season)
+        }
     }
 
     fun changeWatchStatus(episode: FluxEpisode) {
 
-        val episodes = uiState?.episodes ?: return
+        /*val episodes = uiState.value?.episodes ?: return
 
         val index = episodes.indexOf(episode)
         if (index in episodes.indices) {
             val status = if (episode.status != FluxStatus.WATCHED) FluxStatus.WATCHED else FluxStatus.TO_WATCH
             episodes[index] = episode.copy(status = status)
         }
+        */
+
+        episode.status = if (episode.status != FluxStatus.WATCHED) FluxStatus.WATCHED else FluxStatus.TO_WATCH
 
         viewModelScope.launch { repository.saveEpisode(episode) }
 
-        uiState = uiState?.copy(episodes = episodes)
+        _uiState.update { currentState ->
+            currentState?.copy()
+        }
 
     }
 

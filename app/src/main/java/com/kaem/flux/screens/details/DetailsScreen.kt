@@ -30,6 +30,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Done
 import androidx.compose.material.icons.rounded.PlayArrow
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenuItem
@@ -73,6 +74,7 @@ import com.kaem.flux.ui.theme.FluxWeight
 import com.kaem.flux.utils.Constants
 import java.text.DateFormat
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailsScreen(
     onBackButtonTap: () -> Unit,
@@ -81,6 +83,22 @@ fun DetailsScreen(
 
     val uiState by viewModel.uiState.collectAsState()
     val episodes = uiState.episodes
+
+    var episodeToMark by remember { mutableStateOf<FluxEpisode?>(null) }
+
+    if (episodeToMark != null) {
+        AlertDialog(onDismissRequest = { episodeToMark = null }) {
+            Column {
+                Text(text = "Voulez vous marquer tous les épisodes précédents comme vus ?")
+                Button(onClick = { viewModel.checkEpisodesAsWatched(episodeToMark!!); episodeToMark = null }) {
+                    Text(text = "Oui")
+                }
+                Button(onClick = { viewModel.changeWatchStatus(episodeToMark!!); episodeToMark = null }) {
+                    Text(text = "Non")
+                }
+            }
+        }
+    }
 
     LazyColumn(
         modifier = Modifier
@@ -126,14 +144,21 @@ fun DetailsScreen(
 
         }
 
-        items(items = episodes.filter { it.season == uiState.currentSeason }, key = { it }) {
+        items(items = episodes.filter { it.season == uiState.currentSeason }, key = { it }) { episode ->
 
             DetailsEpisode(
-                episode = it,
+                episode = episode,
                 onWatchTap = {},
-                isExpanded = uiState.expandedEpisodeId == it.id,
-                expandDetails = { viewModel.expandEpisodeDetails(it.id) },
-                onWatchStatusChange = { viewModel.changeWatchStatus(it) }
+                isExpanded = uiState.expandedEpisodeId == episode.id,
+                expandDetails = { viewModel.expandEpisodeDetails(episode.id) },
+                onWatchStatusChange = {
+
+                    if (episodes.any { (it.season < episode.season || (it.season == episode.season && it.number < episode.number)) && it.status != FluxStatus.WATCHED } && episode.status != FluxStatus.WATCHED) {
+                        episodeToMark = episode
+                    } else {
+                        viewModel.changeWatchStatus(episode)
+                    }
+                }
             )
 
         }

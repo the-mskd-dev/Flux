@@ -98,6 +98,7 @@ class DetailsViewModel @Inject constructor(
         viewModelScope.launch { repository.saveEpisode(episode) }
 
         _uiState.update { currentState ->
+            Log.d("TEST", "update state")
             currentState?.copy()
         }
 

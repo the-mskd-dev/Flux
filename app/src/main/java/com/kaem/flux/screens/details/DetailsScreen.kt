@@ -79,10 +79,7 @@ fun DetailsScreen(
 ) {
 
     val uiState by viewModel.uiState.collectAsState()
-
-    LaunchedEffect(uiState) {
-        Log.d("TEST", "uiState : ${uiState?.episodes?.map { it.status }}")
-    }
+    val episodes = uiState?.episodes.orEmpty()
 
     uiState?.let { state ->
 
@@ -112,7 +109,7 @@ fun DetailsScreen(
 
             }
 
-            if (state.episodes.isNotEmpty()) {
+            if (episodes.isNotEmpty()) {
 
                 item {
 
@@ -130,7 +127,7 @@ fun DetailsScreen(
 
             }
 
-            items(items = state.episodes.filter { it.season == state.currentSeason }, key = { it }) {
+            items(items = episodes.filter { it.season == state.currentSeason }, key = { it }) {
 
                 DetailsEpisode(
                     episode = it,

@@ -25,7 +25,7 @@ import javax.inject.Inject
 
 data class DetailsUiState(
     val artwork: FluxArtwork,
-    val episodes: ArrayList<FluxEpisode>,
+    val episodes: List<FluxEpisode>,
     val currentEpisode: FluxEpisode?,
     val currentSeason: Int
 ) {
@@ -84,22 +84,23 @@ class DetailsViewModel @Inject constructor(
 
     fun changeWatchStatus(episode: FluxEpisode) {
 
-        /*val episodes = uiState.value?.episodes ?: return
+        val newEpisodes = buildList {
 
-        val index = episodes.indexOf(episode)
-        if (index in episodes.indices) {
-            val status = if (episode.status != FluxStatus.WATCHED) FluxStatus.WATCHED else FluxStatus.TO_WATCH
-            episodes[index] = episode.copy(status = status)
+            uiState.value?.episodes?.forEach {
+
+                if (it.id == episode.id)
+                    add(it.copy(status = if (it.status != FluxStatus.WATCHED) FluxStatus.WATCHED else FluxStatus.TO_WATCH))
+                else
+                    add(it)
+
+            }
+
         }
-        */
-
-        episode.status = if (episode.status != FluxStatus.WATCHED) FluxStatus.WATCHED else FluxStatus.TO_WATCH
 
         viewModelScope.launch { repository.saveEpisode(episode) }
 
         _uiState.update { currentState ->
-            Log.d("TEST", "update state")
-            currentState?.copy()
+            currentState?.copy(episodes = newEpisodes)
         }
 
     }

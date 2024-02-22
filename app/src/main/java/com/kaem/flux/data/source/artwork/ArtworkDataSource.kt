@@ -11,6 +11,6 @@ interface ArtworkDataSource {
         artworkIds: List<Int> = emptyList()
     ) : Pair<List<FluxArtwork>, List<FluxEpisode>>
 
-    suspend fun saveEpisode(episode: FluxEpisode)
+    suspend fun saveEpisodes(episodes: List<FluxEpisode>)
 
 }

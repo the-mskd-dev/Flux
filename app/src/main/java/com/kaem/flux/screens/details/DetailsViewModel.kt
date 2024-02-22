@@ -89,6 +89,34 @@ class DetailsViewModel @Inject constructor(
         }
     }
 
+    fun checkEpisodesAsWatched(episode: FluxEpisode) {
+
+        val episodesToSave = arrayListOf<FluxEpisode>()
+
+        val newEpisodes = buildList {
+
+            uiState.value.episodes.forEach {
+
+                if (it.season < episode.season || (it.season == episode.season && it.number <= episode.number)) {
+                    val newEpisode = it.copy(status = FluxStatus.WATCHED)
+                    add(newEpisode)
+                    episodesToSave.add(newEpisode)
+                } else {
+                    add(it)
+                }
+
+            }
+
+        }
+
+        viewModelScope.launch { repository.saveEpisodes(episodesToSave) }
+
+        _uiState.update { currentState ->
+            currentState.copy(episodes = newEpisodes)
+        }
+
+    }
+
     fun changeWatchStatus(episode: FluxEpisode) {
 
         val newEpisodes = buildList {
@@ -104,7 +132,7 @@ class DetailsViewModel @Inject constructor(
 
         }
 
-        viewModelScope.launch { repository.saveEpisode(episode) }
+        viewModelScope.launch { repository.saveEpisodes(listOf(episode)) }
 
         _uiState.update { currentState ->
             currentState.copy(episodes = newEpisodes)

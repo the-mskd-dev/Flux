@@ -72,8 +72,8 @@ class LibraryRepository @Inject constructor(
 
     }
 
-    suspend fun saveEpisode(episode: FluxEpisode) {
-        localArtworkDataSource.saveEpisode(episode)
+    suspend fun saveEpisodes(episodes: List<FluxEpisode>) {
+        localArtworkDataSource.saveEpisodes(episodes)
     }
 
 }

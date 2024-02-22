@@ -5,6 +5,7 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.animateValueAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -398,6 +399,8 @@ fun DetailsEpisode(
 ) {
 
     val isWatched = episode.status == FluxStatus.WATCHED
+    val alphaAnimation by animateFloatAsState(targetValue = if (isWatched) .4f else 1f, label = "alphaAnimation")
+    val colorAnimation by animateColorAsState(targetValue = if (isWatched) MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.primary, label = "colorAnimation")
 
     Column(
         modifier = Modifier
@@ -421,7 +424,7 @@ fun DetailsEpisode(
                     interactionSource = MutableInteractionSource(),
                     indication = null
                 ) { expandDetails() }
-                .alpha(if (isWatched) .4f else 1f)
+                .alpha(alphaAnimation)
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(FluxSpace.SMALL),
             verticalAlignment = Alignment.CenterVertically
@@ -430,7 +433,7 @@ fun DetailsEpisode(
             Text(
                 modifier = Modifier.alpha(.8f),
                 text = "${episode.number}",
-                color = if (isWatched) MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.primary,
+                color = colorAnimation,
                 fontSize = FluxFontSize.MEDIUM
             )
 

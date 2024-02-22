@@ -79,9 +79,9 @@ fun DetailsScreen(
 ) {
 
     val uiState by viewModel.uiState.collectAsState()
-    val episodes = uiState?.episodes.orEmpty()
+    val episodes = uiState.episodes
 
-    uiState?.let { state ->
+    uiState.let { state ->
 
         LazyColumn(
             modifier = Modifier
@@ -132,6 +132,8 @@ fun DetailsScreen(
                 DetailsEpisode(
                     episode = it,
                     onWatchTap = {},
+                    isExpanded = state.expandedEpisodeId == it.id,
+                    expandDetails = { viewModel.expandEpisodeDetails(it.id) },
                     onWatchStatusChange = { viewModel.changeWatchStatus(it) }
                 )
             }
@@ -163,9 +165,9 @@ fun DetailsHeader(
                     end.linkTo(parent.end)
                     width = Dimension.fillToConstraints
                 },
-            model = Constants.TMDB.IMAGE + uiState.artwork.bannerPath,
+            model = Constants.TMDB.IMAGE + uiState.artwork?.bannerPath,
             contentScale = ContentScale.Crop,
-            contentDescription = uiState.artwork.title
+            contentDescription = uiState.artwork?.title
         )
 
         Box(
@@ -275,10 +277,10 @@ fun DetailsTitle(
 
         Title(
             modifier = Modifier.fillMaxWidth(),
-            text = uiState.artwork.title
+            text = uiState.artwork?.title
         )
 
-        uiState.currentEpisode?.releaseDate ?: uiState.artwork.releaseDate?.let {
+        uiState.currentEpisode?.releaseDate ?: uiState.artwork?.releaseDate?.let {
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -389,12 +391,13 @@ fun DetailsSeasonsDropDown(
 @Composable
 fun DetailsEpisode(
     episode: FluxEpisode,
+    isExpanded: Boolean,
+    expandDetails: () -> Unit,
     onWatchTap: () -> Unit,
     onWatchStatusChange: () -> Unit
 ) {
 
     val isWatched = episode.status == FluxStatus.WATCHED
-    var isExpanded by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -417,7 +420,7 @@ fun DetailsEpisode(
                 .clickable(
                     interactionSource = MutableInteractionSource(),
                     indication = null
-                ) { isExpanded = !isExpanded }
+                ) { expandDetails() }
                 .alpha(if (isWatched) .4f else 1f)
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(FluxSpace.SMALL),
@@ -442,7 +445,7 @@ fun DetailsEpisode(
         AnimatedVisibility(visible = isExpanded) {
             DetailsEpisodeContent(
                 episode = episode,
-                onCloseExpand = { isExpanded = false },
+                onCloseExpand = { expandDetails() },
                 onWatchTap = onWatchTap,
                 onWatchStatusChange = { onWatchStatusChange() }
             )

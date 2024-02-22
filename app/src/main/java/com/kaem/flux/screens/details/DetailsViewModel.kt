@@ -24,10 +24,11 @@ import javax.inject.Inject
 
 
 data class DetailsUiState(
-    val artwork: FluxArtwork,
-    val episodes: List<FluxEpisode>,
-    val currentEpisode: FluxEpisode?,
-    val currentSeason: Int
+    val artwork: FluxArtwork? = null,
+    val episodes: List<FluxEpisode> = emptyList(),
+    val expandedEpisodeId: Int? = null,
+    val currentEpisode: FluxEpisode? = null,
+    val currentSeason: Int = -1
 ) {
 
     val artworkDetails: FluxArtworkDetails? = currentEpisode ?: artwork as? FluxMovie
@@ -48,8 +49,8 @@ class DetailsViewModel @Inject constructor(
 
     private val artworkId: Int = checkNotNull(savedStateHandle["artworkId"])
 
-    private val _uiState = MutableStateFlow<DetailsUiState?>(null)
-    val uiState: StateFlow<DetailsUiState?> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow<DetailsUiState>(DetailsUiState())
+    val uiState: StateFlow<DetailsUiState> = _uiState.asStateFlow()
 
     init {
 
@@ -78,7 +79,13 @@ class DetailsViewModel @Inject constructor(
 
     fun selectSeason(season: Int) {
         _uiState.update { currentState ->
-            currentState?.copy(currentSeason = season)
+            currentState.copy(currentSeason = season)
+        }
+    }
+
+    fun expandEpisodeDetails(id: Int) {
+        _uiState.update { currentState ->
+            currentState.copy(expandedEpisodeId = if (currentState.expandedEpisodeId == id) null else id)
         }
     }
 
@@ -86,7 +93,7 @@ class DetailsViewModel @Inject constructor(
 
         val newEpisodes = buildList {
 
-            uiState.value?.episodes?.forEach {
+            uiState.value.episodes.forEach {
 
                 if (it.id == episode.id)
                     add(it.copy(status = if (it.status != FluxStatus.WATCHED) FluxStatus.WATCHED else FluxStatus.TO_WATCH))
@@ -100,7 +107,7 @@ class DetailsViewModel @Inject constructor(
         viewModelScope.launch { repository.saveEpisode(episode) }
 
         _uiState.update { currentState ->
-            currentState?.copy(episodes = newEpisodes)
+            currentState.copy(episodes = newEpisodes)
         }
 
     }

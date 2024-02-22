@@ -420,7 +420,7 @@ fun DetailsEpisode(
     onWatchStatusChange: () -> Unit
 ) {
 
-    val isWatched = episode.status == FluxStatus.WATCHED
+    var isWatched by remember { mutableStateOf(episode.status == FluxStatus.WATCHED) }
     val alphaAnimation by animateFloatAsState(targetValue = if (isWatched) .4f else 1f, label = "alphaAnimation")
     val colorAnimation by animateColorAsState(targetValue = if (isWatched) MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.primary, label = "colorAnimation")
 
@@ -472,7 +472,10 @@ fun DetailsEpisode(
                 episode = episode,
                 onCloseExpand = { expandDetails() },
                 onWatchTap = onWatchTap,
-                onWatchStatusChange = { onWatchStatusChange() }
+                onWatchStatusChange = {
+                    onWatchStatusChange()
+                    isWatched = episode.status == FluxStatus.WATCHED
+                }
             )
         }
 

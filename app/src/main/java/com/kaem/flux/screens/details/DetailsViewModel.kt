@@ -118,26 +118,8 @@ class DetailsViewModel @Inject constructor(
     }
 
     fun changeWatchStatus(episode: FluxEpisode) {
-
-        val newEpisodes = buildList {
-
-            uiState.value.episodes.forEach {
-
-                if (it.id == episode.id)
-                    add(it.copy(status = if (it.status != FluxStatus.WATCHED) FluxStatus.WATCHED else FluxStatus.TO_WATCH))
-                else
-                    add(it)
-
-            }
-
-        }
-
+        episode.status = if (episode.status != FluxStatus.WATCHED) FluxStatus.WATCHED else FluxStatus.TO_WATCH
         viewModelScope.launch { repository.saveEpisodes(listOf(episode)) }
-
-        _uiState.update { currentState ->
-            currentState.copy(episodes = newEpisodes)
-        }
-
     }
 
 }

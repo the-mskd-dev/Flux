@@ -11,14 +11,27 @@ data class Artwork(
     val imagePath: String,
     val bannerPath: String,
     val content: ArtworkContent
-)
+) {
+
+    val description: String? = when (content) {
+        is ArtworkContent.Movie -> content.movie.description
+        is ArtworkContent.Show -> content.currentEpisode?.description
+    }
+
+}
 
 
 sealed class ArtworkContent {
 
     data class Movie(val movie: ArtworkInfo.Movie) : ArtworkContent()
 
-    data class Show(val episodes: List<ArtworkInfo.Episode>) : ArtworkContent()
+    data class Show(val episodes: List<ArtworkInfo.Episode>) : ArtworkContent() {
+
+        val currentEpisode get() = episodes.lastOrNull { it.status == FluxStatus.IS_WATCHING }
+            ?: episodes.firstOrNull { it.status == FluxStatus.TO_WATCH }
+            ?: episodes.firstOrNull()
+
+    }
 
 }
 

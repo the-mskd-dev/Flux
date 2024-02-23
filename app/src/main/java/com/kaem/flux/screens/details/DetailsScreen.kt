@@ -146,7 +146,7 @@ fun DetailsScreen(
 
             }
 
-            items(items = episodes.filter { it.season == uiState.currentSeason }, key = { it.id }) { episode ->
+            items(items = episodes.filter { it.season == uiState.currentSeason }.sortedBy { it.number }, key = { it.id }) { episode ->
 
                 DetailsEpisode(
                     episode = episode,

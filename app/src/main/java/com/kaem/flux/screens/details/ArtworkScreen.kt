@@ -402,13 +402,16 @@ fun EpisodeItem(
         ) {
 
             Text(
-                modifier = Modifier.alpha(.8f),
+                modifier = Modifier
+                    .alignByBaseline()
+                    .alpha(.8f),
                 text = "${episode.number}",
                 color = colorAnimation,
                 fontSize = FluxFontSize.MEDIUM
             )
 
             Text(
+                modifier = Modifier.alignByBaseline(),
                 text = episode.title,
                 color = MaterialTheme.colorScheme.onBackground,
                 fontSize = FluxFontSize.MEDIUM

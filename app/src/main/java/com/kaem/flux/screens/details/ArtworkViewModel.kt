@@ -21,11 +21,13 @@ import javax.inject.Inject
 data class ArtworkUiState(
     val artwork: Artwork = Artwork(),
     val expandedEpisodeId: Int? = null,
-    val currentEpisode: Episode? = null,
     val currentSeason: Int = -1
 ) {
 
-    val artworkDetails: ArtworkInfo? = currentEpisode ?: (artwork.content as? ArtworkContent.MOVIE)?.movie
+    val artworkDetails: ArtworkInfo? = when (artwork.content) {
+        is ArtworkContent.MOVIE -> artwork.content.movie
+        is ArtworkContent.SHOW -> artwork.content.currentEpisode
+    }
 
 }
 
@@ -51,15 +53,10 @@ class ArtworkViewModel @Inject constructor(
         val libraryContent = repository.libraryContent.value
 
         val artwork = libraryContent?.artworks?.find { it.id == id } ?: return
-        val episodes = (artwork.content as? ArtworkContent.SHOW)?.episodes.orEmpty()
-        val selectedEpisode = episodes.lastOrNull { it.status == FluxStatus.IS_WATCHING }
-            ?: episodes.firstOrNull { it.status == FluxStatus.TO_WATCH }
-            ?: episodes.firstOrNull()
 
         _uiState.value = ArtworkUiState(
             artwork = artwork,
-            currentEpisode = selectedEpisode,
-            currentSeason = selectedEpisode?.season ?: -1
+            currentSeason = (artwork.content as? ArtworkContent.SHOW)?.currentEpisode?.season ?: -1
         )
 
     }

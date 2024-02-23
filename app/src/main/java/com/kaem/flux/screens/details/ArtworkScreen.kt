@@ -270,7 +270,7 @@ fun ArtworkTitle(
             text = uiState.artwork.title
         )
 
-        uiState.currentEpisode?.releaseDate ?: (uiState.artwork.content as? ArtworkContent.MOVIE)?.movie?.releaseDate?.let {
+        uiState.artworkDetails?.releaseDate?.let {
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -296,36 +296,38 @@ fun ArtworkDescription(uiState: ArtworkUiState) {
         verticalArrangement = Arrangement.spacedBy(FluxSpace.SMALL)
     ) {
 
-        uiState.currentEpisode?.let {
+        uiState.artworkDetails?.let {
 
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = stringResource(id = R.string.season_and_episode, it.season, it.number),
-                color = MaterialTheme.colorScheme.onBackground,
-                fontSize = FluxFontSize.LARGE,
-                fontWeight = FluxWeight.MEDIUM
-            )
+            if (it is Episode) {
 
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = it.title,
-                color = MaterialTheme.colorScheme.onBackground,
-                fontSize = FluxFontSize.MEDIUM,
-                fontWeight = FluxWeight.MEDIUM
-            )
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = stringResource(id = R.string.season_and_episode, it.season, it.number),
+                    color = MaterialTheme.colorScheme.onBackground,
+                    fontSize = FluxFontSize.LARGE,
+                    fontWeight = FluxWeight.MEDIUM
+                )
 
-        }
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = it.title,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    fontSize = FluxFontSize.MEDIUM,
+                    fontWeight = FluxWeight.MEDIUM
+                )
 
-        uiState.artwork.description?.let {
+            }
+
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
                     .alpha(.8f),
-                text = it,
+                text = it.description,
                 color = MaterialTheme.colorScheme.onBackground,
                 fontSize = FluxFontSize.MEDIUM,
                 textAlign = TextAlign.Start
             )
+
         }
 
     }

@@ -80,27 +80,6 @@ fun DetailsScreen(
 ) {
 
     val uiState by viewModel.uiState.collectAsState()
-    var artwork by remember { mutableStateOf(uiState.artwork) }
-
-    var episodeToMark by remember { mutableStateOf<Episode?>(null) }
-
-    if (episodeToMark != null) {
-        AlertDialog(onDismissRequest = { episodeToMark = null }) {
-            Column {
-                Text(text = "Voulez vous marquer tous les épisodes précédents comme vus ?")
-                Button(onClick = {
-                    viewModel.checkEpisodesAsWatched(episodeToMark!!);
-                    artwork = uiState.artwork
-                    episodeToMark = null
-                }) {
-                    Text(text = "Oui")
-                }
-                Button(onClick = { viewModel.changeWatchStatus(episodeToMark!!); episodeToMark = null }) {
-                    Text(text = "Non")
-                }
-            }
-        }
-    }
 
     LazyColumn(
         modifier = Modifier
@@ -128,9 +107,9 @@ fun DetailsScreen(
 
         }
 
-        if (artwork.content is ArtworkContent.SHOW) {
+        if (uiState.artwork.content is ArtworkContent.SHOW) {
 
-            val episodes = (artwork.content as ArtworkContent.SHOW).episodes
+            val episodes = (uiState.artwork.content as ArtworkContent.SHOW).episodes
 
             item {
 
@@ -153,14 +132,7 @@ fun DetailsScreen(
                     onWatchTap = {},
                     isExpanded = uiState.expandedEpisodeId == episode.id,
                     expandDetails = { viewModel.expandEpisodeDetails(episode.id) },
-                    onWatchStatusChange = {
-
-                        if (episodes.any { (it.season < episode.season || (it.season == episode.season && it.number < episode.number)) && it.status != FluxStatus.WATCHED } && episode.status != FluxStatus.WATCHED) {
-                            episodeToMark = episode
-                        } else {
-                            viewModel.changeWatchStatus(episode)
-                        }
-                    }
+                    onWatchStatusChange = { viewModel.changeWatchStatus(episode) }
                 )
 
             }

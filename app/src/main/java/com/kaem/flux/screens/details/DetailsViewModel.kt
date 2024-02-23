@@ -81,27 +81,6 @@ class DetailsViewModel @Inject constructor(
         }
     }
 
-    fun checkEpisodesAsWatched(episode: Episode) {
-
-        val episodes = buildList {
-
-            (uiState.value.artwork.content as? ArtworkContent.SHOW)?.episodes?.forEach {
-
-                if (it.season < episode.season || (it.season == episode.season && it.number <= episode.number)) {
-                    it.status = FluxStatus.WATCHED
-                    add(it)
-                } else {
-                    add(it)
-                }
-
-            }
-
-        }
-
-        viewModelScope.launch { repository.saveEpisodes(episodes) }
-
-    }
-
     fun changeWatchStatus(episode: Episode) {
         episode.status = if (episode.status != FluxStatus.WATCHED) FluxStatus.WATCHED else FluxStatus.TO_WATCH
         viewModelScope.launch { repository.saveEpisodes(listOf(episode)) }

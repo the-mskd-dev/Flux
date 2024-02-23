@@ -186,7 +186,6 @@ class DatabaseManager(
 
             }
 
-
             launch {
 
                 val showEntities = withContext(Dispatchers.IO) { fluxDao.getShows() }

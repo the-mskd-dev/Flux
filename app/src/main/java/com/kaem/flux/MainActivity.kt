@@ -17,6 +17,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.kaem.flux.screens.details.ArtworkScreen
 import com.kaem.flux.screens.home.LibraryScreen
+import com.kaem.flux.screens.player.PlayerScreen
 import com.kaem.flux.ui.theme.FluxTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -55,6 +56,23 @@ class MainActivity : ComponentActivity() {
                         arguments = listOf(navArgument("artworkId") { type = NavType.IntType })
                     ) {
                         ArtworkScreen(
+                            onBackButtonTap = {
+
+                                if (navController.currentBackStackEntry != null)
+                                    navController.popBackStack()
+
+                            },
+                            launchPlayer = {
+                                navController.navigate("player/$it")
+                            }
+                        )
+                    }
+
+                    composable(
+                        "player/{path}",
+                        arguments = listOf(navArgument("path") { type = NavType.StringType })
+                    ) {
+                        PlayerScreen(
                             onBackButtonTap = {
 
                                 if (navController.currentBackStackEntry != null)

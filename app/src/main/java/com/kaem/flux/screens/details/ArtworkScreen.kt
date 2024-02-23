@@ -71,6 +71,7 @@ import java.text.DateFormat
 @Composable
 fun ArtworkScreen(
     onBackButtonTap: () -> Unit,
+    launchPlayer: (String) -> Unit,
     viewModel: ArtworkViewModel = hiltViewModel()
 ) {
 
@@ -93,7 +94,16 @@ fun ArtworkScreen(
                 ArtworkHeader(
                     uiState = uiState,
                     onBackButtonTap = { onBackButtonTap() },
-                    onLaunchButtonTap = {}
+                    onLaunchButtonTap = {
+
+                        val path = when (val content = uiState.artwork.content) {
+                            is ArtworkContent.MOVIE -> content.movie.file.path
+                            is ArtworkContent.SHOW -> content.currentEpisode?.file?.path
+                        }
+
+                        path?.let { launchPlayer(it) }
+
+                    }
                 )
 
                 ArtworkDescription(uiState = uiState)

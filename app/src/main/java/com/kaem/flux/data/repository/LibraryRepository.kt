@@ -4,6 +4,7 @@ import com.kaem.flux.data.source.artwork.ArtworkDataSource
 import com.kaem.flux.data.source.file.FilesDataSource
 import com.kaem.flux.model.UserFile
 import com.kaem.flux.model.flux.Artwork
+import com.kaem.flux.model.flux.ArtworkContent
 import com.kaem.flux.model.flux.Episode
 import com.kaem.flux.model.flux.FluxArtwork
 import com.kaem.flux.model.flux.FluxEpisode
@@ -17,8 +18,7 @@ import javax.inject.Inject
 
 data class LibraryContent(
     val isLoading: Boolean = true,
-    val artworks: List<Artwork> = emptyList(),
-    val episodes: List<Episode> = emptyList()
+    val artworks: List<Artwork> = emptyList()
 )
 
 class LibraryRepository @Inject constructor(
@@ -48,10 +48,19 @@ class LibraryRepository @Inject constructor(
             artworkIds = dbIds
         )
 
+        val allArtworks = dbArtworks + tmdbArtworks
+        val allEpisodes = dbEpisodes + tmdbEpisodes
+
+        allArtworks.forEach { artwork ->
+
+            if (artwork.content is ArtworkContent.SHOW)
+                artwork.content.episodes = allEpisodes.filter { it.showId == artwork.id }
+
+        }
+
         _libraryContent.value = LibraryContent(
             isLoading = false,
-            artworks = dbArtworks + tmdbArtworks,
-            episodes = dbEpisodes + tmdbEpisodes
+            artworks = allArtworks
         )
 
     }

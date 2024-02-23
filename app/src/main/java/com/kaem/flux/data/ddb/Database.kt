@@ -64,6 +64,9 @@ interface FluxDao {
     @Query("SELECT * FROM EpisodeEntity")
     suspend fun getEpisodes() : List<EpisodeEntity>
 
+    @Query("SELECT * FROM EpisodeEntity WHERE showId=:showId")
+    suspend fun getEpisodesForShow(showId: Int) : List<EpisodeEntity>
+
     @Query("DELETE FROM movieentity WHERE id IN (:ids)")
     suspend fun deleteMovies(ids: List<Int>)
 

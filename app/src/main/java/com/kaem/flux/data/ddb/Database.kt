@@ -100,6 +100,7 @@ class DatabaseManager(
 
         withContext(Dispatchers.Default) {
 
+
             launch {
 
                 val movieEntities = movies.map {
@@ -121,12 +122,16 @@ class DatabaseManager(
 
             launch {
 
-                val showEntities = shows.map {
+                val showEntities = shows.map { show ->
 
-                    val content = gson.toJson(it)
+                    launch {
+                        (show.content as? ArtworkContent.SHOW)?.episodes?.let { saveEpisodes(it) }
+                    }
+
+                    val content = gson.toJson(show)
 
                     ShowEntity(
-                        id = it.id,
+                        id = show.id,
                         content = content
                     )
 

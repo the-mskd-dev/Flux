@@ -5,12 +5,14 @@ import com.kaem.flux.model.tmdb.TMDBArtwork
 import com.kaem.flux.model.tmdb.TMDBMovie
 
 data class Artwork(
-    val id: Int,
-    val title: String,
-    val imagePath: String,
-    val bannerPath: String,
-    val content: ArtworkContent
+    val id: Int = -1,
+    val title: String = "",
+    val imagePath: String = "",
+    val bannerPath: String = "",
+    val content: ArtworkContent = ArtworkContent.SHOW()
 ) {
+
+
 
     val description: String? = when (content) {
         is ArtworkContent.MOVIE -> content.movie.description

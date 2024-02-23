@@ -60,6 +60,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.kaem.flux.R
+import com.kaem.flux.model.flux.ArtworkContent
+import com.kaem.flux.model.flux.Episode
 import com.kaem.flux.model.flux.FluxEpisode
 import com.kaem.flux.model.flux.FluxStatus
 import com.kaem.flux.ui.component.Title
@@ -78,15 +80,19 @@ fun DetailsScreen(
 ) {
 
     val uiState by viewModel.uiState.collectAsState()
-    val episodes = uiState.episodes
+    var artwork by remember { mutableStateOf(uiState.artwork) }
 
-    var episodeToMark by remember { mutableStateOf<FluxEpisode?>(null) }
+    var episodeToMark by remember { mutableStateOf<Episode?>(null) }
 
     if (episodeToMark != null) {
         AlertDialog(onDismissRequest = { episodeToMark = null }) {
             Column {
                 Text(text = "Voulez vous marquer tous les épisodes précédents comme vus ?")
-                Button(onClick = { viewModel.checkEpisodesAsWatched(episodeToMark!!); episodeToMark = null }) {
+                Button(onClick = {
+                    viewModel.checkEpisodesAsWatched(episodeToMark!!);
+                    artwork = uiState.artwork
+                    episodeToMark = null
+                }) {
                     Text(text = "Oui")
                 }
                 Button(onClick = { viewModel.changeWatchStatus(episodeToMark!!); episodeToMark = null }) {
@@ -122,7 +128,9 @@ fun DetailsScreen(
 
         }
 
-        if (episodes.isNotEmpty()) {
+        if (artwork.content is ArtworkContent.SHOW) {
+
+            val episodes = (artwork.content as ArtworkContent.SHOW).episodes
 
             item {
 
@@ -131,31 +139,31 @@ fun DetailsScreen(
                 DetailsSeasonsDropDown(
                     isExpanded = isExpanded,
                     selectedSeason = uiState.currentSeason,
-                    seasons = uiState.episodes.map { it.season }.distinct(),
+                    seasons = episodes.map { it.season }.distinct(),
                     onSeasonTap = { viewModel.selectSeason(it); isExpanded = false},
                     onExpandedChange = { isExpanded = it }
                 )
 
             }
 
-        }
+            items(items = episodes.filter { it.season == uiState.currentSeason }, key = { it.id }) { episode ->
 
-        items(items = episodes.filter { it.season == uiState.currentSeason }, key = { it.id }) { episode ->
+                DetailsEpisode(
+                    episode = episode,
+                    onWatchTap = {},
+                    isExpanded = uiState.expandedEpisodeId == episode.id,
+                    expandDetails = { viewModel.expandEpisodeDetails(episode.id) },
+                    onWatchStatusChange = {
 
-            DetailsEpisode(
-                episode = episode,
-                onWatchTap = {},
-                isExpanded = uiState.expandedEpisodeId == episode.id,
-                expandDetails = { viewModel.expandEpisodeDetails(episode.id) },
-                onWatchStatusChange = {
-
-                    if (episodes.any { (it.season < episode.season || (it.season == episode.season && it.number < episode.number)) && it.status != FluxStatus.WATCHED } && episode.status != FluxStatus.WATCHED) {
-                        episodeToMark = episode
-                    } else {
-                        viewModel.changeWatchStatus(episode)
+                        if (episodes.any { (it.season < episode.season || (it.season == episode.season && it.number < episode.number)) && it.status != FluxStatus.WATCHED } && episode.status != FluxStatus.WATCHED) {
+                            episodeToMark = episode
+                        } else {
+                            viewModel.changeWatchStatus(episode)
+                        }
                     }
-                }
-            )
+                )
+
+            }
 
         }
 
@@ -184,9 +192,9 @@ fun DetailsHeader(
                     end.linkTo(parent.end)
                     width = Dimension.fillToConstraints
                 },
-            model = Constants.TMDB.IMAGE + uiState.artwork?.bannerPath,
+            model = Constants.TMDB.IMAGE + uiState.artwork.bannerPath,
             contentScale = ContentScale.Crop,
-            contentDescription = uiState.artwork?.title
+            contentDescription = uiState.artwork.title
         )
 
         Box(
@@ -296,10 +304,10 @@ fun DetailsTitle(
 
         Title(
             modifier = Modifier.fillMaxWidth(),
-            text = uiState.artwork?.title
+            text = uiState.artwork.title
         )
 
-        uiState.currentEpisode?.releaseDate ?: uiState.artwork?.releaseDate?.let {
+        uiState.currentEpisode?.releaseDate ?: (uiState.artwork.content as? ArtworkContent.MOVIE)?.movie?.releaseDate?.let {
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -345,7 +353,7 @@ fun DetailsDescription(uiState: DetailsUiState) {
 
         }
 
-        uiState.description?.let {
+        uiState.artwork.description?.let {
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -409,7 +417,7 @@ fun DetailsSeasonsDropDown(
 
 @Composable
 fun DetailsEpisode(
-    episode: FluxEpisode,
+    episode: Episode,
     isExpanded: Boolean,
     expandDetails: () -> Unit,
     onWatchTap: () -> Unit,
@@ -481,7 +489,7 @@ fun DetailsEpisode(
 
 @Composable
 fun DetailsEpisodeContent(
-    episode: FluxEpisode,
+    episode: Episode,
     onCloseExpand: () -> Unit,
     onWatchTap: () -> Unit,
     onWatchStatusChange: () -> Unit

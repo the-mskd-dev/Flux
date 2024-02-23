@@ -62,15 +62,18 @@ class MainActivity : ComponentActivity() {
                                     navController.popBackStack()
 
                             },
-                            launchPlayer = {
-                                navController.navigate("player/$it")
+                            launchPlayer = { id, episodeId ->
+                                navController.navigate("player/$id/$episodeId")
                             }
                         )
                     }
 
                     composable(
-                        "player/{path}",
-                        arguments = listOf(navArgument("path") { type = NavType.StringType })
+                        "player/{id}/{episodeId}",
+                        arguments = listOf(
+                            navArgument("id") { type = NavType.IntType },
+                            navArgument("episodeId") { type = NavType.IntType }
+                        )
                     ) {
                         PlayerScreen(
                             onBackButtonTap = {

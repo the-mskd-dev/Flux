@@ -44,6 +44,8 @@ import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.kaem.flux.R
+import com.kaem.flux.model.flux.Artwork
+import com.kaem.flux.model.flux.ArtworkContent
 import com.kaem.flux.model.flux.FluxArtwork
 import com.kaem.flux.model.flux.FluxEpisode
 import com.kaem.flux.model.flux.FluxMovie
@@ -88,7 +90,6 @@ fun LibraryScreen(
                 null -> Loader()
                 else -> LibraryContent(
                     artworks = it.artworks,
-                    episodes = it.episodes,
                     lastWatchedIds = it.lastWatchedArtworkIds,
                     navigateToDetails = { id -> navigateToDetails(id) }
                 )
@@ -103,8 +104,7 @@ fun LibraryScreen(
 
 @Composable
 fun LibraryContent(
-    artworks: List<FluxArtwork>,
-    episodes: List<FluxEpisode>,
+    artworks: List<Artwork>,
     lastWatchedIds: List<Int>,
     navigateToDetails: (Int) -> Unit
 ) {
@@ -128,7 +128,6 @@ fun LibraryContent(
 
         LibraryGrid(
             artworks = artworks,
-            episodes = episodes,
             lastWatchedIds = lastWatchedIds,
             navigateToDetails = { navigateToDetails(it) }
         )
@@ -139,8 +138,7 @@ fun LibraryContent(
 
 @Composable
 fun LibraryGrid(
-    artworks: List<FluxArtwork>,
-    episodes: List<FluxEpisode>,
+    artworks: List<Artwork>,
     lastWatchedIds: List<Int>,
     navigateToDetails: (Int) -> Unit,
     viewModel: LibraryViewModel = viewModel()
@@ -167,19 +165,19 @@ fun LibraryGrid(
 
         ArtworkList(
             name = stringResource(id = R.string.last_added),
-            artworks = viewModel.getArtworksByAddedDate(artworks = artworks, episodes = episodes),
+            artworks = viewModel.getArtworksByAddedDate(artworks = artworks),
             navigateToDetails = navigateToDetails
         )
 
         ArtworkList(
             name = stringResource(id = R.string.shows),
-            artworks = artworks.filterIsInstance<FluxShow>(),
+            artworks = artworks.filter { it.content is ArtworkContent.SHOW },
             navigateToDetails = navigateToDetails
         )
 
         ArtworkList(
             name = stringResource(id = R.string.movies),
-            artworks = artworks.filterIsInstance<FluxMovie>(),
+            artworks = artworks.filter { it.content is ArtworkContent.MOVIE },
             navigateToDetails = navigateToDetails
         )
 
@@ -197,7 +195,7 @@ fun LibraryGrid(
 fun ArtworkList(
     name: String? = null,
     largeArtwork: Boolean = false,
-    artworks: List<FluxArtwork>,
+    artworks: List<Artwork>,
     navigateToDetails: (Int) -> Unit
 ) {
 
@@ -224,7 +222,7 @@ fun ArtworkList(
 
                 LibraryArtwork(
                     modifier = Modifier.clickable { navigateToDetails(it.id) },
-                    artworkSummary = it,
+                    artwork = it,
                     largeArtwork = largeArtwork
                 )
 
@@ -239,13 +237,13 @@ fun ArtworkList(
 @Composable
 fun LibraryArtwork(
     modifier: Modifier = Modifier,
-    artworkSummary: FluxArtwork,
+    artwork: Artwork,
     largeArtwork: Boolean = false
 ) {
 
     val width = if (largeArtwork) 450.dp else 120.dp
     val ratio = if (largeArtwork) 1920f/1080f else 2f/3f
-    val url = if (largeArtwork) Constants.TMDB.IMAGE + artworkSummary.bannerPath else Constants.TMDB.IMAGE_SMALL + artworkSummary.imagePath
+    val url = if (largeArtwork) Constants.TMDB.IMAGE + artwork.bannerPath else Constants.TMDB.IMAGE_SMALL + artwork.imagePath
 
     GlideImage(
         modifier = Modifier
@@ -254,7 +252,7 @@ fun LibraryArtwork(
             .width(width)
             .aspectRatio(ratio),
         model = url,
-        contentDescription = artworkSummary.title,
+        contentDescription = artwork.title,
         loading = placeholder(ColorPainter(Color.LightGray))
     )
 

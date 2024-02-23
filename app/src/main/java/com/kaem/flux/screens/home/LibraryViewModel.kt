@@ -5,6 +5,8 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.kaem.flux.data.repository.DataStoreRepository
 import com.kaem.flux.data.repository.LibraryRepository
+import com.kaem.flux.model.flux.Artwork
+import com.kaem.flux.model.flux.ArtworkContent
 import com.kaem.flux.model.flux.FluxArtwork
 import com.kaem.flux.model.flux.FluxEpisode
 import com.kaem.flux.model.flux.FluxMovie
@@ -15,8 +17,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class LibraryUiState(
-    val artworks: List<FluxArtwork> = emptyList(),
-    val episodes: List<FluxEpisode> = emptyList(),
+    val artworks: List<Artwork> = emptyList(),
     val lastWatchedArtworkIds: List<Int> = emptyList(),
     val isLoading: Boolean = true
 )
@@ -37,7 +38,6 @@ class LibraryViewModel @Inject constructor(
         return@combine libraryContent?.let {
             LibraryUiState(
                 artworks = libraryContent.artworks,
-                episodes = libraryContent.episodes,
                 lastWatchedArtworkIds = preferences.lastWatchedIds,
                 isLoading = libraryContent.isLoading
             )
@@ -59,26 +59,22 @@ class LibraryViewModel @Inject constructor(
     }
 
     fun getArtworksByAddedDate(
-        artworks: List<FluxArtwork>,
-        episodes: List<FluxEpisode>,
-    ) : List<FluxArtwork> {
+        artworks: List<Artwork>
+    ) : List<Artwork> {
 
         return artworks.sortedByDescending { artwork ->
 
-            val date = when (artwork) {
+            when (artwork.content) {
 
-                is FluxMovie -> {
-                    artwork.file.addedDate
+                is ArtworkContent.MOVIE -> {
+                    artwork.content.movie.file.addedDate
                 }
 
-                is FluxShow -> {
-                    episodes.filter { artwork.id == it.showId }.maxOf { it.file.addedDate }
+                is ArtworkContent.SHOW -> {
+                    artwork.content.episodes.maxOf { it.file.addedDate }
                 }
 
-                else -> artwork.releaseDate
             }
-
-            date
 
         }
 

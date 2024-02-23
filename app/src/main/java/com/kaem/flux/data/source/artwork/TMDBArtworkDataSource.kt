@@ -4,10 +4,13 @@ import com.kaem.flux.data.ddb.DatabaseManager
 import com.kaem.flux.data.tmdb.TMDBService
 import com.kaem.flux.model.FileNameProperties
 import com.kaem.flux.model.UserFile
+import com.kaem.flux.model.flux.Artwork
+import com.kaem.flux.model.flux.Episode
 import com.kaem.flux.model.flux.FluxArtwork
 import com.kaem.flux.model.flux.FluxEpisode
 import com.kaem.flux.model.flux.FluxMovie
 import com.kaem.flux.model.flux.FluxShow
+import com.kaem.flux.model.flux.Movie
 import com.kaem.flux.model.tmdb.TMDBArtwork
 import com.kaem.flux.model.tmdb.TMDBMediaType
 import kotlinx.coroutines.Dispatchers
@@ -24,15 +27,15 @@ class TMDBArtworkDataSource @Inject constructor(
 ) : ArtworkDataSource {
 
     private val mutexArtworks = Mutex()
-    private val artworks = arrayListOf<FluxArtwork>()
+    private val artworks = arrayListOf<Artwork>()
 
     private val mutexEpisodes = Mutex()
-    private val episodes = arrayListOf<FluxEpisode>()
+    private val episodes = arrayListOf<Episode>()
 
     override suspend fun getArtworks(
         files: List<UserFile>,
         artworkIds: List<Int>
-    ): Pair<List<FluxArtwork>, List<FluxEpisode>> {
+    ): Pair<List<Artwork>, List<Episode>> {
 
         getArtworksFromFiles(files = files)
 
@@ -145,7 +148,7 @@ class TMDBArtworkDataSource @Inject constructor(
                     id = tmdbArtwork.id
                 )
 
-                val movie = FluxMovie(
+                val movie = Artwork(
                     tmdbMovie = tmdbMovie,
                     file = file,
                 )
@@ -156,7 +159,7 @@ class TMDBArtworkDataSource @Inject constructor(
 
             TMDBMediaType.SHOW -> {
 
-                val show = FluxShow(tmdbArtwork = tmdbArtwork)
+                val show = Artwork(tmdbArtwork = tmdbArtwork)
                 addArtworkSummary(show)
 
             }
@@ -180,7 +183,7 @@ class TMDBArtworkDataSource @Inject constructor(
             episode = file.nameProperties.episode!!
         )
 
-        val episode = FluxEpisode(
+        val episode = Episode(
             tmdbEpisode = tmdbEpisode,
             showId = tmdbArtwork.id,
             file = file
@@ -194,21 +197,21 @@ class TMDBArtworkDataSource @Inject constructor(
 
     //region Lists
 
-    private suspend fun addArtworkSummary(artworkSummary: FluxArtwork) {
+    private suspend fun addArtworkSummary(artworkSummary: Artwork) {
         mutexArtworks.withLock {
             if (artworks.none { it.id == artworkSummary.id })
                 artworks.add(artworkSummary)
         }
     }
 
-    private suspend fun addEpisode(episode: FluxEpisode) {
+    private suspend fun addEpisode(episode: Episode) {
         mutexEpisodes.withLock {
             if (episodes.none { it.id == episode.id })
                 episodes.add(episode)
         }
     }
 
-    override suspend fun saveEpisodes(episodes: List<FluxEpisode>) {
+    override suspend fun saveEpisodes(episodes: List<Episode>) {
         // Nothing to do here
     }
 

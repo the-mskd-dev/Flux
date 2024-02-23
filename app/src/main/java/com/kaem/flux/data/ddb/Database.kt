@@ -10,6 +10,9 @@ import androidx.room.PrimaryKey
 import androidx.room.Query
 import androidx.room.RoomDatabase
 import com.google.gson.Gson
+import com.kaem.flux.model.flux.Artwork
+import com.kaem.flux.model.flux.ArtworkContent
+import com.kaem.flux.model.flux.Episode
 import com.kaem.flux.model.flux.FluxArtwork
 import com.kaem.flux.model.flux.FluxEpisode
 import com.kaem.flux.model.flux.FluxMovie
@@ -87,10 +90,10 @@ class DatabaseManager(
     val fluxDao: FluxDao
 ) {
 
-    suspend fun saveArtworks(artworks: List<FluxArtwork>) {
+    suspend fun saveArtworks(artworks: List<Artwork>) {
 
-        val movies = artworks.filterIsInstance<FluxMovie>()
-        val shows = artworks.filterIsInstance<FluxShow>()
+        val movies = artworks.filter { it.content is ArtworkContent.MOVIE }
+        val shows = artworks.filter { it.content is ArtworkContent.SHOW }
 
         withContext(Dispatchers.Default) {
 
@@ -134,7 +137,7 @@ class DatabaseManager(
 
     }
 
-    suspend fun saveEpisodes(episodes: List<FluxEpisode>) {
+    suspend fun saveEpisodes(episodes: List<Episode>) {
 
         val episodeEntities = episodes.map {
 
@@ -152,10 +155,10 @@ class DatabaseManager(
 
     }
 
-    suspend fun getAllArtworks() : List<FluxArtwork> {
+    suspend fun getAllArtworks() : List<Artwork> {
 
-        var movies = listOf<FluxMovie>()
-        var shows = listOf<FluxShow>()
+        var movies = listOf<Artwork>()
+        var shows = listOf<Artwork>()
 
         coroutineScope {
 
@@ -167,7 +170,7 @@ class DatabaseManager(
 
                     async {
 
-                        withContext(Dispatchers.Default) { gson.fromJson(it.content, FluxMovie::class.java) }
+                        withContext(Dispatchers.Default) { gson.fromJson(it.content, Artwork::class.java) }
 
                     }
 
@@ -184,7 +187,7 @@ class DatabaseManager(
 
                     async {
 
-                        withContext(Dispatchers.Default) { gson.fromJson(it.content, FluxShow::class.java) }
+                        withContext(Dispatchers.Default) { gson.fromJson(it.content, Artwork::class.java) }
 
                     }
 
@@ -198,9 +201,9 @@ class DatabaseManager(
 
     }
 
-    suspend fun getAllEpisodes() : List<FluxEpisode> {
+    suspend fun getAllEpisodes() : List<Episode> {
 
-        var episodes = listOf<FluxEpisode>()
+        var episodes = listOf<Episode>()
 
         coroutineScope {
 
@@ -212,7 +215,7 @@ class DatabaseManager(
 
                     async {
 
-                        withContext(Dispatchers.Default) { gson.fromJson(it.content, FluxEpisode::class.java) }
+                        withContext(Dispatchers.Default) { gson.fromJson(it.content, Episode::class.java) }
 
                     }
 

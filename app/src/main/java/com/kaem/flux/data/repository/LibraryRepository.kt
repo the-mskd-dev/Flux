@@ -3,6 +3,8 @@ package com.kaem.flux.data.repository
 import com.kaem.flux.data.source.artwork.ArtworkDataSource
 import com.kaem.flux.data.source.file.FilesDataSource
 import com.kaem.flux.model.UserFile
+import com.kaem.flux.model.flux.Artwork
+import com.kaem.flux.model.flux.Episode
 import com.kaem.flux.model.flux.FluxArtwork
 import com.kaem.flux.model.flux.FluxEpisode
 import com.kaem.flux.model.flux.FluxMovie
@@ -15,8 +17,8 @@ import javax.inject.Inject
 
 data class LibraryContent(
     val isLoading: Boolean = true,
-    val artworks: List<FluxArtwork> = emptyList(),
-    val episodes: List<FluxEpisode> = emptyList()
+    val artworks: List<Artwork> = emptyList(),
+    val episodes: List<Episode> = emptyList()
 )
 
 class LibraryRepository @Inject constructor(
@@ -72,7 +74,7 @@ class LibraryRepository @Inject constructor(
 
     }
 
-    suspend fun saveEpisodes(episodes: List<FluxEpisode>) {
+    suspend fun saveEpisodes(episodes: List<Episode>) {
         localArtworkDataSource.saveEpisodes(episodes)
     }
 

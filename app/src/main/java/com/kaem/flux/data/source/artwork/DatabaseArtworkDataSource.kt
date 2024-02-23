@@ -2,6 +2,9 @@ package com.kaem.flux.data.source.artwork
 
 import com.kaem.flux.data.ddb.DatabaseManager
 import com.kaem.flux.model.UserFile
+import com.kaem.flux.model.flux.Artwork
+import com.kaem.flux.model.flux.ArtworkContent
+import com.kaem.flux.model.flux.Episode
 import com.kaem.flux.model.flux.FluxArtwork
 import com.kaem.flux.model.flux.FluxEpisode
 import com.kaem.flux.model.flux.FluxMovie
@@ -19,10 +22,10 @@ class DatabaseArtworkDataSource @Inject constructor(
     override suspend fun getArtworks(
         files: List<UserFile>,
         artworkIds: List<Int>
-    ): Pair<List<FluxArtwork>, List<FluxEpisode>> {
+    ): Pair<List<Artwork>, List<Episode>> {
 
-        val artworks = arrayListOf<FluxArtwork>()
-        val episodes = arrayListOf<FluxEpisode>()
+        val artworks = arrayListOf<Artwork>()
+        val episodes = arrayListOf<Episode>()
 
         coroutineScope {
 
@@ -54,14 +57,14 @@ class DatabaseArtworkDataSource @Inject constructor(
 
     private suspend fun cleanDatabase(
         files: List<UserFile>,
-        artworks: List<FluxArtwork>,
-        episodes: List<FluxEpisode>
-    ) : Pair<List<FluxArtwork>, List<FluxEpisode>> {
+        artworks: List<Artwork>,
+        episodes: List<Episode>
+    ) : Pair<List<Artwork>, List<Episode>> {
 
         val filePaths = files.map { it.path }
-        val episodesToRemove = arrayListOf<FluxEpisode>()
-        val moviesToRemove = arrayListOf<FluxMovie>()
-        val showsToRemove = arrayListOf<FluxShow>()
+        val episodesToRemove = arrayListOf<Episode>()
+        val moviesToRemove = arrayListOf<Artwork>()
+        val showsToRemove = arrayListOf<Artwork>()
 
         episodes.forEach {
 
@@ -69,14 +72,14 @@ class DatabaseArtworkDataSource @Inject constructor(
                 episodesToRemove.add(it)
         }
 
-        artworks.filterIsInstance<FluxMovie>().forEach {
+        artworks.filter { it.content is ArtworkContent.MOVIE }.forEach {
 
-            if (!filePaths.contains(it.file.path))
+            if (!filePaths.contains((it.content as ArtworkContent.MOVIE).movie.file.path))
                 moviesToRemove.add(it)
 
         }
 
-        artworks.filterIsInstance<FluxShow>().forEach { show ->
+        artworks.filter { it.content is ArtworkContent.SHOW }.forEach { show ->
 
             if (episodes.none { it.showId == show.id })
                 showsToRemove.add(show)
@@ -102,7 +105,7 @@ class DatabaseArtworkDataSource @Inject constructor(
 
     }
 
-    override suspend fun saveEpisodes(episodes: List<FluxEpisode>) {
+    override suspend fun saveEpisodes(episodes: List<Episode>) {
         withContext(Dispatchers.Default) {
             launch { databaseManager.saveEpisodes(episodes) }
         }

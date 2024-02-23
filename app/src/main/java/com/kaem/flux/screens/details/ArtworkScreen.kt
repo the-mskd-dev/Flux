@@ -29,15 +29,13 @@ import androidx.compose.material.icons.rounded.Done
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -110,14 +108,10 @@ fun ArtworkScreen(
 
             item {
 
-                var isExpanded by remember { mutableStateOf(false) }
-
-                ArtworkSeasonsDropDown(
-                    isExpanded = isExpanded,
+                ArtworkSeasonsTabs(
                     selectedSeason = uiState.currentSeason,
                     seasons = episodes.map { it.season }.distinct(),
-                    onSeasonTap = { viewModel.selectSeason(it); isExpanded = false},
-                    onExpandedChange = { isExpanded = it }
+                    onSeasonTap = { viewModel.selectSeason(it) }
                 )
 
             }
@@ -338,48 +332,28 @@ fun ArtworkDescription(uiState: ArtworkUiState) {
 
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ArtworkSeasonsDropDown(
-    isExpanded: Boolean,
+fun ArtworkSeasonsTabs(
     selectedSeason: Int,
     seasons: List<Int>,
-    onSeasonTap: (Int) -> Unit,
-    onExpandedChange: (Boolean) -> Unit
+    onSeasonTap: (Int) -> Unit
 ) {
 
-    ExposedDropdownMenuBox(
-        modifier = Modifier.padding(FluxSpace.MEDIUM),
-        expanded = isExpanded,
-        onExpandedChange = { onExpandedChange(it) }
-    ) {
+    Column(modifier = Modifier.fillMaxWidth()) {
 
-        TextField(
-            value = stringResource(id = R.string.season, selectedSeason),
-            onValueChange = {},
-            readOnly = true,
-            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded) },
-            placeholder = { Text(text = stringResource(id = R.string.select_season)) },
-            colors = ExposedDropdownMenuDefaults.textFieldColors(),
-            modifier = Modifier.menuAnchor()
-        )
+        ScrollableTabRow(selectedTabIndex = seasons.indexOf(selectedSeason)) {
 
-        ExposedDropdownMenu(
-            expanded = isExpanded,
-            onDismissRequest = { onExpandedChange(false) }
-        ) {
+            seasons.sorted().forEach { season ->
 
-            seasons.sorted().forEach {
-                DropdownMenuItem(
-                    text = { Text(text = stringResource(id = R.string.season, it)) },
-                    onClick = {
-                        onSeasonTap(it)
-                    }
+                Tab(
+                    text = { Text(text = stringResource(id = R.string.season, season)) },
+                    selected = selectedSeason == season,
+                    onClick = { onSeasonTap(season) }
                 )
+
             }
 
         }
-
     }
 
 }

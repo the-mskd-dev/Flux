@@ -54,7 +54,7 @@ class LibraryRepository @Inject constructor(
         allArtworks.forEach { artwork ->
 
             if (artwork.content is ArtworkContent.SHOW)
-                artwork.content.episodes = allEpisodes.filter { it.showId == artwork.id }
+                artwork.content.episodes = allEpisodes.filter { it.showId == artwork.id }.sortedWith(compareBy({ it.season }, { it.number }))
 
         }
 

@@ -1,7 +1,11 @@
 package com.kaem.flux.model.flux
 
 import com.google.gson.annotations.Expose
+import com.kaem.flux.typeAdapters.ArtworkContentTypeAdapter
 
+/**
+ * Serialized/Deserialized by [ArtworkContentTypeAdapter]
+ */
 sealed class ArtworkContent {
 
     data class MOVIE(val movie: Movie) : ArtworkContent()

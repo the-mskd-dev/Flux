@@ -12,6 +12,6 @@ class PlayerViewModel @Inject constructor(
     private val repository: LibraryRepository
 ) : ViewModel() {
 
-    val filePath: String = checkNotNull(savedStateHandle["filePath"])
+    val filePath: String = checkNotNull(savedStateHandle["path"])
 
 }

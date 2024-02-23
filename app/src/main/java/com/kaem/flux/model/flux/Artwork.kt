@@ -2,11 +2,7 @@ package com.kaem.flux.model.flux
 
 import com.kaem.flux.model.UserFile
 import com.kaem.flux.model.tmdb.TMDBArtwork
-import com.kaem.flux.model.tmdb.TMDBCrew
-import com.kaem.flux.model.tmdb.TMDBEpisode
 import com.kaem.flux.model.tmdb.TMDBMovie
-import com.kaem.flux.utils.parseTMDBDate
-import java.util.Date
 
 data class Artwork(
     val id: Int,

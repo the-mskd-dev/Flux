@@ -4,12 +4,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.Dimension
 import com.kaem.flux.ui.theme.FluxFontSize
-import com.kaem.flux.ui.theme.FluxSpace
 import com.kaem.flux.ui.theme.FluxWeight
 
 @Composable

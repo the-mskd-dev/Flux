@@ -15,7 +15,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.kaem.flux.screens.details.DetailsScreen
+import com.kaem.flux.screens.details.ArtworkScreen
 import com.kaem.flux.screens.home.LibraryScreen
 import com.kaem.flux.ui.theme.FluxTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -45,16 +45,16 @@ class MainActivity : ComponentActivity() {
                     composable("library") {
                         LibraryScreen(
                             navigateToDetails = {
-                                navController.navigate("details/$it")
+                                navController.navigate("artwork/$it")
                             }
                         )
                     }
 
                     composable(
-                        "details/{artworkId}",
+                        "artwork/{artworkId}",
                         arguments = listOf(navArgument("artworkId") { type = NavType.IntType })
                     ) {
-                        DetailsScreen(
+                        ArtworkScreen(
                             onBackButtonTap = {
 
                                 if (navController.currentBackStackEntry != null)

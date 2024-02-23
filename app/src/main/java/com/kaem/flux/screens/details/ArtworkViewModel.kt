@@ -8,11 +8,6 @@ import com.kaem.flux.model.flux.Artwork
 import com.kaem.flux.model.flux.ArtworkContent
 import com.kaem.flux.model.flux.ArtworkInfo
 import com.kaem.flux.model.flux.Episode
-import com.kaem.flux.model.flux.FluxArtwork
-import com.kaem.flux.model.flux.FluxArtworkDetails
-import com.kaem.flux.model.flux.FluxEpisode
-import com.kaem.flux.model.flux.FluxMovie
-import com.kaem.flux.model.flux.FluxShow
 import com.kaem.flux.model.flux.FluxStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,7 +18,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
-data class DetailsUiState(
+data class ArtworkUiState(
     val artwork: Artwork = Artwork(),
     val expandedEpisodeId: Int? = null,
     val currentEpisode: Episode? = null,
@@ -35,15 +30,15 @@ data class DetailsUiState(
 }
 
 @HiltViewModel
-class DetailsViewModel @Inject constructor(
+class ArtworkViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val repository: LibraryRepository
 ) : ViewModel() {
 
     private val artworkId: Int = checkNotNull(savedStateHandle["artworkId"])
 
-    private val _uiState = MutableStateFlow<DetailsUiState>(DetailsUiState())
-    val uiState: StateFlow<DetailsUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(ArtworkUiState())
+    val uiState: StateFlow<ArtworkUiState> = _uiState.asStateFlow()
 
     init {
 
@@ -61,7 +56,7 @@ class DetailsViewModel @Inject constructor(
             ?: episodes.firstOrNull { it.status == FluxStatus.TO_WATCH }
             ?: episodes.firstOrNull()
 
-        _uiState.value = DetailsUiState(
+        _uiState.value = ArtworkUiState(
             artwork = artwork,
             currentEpisode = selectedEpisode,
             currentSeason = selectedEpisode?.season ?: -1

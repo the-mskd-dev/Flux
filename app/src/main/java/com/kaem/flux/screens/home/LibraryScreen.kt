@@ -46,10 +46,6 @@ import com.google.accompanist.permissions.rememberPermissionState
 import com.kaem.flux.R
 import com.kaem.flux.model.flux.Artwork
 import com.kaem.flux.model.flux.ArtworkContent
-import com.kaem.flux.model.flux.FluxArtwork
-import com.kaem.flux.model.flux.FluxEpisode
-import com.kaem.flux.model.flux.FluxMovie
-import com.kaem.flux.model.flux.FluxShow
 import com.kaem.flux.ui.component.FluxButton
 import com.kaem.flux.ui.component.Loader
 import com.kaem.flux.ui.component.Title
@@ -220,7 +216,7 @@ fun ArtworkList(
 
             items(artworks, key = { it.id }) {
 
-                LibraryArtwork(
+                ArtworkItem(
                     modifier = Modifier.clickable { navigateToDetails(it.id) },
                     artwork = it,
                     largeArtwork = largeArtwork
@@ -235,7 +231,7 @@ fun ArtworkList(
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun LibraryArtwork(
+fun ArtworkItem(
     modifier: Modifier = Modifier,
     artwork: Artwork,
     largeArtwork: Boolean = false

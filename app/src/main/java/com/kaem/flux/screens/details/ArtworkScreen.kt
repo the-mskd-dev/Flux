@@ -27,7 +27,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Done
 import androidx.compose.material.icons.rounded.PlayArrow
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenuItem
@@ -62,7 +61,6 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.kaem.flux.R
 import com.kaem.flux.model.flux.ArtworkContent
 import com.kaem.flux.model.flux.Episode
-import com.kaem.flux.model.flux.FluxEpisode
 import com.kaem.flux.model.flux.FluxStatus
 import com.kaem.flux.ui.component.Title
 import com.kaem.flux.ui.theme.FluxElevation
@@ -72,11 +70,10 @@ import com.kaem.flux.ui.theme.FluxWeight
 import com.kaem.flux.utils.Constants
 import java.text.DateFormat
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DetailsScreen(
+fun ArtworkScreen(
     onBackButtonTap: () -> Unit,
-    viewModel: DetailsViewModel = hiltViewModel()
+    viewModel: ArtworkViewModel = hiltViewModel()
 ) {
 
     val uiState by viewModel.uiState.collectAsState()
@@ -95,13 +92,13 @@ fun DetailsScreen(
                 verticalArrangement = Arrangement.spacedBy(FluxSpace.LARGE)
             ) {
 
-                DetailsHeader(
+                ArtworkHeader(
                     uiState = uiState,
                     onBackButtonTap = { onBackButtonTap() },
                     onLaunchButtonTap = {}
                 )
 
-                DetailsDescription(uiState = uiState)
+                ArtworkDescription(uiState = uiState)
 
             }
 
@@ -115,7 +112,7 @@ fun DetailsScreen(
 
                 var isExpanded by remember { mutableStateOf(false) }
 
-                DetailsSeasonsDropDown(
+                ArtworkSeasonsDropDown(
                     isExpanded = isExpanded,
                     selectedSeason = uiState.currentSeason,
                     seasons = episodes.map { it.season }.distinct(),
@@ -127,7 +124,7 @@ fun DetailsScreen(
 
             items(items = episodes.filter { it.season == uiState.currentSeason }.sortedBy { it.number }, key = { it.id }) { episode ->
 
-                DetailsEpisode(
+                EpisodeItem(
                     episode = episode,
                     onWatchTap = {},
                     isExpanded = uiState.expandedEpisodeId == episode.id,
@@ -145,8 +142,8 @@ fun DetailsScreen(
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun DetailsHeader(
-    uiState: DetailsUiState,
+fun ArtworkHeader(
+    uiState: ArtworkUiState,
     onBackButtonTap: () -> Unit,
     onLaunchButtonTap: () -> Unit
 ) {
@@ -248,7 +245,7 @@ fun DetailsHeader(
             content = { Icon(imageVector = Icons.Rounded.Done, contentDescription = "check if watched button") }
         )
 
-        DetailsTitle(
+        ArtworkTitle(
             modifier = Modifier.constrainAs(title) {
                 top.linkTo(watchButton.bottom, FluxSpace.SMALL)
                 start.linkTo(parent.start, FluxSpace.MEDIUM)
@@ -263,9 +260,9 @@ fun DetailsHeader(
 }
 
 @Composable
-fun DetailsTitle(
+fun ArtworkTitle(
     modifier: Modifier,
-    uiState: DetailsUiState
+    uiState: ArtworkUiState
 ) {
 
     Column(
@@ -296,7 +293,7 @@ fun DetailsTitle(
 }
 
 @Composable
-fun DetailsDescription(uiState: DetailsUiState) {
+fun ArtworkDescription(uiState: ArtworkUiState) {
 
     Column(
         modifier = Modifier
@@ -343,7 +340,7 @@ fun DetailsDescription(uiState: DetailsUiState) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DetailsSeasonsDropDown(
+fun ArtworkSeasonsDropDown(
     isExpanded: Boolean,
     selectedSeason: Int,
     seasons: List<Int>,
@@ -388,7 +385,7 @@ fun DetailsSeasonsDropDown(
 }
 
 @Composable
-fun DetailsEpisode(
+fun EpisodeItem(
     episode: Episode,
     isExpanded: Boolean,
     expandDetails: () -> Unit,
@@ -444,7 +441,7 @@ fun DetailsEpisode(
         }
 
         AnimatedVisibility(visible = isExpanded) {
-            DetailsEpisodeContent(
+            EpisodeItemContent(
                 episode = episode,
                 onCloseExpand = { expandDetails() },
                 onWatchTap = onWatchTap,
@@ -460,7 +457,7 @@ fun DetailsEpisode(
 }
 
 @Composable
-fun DetailsEpisodeContent(
+fun EpisodeItemContent(
     episode: Episode,
     onCloseExpand: () -> Unit,
     onWatchTap: () -> Unit,

@@ -1,4 +1,4 @@
-package com.kaem.flux.screens.details
+package com.kaem.flux.screens.artwork
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState

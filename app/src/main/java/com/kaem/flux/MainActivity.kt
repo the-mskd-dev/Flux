@@ -63,16 +63,16 @@ class MainActivity : ComponentActivity() {
 
                             },
                             launchPlayer = { id, episodeId ->
-                                navController.navigate("player/$id/$episodeId")
+                                navController.navigate("player/$id?episodeId=$episodeId")
                             }
                         )
                     }
 
                     composable(
-                        "player/{id}/{episodeId}",
+                        "player/{id}?episodeId={episodeId}",
                         arguments = listOf(
                             navArgument("id") { type = NavType.IntType },
-                            navArgument("episodeId") { type = NavType.IntType }
+                            navArgument("episodeId") { type = NavType.IntType; defaultValue = -1 }
                         )
                     ) {
                         PlayerScreen(

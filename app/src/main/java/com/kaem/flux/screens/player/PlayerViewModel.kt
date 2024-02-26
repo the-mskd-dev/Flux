@@ -24,7 +24,7 @@ class PlayerViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val artworkId: Int = checkNotNull(savedStateHandle["id"])
-    private val episodeId: Int? = savedStateHandle["episodeId"]
+    private val episodeId: Int = checkNotNull(savedStateHandle["episodeId"])
 
     private val _uiState = MutableStateFlow(PlayerUiState())
     val uiState: StateFlow<PlayerUiState> = _uiState.asStateFlow()
@@ -40,7 +40,7 @@ class PlayerViewModel @Inject constructor(
                 is ArtworkContent.MOVIE -> artwork.content.movie.file.path
                 is ArtworkContent.SHOW -> {
 
-                    artwork.content.episodes.first { it.id == episodeId!! }.file.path
+                    artwork.content.episodes.first { it.id == episodeId }.file.path
 
                 }
 

@@ -49,4 +49,8 @@ class PlayerViewModel @Inject constructor(
 
     }
 
+    fun saveCurrentTime(time: Long) {
+
+    }
+
 }

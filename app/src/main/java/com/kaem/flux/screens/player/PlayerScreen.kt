@@ -55,9 +55,13 @@ fun VideoPlayer(videoUri: Uri) {
             play()
         }
     }
-    
-    val playbackState = exoPlayer.playbackState
-    val isPlaying = exoPlayer.isPlaying
+
+    // Manage lifecycle events
+    DisposableEffect(Unit) {
+        onDispose {
+            exoPlayer.release()
+        }
+    }
 
     AndroidView(
         factory = { context ->

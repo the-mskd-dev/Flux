@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.kaem.flux.data.repository.LibraryRepository
 import com.kaem.flux.model.flux.Artwork
 import com.kaem.flux.model.flux.ArtworkContent
+import com.kaem.flux.model.flux.ArtworkInfo
 import com.kaem.flux.model.flux.Episode
 import com.kaem.flux.model.flux.Movie
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,14 +18,12 @@ import javax.inject.Inject
 
 data class PlayerUiState(
     val artwork: Artwork = Artwork(),
-    val episode: Episode? = null
+    val artworkInfo: ArtworkInfo? = null
 ) {
 
-    val isMovie = episode == null
+    val path = artworkInfo?.file?.path ?: ""
 
-    val path = episode?.file?.path ?: (artwork.content as? ArtworkContent.MOVIE)?.movie?.file?.path ?: ""
-
-    val currentTime = episode?.currentTime ?: (artwork.content as? ArtworkContent.MOVIE)?.movie?.currentTime ?: 0L
+    val currentTime = artworkInfo?.currentTime ?: 0L
 }
 
 @HiltViewModel
@@ -44,11 +43,15 @@ class PlayerViewModel @Inject constructor(
         val libraryContent = repository.libraryContent.value
 
         val artwork = libraryContent!!.artworks.first { it.id == artworkId }
-        val episode = (artwork.content as? ArtworkContent.SHOW)?.episodes?.first { it.id == episodeId }
+
+        val artworkInfo = when (artwork.content) {
+            is ArtworkContent.MOVIE -> artwork.content.movie
+            is ArtworkContent.SHOW -> artwork.content.episodes.find { it.id == episodeId }
+        }
 
         _uiState.value = PlayerUiState(
             artwork = artwork,
-            episode = episode
+            artworkInfo = artworkInfo
         )
 
     }
@@ -57,21 +60,23 @@ class PlayerViewModel @Inject constructor(
 
         uiState.value.let { state ->
 
-            when {
+            state.artworkInfo?.currentTime = time
 
-                state.artwork.content is ArtworkContent.MOVIE -> {
+            when (state.artworkInfo) {
 
-                    state.artwork.content.movie.currentTime = time
+                is Movie -> {
+
                     repository.saveArtwork(state.artwork)
 
                 }
 
-                state.episode != null -> {
+                is Episode -> {
 
-                    state.episode.currentTime = time
-                    repository.saveEpisodes(listOf(state.episode))
+                    repository.saveEpisodes(listOf(state.artworkInfo))
 
                 }
+
+                else -> {}
 
             }
 

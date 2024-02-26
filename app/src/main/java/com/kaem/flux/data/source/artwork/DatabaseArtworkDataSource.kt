@@ -101,10 +101,12 @@ class DatabaseArtworkDataSource @Inject constructor(
 
     }
 
+    override suspend fun saveArtwork(artwork: Artwork) {
+        databaseManager.saveArtworks(listOf(artwork))
+    }
+
     override suspend fun saveEpisodes(episodes: List<Episode>) {
-        withContext(Dispatchers.Default) {
-            launch { databaseManager.saveEpisodes(episodes) }
-        }
+        databaseManager.saveEpisodes(episodes)
     }
 
 }

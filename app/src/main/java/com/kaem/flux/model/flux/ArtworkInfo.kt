@@ -10,7 +10,7 @@ sealed class ArtworkInfo(
     val voteAverage: Float,
     val voteCount: Int,
     val duration: Int,
-    val currentTime: Long = 0L,
+    var currentTime: Long = 0L,
     val file: UserFile,
     var status: FluxStatus = FluxStatus.TO_WATCH,
 ) {

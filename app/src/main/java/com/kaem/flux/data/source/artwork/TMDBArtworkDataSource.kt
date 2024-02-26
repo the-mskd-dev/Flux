@@ -206,6 +206,9 @@ class TMDBArtworkDataSource @Inject constructor(
         }
     }
 
+    override suspend fun saveArtwork(artwork: Artwork) {
+        // Nothing to do here
+    }
     override suspend fun saveEpisodes(episodes: List<Episode>) {
         // Nothing to do here
     }

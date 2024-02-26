@@ -11,6 +11,8 @@ interface ArtworkDataSource {
         artworkIds: List<Int> = emptyList()
     ) : Pair<List<Artwork>, List<Episode>>
 
+    suspend fun saveArtwork(artwork: Artwork)
+
     suspend fun saveEpisodes(episodes: List<Episode>)
 
 }

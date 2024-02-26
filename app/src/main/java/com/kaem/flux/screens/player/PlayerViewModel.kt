@@ -2,6 +2,7 @@ package com.kaem.flux.screens.player
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.kaem.flux.data.repository.LibraryRepository
 import com.kaem.flux.model.flux.Artwork
 import com.kaem.flux.model.flux.ArtworkContent
@@ -11,6 +12,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class PlayerUiState(
@@ -51,7 +53,29 @@ class PlayerViewModel @Inject constructor(
 
     }
 
-    fun saveCurrentTime(time: Long) {
+    fun saveCurrentTime(time: Long) = viewModelScope.launch {
+
+        uiState.value.let { state ->
+
+            when {
+
+                state.artwork.content is ArtworkContent.MOVIE -> {
+
+                    state.artwork.content.movie.currentTime = time
+                    repository.saveArtwork(state.artwork)
+
+                }
+
+                state.episode != null -> {
+
+                    state.episode.currentTime = time
+                    repository.saveEpisodes(listOf(state.episode))
+
+                }
+
+            }
+
+        }
 
     }
 

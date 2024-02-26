@@ -81,6 +81,10 @@ class LibraryRepository @Inject constructor(
 
     }
 
+    suspend fun saveArtwork(artwork: Artwork) {
+        localArtworkDataSource.saveArtwork(artwork)
+    }
+
     suspend fun saveEpisodes(episodes: List<Episode>) {
         localArtworkDataSource.saveEpisodes(episodes)
     }

@@ -96,7 +96,6 @@ class DatabaseManager(
 
         withContext(Dispatchers.Default) {
 
-
             launch {
 
                 val movieEntities = movies.map {

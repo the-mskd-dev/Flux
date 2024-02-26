@@ -73,8 +73,10 @@ dependencies {
     // Accompanist
     implementation("com.google.accompanist:accompanist-permissions:0.32.0")
 
-    // ExoPlayer
-    implementation("com.google.android.exoplayer:exoplayer:2.19.1")
+    // Player
+    val media3Version = "1.2.1"
+    implementation("androidx.media3:media3-exoplayer:$media3Version")
+    implementation("androidx.media3:media3-ui:$media3Version")
 
     // Hilt
     implementation("com.google.dagger:hilt-android:2.50")

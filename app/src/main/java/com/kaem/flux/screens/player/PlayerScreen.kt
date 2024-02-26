@@ -64,6 +64,7 @@ fun VideoPlayer(videoUri: Uri) {
     }
 
     AndroidView(
+        modifier = Modifier.fillMaxSize(),
         factory = { context ->
             PlayerView(context).apply {
                 player = exoPlayer
@@ -71,8 +72,7 @@ fun VideoPlayer(videoUri: Uri) {
                 setShowPreviousButton(false)
                 setShowNextButton(false)
             }
-        },
-        modifier = Modifier.fillMaxSize(),
+        }
     )
 
 }

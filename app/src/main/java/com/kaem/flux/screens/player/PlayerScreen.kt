@@ -59,7 +59,8 @@ fun PlayerScreen(
     }
 
    VideoPlayer(
-       videoUri = Uri.parse(uiState.path),
+       path = uiState.path,
+       currentTime = uiState.currentTime,
        onBackButtonTap = onBackButtonTap
    )
 
@@ -68,7 +69,8 @@ fun PlayerScreen(
 @OptIn(UnstableApi::class)
 @Composable
 fun VideoPlayer(
-    videoUri: Uri,
+    path: String,
+    currentTime: Long,
     onBackButtonTap: () -> Unit,
 ) {
 
@@ -77,7 +79,7 @@ fun VideoPlayer(
 
     val exoPlayer = remember {
         ExoPlayer.Builder(localContext).build().apply {
-            setMediaItem(MediaItem.fromUri(videoUri))
+            setMediaItem(MediaItem.fromUri(Uri.parse(path)), currentTime)
             prepare()
             play()
         }

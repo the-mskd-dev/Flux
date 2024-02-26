@@ -50,4 +50,10 @@ class Episode(
         file = file
     )
 
+    companion object {
+
+        const val NO_ID = -1
+
+    }
+
 }

@@ -15,6 +15,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.kaem.flux.model.flux.Episode
 import com.kaem.flux.screens.details.ArtworkScreen
 import com.kaem.flux.screens.home.LibraryScreen
 import com.kaem.flux.screens.player.PlayerScreen
@@ -72,7 +73,7 @@ class MainActivity : ComponentActivity() {
                         "player/{id}?episodeId={episodeId}",
                         arguments = listOf(
                             navArgument("id") { type = NavType.IntType },
-                            navArgument("episodeId") { type = NavType.IntType; defaultValue = -1 }
+                            navArgument("episodeId") { type = NavType.IntType; defaultValue = Episode.NO_ID }
                         )
                     ) {
                         PlayerScreen(

@@ -76,6 +76,8 @@ fun VideoPlayer(videoUri: Uri) {
             PlayerView(context).apply {
                 player = exoPlayer
                 showController()
+                setShowPreviousButton(false)
+                setShowNextButton(false)
             }
         },
         modifier = Modifier.fillMaxSize(),

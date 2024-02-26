@@ -1,6 +1,10 @@
 package com.kaem.flux.screens.player
 
+import android.app.Activity
+import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import android.net.Uri
+import android.service.voice.VoiceInteractionSession.ActivityId
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -11,6 +15,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -33,6 +38,17 @@ fun PlayerScreen(
 ) {
 
     val uiState by viewModel.uiState.collectAsState()
+
+    val context = LocalContext.current
+    val orientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+    DisposableEffect(orientation) {
+        val activity = context as? Activity ?: return@DisposableEffect onDispose {}
+        val originalOrientation = activity.requestedOrientation
+        activity.requestedOrientation = orientation
+        onDispose {
+            activity.requestedOrientation = originalOrientation
+        }
+    }
 
    VideoPlayer(videoUri = Uri.parse(uiState.path))
 

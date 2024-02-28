@@ -1,8 +1,11 @@
 package com.kaem.flux.extensions
 
+import android.annotation.SuppressLint
+import java.text.SimpleDateFormat
 import java.util.concurrent.TimeUnit
 
-val Long.timeString : String get() {
+val Long.timeString : String @SuppressLint("SimpleDateFormat")
+get() {
 
     if (this < 0)
         return "00:00:00"

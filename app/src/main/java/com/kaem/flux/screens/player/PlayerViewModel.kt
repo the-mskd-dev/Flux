@@ -66,7 +66,7 @@ class PlayerViewModel @Inject constructor(
             state.artworkInfo?.let { artworkInfo ->
                 artworkInfo.currentTime = time
                 val watchTime = WatchTime.fromTime(time)
-                artworkInfo.status = if (watchTime.timeInMin >= artworkInfo.duration) FluxStatus.WATCHED else FluxStatus.TO_WATCH
+                artworkInfo.status = if (watchTime.timeInMin >= artworkInfo.duration) FluxStatus.WATCHED else FluxStatus.IS_WATCHING
             }
 
             when (state.artworkInfo) {

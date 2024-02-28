@@ -2,7 +2,7 @@ package com.kaem.flux.model
 
 import java.util.concurrent.TimeUnit
 
-data class Duration(
+data class WatchTime(
     val hours: Long = 0L,
     val min: Long = 0L,
     val sec: Long = 0L,
@@ -16,10 +16,10 @@ data class Duration(
 
     companion object {
 
-        fun fromTime(time: Long) : Duration {
+        fun fromTime(time: Long) : WatchTime {
 
             if (time < 0L)
-                return Duration()
+                return WatchTime()
 
             var ms = time
 
@@ -29,7 +29,7 @@ data class Duration(
             ms -= TimeUnit.MINUTES.toMillis(min)
             val sec = TimeUnit.MILLISECONDS.toSeconds(ms)
 
-            return Duration(
+            return WatchTime(
                 hours = hours,
                 min = min,
                 sec = sec

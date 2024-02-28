@@ -56,7 +56,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.kaem.flux.R
-import com.kaem.flux.model.Duration
+import com.kaem.flux.model.WatchTime
 import com.kaem.flux.model.flux.ArtworkContent
 import com.kaem.flux.model.flux.Episode
 import com.kaem.flux.model.flux.FluxStatus
@@ -236,7 +236,7 @@ fun ArtworkHeader(
                 )
 
 
-                val text = if (uiState.artworkDetails?.status == FluxStatus.IS_WATCHING) stringResource(id = R.string.resume, Duration(uiState.artworkDetails.currentTime).toString()) else stringResource(R.string.start)
+                val text = if (uiState.artworkDetails?.status == FluxStatus.IS_WATCHING) stringResource(id = R.string.resume, WatchTime(uiState.artworkDetails.currentTime).toString()) else stringResource(R.string.start)
                 Text(
                     text = text.uppercase(),
                     fontWeight = FluxWeight.MEDIUM

@@ -227,7 +227,35 @@ class DatabaseManager(
 
         }
 
-        return episodes
+        return episodes.sortedWith(compareBy({ it.season }, { it.number }))
+
+    }
+
+    suspend fun getEpisodesForShow(showId: Int) : List<Episode> {
+
+        var episodes = listOf<Episode>()
+
+        coroutineScope {
+
+            launch {
+
+                val episodeEntities = withContext(Dispatchers.IO) { fluxDao.getEpisodesForShow(showId = showId) }
+
+                episodes = episodeEntities.map {
+
+                    async {
+
+                        withContext(Dispatchers.Default) { gson.fromJson(it.content, Episode::class.java) }
+
+                    }
+
+                }.awaitAll()
+
+            }
+
+        }
+
+        return episodes.sortedWith(compareBy({ it.season }, { it.number }))
 
     }
 

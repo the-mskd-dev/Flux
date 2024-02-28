@@ -1,5 +1,8 @@
 package com.kaem.flux.model
 
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 data class WatchTime(
@@ -21,18 +24,13 @@ data class WatchTime(
             if (time < 0L)
                 return WatchTime()
 
-            var ms = time
-
-            val hours = TimeUnit.MILLISECONDS.toHours(ms)
-            ms -= TimeUnit.HOURS.toMillis(hours)
-            val min = TimeUnit.MILLISECONDS.toMinutes(ms)
-            ms -= TimeUnit.MINUTES.toMillis(min)
-            val sec = TimeUnit.MILLISECONDS.toSeconds(ms)
+            val date = SimpleDateFormat("hh:ss:mm", Locale.getDefault()).format(Date(time))
+            val parsedDate = date.split(":")
 
             return WatchTime(
-                hours = hours,
-                min = min,
-                sec = sec
+                hours = parsedDate.getOrNull(0)?.toLongOrNull()?: 0L,
+                min = parsedDate.getOrNull(1)?.toLongOrNull()?: 0L,
+                sec = parsedDate.getOrNull(2)?.toLongOrNull()?: 0L,
             )
         }
     }

@@ -5,7 +5,6 @@ import com.kaem.flux.model.flux.Episode
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class EpisodeRepository @Inject constructor(private val databaseManager: DatabaseManager) {
@@ -13,7 +12,7 @@ class EpisodeRepository @Inject constructor(private val databaseManager: Databas
     private val _episodes = MutableStateFlow<List<Episode>>(emptyList())
     val episodes: StateFlow<List<Episode>> = _episodes.asStateFlow()
 
-    fun fetchEpisodes(showId: Int) = flow<List<Episode>> {
+    suspend fun fetchEpisodes(showId: Int) {
 
         _episodes.value = databaseManager.getEpisodesForShow(showId = showId)
 

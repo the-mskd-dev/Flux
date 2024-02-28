@@ -1,9 +1,11 @@
 package com.kaem.flux.screens.player
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kaem.flux.data.repository.LibraryRepository
+import com.kaem.flux.model.Duration
 import com.kaem.flux.model.flux.Artwork
 import com.kaem.flux.model.flux.ArtworkContent
 import com.kaem.flux.model.flux.ArtworkInfo
@@ -63,7 +65,7 @@ class PlayerViewModel @Inject constructor(
 
             state.artworkInfo?.let { artworkInfo ->
                 artworkInfo.currentTime = time
-                artworkInfo.status = if (time >= artworkInfo.duration) FluxStatus.WATCHED else FluxStatus.TO_WATCH
+                artworkInfo.status = if (Duration.fromTime(time).timeInMin >= artworkInfo.duration * 1000L) FluxStatus.WATCHED else FluxStatus.TO_WATCH
             }
 
             when (state.artworkInfo) {

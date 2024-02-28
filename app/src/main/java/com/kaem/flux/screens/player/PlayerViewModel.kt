@@ -8,6 +8,7 @@ import com.kaem.flux.model.flux.Artwork
 import com.kaem.flux.model.flux.ArtworkContent
 import com.kaem.flux.model.flux.ArtworkInfo
 import com.kaem.flux.model.flux.Episode
+import com.kaem.flux.model.flux.FluxStatus
 import com.kaem.flux.model.flux.Movie
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -60,21 +61,16 @@ class PlayerViewModel @Inject constructor(
 
         uiState.value.let { state ->
 
-            state.artworkInfo?.currentTime = time
+            state.artworkInfo?.let { artworkInfo ->
+                artworkInfo.currentTime = time
+                artworkInfo.status = if (time >= artworkInfo.duration) FluxStatus.WATCHED else FluxStatus.TO_WATCH
+            }
 
             when (state.artworkInfo) {
 
-                is Movie -> {
+                is Movie -> repository.saveArtwork(state.artwork)
 
-                    repository.saveArtwork(state.artwork)
-
-                }
-
-                is Episode -> {
-
-                    repository.saveEpisodes(listOf(state.artworkInfo))
-
-                }
+                is Episode -> repository.saveEpisodes(listOf(state.artworkInfo))
 
                 else -> {}
 

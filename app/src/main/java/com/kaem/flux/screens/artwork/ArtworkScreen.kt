@@ -1,4 +1,4 @@
-package com.kaem.flux.screens.details
+package com.kaem.flux.screens.artwork
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
@@ -29,7 +29,6 @@ import androidx.compose.material.icons.rounded.Done
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -57,6 +56,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.kaem.flux.R
+import com.kaem.flux.model.WatchTime
 import com.kaem.flux.model.flux.ArtworkContent
 import com.kaem.flux.model.flux.Episode
 import com.kaem.flux.model.flux.FluxStatus
@@ -71,6 +71,7 @@ import java.text.DateFormat
 @Composable
 fun ArtworkScreen(
     onBackButtonTap: () -> Unit,
+    launchPlayer: (Int, Int?) -> Unit,
     viewModel: ArtworkViewModel = hiltViewModel()
 ) {
 
@@ -93,7 +94,28 @@ fun ArtworkScreen(
                 ArtworkHeader(
                     uiState = uiState,
                     onBackButtonTap = { onBackButtonTap() },
-                    onLaunchButtonTap = {}
+                    onLaunchButtonTap = {
+
+                        when (val content = uiState.artwork.content) {
+                            is ArtworkContent.MOVIE -> {
+
+                                launchPlayer(
+                                    uiState.artwork.id,
+                                    null
+                                )
+                            }
+                            is ArtworkContent.SHOW -> {
+
+                                launchPlayer(
+                                    uiState.artwork.id,
+                                    content.currentEpisode?.id
+                                )
+
+                            }
+
+                        }
+
+                    }
                 )
 
                 ArtworkDescription(uiState = uiState)
@@ -213,9 +235,10 @@ fun ArtworkHeader(
                     contentDescription = "play button"
                 )
 
-                val textId = if (uiState.artworkDetails?.status == FluxStatus.IS_WATCHING) R.string.resume else R.string.start
+
+                val text = if (uiState.artworkDetails?.status == FluxStatus.IS_WATCHING) stringResource(id = R.string.resume, WatchTime(uiState.artworkDetails.currentTime).toString()) else stringResource(R.string.start)
                 Text(
-                    text = stringResource(id = textId).uppercase(),
+                    text = text.uppercase(),
                     fontWeight = FluxWeight.MEDIUM
                 )
 
@@ -392,7 +415,7 @@ fun EpisodeItem(
         Row(
             modifier = Modifier
                 .clickable(
-                    interactionSource = MutableInteractionSource(),
+                    interactionSource = remember { MutableInteractionSource() },
                     indication = null
                 ) { expandDetails() }
                 .alpha(alphaAnimation)
@@ -453,7 +476,7 @@ fun EpisodeItemContent(
         Text(
             modifier = Modifier
                 .clickable(
-                    interactionSource = MutableInteractionSource(),
+                    interactionSource = remember { MutableInteractionSource() },
                     indication = null
                 ) { onCloseExpand() }
                 .fillMaxWidth()

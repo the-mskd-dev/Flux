@@ -9,6 +9,7 @@ class Movie(
     voteAverage: Float,
     voteCount: Int,
     duration: Int,
+    currentTime: Long = 0L,
     file: UserFile,
     status: FluxStatus,
     val genres: List<String> = listOf()
@@ -18,6 +19,7 @@ class Movie(
     voteAverage = voteAverage,
     voteCount = voteCount,
     duration = duration,
+    currentTime = currentTime,
     file = file,
     status = status
 ) {
@@ -31,6 +33,7 @@ class Movie(
         voteAverage = tmdbMovie.voteAverage,
         voteCount = tmdbMovie.voteCount,
         duration = tmdbMovie.duration,
+        currentTime = 0L,
         file = file,
         genres = emptyList(),
         status = FluxStatus.TO_WATCH

@@ -6,8 +6,6 @@ import com.kaem.flux.model.UserFile
 import com.kaem.flux.model.flux.Artwork
 import com.kaem.flux.model.flux.ArtworkContent
 import com.kaem.flux.model.flux.Episode
-import com.kaem.flux.model.flux.FluxArtwork
-import com.kaem.flux.model.flux.FluxEpisode
 import com.kaem.flux.model.flux.FluxMovie
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -81,6 +79,10 @@ class LibraryRepository @Inject constructor(
 
         return localFiles
 
+    }
+
+    suspend fun saveArtwork(artwork: Artwork) {
+        localArtworkDataSource.saveArtwork(artwork)
     }
 
     suspend fun saveEpisodes(episodes: List<Episode>) {

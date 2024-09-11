@@ -6,11 +6,6 @@ import com.kaem.flux.model.FileNameProperties
 import com.kaem.flux.model.UserFile
 import com.kaem.flux.model.flux.Artwork
 import com.kaem.flux.model.flux.Episode
-import com.kaem.flux.model.flux.FluxArtwork
-import com.kaem.flux.model.flux.FluxEpisode
-import com.kaem.flux.model.flux.FluxMovie
-import com.kaem.flux.model.flux.FluxShow
-import com.kaem.flux.model.flux.Movie
 import com.kaem.flux.model.tmdb.TMDBArtwork
 import com.kaem.flux.model.tmdb.TMDBMediaType
 import kotlinx.coroutines.Dispatchers
@@ -211,6 +206,9 @@ class TMDBArtworkDataSource @Inject constructor(
         }
     }
 
+    override suspend fun saveArtwork(artwork: Artwork) {
+        // Nothing to do here
+    }
     override suspend fun saveEpisodes(episodes: List<Episode>) {
         // Nothing to do here
     }

@@ -5,10 +5,6 @@ import com.kaem.flux.model.UserFile
 import com.kaem.flux.model.flux.Artwork
 import com.kaem.flux.model.flux.ArtworkContent
 import com.kaem.flux.model.flux.Episode
-import com.kaem.flux.model.flux.FluxArtwork
-import com.kaem.flux.model.flux.FluxEpisode
-import com.kaem.flux.model.flux.FluxMovie
-import com.kaem.flux.model.flux.FluxShow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -105,10 +101,12 @@ class DatabaseArtworkDataSource @Inject constructor(
 
     }
 
+    override suspend fun saveArtwork(artwork: Artwork) {
+        databaseManager.saveArtworks(listOf(artwork))
+    }
+
     override suspend fun saveEpisodes(episodes: List<Episode>) {
-        withContext(Dispatchers.Default) {
-            launch { databaseManager.saveEpisodes(episodes) }
-        }
+        databaseManager.saveEpisodes(episodes)
     }
 
 }

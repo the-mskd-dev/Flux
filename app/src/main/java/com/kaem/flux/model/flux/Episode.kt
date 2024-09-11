@@ -15,6 +15,7 @@ class Episode(
     releaseDateString: String,
     description: String,
     duration: Int,
+    currentTime: Long = 0L,
     voteAverage: Float,
     voteCount: Int,
     status: FluxStatus = FluxStatus.TO_WATCH,
@@ -25,6 +26,7 @@ class Episode(
     voteAverage = voteAverage,
     voteCount = voteCount,
     duration = duration,
+    currentTime = currentTime,
     file = file,
     status = status
 ) {
@@ -44,10 +46,17 @@ class Episode(
         crew = tmdbEpisode.crew,
         description = tmdbEpisode.description,
         duration = tmdbEpisode.duration,
+        currentTime = 0L,
         voteAverage = tmdbEpisode.voteAverage,
         voteCount = tmdbEpisode.voteCount,
         status = FluxStatus.TO_WATCH,
         file = file
     )
+
+    companion object {
+
+        const val NO_ID = -1
+
+    }
 
 }

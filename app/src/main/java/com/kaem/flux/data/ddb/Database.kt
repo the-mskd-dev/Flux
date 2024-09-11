@@ -13,10 +13,6 @@ import com.google.gson.Gson
 import com.kaem.flux.model.flux.Artwork
 import com.kaem.flux.model.flux.ArtworkContent
 import com.kaem.flux.model.flux.Episode
-import com.kaem.flux.model.flux.FluxArtwork
-import com.kaem.flux.model.flux.FluxEpisode
-import com.kaem.flux.model.flux.FluxMovie
-import com.kaem.flux.model.flux.FluxShow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -99,7 +95,6 @@ class DatabaseManager(
         val shows = artworks.filter { it.content is ArtworkContent.SHOW }
 
         withContext(Dispatchers.Default) {
-
 
             launch {
 
@@ -232,7 +227,35 @@ class DatabaseManager(
 
         }
 
-        return episodes
+        return episodes.sortedWith(compareBy({ it.season }, { it.number }))
+
+    }
+
+    suspend fun getEpisodesForShow(showId: Int) : List<Episode> {
+
+        var episodes = listOf<Episode>()
+
+        coroutineScope {
+
+            launch {
+
+                val episodeEntities = withContext(Dispatchers.IO) { fluxDao.getEpisodesForShow(showId = showId) }
+
+                episodes = episodeEntities.map {
+
+                    async {
+
+                        withContext(Dispatchers.Default) { gson.fromJson(it.content, Episode::class.java) }
+
+                    }
+
+                }.awaitAll()
+
+            }
+
+        }
+
+        return episodes.sortedWith(compareBy({ it.season }, { it.number }))
 
     }
 

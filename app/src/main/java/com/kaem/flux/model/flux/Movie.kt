@@ -3,6 +3,19 @@ package com.kaem.flux.model.flux
 import com.kaem.flux.model.UserFile
 import com.kaem.flux.model.tmdb.TMDBMovie
 
+/**
+ * Represents a movie with specific details.
+ *
+ * @property releaseDateString The release date of the artwork as a string.
+ * @property description Description or synopsis of the artwork.
+ * @property voteAverage Average rating of the artwork.
+ * @property voteCount Number of votes received for the artwork.
+ * @property duration Duration of the artwork in minutes.
+ * @property currentTime Current playback position in milliseconds.
+ * @property file The associated local file.
+ * @property status Viewing status of the artwork.
+ * @property genres List of genres associated with the movie.
+ */
 class Movie(
     releaseDateString: String,
     description: String,
@@ -24,6 +37,9 @@ class Movie(
     status = status
 ) {
 
+    /**
+     * Constructs a [Movie] instance using a [TMDBMovie] and a [UserFile].
+     */
     constructor(
         tmdbMovie: TMDBMovie,
         file: UserFile

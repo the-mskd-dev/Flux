@@ -36,7 +36,7 @@ class LibraryRepository @Inject constructor(
             files = allFiles
         )
 
-        val dbFiles = dbArtworks.filterIsInstance<FluxMovie>().map { it.file.name } + dbEpisodes.map { it.file.name }
+        val dbFiles = dbArtworks.mapNotNull { (it.content as? Content.MOVIE)?.movie?.file?.name } + dbEpisodes.map { it.file.name }
         val filteredFiles =  allFiles.filter { !dbFiles.contains(it.name) }
 
         val dbIds = dbArtworks.map { it.id } + dbEpisodes.map { it.id }

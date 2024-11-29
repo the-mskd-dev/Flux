@@ -2,6 +2,7 @@ package com.kaem.flux.data.source.file
 
 import android.content.ContentUris
 import android.content.Context
+import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
@@ -30,9 +31,10 @@ class FilesDataSourceLocalImpl(
         )
 
         // Show only videos that are at least 5 minutes in duration.
-        val selection = "${MediaStore.Video.Media.DURATION} >= ?"
+        val selection = "${MediaStore.Video.Media.DURATION} >= ? AND ${MediaStore.Video.Media.MIME_TYPE} LIKE ?"
         val selectionArgs = arrayOf(
-            TimeUnit.MILLISECONDS.convert(5, TimeUnit.MINUTES).toString()
+            TimeUnit.MILLISECONDS.convert(5, TimeUnit.MINUTES).toString(),
+            "video/%"
         )
 
         val query = context.contentResolver.query(
@@ -42,6 +44,8 @@ class FilesDataSourceLocalImpl(
             selectionArgs,
             null
         )
+
+        val retriever = MediaMetadataRetriever()
 
         withContext(Dispatchers.Main) {
 
@@ -66,14 +70,20 @@ class FilesDataSourceLocalImpl(
                             id
                         ).toString()
 
+                        // Check if the file is a video
+                        retriever.setDataSource(context, Uri.parse(contentPath))
+                        val isVideo = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_HAS_VIDEO) == "yes"
+
                         // Stores column values and the contentUri in a local object
                         // that represents the media file.
-                        files += UserFile(
-                            name = name,
-                            addedDateTime = date,
-                            path = contentPath,
-                            source = FileSource.LOCAL
-                        )
+                        if (isVideo) {
+                            files += UserFile(
+                                name = name,
+                                addedDateTime = date,
+                                path = contentPath,
+                                source = FileSource.LOCAL
+                            )
+                        }
 
                     } catch (e: Exception) {
 
@@ -86,6 +96,8 @@ class FilesDataSourceLocalImpl(
             }
 
         }
+
+        retriever.release()
 
         files.sortByDescending { it.addedDateTime }
 

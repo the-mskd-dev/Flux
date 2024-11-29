@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kaem.flux.data.repository.LibraryRepository
 import com.kaem.flux.model.flux.Artwork
-import com.kaem.flux.model.flux.ArtworkContent
+import com.kaem.flux.model.flux.Content
 import com.kaem.flux.model.flux.ArtworkInfo
 import com.kaem.flux.model.flux.Episode
 import com.kaem.flux.model.flux.FluxStatus
@@ -25,8 +25,8 @@ data class ArtworkUiState(
 ) {
 
     val artworkDetails: ArtworkInfo? = when (artwork.content) {
-        is ArtworkContent.MOVIE -> artwork.content.movie
-        is ArtworkContent.SHOW -> artwork.content.currentEpisode
+        is Content.MOVIE -> artwork.content.movie
+        is Content.SHOW -> artwork.content.currentEpisode
     }
 
 }
@@ -56,7 +56,7 @@ class ArtworkViewModel @Inject constructor(
 
         _uiState.value = ArtworkUiState(
             artwork = artwork,
-            currentSeason = (artwork.content as? ArtworkContent.SHOW)?.currentEpisode?.season ?: -1
+            currentSeason = (artwork.content as? Content.SHOW)?.currentEpisode?.season ?: -1
         )
 
     }

@@ -1,13 +1,12 @@
 package com.kaem.flux.screens.player
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kaem.flux.data.repository.LibraryRepository
 import com.kaem.flux.model.WatchTime
 import com.kaem.flux.model.flux.Artwork
-import com.kaem.flux.model.flux.ArtworkContent
+import com.kaem.flux.model.flux.Content
 import com.kaem.flux.model.flux.ArtworkInfo
 import com.kaem.flux.model.flux.Episode
 import com.kaem.flux.model.flux.FluxStatus
@@ -48,8 +47,8 @@ class PlayerViewModel @Inject constructor(
         val artwork = libraryContent!!.artworks.first { it.id == artworkId }
 
         val artworkInfo = when (artwork.content) {
-            is ArtworkContent.MOVIE -> artwork.content.movie
-            is ArtworkContent.SHOW -> artwork.content.episodes.find { it.id == episodeId }
+            is Content.MOVIE -> artwork.content.movie
+            is Content.SHOW -> artwork.content.episodes.find { it.id == episodeId }
         }
 
         _uiState.value = PlayerUiState(

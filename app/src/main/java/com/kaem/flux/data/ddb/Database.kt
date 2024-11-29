@@ -11,7 +11,7 @@ import androidx.room.Query
 import androidx.room.RoomDatabase
 import com.google.gson.Gson
 import com.kaem.flux.model.flux.Artwork
-import com.kaem.flux.model.flux.ArtworkContent
+import com.kaem.flux.model.flux.Content
 import com.kaem.flux.model.flux.Episode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -91,8 +91,8 @@ class DatabaseManager(
 
     suspend fun saveArtworks(artworks: List<Artwork>) {
 
-        val movies = artworks.filter { it.content is ArtworkContent.MOVIE }
-        val shows = artworks.filter { it.content is ArtworkContent.SHOW }
+        val movies = artworks.filter { it.content is Content.MOVIE }
+        val shows = artworks.filter { it.content is Content.SHOW }
 
         withContext(Dispatchers.Default) {
 
@@ -120,7 +120,7 @@ class DatabaseManager(
                 val showEntities = shows.map { show ->
 
                     launch {
-                        (show.content as? ArtworkContent.SHOW)?.episodes?.let { saveEpisodes(it) }
+                        (show.content as? Content.SHOW)?.episodes?.let { saveEpisodes(it) }
                     }
 
                     val content = gson.toJson(show)

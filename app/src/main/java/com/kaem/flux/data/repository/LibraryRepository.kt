@@ -4,7 +4,7 @@ import com.kaem.flux.data.source.artwork.ArtworkDataSource
 import com.kaem.flux.data.source.file.FilesDataSource
 import com.kaem.flux.model.UserFile
 import com.kaem.flux.model.flux.Artwork
-import com.kaem.flux.model.flux.ArtworkContent
+import com.kaem.flux.model.flux.Content
 import com.kaem.flux.model.flux.Episode
 import com.kaem.flux.model.flux.FluxMovie
 import kotlinx.coroutines.coroutineScope
@@ -51,7 +51,7 @@ class LibraryRepository @Inject constructor(
 
         allArtworks.forEach { artwork ->
 
-            if (artwork.content is ArtworkContent.SHOW)
+            if (artwork.content is Content.SHOW)
                 artwork.content.episodes = allEpisodes.filter { it.showId == artwork.id }.sortedWith(compareBy({ it.season }, { it.number }))
 
         }

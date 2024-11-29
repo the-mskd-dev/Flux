@@ -7,23 +7,23 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParseException
 import com.google.gson.JsonSerializationContext
 import com.google.gson.JsonSerializer
-import com.kaem.flux.model.flux.ArtworkContent
+import com.kaem.flux.model.flux.Content
 import java.lang.reflect.Type
 
-class ArtworkContentTypeAdapter : JsonSerializer<ArtworkContent>, JsonDeserializer<ArtworkContent> {
+class ArtworkContentTypeAdapter : JsonSerializer<Content>, JsonDeserializer<Content> {
 
-    override fun serialize(src: ArtworkContent?, typeOfSrc: Type?, context: JsonSerializationContext?): JsonElement {
+    override fun serialize(src: Content?, typeOfSrc: Type?, context: JsonSerializationContext?): JsonElement {
         val jsonObject = JsonObject()
         jsonObject.addProperty("type", src?.javaClass?.simpleName)
         jsonObject.add("data", context?.serialize(src))
         return jsonObject
     }
 
-    override fun deserialize(json: JsonElement?, typeOfT: Type?, context: JsonDeserializationContext?): ArtworkContent {
+    override fun deserialize(json: JsonElement?, typeOfT: Type?, context: JsonDeserializationContext?): Content {
         val jsonObject = json?.asJsonObject
         val type = when (val typeName = jsonObject?.get("type")?.asString) {
-            "MOVIE" -> ArtworkContent.MOVIE::class.java
-            "SHOW" -> ArtworkContent.SHOW::class.java
+            "MOVIE" -> Content.MOVIE::class.java
+            "SHOW" -> Content.SHOW::class.java
             else -> throw IllegalArgumentException("Unknown type: $typeName")
         }
         return context?.deserialize(jsonObject.get("data"), type)

@@ -9,14 +9,14 @@ data class Artwork(
     val title: String = "",
     val imagePath: String = "",
     val bannerPath: String = "",
-    val content: ArtworkContent = ArtworkContent.SHOW()
+    val content: Content = Content.SHOW()
 ) {
 
 
 
     val description: String? = when (content) {
-        is ArtworkContent.MOVIE -> content.movie.description
-        is ArtworkContent.SHOW -> content.currentEpisode?.description
+        is Content.MOVIE -> content.movie.description
+        is Content.SHOW -> content.currentEpisode?.description
     }
 
     constructor(
@@ -27,7 +27,7 @@ data class Artwork(
         title = tmdbMovie.title,
         imagePath = tmdbMovie.imagePath,
         bannerPath = tmdbMovie.bannerPath,
-        content = ArtworkContent.MOVIE(movie = Movie(tmdbMovie = tmdbMovie, file = file))
+        content = Content.MOVIE(movie = Movie(tmdbMovie = tmdbMovie, file = file))
     )
 
     constructor(tmdbArtwork: TMDBArtwork) : this(
@@ -35,7 +35,7 @@ data class Artwork(
         title = tmdbArtwork.title,
         imagePath = tmdbArtwork.imagePath,
         bannerPath = tmdbArtwork.bannerPath,
-        content = ArtworkContent.SHOW()
+        content = Content.SHOW()
     )
 
 }

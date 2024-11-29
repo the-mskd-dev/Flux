@@ -103,7 +103,13 @@ fun VideoPlayer(
     }
 
     LifecycleComponent(
-        onBackground = { onTimeSave(exoPlayer.currentPosition) }
+        onBackground = {
+            exoPlayer.pause()
+            onTimeSave(exoPlayer.currentPosition)
+        },
+        onForeground = {
+            if (!exoPlayer.isPlaying) exoPlayer.play()
+        }
     )
 
     Box(modifier = Modifier.fillMaxSize()) {

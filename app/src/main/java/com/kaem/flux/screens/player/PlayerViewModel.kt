@@ -1,5 +1,6 @@
 package com.kaem.flux.screens.player
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,6 +12,7 @@ import com.kaem.flux.model.flux.ArtworkInfo
 import com.kaem.flux.model.flux.Episode
 import com.kaem.flux.model.flux.Status
 import com.kaem.flux.model.flux.Movie
+import com.kaem.flux.utils.timeDescription
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -77,6 +79,8 @@ class PlayerViewModel @Inject constructor(
                 else -> {}
 
             }
+
+            Log.i("PlayerViewModel", "${state.artwork.title} saved at ${time.timeDescription}")
 
         }
 

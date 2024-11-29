@@ -1,0 +1,83 @@
+package com.kaem.flux.model.flux
+
+import com.kaem.flux.model.UserFile
+import com.kaem.flux.model.tmdb.TMDBCrew
+import com.kaem.flux.model.tmdb.TMDBEpisode
+
+/**
+ * Represents an episode of a TV show.
+ *
+ * @property id Unique identifier for the episode.
+ * @property title Title of the episode.
+ * @property showId Identifier of the parent show.
+ * @property number Episode number.
+ * @property season Season number.
+ * @property imagePath Path to the episode's image.
+ * @property crew List of crew members involved in the episode.
+ * @property releaseDateString The release date of the artwork as a string.
+ * @property description Description or synopsis of the artwork.
+ * @property voteAverage Average rating of the artwork.
+ * @property voteCount Number of votes received for the artwork.
+ * @property duration Duration of the artwork in minutes.
+ * @property currentTime Current playback position in milliseconds.
+ * @property file The associated local file.
+ * @property status Viewing status of the artwork.
+ * @property releaseDateString Release date of the episode as a string.
+ */
+class Episode(
+    val id: Int,
+    val title: String,
+    val showId: Int,
+    val number: Int,
+    val season: Int,
+    val imagePath: String,
+    val crew: List<TMDBCrew>,
+    releaseDateString: String,
+    description: String,
+    duration: Int,
+    currentTime: Long = 0L,
+    voteAverage: Float,
+    voteCount: Int,
+    status: Status = Status.TO_WATCH,
+    file: UserFile
+) : ArtworkInfo(
+    releaseDateString = releaseDateString,
+    description = description,
+    voteAverage = voteAverage,
+    voteCount = voteCount,
+    duration = duration,
+    currentTime = currentTime,
+    file = file,
+    status = status
+) {
+
+    constructor(
+        showId: Int,
+        tmdbEpisode: TMDBEpisode,
+        file: UserFile
+    ) : this (
+        id = tmdbEpisode.id,
+        showId = showId,
+        title = tmdbEpisode.title,
+        number = tmdbEpisode.number,
+        season = tmdbEpisode.season,
+        imagePath = tmdbEpisode.imagePath,
+        releaseDateString = tmdbEpisode.releaseDateString,
+        crew = tmdbEpisode.crew,
+        description = tmdbEpisode.description,
+        duration = tmdbEpisode.duration,
+        currentTime = 0L,
+        voteAverage = tmdbEpisode.voteAverage,
+        voteCount = tmdbEpisode.voteCount,
+        status = Status.TO_WATCH,
+        file = file
+    )
+
+    companion object {
+
+        /** Constant used when no ID is available. */
+        const val NO_ID = -1
+
+    }
+
+}

@@ -1,0 +1,85 @@
+package com.kaem.flux.screens.player
+
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.kaem.flux.data.repository.LibraryRepository
+import com.kaem.flux.model.WatchTime
+import com.kaem.flux.model.flux.Artwork
+import com.kaem.flux.model.flux.Content
+import com.kaem.flux.model.flux.ArtworkInfo
+import com.kaem.flux.model.flux.Episode
+import com.kaem.flux.model.flux.Status
+import com.kaem.flux.model.flux.Movie
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+
+data class PlayerUiState(
+    val artwork: Artwork = Artwork(),
+    val artworkInfo: ArtworkInfo? = null
+) {
+
+    val path = artworkInfo?.file?.path ?: ""
+
+    val currentTime = artworkInfo?.currentTime ?: 0L
+}
+
+@HiltViewModel
+class PlayerViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
+    private val repository: LibraryRepository
+) : ViewModel() {
+
+    private val artworkId: Int = checkNotNull(savedStateHandle["id"])
+    private val episodeId: Int = checkNotNull(savedStateHandle["episodeId"])
+
+    private val _uiState = MutableStateFlow(PlayerUiState())
+    val uiState: StateFlow<PlayerUiState> = _uiState.asStateFlow()
+
+    init {
+
+        val libraryContent = repository.libraryContent.value
+
+        val artwork = libraryContent!!.artworks.first { it.id == artworkId }
+
+        val artworkInfo = when (artwork.content) {
+            is Content.MOVIE -> artwork.content.movie
+            is Content.SHOW -> artwork.content.episodes.find { it.id == episodeId }
+        }
+
+        _uiState.value = PlayerUiState(
+            artwork = artwork,
+            artworkInfo = artworkInfo
+        )
+
+    }
+
+    fun saveCurrentTime(time: Long) = viewModelScope.launch {
+
+        uiState.value.let { state ->
+
+            state.artworkInfo?.let { artworkInfo ->
+                artworkInfo.currentTime = time
+                val watchTime = WatchTime.fromTime(time)
+                artworkInfo.status = if (watchTime.timeInMin >= artworkInfo.duration) Status.WATCHED else Status.IS_WATCHING
+            }
+
+            when (state.artworkInfo) {
+
+                is Movie -> repository.saveArtwork(state.artwork)
+
+                is Episode -> repository.saveEpisodes(listOf(state.artworkInfo))
+
+                else -> {}
+
+            }
+
+        }
+
+    }
+
+}

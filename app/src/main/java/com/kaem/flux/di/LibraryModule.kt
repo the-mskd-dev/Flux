@@ -20,9 +20,9 @@ object LibraryModule {
         @ArtworkModule.LocalArtworkDataSource localArtworkDataSource: ArtworkDataSource,
         @ArtworkModule.TMDBArtworkDataSource tmdbArtworkDataSource: ArtworkDataSource
     ) : LibraryRepository = LibraryRepository(
-        localFilesDataSource = localFilesDataSource,
-        localArtworkDataSource = localArtworkDataSource,
-        tmdbArtworkDataSource = tmdbArtworkDataSource
+        fileSource = localFilesDataSource,
+        localSource = localArtworkDataSource,
+        tmdbSource = tmdbArtworkDataSource
     )
 
 }

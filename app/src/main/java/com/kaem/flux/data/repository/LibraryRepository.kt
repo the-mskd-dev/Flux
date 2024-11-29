@@ -20,9 +20,9 @@ data class LibraryContent(
 )
 
 class LibraryRepository @Inject constructor(
-    private val localFilesDataSource: FilesDataSource,
-    private val localArtworkDataSource: ArtworkDataSource,
-    private val tmdbArtworkDataSource: ArtworkDataSource
+    private val fileSource: FilesDataSource,
+    private val localSource: ArtworkDataSource,
+    private val tmdbSource: ArtworkDataSource
 ) {
 
     private val _libraryContent = MutableStateFlow<LibraryContent?>(null)
@@ -32,7 +32,7 @@ class LibraryRepository @Inject constructor(
 
         val allFiles = getFiles()
 
-        val (dbArtworks, dbEpisodes) = localArtworkDataSource.getArtworks(
+        val (dbArtworks, dbEpisodes) = localSource.getArtworks(
             files = allFiles
         )
 
@@ -41,7 +41,7 @@ class LibraryRepository @Inject constructor(
 
         val dbIds = dbArtworks.map { it.id } + dbEpisodes.map { it.id }
 
-        val (tmdbArtworks, tmdbEpisodes) = tmdbArtworkDataSource.getArtworks(
+        val (tmdbArtworks, tmdbEpisodes) = tmdbSource.getArtworks(
             files = filteredFiles,
             artworkIds = dbIds
         )
@@ -70,7 +70,7 @@ class LibraryRepository @Inject constructor(
         coroutineScope {
 
             launch {
-                localFiles.addAll(localFilesDataSource.getFiles())
+                localFiles.addAll(fileSource.getFiles())
             }
 
             //TODO: Add other sources
@@ -82,11 +82,11 @@ class LibraryRepository @Inject constructor(
     }
 
     suspend fun saveArtwork(artwork: Artwork) {
-        localArtworkDataSource.saveArtwork(artwork)
+        localSource.saveArtwork(artwork)
     }
 
     suspend fun saveEpisodes(episodes: List<Episode>) {
-        localArtworkDataSource.saveEpisodes(episodes)
+        localSource.saveEpisodes(episodes)
     }
 
 }

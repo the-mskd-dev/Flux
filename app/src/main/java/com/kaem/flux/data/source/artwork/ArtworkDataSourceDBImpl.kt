@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class DatabaseArtworkDataSource @Inject constructor(
+class ArtworkDataSourceDBImpl @Inject constructor(
     private val databaseManager: DatabaseManager
 ) : ArtworkDataSource {
 

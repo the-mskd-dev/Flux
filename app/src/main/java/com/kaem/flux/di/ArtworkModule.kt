@@ -2,8 +2,8 @@ package com.kaem.flux.di
 
 import com.kaem.flux.data.ddb.DatabaseManager
 import com.kaem.flux.data.source.artwork.ArtworkDataSource
-import com.kaem.flux.data.source.artwork.DatabaseArtworkDataSource
-import com.kaem.flux.data.source.artwork.TMDBArtworkDataSource
+import com.kaem.flux.data.source.artwork.ArtworkDataSourceDBImpl
+import com.kaem.flux.data.source.artwork.ArtworkDataSourceTMDBImpl
 import com.kaem.flux.data.tmdb.TMDBService
 import dagger.Module
 import dagger.Provides
@@ -26,7 +26,7 @@ object ArtworkModule {
     @Provides
     @LocalArtworkDataSource
     fun provideDatabaseArtworkDataSource(databaseManager: DatabaseManager) : ArtworkDataSource {
-        return DatabaseArtworkDataSource(
+        return ArtworkDataSourceDBImpl(
             databaseManager = databaseManager
         )
     }
@@ -37,7 +37,7 @@ object ArtworkModule {
         databaseManager: DatabaseManager,
         tmdbService: TMDBService
     ) : ArtworkDataSource {
-        return TMDBArtworkDataSource(
+        return ArtworkDataSourceTMDBImpl(
             databaseManager = databaseManager,
             tmdbService = tmdbService
         )

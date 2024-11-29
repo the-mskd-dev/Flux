@@ -12,7 +12,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 
-class LocalFilesDataSource(
+class FilesDataSourceLocalImpl(
     private val context: Context
 ) : FilesDataSource {
 

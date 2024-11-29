@@ -16,7 +16,7 @@ import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class TMDBArtworkDataSource @Inject constructor(
+class ArtworkDataSourceTMDBImpl @Inject constructor(
     private val databaseManager: DatabaseManager,
     private val tmdbService: TMDBService
 ) : ArtworkDataSource {

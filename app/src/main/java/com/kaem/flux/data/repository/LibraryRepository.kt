@@ -30,25 +30,30 @@ class LibraryRepository @Inject constructor(
 
     suspend fun getLibrary() {
 
+        // Fetch all files, local and online (if possible)
         val allFiles = getFiles()
 
+        // Fetch all artworks infos already in the DB according to the files
         val (dbArtworks, dbEpisodes) = localSource.getArtworks(
             files = allFiles
         )
 
+        // Filter files absents of Artworks in the DB
         val dbFiles = dbArtworks.mapNotNull { (it.content as? Content.MOVIE)?.movie?.file?.name } + dbEpisodes.map { it.file.name }
         val filteredFiles =  allFiles.filter { !dbFiles.contains(it.name) }
-
         val dbIds = dbArtworks.map { it.id } + dbEpisodes.map { it.id }
 
+        // Fetch all new artworks infos from TMDB with files
         val (tmdbArtworks, tmdbEpisodes) = tmdbSource.getArtworks(
             files = filteredFiles,
             artworkIds = dbIds
         )
 
+        // Merge all artworks infos from DB and TMDB
         val allArtworks = dbArtworks + tmdbArtworks
         val allEpisodes = dbEpisodes + tmdbEpisodes
 
+        // Sort episode for shows
         allArtworks.forEach { artwork ->
 
             if (artwork.content is Content.SHOW)
@@ -56,6 +61,7 @@ class LibraryRepository @Inject constructor(
 
         }
 
+        // Update content
         _libraryContent.value = LibraryContent(
             isLoading = false,
             artworks = allArtworks

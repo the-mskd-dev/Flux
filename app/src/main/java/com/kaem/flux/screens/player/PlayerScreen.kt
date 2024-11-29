@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.pm.ActivityInfo
 import android.net.Uri
 import android.view.View
-import android.widget.Toast
 import androidx.annotation.OptIn
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -26,7 +25,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,14 +33,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
+import androidx.media3.common.Tracks
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
+import com.kaem.flux.model.flux.Metadata
 import com.kaem.flux.ui.component.LifecycleComponent
 import com.kaem.flux.ui.theme.FluxSpace
 
@@ -85,11 +82,19 @@ fun VideoPlayer(
 
     val localContext = LocalContext.current
     var showBackButton by remember { mutableStateOf(false) }
+    var metadata = emptyList<Metadata>()
 
     val exoPlayer = remember {
         ExoPlayer.Builder(localContext).build().apply {
             setMediaItem(MediaItem.fromUri(Uri.parse(path)), currentTime)
             prepare()
+            addListener(
+                object : Player.Listener {
+                    override fun onTracksChanged(tracks: Tracks) {
+                        metadata = Metadata.tracksToParameters(tracks)
+                    }
+                }
+            )
             play()
         }
     }
@@ -159,3 +164,4 @@ fun VideoPlayer(
     }
 
 }
+

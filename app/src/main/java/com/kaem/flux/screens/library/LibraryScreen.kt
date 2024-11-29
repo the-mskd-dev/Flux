@@ -1,4 +1,4 @@
-package com.kaem.flux.screens.home
+package com.kaem.flux.screens.library
 
 import android.os.Build
 import androidx.compose.animation.Crossfade

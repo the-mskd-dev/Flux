@@ -17,7 +17,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.kaem.flux.model.flux.Episode
 import com.kaem.flux.screens.artwork.ArtworkScreen
-import com.kaem.flux.screens.home.LibraryScreen
+import com.kaem.flux.screens.library.LibraryScreen
 import com.kaem.flux.screens.player.PlayerScreen
 import com.kaem.flux.ui.theme.FluxTheme
 import dagger.hilt.android.AndroidEntryPoint

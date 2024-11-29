@@ -1,4 +1,4 @@
-package com.kaem.flux.screens.home
+package com.kaem.flux.screens.library
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData

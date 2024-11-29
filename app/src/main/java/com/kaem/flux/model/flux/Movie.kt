@@ -11,7 +11,7 @@ class Movie(
     duration: Int,
     currentTime: Long = 0L,
     file: UserFile,
-    status: FluxStatus,
+    status: Status,
     val genres: List<String> = listOf()
 ) : ArtworkInfo(
     releaseDateString = releaseDateString,
@@ -36,7 +36,7 @@ class Movie(
         currentTime = 0L,
         file = file,
         genres = emptyList(),
-        status = FluxStatus.TO_WATCH
+        status = Status.TO_WATCH
     )
 
 }

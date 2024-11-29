@@ -12,7 +12,7 @@ sealed class ArtworkInfo(
     val duration: Int,
     var currentTime: Long = 0L,
     val file: UserFile,
-    var status: FluxStatus = FluxStatus.TO_WATCH,
+    var status: Status = Status.TO_WATCH,
 ) {
 
     val releaseDate: Date? get() = releaseDateString.parseTMDBDate()

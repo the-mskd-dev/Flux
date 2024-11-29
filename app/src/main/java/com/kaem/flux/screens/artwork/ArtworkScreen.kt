@@ -59,7 +59,7 @@ import com.kaem.flux.R
 import com.kaem.flux.model.WatchTime
 import com.kaem.flux.model.flux.Content
 import com.kaem.flux.model.flux.Episode
-import com.kaem.flux.model.flux.FluxStatus
+import com.kaem.flux.model.flux.Status
 import com.kaem.flux.ui.component.Title
 import com.kaem.flux.ui.theme.FluxElevation
 import com.kaem.flux.ui.theme.FluxFontSize
@@ -236,7 +236,7 @@ fun ArtworkHeader(
                 )
 
 
-                val text = if (uiState.artworkDetails?.status == FluxStatus.IS_WATCHING) stringResource(id = R.string.resume, WatchTime(uiState.artworkDetails.currentTime).toString()) else stringResource(R.string.start)
+                val text = if (uiState.artworkDetails?.status == Status.IS_WATCHING) stringResource(id = R.string.resume, WatchTime(uiState.artworkDetails.currentTime).toString()) else stringResource(R.string.start)
                 Text(
                     text = text.uppercase(),
                     fontWeight = FluxWeight.MEDIUM
@@ -392,7 +392,7 @@ fun EpisodeItem(
     onWatchStatusChange: () -> Unit
 ) {
 
-    var isWatched by remember { mutableStateOf(episode.status == FluxStatus.WATCHED) }
+    var isWatched by remember { mutableStateOf(episode.status == Status.WATCHED) }
     val alphaAnimation by animateFloatAsState(targetValue = if (isWatched) .4f else 1f, label = "alphaAnimation")
     val colorAnimation by animateColorAsState(targetValue = if (isWatched) MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.primary, label = "colorAnimation")
 
@@ -449,7 +449,7 @@ fun EpisodeItem(
                 onWatchTap = onWatchTap,
                 onWatchStatusChange = {
                     onWatchStatusChange()
-                    isWatched = episode.status == FluxStatus.WATCHED
+                    isWatched = episode.status == Status.WATCHED
                 }
             )
         }
@@ -497,14 +497,14 @@ fun EpisodeItemContent(
                 modifier = Modifier.clickable { onWatchStatusChange() },
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FluxWeight.MEDIUM,
-                text = stringResource(id = if (episode.status == FluxStatus.WATCHED) R.string.mark_as_not_watched else R.string.mark_as_watched).uppercase()
+                text = stringResource(id = if (episode.status == Status.WATCHED) R.string.mark_as_not_watched else R.string.mark_as_watched).uppercase()
             )
 
             Text(
                 modifier = Modifier.clickable { onWatchTap() },
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FluxWeight.MEDIUM,
-                text = stringResource(id = if (episode.status == FluxStatus.IS_WATCHING) R.string.resume else R.string.start).uppercase()
+                text = stringResource(id = if (episode.status == Status.IS_WATCHING) R.string.resume else R.string.start).uppercase()
             )
 
         }

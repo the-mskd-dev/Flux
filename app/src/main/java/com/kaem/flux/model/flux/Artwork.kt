@@ -12,8 +12,6 @@ data class Artwork(
     val content: Content = Content.SHOW()
 ) {
 
-
-
     val description: String? = when (content) {
         is Content.MOVIE -> content.movie.description
         is Content.SHOW -> content.currentEpisode?.description

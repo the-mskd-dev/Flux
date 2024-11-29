@@ -18,7 +18,7 @@ class Episode(
     currentTime: Long = 0L,
     voteAverage: Float,
     voteCount: Int,
-    status: FluxStatus = FluxStatus.TO_WATCH,
+    status: Status = Status.TO_WATCH,
     file: UserFile
 ) : ArtworkInfo(
     releaseDateString = releaseDateString,
@@ -49,7 +49,7 @@ class Episode(
         currentTime = 0L,
         voteAverage = tmdbEpisode.voteAverage,
         voteCount = tmdbEpisode.voteCount,
-        status = FluxStatus.TO_WATCH,
+        status = Status.TO_WATCH,
         file = file
     )
 

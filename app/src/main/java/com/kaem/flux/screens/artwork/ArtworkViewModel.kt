@@ -8,7 +8,7 @@ import com.kaem.flux.model.flux.Artwork
 import com.kaem.flux.model.flux.Content
 import com.kaem.flux.model.flux.ArtworkInfo
 import com.kaem.flux.model.flux.Episode
-import com.kaem.flux.model.flux.FluxStatus
+import com.kaem.flux.model.flux.Status
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -74,7 +74,7 @@ class ArtworkViewModel @Inject constructor(
     }
 
     fun changeWatchStatus(episode: Episode) {
-        episode.status = if (episode.status != FluxStatus.WATCHED) FluxStatus.WATCHED else FluxStatus.TO_WATCH
+        episode.status = if (episode.status != Status.WATCHED) Status.WATCHED else Status.TO_WATCH
         viewModelScope.launch { repository.saveEpisodes(listOf(episode)) }
     }
 

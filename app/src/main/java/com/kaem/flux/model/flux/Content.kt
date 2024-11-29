@@ -14,8 +14,8 @@ sealed class Content {
         @Expose(serialize = false) var episodes: List<Episode> = emptyList()
     ) : Content() {
 
-        val currentEpisode get() = episodes.lastOrNull { it.status == FluxStatus.IS_WATCHING }
-            ?: episodes.firstOrNull { it.status == FluxStatus.TO_WATCH }
+        val currentEpisode get() = episodes.lastOrNull { it.status == Status.IS_WATCHING }
+            ?: episodes.firstOrNull { it.status == Status.TO_WATCH }
             ?: episodes.firstOrNull()
 
     }

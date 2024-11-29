@@ -6,7 +6,6 @@ import com.kaem.flux.model.UserFile
 import com.kaem.flux.model.flux.Artwork
 import com.kaem.flux.model.flux.Content
 import com.kaem.flux.model.flux.Episode
-import com.kaem.flux.model.flux.FluxMovie
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

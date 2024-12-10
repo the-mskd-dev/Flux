@@ -4,7 +4,7 @@ import com.kaem.flux.data.source.artwork.ArtworkDataSource
 import com.kaem.flux.data.source.file.FilesDataSource
 import com.kaem.flux.model.UserFile
 import com.kaem.flux.model.flux.Artwork
-import com.kaem.flux.model.flux.Content
+import com.kaem.flux.model.flux.ArtworkType
 import com.kaem.flux.model.flux.Episode
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -38,7 +38,7 @@ class LibraryRepository @Inject constructor(
         )
 
         // Filter files absents of Artworks in the DB
-        val dbFiles = dbArtworks.mapNotNull { (it.content as? Content.MOVIE)?.movie?.file?.name } + dbEpisodes.map { it.file.name }
+        val dbFiles = dbArtworks.mapNotNull { (it.type as? ArtworkType.MOVIE)?.movie?.file?.name } + dbEpisodes.map { it.file.name }
         val filteredFiles =  allFiles.filter { !dbFiles.contains(it.name) }
         val dbIds = dbArtworks.map { it.id } + dbEpisodes.map { it.id }
 
@@ -55,8 +55,8 @@ class LibraryRepository @Inject constructor(
         // Sort episode for shows
         allArtworks.forEach { artwork ->
 
-            if (artwork.content is Content.SHOW)
-                artwork.content.episodes = allEpisodes.filter { it.showId == artwork.id }.sortedWith(compareBy({ it.season }, { it.number }))
+            if (artwork.type is ArtworkType.SHOW)
+                artwork.type.episodes = allEpisodes.filter { it.showId == artwork.id }.sortedWith(compareBy({ it.season }, { it.number }))
 
         }
 

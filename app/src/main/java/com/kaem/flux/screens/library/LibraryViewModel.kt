@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.kaem.flux.data.repository.DataStoreRepository
 import com.kaem.flux.data.repository.LibraryRepository
 import com.kaem.flux.model.flux.Artwork
-import com.kaem.flux.model.flux.Content
+import com.kaem.flux.model.flux.ArtworkType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
@@ -60,14 +60,14 @@ class LibraryViewModel @Inject constructor(
 
         return artworks.sortedByDescending { artwork ->
 
-            when (artwork.content) {
+            when (artwork.type) {
 
-                is Content.MOVIE -> {
-                    artwork.content.movie.file.addedDate
+                is ArtworkType.MOVIE -> {
+                    artwork.type.movie.file.addedDate
                 }
 
-                is Content.SHOW -> {
-                    artwork.content.episodes.maxOf { it.file.addedDate }
+                is ArtworkType.SHOW -> {
+                    artwork.type.episodes.maxOf { it.file.addedDate }
                 }
 
             }

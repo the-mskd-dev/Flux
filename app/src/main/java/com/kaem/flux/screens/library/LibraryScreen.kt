@@ -45,7 +45,7 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.kaem.flux.R
 import com.kaem.flux.model.flux.Artwork
-import com.kaem.flux.model.flux.Content
+import com.kaem.flux.model.flux.ArtworkType
 import com.kaem.flux.ui.component.FluxButton
 import com.kaem.flux.ui.component.Loader
 import com.kaem.flux.ui.component.Title
@@ -167,13 +167,13 @@ fun LibraryGrid(
 
         ArtworkList(
             name = stringResource(id = R.string.shows),
-            artworks = artworks.filter { it.content is Content.SHOW },
+            artworks = artworks.filter { it.type is ArtworkType.SHOW },
             navigateToDetails = navigateToDetails
         )
 
         ArtworkList(
             name = stringResource(id = R.string.movies),
-            artworks = artworks.filter { it.content is Content.MOVIE },
+            artworks = artworks.filter { it.type is ArtworkType.MOVIE },
             navigateToDetails = navigateToDetails
         )
 

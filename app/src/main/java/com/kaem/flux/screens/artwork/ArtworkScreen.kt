@@ -57,7 +57,7 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.kaem.flux.R
 import com.kaem.flux.model.WatchTime
-import com.kaem.flux.model.flux.Content
+import com.kaem.flux.model.flux.ArtworkType
 import com.kaem.flux.model.flux.Episode
 import com.kaem.flux.model.flux.Status
 import com.kaem.flux.ui.component.Title
@@ -96,15 +96,15 @@ fun ArtworkScreen(
                     onBackButtonTap = { onBackButtonTap() },
                     onLaunchButtonTap = {
 
-                        when (val content = uiState.artwork.content) {
-                            is Content.MOVIE -> {
+                        when (val content = uiState.artwork.type) {
+                            is ArtworkType.MOVIE -> {
 
                                 launchPlayer(
                                     uiState.artwork.id,
                                     null
                                 )
                             }
-                            is Content.SHOW -> {
+                            is ArtworkType.SHOW -> {
 
                                 launchPlayer(
                                     uiState.artwork.id,
@@ -124,9 +124,9 @@ fun ArtworkScreen(
 
         }
 
-        if (uiState.artwork.content is Content.SHOW) {
+        if (uiState.artwork.type is ArtworkType.SHOW) {
 
-            val episodes = (uiState.artwork.content as Content.SHOW).episodes
+            val episodes = (uiState.artwork.type as ArtworkType.SHOW).episodes
 
             item {
 

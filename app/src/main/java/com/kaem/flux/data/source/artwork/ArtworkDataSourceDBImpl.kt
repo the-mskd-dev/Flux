@@ -3,7 +3,7 @@ package com.kaem.flux.data.source.artwork
 import com.kaem.flux.data.ddb.DatabaseManager
 import com.kaem.flux.model.UserFile
 import com.kaem.flux.model.flux.Artwork
-import com.kaem.flux.model.flux.Content
+import com.kaem.flux.model.flux.ArtworkType
 import com.kaem.flux.model.flux.Episode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
@@ -68,14 +68,14 @@ class ArtworkDataSourceDBImpl @Inject constructor(
                 episodesToRemove.add(it)
         }
 
-        artworks.filter { it.content is Content.MOVIE }.forEach {
+        artworks.filter { it.type is ArtworkType.MOVIE }.forEach {
 
-            if (!filePaths.contains((it.content as Content.MOVIE).movie.file.path))
+            if (!filePaths.contains((it.type as ArtworkType.MOVIE).movie.file.path))
                 moviesToRemove.add(it)
 
         }
 
-        artworks.filter { it.content is Content.SHOW }.forEach { show ->
+        artworks.filter { it.type is ArtworkType.SHOW }.forEach { show ->
 
             if (episodes.none { it.showId == show.id })
                 showsToRemove.add(show)

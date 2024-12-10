@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.kaem.flux.data.repository.LibraryRepository
 import com.kaem.flux.model.WatchTime
 import com.kaem.flux.model.flux.Artwork
-import com.kaem.flux.model.flux.Content
+import com.kaem.flux.model.flux.ArtworkType
 import com.kaem.flux.model.flux.ArtworkInfo
 import com.kaem.flux.model.flux.Episode
 import com.kaem.flux.model.flux.Status
@@ -48,9 +48,9 @@ class PlayerViewModel @Inject constructor(
 
         val artwork = libraryContent!!.artworks.first { it.id == artworkId }
 
-        val artworkInfo = when (artwork.content) {
-            is Content.MOVIE -> artwork.content.movie
-            is Content.SHOW -> artwork.content.episodes.find { it.id == episodeId }
+        val artworkInfo = when (artwork.type) {
+            is ArtworkType.MOVIE -> artwork.type.movie
+            is ArtworkType.SHOW -> artwork.type.episodes.find { it.id == episodeId }
         }
 
         _uiState.value = PlayerUiState(

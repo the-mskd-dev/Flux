@@ -11,7 +11,7 @@ import com.kaem.flux.model.tmdb.TMDBMovie
  * @property title Title of the artwork.
  * @property imagePath Path to the main image of the artwork.
  * @property bannerPath Path to the banner image of the artwork.
- * @property content Content of the artwork, which can be a movie or a show.
+ * @property type Content of the artwork, which can be a movie or a show.
  * @property description Short description derived from the associated content.
  */
 data class Artwork(
@@ -19,12 +19,12 @@ data class Artwork(
     val title: String = "",
     val imagePath: String = "",
     val bannerPath: String = "",
-    val content: Content = Content.SHOW()
+    val type: ArtworkType = ArtworkType.SHOW()
 ) {
 
-    val description: String? = when (content) {
-        is Content.MOVIE -> content.movie.description
-        is Content.SHOW -> content.currentEpisode?.description
+    val description: String? = when (type) {
+        is ArtworkType.MOVIE -> type.movie.description
+        is ArtworkType.SHOW -> type.currentEpisode?.description
     }
 
 
@@ -39,7 +39,7 @@ data class Artwork(
         title = tmdbMovie.title,
         imagePath = tmdbMovie.imagePath,
         bannerPath = tmdbMovie.bannerPath,
-        content = Content.MOVIE(movie = Movie(tmdbMovie = tmdbMovie, file = file))
+        type = ArtworkType.MOVIE(movie = Movie(tmdbMovie = tmdbMovie, file = file))
     )
 
     /**
@@ -50,7 +50,7 @@ data class Artwork(
         title = tmdbArtwork.title,
         imagePath = tmdbArtwork.imagePath,
         bannerPath = tmdbArtwork.bannerPath,
-        content = Content.SHOW()
+        type = ArtworkType.SHOW()
     )
 
 }

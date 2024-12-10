@@ -17,7 +17,7 @@ import java.util.Date
  * @property status Viewing status of the artwork.
  * @property releaseDate Parsed release date as a [Date], derived from [releaseDateString].
  */
-sealed class ArtworkInfo(
+abstract class ArtworkInfo(
     val releaseDateString: String,
     val description: String,
     val voteAverage: Float,

@@ -1,8 +1,13 @@
 package com.kaem.flux.model.flux
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import androidx.room.TypeConverter
 import com.kaem.flux.model.UserFile
 import com.kaem.flux.model.tmdb.TMDBArtwork
 import com.kaem.flux.model.tmdb.TMDBMovie
+
+enum class ContentType { MOVIE, SHOW }
 
 /**
  * Represents an artwork, such as a movie or a TV show.
@@ -14,18 +19,20 @@ import com.kaem.flux.model.tmdb.TMDBMovie
  * @property type Content of the artwork, which can be a movie or a show.
  * @property description Short description derived from the associated content.
  */
+@Entity(tableName = "artworks")
 data class Artwork(
-    val id: Int = -1,
+    @PrimaryKey
+    val id: Long = 0,
     val title: String = "",
     val imagePath: String = "",
     val bannerPath: String = "",
-    val type: ArtworkType = ArtworkType.SHOW()
+    val type: ContentType = ContentType.SHOW
 ) {
 
-    val description: String? = when (type) {
+    /*val description: String? = when (type) {
         is ArtworkType.MOVIE -> type.movie.description
         is ArtworkType.SHOW -> type.currentEpisode?.description
-    }
+    }*/
 
 
     /**
@@ -33,13 +40,14 @@ data class Artwork(
      */
     constructor(
         tmdbMovie: TMDBMovie,
-        file: UserFile
+        //file: UserFile
     ) : this (
         id = tmdbMovie.id,
         title = tmdbMovie.title,
         imagePath = tmdbMovie.imagePath,
         bannerPath = tmdbMovie.bannerPath,
-        type = ArtworkType.MOVIE(movie = Movie(tmdbMovie = tmdbMovie, file = file))
+        type = ContentType.MOVIE
+        //type = ArtworkType.MOVIE(movie = Movie(tmdbMovie = tmdbMovie, file = file))
     )
 
     /**
@@ -50,7 +58,7 @@ data class Artwork(
         title = tmdbArtwork.title,
         imagePath = tmdbArtwork.imagePath,
         bannerPath = tmdbArtwork.bannerPath,
-        type = ArtworkType.SHOW()
+        type = ContentType.SHOW
     )
 
 }

@@ -18,13 +18,14 @@ import java.util.Date
  * @property releaseDate Parsed release date as a [Date], derived from [releaseDateString].
  */
 abstract class ArtworkInfo(
+    val artworkId: Long,
+    val fileId: Long,
     val releaseDateString: String,
     val description: String,
     val voteAverage: Float,
     val voteCount: Int,
     val duration: Int,
     var currentTime: Long = 0L,
-    val file: UserFile,
     var status: Status = Status.TO_WATCH,
 ) {
 

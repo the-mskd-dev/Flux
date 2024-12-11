@@ -1,5 +1,8 @@
 package com.kaem.flux.model.flux
 
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.PrimaryKey
 import com.kaem.flux.model.UserFile
 import com.kaem.flux.model.tmdb.TMDBCrew
 import com.kaem.flux.model.tmdb.TMDBEpisode
@@ -24,14 +27,27 @@ import com.kaem.flux.model.tmdb.TMDBEpisode
  * @property status Viewing status of the artwork.
  * @property releaseDateString Release date of the episode as a string.
  */
+@Entity(
+    tableName = "episodes",
+    foreignKeys = [
+        ForeignKey(
+            entity = Artwork::class,
+            parentColumns = ["id"],
+            childColumns = ["artworkId"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ]
+)
 class Episode(
-    val id: Int,
+    @PrimaryKey
+    val id: Long,
     val title: String,
-    val showId: Int,
     val number: Int,
     val season: Int,
     val imagePath: String,
     val crew: List<TMDBCrew>,
+    artworkId: Long,
+    fileId: Long,
     releaseDateString: String,
     description: String,
     duration: Int,
@@ -39,25 +55,25 @@ class Episode(
     voteAverage: Float,
     voteCount: Int,
     status: Status = Status.TO_WATCH,
-    file: UserFile
 ) : ArtworkInfo(
+    artworkId = artworkId,
+    fileId = fileId,
     releaseDateString = releaseDateString,
     description = description,
     voteAverage = voteAverage,
     voteCount = voteCount,
     duration = duration,
     currentTime = currentTime,
-    file = file,
     status = status
 ) {
 
     constructor(
-        showId: Int,
+        artworkId: Long,
         tmdbEpisode: TMDBEpisode,
         file: UserFile
     ) : this (
         id = tmdbEpisode.id,
-        showId = showId,
+        artworkId = artworkId,
         title = tmdbEpisode.title,
         number = tmdbEpisode.number,
         season = tmdbEpisode.season,
@@ -70,7 +86,7 @@ class Episode(
         voteAverage = tmdbEpisode.voteAverage,
         voteCount = tmdbEpisode.voteCount,
         status = Status.TO_WATCH,
-        file = file
+        fileId = file.id
     )
 
     companion object {

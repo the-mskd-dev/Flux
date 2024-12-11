@@ -1,11 +1,36 @@
 package com.kaem.flux.model
 
 import android.os.Parcelable
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.PrimaryKey
+import com.kaem.flux.model.flux.Artwork
+import com.kaem.flux.model.flux.Episode
+import com.kaem.flux.model.flux.Movie
 import kotlinx.parcelize.Parcelize
 import java.util.Date
 
 @Parcelize
+@Entity(
+    tableName = "files",
+    foreignKeys = [
+        ForeignKey(
+            entity = Episode::class,
+            parentColumns = ["fileId"],
+            childColumns = ["id"],
+            onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = Movie::class,
+            parentColumns = ["fileId"],
+            childColumns = ["id"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ]
+)
 data class UserFile(
+    @PrimaryKey(autoGenerate = true)
+    val id: Long,
     val name: String,
     val addedDateTime: Long,
     val path: String,

@@ -1,5 +1,8 @@
 package com.kaem.flux.model.flux
 
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.PrimaryKey
 import com.kaem.flux.model.UserFile
 import com.kaem.flux.model.tmdb.TMDBMovie
 
@@ -16,24 +19,37 @@ import com.kaem.flux.model.tmdb.TMDBMovie
  * @property status Viewing status of the artwork.
  * @property genres List of genres associated with the movie.
  */
+@Entity(
+    tableName = "movies",
+    foreignKeys = [
+        ForeignKey(
+            entity = Artwork::class,
+            parentColumns = ["id"],
+            childColumns = ["artworkId"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ]
+)
 class Movie(
+    artworkId: Long,
+    fileId: Long,
     releaseDateString: String,
     description: String,
     voteAverage: Float,
     voteCount: Int,
     duration: Int,
     currentTime: Long = 0L,
-    file: UserFile,
     status: Status,
     val genres: List<String> = listOf()
 ) : ArtworkInfo(
+    artworkId = artworkId,
+    fileId = fileId,
     releaseDateString = releaseDateString,
     description = description,
     voteAverage = voteAverage,
     voteCount = voteCount,
     duration = duration,
     currentTime = currentTime,
-    file = file,
     status = status
 ) {
 
@@ -44,13 +60,14 @@ class Movie(
         tmdbMovie: TMDBMovie,
         file: UserFile
     ) : this(
+        artworkId = tmdbMovie.id,
         releaseDateString = tmdbMovie.releaseDateString,
         description = tmdbMovie.description,
         voteAverage = tmdbMovie.voteAverage,
         voteCount = tmdbMovie.voteCount,
         duration = tmdbMovie.duration,
         currentTime = 0L,
-        file = file,
+        fileId = file.id,
         genres = emptyList(),
         status = Status.TO_WATCH
     )

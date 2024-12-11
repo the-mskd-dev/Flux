@@ -15,4 +15,6 @@ interface ArtworkDataSource {
 
     suspend fun saveEpisodes(episodes: List<Episode>)
 
+    suspend fun saveMovies(episodes: List<Episode>)
+
 }

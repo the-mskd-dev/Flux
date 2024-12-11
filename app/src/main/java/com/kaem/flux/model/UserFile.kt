@@ -11,26 +11,7 @@ import kotlinx.parcelize.Parcelize
 import java.util.Date
 
 @Parcelize
-@Entity(
-    tableName = "files",
-    foreignKeys = [
-        ForeignKey(
-            entity = Episode::class,
-            parentColumns = ["fileId"],
-            childColumns = ["id"],
-            onDelete = ForeignKey.CASCADE
-        ),
-        ForeignKey(
-            entity = Movie::class,
-            parentColumns = ["fileId"],
-            childColumns = ["id"],
-            onDelete = ForeignKey.CASCADE
-        )
-    ]
-)
 data class UserFile(
-    @PrimaryKey(autoGenerate = true)
-    val id: Long,
     val name: String,
     val addedDateTime: Long,
     val path: String,

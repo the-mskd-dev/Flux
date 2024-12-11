@@ -40,14 +40,12 @@ data class Artwork(
      */
     constructor(
         tmdbMovie: TMDBMovie,
-        //file: UserFile
     ) : this (
         id = tmdbMovie.id,
         title = tmdbMovie.title,
         imagePath = tmdbMovie.imagePath,
         bannerPath = tmdbMovie.bannerPath,
         type = ContentType.MOVIE
-        //type = ArtworkType.MOVIE(movie = Movie(tmdbMovie = tmdbMovie, file = file))
     )
 
     /**

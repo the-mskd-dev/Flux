@@ -5,9 +5,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kaem.flux.data.repository.LibraryRepository
 import com.kaem.flux.model.flux.Artwork
-import com.kaem.flux.model.flux.ArtworkType
 import com.kaem.flux.model.flux.ArtworkInfo
+import com.kaem.flux.model.flux.ContentType
 import com.kaem.flux.model.flux.Episode
+import com.kaem.flux.model.flux.Movie
 import com.kaem.flux.model.flux.Status
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,15 +21,28 @@ import javax.inject.Inject
 
 data class ArtworkUiState(
     val artwork: Artwork = Artwork(),
-    val expandedEpisodeId: Int? = null,
+    val screen: ArtworkUiType = ArtworkUiType.LOADING,
+    val expandedEpisodeId: Long? = null,
     val currentSeason: Int = -1
 ) {
 
-    val artworkDetails: ArtworkInfo? = when (artwork.type) {
-        is ArtworkType.MOVIE -> artwork.type.movie
-        is ArtworkType.SHOW -> artwork.type.currentEpisode
+    val artworkDetails: ArtworkInfo? = when (screen) {
+        is ArtworkUiType.MOVIE -> screen.movie
+        is ArtworkUiType.SHOW -> screen.currentEpisode
+        else -> null
     }
 
+}
+
+sealed class ArtworkUiType {
+    data object LOADING : ArtworkUiType()
+    data object ERROR : ArtworkUiType()
+    data class MOVIE(val movie: Movie) : ArtworkUiType()
+    data class SHOW(val episodes: List<Episode> = emptyList()) : ArtworkUiType() {
+        val currentEpisode get() = episodes.lastOrNull { it.status == Status.IS_WATCHING }
+            ?: episodes.firstOrNull { it.status == Status.TO_WATCH }
+            ?: episodes.firstOrNull()
+    }
 }
 
 @HiltViewModel
@@ -37,27 +51,47 @@ class ArtworkViewModel @Inject constructor(
     private val repository: LibraryRepository
 ) : ViewModel() {
 
-    private val artworkId: Int = checkNotNull(savedStateHandle["artworkId"])
+    private val artworkId: Long = checkNotNull(savedStateHandle["artworkId"])
 
     private val _uiState = MutableStateFlow(ArtworkUiState())
     val uiState: StateFlow<ArtworkUiState> = _uiState.asStateFlow()
 
-    init {
+    init { getArtworks(artworkId) }
 
-        getArtworks(artworkId)
-
-    }
-
-    private fun getArtworks(id: Int) {
+    private fun getArtworks(id: Long) = viewModelScope.launch {
 
         val libraryContent = repository.libraryContent.value
 
-        val artwork = libraryContent?.artworks?.find { it.id == id } ?: return
+        val artwork = libraryContent?.artworks?.find { it.id == id }
 
-        _uiState.value = ArtworkUiState(
-            artwork = artwork,
-            currentSeason = (artwork.type as? ArtworkType.SHOW)?.currentEpisode?.season ?: -1
-        )
+        when (artwork?.type) {
+            ContentType.MOVIE -> {
+                val movie = repository.getMovie(artworkId)
+                _uiState.value = ArtworkUiState(
+                    artwork = artwork,
+                    screen = ArtworkUiType.MOVIE(movie)
+                )
+
+            }
+            ContentType.SHOW -> {
+                val episodes = repository.getEpisodes(artworkId)
+                ArtworkUiType.SHOW(episodes).also {
+                    _uiState.value = ArtworkUiState(
+                        artwork = artwork,
+                        screen = it,
+                        currentSeason = it.currentEpisode?.season ?: -1
+                    )
+                }
+            }
+            else -> {
+                _uiState.value = ArtworkUiState(
+                    artwork = artwork ?: Artwork(),
+                    screen = ArtworkUiType.ERROR,
+                )
+            }
+        }
+
+
 
     }
 
@@ -67,7 +101,7 @@ class ArtworkViewModel @Inject constructor(
         }
     }
 
-    fun expandEpisodeDetails(id: Int) {
+    fun expandEpisodeDetails(id: Long) {
         _uiState.update { currentState ->
             currentState.copy(expandedEpisodeId = if (currentState.expandedEpisodeId == id) null else id)
         }
@@ -75,7 +109,7 @@ class ArtworkViewModel @Inject constructor(
 
     fun changeWatchStatus(episode: Episode) {
         episode.status = if (episode.status != Status.WATCHED) Status.WATCHED else Status.TO_WATCH
-        viewModelScope.launch { repository.saveEpisodes(listOf(episode)) }
+        viewModelScope.launch { repository.saveEpisode(episode) }
     }
 
 }

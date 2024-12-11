@@ -1,5 +1,6 @@
 package com.kaem.flux.model.flux
 
+import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
@@ -31,8 +32,8 @@ import com.kaem.flux.model.tmdb.TMDBMovie
     ]
 )
 class Movie(
-    artworkId: Long,
-    fileId: Long,
+    @PrimaryKey
+    override val artworkId: Long,
     releaseDateString: String,
     description: String,
     voteAverage: Float,
@@ -40,16 +41,17 @@ class Movie(
     duration: Int,
     currentTime: Long = 0L,
     status: Status,
-    val genres: List<String> = listOf()
+    @Embedded override val file: UserFile,
+    //val genres: List<String> = listOf()
 ) : ArtworkInfo(
     artworkId = artworkId,
-    fileId = fileId,
     releaseDateString = releaseDateString,
     description = description,
     voteAverage = voteAverage,
     voteCount = voteCount,
     duration = duration,
     currentTime = currentTime,
+    file = file,
     status = status
 ) {
 
@@ -67,8 +69,8 @@ class Movie(
         voteCount = tmdbMovie.voteCount,
         duration = tmdbMovie.duration,
         currentTime = 0L,
-        fileId = file.id,
-        genres = emptyList(),
+        file = file,
+        //genres = emptyList(),
         status = Status.TO_WATCH
     )
 

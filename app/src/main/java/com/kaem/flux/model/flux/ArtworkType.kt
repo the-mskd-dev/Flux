@@ -1,8 +1,7 @@
 package com.kaem.flux.model.flux
 
 import com.google.gson.annotations.Expose
-import com.kaem.flux.typeAdapters.ArtworkContentTypeAdapter
-
+/*
 /**
  * Represents the content type of an artwork, which can be a movie or a TV show.
  * Serialized/Deserialized by [ArtworkContentTypeAdapter]
@@ -35,4 +34,4 @@ sealed class ArtworkType {
 
     }
 
-}
+}*/

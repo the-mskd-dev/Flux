@@ -18,8 +18,7 @@ import java.util.Date
  * @property releaseDate Parsed release date as a [Date], derived from [releaseDateString].
  */
 abstract class ArtworkInfo(
-    val artworkId: Long,
-    val fileId: Long,
+    open val artworkId: Long,
     val releaseDateString: String,
     val description: String,
     val voteAverage: Float,
@@ -27,6 +26,7 @@ abstract class ArtworkInfo(
     val duration: Int,
     var currentTime: Long = 0L,
     var status: Status = Status.TO_WATCH,
+    open val file: UserFile,
 ) {
 
     val releaseDate: Date? get() = releaseDateString.parseTMDBDate()

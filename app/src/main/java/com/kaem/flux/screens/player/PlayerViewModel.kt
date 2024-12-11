@@ -7,8 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.kaem.flux.data.repository.LibraryRepository
 import com.kaem.flux.model.WatchTime
 import com.kaem.flux.model.flux.Artwork
-import com.kaem.flux.model.flux.ArtworkType
 import com.kaem.flux.model.flux.ArtworkInfo
+import com.kaem.flux.model.flux.ContentType
 import com.kaem.flux.model.flux.Episode
 import com.kaem.flux.model.flux.Status
 import com.kaem.flux.model.flux.Movie
@@ -36,27 +36,31 @@ class PlayerViewModel @Inject constructor(
     private val repository: LibraryRepository
 ) : ViewModel() {
 
-    private val artworkId: Int = checkNotNull(savedStateHandle["id"])
-    private val episodeId: Int = checkNotNull(savedStateHandle["episodeId"])
+    private val artworkId: Long = checkNotNull(savedStateHandle["id"])
+    private val episodeId: Long = checkNotNull(savedStateHandle["episodeId"])
 
     private val _uiState = MutableStateFlow(PlayerUiState())
     val uiState: StateFlow<PlayerUiState> = _uiState.asStateFlow()
 
     init {
 
-        val libraryContent = repository.libraryContent.value
+        viewModelScope.launch {
 
-        val artwork = libraryContent!!.artworks.first { it.id == artworkId }
+            val libraryContent = repository.libraryContent.value
 
-        val artworkInfo = when (artwork.type) {
-            is ArtworkType.MOVIE -> artwork.type.movie
-            is ArtworkType.SHOW -> artwork.type.episodes.find { it.id == episodeId }
+            val artwork = libraryContent!!.artworks.first { it.id == artworkId }
+
+            val artworkInfo = when (artwork.type) {
+                ContentType.MOVIE -> repository.getMovie(artworkId)
+                ContentType.SHOW -> repository.getEpisode(episodeId)
+            }
+
+            _uiState.value = PlayerUiState(
+                artwork = artwork,
+                artworkInfo = artworkInfo
+            )
+
         }
-
-        _uiState.value = PlayerUiState(
-            artwork = artwork,
-            artworkInfo = artworkInfo
-        )
 
     }
 
@@ -72,9 +76,9 @@ class PlayerViewModel @Inject constructor(
 
             when (state.artworkInfo) {
 
-                is Movie -> repository.saveArtwork(state.artwork)
+                is Movie -> repository.saveMovie(state.artworkInfo)
 
-                is Episode -> repository.saveEpisodes(listOf(state.artworkInfo))
+                is Episode -> repository.saveEpisode(state.artworkInfo)
 
                 else -> {}
 

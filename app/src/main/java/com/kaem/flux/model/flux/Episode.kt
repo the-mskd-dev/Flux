@@ -1,5 +1,6 @@
 package com.kaem.flux.model.flux
 
+import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
@@ -45,19 +46,19 @@ class Episode(
     val number: Int,
     val season: Int,
     val imagePath: String,
-    val crew: List<TMDBCrew>,
-    artworkId: Long,
-    fileId: Long,
+    //val crew: List<TMDBCrew>,
+    override val artworkId: Long,
     releaseDateString: String,
     description: String,
     duration: Int,
     currentTime: Long = 0L,
     voteAverage: Float,
     voteCount: Int,
+    @Embedded override val file: UserFile,
     status: Status = Status.TO_WATCH,
 ) : ArtworkInfo(
     artworkId = artworkId,
-    fileId = fileId,
+    file = file,
     releaseDateString = releaseDateString,
     description = description,
     voteAverage = voteAverage,
@@ -79,14 +80,14 @@ class Episode(
         season = tmdbEpisode.season,
         imagePath = tmdbEpisode.imagePath,
         releaseDateString = tmdbEpisode.releaseDateString,
-        crew = tmdbEpisode.crew,
+        //crew = tmdbEpisode.crew,
         description = tmdbEpisode.description,
         duration = tmdbEpisode.duration,
         currentTime = 0L,
         voteAverage = tmdbEpisode.voteAverage,
         voteCount = tmdbEpisode.voteCount,
         status = Status.TO_WATCH,
-        fileId = file.id
+        file = file
     )
 
     companion object {

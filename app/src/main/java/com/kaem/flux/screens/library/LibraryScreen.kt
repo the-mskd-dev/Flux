@@ -45,7 +45,8 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.kaem.flux.R
 import com.kaem.flux.model.flux.Artwork
-import com.kaem.flux.model.flux.ArtworkType
+
+import com.kaem.flux.model.flux.ContentType
 import com.kaem.flux.ui.component.FluxButton
 import com.kaem.flux.ui.component.Loader
 import com.kaem.flux.ui.component.Title
@@ -55,7 +56,7 @@ import com.kaem.flux.utils.Constants
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun LibraryScreen(
-    navigateToDetails: (Int) -> Unit,
+    navigateToDetails: (Long) -> Unit,
     viewModel: LibraryViewModel = hiltViewModel()
 ) {
 
@@ -101,8 +102,8 @@ fun LibraryScreen(
 @Composable
 fun LibraryContent(
     artworks: List<Artwork>,
-    lastWatchedIds: List<Int>,
-    navigateToDetails: (Int) -> Unit
+    lastWatchedIds: List<Long>,
+    navigateToDetails: (Long) -> Unit
 ) {
 
     if (artworks.isEmpty()) {
@@ -135,9 +136,8 @@ fun LibraryContent(
 @Composable
 fun LibraryGrid(
     artworks: List<Artwork>,
-    lastWatchedIds: List<Int>,
-    navigateToDetails: (Int) -> Unit,
-    viewModel: LibraryViewModel = viewModel()
+    lastWatchedIds: List<Long>,
+    navigateToDetails: (Long) -> Unit,
 ) {
 
     Column(
@@ -160,20 +160,14 @@ fun LibraryGrid(
         )
 
         ArtworkList(
-            name = stringResource(id = R.string.last_added),
-            artworks = viewModel.getArtworksByAddedDate(artworks = artworks),
-            navigateToDetails = navigateToDetails
-        )
-
-        ArtworkList(
             name = stringResource(id = R.string.shows),
-            artworks = artworks.filter { it.type is ArtworkType.SHOW },
+            artworks = artworks.filter { it.type == ContentType.SHOW },
             navigateToDetails = navigateToDetails
         )
 
         ArtworkList(
             name = stringResource(id = R.string.movies),
-            artworks = artworks.filter { it.type is ArtworkType.MOVIE },
+            artworks = artworks.filter { it.type == ContentType.MOVIE },
             navigateToDetails = navigateToDetails
         )
 
@@ -192,7 +186,7 @@ fun ArtworkList(
     name: String? = null,
     largeArtwork: Boolean = false,
     artworks: List<Artwork>,
-    navigateToDetails: (Int) -> Unit
+    navigateToDetails: (Long) -> Unit
 ) {
 
     if (artworks.isEmpty())

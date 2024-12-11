@@ -57,9 +57,10 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.kaem.flux.R
 import com.kaem.flux.model.WatchTime
-import com.kaem.flux.model.flux.ArtworkType
+
 import com.kaem.flux.model.flux.Episode
 import com.kaem.flux.model.flux.Status
+import com.kaem.flux.ui.component.Loader
 import com.kaem.flux.ui.component.Title
 import com.kaem.flux.ui.theme.FluxElevation
 import com.kaem.flux.ui.theme.FluxFontSize
@@ -71,7 +72,7 @@ import java.text.DateFormat
 @Composable
 fun ArtworkScreen(
     onBackButtonTap: () -> Unit,
-    launchPlayer: (Int, Int?) -> Unit,
+    launchPlayer: (Long, Long?) -> Unit,
     viewModel: ArtworkViewModel = hiltViewModel()
 ) {
 
@@ -96,23 +97,20 @@ fun ArtworkScreen(
                     onBackButtonTap = { onBackButtonTap() },
                     onLaunchButtonTap = {
 
-                        when (val content = uiState.artwork.type) {
-                            is ArtworkType.MOVIE -> {
-
+                        when (val screen = uiState.screen) {
+                            is ArtworkUiType.MOVIE -> {
                                 launchPlayer(
-                                    uiState.artwork.id,
+                                    screen.movie.artworkId,
                                     null
                                 )
                             }
-                            is ArtworkType.SHOW -> {
-
+                            is ArtworkUiType.SHOW -> {
                                 launchPlayer(
                                     uiState.artwork.id,
-                                    content.currentEpisode?.id
+                                    screen.currentEpisode?.id
                                 )
-
                             }
-
+                            else -> {}
                         }
 
                     }
@@ -124,32 +122,47 @@ fun ArtworkScreen(
 
         }
 
-        if (uiState.artwork.type is ArtworkType.SHOW) {
+        when (val screen = uiState.screen) {
+            is ArtworkUiType.MOVIE -> {}
+            ArtworkUiType.LOADING -> {
 
-            val episodes = (uiState.artwork.type as ArtworkType.SHOW).episodes
-
-            item {
-
-                ArtworkSeasonsTabs(
-                    selectedSeason = uiState.currentSeason,
-                    seasons = episodes.map { it.season }.distinct(),
-                    onSeasonTap = { viewModel.selectSeason(it) }
-                )
+                item {
+                    Loader()
+                }
 
             }
+            ArtworkUiType.ERROR -> {
+                item {
+                    Text("Error") //TODO : Error message
+                }
+            }
+            is ArtworkUiType.SHOW -> {
 
-            items(items = episodes.filter { it.season == uiState.currentSeason }.sortedBy { it.number }, key = { it.id }) { episode ->
+                val episodes = screen.episodes
 
-                EpisodeItem(
-                    episode = episode,
-                    onWatchTap = {},
-                    isExpanded = uiState.expandedEpisodeId == episode.id,
-                    expandDetails = { viewModel.expandEpisodeDetails(episode.id) },
-                    onWatchStatusChange = { viewModel.changeWatchStatus(episode) }
-                )
+                item {
+
+                    ArtworkSeasonsTabs(
+                        selectedSeason = uiState.currentSeason,
+                        seasons = episodes.map { it.season }.distinct(),
+                        onSeasonTap = { viewModel.selectSeason(it) }
+                    )
+
+                }
+
+                items(items = episodes.filter { it.season == uiState.currentSeason }.sortedBy { it.number }, key = { it.id }) { episode ->
+
+                    EpisodeItem(
+                        episode = episode,
+                        onWatchTap = {},
+                        isExpanded = uiState.expandedEpisodeId == episode.id,
+                        expandDetails = { viewModel.expandEpisodeDetails(episode.id) },
+                        onWatchStatusChange = { viewModel.changeWatchStatus(episode) }
+                    )
+
+                }
 
             }
-
         }
 
     }

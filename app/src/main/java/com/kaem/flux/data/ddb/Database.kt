@@ -1,30 +1,20 @@
 package com.kaem.flux.data.ddb
 
-import androidx.room.ColumnInfo
 import androidx.room.Dao
 import androidx.room.Database
-import androidx.room.Entity
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
-import androidx.room.PrimaryKey
 import androidx.room.Query
 import androidx.room.RoomDatabase
 import androidx.room.Transaction
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
-import com.google.gson.Gson
+import com.kaem.flux.model.FileSource
 import com.kaem.flux.model.UserFile
 import com.kaem.flux.model.flux.Artwork
-import com.kaem.flux.model.flux.ArtworkType
 import com.kaem.flux.model.flux.ContentType
 import com.kaem.flux.model.flux.Episode
 import com.kaem.flux.model.flux.Movie
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 @Dao
 interface FluxDao {
@@ -40,9 +30,6 @@ interface FluxDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertEpisodes(episodes: List<Episode>)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertFiles(files: List<UserFile>)
-
 //endregion
 
 //region Get
@@ -50,14 +37,20 @@ interface FluxDao {
     @Query("SELECT * FROM artworks")
     suspend fun getArtworks() : List<Artwork>
 
+    @Query("SELECT * FROM movies")
+    suspend fun getMovies() : List<Movie>
+
     @Query("SELECT * FROM movies WHERE artworkId = :artworkId")
     suspend fun getMovie(artworkId: Long) : Movie
+
+    @Query("SELECT * FROM episodes")
+    suspend fun getEpisodes() : List<Episode>
 
     @Query("SELECT * FROM episodes WHERE artworkId = :artworkId")
     suspend fun getEpisodes(artworkId: Long) : List<Episode>
 
-    @Query("SELECT * FROM files WHERE id=:fileId")
-    suspend fun getFile(fileId: Long) : UserFile
+    @Query("SELECT * FROM episodes WHERE id = :episodeId")
+    suspend fun getEpisode(episodeId: Long) : Episode
 
 //endregion
 
@@ -71,9 +64,6 @@ interface FluxDao {
 
     @Query("DELETE FROM episodes WHERE artworkId IN (:ids)")
     suspend fun deleteEpisodes(ids: List<Long>)
-
-    @Query("DELETE FROM files WHERE id IN (:ids)")
-    suspend fun deleteFiles(ids: List<Long>)
 
     @Query("DELETE FROM episodes WHERE id = :episodeId")
     suspend fun deleteEpisode(episodeId: Long)
@@ -104,6 +94,7 @@ interface FluxDao {
 }
 
 class Converters {
+
     @TypeConverter
     fun fromContentType(contentType: ContentType): String {
         return contentType.name
@@ -113,13 +104,22 @@ class Converters {
     fun toContentType(value: String): ContentType {
         return ContentType.valueOf(value)
     }
+
+    @TypeConverter
+    fun fromFileSource(fileSource: FileSource): String {
+        return fileSource.name
+    }
+
+    @TypeConverter
+    fun toFileSource(value: String): FileSource {
+        return FileSource.valueOf(value)
+    }
 }
 
 @Database(entities = [
     Artwork::class,
     Movie::class,
-    Episode::class,
-    UserFile::class
+    Episode::class
  ], version = 1)
 @TypeConverters(Converters::class)
 abstract class FluxDatabase : RoomDatabase() {
@@ -144,10 +144,6 @@ class DatabaseManager(
         fluxDao.insertEpisodes(episodes)
     }
 
-    suspend fun saveFiles(files: List<UserFile>) {
-        fluxDao.insertFiles(files)
-    }
-
 //endregion
 
 //region Get
@@ -156,16 +152,24 @@ class DatabaseManager(
         return fluxDao.getArtworks()
     }
 
-    suspend fun getMovieFrom(artworkId: Long) : Movie {
+    suspend fun getMovies() : List<Movie> {
+        return fluxDao.getMovies()
+    }
+
+    suspend fun getMovie(artworkId: Long) : Movie {
         return fluxDao.getMovie(artworkId)
     }
 
-    suspend fun getEpisodesFrom(artworkId: Long) : List<Episode> {
-        return fluxDao.getEpisodes(artworkId)
+    suspend fun getEpisode(episodeId: Long) : Episode {
+        return fluxDao.getEpisode(episodeId)
     }
 
-    suspend fun getFileFrom(fileId: Long) : UserFile {
-        return fluxDao.getFile(fileId)
+    suspend fun getEpisodes() : List<Episode> {
+        return fluxDao.getEpisodes()
+    }
+
+    suspend fun getEpisodes(artworkId: Long) : List<Episode> {
+        return fluxDao.getEpisodes(artworkId)
     }
 
 //endregion
@@ -180,13 +184,8 @@ class DatabaseManager(
         fluxDao.deleteMovies(ids)
     }
 
-
     suspend fun deleteEpisodes(ids: List<Long>) {
         fluxDao.deleteEpisodes(ids)
-    }
-
-    suspend fun deleteFiles(ids: List<Long>) {
-        fluxDao.deleteFiles(ids)
     }
 
 //endregion

@@ -23,7 +23,8 @@ data class ArtworkUiState(
     val artwork: Artwork = Artwork(),
     val screen: Screen = Screen.LOADING,
     val expandedEpisodeId: Long? = null,
-    val currentSeason: Int = -1
+    val currentSeason: Int = -1,
+    val selectedArtwork: ArtworkInfo? = null
 ) {
 
     val artworkDetails: ArtworkInfo? = when (screen) {
@@ -86,6 +87,12 @@ class ArtworkViewModel @Inject constructor(
 
         }
 
+    }
+
+    fun selectArtwork(artworkInfo: ArtworkInfo?) {
+        _uiState.update { currentState ->
+            currentState.copy(selectedArtwork = artworkInfo)
+        }
     }
 
     fun selectSeason(season: Int) {

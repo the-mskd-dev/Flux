@@ -28,7 +28,6 @@ import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Done
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material3.Button
-import androidx.compose.material3.Divider
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -57,7 +56,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.kaem.flux.R
-import com.kaem.flux.model.flux.ArtworkInfo
 
 import com.kaem.flux.model.flux.Episode
 import com.kaem.flux.model.flux.Status
@@ -167,7 +165,7 @@ fun ArtworkScreen(
         PlayerScreen(
             artworkInfo = uiState.selectedArtwork,
             onBackButtonTap = { viewModel.selectArtwork(null) },
-            onTimeSave = { viewModel.saveCurrentTime(it) }
+            onTimeSave = { viewModel.saveTime(uiState.selectedArtwork, it) }
         )
     }
 

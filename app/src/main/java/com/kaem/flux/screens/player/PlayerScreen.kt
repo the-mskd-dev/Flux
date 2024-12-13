@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.pm.ActivityInfo
 import android.net.Uri
 import android.view.View
+import androidx.activity.compose.BackHandler
 import androidx.annotation.OptIn
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -122,6 +124,11 @@ fun VideoPlayer(
         }
     )
 
+    BackHandler(enabled = true) {
+        onTimeSave(exoPlayer.currentPosition)
+        onBackButtonTap()
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -150,7 +157,10 @@ fun VideoPlayer(
                     .padding(start = FluxSpace.MEDIUM)
                     .size(50.dp)
                     .clip(shape = CircleShape)
-                    .clickable { onBackButtonTap() }
+                    .clickable {
+                        onTimeSave(exoPlayer.currentPosition)
+                        onBackButtonTap()
+                    }
                     .border(
                         width = 1.dp,
                         color = MaterialTheme.colorScheme.onBackground,
@@ -162,7 +172,7 @@ fun VideoPlayer(
             ) {
 
                 Icon(
-                    imageVector = Icons.Rounded.ArrowBack,
+                    imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
                     tint = MaterialTheme.colorScheme.onBackground,
                     contentDescription = "back button"
                 )

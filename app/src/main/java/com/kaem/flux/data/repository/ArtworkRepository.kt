@@ -7,9 +7,11 @@ import com.kaem.flux.model.flux.Artwork
 import com.kaem.flux.model.flux.ContentType
 import com.kaem.flux.model.flux.Episode
 import com.kaem.flux.model.flux.Movie
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ArtworkRepository @Inject constructor(
@@ -28,12 +30,14 @@ class ArtworkRepository @Inject constructor(
         var movie: Movie? = null
         var episodes: List<Episode>? = null
 
-        when (artwork.type) {
-            ContentType.MOVIE -> {
-                movie = db.getMovie(artworkId)
-            }
-            ContentType.SHOW -> {
-                episodes = db.getEpisodes(artworkId)
+        withContext(Dispatchers.IO) {
+            when (artwork.type) {
+                ContentType.MOVIE -> {
+                    movie = db.getMovie(artworkId)
+                }
+                ContentType.SHOW -> {
+                    episodes = db.getEpisodes(artworkId)
+                }
             }
         }
 

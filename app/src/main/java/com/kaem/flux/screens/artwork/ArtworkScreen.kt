@@ -57,7 +57,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.kaem.flux.R
-import com.kaem.flux.model.WatchTime
 
 import com.kaem.flux.model.flux.Episode
 import com.kaem.flux.model.flux.Status
@@ -68,6 +67,7 @@ import com.kaem.flux.ui.theme.FluxFontSize
 import com.kaem.flux.ui.theme.FluxSpace
 import com.kaem.flux.ui.theme.FluxWeight
 import com.kaem.flux.utils.Constants
+import com.kaem.flux.utils.timeDescription
 import java.text.DateFormat
 
 @Composable
@@ -244,7 +244,7 @@ fun ArtworkHeader(
                 )
 
 
-                val text = if (uiState.artworkDetails?.status == Status.IS_WATCHING) stringResource(id = R.string.resume, WatchTime(uiState.artworkDetails.currentTime).toString()) else stringResource(R.string.start)
+                val text = if (uiState.artworkDetails?.status == Status.IS_WATCHING) stringResource(id = R.string.resume, uiState.artworkDetails.currentTime.timeDescription) else stringResource(R.string.start)
                 Text(
                     text = text.uppercase(),
                     fontWeight = FluxWeight.MEDIUM
@@ -508,11 +508,12 @@ fun EpisodeItemContent(
                 text = stringResource(id = if (episode.status == Status.WATCHED) R.string.mark_as_not_watched else R.string.mark_as_watched).uppercase()
             )
 
+            val watchTime = if (episode.status == Status.IS_WATCHING) stringResource(id = R.string.resume, episode.currentTime.timeDescription) else stringResource(R.string.start)
             Text(
                 modifier = Modifier.clickable { onWatchTap() },
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FluxWeight.MEDIUM,
-                text = stringResource(id = if (episode.status == Status.IS_WATCHING) R.string.resume else R.string.start).uppercase()
+                text = watchTime.uppercase()
             )
 
         }

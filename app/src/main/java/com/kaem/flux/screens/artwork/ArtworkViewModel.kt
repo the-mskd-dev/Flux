@@ -5,12 +5,12 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kaem.flux.data.repository.ArtworkRepository
-import com.kaem.flux.model.WatchTime
 import com.kaem.flux.model.flux.Artwork
 import com.kaem.flux.model.flux.ArtworkInfo
 import com.kaem.flux.model.flux.Episode
 import com.kaem.flux.model.flux.Movie
 import com.kaem.flux.model.flux.Status
+import com.kaem.flux.utils.inMinutes
 import com.kaem.flux.utils.timeDescription
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -135,8 +135,7 @@ class ArtworkViewModel @Inject constructor(
 
             state.selectedArtwork?.let { artworkInfo ->
                 artworkInfo.currentTime = time
-                val watchTime = WatchTime.fromTime(time)
-                artworkInfo.status = if (watchTime.timeInMin >= artworkInfo.duration) Status.WATCHED else Status.IS_WATCHING
+                artworkInfo.status = if (time.inMinutes >= artworkInfo.duration) Status.WATCHED else Status.IS_WATCHING
             }
 
             when (state.selectedArtwork) {

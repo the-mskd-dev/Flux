@@ -100,16 +100,10 @@ fun ArtworkScreen(
 
                         when (val screen = uiState.screen) {
                             is ArtworkUiState.Screen.MOVIE -> {
-                                launchPlayer(
-                                    screen.movie.artworkId,
-                                    null
-                                )
+                                viewModel.selectArtwork(screen.movie)
                             }
                             is ArtworkUiState.Screen.SHOW -> {
-                                launchPlayer(
-                                    uiState.artwork.id,
-                                    screen.currentEpisode?.id
-                                )
+                                viewModel.selectArtwork(screen.currentEpisode)
                             }
                             else -> {}
                         }
@@ -155,7 +149,7 @@ fun ArtworkScreen(
 
                     EpisodeItem(
                         episode = episode,
-                        onWatchTap = {},
+                        onWatchTap = { viewModel.selectArtwork(episode) },
                         isExpanded = uiState.expandedEpisodeId == episode.id,
                         expandDetails = { viewModel.expandEpisodeDetails(episode.id) },
                         onWatchStatusChange = { viewModel.changeWatchStatus(episode) }

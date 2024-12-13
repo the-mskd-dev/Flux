@@ -5,11 +5,13 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kaem.flux.data.repository.ArtworkRepository
+import com.kaem.flux.model.WatchTime
 import com.kaem.flux.model.flux.Artwork
 import com.kaem.flux.model.flux.ArtworkInfo
 import com.kaem.flux.model.flux.Episode
 import com.kaem.flux.model.flux.Movie
 import com.kaem.flux.model.flux.Status
+import com.kaem.flux.utils.timeDescription
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -125,6 +127,32 @@ class ArtworkViewModel @Inject constructor(
         viewModelScope.launch { repository.saveEpisode(episode) }
 
         Log.i("ArtworkViewModel", "${episode.title} season ${episode.season} episode ${episode.number} is now ${episode.status}")
+    }
+
+    fun saveCurrentTime(time: Long) = viewModelScope.launch {
+
+        uiState.value.let { state ->
+
+            state.selectedArtwork?.let { artworkInfo ->
+                artworkInfo.currentTime = time
+                val watchTime = WatchTime.fromTime(time)
+                artworkInfo.status = if (watchTime.timeInMin >= artworkInfo.duration) Status.WATCHED else Status.IS_WATCHING
+            }
+
+            when (state.selectedArtwork) {
+
+                is Movie -> repository.saveMovie(state.selectedArtwork)
+
+                is Episode -> repository.saveEpisode(state.selectedArtwork)
+
+                else -> {}
+
+            }
+
+            Log.i("ArtworkViewModel", "${state.artwork.title} saved at ${time.timeDescription}")
+
+        }
+
     }
 
 }

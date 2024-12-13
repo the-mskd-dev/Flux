@@ -24,15 +24,13 @@ class LibraryViewModel @Inject constructor(
     private val dataStoreRepository: DataStoreRepository
 ): ViewModel() {
 
-    private var lastSyncTime: Long = 0
+    private var lastSyncTime: Long = dataStoreRepository.getSyncTime()
     private val dataStorePreferencesFlow = dataStoreRepository.preferencesFlow
 
     private val libraryUiStateFlow = combine(
         repository.libraryContent,
         dataStorePreferencesFlow
     ) { libraryContent, preferences ->
-
-        lastSyncTime = preferences.lastSyncTime
 
         return@combine libraryContent?.let {
             LibraryUiState(
@@ -47,12 +45,15 @@ class LibraryViewModel @Inject constructor(
 
     fun getLibrary() = viewModelScope.launch {
 
-        val sync = System.currentTimeMillis() - lastSyncTime > 7.days.inWholeMilliseconds
+        val currentTime = System.currentTimeMillis()
+        val sync = currentTime - lastSyncTime > 7.days.inWholeMilliseconds
 
         repository.getLibrary(sync)
 
-        if (sync)
-            dataStoreRepository.saveSyncTime(System.currentTimeMillis())
+        if (sync) {
+            dataStoreRepository.saveSyncTime(currentTime)
+            lastSyncTime = currentTime
+        }
     }
 
 }

@@ -6,14 +6,16 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.runBlocking
 import okhttp3.internal.toLongOrDefault
 import javax.inject.Inject
 
 
 data class LibraryPreferences(
     val lastWatchedIds: List<Long> = listOf(),
-    val lastSyncTime: Long = Long.MIN_VALUE
+    //val lastSyncTime: Long = Long.MIN_VALUE
 )
 
 
@@ -33,10 +35,7 @@ class DataStoreRepository @Inject constructor(
         val lastWatchedIds = gson.fromJson<List<Double>>(lastWatchedIdsString, List::class.java)
         val lastSyncTime = (preferences[PreferencesKeys.LAST_SYNC_TIME] ?: "0").toLongOrDefault(0)
 
-        LibraryPreferences(
-            lastWatchedIds = lastWatchedIds.map { it.toLong() },
-            lastSyncTime = lastSyncTime
-        )
+        LibraryPreferences(lastWatchedIds = lastWatchedIds.map { it.toLong() },)
     }
 
     suspend fun addWatchedArtwork(id: Long) {
@@ -53,6 +52,12 @@ class DataStoreRepository @Inject constructor(
             }
 
         }
+    }
+
+    fun getSyncTime() : Long = runBlocking {
+        dataStore.data.map {
+            (it[PreferencesKeys.LAST_SYNC_TIME] ?: "0").toLongOrDefault(0)
+        }.first()
     }
 
     suspend fun saveSyncTime(syncTime: Long) {

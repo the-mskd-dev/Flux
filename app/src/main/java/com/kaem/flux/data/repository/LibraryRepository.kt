@@ -99,18 +99,6 @@ class LibraryRepository @Inject constructor(
 
     }
 
-    suspend fun getMovie(artworkId: Long) : Movie {
-        return databaseManager.getMovie(artworkId)
-    }
-
-    suspend fun getEpisode(episodeId: Long) : Episode {
-        return databaseManager.getEpisode(episodeId)
-    }
-
-    suspend fun getEpisodes(artworkId: Long) : List<Episode> {
-        return databaseManager.getEpisodes(artworkId)
-    }
-
     suspend fun saveMovie(movie: Movie) {
         return databaseManager.saveMovies(listOf(movie))
     }

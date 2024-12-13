@@ -30,6 +30,7 @@ import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ScrollableTabRow
@@ -98,13 +99,13 @@ fun ArtworkScreen(
                     onLaunchButtonTap = {
 
                         when (val screen = uiState.screen) {
-                            is ArtworkUiType.MOVIE -> {
+                            is ArtworkUiState.Screen.MOVIE -> {
                                 launchPlayer(
                                     screen.movie.artworkId,
                                     null
                                 )
                             }
-                            is ArtworkUiType.SHOW -> {
+                            is ArtworkUiState.Screen.SHOW -> {
                                 launchPlayer(
                                     uiState.artwork.id,
                                     screen.currentEpisode?.id
@@ -123,20 +124,20 @@ fun ArtworkScreen(
         }
 
         when (val screen = uiState.screen) {
-            is ArtworkUiType.MOVIE -> {}
-            ArtworkUiType.LOADING -> {
+            is ArtworkUiState.Screen.MOVIE -> {}
+            ArtworkUiState.Screen.LOADING -> {
 
                 item {
                     Loader()
                 }
 
             }
-            ArtworkUiType.ERROR -> {
+            ArtworkUiState.Screen.ERROR -> {
                 item {
                     Text("Error") //TODO : Error message
                 }
             }
-            is ArtworkUiType.SHOW -> {
+            is ArtworkUiState.Screen.SHOW -> {
 
                 val episodes = screen.episodes
 
@@ -418,7 +419,7 @@ fun EpisodeItem(
         verticalArrangement = Arrangement.spacedBy(FluxSpace.MEDIUM)
     ) {
 
-        Divider(
+        HorizontalDivider(
             modifier = Modifier
                 .fillMaxWidth()
                 .alpha(.2f),

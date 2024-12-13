@@ -50,15 +50,15 @@ class PlayerViewModel @Inject constructor(
 
             val artwork = libraryContent!!.artworks.first { it.id == artworkId }
 
-            val artworkInfo = when (artwork.type) {
+            /*val artworkInfo = when (artwork.type) {
                 ContentType.MOVIE -> repository.getMovie(artworkId)
                 ContentType.SHOW -> repository.getEpisode(episodeId)
-            }
+            }*/
 
-            _uiState.value = PlayerUiState(
+            /*_uiState.value = PlayerUiState(
                 artwork = artwork,
                 artworkInfo = artworkInfo
-            )
+            )*/
 
         }
 

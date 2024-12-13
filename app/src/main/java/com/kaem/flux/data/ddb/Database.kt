@@ -34,6 +34,9 @@ interface FluxDao {
 
 //region Get
 
+    @Query("SELECT * FROM artworks WHERE id = :artworkId")
+    suspend fun getArtwork(artworkId: Long) : Artwork
+
     @Query("SELECT * FROM artworks")
     suspend fun getArtworks() : List<Artwork>
 
@@ -147,6 +150,10 @@ class DatabaseManager(
 //endregion
 
 //region Get
+
+    suspend fun getArtwork(artworkId: Long) : Artwork {
+        return fluxDao.getArtwork(artworkId)
+    }
 
     suspend fun getArtworks() : List<Artwork> {
         return fluxDao.getArtworks()

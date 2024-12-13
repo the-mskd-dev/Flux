@@ -1,12 +1,12 @@
 package com.kaem.flux.screens.artwork
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kaem.flux.data.repository.LibraryRepository
+import com.kaem.flux.data.repository.ArtworkRepository
 import com.kaem.flux.model.flux.Artwork
 import com.kaem.flux.model.flux.ArtworkInfo
-import com.kaem.flux.model.flux.ContentType
 import com.kaem.flux.model.flux.Episode
 import com.kaem.flux.model.flux.Movie
 import com.kaem.flux.model.flux.Status
@@ -21,34 +21,34 @@ import javax.inject.Inject
 
 data class ArtworkUiState(
     val artwork: Artwork = Artwork(),
-    val screen: ArtworkUiType = ArtworkUiType.LOADING,
+    val screen: Screen = Screen.LOADING,
     val expandedEpisodeId: Long? = null,
     val currentSeason: Int = -1
 ) {
 
     val artworkDetails: ArtworkInfo? = when (screen) {
-        is ArtworkUiType.MOVIE -> screen.movie
-        is ArtworkUiType.SHOW -> screen.currentEpisode
+        is Screen.MOVIE -> screen.movie
+        is Screen.SHOW -> screen.currentEpisode
         else -> null
     }
 
-}
-
-sealed class ArtworkUiType {
-    data object LOADING : ArtworkUiType()
-    data object ERROR : ArtworkUiType()
-    data class MOVIE(val movie: Movie) : ArtworkUiType()
-    data class SHOW(val episodes: List<Episode> = emptyList()) : ArtworkUiType() {
-        val currentEpisode get() = episodes.lastOrNull { it.status == Status.IS_WATCHING }
-            ?: episodes.firstOrNull { it.status == Status.TO_WATCH }
-            ?: episodes.firstOrNull()
+    sealed class Screen {
+        data object LOADING : Screen()
+        data object ERROR : Screen()
+        data class MOVIE(val movie: Movie) : Screen()
+        data class SHOW(val episodes: List<Episode> = emptyList()) : Screen() {
+            val currentEpisode get() = episodes.lastOrNull { it.status == Status.IS_WATCHING }
+                ?: episodes.firstOrNull { it.status == Status.TO_WATCH }
+                ?: episodes.firstOrNull()
+        }
     }
+
 }
 
 @HiltViewModel
 class ArtworkViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val repository: LibraryRepository
+    private val repository: ArtworkRepository
 ) : ViewModel() {
 
     private val artworkId: Long = checkNotNull(savedStateHandle["artworkId"])
@@ -60,38 +60,31 @@ class ArtworkViewModel @Inject constructor(
 
     private fun getArtworks(id: Long) = viewModelScope.launch {
 
-        val libraryContent = repository.libraryContent.value
+        val (artwork, movie, episodes) = repository.getArtwork(id)
 
-        val artwork = libraryContent?.artworks?.find { it.id == id }
-
-        when (artwork?.type) {
-            ContentType.MOVIE -> {
-                val movie = repository.getMovie(artworkId)
+        when {
+            movie != null -> {
                 _uiState.value = ArtworkUiState(
                     artwork = artwork,
-                    screen = ArtworkUiType.MOVIE(movie)
+                    screen = ArtworkUiState.Screen.MOVIE(movie)
                 )
-
             }
-            ContentType.SHOW -> {
-                val episodes = repository.getEpisodes(artworkId)
-                ArtworkUiType.SHOW(episodes).also {
-                    _uiState.value = ArtworkUiState(
-                        artwork = artwork,
-                        screen = it,
-                        currentSeason = it.currentEpisode?.season ?: -1
-                    )
-                }
+            !episodes.isNullOrEmpty() -> {
+                val screen = ArtworkUiState.Screen.SHOW(episodes)
+                _uiState.value = ArtworkUiState(
+                    artwork = artwork,
+                    screen = screen,
+                    currentSeason = screen.currentEpisode?.season ?: -1
+                )
             }
             else -> {
-                _uiState.value = ArtworkUiState(
-                    artwork = artwork ?: Artwork(),
-                    screen = ArtworkUiType.ERROR,
+                ArtworkUiState(
+                    artwork = artwork,
+                    screen = ArtworkUiState.Screen.ERROR,
                 )
             }
+
         }
-
-
 
     }
 
@@ -108,8 +101,23 @@ class ArtworkViewModel @Inject constructor(
     }
 
     fun changeWatchStatus(episode: Episode) {
+
+        // Change status
         episode.status = if (episode.status != Status.WATCHED) Status.WATCHED else Status.TO_WATCH
+
+        // Update list
+        val episodes = (_uiState.value.screen as? ArtworkUiState.Screen.SHOW)?.episodes.orEmpty().toMutableList()
+        episodes.replaceAll { if (it.id == episode.id) episode else it }
+        _uiState.update { currentState ->
+            currentState.copy(
+                screen = ArtworkUiState.Screen.SHOW(episodes)
+            )
+        }
+
+        // Save status in DB
         viewModelScope.launch { repository.saveEpisode(episode) }
+
+        Log.i("ArtworkViewModel", "${episode.title} season ${episode.season} episode ${episode.number} is now ${episode.status}")
     }
 
 }

@@ -4,7 +4,7 @@ import com.kaem.flux.data.ddb.DatabaseManager
 import com.kaem.flux.data.source.artwork.ArtworkDataSource
 import com.kaem.flux.data.source.file.FilesDataSource
 import com.kaem.flux.model.UserFile
-import com.kaem.flux.model.flux.Artwork
+import com.kaem.flux.model.flux.ArtworkOverview
 import com.kaem.flux.model.flux.Episode
 import com.kaem.flux.model.flux.Movie
 import kotlinx.coroutines.coroutineScope
@@ -16,7 +16,7 @@ import javax.inject.Inject
 
 data class LibraryContent(
     val isLoading: Boolean = true,
-    val artworks: List<Artwork> = emptyList()
+    val artworkOverviews: List<ArtworkOverview> = emptyList()
 )
 
 class LibraryRepository @Inject constructor(
@@ -34,18 +34,18 @@ class LibraryRepository @Inject constructor(
         val artworks = if (sync) {
             syncLibrary()
         } else {
-            localSource.getArtworks(sync = false).artworks
+            localSource.getArtworks(sync = false).artworkOverviews
         }
 
         // Update content
         _libraryContent.value = LibraryContent(
             isLoading = false,
-            artworks = artworks.sortedBy { it.title }
+            artworkOverviews = artworks.sortedBy { it.title }
         )
 
     }
 
-    private suspend fun syncLibrary() : List<Artwork> {
+    private suspend fun syncLibrary() : List<ArtworkOverview> {
 
         // Get all artworks
         val (artworks, movies, episodes) = localSource.getArtworks(sync = true)

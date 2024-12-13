@@ -1,22 +1,19 @@
 package com.kaem.flux.screens.library
 
-import android.icu.util.TimeUnit
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.kaem.flux.data.repository.DataStoreRepository
 import com.kaem.flux.data.repository.LibraryRepository
-import com.kaem.flux.model.flux.Artwork
-import com.kaem.flux.model.flux.ContentType
+import com.kaem.flux.model.flux.ArtworkOverview
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
-import java.sql.Time
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.days
 
 data class LibraryUiState(
-    val artworks: List<Artwork> = emptyList(),
+    val artworkOverviews: List<ArtworkOverview> = emptyList(),
     val lastWatchedArtworkIds: List<Long> = emptyList(),
     val isLoading: Boolean = true
 )
@@ -39,7 +36,7 @@ class LibraryViewModel @Inject constructor(
 
         return@combine libraryContent?.let {
             LibraryUiState(
-                artworks = libraryContent.artworks,
+                artworkOverviews = libraryContent.artworkOverviews,
                 lastWatchedArtworkIds = preferences.lastWatchedIds,
                 isLoading = libraryContent.isLoading
             )

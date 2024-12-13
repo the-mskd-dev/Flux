@@ -1,12 +1,6 @@
 package com.kaem.flux.model
 
 import android.os.Parcelable
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.PrimaryKey
-import com.kaem.flux.model.flux.Artwork
-import com.kaem.flux.model.flux.Episode
-import com.kaem.flux.model.flux.Movie
 import kotlinx.parcelize.Parcelize
 import java.util.Date
 

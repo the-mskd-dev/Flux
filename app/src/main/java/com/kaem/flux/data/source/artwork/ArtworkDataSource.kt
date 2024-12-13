@@ -1,14 +1,14 @@
 package com.kaem.flux.data.source.artwork
 
 import com.kaem.flux.model.UserFile
-import com.kaem.flux.model.flux.Artwork
+import com.kaem.flux.model.flux.ArtworkOverview
 import com.kaem.flux.model.flux.Episode
 import com.kaem.flux.model.flux.Movie
 
 interface ArtworkDataSource {
 
     data class Library(
-        val artworks: List<Artwork> = emptyList(),
+        val artworkOverviews: List<ArtworkOverview> = emptyList(),
         val movies: List<Movie> = emptyList(),
         val episodes: List<Episode> = emptyList()
     )

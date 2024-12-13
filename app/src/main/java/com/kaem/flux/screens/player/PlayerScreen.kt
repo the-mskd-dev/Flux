@@ -18,12 +18,10 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,21 +33,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.Tracks
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
-import com.kaem.flux.model.flux.ArtworkInfo
+import com.kaem.flux.model.flux.Artwork
 import com.kaem.flux.model.flux.Metadata
 import com.kaem.flux.ui.component.LifecycleComponent
 import com.kaem.flux.ui.theme.FluxSpace
 
 @Composable
 fun PlayerScreen(
-    artworkInfo: ArtworkInfo?,
+    artwork: Artwork?,
     onBackButtonTap: () -> Unit,
     onTimeSave: (Long) -> Unit
 ) {
@@ -65,10 +62,10 @@ fun PlayerScreen(
         }
     }
 
-    if (artworkInfo != null) {
+    if (artwork != null) {
         VideoPlayer(
-            path = artworkInfo.file.path,
-            currentTime = artworkInfo.currentTime,
+            path = artwork.file.path,
+            currentTime = artwork.currentTime,
             onBackButtonTap = onBackButtonTap,
             onTimeSave = onTimeSave
         )

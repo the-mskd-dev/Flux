@@ -10,8 +10,7 @@ import androidx.room.Transaction
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 import com.kaem.flux.model.FileSource
-import com.kaem.flux.model.UserFile
-import com.kaem.flux.model.flux.Artwork
+import com.kaem.flux.model.flux.ArtworkOverview
 import com.kaem.flux.model.flux.ContentType
 import com.kaem.flux.model.flux.Episode
 import com.kaem.flux.model.flux.Movie
@@ -22,7 +21,7 @@ interface FluxDao {
 //region Insert
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertArtworks(artworks: List<Artwork>)
+    suspend fun insertArtworks(artworkOverviews: List<ArtworkOverview>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMovies(movies: List<Movie>)
@@ -35,10 +34,10 @@ interface FluxDao {
 //region Get
 
     @Query("SELECT * FROM artworks WHERE id = :artworkId")
-    suspend fun getArtwork(artworkId: Long) : Artwork
+    suspend fun getArtwork(artworkId: Long) : ArtworkOverview
 
     @Query("SELECT * FROM artworks")
-    suspend fun getArtworks() : List<Artwork>
+    suspend fun getArtworks() : List<ArtworkOverview>
 
     @Query("SELECT * FROM movies")
     suspend fun getMovies() : List<Movie>
@@ -120,7 +119,7 @@ class Converters {
 }
 
 @Database(entities = [
-    Artwork::class,
+    ArtworkOverview::class,
     Movie::class,
     Episode::class
  ], version = 1)
@@ -135,8 +134,8 @@ class DatabaseManager(
 ) {
 
 //region Save
-    suspend fun saveArtworks(artworks: List<Artwork>) {
-        fluxDao.insertArtworks(artworks)
+    suspend fun saveArtworks(artworkOverviews: List<ArtworkOverview>) {
+        fluxDao.insertArtworks(artworkOverviews)
     }
 
     suspend fun saveMovies(movies: List<Movie>) {
@@ -151,11 +150,11 @@ class DatabaseManager(
 
 //region Get
 
-    suspend fun getArtwork(artworkId: Long) : Artwork {
+    suspend fun getArtwork(artworkId: Long) : ArtworkOverview {
         return fluxDao.getArtwork(artworkId)
     }
 
-    suspend fun getArtworks() : List<Artwork> {
+    suspend fun getArtworks() : List<ArtworkOverview> {
         return fluxDao.getArtworks()
     }
 

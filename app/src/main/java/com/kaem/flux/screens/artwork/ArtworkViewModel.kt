@@ -5,8 +5,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kaem.flux.data.repository.ArtworkRepository
+import com.kaem.flux.model.flux.ArtworkOverview
 import com.kaem.flux.model.flux.Artwork
-import com.kaem.flux.model.flux.ArtworkInfo
 import com.kaem.flux.model.flux.Episode
 import com.kaem.flux.model.flux.Movie
 import com.kaem.flux.model.flux.Status
@@ -22,14 +22,14 @@ import javax.inject.Inject
 
 
 data class ArtworkUiState(
-    val artwork: Artwork = Artwork(),
+    val artworkOverview: ArtworkOverview = ArtworkOverview(),
     val screen: Screen = Screen.LOADING,
     val expandedEpisodeId: Long? = null,
     val currentSeason: Int = -1,
-    val selectedArtwork: ArtworkInfo? = null
+    val selectedArtwork: Artwork? = null
 ) {
 
-    val artworkDetails: ArtworkInfo? = when (screen) {
+    val artworkDetails: Artwork? = when (screen) {
         is Screen.MOVIE -> screen.movie
         is Screen.SHOW -> screen.currentEpisode
         else -> null
@@ -68,21 +68,21 @@ class ArtworkViewModel @Inject constructor(
         when {
             movie != null -> {
                 _uiState.value = ArtworkUiState(
-                    artwork = artwork,
+                    artworkOverview = artwork,
                     screen = ArtworkUiState.Screen.MOVIE(movie)
                 )
             }
             !episodes.isNullOrEmpty() -> {
                 val screen = ArtworkUiState.Screen.SHOW(episodes)
                 _uiState.value = ArtworkUiState(
-                    artwork = artwork,
+                    artworkOverview = artwork,
                     screen = screen,
                     currentSeason = screen.currentEpisode?.season ?: -1
                 )
             }
             else -> {
                 ArtworkUiState(
-                    artwork = artwork,
+                    artworkOverview = artwork,
                     screen = ArtworkUiState.Screen.ERROR,
                 )
             }
@@ -91,9 +91,9 @@ class ArtworkViewModel @Inject constructor(
 
     }
 
-    fun selectArtwork(artworkInfo: ArtworkInfo?) {
+    fun selectArtwork(artwork: Artwork?) {
         _uiState.update { currentState ->
-            currentState.copy(selectedArtwork = artworkInfo)
+            currentState.copy(selectedArtwork = artwork)
         }
     }
 
@@ -129,14 +129,14 @@ class ArtworkViewModel @Inject constructor(
         Log.i("ArtworkViewModel", "${episode.title} season ${episode.season} episode ${episode.number} is now ${episode.status}")
     }
 
-    fun saveTime(artworkInfo: ArtworkInfo?, time: Long) = viewModelScope.launch {
+    fun saveTime(artwork: Artwork?, time: Long) = viewModelScope.launch {
 
-        artworkInfo ?: return@launch
+        artwork ?: return@launch
 
         uiState.value.let { state ->
 
-            artworkInfo.currentTime = time
-            artworkInfo.status = if (time.inMinutes >= artworkInfo.duration) Status.WATCHED else Status.IS_WATCHING
+            artwork.currentTime = time
+            artwork.status = if (time.inMinutes >= artwork.duration) Status.WATCHED else Status.IS_WATCHING
 
             when (state.selectedArtwork) {
                 is Movie -> repository.saveMovie(state.selectedArtwork)
@@ -144,7 +144,7 @@ class ArtworkViewModel @Inject constructor(
                 else -> {}
             }
 
-            Log.i("ArtworkViewModel", "${state.artwork.title} saved at ${time.timeDescription}")
+            Log.i("ArtworkViewModel", "${state.artworkOverview.title} saved at ${time.timeDescription}")
 
         }
 

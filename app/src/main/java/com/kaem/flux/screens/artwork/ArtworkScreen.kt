@@ -163,7 +163,7 @@ fun ArtworkScreen(
 
     AnimatedVisibility(uiState.selectedArtwork != null) {
         PlayerScreen(
-            artworkInfo = uiState.selectedArtwork,
+            artwork = uiState.selectedArtwork,
             onBackButtonTap = { viewModel.selectArtwork(null) },
             onTimeSave = { viewModel.saveTime(uiState.selectedArtwork, it) }
         )
@@ -192,9 +192,9 @@ fun ArtworkHeader(
                     end.linkTo(parent.end)
                     width = Dimension.fillToConstraints
                 },
-            model = Constants.TMDB.IMAGE + uiState.artwork.bannerPath,
+            model = Constants.TMDB.IMAGE + uiState.artworkOverview.bannerPath,
             contentScale = ContentScale.Crop,
-            contentDescription = uiState.artwork.title
+            contentDescription = uiState.artworkOverview.title
         )
 
         Box(
@@ -305,7 +305,7 @@ fun ArtworkTitle(
 
         Title(
             modifier = Modifier.fillMaxWidth(),
-            text = uiState.artwork.title
+            text = uiState.artworkOverview.title
         )
 
         uiState.artworkDetails?.releaseDate?.let {

@@ -2,14 +2,12 @@ package com.kaem.flux.data.source.artwork
 
 import com.kaem.flux.data.ddb.DatabaseManager
 import com.kaem.flux.model.UserFile
-import com.kaem.flux.model.flux.Artwork
+import com.kaem.flux.model.flux.ArtworkOverview
 
 import com.kaem.flux.model.flux.Episode
 import com.kaem.flux.model.flux.Movie
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ArtworkDataSourceDBImpl @Inject constructor(
@@ -24,7 +22,7 @@ class ArtworkDataSourceDBImpl @Inject constructor(
 
         if (sync) {
 
-            val artworks = arrayListOf<Artwork>()
+            val artworkOverviews = arrayListOf<ArtworkOverview>()
             val movies = arrayListOf<Movie>()
             val episodes = arrayListOf<Episode>()
 
@@ -33,7 +31,7 @@ class ArtworkDataSourceDBImpl @Inject constructor(
                 launch {
 
                     val dbArtworks = databaseManager.getArtworks()
-                    artworks.addAll(dbArtworks)
+                    artworkOverviews.addAll(dbArtworks)
 
                 }
 
@@ -54,14 +52,14 @@ class ArtworkDataSourceDBImpl @Inject constructor(
             }
 
             return ArtworkDataSource.Library(
-                artworks = artworks,
+                artworkOverviews = artworkOverviews,
                 movies = movies,
                 episodes = episodes
             )
 
         } else {
 
-            return ArtworkDataSource.Library(artworks = databaseManager.getArtworks())
+            return ArtworkDataSource.Library(artworkOverviews = databaseManager.getArtworks())
 
         }
 

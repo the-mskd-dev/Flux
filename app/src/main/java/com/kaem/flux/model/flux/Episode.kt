@@ -5,7 +5,6 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.kaem.flux.model.UserFile
-import com.kaem.flux.model.tmdb.TMDBCrew
 import com.kaem.flux.model.tmdb.TMDBEpisode
 
 /**
@@ -32,7 +31,7 @@ import com.kaem.flux.model.tmdb.TMDBEpisode
     tableName = "episodes",
     foreignKeys = [
         ForeignKey(
-            entity = Artwork::class,
+            entity = ArtworkOverview::class,
             parentColumns = ["id"],
             childColumns = ["artworkId"],
             onDelete = ForeignKey.CASCADE
@@ -56,7 +55,7 @@ data class Episode(
     override val voteCount: Int,
     @Embedded override val file: UserFile,
     override var status: Status = Status.TO_WATCH,
-) : ArtworkInfo(
+) : Artwork(
     artworkId = artworkId,
     file = file,
     releaseDateString = releaseDateString,

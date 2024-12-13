@@ -1,26 +1,23 @@
 package com.kaem.flux.data.source.artwork
 
-import com.kaem.flux.data.ddb.DatabaseManager
 import com.kaem.flux.data.tmdb.TMDBService
 import com.kaem.flux.model.FileNameProperties
 import com.kaem.flux.model.UserFile
-import com.kaem.flux.model.flux.Artwork
+import com.kaem.flux.model.flux.ArtworkOverview
 import com.kaem.flux.model.flux.Episode
 import com.kaem.flux.model.flux.Movie
 import com.kaem.flux.model.tmdb.TMDBArtwork
 import com.kaem.flux.model.tmdb.TMDBMediaType
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMDBService) : ArtworkDataSource {
 
     private val mutexArtworks = Mutex()
-    private val artworks = arrayListOf<Artwork>()
+    private val artworkOverviews = arrayListOf<ArtworkOverview>()
 
     private val mutexMovies = Mutex()
     private val movies = arrayListOf<Movie>()
@@ -60,7 +57,7 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
         }
 
         return ArtworkDataSource.Library(
-            artworks = artworks,
+            artworkOverviews = artworkOverviews,
             movies = movies,
             episodes = episodes
         )
@@ -110,8 +107,8 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
 
                 val tmdbMovie = tmdbService.getMovieDetails(id = tmdbArtwork.id)
 
-                val artwork = Artwork(tmdbMovie = tmdbMovie)
-                addArtwork(artwork)
+                val artworkOverview = ArtworkOverview(tmdbMovie = tmdbMovie)
+                addArtwork(artworkOverview)
 
                 val movie = Movie(tmdbMovie = tmdbMovie, file = file,)
                 addMovie(movie)
@@ -120,7 +117,7 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
 
             TMDBMediaType.SHOW -> {
 
-                val show = Artwork(tmdbArtwork = tmdbArtwork)
+                val show = ArtworkOverview(tmdbArtwork = tmdbArtwork)
                 addArtwork(show)
 
             }
@@ -158,10 +155,10 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
 
     //region Lists
 
-    private suspend fun addArtwork(artwork: Artwork) {
+    private suspend fun addArtwork(artworkOverview: ArtworkOverview) {
         mutexArtworks.withLock {
-            if (artworks.none { it.id == artwork.id })
-                artworks.add(artwork)
+            if (artworkOverviews.none { it.id == artworkOverview.id })
+                artworkOverviews.add(artworkOverview)
         }
     }
 

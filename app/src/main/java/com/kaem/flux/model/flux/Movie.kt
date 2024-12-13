@@ -24,7 +24,7 @@ import com.kaem.flux.model.tmdb.TMDBMovie
     tableName = "movies",
     foreignKeys = [
         ForeignKey(
-            entity = Artwork::class,
+            entity = ArtworkOverview::class,
             parentColumns = ["id"],
             childColumns = ["artworkId"],
             onDelete = ForeignKey.CASCADE
@@ -43,7 +43,7 @@ data class Movie(
     override var status: Status,
     @Embedded override val file: UserFile,
     //val genres: List<String> = listOf()
-) : ArtworkInfo(
+) : Artwork(
     artworkId = artworkId,
     releaseDateString = releaseDateString,
     description = description,

@@ -1,16 +1,11 @@
 package com.kaem.flux.data.repository
 
 import com.kaem.flux.data.ddb.DatabaseManager
-import com.kaem.flux.data.source.artwork.ArtworkDataSource
-import com.kaem.flux.data.source.file.FilesDataSource
-import com.kaem.flux.model.flux.Artwork
+import com.kaem.flux.model.flux.ArtworkOverview
 import com.kaem.flux.model.flux.ContentType
 import com.kaem.flux.model.flux.Episode
 import com.kaem.flux.model.flux.Movie
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -19,7 +14,7 @@ class ArtworkRepository @Inject constructor(
 ) {
 
     data class Content(
-        val artwork: Artwork,
+        val artworkOverview: ArtworkOverview,
         val movie: Movie? = null,
         val episodes: List<Episode>? = null
     )
@@ -42,7 +37,7 @@ class ArtworkRepository @Inject constructor(
         }
 
         return Content(
-            artwork = artwork,
+            artworkOverview = artwork,
             movie = movie,
             episodes = episodes
         )

@@ -31,16 +31,16 @@ import com.kaem.flux.model.tmdb.TMDBMovie
         )
     ]
 )
-class Movie(
+data class Movie(
     @PrimaryKey
     override val artworkId: Long,
-    releaseDateString: String,
-    description: String,
-    voteAverage: Float,
-    voteCount: Int,
-    duration: Int,
-    currentTime: Long = 0L,
-    status: Status,
+    override val releaseDateString: String,
+    override val description: String,
+    override val voteAverage: Float,
+    override val voteCount: Int,
+    override val duration: Int,
+    override var currentTime: Long = 0L,
+    override var status: Status,
     @Embedded override val file: UserFile,
     //val genres: List<String> = listOf()
 ) : ArtworkInfo(

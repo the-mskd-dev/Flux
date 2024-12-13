@@ -19,13 +19,13 @@ import java.util.Date
  */
 abstract class ArtworkInfo(
     open val artworkId: Long,
-    val releaseDateString: String,
-    val description: String,
-    val voteAverage: Float,
-    val voteCount: Int,
-    val duration: Int,
-    var currentTime: Long = 0L,
-    var status: Status = Status.TO_WATCH,
+    open val releaseDateString: String,
+    open val description: String,
+    open val voteAverage: Float,
+    open val voteCount: Int,
+    open val duration: Int,
+    open var currentTime: Long = 0L,
+    open var status: Status = Status.TO_WATCH,
     open val file: UserFile,
 ) {
 

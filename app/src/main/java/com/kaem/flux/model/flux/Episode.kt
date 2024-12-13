@@ -39,7 +39,7 @@ import com.kaem.flux.model.tmdb.TMDBEpisode
         )
     ]
 )
-class Episode(
+data class Episode(
     @PrimaryKey
     val id: Long,
     val title: String,
@@ -48,14 +48,14 @@ class Episode(
     val imagePath: String,
     //val crew: List<TMDBCrew>,
     override val artworkId: Long,
-    releaseDateString: String,
-    description: String,
-    duration: Int,
-    currentTime: Long = 0L,
-    voteAverage: Float,
-    voteCount: Int,
+    override val releaseDateString: String,
+    override val description: String,
+    override val duration: Int,
+    override var currentTime: Long = 0L,
+    override val voteAverage: Float,
+    override val voteCount: Int,
     @Embedded override val file: UserFile,
-    status: Status = Status.TO_WATCH,
+    override var status: Status = Status.TO_WATCH,
 ) : ArtworkInfo(
     artworkId = artworkId,
     file = file,
@@ -89,6 +89,8 @@ class Episode(
         status = Status.TO_WATCH,
         file = file
     )
+
+
 
     companion object {
 

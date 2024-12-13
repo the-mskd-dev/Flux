@@ -103,11 +103,11 @@ class ArtworkViewModel @Inject constructor(
     fun changeWatchStatus(episode: Episode) {
 
         // Change status
-        episode.status = if (episode.status != Status.WATCHED) Status.WATCHED else Status.TO_WATCH
+        val updatedEpisode = episode.copy(status = if (episode.status != Status.WATCHED) Status.WATCHED else Status.TO_WATCH)
 
         // Update list
         val episodes = (_uiState.value.screen as? ArtworkUiState.Screen.SHOW)?.episodes.orEmpty().toMutableList()
-        episodes.replaceAll { if (it.id == episode.id) episode else it }
+        episodes.replaceAll { if (it.id == episode.id) updatedEpisode else it }
         _uiState.update { currentState ->
             currentState.copy(
                 screen = ArtworkUiState.Screen.SHOW(episodes)

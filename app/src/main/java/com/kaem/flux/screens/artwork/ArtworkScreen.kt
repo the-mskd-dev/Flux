@@ -57,9 +57,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.kaem.flux.R
+import com.kaem.flux.model.flux.ArtworkInfo
 
 import com.kaem.flux.model.flux.Episode
 import com.kaem.flux.model.flux.Status
+import com.kaem.flux.screens.player.PlayerScreen
 import com.kaem.flux.ui.component.Loader
 import com.kaem.flux.ui.component.Title
 import com.kaem.flux.ui.theme.FluxElevation
@@ -73,7 +75,6 @@ import java.text.DateFormat
 @Composable
 fun ArtworkScreen(
     onBackButtonTap: () -> Unit,
-    launchPlayer: (Long, Long?) -> Unit,
     viewModel: ArtworkViewModel = hiltViewModel()
 ) {
 
@@ -160,6 +161,14 @@ fun ArtworkScreen(
             }
         }
 
+    }
+
+    AnimatedVisibility(uiState.selectedArtwork != null) {
+        PlayerScreen(
+            artworkInfo = uiState.selectedArtwork,
+            onBackButtonTap = { viewModel.selectArtwork(null) },
+            onTimeSave = { viewModel.saveCurrentTime(it) }
+        )
     }
 
 }

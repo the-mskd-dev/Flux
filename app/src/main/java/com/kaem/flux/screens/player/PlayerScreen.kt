@@ -29,6 +29,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -39,17 +40,17 @@ import androidx.media3.common.Tracks
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
+import com.kaem.flux.model.flux.ArtworkInfo
 import com.kaem.flux.model.flux.Metadata
 import com.kaem.flux.ui.component.LifecycleComponent
 import com.kaem.flux.ui.theme.FluxSpace
 
 @Composable
 fun PlayerScreen(
+    artworkInfo: ArtworkInfo?,
     onBackButtonTap: () -> Unit,
-    viewModel: PlayerViewModel = hiltViewModel()
+    onTimeSave: (Long) -> Unit
 ) {
-
-    val uiState by viewModel.uiState.collectAsState()
 
     val context = LocalContext.current
     val orientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
@@ -62,12 +63,16 @@ fun PlayerScreen(
         }
     }
 
-   VideoPlayer(
-       path = uiState.path,
-       currentTime = uiState.currentTime,
-       onBackButtonTap = onBackButtonTap,
-       onTimeSave = { viewModel.saveCurrentTime(it) }
-   )
+    if (artworkInfo != null) {
+        VideoPlayer(
+            path = artworkInfo.file.path,
+            currentTime = artworkInfo.currentTime,
+            onBackButtonTap = onBackButtonTap,
+            onTimeSave = onTimeSave
+        )
+    } else {
+        Box(modifier = Modifier.background(Color.Black).fillMaxSize())
+    }
 
 }
 
@@ -117,7 +122,11 @@ fun VideoPlayer(
         }
     )
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color.Black)
+    ) {
 
         AndroidView(
             modifier = Modifier.fillMaxSize(),

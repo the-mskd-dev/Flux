@@ -1,5 +1,7 @@
 package com.kaem.flux.utils
 
+import java.util.concurrent.TimeUnit
+
 val Long.timeDescription : String
     get() {
         val seconds = this / 1000
@@ -13,3 +15,5 @@ val Long.timeDescription : String
             if (remainingSeconds > 0 || isEmpty()) append("${remainingSeconds}sec")
         }
     }
+
+val Long.inMinutes : Long get() = TimeUnit.MILLISECONDS.toMinutes(this)

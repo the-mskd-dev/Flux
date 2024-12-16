@@ -1,7 +1,10 @@
 package com.kaem.flux.model.flux
 
+import androidx.room.Embedded
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.PrimaryKey
 import com.kaem.flux.model.UserFile
-import com.kaem.flux.model.tmdb.TMDBCrew
 import com.kaem.flux.model.tmdb.TMDBEpisode
 
 /**
@@ -24,46 +27,59 @@ import com.kaem.flux.model.tmdb.TMDBEpisode
  * @property status Viewing status of the artwork.
  * @property releaseDateString Release date of the episode as a string.
  */
-class Episode(
-    val id: Int,
+@Entity(
+    tableName = "episodes",
+    foreignKeys = [
+        ForeignKey(
+            entity = ArtworkOverview::class,
+            parentColumns = ["id"],
+            childColumns = ["artworkId"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ]
+)
+data class Episode(
+    @PrimaryKey
+    val id: Long,
     val title: String,
-    val showId: Int,
     val number: Int,
     val season: Int,
     val imagePath: String,
-    val crew: List<TMDBCrew>,
-    releaseDateString: String,
-    description: String,
-    duration: Int,
-    currentTime: Long = 0L,
-    voteAverage: Float,
-    voteCount: Int,
-    status: Status = Status.TO_WATCH,
-    file: UserFile
-) : ArtworkInfo(
+    //val crew: List<TMDBCrew>,
+    override val artworkId: Long,
+    override val releaseDateString: String,
+    override val description: String,
+    override val duration: Int,
+    override var currentTime: Long = 0L,
+    override val voteAverage: Float,
+    override val voteCount: Int,
+    @Embedded override val file: UserFile,
+    override var status: Status = Status.TO_WATCH,
+) : Artwork(
+    artworkId = artworkId,
+    file = file,
     releaseDateString = releaseDateString,
     description = description,
     voteAverage = voteAverage,
     voteCount = voteCount,
     duration = duration,
     currentTime = currentTime,
-    file = file,
     status = status
 ) {
 
     constructor(
-        showId: Int,
+        artworkId: Long,
         tmdbEpisode: TMDBEpisode,
         file: UserFile
     ) : this (
         id = tmdbEpisode.id,
-        showId = showId,
+        artworkId = artworkId,
         title = tmdbEpisode.title,
         number = tmdbEpisode.number,
         season = tmdbEpisode.season,
         imagePath = tmdbEpisode.imagePath,
         releaseDateString = tmdbEpisode.releaseDateString,
-        crew = tmdbEpisode.crew,
+        //crew = tmdbEpisode.crew,
         description = tmdbEpisode.description,
         duration = tmdbEpisode.duration,
         currentTime = 0L,
@@ -72,6 +88,8 @@ class Episode(
         status = Status.TO_WATCH,
         file = file
     )
+
+
 
     companion object {
 

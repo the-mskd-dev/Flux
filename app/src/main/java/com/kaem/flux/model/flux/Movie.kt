@@ -1,5 +1,9 @@
 package com.kaem.flux.model.flux
 
+import androidx.room.Embedded
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.PrimaryKey
 import com.kaem.flux.model.UserFile
 import com.kaem.flux.model.tmdb.TMDBMovie
 
@@ -16,17 +20,31 @@ import com.kaem.flux.model.tmdb.TMDBMovie
  * @property status Viewing status of the artwork.
  * @property genres List of genres associated with the movie.
  */
-class Movie(
-    releaseDateString: String,
-    description: String,
-    voteAverage: Float,
-    voteCount: Int,
-    duration: Int,
-    currentTime: Long = 0L,
-    file: UserFile,
-    status: Status,
-    val genres: List<String> = listOf()
-) : ArtworkInfo(
+@Entity(
+    tableName = "movies",
+    foreignKeys = [
+        ForeignKey(
+            entity = ArtworkOverview::class,
+            parentColumns = ["id"],
+            childColumns = ["artworkId"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ]
+)
+data class Movie(
+    @PrimaryKey
+    override val artworkId: Long,
+    override val releaseDateString: String,
+    override val description: String,
+    override val voteAverage: Float,
+    override val voteCount: Int,
+    override val duration: Int,
+    override var currentTime: Long = 0L,
+    override var status: Status,
+    @Embedded override val file: UserFile,
+    //val genres: List<String> = listOf()
+) : Artwork(
+    artworkId = artworkId,
     releaseDateString = releaseDateString,
     description = description,
     voteAverage = voteAverage,
@@ -44,6 +62,7 @@ class Movie(
         tmdbMovie: TMDBMovie,
         file: UserFile
     ) : this(
+        artworkId = tmdbMovie.id,
         releaseDateString = tmdbMovie.releaseDateString,
         description = tmdbMovie.description,
         voteAverage = tmdbMovie.voteAverage,
@@ -51,7 +70,7 @@ class Movie(
         duration = tmdbMovie.duration,
         currentTime = 0L,
         file = file,
-        genres = emptyList(),
+        //genres = emptyList(),
         status = Status.TO_WATCH
     )
 

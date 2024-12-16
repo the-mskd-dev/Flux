@@ -2,13 +2,12 @@ package com.kaem.flux.data.source.artwork
 
 import com.kaem.flux.data.ddb.DatabaseManager
 import com.kaem.flux.model.UserFile
-import com.kaem.flux.model.flux.Artwork
-import com.kaem.flux.model.flux.ArtworkType
+import com.kaem.flux.model.flux.ArtworkOverview
+
 import com.kaem.flux.model.flux.Episode
-import kotlinx.coroutines.Dispatchers
+import com.kaem.flux.model.flux.Movie
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ArtworkDataSourceDBImpl @Inject constructor(
@@ -17,96 +16,53 @@ class ArtworkDataSourceDBImpl @Inject constructor(
 
     override suspend fun getArtworks(
         files: List<UserFile>,
-        artworkIds: List<Int>
-    ): Pair<List<Artwork>, List<Episode>> {
+        artworkIds: List<Long>,
+        sync: Boolean
+    ): ArtworkDataSource.Library {
 
-        val artworks = arrayListOf<Artwork>()
-        val episodes = arrayListOf<Episode>()
+        if (sync) {
 
-        coroutineScope {
+            val artworkOverviews = arrayListOf<ArtworkOverview>()
+            val movies = arrayListOf<Movie>()
+            val episodes = arrayListOf<Episode>()
 
-            launch {
+            coroutineScope {
 
-                val dbArtworks = withContext(Dispatchers.Default) { databaseManager.getAllArtworks() }
-                artworks.addAll(dbArtworks)
+                launch {
+
+                    val dbArtworks = databaseManager.getArtworks()
+                    artworkOverviews.addAll(dbArtworks)
+
+                }
+
+                launch {
+
+                    val dbMovies = databaseManager.getMovies()
+                    movies.addAll(dbMovies)
+
+                }
+
+                launch {
+
+                    val dbEpisodes = databaseManager.getEpisodes()
+                    episodes.addAll(dbEpisodes)
+
+                }
 
             }
 
-            launch {
+            return ArtworkDataSource.Library(
+                artworkOverviews = artworkOverviews,
+                movies = movies,
+                episodes = episodes
+            )
 
-                val dbEpisodes = withContext(Dispatchers.Default) { databaseManager.getAllEpisodes() }
-                episodes.addAll(dbEpisodes)
+        } else {
 
-            }
-
-        }
-
-        val (filteredArtworks, filteredEpisodes) = cleanDatabase(
-            files = files,
-            artworks = artworks,
-            episodes = episodes
-        )
-
-        return Pair(filteredArtworks, filteredEpisodes)
-
-    }
-
-    private suspend fun cleanDatabase(
-        files: List<UserFile>,
-        artworks: List<Artwork>,
-        episodes: List<Episode>
-    ) : Pair<List<Artwork>, List<Episode>> {
-
-        val filePaths = files.map { it.path }
-        val episodesToRemove = arrayListOf<Episode>()
-        val moviesToRemove = arrayListOf<Artwork>()
-        val showsToRemove = arrayListOf<Artwork>()
-
-        episodes.forEach {
-
-            if (!filePaths.contains(it.file.path))
-                episodesToRemove.add(it)
-        }
-
-        artworks.filter { it.type is ArtworkType.MOVIE }.forEach {
-
-            if (!filePaths.contains((it.type as ArtworkType.MOVIE).movie.file.path))
-                moviesToRemove.add(it)
+            return ArtworkDataSource.Library(artworkOverviews = databaseManager.getArtworks())
 
         }
 
-        artworks.filter { it.type is ArtworkType.SHOW }.forEach { show ->
-
-            if (episodes.none { it.showId == show.id })
-                showsToRemove.add(show)
-
-        }
-
-        withContext(Dispatchers.Default) {
-
-            launch { databaseManager.deleteMovies(moviesToRemove.map { it.id }) }
-
-            launch { databaseManager.deleteShows(showsToRemove.map { it.id }) }
-
-            launch { databaseManager.deleteEpisodes(episodesToRemove.map { it.id }) }
-
-        }
-
-
-
-        return Pair(
-            artworks.filterNot { showsToRemove.contains(it) || moviesToRemove.contains(it) },
-            episodes.filterNot { episodesToRemove.contains(it) },
-        )
-
-    }
-
-    override suspend fun saveArtwork(artwork: Artwork) {
-        databaseManager.saveArtworks(listOf(artwork))
-    }
-
-    override suspend fun saveEpisodes(episodes: List<Episode>) {
-        databaseManager.saveEpisodes(episodes)
     }
 
 }

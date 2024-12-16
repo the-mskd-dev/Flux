@@ -23,7 +23,7 @@ interface TMDBService {
 
     @GET("movie/{id}")
     suspend fun getMovieDetails(
-        @Path("id") id: Int,
+        @Path("id") id: Long,
         @Query("language") language: String = Constants.Global.LANGUAGE
     ) : TMDBMovie
 
@@ -36,7 +36,7 @@ interface TMDBService {
 
     @GET("tv/{id}/season/{season}/episode/{episode}")
     suspend fun getEpisode(
-        @Path("id") id: Int,
+        @Path("id") id: Long,
         @Path("season") season: Int,
         @Path("episode") episode: Int,
         @Query("language") language: String = Constants.Global.LANGUAGE

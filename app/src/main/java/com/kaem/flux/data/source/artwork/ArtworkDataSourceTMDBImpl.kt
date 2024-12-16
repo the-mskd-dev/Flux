@@ -1,74 +1,35 @@
 package com.kaem.flux.data.source.artwork
 
-import com.kaem.flux.data.ddb.DatabaseManager
 import com.kaem.flux.data.tmdb.TMDBService
 import com.kaem.flux.model.FileNameProperties
 import com.kaem.flux.model.UserFile
-import com.kaem.flux.model.flux.Artwork
+import com.kaem.flux.model.flux.ArtworkOverview
 import com.kaem.flux.model.flux.Episode
+import com.kaem.flux.model.flux.Movie
 import com.kaem.flux.model.tmdb.TMDBArtwork
 import com.kaem.flux.model.tmdb.TMDBMediaType
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class ArtworkDataSourceTMDBImpl @Inject constructor(
-    private val databaseManager: DatabaseManager,
-    private val tmdbService: TMDBService
-) : ArtworkDataSource {
+class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMDBService) : ArtworkDataSource {
 
     private val mutexArtworks = Mutex()
-    private val artworks = arrayListOf<Artwork>()
+    private val artworkOverviews = arrayListOf<ArtworkOverview>()
+
+    private val mutexMovies = Mutex()
+    private val movies = arrayListOf<Movie>()
 
     private val mutexEpisodes = Mutex()
     private val episodes = arrayListOf<Episode>()
 
     override suspend fun getArtworks(
         files: List<UserFile>,
-        artworkIds: List<Int>
-    ): Pair<List<Artwork>, List<Episode>> {
-
-        getArtworksFromFiles(files = files)
-
-        artworks.removeAll { artworkIds.contains(it.id) }
-        episodes.removeAll { artworkIds.contains(it.id) }
-
-        withContext(Dispatchers.Default) {
-
-            launch {
-                saveInDatabase()
-            }
-
-        }
-
-        return Pair(artworks, episodes)
-    }
-
-    private suspend fun saveInDatabase() {
-
-        withContext(Dispatchers.Default) {
-
-            launch {
-
-                databaseManager.saveArtworks(artworks.toList())
-
-            }
-
-            launch {
-
-                databaseManager.saveEpisodes(episodes.toList())
-
-            }
-
-        }
-
-    }
-
-    private suspend fun getArtworksFromFiles(files: List<UserFile>) {
+        artworkIds: List<Long>,
+        sync: Boolean
+    ): ArtworkDataSource.Library {
 
         coroutineScope {
 
@@ -94,6 +55,12 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(
             }
 
         }
+
+        return ArtworkDataSource.Library(
+            artworkOverviews = artworkOverviews,
+            movies = movies,
+            episodes = episodes
+        )
 
     }
 
@@ -138,24 +105,20 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(
 
             TMDBMediaType.MOVIE -> {
 
+                val tmdbMovie = tmdbService.getMovieDetails(id = tmdbArtwork.id)
 
-                val tmdbMovie = tmdbService.getMovieDetails(
-                    id = tmdbArtwork.id
-                )
+                val artworkOverview = ArtworkOverview(tmdbMovie = tmdbMovie)
+                addArtwork(artworkOverview)
 
-                val movie = Artwork(
-                    tmdbMovie = tmdbMovie,
-                    file = file,
-                )
-
-                addArtworkSummary(movie)
+                val movie = Movie(tmdbMovie = tmdbMovie, file = file,)
+                addMovie(movie)
 
             }
 
             TMDBMediaType.SHOW -> {
 
-                val show = Artwork(tmdbArtwork = tmdbArtwork)
-                addArtworkSummary(show)
+                val show = ArtworkOverview(tmdbArtwork = tmdbArtwork)
+                addArtwork(show)
 
             }
 
@@ -180,7 +143,7 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(
 
         val episode = Episode(
             tmdbEpisode = tmdbEpisode,
-            showId = tmdbArtwork.id,
+            artworkId = tmdbArtwork.id,
             file = file
         )
 
@@ -192,10 +155,17 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(
 
     //region Lists
 
-    private suspend fun addArtworkSummary(artworkSummary: Artwork) {
+    private suspend fun addArtwork(artworkOverview: ArtworkOverview) {
         mutexArtworks.withLock {
-            if (artworks.none { it.id == artworkSummary.id })
-                artworks.add(artworkSummary)
+            if (artworkOverviews.none { it.id == artworkOverview.id })
+                artworkOverviews.add(artworkOverview)
+        }
+    }
+
+    private suspend fun addMovie(movie: Movie) {
+        mutexMovies.withLock {
+            if (movies.none { it.artworkId == movie.artworkId })
+                movies.add(movie)
         }
     }
 
@@ -204,13 +174,6 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(
             if (episodes.none { it.id == episode.id })
                 episodes.add(episode)
         }
-    }
-
-    override suspend fun saveArtwork(artwork: Artwork) {
-        // Nothing to do here
-    }
-    override suspend fun saveEpisodes(episodes: List<Episode>) {
-        // Nothing to do here
     }
 
     //endregion

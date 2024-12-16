@@ -35,7 +35,6 @@ import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.placeholder
@@ -44,8 +43,9 @@ import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.kaem.flux.R
-import com.kaem.flux.model.flux.Artwork
-import com.kaem.flux.model.flux.ArtworkType
+import com.kaem.flux.model.flux.ArtworkOverview
+
+import com.kaem.flux.model.flux.ContentType
 import com.kaem.flux.ui.component.FluxButton
 import com.kaem.flux.ui.component.Loader
 import com.kaem.flux.ui.component.Title
@@ -55,7 +55,7 @@ import com.kaem.flux.utils.Constants
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun LibraryScreen(
-    navigateToDetails: (Int) -> Unit,
+    navigateToDetails: (Long) -> Unit,
     viewModel: LibraryViewModel = hiltViewModel()
 ) {
 
@@ -85,7 +85,7 @@ fun LibraryScreen(
 
                 null -> Loader()
                 else -> LibraryContent(
-                    artworks = it.artworks,
+                    artworkOverviews = it.artworkOverviews,
                     lastWatchedIds = it.lastWatchedArtworkIds,
                     navigateToDetails = { id -> navigateToDetails(id) }
                 )
@@ -100,12 +100,12 @@ fun LibraryScreen(
 
 @Composable
 fun LibraryContent(
-    artworks: List<Artwork>,
-    lastWatchedIds: List<Int>,
-    navigateToDetails: (Int) -> Unit
+    artworkOverviews: List<ArtworkOverview>,
+    lastWatchedIds: List<Long>,
+    navigateToDetails: (Long) -> Unit
 ) {
 
-    if (artworks.isEmpty()) {
+    if (artworkOverviews.isEmpty()) {
 
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -123,7 +123,7 @@ fun LibraryContent(
     } else {
 
         LibraryGrid(
-            artworks = artworks,
+            artworkOverviews = artworkOverviews,
             lastWatchedIds = lastWatchedIds,
             navigateToDetails = { navigateToDetails(it) }
         )
@@ -134,10 +134,9 @@ fun LibraryContent(
 
 @Composable
 fun LibraryGrid(
-    artworks: List<Artwork>,
-    lastWatchedIds: List<Int>,
-    navigateToDetails: (Int) -> Unit,
-    viewModel: LibraryViewModel = viewModel()
+    artworkOverviews: List<ArtworkOverview>,
+    lastWatchedIds: List<Long>,
+    navigateToDetails: (Long) -> Unit,
 ) {
 
     Column(
@@ -154,26 +153,20 @@ fun LibraryGrid(
         )
 
         ArtworkList(
-            artworks = artworks.filter { lastWatchedIds.contains(it.id) },
+            artworkOverviews = artworkOverviews.filter { lastWatchedIds.contains(it.id) },
             largeArtwork = true,
             navigateToDetails = navigateToDetails
         )
 
         ArtworkList(
-            name = stringResource(id = R.string.last_added),
-            artworks = viewModel.getArtworksByAddedDate(artworks = artworks),
-            navigateToDetails = navigateToDetails
-        )
-
-        ArtworkList(
             name = stringResource(id = R.string.shows),
-            artworks = artworks.filter { it.type is ArtworkType.SHOW },
+            artworkOverviews = artworkOverviews.filter { it.type == ContentType.SHOW },
             navigateToDetails = navigateToDetails
         )
 
         ArtworkList(
             name = stringResource(id = R.string.movies),
-            artworks = artworks.filter { it.type is ArtworkType.MOVIE },
+            artworkOverviews = artworkOverviews.filter { it.type == ContentType.MOVIE },
             navigateToDetails = navigateToDetails
         )
 
@@ -191,11 +184,11 @@ fun LibraryGrid(
 fun ArtworkList(
     name: String? = null,
     largeArtwork: Boolean = false,
-    artworks: List<Artwork>,
-    navigateToDetails: (Int) -> Unit
+    artworkOverviews: List<ArtworkOverview>,
+    navigateToDetails: (Long) -> Unit
 ) {
 
-    if (artworks.isEmpty())
+    if (artworkOverviews.isEmpty())
         return
 
     Column(
@@ -214,11 +207,11 @@ fun ArtworkList(
             horizontalArrangement = Arrangement.spacedBy(FluxSpace.SMALL)
         ) {
 
-            items(artworks, key = { it.id }) {
+            items(artworkOverviews, key = { it.id }) {
 
                 ArtworkItem(
                     modifier = Modifier.clickable { navigateToDetails(it.id) },
-                    artwork = it,
+                    artworkOverview = it,
                     largeArtwork = largeArtwork
                 )
 
@@ -233,13 +226,13 @@ fun ArtworkList(
 @Composable
 fun ArtworkItem(
     modifier: Modifier = Modifier,
-    artwork: Artwork,
+    artworkOverview: ArtworkOverview,
     largeArtwork: Boolean = false
 ) {
 
     val width = if (largeArtwork) 450.dp else 120.dp
     val ratio = if (largeArtwork) 1920f/1080f else 2f/3f
-    val url = if (largeArtwork) Constants.TMDB.IMAGE + artwork.bannerPath else Constants.TMDB.IMAGE_SMALL + artwork.imagePath
+    val url = if (largeArtwork) Constants.TMDB.IMAGE + artworkOverview.bannerPath else Constants.TMDB.IMAGE_SMALL + artworkOverview.imagePath
 
     GlideImage(
         modifier = Modifier
@@ -248,7 +241,7 @@ fun ArtworkItem(
             .width(width)
             .aspectRatio(ratio),
         model = url,
-        contentDescription = artwork.title,
+        contentDescription = artworkOverview.title,
         loading = placeholder(ColorPainter(Color.LightGray))
     )
 

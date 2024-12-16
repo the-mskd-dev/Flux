@@ -41,7 +41,6 @@ object DatabaseModule {
     @Singleton
     fun provideDatabaseManager(gson: Gson, fluxDao: FluxDao) : DatabaseManager {
         return DatabaseManager(
-            gson = gson,
             fluxDao = fluxDao
         )
     }

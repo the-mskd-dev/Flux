@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.pm.ActivityInfo
 import android.net.Uri
 import android.view.View
+import androidx.activity.compose.BackHandler
 import androidx.annotation.OptIn
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -16,12 +17,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,27 +29,27 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.Tracks
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
+import com.kaem.flux.model.flux.Artwork
 import com.kaem.flux.model.flux.Metadata
 import com.kaem.flux.ui.component.LifecycleComponent
 import com.kaem.flux.ui.theme.FluxSpace
 
 @Composable
 fun PlayerScreen(
+    artwork: Artwork?,
     onBackButtonTap: () -> Unit,
-    viewModel: PlayerViewModel = hiltViewModel()
+    onTimeSave: (Long) -> Unit
 ) {
-
-    val uiState by viewModel.uiState.collectAsState()
 
     val context = LocalContext.current
     val orientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
@@ -62,12 +62,16 @@ fun PlayerScreen(
         }
     }
 
-   VideoPlayer(
-       path = uiState.path,
-       currentTime = uiState.currentTime,
-       onBackButtonTap = onBackButtonTap,
-       onTimeSave = { viewModel.saveCurrentTime(it) }
-   )
+    if (artwork != null) {
+        VideoPlayer(
+            path = artwork.file.path,
+            currentTime = artwork.currentTime,
+            onBackButtonTap = onBackButtonTap,
+            onTimeSave = onTimeSave
+        )
+    } else {
+        Box(modifier = Modifier.background(Color.Black).fillMaxSize())
+    }
 
 }
 
@@ -117,7 +121,16 @@ fun VideoPlayer(
         }
     )
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    BackHandler(enabled = true) {
+        onTimeSave(exoPlayer.currentPosition)
+        onBackButtonTap()
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color.Black)
+    ) {
 
         AndroidView(
             modifier = Modifier.fillMaxSize(),
@@ -141,7 +154,10 @@ fun VideoPlayer(
                     .padding(start = FluxSpace.MEDIUM)
                     .size(50.dp)
                     .clip(shape = CircleShape)
-                    .clickable { onBackButtonTap() }
+                    .clickable {
+                        onTimeSave(exoPlayer.currentPosition)
+                        onBackButtonTap()
+                    }
                     .border(
                         width = 1.dp,
                         color = MaterialTheme.colorScheme.onBackground,
@@ -153,7 +169,7 @@ fun VideoPlayer(
             ) {
 
                 Icon(
-                    imageVector = Icons.Rounded.ArrowBack,
+                    imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
                     tint = MaterialTheme.colorScheme.onBackground,
                     contentDescription = "back button"
                 )

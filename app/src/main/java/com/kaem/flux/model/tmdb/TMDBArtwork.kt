@@ -20,7 +20,7 @@ import com.google.gson.annotations.SerializedName
  * @property relatedContent List of related artworks (used for persons).
  */
 data class TMDBArtwork(
-    val id: Int,
+    val id: Long,
     @SerializedName("overview")
     val description: String,
     @SerializedName("poster_path")

@@ -32,9 +32,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.ConstraintSet
+import androidx.constraintlayout.compose.Dimension
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.Tracks
@@ -120,10 +125,7 @@ fun VideoPlayer(
 
     // Manage lifecycle events
     DisposableEffect(Unit) {
-        onDispose {
-            onTimeSave(exoPlayer.currentPosition)
-            exoPlayer.release()
-        }
+        onDispose { exoPlayer.release() }
     }
 
     LifecycleComponent(
@@ -162,37 +164,83 @@ fun VideoPlayer(
             }
         )
 
-        AnimatedVisibility(visible = showBackButton) {
-            Box(
-                modifier = Modifier
-                    .statusBarsPadding()
-                    .padding(start = FluxSpace.MEDIUM)
-                    .size(50.dp)
-                    .clip(shape = CircleShape)
-                    .clickable {
-                        onTimeSave(exoPlayer.currentPosition)
-                        onBackButtonTap()
-                    }
-                    .border(
-                        width = 1.dp,
-                        color = MaterialTheme.colorScheme.onBackground,
-                        shape = CircleShape
-                    )
-                    .background(color = MaterialTheme.colorScheme.background)
-                    .padding(4.dp),
-                contentAlignment = Alignment.Center
-            ) {
+    }
 
-                Icon(
-                    imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-                    tint = MaterialTheme.colorScheme.onBackground,
-                    contentDescription = "back button"
-                )
+    PlayerButtons(
+        showButtons = showBackButton,
+        onBackButtonTap = {
+            onTimeSave(exoPlayer.currentPosition)
+            onBackButtonTap()
+        }
+    )
 
-            }
+}
+
+@Composable
+fun PlayerButtons(
+    showButtons: Boolean,
+    onBackButtonTap: () -> Unit
+) {
+
+    AnimatedVisibility(visible = showButtons) {
+
+        ConstraintLayout(
+            modifier = Modifier
+                .fillMaxSize()
+                .statusBarsPadding(),
+            constraintSet = PlayerButtonsConstraintSet
+        ) {
+
+            PlayerBackButton(
+                layoutId = "back",
+                onTap = { onBackButtonTap() }
+            )
+
         }
 
     }
 
 }
 
+@Composable
+fun PlayerBackButton(
+    layoutId: String,
+    onTap: () -> Unit
+) {
+
+    Box(
+        modifier = Modifier
+            .padding(start = FluxSpace.MEDIUM)
+            .layoutId(layoutId)
+            .size(50.dp)
+            .clip(shape = CircleShape)
+            .clickable { onTap() }
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.onBackground,
+                shape = CircleShape
+            )
+            .background(color = MaterialTheme.colorScheme.background)
+            .padding(4.dp),
+        contentAlignment = Alignment.Center
+    ) {
+
+        Icon(
+            imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+            tint = MaterialTheme.colorScheme.onBackground,
+            contentDescription = "back button"
+        )
+
+    }
+
+}
+
+val PlayerButtonsConstraintSet = ConstraintSet {
+
+    val back = createRefFor("back")
+    constrain(back) {
+        top.linkTo(parent.top)
+        start.linkTo(parent.start)
+    }
+
+}

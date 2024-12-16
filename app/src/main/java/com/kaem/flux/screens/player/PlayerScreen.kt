@@ -53,19 +53,24 @@ fun PlayerScreen(
     onTimeSave: (Long) -> Unit
 ) {
 
-    val activity = LocalContext.current as ComponentActivity
-
     var isExiting by remember { mutableStateOf(false) }
-
-    fun exitScreen(orientation: Int) {
-        if (activity.requestedOrientation != orientation)
-            activity.requestedOrientation = orientation
-        isExiting = true
-        onBackButtonTap()
+    val activity = LocalContext.current as ComponentActivity
+    val exitScreen = remember {
+        { orientation: Int ->
+            if (activity.requestedOrientation != orientation) {
+                activity.requestedOrientation = orientation
+            }
+            isExiting = true
+            onBackButtonTap()
+        }
     }
 
-    LaunchedEffect (Unit) {
+    DisposableEffect(Unit) {
+        val originalOrientation = activity.requestedOrientation
         activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        onDispose {
+            activity.requestedOrientation = originalOrientation
+        }
     }
 
     if (!isExiting) {

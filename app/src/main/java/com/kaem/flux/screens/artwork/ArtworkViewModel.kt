@@ -1,9 +1,24 @@
 package com.kaem.flux.screens.artwork
 
+import android.content.Context
+import android.media.MediaExtractor
+import android.media.MediaFormat
+import android.media.MediaMetadataRetriever
+import android.net.Uri
 import android.util.Log
+import androidx.annotation.OptIn
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.media3.common.C.TRACK_TYPE_AUDIO
+import androidx.media3.common.C.TRACK_TYPE_TEXT
+import androidx.media3.common.C.TRACK_TYPE_VIDEO
+import androidx.media3.common.C.TrackType
+import androidx.media3.common.Format
+import androidx.media3.common.MediaItem
+import androidx.media3.common.TrackGroup
+import androidx.media3.common.Tracks
+import androidx.media3.common.util.UnstableApi
 import com.kaem.flux.data.repository.ArtworkRepository
 import com.kaem.flux.model.artwork.ArtworkOverview
 import com.kaem.flux.model.artwork.Artwork
@@ -18,6 +33,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.io.IOException
 import javax.inject.Inject
 
 
@@ -51,6 +67,7 @@ data class ArtworkUiState(
 @HiltViewModel
 class ArtworkViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
+    private val context: Context,
     private val repository: ArtworkRepository
 ) : ViewModel() {
 
@@ -150,4 +167,55 @@ class ArtworkViewModel @Inject constructor(
 
     }
 
+    @OptIn(UnstableApi::class)
+    private fun getMetadatas(path: String) : Tracks {
+
+        val uri = Uri.parse(path)
+        val extractor = MediaExtractor()
+
+        try {
+            extractor.setDataSource(context, uri, null)
+
+            val trackGroups = mutableListOf<TrackGroup>()
+
+            // Parcours de toutes les pistes
+            for (i in 0 until extractor.trackCount) {
+                val format = extractor.getTrackFormat(i)
+                val mime = format.getString(MediaFormat.KEY_MIME)
+
+                when {
+                    mime?.startsWith("audio/") == true -> {
+
+                        val audioTrackGroup = TrackGroup(format.toMedia3Format())
+                        trackGroups.add(audioTrackGroup)
+                    }
+                    mime?.startsWith("text/") == true -> {
+                        val textTrackGroup = TrackGroup(format.toMedia3Format())
+                        trackGroups.add(textTrackGroup)
+                    }
+                }
+            }
+            return Tracks(trackGroups)
+
+
+        } catch (e: IOException) {
+            // Gestion des erreurs
+            return Tracks.EMPTY
+        } finally {
+            extractor.release()
+        }
+
+    }
+
+}
+
+@OptIn(UnstableApi::class)
+fun MediaFormat.toMedia3Format(): Format {
+    return Format.Builder()
+        .setSampleMimeType(getString(MediaFormat.KEY_MIME))
+        .setWidth(getInteger(MediaFormat.KEY_WIDTH, Format.NO_VALUE))
+        .setHeight(getInteger(MediaFormat.KEY_HEIGHT, Format.NO_VALUE))
+        .setChannelCount(getInteger(MediaFormat.KEY_CHANNEL_COUNT, Format.NO_VALUE))
+        .setSampleRate(getInteger(MediaFormat.KEY_SAMPLE_RATE, Format.NO_VALUE))
+        .build()
 }

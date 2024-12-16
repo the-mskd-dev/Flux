@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.pm.ActivityInfo
 import android.net.Uri
 import android.view.View
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.annotation.OptIn
 import androidx.compose.animation.AnimatedVisibility
@@ -22,6 +23,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,26 +53,34 @@ fun PlayerScreen(
     onTimeSave: (Long) -> Unit
 ) {
 
-    val context = LocalContext.current
-    val orientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-    DisposableEffect(orientation) {
-        val activity = context as? Activity ?: return@DisposableEffect onDispose {}
-        val originalOrientation = activity.requestedOrientation
-        activity.requestedOrientation = orientation
-        onDispose {
-            activity.requestedOrientation = originalOrientation
-        }
+    val activity = LocalContext.current as ComponentActivity
+
+    var isExiting by remember { mutableStateOf(false) }
+
+    fun exitScreen(orientation: Int) {
+        if (activity.requestedOrientation != orientation)
+            activity.requestedOrientation = orientation
+        isExiting = true
+        onBackButtonTap()
     }
 
-    if (artwork != null) {
-        VideoPlayer(
-            path = artwork.file.path,
-            currentTime = artwork.currentTime,
-            onBackButtonTap = onBackButtonTap,
-            onTimeSave = onTimeSave
-        )
-    } else {
-        Box(modifier = Modifier.background(Color.Black).fillMaxSize())
+    LaunchedEffect (Unit) {
+        activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+    }
+
+    if (!isExiting) {
+        if (artwork != null) {
+            VideoPlayer(
+                path = artwork.file.path,
+                currentTime = artwork.currentTime,
+                onBackButtonTap = {
+                    exitScreen(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+                },
+                onTimeSave = onTimeSave
+            )
+        } else {
+            Box(modifier = Modifier.background(Color.Black).fillMaxSize())
+        }
     }
 
 }

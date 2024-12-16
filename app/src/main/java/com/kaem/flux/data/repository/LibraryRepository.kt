@@ -58,14 +58,17 @@ class LibraryRepository @Inject constructor(
         val newFiles = allFiles.filter { f -> savedFiles.none { it.name == f.name } }
 
         // Delete artworks with missing files
-        val moviesToDelete = movies.filter { m -> allFiles.none { it.name == m.file.name } }
-        val episodesToDelete = episodes.filter { e -> allFiles.none { it.name == e.file.name } }
-        val artworksToDelete = artworks.filter { artwork -> moviesToDelete.any { it.artworkId == artwork.id } || episodesToDelete.containsAll(episodes.filter { it.artworkId == artwork.id }) }
-        databaseManager.deleteArtworks(artworksToDelete.map { it.id })
-        databaseManager.deleteEpisodes(episodesToDelete.map { it.id })
+        val moviesIdsToDelete = movies.filter { m -> allFiles.none { it.name == m.file.name } }.map { it.artworkId }
+        val episodesIdsToDelete = episodes.filter { e -> allFiles.none { it.name == e.file.name } }.map { it.id }
+        val artworksIdsToDelete = artworks.filter { artwork ->
+            moviesIdsToDelete.any { artwork.id == it }
+            || (episodes.any { it.artworkId == artwork.id } && episodesIdsToDelete.containsAll(episodes.filter { it.artworkId == artwork.id }.map { e -> e.id }))
+        }.map { it.id }
+        databaseManager.deleteArtworks(artworksIdsToDelete)
+        databaseManager.deleteEpisodes(episodesIdsToDelete)
 
         // Get new artworks from TMBD
-        val filteredArtwork = artworks.filter { a -> artworksToDelete.none { it.id == a.id } }
+        val filteredArtwork = artworks.filter { a -> artworksIdsToDelete.none { it == a.id } }
         val (newArtworks, newMovies, newEpisodes) = tmdbSource.getArtworks(
             files = newFiles,
             artworkIds = filteredArtwork.map { it.id },

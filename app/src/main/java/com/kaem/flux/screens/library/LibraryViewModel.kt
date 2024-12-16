@@ -46,7 +46,7 @@ class LibraryViewModel @Inject constructor(
     fun getLibrary() = viewModelScope.launch {
 
         val currentTime = System.currentTimeMillis()
-        val sync = currentTime - lastSyncTime > 7.days.inWholeMilliseconds
+        val sync = currentTime - lastSyncTime > 1.days.inWholeMilliseconds
 
         repository.getLibrary(sync)
 

@@ -1,6 +1,5 @@
 package com.kaem.flux.screens.player
 
-import android.app.Activity
 import android.content.pm.ActivityInfo
 import android.net.Uri
 import android.view.View
@@ -23,7 +22,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,12 +32,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
-import androidx.constraintlayout.compose.Dimension
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.Tracks
@@ -105,7 +101,7 @@ fun VideoPlayer(
 ) {
 
     val localContext = LocalContext.current
-    var showBackButton by remember { mutableStateOf(false) }
+    var showButtons by remember { mutableStateOf(false) }
     var metadata = emptyList<Metadata>()
 
     val exoPlayer = remember {
@@ -158,7 +154,7 @@ fun VideoPlayer(
                     setShowPreviousButton(false)
                     setShowNextButton(false)
                     setControllerVisibilityListener(PlayerView.ControllerVisibilityListener {
-                        showBackButton = it == View.VISIBLE
+                        showButtons = it == View.VISIBLE
                     })
                 }
             }
@@ -167,7 +163,7 @@ fun VideoPlayer(
     }
 
     PlayerButtons(
-        showButtons = showBackButton,
+        showButtons = showButtons,
         onBackButtonTap = {
             onTimeSave(exoPlayer.currentPosition)
             onBackButtonTap()

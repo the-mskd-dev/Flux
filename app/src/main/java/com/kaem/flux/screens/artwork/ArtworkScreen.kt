@@ -28,8 +28,8 @@ import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Done
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material3.Button
-import androidx.compose.material3.Divider
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ScrollableTabRow
@@ -56,22 +56,23 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.kaem.flux.R
-import com.kaem.flux.model.WatchTime
-import com.kaem.flux.model.flux.Content
+
 import com.kaem.flux.model.flux.Episode
 import com.kaem.flux.model.flux.Status
+import com.kaem.flux.screens.player.PlayerScreen
+import com.kaem.flux.ui.component.Loader
 import com.kaem.flux.ui.component.Title
 import com.kaem.flux.ui.theme.FluxElevation
 import com.kaem.flux.ui.theme.FluxFontSize
 import com.kaem.flux.ui.theme.FluxSpace
 import com.kaem.flux.ui.theme.FluxWeight
 import com.kaem.flux.utils.Constants
+import com.kaem.flux.utils.timeDescription
 import java.text.DateFormat
 
 @Composable
 fun ArtworkScreen(
     onBackButtonTap: () -> Unit,
-    launchPlayer: (Int, Int?) -> Unit,
     viewModel: ArtworkViewModel = hiltViewModel()
 ) {
 
@@ -96,23 +97,14 @@ fun ArtworkScreen(
                     onBackButtonTap = { onBackButtonTap() },
                     onLaunchButtonTap = {
 
-                        when (val content = uiState.artwork.content) {
-                            is Content.MOVIE -> {
-
-                                launchPlayer(
-                                    uiState.artwork.id,
-                                    null
-                                )
+                        when (val screen = uiState.screen) {
+                            is ArtworkUiState.Screen.MOVIE -> {
+                                viewModel.selectArtwork(screen.movie)
                             }
-                            is Content.SHOW -> {
-
-                                launchPlayer(
-                                    uiState.artwork.id,
-                                    content.currentEpisode?.id
-                                )
-
+                            is ArtworkUiState.Screen.SHOW -> {
+                                viewModel.selectArtwork(screen.currentEpisode)
                             }
-
+                            else -> {}
                         }
 
                     }
@@ -124,34 +116,57 @@ fun ArtworkScreen(
 
         }
 
-        if (uiState.artwork.content is Content.SHOW) {
+        when (val screen = uiState.screen) {
+            is ArtworkUiState.Screen.MOVIE -> {}
+            ArtworkUiState.Screen.LOADING -> {
 
-            val episodes = (uiState.artwork.content as Content.SHOW).episodes
-
-            item {
-
-                ArtworkSeasonsTabs(
-                    selectedSeason = uiState.currentSeason,
-                    seasons = episodes.map { it.season }.distinct(),
-                    onSeasonTap = { viewModel.selectSeason(it) }
-                )
+                item {
+                    Loader()
+                }
 
             }
+            ArtworkUiState.Screen.ERROR -> {
+                item {
+                    Text("Error") //TODO : Error message
+                }
+            }
+            is ArtworkUiState.Screen.SHOW -> {
 
-            items(items = episodes.filter { it.season == uiState.currentSeason }.sortedBy { it.number }, key = { it.id }) { episode ->
+                val episodes = screen.episodes
 
-                EpisodeItem(
-                    episode = episode,
-                    onWatchTap = {},
-                    isExpanded = uiState.expandedEpisodeId == episode.id,
-                    expandDetails = { viewModel.expandEpisodeDetails(episode.id) },
-                    onWatchStatusChange = { viewModel.changeWatchStatus(episode) }
-                )
+                item {
+
+                    ArtworkSeasonsTabs(
+                        selectedSeason = uiState.currentSeason,
+                        seasons = episodes.map { it.season }.distinct(),
+                        onSeasonTap = { viewModel.selectSeason(it) }
+                    )
+
+                }
+
+                items(items = episodes.filter { it.season == uiState.currentSeason }.sortedBy { it.number }, key = { it.id }) { episode ->
+
+                    EpisodeItem(
+                        episode = episode,
+                        onWatchTap = { viewModel.selectArtwork(episode) },
+                        isExpanded = uiState.expandedEpisodeId == episode.id,
+                        expandDetails = { viewModel.expandEpisodeDetails(episode.id) },
+                        onWatchStatusChange = { viewModel.changeWatchStatus(episode) }
+                    )
+
+                }
 
             }
-
         }
 
+    }
+
+    AnimatedVisibility(uiState.selectedArtwork != null) {
+        PlayerScreen(
+            artwork = uiState.selectedArtwork,
+            onBackButtonTap = { viewModel.selectArtwork(null) },
+            onTimeSave = { viewModel.saveTime(uiState.selectedArtwork, it) }
+        )
     }
 
 }
@@ -177,9 +192,9 @@ fun ArtworkHeader(
                     end.linkTo(parent.end)
                     width = Dimension.fillToConstraints
                 },
-            model = Constants.TMDB.IMAGE + uiState.artwork.bannerPath,
+            model = Constants.TMDB.IMAGE + uiState.artworkOverview.bannerPath,
             contentScale = ContentScale.Crop,
-            contentDescription = uiState.artwork.title
+            contentDescription = uiState.artworkOverview.title
         )
 
         Box(
@@ -236,7 +251,7 @@ fun ArtworkHeader(
                 )
 
 
-                val text = if (uiState.artworkDetails?.status == Status.IS_WATCHING) stringResource(id = R.string.resume, WatchTime(uiState.artworkDetails.currentTime).toString()) else stringResource(R.string.start)
+                val text = if (uiState.artworkDetails?.status == Status.IS_WATCHING) stringResource(id = R.string.resume, uiState.artworkDetails.currentTime.timeDescription) else stringResource(R.string.start)
                 Text(
                     text = text.uppercase(),
                     fontWeight = FluxWeight.MEDIUM
@@ -290,7 +305,7 @@ fun ArtworkTitle(
 
         Title(
             modifier = Modifier.fillMaxWidth(),
-            text = uiState.artwork.title
+            text = uiState.artworkOverview.title
         )
 
         uiState.artworkDetails?.releaseDate?.let {
@@ -405,7 +420,7 @@ fun EpisodeItem(
         verticalArrangement = Arrangement.spacedBy(FluxSpace.MEDIUM)
     ) {
 
-        Divider(
+        HorizontalDivider(
             modifier = Modifier
                 .fillMaxWidth()
                 .alpha(.2f),
@@ -500,11 +515,12 @@ fun EpisodeItemContent(
                 text = stringResource(id = if (episode.status == Status.WATCHED) R.string.mark_as_not_watched else R.string.mark_as_watched).uppercase()
             )
 
+            val watchTime = if (episode.status == Status.IS_WATCHING) stringResource(id = R.string.resume, episode.currentTime.timeDescription) else stringResource(R.string.start)
             Text(
                 modifier = Modifier.clickable { onWatchTap() },
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FluxWeight.MEDIUM,
-                text = stringResource(id = if (episode.status == Status.IS_WATCHING) R.string.resume else R.string.start).uppercase()
+                text = watchTime.uppercase()
             )
 
         }

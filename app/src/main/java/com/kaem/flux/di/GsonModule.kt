@@ -2,8 +2,7 @@ package com.kaem.flux.di
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.kaem.flux.model.flux.Content
-import com.kaem.flux.typeAdapters.ArtworkContentTypeAdapter
+
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,7 +17,6 @@ object GsonModule {
     @Singleton
     fun provideGson() : Gson {
         return GsonBuilder()
-            .registerTypeAdapter(Content::class.java, ArtworkContentTypeAdapter())
             .setLenient()
             .create()
     }

@@ -1,5 +1,6 @@
 package com.kaem.flux.di
 
+import com.kaem.flux.data.ddb.DatabaseManager
 import com.kaem.flux.data.repository.LibraryRepository
 import com.kaem.flux.data.source.artwork.ArtworkDataSource
 import com.kaem.flux.data.source.file.FilesDataSource
@@ -18,11 +19,13 @@ object LibraryModule {
     fun provideLibraryRepository(
         @FilesModule.LocalFilesDataSource localFilesDataSource: FilesDataSource,
         @ArtworkModule.LocalArtworkDataSource localArtworkDataSource: ArtworkDataSource,
-        @ArtworkModule.TMDBArtworkDataSource tmdbArtworkDataSource: ArtworkDataSource
+        @ArtworkModule.TMDBArtworkDataSource tmdbArtworkDataSource: ArtworkDataSource,
+        databaseManager: DatabaseManager
     ) : LibraryRepository = LibraryRepository(
         fileSource = localFilesDataSource,
         localSource = localArtworkDataSource,
-        tmdbSource = tmdbArtworkDataSource
+        tmdbSource = tmdbArtworkDataSource,
+        databaseManager = databaseManager
     )
 
 }

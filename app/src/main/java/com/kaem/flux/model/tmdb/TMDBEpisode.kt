@@ -22,7 +22,7 @@ data class TMDBEpisode(
     val title: String,
     @SerializedName("overview")
     val description: String,
-    val id: Int,
+    val id: Long,
     @SerializedName("runtime")
     val duration: Int,
     @SerializedName("episode_number")

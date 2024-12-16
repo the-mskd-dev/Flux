@@ -1,4 +1,4 @@
-package com.kaem.flux.model.flux
+package com.kaem.flux.model.artwork
 
 import com.kaem.flux.model.UserFile
 import com.kaem.flux.utils.parseTMDBDate

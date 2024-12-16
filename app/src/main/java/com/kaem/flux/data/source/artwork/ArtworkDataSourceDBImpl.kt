@@ -2,10 +2,10 @@ package com.kaem.flux.data.source.artwork
 
 import com.kaem.flux.data.ddb.DatabaseManager
 import com.kaem.flux.model.UserFile
-import com.kaem.flux.model.flux.ArtworkOverview
+import com.kaem.flux.model.artwork.ArtworkOverview
 
-import com.kaem.flux.model.flux.Episode
-import com.kaem.flux.model.flux.Movie
+import com.kaem.flux.model.artwork.Episode
+import com.kaem.flux.model.artwork.Movie
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject

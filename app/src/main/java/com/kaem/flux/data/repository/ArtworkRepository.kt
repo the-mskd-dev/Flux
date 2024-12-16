@@ -1,10 +1,10 @@
 package com.kaem.flux.data.repository
 
 import com.kaem.flux.data.ddb.DatabaseManager
-import com.kaem.flux.model.flux.ArtworkOverview
-import com.kaem.flux.model.flux.ContentType
-import com.kaem.flux.model.flux.Episode
-import com.kaem.flux.model.flux.Movie
+import com.kaem.flux.model.artwork.ArtworkOverview
+import com.kaem.flux.model.artwork.ContentType
+import com.kaem.flux.model.artwork.Episode
+import com.kaem.flux.model.artwork.Movie
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject

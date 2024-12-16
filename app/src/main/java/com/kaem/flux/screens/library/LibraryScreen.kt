@@ -43,9 +43,9 @@ import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.kaem.flux.R
-import com.kaem.flux.model.flux.ArtworkOverview
+import com.kaem.flux.model.artwork.ArtworkOverview
 
-import com.kaem.flux.model.flux.ContentType
+import com.kaem.flux.model.artwork.ContentType
 import com.kaem.flux.ui.component.FluxButton
 import com.kaem.flux.ui.component.Loader
 import com.kaem.flux.ui.component.Title

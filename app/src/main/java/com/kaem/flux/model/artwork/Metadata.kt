@@ -1,4 +1,4 @@
-package com.kaem.flux.model.flux
+package com.kaem.flux.model.artwork
 
 import androidx.annotation.OptIn
 import androidx.media3.common.Tracks

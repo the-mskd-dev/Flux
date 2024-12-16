@@ -5,7 +5,7 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.kaem.flux.data.repository.DataStoreRepository
 import com.kaem.flux.data.repository.LibraryRepository
-import com.kaem.flux.model.flux.ArtworkOverview
+import com.kaem.flux.model.artwork.ArtworkOverview
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch

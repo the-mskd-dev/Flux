@@ -5,11 +5,11 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kaem.flux.data.repository.ArtworkRepository
-import com.kaem.flux.model.flux.ArtworkOverview
-import com.kaem.flux.model.flux.Artwork
-import com.kaem.flux.model.flux.Episode
-import com.kaem.flux.model.flux.Movie
-import com.kaem.flux.model.flux.Status
+import com.kaem.flux.model.artwork.ArtworkOverview
+import com.kaem.flux.model.artwork.Artwork
+import com.kaem.flux.model.artwork.Episode
+import com.kaem.flux.model.artwork.Movie
+import com.kaem.flux.model.artwork.Status
 import com.kaem.flux.utils.inMinutes
 import com.kaem.flux.utils.timeDescription
 import dagger.hilt.android.lifecycle.HiltViewModel

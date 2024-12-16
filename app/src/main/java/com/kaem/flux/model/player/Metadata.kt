@@ -1,4 +1,4 @@
-package com.kaem.flux.model.artwork
+package com.kaem.flux.model.player
 
 import androidx.annotation.OptIn
 import androidx.media3.common.Tracks
@@ -66,7 +66,6 @@ sealed class Metadata(
                     }
 
                 }
-
 
             }
         }

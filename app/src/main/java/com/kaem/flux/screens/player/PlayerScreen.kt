@@ -40,7 +40,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import com.kaem.flux.model.artwork.Artwork
-import com.kaem.flux.model.artwork.Metadata
+import com.kaem.flux.model.player.Metadata
 import com.kaem.flux.ui.component.LifecycleComponent
 import com.kaem.flux.ui.theme.FluxSpace
 

@@ -6,12 +6,16 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.runBlocking
+import okhttp3.internal.toLongOrDefault
 import javax.inject.Inject
 
 
 data class LibraryPreferences(
-    val lastWatchedIds: List<Int> = listOf()
+    val lastWatchedIds: List<Long> = listOf(),
+    //val lastSyncTime: Long = Long.MIN_VALUE
 )
 
 
@@ -22,34 +26,43 @@ class DataStoreRepository @Inject constructor(
 
     private object PreferencesKeys {
         val LAST_WATCHED_IDS = stringPreferencesKey("last_watched_ids")
+        val LAST_SYNC_TIME = stringPreferencesKey("last_sync_time")
     }
 
     val preferencesFlow: Flow<LibraryPreferences> = dataStore.data.map { preferences ->
 
         val lastWatchedIdsString = preferences[PreferencesKeys.LAST_WATCHED_IDS] ?: "[]"
         val lastWatchedIds = gson.fromJson<List<Double>>(lastWatchedIdsString, List::class.java)
+        val lastSyncTime = (preferences[PreferencesKeys.LAST_SYNC_TIME] ?: "0").toLongOrDefault(0)
 
-        LibraryPreferences(
-            lastWatchedIds = lastWatchedIds.map { it.toInt() }
-        )
+        LibraryPreferences(lastWatchedIds = lastWatchedIds.map { it.toLong() },)
     }
 
-    suspend fun addWatchedArtwork(id: Int) {
+    suspend fun addWatchedArtwork(id: Long) {
         dataStore.edit { preferences ->
 
             val lastWatchedIdsString = preferences[PreferencesKeys.LAST_WATCHED_IDS] ?: "[]"
-            val lastWatchedIds: ArrayList<Int> = gson.fromJson<ArrayList<Int>>(lastWatchedIdsString, ArrayList::class.java)
+            val lastWatchedIds: ArrayList<Long> = gson.fromJson<ArrayList<Long>>(lastWatchedIdsString, ArrayList::class.java)
 
             if (lastWatchedIds.none { it == id }) {
 
                 lastWatchedIds.add(0, id)
 
-                if (lastWatchedIds.size > 4)
-                    lastWatchedIds.removeLast()
-
-                preferences[PreferencesKeys.LAST_WATCHED_IDS] = gson.toJson(lastWatchedIds)
+                preferences[PreferencesKeys.LAST_WATCHED_IDS] = gson.toJson(lastWatchedIds.take(4))
             }
 
+        }
+    }
+
+    fun getSyncTime() : Long = runBlocking {
+        dataStore.data.map {
+            (it[PreferencesKeys.LAST_SYNC_TIME] ?: "0").toLongOrDefault(0)
+        }.first()
+    }
+
+    suspend fun saveSyncTime(syncTime: Long) {
+        dataStore.edit { preferences ->
+            preferences[PreferencesKeys.LAST_SYNC_TIME] = syncTime.toString()
         }
     }
 

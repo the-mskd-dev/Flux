@@ -54,29 +54,9 @@ class MainActivity : ComponentActivity() {
 
                     composable(
                         "artwork/{artworkId}",
-                        arguments = listOf(navArgument("artworkId") { type = NavType.IntType })
+                        arguments = listOf(navArgument("artworkId") { type = NavType.LongType })
                     ) {
                         ArtworkScreen(
-                            onBackButtonTap = {
-
-                                if (navController.currentBackStackEntry != null)
-                                    navController.popBackStack()
-
-                            },
-                            launchPlayer = { id, episodeId ->
-                                navController.navigate("player/$id?episodeId=$episodeId")
-                            }
-                        )
-                    }
-
-                    composable(
-                        "player/{id}?episodeId={episodeId}",
-                        arguments = listOf(
-                            navArgument("id") { type = NavType.IntType },
-                            navArgument("episodeId") { type = NavType.IntType; defaultValue = Episode.NO_ID }
-                        )
-                    ) {
-                        PlayerScreen(
                             onBackButtonTap = {
 
                                 if (navController.currentBackStackEntry != null)

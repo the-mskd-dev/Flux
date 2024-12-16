@@ -34,11 +34,9 @@ object ArtworkModule {
     @Provides
     @TMDBArtworkDataSource
     fun provideTMDBArtworkDataSource(
-        databaseManager: DatabaseManager,
         tmdbService: TMDBService
     ) : ArtworkDataSource {
         return ArtworkDataSourceTMDBImpl(
-            databaseManager = databaseManager,
             tmdbService = tmdbService
         )
     }

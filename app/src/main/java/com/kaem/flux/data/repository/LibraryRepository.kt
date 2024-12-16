@@ -1,11 +1,12 @@
 package com.kaem.flux.data.repository
 
+import com.kaem.flux.data.ddb.DatabaseManager
 import com.kaem.flux.data.source.artwork.ArtworkDataSource
 import com.kaem.flux.data.source.file.FilesDataSource
 import com.kaem.flux.model.UserFile
-import com.kaem.flux.model.flux.Artwork
-import com.kaem.flux.model.flux.Content
+import com.kaem.flux.model.flux.ArtworkOverview
 import com.kaem.flux.model.flux.Episode
+import com.kaem.flux.model.flux.Movie
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,56 +16,71 @@ import javax.inject.Inject
 
 data class LibraryContent(
     val isLoading: Boolean = true,
-    val artworks: List<Artwork> = emptyList()
+    val artworkOverviews: List<ArtworkOverview> = emptyList()
 )
 
 class LibraryRepository @Inject constructor(
     private val fileSource: FilesDataSource,
     private val localSource: ArtworkDataSource,
-    private val tmdbSource: ArtworkDataSource
+    private val tmdbSource: ArtworkDataSource,
+    private val databaseManager: DatabaseManager
 ) {
 
     private val _libraryContent = MutableStateFlow<LibraryContent?>(null)
     val libraryContent: StateFlow<LibraryContent?> = _libraryContent.asStateFlow()
 
-    suspend fun getLibrary() {
+    suspend fun getLibrary(sync: Boolean = false) {
 
-        // Fetch all files, local and online (if possible)
-        val allFiles = getFiles()
-
-        // Fetch all artworks infos already in the DB according to the files
-        val (dbArtworks, dbEpisodes) = localSource.getArtworks(
-            files = allFiles
-        )
-
-        // Filter files absents of Artworks in the DB
-        val dbFiles = dbArtworks.mapNotNull { (it.content as? Content.MOVIE)?.movie?.file?.name } + dbEpisodes.map { it.file.name }
-        val filteredFiles =  allFiles.filter { !dbFiles.contains(it.name) }
-        val dbIds = dbArtworks.map { it.id } + dbEpisodes.map { it.id }
-
-        // Fetch all new artworks infos from TMDB with files
-        val (tmdbArtworks, tmdbEpisodes) = tmdbSource.getArtworks(
-            files = filteredFiles,
-            artworkIds = dbIds
-        )
-
-        // Merge all artworks infos from DB and TMDB
-        val allArtworks = dbArtworks + tmdbArtworks
-        val allEpisodes = dbEpisodes + tmdbEpisodes
-
-        // Sort episode for shows
-        allArtworks.forEach { artwork ->
-
-            if (artwork.content is Content.SHOW)
-                artwork.content.episodes = allEpisodes.filter { it.showId == artwork.id }.sortedWith(compareBy({ it.season }, { it.number }))
-
+        val artworks = if (sync) {
+            syncLibrary()
+        } else {
+            localSource.getArtworks(sync = false).artworkOverviews
         }
 
         // Update content
         _libraryContent.value = LibraryContent(
             isLoading = false,
-            artworks = allArtworks
+            artworkOverviews = artworks.sortedBy { it.title }
         )
+
+    }
+
+    private suspend fun syncLibrary() : List<ArtworkOverview> {
+
+        // Get all artworks
+        val (artworks, movies, episodes) = localSource.getArtworks(sync = true)
+
+        // Fetch all files, local and online (if possible)
+        val allFiles = getFiles()
+
+        // Filter files absents of Artworks in the DB
+        val savedFiles = movies.map { it.file } + episodes.map { it.file }
+        val newFiles = allFiles.filter { f -> savedFiles.none { it.name == f.name } }
+
+        // Delete artworks with missing files
+        val moviesIdsToDelete = movies.filter { m -> allFiles.none { it.name == m.file.name } }.map { it.artworkId }
+        val episodesIdsToDelete = episodes.filter { e -> allFiles.none { it.name == e.file.name } }.map { it.id }
+        val artworksIdsToDelete = artworks.filter { artwork ->
+            moviesIdsToDelete.any { artwork.id == it }
+            || (episodes.any { it.artworkId == artwork.id } && episodesIdsToDelete.containsAll(episodes.filter { it.artworkId == artwork.id }.map { e -> e.id }))
+        }.map { it.id }
+        databaseManager.deleteArtworks(artworksIdsToDelete)
+        databaseManager.deleteEpisodes(episodesIdsToDelete)
+
+        // Get new artworks from TMBD
+        val filteredArtwork = artworks.filter { a -> artworksIdsToDelete.none { it == a.id } }
+        val (newArtworks, newMovies, newEpisodes) = tmdbSource.getArtworks(
+            files = newFiles,
+            artworkIds = filteredArtwork.map { it.id },
+            sync = true
+        )
+
+        // Save new artworks
+        databaseManager.saveArtworks(newArtworks)
+        databaseManager.saveMovies(newMovies)
+        databaseManager.saveEpisodes(newEpisodes)
+
+        return filteredArtwork + newArtworks
 
     }
 
@@ -86,12 +102,12 @@ class LibraryRepository @Inject constructor(
 
     }
 
-    suspend fun saveArtwork(artwork: Artwork) {
-        localSource.saveArtwork(artwork)
+    suspend fun saveMovie(movie: Movie) {
+        return databaseManager.saveMovies(listOf(movie))
     }
 
-    suspend fun saveEpisodes(episodes: List<Episode>) {
-        localSource.saveEpisodes(episodes)
+    suspend fun saveEpisode(episode: Episode) {
+        return databaseManager.saveEpisodes(listOf(episode))
     }
 
 }

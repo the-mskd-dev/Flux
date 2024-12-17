@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
+import androidx.media3.common.C
 import androidx.media3.common.C.TRACK_TYPE_TEXT
 import androidx.media3.common.C.TrackType
 import androidx.media3.common.MediaItem
@@ -45,6 +46,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import androidx.media3.ui.PlayerView
+import androidx.media3.ui.TrackSelectionDialogBuilder
 import com.kaem.flux.model.artwork.Artwork
 import com.kaem.flux.model.player.Metadata
 import com.kaem.flux.ui.component.LifecycleComponent
@@ -107,16 +109,9 @@ fun VideoPlayer(
     var showButtons by remember { mutableStateOf(false) }
     var metadata = emptyList<Metadata>()
 
-    val trackSelector = DefaultTrackSelector(localContext)
-    val parametersBuilder = trackSelector.buildUponParameters().apply {
-        clearOverridesOfType(TRACK_TYPE_TEXT)
-        setPreferredTextLanguage(null)
-    }
-    val parameters = parametersBuilder.build()
-    trackSelector.parameters = parameters
+
     val exoPlayer = remember {
         ExoPlayer.Builder(localContext)
-            .setTrackSelector(trackSelector)
             .build()
             .apply {
                 setMediaItem(MediaItem.fromUri(Uri.parse(path)), currentTime)
@@ -148,8 +143,9 @@ fun VideoPlayer(
     )
 
     BackHandler(enabled = true) {
-        onTimeSave(exoPlayer.currentPosition)
-        onBackButtonTap()
+        TrackSelectionDialogBuilder(localContext, "Test", exoPlayer, C.TRACK_TYPE_AUDIO).build().show()
+        /*onTimeSave(exoPlayer.currentPosition)
+        onBackButtonTap()*/
     }
 
     Box(
@@ -178,8 +174,9 @@ fun VideoPlayer(
     PlayerButtons(
         showButtons = showButtons,
         onBackButtonTap = {
-            onTimeSave(exoPlayer.currentPosition)
-            onBackButtonTap()
+            TrackSelectionDialogBuilder(localContext, "Test", exoPlayer, TRACK_TYPE_TEXT).build().show()
+            /*onTimeSave(exoPlayer.currentPosition)
+            onBackButtonTap()*/
         }
     )
 

@@ -16,9 +16,12 @@ import androidx.media3.common.C.TRACK_TYPE_VIDEO
 import androidx.media3.common.C.TrackType
 import androidx.media3.common.Format
 import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
 import androidx.media3.common.TrackGroup
 import androidx.media3.common.Tracks
 import androidx.media3.common.util.UnstableApi
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import com.kaem.flux.data.repository.ArtworkRepository
 import com.kaem.flux.model.artwork.ArtworkOverview
 import com.kaem.flux.model.artwork.Artwork
@@ -173,7 +176,7 @@ class ArtworkViewModel @Inject constructor(
 
     }
 
-    private fun getMediaTracksWithExtractor(path: String): MetadataWrapper {
+    /*private fun getMediaTracksWithExtractor(path: String): MetadataWrapper {
 
         val uri = Uri.parse(path)
         val extractor = MediaExtractor()
@@ -210,6 +213,25 @@ class ArtworkViewModel @Inject constructor(
 
         return MetadataWrapper(audioTracks, subtitleTracks)
 
+    }*/
+
+    @OptIn(UnstableApi::class)
+    private fun setupMediaTracks(mediaItem: MediaItem) {
+        val trackSelector = DefaultTrackSelector(context)
+        val player = ExoPlayer.Builder(context)
+            .setTrackSelector(trackSelector)
+            .build()
+
+        player.setMediaItem(mediaItem)
+        player.prepare()
+
+        player.addListener(object : Player.Listener {
+            override fun onTracksChanged(tracks: Tracks) {
+                val audioTracks = tracks.groups.filter { it.type == TRACK_TYPE_AUDIO }
+                val subtitleTracks = tracks.groups.filter { it.type == TRACK_TYPE_TEXT }
+                super.onTracksChanged(tracks)
+            }
+        })
     }
 
 }

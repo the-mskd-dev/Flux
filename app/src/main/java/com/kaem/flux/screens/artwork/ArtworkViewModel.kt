@@ -25,9 +25,12 @@ import com.kaem.flux.model.artwork.Artwork
 import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.model.artwork.Movie
 import com.kaem.flux.model.artwork.Status
+import com.kaem.flux.model.player.Metadata
+import com.kaem.flux.model.player.MetadataWrapper
 import com.kaem.flux.utils.inMinutes
 import com.kaem.flux.utils.timeDescription
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -67,7 +70,7 @@ data class ArtworkUiState(
 @HiltViewModel
 class ArtworkViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val context: Context,
+    @ApplicationContext private val context: Context,
     private val repository: ArtworkRepository
 ) : ViewModel() {
 
@@ -110,6 +113,9 @@ class ArtworkViewModel @Inject constructor(
 
     fun selectArtwork(artwork: Artwork?) {
         _uiState.update { currentState ->
+            artwork?.let {
+                getMediaTracksWithExtractor(it.file.path)
+            }
             currentState.copy(selectedArtwork = artwork)
         }
     }
@@ -167,55 +173,43 @@ class ArtworkViewModel @Inject constructor(
 
     }
 
-    @OptIn(UnstableApi::class)
-    private fun getMetadatas(path: String) : Tracks {
+    private fun getMediaTracksWithExtractor(path: String): MetadataWrapper {
 
         val uri = Uri.parse(path)
         val extractor = MediaExtractor()
+        extractor.setDataSource(context, uri, emptyMap())
 
-        try {
-            extractor.setDataSource(context, uri, null)
+        val audioTracks = mutableListOf<Metadata.Audio>()
+        val subtitleTracks = mutableListOf<Metadata.Subtitles>()
 
-            val trackGroups = mutableListOf<TrackGroup>()
+        for (i in 0 until extractor.trackCount) {
+            val format = extractor.getTrackFormat(i)
+            val mime = format.getString(MediaFormat.KEY_MIME)
 
-            // Parcours de toutes les pistes
-            for (i in 0 until extractor.trackCount) {
-                val format = extractor.getTrackFormat(i)
-                val mime = format.getString(MediaFormat.KEY_MIME)
-
-                when {
-                    mime?.startsWith("audio/") == true -> {
-
-                        val audioTrackGroup = TrackGroup(format.toMedia3Format())
-                        trackGroups.add(audioTrackGroup)
-                    }
-                    mime?.startsWith("text/") == true -> {
-                        val textTrackGroup = TrackGroup(format.toMedia3Format())
-                        trackGroups.add(textTrackGroup)
-                    }
+            when {
+                mime?.startsWith("audio/") == true -> {
+                    val language = format.getString(MediaFormat.KEY_LANGUAGE)
+                    audioTracks.add(
+                        Metadata.Audio(
+                            language = language ?: "Inconnu"
+                        )
+                    )
+                }
+                mime?.startsWith("text/") == true -> {
+                    val language = format.getString(MediaFormat.KEY_LANGUAGE)
+                    subtitleTracks.add(
+                        Metadata.Subtitles(
+                            language = language ?: "Inconnu"
+                        )
+                    )
                 }
             }
-            return Tracks(trackGroups)
-
-
-        } catch (e: IOException) {
-            // Gestion des erreurs
-            return Tracks.EMPTY
-        } finally {
-            extractor.release()
         }
+
+        extractor.release()
+
+        return MetadataWrapper(audioTracks, subtitleTracks)
 
     }
 
-}
-
-@OptIn(UnstableApi::class)
-fun MediaFormat.toMedia3Format(): Format {
-    return Format.Builder()
-        .setSampleMimeType(getString(MediaFormat.KEY_MIME))
-        .setWidth(getInteger(MediaFormat.KEY_WIDTH, Format.NO_VALUE))
-        .setHeight(getInteger(MediaFormat.KEY_HEIGHT, Format.NO_VALUE))
-        .setChannelCount(getInteger(MediaFormat.KEY_CHANNEL_COUNT, Format.NO_VALUE))
-        .setSampleRate(getInteger(MediaFormat.KEY_SAMPLE_RATE, Format.NO_VALUE))
-        .build()
 }

@@ -4,29 +4,34 @@ import androidx.annotation.OptIn
 import androidx.media3.common.Tracks
 import androidx.media3.common.util.UnstableApi
 
+data class MetadataWrapper(
+    val audios: List<Metadata.Audio> = emptyList(),
+    val subtitles: List<Metadata.Subtitles> = emptyList()
+)
+
 sealed class Metadata(
-    val name: String,
-    val id: String,
+    //val name: String,
+    //val id: String,
     val language: String
 ) {
 
     class Audio(
-        name: String,
-        id: String,
+        //name: String,
+        //id: String,
         language: String
     ) : Metadata(
-        name = name,
-        id = id,
+        //name = name,
+        //id = id,
         language = language
     )
 
     class Subtitles(
-        name: String,
-        id: String,
+        //name: String,
+        //id: String,
         language: String
     ) : Metadata(
-        name = name,
-        id = id,
+        //name = name,
+        //id = id,
         language = language
     )
 
@@ -46,8 +51,8 @@ sealed class Metadata(
                             sampleMimeType.contains("audio", true) -> {
                                 add(
                                     Audio(
-                                        name = format.label.orEmpty(),
-                                        id = format.id.orEmpty(),
+                                        //name = format.label.orEmpty(),
+                                        //id = format.id.orEmpty(),
                                         language = format.language.orEmpty()
                                     )
                                 )
@@ -55,8 +60,8 @@ sealed class Metadata(
                             codecs.contains("text", true) -> {
                                 add(
                                     Subtitles(
-                                        name = format.label.orEmpty(),
-                                        id = format.id.orEmpty(),
+                                        //name = format.label.orEmpty(),
+                                        //id = format.id.orEmpty(),
                                         language = format.language.orEmpty()
                                     )
                                 )

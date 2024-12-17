@@ -109,6 +109,9 @@ fun VideoPlayer(
     var showButtons by remember { mutableStateOf(false) }
     var metadata = emptyList<Metadata>()
 
+    //TODO : Subtitles TrackSelectionDialogBuilder(localContext, "Subtitles", exoPlayer, TRACK_TYPE_TEXT).build().show()
+    //TODO : Audios TrackSelectionDialogBuilder(localContext, "Audio", exoPlayer, C.TRACK_TYPE_AUDIO).build().show()
+
 
     val exoPlayer = remember {
         ExoPlayer.Builder(localContext)
@@ -143,9 +146,8 @@ fun VideoPlayer(
     )
 
     BackHandler(enabled = true) {
-        TrackSelectionDialogBuilder(localContext, "Test", exoPlayer, C.TRACK_TYPE_AUDIO).build().show()
-        /*onTimeSave(exoPlayer.currentPosition)
-        onBackButtonTap()*/
+        onTimeSave(exoPlayer.currentPosition)
+        onBackButtonTap()
     }
 
     Box(
@@ -174,9 +176,8 @@ fun VideoPlayer(
     PlayerButtons(
         showButtons = showButtons,
         onBackButtonTap = {
-            TrackSelectionDialogBuilder(localContext, "Test", exoPlayer, TRACK_TYPE_TEXT).build().show()
-            /*onTimeSave(exoPlayer.currentPosition)
-            onBackButtonTap()*/
+            onTimeSave(exoPlayer.currentPosition)
+            onBackButtonTap()
         }
     )
 

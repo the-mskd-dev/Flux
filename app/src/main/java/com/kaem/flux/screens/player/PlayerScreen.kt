@@ -43,6 +43,7 @@ import androidx.media3.common.Player
 import androidx.media3.common.Tracks
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import androidx.media3.ui.PlayerView
 import com.kaem.flux.model.artwork.Artwork
 import com.kaem.flux.model.player.Metadata
@@ -106,18 +107,22 @@ fun VideoPlayer(
     var showButtons by remember { mutableStateOf(false) }
     var metadata = emptyList<Metadata>()
 
+    val trackSelector = DefaultTrackSelector(localContext)
     val exoPlayer = remember {
-        ExoPlayer.Builder(localContext).build().apply {
-            setMediaItem(MediaItem.fromUri(Uri.parse(path)), currentTime)
-            prepare()
-            addListener(
-                object : Player.Listener {
-                    override fun onTracksChanged(tracks: Tracks) {
-                        metadata = Metadata.tracksToParameters(tracks)
+        ExoPlayer.Builder(localContext)
+            .setTrackSelector(trackSelector)
+            .build()
+            .apply {
+                setMediaItem(MediaItem.fromUri(Uri.parse(path)), currentTime)
+                prepare()
+                addListener(
+                    object : Player.Listener {
+                        override fun onTracksChanged(tracks: Tracks) {
+                            metadata = Metadata.tracksToParameters(tracks)
+                        }
                     }
-                }
-            )
-            play()
+                )
+                play()
         }
     }
 

@@ -212,7 +212,7 @@ class ArtworkViewModel @Inject constructor(
 
     }*/
 
-    @OptIn(UnstableApi::class)
+    /*@OptIn(UnstableApi::class)
     private fun setupMediaTracks(mediaItem: MediaItem) {
         val trackSelector = DefaultTrackSelector(context)
         val player = ExoPlayer.Builder(context)
@@ -229,6 +229,6 @@ class ArtworkViewModel @Inject constructor(
                 super.onTracksChanged(tracks)
             }
         })
-    }
+    }*/
 
 }

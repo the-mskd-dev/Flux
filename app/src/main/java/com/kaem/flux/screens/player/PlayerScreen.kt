@@ -108,6 +108,12 @@ fun VideoPlayer(
     var metadata = emptyList<Metadata>()
 
     val trackSelector = DefaultTrackSelector(localContext)
+    val parametersBuilder = trackSelector.buildUponParameters().apply {
+        clearOverridesOfType(TRACK_TYPE_TEXT)
+        setPreferredTextLanguage(null)
+    }
+    val parameters = parametersBuilder.build()
+    trackSelector.parameters = parameters
     val exoPlayer = remember {
         ExoPlayer.Builder(localContext)
             .setTrackSelector(trackSelector)

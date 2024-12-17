@@ -116,9 +116,6 @@ class ArtworkViewModel @Inject constructor(
 
     fun selectArtwork(artwork: Artwork?) {
         _uiState.update { currentState ->
-            artwork?.let {
-                getMediaTracksWithExtractor(it.file.path)
-            }
             currentState.copy(selectedArtwork = artwork)
         }
     }

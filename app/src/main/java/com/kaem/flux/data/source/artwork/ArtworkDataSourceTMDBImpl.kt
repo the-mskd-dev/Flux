@@ -34,7 +34,7 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
     //region Companion object
 
     companion object {
-        const val TAG = "ArtworkDataSourceTMDBImpl"
+        const val TAG = "ArtworkDataSourceTMDB"
     }
 
     //endregion
@@ -95,10 +95,9 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
                     year = fileNameProperties.year
                 )
 
-                val artwork = artworks.results.maxBy { it.popularity }
-                artwork.type = TMDBMediaType.SHOW
-
-                artwork
+                artworks.results.maxByOrNull { it.popularity }?.also {
+                    it.type = TMDBMediaType.SHOW
+                }
 
             } catch (e: Exception) {
                 Log.e(TAG, "Fail to get show for name ${fileNameProperties.title}", e)
@@ -114,10 +113,9 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
                     year = fileNameProperties.year
                 )
 
-                val artwork = artworks.results.firstOrNull()
-                artwork?.type = TMDBMediaType.MOVIE
-
-                artwork
+                artworks.results.firstOrNull()?.also {
+                    it.type = TMDBMediaType.MOVIE
+                }
 
             } catch (e: Exception) {
                 Log.e(TAG, "Fail to get movie for name ${fileNameProperties.title}", e)
@@ -152,7 +150,6 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
                 } catch (e: Exception) {
                     Log.e(TAG, "Fail to get movie details for ID ${tmdbArtwork.id}", e)
                 }
-
 
             }
 

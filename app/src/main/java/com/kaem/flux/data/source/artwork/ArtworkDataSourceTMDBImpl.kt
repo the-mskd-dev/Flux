@@ -5,6 +5,7 @@ import com.kaem.flux.data.tmdb.TMDBService
 import com.kaem.flux.model.FileNameProperties
 import com.kaem.flux.model.UserFile
 import com.kaem.flux.model.artwork.ArtworkOverview
+import com.kaem.flux.model.artwork.ContentType
 import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.model.artwork.Movie
 import com.kaem.flux.model.tmdb.TMDBArtwork
@@ -17,6 +18,8 @@ import javax.inject.Inject
 
 class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMDBService) : ArtworkDataSource {
 
+    //region Variables
+
     private val mutexArtworks = Mutex()
     private val artworkOverviews = arrayListOf<ArtworkOverview>()
 
@@ -25,6 +28,18 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
 
     private val mutexEpisodes = Mutex()
     private val episodes = arrayListOf<Episode>()
+
+    //endregion
+
+    //region Companion object
+
+    companion object {
+        const val TAG = "ArtworkDataSourceTMDBImpl"
+    }
+
+    //endregion
+
+    //region Public methods
 
     override suspend fun getArtworks(
         files: List<UserFile>,
@@ -58,12 +73,16 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
         }
 
         return ArtworkDataSource.Library(
-            artworkOverviews = artworkOverviews,
+            artworkOverviews = artworkOverviews.filter { a -> if (a.type == ContentType.SHOW) episodes.any { it.artworkId == a.id } else true },
             movies = movies,
             episodes = episodes
         )
 
     }
+
+    //endregion
+
+    //region Private methods
 
     private suspend fun getTmdbArtwork(fileNameProperties: FileNameProperties) : TMDBArtwork? {
 
@@ -82,7 +101,7 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
                 artwork
 
             } catch (e: Exception) {
-                Log.e("ArtworkDataSourceTMDBImpl", "Fail to get show for name ${fileNameProperties.title}", e)
+                Log.e(TAG, "Fail to get show for name ${fileNameProperties.title}", e)
                 null
             }
 
@@ -101,7 +120,7 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
                 artwork
 
             } catch (e: Exception) {
-                Log.e("ArtworkDataSourceTMDBImpl", "Fail to get movie for name ${fileNameProperties.title}", e)
+                Log.e(TAG, "Fail to get movie for name ${fileNameProperties.title}", e)
                 null
             }
 
@@ -131,7 +150,7 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
                     addMovie(movie)
 
                 } catch (e: Exception) {
-                    Log.e("ArtworkDataSourceTMDBImpl", "Fail to get movie details for ID ${tmdbArtwork.id}", e)
+                    Log.e(TAG, "Fail to get movie details for ID ${tmdbArtwork.id}", e)
                 }
 
 
@@ -174,14 +193,14 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
             addEpisode(episode)
 
         } catch (e: Exception) {
-            Log.e("ArtworkDataSourceTMDBImpl", "Fail to get episode details for ID ${tmdbArtwork.id}, season ${file.nameProperties.season}, episode ${file.nameProperties.episode}", e)
+            Log.e(TAG, "Fail to get episode details for ID ${tmdbArtwork.id}, season ${file.nameProperties.season}, episode ${file.nameProperties.episode}", e)
         }
 
     }
 
     //endregion
 
-    //region Lists
+    //region Lists methods
 
     private suspend fun addArtwork(artworkOverview: ArtworkOverview) {
         mutexArtworks.withLock {

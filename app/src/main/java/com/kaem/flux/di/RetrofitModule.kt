@@ -16,7 +16,7 @@ import javax.inject.Singleton
 object RetrofitModule {
 
     private const val BASE_URL = "https://api.themoviedb.org/3/"
-    private const val TMDB_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyYWUwM2ExNmE5NjQ5NmJlZjdiMzI5OTZhZWIzYWMzOSIsInN1YiI6IjY1YWU3MjNhODQ4ZWI5MDBhYzljNDQ0ZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.EDyA2TZUKZjLYR8dhkIe0gN1RQuKIuunQjO9WhwFEOQ"
+    private const val TMDB_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyYWUwM2ExNmE5NjQ5NmJlZjdiMzI5OTZhZWIzYWMzOSIsIm5iZiI6MTcwNTkzMTMyMi4xMDUsInN1YiI6IjY1YWU3MjNhODQ4ZWI5MDBhYzljNDQ0ZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.c0I07zJ-DWdveIZoUd_GrBSaKKU3pUYolOCOIrgGwVg"
 
     @Provides
     @Singleton
@@ -24,7 +24,7 @@ object RetrofitModule {
         return OkHttpClient.Builder()
             .addNetworkInterceptor {
                 val requestBuilder = it.request().newBuilder()
-                requestBuilder.addHeader("Content-Type", "application/json")
+                requestBuilder.addHeader("accept", "application/json")
                 requestBuilder.addHeader("Authorization", "Bearer $TMDB_TOKEN")
                 it.proceed(requestBuilder.build())
             }

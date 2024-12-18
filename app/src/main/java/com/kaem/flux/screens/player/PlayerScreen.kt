@@ -41,6 +41,8 @@ import androidx.media3.common.C.TRACK_TYPE_TEXT
 import androidx.media3.common.C.TrackType
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
+import androidx.media3.common.TrackGroup
+import androidx.media3.common.TrackSelectionOverride
 import androidx.media3.common.Tracks
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
@@ -111,6 +113,8 @@ fun VideoPlayer(
 
     //TODO : Subtitles TrackSelectionDialogBuilder(localContext, "Subtitles", exoPlayer, TRACK_TYPE_TEXT).build().show()
     //TODO : Audios TrackSelectionDialogBuilder(localContext, "Audio", exoPlayer, C.TRACK_TYPE_AUDIO).build().show()
+
+
 
 
     val exoPlayer = remember {

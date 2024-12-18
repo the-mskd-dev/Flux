@@ -82,7 +82,7 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
                 artwork
 
             } catch (e: Exception) {
-                Log.e("ArtworkDataSourceTMDBImpl", "Fail to get show", e)
+                Log.e("ArtworkDataSourceTMDBImpl", "Fail to get show for name ${fileNameProperties.title}", e)
                 null
             }
 
@@ -101,7 +101,7 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
                 artwork
 
             } catch (e: Exception) {
-                Log.e("ArtworkDataSourceTMDBImpl", "Fail to get movie", e)
+                Log.e("ArtworkDataSourceTMDBImpl", "Fail to get movie for name ${fileNameProperties.title}", e)
                 null
             }
 
@@ -131,7 +131,7 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
                     addMovie(movie)
 
                 } catch (e: Exception) {
-                    Log.e("ArtworkDataSourceTMDBImpl", "Fail to get movie details", e)
+                    Log.e("ArtworkDataSourceTMDBImpl", "Fail to get movie details for ID ${tmdbArtwork.id}", e)
                 }
 
 
@@ -174,7 +174,7 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
             addEpisode(episode)
 
         } catch (e: Exception) {
-            Log.e("ArtworkDataSourceTMDBImpl", "Fail to get episode details", e)
+            Log.e("ArtworkDataSourceTMDBImpl", "Fail to get episode details for ID ${tmdbArtwork.id}, season ${file.nameProperties.season}, episode ${file.nameProperties.episode}", e)
         }
 
     }

@@ -34,27 +34,24 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.media3.common.C
 import androidx.media3.common.C.TRACK_TYPE_TEXT
-import androidx.media3.common.C.TrackType
 import androidx.media3.common.MediaItem
-import androidx.media3.common.Player
-import androidx.media3.common.TrackGroup
-import androidx.media3.common.TrackSelectionOverride
-import androidx.media3.common.Tracks
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import androidx.media3.ui.PlayerView
 import androidx.media3.ui.TrackSelectionDialogBuilder
 import com.kaem.flux.model.artwork.Artwork
-import com.kaem.flux.model.player.Metadata
 import com.kaem.flux.ui.component.LifecycleComponent
 import com.kaem.flux.ui.theme.FluxSpace
+import com.kaem.flux.utils.hideSystemBars
+import com.kaem.flux.utils.showSystemBars
 
 @Composable
 fun PlayerScreen(
@@ -65,6 +62,7 @@ fun PlayerScreen(
 
     var isExiting by remember { mutableStateOf(false) }
     val activity = LocalContext.current as ComponentActivity
+    val view = LocalView.current
     val exitScreen = remember {
         { orientation: Int ->
             if (activity.requestedOrientation != orientation) {
@@ -74,12 +72,13 @@ fun PlayerScreen(
             onBackButtonTap()
         }
     }
-
     DisposableEffect(Unit) {
         val originalOrientation = activity.requestedOrientation
         activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        activity.hideSystemBars()
         onDispose {
             activity.requestedOrientation = originalOrientation
+            activity.showSystemBars()
         }
     }
 

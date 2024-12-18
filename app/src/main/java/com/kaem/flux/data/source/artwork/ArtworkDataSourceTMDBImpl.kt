@@ -1,5 +1,6 @@
 package com.kaem.flux.data.source.artwork
 
+import android.util.Log
 import com.kaem.flux.data.tmdb.TMDBService
 import com.kaem.flux.model.FileNameProperties
 import com.kaem.flux.model.UserFile
@@ -68,27 +69,41 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
 
         return if (fileNameProperties.episode != null && fileNameProperties.season != null) {
 
-            val artworks = tmdbService.getShow(
-                title = fileNameProperties.title,
-                year = fileNameProperties.year
-            )
+            try {
 
-            val artwork = artworks.results.maxBy { it.popularity }
-            artwork.type = TMDBMediaType.SHOW
+                val artworks = tmdbService.getShow(
+                    title = fileNameProperties.title,
+                    year = fileNameProperties.year
+                )
 
-            artwork
+                val artwork = artworks.results.maxBy { it.popularity }
+                artwork.type = TMDBMediaType.SHOW
+
+                artwork
+
+            } catch (e: Exception) {
+                Log.e("ArtworkDataSourceTMDBImpl", "Fail to get show", e)
+                null
+            }
 
         } else {
 
-            val artworks = tmdbService.getMovie(
-                title = fileNameProperties.title,
-                year = fileNameProperties.year
-            )
+            try {
 
-            val artwork = artworks.results.firstOrNull()
-            artwork?.type = TMDBMediaType.MOVIE
+                val artworks = tmdbService.getMovie(
+                    title = fileNameProperties.title,
+                    year = fileNameProperties.year
+                )
 
-            artwork
+                val artwork = artworks.results.firstOrNull()
+                artwork?.type = TMDBMediaType.MOVIE
+
+                artwork
+
+            } catch (e: Exception) {
+                Log.e("ArtworkDataSourceTMDBImpl", "Fail to get movie", e)
+                null
+            }
 
         }
 
@@ -105,13 +120,20 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
 
             TMDBMediaType.MOVIE -> {
 
-                val tmdbMovie = tmdbService.getMovieDetails(id = tmdbArtwork.id)
+                try {
 
-                val artworkOverview = ArtworkOverview(tmdbMovie = tmdbMovie)
-                addArtwork(artworkOverview)
+                    val tmdbMovie = tmdbService.getMovieDetails(id = tmdbArtwork.id)
 
-                val movie = Movie(tmdbMovie = tmdbMovie, file = file,)
-                addMovie(movie)
+                    val artworkOverview = ArtworkOverview(tmdbMovie = tmdbMovie)
+                    addArtwork(artworkOverview)
+
+                    val movie = Movie(tmdbMovie = tmdbMovie, file = file,)
+                    addMovie(movie)
+
+                } catch (e: Exception) {
+                    Log.e("ArtworkDataSourceTMDBImpl", "Fail to get movie details", e)
+                }
+
 
             }
 
@@ -135,19 +157,25 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
 
         tmdbArtwork ?: return
 
-        val tmdbEpisode = tmdbService.getEpisode(
-            id = tmdbArtwork.id,
-            season = file.nameProperties.season!!,
-            episode = file.nameProperties.episode!!
-        )
+        try {
 
-        val episode = Episode(
-            tmdbEpisode = tmdbEpisode,
-            artworkId = tmdbArtwork.id,
-            file = file
-        )
+            val tmdbEpisode = tmdbService.getEpisode(
+                id = tmdbArtwork.id,
+                season = file.nameProperties.season!!,
+                episode = file.nameProperties.episode!!
+            )
 
-        addEpisode(episode)
+            val episode = Episode(
+                tmdbEpisode = tmdbEpisode,
+                artworkId = tmdbArtwork.id,
+                file = file
+            )
+
+            addEpisode(episode)
+
+        } catch (e: Exception) {
+            Log.e("ArtworkDataSourceTMDBImpl", "Fail to get episode details", e)
+        }
 
     }
 

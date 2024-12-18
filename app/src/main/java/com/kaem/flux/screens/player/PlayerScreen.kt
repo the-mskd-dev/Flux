@@ -123,6 +123,9 @@ fun VideoPlayer(
         }
     }
 
+    val audioDialog = TrackSelectionDialogBuilder(localContext, "Audio", exoPlayer, C.TRACK_TYPE_AUDIO).build()
+    val subtitlesDialog = TrackSelectionDialogBuilder(localContext, "Subtitles", exoPlayer, TRACK_TYPE_TEXT).build()
+
     // Manage lifecycle events
     DisposableEffect(Unit) {
         onDispose { exoPlayer.release() }
@@ -155,6 +158,7 @@ fun VideoPlayer(
                 PlayerView(context).apply {
                     player = exoPlayer
                     showController()
+                    setShowSubtitleButton(false)
                     setShowPreviousButton(false)
                     setShowNextButton(false)
                     setControllerVisibilityListener(PlayerView.ControllerVisibilityListener {
@@ -172,12 +176,8 @@ fun VideoPlayer(
             onTimeSave(exoPlayer.currentPosition)
             onBackButtonTap()
         },
-        onAudioTap = {
-            TrackSelectionDialogBuilder(localContext, "Audio", exoPlayer, C.TRACK_TYPE_AUDIO).build().show()
-        },
-        onSubtitlesTap = {
-            TrackSelectionDialogBuilder(localContext, "Subtitles", exoPlayer, TRACK_TYPE_TEXT).build().show()
-        }
+        onAudioTap = { if (!audioDialog.isShowing) audioDialog.show() },
+        onSubtitlesTap = { if (!subtitlesDialog.isShowing) subtitlesDialog.show() }
     )
 
 }

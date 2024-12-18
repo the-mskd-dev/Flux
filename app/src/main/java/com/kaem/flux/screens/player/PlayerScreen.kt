@@ -3,6 +3,7 @@ package com.kaem.flux.screens.player
 import android.content.pm.ActivityInfo
 import android.net.Uri
 import android.view.View
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.annotation.OptIn
@@ -76,9 +77,11 @@ fun PlayerScreen(
         val originalOrientation = activity.requestedOrientation
         activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
         activity.hideSystemBars()
+        activity.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         onDispose {
             activity.requestedOrientation = originalOrientation
             activity.showSystemBars()
+            activity.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
     }
 

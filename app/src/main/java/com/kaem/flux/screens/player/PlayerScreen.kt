@@ -18,8 +18,10 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -109,12 +111,6 @@ fun VideoPlayer(
 
     val localContext = LocalContext.current
     var showButtons by remember { mutableStateOf(false) }
-    var metadata = emptyList<Metadata>()
-
-    //TODO : Subtitles TrackSelectionDialogBuilder(localContext, "Subtitles", exoPlayer, TRACK_TYPE_TEXT).build().show()
-    //TODO : Audios TrackSelectionDialogBuilder(localContext, "Audio", exoPlayer, C.TRACK_TYPE_AUDIO).build().show()
-
-
 
 
     val exoPlayer = remember {
@@ -123,13 +119,6 @@ fun VideoPlayer(
             .apply {
                 setMediaItem(MediaItem.fromUri(Uri.parse(path)), currentTime)
                 prepare()
-                addListener(
-                    object : Player.Listener {
-                        override fun onTracksChanged(tracks: Tracks) {
-                            metadata = Metadata.tracksToParameters(tracks)
-                        }
-                    }
-                )
                 play()
         }
     }
@@ -182,6 +171,12 @@ fun VideoPlayer(
         onBackButtonTap = {
             onTimeSave(exoPlayer.currentPosition)
             onBackButtonTap()
+        },
+        onAudioTap = {
+            TrackSelectionDialogBuilder(localContext, "Audio", exoPlayer, C.TRACK_TYPE_AUDIO).build().show()
+        },
+        onSubtitlesTap = {
+            TrackSelectionDialogBuilder(localContext, "Subtitles", exoPlayer, TRACK_TYPE_TEXT).build().show()
         }
     )
 
@@ -190,7 +185,9 @@ fun VideoPlayer(
 @Composable
 fun PlayerButtons(
     showButtons: Boolean,
-    onBackButtonTap: () -> Unit
+    onBackButtonTap: () -> Unit,
+    onAudioTap: () -> Unit,
+    onSubtitlesTap: () -> Unit
 ) {
 
     AnimatedVisibility(visible = showButtons) {
@@ -206,6 +203,26 @@ fun PlayerButtons(
                 layoutId = "back",
                 onTap = { onBackButtonTap() }
             )
+
+            Button(
+                modifier = Modifier.layoutId("audio"),
+                onClick = onAudioTap
+            ) {
+                Text(
+                    text = "Audio",
+                    color = Color.White
+                )
+            }
+
+            Button(
+                modifier = Modifier.layoutId("subtitles"),
+                onClick = onSubtitlesTap
+            ) {
+                Text(
+                    text = "Subtitles",
+                    color = Color.White
+                )
+            }
 
         }
 
@@ -251,6 +268,18 @@ val PlayerButtonsConstraintSet = ConstraintSet {
     val back = createRefFor("back")
     constrain(back) {
         top.linkTo(parent.top)
+        start.linkTo(parent.start)
+    }
+
+    val audio = createRefFor("audio")
+    constrain(audio) {
+        top.linkTo(back.bottom, 8.dp)
+        start.linkTo(parent.start)
+    }
+
+    val subtitles = createRefFor("subtitles")
+    constrain(subtitles) {
+        top.linkTo(audio.bottom, 4.dp)
         start.linkTo(parent.start)
     }
 

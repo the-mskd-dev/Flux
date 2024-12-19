@@ -1,9 +1,7 @@
 package com.kaem.flux.screens.player
 
-import android.content.pm.ActivityInfo
 import android.net.Uri
 import android.view.View
-import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.annotation.OptIn
@@ -25,6 +23,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,12 +34,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
-import androidx.core.view.WindowInsetsControllerCompat
 import androidx.media3.common.C
 import androidx.media3.common.C.TRACK_TYPE_TEXT
 import androidx.media3.common.MediaItem
@@ -51,7 +48,10 @@ import androidx.media3.ui.TrackSelectionDialogBuilder
 import com.kaem.flux.model.artwork.Artwork
 import com.kaem.flux.ui.component.LifecycleComponent
 import com.kaem.flux.ui.theme.FluxSpace
+import com.kaem.flux.utils.forceScreenOn
 import com.kaem.flux.utils.hideSystemBars
+import com.kaem.flux.utils.setAppInLandscape
+import com.kaem.flux.utils.setAppOrientation
 import com.kaem.flux.utils.showSystemBars
 
 @Composable
@@ -63,25 +63,13 @@ fun PlayerScreen(
 
     var isExiting by remember { mutableStateOf(false) }
     val activity = LocalContext.current as ComponentActivity
-    val view = LocalView.current
-    val exitScreen = remember {
-        { orientation: Int ->
-            if (activity.requestedOrientation != orientation) {
-                activity.requestedOrientation = orientation
-            }
-            isExiting = true
-            onBackButtonTap()
-        }
-    }
+    val orientation = remember { activity.requestedOrientation }
+
     DisposableEffect(Unit) {
-        val originalOrientation = activity.requestedOrientation
-        activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-        activity.hideSystemBars()
-        activity.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        activity.setAppInLandscape()
+        activity.forceScreenOn(true)
         onDispose {
-            activity.requestedOrientation = originalOrientation
-            activity.showSystemBars()
-            activity.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            activity.forceScreenOn(false)
         }
     }
 
@@ -91,7 +79,9 @@ fun PlayerScreen(
                 path = artwork.file.path,
                 currentTime = artwork.currentTime,
                 onBackButtonTap = {
-                    exitScreen(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+                    activity.setAppOrientation(orientation)
+                    isExiting = true
+                    onBackButtonTap()
                 },
                 onTimeSave = onTimeSave
             )
@@ -108,15 +98,14 @@ fun VideoPlayer(
     path: String,
     currentTime: Long,
     onBackButtonTap: () -> Unit,
-    onTimeSave: (Long) -> Unit,
+    onTimeSave: (Long) -> Unit
 ) {
 
-    val localContext = LocalContext.current
+    val activity = LocalContext.current as ComponentActivity
     var showButtons by remember { mutableStateOf(false) }
 
-
     val exoPlayer = remember {
-        ExoPlayer.Builder(localContext)
+        ExoPlayer.Builder(activity)
             .build()
             .apply {
                 setMediaItem(MediaItem.fromUri(Uri.parse(path)), currentTime)
@@ -125,12 +114,19 @@ fun VideoPlayer(
         }
     }
 
-    val audioDialog = TrackSelectionDialogBuilder(localContext, "Audio", exoPlayer, C.TRACK_TYPE_AUDIO).build()
-    val subtitlesDialog = TrackSelectionDialogBuilder(localContext, "Subtitles", exoPlayer, TRACK_TYPE_TEXT).build()
+    val audioDialog = TrackSelectionDialogBuilder(activity, "Audio", exoPlayer, C.TRACK_TYPE_AUDIO).build()
+    val subtitlesDialog = TrackSelectionDialogBuilder(activity, "Subtitles", exoPlayer, TRACK_TYPE_TEXT).build()
 
     // Manage lifecycle events
     DisposableEffect(Unit) {
-        onDispose { exoPlayer.release() }
+        onDispose {
+            activity.showSystemBars()
+            exoPlayer.release()
+        }
+    }
+
+    LaunchedEffect(showButtons) {
+        if (showButtons) activity.showSystemBars() else activity.hideSystemBars()
     }
 
     LifecycleComponent(

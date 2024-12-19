@@ -9,7 +9,10 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -34,6 +37,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -45,6 +49,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import androidx.media3.ui.TrackSelectionDialogBuilder
+import com.kaem.flux.R
 import com.kaem.flux.model.artwork.Artwork
 import com.kaem.flux.ui.component.LifecycleComponent
 import com.kaem.flux.ui.theme.FluxSpace
@@ -202,24 +207,16 @@ fun PlayerButtons(
                 onTap = { onBackButtonTap() }
             )
 
-            Button(
-                modifier = Modifier.layoutId("audio"),
-                onClick = onAudioTap
+            Column(
+                modifier = Modifier.layoutId("buttons"),
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+                horizontalAlignment = Alignment.End
             ) {
-                Text(
-                    text = "Audio",
-                    color = Color.White
-                )
-            }
 
-            Button(
-                modifier = Modifier.layoutId("subtitles"),
-                onClick = onSubtitlesTap
-            ) {
-                Text(
-                    text = "Subtitles",
-                    color = Color.White
-                )
+                PlayerAudioButton(onTap = onAudioTap)
+
+                PlayerSubtitlesButton(onTap = onSubtitlesTap)
+
             }
 
         }
@@ -236,25 +233,69 @@ fun PlayerBackButton(
 
     Box(
         modifier = Modifier
-            .padding(start = FluxSpace.MEDIUM)
             .layoutId(layoutId)
+            .padding(start = FluxSpace.MEDIUM)
             .size(50.dp)
             .clip(shape = CircleShape)
             .clickable { onTap() }
-            .border(
-                width = 1.dp,
-                color = MaterialTheme.colorScheme.onBackground,
-                shape = CircleShape
-            )
-            .background(color = MaterialTheme.colorScheme.background)
             .padding(4.dp),
         contentAlignment = Alignment.Center
     ) {
 
         Icon(
             imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-            tint = MaterialTheme.colorScheme.onBackground,
+            tint = Color.White,
             contentDescription = "back button"
+        )
+
+    }
+
+}
+
+@Composable
+fun PlayerAudioButton(
+    onTap: () -> Unit
+) {
+
+    Box(
+        modifier = Modifier
+            .padding(start = FluxSpace.MEDIUM)
+            .size(50.dp)
+            .clip(shape = CircleShape)
+            .clickable { onTap() }
+            .padding(4.dp),
+        contentAlignment = Alignment.Center
+    ) {
+
+        Icon(
+            painter = painterResource(R.drawable.audio),
+            tint = Color.White,
+            contentDescription = "audio button"
+        )
+
+    }
+
+}
+
+@Composable
+fun PlayerSubtitlesButton(
+    onTap: () -> Unit
+) {
+
+    Box(
+        modifier = Modifier
+            .padding(start = FluxSpace.MEDIUM)
+            .size(50.dp)
+            .clip(shape = CircleShape)
+            .clickable { onTap() }
+            .padding(4.dp),
+        contentAlignment = Alignment.Center
+    ) {
+
+        Icon(
+            painter = painterResource(R.drawable.subtitles),
+            tint = Color.White,
+            contentDescription = "subtitles button"
         )
 
     }
@@ -269,16 +310,11 @@ val PlayerButtonsConstraintSet = ConstraintSet {
         start.linkTo(parent.start)
     }
 
-    val audio = createRefFor("audio")
-    constrain(audio) {
-        top.linkTo(back.bottom, 8.dp)
-        start.linkTo(parent.start)
-    }
-
-    val subtitles = createRefFor("subtitles")
-    constrain(subtitles) {
-        top.linkTo(audio.bottom, 4.dp)
-        start.linkTo(parent.start)
+    val buttons = createRefFor("buttons")
+    constrain(buttons) {
+        top.linkTo(parent.top)
+        bottom.linkTo(parent.bottom)
+        end.linkTo(parent.end, FluxSpace.SMALL)
     }
 
 }

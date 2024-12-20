@@ -6,8 +6,15 @@ import androidx.lifecycle.viewModelScope
 import com.kaem.flux.data.repository.DataStoreRepository
 import com.kaem.flux.data.repository.LibraryRepository
 import com.kaem.flux.model.artwork.ArtworkOverview
+import com.kaem.flux.screens.artwork.ArtworkUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.days
@@ -43,10 +50,10 @@ class LibraryViewModel @Inject constructor(
     }
     val libraryUiState = libraryUiStateFlow.asLiveData()
 
-    fun getLibrary() = viewModelScope.launch {
+    fun getLibrary(manualSync: Boolean = false) = viewModelScope.launch {
 
         val currentTime = System.currentTimeMillis()
-        val sync = currentTime - lastSyncTime > 1.days.inWholeMilliseconds
+        val sync = currentTime - lastSyncTime > 1.days.inWholeMilliseconds || manualSync
 
         repository.getLibrary(sync)
 
@@ -55,5 +62,7 @@ class LibraryViewModel @Inject constructor(
             lastSyncTime = currentTime
         }
     }
+
+
 
 }

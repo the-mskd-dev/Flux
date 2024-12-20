@@ -21,8 +21,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -52,7 +55,7 @@ import com.kaem.flux.ui.component.Title
 import com.kaem.flux.ui.theme.FluxSpace
 import com.kaem.flux.utils.Constants
 
-@OptIn(ExperimentalPermissionsApi::class)
+@OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun LibraryScreen(
     navigateToDetails: (Long) -> Unit,
@@ -84,11 +87,22 @@ fun LibraryScreen(
             when (it) {
 
                 null -> Loader()
-                else -> LibraryContent(
-                    artworkOverviews = it.artworkOverviews,
-                    lastWatchedIds = it.lastWatchedArtworkIds,
-                    navigateToDetails = { id -> navigateToDetails(id) }
-                )
+                else -> {
+
+                    PullToRefreshBox(
+                        modifier = Modifier.fillMaxSize(),
+                        isRefreshing = it.isLoading,
+                        onRefresh = { viewModel.getLibrary(manualSync = true) }
+                    ) {
+
+                        LibraryContent(
+                            artworkOverviews = it.artworkOverviews,
+                            lastWatchedIds = it.lastWatchedArtworkIds,
+                            navigateToDetails = { id -> navigateToDetails(id) }
+                        )
+
+                    }
+                }
 
             }
 

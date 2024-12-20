@@ -172,7 +172,7 @@ fun VideoPlayer(
                 PlayerView(context).apply {
                     player = exoPlayer
                     showController()
-                    setShowSubtitleButton(false)
+                    setShowSubtitleButton(true)
                     setShowPreviousButton(false)
                     setShowNextButton(false)
                     setControllerVisibilityListener(PlayerView.ControllerVisibilityListener {
@@ -225,7 +225,7 @@ fun PlayerButtons(
                 artwork = artwork
             )
 
-            Column(
+            /*Column(
                 modifier = Modifier.layoutId("buttons"),
                 verticalArrangement = Arrangement.spacedBy(FluxSpace.EXTRA_SMALL),
                 horizontalAlignment = Alignment.End
@@ -235,7 +235,7 @@ fun PlayerButtons(
 
                 PlayerSubtitlesButton(onTap = onSubtitlesTap)
 
-            }
+            }*/
 
         }
 

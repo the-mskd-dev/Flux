@@ -46,6 +46,8 @@ import androidx.media3.common.C
 import androidx.media3.common.C.TRACK_TYPE_TEXT
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
+import androidx.media3.decoder.ffmpeg.FfmpegAudioRenderer
+import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import androidx.media3.ui.TrackSelectionDialogBuilder
@@ -109,8 +111,12 @@ fun VideoPlayer(
     val activity = LocalContext.current as ComponentActivity
     var showButtons by remember { mutableStateOf(false) }
 
+    val renderersFactory = DefaultRenderersFactory(activity)
+    renderersFactory.setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_PREFER)
+
     val exoPlayer = remember {
         ExoPlayer.Builder(activity)
+            .setRenderersFactory(renderersFactory)
             .build()
             .apply {
                 setMediaItem(MediaItem.fromUri(Uri.parse(path)), currentTime)

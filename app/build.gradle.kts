@@ -75,6 +75,7 @@ dependencies {
     val media3Version = "1.5.0"
     implementation("androidx.media3:media3-exoplayer:$media3Version")
     implementation("androidx.media3:media3-ui:$media3Version")
+    implementation("org.jellyfin.media3:media3-ffmpeg-decoder:1.5.0+1")
 
     // Hilt
     implementation("com.google.dagger:hilt-android:2.52")

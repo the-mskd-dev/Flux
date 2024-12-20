@@ -130,9 +130,6 @@ fun VideoPlayer(
         }
     }
 
-    val audioDialog by lazy { TrackSelectionDialogBuilder(activity, "Audio", exoPlayer, C.TRACK_TYPE_AUDIO).build() }
-    val subtitlesDialog by lazy { TrackSelectionDialogBuilder(activity, "Subtitles", exoPlayer, TRACK_TYPE_TEXT).build() }
-
     // Manage lifecycle events
     DisposableEffect(Unit) {
         onDispose {
@@ -190,9 +187,7 @@ fun VideoPlayer(
         onBackButtonTap = {
             onTimeSave(exoPlayer.currentPosition)
             onBackButtonTap()
-        },
-        onAudioTap = { if (!audioDialog.isShowing) audioDialog.show() },
-        onSubtitlesTap = { if (!subtitlesDialog.isShowing) subtitlesDialog.show() }
+        }
     )
 
 }
@@ -201,9 +196,7 @@ fun VideoPlayer(
 fun PlayerButtons(
     artwork: Artwork,
     showButtons: Boolean,
-    onBackButtonTap: () -> Unit,
-    onAudioTap: () -> Unit,
-    onSubtitlesTap: () -> Unit
+    onBackButtonTap: () -> Unit
 ) {
 
     AnimatedVisibility(visible = showButtons) {
@@ -224,18 +217,6 @@ fun PlayerButtons(
                 layoutId = "title",
                 artwork = artwork
             )
-
-            /*Column(
-                modifier = Modifier.layoutId("buttons"),
-                verticalArrangement = Arrangement.spacedBy(FluxSpace.EXTRA_SMALL),
-                horizontalAlignment = Alignment.End
-            ) {
-
-                PlayerAudioButton(onTap = onAudioTap)
-
-                PlayerSubtitlesButton(onTap = onSubtitlesTap)
-
-            }*/
 
         }
 
@@ -311,55 +292,6 @@ fun PlayerTitle(
     }
 
 }
-@Composable
-fun PlayerAudioButton(
-    onTap: () -> Unit
-) {
-
-    Box(
-        modifier = Modifier
-            .padding(start = FluxSpace.MEDIUM)
-            .size(50.dp)
-            .clip(shape = CircleShape)
-            .clickable { onTap() }
-            .padding(FluxSpace.EXTRA_SMALL),
-        contentAlignment = Alignment.Center
-    ) {
-
-        Icon(
-            painter = painterResource(R.drawable.audio),
-            tint = Color.White,
-            contentDescription = "audio button"
-        )
-
-    }
-
-}
-
-@Composable
-fun PlayerSubtitlesButton(
-    onTap: () -> Unit
-) {
-
-    Box(
-        modifier = Modifier
-            .padding(start = FluxSpace.MEDIUM)
-            .size(50.dp)
-            .clip(shape = CircleShape)
-            .clickable { onTap() }
-            .padding(FluxSpace.EXTRA_SMALL),
-        contentAlignment = Alignment.Center
-    ) {
-
-        Icon(
-            painter = painterResource(R.drawable.subtitles),
-            tint = Color.White,
-            contentDescription = "subtitles button"
-        )
-
-    }
-
-}
 
 val PlayerButtonsConstraintSet = ConstraintSet {
 
@@ -375,13 +307,6 @@ val PlayerButtonsConstraintSet = ConstraintSet {
         start.linkTo(back.end, FluxSpace.SMALL)
         end.linkTo(parent.end, FluxSpace.MEDIUM)
         width = Dimension.fillToConstraints
-    }
-
-    val buttons = createRefFor("buttons")
-    constrain(buttons) {
-        top.linkTo(parent.top)
-        bottom.linkTo(parent.bottom)
-        end.linkTo(parent.end, FluxSpace.SMALL)
     }
 
 }

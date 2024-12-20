@@ -125,8 +125,8 @@ fun VideoPlayer(
         }
     }
 
-    val audioDialog = TrackSelectionDialogBuilder(activity, "Audio", exoPlayer, C.TRACK_TYPE_AUDIO).build()
-    val subtitlesDialog = TrackSelectionDialogBuilder(activity, "Subtitles", exoPlayer, TRACK_TYPE_TEXT).build()
+    val audioDialog by lazy { TrackSelectionDialogBuilder(activity, "Audio", exoPlayer, C.TRACK_TYPE_AUDIO).build() }
+    val subtitlesDialog by lazy { TrackSelectionDialogBuilder(activity, "Subtitles", exoPlayer, TRACK_TYPE_TEXT).build() }
 
     // Manage lifecycle events
     DisposableEffect(Unit) {

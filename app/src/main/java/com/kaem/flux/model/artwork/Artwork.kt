@@ -19,6 +19,7 @@ import java.util.Date
  */
 abstract class Artwork(
     open val artworkId: Long,
+    open val title: String,
     open val releaseDateString: String,
     open val description: String,
     open val voteAverage: Float,

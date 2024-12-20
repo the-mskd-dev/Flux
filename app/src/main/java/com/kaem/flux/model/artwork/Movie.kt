@@ -34,6 +34,7 @@ import com.kaem.flux.model.tmdb.TMDBMovie
 data class Movie(
     @PrimaryKey
     override val artworkId: Long,
+    override val title: String,
     override val releaseDateString: String,
     override val description: String,
     override val voteAverage: Float,
@@ -45,6 +46,7 @@ data class Movie(
     //val genres: List<String> = listOf()
 ) : Artwork(
     artworkId = artworkId,
+    title = title,
     releaseDateString = releaseDateString,
     description = description,
     voteAverage = voteAverage,
@@ -63,6 +65,7 @@ data class Movie(
         file: UserFile
     ) : this(
         artworkId = tmdbMovie.id,
+        title = tmdbMovie.title,
         releaseDateString = tmdbMovie.releaseDateString,
         description = tmdbMovie.description,
         voteAverage = tmdbMovie.voteAverage,

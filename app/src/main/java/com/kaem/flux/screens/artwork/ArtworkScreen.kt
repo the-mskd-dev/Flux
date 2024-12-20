@@ -213,7 +213,7 @@ fun ArtworkHeader(
                     shape = CircleShape
                 )
                 .background(color = MaterialTheme.colorScheme.background)
-                .padding(4.dp),
+                .padding(FluxSpace.EXTRA_SMALL),
             contentAlignment = Alignment.Center
         ) {
 

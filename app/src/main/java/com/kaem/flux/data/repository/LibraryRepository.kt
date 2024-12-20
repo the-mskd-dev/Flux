@@ -11,6 +11,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -31,6 +32,9 @@ class LibraryRepository @Inject constructor(
 
     suspend fun getLibrary(sync: Boolean = false) {
 
+        _libraryContent.value = _libraryContent.value?.copy(isLoading = true)
+
+
         val artworks = if (sync) {
             syncLibrary()
         } else {
@@ -38,10 +42,18 @@ class LibraryRepository @Inject constructor(
         }
 
         // Update content
-        _libraryContent.value = LibraryContent(
+        _libraryContent.update { content ->
+
+            (content ?: LibraryContent()).copy(
+                isLoading = false,
+                artworkOverviews = artworks.sortedBy { it.title }
+            )
+
+        }
+        /*_libraryContent.value = LibraryContent(
             isLoading = false,
             artworkOverviews = artworks.sortedBy { it.title }
-        )
+        )*/
 
     }
 

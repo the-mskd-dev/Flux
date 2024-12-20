@@ -1,5 +1,6 @@
 package com.kaem.flux.screens.library
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
@@ -54,6 +55,8 @@ class LibraryViewModel @Inject constructor(
 
         val currentTime = System.currentTimeMillis()
         val sync = currentTime - lastSyncTime > 1.days.inWholeMilliseconds || manualSync
+
+        Log.i("LibraryViewModel", "getLibrary, sync : $sync")
 
         repository.getLibrary(sync)
 

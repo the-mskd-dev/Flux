@@ -5,6 +5,7 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -25,7 +26,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -70,7 +70,7 @@ fun LibraryScreen(
 
     if (!permissionState.status.isGranted) {
 
-        LibraryPermissionButton(permissionState = permissionState)
+        LibraryPermissionScreen(permissionState = permissionState)
 
     } else {
 
@@ -103,30 +103,10 @@ fun LibraryScreen(
                             navigateToDetails = { id -> navigateToDetails(id) }
                         )
 
-
-
-                        if (uiState?.isLoading == true) {
-                            CircularProgressIndicator(
-                                modifier = Modifier
-                                    .statusBarsPadding()
-                                    .padding(end = FluxSpace.MEDIUM)
-                                    .align(Alignment.TopEnd)
-                                    .size(50.dp),
-                                strokeWidth = 2.5.dp,
-                            )
-                        } else {
-                            Icon(
-                                modifier = Modifier
-                                    .statusBarsPadding()
-                                    .padding(end = FluxSpace.MEDIUM)
-                                    .align(Alignment.TopEnd)
-                                    .size(50.dp)
-                                    .clickable { viewModel.getLibrary(true) },
-                                imageVector = Icons.Rounded.Refresh,
-                                tint = MaterialTheme.colorScheme.primary,
-                                contentDescription = "Refresh button"
-                            )
-                        }
+                        LibraryRefreshButton(
+                            isLoading = it.isLoading,
+                            onTap = { viewModel.getLibrary(manualSync = true) }
+                        )
 
                     }
 
@@ -289,33 +269,33 @@ fun ArtworkItem(
 
 }
 
-@OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun LibraryPermissionButton(permissionState: PermissionState) {
+fun BoxScope.LibraryRefreshButton(
+    isLoading: Boolean,
+    onTap: () -> Unit
+) {
 
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-
-        FluxButton(
-            text = stringResource(id = R.string.give_permission),
-            onClick = { permissionState.launchPermissionRequest() }
+    if (isLoading) {
+        CircularProgressIndicator(
+            modifier = Modifier
+                .statusBarsPadding()
+                .padding(end = FluxSpace.MEDIUM)
+                .align(Alignment.TopEnd)
+                .size(50.dp),
+            strokeWidth = 2.5.dp,
         )
-
+    } else {
+        Icon(
+            modifier = Modifier
+                .statusBarsPadding()
+                .padding(end = FluxSpace.MEDIUM)
+                .align(Alignment.TopEnd)
+                .size(50.dp)
+                .clickable { onTap() },
+            imageVector = Icons.Rounded.Refresh,
+            tint = MaterialTheme.colorScheme.primary,
+            contentDescription = "Refresh button"
+        )
     }
-
-}
-
-@Composable
-@OptIn(ExperimentalPermissionsApi::class)
-fun libraryPermissionState(): PermissionState {
-
-    val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-        android.Manifest.permission.READ_MEDIA_VIDEO
-    else
-        android.Manifest.permission.READ_EXTERNAL_STORAGE
-
-    return rememberPermissionState(permission = permission)
 
 }

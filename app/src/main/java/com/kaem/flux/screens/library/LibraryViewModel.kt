@@ -26,6 +26,16 @@ data class LibraryUiState(
     val isLoading: Boolean = true
 )
 
+sealed class LibraryScreen {
+    data object PERMISSIONS : LibraryScreen()
+    data object LOADING : LibraryScreen()
+    data class LIBRARY(
+        val artworkOverviews: List<ArtworkOverview> = emptyList(),
+        val lastWatchedArtworkIds: List<Long> = emptyList(),
+        val isLoading: Boolean = true
+    ) : LibraryScreen()
+}
+
 @HiltViewModel
 class LibraryViewModel @Inject constructor(
     private val repository: LibraryRepository,

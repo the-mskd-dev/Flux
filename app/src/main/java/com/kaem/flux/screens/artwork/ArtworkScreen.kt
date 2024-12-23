@@ -24,6 +24,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Done
 import androidx.compose.material.icons.rounded.PlayArrow
@@ -45,7 +46,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
@@ -58,8 +61,10 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.kaem.flux.R
 
 import com.kaem.flux.model.artwork.Episode
+import com.kaem.flux.model.artwork.Movie
 import com.kaem.flux.model.artwork.Status
 import com.kaem.flux.screens.player.PlayerScreen
+import com.kaem.flux.ui.component.FluxButton
 import com.kaem.flux.ui.component.Loader
 import com.kaem.flux.ui.component.Title
 import com.kaem.flux.ui.theme.FluxElevation
@@ -91,6 +96,27 @@ fun ArtworkScreen(
                 modifier = Modifier.padding(bottom = FluxSpace.MEDIUM),
                 verticalArrangement = Arrangement.spacedBy(FluxSpace.LARGE)
             ) {
+
+                ArtworkBanner(
+                    uiState = uiState,
+                    onBackButtonTap = { onBackButtonTap() }
+                )
+
+                ArtworkButtons(
+                    uiState = uiState,
+                    onLaunchButtonTap = {
+                        when (val screen = uiState.screen) {
+                            is ArtworkUiState.Screen.MOVIE -> {
+                                viewModel.selectArtwork(screen.movie)
+                            }
+                            is ArtworkUiState.Screen.SHOW -> {
+                                viewModel.selectArtwork(screen.currentEpisode)
+                            }
+                            else -> {}
+                        }
+                    },
+                    onWatchStatusChange = { viewModel.changeWatchStatus() }
+                )
 
                 ArtworkHeader(
                     uiState = uiState,
@@ -151,7 +177,7 @@ fun ArtworkScreen(
                         onWatchTap = { viewModel.selectArtwork(episode) },
                         isExpanded = uiState.expandedEpisodeId == episode.id,
                         expandDetails = { viewModel.expandEpisodeDetails(episode.id) },
-                        onWatchStatusChange = { viewModel.changeWatchStatus(episode) }
+                        onWatchStatusChange = { viewModel.changeWatchStatus() }
                     )
 
                 }
@@ -167,6 +193,95 @@ fun ArtworkScreen(
             onBackButtonTap = { viewModel.selectArtwork(null) },
             onTimeSave = { viewModel.saveTime(uiState.selectedArtwork, it) }
         )
+    }
+
+}
+
+@Composable
+@OptIn(ExperimentalGlideComposeApi::class)
+fun ArtworkBanner(
+    uiState: ArtworkUiState,
+    onBackButtonTap: () -> Unit,
+) {
+
+    ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
+
+        val (image, back) = createRefs()
+
+        val bannerPath = when (uiState.selectedArtwork) {
+            is Episode -> uiState.selectedArtwork.imagePath
+            else -> uiState.artworkOverview.bannerPath
+        }
+
+        GlideImage(
+            modifier = Modifier
+                .aspectRatio(6f / 5f)
+                .constrainAs(image) {
+                    top.linkTo(parent.top)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                    width = Dimension.fillToConstraints
+                },
+            model = Constants.TMDB.IMAGE + bannerPath,
+            contentScale = ContentScale.Crop,
+            contentDescription = uiState.artworkOverview.title
+        )
+
+        Box(
+            modifier = Modifier
+                .statusBarsPadding()
+                .constrainAs(back) {
+                    top.linkTo(parent.top)
+                    start.linkTo(parent.start, FluxSpace.MEDIUM)
+                }
+                .size(50.dp)
+                .clip(shape = CircleShape)
+                .clickable { onBackButtonTap() }
+                .padding(FluxSpace.EXTRA_SMALL),
+            contentAlignment = Alignment.Center
+        ) {
+
+            Icon(
+                imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+                tint = Color.White,
+                contentDescription = "back button"
+            )
+
+        }
+
+    }
+
+}
+
+@Composable
+fun ArtworkButtons(
+    uiState: ArtworkUiState,
+    onLaunchButtonTap: () -> Unit,
+    onWatchStatusChange: () -> Unit
+) {
+
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(FluxSpace.SMALL)
+    ) {
+
+        val text = if (uiState.artworkDetails?.status == Status.IS_WATCHING) stringResource(id = R.string.resume, uiState.artworkDetails.currentTime.timeDescription) else stringResource(R.string.start)
+        FluxButton(
+            modifier = Modifier.fillMaxWidth(0.4f),
+            text = text,
+            autoSize = true,
+            onClick = { onLaunchButtonTap() }
+        )
+
+        val statusText = if (uiState.artworkDetails?.status == Status.TO_WATCH) "Marquer comme vu"  else "Marquer comme non vu"
+        FluxButton(
+            modifier = Modifier.fillMaxWidth(0.4f),
+            text = statusText,
+            autoSize = true,
+            onClick = { onWatchStatusChange() }
+        )
+
     }
 
 }
@@ -199,7 +314,6 @@ fun ArtworkHeader(
 
         Box(
             modifier = Modifier
-                .statusBarsPadding()
                 .constrainAs(back) {
                     top.linkTo(parent.top)
                     start.linkTo(parent.start, FluxSpace.MEDIUM)

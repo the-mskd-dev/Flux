@@ -133,24 +133,51 @@ class ArtworkViewModel @Inject constructor(
         }
     }
 
-    fun changeWatchStatus(episode: Episode) {
+    fun changeWatchStatus() {
 
-        // Change status
-        val updatedEpisode = episode.copy(status = if (episode.status != Status.WATCHED) Status.WATCHED else Status.TO_WATCH)
+        val artwork = _uiState.value.artworkDetails ?: return
+        val newStatus = if (artwork.status != Status.WATCHED) Status.WATCHED else Status.TO_WATCH
 
-        // Update list
-        val episodes = (_uiState.value.screen as? ArtworkUiState.Screen.SHOW)?.episodes.orEmpty().toMutableList()
-        episodes.replaceAll { if (it.id == episode.id) updatedEpisode else it }
-        _uiState.update { currentState ->
-            currentState.copy(
-                screen = ArtworkUiState.Screen.SHOW(episodes)
-            )
+        when (artwork) {
+            is Movie -> {
+
+                val movie = artwork.copy(status = newStatus)
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        screen = ArtworkUiState.Screen.MOVIE(movie)
+                    )
+                }
+
+                // Save status in DB
+                viewModelScope.launch { repository.saveMovie(movie) }
+
+                Log.i("ArtworkViewModel", "${movie.title} is now ${movie.status}")
+
+            }
+            is Episode -> {
+
+                val episode = artwork.copy(status = newStatus)
+
+                // Update list
+                val episodes = (_uiState.value.screen as? ArtworkUiState.Screen.SHOW)?.episodes.orEmpty().toMutableList()
+                episodes.replaceAll { if (it.id == episode.id) episode else it }
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        screen = ArtworkUiState.Screen.SHOW(episodes)
+                    )
+                }
+
+                // Save status in DB
+                viewModelScope.launch { repository.saveEpisode(episode) }
+
+                Log.i("ArtworkViewModel", "${episode.title} season ${episode.season} episode ${episode.number} is now ${episode.status}")
+
+            }
+            else -> return
         }
 
-        // Save status in DB
-        viewModelScope.launch { repository.saveEpisode(episode) }
 
-        Log.i("ArtworkViewModel", "${episode.title} season ${episode.season} episode ${episode.number} is now ${episode.status}")
+
     }
 
     fun saveTime(artwork: Artwork?, time: Long) = viewModelScope.launch {

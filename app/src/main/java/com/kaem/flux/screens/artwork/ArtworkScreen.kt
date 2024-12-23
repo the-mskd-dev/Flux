@@ -57,8 +57,8 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.kaem.flux.R
 
-import com.kaem.flux.model.flux.Episode
-import com.kaem.flux.model.flux.Status
+import com.kaem.flux.model.artwork.Episode
+import com.kaem.flux.model.artwork.Status
 import com.kaem.flux.screens.player.PlayerScreen
 import com.kaem.flux.ui.component.Loader
 import com.kaem.flux.ui.component.Title
@@ -213,7 +213,7 @@ fun ArtworkHeader(
                     shape = CircleShape
                 )
                 .background(color = MaterialTheme.colorScheme.background)
-                .padding(4.dp),
+                .padding(FluxSpace.EXTRA_SMALL),
             contentAlignment = Alignment.Center
         ) {
 

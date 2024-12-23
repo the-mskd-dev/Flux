@@ -10,10 +10,10 @@ import androidx.room.Transaction
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 import com.kaem.flux.model.FileSource
-import com.kaem.flux.model.flux.ArtworkOverview
-import com.kaem.flux.model.flux.ContentType
-import com.kaem.flux.model.flux.Episode
-import com.kaem.flux.model.flux.Movie
+import com.kaem.flux.model.artwork.ArtworkOverview
+import com.kaem.flux.model.artwork.ContentType
+import com.kaem.flux.model.artwork.Episode
+import com.kaem.flux.model.artwork.Movie
 
 @Dao
 interface FluxDao {

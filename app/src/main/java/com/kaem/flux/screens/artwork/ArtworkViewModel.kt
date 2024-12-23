@@ -1,23 +1,46 @@
 package com.kaem.flux.screens.artwork
 
+import android.content.Context
+import android.media.MediaExtractor
+import android.media.MediaFormat
+import android.media.MediaMetadataRetriever
+import android.net.Uri
 import android.util.Log
+import androidx.annotation.OptIn
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.media3.common.C.TRACK_TYPE_AUDIO
+import androidx.media3.common.C.TRACK_TYPE_TEXT
+import androidx.media3.common.C.TRACK_TYPE_VIDEO
+import androidx.media3.common.C.TrackType
+import androidx.media3.common.Format
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
+import androidx.media3.common.TrackGroup
+import androidx.media3.common.Tracks
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import com.kaem.flux.data.repository.ArtworkRepository
-import com.kaem.flux.model.flux.ArtworkOverview
-import com.kaem.flux.model.flux.Artwork
-import com.kaem.flux.model.flux.Episode
-import com.kaem.flux.model.flux.Movie
-import com.kaem.flux.model.flux.Status
+import com.kaem.flux.data.repository.DataStoreRepository
+import com.kaem.flux.model.artwork.ArtworkOverview
+import com.kaem.flux.model.artwork.Artwork
+import com.kaem.flux.model.artwork.Episode
+import com.kaem.flux.model.artwork.Movie
+import com.kaem.flux.model.artwork.Status
+import com.kaem.flux.model.player.Metadata
+import com.kaem.flux.model.player.MetadataWrapper
 import com.kaem.flux.utils.inMinutes
 import com.kaem.flux.utils.timeDescription
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.io.IOException
 import javax.inject.Inject
 
 
@@ -51,7 +74,8 @@ data class ArtworkUiState(
 @HiltViewModel
 class ArtworkViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val repository: ArtworkRepository
+    private val repository: ArtworkRepository,
+    private val dataStoreRepository: DataStoreRepository
 ) : ViewModel() {
 
     private val artworkId: Long = checkNotNull(savedStateHandle["artworkId"])
@@ -136,13 +160,15 @@ class ArtworkViewModel @Inject constructor(
         uiState.value.let { state ->
 
             artwork.currentTime = time
-            artwork.status = if (time.inMinutes >= artwork.duration) Status.WATCHED else Status.IS_WATCHING
+            artwork.status = if (time.inMinutes >= artwork.duration * .9) Status.WATCHED else Status.IS_WATCHING
 
             when (state.selectedArtwork) {
                 is Movie -> repository.saveMovie(state.selectedArtwork)
                 is Episode -> repository.saveEpisode(state.selectedArtwork)
                 else -> {}
             }
+
+            dataStoreRepository.addWatchedArtwork(artworkId)
 
             Log.i("ArtworkViewModel", "${state.artworkOverview.title} saved at ${time.timeDescription}")
 

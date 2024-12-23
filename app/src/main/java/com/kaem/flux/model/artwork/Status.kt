@@ -1,4 +1,4 @@
-package com.kaem.flux.model.flux
+package com.kaem.flux.model.artwork
 
 /**
  * Represents the viewing status of an artwork or episode.

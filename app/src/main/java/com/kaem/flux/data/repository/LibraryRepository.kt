@@ -4,13 +4,14 @@ import com.kaem.flux.data.ddb.DatabaseManager
 import com.kaem.flux.data.source.artwork.ArtworkDataSource
 import com.kaem.flux.data.source.file.FilesDataSource
 import com.kaem.flux.model.UserFile
-import com.kaem.flux.model.flux.ArtworkOverview
-import com.kaem.flux.model.flux.Episode
-import com.kaem.flux.model.flux.Movie
+import com.kaem.flux.model.artwork.ArtworkOverview
+import com.kaem.flux.model.artwork.Episode
+import com.kaem.flux.model.artwork.Movie
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -31,6 +32,9 @@ class LibraryRepository @Inject constructor(
 
     suspend fun getLibrary(sync: Boolean = false) {
 
+        _libraryContent.value = _libraryContent.value?.copy(isLoading = true)
+
+
         val artworks = if (sync) {
             syncLibrary()
         } else {
@@ -38,10 +42,18 @@ class LibraryRepository @Inject constructor(
         }
 
         // Update content
-        _libraryContent.value = LibraryContent(
+        _libraryContent.update { content ->
+
+            (content ?: LibraryContent()).copy(
+                isLoading = false,
+                artworkOverviews = artworks.sortedBy { it.title }
+            )
+
+        }
+        /*_libraryContent.value = LibraryContent(
             isLoading = false,
             artworkOverviews = artworks.sortedBy { it.title }
-        )
+        )*/
 
     }
 

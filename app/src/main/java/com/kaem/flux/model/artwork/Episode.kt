@@ -1,4 +1,4 @@
-package com.kaem.flux.model.flux
+package com.kaem.flux.model.artwork
 
 import androidx.room.Embedded
 import androidx.room.Entity
@@ -41,12 +41,12 @@ import com.kaem.flux.model.tmdb.TMDBEpisode
 data class Episode(
     @PrimaryKey
     val id: Long,
-    val title: String,
     val number: Int,
     val season: Int,
     val imagePath: String,
     //val crew: List<TMDBCrew>,
     override val artworkId: Long,
+    override val title: String,
     override val releaseDateString: String,
     override val description: String,
     override val duration: Int,
@@ -57,6 +57,7 @@ data class Episode(
     override var status: Status = Status.TO_WATCH,
 ) : Artwork(
     artworkId = artworkId,
+    title = title,
     file = file,
     releaseDateString = releaseDateString,
     description = description,

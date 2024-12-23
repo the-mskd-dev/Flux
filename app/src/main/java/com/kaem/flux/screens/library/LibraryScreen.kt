@@ -5,6 +5,7 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
@@ -21,6 +23,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Refresh
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -43,9 +49,9 @@ import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.kaem.flux.R
-import com.kaem.flux.model.flux.ArtworkOverview
+import com.kaem.flux.model.artwork.ArtworkOverview
 
-import com.kaem.flux.model.flux.ContentType
+import com.kaem.flux.model.artwork.ContentType
 import com.kaem.flux.ui.component.FluxButton
 import com.kaem.flux.ui.component.Loader
 import com.kaem.flux.ui.component.Title
@@ -64,7 +70,7 @@ fun LibraryScreen(
 
     if (!permissionState.status.isGranted) {
 
-        LibraryPermissionButton(permissionState = permissionState)
+        LibraryPermissionScreen(permissionState = permissionState)
 
     } else {
 
@@ -84,11 +90,27 @@ fun LibraryScreen(
             when (it) {
 
                 null -> Loader()
-                else -> LibraryContent(
-                    artworkOverviews = it.artworkOverviews,
-                    lastWatchedIds = it.lastWatchedArtworkIds,
-                    navigateToDetails = { id -> navigateToDetails(id) }
-                )
+                else -> {
+
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.TopCenter
+                    ) {
+
+                        LibraryContent(
+                            artworkOverviews = it.artworkOverviews,
+                            lastWatchedIds = it.lastWatchedArtworkIds,
+                            navigateToDetails = { id -> navigateToDetails(id) }
+                        )
+
+                        LibraryRefreshButton(
+                            isLoading = it.isLoading,
+                            onTap = { viewModel.getLibrary(manualSync = true) }
+                        )
+
+                    }
+
+                }
 
             }
 
@@ -247,33 +269,33 @@ fun ArtworkItem(
 
 }
 
-@OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun LibraryPermissionButton(permissionState: PermissionState) {
+fun BoxScope.LibraryRefreshButton(
+    isLoading: Boolean,
+    onTap: () -> Unit
+) {
 
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-
-        FluxButton(
-            text = stringResource(id = R.string.give_permission),
-            onClick = { permissionState.launchPermissionRequest() }
+    if (isLoading) {
+        CircularProgressIndicator(
+            modifier = Modifier
+                .statusBarsPadding()
+                .padding(end = FluxSpace.MEDIUM)
+                .align(Alignment.TopEnd)
+                .size(50.dp),
+            strokeWidth = 2.5.dp,
         )
-
+    } else {
+        Icon(
+            modifier = Modifier
+                .statusBarsPadding()
+                .padding(end = FluxSpace.MEDIUM)
+                .align(Alignment.TopEnd)
+                .size(50.dp)
+                .clickable { onTap() },
+            imageVector = Icons.Rounded.Refresh,
+            tint = MaterialTheme.colorScheme.primary,
+            contentDescription = "Refresh button"
+        )
     }
-
-}
-
-@Composable
-@OptIn(ExperimentalPermissionsApi::class)
-fun libraryPermissionState(): PermissionState {
-
-    val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-        android.Manifest.permission.READ_MEDIA_VIDEO
-    else
-        android.Manifest.permission.READ_EXTERNAL_STORAGE
-
-    return rememberPermissionState(permission = permission)
 
 }

@@ -1,4 +1,4 @@
-package com.kaem.flux.model.flux
+package com.kaem.flux.model.artwork
 
 import com.kaem.flux.model.UserFile
 import com.kaem.flux.utils.parseTMDBDate
@@ -19,6 +19,7 @@ import java.util.Date
  */
 abstract class Artwork(
     open val artworkId: Long,
+    open val title: String,
     open val releaseDateString: String,
     open val description: String,
     open val voteAverage: Float,

@@ -1,4 +1,4 @@
-package com.kaem.flux.model.flux
+package com.kaem.flux.model.artwork
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

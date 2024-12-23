@@ -23,6 +23,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import com.kaem.flux.data.repository.ArtworkRepository
+import com.kaem.flux.data.repository.DataStoreRepository
 import com.kaem.flux.model.artwork.ArtworkOverview
 import com.kaem.flux.model.artwork.Artwork
 import com.kaem.flux.model.artwork.Episode
@@ -73,8 +74,8 @@ data class ArtworkUiState(
 @HiltViewModel
 class ArtworkViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    @ApplicationContext private val context: Context,
-    private val repository: ArtworkRepository
+    private val repository: ArtworkRepository,
+    private val dataStoreRepository: DataStoreRepository
 ) : ViewModel() {
 
     private val artworkId: Long = checkNotNull(savedStateHandle["artworkId"])
@@ -159,7 +160,7 @@ class ArtworkViewModel @Inject constructor(
         uiState.value.let { state ->
 
             artwork.currentTime = time
-            artwork.status = if (time.inMinutes >= artwork.duration) Status.WATCHED else Status.IS_WATCHING
+            artwork.status = if (time.inMinutes >= artwork.duration * .9) Status.WATCHED else Status.IS_WATCHING
 
             when (state.selectedArtwork) {
                 is Movie -> repository.saveMovie(state.selectedArtwork)
@@ -167,68 +168,12 @@ class ArtworkViewModel @Inject constructor(
                 else -> {}
             }
 
+            dataStoreRepository.addWatchedArtwork(artworkId)
+
             Log.i("ArtworkViewModel", "${state.artworkOverview.title} saved at ${time.timeDescription}")
 
         }
 
     }
-
-    /*private fun getMediaTracksWithExtractor(path: String): MetadataWrapper {
-
-        val uri = Uri.parse(path)
-        val extractor = MediaExtractor()
-        extractor.setDataSource(context, uri, emptyMap())
-
-        val audioTracks = mutableListOf<Metadata.Audio>()
-        val subtitleTracks = mutableListOf<Metadata.Subtitles>()
-
-        for (i in 0 until extractor.trackCount) {
-            val format = extractor.getTrackFormat(i)
-            val mime = format.getString(MediaFormat.KEY_MIME)
-
-            when {
-                mime?.startsWith("audio/") == true -> {
-                    val language = format.getString(MediaFormat.KEY_LANGUAGE)
-                    audioTracks.add(
-                        Metadata.Audio(
-                            language = language ?: "Inconnu"
-                        )
-                    )
-                }
-                mime?.startsWith("text/") == true -> {
-                    val language = format.getString(MediaFormat.KEY_LANGUAGE)
-                    subtitleTracks.add(
-                        Metadata.Subtitles(
-                            language = language ?: "Inconnu"
-                        )
-                    )
-                }
-            }
-        }
-
-        extractor.release()
-
-        return MetadataWrapper(audioTracks, subtitleTracks)
-
-    }*/
-
-    /*@OptIn(UnstableApi::class)
-    private fun setupMediaTracks(mediaItem: MediaItem) {
-        val trackSelector = DefaultTrackSelector(context)
-        val player = ExoPlayer.Builder(context)
-            .setTrackSelector(trackSelector)
-            .build()
-
-        player.setMediaItem(mediaItem)
-        player.prepare()
-
-        player.addListener(object : Player.Listener {
-            override fun onTracksChanged(tracks: Tracks) {
-                val audioTracks = tracks.groups.filter { it.type == TRACK_TYPE_AUDIO }
-                val subtitleTracks = tracks.groups.filter { it.type == TRACK_TYPE_TEXT }
-                super.onTracksChanged(tracks)
-            }
-        })
-    }*/
 
 }

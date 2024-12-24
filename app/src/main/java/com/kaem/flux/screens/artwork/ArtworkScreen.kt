@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -37,8 +38,10 @@ import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -47,17 +50,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
+import com.bumptech.glide.integration.compose.placeholder
 import com.kaem.flux.R
 
 import com.kaem.flux.model.artwork.Episode
@@ -150,14 +156,17 @@ fun ArtworkScreen(
 
                 }
 
-                items(items = episodes.filter { it.season == uiState.currentSeason }.sortedBy { it.number }, key = { it.id }) { episode ->
+                itemsIndexed(
+                    items = episodes
+                        .filter { it.season == uiState.currentSeason }
+                        .sortedBy { it.number },
+                    key = { _, e -> e.id }
+                ) { i, episode ->
 
                     EpisodeItem(
                         episode = episode,
-                        onWatchTap = { viewModel.selectArtwork(episode) },
-                        isExpanded = uiState.expandedEpisodeId == episode.id,
-                        expandDetails = { viewModel.expandEpisodeDetails(episode.id) },
-                        onWatchStatusChange = { viewModel.changeWatchStatus(episode) }
+                        isFirst = i == 0,
+                        onEpisodeTap = {}
                     )
 
                 }
@@ -399,134 +408,95 @@ fun ArtworkSeasonsTabs(
 
 }
 
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun EpisodeItem(
     episode: Episode,
-    isExpanded: Boolean,
-    expandDetails: () -> Unit,
-    onWatchTap: () -> Unit,
-    onWatchStatusChange: () -> Unit
+    isFirst: Boolean,
+    onEpisodeTap: () -> Unit
 ) {
 
-    var isWatched by remember { mutableStateOf(episode.status == Status.WATCHED) }
-    val alphaAnimation by animateFloatAsState(targetValue = if (isWatched) .4f else 1f, label = "alphaAnimation")
-    val colorAnimation by animateColorAsState(targetValue = if (isWatched) MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.primary, label = "colorAnimation")
+    var alpha by remember { mutableFloatStateOf(1f) }
+    val alphaAnimation by animateFloatAsState(targetValue = alpha, label = "alphaAnimation")
+    LaunchedEffect(episode.status) {
+        alpha = if (episode.status == Status.WATCHED) .4f else 1f
+    }
 
-    Column(
+    ConstraintLayout(
         modifier = Modifier
+            .clickable { onEpisodeTap() }
             .animateContentSize()
             .fillMaxWidth()
             .padding(horizontal = FluxSpace.MEDIUM)
-            .padding(bottom = FluxSpace.MEDIUM),
-        verticalArrangement = Arrangement.spacedBy(FluxSpace.MEDIUM)
+            .padding(bottom = FluxSpace.MEDIUM)
+            .alpha(alphaAnimation)
     ) {
+
+        val (divider, image, content) = createRefs()
+        val startGuideline = createGuidelineFromStart(.3f)
 
         HorizontalDivider(
             modifier = Modifier
-                .fillMaxWidth()
-                .alpha(.2f),
+                .constrainAs(divider) {
+                    top.linkTo(parent.top)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                    width = Dimension.fillToConstraints
+                }
+                .alpha(if (isFirst) 0f else .2f),
             color = MaterialTheme.colorScheme.onBackground
         )
 
-        Row(
+        GlideImage(
             modifier = Modifier
-                .clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null
-                ) { expandDetails() }
-                .alpha(alphaAnimation)
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(FluxSpace.SMALL),
-            verticalAlignment = Alignment.CenterVertically
+                .clip(RoundedCornerShape(4.dp))
+                .aspectRatio(16f / 9f)
+                .constrainAs(image) {
+                    top.linkTo(divider.bottom, FluxSpace.MEDIUM)
+                    start.linkTo(parent.start)
+                    end.linkTo(startGuideline)
+                    width = Dimension.fillToConstraints
+                },
+            model = Constants.TMDB.IMAGE + episode.imagePath,
+            contentScale = ContentScale.Crop,
+            loading = placeholder(ColorPainter(Color.LightGray)),
+            contentDescription = "Season ${episode.season} episode ${episode.number}, ${episode.title}"
+        )
+
+        Column(
+            modifier = Modifier
+                .constrainAs(content) {
+                    top.linkTo(image.top)
+                    start.linkTo(startGuideline, FluxSpace.MEDIUM)
+                    end.linkTo(parent.end)
+                    width = Dimension.fillToConstraints
+                },
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.spacedBy(FluxSpace.EXTRA_SMALL)
         ) {
 
             Text(
                 modifier = Modifier
-                    .alignByBaseline()
+                    .fillMaxWidth()
                     .alpha(.8f),
-                text = "${episode.number}",
-                color = colorAnimation,
-                fontSize = FluxFontSize.MEDIUM
+                text = stringResource(R.string.episode, episode.number),
+                fontSize = FluxFontSize.SMALL,
+                textAlign = TextAlign.Start,
+                color = MaterialTheme.colorScheme.onBackground,
+                fontStyle = FontStyle.Italic
             )
 
             Text(
-                modifier = Modifier.alignByBaseline(),
+                modifier = Modifier.fillMaxWidth(),
                 text = episode.title,
                 color = MaterialTheme.colorScheme.onBackground,
-                fontSize = FluxFontSize.MEDIUM
-            )
-
-        }
-
-        AnimatedVisibility(visible = isExpanded) {
-            EpisodeItemContent(
-                episode = episode,
-                onCloseExpand = { expandDetails() },
-                onWatchTap = onWatchTap,
-                onWatchStatusChange = {
-                    onWatchStatusChange()
-                    isWatched = episode.status == Status.WATCHED
-                }
+                fontSize = FluxFontSize.MEDIUM,
+                textAlign = TextAlign.Start,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
             )
         }
 
     }
 
 }
-
-@Composable
-fun EpisodeItemContent(
-    episode: Episode,
-    onCloseExpand: () -> Unit,
-    onWatchTap: () -> Unit,
-    onWatchStatusChange: () -> Unit
-) {
-
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = FluxSpace.MEDIUM),
-        verticalArrangement = Arrangement.spacedBy(FluxSpace.MEDIUM)
-    ) {
-
-        Text(
-            modifier = Modifier
-                .clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null
-                ) { onCloseExpand() }
-                .fillMaxWidth()
-                .alpha(.8f),
-            text = episode.description,
-            color = MaterialTheme.colorScheme.onBackground,
-            fontSize = FluxFontSize.MEDIUM,
-            textAlign = TextAlign.Start
-        )
-
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(FluxSpace.MEDIUM),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-
-            Text(
-                modifier = Modifier.clickable { onWatchStatusChange() },
-                color = MaterialTheme.colorScheme.primary,
-                fontWeight = FluxWeight.MEDIUM,
-                text = stringResource(id = if (episode.status == Status.WATCHED) R.string.mark_as_not_watched else R.string.mark_as_watched).uppercase()
-            )
-
-            val watchTime = if (episode.status == Status.IS_WATCHING) stringResource(id = R.string.resume, episode.currentTime.timeDescription) else stringResource(R.string.start)
-            Text(
-                modifier = Modifier.clickable { onWatchTap() },
-                color = MaterialTheme.colorScheme.primary,
-                fontWeight = FluxWeight.MEDIUM,
-                text = watchTime.uppercase()
-            )
-
-        }
-
-    }
-
-}
-

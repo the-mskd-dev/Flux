@@ -106,20 +106,8 @@ fun ArtworkScreen(
                 ArtworkHeader(
                     uiState = uiState,
                     onBackButtonTap = { onBackButtonTap() },
-                    onStatusButtonTap = { viewModel.changeWatchStatus(null) },
-                    onLaunchButtonTap = {
-
-                        when (val screen = uiState.screen) {
-                            is ArtworkUiState.Screen.MOVIE -> {
-                                viewModel.selectArtwork(screen.movie)
-                            }
-                            is ArtworkUiState.Screen.SHOW -> {
-                                viewModel.selectArtwork(screen.currentEpisode)
-                            }
-                            else -> {}
-                        }
-
-                    }
+                    onStatusButtonTap = { viewModel.changeWatchStatus() },
+                    onLaunchButtonTap = { viewModel.showPlayer(true) }
                 )
 
                 ArtworkDescription(uiState = uiState)
@@ -166,7 +154,7 @@ fun ArtworkScreen(
                     EpisodeItem(
                         episode = episode,
                         isFirst = i == 0,
-                        onEpisodeTap = {}
+                        onEpisodeTap = { viewModel.selectArtwork(episode) }
                     )
 
                 }
@@ -176,11 +164,11 @@ fun ArtworkScreen(
 
     }
 
-    AnimatedVisibility(uiState.selectedArtwork != null) {
+    AnimatedVisibility(uiState.showPlayer) {
         PlayerScreen(
             artwork = uiState.selectedArtwork,
-            onBackButtonTap = { viewModel.selectArtwork(null) },
-            onTimeSave = { viewModel.saveTime(uiState.selectedArtwork, it) }
+            onBackButtonTap = { viewModel.showPlayer(false) },
+            onTimeSave = { viewModel.saveTime(it) }
         )
     }
 
@@ -261,7 +249,7 @@ fun ArtworkHeader(
                 )
 
 
-                val text = if (uiState.artworkDetails?.status == Status.IS_WATCHING) stringResource(id = R.string.resume, uiState.artworkDetails.currentTime.timeDescription) else stringResource(R.string.start)
+                val text = if (uiState.selectedArtwork?.status == Status.IS_WATCHING) stringResource(id = R.string.resume, uiState.selectedArtwork.currentTime.timeDescription) else stringResource(R.string.start)
                 Text(
                     text = text.uppercase(),
                     fontWeight = FluxWeight.MEDIUM
@@ -318,7 +306,7 @@ fun ArtworkTitle(
             text = uiState.artworkOverview.title
         )
 
-        uiState.artworkDetails?.releaseDate?.let {
+        uiState.selectedArtwork?.releaseDate?.let {
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -344,7 +332,7 @@ fun ArtworkDescription(uiState: ArtworkUiState) {
         verticalArrangement = Arrangement.spacedBy(FluxSpace.SMALL)
     ) {
 
-        uiState.artworkDetails?.let {
+        uiState.selectedArtwork?.let {
 
             if (it is Episode) {
 

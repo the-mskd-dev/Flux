@@ -1,27 +1,9 @@
 package com.kaem.flux.screens.artwork
 
-import android.content.Context
-import android.media.MediaExtractor
-import android.media.MediaFormat
-import android.media.MediaMetadataRetriever
-import android.net.Uri
 import android.util.Log
-import androidx.annotation.OptIn
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.media3.common.C.TRACK_TYPE_AUDIO
-import androidx.media3.common.C.TRACK_TYPE_TEXT
-import androidx.media3.common.C.TRACK_TYPE_VIDEO
-import androidx.media3.common.C.TrackType
-import androidx.media3.common.Format
-import androidx.media3.common.MediaItem
-import androidx.media3.common.Player
-import androidx.media3.common.TrackGroup
-import androidx.media3.common.Tracks
-import androidx.media3.common.util.UnstableApi
-import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import com.kaem.flux.data.repository.ArtworkRepository
 import com.kaem.flux.data.repository.DataStoreRepository
 import com.kaem.flux.model.artwork.ArtworkOverview
@@ -29,44 +11,30 @@ import com.kaem.flux.model.artwork.Artwork
 import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.model.artwork.Movie
 import com.kaem.flux.model.artwork.Status
-import com.kaem.flux.model.player.Metadata
-import com.kaem.flux.model.player.MetadataWrapper
 import com.kaem.flux.utils.inMinutes
 import com.kaem.flux.utils.timeDescription
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.io.IOException
 import javax.inject.Inject
 
 
 data class ArtworkUiState(
     val artworkOverview: ArtworkOverview = ArtworkOverview(),
     val screen: Screen = Screen.LOADING,
-    val expandedEpisodeId: Long? = null,
     val currentSeason: Int = -1,
-    val selectedArtwork: Artwork? = null
+    val selectedArtwork: Artwork? = null,
+    val showPlayer: Boolean = false
 ) {
-
-    val artworkDetails: Artwork? = when (screen) {
-        is Screen.MOVIE -> screen.movie
-        is Screen.SHOW -> screen.currentEpisode
-        else -> null
-    }
 
     sealed class Screen {
         data object LOADING : Screen()
         data object ERROR : Screen()
         data class MOVIE(val movie: Movie) : Screen()
-        data class SHOW(val episodes: List<Episode> = emptyList()) : Screen() {
-            val currentEpisode get() = episodes.lastOrNull { it.status == Status.IS_WATCHING }
-                ?: episodes.firstOrNull { it.status == Status.TO_WATCH }
-                ?: episodes.firstOrNull()
-        }
+        data class SHOW(val episodes: List<Episode> = emptyList()) : Screen()
     }
 
 }
@@ -93,15 +61,21 @@ class ArtworkViewModel @Inject constructor(
             movie != null -> {
                 _uiState.value = ArtworkUiState(
                     artworkOverview = artwork,
-                    screen = ArtworkUiState.Screen.MOVIE(movie)
+                    screen = ArtworkUiState.Screen.MOVIE(movie),
+                    selectedArtwork = movie
                 )
             }
             !episodes.isNullOrEmpty() -> {
                 val screen = ArtworkUiState.Screen.SHOW(episodes)
+                val currentEpisode = episodes.lastOrNull { it.status == Status.IS_WATCHING }
+                    ?: episodes.firstOrNull { it.status == Status.TO_WATCH }
+                    ?: episodes.first()
+
                 _uiState.value = ArtworkUiState(
                     artworkOverview = artwork,
                     screen = screen,
-                    currentSeason = screen.currentEpisode?.season ?: -1
+                    currentSeason = currentEpisode.season,
+                    selectedArtwork = currentEpisode
                 )
             }
             else -> {
@@ -127,21 +101,21 @@ class ArtworkViewModel @Inject constructor(
         }
     }
 
-    fun expandEpisodeDetails(id: Long) {
+    fun showPlayer(show: Boolean) {
         _uiState.update { currentState ->
-            currentState.copy(expandedEpisodeId = if (currentState.expandedEpisodeId == id) null else id)
+            currentState.copy(showPlayer = show)
         }
     }
 
-    fun changeWatchStatus(artwork: Artwork?) {
+    fun changeWatchStatus() {
 
-        val currentArtwork = artwork ?: _uiState.value.artworkDetails ?: return
-        val newStatus = if (currentArtwork.status != Status.WATCHED) Status.WATCHED else Status.TO_WATCH
+        val artwork = uiState.value.selectedArtwork ?: return
+        val newStatus = if (artwork.status != Status.WATCHED) Status.WATCHED else Status.TO_WATCH
 
-        when (currentArtwork) {
+        when (artwork) {
             is Movie -> {
 
-                val movie = currentArtwork.copy(status = newStatus)
+                val movie = artwork.copy(status = newStatus)
                 _uiState.update { currentState ->
                     currentState.copy(
                         screen = ArtworkUiState.Screen.MOVIE(movie)
@@ -156,7 +130,7 @@ class ArtworkViewModel @Inject constructor(
             }
             is Episode -> {
 
-                val episode = currentArtwork.copy(status = newStatus)
+                val episode = artwork.copy(status = newStatus)
 
                 // Update list
                 val episodes = (_uiState.value.screen as? ArtworkUiState.Screen.SHOW)?.episodes.orEmpty().toMutableList()
@@ -180,9 +154,9 @@ class ArtworkViewModel @Inject constructor(
 
     }
 
-    fun saveTime(artwork: Artwork?, time: Long) = viewModelScope.launch {
+    fun saveTime(time: Long) = viewModelScope.launch {
 
-        artwork ?: return@launch
+        val artwork = uiState.value.selectedArtwork ?: return@launch
 
         uiState.value.let { state ->
 

@@ -53,6 +53,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -401,6 +402,22 @@ fun ArtworkSeasonsTabs(
             }
 
         }
+    }
+
+}
+
+
+@Composable
+fun EpisodesDialog(
+    episodes: List<Episode>,
+    onDismiss: () -> Unit,
+    onEpisodeTap: () -> Unit
+) {
+
+    Dialog(
+       onDismissRequest = { onDismiss() }
+    ) {
+
     }
 
 }

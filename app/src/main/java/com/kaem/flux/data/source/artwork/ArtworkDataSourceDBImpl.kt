@@ -16,13 +16,13 @@ class ArtworkDataSourceDBImpl @Inject constructor(
 
     override suspend fun getArtworks(
         files: List<UserFile>,
-        artworkIds: List<Long>,
+        overviewIds: List<Long>,
         sync: Boolean
     ): ArtworkDataSource.Library {
 
         if (sync) {
 
-            val artworkOverviews = arrayListOf<ArtworkOverview>()
+            val overviews = arrayListOf<ArtworkOverview>()
             val movies = arrayListOf<Movie>()
             val episodes = arrayListOf<Episode>()
 
@@ -30,8 +30,8 @@ class ArtworkDataSourceDBImpl @Inject constructor(
 
                 launch {
 
-                    val dbArtworks = databaseManager.getArtworks()
-                    artworkOverviews.addAll(dbArtworks)
+                    val dbOverviews = databaseManager.getArtworks()
+                    overviews.addAll(dbOverviews)
 
                 }
 
@@ -52,14 +52,14 @@ class ArtworkDataSourceDBImpl @Inject constructor(
             }
 
             return ArtworkDataSource.Library(
-                artworkOverviews = artworkOverviews,
+                overviews = overviews,
                 movies = movies,
                 episodes = episodes
             )
 
         } else {
 
-            return ArtworkDataSource.Library(artworkOverviews = databaseManager.getArtworks())
+            return ArtworkDataSource.Library(overviews = databaseManager.getArtworks())
 
         }
 

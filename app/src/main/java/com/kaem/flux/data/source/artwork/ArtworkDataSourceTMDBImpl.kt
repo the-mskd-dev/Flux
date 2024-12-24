@@ -20,8 +20,8 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
 
     //region Variables
 
-    private val mutexArtworks = Mutex()
-    private val artworkOverviews = arrayListOf<ArtworkOverview>()
+    private val mutexOverviews = Mutex()
+    private val overviews = arrayListOf<ArtworkOverview>()
 
     private val mutexMovies = Mutex()
     private val movies = arrayListOf<Movie>()
@@ -45,11 +45,11 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
 
     override suspend fun getArtworks(
         files: List<UserFile>,
-        artworkIds: List<Long>,
+        overviewIds: List<Long>,
         sync: Boolean
     ): ArtworkDataSource.Library {
 
-        savedOverviewIds = artworkIds
+        savedOverviewIds = overviewIds
 
         coroutineScope {
 
@@ -77,7 +77,7 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
         }
 
         return ArtworkDataSource.Library(
-            artworkOverviews = artworkOverviews.filter { a -> if (a.type == ContentType.SHOW) episodes.any { it.artworkId == a.id } else true },
+            overviews = overviews.filter { a -> if (a.type == ContentType.SHOW) episodes.any { it.artworkId == a.id } else true },
             movies = movies,
             episodes = episodes
         )
@@ -219,9 +219,9 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
     //region Lists methods
 
     private suspend fun addArtwork(artworkOverview: ArtworkOverview) {
-        mutexArtworks.withLock {
-            if (artworkOverviews.none { it.id == artworkOverview.id } && !savedOverviewIds.contains(artworkOverview.id))
-                artworkOverviews.add(artworkOverview)
+        mutexOverviews.withLock {
+            if (overviews.none { it.id == artworkOverview.id } && !savedOverviewIds.contains(artworkOverview.id))
+                overviews.add(artworkOverview)
         }
     }
 

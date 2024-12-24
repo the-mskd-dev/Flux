@@ -37,7 +37,7 @@ class LibraryRepository @Inject constructor(
         val artworks = if (sync) {
             syncLibrary()
         } else {
-            localSource.getArtworks(sync = false).artworkOverviews
+            localSource.getArtworks(sync = false).overviews
         }
 
         // Update content
@@ -67,27 +67,27 @@ class LibraryRepository @Inject constructor(
         // Delete artworks with missing files
         val moviesIdsToDelete = movies.filter { m -> allFiles.none { it.name == m.file.name } }.map { it.artworkId }
         val episodesIdsToDelete = episodes.filter { e -> allFiles.none { it.name == e.file.name } }.map { it.id }
-        val artworksIdsToDelete = artworks.filter { artwork ->
+        val overviewsIdsToDelete = artworks.filter { artwork ->
             moviesIdsToDelete.any { artwork.id == it }
             || (episodes.any { it.artworkId == artwork.id } && episodesIdsToDelete.containsAll(episodes.filter { it.artworkId == artwork.id }.map { e -> e.id }))
         }.map { it.id }
-        databaseManager.deleteArtworks(artworksIdsToDelete)
+        databaseManager.deleteArtworks(overviewsIdsToDelete)
         databaseManager.deleteEpisodes(episodesIdsToDelete)
 
         // Get new artworks from TMBD
-        val filteredArtwork = artworks.filter { a -> artworksIdsToDelete.none { it == a.id } }
-        val (newArtworks, newMovies, newEpisodes) = tmdbSource.getArtworks(
+        val filteredOverviews = artworks.filter { a -> overviewsIdsToDelete.none { it == a.id } }
+        val (newOverviews, newMovies, newEpisodes) = tmdbSource.getArtworks(
             files = newFiles,
-            artworkIds = filteredArtwork.map { it.id },
+            overviewIds = filteredOverviews.map { it.id },
             sync = true
         )
 
         // Save new artworks
-        databaseManager.saveArtworks(newArtworks)
+        databaseManager.saveArtworks(newOverviews)
         databaseManager.saveMovies(newMovies)
         databaseManager.saveEpisodes(newEpisodes)
 
-        return filteredArtwork + newArtworks
+        return filteredOverviews + newOverviews
 
     }
 

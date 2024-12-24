@@ -133,15 +133,15 @@ class ArtworkViewModel @Inject constructor(
         }
     }
 
-    fun changeWatchStatus() {
+    fun changeWatchStatus(artwork: Artwork?) {
 
-        val artwork = _uiState.value.artworkDetails ?: return
-        val newStatus = if (artwork.status != Status.WATCHED) Status.WATCHED else Status.TO_WATCH
+        val currentArtwork = artwork ?: _uiState.value.artworkDetails ?: return
+        val newStatus = if (currentArtwork.status != Status.WATCHED) Status.WATCHED else Status.TO_WATCH
 
-        when (artwork) {
+        when (currentArtwork) {
             is Movie -> {
 
-                val movie = artwork.copy(status = newStatus)
+                val movie = currentArtwork.copy(status = newStatus)
                 _uiState.update { currentState ->
                     currentState.copy(
                         screen = ArtworkUiState.Screen.MOVIE(movie)
@@ -156,7 +156,7 @@ class ArtworkViewModel @Inject constructor(
             }
             is Episode -> {
 
-                val episode = artwork.copy(status = newStatus)
+                val episode = currentArtwork.copy(status = newStatus)
 
                 // Update list
                 val episodes = (_uiState.value.screen as? ArtworkUiState.Screen.SHOW)?.episodes.orEmpty().toMutableList()

@@ -100,6 +100,7 @@ fun ArtworkScreen(
                 ArtworkHeader(
                     uiState = uiState,
                     onBackButtonTap = { onBackButtonTap() },
+                    onStatusButtonTap = { viewModel.changeWatchStatus(null) },
                     onLaunchButtonTap = {
 
                         when (val screen = uiState.screen) {
@@ -156,7 +157,7 @@ fun ArtworkScreen(
                         onWatchTap = { viewModel.selectArtwork(episode) },
                         isExpanded = uiState.expandedEpisodeId == episode.id,
                         expandDetails = { viewModel.expandEpisodeDetails(episode.id) },
-                        onWatchStatusChange = { viewModel.changeWatchStatus() }
+                        onWatchStatusChange = { viewModel.changeWatchStatus(episode) }
                     )
 
                 }
@@ -181,6 +182,7 @@ fun ArtworkScreen(
 fun ArtworkHeader(
     uiState: ArtworkUiState,
     onBackButtonTap: () -> Unit,
+    onStatusButtonTap: () -> Unit,
     onLaunchButtonTap: () -> Unit
 ) {
 
@@ -272,7 +274,7 @@ fun ArtworkHeader(
             containerColor = MaterialTheme.colorScheme.primary,
             contentColor = MaterialTheme.colorScheme.onPrimary,
             elevation = FluxElevation.floatingButtonElevation(),
-            onClick = {  },
+            onClick = { onStatusButtonTap() },
             content = { Icon(imageVector = Icons.Rounded.Done, contentDescription = "check if watched button") }
         )
 

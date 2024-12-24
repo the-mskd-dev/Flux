@@ -21,7 +21,7 @@ interface FluxDao {
 //region Insert
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertArtworks(artworkOverviews: List<ArtworkOverview>)
+    suspend fun insertOverviews(artworkOverviews: List<ArtworkOverview>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMovies(movies: List<Movie>)
@@ -33,11 +33,11 @@ interface FluxDao {
 
 //region Get
 
-    @Query("SELECT * FROM artworks WHERE id = :artworkId")
-    suspend fun getArtwork(artworkId: Long) : ArtworkOverview
+    @Query("SELECT * FROM overviews WHERE id = :artworkId")
+    suspend fun getOverview(artworkId: Long) : ArtworkOverview
 
-    @Query("SELECT * FROM artworks")
-    suspend fun getArtworks() : List<ArtworkOverview>
+    @Query("SELECT * FROM overviews")
+    suspend fun getOverviews() : List<ArtworkOverview>
 
     @Query("SELECT * FROM movies")
     suspend fun getMovies() : List<Movie>
@@ -58,8 +58,8 @@ interface FluxDao {
 
 //region Delete
 
-    @Query("DELETE FROM artworks WHERE id IN (:ids)")
-    suspend fun deleteArtworks(ids: List<Long>)
+    @Query("DELETE FROM overviews WHERE id IN (:ids)")
+    suspend fun deleteOverviews(ids: List<Long>)
 
     @Query("DELETE FROM movies WHERE artworkId IN (:ids)")
     suspend fun deleteMovies(ids: List<Long>)
@@ -76,11 +76,11 @@ interface FluxDao {
         deleteEpisode(episode.id)
 
         // Check if it remains episode for show
-        val remainingEpisodes = getEpisodeCountByArtworkId(episode.artworkId)
+        val remainingEpisodes = getEpisodeCountByOverviewId(episode.artworkId)
 
         // If no, delete the show
         if (remainingEpisodes == 0) {
-            deleteArtworks(listOf(episode.artworkId))
+            deleteOverviews(listOf(episode.artworkId))
         }
     }
 
@@ -89,7 +89,7 @@ interface FluxDao {
 //region Other
 
     @Query("SELECT COUNT(*) FROM episodes WHERE artworkId = :artworkId")
-    suspend fun getEpisodeCountByArtworkId(artworkId: Long): Int
+    suspend fun getEpisodeCountByOverviewId(artworkId: Long): Int
 
 //endregion
 
@@ -134,8 +134,8 @@ class DatabaseManager(
 ) {
 
 //region Save
-    suspend fun saveArtworks(artworkOverviews: List<ArtworkOverview>) {
-        fluxDao.insertArtworks(artworkOverviews)
+    suspend fun saveOverviews(overviews: List<ArtworkOverview>) {
+        fluxDao.insertOverviews(overviews)
     }
 
     suspend fun saveMovies(movies: List<Movie>) {
@@ -150,12 +150,12 @@ class DatabaseManager(
 
 //region Get
 
-    suspend fun getArtwork(artworkId: Long) : ArtworkOverview {
-        return fluxDao.getArtwork(artworkId)
+    suspend fun getOverview(artworkId: Long) : ArtworkOverview {
+        return fluxDao.getOverview(artworkId)
     }
 
-    suspend fun getArtworks() : List<ArtworkOverview> {
-        return fluxDao.getArtworks()
+    suspend fun getOverviews() : List<ArtworkOverview> {
+        return fluxDao.getOverviews()
     }
 
     suspend fun getMovies() : List<Movie> {
@@ -182,8 +182,8 @@ class DatabaseManager(
 
 //region Delete
 
-    suspend fun deleteArtworks(ids: List<Long>) {
-        fluxDao.deleteArtworks(ids)
+    suspend fun deleteOverviews(ids: List<Long>) {
+        fluxDao.deleteOverviews(ids)
     }
 
     suspend fun deleteMovies(ids: List<Long>) {

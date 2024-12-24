@@ -30,7 +30,7 @@ class ArtworkDataSourceDBImpl @Inject constructor(
 
                 launch {
 
-                    val dbOverviews = databaseManager.getArtworks()
+                    val dbOverviews = databaseManager.getOverviews()
                     overviews.addAll(dbOverviews)
 
                 }
@@ -59,7 +59,7 @@ class ArtworkDataSourceDBImpl @Inject constructor(
 
         } else {
 
-            return ArtworkDataSource.Library(overviews = databaseManager.getArtworks())
+            return ArtworkDataSource.Library(overviews = databaseManager.getOverviews())
 
         }
 

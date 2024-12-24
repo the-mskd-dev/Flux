@@ -71,7 +71,7 @@ class LibraryRepository @Inject constructor(
             moviesIdsToDelete.any { artwork.id == it }
             || (episodes.any { it.artworkId == artwork.id } && episodesIdsToDelete.containsAll(episodes.filter { it.artworkId == artwork.id }.map { e -> e.id }))
         }.map { it.id }
-        databaseManager.deleteArtworks(overviewsIdsToDelete)
+        databaseManager.deleteOverviews(overviewsIdsToDelete)
         databaseManager.deleteEpisodes(episodesIdsToDelete)
 
         // Get new artworks from TMBD
@@ -83,7 +83,7 @@ class LibraryRepository @Inject constructor(
         )
 
         // Save new artworks
-        databaseManager.saveArtworks(newOverviews)
+        databaseManager.saveOverviews(newOverviews)
         databaseManager.saveMovies(newMovies)
         databaseManager.saveEpisodes(newEpisodes)
 

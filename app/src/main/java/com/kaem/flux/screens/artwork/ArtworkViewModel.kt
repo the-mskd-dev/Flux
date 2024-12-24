@@ -23,7 +23,7 @@ import javax.inject.Inject
 
 
 data class ArtworkUiState(
-    val artworkOverview: ArtworkOverview = ArtworkOverview(),
+    val overview: ArtworkOverview = ArtworkOverview(),
     val screen: Screen = Screen.LOADING,
     val currentSeason: Int = -1,
     val selectedArtwork: Artwork? = null,
@@ -60,7 +60,7 @@ class ArtworkViewModel @Inject constructor(
         when {
             movie != null -> {
                 _uiState.value = ArtworkUiState(
-                    artworkOverview = artwork,
+                    overview = artwork,
                     screen = ArtworkUiState.Screen.MOVIE(movie),
                     selectedArtwork = movie
                 )
@@ -72,7 +72,7 @@ class ArtworkViewModel @Inject constructor(
                     ?: episodes.first()
 
                 _uiState.value = ArtworkUiState(
-                    artworkOverview = artwork,
+                    overview = artwork,
                     screen = screen,
                     currentSeason = currentEpisode.season,
                     selectedArtwork = currentEpisode
@@ -80,7 +80,7 @@ class ArtworkViewModel @Inject constructor(
             }
             else -> {
                 ArtworkUiState(
-                    artworkOverview = artwork,
+                    overview = artwork,
                     screen = ArtworkUiState.Screen.ERROR,
                 )
             }
@@ -171,7 +171,7 @@ class ArtworkViewModel @Inject constructor(
 
             dataStoreRepository.addWatchedArtwork(artworkId)
 
-            Log.i("ArtworkViewModel", "${state.artworkOverview.title} saved at ${time.timeDescription}")
+            Log.i("ArtworkViewModel", "${state.overview.title} saved at ${time.timeDescription}")
 
         }
 

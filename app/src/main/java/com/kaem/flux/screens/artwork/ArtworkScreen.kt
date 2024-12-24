@@ -1,13 +1,10 @@
 package com.kaem.flux.screens.artwork
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,14 +17,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Done
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material3.Button
@@ -43,7 +38,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -54,7 +48,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
@@ -72,7 +65,6 @@ import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.model.artwork.Movie
 import com.kaem.flux.model.artwork.Status
 import com.kaem.flux.screens.player.PlayerScreen
-import com.kaem.flux.ui.component.FluxButton
 import com.kaem.flux.ui.component.Loader
 import com.kaem.flux.ui.component.Title
 import com.kaem.flux.ui.theme.FluxElevation
@@ -91,12 +83,15 @@ fun ArtworkScreen(
 ) {
 
     val uiState by viewModel.uiState.collectAsState()
+    val scrollState = rememberLazyListState()
+    val scope = rememberCoroutineScope()
 
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
-        contentPadding = PaddingValues(bottom = 100.dp)
+        contentPadding = PaddingValues(bottom = 100.dp),
+        state = scrollState
     ) {
 
         item {
@@ -157,7 +152,12 @@ fun ArtworkScreen(
                     EpisodeItem(
                         episode = episode,
                         isFirst = i == 0,
-                        onEpisodeTap = { viewModel.selectArtwork(episode) }
+                        onEpisodeTap = {
+                            scope.launch {
+                                viewModel.selectArtwork(episode)
+                                scrollState.animateScrollToItem(0)
+                            }
+                        }
                     )
 
                 }
@@ -190,6 +190,11 @@ fun ArtworkHeader(
 
         val (image, back, title, watchButton, checkButton) = createRefs()
 
+        val imagePath = when (uiState.selectedArtwork) {
+            is Episode -> uiState.selectedArtwork.imagePath
+            else -> uiState.overview.bannerPath
+        }
+
         GlideImage(
             modifier = Modifier
                 .aspectRatio(6f / 5f)
@@ -199,9 +204,10 @@ fun ArtworkHeader(
                     end.linkTo(parent.end)
                     width = Dimension.fillToConstraints
                 },
-            model = Constants.TMDB.IMAGE + uiState.artworkOverview.bannerPath,
+            model = Constants.TMDB.IMAGE + imagePath,
             contentScale = ContentScale.Crop,
-            contentDescription = uiState.artworkOverview.title
+            loading = placeholder(ColorPainter(Color.LightGray)),
+            contentDescription = uiState.overview.title
         )
 
         Box(
@@ -306,7 +312,7 @@ fun ArtworkTitle(
 
         Title(
             modifier = Modifier.fillMaxWidth(),
-            text = uiState.artworkOverview.title
+            text = uiState.overview.title
         )
 
         uiState.selectedArtwork?.releaseDate?.let {

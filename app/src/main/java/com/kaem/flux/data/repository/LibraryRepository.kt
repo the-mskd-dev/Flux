@@ -34,7 +34,6 @@ class LibraryRepository @Inject constructor(
 
         _libraryContent.value = _libraryContent.value?.copy(isLoading = true)
 
-
         val artworks = if (sync) {
             syncLibrary()
         } else {
@@ -50,10 +49,6 @@ class LibraryRepository @Inject constructor(
             )
 
         }
-        /*_libraryContent.value = LibraryContent(
-            isLoading = false,
-            artworkOverviews = artworks.sortedBy { it.title }
-        )*/
 
     }
 

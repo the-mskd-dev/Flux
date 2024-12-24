@@ -16,7 +16,7 @@ import com.kaem.flux.model.tmdb.TMDBMovie
  * @property type Content of the artwork, which can be a movie or a show.
  * @property description Short description derived from the associated content.
  */
-@Entity(tableName = "overviews")
+@Entity(tableName = "artworks")
 data class ArtworkOverview(
     @PrimaryKey
     val id: Long = 0,

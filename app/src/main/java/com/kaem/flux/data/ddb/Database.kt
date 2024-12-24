@@ -33,10 +33,10 @@ interface FluxDao {
 
 //region Get
 
-    @Query("SELECT * FROM overviews WHERE id = :artworkId")
+    @Query("SELECT * FROM artworks WHERE id = :artworkId")
     suspend fun getOverview(artworkId: Long) : ArtworkOverview
 
-    @Query("SELECT * FROM overviews")
+    @Query("SELECT * FROM artworks")
     suspend fun getOverviews() : List<ArtworkOverview>
 
     @Query("SELECT * FROM movies")
@@ -58,7 +58,7 @@ interface FluxDao {
 
 //region Delete
 
-    @Query("DELETE FROM overviews WHERE id IN (:ids)")
+    @Query("DELETE FROM artworks WHERE id IN (:ids)")
     suspend fun deleteOverviews(ids: List<Long>)
 
     @Query("DELETE FROM movies WHERE artworkId IN (:ids)")

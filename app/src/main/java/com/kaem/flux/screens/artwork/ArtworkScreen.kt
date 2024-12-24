@@ -270,7 +270,7 @@ fun ArtworkButtons(
         FluxButton(
             modifier = Modifier.fillMaxWidth(0.4f),
             text = text,
-            autoSize = true,
+            autoSize = false,
             onClick = { onLaunchButtonTap() }
         )
 
@@ -278,7 +278,7 @@ fun ArtworkButtons(
         FluxButton(
             modifier = Modifier.fillMaxWidth(0.4f),
             text = statusText,
-            autoSize = true,
+            autoSize = false,
             onClick = { onWatchStatusChange() }
         )
 

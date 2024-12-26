@@ -157,12 +157,14 @@ fun ArtworkPlayerButton(
     artwork ?: return
 
     Box(
-        modifier = modifier,
+        modifier = modifier.size(100.dp),
         contentAlignment = Alignment.Center
     ) {
 
         FloatingActionButton(
-            modifier = Modifier.fillMaxSize().padding(3.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(3.dp),
             shape = CircleShape,
             containerColor = MaterialTheme.colorScheme.onPrimary,
             contentColor = MaterialTheme.colorScheme.primary,
@@ -196,7 +198,7 @@ fun ArtworkStatusButton(
 ) {
 
     FloatingActionButton(
-        modifier = modifier,
+        modifier = modifier.size(40.dp),
         shape = CircleShape,
         containerColor = MaterialTheme.colorScheme.primary,
         contentColor = MaterialTheme.colorScheme.onPrimary,
@@ -261,8 +263,6 @@ val ArtworkHeaderConstraintSet = ConstraintSet {
         top.linkTo(image.bottom, FluxSpace.MEDIUM)
         start.linkTo(parent.start)
         end.linkTo(parent.end)
-        height = Dimension.value(100.dp)
-        width = Dimension.value(100.dp)
     }
 
     val status = createRefFor("status")
@@ -270,8 +270,6 @@ val ArtworkHeaderConstraintSet = ConstraintSet {
         top.linkTo(play.top)
         bottom.linkTo(play.bottom)
         start.linkTo(play.end, FluxSpace.LARGE)
-        height = Dimension.value(40.dp)
-        width = Dimension.value(40.dp)
     }
 
     val title = createRefFor("title")

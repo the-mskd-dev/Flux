@@ -79,7 +79,7 @@ class ArtworkViewModel @Inject constructor(
                 )
             }
             else -> {
-                ArtworkUiState(
+                _uiState.value = ArtworkUiState(
                     overview = artwork,
                     screen = ArtworkUiState.Screen.ERROR,
                 )

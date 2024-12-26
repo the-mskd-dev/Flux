@@ -7,6 +7,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -24,10 +25,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Done
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
@@ -36,6 +39,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -43,7 +48,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
@@ -69,6 +77,7 @@ import com.kaem.flux.ui.theme.FluxFontSize
 import com.kaem.flux.ui.theme.FluxSpace
 import com.kaem.flux.ui.theme.FluxWeight
 import com.kaem.flux.utils.Constants
+import com.kaem.flux.utils.inMinutes
 import com.kaem.flux.utils.timeDescription
 import kotlinx.coroutines.launch
 import java.text.DateFormat
@@ -195,146 +204,6 @@ fun ArtworkContent(
 
             }
 
-        }
-
-    }
-
-}
-
-@OptIn(ExperimentalGlideComposeApi::class)
-@Composable
-fun ArtworkHeader(
-    uiState: ArtworkUiState,
-    onBackButtonTap: () -> Unit,
-    onStatusButtonTap: () -> Unit,
-    onPlayerButtonTap: () -> Unit
-) {
-
-    ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
-
-        val (image, back, title, watchButton, checkButton) = createRefs()
-
-        val imagePath = when (uiState.selectedArtwork) {
-            is Episode -> uiState.selectedArtwork.imagePath
-            else -> uiState.overview.bannerPath
-        }
-
-        GlideImage(
-            modifier = Modifier
-                .aspectRatio(6f / 5f)
-                .constrainAs(image) {
-                    top.linkTo(parent.top)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                    width = Dimension.fillToConstraints
-                },
-            model = Constants.TMDB.IMAGE + imagePath,
-            contentScale = ContentScale.Crop,
-            loading = Placeholders.loading,
-            contentDescription = uiState.overview.title
-        )
-
-        BackButton(
-            modifier = Modifier.constrainAs(back) {
-                top.linkTo(parent.top)
-                start.linkTo(parent.start)
-            },
-            onTap = onBackButtonTap
-        )
-
-        Button(
-            modifier = Modifier
-                .constrainAs(watchButton) {
-                    top.linkTo(image.bottom)
-                    bottom.linkTo(image.bottom)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                },
-            onClick = { onPlayerButtonTap() },
-            elevation = FluxElevation.buttonElevation(),
-            shape = RoundedCornerShape(8.dp)
-        ) {
-
-            Row(
-                modifier = Modifier.padding(horizontal = FluxSpace.MEDIUM),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(FluxSpace.SMALL, Alignment.CenterHorizontally)
-            ) {
-
-                Icon(
-                    modifier = Modifier.size(30.dp),
-                    imageVector = Icons.Rounded.PlayArrow,
-                    contentDescription = "play button"
-                )
-
-
-                val text = if (uiState.selectedArtwork?.status == Status.IS_WATCHING) stringResource(id = R.string.resume, uiState.selectedArtwork.currentTime.timeDescription) else stringResource(R.string.start)
-                Text(
-                    text = text.uppercase(),
-                    fontWeight = FluxWeight.MEDIUM
-                )
-
-            }
-
-        }
-
-        FloatingActionButton(
-            modifier = Modifier.constrainAs(checkButton) {
-                top.linkTo(watchButton.top)
-                bottom.linkTo(watchButton.bottom)
-                start.linkTo(watchButton.end, FluxSpace.LARGE)
-                height = Dimension.value(40.dp)
-                width = Dimension.value(40.dp)
-            },
-            shape = CircleShape,
-            containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = MaterialTheme.colorScheme.onPrimary,
-            elevation = FluxElevation.floatingButtonElevation(),
-            onClick = { onStatusButtonTap() },
-            content = { Icon(imageVector = Icons.Rounded.Done, contentDescription = "check if watched button") }
-        )
-
-        ArtworkTitle(
-            modifier = Modifier.constrainAs(title) {
-                top.linkTo(watchButton.bottom, FluxSpace.SMALL)
-                start.linkTo(parent.start, FluxSpace.MEDIUM)
-                end.linkTo(parent.end, FluxSpace.MEDIUM)
-                width = Dimension.fillToConstraints
-            },
-            uiState = uiState
-        )
-
-    }
-
-}
-
-@Composable
-fun ArtworkTitle(
-    modifier: Modifier,
-    uiState: ArtworkUiState
-) {
-
-    Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.Start,
-        verticalArrangement = Arrangement.spacedBy(2.dp)
-    ) {
-
-        Title(
-            modifier = Modifier.fillMaxWidth(),
-            text = uiState.overview.title
-        )
-
-        uiState.selectedArtwork?.releaseDate?.let {
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .alpha(.8f),
-                text = DateFormat.getDateInstance().format(it),
-                fontSize = FluxFontSize.SMALL,
-                color = MaterialTheme.colorScheme.onBackground,
-                fontStyle = FontStyle.Italic
-            )
         }
 
     }

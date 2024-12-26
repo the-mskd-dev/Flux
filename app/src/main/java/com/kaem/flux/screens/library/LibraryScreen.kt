@@ -54,6 +54,7 @@ import com.kaem.flux.model.artwork.ArtworkOverview
 import com.kaem.flux.model.artwork.ContentType
 import com.kaem.flux.ui.component.FluxButton
 import com.kaem.flux.ui.component.Loader
+import com.kaem.flux.ui.component.Placeholders
 import com.kaem.flux.ui.component.Title
 import com.kaem.flux.ui.theme.FluxSpace
 import com.kaem.flux.utils.Constants
@@ -264,7 +265,7 @@ fun ArtworkItem(
             .aspectRatio(ratio),
         model = url,
         contentDescription = artworkOverview.title,
-        loading = placeholder(ColorPainter(Color.LightGray))
+        loading = Placeholders.loading
     )
 
 }

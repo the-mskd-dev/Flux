@@ -1,6 +1,7 @@
 package com.kaem.flux.screens.artwork
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateValueAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -16,6 +17,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.material.icons.rounded.Done
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material3.Button
@@ -39,6 +42,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
@@ -101,6 +105,7 @@ fun ArtworkHeader(
 
         ArtworkStatusButton(
             modifier = Modifier.layoutId("status"),
+            status = uiState.selectedArtwork?.status,
             onTap = { onStatusButtonTap() }
         )
 
@@ -167,17 +172,6 @@ fun ArtworkPlayerButton(
 
     artwork ?: return
 
-    val isWatching = artwork.status == Status.IS_WATCHING
-    val text = if (isWatching) stringResource(R.string.resume) else stringResource(R.string.start)
-    val buttonColor by animateColorAsState(
-        targetValue = if (artwork.status == Status.WATCHED) MaterialTheme.colorScheme.background else MaterialTheme.colorScheme.primary,
-        label = "playButtonColorAnimation"
-    )
-    val textColor by animateColorAsState(
-        targetValue = if (artwork.status == Status.WATCHED) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.background,
-        label = "playButtonTextColorAnimation"
-    )
-
     Box(
         modifier = modifier.size(70.dp),
         contentAlignment = Alignment.Center
@@ -216,21 +210,34 @@ fun ArtworkPlayerButton(
 @Composable
 fun ArtworkStatusButton(
     modifier: Modifier,
+    status: Status?,
     onTap: () -> Unit
 ) {
+
+    status ?: return
 
     FloatingActionButton(
         modifier = modifier.size(30.dp),
         shape = CircleShape,
-        containerColor = MaterialTheme.colorScheme.primary,
+        containerColor = Color.Transparent,
         contentColor = MaterialTheme.colorScheme.onPrimary,
         elevation = FluxElevation.floatingButtonElevation(),
         onClick = onTap,
         content = {
-            Icon(
-                modifier = Modifier.size(20.dp),
-                imageVector = Icons.Rounded.Done, contentDescription = "check if watched button"
-            )
+            if (status == Status.WATCHED) {
+                Icon(
+                    modifier = Modifier.fillMaxSize(),
+                    imageVector = Icons.Rounded.CheckCircle,
+                    contentDescription = "button to mark as not watched"
+                )
+            } else {
+                Icon(
+                    modifier = Modifier.fillMaxSize(),
+                    painter = painterResource(R.drawable.ic_visibility),
+                    contentDescription = "button to mark as watched"
+                )
+            }
+
         }
     )
 

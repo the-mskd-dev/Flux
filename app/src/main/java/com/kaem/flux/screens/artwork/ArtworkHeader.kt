@@ -78,7 +78,7 @@ fun ArtworkHeader(
         )
 
         BackButton(
-            modifier = Modifier.layoutId("image"),
+            modifier = Modifier.layoutId("back"),
             onTap = onBackButtonTap
         )
 
@@ -258,8 +258,7 @@ val ArtworkHeaderConstraintSet = ConstraintSet {
 
     val play = createRefFor("play")
     constrain(play) {
-        top.linkTo(image.bottom)
-        bottom.linkTo(image.bottom)
+        top.linkTo(image.bottom, FluxSpace.MEDIUM)
         start.linkTo(parent.start)
         end.linkTo(parent.end)
         height = Dimension.value(100.dp)
@@ -277,7 +276,7 @@ val ArtworkHeaderConstraintSet = ConstraintSet {
 
     val title = createRefFor("title")
     constrain(title) {
-        top.linkTo(play.bottom, FluxSpace.MEDIUM)
+        bottom.linkTo(image.bottom, FluxSpace.SMALL)
         start.linkTo(parent.start, FluxSpace.MEDIUM)
         end.linkTo(parent.end, FluxSpace.MEDIUM)
         width = Dimension.fillToConstraints

@@ -1,6 +1,9 @@
 package com.kaem.flux.screens.artwork
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,10 +12,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Done
 import androidx.compose.material.icons.rounded.PlayArrow
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -32,6 +39,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -39,8 +47,10 @@ import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
+import com.kaem.flux.R
 import com.kaem.flux.model.artwork.Artwork
 import com.kaem.flux.model.artwork.Episode
+import com.kaem.flux.model.artwork.Status
 import com.kaem.flux.ui.component.BackButton
 import com.kaem.flux.ui.component.Placeholders
 import com.kaem.flux.ui.component.Title
@@ -156,18 +166,29 @@ fun ArtworkPlayerButton(
 
     artwork ?: return
 
+    val isWatching = artwork.status == Status.IS_WATCHING
+    val text = if (isWatching) stringResource(R.string.resume) else stringResource(R.string.start)
+    val buttonColor by animateColorAsState(
+        targetValue = if (artwork.status == Status.WATCHED) MaterialTheme.colorScheme.background else MaterialTheme.colorScheme.primary,
+        label = "playButtonColorAnimation"
+    )
+    val textColor by animateColorAsState(
+        targetValue = if (artwork.status == Status.WATCHED) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.background,
+        label = "playButtonTextColorAnimation"
+    )
+
     Box(
-        modifier = modifier.size(100.dp),
+        modifier = modifier.size(60.dp),
         contentAlignment = Alignment.Center
     ) {
 
         FloatingActionButton(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(3.dp),
+                .padding(2.dp),
             shape = CircleShape,
-            containerColor = MaterialTheme.colorScheme.onPrimary,
-            contentColor = MaterialTheme.colorScheme.primary,
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary,
             elevation = FluxElevation.floatingButtonElevation(),
             onClick = { onTap() },
             content = {
@@ -181,8 +202,8 @@ fun ArtworkPlayerButton(
 
         CircularProgressIndicator(
             modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.primary,
-            strokeWidth = 6.dp,
+            color = MaterialTheme.colorScheme.onBackground,
+            strokeWidth = 4.dp,
             trackColor = ProgressIndicatorDefaults.circularIndeterminateTrackColor,
             progress = { artwork.currentTime.inMinutes.toFloat() / artwork.duration.toFloat() }
         )
@@ -198,13 +219,18 @@ fun ArtworkStatusButton(
 ) {
 
     FloatingActionButton(
-        modifier = modifier.size(40.dp),
+        modifier = modifier.size(30.dp),
         shape = CircleShape,
         containerColor = MaterialTheme.colorScheme.primary,
         contentColor = MaterialTheme.colorScheme.onPrimary,
         elevation = FluxElevation.floatingButtonElevation(),
         onClick = onTap,
-        content = { Icon(imageVector = Icons.Rounded.Done, contentDescription = "check if watched button") }
+        content = {
+            Icon(
+                modifier = Modifier.size(20.dp),
+                imageVector = Icons.Rounded.Done, contentDescription = "check if watched button"
+            )
+        }
     )
 
 }

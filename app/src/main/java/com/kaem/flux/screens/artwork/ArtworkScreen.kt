@@ -1,6 +1,7 @@
 package com.kaem.flux.screens.artwork
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
@@ -63,7 +64,6 @@ import com.bumptech.glide.integration.compose.placeholder
 import com.kaem.flux.R
 
 import com.kaem.flux.model.artwork.Episode
-import com.kaem.flux.model.artwork.Movie
 import com.kaem.flux.model.artwork.Status
 import com.kaem.flux.screens.player.PlayerScreen
 import com.kaem.flux.ui.component.Loader
@@ -84,6 +84,53 @@ fun ArtworkScreen(
 ) {
 
     val uiState by viewModel.uiState.collectAsState()
+
+    Crossfade(
+        modifier = Modifier.fillMaxSize(),
+        targetState = uiState,
+        label = "ArtworkScreenAnimation"
+    ) { state ->
+
+        when (state.screen) {
+            ArtworkUiState.Screen.LOADING -> Loader()
+            ArtworkUiState.Screen.ERROR -> Text("Error") //TODO : Error message
+            else -> {
+
+                ArtworkContent(
+                    state = state,
+                    onBackButtonTap = onBackButtonTap,
+                    onStatusButtonTap = { viewModel.changeWatchStatus() },
+                    onSeasonTap = { viewModel.selectSeason(it) },
+                    onEpisodeTap = { viewModel.selectArtwork(it) },
+                    onPlayerButtonTap = { viewModel.showPlayer(true) }
+                )
+
+            }
+
+        }
+
+    }
+
+    AnimatedVisibility(uiState.showPlayer) {
+        PlayerScreen(
+            artwork = uiState.selectedArtwork,
+            onBackButtonTap = { viewModel.showPlayer(false) },
+            onTimeSave = { viewModel.saveTime(it) }
+        )
+    }
+
+}
+
+@Composable
+fun ArtworkContent(
+    state: ArtworkUiState,
+    onBackButtonTap: () -> Unit,
+    onStatusButtonTap: () -> Unit,
+    onSeasonTap: (Int) -> Unit,
+    onEpisodeTap: (Episode) -> Unit,
+    onPlayerButtonTap: () -> Unit
+) {
+
     val scrollState = rememberLazyListState()
     val scope = rememberCoroutineScope()
 
@@ -103,77 +150,52 @@ fun ArtworkScreen(
             ) {
 
                 ArtworkHeader(
-                    uiState = uiState,
+                    uiState = state,
                     onBackButtonTap = { onBackButtonTap() },
-                    onStatusButtonTap = { viewModel.changeWatchStatus() },
-                    onLaunchButtonTap = { viewModel.showPlayer(true) }
+                    onStatusButtonTap = onStatusButtonTap,
+                    onPlayerButtonTap = onPlayerButtonTap
                 )
 
-                ArtworkDescription(uiState = uiState)
+                ArtworkDescription(uiState = state)
 
             }
 
         }
 
-        when (val screen = uiState.screen) {
-            is ArtworkUiState.Screen.MOVIE -> {}
-            ArtworkUiState.Screen.LOADING -> {
+        (state.screen as? ArtworkUiState.Screen.SHOW)?.episodes?.let { episodes ->
 
-                item {
-                    Loader()
-                }
+            item {
+
+                ArtworkSeasonsTabs(
+                    selectedSeason = state.currentSeason,
+                    seasons = episodes.map { it.season }.distinct(),
+                    onSeasonTap = onSeasonTap
+                )
 
             }
-            ArtworkUiState.Screen.ERROR -> {
-                item {
-                    Text("Error") //TODO : Error message
-                }
-            }
-            is ArtworkUiState.Screen.SHOW -> {
 
-                val episodes = screen.episodes
+            itemsIndexed(
+                items = episodes
+                    .filter { it.season == state.currentSeason }
+                    .sortedBy { it.number },
+                key = { _, e -> e.id }
+            ) { i, episode ->
 
-                item {
-
-                    ArtworkSeasonsTabs(
-                        selectedSeason = uiState.currentSeason,
-                        seasons = episodes.map { it.season }.distinct(),
-                        onSeasonTap = { viewModel.selectSeason(it) }
-                    )
-
-                }
-
-                itemsIndexed(
-                    items = episodes
-                        .filter { it.season == uiState.currentSeason }
-                        .sortedBy { it.number },
-                    key = { _, e -> e.id }
-                ) { i, episode ->
-
-                    EpisodeItem(
-                        episode = episode,
-                        isFirst = i == 0,
-                        onEpisodeTap = {
-                            scope.launch {
-                                viewModel.selectArtwork(episode)
-                                scrollState.animateScrollToItem(0)
-                            }
+                EpisodeItem(
+                    episode = episode,
+                    isFirst = i == 0,
+                    onEpisodeTap = {
+                        scope.launch {
+                            onEpisodeTap(episode)
+                            scrollState.animateScrollToItem(0)
                         }
-                    )
-
-                }
+                    }
+                )
 
             }
+
         }
 
-    }
-
-    AnimatedVisibility(uiState.showPlayer) {
-        PlayerScreen(
-            artwork = uiState.selectedArtwork,
-            onBackButtonTap = { viewModel.showPlayer(false) },
-            onTimeSave = { viewModel.saveTime(it) }
-        )
     }
 
 }
@@ -184,7 +206,7 @@ fun ArtworkHeader(
     uiState: ArtworkUiState,
     onBackButtonTap: () -> Unit,
     onStatusButtonTap: () -> Unit,
-    onLaunchButtonTap: () -> Unit
+    onPlayerButtonTap: () -> Unit
 ) {
 
     ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
@@ -241,7 +263,7 @@ fun ArtworkHeader(
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                 },
-            onClick = { onLaunchButtonTap() },
+            onClick = { onPlayerButtonTap() },
             elevation = FluxElevation.buttonElevation(),
             shape = RoundedCornerShape(8.dp)
         ) {
@@ -339,7 +361,7 @@ fun ArtworkDescription(uiState: ArtworkUiState) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = FluxSpace.MEDIUM),
-        verticalArrangement = Arrangement.spacedBy(FluxSpace.SMALL)
+        verticalArrangement = Arrangement.spacedBy(FluxSpace.EXTRA_SMALL)
     ) {
 
         uiState.selectedArtwork?.let {
@@ -350,15 +372,15 @@ fun ArtworkDescription(uiState: ArtworkUiState) {
                     modifier = Modifier.fillMaxWidth(),
                     text = stringResource(id = R.string.season_and_episode, it.season, it.number),
                     color = MaterialTheme.colorScheme.onBackground,
-                    fontSize = FluxFontSize.LARGE,
-                    fontWeight = FluxWeight.MEDIUM
+                    fontSize = FluxFontSize.MEDIUM,
+                    fontWeight = FluxWeight.LIGHT
                 )
 
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     text = it.title,
                     color = MaterialTheme.colorScheme.onBackground,
-                    fontSize = FluxFontSize.MEDIUM,
+                    fontSize = FluxFontSize.LARGE,
                     fontWeight = FluxWeight.MEDIUM
                 )
 
@@ -371,7 +393,8 @@ fun ArtworkDescription(uiState: ArtworkUiState) {
                 text = it.description,
                 color = MaterialTheme.colorScheme.onBackground,
                 fontSize = FluxFontSize.MEDIUM,
-                textAlign = TextAlign.Start
+                textAlign = TextAlign.Start,
+                lineHeight = FluxFontSize.MEDIUM
             )
 
         }
@@ -402,22 +425,6 @@ fun ArtworkSeasonsTabs(
             }
 
         }
-    }
-
-}
-
-
-@Composable
-fun EpisodesDialog(
-    episodes: List<Episode>,
-    onDismiss: () -> Unit,
-    onEpisodeTap: () -> Unit
-) {
-
-    Dialog(
-       onDismissRequest = { onDismiss() }
-    ) {
-
     }
 
 }

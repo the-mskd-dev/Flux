@@ -247,6 +247,18 @@ fun ArtworkDescription(artwork: Artwork?) {
 
             }
 
+            artwork.releaseDate?.let {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .alpha(.8f),
+                    text = DateFormat.getDateInstance().format(it),
+                    fontSize = FluxFontSize.SMALL,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    fontStyle = FontStyle.Italic
+                )
+            }
+
         }
 
         Text(

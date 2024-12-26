@@ -41,6 +41,7 @@ import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
@@ -178,7 +179,7 @@ fun ArtworkPlayerButton(
     )
 
     Box(
-        modifier = modifier.size(60.dp),
+        modifier = modifier.size(70.dp),
         contentAlignment = Alignment.Center
     ) {
 
@@ -193,7 +194,7 @@ fun ArtworkPlayerButton(
             onClick = { onTap() },
             content = {
                 Icon(
-                    modifier = Modifier.size(40.dp),
+                    modifier = Modifier.size(45.dp),
                     imageVector = Icons.Rounded.PlayArrow,
                     contentDescription = "play button"
                 )
@@ -241,36 +242,17 @@ fun ArtworkTitle(
     uiState: ArtworkUiState
 ) {
 
-    Column(
+    Title(
         modifier = modifier,
-        horizontalAlignment = Alignment.Start,
-        verticalArrangement = Arrangement.spacedBy(2.dp)
-    ) {
-
-        Title(
-            modifier = Modifier.fillMaxWidth(),
-            text = uiState.overview.title
-        )
-
-        uiState.selectedArtwork?.releaseDate?.let {
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .alpha(.8f),
-                text = DateFormat.getDateInstance().format(it),
-                fontSize = FluxFontSize.SMALL,
-                color = MaterialTheme.colorScheme.onBackground,
-                fontStyle = FontStyle.Italic
-            )
-        }
-
-    }
+        text = uiState.overview.title,
+        textAlign = TextAlign.Start
+    )
 
 }
 
 val ArtworkHeaderConstraintSet = ConstraintSet {
 
-    val image = createRefFor("image")
+    val (image, back, title, play, status) = createRefsFor("image", "back", "title", "play", "status")
     constrain(image) {
         top.linkTo(parent.top)
         start.linkTo(parent.start)
@@ -278,32 +260,27 @@ val ArtworkHeaderConstraintSet = ConstraintSet {
         width = Dimension.fillToConstraints
     }
 
-    val back = createRefFor("back")
     constrain(back) {
         top.linkTo(parent.top)
         start.linkTo(parent.start)
     }
 
-    val play = createRefFor("play")
-    constrain(play) {
-        top.linkTo(image.bottom, FluxSpace.MEDIUM)
-        start.linkTo(parent.start)
-        end.linkTo(parent.end)
-    }
-
-    val status = createRefFor("status")
-    constrain(status) {
-        top.linkTo(play.top)
-        bottom.linkTo(play.bottom)
-        start.linkTo(play.end, FluxSpace.LARGE)
-    }
-
-    val title = createRefFor("title")
     constrain(title) {
         bottom.linkTo(image.bottom, FluxSpace.SMALL)
         start.linkTo(parent.start, FluxSpace.MEDIUM)
-        end.linkTo(parent.end, FluxSpace.MEDIUM)
+        end.linkTo(play.start, FluxSpace.MEDIUM)
         width = Dimension.fillToConstraints
+    }
+
+    constrain(play) {
+        top.linkTo(title.top)
+        bottom.linkTo(title.bottom)
+        end.linkTo(parent.end, FluxSpace.LARGE)
+    }
+
+    constrain(status) {
+        top.linkTo(title.bottom, FluxSpace.LARGE)
+        start.linkTo(title.start)
     }
 
 }

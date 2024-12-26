@@ -19,7 +19,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.minutes
 
 
 data class ArtworkUiState(
@@ -111,15 +114,17 @@ class ArtworkViewModel @Inject constructor(
 
         val artwork = uiState.value.selectedArtwork ?: return
         val newStatus = if (artwork.status != Status.WATCHED) Status.WATCHED else Status.TO_WATCH
+        val newTime = if (newStatus == Status.TO_WATCH) 0L else artwork.duration.minutes.inWholeMilliseconds
 
         when (artwork) {
             is Movie -> {
 
-                val movie = artwork.copy(status = newStatus)
+                val movie = artwork.copy(
+                    status = newStatus,
+                    currentTime = newTime
+                )
                 _uiState.update { currentState ->
-                    currentState.copy(
-                        selectedArtwork = movie
-                    )
+                    currentState.copy(selectedArtwork = movie)
                 }
 
                 // Save status in DB
@@ -130,14 +135,18 @@ class ArtworkViewModel @Inject constructor(
             }
             is Episode -> {
 
-                val episode = artwork.copy(status = newStatus)
+                val episode = artwork.copy(
+                    status = newStatus,
+                    currentTime = newTime
+                )
 
                 // Update list
                 val episodes = (_uiState.value.screen as? ArtworkUiState.Screen.SHOW)?.episodes.orEmpty().toMutableList()
                 episodes.replaceAll { if (it.id == episode.id) episode else it }
                 _uiState.update { currentState ->
                     currentState.copy(
-                        screen = ArtworkUiState.Screen.SHOW(episodes)
+                        screen = ArtworkUiState.Screen.SHOW(episodes),
+                        selectedArtwork = episode
                     )
                 }
 

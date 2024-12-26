@@ -220,7 +220,7 @@ fun ArtworkStatusButton(
         modifier = modifier.size(30.dp),
         shape = CircleShape,
         containerColor = Color.Transparent,
-        contentColor = MaterialTheme.colorScheme.onPrimary,
+        contentColor = MaterialTheme.colorScheme.primary,
         elevation = FluxElevation.floatingButtonElevation(),
         onClick = onTap,
         content = {

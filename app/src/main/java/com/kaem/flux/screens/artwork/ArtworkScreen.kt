@@ -67,6 +67,8 @@ import com.kaem.flux.model.artwork.Artwork
 import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.model.artwork.Status
 import com.kaem.flux.screens.player.PlayerScreen
+import com.kaem.flux.ui.component.BackButton
+import com.kaem.flux.ui.component.ErrorScreen
 import com.kaem.flux.ui.component.Loader
 import com.kaem.flux.ui.component.Title
 import com.kaem.flux.ui.theme.FluxElevation
@@ -94,7 +96,12 @@ fun ArtworkScreen(
 
         when (state.screen) {
             ArtworkUiState.Screen.LOADING -> Loader()
-            ArtworkUiState.Screen.ERROR -> Text("Error") //TODO : Error message
+            ArtworkUiState.Screen.ERROR -> {
+                ErrorScreen(
+                    message = stringResource(R.string.oups_an_error_occured),
+                    onBackButtonTap = onBackButtonTap
+                )
+            }
             else -> {
 
                 ArtworkContent(
@@ -234,27 +241,13 @@ fun ArtworkHeader(
             contentDescription = uiState.overview.title
         )
 
-        Box(
-            modifier = Modifier
-                .statusBarsPadding()
-                .constrainAs(back) {
-                    top.linkTo(parent.top)
-                    start.linkTo(parent.start, FluxSpace.MEDIUM)
-                }
-                .size(50.dp)
-                .clip(shape = CircleShape)
-                .clickable { onBackButtonTap() }
-                .padding(FluxSpace.EXTRA_SMALL),
-            contentAlignment = Alignment.Center
-        ) {
-
-            Icon(
-                imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-                tint = Color.White,
-                contentDescription = "back button"
-            )
-
-        }
+        BackButton(
+            modifier = Modifier.constrainAs(back) {
+                top.linkTo(parent.top)
+                start.linkTo(parent.start)
+            },
+            onTap = onBackButtonTap
+        )
 
         Button(
             modifier = Modifier

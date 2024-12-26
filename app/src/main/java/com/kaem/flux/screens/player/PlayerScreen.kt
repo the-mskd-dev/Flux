@@ -59,6 +59,7 @@ import androidx.media3.ui.TrackSelectionDialogBuilder
 import com.kaem.flux.R
 import com.kaem.flux.model.artwork.Artwork
 import com.kaem.flux.model.artwork.Episode
+import com.kaem.flux.ui.component.BackButton
 import com.kaem.flux.ui.component.LifecycleComponent
 import com.kaem.flux.ui.theme.FluxFontSize
 import com.kaem.flux.ui.theme.FluxSpace
@@ -208,9 +209,9 @@ fun PlayerButtons(
             constraintSet = PlayerButtonsConstraintSet
         ) {
 
-            PlayerBackButton(
-                layoutId = "back",
-                onTap = { onBackButtonTap() }
+            BackButton(
+                modifier = Modifier.layoutId("back"),
+                onTap = onBackButtonTap
             )
 
             PlayerTitle(
@@ -219,33 +220,6 @@ fun PlayerButtons(
             )
 
         }
-
-    }
-
-}
-
-@Composable
-fun PlayerBackButton(
-    layoutId: String,
-    onTap: () -> Unit
-) {
-
-    Box(
-        modifier = Modifier
-            .layoutId(layoutId)
-            .padding(start = FluxSpace.MEDIUM)
-            .size(50.dp)
-            .clip(shape = CircleShape)
-            .clickable { onTap() }
-            .padding(FluxSpace.EXTRA_SMALL),
-        contentAlignment = Alignment.Center
-    ) {
-
-        Icon(
-            imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-            tint = Color.White,
-            contentDescription = "back button"
-        )
 
     }
 

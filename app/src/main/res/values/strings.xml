@@ -13,4 +13,5 @@
     <string name="resume">Reprendre à %1$s</string>
     <string name="mark_as_watched">Marquer comme vu</string>
     <string name="mark_as_not_watched">Marquer comme non vu</string>
+    <string name="oups_an_error_occured">Oups, il semble qu\'il y ait une erreur…</string>
 </resources>

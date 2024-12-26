@@ -62,6 +62,7 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.placeholder
 import com.kaem.flux.R
+import com.kaem.flux.model.artwork.Artwork
 
 import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.model.artwork.Status
@@ -151,12 +152,12 @@ fun ArtworkContent(
 
                 ArtworkHeader(
                     uiState = state,
-                    onBackButtonTap = { onBackButtonTap() },
+                    onBackButtonTap = onBackButtonTap,
                     onStatusButtonTap = onStatusButtonTap,
                     onPlayerButtonTap = onPlayerButtonTap
                 )
 
-                ArtworkDescription(uiState = state)
+                ArtworkDescription(artwork = state.selectedArtwork)
 
             }
 
@@ -355,7 +356,9 @@ fun ArtworkTitle(
 }
 
 @Composable
-fun ArtworkDescription(uiState: ArtworkUiState) {
+fun ArtworkDescription(artwork: Artwork?) {
+
+    artwork ?: return
 
     Column(
         modifier = Modifier
@@ -364,21 +367,24 @@ fun ArtworkDescription(uiState: ArtworkUiState) {
         verticalArrangement = Arrangement.spacedBy(FluxSpace.EXTRA_SMALL)
     ) {
 
-        uiState.selectedArtwork?.let {
+        if (artwork is Episode) {
 
-            if (it is Episode) {
+            Column(modifier = Modifier.fillMaxWidth()) {
 
                 Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = stringResource(id = R.string.season_and_episode, it.season, it.number),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .alpha(.8f),
+                    text = stringResource(id = R.string.season_and_episode, artwork.season, artwork.number),
                     color = MaterialTheme.colorScheme.onBackground,
                     fontSize = FluxFontSize.MEDIUM,
-                    fontWeight = FluxWeight.LIGHT
+                    fontWeight = FluxWeight.LIGHT,
+                    fontStyle = FontStyle.Italic
                 )
 
                 Text(
                     modifier = Modifier.fillMaxWidth(),
-                    text = it.title,
+                    text = artwork.title,
                     color = MaterialTheme.colorScheme.onBackground,
                     fontSize = FluxFontSize.LARGE,
                     fontWeight = FluxWeight.MEDIUM
@@ -386,18 +392,18 @@ fun ArtworkDescription(uiState: ArtworkUiState) {
 
             }
 
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .alpha(.8f),
-                text = it.description,
-                color = MaterialTheme.colorScheme.onBackground,
-                fontSize = FluxFontSize.MEDIUM,
-                textAlign = TextAlign.Start,
-                lineHeight = FluxFontSize.MEDIUM
-            )
-
         }
+
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .alpha(.8f),
+            text = artwork.description,
+            color = MaterialTheme.colorScheme.onBackground,
+            fontSize = FluxFontSize.MEDIUM,
+            textAlign = TextAlign.Start,
+            lineHeight = FluxFontSize.MEDIUM
+        )
 
     }
 

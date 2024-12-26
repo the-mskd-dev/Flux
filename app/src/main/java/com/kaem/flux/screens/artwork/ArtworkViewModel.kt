@@ -33,7 +33,7 @@ data class ArtworkUiState(
     sealed class Screen {
         data object LOADING : Screen()
         data object ERROR : Screen()
-        data class MOVIE(val movie: Movie) : Screen()
+        data object MOVIE : Screen()
         data class SHOW(val episodes: List<Episode> = emptyList()) : Screen()
     }
 
@@ -61,7 +61,7 @@ class ArtworkViewModel @Inject constructor(
             movie != null -> {
                 _uiState.value = ArtworkUiState(
                     overview = artwork,
-                    screen = ArtworkUiState.Screen.MOVIE(movie),
+                    screen = ArtworkUiState.Screen.MOVIE,
                     selectedArtwork = movie
                 )
             }
@@ -118,7 +118,7 @@ class ArtworkViewModel @Inject constructor(
                 val movie = artwork.copy(status = newStatus)
                 _uiState.update { currentState ->
                     currentState.copy(
-                        screen = ArtworkUiState.Screen.MOVIE(movie)
+                        selectedArtwork = movie
                     )
                 }
 

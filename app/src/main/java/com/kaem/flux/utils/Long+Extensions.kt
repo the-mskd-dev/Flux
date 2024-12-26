@@ -1,6 +1,6 @@
 package com.kaem.flux.utils
 
-import java.util.concurrent.TimeUnit
+import kotlin.time.Duration.Companion.milliseconds
 
 val Long.timeDescription : String
     get() {
@@ -16,4 +16,4 @@ val Long.timeDescription : String
         }
     }
 
-val Long.inMinutes : Long get() = TimeUnit.MILLISECONDS.toMinutes(this)
+val Long.inMinutes : Long get() = this.milliseconds.inWholeMinutes

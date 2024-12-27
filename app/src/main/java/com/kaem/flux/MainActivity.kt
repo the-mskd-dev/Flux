@@ -9,20 +9,27 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
 import com.kaem.flux.screens.artwork.ArtworkScreen
 import com.kaem.flux.screens.library.LibraryScreen
+import com.kaem.flux.screens.permissions.PermissionsScreen
+import com.kaem.flux.screens.permissions.fluxPermissionState
 import com.kaem.flux.ui.theme.FluxTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
+    @OptIn(ExperimentalPermissionsApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -33,19 +40,44 @@ class MainActivity : ComponentActivity() {
             FluxTheme {
 
                 val navController = rememberNavController()
+                val fluxPermissions = fluxPermissionState()
+                var startDestination = "permissions"
+
+                LaunchedEffect(Unit) {
+                    if (fluxPermissions.status.isGranted) {
+                        startDestination = "library"
+                    }
+                }
+
+                LaunchedEffect(fluxPermissions.status.isGranted) {
+                    if (fluxPermissions.status.isGranted) {
+                        navController.navigate(route = "library") {
+                            popUpTo("permissions") { inclusive = true }
+                            launchSingleTop = true
+                        }
+                    }
+                }
                 
                 NavHost(
                     modifier = Modifier
                         .fillMaxSize()
                         .background(color = MaterialTheme.colorScheme.background),
                     navController = navController,
-                    startDestination = "library"
+                    startDestination = startDestination
                 ) {
+
+                    composable("permissions") {
+                        PermissionsScreen(
+                            onPermissionsTap = { fluxPermissions.launchPermissionRequest() }
+                        )
+                    }
 
                     composable("library") {
                         LibraryScreen(
                             navigateToDetails = {
-                                navController.navigate("artwork/$it")
+                                navController.navigate(
+                                    route = "artwork/$it"
+                                )
                             }
                         )
                     }

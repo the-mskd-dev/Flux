@@ -1,4 +1,4 @@
-package com.kaem.flux.screens.library
+package com.kaem.flux.screens.permissions
 
 import android.os.Build
 import androidx.compose.foundation.layout.Box
@@ -15,7 +15,9 @@ import com.kaem.flux.ui.component.FluxButton
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun LibraryPermissionScreen(permissionState: PermissionState) {
+fun PermissionsScreen(
+    onPermissionsTap: () -> Unit
+) {
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -24,7 +26,7 @@ fun LibraryPermissionScreen(permissionState: PermissionState) {
 
         FluxButton(
             text = stringResource(id = R.string.give_permission),
-            onTap = { permissionState.launchPermissionRequest() }
+            onTap = onPermissionsTap
         )
 
     }
@@ -33,7 +35,7 @@ fun LibraryPermissionScreen(permissionState: PermissionState) {
 
 @Composable
 @OptIn(ExperimentalPermissionsApi::class)
-fun libraryPermissionState(): PermissionState {
+fun fluxPermissionState(): PermissionState {
 
     val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
         android.Manifest.permission.READ_MEDIA_VIDEO

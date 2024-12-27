@@ -59,49 +59,40 @@ fun LibraryScreen(
 ) {
 
     val uiState by viewModel.libraryUiState.observeAsState()
-    val permissionState = libraryPermissionState()
 
-    if (!permissionState.status.isGranted) {
+    LaunchedEffect(Unit) {
 
-        LibraryPermissionScreen(permissionState = permissionState)
+        if (uiState == null)
+            viewModel.getLibrary()
 
-    } else {
+    }
 
-        LaunchedEffect(Unit) {
+    Crossfade(
+        modifier = Modifier.fillMaxSize(),
+        targetState = uiState,
+        label = "LibraryAnimation"
+    ) {
 
-            if (uiState == null)
-                viewModel.getLibrary()
+        when (it) {
 
-        }
+            null -> Loader()
+            else -> {
 
-        Crossfade(
-            modifier = Modifier.fillMaxSize(),
-            targetState = uiState,
-            label = "LibraryAnimation"
-        ) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.TopCenter
+                ) {
 
-            when (it) {
+                    LibraryContent(
+                        artworkOverviews = it.artworkOverviews,
+                        lastWatchedIds = it.lastWatchedArtworkIds,
+                        navigateToDetails = { id -> navigateToDetails(id) }
+                    )
 
-                null -> Loader()
-                else -> {
-
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.TopCenter
-                    ) {
-
-                        LibraryContent(
-                            artworkOverviews = it.artworkOverviews,
-                            lastWatchedIds = it.lastWatchedArtworkIds,
-                            navigateToDetails = { id -> navigateToDetails(id) }
-                        )
-
-                        LibraryRefreshButton(
-                            isLoading = it.isLoading,
-                            onTap = { viewModel.getLibrary(manualSync = true) }
-                        )
-
-                    }
+                    LibraryRefreshButton(
+                        isLoading = it.isLoading,
+                        onTap = { viewModel.getLibrary(manualSync = true) }
+                    )
 
                 }
 

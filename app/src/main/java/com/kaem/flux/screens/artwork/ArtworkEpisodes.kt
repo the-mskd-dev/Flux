@@ -1,14 +1,22 @@
 package com.kaem.flux.screens.artwork
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ScrollableTabRow
@@ -49,21 +57,33 @@ fun ArtworkSeasonsTabs(
     onSeasonTap: (Int) -> Unit
 ) {
 
-    Column(modifier = Modifier.fillMaxWidth()) {
+    LazyRow(
+        modifier = Modifier.fillMaxWidth(),
+        contentPadding = PaddingValues(horizontal = FluxSpace.MEDIUM),
+        horizontalArrangement = Arrangement.spacedBy(FluxSpace.SMALL)
+    ) {
 
-        ScrollableTabRow(selectedTabIndex = seasons.indexOf(selectedSeason)) {
+        items(seasons) { season ->
 
-            seasons.sorted().forEach { season ->
+            val isSelected = selectedSeason == season
+            val backgroundColor by animateColorAsState(if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.background, label = "seasonTabBackgroundColor")
+            val textColor by animateColorAsState(if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.primary, label = "seasonTabTextColor")
 
-                Tab(
-                    text = { Text(text = stringResource(id = R.string.season, season)) },
-                    selected = selectedSeason == season,
-                    onClick = { onSeasonTap(season) }
+            Button(
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = backgroundColor,
+                    contentColor = textColor,
+                ),
+                onClick = { onSeasonTap(season) }
+            ) {
+                Text(
+                    text = stringResource(id = R.string.season, season),
+                    fontSize = FluxFontSize.SMALL
                 )
-
             }
 
         }
+
     }
 
 }

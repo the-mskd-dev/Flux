@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -50,6 +51,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
+import androidx.constraintlayout.compose.atMost
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.kaem.flux.R
@@ -57,6 +59,7 @@ import com.kaem.flux.model.artwork.Artwork
 import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.model.artwork.Status
 import com.kaem.flux.ui.component.BackButton
+import com.kaem.flux.ui.component.FluxButton
 import com.kaem.flux.ui.component.Placeholders
 import com.kaem.flux.ui.component.Title
 import com.kaem.flux.ui.theme.FluxElevation
@@ -172,38 +175,11 @@ fun ArtworkPlayerButton(
 
     artwork ?: return
 
-    Box(
-        modifier = modifier.size(70.dp),
-        contentAlignment = Alignment.Center
-    ) {
-
-        FloatingActionButton(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(2.dp),
-            shape = CircleShape,
-            containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = MaterialTheme.colorScheme.onPrimary,
-            elevation = FluxElevation.floatingButtonElevation(),
-            onClick = { onTap() },
-            content = {
-                Icon(
-                    modifier = Modifier.size(45.dp),
-                    imageVector = Icons.Rounded.PlayArrow,
-                    contentDescription = "play button"
-                )
-            }
-        )
-
-        CircularProgressIndicator(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.onBackground,
-            strokeWidth = 4.dp,
-            trackColor = ProgressIndicatorDefaults.circularIndeterminateTrackColor,
-            progress = { artwork.currentTime.inMinutes.toFloat() / artwork.duration.toFloat() }
-        )
-
-    }
+    FluxButton(
+        modifier = modifier,
+        text = if (artwork.status == Status.IS_WATCHING) stringResource(R.string.resume) else stringResource(R.string.start),
+        onTap = onTap
+    )
 
 }
 
@@ -216,29 +192,12 @@ fun ArtworkStatusButton(
 
     status ?: return
 
-    FloatingActionButton(
-        modifier = modifier.size(30.dp),
-        shape = CircleShape,
-        containerColor = Color.Transparent,
-        contentColor = MaterialTheme.colorScheme.primary,
-        elevation = FluxElevation.floatingButtonElevation(),
-        onClick = onTap,
-        content = {
-            if (status == Status.WATCHED) {
-                Icon(
-                    modifier = Modifier.fillMaxSize(),
-                    imageVector = Icons.Rounded.CheckCircle,
-                    contentDescription = "button to mark as not watched"
-                )
-            } else {
-                Icon(
-                    modifier = Modifier.fillMaxSize(),
-                    painter = painterResource(R.drawable.ic_visibility),
-                    contentDescription = "button to mark as watched"
-                )
-            }
-
-        }
+    FluxButton(
+        modifier = modifier,
+        text = if (status == Status.WATCHED) "Marquer comme non lu" else "Marquer comme lu",
+        backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
+        textColor = MaterialTheme.colorScheme.onSecondaryContainer,
+        onTap = onTap
     )
 
 }
@@ -275,19 +234,22 @@ val ArtworkHeaderConstraintSet = ConstraintSet {
     constrain(title) {
         bottom.linkTo(image.bottom, FluxSpace.SMALL)
         start.linkTo(parent.start, FluxSpace.MEDIUM)
-        end.linkTo(play.start, FluxSpace.MEDIUM)
+        end.linkTo(parent.end, FluxSpace.MEDIUM)
         width = Dimension.fillToConstraints
     }
 
     constrain(play) {
-        top.linkTo(title.top)
-        bottom.linkTo(title.bottom)
-        end.linkTo(parent.end, FluxSpace.LARGE)
+        top.linkTo(title.bottom, FluxSpace.LARGE)
+        start.linkTo(parent.start, FluxSpace.MEDIUM)
+        end.linkTo(parent.end, FluxSpace.MEDIUM)
+        width = Dimension.fillToConstraints.atMost(350.dp)
     }
 
     constrain(status) {
-        top.linkTo(title.bottom, FluxSpace.LARGE)
-        start.linkTo(title.start)
+        top.linkTo(play.bottom, FluxSpace.MEDIUM)
+        start.linkTo(parent.start, FluxSpace.MEDIUM)
+        end.linkTo(parent.end, FluxSpace.MEDIUM)
+        width = Dimension.fillToConstraints.atMost(350.dp)
     }
 
 }

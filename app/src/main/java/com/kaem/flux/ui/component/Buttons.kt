@@ -1,11 +1,14 @@
 package com.kaem.flux.ui.component
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material3.Button
@@ -33,16 +36,21 @@ fun FluxButton(
     modifier: Modifier = Modifier,
     text: String,
     autoSize: Boolean = false,
-    onClick: () -> Unit
+    backgroundColor: Color = MaterialTheme.colorScheme.primary,
+    textColor: Color = MaterialTheme.colorScheme.onPrimary,
+    border: BorderStroke? = null,
+    onTap: () -> Unit
 ) {
 
     Button(
-        modifier = Modifier.then(modifier),
+        modifier = modifier.height(50.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = MaterialTheme.colorScheme.onPrimary,
+            containerColor = backgroundColor,
+            contentColor = textColor,
         ),
-        onClick = onClick
+        shape = RoundedCornerShape(8.dp),
+        border = border,
+        onClick = onTap
     ) {
 
         if (autoSize) {

@@ -41,19 +41,11 @@ class MainActivity : ComponentActivity() {
 
                 val navController = rememberNavController()
                 val fluxPermissions = fluxPermissionState()
-                var startDestination = "permissions"
-
-                LaunchedEffect(Unit) {
-                    if (fluxPermissions.status.isGranted) {
-                        startDestination = "library"
-                    }
-                }
 
                 LaunchedEffect(fluxPermissions.status.isGranted) {
                     if (fluxPermissions.status.isGranted) {
                         navController.navigate(route = "library") {
                             popUpTo("permissions") { inclusive = true }
-                            launchSingleTop = true
                         }
                     }
                 }
@@ -63,7 +55,7 @@ class MainActivity : ComponentActivity() {
                         .fillMaxSize()
                         .background(color = MaterialTheme.colorScheme.background),
                     navController = navController,
-                    startDestination = startDestination
+                    startDestination = "permissions"
                 ) {
 
                     composable("permissions") {

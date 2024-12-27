@@ -56,6 +56,7 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.kaem.flux.R
 import com.kaem.flux.model.artwork.Artwork
+import com.kaem.flux.model.artwork.ArtworkOverview
 import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.model.artwork.Status
 import com.kaem.flux.ui.component.BackButton
@@ -72,7 +73,8 @@ import java.text.DateFormat
 
 @Composable
 fun ArtworkHeader(
-    uiState: ArtworkUiState,
+    overview: ArtworkOverview,
+    artwork: Artwork?,
     onBackButtonTap: () -> Unit,
     onStatusButtonTap: () -> Unit,
     onPlayerButtonTap: () -> Unit
@@ -83,9 +85,9 @@ fun ArtworkHeader(
         constraintSet = ArtworkHeaderConstraintSet
     ) {
 
-        val imagePath = when (uiState.selectedArtwork) {
-            is Episode -> uiState.selectedArtwork.imagePath
-            else -> uiState.overview.bannerPath
+        val imagePath = when (artwork) {
+            is Episode -> artwork.imagePath
+            else -> overview.bannerPath
         }
 
         ArtworkImage(
@@ -93,7 +95,7 @@ fun ArtworkHeader(
                 .aspectRatio(6f / 5f)
                 .layoutId("image"),
             imagePath = imagePath,
-            title = uiState.overview.title
+            title = overview.title
         )
 
         BackButton(
@@ -103,19 +105,19 @@ fun ArtworkHeader(
 
         ArtworkPlayerButton(
             modifier = Modifier.layoutId("play"),
-            artwork = uiState.selectedArtwork,
+            artwork = artwork,
             onTap = onPlayerButtonTap
         )
 
         ArtworkStatusButton(
             modifier = Modifier.layoutId("status"),
-            status = uiState.selectedArtwork?.status,
+            status = artwork?.status,
             onTap = { onStatusButtonTap() }
         )
 
         ArtworkTitle(
             modifier = Modifier.layoutId("title"),
-            uiState = uiState
+            title = overview.title
         )
 
     }
@@ -206,12 +208,12 @@ fun ArtworkStatusButton(
 @Composable
 fun ArtworkTitle(
     modifier: Modifier,
-    uiState: ArtworkUiState
+    title: String,
 ) {
 
     Title(
         modifier = modifier,
-        text = uiState.overview.title,
+        text = title,
         textAlign = TextAlign.Start
     )
 

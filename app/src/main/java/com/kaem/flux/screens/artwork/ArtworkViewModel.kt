@@ -28,8 +28,9 @@ import kotlin.time.Duration.Companion.minutes
 data class ArtworkUiState(
     val overview: ArtworkOverview = ArtworkOverview(),
     val screen: Screen = Screen.LOADING,
-    val currentSeason: Int = -1,
     val selectedArtwork: Artwork? = null,
+    val episodes: List<Episode> = emptyList(),
+    val currentSeason: Int = -1,
     val showPlayer: Boolean = false
 ) {
 
@@ -37,7 +38,7 @@ data class ArtworkUiState(
         data object LOADING : Screen()
         data object ERROR : Screen()
         data object MOVIE : Screen()
-        data class SHOW(val episodes: List<Episode> = emptyList()) : Screen()
+        data object SHOW : Screen()
     }
 
 }
@@ -69,14 +70,15 @@ class ArtworkViewModel @Inject constructor(
                 )
             }
             !episodes.isNullOrEmpty() -> {
-                val screen = ArtworkUiState.Screen.SHOW(episodes)
+                
                 val currentEpisode = episodes.lastOrNull { it.status == Status.IS_WATCHING }
                     ?: episodes.firstOrNull { it.status == Status.TO_WATCH }
                     ?: episodes.first()
 
                 _uiState.value = ArtworkUiState(
                     overview = artwork,
-                    screen = screen,
+                    screen = ArtworkUiState.Screen.SHOW,
+                    episodes = episodes,
                     currentSeason = currentEpisode.season,
                     selectedArtwork = currentEpisode
                 )
@@ -141,12 +143,12 @@ class ArtworkViewModel @Inject constructor(
                 )
 
                 // Update list
-                val episodes = (_uiState.value.screen as? ArtworkUiState.Screen.SHOW)?.episodes.orEmpty().toMutableList()
+                val episodes = _uiState.value.episodes.toMutableList()
                 episodes.replaceAll { if (it.id == episode.id) episode else it }
                 _uiState.update { currentState ->
                     currentState.copy(
-                        screen = ArtworkUiState.Screen.SHOW(episodes),
-                        selectedArtwork = episode
+                        selectedArtwork = episode,
+                        episodes = episodes
                     )
                 }
 

@@ -64,6 +64,7 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.kaem.flux.R
 import com.kaem.flux.model.artwork.Artwork
+import com.kaem.flux.model.artwork.ArtworkOverview
 import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.model.artwork.Status
 import com.kaem.flux.screens.player.PlayerScreen
@@ -107,7 +108,10 @@ fun ArtworkScreen(
             else -> {
 
                 ArtworkContent(
-                    state = state,
+                    overview = state.overview,
+                    artwork = state.selectedArtwork,
+                    episodes = state.episodes,
+                    currentSeason = state.currentSeason,
                     onBackButtonTap = onBackButtonTap,
                     onStatusButtonTap = { viewModel.changeWatchStatus() },
                     onSeasonTap = { viewModel.selectSeason(it) },
@@ -133,7 +137,10 @@ fun ArtworkScreen(
 
 @Composable
 fun ArtworkContent(
-    state: ArtworkUiState,
+    overview: ArtworkOverview,
+    artwork: Artwork?,
+    episodes: List<Episode>,
+    currentSeason: Int,
     onBackButtonTap: () -> Unit,
     onStatusButtonTap: () -> Unit,
     onSeasonTap: (Int) -> Unit,
@@ -160,24 +167,25 @@ fun ArtworkContent(
             ) {
 
                 ArtworkHeader(
-                    uiState = state,
+                    overview = overview,
+                    artwork = artwork,
                     onBackButtonTap = onBackButtonTap,
                     onStatusButtonTap = onStatusButtonTap,
                     onPlayerButtonTap = onPlayerButtonTap
                 )
 
-                ArtworkDescription(artwork = state.selectedArtwork)
+                ArtworkDescription(artwork = artwork)
 
             }
 
         }
 
-        (state.screen as? ArtworkUiState.Screen.SHOW)?.episodes?.let { episodes ->
+        if (episodes.isNotEmpty()) {
 
             item {
 
                 ArtworkSeasonsTabs(
-                    selectedSeason = state.currentSeason,
+                    selectedSeason = currentSeason,
                     seasons = episodes.map { it.season }.distinct(),
                     onSeasonTap = onSeasonTap
                 )
@@ -186,7 +194,7 @@ fun ArtworkContent(
 
             itemsIndexed(
                 items = episodes
-                    .filter { it.season == state.currentSeason }
+                    .filter { it.season == currentSeason }
                     .sortedBy { it.number },
                 key = { _, e -> e.id }
             ) { i, episode ->

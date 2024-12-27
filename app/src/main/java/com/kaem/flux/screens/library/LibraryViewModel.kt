@@ -63,9 +63,7 @@ class LibraryViewModel @Inject constructor(
         val currentTime = System.currentTimeMillis()
         val sync = currentTime - lastSyncTime > 1.days.inWholeMilliseconds || manualSync
 
-        _uiState.update {
-            it.copy(isSyncing = manualSync)
-        }
+        _uiState.value = _uiState.value.copy(isSyncing = manualSync)
 
         Log.i("LibraryViewModel", "getLibrary, sync : $sync")
 

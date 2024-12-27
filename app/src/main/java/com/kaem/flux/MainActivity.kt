@@ -6,6 +6,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
@@ -24,6 +26,7 @@ import com.kaem.flux.screens.library.LibraryScreen
 import com.kaem.flux.screens.permissions.PermissionsScreen
 import com.kaem.flux.screens.permissions.fluxPermissionState
 import com.kaem.flux.ui.theme.FluxTheme
+import com.kaem.flux.utils.Constants
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -61,7 +64,31 @@ class MainActivity : ComponentActivity() {
 
                     composable(
                         "artwork/{artworkId}",
-                        arguments = listOf(navArgument("artworkId") { type = NavType.LongType })
+                        arguments = listOf(navArgument("artworkId") { type = NavType.LongType }),
+                        enterTransition = {
+                            slideIntoContainer(
+                                AnimatedContentTransitionScope.SlideDirection.Left,
+                                animationSpec = tween(Constants.Behaviour.TRANSITION_SPEED)
+                            )
+                        },
+                        exitTransition = {
+                            slideOutOfContainer(
+                                AnimatedContentTransitionScope.SlideDirection.Left,
+                                animationSpec = tween(Constants.Behaviour.TRANSITION_SPEED)
+                            )
+                        },
+                        popEnterTransition = {
+                            slideIntoContainer(
+                                AnimatedContentTransitionScope.SlideDirection.Right,
+                                animationSpec = tween(Constants.Behaviour.TRANSITION_SPEED)
+                            )
+                        },
+                        popExitTransition = {
+                            slideOutOfContainer(
+                                AnimatedContentTransitionScope.SlideDirection.Right,
+                                animationSpec = tween(Constants.Behaviour.TRANSITION_SPEED)
+                            )
+                        }
                     ) {
                         ArtworkScreen(
                             onBackButtonTap = {

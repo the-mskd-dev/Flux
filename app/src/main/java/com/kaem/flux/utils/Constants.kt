@@ -17,4 +17,8 @@ object Constants {
 
     }
 
+    object Behaviour {
+        const val TRANSITION_SPEED = 400
+    }
+
 }

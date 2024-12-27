@@ -136,8 +136,12 @@ fun VideoPlayer(
     )
 
     BackHandler(enabled = true) {
-        onTimeSave(exoPlayer.currentPosition)
-        onBackButtonTap()
+        if (showButtons) {
+            onTimeSave(exoPlayer.currentPosition)
+            onBackButtonTap()
+        } else {
+            showButtons = true
+        }
     }
 
     Box(
@@ -159,6 +163,10 @@ fun VideoPlayer(
                         showButtons = it == View.VISIBLE
                     })
                 }
+            },
+            update = {
+                if (showButtons)
+                    it.showController()
             }
         )
 

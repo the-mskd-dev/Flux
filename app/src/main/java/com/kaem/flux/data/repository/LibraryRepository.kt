@@ -27,12 +27,12 @@ class LibraryRepository @Inject constructor(
     private val databaseManager: DatabaseManager
 ) {
 
-    private val _libraryContent = MutableStateFlow<LibraryContent?>(null)
-    val libraryContent: StateFlow<LibraryContent?> = _libraryContent.asStateFlow()
+    private val _libraryFlow = MutableStateFlow(LibraryContent())
+    val libraryFlow: StateFlow<LibraryContent> = _libraryFlow.asStateFlow()
 
     suspend fun getLibrary(sync: Boolean = false) {
 
-        _libraryContent.value = _libraryContent.value?.copy(isLoading = true)
+        _libraryFlow.value = _libraryFlow.value.copy(isLoading = true)
 
         val artworks = if (sync) {
             syncLibrary()
@@ -41,13 +41,11 @@ class LibraryRepository @Inject constructor(
         }
 
         // Update content
-        _libraryContent.update { content ->
-
-            (content ?: LibraryContent()).copy(
+        _libraryFlow.update { content ->
+            content.copy(
                 isLoading = false,
                 artworkOverviews = artworks.sortedBy { it.title }
             )
-
         }
 
     }

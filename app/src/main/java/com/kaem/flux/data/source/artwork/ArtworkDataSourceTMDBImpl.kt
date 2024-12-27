@@ -50,6 +50,9 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
     ): ArtworkDataSource.Library {
 
         savedOverviewIds = overviewIds
+        overviews.clear()
+        movies.clear()
+        episodes.clear()
 
         coroutineScope {
 

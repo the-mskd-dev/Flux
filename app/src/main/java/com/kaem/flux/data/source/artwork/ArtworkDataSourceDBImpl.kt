@@ -1,6 +1,6 @@
 package com.kaem.flux.data.source.artwork
 
-import com.kaem.flux.data.ddb.DatabaseManager
+import com.kaem.flux.data.ddb.FluxDao
 import com.kaem.flux.model.UserFile
 import com.kaem.flux.model.artwork.ArtworkOverview
 
@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ArtworkDataSourceDBImpl @Inject constructor(
-    private val databaseManager: DatabaseManager
+    private val db: FluxDao
 ) : ArtworkDataSource {
 
     override suspend fun getArtworks(
@@ -30,21 +30,21 @@ class ArtworkDataSourceDBImpl @Inject constructor(
 
                 launch {
 
-                    val dbOverviews = databaseManager.getOverviews()
+                    val dbOverviews = db.getOverviews()
                     overviews.addAll(dbOverviews)
 
                 }
 
                 launch {
 
-                    val dbMovies = databaseManager.getMovies()
+                    val dbMovies = db.getMovies()
                     movies.addAll(dbMovies)
 
                 }
 
                 launch {
 
-                    val dbEpisodes = databaseManager.getEpisodes()
+                    val dbEpisodes = db.getEpisodes()
                     episodes.addAll(dbEpisodes)
 
                 }
@@ -59,7 +59,7 @@ class ArtworkDataSourceDBImpl @Inject constructor(
 
         } else {
 
-            return ArtworkDataSource.Library(overviews = databaseManager.getOverviews())
+            return ArtworkDataSource.Library(overviews = db.getOverviews())
 
         }
 

@@ -1,10 +1,12 @@
 package com.kaem.flux.data.ddb
 
+import android.content.Context
 import androidx.room.Dao
 import androidx.room.Database
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.Transaction
 import androidx.room.TypeConverter
@@ -127,73 +129,25 @@ class Converters {
 abstract class FluxDatabase : RoomDatabase() {
     abstract fun fluxDao(): FluxDao
 
-}
+    companion object {
 
-class DatabaseManager(
-    val fluxDao: FluxDao
-) {
+        // For Singleton instantiation
+        @Volatile private var instance: FluxDatabase? = null
 
-//region Save
-    suspend fun saveOverviews(overviews: List<ArtworkOverview>) {
-        fluxDao.insertOverviews(overviews)
+        fun getInstance(context: Context): FluxDatabase {
+            return instance ?: synchronized(this) {
+                instance ?: buildDatabase(context).also { instance = it }
+            }
+        }
+
+        private fun buildDatabase(context: Context): FluxDatabase {
+            return Room
+                .databaseBuilder(
+                    context,
+                    FluxDatabase::class.java,
+                    "fluxDatabase"
+                )
+                .build()
+        }
     }
-
-    suspend fun saveMovies(movies: List<Movie>) {
-        fluxDao.insertMovies(movies)
-    }
-
-    suspend fun saveEpisodes(episodes: List<Episode>) {
-        fluxDao.insertEpisodes(episodes)
-    }
-
-//endregion
-
-//region Get
-
-    suspend fun getOverview(artworkId: Long) : ArtworkOverview {
-        return fluxDao.getOverview(artworkId)
-    }
-
-    suspend fun getOverviews() : List<ArtworkOverview> {
-        return fluxDao.getOverviews()
-    }
-
-    suspend fun getMovies() : List<Movie> {
-        return fluxDao.getMovies()
-    }
-
-    suspend fun getMovie(artworkId: Long) : Movie {
-        return fluxDao.getMovie(artworkId)
-    }
-
-    suspend fun getEpisode(episodeId: Long) : Episode {
-        return fluxDao.getEpisode(episodeId)
-    }
-
-    suspend fun getEpisodes() : List<Episode> {
-        return fluxDao.getEpisodes()
-    }
-
-    suspend fun getEpisodes(artworkId: Long) : List<Episode> {
-        return fluxDao.getEpisodes(artworkId)
-    }
-
-//endregion
-
-//region Delete
-
-    suspend fun deleteOverviews(ids: List<Long>) {
-        fluxDao.deleteOverviews(ids)
-    }
-
-    suspend fun deleteMovies(ids: List<Long>) {
-        fluxDao.deleteMovies(ids)
-    }
-
-    suspend fun deleteEpisodes(ids: List<Long>) {
-        fluxDao.deleteEpisodes(ids)
-    }
-
-//endregion
-
 }

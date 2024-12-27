@@ -1,6 +1,6 @@
 package com.kaem.flux.data.repository
 
-import com.kaem.flux.data.ddb.DatabaseManager
+import com.kaem.flux.data.ddb.FluxDao
 import com.kaem.flux.data.source.artwork.ArtworkDataSource
 import com.kaem.flux.data.source.file.FilesDataSource
 import com.kaem.flux.model.UserFile
@@ -24,7 +24,7 @@ class LibraryRepository @Inject constructor(
     private val fileSource: FilesDataSource,
     private val localSource: ArtworkDataSource,
     private val tmdbSource: ArtworkDataSource,
-    private val databaseManager: DatabaseManager
+    private val db: FluxDao
 ) {
 
     private val _libraryFlow = MutableStateFlow(LibraryContent())
@@ -69,8 +69,8 @@ class LibraryRepository @Inject constructor(
             moviesIdsToDelete.any { artwork.id == it }
             || (episodes.any { it.artworkId == artwork.id } && episodesIdsToDelete.containsAll(episodes.filter { it.artworkId == artwork.id }.map { e -> e.id }))
         }.map { it.id }
-        databaseManager.deleteOverviews(overviewsIdsToDelete)
-        databaseManager.deleteEpisodes(episodesIdsToDelete)
+        db.deleteOverviews(overviewsIdsToDelete)
+        db.deleteEpisodes(episodesIdsToDelete)
 
         // Get new artworks from TMBD
         val filteredOverviews = artworks.filter { a -> overviewsIdsToDelete.none { it == a.id } }
@@ -81,9 +81,9 @@ class LibraryRepository @Inject constructor(
         )
 
         // Save new artworks
-        databaseManager.saveOverviews(newOverviews)
-        databaseManager.saveMovies(newMovies)
-        databaseManager.saveEpisodes(newEpisodes)
+        db.insertOverviews(newOverviews)
+        db.insertMovies(newMovies)
+        db.insertEpisodes(newEpisodes)
 
         return filteredOverviews + newOverviews
 
@@ -108,11 +108,11 @@ class LibraryRepository @Inject constructor(
     }
 
     suspend fun saveMovie(movie: Movie) {
-        return databaseManager.saveMovies(listOf(movie))
+        return db.insertMovies(listOf(movie))
     }
 
     suspend fun saveEpisode(episode: Episode) {
-        return databaseManager.saveEpisodes(listOf(episode))
+        return db.insertEpisodes(listOf(episode))
     }
 
 }

@@ -25,9 +25,13 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -55,7 +59,7 @@ import com.kaem.flux.ui.component.Title
 import com.kaem.flux.ui.theme.FluxSpace
 import com.kaem.flux.utils.Constants
 
-@OptIn(ExperimentalPermissionsApi::class)
+@OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun LibraryScreen(
     navigateToDetails: (Long) -> Unit,
@@ -86,20 +90,29 @@ fun LibraryScreen(
                 ScreenState.LOADING -> Loader()
                 else -> {
 
-                    Box(
+                    val state = rememberPullToRefreshState()
+
+                    PullToRefreshBox(
                         modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.TopCenter
+                        state = state,
+                        contentAlignment = Alignment.TopCenter,
+                        isRefreshing = uiState.isSyncing,
+                        indicator = {
+                            PullToRefreshDefaults.Indicator(
+                                modifier = Modifier.align(Alignment.TopCenter),
+                                isRefreshing = uiState.isSyncing,
+                                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                state = state
+                            )
+                        },
+                        onRefresh = { viewModel.getLibrary(manualSync = true) }
                     ) {
 
                         LibraryContent(
                             artworkOverviews = uiState.artworkOverviews,
                             lastWatchedIds = uiState.lastWatchedArtworkIds,
                             navigateToDetails = { id -> navigateToDetails(id) }
-                        )
-
-                        LibraryRefreshButton(
-                            isLoading = uiState.isSyncing,
-                            onTap = { viewModel.getLibrary(manualSync = true) }
                         )
 
                     }
@@ -260,36 +273,5 @@ fun ArtworkItem(
         contentDescription = artworkOverview.title,
         loading = Placeholders.loading
     )
-
-}
-
-@Composable
-fun BoxScope.LibraryRefreshButton(
-    isLoading: Boolean,
-    onTap: () -> Unit
-) {
-
-    if (isLoading) {
-        CircularProgressIndicator(
-            modifier = Modifier
-                .statusBarsPadding()
-                .padding(end = FluxSpace.MEDIUM)
-                .align(Alignment.TopEnd)
-                .size(50.dp),
-            strokeWidth = 2.5.dp,
-        )
-    } else {
-        Icon(
-            modifier = Modifier
-                .statusBarsPadding()
-                .padding(end = FluxSpace.MEDIUM)
-                .align(Alignment.TopEnd)
-                .size(50.dp)
-                .clickable { onTap() },
-            imageVector = Icons.Rounded.Refresh,
-            tint = MaterialTheme.colorScheme.primary,
-            contentDescription = "Refresh button"
-        )
-    }
 
 }

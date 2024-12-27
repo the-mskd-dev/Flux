@@ -74,6 +74,7 @@ fun ArtworkSeasonsTabs(
                     containerColor = backgroundColor,
                     contentColor = textColor,
                 ),
+                shape = RoundedCornerShape(8.dp),
                 onClick = { onSeasonTap(season) }
             ) {
                 Text(

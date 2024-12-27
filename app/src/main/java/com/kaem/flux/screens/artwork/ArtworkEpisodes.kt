@@ -93,7 +93,7 @@ fun EpisodeItem(
     onEpisodeTap: () -> Unit
 ) {
 
-    var alpha by remember { mutableFloatStateOf(1f) }
+    var alpha by remember { mutableFloatStateOf(if (episode.status == Status.WATCHED) .4f else 1f) }
     val alphaAnimation by animateFloatAsState(targetValue = alpha, label = "alphaAnimation")
     LaunchedEffect(episode.status) {
         alpha = if (episode.status == Status.WATCHED) .4f else 1f
@@ -106,7 +106,6 @@ fun EpisodeItem(
             .fillMaxWidth()
             .padding(horizontal = FluxSpace.MEDIUM)
             .padding(bottom = FluxSpace.MEDIUM)
-            .alpha(alphaAnimation)
     ) {
 
         val (divider, image, content) = createRefs()
@@ -126,6 +125,7 @@ fun EpisodeItem(
 
         GlideImage(
             modifier = Modifier
+                .alpha(alphaAnimation)
                 .clip(RoundedCornerShape(4.dp))
                 .aspectRatio(16f / 9f)
                 .constrainAs(image) {
@@ -142,6 +142,7 @@ fun EpisodeItem(
 
         Column(
             modifier = Modifier
+                .alpha(alphaAnimation)
                 .constrainAs(content) {
                     top.linkTo(image.top)
                     start.linkTo(startGuideline, FluxSpace.MEDIUM)

@@ -56,11 +56,11 @@ fun ArtworkScreen(
 
     Crossfade(
         modifier = Modifier.fillMaxSize(),
-        targetState = uiState,
+        targetState = uiState.screen,
         label = "ArtworkScreenAnimation"
-    ) { state ->
+    ) { screen ->
 
-        when (state.screen) {
+        when (screen) {
             ScreenState.LOADING -> Loader()
             ScreenState.ERROR -> {
                 ErrorScreen(
@@ -71,10 +71,10 @@ fun ArtworkScreen(
             else -> {
 
                 ArtworkContent(
-                    overview = state.overview,
-                    artwork = state.selectedArtwork,
-                    episodes = state.episodes,
-                    currentSeason = state.currentSeason,
+                    overview = uiState.overview,
+                    artwork = uiState.selectedArtwork,
+                    episodes = uiState.episodes,
+                    currentSeason = uiState.currentSeason,
                     onBackButtonTap = { onBackButtonTap() },
                     onStatusButtonTap = { viewModel.changeWatchStatus() },
                     onSeasonTap = { viewModel.selectSeason(it) },

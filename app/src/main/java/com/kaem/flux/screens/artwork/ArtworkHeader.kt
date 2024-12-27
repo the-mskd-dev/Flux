@@ -233,7 +233,7 @@ val ArtworkHeaderConstraintSet = ConstraintSet {
     }
 
     constrain(title) {
-        bottom.linkTo(image.bottom, FluxSpace.SMALL)
+        bottom.linkTo(image.bottom, FluxSpace.MEDIUM)
         start.linkTo(parent.start, FluxSpace.MEDIUM)
         end.linkTo(parent.end, FluxSpace.MEDIUM)
         width = Dimension.fillToConstraints

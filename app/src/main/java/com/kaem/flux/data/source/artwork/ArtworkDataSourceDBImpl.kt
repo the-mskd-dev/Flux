@@ -6,8 +6,10 @@ import com.kaem.flux.model.artwork.ArtworkOverview
 
 import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.model.artwork.Movie
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ArtworkDataSourceDBImpl @Inject constructor(
@@ -26,29 +28,31 @@ class ArtworkDataSourceDBImpl @Inject constructor(
             val movies = arrayListOf<Movie>()
             val episodes = arrayListOf<Episode>()
 
-            coroutineScope {
+            withContext(Dispatchers.IO) {
+                coroutineScope {
 
-                launch {
+                    launch {
 
-                    val dbOverviews = db.getOverviews()
-                    overviews.addAll(dbOverviews)
+                        val dbOverviews = db.getOverviews()
+                        overviews.addAll(dbOverviews)
+
+                    }
+
+                    launch {
+
+                        val dbMovies = db.getMovies()
+                        movies.addAll(dbMovies)
+
+                    }
+
+                    launch {
+
+                        val dbEpisodes = db.getEpisodes()
+                        episodes.addAll(dbEpisodes)
+
+                    }
 
                 }
-
-                launch {
-
-                    val dbMovies = db.getMovies()
-                    movies.addAll(dbMovies)
-
-                }
-
-                launch {
-
-                    val dbEpisodes = db.getEpisodes()
-                    episodes.addAll(dbEpisodes)
-
-                }
-
             }
 
             return ArtworkDataSource.Library(

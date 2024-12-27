@@ -47,7 +47,7 @@ class FilesDataSourceLocalImpl(
 
         val retriever = MediaMetadataRetriever()
 
-        withContext(Dispatchers.Main) {
+        withContext(Dispatchers.IO) {
 
             query?.use { cursor ->
 
@@ -100,8 +100,6 @@ class FilesDataSourceLocalImpl(
         retriever.release()
 
         files.sortByDescending { it.addedDateTime }
-
-        withContext(Dispatchers.Default) { delay(2000) }
 
         return files
 

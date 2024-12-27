@@ -195,7 +195,7 @@ fun ArtworkStatusButton(
 
     FluxButton(
         modifier = modifier,
-        text = if (status == Status.WATCHED) "Marquer comme non lu" else "Marquer comme lu",
+        text = if (status == Status.WATCHED) stringResource(R.string.mark_as_not_watched) else stringResource(R.string.mark_as_watched),
         backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
         textColor = MaterialTheme.colorScheme.onSecondaryContainer,
         onTap = onTap

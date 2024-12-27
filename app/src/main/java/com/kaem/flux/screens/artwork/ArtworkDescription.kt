@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
@@ -18,7 +19,9 @@ import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.ui.theme.FluxFontSize
 import com.kaem.flux.ui.theme.FluxSpace
 import com.kaem.flux.ui.theme.FluxWeight
+import com.kaem.flux.utils.timeDescription
 import java.text.DateFormat
+import kotlin.time.Duration.Companion.minutes
 
 @Composable
 fun ArtworkDescription(artwork: Artwork?) {
@@ -57,6 +60,16 @@ fun ArtworkDescription(artwork: Artwork?) {
 
             }
 
+        } else {
+
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(R.string.summary),
+                color = MaterialTheme.colorScheme.onBackground,
+                fontSize = FluxFontSize.LARGE,
+                fontWeight = FluxWeight.MEDIUM
+            )
+
         }
 
         Text(
@@ -66,22 +79,45 @@ fun ArtworkDescription(artwork: Artwork?) {
             text = artwork.description,
             color = MaterialTheme.colorScheme.onBackground,
             fontSize = FluxFontSize.MEDIUM,
-            textAlign = TextAlign.Start,
+            textAlign = TextAlign.Justify,
             lineHeight = FluxFontSize.MEDIUM.times(1.1f)
         )
+
+        ArtworkDescriptionDetails(artwork)
+
+    }
+
+}
+
+@Composable
+fun ArtworkDescriptionDetails(artwork: Artwork) {
+
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.Start
+    ) {
 
         artwork.releaseDate?.let {
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
                     .alpha(.8f),
-                text = DateFormat.getDateInstance().format(it),
+                text = stringResource(R.string.release_date, DateFormat.getDateInstance().format(it)) ,
                 fontSize = FluxFontSize.SMALL,
                 color = MaterialTheme.colorScheme.onBackground,
                 fontStyle = FontStyle.Italic
             )
         }
 
-    }
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .alpha(.8f),
+            text = stringResource(R.string.duration, artwork.duration.minutes.inWholeMilliseconds.timeDescription) ,
+            fontSize = FluxFontSize.SMALL,
+            color = MaterialTheme.colorScheme.onBackground,
+            fontStyle = FontStyle.Italic
+        )
 
+    }
 }

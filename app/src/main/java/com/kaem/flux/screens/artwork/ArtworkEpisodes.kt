@@ -59,7 +59,7 @@ fun ArtworkSeasonsTabs(
         horizontalArrangement = Arrangement.spacedBy(FluxSpace.SMALL)
     ) {
 
-        items(seasons) { season ->
+        items(items = seasons.sorted(), key = { it }) { season ->
 
             val isSelected = selectedSeason == season
             val backgroundColor by animateColorAsState(if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.background, label = "seasonTabBackgroundColor")

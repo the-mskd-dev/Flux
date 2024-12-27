@@ -75,7 +75,7 @@ fun ArtworkScreen(
                     artwork = state.selectedArtwork,
                     episodes = state.episodes,
                     currentSeason = state.currentSeason,
-                    onBackButtonTap = onBackButtonTap,
+                    onBackButtonTap = { onBackButtonTap() },
                     onStatusButtonTap = { viewModel.changeWatchStatus() },
                     onSeasonTap = { viewModel.selectSeason(it) },
                     onEpisodeTap = { viewModel.selectArtwork(it) },

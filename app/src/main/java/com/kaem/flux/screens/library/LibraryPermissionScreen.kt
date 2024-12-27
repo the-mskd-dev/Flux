@@ -24,7 +24,7 @@ fun LibraryPermissionScreen(permissionState: PermissionState) {
 
         FluxButton(
             text = stringResource(id = R.string.give_permission),
-            onClick = { permissionState.launchPermissionRequest() }
+            onTap = { permissionState.launchPermissionRequest() }
         )
 
     }

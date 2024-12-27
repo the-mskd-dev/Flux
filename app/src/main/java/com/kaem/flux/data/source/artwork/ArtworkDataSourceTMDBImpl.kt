@@ -20,14 +20,16 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
 
     //region Variables
 
-    private val mutexArtworks = Mutex()
-    private val artworkOverviews = arrayListOf<ArtworkOverview>()
+    private val mutexOverviews = Mutex()
+    private val overviews = arrayListOf<ArtworkOverview>()
 
     private val mutexMovies = Mutex()
     private val movies = arrayListOf<Movie>()
 
     private val mutexEpisodes = Mutex()
     private val episodes = arrayListOf<Episode>()
+
+    private var savedOverviewIds: List<Long> = emptyList()
 
     //endregion
 
@@ -43,9 +45,11 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
 
     override suspend fun getArtworks(
         files: List<UserFile>,
-        artworkIds: List<Long>,
+        overviewIds: List<Long>,
         sync: Boolean
     ): ArtworkDataSource.Library {
+
+        savedOverviewIds = overviewIds
 
         coroutineScope {
 
@@ -73,7 +77,7 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
         }
 
         return ArtworkDataSource.Library(
-            artworkOverviews = artworkOverviews.filter { a -> if (a.type == ContentType.SHOW) episodes.any { it.artworkId == a.id } else true },
+            overviews = overviews.filter { a -> if (a.type == ContentType.SHOW) episodes.any { it.artworkId == a.id } else true },
             movies = movies,
             episodes = episodes
         )
@@ -95,12 +99,16 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
                     year = fileNameProperties.year
                 )
 
-                artworks.results.maxByOrNull { it.popularity }?.also {
+                val show = artworks.results.maxByOrNull { it.popularity }?.also {
                     it.type = TMDBMediaType.SHOW
                 }
 
+                Log.i(TAG, "[getTmdbArtwork] Show : ${show?.title} (id ${show?.id})")
+
+                show
+
             } catch (e: Exception) {
-                Log.e(TAG, "Fail to get show for name ${fileNameProperties.title}", e)
+                Log.e(TAG, "[getTmdbArtwork] Fail to get show for name ${fileNameProperties.title}", e)
                 null
             }
 
@@ -113,12 +121,16 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
                     year = fileNameProperties.year
                 )
 
-                artworks.results.firstOrNull()?.also {
+                val movie = artworks.results.firstOrNull()?.also {
                     it.type = TMDBMediaType.MOVIE
                 }
 
+                Log.i(TAG, "[getTmdbArtwork] Movie : ${movie?.title} (id ${movie?.id})")
+
+                movie
+
             } catch (e: Exception) {
-                Log.e(TAG, "Fail to get movie for name ${fileNameProperties.title}", e)
+                Log.e(TAG, "[getTmdbArtwork] Fail to get movie for name ${fileNameProperties.title}", e)
                 null
             }
 
@@ -144,8 +156,11 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
                     val artworkOverview = ArtworkOverview(tmdbMovie = tmdbMovie)
                     addArtwork(artworkOverview)
 
-                    val movie = Movie(tmdbMovie = tmdbMovie, file = file,)
+                    val movie = Movie(tmdbMovie = tmdbMovie, file = file)
+
                     addMovie(movie)
+
+                    Log.i(TAG, "[tmdbToFluxArtwork] Movie : ${movie.title} (id ${movie.artworkId})")
 
                 } catch (e: Exception) {
                     Log.e(TAG, "Fail to get movie details for ID ${tmdbArtwork.id}", e)
@@ -157,6 +172,8 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
 
                 val show = ArtworkOverview(tmdbArtwork = tmdbArtwork)
                 addArtwork(show)
+
+                Log.i(TAG, "[tmdbToFluxArtwork] Show : ${show.title} (id ${show.id})")
 
             }
 
@@ -189,6 +206,8 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
 
             addEpisode(episode)
 
+            Log.i(TAG, "[tmdbToFluxEpisode] Episode : ${episode.title} season ${episode.season} n°${episode.number} (id ${episode.id})")
+
         } catch (e: Exception) {
             Log.e(TAG, "Fail to get episode details for ID ${tmdbArtwork.id}, season ${file.nameProperties.season}, episode ${file.nameProperties.episode}", e)
         }
@@ -200,9 +219,9 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
     //region Lists methods
 
     private suspend fun addArtwork(artworkOverview: ArtworkOverview) {
-        mutexArtworks.withLock {
-            if (artworkOverviews.none { it.id == artworkOverview.id })
-                artworkOverviews.add(artworkOverview)
+        mutexOverviews.withLock {
+            if (overviews.none { it.id == artworkOverview.id } && !savedOverviewIds.contains(artworkOverview.id))
+                overviews.add(artworkOverview)
         }
     }
 

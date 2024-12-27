@@ -1,75 +1,39 @@
 package com.kaem.flux.screens.artwork
 
-import android.content.Context
-import android.media.MediaExtractor
-import android.media.MediaFormat
-import android.media.MediaMetadataRetriever
-import android.net.Uri
 import android.util.Log
-import androidx.annotation.OptIn
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.media3.common.C.TRACK_TYPE_AUDIO
-import androidx.media3.common.C.TRACK_TYPE_TEXT
-import androidx.media3.common.C.TRACK_TYPE_VIDEO
-import androidx.media3.common.C.TrackType
-import androidx.media3.common.Format
-import androidx.media3.common.MediaItem
-import androidx.media3.common.Player
-import androidx.media3.common.TrackGroup
-import androidx.media3.common.Tracks
-import androidx.media3.common.util.UnstableApi
-import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import com.kaem.flux.data.repository.ArtworkRepository
 import com.kaem.flux.data.repository.DataStoreRepository
-import com.kaem.flux.model.artwork.ArtworkOverview
+import com.kaem.flux.model.ScreenState
 import com.kaem.flux.model.artwork.Artwork
+import com.kaem.flux.model.artwork.ArtworkOverview
 import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.model.artwork.Movie
 import com.kaem.flux.model.artwork.Status
-import com.kaem.flux.model.player.Metadata
-import com.kaem.flux.model.player.MetadataWrapper
-import com.kaem.flux.utils.inMinutes
-import com.kaem.flux.utils.timeDescription
+import com.kaem.flux.utils.extensions.getPreviousEpisodesFor
+import com.kaem.flux.utils.extensions.inMinutes
+import com.kaem.flux.utils.extensions.timeDescription
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.io.IOException
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.minutes
 
 
 data class ArtworkUiState(
-    val artworkOverview: ArtworkOverview = ArtworkOverview(),
-    val screen: Screen = Screen.LOADING,
-    val expandedEpisodeId: Long? = null,
+    val overview: ArtworkOverview = ArtworkOverview(),
+    val screen: ScreenState = ScreenState.LOADING,
+    val selectedArtwork: Artwork? = null,
+    val episodes: List<Episode> = emptyList(),
     val currentSeason: Int = -1,
-    val selectedArtwork: Artwork? = null
-) {
-
-    val artworkDetails: Artwork? = when (screen) {
-        is Screen.MOVIE -> screen.movie
-        is Screen.SHOW -> screen.currentEpisode
-        else -> null
-    }
-
-    sealed class Screen {
-        data object LOADING : Screen()
-        data object ERROR : Screen()
-        data class MOVIE(val movie: Movie) : Screen()
-        data class SHOW(val episodes: List<Episode> = emptyList()) : Screen() {
-            val currentEpisode get() = episodes.lastOrNull { it.status == Status.IS_WATCHING }
-                ?: episodes.firstOrNull { it.status == Status.TO_WATCH }
-                ?: episodes.firstOrNull()
-        }
-    }
-
-}
+    val showPlayer: Boolean = false,
+    val showStatusDialog: Boolean = false
+)
 
 @HiltViewModel
 class ArtworkViewModel @Inject constructor(
@@ -87,27 +51,33 @@ class ArtworkViewModel @Inject constructor(
 
     private fun getArtworks(id: Long) = viewModelScope.launch {
 
-        val (artwork, movie, episodes) = repository.getArtwork(id)
+        val (overview, movie, episodes) = repository.getArtwork(id)
 
         when {
             movie != null -> {
                 _uiState.value = ArtworkUiState(
-                    artworkOverview = artwork,
-                    screen = ArtworkUiState.Screen.MOVIE(movie)
+                    overview = overview,
+                    screen = ScreenState.CONTENT,
+                    selectedArtwork = movie
                 )
             }
             !episodes.isNullOrEmpty() -> {
-                val screen = ArtworkUiState.Screen.SHOW(episodes)
+                
+                val currentEpisode = episodes.lastOrNull { it.status == Status.IS_WATCHING }
+                    ?: episodes.firstOrNull { it.status == Status.TO_WATCH }
+                    ?: episodes.first()
+
                 _uiState.value = ArtworkUiState(
-                    artworkOverview = artwork,
-                    screen = screen,
-                    currentSeason = screen.currentEpisode?.season ?: -1
+                    overview = overview,
+                    screen = ScreenState.CONTENT,
+                    episodes = episodes,
+                    currentSeason = currentEpisode.season,
+                    selectedArtwork = currentEpisode
                 )
             }
             else -> {
-                ArtworkUiState(
-                    artworkOverview = artwork,
-                    screen = ArtworkUiState.Screen.ERROR,
+                _uiState.value = ArtworkUiState(
+                    screen = ScreenState.ERROR
                 )
             }
 
@@ -127,35 +97,116 @@ class ArtworkViewModel @Inject constructor(
         }
     }
 
-    fun expandEpisodeDetails(id: Long) {
+    fun showPlayer(show: Boolean) {
         _uiState.update { currentState ->
-            currentState.copy(expandedEpisodeId = if (currentState.expandedEpisodeId == id) null else id)
+            currentState.copy(showPlayer = show)
         }
     }
 
-    fun changeWatchStatus(episode: Episode) {
+    fun showStatusDialog(show: Boolean) {
+        _uiState.update { currentState ->
+            currentState.copy(showStatusDialog = show)
+        }
+    }
 
-        // Change status
-        val updatedEpisode = episode.copy(status = if (episode.status != Status.WATCHED) Status.WATCHED else Status.TO_WATCH)
+    fun changeWatchStatus() {
+
+        val artwork = uiState.value.selectedArtwork ?: return
+
+        val newStatus = if (artwork.status != Status.WATCHED) Status.WATCHED else Status.TO_WATCH
+
+        if (
+            newStatus == Status.WATCHED
+            && artwork is Episode
+            && _uiState.value.episodes.getPreviousEpisodesFor(artwork).any { it.status != Status.WATCHED }
+        ) {
+            showStatusDialog(true)
+            return
+        }
+
+        when (artwork) {
+            is Movie -> {
+
+                val movie = artwork.copy(
+                    status = newStatus,
+                    currentTime = 0L
+                )
+                _uiState.update { currentState ->
+                    currentState.copy(selectedArtwork = movie)
+                }
+
+                // Save status in DB
+                viewModelScope.launch { repository.saveMovie(movie) }
+
+                Log.i("ArtworkViewModel", "${movie.title} is now ${movie.status}")
+
+            }
+            is Episode -> {
+
+                val episode = artwork.copy(
+                    status = newStatus,
+                    currentTime = 0L
+                )
+
+                // Update list
+                val episodes = _uiState.value.episodes.toMutableList()
+                episodes.replaceAll { if (it.id == episode.id) episode else it }
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        selectedArtwork = episode,
+                        episodes = episodes
+                    )
+                }
+
+                // Save status in DB
+                viewModelScope.launch { repository.saveEpisode(episode) }
+
+                Log.i("ArtworkViewModel", "${episode.title} season ${episode.season} episode ${episode.number} is now ${episode.status}")
+
+            }
+            else -> return
+        }
+
+    }
+
+    fun changeWatchStatusForEpisodeAndPrevious() {
+
+        val episode = uiState.value.selectedArtwork as? Episode ?: return
+        val previousEpisodes = _uiState.value.episodes.getPreviousEpisodesFor(episode).filter { it.status != Status.WATCHED }
+
+        val updatedEpisode = episode.copy(
+            status = Status.WATCHED,
+            currentTime = 0L
+        )
+
+        val updatedEpisodes = previousEpisodes.map {
+            it.copy(
+                status = Status.WATCHED,
+                currentTime = 0L
+            )
+        } + updatedEpisode
 
         // Update list
-        val episodes = (_uiState.value.screen as? ArtworkUiState.Screen.SHOW)?.episodes.orEmpty().toMutableList()
-        episodes.replaceAll { if (it.id == episode.id) updatedEpisode else it }
+        val episodes = _uiState.value.episodes.toMutableList()
+        episodes.replaceAll { e ->
+            updatedEpisodes.find { it.id == e.id } ?: e
+        }
         _uiState.update { currentState ->
             currentState.copy(
-                screen = ArtworkUiState.Screen.SHOW(episodes)
+                selectedArtwork = updatedEpisode,
+                episodes = episodes,
+                showStatusDialog = false
             )
         }
 
         // Save status in DB
-        viewModelScope.launch { repository.saveEpisode(episode) }
+        viewModelScope.launch { repository.saveEpisodes(episodes) }
 
-        Log.i("ArtworkViewModel", "${episode.title} season ${episode.season} episode ${episode.number} is now ${episode.status}")
     }
 
-    fun saveTime(artwork: Artwork?, time: Long) = viewModelScope.launch {
+    fun saveTime(time: Long) = viewModelScope.launch {
 
-        artwork ?: return@launch
+        val artwork = uiState.value.selectedArtwork ?: return@launch
 
         uiState.value.let { state ->
 
@@ -170,7 +221,7 @@ class ArtworkViewModel @Inject constructor(
 
             dataStoreRepository.addWatchedArtwork(artworkId)
 
-            Log.i("ArtworkViewModel", "${state.artworkOverview.title} saved at ${time.timeDescription}")
+            Log.i("ArtworkViewModel", "${state.overview.title} saved at ${time.timeDescription}")
 
         }
 

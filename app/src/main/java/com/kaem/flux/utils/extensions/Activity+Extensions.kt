@@ -1,11 +1,8 @@
-package com.kaem.flux.utils
+package com.kaem.flux.utils.extensions
 
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.pm.ActivityInfo
-import android.os.Build
-import android.view.View
-import android.view.WindowInsetsController
 import android.view.WindowManager
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat

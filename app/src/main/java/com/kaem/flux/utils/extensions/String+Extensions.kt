@@ -1,4 +1,4 @@
-package com.kaem.flux.utils
+package com.kaem.flux.utils.extensions
 
 import android.util.Log
 import java.text.ParseException

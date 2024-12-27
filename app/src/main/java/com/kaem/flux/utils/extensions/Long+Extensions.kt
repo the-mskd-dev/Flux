@@ -1,4 +1,4 @@
-package com.kaem.flux.utils
+package com.kaem.flux.utils.extensions
 
 import kotlin.time.Duration.Companion.milliseconds
 

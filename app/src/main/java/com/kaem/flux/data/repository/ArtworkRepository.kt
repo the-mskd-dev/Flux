@@ -52,4 +52,8 @@ class ArtworkRepository @Inject constructor(
         db.saveEpisodes(listOf(episode))
     }
 
+    suspend fun saveEpisodes(episodes: List<Episode>) {
+        db.saveEpisodes(episodes)
+    }
+
 }

@@ -19,7 +19,7 @@ import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.ui.theme.FluxFontSize
 import com.kaem.flux.ui.theme.FluxSpace
 import com.kaem.flux.ui.theme.FluxWeight
-import com.kaem.flux.utils.timeDescription
+import com.kaem.flux.utils.extensions.timeDescription
 import java.text.DateFormat
 import kotlin.time.Duration.Companion.minutes
 

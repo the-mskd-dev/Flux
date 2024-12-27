@@ -13,8 +13,11 @@
     <string name="resume">Reprendre à %1$s</string>
     <string name="mark_as_watched">Marquer comme vu</string>
     <string name="mark_as_not_watched">Marquer comme non vu</string>
+    <string name="mark_previous_episodes_as_watched">Souhaitez-vous également marquer les épisodes précédents comme vus ?</string>
     <string name="oups_an_error_occured">Oups, il semble qu\'il y ait une erreur…</string>
     <string name="release_date">Date de sortie : %1$s</string>
     <string name="duration">Durée : %1$s</string>
     <string name="summary">Résumé</string>
+    <string name="no">Non</string>
+    <string name="yes">Oui</string>
 </resources>

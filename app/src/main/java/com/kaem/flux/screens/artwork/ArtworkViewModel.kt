@@ -12,8 +12,9 @@ import com.kaem.flux.model.artwork.ArtworkOverview
 import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.model.artwork.Movie
 import com.kaem.flux.model.artwork.Status
-import com.kaem.flux.utils.inMinutes
-import com.kaem.flux.utils.timeDescription
+import com.kaem.flux.utils.extensions.getPreviousEpisodesFor
+import com.kaem.flux.utils.extensions.inMinutes
+import com.kaem.flux.utils.extensions.timeDescription
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -30,7 +31,8 @@ data class ArtworkUiState(
     val selectedArtwork: Artwork? = null,
     val episodes: List<Episode> = emptyList(),
     val currentSeason: Int = -1,
-    val showPlayer: Boolean = false
+    val showPlayer: Boolean = false,
+    val showStatusDialog: Boolean = false
 )
 
 @HiltViewModel
@@ -101,18 +103,33 @@ class ArtworkViewModel @Inject constructor(
         }
     }
 
+    fun showStatusDialog(show: Boolean) {
+        _uiState.update { currentState ->
+            currentState.copy(showStatusDialog = show)
+        }
+    }
+
     fun changeWatchStatus() {
 
         val artwork = uiState.value.selectedArtwork ?: return
+
         val newStatus = if (artwork.status != Status.WATCHED) Status.WATCHED else Status.TO_WATCH
-        val newTime = if (newStatus == Status.TO_WATCH) 0L else artwork.duration.minutes.inWholeMilliseconds
+
+        if (
+            newStatus == Status.WATCHED
+            && artwork is Episode
+            && _uiState.value.episodes.getPreviousEpisodesFor(artwork).any { it.status != Status.WATCHED }
+        ) {
+            showStatusDialog(true)
+            return
+        }
 
         when (artwork) {
             is Movie -> {
 
                 val movie = artwork.copy(
                     status = newStatus,
-                    currentTime = newTime
+                    currentTime = 0L
                 )
                 _uiState.update { currentState ->
                     currentState.copy(selectedArtwork = movie)
@@ -128,7 +145,7 @@ class ArtworkViewModel @Inject constructor(
 
                 val episode = artwork.copy(
                     status = newStatus,
-                    currentTime = newTime
+                    currentTime = 0L
                 )
 
                 // Update list
@@ -150,7 +167,40 @@ class ArtworkViewModel @Inject constructor(
             else -> return
         }
 
+    }
 
+    fun changeWatchStatusForEpisodeAndPrevious() {
+
+        val episode = uiState.value.selectedArtwork as? Episode ?: return
+        val previousEpisodes = _uiState.value.episodes.getPreviousEpisodesFor(episode).filter { it.status != Status.WATCHED }
+
+        val updatedEpisode = episode.copy(
+            status = Status.WATCHED,
+            currentTime = 0L
+        )
+
+        val updatedEpisodes = previousEpisodes.map {
+            it.copy(
+                status = Status.WATCHED,
+                currentTime = 0L
+            )
+        } + updatedEpisode
+
+        // Update list
+        val episodes = _uiState.value.episodes.toMutableList()
+        episodes.replaceAll { e ->
+            updatedEpisodes.find { it.id == e.id } ?: e
+        }
+        _uiState.update { currentState ->
+            currentState.copy(
+                selectedArtwork = updatedEpisode,
+                episodes = episodes,
+                showStatusDialog = false
+            )
+        }
+
+        // Save status in DB
+        viewModelScope.launch { repository.saveEpisodes(episodes) }
 
     }
 

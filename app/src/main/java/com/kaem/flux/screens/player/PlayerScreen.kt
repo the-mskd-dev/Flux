@@ -45,11 +45,11 @@ import com.kaem.flux.ui.component.BackButton
 import com.kaem.flux.ui.component.LifecycleComponent
 import com.kaem.flux.ui.theme.FluxFontSize
 import com.kaem.flux.ui.theme.FluxSpace
-import com.kaem.flux.utils.forceScreenOn
-import com.kaem.flux.utils.hideSystemBars
-import com.kaem.flux.utils.setAppInLandscape
-import com.kaem.flux.utils.setAppOrientation
-import com.kaem.flux.utils.showSystemBars
+import com.kaem.flux.utils.extensions.forceScreenOn
+import com.kaem.flux.utils.extensions.hideSystemBars
+import com.kaem.flux.utils.extensions.setAppInLandscape
+import com.kaem.flux.utils.extensions.setAppOrientation
+import com.kaem.flux.utils.extensions.showSystemBars
 
 @Composable
 fun PlayerScreen(

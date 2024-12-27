@@ -38,7 +38,7 @@ import com.kaem.flux.ui.component.Placeholders
 import com.kaem.flux.ui.component.Title
 import com.kaem.flux.ui.theme.FluxSpace
 import com.kaem.flux.utils.Constants
-import com.kaem.flux.utils.timeDescription
+import com.kaem.flux.utils.extensions.timeDescription
 
 @Composable
 fun ArtworkHeader(

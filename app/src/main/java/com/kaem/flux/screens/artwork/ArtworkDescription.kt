@@ -21,6 +21,7 @@ import com.kaem.flux.ui.theme.FluxSpace
 import com.kaem.flux.ui.theme.FluxWeight
 import com.kaem.flux.utils.extensions.timeDescription
 import java.text.DateFormat
+import java.util.Locale
 import kotlin.time.Duration.Companion.minutes
 
 @Composable
@@ -93,15 +94,14 @@ fun ArtworkDescription(artwork: Artwork?) {
 fun ArtworkDescriptionDetails(artwork: Artwork) {
 
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .alpha(.8f),
         horizontalAlignment = Alignment.Start
     ) {
 
         artwork.releaseDate?.let {
             Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .alpha(.8f),
                 text = stringResource(R.string.release_date, DateFormat.getDateInstance().format(it)) ,
                 fontSize = FluxFontSize.SMALL,
                 color = MaterialTheme.colorScheme.onBackground,
@@ -110,14 +110,21 @@ fun ArtworkDescriptionDetails(artwork: Artwork) {
         }
 
         Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .alpha(.8f),
             text = stringResource(R.string.duration, artwork.duration.minutes.inWholeMilliseconds.timeDescription) ,
             fontSize = FluxFontSize.SMALL,
             color = MaterialTheme.colorScheme.onBackground,
             fontStyle = FontStyle.Italic
         )
+
+        if (artwork.voteAverage > 0f) {
+            val rate = String.format(Locale.getDefault(),"%.2f", artwork.voteAverage)
+            Text(
+                text = stringResource(R.string.rate, rate),
+                fontSize = FluxFontSize.SMALL,
+                color = MaterialTheme.colorScheme.onBackground,
+                fontStyle = FontStyle.Italic
+            )
+        }
 
     }
 }

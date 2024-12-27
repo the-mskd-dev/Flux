@@ -45,12 +45,15 @@ import com.google.accompanist.permissions.isGranted
 import com.kaem.flux.R
 import com.kaem.flux.model.artwork.ArtworkOverview
 import com.kaem.flux.model.artwork.ContentType
+import com.kaem.flux.screens.permissions.PermissionsScreen
+import com.kaem.flux.screens.permissions.fluxPermissionState
 import com.kaem.flux.ui.component.Loader
 import com.kaem.flux.ui.component.Placeholders
 import com.kaem.flux.ui.component.Title
 import com.kaem.flux.ui.theme.FluxSpace
 import com.kaem.flux.utils.Constants
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun LibraryScreen(
     navigateToDetails: (Long) -> Unit,
@@ -58,40 +61,49 @@ fun LibraryScreen(
 ) {
 
     val uiState by viewModel.libraryUiState.observeAsState()
+    val permissions = fluxPermissionState()
 
-    LaunchedEffect(Unit) {
+    if (!permissions.status.isGranted) {
 
-        if (uiState == null)
-            viewModel.getLibrary()
+        PermissionsScreen { permissions.launchPermissionRequest() }
 
-    }
+    } else {
 
-    Crossfade(
-        modifier = Modifier.fillMaxSize(),
-        targetState = uiState,
-        label = "LibraryAnimation"
-    ) {
+        LaunchedEffect(Unit) {
 
-        when (it) {
+            if (uiState == null)
+                viewModel.getLibrary()
 
-            null -> Loader()
-            else -> {
+        }
 
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.TopCenter
-                ) {
+        Crossfade(
+            modifier = Modifier.fillMaxSize(),
+            targetState = uiState,
+            label = "LibraryAnimation"
+        ) {
 
-                    LibraryContent(
-                        artworkOverviews = it.artworkOverviews,
-                        lastWatchedIds = it.lastWatchedArtworkIds,
-                        navigateToDetails = { id -> navigateToDetails(id) }
-                    )
+            when (it) {
 
-                    LibraryRefreshButton(
-                        isLoading = it.isLoading,
-                        onTap = { viewModel.getLibrary(manualSync = true) }
-                    )
+                null -> Loader()
+                else -> {
+
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.TopCenter
+                    ) {
+
+                        LibraryContent(
+                            artworkOverviews = it.artworkOverviews,
+                            lastWatchedIds = it.lastWatchedArtworkIds,
+                            navigateToDetails = { id -> navigateToDetails(id) }
+                        )
+
+                        LibraryRefreshButton(
+                            isLoading = it.isLoading,
+                            onTap = { viewModel.getLibrary(manualSync = true) }
+                        )
+
+                    }
 
                 }
 

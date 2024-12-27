@@ -40,29 +40,14 @@ class MainActivity : ComponentActivity() {
             FluxTheme {
 
                 val navController = rememberNavController()
-                val fluxPermissions = fluxPermissionState()
-
-                LaunchedEffect(fluxPermissions.status.isGranted) {
-                    if (fluxPermissions.status.isGranted) {
-                        navController.navigate(route = "library") {
-                            popUpTo("permissions") { inclusive = true }
-                        }
-                    }
-                }
                 
                 NavHost(
                     modifier = Modifier
                         .fillMaxSize()
                         .background(color = MaterialTheme.colorScheme.background),
                     navController = navController,
-                    startDestination = "permissions"
+                    startDestination = "library"
                 ) {
-
-                    composable("permissions") {
-                        PermissionsScreen(
-                            onPermissionsTap = { fluxPermissions.launchPermissionRequest() }
-                        )
-                    }
 
                     composable("library") {
                         LibraryScreen(

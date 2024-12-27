@@ -21,7 +21,7 @@ class ArtworkRepository @Inject constructor(
 
     suspend fun getArtwork(artworkId: Long) : Content {
 
-        val artwork = db.getArtwork(artworkId)
+        val artwork = db.getOverview(artworkId)
         var movie: Movie? = null
         var episodes: List<Episode>? = null
 
@@ -50,6 +50,10 @@ class ArtworkRepository @Inject constructor(
 
     suspend fun saveEpisode(episode: Episode) {
         db.saveEpisodes(listOf(episode))
+    }
+
+    suspend fun saveEpisodes(episodes: List<Episode>) {
+        db.saveEpisodes(episodes)
     }
 
 }

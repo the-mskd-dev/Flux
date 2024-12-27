@@ -1,7 +1,7 @@
 package com.kaem.flux.model.artwork
 
 import com.kaem.flux.model.UserFile
-import com.kaem.flux.utils.parseTMDBDate
+import com.kaem.flux.utils.extensions.parseTMDBDate
 import java.util.Date
 
 /**

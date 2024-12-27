@@ -1,74 +1,50 @@
 package com.kaem.flux.screens.artwork
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowBack
-import androidx.compose.material.icons.rounded.Done
-import androidx.compose.material.icons.rounded.PlayArrow
-import androidx.compose.material3.Button
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.BasicAlertDialog
+import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ScrollableTabRow
-import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension
+import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
-import com.bumptech.glide.integration.compose.GlideImage
 import com.kaem.flux.R
-
+import com.kaem.flux.model.ScreenState
+import com.kaem.flux.model.artwork.Artwork
+import com.kaem.flux.model.artwork.ArtworkOverview
 import com.kaem.flux.model.artwork.Episode
-import com.kaem.flux.model.artwork.Status
 import com.kaem.flux.screens.player.PlayerScreen
+import com.kaem.flux.ui.component.ErrorScreen
 import com.kaem.flux.ui.component.Loader
-import com.kaem.flux.ui.component.Title
-import com.kaem.flux.ui.theme.FluxElevation
-import com.kaem.flux.ui.theme.FluxFontSize
 import com.kaem.flux.ui.theme.FluxSpace
-import com.kaem.flux.ui.theme.FluxWeight
-import com.kaem.flux.utils.Constants
-import com.kaem.flux.utils.timeDescription
-import java.text.DateFormat
+import kotlinx.coroutines.launch
 
 @Composable
 fun ArtworkScreen(
@@ -78,11 +54,78 @@ fun ArtworkScreen(
 
     val uiState by viewModel.uiState.collectAsState()
 
+    Crossfade(
+        modifier = Modifier.fillMaxSize(),
+        targetState = uiState.screen,
+        label = "ArtworkScreenAnimation"
+    ) { screen ->
+
+        when (screen) {
+            ScreenState.LOADING -> Loader()
+            ScreenState.ERROR -> {
+                ErrorScreen(
+                    message = stringResource(R.string.oups_an_error_occured),
+                    onBackButtonTap = onBackButtonTap
+                )
+            }
+            else -> {
+
+                ArtworkContent(
+                    overview = uiState.overview,
+                    artwork = uiState.selectedArtwork,
+                    episodes = uiState.episodes,
+                    currentSeason = uiState.currentSeason,
+                    onBackButtonTap = { onBackButtonTap() },
+                    onStatusButtonTap = { viewModel.changeWatchStatus() },
+                    onSeasonTap = { viewModel.selectSeason(it) },
+                    onEpisodeTap = { viewModel.selectArtwork(it) },
+                    onPlayerButtonTap = { viewModel.showPlayer(true) }
+                )
+
+            }
+
+        }
+
+    }
+
+    AnimatedVisibility(uiState.showPlayer) {
+        PlayerScreen(
+            artwork = uiState.selectedArtwork,
+            onBackButtonTap = { viewModel.showPlayer(false) },
+            onTimeSave = { viewModel.saveTime(it) }
+        )
+    }
+
+    ArtworkStatusDialog(
+        showStatusDialog = uiState.showStatusDialog,
+        onDismiss = { viewModel.showStatusDialog(false) },
+        onValidate = { viewModel.changeWatchStatusForEpisodeAndPrevious() }
+    )
+
+}
+
+@Composable
+fun ArtworkContent(
+    overview: ArtworkOverview,
+    artwork: Artwork?,
+    episodes: List<Episode>,
+    currentSeason: Int,
+    onBackButtonTap: () -> Unit,
+    onStatusButtonTap: () -> Unit,
+    onSeasonTap: (Int) -> Unit,
+    onEpisodeTap: (Episode) -> Unit,
+    onPlayerButtonTap: () -> Unit
+) {
+
+    val scrollState = rememberLazyListState()
+    val scope = rememberCoroutineScope()
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
-        contentPadding = PaddingValues(bottom = 100.dp)
+        contentPadding = PaddingValues(bottom = 100.dp),
+        state = scrollState
     ) {
 
         item {
@@ -93,439 +136,97 @@ fun ArtworkScreen(
             ) {
 
                 ArtworkHeader(
-                    uiState = uiState,
-                    onBackButtonTap = { onBackButtonTap() },
-                    onLaunchButtonTap = {
+                    overview = overview,
+                    artwork = artwork,
+                    onBackButtonTap = onBackButtonTap,
+                    onStatusButtonTap = onStatusButtonTap,
+                    onPlayerButtonTap = onPlayerButtonTap
+                )
 
-                        when (val screen = uiState.screen) {
-                            is ArtworkUiState.Screen.MOVIE -> {
-                                viewModel.selectArtwork(screen.movie)
-                            }
-                            is ArtworkUiState.Screen.SHOW -> {
-                                viewModel.selectArtwork(screen.currentEpisode)
-                            }
-                            else -> {}
+                ArtworkDescription(artwork = artwork)
+
+            }
+
+        }
+
+        if (episodes.isNotEmpty()) {
+
+            item {
+
+                ArtworkSeasonsTabs(
+                    selectedSeason = currentSeason,
+                    seasons = episodes.map { it.season }.distinct(),
+                    onSeasonTap = onSeasonTap
+                )
+
+            }
+
+            itemsIndexed(
+                items = episodes
+                    .filter { it.season == currentSeason }
+                    .sortedBy { it.number },
+                key = { _, e -> e.id }
+            ) { i, episode ->
+
+                EpisodeItem(
+                    episode = episode,
+                    isFirst = i == 0,
+                    onEpisodeTap = {
+                        scope.launch {
+                            onEpisodeTap(episode)
+                            scrollState.animateScrollToItem(0)
                         }
-
                     }
                 )
 
-                ArtworkDescription(uiState = uiState)
-
             }
 
         }
 
-        when (val screen = uiState.screen) {
-            is ArtworkUiState.Screen.MOVIE -> {}
-            ArtworkUiState.Screen.LOADING -> {
-
-                item {
-                    Loader()
-                }
-
-            }
-            ArtworkUiState.Screen.ERROR -> {
-                item {
-                    Text("Error") //TODO : Error message
-                }
-            }
-            is ArtworkUiState.Screen.SHOW -> {
-
-                val episodes = screen.episodes
-
-                item {
-
-                    ArtworkSeasonsTabs(
-                        selectedSeason = uiState.currentSeason,
-                        seasons = episodes.map { it.season }.distinct(),
-                        onSeasonTap = { viewModel.selectSeason(it) }
-                    )
-
-                }
-
-                items(items = episodes.filter { it.season == uiState.currentSeason }.sortedBy { it.number }, key = { it.id }) { episode ->
-
-                    EpisodeItem(
-                        episode = episode,
-                        onWatchTap = { viewModel.selectArtwork(episode) },
-                        isExpanded = uiState.expandedEpisodeId == episode.id,
-                        expandDetails = { viewModel.expandEpisodeDetails(episode.id) },
-                        onWatchStatusChange = { viewModel.changeWatchStatus(episode) }
-                    )
-
-                }
-
-            }
-        }
-
-    }
-
-    AnimatedVisibility(uiState.selectedArtwork != null) {
-        PlayerScreen(
-            artwork = uiState.selectedArtwork,
-            onBackButtonTap = { viewModel.selectArtwork(null) },
-            onTimeSave = { viewModel.saveTime(uiState.selectedArtwork, it) }
-        )
     }
 
 }
 
-@OptIn(ExperimentalGlideComposeApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ArtworkHeader(
-    uiState: ArtworkUiState,
-    onBackButtonTap: () -> Unit,
-    onLaunchButtonTap: () -> Unit
+fun ArtworkStatusDialog(
+    showStatusDialog: Boolean,
+    onDismiss: () -> Unit,
+    onValidate: () -> Unit
 ) {
 
-    ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
+    if (showStatusDialog) {
+        BasicAlertDialog(onDismissRequest = onDismiss) {
 
-        val (image, back, title, watchButton, checkButton) = createRefs()
-
-        GlideImage(
-            modifier = Modifier
-                .aspectRatio(6f / 5f)
-                .constrainAs(image) {
-                    top.linkTo(parent.top)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                    width = Dimension.fillToConstraints
-                },
-            model = Constants.TMDB.IMAGE + uiState.artworkOverview.bannerPath,
-            contentScale = ContentScale.Crop,
-            contentDescription = uiState.artworkOverview.title
-        )
-
-        Box(
-            modifier = Modifier
-                .statusBarsPadding()
-                .constrainAs(back) {
-                    top.linkTo(parent.top)
-                    start.linkTo(parent.start, FluxSpace.MEDIUM)
-                }
-                .size(50.dp)
-                .clip(shape = CircleShape)
-                .clickable { onBackButtonTap() }
-                .border(
-                    width = 1.dp,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    shape = CircleShape
-                )
-                .background(color = MaterialTheme.colorScheme.background)
-                .padding(FluxSpace.EXTRA_SMALL),
-            contentAlignment = Alignment.Center
-        ) {
-
-            Icon(
-                imageVector = Icons.Rounded.ArrowBack,
-                tint = MaterialTheme.colorScheme.onBackground,
-                contentDescription = "back button"
-            )
-
-        }
-
-        Button(
-            modifier = Modifier
-                .constrainAs(watchButton) {
-                    top.linkTo(image.bottom)
-                    bottom.linkTo(image.bottom)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                },
-            onClick = { onLaunchButtonTap() },
-            elevation = FluxElevation.buttonElevation(),
-            shape = RoundedCornerShape(8.dp)
-        ) {
-
-            Row(
-                modifier = Modifier.padding(horizontal = FluxSpace.MEDIUM),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(FluxSpace.SMALL, Alignment.CenterHorizontally)
+            Card(
+                shape = RoundedCornerShape(8.dp)
             ) {
+                Column(
+                    modifier = Modifier.padding(FluxSpace.MEDIUM),
+                    verticalArrangement = Arrangement.spacedBy(FluxSpace.LARGE)
+                ) {
 
-                Icon(
-                    modifier = Modifier.size(30.dp),
-                    imageVector = Icons.Rounded.PlayArrow,
-                    contentDescription = "play button"
-                )
+                    Text(stringResource(R.string.mark_previous_episodes_as_watched))
 
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(FluxSpace.MEDIUM, Alignment.End)
+                    ) {
 
-                val text = if (uiState.artworkDetails?.status == Status.IS_WATCHING) stringResource(id = R.string.resume, uiState.artworkDetails.currentTime.timeDescription) else stringResource(R.string.start)
-                Text(
-                    text = text.uppercase(),
-                    fontWeight = FluxWeight.MEDIUM
-                )
+                        TextButton(onClick = onDismiss) {
+                            Text(stringResource(R.string.no))
+                        }
 
-            }
+                        TextButton(onClick = onValidate) {
+                            Text(stringResource(R.string.yes))
+                        }
 
-        }
-
-        FloatingActionButton(
-            modifier = Modifier.constrainAs(checkButton) {
-                top.linkTo(watchButton.top)
-                bottom.linkTo(watchButton.bottom)
-                start.linkTo(watchButton.end, FluxSpace.LARGE)
-                height = Dimension.value(40.dp)
-                width = Dimension.value(40.dp)
-            },
-            shape = CircleShape,
-            containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = MaterialTheme.colorScheme.onPrimary,
-            elevation = FluxElevation.floatingButtonElevation(),
-            onClick = {  },
-            content = { Icon(imageVector = Icons.Rounded.Done, contentDescription = "check if watched button") }
-        )
-
-        ArtworkTitle(
-            modifier = Modifier.constrainAs(title) {
-                top.linkTo(watchButton.bottom, FluxSpace.SMALL)
-                start.linkTo(parent.start, FluxSpace.MEDIUM)
-                end.linkTo(parent.end, FluxSpace.MEDIUM)
-                width = Dimension.fillToConstraints
-            },
-            uiState = uiState
-        )
-
-    }
-
-}
-
-@Composable
-fun ArtworkTitle(
-    modifier: Modifier,
-    uiState: ArtworkUiState
-) {
-
-    Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.Start,
-        verticalArrangement = Arrangement.spacedBy(2.dp)
-    ) {
-
-        Title(
-            modifier = Modifier.fillMaxWidth(),
-            text = uiState.artworkOverview.title
-        )
-
-        uiState.artworkDetails?.releaseDate?.let {
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .alpha(.8f),
-                text = DateFormat.getDateInstance().format(it),
-                fontSize = FluxFontSize.SMALL,
-                color = MaterialTheme.colorScheme.onBackground,
-                fontStyle = FontStyle.Italic
-            )
-        }
-
-    }
-
-}
-
-@Composable
-fun ArtworkDescription(uiState: ArtworkUiState) {
-
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = FluxSpace.MEDIUM),
-        verticalArrangement = Arrangement.spacedBy(FluxSpace.SMALL)
-    ) {
-
-        uiState.artworkDetails?.let {
-
-            if (it is Episode) {
-
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = stringResource(id = R.string.season_and_episode, it.season, it.number),
-                    color = MaterialTheme.colorScheme.onBackground,
-                    fontSize = FluxFontSize.LARGE,
-                    fontWeight = FluxWeight.MEDIUM
-                )
-
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = it.title,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    fontSize = FluxFontSize.MEDIUM,
-                    fontWeight = FluxWeight.MEDIUM
-                )
-
-            }
-
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .alpha(.8f),
-                text = it.description,
-                color = MaterialTheme.colorScheme.onBackground,
-                fontSize = FluxFontSize.MEDIUM,
-                textAlign = TextAlign.Start
-            )
-
-        }
-
-    }
-
-}
-
-@Composable
-fun ArtworkSeasonsTabs(
-    selectedSeason: Int,
-    seasons: List<Int>,
-    onSeasonTap: (Int) -> Unit
-) {
-
-    Column(modifier = Modifier.fillMaxWidth()) {
-
-        ScrollableTabRow(selectedTabIndex = seasons.indexOf(selectedSeason)) {
-
-            seasons.sorted().forEach { season ->
-
-                Tab(
-                    text = { Text(text = stringResource(id = R.string.season, season)) },
-                    selected = selectedSeason == season,
-                    onClick = { onSeasonTap(season) }
-                )
-
-            }
-
-        }
-    }
-
-}
-
-@Composable
-fun EpisodeItem(
-    episode: Episode,
-    isExpanded: Boolean,
-    expandDetails: () -> Unit,
-    onWatchTap: () -> Unit,
-    onWatchStatusChange: () -> Unit
-) {
-
-    var isWatched by remember { mutableStateOf(episode.status == Status.WATCHED) }
-    val alphaAnimation by animateFloatAsState(targetValue = if (isWatched) .4f else 1f, label = "alphaAnimation")
-    val colorAnimation by animateColorAsState(targetValue = if (isWatched) MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.primary, label = "colorAnimation")
-
-    Column(
-        modifier = Modifier
-            .animateContentSize()
-            .fillMaxWidth()
-            .padding(horizontal = FluxSpace.MEDIUM)
-            .padding(bottom = FluxSpace.MEDIUM),
-        verticalArrangement = Arrangement.spacedBy(FluxSpace.MEDIUM)
-    ) {
-
-        HorizontalDivider(
-            modifier = Modifier
-                .fillMaxWidth()
-                .alpha(.2f),
-            color = MaterialTheme.colorScheme.onBackground
-        )
-
-        Row(
-            modifier = Modifier
-                .clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null
-                ) { expandDetails() }
-                .alpha(alphaAnimation)
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(FluxSpace.SMALL),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-
-            Text(
-                modifier = Modifier
-                    .alignByBaseline()
-                    .alpha(.8f),
-                text = "${episode.number}",
-                color = colorAnimation,
-                fontSize = FluxFontSize.MEDIUM
-            )
-
-            Text(
-                modifier = Modifier.alignByBaseline(),
-                text = episode.title,
-                color = MaterialTheme.colorScheme.onBackground,
-                fontSize = FluxFontSize.MEDIUM
-            )
-
-        }
-
-        AnimatedVisibility(visible = isExpanded) {
-            EpisodeItemContent(
-                episode = episode,
-                onCloseExpand = { expandDetails() },
-                onWatchTap = onWatchTap,
-                onWatchStatusChange = {
-                    onWatchStatusChange()
-                    isWatched = episode.status == Status.WATCHED
+                    }
                 }
-            )
-        }
+            }
 
+        }
     }
 
 }
-
-@Composable
-fun EpisodeItemContent(
-    episode: Episode,
-    onCloseExpand: () -> Unit,
-    onWatchTap: () -> Unit,
-    onWatchStatusChange: () -> Unit
-) {
-
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = FluxSpace.MEDIUM),
-        verticalArrangement = Arrangement.spacedBy(FluxSpace.MEDIUM)
-    ) {
-
-        Text(
-            modifier = Modifier
-                .clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null
-                ) { onCloseExpand() }
-                .fillMaxWidth()
-                .alpha(.8f),
-            text = episode.description,
-            color = MaterialTheme.colorScheme.onBackground,
-            fontSize = FluxFontSize.MEDIUM,
-            textAlign = TextAlign.Start
-        )
-
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(FluxSpace.MEDIUM),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-
-            Text(
-                modifier = Modifier.clickable { onWatchStatusChange() },
-                color = MaterialTheme.colorScheme.primary,
-                fontWeight = FluxWeight.MEDIUM,
-                text = stringResource(id = if (episode.status == Status.WATCHED) R.string.mark_as_not_watched else R.string.mark_as_watched).uppercase()
-            )
-
-            val watchTime = if (episode.status == Status.IS_WATCHING) stringResource(id = R.string.resume, episode.currentTime.timeDescription) else stringResource(R.string.start)
-            Text(
-                modifier = Modifier.clickable { onWatchTap() },
-                color = MaterialTheme.colorScheme.primary,
-                fontWeight = FluxWeight.MEDIUM,
-                text = watchTime.uppercase()
-            )
-
-        }
-
-    }
-
-}
-

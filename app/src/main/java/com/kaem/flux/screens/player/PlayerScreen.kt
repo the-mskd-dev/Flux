@@ -7,23 +7,12 @@ import androidx.activity.compose.BackHandler
 import androidx.annotation.OptIn
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -34,39 +23,33 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
-import androidx.media3.common.C
-import androidx.media3.common.C.TRACK_TYPE_TEXT
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.decoder.ffmpeg.FfmpegAudioRenderer
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
-import androidx.media3.ui.TrackSelectionDialogBuilder
 import com.kaem.flux.R
 import com.kaem.flux.model.artwork.Artwork
 import com.kaem.flux.model.artwork.Episode
+import com.kaem.flux.ui.component.BackButton
 import com.kaem.flux.ui.component.LifecycleComponent
 import com.kaem.flux.ui.theme.FluxFontSize
 import com.kaem.flux.ui.theme.FluxSpace
-import com.kaem.flux.utils.forceScreenOn
-import com.kaem.flux.utils.hideSystemBars
-import com.kaem.flux.utils.setAppInLandscape
-import com.kaem.flux.utils.setAppOrientation
-import com.kaem.flux.utils.showSystemBars
+import com.kaem.flux.utils.extensions.forceScreenOn
+import com.kaem.flux.utils.extensions.hideSystemBars
+import com.kaem.flux.utils.extensions.setAppInLandscape
+import com.kaem.flux.utils.extensions.setAppOrientation
+import com.kaem.flux.utils.extensions.showSystemBars
 
 @Composable
 fun PlayerScreen(
@@ -153,8 +136,12 @@ fun VideoPlayer(
     )
 
     BackHandler(enabled = true) {
-        onTimeSave(exoPlayer.currentPosition)
-        onBackButtonTap()
+        if (showButtons) {
+            onTimeSave(exoPlayer.currentPosition)
+            onBackButtonTap()
+        } else {
+            showButtons = true
+        }
     }
 
     Box(
@@ -176,6 +163,10 @@ fun VideoPlayer(
                         showButtons = it == View.VISIBLE
                     })
                 }
+            },
+            update = {
+                if (showButtons)
+                    it.showController()
             }
         )
 
@@ -208,9 +199,9 @@ fun PlayerButtons(
             constraintSet = PlayerButtonsConstraintSet
         ) {
 
-            PlayerBackButton(
-                layoutId = "back",
-                onTap = { onBackButtonTap() }
+            BackButton(
+                modifier = Modifier.layoutId("back"),
+                onTap = onBackButtonTap
             )
 
             PlayerTitle(
@@ -219,33 +210,6 @@ fun PlayerButtons(
             )
 
         }
-
-    }
-
-}
-
-@Composable
-fun PlayerBackButton(
-    layoutId: String,
-    onTap: () -> Unit
-) {
-
-    Box(
-        modifier = Modifier
-            .layoutId(layoutId)
-            .padding(start = FluxSpace.MEDIUM)
-            .size(50.dp)
-            .clip(shape = CircleShape)
-            .clickable { onTap() }
-            .padding(FluxSpace.EXTRA_SMALL),
-        contentAlignment = Alignment.Center
-    ) {
-
-        Icon(
-            imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-            tint = Color.White,
-            contentDescription = "back button"
-        )
 
     }
 

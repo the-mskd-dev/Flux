@@ -11,10 +11,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 object FluxFontSize {
-    val SMALL = 12.sp
+    val SMALL = 14.sp
     val MEDIUM = 17.sp
     val LARGE = 20.sp
-    val TITLE = 24.sp
+    val TITLE = 30.sp
 }
 
 object FluxSpace {

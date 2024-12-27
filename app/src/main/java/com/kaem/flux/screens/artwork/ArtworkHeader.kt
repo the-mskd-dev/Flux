@@ -67,6 +67,7 @@ import com.kaem.flux.ui.theme.FluxFontSize
 import com.kaem.flux.ui.theme.FluxSpace
 import com.kaem.flux.utils.Constants
 import com.kaem.flux.utils.inMinutes
+import com.kaem.flux.utils.timeDescription
 import java.text.DateFormat
 
 @Composable
@@ -177,7 +178,7 @@ fun ArtworkPlayerButton(
 
     FluxButton(
         modifier = modifier,
-        text = if (artwork.status == Status.IS_WATCHING) stringResource(R.string.resume) else stringResource(R.string.start),
+        text = if (artwork.status == Status.IS_WATCHING) stringResource(R.string.resume, artwork.currentTime.timeDescription) else stringResource(R.string.start),
         onTap = onTap
     )
 

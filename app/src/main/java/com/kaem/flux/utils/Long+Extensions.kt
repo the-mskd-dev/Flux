@@ -10,8 +10,8 @@ val Long.timeDescription : String
         val remainingSeconds = seconds % 60
 
         return buildString {
-            if (hours > 0) append("${hours}h")
-            if (minutes > 0) append("${minutes}min")
+            if (hours > 0) append("${hours}h ")
+            if (minutes > 0) append("${minutes}min ")
             if (remainingSeconds > 0 || isEmpty()) append("${remainingSeconds}sec")
         }
     }

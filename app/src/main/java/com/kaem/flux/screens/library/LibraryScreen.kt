@@ -3,8 +3,6 @@ package com.kaem.flux.screens.library
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -14,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
@@ -22,11 +19,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Refresh
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
@@ -52,7 +45,6 @@ import com.kaem.flux.model.artwork.ArtworkOverview
 import com.kaem.flux.model.artwork.ContentType
 import com.kaem.flux.screens.permissions.PermissionsScreen
 import com.kaem.flux.screens.permissions.fluxPermissionState
-import com.kaem.flux.ui.component.ErrorScreen
 import com.kaem.flux.ui.component.Loader
 import com.kaem.flux.ui.component.Placeholders
 import com.kaem.flux.ui.component.Title
@@ -142,6 +134,7 @@ fun LibraryContent(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
 
+            //TODO
             Text(
                 text = "No content",
                 color = MaterialTheme.colorScheme.primary
@@ -152,7 +145,7 @@ fun LibraryContent(
     } else {
 
         LibraryGrid(
-            artworkOverviews = artworkOverviews,
+            overviews = artworkOverviews,
             lastWatchedIds = lastWatchedIds,
             navigateToDetails = { navigateToDetails(it) }
         )
@@ -163,7 +156,7 @@ fun LibraryContent(
 
 @Composable
 fun LibraryGrid(
-    artworkOverviews: List<ArtworkOverview>,
+    overviews: List<ArtworkOverview>,
     lastWatchedIds: List<Long>,
     navigateToDetails: (Long) -> Unit,
 ) {
@@ -182,20 +175,20 @@ fun LibraryGrid(
         )
 
         ArtworkList(
-            artworkOverviews = artworkOverviews.filter { lastWatchedIds.contains(it.id) },
+            artworkOverviews = lastWatchedIds.mapNotNull { overviews.find { o -> o.id == it } },
             largeArtwork = true,
             navigateToDetails = navigateToDetails
         )
 
         ArtworkList(
             name = stringResource(id = R.string.shows),
-            artworkOverviews = artworkOverviews.filter { it.type == ContentType.SHOW },
+            artworkOverviews = overviews.filter { it.type == ContentType.SHOW },
             navigateToDetails = navigateToDetails
         )
 
         ArtworkList(
             name = stringResource(id = R.string.movies),
-            artworkOverviews = artworkOverviews.filter { it.type == ContentType.MOVIE },
+            artworkOverviews = overviews.filter { it.type == ContentType.MOVIE },
             navigateToDetails = navigateToDetails
         )
 

@@ -2,6 +2,7 @@ package com.kaem.flux.screens.artwork
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,8 +26,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -40,6 +45,7 @@ import com.kaem.flux.model.ScreenState
 import com.kaem.flux.model.artwork.Artwork
 import com.kaem.flux.model.artwork.ArtworkOverview
 import com.kaem.flux.model.artwork.Episode
+import com.kaem.flux.model.artwork.Status
 import com.kaem.flux.screens.player.PlayerScreen
 import com.kaem.flux.ui.component.ErrorScreen
 import com.kaem.flux.ui.component.Loader
@@ -120,6 +126,18 @@ fun ArtworkContent(
     val scrollState = rememberLazyListState()
     val scope = rememberCoroutineScope()
 
+    val maxZoom = 1.05f
+    val scrollRange = 500
+
+    val firstItemOffset by remember { derivedStateOf { scrollState.firstVisibleItemScrollOffset } }
+    val zoom by animateFloatAsState(
+        if (firstItemOffset < scrollRange) {
+            1f + (maxZoom - 1f) * (firstItemOffset.toFloat() / scrollRange)
+        } else {
+            maxZoom
+        },
+        label = "zoomEffect"
+    )
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -138,6 +156,7 @@ fun ArtworkContent(
                 ArtworkHeader(
                     overview = overview,
                     artwork = artwork,
+                    zoom = zoom,
                     onBackButtonTap = onBackButtonTap,
                     onStatusButtonTap = onStatusButtonTap,
                     onPlayerButtonTap = onPlayerButtonTap

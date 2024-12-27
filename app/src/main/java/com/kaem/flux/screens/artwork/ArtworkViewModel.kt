@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kaem.flux.data.repository.ArtworkRepository
 import com.kaem.flux.data.repository.DataStoreRepository
+import com.kaem.flux.model.ScreenState
 import com.kaem.flux.model.artwork.ArtworkOverview
 import com.kaem.flux.model.artwork.Artwork
 import com.kaem.flux.model.artwork.Episode
@@ -27,21 +28,12 @@ import kotlin.time.Duration.Companion.minutes
 
 data class ArtworkUiState(
     val overview: ArtworkOverview = ArtworkOverview(),
-    val screen: Screen = Screen.LOADING,
+    val screen: ScreenState = ScreenState.LOADING,
     val selectedArtwork: Artwork? = null,
     val episodes: List<Episode> = emptyList(),
     val currentSeason: Int = -1,
     val showPlayer: Boolean = false
-) {
-
-    sealed class Screen {
-        data object LOADING : Screen()
-        data object ERROR : Screen()
-        data object MOVIE : Screen()
-        data object SHOW : Screen()
-    }
-
-}
+)
 
 @HiltViewModel
 class ArtworkViewModel @Inject constructor(
@@ -59,13 +51,13 @@ class ArtworkViewModel @Inject constructor(
 
     private fun getArtworks(id: Long) = viewModelScope.launch {
 
-        val (artwork, movie, episodes) = repository.getArtwork(id)
+        val (overview, movie, episodes) = repository.getArtwork(id)
 
         when {
             movie != null -> {
                 _uiState.value = ArtworkUiState(
-                    overview = artwork,
-                    screen = ArtworkUiState.Screen.MOVIE,
+                    overview = overview,
+                    screen = ScreenState.CONTENT,
                     selectedArtwork = movie
                 )
             }
@@ -76,8 +68,8 @@ class ArtworkViewModel @Inject constructor(
                     ?: episodes.first()
 
                 _uiState.value = ArtworkUiState(
-                    overview = artwork,
-                    screen = ArtworkUiState.Screen.SHOW,
+                    overview = overview,
+                    screen = ScreenState.CONTENT,
                     episodes = episodes,
                     currentSeason = currentEpisode.season,
                     selectedArtwork = currentEpisode
@@ -85,8 +77,7 @@ class ArtworkViewModel @Inject constructor(
             }
             else -> {
                 _uiState.value = ArtworkUiState(
-                    overview = artwork,
-                    screen = ArtworkUiState.Screen.ERROR,
+                    screen = ScreenState.ERROR
                 )
             }
 

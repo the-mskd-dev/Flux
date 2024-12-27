@@ -63,6 +63,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.kaem.flux.R
+import com.kaem.flux.model.ScreenState
 import com.kaem.flux.model.artwork.Artwork
 import com.kaem.flux.model.artwork.ArtworkOverview
 import com.kaem.flux.model.artwork.Episode
@@ -98,8 +99,8 @@ fun ArtworkScreen(
     ) { state ->
 
         when (state.screen) {
-            ArtworkUiState.Screen.LOADING -> Loader()
-            ArtworkUiState.Screen.ERROR -> {
+            ScreenState.LOADING -> Loader()
+            ScreenState.ERROR -> {
                 ErrorScreen(
                     message = stringResource(R.string.oups_an_error_occured),
                     onBackButtonTap = onBackButtonTap

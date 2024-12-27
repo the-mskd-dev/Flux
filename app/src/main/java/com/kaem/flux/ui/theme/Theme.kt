@@ -15,7 +15,6 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
 
 private val FluxColorScheme = darkColorScheme(
     primary = Coral, // Most important, like buttons, titles, navigation bars...

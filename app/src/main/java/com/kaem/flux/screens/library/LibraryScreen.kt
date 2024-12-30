@@ -102,7 +102,10 @@ fun LibraryScreen(
                         LibraryContent(
                             artworkOverviews = uiState.artworkOverviews,
                             lastWatchedIds = uiState.lastWatchedArtworkIds,
-                            navigateToDetails = { id -> navigateToDetails(id) }
+                            navigateToDetails = { id -> navigateToDetails(id) },
+                            navigateToCategory = {
+                                //TODO
+                            }
                         )
 
                     }
@@ -121,7 +124,8 @@ fun LibraryScreen(
 fun LibraryContent(
     artworkOverviews: List<ArtworkOverview>,
     lastWatchedIds: List<Long>,
-    navigateToDetails: (Long) -> Unit
+    navigateToDetails: (Long) -> Unit,
+    navigateToCategory: (ContentType) -> Unit
 ) {
 
     if (artworkOverviews.isEmpty()) {
@@ -145,7 +149,8 @@ fun LibraryContent(
         LibraryLists(
             overviews = artworkOverviews,
             lastWatchedIds = lastWatchedIds,
-            navigateToDetails = { navigateToDetails(it) }
+            navigateToDetails = { navigateToDetails(it) },
+            navigateToCategory = navigateToCategory
         )
 
     }
@@ -157,6 +162,7 @@ fun LibraryLists(
     overviews: List<ArtworkOverview>,
     lastWatchedIds: List<Long>,
     navigateToDetails: (Long) -> Unit,
+    navigateToCategory: (ContentType) -> Unit
 ) {
 
     Column(
@@ -177,13 +183,15 @@ fun LibraryLists(
         ArtworkList(
             name = stringResource(id = R.string.shows),
             artworkOverviews = overviews.filter { it.type == ContentType.SHOW },
-            navigateToDetails = navigateToDetails
+            navigateToDetails = navigateToDetails,
+            navigateToCategory = { navigateToCategory(ContentType.SHOW) }
         )
 
         ArtworkList(
             name = stringResource(id = R.string.movies),
             artworkOverviews = overviews.filter { it.type == ContentType.MOVIE },
-            navigateToDetails = navigateToDetails
+            navigateToDetails = navigateToDetails,
+            navigateToCategory = { navigateToCategory(ContentType.MOVIE) }
         )
 
     }
@@ -195,7 +203,8 @@ fun ArtworkList(
     name: String? = null,
     largeArtwork: Boolean = false,
     artworkOverviews: List<ArtworkOverview>,
-    navigateToDetails: (Long) -> Unit
+    navigateToDetails: (Long) -> Unit,
+    navigateToCategory: () -> Unit = {}
 ) {
 
     if (artworkOverviews.isEmpty())
@@ -208,7 +217,9 @@ fun ArtworkList(
 
         name?.let {
             Text(
-                modifier = Modifier.padding(start = FluxSpace.MEDIUM, top = FluxSpace.LARGE),
+                modifier = Modifier
+                    .clickable { navigateToCategory() }
+                    .padding(start = FluxSpace.MEDIUM, top = FluxSpace.LARGE),
                 text = name,
                 color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FluxWeight.BOLD,

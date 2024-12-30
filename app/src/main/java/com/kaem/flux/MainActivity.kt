@@ -6,8 +6,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
@@ -22,7 +20,6 @@ import com.kaem.flux.screens.artwork.ArtworkScreen
 import com.kaem.flux.screens.category.CategoryScreen
 import com.kaem.flux.screens.home.HomeScreen
 import com.kaem.flux.ui.theme.FluxTheme
-import com.kaem.flux.utils.Constants
 import com.kaem.flux.utils.composableWithSlideTransition
 import dagger.hilt.android.AndroidEntryPoint
 

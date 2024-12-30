@@ -9,7 +9,6 @@ import android.util.Log
 import com.kaem.flux.model.FileSource
 import com.kaem.flux.model.UserFile
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 

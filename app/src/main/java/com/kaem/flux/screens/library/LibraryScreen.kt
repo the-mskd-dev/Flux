@@ -208,7 +208,7 @@ fun ArtworkList(
 
         name?.let {
             Text(
-                modifier = Modifier.padding(start = FluxSpace.MEDIUM),
+                modifier = Modifier.padding(start = FluxSpace.MEDIUM, top = FluxSpace.LARGE),
                 text = name,
                 color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FluxWeight.BOLD,

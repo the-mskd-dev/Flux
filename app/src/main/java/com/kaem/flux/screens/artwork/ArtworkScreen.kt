@@ -104,7 +104,7 @@ fun ArtworkScreen(
 
     ArtworkStatusDialog(
         showStatusDialog = uiState.showStatusDialog,
-        onDismiss = { viewModel.showStatusDialog(false) },
+        onDismiss = { viewModel.changeWatchStatus(checkPrevious = false) },
         onValidate = { viewModel.changeWatchStatusForEpisodeAndPrevious() }
     )
 

@@ -19,9 +19,11 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.kaem.flux.screens.artwork.ArtworkScreen
+import com.kaem.flux.screens.category.CategoryScreen
 import com.kaem.flux.screens.home.HomeScreen
 import com.kaem.flux.ui.theme.FluxTheme
 import com.kaem.flux.utils.Constants
+import com.kaem.flux.utils.composableWithSlideTransition
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -53,37 +55,18 @@ class MainActivity : ComponentActivity() {
                                 navController.navigate(
                                     route = "artwork/$it"
                                 )
+                            },
+                            navigateToCategory = {
+                                navController.navigate(
+                                    route = "category/${it.name}"
+                                )
                             }
                         )
                     }
 
-                    composable(
+                    composableWithSlideTransition(
                         "artwork/{artworkId}",
                         arguments = listOf(navArgument("artworkId") { type = NavType.LongType }),
-                        enterTransition = {
-                            slideIntoContainer(
-                                AnimatedContentTransitionScope.SlideDirection.Left,
-                                animationSpec = tween(Constants.Behaviour.TRANSITION_SPEED)
-                            )
-                        },
-                        exitTransition = {
-                            slideOutOfContainer(
-                                AnimatedContentTransitionScope.SlideDirection.Left,
-                                animationSpec = tween(Constants.Behaviour.TRANSITION_SPEED)
-                            )
-                        },
-                        popEnterTransition = {
-                            slideIntoContainer(
-                                AnimatedContentTransitionScope.SlideDirection.Right,
-                                animationSpec = tween(Constants.Behaviour.TRANSITION_SPEED)
-                            )
-                        },
-                        popExitTransition = {
-                            slideOutOfContainer(
-                                AnimatedContentTransitionScope.SlideDirection.Right,
-                                animationSpec = tween(Constants.Behaviour.TRANSITION_SPEED)
-                            )
-                        }
                     ) {
                         ArtworkScreen(
                             onBackButtonTap = {
@@ -93,6 +76,13 @@ class MainActivity : ComponentActivity() {
 
                             }
                         )
+                    }
+
+                    composableWithSlideTransition(
+                        "category/{contentType}",
+                        arguments = listOf(navArgument("contentType") { type = NavType.StringType }),
+                    ) {
+                        CategoryScreen()
                     }
 
                 }

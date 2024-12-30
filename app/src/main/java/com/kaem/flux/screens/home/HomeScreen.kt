@@ -54,6 +54,7 @@ import com.kaem.flux.utils.Constants
 @Composable
 fun HomeScreen(
     navigateToDetails: (Long) -> Unit,
+    navigateToCategory: (ContentType) -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
 
@@ -104,9 +105,7 @@ fun HomeScreen(
                             overviews = uiState.overviews,
                             lastWatchedIds = uiState.lastWatchedArtworkIds,
                             navigateToDetails = { id -> navigateToDetails(id) },
-                            navigateToCategory = {
-                                //TODO
-                            }
+                            navigateToCategory = { type -> navigateToCategory(type) }
                         )
 
                     }

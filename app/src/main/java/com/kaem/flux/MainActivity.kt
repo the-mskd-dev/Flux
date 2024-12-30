@@ -11,22 +11,19 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavType
-import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.kaem.flux.screens.artwork.ArtworkScreen
 import com.kaem.flux.screens.category.CategoryScreen
 import com.kaem.flux.screens.home.HomeScreen
 import com.kaem.flux.ui.theme.FluxTheme
-import com.kaem.flux.utils.composableWithSlideTransition
+import com.kaem.flux.utils.FluxNavHost
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    @OptIn(ExperimentalPermissionsApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -38,7 +35,7 @@ class MainActivity : ComponentActivity() {
 
                 val navController = rememberNavController()
                 
-                NavHost(
+                FluxNavHost(
                     modifier = Modifier
                         .fillMaxSize()
                         .background(color = MaterialTheme.colorScheme.background),
@@ -61,7 +58,7 @@ class MainActivity : ComponentActivity() {
                         )
                     }
 
-                    composableWithSlideTransition(
+                    composable(
                         "artwork/{artworkId}",
                         arguments = listOf(navArgument("artworkId") { type = NavType.LongType }),
                     ) {
@@ -75,7 +72,7 @@ class MainActivity : ComponentActivity() {
                         )
                     }
 
-                    composableWithSlideTransition(
+                    composable(
                         "category/{contentType}",
                         arguments = listOf(navArgument("contentType") { type = NavType.StringType }),
                     ) {

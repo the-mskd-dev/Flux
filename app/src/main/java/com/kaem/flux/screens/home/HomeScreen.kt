@@ -30,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -221,11 +222,13 @@ fun ArtworkList(
             Text(
                 modifier = Modifier
                     .clickable { navigateToCategory() }
+                    .fillMaxWidth()
                     .padding(start = FluxSpace.MEDIUM, top = FluxSpace.LARGE),
                 text = name,
                 color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FluxWeight.BOLD,
                 fontSize = FluxFontSize.LARGE,
+                textAlign = TextAlign.Start
             )
         }
 

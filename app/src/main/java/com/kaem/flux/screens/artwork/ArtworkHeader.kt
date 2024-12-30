@@ -211,7 +211,7 @@ val ArtworkHeaderConstraintSet = ConstraintSet {
 
     constrain(back) {
         top.linkTo(parent.top)
-        start.linkTo(parent.start)
+        start.linkTo(parent.start, FluxSpace.MEDIUM)
     }
 
     constrain(title) {

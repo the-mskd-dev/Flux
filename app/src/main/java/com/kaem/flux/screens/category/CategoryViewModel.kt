@@ -19,15 +19,10 @@ class CategoryViewModel @Inject constructor(
     repository: LibraryRepository
 ) : ViewModel() {
 
-    private val contentType: ContentType = ContentType.valueOf(checkNotNull(savedStateHandle["contentType"]))
+    val contentType: ContentType = ContentType.valueOf(checkNotNull(savedStateHandle["contentType"]))
+    val overviews = repository.libraryFlow.value.artworkOverviews
+        .filter { it.type == contentType }
+        .sortedBy { it.title }
 
-    private val _overviews = MutableStateFlow(emptyList<ArtworkOverview>())
-    val overviews : StateFlow<List<ArtworkOverview>> = _overviews.asStateFlow()
-
-    init {
-
-        _overviews.value = repository.libraryFlow.value.artworkOverviews.filter { it.type == contentType }
-
-    }
 
 }

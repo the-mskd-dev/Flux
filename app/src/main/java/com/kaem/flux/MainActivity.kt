@@ -82,7 +82,19 @@ class MainActivity : ComponentActivity() {
                         "category/{contentType}",
                         arguments = listOf(navArgument("contentType") { type = NavType.StringType }),
                     ) {
-                        CategoryScreen()
+                        CategoryScreen(
+                            onBackButtonTap = {
+
+                                if (navController.currentBackStackEntry != null)
+                                    navController.popBackStack()
+
+                            },
+                            navigateToDetails = {
+                                navController.navigate(
+                                    route = "artwork/$it"
+                                )
+                            }
+                        )
                     }
 
                 }

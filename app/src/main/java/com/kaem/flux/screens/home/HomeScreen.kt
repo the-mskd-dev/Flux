@@ -181,14 +181,14 @@ fun HomeLists(
         )
 
         ArtworkList(
-            name = stringResource(id = R.string.shows),
+            name = stringResource(id = ContentType.SHOW.stringResource),
             overviews = overviews.filter { it.type == ContentType.SHOW },
             navigateToDetails = navigateToDetails,
             navigateToCategory = { navigateToCategory(ContentType.SHOW) }
         )
 
         ArtworkList(
-            name = stringResource(id = R.string.movies),
+            name = stringResource(id = ContentType.MOVIE.stringResource),
             overviews = overviews.filter { it.type == ContentType.MOVIE },
             navigateToDetails = navigateToDetails,
             navigateToCategory = { navigateToCategory(ContentType.MOVIE) }
@@ -241,10 +241,10 @@ fun ArtworkList(
                 val url = if (largeArtwork) Constants.TMDB.IMAGE + it.bannerPath else Constants.TMDB.IMAGE_SMALL + it.imagePath
 
                 ArtworkItem(
-                    modifier = Modifier.clickable { navigateToDetails(it.id) },
                     width = width,
                     ratio = ratio,
                     url = url,
+                    onTap = { navigateToDetails(it.id) },
                     description = it.title
                 )
 
@@ -258,15 +258,16 @@ fun ArtworkList(
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun ArtworkItem(
-    modifier: Modifier = Modifier,
     width: Dp,
     url: String,
     ratio: Float,
+    onTap: () -> Unit,
     description: String
 ) {
 
     GlideImage(
-        modifier = modifier
+        modifier = Modifier
+            .clickable { onTap() }
             .clip(RoundedCornerShape(8.dp))
             .width(width)
             .aspectRatio(ratio),

@@ -47,8 +47,9 @@ import com.kaem.flux.screens.permissions.PermissionsScreen
 import com.kaem.flux.screens.permissions.fluxPermissionState
 import com.kaem.flux.ui.component.Loader
 import com.kaem.flux.ui.component.Placeholders
-import com.kaem.flux.ui.component.Title
+import com.kaem.flux.ui.theme.FluxFontSize
 import com.kaem.flux.ui.theme.FluxSpace
+import com.kaem.flux.ui.theme.FluxWeight
 import com.kaem.flux.utils.Constants
 
 @OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
@@ -218,10 +219,15 @@ fun ArtworkList(
         verticalArrangement = Arrangement.spacedBy(FluxSpace.MEDIUM)
     ) {
 
-        Title(
-            modifier = Modifier.padding(start = FluxSpace.MEDIUM),
-            text = name
-        )
+        name?.let {
+            Text(
+                modifier = Modifier.padding(start = FluxSpace.MEDIUM),
+                text = name,
+                color = MaterialTheme.colorScheme.onBackground,
+                fontWeight = FluxWeight.BOLD,
+                fontSize = FluxFontSize.LARGE,
+            )
+        }
 
         LazyRow(
             modifier = Modifier.fillMaxWidth(),
@@ -233,7 +239,7 @@ fun ArtworkList(
 
                 ArtworkItem(
                     modifier = Modifier.clickable { navigateToDetails(it.id) },
-                    artworkOverview = it,
+                    overview = it,
                     largeArtwork = largeArtwork
                 )
 
@@ -248,22 +254,21 @@ fun ArtworkList(
 @Composable
 fun ArtworkItem(
     modifier: Modifier = Modifier,
-    artworkOverview: ArtworkOverview,
+    overview: ArtworkOverview,
     largeArtwork: Boolean = false
 ) {
 
     val width = if (largeArtwork) 450.dp else 120.dp
     val ratio = if (largeArtwork) 1920f/1080f else 2f/3f
-    val url = if (largeArtwork) Constants.TMDB.IMAGE + artworkOverview.bannerPath else Constants.TMDB.IMAGE_SMALL + artworkOverview.imagePath
+    val url = if (largeArtwork) Constants.TMDB.IMAGE + overview.bannerPath else Constants.TMDB.IMAGE_SMALL + overview.imagePath
 
     GlideImage(
-        modifier = Modifier
-            .then(modifier)
+        modifier = modifier
             .clip(RoundedCornerShape(8.dp))
             .width(width)
             .aspectRatio(ratio),
         model = url,
-        contentDescription = artworkOverview.title,
+        contentDescription = overview.title,
         loading = Placeholders.loading
     )
 

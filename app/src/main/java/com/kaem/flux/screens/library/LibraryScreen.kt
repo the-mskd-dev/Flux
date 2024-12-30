@@ -5,14 +5,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -145,7 +142,7 @@ fun LibraryContent(
 
     } else {
 
-        LibraryGrid(
+        LibraryLists(
             overviews = artworkOverviews,
             lastWatchedIds = lastWatchedIds,
             navigateToDetails = { navigateToDetails(it) }
@@ -156,7 +153,7 @@ fun LibraryContent(
 }
 
 @Composable
-fun LibraryGrid(
+fun LibraryLists(
     overviews: List<ArtworkOverview>,
     lastWatchedIds: List<Long>,
     navigateToDetails: (Long) -> Unit,
@@ -165,15 +162,11 @@ fun LibraryGrid(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
+            .verticalScroll(rememberScrollState())
+            .systemBarsPadding()
+            .padding(bottom = FluxSpace.LARGE),
         verticalArrangement = Arrangement.spacedBy(FluxSpace.MEDIUM)
     ) {
-
-        Spacer(
-            modifier = Modifier
-                .statusBarsPadding()
-                .height(FluxSpace.MEDIUM)
-        )
 
         ArtworkList(
             artworkOverviews = lastWatchedIds.mapNotNull { overviews.find { o -> o.id == it } },
@@ -191,12 +184,6 @@ fun LibraryGrid(
             name = stringResource(id = R.string.movies),
             artworkOverviews = overviews.filter { it.type == ContentType.MOVIE },
             navigateToDetails = navigateToDetails
-        )
-
-        Spacer(
-            modifier = Modifier
-                .navigationBarsPadding()
-                .height(FluxSpace.LARGE)
         )
 
     }

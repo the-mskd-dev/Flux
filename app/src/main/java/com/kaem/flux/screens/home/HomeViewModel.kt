@@ -1,4 +1,4 @@
-package com.kaem.flux.screens.library
+package com.kaem.flux.screens.home
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -11,27 +11,26 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.days
 
-data class LibraryUiState(
+data class HomeUiState(
     val screenState: ScreenState = ScreenState.LOADING,
-    val artworkOverviews: List<ArtworkOverview> = emptyList(),
+    val overviews: List<ArtworkOverview> = emptyList(),
     val lastWatchedArtworkIds: List<Long> = emptyList(),
     val isSyncing: Boolean = true
 )
 
 @HiltViewModel
-class LibraryViewModel @Inject constructor(
+class HomeViewModel @Inject constructor(
     private val repository: LibraryRepository,
     private val dataStoreRepository: DataStoreRepository
 ): ViewModel() {
 
     private var lastSyncTime: Long = dataStoreRepository.getSyncTime()
 
-    private val _uiState = MutableStateFlow(LibraryUiState())
+    private val _uiState = MutableStateFlow(HomeUiState())
     val uiState = _uiState.asStateFlow()
 
     init {
@@ -48,9 +47,9 @@ class LibraryViewModel @Inject constructor(
                     else -> ScreenState.CONTENT
                 }
 
-                LibraryUiState(
+                HomeUiState(
                     screenState = screenState,
-                    artworkOverviews = libraryContent.artworkOverviews,
+                    overviews = libraryContent.artworkOverviews,
                     lastWatchedArtworkIds = preferences.lastWatchedIds,
                     isSyncing = libraryContent.isLoading
                 )

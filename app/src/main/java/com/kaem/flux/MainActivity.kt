@@ -11,20 +11,15 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.isGranted
 import com.kaem.flux.screens.artwork.ArtworkScreen
-import com.kaem.flux.screens.library.LibraryScreen
-import com.kaem.flux.screens.permissions.PermissionsScreen
-import com.kaem.flux.screens.permissions.fluxPermissionState
+import com.kaem.flux.screens.home.HomeScreen
 import com.kaem.flux.ui.theme.FluxTheme
 import com.kaem.flux.utils.Constants
 import dagger.hilt.android.AndroidEntryPoint
@@ -53,7 +48,7 @@ class MainActivity : ComponentActivity() {
                 ) {
 
                     composable("library") {
-                        LibraryScreen(
+                        HomeScreen(
                             navigateToDetails = {
                                 navController.navigate(
                                     route = "artwork/$it"

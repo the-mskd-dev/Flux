@@ -1,4 +1,4 @@
-package com.kaem.flux.screens.library
+package com.kaem.flux.screens.home
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.clickable
@@ -51,9 +51,9 @@ import com.kaem.flux.utils.Constants
 
 @OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun LibraryScreen(
+fun HomeScreen(
     navigateToDetails: (Long) -> Unit,
-    viewModel: LibraryViewModel = hiltViewModel()
+    viewModel: HomeViewModel = hiltViewModel()
 ) {
 
     val uiState by viewModel.uiState.collectAsState()
@@ -99,8 +99,8 @@ fun LibraryScreen(
                         onRefresh = { viewModel.getLibrary(manualSync = true) }
                     ) {
 
-                        LibraryContent(
-                            artworkOverviews = uiState.artworkOverviews,
+                        HomeContent(
+                            overviews = uiState.overviews,
                             lastWatchedIds = uiState.lastWatchedArtworkIds,
                             navigateToDetails = { id -> navigateToDetails(id) },
                             navigateToCategory = {
@@ -121,14 +121,14 @@ fun LibraryScreen(
 }
 
 @Composable
-fun LibraryContent(
-    artworkOverviews: List<ArtworkOverview>,
+fun HomeContent(
+    overviews: List<ArtworkOverview>,
     lastWatchedIds: List<Long>,
     navigateToDetails: (Long) -> Unit,
     navigateToCategory: (ContentType) -> Unit
 ) {
 
-    if (artworkOverviews.isEmpty()) {
+    if (overviews.isEmpty()) {
 
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -146,8 +146,8 @@ fun LibraryContent(
 
     } else {
 
-        LibraryLists(
-            overviews = artworkOverviews,
+        HomeLists(
+            overviews = overviews,
             lastWatchedIds = lastWatchedIds,
             navigateToDetails = { navigateToDetails(it) },
             navigateToCategory = navigateToCategory
@@ -158,7 +158,7 @@ fun LibraryContent(
 }
 
 @Composable
-fun LibraryLists(
+fun HomeLists(
     overviews: List<ArtworkOverview>,
     lastWatchedIds: List<Long>,
     navigateToDetails: (Long) -> Unit,
@@ -175,21 +175,21 @@ fun LibraryLists(
     ) {
 
         ArtworkList(
-            artworkOverviews = lastWatchedIds.mapNotNull { overviews.find { o -> o.id == it } },
+            overviews = lastWatchedIds.mapNotNull { overviews.find { o -> o.id == it } },
             largeArtwork = true,
             navigateToDetails = navigateToDetails
         )
 
         ArtworkList(
             name = stringResource(id = R.string.shows),
-            artworkOverviews = overviews.filter { it.type == ContentType.SHOW },
+            overviews = overviews.filter { it.type == ContentType.SHOW },
             navigateToDetails = navigateToDetails,
             navigateToCategory = { navigateToCategory(ContentType.SHOW) }
         )
 
         ArtworkList(
             name = stringResource(id = R.string.movies),
-            artworkOverviews = overviews.filter { it.type == ContentType.MOVIE },
+            overviews = overviews.filter { it.type == ContentType.MOVIE },
             navigateToDetails = navigateToDetails,
             navigateToCategory = { navigateToCategory(ContentType.MOVIE) }
         )
@@ -202,12 +202,12 @@ fun LibraryLists(
 fun ArtworkList(
     name: String? = null,
     largeArtwork: Boolean = false,
-    artworkOverviews: List<ArtworkOverview>,
+    overviews: List<ArtworkOverview>,
     navigateToDetails: (Long) -> Unit,
     navigateToCategory: () -> Unit = {}
 ) {
 
-    if (artworkOverviews.isEmpty())
+    if (overviews.isEmpty())
         return
 
     Column(
@@ -233,7 +233,7 @@ fun ArtworkList(
             horizontalArrangement = Arrangement.spacedBy(FluxSpace.SMALL)
         ) {
 
-            items(artworkOverviews, key = { it.id }) {
+            items(overviews, key = { it.id }) {
 
                 ArtworkItem(
                     modifier = Modifier.clickable { navigateToDetails(it.id) },

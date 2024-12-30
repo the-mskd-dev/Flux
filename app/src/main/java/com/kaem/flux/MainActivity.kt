@@ -18,6 +18,7 @@ import com.kaem.flux.screens.artwork.ArtworkScreen
 import com.kaem.flux.screens.category.CategoryScreen
 import com.kaem.flux.screens.home.HomeScreen
 import com.kaem.flux.ui.theme.FluxTheme
+import com.kaem.flux.utils.Constants
 import com.kaem.flux.utils.FluxNavHost
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -40,26 +41,26 @@ class MainActivity : ComponentActivity() {
                         .fillMaxSize()
                         .background(color = MaterialTheme.colorScheme.background),
                     navController = navController,
-                    startDestination = "library"
+                    startDestination = Constants.Navigation.LIBRARY
                 ) {
 
-                    composable("library") {
+                    composable(Constants.Navigation.LIBRARY) {
                         HomeScreen(
                             navigateToDetails = {
                                 navController.navigate(
-                                    route = "artwork/$it"
+                                    route = "${Constants.Navigation.ARTWORK}/$it"
                                 )
                             },
                             navigateToCategory = {
                                 navController.navigate(
-                                    route = "category/${it.name}"
+                                    route = "${Constants.Navigation.CATEGORY}/${it.name}"
                                 )
                             }
                         )
                     }
 
                     composable(
-                        "artwork/{artworkId}",
+                        "${Constants.Navigation.ARTWORK}/{artworkId}",
                         arguments = listOf(navArgument("artworkId") { type = NavType.LongType }),
                     ) {
                         ArtworkScreen(
@@ -73,7 +74,7 @@ class MainActivity : ComponentActivity() {
                     }
 
                     composable(
-                        "category/{contentType}",
+                        "${Constants.Navigation.CATEGORY}/{contentType}",
                         arguments = listOf(navArgument("contentType") { type = NavType.StringType }),
                     ) {
                         CategoryScreen(
@@ -85,7 +86,7 @@ class MainActivity : ComponentActivity() {
                             },
                             navigateToDetails = {
                                 navController.navigate(
-                                    route = "artwork/$it"
+                                    route = "${Constants.Navigation.ARTWORK}/$it"
                                 )
                             }
                         )

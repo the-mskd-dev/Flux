@@ -30,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
@@ -210,6 +211,9 @@ fun ArtworkList(
     if (overviews.isEmpty())
         return
 
+    val width = if (largeArtwork) 450.dp else 120.dp
+    val ratio = if (largeArtwork) 1920f/1080f else 2f/3f
+
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(FluxSpace.MEDIUM)
@@ -235,10 +239,14 @@ fun ArtworkList(
 
             items(overviews, key = { it.id }) {
 
+                val url = if (largeArtwork) Constants.TMDB.IMAGE + it.bannerPath else Constants.TMDB.IMAGE_SMALL + it.imagePath
+
                 ArtworkItem(
                     modifier = Modifier.clickable { navigateToDetails(it.id) },
-                    overview = it,
-                    largeArtwork = largeArtwork
+                    width = width,
+                    ratio = ratio,
+                    url = url,
+                    description = it.title
                 )
 
             }
@@ -252,13 +260,11 @@ fun ArtworkList(
 @Composable
 fun ArtworkItem(
     modifier: Modifier = Modifier,
-    overview: ArtworkOverview,
-    largeArtwork: Boolean = false
+    width: Dp,
+    url: String,
+    ratio: Float,
+    description: String
 ) {
-
-    val width = if (largeArtwork) 450.dp else 120.dp
-    val ratio = if (largeArtwork) 1920f/1080f else 2f/3f
-    val url = if (largeArtwork) Constants.TMDB.IMAGE + overview.bannerPath else Constants.TMDB.IMAGE_SMALL + overview.imagePath
 
     GlideImage(
         modifier = modifier
@@ -266,7 +272,7 @@ fun ArtworkItem(
             .width(width)
             .aspectRatio(ratio),
         model = url,
-        contentDescription = overview.title,
+        contentDescription = description,
         loading = Placeholders.loading
     )
 

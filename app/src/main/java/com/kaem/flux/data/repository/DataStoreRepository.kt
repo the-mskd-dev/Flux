@@ -13,9 +13,10 @@ import okhttp3.internal.toLongOrDefault
 import javax.inject.Inject
 
 
-data class LibraryPreferences(
+data class FluxDataStore(
     val lastWatchedIds: List<Long> = listOf(),
-    //val lastSyncTime: Long = Long.MIN_VALUE
+    val playerBackwardValue: Int = 10,
+    val playerForwardValue: Int = 10,
 )
 
 
@@ -24,45 +25,88 @@ class DataStoreRepository @Inject constructor(
     private val gson: Gson
 ) {
 
-    private object PreferencesKeys {
+    //region Keys
+
+    private object Keys {
         val LAST_WATCHED_IDS = stringPreferencesKey("last_watched_ids")
         val LAST_SYNC_TIME = stringPreferencesKey("last_sync_time")
+        val PLAYER_BACKWARD = stringPreferencesKey("player_backward")
+        val PLAYER_FORWARD = stringPreferencesKey("player_forward")
     }
 
-    val preferencesFlow: Flow<LibraryPreferences> = dataStore.data.map { preferences ->
+    //endregion
 
-        val lastWatchedIdsString = preferences[PreferencesKeys.LAST_WATCHED_IDS] ?: "[]"
+    //region Flow
+
+    val preferencesFlow: Flow<FluxDataStore> = dataStore.data.map { preferences ->
+
+        val lastWatchedIdsString = preferences[Keys.LAST_WATCHED_IDS] ?: "[]"
         val lastWatchedIds = gson.fromJson<List<Double>>(lastWatchedIdsString, List::class.java)
 
-        LibraryPreferences(lastWatchedIds = lastWatchedIds.map { it.toLong() },)
+        val playerBackwardValue = preferences[Keys.PLAYER_BACKWARD]?.toInt() ?: 10
+        val playerForwardValue = preferences[Keys.PLAYER_FORWARD]?.toInt() ?: 10
+
+        FluxDataStore(
+            lastWatchedIds = lastWatchedIds.map { it.toLong() },
+            playerBackwardValue = playerBackwardValue,
+            playerForwardValue = playerForwardValue
+        )
     }
+
+    //endregion
+
+    //region WatchedArtwork
 
     suspend fun addWatchedArtwork(id: Long) {
         dataStore.edit { preferences ->
 
-            val lastWatchedIdsString = preferences[PreferencesKeys.LAST_WATCHED_IDS] ?: "[]"
+            val lastWatchedIdsString = preferences[Keys.LAST_WATCHED_IDS] ?: "[]"
             val lastWatchedIds: ArrayList<Long> = gson.fromJson<ArrayList<Long>>(lastWatchedIdsString, ArrayList::class.java)
 
             if (lastWatchedIds.none { it == id }) {
 
                 lastWatchedIds.add(0, id)
 
-                preferences[PreferencesKeys.LAST_WATCHED_IDS] = gson.toJson(lastWatchedIds.take(4))
+                preferences[Keys.LAST_WATCHED_IDS] = gson.toJson(lastWatchedIds.take(4))
             }
 
         }
     }
 
+    //endregion
+
+    //region Sync time
+
     fun getSyncTime() : Long = runBlocking {
         dataStore.data.map {
-            (it[PreferencesKeys.LAST_SYNC_TIME] ?: "0").toLongOrDefault(0)
+            (it[Keys.LAST_SYNC_TIME] ?: "0").toLongOrDefault(0)
         }.first()
     }
 
     suspend fun saveSyncTime(syncTime: Long) {
         dataStore.edit { preferences ->
-            preferences[PreferencesKeys.LAST_SYNC_TIME] = syncTime.toString()
+            preferences[Keys.LAST_SYNC_TIME] = syncTime.toString()
         }
     }
+
+    //endregion
+
+    //region Player backward/forward
+
+
+    suspend fun setPlayerBackwardValue(value: Int) {
+        dataStore.edit { preferences ->
+            preferences[Keys.PLAYER_BACKWARD] = value.toString()
+        }
+    }
+
+
+    suspend fun setPlayerForwardValue(value: Int) {
+        dataStore.edit { preferences ->
+            preferences[Keys.PLAYER_FORWARD] = value.toString()
+        }
+    }
+
+    //endregion
 
 }

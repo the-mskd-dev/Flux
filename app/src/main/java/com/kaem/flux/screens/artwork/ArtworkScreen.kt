@@ -129,6 +129,7 @@ fun ArtworkContent(
         },
         label = "zoomEffect"
     )
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()

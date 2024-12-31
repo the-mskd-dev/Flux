@@ -25,7 +25,7 @@ object FluxSpace {
 }
 
 object FluxWeight {
-    val LIGHT = FontWeight.W300
+    val LIGHT = FontWeight.W400
     val MEDIUM = FontWeight.W500
     val BOLD = FontWeight.W700
 }

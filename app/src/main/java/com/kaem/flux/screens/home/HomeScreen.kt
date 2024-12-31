@@ -55,6 +55,7 @@ import com.kaem.flux.model.artwork.ContentType
 import com.kaem.flux.screens.permissions.PermissionsScreen
 import com.kaem.flux.screens.permissions.fluxPermissionState
 import com.kaem.flux.ui.component.Loader
+import com.kaem.flux.ui.component.MediumText
 import com.kaem.flux.ui.component.Placeholders
 import com.kaem.flux.ui.theme.FluxFontSize
 import com.kaem.flux.ui.theme.FluxSpace
@@ -291,19 +292,13 @@ fun ArtworkList(
         verticalArrangement = Arrangement.spacedBy(FluxSpace.MEDIUM)
     ) {
 
-        name?.let {
-            Text(
-                modifier = Modifier
-                    .clickable { navigateToCategory() }
-                    .fillMaxWidth()
-                    .padding(start = FluxSpace.MEDIUM, top = FluxSpace.LARGE),
-                text = name,
-                color = MaterialTheme.colorScheme.onBackground,
-                fontWeight = FluxWeight.BOLD,
-                fontSize = FluxFontSize.LARGE,
-                textAlign = TextAlign.Start
-            )
-        }
+        MediumText(
+            modifier = Modifier
+                .clickable { navigateToCategory() }
+                .fillMaxWidth()
+                .padding(start = FluxSpace.MEDIUM, top = FluxSpace.LARGE),
+            text = name
+        )
 
         LazyRow(
             modifier = Modifier.fillMaxWidth(),

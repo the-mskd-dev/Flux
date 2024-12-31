@@ -1,14 +1,17 @@
 package com.kaem.flux.screens.home
 
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
@@ -16,7 +19,13 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Search
+import androidx.compose.material.icons.rounded.Settings
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
@@ -29,6 +38,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
@@ -38,6 +48,7 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
+import com.kaem.flux.R
 import com.kaem.flux.model.ScreenState
 import com.kaem.flux.model.artwork.ArtworkOverview
 import com.kaem.flux.model.artwork.ContentType
@@ -55,6 +66,7 @@ import com.kaem.flux.utils.Constants
 fun HomeScreen(
     navigateToDetails: (Long) -> Unit,
     navigateToCategory: (ContentType) -> Unit,
+    navigateToSearch: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
 
@@ -82,33 +94,16 @@ fun HomeScreen(
                 ScreenState.LOADING -> Loader()
                 else -> {
 
-                    val state = rememberPullToRefreshState()
-
-                    PullToRefreshBox(
-                        modifier = Modifier.fillMaxSize(),
-                        state = state,
-                        contentAlignment = Alignment.TopCenter,
-                        isRefreshing = uiState.isSyncing,
-                        indicator = {
-                            PullToRefreshDefaults.Indicator(
-                                modifier = Modifier.align(Alignment.TopCenter),
-                                isRefreshing = uiState.isSyncing,
-                                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                                color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                state = state
-                            )
-                        },
-                        onRefresh = { viewModel.getLibrary(manualSync = true) }
-                    ) {
-
-                        HomeContent(
-                            overviews = uiState.overviews,
-                            lastWatchedIds = uiState.lastWatchedArtworkIds,
-                            navigateToDetails = { id -> navigateToDetails(id) },
-                            navigateToCategory = { type -> navigateToCategory(type) }
-                        )
-
-                    }
+                    HomeContent(
+                        overviews = uiState.overviews,
+                        lastWatchedIds = uiState.lastWatchedArtworkIds,
+                        isSyncing = uiState.isSyncing,
+                        onSyncTap = { viewModel.getLibrary(manualSync = true) },
+                        navigateToDetails = { id -> navigateToDetails(id) },
+                        navigateToCategory = { type -> navigateToCategory(type) },
+                        navigateToSearch = navigateToSearch,
+                        navigateToSettings = navigateToSearch
+                    )
 
                 }
 
@@ -124,8 +119,12 @@ fun HomeScreen(
 fun HomeContent(
     overviews: List<ArtworkOverview>,
     lastWatchedIds: List<Long>,
+    isSyncing: Boolean,
+    onSyncTap: () -> Unit,
     navigateToDetails: (Long) -> Unit,
-    navigateToCategory: (ContentType) -> Unit
+    navigateToCategory: (ContentType) -> Unit,
+    navigateToSearch: () -> Unit,
+    navigateToSettings: () -> Unit
 ) {
 
     if (overviews.isEmpty()) {
@@ -149,8 +148,12 @@ fun HomeContent(
         HomeLists(
             overviews = overviews,
             lastWatchedIds = lastWatchedIds,
-            navigateToDetails = { navigateToDetails(it) },
-            navigateToCategory = navigateToCategory
+            isSyncing = isSyncing,
+            onSyncTap = onSyncTap,
+            navigateToDetails = navigateToDetails,
+            navigateToCategory = navigateToCategory,
+            navigateToSearch = navigateToSearch,
+            navigateToSettings = navigateToSettings
         )
 
     }
@@ -161,8 +164,12 @@ fun HomeContent(
 fun HomeLists(
     overviews: List<ArtworkOverview>,
     lastWatchedIds: List<Long>,
+    isSyncing: Boolean,
+    onSyncTap: () -> Unit,
     navigateToDetails: (Long) -> Unit,
-    navigateToCategory: (ContentType) -> Unit
+    navigateToCategory: (ContentType) -> Unit,
+    navigateToSearch: () -> Unit,
+    navigateToSettings: () -> Unit
 ) {
 
     Column(
@@ -173,6 +180,13 @@ fun HomeLists(
             .padding(bottom = FluxSpace.LARGE),
         verticalArrangement = Arrangement.spacedBy(FluxSpace.MEDIUM)
     ) {
+
+        HomeTopButtons(
+            isSyncing = isSyncing,
+            onSyncTap = onSyncTap,
+            navigateToSearch = navigateToSearch,
+            navigateToSettings = navigateToSettings
+        )
 
         ArtworkList(
             overviews = lastWatchedIds.mapNotNull { overviews.find { o -> o.id == it } },
@@ -193,6 +207,64 @@ fun HomeLists(
             navigateToDetails = navigateToDetails,
             navigateToCategory = { navigateToCategory(ContentType.MOVIE) }
         )
+
+    }
+
+}
+
+@Composable
+fun HomeTopButtons(
+    isSyncing: Boolean,
+    onSyncTap: () -> Unit,
+    navigateToSearch: () -> Unit,
+    navigateToSettings: () -> Unit
+) {
+
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(FluxSpace.EXTRA_SMALL, Alignment.End),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+
+        Crossfade(
+            targetState = isSyncing,
+            label = "Refresh indicator"
+        ) { syncing ->
+            if (syncing) {
+                IconButton(onClick = {}) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(24.dp),
+                        strokeWidth = 2.5.dp,
+                        color = MaterialTheme.colorScheme.onBackground,
+                    )
+                }
+
+            } else {
+                IconButton(onClick = onSyncTap) {
+                    Icon(
+                        painter = painterResource(R.drawable.sync),
+                        tint = MaterialTheme.colorScheme.onBackground,
+                        contentDescription = "Sync button"
+                    )
+                }
+            }
+        }
+
+        IconButton(onClick = navigateToSearch) {
+            Icon(
+                imageVector = Icons.Rounded.Search,
+                tint = MaterialTheme.colorScheme.onBackground,
+                contentDescription = "Search button"
+            )
+        }
+
+        IconButton(onClick = navigateToSettings) {
+            Icon(
+                imageVector = Icons.Rounded.Settings,
+                tint = MaterialTheme.colorScheme.onBackground,
+                contentDescription = "Settings button"
+            )
+        }
 
     }
 

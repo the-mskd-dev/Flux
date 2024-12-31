@@ -17,6 +17,7 @@ import androidx.navigation.navArgument
 import com.kaem.flux.screens.artwork.ArtworkScreen
 import com.kaem.flux.screens.category.CategoryScreen
 import com.kaem.flux.screens.home.HomeScreen
+import com.kaem.flux.screens.search.SearchScreen
 import com.kaem.flux.ui.theme.FluxTheme
 import com.kaem.flux.utils.Constants
 import com.kaem.flux.utils.FluxNavHost
@@ -55,6 +56,11 @@ class MainActivity : ComponentActivity() {
                                 navController.navigate(
                                     route = "${Constants.Navigation.CATEGORY}/${it.name}"
                                 )
+                            },
+                            navigateToSearch = {
+                                navController.navigate(
+                                    route = Constants.Navigation.SEARCH
+                                )
                             }
                         )
                     }
@@ -64,12 +70,7 @@ class MainActivity : ComponentActivity() {
                         arguments = listOf(navArgument("artworkId") { type = NavType.LongType }),
                     ) {
                         ArtworkScreen(
-                            onBackButtonTap = {
-
-                                if (navController.currentBackStackEntry != null)
-                                    navController.popBackStack()
-
-                            }
+                            onBackButtonTap = { navController.popBackStack() }
                         )
                     }
 
@@ -78,17 +79,18 @@ class MainActivity : ComponentActivity() {
                         arguments = listOf(navArgument("contentType") { type = NavType.StringType }),
                     ) {
                         CategoryScreen(
-                            onBackButtonTap = {
-
-                                if (navController.currentBackStackEntry != null)
-                                    navController.popBackStack()
-
-                            },
+                            onBackButtonTap = { navController.popBackStack() },
                             navigateToDetails = {
                                 navController.navigate(
                                     route = "${Constants.Navigation.ARTWORK}/$it"
                                 )
                             }
+                        )
+                    }
+
+                    composable(Constants.Navigation.SEARCH) {
+                        SearchScreen(
+                            onBackButtonTap = { navController.popBackStack() }
                         )
                     }
 

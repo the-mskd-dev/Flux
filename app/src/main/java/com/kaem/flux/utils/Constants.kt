@@ -16,6 +16,7 @@ object Constants {
         const val LIBRARY = "library"
         const val CATEGORY = "category"
         const val ARTWORK = "artwork"
+        const val SEARCH = "search"
     }
 
     object TMDB {

@@ -1,9 +1,6 @@
 package com.kaem.flux.di
 
 import android.content.Context
-import androidx.room.Room
-import com.google.gson.Gson
-import com.kaem.flux.data.ddb.DatabaseManager
 import com.kaem.flux.data.ddb.FluxDao
 import com.kaem.flux.data.ddb.FluxDatabase
 import dagger.Module
@@ -22,13 +19,7 @@ object DatabaseModule {
     fun provideDatabase(
         @ApplicationContext context: Context
     ) : FluxDatabase {
-
-        return Room.databaseBuilder(
-            context = context,
-            klass = FluxDatabase::class.java,
-            name = "fluxDatabase"
-        ).build()
-
+        return FluxDatabase.getInstance(context)
     }
 
     @Provides
@@ -37,12 +28,5 @@ object DatabaseModule {
         return fluxDatabase.fluxDao()
     }
 
-    @Provides
-    @Singleton
-    fun provideDatabaseManager(gson: Gson, fluxDao: FluxDao) : DatabaseManager {
-        return DatabaseManager(
-            fluxDao = fluxDao
-        )
-    }
 
 }

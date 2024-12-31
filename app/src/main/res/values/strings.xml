@@ -20,4 +20,6 @@
     <string name="summary">Résumé</string>
     <string name="no">Non</string>
     <string name="yes">Oui</string>
+    <string name="rate">Note : %1$s/10</string>
+    <string name="enter_search">Rechercher…</string>
 </resources>

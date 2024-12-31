@@ -88,6 +88,7 @@ fun ArtworkSeasonsTabs(
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun EpisodeItem(
+    modifier: Modifier = Modifier,
     episode: Episode,
     isFirst: Boolean,
     onEpisodeTap: () -> Unit
@@ -100,7 +101,7 @@ fun EpisodeItem(
     }
 
     ConstraintLayout(
-        modifier = Modifier
+        modifier = modifier
             .clickable { onEpisodeTap() }
             .animateContentSize()
             .fillMaxWidth()

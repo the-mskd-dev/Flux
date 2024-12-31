@@ -91,7 +91,6 @@ fun BackButton(
         modifier = modifier
             .statusBarsPadding()
             .clickable { onTap() }
-            .padding(start = FluxSpace.MEDIUM)
             .size(50.dp)
             .clip(shape = CircleShape)
             .padding(FluxSpace.EXTRA_SMALL),

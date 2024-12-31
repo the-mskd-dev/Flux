@@ -22,7 +22,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.time.Duration.Companion.minutes
 
 
 data class ArtworkUiState(
@@ -109,14 +108,15 @@ class ArtworkViewModel @Inject constructor(
         }
     }
 
-    fun changeWatchStatus() {
+    fun changeWatchStatus(checkPrevious: Boolean = true) {
 
         val artwork = uiState.value.selectedArtwork ?: return
 
         val newStatus = if (artwork.status != Status.WATCHED) Status.WATCHED else Status.TO_WATCH
 
         if (
-            newStatus == Status.WATCHED
+            checkPrevious
+            && newStatus == Status.WATCHED
             && artwork is Episode
             && _uiState.value.episodes.getPreviousEpisodesFor(artwork).any { it.status != Status.WATCHED }
         ) {
@@ -132,7 +132,10 @@ class ArtworkViewModel @Inject constructor(
                     currentTime = 0L
                 )
                 _uiState.update { currentState ->
-                    currentState.copy(selectedArtwork = movie)
+                    currentState.copy(
+                        selectedArtwork = movie,
+                        showStatusDialog = false
+                    )
                 }
 
                 // Save status in DB
@@ -154,7 +157,8 @@ class ArtworkViewModel @Inject constructor(
                 _uiState.update { currentState ->
                     currentState.copy(
                         selectedArtwork = episode,
-                        episodes = episodes
+                        episodes = episodes,
+                        showStatusDialog = false
                     )
                 }
 

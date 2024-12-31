@@ -15,10 +15,14 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.kaem.flux.screens.home.ArtworkItem
 import com.kaem.flux.ui.component.BackButton
 import com.kaem.flux.ui.theme.FluxFontSize
@@ -28,8 +32,11 @@ import com.kaem.flux.utils.Constants
 
 @Composable
 fun SearchScreen(
-    onBackButtonTap: () -> Unit
+    onBackButtonTap: () -> Unit,
+    viewModel: SearchViewModel = hiltViewModel()
 ) {
+
+    val state by viewModel.uiState.collectAsState()
 
     LazyVerticalGrid(
         modifier = Modifier
@@ -64,25 +71,40 @@ fun SearchScreen(
 
         }
 
-//        items(items = viewModel.overviews) { overview ->
-//
-//            BoxWithConstraints(
-//                modifier = Modifier.fillMaxWidth(),
-//                contentAlignment = Alignment.Center
-//            ) {
-//
-//                ArtworkItem(
-//                    width = maxWidth,
-//                    url = Constants.TMDB.IMAGE_SMALL + overview.imagePath,
-//                    ratio = 2f/3f,
-//                    description = overview.title,
-//                    onTap = { navigateToDetails(overview.id) }
-//                )
-//
-//            }
-//
-//
-//        }
+        item(span = { GridItemSpan(3) }) {
+
+            TextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = state.searchWord,
+                onValueChange = { viewModel.updateSearchWord(it) }
+            )
+
+        }
+
+        items(
+            items = state.overviews.filter { it.title.contains(state.searchWord, true) },
+            key = { it.id }
+        ) { overview ->
+
+            BoxWithConstraints(
+                modifier = Modifier
+                    .animateItem()
+                    .fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+
+                ArtworkItem(
+                    width = maxWidth,
+                    url = Constants.TMDB.IMAGE_SMALL + overview.imagePath,
+                    ratio = 2f/3f,
+                    description = overview.title,
+                    onTap = { /*navigateToDetails(overview.id)*/ }
+                )
+
+            }
+
+
+        }
 
         item(span = { GridItemSpan(3) }) {
             Box(modifier = Modifier.navigationBarsPadding())

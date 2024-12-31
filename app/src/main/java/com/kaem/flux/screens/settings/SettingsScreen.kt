@@ -1,13 +1,17 @@
 package com.kaem.flux.screens.settings
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,6 +29,7 @@ import com.kaem.flux.ui.theme.FluxWeight
 @Composable
 fun SettingsScreen(
     onBackButtonTap: () -> Unit,
+    viewModel: SettingsViewModel = hiltViewModel()
 ) {
 
     Column(
@@ -38,9 +43,35 @@ fun SettingsScreen(
             onBackButtonTap = onBackButtonTap
         )
 
-        (0..100).forEach {
-            Text("Settings $it")
+    }
+
+}
+
+@Composable
+fun SettingsItem(
+    text: String,
+    value: String,
+    onTap: () -> Unit
+) {
+
+    Column(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+
+            Text(
+                text = text,
+
+            )
+
         }
+
+        HorizontalDivider(modifier = Modifier.fillMaxWidth())
 
     }
 

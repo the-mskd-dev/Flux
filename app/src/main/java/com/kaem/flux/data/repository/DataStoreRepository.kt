@@ -38,7 +38,7 @@ class DataStoreRepository @Inject constructor(
 
     //region Flow
 
-    val preferencesFlow: Flow<FluxDataStore> = dataStore.data.map { preferences ->
+    val flow: Flow<FluxDataStore> = dataStore.data.map { preferences ->
 
         val lastWatchedIdsString = preferences[Keys.LAST_WATCHED_IDS] ?: "[]"
         val lastWatchedIds = gson.fromJson<List<Double>>(lastWatchedIdsString, List::class.java)

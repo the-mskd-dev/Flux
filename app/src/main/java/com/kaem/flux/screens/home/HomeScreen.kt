@@ -67,6 +67,7 @@ fun HomeScreen(
     navigateToDetails: (Long) -> Unit,
     navigateToCategory: (ContentType) -> Unit,
     navigateToSearch: () -> Unit,
+    navigateToSettings: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
 
@@ -102,7 +103,7 @@ fun HomeScreen(
                         navigateToDetails = { id -> navigateToDetails(id) },
                         navigateToCategory = { type -> navigateToCategory(type) },
                         navigateToSearch = navigateToSearch,
-                        navigateToSettings = navigateToSearch
+                        navigateToSettings = navigateToSettings
                     )
 
                 }

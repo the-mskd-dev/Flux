@@ -36,6 +36,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.kaem.flux.R
 import com.kaem.flux.screens.home.ArtworkItem
 import com.kaem.flux.ui.component.BackButton
+import com.kaem.flux.ui.component.FluxTopBar
 import com.kaem.flux.ui.theme.FluxFontSize
 import com.kaem.flux.ui.theme.FluxSpace
 import com.kaem.flux.ui.theme.FluxWeight
@@ -62,24 +63,10 @@ fun SearchScreen(
 
         item(span = { GridItemSpan(3) }) {
 
-            Box(
-                modifier = Modifier
-                    .statusBarsPadding()
-                    .fillMaxWidth(),
-                contentAlignment = Alignment.CenterStart
-            ) {
-
-                BackButton(onTap = onBackButtonTap)
-
-                Text(
-                    modifier = Modifier.align(Alignment.Center),
-                    text = stringResource(android.R.string.search_go),
-                    color = MaterialTheme.colorScheme.onBackground,
-                    fontWeight = FluxWeight.BOLD,
-                    fontSize = FluxFontSize.LARGE,
-                )
-
-            }
+            FluxTopBar(
+                text = stringResource(android.R.string.search_go),
+                onBackButtonTap = onBackButtonTap
+            )
 
         }
 

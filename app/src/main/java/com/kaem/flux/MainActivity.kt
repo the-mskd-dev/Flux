@@ -18,6 +18,7 @@ import com.kaem.flux.screens.artwork.ArtworkScreen
 import com.kaem.flux.screens.category.CategoryScreen
 import com.kaem.flux.screens.home.HomeScreen
 import com.kaem.flux.screens.search.SearchScreen
+import com.kaem.flux.screens.settings.SettingsScreen
 import com.kaem.flux.ui.theme.FluxTheme
 import com.kaem.flux.utils.Constants
 import com.kaem.flux.utils.FluxNavHost
@@ -61,6 +62,11 @@ class MainActivity : ComponentActivity() {
                                 navController.navigate(
                                     route = Constants.Navigation.SEARCH
                                 )
+                            },
+                            navigateToSettings = {
+                                navController.navigate(
+                                    route = Constants.Navigation.SETTINGS
+                                )
                             }
                         )
                     }
@@ -96,6 +102,12 @@ class MainActivity : ComponentActivity() {
                                     route = "${Constants.Navigation.ARTWORK}/$it"
                                 )
                             }
+                        )
+                    }
+
+                    composable(Constants.Navigation.SETTINGS) {
+                        SettingsScreen(
+                            onBackButtonTap = { navController.popBackStack() }
                         )
                     }
 

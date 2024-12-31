@@ -44,6 +44,7 @@ import com.kaem.flux.utils.Constants
 @Composable
 fun SearchScreen(
     onBackButtonTap: () -> Unit,
+    navigateToDetails: (Long) -> Unit,
     viewModel: SearchViewModel = hiltViewModel()
 ) {
 
@@ -126,7 +127,7 @@ fun SearchScreen(
                     url = Constants.TMDB.IMAGE_SMALL + overview.imagePath,
                     ratio = 2f/3f,
                     description = overview.title,
-                    onTap = { /*navigateToDetails(overview.id)*/ }
+                    onTap = { navigateToDetails(overview.id) }
                 )
 
             }

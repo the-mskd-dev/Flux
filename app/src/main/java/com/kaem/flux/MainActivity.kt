@@ -90,7 +90,12 @@ class MainActivity : ComponentActivity() {
 
                     composable(Constants.Navigation.SEARCH) {
                         SearchScreen(
-                            onBackButtonTap = { navController.popBackStack() }
+                            onBackButtonTap = { navController.popBackStack() },
+                            navigateToDetails = {
+                                navController.navigate(
+                                    route = "${Constants.Navigation.ARTWORK}/$it"
+                                )
+                            }
                         )
                     }
 

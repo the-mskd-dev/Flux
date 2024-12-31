@@ -226,6 +226,14 @@ fun HomeTopButtons(
         verticalAlignment = Alignment.CenterVertically
     ) {
 
+        IconButton(onClick = navigateToSearch) {
+            Icon(
+                imageVector = Icons.Rounded.Search,
+                tint = MaterialTheme.colorScheme.onBackground,
+                contentDescription = "Search button"
+            )
+        }
+
         Crossfade(
             targetState = isSyncing,
             label = "Refresh indicator"
@@ -248,14 +256,6 @@ fun HomeTopButtons(
                     )
                 }
             }
-        }
-
-        IconButton(onClick = navigateToSearch) {
-            Icon(
-                imageVector = Icons.Rounded.Search,
-                tint = MaterialTheme.colorScheme.onBackground,
-                contentDescription = "Search button"
-            )
         }
 
         IconButton(onClick = navigateToSettings) {

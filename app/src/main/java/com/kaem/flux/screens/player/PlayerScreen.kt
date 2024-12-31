@@ -262,7 +262,7 @@ val PlayerButtonsConstraintSet = ConstraintSet {
     val back = createRefFor("back")
     constrain(back) {
         top.linkTo(parent.top)
-        start.linkTo(parent.start)
+        start.linkTo(parent.start, FluxSpace.MEDIUM)
     }
 
     val title = createRefFor("title")

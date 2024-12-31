@@ -10,10 +10,12 @@ import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.model.artwork.Movie
 import com.kaem.flux.model.tmdb.TMDBArtwork
 import com.kaem.flux.model.tmdb.TMDBMediaType
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMDBService) : ArtworkDataSource {
@@ -50,30 +52,35 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
     ): ArtworkDataSource.Library {
 
         savedOverviewIds = overviewIds
+        overviews.clear()
+        movies.clear()
+        episodes.clear()
 
-        coroutineScope {
+        withContext(Dispatchers.Default) {
+            coroutineScope {
 
-            files.forEach { file ->
+                files.forEach { file ->
 
-                launch {
+                    launch {
 
-                    val tmdbArtwork = getTmdbArtwork(file.nameProperties)
-                    tmdbToFluxArtwork(
-                        tmdbArtwork = tmdbArtwork,
-                        file = file
-                    )
-
-                    if (tmdbArtwork?.type == TMDBMediaType.SHOW) {
-                        tmdbToFluxEpisode(
+                        val tmdbArtwork = getTmdbArtwork(file.nameProperties)
+                        tmdbToFluxArtwork(
                             tmdbArtwork = tmdbArtwork,
                             file = file
                         )
+
+                        if (tmdbArtwork?.type == TMDBMediaType.SHOW) {
+                            tmdbToFluxEpisode(
+                                tmdbArtwork = tmdbArtwork,
+                                file = file
+                            )
+                        }
+
                     }
 
                 }
 
             }
-
         }
 
         return ArtworkDataSource.Library(

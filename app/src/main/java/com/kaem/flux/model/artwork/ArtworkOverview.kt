@@ -2,6 +2,7 @@ package com.kaem.flux.model.artwork
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.kaem.flux.R
 import com.kaem.flux.model.UserFile
 import com.kaem.flux.model.tmdb.TMDBArtwork
 import com.kaem.flux.model.tmdb.TMDBMovie
@@ -52,4 +53,13 @@ data class ArtworkOverview(
 
 }
 
-enum class ContentType { MOVIE, SHOW }
+enum class ContentType {
+    MOVIE,
+    SHOW;
+
+    val stringResource: Int get() = when (this) {
+        MOVIE -> R.string.movies
+        SHOW -> R.string.shows
+    }
+
+}

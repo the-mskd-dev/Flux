@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.layout.onSizeChanged
@@ -44,6 +45,7 @@ import com.kaem.flux.utils.extensions.timeDescription
 fun ArtworkHeader(
     overview: ArtworkOverview,
     artwork: Artwork?,
+    zoom: Float,
     onBackButtonTap: () -> Unit,
     onStatusButtonTap: () -> Unit,
     onPlayerButtonTap: () -> Unit
@@ -63,6 +65,7 @@ fun ArtworkHeader(
             modifier = Modifier
                 .aspectRatio(6f / 5f)
                 .layoutId("image"),
+            zoom = zoom,
             imagePath = imagePath,
             title = overview.title
         )
@@ -97,6 +100,7 @@ fun ArtworkHeader(
 @Composable
 fun ArtworkImage(
     modifier: Modifier,
+    zoom: Float,
     imagePath: String,
     title: String
 ) {
@@ -109,7 +113,14 @@ fun ArtworkImage(
     ) {
 
         GlideImage(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .graphicsLayer {
+                    scaleX = zoom
+                    scaleY = zoom
+                    translationX = (size.width * (1 - zoom)) / 2
+                    translationY = (size.height * (1 - zoom)) / 2
+                },
             model = Constants.TMDB.IMAGE + imagePath,
             contentScale = ContentScale.Crop,
             loading = Placeholders.loading,
@@ -200,7 +211,7 @@ val ArtworkHeaderConstraintSet = ConstraintSet {
 
     constrain(back) {
         top.linkTo(parent.top)
-        start.linkTo(parent.start)
+        start.linkTo(parent.start, FluxSpace.MEDIUM)
     }
 
     constrain(title) {

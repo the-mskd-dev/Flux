@@ -1,6 +1,6 @@
 package com.kaem.flux.di
 
-import com.kaem.flux.data.ddb.DatabaseManager
+import com.kaem.flux.data.ddb.FluxDao
 import com.kaem.flux.data.source.artwork.ArtworkDataSource
 import com.kaem.flux.data.source.artwork.ArtworkDataSourceDBImpl
 import com.kaem.flux.data.source.artwork.ArtworkDataSourceTMDBImpl
@@ -25,9 +25,9 @@ object ArtworkModule {
 
     @Provides
     @LocalArtworkDataSource
-    fun provideDatabaseArtworkDataSource(databaseManager: DatabaseManager) : ArtworkDataSource {
+    fun provideDatabaseArtworkDataSource(db: FluxDao) : ArtworkDataSource {
         return ArtworkDataSourceDBImpl(
-            databaseManager = databaseManager
+            db = db
         )
     }
 

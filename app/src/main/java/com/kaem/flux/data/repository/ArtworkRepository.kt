@@ -1,6 +1,6 @@
 package com.kaem.flux.data.repository
 
-import com.kaem.flux.data.ddb.DatabaseManager
+import com.kaem.flux.data.ddb.FluxDao
 import com.kaem.flux.model.artwork.ArtworkOverview
 import com.kaem.flux.model.artwork.ContentType
 import com.kaem.flux.model.artwork.Episode
@@ -10,7 +10,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ArtworkRepository @Inject constructor(
-    private val db: DatabaseManager
+    private val db: FluxDao
 ) {
 
     data class Content(
@@ -45,15 +45,15 @@ class ArtworkRepository @Inject constructor(
     }
 
     suspend fun saveMovie(movie: Movie) {
-        db.saveMovies(listOf(movie))
+        db.insertMovies(listOf(movie))
     }
 
     suspend fun saveEpisode(episode: Episode) {
-        db.saveEpisodes(listOf(episode))
+        db.insertEpisodes(listOf(episode))
     }
 
     suspend fun saveEpisodes(episodes: List<Episode>) {
-        db.saveEpisodes(episodes)
+        db.insertEpisodes(episodes)
     }
 
 }

@@ -33,7 +33,6 @@ class DataStoreRepository @Inject constructor(
 
         val lastWatchedIdsString = preferences[PreferencesKeys.LAST_WATCHED_IDS] ?: "[]"
         val lastWatchedIds = gson.fromJson<List<Double>>(lastWatchedIdsString, List::class.java)
-        val lastSyncTime = (preferences[PreferencesKeys.LAST_SYNC_TIME] ?: "0").toLongOrDefault(0)
 
         LibraryPreferences(lastWatchedIds = lastWatchedIds.map { it.toLong() },)
     }

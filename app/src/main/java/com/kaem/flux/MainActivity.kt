@@ -11,13 +11,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavType
-import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.kaem.flux.screens.artwork.ArtworkScreen
-import com.kaem.flux.screens.library.LibraryScreen
+import com.kaem.flux.screens.category.CategoryScreen
+import com.kaem.flux.screens.home.HomeScreen
+import com.kaem.flux.screens.search.SearchScreen
 import com.kaem.flux.ui.theme.FluxTheme
+import com.kaem.flux.utils.Constants
+import com.kaem.flux.utils.FluxNavHost
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -34,32 +37,64 @@ class MainActivity : ComponentActivity() {
 
                 val navController = rememberNavController()
                 
-                NavHost(
+                FluxNavHost(
                     modifier = Modifier
                         .fillMaxSize()
                         .background(color = MaterialTheme.colorScheme.background),
                     navController = navController,
-                    startDestination = "library"
+                    startDestination = Constants.Navigation.LIBRARY
                 ) {
 
-                    composable("library") {
-                        LibraryScreen(
+                    composable(Constants.Navigation.LIBRARY) {
+                        HomeScreen(
                             navigateToDetails = {
-                                navController.navigate("artwork/$it")
+                                navController.navigate(
+                                    route = "${Constants.Navigation.ARTWORK}/$it"
+                                )
+                            },
+                            navigateToCategory = {
+                                navController.navigate(
+                                    route = "${Constants.Navigation.CATEGORY}/${it.name}"
+                                )
+                            },
+                            navigateToSearch = {
+                                navController.navigate(
+                                    route = Constants.Navigation.SEARCH
+                                )
                             }
                         )
                     }
 
                     composable(
-                        "artwork/{artworkId}",
-                        arguments = listOf(navArgument("artworkId") { type = NavType.LongType })
+                        "${Constants.Navigation.ARTWORK}/{artworkId}",
+                        arguments = listOf(navArgument("artworkId") { type = NavType.LongType }),
                     ) {
                         ArtworkScreen(
-                            onBackButtonTap = {
+                            onBackButtonTap = { navController.popBackStack() }
+                        )
+                    }
 
-                                if (navController.currentBackStackEntry != null)
-                                    navController.popBackStack()
+                    composable(
+                        "${Constants.Navigation.CATEGORY}/{contentType}",
+                        arguments = listOf(navArgument("contentType") { type = NavType.StringType }),
+                    ) {
+                        CategoryScreen(
+                            onBackButtonTap = { navController.popBackStack() },
+                            navigateToDetails = {
+                                navController.navigate(
+                                    route = "${Constants.Navigation.ARTWORK}/$it"
+                                )
+                            }
+                        )
+                    }
 
+                    composable(Constants.Navigation.SEARCH) {
+                        SearchScreen(
+                            onBackButtonTap = { navController.popBackStack() },
+                            navigateToDetails = {
+                                navController.navigate(
+                                    route = "${Constants.Navigation.ARTWORK}/$it"
+                                )
                             }
                         )
                     }

@@ -13,9 +13,9 @@ import javax.inject.Inject
 
 data class SettingsUiState(
     val backwardValue: Int = 5,
-    val showBackwardDialog: Boolean = true,
+    val showBackwardDialog: Boolean = false,
     val forwardValue: Int = 5,
-    val showForwardDialog: Boolean = true,
+    val showForwardDialog: Boolean = false,
 )
 
 @HiltViewModel

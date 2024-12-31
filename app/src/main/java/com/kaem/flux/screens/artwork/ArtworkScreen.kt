@@ -179,6 +179,7 @@ fun ArtworkContent(
             ) { i, episode ->
 
                 EpisodeItem(
+                    modifier = Modifier.animateItem(),
                     episode = episode,
                     isFirst = i == 0,
                     onEpisodeTap = {

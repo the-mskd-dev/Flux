@@ -6,8 +6,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -22,6 +24,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -40,6 +43,11 @@ fun SettingsScreen(
 ) {
 
     val state by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
+    val appVersion = context
+        .packageManager
+        .getPackageInfo(context.packageName, 0)
+        .versionName
 
     Column(
         modifier = Modifier
@@ -70,6 +78,16 @@ fun SettingsScreen(
             value = "${state.forwardValue}sec",
             onTap = { viewModel.showForwardDialog(true) }
         )
+
+        appVersion?.let {
+            SettingsItem(
+                text = stringResource(R.string.app_version),
+                value = it,
+                onTap = {}
+            )
+        }
+
+        Spacer(modifier = Modifier.navigationBarsPadding())
 
     }
 

@@ -30,4 +30,5 @@
     <string name="app_theme">Thème de l\'application</string>
     <string name="button_backward">Bouton arrière du lecteur</string>
     <string name="button_forward">Bouton avant du lecteur</string>
+    <string name="app_version">Numéro de version</string>
 </resources>

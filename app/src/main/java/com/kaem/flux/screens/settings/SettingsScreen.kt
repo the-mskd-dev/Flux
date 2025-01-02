@@ -54,19 +54,19 @@ fun SettingsScreen(
         )
 
         SettingsItem(
-            text = "Thème de l'application",
+            text = stringResource(R.string.app_theme),
             value = stringResource(state.uiTheme.stringResourceId),
             onTap = { viewModel.showUiThemeDialog(true) }
         )
 
         SettingsItem(
-            text = "Bouton arrière",
+            text = stringResource(R.string.button_backward),
             value = "${state.backwardValue}sec",
             onTap = { viewModel.showBackwardDialog(true) }
         )
 
         SettingsItem(
-            text = "Bouton avant",
+            text = stringResource(R.string.button_forward),
             value = "${state.forwardValue}sec",
             onTap = { viewModel.showForwardDialog(true) }
         )

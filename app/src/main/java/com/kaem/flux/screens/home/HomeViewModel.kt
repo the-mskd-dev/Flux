@@ -37,7 +37,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             combine(
                 repository.libraryFlow,
-                dataStoreRepository.preferencesFlow
+                dataStoreRepository.flow
             ) { libraryContent, preferences ->
 
                 val screenState = when {

@@ -12,12 +12,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -33,7 +31,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
@@ -41,9 +38,10 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.kaem.flux.R
 import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.model.artwork.Status
+import com.kaem.flux.ui.component.MediumText
 import com.kaem.flux.ui.component.Placeholders
-import com.kaem.flux.ui.theme.FluxFontSize
-import com.kaem.flux.ui.theme.FluxSpace
+import com.kaem.flux.ui.component.SmallText
+import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.Constants
 
 @Composable
@@ -55,27 +53,26 @@ fun ArtworkSeasonsTabs(
 
     LazyRow(
         modifier = Modifier.fillMaxWidth(),
-        contentPadding = PaddingValues(horizontal = FluxSpace.MEDIUM),
-        horizontalArrangement = Arrangement.spacedBy(FluxSpace.SMALL)
+        contentPadding = PaddingValues(horizontal = Ui.Space.MEDIUM),
+        horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)
     ) {
 
         items(items = seasons.sorted(), key = { it }) { season ->
 
             val isSelected = selectedSeason == season
-            val backgroundColor by animateColorAsState(if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.background, label = "seasonTabBackgroundColor")
-            val textColor by animateColorAsState(if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.primary, label = "seasonTabTextColor")
+            val backgroundColor by animateColorAsState(if (isSelected) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.background, label = "seasonTabBackgroundColor")
+            val textColor by animateColorAsState(if (isSelected) MaterialTheme.colorScheme.onSecondaryContainer else MaterialTheme.colorScheme.primary, label = "seasonTabTextColor")
 
             Button(
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = backgroundColor,
-                    contentColor = textColor,
+                    containerColor = backgroundColor
                 ),
-                shape = RoundedCornerShape(8.dp),
+                shape = Ui.Shape.RoundedCorner,
                 onClick = { onSeasonTap(season) }
             ) {
-                Text(
+                SmallText(
                     text = stringResource(id = R.string.season, season),
-                    fontSize = FluxFontSize.SMALL
+                    color = textColor
                 )
             }
 
@@ -105,8 +102,8 @@ fun EpisodeItem(
             .clickable { onEpisodeTap() }
             .animateContentSize()
             .fillMaxWidth()
-            .padding(horizontal = FluxSpace.MEDIUM)
-            .padding(bottom = FluxSpace.MEDIUM)
+            .padding(horizontal = Ui.Space.MEDIUM)
+            .padding(bottom = Ui.Space.MEDIUM)
     ) {
 
         val (divider, image, content) = createRefs()
@@ -127,10 +124,10 @@ fun EpisodeItem(
         GlideImage(
             modifier = Modifier
                 .alpha(alphaAnimation)
-                .clip(RoundedCornerShape(4.dp))
+                .clip(Ui.Shape.RoundedCorner)
                 .aspectRatio(16f / 9f)
                 .constrainAs(image) {
-                    top.linkTo(divider.bottom, FluxSpace.MEDIUM)
+                    top.linkTo(divider.bottom, Ui.Space.MEDIUM)
                     start.linkTo(parent.start)
                     end.linkTo(startGuideline)
                     width = Dimension.fillToConstraints
@@ -146,30 +143,26 @@ fun EpisodeItem(
                 .alpha(alphaAnimation)
                 .constrainAs(content) {
                     top.linkTo(image.top)
-                    start.linkTo(startGuideline, FluxSpace.MEDIUM)
+                    start.linkTo(startGuideline, Ui.Space.MEDIUM)
                     end.linkTo(parent.end)
                     width = Dimension.fillToConstraints
                 },
             horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.spacedBy(FluxSpace.EXTRA_SMALL)
+            verticalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)
         ) {
 
-            Text(
+            SmallText(
                 modifier = Modifier
                     .fillMaxWidth()
                     .alpha(.8f),
                 text = stringResource(R.string.episode, episode.number),
-                fontSize = FluxFontSize.SMALL,
                 textAlign = TextAlign.Start,
-                color = MaterialTheme.colorScheme.onBackground,
                 fontStyle = FontStyle.Italic
             )
 
-            Text(
+            MediumText(
                 modifier = Modifier.fillMaxWidth(),
                 text = episode.title,
-                color = MaterialTheme.colorScheme.onBackground,
-                fontSize = FluxFontSize.MEDIUM,
                 textAlign = TextAlign.Start,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis

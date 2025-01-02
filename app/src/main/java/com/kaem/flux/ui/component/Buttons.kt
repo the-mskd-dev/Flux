@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material3.Button
@@ -28,7 +27,7 @@ import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.kaem.flux.ui.theme.FluxSpace
+import com.kaem.flux.ui.theme.Ui
 
 @Composable
 fun FluxButton(
@@ -47,7 +46,7 @@ fun FluxButton(
             containerColor = backgroundColor,
             contentColor = textColor,
         ),
-        shape = RoundedCornerShape(8.dp),
+        shape = Ui.Shape.RoundedCorner,
         border = border,
         onClick = onTap
     ) {
@@ -84,6 +83,7 @@ fun FluxButton(
 @Composable
 fun BackButton(
     modifier: Modifier = Modifier,
+    tint: Color = MaterialTheme.colorScheme.onBackground,
     onTap: () -> Unit
 ) {
 
@@ -93,13 +93,13 @@ fun BackButton(
             .clickable { onTap() }
             .size(50.dp)
             .clip(shape = CircleShape)
-            .padding(FluxSpace.EXTRA_SMALL),
+            .padding(Ui.Space.EXTRA_SMALL),
         contentAlignment = Alignment.Center
     ) {
 
         Icon(
             imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-            tint = Color.White,
+            tint = tint,
             contentDescription = "back button"
         )
 

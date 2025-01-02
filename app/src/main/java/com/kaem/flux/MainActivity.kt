@@ -9,31 +9,44 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.kaem.flux.data.repository.DataStoreRepository
 import com.kaem.flux.screens.artwork.ArtworkScreen
 import com.kaem.flux.screens.category.CategoryScreen
 import com.kaem.flux.screens.home.HomeScreen
 import com.kaem.flux.screens.search.SearchScreen
+import com.kaem.flux.screens.settings.SettingsScreen
 import com.kaem.flux.ui.theme.FluxTheme
+import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.Constants
 import com.kaem.flux.utils.FluxNavHost
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject lateinit var dataStoreRepository: DataStoreRepository
+    private var uiTheme by mutableStateOf(Ui.THEME.SYSTEM)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         enableEdgeToEdge(SystemBarStyle.dark(Color.TRANSPARENT))
+        observeDataStore()
 
         setContent {
 
-            FluxTheme {
+            FluxTheme(theme = uiTheme) {
 
                 val navController = rememberNavController()
                 
@@ -60,6 +73,11 @@ class MainActivity : ComponentActivity() {
                             navigateToSearch = {
                                 navController.navigate(
                                     route = Constants.Navigation.SEARCH
+                                )
+                            },
+                            navigateToSettings = {
+                                navController.navigate(
+                                    route = Constants.Navigation.SETTINGS
                                 )
                             }
                         )
@@ -99,12 +117,26 @@ class MainActivity : ComponentActivity() {
                         )
                     }
 
+                    composable(Constants.Navigation.SETTINGS) {
+                        SettingsScreen(
+                            onBackButtonTap = { navController.popBackStack() }
+                        )
+                    }
+
                 }
 
             }
 
         }
 
+    }
+
+    private fun observeDataStore() {
+        lifecycleScope.launch {
+            dataStoreRepository.flow.collect {
+                uiTheme = it.uiTheme
+            }
+        }
     }
 
 }

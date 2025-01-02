@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -43,8 +42,9 @@ import com.kaem.flux.model.artwork.Artwork
 import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.ui.component.BackButton
 import com.kaem.flux.ui.component.LifecycleComponent
-import com.kaem.flux.ui.theme.FluxFontSize
-import com.kaem.flux.ui.theme.FluxSpace
+import com.kaem.flux.ui.component.MediumText
+import com.kaem.flux.ui.component.SmallText
+import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.extensions.forceScreenOn
 import com.kaem.flux.utils.extensions.hideSystemBars
 import com.kaem.flux.utils.extensions.setAppInLandscape
@@ -54,6 +54,8 @@ import com.kaem.flux.utils.extensions.showSystemBars
 @Composable
 fun PlayerScreen(
     artwork: Artwork?,
+    backward: Long,
+    forward: Long,
     onBackButtonTap: () -> Unit,
     onTimeSave: (Long) -> Unit
 ) {
@@ -74,6 +76,8 @@ fun PlayerScreen(
         if (artwork != null) {
             VideoPlayer(
                 artwork = artwork,
+                backward = backward,
+                forward = forward,
                 onBackButtonTap = {
                     activity.setAppOrientation(orientation)
                     isExiting = true
@@ -92,6 +96,8 @@ fun PlayerScreen(
 @Composable
 fun VideoPlayer(
     artwork: Artwork,
+    backward: Long,
+    forward: Long,
     onBackButtonTap: () -> Unit,
     onTimeSave: (Long) -> Unit
 ) {
@@ -105,6 +111,8 @@ fun VideoPlayer(
     val exoPlayer = remember {
         ExoPlayer.Builder(activity)
             .setRenderersFactory(renderersFactory)
+            .setSeekBackIncrementMs(backward)
+            .setSeekForwardIncrementMs(forward)
             .build()
             .apply {
                 setMediaItem(MediaItem.fromUri(Uri.parse(artwork.file.path)), artwork.currentTime)
@@ -201,6 +209,7 @@ fun PlayerButtons(
 
             BackButton(
                 modifier = Modifier.layoutId("back"),
+                tint = Color.White,
                 onTap = onBackButtonTap
             )
 
@@ -224,14 +233,13 @@ fun PlayerTitle(
     Column(
         modifier = Modifier.layoutId(layoutId),
         horizontalAlignment = Alignment.Start,
-        verticalArrangement = Arrangement.spacedBy(FluxSpace.EXTRA_SMALL)
+        verticalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)
     ) {
 
-        Text(
+        MediumText(
             modifier = Modifier.fillMaxWidth(),
             text = artwork.title,
             color = Color.White,
-            fontSize = FluxFontSize.MEDIUM,
             maxLines = 1,
             textAlign = TextAlign.Start,
             overflow = TextOverflow.Ellipsis
@@ -242,15 +250,15 @@ fun PlayerTitle(
             val season = stringResource(R.string.season, episode.season)
             val number = stringResource(R.string.episode, episode.number)
 
-            Text(
+            SmallText(
                 modifier = Modifier.fillMaxWidth(),
                 text = "$season, $number",
                 color = Color.White,
-                fontSize = FluxFontSize.SMALL,
                 maxLines = 1,
                 textAlign = TextAlign.Start,
                 overflow = TextOverflow.Ellipsis
             )
+
         }
 
     }
@@ -262,14 +270,14 @@ val PlayerButtonsConstraintSet = ConstraintSet {
     val back = createRefFor("back")
     constrain(back) {
         top.linkTo(parent.top)
-        start.linkTo(parent.start, FluxSpace.MEDIUM)
+        start.linkTo(parent.start, Ui.Space.MEDIUM)
     }
 
     val title = createRefFor("title")
     constrain(title) {
-        top.linkTo(parent.top, FluxSpace.EXTRA_SMALL)
-        start.linkTo(back.end, FluxSpace.SMALL)
-        end.linkTo(parent.end, FluxSpace.MEDIUM)
+        top.linkTo(parent.top, Ui.Space.EXTRA_SMALL)
+        start.linkTo(back.end, Ui.Space.SMALL)
+        end.linkTo(parent.end, Ui.Space.MEDIUM)
         width = Dimension.fillToConstraints
     }
 

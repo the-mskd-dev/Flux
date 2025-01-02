@@ -78,10 +78,10 @@ dependencies {
     implementation("org.jellyfin.media3:media3-ffmpeg-decoder:1.5.0+1")
 
     // Hilt
-    implementation("com.google.dagger:hilt-android:2.52")
+    implementation("com.google.dagger:hilt-android:2.54")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
-    ksp("com.google.dagger:dagger-compiler:2.52")
-    ksp("com.google.dagger:hilt-android-compiler:2.52")
+    ksp("com.google.dagger:dagger-compiler:2.54")
+    ksp("com.google.dagger:hilt-android-compiler:2.54")
 
     // Gson
     implementation("com.google.code.gson:gson:2.10.1")

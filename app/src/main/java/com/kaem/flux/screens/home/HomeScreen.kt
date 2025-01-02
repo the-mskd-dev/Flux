@@ -1,7 +1,6 @@
 package com.kaem.flux.screens.home
 
 import androidx.compose.animation.Crossfade
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,7 +16,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Search
@@ -28,9 +26,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.pulltorefresh.PullToRefreshBox
-import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
-import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -40,7 +35,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -54,11 +48,10 @@ import com.kaem.flux.model.artwork.ArtworkOverview
 import com.kaem.flux.model.artwork.ContentType
 import com.kaem.flux.screens.permissions.PermissionsScreen
 import com.kaem.flux.screens.permissions.fluxPermissionState
+import com.kaem.flux.ui.component.BoldText
 import com.kaem.flux.ui.component.Loader
 import com.kaem.flux.ui.component.Placeholders
-import com.kaem.flux.ui.theme.FluxFontSize
-import com.kaem.flux.ui.theme.FluxSpace
-import com.kaem.flux.ui.theme.FluxWeight
+import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.Constants
 
 @OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
@@ -67,6 +60,7 @@ fun HomeScreen(
     navigateToDetails: (Long) -> Unit,
     navigateToCategory: (ContentType) -> Unit,
     navigateToSearch: () -> Unit,
+    navigateToSettings: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
 
@@ -102,7 +96,7 @@ fun HomeScreen(
                         navigateToDetails = { id -> navigateToDetails(id) },
                         navigateToCategory = { type -> navigateToCategory(type) },
                         navigateToSearch = navigateToSearch,
-                        navigateToSettings = navigateToSearch
+                        navigateToSettings = navigateToSettings
                     )
 
                 }
@@ -177,8 +171,8 @@ fun HomeLists(
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .systemBarsPadding()
-            .padding(bottom = FluxSpace.LARGE),
-        verticalArrangement = Arrangement.spacedBy(FluxSpace.MEDIUM)
+            .padding(bottom = Ui.Space.LARGE),
+        verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
     ) {
 
         HomeTopButtons(
@@ -222,7 +216,7 @@ fun HomeTopButtons(
 
     Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(FluxSpace.EXTRA_SMALL, Alignment.End),
+        horizontalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL, Alignment.End),
         verticalAlignment = Alignment.CenterVertically
     ) {
 
@@ -287,27 +281,21 @@ fun ArtworkList(
 
     Column(
         modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(FluxSpace.MEDIUM)
+        verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
     ) {
 
-        name?.let {
-            Text(
-                modifier = Modifier
-                    .clickable { navigateToCategory() }
-                    .fillMaxWidth()
-                    .padding(start = FluxSpace.MEDIUM, top = FluxSpace.LARGE),
-                text = name,
-                color = MaterialTheme.colorScheme.onBackground,
-                fontWeight = FluxWeight.BOLD,
-                fontSize = FluxFontSize.LARGE,
-                textAlign = TextAlign.Start
-            )
-        }
+        BoldText(
+            modifier = Modifier
+                .clickable { navigateToCategory() }
+                .fillMaxWidth()
+                .padding(start = Ui.Space.MEDIUM, top = Ui.Space.LARGE),
+            text = name
+        )
 
         LazyRow(
             modifier = Modifier.fillMaxWidth(),
-            contentPadding = PaddingValues(horizontal = FluxSpace.MEDIUM),
-            horizontalArrangement = Arrangement.spacedBy(FluxSpace.SMALL)
+            contentPadding = PaddingValues(horizontal = Ui.Space.MEDIUM),
+            horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)
         ) {
 
             items(overviews, key = { it.id }) {
@@ -342,7 +330,7 @@ fun ArtworkItem(
     GlideImage(
         modifier = Modifier
             .clickable { onTap() }
-            .clip(RoundedCornerShape(8.dp))
+            .clip(Ui.Shape.RoundedCorner)
             .width(width)
             .aspectRatio(ratio),
         model = url,

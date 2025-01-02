@@ -7,27 +7,19 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.BasicAlertDialog
-import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -39,8 +31,9 @@ import com.kaem.flux.model.artwork.ArtworkOverview
 import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.screens.player.PlayerScreen
 import com.kaem.flux.ui.component.ErrorScreen
+import com.kaem.flux.ui.component.FluxDialog
 import com.kaem.flux.ui.component.Loader
-import com.kaem.flux.ui.theme.FluxSpace
+import com.kaem.flux.ui.theme.Ui
 import kotlinx.coroutines.launch
 
 @Composable
@@ -88,6 +81,8 @@ fun ArtworkScreen(
     AnimatedVisibility(uiState.showPlayer) {
         PlayerScreen(
             artwork = uiState.selectedArtwork,
+            backward = viewModel.backwardValue,
+            forward = viewModel.forwardValue,
             onBackButtonTap = { viewModel.showPlayer(false) },
             onTimeSave = { viewModel.saveTime(it) }
         )
@@ -141,8 +136,8 @@ fun ArtworkContent(
         item {
 
             Column(
-                modifier = Modifier.padding(bottom = FluxSpace.MEDIUM),
-                verticalArrangement = Arrangement.spacedBy(FluxSpace.LARGE)
+                modifier = Modifier.padding(bottom = Ui.Space.MEDIUM),
+                verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE)
             ) {
 
                 ArtworkHeader(
@@ -207,38 +202,13 @@ fun ArtworkStatusDialog(
     onValidate: () -> Unit
 ) {
 
-    if (showStatusDialog) {
-        BasicAlertDialog(onDismissRequest = onDismiss) {
-
-            Card(
-                shape = RoundedCornerShape(8.dp)
-            ) {
-                Column(
-                    modifier = Modifier.padding(FluxSpace.MEDIUM),
-                    verticalArrangement = Arrangement.spacedBy(FluxSpace.LARGE)
-                ) {
-
-                    Text(stringResource(R.string.mark_previous_episodes_as_watched))
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(FluxSpace.MEDIUM, Alignment.End)
-                    ) {
-
-                        TextButton(onClick = onDismiss) {
-                            Text(stringResource(R.string.no))
-                        }
-
-                        TextButton(onClick = onValidate) {
-                            Text(stringResource(R.string.yes))
-                        }
-
-                    }
-                }
-            }
-
-        }
-    }
+    FluxDialog(
+        show = showStatusDialog,
+        text = stringResource(R.string.mark_previous_episodes_as_watched),
+        cancelText = stringResource(R.string.no),
+        validateText = stringResource(R.string.yes),
+        onDismissRequest = onDismiss,
+        onValidate = onValidate
+    )
 
 }

@@ -62,18 +62,20 @@ fun ArtworkSeasonsTabs(
         items(items = seasons.sorted(), key = { it }) { season ->
 
             val isSelected = selectedSeason == season
-            val backgroundColor by animateColorAsState(if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.background, label = "seasonTabBackgroundColor")
-            val textColor by animateColorAsState(if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.primary, label = "seasonTabTextColor")
+            val backgroundColor by animateColorAsState(if (isSelected) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.background, label = "seasonTabBackgroundColor")
+            val textColor by animateColorAsState(if (isSelected) MaterialTheme.colorScheme.onSecondaryContainer else MaterialTheme.colorScheme.primary, label = "seasonTabTextColor")
 
             Button(
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = backgroundColor,
-                    contentColor = textColor,
+                    containerColor = backgroundColor
                 ),
                 shape = Dimensions.Shape.RoundedCorner,
                 onClick = { onSeasonTap(season) }
             ) {
-                SmallText(text = stringResource(id = R.string.season, season))
+                SmallText(
+                    text = stringResource(id = R.string.season, season),
+                    color = textColor
+                )
             }
 
         }

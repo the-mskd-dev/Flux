@@ -1,5 +1,6 @@
 package com.kaem.flux.screens.settings
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -13,6 +14,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,6 +29,7 @@ import com.kaem.flux.R
 import com.kaem.flux.ui.component.FluxButton
 import com.kaem.flux.ui.component.FluxTopBar
 import com.kaem.flux.ui.component.LightText
+import com.kaem.flux.ui.component.MediumText
 import com.kaem.flux.ui.theme.Ui
 
 @Composable
@@ -113,7 +116,7 @@ fun SettingsItem(
             .padding(horizontal = Ui.Space.MEDIUM, vertical = Ui.Space.LARGE)
     ) {
 
-        LightText(
+        MediumText(
             text = text,
             fontSize = Ui.FontSize.LARGE,
         )
@@ -137,9 +140,9 @@ fun <T> SettingsDialog(
     onDismiss: () -> Unit
 ) {
 
-    var selectedValue by remember { mutableStateOf(currentValue) }
-
     if (show) {
+
+        var selectedValue by remember { mutableStateOf(currentValue) }
 
         Dialog(
             onDismissRequest = onDismiss
@@ -164,7 +167,7 @@ fun <T> SettingsDialog(
                     ) {
 
                         RadioButton(
-                            selected = selectedValue == option,
+                            selected = selectedValue == option.key,
                             onClick = { selectedValue = option.key }
                         )
 

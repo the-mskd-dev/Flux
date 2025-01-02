@@ -31,15 +31,12 @@ fun ErrorScreen(
             BackButton(onTap = onBackButtonTap)
         }
 
-        Text(
+        MediumText(
             modifier = Modifier
                 .align(Alignment.Center)
                 .fillMaxWidth(),
             text = message,
-            color = MaterialTheme.colorScheme.onBackground,
-            fontSize = FluxFontSize.MEDIUM,
-            textAlign = TextAlign.Center,
-            lineHeight = FluxFontSize.MEDIUM
+            textAlign = TextAlign.Center
         )
 
     }

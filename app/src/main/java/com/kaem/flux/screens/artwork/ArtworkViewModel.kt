@@ -22,6 +22,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.seconds
 
 
 data class ArtworkUiState(
@@ -46,7 +47,17 @@ class ArtworkViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(ArtworkUiState())
     val uiState: StateFlow<ArtworkUiState> = _uiState.asStateFlow()
 
-    init { getArtworks(artworkId) }
+    var backwardValue: Long = 10.seconds.inWholeMilliseconds
+    var forwardValue: Long = 10.seconds.inWholeMilliseconds
+
+    init {
+
+        val (backward, forward) = dataStoreRepository.getPlayerButtonsValues()
+        backwardValue = backward.seconds.inWholeMilliseconds
+        forwardValue = forward.seconds.inWholeMilliseconds
+
+        getArtworks(artworkId)
+    }
 
     private fun getArtworks(id: Long) = viewModelScope.launch {
 

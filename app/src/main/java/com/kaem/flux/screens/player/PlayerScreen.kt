@@ -54,6 +54,8 @@ import com.kaem.flux.utils.extensions.showSystemBars
 @Composable
 fun PlayerScreen(
     artwork: Artwork?,
+    backward: Long,
+    forward: Long,
     onBackButtonTap: () -> Unit,
     onTimeSave: (Long) -> Unit
 ) {
@@ -74,6 +76,8 @@ fun PlayerScreen(
         if (artwork != null) {
             VideoPlayer(
                 artwork = artwork,
+                backward = backward,
+                forward = forward,
                 onBackButtonTap = {
                     activity.setAppOrientation(orientation)
                     isExiting = true
@@ -92,6 +96,8 @@ fun PlayerScreen(
 @Composable
 fun VideoPlayer(
     artwork: Artwork,
+    backward: Long,
+    forward: Long,
     onBackButtonTap: () -> Unit,
     onTimeSave: (Long) -> Unit
 ) {
@@ -105,6 +111,8 @@ fun VideoPlayer(
     val exoPlayer = remember {
         ExoPlayer.Builder(activity)
             .setRenderersFactory(renderersFactory)
+            .setSeekBackIncrementMs(backward)
+            .setSeekForwardIncrementMs(forward)
             .build()
             .apply {
                 setMediaItem(MediaItem.fromUri(Uri.parse(artwork.file.path)), artwork.currentTime)

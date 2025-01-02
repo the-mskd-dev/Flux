@@ -25,6 +25,7 @@ fun FluxDialog(
     show: Boolean,
     title: String? = null,
     text: String? = null,
+    hideButtons: Boolean = false,
     cancelText: String = stringResource(android.R.string.cancel),
     validateText: String = stringResource(R.string.validate),
     onDismissRequest: () -> Unit,
@@ -35,6 +36,7 @@ fun FluxDialog(
         show = show,
         cancelText = cancelText,
         validateText = validateText,
+        hideButtons = hideButtons,
         onDismissRequest = onDismissRequest,
         onValidate = onValidate,
         content = {
@@ -59,6 +61,7 @@ fun FluxDialog(
 @Composable
 fun FluxDialog(
     show: Boolean,
+    hideButtons: Boolean = false,
     cancelText: String = stringResource(android.R.string.cancel),
     validateText: String = stringResource(R.string.validate),
     onDismissRequest: () -> Unit,
@@ -75,24 +78,26 @@ fun FluxDialog(
 
                     content()
 
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = Ui.Space.LARGE),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM, Alignment.End)
-                    ) {
+                    if (!hideButtons) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = Ui.Space.LARGE),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM, Alignment.End)
+                        ) {
 
-                        TextButton(onClick = onDismissRequest) {
-                            Text(cancelText)
-                        }
-
-                        onValidate?.let {
-                            TextButton(onClick = it) {
-                                Text(validateText)
+                            TextButton(onClick = onDismissRequest) {
+                                Text(cancelText)
                             }
-                        }
 
+                            onValidate?.let {
+                                TextButton(onClick = it) {
+                                    Text(validateText)
+                                }
+                            }
+
+                        }
                     }
                 }
             }

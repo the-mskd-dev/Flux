@@ -141,15 +141,10 @@ fun <T> SettingsDialog(
     onDismiss: () -> Unit
 ) {
 
-    var selectedValue by remember { mutableStateOf(currentValue) }
-
     FluxDialog(
         show = show,
+        hideButtons = true,
         onDismissRequest = onDismiss,
-        onValidate = {
-            onSelect(selectedValue)
-            onDismiss()
-        },
         content = {
 
             Column(
@@ -163,15 +158,15 @@ fun <T> SettingsDialog(
 
                     Row(
                         modifier = Modifier
-                            .clickable { selectedValue = option.key }
+                            .clickable { onSelect(option.key); onDismiss()  }
                             .fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)
                     ) {
 
                         RadioButton(
-                            selected = selectedValue == option.key,
-                            onClick = { selectedValue = option.key }
+                            selected = currentValue == option.key,
+                            onClick = { onSelect(option.key); onDismiss() }
                         )
 
                         MediumText(

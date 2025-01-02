@@ -81,6 +81,8 @@ fun ArtworkScreen(
     AnimatedVisibility(uiState.showPlayer) {
         PlayerScreen(
             artwork = uiState.selectedArtwork,
+            backward = viewModel.backwardValue,
+            forward = viewModel.forwardValue,
             onBackButtonTap = { viewModel.showPlayer(false) },
             onTimeSave = { viewModel.saveTime(it) }
         )

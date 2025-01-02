@@ -113,6 +113,12 @@ class DataStoreRepository @Inject constructor(
         }
     }
 
+    fun getPlayerButtonsValues() : Pair<Int, Int> = runBlocking {
+        dataStore.data.map {
+            (it[Keys.PLAYER_BACKWARD] ?: "0").toInt() to (it[Keys.PLAYER_FORWARD] ?: "0").toInt()
+        }.first()
+    }
+
     //endregion
 
     //region UI Theme

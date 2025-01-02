@@ -23,9 +23,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.kaem.flux.screens.home.ArtworkItem
 import com.kaem.flux.ui.component.BackButton
 import com.kaem.flux.ui.component.BoldText
-import com.kaem.flux.ui.theme.FluxFontSize
-import com.kaem.flux.ui.theme.FluxSpace
-import com.kaem.flux.ui.theme.FluxWeight
+import com.kaem.flux.ui.theme.Dimensions
 import com.kaem.flux.utils.Constants
 
 @Composable
@@ -40,9 +38,9 @@ fun CategoryScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
         columns = GridCells.Fixed(3),
-        horizontalArrangement = Arrangement.spacedBy(FluxSpace.SMALL),
-        verticalArrangement = Arrangement.spacedBy(FluxSpace.SMALL),
-        contentPadding = PaddingValues(horizontal = FluxSpace.MEDIUM)
+        horizontalArrangement = Arrangement.spacedBy(Dimensions.Space.SMALL),
+        verticalArrangement = Arrangement.spacedBy(Dimensions.Space.SMALL),
+        contentPadding = PaddingValues(horizontal = Dimensions.Space.MEDIUM)
     ) {
 
         item(span = { GridItemSpan(3) }) {

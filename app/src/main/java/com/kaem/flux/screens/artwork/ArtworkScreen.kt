@@ -41,8 +41,7 @@ import com.kaem.flux.screens.player.PlayerScreen
 import com.kaem.flux.ui.component.ErrorScreen
 import com.kaem.flux.ui.component.FluxDialog
 import com.kaem.flux.ui.component.Loader
-import com.kaem.flux.ui.component.MediumText
-import com.kaem.flux.ui.theme.FluxSpace
+import com.kaem.flux.ui.theme.Dimensions
 import kotlinx.coroutines.launch
 
 @Composable
@@ -143,8 +142,8 @@ fun ArtworkContent(
         item {
 
             Column(
-                modifier = Modifier.padding(bottom = FluxSpace.MEDIUM),
-                verticalArrangement = Arrangement.spacedBy(FluxSpace.LARGE)
+                modifier = Modifier.padding(bottom = Dimensions.Space.MEDIUM),
+                verticalArrangement = Arrangement.spacedBy(Dimensions.Space.LARGE)
             ) {
 
                 ArtworkHeader(

@@ -19,9 +19,7 @@ import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.ui.component.LightText
 import com.kaem.flux.ui.component.MediumText
 import com.kaem.flux.ui.component.SmallText
-import com.kaem.flux.ui.theme.FluxFontSize
-import com.kaem.flux.ui.theme.FluxSpace
-import com.kaem.flux.ui.theme.FluxWeight
+import com.kaem.flux.ui.theme.Dimensions
 import com.kaem.flux.utils.extensions.timeDescription
 import java.text.DateFormat
 import java.util.Locale
@@ -35,8 +33,8 @@ fun ArtworkDescription(artwork: Artwork?) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = FluxSpace.MEDIUM),
-        verticalArrangement = Arrangement.spacedBy(FluxSpace.MEDIUM)
+            .padding(horizontal = Dimensions.Space.MEDIUM),
+        verticalArrangement = Arrangement.spacedBy(Dimensions.Space.MEDIUM)
     ) {
 
         if (artwork is Episode) {
@@ -56,7 +54,7 @@ fun ArtworkDescription(artwork: Artwork?) {
                     modifier = Modifier.fillMaxWidth(),
                     text = artwork.title,
                     color = MaterialTheme.colorScheme.onBackground,
-                    fontSize = FluxFontSize.LARGE
+                    fontSize = Dimensions.FontSize.LARGE
                 )
 
             }
@@ -67,7 +65,7 @@ fun ArtworkDescription(artwork: Artwork?) {
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(R.string.summary),
                 color = MaterialTheme.colorScheme.onBackground,
-                fontSize = FluxFontSize.LARGE
+                fontSize = Dimensions.FontSize.LARGE
             )
 
         }

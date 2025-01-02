@@ -37,7 +37,7 @@ import com.kaem.flux.ui.component.BackButton
 import com.kaem.flux.ui.component.FluxButton
 import com.kaem.flux.ui.component.Placeholders
 import com.kaem.flux.ui.component.Title
-import com.kaem.flux.ui.theme.FluxSpace
+import com.kaem.flux.ui.theme.Dimensions
 import com.kaem.flux.utils.Constants
 import com.kaem.flux.utils.extensions.timeDescription
 
@@ -211,27 +211,27 @@ val ArtworkHeaderConstraintSet = ConstraintSet {
 
     constrain(back) {
         top.linkTo(parent.top)
-        start.linkTo(parent.start, FluxSpace.MEDIUM)
+        start.linkTo(parent.start, Dimensions.Space.MEDIUM)
     }
 
     constrain(title) {
-        bottom.linkTo(image.bottom, FluxSpace.MEDIUM)
-        start.linkTo(parent.start, FluxSpace.MEDIUM)
-        end.linkTo(parent.end, FluxSpace.MEDIUM)
+        bottom.linkTo(image.bottom, Dimensions.Space.MEDIUM)
+        start.linkTo(parent.start, Dimensions.Space.MEDIUM)
+        end.linkTo(parent.end, Dimensions.Space.MEDIUM)
         width = Dimension.fillToConstraints
     }
 
     constrain(play) {
-        top.linkTo(title.bottom, FluxSpace.LARGE)
-        start.linkTo(parent.start, FluxSpace.MEDIUM)
-        end.linkTo(parent.end, FluxSpace.MEDIUM)
+        top.linkTo(title.bottom, Dimensions.Space.LARGE)
+        start.linkTo(parent.start, Dimensions.Space.MEDIUM)
+        end.linkTo(parent.end, Dimensions.Space.MEDIUM)
         width = Dimension.fillToConstraints.atMost(350.dp)
     }
 
     constrain(status) {
-        top.linkTo(play.bottom, FluxSpace.MEDIUM)
-        start.linkTo(parent.start, FluxSpace.MEDIUM)
-        end.linkTo(parent.end, FluxSpace.MEDIUM)
+        top.linkTo(play.bottom, Dimensions.Space.MEDIUM)
+        start.linkTo(parent.start, Dimensions.Space.MEDIUM)
+        end.linkTo(parent.end, Dimensions.Space.MEDIUM)
         width = Dimension.fillToConstraints.atMost(350.dp)
     }
 

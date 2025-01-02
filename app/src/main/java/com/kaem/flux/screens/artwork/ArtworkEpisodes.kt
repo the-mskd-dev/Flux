@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
@@ -44,8 +43,7 @@ import com.kaem.flux.model.artwork.Status
 import com.kaem.flux.ui.component.MediumText
 import com.kaem.flux.ui.component.Placeholders
 import com.kaem.flux.ui.component.SmallText
-import com.kaem.flux.ui.theme.FluxFontSize
-import com.kaem.flux.ui.theme.FluxSpace
+import com.kaem.flux.ui.theme.Dimensions
 import com.kaem.flux.utils.Constants
 
 @Composable
@@ -57,8 +55,8 @@ fun ArtworkSeasonsTabs(
 
     LazyRow(
         modifier = Modifier.fillMaxWidth(),
-        contentPadding = PaddingValues(horizontal = FluxSpace.MEDIUM),
-        horizontalArrangement = Arrangement.spacedBy(FluxSpace.SMALL)
+        contentPadding = PaddingValues(horizontal = Dimensions.Space.MEDIUM),
+        horizontalArrangement = Arrangement.spacedBy(Dimensions.Space.SMALL)
     ) {
 
         items(items = seasons.sorted(), key = { it }) { season ->
@@ -72,7 +70,7 @@ fun ArtworkSeasonsTabs(
                     containerColor = backgroundColor,
                     contentColor = textColor,
                 ),
-                shape = RoundedCornerShape(8.dp),
+                shape = Dimensions.Shape.RoundedCorner,
                 onClick = { onSeasonTap(season) }
             ) {
                 SmallText(text = stringResource(id = R.string.season, season))
@@ -104,8 +102,8 @@ fun EpisodeItem(
             .clickable { onEpisodeTap() }
             .animateContentSize()
             .fillMaxWidth()
-            .padding(horizontal = FluxSpace.MEDIUM)
-            .padding(bottom = FluxSpace.MEDIUM)
+            .padding(horizontal = Dimensions.Space.MEDIUM)
+            .padding(bottom = Dimensions.Space.MEDIUM)
     ) {
 
         val (divider, image, content) = createRefs()
@@ -126,10 +124,10 @@ fun EpisodeItem(
         GlideImage(
             modifier = Modifier
                 .alpha(alphaAnimation)
-                .clip(RoundedCornerShape(4.dp))
+                .clip(Dimensions.Shape.RoundedCorner)
                 .aspectRatio(16f / 9f)
                 .constrainAs(image) {
-                    top.linkTo(divider.bottom, FluxSpace.MEDIUM)
+                    top.linkTo(divider.bottom, Dimensions.Space.MEDIUM)
                     start.linkTo(parent.start)
                     end.linkTo(startGuideline)
                     width = Dimension.fillToConstraints
@@ -145,12 +143,12 @@ fun EpisodeItem(
                 .alpha(alphaAnimation)
                 .constrainAs(content) {
                     top.linkTo(image.top)
-                    start.linkTo(startGuideline, FluxSpace.MEDIUM)
+                    start.linkTo(startGuideline, Dimensions.Space.MEDIUM)
                     end.linkTo(parent.end)
                     width = Dimension.fillToConstraints
                 },
             horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.spacedBy(FluxSpace.EXTRA_SMALL)
+            verticalArrangement = Arrangement.spacedBy(Dimensions.Space.EXTRA_SMALL)
         ) {
 
             SmallText(

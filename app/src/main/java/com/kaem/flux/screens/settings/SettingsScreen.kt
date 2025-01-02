@@ -28,9 +28,7 @@ import com.kaem.flux.R
 import com.kaem.flux.ui.component.FluxButton
 import com.kaem.flux.ui.component.FluxTopBar
 import com.kaem.flux.ui.component.LightText
-import com.kaem.flux.ui.theme.FluxFontSize
-import com.kaem.flux.ui.theme.FluxSpace
-import com.kaem.flux.ui.theme.FluxWeight
+import com.kaem.flux.ui.theme.Dimensions
 
 @Composable
 fun SettingsScreen(
@@ -95,17 +93,17 @@ fun SettingsItem(
         modifier = Modifier
             .clickable { onTap() }
             .fillMaxWidth()
-            .padding(horizontal = FluxSpace.MEDIUM, vertical = FluxSpace.LARGE)
+            .padding(horizontal = Dimensions.Space.MEDIUM, vertical = Dimensions.Space.LARGE)
     ) {
 
         LightText(
             text = text,
-            fontSize = FluxFontSize.LARGE,
+            fontSize = Dimensions.FontSize.LARGE,
         )
 
         LightText(
             text = text,
-            fontSize = FluxFontSize.SMALL,
+            fontSize = Dimensions.FontSize.SMALL,
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = .8f),
         )
 
@@ -135,7 +133,7 @@ fun SettingsDialog(
                     .verticalScroll(rememberScrollState())
                     .background(color = MaterialTheme.colorScheme.surface)
                     .fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(FluxSpace.MEDIUM)
+                verticalArrangement = Arrangement.spacedBy(Dimensions.Space.MEDIUM)
             ) {
 
                 values.forEach { value ->
@@ -145,7 +143,7 @@ fun SettingsDialog(
                             .clickable { selectedValue = value }
                             .fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(FluxSpace.EXTRA_SMALL)
+                        horizontalArrangement = Arrangement.spacedBy(Dimensions.Space.EXTRA_SMALL)
                     ) {
 
                         RadioButton(
@@ -156,7 +154,7 @@ fun SettingsDialog(
                         LightText(
                             modifier = Modifier.weight(1f),
                             text = value,
-                            fontSize = FluxFontSize.LARGE,
+                            fontSize = Dimensions.FontSize.LARGE,
                             color = MaterialTheme.colorScheme.onSurface
                         )
 

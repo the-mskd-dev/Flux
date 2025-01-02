@@ -52,7 +52,7 @@ import com.kaem.flux.screens.permissions.fluxPermissionState
 import com.kaem.flux.ui.component.Loader
 import com.kaem.flux.ui.component.BoldText
 import com.kaem.flux.ui.component.Placeholders
-import com.kaem.flux.ui.theme.FluxSpace
+import com.kaem.flux.ui.theme.Dimensions
 import com.kaem.flux.utils.Constants
 
 @OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
@@ -172,8 +172,8 @@ fun HomeLists(
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .systemBarsPadding()
-            .padding(bottom = FluxSpace.LARGE),
-        verticalArrangement = Arrangement.spacedBy(FluxSpace.MEDIUM)
+            .padding(bottom = Dimensions.Space.LARGE),
+        verticalArrangement = Arrangement.spacedBy(Dimensions.Space.MEDIUM)
     ) {
 
         HomeTopButtons(
@@ -217,7 +217,7 @@ fun HomeTopButtons(
 
     Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(FluxSpace.EXTRA_SMALL, Alignment.End),
+        horizontalArrangement = Arrangement.spacedBy(Dimensions.Space.EXTRA_SMALL, Alignment.End),
         verticalAlignment = Alignment.CenterVertically
     ) {
 
@@ -282,21 +282,21 @@ fun ArtworkList(
 
     Column(
         modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(FluxSpace.MEDIUM)
+        verticalArrangement = Arrangement.spacedBy(Dimensions.Space.MEDIUM)
     ) {
 
         BoldText(
             modifier = Modifier
                 .clickable { navigateToCategory() }
                 .fillMaxWidth()
-                .padding(start = FluxSpace.MEDIUM, top = FluxSpace.LARGE),
+                .padding(start = Dimensions.Space.MEDIUM, top = Dimensions.Space.LARGE),
             text = name
         )
 
         LazyRow(
             modifier = Modifier.fillMaxWidth(),
-            contentPadding = PaddingValues(horizontal = FluxSpace.MEDIUM),
-            horizontalArrangement = Arrangement.spacedBy(FluxSpace.SMALL)
+            contentPadding = PaddingValues(horizontal = Dimensions.Space.MEDIUM),
+            horizontalArrangement = Arrangement.spacedBy(Dimensions.Space.SMALL)
         ) {
 
             items(overviews, key = { it.id }) {
@@ -331,7 +331,7 @@ fun ArtworkItem(
     GlideImage(
         modifier = Modifier
             .clickable { onTap() }
-            .clip(RoundedCornerShape(8.dp))
+            .clip(Dimensions.Shape.RoundedCorner)
             .width(width)
             .aspectRatio(ratio),
         model = url,

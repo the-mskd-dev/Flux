@@ -45,8 +45,7 @@ import com.kaem.flux.ui.component.BackButton
 import com.kaem.flux.ui.component.LifecycleComponent
 import com.kaem.flux.ui.component.MediumText
 import com.kaem.flux.ui.component.SmallText
-import com.kaem.flux.ui.theme.FluxFontSize
-import com.kaem.flux.ui.theme.FluxSpace
+import com.kaem.flux.ui.theme.Dimensions
 import com.kaem.flux.utils.extensions.forceScreenOn
 import com.kaem.flux.utils.extensions.hideSystemBars
 import com.kaem.flux.utils.extensions.setAppInLandscape
@@ -226,7 +225,7 @@ fun PlayerTitle(
     Column(
         modifier = Modifier.layoutId(layoutId),
         horizontalAlignment = Alignment.Start,
-        verticalArrangement = Arrangement.spacedBy(FluxSpace.EXTRA_SMALL)
+        verticalArrangement = Arrangement.spacedBy(Dimensions.Space.EXTRA_SMALL)
     ) {
 
         MediumText(
@@ -263,14 +262,14 @@ val PlayerButtonsConstraintSet = ConstraintSet {
     val back = createRefFor("back")
     constrain(back) {
         top.linkTo(parent.top)
-        start.linkTo(parent.start, FluxSpace.MEDIUM)
+        start.linkTo(parent.start, Dimensions.Space.MEDIUM)
     }
 
     val title = createRefFor("title")
     constrain(title) {
-        top.linkTo(parent.top, FluxSpace.EXTRA_SMALL)
-        start.linkTo(back.end, FluxSpace.SMALL)
-        end.linkTo(parent.end, FluxSpace.MEDIUM)
+        top.linkTo(parent.top, Dimensions.Space.EXTRA_SMALL)
+        start.linkTo(back.end, Dimensions.Space.SMALL)
+        end.linkTo(parent.end, Dimensions.Space.MEDIUM)
         width = Dimension.fillToConstraints
     }
 

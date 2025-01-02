@@ -44,22 +44,27 @@ private val FluxLightColorScheme = lightColorScheme(
 
 @Composable
 fun FluxTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dark: Boolean = true,
+    dynamicColor: Boolean = true, // Dynamic color is available on Android 12+
+    theme: Ui.THEME = Ui.THEME.SYSTEM,
     content: @Composable () -> Unit
 ) {
-    val dark = true // darkTheme
-    val colorScheme = when {
 
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (dark) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+    val colorScheme = when (theme) {
+        Ui.THEME.LIGHT -> FluxLightColorScheme
+        Ui.THEME.DARK -> FluxColorScheme
+        Ui.THEME.SYSTEM -> {
+
+            val isDark = isSystemInDarkTheme()
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                val context = LocalContext.current
+                if (isDark) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+            } else {
+                if (isDark) FluxColorScheme else FluxLightColorScheme
+            }
+
         }
-
-        dark -> FluxColorScheme
-
-        else -> FluxLightColorScheme
     }
     val view = LocalView.current
     if (!view.isInEditMode) {

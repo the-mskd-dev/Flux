@@ -27,7 +27,7 @@ import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.kaem.flux.ui.theme.Dimensions
+import com.kaem.flux.ui.theme.Ui
 
 @Composable
 fun FluxButton(
@@ -46,7 +46,7 @@ fun FluxButton(
             containerColor = backgroundColor,
             contentColor = textColor,
         ),
-        shape = Dimensions.Shape.RoundedCorner,
+        shape = Ui.Shape.RoundedCorner,
         border = border,
         onClick = onTap
     ) {
@@ -92,7 +92,7 @@ fun BackButton(
             .clickable { onTap() }
             .size(50.dp)
             .clip(shape = CircleShape)
-            .padding(Dimensions.Space.EXTRA_SMALL),
+            .padding(Ui.Space.EXTRA_SMALL),
         contentAlignment = Alignment.Center
     ) {
 

@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -15,9 +14,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import com.kaem.flux.R
-import com.kaem.flux.ui.theme.Dimensions
+import com.kaem.flux.ui.theme.Ui
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -35,11 +33,11 @@ fun FluxDialog(
     if (show) {
         BasicAlertDialog(onDismissRequest = onDismissRequest) {
 
-            Card(shape = Dimensions.Shape.RoundedCorner) {
+            Card(shape = Ui.Shape.RoundedCorner) {
 
                 Column(
-                    modifier = Modifier.padding(Dimensions.Space.MEDIUM),
-                    verticalArrangement = Arrangement.spacedBy(Dimensions.Space.LARGE)
+                    modifier = Modifier.padding(Ui.Space.MEDIUM),
+                    verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE)
                 ) {
 
                     BoldText(text = title)
@@ -49,7 +47,7 @@ fun FluxDialog(
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(Dimensions.Space.MEDIUM, Alignment.End)
+                        horizontalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM, Alignment.End)
                     ) {
 
                         TextButton(onClick = onDismissRequest) {

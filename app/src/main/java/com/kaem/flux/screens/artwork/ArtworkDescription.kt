@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,7 +18,7 @@ import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.ui.component.LightText
 import com.kaem.flux.ui.component.MediumText
 import com.kaem.flux.ui.component.SmallText
-import com.kaem.flux.ui.theme.Dimensions
+import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.extensions.timeDescription
 import java.text.DateFormat
 import java.util.Locale
@@ -33,8 +32,8 @@ fun ArtworkDescription(artwork: Artwork?) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = Dimensions.Space.MEDIUM),
-        verticalArrangement = Arrangement.spacedBy(Dimensions.Space.MEDIUM)
+            .padding(horizontal = Ui.Space.MEDIUM),
+        verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
     ) {
 
         if (artwork is Episode) {
@@ -54,7 +53,7 @@ fun ArtworkDescription(artwork: Artwork?) {
                     modifier = Modifier.fillMaxWidth(),
                     text = artwork.title,
                     color = MaterialTheme.colorScheme.onBackground,
-                    fontSize = Dimensions.FontSize.LARGE
+                    fontSize = Ui.FontSize.LARGE
                 )
 
             }
@@ -65,7 +64,7 @@ fun ArtworkDescription(artwork: Artwork?) {
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(R.string.summary),
                 color = MaterialTheme.colorScheme.onBackground,
-                fontSize = Dimensions.FontSize.LARGE
+                fontSize = Ui.FontSize.LARGE
             )
 
         }

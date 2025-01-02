@@ -16,7 +16,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -32,7 +31,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
@@ -43,7 +41,7 @@ import com.kaem.flux.model.artwork.Status
 import com.kaem.flux.ui.component.MediumText
 import com.kaem.flux.ui.component.Placeholders
 import com.kaem.flux.ui.component.SmallText
-import com.kaem.flux.ui.theme.Dimensions
+import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.Constants
 
 @Composable
@@ -55,8 +53,8 @@ fun ArtworkSeasonsTabs(
 
     LazyRow(
         modifier = Modifier.fillMaxWidth(),
-        contentPadding = PaddingValues(horizontal = Dimensions.Space.MEDIUM),
-        horizontalArrangement = Arrangement.spacedBy(Dimensions.Space.SMALL)
+        contentPadding = PaddingValues(horizontal = Ui.Space.MEDIUM),
+        horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)
     ) {
 
         items(items = seasons.sorted(), key = { it }) { season ->
@@ -69,7 +67,7 @@ fun ArtworkSeasonsTabs(
                 colors = ButtonDefaults.buttonColors(
                     containerColor = backgroundColor
                 ),
-                shape = Dimensions.Shape.RoundedCorner,
+                shape = Ui.Shape.RoundedCorner,
                 onClick = { onSeasonTap(season) }
             ) {
                 SmallText(
@@ -104,8 +102,8 @@ fun EpisodeItem(
             .clickable { onEpisodeTap() }
             .animateContentSize()
             .fillMaxWidth()
-            .padding(horizontal = Dimensions.Space.MEDIUM)
-            .padding(bottom = Dimensions.Space.MEDIUM)
+            .padding(horizontal = Ui.Space.MEDIUM)
+            .padding(bottom = Ui.Space.MEDIUM)
     ) {
 
         val (divider, image, content) = createRefs()
@@ -126,10 +124,10 @@ fun EpisodeItem(
         GlideImage(
             modifier = Modifier
                 .alpha(alphaAnimation)
-                .clip(Dimensions.Shape.RoundedCorner)
+                .clip(Ui.Shape.RoundedCorner)
                 .aspectRatio(16f / 9f)
                 .constrainAs(image) {
-                    top.linkTo(divider.bottom, Dimensions.Space.MEDIUM)
+                    top.linkTo(divider.bottom, Ui.Space.MEDIUM)
                     start.linkTo(parent.start)
                     end.linkTo(startGuideline)
                     width = Dimension.fillToConstraints
@@ -145,12 +143,12 @@ fun EpisodeItem(
                 .alpha(alphaAnimation)
                 .constrainAs(content) {
                     top.linkTo(image.top)
-                    start.linkTo(startGuideline, Dimensions.Space.MEDIUM)
+                    start.linkTo(startGuideline, Ui.Space.MEDIUM)
                     end.linkTo(parent.end)
                     width = Dimension.fillToConstraints
                 },
             horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.spacedBy(Dimensions.Space.EXTRA_SMALL)
+            verticalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)
         ) {
 
             SmallText(

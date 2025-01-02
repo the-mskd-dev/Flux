@@ -9,12 +9,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material3.Icon
@@ -22,7 +20,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -35,9 +32,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.kaem.flux.R
 import com.kaem.flux.screens.home.ArtworkItem
-import com.kaem.flux.ui.component.BackButton
 import com.kaem.flux.ui.component.FluxTopBar
-import com.kaem.flux.ui.theme.Dimensions
+import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.Constants
 
 @Composable
@@ -54,9 +50,9 @@ fun SearchScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
         columns = GridCells.Fixed(3),
-        horizontalArrangement = Arrangement.spacedBy(Dimensions.Space.SMALL),
-        verticalArrangement = Arrangement.spacedBy(Dimensions.Space.SMALL),
-        contentPadding = PaddingValues(horizontal = Dimensions.Space.MEDIUM)
+        horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL),
+        verticalArrangement = Arrangement.spacedBy(Ui.Space.SMALL),
+        contentPadding = PaddingValues(horizontal = Ui.Space.MEDIUM)
     ) {
 
         item(span = { GridItemSpan(3) }) {
@@ -75,7 +71,7 @@ fun SearchScreen(
                 value = state.searchWord,
                 onValueChange = { viewModel.updateSearchWord(it) },
                 singleLine = true,
-                shape = Dimensions.Shape.RoundedCorner,
+                shape = Ui.Shape.RoundedCorner,
                 colors = TextFieldDefaults.colors(
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,

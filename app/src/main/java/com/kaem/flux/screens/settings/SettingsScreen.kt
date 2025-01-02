@@ -12,7 +12,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -28,7 +27,7 @@ import com.kaem.flux.R
 import com.kaem.flux.ui.component.FluxButton
 import com.kaem.flux.ui.component.FluxTopBar
 import com.kaem.flux.ui.component.LightText
-import com.kaem.flux.ui.theme.Dimensions
+import com.kaem.flux.ui.theme.Ui
 
 @Composable
 fun SettingsScreen(
@@ -51,6 +50,12 @@ fun SettingsScreen(
         )
 
         SettingsItem(
+            text = "Thème de l'application",
+            value = stringResource(state.uiTheme.stringResourceId),
+            onTap = { viewModel.showUiThemeDialog(true) }
+        )
+
+        SettingsItem(
             text = "Bouton arrière",
             value = "${state.backwardValue}sec",
             onTap = { viewModel.showBackwardDialog(true) }
@@ -66,18 +71,30 @@ fun SettingsScreen(
 
     SettingsDialog(
         show = state.showBackwardDialog,
-        currentValue = state.backwardValue.toString(),
-        values = listOf("5", "10", "15", "20", "25", "30"),
-        onSelect = { viewModel.setBackwardValue(it.toInt()) },
+        currentValue = state.backwardValue,
+        options = SettingsViewModel.playerSeconds,
+        onSelect = { viewModel.setBackwardValue(it) },
         onDismiss = { viewModel.showBackwardDialog(false) }
     )
 
     SettingsDialog(
         show = state.showForwardDialog,
-        currentValue = state.forwardValue.toString(),
-        values = listOf("5", "10", "15", "20", "25", "30"),
-        onSelect = { viewModel.setForwardValue(it.toInt()) },
+        currentValue = state.forwardValue,
+        options = SettingsViewModel.playerSeconds,
+        onSelect = { viewModel.setForwardValue(it) },
         onDismiss = { viewModel.showForwardDialog(false) }
+    )
+
+    SettingsDialog(
+        show = state.showUiThemeDialog,
+        currentValue = state.uiTheme,
+        options = mapOf(
+            Ui.THEME.LIGHT to stringResource(Ui.THEME.LIGHT.stringResourceId),
+            Ui.THEME.DARK to stringResource(Ui.THEME.DARK.stringResourceId),
+            Ui.THEME.SYSTEM to stringResource(Ui.THEME.SYSTEM.stringResourceId),
+        ),
+        onSelect = { viewModel.setUiTheme(it) },
+        onDismiss = { viewModel.showUiThemeDialog(false) }
     )
 
 }
@@ -93,17 +110,17 @@ fun SettingsItem(
         modifier = Modifier
             .clickable { onTap() }
             .fillMaxWidth()
-            .padding(horizontal = Dimensions.Space.MEDIUM, vertical = Dimensions.Space.LARGE)
+            .padding(horizontal = Ui.Space.MEDIUM, vertical = Ui.Space.LARGE)
     ) {
 
         LightText(
             text = text,
-            fontSize = Dimensions.FontSize.LARGE,
+            fontSize = Ui.FontSize.LARGE,
         )
 
         LightText(
-            text = text,
-            fontSize = Dimensions.FontSize.SMALL,
+            text = value,
+            fontSize = Ui.FontSize.SMALL,
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = .8f),
         )
 
@@ -112,11 +129,11 @@ fun SettingsItem(
 }
 
 @Composable
-fun SettingsDialog(
+fun <T> SettingsDialog(
     show: Boolean,
-    currentValue: String,
-    values: List<String>,
-    onSelect: (String) -> Unit,
+    currentValue: T,
+    options: Map<T, String>,
+    onSelect: (T) -> Unit,
     onDismiss: () -> Unit
 ) {
 
@@ -133,28 +150,28 @@ fun SettingsDialog(
                     .verticalScroll(rememberScrollState())
                     .background(color = MaterialTheme.colorScheme.surface)
                     .fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(Dimensions.Space.MEDIUM)
+                verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
             ) {
 
-                values.forEach { value ->
+                options.forEach { option ->
 
                     Row(
                         modifier = Modifier
-                            .clickable { selectedValue = value }
+                            .clickable { selectedValue = option.key }
                             .fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(Dimensions.Space.EXTRA_SMALL)
+                        horizontalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)
                     ) {
 
                         RadioButton(
-                            selected = selectedValue == value,
-                            onClick = { selectedValue = value }
+                            selected = selectedValue == option,
+                            onClick = { selectedValue = option.key }
                         )
 
                         LightText(
                             modifier = Modifier.weight(1f),
-                            text = value,
-                            fontSize = Dimensions.FontSize.LARGE,
+                            text = option.value,
+                            fontSize = Ui.FontSize.LARGE,
                             color = MaterialTheme.colorScheme.onSurface
                         )
 
@@ -165,7 +182,10 @@ fun SettingsDialog(
                 FluxButton(
                     modifier = Modifier.align(Alignment.End),
                     text = "Valider",
-                    onTap = { onSelect(selectedValue); onDismiss() }
+                    onTap = {
+                        onSelect(selectedValue)
+                        onDismiss()
+                    }
                 )
 
             }

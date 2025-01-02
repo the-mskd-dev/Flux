@@ -9,7 +9,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
-import com.kaem.flux.ui.theme.Dimensions
+import com.kaem.flux.ui.theme.Ui
 
 @Composable
 fun Title(
@@ -30,8 +30,8 @@ fun Title(
         modifier = Modifier.then(modifier),
         text = text,
         color = color,
-        fontWeight = Dimensions.Weight.BOLD,
-        fontSize = Dimensions.FontSize.TITLE,
+        fontWeight = Ui.Weight.BOLD,
+        fontSize = Ui.FontSize.TITLE,
         textAlign = textAlign,
         fontStyle = fontStyle,
         overflow = overflow,
@@ -47,7 +47,7 @@ fun BoldText(
     text: String?,
     textAlign: TextAlign = TextAlign.Start,
     color: Color = MaterialTheme.colorScheme.onBackground,
-    fontSize: TextUnit = Dimensions.FontSize.LARGE,
+    fontSize: TextUnit = Ui.FontSize.LARGE,
     fontStyle: FontStyle? = null,
     overflow: TextOverflow = TextOverflow.Clip,
     maxLines: Int = Int.MAX_VALUE,
@@ -61,7 +61,7 @@ fun BoldText(
         modifier = modifier,
         text = text,
         color = color,
-        fontWeight = Dimensions.Weight.BOLD,
+        fontWeight = Ui.Weight.BOLD,
         fontSize = fontSize,
         textAlign = textAlign,
         fontStyle = fontStyle,
@@ -78,7 +78,7 @@ fun MediumText(
     text: String?,
     textAlign: TextAlign = TextAlign.Start,
     color: Color = MaterialTheme.colorScheme.onBackground,
-    fontSize: TextUnit = Dimensions.FontSize.MEDIUM,
+    fontSize: TextUnit = Ui.FontSize.MEDIUM,
     fontStyle: FontStyle? = null,
     overflow: TextOverflow = TextOverflow.Clip,
     maxLines: Int = Int.MAX_VALUE,
@@ -92,7 +92,7 @@ fun MediumText(
         modifier = modifier,
         text = text,
         color = color,
-        fontWeight = Dimensions.Weight.MEDIUM,
+        fontWeight = Ui.Weight.MEDIUM,
         fontSize = fontSize,
         textAlign = textAlign,
         fontStyle = fontStyle,
@@ -109,7 +109,7 @@ fun LightText(
     text: String?,
     textAlign: TextAlign = TextAlign.Start,
     color: Color = MaterialTheme.colorScheme.onBackground,
-    fontSize: TextUnit = Dimensions.FontSize.MEDIUM,
+    fontSize: TextUnit = Ui.FontSize.MEDIUM,
     fontStyle: FontStyle? = null,
     overflow: TextOverflow = TextOverflow.Clip,
     maxLines: Int = Int.MAX_VALUE,
@@ -123,7 +123,7 @@ fun LightText(
         modifier = modifier,
         text = text,
         color = color,
-        fontWeight = Dimensions.Weight.LIGHT,
+        fontWeight = Ui.Weight.LIGHT,
         fontSize = fontSize,
         textAlign = textAlign,
         fontStyle = fontStyle,
@@ -153,8 +153,8 @@ fun SmallText(
         modifier = modifier,
         text = text,
         color = color,
-        fontWeight = Dimensions.Weight.LIGHT,
-        fontSize = Dimensions.FontSize.SMALL,
+        fontWeight = Ui.Weight.LIGHT,
+        fontSize = Ui.FontSize.SMALL,
         textAlign = textAlign,
         fontStyle = fontStyle,
         overflow = overflow,

@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Search
@@ -52,7 +51,7 @@ import com.kaem.flux.screens.permissions.fluxPermissionState
 import com.kaem.flux.ui.component.Loader
 import com.kaem.flux.ui.component.BoldText
 import com.kaem.flux.ui.component.Placeholders
-import com.kaem.flux.ui.theme.Dimensions
+import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.Constants
 
 @OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
@@ -172,8 +171,8 @@ fun HomeLists(
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .systemBarsPadding()
-            .padding(bottom = Dimensions.Space.LARGE),
-        verticalArrangement = Arrangement.spacedBy(Dimensions.Space.MEDIUM)
+            .padding(bottom = Ui.Space.LARGE),
+        verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
     ) {
 
         HomeTopButtons(
@@ -217,7 +216,7 @@ fun HomeTopButtons(
 
     Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(Dimensions.Space.EXTRA_SMALL, Alignment.End),
+        horizontalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL, Alignment.End),
         verticalAlignment = Alignment.CenterVertically
     ) {
 
@@ -282,21 +281,21 @@ fun ArtworkList(
 
     Column(
         modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(Dimensions.Space.MEDIUM)
+        verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
     ) {
 
         BoldText(
             modifier = Modifier
                 .clickable { navigateToCategory() }
                 .fillMaxWidth()
-                .padding(start = Dimensions.Space.MEDIUM, top = Dimensions.Space.LARGE),
+                .padding(start = Ui.Space.MEDIUM, top = Ui.Space.LARGE),
             text = name
         )
 
         LazyRow(
             modifier = Modifier.fillMaxWidth(),
-            contentPadding = PaddingValues(horizontal = Dimensions.Space.MEDIUM),
-            horizontalArrangement = Arrangement.spacedBy(Dimensions.Space.SMALL)
+            contentPadding = PaddingValues(horizontal = Ui.Space.MEDIUM),
+            horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)
         ) {
 
             items(overviews, key = { it.id }) {
@@ -331,7 +330,7 @@ fun ArtworkItem(
     GlideImage(
         modifier = Modifier
             .clickable { onTap() }
-            .clip(Dimensions.Shape.RoundedCorner)
+            .clip(Ui.Shape.RoundedCorner)
             .width(width)
             .aspectRatio(ratio),
         model = url,

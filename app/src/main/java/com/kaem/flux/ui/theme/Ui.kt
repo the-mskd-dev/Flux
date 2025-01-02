@@ -4,8 +4,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kaem.flux.R
 
-object Dimensions {
+object Ui {
 
     object FontSize {
         val SMALL = 14.sp
@@ -38,6 +39,16 @@ object Dimensions {
 
     object Shape {
         val RoundedCorner get() = RoundedCornerShape(8.dp)
+    }
+
+    enum class THEME {
+        LIGHT, DARK, SYSTEM;
+
+        val stringResourceId: Int get() = when(this) {
+            LIGHT -> R.string.light
+            DARK -> R.string.dark
+            SYSTEM -> R.string.system
+        }
     }
 
 }

@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -45,7 +44,7 @@ import com.kaem.flux.ui.component.BackButton
 import com.kaem.flux.ui.component.LifecycleComponent
 import com.kaem.flux.ui.component.MediumText
 import com.kaem.flux.ui.component.SmallText
-import com.kaem.flux.ui.theme.Dimensions
+import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.extensions.forceScreenOn
 import com.kaem.flux.utils.extensions.hideSystemBars
 import com.kaem.flux.utils.extensions.setAppInLandscape
@@ -225,7 +224,7 @@ fun PlayerTitle(
     Column(
         modifier = Modifier.layoutId(layoutId),
         horizontalAlignment = Alignment.Start,
-        verticalArrangement = Arrangement.spacedBy(Dimensions.Space.EXTRA_SMALL)
+        verticalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)
     ) {
 
         MediumText(
@@ -262,14 +261,14 @@ val PlayerButtonsConstraintSet = ConstraintSet {
     val back = createRefFor("back")
     constrain(back) {
         top.linkTo(parent.top)
-        start.linkTo(parent.start, Dimensions.Space.MEDIUM)
+        start.linkTo(parent.start, Ui.Space.MEDIUM)
     }
 
     val title = createRefFor("title")
     constrain(title) {
-        top.linkTo(parent.top, Dimensions.Space.EXTRA_SMALL)
-        start.linkTo(back.end, Dimensions.Space.SMALL)
-        end.linkTo(parent.end, Dimensions.Space.MEDIUM)
+        top.linkTo(parent.top, Ui.Space.EXTRA_SMALL)
+        start.linkTo(back.end, Ui.Space.SMALL)
+        end.linkTo(parent.end, Ui.Space.MEDIUM)
         width = Dimension.fillToConstraints
     }
 

@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.google.gson.Gson
+import com.kaem.flux.ui.theme.Ui
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -17,6 +18,7 @@ data class FluxDataStore(
     val lastWatchedIds: List<Long> = listOf(),
     val playerBackwardValue: Int = 10,
     val playerForwardValue: Int = 10,
+    val uiTheme: Ui.THEME = Ui.THEME.SYSTEM
 )
 
 
@@ -32,6 +34,7 @@ class DataStoreRepository @Inject constructor(
         val LAST_SYNC_TIME = stringPreferencesKey("last_sync_time")
         val PLAYER_BACKWARD = stringPreferencesKey("player_backward")
         val PLAYER_FORWARD = stringPreferencesKey("player_forward")
+        val UI_THEME = stringPreferencesKey("ui_theme")
     }
 
     //endregion
@@ -46,10 +49,13 @@ class DataStoreRepository @Inject constructor(
         val playerBackwardValue = preferences[Keys.PLAYER_BACKWARD]?.toInt() ?: 10
         val playerForwardValue = preferences[Keys.PLAYER_FORWARD]?.toInt() ?: 10
 
+        val uiTheme = preferences[Keys.UI_THEME]?.toString()?.let { Ui.THEME.valueOf(it) } ?: Ui.THEME.SYSTEM
+
         FluxDataStore(
             lastWatchedIds = lastWatchedIds.map { it.toLong() },
             playerBackwardValue = playerBackwardValue,
-            playerForwardValue = playerForwardValue
+            playerForwardValue = playerForwardValue,
+            uiTheme = uiTheme
         )
     }
 
@@ -104,6 +110,16 @@ class DataStoreRepository @Inject constructor(
     suspend fun setPlayerForwardValue(value: Int) {
         dataStore.edit { preferences ->
             preferences[Keys.PLAYER_FORWARD] = value.toString()
+        }
+    }
+
+    //endregion
+
+    //region UI Theme
+
+    suspend fun setUiTheme(theme: Ui.THEME) {
+        dataStore.edit { preferences ->
+            preferences[Keys.UI_THEME] = theme.toString()
         }
     }
 

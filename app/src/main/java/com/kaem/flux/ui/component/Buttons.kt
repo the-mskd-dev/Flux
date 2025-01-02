@@ -83,6 +83,7 @@ fun FluxButton(
 @Composable
 fun BackButton(
     modifier: Modifier = Modifier,
+    tint: Color = MaterialTheme.colorScheme.onBackground,
     onTap: () -> Unit
 ) {
 
@@ -98,7 +99,7 @@ fun BackButton(
 
         Icon(
             imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-            tint = Color.White,
+            tint = tint,
             contentDescription = "back button"
         )
 

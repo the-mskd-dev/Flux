@@ -209,6 +209,7 @@ fun PlayerButtons(
 
             BackButton(
                 modifier = Modifier.layoutId("back"),
+                tint = Color.White,
                 onTap = onBackButtonTap
             )
 

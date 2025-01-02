@@ -27,6 +27,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.kaem.flux.R
 import com.kaem.flux.ui.component.FluxButton
+import com.kaem.flux.ui.component.FluxDialog
 import com.kaem.flux.ui.component.FluxTopBar
 import com.kaem.flux.ui.component.LightText
 import com.kaem.flux.ui.component.MediumText
@@ -140,18 +141,20 @@ fun <T> SettingsDialog(
     onDismiss: () -> Unit
 ) {
 
-    if (show) {
+    var selectedValue by remember { mutableStateOf(currentValue) }
 
-        var selectedValue by remember { mutableStateOf(currentValue) }
-
-        Dialog(
-            onDismissRequest = onDismiss
-        ) {
+    FluxDialog(
+        show = show,
+        onDismissRequest = onDismiss,
+        onValidate = {
+            onSelect(selectedValue)
+            onDismiss()
+        },
+        content = {
 
             Column(
                 modifier = Modifier
                     .verticalScroll(rememberScrollState())
-                    .background(color = MaterialTheme.colorScheme.surface)
                     .fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
             ) {
@@ -171,10 +174,9 @@ fun <T> SettingsDialog(
                             onClick = { selectedValue = option.key }
                         )
 
-                        LightText(
+                        MediumText(
                             modifier = Modifier.weight(1f),
                             text = option.value,
-                            fontSize = Ui.FontSize.LARGE,
                             color = MaterialTheme.colorScheme.onSurface
                         )
 
@@ -182,19 +184,9 @@ fun <T> SettingsDialog(
 
                 }
 
-                FluxButton(
-                    modifier = Modifier.align(Alignment.End),
-                    text = "Valider",
-                    onTap = {
-                        onSelect(selectedValue)
-                        onDismiss()
-                    }
-                )
-
             }
 
         }
-
-    }
+    )
 
 }

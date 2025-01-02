@@ -203,6 +203,8 @@ fun ArtworkStatusDialog(
     FluxDialog(
         show = showStatusDialog,
         text = stringResource(R.string.mark_previous_episodes_as_watched),
+        cancelText = stringResource(R.string.no),
+        validateText = stringResource(R.string.yes),
         onDismissRequest = onDismiss,
         onValidate = onValidate
     )

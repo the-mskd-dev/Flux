@@ -2,6 +2,7 @@ package com.kaem.flux.ui.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -24,10 +25,45 @@ fun FluxDialog(
     show: Boolean,
     title: String? = null,
     text: String? = null,
-    cancelText: String = stringResource(R.string.no),
-    validateText: String = stringResource(R.string.yes),
+    cancelText: String = stringResource(android.R.string.cancel),
+    validateText: String = stringResource(R.string.validate),
     onDismissRequest: () -> Unit,
     onValidate: (() -> Unit)? = null
+) {
+
+    FluxDialog(
+        show = show,
+        cancelText = cancelText,
+        validateText = validateText,
+        onDismissRequest = onDismissRequest,
+        onValidate = onValidate,
+        content = {
+
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE)
+            ) {
+
+                BoldText(text = title)
+
+                LightText(text = text)
+
+            }
+
+        }
+    )
+
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun FluxDialog(
+    show: Boolean,
+    cancelText: String = stringResource(android.R.string.cancel),
+    validateText: String = stringResource(R.string.validate),
+    onDismissRequest: () -> Unit,
+    onValidate: (() -> Unit)? = null,
+    content: @Composable ColumnScope.() -> Unit
 ) {
 
     if (show) {
@@ -35,17 +71,14 @@ fun FluxDialog(
 
             Card(shape = Ui.Shape.RoundedCorner) {
 
-                Column(
-                    modifier = Modifier.padding(Ui.Space.MEDIUM),
-                    verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE)
-                ) {
+                Column(modifier = Modifier.padding(Ui.Space.MEDIUM)) {
 
-                    BoldText(text = title)
-
-                    LightText(text = text)
+                    content()
 
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = Ui.Space.LARGE),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM, Alignment.End)
                     ) {

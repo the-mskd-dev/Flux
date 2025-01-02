@@ -39,6 +39,7 @@ import com.kaem.flux.model.artwork.ArtworkOverview
 import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.screens.player.PlayerScreen
 import com.kaem.flux.ui.component.ErrorScreen
+import com.kaem.flux.ui.component.FluxDialog
 import com.kaem.flux.ui.component.Loader
 import com.kaem.flux.ui.component.MediumText
 import com.kaem.flux.ui.theme.FluxSpace
@@ -208,38 +209,11 @@ fun ArtworkStatusDialog(
     onValidate: () -> Unit
 ) {
 
-    if (showStatusDialog) {
-        BasicAlertDialog(onDismissRequest = onDismiss) {
-
-            Card(
-                shape = RoundedCornerShape(8.dp)
-            ) {
-                Column(
-                    modifier = Modifier.padding(FluxSpace.MEDIUM),
-                    verticalArrangement = Arrangement.spacedBy(FluxSpace.LARGE)
-                ) {
-
-                    MediumText(text = stringResource(R.string.mark_previous_episodes_as_watched))
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(FluxSpace.MEDIUM, Alignment.End)
-                    ) {
-
-                        TextButton(onClick = onDismiss) {
-                            Text(stringResource(R.string.no))
-                        }
-
-                        TextButton(onClick = onValidate) {
-                            Text(stringResource(R.string.yes))
-                        }
-
-                    }
-                }
-            }
-
-        }
-    }
+    FluxDialog(
+        show = showStatusDialog,
+        text = stringResource(R.string.mark_previous_episodes_as_watched),
+        onDismissRequest = onDismiss,
+        onValidate = onValidate
+    )
 
 }

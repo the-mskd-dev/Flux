@@ -43,6 +43,8 @@ import com.kaem.flux.model.artwork.Artwork
 import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.ui.component.BackButton
 import com.kaem.flux.ui.component.LifecycleComponent
+import com.kaem.flux.ui.component.MediumText
+import com.kaem.flux.ui.component.SmallText
 import com.kaem.flux.ui.theme.FluxFontSize
 import com.kaem.flux.ui.theme.FluxSpace
 import com.kaem.flux.utils.extensions.forceScreenOn
@@ -227,11 +229,10 @@ fun PlayerTitle(
         verticalArrangement = Arrangement.spacedBy(FluxSpace.EXTRA_SMALL)
     ) {
 
-        Text(
+        MediumText(
             modifier = Modifier.fillMaxWidth(),
             text = artwork.title,
             color = Color.White,
-            fontSize = FluxFontSize.MEDIUM,
             maxLines = 1,
             textAlign = TextAlign.Start,
             overflow = TextOverflow.Ellipsis
@@ -242,15 +243,15 @@ fun PlayerTitle(
             val season = stringResource(R.string.season, episode.season)
             val number = stringResource(R.string.episode, episode.number)
 
-            Text(
+            SmallText(
                 modifier = Modifier.fillMaxWidth(),
                 text = "$season, $number",
                 color = Color.White,
-                fontSize = FluxFontSize.SMALL,
                 maxLines = 1,
                 textAlign = TextAlign.Start,
                 overflow = TextOverflow.Ellipsis
             )
+
         }
 
     }

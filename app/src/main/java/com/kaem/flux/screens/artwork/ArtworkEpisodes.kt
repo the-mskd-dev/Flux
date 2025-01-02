@@ -41,7 +41,9 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.kaem.flux.R
 import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.model.artwork.Status
+import com.kaem.flux.ui.component.MediumText
 import com.kaem.flux.ui.component.Placeholders
+import com.kaem.flux.ui.component.SmallText
 import com.kaem.flux.ui.theme.FluxFontSize
 import com.kaem.flux.ui.theme.FluxSpace
 import com.kaem.flux.utils.Constants
@@ -73,10 +75,7 @@ fun ArtworkSeasonsTabs(
                 shape = RoundedCornerShape(8.dp),
                 onClick = { onSeasonTap(season) }
             ) {
-                Text(
-                    text = stringResource(id = R.string.season, season),
-                    fontSize = FluxFontSize.SMALL
-                )
+                SmallText(text = stringResource(id = R.string.season, season))
             }
 
         }
@@ -154,22 +153,18 @@ fun EpisodeItem(
             verticalArrangement = Arrangement.spacedBy(FluxSpace.EXTRA_SMALL)
         ) {
 
-            Text(
+            SmallText(
                 modifier = Modifier
                     .fillMaxWidth()
                     .alpha(.8f),
                 text = stringResource(R.string.episode, episode.number),
-                fontSize = FluxFontSize.SMALL,
                 textAlign = TextAlign.Start,
-                color = MaterialTheme.colorScheme.onBackground,
                 fontStyle = FontStyle.Italic
             )
 
-            Text(
+            MediumText(
                 modifier = Modifier.fillMaxWidth(),
                 text = episode.title,
-                color = MaterialTheme.colorScheme.onBackground,
-                fontSize = FluxFontSize.MEDIUM,
                 textAlign = TextAlign.Start,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis

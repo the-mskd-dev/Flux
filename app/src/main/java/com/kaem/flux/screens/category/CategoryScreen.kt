@@ -22,6 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.kaem.flux.screens.home.ArtworkItem
 import com.kaem.flux.ui.component.BackButton
+import com.kaem.flux.ui.component.BoldText
 import com.kaem.flux.ui.theme.FluxFontSize
 import com.kaem.flux.ui.theme.FluxSpace
 import com.kaem.flux.ui.theme.FluxWeight
@@ -55,12 +56,9 @@ fun CategoryScreen(
 
                 BackButton(onTap = onBackButtonTap)
 
-                Text(
+                BoldText(
                     modifier = Modifier.align(Alignment.Center),
-                    text = stringResource(viewModel.contentType.stringResource),
-                    color = MaterialTheme.colorScheme.onBackground,
-                    fontWeight = FluxWeight.BOLD,
-                    fontSize = FluxFontSize.LARGE,
+                    text = stringResource(viewModel.contentType.stringResource)
                 )
 
             }

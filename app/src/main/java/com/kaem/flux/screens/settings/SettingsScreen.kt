@@ -3,24 +3,16 @@ package com.kaem.flux.screens.settings
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
-import androidx.compose.material.icons.rounded.KeyboardArrowRight
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -33,11 +25,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.kaem.flux.R
-import com.kaem.flux.screens.search.SearchViewModel
-import com.kaem.flux.ui.component.BackButton
 import com.kaem.flux.ui.component.FluxButton
 import com.kaem.flux.ui.component.FluxTopBar
-import com.kaem.flux.ui.component.MediumText
+import com.kaem.flux.ui.component.LightText
 import com.kaem.flux.ui.theme.FluxFontSize
 import com.kaem.flux.ui.theme.FluxSpace
 import com.kaem.flux.ui.theme.FluxWeight
@@ -108,18 +98,15 @@ fun SettingsItem(
             .padding(horizontal = FluxSpace.MEDIUM, vertical = FluxSpace.LARGE)
     ) {
 
-        Text(
+        LightText(
             text = text,
-            fontWeight = FluxWeight.LIGHT,
             fontSize = FluxFontSize.LARGE,
-            color = MaterialTheme.colorScheme.onBackground
         )
 
-        Text(
-            text = value,
-            color = MaterialTheme.colorScheme.onBackground.copy(alpha = .8f),
-            fontWeight = FluxWeight.LIGHT,
+        LightText(
+            text = text,
             fontSize = FluxFontSize.SMALL,
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = .8f),
         )
 
     }
@@ -166,10 +153,9 @@ fun SettingsDialog(
                             onClick = { selectedValue = value }
                         )
 
-                        Text(
+                        LightText(
                             modifier = Modifier.weight(1f),
                             text = value,
-                            fontWeight = FluxWeight.LIGHT,
                             fontSize = FluxFontSize.LARGE,
                             color = MaterialTheme.colorScheme.onSurface
                         )

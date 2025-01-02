@@ -40,6 +40,7 @@ import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.screens.player.PlayerScreen
 import com.kaem.flux.ui.component.ErrorScreen
 import com.kaem.flux.ui.component.Loader
+import com.kaem.flux.ui.component.MediumText
 import com.kaem.flux.ui.theme.FluxSpace
 import kotlinx.coroutines.launch
 
@@ -218,7 +219,7 @@ fun ArtworkStatusDialog(
                     verticalArrangement = Arrangement.spacedBy(FluxSpace.LARGE)
                 ) {
 
-                    Text(stringResource(R.string.mark_previous_episodes_as_watched))
+                    MediumText(text = stringResource(R.string.mark_previous_episodes_as_watched))
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),

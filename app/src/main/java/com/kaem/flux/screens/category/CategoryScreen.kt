@@ -14,7 +14,6 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,9 +21,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.kaem.flux.screens.home.ArtworkItem
 import com.kaem.flux.ui.component.BackButton
-import com.kaem.flux.ui.theme.FluxFontSize
-import com.kaem.flux.ui.theme.FluxSpace
-import com.kaem.flux.ui.theme.FluxWeight
+import com.kaem.flux.ui.component.BoldText
+import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.Constants
 
 @Composable
@@ -39,9 +37,9 @@ fun CategoryScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
         columns = GridCells.Fixed(3),
-        horizontalArrangement = Arrangement.spacedBy(FluxSpace.SMALL),
-        verticalArrangement = Arrangement.spacedBy(FluxSpace.SMALL),
-        contentPadding = PaddingValues(horizontal = FluxSpace.MEDIUM)
+        horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL),
+        verticalArrangement = Arrangement.spacedBy(Ui.Space.SMALL),
+        contentPadding = PaddingValues(horizontal = Ui.Space.MEDIUM)
     ) {
 
         item(span = { GridItemSpan(3) }) {
@@ -55,12 +53,9 @@ fun CategoryScreen(
 
                 BackButton(onTap = onBackButtonTap)
 
-                Text(
+                BoldText(
                     modifier = Modifier.align(Alignment.Center),
-                    text = stringResource(viewModel.contentType.stringResource),
-                    color = MaterialTheme.colorScheme.onBackground,
-                    fontWeight = FluxWeight.BOLD,
-                    fontSize = FluxFontSize.LARGE,
+                    text = stringResource(viewModel.contentType.stringResource)
                 )
 
             }

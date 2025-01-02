@@ -48,8 +48,8 @@ import com.kaem.flux.model.artwork.ArtworkOverview
 import com.kaem.flux.model.artwork.ContentType
 import com.kaem.flux.screens.permissions.PermissionsScreen
 import com.kaem.flux.screens.permissions.fluxPermissionState
-import com.kaem.flux.ui.component.Loader
 import com.kaem.flux.ui.component.BoldText
+import com.kaem.flux.ui.component.Loader
 import com.kaem.flux.ui.component.Placeholders
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.Constants

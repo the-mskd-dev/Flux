@@ -54,7 +54,7 @@ import com.kaem.flux.ui.component.Placeholders
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.Constants
 
-@OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun HomeScreen(
     navigateToDetails: (Long) -> Unit,

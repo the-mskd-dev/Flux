@@ -1,4 +1,4 @@
-package com.kaem.flux.screens.permissions
+package com.kaem.flux.screens.welcome
 
 import android.os.Build
 import androidx.activity.compose.BackHandler

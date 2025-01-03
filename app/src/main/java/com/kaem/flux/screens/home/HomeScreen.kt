@@ -45,8 +45,8 @@ import com.kaem.flux.R
 import com.kaem.flux.model.ScreenState
 import com.kaem.flux.model.artwork.ArtworkOverview
 import com.kaem.flux.model.artwork.ContentType
-import com.kaem.flux.screens.permissions.WelcomeScreen
-import com.kaem.flux.screens.permissions.fluxPermissionState
+import com.kaem.flux.screens.welcome.WelcomeScreen
+import com.kaem.flux.screens.welcome.fluxPermissionState
 import com.kaem.flux.ui.component.BoldText
 import com.kaem.flux.ui.component.Loader
 import com.kaem.flux.ui.component.Placeholders

@@ -9,12 +9,14 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowLeft
@@ -33,6 +35,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -68,7 +72,6 @@ fun PermissionsScreen(
 
         AnimatedContent(
             modifier = Modifier
-                .statusBarsPadding()
                 .constrainAs(texts) {
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)
@@ -88,25 +91,13 @@ fun PermissionsScreen(
             }
         ) { i ->
 
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.Start,
-                verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE)
-            ) {
+            val presentation = presentations[i]
 
-                val presentation = presentations[i]
-
-                Title(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = presentation.title
-                )
-
-                MediumText(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = presentation.description
-                )
-
-            }
+            WelcomeComposable(
+                modifier = Modifier,
+                title = presentation.title,
+                description = presentation.description
+            )
 
         }
 
@@ -162,6 +153,49 @@ fun PermissionsScreen(
             }
 
         }
+
+    }
+
+}
+
+@Composable
+fun WelcomeComposable(
+    modifier: Modifier,
+    title: String,
+    description: String
+) {
+
+    Column(
+        modifier = modifier
+            .background(brush = Brush.verticalGradient(
+                colors = listOf(
+                    MaterialTheme.colorScheme.primary,
+                    MaterialTheme.colorScheme.primary.copy(alpha = .9f),
+                    MaterialTheme.colorScheme.primary.copy(alpha = .6f),
+                    MaterialTheme.colorScheme.primary.copy(alpha = .3f),
+                    Color.Transparent,
+                ),
+                startY = 0f,
+                endY = Float.POSITIVE_INFINITY
+            ))
+            .statusBarsPadding()
+            .fillMaxSize()
+            .padding(start = Ui.Space.MEDIUM, end = Ui.Space.MEDIUM, top = Ui.Space.LARGE),
+        horizontalAlignment = Alignment.Start,
+        verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE)
+    ) {
+
+        Title(
+            modifier = Modifier.fillMaxWidth(),
+            text = title,
+            color = MaterialTheme.colorScheme.onPrimary
+        )
+
+        MediumText(
+            modifier = Modifier.fillMaxWidth(),
+            text = description,
+            color = MaterialTheme.colorScheme.onPrimary
+        )
 
     }
 

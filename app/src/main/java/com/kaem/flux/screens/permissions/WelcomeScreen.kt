@@ -3,9 +3,8 @@ package com.kaem.flux.screens.permissions
 import android.os.Build
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
@@ -21,15 +20,12 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
-import androidx.compose.material.icons.rounded.KeyboardArrowLeft
-import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -41,7 +37,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import androidx.room.util.TableInfo
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.rememberPermissionState
@@ -52,12 +47,29 @@ import com.kaem.flux.ui.component.Title
 import com.kaem.flux.ui.theme.Ui
 
 @Composable
-fun PermissionsScreen(
+fun WelcomeScreen(
     onPermissionsTap: () -> Unit
 ) {
 
     var index by remember { mutableIntStateOf(0) }
-    val backVisibility by animateFloatAsState(if (index == 0) 0f else 1f, label = "back animation")
+
+    val backgroundColor by animateColorAsState(
+        targetValue = when (index) {
+            0 -> MaterialTheme.colorScheme.primary
+            1 -> MaterialTheme.colorScheme.secondary
+            else -> MaterialTheme.colorScheme.surface
+        },
+        label = "backgroundColor"
+    )
+
+    val textColor by animateColorAsState(
+        targetValue = when (index) {
+            0 -> MaterialTheme.colorScheme.onPrimary
+            1 -> MaterialTheme.colorScheme.onSecondary
+            else -> MaterialTheme.colorScheme.onSurface
+        },
+        label = "backgroundColor"
+    )
 
     BackHandler(enabled = index > 0) {
         index--
@@ -67,102 +79,111 @@ fun PermissionsScreen(
         modifier = Modifier.fillMaxSize()
     ) {
 
-        val (texts, buttons) = createRefs()
+        val (background, descriptions, buttons) = createRefs()
         val guideline = createGuidelineFromTop(.7f)
 
-        AnimatedContent(
-            modifier = Modifier
-                .constrainAs(texts) {
-                    top.linkTo(parent.top)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                    bottom.linkTo(guideline)
-                    height = Dimension.fillToConstraints
-                    width = Dimension.fillToConstraints
-                },
-            targetState = index,
-            label = "textsAnim",
-            transitionSpec = {
-                if (targetState > initialState) {
-                    slideInHorizontally { width -> width } togetherWith slideOutHorizontally { width -> -width }
-                } else {
-                    slideInHorizontally { width -> -width }  togetherWith slideOutHorizontally { width -> width }
-                }
-            }
-        ) { i ->
+        WelcomeBackground(
+            modifier = Modifier.constrainAs(background) {
+                top.linkTo(parent.top)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+                bottom.linkTo(guideline)
+                height = Dimension.fillToConstraints
+                width = Dimension.fillToConstraints
+            },
+            backgroundColor = backgroundColor
+        )
 
-            val presentation = presentations[i]
+        WelcomeDescriptions(
+            modifier = Modifier.constrainAs(descriptions) {
+                top.linkTo(parent.top)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+                bottom.linkTo(guideline)
+                height = Dimension.fillToConstraints
+                width = Dimension.fillToConstraints
+            },
+            textColor = textColor,
+            index = index
+        )
 
-            WelcomeComposable(
-                modifier = Modifier,
-                title = presentation.title,
-                description = presentation.description
-            )
-
-        }
-
-        AnimatedContent(
+        WelcomeButtons(
             modifier = Modifier.constrainAs(buttons) {
                 top.linkTo(guideline, Ui.Space.LARGE)
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
             },
-            targetState = index == presentations.lastIndex
-        ) { isLastText ->
-
-            if (isLastText) {
-
-                FluxButton(
-                    text = stringResource(id = R.string.give_permission),
-                    onTap = onPermissionsTap
-                )
-
-            } else {
-
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(200.dp)
-                ) {
-
-                    IconButton(
-                        modifier = Modifier.alpha(backVisibility),
-                        onClick = { if (index != 0) index-- },
-                        content = {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowLeft,
-                                tint = MaterialTheme.colorScheme.onBackground,
-                                contentDescription = "Back button"
-                            )
-                        }
-                    )
-
-                    IconButton(
-                        onClick = { index++ },
-                        content = {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowRight,
-                                tint = MaterialTheme.colorScheme.onBackground,
-                                contentDescription = "Next button"
-                            )
-                        }
-                    )
-
-
-                }
-
-            }
-
-        }
+            index = index,
+            onIndexChange = { index = it },
+            onPermissionsTap = onPermissionsTap
+        )
 
     }
 
 }
 
 @Composable
-fun WelcomeComposable(
+fun WelcomeBackground(
+    modifier: Modifier,
+    backgroundColor: Color
+) {
+
+    Box(
+        modifier = modifier
+            .background(brush = Brush.verticalGradient(
+                colors = listOf(
+                    backgroundColor,
+                    backgroundColor.copy(alpha = .9f),
+                    backgroundColor.copy(alpha = .6f),
+                    backgroundColor.copy(alpha = .3f),
+                    Color.Transparent,
+                ),
+                startY = 0f,
+                endY = Float.POSITIVE_INFINITY
+            ))
+    )
+
+}
+
+@Composable
+fun WelcomeDescriptions(
+    modifier: Modifier,
+    textColor: Color,
+    index: Int
+) {
+
+    AnimatedContent(
+        modifier = modifier,
+        targetState = index,
+        label = "textsAnim",
+        transitionSpec = {
+            if (targetState > initialState) {
+                slideInHorizontally { width -> width } togetherWith slideOutHorizontally { width -> -width }
+            } else {
+                slideInHorizontally { width -> -width }  togetherWith slideOutHorizontally { width -> width }
+            }
+        }
+    ) { i ->
+
+        val presentation = presentations[i]
+
+        WelcomeItem(
+            modifier = Modifier,
+            title = presentation.title,
+            description = presentation.description,
+            textColor = textColor
+        )
+
+    }
+
+}
+
+@Composable
+fun WelcomeItem(
     modifier: Modifier,
     title: String,
-    description: String
+    description: String,
+    textColor: Color
 ) {
 
     Column(
@@ -188,14 +209,76 @@ fun WelcomeComposable(
         Title(
             modifier = Modifier.fillMaxWidth(),
             text = title,
-            color = MaterialTheme.colorScheme.onPrimary
+            color = textColor
         )
 
         MediumText(
             modifier = Modifier.fillMaxWidth(),
             text = description,
-            color = MaterialTheme.colorScheme.onPrimary
+            color = textColor
         )
+
+    }
+
+}
+
+@Composable
+fun WelcomeButtons(
+    modifier: Modifier,
+    index: Int,
+    onIndexChange: (Int) -> Unit,
+    onPermissionsTap: () -> Unit
+) {
+
+    val backVisibility by animateFloatAsState(if (index == 0) 0f else 1f, label = "back animation")
+
+    AnimatedContent(
+        modifier = modifier,
+        targetState = index == presentations.lastIndex,
+        label = "welcome buttons anim"
+    ) { isLastText ->
+
+        if (isLastText) {
+
+            FluxButton(
+                text = stringResource(id = R.string.give_permission),
+                onTap = onPermissionsTap
+            )
+
+        } else {
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(200.dp)
+            ) {
+
+                IconButton(
+                    modifier = Modifier.alpha(backVisibility),
+                    onClick = { if (index != 0) onIndexChange(index - 1) },
+                    content = {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowLeft,
+                            tint = MaterialTheme.colorScheme.onBackground,
+                            contentDescription = "Back button"
+                        )
+                    }
+                )
+
+                IconButton(
+                    onClick = { onIndexChange(index + 1) },
+                    content = {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowRight,
+                            tint = MaterialTheme.colorScheme.onBackground,
+                            contentDescription = "Next button"
+                        )
+                    }
+                )
+
+
+            }
+
+        }
 
     }
 

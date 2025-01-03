@@ -4,6 +4,11 @@ import android.os.Build
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -73,7 +78,14 @@ fun PermissionsScreen(
                     width = Dimension.fillToConstraints
                 },
             targetState = index,
-            label = "textsAnim"
+            label = "textsAnim",
+            transitionSpec = {
+                if (targetState > initialState) {
+                    slideInHorizontally { width -> width } togetherWith slideOutHorizontally { width -> -width }
+                } else {
+                    slideInHorizontally { width -> -width }  togetherWith slideOutHorizontally { width -> width }
+                }
+            }
         ) { i ->
 
             Column(

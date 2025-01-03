@@ -56,8 +56,8 @@ fun WelcomeScreen(
     val backgroundColor by animateColorAsState(
         targetValue = when (index) {
             0 -> MaterialTheme.colorScheme.primary
-            1 -> MaterialTheme.colorScheme.secondary
-            else -> MaterialTheme.colorScheme.surface
+            1 -> MaterialTheme.colorScheme.secondaryContainer
+            else -> MaterialTheme.colorScheme.primaryContainer
         },
         label = "backgroundColor"
     )
@@ -65,8 +65,8 @@ fun WelcomeScreen(
     val textColor by animateColorAsState(
         targetValue = when (index) {
             0 -> MaterialTheme.colorScheme.onPrimary
-            1 -> MaterialTheme.colorScheme.onSecondary
-            else -> MaterialTheme.colorScheme.onSurface
+            1 -> MaterialTheme.colorScheme.onSecondaryContainer
+            else -> MaterialTheme.colorScheme.onPrimaryContainer
         },
         label = "backgroundColor"
     )

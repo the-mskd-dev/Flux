@@ -109,7 +109,8 @@ fun WelcomeScreen(
 
         WelcomeButtons(
             modifier = Modifier.constrainAs(buttons) {
-                top.linkTo(guideline, Ui.Space.LARGE)
+                top.linkTo(guideline)
+                bottom.linkTo(parent.bottom)
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
             },

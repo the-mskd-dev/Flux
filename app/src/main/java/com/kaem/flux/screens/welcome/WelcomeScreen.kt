@@ -62,15 +62,6 @@ fun WelcomeScreen(
         label = "backgroundColor"
     )
 
-    val textColor by animateColorAsState(
-        targetValue = when (index) {
-            0 -> MaterialTheme.colorScheme.onPrimary
-            1 -> MaterialTheme.colorScheme.onSecondaryContainer
-            else -> MaterialTheme.colorScheme.onPrimaryContainer
-        },
-        label = "backgroundColor"
-    )
-
     BackHandler(enabled = index > 0) {
         index--
     }
@@ -103,7 +94,6 @@ fun WelcomeScreen(
                 height = Dimension.fillToConstraints
                 width = Dimension.fillToConstraints
             },
-            textColor = textColor,
             index = index
         )
 
@@ -133,9 +123,6 @@ fun WelcomeBackground(
         modifier = modifier
             .background(brush = Brush.verticalGradient(
                 colors = listOf(
-                    backgroundColor,
-                    backgroundColor.copy(alpha = .9f),
-                    backgroundColor.copy(alpha = .6f),
                     backgroundColor.copy(alpha = .3f),
                     Color.Transparent,
                 ),
@@ -149,7 +136,6 @@ fun WelcomeBackground(
 @Composable
 fun WelcomeDescriptions(
     modifier: Modifier,
-    textColor: Color,
     index: Int
 ) {
 
@@ -172,7 +158,7 @@ fun WelcomeDescriptions(
             modifier = Modifier,
             title = presentation.title,
             description = presentation.description,
-            textColor = textColor
+            textColor = MaterialTheme.colorScheme.onBackground
         )
 
     }
@@ -189,17 +175,6 @@ fun WelcomeItem(
 
     Column(
         modifier = modifier
-            .background(brush = Brush.verticalGradient(
-                colors = listOf(
-                    MaterialTheme.colorScheme.primary,
-                    MaterialTheme.colorScheme.primary.copy(alpha = .9f),
-                    MaterialTheme.colorScheme.primary.copy(alpha = .6f),
-                    MaterialTheme.colorScheme.primary.copy(alpha = .3f),
-                    Color.Transparent,
-                ),
-                startY = 0f,
-                endY = Float.POSITIVE_INFINITY
-            ))
             .statusBarsPadding()
             .fillMaxSize()
             .padding(start = Ui.Space.MEDIUM, end = Ui.Space.MEDIUM, top = Ui.Space.LARGE),

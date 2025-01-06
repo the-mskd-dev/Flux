@@ -73,7 +73,7 @@ fun SettingsScreen(
         )
 
         SettingsItem(
-            text = "Langue des sous titres",
+            text = stringResource(R.string.subtitles_language),
             value = state.subtitlesLanguage.displayLanguage,
             onTap = { viewModel.showSubtitlesLanguageDialog(true) }
         )

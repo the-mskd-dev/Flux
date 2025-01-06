@@ -31,4 +31,5 @@
     <string name="button_backward">Bouton arrière du lecteur</string>
     <string name="button_forward">Bouton avant du lecteur</string>
     <string name="app_version">Numéro de version</string>
+    <string name="subtitles_language">Langue des sous-titres</string>
 </resources>

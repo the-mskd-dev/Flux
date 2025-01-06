@@ -32,4 +32,8 @@
     <string name="button_forward">Bouton avant du lecteur</string>
     <string name="app_version">Numéro de version</string>
     <string name="subtitles_language">Langue des sous-titres</string>
+    <string name="presentation_1_title">Bienvenue dans Flux</string>
+    <string name="presentation_1_description">Retrouvez vos films, séries et animes, dans une librairie simple et organisée</string>
+    <string name="presentation_2_title">Accès aux données</string>
+    <string name="presentation_2_description">Pour le fonctionnement de l\'application, nous avons besoin d\'avoir accès à vos fichiers vidéos. Aucune donnée personnelle n\'est récupérée ni transmise à quiconque</string>
 </resources>

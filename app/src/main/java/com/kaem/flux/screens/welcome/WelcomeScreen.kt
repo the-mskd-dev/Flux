@@ -101,7 +101,7 @@ fun WelcomeScreen(
                 end.linkTo(parent.end)
             },
             index = pagerState.currentPage,
-            itemCount = presentations.size,
+            lastIndex = presentations.lastIndex,
             onIndexChange = { scope.launch { pagerState.animateScrollToPage(it) } },
             onPermissionsTap = onPermissionsTap
         )
@@ -183,7 +183,7 @@ fun WelcomeItem(
 fun WelcomeButtons(
     modifier: Modifier,
     index: Int,
-    itemCount: Int,
+    lastIndex: Int,
     onIndexChange: (Int) -> Unit,
     onPermissionsTap: () -> Unit
 ) {
@@ -192,7 +192,7 @@ fun WelcomeButtons(
 
     AnimatedContent(
         modifier = modifier,
-        targetState = index == itemCount,
+        targetState = index == lastIndex,
         label = "welcome buttons anim"
     ) { isLastText ->
 

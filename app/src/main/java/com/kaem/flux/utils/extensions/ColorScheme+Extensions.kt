@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.compose.material3.ColorScheme
 import androidx.compose.ui.graphics.Color
 
-fun ColorScheme.logColorScheme() {
+fun ColorScheme.log() {
 
     val colorScheme = this
     fun getRGB(color: Color): Triple<Float, Float, Float> {

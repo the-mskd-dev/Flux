@@ -56,22 +56,46 @@ private val FluxColorScheme = darkColorScheme(
 )
 
 private val FluxLightColorScheme = lightColorScheme(
-    primary = Coral, // Most important, like buttons, titles, navigation bars...
-    onPrimary = Color.White,
-    primaryContainer = Coral,
-    onPrimaryContainer = Color.White,
-    secondary = LightCoral, // Less important, background, borders, texts
-    tertiary = ContrastCoral, // Additional color for contrast,
-    background = Color.White,
-    surface = Color.White,
-    onSurface = Color.Black,
-    onBackground = Color.Black,
+    primary = Color(1.0f, 0.44705883f, 0.25882354f),
+    onPrimary = Color(1.0f, 1.0f, 1.0f),
+    primaryContainer = Color(1.0f, 0.44705883f, 0.25882354f),
+    onPrimaryContainer = Color(1.0f, 1.0f, 1.0f),
+    inversePrimary = Color(0.8156863f, 0.7372549f, 1.0f),
+    secondary = Color(1.0f, 0.6666667f, 0.5529412f),
+    onSecondary = Color(1.0f, 1.0f, 1.0f),
+    secondaryContainer = Color(0.9098039f, 0.87058824f, 0.972549f),
+    onSecondaryContainer = Color(0.11372549f, 0.09803922f, 0.16862746f),
+    tertiary = Color(0.92156863f, 0.34117648f, 0.34117648f),
+    onTertiary = Color(1.0f, 1.0f, 1.0f),
+    tertiaryContainer = Color(1.0f, 0.84705883f, 0.89411765f),
+    onTertiaryContainer = Color(0.19215687f, 0.06666667f, 0.11372549f),
+    background = Color(1.0f, 1.0f, 1.0f),
+    onBackground = Color(0.0f, 0.0f, 0.0f),
+    surface = Color(1.0f, 1.0f, 1.0f),
+    onSurface = Color(0.0f, 0.0f, 0.0f),
+    surfaceVariant = Color(0.90588236f, 0.8784314f, 0.9254902f),
+    onSurfaceVariant = Color(0.28627452f, 0.27058825f, 0.30980393f),
+    surfaceTint = Color(1.0f, 0.44705883f, 0.25882354f),
+    inverseSurface = Color(0.19607843f, 0.18431373f, 0.20784314f),
+    inverseOnSurface = Color(0.9607843f, 0.9372549f, 0.96862745f),
+    error = Color(0.7019608f, 0.14901961f, 0.11764706f),
+    onError = Color(1.0f, 1.0f, 1.0f),
+    errorContainer = Color(0.9764706f, 0.87058824f, 0.8627451f),
+    onErrorContainer = Color(0.25490198f, 0.05490196f, 0.043137256f),
+    outline = Color(0.4745098f, 0.45490196f, 0.49411765f),
+    outlineVariant = Color(0.7921569f, 0.76862746f, 0.8156863f),
+    scrim = Color(0.0f, 0.0f, 0.0f),
+    surfaceBright = Color(0.99607843f, 0.96862745f, 1.0f),
+    surfaceDim = Color(0.87058824f, 0.84705883f, 0.88235295f),
+    surfaceContainer = Color(0.9529412f, 0.92941177f, 0.96862745f),
+    surfaceContainerHigh = Color(0.9254902f, 0.9019608f, 0.9411765f),
+    surfaceContainerHighest = Color(0.9019608f, 0.8784314f, 0.9137255f),
+    surfaceContainerLow = Color(0.96862745f, 0.9490196f, 0.98039216f),
+    surfaceContainerLowest = Color(1.0f, 1.0f, 1.0f)
 )
 
 @Composable
 fun FluxTheme(
-    dark: Boolean = true,
-    dynamicColor: Boolean = true, // Dynamic color is available on Android 12+
     theme: Ui.THEME = Ui.THEME.SYSTEM,
     content: @Composable () -> Unit
 ) {

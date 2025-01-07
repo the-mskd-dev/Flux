@@ -83,6 +83,7 @@ fun ArtworkScreen(
             artwork = uiState.selectedArtwork,
             backward = viewModel.backwardValue,
             forward = viewModel.forwardValue,
+            subtitlesLanguage = viewModel.subtitlesLanguage,
             onBackButtonTap = { viewModel.showPlayer(false) },
             onTimeSave = { viewModel.saveTime(it) }
         )

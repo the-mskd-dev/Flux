@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 import okhttp3.internal.toLongOrDefault
+import java.util.Locale
 import javax.inject.Inject
 
 
@@ -18,7 +19,8 @@ data class FluxDataStore(
     val lastWatchedIds: List<Long> = listOf(),
     val playerBackwardValue: Int = 10,
     val playerForwardValue: Int = 10,
-    val uiTheme: Ui.THEME = Ui.THEME.SYSTEM
+    val uiTheme: Ui.THEME = Ui.THEME.SYSTEM,
+    val subtitlesLanguage: Locale = Locale.getDefault()
 )
 
 
@@ -35,6 +37,7 @@ class DataStoreRepository @Inject constructor(
         val PLAYER_BACKWARD = stringPreferencesKey("player_backward")
         val PLAYER_FORWARD = stringPreferencesKey("player_forward")
         val UI_THEME = stringPreferencesKey("ui_theme")
+        val SUBTITLES_LANGUAGE = stringPreferencesKey("subtitles_language")
     }
 
     //endregion
@@ -51,11 +54,14 @@ class DataStoreRepository @Inject constructor(
 
         val uiTheme = preferences[Keys.UI_THEME]?.toString()?.let { Ui.THEME.valueOf(it) } ?: Ui.THEME.SYSTEM
 
+        val subtitlesLanguage = preferences[Keys.SUBTITLES_LANGUAGE]?.toString()?.let { Locale(it) } ?: Locale.getDefault()
+
         FluxDataStore(
             lastWatchedIds = lastWatchedIds.map { it.toLong() },
             playerBackwardValue = playerBackwardValue,
             playerForwardValue = playerForwardValue,
-            uiTheme = uiTheme
+            uiTheme = uiTheme,
+            subtitlesLanguage = subtitlesLanguage
         )
     }
 
@@ -127,6 +133,22 @@ class DataStoreRepository @Inject constructor(
         dataStore.edit { preferences ->
             preferences[Keys.UI_THEME] = theme.toString()
         }
+    }
+
+    //endregion
+
+    //region Languages
+
+    suspend fun setSubtitlesLanguage(locale: Locale) {
+        dataStore.edit { preferences ->
+            preferences[Keys.SUBTITLES_LANGUAGE] = locale.language
+        }
+    }
+
+    fun getSubtitlesLanguage() : Locale = runBlocking {
+        dataStore.data.map { preferences ->
+            preferences[Keys.SUBTITLES_LANGUAGE]?.let { Locale(it) } ?: Locale.getDefault()
+        }.first()
     }
 
     //endregion

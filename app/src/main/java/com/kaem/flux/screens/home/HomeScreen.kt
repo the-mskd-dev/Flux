@@ -66,7 +66,7 @@ fun HomeScreen(
     val uiState by viewModel.uiState.collectAsState()
     val permissions = fluxPermissionState()
 
-    if (!permissions.status.isGranted || true) {
+    if (!permissions.status.isGranted) {
 
         WelcomeScreen { permissions.launchPermissionRequest() }
 

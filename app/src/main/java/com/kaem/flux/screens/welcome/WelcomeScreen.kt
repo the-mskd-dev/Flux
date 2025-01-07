@@ -5,18 +5,18 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PageSize
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
@@ -25,9 +25,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -45,16 +45,22 @@ import com.kaem.flux.ui.component.FluxButton
 import com.kaem.flux.ui.component.MediumText
 import com.kaem.flux.ui.component.Title
 import com.kaem.flux.ui.theme.Ui
+import kotlinx.coroutines.launch
 
 @Composable
 fun WelcomeScreen(
     onPermissionsTap: () -> Unit
 ) {
 
-    var index by remember { mutableIntStateOf(0) }
+    val presentations = listOf(
+        stringResource(R.string.presentation_1_title) to stringResource(R.string.presentation_1_description),
+        stringResource(R.string.presentation_2_title) to stringResource(R.string.presentation_1_description),
+    )
 
+    val scope = rememberCoroutineScope()
+    val pagerState = rememberPagerState(0) { presentations.size }
     val backgroundColor by animateColorAsState(
-        targetValue = when (index) {
+        targetValue = when (pagerState.currentPage) {
             0 -> MaterialTheme.colorScheme.primary
             1 -> MaterialTheme.colorScheme.secondaryContainer
             else -> MaterialTheme.colorScheme.primaryContainer
@@ -62,39 +68,29 @@ fun WelcomeScreen(
         label = "backgroundColor"
     )
 
-    BackHandler(enabled = index > 0) {
-        index--
+    BackHandler(enabled = pagerState.currentPage > 0) {
+        scope.launch { pagerState.animateScrollToPage(pagerState.currentPage - 1) }
     }
 
     ConstraintLayout(
         modifier = Modifier.fillMaxSize()
     ) {
 
-        val (background, descriptions, buttons) = createRefs()
+        val (descriptions, buttons) = createRefs()
         val guideline = createGuidelineFromTop(.7f)
 
-        WelcomeBackground(
-            modifier = Modifier.constrainAs(background) {
-                top.linkTo(parent.top)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-                bottom.linkTo(guideline)
-                height = Dimension.fillToConstraints
-                width = Dimension.fillToConstraints
-            },
-            backgroundColor = backgroundColor
-        )
-
-        WelcomeDescriptions(
+        WelcomePager(
             modifier = Modifier.constrainAs(descriptions) {
-                top.linkTo(parent.top)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-                bottom.linkTo(guideline)
-                height = Dimension.fillToConstraints
-                width = Dimension.fillToConstraints
-            },
-            index = index
+                    top.linkTo(parent.top)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                    bottom.linkTo(guideline)
+                    height = Dimension.fillToConstraints
+                    width = Dimension.fillToConstraints
+                },
+            backgroundColor = backgroundColor,
+            pagerState = pagerState,
+            presentations = presentations
         )
 
         WelcomeButtons(
@@ -104,8 +100,9 @@ fun WelcomeScreen(
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
             },
-            index = index,
-            onIndexChange = { index = it },
+            index = pagerState.currentPage,
+            itemCount = presentations.size,
+            onIndexChange = { scope.launch { pagerState.animateScrollToPage(it) } },
             onPermissionsTap = onPermissionsTap
         )
 
@@ -114,12 +111,14 @@ fun WelcomeScreen(
 }
 
 @Composable
-fun WelcomeBackground(
+fun WelcomePager(
     modifier: Modifier,
-    backgroundColor: Color
+    backgroundColor: Color,
+    pagerState: PagerState,
+    presentations: List<Pair<String, String>>
 ) {
 
-    Box(
+    HorizontalPager(
         modifier = modifier
             .background(brush = Brush.verticalGradient(
                 colors = listOf(
@@ -128,40 +127,22 @@ fun WelcomeBackground(
                 ),
                 startY = 0f,
                 endY = Float.POSITIVE_INFINITY
-            ))
-    )
+            )),
+        state = pagerState,
+        pageSize = PageSize.Fill,
+        pageContent = { page ->
 
-}
+            val presentation = presentations[page]
 
-@Composable
-fun WelcomeDescriptions(
-    modifier: Modifier,
-    index: Int
-) {
+            WelcomeItem(
+                modifier = Modifier,
+                title = presentation.first,
+                description = presentation.second,
+                textColor = MaterialTheme.colorScheme.onBackground
+            )
 
-    AnimatedContent(
-        modifier = modifier,
-        targetState = index,
-        label = "textsAnim",
-        transitionSpec = {
-            if (targetState > initialState) {
-                slideInHorizontally { width -> width } togetherWith slideOutHorizontally { width -> -width }
-            } else {
-                slideInHorizontally { width -> -width }  togetherWith slideOutHorizontally { width -> width }
-            }
         }
-    ) { i ->
-
-        val presentation = presentations[i]
-
-        WelcomeItem(
-            modifier = Modifier,
-            title = presentation.title,
-            description = presentation.description,
-            textColor = MaterialTheme.colorScheme.onBackground
-        )
-
-    }
+    )
 
 }
 
@@ -202,6 +183,7 @@ fun WelcomeItem(
 fun WelcomeButtons(
     modifier: Modifier,
     index: Int,
+    itemCount: Int,
     onIndexChange: (Int) -> Unit,
     onPermissionsTap: () -> Unit
 ) {
@@ -210,7 +192,7 @@ fun WelcomeButtons(
 
     AnimatedContent(
         modifier = modifier,
-        targetState = index == presentations.lastIndex,
+        targetState = index == itemCount,
         label = "welcome buttons anim"
     ) { isLastText ->
 
@@ -259,19 +241,6 @@ fun WelcomeButtons(
     }
 
 }
-
-data class Presentation(val title: String, val description: String)
-
-val presentations = listOf(
-    Presentation(
-        title = "Bienvenue dans Flux",
-        description = "Retrouvez vos films, séries et animes, dans une librairie simple et organisée"
-    ),
-    Presentation(
-        title = "Accès aux données",
-        description = "Pour le fonctionnement de l'application, nous avons besoin d'avoir accès à vos fichiers vidéos. Aucune donnée personnelle n'est récupérée ni transmise à quiconque"
-    )
-)
 
 @Composable
 @OptIn(ExperimentalPermissionsApi::class)

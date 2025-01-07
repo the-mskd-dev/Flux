@@ -10,6 +10,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.intellij.lang.annotations.Language
+import java.util.Locale
 import javax.inject.Inject
 
 data class SettingsUiState(
@@ -18,7 +20,9 @@ data class SettingsUiState(
     val forwardValue: Int = 5,
     val showForwardDialog: Boolean = false,
     val uiTheme: Ui.THEME = Ui.THEME.SYSTEM,
-    val showUiThemeDialog: Boolean = false
+    val showUiThemeDialog: Boolean = false,
+    val subtitlesLanguage: Locale = Locale.getDefault(),
+    val showSubtitlesLanguage: Boolean = false,
 )
 
 @HiltViewModel
@@ -43,7 +47,8 @@ class SettingsViewModel @Inject constructor(
                     it.copy(
                         backwardValue = dataStore.playerBackwardValue,
                         forwardValue = dataStore.playerForwardValue,
-                        uiTheme = dataStore.uiTheme
+                        uiTheme = dataStore.uiTheme,
+                        subtitlesLanguage = dataStore.subtitlesLanguage
                     )
                 }
             }
@@ -91,6 +96,20 @@ class SettingsViewModel @Inject constructor(
 
     //endregion
 
+    //region Languages
+
+    fun showSubtitlesLanguageDialog(show: Boolean) {
+        _uiState.update {
+            it.copy(showSubtitlesLanguage = show)
+        }
+    }
+
+    fun setSubtitlesLanguage(locale: Locale) = viewModelScope.launch {
+        dataStoreRepository.setSubtitlesLanguage(locale)
+    }
+
+    //endregion
+
     companion object {
 
         val playerSeconds = mapOf(
@@ -100,6 +119,15 @@ class SettingsViewModel @Inject constructor(
             20 to "20sec",
             25 to "25sec",
             30 to "30sec",
+        )
+
+        val languages = mapOf(
+            Locale.ENGLISH to Locale.ENGLISH.displayLanguage,
+            Locale.FRENCH to Locale.FRENCH.displayLanguage,
+            Locale.ITALIAN to Locale.ITALIAN.displayLanguage,
+            Locale.JAPANESE to Locale.JAPANESE.displayLanguage,
+            Locale.CHINESE to Locale.CHINESE.displayLanguage,
+            Locale.KOREAN to Locale.KOREAN.displayLanguage
         )
 
     }

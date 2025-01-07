@@ -21,7 +21,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -46,15 +45,15 @@ import com.kaem.flux.R
 import com.kaem.flux.model.ScreenState
 import com.kaem.flux.model.artwork.ArtworkOverview
 import com.kaem.flux.model.artwork.ContentType
-import com.kaem.flux.screens.permissions.PermissionsScreen
-import com.kaem.flux.screens.permissions.fluxPermissionState
+import com.kaem.flux.screens.welcome.WelcomeScreen
+import com.kaem.flux.screens.welcome.fluxPermissionState
 import com.kaem.flux.ui.component.BoldText
 import com.kaem.flux.ui.component.Loader
 import com.kaem.flux.ui.component.Placeholders
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.Constants
 
-@OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun HomeScreen(
     navigateToDetails: (Long) -> Unit,
@@ -69,7 +68,7 @@ fun HomeScreen(
 
     if (!permissions.status.isGranted) {
 
-        PermissionsScreen { permissions.launchPermissionRequest() }
+        WelcomeScreen { permissions.launchPermissionRequest() }
 
     } else {
 

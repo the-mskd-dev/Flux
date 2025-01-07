@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.Locale
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
@@ -49,12 +50,15 @@ class ArtworkViewModel @Inject constructor(
 
     var backwardValue: Long = 10.seconds.inWholeMilliseconds
     var forwardValue: Long = 10.seconds.inWholeMilliseconds
+    var subtitlesLanguage: Locale = Locale.getDefault()
 
     init {
 
         val (backward, forward) = dataStoreRepository.getPlayerButtonsValues()
         backwardValue = backward.seconds.inWholeMilliseconds
         forwardValue = forward.seconds.inWholeMilliseconds
+
+        subtitlesLanguage = dataStoreRepository.getSubtitlesLanguage()
 
         getArtworks(artworkId)
     }

@@ -32,6 +32,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
+import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.DefaultRenderersFactory
@@ -50,12 +51,14 @@ import com.kaem.flux.utils.extensions.hideSystemBars
 import com.kaem.flux.utils.extensions.setAppInLandscape
 import com.kaem.flux.utils.extensions.setAppOrientation
 import com.kaem.flux.utils.extensions.showSystemBars
+import java.util.Locale
 
 @Composable
 fun PlayerScreen(
     artwork: Artwork?,
     backward: Long,
     forward: Long,
+    subtitlesLanguage: Locale,
     onBackButtonTap: () -> Unit,
     onTimeSave: (Long) -> Unit
 ) {
@@ -78,6 +81,7 @@ fun PlayerScreen(
                 artwork = artwork,
                 backward = backward,
                 forward = forward,
+                subtitlesLanguage = subtitlesLanguage,
                 onBackButtonTap = {
                     activity.setAppOrientation(orientation)
                     isExiting = true
@@ -98,6 +102,7 @@ fun VideoPlayer(
     artwork: Artwork,
     backward: Long,
     forward: Long,
+    subtitlesLanguage: Locale,
     onBackButtonTap: () -> Unit,
     onTimeSave: (Long) -> Unit
 ) {
@@ -115,6 +120,11 @@ fun VideoPlayer(
             .setSeekForwardIncrementMs(forward)
             .build()
             .apply {
+                trackSelectionParameters = trackSelectionParameters
+                    .buildUpon()
+                    .setPreferredTextLanguage(subtitlesLanguage.language)
+                    .setPreferredTextRoleFlags(C.ROLE_FLAG_SUBTITLE)
+                    .build()
                 setMediaItem(MediaItem.fromUri(Uri.parse(artwork.file.path)), artwork.currentTime)
                 prepare()
                 play()

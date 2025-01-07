@@ -72,6 +72,12 @@ fun SettingsScreen(
             onTap = { viewModel.showForwardDialog(true) }
         )
 
+        SettingsItem(
+            text = stringResource(R.string.subtitles_language),
+            value = state.subtitlesLanguage.displayLanguage,
+            onTap = { viewModel.showSubtitlesLanguageDialog(true) }
+        )
+
         appVersion?.let {
             SettingsItem(
                 text = stringResource(R.string.app_version),
@@ -110,6 +116,14 @@ fun SettingsScreen(
         ),
         onSelect = { viewModel.setUiTheme(it) },
         onDismiss = { viewModel.showUiThemeDialog(false) }
+    )
+
+    SettingsDialog(
+        show = state.showSubtitlesLanguage,
+        currentValue = state.subtitlesLanguage,
+        options = SettingsViewModel.languages,
+        onSelect = { viewModel.setSubtitlesLanguage(it) },
+        onDismiss = { viewModel.showSubtitlesLanguageDialog(false) }
     )
 
 }

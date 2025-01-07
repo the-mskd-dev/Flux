@@ -7,6 +7,7 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -135,7 +136,6 @@ fun WelcomePager(
             val presentation = presentations[page]
 
             WelcomeItem(
-                modifier = Modifier,
                 title = presentation.first,
                 description = presentation.second,
                 textColor = MaterialTheme.colorScheme.onBackground
@@ -148,32 +148,37 @@ fun WelcomePager(
 
 @Composable
 fun WelcomeItem(
-    modifier: Modifier,
     title: String,
     description: String,
     textColor: Color
 ) {
 
-    Column(
-        modifier = modifier
+    Box(
+        modifier = Modifier
             .statusBarsPadding()
             .fillMaxSize()
-            .padding(start = Ui.Space.MEDIUM, end = Ui.Space.MEDIUM, top = Ui.Space.LARGE),
-        horizontalAlignment = Alignment.Start,
-        verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE)
+            .padding(horizontal = Ui.Space.MEDIUM),
+        contentAlignment = Alignment.Center
     ) {
 
-        Title(
-            modifier = Modifier.fillMaxWidth(),
-            text = title,
-            color = textColor
-        )
+        Column(
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE)
+        ) {
 
-        MediumText(
-            modifier = Modifier.fillMaxWidth(),
-            text = description,
-            color = textColor
-        )
+            Title(
+                modifier = Modifier.fillMaxWidth(),
+                text = title,
+                color = textColor
+            )
+
+            MediumText(
+                modifier = Modifier.fillMaxWidth(),
+                text = description,
+                color = textColor
+            )
+
+        }
 
     }
 

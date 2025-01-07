@@ -2,9 +2,11 @@ package com.kaem.flux.screens.welcome
 
 import android.os.Build
 import androidx.activity.compose.BackHandler
+import androidx.annotation.DrawableRes
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -26,6 +28,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -34,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -55,19 +59,16 @@ fun WelcomeScreen(
 
     val presentations = listOf(
         stringResource(R.string.presentation_1_title) to stringResource(R.string.presentation_1_description),
-        stringResource(R.string.presentation_2_title) to stringResource(R.string.presentation_1_description),
+        stringResource(R.string.presentation_2_title) to stringResource(R.string.presentation_2_description),
     )
 
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState(0) { presentations.size }
-    val backgroundColor by animateColorAsState(
-        targetValue = when (pagerState.currentPage) {
-            0 -> MaterialTheme.colorScheme.primary
-            1 -> MaterialTheme.colorScheme.secondaryContainer
-            else -> MaterialTheme.colorScheme.primaryContainer
-        },
-        label = "backgroundColor"
-    )
+    val backgroundImage = when (pagerState.currentPage) {
+        0 -> R.drawable.home_screen
+        1 -> R.drawable.artwork_screen
+        else -> R.drawable.search_screen
+    }
 
     BackHandler(enabled = pagerState.currentPage > 0) {
         scope.launch { pagerState.animateScrollToPage(pagerState.currentPage - 1) }
@@ -77,8 +78,20 @@ fun WelcomeScreen(
         modifier = Modifier.fillMaxSize()
     ) {
 
-        val (descriptions, buttons) = createRefs()
+        val (background, descriptions, buttons) = createRefs()
         val guideline = createGuidelineFromTop(.7f)
+
+        WelcomeBackground(
+            modifier = Modifier.constrainAs(background) {
+                top.linkTo(parent.top)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+                bottom.linkTo(parent.bottom)
+                height = Dimension.fillToConstraints
+                width = Dimension.fillToConstraints
+            },
+            drawableId = backgroundImage
+        )
 
         WelcomePager(
             modifier = Modifier.constrainAs(descriptions) {
@@ -89,7 +102,6 @@ fun WelcomeScreen(
                     height = Dimension.fillToConstraints
                     width = Dimension.fillToConstraints
                 },
-            backgroundColor = backgroundColor,
             pagerState = pagerState,
             presentations = presentations
         )
@@ -112,23 +124,58 @@ fun WelcomeScreen(
 }
 
 @Composable
+fun WelcomeBackground(
+    modifier: Modifier,
+    drawableId: Int
+) {
+
+    Box(
+        modifier = modifier,
+        contentAlignment = Alignment.Center
+    ) {
+
+        AnimatedContent(
+            modifier = Modifier.fillMaxSize(),
+            targetState = drawableId,
+            label = "background animation"
+        ) { id ->
+
+            Image(
+                modifier = Modifier.fillMaxSize(),
+                painter = painterResource(id),
+                contentDescription = "app presentation image"
+            )
+
+        }
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            MaterialTheme.colorScheme.background.copy(.8f),
+                            MaterialTheme.colorScheme.background
+                        ),
+                        startY = 0f,
+                        endY = Float.POSITIVE_INFINITY
+                    )
+                )
+        )
+
+    }
+
+}
+
+@Composable
 fun WelcomePager(
     modifier: Modifier,
-    backgroundColor: Color,
     pagerState: PagerState,
     presentations: List<Pair<String, String>>
 ) {
 
     HorizontalPager(
-        modifier = modifier
-            .background(brush = Brush.verticalGradient(
-                colors = listOf(
-                    backgroundColor.copy(alpha = .3f),
-                    Color.Transparent,
-                ),
-                startY = 0f,
-                endY = Float.POSITIVE_INFINITY
-            )),
+        modifier = modifier,
         state = pagerState,
         pageSize = PageSize.Fill,
         pageContent = { page ->

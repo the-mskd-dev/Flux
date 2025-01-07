@@ -37,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -141,7 +142,15 @@ fun WelcomeBackground(
         ) { id ->
 
             Image(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .graphicsLayer {
+                        translationY = -15f
+                        translationX = 15f
+                        rotationZ = -15f
+                        rotationX = 15f
+                        cameraDistance = 15f
+                    },
                 painter = painterResource(id),
                 contentDescription = "app presentation image"
             )

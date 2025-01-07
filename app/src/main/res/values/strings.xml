@@ -1,8 +1,7 @@
 <resources>
-    <string name="app_name">Flux</string>
+    <string name="app_name" translatable="false">Flux</string>
 
     <string name="give_permission">Accorder les permissions</string>
-    <string name="last_added">Derniers ajouts</string>
     <string name="movies">Films</string>
     <string name="shows">Séries</string>
     <string name="select_season">Sélectionnez une saison</string>

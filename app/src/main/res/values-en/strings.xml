@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="give_permission">Grant permissions</string>
+    <string name="movies">Movies</string>
+    <string name="shows">Shows</string>
+    <string name="select_season">Select a season</string>
+    <string name="season_and_episode">Season %1$d, episode %2$d</string>
+    <string name="season">Season %1$d</string>
+    <string name="episode">Episode %1$d</string>
+    <string name="start">Play</string>
+    <string name="resume">Resume at %1$s</string>
+    <string name="mark_as_watched">Mark as watched</string>
+    <string name="mark_as_not_watched">Mark as not watched</string>
+    <string name="mark_previous_episodes_as_watched">Do you want to mark previous episodes as watched?</string>
+    <string name="oups_an_error_occured">Oops, an error occured…</string>
+    <string name="release_date">Release date : %1$s</string>
+    <string name="duration">Duration : %1$s</string>
+    <string name="summary">Summary</string>
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
+    <string name="rate">Rating : %1$s/10</string>
+    <string name="enter_search">Search…</string>
+    <string name="settings">Settings</string>
+    <string name="dark">Dark</string>
+    <string name="light">Light</string>
+    <string name="system">System</string>
+    <string name="validate">Validate</string>
+    <string name="app_theme">Theme</string>
+    <string name="button_backward">Player back button</string>
+    <string name="button_forward">Player forward button</string>
+    <string name="app_version">Version</string>
+    <string name="subtitles_language">Subtitles languages</string>
+    <string name="presentation_1_title">Welcome to Flux</string>
+    <string name="presentation_1_description">Retrive your movies, tv shows and animes, in a minimalistic library</string>
+    <string name="presentation_2_title">Data permissions</string>
+    <string name="presentation_2_description">For the application to function, we need access to your video files. No personal data is collected or transmitted to anyone</string>
+</resources>

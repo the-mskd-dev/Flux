@@ -334,7 +334,8 @@ fun ArtworkItem(
             .aspectRatio(ratio),
         model = url,
         contentDescription = description,
-        loading = Placeholders.loading
+        loading = Placeholders.loading(),
+        failure = Placeholders.failure()
     )
 
 }

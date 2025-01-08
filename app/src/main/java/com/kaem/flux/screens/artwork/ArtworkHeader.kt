@@ -123,7 +123,8 @@ fun ArtworkImage(
                 },
             model = Constants.TMDB.IMAGE + imagePath,
             contentScale = ContentScale.Crop,
-            loading = Placeholders.loading,
+            loading = Placeholders.loading(),
+            failure = Placeholders.failure(),
             contentDescription = title
         )
 

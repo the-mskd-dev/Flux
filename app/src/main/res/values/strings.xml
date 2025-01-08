@@ -35,4 +35,7 @@
     <string name="presentation_1_description">Retrouvez vos films, séries et animes, de manière organisée dans une librairie minimaliste</string>
     <string name="presentation_2_title">Accès aux données</string>
     <string name="presentation_2_description">Pour le fonctionnement de l\'application, nous avons besoin d\'avoir accès à vos fichiers vidéos. Aucune donnée personnelle n\'est récupérée ni transmise à quiconque</string>
+    <string name="name_placeholder">nom</string>
+    <string name="season_placeholder">saison</string>
+    <string name="episode_placeholder">épisode</string>
 </resources>

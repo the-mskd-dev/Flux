@@ -34,4 +34,7 @@
     <string name="presentation_1_description">Retrive your movies, tv shows and animes, in a minimalistic library</string>
     <string name="presentation_2_title">Data permissions</string>
     <string name="presentation_2_description">For the application to function, we need access to your video files. No personal data is collected or transmitted to anyone</string>
+    <string name="name_placeholder">name</string>
+    <string name="season_placeholder">season</string>
+    <string name="episode_placeholder">episode</string>
 </resources>

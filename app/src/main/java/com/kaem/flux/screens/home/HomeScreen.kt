@@ -182,9 +182,9 @@ fun HomeEmpty(
         Column {
 
             val annotatedString = buildAnnotatedString {
-                append("Film : ")
+                append(stringResource(R.string.movies) + " : ")
                 pushStyle(coloredStyle)
-                append("<nom>")
+                append(stringResource(R.string.name_placeholder))
                 pop()
             }
 
@@ -205,17 +205,17 @@ fun HomeEmpty(
         Column {
 
             val annotatedString = buildAnnotatedString {
-                append("Série/Animes : ")
+                append(stringResource(R.string.shows) + " : ")
                 pushStyle(coloredStyle)
-                append("<nom>")
+                append(stringResource(R.string.name_placeholder))
                 pop()
                 append("_S")
                 pushStyle(coloredStyle)
-                append("<saison>")
+                append(stringResource(R.string.season_placeholder))
                 pop()
                 append("E")
                 pushStyle(coloredStyle)
-                append("<episode>")
+                append(stringResource(R.string.episode_placeholder))
                 pop()
             }
 

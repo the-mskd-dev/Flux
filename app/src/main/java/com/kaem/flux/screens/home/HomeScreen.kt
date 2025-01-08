@@ -131,9 +131,7 @@ fun HomeContent(
     navigateToSettings: () -> Unit
 ) {
 
-    val isEmpty = overviews.isEmpty() || true
-
-    if (isEmpty) {
+    if (overviews.isEmpty()) {
 
         HomeEmpty(
             onReloadTap = onSyncTap

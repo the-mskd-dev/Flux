@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
@@ -37,6 +38,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -56,6 +60,7 @@ import com.kaem.flux.ui.component.LightText
 import com.kaem.flux.ui.component.Loader
 import com.kaem.flux.ui.component.MediumText
 import com.kaem.flux.ui.component.Placeholders
+import com.kaem.flux.ui.component.Title
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.Constants
 
@@ -156,6 +161,8 @@ fun HomeEmpty(
     onReloadTap: () -> Unit
 ) {
 
+    val coloredStyle = SpanStyle(color = MaterialTheme.colorScheme.primary)
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -164,19 +171,70 @@ fun HomeEmpty(
         horizontalAlignment = Alignment.Start,
     ) {
 
-        BoldText(
+        Title(
             text = "Votre librarie est vide"
         )
 
         MediumText(
             text = "Pour retrouver vos fichiers, veillez à bien les nommer selon la norme suivante : "
         )
+        
+        Column {
 
-        LightText(
-            text = "Film : <Nom>\nSérie/Anime : <Nom>_S<saison>E<épisode>"
-        )
+            val annotatedString = buildAnnotatedString {
+                append("Film : ")
+                pushStyle(coloredStyle)
+                append("<nom>")
+                pop()
+            }
+
+            Text(
+                text = annotatedString,
+                fontWeight = Ui.Weight.LIGHT,
+                color = MaterialTheme.colorScheme.onBackground,
+                fontSize = Ui.FontSize.SMALL,
+            )
+
+            LightText(
+                text = "Ex: Your name.mkv",
+                fontSize = Ui.FontSize.SMALL,
+                fontStyle = FontStyle.Italic
+            )
+        }
+
+        Column {
+
+            val annotatedString = buildAnnotatedString {
+                append("Série/Animes : ")
+                pushStyle(coloredStyle)
+                append("<nom>")
+                pop()
+                append("_S")
+                pushStyle(coloredStyle)
+                append("<saison>")
+                pop()
+                append("E")
+                pushStyle(coloredStyle)
+                append("<episode>")
+                pop()
+            }
+
+            Text(
+                text = annotatedString,
+                fontWeight = Ui.Weight.LIGHT,
+                color = MaterialTheme.colorScheme.onBackground,
+                fontSize = Ui.FontSize.SMALL,
+            )
+
+            LightText(
+                text = "Ex: Naruto_S01E01.mkv",
+                fontSize = Ui.FontSize.SMALL,
+                fontStyle = FontStyle.Italic
+            )
+        }
 
         FluxButton(
+            modifier = Modifier.align(Alignment.CenterHorizontally),
             text = "Actualiser",
             onTap = onReloadTap
         )

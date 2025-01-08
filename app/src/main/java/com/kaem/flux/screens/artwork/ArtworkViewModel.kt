@@ -67,21 +67,21 @@ class ArtworkViewModel @Inject constructor(
 
         val (overview, movie, episodes) = repository.getArtwork(id)
 
-        when {
-            movie != null -> {
-                _uiState.value = ArtworkUiState(
-                    overview = overview,
-                    screen = ScreenState.CONTENT,
-                    selectedArtwork = movie
-                )
-            }
+        _uiState.value = when {
+            overview == null -> ArtworkUiState(screen = ScreenState.ERROR)
+            movie != null -> ArtworkUiState(
+                overview = overview,
+                screen = ScreenState.CONTENT,
+                selectedArtwork = movie
+            )
+
             !episodes.isNullOrEmpty() -> {
                 
                 val currentEpisode = episodes.lastOrNull { it.status == Status.IS_WATCHING }
                     ?: episodes.firstOrNull { it.status == Status.TO_WATCH }
                     ?: episodes.first()
 
-                _uiState.value = ArtworkUiState(
+                ArtworkUiState(
                     overview = overview,
                     screen = ScreenState.CONTENT,
                     episodes = episodes,
@@ -89,11 +89,7 @@ class ArtworkViewModel @Inject constructor(
                     selectedArtwork = currentEpisode
                 )
             }
-            else -> {
-                _uiState.value = ArtworkUiState(
-                    screen = ScreenState.ERROR
-                )
-            }
+            else -> ArtworkUiState(screen = ScreenState.ERROR)
 
         }
 

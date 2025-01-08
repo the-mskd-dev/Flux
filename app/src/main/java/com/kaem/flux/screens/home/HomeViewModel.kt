@@ -62,7 +62,10 @@ class HomeViewModel @Inject constructor(
         val currentTime = System.currentTimeMillis()
         val sync = currentTime - lastSyncTime > 1.days.inWholeMilliseconds || manualSync
 
-        _uiState.value = _uiState.value.copy(isSyncing = manualSync)
+        _uiState.value = _uiState.value.copy(
+            isSyncing = manualSync,
+            screenState = if (manualSync && _uiState.value.overviews.isEmpty()) ScreenState.LOADING else _uiState.value.screenState
+        )
 
         Log.i("LibraryViewModel", "getLibrary, sync : $sync")
 

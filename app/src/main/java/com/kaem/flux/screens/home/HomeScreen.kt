@@ -3,14 +3,18 @@ package com.kaem.flux.screens.home
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
@@ -34,6 +38,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -48,8 +55,12 @@ import com.kaem.flux.model.artwork.ContentType
 import com.kaem.flux.screens.welcome.WelcomeScreen
 import com.kaem.flux.screens.welcome.fluxPermissionState
 import com.kaem.flux.ui.component.BoldText
+import com.kaem.flux.ui.component.FluxButton
+import com.kaem.flux.ui.component.LightText
 import com.kaem.flux.ui.component.Loader
+import com.kaem.flux.ui.component.MediumText
 import com.kaem.flux.ui.component.Placeholders
+import com.kaem.flux.ui.component.Title
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.Constants
 
@@ -122,19 +133,9 @@ fun HomeContent(
 
     if (overviews.isEmpty()) {
 
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-
-            //TODO
-            Text(
-                text = "No content",
-                color = MaterialTheme.colorScheme.primary
-            )
-
-        }
+        HomeEmpty(
+            onReloadTap = onSyncTap
+        )
 
     } else {
 
@@ -147,6 +148,89 @@ fun HomeContent(
             navigateToCategory = navigateToCategory,
             navigateToSearch = navigateToSearch,
             navigateToSettings = navigateToSettings
+        )
+
+    }
+
+}
+
+@Composable
+fun HomeEmpty(
+    onReloadTap: () -> Unit
+) {
+
+    val coloredStyle = SpanStyle(color = MaterialTheme.colorScheme.primary)
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = Ui.Space.MEDIUM),
+        verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE, Alignment.CenterVertically),
+        horizontalAlignment = Alignment.Start,
+    ) {
+
+        Title(text = stringResource(R.string.empty_library))
+
+        MediumText(text = stringResource(R.string.empty_library_desc))
+        
+        Column {
+
+            val annotatedString = buildAnnotatedString {
+                append(stringResource(R.string.movies) + " : ")
+                pushStyle(coloredStyle)
+                append(stringResource(R.string.name_placeholder))
+                pop()
+            }
+
+            Text(
+                text = annotatedString,
+                fontWeight = Ui.Weight.LIGHT,
+                color = MaterialTheme.colorScheme.onBackground,
+                fontSize = Ui.FontSize.SMALL,
+            )
+
+            LightText(
+                text = "Ex: Your name.mkv",
+                fontSize = Ui.FontSize.SMALL,
+                fontStyle = FontStyle.Italic
+            )
+        }
+
+        Column {
+
+            val annotatedString = buildAnnotatedString {
+                append(stringResource(R.string.shows) + " : ")
+                pushStyle(coloredStyle)
+                append(stringResource(R.string.name_placeholder))
+                pop()
+                append("_S")
+                pushStyle(coloredStyle)
+                append(stringResource(R.string.season_placeholder))
+                pop()
+                append("E")
+                pushStyle(coloredStyle)
+                append(stringResource(R.string.episode_placeholder))
+                pop()
+            }
+
+            Text(
+                text = annotatedString,
+                fontWeight = Ui.Weight.LIGHT,
+                color = MaterialTheme.colorScheme.onBackground,
+                fontSize = Ui.FontSize.SMALL,
+            )
+
+            LightText(
+                text = "Ex: Naruto_S01E01.mkv",
+                fontSize = Ui.FontSize.SMALL,
+                fontStyle = FontStyle.Italic
+            )
+        }
+
+        FluxButton(
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+            text = stringResource(R.string.refresh),
+            onTap = onReloadTap
         )
 
     }
@@ -275,7 +359,7 @@ fun ArtworkList(
     if (overviews.isEmpty())
         return
 
-    val width = if (largeArtwork) 450.dp else 120.dp
+    val width = if (largeArtwork) 350.dp else 120.dp
     val ratio = if (largeArtwork) 1920f/1080f else 2f/3f
 
     Column(
@@ -334,7 +418,8 @@ fun ArtworkItem(
             .aspectRatio(ratio),
         model = url,
         contentDescription = description,
-        loading = Placeholders.loading
+        loading = Placeholders.loading(),
+        failure = Placeholders.failure()
     )
 
 }

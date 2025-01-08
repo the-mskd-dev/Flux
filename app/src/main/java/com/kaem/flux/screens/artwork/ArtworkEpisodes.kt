@@ -134,7 +134,8 @@ fun EpisodeItem(
                 },
             model = Constants.TMDB.IMAGE + episode.imagePath,
             contentScale = ContentScale.Crop,
-            loading = Placeholders.loading,
+            loading = Placeholders.loading(),
+            failure = Placeholders.failure(),
             contentDescription = "Season ${episode.season} episode ${episode.number}, ${episode.title}"
         )
 

@@ -51,6 +51,7 @@ import com.kaem.flux.model.artwork.ContentType
 import com.kaem.flux.screens.welcome.WelcomeScreen
 import com.kaem.flux.screens.welcome.fluxPermissionState
 import com.kaem.flux.ui.component.BoldText
+import com.kaem.flux.ui.component.FluxButton
 import com.kaem.flux.ui.component.LightText
 import com.kaem.flux.ui.component.Loader
 import com.kaem.flux.ui.component.MediumText
@@ -126,69 +127,59 @@ fun HomeContent(
 ) {
 
     val isEmpty = overviews.isEmpty() || true
-    val modifier = if (isEmpty) Modifier else Modifier.verticalScroll(rememberScrollState())
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .statusBarsPadding()
-    ) {
+    if (isEmpty) {
 
-        HomeTopButtons(
+        HomeEmpty(
+            onReloadTap = onSyncTap
+        )
+
+    } else {
+
+        HomeLists(
+            overviews = overviews,
+            lastWatchedIds = lastWatchedIds,
             isSyncing = isSyncing,
             onSyncTap = onSyncTap,
+            navigateToDetails = navigateToDetails,
+            navigateToCategory = navigateToCategory,
             navigateToSearch = navigateToSearch,
             navigateToSettings = navigateToSettings
         )
-
-        if (isEmpty) {
-
-            HomeEmpty()
-
-        } else {
-
-            HomeLists(
-                overviews = overviews,
-                lastWatchedIds = lastWatchedIds,
-                navigateToDetails = navigateToDetails,
-                navigateToCategory = navigateToCategory,
-            )
-
-        }
-
 
     }
 
 }
 
 @Composable
-fun HomeEmpty() {
+fun HomeEmpty(
+    onReloadTap: () -> Unit
+) {
 
-    Box(
+    Column(
         modifier = Modifier
-        .fillMaxSize()
-        .padding(horizontal = Ui.Space.MEDIUM),
-        contentAlignment = Alignment.Center
+            .fillMaxSize()
+            .padding(horizontal = Ui.Space.MEDIUM),
+        verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE, Alignment.CenterVertically),
+        horizontalAlignment = Alignment.Start,
     ) {
 
-        Column(
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
+        BoldText(
+            text = "Votre librarie est vide"
+        )
 
-            BoldText(
-                text = "Votre librarie est vide"
-            )
+        MediumText(
+            text = "Pour retrouver vos fichiers, veillez à bien les nommer selon la norme suivante : "
+        )
 
-            MediumText(
-                text = "Pour retrouver vos fichiers, veillez à bien les nommer selon la norme suivante : "
-            )
+        LightText(
+            text = "Film : <Nom>\nSérie/Anime : <Nom>_S<saison>E<épisode>"
+        )
 
-            LightText(
-                text = "Film : <Nom>\nSérie/Anime : <Nom>_S<saison>E<épisode>"
-            )
-
-        }
+        FluxButton(
+            text = "Actualiser",
+            onTap = onReloadTap
+        )
 
     }
 
@@ -198,16 +189,29 @@ fun HomeEmpty() {
 fun HomeLists(
     overviews: List<ArtworkOverview>,
     lastWatchedIds: List<Long>,
+    isSyncing: Boolean,
+    onSyncTap: () -> Unit,
     navigateToDetails: (Long) -> Unit,
     navigateToCategory: (ContentType) -> Unit,
+    navigateToSearch: () -> Unit,
+    navigateToSettings: () -> Unit
 ) {
 
     Column(
         modifier = Modifier
-            .navigationBarsPadding()
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .systemBarsPadding()
             .padding(bottom = Ui.Space.LARGE),
         verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
     ) {
+
+        HomeTopButtons(
+            isSyncing = isSyncing,
+            onSyncTap = onSyncTap,
+            navigateToSearch = navigateToSearch,
+            navigateToSettings = navigateToSettings
+        )
 
         ArtworkList(
             overviews = lastWatchedIds.mapNotNull { overviews.find { o -> o.id == it } },

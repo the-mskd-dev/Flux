@@ -12,6 +12,7 @@ import com.kaem.flux.model.FileSource
 import com.kaem.flux.model.UserFile
 import com.kaem.flux.model.artwork.ArtworkOverview
 import com.kaem.flux.model.artwork.ContentType
+import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.model.artwork.Movie
 import com.kaem.flux.model.artwork.Status
 import kotlinx.coroutines.runBlocking
@@ -40,25 +41,24 @@ class DatabaseTest {
     }
 
     @Test
-    fun insertOverview() = runBlocking {
+    fun test_1_insert_movie_overview() = runBlocking {
 
         val overview = ArtworkOverview(
-            id = 0L,
+            id = 1L,
             title = "Your name",
-            type = ContentType.SHOW
+            type = ContentType.MOVIE
         )
 
         db.insertOverviews(listOf(overview))
 
-        val overviews = db.getOverviews()
+        val dbOverview = db.getOverview(overview.id)
 
-        assert(overviews.size == 1)
-        assert(overviews.first() == overview)
+        assert(overview == dbOverview)
 
     }
 
     @Test
-    fun insertMovie() = runBlocking {
+    fun test_2_insert_Movie() = runBlocking {
 
         val movie = Movie(
             artworkId = 1L,
@@ -79,11 +79,107 @@ class DatabaseTest {
         )
 
         db.insertMovies(listOf(movie))
+        val dbMovie = db.getMovie(artworkId = movie.artworkId)
 
-        val movies = db.getMovies()
+        assert(movie == dbMovie)
 
-        assert(movies.size == 1)
-        assert(movies.first() == movie)
+    }
+
+    @Test
+    fun test_3_insert_show_overview() = runBlocking {
+
+        val overview = ArtworkOverview(
+            id = 2L,
+            title = "Naruto",
+            type = ContentType.SHOW
+        )
+
+        db.insertOverviews(listOf(overview))
+        val dbOverview = db.getOverview(overview.id)
+
+        assert(overview == dbOverview)
+
+    }
+
+    @Test
+    fun test_4_insert_show_episodes() = runBlocking {
+
+        val episode1 = Episode(
+            id = 3L,
+            number = 1,
+            season = 1,
+            imagePath = "",
+            artworkId = 2L,
+            title = "Naruto episode 1",
+            releaseDateString = "2016-12-28",
+            description = "description",
+            voteAverage = 10f,
+            voteCount = 2809,
+            duration = 22,
+            currentTime = 0L,
+            status = Status.TO_WATCH,
+            file = UserFile(
+                name = "naruto_S01E01.mkv",
+                addedDateTime = 0L,
+                path = "path",
+                source = FileSource.LOCAL
+            )
+        )
+
+        val episode2 = Episode(
+            id = 4L,
+            number = 2,
+            season = 1,
+            imagePath = "",
+            artworkId = 2L,
+            title = "Naruto epsiode 2",
+            releaseDateString = "2016-12-28",
+            description = "description",
+            voteAverage = 10f,
+            voteCount = 289,
+            duration = 23,
+            currentTime = 0L,
+            status = Status.TO_WATCH,
+            file = UserFile(
+                name = "naruto_S01E02.mkv",
+                addedDateTime = 0L,
+                path = "path",
+                source = FileSource.LOCAL
+            )
+        )
+
+        db.insertEpisodes(listOf(episode1, episode2))
+        val dbEpisodes = db.getEpisodes(artworkId = episode1.artworkId)
+
+        assert(dbEpisodes.size == 2)
+        assert(dbEpisodes.any { it == episode1 })
+        assert(dbEpisodes.any { it == episode2 })
+
+    }
+
+    @Test
+    fun test_5_delete_movie_overview() = runBlocking {
+
+        db.deleteOverviews(listOf(1L))
+
+        val dbOverview = db.getOverview(1L)
+        val dbMovie = db.getMovie(1L)
+
+        assert(dbOverview == null)
+        assert(dbMovie == null)
+
+    }
+
+    @Test
+    fun test_5_delete_show_overview() = runBlocking {
+
+        db.deleteOverviews(listOf(2L))
+
+        val dbOverview = db.getOverview(2L)
+        val dbEpisodes = db.getEpisodes(2L)
+
+        assert(dbOverview == null)
+        assert(dbEpisodes.isEmpty())
 
     }
 

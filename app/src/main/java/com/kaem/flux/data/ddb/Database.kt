@@ -36,7 +36,7 @@ interface FluxDao {
 //region Get
 
     @Query("SELECT * FROM artworks WHERE id = :artworkId")
-    suspend fun getOverview(artworkId: Long) : ArtworkOverview
+    suspend fun getOverview(artworkId: Long) : ArtworkOverview?
 
     @Query("SELECT * FROM artworks")
     suspend fun getOverviews() : List<ArtworkOverview>
@@ -45,7 +45,7 @@ interface FluxDao {
     suspend fun getMovies() : List<Movie>
 
     @Query("SELECT * FROM movies WHERE artworkId = :artworkId")
-    suspend fun getMovie(artworkId: Long) : Movie
+    suspend fun getMovie(artworkId: Long) : Movie?
 
     @Query("SELECT * FROM episodes")
     suspend fun getEpisodes() : List<Episode>
@@ -54,7 +54,7 @@ interface FluxDao {
     suspend fun getEpisodes(artworkId: Long) : List<Episode>
 
     @Query("SELECT * FROM episodes WHERE id = :episodeId")
-    suspend fun getEpisode(episodeId: Long) : Episode
+    suspend fun getEpisode(episodeId: Long) : Episode?
 
 //endregion
 

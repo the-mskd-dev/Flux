@@ -38,4 +38,7 @@
     <string name="name_placeholder">nom</string>
     <string name="season_placeholder">saison</string>
     <string name="episode_placeholder">épisode</string>
+    <string name="empty_library">Votre librairie est vide</string>
+    <string name="empty_library_desc">Pour retrouvez vos fichiers, veillez à les nommer selon la norme suivante</string>
+    <string name="refresh">Actualiser</string>
 </resources>

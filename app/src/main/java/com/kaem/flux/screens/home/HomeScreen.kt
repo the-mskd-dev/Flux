@@ -171,13 +171,9 @@ fun HomeEmpty(
         horizontalAlignment = Alignment.Start,
     ) {
 
-        Title(
-            text = "Votre librarie est vide"
-        )
+        Title(text = stringResource(R.string.empty_library))
 
-        MediumText(
-            text = "Pour retrouver vos fichiers, veillez à bien les nommer selon la norme suivante : "
-        )
+        MediumText(text = stringResource(R.string.empty_library_desc))
         
         Column {
 
@@ -235,7 +231,7 @@ fun HomeEmpty(
 
         FluxButton(
             modifier = Modifier.align(Alignment.CenterHorizontally),
-            text = "Actualiser",
+            text = stringResource(R.string.refresh),
             onTap = onReloadTap
         )
 

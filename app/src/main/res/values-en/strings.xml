@@ -37,4 +37,7 @@
     <string name="name_placeholder">name</string>
     <string name="season_placeholder">season</string>
     <string name="episode_placeholder">episode</string>
+    <string name="empty_library">Your library is empty</string>
+    <string name="empty_library_desc">To find your files, please name them according to the following name</string>
+    <string name="refresh">Refresh</string>
 </resources>

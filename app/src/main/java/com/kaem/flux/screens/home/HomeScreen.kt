@@ -9,8 +9,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
@@ -120,34 +122,47 @@ fun HomeContent(
     navigateToSettings: () -> Unit
 ) {
 
-    if (overviews.isEmpty()) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .statusBarsPadding()
+    ) {
 
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
+        HomeTopButtons(
+            isSyncing = isSyncing,
+            onSyncTap = onSyncTap,
+            navigateToSearch = navigateToSearch,
+            navigateToSettings = navigateToSettings
+        )
 
-            //TODO
-            Text(
-                text = "No content",
-                color = MaterialTheme.colorScheme.primary
+        if (overviews.isEmpty()) {
+
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+
+                //TODO
+                Text(
+                    text = "No content",
+                    color = MaterialTheme.colorScheme.primary
+                )
+
+            }
+
+        } else {
+
+            HomeLists(
+                overviews = overviews,
+                lastWatchedIds = lastWatchedIds,
+                navigateToDetails = navigateToDetails,
+                navigateToCategory = navigateToCategory,
             )
 
         }
 
-    } else {
-
-        HomeLists(
-            overviews = overviews,
-            lastWatchedIds = lastWatchedIds,
-            isSyncing = isSyncing,
-            onSyncTap = onSyncTap,
-            navigateToDetails = navigateToDetails,
-            navigateToCategory = navigateToCategory,
-            navigateToSearch = navigateToSearch,
-            navigateToSettings = navigateToSettings
-        )
 
     }
 
@@ -157,29 +172,16 @@ fun HomeContent(
 fun HomeLists(
     overviews: List<ArtworkOverview>,
     lastWatchedIds: List<Long>,
-    isSyncing: Boolean,
-    onSyncTap: () -> Unit,
     navigateToDetails: (Long) -> Unit,
     navigateToCategory: (ContentType) -> Unit,
-    navigateToSearch: () -> Unit,
-    navigateToSettings: () -> Unit
 ) {
 
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .systemBarsPadding()
+            .navigationBarsPadding()
             .padding(bottom = Ui.Space.LARGE),
         verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
     ) {
-
-        HomeTopButtons(
-            isSyncing = isSyncing,
-            onSyncTap = onSyncTap,
-            navigateToSearch = navigateToSearch,
-            navigateToSettings = navigateToSettings
-        )
 
         ArtworkList(
             overviews = lastWatchedIds.mapNotNull { overviews.find { o -> o.id == it } },
@@ -275,7 +277,7 @@ fun ArtworkList(
     if (overviews.isEmpty())
         return
 
-    val width = if (largeArtwork) 450.dp else 120.dp
+    val width = if (largeArtwork) 350.dp else 120.dp
     val ratio = if (largeArtwork) 1920f/1080f else 2f/3f
 
     Column(

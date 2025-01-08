@@ -3,6 +3,7 @@ package com.kaem.flux.screens.home
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -50,7 +51,9 @@ import com.kaem.flux.model.artwork.ContentType
 import com.kaem.flux.screens.welcome.WelcomeScreen
 import com.kaem.flux.screens.welcome.fluxPermissionState
 import com.kaem.flux.ui.component.BoldText
+import com.kaem.flux.ui.component.LightText
 import com.kaem.flux.ui.component.Loader
+import com.kaem.flux.ui.component.MediumText
 import com.kaem.flux.ui.component.Placeholders
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.Constants
@@ -122,10 +125,12 @@ fun HomeContent(
     navigateToSettings: () -> Unit
 ) {
 
+    val isEmpty = overviews.isEmpty() || true
+    val modifier = if (isEmpty) Modifier else Modifier.verticalScroll(rememberScrollState())
+
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
             .statusBarsPadding()
     ) {
 
@@ -136,21 +141,9 @@ fun HomeContent(
             navigateToSettings = navigateToSettings
         )
 
-        if (overviews.isEmpty()) {
+        if (isEmpty) {
 
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-
-                //TODO
-                Text(
-                    text = "No content",
-                    color = MaterialTheme.colorScheme.primary
-                )
-
-            }
+            HomeEmpty()
 
         } else {
 
@@ -163,6 +156,39 @@ fun HomeContent(
 
         }
 
+
+    }
+
+}
+
+@Composable
+fun HomeEmpty() {
+
+    Box(
+        modifier = Modifier
+        .fillMaxSize()
+        .padding(horizontal = Ui.Space.MEDIUM),
+        contentAlignment = Alignment.Center
+    ) {
+
+        Column(
+            verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+
+            BoldText(
+                text = "Votre librarie est vide"
+            )
+
+            MediumText(
+                text = "Pour retrouver vos fichiers, veillez à bien les nommer selon la norme suivante : "
+            )
+
+            LightText(
+                text = "Film : <Nom>\nSérie/Anime : <Nom>_S<saison>E<épisode>"
+            )
+
+        }
 
     }
 

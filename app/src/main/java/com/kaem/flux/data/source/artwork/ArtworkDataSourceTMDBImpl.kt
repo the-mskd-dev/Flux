@@ -140,20 +140,27 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
 
                     val type = if (folder.seasonsAndEpisodes.isEmpty()) TMDBMediaType.MOVIE else TMDBMediaType.SHOW
 
-                    val artworks = if (type == TMDBMediaType.SHOW) {
-                        tmdbService.getShow(
-                            title = folder.title,
-                            year = folder.year
-                        )
-                    } else {
-                        tmdbService.getMovie(
-                            title = folder.title,
-                            year = folder.year
-                        )
-                    }
+                    try {
 
-                    artworks.results.maxByOrNull { it.popularity }?.also {
-                        it.type = type
+                        val artworks = if (type == TMDBMediaType.SHOW) {
+                            tmdbService.getShow(
+                                title = folder.title,
+                                year = folder.year
+                            )
+                        } else {
+                            tmdbService.getMovie(
+                                title = folder.title,
+                                year = folder.year
+                            )
+                        }
+
+                        artworks.results.maxByOrNull { it.popularity }?.also {
+                            it.type = type
+                        }
+
+                    } catch (e: Exception) {
+                        Log.i(TAG, "[getTMDBOverviews] Fail to get TMDB Overviews : ${folder.title}")
+                        null
                     }
 
                 }
@@ -163,6 +170,52 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
         }
 
         return tmdbOverviews
+
+    }
+
+    private suspend fun tmdbToFluxOverviews(tmdbOverviews: List<TMDBOverview>) : List<ArtworkOverview> {
+
+        var overviews = emptyList<ArtworkOverview>()
+
+        CoroutineScope(Dispatchers.Default).launch {
+
+            overviews = tmdbOverviews.map { tmdbOverview ->
+
+                async {
+
+                    try {
+
+                        when (tmdbOverview.type) {
+
+                            TMDBMediaType.MOVIE -> {
+
+                                val tmdbMovie = tmdbService.getMovieDetails(id = tmdbOverview.id)
+                                ArtworkOverview(tmdbMovie = tmdbMovie)
+
+                            }
+
+                            TMDBMediaType.SHOW -> {
+
+                                ArtworkOverview(tmdbOverview = tmdbOverview)
+
+                            }
+
+                            else -> null
+
+                        }
+
+                    } catch (e: Exception) {
+                        Log.e(TAG, "[tmdbToFluxOverviews] Fail to get details for ${tmdbOverview.title} (${tmdbOverview.id})", e)
+                        null
+                    }
+
+                }
+
+            }.awaitAll().filterNotNull()
+
+        }
+
+        return overviews
 
     }
 

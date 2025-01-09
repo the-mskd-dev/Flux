@@ -6,7 +6,7 @@ import org.junit.Test
 class UserFileTest {
 
     @Test
-    fun testParsingFileName() {
+    fun parsing_file_name() {
 
         val files = listOf(
             "Naruto_s02e09.mp4",

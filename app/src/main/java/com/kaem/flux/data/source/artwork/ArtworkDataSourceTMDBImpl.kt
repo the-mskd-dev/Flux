@@ -128,6 +128,48 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
 
     }
 
+    suspend fun getMovies(folders: List<UserFolder>) : Map<ArtworkOverview, Movie> {
+
+        var movies = mapOf<ArtworkOverview, Movie>()
+
+        CoroutineScope(Dispatchers.Default).launch {
+
+            movies = folders.map { folder ->
+
+                async {
+
+                    try {
+
+                        val tmdbOverviews = tmdbService.getMovie(
+                            title = folder.title,
+                            year = folder.year
+                        )
+
+                        val tmdbOverview = tmdbOverviews.results.maxBy { it.popularity }.also {
+                            it.type = TMDBMediaType.MOVIE
+                        }
+
+                        val tmdbMovie = tmdbService.getMovieDetails(id = tmdbOverview.id)
+                        val overview = ArtworkOverview(tmdbMovie = tmdbMovie)
+                        val movie = Movie(tmdbMovie = tmdbMovie, file = folder.files.first())
+
+                        overview to movie
+
+                    } catch (e: Exception) {
+                        Log.i(TAG, "[getMovies] Fail to get movie : ${folder.title}")
+                        null
+                    }
+
+                }
+
+            }.awaitAll().filterNotNull().toMap()
+
+        }
+
+        return movies
+
+    }
+
     suspend fun getTMDBOverviews(folders: List<UserFolder>) : List<TMDBOverview> {
 
         var tmdbOverviews = emptyList<TMDBOverview>()

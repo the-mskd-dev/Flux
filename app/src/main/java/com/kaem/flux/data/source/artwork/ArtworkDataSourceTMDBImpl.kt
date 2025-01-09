@@ -170,6 +170,10 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
 
     }
 
+    suspend fun getShows(folders: List<UserFolder>) : Map<ArtworkOverview, List<Episode>> {
+        //TODO
+    }
+
     suspend fun getTMDBOverviews(folders: List<UserFolder>) : List<TMDBOverview> {
 
         var tmdbOverviews = emptyList<TMDBOverview>()

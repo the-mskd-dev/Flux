@@ -77,5 +77,7 @@ data class FileNameProperties(
 
 data class UserFolder(
     val title: String,
-    val seasonsAndEpisodes: List<Pair<Int, Int>>
+    val year: Int?,
+    val seasonsAndEpisodes: List<Pair<Int, Int>>,
+    val files: List<UserFile>
 )

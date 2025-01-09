@@ -11,9 +11,13 @@ import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.model.artwork.Movie
 import com.kaem.flux.model.tmdb.TMDBArtwork
 import com.kaem.flux.model.tmdb.TMDBMediaType
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
@@ -96,8 +100,6 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
 
     //region Private methods
 
-
-
     fun createFolders(userFiles: List<UserFile>) : List<UserFolder> {
 
         val folders = userFiles.groupBy { it.nameProperties.title }.map { (title, files) ->
@@ -116,12 +118,52 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
 
             UserFolder(
                 title = title,
-                seasonsAndEpisodes = seasonsAndEpisodes
+                year = files.first().nameProperties.year,
+                seasonsAndEpisodes = seasonsAndEpisodes,
+                files = userFiles
             )
 
         }
 
         return folders
+
+    }
+
+    suspend fun getTMDBArtworks(folders: List<UserFolder>) : List<TMDBArtwork> {
+
+        var tmdbArtworks = emptyList<TMDBArtwork>()
+
+        CoroutineScope(Dispatchers.Default).launch {
+
+            tmdbArtworks = folders.map { folder ->
+
+                async {
+
+                    val type = if (folder.seasonsAndEpisodes.isEmpty()) TMDBMediaType.MOVIE else TMDBMediaType.SHOW
+
+                    val artworks = if (type == TMDBMediaType.SHOW) {
+                        tmdbService.getShow(
+                            title = folder.title,
+                            year = folder.year
+                        )
+                    } else {
+                        tmdbService.getMovie(
+                            title = folder.title,
+                            year = folder.year
+                        )
+                    }
+
+                    artworks.results.maxByOrNull { it.popularity }?.also {
+                        it.type = type
+                    }
+
+                }
+
+            }.awaitAll().filterNotNull()
+
+        }
+
+        return tmdbArtworks
 
     }
 

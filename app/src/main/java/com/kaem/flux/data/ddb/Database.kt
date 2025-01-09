@@ -88,7 +88,7 @@ interface FluxDao {
 
 //endregion
 
-//region Other
+//region Count
 
     @Query("SELECT COUNT(*) FROM episodes WHERE artworkId = :artworkId")
     suspend fun getEpisodeCountByOverviewId(artworkId: Long): Int

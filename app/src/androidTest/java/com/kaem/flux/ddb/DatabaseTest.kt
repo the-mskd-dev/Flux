@@ -8,6 +8,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.kaem.flux.data.ddb.FluxDao
 import com.kaem.flux.data.ddb.FluxDatabase
+import com.kaem.flux.mockups.ArtworkMockups
 import com.kaem.flux.model.FileSource
 import com.kaem.flux.model.UserFile
 import com.kaem.flux.model.artwork.ArtworkOverview
@@ -44,145 +45,93 @@ class DatabaseTest {
     }
 
     @Test
-    fun test_1_insert_movie_overview() = runBlocking {
+    fun insert_and_delete_movie() = runBlocking {
 
-        val overview = ArtworkOverview(
-            id = 1L,
-            title = "Your name",
-            type = ContentType.MOVIE
-        )
+        val overview = ArtworkMockups.movieOverview
+        val movie = ArtworkMockups.movie
+
 
         db.insertOverviews(listOf(overview))
-
         val dbOverview = db.getOverview(overview.id)
 
         assert(overview == dbOverview)
 
-    }
-
-    @Test
-    fun test_2_insert_Movie() = runBlocking {
-
-        val movie = Movie(
-            artworkId = 1L,
-            title = "Your name",
-            releaseDateString = "2016-12-28",
-            description = "description",
-            voteAverage = 10f,
-            voteCount = 2809,
-            duration = 110,
-            currentTime = 0L,
-            status = Status.TO_WATCH,
-            file = UserFile(
-                name = "your_name.mkv",
-                addedDateTime = 0L,
-                path = "path",
-                source = FileSource.LOCAL
-            )
-        )
-
         db.insertMovies(listOf(movie))
-        val dbMovie = db.getMovie(artworkId = movie.artworkId)
+        val dbMovie = db.getMovie(overview.id)
 
         assert(movie == dbMovie)
 
+        db.deleteOverviews(listOf(overview.id))
+
+        val deletedOverview = db.getOverview(overview.id)
+        val deletedMovie = db.getMovie(overview.id)
+
+        assert(deletedOverview == null)
+        assert(deletedMovie == null)
+
     }
 
     @Test
-    fun test_3_insert_show_overview() = runBlocking {
+    fun insert_and_delete_show() = runBlocking {
 
-        val overview = ArtworkOverview(
-            id = 2L,
-            title = "Naruto",
-            type = ContentType.SHOW
-        )
+        val overview = ArtworkMockups.showOverview
+        val episode1 = ArtworkMockups.episode1
+        val episode2 = ArtworkMockups.episode2
 
         db.insertOverviews(listOf(overview))
         val dbOverview = db.getOverview(overview.id)
 
         assert(overview == dbOverview)
 
-    }
-
-    @Test
-    fun test_4_insert_show_episodes() = runBlocking {
-
-        val episode1 = Episode(
-            id = 3L,
-            number = 1,
-            season = 1,
-            imagePath = "",
-            artworkId = 2L,
-            title = "Naruto episode 1",
-            releaseDateString = "2016-12-28",
-            description = "description",
-            voteAverage = 10f,
-            voteCount = 2809,
-            duration = 22,
-            currentTime = 0L,
-            status = Status.TO_WATCH,
-            file = UserFile(
-                name = "naruto_S01E01.mkv",
-                addedDateTime = 0L,
-                path = "path",
-                source = FileSource.LOCAL
-            )
-        )
-
-        val episode2 = Episode(
-            id = 4L,
-            number = 2,
-            season = 1,
-            imagePath = "",
-            artworkId = 2L,
-            title = "Naruto epsiode 2",
-            releaseDateString = "2016-12-28",
-            description = "description",
-            voteAverage = 10f,
-            voteCount = 289,
-            duration = 23,
-            currentTime = 0L,
-            status = Status.TO_WATCH,
-            file = UserFile(
-                name = "naruto_S01E02.mkv",
-                addedDateTime = 0L,
-                path = "path",
-                source = FileSource.LOCAL
-            )
-        )
 
         db.insertEpisodes(listOf(episode1, episode2))
-        val dbEpisodes = db.getEpisodes(artworkId = episode1.artworkId)
+        val dbEpisodes = db.getEpisodes(overview.id)
 
         assert(dbEpisodes.size == 2)
         assert(dbEpisodes.any { it == episode1 })
         assert(dbEpisodes.any { it == episode2 })
 
+        db.deleteEpisode(episode2.id)
+        var dbEpisodesCount = db.getEpisodeCountByOverviewId(overview.id)
+
+        assert(dbEpisodesCount == 1)
+
+        db.deleteOverviews(listOf(overview.id))
+
+        val deletedOverview = db.getOverview(overview.id)
+        dbEpisodesCount = db.getEpisodeCountByOverviewId(overview.id)
+
+        assert(deletedOverview == null)
+        assert(dbEpisodesCount == 0)
+
     }
 
     @Test
-    fun test_5_delete_movie_overview() = runBlocking {
+    fun insert_and_delete_episodes() = runBlocking {
 
-        db.deleteOverviews(listOf(1L))
+        val overview = ArtworkMockups.showOverview
+        val episode1 = ArtworkMockups.episode1
+        val episode2 = ArtworkMockups.episode2
 
-        val dbOverview = db.getOverview(1L)
-        val dbMovie = db.getMovie(1L)
+        db.insertOverviews(listOf(overview))
+        db.insertEpisodes(listOf(episode1, episode2))
+        var dbOverview = db.getOverview(overview.id)
+
+        assert(overview == dbOverview)
+
+        db.deleteEpisode(episode1)
+        dbOverview = db.getOverview(overview.id)
+        var dbEpisodesCount = db.getEpisodeCountByOverviewId(overview.id)
+
+        assert(overview == dbOverview)
+        assert(dbEpisodesCount == 1)
+
+        db.deleteEpisode(episode2)
+        dbOverview = db.getOverview(overview.id)
+        dbEpisodesCount = db.getEpisodeCountByOverviewId(overview.id)
 
         assert(dbOverview == null)
-        assert(dbMovie == null)
-
-    }
-
-    @Test
-    fun test_5_delete_show_overview() = runBlocking {
-
-        db.deleteOverviews(listOf(2L))
-
-        val dbOverview = db.getOverview(2L)
-        val dbEpisodes = db.getEpisodes(2L)
-
-        assert(dbOverview == null)
-        assert(dbEpisodes.isEmpty())
+        assert(dbEpisodesCount == 0)
 
     }
 

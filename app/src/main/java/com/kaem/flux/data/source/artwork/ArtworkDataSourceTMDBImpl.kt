@@ -219,6 +219,13 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
 
     }
 
+    private suspend fun getFluxMovies(tmdbOverviews: List<TMDBOverview>) : List<Movie> {
+        return tmdbOverviews.filter { it.type == TMDBMediaType.MOVIE }.map {
+            Movie(tmdbMovie = it, file = file)
+        }
+
+    }
+
     private suspend fun getTmdbArtwork(fileNameProperties: FileNameProperties) : TMDBOverview? {
 
         return if (fileNameProperties.episode != null && fileNameProperties.season != null) {

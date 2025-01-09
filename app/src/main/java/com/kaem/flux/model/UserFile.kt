@@ -36,7 +36,10 @@ data class FileNameProperties(
 
         fun fromFileName(fileName: String): FileNameProperties {
 
-            var name = fileName.substringBeforeLast('.').lowercase()
+            var name = fileName
+                .substringBeforeLast('.')
+                .lowercase()
+
             var season: Int? = null
             var episode: Int? = null
             var year: Int? = null
@@ -44,7 +47,7 @@ data class FileNameProperties(
             val splitName = name.split('_')
             if (splitName.size == 2) {
 
-                name = splitName[0]
+                name = splitName[0].trim()
 
                 val seasonAndEpisodeRegex = Regex("s(\\d+)e(\\d+)")
                 val seasonAndEpisodeResult = seasonAndEpisodeRegex.find(splitName[1])
@@ -71,3 +74,8 @@ data class FileNameProperties(
     }
 
 }
+
+data class UserFolder(
+    val title: String,
+    val seasonsAndEpisodes: List<Pair<Int, Int>>
+)

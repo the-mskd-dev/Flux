@@ -4,6 +4,7 @@ import android.util.Log
 import com.kaem.flux.data.tmdb.TMDBService
 import com.kaem.flux.model.FileNameProperties
 import com.kaem.flux.model.UserFile
+import com.kaem.flux.model.UserFolder
 import com.kaem.flux.model.artwork.ArtworkOverview
 import com.kaem.flux.model.artwork.ContentType
 import com.kaem.flux.model.artwork.Episode
@@ -94,6 +95,35 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
     //endregion
 
     //region Private methods
+
+
+
+    fun createFolders(userFiles: List<UserFile>) : List<UserFolder> {
+
+        val folders = userFiles.groupBy { it.nameProperties.title }.map { (title, files) ->
+
+            val seasonsAndEpisodes = files.mapNotNull {
+
+                val season = it.nameProperties.season
+                val episode = it.nameProperties.episode
+
+                if (season != null && episode != null)
+                    season to episode
+                else
+                    null
+
+            }
+
+            UserFolder(
+                title = title,
+                seasonsAndEpisodes = seasonsAndEpisodes
+            )
+
+        }
+
+        return folders
+
+    }
 
     private suspend fun getTmdbArtwork(fileNameProperties: FileNameProperties) : TMDBArtwork? {
 

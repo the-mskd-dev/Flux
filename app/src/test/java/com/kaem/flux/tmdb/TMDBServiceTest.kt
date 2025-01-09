@@ -1,5 +1,6 @@
 package com.kaem.flux.tmdb
 
+import com.kaem.flux.ApiTest
 import com.kaem.flux.data.tmdb.TMDBService
 import com.kaem.flux.mockups.TMDBResponseMockups
 import kotlinx.coroutines.runBlocking
@@ -9,31 +10,8 @@ import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
-class TMDBServiceTest {
-
-    private lateinit var mockWebServer: MockWebServer
-    private lateinit var api: TMDBService
-
-    @Before
-    fun setUp() {
-
-        // Start server
-        mockWebServer = MockWebServer()
-        mockWebServer.start()
-
-        // Create api
-        val retrofit = Retrofit.Builder()
-            .baseUrl(mockWebServer.url("/")) // URL of MockWebServer
-            .addConverterFactory(GsonConverterFactory.create())
-            .client(OkHttpClient())
-            .build()
-
-        api = retrofit.create(TMDBService::class.java)
-
-    }
+class TMDBServiceTest : ApiTest() {
 
     @Test
     fun get_movies_success() = runBlocking {
@@ -125,11 +103,6 @@ class TMDBServiceTest {
 
         assert(tmdbResult.title.isNotEmpty())
 
-    }
-
-    @After
-    fun close() {
-        mockWebServer.close()
     }
 
 }

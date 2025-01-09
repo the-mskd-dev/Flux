@@ -26,7 +26,7 @@ class TMDBServiceTest {
 
         // Create api
         val retrofit = Retrofit.Builder()
-            .baseUrl(mockWebServer.url("/")) // Utiliser l'URL du MockWebServer
+            .baseUrl(mockWebServer.url("/")) // URL of MockWebServer
             .addConverterFactory(GsonConverterFactory.create())
             .client(OkHttpClient())
             .build()

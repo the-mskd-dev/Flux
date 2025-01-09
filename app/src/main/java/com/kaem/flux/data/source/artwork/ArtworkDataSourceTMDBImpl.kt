@@ -9,7 +9,7 @@ import com.kaem.flux.model.artwork.ArtworkOverview
 import com.kaem.flux.model.artwork.ContentType
 import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.model.artwork.Movie
-import com.kaem.flux.model.tmdb.TMDBArtwork
+import com.kaem.flux.model.tmdb.TMDBOverview
 import com.kaem.flux.model.tmdb.TMDBMediaType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -17,7 +17,6 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
@@ -70,13 +69,13 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
 
                         val tmdbArtwork = getTmdbArtwork(file.nameProperties)
                         tmdbToFluxArtwork(
-                            tmdbArtwork = tmdbArtwork,
+                            tmdbOverview = tmdbArtwork,
                             file = file
                         )
 
                         if (tmdbArtwork?.type == TMDBMediaType.SHOW) {
                             tmdbToFluxEpisode(
-                                tmdbArtwork = tmdbArtwork,
+                                tmdbOverview = tmdbArtwork,
                                 file = file
                             )
                         }
@@ -129,13 +128,13 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
 
     }
 
-    suspend fun getTMDBArtworks(folders: List<UserFolder>) : List<TMDBArtwork> {
+    suspend fun getTMDBOverviews(folders: List<UserFolder>) : List<TMDBOverview> {
 
-        var tmdbArtworks = emptyList<TMDBArtwork>()
+        var tmdbOverviews = emptyList<TMDBOverview>()
 
         CoroutineScope(Dispatchers.Default).launch {
 
-            tmdbArtworks = folders.map { folder ->
+            tmdbOverviews = folders.map { folder ->
 
                 async {
 
@@ -163,11 +162,11 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
 
         }
 
-        return tmdbArtworks
+        return tmdbOverviews
 
     }
 
-    private suspend fun getTmdbArtwork(fileNameProperties: FileNameProperties) : TMDBArtwork? {
+    private suspend fun getTmdbArtwork(fileNameProperties: FileNameProperties) : TMDBOverview? {
 
         return if (fileNameProperties.episode != null && fileNameProperties.season != null) {
 
@@ -218,19 +217,19 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
     }
 
     private suspend fun tmdbToFluxArtwork(
-        tmdbArtwork: TMDBArtwork?,
+        tmdbOverview: TMDBOverview?,
         file: UserFile
     ) {
 
-        tmdbArtwork ?: return
+        tmdbOverview ?: return
 
-        when (tmdbArtwork.type){
+        when (tmdbOverview.type){
 
             TMDBMediaType.MOVIE -> {
 
                 try {
 
-                    val tmdbMovie = tmdbService.getMovieDetails(id = tmdbArtwork.id)
+                    val tmdbMovie = tmdbService.getMovieDetails(id = tmdbOverview.id)
 
                     val artworkOverview = ArtworkOverview(tmdbMovie = tmdbMovie)
                     addArtwork(artworkOverview)
@@ -242,14 +241,14 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
                     Log.i(TAG, "[tmdbToFluxArtwork] Movie : ${movie.title} (id ${movie.artworkId})")
 
                 } catch (e: Exception) {
-                    Log.e(TAG, "Fail to get movie details for ID ${tmdbArtwork.id}", e)
+                    Log.e(TAG, "Fail to get movie details for ID ${tmdbOverview.id}", e)
                 }
 
             }
 
             TMDBMediaType.SHOW -> {
 
-                val show = ArtworkOverview(tmdbArtwork = tmdbArtwork)
+                val show = ArtworkOverview(tmdbOverview = tmdbOverview)
                 addArtwork(show)
 
                 Log.i(TAG, "[tmdbToFluxArtwork] Show : ${show.title} (id ${show.id})")
@@ -263,23 +262,23 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
     }
 
     private suspend fun tmdbToFluxEpisode(
-        tmdbArtwork: TMDBArtwork?,
+        tmdbOverview: TMDBOverview?,
         file: UserFile
     ) {
 
-        tmdbArtwork ?: return
+        tmdbOverview ?: return
 
         try {
 
             val tmdbEpisode = tmdbService.getEpisode(
-                id = tmdbArtwork.id,
+                id = tmdbOverview.id,
                 season = file.nameProperties.season!!,
                 episode = file.nameProperties.episode!!
             )
 
             val episode = Episode(
                 tmdbEpisode = tmdbEpisode,
-                artworkId = tmdbArtwork.id,
+                artworkId = tmdbOverview.id,
                 file = file
             )
 
@@ -288,7 +287,7 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
             Log.i(TAG, "[tmdbToFluxEpisode] Episode : ${episode.title} season ${episode.season} n°${episode.number} (id ${episode.id})")
 
         } catch (e: Exception) {
-            Log.e(TAG, "Fail to get episode details for ID ${tmdbArtwork.id}, season ${file.nameProperties.season}, episode ${file.nameProperties.episode}", e)
+            Log.e(TAG, "Fail to get episode details for ID ${tmdbOverview.id}, season ${file.nameProperties.season}, episode ${file.nameProperties.episode}", e)
         }
 
     }

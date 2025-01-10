@@ -29,7 +29,7 @@ class ArtworkDataSourceTMDBTest : ApiTest() {
 
         val narutoFolder = folders.firstOrNull { it.title == "naruto" }
 
-        assert(narutoFolder?.seasonsAndEpisodes?.size == 4)
+        assert(narutoFolder?.files?.size == 4)
     }
 
 }

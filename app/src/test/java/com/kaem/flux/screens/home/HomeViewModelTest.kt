@@ -107,7 +107,7 @@ class HomeViewModelTest {
         viewModel.getLibrary(manualSync = true)
 
         coVerify {
-            libraryRepository.getLibrary(any())
+            libraryRepository.getLibrary(sync = true)
             dataStoreRepository.saveSyncTime(any())
         }
     }
@@ -121,7 +121,7 @@ class HomeViewModelTest {
         viewModel.getLibrary(manualSync = false)
 
         coVerify {
-            libraryRepository.getLibrary(any())
+            libraryRepository.getLibrary(sync = true)
             dataStoreRepository.saveSyncTime(any())
         }
     }
@@ -135,7 +135,7 @@ class HomeViewModelTest {
         viewModel.getLibrary(manualSync = false)
 
         coVerify {
-            libraryRepository.getLibrary(any())
+            libraryRepository.getLibrary(sync = false)
         }
         coVerify(exactly = 0) {
             dataStoreRepository.saveSyncTime(any())

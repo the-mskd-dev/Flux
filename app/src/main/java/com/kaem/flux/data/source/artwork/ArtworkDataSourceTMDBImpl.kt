@@ -2,23 +2,18 @@ package com.kaem.flux.data.source.artwork
 
 import android.util.Log
 import com.kaem.flux.data.tmdb.TMDBService
-import com.kaem.flux.model.FileNameProperties
 import com.kaem.flux.model.UserFile
 import com.kaem.flux.model.UserFolder
 import com.kaem.flux.model.artwork.ArtworkOverview
 import com.kaem.flux.model.artwork.ContentType
 import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.model.artwork.Movie
-import com.kaem.flux.model.tmdb.TMDBOverview
 import com.kaem.flux.model.tmdb.TMDBMediaType
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 

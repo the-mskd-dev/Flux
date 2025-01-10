@@ -24,21 +24,6 @@ import javax.inject.Inject
 
 class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMDBService) : ArtworkDataSource {
 
-    //region Variables
-
-    private val mutexOverviews = Mutex()
-    private val overviews = arrayListOf<ArtworkOverview>()
-
-    private val mutexMovies = Mutex()
-    private val movies = arrayListOf<Movie>()
-
-    private val mutexEpisodes = Mutex()
-    private val episodes = arrayListOf<Episode>()
-
-    private var savedOverviewIds: List<Long> = emptyList()
-
-    //endregion
-
     //region Companion object
 
     companion object {
@@ -55,72 +40,43 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
         sync: Boolean
     ): ArtworkDataSource.Library {
 
-        savedOverviewIds = overviewIds
-        overviews.clear()
-        movies.clear()
-        episodes.clear()
+        var movies: Map<ArtworkOverview, Movie> = mapOf()
+        var shows: Map<ArtworkOverview, List<Episode>> = mapOf()
 
         withContext(Dispatchers.Default) {
+
+            val folders = createFolders(files)
+
             coroutineScope {
 
-                files.forEach { file ->
+                launch {
+                    val moviesFolders = folders.filter { it.type == ContentType.MOVIE }
+                    movies = getMovies(moviesFolders)
+                }
 
-                    launch {
-
-                        val tmdbArtwork = getTmdbArtwork(file.nameProperties)
-                        tmdbToFluxArtwork(
-                            tmdbOverview = tmdbArtwork,
-                            file = file
-                        )
-
-                        if (tmdbArtwork?.type == TMDBMediaType.SHOW) {
-                            tmdbToFluxEpisode(
-                                tmdbOverview = tmdbArtwork,
-                                file = file
-                            )
-                        }
-
-                    }
-
+                launch {
+                    val showsFolders = folders.filter { it.type == ContentType.SHOW }
+                    shows = getShows(showsFolders)
                 }
 
             }
+
         }
 
         return ArtworkDataSource.Library(
-            overviews = overviews.filter { a -> if (a.type == ContentType.SHOW) episodes.any { it.artworkId == a.id } else true },
-            movies = movies,
-            episodes = episodes
-        )
-
+            overviews = (movies.keys + shows.keys).toList(),
+            movies = movies.values.toList(),
+            episodes = shows.values.flatten()
+        ).also {
+            Log.d(TAG, "[getArtworks] Found ${it.overviews.size} overviews, ${it.movies.size} movies, ${it.episodes.size} episodes")
+        }
     }
 
-    //endregion
+    fun createFolders(files: List<UserFile>) : List<UserFolder> {
 
-    //region Private methods
+        val folders = files.groupBy { it.nameProperties.title }.map { (t, f) ->
 
-    fun createFolders(userFiles: List<UserFile>) : List<UserFolder> {
-
-        val folders = userFiles.groupBy { it.nameProperties.title }.map { (title, files) ->
-
-            val seasonsAndEpisodes = files.mapNotNull {
-
-                val season = it.nameProperties.season
-                val episode = it.nameProperties.episode
-
-                if (season != null && episode != null)
-                    season to episode
-                else
-                    null
-
-            }
-
-            UserFolder(
-                title = title,
-                year = files.first().nameProperties.year,
-                seasonsAndEpisodes = seasonsAndEpisodes,
-                files = userFiles
-            )
+            UserFolder(title = t, files = f)
 
         }
 
@@ -128,21 +84,25 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
 
     }
 
-    suspend fun getMovies(folders: List<UserFolder>) : Map<ArtworkOverview, Movie> {
+    //endregion
 
-        var movies = mapOf<ArtworkOverview, Movie>()
+    //region Private methods
 
-        CoroutineScope(Dispatchers.Default).launch {
+    private suspend fun getMovies(folders: List<UserFolder>) : Map<ArtworkOverview, Movie> {
 
-            movies = folders.map { folder ->
+        val movies = coroutineScope {
+
+            folders.map { folder ->
 
                 async {
 
                     try {
 
+                        val file = folder.files.first()
+
                         val tmdbOverviews = tmdbService.getMovie(
                             title = folder.title,
-                            year = folder.year
+                            year = file.nameProperties.year
                         )
 
                         val tmdbOverview = tmdbOverviews.results.maxBy { it.popularity }.also {
@@ -151,7 +111,7 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
 
                         val tmdbMovie = tmdbService.getMovieDetails(id = tmdbOverview.id)
                         val overview = ArtworkOverview(tmdbMovie = tmdbMovie)
-                        val movie = Movie(tmdbMovie = tmdbMovie, file = folder.files.first())
+                        val movie = Movie(tmdbMovie = tmdbMovie, file = file)
 
                         overview to movie
 
@@ -166,263 +126,93 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
 
         }
 
+        Log.i(TAG, "[getShows] Found ${movies.size}/${folders.size} movies")
+
         return movies
 
     }
 
-    suspend fun getShows(folders: List<UserFolder>) : Map<ArtworkOverview, List<Episode>> {
-        //TODO
-    }
+    private suspend fun getShows(folders: List<UserFolder>) : Map<ArtworkOverview, List<Episode>> {
 
-    suspend fun getTMDBOverviews(folders: List<UserFolder>) : List<TMDBOverview> {
+        val shows = mutableMapOf<ArtworkOverview, List<Episode>>()
 
-        var tmdbOverviews = emptyList<TMDBOverview>()
+        coroutineScope {
 
-        CoroutineScope(Dispatchers.Default).launch {
-
-            tmdbOverviews = folders.map { folder ->
+            folders.map { folder ->
 
                 async {
 
-                    val type = if (folder.seasonsAndEpisodes.isEmpty()) TMDBMediaType.MOVIE else TMDBMediaType.SHOW
-
-                    try {
-
-                        val artworks = if (type == TMDBMediaType.SHOW) {
-                            tmdbService.getShow(
-                                title = folder.title,
-                                year = folder.year
-                            )
-                        } else {
-                            tmdbService.getMovie(
-                                title = folder.title,
-                                year = folder.year
-                            )
-                        }
-
-                        artworks.results.maxByOrNull { it.popularity }?.also {
-                            it.type = type
-                        }
-
-                    } catch (e: Exception) {
-                        Log.i(TAG, "[getTMDBOverviews] Fail to get TMDB Overviews : ${folder.title}")
-                        null
+                    getShowOverviewAndEpisodes(folder)?.let { (overview, episodes) ->
+                        shows[overview] = episodes
                     }
 
                 }
 
-            }.awaitAll().filterNotNull()
+            }.awaitAll()
 
         }
 
-        return tmdbOverviews
+        Log.i(TAG, "[getShows] Found ${shows.size}/${folders.size} shows and ${shows.values.flatten().size}/${folders.map { it.files }.flatten().size} episodes")
+
+        return shows
 
     }
 
-    private suspend fun tmdbToFluxOverviews(tmdbOverviews: List<TMDBOverview>) : List<ArtworkOverview> {
+    private suspend fun getShowOverviewAndEpisodes(folder: UserFolder) : Pair<ArtworkOverview, List<Episode>>? {
 
-        var overviews = emptyList<ArtworkOverview>()
-
-        CoroutineScope(Dispatchers.Default).launch {
-
-            overviews = tmdbOverviews.map { tmdbOverview ->
-
-                async {
-
-                    try {
-
-                        when (tmdbOverview.type) {
-
-                            TMDBMediaType.MOVIE -> {
-
-                                val tmdbMovie = tmdbService.getMovieDetails(id = tmdbOverview.id)
-                                ArtworkOverview(tmdbMovie = tmdbMovie)
-
-                            }
-
-                            TMDBMediaType.SHOW -> {
-
-                                ArtworkOverview(tmdbOverview = tmdbOverview)
-
-                            }
-
-                            else -> null
-
-                        }
-
-                    } catch (e: Exception) {
-                        Log.e(TAG, "[tmdbToFluxOverviews] Fail to get details for ${tmdbOverview.title} (${tmdbOverview.id})", e)
-                        null
-                    }
-
-                }
-
-            }.awaitAll().filterNotNull()
-
-        }
-
-        return overviews
-
-    }
-
-    private suspend fun getFluxMovies(tmdbOverviews: List<TMDBOverview>) : List<Movie> {
-        return tmdbOverviews.filter { it.type == TMDBMediaType.MOVIE }.map {
-            Movie(tmdbMovie = it, file = file)
-        }
-
-    }
-
-    private suspend fun getTmdbArtwork(fileNameProperties: FileNameProperties) : TMDBOverview? {
-
-        return if (fileNameProperties.episode != null && fileNameProperties.season != null) {
-
-            try {
-
-                val artworks = tmdbService.getShow(
-                    title = fileNameProperties.title,
-                    year = fileNameProperties.year
-                )
-
-                val show = artworks.results.maxByOrNull { it.popularity }?.also {
-                    it.type = TMDBMediaType.SHOW
-                }
-
-                Log.i(TAG, "[getTmdbArtwork] Show : ${show?.title} (id ${show?.id})")
-
-                show
-
-            } catch (e: Exception) {
-                Log.e(TAG, "[getTmdbArtwork] Fail to get show for name ${fileNameProperties.title}", e)
-                null
-            }
-
-        } else {
-
-            try {
-
-                val artworks = tmdbService.getMovie(
-                    title = fileNameProperties.title,
-                    year = fileNameProperties.year
-                )
-
-                val movie = artworks.results.firstOrNull()?.also {
-                    it.type = TMDBMediaType.MOVIE
-                }
-
-                Log.i(TAG, "[getTmdbArtwork] Movie : ${movie?.title} (id ${movie?.id})")
-
-                movie
-
-            } catch (e: Exception) {
-                Log.e(TAG, "[getTmdbArtwork] Fail to get movie for name ${fileNameProperties.title}", e)
-                null
-            }
-
-        }
-
-    }
-
-    private suspend fun tmdbToFluxArtwork(
-        tmdbOverview: TMDBOverview?,
-        file: UserFile
-    ) {
-
-        tmdbOverview ?: return
-
-        when (tmdbOverview.type){
-
-            TMDBMediaType.MOVIE -> {
-
-                try {
-
-                    val tmdbMovie = tmdbService.getMovieDetails(id = tmdbOverview.id)
-
-                    val artworkOverview = ArtworkOverview(tmdbMovie = tmdbMovie)
-                    addArtwork(artworkOverview)
-
-                    val movie = Movie(tmdbMovie = tmdbMovie, file = file)
-
-                    addMovie(movie)
-
-                    Log.i(TAG, "[tmdbToFluxArtwork] Movie : ${movie.title} (id ${movie.artworkId})")
-
-                } catch (e: Exception) {
-                    Log.e(TAG, "Fail to get movie details for ID ${tmdbOverview.id}", e)
-                }
-
-            }
-
-            TMDBMediaType.SHOW -> {
-
-                val show = ArtworkOverview(tmdbOverview = tmdbOverview)
-                addArtwork(show)
-
-                Log.i(TAG, "[tmdbToFluxArtwork] Show : ${show.title} (id ${show.id})")
-
-            }
-
-            else -> {}
-
-        }
-
-    }
-
-    private suspend fun tmdbToFluxEpisode(
-        tmdbOverview: TMDBOverview?,
-        file: UserFile
-    ) {
-
-        tmdbOverview ?: return
+        val overview: ArtworkOverview
 
         try {
 
-            val tmdbEpisode = tmdbService.getEpisode(
-                id = tmdbOverview.id,
-                season = file.nameProperties.season!!,
-                episode = file.nameProperties.episode!!
+            val tmdbOverviews = tmdbService.getShow(
+                title = folder.title,
+                year = folder.files.firstOrNull { it.nameProperties.year != null }?.nameProperties?.year
             )
 
-            val episode = Episode(
-                tmdbEpisode = tmdbEpisode,
-                artworkId = tmdbOverview.id,
-                file = file
-            )
+            val tmdbOverview = tmdbOverviews.results.maxBy { it.popularity }.also {
+                it.type = TMDBMediaType.SHOW
+            }
 
-            addEpisode(episode)
-
-            Log.i(TAG, "[tmdbToFluxEpisode] Episode : ${episode.title} season ${episode.season} n°${episode.number} (id ${episode.id})")
+            overview = ArtworkOverview(tmdbOverview)
 
         } catch (e: Exception) {
-            Log.e(TAG, "Fail to get episode details for ID ${tmdbOverview.id}, season ${file.nameProperties.season}, episode ${file.nameProperties.episode}", e)
+            Log.e(TAG, "[getShowAndEpisodes] Fail to get show overview : ${folder.title}", e)
+            return null
         }
 
-    }
+        val episodes: List<Episode> = coroutineScope {
 
-    //endregion
+            folder.files.map { file ->
 
-    //region Lists methods
+                async {
 
-    private suspend fun addArtwork(artworkOverview: ArtworkOverview) {
-        mutexOverviews.withLock {
-            if (overviews.none { it.id == artworkOverview.id } && !savedOverviewIds.contains(artworkOverview.id))
-                overviews.add(artworkOverview)
+                    try {
+
+                        val tmdbEpisode = tmdbService.getEpisode(
+                            id = overview.id,
+                            season = file.nameProperties.season!!,
+                            episode = file.nameProperties.episode!!
+                        )
+
+                        Episode(
+                            tmdbEpisode = tmdbEpisode,
+                            artworkId = overview.id,
+                            file = file
+                        )
+
+                    } catch (e: Exception) {
+                        Log.e(TAG, "[getShowAndEpisodes] Fail to get episode : ${folder.title} (season ${file.nameProperties.season}, episode ${file.nameProperties.episode})", e)
+                        null
+                    }
+
+                }
+
+            }.awaitAll().filterNotNull()
+
         }
-    }
 
-    private suspend fun addMovie(movie: Movie) {
-        mutexMovies.withLock {
-            if (movies.none { it.artworkId == movie.artworkId })
-                movies.add(movie)
-        }
-    }
+        return overview to episodes
 
-    private suspend fun addEpisode(episode: Episode) {
-        mutexEpisodes.withLock {
-            if (episodes.none { it.id == episode.id })
-                episodes.add(episode)
-        }
     }
-
-    //endregion
 
 }

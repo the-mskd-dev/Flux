@@ -85,7 +85,7 @@ class LibraryRepository @Inject constructor(
         db.insertMovies(newMovies)
         db.insertEpisodes(newEpisodes)
 
-        return filteredOverviews + newOverviews
+        return (filteredOverviews + newOverviews).distinctBy { it.id }
 
     }
 

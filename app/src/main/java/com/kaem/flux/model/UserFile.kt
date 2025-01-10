@@ -1,6 +1,7 @@
 package com.kaem.flux.model
 
 import android.os.Parcelable
+import com.kaem.flux.model.artwork.ContentType
 import kotlinx.parcelize.Parcelize
 import java.util.Date
 
@@ -14,6 +15,9 @@ data class UserFile(
 
     val nameProperties: FileNameProperties
         get() = FileNameProperties.fromFileName(name)
+
+    val isEpisode: Boolean
+        get() = nameProperties.season != null && nameProperties.episode != null
 
     val addedDate: Date
         get() = Date(addedDateTime)
@@ -77,7 +81,14 @@ data class FileNameProperties(
 
 data class UserFolder(
     val title: String,
-    val year: Int?,
-    val seasonsAndEpisodes: List<Pair<Int, Int>>,
     val files: List<UserFile>
-)
+) {
+
+    val type: ContentType?
+        get() = when {
+            files.all { it.isEpisode } -> ContentType.SHOW
+            files.size == 1 && !files.first().isEpisode -> ContentType.MOVIE
+            else -> null
+        }
+
+}

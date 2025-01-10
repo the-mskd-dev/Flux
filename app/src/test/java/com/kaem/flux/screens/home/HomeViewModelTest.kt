@@ -9,6 +9,7 @@ import com.kaem.flux.mockups.ArtworkMockups
 import com.kaem.flux.model.ScreenState
 import com.kaem.flux.model.artwork.ArtworkOverview
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -24,6 +25,8 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import java.util.prefs.Preferences
+import kotlin.time.Duration.Companion.days
+import kotlin.time.Duration.Companion.hours
 
 class HomeViewModelTest {
 
@@ -54,7 +57,7 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun initial_state() = runTest {
+    fun `initial state`() = runTest {
 
         viewModel.uiState.test {
             val initialState = awaitItem()
@@ -69,7 +72,7 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun combine_flows_should_update_state() = runTest {
+    fun `combine flows should update state`() = runTest {
 
         // Mock
         val overviews = listOf(ArtworkMockups.movieOverview, ArtworkMockups.showOverview)
@@ -96,6 +99,46 @@ class HomeViewModelTest {
             assert(!updatedState.isSyncing)
 
             cancelAndConsumeRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `getLibrary should force sync when manual sync requested`() = runTest {
+        viewModel.getLibrary(manualSync = true)
+
+        coVerify {
+            libraryRepository.getLibrary(any())
+            dataStoreRepository.saveSyncTime(any())
+        }
+    }
+
+    @Test
+    fun `getLibrary should sync when last sync was more than 1 day ago`() = runTest {
+        val oldTime = System.currentTimeMillis() - 2.days.inWholeMilliseconds
+        every { dataStoreRepository.getSyncTime() } returns oldTime
+
+        viewModel = HomeViewModel(libraryRepository, dataStoreRepository)
+        viewModel.getLibrary(manualSync = false)
+
+        coVerify {
+            libraryRepository.getLibrary(any())
+            dataStoreRepository.saveSyncTime(any())
+        }
+    }
+
+    @Test
+    fun `getLibrary should not sync when last sync was less than 1 day ago`() = runTest {
+        val recentTime = System.currentTimeMillis() - 12.hours.inWholeMilliseconds
+        every { dataStoreRepository.getSyncTime() } returns recentTime
+
+        viewModel = HomeViewModel(libraryRepository, dataStoreRepository)
+        viewModel.getLibrary(manualSync = false)
+
+        coVerify {
+            libraryRepository.getLibrary(any())
+        }
+        coVerify(exactly = 0) {
+            dataStoreRepository.saveSyncTime(any())
         }
     }
 

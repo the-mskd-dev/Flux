@@ -76,7 +76,6 @@ class LibraryRepository @Inject constructor(
         val filteredOverviews = artworks.filter { a -> overviewsIdsToDelete.none { it == a.id } }
         val (newOverviews, newMovies, newEpisodes) = tmdbSource.getArtworks(
             files = newFiles,
-            overviewIds = filteredOverviews.map { it.id },
             sync = true
         )
 

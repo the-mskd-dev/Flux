@@ -32,7 +32,6 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
 
     override suspend fun getArtworks(
         files: List<UserFile>,
-        overviewIds: List<Long>,
         sync: Boolean
     ): ArtworkDataSource.Library {
 

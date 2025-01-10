@@ -1,7 +1,5 @@
 package com.kaem.flux.ddb
 
-import androidx.room.Embedded
-import androidx.room.PrimaryKey
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -9,14 +7,7 @@ import androidx.test.filters.SmallTest
 import com.kaem.flux.data.ddb.FluxDao
 import com.kaem.flux.data.ddb.FluxDatabase
 import com.kaem.flux.mockups.ArtworkMockups
-import com.kaem.flux.model.FileSource
-import com.kaem.flux.model.UserFile
-import com.kaem.flux.model.artwork.ArtworkOverview
-import com.kaem.flux.model.artwork.ContentType
-import com.kaem.flux.model.artwork.Episode
-import com.kaem.flux.model.artwork.Movie
-import com.kaem.flux.model.artwork.Status
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.FixMethodOrder
@@ -45,7 +36,7 @@ class DatabaseTest {
     }
 
     @Test
-    fun insert_and_delete_movie() = runBlocking {
+    fun insert_and_delete_movie() = runTest {
 
         val overview = ArtworkMockups.movieOverview
         val movie = ArtworkMockups.movie
@@ -72,7 +63,7 @@ class DatabaseTest {
     }
 
     @Test
-    fun insert_and_delete_show() = runBlocking {
+    fun insert_and_delete_show() = runTest {
 
         val overview = ArtworkMockups.showOverview
         val episode1 = ArtworkMockups.episode1
@@ -107,7 +98,7 @@ class DatabaseTest {
     }
 
     @Test
-    fun insert_and_delete_episodes() = runBlocking {
+    fun insert_and_delete_episodes() = runTest {
 
         val overview = ArtworkMockups.showOverview
         val episode1 = ArtworkMockups.episode1

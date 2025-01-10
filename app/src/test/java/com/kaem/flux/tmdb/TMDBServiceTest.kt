@@ -1,14 +1,9 @@
 package com.kaem.flux.tmdb
 
 import com.kaem.flux.ApiTest
-import com.kaem.flux.data.tmdb.TMDBService
 import com.kaem.flux.mockups.TMDBResponseMockups
 import kotlinx.coroutines.runBlocking
-import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse
-import okhttp3.mockwebserver.MockWebServer
-import org.junit.After
-import org.junit.Before
 import org.junit.Test
 
 class TMDBServiceTest : ApiTest() {

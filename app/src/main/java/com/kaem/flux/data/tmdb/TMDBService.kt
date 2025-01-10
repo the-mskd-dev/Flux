@@ -1,9 +1,9 @@
 package com.kaem.flux.data.tmdb
 
-import com.kaem.flux.model.tmdb.TMDBOverviewsResult
 import com.kaem.flux.model.tmdb.TMDBAuthentication
 import com.kaem.flux.model.tmdb.TMDBEpisode
 import com.kaem.flux.model.tmdb.TMDBMovie
+import com.kaem.flux.model.tmdb.TMDBOverviewsResult
 import com.kaem.flux.utils.Constants
 import retrofit2.http.GET
 import retrofit2.http.Path

@@ -4,8 +4,8 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.kaem.flux.R
 import com.kaem.flux.model.UserFile
-import com.kaem.flux.model.tmdb.TMDBOverview
 import com.kaem.flux.model.tmdb.TMDBMovie
+import com.kaem.flux.model.tmdb.TMDBOverview
 
 /**
  * Represents an artwork, such as a movie or a TV show.

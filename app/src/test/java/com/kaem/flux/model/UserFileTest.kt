@@ -1,5 +1,7 @@
 package com.kaem.flux.model
 
+import com.kaem.flux.mockups.FilesMockups
+import com.kaem.flux.utils.extensions.groupInFolders
 import org.junit.Test
 
 
@@ -26,6 +28,20 @@ class UserFileTest {
         assert(spiderman.episode == null)
         assert(spiderman.year == 2001)
 
+    }
+
+    @Test
+    fun group_files_in_folders() {
+
+        val files = FilesMockups.localFiles
+
+        val folders = files.groupInFolders()
+
+        assert(folders.size == 3)
+
+        val narutoFolder = folders.firstOrNull { it.title == "naruto" }
+
+        assert(narutoFolder?.files?.size == 4)
     }
 
 }

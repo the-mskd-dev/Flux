@@ -9,6 +9,7 @@ import com.kaem.flux.model.artwork.ContentType
 import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.model.artwork.Movie
 import com.kaem.flux.model.tmdb.TMDBMediaType
+import com.kaem.flux.utils.extensions.groupInFolders
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -40,7 +41,7 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
 
         withContext(Dispatchers.Default) {
 
-            val folders = createFolders(files)
+            val folders = files.groupInFolders()
 
             coroutineScope {
 
@@ -65,18 +66,6 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(private val tmdbService: TMD
         ).also {
             Log.d(TAG, "[getArtworks] Found ${it.overviews.size} overviews, ${it.movies.size} movies, ${it.episodes.size} episodes")
         }
-    }
-
-    fun createFolders(files: List<UserFile>) : List<UserFolder> {
-
-        val folders = files.groupBy { it.nameProperties.title }.map { (t, f) ->
-
-            UserFolder(title = t, files = f)
-
-        }
-
-        return folders
-
     }
 
     //endregion

@@ -28,7 +28,6 @@ class HomeViewModelTest {
     private lateinit var viewModel: HomeViewModel
     private val repository: LibraryRepository = mockk()
     private val dataStoreRepository: DataStoreRepository = mockk()
-    private val libraryFlow = MutableStateFlow(mockk<LibraryContent>())
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Before
@@ -39,6 +38,7 @@ class HomeViewModelTest {
         // Setup mocks
         every { dataStoreRepository.getSyncTime() } returns 0L
         every { dataStoreRepository.flow } returns flowOf(mockk())
+        val libraryFlow = MutableStateFlow(mockk<LibraryContent>())
         coEvery { repository.libraryFlow } returns libraryFlow
 
         // Init ViewModel
@@ -56,6 +56,7 @@ class HomeViewModelTest {
             assert(emptyList<Long>() == initialState.lastWatchedArtworkIds)
             assert(initialState.isSyncing)
         }
+
     }
 
     @Test

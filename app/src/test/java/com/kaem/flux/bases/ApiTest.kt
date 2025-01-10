@@ -1,4 +1,4 @@
-package com.kaem.flux
+package com.kaem.flux.bases
 
 import com.kaem.flux.data.tmdb.TMDBService
 import okhttp3.OkHttpClient
@@ -32,7 +32,7 @@ abstract class ApiTest {
     }
 
     @After
-    open fun close() {
+    open fun tearDown() {
         mockWebServer.close()
     }
 

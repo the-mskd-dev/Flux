@@ -1,6 +1,6 @@
 package com.kaem.flux.tmdb
 
-import com.kaem.flux.ApiTest
+import com.kaem.flux.bases.ApiTest
 import com.kaem.flux.mockups.TMDBResponseMockups
 import kotlinx.coroutines.runBlocking
 import okhttp3.mockwebserver.MockResponse

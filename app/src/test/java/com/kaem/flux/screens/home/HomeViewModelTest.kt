@@ -16,6 +16,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
@@ -26,24 +28,29 @@ import java.util.prefs.Preferences
 class HomeViewModelTest {
 
     private lateinit var viewModel: HomeViewModel
-    private val repository: LibraryRepository = mockk()
-    private val dataStoreRepository: DataStoreRepository = mockk()
+    private lateinit var libraryRepository: LibraryRepository
+    private lateinit var dataStoreRepository: DataStoreRepository
+    private val testDispatcher = StandardTestDispatcher()
+
+    // Mocked flows
+    private val libraryFlow = MutableStateFlow(LibraryContent())
+    private val dataStoreFlow = MutableStateFlow(FluxDataStore())
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Before
-    fun setUp() {
+    fun setup() {
+        Dispatchers.setMain(testDispatcher)
 
-        Dispatchers.setMain(Dispatchers.Unconfined)
+        libraryRepository = mockk(relaxed = true) {
+            every { libraryFlow } returns this@HomeViewModelTest.libraryFlow
+        }
 
-        // Setup mocks
-        every { dataStoreRepository.getSyncTime() } returns 0L
-        every { dataStoreRepository.flow } returns flowOf(mockk())
-        val libraryFlow = MutableStateFlow(mockk<LibraryContent>())
-        coEvery { repository.libraryFlow } returns libraryFlow
+        dataStoreRepository = mockk(relaxed = true) {
+            every { flow } returns this@HomeViewModelTest.dataStoreFlow
+            every { getSyncTime() } returns 0L
+        }
 
-        // Init ViewModel
-        viewModel = HomeViewModel(repository, dataStoreRepository)
-
+        viewModel = HomeViewModel(libraryRepository, dataStoreRepository)
     }
 
     @Test
@@ -55,6 +62,8 @@ class HomeViewModelTest {
             assert(emptyList<ArtworkOverview>() == initialState.overviews)
             assert(emptyList<Long>() == initialState.lastWatchedArtworkIds)
             assert(initialState.isSyncing)
+
+            cancelAndConsumeRemainingEvents()
         }
 
     }
@@ -65,35 +74,35 @@ class HomeViewModelTest {
         // Mock
         val overviews = listOf(ArtworkMockups.movieOverview, ArtworkMockups.showOverview)
         val lastWatchedIds = listOf(ArtworkMockups.showOverview.id)
-        val libraryContent = mockk<LibraryContent> {
-            every { isLoading } returns false
-            every { artworkOverviews } returns overviews
-        }
-        val dataStore = mockk<FluxDataStore> {
-            every { lastWatchedIds } returns lastWatchedIds
-        }
-
-        // Mock flow
-        val mockedLibraryFlow = MutableStateFlow(libraryContent)
-        coEvery { repository.libraryFlow } returns mockedLibraryFlow
-        every { dataStoreRepository.flow } returns flowOf(dataStore)
-
+        val libraryContent = LibraryContent(
+            isLoading = false,
+            artworkOverviews = overviews
+        )
+        val dataStore = FluxDataStore(
+            lastWatchedIds = lastWatchedIds
+        )
 
         viewModel.uiState.test {
-            val initialState = awaitItem() // Ignore initial state
+            awaitItem() // Ignore initial state
+
+            libraryFlow.value = libraryContent
+            dataStoreFlow.value = dataStore
+
             val updatedState = awaitItem()
 
             assert(ScreenState.CONTENT == updatedState.screenState)
             assert(overviews == updatedState.overviews)
             assert(lastWatchedIds == updatedState.lastWatchedArtworkIds)
             assert(!updatedState.isSyncing)
+
+            cancelAndConsumeRemainingEvents()
         }
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
+    @OptIn(ExperimentalCoroutinesApi::class)
     @After
     fun tearDown() {
-        Dispatchers.shutdown()
+        Dispatchers.resetMain()
     }
 
 }

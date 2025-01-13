@@ -14,9 +14,9 @@ import java.util.Locale
 import javax.inject.Inject
 
 data class SettingsUiState(
-    val backwardValue: Int = 5,
+    val backwardValue: Int = 10,
     val showBackwardDialog: Boolean = false,
-    val forwardValue: Int = 5,
+    val forwardValue: Int = 10,
     val showForwardDialog: Boolean = false,
     val uiTheme: Ui.THEME = Ui.THEME.SYSTEM,
     val showUiThemeDialog: Boolean = false,

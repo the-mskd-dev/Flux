@@ -148,14 +148,17 @@ class ArtworkViewModelTest : BaseTest() {
 
         viewModel.uiState.test {
 
-            awaitItem()
+            awaitItem() // Initial state
 
             viewModel.selectArtwork(ArtworkMockups.episode2)
+            awaitItem() // State after episode change
+
             viewModel.changeWatchStatus()
             advanceUntilIdle()
-            val updatedState = awaitItem()
 
-            //coVerify { viewModel.showStatusDialog() }
+            val updatedState = awaitItem() // Final state
+
+            assert(updatedState.showStatusDialog)
 
         }
 

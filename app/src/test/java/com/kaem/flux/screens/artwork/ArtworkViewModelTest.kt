@@ -21,6 +21,7 @@ import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import java.util.Locale
+import kotlin.time.Duration.Companion.minutes
 
 class ArtworkViewModelTest : BaseTest() {
 
@@ -125,15 +126,16 @@ class ArtworkViewModelTest : BaseTest() {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `change watch status for first episode`() = runTest {
+    fun `mark first episode as watched`() = runTest {
 
         viewModel.uiState.test {
 
             awaitItem()
 
             viewModel.changeWatchStatus()
-            advanceUntilIdle()
             val updatedState = awaitItem()
+
+            advanceUntilIdle()
 
             assert(updatedState.selectedArtwork?.status == Status.WATCHED)
             coVerify { artworkRepository.saveEpisode(any()) }
@@ -144,23 +146,131 @@ class ArtworkViewModelTest : BaseTest() {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `change watch status for second episode`() = runTest {
+    fun `request change watch status for second episode with previous`() = runTest {
 
         viewModel.uiState.test {
 
-            awaitItem() // Initial state
+            // Initial state
+            awaitItem()
 
+            // Select episode 2
             viewModel.selectArtwork(ArtworkMockups.episode2)
-            awaitItem() // State after episode change
+            awaitItem()
 
+            // Request change status of current episode
             viewModel.changeWatchStatus()
             advanceUntilIdle()
 
-            val updatedState = awaitItem() // Final state
+            // Final state
+            val updatedState = awaitItem()
 
             assert(updatedState.showStatusDialog)
 
         }
+
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun `request change watch status for second episode without previous`() = runTest {
+
+        viewModel.uiState.test {
+
+            // Initial state
+            awaitItem()
+
+            // Change status of current episode (1)
+            viewModel.changeWatchStatus()
+            awaitItem()
+
+            // Select episode 2
+            viewModel.selectArtwork(ArtworkMockups.episode2)
+            awaitItem()
+
+            // Change status of current episode (2)
+            viewModel.changeWatchStatus()
+            advanceUntilIdle()
+
+            // Final state
+            val updatedState = awaitItem()
+
+            assert(!updatedState.showStatusDialog)
+            assert(updatedState.episodes.all { it.status == Status.WATCHED })
+            coVerify { artworkRepository.saveEpisode(any()) }
+
+            cancelAndConsumeRemainingEvents()
+
+        }
+
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun `mark second episode and previous as watched`() = runTest {
+
+        viewModel.uiState.test {
+
+            // Initial state
+            awaitItem()
+
+            // Select episode 2
+            viewModel.selectArtwork(ArtworkMockups.episode2)
+            awaitItem()
+
+            // Change status of current and previous episodes
+            viewModel.changeWatchStatusForEpisodeAndPrevious()
+            advanceUntilIdle()
+
+            // Final state
+            val updatedState = awaitItem()
+
+            assert(updatedState.episodes.all { it.status == Status.WATCHED })
+            coVerify { artworkRepository.saveEpisode(any()) }
+
+            cancelAndConsumeRemainingEvents()
+
+        }
+
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun `mark first episode as to watch`() = runTest {
+
+        viewModel.uiState.test {
+
+            awaitItem()
+
+            // Mark as watched
+            viewModel.changeWatchStatus()
+            awaitItem()
+
+            // Mark as not to watch
+            viewModel.changeWatchStatus()
+            val updatedState = awaitItem()
+
+            advanceUntilIdle()
+
+            assert(updatedState.selectedArtwork?.status == Status.TO_WATCH)
+            coVerify { artworkRepository.saveEpisode(any()) }
+
+            cancelAndConsumeRemainingEvents()
+
+        }
+
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun `save episode progression`() = runTest {
+
+        // Save progression at 5 minutes
+        viewModel.saveTime(5.minutes.inWholeMilliseconds)
+
+        advanceUntilIdle()
+
+        coVerify { artworkRepository.saveEpisode(any()) }
+        coVerify { dataStoreRepository.addWatchedArtwork(any()) }
 
     }
 

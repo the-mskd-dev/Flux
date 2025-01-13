@@ -37,7 +37,7 @@ class SearchViewModel @Inject constructor(
     }
 
     fun updateSearchWord(value: String) {
-        _uiState.value = _uiState.value.copy(searchWord = value)
+        _uiState.update { it.copy(searchWord = value) }
     }
 
 }

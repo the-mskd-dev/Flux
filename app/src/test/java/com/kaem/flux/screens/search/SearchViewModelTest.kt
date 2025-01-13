@@ -5,14 +5,12 @@ import com.kaem.flux.bases.BaseTest
 import com.kaem.flux.data.repository.LibraryContent
 import com.kaem.flux.data.repository.LibraryRepository
 import com.kaem.flux.mockups.ArtworkMockups
-import com.kaem.flux.screens.home.HomeViewModel
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
-import okhttp3.internal.wait
 import org.junit.Test
 
 class SearchViewModelTest : BaseTest() {

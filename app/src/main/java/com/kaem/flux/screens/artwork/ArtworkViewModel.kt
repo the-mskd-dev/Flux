@@ -113,9 +113,9 @@ class ArtworkViewModel @Inject constructor(
         }
     }
 
-    fun showStatusDialog(show: Boolean) {
+    private fun showStatusDialog() {
         _uiState.update { currentState ->
-            currentState.copy(showStatusDialog = show)
+            currentState.copy(showStatusDialog = true)
         }
     }
 
@@ -131,7 +131,7 @@ class ArtworkViewModel @Inject constructor(
             && artwork is Episode
             && _uiState.value.episodes.getPreviousEpisodesFor(artwork).any { it.status != Status.WATCHED }
         ) {
-            showStatusDialog(true)
+            showStatusDialog()
             return
         }
 

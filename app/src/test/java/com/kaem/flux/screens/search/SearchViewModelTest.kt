@@ -8,7 +8,9 @@ import com.kaem.flux.mockups.ArtworkMockups
 import com.kaem.flux.screens.home.HomeViewModel
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import okhttp3.internal.wait
 import org.junit.Test
@@ -42,6 +44,29 @@ class SearchViewModelTest : BaseTest() {
 
             assert(initialState.searchWord == "")
             assert(initialState.overviews == ArtworkMockups.overviews)
+
+            cancelAndConsumeRemainingEvents()
         }
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun `search word with result`() = runTest {
+
+        viewModel.updateSearchWord("nar")
+
+        advanceUntilIdle()
+
+        viewModel.uiState.test {
+            awaitItem()
+            val state = awaitItem()
+
+            assert(state.searchWord == "nar")
+            assert(state.filteredOverviews.size == 1)
+            assert(state.filteredOverviews.any { it.title.equals("naruto", ignoreCase = true) })
+
+            cancelAndConsumeRemainingEvents()
+        }
+
     }
 }

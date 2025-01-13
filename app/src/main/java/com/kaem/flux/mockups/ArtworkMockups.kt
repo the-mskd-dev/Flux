@@ -84,4 +84,14 @@ object ArtworkMockups {
         )
     )
 
+    val overviews get() = listOf(
+        movieOverview,
+        showOverview
+    )
+
+    val episodes get() = listOf(
+        episode1,
+        episode2
+    )
+
 }

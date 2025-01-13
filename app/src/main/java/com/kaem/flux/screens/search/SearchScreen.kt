@@ -92,7 +92,7 @@ fun SearchScreen(
         }
 
         items(
-            items = state.overviews.filter { it.title.contains(state.searchWord, true) },
+            items = state.filteredOverviews,
             key = { it.id }
         ) { overview ->
 

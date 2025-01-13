@@ -1,6 +1,7 @@
 package com.kaem.flux.screens.artwork
 
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
 import app.cash.turbine.test
 import com.kaem.flux.bases.BaseTest
 import com.kaem.flux.data.repository.ArtworkRepository
@@ -23,14 +24,12 @@ import org.junit.Test
 import java.util.Locale
 import kotlin.time.Duration.Companion.minutes
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class ArtworkViewModelTest : BaseTest() {
 
     private lateinit var viewModel: ArtworkViewModel
     private lateinit var artworkRepository: ArtworkRepository
     private lateinit var dataStoreRepository: DataStoreRepository
-
-    private val dataStoreFlow = MutableStateFlow(FluxDataStore())
-
 
     override fun setUp() {
         super.setUp()
@@ -48,7 +47,7 @@ class ArtworkViewModelTest : BaseTest() {
         }
 
         dataStoreRepository = mockk(relaxed = true) {
-            every { flow } returns dataStoreFlow
+            every { flow } returns MutableStateFlow(FluxDataStore())
             every { getPlayerButtonsValues() } returns Pair(10, 10)
             every { getSubtitlesLanguage() } returns Locale.ENGLISH
         }
@@ -124,7 +123,6 @@ class ArtworkViewModelTest : BaseTest() {
 
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `mark first episode as watched`() = runTest {
 
@@ -144,7 +142,6 @@ class ArtworkViewModelTest : BaseTest() {
 
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `request change watch status for second episode with previous`() = runTest {
 
@@ -170,7 +167,6 @@ class ArtworkViewModelTest : BaseTest() {
 
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `request change watch status for second episode without previous`() = runTest {
 
@@ -204,7 +200,6 @@ class ArtworkViewModelTest : BaseTest() {
 
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `mark second episode and previous as watched`() = runTest {
 
@@ -233,7 +228,6 @@ class ArtworkViewModelTest : BaseTest() {
 
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `mark first episode as to watch`() = runTest {
 
@@ -260,7 +254,6 @@ class ArtworkViewModelTest : BaseTest() {
 
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `save episode progression`() = runTest {
 
@@ -271,6 +264,40 @@ class ArtworkViewModelTest : BaseTest() {
 
         coVerify { artworkRepository.saveEpisode(any()) }
         coVerify { dataStoreRepository.addWatchedArtwork(any()) }
+
+    }
+
+    @Test
+    fun `mark movie as watched`() = runTest {
+
+        val savedStateHandle = mockk<SavedStateHandle>(relaxed = true) {
+            every { this@mockk.get<Any>(any()) } returns ArtworkMockups.movieOverview.id
+        }
+
+        artworkRepository = mockk(relaxed = true) {
+            coEvery { getArtwork(any()) } returns ArtworkRepository.Content(
+                artworkOverview = ArtworkMockups.movieOverview,
+                movie = ArtworkMockups.movie
+            )
+        }
+
+        viewModel = ArtworkViewModel(savedStateHandle, artworkRepository, dataStoreRepository)
+
+        viewModel.uiState.test {
+
+            val initialState = awaitItem()
+
+            assert(initialState.selectedArtwork?.status == Status.TO_WATCH)
+
+            viewModel.changeWatchStatus()
+            val updatedState = awaitItem()
+
+            advanceUntilIdle()
+
+            assert(updatedState.selectedArtwork?.status == Status.WATCHED)
+            coVerify { artworkRepository.saveMovie(any()) }
+
+        }
 
     }
 

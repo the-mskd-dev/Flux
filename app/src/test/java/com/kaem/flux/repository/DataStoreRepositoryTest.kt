@@ -64,14 +64,14 @@ class DataStoreRepositoryTest : BaseTest() {
 
     @Test
     fun `add watched artwork id`() = runTest {
-        val newId = 4L
-
-        dataStoreRepository.addWatchedArtwork(newId)
+        dataStoreRepository.addWatchedArtwork(4L)
 
         dataStoreRepository.flow.test {
             val state = awaitItem()
-            assert(state.watchedIds.contains(newId))
-            assert(state.watchedIds.size <= 4) // Vérifie la limite de 4 éléments
+
+            assert(state.watchedIds.contains(4L))
+            assert(state.watchedIds == listOf(4L, 1L, 2L, 3L))
+
             cancelAndConsumeRemainingEvents()
         }
     }

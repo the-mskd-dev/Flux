@@ -70,4 +70,44 @@ class DataStoreRepositoryTest : BaseTest() {
         //TODO
     }
 
+    @Test
+    fun `get sync time`() = runTest {
+        //TODO
+    }
+
+    @Test
+    fun `save sync time`() = runTest {
+        //TODO
+    }
+
+    @Test
+    fun `set player back value`() = runTest {
+        //TODO
+    }
+
+    @Test
+    fun `set player forward value`() = runTest {
+        //TODO
+    }
+
+    @Test
+    fun `get player buttons values`() = runTest {
+        //TODO
+    }
+
+    @Test
+    fun `set ui theme`() = runTest {
+        //TODO
+    }
+
+    @Test
+    fun `set subtitles language`() = runTest {
+        //TODO
+    }
+
+    @Test
+    fun `get subtitles language`() = runTest {
+        //TODO
+    }
+
 }

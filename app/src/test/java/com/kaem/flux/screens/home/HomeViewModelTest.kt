@@ -72,7 +72,7 @@ class HomeViewModelTest : BaseTest() {
             artworkOverviews = overviews
         )
         val dataStore = FluxDataStore(
-            lastWatchedIds = lastWatchedIds
+            watchedIds = lastWatchedIds
         )
 
         viewModel.uiState.test {

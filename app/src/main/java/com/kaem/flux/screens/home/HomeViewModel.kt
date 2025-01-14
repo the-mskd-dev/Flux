@@ -50,7 +50,7 @@ class HomeViewModel @Inject constructor(
                 HomeUiState(
                     screenState = screenState,
                     overviews = libraryContent.artworkOverviews,
-                    lastWatchedArtworkIds = preferences.lastWatchedIds,
+                    lastWatchedArtworkIds = preferences.watchedIds,
                     isSyncing = libraryContent.isLoading
                 )
             }.collect { _uiState.value = it }

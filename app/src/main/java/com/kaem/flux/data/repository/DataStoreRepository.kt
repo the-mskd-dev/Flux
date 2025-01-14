@@ -16,7 +16,7 @@ import javax.inject.Inject
 
 
 data class FluxDataStore(
-    val lastWatchedIds: List<Long> = listOf(),
+    val watchedIds: List<Long> = listOf(),
     val playerBackwardValue: Int = 10,
     val playerForwardValue: Int = 10,
     val uiTheme: Ui.THEME = Ui.THEME.SYSTEM,
@@ -32,7 +32,7 @@ class DataStoreRepository @Inject constructor(
     //region Keys
 
     object Keys {
-        val LAST_WATCHED_IDS = stringPreferencesKey("last_watched_ids")
+        val WATCHED_IDS = stringPreferencesKey("last_watched_ids")
         val LAST_SYNC_TIME = stringPreferencesKey("last_sync_time")
         val PLAYER_BACKWARD = stringPreferencesKey("player_backward")
         val PLAYER_FORWARD = stringPreferencesKey("player_forward")
@@ -46,8 +46,8 @@ class DataStoreRepository @Inject constructor(
 
     val flow: Flow<FluxDataStore> = dataStore.data.map { preferences ->
 
-        val lastWatchedIdsString = preferences[Keys.LAST_WATCHED_IDS] ?: "[]"
-        val lastWatchedIds = gson.fromJson<List<Double>>(lastWatchedIdsString, List::class.java)
+        val watchedIdsString = preferences[Keys.WATCHED_IDS] ?: "[]"
+        val watchedIds = gson.fromJson<List<Double>>(watchedIdsString, List::class.java)
 
         val playerBackwardValue = preferences[Keys.PLAYER_BACKWARD]?.toInt() ?: 10
         val playerForwardValue = preferences[Keys.PLAYER_FORWARD]?.toInt() ?: 10
@@ -57,7 +57,7 @@ class DataStoreRepository @Inject constructor(
         val subtitlesLanguage = preferences[Keys.SUBTITLES_LANGUAGE]?.toString()?.let { Locale(it) } ?: Locale.getDefault()
 
         FluxDataStore(
-            lastWatchedIds = lastWatchedIds.map { it.toLong() },
+            watchedIds = watchedIds.map { it.toLong() },
             playerBackwardValue = playerBackwardValue,
             playerForwardValue = playerForwardValue,
             uiTheme = uiTheme,
@@ -72,14 +72,14 @@ class DataStoreRepository @Inject constructor(
     suspend fun addWatchedArtwork(id: Long) {
         dataStore.edit { preferences ->
 
-            val lastWatchedIdsString = preferences[Keys.LAST_WATCHED_IDS] ?: "[]"
+            val lastWatchedIdsString = preferences[Keys.WATCHED_IDS] ?: "[]"
             val lastWatchedIds: ArrayList<Long> = gson.fromJson<ArrayList<Long>>(lastWatchedIdsString, ArrayList::class.java)
 
             if (lastWatchedIds.none { it == id }) {
 
                 lastWatchedIds.add(0, id)
 
-                preferences[Keys.LAST_WATCHED_IDS] = gson.toJson(lastWatchedIds.take(4))
+                preferences[Keys.WATCHED_IDS] = gson.toJson(lastWatchedIds.take(4))
             }
 
         }
@@ -88,11 +88,11 @@ class DataStoreRepository @Inject constructor(
     suspend fun removeWatchedArtwork(id: Long) {
         dataStore.edit { preferences ->
 
-            val lastWatchedIdsString = preferences[Keys.LAST_WATCHED_IDS] ?: "[]"
+            val lastWatchedIdsString = preferences[Keys.WATCHED_IDS] ?: "[]"
             val lastWatchedIds: ArrayList<Long> = gson.fromJson<ArrayList<Long>>(lastWatchedIdsString, ArrayList::class.java)
 
             lastWatchedIds.remove(id)
-            preferences[Keys.LAST_WATCHED_IDS] = gson.toJson(lastWatchedIds.take(4))
+            preferences[Keys.WATCHED_IDS] = gson.toJson(lastWatchedIds.take(4))
 
         }
     }

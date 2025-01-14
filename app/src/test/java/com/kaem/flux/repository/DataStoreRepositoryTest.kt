@@ -8,16 +8,10 @@ import com.google.gson.Gson
 import com.kaem.flux.bases.BaseTest
 import com.kaem.flux.data.repository.DataStoreRepository
 import com.kaem.flux.ui.theme.Ui
-import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.mockkStatic
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert
 import org.junit.Test
 import java.util.Locale
 
@@ -32,7 +26,7 @@ class DataStoreRepositoryTest : BaseTest() {
         super.setUp()
 
         preferences = preferencesOf(
-            DataStoreRepository.Keys.LAST_WATCHED_IDS to "[1, 2, 3]",
+            DataStoreRepository.Keys.WATCHED_IDS to "[1, 2, 3]",
             DataStoreRepository.Keys.PLAYER_BACKWARD to "15",
             DataStoreRepository.Keys.PLAYER_FORWARD to "30",
             DataStoreRepository.Keys.UI_THEME to "DARK",
@@ -54,8 +48,8 @@ class DataStoreRepositoryTest : BaseTest() {
 
             val initialState = awaitItem()
 
-            assert(initialState.lastWatchedIds.isNotEmpty())
-            assert(listOf(1L, 2L, 3L) == initialState.lastWatchedIds)
+            assert(initialState.watchedIds.isNotEmpty())
+            assert(listOf(1L, 2L, 3L) == initialState.watchedIds)
             assert(15 == initialState.playerBackwardValue)
             assert(30 == initialState.playerForwardValue)
             assert(Ui.THEME.DARK == initialState.uiTheme)
@@ -66,5 +60,14 @@ class DataStoreRepositoryTest : BaseTest() {
 
     }
 
+    @Test
+    fun `add watched artwork id`() = runTest {
+        //TODO
+    }
+
+    @Test
+    fun `remove watched artwork id`() = runTest {
+        //TODO
+    }
 
 }

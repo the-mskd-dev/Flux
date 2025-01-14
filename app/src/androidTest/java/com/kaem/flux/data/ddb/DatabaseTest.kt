@@ -1,11 +1,9 @@
-package com.kaem.flux.ddb
+package com.kaem.flux.data.ddb
 
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
-import com.kaem.flux.data.ddb.FluxDao
-import com.kaem.flux.data.ddb.FluxDatabase
 import com.kaem.flux.mockups.ArtworkMockups
 import kotlinx.coroutines.test.runTest
 import org.junit.After

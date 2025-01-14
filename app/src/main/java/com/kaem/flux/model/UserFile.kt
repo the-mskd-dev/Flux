@@ -57,11 +57,11 @@ data class FileProperties(
                 val season = episodeMatcher.group(2)?.toIntOrNull()
                     ?: episodeMatcher.group(4)?.toIntOrNull()
                     ?: episodeMatcher.group(6)?.toIntOrNull()
-                    ?: episodeMatcher.group(8)?.toIntOrNull()  // Changé de 7 à 8
+                    ?: episodeMatcher.group(8)?.toIntOrNull()
                 val episode = episodeMatcher.group(3)?.toIntOrNull()
                     ?: episodeMatcher.group(5)?.toIntOrNull()
                     ?: episodeMatcher.group(7)?.toIntOrNull()
-                    ?: episodeMatcher.group(9)?.toIntOrNull()  // Changé de 8 à 9
+                    ?: episodeMatcher.group(9)?.toIntOrNull()
                 return FileProperties(title ?: "", null, season, episode)
             }
 

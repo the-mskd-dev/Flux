@@ -14,8 +14,8 @@ data class UserFile(
     val source: FileSource
 ) : Parcelable {
 
-    val nameProperties: FileNameProperties
-        get() = FileNameProperties.fromFileName(name)
+    val nameProperties: FileProperties
+        get() = FileProperties.extractFileProperties(name)
 
     val isEpisode: Boolean
         get() = nameProperties.season != null && nameProperties.episode != null
@@ -30,7 +30,7 @@ enum class FileSource {
 }
 
 
-data class FileNameProperties(
+data class FileProperties(
     val title: String,
     val year: Int? = null,
     val season: Int? = null,
@@ -39,56 +39,30 @@ data class FileNameProperties(
 
     companion object {
 
-        fun fromFileName(fileName: String): FileNameProperties {
-
-            var name = fileName
-                .substringBeforeLast('.')
-                .lowercase()
-
-            var season: Int? = null
-            var episode: Int? = null
-            var year: Int? = null
-
-            val splitName = name.split('_')
-            if (splitName.size == 2) {
-
-                name = splitName[0].trim()
-
-                val seasonAndEpisodeRegex = Regex("s(\\d+)e(\\d+)")
-                val seasonAndEpisodeResult = seasonAndEpisodeRegex.find(splitName[1])
-                seasonAndEpisodeResult?.let {
-                    val (first, last) = it.destructured
-                    season = first.toIntOrNull()
-                    episode = last.toIntOrNull()
-                }
-
-            }
-
-            val yearRegex = Regex("\\b\\d{4}\\b")
-            year = yearRegex.find(name)?.value?.toIntOrNull()
-
-            return FileNameProperties(
-                title = name,
-                season = season,
-                episode = episode,
-                year = year
-            )
-
-        }
-
-        fun extractFileProperties(filename: String): FileNameProperties {
+        fun extractFileProperties(filename: String): FileProperties {
 
             // Patterns
             val moviePattern = Pattern.compile("^(.*?)[ .]*(?:\\((\\d{4})\\))?\\.[^.]+$")
-            val episodePattern = Pattern.compile("^(.*?)[ .]*(?:[sS](\\d{1,2})[ .]*[eE](\\d{1,2})|(\\d{1,2})[xX](\\d{1,2})|season[ .]*(\\d{1,2})[ .]*episode[ .]*(\\d{1,2})).*\\.[^.]+$")
+            val episodePattern = Pattern.compile(
+                "^(.*?)[ ._-]*(?:[sS](\\d{1,2})[ .]*[eE](\\d{1,2})|" +
+                        "(\\d{1,2})[xX](\\d{1,2})|" +
+                        "season[ .]*(\\d{1,2})[ .]*episode[ .]*(\\d{1,2})|" +
+                        "se(\\d{1,2})[ .]*ep(\\d{1,2})).*\\.[^.]+$"
+            )
 
             // Try episode pattern
             val episodeMatcher = episodePattern.matcher(filename)
             if (episodeMatcher.matches()) {
                 val title = episodeMatcher.group(1)?.replace("-", " ")?.trim()?.lowercase()
-                val season = episodeMatcher.group(2)?.toIntOrNull() ?: episodeMatcher.group(4)?.toIntOrNull() ?: episodeMatcher.group(6)?.toIntOrNull()
-                val episode = episodeMatcher.group(3)?.toIntOrNull() ?: episodeMatcher.group(5)?.toIntOrNull() ?: episodeMatcher.group(7)?.toIntOrNull()
-                return FileNameProperties(title ?: "", null, season, episode)
+                val season = episodeMatcher.group(2)?.toIntOrNull()
+                    ?: episodeMatcher.group(4)?.toIntOrNull()
+                    ?: episodeMatcher.group(6)?.toIntOrNull()
+                    ?: episodeMatcher.group(8)?.toIntOrNull()  // Changé de 7 à 8
+                val episode = episodeMatcher.group(3)?.toIntOrNull()
+                    ?: episodeMatcher.group(5)?.toIntOrNull()
+                    ?: episodeMatcher.group(7)?.toIntOrNull()
+                    ?: episodeMatcher.group(9)?.toIntOrNull()  // Changé de 8 à 9
+                return FileProperties(title ?: "", null, season, episode)
             }
 
             // Try movie pattern
@@ -96,11 +70,11 @@ data class FileNameProperties(
             if (movieMatcher.matches()) {
                 val title = movieMatcher.group(1)?.replace("-", " ")?.trim()?.lowercase()
                 val year = movieMatcher.group(2)?.toIntOrNull()
-                return FileNameProperties(title ?: "", year, null, null)
+                return FileProperties(title ?: "", year, null, null)
             }
 
             // If no pattern works, return the filename as title
-            return FileNameProperties(filename.replace("-", " ").trim().lowercase(), null, null, null)
+            return FileProperties(filename.replace("-", " ").trim().lowercase(), null, null, null)
         }
 
     }

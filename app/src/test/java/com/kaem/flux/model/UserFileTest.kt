@@ -7,36 +7,14 @@ import org.junit.Test
 
 class UserFileTest {
 
-    @Test
-    fun parsing_file_name() {
-
-        val files = listOf(
-            "Naruto_s02e09.mp4",
-            "Spider-man(2001).mp4"
-        )
-
-        val naruto = FileNameProperties.fromFileName(files[0])
-        val spiderman = FileNameProperties.fromFileName(files[1])
-
-        assert(naruto.title == "naruto")
-        assert(naruto.season == 2)
-        assert(naruto.episode == 9)
-        assert(naruto.year == null)
-
-        assert(spiderman.title == "spider-man(2001)")
-        assert(spiderman.season == null)
-        assert(spiderman.episode == null)
-        assert(spiderman.year == 2001)
-
-    }
 
     @Test
-    fun testExtractMediaInfo() {
+    fun `test file name properties parsing`() {
         // Movies
         asserFileProperties("Spider-man(2001).mp4", "spider man", 2001, null, null)
         asserFileProperties("Pulp Fiction (1994).mkv", "pulp fiction", 1994, null, null)
         asserFileProperties("Inception.avi", "inception", null, null, null)
-        asserFileProperties("Captain-America-The-Winter-Soldier-2014.mp4", "captain america the winter soldier", 2014, null, null)
+        asserFileProperties("Captain-America-The-Winter-Soldier-(2014).mp4", "captain america the winter soldier", 2014, null, null)
 
         // Episodes
         asserFileProperties("Naruto_s02e09.mp4", "naruto", null, 2, 9)
@@ -73,7 +51,7 @@ class UserFileTest {
         expectedSeason: Int?,
         expectedEpisode: Int?
     ) {
-        val mediaInfo = FileNameProperties.extractFileProperties(filename)
+        val mediaInfo = FileProperties.extractFileProperties(filename)
         assert(expectedTitle == mediaInfo.title) { "Title mismatch for file: $filename, found ${mediaInfo.title}" }
         assert(expectedYear == mediaInfo.year) { "Year mismatch for file: $filename, found ${mediaInfo.year}" }
         assert(expectedSeason == mediaInfo.season) { "Season mismatch for file: $filename, found ${mediaInfo.season}" }

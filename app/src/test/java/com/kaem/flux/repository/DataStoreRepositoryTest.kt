@@ -2,12 +2,14 @@ package com.kaem.flux.repository
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.preferencesOf
 import app.cash.turbine.test
 import com.google.gson.Gson
 import com.kaem.flux.bases.BaseTest
 import com.kaem.flux.data.repository.DataStoreRepository
 import com.kaem.flux.ui.theme.Ui
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
@@ -62,52 +64,139 @@ class DataStoreRepositoryTest : BaseTest() {
 
     @Test
     fun `add watched artwork id`() = runTest {
-        //TODO
+        val newId = 4L
+
+        dataStoreRepository.addWatchedArtwork(newId)
+
+        dataStoreRepository.flow.test {
+            val state = awaitItem()
+            assert(state.watchedIds.contains(newId))
+            assert(state.watchedIds.size <= 4) // Vérifie la limite de 4 éléments
+            cancelAndConsumeRemainingEvents()
+        }
     }
 
     @Test
     fun `remove watched artwork id`() = runTest {
-        //TODO
+        val idToRemove = 2L
+
+        dataStoreRepository.removeWatchedArtwork(idToRemove)
+
+        coVerify {
+            dataStore.edit(any())
+        }
+
+        dataStoreRepository.flow.test {
+            val state = awaitItem()
+            assert(!state.watchedIds.contains(idToRemove))
+            cancelAndConsumeRemainingEvents()
+        }
     }
 
     @Test
     fun `get sync time`() = runTest {
-        //TODO
+        val expectedTime = 123456789L
+        val syncPreferences = preferencesOf(
+            DataStoreRepository.Keys.LAST_SYNC_TIME to expectedTime.toString()
+        )
+
+        every { dataStore.data } returns flowOf(syncPreferences)
+
+        val syncTime = dataStoreRepository.getSyncTime()
+        assert(syncTime == expectedTime)
     }
 
     @Test
     fun `save sync time`() = runTest {
-        //TODO
+        val timeToSave = 987654321L
+
+        dataStoreRepository.saveSyncTime(timeToSave)
+
+        coVerify {
+            dataStore.edit(any())
+        }
     }
 
     @Test
     fun `set player back value`() = runTest {
-        //TODO
+        val newValue = 20
+
+        dataStoreRepository.setPlayerBackwardValue(newValue)
+
+        coVerify {
+            dataStore.edit(any())
+        }
+
+        dataStoreRepository.flow.test {
+            val state = awaitItem()
+            assert(state.playerBackwardValue == newValue)
+            cancelAndConsumeRemainingEvents()
+        }
     }
 
     @Test
     fun `set player forward value`() = runTest {
-        //TODO
+        val newValue = 25
+
+        dataStoreRepository.setPlayerForwardValue(newValue)
+
+        coVerify {
+            dataStore.edit(any())
+        }
+
+        dataStoreRepository.flow.test {
+            val state = awaitItem()
+            assert(state.playerForwardValue == newValue)
+            cancelAndConsumeRemainingEvents()
+        }
     }
 
     @Test
     fun `get player buttons values`() = runTest {
-        //TODO
+        val (backward, forward) = dataStoreRepository.getPlayerButtonsValues()
+
+        assert(backward == 15)
+        assert(forward == 30)
     }
 
     @Test
     fun `set ui theme`() = runTest {
-        //TODO
+        val newTheme = Ui.THEME.LIGHT
+
+        dataStoreRepository.setUiTheme(newTheme)
+
+        coVerify {
+            dataStore.edit(any())
+        }
+
+        dataStoreRepository.flow.test {
+            val state = awaitItem()
+            assert(state.uiTheme == newTheme)
+            cancelAndConsumeRemainingEvents()
+        }
     }
 
     @Test
     fun `set subtitles language`() = runTest {
-        //TODO
+        val newLocale = Locale("en")
+
+        dataStoreRepository.setSubtitlesLanguage(newLocale)
+
+        coVerify {
+            dataStore.edit(any())
+        }
+
+        dataStoreRepository.flow.test {
+            val state = awaitItem()
+            assert(state.subtitlesLanguage == newLocale)
+            cancelAndConsumeRemainingEvents()
+        }
     }
 
     @Test
     fun `get subtitles language`() = runTest {
-        //TODO
+        val language = dataStoreRepository.getSubtitlesLanguage()
+        assert(language == Locale.FRENCH)
     }
 
 }

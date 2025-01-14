@@ -219,7 +219,7 @@ class ArtworkViewModelTest : BaseTest() {
             val updatedState = awaitItem()
 
             assert(updatedState.episodes.all { it.status == Status.WATCHED })
-            coVerify { artworkRepository.saveEpisode(any()) }
+            coVerify { artworkRepository.saveEpisodes(any()) }
 
             cancelAndConsumeRemainingEvents()
 

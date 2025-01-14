@@ -25,21 +25,13 @@ class DataStoreRepositoryTest : BaseTest() {
 
     private lateinit var dataStoreRepository: DataStoreRepository
     private lateinit var dataStore: DataStore<Preferences>
+    private lateinit var preferences: Preferences
     private lateinit var gson: Gson
 
     override fun setUp() {
         super.setUp()
 
-        dataStore = mockk(relaxed = true)
-        gson = Gson()
-        dataStoreRepository = DataStoreRepository(dataStore, gson)
-
-    }
-
-    @Test
-    fun `initial state`() = runTest {
-        // Préparation des données
-        val mockPreferences = preferencesOf(
+        preferences = preferencesOf(
             DataStoreRepository.Keys.LAST_WATCHED_IDS to "[1, 2, 3]",
             DataStoreRepository.Keys.PLAYER_BACKWARD to "15",
             DataStoreRepository.Keys.PLAYER_FORWARD to "30",
@@ -47,18 +39,31 @@ class DataStoreRepositoryTest : BaseTest() {
             DataStoreRepository.Keys.SUBTITLES_LANGUAGE to "fr"
         )
 
-        every { dataStore.data } returns flowOf(mockPreferences)
+        dataStore = mockk(relaxed = true) {
+            every { data } returns flowOf(preferences)
+        }
+        gson = Gson()
+        dataStoreRepository = DataStoreRepository(dataStore, gson)
 
-        // Collecte la première valeur
-        val initialState = dataStoreRepository.flow.first()
+    }
 
-        // Vérifications
-        assert(initialState.lastWatchedIds.isNotEmpty())
-        Assert.assertEquals(listOf(1L, 2L, 3L), initialState.lastWatchedIds)
-        Assert.assertEquals(15, initialState.playerBackwardValue)
-        Assert.assertEquals(30, initialState.playerForwardValue)
-        Assert.assertEquals(Ui.THEME.DARK, initialState.uiTheme)
-        Assert.assertEquals(Locale.FRENCH, initialState.subtitlesLanguage)
+    @Test
+    fun `initial state`() = runTest {
+
+        dataStoreRepository.flow.test {
+
+            val initialState = awaitItem()
+
+            assert(initialState.lastWatchedIds.isNotEmpty())
+            assert(listOf(1L, 2L, 3L) == initialState.lastWatchedIds)
+            assert(15 == initialState.playerBackwardValue)
+            assert(30 == initialState.playerForwardValue)
+            assert(Ui.THEME.DARK == initialState.uiTheme)
+            assert(Locale.FRENCH == initialState.subtitlesLanguage)
+
+            cancelAndConsumeRemainingEvents()
+        }
+
     }
 
 

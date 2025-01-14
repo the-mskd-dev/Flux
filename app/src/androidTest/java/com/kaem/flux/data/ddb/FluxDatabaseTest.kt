@@ -1,11 +1,9 @@
-package com.kaem.flux.ddb
+package com.kaem.flux.data.ddb
 
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
-import com.kaem.flux.data.ddb.FluxDao
-import com.kaem.flux.data.ddb.FluxDatabase
 import com.kaem.flux.mockups.ArtworkMockups
 import kotlinx.coroutines.test.runTest
 import org.junit.After
@@ -16,9 +14,8 @@ import org.junit.runner.RunWith
 import org.junit.runners.MethodSorters
 
 @RunWith(AndroidJUnit4::class)
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @SmallTest
-class DatabaseTest {
+class FluxDatabaseTest {
 
     private lateinit var database: FluxDatabase
     private lateinit var db: FluxDao
@@ -40,7 +37,6 @@ class DatabaseTest {
 
         val overview = ArtworkMockups.movieOverview
         val movie = ArtworkMockups.movie
-
 
         db.insertOverviews(listOf(overview))
         val dbOverview = db.getOverview(overview.id)

@@ -241,14 +241,10 @@ class ArtworkViewModel @Inject constructor(
                 is Episode -> {
 
                     repository.saveEpisode(artwork)
-
-                    _uiState.value = state.copy(
-                        selectedArtwork = artwork,
-                        episodes = state.episodes.map { e ->
-                            if (e.id == artwork.id) artwork else e
-                        }
+                    val episodes = state.episodes.sortedWith(
+                        compareBy<Episode> { it.season }.thenBy { it.number }
                     )
-                    if (_uiState.value.episodes.all { it.status == Status.WATCHED }) dataStoreRepository.removeWatchedArtwork(artworkId)
+                    if (artwork.id == episodes.lastOrNull()?.id && status == Status.WATCHED) dataStoreRepository.removeWatchedArtwork(artworkId)
                     else dataStoreRepository.addWatchedArtwork(artworkId)
 
                 }

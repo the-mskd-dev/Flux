@@ -270,17 +270,47 @@ class ArtworkViewModelTest : BaseTest() {
     fun `end episode watching`() = runTest {
 
         viewModel.uiState.test {
-            awaitItem()
+            val state = awaitItem()
 
             // Save progression at 5 minutes
             viewModel.saveTime(ArtworkMockups.episode1.duration.minutes.inWholeMilliseconds)
-            val updatedState = awaitItem()
+
 
             advanceUntilIdle()
 
-            assert(updatedState.selectedArtwork?.status == Status.WATCHED)
+            assert(state.selectedArtwork?.status == Status.WATCHED)
             coVerify { artworkRepository.saveEpisode(any()) }
             coVerify { dataStoreRepository.addWatchedArtwork(any()) }
+
+            cancelAndConsumeRemainingEvents()
+
+        }
+
+    }
+
+    @Test
+    fun `end last episode watching`() = runTest {
+
+        viewModel.uiState.test {
+            awaitItem()
+
+            // Set first episode as watched
+            viewModel.changeWatchStatus()
+            awaitItem()
+
+            // Select second episode
+            viewModel.selectArtwork(ArtworkMockups.episode2)
+            awaitItem()
+
+            // Save progression at 5 minutes
+            viewModel.saveTime(ArtworkMockups.episode2.duration.minutes.inWholeMilliseconds)
+            val state = awaitItem()
+
+            advanceUntilIdle()
+
+            coVerify { artworkRepository.saveEpisode(any()) }
+            coVerify { dataStoreRepository.removeWatchedArtwork(any()) }
+            assert(state.episodes.all { it.status == Status.WATCHED })
 
             cancelAndConsumeRemainingEvents()
 
@@ -345,15 +375,14 @@ class ArtworkViewModelTest : BaseTest() {
 
             awaitItem()
 
-            val initialState = awaitItem()
-            assert(initialState.selectedArtwork?.status == Status.TO_WATCH)
+            val state = awaitItem()
+            assert(state.selectedArtwork?.status == Status.TO_WATCH)
 
             viewModel.saveTime(ArtworkMockups.movie.duration.minutes.inWholeMilliseconds)
-            val updatedState = awaitItem()
 
             advanceUntilIdle()
 
-            assert(updatedState.selectedArtwork?.status == Status.WATCHED)
+            assert(state.selectedArtwork?.status == Status.WATCHED)
             coVerify { artworkRepository.saveMovie(any()) }
             coVerify { dataStoreRepository.removeWatchedArtwork(any()) }
 

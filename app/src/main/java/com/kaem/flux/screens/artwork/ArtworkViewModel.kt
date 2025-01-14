@@ -229,10 +229,10 @@ class ArtworkViewModel @Inject constructor(
             artwork.currentTime = time
             artwork.status = status
 
-            when (state.selectedArtwork) {
+            when (artwork) {
                 is Movie -> {
 
-                    repository.saveMovie(state.selectedArtwork)
+                    repository.saveMovie(artwork)
 
                     if (status == Status.WATCHED) dataStoreRepository.removeWatchedArtwork(artworkId)
                     else dataStoreRepository.addWatchedArtwork(artworkId)
@@ -240,8 +240,15 @@ class ArtworkViewModel @Inject constructor(
                 }
                 is Episode -> {
 
-                    repository.saveEpisode(state.selectedArtwork)
-                    if (state.episodes.all { it.status == Status.WATCHED }) dataStoreRepository.removeWatchedArtwork(artworkId)
+                    repository.saveEpisode(artwork)
+
+                    _uiState.value = state.copy(
+                        selectedArtwork = artwork,
+                        episodes = state.episodes.map { e ->
+                            if (e.id == artwork.id) artwork else e
+                        }
+                    )
+                    if (_uiState.value.episodes.all { it.status == Status.WATCHED }) dataStoreRepository.removeWatchedArtwork(artworkId)
                     else dataStoreRepository.addWatchedArtwork(artworkId)
 
                 }
@@ -252,6 +259,18 @@ class ArtworkViewModel @Inject constructor(
 
         }
 
+    }
+
+    private fun updatedEpisodes(episodes: List<Episode>) {
+        _uiState.update { currentState ->
+
+            val currentEpisodes = _uiState.value.episodes.toMutableList()
+            currentEpisodes.replaceAll { e ->
+                episodes.find { it.id == e.id } ?: e
+            }
+
+            currentState.copy(episodes = currentEpisodes)
+        }
     }
 
 }

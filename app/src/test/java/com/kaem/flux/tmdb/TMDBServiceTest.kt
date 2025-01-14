@@ -1,4 +1,4 @@
-package com.kaem.flux.data.tmdb
+package com.kaem.flux.tmdb
 
 import com.kaem.flux.bases.ApiTest
 import com.kaem.flux.mockups.TMDBResponseMockups

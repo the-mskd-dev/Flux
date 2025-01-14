@@ -4,6 +4,7 @@ import android.os.Parcelable
 import com.kaem.flux.model.artwork.ContentType
 import kotlinx.parcelize.Parcelize
 import java.util.Date
+import java.util.regex.Pattern
 
 @Parcelize
 data class UserFile(
@@ -73,6 +74,33 @@ data class FileNameProperties(
                 year = year
             )
 
+        }
+
+        fun extractFileProperties(filename: String): FileNameProperties {
+            // Regex pour les films
+            val moviePattern = Pattern.compile("^(.*?)[ .]*(?:\\((\\d{4})\\))?\\.[^.]+$")
+            // Regex pour les épisodes
+            val episodePattern = Pattern.compile("^(.*?)[ .]*(?:[sS](\\d{1,2})[ .]*[eE](\\d{1,2})|(\\d{1,2})[xX](\\d{1,2})|season[ .]*(\\d{1,2})[ .]*episode[ .]*(\\d{1,2})).*\\.[^.]+$")
+
+            // Essayer de matcher avec le pattern des épisodes
+            val episodeMatcher = episodePattern.matcher(filename)
+            if (episodeMatcher.matches()) {
+                val title = episodeMatcher.group(1)?.replace("-", " ")?.trim()
+                val season = episodeMatcher.group(2)?.toIntOrNull() ?: episodeMatcher.group(4)?.toIntOrNull() ?: episodeMatcher.group(6)?.toIntOrNull()
+                val episode = episodeMatcher.group(3)?.toIntOrNull() ?: episodeMatcher.group(5)?.toIntOrNull() ?: episodeMatcher.group(7)?.toIntOrNull()
+                return FileNameProperties(title ?: "", null, season, episode)
+            }
+
+            // Essayer de matcher avec le pattern des films
+            val movieMatcher = moviePattern.matcher(filename)
+            if (movieMatcher.matches()) {
+                val title = movieMatcher.group(1)?.replace("-", " ")?.trim()
+                val year = movieMatcher.group(2)?.toIntOrNull()
+                return FileNameProperties(title ?: "", year, null, null)
+            }
+
+            // Si aucun pattern ne correspond, retourner un MediaInfo avec le titre seulement
+            return FileNameProperties(filename.replace("-", " ").trim(), null, null, null)
         }
 
     }

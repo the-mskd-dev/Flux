@@ -85,6 +85,18 @@ class DataStoreRepository @Inject constructor(
         }
     }
 
+    suspend fun removeWatchedArtwork(id: Long) {
+        dataStore.edit { preferences ->
+
+            val lastWatchedIdsString = preferences[Keys.LAST_WATCHED_IDS] ?: "[]"
+            val lastWatchedIds: ArrayList<Long> = gson.fromJson<ArrayList<Long>>(lastWatchedIdsString, ArrayList::class.java)
+
+            lastWatchedIds.remove(id)
+            preferences[Keys.LAST_WATCHED_IDS] = gson.toJson(lastWatchedIds.take(4))
+
+        }
+    }
+
     //endregion
 
     //region Sync time

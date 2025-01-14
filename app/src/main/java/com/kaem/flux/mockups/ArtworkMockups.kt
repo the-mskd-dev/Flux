@@ -10,13 +10,13 @@ import com.kaem.flux.model.artwork.Status
 
 object ArtworkMockups {
 
-    val movieOverview = ArtworkOverview(
+    val movieOverview get() = ArtworkOverview(
         id = 1L,
         title = "Your name",
         type = ContentType.MOVIE
     )
 
-    val movie = Movie(
+    val movie get() = Movie(
         artworkId = 1L,
         title = "Your name",
         releaseDateString = "2016-12-28",
@@ -34,13 +34,13 @@ object ArtworkMockups {
         )
     )
 
-    val showOverview = ArtworkOverview(
+    val showOverview get() = ArtworkOverview(
         id = 2L,
         title = "Naruto",
         type = ContentType.SHOW
     )
 
-    val episode1 = Episode(
+    val episode1 get() = Episode(
         id = 3L,
         number = 1,
         season = 1,
@@ -62,7 +62,7 @@ object ArtworkMockups {
         )
     )
 
-    val episode2 = Episode(
+    val episode2 get() = Episode(
         id = 4L,
         number = 2,
         season = 1,

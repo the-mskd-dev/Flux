@@ -222,19 +222,31 @@ class ArtworkViewModel @Inject constructor(
     fun saveTime(time: Long) = viewModelScope.launch {
 
         val artwork = uiState.value.selectedArtwork ?: return@launch
+        val status = if (time.inMinutes >= artwork.duration * .9) Status.WATCHED else Status.IS_WATCHING
 
         uiState.value.let { state ->
 
             artwork.currentTime = time
-            artwork.status = if (time.inMinutes >= artwork.duration * .9) Status.WATCHED else Status.IS_WATCHING
+            artwork.status = status
 
             when (state.selectedArtwork) {
-                is Movie -> repository.saveMovie(state.selectedArtwork)
-                is Episode -> repository.saveEpisode(state.selectedArtwork)
+                is Movie -> {
+
+                    repository.saveMovie(state.selectedArtwork)
+
+                    if (status == Status.WATCHED) dataStoreRepository.removeWatchedArtwork(artworkId)
+                    else dataStoreRepository.addWatchedArtwork(artworkId)
+
+                }
+                is Episode -> {
+
+                    repository.saveEpisode(state.selectedArtwork)
+                    if (state.episodes.all { it.status == Status.WATCHED }) dataStoreRepository.removeWatchedArtwork(artworkId)
+                    else dataStoreRepository.addWatchedArtwork(artworkId)
+
+                }
                 else -> {}
             }
-
-            dataStoreRepository.addWatchedArtwork(artworkId)
 
             Log.i("ArtworkViewModel", "${state.overview.title} saved at ${time.timeDescription}")
 

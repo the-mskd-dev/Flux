@@ -41,7 +41,6 @@ class ArtworkViewModelTest : BaseTest() {
         artworkRepository = mockk(relaxed = true) {
             coEvery { getArtwork(any()) } returns ArtworkRepository.Content(
                 artworkOverview = ArtworkMockups.showOverview,
-                movie = null,
                 episodes = ArtworkMockups.episodes
             )
         }
@@ -268,6 +267,28 @@ class ArtworkViewModelTest : BaseTest() {
     }
 
     @Test
+    fun `end episode watching`() = runTest {
+
+        viewModel.uiState.test {
+            awaitItem()
+
+            // Save progression at 5 minutes
+            viewModel.saveTime(ArtworkMockups.episode1.duration.minutes.inWholeMilliseconds)
+            val updatedState = awaitItem()
+
+            advanceUntilIdle()
+
+            assert(updatedState.selectedArtwork?.status == Status.WATCHED)
+            coVerify { artworkRepository.saveEpisode(any()) }
+            coVerify { dataStoreRepository.addWatchedArtwork(any()) }
+
+            cancelAndConsumeRemainingEvents()
+
+        }
+
+    }
+
+    @Test
     fun `mark movie as watched`() = runTest {
 
         val savedStateHandle = mockk<SavedStateHandle>(relaxed = true) {
@@ -285,8 +306,9 @@ class ArtworkViewModelTest : BaseTest() {
 
         viewModel.uiState.test {
 
-            val initialState = awaitItem()
+            awaitItem()
 
+            val initialState = awaitItem()
             assert(initialState.selectedArtwork?.status == Status.TO_WATCH)
 
             viewModel.changeWatchStatus()
@@ -296,6 +318,46 @@ class ArtworkViewModelTest : BaseTest() {
 
             assert(updatedState.selectedArtwork?.status == Status.WATCHED)
             coVerify { artworkRepository.saveMovie(any()) }
+
+            cancelAndConsumeRemainingEvents()
+
+        }
+
+    }
+
+    @Test
+    fun `end movie watching`() = runTest {
+
+        val savedStateHandle = mockk<SavedStateHandle>(relaxed = true) {
+            every { this@mockk.get<Any>(any()) } returns ArtworkMockups.movieOverview.id
+        }
+
+        artworkRepository = mockk(relaxed = true) {
+            coEvery { getArtwork(any()) } returns ArtworkRepository.Content(
+                artworkOverview = ArtworkMockups.movieOverview,
+                movie = ArtworkMockups.movie
+            )
+        }
+
+        viewModel = ArtworkViewModel(savedStateHandle, artworkRepository, dataStoreRepository)
+
+        viewModel.uiState.test {
+
+            awaitItem()
+
+            val initialState = awaitItem()
+            assert(initialState.selectedArtwork?.status == Status.TO_WATCH)
+
+            viewModel.saveTime(ArtworkMockups.movie.duration.minutes.inWholeMilliseconds)
+            val updatedState = awaitItem()
+
+            advanceUntilIdle()
+
+            assert(updatedState.selectedArtwork?.status == Status.WATCHED)
+            coVerify { artworkRepository.saveMovie(any()) }
+            coVerify { dataStoreRepository.removeWatchedArtwork(any()) }
+
+            cancelAndConsumeRemainingEvents()
 
         }
 

@@ -31,7 +31,7 @@ class DataStoreRepository @Inject constructor(
 
     //region Keys
 
-    private object Keys {
+    object Keys {
         val LAST_WATCHED_IDS = stringPreferencesKey("last_watched_ids")
         val LAST_SYNC_TIME = stringPreferencesKey("last_sync_time")
         val PLAYER_BACKWARD = stringPreferencesKey("player_backward")

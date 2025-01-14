@@ -77,30 +77,30 @@ data class FileNameProperties(
         }
 
         fun extractFileProperties(filename: String): FileNameProperties {
-            // Regex pour les films
+
+            // Patterns
             val moviePattern = Pattern.compile("^(.*?)[ .]*(?:\\((\\d{4})\\))?\\.[^.]+$")
-            // Regex pour les épisodes
             val episodePattern = Pattern.compile("^(.*?)[ .]*(?:[sS](\\d{1,2})[ .]*[eE](\\d{1,2})|(\\d{1,2})[xX](\\d{1,2})|season[ .]*(\\d{1,2})[ .]*episode[ .]*(\\d{1,2})).*\\.[^.]+$")
 
-            // Essayer de matcher avec le pattern des épisodes
+            // Try episode pattern
             val episodeMatcher = episodePattern.matcher(filename)
             if (episodeMatcher.matches()) {
-                val title = episodeMatcher.group(1)?.replace("-", " ")?.trim()
+                val title = episodeMatcher.group(1)?.replace("-", " ")?.trim()?.lowercase()
                 val season = episodeMatcher.group(2)?.toIntOrNull() ?: episodeMatcher.group(4)?.toIntOrNull() ?: episodeMatcher.group(6)?.toIntOrNull()
                 val episode = episodeMatcher.group(3)?.toIntOrNull() ?: episodeMatcher.group(5)?.toIntOrNull() ?: episodeMatcher.group(7)?.toIntOrNull()
                 return FileNameProperties(title ?: "", null, season, episode)
             }
 
-            // Essayer de matcher avec le pattern des films
+            // Try movie pattern
             val movieMatcher = moviePattern.matcher(filename)
             if (movieMatcher.matches()) {
-                val title = movieMatcher.group(1)?.replace("-", " ")?.trim()
+                val title = movieMatcher.group(1)?.replace("-", " ")?.trim()?.lowercase()
                 val year = movieMatcher.group(2)?.toIntOrNull()
                 return FileNameProperties(title ?: "", year, null, null)
             }
 
-            // Si aucun pattern ne correspond, retourner un MediaInfo avec le titre seulement
-            return FileNameProperties(filename.replace("-", " ").trim(), null, null, null)
+            // If no pattern works, return the filename as title
+            return FileNameProperties(filename.replace("-", " ").trim().lowercase(), null, null, null)
         }
 
     }

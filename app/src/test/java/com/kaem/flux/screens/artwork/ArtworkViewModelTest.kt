@@ -137,6 +137,8 @@ class ArtworkViewModelTest : BaseTest() {
             assert(updatedState.selectedArtwork?.status == Status.WATCHED)
             coVerify { artworkRepository.saveEpisode(any()) }
 
+            cancelAndConsumeRemainingEvents()
+
         }
 
     }
@@ -161,6 +163,8 @@ class ArtworkViewModelTest : BaseTest() {
             val updatedState = awaitItem()
 
             assert(updatedState.showStatusDialog)
+
+            cancelAndConsumeRemainingEvents()
 
         }
 
@@ -256,13 +260,19 @@ class ArtworkViewModelTest : BaseTest() {
     @Test
     fun `save episode progression`() = runTest {
 
-        // Save progression at 5 minutes
-        viewModel.saveTime(5.minutes.inWholeMilliseconds)
+        viewModel.uiState.test {
 
-        advanceUntilIdle()
+            // Save progression at 5 minutes
+            viewModel.saveTime(5.minutes.inWholeMilliseconds)
 
-        coVerify { artworkRepository.saveEpisode(any()) }
-        coVerify { dataStoreRepository.addWatchedArtwork(any()) }
+            advanceUntilIdle()
+
+            coVerify { artworkRepository.saveEpisode(any()) }
+            coVerify { dataStoreRepository.addWatchedArtwork(any()) }
+
+            cancelAndConsumeRemainingEvents()
+
+        }
 
     }
 

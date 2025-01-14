@@ -3,6 +3,7 @@ package com.kaem.flux.bases
 import android.util.Log
 import io.mockk.every
 import io.mockk.mockkStatic
+import io.mockk.unmockkAll
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -30,6 +31,7 @@ abstract class BaseTest {
     @After
     open fun tearDown() {
         Dispatchers.resetMain()
+        unmockkAll()
     }
 
 }

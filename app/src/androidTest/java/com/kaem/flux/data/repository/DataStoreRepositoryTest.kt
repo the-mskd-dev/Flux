@@ -69,20 +69,22 @@ class DataStoreRepositoryTest {
     @Test
     fun add_and_remove_watched_artwork_id() = runTest {
 
+        val idTest = 4L
+
         dataStoreRepository.flow.test {
             var state = awaitItem()
 
             assert(state.watchedIds.isEmpty())
 
-            dataStoreRepository.addWatchedArtwork(4L)
+            dataStoreRepository.addWatchedArtwork(idTest)
             advanceUntilIdle()
             state = awaitItem()
-            assert(state.watchedIds.contains(4L))
+            assert(state.watchedIds.contains(idTest))
 
-            dataStoreRepository.removeWatchedArtwork(4L)
+            dataStoreRepository.removeWatchedArtwork(idTest)
             advanceUntilIdle()
             state = awaitItem()
-            assert(!state.watchedIds.contains(4L))
+            assert(!state.watchedIds.contains(idTest))
 
             cancelAndConsumeRemainingEvents()
         }

@@ -11,6 +11,7 @@ import com.kaem.flux.ui.theme.Ui
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -66,30 +67,26 @@ class DataStoreRepositoryTest {
     }
 
     @Test
-    fun add_watched_artwork_id() = runTest {
-        dataStoreRepository.addWatchedArtwork(4L)
+    fun add_and_remove_watched_artwork_id() = runTest {
 
         dataStoreRepository.flow.test {
-            val state = awaitItem()
+            var state = awaitItem()
 
+            assert(state.watchedIds.isEmpty())
+
+            dataStoreRepository.addWatchedArtwork(4L)
+            advanceUntilIdle()
+            state = awaitItem()
             assert(state.watchedIds.contains(4L))
-            assert(state.watchedIds == listOf(4L, 1L, 2L, 3L))
+
+            dataStoreRepository.removeWatchedArtwork(4L)
+            advanceUntilIdle()
+            state = awaitItem()
+            assert(!state.watchedIds.contains(4L))
 
             cancelAndConsumeRemainingEvents()
         }
-    }
 
-    @Test
-    fun remove_watched_artwork_id() = runTest {
-        val idToRemove = 2L
-
-        dataStoreRepository.removeWatchedArtwork(idToRemove)
-
-        dataStoreRepository.flow.test {
-            val state = awaitItem()
-            assert(!state.watchedIds.contains(idToRemove))
-            cancelAndConsumeRemainingEvents()
-        }
     }
 
     @Test

@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.kaem.flux.ui.theme.Ui
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -89,7 +90,8 @@ class DataStoreRepository @Inject constructor(
         dataStore.edit { preferences ->
 
             val lastWatchedIdsString = preferences[Keys.WATCHED_IDS] ?: "[]"
-            val lastWatchedIds: ArrayList<Long> = gson.fromJson<ArrayList<Long>>(lastWatchedIdsString, ArrayList::class.java)
+            val type = object : TypeToken<ArrayList<Long>>() {}.type
+            val lastWatchedIds: ArrayList<Long> = gson.fromJson(lastWatchedIdsString, type)
 
             lastWatchedIds.remove(id)
             preferences[Keys.WATCHED_IDS] = gson.toJson(lastWatchedIds.take(4))

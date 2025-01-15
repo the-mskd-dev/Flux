@@ -106,30 +106,49 @@ class DataStoreRepositoryTest {
     }
 
     @Test
-    fun set_player_back_value() = runTest {
-        val newValue = 20
-
-        dataStoreRepository.setPlayerBackwardValue(newValue)
-
+    fun get_and_set_player_back_value() = runTest {
 
         dataStoreRepository.flow.test {
-            val state = awaitItem()
-            assert(state.playerBackwardValue == newValue)
+
+            var state = awaitItem()
+
+            assert(FluxDataStore().playerBackwardValue == state.playerBackwardValue)
+
+            val newValue = 20
+            dataStoreRepository.setPlayerBackwardValue(newValue)
+            state = awaitItem()
+
+            val blockingValue = dataStoreRepository.getPlayerButtonsValues().first
+            assert(newValue == state.playerBackwardValue)
+            assert(newValue == blockingValue)
+
             cancelAndConsumeRemainingEvents()
+
         }
+
     }
 
     @Test
-    fun set_player_forward_value() = runTest {
-        val newValue = 30
-
-        dataStoreRepository.setPlayerForwardValue(newValue)
+    fun get_and_set_player_forward_value() = runTest {
 
         dataStoreRepository.flow.test {
-            val state = awaitItem()
-            assert(state.playerForwardValue == newValue)
+
+            var state = awaitItem()
+
+            assert(FluxDataStore().playerForwardValue == state.playerForwardValue)
+
+            val newValue = 20
+            dataStoreRepository.setPlayerForwardValue(newValue)
+            state = awaitItem()
+
+            val blockingValue = dataStoreRepository.getPlayerButtonsValues().second
+            assert(newValue == state.playerForwardValue)
+            assert(newValue == blockingValue)
+
             cancelAndConsumeRemainingEvents()
+
         }
+
     }
 
     @Test

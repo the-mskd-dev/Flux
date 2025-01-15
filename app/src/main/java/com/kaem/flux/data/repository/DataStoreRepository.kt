@@ -24,7 +24,6 @@ data class FluxDataStore(
     val subtitlesLanguage: Locale = Locale.getDefault()
 )
 
-
 class DataStoreRepository @Inject constructor(
     private val dataStore: DataStore<Preferences>,
     private val gson: Gson

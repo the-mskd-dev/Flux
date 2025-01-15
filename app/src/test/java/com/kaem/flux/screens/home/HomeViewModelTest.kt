@@ -100,7 +100,7 @@ class HomeViewModelTest : BaseTest() {
 
         coVerify {
             libraryRepository.getLibrary(sync = true)
-            dataStoreRepository.saveSyncTime(any())
+            dataStoreRepository.setSyncTime(any())
         }
     }
 
@@ -117,7 +117,7 @@ class HomeViewModelTest : BaseTest() {
 
         coVerify {
             libraryRepository.getLibrary(sync = true)
-            dataStoreRepository.saveSyncTime(any())
+            dataStoreRepository.setSyncTime(any())
         }
     }
 
@@ -135,7 +135,7 @@ class HomeViewModelTest : BaseTest() {
             libraryRepository.getLibrary(sync = false)
         }
         coVerify(exactly = 0) {
-            dataStoreRepository.saveSyncTime(any())
+            dataStoreRepository.setSyncTime(any())
         }
     }
 

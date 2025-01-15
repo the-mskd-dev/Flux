@@ -2,7 +2,6 @@ package com.kaem.flux.data.repository
 
 import android.content.Context
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
-import androidx.datastore.preferences.core.preferencesOf
 import androidx.datastore.preferences.preferencesDataStoreFile
 import androidx.test.core.app.ApplicationProvider
 import app.cash.turbine.test
@@ -92,23 +91,18 @@ class DataStoreRepositoryTest {
     }
 
     @Test
-    fun get_sync_time() = runTest {
-        val expectedTime = 123456789L
-        val syncPreferences = preferencesOf(
-            DataStoreRepository.Keys.LAST_SYNC_TIME to expectedTime.toString()
-        )
+    fun get_and_set_sync_time() = runTest {
 
+        var syncTime = dataStoreRepository.getSyncTime()
+        assert(syncTime == 0L)
 
-        val syncTime = dataStoreRepository.getSyncTime()
-        assert(syncTime == expectedTime)
-    }
+        val testTime = 123456789L
+        dataStoreRepository.setSyncTime(testTime)
+        advanceUntilIdle()
 
-    @Test
-    fun save_sync_time() = runTest {
-        val timeToSave = 987654321L
+        syncTime = dataStoreRepository.getSyncTime()
 
-        dataStoreRepository.saveSyncTime(timeToSave)
-
+        assert(syncTime == testTime)
     }
 
     @Test

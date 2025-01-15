@@ -109,7 +109,7 @@ class DataStoreRepository @Inject constructor(
         }.first()
     }
 
-    suspend fun saveSyncTime(syncTime: Long) {
+    suspend fun setSyncTime(syncTime: Long) {
         dataStore.edit { preferences ->
             preferences[Keys.LAST_SYNC_TIME] = syncTime.toString()
         }

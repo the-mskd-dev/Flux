@@ -72,7 +72,7 @@ class HomeViewModel @Inject constructor(
         repository.getLibrary(sync)
 
         if (sync) {
-            dataStoreRepository.saveSyncTime(currentTime)
+            dataStoreRepository.setSyncTime(currentTime)
             lastSyncTime = currentTime
         }
     }

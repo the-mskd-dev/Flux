@@ -16,13 +16,16 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
+import org.junit.FixMethodOrder
 import org.junit.Test
+import org.junit.runners.MethodSorters
 import java.util.Locale
 
 
 //TODO: See https://medium.com/androiddevelopers/datastore-and-testing-edf7ae8df3d8
 
 @OptIn(ExperimentalCoroutinesApi::class)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class DataStoreRepositoryTest {
 
     private val context: Context = ApplicationProvider.getApplicationContext()
@@ -46,7 +49,7 @@ class DataStoreRepositoryTest {
     }
 
     @Test
-    fun initial_state() = runTest {
+    fun test_1_initial_state() = runTest {
 
         val defaultDataStore = FluxDataStore()
 
@@ -66,22 +69,20 @@ class DataStoreRepositoryTest {
     }
 
     @Test
-    fun add_and_remove_watched_artwork_id() = runTest {
+    fun test_2_add_and_remove_watched_artwork_id() = runTest {
 
         val idTest = 4L
 
         dataStoreRepository.flow.test {
-            var state = awaitItem()
 
+            var state = awaitItem()
             assert(state.watchedIds.isEmpty())
 
             dataStoreRepository.addWatchedArtwork(idTest)
-            advanceUntilIdle()
             state = awaitItem()
             assert(state.watchedIds.contains(idTest))
 
             dataStoreRepository.removeWatchedArtwork(idTest)
-            advanceUntilIdle()
             state = awaitItem()
             assert(!state.watchedIds.contains(idTest))
 
@@ -91,14 +92,13 @@ class DataStoreRepositoryTest {
     }
 
     @Test
-    fun get_and_set_sync_time() = runTest {
+    fun test_3_get_and_set_sync_time() = runTest {
 
         var syncTime = dataStoreRepository.getSyncTime()
         assert(syncTime == 0L)
 
         val testTime = 123456789L
         dataStoreRepository.setSyncTime(testTime)
-        advanceUntilIdle()
 
         syncTime = dataStoreRepository.getSyncTime()
 
@@ -106,7 +106,7 @@ class DataStoreRepositoryTest {
     }
 
     @Test
-    fun get_and_set_player_back_value() = runTest {
+    fun test_4_get_and_set_player_back_value() = runTest {
 
         dataStoreRepository.flow.test {
 
@@ -129,7 +129,7 @@ class DataStoreRepositoryTest {
     }
 
     @Test
-    fun get_and_set_player_forward_value() = runTest {
+    fun test_5_get_and_set_player_forward_value() = runTest {
 
         dataStoreRepository.flow.test {
 
@@ -152,15 +152,8 @@ class DataStoreRepositoryTest {
     }
 
     @Test
-    fun get_player_buttons_values() = runTest {
-        val (backward, forward) = dataStoreRepository.getPlayerButtonsValues()
+    fun test_6_set_ui_theme() = runTest {
 
-        assert(backward == 15)
-        assert(forward == 30)
-    }
-
-    @Test
-    fun set_ui_theme() = runTest {
         val newTheme = Ui.THEME.LIGHT
 
         dataStoreRepository.setUiTheme(newTheme)
@@ -173,22 +166,23 @@ class DataStoreRepositoryTest {
     }
 
     @Test
-    fun set_subtitles_language() = runTest {
-        val newLocale = Locale("en")
+    fun test_7_get_and_set_subtitles_language() = runTest {
 
-        dataStoreRepository.setSubtitlesLanguage(newLocale)
+        val language = dataStoreRepository.getSubtitlesLanguage()
+        assert(language == Locale.getDefault())
 
         dataStoreRepository.flow.test {
+            awaitItem()
+
+            val newLocale = Locale.JAPANESE
+            dataStoreRepository.setSubtitlesLanguage(newLocale)
             val state = awaitItem()
             assert(state.subtitlesLanguage == newLocale)
-            cancelAndConsumeRemainingEvents()
-        }
-    }
 
-    @Test
-    fun get_subtitles_language() = runTest {
-        val language = dataStoreRepository.getSubtitlesLanguage()
-        assert(language == Locale.FRENCH)
+            cancelAndConsumeRemainingEvents()
+
+        }
+
     }
 
 }

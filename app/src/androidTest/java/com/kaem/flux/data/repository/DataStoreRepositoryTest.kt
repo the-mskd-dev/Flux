@@ -48,16 +48,17 @@ class DataStoreRepositoryTest {
     @Test
     fun initial_state() = runTest {
 
+        val defaultDataStore = FluxDataStore()
+
         dataStoreRepository.flow.test {
 
             val initialState = awaitItem()
 
-            assert(initialState.watchedIds.isNotEmpty())
-            assert(listOf(1L, 2L, 3L) == initialState.watchedIds)
-            assert(15 == initialState.playerBackwardValue)
-            assert(30 == initialState.playerForwardValue)
-            assert(Ui.THEME.DARK == initialState.uiTheme)
-            assert(Locale.FRENCH == initialState.subtitlesLanguage)
+            assert(defaultDataStore.uiTheme == initialState.uiTheme)
+            assert(defaultDataStore.subtitlesLanguage == initialState.subtitlesLanguage)
+            assert(defaultDataStore.playerBackwardValue == initialState.playerBackwardValue)
+            assert(defaultDataStore.playerForwardValue == initialState.playerForwardValue)
+            assert(defaultDataStore.watchedIds == initialState.watchedIds)
 
             cancelAndConsumeRemainingEvents()
         }

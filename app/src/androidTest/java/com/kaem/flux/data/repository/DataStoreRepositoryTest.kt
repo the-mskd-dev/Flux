@@ -41,6 +41,7 @@ class DataStoreRepositoryTest {
     @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
+        testDispatcher.scheduler.advanceUntilIdle()
     }
 
     @After

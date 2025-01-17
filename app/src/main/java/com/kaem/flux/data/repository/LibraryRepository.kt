@@ -52,20 +52,15 @@ class LibraryRepository @Inject constructor(
 
     private suspend fun syncLibrary() : List<ArtworkOverview> {
 
-        // Get all artworks
-        val (artworks, movies, episodes) = localSource.getArtworks(sync = true)
-
         // Fetch all files, local and online (if possible)
         val allFiles = getFiles()
-
-        // Filter files absents of Artworks in the DB
-        val savedFiles = movies.map { it.file } + episodes.map { it.file }
-        val newFiles = allFiles.filter { f -> savedFiles.none { it.name == f.name } }
+        val dbFileNames = db.getAllFileNames()
 
         // Delete artworks with missing files
         db.deleteArtworksWithNoFiles(allFiles)
 
         // Get new artworks from TMBD
+        val newFiles = allFiles.filter { !dbFileNames.contains(it.name) }
         val (newOverviews, newMovies, newEpisodes) = tmdbSource.getArtworks(
             files = newFiles,
             sync = true
@@ -76,8 +71,8 @@ class LibraryRepository @Inject constructor(
         db.insertMovies(newMovies)
         db.insertEpisodes(newEpisodes)
 
-        val filteredOverviews = artworks//.filter { a -> overviewsIdsToDelete.none { it == a.id } }
-        return (filteredOverviews + newOverviews).distinctBy { it.id }
+        // Return all overviews
+        return db.getOverviews()
 
     }
 

@@ -33,6 +33,11 @@ class FluxDatabaseTest {
 
     }
 
+    @After
+    fun closeDatabase() {
+        database.close()
+    }
+
     @Test
     fun insert_and_delete_movie() = runTest {
 
@@ -121,11 +126,6 @@ class FluxDatabaseTest {
         assert(dbOverview == null)
         assert(dbEpisodesCount == 0)
 
-    }
-
-    @After
-    fun closeDatabase() {
-        database.close()
     }
 
 }

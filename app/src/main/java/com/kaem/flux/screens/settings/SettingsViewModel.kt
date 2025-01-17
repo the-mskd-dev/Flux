@@ -10,14 +10,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.intellij.lang.annotations.Language
 import java.util.Locale
 import javax.inject.Inject
 
 data class SettingsUiState(
-    val backwardValue: Int = 5,
+    val backwardValue: Int = 10,
     val showBackwardDialog: Boolean = false,
-    val forwardValue: Int = 5,
+    val forwardValue: Int = 10,
     val showForwardDialog: Boolean = false,
     val uiTheme: Ui.THEME = Ui.THEME.SYSTEM,
     val showUiThemeDialog: Boolean = false,

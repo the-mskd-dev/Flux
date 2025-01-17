@@ -19,7 +19,7 @@ import com.google.gson.annotations.SerializedName
  * @property originalTitle Original title of the artwork.
  * @property relatedContent List of related artworks (used for persons).
  */
-data class TMDBArtwork(
+data class TMDBOverview(
     val id: Long,
     @SerializedName("overview")
     val description: String,
@@ -46,7 +46,7 @@ data class TMDBArtwork(
 
     // For Persons
     @SerializedName("known_for")
-    val relatedContent: List<TMDBArtwork>
+    val relatedContent: List<TMDBOverview>
 )
 
 /**
@@ -57,9 +57,9 @@ data class TMDBArtwork(
  * @property pageCount Total number of pages available.
  * @property resultCount Total number of artworks in the result set.
  */
-data class TMDBArtworksResult(
+data class TMDBOverviewsResult(
     val page: Int,
-    val results: List<TMDBArtwork>,
+    val results: List<TMDBOverview>,
     @SerializedName("total_pages")
     val pageCount: Int,
     @SerializedName("total_results")

@@ -15,7 +15,10 @@ import javax.inject.Inject
 data class SearchUIState(
     val searchWord: String = "",
     val overviews: List<ArtworkOverview> = emptyList()
-)
+) {
+
+    val filteredOverviews get() = overviews.filter { it.title.contains(searchWord, true) }
+}
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
@@ -34,7 +37,7 @@ class SearchViewModel @Inject constructor(
     }
 
     fun updateSearchWord(value: String) {
-        _uiState.value = _uiState.value.copy(searchWord = value)
+        _uiState.update { it.copy(searchWord = value) }
     }
 
 }

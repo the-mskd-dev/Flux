@@ -4,8 +4,8 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.kaem.flux.R
 import com.kaem.flux.model.UserFile
-import com.kaem.flux.model.tmdb.TMDBArtwork
 import com.kaem.flux.model.tmdb.TMDBMovie
+import com.kaem.flux.model.tmdb.TMDBOverview
 
 /**
  * Represents an artwork, such as a movie or a TV show.
@@ -41,13 +41,13 @@ data class ArtworkOverview(
     )
 
     /**
-     * Constructs an [ArtworkOverview] instance using a [TMDBArtwork].
+     * Constructs an [ArtworkOverview] instance using a [TMDBOverview].
      */
-    constructor(tmdbArtwork: TMDBArtwork) : this(
-        id = tmdbArtwork.id,
-        title = tmdbArtwork.title,
-        imagePath = tmdbArtwork.imagePath,
-        bannerPath = tmdbArtwork.bannerPath,
+    constructor(tmdbOverview: TMDBOverview) : this(
+        id = tmdbOverview.id,
+        title = tmdbOverview.title,
+        imagePath = tmdbOverview.imagePath,
+        bannerPath = tmdbOverview.bannerPath,
         type = ContentType.SHOW
     )
 

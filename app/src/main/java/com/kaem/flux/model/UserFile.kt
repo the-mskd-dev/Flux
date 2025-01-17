@@ -1,8 +1,10 @@
 package com.kaem.flux.model
 
 import android.os.Parcelable
+import com.kaem.flux.model.artwork.ContentType
 import kotlinx.parcelize.Parcelize
 import java.util.Date
+import java.util.regex.Pattern
 
 @Parcelize
 data class UserFile(
@@ -12,8 +14,11 @@ data class UserFile(
     val source: FileSource
 ) : Parcelable {
 
-    val nameProperties: FileNameProperties
-        get() = FileNameProperties.fromFileName(name)
+    val nameProperties: FileProperties
+        get() = FileProperties.extractFileProperties(name)
+
+    val isEpisode: Boolean
+        get() = nameProperties.season != null && nameProperties.episode != null
 
     val addedDate: Date
         get() = Date(addedDateTime)
@@ -25,7 +30,7 @@ enum class FileSource {
 }
 
 
-data class FileNameProperties(
+data class FileProperties(
     val title: String,
     val year: Int? = null,
     val season: Int? = null,
@@ -34,40 +39,58 @@ data class FileNameProperties(
 
     companion object {
 
-        fun fromFileName(fileName: String): FileNameProperties {
+        fun extractFileProperties(filename: String): FileProperties {
 
-            var name = fileName.substringBeforeLast('.').lowercase()
-            var season: Int? = null
-            var episode: Int? = null
-            var year: Int? = null
-
-            val splitName = name.split('_')
-            if (splitName.size == 2) {
-
-                name = splitName[0]
-
-                val seasonAndEpisodeRegex = Regex("s(\\d+)e(\\d+)")
-                val seasonAndEpisodeResult = seasonAndEpisodeRegex.find(splitName[1])
-                seasonAndEpisodeResult?.let {
-                    val (first, last) = it.destructured
-                    season = first.toIntOrNull()
-                    episode = last.toIntOrNull()
-                }
-
-            }
-
-            val yearRegex = Regex("\\b\\d{4}\\b")
-            year = yearRegex.find(name)?.value?.toIntOrNull()
-
-            return FileNameProperties(
-                title = name,
-                season = season,
-                episode = episode,
-                year = year
+            // Patterns
+            val moviePattern = Pattern.compile("^(.*?)[ .]*(?:\\((\\d{4})\\))?\\.[^.]+$")
+            val episodePattern = Pattern.compile(
+                "^(.*?)[ ._-]*(?:[sS](\\d{1,2})[ .]*[eE](\\d{1,2})|" +
+                        "(\\d{1,2})[xX](\\d{1,2})|" +
+                        "season[ .]*(\\d{1,2})[ .]*episode[ .]*(\\d{1,2})|" +
+                        "se(\\d{1,2})[ .]*ep(\\d{1,2})).*\\.[^.]+$"
             )
 
+            // Try episode pattern
+            val episodeMatcher = episodePattern.matcher(filename)
+            if (episodeMatcher.matches()) {
+                val title = episodeMatcher.group(1)?.replace("-", " ")?.trim()?.lowercase()
+                val season = episodeMatcher.group(2)?.toIntOrNull()
+                    ?: episodeMatcher.group(4)?.toIntOrNull()
+                    ?: episodeMatcher.group(6)?.toIntOrNull()
+                    ?: episodeMatcher.group(8)?.toIntOrNull()
+                val episode = episodeMatcher.group(3)?.toIntOrNull()
+                    ?: episodeMatcher.group(5)?.toIntOrNull()
+                    ?: episodeMatcher.group(7)?.toIntOrNull()
+                    ?: episodeMatcher.group(9)?.toIntOrNull()
+                return FileProperties(title ?: "", null, season, episode)
+            }
+
+            // Try movie pattern
+            val movieMatcher = moviePattern.matcher(filename)
+            if (movieMatcher.matches()) {
+                val title = movieMatcher.group(1)?.replace("-", " ")?.trim()?.lowercase()
+                val year = movieMatcher.group(2)?.toIntOrNull()
+                return FileProperties(title ?: "", year, null, null)
+            }
+
+            // If no pattern works, return the filename as title
+            return FileProperties(filename.replace("-", " ").trim().lowercase(), null, null, null)
         }
 
     }
+
+}
+
+data class UserFolder(
+    val title: String,
+    val files: List<UserFile>
+) {
+
+    val type: ContentType?
+        get() = when {
+            files.all { it.isEpisode } -> ContentType.SHOW
+            files.size == 1 && !files.first().isEpisode -> ContentType.MOVIE
+            else -> null
+        }
 
 }

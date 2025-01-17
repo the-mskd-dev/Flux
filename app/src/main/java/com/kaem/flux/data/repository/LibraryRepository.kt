@@ -95,11 +95,11 @@ class LibraryRepository @Inject constructor(
     }
 
     suspend fun saveMovie(movie: Movie) {
-        return db.insertMovies(listOf(movie))
+        db.insertMovies(listOf(movie))
     }
 
     suspend fun saveEpisode(episode: Episode) {
-        return db.insertEpisodes(listOf(episode))
+        db.insertEpisodes(listOf(episode))
     }
 
 }

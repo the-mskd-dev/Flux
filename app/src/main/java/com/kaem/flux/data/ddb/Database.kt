@@ -12,6 +12,7 @@ import androidx.room.Transaction
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 import com.kaem.flux.model.FileSource
+import com.kaem.flux.model.UserFile
 import com.kaem.flux.model.artwork.ArtworkOverview
 import com.kaem.flux.model.artwork.ContentType
 import com.kaem.flux.model.artwork.Episode
@@ -42,20 +43,38 @@ interface FluxDao {
     @Query("SELECT * FROM artworks")
     suspend fun getOverviews() : List<ArtworkOverview>
 
-    @Query("SELECT * FROM movies")
-    suspend fun getMovies() : List<Movie>
-
     @Query("SELECT * FROM movies WHERE artworkId = :artworkId")
     suspend fun getMovie(artworkId: Long) : Movie?
 
-    @Query("SELECT * FROM episodes")
-    suspend fun getEpisodes() : List<Episode>
+    @Query("SELECT * FROM movies")
+    suspend fun getMovies() : List<Movie>
+
+    @Query("SELECT * FROM movies WHERE name NOT IN (:fileNames)")
+    suspend fun getMoviesWithNoFiles(fileNames: List<String>) : List<Movie>
+
+    @Query("SELECT name FROM movies")
+    suspend fun getMoviesFileNames(): List<String>
+
+    @Query("SELECT * FROM episodes WHERE id = :episodeId")
+    suspend fun getEpisode(episodeId: Long) : Episode?
 
     @Query("SELECT * FROM episodes WHERE artworkId = :artworkId")
     suspend fun getEpisodes(artworkId: Long) : List<Episode>
 
-    @Query("SELECT * FROM episodes WHERE id = :episodeId")
-    suspend fun getEpisode(episodeId: Long) : Episode?
+    @Query("SELECT * FROM episodes")
+    suspend fun getEpisodes() : List<Episode>
+
+    @Query("SELECT * FROM episodes WHERE name NOT IN (:fileNames)")
+    suspend fun getEpisodesWithNoFiles(fileNames: List<String>) : List<Episode>
+
+    @Query("SELECT name FROM episodes")
+    suspend fun getEpisodesFileNames(): List<String>
+
+    suspend fun getAllFileNames() : List<String> {
+        val movieFileNames = getMoviesFileNames()
+        val episodeFileNames = getEpisodesFileNames()
+        return movieFileNames + episodeFileNames
+    }
 
 //endregion
 
@@ -99,6 +118,17 @@ interface FluxDao {
                 }
 
             }
+
+    }
+
+    @Transaction
+    suspend fun deleteArtworksWithNoFiles(existingFiles: List<UserFile>) {
+
+        val moviesToDelete = getMoviesWithNoFiles(fileNames = existingFiles.map { it.name })
+        val episodesToDelete = getEpisodesWithNoFiles(fileNames = existingFiles.map { it.name })
+
+        deleteMovies(moviesToDelete)
+        deleteEpisodes(episodesToDelete)
 
     }
 

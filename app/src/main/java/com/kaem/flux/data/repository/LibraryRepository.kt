@@ -63,17 +63,9 @@ class LibraryRepository @Inject constructor(
         val newFiles = allFiles.filter { f -> savedFiles.none { it.name == f.name } }
 
         // Delete artworks with missing files
-        val moviesIds = movies.filter { m -> allFiles.none { it.name == m.file.name } }
-        val episodesIds = episodes.filter { e -> allFiles.none { it.name == e.file.name } }
-        /*val overviewsIdsToDelete = artworks.filter { artwork ->
-            moviesIds.any { artwork.id == it.artworkId }
-            || (episodes.any { it.artworkId == artwork.id } && episodesIds.containsAll(episodes.filter { it.artworkId == artwork.id }.map { e -> e.id }))
-        }.map { it.id }
-        db.deleteOverviews(overviewsIdsToDelete)
-        db.deleteEpisodes(episodesIdsToDelete)*/
+        db.deleteArtworksWithNoFiles(allFiles)
 
         // Get new artworks from TMBD
-        val filteredOverviews = artworks//.filter { a -> overviewsIdsToDelete.none { it == a.id } }
         val (newOverviews, newMovies, newEpisodes) = tmdbSource.getArtworks(
             files = newFiles,
             sync = true
@@ -84,6 +76,7 @@ class LibraryRepository @Inject constructor(
         db.insertMovies(newMovies)
         db.insertEpisodes(newEpisodes)
 
+        val filteredOverviews = artworks//.filter { a -> overviewsIdsToDelete.none { it == a.id } }
         return (filteredOverviews + newOverviews).distinctBy { it.id }
 
     }

@@ -184,4 +184,51 @@ class FluxDatabaseTest {
 
     }
 
+    @Test
+    fun get_all_file_names() = runTest {
+
+        // Given
+        val overviews = listOf(ArtworkMockups.movieOverview, ArtworkMockups.showOverview)
+        val movie = ArtworkMockups.movie
+        val episodes = listOf(ArtworkMockups.episode1, ArtworkMockups.episode2)
+        val fileNames = episodes.map { it.file.name } + movie.file.name
+
+        // When
+        db.insertOverviews(overviews)
+        db.insertMovies(listOf(movie))
+        db.insertEpisodes(episodes)
+
+        // Then
+        val dbFileNames = db.getAllFileNames()
+        assert(dbFileNames.containsAll(fileNames))
+
+    }
+
+    @Test
+    fun delete_artworks_with_no_files() = runTest {
+
+        // Given
+        val overviews = listOf(ArtworkMockups.movieOverview, ArtworkMockups.showOverview)
+        val movie = ArtworkMockups.movie
+        val episodes = listOf(ArtworkMockups.episode1, ArtworkMockups.episode2)
+        val files = listOf(ArtworkMockups.episode2.file)
+
+        // When
+        db.insertOverviews(overviews)
+        db.insertMovies(listOf(movie))
+        db.insertEpisodes(episodes)
+        db.deleteArtworksWithNoFiles(files)
+
+        // Then
+        val dbOverviews = db.getOverviews()
+        val dbMovies = db.getMovies()
+        val dbEpisodes = db.getEpisodes()
+        assert(dbOverviews.size == 1)
+        assert(dbOverviews.contains(ArtworkMockups.showOverview))
+        assert(dbMovies.isEmpty())
+        assert(dbEpisodes.size == 1)
+        assert(dbEpisodes.contains(ArtworkMockups.episode2))
+
+    }
+
 }

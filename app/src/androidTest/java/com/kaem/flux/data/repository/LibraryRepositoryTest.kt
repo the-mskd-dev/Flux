@@ -22,8 +22,8 @@ class LibraryRepositoryTest {
     private lateinit var repository: LibraryRepository
 
     private val fileSource: FilesDataSource = mockk()
-    private val localSource: ArtworkDataSource = mockk()
-    private val tmdbSource: ArtworkDataSource = mockk()
+    private val localSource: ArtworkDataSource = mockk(relaxed = true)
+    private val tmdbSource: ArtworkDataSource = mockk(relaxed = true)
     private val db: FluxDao = mockk()
 
     @Before

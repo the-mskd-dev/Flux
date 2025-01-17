@@ -27,10 +27,10 @@ interface FluxDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertOverviews(artworkOverviews: List<ArtworkOverview>)
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMovies(movies: List<Movie>)
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertEpisodes(episodes: List<Episode>)
 
 //endregion

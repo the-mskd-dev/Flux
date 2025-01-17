@@ -32,6 +32,7 @@ import com.kaem.flux.ui.theme.Ui
 @Composable
 fun SettingsScreen(
     onBackButtonTap: () -> Unit,
+    navigateToHowToScreen: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
 
@@ -52,6 +53,12 @@ fun SettingsScreen(
         FluxTopBar(
             text = stringResource(R.string.settings),
             onBackButtonTap = onBackButtonTap
+        )
+
+        SettingsItem(
+            text = "Comment nommer mes fichiers ?",
+            value = "",
+            onTap = navigateToHowToScreen
         )
 
         SettingsItem(

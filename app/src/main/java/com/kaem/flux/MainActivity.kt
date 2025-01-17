@@ -22,6 +22,7 @@ import com.kaem.flux.data.repository.DataStoreRepository
 import com.kaem.flux.screens.artwork.ArtworkScreen
 import com.kaem.flux.screens.category.CategoryScreen
 import com.kaem.flux.screens.home.HomeScreen
+import com.kaem.flux.screens.howTo.HowToScreen
 import com.kaem.flux.screens.search.SearchScreen
 import com.kaem.flux.screens.settings.SettingsScreen
 import com.kaem.flux.ui.theme.FluxTheme
@@ -119,6 +120,17 @@ class MainActivity : ComponentActivity() {
 
                     composable(Constants.Navigation.SETTINGS) {
                         SettingsScreen(
+                            onBackButtonTap = { navController.popBackStack() },
+                            navigateToHowToScreen = {
+                                navController.navigate(
+                                    route = Constants.Navigation.HOW_TO
+                                )
+                            }
+                        )
+                    }
+
+                    composable(Constants.Navigation.HOW_TO) {
+                        HowToScreen(
                             onBackButtonTap = { navController.popBackStack() }
                         )
                     }

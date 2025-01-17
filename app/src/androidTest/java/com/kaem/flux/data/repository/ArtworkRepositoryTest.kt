@@ -5,8 +5,13 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.filters.MediumTest
 import com.kaem.flux.data.ddb.FluxDao
 import com.kaem.flux.data.ddb.FluxDatabase
+import io.mockk.coVerify
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
+import org.junit.Test
 
 @MediumTest
 class ArtworkRepositoryTest {
@@ -35,4 +40,15 @@ class ArtworkRepositoryTest {
         database.close()
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun get_artwork() = runTest {
+
+        val content = repository.getArtwork(1L)
+        advanceUntilIdle()
+
+        coVerify {
+            db.getOverview(any())
+        }
+    }
 }

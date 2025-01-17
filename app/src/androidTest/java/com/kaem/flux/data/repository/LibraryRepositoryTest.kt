@@ -60,16 +60,17 @@ class LibraryRepositoryTest {
         // Arrange
         val localArtworks = listOf(ArtworkOverview(id = 1, title = "Local"))
         val newArtworks = listOf(ArtworkOverview(id = 2, title = "New"))
-        val localFiles = listOf(UserFile(name = "file1"))
-        val newFiles = listOf(UserFile(name = "file2"))
+        val localFiles = listOf(ArtworkMockups.episode1.file)
+        val newFiles = listOf(ArtworkMockups.episode2.file)
+        val allFiles = listOf(ArtworkMockups.episode1.file, ArtworkMockups.episode2.file)
 
-        coEvery { localSource.getArtworks(sync = true) } returns ArtworkDataSource.ArtworksResult(
+        coEvery { localSource.getArtworks(sync = true) } returns ArtworkDataSource.Library(
             overviews = localArtworks,
             movies = emptyList(),
             episodes = emptyList()
         )
         coEvery { fileSource.getFiles() } returns localFiles
-        coEvery { tmdbSource.getArtworks(files = newFiles, sync = true) } returns ArtworkDataSource.ArtworksResult(
+        coEvery { tmdbSource.getArtworks(files = newFiles, sync = true) } returns ArtworkDataSource.Library(
             overviews = newArtworks,
             movies = emptyList(),
             episodes = emptyList()
@@ -85,7 +86,7 @@ class LibraryRepositoryTest {
 
             val loadedState = awaitItem()
             assertEquals(false, loadedState.isLoading)
-            assertEquals(listOf("Local", "New"), loadedState.artworkOverviews.map { it.title })
+            assertEquals(allFiles.map { it.name }, loadedState.artworkOverviews.map { it.title })
             cancelAndIgnoreRemainingEvents()
         }
 

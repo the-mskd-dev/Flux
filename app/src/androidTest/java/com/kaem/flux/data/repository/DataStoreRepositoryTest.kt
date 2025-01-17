@@ -10,37 +10,46 @@ import com.kaem.flux.ui.theme.Ui
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
-import org.junit.FixMethodOrder
+import org.junit.Rule
 import org.junit.Test
-import org.junit.runners.MethodSorters
+import org.junit.rules.TemporaryFolder
 import java.util.Locale
 
 
 //TODO: See https://medium.com/androiddevelopers/datastore-and-testing-edf7ae8df3d8
 
 @OptIn(ExperimentalCoroutinesApi::class)
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class DataStoreRepositoryTest {
+
+    @get:Rule
+    val tempFolder = TemporaryFolder()
 
     private val context: Context = ApplicationProvider.getApplicationContext()
     private val testDispatcher = StandardTestDispatcher()
-    private val testDataStore = PreferenceDataStoreFactory.create(
-        produceFile = { context.preferencesDataStoreFile("TEST_DATASTORE_NAME") }
-    )
-    private val dataStoreRepository = DataStoreRepository(
-        dataStore = testDataStore,
-        gson = Gson()
-    )
+    private lateinit var dataStoreRepository: DataStoreRepository
 
     @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
+
+        context.preferencesDataStoreFile("TEST_DATASTORE_NAME")
+
+        val testDataStore = PreferenceDataStoreFactory.create(
+            produceFile = {
+                tempFolder.newFile("test_datastore_${System.nanoTime()}.preferences_pb")
+            }
+        )
+
+        dataStoreRepository = DataStoreRepository(
+            dataStore = testDataStore,
+            gson = Gson()
+        )
+
         testDispatcher.scheduler.advanceUntilIdle()
     }
 
@@ -50,7 +59,7 @@ class DataStoreRepositoryTest {
     }
 
     @Test
-    fun test_1_initial_state() = runTest {
+    fun initial_state() = runTest {
 
         val defaultDataStore = FluxDataStore()
 
@@ -70,7 +79,7 @@ class DataStoreRepositoryTest {
     }
 
     @Test
-    fun test_2_add_and_remove_watched_artwork_id() = runTest {
+    fun add_and_remove_watched_artwork_id() = runTest {
 
         val idTest = 4L
 
@@ -93,7 +102,7 @@ class DataStoreRepositoryTest {
     }
 
     @Test
-    fun test_3_get_and_set_sync_time() = runTest {
+    fun get_and_set_sync_time() = runTest {
 
         var syncTime = dataStoreRepository.getSyncTime()
         assert(syncTime == 0L)
@@ -107,7 +116,7 @@ class DataStoreRepositoryTest {
     }
 
     @Test
-    fun test_4_get_and_set_player_back_value() = runTest {
+    fun get_and_set_player_back_value() = runTest {
 
         dataStoreRepository.flow.test {
 
@@ -130,7 +139,7 @@ class DataStoreRepositoryTest {
     }
 
     @Test
-    fun test_5_get_and_set_player_forward_value() = runTest {
+    fun get_and_set_player_forward_value() = runTest {
 
         dataStoreRepository.flow.test {
 
@@ -153,7 +162,7 @@ class DataStoreRepositoryTest {
     }
 
     @Test
-    fun test_6_set_ui_theme() = runTest {
+    fun set_ui_theme() = runTest {
 
         val newTheme = Ui.THEME.LIGHT
 
@@ -167,7 +176,7 @@ class DataStoreRepositoryTest {
     }
 
     @Test
-    fun test_7_get_and_set_subtitles_language() = runTest {
+    fun get_and_set_subtitles_language() = runTest {
 
         val language = dataStoreRepository.getSubtitlesLanguage()
         assert(language == Locale.getDefault())

@@ -67,40 +67,21 @@ interface FluxDao {
     @Query("DELETE FROM movies WHERE artworkId IN (:ids)")
     suspend fun deleteMoviesByIds(ids: List<Long>)
 
-    @Query("DELETE FROM episodes WHERE artworkId IN (:ids)")
+    @Query("DELETE FROM episodes WHERE id IN (:ids)")
     suspend fun deleteEpisodesByIds(ids: List<Long>)
 
-    @Query("DELETE FROM episodes WHERE id = :episodeId")
-    suspend fun deleteEpisodeById(episodeId: Long)
-
     @Transaction
-    suspend fun deleteMovie(movie: Movie) {
+    suspend fun deleteMovies(movies: List<Movie>) {
 
-        // Delete movie
-        deleteMoviesByIds(listOf(movie.artworkId))
+        // Delete overviews, it will also delete related movies
+        deleteOverviews(movies.map { it.artworkId })
 
-        // Delete overviews
-        deleteOverviews(listOf(movie.artworkId))
-
-    }
-
-    @Transaction
-    suspend fun deleteEpisode(episode: Episode) {
-        // Delete episode
-        deleteEpisodeById(episode.id)
-
-        // Check if it remains episode for show
-        val remainingEpisodes = getEpisodeCountByOverviewId(episode.artworkId)
-
-        // If no, delete the show
-        if (remainingEpisodes == 0) {
-            deleteOverviews(listOf(episode.artworkId))
-        }
     }
 
     @Transaction
     suspend fun deleteEpisodes(episodes: List<Episode>) {
-        // Delete episode
+
+        // Delete episodes
         deleteEpisodesByIds(episodes.map { it.id })
 
         // Delete overviews if needed

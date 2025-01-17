@@ -84,7 +84,7 @@ class FluxDatabaseTest {
         // When
         db.insertOverviews(listOf(overview))
         db.insertMovies(listOf(movie))
-        db.deleteMovie(movie)
+        db.deleteMovies(listOf(movie))
 
         // Then
         val dbOverview = db.getOverview(overview.id)
@@ -147,7 +147,7 @@ class FluxDatabaseTest {
         // When
         db.insertOverviews(listOf(overview))
         db.insertEpisodes(listOf(episode1, episode2))
-        db.deleteEpisode(episode1)
+        db.deleteEpisodes(listOf(episode1))
 
         // Then
         val dbOverview = db.getOverview(overview.id)
@@ -155,11 +155,32 @@ class FluxDatabaseTest {
         assert(dbOverview == overview)
         assert(dbEpisodes == listOf(episode2))
 
-        db.deleteEpisode(episode2)
+        db.deleteEpisodes(listOf(episode2))
         val dbOverview2 = db.getOverview(overview.id)
         val dbEpisodes2 = db.getEpisodes(overview.id)
         assert(dbOverview2 == null)
         assert(dbEpisodes2.isEmpty())
+
+    }
+
+    @Test
+    fun delete_show_by_all_episodes() = runTest {
+
+        // Given
+        val overview = ArtworkMockups.showOverview
+        val episode1 = ArtworkMockups.episode1
+        val episode2 = ArtworkMockups.episode2
+
+        // When
+        db.insertOverviews(listOf(overview))
+        db.insertEpisodes(listOf(episode1, episode2))
+        db.deleteEpisodes(listOf(episode1, episode2))
+
+        // Then
+        val dbOverview = db.getOverview(overview.id)
+        val dbEpisodes = db.getEpisodes(overview.id)
+        assert(dbOverview == null)
+        assert(dbEpisodes.isEmpty())
 
     }
 

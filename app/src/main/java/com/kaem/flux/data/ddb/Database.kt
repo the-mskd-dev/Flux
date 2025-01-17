@@ -16,6 +16,7 @@ import com.kaem.flux.model.artwork.ArtworkOverview
 import com.kaem.flux.model.artwork.ContentType
 import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.model.artwork.Movie
+import kotlinx.coroutines.coroutineScope
 
 @Dao
 interface FluxDao {
@@ -64,18 +65,29 @@ interface FluxDao {
     suspend fun deleteOverviews(ids: List<Long>)
 
     @Query("DELETE FROM movies WHERE artworkId IN (:ids)")
-    suspend fun deleteMovies(ids: List<Long>)
+    suspend fun deleteMoviesByIds(ids: List<Long>)
 
     @Query("DELETE FROM episodes WHERE artworkId IN (:ids)")
-    suspend fun deleteEpisodes(ids: List<Long>)
+    suspend fun deleteEpisodesByIds(ids: List<Long>)
 
     @Query("DELETE FROM episodes WHERE id = :episodeId")
-    suspend fun deleteEpisode(episodeId: Long)
+    suspend fun deleteEpisodeById(episodeId: Long)
+
+    @Transaction
+    suspend fun deleteMovie(movie: Movie) {
+
+        // Delete movie
+        deleteMoviesByIds(listOf(movie.artworkId))
+
+        // Delete overviews
+        deleteOverviews(listOf(movie.artworkId))
+
+    }
 
     @Transaction
     suspend fun deleteEpisode(episode: Episode) {
         // Delete episode
-        deleteEpisode(episode.id)
+        deleteEpisodeById(episode.id)
 
         // Check if it remains episode for show
         val remainingEpisodes = getEpisodeCountByOverviewId(episode.artworkId)
@@ -84,6 +96,29 @@ interface FluxDao {
         if (remainingEpisodes == 0) {
             deleteOverviews(listOf(episode.artworkId))
         }
+    }
+
+    @Transaction
+    suspend fun deleteEpisodes(episodes: List<Episode>) {
+        // Delete episode
+        deleteEpisodesByIds(episodes.map { it.id })
+
+        // Delete overviews if needed
+        episodes
+            .map { it.artworkId }
+            .distinct()
+            .forEach { artworkId ->
+
+                // Check if it remains episode for show
+                val remainingEpisodes = getEpisodeCountByOverviewId(artworkId)
+
+                // If no, delete the show
+                if (remainingEpisodes == 0) {
+                    deleteOverviews(listOf(artworkId))
+                }
+
+            }
+
     }
 
 //endregion

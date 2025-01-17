@@ -4,15 +4,12 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
-import androidx.test.filters.SmallTest
 import com.kaem.flux.mockups.ArtworkMockups
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
-import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.junit.runners.MethodSorters
 
 @RunWith(AndroidJUnit4::class)
 @MediumTest
@@ -39,92 +36,130 @@ class FluxDatabaseTest {
     }
 
     @Test
-    fun insert_and_delete_movie() = runTest {
+    fun insert_movie() = runTest {
 
+        // Given
         val overview = ArtworkMockups.movieOverview
         val movie = ArtworkMockups.movie
 
+        // When
         db.insertOverviews(listOf(overview))
-        val dbOverview = db.getOverview(overview.id)
-
-        assert(overview == dbOverview)
-
         db.insertMovies(listOf(movie))
-        val dbMovie = db.getMovie(overview.id)
 
-        assert(movie == dbMovie)
-
-        db.deleteOverviews(listOf(overview.id))
-
-        val deletedOverview = db.getOverview(overview.id)
-        val deletedMovie = db.getMovie(overview.id)
-
-        assert(deletedOverview == null)
-        assert(deletedMovie == null)
-
-    }
-
-    @Test
-    fun insert_and_delete_show() = runTest {
-
-        val overview = ArtworkMockups.showOverview
-        val episode1 = ArtworkMockups.episode1
-        val episode2 = ArtworkMockups.episode2
-
-        db.insertOverviews(listOf(overview))
+        // Then
         val dbOverview = db.getOverview(overview.id)
-
-        assert(overview == dbOverview)
-
-
-        db.insertEpisodes(listOf(episode1, episode2))
-        val dbEpisodes = db.getEpisodes(overview.id)
-
-        assert(dbEpisodes.size == 2)
-        assert(dbEpisodes.any { it == episode1 })
-        assert(dbEpisodes.any { it == episode2 })
-
-        db.deleteEpisode(episode2.id)
-        var dbEpisodesCount = db.getEpisodeCountByOverviewId(overview.id)
-
-        assert(dbEpisodesCount == 1)
-
-        db.deleteOverviews(listOf(overview.id))
-
-        val deletedOverview = db.getOverview(overview.id)
-        dbEpisodesCount = db.getEpisodeCountByOverviewId(overview.id)
-
-        assert(deletedOverview == null)
-        assert(dbEpisodesCount == 0)
+        val dbMovie = db.getMovie(overview.id)
+        assert(dbOverview == overview)
+        assert(dbMovie == movie)
 
     }
 
     @Test
-    fun insert_and_delete_episodes() = runTest {
+    fun delete_movie_by_overview() = runTest {
 
+        // Given
+        val overview = ArtworkMockups.movieOverview
+        val movie = ArtworkMockups.movie
+
+        // When
+        db.insertOverviews(listOf(overview))
+        db.insertMovies(listOf(movie))
+        db.deleteOverviews(listOf(overview.id))
+
+        // Then
+        val dbOverview = db.getOverview(overview.id)
+        val dbMovie = db.getMovie(overview.id)
+        assert(dbOverview == null)
+        assert(dbMovie == null)
+
+    }
+
+    @Test
+    fun delete_movie_by_artwork() = runTest {
+
+        // Given
+        val overview = ArtworkMockups.movieOverview
+        val movie = ArtworkMockups.movie
+
+        // When
+        db.insertOverviews(listOf(overview))
+        db.insertMovies(listOf(movie))
+        db.deleteMovie(movie)
+
+        // Then
+        val dbOverview = db.getOverview(overview.id)
+        val dbMovie = db.getMovie(overview.id)
+        assert(dbOverview == null)
+        assert(dbMovie == null)
+
+    }
+
+    @Test
+    fun insert_show() = runTest {
+
+        // Given
         val overview = ArtworkMockups.showOverview
         val episode1 = ArtworkMockups.episode1
         val episode2 = ArtworkMockups.episode2
 
+        // When
         db.insertOverviews(listOf(overview))
         db.insertEpisodes(listOf(episode1, episode2))
-        var dbOverview = db.getOverview(overview.id)
 
-        assert(overview == dbOverview)
+        // Then
+        val dbOverview = db.getOverview(overview.id)
+        val dbEpisodes = db.getEpisodes(overview.id)
+        assert(dbOverview == overview)
+        assert(dbEpisodes.size == 2)
+        assert(dbEpisodes == listOf(episode1, episode2))
 
+    }
+
+    @Test
+    fun delete_show_by_overview() = runTest {
+
+        // Given
+        val overview = ArtworkMockups.showOverview
+        val episode1 = ArtworkMockups.episode1
+        val episode2 = ArtworkMockups.episode2
+
+        // When
+        db.insertOverviews(listOf(overview))
+        db.insertEpisodes(listOf(episode1, episode2))
+        db.deleteOverviews(listOf(overview.id))
+
+        // Then
+        val dbOverview = db.getOverview(overview.id)
+        val dbEpisodes = db.getEpisodes(overview.id)
+        assert(dbOverview == null)
+        assert(dbEpisodes.isEmpty())
+
+    }
+
+    @Test
+    fun delete_show_by_episodes() = runTest {
+
+        // Given
+        val overview = ArtworkMockups.showOverview
+        val episode1 = ArtworkMockups.episode1
+        val episode2 = ArtworkMockups.episode2
+
+        // When
+        db.insertOverviews(listOf(overview))
+        db.insertEpisodes(listOf(episode1, episode2))
         db.deleteEpisode(episode1)
-        dbOverview = db.getOverview(overview.id)
-        var dbEpisodesCount = db.getEpisodeCountByOverviewId(overview.id)
 
-        assert(overview == dbOverview)
-        assert(dbEpisodesCount == 1)
+        // Then
+        val dbOverview = db.getOverview(overview.id)
+        val dbEpisodes = db.getEpisodes(overview.id)
+        assert(dbOverview == overview)
+        assert(dbEpisodes == listOf(episode2))
 
         db.deleteEpisode(episode2)
-        dbOverview = db.getOverview(overview.id)
-        dbEpisodesCount = db.getEpisodeCountByOverviewId(overview.id)
-
-        assert(dbOverview == null)
-        assert(dbEpisodesCount == 0)
+        val dbOverview2 = db.getOverview(overview.id)
+        val dbEpisodes2 = db.getEpisodes(overview.id)
+        assert(dbOverview2 == null)
+        assert(dbEpisodes2.isEmpty())
 
     }
 

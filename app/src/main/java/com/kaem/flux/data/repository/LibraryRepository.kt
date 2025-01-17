@@ -1,5 +1,6 @@
 package com.kaem.flux.data.repository
 
+import android.util.Log
 import com.kaem.flux.data.ddb.FluxDao
 import com.kaem.flux.data.source.artwork.ArtworkDataSource
 import com.kaem.flux.data.source.file.FilesDataSource
@@ -67,12 +68,14 @@ class LibraryRepository @Inject constructor(
         )
 
         // Save new artworks
-        db.insertOverviews(newOverviews)
+        val dbOverviews = db.getOverviews()
+        val filteredNewOverviews = newOverviews.filter { nO -> dbOverviews.none { it.id == nO.id } }
+        db.insertOverviews(filteredNewOverviews)
         db.insertMovies(newMovies)
         db.insertEpisodes(newEpisodes)
 
         // Return all overviews
-        return db.getOverviews()
+        return dbOverviews + filteredNewOverviews
 
     }
 

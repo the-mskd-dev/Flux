@@ -14,7 +14,7 @@ class ArtworkRepository @Inject constructor(
 ) {
 
     data class Content(
-        val artworkOverview: ArtworkOverview,
+        val artworkOverview: ArtworkOverview?,
         val movie: Movie? = null,
         val episodes: List<Episode>? = null
     )
@@ -26,13 +26,14 @@ class ArtworkRepository @Inject constructor(
         var episodes: List<Episode>? = null
 
         withContext(Dispatchers.IO) {
-            when (artwork.type) {
+            when (artwork?.type) {
                 ContentType.MOVIE -> {
                     movie = db.getMovie(artworkId)
                 }
                 ContentType.SHOW -> {
                     episodes = db.getEpisodes(artworkId)
                 }
+                else -> {}
             }
         }
 

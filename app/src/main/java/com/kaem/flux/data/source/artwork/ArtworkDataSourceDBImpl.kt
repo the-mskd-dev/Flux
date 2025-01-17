@@ -18,7 +18,6 @@ class ArtworkDataSourceDBImpl @Inject constructor(
 
     override suspend fun getArtworks(
         files: List<UserFile>,
-        overviewIds: List<Long>,
         sync: Boolean
     ): ArtworkDataSource.Library {
 

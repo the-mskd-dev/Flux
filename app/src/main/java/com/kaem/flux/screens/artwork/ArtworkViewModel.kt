@@ -67,21 +67,21 @@ class ArtworkViewModel @Inject constructor(
 
         val (overview, movie, episodes) = repository.getArtwork(id)
 
-        when {
-            movie != null -> {
-                _uiState.value = ArtworkUiState(
-                    overview = overview,
-                    screen = ScreenState.CONTENT,
-                    selectedArtwork = movie
-                )
-            }
+        _uiState.value = when {
+            overview == null -> ArtworkUiState(screen = ScreenState.ERROR)
+            movie != null -> ArtworkUiState(
+                overview = overview,
+                screen = ScreenState.CONTENT,
+                selectedArtwork = movie
+            )
+
             !episodes.isNullOrEmpty() -> {
                 
                 val currentEpisode = episodes.lastOrNull { it.status == Status.IS_WATCHING }
                     ?: episodes.firstOrNull { it.status == Status.TO_WATCH }
                     ?: episodes.first()
 
-                _uiState.value = ArtworkUiState(
+                ArtworkUiState(
                     overview = overview,
                     screen = ScreenState.CONTENT,
                     episodes = episodes,
@@ -89,11 +89,7 @@ class ArtworkViewModel @Inject constructor(
                     selectedArtwork = currentEpisode
                 )
             }
-            else -> {
-                _uiState.value = ArtworkUiState(
-                    screen = ScreenState.ERROR
-                )
-            }
+            else -> ArtworkUiState(screen = ScreenState.ERROR)
 
         }
 
@@ -117,9 +113,9 @@ class ArtworkViewModel @Inject constructor(
         }
     }
 
-    fun showStatusDialog(show: Boolean) {
+    private fun showStatusDialog() {
         _uiState.update { currentState ->
-            currentState.copy(showStatusDialog = show)
+            currentState.copy(showStatusDialog = true)
         }
     }
 
@@ -135,7 +131,7 @@ class ArtworkViewModel @Inject constructor(
             && artwork is Episode
             && _uiState.value.episodes.getPreviousEpisodesFor(artwork).any { it.status != Status.WATCHED }
         ) {
-            showStatusDialog(true)
+            showStatusDialog()
             return
         }
 
@@ -226,24 +222,51 @@ class ArtworkViewModel @Inject constructor(
     fun saveTime(time: Long) = viewModelScope.launch {
 
         val artwork = uiState.value.selectedArtwork ?: return@launch
+        val status = if (time.inMinutes >= artwork.duration * .9) Status.WATCHED else Status.IS_WATCHING
 
         uiState.value.let { state ->
 
             artwork.currentTime = time
-            artwork.status = if (time.inMinutes >= artwork.duration * .9) Status.WATCHED else Status.IS_WATCHING
+            artwork.status = status
 
-            when (state.selectedArtwork) {
-                is Movie -> repository.saveMovie(state.selectedArtwork)
-                is Episode -> repository.saveEpisode(state.selectedArtwork)
+            when (artwork) {
+                is Movie -> {
+
+                    repository.saveMovie(artwork)
+
+                    if (status == Status.WATCHED) dataStoreRepository.removeWatchedArtwork(artworkId)
+                    else dataStoreRepository.addWatchedArtwork(artworkId)
+
+                }
+                is Episode -> {
+
+                    repository.saveEpisode(artwork)
+                    val episodes = state.episodes.sortedWith(
+                        compareBy<Episode> { it.season }.thenBy { it.number }
+                    )
+                    if (artwork.id == episodes.lastOrNull()?.id && status == Status.WATCHED) dataStoreRepository.removeWatchedArtwork(artworkId)
+                    else dataStoreRepository.addWatchedArtwork(artworkId)
+
+                }
                 else -> {}
             }
-
-            dataStoreRepository.addWatchedArtwork(artworkId)
 
             Log.i("ArtworkViewModel", "${state.overview.title} saved at ${time.timeDescription}")
 
         }
 
+    }
+
+    private fun updatedEpisodes(episodes: List<Episode>) {
+        _uiState.update { currentState ->
+
+            val currentEpisodes = _uiState.value.episodes.toMutableList()
+            currentEpisodes.replaceAll { e ->
+                episodes.find { it.id == e.id } ?: e
+            }
+
+            currentState.copy(episodes = currentEpisodes)
+        }
     }
 
 }

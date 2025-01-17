@@ -52,31 +52,17 @@ class LibraryRepository @Inject constructor(
 
     private suspend fun syncLibrary() : List<ArtworkOverview> {
 
-        // Get all artworks
-        val (artworks, movies, episodes) = localSource.getArtworks(sync = true)
-
         // Fetch all files, local and online (if possible)
         val allFiles = getFiles()
-
-        // Filter files absents of Artworks in the DB
-        val savedFiles = movies.map { it.file } + episodes.map { it.file }
-        val newFiles = allFiles.filter { f -> savedFiles.none { it.name == f.name } }
+        val dbFileNames = db.getAllFileNames()
 
         // Delete artworks with missing files
-        val moviesIdsToDelete = movies.filter { m -> allFiles.none { it.name == m.file.name } }.map { it.artworkId }
-        val episodesIdsToDelete = episodes.filter { e -> allFiles.none { it.name == e.file.name } }.map { it.id }
-        val overviewsIdsToDelete = artworks.filter { artwork ->
-            moviesIdsToDelete.any { artwork.id == it }
-            || (episodes.any { it.artworkId == artwork.id } && episodesIdsToDelete.containsAll(episodes.filter { it.artworkId == artwork.id }.map { e -> e.id }))
-        }.map { it.id }
-        db.deleteOverviews(overviewsIdsToDelete)
-        db.deleteEpisodes(episodesIdsToDelete)
+        db.deleteArtworksWithNoFiles(allFiles)
 
         // Get new artworks from TMBD
-        val filteredOverviews = artworks.filter { a -> overviewsIdsToDelete.none { it == a.id } }
+        val newFiles = allFiles.filter { !dbFileNames.contains(it.name) }
         val (newOverviews, newMovies, newEpisodes) = tmdbSource.getArtworks(
             files = newFiles,
-            overviewIds = filteredOverviews.map { it.id },
             sync = true
         )
 
@@ -85,7 +71,8 @@ class LibraryRepository @Inject constructor(
         db.insertMovies(newMovies)
         db.insertEpisodes(newEpisodes)
 
-        return filteredOverviews + newOverviews
+        // Return all overviews
+        return db.getOverviews()
 
     }
 

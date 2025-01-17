@@ -15,7 +15,6 @@ interface ArtworkDataSource {
 
     suspend fun getArtworks(
         files: List<UserFile> = emptyList(),
-        overviewIds: List<Long> = emptyList(),
         sync: Boolean
     ) : Library
 

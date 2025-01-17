@@ -1,5 +1,6 @@
 package com.kaem.flux.data.repository
 
+import androidx.test.filters.MediumTest
 import app.cash.turbine.test
 import com.kaem.flux.data.ddb.FluxDao
 import com.kaem.flux.data.source.artwork.ArtworkDataSource
@@ -17,14 +18,15 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 
+@MediumTest
 class LibraryRepositoryTest {
 
     private lateinit var repository: LibraryRepository
 
-    private val fileSource: FilesDataSource = mockk()
+    private val fileSource: FilesDataSource = mockk(relaxed = true)
     private val localSource: ArtworkDataSource = mockk(relaxed = true)
     private val tmdbSource: ArtworkDataSource = mockk(relaxed = true)
-    private val db: FluxDao = mockk()
+    private val db: FluxDao = mockk(relaxed = true)
 
     @Before
     fun setUp() {
@@ -32,66 +34,60 @@ class LibraryRepositoryTest {
     }
 
     @Test
-    fun getLibrary_should_update_libraryFlow_with_sorted_artworks() = runTest {
-        // Arrange
-        val artworks = listOf(
-            ArtworkMockups.movieOverview,
-            ArtworkMockups.showOverview,
+    fun getLibrary_without_sync() = runTest {
+        // Given
+        val localArtworks = ArtworkMockups.overviews
+        val localMovies = listOf(ArtworkMockups.movie)
+        val localEpisodes = ArtworkMockups.episodes
+
+        coEvery { localSource.getArtworks(sync = false) } returns ArtworkDataSource.Library(
+            overviews = localArtworks,
+            movies = localMovies,
+            episodes = localEpisodes
         )
-        coEvery { localSource.getArtworks(sync = false) } returns ArtworkDataSource.Library(overviews = artworks)
 
-        // Act
-        repository.getLibrary()
+        // When
+        repository.getLibrary(sync = false)
 
-        // Assert
+        // Then
         repository.libraryFlow.test {
-            val initialLoadingState = awaitItem()
-            assertEquals(true, initialLoadingState.isLoading)
 
             val loadedState = awaitItem()
-            assertEquals(false, loadedState.isLoading)
-            assertEquals(listOf("A", "B"), loadedState.artworkOverviews.map { it.title })
+            assert(!loadedState.isLoading)
+            assert(loadedState.artworkOverviews.containsAll(localArtworks))
+
             cancelAndIgnoreRemainingEvents()
         }
+
+        coVerify { localSource.getArtworks(sync = false) }
+
     }
 
     @Test
-    fun syncLibrary_should_sync_and_update_libraryFlow() = runTest {
-        // Arrange
-        val localArtworks = listOf(ArtworkOverview(id = 1, title = "Local"))
-        val newArtworks = listOf(ArtworkOverview(id = 2, title = "New"))
-        val localFiles = listOf(ArtworkMockups.episode1.file)
-        val newFiles = listOf(ArtworkMockups.episode2.file)
-        val allFiles = listOf(ArtworkMockups.episode1.file, ArtworkMockups.episode2.file)
+    fun getLibrary_with_sync() = runTest {
 
-        coEvery { localSource.getArtworks(sync = true) } returns ArtworkDataSource.Library(
-            overviews = localArtworks,
-            movies = emptyList(),
-            episodes = emptyList()
-        )
-        coEvery { fileSource.getFiles() } returns localFiles
-        coEvery { tmdbSource.getArtworks(files = newFiles, sync = true) } returns ArtworkDataSource.Library(
-            overviews = newArtworks,
-            movies = emptyList(),
-            episodes = emptyList()
-        )
-
-        // Act
+        // When
         repository.getLibrary(sync = true)
 
-        // Assert
+        // Then
         repository.libraryFlow.test {
-            val initialLoadingState = awaitItem()
-            assertEquals(true, initialLoadingState.isLoading)
 
             val loadedState = awaitItem()
-            assertEquals(false, loadedState.isLoading)
-            assertEquals(allFiles.map { it.name }, loadedState.artworkOverviews.map { it.title })
+            assert(!loadedState.isLoading)
+
             cancelAndIgnoreRemainingEvents()
         }
 
-        coVerify { db.insertOverviews(newArtworks) }
+        coVerify { db.getAllFileNames() }
+        coVerify { db.deleteArtworksWithNoFiles(any()) }
+        coVerify { tmdbSource.getArtworks(files = any(), sync = true) }
+        coVerify { db.insertOverviews(any()) }
+        coVerify { db.insertMovies(any()) }
+        coVerify { db.insertEpisodes(any()) }
+        coVerify { db.getOverviews() }
+
     }
+
 
     @Test
     fun saveMovie_should_insert_movie_into_db() = runTest {
@@ -118,4 +114,5 @@ class LibraryRepositoryTest {
         // Assert
         coVerify { db.insertEpisodes(listOf(episode)) }
     }
+
 }

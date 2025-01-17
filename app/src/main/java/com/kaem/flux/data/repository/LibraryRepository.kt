@@ -68,14 +68,12 @@ class LibraryRepository @Inject constructor(
         )
 
         // Save new artworks
-        val dbOverviews = db.getOverviews()
-        val filteredNewOverviews = newOverviews.filter { nO -> dbOverviews.none { it.id == nO.id } }
-        db.insertOverviews(filteredNewOverviews)
+        db.insertOverviews(newOverviews)
         db.insertMovies(newMovies)
         db.insertEpisodes(newEpisodes)
 
         // Return all overviews
-        return dbOverviews + filteredNewOverviews
+        return db.getOverviews()
 
     }
 

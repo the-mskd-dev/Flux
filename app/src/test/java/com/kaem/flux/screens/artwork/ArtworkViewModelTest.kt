@@ -1,7 +1,6 @@
 package com.kaem.flux.screens.artwork
 
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
 import app.cash.turbine.test
 import com.kaem.flux.bases.BaseTest
 import com.kaem.flux.data.repository.ArtworkRepository
@@ -9,13 +8,11 @@ import com.kaem.flux.data.repository.DataStoreRepository
 import com.kaem.flux.data.repository.FluxDataStore
 import com.kaem.flux.mockups.ArtworkMockups
 import com.kaem.flux.model.ScreenState
-import com.kaem.flux.model.artwork.ArtworkOverview
 import com.kaem.flux.model.artwork.Status
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.advanceUntilIdle

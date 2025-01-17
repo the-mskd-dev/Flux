@@ -6,15 +6,10 @@ import com.kaem.flux.data.ddb.FluxDao
 import com.kaem.flux.data.source.artwork.ArtworkDataSource
 import com.kaem.flux.data.source.file.FilesDataSource
 import com.kaem.flux.mockups.ArtworkMockups
-import com.kaem.flux.model.UserFile
-import com.kaem.flux.model.artwork.ArtworkOverview
-import com.kaem.flux.model.artwork.Episode
-import com.kaem.flux.model.artwork.Movie
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 

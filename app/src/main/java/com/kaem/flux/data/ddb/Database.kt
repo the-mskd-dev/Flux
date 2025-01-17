@@ -17,7 +17,6 @@ import com.kaem.flux.model.artwork.ArtworkOverview
 import com.kaem.flux.model.artwork.ContentType
 import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.model.artwork.Movie
-import kotlinx.coroutines.coroutineScope
 
 @Dao
 interface FluxDao {

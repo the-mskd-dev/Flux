@@ -3,6 +3,7 @@ package com.kaem.flux.data.ddb
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.filters.MediumTest
 import androidx.test.filters.SmallTest
 import com.kaem.flux.mockups.ArtworkMockups
 import kotlinx.coroutines.test.runTest
@@ -14,7 +15,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.MethodSorters
 
 @RunWith(AndroidJUnit4::class)
-@SmallTest
+@MediumTest
 class FluxDatabaseTest {
 
     private lateinit var database: FluxDatabase

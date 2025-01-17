@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.preferencesDataStoreFile
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.filters.MediumTest
 import app.cash.turbine.test
 import com.google.gson.Gson
 import com.kaem.flux.ui.theme.Ui
@@ -24,6 +25,7 @@ import java.util.Locale
 //TODO: See https://medium.com/androiddevelopers/datastore-and-testing-edf7ae8df3d8
 
 @OptIn(ExperimentalCoroutinesApi::class)
+@MediumTest
 class DataStoreRepositoryTest {
 
     @get:Rule

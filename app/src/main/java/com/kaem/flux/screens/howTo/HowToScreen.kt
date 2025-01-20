@@ -48,27 +48,40 @@ fun HowToScreen(onBackButtonTap: () -> Unit) {
             horizontalAlignment = Alignment.Start
         ) {
 
-            MediumText(
-                text = "Pas de panique, c’est très simple ! Pour que vos vidéos soient bien organisées, voici comment nommer vos fichiers :"
-            )
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM),
+            ) {
 
-            BoldText(text = "Pour les films :")
-            MediumText(text = "Donnez à vos films un nom clair, suivi de l’année si vous le souhaitez. Par exemple :")
-            LightText(
-                text = "Pulp Fiction (1994).mkv\n" +
-                        "Inception.avi\n" +
-                        "Captain-America-The-Winter-Soldier-(2014).mp4"
-            )
+                MediumText(
+                    text = "Pas de panique, c’est très simple ! Pour que vos vidéos soient bien organisées, voici comment nommer vos fichiers :"
+                )
 
+                BoldText(text = "Pour les films :")
+                MediumText(text = "Donnez à vos films un nom clair, suivi de l’année si vous le souhaitez. Par exemple :")
+                LightText(
+                    text = "Pulp Fiction (1994).mkv\n" +
+                            "Inception.avi\n" +
+                            "Captain-America-The-Winter-Soldier-(2014).mp4"
+                )
 
-            BoldText(text = "Pour les séries :")
-            MediumText(text = "Pour les épisodes de séries, utilisez un format qui indique la saison et l’épisode. Par exemple :")
-            LightText(
-                text = "show-name_s01.e02.mkv\n" +
-                        "show-name_1x02.mkv\n" +
-                        "show-name_se1.ep2.mkv\n" +
-                        "show-name-season1.episode2.mkv"
-            )
+            }
+
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM),
+            ) {
+
+                BoldText(text = "Pour les séries :")
+                MediumText(text = "Pour les épisodes de séries, utilisez un format qui indique la saison et l’épisode. Par exemple :")
+                LightText(
+                    text = "show-name_s01.e02.mkv\n" +
+                            "show-name_1x02.mkv\n" +
+                            "show-name_se1.ep2.mkv\n" +
+                            "show-name-season1.episode2.mkv"
+                )
+
+            }
 
 
         }

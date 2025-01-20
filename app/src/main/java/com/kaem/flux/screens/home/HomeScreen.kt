@@ -25,6 +25,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -37,6 +38,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -66,6 +68,7 @@ fun HomeScreen(
     navigateToDetails: (Long) -> Unit,
     navigateToCategory: (ContentType) -> Unit,
     navigateToSearch: () -> Unit,
+    navigateToHowTo: () -> Unit,
     navigateToSettings: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
@@ -102,6 +105,7 @@ fun HomeScreen(
                         navigateToDetails = { id -> navigateToDetails(id) },
                         navigateToCategory = { type -> navigateToCategory(type) },
                         navigateToSearch = navigateToSearch,
+                        navigateToHowTo = navigateToHowTo,
                         navigateToSettings = navigateToSettings
                     )
 
@@ -124,12 +128,14 @@ fun HomeContent(
     navigateToDetails: (Long) -> Unit,
     navigateToCategory: (ContentType) -> Unit,
     navigateToSearch: () -> Unit,
+    navigateToHowTo: () -> Unit,
     navigateToSettings: () -> Unit
 ) {
 
     if (overviews.isEmpty()) {
 
         HomeEmpty(
+            navigateToHowTo = navigateToHowTo,
             onReloadTap = onSyncTap
         )
 
@@ -152,82 +158,42 @@ fun HomeContent(
 
 @Composable
 fun HomeEmpty(
+    navigateToHowTo: () -> Unit,
     onReloadTap: () -> Unit
 ) {
-
-    val coloredStyle = SpanStyle(color = MaterialTheme.colorScheme.primary)
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = Ui.Space.MEDIUM),
-        verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE, Alignment.CenterVertically),
-        horizontalAlignment = Alignment.Start,
+        verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE.times(2), Alignment.CenterVertically),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
 
-        Title(text = stringResource(R.string.empty_library))
+        BoldText(text = stringResource(R.string.empty_library))
 
         MediumText(text = stringResource(R.string.empty_library_desc))
-        
-        Column {
 
-            val annotatedString = buildAnnotatedString {
-                append(stringResource(R.string.movies) + " : ")
-                pushStyle(coloredStyle)
-                append(stringResource(R.string.name_placeholder))
-                pop()
-            }
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
 
-            Text(
-                text = annotatedString,
-                fontWeight = Ui.Weight.LIGHT,
-                color = MaterialTheme.colorScheme.onBackground,
-                fontSize = Ui.FontSize.SMALL,
+            FluxButton(
+                text = stringResource(R.string.how_to_name_files),
+                onTap = onReloadTap
             )
 
-            LightText(
-                text = "Ex: Your name.mkv",
-                fontSize = Ui.FontSize.SMALL,
-                fontStyle = FontStyle.Italic
+            TextButton(
+                onClick = navigateToHowTo,
+                content = {
+                    MediumText(
+                        text = stringResource(R.string.refresh),
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
             )
+
         }
-
-        Column {
-
-            val annotatedString = buildAnnotatedString {
-                append(stringResource(R.string.shows) + " : ")
-                pushStyle(coloredStyle)
-                append(stringResource(R.string.name_placeholder))
-                pop()
-                append("_S")
-                pushStyle(coloredStyle)
-                append(stringResource(R.string.season_placeholder))
-                pop()
-                append("E")
-                pushStyle(coloredStyle)
-                append(stringResource(R.string.episode_placeholder))
-                pop()
-            }
-
-            Text(
-                text = annotatedString,
-                fontWeight = Ui.Weight.LIGHT,
-                color = MaterialTheme.colorScheme.onBackground,
-                fontSize = Ui.FontSize.SMALL,
-            )
-
-            LightText(
-                text = "Ex: Naruto_S01E01.mkv",
-                fontSize = Ui.FontSize.SMALL,
-                fontStyle = FontStyle.Italic
-            )
-        }
-
-        FluxButton(
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-            text = stringResource(R.string.refresh),
-            onTap = onReloadTap
-        )
 
     }
 

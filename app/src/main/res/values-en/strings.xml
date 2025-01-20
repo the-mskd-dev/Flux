@@ -38,7 +38,7 @@
     <string name="season_placeholder">season</string>
     <string name="episode_placeholder">episode</string>
     <string name="empty_library">Your library is empty</string>
-    <string name="empty_library_desc">To find your files, please name them according to the following name</string>
+    <string name="empty_library_desc">To get started, make sure your video files are properly named. This allows the app to organize them automatically.</string>
     <string name="refresh">Refresh</string>
     <string name="how_to_name_files">How to name my files?</string>
     <string name="how_to_name_files_desc">Don’t worry, it’s super easy! To keep your videos well organized, here’s how to name your files:</string>

@@ -39,7 +39,7 @@
     <string name="season_placeholder">saison</string>
     <string name="episode_placeholder">épisode</string>
     <string name="empty_library">Votre librairie est vide</string>
-    <string name="empty_library_desc">Pour retrouvez vos fichiers, veillez à les nommer selon la norme suivante</string>
+    <string name="empty_library_desc">Pour commencer, assurez-vous que vos fichiers vidéo sont bien nommés. Cela permet à l’application de les organiser automatiquement.</string>
     <string name="refresh">Actualiser</string>
     <string name="how_to_name_files">Comment nommer mes fichiers ?</string>
     <string name="how_to_name_files_desc">Pas de panique, c’est très simple ! Pour que vos vidéos soient bien organisées, voici comment nommer vos fichiers :</string>

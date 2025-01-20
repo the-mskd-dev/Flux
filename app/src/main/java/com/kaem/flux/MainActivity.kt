@@ -76,6 +76,11 @@ class MainActivity : ComponentActivity() {
                                     route = Constants.Navigation.SEARCH
                                 )
                             },
+                            navigateToHowTo = {
+                                navController.navigate(
+                                    route = Constants.Navigation.HOW_TO
+                                )
+                            },
                             navigateToSettings = {
                                 navController.navigate(
                                     route = Constants.Navigation.SETTINGS

@@ -56,7 +56,7 @@ fun SettingsScreen(
         )
 
         SettingsItem(
-            text = "Comment nommer mes fichiers ?", //TODO: Text
+            text = stringResource(R.string.how_to_name_files),
             value = "",
             onTap = navigateToHowToScreen
         )

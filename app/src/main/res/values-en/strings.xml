@@ -40,4 +40,14 @@
     <string name="empty_library">Your library is empty</string>
     <string name="empty_library_desc">To find your files, please name them according to the following name</string>
     <string name="refresh">Refresh</string>
+    <string name="how_to_name_files">How to name my files?</string>
+    <string name="how_to_name_files_desc">Don’t worry, it’s super easy! To keep your videos well organized, here’s how to name your files:</string>
+    <string name="how_to_name_files_movies">For movies:</string>
+    <string name="how_to_name_files_movies_desc">Give your movies a clear name, followed by the year if you want. For example:</string>
+    <string name="how_to_name_files_show">For TV shows:</string>
+    <string name="how_to_name_files_show_desc">For TV show episodes, use a format that includes the season and episode number. For example:</string>
+    <string name="show_file_example_1">show name_s01.e02.mkv</string>
+    <string name="show_file_example_2">show_name_1x02.mkv</string>
+    <string name="show_file_example_3">show_name_se1.ep2.mkv</string>
+    <string name="show_file_example_4">show_name-season1.episode2.mkv</string>
 </resources>

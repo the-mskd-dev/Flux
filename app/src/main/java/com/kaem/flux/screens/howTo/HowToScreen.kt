@@ -12,7 +12,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.kaem.flux.R
 import com.kaem.flux.ui.component.BoldText
 import com.kaem.flux.ui.component.FluxTopBar
 import com.kaem.flux.ui.component.LightText
@@ -32,7 +34,7 @@ fun HowToScreen(onBackButtonTap: () -> Unit) {
     ) {
 
         FluxTopBar(
-            text = "Comment nommer mes fichiers ?",
+            text = stringResource(R.string.how_to_name_files),
             onBackButtonTap = onBackButtonTap
         )
 
@@ -44,38 +46,33 @@ fun HowToScreen(onBackButtonTap: () -> Unit) {
             horizontalAlignment = Alignment.Start
         ) {
 
-            MediumText(
-                text = "Pas de panique, c’est très simple ! Pour que vos vidéos soient bien organisées, voici comment nommer vos fichiers :"
-            )
+            MediumText(text = stringResource(R.string.how_to_name_files_desc))
 
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM),
-            ) {
+            Column(verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)) {
 
-                BoldText(text = "Pour les films :")
-                MediumText(text = "Donnez à vos films un nom clair, suivi de l’année si vous le souhaitez. Par exemple :")
-                LightText(
-                    text = "Spider-man (2002).mkv\n" +
-                            "Your name.avi\n" +
-                            "Spider-man-no-way-home-(2021).mp4"
-                )
+                BoldText(text = stringResource(R.string.how_to_name_files_movies))
+                MediumText(text = stringResource(R.string.how_to_name_files_movies_desc))
+
+                Column(verticalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)) {
+                    LightText(text = stringResource(R.string.movie_file_example_1))
+                    LightText(text = stringResource(R.string.movie_file_example_2))
+                    LightText(text = stringResource(R.string.movie_file_example_3))
+
+                }
 
             }
 
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM),
-            ) {
+            Column(verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)) {
 
-                BoldText(text = "Pour les séries :")
-                MediumText(text = "Pour les épisodes de séries, utilisez un format qui indique la saison et l’épisode. Par exemple :")
-                LightText(
-                    text = "nom série_s01.e02.mkv\n" +
-                            "nom_série_1x02.mkv\n" +
-                            "nom_série_se1.ep2.mkv\n" +
-                            "nom_série-season1.episode2.mkv"
-                )
+                BoldText(text = stringResource(R.string.how_to_name_files_show))
+                MediumText(text = stringResource(R.string.how_to_name_files_show_desc))
+
+                Column(verticalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)) {
+                    LightText(text = stringResource(R.string.show_file_example_1))
+                    LightText(text = stringResource(R.string.show_file_example_2))
+                    LightText(text = stringResource(R.string.show_file_example_3))
+                    LightText(text = stringResource(R.string.show_file_example_4))
+                }
 
             }
 

@@ -35,9 +35,6 @@
     <string name="presentation_1_description">Retrouvez facilement vos films et séries préférés !\nFlux organise automatiquement vos vidéos pour vous offrir une bibliothèque simple et agréable à utiliser !</string>
     <string name="presentation_2_title">Accédez à vos vidéos</string>
     <string name="presentation_2_description">Pour afficher et lire vos vidéos, Flux a besoin d’accéder aux fichiers de votre appareil.\nNe vous inquiétez pas, nous ne collectons ni ne partageons aucune donnée personnelle.</string>
-    <string name="name_placeholder">nom</string>
-    <string name="season_placeholder">saison</string>
-    <string name="episode_placeholder">épisode</string>
     <string name="empty_library">Votre librairie est vide</string>
     <string name="empty_library_desc">Pour commencer, assurez-vous que vos fichiers vidéo sont bien nommés. Cela permet à l’application de les organiser automatiquement.</string>
     <string name="refresh">Actualiser</string>

@@ -11,75 +11,79 @@ import com.kaem.flux.model.artwork.Status
 object ArtworkMockups {
 
     val movieOverview get() = ArtworkOverview(
-        id = 1L,
+        id = 372058L,
         title = "Your name",
-        type = ContentType.MOVIE
+        type = ContentType.MOVIE,
+        imagePath = "/vfJFJPepRKapMd5G2ro7klIRysq.jpg",
+        bannerPath = "/8x9iKH8kWA0zdkgNdpAew7OstYe.jpg"
     )
 
     val movie get() = Movie(
-        artworkId = 1L,
+        artworkId = 372058L,
         title = "Your name",
-        releaseDateString = "2016-12-28",
-        description = "description",
-        voteAverage = 10f,
-        voteCount = 2809,
-        duration = 110,
+        releaseDateString = "2016-08-26",
+        description = "High schoolers Mitsuha and Taki are complete strangers living separate lives. But one night, they suddenly switch places. Mitsuha wakes up in Taki’s body, and he in hers. This bizarre occurrence continues to happen randomly, and the two must adjust their lives around each other.",
+        voteAverage = 8.5f,
+        voteCount = 11518,
+        duration = 106,
         currentTime = 0L,
         status = Status.TO_WATCH,
         file = UserFile(
             name = "your_name.mkv",
             addedDateTime = 0L,
-            path = "path",
+            path = "path/your_name.mkv",
             source = FileSource.LOCAL
         )
     )
 
     val showOverview get() = ArtworkOverview(
-        id = 2L,
-        title = "Naruto",
-        type = ContentType.SHOW
+        id = 31910L,
+        title = "Naruto Shippūden",
+        type = ContentType.SHOW,
+        imagePath = "/z0YhJvomqedHF85bplUJEotkN5l.jpg",
+        bannerPath = "/71mASgFgSiPl9QUexVH8BubU0lD.jpg"
     )
 
     val episode1 get() = Episode(
-        id = 3L,
+        id = 761472L,
         number = 1,
         season = 1,
-        imagePath = "",
-        artworkId = 2L,
-        title = "Naruto episode 1",
-        releaseDateString = "2016-12-28",
-        description = "description",
-        voteAverage = 10f,
-        voteCount = 2809,
-        duration = 22,
+        imagePath = "/lFg0YnHI7sJkPSv38a8ctE96sqr.jpg",
+        artworkId = 31910L,
+        title = "Homecoming",
+        releaseDateString = "2007-02-15",
+        description = "A figure passes through the gates. It's an older Naruto, who has returned from a long training journey with Jiraiya. Naruto Uzumaki is back!",
+        voteAverage = 7.8f,
+        voteCount = 8,
+        duration = 23,
         currentTime = 0L,
         status = Status.TO_WATCH,
         file = UserFile(
-            name = "naruto_S01E01.mkv",
+            name = "naruto_shippuuden_S01E01.mkv",
             addedDateTime = 0L,
-            path = "path",
+            path = "path/naruto_shippuuden_S01E01.mkv",
             source = FileSource.LOCAL
         )
     )
 
     val episode2 get() = Episode(
-        id = 4L,
+        id = 761474L,
         number = 2,
         season = 1,
-        imagePath = "",
-        artworkId = 2L,
-        title = "Naruto episode 2",
-        releaseDateString = "2016-12-28",
-        description = "description",
-        voteAverage = 10f,
-        voteCount = 289,
+        imagePath = "/zbvJ4ts4JJmqP6koMNnLzBX6qiJ.jpg",
+        artworkId = 31910L,
+        title = "The Akatsuki Makes Its Move",
+        releaseDateString = "2007-02-15",
+        description = "Naruto and Sakura team up and challenge Kakashi to a survival challenge to show off their progress.",
+        voteAverage = 6.8f,
+        voteCount = 6,
         duration = 23,
         currentTime = 0L,
         status = Status.TO_WATCH,
         file = UserFile(
-            name = "naruto_S01E02.mkv",
+            name = "naruto_shippuuden_S01E02.mkv",
             addedDateTime = 0L,
-            path = "path",
+            path = "path/naruto_shippuuden_S01E02.mkv",
             source = FileSource.LOCAL
         )
     )

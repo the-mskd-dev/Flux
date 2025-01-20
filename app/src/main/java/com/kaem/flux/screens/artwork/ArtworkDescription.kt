@@ -1,6 +1,8 @@
 package com.kaem.flux.screens.artwork
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -12,9 +14,12 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import com.kaem.flux.R
+import com.kaem.flux.mockups.ArtworkMockups
 import com.kaem.flux.model.artwork.Artwork
 import com.kaem.flux.model.artwork.Episode
+import com.kaem.flux.ui.component.BoldText
 import com.kaem.flux.ui.component.LightText
 import com.kaem.flux.ui.component.MediumText
 import com.kaem.flux.ui.component.SmallText
@@ -40,13 +45,13 @@ fun ArtworkDescription(artwork: Artwork?) {
 
             Column(modifier = Modifier.fillMaxWidth()) {
 
-                SmallText(
+                BoldText(
                     modifier = Modifier
                         .fillMaxWidth()
                         .alpha(.8f),
-                    text = stringResource(id = R.string.season_and_episode, artwork.season, artwork.number),
+                    text = stringResource(id = R.string.season_and_episode, artwork.season, artwork.number).uppercase(),
                     color = MaterialTheme.colorScheme.primary,
-                    fontStyle = FontStyle.Italic
+                    fontSize = Ui.FontSize.SMALL
                 )
 
                 MediumText(
@@ -111,5 +116,22 @@ fun ArtworkDescriptionDetails(artwork: Artwork) {
             )
         }
 
+    }
+}
+
+@Preview
+@Composable
+fun ArtworkDescription_Movie_Preview() {
+    Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
+        ArtworkDescription(artwork = ArtworkMockups.movie)
+    }
+
+}
+
+@Preview
+@Composable
+fun ArtworkDescription_Show_Preview() {
+    Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
+        ArtworkDescription(artwork = ArtworkMockups.episode1)
     }
 }

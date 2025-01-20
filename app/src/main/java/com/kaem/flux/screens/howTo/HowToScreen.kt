@@ -56,9 +56,7 @@ fun HowToScreen(onBackButtonTap: () -> Unit) {
             MediumText(text = "Donnez à vos films un nom clair, suivi de l’année si vous le souhaitez. Par exemple :")
             LightText(
                 text = "Pulp Fiction (1994).mkv\n" +
-                        "\n" +
                         "Inception.avi\n" +
-                        "\n" +
                         "Captain-America-The-Winter-Soldier-(2014).mp4"
             )
 
@@ -67,11 +65,8 @@ fun HowToScreen(onBackButtonTap: () -> Unit) {
             MediumText(text = "Pour les épisodes de séries, utilisez un format qui indique la saison et l’épisode. Par exemple :")
             LightText(
                 text = "show-name_s01.e02.mkv\n" +
-                        "\n" +
                         "show-name_1x02.mkv\n" +
-                        "\n" +
                         "show-name_se1.ep2.mkv\n" +
-                        "\n" +
                         "show-name-season1.episode2.mkv"
             )
 

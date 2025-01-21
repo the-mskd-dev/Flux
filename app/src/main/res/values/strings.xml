@@ -5,7 +5,7 @@
     <string name="movies">Films</string>
     <string name="shows">Séries</string>
     <string name="select_season">Sélectionnez une saison</string>
-    <string name="season_and_episode">Saison %1$d, épisode %2$d</string>
+    <string name="season_and_episode">Saison %1$d - épisode %2$d</string>
     <string name="season">Saison %1$d</string>
     <string name="episode">Épisode %1$d</string>
     <string name="start">Lire</string>
@@ -27,18 +27,28 @@
     <string name="system">Système</string>
     <string name="validate">Valider</string>
     <string name="app_theme">Thème de l\'application</string>
-    <string name="button_backward">Bouton arrière du lecteur</string>
-    <string name="button_forward">Bouton avant du lecteur</string>
+    <string name="button_backward">Réglage du saut arrière</string>
+    <string name="button_forward">Réglage du saut avant</string>
     <string name="app_version">Numéro de version</string>
     <string name="subtitles_language">Langue des sous-titres</string>
     <string name="presentation_1_title">Bienvenue dans Flux</string>
-    <string name="presentation_1_description">Retrouvez vos films, séries et animes, de manière organisée dans une librairie minimaliste</string>
-    <string name="presentation_2_title">Accès aux données</string>
-    <string name="presentation_2_description">Pour le fonctionnement de l\'application, nous avons besoin d\'avoir accès à vos fichiers vidéos. Aucune donnée personnelle n\'est récupérée ni transmise à quiconque</string>
-    <string name="name_placeholder">nom</string>
-    <string name="season_placeholder">saison</string>
-    <string name="episode_placeholder">épisode</string>
+    <string name="presentation_1_description">Retrouvez facilement vos films et séries préférés !\nFlux organise automatiquement vos vidéos pour vous offrir une bibliothèque simple et agréable à utiliser !</string>
+    <string name="presentation_2_title">Accédez à vos vidéos</string>
+    <string name="presentation_2_description">Pour afficher et lire vos vidéos, Flux a besoin d’accéder aux fichiers de votre appareil.\nNe vous inquiétez pas, nous ne collectons ni ne partageons aucune donnée personnelle.</string>
     <string name="empty_library">Votre librairie est vide</string>
-    <string name="empty_library_desc">Pour retrouvez vos fichiers, veillez à les nommer selon la norme suivante</string>
+    <string name="empty_library_desc">Pour commencer, assurez-vous que vos fichiers vidéo sont bien nommés. Cela permet à l’application de les organiser automatiquement.</string>
     <string name="refresh">Actualiser</string>
+    <string name="how_to_name_files">Comment nommer mes fichiers ?</string>
+    <string name="how_to_name_files_desc">Pas de panique, c’est très simple ! Pour que vos vidéos soient bien organisées, voici comment nommer vos fichiers :</string>
+    <string name="how_to_name_files_movies">Pour les films :</string>
+    <string name="how_to_name_files_movies_desc">Donnez à vos films un nom clair, suivi de l’année si vous le souhaitez. Par exemple :</string>
+    <string name="how_to_name_files_show">Pour les séries :</string>
+    <string name="how_to_name_files_show_desc">Pour les épisodes de séries, utilisez un format qui indique la saison et l\’épisode. Par exemple :</string>
+    <string name="movie_file_example_1" translatable="false">Spider-man (2002).mkv</string>
+    <string name="movie_file_example_2" translatable="false">Your name.avi</string>
+    <string name="movie_file_example_3" translatable="false">Spider-man-no-way-home-(2021).mp4</string>
+    <string name="show_file_example_1">nom série_s01.e02.mkv</string>
+    <string name="show_file_example_2">nom_série_1x02.mkv</string>
+    <string name="show_file_example_3">nom_série_se1.ep2.mkv</string>
+    <string name="show_file_example_4">nom_série-season1.episode2.mkv</string>
 </resources>

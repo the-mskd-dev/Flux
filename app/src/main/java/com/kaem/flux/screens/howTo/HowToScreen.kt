@@ -1,0 +1,90 @@
+package com.kaem.flux.screens.howTo
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import com.kaem.flux.R
+import com.kaem.flux.ui.component.BoldText
+import com.kaem.flux.ui.component.FluxTopBar
+import com.kaem.flux.ui.component.LightText
+import com.kaem.flux.ui.component.MediumText
+import com.kaem.flux.ui.theme.Ui
+
+@Composable
+fun HowToScreen(onBackButtonTap: () -> Unit) {
+
+    Column(
+        modifier = Modifier
+            .background(MaterialTheme.colorScheme.background)
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE),
+        horizontalAlignment = Alignment.Start
+    ) {
+
+        FluxTopBar(
+            text = stringResource(R.string.how_to_name_files),
+            onBackButtonTap = onBackButtonTap
+        )
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = Ui.Space.MEDIUM),
+            verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE),
+            horizontalAlignment = Alignment.Start
+        ) {
+
+            MediumText(text = stringResource(R.string.how_to_name_files_desc))
+
+            Column(verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)) {
+
+                BoldText(text = stringResource(R.string.how_to_name_files_movies))
+                MediumText(text = stringResource(R.string.how_to_name_files_movies_desc))
+
+                Column(verticalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)) {
+                    LightText(text = stringResource(R.string.movie_file_example_1))
+                    LightText(text = stringResource(R.string.movie_file_example_2))
+                    LightText(text = stringResource(R.string.movie_file_example_3))
+
+                }
+
+            }
+
+            Column(verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)) {
+
+                BoldText(text = stringResource(R.string.how_to_name_files_show))
+                MediumText(text = stringResource(R.string.how_to_name_files_show_desc))
+
+                Column(verticalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)) {
+                    LightText(text = stringResource(R.string.show_file_example_1))
+                    LightText(text = stringResource(R.string.show_file_example_2))
+                    LightText(text = stringResource(R.string.show_file_example_3))
+                    LightText(text = stringResource(R.string.show_file_example_4))
+                }
+
+            }
+
+
+        }
+
+    }
+
+}
+
+@Preview
+@Composable
+fun HowToScreen_Preview() {
+    HowToScreen(onBackButtonTap = {})
+}

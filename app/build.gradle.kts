@@ -5,6 +5,7 @@ plugins {
     id("com.google.dagger.hilt.android")
     id("kotlin-parcelize")
     id("org.jetbrains.kotlin.plugin.compose")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -113,6 +114,9 @@ dependencies {
     implementation("androidx.room:room-runtime:$roomVersion")
     implementation("androidx.room:room-ktx:$roomVersion")
     ksp("androidx.room:room-compiler:$roomVersion")
+
+    // Firebase
+    implementation("com.google.firebase:firebase-analytics:22.2.0")
 
     implementation("app.cash.turbine:turbine:1.2.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.1")

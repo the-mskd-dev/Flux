@@ -9,7 +9,7 @@ import com.kaem.flux.R
 object Ui {
 
     object FontSize {
-        val SMALL = 14.sp
+        val SMALL = 12.sp
         val MEDIUM = 17.sp
         val LARGE = 20.sp
         val TITLE = 30.sp

@@ -18,6 +18,7 @@ object Constants {
         const val ARTWORK = "artwork"
         const val SEARCH = "search"
         const val SETTINGS = "settings"
+        const val HOW_TO = "howTo"
     }
 
     object TMDB {

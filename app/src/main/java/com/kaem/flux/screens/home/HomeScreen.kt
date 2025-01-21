@@ -180,11 +180,11 @@ fun HomeEmpty(
 
             FluxButton(
                 text = stringResource(R.string.how_to_name_files),
-                onTap = onReloadTap
+                onTap = navigateToHowTo
             )
 
             TextButton(
-                onClick = navigateToHowTo,
+                onClick = onReloadTap,
                 content = {
                     MediumText(
                         text = stringResource(R.string.refresh),

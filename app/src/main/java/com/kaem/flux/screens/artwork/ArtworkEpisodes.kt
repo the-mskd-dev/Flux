@@ -149,7 +149,7 @@ fun EpisodeItem(
                         top.linkTo(image.top, Ui.Space.EXTRA_SMALL)
                         start.linkTo(image.start, Ui.Space.EXTRA_SMALL)
                     },
-                text = stringResource(R.string.read),
+                text = stringResource(R.string.read).uppercase(),
                 color = MaterialTheme.colorScheme.secondary,
                 fontSize = Ui.FontSize.SMALL
             )

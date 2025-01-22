@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "745123580180",
+    "project_id": "flux-c84b2",
+    "storage_bucket": "flux-c84b2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:745123580180:android:7d2629a7931336300eda01",
+        "android_client_info": {
+          "package_name": "com.kaem.flux"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC6Hggf9V0Pe-PLzelV3Xy25Lygd-TiCk0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

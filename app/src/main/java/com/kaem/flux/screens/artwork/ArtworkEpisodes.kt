@@ -47,6 +47,7 @@ import com.kaem.flux.ui.component.Placeholders
 import com.kaem.flux.ui.component.SmallText
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.Constants
+import com.kaem.flux.utils.extensions.grayScale
 
 @Composable
 fun ArtworkSeasonsTabs(
@@ -91,47 +92,33 @@ fun ArtworkSeasonsTabs(
 fun EpisodeItem(
     modifier: Modifier = Modifier,
     episode: Episode,
-    isFirst: Boolean,
     onEpisodeTap: () -> Unit
 ) {
 
-    var alpha by remember { mutableFloatStateOf(if (episode.status == Status.WATCHED) .4f else 1f) }
-    val alphaAnimation by animateFloatAsState(targetValue = alpha, label = "alphaAnimation")
-    LaunchedEffect(episode.status) {
-        alpha = if (episode.status == Status.WATCHED) .4f else 1f
-    }
+    val episodeModifier = if (episode.status == Status.WATCHED)
+        modifier
+            .alpha(.4f)
+            .grayScale()
+    else
+        modifier
 
     ConstraintLayout(
-        modifier = modifier
+        modifier = episodeModifier
             .clickable { onEpisodeTap() }
             .animateContentSize()
             .fillMaxWidth()
-            .padding(horizontal = Ui.Space.MEDIUM)
-            .padding(bottom = Ui.Space.MEDIUM)
+            .padding(vertical = Ui.Space.MEDIUM)
     ) {
 
-        val (divider, image, status, content) = createRefs()
+        val (image, content) = createRefs()
         val startGuideline = createGuidelineFromStart(.3f)
-
-        HorizontalDivider(
-            modifier = Modifier
-                .constrainAs(divider) {
-                    top.linkTo(parent.top)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                    width = Dimension.fillToConstraints
-                }
-                .alpha(if (isFirst) 0f else .2f),
-            color = MaterialTheme.colorScheme.onBackground
-        )
 
         GlideImage(
             modifier = Modifier
-                .alpha(alphaAnimation)
                 .clip(Ui.Shape.RoundedCorner)
                 .aspectRatio(16f / 9f)
                 .constrainAs(image) {
-                    top.linkTo(divider.bottom, Ui.Space.MEDIUM)
+                    top.linkTo(parent.top)
                     start.linkTo(parent.start)
                     end.linkTo(startGuideline)
                     width = Dimension.fillToConstraints
@@ -143,21 +130,8 @@ fun EpisodeItem(
             contentDescription = "Season ${episode.season} episode ${episode.number}, ${episode.title}"
         )
 
-        if (episode.status == Status.WATCHED) {
-            BoldText(
-                modifier = Modifier.constrainAs(status) {
-                        top.linkTo(image.top, Ui.Space.EXTRA_SMALL)
-                        start.linkTo(image.start, Ui.Space.EXTRA_SMALL)
-                    },
-                text = stringResource(R.string.read).uppercase(),
-                color = MaterialTheme.colorScheme.secondary,
-                fontSize = Ui.FontSize.SMALL
-            )
-        }
-
         Column(
             modifier = Modifier
-                .alpha(alphaAnimation)
                 .constrainAs(content) {
                     top.linkTo(image.top)
                     start.linkTo(startGuideline, Ui.Space.MEDIUM)
@@ -168,13 +142,12 @@ fun EpisodeItem(
             verticalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)
         ) {
 
-            SmallText(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .alpha(.8f),
-                text = stringResource(R.string.episode, episode.number),
+            BoldText(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(R.string.episode, episode.number).uppercase(),
                 textAlign = TextAlign.Start,
-                fontStyle = FontStyle.Italic
+                fontSize = Ui.FontSize.SMALL,
+                color = MaterialTheme.colorScheme.primary
             )
 
             MediumText(
@@ -194,8 +167,7 @@ fun EpisodeItem(
 @Composable
 fun EpisodeItem_Preview() {
     EpisodeItem(
-        episode = ArtworkMockups.episode1.copy(status = Status.WATCHED),
-        isFirst = false,
+        episode = ArtworkMockups.episode1,
         onEpisodeTap = {}
     )
 }

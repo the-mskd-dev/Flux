@@ -116,7 +116,8 @@ dependencies {
     ksp("androidx.room:room-compiler:$roomVersion")
 
     // Firebase
-    implementation("com.google.firebase:firebase-analytics:22.2.0")
+    implementation(platform("com.google.firebase:firebase-bom:33.8.0"))
+    implementation("com.google.firebase:firebase-analytics")
 
     implementation("app.cash.turbine:turbine:1.2.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.1")

@@ -51,4 +51,5 @@
     <string name="show_file_example_2">nom_série_1x02.mkv</string>
     <string name="show_file_example_3">nom_série_se1.ep2.mkv</string>
     <string name="show_file_example_4">nom_série-season1.episode2.mkv</string>
+    <string name="read">lu</string>
 </resources>

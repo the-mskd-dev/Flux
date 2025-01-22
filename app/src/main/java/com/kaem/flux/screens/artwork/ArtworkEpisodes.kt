@@ -146,12 +146,11 @@ fun EpisodeItem(
         if (episode.status == Status.WATCHED) {
             BoldText(
                 modifier = Modifier.constrainAs(status) {
-                        top.linkTo(image.top)
-                        start.linkTo(image.start)
-                    }
-                    .padding(Ui.Space.EXTRA_SMALL),
-                text = "READ",
-                color = MaterialTheme.colorScheme.primary,
+                        top.linkTo(image.top, Ui.Space.EXTRA_SMALL)
+                        start.linkTo(image.start, Ui.Space.EXTRA_SMALL)
+                    },
+                text = stringResource(R.string.read),
+                color = MaterialTheme.colorScheme.secondary,
                 fontSize = Ui.FontSize.SMALL
             )
         }

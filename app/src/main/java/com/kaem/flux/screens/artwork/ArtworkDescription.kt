@@ -46,9 +46,7 @@ fun ArtworkDescription(artwork: Artwork?) {
             Column(modifier = Modifier.fillMaxWidth()) {
 
                 BoldText(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .alpha(.8f),
+                    modifier = Modifier.fillMaxWidth(),
                     text = stringResource(id = R.string.season_and_episode, artwork.season, artwork.number).uppercase(),
                     color = MaterialTheme.colorScheme.primary,
                     fontSize = Ui.FontSize.SMALL

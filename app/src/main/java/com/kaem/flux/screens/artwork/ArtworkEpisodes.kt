@@ -1,5 +1,6 @@
 package com.kaem.flux.screens.artwork
 
+import android.content.res.Configuration
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
@@ -31,13 +32,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.kaem.flux.R
+import com.kaem.flux.mockups.ArtworkMockups
 import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.model.artwork.Status
+import com.kaem.flux.ui.component.BoldText
 import com.kaem.flux.ui.component.MediumText
 import com.kaem.flux.ui.component.Placeholders
 import com.kaem.flux.ui.component.SmallText
@@ -106,7 +110,7 @@ fun EpisodeItem(
             .padding(bottom = Ui.Space.MEDIUM)
     ) {
 
-        val (divider, image, content) = createRefs()
+        val (divider, image, status, content) = createRefs()
         val startGuideline = createGuidelineFromStart(.3f)
 
         HorizontalDivider(
@@ -138,6 +142,19 @@ fun EpisodeItem(
             failure = Placeholders.failure(),
             contentDescription = "Season ${episode.season} episode ${episode.number}, ${episode.title}"
         )
+
+        if (episode.status == Status.WATCHED) {
+            BoldText(
+                modifier = Modifier.constrainAs(status) {
+                        top.linkTo(image.top)
+                        start.linkTo(image.start)
+                    }
+                    .padding(Ui.Space.EXTRA_SMALL),
+                text = "READ",
+                color = MaterialTheme.colorScheme.primary,
+                fontSize = Ui.FontSize.SMALL
+            )
+        }
 
         Column(
             modifier = Modifier
@@ -172,4 +189,14 @@ fun EpisodeItem(
 
     }
 
+}
+
+@Preview(showBackground = true)
+@Composable
+fun EpisodeItem_Preview() {
+    EpisodeItem(
+        episode = ArtworkMockups.episode1.copy(status = Status.WATCHED),
+        isFirst = false,
+        onEpisodeTap = {}
+    )
 }

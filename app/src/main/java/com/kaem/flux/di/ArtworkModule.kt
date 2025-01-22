@@ -1,5 +1,6 @@
 package com.kaem.flux.di
 
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.kaem.flux.data.ddb.FluxDao
 import com.kaem.flux.data.source.artwork.ArtworkDataSource
 import com.kaem.flux.data.source.artwork.ArtworkDataSourceDBImpl
@@ -34,10 +35,12 @@ object ArtworkModule {
     @Provides
     @TMDBArtworkDataSource
     fun provideTMDBArtworkDataSource(
-        tmdbService: TMDBService
+        tmdbService: TMDBService,
+        firebaseAnalytics: FirebaseAnalytics
     ) : ArtworkDataSource {
         return ArtworkDataSourceTMDBImpl(
-            tmdbService = tmdbService
+            tmdbService = tmdbService,
+            firebaseAnalytics = firebaseAnalytics
         )
     }
 

@@ -2,6 +2,7 @@ package com.kaem.flux.screens.artwork
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,10 +11,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -43,10 +41,10 @@ import com.kaem.flux.model.artwork.Artwork
 import com.kaem.flux.model.artwork.ArtworkOverview
 import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.model.artwork.Status
+import com.kaem.flux.ui.component.ProgressBar
 import com.kaem.flux.ui.component.BackButton
 import com.kaem.flux.ui.component.FluxButton
 import com.kaem.flux.ui.component.FluxTextButton
-import com.kaem.flux.ui.component.MediumText
 import com.kaem.flux.ui.component.Placeholders
 import com.kaem.flux.ui.component.SmallText
 import com.kaem.flux.ui.component.Title
@@ -54,7 +52,6 @@ import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.Constants
 import com.kaem.flux.utils.extensions.minToMs
 import com.kaem.flux.utils.extensions.timeDescription
-import kotlin.time.Duration.Companion.minutes
 
 @Composable
 fun ArtworkHeader(
@@ -206,11 +203,9 @@ fun ArtworkStatusProgression(artwork: Artwork) {
             verticalAlignment = Alignment.CenterVertically
         ){
 
-            LinearProgressIndicator(
+            ProgressBar(
                 modifier = Modifier.weight(1f),
-                progress = { (artwork.currentTime.toFloat() / artwork.duration.minToMs) },
-                gapSize = 0.dp,
-                drawStopIndicator = {}
+                artwork = artwork
             )
 
             val remainingTime = (artwork.duration.minToMs - artwork.currentTime).timeDescription(withoutSeconds = true)

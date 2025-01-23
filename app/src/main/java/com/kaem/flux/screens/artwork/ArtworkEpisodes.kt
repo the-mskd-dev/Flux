@@ -6,9 +6,11 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
@@ -44,6 +46,7 @@ import com.kaem.flux.model.artwork.Status
 import com.kaem.flux.ui.component.BoldText
 import com.kaem.flux.ui.component.MediumText
 import com.kaem.flux.ui.component.Placeholders
+import com.kaem.flux.ui.component.ProgressBar
 import com.kaem.flux.ui.component.SmallText
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.Constants
@@ -113,7 +116,7 @@ fun EpisodeItem(
         val (image, content) = createRefs()
         val startGuideline = createGuidelineFromStart(.3f)
 
-        GlideImage(
+        Box(
             modifier = Modifier
                 .clip(Ui.Shape.RoundedCorner)
                 .aspectRatio(16f / 9f)
@@ -123,11 +126,26 @@ fun EpisodeItem(
                     end.linkTo(startGuideline)
                     width = Dimension.fillToConstraints
                 },
-            model = Constants.TMDB.IMAGE + episode.imagePath,
-            contentScale = ContentScale.Crop,
-            loading = Placeholders.loading(),
-            failure = Placeholders.failure(),
-            contentDescription = "Season ${episode.season} episode ${episode.number}, ${episode.title}"
+            contentAlignment = Alignment.BottomCenter,
+            content = {
+
+                GlideImage(
+                    modifier = Modifier.fillMaxSize(),
+                    model = Constants.TMDB.IMAGE + episode.imagePath,
+                    contentScale = ContentScale.Crop,
+                    loading = Placeholders.loading(),
+                    failure = Placeholders.failure(),
+                    contentDescription = "Season ${episode.season} episode ${episode.number}, ${episode.title}"
+                )
+
+                if (episode.status == Status.IS_WATCHING) {
+                    ProgressBar(
+                        modifier = Modifier.fillMaxWidth(),
+                        artwork = episode
+                    )
+                }
+
+            }
         )
 
         Column(

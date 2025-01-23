@@ -22,6 +22,8 @@ class UserFileTest {
         asserFileProperties("Detective-Conan_s01.e02.mkv", "detective conan", null, 1, 2)
         asserFileProperties("Detective Conan_s1e2.mkv", "detective conan", null, 1, 2)
         asserFileProperties("Detective-Conan_s1e2.mkv", "detective conan", null, 1, 2)
+        asserFileProperties("Detective Conan_s01e02.mkv", "detective conan", null, 1, 2)
+        asserFileProperties("Detective-Conan_s01e02.mkv", "detective conan", null, 1, 2)
         asserFileProperties("Detective Conan_1x02.mkv", "detective conan", null, 1, 2)
         asserFileProperties("Detective-Conan_1x02.mkv", "detective conan", null, 1, 2)
         asserFileProperties("Detective Conan_se1.ep2.mkv", "detective conan", null, 1, 2)

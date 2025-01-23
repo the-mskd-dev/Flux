@@ -20,10 +20,10 @@ import com.kaem.flux.mockups.ArtworkMockups
 import com.kaem.flux.model.artwork.Artwork
 import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.ui.component.BoldText
-import com.kaem.flux.ui.component.LightText
 import com.kaem.flux.ui.component.MediumText
 import com.kaem.flux.ui.component.SmallText
 import com.kaem.flux.ui.theme.Ui
+import com.kaem.flux.utils.extensions.minToMs
 import com.kaem.flux.utils.extensions.timeDescription
 import java.text.DateFormat
 import java.util.Locale
@@ -46,9 +46,7 @@ fun ArtworkDescription(artwork: Artwork?) {
             Column(modifier = Modifier.fillMaxWidth()) {
 
                 BoldText(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .alpha(.8f),
+                    modifier = Modifier.fillMaxWidth(),
                     text = stringResource(id = R.string.season_and_episode, artwork.season, artwork.number).uppercase(),
                     color = MaterialTheme.colorScheme.primary,
                     fontSize = Ui.FontSize.SMALL
@@ -74,7 +72,7 @@ fun ArtworkDescription(artwork: Artwork?) {
 
         }
 
-        LightText(
+        MediumText(
             modifier = Modifier
                 .fillMaxWidth()
                 .alpha(.8f),
@@ -104,7 +102,7 @@ fun ArtworkDescriptionDetails(artwork: Artwork) {
         )
 
         SmallText(
-            text = stringResource(R.string.duration, artwork.duration.minutes.inWholeMilliseconds.timeDescription) ,
+            text = stringResource(R.string.duration, artwork.duration.minToMs.timeDescription()) ,
             fontStyle = FontStyle.Italic
         )
 

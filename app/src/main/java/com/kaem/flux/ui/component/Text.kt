@@ -104,37 +104,6 @@ fun MediumText(
 }
 
 @Composable
-fun LightText(
-    modifier: Modifier = Modifier,
-    text: String?,
-    textAlign: TextAlign = TextAlign.Start,
-    color: Color = MaterialTheme.colorScheme.onBackground,
-    fontSize: TextUnit = Ui.FontSize.MEDIUM,
-    fontStyle: FontStyle? = null,
-    overflow: TextOverflow = TextOverflow.Clip,
-    maxLines: Int = Int.MAX_VALUE,
-    minLines: Int = 1,
-) {
-
-    if (text.isNullOrBlank())
-        return
-
-    Text(
-        modifier = modifier,
-        text = text,
-        color = color,
-        fontWeight = Ui.Weight.LIGHT,
-        fontSize = fontSize,
-        textAlign = textAlign,
-        fontStyle = fontStyle,
-        overflow = overflow,
-        maxLines = maxLines,
-        minLines = minLines
-    )
-
-}
-
-@Composable
 fun SmallText(
     modifier: Modifier = Modifier,
     text: String?,
@@ -153,7 +122,7 @@ fun SmallText(
         modifier = modifier,
         text = text,
         color = color,
-        fontWeight = Ui.Weight.LIGHT,
+        fontWeight = Ui.Weight.MEDIUM,
         fontSize = Ui.FontSize.SMALL,
         textAlign = textAlign,
         fontStyle = fontStyle,

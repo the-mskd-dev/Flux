@@ -1,13 +1,16 @@
 package com.kaem.flux.screens.artwork
 
+import android.content.res.Configuration
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
@@ -31,18 +34,23 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.kaem.flux.R
+import com.kaem.flux.mockups.ArtworkMockups
 import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.model.artwork.Status
+import com.kaem.flux.ui.component.BoldText
 import com.kaem.flux.ui.component.MediumText
 import com.kaem.flux.ui.component.Placeholders
+import com.kaem.flux.ui.component.ProgressBar
 import com.kaem.flux.ui.component.SmallText
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.Constants
+import com.kaem.flux.utils.extensions.grayScale
 
 @Composable
 fun ArtworkSeasonsTabs(
@@ -71,7 +79,7 @@ fun ArtworkSeasonsTabs(
                 onClick = { onSeasonTap(season) }
             ) {
                 SmallText(
-                    text = stringResource(id = R.string.season, season),
+                    text = stringResource(id = R.string.season, season).uppercase(),
                     color = textColor
                 )
             }
@@ -87,78 +95,76 @@ fun ArtworkSeasonsTabs(
 fun EpisodeItem(
     modifier: Modifier = Modifier,
     episode: Episode,
-    isFirst: Boolean,
     onEpisodeTap: () -> Unit
 ) {
 
-    var alpha by remember { mutableFloatStateOf(if (episode.status == Status.WATCHED) .4f else 1f) }
-    val alphaAnimation by animateFloatAsState(targetValue = alpha, label = "alphaAnimation")
-    LaunchedEffect(episode.status) {
-        alpha = if (episode.status == Status.WATCHED) .4f else 1f
-    }
+    val episodeModifier = if (episode.status == Status.WATCHED)
+        modifier
+            .alpha(.4f)
+            .grayScale()
+    else
+        modifier
 
     ConstraintLayout(
-        modifier = modifier
+        modifier = episodeModifier
             .clickable { onEpisodeTap() }
             .animateContentSize()
             .fillMaxWidth()
-            .padding(horizontal = Ui.Space.MEDIUM)
-            .padding(bottom = Ui.Space.MEDIUM)
+            .padding(vertical = Ui.Space.MEDIUM)
     ) {
 
-        val (divider, image, content) = createRefs()
+        val (image, content) = createRefs()
         val startGuideline = createGuidelineFromStart(.3f)
 
-        HorizontalDivider(
+        Box(
             modifier = Modifier
-                .constrainAs(divider) {
-                    top.linkTo(parent.top)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                    width = Dimension.fillToConstraints
-                }
-                .alpha(if (isFirst) 0f else .2f),
-            color = MaterialTheme.colorScheme.onBackground
-        )
-
-        GlideImage(
-            modifier = Modifier
-                .alpha(alphaAnimation)
                 .clip(Ui.Shape.RoundedCorner)
                 .aspectRatio(16f / 9f)
                 .constrainAs(image) {
-                    top.linkTo(divider.bottom, Ui.Space.MEDIUM)
+                    top.linkTo(parent.top)
                     start.linkTo(parent.start)
                     end.linkTo(startGuideline)
                     width = Dimension.fillToConstraints
                 },
-            model = Constants.TMDB.IMAGE + episode.imagePath,
-            contentScale = ContentScale.Crop,
-            loading = Placeholders.loading(),
-            failure = Placeholders.failure(),
-            contentDescription = "Season ${episode.season} episode ${episode.number}, ${episode.title}"
+            contentAlignment = Alignment.BottomCenter,
+            content = {
+
+                GlideImage(
+                    modifier = Modifier.fillMaxSize(),
+                    model = Constants.TMDB.IMAGE + episode.imagePath,
+                    contentScale = ContentScale.Crop,
+                    loading = Placeholders.loading(),
+                    failure = Placeholders.failure(),
+                    contentDescription = "Season ${episode.season} episode ${episode.number}, ${episode.title}"
+                )
+
+                if (episode.status == Status.IS_WATCHING) {
+                    ProgressBar(
+                        modifier = Modifier.fillMaxWidth(),
+                        artwork = episode
+                    )
+                }
+
+            }
         )
 
         Column(
             modifier = Modifier
-                .alpha(alphaAnimation)
                 .constrainAs(content) {
                     top.linkTo(image.top)
                     start.linkTo(startGuideline, Ui.Space.MEDIUM)
                     end.linkTo(parent.end)
                     width = Dimension.fillToConstraints
                 },
-            horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)
+            horizontalAlignment = Alignment.Start
         ) {
 
-            SmallText(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .alpha(.8f),
-                text = stringResource(R.string.episode, episode.number),
+            BoldText(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(R.string.episode, episode.number).uppercase(),
                 textAlign = TextAlign.Start,
-                fontStyle = FontStyle.Italic
+                fontSize = Ui.FontSize.SMALL,
+                color = MaterialTheme.colorScheme.primary
             )
 
             MediumText(
@@ -172,4 +178,13 @@ fun EpisodeItem(
 
     }
 
+}
+
+@Preview(showBackground = true)
+@Composable
+fun EpisodeItem_Preview() {
+    EpisodeItem(
+        episode = ArtworkMockups.episode1,
+        onEpisodeTap = {}
+    )
 }

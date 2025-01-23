@@ -1,10 +1,14 @@
 package com.kaem.flux.screens.artwork
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -38,10 +42,12 @@ import com.kaem.flux.model.artwork.Status
 import com.kaem.flux.ui.component.BackButton
 import com.kaem.flux.ui.component.FluxButton
 import com.kaem.flux.ui.component.Placeholders
+import com.kaem.flux.ui.component.SmallText
 import com.kaem.flux.ui.component.Title
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.Constants
 import com.kaem.flux.utils.extensions.timeDescription
+import kotlin.time.Duration.Companion.minutes
 
 @Composable
 fun ArtworkHeader(
@@ -85,7 +91,7 @@ fun ArtworkHeader(
 
         ArtworkStatusButton(
             modifier = Modifier.layoutId("status"),
-            status = artwork?.status,
+            artwork = artwork,
             onTap = { onStatusButtonTap() }
         )
 
@@ -172,19 +178,49 @@ fun ArtworkPlayerButton(
 @Composable
 fun ArtworkStatusButton(
     modifier: Modifier,
-    status: Status?,
+    artwork: Artwork?,
     onTap: () -> Unit
 ) {
 
-    status ?: return
+    artwork ?: return
 
-    FluxButton(
+    Column(
         modifier = modifier,
-        text = if (status == Status.WATCHED) stringResource(R.string.mark_as_not_watched) else stringResource(R.string.mark_as_watched),
-        backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
-        textColor = MaterialTheme.colorScheme.onSecondaryContainer,
-        onTap = onTap
-    )
+        verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM),
+    ) {
+        
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM),
+            verticalAlignment = Alignment.CenterVertically
+        ){
+
+            if (artwork.status == Status.IS_WATCHING) {
+                LinearProgressIndicator(
+                    modifier = Modifier.weight(1f),
+                    progress = { (artwork.currentTime.toFloat() / artwork.duration.minutes.inWholeMilliseconds) },
+                    gapSize = 0.dp,
+                    drawStopIndicator = {}
+                )
+            }
+
+            val remainingTime = (artwork.duration.minutes.inWholeMilliseconds - artwork.currentTime).timeDescription
+            SmallText(
+                text = "Il reste $remainingTime",
+                color = MaterialTheme.colorScheme.onBackground
+            )
+
+        }
+
+        FluxButton(
+            modifier = Modifier.fillMaxWidth(),
+            text = if (artwork.status == Status.WATCHED) stringResource(R.string.mark_as_not_watched) else stringResource(R.string.mark_as_watched),
+            backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
+            textColor = MaterialTheme.colorScheme.onSecondaryContainer,
+            onTap = onTap
+        )
+
+    }
 
 }
 

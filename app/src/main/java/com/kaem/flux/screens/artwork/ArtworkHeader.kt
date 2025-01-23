@@ -46,6 +46,7 @@ import com.kaem.flux.ui.component.SmallText
 import com.kaem.flux.ui.component.Title
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.Constants
+import com.kaem.flux.utils.extensions.minToMs
 import com.kaem.flux.utils.extensions.timeDescription
 import kotlin.time.Duration.Companion.minutes
 
@@ -169,7 +170,7 @@ fun ArtworkPlayerButton(
 
     FluxButton(
         modifier = modifier,
-        text = if (artwork.status == Status.IS_WATCHING) stringResource(R.string.resume, artwork.currentTime.timeDescription) else stringResource(R.string.start),
+        text = if (artwork.status == Status.IS_WATCHING) stringResource(R.string.resume, artwork.currentTime.timeDescription()) else stringResource(R.string.start),
         onTap = onTap
     )
 
@@ -198,13 +199,13 @@ fun ArtworkStatusButton(
             if (artwork.status == Status.IS_WATCHING) {
                 LinearProgressIndicator(
                     modifier = Modifier.weight(1f),
-                    progress = { (artwork.currentTime.toFloat() / artwork.duration.minutes.inWholeMilliseconds) },
+                    progress = { (artwork.currentTime.toFloat() / artwork.duration.minToMs) },
                     gapSize = 0.dp,
                     drawStopIndicator = {}
                 )
             }
 
-            val remainingTime = (artwork.duration.minutes.inWholeMilliseconds - artwork.currentTime).timeDescription
+            val remainingTime = (artwork.duration.minToMs - artwork.currentTime).timeDescription(withoutSeconds = true)
             SmallText(
                 text = "Il reste $remainingTime",
                 color = MaterialTheme.colorScheme.onBackground

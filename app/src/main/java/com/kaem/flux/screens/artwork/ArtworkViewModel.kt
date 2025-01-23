@@ -13,7 +13,7 @@ import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.model.artwork.Movie
 import com.kaem.flux.model.artwork.Status
 import com.kaem.flux.utils.extensions.getPreviousEpisodesFor
-import com.kaem.flux.utils.extensions.inMinutes
+import com.kaem.flux.utils.extensions.msToMin
 import com.kaem.flux.utils.extensions.timeDescription
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -222,7 +222,7 @@ class ArtworkViewModel @Inject constructor(
     fun saveTime(time: Long) = viewModelScope.launch {
 
         val artwork = uiState.value.selectedArtwork ?: return@launch
-        val status = if (time.inMinutes >= artwork.duration * .9) Status.WATCHED else Status.IS_WATCHING
+        val status = if (time.msToMin >= artwork.duration * .9) Status.WATCHED else Status.IS_WATCHING
 
         uiState.value.let { state ->
 
@@ -251,7 +251,7 @@ class ArtworkViewModel @Inject constructor(
                 else -> {}
             }
 
-            Log.i("ArtworkViewModel", "${state.overview.title} saved at ${time.timeDescription}")
+            Log.i("ArtworkViewModel", "${state.overview.title} saved at ${time.timeDescription()}")
 
         }
 

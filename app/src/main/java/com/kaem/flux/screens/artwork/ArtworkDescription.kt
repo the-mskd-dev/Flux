@@ -23,6 +23,7 @@ import com.kaem.flux.ui.component.BoldText
 import com.kaem.flux.ui.component.MediumText
 import com.kaem.flux.ui.component.SmallText
 import com.kaem.flux.ui.theme.Ui
+import com.kaem.flux.utils.extensions.minToMs
 import com.kaem.flux.utils.extensions.timeDescription
 import java.text.DateFormat
 import java.util.Locale
@@ -101,7 +102,7 @@ fun ArtworkDescriptionDetails(artwork: Artwork) {
         )
 
         SmallText(
-            text = stringResource(R.string.duration, artwork.duration.minutes.inWholeMilliseconds.timeDescription) ,
+            text = stringResource(R.string.duration, artwork.duration.minToMs.timeDescription()) ,
             fontStyle = FontStyle.Italic
         )
 

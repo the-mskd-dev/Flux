@@ -20,6 +20,9 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.Settings
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CardElevation
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -335,7 +338,7 @@ fun ArtworkList(
         LazyRow(
             modifier = Modifier.fillMaxWidth(),
             contentPadding = PaddingValues(horizontal = Ui.Space.MEDIUM),
-            horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)
+            horizontalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
         ) {
 
             items(overviews, key = { it.id }) {
@@ -367,16 +370,18 @@ fun ArtworkItem(
     description: String
 ) {
 
-    GlideImage(
-        modifier = Modifier
-            .clickable { onTap() }
-            .clip(Ui.Shape.RoundedCorner)
-            .width(width)
-            .aspectRatio(ratio),
-        model = url,
-        contentDescription = description,
-        loading = Placeholders.loading(),
-        failure = Placeholders.failure()
-    )
+    Card(elevation = Ui.Card.elevations()) {
+        GlideImage(
+            modifier = Modifier
+                .clickable { onTap() }
+                .clip(Ui.Shape.RoundedCorner)
+                .width(width)
+                .aspectRatio(ratio),
+            model = url,
+            contentDescription = description,
+            loading = Placeholders.loading(),
+            failure = Placeholders.failure()
+        )
+    }
 
 }

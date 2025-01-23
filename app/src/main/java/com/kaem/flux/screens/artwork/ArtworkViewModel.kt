@@ -226,7 +226,7 @@ class ArtworkViewModel @Inject constructor(
 
         uiState.value.let { state ->
 
-            artwork.currentTime = time
+            artwork.currentTime = if (status == Status.WATCHED) 0L else time
             artwork.status = status
 
             when (artwork) {
@@ -255,18 +255,6 @@ class ArtworkViewModel @Inject constructor(
 
         }
 
-    }
-
-    private fun updatedEpisodes(episodes: List<Episode>) {
-        _uiState.update { currentState ->
-
-            val currentEpisodes = _uiState.value.episodes.toMutableList()
-            currentEpisodes.replaceAll { e ->
-                episodes.find { it.id == e.id } ?: e
-            }
-
-            currentState.copy(episodes = currentEpisodes)
-        }
     }
 
 }

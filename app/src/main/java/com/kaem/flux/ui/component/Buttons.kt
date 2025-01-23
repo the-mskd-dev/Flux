@@ -58,14 +58,14 @@ fun FluxButton(
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL, Alignment.CenterHorizontally)
+            horizontalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL, Alignment.CenterHorizontally)
         ) {
 
             icon?.let {
                 Icon(
                     imageVector = it,
                     tint = textColor,
-                    modifier = Modifier.size(40.dp),
+                    modifier = Modifier.size(30.dp),
                     contentDescription = null,
                 )
             }

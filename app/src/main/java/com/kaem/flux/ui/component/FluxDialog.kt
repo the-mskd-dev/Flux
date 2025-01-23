@@ -48,7 +48,7 @@ fun FluxDialog(
 
                 BoldText(text = title)
 
-                LightText(text = text)
+                MediumText(text = text)
 
             }
 

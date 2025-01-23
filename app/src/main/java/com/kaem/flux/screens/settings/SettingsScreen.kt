@@ -25,9 +25,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.kaem.flux.R
 import com.kaem.flux.ui.component.FluxDialog
 import com.kaem.flux.ui.component.FluxTopBar
-import com.kaem.flux.ui.component.LightText
 import com.kaem.flux.ui.component.MediumText
 import com.kaem.flux.ui.theme.Ui
+import com.kaem.flux.utils.extensions.uppercaseFirstLetter
+import java.util.Locale
 
 @Composable
 fun SettingsScreen(
@@ -154,9 +155,9 @@ fun SettingsItem(
             fontSize = Ui.FontSize.LARGE,
         )
 
-        LightText(
-            text = value,
-            fontSize = Ui.FontSize.SMALL,
+        MediumText(
+            text = value.uppercaseFirstLetter(),
+            fontSize = Ui.FontSize.MEDIUM,
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = .8f),
         )
 
@@ -203,7 +204,7 @@ fun <T> SettingsDialog(
 
                         MediumText(
                             modifier = Modifier.weight(1f),
-                            text = option.value,
+                            text = option.value.uppercaseFirstLetter(),
                             color = MaterialTheme.colorScheme.onSurface
                         )
 

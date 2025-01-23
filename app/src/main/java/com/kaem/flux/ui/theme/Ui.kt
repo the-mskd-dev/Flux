@@ -1,6 +1,8 @@
 package com.kaem.flux.ui.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CardDefaults
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -13,6 +15,7 @@ object Ui {
         val MEDIUM = 17.sp
         val LARGE = 20.sp
         val TITLE = 30.sp
+        val BUTTON = 15.sp
     }
 
     object Space {
@@ -39,6 +42,19 @@ object Ui {
 
     object Shape {
         val RoundedCorner get() = RoundedCornerShape(8.dp)
+    }
+
+    object Card {
+
+        @Composable
+        fun elevations() = CardDefaults.cardElevation(
+            defaultElevation = 12.dp,
+            pressedElevation = 4.dp,
+            focusedElevation = 12.dp,
+            disabledElevation = 0.dp,
+            draggedElevation = 12.dp,
+            hoveredElevation = 12.dp
+        )
     }
 
     enum class THEME {

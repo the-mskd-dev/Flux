@@ -1,8 +1,11 @@
 package com.kaem.flux.ui.component
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -15,6 +18,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -25,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kaem.flux.ui.theme.Ui
@@ -37,6 +42,7 @@ fun FluxButton(
     backgroundColor: Color = MaterialTheme.colorScheme.primary,
     textColor: Color = MaterialTheme.colorScheme.onPrimary,
     border: BorderStroke? = null,
+    icon: ImageVector? = null,
     onTap: () -> Unit
 ) {
 
@@ -51,30 +57,60 @@ fun FluxButton(
         onClick = onTap
     ) {
 
-        if (autoSize) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL, Alignment.CenterHorizontally)
+        ) {
 
-            var fontSize by remember { mutableStateOf(15.sp) }
-            var readyToDraw by remember { mutableStateOf(false) }
-
-            Text(
-                modifier = modifier.drawWithContent {
-                    if (readyToDraw) drawContent()
-                },
-                text = text,
-                fontSize = fontSize,
-                maxLines = 1,
-                softWrap = false,
-                onTextLayout = {
-                    if (it.didOverflowWidth)
-                        fontSize = fontSize.times(.95)
-                    else
-                        readyToDraw = true
+            icon?.let {
+                AnimatedContent(
+                    targetState = it,
+                    label = "FluxButton icon animation"
+                ) { state ->
+                    Icon(
+                        imageVector = state,
+                        tint = textColor,
+                        modifier = Modifier.size(30.dp),
+                        contentDescription = null,
+                    )
                 }
-            )
-        } else {
-            Text(text = text)
-        }
+            }
 
+            AnimatedContent(
+                targetState = text,
+                label = "FluxButton text animation"
+            ) { state ->
+                if (autoSize) {
+
+                    var fontSize by remember { mutableStateOf(Ui.FontSize.BUTTON) }
+                    var readyToDraw by remember { mutableStateOf(false) }
+
+                    Text(
+                        modifier = Modifier.drawWithContent {
+                            if (readyToDraw) drawContent()
+                        },
+                        text = state,
+                        fontSize = fontSize,
+                        maxLines = 1,
+                        fontWeight = Ui.Weight.MEDIUM,
+                        softWrap = false,
+                        onTextLayout = {
+                            if (it.didOverflowWidth)
+                                fontSize = fontSize.times(.95)
+                            else
+                                readyToDraw = true
+                        }
+                    )
+                } else {
+                    MediumText(
+                        text = state,
+                        color = textColor,
+                        fontSize = Ui.FontSize.BUTTON
+                    )
+                }
+            }
+
+        }
 
     }
 
@@ -104,5 +140,27 @@ fun BackButton(
         )
 
     }
+
+}
+
+@Composable
+fun FluxTextButton(
+    text: String,
+    modifier: Modifier = Modifier,
+    color: Color = MaterialTheme.colorScheme.primary,
+    onTap: () -> Unit
+) {
+
+    TextButton(
+        modifier = modifier,
+        onClick = onTap,
+        content = {
+            MediumText(
+                text = text,
+                color = color,
+                fontSize = Ui.FontSize.BUTTON
+            )
+        }
+    )
 
 }

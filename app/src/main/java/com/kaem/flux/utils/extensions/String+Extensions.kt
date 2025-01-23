@@ -21,3 +21,7 @@ fun String.parseTMDBDate() : Date? {
     }
 
 }
+
+fun String?.uppercaseFirstLetter() : String? {
+    return this?.replaceFirstChar { if (it.isLowerCase()) it. titlecase(Locale.getDefault()) else it.toString() }
+}

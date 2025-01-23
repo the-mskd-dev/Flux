@@ -21,6 +21,7 @@ import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
@@ -29,6 +30,7 @@ import androidx.constraintlayout.compose.atMost
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.kaem.flux.R
+import com.kaem.flux.mockups.ArtworkMockups
 import com.kaem.flux.model.artwork.Artwork
 import com.kaem.flux.model.artwork.ArtworkOverview
 import com.kaem.flux.model.artwork.Episode
@@ -226,14 +228,26 @@ val ArtworkHeaderConstraintSet = ConstraintSet {
         top.linkTo(title.bottom, Ui.Space.LARGE)
         start.linkTo(parent.start, Ui.Space.MEDIUM)
         end.linkTo(parent.end, Ui.Space.MEDIUM)
-        width = Dimension.fillToConstraints.atMost(350.dp)
+        width = Dimension.fillToConstraints.atMost(300.dp)
     }
 
     constrain(status) {
         top.linkTo(play.bottom, Ui.Space.MEDIUM)
         start.linkTo(parent.start, Ui.Space.MEDIUM)
         end.linkTo(parent.end, Ui.Space.MEDIUM)
-        width = Dimension.fillToConstraints.atMost(350.dp)
+        width = Dimension.fillToConstraints.atMost(300.dp)
     }
 
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ArtworkHeader_Preview() {
+    ArtworkHeader(
+        overview = ArtworkMockups.showOverview,
+        artwork = ArtworkMockups.episode1.copy(status = Status.IS_WATCHING, currentTime = 123456L),
+        zoom = 1f,
+        onBackButtonTap = {},
+        onStatusButtonTap = {},
+    ) { }
 }

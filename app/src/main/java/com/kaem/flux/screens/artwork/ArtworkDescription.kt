@@ -20,7 +20,6 @@ import com.kaem.flux.mockups.ArtworkMockups
 import com.kaem.flux.model.artwork.Artwork
 import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.ui.component.BoldText
-import com.kaem.flux.ui.component.LightText
 import com.kaem.flux.ui.component.MediumText
 import com.kaem.flux.ui.component.SmallText
 import com.kaem.flux.ui.theme.Ui
@@ -72,7 +71,7 @@ fun ArtworkDescription(artwork: Artwork?) {
 
         }
 
-        LightText(
+        MediumText(
             modifier = Modifier
                 .fillMaxWidth()
                 .alpha(.8f),

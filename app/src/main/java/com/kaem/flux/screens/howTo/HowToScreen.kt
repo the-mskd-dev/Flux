@@ -12,12 +12,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.kaem.flux.R
 import com.kaem.flux.ui.component.BoldText
 import com.kaem.flux.ui.component.FluxTopBar
-import com.kaem.flux.ui.component.LightText
 import com.kaem.flux.ui.component.MediumText
 import com.kaem.flux.ui.theme.Ui
 
@@ -53,10 +53,13 @@ fun HowToScreen(onBackButtonTap: () -> Unit) {
                 BoldText(text = stringResource(R.string.how_to_name_files_movies))
                 MediumText(text = stringResource(R.string.how_to_name_files_movies_desc))
 
-                Column(verticalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)) {
-                    LightText(text = stringResource(R.string.movie_file_example_1))
-                    LightText(text = stringResource(R.string.movie_file_example_2))
-                    LightText(text = stringResource(R.string.movie_file_example_3))
+                Column(
+                    modifier = Modifier.alpha(.6f),
+                    verticalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)
+                ) {
+                    MediumText(text = "• " + stringResource(R.string.movie_file_example_1))
+                    MediumText(text = "• " + stringResource(R.string.movie_file_example_2))
+                    MediumText(text = "• " + stringResource(R.string.movie_file_example_3))
 
                 }
 
@@ -67,11 +70,14 @@ fun HowToScreen(onBackButtonTap: () -> Unit) {
                 BoldText(text = stringResource(R.string.how_to_name_files_show))
                 MediumText(text = stringResource(R.string.how_to_name_files_show_desc))
 
-                Column(verticalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)) {
-                    LightText(text = stringResource(R.string.show_file_example_1))
-                    LightText(text = stringResource(R.string.show_file_example_2))
-                    LightText(text = stringResource(R.string.show_file_example_3))
-                    LightText(text = stringResource(R.string.show_file_example_4))
+                Column(
+                    modifier = Modifier.alpha(.6f),
+                    verticalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)
+                ) {
+                    MediumText(text = "• " + stringResource(R.string.show_file_example_1))
+                    MediumText(text = "• " + stringResource(R.string.show_file_example_2))
+                    MediumText(text = "• " + stringResource(R.string.show_file_example_3))
+                    MediumText(text = "• " + stringResource(R.string.show_file_example_4))
                 }
 
             }

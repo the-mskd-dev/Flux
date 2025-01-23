@@ -1,5 +1,7 @@
 package com.kaem.flux.screens.artwork
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -192,7 +194,10 @@ fun ArtworkPlayerButton(
 @Composable
 fun ArtworkStatusProgression(artwork: Artwork) {
 
-    if (artwork.status == Status.IS_WATCHING) {
+    AnimatedVisibility(
+        visible = artwork.status == Status.IS_WATCHING,
+        label = "ArtworkStatusProgression animation"
+    ) {
 
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -228,16 +233,22 @@ fun ArtworkStatusButton(
 
     artwork ?: return
 
-    TextButton(
+    AnimatedContent(
         modifier = modifier,
-        onClick = onTap,
-        content = {
-            MediumText(
-                text = (if (artwork.status == Status.WATCHED) stringResource(R.string.mark_as_not_watched) else stringResource(R.string.mark_as_watched)).uppercase(),
-                color = MaterialTheme.colorScheme.primary
-            )
-        }
-    )
+        targetState = (if (artwork.status == Status.WATCHED) stringResource(R.string.mark_as_not_watched) else stringResource(R.string.mark_as_watched)).uppercase(),
+        contentAlignment = Alignment.Center,
+        label = "ArtworkStatusButton animation"
+    ) { text ->
+        TextButton(
+            onClick = onTap,
+            content = {
+                MediumText(
+                    text = text,
+                    color = MaterialTheme.colorScheme.primary,
+                )
+            }
+        )
+    }
 
 }
 

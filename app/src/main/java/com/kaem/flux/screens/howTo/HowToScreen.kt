@@ -78,6 +78,7 @@ fun HowToScreen(onBackButtonTap: () -> Unit) {
                     MediumText(text = "• " + stringResource(R.string.show_file_example_2))
                     MediumText(text = "• " + stringResource(R.string.show_file_example_3))
                     MediumText(text = "• " + stringResource(R.string.show_file_example_4))
+                    MediumText(text = "• " + stringResource(R.string.show_file_example_5))
                 }
 
             }

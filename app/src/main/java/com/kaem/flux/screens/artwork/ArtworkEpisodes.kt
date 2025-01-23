@@ -138,8 +138,7 @@ fun EpisodeItem(
                     end.linkTo(parent.end)
                     width = Dimension.fillToConstraints
                 },
-            horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)
+            horizontalAlignment = Alignment.Start
         ) {
 
             BoldText(

@@ -2,7 +2,9 @@ package com.kaem.flux.ui.component
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -26,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kaem.flux.ui.theme.Ui
@@ -38,6 +41,7 @@ fun FluxButton(
     backgroundColor: Color = MaterialTheme.colorScheme.primary,
     textColor: Color = MaterialTheme.colorScheme.onPrimary,
     border: BorderStroke? = null,
+    icon: ImageVector? = null,
     onTap: () -> Unit
 ) {
 
@@ -52,35 +56,50 @@ fun FluxButton(
         onClick = onTap
     ) {
 
-        if (autoSize) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL, Alignment.CenterHorizontally)
+        ) {
 
-            var fontSize by remember { mutableStateOf(Ui.FontSize.BUTTON) }
-            var readyToDraw by remember { mutableStateOf(false) }
+            icon?.let {
+                Icon(
+                    imageVector = it,
+                    tint = textColor,
+                    modifier = Modifier.size(40.dp),
+                    contentDescription = null,
+                )
+            }
 
-            Text(
-                modifier = modifier.drawWithContent {
-                    if (readyToDraw) drawContent()
-                },
-                text = text,
-                fontSize = fontSize,
-                maxLines = 1,
-                fontWeight = Ui.Weight.MEDIUM,
-                softWrap = false,
-                onTextLayout = {
-                    if (it.didOverflowWidth)
-                        fontSize = fontSize.times(.95)
-                    else
-                        readyToDraw = true
-                }
-            )
-        } else {
-            MediumText(
-                text = text,
-                color = textColor,
-                fontSize = Ui.FontSize.BUTTON
-            )
+            if (autoSize) {
+
+                var fontSize by remember { mutableStateOf(Ui.FontSize.BUTTON) }
+                var readyToDraw by remember { mutableStateOf(false) }
+
+                Text(
+                    modifier = Modifier.drawWithContent {
+                        if (readyToDraw) drawContent()
+                    },
+                    text = text,
+                    fontSize = fontSize,
+                    maxLines = 1,
+                    fontWeight = Ui.Weight.MEDIUM,
+                    softWrap = false,
+                    onTextLayout = {
+                        if (it.didOverflowWidth)
+                            fontSize = fontSize.times(.95)
+                        else
+                            readyToDraw = true
+                    }
+                )
+            } else {
+                MediumText(
+                    text = text,
+                    color = textColor,
+                    fontSize = Ui.FontSize.BUTTON
+                )
+            }
+
         }
-
 
     }
 

@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -182,7 +184,8 @@ fun ArtworkPlayerButton(
         FluxButton(
             modifier = Modifier.fillMaxWidth(),
             text = (if (artwork.status == Status.IS_WATCHING) stringResource(R.string.resume) else stringResource(R.string.start)).uppercase(),
-            onTap = onTap
+            onTap = onTap,
+            icon = Icons.Default.PlayArrow
         )
 
     }

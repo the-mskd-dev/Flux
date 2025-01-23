@@ -79,7 +79,7 @@ fun ArtworkSeasonsTabs(
                 onClick = { onSeasonTap(season) }
             ) {
                 SmallText(
-                    text = stringResource(id = R.string.season, season),
+                    text = stringResource(id = R.string.season, season).uppercase(),
                     color = textColor
                 )
             }

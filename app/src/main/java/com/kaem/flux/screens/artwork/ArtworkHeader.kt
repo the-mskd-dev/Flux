@@ -2,6 +2,7 @@ package com.kaem.flux.screens.artwork
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -173,6 +175,22 @@ fun ArtworkPlayerButton(
 
     artwork ?: return
 
+    val backgroundColor by animateColorAsState(
+        targetValue = if (artwork.status == Status.WATCHED) MaterialTheme.colorScheme.surfaceVariant else MaterialTheme.colorScheme.primary,
+        label = "ArtworkPlayerButton backgroundColor animation"
+    )
+
+    val textColor by animateColorAsState(
+        targetValue = if (artwork.status == Status.WATCHED) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onPrimary,
+        label = "ArtworkPlayerButton backgroundColor animation"
+    )
+
+    val text = when (artwork.status) {
+        Status.WATCHED -> stringResource(R.string.rewatch)
+        Status.IS_WATCHING -> stringResource(R.string.resume)
+        else -> stringResource(R.string.start)
+    }
+
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -183,9 +201,11 @@ fun ArtworkPlayerButton(
 
         FluxButton(
             modifier = Modifier.fillMaxWidth(),
-            text = (if (artwork.status == Status.IS_WATCHING) stringResource(R.string.resume) else stringResource(R.string.start)).uppercase(),
+            text = text.uppercase(),
             onTap = onTap,
-            icon = Icons.Default.PlayArrow
+            icon = if (artwork.status == Status.WATCHED) Icons.Default.Refresh else Icons.Default.PlayArrow,
+            backgroundColor = backgroundColor,
+            textColor = textColor
         )
 
     }

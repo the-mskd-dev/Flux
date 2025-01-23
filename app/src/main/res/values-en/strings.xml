@@ -50,4 +50,5 @@
     <string name="show_file_example_5">show_name-season1.episode2.mkv</string>
     <string name="read">read</string>
     <string name="remaining_time">%1$1s left</string>
+    <string name="rewatch">Rewatch</string>
 </resources>

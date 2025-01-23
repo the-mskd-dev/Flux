@@ -1,5 +1,6 @@
 package com.kaem.flux.ui.component
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -62,41 +63,51 @@ fun FluxButton(
         ) {
 
             icon?.let {
-                Icon(
-                    imageVector = it,
-                    tint = textColor,
-                    modifier = Modifier.size(30.dp),
-                    contentDescription = null,
-                )
+                AnimatedContent(
+                    targetState = it,
+                    label = "FluxButton icon animation"
+                ) { state ->
+                    Icon(
+                        imageVector = state,
+                        tint = textColor,
+                        modifier = Modifier.size(30.dp),
+                        contentDescription = null,
+                    )
+                }
             }
 
-            if (autoSize) {
+            AnimatedContent(
+                targetState = text,
+                label = "FluxButton text animation"
+            ) { state ->
+                if (autoSize) {
 
-                var fontSize by remember { mutableStateOf(Ui.FontSize.BUTTON) }
-                var readyToDraw by remember { mutableStateOf(false) }
+                    var fontSize by remember { mutableStateOf(Ui.FontSize.BUTTON) }
+                    var readyToDraw by remember { mutableStateOf(false) }
 
-                Text(
-                    modifier = Modifier.drawWithContent {
-                        if (readyToDraw) drawContent()
-                    },
-                    text = text,
-                    fontSize = fontSize,
-                    maxLines = 1,
-                    fontWeight = Ui.Weight.MEDIUM,
-                    softWrap = false,
-                    onTextLayout = {
-                        if (it.didOverflowWidth)
-                            fontSize = fontSize.times(.95)
-                        else
-                            readyToDraw = true
-                    }
-                )
-            } else {
-                MediumText(
-                    text = text,
-                    color = textColor,
-                    fontSize = Ui.FontSize.BUTTON
-                )
+                    Text(
+                        modifier = Modifier.drawWithContent {
+                            if (readyToDraw) drawContent()
+                        },
+                        text = state,
+                        fontSize = fontSize,
+                        maxLines = 1,
+                        fontWeight = Ui.Weight.MEDIUM,
+                        softWrap = false,
+                        onTextLayout = {
+                            if (it.didOverflowWidth)
+                                fontSize = fontSize.times(.95)
+                            else
+                                readyToDraw = true
+                        }
+                    )
+                } else {
+                    MediumText(
+                        text = state,
+                        color = textColor,
+                        fontSize = Ui.FontSize.BUTTON
+                    )
+                }
             }
 
         }

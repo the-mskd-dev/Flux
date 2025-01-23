@@ -8,8 +8,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -41,6 +43,7 @@ import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.model.artwork.Status
 import com.kaem.flux.ui.component.BackButton
 import com.kaem.flux.ui.component.FluxButton
+import com.kaem.flux.ui.component.MediumText
 import com.kaem.flux.ui.component.Placeholders
 import com.kaem.flux.ui.component.SmallText
 import com.kaem.flux.ui.component.Title
@@ -168,11 +171,51 @@ fun ArtworkPlayerButton(
 
     artwork ?: return
 
-    FluxButton(
+    Column(
         modifier = modifier,
-        text = if (artwork.status == Status.IS_WATCHING) stringResource(R.string.resume, artwork.currentTime.timeDescription()) else stringResource(R.string.start),
-        onTap = onTap
-    )
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)
+    ) {
+
+        ArtworkStatusProgression(artwork = artwork)
+
+        FluxButton(
+            modifier = Modifier.fillMaxWidth(),
+            text = (if (artwork.status == Status.IS_WATCHING) stringResource(R.string.resume) else stringResource(R.string.start)).uppercase(),
+            onTap = onTap
+        )
+
+    }
+
+}
+
+@Composable
+fun ArtworkStatusProgression(artwork: Artwork) {
+
+    if (artwork.status == Status.IS_WATCHING) {
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM),
+            verticalAlignment = Alignment.CenterVertically
+        ){
+
+            LinearProgressIndicator(
+                modifier = Modifier.weight(1f),
+                progress = { (artwork.currentTime.toFloat() / artwork.duration.minToMs) },
+                gapSize = 0.dp,
+                drawStopIndicator = {}
+            )
+
+            val remainingTime = (artwork.duration.minToMs - artwork.currentTime).timeDescription(withoutSeconds = true)
+            SmallText(
+                text = stringResource(R.string.remaining_time, remainingTime),
+                color = MaterialTheme.colorScheme.onBackground
+            )
+
+        }
+
+    }
 
 }
 
@@ -185,43 +228,16 @@ fun ArtworkStatusButton(
 
     artwork ?: return
 
-    Column(
+    TextButton(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM),
-    ) {
-        
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM),
-            verticalAlignment = Alignment.CenterVertically
-        ){
-
-            if (artwork.status == Status.IS_WATCHING) {
-                LinearProgressIndicator(
-                    modifier = Modifier.weight(1f),
-                    progress = { (artwork.currentTime.toFloat() / artwork.duration.minToMs) },
-                    gapSize = 0.dp,
-                    drawStopIndicator = {}
-                )
-            }
-
-            val remainingTime = (artwork.duration.minToMs - artwork.currentTime).timeDescription(withoutSeconds = true)
-            SmallText(
-                text = "Il reste $remainingTime",
-                color = MaterialTheme.colorScheme.onBackground
+        onClick = onTap,
+        content = {
+            MediumText(
+                text = (if (artwork.status == Status.WATCHED) stringResource(R.string.mark_as_not_watched) else stringResource(R.string.mark_as_watched)).uppercase(),
+                color = MaterialTheme.colorScheme.primary
             )
-
         }
-
-        FluxButton(
-            modifier = Modifier.fillMaxWidth(),
-            text = if (artwork.status == Status.WATCHED) stringResource(R.string.mark_as_not_watched) else stringResource(R.string.mark_as_watched),
-            backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
-            textColor = MaterialTheme.colorScheme.onSecondaryContainer,
-            onTap = onTap
-        )
-
-    }
+    )
 
 }
 

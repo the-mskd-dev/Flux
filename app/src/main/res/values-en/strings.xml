@@ -8,7 +8,7 @@
     <string name="season">Season %1$d</string>
     <string name="episode">Episode %1$d</string>
     <string name="start">Play</string>
-    <string name="resume">Resume at %1$s</string>
+    <string name="resume">Resume</string>
     <string name="mark_as_watched">Mark as watched</string>
     <string name="mark_as_not_watched">Mark as not watched</string>
     <string name="mark_previous_episodes_as_watched">Do you want to mark previous episodes as watched?</string>
@@ -48,4 +48,5 @@
     <string name="show_file_example_3">show_name_se1.ep2.mkv</string>
     <string name="show_file_example_4">show_name-season1.episode2.mkv</string>
     <string name="read">read</string>
+    <string name="remaining_time">%1$1s left</string>
 </resources>

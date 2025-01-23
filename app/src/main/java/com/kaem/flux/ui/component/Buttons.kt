@@ -53,7 +53,7 @@ fun FluxButton(
 
         if (autoSize) {
 
-            var fontSize by remember { mutableStateOf(15.sp) }
+            var fontSize by remember { mutableStateOf(Ui.FontSize.MEDIUM) }
             var readyToDraw by remember { mutableStateOf(false) }
 
             Text(
@@ -63,6 +63,7 @@ fun FluxButton(
                 text = text,
                 fontSize = fontSize,
                 maxLines = 1,
+                fontWeight = Ui.Weight.MEDIUM,
                 softWrap = false,
                 onTextLayout = {
                     if (it.didOverflowWidth)
@@ -72,7 +73,7 @@ fun FluxButton(
                 }
             )
         } else {
-            Text(text = text)
+            MediumText(text = text, color = textColor)
         }
 
 

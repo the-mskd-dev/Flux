@@ -74,7 +74,11 @@ fun FluxButton(
                 }
             )
         } else {
-            MediumText(text = text, color = textColor)
+            MediumText(
+                text = text,
+                color = textColor,
+                fontSize = Ui.FontSize.BUTTON
+            )
         }
 
 

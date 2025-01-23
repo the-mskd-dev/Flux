@@ -285,14 +285,14 @@ val ArtworkHeaderConstraintSet = ConstraintSet {
     }
 
     constrain(play) {
-        top.linkTo(title.bottom, Ui.Space.LARGE)
+        top.linkTo(title.bottom, Ui.Space.LARGE.times(2))
         start.linkTo(parent.start, Ui.Space.MEDIUM)
         end.linkTo(parent.end, Ui.Space.MEDIUM)
         width = Dimension.fillToConstraints.atMost(300.dp)
     }
 
     constrain(status) {
-        top.linkTo(play.bottom, Ui.Space.MEDIUM)
+        top.linkTo(play.bottom, Ui.Space.SMALL)
         start.linkTo(parent.start, Ui.Space.MEDIUM)
         end.linkTo(parent.end, Ui.Space.MEDIUM)
         width = Dimension.fillToConstraints.atMost(300.dp)

@@ -45,6 +45,7 @@ import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.model.artwork.Status
 import com.kaem.flux.ui.component.BackButton
 import com.kaem.flux.ui.component.FluxButton
+import com.kaem.flux.ui.component.FluxTextButton
 import com.kaem.flux.ui.component.MediumText
 import com.kaem.flux.ui.component.Placeholders
 import com.kaem.flux.ui.component.SmallText
@@ -239,14 +240,9 @@ fun ArtworkStatusButton(
         contentAlignment = Alignment.Center,
         label = "ArtworkStatusButton animation"
     ) { text ->
-        TextButton(
-            onClick = onTap,
-            content = {
-                MediumText(
-                    text = text,
-                    color = MaterialTheme.colorScheme.primary,
-                )
-            }
+        FluxTextButton(
+            text = text,
+            onTap = onTap
         )
     }
 

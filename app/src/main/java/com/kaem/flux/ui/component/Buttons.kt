@@ -15,6 +15,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -53,7 +54,7 @@ fun FluxButton(
 
         if (autoSize) {
 
-            var fontSize by remember { mutableStateOf(Ui.FontSize.MEDIUM) }
+            var fontSize by remember { mutableStateOf(Ui.FontSize.BUTTON) }
             var readyToDraw by remember { mutableStateOf(false) }
 
             Text(
@@ -105,5 +106,27 @@ fun BackButton(
         )
 
     }
+
+}
+
+@Composable
+fun FluxTextButton(
+    text: String,
+    modifier: Modifier = Modifier,
+    color: Color = MaterialTheme.colorScheme.primary,
+    onTap: () -> Unit
+) {
+
+    TextButton(
+        modifier = modifier,
+        onClick = onTap,
+        content = {
+            MediumText(
+                text = text,
+                color = color,
+                fontSize = Ui.FontSize.BUTTON
+            )
+        }
+    )
 
 }

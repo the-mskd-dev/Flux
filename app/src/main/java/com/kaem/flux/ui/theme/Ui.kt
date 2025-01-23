@@ -13,6 +13,7 @@ object Ui {
         val MEDIUM = 17.sp
         val LARGE = 20.sp
         val TITLE = 30.sp
+        val BUTTON = 15.sp
     }
 
     object Space {

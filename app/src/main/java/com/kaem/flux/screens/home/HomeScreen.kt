@@ -54,6 +54,7 @@ import com.kaem.flux.screens.welcome.WelcomeScreen
 import com.kaem.flux.screens.welcome.fluxPermissionState
 import com.kaem.flux.ui.component.BoldText
 import com.kaem.flux.ui.component.FluxButton
+import com.kaem.flux.ui.component.FluxTextButton
 import com.kaem.flux.ui.component.Loader
 import com.kaem.flux.ui.component.MediumText
 import com.kaem.flux.ui.component.Placeholders
@@ -182,14 +183,9 @@ fun HomeEmpty(
                 onTap = navigateToHowTo
             )
 
-            TextButton(
-                onClick = onReloadTap,
-                content = {
-                    MediumText(
-                        text = stringResource(R.string.refresh),
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                }
+            FluxTextButton(
+                text = stringResource(R.string.refresh),
+                onTap = onReloadTap
             )
 
         }

@@ -57,9 +57,9 @@
     <string name="rewatch">Revoir</string>
     <string name="about">À propos</string>
     <string name="who_am_i">Qui suis-je ?</string>
-    <string name="who_am_i_desc">Passionné depuis l\'adolescence par l\'univers des smartphones, j\'ai décidé de devenir développeur Android et d\'en faire mon métier, que j\'exerce depuis quelques années maintenant.\\n\\nAu-delà de ça, je suis un type lambda qui aime les mangas, voyager et le foot.</string>
+    <string name="who_am_i_desc">Passionné depuis l\'adolescence par l\'univers des smartphones, j\'ai décidé de devenir développeur Android et d\'en faire mon métier, que j\'exerce depuis quelques années maintenant.\nAu-delà de ça, je suis un type lambda qui aime les mangas, voyager et le Real Madrid.</string>
     <string name="why_this_app">Pourquoi cette application ?</string>
-    <string name="why_this_app_desc">Il arrive parfois d\'avoir beaucoup de fichiers vidéo et de souhaiter une application permettant de les organiser simplement. Une telle application, nommée Infuse, existe sur iOS, mais son équivalent Android n\'existant pas, j\'ai décidé de la créer moi-même pour mon besoin personnel. De plus, étant développeur Android, cette application me permet également de rester à jour sur les différentes nouveautés du développement et d\'en faire une sorte de \"bac à sable\".</string>
+    <string name="why_this_app_desc">Il arrive parfois d\'avoir beaucoup de fichiers vidéo et de souhaiter une application permettant de les organiser simplement. Une telle application, nommée Infuse, existe sur iOS, mais son équivalent Android n\'existant pas, j\'ai décidé de la créer moi-même pour mon besoin personnel.\nDe plus, étant développeur Android, cette application me permet également de rester à jour sur les différentes nouveautés du développement et d\'en faire une sorte de \"bac à sable\".</string>
     <string name="how_it_works">Comment fonctionne cette application ?</string>
     <string name="how_it_works_desc">Cette application va scanner vos fichiers vidéo de plus de 5 minutes et en extraire des informations à partir du nom du fichier (titre, saison, épisode, année). Ensuite, l\'API de TMDB est utilisée pour récupérer des informations supplémentaires comme le synopsis, la note, le genre, etc.</string>
     <string name="which_technologies">Quelles sont les technologies utilisées ?</string>

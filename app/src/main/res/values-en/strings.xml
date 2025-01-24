@@ -53,9 +53,9 @@
     <string name="rewatch">Rewatch</string>
     <string name="about">About</string>
     <string name="who_am_i">Who am I?</string>
-    <string name="who_am_i_desc">I\'ve been passionate about smartphones since my teenage years, and I decided to become an Android developer, a job I\'ve been doing for a few years now.\\n\\nBeyond that, I\'m just an average guy who loves manga, traveling, and soccer.</string>
+    <string name="who_am_i_desc">I\'ve been passionate about smartphones since my teenage years, and I decided to become an Android developer, a job I\'ve been doing for a few years now.\nBeyond that, I\'m just an average guy who loves manga, traveling, and Real Madrid.</string>
     <string name="why_this_app">Why this app?</string>
-    <string name="why_this_app_desc">Sometimes, you end up with a lot of video files and wish for an app to organize them simply. An app like Infuse exists on iOS, but since there\'s no equivalent on Android, I decided to create it myself for my personal needs. Plus, as an Android developer, this app also helps me stay up-to-date with the latest developments and serves as a kind of \"sandbox\".</string>
+    <string name="why_this_app_desc">Sometimes, you end up with a lot of video files and wish for an app to organize them simply. An app like Infuse exists on iOS, but since there\'s no equivalent on Android, I decided to create it myself for my personal needs.\nPlus, as an Android developer, this app also helps me stay up-to-date with the latest developments and serves as a kind of \"sandbox\".</string>
     <string name="how_it_works">How does this app work?</string>
     <string name="how_it_works_desc">This app will scan your video files longer than 5 minutes and extract information from the file name (title, season, episode, year). Then, the TMDB API is used to fetch additional information like the synopsis, rating, genre, etc.</string>
     <string name="which_technologies">What technologies are used?</string>

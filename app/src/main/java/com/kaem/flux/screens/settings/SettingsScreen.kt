@@ -11,7 +11,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.runtime.Composable
@@ -19,6 +21,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -26,6 +29,7 @@ import com.kaem.flux.R
 import com.kaem.flux.ui.component.FluxDialog
 import com.kaem.flux.ui.component.FluxTopBar
 import com.kaem.flux.ui.component.MediumText
+import com.kaem.flux.ui.component.SmallText
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.extensions.uppercaseFirstLetter
 import java.util.Locale
@@ -48,7 +52,8 @@ fun SettingsScreen(
         modifier = Modifier
             .background(MaterialTheme.colorScheme.background)
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
+            .verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
     ) {
 
         FluxTopBar(
@@ -56,42 +61,62 @@ fun SettingsScreen(
             onBackButtonTap = onBackButtonTap
         )
 
-        SettingsItem(
-            text = stringResource(R.string.how_to_name_files),
-            value = "",
-            onTap = navigateToHowToScreen
-        )
+        SettingsSection {
 
-        SettingsItem(
-            text = stringResource(R.string.app_theme),
-            value = stringResource(state.uiTheme.stringResourceId),
-            onTap = { viewModel.showUiThemeDialog(true) }
-        )
+            SettingsItem(
+                text = stringResource(R.string.how_to_name_files),
+                value = "",
+                onTap = navigateToHowToScreen
+            )
 
-        SettingsItem(
-            text = stringResource(R.string.button_backward),
-            value = "${state.backwardValue}sec",
-            onTap = { viewModel.showBackwardDialog(true) }
-        )
+        }
 
-        SettingsItem(
-            text = stringResource(R.string.button_forward),
-            value = "${state.forwardValue}sec",
-            onTap = { viewModel.showForwardDialog(true) }
-        )
+        SettingsSection {
 
-        SettingsItem(
-            text = stringResource(R.string.subtitles_language),
-            value = state.subtitlesLanguage.displayLanguage,
-            onTap = { viewModel.showSubtitlesLanguageDialog(true) }
-        )
+            SettingsItem(
+                text = stringResource(R.string.app_theme),
+                value = stringResource(state.uiTheme.stringResourceId),
+                onTap = { viewModel.showUiThemeDialog(true) }
+            )
+
+            SettingsDivider()
+
+            SettingsItem(
+                text = stringResource(R.string.button_backward),
+                value = "${state.backwardValue}sec",
+                onTap = { viewModel.showBackwardDialog(true) }
+            )
+
+            SettingsDivider()
+
+            SettingsItem(
+                text = stringResource(R.string.button_forward),
+                value = "${state.forwardValue}sec",
+                onTap = { viewModel.showForwardDialog(true) }
+            )
+
+            SettingsDivider()
+
+            SettingsItem(
+                text = stringResource(R.string.subtitles_language),
+                value = state.subtitlesLanguage.displayLanguage,
+                onTap = { viewModel.showSubtitlesLanguageDialog(true) }
+            )
+
+        }
 
         appVersion?.let {
-            SettingsItem(
-                text = stringResource(R.string.app_version),
-                value = it,
-                onTap = {}
-            )
+
+            SettingsSection {
+
+                SettingsItem(
+                    text = stringResource(R.string.app_version),
+                    value = it,
+                    onTap = {}
+                )
+
+            }
+
         }
 
         Spacer(modifier = Modifier.navigationBarsPadding())
@@ -137,6 +162,20 @@ fun SettingsScreen(
 }
 
 @Composable
+fun SettingsSection(content: @Composable () -> Unit) {
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = Ui.Space.MEDIUM)
+                .clip(Ui.Shape.RoundedCorner)
+                .background(MaterialTheme.colorScheme.surfaceContainer)
+                .padding(horizontal = Ui.Space.MEDIUM),
+            horizontalAlignment = Alignment.Start
+        ) { content() }
+}
+
+@Composable
 fun SettingsItem(
     text: String,
     value: String,
@@ -147,21 +186,30 @@ fun SettingsItem(
         modifier = Modifier
             .clickable { onTap() }
             .fillMaxWidth()
-            .padding(horizontal = Ui.Space.MEDIUM, vertical = Ui.Space.LARGE)
+            .padding(vertical = Ui.Space.MEDIUM),
     ) {
 
         MediumText(
             text = text,
-            fontSize = Ui.FontSize.LARGE,
+            fontSize = Ui.FontSize.LARGE
         )
 
         MediumText(
             text = value.uppercaseFirstLetter(),
-            fontSize = Ui.FontSize.MEDIUM,
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = .8f),
         )
 
     }
+
+}
+
+@Composable
+fun SettingsDivider() {
+
+    HorizontalDivider(
+        modifier = Modifier.fillMaxWidth(),
+        color = MaterialTheme.colorScheme.background
+    )
 
 }
 

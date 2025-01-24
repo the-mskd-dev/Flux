@@ -7,9 +7,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -134,7 +138,6 @@ fun ArtworkContent(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
-        contentPadding = PaddingValues(bottom = 100.dp),
         state = scrollState
     ) {
 
@@ -180,8 +183,10 @@ fun ArtworkContent(
             ) { i, episode ->
 
                 Column(modifier = Modifier
+                    .background(MaterialTheme.colorScheme.surfaceContainer)
                     .fillMaxSize()
                     .padding(horizontal = Ui.Space.MEDIUM)
+                    .animateItem()
                 ) {
 
                     if (i != 0) {
@@ -210,6 +215,17 @@ fun ArtworkContent(
 
         }
 
+        item {
+
+            Spacer(
+                Modifier
+                    .background(if (episodes.isEmpty()) MaterialTheme.colorScheme.background else MaterialTheme.colorScheme.surfaceContainer)
+                    .navigationBarsPadding()
+                    .fillMaxWidth()
+                    .height(100.dp)
+            )
+
+        }
     }
 
 }

@@ -19,6 +19,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.kaem.flux.data.repository.DataStoreRepository
+import com.kaem.flux.screens.about.AboutScreen
 import com.kaem.flux.screens.artwork.ArtworkScreen
 import com.kaem.flux.screens.category.CategoryScreen
 import com.kaem.flux.screens.home.HomeScreen
@@ -130,12 +131,23 @@ class MainActivity : ComponentActivity() {
                                 navController.navigate(
                                     route = Constants.Navigation.HOW_TO
                                 )
+                            },
+                            navigateToAboutScreen = {
+                                navController.navigate(
+                                    route = Constants.Navigation.ABOUT
+                                )
                             }
                         )
                     }
 
                     composable(Constants.Navigation.HOW_TO) {
                         HowToScreen(
+                            onBackButtonTap = { navController.popBackStack() }
+                        )
+                    }
+
+                    composable(Constants.Navigation.ABOUT) {
+                        AboutScreen(
                             onBackButtonTap = { navController.popBackStack() }
                         )
                     }

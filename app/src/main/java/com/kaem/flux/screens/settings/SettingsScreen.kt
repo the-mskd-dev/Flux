@@ -31,6 +31,7 @@ import com.kaem.flux.ui.component.FluxTopBar
 import com.kaem.flux.ui.component.MediumText
 import com.kaem.flux.ui.component.SmallText
 import com.kaem.flux.ui.theme.Ui
+import com.kaem.flux.utils.WebLink
 import com.kaem.flux.utils.extensions.uppercaseFirstLetter
 import java.util.Locale
 
@@ -110,6 +111,19 @@ fun SettingsScreen(
                 text = stringResource(R.string.about),
                 value = "",
                 onTap = navigateToAboutScreen
+            )
+
+            SettingsDivider()
+
+            SettingsItem(
+                text = stringResource(R.string.make_a_donation),
+                value = "",
+                onTap = {
+                    WebLink.openPage(
+                        context = context,
+                        url = "https://paypal.me/kevynbct"
+                    )
+                }
             )
 
         }

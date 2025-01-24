@@ -21,9 +21,6 @@ import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import java.util.Locale
 
-
-//TODO: See https://medium.com/androiddevelopers/datastore-and-testing-edf7ae8df3d8
-
 @OptIn(ExperimentalCoroutinesApi::class)
 @MediumTest
 class DataStoreRepositoryTest {

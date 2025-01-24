@@ -38,6 +38,7 @@ import java.util.Locale
 fun SettingsScreen(
     onBackButtonTap: () -> Unit,
     navigateToHowToScreen: () -> Unit,
+    navigateToAboutScreen: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
 
@@ -60,16 +61,6 @@ fun SettingsScreen(
             text = stringResource(R.string.settings),
             onBackButtonTap = onBackButtonTap
         )
-
-        SettingsSection {
-
-            SettingsItem(
-                text = stringResource(R.string.how_to_name_files),
-                value = "",
-                onTap = navigateToHowToScreen
-            )
-
-        }
 
         SettingsSection {
 
@@ -101,6 +92,24 @@ fun SettingsScreen(
                 text = stringResource(R.string.subtitles_language),
                 value = state.subtitlesLanguage.displayLanguage,
                 onTap = { viewModel.showSubtitlesLanguageDialog(true) }
+            )
+
+        }
+
+        SettingsSection {
+
+            SettingsItem(
+                text = stringResource(R.string.how_to_name_files),
+                value = "",
+                onTap = navigateToHowToScreen
+            )
+
+            SettingsDivider()
+
+            SettingsItem(
+                text = stringResource(R.string.about),
+                value = "",
+                onTap = navigateToAboutScreen
             )
 
         }

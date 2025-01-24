@@ -55,4 +55,17 @@
     <string name="read">lu</string>
     <string name="remaining_time">Il reste %1$1s</string>
     <string name="rewatch">Revoir</string>
+    <string name="about">À propos</string>
+    <string name="who_am_i">Qui suis-je ?</string>
+    <string name="who_am_i_desc">Passionné depuis l\'adolescence par l\'univers des smartphones, j\'ai décidé de devenir développeur Android et d\'en faire mon métier, que j\'exerce depuis quelques années maintenant.\\n\\nAu-delà de ça, je suis un type lambda qui aime les mangas, voyager et le foot.</string>
+    <string name="why_this_app">Pourquoi cette application ?</string>
+    <string name="why_this_app_desc">Il arrive parfois d\'avoir beaucoup de fichiers vidéo et de souhaiter une application permettant de les organiser simplement. Une telle application, nommée Infuse, existe sur iOS, mais son équivalent Android n\'existant pas, j\'ai décidé de la créer moi-même pour mon besoin personnel. De plus, étant développeur Android, cette application me permet également de rester à jour sur les différentes nouveautés du développement et d\'en faire une sorte de \"bac à sable\".</string>
+    <string name="how_it_works">Comment fonctionne cette application ?</string>
+    <string name="how_it_works_desc">Cette application va scanner vos fichiers vidéo de plus de 5 minutes et en extraire des informations à partir du nom du fichier (titre, saison, épisode, année). Ensuite, l\'API de TMDB est utilisée pour récupérer des informations supplémentaires comme le synopsis, la note, le genre, etc.</string>
+    <string name="which_technologies">Quelles sont les technologies utilisées ?</string>
+    <string name="which_technologies_desc">Cette application est entièrement développée en Kotlin avec Jetpack Compose. J\'utilise Room pour la base de données, Retrofit pour les appels réseau et Hilt pour les injections de dépendances. Hors application, j\'utilise également Firebase et GitHub. Pour ce qui est de l\'UI/UX, j\'ai fait ce que j\'ai pu. C\'est pas si moche, non ?</string>
+    <string name="how_to_suggest">Comment me contacter ou suggérer des améliorations ?</string>
+    <string name="how_to_suggest_desc">Si c\'est un avis positif, le Play Store est l\'endroit idéal ! Sinon, j\'espère que vous n\'aurez pas à le faire, mais vous pouvez me contacter par mail à l\'adresse suivante : kevyn.buchet@protonmail.com</string>
+    <string name="what_is_next">Et la suite ?</string>
+    <string name="what_is_next_desc">L\'objectif est d\'améliorer toujours plus l\'application. Que ce soit au niveau de l\'UI, de l\'UX ou des performances. Mais également je prévois d\'ajouter de nouvelles sources de données et non seulement les fichiers sur l\'appareil.</string>
 </resources>

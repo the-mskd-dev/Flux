@@ -19,7 +19,7 @@ object Constants {
         const val SEARCH = "search"
         const val SETTINGS = "settings"
         const val HOW_TO = "howTo"
-        const val ABOUT = "howTo"
+        const val ABOUT = "about"
     }
 
     object TMDB {

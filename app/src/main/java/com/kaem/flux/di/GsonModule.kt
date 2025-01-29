@@ -2,6 +2,7 @@ package com.kaem.flux.di
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.google.gson.Strictness
 
 import dagger.Module
 import dagger.Provides
@@ -17,7 +18,7 @@ object GsonModule {
     @Singleton
     fun provideGson() : Gson {
         return GsonBuilder()
-            .setLenient()
+            .setStrictness(Strictness.LENIENT)
             .create()
     }
 

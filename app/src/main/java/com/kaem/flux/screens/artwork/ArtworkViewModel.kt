@@ -245,9 +245,6 @@ class ArtworkViewModel @Inject constructor(
                 is Episode -> {
 
                     repository.saveEpisode(artwork)
-                    val episodes = state.episodes.sortedWith(
-                        compareBy<Episode> { it.season }.thenBy { it.number }
-                    )
 
                     addOrRemoveToWatchedArtworks()
 

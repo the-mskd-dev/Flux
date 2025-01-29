@@ -3,6 +3,7 @@ package com.kaem.flux.data.source.artwork
 import android.util.Log
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.logEvent
+import com.google.gson.JsonSyntaxException
 import com.kaem.flux.data.tmdb.TMDBService
 import com.kaem.flux.model.UserFile
 import com.kaem.flux.model.UserFolder
@@ -106,10 +107,13 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(
 
                     } catch (e: Exception) {
                         Log.i(TAG, "[getMovies] Fail to get movie : ${folder.title}", e)
-                        firebaseAnalytics.logEvent(Analytics.Event.TMDB_ERROR) {
-                            param(Analytics.Param.TITLE, folder.title)
-                            param(Analytics.Param.TYPE, "movie")
-                            param(Analytics.Param.MESSAGE, e.message ?: "Unknown")
+
+                        if (e is IllegalStateException || e is JsonSyntaxException) {
+                            firebaseAnalytics.logEvent(Analytics.Event.TMDB_ERROR) {
+                                param(Analytics.Param.TITLE, folder.title)
+                                param(Analytics.Param.TYPE, "movie")
+                                param(Analytics.Param.MESSAGE, e.message ?: "Unknown")
+                            }
                         }
                         null
                     }
@@ -171,11 +175,15 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(
 
         } catch (e: Exception) {
             Log.e(TAG, "[getShowAndEpisodes] Fail to get show overview : ${folder.title}", e)
-            firebaseAnalytics.logEvent(Analytics.Event.TMDB_ERROR) {
-                param(Analytics.Param.TITLE, folder.title)
-                param(Analytics.Param.TYPE, "show overview")
-                param(Analytics.Param.MESSAGE, e.message ?: "Unknown")
+
+            if (e is IllegalStateException || e is JsonSyntaxException) {
+                firebaseAnalytics.logEvent(Analytics.Event.TMDB_ERROR) {
+                    param(Analytics.Param.TITLE, folder.title)
+                    param(Analytics.Param.TYPE, "show overview")
+                    param(Analytics.Param.MESSAGE, e.message ?: "Unknown")
+                }
             }
+
             return null
         }
 
@@ -201,12 +209,15 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(
 
                     } catch (e: Exception) {
                         Log.e(TAG, "[getShowAndEpisodes] Fail to get episode : ${folder.title} (season ${file.nameProperties.season}, episode ${file.nameProperties.episode})", e)
-                        firebaseAnalytics.logEvent(Analytics.Event.TMDB_ERROR) {
-                            param(Analytics.Param.TITLE, folder.title)
-                            param(Analytics.Param.SEASON, file.nameProperties.season.toString())
-                            param(Analytics.Param.EPISODE, file.nameProperties.episode.toString())
-                            param(Analytics.Param.TYPE, "show episode")
-                            param(Analytics.Param.MESSAGE, e.message ?: "Unknown")
+
+                        if (e is IllegalStateException || e is JsonSyntaxException) {
+                            firebaseAnalytics.logEvent(Analytics.Event.TMDB_ERROR) {
+                                param(Analytics.Param.TITLE, folder.title)
+                                param(Analytics.Param.SEASON, file.nameProperties.season.toString())
+                                param(Analytics.Param.EPISODE, file.nameProperties.episode.toString())
+                                param(Analytics.Param.TYPE, "show episode")
+                                param(Analytics.Param.MESSAGE, e.message ?: "Unknown")
+                            }
                         }
                         null
                     }

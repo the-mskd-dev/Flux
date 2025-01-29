@@ -4,50 +4,63 @@ import android.util.Log
 import androidx.compose.material3.ColorScheme
 import androidx.compose.ui.graphics.Color
 
-fun ColorScheme.log() {
+fun ColorScheme.logDescription() {
 
     val colorScheme = this
-    fun getRGB(color: Color): Triple<Float, Float, Float> {
+    fun getRGB(color: Color): String {
         val red = color.red
         val green = color.green
         val blue = color.blue
-        return Triple(red, green, blue)
+
+        val hexRed = (red * 255).toInt()
+        val hexGreen = (green * 255).toInt()
+        val hexBlue = (blue * 255).toInt()
+        val hex = String.format("#%02X%02X%02X", hexRed, hexGreen, hexBlue)
+
+        return "Color(${red}f, ${green}f, ${blue}f), // $hex"
     }
 
-    Log.i("ColorScheme", "primary : ${getRGB(colorScheme.primary)}")
-    Log.i("ColorScheme", "onPrimary : ${getRGB(colorScheme.onPrimary)}")
-    Log.i("ColorScheme", "primaryContainer : ${getRGB(colorScheme.primaryContainer)}")
-    Log.i("ColorScheme", "onPrimaryContainer : ${getRGB(colorScheme.onPrimaryContainer)}")
-    Log.i("ColorScheme", "inversePrimary : ${getRGB(colorScheme.inversePrimary)}")
-    Log.i("ColorScheme", "secondary : ${getRGB(colorScheme.secondary)}")
-    Log.i("ColorScheme", "onSecondary : ${getRGB(colorScheme.onSecondary)}")
-    Log.i("ColorScheme", "secondaryContainer : ${getRGB(colorScheme.secondaryContainer)}")
-    Log.i("ColorScheme", "onSecondaryContainer : ${getRGB(colorScheme.onSecondaryContainer)}")
-    Log.i("ColorScheme", "tertiary : ${getRGB(colorScheme.tertiary)}")
-    Log.i("ColorScheme", "onTertiary : ${getRGB(colorScheme.onTertiary)}")
-    Log.i("ColorScheme", "tertiaryContainer : ${getRGB(colorScheme.tertiaryContainer)}")
-    Log.i("ColorScheme", "onTertiaryContainer : ${getRGB(colorScheme.onTertiaryContainer)}")
-    Log.i("ColorScheme", "background : ${getRGB(colorScheme.background)}")
-    Log.i("ColorScheme", "onBackground : ${getRGB(colorScheme.onBackground)}")
-    Log.i("ColorScheme", "surface : ${getRGB(colorScheme.surface)}")
-    Log.i("ColorScheme", "onSurface : ${getRGB(colorScheme.onSurface)}")
-    Log.i("ColorScheme", "surfaceVariant : ${getRGB(colorScheme.surfaceVariant)}")
-    Log.i("ColorScheme", "onSurfaceVariant : ${getRGB(colorScheme.onSurfaceVariant)}")
-    Log.i("ColorScheme", "surfaceTint : ${getRGB(colorScheme.surfaceTint)}")
-    Log.i("ColorScheme", "inverseSurface : ${getRGB(colorScheme.inverseSurface)}")
-    Log.i("ColorScheme", "inverseOnSurface : ${getRGB(colorScheme.inverseOnSurface)}")
-    Log.i("ColorScheme", "error : ${getRGB(colorScheme.error)}")
-    Log.i("ColorScheme", "onError : ${getRGB(colorScheme.onError)}")
-    Log.i("ColorScheme", "errorContainer : ${getRGB(colorScheme.errorContainer)}")
-    Log.i("ColorScheme", "onErrorContainer : ${getRGB(colorScheme.onErrorContainer)}")
-    Log.i("ColorScheme", "outline : ${getRGB(colorScheme.outline)}")
-    Log.i("ColorScheme", "outlineVariant : ${getRGB(colorScheme.outlineVariant)}")
-    Log.i("ColorScheme", "scrim : ${getRGB(colorScheme.scrim)}")
-    Log.i("ColorScheme", "surfaceBright : ${getRGB(colorScheme.surfaceBright)}")
-    Log.i("ColorScheme", "surfaceDim : ${getRGB(colorScheme.surfaceDim)}")
-    Log.i("ColorScheme", "surfaceContainer : ${getRGB(colorScheme.surfaceContainer)}")
-    Log.i("ColorScheme", "surfaceContainerHigh : ${getRGB(colorScheme.surfaceContainerHigh)}")
-    Log.i("ColorScheme", "surfaceContainerHighest : ${getRGB(colorScheme.surfaceContainerHighest)}")
-    Log.i("ColorScheme", "surfaceContainerLow : ${getRGB(colorScheme.surfaceContainerLow)}")
-    Log.i("ColorScheme", "surfaceContainerLowest : ${getRGB(colorScheme.surfaceContainerLowest)}")
+    val color = """
+        ColorScheme(
+            primary = ${getRGB(colorScheme.primary)}
+            onPrimary = ${getRGB(colorScheme.onPrimary)}
+            primaryContainer = ${getRGB(colorScheme.primaryContainer)}
+            onPrimaryContainer = ${getRGB(colorScheme.onPrimaryContainer)}
+            inversePrimary = ${getRGB(colorScheme.inversePrimary)}
+            secondary = ${getRGB(colorScheme.secondary)}
+            onSecondary = ${getRGB(colorScheme.onSecondary)}
+            secondaryContainer = ${getRGB(colorScheme.secondaryContainer)}
+            onSecondaryContainer = ${getRGB(colorScheme.onSecondaryContainer)}
+            tertiary = ${getRGB(colorScheme.tertiary)}
+            onTertiary = ${getRGB(colorScheme.onTertiary)}
+            tertiaryContainer = ${getRGB(colorScheme.tertiaryContainer)}
+            onTertiaryContainer = ${getRGB(colorScheme.onTertiaryContainer)}
+            background = ${getRGB(colorScheme.background)}
+            onBackground = ${getRGB(colorScheme.onBackground)}
+            surface = ${getRGB(colorScheme.surface)}
+            onSurface = ${getRGB(colorScheme.onSurface)}
+            surfaceVariant = ${getRGB(colorScheme.surfaceVariant)}
+            onSurfaceVariant = ${getRGB(colorScheme.onSurfaceVariant)}
+            surfaceTint = ${getRGB(colorScheme.surfaceTint)}
+            inverseSurface = ${getRGB(colorScheme.inverseSurface)}
+            inverseOnSurface = ${getRGB(colorScheme.inverseOnSurface)}
+            error = ${getRGB(colorScheme.error)}
+            onError = ${getRGB(colorScheme.onError)}
+            errorContainer = ${getRGB(colorScheme.errorContainer)}
+            onErrorContainer = ${getRGB(colorScheme.onErrorContainer)}
+            outline = ${getRGB(colorScheme.outline)}
+            outlineVariant = ${getRGB(colorScheme.outlineVariant)}
+            scrim = ${getRGB(colorScheme.scrim)}
+            surfaceBright = ${getRGB(colorScheme.surfaceBright)}
+            surfaceDim = ${getRGB(colorScheme.surfaceDim)}
+            surfaceContainer = ${getRGB(colorScheme.surfaceContainer)}
+            surfaceContainerHigh = ${getRGB(colorScheme.surfaceContainerHigh)}
+            surfaceContainerHighest = ${getRGB(colorScheme.surfaceContainerHighest)}
+            surfaceContainerLow = ${getRGB(colorScheme.surfaceContainerLow)}
+            surfaceContainerLowest = ${getRGB(colorScheme.surfaceContainerLowest)}
+        )
+    """.trimIndent()
+
+    Log.i("ColorScheme", color)
+
 }

@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import com.kaem.flux.utils.extensions.logDescription
 
 private val FluxColorScheme = darkColorScheme(
     primary = Color(0.9882353f, 0.6901961f, 0.8392157f),
@@ -129,6 +130,8 @@ fun FluxTheme(
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = false//darkTheme
         }
     }
+
+    colorScheme.logDescription()
 
     MaterialTheme(
         colorScheme = colorScheme,

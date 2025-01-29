@@ -10,3 +10,4 @@
 local.properties
 /private
 /app/debug
+/app/google-services.json

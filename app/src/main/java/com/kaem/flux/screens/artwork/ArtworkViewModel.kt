@@ -176,6 +176,8 @@ class ArtworkViewModel @Inject constructor(
                 // Save status in DB
                 viewModelScope.launch { repository.saveEpisode(episode) }
 
+                viewModelScope.launch { addOrRemoveToWatchedArtworks() }
+
                 Log.i("ArtworkViewModel", "${episode.title} season ${episode.season} episode ${episode.number} is now ${episode.status}")
 
             }
@@ -217,6 +219,8 @@ class ArtworkViewModel @Inject constructor(
         // Save status in DB
         viewModelScope.launch { repository.saveEpisodes(episodes) }
 
+        viewModelScope.launch { addOrRemoveToWatchedArtworks() }
+
     }
 
     fun saveTime(time: Long) = viewModelScope.launch {
@@ -244,8 +248,8 @@ class ArtworkViewModel @Inject constructor(
                     val episodes = state.episodes.sortedWith(
                         compareBy<Episode> { it.season }.thenBy { it.number }
                     )
-                    if (artwork.id == episodes.lastOrNull()?.id && status == Status.WATCHED) dataStoreRepository.removeWatchedArtwork(artworkId)
-                    else dataStoreRepository.addWatchedArtwork(artworkId)
+
+                    addOrRemoveToWatchedArtworks()
 
                 }
                 else -> {}
@@ -255,6 +259,11 @@ class ArtworkViewModel @Inject constructor(
 
         }
 
+    }
+
+    private suspend fun addOrRemoveToWatchedArtworks() {
+        if (uiState.value.episodes.all { it.status == Status.WATCHED }) dataStoreRepository.removeWatchedArtwork(artworkId)
+        else dataStoreRepository.addWatchedArtwork(artworkId)
     }
 
 }

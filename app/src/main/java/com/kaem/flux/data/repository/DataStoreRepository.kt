@@ -5,65 +5,165 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import com.kaem.flux.ui.theme.Ui
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 import okhttp3.internal.toLongOrDefault
+import java.util.Locale
 import javax.inject.Inject
 
 
-data class LibraryPreferences(
-    val lastWatchedIds: List<Long> = listOf(),
-    //val lastSyncTime: Long = Long.MIN_VALUE
+data class FluxDataStore(
+    val watchedIds: List<Long> = listOf(),
+    val playerBackwardValue: Int = 10,
+    val playerForwardValue: Int = 10,
+    val uiTheme: Ui.THEME = Ui.THEME.SYSTEM,
+    val subtitlesLanguage: Locale = Locale.getDefault()
 )
-
 
 class DataStoreRepository @Inject constructor(
     private val dataStore: DataStore<Preferences>,
     private val gson: Gson
 ) {
 
-    private object PreferencesKeys {
-        val LAST_WATCHED_IDS = stringPreferencesKey("last_watched_ids")
+    //region Keys
+
+    object Keys {
+        val WATCHED_IDS = stringPreferencesKey("last_watched_ids")
         val LAST_SYNC_TIME = stringPreferencesKey("last_sync_time")
+        val PLAYER_BACKWARD = stringPreferencesKey("player_backward")
+        val PLAYER_FORWARD = stringPreferencesKey("player_forward")
+        val UI_THEME = stringPreferencesKey("ui_theme")
+        val SUBTITLES_LANGUAGE = stringPreferencesKey("subtitles_language")
     }
 
-    val preferencesFlow: Flow<LibraryPreferences> = dataStore.data.map { preferences ->
+    //endregion
 
-        val lastWatchedIdsString = preferences[PreferencesKeys.LAST_WATCHED_IDS] ?: "[]"
-        val lastWatchedIds = gson.fromJson<List<Double>>(lastWatchedIdsString, List::class.java)
-        val lastSyncTime = (preferences[PreferencesKeys.LAST_SYNC_TIME] ?: "0").toLongOrDefault(0)
+    //region Flow
 
-        LibraryPreferences(lastWatchedIds = lastWatchedIds.map { it.toLong() },)
+    val flow: Flow<FluxDataStore> = dataStore.data.map { preferences ->
+
+        val watchedIdsString = preferences[Keys.WATCHED_IDS] ?: "[]"
+        val watchedIds = gson.fromJson<List<Double>>(watchedIdsString, List::class.java)
+
+        val playerBackwardValue = preferences[Keys.PLAYER_BACKWARD]?.toInt() ?: 10
+        val playerForwardValue = preferences[Keys.PLAYER_FORWARD]?.toInt() ?: 10
+
+        val uiTheme = preferences[Keys.UI_THEME]?.toString()?.let { Ui.THEME.valueOf(it) } ?: Ui.THEME.SYSTEM
+
+        val subtitlesLanguage = preferences[Keys.SUBTITLES_LANGUAGE]?.toString()?.let { Locale(it) } ?: Locale.getDefault()
+
+        FluxDataStore(
+            watchedIds = watchedIds.map { it.toLong() },
+            playerBackwardValue = playerBackwardValue,
+            playerForwardValue = playerForwardValue,
+            uiTheme = uiTheme,
+            subtitlesLanguage = subtitlesLanguage
+        )
     }
+
+    //endregion
+
+    //region WatchedArtwork
 
     suspend fun addWatchedArtwork(id: Long) {
         dataStore.edit { preferences ->
 
-            val lastWatchedIdsString = preferences[PreferencesKeys.LAST_WATCHED_IDS] ?: "[]"
+            val lastWatchedIdsString = preferences[Keys.WATCHED_IDS] ?: "[]"
             val lastWatchedIds: ArrayList<Long> = gson.fromJson<ArrayList<Long>>(lastWatchedIdsString, ArrayList::class.java)
 
             if (lastWatchedIds.none { it == id }) {
 
                 lastWatchedIds.add(0, id)
 
-                preferences[PreferencesKeys.LAST_WATCHED_IDS] = gson.toJson(lastWatchedIds.take(4))
+                preferences[Keys.WATCHED_IDS] = gson.toJson(lastWatchedIds.take(4))
             }
 
         }
     }
 
+    suspend fun removeWatchedArtwork(id: Long) {
+        dataStore.edit { preferences ->
+
+            val lastWatchedIdsString = preferences[Keys.WATCHED_IDS] ?: "[]"
+            val type = object : TypeToken<ArrayList<Long>>() {}.type
+            val lastWatchedIds: ArrayList<Long> = gson.fromJson(lastWatchedIdsString, type)
+
+            lastWatchedIds.remove(id)
+            preferences[Keys.WATCHED_IDS] = gson.toJson(lastWatchedIds.take(4))
+
+        }
+    }
+
+    //endregion
+
+    //region Sync time
+
     fun getSyncTime() : Long = runBlocking {
         dataStore.data.map {
-            (it[PreferencesKeys.LAST_SYNC_TIME] ?: "0").toLongOrDefault(0)
+            (it[Keys.LAST_SYNC_TIME] ?: "0").toLongOrDefault(0)
         }.first()
     }
 
-    suspend fun saveSyncTime(syncTime: Long) {
+    suspend fun setSyncTime(syncTime: Long) {
         dataStore.edit { preferences ->
-            preferences[PreferencesKeys.LAST_SYNC_TIME] = syncTime.toString()
+            preferences[Keys.LAST_SYNC_TIME] = syncTime.toString()
         }
     }
+
+    //endregion
+
+    //region Player backward/forward
+
+
+    suspend fun setPlayerBackwardValue(value: Int) {
+        dataStore.edit { preferences ->
+            preferences[Keys.PLAYER_BACKWARD] = value.toString()
+        }
+    }
+
+
+    suspend fun setPlayerForwardValue(value: Int) {
+        dataStore.edit { preferences ->
+            preferences[Keys.PLAYER_FORWARD] = value.toString()
+        }
+    }
+
+    fun getPlayerButtonsValues() : Pair<Int, Int> = runBlocking {
+        dataStore.data.map {
+            (it[Keys.PLAYER_BACKWARD] ?: "10").toInt() to (it[Keys.PLAYER_FORWARD] ?: "10").toInt()
+        }.first()
+    }
+
+    //endregion
+
+    //region UI Theme
+
+    suspend fun setUiTheme(theme: Ui.THEME) {
+        dataStore.edit { preferences ->
+            preferences[Keys.UI_THEME] = theme.toString()
+        }
+    }
+
+    //endregion
+
+    //region Languages
+
+    suspend fun setSubtitlesLanguage(locale: Locale) {
+        dataStore.edit { preferences ->
+            preferences[Keys.SUBTITLES_LANGUAGE] = locale.language
+        }
+    }
+
+    fun getSubtitlesLanguage() : Locale = runBlocking {
+        dataStore.data.map { preferences ->
+            preferences[Keys.SUBTITLES_LANGUAGE]?.let { Locale(it) } ?: Locale.getDefault()
+        }.first()
+    }
+
+    //endregion
 
 }

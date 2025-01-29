@@ -9,7 +9,6 @@ import android.util.Log
 import com.kaem.flux.model.FileSource
 import com.kaem.flux.model.UserFile
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 
@@ -47,7 +46,7 @@ class FilesDataSourceLocalImpl(
 
         val retriever = MediaMetadataRetriever()
 
-        withContext(Dispatchers.Main) {
+        withContext(Dispatchers.IO) {
 
             query?.use { cursor ->
 
@@ -100,8 +99,6 @@ class FilesDataSourceLocalImpl(
         retriever.release()
 
         files.sortByDescending { it.addedDateTime }
-
-        withContext(Dispatchers.Default) { delay(2000) }
 
         return files
 

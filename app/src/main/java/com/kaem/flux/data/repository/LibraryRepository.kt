@@ -1,16 +1,17 @@
 package com.kaem.flux.data.repository
 
-import com.kaem.flux.data.ddb.DatabaseManager
+import com.kaem.flux.data.ddb.FluxDao
 import com.kaem.flux.data.source.artwork.ArtworkDataSource
 import com.kaem.flux.data.source.file.FilesDataSource
 import com.kaem.flux.model.UserFile
-import com.kaem.flux.model.flux.ArtworkOverview
-import com.kaem.flux.model.flux.Episode
-import com.kaem.flux.model.flux.Movie
+import com.kaem.flux.model.artwork.ArtworkOverview
+import com.kaem.flux.model.artwork.Episode
+import com.kaem.flux.model.artwork.Movie
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -23,64 +24,55 @@ class LibraryRepository @Inject constructor(
     private val fileSource: FilesDataSource,
     private val localSource: ArtworkDataSource,
     private val tmdbSource: ArtworkDataSource,
-    private val databaseManager: DatabaseManager
+    private val db: FluxDao
 ) {
 
-    private val _libraryContent = MutableStateFlow<LibraryContent?>(null)
-    val libraryContent: StateFlow<LibraryContent?> = _libraryContent.asStateFlow()
+    private val _libraryFlow = MutableStateFlow(LibraryContent())
+    val libraryFlow: StateFlow<LibraryContent> = _libraryFlow.asStateFlow()
 
     suspend fun getLibrary(sync: Boolean = false) {
+
+        _libraryFlow.value = _libraryFlow.value.copy(isLoading = true)
 
         val artworks = if (sync) {
             syncLibrary()
         } else {
-            localSource.getArtworks(sync = false).artworkOverviews
+            localSource.getArtworks(sync = false).overviews
         }
 
         // Update content
-        _libraryContent.value = LibraryContent(
-            isLoading = false,
-            artworkOverviews = artworks.sortedBy { it.title }
-        )
+        _libraryFlow.update { content ->
+            content.copy(
+                isLoading = false,
+                artworkOverviews = artworks.sortedBy { it.title }
+            )
+        }
 
     }
 
     private suspend fun syncLibrary() : List<ArtworkOverview> {
 
-        // Get all artworks
-        val (artworks, movies, episodes) = localSource.getArtworks(sync = true)
-
         // Fetch all files, local and online (if possible)
         val allFiles = getFiles()
-
-        // Filter files absents of Artworks in the DB
-        val savedFiles = movies.map { it.file } + episodes.map { it.file }
-        val newFiles = allFiles.filter { f -> savedFiles.none { it.name == f.name } }
+        val dbFileNames = db.getAllFileNames()
 
         // Delete artworks with missing files
-        val moviesIdsToDelete = movies.filter { m -> allFiles.none { it.name == m.file.name } }.map { it.artworkId }
-        val episodesIdsToDelete = episodes.filter { e -> allFiles.none { it.name == e.file.name } }.map { it.id }
-        val artworksIdsToDelete = artworks.filter { artwork ->
-            moviesIdsToDelete.any { artwork.id == it }
-            || (episodes.any { it.artworkId == artwork.id } && episodesIdsToDelete.containsAll(episodes.filter { it.artworkId == artwork.id }.map { e -> e.id }))
-        }.map { it.id }
-        databaseManager.deleteArtworks(artworksIdsToDelete)
-        databaseManager.deleteEpisodes(episodesIdsToDelete)
+        db.deleteArtworksWithNoFiles(allFiles)
 
         // Get new artworks from TMBD
-        val filteredArtwork = artworks.filter { a -> artworksIdsToDelete.none { it == a.id } }
-        val (newArtworks, newMovies, newEpisodes) = tmdbSource.getArtworks(
+        val newFiles = allFiles.filter { !dbFileNames.contains(it.name) }
+        val (newOverviews, newMovies, newEpisodes) = tmdbSource.getArtworks(
             files = newFiles,
-            artworkIds = filteredArtwork.map { it.id },
             sync = true
         )
 
         // Save new artworks
-        databaseManager.saveArtworks(newArtworks)
-        databaseManager.saveMovies(newMovies)
-        databaseManager.saveEpisodes(newEpisodes)
+        db.insertOverviews(newOverviews)
+        db.insertMovies(newMovies)
+        db.insertEpisodes(newEpisodes)
 
-        return filteredArtwork + newArtworks
+        // Return all overviews
+        return db.getOverviews()
 
     }
 
@@ -103,11 +95,11 @@ class LibraryRepository @Inject constructor(
     }
 
     suspend fun saveMovie(movie: Movie) {
-        return databaseManager.saveMovies(listOf(movie))
+        db.insertMovies(listOf(movie))
     }
 
     suspend fun saveEpisode(episode: Episode) {
-        return databaseManager.saveEpisodes(listOf(episode))
+        db.insertEpisodes(listOf(episode))
     }
 
 }

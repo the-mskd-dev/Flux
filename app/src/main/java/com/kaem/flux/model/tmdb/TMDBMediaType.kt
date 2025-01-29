@@ -1,6 +1,9 @@
 package com.kaem.flux.model.tmdb
 
 import com.google.gson.annotations.SerializedName
+import com.kaem.flux.model.tmdb.TMDBMediaType.MOVIE
+import com.kaem.flux.model.tmdb.TMDBMediaType.PERSON
+import com.kaem.flux.model.tmdb.TMDBMediaType.SHOW
 
 
 /**

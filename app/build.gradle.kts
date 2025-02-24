@@ -118,6 +118,7 @@ dependencies {
     // Firebase
     implementation(platform("com.google.firebase:firebase-bom:33.9.0"))
     implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-crashlytics")
 
     implementation("app.cash.turbine:turbine:1.2.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.1")

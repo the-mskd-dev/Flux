@@ -64,14 +64,14 @@ dependencies {
     implementation("androidx.activity:activity-compose:1.10.0")
 
     // Compose
-    implementation(platform("androidx.compose:compose-bom:2025.01.00"))
+    implementation(platform("androidx.compose:compose-bom:2025.02.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.runtime:runtime-livedata")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
-    implementation("androidx.navigation:navigation-compose:2.8.5")
+    implementation("androidx.navigation:navigation-compose:2.8.7")
     implementation("androidx.constraintlayout:constraintlayout-compose:1.1.0")
 
     // Accompanist
@@ -116,7 +116,7 @@ dependencies {
     ksp("androidx.room:room-compiler:$roomVersion")
 
     // Firebase
-    implementation(platform("com.google.firebase:firebase-bom:33.8.0"))
+    implementation(platform("com.google.firebase:firebase-bom:33.9.0"))
     implementation("com.google.firebase:firebase-analytics")
 
     implementation("app.cash.turbine:turbine:1.2.0")
@@ -131,7 +131,7 @@ dependencies {
     androidTestImplementation("com.google.truth:truth:1.4.4")
     androidTestImplementation("androidx.arch.core:core-testing:2.2.0")
     androidTestImplementation("io.mockk:mockk-android:1.13.16")
-    androidTestImplementation(platform("androidx.compose:compose-bom:2025.01.00"))
+    androidTestImplementation(platform("androidx.compose:compose-bom:2025.02.00"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
 
     debugImplementation("androidx.compose.ui:ui-tooling")

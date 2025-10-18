@@ -41,7 +41,7 @@ data class Movie(
     override val voteCount: Int,
     override val duration: Int,
     override var currentTime: Long = 0L,
-    override var status: Status,
+    override var status: Status = Status.TO_WATCH,
     @Embedded override val file: UserFile,
     //val genres: List<String> = listOf()
 ) : Artwork() {

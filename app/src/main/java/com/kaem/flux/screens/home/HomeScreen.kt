@@ -1,115 +1,123 @@
 package com.kaem.flux.screens.home
 
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBarsPadding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.Settings
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CardElevation
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import androidx.compose.material3.carousel.HorizontalCenteredHeroCarousel
+import androidx.compose.material3.carousel.rememberCarouselState
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
-import com.bumptech.glide.integration.compose.GlideImage
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
+import com.kaem.flux.Navigation.Navigation
 import com.kaem.flux.R
+import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.ScreenState
-import com.kaem.flux.model.artwork.ArtworkOverview
-import com.kaem.flux.model.artwork.ContentType
+import com.kaem.flux.model.media.ContentType
+import com.kaem.flux.model.media.MediaOverview
 import com.kaem.flux.screens.welcome.WelcomeScreen
 import com.kaem.flux.screens.welcome.fluxPermissionState
-import com.kaem.flux.ui.component.BoldText
 import com.kaem.flux.ui.component.FluxButton
 import com.kaem.flux.ui.component.FluxTextButton
-import com.kaem.flux.ui.component.Loader
-import com.kaem.flux.ui.component.MediumText
-import com.kaem.flux.ui.component.Placeholders
-import com.kaem.flux.ui.component.Title
+import com.kaem.flux.ui.component.Image
+import com.kaem.flux.ui.component.LoadingScreen
+import com.kaem.flux.ui.component.MediaItem
+import com.kaem.flux.ui.component.Text
+import com.kaem.flux.ui.theme.FluxTheme
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.Constants
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun HomeScreen(
-    navigateToDetails: (Long) -> Unit,
-    navigateToCategory: (ContentType) -> Unit,
-    navigateToSearch: () -> Unit,
-    navigateToHowTo: () -> Unit,
-    navigateToSettings: () -> Unit,
+    navigate: (String) -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
 
     val uiState by viewModel.uiState.collectAsState()
     val permissions = fluxPermissionState()
 
+    LaunchedEffect(Unit) {
+        viewModel.event.collect { event ->
+            when (event) {
+                is HomeEvent.NavigateToCategory -> navigate(Navigation.CATEGORY.build(listOf(event.category.name)))
+                is HomeEvent.NavigateToMedia -> navigate(Navigation.MEDIA.build(listOf(event.mediaId)))
+                HomeEvent.NavigateToHowTo -> navigate(Navigation.HOW_TO.build())
+                HomeEvent.NavigateToSearch -> navigate(Navigation.SEARCH.build())
+                HomeEvent.NavigateToSettings -> navigate(Navigation.SETTINGS.build())
+                HomeEvent.OpenPermissionDialog -> permissions.launchPermissionRequest()
+            }
+        }
+    }
+
     if (!permissions.status.isGranted) {
 
-        WelcomeScreen { permissions.launchPermissionRequest() }
+        WelcomeScreen(
+            onPermissionsTap = { viewModel.handleIntent(HomeIntent.OnPermissionTap) }
+        )
 
     } else {
 
         LaunchedEffect(Unit) {
-            viewModel.getLibrary()
+            viewModel.handleIntent(HomeIntent.OnSyncTap(manualSync = false))
         }
 
         Crossfade(
             modifier = Modifier.fillMaxSize(),
             targetState = uiState.screenState,
-            label = "LibraryAnimation"
+            label = "CatalogAnimation"
         ) {
 
             when (it) {
 
-                ScreenState.LOADING -> Loader()
+                ScreenState.LOADING -> LoadingScreen()
                 else -> {
 
                     HomeContent(
                         overviews = uiState.overviews,
-                        lastWatchedIds = uiState.lastWatchedArtworkIds,
-                        isSyncing = uiState.isSyncing,
-                        onSyncTap = { viewModel.getLibrary(manualSync = true) },
-                        navigateToDetails = { id -> navigateToDetails(id) },
-                        navigateToCategory = { type -> navigateToCategory(type) },
-                        navigateToSearch = navigateToSearch,
-                        navigateToHowTo = navigateToHowTo,
-                        navigateToSettings = navigateToSettings
+                        lastWatchedIds = uiState.lastWatchedMediaIds,
+                        isSyncing = uiState.isRefreshing,
+                        sendIntent = { intent -> viewModel.handleIntent(intent) },
                     )
 
                 }
@@ -124,35 +132,23 @@ fun HomeScreen(
 
 @Composable
 fun HomeContent(
-    overviews: List<ArtworkOverview>,
+    overviews: List<MediaOverview>,
     lastWatchedIds: List<Long>,
     isSyncing: Boolean,
-    onSyncTap: () -> Unit,
-    navigateToDetails: (Long) -> Unit,
-    navigateToCategory: (ContentType) -> Unit,
-    navigateToSearch: () -> Unit,
-    navigateToHowTo: () -> Unit,
-    navigateToSettings: () -> Unit
+    sendIntent: (HomeIntent) -> Unit
 ) {
 
     if (overviews.isEmpty()) {
 
-        HomeEmpty(
-            navigateToHowTo = navigateToHowTo,
-            onReloadTap = onSyncTap
-        )
+        HomeEmpty(sendIntent = sendIntent)
 
     } else {
 
         HomeLists(
             overviews = overviews,
             lastWatchedIds = lastWatchedIds,
-            isSyncing = isSyncing,
-            onSyncTap = onSyncTap,
-            navigateToDetails = navigateToDetails,
-            navigateToCategory = navigateToCategory,
-            navigateToSearch = navigateToSearch,
-            navigateToSettings = navigateToSettings
+            isRefreshing = isSyncing,
+            sendIntent = sendIntent
         )
 
     }
@@ -160,10 +156,7 @@ fun HomeContent(
 }
 
 @Composable
-fun HomeEmpty(
-    navigateToHowTo: () -> Unit,
-    onReloadTap: () -> Unit
-) {
+fun HomeEmpty(sendIntent: (HomeIntent) -> Unit) {
 
     Column(
         modifier = Modifier
@@ -173,9 +166,9 @@ fun HomeEmpty(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
 
-        BoldText(text = stringResource(R.string.empty_library))
+        Text.Headline.Medium(text = stringResource(R.string.empty_catalog))
 
-        MediumText(text = stringResource(R.string.empty_library_desc))
+        Text.Body.Large(text = stringResource(R.string.empty_catalog_desc))
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -183,12 +176,12 @@ fun HomeEmpty(
 
             FluxButton(
                 text = stringResource(R.string.how_to_name_files),
-                onTap = navigateToHowTo
+                onTap = { sendIntent(HomeIntent.OnHowToTap) }
             )
 
             FluxTextButton(
                 text = stringResource(R.string.refresh),
-                onTap = onReloadTap
+                onTap = { sendIntent(HomeIntent.OnSyncTap(manualSync = true)) }
             )
 
         }
@@ -197,73 +190,106 @@ fun HomeEmpty(
 
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun HomeLists(
-    overviews: List<ArtworkOverview>,
+    overviews: List<MediaOverview>,
     lastWatchedIds: List<Long>,
-    isSyncing: Boolean,
-    onSyncTap: () -> Unit,
-    navigateToDetails: (Long) -> Unit,
-    navigateToCategory: (ContentType) -> Unit,
-    navigateToSearch: () -> Unit,
-    navigateToSettings: () -> Unit
+    isRefreshing: Boolean,
+    sendIntent: (HomeIntent) -> Unit
 ) {
+
+    val pullToRefreshState = rememberPullToRefreshState()
+    var offsetY by remember { mutableFloatStateOf(0f) }
+    val loaderAnim by animateFloatAsState(pullToRefreshState.distanceFraction.coerceIn(0f, 1f))
+    with(LocalDensity.current) {
+        offsetY = 100.dp.toPx() * pullToRefreshState.distanceFraction
+    }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .systemBarsPadding()
-            .padding(bottom = Ui.Space.LARGE),
-        verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
+            .statusBarsPadding()
     ) {
 
-        HomeTopButtons(
-            isSyncing = isSyncing,
-            onSyncTap = onSyncTap,
-            navigateToSearch = navigateToSearch,
-            navigateToSettings = navigateToSettings
-        )
+        HomeTopButtons(sendIntent = sendIntent)
 
-        ArtworkList(
-            overviews = lastWatchedIds.mapNotNull { overviews.find { o -> o.id == it } },
-            largeArtwork = true,
-            navigateToDetails = navigateToDetails
-        )
+        PullToRefreshBox(
+            modifier = Modifier.weight(1f),
+            isRefreshing = isRefreshing,
+            onRefresh = { sendIntent(HomeIntent.OnSyncTap(true)) },
+            state = pullToRefreshState,
+            indicator = {
+                PullToRefreshDefaults.LoadingIndicator(
+                    modifier = Modifier
+                        .scale(loaderAnim)
+                        .align(Alignment.TopCenter),
+                    state = pullToRefreshState,
+                    isRefreshing = isRefreshing
+                )
+            }
+        ) {
 
-        ArtworkList(
-            name = stringResource(id = ContentType.SHOW.stringResource),
-            overviews = overviews.filter { it.type == ContentType.SHOW },
-            navigateToDetails = navigateToDetails,
-            navigateToCategory = { navigateToCategory(ContentType.SHOW) }
-        )
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .graphicsLayer { translationY = offsetY },
+                verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
+            ) {
 
-        ArtworkList(
-            name = stringResource(id = ContentType.MOVIE.stringResource),
-            overviews = overviews.filter { it.type == ContentType.MOVIE },
-            navigateToDetails = navigateToDetails,
-            navigateToCategory = { navigateToCategory(ContentType.MOVIE) }
-        )
+                item {
+                    LastWatchedCarousel(
+                        overviews = lastWatchedIds.mapNotNull { overviews.find { o -> o.id == it } },
+                        sendIntent = sendIntent
+                    )
+                }
+
+                item {
+                    MediaCategory(
+                        name = stringResource(id = ContentType.SHOW.stringResource),
+                        category = ContentType.SHOW,
+                        overviews = overviews.filter { it.type == ContentType.SHOW },
+                        sendIntent = sendIntent
+                    )
+                }
+
+                item {
+                    MediaCategory(
+                        name = stringResource(id = ContentType.MOVIE.stringResource),
+                        category = ContentType.MOVIE,
+                        overviews = overviews.filter { it.type == ContentType.MOVIE },
+                        sendIntent = sendIntent
+                    )
+                }
+
+                item {
+                    Spacer(
+                        Modifier
+                            .navigationBarsPadding()
+                            .size(Ui.Space.LARGE)
+                    )
+                }
+
+            }
+
+        }
 
     }
 
 }
 
 @Composable
-fun HomeTopButtons(
-    isSyncing: Boolean,
-    onSyncTap: () -> Unit,
-    navigateToSearch: () -> Unit,
-    navigateToSettings: () -> Unit
-) {
+fun HomeTopButtons(sendIntent: (HomeIntent) -> Unit) {
 
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .padding(vertical = Ui.Space.SMALL)
+            .fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL, Alignment.End),
         verticalAlignment = Alignment.CenterVertically
     ) {
 
-        IconButton(onClick = navigateToSearch) {
+        IconButton(onClick = { sendIntent(HomeIntent.OnSearchTap) }) {
             Icon(
                 imageVector = Icons.Rounded.Search,
                 tint = MaterialTheme.colorScheme.onBackground,
@@ -271,31 +297,7 @@ fun HomeTopButtons(
             )
         }
 
-        Crossfade(
-            targetState = isSyncing,
-            label = "Refresh indicator"
-        ) { syncing ->
-            if (syncing) {
-                IconButton(onClick = {}) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(24.dp),
-                        strokeWidth = 2.5.dp,
-                        color = MaterialTheme.colorScheme.onBackground,
-                    )
-                }
-
-            } else {
-                IconButton(onClick = onSyncTap) {
-                    Icon(
-                        painter = painterResource(R.drawable.sync),
-                        tint = MaterialTheme.colorScheme.onBackground,
-                        contentDescription = "Sync button"
-                    )
-                }
-            }
-        }
-
-        IconButton(onClick = navigateToSettings) {
+        IconButton(onClick = { sendIntent(HomeIntent.OnSettingsTap) }) {
             Icon(
                 imageVector = Icons.Rounded.Settings,
                 tint = MaterialTheme.colorScheme.onBackground,
@@ -307,49 +309,85 @@ fun HomeTopButtons(
 
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ArtworkList(
-    name: String? = null,
-    largeArtwork: Boolean = false,
-    overviews: List<ArtworkOverview>,
-    navigateToDetails: (Long) -> Unit,
-    navigateToCategory: () -> Unit = {}
+fun LastWatchedCarousel(
+    overviews: List<MediaOverview>,
+    sendIntent: (HomeIntent) -> Unit
 ) {
 
     if (overviews.isEmpty())
         return
 
-    val width = if (largeArtwork) 350.dp else 120.dp
-    val ratio = if (largeArtwork) 1920f/1080f else 2f/3f
+    val ratio = 1920f/1080f
+
+    val carouselState = rememberCarouselState { overviews.size }
+
+    HorizontalCenteredHeroCarousel(
+        modifier = Modifier.fillMaxWidth(),
+        maxItemWidth = 350.dp,
+        state = carouselState,
+        contentPadding = PaddingValues(horizontal = Ui.Space.MEDIUM)
+    ) { i ->
+
+        val overview = overviews[i]
+        val url = Constants.TMDB.IMAGE + overview.bannerPath
+
+        Image(
+            modifier = Modifier
+                .maskClip(MaterialTheme.shapes.extraLarge)
+                .clickable { sendIntent(HomeIntent.OnMediaTap(mediaId = overview.id)) }
+                .aspectRatio(ratio),
+            url = url,
+            contentDescription = overview.title
+        )
+
+    }
+
+}
+
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+fun MediaCategory(
+    name: String? = null,
+    category: ContentType,
+    overviews: List<MediaOverview>,
+    sendIntent: (HomeIntent) -> Unit
+) {
+
+    if (overviews.isEmpty())
+        return
+
+    val width = 120.dp
+    val ratio = 2f/3f
 
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
     ) {
 
-        BoldText(
+        Text.Title.Large(
             modifier = Modifier
-                .clickable { navigateToCategory() }
+                .clickable { sendIntent(HomeIntent.OnCategoryTap(category)) }
                 .fillMaxWidth()
                 .padding(start = Ui.Space.MEDIUM, top = Ui.Space.LARGE),
-            text = name
+            text = name,
+            emphasized = true
         )
 
         LazyRow(
             modifier = Modifier.fillMaxWidth(),
             contentPadding = PaddingValues(horizontal = Ui.Space.MEDIUM),
-            horizontalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
+            horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)
         ) {
 
             items(overviews, key = { it.id }) {
 
-                val url = if (largeArtwork) Constants.TMDB.IMAGE + it.bannerPath else Constants.TMDB.IMAGE_SMALL + it.imagePath
-
-                ArtworkItem(
+                MediaItem(
                     width = width,
                     ratio = ratio,
-                    url = url,
-                    onTap = { navigateToDetails(it.id) },
+                    url = Constants.TMDB.IMAGE_SMALL + it.imagePath,
+                    onTap = { sendIntent(HomeIntent.OnMediaTap(mediaId = it.id)) },
                     description = it.title
                 )
 
@@ -360,28 +398,15 @@ fun ArtworkList(
     }
 }
 
-@OptIn(ExperimentalGlideComposeApi::class)
+@Preview
 @Composable
-fun ArtworkItem(
-    width: Dp,
-    url: String,
-    ratio: Float,
-    onTap: () -> Unit,
-    description: String
-) {
-
-    Card(elevation = Ui.Card.elevations()) {
-        GlideImage(
-            modifier = Modifier
-                .clickable { onTap() }
-                .clip(Ui.Shape.RoundedCorner)
-                .width(width)
-                .aspectRatio(ratio),
-            model = url,
-            contentDescription = description,
-            loading = Placeholders.loading(),
-            failure = Placeholders.failure()
+fun HomeScreen_Preview() {
+    FluxTheme(theme = Ui.THEME.DARK) {
+        HomeContent(
+            overviews = MediaMockups.overviews,
+            lastWatchedIds = MediaMockups.overviews.map { it.id },
+            isSyncing = false,
+            sendIntent = {}
         )
     }
-
 }

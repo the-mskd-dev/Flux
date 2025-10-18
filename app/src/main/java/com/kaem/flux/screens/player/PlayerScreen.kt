@@ -4,6 +4,7 @@ import android.net.Uri
 import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.LocalActivity
 import androidx.annotation.OptIn
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -24,7 +25,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -39,12 +39,11 @@ import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import com.kaem.flux.R
-import com.kaem.flux.model.artwork.Artwork
-import com.kaem.flux.model.artwork.Episode
+import com.kaem.flux.model.media.Episode
+import com.kaem.flux.model.media.Media
 import com.kaem.flux.ui.component.BackButton
 import com.kaem.flux.ui.component.LifecycleComponent
-import com.kaem.flux.ui.component.MediumText
-import com.kaem.flux.ui.component.SmallText
+import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.extensions.forceScreenOn
 import com.kaem.flux.utils.extensions.hideSystemBars
@@ -55,7 +54,7 @@ import java.util.Locale
 
 @Composable
 fun PlayerScreen(
-    artwork: Artwork?,
+    media: Media?,
     backward: Long,
     forward: Long,
     subtitlesLanguage: Locale,
@@ -64,7 +63,7 @@ fun PlayerScreen(
 ) {
 
     var isExiting by remember { mutableStateOf(false) }
-    val activity = LocalContext.current as ComponentActivity
+    val activity = LocalActivity.current as ComponentActivity
     val orientation = remember { activity.requestedOrientation }
 
     DisposableEffect(Unit) {
@@ -76,9 +75,9 @@ fun PlayerScreen(
     }
 
     if (!isExiting) {
-        if (artwork != null) {
+        if (media != null) {
             VideoPlayer(
-                artwork = artwork,
+                media = media,
                 backward = backward,
                 forward = forward,
                 subtitlesLanguage = subtitlesLanguage,
@@ -99,7 +98,7 @@ fun PlayerScreen(
 @OptIn(UnstableApi::class)
 @Composable
 fun VideoPlayer(
-    artwork: Artwork,
+    media: Media,
     backward: Long,
     forward: Long,
     subtitlesLanguage: Locale,
@@ -107,7 +106,7 @@ fun VideoPlayer(
     onTimeSave: (Long) -> Unit
 ) {
 
-    val activity = LocalContext.current as ComponentActivity
+    val activity = LocalActivity.current as ComponentActivity
     var showButtons by remember { mutableStateOf(false) }
 
     val renderersFactory = DefaultRenderersFactory(activity)
@@ -125,7 +124,7 @@ fun VideoPlayer(
                     .setPreferredTextLanguage(subtitlesLanguage.language)
                     .setPreferredTextRoleFlags(C.ROLE_FLAG_SUBTITLE)
                     .build()
-                setMediaItem(MediaItem.fromUri(Uri.parse(artwork.file.path)), artwork.currentTime)
+                setMediaItem(MediaItem.fromUri(Uri.parse(media.file.path)), media.currentTime)
                 prepare()
                 play()
         }
@@ -191,7 +190,7 @@ fun VideoPlayer(
     }
 
     PlayerButtons(
-        artwork = artwork,
+        media = media,
         showButtons = showButtons,
         onBackButtonTap = {
             onTimeSave(exoPlayer.currentPosition)
@@ -203,7 +202,7 @@ fun VideoPlayer(
 
 @Composable
 fun PlayerButtons(
-    artwork: Artwork,
+    media: Media,
     showButtons: Boolean,
     onBackButtonTap: () -> Unit
 ) {
@@ -225,7 +224,7 @@ fun PlayerButtons(
 
             PlayerTitle(
                 layoutId = "title",
-                artwork = artwork
+                media = media
             )
 
         }
@@ -237,7 +236,7 @@ fun PlayerButtons(
 @Composable
 fun PlayerTitle(
     layoutId: String,
-    artwork: Artwork
+    media: Media
 ) {
 
     Column(
@@ -246,21 +245,21 @@ fun PlayerTitle(
         verticalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)
     ) {
 
-        MediumText(
+        Text.Body.Large(
             modifier = Modifier.fillMaxWidth(),
-            text = artwork.title,
+            text = media.title,
             color = Color.White,
             maxLines = 1,
             textAlign = TextAlign.Start,
             overflow = TextOverflow.Ellipsis
         )
 
-        (artwork as? Episode)?.let { episode ->
+        (media as? Episode)?.let { episode ->
 
             val season = stringResource(R.string.season, episode.season)
             val number = stringResource(R.string.episode, episode.number)
 
-            SmallText(
+            Text.Body.Small(
                 modifier = Modifier.fillMaxWidth(),
                 text = "$season, $number",
                 color = Color.White,

@@ -2,8 +2,8 @@ package com.kaem.flux.screens.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kaem.flux.data.repository.LibraryRepository
-import com.kaem.flux.model.artwork.ArtworkOverview
+import com.kaem.flux.data.repository.CatalogRepository
+import com.kaem.flux.model.media.MediaOverview
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 data class SearchUIState(
     val searchWord: String = "",
-    val overviews: List<ArtworkOverview> = emptyList()
+    val overviews: List<MediaOverview> = emptyList()
 ) {
 
     val filteredOverviews get() = overviews.filter { it.title.contains(searchWord, true) }
@@ -22,7 +22,7 @@ data class SearchUIState(
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    private val repository: LibraryRepository
+    private val repository: CatalogRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SearchUIState())
@@ -30,8 +30,8 @@ class SearchViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            repository.libraryFlow.collect { library ->
-                _uiState.update { it.copy(overviews = library.artworkOverviews) }
+            repository.catalogFlow.collect { library ->
+                _uiState.update { it.copy(overviews = library.mediaOverviews) }
             }
         }
     }

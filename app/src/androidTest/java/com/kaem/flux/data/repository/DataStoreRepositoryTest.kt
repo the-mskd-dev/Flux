@@ -78,7 +78,7 @@ class DataStoreRepositoryTest {
     }
 
     @Test
-    fun add_and_remove_watched_artwork_id() = runTest {
+    fun add_and_remove_watched_media_id() = runTest {
 
         val idTest = 4L
 
@@ -87,11 +87,11 @@ class DataStoreRepositoryTest {
             var state = awaitItem()
             assert(state.watchedIds.isEmpty())
 
-            dataStoreRepository.addWatchedArtwork(idTest)
+            dataStoreRepository.addWatchedMedia(idTest)
             state = awaitItem()
             assert(state.watchedIds.contains(idTest))
 
-            dataStoreRepository.removeWatchedArtwork(idTest)
+            dataStoreRepository.removeWatchedMedia(idTest)
             state = awaitItem()
             assert(!state.watchedIds.contains(idTest))
 

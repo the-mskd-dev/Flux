@@ -34,8 +34,8 @@
     <string name="presentation_1_description">Easily find your favorite movies and series!\nFlux automatically organizes your videos to provide you with a simple and enjoyable library to use!</string>
     <string name="presentation_2_title">Access your videos</string>
     <string name="presentation_2_description">To display and play your videos, Flux needs access to your device\'s files.\nDon\'t worry, we do not collect or share any personal data.</string>
-    <string name="empty_library">Your library is empty</string>
-    <string name="empty_library_desc">To get started, make sure your video files are properly named. This allows the app to organize them automatically.</string>
+    <string name="empty_catalog">Your library is empty</string>
+    <string name="empty_catalog_desc">To get started, make sure your video files are properly named. This allows the app to organize them automatically.</string>
     <string name="refresh">Refresh</string>
     <string name="how_to_name_files">How to name my files?</string>
     <string name="how_to_name_files_desc">Don’t worry, it’s super easy! To keep your videos well organized, here’s how to name your files:</string>

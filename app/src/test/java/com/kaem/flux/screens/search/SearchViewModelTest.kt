@@ -2,9 +2,9 @@ package com.kaem.flux.screens.search
 
 import app.cash.turbine.test
 import com.kaem.flux.bases.BaseTest
-import com.kaem.flux.data.repository.LibraryContent
-import com.kaem.flux.data.repository.LibraryRepository
-import com.kaem.flux.mockups.ArtworkMockups
+import com.kaem.flux.data.repository.CatalogContent
+import com.kaem.flux.data.repository.CatalogRepository
+import com.kaem.flux.mockups.MediaMockups
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,21 +14,21 @@ import org.junit.Test
 class SearchViewModelTest : BaseTest() {
 
     private lateinit var viewModel: SearchViewModel
-    private lateinit var libraryRepository: LibraryRepository
+    private lateinit var catalogRepository: CatalogRepository
 
     // Mocked data
     private val libraryFlow = MutableStateFlow(
-        LibraryContent(artworkOverviews = ArtworkMockups.overviews)
+        CatalogContent(mediaOverviews = MediaMockups.overviews)
     )
 
     override fun setUp() {
         super.setUp()
 
-        libraryRepository = mockk(relaxed = true) {
-            every { libraryFlow } returns this@SearchViewModelTest.libraryFlow
+        catalogRepository = mockk(relaxed = true) {
+            every { catalogFlow } returns this@SearchViewModelTest.libraryFlow
         }
 
-        viewModel = SearchViewModel(libraryRepository)
+        viewModel = SearchViewModel(catalogRepository)
 
     }
 
@@ -40,7 +40,7 @@ class SearchViewModelTest : BaseTest() {
             val initialState = awaitItem()
 
             assert(initialState.searchWord == "")
-            assert(initialState.overviews == ArtworkMockups.overviews)
+            assert(initialState.overviews == MediaMockups.overviews)
 
         }
 
@@ -78,7 +78,7 @@ class SearchViewModelTest : BaseTest() {
 
             assert(state.searchWord == "na")
             assert(state.filteredOverviews.size == 2)
-            assert(state.filteredOverviews == ArtworkMockups.overviews)
+            assert(state.filteredOverviews == MediaMockups.overviews)
 
         }
 

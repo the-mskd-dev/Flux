@@ -18,10 +18,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.kaem.flux.screens.home.ArtworkItem
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.kaem.flux.ui.component.BackButton
-import com.kaem.flux.ui.component.BoldText
+import com.kaem.flux.ui.component.MediaItem
+import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.Constants
 
@@ -53,7 +53,7 @@ fun CategoryScreen(
 
                 BackButton(onTap = onBackButtonTap)
 
-                BoldText(
+                Text.Headline.Small(
                     modifier = Modifier.align(Alignment.Center),
                     text = stringResource(viewModel.contentType.stringResource)
                 )
@@ -69,7 +69,7 @@ fun CategoryScreen(
                 contentAlignment = Alignment.Center
             ) {
 
-                ArtworkItem(
+                MediaItem(
                     width = maxWidth,
                     url = Constants.TMDB.IMAGE_SMALL + overview.imagePath,
                     ratio = 2f/3f,

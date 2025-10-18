@@ -67,9 +67,9 @@ class DataStoreRepository @Inject constructor(
 
     //endregion
 
-    //region WatchedArtwork
+    //region WatchedMedia
 
-    suspend fun addWatchedArtwork(id: Long) {
+    suspend fun addWatchedMedia(id: Long) {
         dataStore.edit { preferences ->
 
             val lastWatchedIdsString = preferences[Keys.WATCHED_IDS] ?: "[]"
@@ -85,7 +85,7 @@ class DataStoreRepository @Inject constructor(
         }
     }
 
-    suspend fun removeWatchedArtwork(id: Long) {
+    suspend fun removeWatchedMedia(id: Long) {
         dataStore.edit { preferences ->
 
             val lastWatchedIdsString = preferences[Keys.WATCHED_IDS] ?: "[]"

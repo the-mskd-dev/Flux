@@ -43,8 +43,7 @@ import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.rememberPermissionState
 import com.kaem.flux.R
 import com.kaem.flux.ui.component.FluxButton
-import com.kaem.flux.ui.component.MediumText
-import com.kaem.flux.ui.component.Title
+import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.Ui
 import kotlinx.coroutines.launch
 
@@ -62,7 +61,7 @@ fun WelcomeScreen(
     val pagerState = rememberPagerState(0) { presentations.size }
     val backgroundImage = when (pagerState.currentPage) {
         0 -> R.drawable.home_screen
-        1 -> R.drawable.artwork_screen
+        1 -> R.drawable.media_screen
         else -> R.drawable.search_screen
     }
 
@@ -217,13 +216,13 @@ fun WelcomeItem(
             verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE)
         ) {
 
-            Title(
+            Text.Headline.Large(
                 modifier = Modifier.fillMaxWidth(),
                 text = title,
                 color = textColor
             )
 
-            MediumText(
+            Text.Body.Large(
                 modifier = Modifier.fillMaxWidth(),
                 text = description,
                 color = textColor

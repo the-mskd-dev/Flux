@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -24,16 +23,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.kaem.flux.R
 import com.kaem.flux.ui.component.FluxDialog
 import com.kaem.flux.ui.component.FluxTopBar
-import com.kaem.flux.ui.component.MediumText
-import com.kaem.flux.ui.component.SmallText
+import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.WebLink
 import com.kaem.flux.utils.extensions.uppercaseFirstLetter
-import java.util.Locale
 
 @Composable
 fun SettingsScreen(
@@ -212,12 +209,11 @@ fun SettingsItem(
             .padding(vertical = Ui.Space.MEDIUM),
     ) {
 
-        MediumText(
+        Text.Title.Large(
             text = text,
-            fontSize = Ui.FontSize.LARGE
         )
 
-        MediumText(
+        Text.Body.Large(
             text = value.uppercaseFirstLetter(),
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = .8f),
         )
@@ -273,7 +269,7 @@ fun <T> SettingsDialog(
                             onClick = { onSelect(option.key); onDismiss() }
                         )
 
-                        MediumText(
+                        Text.Body.Large(
                             modifier = Modifier.weight(1f),
                             text = option.value.uppercaseFirstLetter(),
                             color = MaterialTheme.colorScheme.onSurface

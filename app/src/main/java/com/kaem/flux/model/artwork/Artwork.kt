@@ -1,5 +1,6 @@
 package com.kaem.flux.model.artwork
 
+import androidx.room.Embedded
 import com.kaem.flux.model.UserFile
 import com.kaem.flux.utils.extensions.parseTMDBDate
 import java.util.Date
@@ -17,18 +18,18 @@ import java.util.Date
  * @property status Viewing status of the artwork.
  * @property releaseDate Parsed release date as a [Date], derived from [releaseDateString].
  */
-abstract class Artwork(
-    open val artworkId: Long,
-    open val title: String,
-    open val releaseDateString: String,
-    open val description: String,
-    open val voteAverage: Float,
-    open val voteCount: Int,
-    open val duration: Int,
-    open var currentTime: Long = 0L,
-    open var status: Status = Status.TO_WATCH,
-    open val file: UserFile,
-) {
+abstract class Artwork {
+    abstract val artworkId: Long
+    abstract val title: String
+    abstract  val releaseDateString: String
+    abstract  val description: String
+    abstract  val voteAverage: Float
+    abstract  val voteCount: Int
+    abstract  val duration: Int
+    abstract  var currentTime: Long
+    abstract  var status: Status
+
+    abstract  val file: UserFile
 
     val releaseDate: Date? get() = releaseDateString.parseTMDBDate()
 

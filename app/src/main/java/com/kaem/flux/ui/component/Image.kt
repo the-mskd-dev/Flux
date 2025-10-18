@@ -9,6 +9,7 @@ import com.bumptech.glide.integration.compose.placeholder
 
 object Placeholders {
 
+
     @OptIn(ExperimentalGlideComposeApi::class)
     @Composable
     fun loading() : Placeholder = placeholder(ColorPainter(MaterialTheme.colorScheme.secondaryContainer.copy(alpha = .4f)))

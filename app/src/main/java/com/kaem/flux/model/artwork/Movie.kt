@@ -44,18 +44,7 @@ data class Movie(
     override var status: Status,
     @Embedded override val file: UserFile,
     //val genres: List<String> = listOf()
-) : Artwork(
-    artworkId = artworkId,
-    title = title,
-    releaseDateString = releaseDateString,
-    description = description,
-    voteAverage = voteAverage,
-    voteCount = voteCount,
-    duration = duration,
-    currentTime = currentTime,
-    file = file,
-    status = status
-) {
+) : Artwork() {
 
     /**
      * Constructs a [Movie] instance using a [TMDBMovie] and a [UserFile].

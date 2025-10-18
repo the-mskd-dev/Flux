@@ -55,18 +55,7 @@ data class Episode(
     override val voteCount: Int,
     @Embedded override val file: UserFile,
     override var status: Status = Status.TO_WATCH,
-) : Artwork(
-    artworkId = artworkId,
-    title = title,
-    file = file,
-    releaseDateString = releaseDateString,
-    description = description,
-    voteAverage = voteAverage,
-    voteCount = voteCount,
-    duration = duration,
-    currentTime = currentTime,
-    status = status
-) {
+) : Artwork() {
 
     constructor(
         artworkId: Long,

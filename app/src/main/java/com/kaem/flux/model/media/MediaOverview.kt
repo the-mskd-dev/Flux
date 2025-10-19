@@ -1,4 +1,4 @@
-package com.kaem.flux.model.artwork
+package com.kaem.flux.model.media
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -8,17 +8,16 @@ import com.kaem.flux.model.tmdb.TMDBMovie
 import com.kaem.flux.model.tmdb.TMDBOverview
 
 /**
- * Represents an artwork, such as a movie or a TV show.
+ * Represents a media, such as a movie or a TV show.
  *
- * @property id Unique identifier for the artwork.
- * @property title Title of the artwork.
- * @property imagePath Path to the main image of the artwork.
- * @property bannerPath Path to the banner image of the artwork.
- * @property type Content of the artwork, which can be a movie or a show.
- * @property description Short description derived from the associated content.
+ * @property id Unique identifier for the media.
+ * @property title Title of the media.
+ * @property imagePath Path to the main image of the media.
+ * @property bannerPath Path to the banner image of the media.
+ * @property type Content of the media, which can be a movie or a show.
  */
-@Entity(tableName = "artworks")
-data class ArtworkOverview(
+@Entity(tableName = "medias")
+data class MediaOverview(
     @PrimaryKey
     val id: Long = 0,
     val title: String = "",
@@ -28,7 +27,7 @@ data class ArtworkOverview(
 ) {
 
     /**
-     * Constructs an [ArtworkOverview] instance using a [TMDBMovie] and a [UserFile].
+     * Constructs an [MediaOverview] instance using a [TMDBMovie] and a [UserFile].
      */
     constructor(
         tmdbMovie: TMDBMovie,
@@ -41,7 +40,7 @@ data class ArtworkOverview(
     )
 
     /**
-     * Constructs an [ArtworkOverview] instance using a [TMDBOverview].
+     * Constructs an [MediaOverview] instance using a [TMDBOverview].
      */
     constructor(tmdbOverview: TMDBOverview) : this(
         id = tmdbOverview.id,

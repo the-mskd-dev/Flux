@@ -1,29 +1,29 @@
-package com.kaem.flux.data.source.artwork
+package com.kaem.flux.data.source.media
 
 import com.kaem.flux.data.ddb.FluxDao
 import com.kaem.flux.model.UserFile
-import com.kaem.flux.model.artwork.ArtworkOverview
+import com.kaem.flux.model.media.MediaOverview
 
-import com.kaem.flux.model.artwork.Episode
-import com.kaem.flux.model.artwork.Movie
+import com.kaem.flux.model.media.Episode
+import com.kaem.flux.model.media.Movie
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class ArtworkDataSourceDBImpl @Inject constructor(
+class MediaDataSourceDBImpl @Inject constructor(
     private val db: FluxDao
-) : ArtworkDataSource {
+) : MediaDataSource {
 
-    override suspend fun getArtworks(
+    override suspend fun getMedias(
         files: List<UserFile>,
         sync: Boolean
-    ): ArtworkDataSource.Library {
+    ): MediaDataSource.Library {
 
         if (sync) {
 
-            val overviews = arrayListOf<ArtworkOverview>()
+            val overviews = arrayListOf<MediaOverview>()
             val movies = arrayListOf<Movie>()
             val episodes = arrayListOf<Episode>()
 
@@ -54,7 +54,7 @@ class ArtworkDataSourceDBImpl @Inject constructor(
                 }
             }
 
-            return ArtworkDataSource.Library(
+            return MediaDataSource.Library(
                 overviews = overviews,
                 movies = movies,
                 episodes = episodes
@@ -62,7 +62,7 @@ class ArtworkDataSourceDBImpl @Inject constructor(
 
         } else {
 
-            return ArtworkDataSource.Library(overviews = db.getOverviews())
+            return MediaDataSource.Library(overviews = db.getOverviews())
 
         }
 

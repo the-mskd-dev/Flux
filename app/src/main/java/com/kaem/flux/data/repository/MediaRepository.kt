@@ -1,44 +1,44 @@
 package com.kaem.flux.data.repository
 
 import com.kaem.flux.data.ddb.FluxDao
-import com.kaem.flux.model.artwork.ArtworkOverview
-import com.kaem.flux.model.artwork.ContentType
-import com.kaem.flux.model.artwork.Episode
-import com.kaem.flux.model.artwork.Movie
+import com.kaem.flux.model.media.MediaOverview
+import com.kaem.flux.model.media.ContentType
+import com.kaem.flux.model.media.Episode
+import com.kaem.flux.model.media.Movie
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class ArtworkRepository @Inject constructor(
+class MediaRepository @Inject constructor(
     private val db: FluxDao
 ) {
 
     data class Content(
-        val artworkOverview: ArtworkOverview?,
+        val mediaOverview: MediaOverview?,
         val movie: Movie? = null,
         val episodes: List<Episode>? = null
     )
 
-    suspend fun getArtwork(artworkId: Long) : Content {
+    suspend fun getMedia(mediaId: Long) : Content {
 
-        val artwork = db.getOverview(artworkId)
+        val media = db.getOverview(mediaId)
         var movie: Movie? = null
         var episodes: List<Episode>? = null
 
         withContext(Dispatchers.IO) {
-            when (artwork?.type) {
+            when (media?.type) {
                 ContentType.MOVIE -> {
-                    movie = db.getMovie(artworkId)
+                    movie = db.getMovie(mediaId)
                 }
                 ContentType.SHOW -> {
-                    episodes = db.getEpisodes(artworkId)
+                    episodes = db.getEpisodes(mediaId)
                 }
                 else -> {}
             }
         }
 
         return Content(
-            artworkOverview = artwork,
+            mediaOverview = media,
             movie = movie,
             episodes = episodes
         )

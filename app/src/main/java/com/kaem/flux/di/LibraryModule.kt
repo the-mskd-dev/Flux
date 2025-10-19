@@ -2,7 +2,7 @@ package com.kaem.flux.di
 
 import com.kaem.flux.data.ddb.FluxDao
 import com.kaem.flux.data.repository.CatalogRepository
-import com.kaem.flux.data.source.artwork.ArtworkDataSource
+import com.kaem.flux.data.source.media.MediaDataSource
 import com.kaem.flux.data.source.file.FilesDataSource
 import dagger.Module
 import dagger.Provides
@@ -18,13 +18,13 @@ object LibraryModule {
     @Singleton
     fun provideLibraryRepository(
         @FilesModule.LocalFilesDataSource localFilesDataSource: FilesDataSource,
-        @ArtworkModule.LocalArtworkDataSource localArtworkDataSource: ArtworkDataSource,
-        @ArtworkModule.TMDBArtworkDataSource tmdbArtworkDataSource: ArtworkDataSource,
+        @MediaModule.LocalMediaDataSource localMediaDataSource: MediaDataSource,
+        @MediaModule.TMDBMediaDataSource tmdbMediaDataSource: MediaDataSource,
         db: FluxDao
     ) : CatalogRepository = CatalogRepository(
         fileSource = localFilesDataSource,
-        localSource = localArtworkDataSource,
-        tmdbSource = tmdbArtworkDataSource,
+        localSource = localMediaDataSource,
+        tmdbSource = tmdbMediaDataSource,
         db = db
     )
 

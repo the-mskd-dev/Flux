@@ -1,4 +1,4 @@
-package com.kaem.flux.screens.artwork
+package com.kaem.flux.screens.media
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
@@ -6,14 +6,12 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -30,13 +28,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.kaem.flux.R
 import com.kaem.flux.model.ScreenState
-import com.kaem.flux.model.artwork.Artwork
-import com.kaem.flux.model.artwork.ArtworkOverview
-import com.kaem.flux.model.artwork.Episode
+import com.kaem.flux.model.media.Media
+import com.kaem.flux.model.media.MediaOverview
+import com.kaem.flux.model.media.Episode
 import com.kaem.flux.screens.player.PlayerScreen
 import com.kaem.flux.ui.component.ErrorScreen
 import com.kaem.flux.ui.component.FluxDialog
@@ -45,9 +42,9 @@ import com.kaem.flux.ui.theme.Ui
 import kotlinx.coroutines.launch
 
 @Composable
-fun ArtworkScreen(
+fun MediaScreen(
     onBackButtonTap: () -> Unit,
-    viewModel: ArtworkViewModel = hiltViewModel()
+    viewModel: MediaViewModel = hiltViewModel()
 ) {
 
     val uiState by viewModel.uiState.collectAsState()
@@ -55,7 +52,7 @@ fun ArtworkScreen(
     Crossfade(
         modifier = Modifier.fillMaxSize(),
         targetState = uiState.screen,
-        label = "ArtworkScreenAnimation"
+        label = "MediaScreenAnimation"
     ) { screen ->
 
         when (screen) {
@@ -68,15 +65,15 @@ fun ArtworkScreen(
             }
             else -> {
 
-                ArtworkContent(
+                MediaContent(
                     overview = uiState.overview,
-                    artwork = uiState.selectedArtwork,
+                    media = uiState.selectedMedia,
                     episodes = uiState.episodes,
                     currentSeason = uiState.currentSeason,
                     onBackButtonTap = { onBackButtonTap() },
                     onStatusButtonTap = { viewModel.changeWatchStatus() },
                     onSeasonTap = { viewModel.selectSeason(it) },
-                    onEpisodeTap = { viewModel.selectArtwork(it) },
+                    onEpisodeTap = { viewModel.selectMedia(it) },
                     onPlayerButtonTap = { viewModel.showPlayer(true) }
                 )
 
@@ -88,7 +85,7 @@ fun ArtworkScreen(
 
     AnimatedVisibility(uiState.showPlayer) {
         PlayerScreen(
-            artwork = uiState.selectedArtwork,
+            media = uiState.selectedMedia,
             backward = viewModel.backwardValue,
             forward = viewModel.forwardValue,
             subtitlesLanguage = viewModel.subtitlesLanguage,
@@ -97,7 +94,7 @@ fun ArtworkScreen(
         )
     }
 
-    ArtworkStatusDialog(
+    MediaStatusDialog(
         showStatusDialog = uiState.showStatusDialog,
         onDismiss = { viewModel.changeWatchStatus(checkPrevious = false) },
         onValidate = { viewModel.changeWatchStatusForEpisodeAndPrevious() }
@@ -106,9 +103,9 @@ fun ArtworkScreen(
 }
 
 @Composable
-fun ArtworkContent(
-    overview: ArtworkOverview,
-    artwork: Artwork?,
+fun MediaContent(
+    overview: MediaOverview,
+    media: Media?,
     episodes: List<Episode>,
     currentSeason: Int,
     onBackButtonTap: () -> Unit,
@@ -148,16 +145,16 @@ fun ArtworkContent(
                 verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE)
             ) {
 
-                ArtworkHeader(
+                MediaHeader(
                     overview = overview,
-                    artwork = artwork,
+                    media = media,
                     zoom = zoom,
                     onBackButtonTap = onBackButtonTap,
                     onStatusButtonTap = onStatusButtonTap,
                     onPlayerButtonTap = onPlayerButtonTap
                 )
 
-                ArtworkDescription(artwork = artwork)
+                MediaDescription(media = media)
 
             }
 
@@ -167,7 +164,7 @@ fun ArtworkContent(
 
             item {
 
-                ArtworkSeasonsTabs(
+                MediaSeasonsTabs(
                     selectedSeason = currentSeason,
                     seasons = episodes.map { it.season }.distinct(),
                     onSeasonTap = onSeasonTap
@@ -232,7 +229,7 @@ fun ArtworkContent(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ArtworkStatusDialog(
+fun MediaStatusDialog(
     showStatusDialog: Boolean,
     onDismiss: () -> Unit,
     onValidate: () -> Unit

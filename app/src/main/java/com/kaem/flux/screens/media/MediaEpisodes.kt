@@ -1,9 +1,7 @@
-package com.kaem.flux.screens.artwork
+package com.kaem.flux.screens.media
 
-import android.content.res.Configuration
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -19,21 +17,15 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -43,9 +35,9 @@ import androidx.constraintlayout.compose.Dimension
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.kaem.flux.R
-import com.kaem.flux.mockups.ArtworkMockups
-import com.kaem.flux.model.artwork.Episode
-import com.kaem.flux.model.artwork.Status
+import com.kaem.flux.mockups.MediaMockups
+import com.kaem.flux.model.media.Episode
+import com.kaem.flux.model.media.Status
 import com.kaem.flux.ui.component.BoldText
 import com.kaem.flux.ui.component.MediumText
 import com.kaem.flux.ui.component.Placeholders
@@ -56,7 +48,7 @@ import com.kaem.flux.utils.Constants
 import com.kaem.flux.utils.extensions.grayScale
 
 @Composable
-fun ArtworkSeasonsTabs(
+fun MediaSeasonsTabs(
     selectedSeason: Int,
     seasons: List<Int>,
     onSeasonTap: (Int) -> Unit
@@ -148,7 +140,7 @@ fun EpisodeItem(
                 if (episode.status == Status.IS_WATCHING) {
                     ProgressBar(
                         modifier = Modifier.fillMaxWidth(),
-                        artwork = episode
+                        media = episode
                     )
                 }
 
@@ -191,7 +183,7 @@ fun EpisodeItem(
 @Composable
 fun EpisodeItem_Preview() {
     EpisodeItem(
-        episode = ArtworkMockups.episode1,
+        episode = MediaMockups.episode1,
         onEpisodeTap = {}
     )
 }

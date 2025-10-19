@@ -1,10 +1,8 @@
-package com.kaem.flux.screens.artwork
+package com.kaem.flux.screens.media
 
-import android.graphics.drawable.Icon
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -41,11 +39,11 @@ import androidx.constraintlayout.compose.atMost
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.kaem.flux.R
-import com.kaem.flux.mockups.ArtworkMockups
-import com.kaem.flux.model.artwork.Artwork
-import com.kaem.flux.model.artwork.ArtworkOverview
-import com.kaem.flux.model.artwork.Episode
-import com.kaem.flux.model.artwork.Status
+import com.kaem.flux.mockups.MediaMockups
+import com.kaem.flux.model.media.Media
+import com.kaem.flux.model.media.MediaOverview
+import com.kaem.flux.model.media.Episode
+import com.kaem.flux.model.media.Status
 import com.kaem.flux.ui.component.ProgressBar
 import com.kaem.flux.ui.component.BackButton
 import com.kaem.flux.ui.component.FluxButton
@@ -59,9 +57,9 @@ import com.kaem.flux.utils.extensions.minToMs
 import com.kaem.flux.utils.extensions.timeDescription
 
 @Composable
-fun ArtworkHeader(
-    overview: ArtworkOverview,
-    artwork: Artwork?,
+fun MediaHeader(
+    overview: MediaOverview,
+    media: Media?,
     zoom: Float,
     onBackButtonTap: () -> Unit,
     onStatusButtonTap: () -> Unit,
@@ -70,15 +68,15 @@ fun ArtworkHeader(
 
     ConstraintLayout(
         modifier = Modifier.fillMaxWidth(),
-        constraintSet = ArtworkHeaderConstraintSet
+        constraintSet = MediaHeaderConstraintSet
     ) {
 
-        val imagePath = when (artwork) {
-            is Episode -> artwork.imagePath
+        val imagePath = when (media) {
+            is Episode -> media.imagePath
             else -> overview.bannerPath
         }
 
-        ArtworkImage(
+        MediaImage(
             modifier = Modifier
                 .aspectRatio(6f / 5f)
                 .layoutId("image"),
@@ -92,19 +90,19 @@ fun ArtworkHeader(
             onTap = onBackButtonTap
         )
 
-        ArtworkPlayerButton(
+        MediaPlayerButton(
             modifier = Modifier.layoutId("play"),
-            artwork = artwork,
+            media = media,
             onTap = onPlayerButtonTap
         )
 
-        ArtworkStatusButton(
+        MediaStatusButton(
             modifier = Modifier.layoutId("status"),
-            artwork = artwork,
+            media = media,
             onTap = { onStatusButtonTap() }
         )
 
-        ArtworkTitle(
+        MediaTitle(
             modifier = Modifier.layoutId("title"),
             title = overview.title
         )
@@ -115,7 +113,7 @@ fun ArtworkHeader(
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun ArtworkImage(
+fun MediaImage(
     modifier: Modifier,
     zoom: Float,
     imagePath: String,
@@ -168,25 +166,25 @@ fun ArtworkImage(
 }
 
 @Composable
-fun ArtworkPlayerButton(
+fun MediaPlayerButton(
     modifier: Modifier,
-    artwork: Artwork?,
+    media: Media?,
     onTap: () -> Unit
 ) {
 
-    artwork ?: return
+    media ?: return
 
     val backgroundColor by animateColorAsState(
-        targetValue = if (artwork.status == Status.WATCHED) MaterialTheme.colorScheme.surfaceVariant else MaterialTheme.colorScheme.primary,
-        label = "ArtworkPlayerButton backgroundColor animation"
+        targetValue = if (media.status == Status.WATCHED) MaterialTheme.colorScheme.surfaceVariant else MaterialTheme.colorScheme.primary,
+        label = "MediaPlayerButton backgroundColor animation"
     )
 
     val textColor by animateColorAsState(
-        targetValue = if (artwork.status == Status.WATCHED) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onPrimary,
-        label = "ArtworkPlayerButton backgroundColor animation"
+        targetValue = if (media.status == Status.WATCHED) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onPrimary,
+        label = "MediaPlayerButton backgroundColor animation"
     )
 
-    val text = when (artwork.status) {
+    val text = when (media.status) {
         Status.WATCHED -> stringResource(R.string.rewatch)
         Status.IS_WATCHING -> stringResource(R.string.resume)
         else -> stringResource(R.string.start)
@@ -198,13 +196,13 @@ fun ArtworkPlayerButton(
         verticalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)
     ) {
 
-        ArtworkStatusProgression(artwork = artwork)
+        MediaStatusProgression(media = media)
 
         FluxButton(
             modifier = Modifier.fillMaxWidth(),
             text = text.uppercase(),
             onTap = onTap,
-            icon = if (artwork.status == Status.WATCHED) Icons.Default.Refresh else Icons.Default.PlayArrow,
+            icon = if (media.status == Status.WATCHED) Icons.Default.Refresh else Icons.Default.PlayArrow,
             backgroundColor = backgroundColor,
             textColor = textColor
         )
@@ -214,11 +212,11 @@ fun ArtworkPlayerButton(
 }
 
 @Composable
-fun ArtworkStatusProgression(artwork: Artwork) {
+fun MediaStatusProgression(media: Media) {
 
     AnimatedVisibility(
-        visible = artwork.status == Status.IS_WATCHING,
-        label = "ArtworkStatusProgression animation"
+        visible = media.status == Status.IS_WATCHING,
+        label = "MediaStatusProgression animation"
     ) {
 
         Row(
@@ -229,10 +227,10 @@ fun ArtworkStatusProgression(artwork: Artwork) {
 
             ProgressBar(
                 modifier = Modifier.weight(1f),
-                artwork = artwork
+                media = media
             )
 
-            val remainingTime = (artwork.duration.minToMs - artwork.currentTime).timeDescription(withoutSeconds = true)
+            val remainingTime = (media.duration.minToMs - media.currentTime).timeDescription(withoutSeconds = true)
             SmallText(
                 text = stringResource(R.string.remaining_time, remainingTime),
                 color = MaterialTheme.colorScheme.onBackground
@@ -245,19 +243,19 @@ fun ArtworkStatusProgression(artwork: Artwork) {
 }
 
 @Composable
-fun ArtworkStatusButton(
+fun MediaStatusButton(
     modifier: Modifier,
-    artwork: Artwork?,
+    media: Media?,
     onTap: () -> Unit
 ) {
 
-    artwork ?: return
+    media ?: return
 
     AnimatedContent(
         modifier = modifier,
-        targetState = (if (artwork.status == Status.WATCHED) stringResource(R.string.mark_as_not_watched) else stringResource(R.string.mark_as_watched)).uppercase(),
+        targetState = (if (media.status == Status.WATCHED) stringResource(R.string.mark_as_not_watched) else stringResource(R.string.mark_as_watched)).uppercase(),
         contentAlignment = Alignment.Center,
-        label = "ArtworkStatusButton animation"
+        label = "MediaStatusButton animation"
     ) { text ->
         FluxTextButton(
             text = text,
@@ -268,7 +266,7 @@ fun ArtworkStatusButton(
 }
 
 @Composable
-fun ArtworkTitle(
+fun MediaTitle(
     modifier: Modifier,
     title: String,
 ) {
@@ -281,7 +279,7 @@ fun ArtworkTitle(
 
 }
 
-val ArtworkHeaderConstraintSet = ConstraintSet {
+val MediaHeaderConstraintSet = ConstraintSet {
 
     val (image, back, title, play, status) = createRefsFor("image", "back", "title", "play", "status")
     constrain(image) {
@@ -321,10 +319,10 @@ val ArtworkHeaderConstraintSet = ConstraintSet {
 
 @Preview(showBackground = true)
 @Composable
-fun ArtworkHeader_Preview() {
-    ArtworkHeader(
-        overview = ArtworkMockups.showOverview,
-        artwork = ArtworkMockups.episode1.copy(status = Status.IS_WATCHING, currentTime = 123456L),
+fun MediaHeader_Preview() {
+    MediaHeader(
+        overview = MediaMockups.showOverview,
+        media = MediaMockups.episode1.copy(status = Status.IS_WATCHING, currentTime = 123456L),
         zoom = 1f,
         onBackButtonTap = {},
         onStatusButtonTap = {},

@@ -15,7 +15,7 @@ object Constants {
     object Navigation {
         const val LIBRARY = "library"
         const val CATEGORY = "category"
-        const val ARTWORK = "artwork"
+        const val MEDIA = "media"
         const val SEARCH = "search"
         const val SETTINGS = "settings"
         const val HOW_TO = "howTo"

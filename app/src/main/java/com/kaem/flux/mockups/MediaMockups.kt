@@ -2,15 +2,15 @@ package com.kaem.flux.mockups
 
 import com.kaem.flux.model.FileSource
 import com.kaem.flux.model.UserFile
-import com.kaem.flux.model.artwork.ArtworkOverview
-import com.kaem.flux.model.artwork.ContentType
-import com.kaem.flux.model.artwork.Episode
-import com.kaem.flux.model.artwork.Movie
-import com.kaem.flux.model.artwork.Status
+import com.kaem.flux.model.media.MediaOverview
+import com.kaem.flux.model.media.ContentType
+import com.kaem.flux.model.media.Episode
+import com.kaem.flux.model.media.Movie
+import com.kaem.flux.model.media.Status
 
-object ArtworkMockups {
+object MediaMockups {
 
-    val movieOverview get() = ArtworkOverview(
+    val movieOverview get() = MediaOverview(
         id = 372058L,
         title = "Your name",
         type = ContentType.MOVIE,
@@ -19,7 +19,7 @@ object ArtworkMockups {
     )
 
     val movie get() = Movie(
-        artworkId = 372058L,
+        mediaId = 372058L,
         title = "Your name",
         releaseDateString = "2016-08-26",
         description = "High schoolers Mitsuha and Taki are complete strangers living separate lives. But one night, they suddenly switch places. Mitsuha wakes up in Taki’s body, and he in hers. This bizarre occurrence continues to happen randomly, and the two must adjust their lives around each other.",
@@ -36,7 +36,7 @@ object ArtworkMockups {
         )
     )
 
-    val showOverview get() = ArtworkOverview(
+    val showOverview get() = MediaOverview(
         id = 31910L,
         title = "Naruto Shippūden",
         type = ContentType.SHOW,
@@ -49,7 +49,7 @@ object ArtworkMockups {
         number = 1,
         season = 1,
         imagePath = "/lFg0YnHI7sJkPSv38a8ctE96sqr.jpg",
-        artworkId = 31910L,
+        mediaId = 31910L,
         title = "Homecoming",
         releaseDateString = "2007-02-15",
         description = "A figure passes through the gates. It's an older Naruto, who has returned from a long training journey with Jiraiya. Naruto Uzumaki is back!",
@@ -71,7 +71,7 @@ object ArtworkMockups {
         number = 2,
         season = 1,
         imagePath = "/zbvJ4ts4JJmqP6koMNnLzBX6qiJ.jpg",
-        artworkId = 31910L,
+        mediaId = 31910L,
         title = "The Akatsuki Makes Its Move",
         releaseDateString = "2007-02-15",
         description = "Naruto and Sakura team up and challenge Kakashi to a survival challenge to show off their progress.",

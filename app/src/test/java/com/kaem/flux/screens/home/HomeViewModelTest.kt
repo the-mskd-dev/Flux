@@ -6,9 +6,9 @@ import com.kaem.flux.data.repository.DataStoreRepository
 import com.kaem.flux.data.repository.FluxDataStore
 import com.kaem.flux.data.repository.CatalogContent
 import com.kaem.flux.data.repository.CatalogRepository
-import com.kaem.flux.mockups.ArtworkMockups
+import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.ScreenState
-import com.kaem.flux.model.artwork.ArtworkOverview
+import com.kaem.flux.model.media.MediaOverview
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
@@ -52,8 +52,8 @@ class HomeViewModelTest : BaseTest() {
         viewModel.uiState.test {
             val initialState = awaitItem()
             assert(ScreenState.LOADING == initialState.screenState)
-            assert(emptyList<ArtworkOverview>() == initialState.overviews)
-            assert(emptyList<Long>() == initialState.lastWatchedArtworkIds)
+            assert(emptyList<MediaOverview>() == initialState.overviews)
+            assert(emptyList<Long>() == initialState.lastWatchedMediaIds)
             assert(initialState.isSyncing)
 
             cancelAndConsumeRemainingEvents()
@@ -65,11 +65,11 @@ class HomeViewModelTest : BaseTest() {
     fun `combine flows should update state`() = runTest {
 
         // Mock
-        val overviews = listOf(ArtworkMockups.movieOverview, ArtworkMockups.showOverview)
-        val lastWatchedIds = listOf(ArtworkMockups.showOverview.id)
+        val overviews = listOf(MediaMockups.movieOverview, MediaMockups.showOverview)
+        val lastWatchedIds = listOf(MediaMockups.showOverview.id)
         val catalogContent = CatalogContent(
             isLoading = false,
-            artworkOverviews = overviews
+            mediaOverviews = overviews
         )
         val dataStore = FluxDataStore(
             watchedIds = lastWatchedIds
@@ -85,7 +85,7 @@ class HomeViewModelTest : BaseTest() {
 
             assert(ScreenState.CONTENT == updatedState.screenState)
             assert(overviews == updatedState.overviews)
-            assert(lastWatchedIds == updatedState.lastWatchedArtworkIds)
+            assert(lastWatchedIds == updatedState.lastWatchedMediaIds)
             assert(!updatedState.isSyncing)
 
             cancelAndConsumeRemainingEvents()

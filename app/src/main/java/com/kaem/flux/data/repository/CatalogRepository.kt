@@ -1,12 +1,12 @@
 package com.kaem.flux.data.repository
 
 import com.kaem.flux.data.ddb.FluxDao
-import com.kaem.flux.data.source.artwork.ArtworkDataSource
+import com.kaem.flux.data.source.media.MediaDataSource
 import com.kaem.flux.data.source.file.FilesDataSource
 import com.kaem.flux.model.UserFile
-import com.kaem.flux.model.artwork.ArtworkOverview
-import com.kaem.flux.model.artwork.Episode
-import com.kaem.flux.model.artwork.Movie
+import com.kaem.flux.model.media.MediaOverview
+import com.kaem.flux.model.media.Episode
+import com.kaem.flux.model.media.Movie
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,13 +17,13 @@ import javax.inject.Inject
 
 data class CatalogContent(
     val isLoading: Boolean = true,
-    val artworkOverviews: List<ArtworkOverview> = emptyList()
+    val mediaOverviews: List<MediaOverview> = emptyList()
 )
 
 class CatalogRepository @Inject constructor(
     private val fileSource: FilesDataSource,
-    private val localSource: ArtworkDataSource,
-    private val tmdbSource: ArtworkDataSource,
+    private val localSource: MediaDataSource,
+    private val tmdbSource: MediaDataSource,
     private val db: FluxDao
 ) {
 
@@ -34,39 +34,39 @@ class CatalogRepository @Inject constructor(
 
         _catalogFlow.value = _catalogFlow.value.copy(isLoading = true)
 
-        val artworks = if (sync) {
+        val medias = if (sync) {
             syncCatalog()
         } else {
-            localSource.getArtworks(sync = false).overviews
+            localSource.getMedias(sync = false).overviews
         }
 
         // Update content
         _catalogFlow.update { content ->
             content.copy(
                 isLoading = false,
-                artworkOverviews = artworks.sortedBy { it.title }
+                mediaOverviews = medias.sortedBy { it.title }
             )
         }
 
     }
 
-    private suspend fun syncCatalog() : List<ArtworkOverview> {
+    private suspend fun syncCatalog() : List<MediaOverview> {
 
         // Fetch all files, local and online (if possible)
         val allFiles = getFiles()
         val dbFileNames = db.getAllFileNames()
 
-        // Delete artworks with missing files
-        db.deleteArtworksWithNoFiles(allFiles)
+        // Delete medias with missing files
+        db.deleteMediasWithNoFiles(allFiles)
 
-        // Get new artworks from TMBD
+        // Get new medias from TMBD
         val newFiles = allFiles.filter { !dbFileNames.contains(it.name) }
-        val (newOverviews, newMovies, newEpisodes) = tmdbSource.getArtworks(
+        val (newOverviews, newMovies, newEpisodes) = tmdbSource.getMedias(
             files = newFiles,
             sync = true
         )
 
-        // Save new artworks
+        // Save new medias
         db.insertOverviews(newOverviews)
         db.insertMovies(newMovies)
         db.insertEpisodes(newEpisodes)

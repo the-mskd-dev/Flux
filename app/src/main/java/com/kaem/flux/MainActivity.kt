@@ -20,7 +20,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.kaem.flux.data.repository.DataStoreRepository
 import com.kaem.flux.screens.about.AboutScreen
-import com.kaem.flux.screens.artwork.ArtworkScreen
+import com.kaem.flux.screens.media.MediaScreen
 import com.kaem.flux.screens.category.CategoryScreen
 import com.kaem.flux.screens.home.HomeScreen
 import com.kaem.flux.screens.howTo.HowToScreen
@@ -64,7 +64,7 @@ class MainActivity : ComponentActivity() {
                         HomeScreen(
                             navigateToDetails = {
                                 navController.navigate(
-                                    route = "${Constants.Navigation.ARTWORK}/$it"
+                                    route = "${Constants.Navigation.MEDIA}/$it"
                                 )
                             },
                             navigateToCategory = {
@@ -91,10 +91,10 @@ class MainActivity : ComponentActivity() {
                     }
 
                     composable(
-                        "${Constants.Navigation.ARTWORK}/{artworkId}",
-                        arguments = listOf(navArgument("artworkId") { type = NavType.LongType }),
+                        "${Constants.Navigation.MEDIA}/{mediaId}",
+                        arguments = listOf(navArgument("mediaId") { type = NavType.LongType }),
                     ) {
-                        ArtworkScreen(
+                        MediaScreen(
                             onBackButtonTap = { navController.popBackStack() }
                         )
                     }
@@ -107,7 +107,7 @@ class MainActivity : ComponentActivity() {
                             onBackButtonTap = { navController.popBackStack() },
                             navigateToDetails = {
                                 navController.navigate(
-                                    route = "${Constants.Navigation.ARTWORK}/$it"
+                                    route = "${Constants.Navigation.MEDIA}/$it"
                                 )
                             }
                         )
@@ -118,7 +118,7 @@ class MainActivity : ComponentActivity() {
                             onBackButtonTap = { navController.popBackStack() },
                             navigateToDetails = {
                                 navController.navigate(
-                                    route = "${Constants.Navigation.ARTWORK}/$it"
+                                    route = "${Constants.Navigation.MEDIA}/$it"
                                 )
                             }
                         )

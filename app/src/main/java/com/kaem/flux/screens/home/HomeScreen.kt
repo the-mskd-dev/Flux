@@ -21,14 +21,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CardElevation
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -38,10 +34,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -51,8 +43,8 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.kaem.flux.R
 import com.kaem.flux.model.ScreenState
-import com.kaem.flux.model.artwork.ArtworkOverview
-import com.kaem.flux.model.artwork.ContentType
+import com.kaem.flux.model.media.MediaOverview
+import com.kaem.flux.model.media.ContentType
 import com.kaem.flux.screens.welcome.WelcomeScreen
 import com.kaem.flux.screens.welcome.fluxPermissionState
 import com.kaem.flux.ui.component.BoldText
@@ -61,7 +53,6 @@ import com.kaem.flux.ui.component.FluxTextButton
 import com.kaem.flux.ui.component.Loader
 import com.kaem.flux.ui.component.MediumText
 import com.kaem.flux.ui.component.Placeholders
-import com.kaem.flux.ui.component.Title
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.Constants
 
@@ -102,7 +93,7 @@ fun HomeScreen(
 
                     HomeContent(
                         overviews = uiState.overviews,
-                        lastWatchedIds = uiState.lastWatchedArtworkIds,
+                        lastWatchedIds = uiState.lastWatchedMediaIds,
                         isSyncing = uiState.isSyncing,
                         onSyncTap = { viewModel.getLibrary(manualSync = true) },
                         navigateToDetails = { id -> navigateToDetails(id) },
@@ -124,7 +115,7 @@ fun HomeScreen(
 
 @Composable
 fun HomeContent(
-    overviews: List<ArtworkOverview>,
+    overviews: List<MediaOverview>,
     lastWatchedIds: List<Long>,
     isSyncing: Boolean,
     onSyncTap: () -> Unit,
@@ -199,7 +190,7 @@ fun HomeEmpty(
 
 @Composable
 fun HomeLists(
-    overviews: List<ArtworkOverview>,
+    overviews: List<MediaOverview>,
     lastWatchedIds: List<Long>,
     isSyncing: Boolean,
     onSyncTap: () -> Unit,
@@ -225,20 +216,20 @@ fun HomeLists(
             navigateToSettings = navigateToSettings
         )
 
-        ArtworkList(
+        MediaList(
             overviews = lastWatchedIds.mapNotNull { overviews.find { o -> o.id == it } },
-            largeArtwork = true,
+            largeMedia = true,
             navigateToDetails = navigateToDetails
         )
 
-        ArtworkList(
+        MediaList(
             name = stringResource(id = ContentType.SHOW.stringResource),
             overviews = overviews.filter { it.type == ContentType.SHOW },
             navigateToDetails = navigateToDetails,
             navigateToCategory = { navigateToCategory(ContentType.SHOW) }
         )
 
-        ArtworkList(
+        MediaList(
             name = stringResource(id = ContentType.MOVIE.stringResource),
             overviews = overviews.filter { it.type == ContentType.MOVIE },
             navigateToDetails = navigateToDetails,
@@ -308,10 +299,10 @@ fun HomeTopButtons(
 }
 
 @Composable
-fun ArtworkList(
+fun MediaList(
     name: String? = null,
-    largeArtwork: Boolean = false,
-    overviews: List<ArtworkOverview>,
+    largeMedia: Boolean = false,
+    overviews: List<MediaOverview>,
     navigateToDetails: (Long) -> Unit,
     navigateToCategory: () -> Unit = {}
 ) {
@@ -319,8 +310,8 @@ fun ArtworkList(
     if (overviews.isEmpty())
         return
 
-    val width = if (largeArtwork) 350.dp else 120.dp
-    val ratio = if (largeArtwork) 1920f/1080f else 2f/3f
+    val width = if (largeMedia) 350.dp else 120.dp
+    val ratio = if (largeMedia) 1920f/1080f else 2f/3f
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -343,9 +334,9 @@ fun ArtworkList(
 
             items(overviews, key = { it.id }) {
 
-                val url = if (largeArtwork) Constants.TMDB.IMAGE + it.bannerPath else Constants.TMDB.IMAGE_SMALL + it.imagePath
+                val url = if (largeMedia) Constants.TMDB.IMAGE + it.bannerPath else Constants.TMDB.IMAGE_SMALL + it.imagePath
 
-                ArtworkItem(
+                MediaItem(
                     width = width,
                     ratio = ratio,
                     url = url,
@@ -362,7 +353,7 @@ fun ArtworkList(
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun ArtworkItem(
+fun MediaItem(
     width: Dp,
     url: String,
     ratio: Float,

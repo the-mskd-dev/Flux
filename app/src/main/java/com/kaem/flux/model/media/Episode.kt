@@ -1,4 +1,4 @@
-package com.kaem.flux.model.artwork
+package com.kaem.flux.model.media
 
 import androidx.room.Embedded
 import androidx.room.Entity
@@ -17,23 +17,23 @@ import com.kaem.flux.model.tmdb.TMDBEpisode
  * @property season Season number.
  * @property imagePath Path to the episode's image.
  * @property crew List of crew members involved in the episode.
- * @property releaseDateString The release date of the artwork as a string.
- * @property description Description or synopsis of the artwork.
- * @property voteAverage Average rating of the artwork.
- * @property voteCount Number of votes received for the artwork.
- * @property duration Duration of the artwork in minutes.
+ * @property releaseDateString The release date of the media as a string.
+ * @property description Description or synopsis of the media.
+ * @property voteAverage Average rating of the media.
+ * @property voteCount Number of votes received for the media.
+ * @property duration Duration of the media in minutes.
  * @property currentTime Current playback position in milliseconds.
  * @property file The associated local file.
- * @property status Viewing status of the artwork.
+ * @property status Viewing status of the media.
  * @property releaseDateString Release date of the episode as a string.
  */
 @Entity(
     tableName = "episodes",
     foreignKeys = [
         ForeignKey(
-            entity = ArtworkOverview::class,
+            entity = MediaOverview::class,
             parentColumns = ["id"],
-            childColumns = ["artworkId"],
+            childColumns = ["mediaId"],
             onDelete = ForeignKey.CASCADE
         )
     ]
@@ -45,7 +45,7 @@ data class Episode(
     val season: Int,
     val imagePath: String,
     //val crew: List<TMDBCrew>,
-    override val artworkId: Long,
+    override val mediaId: Long,
     override val title: String,
     override val releaseDateString: String,
     override val description: String,
@@ -55,15 +55,15 @@ data class Episode(
     override val voteCount: Int,
     @Embedded override val file: UserFile,
     override var status: Status = Status.TO_WATCH,
-) : Artwork() {
+) : Media() {
 
     constructor(
-        artworkId: Long,
+        mediaId: Long,
         tmdbEpisode: TMDBEpisode,
         file: UserFile
     ) : this (
         id = tmdbEpisode.id,
-        artworkId = artworkId,
+        mediaId = mediaId,
         title = tmdbEpisode.title,
         number = tmdbEpisode.number,
         season = tmdbEpisode.season,

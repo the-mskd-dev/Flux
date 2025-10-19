@@ -2,9 +2,9 @@ package com.kaem.flux.di
 
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.kaem.flux.data.ddb.FluxDao
-import com.kaem.flux.data.source.artwork.ArtworkDataSource
-import com.kaem.flux.data.source.artwork.ArtworkDataSourceDBImpl
-import com.kaem.flux.data.source.artwork.ArtworkDataSourceTMDBImpl
+import com.kaem.flux.data.source.media.MediaDataSource
+import com.kaem.flux.data.source.media.MediaDataSourceDBImpl
+import com.kaem.flux.data.source.media.MediaDataSourceTMDBImpl
 import com.kaem.flux.data.tmdb.TMDBService
 import dagger.Module
 import dagger.Provides
@@ -14,31 +14,31 @@ import javax.inject.Qualifier
 
 @Module
 @InstallIn(SingletonComponent::class)
-object ArtworkModule {
+object MediaModule {
 
     @Qualifier
     @Retention(AnnotationRetention.RUNTIME)
-    annotation class LocalArtworkDataSource
+    annotation class LocalMediaDataSource
 
     @Qualifier
     @Retention(AnnotationRetention.RUNTIME)
-    annotation class TMDBArtworkDataSource
+    annotation class TMDBMediaDataSource
 
     @Provides
-    @LocalArtworkDataSource
-    fun provideDatabaseArtworkDataSource(db: FluxDao) : ArtworkDataSource {
-        return ArtworkDataSourceDBImpl(
+    @LocalMediaDataSource
+    fun provideDatabaseMediaDataSource(db: FluxDao) : MediaDataSource {
+        return MediaDataSourceDBImpl(
             db = db
         )
     }
 
     @Provides
-    @TMDBArtworkDataSource
-    fun provideTMDBArtworkDataSource(
+    @TMDBMediaDataSource
+    fun provideTMDBMediaDataSource(
         tmdbService: TMDBService,
         firebaseAnalytics: FirebaseAnalytics
-    ) : ArtworkDataSource {
-        return ArtworkDataSourceTMDBImpl(
+    ) : MediaDataSource {
+        return MediaDataSourceTMDBImpl(
             tmdbService = tmdbService,
             firebaseAnalytics = firebaseAnalytics
         )

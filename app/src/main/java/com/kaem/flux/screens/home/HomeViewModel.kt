@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.kaem.flux.data.repository.DataStoreRepository
 import com.kaem.flux.data.repository.CatalogRepository
 import com.kaem.flux.model.ScreenState
-import com.kaem.flux.model.artwork.ArtworkOverview
+import com.kaem.flux.model.media.MediaOverview
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,8 +17,8 @@ import kotlin.time.Duration.Companion.days
 
 data class HomeUiState(
     val screenState: ScreenState = ScreenState.LOADING,
-    val overviews: List<ArtworkOverview> = emptyList(),
-    val lastWatchedArtworkIds: List<Long> = emptyList(),
+    val overviews: List<MediaOverview> = emptyList(),
+    val lastWatchedMediaIds: List<Long> = emptyList(),
     val isSyncing: Boolean = true
 )
 
@@ -49,8 +49,8 @@ class HomeViewModel @Inject constructor(
 
                 HomeUiState(
                     screenState = screenState,
-                    overviews = libraryContent.artworkOverviews,
-                    lastWatchedArtworkIds = preferences.watchedIds,
+                    overviews = libraryContent.mediaOverviews,
+                    lastWatchedMediaIds = preferences.watchedIds,
                     isSyncing = libraryContent.isLoading
                 )
             }.collect { _uiState.value = it }

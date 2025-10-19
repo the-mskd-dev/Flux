@@ -1,4 +1,4 @@
-package com.kaem.flux.model.artwork
+package com.kaem.flux.model.media
 
 import androidx.room.Embedded
 import androidx.room.Entity
@@ -10,30 +10,30 @@ import com.kaem.flux.model.tmdb.TMDBMovie
 /**
  * Represents a movie with specific details.
  *
- * @property releaseDateString The release date of the artwork as a string.
- * @property description Description or synopsis of the artwork.
- * @property voteAverage Average rating of the artwork.
- * @property voteCount Number of votes received for the artwork.
- * @property duration Duration of the artwork in minutes.
+ * @property releaseDateString The release date of the media as a string.
+ * @property description Description or synopsis of the media.
+ * @property voteAverage Average rating of the media.
+ * @property voteCount Number of votes received for the media.
+ * @property duration Duration of the media in minutes.
  * @property currentTime Current playback position in milliseconds.
  * @property file The associated local file.
- * @property status Viewing status of the artwork.
+ * @property status Viewing status of the media.
  * @property genres List of genres associated with the movie.
  */
 @Entity(
     tableName = "movies",
     foreignKeys = [
         ForeignKey(
-            entity = ArtworkOverview::class,
+            entity = MediaOverview::class,
             parentColumns = ["id"],
-            childColumns = ["artworkId"],
+            childColumns = ["mediaId"],
             onDelete = ForeignKey.CASCADE
         )
     ]
 )
 data class Movie(
     @PrimaryKey
-    override val artworkId: Long,
+    override val mediaId: Long,
     override val title: String,
     override val releaseDateString: String,
     override val description: String,
@@ -44,7 +44,7 @@ data class Movie(
     override var status: Status = Status.TO_WATCH,
     @Embedded override val file: UserFile,
     //val genres: List<String> = listOf()
-) : Artwork() {
+) : Media() {
 
     /**
      * Constructs a [Movie] instance using a [TMDBMovie] and a [UserFile].
@@ -53,7 +53,7 @@ data class Movie(
         tmdbMovie: TMDBMovie,
         file: UserFile
     ) : this(
-        artworkId = tmdbMovie.id,
+        mediaId = tmdbMovie.id,
         title = tmdbMovie.title,
         releaseDateString = tmdbMovie.releaseDateString,
         description = tmdbMovie.description,

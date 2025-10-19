@@ -1,14 +1,14 @@
-package com.kaem.flux.screens.artwork
+package com.kaem.flux.screens.media
 
 import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
 import com.kaem.flux.bases.BaseTest
-import com.kaem.flux.data.repository.ArtworkRepository
+import com.kaem.flux.data.repository.MediaRepository
 import com.kaem.flux.data.repository.DataStoreRepository
 import com.kaem.flux.data.repository.FluxDataStore
-import com.kaem.flux.mockups.ArtworkMockups
+import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.ScreenState
-import com.kaem.flux.model.artwork.Status
+import com.kaem.flux.model.media.Status
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -22,23 +22,23 @@ import java.util.Locale
 import kotlin.time.Duration.Companion.minutes
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class ArtworkViewModelTest : BaseTest() {
+class MediaViewModelTest : BaseTest() {
 
-    private lateinit var viewModel: ArtworkViewModel
-    private lateinit var artworkRepository: ArtworkRepository
+    private lateinit var viewModel: MediaViewModel
+    private lateinit var mediaRepository: MediaRepository
     private lateinit var dataStoreRepository: DataStoreRepository
 
     override fun setUp() {
         super.setUp()
 
         val savedStateHandle = mockk<SavedStateHandle>(relaxed = true) {
-            every { this@mockk.get<Any>(any()) } returns ArtworkMockups.showOverview.id
+            every { this@mockk.get<Any>(any()) } returns MediaMockups.showOverview.id
         }
 
-        artworkRepository = mockk(relaxed = true) {
-            coEvery { getArtwork(any()) } returns ArtworkRepository.Content(
-                artworkOverview = ArtworkMockups.showOverview,
-                episodes = ArtworkMockups.episodes
+        mediaRepository = mockk(relaxed = true) {
+            coEvery { getMedia(any()) } returns MediaRepository.Content(
+                mediaOverview = MediaMockups.showOverview,
+                episodes = MediaMockups.episodes
             )
         }
 
@@ -48,7 +48,7 @@ class ArtworkViewModelTest : BaseTest() {
             every { getSubtitlesLanguage() } returns Locale.ENGLISH
         }
 
-        viewModel = ArtworkViewModel(savedStateHandle, artworkRepository, dataStoreRepository)
+        viewModel = MediaViewModel(savedStateHandle, mediaRepository, dataStoreRepository)
 
     }
 
@@ -59,11 +59,11 @@ class ArtworkViewModelTest : BaseTest() {
 
             val initialState = awaitItem()
 
-            assert(initialState.overview == ArtworkMockups.showOverview)
+            assert(initialState.overview == MediaMockups.showOverview)
             assert(initialState.screen == ScreenState.CONTENT)
-            assert(initialState.selectedArtwork == ArtworkMockups.episode1)
+            assert(initialState.selectedMedia == MediaMockups.episode1)
             assert(initialState.episodes.size == 2)
-            assert(initialState.currentSeason == ArtworkMockups.episode1.season)
+            assert(initialState.currentSeason == MediaMockups.episode1.season)
             assert(!initialState.showPlayer)
             assert(!initialState.showStatusDialog)
 
@@ -78,10 +78,10 @@ class ArtworkViewModelTest : BaseTest() {
 
             awaitItem()
 
-            viewModel.selectArtwork(ArtworkMockups.episode2)
+            viewModel.selectMedia(MediaMockups.episode2)
             val updatedState = awaitItem()
 
-            assert(updatedState.selectedArtwork == ArtworkMockups.episode2)
+            assert(updatedState.selectedMedia == MediaMockups.episode2)
 
         }
 
@@ -131,8 +131,8 @@ class ArtworkViewModelTest : BaseTest() {
 
             advanceUntilIdle()
 
-            assert(updatedState.selectedArtwork?.status == Status.WATCHED)
-            coVerify { artworkRepository.saveEpisode(any()) }
+            assert(updatedState.selectedMedia?.status == Status.WATCHED)
+            coVerify { mediaRepository.saveEpisode(any()) }
 
             cancelAndConsumeRemainingEvents()
 
@@ -149,7 +149,7 @@ class ArtworkViewModelTest : BaseTest() {
             awaitItem()
 
             // Select episode 2
-            viewModel.selectArtwork(ArtworkMockups.episode2)
+            viewModel.selectMedia(MediaMockups.episode2)
             awaitItem()
 
             // Request change status of current episode
@@ -180,7 +180,7 @@ class ArtworkViewModelTest : BaseTest() {
             awaitItem()
 
             // Select episode 2
-            viewModel.selectArtwork(ArtworkMockups.episode2)
+            viewModel.selectMedia(MediaMockups.episode2)
             awaitItem()
 
             // Change status of current episode (2)
@@ -192,7 +192,7 @@ class ArtworkViewModelTest : BaseTest() {
 
             assert(!updatedState.showStatusDialog)
             assert(updatedState.episodes.all { it.status == Status.WATCHED })
-            coVerify { artworkRepository.saveEpisode(any()) }
+            coVerify { mediaRepository.saveEpisode(any()) }
 
             cancelAndConsumeRemainingEvents()
 
@@ -209,7 +209,7 @@ class ArtworkViewModelTest : BaseTest() {
             awaitItem()
 
             // Select episode 2
-            viewModel.selectArtwork(ArtworkMockups.episode2)
+            viewModel.selectMedia(MediaMockups.episode2)
             awaitItem()
 
             // Change status of current and previous episodes
@@ -220,7 +220,7 @@ class ArtworkViewModelTest : BaseTest() {
             val updatedState = awaitItem()
 
             assert(updatedState.episodes.all { it.status == Status.WATCHED })
-            coVerify { artworkRepository.saveEpisodes(any()) }
+            coVerify { mediaRepository.saveEpisodes(any()) }
 
             cancelAndConsumeRemainingEvents()
 
@@ -245,8 +245,8 @@ class ArtworkViewModelTest : BaseTest() {
 
             advanceUntilIdle()
 
-            assert(updatedState.selectedArtwork?.status == Status.TO_WATCH)
-            coVerify { artworkRepository.saveEpisode(any()) }
+            assert(updatedState.selectedMedia?.status == Status.TO_WATCH)
+            coVerify { mediaRepository.saveEpisode(any()) }
 
             cancelAndConsumeRemainingEvents()
 
@@ -264,8 +264,8 @@ class ArtworkViewModelTest : BaseTest() {
 
             advanceUntilIdle()
 
-            coVerify { artworkRepository.saveEpisode(any()) }
-            coVerify { dataStoreRepository.addWatchedArtwork(any()) }
+            coVerify { mediaRepository.saveEpisode(any()) }
+            coVerify { dataStoreRepository.addWatchedMedia(any()) }
 
             cancelAndConsumeRemainingEvents()
 
@@ -280,14 +280,14 @@ class ArtworkViewModelTest : BaseTest() {
             val state = awaitItem()
 
             // Save progression at 5 minutes
-            viewModel.saveTime(ArtworkMockups.episode1.duration.minutes.inWholeMilliseconds)
+            viewModel.saveTime(MediaMockups.episode1.duration.minutes.inWholeMilliseconds)
 
 
             advanceUntilIdle()
 
-            assert(state.selectedArtwork?.status == Status.WATCHED)
-            coVerify { artworkRepository.saveEpisode(any()) }
-            coVerify { dataStoreRepository.addWatchedArtwork(any()) }
+            assert(state.selectedMedia?.status == Status.WATCHED)
+            coVerify { mediaRepository.saveEpisode(any()) }
+            coVerify { dataStoreRepository.addWatchedMedia(any()) }
 
             cancelAndConsumeRemainingEvents()
 
@@ -306,17 +306,17 @@ class ArtworkViewModelTest : BaseTest() {
             awaitItem()
 
             // Select second episode
-            viewModel.selectArtwork(ArtworkMockups.episode2)
+            viewModel.selectMedia(MediaMockups.episode2)
             val state = awaitItem()
 
             // Save progression at the end
-            viewModel.saveTime(ArtworkMockups.episode2.duration.minutes.inWholeMilliseconds)
+            viewModel.saveTime(MediaMockups.episode2.duration.minutes.inWholeMilliseconds)
 
             advanceUntilIdle()
 
-            assert(state.selectedArtwork?.status == Status.WATCHED)
-            coVerify { artworkRepository.saveEpisode(any()) }
-            coVerify { dataStoreRepository.removeWatchedArtwork(any()) }
+            assert(state.selectedMedia?.status == Status.WATCHED)
+            coVerify { mediaRepository.saveEpisode(any()) }
+            coVerify { dataStoreRepository.removeWatchedMedia(any()) }
 
             cancelAndConsumeRemainingEvents()
 
@@ -328,32 +328,32 @@ class ArtworkViewModelTest : BaseTest() {
     fun `mark movie as watched`() = runTest {
 
         val savedStateHandle = mockk<SavedStateHandle>(relaxed = true) {
-            every { this@mockk.get<Any>(any()) } returns ArtworkMockups.movieOverview.id
+            every { this@mockk.get<Any>(any()) } returns MediaMockups.movieOverview.id
         }
 
-        artworkRepository = mockk(relaxed = true) {
-            coEvery { getArtwork(any()) } returns ArtworkRepository.Content(
-                artworkOverview = ArtworkMockups.movieOverview,
-                movie = ArtworkMockups.movie
+        mediaRepository = mockk(relaxed = true) {
+            coEvery { getMedia(any()) } returns MediaRepository.Content(
+                mediaOverview = MediaMockups.movieOverview,
+                movie = MediaMockups.movie
             )
         }
 
-        viewModel = ArtworkViewModel(savedStateHandle, artworkRepository, dataStoreRepository)
+        viewModel = MediaViewModel(savedStateHandle, mediaRepository, dataStoreRepository)
 
         viewModel.uiState.test {
 
             awaitItem()
 
             val initialState = awaitItem()
-            assert(initialState.selectedArtwork?.status == Status.TO_WATCH)
+            assert(initialState.selectedMedia?.status == Status.TO_WATCH)
 
             viewModel.changeWatchStatus()
             val updatedState = awaitItem()
 
             advanceUntilIdle()
 
-            assert(updatedState.selectedArtwork?.status == Status.WATCHED)
-            coVerify { artworkRepository.saveMovie(any()) }
+            assert(updatedState.selectedMedia?.status == Status.WATCHED)
+            coVerify { mediaRepository.saveMovie(any()) }
 
             cancelAndConsumeRemainingEvents()
 
@@ -365,32 +365,32 @@ class ArtworkViewModelTest : BaseTest() {
     fun `end movie watching`() = runTest {
 
         val savedStateHandle = mockk<SavedStateHandle>(relaxed = true) {
-            every { this@mockk.get<Any>(any()) } returns ArtworkMockups.movieOverview.id
+            every { this@mockk.get<Any>(any()) } returns MediaMockups.movieOverview.id
         }
 
-        artworkRepository = mockk(relaxed = true) {
-            coEvery { getArtwork(any()) } returns ArtworkRepository.Content(
-                artworkOverview = ArtworkMockups.movieOverview,
-                movie = ArtworkMockups.movie
+        mediaRepository = mockk(relaxed = true) {
+            coEvery { getMedia(any()) } returns MediaRepository.Content(
+                mediaOverview = MediaMockups.movieOverview,
+                movie = MediaMockups.movie
             )
         }
 
-        viewModel = ArtworkViewModel(savedStateHandle, artworkRepository, dataStoreRepository)
+        viewModel = MediaViewModel(savedStateHandle, mediaRepository, dataStoreRepository)
 
         viewModel.uiState.test {
 
             awaitItem()
 
             val state = awaitItem()
-            assert(state.selectedArtwork?.status == Status.TO_WATCH)
+            assert(state.selectedMedia?.status == Status.TO_WATCH)
 
-            viewModel.saveTime(ArtworkMockups.movie.duration.minutes.inWholeMilliseconds)
+            viewModel.saveTime(MediaMockups.movie.duration.minutes.inWholeMilliseconds)
 
             advanceUntilIdle()
 
-            assert(state.selectedArtwork?.status == Status.WATCHED)
-            coVerify { artworkRepository.saveMovie(any()) }
-            coVerify { dataStoreRepository.removeWatchedArtwork(any()) }
+            assert(state.selectedMedia?.status == Status.WATCHED)
+            coVerify { mediaRepository.saveMovie(any()) }
+            coVerify { dataStoreRepository.removeWatchedMedia(any()) }
 
             cancelAndConsumeRemainingEvents()
 

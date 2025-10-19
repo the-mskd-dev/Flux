@@ -1,4 +1,4 @@
-package com.kaem.flux.data.source.artwork
+package com.kaem.flux.data.source.media
 
 import android.util.Log
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -7,10 +7,10 @@ import com.google.gson.JsonSyntaxException
 import com.kaem.flux.data.tmdb.TMDBService
 import com.kaem.flux.model.UserFile
 import com.kaem.flux.model.UserFolder
-import com.kaem.flux.model.artwork.ArtworkOverview
-import com.kaem.flux.model.artwork.ContentType
-import com.kaem.flux.model.artwork.Episode
-import com.kaem.flux.model.artwork.Movie
+import com.kaem.flux.model.media.MediaOverview
+import com.kaem.flux.model.media.ContentType
+import com.kaem.flux.model.media.Episode
+import com.kaem.flux.model.media.Movie
 import com.kaem.flux.model.tmdb.TMDBMediaType
 import com.kaem.flux.utils.Analytics
 import com.kaem.flux.utils.extensions.groupInFolders
@@ -22,28 +22,28 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class ArtworkDataSourceTMDBImpl @Inject constructor(
+class MediaDataSourceTMDBImpl @Inject constructor(
     private val tmdbService: TMDBService,
     private val firebaseAnalytics: FirebaseAnalytics
-) : ArtworkDataSource {
+) : MediaDataSource {
 
     //region Companion object
 
     companion object {
-        const val TAG = "ArtworkDataSourceTMDB"
+        const val TAG = "MediaDataSourceTMDB"
     }
 
     //endregion
 
     //region Public methods
 
-    override suspend fun getArtworks(
+    override suspend fun getMedias(
         files: List<UserFile>,
         sync: Boolean
-    ): ArtworkDataSource.Library {
+    ): MediaDataSource.Library {
 
-        var movies: Map<ArtworkOverview, Movie> = mapOf()
-        var shows: Map<ArtworkOverview, List<Episode>> = mapOf()
+        var movies: Map<MediaOverview, Movie> = mapOf()
+        var shows: Map<MediaOverview, List<Episode>> = mapOf()
 
         withContext(Dispatchers.Default) {
 
@@ -65,12 +65,12 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(
 
         }
 
-        return ArtworkDataSource.Library(
+        return MediaDataSource.Library(
             overviews = (movies.keys + shows.keys).toList(),
             movies = movies.values.toList(),
             episodes = shows.values.flatten()
         ).also {
-            Log.d(TAG, "[getArtworks] Found ${it.overviews.size} overviews, ${it.movies.size} movies, ${it.episodes.size} episodes")
+            Log.d(TAG, "[getMedias] Found ${it.overviews.size} overviews, ${it.movies.size} movies, ${it.episodes.size} episodes")
         }
     }
 
@@ -78,7 +78,7 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(
 
     //region Private methods
 
-    private suspend fun getMovies(folders: List<UserFolder>) : Map<ArtworkOverview, Movie> {
+    private suspend fun getMovies(folders: List<UserFolder>) : Map<MediaOverview, Movie> {
 
         val movies = coroutineScope {
 
@@ -100,7 +100,7 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(
                         }
 
                         val tmdbMovie = tmdbService.getMovieDetails(id = tmdbOverview.id)
-                        val overview = ArtworkOverview(tmdbMovie = tmdbMovie)
+                        val overview = MediaOverview(tmdbMovie = tmdbMovie)
                         val movie = Movie(tmdbMovie = tmdbMovie, file = file)
 
                         overview to movie
@@ -130,9 +130,9 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(
 
     }
 
-    private suspend fun getShows(folders: List<UserFolder>) : Map<ArtworkOverview, List<Episode>> {
+    private suspend fun getShows(folders: List<UserFolder>) : Map<MediaOverview, List<Episode>> {
 
-        val shows = mutableMapOf<ArtworkOverview, List<Episode>>()
+        val shows = mutableMapOf<MediaOverview, List<Episode>>()
 
         coroutineScope {
 
@@ -156,9 +156,9 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(
 
     }
 
-    private suspend fun getShowOverviewAndEpisodes(folder: UserFolder) : Pair<ArtworkOverview, List<Episode>>? {
+    private suspend fun getShowOverviewAndEpisodes(folder: UserFolder) : Pair<MediaOverview, List<Episode>>? {
 
-        val overview: ArtworkOverview
+        val overview: MediaOverview
 
         try {
 
@@ -171,7 +171,7 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(
                 it.type = TMDBMediaType.SHOW
             }
 
-            overview = ArtworkOverview(tmdbOverview)
+            overview = MediaOverview(tmdbOverview)
 
         } catch (e: Exception) {
             Log.e(TAG, "[getShowAndEpisodes] Fail to get show overview : ${folder.title}", e)
@@ -203,7 +203,7 @@ class ArtworkDataSourceTMDBImpl @Inject constructor(
 
                         Episode(
                             tmdbEpisode = tmdbEpisode,
-                            artworkId = overview.id,
+                            mediaId = overview.id,
                             file = file
                         )
 

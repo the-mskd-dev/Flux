@@ -19,7 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.kaem.flux.screens.home.ArtworkItem
+import com.kaem.flux.screens.home.MediaItem
 import com.kaem.flux.ui.component.BackButton
 import com.kaem.flux.ui.component.BoldText
 import com.kaem.flux.ui.theme.Ui
@@ -69,7 +69,7 @@ fun CategoryScreen(
                 contentAlignment = Alignment.Center
             ) {
 
-                ArtworkItem(
+                MediaItem(
                     width = maxWidth,
                     url = Constants.TMDB.IMAGE_SMALL + overview.imagePath,
                     ratio = 2f/3f,

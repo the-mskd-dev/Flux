@@ -1,4 +1,4 @@
-package com.kaem.flux.screens.artwork
+package com.kaem.flux.screens.media
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -16,9 +16,9 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.kaem.flux.R
-import com.kaem.flux.mockups.ArtworkMockups
-import com.kaem.flux.model.artwork.Artwork
-import com.kaem.flux.model.artwork.Episode
+import com.kaem.flux.mockups.MediaMockups
+import com.kaem.flux.model.media.Media
+import com.kaem.flux.model.media.Episode
 import com.kaem.flux.ui.component.BoldText
 import com.kaem.flux.ui.component.MediumText
 import com.kaem.flux.ui.component.SmallText
@@ -27,12 +27,11 @@ import com.kaem.flux.utils.extensions.minToMs
 import com.kaem.flux.utils.extensions.timeDescription
 import java.text.DateFormat
 import java.util.Locale
-import kotlin.time.Duration.Companion.minutes
 
 @Composable
-fun ArtworkDescription(artwork: Artwork?) {
+fun MediaDescription(media: Media?) {
 
-    artwork ?: return
+    media ?: return
 
     Column(
         modifier = Modifier
@@ -41,20 +40,20 @@ fun ArtworkDescription(artwork: Artwork?) {
         verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
     ) {
 
-        if (artwork is Episode) {
+        if (media is Episode) {
 
             Column(modifier = Modifier.fillMaxWidth()) {
 
                 BoldText(
                     modifier = Modifier.fillMaxWidth(),
-                    text = stringResource(id = R.string.season_and_episode, artwork.season, artwork.number).uppercase(),
+                    text = stringResource(id = R.string.season_and_episode, media.season, media.number).uppercase(),
                     color = MaterialTheme.colorScheme.primary,
                     fontSize = Ui.FontSize.SMALL
                 )
 
                 MediumText(
                     modifier = Modifier.fillMaxWidth(),
-                    text = artwork.title,
+                    text = media.title,
                     color = MaterialTheme.colorScheme.onBackground,
                     fontSize = Ui.FontSize.LARGE
                 )
@@ -76,18 +75,18 @@ fun ArtworkDescription(artwork: Artwork?) {
             modifier = Modifier
                 .fillMaxWidth()
                 .alpha(.8f),
-            text = artwork.description,
+            text = media.description,
             textAlign = TextAlign.Justify
         )
 
-        ArtworkDescriptionDetails(artwork)
+        MediaDescriptionDetails(media)
 
     }
 
 }
 
 @Composable
-fun ArtworkDescriptionDetails(artwork: Artwork) {
+fun MediaDescriptionDetails(media: Media) {
 
     Column(
         modifier = Modifier
@@ -97,17 +96,17 @@ fun ArtworkDescriptionDetails(artwork: Artwork) {
     ) {
 
         SmallText(
-            text = artwork.releaseDate?.let { stringResource(R.string.release_date, DateFormat.getDateInstance().format(it)) },
+            text = media.releaseDate?.let { stringResource(R.string.release_date, DateFormat.getDateInstance().format(it)) },
             fontStyle = FontStyle.Italic
         )
 
         SmallText(
-            text = stringResource(R.string.duration, artwork.duration.minToMs.timeDescription()) ,
+            text = stringResource(R.string.duration, media.duration.minToMs.timeDescription()) ,
             fontStyle = FontStyle.Italic
         )
 
-        if (artwork.voteAverage > 0f) {
-            val rate = String.format(Locale.getDefault(),"%.2f", artwork.voteAverage)
+        if (media.voteAverage > 0f) {
+            val rate = String.format(Locale.getDefault(),"%.2f", media.voteAverage)
             SmallText(
                 text = stringResource(R.string.rate, rate),
                 fontStyle = FontStyle.Italic
@@ -119,17 +118,17 @@ fun ArtworkDescriptionDetails(artwork: Artwork) {
 
 @Preview
 @Composable
-fun ArtworkDescription_Movie_Preview() {
+fun MediaDescription_Movie_Preview() {
     Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
-        ArtworkDescription(artwork = ArtworkMockups.movie)
+        MediaDescription(media = MediaMockups.movie)
     }
 
 }
 
 @Preview
 @Composable
-fun ArtworkDescription_Show_Preview() {
+fun MediaDescription_Show_Preview() {
     Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
-        ArtworkDescription(artwork = ArtworkMockups.episode1)
+        MediaDescription(media = MediaMockups.episode1)
     }
 }

@@ -4,7 +4,7 @@ import app.cash.turbine.test
 import com.kaem.flux.bases.BaseTest
 import com.kaem.flux.data.repository.CatalogContent
 import com.kaem.flux.data.repository.CatalogRepository
-import com.kaem.flux.mockups.ArtworkMockups
+import com.kaem.flux.mockups.MediaMockups
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,7 +18,7 @@ class SearchViewModelTest : BaseTest() {
 
     // Mocked data
     private val libraryFlow = MutableStateFlow(
-        CatalogContent(artworkOverviews = ArtworkMockups.overviews)
+        CatalogContent(mediaOverviews = MediaMockups.overviews)
     )
 
     override fun setUp() {
@@ -40,7 +40,7 @@ class SearchViewModelTest : BaseTest() {
             val initialState = awaitItem()
 
             assert(initialState.searchWord == "")
-            assert(initialState.overviews == ArtworkMockups.overviews)
+            assert(initialState.overviews == MediaMockups.overviews)
 
         }
 
@@ -78,7 +78,7 @@ class SearchViewModelTest : BaseTest() {
 
             assert(state.searchWord == "na")
             assert(state.filteredOverviews.size == 2)
-            assert(state.filteredOverviews == ArtworkMockups.overviews)
+            assert(state.filteredOverviews == MediaMockups.overviews)
 
         }
 

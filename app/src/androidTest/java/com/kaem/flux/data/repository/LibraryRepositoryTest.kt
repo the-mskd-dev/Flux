@@ -3,9 +3,9 @@ package com.kaem.flux.data.repository
 import androidx.test.filters.MediumTest
 import app.cash.turbine.test
 import com.kaem.flux.data.ddb.FluxDao
-import com.kaem.flux.data.source.artwork.ArtworkDataSource
+import com.kaem.flux.data.source.media.MediaDataSource
 import com.kaem.flux.data.source.file.FilesDataSource
-import com.kaem.flux.mockups.ArtworkMockups
+import com.kaem.flux.mockups.MediaMockups
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -19,8 +19,8 @@ class LibraryRepositoryTest {
     private lateinit var repository: CatalogRepository
 
     private val fileSource: FilesDataSource = mockk(relaxed = true)
-    private val localSource: ArtworkDataSource = mockk(relaxed = true)
-    private val tmdbSource: ArtworkDataSource = mockk(relaxed = true)
+    private val localSource: MediaDataSource = mockk(relaxed = true)
+    private val tmdbSource: MediaDataSource = mockk(relaxed = true)
     private val db: FluxDao = mockk(relaxed = true)
 
     @Before
@@ -31,12 +31,12 @@ class LibraryRepositoryTest {
     @Test
     fun getLibrary_without_sync() = runTest {
         // Given
-        val localArtworks = ArtworkMockups.overviews
-        val localMovies = listOf(ArtworkMockups.movie)
-        val localEpisodes = ArtworkMockups.episodes
+        val localMedias = MediaMockups.overviews
+        val localMovies = listOf(MediaMockups.movie)
+        val localEpisodes = MediaMockups.episodes
 
-        coEvery { localSource.getArtworks(sync = false) } returns ArtworkDataSource.Library(
-            overviews = localArtworks,
+        coEvery { localSource.getMedias(sync = false) } returns MediaDataSource.Library(
+            overviews = localMedias,
             movies = localMovies,
             episodes = localEpisodes
         )
@@ -49,12 +49,12 @@ class LibraryRepositoryTest {
 
             val loadedState = awaitItem()
             assert(!loadedState.isLoading)
-            assert(loadedState.artworkOverviews.containsAll(localArtworks))
+            assert(loadedState.mediaOverviews.containsAll(localMedias))
 
             cancelAndIgnoreRemainingEvents()
         }
 
-        coVerify { localSource.getArtworks(sync = false) }
+        coVerify { localSource.getMedias(sync = false) }
 
     }
 
@@ -74,8 +74,8 @@ class LibraryRepositoryTest {
         }
 
         coVerify { db.getAllFileNames() }
-        coVerify { db.deleteArtworksWithNoFiles(any()) }
-        coVerify { tmdbSource.getArtworks(files = any(), sync = true) }
+        coVerify { db.deleteMediasWithNoFiles(any()) }
+        coVerify { tmdbSource.getMedias(files = any(), sync = true) }
         coVerify { db.insertOverviews(any()) }
         coVerify { db.insertMovies(any()) }
         coVerify { db.insertEpisodes(any()) }
@@ -87,7 +87,7 @@ class LibraryRepositoryTest {
     @Test
     fun saveMovie_should_insert_movie_into_db() = runTest {
         // Arrange
-        val movie = ArtworkMockups.movie
+        val movie = MediaMockups.movie
         coEvery { db.insertMovies(listOf(movie)) } returns Unit
 
         // Act
@@ -100,7 +100,7 @@ class LibraryRepositoryTest {
     @Test
     fun saveEpisode_should_insert_episode_into_db() = runTest {
         // Arrange
-        val episode = ArtworkMockups.episode1
+        val episode = MediaMockups.episode1
         coEvery { db.insertEpisodes(listOf(episode)) } returns Unit
 
         // Act

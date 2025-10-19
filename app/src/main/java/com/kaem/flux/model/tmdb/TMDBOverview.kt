@@ -3,21 +3,21 @@ package com.kaem.flux.model.tmdb
 import com.google.gson.annotations.SerializedName
 
 /**
- * Represents an artwork retrieved from TMDB (The Movie Database).
+ * Represents an media retrieved from TMDB (The Movie Database).
  *
- * @property id Unique identifier for the artwork.
- * @property description Overview or synopsis of the artwork.
- * @property imagePath Path to the artwork's poster image.
- * @property bannerPath Path to the artwork's backdrop image.
+ * @property id Unique identifier for the media.
+ * @property description Overview or synopsis of the media.
+ * @property imagePath Path to the media's poster image.
+ * @property bannerPath Path to the media's backdrop image.
  * @property type Type of media (e.g., movie, TV show, or person).
- * @property genres List of genre IDs associated with the artwork.
- * @property popularity Popularity score of the artwork.
- * @property releaseDateString Release date of the artwork as a string.
- * @property voteAverage Average rating of the artwork.
- * @property voteCount Number of votes for the artwork.
- * @property title Title of the artwork.
- * @property originalTitle Original title of the artwork.
- * @property relatedContent List of related artworks (used for persons).
+ * @property genres List of genre IDs associated with the media.
+ * @property popularity Popularity score of the media.
+ * @property releaseDateString Release date of the media as a string.
+ * @property voteAverage Average rating of the media.
+ * @property voteCount Number of votes for the media.
+ * @property title Title of the media.
+ * @property originalTitle Original title of the media.
+ * @property relatedContent List of related medias (used for persons).
  */
 data class TMDBOverview(
     val id: Long,
@@ -50,12 +50,12 @@ data class TMDBOverview(
 )
 
 /**
- * Represents a paginated list of TMDB artworks.
+ * Represents a paginated list of TMDB medias.
  *
  * @property page Current page of the results.
- * @property results List of artworks retrieved for the current page.
+ * @property results List of medias retrieved for the current page.
  * @property pageCount Total number of pages available.
- * @property resultCount Total number of artworks in the result set.
+ * @property resultCount Total number of medias in the result set.
  */
 data class TMDBOverviewsResult(
     val page: Int,

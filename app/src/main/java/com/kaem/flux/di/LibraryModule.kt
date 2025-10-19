@@ -18,13 +18,13 @@ object LibraryModule {
     @Singleton
     fun provideLibraryRepository(
         @FilesModule.LocalFilesDataSource localFilesDataSource: FilesDataSource,
-        @MediaModule.LocalMediaDataSource localMediaDataSource: MediaDataSource,
-        @MediaModule.TMDBMediaDataSource tmdbMediaDataSource: MediaDataSource,
+        @MediaModule.MediaDataSourceLocal mediaDataSourceLocal: MediaDataSource,
+        @MediaModule.MediaDataSourceTMDB mediaDataSourceTMDB: MediaDataSource,
         db: FluxDao
     ) : CatalogRepository = CatalogRepository(
         fileSource = localFilesDataSource,
-        localSource = localMediaDataSource,
-        tmdbSource = tmdbMediaDataSource,
+        localSource = mediaDataSourceLocal,
+        tmdbSource = mediaDataSourceTMDB,
         db = db
     )
 

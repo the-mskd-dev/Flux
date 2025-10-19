@@ -18,23 +18,23 @@ object MediaModule {
 
     @Qualifier
     @Retention(AnnotationRetention.RUNTIME)
-    annotation class LocalMediaDataSource
+    annotation class MediaDataSourceLocal
 
     @Qualifier
     @Retention(AnnotationRetention.RUNTIME)
-    annotation class TMDBMediaDataSource
+    annotation class MediaDataSourceTMDB
 
     @Provides
-    @LocalMediaDataSource
-    fun provideDatabaseMediaDataSource(db: FluxDao) : MediaDataSource {
+    @MediaDataSourceLocal
+    fun provideMediaDataSourceLocal(db: FluxDao) : MediaDataSource {
         return MediaDataSourceDBImpl(
             db = db
         )
     }
 
     @Provides
-    @TMDBMediaDataSource
-    fun provideTMDBMediaDataSource(
+    @MediaDataSourceTMDB
+    fun provideMediaDataSourceTMDB(
         tmdbService: TMDBService,
         firebaseAnalytics: FirebaseAnalytics
     ) : MediaDataSource {

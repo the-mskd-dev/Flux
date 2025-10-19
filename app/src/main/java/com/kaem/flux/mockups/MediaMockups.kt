@@ -93,6 +93,10 @@ object MediaMockups {
         showOverview
     )
 
+    val movies get() = listOf(
+        movie
+    )
+
     val episodes get() = listOf(
         episode1,
         episode2

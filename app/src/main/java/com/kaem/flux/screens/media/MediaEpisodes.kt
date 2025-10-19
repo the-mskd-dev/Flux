@@ -24,7 +24,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -32,15 +31,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
-import com.bumptech.glide.integration.compose.GlideImage
 import com.kaem.flux.R
 import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.media.Episode
 import com.kaem.flux.model.media.Status
 import com.kaem.flux.ui.component.BoldText
+import com.kaem.flux.ui.component.Image
 import com.kaem.flux.ui.component.MediumText
-import com.kaem.flux.ui.component.Placeholders
 import com.kaem.flux.ui.component.ProgressBar
 import com.kaem.flux.ui.component.SmallText
 import com.kaem.flux.ui.theme.Ui
@@ -89,7 +86,6 @@ fun MediaSeasonsTabs(
 
 }
 
-@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun EpisodeItem(
     modifier: Modifier = Modifier,
@@ -128,12 +124,9 @@ fun EpisodeItem(
             contentAlignment = Alignment.BottomCenter,
             content = {
 
-                GlideImage(
+                Image(
                     modifier = Modifier.fillMaxSize(),
-                    model = Constants.TMDB.IMAGE + episode.imagePath,
-                    contentScale = ContentScale.Crop,
-                    loading = Placeholders.loading(),
-                    failure = Placeholders.failure(),
+                    url = Constants.TMDB.IMAGE + episode.imagePath,
                     contentDescription = "Season ${episode.season} episode ${episode.number}, ${episode.title}"
                 )
 

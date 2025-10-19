@@ -36,8 +36,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.compose.atMost
-import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
-import com.bumptech.glide.integration.compose.GlideImage
+import coil3.compose.AsyncImage
 import com.kaem.flux.R
 import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.media.Media
@@ -48,7 +47,7 @@ import com.kaem.flux.ui.component.ProgressBar
 import com.kaem.flux.ui.component.BackButton
 import com.kaem.flux.ui.component.FluxButton
 import com.kaem.flux.ui.component.FluxTextButton
-import com.kaem.flux.ui.component.Placeholders
+import com.kaem.flux.ui.component.Image
 import com.kaem.flux.ui.component.SmallText
 import com.kaem.flux.ui.component.Title
 import com.kaem.flux.ui.theme.Ui
@@ -111,7 +110,6 @@ fun MediaHeader(
 
 }
 
-@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun MediaImage(
     modifier: Modifier,
@@ -127,7 +125,7 @@ fun MediaImage(
         contentAlignment = Alignment.BottomCenter
     ) {
 
-        GlideImage(
+        Image(
             modifier = Modifier
                 .fillMaxSize()
                 .graphicsLayer {
@@ -136,10 +134,7 @@ fun MediaImage(
                     translationX = (size.width * (1 - zoom)) / 2
                     translationY = (size.height * (1 - zoom)) / 2
                 },
-            model = Constants.TMDB.IMAGE + imagePath,
-            contentScale = ContentScale.Crop,
-            loading = Placeholders.loading(),
-            failure = Placeholders.failure(),
+            url = Constants.TMDB.IMAGE + imagePath,
             contentDescription = title
         )
 

@@ -32,13 +32,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
-import com.bumptech.glide.integration.compose.GlideImage
+import coil3.compose.AsyncImage
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.kaem.flux.R
@@ -50,9 +50,9 @@ import com.kaem.flux.screens.welcome.fluxPermissionState
 import com.kaem.flux.ui.component.BoldText
 import com.kaem.flux.ui.component.FluxButton
 import com.kaem.flux.ui.component.FluxTextButton
+import com.kaem.flux.ui.component.Image
 import com.kaem.flux.ui.component.Loader
 import com.kaem.flux.ui.component.MediumText
-import com.kaem.flux.ui.component.Placeholders
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.Constants
 
@@ -351,7 +351,6 @@ fun MediaList(
     }
 }
 
-@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun MediaItem(
     width: Dp,
@@ -362,16 +361,14 @@ fun MediaItem(
 ) {
 
     Card(elevation = Ui.Card.elevations()) {
-        GlideImage(
+        Image(
             modifier = Modifier
                 .clickable { onTap() }
                 .clip(Ui.Shape.RoundedCorner)
                 .width(width)
                 .aspectRatio(ratio),
-            model = url,
-            contentDescription = description,
-            loading = Placeholders.loading(),
-            failure = Placeholders.failure()
+            url = url,
+            contentDescription = description
         )
     }
 

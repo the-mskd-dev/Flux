@@ -1,9 +1,9 @@
 package com.kaem.flux.data.repository
 
 import com.kaem.flux.data.ddb.FluxDao
-import com.kaem.flux.model.media.MediaOverview
 import com.kaem.flux.model.media.ContentType
 import com.kaem.flux.model.media.Episode
+import com.kaem.flux.model.media.MediaOverview
 import com.kaem.flux.model.media.Movie
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

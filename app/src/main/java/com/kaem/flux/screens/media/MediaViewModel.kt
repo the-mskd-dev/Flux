@@ -4,12 +4,12 @@ import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kaem.flux.data.repository.MediaRepository
 import com.kaem.flux.data.repository.DataStoreRepository
+import com.kaem.flux.data.repository.MediaRepository
 import com.kaem.flux.model.ScreenState
+import com.kaem.flux.model.media.Episode
 import com.kaem.flux.model.media.Media
 import com.kaem.flux.model.media.MediaOverview
-import com.kaem.flux.model.media.Episode
 import com.kaem.flux.model.media.Movie
 import com.kaem.flux.model.media.Status
 import com.kaem.flux.utils.extensions.getPreviousEpisodesFor

@@ -2,10 +2,10 @@ package com.kaem.flux.screens.home
 
 import app.cash.turbine.test
 import com.kaem.flux.bases.BaseTest
-import com.kaem.flux.data.repository.DataStoreRepository
-import com.kaem.flux.data.repository.FluxDataStore
 import com.kaem.flux.data.repository.CatalogContent
 import com.kaem.flux.data.repository.CatalogRepository
+import com.kaem.flux.data.repository.DataStoreRepository
+import com.kaem.flux.data.repository.FluxDataStore
 import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.ScreenState
 import com.kaem.flux.model.media.MediaOverview

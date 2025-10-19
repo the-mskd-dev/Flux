@@ -2,8 +2,8 @@ package com.kaem.flux.di
 
 import com.kaem.flux.data.ddb.FluxDao
 import com.kaem.flux.data.repository.CatalogRepository
-import com.kaem.flux.data.source.media.MediaSource
 import com.kaem.flux.data.source.file.FilesSource
+import com.kaem.flux.data.source.media.MediaSource
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

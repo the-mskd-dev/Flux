@@ -13,9 +13,9 @@ import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 import com.kaem.flux.model.FileSource
 import com.kaem.flux.model.UserFile
-import com.kaem.flux.model.media.MediaOverview
 import com.kaem.flux.model.media.ContentType
 import com.kaem.flux.model.media.Episode
+import com.kaem.flux.model.media.MediaOverview
 import com.kaem.flux.model.media.Movie
 
 @Dao

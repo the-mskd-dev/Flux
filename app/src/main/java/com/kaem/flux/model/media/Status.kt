@@ -1,5 +1,10 @@
 package com.kaem.flux.model.media
 
+import com.kaem.flux.model.media.Status.IS_WATCHING
+import com.kaem.flux.model.media.Status.TO_WATCH
+import com.kaem.flux.model.media.Status.WATCHED
+
+
 /**
  * Represents the viewing status of an media or episode.
  *

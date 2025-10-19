@@ -3,8 +3,8 @@ package com.kaem.flux.data.repository
 import androidx.test.filters.MediumTest
 import app.cash.turbine.test
 import com.kaem.flux.data.ddb.FluxDao
-import com.kaem.flux.data.source.media.MediaSource
 import com.kaem.flux.data.source.file.FilesSource
+import com.kaem.flux.data.source.media.MediaSource
 import com.kaem.flux.mockups.MediaMockups
 import io.mockk.coEvery
 import io.mockk.coVerify

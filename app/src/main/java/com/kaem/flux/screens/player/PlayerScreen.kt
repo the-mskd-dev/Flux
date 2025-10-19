@@ -39,8 +39,8 @@ import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import com.kaem.flux.R
-import com.kaem.flux.model.media.Media
 import com.kaem.flux.model.media.Episode
+import com.kaem.flux.model.media.Media
 import com.kaem.flux.ui.component.BackButton
 import com.kaem.flux.ui.component.LifecycleComponent
 import com.kaem.flux.ui.component.MediumText

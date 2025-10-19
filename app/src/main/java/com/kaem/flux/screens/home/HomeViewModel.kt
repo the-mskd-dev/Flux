@@ -3,8 +3,8 @@ package com.kaem.flux.screens.home
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kaem.flux.data.repository.DataStoreRepository
 import com.kaem.flux.data.repository.CatalogRepository
+import com.kaem.flux.data.repository.DataStoreRepository
 import com.kaem.flux.model.ScreenState
 import com.kaem.flux.model.media.MediaOverview
 import dagger.hilt.android.lifecycle.HiltViewModel

@@ -12,14 +12,14 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class MediaDataSourceDBImpl @Inject constructor(
+class MediaSourceDBImpl @Inject constructor(
     private val db: FluxDao
-) : MediaDataSource {
+) : MediaSource {
 
     override suspend fun getMedias(
         files: List<UserFile>,
         sync: Boolean
-    ): MediaDataSource.Library {
+    ): MediaSource.Library {
 
         if (sync) {
 
@@ -54,7 +54,7 @@ class MediaDataSourceDBImpl @Inject constructor(
                 }
             }
 
-            return MediaDataSource.Library(
+            return MediaSource.Library(
                 overviews = overviews,
                 movies = movies,
                 episodes = episodes
@@ -62,7 +62,7 @@ class MediaDataSourceDBImpl @Inject constructor(
 
         } else {
 
-            return MediaDataSource.Library(overviews = db.getOverviews())
+            return MediaSource.Library(overviews = db.getOverviews())
 
         }
 

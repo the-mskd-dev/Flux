@@ -3,8 +3,8 @@ package com.kaem.flux.data.repository
 import androidx.test.filters.MediumTest
 import app.cash.turbine.test
 import com.kaem.flux.data.ddb.FluxDao
-import com.kaem.flux.data.source.media.MediaDataSource
-import com.kaem.flux.data.source.file.FilesDataSource
+import com.kaem.flux.data.source.media.MediaSource
+import com.kaem.flux.data.source.file.FilesSource
 import com.kaem.flux.mockups.MediaMockups
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -18,9 +18,9 @@ class LibraryRepositoryTest {
 
     private lateinit var repository: CatalogRepository
 
-    private val fileSource: FilesDataSource = mockk(relaxed = true)
-    private val localSource: MediaDataSource = mockk(relaxed = true)
-    private val tmdbSource: MediaDataSource = mockk(relaxed = true)
+    private val fileSource: FilesSource = mockk(relaxed = true)
+    private val localSource: MediaSource = mockk(relaxed = true)
+    private val tmdbSource: MediaSource = mockk(relaxed = true)
     private val db: FluxDao = mockk(relaxed = true)
 
     @Before
@@ -35,7 +35,7 @@ class LibraryRepositoryTest {
         val localMovies = listOf(MediaMockups.movie)
         val localEpisodes = MediaMockups.episodes
 
-        coEvery { localSource.getMedias(sync = false) } returns MediaDataSource.Library(
+        coEvery { localSource.getMedias(sync = false) } returns MediaSource.Library(
             overviews = localMedias,
             movies = localMovies,
             episodes = localEpisodes

@@ -12,9 +12,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 
-class FilesDataSourceLocalImpl(
+class FilesSourceLocalImpl(
     private val context: Context
-) : FilesDataSource {
+) : FilesSource {
 
     override suspend fun getFiles(): List<UserFile> {
 

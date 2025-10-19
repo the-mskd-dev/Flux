@@ -2,9 +2,9 @@ package com.kaem.flux.di
 
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.kaem.flux.data.ddb.FluxDao
-import com.kaem.flux.data.source.media.MediaDataSource
-import com.kaem.flux.data.source.media.MediaDataSourceDBImpl
-import com.kaem.flux.data.source.media.MediaDataSourceTMDBImpl
+import com.kaem.flux.data.source.media.MediaSource
+import com.kaem.flux.data.source.media.MediaSourceDBImpl
+import com.kaem.flux.data.source.media.MediaSourceTMDBImpl
 import com.kaem.flux.data.tmdb.TMDBService
 import dagger.Module
 import dagger.Provides
@@ -26,8 +26,8 @@ object MediaModule {
 
     @Provides
     @MediaDataSourceLocal
-    fun provideMediaDataSourceLocal(db: FluxDao) : MediaDataSource {
-        return MediaDataSourceDBImpl(
+    fun provideMediaDataSourceLocal(db: FluxDao) : MediaSource {
+        return MediaSourceDBImpl(
             db = db
         )
     }
@@ -37,8 +37,8 @@ object MediaModule {
     fun provideMediaDataSourceTMDB(
         tmdbService: TMDBService,
         firebaseAnalytics: FirebaseAnalytics
-    ) : MediaDataSource {
-        return MediaDataSourceTMDBImpl(
+    ) : MediaSource {
+        return MediaSourceTMDBImpl(
             tmdbService = tmdbService,
             firebaseAnalytics = firebaseAnalytics
         )

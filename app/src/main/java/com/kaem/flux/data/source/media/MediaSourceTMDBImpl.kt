@@ -22,10 +22,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class MediaDataSourceTMDBImpl @Inject constructor(
+class MediaSourceTMDBImpl @Inject constructor(
     private val tmdbService: TMDBService,
     private val firebaseAnalytics: FirebaseAnalytics
-) : MediaDataSource {
+) : MediaSource {
 
     //region Companion object
 
@@ -40,7 +40,7 @@ class MediaDataSourceTMDBImpl @Inject constructor(
     override suspend fun getMedias(
         files: List<UserFile>,
         sync: Boolean
-    ): MediaDataSource.Library {
+    ): MediaSource.Library {
 
         var movies: Map<MediaOverview, Movie> = mapOf()
         var shows: Map<MediaOverview, List<Episode>> = mapOf()
@@ -65,7 +65,7 @@ class MediaDataSourceTMDBImpl @Inject constructor(
 
         }
 
-        return MediaDataSource.Library(
+        return MediaSource.Library(
             overviews = (movies.keys + shows.keys).toList(),
             movies = movies.values.toList(),
             episodes = shows.values.flatten()

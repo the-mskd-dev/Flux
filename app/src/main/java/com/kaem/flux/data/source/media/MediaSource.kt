@@ -5,7 +5,7 @@ import com.kaem.flux.model.media.MediaOverview
 import com.kaem.flux.model.media.Episode
 import com.kaem.flux.model.media.Movie
 
-interface MediaDataSource {
+interface MediaSource {
 
     data class Library(
         val overviews: List<MediaOverview> = emptyList(),

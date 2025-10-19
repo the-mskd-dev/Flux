@@ -2,7 +2,7 @@ package com.kaem.flux.data.source.file
 
 import com.kaem.flux.model.UserFile
 
-interface FilesDataSource {
+interface FilesSource {
 
     suspend fun getFiles() : List<UserFile>
 

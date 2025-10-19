@@ -1,6 +1,6 @@
 package com.kaem.flux.data.repository
 
-import com.kaem.flux.data.ddb.FluxDao
+import com.kaem.flux.data.ddb.DatabaseDao
 import com.kaem.flux.model.media.ContentType
 import com.kaem.flux.model.media.Episode
 import com.kaem.flux.model.media.MediaOverview
@@ -10,7 +10,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class MediaRepository @Inject constructor(
-    private val db: FluxDao
+    private val db: DatabaseDao
 ) {
 
     data class Content(

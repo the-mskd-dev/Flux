@@ -19,7 +19,7 @@ import com.kaem.flux.model.media.MediaOverview
 import com.kaem.flux.model.media.Movie
 
 @Dao
-interface FluxDao {
+interface DatabaseDao {
 
 //region Insert
 
@@ -172,7 +172,7 @@ class Converters {
  ], version = 1)
 @TypeConverters(Converters::class)
 abstract class FluxDatabase : RoomDatabase() {
-    abstract fun fluxDao(): FluxDao
+    abstract fun dao(): DatabaseDao
 
     companion object {
 

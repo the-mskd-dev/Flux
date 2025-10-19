@@ -3,7 +3,7 @@ package com.kaem.flux.data.repository
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.filters.MediumTest
-import com.kaem.flux.data.ddb.FluxDao
+import com.kaem.flux.data.ddb.DatabaseDao
 import com.kaem.flux.data.ddb.FluxDatabase
 import com.kaem.flux.mockups.MediaMockups
 import kotlinx.coroutines.test.runTest
@@ -15,7 +15,7 @@ import org.junit.Test
 class MediaRepositoryTest {
 
     private lateinit var database: FluxDatabase
-    private lateinit var db: FluxDao
+    private lateinit var db: DatabaseDao
     private lateinit var repository: MediaRepository
 
 
@@ -27,7 +27,7 @@ class MediaRepositoryTest {
             FluxDatabase::class.java
         ).build()
 
-        db = database.fluxDao()
+        db = database.dao()
 
         repository = MediaRepository(db)
 

@@ -1,6 +1,6 @@
 package com.kaem.flux.data.source.media
 
-import com.kaem.flux.data.ddb.FluxDao
+import com.kaem.flux.data.ddb.DatabaseDao
 import com.kaem.flux.model.UserFile
 import com.kaem.flux.model.media.Episode
 import com.kaem.flux.model.media.MediaOverview
@@ -12,7 +12,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class MediaSourceDBImpl @Inject constructor(
-    private val db: FluxDao
+    private val db: DatabaseDao
 ) : MediaSource {
 
     override suspend fun getMedias(

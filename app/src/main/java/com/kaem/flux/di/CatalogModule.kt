@@ -1,6 +1,6 @@
 package com.kaem.flux.di
 
-import com.kaem.flux.data.ddb.FluxDao
+import com.kaem.flux.data.ddb.DatabaseDao
 import com.kaem.flux.data.repository.CatalogRepository
 import com.kaem.flux.data.source.file.FilesSource
 import com.kaem.flux.data.source.media.MediaSource
@@ -20,7 +20,7 @@ object CatalogModule {
         @FilesModule.LocalFilesDataSource localFilesSource: FilesSource,
         @MediaModule.MediaDataSourceLocal mediaSourceLocal: MediaSource,
         @MediaModule.MediaDataSourceTMDB mediaSourceTMDB: MediaSource,
-        db: FluxDao
+        db: DatabaseDao
     ) : CatalogRepository = CatalogRepository(
         fileSource = localFilesSource,
         mediaSourceLocal = mediaSourceLocal,

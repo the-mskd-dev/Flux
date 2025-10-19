@@ -16,7 +16,7 @@ import org.junit.runner.RunWith
 class FluxDatabaseTest {
 
     private lateinit var database: FluxDatabase
-    private lateinit var db: FluxDao
+    private lateinit var db: DatabaseDao
 
     @Before
     fun setUpDatabase() {
@@ -26,7 +26,7 @@ class FluxDatabaseTest {
             FluxDatabase::class.java
         ).build()
 
-        db = database.fluxDao()
+        db = database.dao()
 
     }
 

@@ -1,6 +1,6 @@
 package com.kaem.flux.data.repository
 
-import com.kaem.flux.data.ddb.FluxDao
+import com.kaem.flux.data.ddb.DatabaseDao
 import com.kaem.flux.data.source.file.FilesSource
 import com.kaem.flux.data.source.media.MediaSource
 import com.kaem.flux.model.UserFile
@@ -24,7 +24,7 @@ class CatalogRepository @Inject constructor(
     private val fileSource: FilesSource,
     private val mediaSourceLocal: MediaSource,
     private val mediaSourceTmdb: MediaSource,
-    private val db: FluxDao
+    private val db: DatabaseDao
 ) {
 
     private val _catalogFlow = MutableStateFlow(CatalogContent())

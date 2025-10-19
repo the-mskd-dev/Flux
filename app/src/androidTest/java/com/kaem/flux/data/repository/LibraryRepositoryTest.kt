@@ -2,7 +2,7 @@ package com.kaem.flux.data.repository
 
 import androidx.test.filters.MediumTest
 import app.cash.turbine.test
-import com.kaem.flux.data.ddb.FluxDao
+import com.kaem.flux.data.ddb.DatabaseDao
 import com.kaem.flux.data.source.file.FilesSource
 import com.kaem.flux.data.source.media.MediaSource
 import com.kaem.flux.mockups.MediaMockups
@@ -21,7 +21,7 @@ class LibraryRepositoryTest {
     private val fileSource: FilesSource = mockk(relaxed = true)
     private val localSource: MediaSource = mockk(relaxed = true)
     private val tmdbSource: MediaSource = mockk(relaxed = true)
-    private val db: FluxDao = mockk(relaxed = true)
+    private val db: DatabaseDao = mockk(relaxed = true)
 
     @Before
     fun setUp() {

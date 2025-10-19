@@ -2,7 +2,7 @@ package com.kaem.flux.screens.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kaem.flux.data.repository.LibraryRepository
+import com.kaem.flux.data.repository.CatalogRepository
 import com.kaem.flux.model.artwork.ArtworkOverview
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,7 +22,7 @@ data class SearchUIState(
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    private val repository: LibraryRepository
+    private val repository: CatalogRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SearchUIState())
@@ -30,7 +30,7 @@ class SearchViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            repository.libraryFlow.collect { library ->
+            repository.catalogFlow.collect { library ->
                 _uiState.update { it.copy(overviews = library.artworkOverviews) }
             }
         }

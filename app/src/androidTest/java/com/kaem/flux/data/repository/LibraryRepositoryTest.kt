@@ -16,7 +16,7 @@ import org.junit.Test
 @MediumTest
 class LibraryRepositoryTest {
 
-    private lateinit var repository: LibraryRepository
+    private lateinit var repository: CatalogRepository
 
     private val fileSource: FilesDataSource = mockk(relaxed = true)
     private val localSource: ArtworkDataSource = mockk(relaxed = true)
@@ -25,7 +25,7 @@ class LibraryRepositoryTest {
 
     @Before
     fun setUp() {
-        repository = LibraryRepository(fileSource, localSource, tmdbSource, db)
+        repository = CatalogRepository(fileSource, localSource, tmdbSource, db)
     }
 
     @Test
@@ -42,10 +42,10 @@ class LibraryRepositoryTest {
         )
 
         // When
-        repository.getLibrary(sync = false)
+        repository.getCatalog(sync = false)
 
         // Then
-        repository.libraryFlow.test {
+        repository.catalogFlow.test {
 
             val loadedState = awaitItem()
             assert(!loadedState.isLoading)
@@ -62,10 +62,10 @@ class LibraryRepositoryTest {
     fun getLibrary_with_sync() = runTest {
 
         // When
-        repository.getLibrary(sync = true)
+        repository.getCatalog(sync = true)
 
         // Then
-        repository.libraryFlow.test {
+        repository.catalogFlow.test {
 
             val loadedState = awaitItem()
             assert(!loadedState.isLoading)

@@ -1,7 +1,7 @@
 package com.kaem.flux.di
 
 import com.kaem.flux.data.ddb.FluxDao
-import com.kaem.flux.data.repository.LibraryRepository
+import com.kaem.flux.data.repository.CatalogRepository
 import com.kaem.flux.data.source.artwork.ArtworkDataSource
 import com.kaem.flux.data.source.file.FilesDataSource
 import dagger.Module
@@ -21,7 +21,7 @@ object LibraryModule {
         @ArtworkModule.LocalArtworkDataSource localArtworkDataSource: ArtworkDataSource,
         @ArtworkModule.TMDBArtworkDataSource tmdbArtworkDataSource: ArtworkDataSource,
         db: FluxDao
-    ) : LibraryRepository = LibraryRepository(
+    ) : CatalogRepository = CatalogRepository(
         fileSource = localFilesDataSource,
         localSource = localArtworkDataSource,
         tmdbSource = tmdbArtworkDataSource,

@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kaem.flux.data.repository.DataStoreRepository
-import com.kaem.flux.data.repository.LibraryRepository
+import com.kaem.flux.data.repository.CatalogRepository
 import com.kaem.flux.model.ScreenState
 import com.kaem.flux.model.artwork.ArtworkOverview
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,7 +24,7 @@ data class HomeUiState(
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val repository: LibraryRepository,
+    private val repository: CatalogRepository,
     private val dataStoreRepository: DataStoreRepository
 ): ViewModel() {
 
@@ -36,7 +36,7 @@ class HomeViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             combine(
-                repository.libraryFlow,
+                repository.catalogFlow,
                 dataStoreRepository.flow
             ) { libraryContent, preferences ->
 
@@ -69,7 +69,7 @@ class HomeViewModel @Inject constructor(
 
         Log.i("LibraryViewModel", "getLibrary, sync : $sync")
 
-        repository.getLibrary(sync)
+        repository.getCatalog(sync)
 
         if (sync) {
             dataStoreRepository.setSyncTime(currentTime)

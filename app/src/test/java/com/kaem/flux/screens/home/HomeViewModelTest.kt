@@ -4,8 +4,8 @@ import app.cash.turbine.test
 import com.kaem.flux.bases.BaseTest
 import com.kaem.flux.data.repository.DataStoreRepository
 import com.kaem.flux.data.repository.FluxDataStore
-import com.kaem.flux.data.repository.LibraryContent
-import com.kaem.flux.data.repository.LibraryRepository
+import com.kaem.flux.data.repository.CatalogContent
+import com.kaem.flux.data.repository.CatalogRepository
 import com.kaem.flux.mockups.ArtworkMockups
 import com.kaem.flux.model.ScreenState
 import com.kaem.flux.model.artwork.ArtworkOverview
@@ -24,18 +24,18 @@ import kotlin.time.Duration.Companion.hours
 class HomeViewModelTest : BaseTest() {
 
     private lateinit var viewModel: HomeViewModel
-    private lateinit var libraryRepository: LibraryRepository
+    private lateinit var catalogRepository: CatalogRepository
     private lateinit var dataStoreRepository: DataStoreRepository
 
     // Mocked flows
-    private val libraryFlow = MutableStateFlow(LibraryContent())
+    private val libraryFlow = MutableStateFlow(CatalogContent())
     private val dataStoreFlow = MutableStateFlow(FluxDataStore())
 
     override fun setUp() {
         super.setUp()
 
-        libraryRepository = mockk(relaxed = true) {
-            every { libraryFlow } returns this@HomeViewModelTest.libraryFlow
+        catalogRepository = mockk(relaxed = true) {
+            every { catalogFlow } returns this@HomeViewModelTest.libraryFlow
         }
 
         dataStoreRepository = mockk(relaxed = true) {
@@ -43,7 +43,7 @@ class HomeViewModelTest : BaseTest() {
             every { getSyncTime() } returns 0L
         }
 
-        viewModel = HomeViewModel(libraryRepository, dataStoreRepository)
+        viewModel = HomeViewModel(catalogRepository, dataStoreRepository)
     }
 
     @Test
@@ -67,7 +67,7 @@ class HomeViewModelTest : BaseTest() {
         // Mock
         val overviews = listOf(ArtworkMockups.movieOverview, ArtworkMockups.showOverview)
         val lastWatchedIds = listOf(ArtworkMockups.showOverview.id)
-        val libraryContent = LibraryContent(
+        val catalogContent = CatalogContent(
             isLoading = false,
             artworkOverviews = overviews
         )
@@ -78,7 +78,7 @@ class HomeViewModelTest : BaseTest() {
         viewModel.uiState.test {
             awaitItem() // Ignore initial state
 
-            libraryFlow.value = libraryContent
+            libraryFlow.value = catalogContent
             dataStoreFlow.value = dataStore
 
             val updatedState = awaitItem()
@@ -99,7 +99,7 @@ class HomeViewModelTest : BaseTest() {
         advanceUntilIdle()
 
         coVerify {
-            libraryRepository.getLibrary(sync = true)
+            catalogRepository.getCatalog(sync = true)
             dataStoreRepository.setSyncTime(any())
         }
     }
@@ -110,13 +110,13 @@ class HomeViewModelTest : BaseTest() {
         val oldTime = System.currentTimeMillis() - 2.days.inWholeMilliseconds
         every { dataStoreRepository.getSyncTime() } returns oldTime
 
-        viewModel = HomeViewModel(libraryRepository, dataStoreRepository)
+        viewModel = HomeViewModel(catalogRepository, dataStoreRepository)
         viewModel.getLibrary(manualSync = false)
 
         advanceUntilIdle()
 
         coVerify {
-            libraryRepository.getLibrary(sync = true)
+            catalogRepository.getCatalog(sync = true)
             dataStoreRepository.setSyncTime(any())
         }
     }
@@ -126,13 +126,13 @@ class HomeViewModelTest : BaseTest() {
         val recentTime = System.currentTimeMillis() - 12.hours.inWholeMilliseconds
         every { dataStoreRepository.getSyncTime() } returns recentTime
 
-        viewModel = HomeViewModel(libraryRepository, dataStoreRepository)
+        viewModel = HomeViewModel(catalogRepository, dataStoreRepository)
         viewModel.getLibrary(manualSync = false)
 
         advanceUntilIdle()
 
         coVerify {
-            libraryRepository.getLibrary(sync = false)
+            catalogRepository.getCatalog(sync = false)
         }
         coVerify(exactly = 0) {
             dataStoreRepository.setSyncTime(any())

@@ -15,33 +15,33 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-data class LibraryContent(
+data class CatalogContent(
     val isLoading: Boolean = true,
     val artworkOverviews: List<ArtworkOverview> = emptyList()
 )
 
-class LibraryRepository @Inject constructor(
+class CatalogRepository @Inject constructor(
     private val fileSource: FilesDataSource,
     private val localSource: ArtworkDataSource,
     private val tmdbSource: ArtworkDataSource,
     private val db: FluxDao
 ) {
 
-    private val _libraryFlow = MutableStateFlow(LibraryContent())
-    val libraryFlow: StateFlow<LibraryContent> = _libraryFlow.asStateFlow()
+    private val _catalogFlow = MutableStateFlow(CatalogContent())
+    val catalogFlow: StateFlow<CatalogContent> = _catalogFlow.asStateFlow()
 
-    suspend fun getLibrary(sync: Boolean = false) {
+    suspend fun getCatalog(sync: Boolean = false) {
 
-        _libraryFlow.value = _libraryFlow.value.copy(isLoading = true)
+        _catalogFlow.value = _catalogFlow.value.copy(isLoading = true)
 
         val artworks = if (sync) {
-            syncLibrary()
+            syncCatalog()
         } else {
             localSource.getArtworks(sync = false).overviews
         }
 
         // Update content
-        _libraryFlow.update { content ->
+        _catalogFlow.update { content ->
             content.copy(
                 isLoading = false,
                 artworkOverviews = artworks.sortedBy { it.title }
@@ -50,7 +50,7 @@ class LibraryRepository @Inject constructor(
 
     }
 
-    private suspend fun syncLibrary() : List<ArtworkOverview> {
+    private suspend fun syncCatalog() : List<ArtworkOverview> {
 
         // Fetch all files, local and online (if possible)
         val allFiles = getFiles()

@@ -73,34 +73,6 @@ fun TextBold(
 
 }
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
-@Composable
-fun TextHeadline(
-    modifier: Modifier = Modifier,
-    text: String?,
-    textAlign: TextAlign = TextAlign.Start,
-    color: Color = MaterialTheme.colorScheme.onBackground,
-    overflow: TextOverflow = TextOverflow.Clip,
-    maxLines: Int = Int.MAX_VALUE,
-    minLines: Int = 1,
-) {
-
-    if (text.isNullOrBlank())
-        return
-
-    Text(
-        modifier = modifier,
-        text = text,
-        color = color,
-        style = MaterialTheme.typography.headlineLargeEmphasized,
-        textAlign = textAlign,
-        overflow = overflow,
-        maxLines = maxLines,
-        minLines = minLines
-    )
-
-}
-
 @Composable
 fun TextMedium(
     modifier: Modifier = Modifier,
@@ -155,6 +127,62 @@ fun TextSmall(
         fontSize = Ui.FontSize.SMALL,
         textAlign = textAlign,
         fontStyle = fontStyle,
+        overflow = overflow,
+        maxLines = maxLines,
+        minLines = minLines
+    )
+
+}
+
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+fun TextHeadline(
+    modifier: Modifier = Modifier,
+    text: String?,
+    textAlign: TextAlign = TextAlign.Start,
+    color: Color = MaterialTheme.colorScheme.onBackground,
+    overflow: TextOverflow = TextOverflow.Clip,
+    maxLines: Int = Int.MAX_VALUE,
+    minLines: Int = 1,
+) {
+
+    if (text.isNullOrBlank())
+        return
+
+    Text(
+        modifier = modifier,
+        text = text,
+        color = color,
+        style = MaterialTheme.typography.headlineLargeEmphasized,
+        textAlign = textAlign,
+        overflow = overflow,
+        maxLines = maxLines,
+        minLines = minLines
+    )
+
+}
+
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+fun TextTitle(
+    modifier: Modifier = Modifier,
+    text: String?,
+    textAlign: TextAlign = TextAlign.Start,
+    color: Color = MaterialTheme.colorScheme.onBackground,
+    overflow: TextOverflow = TextOverflow.Clip,
+    maxLines: Int = Int.MAX_VALUE,
+    minLines: Int = 1,
+) {
+
+    if (text.isNullOrBlank())
+        return
+
+    Text(
+        modifier = modifier,
+        text = text,
+        color = color,
+        style = MaterialTheme.typography.titleLargeEmphasized,
+        textAlign = textAlign,
         overflow = overflow,
         maxLines = maxLines,
         minLines = minLines

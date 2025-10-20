@@ -54,6 +54,7 @@ import com.kaem.flux.ui.component.Image
 import com.kaem.flux.ui.component.Loader
 import com.kaem.flux.ui.component.TextMedium
 import com.kaem.flux.ui.component.TextHeadline
+import com.kaem.flux.ui.component.TextTitle
 import com.kaem.flux.ui.theme.FluxTheme
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.Constants
@@ -320,7 +321,7 @@ fun MediaList(
         verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
     ) {
 
-        TextHeadline(
+        TextTitle(
             modifier = Modifier
                 .clickable { navigateToCategory() }
                 .fillMaxWidth()

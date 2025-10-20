@@ -101,10 +101,9 @@ fun FluxButton(
                         }
                     )
                 } else {
-                    TextMedium(
+                    TextLabelLarge(
                         text = state,
                         color = textColor,
-                        fontSize = Ui.FontSize.BUTTON
                     )
                 }
             }
@@ -154,10 +153,9 @@ fun FluxTextButton(
         modifier = modifier,
         onClick = onTap,
         content = {
-            TextMedium(
+            TextLabelLarge(
                 text = text,
                 color = color,
-                fontSize = Ui.FontSize.BUTTON
             )
         }
     )

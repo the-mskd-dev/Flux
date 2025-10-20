@@ -20,8 +20,11 @@ import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.media.Episode
 import com.kaem.flux.model.media.Media
 import com.kaem.flux.ui.component.TextBold
-import com.kaem.flux.ui.component.TextMedium
+import com.kaem.flux.ui.component.TextBodyLarge
+import com.kaem.flux.ui.component.TextLabelSmall
 import com.kaem.flux.ui.component.TextSmall
+import com.kaem.flux.ui.component.TextTitleLarge
+import com.kaem.flux.ui.component.TextTitleSmall
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.extensions.minToMs
 import com.kaem.flux.utils.extensions.timeDescription
@@ -44,34 +47,31 @@ fun MediaDescription(media: Media?) {
 
             Column(modifier = Modifier.fillMaxWidth()) {
 
-                TextBold(
+                TextTitleSmall(
                     modifier = Modifier.fillMaxWidth(),
                     text = stringResource(id = R.string.season_and_episode, media.season, media.number).uppercase(),
-                    color = MaterialTheme.colorScheme.primary,
-                    fontSize = Ui.FontSize.SMALL
+                    color = MaterialTheme.colorScheme.primary
                 )
 
-                TextMedium(
+                TextTitleLarge(
                     modifier = Modifier.fillMaxWidth(),
                     text = media.title,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    fontSize = Ui.FontSize.LARGE
+                    color = MaterialTheme.colorScheme.onBackground
                 )
 
             }
 
         } else {
 
-            TextMedium(
+            TextTitleLarge(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(R.string.summary),
                 color = MaterialTheme.colorScheme.onBackground,
-                fontSize = Ui.FontSize.LARGE
             )
 
         }
 
-        TextMedium(
+        TextBodyLarge(
             modifier = Modifier
                 .fillMaxWidth()
                 .alpha(.8f),
@@ -95,21 +95,18 @@ fun MediaDescriptionDetails(media: Media) {
         horizontalAlignment = Alignment.Start
     ) {
 
-        TextSmall(
+        TextLabelSmall(
             text = media.releaseDate?.let { stringResource(R.string.release_date, DateFormat.getDateInstance().format(it)) },
-            fontStyle = FontStyle.Italic
         )
 
-        TextSmall(
+        TextLabelSmall(
             text = stringResource(R.string.duration, media.duration.minToMs.timeDescription()) ,
-            fontStyle = FontStyle.Italic
         )
 
         if (media.voteAverage > 0f) {
             val rate = String.format(Locale.getDefault(),"%.2f", media.voteAverage)
-            TextSmall(
+            TextLabelSmall(
                 text = stringResource(R.string.rate, rate),
-                fontStyle = FontStyle.Italic
             )
         }
 

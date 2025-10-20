@@ -29,7 +29,7 @@ fun ErrorScreen(
             BackButton(onTap = onBackButtonTap)
         }
 
-        TextMedium(
+        TextBodyLarge(
             modifier = Modifier
                 .align(Alignment.Center)
                 .fillMaxWidth(),

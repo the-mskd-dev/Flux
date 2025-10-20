@@ -13,36 +13,6 @@ import androidx.compose.ui.unit.TextUnit
 import com.kaem.flux.ui.theme.Ui
 
 @Composable
-fun TextTitle(
-    modifier: Modifier = Modifier,
-    text: String?,
-    textAlign: TextAlign = TextAlign.Start,
-    color: Color = MaterialTheme.colorScheme.onBackground,
-    fontStyle: FontStyle? = null,
-    overflow: TextOverflow = TextOverflow.Clip,
-    maxLines: Int = Int.MAX_VALUE,
-    minLines: Int = 1,
-) {
-
-    if (text.isNullOrBlank())
-        return
-
-    Text(
-        modifier = Modifier.then(modifier),
-        text = text,
-        color = color,
-        fontWeight = Ui.Weight.BOLD,
-        fontSize = Ui.FontSize.TITLE,
-        textAlign = textAlign,
-        fontStyle = fontStyle,
-        overflow = overflow,
-        maxLines = maxLines,
-        minLines = minLines
-    )
-
-}
-
-@Composable
 fun TextBold(
     modifier: Modifier = Modifier,
     text: String?,
@@ -63,37 +33,6 @@ fun TextBold(
         text = text,
         color = color,
         fontWeight = Ui.Weight.BOLD,
-        fontSize = fontSize,
-        textAlign = textAlign,
-        fontStyle = fontStyle,
-        overflow = overflow,
-        maxLines = maxLines,
-        minLines = minLines
-    )
-
-}
-
-@Composable
-fun TextMedium(
-    modifier: Modifier = Modifier,
-    text: String?,
-    textAlign: TextAlign = TextAlign.Start,
-    color: Color = MaterialTheme.colorScheme.onBackground,
-    fontSize: TextUnit = Ui.FontSize.MEDIUM,
-    fontStyle: FontStyle? = null,
-    overflow: TextOverflow = TextOverflow.Clip,
-    maxLines: Int = Int.MAX_VALUE,
-    minLines: Int = 1,
-) {
-
-    if (text.isNullOrBlank())
-        return
-
-    Text(
-        modifier = modifier,
-        text = text,
-        color = color,
-        fontWeight = Ui.Weight.MEDIUM,
         fontSize = fontSize,
         textAlign = textAlign,
         fontStyle = fontStyle,
@@ -164,7 +103,7 @@ fun TextHeadline(
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun TextTitle(
+fun TextTitleLarge(
     modifier: Modifier = Modifier,
     text: String?,
     textAlign: TextAlign = TextAlign.Start,
@@ -182,6 +121,115 @@ fun TextTitle(
         text = text,
         color = color,
         style = MaterialTheme.typography.titleLargeEmphasized,
+        textAlign = textAlign,
+        overflow = overflow,
+        maxLines = maxLines,
+        minLines = minLines
+    )
+
+}
+
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+fun TextTitleSmall(
+    modifier: Modifier = Modifier,
+    text: String?,
+    textAlign: TextAlign = TextAlign.Start,
+    color: Color = MaterialTheme.colorScheme.onBackground,
+    overflow: TextOverflow = TextOverflow.Clip,
+    maxLines: Int = Int.MAX_VALUE,
+    minLines: Int = 1,
+) {
+
+    if (text.isNullOrBlank())
+        return
+
+    Text(
+        modifier = modifier,
+        text = text,
+        color = color,
+        style = MaterialTheme.typography.titleSmall,
+        textAlign = textAlign,
+        overflow = overflow,
+        maxLines = maxLines,
+        minLines = minLines
+    )
+
+}
+
+@Composable
+fun TextBodyLarge(
+    modifier: Modifier = Modifier,
+    text: String?,
+    textAlign: TextAlign = TextAlign.Start,
+    color: Color = MaterialTheme.colorScheme.onBackground,
+    overflow: TextOverflow = TextOverflow.Clip,
+    maxLines: Int = Int.MAX_VALUE,
+    minLines: Int = 1,
+) {
+
+    if (text.isNullOrBlank())
+        return
+
+    Text(
+        modifier = modifier,
+        text = text,
+        color = color,
+        style = MaterialTheme.typography.bodyLarge,
+        textAlign = textAlign,
+        overflow = overflow,
+        maxLines = maxLines,
+        minLines = minLines
+    )
+
+}
+
+@Composable
+fun TextLabelLarge(
+    modifier: Modifier = Modifier,
+    text: String?,
+    textAlign: TextAlign = TextAlign.Start,
+    color: Color = MaterialTheme.colorScheme.onBackground,
+    overflow: TextOverflow = TextOverflow.Clip,
+    maxLines: Int = Int.MAX_VALUE,
+    minLines: Int = 1,
+) {
+
+    if (text.isNullOrBlank())
+        return
+
+    Text(
+        modifier = modifier,
+        text = text,
+        color = color,
+        style = MaterialTheme.typography.labelLarge,
+        textAlign = textAlign,
+        overflow = overflow,
+        maxLines = maxLines,
+        minLines = minLines
+    )
+
+}
+
+@Composable
+fun TextLabelSmall(
+    modifier: Modifier = Modifier,
+    text: String?,
+    textAlign: TextAlign = TextAlign.Start,
+    color: Color = MaterialTheme.colorScheme.onBackground,
+    overflow: TextOverflow = TextOverflow.Clip,
+    maxLines: Int = Int.MAX_VALUE,
+    minLines: Int = 1,
+) {
+
+    if (text.isNullOrBlank())
+        return
+
+    Text(
+        modifier = modifier,
+        text = text,
+        color = color,
+        style = MaterialTheme.typography.labelSmall,
         textAlign = textAlign,
         overflow = overflow,
         maxLines = maxLines,

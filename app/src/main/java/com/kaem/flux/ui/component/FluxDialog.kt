@@ -48,7 +48,7 @@ fun FluxDialog(
 
                 TextBold(text = title)
 
-                TextMedium(text = text)
+                TextBodyLarge(text = text)
 
             }
 

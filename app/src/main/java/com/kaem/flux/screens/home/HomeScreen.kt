@@ -52,9 +52,8 @@ import com.kaem.flux.ui.component.FluxButton
 import com.kaem.flux.ui.component.FluxTextButton
 import com.kaem.flux.ui.component.Image
 import com.kaem.flux.ui.component.Loader
-import com.kaem.flux.ui.component.TextMedium
-import com.kaem.flux.ui.component.TextHeadline
-import com.kaem.flux.ui.component.TextTitle
+import com.kaem.flux.ui.component.TextBodyLarge
+import com.kaem.flux.ui.component.TextTitleLarge
 import com.kaem.flux.ui.theme.FluxTheme
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.Constants
@@ -169,7 +168,7 @@ fun HomeEmpty(
 
         TextBold(text = stringResource(R.string.empty_library))
 
-        TextMedium(text = stringResource(R.string.empty_library_desc))
+        TextBodyLarge(text = stringResource(R.string.empty_library_desc))
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -321,7 +320,7 @@ fun MediaList(
         verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
     ) {
 
-        TextTitle(
+        TextTitleLarge(
             modifier = Modifier
                 .clickable { navigateToCategory() }
                 .fillMaxWidth()

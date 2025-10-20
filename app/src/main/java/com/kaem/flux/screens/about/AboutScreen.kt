@@ -17,7 +17,7 @@ import androidx.compose.ui.res.stringResource
 import com.kaem.flux.R
 import com.kaem.flux.ui.component.TextBold
 import com.kaem.flux.ui.component.FluxTopBar
-import com.kaem.flux.ui.component.TextMedium
+import com.kaem.flux.ui.component.TextBodyLarge
 import com.kaem.flux.ui.theme.Ui
 
 @Composable
@@ -90,6 +90,6 @@ fun AboutSection(
     Column(
     ) {
         TextBold(text = title)
-        TextMedium(text = content)
+        TextBodyLarge(text = content)
     }
 }

@@ -37,7 +37,7 @@ import com.kaem.flux.model.media.Episode
 import com.kaem.flux.model.media.Status
 import com.kaem.flux.ui.component.TextBold
 import com.kaem.flux.ui.component.Image
-import com.kaem.flux.ui.component.TextMedium
+import com.kaem.flux.ui.component.TextBodyLarge
 import com.kaem.flux.ui.component.ProgressBar
 import com.kaem.flux.ui.component.TextSmall
 import com.kaem.flux.ui.theme.Ui
@@ -159,7 +159,7 @@ fun EpisodeItem(
                 color = MaterialTheme.colorScheme.primary
             )
 
-            TextMedium(
+            TextBodyLarge(
                 modifier = Modifier.fillMaxWidth(),
                 text = episode.title,
                 textAlign = TextAlign.Start,

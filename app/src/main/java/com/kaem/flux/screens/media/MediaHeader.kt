@@ -47,7 +47,7 @@ import com.kaem.flux.ui.component.FluxTextButton
 import com.kaem.flux.ui.component.Image
 import com.kaem.flux.ui.component.ProgressBar
 import com.kaem.flux.ui.component.TextSmall
-import com.kaem.flux.ui.component.TextTitle
+import com.kaem.flux.ui.component.TextTitleLarge
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.Constants
 import com.kaem.flux.utils.extensions.minToMs
@@ -264,7 +264,7 @@ fun MediaTitle(
     title: String,
 ) {
 
-    TextTitle(
+    TextTitleLarge(
         modifier = modifier,
         text = title,
         textAlign = TextAlign.Start

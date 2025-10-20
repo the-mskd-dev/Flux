@@ -18,7 +18,7 @@ fun FluxTopBar(
         modifier = Modifier
             .statusBarsPadding()
             .fillMaxWidth(),
-        title = { BoldText(text = text) },
+        title = { TextBold(text = text) },
         navigationIcon = {
             BackButton(onTap = onBackButtonTap)
         }

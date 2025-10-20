@@ -46,9 +46,9 @@ fun FluxDialog(
                 verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE)
             ) {
 
-                BoldText(text = title)
+                TextBold(text = title)
 
-                MediumText(text = text)
+                TextMedium(text = text)
 
             }
 

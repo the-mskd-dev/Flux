@@ -47,12 +47,13 @@ import com.kaem.flux.model.media.ContentType
 import com.kaem.flux.model.media.MediaOverview
 import com.kaem.flux.screens.welcome.WelcomeScreen
 import com.kaem.flux.screens.welcome.fluxPermissionState
-import com.kaem.flux.ui.component.BoldText
+import com.kaem.flux.ui.component.TextBold
 import com.kaem.flux.ui.component.FluxButton
 import com.kaem.flux.ui.component.FluxTextButton
 import com.kaem.flux.ui.component.Image
 import com.kaem.flux.ui.component.Loader
-import com.kaem.flux.ui.component.MediumText
+import com.kaem.flux.ui.component.TextMedium
+import com.kaem.flux.ui.component.TextHeadline
 import com.kaem.flux.ui.theme.FluxTheme
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.Constants
@@ -165,9 +166,9 @@ fun HomeEmpty(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
 
-        BoldText(text = stringResource(R.string.empty_library))
+        TextBold(text = stringResource(R.string.empty_library))
 
-        MediumText(text = stringResource(R.string.empty_library_desc))
+        TextMedium(text = stringResource(R.string.empty_library_desc))
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -319,7 +320,7 @@ fun MediaList(
         verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
     ) {
 
-        BoldText(
+        TextHeadline(
             modifier = Modifier
                 .clickable { navigateToCategory() }
                 .fillMaxWidth()

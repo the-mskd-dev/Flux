@@ -43,8 +43,8 @@ import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.rememberPermissionState
 import com.kaem.flux.R
 import com.kaem.flux.ui.component.FluxButton
-import com.kaem.flux.ui.component.MediumText
-import com.kaem.flux.ui.component.Title
+import com.kaem.flux.ui.component.TextMedium
+import com.kaem.flux.ui.component.TextTitle
 import com.kaem.flux.ui.theme.Ui
 import kotlinx.coroutines.launch
 
@@ -217,13 +217,13 @@ fun WelcomeItem(
             verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE)
         ) {
 
-            Title(
+            TextTitle(
                 modifier = Modifier.fillMaxWidth(),
                 text = title,
                 color = textColor
             )
 
-            MediumText(
+            TextMedium(
                 modifier = Modifier.fillMaxWidth(),
                 text = description,
                 color = textColor

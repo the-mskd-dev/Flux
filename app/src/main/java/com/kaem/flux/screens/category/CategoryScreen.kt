@@ -21,7 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.kaem.flux.screens.home.MediaItem
 import com.kaem.flux.ui.component.BackButton
-import com.kaem.flux.ui.component.BoldText
+import com.kaem.flux.ui.component.TextBold
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.Constants
 
@@ -53,7 +53,7 @@ fun CategoryScreen(
 
                 BackButton(onTap = onBackButtonTap)
 
-                BoldText(
+                TextBold(
                     modifier = Modifier.align(Alignment.Center),
                     text = stringResource(viewModel.contentType.stringResource)
                 )

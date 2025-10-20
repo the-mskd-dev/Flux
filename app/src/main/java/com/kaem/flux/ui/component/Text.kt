@@ -1,5 +1,6 @@
 package com.kaem.flux.ui.component
 
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -12,7 +13,7 @@ import androidx.compose.ui.unit.TextUnit
 import com.kaem.flux.ui.theme.Ui
 
 @Composable
-fun Title(
+fun TextTitle(
     modifier: Modifier = Modifier,
     text: String?,
     textAlign: TextAlign = TextAlign.Start,
@@ -42,7 +43,7 @@ fun Title(
 }
 
 @Composable
-fun BoldText(
+fun TextBold(
     modifier: Modifier = Modifier,
     text: String?,
     textAlign: TextAlign = TextAlign.Start,
@@ -72,8 +73,36 @@ fun BoldText(
 
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun MediumText(
+fun TextHeadline(
+    modifier: Modifier = Modifier,
+    text: String?,
+    textAlign: TextAlign = TextAlign.Start,
+    color: Color = MaterialTheme.colorScheme.onBackground,
+    overflow: TextOverflow = TextOverflow.Clip,
+    maxLines: Int = Int.MAX_VALUE,
+    minLines: Int = 1,
+) {
+
+    if (text.isNullOrBlank())
+        return
+
+    Text(
+        modifier = modifier,
+        text = text,
+        color = color,
+        style = MaterialTheme.typography.headlineLargeEmphasized,
+        textAlign = textAlign,
+        overflow = overflow,
+        maxLines = maxLines,
+        minLines = minLines
+    )
+
+}
+
+@Composable
+fun TextMedium(
     modifier: Modifier = Modifier,
     text: String?,
     textAlign: TextAlign = TextAlign.Start,
@@ -104,7 +133,7 @@ fun MediumText(
 }
 
 @Composable
-fun SmallText(
+fun TextSmall(
     modifier: Modifier = Modifier,
     text: String?,
     textAlign: TextAlign = TextAlign.Start,

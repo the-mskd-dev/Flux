@@ -101,7 +101,7 @@ fun FluxButton(
                         }
                     )
                 } else {
-                    MediumText(
+                    TextMedium(
                         text = state,
                         color = textColor,
                         fontSize = Ui.FontSize.BUTTON
@@ -154,7 +154,7 @@ fun FluxTextButton(
         modifier = modifier,
         onClick = onTap,
         content = {
-            MediumText(
+            TextMedium(
                 text = text,
                 color = color,
                 fontSize = Ui.FontSize.BUTTON

@@ -34,12 +34,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.kaem.flux.R
+import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.ScreenState
 import com.kaem.flux.model.media.ContentType
 import com.kaem.flux.model.media.MediaOverview
@@ -51,6 +53,7 @@ import com.kaem.flux.ui.component.FluxTextButton
 import com.kaem.flux.ui.component.Image
 import com.kaem.flux.ui.component.Loader
 import com.kaem.flux.ui.component.MediumText
+import com.kaem.flux.ui.theme.FluxTheme
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.Constants
 
@@ -370,4 +373,22 @@ fun MediaItem(
         )
     }
 
+}
+
+@Preview
+@Composable
+fun HomeScreen_Preview() {
+    FluxTheme(theme = Ui.THEME.DARK) {
+        HomeContent(
+            navigateToDetails = {},
+            navigateToCategory = {},
+            navigateToSearch = {},
+            navigateToHowTo = {},
+            navigateToSettings = {},
+            onSyncTap = {},
+            overviews = MediaMockups.overviews,
+            lastWatchedIds = MediaMockups.overviews.map { it.id },
+            isSyncing = false
+        )
+    }
 }

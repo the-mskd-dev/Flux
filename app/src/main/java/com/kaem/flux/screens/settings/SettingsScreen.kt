@@ -28,6 +28,7 @@ import com.kaem.flux.R
 import com.kaem.flux.ui.component.FluxDialog
 import com.kaem.flux.ui.component.FluxTopBar
 import com.kaem.flux.ui.component.TextBodyLarge
+import com.kaem.flux.ui.component.TextTitleLarge
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.WebLink
 import com.kaem.flux.utils.extensions.uppercaseFirstLetter
@@ -209,9 +210,8 @@ fun SettingsItem(
             .padding(vertical = Ui.Space.MEDIUM),
     ) {
 
-        TextBodyLarge(
+        TextTitleLarge(
             text = text,
-            fontSize = Ui.FontSize.LARGE
         )
 
         TextBodyLarge(

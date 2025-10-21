@@ -18,25 +18,10 @@ fun FluxTopBar(
         modifier = Modifier
             .statusBarsPadding()
             .fillMaxWidth(),
-        title = { TextBold(text = text) },
+        title = { Text.Headline.Medium(text = text) },
         navigationIcon = {
             BackButton(onTap = onBackButtonTap)
         }
     )
 
-    /*Box(
-        modifier = Modifier
-            .statusBarsPadding()
-            .fillMaxWidth(),
-        contentAlignment = Alignment.CenterStart
-    ) {
-
-        BackButton(onTap = onBackButtonTap)
-
-        BoldText(
-            modifier = Modifier.align(Alignment.Center),
-            text = text
-        )
-
-    }*/
 }

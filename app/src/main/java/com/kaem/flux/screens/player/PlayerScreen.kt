@@ -4,6 +4,7 @@ import android.net.Uri
 import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.LocalActivity
 import androidx.annotation.OptIn
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -43,8 +44,7 @@ import com.kaem.flux.model.media.Episode
 import com.kaem.flux.model.media.Media
 import com.kaem.flux.ui.component.BackButton
 import com.kaem.flux.ui.component.LifecycleComponent
-import com.kaem.flux.ui.component.TextBodyLarge
-import com.kaem.flux.ui.component.TextSmall
+import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.extensions.forceScreenOn
 import com.kaem.flux.utils.extensions.hideSystemBars
@@ -64,7 +64,7 @@ fun PlayerScreen(
 ) {
 
     var isExiting by remember { mutableStateOf(false) }
-    val activity = LocalContext.current as ComponentActivity
+    val activity = LocalActivity.current as ComponentActivity
     val orientation = remember { activity.requestedOrientation }
 
     DisposableEffect(Unit) {
@@ -107,7 +107,7 @@ fun VideoPlayer(
     onTimeSave: (Long) -> Unit
 ) {
 
-    val activity = LocalContext.current as ComponentActivity
+    val activity = LocalActivity.current as ComponentActivity
     var showButtons by remember { mutableStateOf(false) }
 
     val renderersFactory = DefaultRenderersFactory(activity)
@@ -246,7 +246,7 @@ fun PlayerTitle(
         verticalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)
     ) {
 
-        TextBodyLarge(
+        Text.Body.Large(
             modifier = Modifier.fillMaxWidth(),
             text = media.title,
             color = Color.White,
@@ -260,7 +260,7 @@ fun PlayerTitle(
             val season = stringResource(R.string.season, episode.season)
             val number = stringResource(R.string.episode, episode.number)
 
-            TextSmall(
+            Text.Body.Small(
                 modifier = Modifier.fillMaxWidth(),
                 text = "$season, $number",
                 color = Color.White,

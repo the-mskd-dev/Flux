@@ -101,7 +101,7 @@ fun FluxButton(
                         }
                     )
                 } else {
-                    TextLabelLarge(
+                    Text.Label.Large(
                         text = state,
                         color = textColor,
                     )
@@ -153,7 +153,7 @@ fun FluxTextButton(
         modifier = modifier,
         onClick = onTap,
         content = {
-            TextLabelLarge(
+            Text.Label.Large(
                 text = text,
                 color = color,
             )

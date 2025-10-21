@@ -15,9 +15,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.kaem.flux.R
-import com.kaem.flux.ui.component.TextBold
 import com.kaem.flux.ui.component.FluxTopBar
-import com.kaem.flux.ui.component.TextBodyLarge
+import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.Ui
 
 @Composable
@@ -89,7 +88,7 @@ fun AboutSection(
 ) {
     Column(
     ) {
-        TextBold(text = title)
-        TextBodyLarge(text = content)
+        Text.Headline.Small(text = title)
+        Text.Body.Large(text = content)
     }
 }

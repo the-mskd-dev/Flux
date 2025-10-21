@@ -46,8 +46,7 @@ import com.kaem.flux.ui.component.FluxButton
 import com.kaem.flux.ui.component.FluxTextButton
 import com.kaem.flux.ui.component.Image
 import com.kaem.flux.ui.component.ProgressBar
-import com.kaem.flux.ui.component.TextSmall
-import com.kaem.flux.ui.component.TextTitleLarge
+import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.Constants
 import com.kaem.flux.utils.extensions.minToMs
@@ -224,7 +223,7 @@ fun MediaStatusProgression(media: Media) {
             )
 
             val remainingTime = (media.duration.minToMs - media.currentTime).timeDescription(withoutSeconds = true)
-            TextSmall(
+            Text.Label.Medium(
                 text = stringResource(R.string.remaining_time, remainingTime),
                 color = MaterialTheme.colorScheme.onBackground
             )
@@ -264,7 +263,7 @@ fun MediaTitle(
     title: String,
 ) {
 
-    TextTitleLarge(
+    Text.Title.Large(
         modifier = modifier,
         text = title,
         textAlign = TextAlign.Start

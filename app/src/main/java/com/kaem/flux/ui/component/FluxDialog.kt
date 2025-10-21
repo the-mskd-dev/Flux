@@ -46,9 +46,9 @@ fun FluxDialog(
                 verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE)
             ) {
 
-                TextBold(text = title)
+                Text.Headline.Small(text = title)
 
-                TextBodyLarge(text = text)
+                Text.Body.Large(text = text)
 
             }
 

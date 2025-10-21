@@ -27,8 +27,8 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.kaem.flux.R
 import com.kaem.flux.ui.component.FluxDialog
 import com.kaem.flux.ui.component.FluxTopBar
-import com.kaem.flux.ui.component.TextBodyLarge
-import com.kaem.flux.ui.component.TextTitleLarge
+import com.kaem.flux.ui.component.Text
+import com.kaem.flux.ui.component.Text.Title.Large
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.WebLink
 import com.kaem.flux.utils.extensions.uppercaseFirstLetter
@@ -210,11 +210,11 @@ fun SettingsItem(
             .padding(vertical = Ui.Space.MEDIUM),
     ) {
 
-        TextTitleLarge(
+        Text.Title.Large(
             text = text,
         )
 
-        TextBodyLarge(
+        Text.Body.Large(
             text = value.uppercaseFirstLetter(),
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = .8f),
         )
@@ -270,7 +270,7 @@ fun <T> SettingsDialog(
                             onClick = { onSelect(option.key); onDismiss() }
                         )
 
-                        TextBodyLarge(
+                        Text.Body.Large(
                             modifier = Modifier.weight(1f),
                             text = option.value.uppercaseFirstLetter(),
                             color = MaterialTheme.colorScheme.onSurface

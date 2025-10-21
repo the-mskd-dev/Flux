@@ -35,11 +35,9 @@ import com.kaem.flux.R
 import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.media.Episode
 import com.kaem.flux.model.media.Status
-import com.kaem.flux.ui.component.TextBold
 import com.kaem.flux.ui.component.Image
-import com.kaem.flux.ui.component.TextBodyLarge
 import com.kaem.flux.ui.component.ProgressBar
-import com.kaem.flux.ui.component.TextSmall
+import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.Constants
 import com.kaem.flux.utils.extensions.grayScale
@@ -74,7 +72,7 @@ fun MediaSeasonsTabs(
                 shape = Ui.Shape.RoundedCorner,
                 onClick = { onSeasonTap(season) }
             ) {
-                TextSmall(
+                Text.Label.Medium(
                     text = stringResource(id = R.string.season, season).uppercase(),
                     color = textColor
                 )
@@ -151,15 +149,14 @@ fun EpisodeItem(
             horizontalAlignment = Alignment.Start
         ) {
 
-            TextBold(
+            Text.Label.Medium(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(R.string.episode, episode.number).uppercase(),
                 textAlign = TextAlign.Start,
-                fontSize = Ui.FontSize.SMALL,
                 color = MaterialTheme.colorScheme.primary
             )
 
-            TextBodyLarge(
+            Text.Body.Large(
                 modifier = Modifier.fillMaxWidth(),
                 text = episode.title,
                 textAlign = TextAlign.Start,

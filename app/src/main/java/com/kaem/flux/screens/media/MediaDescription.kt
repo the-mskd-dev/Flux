@@ -19,12 +19,7 @@ import com.kaem.flux.R
 import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.media.Episode
 import com.kaem.flux.model.media.Media
-import com.kaem.flux.ui.component.TextBold
-import com.kaem.flux.ui.component.TextBodyLarge
-import com.kaem.flux.ui.component.TextLabelSmall
-import com.kaem.flux.ui.component.TextSmall
-import com.kaem.flux.ui.component.TextTitleLarge
-import com.kaem.flux.ui.component.TextTitleSmall
+import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.extensions.minToMs
 import com.kaem.flux.utils.extensions.timeDescription
@@ -47,13 +42,13 @@ fun MediaDescription(media: Media?) {
 
             Column(modifier = Modifier.fillMaxWidth()) {
 
-                TextTitleSmall(
+                Text.Title.Small(
                     modifier = Modifier.fillMaxWidth(),
                     text = stringResource(id = R.string.season_and_episode, media.season, media.number).uppercase(),
                     color = MaterialTheme.colorScheme.primary
                 )
 
-                TextTitleLarge(
+                Text.Title.Large(
                     modifier = Modifier.fillMaxWidth(),
                     text = media.title,
                     color = MaterialTheme.colorScheme.onBackground
@@ -63,7 +58,7 @@ fun MediaDescription(media: Media?) {
 
         } else {
 
-            TextTitleLarge(
+            Text.Title.Large(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(R.string.summary),
                 color = MaterialTheme.colorScheme.onBackground,
@@ -71,7 +66,7 @@ fun MediaDescription(media: Media?) {
 
         }
 
-        TextBodyLarge(
+        Text.Body.Large(
             modifier = Modifier
                 .fillMaxWidth()
                 .alpha(.8f),
@@ -95,17 +90,17 @@ fun MediaDescriptionDetails(media: Media) {
         horizontalAlignment = Alignment.Start
     ) {
 
-        TextLabelSmall(
+        Text.Label.Small(
             text = media.releaseDate?.let { stringResource(R.string.release_date, DateFormat.getDateInstance().format(it)) },
         )
 
-        TextLabelSmall(
+        Text.Label.Small(
             text = stringResource(R.string.duration, media.duration.minToMs.timeDescription()) ,
         )
 
         if (media.voteAverage > 0f) {
             val rate = String.format(Locale.getDefault(),"%.2f", media.voteAverage)
-            TextLabelSmall(
+            Text.Label.Small(
                 text = stringResource(R.string.rate, rate),
             )
         }

@@ -8,6 +8,7 @@ import com.kaem.flux.data.repository.DataStoreRepository
 import com.kaem.flux.model.ScreenState
 import com.kaem.flux.model.media.MediaOverview
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine

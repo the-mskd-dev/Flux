@@ -23,11 +23,15 @@ import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.carousel.HorizontalCenteredHeroCarousel
 import androidx.compose.material3.carousel.rememberCarouselState
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -193,7 +197,7 @@ fun HomeEmpty(
 
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun HomeLists(
     overviews: List<MediaOverview>,
@@ -206,40 +210,57 @@ fun HomeLists(
     navigateToSettings: () -> Unit
 ) {
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .systemBarsPadding()
-            .padding(bottom = Ui.Space.LARGE),
-        verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
+    val state = rememberPullToRefreshState()
+
+    PullToRefreshBox(
+        modifier = Modifier.fillMaxSize(),
+        isRefreshing = isSyncing,
+        onRefresh = onSyncTap,
+        state = state,
+        indicator = {
+            PullToRefreshDefaults.LoadingIndicator(
+                modifier = Modifier.align(Alignment.TopCenter),
+                state = state,
+                isRefreshing = isSyncing,
+                maxDistance = 120.dp
+            )
+        }
     ) {
 
-        HomeTopButtons(
-            isSyncing = isSyncing,
-            onSyncTap = onSyncTap,
-            navigateToSearch = navigateToSearch,
-            navigateToSettings = navigateToSettings
-        )
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .systemBarsPadding()
+                .padding(bottom = Ui.Space.LARGE),
+            verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
+        ) {
 
-        LastWatchedCarousel(
-            overviews = lastWatchedIds.mapNotNull { overviews.find { o -> o.id == it } },
-            navigateToDetails = navigateToDetails
-        )
+            HomeTopButtons(
+                navigateToSearch = navigateToSearch,
+                navigateToSettings = navigateToSettings
+            )
 
-        MediaList(
-            name = stringResource(id = ContentType.SHOW.stringResource),
-            overviews = overviews.filter { it.type == ContentType.SHOW },
-            navigateToDetails = navigateToDetails,
-            navigateToCategory = { navigateToCategory(ContentType.SHOW) }
-        )
+            LastWatchedCarousel(
+                overviews = lastWatchedIds.mapNotNull { overviews.find { o -> o.id == it } },
+                navigateToDetails = navigateToDetails
+            )
 
-        MediaList(
-            name = stringResource(id = ContentType.MOVIE.stringResource),
-            overviews = overviews.filter { it.type == ContentType.MOVIE },
-            navigateToDetails = navigateToDetails,
-            navigateToCategory = { navigateToCategory(ContentType.MOVIE) }
-        )
+            MediaList(
+                name = stringResource(id = ContentType.SHOW.stringResource),
+                overviews = overviews.filter { it.type == ContentType.SHOW },
+                navigateToDetails = navigateToDetails,
+                navigateToCategory = { navigateToCategory(ContentType.SHOW) }
+            )
+
+            MediaList(
+                name = stringResource(id = ContentType.MOVIE.stringResource),
+                overviews = overviews.filter { it.type == ContentType.MOVIE },
+                navigateToDetails = navigateToDetails,
+                navigateToCategory = { navigateToCategory(ContentType.MOVIE) }
+            )
+
+        }
 
     }
 
@@ -247,8 +268,6 @@ fun HomeLists(
 
 @Composable
 fun HomeTopButtons(
-    isSyncing: Boolean,
-    onSyncTap: () -> Unit,
     navigateToSearch: () -> Unit,
     navigateToSettings: () -> Unit
 ) {
@@ -265,30 +284,6 @@ fun HomeTopButtons(
                 tint = MaterialTheme.colorScheme.onBackground,
                 contentDescription = "Search button"
             )
-        }
-
-        Crossfade(
-            targetState = isSyncing,
-            label = "Refresh indicator"
-        ) { syncing ->
-            if (syncing) {
-                IconButton(onClick = {}) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(24.dp),
-                        strokeWidth = 2.5.dp,
-                        color = MaterialTheme.colorScheme.onBackground,
-                    )
-                }
-
-            } else {
-                IconButton(onClick = onSyncTap) {
-                    Icon(
-                        painter = painterResource(R.drawable.sync),
-                        tint = MaterialTheme.colorScheme.onBackground,
-                        contentDescription = "Sync button"
-                    )
-                }
-            }
         }
 
         IconButton(onClick = navigateToSettings) {

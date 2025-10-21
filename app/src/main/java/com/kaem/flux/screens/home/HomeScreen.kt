@@ -22,9 +22,12 @@ import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.carousel.HorizontalCenteredHeroCarousel
+import androidx.compose.material3.carousel.rememberCarouselState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -190,6 +193,7 @@ fun HomeEmpty(
 
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeLists(
     overviews: List<MediaOverview>,
@@ -218,9 +222,8 @@ fun HomeLists(
             navigateToSettings = navigateToSettings
         )
 
-        MediaList(
+        LastWatchedCarousel(
             overviews = lastWatchedIds.mapNotNull { overviews.find { o -> o.id == it } },
-            largeMedia = true,
             navigateToDetails = navigateToDetails
         )
 
@@ -300,10 +303,46 @@ fun HomeTopButtons(
 
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun LastWatchedCarousel(
+    overviews: List<MediaOverview>,
+    navigateToDetails: (Long) -> Unit,
+) {
+
+    if (overviews.isEmpty())
+        return
+
+    val ratio = 1920f/1080f
+
+    val carouselState = rememberCarouselState { overviews.size }
+
+    HorizontalCenteredHeroCarousel(
+        modifier = Modifier.fillMaxWidth(),
+        maxItemWidth = 350.dp,
+        state = carouselState,
+        contentPadding = PaddingValues(horizontal = Ui.Space.MEDIUM)
+    ) { i ->
+
+        val overview = overviews[i]
+        val url = Constants.TMDB.IMAGE + overview.bannerPath
+
+        Image(
+            modifier = Modifier
+                .maskClip(MaterialTheme.shapes.extraLarge)
+                .clickable { navigateToDetails(overview.id) }
+                .aspectRatio(ratio),
+            url = url,
+            contentDescription = overview.title
+        )
+
+    }
+
+}
+
 @Composable
 fun MediaList(
     name: String? = null,
-    largeMedia: Boolean = false,
     overviews: List<MediaOverview>,
     navigateToDetails: (Long) -> Unit,
     navigateToCategory: () -> Unit = {}
@@ -312,8 +351,8 @@ fun MediaList(
     if (overviews.isEmpty())
         return
 
-    val width = if (largeMedia) 350.dp else 120.dp
-    val ratio = if (largeMedia) 1920f/1080f else 2f/3f
+    val width = 120.dp
+    val ratio = 2f/3f
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -336,12 +375,10 @@ fun MediaList(
 
             items(overviews, key = { it.id }) {
 
-                val url = if (largeMedia) Constants.TMDB.IMAGE + it.bannerPath else Constants.TMDB.IMAGE_SMALL + it.imagePath
-
                 MediaItem(
                     width = width,
                     ratio = ratio,
-                    url = url,
+                    url = Constants.TMDB.IMAGE_SMALL + it.imagePath,
                     onTap = { navigateToDetails(it.id) },
                     description = it.title
                 )
@@ -362,17 +399,15 @@ fun MediaItem(
     description: String
 ) {
 
-    Card(elevation = Ui.Card.elevations()) {
-        Image(
-            modifier = Modifier
-                .clickable { onTap() }
-                .clip(Ui.Shape.RoundedCorner)
-                .width(width)
-                .aspectRatio(ratio),
-            url = url,
-            contentDescription = description
-        )
-    }
+    Image(
+        modifier = Modifier
+            .clickable { onTap() }
+            .clip(Ui.Shape.RoundedCorner)
+            .width(width)
+            .aspectRatio(ratio),
+        url = url,
+        contentDescription = description
+    )
 
 }
 

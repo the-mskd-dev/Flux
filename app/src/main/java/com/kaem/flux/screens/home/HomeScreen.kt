@@ -54,6 +54,7 @@ import com.kaem.flux.ui.component.FluxButton
 import com.kaem.flux.ui.component.FluxTextButton
 import com.kaem.flux.ui.component.Image
 import com.kaem.flux.ui.component.LoadingScreen
+import com.kaem.flux.ui.component.MediaItem
 import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.FluxTheme
 import com.kaem.flux.ui.theme.Ui
@@ -191,7 +192,7 @@ fun HomeEmpty(
 
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun HomeLists(
     overviews: List<MediaOverview>,
@@ -240,14 +241,14 @@ fun HomeLists(
                 navigateToDetails = navigateToDetails
             )
 
-            MediaList(
+            MediaCategory(
                 name = stringResource(id = ContentType.SHOW.stringResource),
                 overviews = overviews.filter { it.type == ContentType.SHOW },
                 navigateToDetails = navigateToDetails,
                 navigateToCategory = { navigateToCategory(ContentType.SHOW) }
             )
 
-            MediaList(
+            MediaCategory(
                 name = stringResource(id = ContentType.MOVIE.stringResource),
                 overviews = overviews.filter { it.type == ContentType.MOVIE },
                 navigateToDetails = navigateToDetails,
@@ -330,7 +331,7 @@ fun LastWatchedCarousel(
 }
 
 @Composable
-fun MediaList(
+fun MediaCategory(
     name: String? = null,
     overviews: List<MediaOverview>,
     navigateToDetails: (Long) -> Unit,
@@ -377,27 +378,6 @@ fun MediaList(
         }
 
     }
-}
-
-@Composable
-fun MediaItem(
-    width: Dp,
-    url: String,
-    ratio: Float,
-    onTap: () -> Unit,
-    description: String
-) {
-
-    Image(
-        modifier = Modifier
-            .clickable { onTap() }
-            .clip(Ui.Shape.RoundedCorner)
-            .width(width)
-            .aspectRatio(ratio),
-        url = url,
-        contentDescription = description
-    )
-
 }
 
 @Preview

@@ -21,6 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.kaem.flux.screens.home.MediaItem
 import com.kaem.flux.ui.component.BackButton
+import com.kaem.flux.ui.component.MediaItem
 import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.Constants

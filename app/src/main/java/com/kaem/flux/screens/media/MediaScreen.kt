@@ -37,7 +37,7 @@ import com.kaem.flux.model.media.MediaOverview
 import com.kaem.flux.screens.player.PlayerScreen
 import com.kaem.flux.ui.component.ErrorScreen
 import com.kaem.flux.ui.component.FluxDialog
-import com.kaem.flux.ui.component.Loader
+import com.kaem.flux.ui.component.LoadingScreen
 import com.kaem.flux.ui.theme.Ui
 import kotlinx.coroutines.launch
 
@@ -56,7 +56,7 @@ fun MediaScreen(
     ) { screen ->
 
         when (screen) {
-            ScreenState.LOADING -> Loader()
+            ScreenState.LOADING -> LoadingScreen()
             ScreenState.ERROR -> {
                 ErrorScreen(
                     message = stringResource(R.string.oups_an_error_occured),

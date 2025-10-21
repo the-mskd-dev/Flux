@@ -6,9 +6,13 @@ import androidx.lifecycle.viewModelScope
 import com.kaem.flux.data.repository.CatalogRepository
 import com.kaem.flux.data.repository.DataStoreRepository
 import com.kaem.flux.model.ScreenState
+import com.kaem.flux.model.media.ContentType
 import com.kaem.flux.model.media.MediaOverview
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
@@ -22,6 +26,23 @@ data class HomeUiState(
     val isSyncing: Boolean = true
 )
 
+sealed class HomeIntent {
+    data class onMediaTap(val mediaId: Long): HomeIntent()
+    data class onCategoryTap(val category: ContentType): HomeIntent()
+    data class onSyncTap(val manualSync: Boolean): HomeIntent()
+    object onSearchTap: HomeIntent()
+    object onSettingsTap: HomeIntent()
+    object onHowToTap: HomeIntent()
+}
+
+sealed class HomeEvent {
+    data class NavigateToMedia(val mediaId: Long): HomeEvent()
+    data class NavigateToCategory(val category: ContentType): HomeEvent()
+    object NavigateToSearch: HomeEvent()
+    object NavigateToSettings: HomeEvent()
+    object NavigateToHowTo: HomeEvent()
+}
+
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val repository: CatalogRepository,
@@ -32,6 +53,9 @@ class HomeViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState = _uiState.asStateFlow()
+
+    private val _event = MutableSharedFlow<HomeEvent>()
+    val event = _event.asSharedFlow()
 
     init {
         viewModelScope.launch {
@@ -57,7 +81,18 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun getLibrary(manualSync: Boolean = false) = viewModelScope.launch {
+    fun onIntent(intent: HomeIntent) = viewModelScope.launch {
+        when (intent) {
+            is HomeIntent.onMediaTap -> _event.emit(HomeEvent.NavigateToMedia(mediaId = intent.mediaId))
+            is HomeIntent.onCategoryTap -> _event.emit(HomeEvent.NavigateToCategory(category = intent.category))
+            is HomeIntent.onSyncTap -> getLibrary(manualSync = intent.manualSync)
+            HomeIntent.onSearchTap -> _event.emit(HomeEvent.NavigateToSearch)
+            HomeIntent.onSettingsTap -> _event.emit(HomeEvent.NavigateToSettings)
+            HomeIntent.onHowToTap -> _event.emit(HomeEvent.NavigateToHowTo)
+        }
+    }
+
+    private suspend fun getLibrary(manualSync: Boolean = false) {
 
         val currentTime = System.currentTimeMillis()
         val sync = currentTime - lastSyncTime > 1.days.inWholeMilliseconds || manualSync

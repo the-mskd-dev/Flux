@@ -81,7 +81,7 @@ fun HomeScreen(
     } else {
 
         LaunchedEffect(Unit) {
-            viewModel.getLibrary()
+            viewModel.onIntent(HomeIntent.onSyncTap(manualSync = false))
         }
 
         Crossfade(
@@ -99,12 +99,7 @@ fun HomeScreen(
                         overviews = uiState.overviews,
                         lastWatchedIds = uiState.lastWatchedMediaIds,
                         isSyncing = uiState.isSyncing,
-                        onSyncTap = { viewModel.getLibrary(manualSync = true) },
-                        navigateToDetails = { id -> navigateToDetails(id) },
-                        navigateToCategory = { type -> navigateToCategory(type) },
-                        navigateToSearch = navigateToSearch,
-                        navigateToHowTo = navigateToHowTo,
-                        navigateToSettings = navigateToSettings
+                        sendIntent = { intent -> viewModel.onIntent(intent) },
                     )
 
                 }
@@ -122,20 +117,12 @@ fun HomeContent(
     overviews: List<MediaOverview>,
     lastWatchedIds: List<Long>,
     isSyncing: Boolean,
-    onSyncTap: () -> Unit,
-    navigateToDetails: (Long) -> Unit,
-    navigateToCategory: (ContentType) -> Unit,
-    navigateToSearch: () -> Unit,
-    navigateToHowTo: () -> Unit,
-    navigateToSettings: () -> Unit
+    sendIntent: (HomeIntent) -> Unit
 ) {
 
     if (overviews.isEmpty()) {
 
-        HomeEmpty(
-            navigateToHowTo = navigateToHowTo,
-            onReloadTap = onSyncTap
-        )
+        HomeEmpty(sendIntent = sendIntent)
 
     } else {
 
@@ -143,11 +130,7 @@ fun HomeContent(
             overviews = overviews,
             lastWatchedIds = lastWatchedIds,
             isSyncing = isSyncing,
-            onSyncTap = onSyncTap,
-            navigateToDetails = navigateToDetails,
-            navigateToCategory = navigateToCategory,
-            navigateToSearch = navigateToSearch,
-            navigateToSettings = navigateToSettings
+            sendIntent = sendIntent
         )
 
     }
@@ -155,10 +138,7 @@ fun HomeContent(
 }
 
 @Composable
-fun HomeEmpty(
-    navigateToHowTo: () -> Unit,
-    onReloadTap: () -> Unit
-) {
+fun HomeEmpty(sendIntent: (HomeIntent) -> Unit) {
 
     Column(
         modifier = Modifier
@@ -178,12 +158,12 @@ fun HomeEmpty(
 
             FluxButton(
                 text = stringResource(R.string.how_to_name_files),
-                onTap = navigateToHowTo
+                onTap = { sendIntent(HomeIntent.onHowToTap) }
             )
 
             FluxTextButton(
                 text = stringResource(R.string.refresh),
-                onTap = onReloadTap
+                onTap = { sendIntent(HomeIntent.onSyncTap(manualSync = true)) }
             )
 
         }
@@ -198,11 +178,7 @@ fun HomeLists(
     overviews: List<MediaOverview>,
     lastWatchedIds: List<Long>,
     isSyncing: Boolean,
-    onSyncTap: () -> Unit,
-    navigateToDetails: (Long) -> Unit,
-    navigateToCategory: (ContentType) -> Unit,
-    navigateToSearch: () -> Unit,
-    navigateToSettings: () -> Unit
+    sendIntent: (HomeIntent) -> Unit
 ) {
 
     val state = rememberPullToRefreshState()
@@ -210,7 +186,7 @@ fun HomeLists(
     PullToRefreshBox(
         modifier = Modifier.fillMaxSize(),
         isRefreshing = isSyncing,
-        onRefresh = onSyncTap,
+        onRefresh = { sendIntent(HomeIntent.onSyncTap(false)) },
         state = state,
         indicator = {
             PullToRefreshDefaults.LoadingIndicator(
@@ -231,28 +207,25 @@ fun HomeLists(
             verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
         ) {
 
-            HomeTopButtons(
-                navigateToSearch = navigateToSearch,
-                navigateToSettings = navigateToSettings
-            )
+            HomeTopButtons(sendIntent = sendIntent)
 
             LastWatchedCarousel(
                 overviews = lastWatchedIds.mapNotNull { overviews.find { o -> o.id == it } },
-                navigateToDetails = navigateToDetails
+                sendIntent = sendIntent
             )
 
             MediaCategory(
                 name = stringResource(id = ContentType.SHOW.stringResource),
+                category = ContentType.SHOW,
                 overviews = overviews.filter { it.type == ContentType.SHOW },
-                navigateToDetails = navigateToDetails,
-                navigateToCategory = { navigateToCategory(ContentType.SHOW) }
+                sendIntent = sendIntent
             )
 
             MediaCategory(
                 name = stringResource(id = ContentType.MOVIE.stringResource),
+                category = ContentType.MOVIE,
                 overviews = overviews.filter { it.type == ContentType.MOVIE },
-                navigateToDetails = navigateToDetails,
-                navigateToCategory = { navigateToCategory(ContentType.MOVIE) }
+                sendIntent = sendIntent
             )
 
         }
@@ -262,10 +235,7 @@ fun HomeLists(
 }
 
 @Composable
-fun HomeTopButtons(
-    navigateToSearch: () -> Unit,
-    navigateToSettings: () -> Unit
-) {
+fun HomeTopButtons(sendIntent: (HomeIntent) -> Unit) {
 
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -273,7 +243,7 @@ fun HomeTopButtons(
         verticalAlignment = Alignment.CenterVertically
     ) {
 
-        IconButton(onClick = navigateToSearch) {
+        IconButton(onClick = { sendIntent(HomeIntent.onSearchTap) }) {
             Icon(
                 imageVector = Icons.Rounded.Search,
                 tint = MaterialTheme.colorScheme.onBackground,
@@ -281,7 +251,7 @@ fun HomeTopButtons(
             )
         }
 
-        IconButton(onClick = navigateToSettings) {
+        IconButton(onClick = { sendIntent(HomeIntent.onSettingsTap) }) {
             Icon(
                 imageVector = Icons.Rounded.Settings,
                 tint = MaterialTheme.colorScheme.onBackground,
@@ -297,7 +267,7 @@ fun HomeTopButtons(
 @Composable
 fun LastWatchedCarousel(
     overviews: List<MediaOverview>,
-    navigateToDetails: (Long) -> Unit,
+    sendIntent: (HomeIntent) -> Unit
 ) {
 
     if (overviews.isEmpty())
@@ -320,7 +290,7 @@ fun LastWatchedCarousel(
         Image(
             modifier = Modifier
                 .maskClip(MaterialTheme.shapes.extraLarge)
-                .clickable { navigateToDetails(overview.id) }
+                .clickable { sendIntent(HomeIntent.onMediaTap(mediaId = overview.id)) }
                 .aspectRatio(ratio),
             url = url,
             contentDescription = overview.title
@@ -333,9 +303,9 @@ fun LastWatchedCarousel(
 @Composable
 fun MediaCategory(
     name: String? = null,
+    category: ContentType,
     overviews: List<MediaOverview>,
-    navigateToDetails: (Long) -> Unit,
-    navigateToCategory: () -> Unit = {}
+    sendIntent: (HomeIntent) -> Unit
 ) {
 
     if (overviews.isEmpty())
@@ -351,7 +321,7 @@ fun MediaCategory(
 
         Text.Title.Large(
             modifier = Modifier
-                .clickable { navigateToCategory() }
+                .clickable { sendIntent(HomeIntent.onCategoryTap(category)) }
                 .fillMaxWidth()
                 .padding(start = Ui.Space.MEDIUM, top = Ui.Space.LARGE),
             text = name
@@ -369,7 +339,7 @@ fun MediaCategory(
                     width = width,
                     ratio = ratio,
                     url = Constants.TMDB.IMAGE_SMALL + it.imagePath,
-                    onTap = { navigateToDetails(it.id) },
+                    onTap = { sendIntent(HomeIntent.onMediaTap(mediaId = it.id)) },
                     description = it.title
                 )
 
@@ -385,15 +355,10 @@ fun MediaCategory(
 fun HomeScreen_Preview() {
     FluxTheme(theme = Ui.THEME.DARK) {
         HomeContent(
-            navigateToDetails = {},
-            navigateToCategory = {},
-            navigateToSearch = {},
-            navigateToHowTo = {},
-            navigateToSettings = {},
-            onSyncTap = {},
             overviews = MediaMockups.overviews,
             lastWatchedIds = MediaMockups.overviews.map { it.id },
-            isSyncing = false
+            isSyncing = false,
+            sendIntent = {}
         )
     }
 }

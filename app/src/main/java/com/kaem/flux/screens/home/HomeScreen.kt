@@ -207,73 +207,71 @@ fun HomeLists(
     val pullToRefreshState = rememberPullToRefreshState()
     var value by remember { mutableFloatStateOf(0f) }
     with(LocalDensity.current) {
-        value = 120.dp.toPx() * pullToRefreshState.distanceFraction
+        value = 100.dp.toPx() * pullToRefreshState.distanceFraction
     }
 
-    PullToRefreshBox(
-        modifier = Modifier.fillMaxSize(),
-        isRefreshing = isSyncing,
-        onRefresh = { sendIntent(HomeIntent.OnSyncTap(true)) },
-        state = pullToRefreshState,
-        indicator = {
-            PullToRefreshDefaults.LoadingIndicator(
-                modifier = Modifier.align(Alignment.TopCenter),
-                state = pullToRefreshState,
-                isRefreshing = isSyncing,
-                maxDistance = 120.dp
-            )
-        }
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .statusBarsPadding()
     ) {
 
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .graphicsLayer { translationY = value },
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
+        HomeTopButtons(sendIntent = sendIntent)
+
+        PullToRefreshBox(
+            modifier = Modifier.weight(1f),
+            isRefreshing = isSyncing,
+            onRefresh = { sendIntent(HomeIntent.OnSyncTap(true)) },
+            state = pullToRefreshState,
+            indicator = {
+                PullToRefreshDefaults.LoadingIndicator(
+                    modifier = Modifier.align(Alignment.TopCenter),
+                    state = pullToRefreshState,
+                    isRefreshing = isSyncing
+                )
+            }
         ) {
 
-            item {
-                Spacer(
-                    Modifier
-                        .statusBarsPadding()
-                )
-            }
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .graphicsLayer { translationY = value },
+                verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
+            ) {
 
-            item {
-                HomeTopButtons(sendIntent = sendIntent)
-            }
+                item {
+                    LastWatchedCarousel(
+                        overviews = lastWatchedIds.mapNotNull { overviews.find { o -> o.id == it } },
+                        sendIntent = sendIntent
+                    )
+                }
 
-            item {
-                LastWatchedCarousel(
-                    overviews = lastWatchedIds.mapNotNull { overviews.find { o -> o.id == it } },
-                    sendIntent = sendIntent
-                )
-            }
+                item {
+                    MediaCategory(
+                        name = stringResource(id = ContentType.SHOW.stringResource),
+                        category = ContentType.SHOW,
+                        overviews = overviews.filter { it.type == ContentType.SHOW },
+                        sendIntent = sendIntent
+                    )
+                }
 
-            item {
-                MediaCategory(
-                    name = stringResource(id = ContentType.SHOW.stringResource),
-                    category = ContentType.SHOW,
-                    overviews = overviews.filter { it.type == ContentType.SHOW },
-                    sendIntent = sendIntent
-                )
-            }
+                item {
+                    MediaCategory(
+                        name = stringResource(id = ContentType.MOVIE.stringResource),
+                        category = ContentType.MOVIE,
+                        overviews = overviews.filter { it.type == ContentType.MOVIE },
+                        sendIntent = sendIntent
+                    )
+                }
 
-            item {
-                MediaCategory(
-                    name = stringResource(id = ContentType.MOVIE.stringResource),
-                    category = ContentType.MOVIE,
-                    overviews = overviews.filter { it.type == ContentType.MOVIE },
-                    sendIntent = sendIntent
-                )
-            }
+                item {
+                    Spacer(
+                        Modifier
+                            .navigationBarsPadding()
+                            .size(Ui.Space.LARGE)
+                    )
+                }
 
-            item {
-                Spacer(
-                    Modifier
-                        .navigationBarsPadding()
-                        .size(Ui.Space.LARGE)
-                )
             }
 
         }

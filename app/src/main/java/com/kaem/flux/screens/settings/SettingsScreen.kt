@@ -28,6 +28,7 @@ import com.kaem.flux.R
 import com.kaem.flux.ui.component.FluxDialog
 import com.kaem.flux.ui.component.FluxTopBar
 import com.kaem.flux.ui.component.Text
+import com.kaem.flux.ui.component.Text.Title.Large
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.WebLink
 import com.kaem.flux.utils.extensions.uppercaseFirstLetter

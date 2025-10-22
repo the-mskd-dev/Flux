@@ -16,7 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.kaem.flux.Navigation.Navigation
 import com.kaem.flux.data.repository.DataStoreRepository
 import com.kaem.flux.screens.about.AboutScreen
 import com.kaem.flux.screens.category.CategoryScreen
@@ -27,10 +26,12 @@ import com.kaem.flux.screens.search.SearchScreen
 import com.kaem.flux.screens.settings.SettingsScreen
 import com.kaem.flux.ui.theme.FluxTheme
 import com.kaem.flux.ui.theme.Ui
+import com.kaem.flux.utils.Constants
 import com.kaem.flux.utils.FluxNavHost
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.kaem.flux.Navigation.Navigation
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {

@@ -1,16 +1,24 @@
 package com.kaem.flux.screens.home
 
+import android.util.Log
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.animate
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -32,8 +40,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -190,52 +204,77 @@ fun HomeLists(
     sendIntent: (HomeIntent) -> Unit
 ) {
 
-    val state = rememberPullToRefreshState()
+    val pullToRefreshState = rememberPullToRefreshState()
+    var value by remember { mutableFloatStateOf(0f) }
+    with(LocalDensity.current) {
+        value = 120.dp.toPx() * pullToRefreshState.distanceFraction
+    }
 
     PullToRefreshBox(
         modifier = Modifier.fillMaxSize(),
         isRefreshing = isSyncing,
-        onRefresh = { sendIntent(HomeIntent.OnSyncTap(false)) },
-        state = state,
+        onRefresh = { sendIntent(HomeIntent.OnSyncTap(true)) },
+        state = pullToRefreshState,
         indicator = {
             PullToRefreshDefaults.LoadingIndicator(
                 modifier = Modifier.align(Alignment.TopCenter),
-                state = state,
+                state = pullToRefreshState,
                 isRefreshing = isSyncing,
                 maxDistance = 120.dp
             )
         }
     ) {
 
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .systemBarsPadding()
-                .padding(bottom = Ui.Space.LARGE),
+                .graphicsLayer { translationY = value },
             verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
         ) {
 
-            HomeTopButtons(sendIntent = sendIntent)
+            item {
+                Spacer(
+                    Modifier
+                        .statusBarsPadding()
+                )
+            }
 
-            LastWatchedCarousel(
-                overviews = lastWatchedIds.mapNotNull { overviews.find { o -> o.id == it } },
-                sendIntent = sendIntent
-            )
+            item {
+                HomeTopButtons(sendIntent = sendIntent)
+            }
 
-            MediaCategory(
-                name = stringResource(id = ContentType.SHOW.stringResource),
-                category = ContentType.SHOW,
-                overviews = overviews.filter { it.type == ContentType.SHOW },
-                sendIntent = sendIntent
-            )
+            item {
+                LastWatchedCarousel(
+                    overviews = lastWatchedIds.mapNotNull { overviews.find { o -> o.id == it } },
+                    sendIntent = sendIntent
+                )
+            }
 
-            MediaCategory(
-                name = stringResource(id = ContentType.MOVIE.stringResource),
-                category = ContentType.MOVIE,
-                overviews = overviews.filter { it.type == ContentType.MOVIE },
-                sendIntent = sendIntent
-            )
+            item {
+                MediaCategory(
+                    name = stringResource(id = ContentType.SHOW.stringResource),
+                    category = ContentType.SHOW,
+                    overviews = overviews.filter { it.type == ContentType.SHOW },
+                    sendIntent = sendIntent
+                )
+            }
+
+            item {
+                MediaCategory(
+                    name = stringResource(id = ContentType.MOVIE.stringResource),
+                    category = ContentType.MOVIE,
+                    overviews = overviews.filter { it.type == ContentType.MOVIE },
+                    sendIntent = sendIntent
+                )
+            }
+
+            item {
+                Spacer(
+                    Modifier
+                        .navigationBarsPadding()
+                        .size(Ui.Space.LARGE)
+                )
+            }
 
         }
 

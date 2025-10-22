@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
+import com.kaem.flux.Navigation.Navigation
 import com.kaem.flux.R
 import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.ScreenState
@@ -63,16 +64,24 @@ import com.kaem.flux.utils.Constants
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun HomeScreen(
-    navigateToDetails: (Long) -> Unit,
-    navigateToCategory: (ContentType) -> Unit,
-    navigateToSearch: () -> Unit,
-    navigateToHowTo: () -> Unit,
-    navigateToSettings: () -> Unit,
+    navigate: (String) -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
 
     val uiState by viewModel.uiState.collectAsState()
     val permissions = fluxPermissionState()
+
+    LaunchedEffect(Unit) {
+        viewModel.event.collect { event ->
+            when (event) {
+                is HomeEvent.NavigateToCategory -> navigate(Navigation.CATEGORY.build(listOf(event.category.name)))
+                is HomeEvent.NavigateToMedia -> navigate(Navigation.MEDIA.build(listOf(event.mediaId)))
+                HomeEvent.NavigateToHowTo -> navigate(Navigation.HOW_TO.build())
+                HomeEvent.NavigateToSearch -> navigate(Navigation.SEARCH.build())
+                HomeEvent.NavigateToSettings -> navigate(Navigation.SETTINGS.build())
+            }
+        }
+    }
 
     if (!permissions.status.isGranted) {
 

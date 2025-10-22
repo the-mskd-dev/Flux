@@ -14,10 +14,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import com.kaem.flux.data.repository.DataStoreRepository
 import com.kaem.flux.screens.about.AboutScreen
 import com.kaem.flux.screens.category.CategoryScreen
@@ -33,6 +31,7 @@ import com.kaem.flux.utils.FluxNavHost
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.kaem.flux.Navigation.Navigation
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -57,42 +56,21 @@ class MainActivity : ComponentActivity() {
                         .fillMaxSize()
                         .background(color = MaterialTheme.colorScheme.background),
                     navController = navController,
-                    startDestination = Constants.Navigation.LIBRARY
+                    startDestination = Navigation.LIBRARY.route
                 ) {
 
-                    composable(Constants.Navigation.LIBRARY) {
+                    composable(
+                        route = Navigation.LIBRARY.route,
+                        arguments = Navigation.LIBRARY.arguments
+                    ) {
                         HomeScreen(
-                            navigateToDetails = {
-                                navController.navigate(
-                                    route = "${Constants.Navigation.MEDIA}/$it"
-                                )
-                            },
-                            navigateToCategory = {
-                                navController.navigate(
-                                    route = "${Constants.Navigation.CATEGORY}/${it.name}"
-                                )
-                            },
-                            navigateToSearch = {
-                                navController.navigate(
-                                    route = Constants.Navigation.SEARCH
-                                )
-                            },
-                            navigateToHowTo = {
-                                navController.navigate(
-                                    route = Constants.Navigation.HOW_TO
-                                )
-                            },
-                            navigateToSettings = {
-                                navController.navigate(
-                                    route = Constants.Navigation.SETTINGS
-                                )
-                            }
+                            navigate = { route -> navController.navigate(route) },
                         )
                     }
 
                     composable(
-                        "${Constants.Navigation.MEDIA}/{mediaId}",
-                        arguments = listOf(navArgument("mediaId") { type = NavType.LongType }),
+                        route = Navigation.MEDIA.route,
+                        arguments = Navigation.MEDIA.arguments,
                     ) {
                         MediaScreen(
                             onBackButtonTap = { navController.popBackStack() }
@@ -100,53 +78,65 @@ class MainActivity : ComponentActivity() {
                     }
 
                     composable(
-                        "${Constants.Navigation.CATEGORY}/{contentType}",
-                        arguments = listOf(navArgument("contentType") { type = NavType.StringType }),
+                        route = Navigation.CATEGORY.route,
+                        arguments = Navigation.CATEGORY.arguments,
                     ) {
                         CategoryScreen(
                             onBackButtonTap = { navController.popBackStack() },
                             navigateToDetails = {
                                 navController.navigate(
-                                    route = "${Constants.Navigation.MEDIA}/$it"
+                                    route = "${Navigation.MEDIA.route}/$it"
                                 )
                             }
                         )
                     }
 
-                    composable(Constants.Navigation.SEARCH) {
+                    composable(
+                        route = Navigation.SEARCH.route,
+                        arguments = Navigation.SEARCH.arguments
+                    ) {
                         SearchScreen(
                             onBackButtonTap = { navController.popBackStack() },
                             navigateToDetails = {
                                 navController.navigate(
-                                    route = "${Constants.Navigation.MEDIA}/$it"
+                                    route = "${Navigation.MEDIA.route}/$it"
                                 )
                             }
                         )
                     }
 
-                    composable(Constants.Navigation.SETTINGS) {
+                    composable(
+                        route = Navigation.SETTINGS.route,
+                        arguments = Navigation.SETTINGS.arguments
+                    ) {
                         SettingsScreen(
                             onBackButtonTap = { navController.popBackStack() },
                             navigateToHowToScreen = {
                                 navController.navigate(
-                                    route = Constants.Navigation.HOW_TO
+                                    route = Navigation.HOW_TO.route
                                 )
                             },
                             navigateToAboutScreen = {
                                 navController.navigate(
-                                    route = Constants.Navigation.ABOUT
+                                    route = Navigation.ABOUT.route
                                 )
                             }
                         )
                     }
 
-                    composable(Constants.Navigation.HOW_TO) {
+                    composable(
+                        route = Navigation.HOW_TO.route,
+                        arguments = Navigation.HOW_TO.arguments
+                    ) {
                         HowToScreen(
                             onBackButtonTap = { navController.popBackStack() }
                         )
                     }
 
-                    composable(Constants.Navigation.ABOUT) {
+                    composable(
+                        route = Navigation.ABOUT.route,
+                        arguments = Navigation.ABOUT.arguments
+                    ) {
                         AboutScreen(
                             onBackButtonTap = { navController.popBackStack() }
                         )

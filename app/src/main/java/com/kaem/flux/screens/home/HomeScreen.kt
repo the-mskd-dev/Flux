@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -35,10 +34,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -79,18 +76,21 @@ fun HomeScreen(
                 HomeEvent.NavigateToHowTo -> navigate(Navigation.HOW_TO.build())
                 HomeEvent.NavigateToSearch -> navigate(Navigation.SEARCH.build())
                 HomeEvent.NavigateToSettings -> navigate(Navigation.SETTINGS.build())
+                HomeEvent.OpenPermissionDialog -> permissions.launchPermissionRequest()
             }
         }
     }
 
     if (!permissions.status.isGranted) {
 
-        WelcomeScreen { permissions.launchPermissionRequest() }
+        WelcomeScreen(
+            onPermissionsTap = { viewModel.handleIntent(HomeIntent.OnPermissionTap) }
+        )
 
     } else {
 
         LaunchedEffect(Unit) {
-            viewModel.onIntent(HomeIntent.onSyncTap(manualSync = false))
+            viewModel.handleIntent(HomeIntent.OnSyncTap(manualSync = false))
         }
 
         Crossfade(
@@ -108,7 +108,7 @@ fun HomeScreen(
                         overviews = uiState.overviews,
                         lastWatchedIds = uiState.lastWatchedMediaIds,
                         isSyncing = uiState.isSyncing,
-                        sendIntent = { intent -> viewModel.onIntent(intent) },
+                        sendIntent = { intent -> viewModel.handleIntent(intent) },
                     )
 
                 }
@@ -167,12 +167,12 @@ fun HomeEmpty(sendIntent: (HomeIntent) -> Unit) {
 
             FluxButton(
                 text = stringResource(R.string.how_to_name_files),
-                onTap = { sendIntent(HomeIntent.onHowToTap) }
+                onTap = { sendIntent(HomeIntent.OnHowToTap) }
             )
 
             FluxTextButton(
                 text = stringResource(R.string.refresh),
-                onTap = { sendIntent(HomeIntent.onSyncTap(manualSync = true)) }
+                onTap = { sendIntent(HomeIntent.OnSyncTap(manualSync = true)) }
             )
 
         }
@@ -195,7 +195,7 @@ fun HomeLists(
     PullToRefreshBox(
         modifier = Modifier.fillMaxSize(),
         isRefreshing = isSyncing,
-        onRefresh = { sendIntent(HomeIntent.onSyncTap(false)) },
+        onRefresh = { sendIntent(HomeIntent.OnSyncTap(false)) },
         state = state,
         indicator = {
             PullToRefreshDefaults.LoadingIndicator(
@@ -252,7 +252,7 @@ fun HomeTopButtons(sendIntent: (HomeIntent) -> Unit) {
         verticalAlignment = Alignment.CenterVertically
     ) {
 
-        IconButton(onClick = { sendIntent(HomeIntent.onSearchTap) }) {
+        IconButton(onClick = { sendIntent(HomeIntent.OnSearchTap) }) {
             Icon(
                 imageVector = Icons.Rounded.Search,
                 tint = MaterialTheme.colorScheme.onBackground,
@@ -260,7 +260,7 @@ fun HomeTopButtons(sendIntent: (HomeIntent) -> Unit) {
             )
         }
 
-        IconButton(onClick = { sendIntent(HomeIntent.onSettingsTap) }) {
+        IconButton(onClick = { sendIntent(HomeIntent.OnSettingsTap) }) {
             Icon(
                 imageVector = Icons.Rounded.Settings,
                 tint = MaterialTheme.colorScheme.onBackground,
@@ -299,7 +299,7 @@ fun LastWatchedCarousel(
         Image(
             modifier = Modifier
                 .maskClip(MaterialTheme.shapes.extraLarge)
-                .clickable { sendIntent(HomeIntent.onMediaTap(mediaId = overview.id)) }
+                .clickable { sendIntent(HomeIntent.OnMediaTap(mediaId = overview.id)) }
                 .aspectRatio(ratio),
             url = url,
             contentDescription = overview.title
@@ -330,7 +330,7 @@ fun MediaCategory(
 
         Text.Title.Large(
             modifier = Modifier
-                .clickable { sendIntent(HomeIntent.onCategoryTap(category)) }
+                .clickable { sendIntent(HomeIntent.OnCategoryTap(category)) }
                 .fillMaxWidth()
                 .padding(start = Ui.Space.MEDIUM, top = Ui.Space.LARGE),
             text = name,
@@ -349,7 +349,7 @@ fun MediaCategory(
                     width = width,
                     ratio = ratio,
                     url = Constants.TMDB.IMAGE_SMALL + it.imagePath,
-                    onTap = { sendIntent(HomeIntent.onMediaTap(mediaId = it.id)) },
+                    onTap = { sendIntent(HomeIntent.OnMediaTap(mediaId = it.id)) },
                     description = it.title
                 )
 

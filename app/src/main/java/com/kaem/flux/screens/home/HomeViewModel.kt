@@ -11,7 +11,6 @@ import com.kaem.flux.model.media.MediaOverview
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
@@ -27,12 +26,13 @@ data class HomeUiState(
 )
 
 sealed class HomeIntent {
-    data class onMediaTap(val mediaId: Long): HomeIntent()
-    data class onCategoryTap(val category: ContentType): HomeIntent()
-    data class onSyncTap(val manualSync: Boolean): HomeIntent()
-    object onSearchTap: HomeIntent()
-    object onSettingsTap: HomeIntent()
-    object onHowToTap: HomeIntent()
+    data class OnMediaTap(val mediaId: Long): HomeIntent()
+    data class OnCategoryTap(val category: ContentType): HomeIntent()
+    data class OnSyncTap(val manualSync: Boolean): HomeIntent()
+    object OnSearchTap: HomeIntent()
+    object OnSettingsTap: HomeIntent()
+    object OnHowToTap: HomeIntent()
+    object OnPermissionTap: HomeIntent()
 }
 
 sealed class HomeEvent {
@@ -41,6 +41,7 @@ sealed class HomeEvent {
     object NavigateToSearch: HomeEvent()
     object NavigateToSettings: HomeEvent()
     object NavigateToHowTo: HomeEvent()
+    object OpenPermissionDialog: HomeEvent()
 }
 
 @HiltViewModel
@@ -81,14 +82,15 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun onIntent(intent: HomeIntent) = viewModelScope.launch {
+    fun handleIntent(intent: HomeIntent) = viewModelScope.launch {
         when (intent) {
-            is HomeIntent.onMediaTap -> _event.emit(HomeEvent.NavigateToMedia(mediaId = intent.mediaId))
-            is HomeIntent.onCategoryTap -> _event.emit(HomeEvent.NavigateToCategory(category = intent.category))
-            is HomeIntent.onSyncTap -> getLibrary(manualSync = intent.manualSync)
-            HomeIntent.onSearchTap -> _event.emit(HomeEvent.NavigateToSearch)
-            HomeIntent.onSettingsTap -> _event.emit(HomeEvent.NavigateToSettings)
-            HomeIntent.onHowToTap -> _event.emit(HomeEvent.NavigateToHowTo)
+            is HomeIntent.OnSyncTap -> getLibrary(manualSync = intent.manualSync)
+            is HomeIntent.OnMediaTap -> _event.emit(HomeEvent.NavigateToMedia(mediaId = intent.mediaId))
+            is HomeIntent.OnCategoryTap -> _event.emit(HomeEvent.NavigateToCategory(category = intent.category))
+            HomeIntent.OnSearchTap -> _event.emit(HomeEvent.NavigateToSearch)
+            HomeIntent.OnSettingsTap -> _event.emit(HomeEvent.NavigateToSettings)
+            HomeIntent.OnHowToTap -> _event.emit(HomeEvent.NavigateToHowTo)
+            HomeIntent.OnPermissionTap -> _event.emit(HomeEvent.OpenPermissionDialog)
         }
     }
 

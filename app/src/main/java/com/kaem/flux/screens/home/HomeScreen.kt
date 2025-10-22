@@ -1,10 +1,7 @@
 package com.kaem.flux.screens.home
 
-import android.util.Log
 import androidx.compose.animation.Crossfade
-import androidx.compose.animation.core.animate
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -17,12 +14,9 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.Settings
@@ -41,11 +35,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
@@ -205,9 +200,9 @@ fun HomeLists(
 ) {
 
     val pullToRefreshState = rememberPullToRefreshState()
-    var value by remember { mutableFloatStateOf(0f) }
+    var offsetY by remember { mutableFloatStateOf(0f) }
     with(LocalDensity.current) {
-        value = 100.dp.toPx() * pullToRefreshState.distanceFraction
+        offsetY = 100.dp.toPx() * pullToRefreshState.distanceFraction
     }
 
     Column(
@@ -225,7 +220,9 @@ fun HomeLists(
             state = pullToRefreshState,
             indicator = {
                 PullToRefreshDefaults.LoadingIndicator(
-                    modifier = Modifier.align(Alignment.TopCenter),
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .scale(pullToRefreshState.distanceFraction.coerceIn(0f, 1f)),
                     state = pullToRefreshState,
                     isRefreshing = isSyncing
                 )
@@ -235,7 +232,7 @@ fun HomeLists(
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .graphicsLayer { translationY = value },
+                    .graphicsLayer { translationY = offsetY },
                 verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
             ) {
 

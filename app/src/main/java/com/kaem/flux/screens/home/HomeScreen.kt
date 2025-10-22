@@ -333,13 +333,14 @@ fun MediaCategory(
                 .clickable { sendIntent(HomeIntent.onCategoryTap(category)) }
                 .fillMaxWidth()
                 .padding(start = Ui.Space.MEDIUM, top = Ui.Space.LARGE),
-            text = name
+            text = name,
+            emphasized = true
         )
 
         LazyRow(
             modifier = Modifier.fillMaxWidth(),
             contentPadding = PaddingValues(horizontal = Ui.Space.MEDIUM),
-            horizontalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
+            horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)
         ) {
 
             items(overviews, key = { it.id }) {

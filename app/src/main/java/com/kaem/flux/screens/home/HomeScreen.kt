@@ -1,6 +1,7 @@
 package com.kaem.flux.screens.home
 
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -201,6 +202,7 @@ fun HomeLists(
 
     val pullToRefreshState = rememberPullToRefreshState()
     var offsetY by remember { mutableFloatStateOf(0f) }
+    val loaderAnim by animateFloatAsState(pullToRefreshState.distanceFraction.coerceIn(0f, 1f))
     with(LocalDensity.current) {
         offsetY = 100.dp.toPx() * pullToRefreshState.distanceFraction
     }
@@ -221,8 +223,8 @@ fun HomeLists(
             indicator = {
                 PullToRefreshDefaults.LoadingIndicator(
                     modifier = Modifier
-                        .align(Alignment.TopCenter)
-                        .scale(pullToRefreshState.distanceFraction.coerceIn(0f, 1f)),
+                        .scale(loaderAnim)
+                        .align(Alignment.TopCenter),
                     state = pullToRefreshState,
                     isRefreshing = isSyncing
                 )

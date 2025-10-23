@@ -104,7 +104,7 @@ fun FluxTheme(
     content: @Composable () -> Unit
 ) {
 
-    val colorScheme = when (theme) {
+    /*val colorScheme = when (theme) {
         Ui.THEME.LIGHT -> FluxLightColorScheme
         Ui.THEME.DARK -> FluxColorScheme
         Ui.THEME.SYSTEM -> {
@@ -119,6 +119,18 @@ fun FluxTheme(
             }
 
         }
+    }*/
+    val colorScheme = when (theme) {
+        Ui.THEME.SYSTEM -> {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                val context = LocalContext.current
+                dynamicDarkColorScheme(context)
+            } else {
+                FluxColorScheme
+            }
+
+        }
+        else -> FluxColorScheme
     }
     val view = LocalView.current
     if (!view.isInEditMode) {

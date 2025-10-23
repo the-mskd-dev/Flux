@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -21,131 +20,35 @@ import androidx.compose.ui.text.font.FontVariation
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import com.kaem.flux.R
-import com.kaem.flux.screens.home.HomeIntent
 import com.kaem.flux.ui.theme.FluxTheme
 import com.kaem.flux.ui.theme.Ui
 
 // Region Normal
 
 @OptIn(ExperimentalTextApi::class)
-val RobotoFlexDisplay = FontFamily(
+val RobotoFlex = FontFamily(
     Font(
         resId = R.font.roboto_flex,
         variationSettings = FontVariation.Settings(
             FontVariation.weight(FontWeight.Normal.weight),
-            //TODO
         ),
     )
 )
 
 @OptIn(ExperimentalTextApi::class)
-val RobotoFlexHeadline = FontFamily(
+val RobotoFlexEmphasized = FontFamily(
     Font(
         resId = R.font.roboto_flex,
         variationSettings = FontVariation.Settings(
-            FontVariation.weight(FontWeight.Normal.weight),
-            //TODO
+            FontVariation.weight(FontWeight.Bold.weight),
+            FontVariation.grade(100),
+            FontVariation.slant(-30f)
         ),
     )
 )
-
-@OptIn(ExperimentalTextApi::class)
-val RobotoFlexTitle = FontFamily(
-    Font(
-        resId = R.font.roboto_flex,
-        variationSettings = FontVariation.Settings(
-            FontVariation.weight(FontWeight.Normal.weight),
-            //TODO
-        ),
-    )
-)
-
-@OptIn(ExperimentalTextApi::class)
-val RobotoFlexBody = FontFamily(
-    Font(
-        resId = R.font.roboto_flex,
-        variationSettings = FontVariation.Settings(
-            FontVariation.weight(FontWeight.Normal.weight),
-            //TODO
-        ),
-    )
-)
-
-@OptIn(ExperimentalTextApi::class)
-val RobotoFlexLabel = FontFamily(
-    Font(
-        resId = R.font.roboto_flex,
-        variationSettings = FontVariation.Settings(
-            FontVariation.weight(FontWeight.Normal.weight),
-            //TODO
-        ),
-    )
-)
-
-//endregion
-
-//region Emphasized
-
-@OptIn(ExperimentalTextApi::class)
-val RobotoFlexDisplayEmphasized = FontFamily(
-    Font(
-        resId = R.font.roboto_flex,
-        variationSettings = FontVariation.Settings(
-            FontVariation.weight(FontWeight.Normal.weight),
-            //TODO
-        ),
-    )
-)
-
-@OptIn(ExperimentalTextApi::class)
-val RobotoFlexHeadlineEmphasized = FontFamily(
-    Font(
-        resId = R.font.roboto_flex,
-        variationSettings = FontVariation.Settings(
-            FontVariation.weight(FontWeight.Normal.weight),
-            //TODO
-        ),
-    )
-)
-
-@OptIn(ExperimentalTextApi::class)
-val RobotoFlexTitleEmphasized = FontFamily(
-    Font(
-        resId = R.font.roboto_flex,
-        variationSettings = FontVariation.Settings(
-            FontVariation.weight(FontWeight.Normal.weight),
-            //TODO
-        ),
-    )
-)
-
-@OptIn(ExperimentalTextApi::class)
-val RobotoFlexBodyEmphasized = FontFamily(
-    Font(
-        resId = R.font.roboto_flex,
-        variationSettings = FontVariation.Settings(
-            FontVariation.weight(FontWeight.Normal.weight),
-            //TODO
-        ),
-    )
-)
-
-@OptIn(ExperimentalTextApi::class)
-val RobotoFlexLabelEmphasized = FontFamily(
-    Font(
-        resId = R.font.roboto_flex,
-        variationSettings = FontVariation.Settings(
-            FontVariation.weight(FontWeight.Normal.weight),
-            //TODO
-        ),
-    )
-)
-
-//endregion
-
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
-@Preview
+@Preview(widthDp = 500)
 @Composable
 fun FontFamily_Preview() {
     FluxTheme {

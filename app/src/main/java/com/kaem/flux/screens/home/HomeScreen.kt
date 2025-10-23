@@ -345,6 +345,7 @@ fun LastWatchedCarousel(
 
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun MediaCategory(
     name: String? = null,
@@ -371,6 +372,24 @@ fun MediaCategory(
                 .padding(start = Ui.Space.MEDIUM, top = Ui.Space.LARGE),
             text = name,
             emphasized = true
+        )
+        androidx.compose.material3.Text(
+            modifier = Modifier
+                .clickable { sendIntent(HomeIntent.OnCategoryTap(category)) }
+                .fillMaxWidth()
+                .padding(start = Ui.Space.MEDIUM, top = Ui.Space.LARGE),
+            text = name ?: "TEST",
+            style = MaterialTheme.typography.titleLargeEmphasized,
+            color = MaterialTheme.colorScheme.onBackground
+        )
+        androidx.compose.material3.Text(
+            modifier = Modifier
+                .clickable { sendIntent(HomeIntent.OnCategoryTap(category)) }
+                .fillMaxWidth()
+                .padding(start = Ui.Space.MEDIUM, top = Ui.Space.LARGE),
+            text = name ?: "TEST",
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.onBackground
         )
 
         LazyRow(

@@ -41,8 +41,11 @@ val RobotoFlexEmphasized = FontFamily(
         resId = R.font.roboto_flex,
         variationSettings = FontVariation.Settings(
             FontVariation.weight(FontWeight.Bold.weight),
-            FontVariation.grade(500),
-            FontVariation.width(20f),
+            FontVariation.grade(200),
+            FontVariation.width(50f),
+            FontVariation.slant(-5f),
+            FontVariation.Setting("XOPQ", 100f), // Thick stroke
+            FontVariation.Setting("YOPQ", 50f), // Thin stroke
         ),
     )
 )

@@ -118,7 +118,7 @@ val displayLargeEmphasized = TextStyle(
     fontFamily = RobotoFlexEmphasized,
     fontSize = 57.sp,
     lineHeight = 64.0.sp,
-    letterSpacing = 0.sp
+    //letterSpacing = 0.sp
 )
 
 val displayMediumEmphasized = TextStyle(

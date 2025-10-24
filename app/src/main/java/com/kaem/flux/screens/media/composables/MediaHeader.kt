@@ -41,6 +41,7 @@ import com.kaem.flux.model.media.Episode
 import com.kaem.flux.model.media.Media
 import com.kaem.flux.model.media.MediaOverview
 import com.kaem.flux.model.media.Status
+import com.kaem.flux.screens.media.MediaIntent
 import com.kaem.flux.ui.component.BackButton
 import com.kaem.flux.ui.component.FluxButton
 import com.kaem.flux.ui.component.FluxTextButton
@@ -57,9 +58,7 @@ fun MediaHeader(
     overview: MediaOverview,
     media: Media?,
     zoom: Float,
-    onBackButtonTap: () -> Unit,
-    onStatusButtonTap: () -> Unit,
-    onPlayerButtonTap: () -> Unit
+    sendIntent: (MediaIntent) -> Unit,
 ) {
 
     ConstraintLayout(
@@ -83,19 +82,19 @@ fun MediaHeader(
 
         BackButton(
             modifier = Modifier.layoutId("back"),
-            onTap = onBackButtonTap
+            onTap = { sendIntent(MediaIntent.OnBackTap) }
         )
 
         MediaPlayerButton(
             modifier = Modifier.layoutId("play"),
             media = media,
-            onTap = onPlayerButtonTap
+            onTap = { sendIntent(MediaIntent.PlayMedia) }
         )
 
         MediaStatusButton(
             modifier = Modifier.layoutId("status"),
             media = media,
-            onTap = { onStatusButtonTap() }
+            onTap = { sendIntent(MediaIntent.ChangeWatchStatus) }
         )
 
         MediaTitle(
@@ -316,7 +315,6 @@ fun MediaHeader_Preview() {
         overview = MediaMockups.showOverview,
         media = MediaMockups.episode1.copy(status = Status.IS_WATCHING, currentTime = 123456L),
         zoom = 1f,
-        onBackButtonTap = {},
-        onStatusButtonTap = {},
-    ) { }
+        sendIntent = {},
+    )
 }

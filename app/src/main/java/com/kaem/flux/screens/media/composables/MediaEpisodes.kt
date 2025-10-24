@@ -88,7 +88,7 @@ fun MediaSeasonsTabs(
 fun EpisodeItem(
     modifier: Modifier = Modifier,
     episode: Episode,
-    onEpisodeTap: () -> Unit
+    onTap: () -> Unit
 ) {
 
     val episodeModifier = if (episode.status == Status.WATCHED)
@@ -100,7 +100,7 @@ fun EpisodeItem(
 
     ConstraintLayout(
         modifier = episodeModifier
-            .clickable { onEpisodeTap() }
+            .clickable { onTap() }
             .animateContentSize()
             .fillMaxWidth()
             .padding(vertical = Ui.Space.MEDIUM)
@@ -174,6 +174,6 @@ fun EpisodeItem(
 fun EpisodeItem_Preview() {
     EpisodeItem(
         episode = MediaMockups.episode1,
-        onEpisodeTap = {}
+        onTap = {}
     )
 }

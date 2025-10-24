@@ -68,9 +68,9 @@ class MediaViewModel @Inject constructor(
         getMedias(mediaId)
     }
 
-    fun handleEvent(event: MediaEvent) {
-        when (event) {
-
+    fun handleIntent(intent: MediaIntent) {
+        when (intent) {
+            MediaIntent.PlayMedia -> showPlayer(true)
             else -> {}
         }
     }

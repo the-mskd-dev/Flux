@@ -74,11 +74,7 @@ fun MediaScreen(
                     media = uiState.selectedMedia,
                     episodes = uiState.episodes,
                     currentSeason = uiState.currentSeason,
-                    onBackButtonTap = { onBackButtonTap() },
-                    onStatusButtonTap = { viewModel.changeWatchStatus() },
-                    onSeasonTap = { viewModel.selectSeason(it) },
-                    onEpisodeTap = { viewModel.selectMedia(it) },
-                    onPlayerButtonTap = { viewModel.showPlayer(true) }
+                    sendIntent = viewModel::handleIntent,
                 )
 
             }
@@ -112,11 +108,7 @@ fun MediaContent(
     media: Media?,
     episodes: List<Episode>,
     currentSeason: Int,
-    onBackButtonTap: () -> Unit,
-    onStatusButtonTap: () -> Unit,
-    onSeasonTap: (Int) -> Unit,
-    onEpisodeTap: (Episode) -> Unit,
-    onPlayerButtonTap: () -> Unit
+    sendIntent: (MediaIntent) -> Unit,
 ) {
 
     val scrollState = rememberLazyListState()
@@ -153,9 +145,7 @@ fun MediaContent(
                     overview = overview,
                     media = media,
                     zoom = zoom,
-                    onBackButtonTap = onBackButtonTap,
-                    onStatusButtonTap = onStatusButtonTap,
-                    onPlayerButtonTap = onPlayerButtonTap
+                    sendIntent = sendIntent
                 )
 
                 MediaDescription(media = media)
@@ -171,7 +161,7 @@ fun MediaContent(
                 MediaSeasonsTabs(
                     selectedSeason = currentSeason,
                     seasons = episodes.map { it.season }.distinct(),
-                    onSeasonTap = onSeasonTap
+                    onSeasonTap = { sendIntent(MediaIntent.SelectSeason(it)) }
                 )
 
             }
@@ -202,9 +192,9 @@ fun MediaContent(
                     EpisodeItem(
                         modifier = Modifier.animateItem(),
                         episode = episode,
-                        onEpisodeTap = {
+                        onTap = {
                             scope.launch {
-                                onEpisodeTap(episode)
+                                sendIntent(MediaIntent.SelectEpisode(episode))
                                 scrollState.animateScrollToItem(0)
                             }
                         }

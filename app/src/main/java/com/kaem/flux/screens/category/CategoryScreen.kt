@@ -15,10 +15,12 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.kaem.flux.Navigation.Navigation
 import com.kaem.flux.ui.component.BackButton
 import com.kaem.flux.ui.component.MediaItem
 import com.kaem.flux.ui.component.Text
@@ -27,10 +29,19 @@ import com.kaem.flux.utils.Constants
 
 @Composable
 fun CategoryScreen(
-    onBackButtonTap: () -> Unit,
-    navigateToDetails: (Long) -> Unit,
+    navigate: (String) -> Unit,
+    backToPreviousScreen: () -> Unit,
     viewModel: CategoryViewModel = hiltViewModel()
 ) {
+
+    LaunchedEffect(Unit) {
+        viewModel.event.collect {
+            when(it) {
+                is CategoryEvent.NavigateToMedia -> navigate(Navigation.MEDIA.build(listOf(it.mediaId)))
+                CategoryEvent.BackToPreviousScreen -> backToPreviousScreen()
+            }
+        }
+    }
 
     LazyVerticalGrid(
         modifier = Modifier
@@ -51,7 +62,7 @@ fun CategoryScreen(
                 contentAlignment = Alignment.CenterStart
             ) {
 
-                BackButton(onTap = onBackButtonTap)
+                BackButton(onTap = { viewModel.handleIntent(CategoryIntent.OnBackTap) })
 
                 Text.Headline.Small(
                     modifier = Modifier.align(Alignment.Center),
@@ -74,7 +85,7 @@ fun CategoryScreen(
                     url = Constants.TMDB.IMAGE_SMALL + overview.imagePath,
                     ratio = 2f/3f,
                     description = overview.title,
-                    onTap = { navigateToDetails(overview.id) }
+                    onTap = { viewModel.handleIntent(CategoryIntent.OnMediaTap(overview.id)) }
                 )
 
             }

@@ -116,7 +116,7 @@ fun HomeScreen(
                     HomeContent(
                         overviews = uiState.overviews,
                         lastWatchedIds = uiState.lastWatchedMediaIds,
-                        isSyncing = uiState.isSyncing,
+                        isSyncing = uiState.isRefreshing,
                         sendIntent = { intent -> viewModel.handleIntent(intent) },
                     )
 
@@ -147,7 +147,7 @@ fun HomeContent(
         HomeLists(
             overviews = overviews,
             lastWatchedIds = lastWatchedIds,
-            isSyncing = isSyncing,
+            isRefreshing = isSyncing,
             sendIntent = sendIntent
         )
 
@@ -195,7 +195,7 @@ fun HomeEmpty(sendIntent: (HomeIntent) -> Unit) {
 fun HomeLists(
     overviews: List<MediaOverview>,
     lastWatchedIds: List<Long>,
-    isSyncing: Boolean,
+    isRefreshing: Boolean,
     sendIntent: (HomeIntent) -> Unit
 ) {
 
@@ -216,7 +216,7 @@ fun HomeLists(
 
         PullToRefreshBox(
             modifier = Modifier.weight(1f),
-            isRefreshing = isSyncing,
+            isRefreshing = isRefreshing,
             onRefresh = { sendIntent(HomeIntent.OnSyncTap(true)) },
             state = pullToRefreshState,
             indicator = {
@@ -225,7 +225,7 @@ fun HomeLists(
                         .scale(loaderAnim)
                         .align(Alignment.TopCenter),
                     state = pullToRefreshState,
-                    isRefreshing = isSyncing
+                    isRefreshing = isRefreshing
                 )
             }
         ) {

@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.kaem.flux.data.repository.CatalogRepository
 import com.kaem.flux.data.repository.DataStoreRepository
 import com.kaem.flux.model.ScreenState
-import com.kaem.flux.model.media.ContentType
 import com.kaem.flux.model.media.MediaOverview
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -22,27 +21,8 @@ data class HomeUiState(
     val screenState: ScreenState = ScreenState.LOADING,
     val overviews: List<MediaOverview> = emptyList(),
     val lastWatchedMediaIds: List<Long> = emptyList(),
-    val isSyncing: Boolean = true
+    val isRefreshing: Boolean = true
 )
-
-sealed class HomeIntent {
-    data class OnMediaTap(val mediaId: Long): HomeIntent()
-    data class OnCategoryTap(val category: ContentType): HomeIntent()
-    data class OnSyncTap(val manualSync: Boolean): HomeIntent()
-    object OnSearchTap: HomeIntent()
-    object OnSettingsTap: HomeIntent()
-    object OnHowToTap: HomeIntent()
-    object OnPermissionTap: HomeIntent()
-}
-
-sealed class HomeEvent {
-    data class NavigateToMedia(val mediaId: Long): HomeEvent()
-    data class NavigateToCategory(val category: ContentType): HomeEvent()
-    object NavigateToSearch: HomeEvent()
-    object NavigateToSettings: HomeEvent()
-    object NavigateToHowTo: HomeEvent()
-    object OpenPermissionDialog: HomeEvent()
-}
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -76,7 +56,7 @@ class HomeViewModel @Inject constructor(
                     screenState = screenState,
                     overviews = libraryContent.mediaOverviews,
                     lastWatchedMediaIds = preferences.watchedIds,
-                    isSyncing = libraryContent.isLoading
+                    isRefreshing = libraryContent.isLoading
                 )
             }.collect { _uiState.value = it }
         }
@@ -100,7 +80,7 @@ class HomeViewModel @Inject constructor(
         val sync = currentTime - lastSyncTime > 1.days.inWholeMilliseconds || manualSync
 
         _uiState.value = _uiState.value.copy(
-            isSyncing = manualSync,
+            isRefreshing = manualSync,
             screenState = if (manualSync && _uiState.value.overviews.isEmpty()) ScreenState.LOADING else _uiState.value.screenState
         )
 

@@ -54,7 +54,7 @@ class HomeViewModelTest : BaseTest() {
             assert(ScreenState.LOADING == initialState.screenState)
             assert(emptyList<MediaOverview>() == initialState.overviews)
             assert(emptyList<Long>() == initialState.lastWatchedMediaIds)
-            assert(initialState.isSyncing)
+            assert(initialState.isRefreshing)
 
             cancelAndConsumeRemainingEvents()
         }
@@ -86,7 +86,7 @@ class HomeViewModelTest : BaseTest() {
             assert(ScreenState.CONTENT == updatedState.screenState)
             assert(overviews == updatedState.overviews)
             assert(lastWatchedIds == updatedState.lastWatchedMediaIds)
-            assert(!updatedState.isSyncing)
+            assert(!updatedState.isRefreshing)
 
             cancelAndConsumeRemainingEvents()
         }

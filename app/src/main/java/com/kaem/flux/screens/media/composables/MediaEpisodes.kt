@@ -1,4 +1,4 @@
-package com.kaem.flux.screens.media
+package com.kaem.flux.screens.media.composables
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize

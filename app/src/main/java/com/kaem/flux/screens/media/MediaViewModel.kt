@@ -16,8 +16,10 @@ import com.kaem.flux.utils.extensions.getPreviousEpisodesFor
 import com.kaem.flux.utils.extensions.msToMin
 import com.kaem.flux.utils.extensions.timeDescription
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -43,6 +45,9 @@ class MediaViewModel @Inject constructor(
     private val dataStoreRepository: DataStoreRepository
 ) : ViewModel() {
 
+    private val _event = MutableSharedFlow<MediaEvent>()
+    val event = _event.asSharedFlow()
+
     private val mediaId: Long = checkNotNull(savedStateHandle["mediaId"])
 
     private val _uiState = MutableStateFlow(MediaUiState())
@@ -62,6 +67,14 @@ class MediaViewModel @Inject constructor(
 
         getMedias(mediaId)
     }
+
+    fun handleEvent(event: MediaEvent) {
+        when (event) {
+
+            else -> {}
+        }
+    }
+
 
     private fun getMedias(id: Long) = viewModelScope.launch {
 

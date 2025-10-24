@@ -1,4 +1,4 @@
-package com.kaem.flux.screens.media
+package com.kaem.flux.screens.media.composables
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility

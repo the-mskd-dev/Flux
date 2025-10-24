@@ -18,7 +18,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.kaem.flux.R
 import com.kaem.flux.ui.component.FluxTopBar
 import com.kaem.flux.ui.component.Text
-import com.kaem.flux.ui.component.Text.Body.Large
 import com.kaem.flux.ui.theme.Ui
 
 @Composable

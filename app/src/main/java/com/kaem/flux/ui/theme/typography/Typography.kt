@@ -2,7 +2,6 @@ package com.kaem.flux.ui.theme.typography
 
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Typography
-import androidx.compose.ui.text.TextStyle
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 val FluxTypography = Typography(

@@ -8,12 +8,17 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -26,6 +31,7 @@ import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.media.ContentType
 import com.kaem.flux.model.media.MediaOverview
 import com.kaem.flux.ui.component.BackButton
+import com.kaem.flux.ui.component.FluxTopBar
 import com.kaem.flux.ui.component.MediaItem
 import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.FluxTheme
@@ -57,6 +63,7 @@ fun CategoryScreen(
 
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CategoryScreenContent(
     overviews: List<MediaOverview>,
@@ -64,58 +71,50 @@ fun CategoryScreenContent(
     sendIntent: (CategoryIntent) -> Unit,
 ) {
 
-    LazyVerticalGrid(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
-        columns = GridCells.Fixed(3),
-        horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL),
-        verticalArrangement = Arrangement.spacedBy(Ui.Space.SMALL),
-        contentPadding = PaddingValues(horizontal = Ui.Space.MEDIUM)
-    ) {
+    Scaffold(
+        topBar = {
+            FluxTopBar(
+                text = stringResource(contentType.stringResource),
+                onBackButtonTap = { sendIntent(CategoryIntent.OnBackTap) }
+            )
+        }
+    ) { innerPadding ->
 
-        item(span = { GridItemSpan(3) }) {
+        LazyVerticalGrid(
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background),
+            columns = GridCells.Fixed(3),
+            horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL),
+            verticalArrangement = Arrangement.spacedBy(Ui.Space.SMALL),
+            contentPadding = PaddingValues(all = Ui.Space.MEDIUM)
+        ) {
 
-            Box(
-                modifier = Modifier
-                    .statusBarsPadding()
-                    .fillMaxWidth(),
-                contentAlignment = Alignment.CenterStart
-            ) {
+            items(items = overviews) { overview ->
 
-                BackButton(onTap = { sendIntent(CategoryIntent.OnBackTap) })
+                BoxWithConstraints(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
 
-                Text.Headline.Small(
-                    modifier = Modifier.align(Alignment.Center),
-                    text = stringResource(contentType.stringResource)
-                )
+                    MediaItem(
+                        width = maxWidth,
+                        url = Constants.TMDB.IMAGE_SMALL + overview.imagePath,
+                        ratio = 2f/3f,
+                        description = overview.title,
+                        onTap = { sendIntent(CategoryIntent.OnMediaTap(overview.id)) }
+                    )
+
+                }
+
 
             }
 
-        }
-
-        items(items = overviews) { overview ->
-
-            BoxWithConstraints(
-                modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.Center
-            ) {
-
-                MediaItem(
-                    width = maxWidth,
-                    url = Constants.TMDB.IMAGE_SMALL + overview.imagePath,
-                    ratio = 2f/3f,
-                    description = overview.title,
-                    onTap = { sendIntent(CategoryIntent.OnMediaTap(overview.id)) }
-                )
-
+            item(span = { GridItemSpan(3) }) {
+                Box(modifier = Modifier.navigationBarsPadding())
             }
 
-
-        }
-
-        item(span = { GridItemSpan(3) }) {
-            Box(modifier = Modifier.navigationBarsPadding())
         }
 
     }

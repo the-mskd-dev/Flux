@@ -4,6 +4,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
@@ -14,11 +17,14 @@ fun FluxTopBar(
     onBackButtonTap: () -> Unit
 ) {
 
-    CenterAlignedTopAppBar(
+    TopAppBar(
         modifier = Modifier
-            .statusBarsPadding()
             .fillMaxWidth(),
         title = { Text.Headline.Medium(text = text) },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainer,
+            titleContentColor = MaterialTheme.colorScheme.onSurface,
+        ),
         navigationIcon = {
             BackButton(onTap = onBackButtonTap)
         }

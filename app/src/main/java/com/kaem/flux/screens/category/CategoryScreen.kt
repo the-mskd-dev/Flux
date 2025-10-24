@@ -19,11 +19,16 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.kaem.flux.Navigation.Navigation
+import com.kaem.flux.mockups.MediaMockups
+import com.kaem.flux.model.media.ContentType
+import com.kaem.flux.model.media.MediaOverview
 import com.kaem.flux.ui.component.BackButton
 import com.kaem.flux.ui.component.MediaItem
 import com.kaem.flux.ui.component.Text
+import com.kaem.flux.ui.theme.FluxTheme
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.Constants
 
@@ -42,6 +47,22 @@ fun CategoryScreen(
             }
         }
     }
+
+    CategoryScreenContent(
+        overviews = viewModel.overviews,
+        contentType = viewModel.contentType,
+        sendIntent = viewModel::handleIntent
+    )
+
+
+}
+
+@Composable
+fun CategoryScreenContent(
+    overviews: List<MediaOverview>,
+    contentType: ContentType,
+    sendIntent: (CategoryIntent) -> Unit,
+) {
 
     LazyVerticalGrid(
         modifier = Modifier
@@ -62,18 +83,18 @@ fun CategoryScreen(
                 contentAlignment = Alignment.CenterStart
             ) {
 
-                BackButton(onTap = { viewModel.handleIntent(CategoryIntent.OnBackTap) })
+                BackButton(onTap = { sendIntent(CategoryIntent.OnBackTap) })
 
                 Text.Headline.Small(
                     modifier = Modifier.align(Alignment.Center),
-                    text = stringResource(viewModel.contentType.stringResource)
+                    text = stringResource(contentType.stringResource)
                 )
 
             }
 
         }
 
-        items(items = viewModel.overviews) { overview ->
+        items(items = overviews) { overview ->
 
             BoxWithConstraints(
                 modifier = Modifier.fillMaxWidth(),
@@ -85,7 +106,7 @@ fun CategoryScreen(
                     url = Constants.TMDB.IMAGE_SMALL + overview.imagePath,
                     ratio = 2f/3f,
                     description = overview.title,
-                    onTap = { viewModel.handleIntent(CategoryIntent.OnMediaTap(overview.id)) }
+                    onTap = { sendIntent(CategoryIntent.OnMediaTap(overview.id)) }
                 )
 
             }
@@ -99,4 +120,16 @@ fun CategoryScreen(
 
     }
 
+}
+
+@Preview
+@Composable
+fun CategoryScreen_Preview() {
+    FluxTheme {
+        CategoryScreenContent(
+            overviews = MediaMockups.overviews,
+            contentType = ContentType.MOVIE,
+            sendIntent = {}
+        )
+    }
 }

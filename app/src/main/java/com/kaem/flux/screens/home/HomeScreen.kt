@@ -117,7 +117,7 @@ fun HomeScreen(
                         overviews = uiState.overviews,
                         lastWatchedIds = uiState.lastWatchedMediaIds,
                         isSyncing = uiState.isRefreshing,
-                        sendIntent = { intent -> viewModel.handleIntent(intent) },
+                        sendIntent = viewModel::handleIntent
                     )
 
                 }

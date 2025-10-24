@@ -88,7 +88,7 @@ fun MediaHeader(
         MediaPlayerButton(
             modifier = Modifier.layoutId("play"),
             media = media,
-            onTap = { sendIntent(MediaIntent.PlayMedia) }
+            onTap = { sendIntent(MediaIntent.ShowPlayer) }
         )
 
         MediaStatusButton(

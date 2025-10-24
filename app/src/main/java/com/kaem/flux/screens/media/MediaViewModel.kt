@@ -68,9 +68,14 @@ class MediaViewModel @Inject constructor(
         getMedias(mediaId)
     }
 
-    fun handleIntent(intent: MediaIntent) {
+    fun handleIntent(intent: MediaIntent) = viewModelScope.launch {
         when (intent) {
-            MediaIntent.PlayMedia -> showPlayer(true)
+            MediaIntent.OnBackTap -> _event.emit(MediaEvent.BackToPreviousScreen)
+            is MediaIntent.SelectEpisode -> selectMedia(intent.episode)
+            is MediaIntent.SelectSeason -> selectSeason(intent.season)
+            is MediaIntent.SaveTime -> saveTime(intent.time)
+            MediaIntent.ShowPlayer -> showPlayer(true)
+            MediaIntent.ClosePlayer -> showPlayer(false)
             else -> {}
         }
     }
@@ -108,19 +113,19 @@ class MediaViewModel @Inject constructor(
 
     }
 
-    fun selectMedia(media: Media?) {
+    private fun selectMedia(media: Media?) {
         _uiState.update { currentState ->
             currentState.copy(selectedMedia = media)
         }
     }
 
-    fun selectSeason(season: Int) {
+    private fun selectSeason(season: Int) {
         _uiState.update { currentState ->
             currentState.copy(currentSeason = season)
         }
     }
 
-    fun showPlayer(show: Boolean) {
+    private fun showPlayer(show: Boolean) {
         _uiState.update { currentState ->
             currentState.copy(showPlayer = show)
         }
@@ -236,7 +241,7 @@ class MediaViewModel @Inject constructor(
 
     }
 
-    fun saveTime(time: Long) = viewModelScope.launch {
+    private fun saveTime(time: Long) = viewModelScope.launch {
 
         val media = uiState.value.selectedMedia ?: return@launch
         val status = if (time.msToMin >= media.duration * .9) Status.WATCHED else Status.IS_WATCHING

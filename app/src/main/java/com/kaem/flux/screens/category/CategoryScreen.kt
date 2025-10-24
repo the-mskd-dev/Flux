@@ -55,7 +55,7 @@ fun CategoryScreen(
     }
 
     CategoryScreenContent(
-        overviews = viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews,
+        overviews = viewModel.overviews,
         contentType = viewModel.contentType,
         sendIntent = viewModel::handleIntent
     )

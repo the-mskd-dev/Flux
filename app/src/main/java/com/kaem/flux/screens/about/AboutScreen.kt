@@ -29,6 +29,7 @@ fun AboutScreen(onBackButtonTap: () -> Unit) {
 
         Column(
             modifier = Modifier
+                .padding(innerPadding)
                 .background(MaterialTheme.colorScheme.background)
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())

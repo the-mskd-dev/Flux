@@ -18,6 +18,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun FluxScaffold(
+    modifier: Modifier = Modifier,
     title: String,
     onBackTap: () -> Unit,
     content: @Composable (PaddingValues) -> Unit
@@ -26,7 +27,7 @@ fun FluxScaffold(
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
 
             CenterAlignedTopAppBar(

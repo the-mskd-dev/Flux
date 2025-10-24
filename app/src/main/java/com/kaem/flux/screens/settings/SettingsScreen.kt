@@ -26,7 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.kaem.flux.R
 import com.kaem.flux.ui.component.FluxDialog
-import com.kaem.flux.ui.component.FluxTopBar
+import com.kaem.flux.ui.component.FluxScaffold
 import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.WebLink
@@ -47,99 +47,101 @@ fun SettingsScreen(
         .getPackageInfo(context.packageName, 0)
         .versionName
 
-    Column(
-        modifier = Modifier
-            .background(MaterialTheme.colorScheme.background)
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
-    ) {
+    FluxScaffold(
+        title = stringResource(R.string.settings),
+        onBackTap = onBackButtonTap
+    ) { innerPadding ->
 
-        FluxTopBar(
-            text = stringResource(R.string.settings),
-            onBackButtonTap = onBackButtonTap
-        )
-
-        SettingsSection {
-
-            SettingsItem(
-                text = stringResource(R.string.app_theme),
-                value = stringResource(state.uiTheme.stringResourceId),
-                onTap = { viewModel.showUiThemeDialog(true) }
-            )
-
-            SettingsDivider()
-
-            SettingsItem(
-                text = stringResource(R.string.button_backward),
-                value = "${state.backwardValue}sec",
-                onTap = { viewModel.showBackwardDialog(true) }
-            )
-
-            SettingsDivider()
-
-            SettingsItem(
-                text = stringResource(R.string.button_forward),
-                value = "${state.forwardValue}sec",
-                onTap = { viewModel.showForwardDialog(true) }
-            )
-
-            SettingsDivider()
-
-            SettingsItem(
-                text = stringResource(R.string.subtitles_language),
-                value = state.subtitlesLanguage.displayLanguage,
-                onTap = { viewModel.showSubtitlesLanguageDialog(true) }
-            )
-
-        }
-
-        SettingsSection {
-
-            SettingsItem(
-                text = stringResource(R.string.how_to_name_files),
-                value = "",
-                onTap = navigateToHowToScreen
-            )
-
-            SettingsDivider()
-
-            SettingsItem(
-                text = stringResource(R.string.about),
-                value = "",
-                onTap = navigateToAboutScreen
-            )
-
-            SettingsDivider()
-
-            SettingsItem(
-                text = stringResource(R.string.make_a_donation),
-                value = "",
-                onTap = {
-                    WebLink.openPage(
-                        context = context,
-                        url = "https://paypal.me/kevynbct"
-                    )
-                }
-            )
-
-        }
-
-        appVersion?.let {
+        Column(
+            modifier = Modifier
+                .background(MaterialTheme.colorScheme.background)
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
+        ) {
 
             SettingsSection {
 
                 SettingsItem(
-                    text = stringResource(R.string.app_version),
-                    value = it,
-                    onTap = {}
+                    text = stringResource(R.string.app_theme),
+                    value = stringResource(state.uiTheme.stringResourceId),
+                    onTap = { viewModel.showUiThemeDialog(true) }
+                )
+
+                SettingsDivider()
+
+                SettingsItem(
+                    text = stringResource(R.string.button_backward),
+                    value = "${state.backwardValue}sec",
+                    onTap = { viewModel.showBackwardDialog(true) }
+                )
+
+                SettingsDivider()
+
+                SettingsItem(
+                    text = stringResource(R.string.button_forward),
+                    value = "${state.forwardValue}sec",
+                    onTap = { viewModel.showForwardDialog(true) }
+                )
+
+                SettingsDivider()
+
+                SettingsItem(
+                    text = stringResource(R.string.subtitles_language),
+                    value = state.subtitlesLanguage.displayLanguage,
+                    onTap = { viewModel.showSubtitlesLanguageDialog(true) }
                 )
 
             }
 
-        }
+            SettingsSection {
 
-        Spacer(modifier = Modifier.navigationBarsPadding())
+                SettingsItem(
+                    text = stringResource(R.string.how_to_name_files),
+                    value = "",
+                    onTap = navigateToHowToScreen
+                )
+
+                SettingsDivider()
+
+                SettingsItem(
+                    text = stringResource(R.string.about),
+                    value = "",
+                    onTap = navigateToAboutScreen
+                )
+
+                SettingsDivider()
+
+                SettingsItem(
+                    text = stringResource(R.string.make_a_donation),
+                    value = "",
+                    onTap = {
+                        WebLink.openPage(
+                            context = context,
+                            url = "https://paypal.me/kevynbct"
+                        )
+                    }
+                )
+
+            }
+
+            appVersion?.let {
+
+                SettingsSection {
+
+                    SettingsItem(
+                        text = stringResource(R.string.app_version),
+                        value = it,
+                        onTap = {}
+                    )
+
+                }
+
+            }
+
+            Spacer(modifier = Modifier.navigationBarsPadding())
+
+        }
 
     }
 

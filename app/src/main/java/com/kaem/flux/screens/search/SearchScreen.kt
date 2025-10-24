@@ -31,7 +31,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.kaem.flux.R
-import com.kaem.flux.ui.component.FluxTopBar
+import com.kaem.flux.ui.component.FluxScaffold
 import com.kaem.flux.ui.component.MediaItem
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.Constants
@@ -45,79 +45,77 @@ fun SearchScreen(
 
     val state by viewModel.uiState.collectAsState()
 
-    LazyVerticalGrid(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
-        columns = GridCells.Fixed(3),
-        horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL),
-        verticalArrangement = Arrangement.spacedBy(Ui.Space.SMALL),
-        contentPadding = PaddingValues(horizontal = Ui.Space.MEDIUM)
-    ) {
+    FluxScaffold(
+        title = stringResource(android.R.string.search_go),
+        onBackTap = onBackButtonTap
+    ) { innerContent ->
 
-        item(span = { GridItemSpan(3) }) {
+        LazyVerticalGrid(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background),
+            columns = GridCells.Fixed(3),
+            horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL),
+            verticalArrangement = Arrangement.spacedBy(Ui.Space.SMALL),
+            contentPadding = PaddingValues(horizontal = Ui.Space.MEDIUM)
+        ) {
 
-            FluxTopBar(
-                text = stringResource(android.R.string.search_go),
-                onBackButtonTap = onBackButtonTap
-            )
+            item(span = { GridItemSpan(3) }) {
 
-        }
-
-        item(span = { GridItemSpan(3) }) {
-
-            TextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = state.searchWord,
-                onValueChange = { viewModel.updateSearchWord(it) },
-                singleLine = true,
-                shape = Ui.Shape.RoundedCorner,
-                colors = TextFieldDefaults.colors(
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent
-                ),
-                placeholder = { Text(stringResource(R.string.enter_search)) },
-                trailingIcon = {
-                    if (state.searchWord.isNotEmpty()) {
-                        IconButton(
-                            modifier = Modifier.size(18.dp),
-                            onClick = { viewModel.updateSearchWord("") },
-                            content = { Icon(imageVector = Icons.Rounded.Clear, contentDescription = "clear button") }
-                        )
+                TextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    value = state.searchWord,
+                    onValueChange = { viewModel.updateSearchWord(it) },
+                    singleLine = true,
+                    shape = Ui.Shape.RoundedCorner,
+                    colors = TextFieldDefaults.colors(
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        disabledIndicatorColor = Color.Transparent
+                    ),
+                    placeholder = { Text(stringResource(R.string.enter_search)) },
+                    trailingIcon = {
+                        if (state.searchWord.isNotEmpty()) {
+                            IconButton(
+                                modifier = Modifier.size(18.dp),
+                                onClick = { viewModel.updateSearchWord("") },
+                                content = { Icon(imageVector = Icons.Rounded.Clear, contentDescription = "clear button") }
+                            )
+                        }
                     }
-                }
-            )
-
-        }
-
-        items(
-            items = state.filteredOverviews,
-            key = { it.id }
-        ) { overview ->
-
-            BoxWithConstraints(
-                modifier = Modifier
-                    .animateItem()
-                    .fillMaxWidth(),
-                contentAlignment = Alignment.Center
-            ) {
-
-                MediaItem(
-                    width = maxWidth,
-                    url = Constants.TMDB.IMAGE_SMALL + overview.imagePath,
-                    ratio = 2f/3f,
-                    description = overview.title,
-                    onTap = { navigateToDetails(overview.id) }
                 )
 
             }
 
+            items(
+                items = state.filteredOverviews,
+                key = { it.id }
+            ) { overview ->
 
-        }
+                BoxWithConstraints(
+                    modifier = Modifier
+                        .animateItem()
+                        .fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
 
-        item(span = { GridItemSpan(3) }) {
-            Box(modifier = Modifier.navigationBarsPadding())
+                    MediaItem(
+                        width = maxWidth,
+                        url = Constants.TMDB.IMAGE_SMALL + overview.imagePath,
+                        ratio = 2f/3f,
+                        description = overview.title,
+                        onTap = { navigateToDetails(overview.id) }
+                    )
+
+                }
+
+
+            }
+
+            item(span = { GridItemSpan(3) }) {
+                Box(modifier = Modifier.navigationBarsPadding())
+            }
+
         }
 
     }

@@ -32,7 +32,6 @@ import com.kaem.flux.model.media.ContentType
 import com.kaem.flux.model.media.MediaOverview
 import com.kaem.flux.ui.component.BackButton
 import com.kaem.flux.ui.component.FluxScaffold
-import com.kaem.flux.ui.component.FluxTopBar
 import com.kaem.flux.ui.component.MediaItem
 import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.FluxTheme

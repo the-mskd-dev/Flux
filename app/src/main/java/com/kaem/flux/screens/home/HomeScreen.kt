@@ -105,7 +105,7 @@ fun HomeScreen(
         Crossfade(
             modifier = Modifier.fillMaxSize(),
             targetState = uiState.screenState,
-            label = "LibraryAnimation"
+            label = "CatalogAnimation"
         ) {
 
             when (it) {
@@ -166,9 +166,9 @@ fun HomeEmpty(sendIntent: (HomeIntent) -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
 
-        Text.Headline.Medium(text = stringResource(R.string.empty_library))
+        Text.Headline.Medium(text = stringResource(R.string.empty_catalog))
 
-        Text.Body.Large(text = stringResource(R.string.empty_library_desc))
+        Text.Body.Large(text = stringResource(R.string.empty_catalog_desc))
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,

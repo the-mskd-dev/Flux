@@ -43,28 +43,27 @@ class HomeViewModel @Inject constructor(
             combine(
                 repository.catalogFlow,
                 dataStoreRepository.flow
-            ) { libraryContent, preferences ->
+            ) { catalogContent, preferences ->
 
-                val screenState = when {
-                    _uiState.value.screenState == ScreenState.LOADING -> {
-                        if (libraryContent.isLoading) ScreenState.LOADING else ScreenState.CONTENT
-                    }
+                val screenState = when (_uiState.value.screenState) {
+                    ScreenState.LOADING -> if (catalogContent.isLoading) ScreenState.LOADING else ScreenState.CONTENT
                     else -> ScreenState.CONTENT
                 }
 
                 HomeUiState(
                     screenState = screenState,
-                    overviews = libraryContent.mediaOverviews,
+                    overviews = catalogContent.mediaOverviews,
                     lastWatchedMediaIds = preferences.watchedIds,
-                    isRefreshing = libraryContent.isLoading
+                    isRefreshing = catalogContent.isLoading
                 )
+
             }.collect { _uiState.value = it }
         }
     }
 
     fun handleIntent(intent: HomeIntent) = viewModelScope.launch {
         when (intent) {
-            is HomeIntent.OnSyncTap -> getLibrary(manualSync = intent.manualSync)
+            is HomeIntent.OnSyncTap -> fetchCatalog(manualSync = intent.manualSync)
             is HomeIntent.OnMediaTap -> _event.emit(HomeEvent.NavigateToMedia(mediaId = intent.mediaId))
             is HomeIntent.OnCategoryTap -> _event.emit(HomeEvent.NavigateToCategory(category = intent.category))
             HomeIntent.OnSearchTap -> _event.emit(HomeEvent.NavigateToSearch)
@@ -74,7 +73,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getLibrary(manualSync: Boolean = false) {
+    private suspend fun fetchCatalog(manualSync: Boolean = false) {
 
         val currentTime = System.currentTimeMillis()
         val sync = currentTime - lastSyncTime > 1.days.inWholeMilliseconds || manualSync

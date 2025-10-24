@@ -1,4 +1,4 @@
-package com.kaem.flux.ui.theme.typography
+package com.kaem.flux.ui.typography
 
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Typography

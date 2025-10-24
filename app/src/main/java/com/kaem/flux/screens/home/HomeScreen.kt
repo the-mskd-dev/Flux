@@ -282,7 +282,9 @@ fun HomeLists(
 fun HomeTopButtons(sendIntent: (HomeIntent) -> Unit) {
 
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .padding(vertical = Ui.Space.SMALL)
+            .fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL, Alignment.End),
         verticalAlignment = Alignment.CenterVertically
     ) {

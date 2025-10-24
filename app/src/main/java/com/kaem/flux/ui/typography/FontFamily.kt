@@ -1,4 +1,4 @@
-package com.kaem.flux.ui.theme.typography
+package com.kaem.flux.ui.typography
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -40,11 +40,12 @@ val RobotoFlexEmphasized = FontFamily(
         resId = R.font.roboto_flex,
         variationSettings = FontVariation.Settings(
             FontVariation.weight(FontWeight.Bold.weight),
-            FontVariation.grade(100),
-            FontVariation.width(40f),
-            FontVariation.slant(-2f),
-            FontVariation.Setting("XOPQ", 110f), // Thick stroke
-            FontVariation.Setting("YOPQ", 20f), // Thin stroke
+            FontVariation.grade(90),
+            FontVariation.width(100f),
+            FontVariation.slant(-1f),
+            FontVariation.Setting("XOPQ", 60f), // Thick stroke
+            FontVariation.Setting("YOPQ", 40f), // Thin stroke
+            FontVariation.Setting("YTLC", 500f), // Thin stroke
         ),
     )
 )

@@ -14,7 +14,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
-import com.kaem.flux.ui.theme.typography.FluxTypography
+import com.kaem.flux.ui.typography.FluxTypography
 import com.kaem.flux.utils.extensions.logDescription
 
 private val FluxColorScheme = darkColorScheme(

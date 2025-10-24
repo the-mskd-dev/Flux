@@ -31,6 +31,7 @@ import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.media.ContentType
 import com.kaem.flux.model.media.MediaOverview
 import com.kaem.flux.ui.component.BackButton
+import com.kaem.flux.ui.component.FluxScaffold
 import com.kaem.flux.ui.component.FluxTopBar
 import com.kaem.flux.ui.component.MediaItem
 import com.kaem.flux.ui.component.Text
@@ -55,7 +56,7 @@ fun CategoryScreen(
     }
 
     CategoryScreenContent(
-        overviews = viewModel.overviews,
+        overviews = viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews + viewModel.overviews,
         contentType = viewModel.contentType,
         sendIntent = viewModel::handleIntent
     )
@@ -71,13 +72,9 @@ fun CategoryScreenContent(
     sendIntent: (CategoryIntent) -> Unit,
 ) {
 
-    Scaffold(
-        topBar = {
-            FluxTopBar(
-                text = stringResource(contentType.stringResource),
-                onBackButtonTap = { sendIntent(CategoryIntent.OnBackTap) }
-            )
-        }
+    FluxScaffold(
+        title = stringResource(contentType.stringResource),
+        onBackTap = { sendIntent(CategoryIntent.OnBackTap) }
     ) { innerPadding ->
 
         LazyVerticalGrid(

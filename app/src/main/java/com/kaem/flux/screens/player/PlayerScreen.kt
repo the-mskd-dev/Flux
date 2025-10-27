@@ -86,7 +86,7 @@ fun PlayerScreen(
                     isExiting = true
                     sendIntent(MediaIntent.ClosePlayer)
                 },
-                onTimeSave = { sendIntent(MediaIntent.SaveTime(it)) }
+                onTimeSave = { sendIntent(MediaIntent.SaveWatchTime(it)) }
             )
         } else {
             Box(modifier = Modifier.background(Color.Black).fillMaxSize())

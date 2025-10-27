@@ -78,7 +78,7 @@ class MediaViewModelTest : BaseTest() {
 
             awaitItem()
 
-            viewModel.selectMedia(MediaMockups.episode2)
+            viewModel.handleIntent(MediaIntent.SelectEpisode(MediaMockups.episode2))
             val updatedState = awaitItem()
 
             assert(updatedState.selectedMedia == MediaMockups.episode2)
@@ -94,7 +94,7 @@ class MediaViewModelTest : BaseTest() {
 
             awaitItem()
 
-            viewModel.selectSeason(2)
+            viewModel.handleIntent(MediaIntent.SelectSeason(2))
             val updatedState = awaitItem()
 
             assert(updatedState.currentSeason == 2)
@@ -110,7 +110,7 @@ class MediaViewModelTest : BaseTest() {
 
             awaitItem()
 
-            viewModel.showPlayer(true)
+            viewModel.handleIntent(MediaIntent.ShowPlayer)
             val updatedState = awaitItem()
 
             assert(updatedState.showPlayer)
@@ -126,7 +126,7 @@ class MediaViewModelTest : BaseTest() {
 
             awaitItem()
 
-            viewModel.changeWatchStatus()
+            viewModel.handleIntent(MediaIntent.ChangeWatchStatus(checkPrevious = false))
             val updatedState = awaitItem()
 
             advanceUntilIdle()
@@ -149,11 +149,11 @@ class MediaViewModelTest : BaseTest() {
             awaitItem()
 
             // Select episode 2
-            viewModel.selectMedia(MediaMockups.episode2)
+            viewModel.handleIntent(MediaIntent.SelectEpisode(MediaMockups.episode2))
             awaitItem()
 
             // Request change status of current episode
-            viewModel.changeWatchStatus()
+            viewModel.handleIntent(MediaIntent.ChangeWatchStatus(checkPrevious = true))
             advanceUntilIdle()
 
             // Final state
@@ -176,15 +176,15 @@ class MediaViewModelTest : BaseTest() {
             awaitItem()
 
             // Change status of current episode (1)
-            viewModel.changeWatchStatus()
+            viewModel.handleIntent(MediaIntent.ChangeWatchStatus(checkPrevious = true))
             awaitItem()
 
             // Select episode 2
-            viewModel.selectMedia(MediaMockups.episode2)
+            viewModel.handleIntent(MediaIntent.SelectEpisode(MediaMockups.episode2))
             awaitItem()
 
             // Change status of current episode (2)
-            viewModel.changeWatchStatus()
+            viewModel.handleIntent(MediaIntent.ChangeWatchStatus(checkPrevious = true))
             advanceUntilIdle()
 
             // Final state
@@ -209,11 +209,11 @@ class MediaViewModelTest : BaseTest() {
             awaitItem()
 
             // Select episode 2
-            viewModel.selectMedia(MediaMockups.episode2)
+            viewModel.handleIntent(MediaIntent.SelectEpisode(MediaMockups.episode2))
             awaitItem()
 
             // Change status of current and previous episodes
-            viewModel.changeWatchStatusForEpisodeAndPrevious()
+            viewModel.handleIntent(MediaIntent.ChangeWatchStatus(checkPrevious = true))
             advanceUntilIdle()
 
             // Final state
@@ -236,11 +236,11 @@ class MediaViewModelTest : BaseTest() {
             awaitItem()
 
             // Mark as watched
-            viewModel.changeWatchStatus()
+            viewModel.handleIntent(MediaIntent.ChangeWatchStatus(checkPrevious = true))
             awaitItem()
 
             // Mark as not to watch
-            viewModel.changeWatchStatus()
+            viewModel.handleIntent(MediaIntent.ChangeWatchStatus(checkPrevious = true))
             val updatedState = awaitItem()
 
             advanceUntilIdle()
@@ -260,7 +260,7 @@ class MediaViewModelTest : BaseTest() {
         viewModel.uiState.test {
 
             // Save progression at 5 minutes
-            viewModel.saveTime(5.minutes.inWholeMilliseconds)
+            viewModel.handleIntent(MediaIntent.SaveWatchTime(5.minutes.inWholeMilliseconds))
 
             advanceUntilIdle()
 
@@ -280,7 +280,7 @@ class MediaViewModelTest : BaseTest() {
             val state = awaitItem()
 
             // Save progression at 5 minutes
-            viewModel.saveTime(MediaMockups.episode1.duration.minutes.inWholeMilliseconds)
+            viewModel.handleIntent(MediaIntent.SaveWatchTime(MediaMockups.episode1.duration.minutes.inWholeMilliseconds))
 
 
             advanceUntilIdle()
@@ -302,15 +302,15 @@ class MediaViewModelTest : BaseTest() {
             awaitItem()
 
             // Set first episode as watched
-            viewModel.changeWatchStatus()
+            viewModel.handleIntent(MediaIntent.ChangeWatchStatus(checkPrevious = true))
             awaitItem()
 
             // Select second episode
-            viewModel.selectMedia(MediaMockups.episode2)
+            viewModel.handleIntent(MediaIntent.SelectEpisode(MediaMockups.episode2))
             val state = awaitItem()
 
             // Save progression at the end
-            viewModel.saveTime(MediaMockups.episode2.duration.minutes.inWholeMilliseconds)
+            viewModel.handleIntent(MediaIntent.SaveWatchTime(MediaMockups.episode2.duration.minutes.inWholeMilliseconds))
 
             advanceUntilIdle()
 
@@ -347,7 +347,7 @@ class MediaViewModelTest : BaseTest() {
             val initialState = awaitItem()
             assert(initialState.selectedMedia?.status == Status.TO_WATCH)
 
-            viewModel.changeWatchStatus()
+            viewModel.handleIntent(MediaIntent.ChangeWatchStatus(checkPrevious = true))
             val updatedState = awaitItem()
 
             advanceUntilIdle()
@@ -384,7 +384,7 @@ class MediaViewModelTest : BaseTest() {
             val state = awaitItem()
             assert(state.selectedMedia?.status == Status.TO_WATCH)
 
-            viewModel.saveTime(MediaMockups.movie.duration.minutes.inWholeMilliseconds)
+            viewModel.handleIntent(MediaIntent.SaveWatchTime(MediaMockups.movie.duration.minutes.inWholeMilliseconds))
 
             advanceUntilIdle()
 

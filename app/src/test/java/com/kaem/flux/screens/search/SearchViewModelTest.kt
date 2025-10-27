@@ -53,7 +53,7 @@ class SearchViewModelTest : BaseTest() {
 
             awaitItem()
 
-            viewModel.updateSearchWord("nar")
+            viewModel.handleIntent(SearchIntent.DoSearch("nar"))
 
             val state = awaitItem()
 
@@ -72,7 +72,7 @@ class SearchViewModelTest : BaseTest() {
 
             awaitItem()
 
-            viewModel.updateSearchWord("na")
+            viewModel.handleIntent(SearchIntent.DoSearch("na"))
 
             val state = awaitItem()
 
@@ -91,7 +91,7 @@ class SearchViewModelTest : BaseTest() {
 
             awaitItem()
 
-            viewModel.updateSearchWord("spider-man")
+            viewModel.handleIntent(SearchIntent.DoSearch("spider-man"))
 
             val state = awaitItem()
 

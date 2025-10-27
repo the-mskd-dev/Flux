@@ -138,7 +138,7 @@ class MediaViewModel @Inject constructor(
         }
     }
 
-    private fun changeWatchStatus(checkPrevious: Boolean = true) {
+    private suspend fun changeWatchStatus(checkPrevious: Boolean = true) {
 
 
         val media = uiState.value.selectedMedia ?: return
@@ -161,7 +161,7 @@ class MediaViewModel @Inject constructor(
 
     }
 
-    private fun changeMovieStatus(status: Status) {
+    private suspend fun changeMovieStatus(status: Status) {
 
         val media = uiState.value.selectedMedia as? Movie ?: return
 
@@ -177,16 +177,17 @@ class MediaViewModel @Inject constructor(
         }
 
         // Save status in DB
-        viewModelScope.launch { repository.saveMovie(movie) }
+        repository.saveMovie(movie)
 
         Log.i("MediaViewModel", "${movie.title} is now ${movie.status}")
 
     }
 
-    private fun changeEpisodesStatus(status: Status, previous: Boolean) {
+    private suspend fun changeEpisodesStatus(status: Status, previous: Boolean) {
 
-        val episode = uiState.value.selectedMedia as? Episode ?: return
-        val previousEpisodes = if (previous && status == Status.WATCHED) _uiState.value.episodes.getPreviousEpisodesFor(episode).filter { it.status != Status.WATCHED } else emptyList()
+        val state = uiState.value
+        val episode = state.selectedMedia as? Episode ?: return
+        val previousEpisodes = if (previous && status == Status.WATCHED) state.episodes.getPreviousEpisodesFor(episode).filter { it.status != Status.WATCHED } else emptyList()
 
         val updatedEpisode = episode.copy(
             status = status,
@@ -201,7 +202,7 @@ class MediaViewModel @Inject constructor(
         } + updatedEpisode
 
         // Update list
-        val episodes = _uiState.value.episodes.toMutableList()
+        val episodes = state.episodes.toMutableList()
         episodes.replaceAll { e ->
             updatedEpisodes.find { it.id == e.id } ?: e
         }
@@ -214,17 +215,17 @@ class MediaViewModel @Inject constructor(
         }
 
         // Save status in DB
-        viewModelScope.launch { repository.saveEpisodes(episodes) }
+        repository.saveEpisodes(episodes)
 
-        viewModelScope.launch { addOrRemoveToWatchedMedias() }
+        addOrRemoveToWatchedMedias()
 
         Log.i("MediaViewModel", "${episode.title} season ${episode.season} episode ${episode.number} is now ${episode.status}")
 
     }
 
-    private fun saveWatchTime(time: Long) = viewModelScope.launch {
+    private suspend fun saveWatchTime(time: Long) {
 
-        val media = uiState.value.selectedMedia ?: return@launch
+        val media = uiState.value.selectedMedia ?: return
         val status = if (time.msToMin >= media.duration * .9) Status.WATCHED else Status.IS_WATCHING
 
         uiState.value.let { state ->
@@ -244,6 +245,16 @@ class MediaViewModel @Inject constructor(
                 is Episode -> {
 
                     repository.saveEpisode(media)
+
+                    _uiState.update { currentState ->
+                        val episodes = currentState.episodes.toMutableList()
+                        episodes.replaceAll { episode ->
+                            if (episode.id == media.id) media else episode
+                        }
+                        currentState.copy(
+                            episodes = episodes
+                        )
+                    }
 
                     addOrRemoveToWatchedMedias()
 

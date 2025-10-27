@@ -132,7 +132,7 @@ class MediaViewModelTest : BaseTest() {
             advanceUntilIdle()
 
             assert(updatedState.selectedMedia?.status == Status.WATCHED)
-            coVerify { mediaRepository.saveEpisode(any()) }
+            coVerify { mediaRepository.saveEpisodes(any()) }
 
             cancelAndConsumeRemainingEvents()
 
@@ -192,7 +192,7 @@ class MediaViewModelTest : BaseTest() {
 
             assert(!updatedState.showStatusDialog)
             assert(updatedState.episodes.all { it.status == Status.WATCHED })
-            coVerify { mediaRepository.saveEpisode(any()) }
+            coVerify { mediaRepository.saveEpisodes(any()) }
 
             cancelAndConsumeRemainingEvents()
 
@@ -214,6 +214,10 @@ class MediaViewModelTest : BaseTest() {
 
             // Change status of current and previous episodes
             viewModel.handleIntent(MediaIntent.ChangeWatchStatus(checkPrevious = true))
+            awaitItem()
+
+            // Validate change for previous episodes
+            viewModel.handleIntent(MediaIntent.ChangeWatchStatusForEpisodeAndPrevious)
             advanceUntilIdle()
 
             // Final state
@@ -246,7 +250,7 @@ class MediaViewModelTest : BaseTest() {
             advanceUntilIdle()
 
             assert(updatedState.selectedMedia?.status == Status.TO_WATCH)
-            coVerify { mediaRepository.saveEpisode(any()) }
+            coVerify { mediaRepository.saveEpisodes(any()) }
 
             cancelAndConsumeRemainingEvents()
 
@@ -315,7 +319,7 @@ class MediaViewModelTest : BaseTest() {
             advanceUntilIdle()
 
             assert(state.selectedMedia?.status == Status.WATCHED)
-            coVerify { mediaRepository.saveEpisode(any()) }
+            coVerify { mediaRepository.saveEpisodes(any()) }
             coVerify { dataStoreRepository.removeWatchedMedia(any()) }
 
             cancelAndConsumeRemainingEvents()

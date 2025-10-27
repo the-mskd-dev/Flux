@@ -49,37 +49,53 @@ class SettingsViewModelTest : BaseTest() {
 
     @Test
     fun `show backward dialog`() = runTest {
-        viewModel.handleIntent(SettingsIntent.BackwardDialog(true))
         viewModel.uiState.test {
+
+            awaitItem()
+            viewModel.handleIntent(SettingsIntent.BackwardDialog(true))
+
             val state = awaitItem()
             assert(state.showBackwardDialog)
+
         }
     }
 
     @Test
     fun `show forward dialog`() = runTest {
-        viewModel.handleIntent(SettingsIntent.ForwardDialog(true))
         viewModel.uiState.test {
+
+            awaitItem()
+            viewModel.handleIntent(SettingsIntent.ForwardDialog(true))
+
             val state = awaitItem()
             assert(state.showForwardDialog)
+
         }
     }
 
     @Test
     fun `show ui theme dialog`() = runTest {
-        viewModel.handleIntent(SettingsIntent.ThemeDialog(true))
         viewModel.uiState.test {
+
+            awaitItem()
+            viewModel.handleIntent(SettingsIntent.ThemeDialog(true))
+
             val state = awaitItem()
             assert(state.showUiThemeDialog)
+
         }
     }
 
     @Test
     fun `show subtitles language dialog`() = runTest {
-        viewModel.handleIntent(SettingsIntent.SubtitlesDialog(true))
         viewModel.uiState.test {
+
+            awaitItem()
+            viewModel.handleIntent(SettingsIntent.SubtitlesDialog(true))
+
             val state = awaitItem()
             assert(state.showSubtitlesLanguage)
+
         }
     }
 

@@ -76,7 +76,8 @@ class MediaViewModel @Inject constructor(
             is MediaIntent.SaveTime -> saveTime(intent.time)
             MediaIntent.ShowPlayer -> showPlayer(true)
             MediaIntent.ClosePlayer -> showPlayer(false)
-            else -> {}
+            is MediaIntent.ChangeWatchStatus -> changeWatchStatus(intent.checkPrevious)
+            MediaIntent.ChangeWatchStatusForEpisodeAndPrevious -> changeWatchStatusForEpisodeAndPrevious()
         }
     }
 
@@ -137,7 +138,7 @@ class MediaViewModel @Inject constructor(
         }
     }
 
-    fun changeWatchStatus(checkPrevious: Boolean = true) {
+    private fun changeWatchStatus(checkPrevious: Boolean = true) {
 
         val media = uiState.value.selectedMedia ?: return
 
@@ -204,7 +205,7 @@ class MediaViewModel @Inject constructor(
 
     }
 
-    fun changeWatchStatusForEpisodeAndPrevious() {
+    private fun changeWatchStatusForEpisodeAndPrevious() {
 
         val episode = uiState.value.selectedMedia as? Episode ?: return
         val previousEpisodes = _uiState.value.episodes.getPreviousEpisodesFor(episode).filter { it.status != Status.WATCHED }

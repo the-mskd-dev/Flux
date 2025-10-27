@@ -58,7 +58,6 @@ fun MediaScreen(
         viewModel.event.collect { event ->
             when (event) {
                 MediaEvent.BackToPreviousScreen -> onBackButtonTap()
-                else -> {}
             }
         }
     }
@@ -74,7 +73,7 @@ fun MediaScreen(
             ScreenState.ERROR -> {
                 ErrorScreen(
                     message = stringResource(R.string.oups_an_error_occured),
-                    onBackButtonTap = onBackButtonTap
+                    onBackButtonTap = { viewModel.handleIntent(MediaIntent.OnBackTap) }
                 )
             }
             else -> {
@@ -99,15 +98,14 @@ fun MediaScreen(
             backward = viewModel.backwardValue,
             forward = viewModel.forwardValue,
             subtitlesLanguage = viewModel.subtitlesLanguage,
-            onBackButtonTap = { viewModel.handleIntent(MediaIntent.ClosePlayer) },
-            onTimeSave = { viewModel.handleIntent(MediaIntent.SaveTime(it)) }
+            sendIntent = viewModel::handleIntent,
         )
     }
 
     MediaStatusDialog(
         showStatusDialog = uiState.showStatusDialog,
-        onDismiss = { viewModel.changeWatchStatus(checkPrevious = false) },
-        onValidate = { viewModel.changeWatchStatusForEpisodeAndPrevious() }
+        onDismiss = { viewModel.handleIntent(MediaIntent.ChangeWatchStatus(false)) },
+        onValidate = { viewModel.handleIntent(MediaIntent.ChangeWatchStatusForEpisodeAndPrevious) }
     )
 
 }

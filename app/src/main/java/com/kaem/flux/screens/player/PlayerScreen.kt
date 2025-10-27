@@ -41,6 +41,7 @@ import androidx.media3.ui.PlayerView
 import com.kaem.flux.R
 import com.kaem.flux.model.media.Episode
 import com.kaem.flux.model.media.Media
+import com.kaem.flux.screens.media.MediaIntent
 import com.kaem.flux.ui.component.BackButton
 import com.kaem.flux.ui.component.LifecycleComponent
 import com.kaem.flux.ui.component.Text
@@ -58,8 +59,7 @@ fun PlayerScreen(
     backward: Long,
     forward: Long,
     subtitlesLanguage: Locale,
-    onBackButtonTap: () -> Unit,
-    onTimeSave: (Long) -> Unit
+    sendIntent: (MediaIntent) -> Unit
 ) {
 
     var isExiting by remember { mutableStateOf(false) }
@@ -84,9 +84,9 @@ fun PlayerScreen(
                 onBackButtonTap = {
                     activity.setAppOrientation(orientation)
                     isExiting = true
-                    onBackButtonTap()
+                    sendIntent(MediaIntent.ClosePlayer)
                 },
-                onTimeSave = onTimeSave
+                onTimeSave = { sendIntent(MediaIntent.SaveTime(it)) }
             )
         } else {
             Box(modifier = Modifier.background(Color.Black).fillMaxSize())

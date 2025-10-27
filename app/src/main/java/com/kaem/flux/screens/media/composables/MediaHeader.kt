@@ -94,7 +94,7 @@ fun MediaHeader(
         MediaStatusButton(
             modifier = Modifier.layoutId("status"),
             media = media,
-            onTap = { sendIntent(MediaIntent.ChangeWatchStatus) }
+            onTap = { sendIntent(MediaIntent.ChangeWatchStatus(checkPrevious = true)) }
         )
 
         MediaTitle(

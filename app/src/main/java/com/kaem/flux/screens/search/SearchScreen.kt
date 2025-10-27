@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -22,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -30,6 +32,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.kaem.flux.Navigation.Navigation
 import com.kaem.flux.R
 import com.kaem.flux.ui.component.FluxScaffold
 import com.kaem.flux.ui.component.MediaItem
@@ -38,20 +41,30 @@ import com.kaem.flux.utils.Constants
 
 @Composable
 fun SearchScreen(
-    onBackButtonTap: () -> Unit,
-    navigateToDetails: (Long) -> Unit,
+    navigate: (String) -> Unit,
+    backToPreviousScreen: () -> Unit,
     viewModel: SearchViewModel = hiltViewModel()
 ) {
 
     val state by viewModel.uiState.collectAsState()
 
+    LaunchedEffect(Unit) {
+        viewModel.event.collect { event ->
+            when (event) {
+                is SearchEvent.NavigateToMedia -> navigate(Navigation.MEDIA.build(listOf(event.mediaId)))
+                SearchEvent.BackToPreviousScreen -> backToPreviousScreen()
+            }
+        }
+    }
+
     FluxScaffold(
         title = stringResource(android.R.string.search_go),
-        onBackTap = onBackButtonTap
-    ) { innerContent ->
+        onBackTap = { viewModel.handleIntent(SearchIntent.OnBackTap) }
+    ) { innerPadding ->
 
         LazyVerticalGrid(
             modifier = Modifier
+                .padding(innerPadding)
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background),
             columns = GridCells.Fixed(3),
@@ -65,7 +78,7 @@ fun SearchScreen(
                 TextField(
                     modifier = Modifier.fillMaxWidth(),
                     value = state.searchWord,
-                    onValueChange = { viewModel.updateSearchWord(it) },
+                    onValueChange = { viewModel.handleIntent(SearchIntent.DoSearch(it)) },
                     singleLine = true,
                     shape = Ui.Shape.RoundedCorner,
                     colors = TextFieldDefaults.colors(
@@ -78,7 +91,7 @@ fun SearchScreen(
                         if (state.searchWord.isNotEmpty()) {
                             IconButton(
                                 modifier = Modifier.size(18.dp),
-                                onClick = { viewModel.updateSearchWord("") },
+                                onClick = { viewModel.handleIntent(SearchIntent.DoSearch("")) },
                                 content = { Icon(imageVector = Icons.Rounded.Clear, contentDescription = "clear button") }
                             )
                         }
@@ -104,7 +117,7 @@ fun SearchScreen(
                         url = Constants.TMDB.IMAGE_SMALL + overview.imagePath,
                         ratio = 2f/3f,
                         description = overview.title,
-                        onTap = { navigateToDetails(overview.id) }
+                        onTap = { viewModel.handleIntent(SearchIntent.OnMediaTap(overview.id)) }
                     )
 
                 }

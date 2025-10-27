@@ -91,12 +91,8 @@ class MainActivity : ComponentActivity() {
                         arguments = Navigation.SEARCH.arguments
                     ) {
                         SearchScreen(
-                            onBackButtonTap = { navController.popBackStack() },
-                            navigateToDetails = {
-                                navController.navigate(
-                                    route = "${Navigation.MEDIA.route}/$it"
-                                )
-                            }
+                            navigate = { route -> navController.navigate(route) },
+                            backToPreviousScreen = { navController.popBackStack() },
                         )
                     }
 

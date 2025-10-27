@@ -19,6 +19,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -34,6 +35,10 @@ import com.kaem.flux.model.ScreenState
 import com.kaem.flux.model.media.Episode
 import com.kaem.flux.model.media.Media
 import com.kaem.flux.model.media.MediaOverview
+import com.kaem.flux.screens.media.composables.EpisodeItem
+import com.kaem.flux.screens.media.composables.MediaDescription
+import com.kaem.flux.screens.media.composables.MediaHeader
+import com.kaem.flux.screens.media.composables.MediaSeasonsTabs
 import com.kaem.flux.screens.player.PlayerScreen
 import com.kaem.flux.ui.component.ErrorScreen
 import com.kaem.flux.ui.component.FluxDialog
@@ -43,11 +48,19 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun MediaScreen(
-    onBackButtonTap: () -> Unit,
+    onBack: () -> Unit,
     viewModel: MediaViewModel = hiltViewModel()
 ) {
 
     val uiState by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.event.collect { event ->
+            when (event) {
+                MediaEvent.BackToPreviousScreen -> onBack()
+            }
+        }
+    }
 
     Crossfade(
         modifier = Modifier.fillMaxSize(),
@@ -60,7 +73,7 @@ fun MediaScreen(
             ScreenState.ERROR -> {
                 ErrorScreen(
                     message = stringResource(R.string.oups_an_error_occured),
-                    onBackButtonTap = onBackButtonTap
+                    onBackButtonTap = { viewModel.handleIntent(MediaIntent.OnBackTap) }
                 )
             }
             else -> {
@@ -70,11 +83,7 @@ fun MediaScreen(
                     media = uiState.selectedMedia,
                     episodes = uiState.episodes,
                     currentSeason = uiState.currentSeason,
-                    onBackButtonTap = { onBackButtonTap() },
-                    onStatusButtonTap = { viewModel.changeWatchStatus() },
-                    onSeasonTap = { viewModel.selectSeason(it) },
-                    onEpisodeTap = { viewModel.selectMedia(it) },
-                    onPlayerButtonTap = { viewModel.showPlayer(true) }
+                    sendIntent = viewModel::handleIntent,
                 )
 
             }
@@ -89,15 +98,14 @@ fun MediaScreen(
             backward = viewModel.backwardValue,
             forward = viewModel.forwardValue,
             subtitlesLanguage = viewModel.subtitlesLanguage,
-            onBackButtonTap = { viewModel.showPlayer(false) },
-            onTimeSave = { viewModel.saveTime(it) }
+            sendIntent = viewModel::handleIntent,
         )
     }
 
     MediaStatusDialog(
         showStatusDialog = uiState.showStatusDialog,
-        onDismiss = { viewModel.changeWatchStatus(checkPrevious = false) },
-        onValidate = { viewModel.changeWatchStatusForEpisodeAndPrevious() }
+        onDismiss = { viewModel.handleIntent(MediaIntent.ChangeWatchStatus(false)) },
+        onValidate = { viewModel.handleIntent(MediaIntent.ChangeWatchStatusForEpisodeAndPrevious) }
     )
 
 }
@@ -108,11 +116,7 @@ fun MediaContent(
     media: Media?,
     episodes: List<Episode>,
     currentSeason: Int,
-    onBackButtonTap: () -> Unit,
-    onStatusButtonTap: () -> Unit,
-    onSeasonTap: (Int) -> Unit,
-    onEpisodeTap: (Episode) -> Unit,
-    onPlayerButtonTap: () -> Unit
+    sendIntent: (MediaIntent) -> Unit,
 ) {
 
     val scrollState = rememberLazyListState()
@@ -149,9 +153,7 @@ fun MediaContent(
                     overview = overview,
                     media = media,
                     zoom = zoom,
-                    onBackButtonTap = onBackButtonTap,
-                    onStatusButtonTap = onStatusButtonTap,
-                    onPlayerButtonTap = onPlayerButtonTap
+                    sendIntent = sendIntent
                 )
 
                 MediaDescription(media = media)
@@ -167,7 +169,7 @@ fun MediaContent(
                 MediaSeasonsTabs(
                     selectedSeason = currentSeason,
                     seasons = episodes.map { it.season }.distinct(),
-                    onSeasonTap = onSeasonTap
+                    onSeasonTap = { sendIntent(MediaIntent.SelectSeason(it)) }
                 )
 
             }
@@ -198,9 +200,9 @@ fun MediaContent(
                     EpisodeItem(
                         modifier = Modifier.animateItem(),
                         episode = episode,
-                        onEpisodeTap = {
+                        onTap = {
                             scope.launch {
-                                onEpisodeTap(episode)
+                                sendIntent(MediaIntent.SelectEpisode(episode))
                                 scrollState.animateScrollToItem(0)
                             }
                         }

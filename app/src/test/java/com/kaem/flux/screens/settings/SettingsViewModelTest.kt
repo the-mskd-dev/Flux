@@ -49,37 +49,53 @@ class SettingsViewModelTest : BaseTest() {
 
     @Test
     fun `show backward dialog`() = runTest {
-        viewModel.showBackwardDialog(true)
         viewModel.uiState.test {
+
+            awaitItem()
+            viewModel.handleIntent(SettingsIntent.BackwardDialog(true))
+
             val state = awaitItem()
             assert(state.showBackwardDialog)
+
         }
     }
 
     @Test
     fun `show forward dialog`() = runTest {
-        viewModel.showForwardDialog(true)
         viewModel.uiState.test {
+
+            awaitItem()
+            viewModel.handleIntent(SettingsIntent.ForwardDialog(true))
+
             val state = awaitItem()
             assert(state.showForwardDialog)
+
         }
     }
 
     @Test
     fun `show ui theme dialog`() = runTest {
-        viewModel.showUiThemeDialog(true)
         viewModel.uiState.test {
+
+            awaitItem()
+            viewModel.handleIntent(SettingsIntent.ThemeDialog(true))
+
             val state = awaitItem()
             assert(state.showUiThemeDialog)
+
         }
     }
 
     @Test
     fun `show subtitles language dialog`() = runTest {
-        viewModel.showSubtitlesLanguageDialog(true)
         viewModel.uiState.test {
+
+            awaitItem()
+            viewModel.handleIntent(SettingsIntent.SubtitlesDialog(true))
+
             val state = awaitItem()
             assert(state.showSubtitlesLanguage)
+
         }
     }
 
@@ -89,7 +105,7 @@ class SettingsViewModelTest : BaseTest() {
         viewModel.uiState.test {
             awaitItem()
 
-            viewModel.setBackwardValue(20)
+            viewModel.handleIntent(SettingsIntent.SetBackwardValue(20))
             dataStoreFlow.value = dataStoreFlow.value.copy(playerBackwardValue = 20)
             advanceUntilIdle()
 
@@ -109,7 +125,7 @@ class SettingsViewModelTest : BaseTest() {
         viewModel.uiState.test {
             awaitItem()
 
-            viewModel.setForwardValue(20)
+            viewModel.handleIntent(SettingsIntent.SetForwardValue(20))
             dataStoreFlow.value = dataStoreFlow.value.copy(playerForwardValue = 20)
             advanceUntilIdle()
 
@@ -130,7 +146,7 @@ class SettingsViewModelTest : BaseTest() {
         viewModel.uiState.test {
             awaitItem()
 
-            viewModel.setUiTheme(Ui.THEME.DARK)
+            viewModel.handleIntent(SettingsIntent.SetThemeValue(Ui.THEME.DARK))
             dataStoreFlow.value = dataStoreFlow.value.copy(uiTheme = Ui.THEME.DARK)
             advanceUntilIdle()
 
@@ -152,7 +168,7 @@ class SettingsViewModelTest : BaseTest() {
         viewModel.uiState.test {
             awaitItem()
 
-            viewModel.setSubtitlesLanguage(Locale.ENGLISH)
+            viewModel.handleIntent(SettingsIntent.SetSubtitlesValue(Locale.ENGLISH))
             dataStoreFlow.value = dataStoreFlow.value.copy(subtitlesLanguage = Locale.ENGLISH)
             advanceUntilIdle()
 

@@ -53,13 +53,13 @@ class SearchViewModelTest : BaseTest() {
 
             awaitItem()
 
-            viewModel.updateSearchWord("nar")
+            viewModel.handleIntent(SearchIntent.DoSearch("nar"))
 
             val state = awaitItem()
 
             assert(state.searchWord == "nar")
             assert(state.filteredOverviews.size == 1)
-            assert(state.filteredOverviews.any { it.title.equals("naruto", ignoreCase = true) })
+            assert(state.filteredOverviews.any { it.title.contains("naruto", ignoreCase = true) })
 
         }
 
@@ -72,7 +72,7 @@ class SearchViewModelTest : BaseTest() {
 
             awaitItem()
 
-            viewModel.updateSearchWord("na")
+            viewModel.handleIntent(SearchIntent.DoSearch("na"))
 
             val state = awaitItem()
 
@@ -91,7 +91,7 @@ class SearchViewModelTest : BaseTest() {
 
             awaitItem()
 
-            viewModel.updateSearchWord("spider-man")
+            viewModel.handleIntent(SearchIntent.DoSearch("spider-man"))
 
             val state = awaitItem()
 

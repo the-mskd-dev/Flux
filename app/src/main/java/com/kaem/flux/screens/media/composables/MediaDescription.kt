@@ -1,4 +1,4 @@
-package com.kaem.flux.screens.media
+package com.kaem.flux.screens.media.composables
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

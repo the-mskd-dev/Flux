@@ -94,7 +94,7 @@ class HomeViewModelTest : BaseTest() {
 
     @Test
     fun `should force sync when manual sync requested`() = runTest {
-        viewModel.getLibrary(manualSync = true)
+        viewModel.handleIntent(HomeIntent.OnSyncTap(manualSync = true))
 
         advanceUntilIdle()
 
@@ -111,7 +111,7 @@ class HomeViewModelTest : BaseTest() {
         every { dataStoreRepository.getSyncTime() } returns oldTime
 
         viewModel = HomeViewModel(catalogRepository, dataStoreRepository)
-        viewModel.getLibrary(manualSync = false)
+        viewModel.handleIntent(HomeIntent.OnSyncTap(manualSync = false))
 
         advanceUntilIdle()
 
@@ -127,7 +127,7 @@ class HomeViewModelTest : BaseTest() {
         every { dataStoreRepository.getSyncTime() } returns recentTime
 
         viewModel = HomeViewModel(catalogRepository, dataStoreRepository)
-        viewModel.getLibrary(manualSync = false)
+        viewModel.handleIntent(HomeIntent.OnSyncTap(manualSync = false))
 
         advanceUntilIdle()
 

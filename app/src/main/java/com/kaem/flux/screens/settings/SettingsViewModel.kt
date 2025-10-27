@@ -5,8 +5,10 @@ import androidx.lifecycle.viewModelScope
 import com.kaem.flux.data.repository.DataStoreRepository
 import com.kaem.flux.ui.theme.Ui
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -34,6 +36,9 @@ class SettingsViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(SettingsUiState())
     val uiState: StateFlow<SettingsUiState> = _uiState.asStateFlow()
 
+    private val _event = MutableSharedFlow<SettingsEvent>()
+    val event = _event.asSharedFlow()
+
     //endregion
 
     //region Init
@@ -57,25 +62,45 @@ class SettingsViewModel @Inject constructor(
 
     //endregion
 
+    //region Intents
+
+    fun handleIntent(intent: SettingsIntent) = viewModelScope.launch {
+        when (intent) {
+            is SettingsIntent.BackwardDialog -> showBackwardDialog(intent.show)
+            is SettingsIntent.SetBackwardValue -> setBackwardValue(intent.value)
+            is SettingsIntent.ForwardDialog -> showForwardDialog(intent.show)
+            is SettingsIntent.SetForwardValue -> setForwardValue(intent.value)
+            is SettingsIntent.SubtitlesDialog -> showSubtitlesLanguageDialog(intent.show)
+            is SettingsIntent.SetSubtitlesValue -> setSubtitlesLanguage(intent.locale)
+            is SettingsIntent.ThemeDialog -> showUiThemeDialog(intent.show)
+            is SettingsIntent.SetThemeValue -> setUiTheme(intent.theme)
+            SettingsIntent.OnBackTap -> _event.emit(SettingsEvent.BackToPreviousScreen)
+            SettingsIntent.OnAboutTap -> _event.emit(SettingsEvent.NavigateToAboutScreen)
+            SettingsIntent.OnHowToTap -> _event.emit(SettingsEvent.NavigateToHowToScreen)
+        }
+    }
+
+    //endregion
+
     //region Player settings
 
-    fun showBackwardDialog(show: Boolean) {
+    private fun showBackwardDialog(show: Boolean) {
         _uiState.update {
             it.copy(showBackwardDialog = show)
         }
     }
 
-    fun setBackwardValue(value: Int) = viewModelScope.launch {
+    private fun setBackwardValue(value: Int) = viewModelScope.launch {
         dataStoreRepository.setPlayerBackwardValue(value)
     }
 
-    fun showForwardDialog(show: Boolean) {
+    private fun showForwardDialog(show: Boolean) {
         _uiState.update {
             it.copy(showForwardDialog = show)
         }
     }
 
-    fun setForwardValue(value: Int) = viewModelScope.launch {
+    private fun setForwardValue(value: Int) = viewModelScope.launch {
         dataStoreRepository.setPlayerForwardValue(value)
     }
 
@@ -83,13 +108,13 @@ class SettingsViewModel @Inject constructor(
 
     //region UI Theme
 
-    fun showUiThemeDialog(show: Boolean) {
+    private fun showUiThemeDialog(show: Boolean) {
         _uiState.update {
             it.copy(showUiThemeDialog = show)
         }
     }
 
-    fun setUiTheme(theme: Ui.THEME) = viewModelScope.launch {
+    private fun setUiTheme(theme: Ui.THEME) = viewModelScope.launch {
         dataStoreRepository.setUiTheme(theme)
     }
 
@@ -97,13 +122,13 @@ class SettingsViewModel @Inject constructor(
 
     //region Languages
 
-    fun showSubtitlesLanguageDialog(show: Boolean) {
+    private fun showSubtitlesLanguageDialog(show: Boolean) {
         _uiState.update {
             it.copy(showSubtitlesLanguage = show)
         }
     }
 
-    fun setSubtitlesLanguage(locale: Locale) = viewModelScope.launch {
+    private fun setSubtitlesLanguage(locale: Locale) = viewModelScope.launch {
         dataStoreRepository.setSubtitlesLanguage(locale)
     }
 

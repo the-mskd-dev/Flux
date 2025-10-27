@@ -72,7 +72,7 @@ class MainActivity : ComponentActivity() {
                         arguments = Navigation.MEDIA.arguments,
                     ) {
                         MediaScreen(
-                            onBackButtonTap = { navController.popBackStack() }
+                            onBack = { navController.popBackStack() }
                         )
                     }
 
@@ -82,7 +82,7 @@ class MainActivity : ComponentActivity() {
                     ) {
                         CategoryScreen(
                             navigate = { route -> navController.navigate(route) },
-                            backToPreviousScreen = { navController.popBackStack() },
+                            onBack = { navController.popBackStack() },
                         )
                     }
 
@@ -92,7 +92,7 @@ class MainActivity : ComponentActivity() {
                     ) {
                         SearchScreen(
                             navigate = { route -> navController.navigate(route) },
-                            backToPreviousScreen = { navController.popBackStack() },
+                            onBack = { navController.popBackStack() },
                         )
                     }
 
@@ -101,17 +101,8 @@ class MainActivity : ComponentActivity() {
                         arguments = Navigation.SETTINGS.arguments
                     ) {
                         SettingsScreen(
-                            onBackButtonTap = { navController.popBackStack() },
-                            navigateToHowToScreen = {
-                                navController.navigate(
-                                    route = Navigation.HOW_TO.route
-                                )
-                            },
-                            navigateToAboutScreen = {
-                                navController.navigate(
-                                    route = Navigation.ABOUT.route
-                                )
-                            }
+                            navigate = { route -> navController.navigate(route) },
+                            onBack = { navController.popBackStack() },
                         )
                     }
 
@@ -120,7 +111,7 @@ class MainActivity : ComponentActivity() {
                         arguments = Navigation.HOW_TO.arguments
                     ) {
                         HowToScreen(
-                            onBackButtonTap = { navController.popBackStack() }
+                            onBack = { navController.popBackStack() }
                         )
                     }
 
@@ -129,7 +120,7 @@ class MainActivity : ComponentActivity() {
                         arguments = Navigation.ABOUT.arguments
                     ) {
                         AboutScreen(
-                            onBackButtonTap = { navController.popBackStack() }
+                            onBack = { navController.popBackStack() }
                         )
                     }
 

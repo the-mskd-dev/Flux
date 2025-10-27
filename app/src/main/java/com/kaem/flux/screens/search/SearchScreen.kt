@@ -42,7 +42,7 @@ import com.kaem.flux.utils.Constants
 @Composable
 fun SearchScreen(
     navigate: (String) -> Unit,
-    backToPreviousScreen: () -> Unit,
+    onBack: () -> Unit,
     viewModel: SearchViewModel = hiltViewModel()
 ) {
 
@@ -52,7 +52,7 @@ fun SearchScreen(
         viewModel.event.collect { event ->
             when (event) {
                 is SearchEvent.NavigateToMedia -> navigate(Navigation.MEDIA.build(listOf(event.mediaId)))
-                SearchEvent.BackToPreviousScreen -> backToPreviousScreen()
+                SearchEvent.BackToPreviousScreen -> onBack()
             }
         }
     }

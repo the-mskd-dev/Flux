@@ -20,11 +20,11 @@ import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.Ui
 
 @Composable
-fun AboutScreen(onBackButtonTap: () -> Unit) {
+fun AboutScreen(onBack: () -> Unit) {
 
     FluxScaffold(
         title = stringResource(R.string.about),
-        onBackTap = onBackButtonTap
+        onBackTap = onBack
     ) { innerPadding ->
 
         Column(

@@ -9,16 +9,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -30,10 +26,8 @@ import com.kaem.flux.Navigation.Navigation
 import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.media.ContentType
 import com.kaem.flux.model.media.MediaOverview
-import com.kaem.flux.ui.component.BackButton
 import com.kaem.flux.ui.component.FluxScaffold
 import com.kaem.flux.ui.component.MediaItem
-import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.FluxTheme
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.Constants
@@ -41,7 +35,7 @@ import com.kaem.flux.utils.Constants
 @Composable
 fun CategoryScreen(
     navigate: (String) -> Unit,
-    backToPreviousScreen: () -> Unit,
+    onBack: () -> Unit,
     viewModel: CategoryViewModel = hiltViewModel()
 ) {
 
@@ -49,7 +43,7 @@ fun CategoryScreen(
         viewModel.event.collect {
             when(it) {
                 is CategoryEvent.NavigateToMedia -> navigate(Navigation.MEDIA.build(listOf(it.mediaId)))
-                CategoryEvent.BackToPreviousScreen -> backToPreviousScreen()
+                CategoryEvent.BackToPreviousScreen -> onBack()
             }
         }
     }

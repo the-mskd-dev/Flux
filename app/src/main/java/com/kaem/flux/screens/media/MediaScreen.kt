@@ -48,7 +48,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun MediaScreen(
-    onBackButtonTap: () -> Unit,
+    onBack: () -> Unit,
     viewModel: MediaViewModel = hiltViewModel()
 ) {
 
@@ -57,7 +57,7 @@ fun MediaScreen(
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
             when (event) {
-                MediaEvent.BackToPreviousScreen -> onBackButtonTap()
+                MediaEvent.BackToPreviousScreen -> onBack()
             }
         }
     }

@@ -22,11 +22,11 @@ import com.kaem.flux.ui.theme.FluxTheme
 import com.kaem.flux.ui.theme.Ui
 
 @Composable
-fun HowToScreen(onBackButtonTap: () -> Unit) {
+fun HowToScreen(onBack: () -> Unit) {
 
     FluxScaffold(
         title = stringResource(R.string.how_to_name_files),
-        onBackTap = onBackButtonTap
+        onBackTap = onBack
     ) { innerPadding ->
 
         Column(
@@ -97,6 +97,6 @@ fun HowToScreen(onBackButtonTap: () -> Unit) {
 @Composable
 fun HowToScreen_Preview() {
     FluxTheme {
-        HowToScreen(onBackButtonTap = {})
+        HowToScreen(onBack = {})
     }
 }

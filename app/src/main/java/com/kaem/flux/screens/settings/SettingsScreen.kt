@@ -16,6 +16,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -24,6 +25,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.kaem.flux.Navigation.Navigation
 import com.kaem.flux.R
 import com.kaem.flux.ui.component.FluxDialog
 import com.kaem.flux.ui.component.FluxScaffold
@@ -34,9 +36,8 @@ import com.kaem.flux.utils.extensions.uppercaseFirstLetter
 
 @Composable
 fun SettingsScreen(
-    onBackButtonTap: () -> Unit,
-    navigateToHowToScreen: () -> Unit,
-    navigateToAboutScreen: () -> Unit,
+    onBack: () -> Unit,
+    navigate: (String) -> Unit,
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
 
@@ -47,9 +48,19 @@ fun SettingsScreen(
         .getPackageInfo(context.packageName, 0)
         .versionName
 
+    LaunchedEffect(Unit) {
+        viewModel.event.collect { event ->
+            when (event) {
+                SettingsEvent.BackToPreviousScreen -> onBack()
+                SettingsEvent.NavigateToAboutScreen -> navigate(Navigation.ABOUT.build())
+                SettingsEvent.NavigateToHowToScreen -> navigate(Navigation.HOW_TO.build())
+            }
+        }
+    }
+
     FluxScaffold(
         title = stringResource(R.string.settings),
-        onBackTap = onBackButtonTap
+        onBackTap = { viewModel.handleIntent(SettingsIntent.OnBackTap) }
     ) { innerPadding ->
 
         Column(
@@ -66,7 +77,7 @@ fun SettingsScreen(
                 SettingsItem(
                     text = stringResource(R.string.app_theme),
                     value = stringResource(state.uiTheme.stringResourceId),
-                    onTap = { viewModel.showUiThemeDialog(true) }
+                    onTap = { viewModel.handleIntent(SettingsIntent.ThemeDialog(true)) }
                 )
 
                 SettingsDivider()
@@ -74,7 +85,7 @@ fun SettingsScreen(
                 SettingsItem(
                     text = stringResource(R.string.button_backward),
                     value = "${state.backwardValue}sec",
-                    onTap = { viewModel.showBackwardDialog(true) }
+                    onTap = { viewModel.handleIntent(SettingsIntent.BackwardDialog(true)) }
                 )
 
                 SettingsDivider()
@@ -82,7 +93,7 @@ fun SettingsScreen(
                 SettingsItem(
                     text = stringResource(R.string.button_forward),
                     value = "${state.forwardValue}sec",
-                    onTap = { viewModel.showForwardDialog(true) }
+                    onTap = { viewModel.handleIntent(SettingsIntent.ForwardDialog(true)) }
                 )
 
                 SettingsDivider()
@@ -90,7 +101,7 @@ fun SettingsScreen(
                 SettingsItem(
                     text = stringResource(R.string.subtitles_language),
                     value = state.subtitlesLanguage.displayLanguage,
-                    onTap = { viewModel.showSubtitlesLanguageDialog(true) }
+                    onTap = { viewModel.handleIntent(SettingsIntent.SubtitlesDialog(true)) }
                 )
 
             }
@@ -100,7 +111,7 @@ fun SettingsScreen(
                 SettingsItem(
                     text = stringResource(R.string.how_to_name_files),
                     value = "",
-                    onTap = navigateToHowToScreen
+                    onTap = { viewModel.handleIntent(SettingsIntent.OnHowToTap) }
                 )
 
                 SettingsDivider()
@@ -108,7 +119,7 @@ fun SettingsScreen(
                 SettingsItem(
                     text = stringResource(R.string.about),
                     value = "",
-                    onTap = navigateToAboutScreen
+                    onTap = { viewModel.handleIntent(SettingsIntent.OnAboutTap) }
                 )
 
                 SettingsDivider()
@@ -150,16 +161,16 @@ fun SettingsScreen(
         show = state.showBackwardDialog,
         currentValue = state.backwardValue,
         options = SettingsViewModel.playerSeconds,
-        onSelect = { viewModel.setBackwardValue(it) },
-        onDismiss = { viewModel.showBackwardDialog(false) }
+        onSelect = { viewModel.handleIntent(SettingsIntent.SetBackwardValue(it)) },
+        onDismiss = { viewModel.handleIntent(SettingsIntent.BackwardDialog(false)) }
     )
 
     SettingsDialog(
         show = state.showForwardDialog,
         currentValue = state.forwardValue,
         options = SettingsViewModel.playerSeconds,
-        onSelect = { viewModel.setForwardValue(it) },
-        onDismiss = { viewModel.showForwardDialog(false) }
+        onSelect = { viewModel.handleIntent(SettingsIntent.SetForwardValue(it)) },
+        onDismiss = { viewModel.handleIntent(SettingsIntent.ForwardDialog(false)) }
     )
 
     SettingsDialog(
@@ -170,16 +181,16 @@ fun SettingsScreen(
             Ui.THEME.DARK to stringResource(Ui.THEME.DARK.stringResourceId),
             Ui.THEME.SYSTEM to stringResource(Ui.THEME.SYSTEM.stringResourceId),
         ),
-        onSelect = { viewModel.setUiTheme(it) },
-        onDismiss = { viewModel.showUiThemeDialog(false) }
+        onSelect = { viewModel.handleIntent(SettingsIntent.SetThemeValue(it)) },
+        onDismiss = { viewModel.handleIntent(SettingsIntent.ThemeDialog(false)) }
     )
 
     SettingsDialog(
         show = state.showSubtitlesLanguage,
         currentValue = state.subtitlesLanguage,
         options = SettingsViewModel.languages,
-        onSelect = { viewModel.setSubtitlesLanguage(it) },
-        onDismiss = { viewModel.showSubtitlesLanguageDialog(false) }
+        onSelect = { viewModel.handleIntent(SettingsIntent.SetSubtitlesValue(it)) },
+        onDismiss = { viewModel.handleIntent(SettingsIntent.SubtitlesDialog(false)) }
     )
 
 }

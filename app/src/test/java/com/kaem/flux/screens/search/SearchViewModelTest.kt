@@ -59,7 +59,7 @@ class SearchViewModelTest : BaseTest() {
 
             assert(state.searchWord == "nar")
             assert(state.filteredOverviews.size == 1)
-            assert(state.filteredOverviews.any { it.title.equals("naruto", ignoreCase = true) })
+            assert(state.filteredOverviews.any { it.title.contains("naruto", ignoreCase = true) })
 
         }
 

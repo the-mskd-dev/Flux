@@ -88,7 +88,7 @@ fun SettingsScreen(
         show = state.showUiThemeDialog,
         currentValue = state.uiTheme,
         options = mapOf(
-            Ui.THEME.LIGHT to stringResource(Ui.THEME.LIGHT.stringResourceId),
+            //Ui.THEME.LIGHT to stringResource(Ui.THEME.LIGHT.stringResourceId),
             Ui.THEME.DARK to stringResource(Ui.THEME.DARK.stringResourceId),
             Ui.THEME.SYSTEM to stringResource(Ui.THEME.SYSTEM.stringResourceId),
         ),

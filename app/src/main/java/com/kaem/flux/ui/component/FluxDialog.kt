@@ -72,7 +72,7 @@ fun FluxDialog(
     if (show) {
         BasicAlertDialog(onDismissRequest = onDismissRequest) {
 
-            Card(shape = Ui.Shape.RoundedCorner) {
+            Card(shape = Ui.Shape.Corner.ExtraLargeIncreased) {
 
                 Column(modifier = Modifier.padding(Ui.Space.MEDIUM)) {
 

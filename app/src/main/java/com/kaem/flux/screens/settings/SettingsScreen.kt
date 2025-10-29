@@ -1,5 +1,6 @@
 package com.kaem.flux.screens.settings
 
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -24,12 +25,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.kaem.flux.Navigation.Navigation
 import com.kaem.flux.R
 import com.kaem.flux.ui.component.FluxDialog
 import com.kaem.flux.ui.component.FluxScaffold
 import com.kaem.flux.ui.component.Text
+import com.kaem.flux.ui.theme.FluxTheme
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.WebLink
 import com.kaem.flux.utils.extensions.uppercaseFirstLetter
@@ -58,104 +61,12 @@ fun SettingsScreen(
         }
     }
 
-    FluxScaffold(
-        title = stringResource(R.string.settings),
-        onBackTap = { viewModel.handleIntent(SettingsIntent.OnBackTap) }
-    ) { innerPadding ->
-
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .background(MaterialTheme.colorScheme.background)
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
-        ) {
-
-            SettingsSection {
-
-                SettingsItem(
-                    text = stringResource(R.string.app_theme),
-                    value = stringResource(state.uiTheme.stringResourceId),
-                    onTap = { viewModel.handleIntent(SettingsIntent.ThemeDialog(true)) }
-                )
-
-                SettingsDivider()
-
-                SettingsItem(
-                    text = stringResource(R.string.button_backward),
-                    value = "${state.backwardValue}sec",
-                    onTap = { viewModel.handleIntent(SettingsIntent.BackwardDialog(true)) }
-                )
-
-                SettingsDivider()
-
-                SettingsItem(
-                    text = stringResource(R.string.button_forward),
-                    value = "${state.forwardValue}sec",
-                    onTap = { viewModel.handleIntent(SettingsIntent.ForwardDialog(true)) }
-                )
-
-                SettingsDivider()
-
-                SettingsItem(
-                    text = stringResource(R.string.subtitles_language),
-                    value = state.subtitlesLanguage.displayLanguage,
-                    onTap = { viewModel.handleIntent(SettingsIntent.SubtitlesDialog(true)) }
-                )
-
-            }
-
-            SettingsSection {
-
-                SettingsItem(
-                    text = stringResource(R.string.how_to_name_files),
-                    value = "",
-                    onTap = { viewModel.handleIntent(SettingsIntent.OnHowToTap) }
-                )
-
-                SettingsDivider()
-
-                SettingsItem(
-                    text = stringResource(R.string.about),
-                    value = "",
-                    onTap = { viewModel.handleIntent(SettingsIntent.OnAboutTap) }
-                )
-
-                SettingsDivider()
-
-                SettingsItem(
-                    text = stringResource(R.string.make_a_donation),
-                    value = "",
-                    onTap = {
-                        WebLink.openPage(
-                            context = context,
-                            url = "https://paypal.me/kevynbct"
-                        )
-                    }
-                )
-
-            }
-
-            appVersion?.let {
-
-                SettingsSection {
-
-                    SettingsItem(
-                        text = stringResource(R.string.app_version),
-                        value = it,
-                        onTap = {}
-                    )
-
-                }
-
-            }
-
-            Spacer(modifier = Modifier.navigationBarsPadding())
-
-        }
-
-    }
+    SettingsContent(
+        state = state,
+        context = context,
+        appVersion = appVersion,
+        sendIntent = viewModel::handleIntent
+    )
 
     SettingsDialog(
         show = state.showBackwardDialog,
@@ -196,13 +107,122 @@ fun SettingsScreen(
 }
 
 @Composable
+fun SettingsContent(
+    state: SettingsUiState,
+    context: Context,
+    appVersion: String?,
+    sendIntent: (SettingsIntent) -> Unit
+) {
+
+    FluxScaffold(
+        title = stringResource(R.string.settings),
+        onBackTap = { sendIntent(SettingsIntent.OnBackTap) }
+    ) { innerPadding ->
+
+        Column(
+            modifier = Modifier
+                .padding(innerPadding)
+                .background(MaterialTheme.colorScheme.background)
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
+        ) {
+
+            SettingsSection {
+
+                SettingsItem(
+                    text = stringResource(R.string.app_theme),
+                    value = stringResource(state.uiTheme.stringResourceId),
+                    onTap = { sendIntent(SettingsIntent.ThemeDialog(true)) }
+                )
+
+                SettingsDivider()
+
+                SettingsItem(
+                    text = stringResource(R.string.button_backward),
+                    value = "${state.backwardValue}sec",
+                    onTap = { sendIntent(SettingsIntent.BackwardDialog(true)) }
+                )
+
+                SettingsDivider()
+
+                SettingsItem(
+                    text = stringResource(R.string.button_forward),
+                    value = "${state.forwardValue}sec",
+                    onTap = { sendIntent(SettingsIntent.ForwardDialog(true)) }
+                )
+
+                SettingsDivider()
+
+                SettingsItem(
+                    text = stringResource(R.string.subtitles_language),
+                    value = state.subtitlesLanguage.displayLanguage,
+                    onTap = { sendIntent(SettingsIntent.SubtitlesDialog(true)) }
+                )
+
+            }
+
+            SettingsSection {
+
+                SettingsItem(
+                    text = stringResource(R.string.how_to_name_files),
+                    value = "",
+                    onTap = { sendIntent(SettingsIntent.OnHowToTap) }
+                )
+
+                SettingsDivider()
+
+                SettingsItem(
+                    text = stringResource(R.string.about),
+                    value = "",
+                    onTap = { sendIntent(SettingsIntent.OnAboutTap) }
+                )
+
+                SettingsDivider()
+
+                SettingsItem(
+                    text = stringResource(R.string.make_a_donation),
+                    value = "",
+                    onTap = {
+                        WebLink.openPage(
+                            context = context,
+                            url = "https://paypal.me/kevynbct"
+                        )
+                    }
+                )
+
+            }
+
+            appVersion?.let {
+
+                SettingsSection {
+
+                    SettingsItem(
+                        text = stringResource(R.string.app_version),
+                        value = it,
+                        onTap = {}
+                    )
+
+                }
+
+            }
+
+            Spacer(modifier = Modifier.navigationBarsPadding())
+
+        }
+
+    }
+
+}
+
+@Composable
 fun SettingsSection(content: @Composable () -> Unit) {
 
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = Ui.Space.MEDIUM)
-                .clip(Ui.Shape.RoundedCorner)
+                .clip(Ui.Shape.Corner.Small)
                 .background(MaterialTheme.colorScheme.surfaceContainer)
                 .padding(horizontal = Ui.Space.MEDIUM),
             horizontalAlignment = Alignment.Start
@@ -223,11 +243,11 @@ fun SettingsItem(
             .padding(vertical = Ui.Space.MEDIUM),
     ) {
 
-        Text.Title.Large(
+        Text.Title.Medium(
             text = text,
         )
 
-        Text.Body.Large(
+        Text.Title.Small(
             text = value.uppercaseFirstLetter(),
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = .8f),
         )
@@ -299,3 +319,30 @@ fun <T> SettingsDialog(
     )
 
 }
+
+@Preview
+@Composable
+fun SettingsScreen_Preview() {
+    FluxTheme {
+        SettingsContent(
+            state = SettingsUiState(),
+            context = LocalContext.current,
+            appVersion = "1.0.0",
+        ) { }
+    }
+}
+
+@Preview
+@Composable
+fun SettingsDialog_Preview() {
+    FluxTheme {
+        SettingsDialog(
+            show = true,
+            currentValue = SettingsViewModel.playerSeconds.keys.first(),
+            options = SettingsViewModel.playerSeconds,
+            onSelect = { },
+            onDismiss = { }
+        )
+    }
+}
+

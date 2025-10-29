@@ -2,6 +2,8 @@ package com.kaem.flux.ui.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -41,7 +43,20 @@ object Ui {
     }
 
     object Shape {
-        val RoundedCorner get() = RoundedCornerShape(8.dp)
+
+        @OptIn(ExperimentalMaterial3ExpressiveApi::class)
+        object Corner {
+
+            val ExtraSmall @Composable get() = MaterialTheme.shapes.extraSmall
+            val Small @Composable get() = MaterialTheme.shapes.small
+            val Medium @Composable get() = MaterialTheme.shapes.medium
+            val Large @Composable get() = MaterialTheme.shapes.large
+            val LargeIncreased @Composable get() = MaterialTheme.shapes.largeIncreased
+            val ExtraLarge @Composable get() = MaterialTheme.shapes.extraLarge
+            val ExtraLargeIncreased @Composable get() = MaterialTheme.shapes.extraLargeIncreased
+            val ExtraExtraLarge @Composable get() = MaterialTheme.shapes.extraExtraLarge
+        }
+
     }
 
     object Card {

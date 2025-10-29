@@ -80,7 +80,7 @@ fun SearchScreen(
                     value = state.searchWord,
                     onValueChange = { viewModel.handleIntent(SearchIntent.DoSearch(it)) },
                     singleLine = true,
-                    shape = Ui.Shape.RoundedCorner,
+                    shape = Ui.Shape.Corner.Small,
                     colors = TextFieldDefaults.colors(
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,

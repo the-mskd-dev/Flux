@@ -51,7 +51,7 @@ fun FluxButton(
             containerColor = backgroundColor,
             contentColor = textColor,
         ),
-        shape = Ui.Shape.RoundedCorner,
+        shape = Ui.Shape.Corner.Medium,
         border = border,
         onClick = onTap
     ) {

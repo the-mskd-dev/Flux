@@ -90,7 +90,7 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    private fun setBackwardValue(value: Int) = viewModelScope.launch {
+    private suspend fun setBackwardValue(value: Int) {
         dataStoreRepository.setPlayerBackwardValue(value)
     }
 
@@ -100,7 +100,7 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    private fun setForwardValue(value: Int) = viewModelScope.launch {
+    private suspend fun setForwardValue(value: Int) {
         dataStoreRepository.setPlayerForwardValue(value)
     }
 
@@ -114,7 +114,7 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    private fun setUiTheme(theme: Ui.THEME) = viewModelScope.launch {
+    private suspend fun setUiTheme(theme: Ui.THEME) {
         dataStoreRepository.setUiTheme(theme)
     }
 
@@ -128,7 +128,7 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    private fun setSubtitlesLanguage(locale: Locale) = viewModelScope.launch {
+    private suspend fun setSubtitlesLanguage(locale: Locale) {
         dataStoreRepository.setSubtitlesLanguage(locale)
     }
 

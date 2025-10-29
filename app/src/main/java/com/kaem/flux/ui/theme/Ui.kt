@@ -12,34 +12,11 @@ import com.kaem.flux.R
 
 object Ui {
 
-    object FontSize {
-        val SMALL = 12.sp
-        val MEDIUM = 17.sp
-        val LARGE = 20.sp
-        val TITLE = 30.sp
-        val BUTTON = 15.sp
-    }
-
     object Space {
         val EXTRA_SMALL = 4.dp
         val SMALL = 8.dp
         val MEDIUM = 16.dp
         val LARGE = 24.dp
-    }
-
-    object Weight {
-        val LIGHT = FontWeight.W400
-        val MEDIUM = FontWeight.W500
-        val BOLD = FontWeight.W700
-    }
-
-    object Elevation {
-        val Level0 = 0.0.dp
-        val Level1 = 1.0.dp
-        val Level2 = 3.0.dp
-        val Level3 = 6.0.dp
-        val Level4 = 8.0.dp
-        val Level5 = 12.0.dp
     }
 
     object Shape {
@@ -57,19 +34,6 @@ object Ui {
             val ExtraExtraLarge @Composable get() = MaterialTheme.shapes.extraExtraLarge
         }
 
-    }
-
-    object Card {
-
-        @Composable
-        fun elevations() = CardDefaults.cardElevation(
-            defaultElevation = 12.dp,
-            pressedElevation = 4.dp,
-            focusedElevation = 12.dp,
-            disabledElevation = 0.dp,
-            draggedElevation = 12.dp,
-            hoveredElevation = 12.dp
-        )
     }
 
     enum class THEME {

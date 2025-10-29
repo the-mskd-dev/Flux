@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -121,12 +122,13 @@ fun SettingsContent(
 
         Column(
             modifier = Modifier
-                .padding(innerPadding)
                 .background(MaterialTheme.colorScheme.background)
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
         ) {
+
+            Spacer(modifier = Modifier.height(innerPadding.calculateTopPadding()))
 
             SettingsSection {
 
@@ -207,7 +209,8 @@ fun SettingsContent(
 
             }
 
-            Spacer(modifier = Modifier.navigationBarsPadding())
+            //Spacer(modifier = Modifier.navigationBarsPadding())
+            Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding()))
 
         }
 

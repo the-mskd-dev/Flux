@@ -3,8 +3,10 @@ package com.kaem.flux.screens.howTo
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -31,13 +33,14 @@ fun HowToScreen(onBack: () -> Unit) {
 
         Column(
             modifier = Modifier
-                .padding(innerPadding)
                 .background(MaterialTheme.colorScheme.background)
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE),
             horizontalAlignment = Alignment.Start
         ) {
+
+            Spacer(modifier = Modifier.height(innerPadding.calculateTopPadding()))
 
             Column(
                 modifier = Modifier
@@ -86,6 +89,8 @@ fun HowToScreen(onBack: () -> Unit) {
 
 
             }
+
+            Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding()))
 
         }
 

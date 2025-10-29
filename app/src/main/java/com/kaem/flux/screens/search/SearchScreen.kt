@@ -5,8 +5,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -64,7 +66,6 @@ fun SearchScreen(
 
         LazyVerticalGrid(
             modifier = Modifier
-                .padding(innerPadding)
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background),
             columns = GridCells.Fixed(3),
@@ -72,6 +73,10 @@ fun SearchScreen(
             verticalArrangement = Arrangement.spacedBy(Ui.Space.SMALL),
             contentPadding = PaddingValues(horizontal = Ui.Space.MEDIUM)
         ) {
+
+            item {
+                Spacer(modifier = Modifier.height(innerPadding.calculateTopPadding()))
+            }
 
             item(span = { GridItemSpan(3) }) {
 
@@ -125,8 +130,8 @@ fun SearchScreen(
 
             }
 
-            item(span = { GridItemSpan(3) }) {
-                Box(modifier = Modifier.navigationBarsPadding())
+            item {
+                Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding()))
             }
 
         }

@@ -294,7 +294,7 @@ fun <T> SettingsDialog(
             TextButton(
                 onClick = { onSelect(selectedValue); onDismiss() },
                 content = {
-                    androidx.compose.material3.Text(stringResource(R.string.validate))
+                    Text.Label.Large(text = stringResource(R.string.validate))
                 }
             )
         },
@@ -302,7 +302,7 @@ fun <T> SettingsDialog(
             TextButton(
                 onClick = onDismiss,
                 content = {
-                    androidx.compose.material3.Text(stringResource(android.R.string.cancel))
+                    Text.Label.Large(text = stringResource(android.R.string.cancel))
                 }
             )
         },

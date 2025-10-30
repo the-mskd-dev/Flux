@@ -14,13 +14,19 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,6 +36,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.kaem.flux.Navigation.Navigation
 import com.kaem.flux.R
+import com.kaem.flux.ui.component.FluxButton
 import com.kaem.flux.ui.component.FluxDialog
 import com.kaem.flux.ui.component.FluxScaffold
 import com.kaem.flux.ui.component.Text
@@ -209,7 +216,6 @@ fun SettingsContent(
 
             }
 
-            //Spacer(modifier = Modifier.navigationBarsPadding())
             Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding()))
 
         }
@@ -278,11 +284,29 @@ fun <T> SettingsDialog(
     onDismiss: () -> Unit
 ) {
 
-    FluxDialog(
-        show = show,
-        hideButtons = true,
+    if (!show) return
+
+    var selectedValue by remember { mutableStateOf(currentValue) }
+
+    AlertDialog(
         onDismissRequest = onDismiss,
-        content = {
+        confirmButton = {
+            TextButton(
+                onClick = { onSelect(selectedValue); onDismiss() },
+                content = {
+                    androidx.compose.material3.Text(stringResource(R.string.validate))
+                }
+            )
+        },
+        dismissButton = {
+            TextButton(
+                onClick = onDismiss,
+                content = {
+                    androidx.compose.material3.Text(stringResource(android.R.string.cancel))
+                }
+            )
+        },
+        text = {
 
             Column(
                 modifier = Modifier
@@ -295,15 +319,15 @@ fun <T> SettingsDialog(
 
                     Row(
                         modifier = Modifier
-                            .clickable { onSelect(option.key); onDismiss()  }
+                            .clickable { selectedValue = option.key  }
                             .fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)
                     ) {
 
                         RadioButton(
-                            selected = currentValue == option.key,
-                            onClick = { onSelect(option.key); onDismiss() }
+                            selected = selectedValue == option.key,
+                            onClick = { selectedValue = option.key }
                         )
 
                         Text.Body.Large(

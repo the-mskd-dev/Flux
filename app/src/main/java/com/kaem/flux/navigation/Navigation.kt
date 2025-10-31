@@ -1,4 +1,4 @@
-package com.kaem.flux.Navigation
+package com.kaem.flux.navigation
 
 import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavType

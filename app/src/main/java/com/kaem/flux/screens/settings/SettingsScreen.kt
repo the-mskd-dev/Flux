@@ -32,7 +32,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import com.kaem.flux.Navigation.Navigation
+import com.kaem.flux.navigation.Navigation
 import com.kaem.flux.R
 import com.kaem.flux.ui.component.FluxScaffold
 import com.kaem.flux.ui.component.Text

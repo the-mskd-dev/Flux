@@ -27,17 +27,6 @@ import java.util.Locale
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
-
-data class MediaUiState(
-    val overview: MediaOverview = MediaOverview(),
-    val screen: ScreenState = ScreenState.LOADING,
-    val selectedMedia: Media? = null,
-    val episodes: List<Episode> = emptyList(),
-    val currentSeason: Int = -1,
-    val showPlayer: Boolean = false,
-    val showStatusDialog: Boolean = false
-)
-
 @HiltViewModel
 class MediaViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,

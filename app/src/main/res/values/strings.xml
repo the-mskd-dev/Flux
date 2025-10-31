@@ -40,9 +40,7 @@
     <string name="refresh">Actualiser</string>
     <string name="how_to_name_files">Comment nommer mes fichiers ?</string>
     <string name="how_to_name_files_desc">Pas de panique, c’est très simple ! Pour que vos vidéos soient bien organisées, voici comment nommer vos fichiers :</string>
-    <string name="how_to_name_files_movies">Pour les films :</string>
     <string name="how_to_name_files_movies_desc">Donnez à vos films un nom clair, suivi de l’année si vous le souhaitez. Par exemple :</string>
-    <string name="how_to_name_files_show">Pour les séries :</string>
     <string name="how_to_name_files_show_desc">Pour les épisodes de séries, utilisez un format qui indique la saison et l\’épisode. Par exemple :</string>
     <string name="movie_file_example_1" translatable="false">Spider-man (2002).mkv</string>
     <string name="movie_file_example_2" translatable="false">Your name.avi</string>
@@ -65,7 +63,7 @@
     <string name="which_technologies">Quelles sont les technologies utilisées ?</string>
     <string name="which_technologies_desc">Cette application est entièrement développée en Kotlin avec Jetpack Compose. J\'utilise Room pour la base de données, Retrofit pour les appels réseau et Hilt pour les injections de dépendances. Hors application, j\'utilise également Firebase et GitHub. Pour ce qui est de l\'UI/UX, j\'ai fait ce que j\'ai pu. C\'est pas si moche, non ?</string>
     <string name="how_to_suggest">Comment me contacter ou suggérer des améliorations ?</string>
-    <string name="how_to_suggest_desc">Si c\'est un avis positif, le Play Store est l\'endroit idéal ! Sinon, j\'espère que vous n\'aurez pas à le faire, mais vous pouvez me contacter par mail à l\'adresse suivante : kevyn.buchet@protonmail.com</string>
+    <string name="how_to_suggest_desc">Si c\'est un avis positif, le Play Store est l\'endroit idéal ! Sinon, j\'espère que vous n\'aurez pas à le faire, mais vous pouvez me contacter par mail à l\'adresse suivante : kevyn.buchet.pro@gmail.com</string>
     <string name="what_is_next">Et la suite ?</string>
     <string name="what_is_next_desc">L\'objectif est d\'améliorer toujours plus l\'application. Que ce soit au niveau de l\'UI, de l\'UX ou des performances. Mais également je prévois d\'ajouter de nouvelles sources de données et non seulement les fichiers sur l\'appareil.</string>
     <string name="make_a_donation">Faire un don</string>

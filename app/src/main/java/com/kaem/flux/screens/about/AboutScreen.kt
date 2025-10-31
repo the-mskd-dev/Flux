@@ -16,9 +16,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import com.kaem.flux.R
 import com.kaem.flux.ui.component.FluxScaffold
 import com.kaem.flux.ui.component.Text
+import com.kaem.flux.ui.theme.FluxTheme
 import com.kaem.flux.ui.theme.Ui
 
 @Composable
@@ -94,9 +96,16 @@ fun AboutSection(
     title: String,
     content: String
 ) {
-    Column(
-    ) {
+    Column(verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)) {
         Text.Headline.Small(text = title)
         Text.Body.Large(text = content)
+    }
+}
+
+@Preview
+@Composable
+fun AboutScreen_Preview() {
+    FluxTheme {
+        AboutScreen {  }
     }
 }

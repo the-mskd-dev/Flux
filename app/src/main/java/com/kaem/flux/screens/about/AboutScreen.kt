@@ -3,8 +3,10 @@ package com.kaem.flux.screens.about
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -14,9 +16,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import com.kaem.flux.R
 import com.kaem.flux.ui.component.FluxScaffold
 import com.kaem.flux.ui.component.Text
+import com.kaem.flux.ui.theme.FluxTheme
 import com.kaem.flux.ui.theme.Ui
 
 @Composable
@@ -29,7 +33,6 @@ fun AboutScreen(onBack: () -> Unit) {
 
         Column(
             modifier = Modifier
-                .padding(innerPadding)
                 .background(MaterialTheme.colorScheme.background)
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
@@ -37,6 +40,8 @@ fun AboutScreen(onBack: () -> Unit) {
                 .padding(bottom = Ui.Space.LARGE),
             verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
         ) {
+
+            Spacer(modifier = Modifier.height(innerPadding.calculateTopPadding()))
 
             Column(
                 modifier = Modifier
@@ -78,6 +83,8 @@ fun AboutScreen(onBack: () -> Unit) {
 
             }
 
+            Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding()))
+
         }
 
     }
@@ -89,9 +96,16 @@ fun AboutSection(
     title: String,
     content: String
 ) {
-    Column(
-    ) {
+    Column(verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)) {
         Text.Headline.Small(text = title)
         Text.Body.Large(text = content)
+    }
+}
+
+@Preview
+@Composable
+fun AboutScreen_Preview() {
+    FluxTheme {
+        AboutScreen {  }
     }
 }

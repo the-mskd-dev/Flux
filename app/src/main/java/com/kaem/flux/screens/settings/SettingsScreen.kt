@@ -1,5 +1,6 @@
 package com.kaem.flux.screens.settings
 
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -8,28 +9,34 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import com.kaem.flux.Navigation.Navigation
+import com.kaem.flux.navigation.Navigation
 import com.kaem.flux.R
-import com.kaem.flux.ui.component.FluxDialog
 import com.kaem.flux.ui.component.FluxScaffold
 import com.kaem.flux.ui.component.Text
+import com.kaem.flux.ui.theme.FluxTheme
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.WebLink
 import com.kaem.flux.utils.extensions.uppercaseFirstLetter
@@ -58,26 +65,52 @@ fun SettingsScreen(
         }
     }
 
+    SettingsContent(
+        state = state,
+        context = context,
+        appVersion = appVersion,
+        sendIntent = viewModel::handleIntent
+    )
+
+    state.dialogState?.let {
+        SettingsDialog(
+            state = it,
+            sendIntent = viewModel::handleIntent,
+            onDismiss = { viewModel.handleIntent(SettingsIntent.HideDialog) }
+        )
+    }
+
+}
+
+@Composable
+fun SettingsContent(
+    state: SettingsUiState,
+    context: Context,
+    appVersion: String?,
+    sendIntent: (SettingsIntent) -> Unit
+) {
+
     FluxScaffold(
         title = stringResource(R.string.settings),
-        onBackTap = { viewModel.handleIntent(SettingsIntent.OnBackTap) }
+        onBackTap = { sendIntent(SettingsIntent.OnBackTap) }
     ) { innerPadding ->
 
         Column(
             modifier = Modifier
-                .padding(innerPadding)
                 .background(MaterialTheme.colorScheme.background)
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
         ) {
 
+            Spacer(modifier = Modifier.height(innerPadding.calculateTopPadding()))
+
             SettingsSection {
 
                 SettingsItem(
                     text = stringResource(R.string.app_theme),
                     value = stringResource(state.uiTheme.stringResourceId),
-                    onTap = { viewModel.handleIntent(SettingsIntent.ThemeDialog(true)) }
+                    onTap = { sendIntent(SettingsIntent.ShowThemeDialog) }
                 )
 
                 SettingsDivider()
@@ -85,7 +118,7 @@ fun SettingsScreen(
                 SettingsItem(
                     text = stringResource(R.string.button_backward),
                     value = "${state.backwardValue}sec",
-                    onTap = { viewModel.handleIntent(SettingsIntent.BackwardDialog(true)) }
+                    onTap = { sendIntent(SettingsIntent.ShowBackwardDialog) }
                 )
 
                 SettingsDivider()
@@ -93,7 +126,7 @@ fun SettingsScreen(
                 SettingsItem(
                     text = stringResource(R.string.button_forward),
                     value = "${state.forwardValue}sec",
-                    onTap = { viewModel.handleIntent(SettingsIntent.ForwardDialog(true)) }
+                    onTap = { sendIntent(SettingsIntent.ShowForwardDialog) }
                 )
 
                 SettingsDivider()
@@ -101,7 +134,7 @@ fun SettingsScreen(
                 SettingsItem(
                     text = stringResource(R.string.subtitles_language),
                     value = state.subtitlesLanguage.displayLanguage,
-                    onTap = { viewModel.handleIntent(SettingsIntent.SubtitlesDialog(true)) }
+                    onTap = { sendIntent(SettingsIntent.ShowSubtitlesDialog) }
                 )
 
             }
@@ -111,7 +144,7 @@ fun SettingsScreen(
                 SettingsItem(
                     text = stringResource(R.string.how_to_name_files),
                     value = "",
-                    onTap = { viewModel.handleIntent(SettingsIntent.OnHowToTap) }
+                    onTap = { sendIntent(SettingsIntent.OnHowToTap) }
                 )
 
                 SettingsDivider()
@@ -119,7 +152,7 @@ fun SettingsScreen(
                 SettingsItem(
                     text = stringResource(R.string.about),
                     value = "",
-                    onTap = { viewModel.handleIntent(SettingsIntent.OnAboutTap) }
+                    onTap = { sendIntent(SettingsIntent.OnAboutTap) }
                 )
 
                 SettingsDivider()
@@ -151,47 +184,11 @@ fun SettingsScreen(
 
             }
 
-            Spacer(modifier = Modifier.navigationBarsPadding())
+            Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding()))
 
         }
 
     }
-
-    SettingsDialog(
-        show = state.showBackwardDialog,
-        currentValue = state.backwardValue,
-        options = SettingsViewModel.playerSeconds,
-        onSelect = { viewModel.handleIntent(SettingsIntent.SetBackwardValue(it)) },
-        onDismiss = { viewModel.handleIntent(SettingsIntent.BackwardDialog(false)) }
-    )
-
-    SettingsDialog(
-        show = state.showForwardDialog,
-        currentValue = state.forwardValue,
-        options = SettingsViewModel.playerSeconds,
-        onSelect = { viewModel.handleIntent(SettingsIntent.SetForwardValue(it)) },
-        onDismiss = { viewModel.handleIntent(SettingsIntent.ForwardDialog(false)) }
-    )
-
-    SettingsDialog(
-        show = state.showUiThemeDialog,
-        currentValue = state.uiTheme,
-        options = mapOf(
-            Ui.THEME.LIGHT to stringResource(Ui.THEME.LIGHT.stringResourceId),
-            Ui.THEME.DARK to stringResource(Ui.THEME.DARK.stringResourceId),
-            Ui.THEME.SYSTEM to stringResource(Ui.THEME.SYSTEM.stringResourceId),
-        ),
-        onSelect = { viewModel.handleIntent(SettingsIntent.SetThemeValue(it)) },
-        onDismiss = { viewModel.handleIntent(SettingsIntent.ThemeDialog(false)) }
-    )
-
-    SettingsDialog(
-        show = state.showSubtitlesLanguage,
-        currentValue = state.subtitlesLanguage,
-        options = SettingsViewModel.languages,
-        onSelect = { viewModel.handleIntent(SettingsIntent.SetSubtitlesValue(it)) },
-        onDismiss = { viewModel.handleIntent(SettingsIntent.SubtitlesDialog(false)) }
-    )
 
 }
 
@@ -202,7 +199,7 @@ fun SettingsSection(content: @Composable () -> Unit) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = Ui.Space.MEDIUM)
-                .clip(Ui.Shape.RoundedCorner)
+                .clip(Ui.Shape.Corner.Small)
                 .background(MaterialTheme.colorScheme.surfaceContainer)
                 .padding(horizontal = Ui.Space.MEDIUM),
             horizontalAlignment = Alignment.Start
@@ -223,11 +220,11 @@ fun SettingsItem(
             .padding(vertical = Ui.Space.MEDIUM),
     ) {
 
-        Text.Title.Large(
+        Text.Title.Medium(
             text = text,
         )
 
-        Text.Body.Large(
+        Text.Title.Small(
             text = value.uppercaseFirstLetter(),
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = .8f),
         )
@@ -248,18 +245,35 @@ fun SettingsDivider() {
 
 @Composable
 fun <T> SettingsDialog(
-    show: Boolean,
-    currentValue: T,
-    options: Map<T, String>,
-    onSelect: (T) -> Unit,
+    state: SettingsDialogState<T>,
+    sendIntent: (SettingsIntent) -> Unit,
     onDismiss: () -> Unit
 ) {
 
-    FluxDialog(
-        show = show,
-        hideButtons = true,
+    var selectedValue by remember { mutableStateOf(state.currentValue) }
+
+    AlertDialog(
         onDismissRequest = onDismiss,
-        content = {
+        confirmButton = {
+            TextButton(
+                onClick = { sendIntent(state.applyValue(selectedValue)); onDismiss() },
+                content = {
+                    Text.Label.Large(text = stringResource(R.string.validate))
+                }
+            )
+        },
+        dismissButton = {
+            TextButton(
+                onClick = onDismiss,
+                content = {
+                    Text.Label.Large(text = stringResource(R.string.cancel))
+                }
+            )
+        },
+        title = {
+            Text.Headline.Small(text = stringResource(state.title))
+        },
+        text = {
 
             Column(
                 modifier = Modifier
@@ -268,24 +282,25 @@ fun <T> SettingsDialog(
                 verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
             ) {
 
-                options.forEach { option ->
+                state.options.forEach { option ->
 
                     Row(
                         modifier = Modifier
-                            .clickable { onSelect(option.key); onDismiss()  }
+                            .clickable { selectedValue = option.key  }
                             .fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)
                     ) {
 
                         RadioButton(
-                            selected = currentValue == option.key,
-                            onClick = { onSelect(option.key); onDismiss() }
+                            selected = selectedValue == option.key,
+                            onClick = { selectedValue = option.key }
                         )
 
+                        val value = option.value.second?.let { stringResource(it) } ?: option.value.first
                         Text.Body.Large(
                             modifier = Modifier.weight(1f),
-                            text = option.value.uppercaseFirstLetter(),
+                            text = value.uppercaseFirstLetter(),
                             color = MaterialTheme.colorScheme.onSurface
                         )
 
@@ -299,3 +314,28 @@ fun <T> SettingsDialog(
     )
 
 }
+
+@Preview
+@Composable
+fun SettingsScreen_Preview() {
+    FluxTheme {
+        SettingsContent(
+            state = SettingsUiState(),
+            context = LocalContext.current,
+            appVersion = "1.0.0",
+        ) { }
+    }
+}
+
+@Preview
+@Composable
+fun SettingsDialog_Preview() {
+    FluxTheme {
+        SettingsDialog(
+            state = SettingsDialogState.forward(5),
+            sendIntent = {},
+            onDismiss = {}
+        )
+    }
+}
+

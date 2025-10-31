@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.kaem.flux.Navigation.Navigation
+import com.kaem.flux.navigation.Navigation
 import com.kaem.flux.data.repository.DataStoreRepository
 import com.kaem.flux.screens.about.AboutScreen
 import com.kaem.flux.screens.category.CategoryScreen

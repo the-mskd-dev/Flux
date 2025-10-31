@@ -69,7 +69,7 @@ fun MediaSeasonsTabs(
                 colors = ButtonDefaults.buttonColors(
                     containerColor = backgroundColor
                 ),
-                shape = Ui.Shape.RoundedCorner,
+                shape = Ui.Shape.Corner.Small,
                 onClick = { onSeasonTap(season) }
             ) {
                 Text.Label.Medium(
@@ -111,7 +111,7 @@ fun EpisodeItem(
 
         Box(
             modifier = Modifier
-                .clip(Ui.Shape.RoundedCorner)
+                .clip(Ui.Shape.Corner.Small)
                 .aspectRatio(16f / 9f)
                 .constrainAs(image) {
                     top.linkTo(parent.top)

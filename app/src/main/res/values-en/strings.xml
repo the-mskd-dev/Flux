@@ -25,6 +25,7 @@
     <string name="light">Light</string>
     <string name="system">System</string>
     <string name="validate">Validate</string>
+    <string name="cancel">Cancel</string>
     <string name="app_theme">Theme</string>
     <string name="button_backward">Player back button</string>
     <string name="button_forward">Player forward button</string>
@@ -39,9 +40,7 @@
     <string name="refresh">Refresh</string>
     <string name="how_to_name_files">How to name my files?</string>
     <string name="how_to_name_files_desc">Don’t worry, it’s super easy! To keep your videos well organized, here’s how to name your files:</string>
-    <string name="how_to_name_files_movies">For movies:</string>
     <string name="how_to_name_files_movies_desc">Give your movies a clear name, followed by the year if you want. For example:</string>
-    <string name="how_to_name_files_show">For TV shows:</string>
     <string name="how_to_name_files_show_desc">For TV show episodes, use a format that includes the season and episode number. For example:</string>
     <string name="show_file_example_1">show name_s01e02.mkv</string>
     <string name="show_file_example_2">show name_s01.e02.mkv</string>
@@ -61,7 +60,7 @@
     <string name="which_technologies">What technologies are used?</string>
     <string name="which_technologies_desc">This app is entirely developed in Kotlin with Jetpack Compose. I use Room for the database, Retrofit for network calls, and Hilt for dependency injection. I use also Firebase and GitHub. As for the UI/UX, I did my best. Not too shabby, right?</string>
     <string name="how_to_suggest">How to contact me or suggest improvements?</string>
-    <string name="how_to_suggest_desc">If it\'s positive feedback, the Play Store is the ideal place! Otherwise, I hope you won\'t have to, but you can contact me by email at the following address: kevyn.buchet@protonmail.com</string>
+    <string name="how_to_suggest_desc">If it\'s positive feedback, the Play Store is the ideal place! Otherwise, I hope you won\'t have to, but you can contact me by email at the following address: kevyn.buchet.pro@gmail.com</string>
     <string name="what_is_next">What\'s next?</string>
     <string name="what_is_next_desc">The goal is to keep improving the app, whether it\'s the UI, UX, or performance. I also plan to add new data sources, not just files on the device</string>
     <string name="make_a_donation">Make a donation</string>

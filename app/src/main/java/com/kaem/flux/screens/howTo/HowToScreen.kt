@@ -3,8 +3,10 @@ package com.kaem.flux.screens.howTo
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -31,13 +33,14 @@ fun HowToScreen(onBack: () -> Unit) {
 
         Column(
             modifier = Modifier
-                .padding(innerPadding)
                 .background(MaterialTheme.colorScheme.background)
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE),
             horizontalAlignment = Alignment.Start
         ) {
+
+            Spacer(modifier = Modifier.height(innerPadding.calculateTopPadding()))
 
             Column(
                 modifier = Modifier
@@ -51,16 +54,16 @@ fun HowToScreen(onBack: () -> Unit) {
 
                 Column(verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)) {
 
-                    Text.Headline.Medium(text = stringResource(R.string.how_to_name_files_movies))
+                    Text.Headline.Small(text = stringResource(R.string.movies))
                     Text.Body.Large(text = stringResource(R.string.how_to_name_files_movies_desc))
 
                     Column(
-                        modifier = Modifier.alpha(.6f),
+                        modifier = Modifier.alpha(.7f),
                         verticalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)
                     ) {
-                        Text.Body.Large(text = "• " + stringResource(R.string.movie_file_example_1))
-                        Text.Body.Large(text = "• " + stringResource(R.string.movie_file_example_2))
-                        Text.Body.Large(text = "• " + stringResource(R.string.movie_file_example_3))
+                        Text.Body.Medium(text = "• " + stringResource(R.string.movie_file_example_1))
+                        Text.Body.Medium(text = "• " + stringResource(R.string.movie_file_example_2))
+                        Text.Body.Medium(text = "• " + stringResource(R.string.movie_file_example_3))
 
                     }
 
@@ -68,24 +71,26 @@ fun HowToScreen(onBack: () -> Unit) {
 
                 Column(verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)) {
 
-                    Text.Headline.Medium(text = stringResource(R.string.how_to_name_files_show))
+                    Text.Headline.Small(text = stringResource(R.string.shows))
                     Text.Body.Large(text = stringResource(R.string.how_to_name_files_show_desc))
 
                     Column(
-                        modifier = Modifier.alpha(.6f),
+                        modifier = Modifier.alpha(.7f),
                         verticalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)
                     ) {
-                        Text.Body.Large(text = "• " + stringResource(R.string.show_file_example_1))
-                        Text.Body.Large(text = "• " + stringResource(R.string.show_file_example_2))
-                        Text.Body.Large(text = "• " + stringResource(R.string.show_file_example_3))
-                        Text.Body.Large(text = "• " + stringResource(R.string.show_file_example_4))
-                        Text.Body.Large(text = "• " + stringResource(R.string.show_file_example_5))
+                        Text.Body.Medium(text = "• " + stringResource(R.string.show_file_example_1))
+                        Text.Body.Medium(text = "• " + stringResource(R.string.show_file_example_2))
+                        Text.Body.Medium(text = "• " + stringResource(R.string.show_file_example_3))
+                        Text.Body.Medium(text = "• " + stringResource(R.string.show_file_example_4))
+                        Text.Body.Medium(text = "• " + stringResource(R.string.show_file_example_5))
                     }
 
                 }
 
 
             }
+
+            Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding()))
 
         }
 

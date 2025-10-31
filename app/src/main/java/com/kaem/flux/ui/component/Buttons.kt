@@ -45,13 +45,15 @@ fun FluxButton(
     onTap: () -> Unit
 ) {
 
+    val typography = MaterialTheme.typography.labelLarge
+
     Button(
         modifier = modifier.height(50.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = backgroundColor,
             contentColor = textColor,
         ),
-        shape = Ui.Shape.RoundedCorner,
+        shape = Ui.Shape.Corner.Medium,
         border = border,
         onClick = onTap
     ) {
@@ -81,7 +83,7 @@ fun FluxButton(
             ) { state ->
                 if (autoSize) {
 
-                    var fontSize by remember { mutableStateOf(Ui.FontSize.BUTTON) }
+                    var fontSize by remember { mutableStateOf(typography.fontSize) }
                     var readyToDraw by remember { mutableStateOf(false) }
 
                     Text(
@@ -91,7 +93,7 @@ fun FluxButton(
                         text = state,
                         fontSize = fontSize,
                         maxLines = 1,
-                        fontWeight = Ui.Weight.MEDIUM,
+                        fontWeight = typography.fontWeight,
                         softWrap = false,
                         onTextLayout = {
                             if (it.didOverflowWidth)

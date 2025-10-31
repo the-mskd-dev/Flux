@@ -21,7 +21,7 @@ fun MediaItem(
     Image(
         modifier = Modifier
             .clickable { onTap() }
-            .clip(Ui.Shape.RoundedCorner)
+            .clip(Ui.Shape.Corner.Small)
             .width(width)
             .aspectRatio(ratio),
         url = url,

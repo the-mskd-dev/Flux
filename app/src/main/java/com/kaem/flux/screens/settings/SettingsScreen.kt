@@ -10,12 +10,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
@@ -36,8 +34,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.kaem.flux.Navigation.Navigation
 import com.kaem.flux.R
-import com.kaem.flux.ui.component.FluxButton
-import com.kaem.flux.ui.component.FluxDialog
 import com.kaem.flux.ui.component.FluxScaffold
 import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.FluxTheme
@@ -76,41 +72,13 @@ fun SettingsScreen(
         sendIntent = viewModel::handleIntent
     )
 
-    SettingsDialog(
-        show = state.showBackwardDialog,
-        currentValue = state.backwardValue,
-        options = SettingsViewModel.playerSeconds,
-        onSelect = { viewModel.handleIntent(SettingsIntent.SetBackwardValue(it)) },
-        onDismiss = { viewModel.handleIntent(SettingsIntent.BackwardDialog(false)) }
-    )
-
-    SettingsDialog(
-        show = state.showForwardDialog,
-        currentValue = state.forwardValue,
-        options = SettingsViewModel.playerSeconds,
-        onSelect = { viewModel.handleIntent(SettingsIntent.SetForwardValue(it)) },
-        onDismiss = { viewModel.handleIntent(SettingsIntent.ForwardDialog(false)) }
-    )
-
-    SettingsDialog(
-        show = state.showUiThemeDialog,
-        currentValue = state.uiTheme,
-        options = mapOf(
-            //Ui.THEME.LIGHT to stringResource(Ui.THEME.LIGHT.stringResourceId),
-            Ui.THEME.DARK to stringResource(Ui.THEME.DARK.stringResourceId),
-            Ui.THEME.SYSTEM to stringResource(Ui.THEME.SYSTEM.stringResourceId),
-        ),
-        onSelect = { viewModel.handleIntent(SettingsIntent.SetThemeValue(it)) },
-        onDismiss = { viewModel.handleIntent(SettingsIntent.ThemeDialog(false)) }
-    )
-
-    SettingsDialog(
-        show = state.showSubtitlesLanguage,
-        currentValue = state.subtitlesLanguage,
-        options = SettingsViewModel.languages,
-        onSelect = { viewModel.handleIntent(SettingsIntent.SetSubtitlesValue(it)) },
-        onDismiss = { viewModel.handleIntent(SettingsIntent.SubtitlesDialog(false)) }
-    )
+    state.dialogState?.let {
+        SettingsDialog(
+            state = it,
+            sendIntent = viewModel::handleIntent,
+            onDismiss = { viewModel.handleIntent(SettingsIntent.HideDialog) }
+        )
+    }
 
 }
 
@@ -142,7 +110,7 @@ fun SettingsContent(
                 SettingsItem(
                     text = stringResource(R.string.app_theme),
                     value = stringResource(state.uiTheme.stringResourceId),
-                    onTap = { sendIntent(SettingsIntent.ThemeDialog(true)) }
+                    onTap = { sendIntent(SettingsIntent.ShowThemeDialog) }
                 )
 
                 SettingsDivider()
@@ -150,7 +118,7 @@ fun SettingsContent(
                 SettingsItem(
                     text = stringResource(R.string.button_backward),
                     value = "${state.backwardValue}sec",
-                    onTap = { sendIntent(SettingsIntent.BackwardDialog(true)) }
+                    onTap = { sendIntent(SettingsIntent.ShowBackwardDialog) }
                 )
 
                 SettingsDivider()
@@ -158,7 +126,7 @@ fun SettingsContent(
                 SettingsItem(
                     text = stringResource(R.string.button_forward),
                     value = "${state.forwardValue}sec",
-                    onTap = { sendIntent(SettingsIntent.ForwardDialog(true)) }
+                    onTap = { sendIntent(SettingsIntent.ShowForwardDialog) }
                 )
 
                 SettingsDivider()
@@ -166,7 +134,7 @@ fun SettingsContent(
                 SettingsItem(
                     text = stringResource(R.string.subtitles_language),
                     value = state.subtitlesLanguage.displayLanguage,
-                    onTap = { sendIntent(SettingsIntent.SubtitlesDialog(true)) }
+                    onTap = { sendIntent(SettingsIntent.ShowSubtitlesDialog) }
                 )
 
             }
@@ -277,22 +245,18 @@ fun SettingsDivider() {
 
 @Composable
 fun <T> SettingsDialog(
-    show: Boolean,
-    currentValue: T,
-    options: Map<T, String>,
-    onSelect: (T) -> Unit,
+    state: SettingsDialogState<T>,
+    sendIntent: (SettingsIntent) -> Unit,
     onDismiss: () -> Unit
 ) {
 
-    if (!show) return
-
-    var selectedValue by remember { mutableStateOf(currentValue) }
+    var selectedValue by remember { mutableStateOf(state.currentValue) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
         confirmButton = {
             TextButton(
-                onClick = { onSelect(selectedValue); onDismiss() },
+                onClick = { sendIntent(state.applyValue(selectedValue)); onDismiss() },
                 content = {
                     Text.Label.Large(text = stringResource(R.string.validate))
                 }
@@ -302,9 +266,12 @@ fun <T> SettingsDialog(
             TextButton(
                 onClick = onDismiss,
                 content = {
-                    Text.Label.Large(text = stringResource(android.R.string.cancel))
+                    Text.Label.Large(text = stringResource(R.string.cancel))
                 }
             )
+        },
+        title = {
+            Text.Headline.Small(text = stringResource(state.title))
         },
         text = {
 
@@ -315,7 +282,7 @@ fun <T> SettingsDialog(
                 verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
             ) {
 
-                options.forEach { option ->
+                state.options.forEach { option ->
 
                     Row(
                         modifier = Modifier
@@ -330,9 +297,10 @@ fun <T> SettingsDialog(
                             onClick = { selectedValue = option.key }
                         )
 
+                        val value = option.value.second?.let { stringResource(it) } ?: option.value.first
                         Text.Body.Large(
                             modifier = Modifier.weight(1f),
-                            text = option.value.uppercaseFirstLetter(),
+                            text = value.uppercaseFirstLetter(),
                             color = MaterialTheme.colorScheme.onSurface
                         )
 
@@ -364,11 +332,9 @@ fun SettingsScreen_Preview() {
 fun SettingsDialog_Preview() {
     FluxTheme {
         SettingsDialog(
-            show = true,
-            currentValue = SettingsViewModel.playerSeconds.keys.first(),
-            options = SettingsViewModel.playerSeconds,
-            onSelect = { },
-            onDismiss = { }
+            state = SettingsDialogState.forward(5),
+            sendIntent = {},
+            onDismiss = {}
         )
     }
 }

@@ -25,6 +25,7 @@
     <string name="light">Light</string>
     <string name="system">System</string>
     <string name="validate">Validate</string>
+    <string name="cancel">Cancel</string>
     <string name="app_theme">Theme</string>
     <string name="button_backward">Player back button</string>
     <string name="button_forward">Player forward button</string>

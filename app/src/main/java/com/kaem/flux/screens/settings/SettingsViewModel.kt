@@ -2,6 +2,7 @@ package com.kaem.flux.screens.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kaem.flux.R
 import com.kaem.flux.data.repository.DataStoreRepository
 import com.kaem.flux.ui.theme.Ui
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,17 +15,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.Locale
 import javax.inject.Inject
-
-data class SettingsUiState(
-    val backwardValue: Int = 10,
-    val showBackwardDialog: Boolean = false,
-    val forwardValue: Int = 10,
-    val showForwardDialog: Boolean = false,
-    val uiTheme: Ui.THEME = Ui.THEME.SYSTEM,
-    val showUiThemeDialog: Boolean = false,
-    val subtitlesLanguage: Locale = Locale.getDefault(),
-    val showSubtitlesLanguage: Boolean = false,
-)
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
@@ -66,14 +56,15 @@ class SettingsViewModel @Inject constructor(
 
     fun handleIntent(intent: SettingsIntent) = viewModelScope.launch {
         when (intent) {
-            is SettingsIntent.BackwardDialog -> showBackwardDialog(intent.show)
+            SettingsIntent.ShowBackwardDialog -> showBackwardDialog()
             is SettingsIntent.SetBackwardValue -> setBackwardValue(intent.value)
-            is SettingsIntent.ForwardDialog -> showForwardDialog(intent.show)
+            SettingsIntent.ShowForwardDialog -> showForwardDialog()
             is SettingsIntent.SetForwardValue -> setForwardValue(intent.value)
-            is SettingsIntent.SubtitlesDialog -> showSubtitlesLanguageDialog(intent.show)
+            SettingsIntent.ShowSubtitlesDialog -> showSubtitlesLanguageDialog()
             is SettingsIntent.SetSubtitlesValue -> setSubtitlesLanguage(intent.locale)
-            is SettingsIntent.ThemeDialog -> showUiThemeDialog(intent.show)
-            is SettingsIntent.SetThemeValue -> setUiTheme(intent.theme)
+            SettingsIntent.ShowThemeDialog -> showThemeDialog()
+            is SettingsIntent.SetThemeValue -> setTheme(intent.theme)
+            SettingsIntent.HideDialog -> hideDialog()
             SettingsIntent.OnBackTap -> _event.emit(SettingsEvent.BackToPreviousScreen)
             SettingsIntent.OnAboutTap -> _event.emit(SettingsEvent.NavigateToAboutScreen)
             SettingsIntent.OnHowToTap -> _event.emit(SettingsEvent.NavigateToHowToScreen)
@@ -82,11 +73,13 @@ class SettingsViewModel @Inject constructor(
 
     //endregion
 
-    //region Player settings
+    private fun hideDialog() {
+        _uiState.update { it.copy(dialogState = null) }
+    }
 
-    private fun showBackwardDialog(show: Boolean) {
+    private fun showBackwardDialog() {
         _uiState.update {
-            it.copy(showBackwardDialog = show)
+            it.copy(dialogState = SettingsDialogState.backward(it.backwardValue))
         }
     }
 
@@ -94,9 +87,9 @@ class SettingsViewModel @Inject constructor(
         dataStoreRepository.setPlayerBackwardValue(value)
     }
 
-    private fun showForwardDialog(show: Boolean) {
+    private fun showForwardDialog() {
         _uiState.update {
-            it.copy(showForwardDialog = show)
+            it.copy(dialogState = SettingsDialogState.forward(it.forwardValue))
         }
     }
 
@@ -104,56 +97,24 @@ class SettingsViewModel @Inject constructor(
         dataStoreRepository.setPlayerForwardValue(value)
     }
 
-    //endregion
-
-    //region UI Theme
-
-    private fun showUiThemeDialog(show: Boolean) {
+    private fun showThemeDialog() {
         _uiState.update {
-            it.copy(showUiThemeDialog = show)
+            it.copy(dialogState = SettingsDialogState.theme(it.uiTheme))
         }
     }
 
-    private suspend fun setUiTheme(theme: Ui.THEME) {
+    private suspend fun setTheme(theme: Ui.THEME) {
         dataStoreRepository.setUiTheme(theme)
     }
 
-    //endregion
-
-    //region Languages
-
-    private fun showSubtitlesLanguageDialog(show: Boolean) {
+    private fun showSubtitlesLanguageDialog() {
         _uiState.update {
-            it.copy(showSubtitlesLanguage = show)
+            it.copy(dialogState = SettingsDialogState.subtitles(it.subtitlesLanguage))
         }
     }
 
-    private suspend fun setSubtitlesLanguage(locale: Locale) {
-        dataStoreRepository.setSubtitlesLanguage(locale)
-    }
-
-    //endregion
-
-    companion object {
-
-        val playerSeconds = mapOf(
-            5 to "5sec",
-            10 to "10sec",
-            15 to "15sec",
-            20 to "20sec",
-            25 to "25sec",
-            30 to "30sec",
-        )
-
-        val languages = mapOf(
-            Locale.ENGLISH to Locale.ENGLISH.displayLanguage,
-            Locale.FRENCH to Locale.FRENCH.displayLanguage,
-            Locale.ITALIAN to Locale.ITALIAN.displayLanguage,
-            Locale.JAPANESE to Locale.JAPANESE.displayLanguage,
-            Locale.CHINESE to Locale.CHINESE.displayLanguage,
-            Locale.KOREAN to Locale.KOREAN.displayLanguage
-        )
-
+    private suspend fun setSubtitlesLanguage(value: Locale) {
+        dataStoreRepository.setSubtitlesLanguage(value)
     }
 
 }

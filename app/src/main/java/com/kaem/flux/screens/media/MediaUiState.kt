@@ -4,6 +4,8 @@ import com.kaem.flux.model.ScreenState
 import com.kaem.flux.model.media.Episode
 import com.kaem.flux.model.media.Media
 import com.kaem.flux.model.media.MediaOverview
+import java.util.Locale
+import kotlin.time.Duration.Companion.seconds
 
 data class MediaUiState(
     val overview: MediaOverview = MediaOverview(),
@@ -12,5 +14,8 @@ data class MediaUiState(
     val episodes: List<Episode> = emptyList(),
     val currentSeason: Int = -1,
     val showPlayer: Boolean = false,
-    val showStatusDialog: Boolean = false
+    val showStatusDialog: Boolean = false,
+    var backwardValue: Long = 10.seconds.inWholeMilliseconds,
+    var forwardValue: Long = 10.seconds.inWholeMilliseconds,
+    var subtitlesLanguage: Locale = Locale.getDefault()
 )

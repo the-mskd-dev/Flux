@@ -95,9 +95,9 @@ fun MediaScreen(
     AnimatedVisibility(uiState.showPlayer) {
         PlayerScreen(
             media = uiState.selectedMedia,
-            backward = viewModel.backwardValue,
-            forward = viewModel.forwardValue,
-            subtitlesLanguage = viewModel.subtitlesLanguage,
+            backward = uiState.backwardValue,
+            forward = uiState.forwardValue,
+            subtitlesLanguage = uiState.subtitlesLanguage,
             sendIntent = viewModel::handleIntent,
         )
     }

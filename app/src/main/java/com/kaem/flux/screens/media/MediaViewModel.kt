@@ -42,7 +42,17 @@ class MediaViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(MediaUiState())
     val uiState: StateFlow<MediaUiState> = _uiState.asStateFlow()
 
+    var backwardValue: Long = 10.seconds.inWholeMilliseconds
+    var forwardValue: Long = 10.seconds.inWholeMilliseconds
+    var subtitlesLanguage: Locale = Locale.getDefault()
+
     init {
+
+        val (backward, forward) = dataStoreRepository.getPlayerButtonsValues()
+        backwardValue = backward.seconds.inWholeMilliseconds
+        forwardValue = forward.seconds.inWholeMilliseconds
+        subtitlesLanguage = dataStoreRepository.getSubtitlesLanguage()
+
         getMedias(mediaId)
     }
 
@@ -64,20 +74,12 @@ class MediaViewModel @Inject constructor(
 
         val (overview, movie, episodes) = repository.getMedia(id)
 
-        val (backward, forward) = dataStoreRepository.getPlayerButtonsValues()
-        val backwardValue = backward.seconds.inWholeMilliseconds
-        val forwardValue = forward.seconds.inWholeMilliseconds
-        val subtitlesLanguage = dataStoreRepository.getSubtitlesLanguage()
-
         _uiState.value = when {
             overview == null -> MediaUiState(screen = ScreenState.ERROR)
             movie != null -> MediaUiState(
                 overview = overview,
                 screen = ScreenState.CONTENT,
-                selectedMedia = movie,
-                backwardValue = backwardValue,
-                forwardValue = forwardValue,
-                subtitlesLanguage = subtitlesLanguage
+                selectedMedia = movie
             )
 
             !episodes.isNullOrEmpty() -> {
@@ -92,9 +94,6 @@ class MediaViewModel @Inject constructor(
                     episodes = episodes,
                     currentSeason = currentEpisode.season,
                     selectedMedia = currentEpisode,
-                    backwardValue = backwardValue,
-                    forwardValue = forwardValue,
-                    subtitlesLanguage = subtitlesLanguage
                 )
             }
             else -> MediaUiState(screen = ScreenState.ERROR)

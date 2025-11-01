@@ -14,8 +14,5 @@ data class MediaUiState(
     val episodes: List<Episode> = emptyList(),
     val currentSeason: Int = -1,
     val showPlayer: Boolean = false,
-    val showStatusDialog: Boolean = false,
-    var backwardValue: Long = 10.seconds.inWholeMilliseconds,
-    var forwardValue: Long = 10.seconds.inWholeMilliseconds,
-    var subtitlesLanguage: Locale = Locale.getDefault()
+    val showStatusDialog: Boolean = false
 )

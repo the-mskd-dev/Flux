@@ -70,7 +70,8 @@ fun MediaDescription(media: Media?) {
                 .fillMaxWidth()
                 .alpha(.8f),
             text = media.description,
-            textAlign = TextAlign.Justify
+            textAlign = TextAlign.Justify,
+            color = MaterialTheme.colorScheme.onBackground
         )
 
         MediaDescriptionDetails(media)
@@ -91,16 +92,19 @@ fun MediaDescriptionDetails(media: Media) {
 
         Text.Label.Small(
             text = media.releaseDate?.let { stringResource(R.string.release_date, DateFormat.getDateInstance().format(it)) },
+            color = MaterialTheme.colorScheme.onBackground
         )
 
         Text.Label.Small(
             text = stringResource(R.string.duration, media.duration.minToMs.timeDescription()) ,
+            color = MaterialTheme.colorScheme.onBackground
         )
 
         if (media.voteAverage > 0f) {
             val rate = String.format(Locale.getDefault(),"%.2f", media.voteAverage)
             Text.Label.Small(
                 text = stringResource(R.string.rate, rate),
+                color = MaterialTheme.colorScheme.onBackground
             )
         }
 

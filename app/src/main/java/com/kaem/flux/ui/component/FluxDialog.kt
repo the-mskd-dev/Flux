@@ -31,14 +31,11 @@ import com.kaem.flux.utils.extensions.uppercaseFirstLetter
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FluxDialog(
-    show: Boolean,
     onDismiss: () -> Unit,
     onValidate: (() -> Unit)? = null,
     title: String? = null,
     content: @Composable () -> Unit
 ) {
-
-    if (!show) return
 
     AlertDialog(
         onDismissRequest = onDismiss,

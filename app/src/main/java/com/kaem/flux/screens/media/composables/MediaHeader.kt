@@ -48,6 +48,7 @@ import com.kaem.flux.ui.component.FluxTextButton
 import com.kaem.flux.ui.component.Image
 import com.kaem.flux.ui.component.ProgressBar
 import com.kaem.flux.ui.component.Text
+import com.kaem.flux.ui.theme.FluxTheme
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.Constants
 import com.kaem.flux.utils.extensions.minToMs
@@ -265,7 +266,8 @@ fun MediaTitle(
     Text.Title.Large(
         modifier = modifier,
         text = title,
-        textAlign = TextAlign.Start
+        textAlign = TextAlign.Start,
+        color = MaterialTheme.colorScheme.onBackground
     )
 
 }
@@ -311,10 +313,12 @@ val MediaHeaderConstraintSet = ConstraintSet {
 @Preview(showBackground = true)
 @Composable
 fun MediaHeader_Preview() {
-    MediaHeader(
-        overview = MediaMockups.showOverview,
-        media = MediaMockups.episode1.copy(status = Status.IS_WATCHING, currentTime = 123456L),
-        zoom = 1f,
-        sendIntent = {},
-    )
+    FluxTheme {
+        MediaHeader(
+            overview = MediaMockups.showOverview,
+            media = MediaMockups.episode1.copy(status = Status.IS_WATCHING, currentTime = 123456L),
+            zoom = 1f,
+            sendIntent = {},
+        )
+    }
 }

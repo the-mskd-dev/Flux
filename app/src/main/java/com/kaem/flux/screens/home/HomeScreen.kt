@@ -372,7 +372,8 @@ fun MediaCategory(
                 .fillMaxWidth()
                 .padding(start = Ui.Space.MEDIUM, top = Ui.Space.LARGE),
             text = name,
-            emphasized = true
+            emphasized = true,
+            color = MaterialTheme.colorScheme.onBackground
         )
 
         LazyRow(

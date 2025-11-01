@@ -252,7 +252,6 @@ fun <T> SettingsDialog(
     var selectedValue by remember { mutableStateOf(state.currentValue) }
 
     FluxDialog(
-        show = true,
         onDismiss = onDismiss,
         onValidate = { sendIntent(state.applyValue(selectedValue)) },
         title = stringResource(state.title),

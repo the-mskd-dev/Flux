@@ -106,11 +106,12 @@ fun MediaScreen(
         )
     }
 
-    MediaStatusDialog(
-        showStatusDialog = uiState.showStatusDialog,
-        onDismiss = { viewModel.handleIntent(MediaIntent.ChangeWatchStatus(false)) },
-        onValidate = { viewModel.handleIntent(MediaIntent.ChangeWatchStatusForEpisodeAndPrevious) }
-    )
+    if (uiState.showStatusDialog) {
+        MediaStatusDialog(
+            onDismiss = { viewModel.handleIntent(MediaIntent.ChangeWatchStatus(false)) },
+            onValidate = { viewModel.handleIntent(MediaIntent.ChangeWatchStatusForEpisodeAndPrevious) }
+        )
+    }
 
 }
 
@@ -236,13 +237,11 @@ fun MediaContent(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MediaStatusDialog(
-    showStatusDialog: Boolean,
     onDismiss: () -> Unit,
     onValidate: () -> Unit
 ) {
 
     FluxDialog(
-        show = showStatusDialog,
         content = {
             Text.Body.Large(text = stringResource(R.string.mark_previous_episodes_as_watched))
         },
@@ -257,7 +256,6 @@ fun MediaStatusDialog(
 fun MediaStatusDialog_Preview() {
     FluxTheme {
         MediaStatusDialog(
-            showStatusDialog = true,
             onDismiss = {},
             onValidate = {}
         )

@@ -161,7 +161,8 @@ fun EpisodeItem(
                 text = episode.title,
                 textAlign = TextAlign.Start,
                 maxLines = 2,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
+                color = MaterialTheme.colorScheme.onBackground
             )
         }
 

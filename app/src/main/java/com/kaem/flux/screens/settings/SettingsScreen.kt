@@ -13,11 +13,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -32,8 +30,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import com.kaem.flux.navigation.Navigation
 import com.kaem.flux.R
+import com.kaem.flux.navigation.Navigation
+import com.kaem.flux.ui.component.FluxDialog
 import com.kaem.flux.ui.component.FluxScaffold
 import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.FluxTheme
@@ -252,28 +251,12 @@ fun <T> SettingsDialog(
 
     var selectedValue by remember { mutableStateOf(state.currentValue) }
 
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        confirmButton = {
-            TextButton(
-                onClick = { sendIntent(state.applyValue(selectedValue)); onDismiss() },
-                content = {
-                    Text.Label.Large(text = stringResource(R.string.validate))
-                }
-            )
-        },
-        dismissButton = {
-            TextButton(
-                onClick = onDismiss,
-                content = {
-                    Text.Label.Large(text = stringResource(R.string.cancel))
-                }
-            )
-        },
-        title = {
-            Text.Headline.Small(text = stringResource(state.title))
-        },
-        text = {
+    FluxDialog(
+        show = true,
+        onDismiss = onDismiss,
+        onValidate = { sendIntent(state.applyValue(selectedValue)) },
+        title = stringResource(state.title),
+        content = {
 
             Column(
                 modifier = Modifier

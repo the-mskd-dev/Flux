@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -28,6 +29,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.kaem.flux.R
@@ -43,6 +45,8 @@ import com.kaem.flux.screens.player.PlayerScreen
 import com.kaem.flux.ui.component.ErrorScreen
 import com.kaem.flux.ui.component.FluxDialog
 import com.kaem.flux.ui.component.LoadingScreen
+import com.kaem.flux.ui.component.Text
+import com.kaem.flux.ui.theme.FluxTheme
 import com.kaem.flux.ui.theme.Ui
 import kotlinx.coroutines.launch
 
@@ -239,11 +243,23 @@ fun MediaStatusDialog(
 
     FluxDialog(
         show = showStatusDialog,
-        text = stringResource(R.string.mark_previous_episodes_as_watched),
-        cancelText = stringResource(R.string.no),
-        validateText = stringResource(R.string.yes),
-        onDismissRequest = onDismiss,
+        content = {
+            Text.Body.Large(text = stringResource(R.string.mark_previous_episodes_as_watched))
+        },
+        onDismiss = onDismiss,
         onValidate = onValidate
     )
 
+}
+
+@Preview
+@Composable
+fun MediaStatusDialog_Preview() {
+    FluxTheme {
+        MediaStatusDialog(
+            showStatusDialog = true,
+            onDismiss = {},
+            onValidate = {}
+        )
+    }
 }

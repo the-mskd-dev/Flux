@@ -19,6 +19,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -33,6 +34,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.kaem.flux.R
+import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.ScreenState
 import com.kaem.flux.model.media.Episode
 import com.kaem.flux.model.media.Media
@@ -251,7 +253,81 @@ fun MediaStatusDialog(
 
 }
 
+@Composable
+fun MediaResumePan(
+    overview: MediaOverview,
+    media: Media?,
+    sendIntent: (MediaIntent) -> Unit,
+) {
+
+    Column(
+        modifier = Modifier.padding(bottom = Ui.Space.MEDIUM),
+        verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE)
+    ) {
+
+        MediaHeader(
+            overview = overview,
+            media = media,
+            zoom = 1f,
+            sendIntent = sendIntent
+        )
+
+        MediaDescription(media = media)
+
+        if (media is Episode) {
+            TextButton(
+                onClick = {}
+            ) {
+                Text.Label.Large(text = "Sélectionner épisode")
+            }
+        }
+
+    }
+
+}
+
 @Preview
+@Composable
+fun MediaResumePan_Preview() {
+    FluxTheme {
+        MediaResumePan(
+            overview = MediaMockups.showOverview,
+            media = MediaMockups.episode1,
+            sendIntent = {}
+        )
+    }
+}
+
+
+
+@Composable
+fun MediaContentMovie_Preview() {
+    FluxTheme {
+        MediaContent(
+            overview = MediaMockups.movieOverview,
+            media = MediaMockups.movie,
+            episodes = emptyList(),
+            currentSeason = -1,
+            sendIntent = {}
+        )
+    }
+}
+
+
+@Composable
+fun MediaContentShow_Preview() {
+    FluxTheme {
+        MediaContent(
+            overview = MediaMockups.showOverview,
+            media = MediaMockups.episode1,
+            episodes = MediaMockups.episodes,
+            currentSeason = 1,
+            sendIntent = {}
+        )
+    }
+}
+
+
 @Composable
 fun MediaStatusDialog_Preview() {
     FluxTheme {

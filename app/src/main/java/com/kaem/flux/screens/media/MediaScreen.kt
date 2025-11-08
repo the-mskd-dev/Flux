@@ -6,7 +6,9 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -44,9 +46,9 @@ import com.kaem.flux.model.ScreenState
 import com.kaem.flux.model.media.Episode
 import com.kaem.flux.model.media.Media
 import com.kaem.flux.model.media.MediaOverview
-import com.kaem.flux.screens.media.composables.EpisodeItem
 import com.kaem.flux.screens.media.composables.MediaDescription
 import com.kaem.flux.screens.media.composables.MediaEpisodesPan
+import com.kaem.flux.screens.media.composables.MediaEpisodesSheet
 import com.kaem.flux.screens.media.composables.MediaHeader
 import com.kaem.flux.screens.media.composables.MediaResumePan
 import com.kaem.flux.screens.media.composables.MediaSeasonsTabs
@@ -146,13 +148,46 @@ fun MediaContent(
         ModalBottomSheet(
             onDismissRequest = { sendIntent(MediaIntent.CloseEpisodesSheet) },
             content = {
-                MediaEpisodesPan(
-                    episodes = episodes,
+                MediaEpisodesSheet(
+                    episodes = episodes + episodes + episodes + episodes + episodes + episodes + episodes + episodes,
                     currentSeason = currentSeason,
                     sendIntent = sendIntent
                 )
             }
         )
+    }
+
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MediaContentLarge(
+    overview: MediaOverview,
+    media: Media?,
+    episodes: List<Episode>,
+    currentSeason: Int,
+    showEpisodes: Boolean,
+    sendIntent: (MediaIntent) -> Unit,
+) {
+
+    Row {
+        Box(Modifier.weight(weight = 1f)) {
+            MediaResumePan(
+                overview = overview,
+                media = media,
+                sendIntent = sendIntent
+            )
+        }
+
+        if (showEpisodes) {
+            Box(Modifier.weight(weight = 1f)) {
+                MediaEpisodesPan(
+                    episodes = episodes + episodes + episodes + episodes + episodes + episodes + episodes + episodes,
+                    currentSeason = currentSeason,
+                    sendIntent = sendIntent
+                )
+            }
+        }
     }
 
 }

@@ -33,6 +33,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -54,11 +57,16 @@ import com.kaem.flux.utils.Constants
 import com.kaem.flux.utils.extensions.grayScale
 
 @Composable
-fun MediaEpisodesPan(
+fun MediaEpisodesSheet(
     episodes: List<Episode>,
     currentSeason: Int,
     sendIntent: (MediaIntent) -> Unit,
 ) {
+
+    var screenWidth = 0.dp
+    with(LocalDensity.current) {
+        screenWidth = LocalWindowInfo.current.containerSize.width.toDp()
+    }
 
     Column(
         modifier = Modifier
@@ -71,7 +79,10 @@ fun MediaEpisodesPan(
             onSeasonTap = { sendIntent(MediaIntent.SelectSeason(it)) }
         )
 
-        LazyColumn {
+        LazyRow(
+            contentPadding = PaddingValues(all = Ui.Space.MEDIUM),
+            horizontalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
+        ) {
 
             items(
                 items = episodes
@@ -81,12 +92,11 @@ fun MediaEpisodesPan(
             ) { episode ->
 
                 Column(modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = Ui.Space.MEDIUM)
+                    .width(screenWidth.times(.8f))
                     .animateItem()
                 ) {
 
-                    EpisodeItemVertical(
+                    EpisodeItemHorizontal(
                         modifier = Modifier.animateItem(),
                         episode = episode,
                         onTap = { sendIntent(MediaIntent.SelectEpisode(episode)) }
@@ -103,7 +113,51 @@ fun MediaEpisodesPan(
 }
 
 @Composable
-fun EpisodeItemVertical(
+fun MediaSeasonsTabs(
+    selectedSeason: Int,
+    seasons: List<Int>,
+    onSeasonTap: (Int) -> Unit
+) {
+
+    LazyRow(
+        modifier = Modifier
+            .clip(RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp))
+            .fillMaxWidth(),
+        contentPadding = PaddingValues(horizontal = Ui.Space.MEDIUM),
+        horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)
+    ) {
+
+        items(items = seasons.sorted(), key = { it }) { season ->
+
+            val isSelected = selectedSeason == season
+
+            FilterChip(
+                onClick = { onSeasonTap(season) },
+                label = {
+                    Text.Label.Medium(
+                        text = stringResource(id = R.string.season, season).uppercase(),
+                    )
+                },
+                selected = isSelected,
+                leadingIcon = if (isSelected) {
+                    {
+                        Icon(
+                            imageVector = Icons.Filled.Done,
+                            contentDescription = "Selected icon",
+                            modifier = Modifier.size(FilterChipDefaults.IconSize)
+                        )
+                    }
+                } else { null },
+            )
+
+        }
+
+    }
+
+}
+
+@Composable
+fun EpisodeItemHorizontal(
     modifier: Modifier = Modifier,
     episode: Episode,
     onTap: () -> Unit
@@ -116,27 +170,19 @@ fun EpisodeItemVertical(
     else
         modifier
 
-    ConstraintLayout(
+    Column(
         modifier = episodeModifier
             .clickable { onTap() }
-            .animateContentSize()
             .fillMaxWidth()
-            .padding(vertical = Ui.Space.MEDIUM)
+            .padding(vertical = Ui.Space.MEDIUM),
+        verticalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)
     ) {
-
-        val (image, content) = createRefs()
-        val startGuideline = createGuidelineFromStart(.3f)
 
         Box(
             modifier = Modifier
                 .clip(Ui.Shape.Corner.Small)
-                .aspectRatio(16f / 9f)
-                .constrainAs(image) {
-                    top.linkTo(parent.top)
-                    start.linkTo(parent.start)
-                    end.linkTo(startGuideline)
-                    width = Dimension.fillToConstraints
-                },
+                .width(200.dp)
+                .aspectRatio(16f / 9f),
             contentAlignment = Alignment.BottomCenter,
             content = {
 
@@ -156,33 +202,29 @@ fun EpisodeItemVertical(
             }
         )
 
-        Column(
-            modifier = Modifier
-                .constrainAs(content) {
-                    top.linkTo(image.top)
-                    start.linkTo(startGuideline, Ui.Space.MEDIUM)
-                    end.linkTo(parent.end)
-                    width = Dimension.fillToConstraints
-                },
-            horizontalAlignment = Alignment.Start
-        ) {
+        Text.Label.Small(
+            modifier = Modifier.fillMaxWidth(),
+            text = stringResource(R.string.episode, episode.number).uppercase(),
+            textAlign = TextAlign.Start,
+            color = MaterialTheme.colorScheme.primary
+        )
 
-            Text.Label.Medium(
-                modifier = Modifier.fillMaxWidth(),
-                text = stringResource(R.string.episode, episode.number).uppercase(),
-                textAlign = TextAlign.Start,
-                color = MaterialTheme.colorScheme.primary
-            )
+        Text.Body.Large(
+            modifier = Modifier.fillMaxWidth(),
+            text = episode.title,
+            textAlign = TextAlign.Start,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
+            emphasized = true
+        )
 
-            Text.Body.Large(
-                modifier = Modifier.fillMaxWidth(),
-                text = episode.title,
-                textAlign = TextAlign.Start,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-        }
+        Text.Body.Medium(
+            modifier = Modifier.fillMaxWidth(),
+            text = episode.description,
+            textAlign = TextAlign.Start,
+            maxLines = 4,
+            overflow = TextOverflow.Ellipsis,
+        )
 
     }
 
@@ -190,9 +232,9 @@ fun EpisodeItemVertical(
 
 @Preview
 @Composable
-fun MediaEpisodesPan_Preview() {
+fun MediaEpisodesSheet_Preview() {
     FluxTheme {
-        MediaEpisodesPan(
+        MediaEpisodesSheet(
             episodes = MediaMockups.episodes,
             currentSeason = 1,
             sendIntent = {}
@@ -200,11 +242,12 @@ fun MediaEpisodesPan_Preview() {
     }
 }
 
+
 @Preview(showBackground = true)
 @Composable
-fun EpisodeItemVertical_Preview() {
+fun EpisodeItemHorizontal_Preview() {
     FluxTheme {
-        EpisodeItemVertical(
+        EpisodeItemHorizontal(
             episode = MediaMockups.episode1,
             onTap = {}
         )

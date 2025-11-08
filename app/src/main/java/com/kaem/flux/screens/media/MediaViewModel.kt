@@ -59,6 +59,8 @@ class MediaViewModel @Inject constructor(
     fun handleIntent(intent: MediaIntent) = viewModelScope.launch {
         when (intent) {
             MediaIntent.OnBackTap -> _event.emit(MediaEvent.BackToPreviousScreen)
+            MediaIntent.OpenEpisodesSheet -> openEpisodesSheet(show = true)
+            MediaIntent.CloseEpisodesSheet -> openEpisodesSheet(show = false)
             is MediaIntent.SelectEpisode -> selectMedia(intent.episode)
             is MediaIntent.SelectSeason -> selectSeason(intent.season)
             is MediaIntent.SaveWatchTime -> saveWatchTime(intent.time)
@@ -117,6 +119,12 @@ class MediaViewModel @Inject constructor(
     private fun showPlayer(show: Boolean) {
         _uiState.update { currentState ->
             currentState.copy(showPlayer = show)
+        }
+    }
+
+    private fun openEpisodesSheet(show: Boolean) {
+        _uiState.update { currentState ->
+            currentState.copy(showEpisodesSheet = show)
         }
     }
 

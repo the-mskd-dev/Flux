@@ -14,5 +14,6 @@ data class MediaUiState(
     val episodes: List<Episode> = emptyList(),
     val currentSeason: Int = -1,
     val showPlayer: Boolean = false,
-    val showStatusDialog: Boolean = false
+    val showStatusDialog: Boolean = false,
+    val showEpisodesSheet: Boolean = false
 )

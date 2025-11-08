@@ -19,6 +19,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -42,6 +43,7 @@ import com.kaem.flux.model.media.Media
 import com.kaem.flux.model.media.MediaOverview
 import com.kaem.flux.screens.media.composables.EpisodeItem
 import com.kaem.flux.screens.media.composables.MediaDescription
+import com.kaem.flux.screens.media.composables.MediaEpisodesPan
 import com.kaem.flux.screens.media.composables.MediaHeader
 import com.kaem.flux.screens.media.composables.MediaResumePan
 import com.kaem.flux.screens.media.composables.MediaSeasonsTabs
@@ -91,6 +93,7 @@ fun MediaScreen(
                     media = uiState.selectedMedia,
                     episodes = uiState.episodes,
                     currentSeason = uiState.currentSeason,
+                    showEpisodes = uiState.showEpisodesSheet,
                     sendIntent = viewModel::handleIntent,
                 )
 
@@ -119,12 +122,14 @@ fun MediaScreen(
 
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MediaContent(
     overview: MediaOverview,
     media: Media?,
     episodes: List<Episode>,
     currentSeason: Int,
+    showEpisodes: Boolean,
     sendIntent: (MediaIntent) -> Unit,
 ) {
 
@@ -133,6 +138,20 @@ fun MediaContent(
         media = media,
         sendIntent = sendIntent
     )
+
+
+    if (showEpisodes) {
+        ModalBottomSheet(
+            onDismissRequest = { sendIntent(MediaIntent.ClosePlayer) },
+            content = {
+                MediaEpisodesPan(
+                    episodes = episodes,
+                    currentSeason = currentSeason,
+                    sendIntent = sendIntent
+                )
+            }
+        )
+    }
 
 }
 
@@ -163,6 +182,7 @@ fun MediaContentMovie_Preview() {
             media = MediaMockups.movie,
             episodes = emptyList(),
             currentSeason = -1,
+            showEpisodes = false,
             sendIntent = {}
         )
     }
@@ -177,6 +197,7 @@ fun MediaContentShow_Preview() {
             media = MediaMockups.episode1,
             episodes = MediaMockups.episodes,
             currentSeason = 1,
+            showEpisodes = false,
             sendIntent = {}
         )
     }

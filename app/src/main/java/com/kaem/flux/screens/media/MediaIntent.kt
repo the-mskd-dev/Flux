@@ -4,6 +4,8 @@ import com.kaem.flux.model.media.Episode
 
 sealed class MediaIntent {
     object OnBackTap: MediaIntent()
+    object OpenEpisodesSheet: MediaIntent()
+    object CloseEpisodesSheet: MediaIntent()
     data class ChangeWatchStatus(val checkPrevious: Boolean): MediaIntent()
     object ChangeWatchStatusForEpisodeAndPrevious: MediaIntent()
     data class SelectSeason(val season: Int): MediaIntent()

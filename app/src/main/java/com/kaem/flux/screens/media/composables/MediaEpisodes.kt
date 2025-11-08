@@ -43,48 +43,6 @@ import com.kaem.flux.utils.Constants
 import com.kaem.flux.utils.extensions.grayScale
 
 @Composable
-fun MediaSeasonsTabs(
-    selectedSeason: Int,
-    seasons: List<Int>,
-    onSeasonTap: (Int) -> Unit
-) {
-
-    LazyRow(
-        modifier = Modifier
-            .clip(RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp))
-            .background(MaterialTheme.colorScheme.surfaceContainer)
-            .padding(top = Ui.Space.MEDIUM)
-            .fillMaxWidth(),
-        contentPadding = PaddingValues(horizontal = Ui.Space.MEDIUM),
-        horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)
-    ) {
-
-        items(items = seasons.sorted(), key = { it }) { season ->
-
-            val isSelected = selectedSeason == season
-            val backgroundColor by animateColorAsState(if (isSelected) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.surfaceContainer, label = "seasonTabBackgroundColor")
-            val textColor by animateColorAsState(if (isSelected) MaterialTheme.colorScheme.onSecondaryContainer else MaterialTheme.colorScheme.primary, label = "seasonTabTextColor")
-
-            Button(
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = backgroundColor
-                ),
-                shape = Ui.Shape.Corner.Small,
-                onClick = { onSeasonTap(season) }
-            ) {
-                Text.Label.Medium(
-                    text = stringResource(id = R.string.season, season).uppercase(),
-                    color = textColor
-                )
-            }
-
-        }
-
-    }
-
-}
-
-@Composable
 fun EpisodeItem(
     modifier: Modifier = Modifier,
     episode: Episode,

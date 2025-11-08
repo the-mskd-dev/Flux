@@ -27,6 +27,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
@@ -42,6 +43,7 @@ import com.kaem.flux.model.media.MediaOverview
 import com.kaem.flux.screens.media.composables.EpisodeItem
 import com.kaem.flux.screens.media.composables.MediaDescription
 import com.kaem.flux.screens.media.composables.MediaHeader
+import com.kaem.flux.screens.media.composables.MediaResumePan
 import com.kaem.flux.screens.media.composables.MediaSeasonsTabs
 import com.kaem.flux.screens.player.PlayerScreen
 import com.kaem.flux.ui.component.ErrorScreen
@@ -126,113 +128,11 @@ fun MediaContent(
     sendIntent: (MediaIntent) -> Unit,
 ) {
 
-    val scrollState = rememberLazyListState()
-    val scope = rememberCoroutineScope()
-
-    val maxZoom = 1.05f
-    val scrollRange = 500
-
-    val firstItemOffset by remember { derivedStateOf { scrollState.firstVisibleItemScrollOffset } }
-    val zoom by animateFloatAsState(
-        if (firstItemOffset < scrollRange) {
-            1f + (maxZoom - 1f) * (firstItemOffset.toFloat() / scrollRange)
-        } else {
-            maxZoom
-        },
-        label = "zoomEffect"
+    MediaResumePan(
+        overview = overview,
+        media = media,
+        sendIntent = sendIntent
     )
-
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
-        state = scrollState
-    ) {
-
-        item {
-
-            Column(
-                modifier = Modifier.padding(bottom = Ui.Space.MEDIUM),
-                verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE)
-            ) {
-
-                MediaHeader(
-                    overview = overview,
-                    media = media,
-                    zoom = zoom,
-                    sendIntent = sendIntent
-                )
-
-                MediaDescription(media = media)
-
-            }
-
-        }
-
-        if (episodes.isNotEmpty()) {
-
-            item {
-
-                MediaSeasonsTabs(
-                    selectedSeason = currentSeason,
-                    seasons = episodes.map { it.season }.distinct(),
-                    onSeasonTap = { sendIntent(MediaIntent.SelectSeason(it)) }
-                )
-
-            }
-
-            itemsIndexed(
-                items = episodes
-                    .filter { it.season == currentSeason }
-                    .sortedBy { it.number },
-                key = { _, e -> e.id }
-            ) { i, episode ->
-
-                Column(modifier = Modifier
-                    .background(MaterialTheme.colorScheme.surfaceContainer)
-                    .fillMaxSize()
-                    .padding(horizontal = Ui.Space.MEDIUM)
-                    .animateItem()
-                ) {
-
-                    if (i != 0) {
-                        HorizontalDivider(
-                            modifier = Modifier
-                                .alpha(.2f)
-                                .fillMaxWidth(),
-                            color = MaterialTheme.colorScheme.onBackground
-                        )
-                    }
-
-                    EpisodeItem(
-                        modifier = Modifier.animateItem(),
-                        episode = episode,
-                        onTap = {
-                            scope.launch {
-                                sendIntent(MediaIntent.SelectEpisode(episode))
-                                scrollState.animateScrollToItem(0)
-                            }
-                        }
-                    )
-
-                }
-
-            }
-
-        }
-
-        item {
-
-            Spacer(
-                Modifier
-                    .background(if (episodes.isEmpty()) MaterialTheme.colorScheme.background else MaterialTheme.colorScheme.surfaceContainer)
-                    .navigationBarsPadding()
-                    .fillMaxWidth()
-                    .height(100.dp)
-            )
-
-        }
-    }
 
 }
 
@@ -253,53 +153,8 @@ fun MediaStatusDialog(
 
 }
 
-@Composable
-fun MediaResumePan(
-    overview: MediaOverview,
-    media: Media?,
-    sendIntent: (MediaIntent) -> Unit,
-) {
-
-    Column(
-        modifier = Modifier.padding(bottom = Ui.Space.MEDIUM),
-        verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE)
-    ) {
-
-        MediaHeader(
-            overview = overview,
-            media = media,
-            zoom = 1f,
-            sendIntent = sendIntent
-        )
-
-        MediaDescription(media = media)
-
-        if (media is Episode) {
-            TextButton(
-                onClick = {}
-            ) {
-                Text.Label.Large(text = "Sélectionner épisode")
-            }
-        }
-
-    }
-
-}
 
 @Preview
-@Composable
-fun MediaResumePan_Preview() {
-    FluxTheme {
-        MediaResumePan(
-            overview = MediaMockups.showOverview,
-            media = MediaMockups.episode1,
-            sendIntent = {}
-        )
-    }
-}
-
-
-
 @Composable
 fun MediaContentMovie_Preview() {
     FluxTheme {
@@ -313,7 +168,7 @@ fun MediaContentMovie_Preview() {
     }
 }
 
-
+@Preview
 @Composable
 fun MediaContentShow_Preview() {
     FluxTheme {
@@ -327,7 +182,7 @@ fun MediaContentShow_Preview() {
     }
 }
 
-
+@Preview
 @Composable
 fun MediaStatusDialog_Preview() {
     FluxTheme {

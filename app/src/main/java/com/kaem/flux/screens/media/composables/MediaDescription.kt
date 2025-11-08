@@ -19,11 +19,14 @@ import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.media.Episode
 import com.kaem.flux.model.media.Media
 import com.kaem.flux.ui.component.Text
+import com.kaem.flux.ui.theme.FluxTheme
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.extensions.minToMs
 import com.kaem.flux.utils.extensions.timeDescription
 import java.text.DateFormat
 import java.util.Locale
+
+
 
 @Composable
 fun MediaDescription(media: Media?) {
@@ -37,30 +40,21 @@ fun MediaDescription(media: Media?) {
         verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
     ) {
 
-        if (media is Episode) {
+        Column(modifier = Modifier.fillMaxWidth()) {
 
-            Column(modifier = Modifier.fillMaxWidth()) {
-
-                Text.Title.Small(
+            if (media is Episode) {
+                Text.Label.Medium(
                     modifier = Modifier.fillMaxWidth(),
                     text = stringResource(id = R.string.season_and_episode, media.season, media.number).uppercase(),
                     color = MaterialTheme.colorScheme.primary
                 )
-
-                Text.Title.Large(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = media.title,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-
             }
-
-        } else {
 
             Text.Title.Large(
                 modifier = Modifier.fillMaxWidth(),
-                text = stringResource(R.string.summary),
+                text = if (media is Episode) media.title else stringResource(R.string.summary),
                 color = MaterialTheme.colorScheme.onBackground,
+                emphasized = true
             )
 
         }
@@ -90,19 +84,19 @@ fun MediaDescriptionDetails(media: Media) {
         horizontalAlignment = Alignment.Start
     ) {
 
-        Text.Label.Small(
+        Text.Body.Small(
             text = media.releaseDate?.let { stringResource(R.string.release_date, DateFormat.getDateInstance().format(it)) },
             color = MaterialTheme.colorScheme.onBackground
         )
 
-        Text.Label.Small(
+        Text.Body.Small(
             text = stringResource(R.string.duration, media.duration.minToMs.timeDescription()) ,
             color = MaterialTheme.colorScheme.onBackground
         )
 
         if (media.voteAverage > 0f) {
             val rate = String.format(Locale.getDefault(),"%.2f", media.voteAverage)
-            Text.Label.Small(
+            Text.Body.Small(
                 text = stringResource(R.string.rate, rate),
                 color = MaterialTheme.colorScheme.onBackground
             )
@@ -114,7 +108,7 @@ fun MediaDescriptionDetails(media: Media) {
 @Preview
 @Composable
 fun MediaDescription_Movie_Preview() {
-    Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
+    FluxTheme {
         MediaDescription(media = MediaMockups.movie)
     }
 
@@ -123,7 +117,7 @@ fun MediaDescription_Movie_Preview() {
 @Preview
 @Composable
 fun MediaDescription_Show_Preview() {
-    Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
+    FluxTheme {
         MediaDescription(media = MediaMockups.episode1)
     }
 }

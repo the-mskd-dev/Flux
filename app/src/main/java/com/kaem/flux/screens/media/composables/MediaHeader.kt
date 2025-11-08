@@ -58,7 +58,6 @@ import com.kaem.flux.utils.extensions.timeDescription
 fun MediaHeader(
     overview: MediaOverview,
     media: Media?,
-    zoom: Float,
     sendIntent: (MediaIntent) -> Unit,
 ) {
 
@@ -76,7 +75,6 @@ fun MediaHeader(
             modifier = Modifier
                 .aspectRatio(6f / 5f)
                 .layoutId("image"),
-            zoom = zoom,
             imagePath = imagePath,
             title = overview.title
         )
@@ -110,7 +108,6 @@ fun MediaHeader(
 @Composable
 fun MediaImage(
     modifier: Modifier,
-    zoom: Float,
     imagePath: String,
     title: String
 ) {
@@ -123,14 +120,7 @@ fun MediaImage(
     ) {
 
         Image(
-            modifier = Modifier
-                .fillMaxSize()
-                .graphicsLayer {
-                    scaleX = zoom
-                    scaleY = zoom
-                    translationX = (size.width * (1 - zoom)) / 2
-                    translationY = (size.height * (1 - zoom)) / 2
-                },
+            modifier = Modifier.fillMaxSize(),
             url = Constants.TMDB.IMAGE + imagePath,
             contentDescription = title
         )
@@ -317,7 +307,6 @@ fun MediaHeader_Preview() {
         MediaHeader(
             overview = MediaMockups.showOverview,
             media = MediaMockups.episode1.copy(status = Status.IS_WATCHING, currentTime = 123456L),
-            zoom = 1f,
             sendIntent = {},
         )
     }

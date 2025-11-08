@@ -68,4 +68,5 @@
     <string name="what_is_next">Et la suite ?</string>
     <string name="what_is_next_desc">L\'objectif est d\'améliorer toujours plus l\'application. Que ce soit au niveau de l\'UI, de l\'UX ou des performances. Mais également je prévois d\'ajouter de nouvelles sources de données et non seulement les fichiers sur l\'appareil.</string>
     <string name="make_a_donation">Faire un don</string>
+    <string name="episode_list">Liste des épisodes</string>
 </resources>

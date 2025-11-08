@@ -45,10 +45,9 @@ fun MediaResumePan(
 
         if (media is Episode) {
             TextButton(
-                onClick = { sendIntent(MediaIntent.OpenEpisodesSheet) }
-            ) {
-                Text.Label.Large(text = stringResource(R.string.episode_list))
-            }
+                onClick = { sendIntent(MediaIntent.OpenEpisodesSheet) },
+                content = { Text.Label.Large(text = stringResource(R.string.episode_list)) }
+            )
         }
 
     }

@@ -1,5 +1,6 @@
 package com.kaem.flux.screens.media
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.animateFloatAsState
@@ -139,10 +140,9 @@ fun MediaContent(
         sendIntent = sendIntent
     )
 
-
     if (showEpisodes) {
         ModalBottomSheet(
-            onDismissRequest = { sendIntent(MediaIntent.ClosePlayer) },
+            onDismissRequest = { sendIntent(MediaIntent.CloseEpisodesSheet) },
             content = {
                 MediaEpisodesPan(
                     episodes = episodes,

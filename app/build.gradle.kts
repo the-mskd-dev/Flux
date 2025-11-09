@@ -65,17 +65,19 @@ dependencies {
     implementation("androidx.activity:activity-compose:1.11.0")
 
     // Compose
-    implementation(platform("androidx.compose:compose-bom:2025.10.01"))
+    implementation(platform("androidx.compose:compose-bom:2025.11.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.ui:ui-text:1.10.0-beta01")
-    implementation("androidx.compose.material3:material3:1.5.0-alpha07")
+    implementation("androidx.compose.ui:ui-text:1.10.0-beta02")
+    implementation("androidx.compose.material3:material3:1.5.0-alpha08")
     implementation("androidx.compose.material:material-icons-core")
     implementation("androidx.compose.runtime:runtime-livedata")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.4")
-    implementation("androidx.navigation:navigation-compose:2.9.5")
+    implementation("androidx.navigation:navigation-compose:2.9.6")
+    implementation("androidx.compose.material3.adaptive:adaptive")
     implementation("androidx.constraintlayout:constraintlayout-compose:1.1.1")
+
 
     // Accompanist
     implementation("com.google.accompanist:accompanist-permissions:0.37.3")
@@ -101,7 +103,7 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:3.0.0")
 
     // OKHttp
-    implementation("com.squareup.okhttp3:okhttp:5.2.1")
+    implementation("com.squareup.okhttp3:okhttp:5.3.0")
 
     // Coil
     implementation("io.coil-kt.coil3:coil-compose:3.3.0")
@@ -114,13 +116,13 @@ dependencies {
     implementation("androidx.datastore:datastore-preferences-rxjava3:$datastoreVersion")
 
     // Room
-    val roomVersion = "2.8.2"
+    val roomVersion = "2.8.3"
     implementation("androidx.room:room-runtime:$roomVersion")
     implementation("androidx.room:room-ktx:$roomVersion")
     ksp("androidx.room:room-compiler:$roomVersion")
 
     // Firebase
-    implementation(platform("com.google.firebase:firebase-bom:34.4.0"))
+    implementation(platform("com.google.firebase:firebase-bom:34.5.0"))
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-crashlytics")
 
@@ -128,7 +130,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
 
     testImplementation("junit:junit:4.13.2")
-    testImplementation("com.squareup.okhttp3:mockwebserver:5.2.1")
+    testImplementation("com.squareup.okhttp3:mockwebserver:5.3.0")
     testImplementation("io.mockk:mockk:1.14.6")
 
     androidTestImplementation("androidx.test.ext:junit:1.3.0")
@@ -136,7 +138,7 @@ dependencies {
     androidTestImplementation("com.google.truth:truth:1.4.5")
     androidTestImplementation("androidx.arch.core:core-testing:2.2.0")
     androidTestImplementation("io.mockk:mockk-android:1.14.6")
-    androidTestImplementation(platform("androidx.compose:compose-bom:2025.10.00"))
+    androidTestImplementation(platform("androidx.compose:compose-bom:2025.11.00"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
 
     debugImplementation("androidx.compose.ui:ui-tooling")

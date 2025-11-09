@@ -1,23 +1,31 @@
 package com.kaem.flux.screens.media
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.window.core.layout.WindowSizeClass
 import com.kaem.flux.R
 import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.ScreenState
+import com.kaem.flux.model.media.ContentType
 import com.kaem.flux.model.media.Episode
 import com.kaem.flux.model.media.Media
 import com.kaem.flux.model.media.MediaOverview
@@ -38,6 +46,8 @@ fun MediaScreen(
 ) {
 
     val uiState by viewModel.uiState.collectAsState()
+    val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
+    val isLargeScreen = windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND)
 
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
@@ -63,14 +73,25 @@ fun MediaScreen(
             }
             else -> {
 
-                MediaContent(
-                    overview = uiState.overview,
-                    media = uiState.selectedMedia,
-                    episodes = uiState.episodes,
-                    currentSeason = uiState.currentSeason,
-                    showEpisodes = uiState.showEpisodesSheet,
-                    sendIntent = viewModel::handleIntent,
-                )
+                if (isLargeScreen) {
+                    MediaContentLarge(
+                        overview = uiState.overview,
+                        media = uiState.selectedMedia,
+                        episodes = uiState.episodes,
+                        currentSeason = uiState.currentSeason,
+                        showEpisodes = uiState.overview.type == ContentType.SHOW,
+                        sendIntent = viewModel::handleIntent,
+                    )
+                } else {
+                    MediaContent(
+                        overview = uiState.overview,
+                        media = uiState.selectedMedia,
+                        episodes = uiState.episodes,
+                        currentSeason = uiState.currentSeason,
+                        showEpisodes = uiState.showEpisodesSheet,
+                        sendIntent = viewModel::handleIntent,
+                    )
+                }
 
             }
 
@@ -141,8 +162,12 @@ fun MediaContentLarge(
     sendIntent: (MediaIntent) -> Unit,
 ) {
 
-    Row {
-        Box(Modifier.weight(weight = 1f)) {
+    Row(modifier = Modifier.fillMaxSize()) {
+        Box(
+            modifier = Modifier
+                .fillMaxHeight()
+                .weight(1f)
+        ) {
             MediaResumePan(
                 overview = overview,
                 media = media,
@@ -151,9 +176,13 @@ fun MediaContentLarge(
         }
 
         if (showEpisodes) {
-            Box(Modifier.weight(weight = 1f)) {
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .weight(1f)
+            ) {
                 MediaEpisodesPan(
-                    episodes = episodes + episodes + episodes + episodes + episodes + episodes + episodes + episodes,
+                    episodes = episodes,
                     currentSeason = currentSeason,
                     sendIntent = sendIntent
                 )

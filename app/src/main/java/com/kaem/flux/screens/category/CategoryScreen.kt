@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -19,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.constraintlayout.compose.Span
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.kaem.flux.navigation.Navigation
 import com.kaem.flux.mockups.MediaMockups
@@ -78,7 +80,7 @@ fun CategoryScreenContent(
             contentPadding = PaddingValues(all = Ui.Space.MEDIUM)
         ) {
 
-            item {
+            item(span = { GridItemSpan(3) }) {
                 Spacer(modifier = Modifier.height(innerPadding.calculateTopPadding()))
             }
 
@@ -102,7 +104,7 @@ fun CategoryScreenContent(
 
             }
 
-            item {
+            item(span = { GridItemSpan(3) }) {
                 Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding()))
             }
 

@@ -71,7 +71,7 @@ fun SearchScreen(
             contentPadding = PaddingValues(horizontal = Ui.Space.MEDIUM)
         ) {
 
-            item {
+            item(span = { GridItemSpan(3) }) {
                 Spacer(modifier = Modifier.height(innerPadding.calculateTopPadding()))
             }
 
@@ -127,7 +127,7 @@ fun SearchScreen(
 
             }
 
-            item {
+            item(span = { GridItemSpan(3) }) {
                 Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding()))
             }
 

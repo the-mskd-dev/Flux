@@ -5,6 +5,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -33,6 +34,15 @@ object Ui {
             val ExtraLargeIncreased @Composable get() = MaterialTheme.shapes.extraLargeIncreased
             val ExtraExtraLarge @Composable get() = MaterialTheme.shapes.extraExtraLarge
         }
+
+    }
+
+    object Card {
+
+        val selectedCardColors @Composable get() = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+            contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+        )
 
     }
 

@@ -119,7 +119,8 @@ fun MediaContent(
             onDismissRequest = { sendIntent(MediaIntent.CloseEpisodesSheet) },
             content = {
                 MediaEpisodesSheet(
-                    episodes = episodes + episodes + episodes + episodes + episodes + episodes + episodes + episodes,
+                    selectedId = (media as? Episode)?.id,
+                    episodes = episodes,
                     currentSeason = currentSeason,
                     sendIntent = sendIntent
                 )

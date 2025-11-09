@@ -1,5 +1,7 @@
 package com.kaem.flux.screens.media.composables
 
+import android.util.Log
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,10 +13,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CardElevation
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
@@ -37,6 +43,7 @@ import com.kaem.flux.utils.extensions.grayScale
 
 @Composable
 fun MediaEpisodesSheet(
+    selectedId: Long?,
     episodes: List<Episode>,
     currentSeason: Int,
     sendIntent: (MediaIntent) -> Unit,
@@ -67,20 +74,15 @@ fun MediaEpisodesSheet(
                 items = episodes
                     .filter { it.season == currentSeason }
                     .sortedBy { it.number },
-                //key = { e -> e.id }
+                key = { e -> e.id }
             ) { episode ->
 
                 Card(
-                    modifier = Modifier
-                        .width(screenWidth.times(.8f))
-                        .animateItem()
-                ) {
-                    EpisodeItemHorizontal(
-                        modifier = Modifier.animateItem(),
-                        episode = episode,
-                        onTap = { sendIntent(MediaIntent.SelectEpisode(episode)) }
-                    )
-                }
+                    modifier = Modifier.width(screenWidth.times(.8f)),
+                    onClick = { sendIntent(MediaIntent.SelectEpisode(episode)) },
+                    colors = if (episode.id == selectedId) Ui.Card.selectedCardColors else CardDefaults.cardColors(),
+                    content = { EpisodeItemHorizontal(episode = episode) }
+                )
 
             }
 
@@ -93,22 +95,17 @@ fun MediaEpisodesSheet(
 
 
 @Composable
-fun EpisodeItemHorizontal(
-    modifier: Modifier = Modifier,
-    episode: Episode,
-    onTap: () -> Unit
-) {
+fun EpisodeItemHorizontal(episode: Episode) {
 
     val episodeModifier = if (episode.status == Status.WATCHED)
-        modifier
+        Modifier
             .alpha(.4f)
             .grayScale()
     else
-        modifier
+        Modifier
 
     Column(
         modifier = episodeModifier
-            .clickable { onTap() }
             .fillMaxWidth()
             .padding(Ui.Space.MEDIUM),
         verticalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)
@@ -133,6 +130,7 @@ fun EpisodeItemHorizontal(
 fun MediaEpisodesSheet_Preview() {
     FluxTheme {
         MediaEpisodesSheet(
+            selectedId = MediaMockups.episode2.id,
             episodes = MediaMockups.episodes,
             currentSeason = 1,
             sendIntent = {}
@@ -147,7 +145,6 @@ fun EpisodeItemHorizontal_Preview() {
     FluxTheme {
         EpisodeItemHorizontal(
             episode = MediaMockups.episode1,
-            onTap = {}
         )
     }
 }

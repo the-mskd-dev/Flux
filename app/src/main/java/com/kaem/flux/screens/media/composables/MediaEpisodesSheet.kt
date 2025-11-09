@@ -12,12 +12,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CardElevation
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
@@ -40,6 +43,7 @@ import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.FluxTheme
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.extensions.grayScale
+import kotlinx.coroutines.launch
 
 @Composable
 fun MediaEpisodesSheet(
@@ -49,9 +53,21 @@ fun MediaEpisodesSheet(
     sendIntent: (MediaIntent) -> Unit,
 ) {
 
+    val state = rememberLazyListState()
     var screenWidth = 0.dp
+    val filteredEpisodes = episodes
+        .filter { it.season == currentSeason }
+        .sortedBy { it.number }
+
+    // Get screen width
     with(LocalDensity.current) {
         screenWidth = LocalWindowInfo.current.containerSize.width.toDp()
+    }
+
+    // Scroll to selected episode
+    LaunchedEffect(selectedId) {
+        val episodeIndex = episodes.indexOfFirst { it.id == selectedId }
+        if (episodeIndex >= 0) state.animateScrollToItem(episodeIndex)
     }
 
     Column(
@@ -66,14 +82,13 @@ fun MediaEpisodesSheet(
         )
 
         LazyRow(
+            state = state,
             contentPadding = PaddingValues(all = Ui.Space.MEDIUM),
             horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)
         ) {
 
             items(
-                items = episodes
-                    .filter { it.season == currentSeason }
-                    .sortedBy { it.number },
+                items = filteredEpisodes,
                 key = { e -> e.id }
             ) { episode ->
 

@@ -6,15 +6,19 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -29,14 +33,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.kaem.flux.ui.theme.Ui
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun FluxButton(
     modifier: Modifier = Modifier,
     text: String,
+    height: Dp = ButtonDefaults.MediumContainerHeight,
+    shape: Shape = Ui.Shape.Corner.Medium,
     autoSize: Boolean = false,
     backgroundColor: Color = MaterialTheme.colorScheme.primary,
     textColor: Color = MaterialTheme.colorScheme.onPrimary,
@@ -45,71 +54,68 @@ fun FluxButton(
     onTap: () -> Unit
 ) {
 
-    val typography = MaterialTheme.typography.labelLarge
-
+    val typography = ButtonDefaults.textStyleFor(height)
     Button(
-        modifier = modifier,
+        modifier = modifier.height(height),
         colors = ButtonDefaults.buttonColors(
             containerColor = backgroundColor,
             contentColor = textColor,
         ),
-        shape = Ui.Shape.Corner.ExtraLarge,
+        shape = shape,
         border = border,
+        contentPadding = ButtonDefaults.contentPaddingFor(height),
         onClick = onTap
     ) {
 
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL, Alignment.CenterHorizontally)
-        ) {
-
-            icon?.let {
-                AnimatedContent(
-                    targetState = it,
-                    label = "FluxButton icon animation"
-                ) { state ->
-                    Icon(
-                        imageVector = state,
-                        tint = textColor,
-                        modifier = Modifier.size(30.dp),
-                        contentDescription = null,
-                    )
-                }
-            }
-
+        icon?.let {
             AnimatedContent(
-                targetState = text,
-                label = "FluxButton text animation"
+                targetState = it,
+                label = "FluxButton icon animation"
             ) { state ->
-                if (autoSize) {
-
-                    var fontSize by remember { mutableStateOf(typography.fontSize) }
-                    var readyToDraw by remember { mutableStateOf(false) }
-
-                    Text(
-                        modifier = Modifier.drawWithContent {
-                            if (readyToDraw) drawContent()
-                        },
-                        text = state,
-                        fontSize = fontSize,
-                        maxLines = 1,
-                        fontWeight = typography.fontWeight,
-                        softWrap = false,
-                        onTextLayout = {
-                            if (it.didOverflowWidth)
-                                fontSize = fontSize.times(.95)
-                            else
-                                readyToDraw = true
-                        }
-                    )
-                } else {
-                    Text.Label.Large(
-                        text = state,
-                        color = textColor,
-                    )
-                }
+                Icon(
+                    modifier = Modifier.size(ButtonDefaults.iconSizeFor(height)),
+                    imageVector = state,
+                    tint = textColor,
+                    contentDescription = null,
+                )
             }
 
+            Spacer(Modifier.size(ButtonDefaults.iconSpacingFor(height)))
+
+        }
+
+        AnimatedContent(
+            targetState = text,
+            label = "FluxButton text animation"
+        ) { state ->
+            if (autoSize) {
+
+                var fontSize by remember { mutableStateOf(typography.fontSize) }
+                var readyToDraw by remember { mutableStateOf(false) }
+
+                Text(
+                    modifier = Modifier.drawWithContent {
+                        if (readyToDraw) drawContent()
+                    },
+                    text = state,
+                    fontSize = fontSize,
+                    maxLines = 1,
+                    fontWeight = typography.fontWeight,
+                    softWrap = false,
+                    onTextLayout = {
+                        if (it.didOverflowWidth)
+                            fontSize = fontSize.times(.95)
+                        else
+                            readyToDraw = true
+                    }
+                )
+            } else {
+                Text(
+                    text = state,
+                    color = textColor,
+                    style = typography
+                )
+            }
         }
 
     }

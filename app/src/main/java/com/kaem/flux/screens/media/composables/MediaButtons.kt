@@ -3,6 +3,7 @@ package com.kaem.flux.screens.media.composables
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,8 +21,10 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ButtonGroup
 import androidx.compose.material3.ButtonGroupDefaults
+import androidx.compose.material3.ButtonShapes
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
@@ -37,6 +40,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import com.kaem.flux.R
 import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.media.Media
@@ -64,9 +69,7 @@ fun MediaButtons(
     ) {
 
         MediaPlayerButton(
-            modifier = Modifier
-                .width(250.dp)
-                .fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             media = media,
             sendIntent = sendIntent
         )
@@ -85,6 +88,8 @@ fun MediaPlayerButton(
 
     media ?: return
 
+    val size = ButtonDefaults.MediumContainerHeight
+
     val text = when (media.status) {
         Status.WATCHED -> stringResource(R.string.rewatch)
         Status.IS_WATCHING -> stringResource(R.string.resume)
@@ -97,26 +102,44 @@ fun MediaPlayerButton(
         verticalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)
     ) {
 
-        MediaStatusProgression(media = media)
+        ConstraintLayout {
 
-        Row(
-            modifier = Modifier.height(50.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween)
-        ) {
+            val (play, status, progress) = createRefs()
+
+            MediaStatusProgression(
+                modifier = Modifier.constrainAs(progress) {
+                    top.linkTo(parent.top)
+                    start.linkTo(play.start)
+                    end.linkTo(play.end)
+                    width = Dimension.fillToConstraints
+                },
+                media = media
+            )
 
             FluxButton(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .weight(1f),
-                text = text.uppercase(),
+                modifier = Modifier.constrainAs(play) {
+                    top.linkTo(progress.bottom)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                    bottom.linkTo(parent.bottom)
+                    width = Dimension.value(220.dp)
+                },
+                text = text,
                 onTap = { sendIntent(MediaIntent.ShowPlayer) },
+                height = size,
+                shape = ButtonDefaults.shape,
                 icon = if (media.status == Status.WATCHED) Icons.Default.Refresh else Icons.Default.PlayArrow,
                 backgroundColor = MaterialTheme.colorScheme.primary,
                 textColor = MaterialTheme.colorScheme.onPrimary
             )
 
             MediaStatusButton(
+                modifier = Modifier.constrainAs(status) {
+                    top.linkTo(play.top)
+                    start.linkTo(play.end, Ui.Space.SMALL)
+                    bottom.linkTo(play.bottom)
+                    height = Dimension.value(ButtonDefaults.MediumContainerHeight)
+                },
                 media = media,
                 onTap = { sendIntent(MediaIntent.ChangeWatchStatus(checkPrevious = true)) }
             )
@@ -128,9 +151,13 @@ fun MediaPlayerButton(
 }
 
 @Composable
-fun MediaStatusProgression(media: Media) {
+fun MediaStatusProgression(
+    modifier: Modifier,
+    media: Media
+) {
 
     AnimatedVisibility(
+        modifier = modifier,
         visible = media.status == Status.IS_WATCHING,
         label = "MediaStatusProgression animation"
     ) {
@@ -161,6 +188,7 @@ fun MediaStatusProgression(media: Media) {
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun MediaStatusButton(
+    modifier: Modifier,
     media: Media?,
     onTap: () -> Unit
 ) {
@@ -168,7 +196,7 @@ fun MediaStatusButton(
     media ?: return
 
     ToggleButton(
-        modifier = Modifier.fillMaxHeight(),
+        modifier = modifier,
         checked = media.status == Status.WATCHED,
         onCheckedChange = { onTap() },
         shapes = ButtonGroupDefaults.connectedMiddleButtonShapes(),

@@ -132,12 +132,11 @@ fun MediaImage(
                     brush = Brush.verticalGradient(
                         colors = listOf(
                             Color.Transparent,
-                            MaterialTheme.colorScheme.background.copy(alpha = .3f),
                             MaterialTheme.colorScheme.background.copy(alpha = .6f),
                             MaterialTheme.colorScheme.background.copy(alpha = .9f),
                             MaterialTheme.colorScheme.background,
                         ),
-                        startY = imageHeight * .0f,
+                        startY = imageHeight * .7f,
                         endY = Float.POSITIVE_INFINITY
                     )
                 )

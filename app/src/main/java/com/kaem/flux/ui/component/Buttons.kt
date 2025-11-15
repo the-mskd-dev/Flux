@@ -48,12 +48,12 @@ fun FluxButton(
     val typography = MaterialTheme.typography.labelLarge
 
     Button(
-        modifier = modifier.height(50.dp),
+        modifier = modifier,
         colors = ButtonDefaults.buttonColors(
             containerColor = backgroundColor,
             contentColor = textColor,
         ),
-        shape = Ui.Shape.Corner.Medium,
+        shape = Ui.Shape.Corner.ExtraLarge,
         border = border,
         onClick = onTap
     ) {

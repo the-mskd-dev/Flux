@@ -6,17 +6,34 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonGroup
+import androidx.compose.material3.ButtonGroupDefaults
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.FilledIconButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ToggleButton
+import androidx.compose.material3.ToggleButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -34,6 +51,7 @@ import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.extensions.minToMs
 import com.kaem.flux.utils.extensions.timeDescription
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun MediaButtons(
     media: Media?,
@@ -47,44 +65,25 @@ fun MediaButtons(
 
         MediaPlayerButton(
             modifier = Modifier
-                .padding(top = Ui.Space.LARGE.times(2))
-                .widthIn(max = 300.dp)
+                .width(250.dp)
                 .fillMaxWidth(),
             media = media,
-            onTap = { sendIntent(MediaIntent.ShowPlayer) }
-        )
-
-        MediaStatusButton(
-            modifier = Modifier
-                .padding(top = Ui.Space.SMALL)
-                .widthIn(max = 300.dp)
-                .fillMaxWidth(),
-            media = media,
-            onTap = { sendIntent(MediaIntent.ChangeWatchStatus(checkPrevious = true)) }
+            sendIntent = sendIntent
         )
 
     }
 
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun MediaPlayerButton(
     modifier: Modifier,
     media: Media?,
-    onTap: () -> Unit
+    sendIntent: (MediaIntent) -> Unit
 ) {
 
     media ?: return
-
-    val backgroundColor by animateColorAsState(
-        targetValue = if (media.status == Status.WATCHED) MaterialTheme.colorScheme.surfaceVariant else MaterialTheme.colorScheme.primary,
-        label = "MediaPlayerButton backgroundColor animation"
-    )
-
-    val textColor by animateColorAsState(
-        targetValue = if (media.status == Status.WATCHED) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onPrimary,
-        label = "MediaPlayerButton backgroundColor animation"
-    )
 
     val text = when (media.status) {
         Status.WATCHED -> stringResource(R.string.rewatch)
@@ -100,14 +99,29 @@ fun MediaPlayerButton(
 
         MediaStatusProgression(media = media)
 
-        FluxButton(
-            modifier = Modifier.fillMaxWidth(),
-            text = text.uppercase(),
-            onTap = onTap,
-            icon = if (media.status == Status.WATCHED) Icons.Default.Refresh else Icons.Default.PlayArrow,
-            backgroundColor = backgroundColor,
-            textColor = textColor
-        )
+        Row(
+            modifier = Modifier.height(50.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween)
+        ) {
+
+            FluxButton(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .weight(1f),
+                text = text.uppercase(),
+                onTap = { sendIntent(MediaIntent.ShowPlayer) },
+                icon = if (media.status == Status.WATCHED) Icons.Default.Refresh else Icons.Default.PlayArrow,
+                backgroundColor = MaterialTheme.colorScheme.primary,
+                textColor = MaterialTheme.colorScheme.onPrimary
+            )
+
+            MediaStatusButton(
+                media = media,
+                onTap = { sendIntent(MediaIntent.ChangeWatchStatus(checkPrevious = true)) }
+            )
+
+        }
 
     }
 
@@ -144,25 +158,39 @@ fun MediaStatusProgression(media: Media) {
 
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun MediaStatusButton(
-    modifier: Modifier,
     media: Media?,
     onTap: () -> Unit
 ) {
 
     media ?: return
 
-    AnimatedContent(
-        modifier = modifier,
-        targetState = (if (media.status == Status.WATCHED) stringResource(R.string.mark_as_not_watched) else stringResource(R.string.mark_as_watched)).uppercase(),
-        contentAlignment = Alignment.Center,
-        label = "MediaStatusButton animation"
-    ) { text ->
-        FluxTextButton(
-            text = text,
-            onTap = onTap
+    ToggleButton(
+        modifier = Modifier.fillMaxHeight(),
+        checked = media.status == Status.WATCHED,
+        onCheckedChange = { onTap() },
+        shapes = ButtonGroupDefaults.connectedMiddleButtonShapes(),
+        colors = ToggleButtonDefaults.toggleButtonColors(
+            checkedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+            checkedContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary
         )
+    ) {
+
+        if (media.status == Status.WATCHED) {
+            Icon(
+                imageVector = Icons.Filled.Done,
+                contentDescription = "Mark as not watched button"
+            )
+        } else {
+            Icon(
+                painter = painterResource(R.drawable.ic_visibility),
+                contentDescription = "Mark as watched button"
+            )
+        }
     }
 
 }

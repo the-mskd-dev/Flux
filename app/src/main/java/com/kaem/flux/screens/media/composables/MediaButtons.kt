@@ -1,53 +1,34 @@
 package com.kaem.flux.screens.media.composables
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Done
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ButtonGroup
-import androidx.compose.material3.ButtonGroupDefaults
-import androidx.compose.material3.ButtonShapes
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ToggleButton
 import androidx.compose.material3.ToggleButtonDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension
 import com.kaem.flux.R
 import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.media.Media
 import com.kaem.flux.model.media.Status
 import com.kaem.flux.screens.media.MediaIntent
-import com.kaem.flux.ui.component.FluxButton
 import com.kaem.flux.ui.component.FluxTextButton
 import com.kaem.flux.ui.component.ProgressBar
 import com.kaem.flux.ui.component.Text
@@ -63,32 +44,9 @@ fun MediaButtons(
     sendIntent: (MediaIntent) -> Unit
 ) {
 
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-
-        MediaPlayerButton(
-            modifier = Modifier.fillMaxWidth(),
-            media = media,
-            sendIntent = sendIntent
-        )
-
-    }
-
-}
-
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
-@Composable
-fun MediaPlayerButton(
-    modifier: Modifier,
-    media: Media?,
-    sendIntent: (MediaIntent) -> Unit
-) {
-
     media ?: return
 
-    val size = ButtonDefaults.MediumContainerHeight
+    val buttonHeight = ButtonDefaults.MediumContainerHeight
 
     val text = when (media.status) {
         Status.WATCHED -> stringResource(R.string.rewatch)
@@ -97,54 +55,59 @@ fun MediaPlayerButton(
     }
 
     Column(
-        modifier = modifier,
+        modifier = Modifier.width(250.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)
     ) {
 
-        ConstraintLayout {
+        MediaStatusProgression(
+            modifier = Modifier.fillMaxWidth(),
+            media = media
+        )
 
-            val (play, status, progress) = createRefs()
+        ToggleButton(
+            modifier = Modifier
+                .padding(top = Ui.Space.SMALL)
+                .height(buttonHeight)
+                .fillMaxWidth(),
+            checked = media.status == Status.WATCHED,
+            onCheckedChange = { sendIntent(MediaIntent.ShowPlayer) },
+            colors = ToggleButtonDefaults.toggleButtonColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+                checkedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                checkedContentColor = MaterialTheme.colorScheme.onSurfaceVariant
+            ),
+            shapes = ToggleButtonDefaults.shapes(
+                shape = Ui.Shape.Corner.Full,
+                pressedShape = Ui.Shape.Corner.Medium,
+                checkedShape = Ui.Shape.Corner.Small,
+            ),
+            content = {
 
-            MediaStatusProgression(
-                modifier = Modifier.constrainAs(progress) {
-                    top.linkTo(parent.top)
-                    start.linkTo(play.start)
-                    end.linkTo(play.end)
-                    width = Dimension.fillToConstraints
-                },
-                media = media
-            )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(ButtonDefaults.iconSpacingFor(buttonHeight))
+                ) {
+                    Icon(
+                        modifier = Modifier.size(ButtonDefaults.iconSizeFor(buttonHeight)),
+                        imageVector = if (media.status == Status.WATCHED) Icons.Default.Refresh else Icons.Default.PlayArrow,
+                        contentDescription = "Mark as not watched button"
+                    )
+                    androidx.compose.material3.Text(
+                        text = text,
+                        style = ButtonDefaults.textStyleFor(buttonHeight)
+                    )
+                }
 
-            FluxButton(
-                modifier = Modifier.constrainAs(play) {
-                    top.linkTo(progress.bottom)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                    bottom.linkTo(parent.bottom)
-                    width = Dimension.value(220.dp)
-                },
-                text = text,
-                onTap = { sendIntent(MediaIntent.ShowPlayer) },
-                height = size,
-                shape = ButtonDefaults.shape,
-                icon = if (media.status == Status.WATCHED) Icons.Default.Refresh else Icons.Default.PlayArrow,
-                backgroundColor = MaterialTheme.colorScheme.primary,
-                textColor = MaterialTheme.colorScheme.onPrimary
-            )
+            }
+        )
 
-            MediaStatusButton(
-                modifier = Modifier.constrainAs(status) {
-                    top.linkTo(play.top)
-                    start.linkTo(play.end, Ui.Space.SMALL)
-                    bottom.linkTo(play.bottom)
-                    height = Dimension.value(ButtonDefaults.MediumContainerHeight)
-                },
-                media = media,
-                onTap = { sendIntent(MediaIntent.ChangeWatchStatus(checkPrevious = true)) }
-            )
 
-        }
+        FluxTextButton(
+            text = stringResource(if (media.status == Status.WATCHED) R.string.mark_as_not_watched else R.string.mark_as_watched),
+            height = buttonHeight,
+            onTap = { sendIntent(MediaIntent.ChangeWatchStatus(checkPrevious = true)) }
+        )
 
     }
 
@@ -181,44 +144,6 @@ fun MediaStatusProgression(
 
         }
 
-    }
-
-}
-
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
-@Composable
-fun MediaStatusButton(
-    modifier: Modifier,
-    media: Media?,
-    onTap: () -> Unit
-) {
-
-    media ?: return
-
-    ToggleButton(
-        modifier = modifier,
-        checked = media.status == Status.WATCHED,
-        onCheckedChange = { onTap() },
-        shapes = ButtonGroupDefaults.connectedMiddleButtonShapes(),
-        colors = ToggleButtonDefaults.toggleButtonColors(
-            checkedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-            checkedContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-            containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = MaterialTheme.colorScheme.onPrimary
-        )
-    ) {
-
-        if (media.status == Status.WATCHED) {
-            Icon(
-                imageVector = Icons.Filled.Done,
-                contentDescription = "Mark as not watched button"
-            )
-        } else {
-            Icon(
-                painter = painterResource(R.drawable.ic_visibility),
-                contentDescription = "Mark as watched button"
-            )
-        }
     }
 
 }

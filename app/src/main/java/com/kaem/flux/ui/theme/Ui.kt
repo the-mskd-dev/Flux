@@ -1,5 +1,6 @@
 package com.kaem.flux.ui.theme
 
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -33,6 +34,8 @@ object Ui {
             val ExtraLarge @Composable get() = MaterialTheme.shapes.extraLarge
             val ExtraLargeIncreased @Composable get() = MaterialTheme.shapes.extraLargeIncreased
             val ExtraExtraLarge @Composable get() = MaterialTheme.shapes.extraExtraLarge
+            val Full @Composable get() = CircleShape
+
         }
 
     }

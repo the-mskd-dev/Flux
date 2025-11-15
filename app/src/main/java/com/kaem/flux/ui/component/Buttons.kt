@@ -149,21 +149,24 @@ fun BackButton(
 
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun FluxTextButton(
     text: String,
     modifier: Modifier = Modifier,
+    height: Dp = ButtonDefaults.MediumContainerHeight,
     color: Color = MaterialTheme.colorScheme.primary,
     onTap: () -> Unit
 ) {
 
     TextButton(
-        modifier = modifier,
+        modifier = modifier.height(height),
         onClick = onTap,
         content = {
-            Text.Label.Large(
+            Text(
                 text = text,
                 color = color,
+                style = ButtonDefaults.textStyleFor(height)
             )
         }
     )

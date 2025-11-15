@@ -4,6 +4,7 @@ import androidx.compose.foundation.gestures.rememberScrollableState
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -51,8 +52,13 @@ fun MediaResumePan(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        MediaHeader(
+        MediaImage(
+            modifier = Modifier.aspectRatio(6f / 5f),
             overview = overview,
+            sendIntent = sendIntent
+        )
+
+        MediaButtons(
             media = media,
             sendIntent = sendIntent
         )

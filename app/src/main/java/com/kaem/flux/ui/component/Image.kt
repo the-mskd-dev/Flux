@@ -24,9 +24,17 @@ fun Image(
             .crossfade(true)
             .build(),
         contentScale = contentScale,
-        placeholder = ColorPainter(MaterialTheme.colorScheme.secondaryContainer.copy(alpha = .4f)),
-        error = ColorPainter(MaterialTheme.colorScheme.secondaryContainer.copy(alpha = .4f)),
+        placeholder = Image.placeholder,
+        error = Image.error,
         contentDescription = contentDescription
     )
+
+}
+
+object Image {
+
+    val placeholder: ColorPainter @Composable get() = ColorPainter(MaterialTheme.colorScheme.secondaryContainer.copy(alpha = .4f))
+
+    val error: ColorPainter @Composable get() = ColorPainter(MaterialTheme.colorScheme.secondaryContainer.copy(alpha = .4f))
 
 }

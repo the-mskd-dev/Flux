@@ -2,7 +2,6 @@ package com.kaem.flux.screens.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kaem.flux.R
 import com.kaem.flux.data.repository.DataStoreRepository
 import com.kaem.flux.ui.theme.Ui
 import dagger.hilt.android.lifecycle.HiltViewModel

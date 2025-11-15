@@ -11,10 +11,18 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -22,11 +30,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.painter.ColorPainter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -35,6 +49,9 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.compose.atMost
+import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 import com.kaem.flux.R
 import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.media.Episode
@@ -61,68 +78,66 @@ fun MediaHeader(
     sendIntent: (MediaIntent) -> Unit,
 ) {
 
-    ConstraintLayout(
+    Column(
         modifier = Modifier.fillMaxWidth(),
-        constraintSet = MediaHeaderConstraintSet
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        val imagePath = when (media) {
-            is Episode -> media.imagePath
-            else -> overview.bannerPath
-        }
-
         MediaImage(
-            modifier = Modifier
-                .aspectRatio(6f / 5f)
-                .layoutId("image"),
-            imagePath = imagePath,
-            title = overview.title
-        )
-
-        BackButton(
-            modifier = Modifier.layoutId("back"),
-            onTap = { sendIntent(MediaIntent.OnBackTap) }
+            modifier = Modifier.aspectRatio(6f / 5f),
+            imagePath = overview.imagePath,
+            title = overview.title,
+            sendIntent = sendIntent
         )
 
         MediaPlayerButton(
-            modifier = Modifier.layoutId("play"),
+            modifier = Modifier
+                .padding(top = Ui.Space.LARGE.times(2))
+                .widthIn(max = 300.dp)
+                .fillMaxWidth(),
             media = media,
             onTap = { sendIntent(MediaIntent.ShowPlayer) }
         )
 
         MediaStatusButton(
-            modifier = Modifier.layoutId("status"),
+            modifier = Modifier
+                .padding(top = Ui.Space.SMALL)
+                .widthIn(max = 300.dp)
+                .fillMaxWidth(),
             media = media,
             onTap = { sendIntent(MediaIntent.ChangeWatchStatus(checkPrevious = true)) }
-        )
-
-        MediaTitle(
-            modifier = Modifier.layoutId("title"),
-            title = overview.title
         )
 
     }
 
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MediaImage(
     modifier: Modifier,
     imagePath: String,
-    title: String
+    title: String,
+    sendIntent: (MediaIntent) -> Unit
 ) {
 
     var imageHeight by remember { mutableIntStateOf(0) }
 
-    Box(
-        modifier = modifier.onSizeChanged { imageHeight = it.height },
-        contentAlignment = Alignment.BottomCenter
-    ) {
+    Box(modifier = modifier.onSizeChanged { imageHeight = it.height },) {
 
-        Image(
-            modifier = Modifier.fillMaxSize(),
-            url = Constants.TMDB.IMAGE + imagePath,
-            contentDescription = title
+        AsyncImage(
+            modifier = Modifier
+                .fillMaxWidth()
+                .blur(radius = 15.dp),
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(Constants.TMDB.IMAGE + imagePath)
+                .crossfade(true)
+                .build(),
+            contentScale = ContentScale.Crop,
+            placeholder = ColorPainter(MaterialTheme.colorScheme.secondaryContainer.copy(alpha = .4f)),
+            error = ColorPainter(MaterialTheme.colorScheme.secondaryContainer.copy(alpha = .4f)),
+            alpha = .2f,
+            contentDescription = "contentDescription"
         )
 
         Box(
@@ -141,6 +156,31 @@ fun MediaImage(
                     )
                 )
         )
+
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+
+            TopAppBar(
+                modifier = Modifier.fillMaxWidth(),
+                title = {  },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
+                navigationIcon = {
+                    BackButton(onTap = {sendIntent(MediaIntent.OnBackTap)})
+                },
+            )
+
+            Image(
+                modifier = Modifier
+                    .clip(Ui.Shape.Corner.Small)
+                    .width(160.dp)
+                    .aspectRatio(2f/3f),
+                url = Constants.TMDB.IMAGE + imagePath,
+                contentDescription = title
+            )
+
+        }
 
     }
 
@@ -242,59 +282,6 @@ fun MediaStatusButton(
             text = text,
             onTap = onTap
         )
-    }
-
-}
-
-@Composable
-fun MediaTitle(
-    modifier: Modifier,
-    title: String,
-) {
-
-    Text.Title.Large(
-        modifier = modifier,
-        text = title,
-        textAlign = TextAlign.Start,
-        color = MaterialTheme.colorScheme.onBackground
-    )
-
-}
-
-val MediaHeaderConstraintSet = ConstraintSet {
-
-    val (image, back, title, play, status) = createRefsFor("image", "back", "title", "play", "status")
-    constrain(image) {
-        top.linkTo(parent.top)
-        start.linkTo(parent.start)
-        end.linkTo(parent.end)
-        width = Dimension.fillToConstraints
-    }
-
-    constrain(back) {
-        top.linkTo(parent.top)
-        start.linkTo(parent.start, Ui.Space.MEDIUM)
-    }
-
-    constrain(title) {
-        bottom.linkTo(image.bottom, Ui.Space.MEDIUM)
-        start.linkTo(parent.start, Ui.Space.MEDIUM)
-        end.linkTo(parent.end, Ui.Space.MEDIUM)
-        width = Dimension.fillToConstraints
-    }
-
-    constrain(play) {
-        top.linkTo(title.bottom, Ui.Space.LARGE.times(2))
-        start.linkTo(parent.start, Ui.Space.MEDIUM)
-        end.linkTo(parent.end, Ui.Space.MEDIUM)
-        width = Dimension.fillToConstraints.atMost(300.dp)
-    }
-
-    constrain(status) {
-        top.linkTo(play.bottom, Ui.Space.SMALL)
-        start.linkTo(parent.start, Ui.Space.MEDIUM)
-        end.linkTo(parent.end, Ui.Space.MEDIUM)
-        width = Dimension.fillToConstraints.atMost(300.dp)
     }
 
 }

@@ -49,7 +49,7 @@ fun MediaImage(
 
     var imageHeight by remember { mutableIntStateOf(0) }
     val imageRequest = ImageRequest.Builder(LocalContext.current)
-        .data(Constants.TMDB.IMAGE + overview.imagePath)
+        .data(Constants.TMDB.IMAGE_SMALL + overview.imagePath)
         .crossfade(true)
         .build()
 

@@ -73,7 +73,7 @@ fun MediaEpisodesPan(
                     EpisodeItemVertical(
                         modifier = Modifier.animateItem(),
                         episode = episode,
-                        onTap = { sendIntent(MediaIntent.SelectEpisode(episode)) }
+                        onTap = { sendIntent(MediaIntent.PlayMedia(episode)) }
                     )
 
                 }

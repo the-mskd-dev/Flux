@@ -47,7 +47,7 @@ fun MediaDescription(media: Media?) {
                 )
             }
 
-            Text.Title.Large(
+            Text.Headline.Medium(
                 modifier = Modifier.fillMaxWidth(),
                 text = if (media is Episode) media.title else stringResource(R.string.summary),
                 color = MaterialTheme.colorScheme.onBackground,

@@ -58,13 +58,10 @@ class MediaViewModel @Inject constructor(
     fun handleIntent(intent: MediaIntent) = viewModelScope.launch {
         when (intent) {
             MediaIntent.OnBackTap -> _event.emit(MediaEvent.BackToPreviousScreen)
-            MediaIntent.OpenEpisodesSheet -> openEpisodesSheet(show = true)
-            MediaIntent.CloseEpisodesSheet -> openEpisodesSheet(show = false)
-            is MediaIntent.SelectEpisode -> selectMedia(intent.episode)
             is MediaIntent.SelectSeason -> selectSeason(intent.season)
             is MediaIntent.SaveWatchTime -> saveWatchTime(intent.time)
-            MediaIntent.ShowPlayer -> showPlayer(true)
-            MediaIntent.ClosePlayer -> showPlayer(false)
+            is MediaIntent.PlayMedia -> playMedia(intent.media)
+            MediaIntent.ClosePlayer -> closePlayer()
             is MediaIntent.ChangeWatchStatus -> changeWatchStatus(intent.checkPrevious)
             MediaIntent.ChangeWatchStatusForEpisodeAndPrevious -> changeEpisodesStatus(status = Status.WATCHED, previous = true)
         }
@@ -103,27 +100,24 @@ class MediaViewModel @Inject constructor(
 
     }
 
-    private fun selectMedia(media: Media?) {
-        _uiState.update { currentState ->
-            currentState.copy(selectedMedia = media)
-        }
-    }
-
     private fun selectSeason(season: Int) {
         _uiState.update { currentState ->
             currentState.copy(currentSeason = season)
         }
     }
 
-    private fun showPlayer(show: Boolean) {
+    private fun playMedia(media: Media) {
         _uiState.update { currentState ->
-            currentState.copy(showPlayer = show)
+            currentState.copy(
+                selectedMedia = media,
+                showPlayer = true
+            )
         }
     }
 
-    private fun openEpisodesSheet(show: Boolean) {
+    private fun closePlayer() {
         _uiState.update { currentState ->
-            currentState.copy(showEpisodesSheet = show)
+            currentState.copy(showPlayer = false)
         }
     }
 

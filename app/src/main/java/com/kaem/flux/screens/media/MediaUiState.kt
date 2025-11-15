@@ -13,5 +13,4 @@ data class MediaUiState(
     val currentSeason: Int = -1,
     val showPlayer: Boolean = false,
     val showStatusDialog: Boolean = false,
-    val showEpisodesSheet: Boolean = false
 )

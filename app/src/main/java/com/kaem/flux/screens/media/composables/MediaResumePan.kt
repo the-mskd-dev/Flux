@@ -27,14 +27,14 @@ import com.kaem.flux.ui.theme.Ui
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MediaResumePan(
+    modifier: Modifier = Modifier,
     overview: MediaOverview,
     media: Media?,
     sendIntent: (MediaIntent) -> Unit,
 ) {
 
     Column(
-        modifier = Modifier
-            .verticalScroll(rememberScrollState())
+        modifier = modifier
             .navigationBarsPadding()
             .padding(bottom = Ui.Space.MEDIUM),
         verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE),
@@ -53,13 +53,6 @@ fun MediaResumePan(
         )
 
         MediaDescription(media = media)
-
-        if (media is Episode) {
-            TextButton(
-                onClick = { sendIntent(MediaIntent.OpenEpisodesSheet) },
-                content = { Text.Label.Large(text = stringResource(R.string.episode_list)) }
-            )
-        }
 
     }
 

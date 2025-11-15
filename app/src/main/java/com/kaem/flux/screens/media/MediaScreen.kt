@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -19,14 +18,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.window.core.layout.WindowSizeClass
 import com.kaem.flux.R
-import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.ScreenState
 import com.kaem.flux.model.media.ContentType
 import com.kaem.flux.model.media.Episode
 import com.kaem.flux.model.media.Media
 import com.kaem.flux.model.media.MediaOverview
+import com.kaem.flux.screens.media.composables.MediaScreenContent
 import com.kaem.flux.screens.media.composables.MediaEpisodesPan
-import com.kaem.flux.screens.media.composables.MediaEpisodesSheet
 import com.kaem.flux.screens.media.composables.MediaResumePan
 import com.kaem.flux.screens.player.PlayerScreen
 import com.kaem.flux.ui.component.ErrorScreen
@@ -79,12 +77,11 @@ fun MediaScreen(
                         sendIntent = viewModel::handleIntent,
                     )
                 } else {
-                    MediaContent(
+                    MediaScreenContent(
                         overview = uiState.overview,
                         media = uiState.selectedMedia,
                         episodes = uiState.episodes,
                         currentSeason = uiState.currentSeason,
-                        showEpisodes = uiState.showEpisodesSheet,
                         sendIntent = viewModel::handleIntent,
                     )
                 }
@@ -109,39 +106,6 @@ fun MediaScreen(
         MediaStatusDialog(
             onDismiss = { viewModel.handleIntent(MediaIntent.ChangeWatchStatus(false)) },
             onValidate = { viewModel.handleIntent(MediaIntent.ChangeWatchStatusForEpisodeAndPrevious) }
-        )
-    }
-
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun MediaContent(
-    overview: MediaOverview,
-    media: Media?,
-    episodes: List<Episode>,
-    currentSeason: Int,
-    showEpisodes: Boolean,
-    sendIntent: (MediaIntent) -> Unit,
-) {
-
-    MediaResumePan(
-        overview = overview,
-        media = media,
-        sendIntent = sendIntent
-    )
-
-    if (showEpisodes) {
-        ModalBottomSheet(
-            onDismissRequest = { sendIntent(MediaIntent.CloseEpisodesSheet) },
-            content = {
-                MediaEpisodesSheet(
-                    selectedId = (media as? Episode)?.id,
-                    episodes = episodes,
-                    currentSeason = currentSeason,
-                    sendIntent = sendIntent
-                )
-            }
         )
     }
 
@@ -203,37 +167,6 @@ fun MediaStatusDialog(
         onValidate = onValidate
     )
 
-}
-
-
-@Preview
-@Composable
-fun MediaContentMovie_Preview() {
-    FluxTheme {
-        MediaContent(
-            overview = MediaMockups.movieOverview,
-            media = MediaMockups.movie,
-            episodes = emptyList(),
-            currentSeason = -1,
-            showEpisodes = false,
-            sendIntent = {}
-        )
-    }
-}
-
-@Preview
-@Composable
-fun MediaContentShow_Preview() {
-    FluxTheme {
-        MediaContent(
-            overview = MediaMockups.showOverview,
-            media = MediaMockups.episode1,
-            episodes = MediaMockups.episodes,
-            currentSeason = 1,
-            showEpisodes = false,
-            sendIntent = {}
-        )
-    }
 }
 
 @Preview

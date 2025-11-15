@@ -70,7 +70,7 @@ fun MediaButtons(
                 .height(buttonHeight)
                 .fillMaxWidth(),
             checked = media.status == Status.WATCHED,
-            onCheckedChange = { sendIntent(MediaIntent.ShowPlayer) },
+            onCheckedChange = { sendIntent(MediaIntent.PlayMedia(media)) },
             colors = ToggleButtonDefaults.toggleButtonColors(
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary,

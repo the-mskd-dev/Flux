@@ -18,8 +18,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kaem.flux.R
+import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.media.Media
 import com.kaem.flux.model.media.Status
 import com.kaem.flux.screens.media.MediaIntent
@@ -27,6 +29,7 @@ import com.kaem.flux.ui.component.FluxButton
 import com.kaem.flux.ui.component.FluxTextButton
 import com.kaem.flux.ui.component.ProgressBar
 import com.kaem.flux.ui.component.Text
+import com.kaem.flux.ui.theme.FluxTheme
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.extensions.minToMs
 import com.kaem.flux.utils.extensions.timeDescription
@@ -162,4 +165,40 @@ fun MediaStatusButton(
         )
     }
 
+}
+
+@Preview
+@Composable
+fun MediaButtons_Preview() {
+    FluxTheme {
+        MediaButtons(
+            media = MediaMockups.episode1,
+            sendIntent = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+fun MediaButtonsWatching_Preview() {
+    FluxTheme {
+        MediaButtons(
+            media = MediaMockups.episode1.copy(
+                currentTime = (MediaMockups.episode1.duration.minToMs / 2f).toLong(),
+                status = Status.IS_WATCHING
+            ),
+            sendIntent = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+fun MediaButtonsWatched_Preview() {
+    FluxTheme {
+        MediaButtons(
+            media = MediaMockups.episode1.copy(status = Status.WATCHED),
+            sendIntent = {}
+        )
+    }
 }

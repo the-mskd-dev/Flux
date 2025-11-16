@@ -24,8 +24,7 @@ import com.kaem.flux.model.media.Episode
 import com.kaem.flux.model.media.Media
 import com.kaem.flux.model.media.MediaOverview
 import com.kaem.flux.screens.media.composables.MediaScreenContent
-import com.kaem.flux.screens.media.composables.MediaEpisodesPan
-import com.kaem.flux.screens.media.composables.MediaResumePan
+import com.kaem.flux.screens.media.composables.MediaScreenContentLarge
 import com.kaem.flux.screens.player.PlayerScreen
 import com.kaem.flux.ui.component.ErrorScreen
 import com.kaem.flux.ui.component.FluxDialog
@@ -68,12 +67,11 @@ fun MediaScreen(
             else -> {
 
                 if (isLargeScreen) {
-                    MediaContentLarge(
+                    MediaScreenContentLarge(
                         overview = uiState.overview,
                         media = uiState.selectedMedia,
                         episodes = uiState.episodes,
                         currentSeason = uiState.currentSeason,
-                        showEpisodes = uiState.overview.type == ContentType.SHOW,
                         sendIntent = viewModel::handleIntent,
                     )
                 } else {
@@ -107,47 +105,6 @@ fun MediaScreen(
             onDismiss = { viewModel.handleIntent(MediaIntent.ChangeWatchStatus(false)) },
             onValidate = { viewModel.handleIntent(MediaIntent.ChangeWatchStatusForEpisodeAndPrevious) }
         )
-    }
-
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun MediaContentLarge(
-    overview: MediaOverview,
-    media: Media?,
-    episodes: List<Episode>,
-    currentSeason: Int,
-    showEpisodes: Boolean,
-    sendIntent: (MediaIntent) -> Unit,
-) {
-
-    Row(modifier = Modifier.fillMaxSize()) {
-        Box(
-            modifier = Modifier
-                .fillMaxHeight()
-                .weight(1f)
-        ) {
-            MediaResumePan(
-                overview = overview,
-                media = media,
-                sendIntent = sendIntent
-            )
-        }
-
-        if (showEpisodes) {
-            Box(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .weight(1f)
-            ) {
-                MediaEpisodesPan(
-                    episodes = episodes,
-                    currentSeason = currentSeason,
-                    sendIntent = sendIntent
-                )
-            }
-        }
     }
 
 }

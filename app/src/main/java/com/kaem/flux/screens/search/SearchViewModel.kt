@@ -14,14 +14,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-data class SearchUIState(
-    val searchWord: String = "",
-    val overviews: List<MediaOverview> = emptyList()
-) {
-
-    val filteredOverviews get() = overviews.filter { it.title.contains(searchWord, true) }
-}
-
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     private val repository: CatalogRepository

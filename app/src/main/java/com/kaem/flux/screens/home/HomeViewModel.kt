@@ -17,12 +17,6 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.days
 
-data class HomeUiState(
-    val screenState: ScreenState = ScreenState.LOADING,
-    val overviews: List<MediaOverview> = emptyList(),
-    val lastWatchedMediaIds: List<Long> = emptyList(),
-    val isRefreshing: Boolean = true
-)
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(

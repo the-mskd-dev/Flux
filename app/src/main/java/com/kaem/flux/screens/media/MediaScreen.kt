@@ -56,38 +56,48 @@ fun MediaScreen(
             }
             else -> {
 
-                if (isLargeScreen) {
-                    MediaScreenContentLarge(
-                        overview = uiState.overview,
-                        media = uiState.selectedMedia,
-                        episodes = uiState.episodes,
-                        currentSeason = uiState.currentSeason,
-                        sendIntent = viewModel::handleIntent,
-                    )
-                } else {
-                    MediaScreenContent(
-                        overview = uiState.overview,
-                        media = uiState.selectedMedia,
-                        episodes = uiState.episodes,
-                        currentSeason = uiState.currentSeason,
-                        sendIntent = viewModel::handleIntent,
-                    )
+                Crossfade(
+                    modifier = Modifier.fillMaxSize(),
+                    targetState = uiState.showPlayer,
+                    label = "MediaScreenAnimation"
+                ) { showPlayer ->
+                    if (showPlayer) {
+
+                        PlayerScreen(
+                            media = uiState.selectedMedia,
+                            backward = viewModel.backwardValue,
+                            forward = viewModel.forwardValue,
+                            subtitlesLanguage = viewModel.subtitlesLanguage,
+                            sendIntent = viewModel::handleIntent,
+                        )
+
+                    } else {
+
+                        if (isLargeScreen) {
+                            MediaScreenContentLarge(
+                                overview = uiState.overview,
+                                media = uiState.selectedMedia,
+                                episodes = uiState.episodes,
+                                currentSeason = uiState.currentSeason,
+                                sendIntent = viewModel::handleIntent,
+                            )
+                        } else {
+                            MediaScreenContent(
+                                overview = uiState.overview,
+                                media = uiState.selectedMedia,
+                                episodes = uiState.episodes,
+                                currentSeason = uiState.currentSeason,
+                                sendIntent = viewModel::handleIntent,
+                            )
+                        }
+
+                    }
                 }
 
             }
 
         }
 
-    }
-
-    AnimatedVisibility(uiState.showPlayer) {
-        PlayerScreen(
-            media = uiState.selectedMedia,
-            backward = viewModel.backwardValue,
-            forward = viewModel.forwardValue,
-            subtitlesLanguage = viewModel.subtitlesLanguage,
-            sendIntent = viewModel::handleIntent,
-        )
     }
 
     if (uiState.showStatusDialog) {

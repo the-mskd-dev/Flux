@@ -84,6 +84,7 @@ class SettingsViewModel @Inject constructor(
 
     private suspend fun setBackwardValue(value: Int) {
         dataStoreRepository.setPlayerBackwardValue(value)
+        hideDialog()
     }
 
     private fun showForwardDialog() {
@@ -94,6 +95,7 @@ class SettingsViewModel @Inject constructor(
 
     private suspend fun setForwardValue(value: Int) {
         dataStoreRepository.setPlayerForwardValue(value)
+        hideDialog()
     }
 
     private fun showThemeDialog() {
@@ -104,6 +106,7 @@ class SettingsViewModel @Inject constructor(
 
     private suspend fun setTheme(theme: Ui.THEME) {
         dataStoreRepository.setUiTheme(theme)
+        hideDialog()
     }
 
     private fun showSubtitlesLanguageDialog() {
@@ -114,6 +117,7 @@ class SettingsViewModel @Inject constructor(
 
     private suspend fun setSubtitlesLanguage(value: Locale) {
         dataStoreRepository.setSubtitlesLanguage(value)
+        hideDialog()
     }
 
 }

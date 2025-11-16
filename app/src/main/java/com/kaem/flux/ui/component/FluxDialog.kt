@@ -23,7 +23,7 @@ fun FluxDialog(
         onDismissRequest = onDismiss,
         confirmButton = {
             TextButton(
-                onClick = { onValidate?.invoke(); onDismiss() },
+                onClick = { onValidate?.invoke() },
                 content = {
                     Text.Label.Large(text = stringResource(R.string.validate))
                 }

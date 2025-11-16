@@ -24,6 +24,9 @@ import com.kaem.flux.model.media.Episode
 import com.kaem.flux.model.media.Media
 import com.kaem.flux.model.media.MediaOverview
 import com.kaem.flux.screens.media.MediaIntent
+import com.kaem.flux.screens.media.composables.common.MediaButtons
+import com.kaem.flux.screens.media.composables.common.MediaDescription
+import com.kaem.flux.screens.media.composables.common.MediaImage
 import com.kaem.flux.screens.media.composables.episodes.EpisodeItem
 import com.kaem.flux.screens.media.composables.episodes.SeasonsTabs
 import com.kaem.flux.ui.component.Text

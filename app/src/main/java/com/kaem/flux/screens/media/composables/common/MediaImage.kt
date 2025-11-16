@@ -1,4 +1,4 @@
-package com.kaem.flux.screens.media.composables
+package com.kaem.flux.screens.media.composables.common
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

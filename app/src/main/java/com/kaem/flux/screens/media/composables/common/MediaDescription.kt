@@ -40,9 +40,9 @@ fun MediaDescription(media: Media?) {
         Column(modifier = Modifier.fillMaxWidth()) {
 
             if (media is Episode) {
-                Text.Label.Medium(
+                Text.Title.Small(
                     modifier = Modifier.fillMaxWidth(),
-                    text = stringResource(id = R.string.season_and_episode, media.season, media.number).uppercase(),
+                    text = stringResource(id = R.string.season_and_episode, media.season, media.number),
                     color = MaterialTheme.colorScheme.tertiary
                 )
             }

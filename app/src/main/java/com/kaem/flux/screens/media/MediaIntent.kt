@@ -1,6 +1,5 @@
 package com.kaem.flux.screens.media
 
-import com.kaem.flux.model.media.Episode
 import com.kaem.flux.model.media.Media
 
 sealed class MediaIntent {

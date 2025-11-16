@@ -2,9 +2,6 @@ package com.kaem.flux.screens.media
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
@@ -19,10 +16,6 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.window.core.layout.WindowSizeClass
 import com.kaem.flux.R
 import com.kaem.flux.model.ScreenState
-import com.kaem.flux.model.media.ContentType
-import com.kaem.flux.model.media.Episode
-import com.kaem.flux.model.media.Media
-import com.kaem.flux.model.media.MediaOverview
 import com.kaem.flux.screens.media.composables.MediaScreenContent
 import com.kaem.flux.screens.media.composables.MediaScreenContentLarge
 import com.kaem.flux.screens.player.PlayerScreen

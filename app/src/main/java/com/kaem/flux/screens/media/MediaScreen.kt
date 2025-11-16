@@ -3,7 +3,6 @@ package com.kaem.flux.screens.media
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -11,7 +10,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.window.core.layout.WindowSizeClass
 import com.kaem.flux.R
@@ -23,7 +21,6 @@ import com.kaem.flux.ui.component.ErrorScreen
 import com.kaem.flux.ui.component.FluxDialog
 import com.kaem.flux.ui.component.LoadingScreen
 import com.kaem.flux.ui.component.Text
-import com.kaem.flux.ui.theme.FluxTheme
 
 @Composable
 fun MediaScreen(
@@ -94,38 +91,13 @@ fun MediaScreen(
     }
 
     if (uiState.showStatusDialog) {
-        MediaStatusDialog(
+        FluxDialog(
+            content = {
+                Text.Body.Large(text = stringResource(R.string.mark_previous_episodes_as_watched))
+            },
             onDismiss = { viewModel.handleIntent(MediaIntent.ChangeWatchStatus(false)) },
             onValidate = { viewModel.handleIntent(MediaIntent.ChangeWatchStatusForEpisodeAndPrevious) }
         )
     }
 
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun MediaStatusDialog(
-    onDismiss: () -> Unit,
-    onValidate: () -> Unit
-) {
-
-    FluxDialog(
-        content = {
-            Text.Body.Large(text = stringResource(R.string.mark_previous_episodes_as_watched))
-        },
-        onDismiss = onDismiss,
-        onValidate = onValidate
-    )
-
-}
-
-@Preview
-@Composable
-fun MediaStatusDialog_Preview() {
-    FluxTheme {
-        MediaStatusDialog(
-            onDismiss = {},
-            onValidate = {}
-        )
-    }
 }

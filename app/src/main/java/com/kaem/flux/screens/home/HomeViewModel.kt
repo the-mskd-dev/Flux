@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.kaem.flux.data.repository.CatalogRepository
 import com.kaem.flux.data.repository.DataStoreRepository
 import com.kaem.flux.model.ScreenState
-import com.kaem.flux.model.media.MediaOverview
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow

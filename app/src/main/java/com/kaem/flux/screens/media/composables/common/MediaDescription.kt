@@ -43,7 +43,7 @@ fun MediaDescription(media: Media?) {
                 Text.Label.Medium(
                     modifier = Modifier.fillMaxWidth(),
                     text = stringResource(id = R.string.season_and_episode, media.season, media.number).uppercase(),
-                    color = MaterialTheme.colorScheme.primary
+                    color = MaterialTheme.colorScheme.tertiary
                 )
             }
 
@@ -57,9 +57,7 @@ fun MediaDescription(media: Media?) {
         }
 
         Text.Body.Large(
-            modifier = Modifier
-                .fillMaxWidth()
-                .alpha(.8f),
+            modifier = Modifier.fillMaxWidth(),
             text = media.description,
             textAlign = TextAlign.Justify,
             color = MaterialTheme.colorScheme.onBackground
@@ -75,27 +73,25 @@ fun MediaDescription(media: Media?) {
 fun MediaDescriptionDetails(media: Media) {
 
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .alpha(.8f),
+        modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.Start
     ) {
 
         Text.Body.Small(
             text = media.releaseDate?.let { stringResource(R.string.release_date, it.formattedText) },
-            color = MaterialTheme.colorScheme.onBackground
+            color = MaterialTheme.colorScheme.secondary
         )
 
         Text.Body.Small(
             text = stringResource(R.string.duration, media.duration.minToMs.timeDescription()) ,
-            color = MaterialTheme.colorScheme.onBackground
+            color = MaterialTheme.colorScheme.secondary
         )
 
         if (media.voteAverage > 0f) {
             val rate = String.format(Locale.getDefault(),"%.2f", media.voteAverage)
             Text.Body.Small(
                 text = stringResource(R.string.rate, rate),
-                color = MaterialTheme.colorScheme.onBackground
+                color = MaterialTheme.colorScheme.secondary
             )
         }
 

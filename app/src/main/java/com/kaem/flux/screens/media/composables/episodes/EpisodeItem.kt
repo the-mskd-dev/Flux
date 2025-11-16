@@ -35,6 +35,7 @@ import com.kaem.flux.ui.theme.FluxTheme
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.Constants
 import com.kaem.flux.utils.extensions.formattedText
+import com.kaem.flux.utils.extensions.grayScale
 import com.kaem.flux.utils.extensions.minToMs
 import com.kaem.flux.utils.extensions.timeDescription
 
@@ -122,7 +123,9 @@ fun EpisodeImage(
         content = {
 
             Image(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .let { if (episode.status == Status.WATCHED) it.grayScale() else it },
                 url = Constants.TMDB.IMAGE + episode.imagePath,
                 contentDescription = "Season ${episode.season} episode ${episode.number}, ${episode.title}"
             )
@@ -146,14 +149,14 @@ fun EpisodeImage(
                 Box(
                     modifier = Modifier
                         .clip(Ui.Shape.Corner.Small)
-                        .background(MaterialTheme.colorScheme.tertiaryContainer)
+                        .background(MaterialTheme.colorScheme.tertiary)
                         .height(32.dp)
                         .widthIn(min = 40.dp)
                         .padding(horizontal = Ui.Space.SMALL),
                     contentAlignment = Alignment.Center
                 ) {
                     Text.Label.Medium(
-                        color = MaterialTheme.colorScheme.onTertiaryContainer,
+                        color = MaterialTheme.colorScheme.onTertiary,
                         text = stringResource(R.string.watched)
                     )
                 }

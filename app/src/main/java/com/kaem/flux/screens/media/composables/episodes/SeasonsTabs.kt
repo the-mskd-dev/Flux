@@ -21,7 +21,7 @@ import com.kaem.flux.ui.theme.FluxTheme
 import com.kaem.flux.ui.theme.Ui
 
 @Composable
-fun MediaSeasonsTabs(
+fun SeasonsTabs(
     selectedSeason: Int,
     seasons: List<Int>,
     onSeasonTap: (Int) -> Unit
@@ -66,7 +66,7 @@ fun MediaSeasonsTabs(
 @Composable
 fun MediaSeasonsTabs_Preview() {
     FluxTheme {
-        MediaSeasonsTabs(
+        SeasonsTabs(
             selectedSeason = 2,
             seasons = listOf(1,2,3),
             onSeasonTap = {}

@@ -9,8 +9,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -23,7 +24,8 @@ import com.kaem.flux.model.media.Episode
 import com.kaem.flux.model.media.Media
 import com.kaem.flux.model.media.MediaOverview
 import com.kaem.flux.screens.media.MediaIntent
-import com.kaem.flux.screens.media.composables.episodes.MediaSeasonsTabs
+import com.kaem.flux.screens.media.composables.episodes.EpisodeItem
+import com.kaem.flux.screens.media.composables.episodes.SeasonsTabs
 import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.FluxTheme
 import com.kaem.flux.ui.theme.Ui
@@ -84,7 +86,7 @@ fun MediaScreenContent(
                         color = MaterialTheme.colorScheme.onBackground
                     )
 
-                    MediaSeasonsTabs(
+                    SeasonsTabs(
                         selectedSeason = currentSeason,
                         seasons = episodes.map { it.season }.distinct(),
                         onSeasonTap = { sendIntent(MediaIntent.SelectSeason(it)) }
@@ -94,26 +96,23 @@ fun MediaScreenContent(
 
             }
 
-            items(
+
+            itemsIndexed(
                 items = episodes
                     .filter { it.season == currentSeason }
                     .sortedBy { it.number },
-                key = { e -> e.id }
-            ) { episode ->
+                key = { _, e -> e.id }
+            ) { i, episode ->
 
-                Column(modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = Ui.Space.MEDIUM)
-                    .animateItem()
-                ) {
-
-                    EpisodeItemVertical(
-                        modifier = Modifier.animateItem(),
-                        episode = episode,
-                        onTap = { sendIntent(MediaIntent.PlayMedia(episode)) }
-                    )
-
+                if (i != 0) {
+                    HorizontalDivider(modifier = Modifier.padding(horizontal = Ui.Space.MEDIUM))
                 }
+
+                EpisodeItem(
+                    modifier = Modifier.animateItem(),
+                    episode = episode,
+                    onTap = { sendIntent(MediaIntent.PlayMedia(episode)) }
+                )
 
             }
 

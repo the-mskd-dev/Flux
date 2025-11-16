@@ -19,6 +19,7 @@ import com.kaem.flux.model.media.Media
 import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.FluxTheme
 import com.kaem.flux.ui.theme.Ui
+import com.kaem.flux.utils.extensions.formattedText
 import com.kaem.flux.utils.extensions.minToMs
 import com.kaem.flux.utils.extensions.timeDescription
 import java.text.DateFormat
@@ -82,7 +83,7 @@ fun MediaDescriptionDetails(media: Media) {
     ) {
 
         Text.Body.Small(
-            text = media.releaseDate?.let { stringResource(R.string.release_date, DateFormat.getDateInstance().format(it)) },
+            text = media.releaseDate?.let { stringResource(R.string.release_date, it.formattedText) },
             color = MaterialTheme.colorScheme.onBackground
         )
 

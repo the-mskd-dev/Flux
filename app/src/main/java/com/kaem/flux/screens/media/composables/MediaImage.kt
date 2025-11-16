@@ -116,7 +116,7 @@ fun MediaImage(
 
 }
 
-@Preview(showBackground = true)
+@Preview
 @Composable
 fun MediaImage_Preview() {
     FluxTheme {

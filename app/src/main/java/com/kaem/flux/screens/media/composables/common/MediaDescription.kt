@@ -45,7 +45,10 @@ fun MediaDescription(media: Media?) {
         verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
     ) {
 
-        Column(modifier = Modifier.fillMaxWidth()) {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)
+        ) {
 
             if (media is Episode) {
                 Row(horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)) {

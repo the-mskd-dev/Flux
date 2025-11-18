@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -17,18 +18,22 @@ import com.kaem.flux.ui.theme.FluxTheme
 import com.kaem.flux.ui.theme.Ui
 
 @Composable
-fun FixedChip(text: String) {
+fun FixedChip(
+    text: String,
+    backgroundColor: Color = MaterialTheme.colorScheme.secondaryContainer,
+    textColor: Color = MaterialTheme.colorScheme.onSecondaryContainer
+) {
     Box(
         modifier = Modifier
             .clip(Ui.Shape.Corner.Small)
             .height(32.dp)
-            .background(MaterialTheme.colorScheme.secondaryContainer)
+            .background(backgroundColor)
             .padding(horizontal = Ui.Space.MEDIUM),
         contentAlignment = Alignment.Center
     ) {
         Text.Label.Medium(
             text = text,
-            color = MaterialTheme.colorScheme.onSecondaryContainer
+            color = textColor
         )
     }
 }

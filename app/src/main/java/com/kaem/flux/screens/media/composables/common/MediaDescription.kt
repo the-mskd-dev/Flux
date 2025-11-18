@@ -2,8 +2,15 @@ package com.kaem.flux.screens.media.composables.common
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Done
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -16,6 +23,7 @@ import com.kaem.flux.R
 import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.media.Episode
 import com.kaem.flux.model.media.Media
+import com.kaem.flux.ui.component.FixedChip
 import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.FluxTheme
 import com.kaem.flux.ui.theme.Ui
@@ -40,11 +48,10 @@ fun MediaDescription(media: Media?) {
         Column(modifier = Modifier.fillMaxWidth()) {
 
             if (media is Episode) {
-                Text.Title.Small(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = stringResource(id = R.string.season_and_episode, media.season, media.number),
-                    color = MaterialTheme.colorScheme.tertiary
-                )
+                Row(horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)) {
+                    FixedChip(text = stringResource(id = R.string.season, media.season).uppercase())
+                    FixedChip(text = stringResource(id = R.string.episode, media.number).uppercase())
+                }
             }
 
             Text.Headline.Medium(

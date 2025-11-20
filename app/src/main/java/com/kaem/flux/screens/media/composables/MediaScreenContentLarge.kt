@@ -121,7 +121,7 @@ fun MediaScreenContentLarge(
                     EpisodeItem(
                         modifier = Modifier.animateItem(),
                         episode = episode,
-                        onTap = { sendIntent(MediaIntent.PlayMedia(episode)) }
+                        sendIntent = sendIntent
                     )
 
                 }

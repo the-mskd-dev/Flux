@@ -3,7 +3,7 @@ package com.kaem.flux.screens.media.composables.episodes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,11 +14,24 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -28,6 +41,7 @@ import com.kaem.flux.R
 import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.media.Episode
 import com.kaem.flux.model.media.Status
+import com.kaem.flux.screens.media.MediaIntent
 import com.kaem.flux.ui.component.Image
 import com.kaem.flux.ui.component.ProgressBar
 import com.kaem.flux.ui.component.Text
@@ -43,12 +57,17 @@ import com.kaem.flux.utils.extensions.timeDescription
 fun EpisodeItem(
     modifier: Modifier = Modifier,
     episode: Episode,
-    onTap: () -> Unit
+    sendIntent: (MediaIntent) -> Unit
 ) {
+
+    var showMenu by remember { mutableStateOf(false) }
 
     Column(
         modifier = modifier
-            .clickable { onTap() }
+            .combinedClickable(
+                onClick = { sendIntent(MediaIntent.PlayMedia(episode)) },
+                onLongClick = { showMenu = true }
+            )
             .animateContentSize()
             .fillMaxWidth()
             .padding(Ui.Space.MEDIUM),
@@ -105,6 +124,14 @@ fun EpisodeItem(
             color = MaterialTheme.colorScheme.onBackground,
         )
 
+    }
+
+    if (showMenu) {
+        EpisodeDropDownMenu(
+            episode = episode,
+            onDismissRequest = { showMenu = false },
+            sendIntent = sendIntent
+        )
     }
 
 }
@@ -167,13 +194,74 @@ fun EpisodeImage(
 
 }
 
+@Composable
+fun EpisodeDropDownMenu(
+    episode: Episode,
+    onDismissRequest: () -> Unit,
+    sendIntent: (MediaIntent) -> Unit
+) {
+
+    val text = when (episode.status) {
+        Status.WATCHED -> stringResource(R.string.rewatch)
+        Status.IS_WATCHING -> stringResource(R.string.resume)
+        else -> stringResource(R.string.start)
+    }
+
+    DropdownMenu(
+        expanded = true,
+        onDismissRequest = onDismissRequest,
+        containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+        content = {
+
+            DropdownMenuItem(
+                colors = MenuDefaults.itemColors(
+                    textColor = MaterialTheme.colorScheme.onTertiaryContainer,
+                    leadingIconColor = MaterialTheme.colorScheme.onTertiaryContainer,
+                ),
+                onClick = {
+                    sendIntent(MediaIntent.PlayMedia(media = episode))
+                    onDismissRequest()
+                },
+                text = {
+                    Text.Body.Medium(text = text)
+                },
+                leadingIcon = {
+                    Icon(imageVector = if (episode.status == Status.WATCHED) Icons.Default.Refresh else Icons.Default.PlayArrow, contentDescription = null)
+                },
+            )
+
+            DropdownMenuItem(
+                colors = MenuDefaults.itemColors(
+                    textColor = MaterialTheme.colorScheme.onTertiaryContainer,
+                    leadingIconColor = MaterialTheme.colorScheme.onTertiaryContainer,
+                ),
+                onClick = {
+                    sendIntent(MediaIntent.ChangeWatchStatus(checkPrevious = true, episode = episode))
+                    onDismissRequest()
+                },
+                text = {
+                    Text.Body.Medium(stringResource(if (episode.status == Status.WATCHED) R.string.mark_as_not_watched else R.string.mark_as_watched))
+                },
+                leadingIcon = {
+                    if (episode.status == Status.WATCHED)
+                        Icon(painter = painterResource(R.drawable.ic_visibility), contentDescription = null)
+                    else
+                        Icon(imageVector = Icons.Default.Done, contentDescription = null)
+                },
+            )
+
+        }
+    )
+
+}
+
 @Preview
 @Composable
 fun EpisodeItem_Preview() {
     FluxTheme {
         EpisodeItem(
             episode = MediaMockups.episode1,
-            onTap = {}
+            sendIntent = {}
         )
     }
 }
@@ -187,7 +275,7 @@ fun EpisodeItemWatching_Preview() {
                 status = Status.IS_WATCHING,
                 currentTime = (MediaMockups.episode1.duration.minToMs / 2f).toLong(),
             ),
-            onTap = {}
+            sendIntent = {}
         )
     }
 }
@@ -201,7 +289,7 @@ fun EpisodeItemWatched_Preview() {
                 status = Status.WATCHED,
                 currentTime = MediaMockups.episode1.duration.minToMs,
             ),
-            onTap = {}
+            sendIntent = {}
         )
     }
 }

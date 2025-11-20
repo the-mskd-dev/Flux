@@ -91,7 +91,7 @@ fun MediaButtons(
                     Icon(
                         modifier = Modifier.size(ButtonDefaults.iconSizeFor(buttonHeight)),
                         imageVector = if (media.status == Status.WATCHED) Icons.Default.Refresh else Icons.Default.PlayArrow,
-                        contentDescription = "Mark as not watched button"
+                        contentDescription = "Play button"
                     )
                     androidx.compose.material3.Text(
                         text = text,

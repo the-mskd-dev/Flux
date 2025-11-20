@@ -17,7 +17,7 @@ data class MediaUiState(
 
 sealed class MediaIntent {
     object OnBackTap: MediaIntent()
-    data class ChangeWatchStatus(val checkPrevious: Boolean): MediaIntent()
+    data class ChangeWatchStatus(val checkPrevious: Boolean, val episode: Episode? = null): MediaIntent()
     object ChangeWatchStatusForEpisodeAndPrevious: MediaIntent()
     data class SelectSeason(val season: Int): MediaIntent()
     data class SaveWatchTime(val time: Long): MediaIntent()

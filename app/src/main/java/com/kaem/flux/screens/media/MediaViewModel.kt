@@ -58,11 +58,11 @@ class MediaViewModel @Inject constructor(
     fun handleIntent(intent: MediaIntent) = viewModelScope.launch {
         when (intent) {
             MediaIntent.OnBackTap -> _event.emit(MediaEvent.BackToPreviousScreen)
-            is MediaIntent.SelectSeason -> selectSeason(intent.season)
-            is MediaIntent.SaveWatchTime -> saveWatchTime(intent.time)
-            is MediaIntent.PlayMedia -> playMedia(intent.media)
+            is MediaIntent.SelectSeason -> selectSeason(season = intent.season)
+            is MediaIntent.SaveWatchTime -> saveWatchTime(time = intent.time)
+            is MediaIntent.PlayMedia -> playMedia(media = intent.media)
             MediaIntent.ClosePlayer -> closePlayer()
-            is MediaIntent.ChangeWatchStatus -> changeWatchStatus(intent.checkPrevious)
+            is MediaIntent.ChangeWatchStatus -> changeWatchStatus(checkPrevious = intent.checkPrevious, episode = intent.episode)
             MediaIntent.ChangeWatchStatusForEpisodeAndPrevious -> changeEpisodesStatus(status = Status.WATCHED, previous = true)
         }
     }
@@ -127,10 +127,10 @@ class MediaViewModel @Inject constructor(
         }
     }
 
-    private suspend fun changeWatchStatus(checkPrevious: Boolean = true) {
+    private suspend fun changeWatchStatus(checkPrevious: Boolean = true, episode: Episode? = null) {
 
 
-        val media = uiState.value.selectedMedia ?: return
+        val media = episode ?: uiState.value.selectedMedia ?: return
         val newStatus = if (media.status != Status.WATCHED) Status.WATCHED else Status.TO_WATCH
 
         if (

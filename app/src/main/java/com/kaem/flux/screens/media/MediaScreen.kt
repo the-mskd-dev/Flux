@@ -1,6 +1,5 @@
 package com.kaem.flux.screens.media
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
@@ -105,8 +104,8 @@ fun MediaScreen(
             content = {
                 Text.Body.Large(text = stringResource(R.string.mark_previous_episodes_as_watched))
             },
-            onDismiss = { viewModel.handleIntent(MediaIntent.ChangeWatchStatus(false)) },
-            onValidate = { viewModel.handleIntent(MediaIntent.ChangeWatchStatusForEpisodeAndPrevious) }
+            onDismiss = { viewModel.handleIntent(MediaIntent.CloseEpisodesStatusDialog) },
+            onValidate = { viewModel.handleIntent(MediaIntent.MarkPreviousEpisodesAsWatched) }
         )
     }
 

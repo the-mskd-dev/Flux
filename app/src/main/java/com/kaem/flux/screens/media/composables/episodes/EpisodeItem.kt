@@ -236,7 +236,7 @@ fun EpisodeDropDownMenu(
                     leadingIconColor = MaterialTheme.colorScheme.onTertiaryContainer,
                 ),
                 onClick = {
-                    sendIntent(MediaIntent.ChangeWatchStatus(checkPrevious = true, episode = episode))
+                    sendIntent(MediaIntent.ChangeWatchStatus(media = episode))
                     onDismissRequest()
                 },
                 text = {

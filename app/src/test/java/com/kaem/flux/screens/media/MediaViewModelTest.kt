@@ -217,7 +217,7 @@ class MediaViewModelTest : BaseTest() {
             awaitItem()
 
             // Validate change for previous episodes
-            viewModel.handleIntent(MediaIntent.ChangeWatchStatusForEpisodeAndPrevious)
+            viewModel.handleIntent(MediaIntent.MarkPreviousEpisodesAsWatched)
             advanceUntilIdle()
 
             // Final state

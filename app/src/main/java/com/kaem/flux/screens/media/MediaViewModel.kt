@@ -45,6 +45,8 @@ class MediaViewModel @Inject constructor(
     var forwardValue: Long = 10.seconds.inWholeMilliseconds
     var subtitlesLanguage: Locale = Locale.getDefault()
 
+    private var episodeTmp: Episode? = null
+
     init {
 
         val (backward, forward) = dataStoreRepository.getPlayerButtonsValues()
@@ -61,9 +63,10 @@ class MediaViewModel @Inject constructor(
             is MediaIntent.SelectSeason -> selectSeason(season = intent.season)
             is MediaIntent.SaveWatchTime -> saveWatchTime(time = intent.time)
             is MediaIntent.PlayMedia -> playMedia(media = intent.media)
+            MediaIntent.CloseEpisodesStatusDialog -> closeStatusDialog()
             MediaIntent.ClosePlayer -> closePlayer()
-            is MediaIntent.ChangeWatchStatus -> changeWatchStatus(checkPrevious = intent.checkPrevious, episode = intent.episode)
-            MediaIntent.ChangeWatchStatusForEpisodeAndPrevious -> changeEpisodesStatus(status = Status.WATCHED, previous = true)
+            is MediaIntent.ChangeWatchStatus -> changeWatchStatus(media = intent.media)
+            MediaIntent.MarkPreviousEpisodesAsWatched -> markPreviousEpisodesAsWatched()
         }
     }
 
@@ -127,68 +130,97 @@ class MediaViewModel @Inject constructor(
         }
     }
 
-    private suspend fun changeWatchStatus(checkPrevious: Boolean = true, episode: Episode? = null) {
+    private fun closeStatusDialog() {
+        _uiState.update { currentState ->
+            currentState.copy(showStatusDialog = false)
+        }
+        episodeTmp = null
+    }
 
+    private suspend fun changeWatchStatus(media: Media) {
 
-        val media = episode ?: uiState.value.selectedMedia ?: return
         val newStatus = if (media.status != Status.WATCHED) Status.WATCHED else Status.TO_WATCH
 
+        when (media) {
+            is Movie -> changeMovieStatus(movie = media, status = newStatus)
+            is Episode -> changeEpisodeStatus(episode = media, status = newStatus)
+        }
+
         if (
-            checkPrevious
-            && newStatus == Status.WATCHED
+            newStatus == Status.WATCHED
             && media is Episode
             && _uiState.value.episodes.getPreviousEpisodesFor(media).any { it.status != Status.WATCHED }
         ) {
+            episodeTmp = media
             showStatusDialog()
-            return
-        }
-
-        when (media) {
-            is Movie -> changeMovieStatus(newStatus)
-            is Episode -> changeEpisodesStatus(status = newStatus, previous = false)
         }
 
     }
 
-    private suspend fun changeMovieStatus(status: Status) {
+    private suspend fun changeMovieStatus(movie: Movie, status: Status) {
 
-        val media = uiState.value.selectedMedia as? Movie ?: return
-
-        val movie = media.copy(
+        val movieUpdated = movie.copy(
             status = status,
             currentTime = 0L
         )
         _uiState.update { currentState ->
             currentState.copy(
-                selectedMedia = movie,
+                selectedMedia = movieUpdated,
                 showStatusDialog = false
             )
         }
 
         // Save status in DB
-        repository.saveMovie(movie)
+        repository.saveMovie(movieUpdated)
 
         Log.i("MediaViewModel", "${movie.title} is now ${movie.status}")
 
     }
 
-    private suspend fun changeEpisodesStatus(status: Status, previous: Boolean) {
+    private suspend fun changeEpisodeStatus(episode: Episode, status: Status) {
 
         val state = uiState.value
-        val episode = state.selectedMedia as? Episode ?: return
-        val previousEpisodes = if (previous && status == Status.WATCHED) state.episodes.getPreviousEpisodesFor(episode).filter { it.status != Status.WATCHED } else emptyList()
 
         val updatedEpisode = episode.copy(
             status = status,
             currentTime = 0L
         )
 
+        // Update list
+        val episodes = state.episodes.toMutableList()
+        episodes.replaceAll { e ->
+            if (e.id == episode.id) updatedEpisode else e
+        }
+
+        _uiState.update { currentState ->
+            currentState.copy(
+                selectedMedia = if ((currentState.selectedMedia as? Episode)?.id == episode.id) updatedEpisode else currentState.selectedMedia, // Update media only if it's the same as selected
+                episodes = episodes,
+                showStatusDialog = false
+            )
+        }
+
+        // Save status in DB
+        repository.saveEpisodes(listOf(updatedEpisode))
+
+        addOrRemoveToWatchedMedias()
+
+        Log.i("MediaViewModel", "${episode.title} season ${episode.season} episode ${episode.number} is now ${episode.status}")
+
+    }
+
+    private suspend fun markPreviousEpisodesAsWatched() {
+
+        val state = uiState.value
+        val episode = episodeTmp ?: return
+        val previousEpisodes = state.episodes.getPreviousEpisodesFor(episode).filter { it.status != Status.WATCHED }
+
         val updatedEpisodes = previousEpisodes.map {
             it.copy(
                 status = Status.WATCHED,
                 currentTime = 0L
             )
-        } + updatedEpisode
+        }
 
         // Update list
         val episodes = state.episodes.toMutableList()
@@ -197,7 +229,6 @@ class MediaViewModel @Inject constructor(
         }
         _uiState.update { currentState ->
             currentState.copy(
-                selectedMedia = updatedEpisode,
                 episodes = episodes,
                 showStatusDialog = false
             )
@@ -206,9 +237,9 @@ class MediaViewModel @Inject constructor(
         // Save status in DB
         repository.saveEpisodes(episodes)
 
-        addOrRemoveToWatchedMedias()
+        episodeTmp = null
 
-        Log.i("MediaViewModel", "${episode.title} season ${episode.season} episode ${episode.number} is now ${episode.status}")
+        Log.i("MediaViewModel", "Episodes previous season ${episode.season} episode ${episode.number} are marked as watched")
 
     }
 

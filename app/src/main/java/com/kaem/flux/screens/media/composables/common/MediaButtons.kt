@@ -106,7 +106,7 @@ fun MediaButtons(
         FluxTextButton(
             text = stringResource(if (media.status == Status.WATCHED) R.string.mark_as_not_watched else R.string.mark_as_watched),
             height = buttonHeight,
-            onTap = { sendIntent(MediaIntent.ChangeWatchStatus(checkPrevious = true)) }
+            onTap = { sendIntent(MediaIntent.ChangeWatchStatus(media = media)) }
         )
 
     }

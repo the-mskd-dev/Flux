@@ -6,13 +6,9 @@ import java.util.Locale
 
 data class SettingsUiState(
     val backwardValue: Int = 10,
-    val showBackwardDialog: Boolean = false,
     val forwardValue: Int = 10,
-    val showForwardDialog: Boolean = false,
     val uiTheme: Ui.THEME = Ui.THEME.SYSTEM,
-    val showUiThemeDialog: Boolean = false,
     val subtitlesLanguage: Locale = Locale.getDefault(),
-    val showSubtitlesLanguage: Boolean = false,
     val dialogState: SettingsDialogState<*>? = null
 )
 

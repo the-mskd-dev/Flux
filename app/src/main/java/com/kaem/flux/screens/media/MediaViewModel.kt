@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.Locale
@@ -34,7 +35,7 @@ class MediaViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _event = MutableSharedFlow<MediaEvent>()
-    val event = _event.asSharedFlow()
+    val event = _event.asSharedFlow().distinctUntilChanged()
 
     private val mediaId: Long = checkNotNull(savedStateHandle["mediaId"])
 

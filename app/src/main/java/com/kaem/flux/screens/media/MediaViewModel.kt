@@ -80,7 +80,7 @@ class MediaViewModel @Inject constructor(
             movie != null -> MediaUiState(
                 overview = overview,
                 screen = ScreenState.CONTENT,
-                selectedMedia = movie
+                media = movie
             )
 
             !episodes.isNullOrEmpty() -> {
@@ -93,8 +93,8 @@ class MediaViewModel @Inject constructor(
                     overview = overview,
                     screen = ScreenState.CONTENT,
                     episodes = episodes,
-                    currentSeason = currentEpisode.season,
-                    selectedMedia = currentEpisode,
+                    season = currentEpisode.season,
+                    media = currentEpisode,
                 )
             }
             else -> MediaUiState(screen = ScreenState.ERROR)
@@ -105,14 +105,14 @@ class MediaViewModel @Inject constructor(
 
     private fun selectSeason(season: Int) {
         _uiState.update { currentState ->
-            currentState.copy(currentSeason = season)
+            currentState.copy(season = season)
         }
     }
 
     private fun playMedia(media: Media) {
         _uiState.update { currentState ->
             currentState.copy(
-                selectedMedia = media,
+                media = media,
                 showPlayer = true
             )
         }
@@ -165,7 +165,7 @@ class MediaViewModel @Inject constructor(
         )
         _uiState.update { currentState ->
             currentState.copy(
-                selectedMedia = movieUpdated,
+                media = movieUpdated,
                 showStatusDialog = false
             )
         }
@@ -194,7 +194,7 @@ class MediaViewModel @Inject constructor(
 
         _uiState.update { currentState ->
             currentState.copy(
-                selectedMedia = if ((currentState.selectedMedia as? Episode)?.id == episode.id) updatedEpisode else currentState.selectedMedia, // Update media only if it's the same as selected
+                media = if ((currentState.media as? Episode)?.id == episode.id) updatedEpisode else currentState.media, // Update media only if it's the same as selected
                 episodes = episodes,
                 showStatusDialog = false
             )
@@ -245,7 +245,7 @@ class MediaViewModel @Inject constructor(
 
     private suspend fun saveWatchTime(time: Long) {
 
-        val media = uiState.value.selectedMedia ?: return
+        val media = uiState.value.media
         val status = if (time.msToMin >= media.duration * .9) Status.WATCHED else Status.IS_WATCHING
 
         uiState.value.let { state ->

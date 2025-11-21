@@ -40,11 +40,9 @@ import com.kaem.flux.utils.extensions.timeDescription
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun MediaButtons(
-    media: Media?,
+    media: Media,
     sendIntent: (MediaIntent) -> Unit
 ) {
-
-    media ?: return
 
     val buttonHeight = ButtonDefaults.MediumContainerHeight
 

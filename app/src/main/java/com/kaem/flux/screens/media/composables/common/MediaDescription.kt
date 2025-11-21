@@ -34,9 +34,7 @@ import java.util.Locale
 
 
 @Composable
-fun MediaDescription(media: Media?) {
-
-    media ?: return
+fun MediaDescription(media: Media) {
 
     Column(
         modifier = Modifier

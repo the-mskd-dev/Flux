@@ -63,7 +63,7 @@ fun MediaScreen(
                     if (showPlayer) {
 
                         PlayerScreen(
-                            media = uiState.selectedMedia,
+                            media = uiState.media,
                             backward = viewModel.backwardValue,
                             forward = viewModel.forwardValue,
                             subtitlesLanguage = viewModel.subtitlesLanguage,
@@ -75,17 +75,17 @@ fun MediaScreen(
                         if (isLargeScreen) {
                             MediaScreenContentLarge(
                                 overview = uiState.overview,
-                                media = uiState.selectedMedia,
+                                media = uiState.media,
                                 episodes = uiState.episodes,
-                                currentSeason = uiState.currentSeason,
+                                currentSeason = uiState.season,
                                 sendIntent = viewModel::handleIntent,
                             )
                         } else {
                             MediaScreenContent(
                                 overview = uiState.overview,
-                                media = uiState.selectedMedia,
+                                media = uiState.media,
                                 episodes = uiState.episodes,
-                                currentSeason = uiState.currentSeason,
+                                currentSeason = uiState.season,
                                 sendIntent = viewModel::handleIntent,
                             )
                         }

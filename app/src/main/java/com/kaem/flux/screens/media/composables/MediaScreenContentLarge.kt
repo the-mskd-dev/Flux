@@ -38,7 +38,7 @@ import com.kaem.flux.ui.theme.Ui
 @Composable
 fun MediaScreenContentLarge(
     overview: MediaOverview,
-    media: Media?,
+    media: Media,
     episodes: List<Episode>,
     currentSeason: Int,
     sendIntent: (MediaIntent) -> Unit,

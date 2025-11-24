@@ -124,14 +124,14 @@ fun EpisodeItem(
             color = MaterialTheme.colorScheme.onBackground,
         )
 
-    }
+        if (showMenu) {
+            EpisodeDropDownMenu(
+                episode = episode,
+                onDismissRequest = { showMenu = false },
+                sendIntent = sendIntent
+            )
+        }
 
-    if (showMenu) {
-        EpisodeDropDownMenu(
-            episode = episode,
-            onDismissRequest = { showMenu = false },
-            sendIntent = sendIntent
-        )
     }
 
 }

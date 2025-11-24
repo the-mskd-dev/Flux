@@ -7,6 +7,7 @@ import java.util.Date
 /**
  * Represents detailed information about a media, such as a movie or an episode.
  *
+ * @property mediaId Id of the artwork
  * @property releaseDateString The release date of the media as a string.
  * @property description Description or synopsis of the media.
  * @property voteAverage Average rating of the media.

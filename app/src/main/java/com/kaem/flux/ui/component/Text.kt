@@ -24,8 +24,8 @@ object Text {
          */
         @Composable
         fun Large(
-            modifier: Modifier = Modifier,
             text: String?,
+            modifier: Modifier = Modifier,
             textAlign: TextAlign = TextAlign.Start,
             color: Color = Color.Unspecified,
             emphasized: Boolean = false,
@@ -56,8 +56,8 @@ object Text {
          */
         @Composable
         fun Medium(
-            modifier: Modifier = Modifier,
             text: String?,
+            modifier: Modifier = Modifier,
             textAlign: TextAlign = TextAlign.Start,
             color: Color = Color.Unspecified,
             emphasized: Boolean = false,
@@ -88,8 +88,8 @@ object Text {
          */
         @Composable
         fun Small(
-            modifier: Modifier = Modifier,
             text: String?,
+            modifier: Modifier = Modifier,
             textAlign: TextAlign = TextAlign.Start,
             color: Color = Color.Unspecified,
             emphasized: Boolean = false,
@@ -127,8 +127,8 @@ object Text {
          */
         @Composable
         fun Large(
-            modifier: Modifier = Modifier,
             text: String?,
+            modifier: Modifier = Modifier,
             textAlign: TextAlign = TextAlign.Start,
             color: Color = Color.Unspecified,
             emphasized: Boolean = false,
@@ -159,8 +159,8 @@ object Text {
          */
         @Composable
         fun Medium(
-            modifier: Modifier = Modifier,
             text: String?,
+            modifier: Modifier = Modifier,
             textAlign: TextAlign = TextAlign.Start,
             color: Color = Color.Unspecified,
             emphasized: Boolean = false,
@@ -191,8 +191,8 @@ object Text {
          */
         @Composable
         fun Small(
-            modifier: Modifier = Modifier,
             text: String?,
+            modifier: Modifier = Modifier,
             textAlign: TextAlign = TextAlign.Start,
             color: Color = Color.Unspecified,
             emphasized: Boolean = false,
@@ -230,8 +230,8 @@ object Text {
          */
         @Composable
         fun Large(
-            modifier: Modifier = Modifier,
             text: String?,
+            modifier: Modifier = Modifier,
             textAlign: TextAlign = TextAlign.Start,
             color: Color = Color.Unspecified,
             emphasized: Boolean = false,
@@ -262,8 +262,8 @@ object Text {
          */
         @Composable
         fun Medium(
-            modifier: Modifier = Modifier,
             text: String?,
+            modifier: Modifier = Modifier,
             textAlign: TextAlign = TextAlign.Start,
             color: Color = Color.Unspecified,
             emphasized: Boolean = false,
@@ -295,8 +295,8 @@ object Text {
          */
         @Composable
         fun Small(
-            modifier: Modifier = Modifier,
             text: String?,
+            modifier: Modifier = Modifier,
             textAlign: TextAlign = TextAlign.Start,
             color: Color = Color.Unspecified,
             emphasized: Boolean = false,
@@ -334,8 +334,8 @@ object Text {
          */
         @Composable
         fun Large(
-            modifier: Modifier = Modifier,
             text: String?,
+            modifier: Modifier = Modifier,
             textAlign: TextAlign = TextAlign.Start,
             color: Color = Color.Unspecified,
             emphasized: Boolean = false,
@@ -366,8 +366,8 @@ object Text {
          */
         @Composable
         fun Medium(
-            modifier: Modifier = Modifier,
             text: String?,
+            modifier: Modifier = Modifier,
             textAlign: TextAlign = TextAlign.Start,
             color: Color = Color.Unspecified,
             emphasized: Boolean = false,
@@ -398,8 +398,8 @@ object Text {
          */
         @Composable
         fun Small(
-            modifier: Modifier = Modifier,
             text: String?,
+            modifier: Modifier = Modifier,
             textAlign: TextAlign = TextAlign.Start,
             color: Color = Color.Unspecified,
             emphasized: Boolean = false,
@@ -437,8 +437,8 @@ object Text {
          */
         @Composable
         fun Large(
-            modifier: Modifier = Modifier,
             text: String?,
+            modifier: Modifier = Modifier,
             textAlign: TextAlign = TextAlign.Start,
             color: Color = Color.Unspecified,
             emphasized: Boolean = false,
@@ -469,8 +469,8 @@ object Text {
          */
         @Composable
         fun Medium(
-            modifier: Modifier = Modifier,
             text: String?,
+            modifier: Modifier = Modifier,
             textAlign: TextAlign = TextAlign.Start,
             color: Color = Color.Unspecified,
             emphasized: Boolean = false,
@@ -501,8 +501,8 @@ object Text {
          */
         @Composable
         fun Small(
-            modifier: Modifier = Modifier,
             text: String?,
+            modifier: Modifier = Modifier,
             textAlign: TextAlign = TextAlign.Start,
             color: Color = Color.Unspecified,
             emphasized: Boolean = false,

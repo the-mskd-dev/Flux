@@ -49,12 +49,12 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
-import com.kaem.flux.navigation.Navigation
 import com.kaem.flux.R
 import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.ScreenState
 import com.kaem.flux.model.media.ContentType
 import com.kaem.flux.model.media.MediaOverview
+import com.kaem.flux.navigation.Navigation
 import com.kaem.flux.screens.welcome.WelcomeScreen
 import com.kaem.flux.screens.welcome.fluxPermissionState
 import com.kaem.flux.ui.component.FluxButton
@@ -372,7 +372,8 @@ fun MediaCategory(
                 .fillMaxWidth()
                 .padding(start = Ui.Space.MEDIUM, top = Ui.Space.LARGE),
             text = name,
-            emphasized = true
+            emphasized = true,
+            color = MaterialTheme.colorScheme.onBackground
         )
 
         LazyRow(

@@ -52,10 +52,11 @@ import com.kaem.flux.utils.extensions.setAppInLandscape
 import com.kaem.flux.utils.extensions.setAppOrientation
 import com.kaem.flux.utils.extensions.showSystemBars
 import java.util.Locale
+import androidx.core.net.toUri
 
 @Composable
 fun PlayerScreen(
-    media: Media?,
+    media: Media,
     backward: Long,
     forward: Long,
     subtitlesLanguage: Locale,
@@ -75,22 +76,18 @@ fun PlayerScreen(
     }
 
     if (!isExiting) {
-        if (media != null) {
-            VideoPlayer(
-                media = media,
-                backward = backward,
-                forward = forward,
-                subtitlesLanguage = subtitlesLanguage,
-                onBackButtonTap = {
-                    activity.setAppOrientation(orientation)
-                    isExiting = true
-                    sendIntent(MediaIntent.ClosePlayer)
-                },
-                onTimeSave = { sendIntent(MediaIntent.SaveWatchTime(it)) }
-            )
-        } else {
-            Box(modifier = Modifier.background(Color.Black).fillMaxSize())
-        }
+        VideoPlayer(
+            media = media,
+            backward = backward,
+            forward = forward,
+            subtitlesLanguage = subtitlesLanguage,
+            onBackButtonTap = {
+                activity.setAppOrientation(orientation)
+                isExiting = true
+                sendIntent(MediaIntent.ClosePlayer)
+            },
+            onTimeSave = { sendIntent(MediaIntent.SaveWatchTime(it)) }
+        )
     }
 
 }
@@ -124,7 +121,7 @@ fun VideoPlayer(
                     .setPreferredTextLanguage(subtitlesLanguage.language)
                     .setPreferredTextRoleFlags(C.ROLE_FLAG_SUBTITLE)
                     .build()
-                setMediaItem(MediaItem.fromUri(Uri.parse(media.file.path)), media.currentTime)
+                setMediaItem(MediaItem.fromUri(media.file.path.toUri()), media.currentTime)
                 prepare()
                 play()
         }

@@ -37,13 +37,10 @@ class SettingsViewModelTest : BaseTest() {
         viewModel.uiState.test {
             val initialState = awaitItem()
             assert(10 == initialState.backwardValue)
-            assert(!initialState.showBackwardDialog)
             assert(10 == initialState.forwardValue)
-            assert(!initialState.showForwardDialog)
             assert(Ui.THEME.SYSTEM == initialState.uiTheme)
-            assert(!initialState.showUiThemeDialog)
             assert(Locale.getDefault() == initialState.subtitlesLanguage)
-            assert(!initialState.showSubtitlesLanguage)
+            assert(initialState.dialogState == null)
         }
     }
 
@@ -52,10 +49,10 @@ class SettingsViewModelTest : BaseTest() {
         viewModel.uiState.test {
 
             awaitItem()
-            viewModel.handleIntent(SettingsIntent.ShowBackwardDialog(true))
+            viewModel.handleIntent(SettingsIntent.ShowBackwardDialog)
 
             val state = awaitItem()
-            assert(state.showBackwardDialog)
+            assert(state.dialogState != null)
 
         }
     }
@@ -65,10 +62,10 @@ class SettingsViewModelTest : BaseTest() {
         viewModel.uiState.test {
 
             awaitItem()
-            viewModel.handleIntent(SettingsIntent.ShowForwardDialog(true))
+            viewModel.handleIntent(SettingsIntent.ShowForwardDialog)
 
             val state = awaitItem()
-            assert(state.showForwardDialog)
+            assert(state.dialogState != null)
 
         }
     }
@@ -78,10 +75,10 @@ class SettingsViewModelTest : BaseTest() {
         viewModel.uiState.test {
 
             awaitItem()
-            viewModel.handleIntent(SettingsIntent.ShowThemeDialog(true))
+            viewModel.handleIntent(SettingsIntent.ShowThemeDialog)
 
             val state = awaitItem()
-            assert(state.showUiThemeDialog)
+            assert(state.dialogState != null)
 
         }
     }
@@ -91,10 +88,10 @@ class SettingsViewModelTest : BaseTest() {
         viewModel.uiState.test {
 
             awaitItem()
-            viewModel.handleIntent(SettingsIntent.ShowSubtitlesDialog(true))
+            viewModel.handleIntent(SettingsIntent.ShowSubtitlesDialog)
 
             val state = awaitItem()
-            assert(state.showSubtitlesLanguage)
+            assert(state.dialogState != null)
 
         }
     }
@@ -113,6 +110,7 @@ class SettingsViewModelTest : BaseTest() {
 
             coVerify { dataStoreRepository.setPlayerBackwardValue(20) }
             assert(20 == state.backwardValue)
+            assert(state.dialogState == null)
 
             cancelAndConsumeRemainingEvents()
 
@@ -133,6 +131,7 @@ class SettingsViewModelTest : BaseTest() {
 
             coVerify { dataStoreRepository.setPlayerForwardValue(20) }
             assert(20 == state.forwardValue)
+            assert(state.dialogState == null)
 
             cancelAndConsumeRemainingEvents()
 
@@ -154,6 +153,7 @@ class SettingsViewModelTest : BaseTest() {
 
             coVerify { dataStoreRepository.setUiTheme(Ui.THEME.DARK) }
             assert(Ui.THEME.DARK == state.uiTheme)
+            assert(state.dialogState == null)
 
             cancelAndConsumeRemainingEvents()
 
@@ -176,6 +176,7 @@ class SettingsViewModelTest : BaseTest() {
 
             coVerify { dataStoreRepository.setSubtitlesLanguage(Locale.ENGLISH) }
             assert(Locale.ENGLISH == state.subtitlesLanguage)
+            assert(state.dialogState == null)
 
             cancelAndConsumeRemainingEvents()
 

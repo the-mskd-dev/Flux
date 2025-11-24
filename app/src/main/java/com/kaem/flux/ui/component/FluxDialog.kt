@@ -1,108 +1,44 @@
 package com.kaem.flux.ui.component
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.BasicAlertDialog
-import androidx.compose.material3.Card
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.kaem.flux.R
-import com.kaem.flux.ui.theme.Ui
 
-
+/**
+ * Simple AlertDialog with Cancel and Validate buttons
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FluxDialog(
-    show: Boolean,
-    title: String? = null,
-    text: String? = null,
-    hideButtons: Boolean = false,
-    cancelText: String = stringResource(android.R.string.cancel),
-    validateText: String = stringResource(R.string.validate),
-    onDismissRequest: () -> Unit,
-    onValidate: (() -> Unit)? = null
-) {
-
-    FluxDialog(
-        show = show,
-        cancelText = cancelText,
-        validateText = validateText,
-        hideButtons = hideButtons,
-        onDismissRequest = onDismissRequest,
-        onValidate = onValidate,
-        content = {
-
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE)
-            ) {
-
-                Text.Headline.Small(text = title)
-
-                Text.Body.Large(text = text)
-
-            }
-
-        }
-    )
-
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun FluxDialog(
-    show: Boolean,
-    hideButtons: Boolean = false,
-    cancelText: String = stringResource(android.R.string.cancel),
-    validateText: String = stringResource(R.string.validate),
-    onDismissRequest: () -> Unit,
+    onDismiss: () -> Unit,
     onValidate: (() -> Unit)? = null,
-    content: @Composable ColumnScope.() -> Unit
+    title: String? = null,
+    content: @Composable () -> Unit
 ) {
 
-    if (show) {
-        BasicAlertDialog(onDismissRequest = onDismissRequest) {
-
-            Card(shape = Ui.Shape.Corner.ExtraLargeIncreased) {
-
-                Column(modifier = Modifier.padding(Ui.Space.MEDIUM)) {
-
-                    content()
-
-                    if (!hideButtons) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = Ui.Space.LARGE),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM, Alignment.End)
-                        ) {
-
-                            TextButton(onClick = onDismissRequest) {
-                                Text(cancelText)
-                            }
-
-                            onValidate?.let {
-                                TextButton(onClick = it) {
-                                    Text(validateText)
-                                }
-                            }
-
-                        }
-                    }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            TextButton(
+                onClick = { onValidate?.invoke() },
+                content = {
+                    Text.Label.Large(text = stringResource(R.string.validate))
                 }
-            }
-
-        }
-    }
+            )
+        },
+        dismissButton = {
+            TextButton(
+                onClick = onDismiss,
+                content = {
+                    Text.Label.Large(text = stringResource(R.string.cancel))
+                }
+            )
+        },
+        title = { Text.Headline.Small(text = title) },
+        text = content
+    )
 
 }

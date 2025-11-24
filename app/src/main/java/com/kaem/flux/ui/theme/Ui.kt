@@ -1,13 +1,11 @@
 package com.kaem.flux.ui.theme
 
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.kaem.flux.R
 
 object Ui {
@@ -32,7 +30,18 @@ object Ui {
             val ExtraLarge @Composable get() = MaterialTheme.shapes.extraLarge
             val ExtraLargeIncreased @Composable get() = MaterialTheme.shapes.extraLargeIncreased
             val ExtraExtraLarge @Composable get() = MaterialTheme.shapes.extraExtraLarge
+            val Full @Composable get() = CircleShape
+
         }
+
+    }
+
+    object Card {
+
+        val selectedCardColors @Composable get() = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+            contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+        )
 
     }
 

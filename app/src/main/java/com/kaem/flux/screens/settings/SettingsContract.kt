@@ -6,13 +6,9 @@ import java.util.Locale
 
 data class SettingsUiState(
     val backwardValue: Int = 10,
-    val showBackwardDialog: Boolean = false,
     val forwardValue: Int = 10,
-    val showForwardDialog: Boolean = false,
     val uiTheme: Ui.THEME = Ui.THEME.SYSTEM,
-    val showUiThemeDialog: Boolean = false,
     val subtitlesLanguage: Locale = Locale.getDefault(),
-    val showSubtitlesLanguage: Boolean = false,
     val dialogState: SettingsDialogState<*>? = null
 )
 
@@ -80,4 +76,25 @@ data class SettingsDialogState<T>(
 
     }
 
+}
+
+sealed class SettingsIntent {
+    object ShowBackwardDialog: SettingsIntent()
+    data class SetBackwardValue(val value: Int): SettingsIntent()
+    object ShowForwardDialog: SettingsIntent()
+    data class SetForwardValue(val value: Int): SettingsIntent()
+    object ShowThemeDialog: SettingsIntent()
+    data class SetThemeValue(val theme: Ui.THEME): SettingsIntent()
+    object ShowSubtitlesDialog: SettingsIntent()
+    data class SetSubtitlesValue(val locale: Locale): SettingsIntent()
+    object HideDialog : SettingsIntent()
+    object OnBackTap: SettingsIntent()
+    object OnHowToTap: SettingsIntent()
+    object OnAboutTap: SettingsIntent()
+}
+
+sealed class SettingsEvent {
+    object BackToPreviousScreen: SettingsEvent()
+    object NavigateToHowToScreen: SettingsEvent()
+    object NavigateToAboutScreen: SettingsEvent()
 }

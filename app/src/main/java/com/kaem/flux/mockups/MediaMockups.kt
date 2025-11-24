@@ -88,6 +88,28 @@ object MediaMockups {
         )
     )
 
+    val episode3 get() = Episode(
+        id = 761474L,
+        number =33,
+        season = 2,
+        imagePath = "/97O9irZPuV08ZLPQIPea434UG6R.jpg",
+        mediaId = 31910L,
+        title = "The New Target",
+        releaseDateString = "2007-11-08",
+        description = "Teams Kakashi and Guy return home to Konoha. As Kakashi rests in the infirmary, Sakura tells Tsunade about the information Sasori gave her as a reward for defeating him. Sasori had a meeting scheduled with a spy from within Orochimaru's ranks in 10 days. 4 days have passed since Sakura received this information, and now Naruto and Sakura need to recruit a new team member to go and investigate. As Naruto searches Konoha for a willing recruit, he meets some of his old friends. Just as Choji agrees to help, Shikamaru, Choji, and Naruto are attacked by a Konoha shinobi unknown to them, Sai.",
+        voteAverage = 7.8f,
+        voteCount = 6,
+        duration = 23,
+        currentTime = 0L,
+        status = Status.TO_WATCH,
+        file = UserFile(
+            name = "naruto_shippuuden_S02E33.mkv",
+            addedDateTime = 0L,
+            path = "path/naruto_shippuuden_S02E33.mkv",
+            source = FileSource.LOCAL
+        )
+    )
+
     val overviews get() = listOf(
         movieOverview,
         showOverview
@@ -99,7 +121,8 @@ object MediaMockups {
 
     val episodes get() = listOf(
         episode1,
-        episode2
+        episode2,
+        episode3
     )
 
 }

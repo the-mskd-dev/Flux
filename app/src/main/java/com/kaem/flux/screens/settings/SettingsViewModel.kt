@@ -2,7 +2,6 @@ package com.kaem.flux.screens.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kaem.flux.R
 import com.kaem.flux.data.repository.DataStoreRepository
 import com.kaem.flux.ui.theme.Ui
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -85,6 +84,7 @@ class SettingsViewModel @Inject constructor(
 
     private suspend fun setBackwardValue(value: Int) {
         dataStoreRepository.setPlayerBackwardValue(value)
+        hideDialog()
     }
 
     private fun showForwardDialog() {
@@ -95,6 +95,7 @@ class SettingsViewModel @Inject constructor(
 
     private suspend fun setForwardValue(value: Int) {
         dataStoreRepository.setPlayerForwardValue(value)
+        hideDialog()
     }
 
     private fun showThemeDialog() {
@@ -105,6 +106,7 @@ class SettingsViewModel @Inject constructor(
 
     private suspend fun setTheme(theme: Ui.THEME) {
         dataStoreRepository.setUiTheme(theme)
+        hideDialog()
     }
 
     private fun showSubtitlesLanguageDialog() {
@@ -115,6 +117,7 @@ class SettingsViewModel @Inject constructor(
 
     private suspend fun setSubtitlesLanguage(value: Locale) {
         dataStoreRepository.setSubtitlesLanguage(value)
+        hideDialog()
     }
 
 }

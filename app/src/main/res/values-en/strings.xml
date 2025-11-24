@@ -64,4 +64,6 @@
     <string name="what_is_next">What\'s next?</string>
     <string name="what_is_next_desc">The goal is to keep improving the app, whether it\'s the UI, UX, or performance. I also plan to add new data sources, not just files on the device</string>
     <string name="make_a_donation">Make a donation</string>
+    <string name="episode_list">Episode list</string>
+    <string name="watched">Watched</string>
 </resources>

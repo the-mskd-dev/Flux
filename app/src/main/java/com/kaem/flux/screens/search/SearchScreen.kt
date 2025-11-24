@@ -31,8 +31,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import com.kaem.flux.navigation.Navigation
 import com.kaem.flux.R
+import com.kaem.flux.navigation.Navigation
 import com.kaem.flux.ui.component.FluxScaffold
 import com.kaem.flux.ui.component.MediaItem
 import com.kaem.flux.ui.theme.Ui
@@ -71,7 +71,7 @@ fun SearchScreen(
             contentPadding = PaddingValues(horizontal = Ui.Space.MEDIUM)
         ) {
 
-            item {
+            item(span = { GridItemSpan(3) }) {
                 Spacer(modifier = Modifier.height(innerPadding.calculateTopPadding()))
             }
 
@@ -127,7 +127,7 @@ fun SearchScreen(
 
             }
 
-            item {
+            item(span = { GridItemSpan(3) }) {
                 Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding()))
             }
 

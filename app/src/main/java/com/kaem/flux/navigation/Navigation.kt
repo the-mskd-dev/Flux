@@ -3,6 +3,18 @@ package com.kaem.flux.navigation
 import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
+import kotlinx.serialization.Serializable
+
+@Serializable
+sealed class Route {
+    data object Library: Route()
+    data class Category(val category: String): Route()
+    data class Media(val id: Long): Route()
+    data object Search: Route()
+    data object Settings: Route()
+    data object HowTo: Route()
+    data object About: Route()
+}
 
 sealed class Navigation(protected val base: String) {
 

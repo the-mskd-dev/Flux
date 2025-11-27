@@ -10,21 +10,29 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation3.runtime.NavEntry
+import androidx.navigation3.ui.NavDisplay
 import com.kaem.flux.data.repository.DataStoreRepository
 import com.kaem.flux.navigation.Navigation
+import com.kaem.flux.navigation.Route
 import com.kaem.flux.screens.about.AboutScreen
 import com.kaem.flux.screens.category.CategoryScreen
 import com.kaem.flux.screens.home.HomeScreen
 import com.kaem.flux.screens.howTo.HowToScreen
 import com.kaem.flux.screens.media.MediaScreen
+import com.kaem.flux.screens.media.MediaViewModel
 import com.kaem.flux.screens.search.SearchScreen
 import com.kaem.flux.screens.settings.SettingsScreen
+import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.FluxTheme
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.FluxNavHost
@@ -48,7 +56,33 @@ class MainActivity : ComponentActivity() {
 
             FluxTheme(theme = uiTheme) {
 
-                val navController = rememberNavController()
+                val backStack = remember { mutableStateListOf<Any>(Route.Library) }
+
+                NavDisplay(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(color = MaterialTheme.colorScheme.background),
+                    backStack = backStack,
+                    onBack = { backStack.removeLastOrNull() },
+                    entryProvider = { key ->
+                        when (key) {
+                            is Route.Library -> NavEntry(key) {
+                                HomeScreen(
+                                    navigate = { route -> backStack.add(route) },
+                                )
+                            }
+                            is Route.Media -> NavEntry(key) {
+                                MediaScreen(
+                                    onBack = { backStack.removeLastOrNull() },
+                                    mediaId = key.id
+                                )
+                            }
+                            else -> NavEntry(Unit) { Text.Display.Large("Unknown route") }
+                        }
+                    }
+                )
+
+                /*val navController = rememberNavController()
                 
                 FluxNavHost(
                     modifier = Modifier
@@ -124,7 +158,7 @@ class MainActivity : ComponentActivity() {
                         )
                     }
 
-                }
+                }*/
 
             }
 

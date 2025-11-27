@@ -13,6 +13,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.window.core.layout.WindowSizeClass
 import com.kaem.flux.R
 import com.kaem.flux.model.ScreenState
+import com.kaem.flux.navigation.Route
 import com.kaem.flux.screens.media.composables.MediaScreenContent
 import com.kaem.flux.screens.media.composables.MediaScreenContentLarge
 import com.kaem.flux.screens.player.PlayerScreen
@@ -24,7 +25,10 @@ import com.kaem.flux.ui.component.Text
 @Composable
 fun MediaScreen(
     onBack: () -> Unit,
-    viewModel: MediaViewModel = hiltViewModel()
+    mediaId: Long,
+    viewModel: MediaViewModel = hiltViewModel<MediaViewModel, MediaViewModel.Factory>(
+        creationCallback = { factory -> factory.create(mediaId) }
+    )
 ) {
 
     val uiState by viewModel.uiState.collectAsState()

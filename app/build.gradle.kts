@@ -71,7 +71,6 @@ dependencies {
 
     // Navigation 3
     implementation(libs.bundles.nav3)
-    implementation(libs.androidx.navigation.compose)
 
     // Accompanist
     implementation(libs.accompanist.permissions)

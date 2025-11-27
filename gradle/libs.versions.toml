@@ -22,8 +22,9 @@ constraintLayout = "1.1.1"
 
 # -- Navigation --
 navCompose = "2.9.6"
-nav3 = "1.0.0"
+nav3Core = "1.0.0"
 lifecycleNav3 = "2.10.0"
+material3AdaptiveNav3 = "1.3.0-alpha04"
 
 # -- Architecture & DI --
 hilt = "2.57.2"
@@ -80,10 +81,10 @@ androidx-constraintlayout-compose = { group = "androidx.constraintlayout", name 
 androidx-material3-adaptive = { group = "androidx.compose.material3.adaptive", name = "adaptive", version.ref = "adaptive" }
 
 # -- Navigation Standard & Nav3 --
-androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navCompose" }
-androidx-navigation3-runtime = { group = "androidx.navigation3", name = "navigation3-runtime", version.ref = "nav3" }
-androidx-navigation3-ui = { group = "androidx.navigation3", name = "navigation3-ui", version.ref = "nav3" }
+androidx-navigation3-runtime = { group = "androidx.navigation3", name = "navigation3-runtime", version.ref = "nav3Core" }
+androidx-navigation3-ui = { group = "androidx.navigation3", name = "navigation3-ui", version.ref = "nav3Core" }
 androidx-lifecycle-viewmodel-nav3 = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-navigation3", version.ref = "lifecycleNav3" }
+androidx-material3-adaptive-navigation3 = { group = "androidx.compose.material3.adaptive", name = "adaptive-navigation3", version.ref = "material3AdaptiveNav3" }
 
 # -- Accompanist --
 accompanist-permissions = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanist" }
@@ -164,7 +165,8 @@ compose = [
 nav3 = [
     "androidx-navigation3-runtime",
     "androidx-navigation3-ui",
-    "androidx-lifecycle-viewmodel-nav3"
+    "androidx-lifecycle-viewmodel-nav3",
+    "androidx-material3-adaptive-navigation3"
 ]
 media3 = [
     "androidx-media3-exoplayer",

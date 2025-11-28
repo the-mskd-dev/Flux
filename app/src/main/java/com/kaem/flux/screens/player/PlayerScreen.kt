@@ -1,6 +1,5 @@
 package com.kaem.flux.screens.player
 
-import android.net.Uri
 import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
@@ -76,7 +75,7 @@ fun PlayerScreen(
     }
 
     if (!isExiting) {
-        VideoPlayer(
+        PlayerContent(
             media = media,
             backward = backward,
             forward = forward,
@@ -94,7 +93,7 @@ fun PlayerScreen(
 
 @OptIn(UnstableApi::class)
 @Composable
-fun VideoPlayer(
+fun PlayerContent(
     media: Media,
     backward: Long,
     forward: Long,

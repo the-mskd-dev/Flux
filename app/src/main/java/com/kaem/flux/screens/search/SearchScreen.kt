@@ -29,13 +29,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation3.runtime.NavKey
 import com.kaem.flux.R
+import com.kaem.flux.mockups.MediaMockups
+import com.kaem.flux.model.media.MediaOverview
 import com.kaem.flux.navigation.Route
 import com.kaem.flux.ui.component.FluxScaffold
 import com.kaem.flux.ui.component.MediaItem
+import com.kaem.flux.ui.theme.FluxTheme
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.Constants
 
@@ -57,9 +61,24 @@ fun SearchScreen(
         }
     }
 
+    SearchContent(
+        searchWord = state.searchWord,
+        filteredOverviews = state.filteredOverviews,
+        sendIntent = viewModel::handleIntent
+    )
+
+}
+
+@Composable
+fun SearchContent(
+    searchWord: String,
+    filteredOverviews: List<MediaOverview>,
+    sendIntent: (SearchIntent) -> Unit,
+) {
+
     FluxScaffold(
         title = stringResource(android.R.string.search_go),
-        onBackTap = { viewModel.handleIntent(SearchIntent.OnBackTap) }
+        onBackTap = { sendIntent(SearchIntent.OnBackTap) }
     ) { innerPadding ->
 
         LazyVerticalGrid(
@@ -80,8 +99,8 @@ fun SearchScreen(
 
                 TextField(
                     modifier = Modifier.fillMaxWidth(),
-                    value = state.searchWord,
-                    onValueChange = { viewModel.handleIntent(SearchIntent.DoSearch(it)) },
+                    value = searchWord,
+                    onValueChange = { sendIntent(SearchIntent.DoSearch(it)) },
                     singleLine = true,
                     shape = Ui.Shape.Corner.Small,
                     colors = TextFieldDefaults.colors(
@@ -91,10 +110,10 @@ fun SearchScreen(
                     ),
                     placeholder = { Text(stringResource(R.string.enter_search)) },
                     trailingIcon = {
-                        if (state.searchWord.isNotEmpty()) {
+                        if (searchWord.isNotEmpty()) {
                             IconButton(
                                 modifier = Modifier.size(18.dp),
-                                onClick = { viewModel.handleIntent(SearchIntent.DoSearch("")) },
+                                onClick = { sendIntent(SearchIntent.DoSearch("")) },
                                 content = { Icon(imageVector = Icons.Rounded.Clear, contentDescription = "clear button") }
                             )
                         }
@@ -104,7 +123,7 @@ fun SearchScreen(
             }
 
             items(
-                items = state.filteredOverviews,
+                items = filteredOverviews,
                 key = { it.id }
             ) { overview ->
 
@@ -120,7 +139,7 @@ fun SearchScreen(
                         url = Constants.TMDB.IMAGE_SMALL + overview.imagePath,
                         ratio = 2f/3f,
                         description = overview.title,
-                        onTap = { viewModel.handleIntent(SearchIntent.OnMediaTap(overview.id)) }
+                        onTap = { sendIntent(SearchIntent.OnMediaTap(overview.id)) }
                     )
 
                 }
@@ -136,4 +155,16 @@ fun SearchScreen(
 
     }
 
+}
+
+@Preview
+@Composable
+fun SearchContent_Preview() {
+    FluxTheme {
+        SearchContent(
+            searchWord = "preview",
+            filteredOverviews = MediaMockups.overviews,
+            sendIntent = {}
+        )
+    }
 }

@@ -69,6 +69,25 @@ fun WelcomeScreen(
         scope.launch { pagerState.animateScrollToPage(pagerState.currentPage - 1) }
     }
 
+    WelcomeContent(
+        backgroundImage = backgroundImage,
+        pagerState = pagerState,
+        presentations = presentations,
+        onPermissionsTap = onPermissionsTap,
+        onIndexChange = { scope.launch { pagerState.animateScrollToPage(it) } }
+    )
+
+}
+
+@Composable
+fun WelcomeContent(
+    backgroundImage: Int,
+    pagerState: PagerState,
+    presentations: List<Pair<String, String>>,
+    onPermissionsTap: () -> Unit,
+    onIndexChange: (Int) -> Unit
+) {
+
     ConstraintLayout(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -90,13 +109,13 @@ fun WelcomeScreen(
 
         WelcomePager(
             modifier = Modifier.constrainAs(descriptions) {
-                    top.linkTo(parent.top)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                    bottom.linkTo(guideline)
-                    height = Dimension.fillToConstraints
-                    width = Dimension.fillToConstraints
-                },
+                top.linkTo(parent.top)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+                bottom.linkTo(guideline)
+                height = Dimension.fillToConstraints
+                width = Dimension.fillToConstraints
+            },
             pagerState = pagerState,
             presentations = presentations
         )
@@ -110,7 +129,7 @@ fun WelcomeScreen(
             },
             index = pagerState.currentPage,
             lastIndex = presentations.lastIndex,
-            onIndexChange = { scope.launch { pagerState.animateScrollToPage(it) } },
+            onIndexChange = onIndexChange,
             onPermissionsTap = onPermissionsTap
         )
 

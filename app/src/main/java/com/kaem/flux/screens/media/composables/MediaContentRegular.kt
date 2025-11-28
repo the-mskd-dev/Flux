@@ -37,7 +37,7 @@ import com.kaem.flux.ui.theme.Ui
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MediaScreenContent(
+fun MediaContentRegular(
     overview: MediaOverview,
     media: Media,
     episodes: List<Episode>,
@@ -142,7 +142,7 @@ fun MediaScreenContent(
 @Composable
 fun MediaContentMovie_Preview() {
     FluxTheme {
-        MediaScreenContent(
+        MediaContentRegular(
             overview = MediaMockups.movieOverview,
             media = MediaMockups.movie,
             episodes = emptyList(),
@@ -156,7 +156,7 @@ fun MediaContentMovie_Preview() {
 @Composable
 fun MediaContentShow_Preview() {
     FluxTheme {
-        MediaScreenContent(
+        MediaContentRegular(
             overview = MediaMockups.showOverview,
             media = MediaMockups.episode1,
             episodes = MediaMockups.episodes,

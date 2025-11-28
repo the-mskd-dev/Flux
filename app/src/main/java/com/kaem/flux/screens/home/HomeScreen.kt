@@ -113,45 +113,31 @@ fun HomeScreen(
             when (it) {
 
                 ScreenState.LOADING -> LoadingScreen()
+
                 else -> {
 
-                    HomeContent(
-                        overviews = uiState.overviews,
-                        lastWatchedIds = uiState.lastWatchedMediaIds,
-                        isSyncing = uiState.isRefreshing,
-                        sendIntent = viewModel::handleIntent
-                    )
+                    if (uiState.overviews.isEmpty()) {
+
+                        HomeEmpty(sendIntent = viewModel::handleIntent)
+
+                    } else {
+
+                        HomeContent(
+                            overviews = uiState.overviews,
+                            lastWatchedIds = uiState.lastWatchedMediaIds,
+                            isRefreshing = uiState.isRefreshing,
+                            sendIntent = viewModel::handleIntent
+                        )
+
+                    }
+
+
 
                 }
 
             }
 
         }
-
-    }
-
-}
-
-@Composable
-fun HomeContent(
-    overviews: List<MediaOverview>,
-    lastWatchedIds: List<Long>,
-    isSyncing: Boolean,
-    sendIntent: (HomeIntent) -> Unit
-) {
-
-    if (overviews.isEmpty()) {
-
-        HomeEmpty(sendIntent = sendIntent)
-
-    } else {
-
-        HomeLists(
-            overviews = overviews,
-            lastWatchedIds = lastWatchedIds,
-            isRefreshing = isSyncing,
-            sendIntent = sendIntent
-        )
 
     }
 
@@ -194,7 +180,7 @@ fun HomeEmpty(sendIntent: (HomeIntent) -> Unit) {
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun HomeLists(
+fun HomeContent(
     overviews: List<MediaOverview>,
     lastWatchedIds: List<Long>,
     isRefreshing: Boolean,
@@ -408,7 +394,7 @@ fun HomeScreen_Preview() {
         HomeContent(
             overviews = MediaMockups.overviews,
             lastWatchedIds = MediaMockups.overviews.map { it.id },
-            isSyncing = false,
+            isRefreshing = false,
             sendIntent = {}
         )
     }

@@ -21,7 +21,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.navigation3.runtime.NavKey
 import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.media.ContentType
 import com.kaem.flux.model.media.MediaOverview
@@ -51,7 +50,7 @@ fun CategoryScreen(
         }
     }
 
-    CategoryScreenContent(
+    CategoryContent(
         overviews = viewModel.overviews,
         contentType = viewModel.contentType,
         sendIntent = viewModel::handleIntent
@@ -62,7 +61,7 @@ fun CategoryScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CategoryScreenContent(
+fun CategoryContent(
     overviews: List<MediaOverview>,
     contentType: ContentType,
     sendIntent: (CategoryIntent) -> Unit,
@@ -121,7 +120,7 @@ fun CategoryScreenContent(
 @Composable
 fun CategoryScreen_Preview() {
     FluxTheme {
-        CategoryScreenContent(
+        CategoryContent(
             overviews = MediaMockups.overviews,
             contentType = ContentType.MOVIE,
             sendIntent = {}

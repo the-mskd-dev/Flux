@@ -15,27 +15,21 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.ui.NavDisplay
 import com.kaem.flux.data.repository.DataStoreRepository
-import com.kaem.flux.navigation.Navigation
 import com.kaem.flux.navigation.Route
 import com.kaem.flux.screens.about.AboutScreen
 import com.kaem.flux.screens.category.CategoryScreen
 import com.kaem.flux.screens.home.HomeScreen
 import com.kaem.flux.screens.howTo.HowToScreen
 import com.kaem.flux.screens.media.MediaScreen
-import com.kaem.flux.screens.media.MediaViewModel
 import com.kaem.flux.screens.search.SearchScreen
 import com.kaem.flux.screens.settings.SettingsScreen
 import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.FluxTheme
 import com.kaem.flux.ui.theme.Ui
-import com.kaem.flux.utils.FluxNavHost
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -74,7 +68,36 @@ class MainActivity : ComponentActivity() {
                             is Route.Media -> NavEntry(key) {
                                 MediaScreen(
                                     onBack = { backStack.removeLastOrNull() },
-                                    mediaId = key.id
+                                    mediaId = key.mediaId
+                                )
+                            }
+                            is Route.Category -> NavEntry(key) {
+                                CategoryScreen(
+                                    navigate = { route -> backStack.add(route) },
+                                    onBack = { backStack.removeLastOrNull() },
+                                    contentType = key.contentType
+                                )
+                            }
+                            is Route.Search -> NavEntry(key) {
+                                SearchScreen(
+                                    navigate = { route -> backStack.add(route) },
+                                    onBack = { backStack.removeLastOrNull() },
+                                )
+                            }
+                            is Route.Settings -> NavEntry(key) {
+                                SettingsScreen(
+                                    navigate = { route -> backStack.add(route) },
+                                    onBack = { backStack.removeLastOrNull() },
+                                )
+                            }
+                            is Route.HowTo -> NavEntry(key) {
+                                HowToScreen(
+                                    onBack = { backStack.removeLastOrNull() }
+                                )
+                            }
+                            is Route.About -> NavEntry(key) {
+                                AboutScreen(
+                                    onBack = { backStack.removeLastOrNull() }
                                 )
                             }
                             else -> NavEntry(Unit) { Text.Display.Large("Unknown route") }

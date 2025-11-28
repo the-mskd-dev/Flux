@@ -5,22 +5,30 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kaem.flux.data.repository.CatalogRepository
 import com.kaem.flux.model.media.ContentType
+import com.kaem.flux.screens.media.MediaViewModel
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@HiltViewModel
-class CategoryViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
+@HiltViewModel(assistedFactory = CategoryViewModel.Factory::class)
+class CategoryViewModel @AssistedInject constructor(
+    @Assisted val contentType: ContentType,
     repository: CatalogRepository
 ) : ViewModel() {
+
+    @AssistedFactory
+    interface Factory {
+        fun create(contentType: ContentType): CategoryViewModel
+    }
 
     private val _event = MutableSharedFlow<CategoryEvent>()
     val event = _event.asSharedFlow()
 
-    val contentType: ContentType = ContentType.valueOf(checkNotNull(savedStateHandle["contentType"]))
     val overviews = repository.catalogFlow.value.mediaOverviews
         .filter { it.type == contentType }
         .sortedBy { it.title }

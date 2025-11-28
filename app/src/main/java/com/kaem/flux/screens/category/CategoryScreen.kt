@@ -24,7 +24,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.media.ContentType
 import com.kaem.flux.model.media.MediaOverview
-import com.kaem.flux.navigation.Navigation
+import com.kaem.flux.navigation.Route
 import com.kaem.flux.ui.component.FluxScaffold
 import com.kaem.flux.ui.component.MediaItem
 import com.kaem.flux.ui.theme.FluxTheme
@@ -33,15 +33,18 @@ import com.kaem.flux.utils.Constants
 
 @Composable
 fun CategoryScreen(
-    navigate: (String) -> Unit,
+    navigate: (Route) -> Unit,
     onBack: () -> Unit,
-    viewModel: CategoryViewModel = hiltViewModel()
+    contentType: ContentType,
+    viewModel: CategoryViewModel = hiltViewModel<CategoryViewModel, CategoryViewModel.Factory>(
+        creationCallback = { factory -> factory.create(contentType) }
+    )
 ) {
 
     LaunchedEffect(Unit) {
         viewModel.event.collect {
             when(it) {
-                is CategoryEvent.NavigateToMedia -> navigate(Navigation.MEDIA.build(listOf(it.mediaId)))
+                is CategoryEvent.NavigateToMedia -> navigate(Route.Media(mediaId = it.mediaId))
                 CategoryEvent.BackToPreviousScreen -> onBack()
             }
         }

@@ -81,7 +81,7 @@ fun HomeScreen(
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
             when (event) {
-                is HomeEvent.NavigateToCategory -> navigate(Route.Category(event.category.name))
+                is HomeEvent.NavigateToCategory -> navigate(Route.Category(contentType = event.category))
                 is HomeEvent.NavigateToMedia -> navigate(Route.Media(event.mediaId))
                 HomeEvent.NavigateToHowTo -> navigate(Route.HowTo)
                 HomeEvent.NavigateToSearch -> navigate(Route.Search)

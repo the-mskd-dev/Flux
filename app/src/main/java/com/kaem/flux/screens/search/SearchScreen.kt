@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.kaem.flux.R
 import com.kaem.flux.navigation.Navigation
+import com.kaem.flux.navigation.Route
 import com.kaem.flux.ui.component.FluxScaffold
 import com.kaem.flux.ui.component.MediaItem
 import com.kaem.flux.ui.theme.Ui
@@ -40,7 +41,7 @@ import com.kaem.flux.utils.Constants
 
 @Composable
 fun SearchScreen(
-    navigate: (String) -> Unit,
+    navigate: (Route) -> Unit,
     onBack: () -> Unit,
     viewModel: SearchViewModel = hiltViewModel()
 ) {
@@ -50,7 +51,7 @@ fun SearchScreen(
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
             when (event) {
-                is SearchEvent.NavigateToMedia -> navigate(Navigation.MEDIA.build(listOf(event.mediaId)))
+                is SearchEvent.NavigateToMedia -> navigate(Route.Media(mediaId = event.mediaId))
                 SearchEvent.BackToPreviousScreen -> onBack()
             }
         }

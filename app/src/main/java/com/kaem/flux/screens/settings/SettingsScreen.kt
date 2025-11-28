@@ -32,6 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.kaem.flux.R
 import com.kaem.flux.navigation.Navigation
+import com.kaem.flux.navigation.Route
 import com.kaem.flux.ui.component.FluxDialog
 import com.kaem.flux.ui.component.FluxScaffold
 import com.kaem.flux.ui.component.Text
@@ -43,7 +44,7 @@ import com.kaem.flux.utils.extensions.uppercaseFirstLetter
 @Composable
 fun SettingsScreen(
     onBack: () -> Unit,
-    navigate: (String) -> Unit,
+    navigate: (Route) -> Unit,
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
 
@@ -58,8 +59,8 @@ fun SettingsScreen(
         viewModel.event.collect { event ->
             when (event) {
                 SettingsEvent.BackToPreviousScreen -> onBack()
-                SettingsEvent.NavigateToAboutScreen -> navigate(Navigation.ABOUT.build())
-                SettingsEvent.NavigateToHowToScreen -> navigate(Navigation.HOW_TO.build())
+                SettingsEvent.NavigateToAboutScreen -> navigate(Route.About)
+                SettingsEvent.NavigateToHowToScreen -> navigate(Route.HowTo)
             }
         }
     }

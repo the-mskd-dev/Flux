@@ -1,7 +1,6 @@
 package com.kaem.flux.screens.media
 
 import android.util.Log
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kaem.flux.data.repository.DataStoreRepository
@@ -11,7 +10,6 @@ import com.kaem.flux.model.media.Episode
 import com.kaem.flux.model.media.Media
 import com.kaem.flux.model.media.Movie
 import com.kaem.flux.model.media.Status
-import com.kaem.flux.navigation.Route
 import com.kaem.flux.utils.extensions.getPreviousEpisodesFor
 import com.kaem.flux.utils.extensions.msToMin
 import com.kaem.flux.utils.extensions.timeDescription
@@ -28,7 +26,6 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.Locale
-import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
 @HiltViewModel(assistedFactory = MediaViewModel.Factory::class)

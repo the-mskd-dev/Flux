@@ -13,8 +13,8 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.window.core.layout.WindowSizeClass
 import com.kaem.flux.R
 import com.kaem.flux.model.ScreenState
-import com.kaem.flux.screens.media.composables.MediaContentRegular
 import com.kaem.flux.screens.media.composables.MediaContentLarge
+import com.kaem.flux.screens.media.composables.MediaContentRegular
 import com.kaem.flux.screens.player.PlayerScreen
 import com.kaem.flux.ui.component.ErrorScreen
 import com.kaem.flux.ui.component.FluxDialog

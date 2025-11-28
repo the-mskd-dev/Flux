@@ -31,6 +31,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
+import androidx.core.net.toUri
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
@@ -51,7 +52,6 @@ import com.kaem.flux.utils.extensions.setAppInLandscape
 import com.kaem.flux.utils.extensions.setAppOrientation
 import com.kaem.flux.utils.extensions.showSystemBars
 import java.util.Locale
-import androidx.core.net.toUri
 
 @Composable
 fun PlayerScreen(

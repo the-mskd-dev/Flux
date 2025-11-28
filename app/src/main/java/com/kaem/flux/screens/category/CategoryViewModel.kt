@@ -1,11 +1,9 @@
 package com.kaem.flux.screens.category
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kaem.flux.data.repository.CatalogRepository
 import com.kaem.flux.model.media.ContentType
-import com.kaem.flux.screens.media.MediaViewModel
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -13,7 +11,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel(assistedFactory = CategoryViewModel.Factory::class)
 class CategoryViewModel @AssistedInject constructor(

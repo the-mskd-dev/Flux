@@ -47,6 +47,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.navigation3.runtime.NavEntry
+import androidx.navigation3.runtime.NavKey
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.kaem.flux.R
@@ -54,7 +56,6 @@ import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.ScreenState
 import com.kaem.flux.model.media.ContentType
 import com.kaem.flux.model.media.MediaOverview
-import com.kaem.flux.navigation.Navigation
 import com.kaem.flux.navigation.Route
 import com.kaem.flux.screens.welcome.WelcomeScreen
 import com.kaem.flux.screens.welcome.fluxPermissionState

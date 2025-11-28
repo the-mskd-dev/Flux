@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.jetbrains.kotlin.serialization)
     alias(libs.plugins.parcelize)
     alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.compose)
@@ -64,6 +65,7 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
+    implementation(libs.kotlinx.serialization.core)
 
     // Compose (Bundle + BOM)
     implementation(platform(libs.androidx.compose.bom))

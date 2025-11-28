@@ -6,6 +6,15 @@ import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
@@ -17,6 +26,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation3.runtime.NavEntry
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import com.kaem.flux.data.repository.DataStoreRepository
 import com.kaem.flux.navigation.Route
@@ -30,6 +41,7 @@ import com.kaem.flux.screens.settings.SettingsScreen
 import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.FluxTheme
 import com.kaem.flux.ui.theme.Ui
+import com.kaem.flux.utils.Constants
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -50,7 +62,7 @@ class MainActivity : ComponentActivity() {
 
             FluxTheme(theme = uiTheme) {
 
-                val backStack = remember { mutableStateListOf<Any>(Route.Library) }
+                val backStack = rememberNavBackStack(Route.Library)
 
                 NavDisplay(
                     modifier = Modifier
@@ -58,130 +70,61 @@ class MainActivity : ComponentActivity() {
                         .background(color = MaterialTheme.colorScheme.background),
                     backStack = backStack,
                     onBack = { backStack.removeLastOrNull() },
-                    entryProvider = { key ->
-                        when (key) {
-                            is Route.Library -> NavEntry(key) {
-                                HomeScreen(
-                                    navigate = { route -> backStack.add(route) },
-                                )
-                            }
-                            is Route.Media -> NavEntry(key) {
-                                MediaScreen(
-                                    onBack = { backStack.removeLastOrNull() },
-                                    mediaId = key.mediaId
-                                )
-                            }
-                            is Route.Category -> NavEntry(key) {
-                                CategoryScreen(
-                                    navigate = { route -> backStack.add(route) },
-                                    onBack = { backStack.removeLastOrNull() },
-                                    contentType = key.contentType
-                                )
-                            }
-                            is Route.Search -> NavEntry(key) {
-                                SearchScreen(
-                                    navigate = { route -> backStack.add(route) },
-                                    onBack = { backStack.removeLastOrNull() },
-                                )
-                            }
-                            is Route.Settings -> NavEntry(key) {
-                                SettingsScreen(
-                                    navigate = { route -> backStack.add(route) },
-                                    onBack = { backStack.removeLastOrNull() },
-                                )
-                            }
-                            is Route.HowTo -> NavEntry(key) {
-                                HowToScreen(
-                                    onBack = { backStack.removeLastOrNull() }
-                                )
-                            }
-                            is Route.About -> NavEntry(key) {
-                                AboutScreen(
-                                    onBack = { backStack.removeLastOrNull() }
-                                )
-                            }
-                            else -> NavEntry(Unit) { Text.Display.Large("Unknown route") }
+                    transitionSpec = {
+                        // Slide in from right when navigating forward
+                        slideInHorizontally(initialOffsetX = { it }) togetherWith slideOutHorizontally(targetOffsetX = { -it })
+                    },
+                    popTransitionSpec = {
+                        // Slide in from left when navigating back
+                        slideInHorizontally(initialOffsetX = { -it }) togetherWith slideOutHorizontally(targetOffsetX = { it })
+                    },
+                    predictivePopTransitionSpec = {
+                        // Slide in from left when navigating back
+                        slideInHorizontally(initialOffsetX = { -it }) togetherWith slideOutHorizontally(targetOffsetX = { it })
+                    },
+                    entryProvider = entryProvider {
+                        entry<Route.Library> {
+                            HomeScreen(
+                                navigate = { route -> backStack.add(route) },
+                            )
+                        }
+                        entry<Route.Media> { entry ->
+                            MediaScreen(
+                                onBack = { backStack.removeLastOrNull() },
+                                mediaId = entry.mediaId
+                            )
+                        }
+                        entry<Route.Category> { entry ->
+                            CategoryScreen(
+                                navigate = { route -> backStack.add(route) },
+                                onBack = { backStack.removeLastOrNull() },
+                                contentType = entry.contentType
+                            )
+                        }
+                        entry<Route.Search> {
+                            SearchScreen(
+                                navigate = { route -> backStack.add(route) },
+                                onBack = { backStack.removeLastOrNull() },
+                            )
+                        }
+                        entry<Route.Settings> {
+                            SettingsScreen(
+                                navigate = { route -> backStack.add(route) },
+                                onBack = { backStack.removeLastOrNull() },
+                            )
+                        }
+                        entry<Route.HowTo> {
+                            HowToScreen(
+                                onBack = { backStack.removeLastOrNull() }
+                            )
+                        }
+                        entry<Route.About> {
+                            AboutScreen(
+                                onBack = { backStack.removeLastOrNull() }
+                            )
                         }
                     }
                 )
-
-                /*val navController = rememberNavController()
-                
-                FluxNavHost(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(color = MaterialTheme.colorScheme.background),
-                    navController = navController,
-                    startDestination = Navigation.LIBRARY.route
-                ) {
-
-                    composable(
-                        route = Navigation.LIBRARY.route,
-                        arguments = Navigation.LIBRARY.arguments
-                    ) {
-                        HomeScreen(
-                            navigate = { route -> navController.navigate(route) },
-                        )
-                    }
-
-                    composable(
-                        route = Navigation.MEDIA.route,
-                        arguments = Navigation.MEDIA.arguments,
-                    ) {
-                        MediaScreen(
-                            onBack = { navController.popBackStack() }
-                        )
-                    }
-
-                    composable(
-                        route = Navigation.CATEGORY.route,
-                        arguments = Navigation.CATEGORY.arguments,
-                    ) {
-                        CategoryScreen(
-                            navigate = { route -> navController.navigate(route) },
-                            onBack = { navController.popBackStack() },
-                        )
-                    }
-
-                    composable(
-                        route = Navigation.SEARCH.route,
-                        arguments = Navigation.SEARCH.arguments
-                    ) {
-                        SearchScreen(
-                            navigate = { route -> navController.navigate(route) },
-                            onBack = { navController.popBackStack() },
-                        )
-                    }
-
-                    composable(
-                        route = Navigation.SETTINGS.route,
-                        arguments = Navigation.SETTINGS.arguments
-                    ) {
-                        SettingsScreen(
-                            navigate = { route -> navController.navigate(route) },
-                            onBack = { navController.popBackStack() },
-                        )
-                    }
-
-                    composable(
-                        route = Navigation.HOW_TO.route,
-                        arguments = Navigation.HOW_TO.arguments
-                    ) {
-                        HowToScreen(
-                            onBack = { navController.popBackStack() }
-                        )
-                    }
-
-                    composable(
-                        route = Navigation.ABOUT.route,
-                        arguments = Navigation.ABOUT.arguments
-                    ) {
-                        AboutScreen(
-                            onBack = { navController.popBackStack() }
-                        )
-                    }
-
-                }*/
 
             }
 

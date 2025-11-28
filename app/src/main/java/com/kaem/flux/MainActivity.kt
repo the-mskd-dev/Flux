@@ -31,6 +31,7 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import com.kaem.flux.data.repository.DataStoreRepository
 import com.kaem.flux.navigation.Route
+import com.kaem.flux.navigation.Transition
 import com.kaem.flux.screens.about.AboutScreen
 import com.kaem.flux.screens.category.CategoryScreen
 import com.kaem.flux.screens.home.HomeScreen
@@ -70,18 +71,9 @@ class MainActivity : ComponentActivity() {
                         .background(color = MaterialTheme.colorScheme.background),
                     backStack = backStack,
                     onBack = { backStack.removeLastOrNull() },
-                    transitionSpec = {
-                        // Slide in from right when navigating forward
-                        slideInHorizontally(initialOffsetX = { it }) togetherWith slideOutHorizontally(targetOffsetX = { -it })
-                    },
-                    popTransitionSpec = {
-                        // Slide in from left when navigating back
-                        slideInHorizontally(initialOffsetX = { -it }) togetherWith slideOutHorizontally(targetOffsetX = { it })
-                    },
-                    predictivePopTransitionSpec = {
-                        // Slide in from left when navigating back
-                        slideInHorizontally(initialOffsetX = { -it }) togetherWith slideOutHorizontally(targetOffsetX = { it })
-                    },
+                    transitionSpec = { Transition.Forward },
+                    popTransitionSpec = { Transition.Backward },
+                    predictivePopTransitionSpec = { Transition.Backward },
                     entryProvider = entryProvider {
                         entry<Route.Library> {
                             HomeScreen(

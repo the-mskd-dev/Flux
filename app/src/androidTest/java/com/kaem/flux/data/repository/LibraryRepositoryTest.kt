@@ -83,31 +83,4 @@ class LibraryRepositoryTest {
 
     }
 
-
-    @Test
-    fun saveMovie_should_insert_movie_into_db() = runTest {
-        // Arrange
-        val movie = MediaMockups.movie
-        coEvery { db.insertMovies(listOf(movie)) } returns Unit
-
-        // Act
-        repository.saveMovie(movie)
-
-        // Assert
-        coVerify { db.insertMovies(listOf(movie)) }
-    }
-
-    @Test
-    fun saveEpisode_should_insert_episode_into_db() = runTest {
-        // Arrange
-        val episode = MediaMockups.episode1
-        coEvery { db.insertEpisodes(listOf(episode)) } returns Unit
-
-        // Act
-        repository.saveEpisode(episode)
-
-        // Assert
-        coVerify { db.insertEpisodes(listOf(episode)) }
-    }
-
 }

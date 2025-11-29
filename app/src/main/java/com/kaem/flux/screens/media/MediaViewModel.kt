@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kaem.flux.data.repository.DataStoreRepository
 import com.kaem.flux.data.repository.MediaRepository
+import com.kaem.flux.data.repository.SettingsRepository
+import com.kaem.flux.data.repository.UserRepository
 import com.kaem.flux.model.ScreenState
 import com.kaem.flux.model.media.Episode
 import com.kaem.flux.model.media.Media
@@ -32,7 +34,8 @@ import kotlin.time.Duration.Companion.seconds
 class MediaViewModel @AssistedInject constructor(
     @Assisted val mediaId: Long,
     private val repository: MediaRepository,
-    private val dataStoreRepository: DataStoreRepository
+    private val settingsRepository: SettingsRepository,
+    private val userRepository: UserRepository
 ) : ViewModel() {
 
     @AssistedFactory
@@ -54,10 +57,14 @@ class MediaViewModel @AssistedInject constructor(
 
     init {
 
-        val (backward, forward) = dataStoreRepository.getPlayerButtonsValues()
-        backwardValue = backward.seconds.inWholeMilliseconds
-        forwardValue = forward.seconds.inWholeMilliseconds
-        subtitlesLanguage = dataStoreRepository.getSubtitlesLanguage()
+        viewModelScope.launch {
+            settingsRepository.settingsPreferencesFlow.collect { settings ->
+                backwardValue = settings.playerBackwardValue.seconds.inWholeMilliseconds
+                forwardValue = settings.playerForwardValue.seconds.inWholeMilliseconds
+                subtitlesLanguage = settings.subtitlesLanguage
+            }
+
+        }
 
         getMedias(mediaId)
     }
@@ -263,8 +270,8 @@ class MediaViewModel @AssistedInject constructor(
 
                     repository.saveMovie(media)
 
-                    if (status == Status.WATCHED) dataStoreRepository.removeWatchedMedia(mediaId)
-                    else dataStoreRepository.addWatchedMedia(mediaId)
+                    if (status == Status.WATCHED) userRepository.removeWatchedMedia(mediaId)
+                    else userRepository.addWatchedMedia(mediaId)
 
                 }
                 is Episode -> {
@@ -294,8 +301,8 @@ class MediaViewModel @AssistedInject constructor(
     }
 
     private suspend fun addOrRemoveToWatchedMedias() {
-        if (uiState.value.episodes.all { it.status == Status.WATCHED }) dataStoreRepository.removeWatchedMedia(mediaId)
-        else dataStoreRepository.addWatchedMedia(mediaId)
+        if (uiState.value.episodes.all { it.status == Status.WATCHED }) userRepository.removeWatchedMedia(mediaId)
+        else userRepository.addWatchedMedia(mediaId)
     }
 
 }

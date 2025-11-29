@@ -9,15 +9,22 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import com.kaem.flux.data.repository.DataStoreRepository
+import com.kaem.flux.data.repository.SettingsPreferences
+import com.kaem.flux.data.repository.SettingsRepository
+import com.kaem.flux.data.repository.settingsDatastore
 import com.kaem.flux.navigation.Route
 import com.kaem.flux.navigation.Transition
 import com.kaem.flux.screens.about.AboutScreen
@@ -30,24 +37,30 @@ import com.kaem.flux.screens.settings.SettingsScreen
 import com.kaem.flux.ui.theme.FluxTheme
 import com.kaem.flux.ui.theme.Ui
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.last
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    @Inject lateinit var dataStoreRepository: DataStoreRepository
-    private var uiTheme by mutableStateOf(Ui.THEME.SYSTEM)
+    @Inject lateinit var settingsRepository: SettingsRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         enableEdgeToEdge(SystemBarStyle.dark(Color.TRANSPARENT))
-        observeDataStore()
 
         setContent {
 
-            FluxTheme(theme = uiTheme) {
+            val settings by settingsRepository.settingsPreferencesFlow.collectAsStateWithLifecycle(
+                initialValue = SettingsPreferences(),
+                lifecycleOwner = LocalLifecycleOwner.current
+            )
+
+            FluxTheme(theme = settings.uiTheme) {
 
                 val backStack = rememberNavBackStack(Route.Library)
 
@@ -108,14 +121,6 @@ class MainActivity : ComponentActivity() {
 
         }
 
-    }
-
-    private fun observeDataStore() {
-        lifecycleScope.launch {
-            dataStoreRepository.flow.collect {
-                uiTheme = it.uiTheme
-            }
-        }
     }
 
 }

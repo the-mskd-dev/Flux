@@ -26,8 +26,8 @@ abstract class Media {
     abstract  val voteAverage: Float
     abstract  val voteCount: Int
     abstract  val duration: Int
-    abstract  var currentTime: Long
-    abstract  var status: Status
+    abstract  val currentTime: Long
+    abstract  val status: Status
 
     abstract  val file: UserFile
 

@@ -40,8 +40,8 @@ data class Movie(
     override val voteAverage: Float,
     override val voteCount: Int,
     override val duration: Int,
-    override var currentTime: Long = 0L,
-    override var status: Status = Status.TO_WATCH,
+    override val currentTime: Long = 0L,
+    override val status: Status = Status.TO_WATCH,
     @Embedded override val file: UserFile,
     //val genres: List<String> = listOf()
 ) : Media() {

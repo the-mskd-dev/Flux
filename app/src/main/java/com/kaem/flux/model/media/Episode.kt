@@ -50,11 +50,11 @@ data class Episode(
     override val releaseDateString: String,
     override val description: String,
     override val duration: Int,
-    override var currentTime: Long = 0L,
+    override val currentTime: Long = 0L,
     override val voteAverage: Float,
     override val voteCount: Int,
     @Embedded override val file: UserFile,
-    override var status: Status = Status.TO_WATCH,
+    override val status: Status = Status.TO_WATCH,
 ) : Media() {
 
     constructor(

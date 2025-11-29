@@ -3,13 +3,17 @@ package com.kaem.flux.screens.settings
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kaem.flux.data.repository.DataStoreRepository
+import com.kaem.flux.data.repository.SettingsRepository
 import com.kaem.flux.ui.theme.Ui
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.Locale
@@ -17,37 +21,32 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    private val dataStoreRepository: DataStoreRepository
+    private val settingsRepository: SettingsRepository
 ) : ViewModel() {
 
     //region Variables
 
-    private val _uiState = MutableStateFlow(SettingsUiState())
-    val uiState: StateFlow<SettingsUiState> = _uiState.asStateFlow()
+    private val _dialogState = MutableStateFlow<SettingsDialogState<*>?>(null)
+
+    val uiState: StateFlow<SettingsUiState> = combine(
+        settingsRepository.settingsPreferencesFlow,
+        _dialogState
+    ) { settings, dialog ->
+        SettingsUiState(
+            backwardValue = settings.playerBackwardValue,
+            forwardValue = settings.playerForwardValue,
+            uiTheme = settings.uiTheme,
+            subtitlesLanguage = settings.subtitlesLanguage,
+            dialogState = dialog
+        )
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = SettingsUiState()
+    )
 
     private val _event = MutableSharedFlow<SettingsEvent>()
     val event = _event.asSharedFlow()
-
-    //endregion
-
-    //region Init
-
-    init {
-
-        viewModelScope.launch {
-            dataStoreRepository.flow.collect { dataStore ->
-                _uiState.update {
-                    it.copy(
-                        backwardValue = dataStore.playerBackwardValue,
-                        forwardValue = dataStore.playerForwardValue,
-                        uiTheme = dataStore.uiTheme,
-                        subtitlesLanguage = dataStore.subtitlesLanguage
-                    )
-                }
-            }
-        }
-
-    }
 
     //endregion
 
@@ -73,50 +72,46 @@ class SettingsViewModel @Inject constructor(
     //endregion
 
     private fun hideDialog() {
-        _uiState.update { it.copy(dialogState = null) }
+        _dialogState.update { null }
     }
 
     private fun showBackwardDialog() {
-        _uiState.update {
-            it.copy(dialogState = SettingsDialogState.backward(it.backwardValue))
-        }
+        val currentValue = uiState.value.backwardValue
+        _dialogState.update { SettingsDialogState.backward(currentValue) }
     }
 
     private suspend fun setBackwardValue(value: Int) {
-        dataStoreRepository.setPlayerBackwardValue(value)
+        settingsRepository.setPlayerBackwardValue(value)
         hideDialog()
     }
 
     private fun showForwardDialog() {
-        _uiState.update {
-            it.copy(dialogState = SettingsDialogState.forward(it.forwardValue))
-        }
+        val currentValue = uiState.value.forwardValue
+        _dialogState.update { SettingsDialogState.forward(currentValue) }
     }
 
     private suspend fun setForwardValue(value: Int) {
-        dataStoreRepository.setPlayerForwardValue(value)
+        settingsRepository.setPlayerForwardValue(value)
         hideDialog()
     }
 
     private fun showThemeDialog() {
-        _uiState.update {
-            it.copy(dialogState = SettingsDialogState.theme(it.uiTheme))
-        }
+        val currentValue = uiState.value.uiTheme
+        _dialogState.update { SettingsDialogState.theme(currentValue) }
     }
 
     private suspend fun setTheme(theme: Ui.THEME) {
-        dataStoreRepository.setUiTheme(theme)
+        settingsRepository.setUiTheme(theme)
         hideDialog()
     }
 
     private fun showSubtitlesLanguageDialog() {
-        _uiState.update {
-            it.copy(dialogState = SettingsDialogState.subtitles(it.subtitlesLanguage))
-        }
+        val currentValue = uiState.value.subtitlesLanguage
+        _dialogState.update { SettingsDialogState.subtitles(currentValue) }
     }
 
     private suspend fun setSubtitlesLanguage(value: Locale) {
-        dataStoreRepository.setSubtitlesLanguage(value)
+        settingsRepository.setSubtitlesLanguage(value)
         hideDialog()
     }
 

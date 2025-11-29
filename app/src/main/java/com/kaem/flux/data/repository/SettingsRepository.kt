@@ -1,0 +1,79 @@
+package com.kaem.flux.data.repository
+
+import android.content.Context
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.emptyPreferences
+import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.preferencesDataStore
+import com.kaem.flux.ui.theme.Ui
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.map
+import java.io.IOException
+import java.util.Locale
+import javax.inject.Inject
+
+val Context.settingsDatastore by preferencesDataStore("SettingsDataStore")
+
+data class SettingsPreferences(
+    val playerBackwardValue: Int = 10,
+    val playerForwardValue: Int = 10,
+    val uiTheme: Ui.THEME = Ui.THEME.SYSTEM,
+    val subtitlesLanguage: Locale = Locale.getDefault()
+)
+
+class SettingsRepository @Inject constructor(private val context: Context) {
+
+    object Keys {
+        val PLAYER_BACKWARD = intPreferencesKey("player_backward")
+        val PLAYER_FORWARD = intPreferencesKey("player_forward")
+        val UI_THEME = stringPreferencesKey("ui_theme")
+        val SUBTITLES_LANGUAGE = stringPreferencesKey("subtitles_language")
+    }
+
+    val settingsPreferencesFlow: Flow<SettingsPreferences> = context.settingsDatastore.data
+        .catch { exception ->
+            if (exception is IOException) emit(emptyPreferences()) else throw exception
+        }
+        .map { preferences ->
+
+            val playerBackwardValue = preferences[Keys.PLAYER_BACKWARD] ?: 10
+            val playerForwardValue = preferences[Keys.PLAYER_FORWARD] ?: 10
+            val uiTheme = preferences[Keys.UI_THEME]?.let { Ui.THEME.valueOf(it) } ?: Ui.THEME.SYSTEM
+            val subtitlesLanguage = preferences[Keys.SUBTITLES_LANGUAGE]?.let { Locale.forLanguageTag(it) } ?: Locale.getDefault()
+
+            SettingsPreferences(
+                playerBackwardValue = playerBackwardValue,
+                playerForwardValue = playerForwardValue,
+                uiTheme = uiTheme,
+                subtitlesLanguage = subtitlesLanguage
+            )
+        }
+
+    suspend fun setPlayerBackwardValue(value: Int) {
+        context.settingsDatastore.edit { preferences ->
+            preferences[Keys.PLAYER_BACKWARD] = value
+        }
+    }
+
+
+    suspend fun setPlayerForwardValue(value: Int) {
+        context.settingsDatastore.edit { preferences ->
+            preferences[Keys.PLAYER_FORWARD] = value
+        }
+    }
+
+    suspend fun setUiTheme(theme: Ui.THEME) {
+        context.settingsDatastore.edit { preferences ->
+            preferences[Keys.UI_THEME] = theme.toString()
+        }
+    }
+
+    suspend fun setSubtitlesLanguage(locale: Locale) {
+        context.settingsDatastore.edit { preferences ->
+            preferences[Keys.SUBTITLES_LANGUAGE] = locale.language
+        }
+    }
+
+}

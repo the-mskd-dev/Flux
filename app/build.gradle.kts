@@ -1,3 +1,6 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.android.application)
@@ -8,6 +11,12 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.google.services)
     alias(libs.plugins.crashlytics)
+}
+
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(FileInputStream(localPropertiesFile))
 }
 
 android {
@@ -25,6 +34,9 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        val tmdbToken = localProperties.getProperty("tmdb_token") ?: ""
+        buildConfigField("String", "TMDB_TOKEN", "\"$tmdbToken\"")
     }
 
     buildTypes {
@@ -45,6 +57,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     packaging {
         resources {

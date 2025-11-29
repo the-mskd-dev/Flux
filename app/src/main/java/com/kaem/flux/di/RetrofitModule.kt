@@ -1,6 +1,7 @@
 package com.kaem.flux.di
 
 import com.google.gson.Gson
+import com.kaem.flux.BuildConfig
 import com.kaem.flux.data.tmdb.TMDBService
 import dagger.Module
 import dagger.Provides
@@ -16,7 +17,6 @@ import javax.inject.Singleton
 object RetrofitModule {
 
     private const val BASE_URL = "https://api.themoviedb.org/3/"
-    private const val TMDB_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyYWUwM2ExNmE5NjQ5NmJlZjdiMzI5OTZhZWIzYWMzOSIsIm5iZiI6MTcwNTkzMTMyMi4xMDUsInN1YiI6IjY1YWU3MjNhODQ4ZWI5MDBhYzljNDQ0ZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.c0I07zJ-DWdveIZoUd_GrBSaKKU3pUYolOCOIrgGwVg"
 
     @Provides
     @Singleton
@@ -25,7 +25,7 @@ object RetrofitModule {
             .addNetworkInterceptor {
                 val requestBuilder = it.request().newBuilder()
                 requestBuilder.addHeader("accept", "application/json")
-                requestBuilder.addHeader("Authorization", "Bearer $TMDB_TOKEN")
+                requestBuilder.addHeader("Authorization", "Bearer ${BuildConfig.TMDB_TOKEN}")
                 it.proceed(requestBuilder.build())
             }
             .build()

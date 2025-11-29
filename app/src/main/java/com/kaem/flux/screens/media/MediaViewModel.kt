@@ -1,7 +1,6 @@
 package com.kaem.flux.screens.media
 
 import android.util.Log
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kaem.flux.data.repository.DataStoreRepository
@@ -14,6 +13,9 @@ import com.kaem.flux.model.media.Status
 import com.kaem.flux.utils.extensions.getPreviousEpisodesFor
 import com.kaem.flux.utils.extensions.msToMin
 import com.kaem.flux.utils.extensions.timeDescription
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,20 +26,22 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.Locale
-import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
-@HiltViewModel
-class MediaViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
+@HiltViewModel(assistedFactory = MediaViewModel.Factory::class)
+class MediaViewModel @AssistedInject constructor(
+    @Assisted val mediaId: Long,
     private val repository: MediaRepository,
     private val dataStoreRepository: DataStoreRepository
 ) : ViewModel() {
 
+    @AssistedFactory
+    interface Factory {
+        fun create(mediaId: Long): MediaViewModel
+    }
+
     private val _event = MutableSharedFlow<MediaEvent>()
     val event = _event.asSharedFlow().distinctUntilChanged()
-
-    private val mediaId: Long = checkNotNull(savedStateHandle["mediaId"])
 
     private val _uiState = MutableStateFlow(MediaUiState())
     val uiState: StateFlow<MediaUiState> = _uiState.asStateFlow()

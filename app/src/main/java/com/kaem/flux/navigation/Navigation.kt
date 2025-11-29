@@ -1,36 +1,68 @@
 package com.kaem.flux.navigation
 
-import androidx.navigation.NamedNavArgument
-import androidx.navigation.NavType
-import androidx.navigation.navArgument
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
+import androidx.compose.ui.unit.IntOffset
+import androidx.navigation3.runtime.NavKey
+import com.kaem.flux.model.media.ContentType
+import kotlinx.serialization.Serializable
 
-sealed class Navigation(protected val base: String) {
+sealed class Route : NavKey {
 
-    open val route: String = base
-    open val arguments: List<NamedNavArgument> = emptyList()
+    @Serializable
+    data object Library: Route()
 
-    fun build(args: List<Any> = emptyList()) : String {
-        if (args.isEmpty()) return route
-        return base +  args.joinToString(separator = "/", prefix = "/")
-    }
+    @Serializable
+    data class Category(val contentType: ContentType): Route()
 
-    object LIBRARY : Navigation("library")
+    @Serializable
+    data class Media(val mediaId: Long): Route()
 
-    object CATEGORY : Navigation("category") {
+    @Serializable
+    data object Search: Route()
 
-        override val route: String = "$base/{contentType}"
-        override val arguments: List<NamedNavArgument> = listOf(navArgument("contentType") { type = NavType.StringType })
+    @Serializable
+    data object Settings: Route()
 
-    }
+    @Serializable
+    data object HowTo: Route()
 
-    object MEDIA : Navigation("media") {
-        override val route: String = "$base/{mediaId}"
-        override val arguments: List<NamedNavArgument> = listOf(navArgument("mediaId") { type = NavType.LongType })
+    @Serializable
+    data object About: Route()
+}
 
-    }
+object Transition {
 
-    object SEARCH : Navigation("search")
-    object SETTINGS : Navigation("settings")
-    object HOW_TO : Navigation("howTo")
-    object ABOUT : Navigation("about")
+    private val motionSpec = spring<Float>(
+        stiffness = Spring.StiffnessMediumLow,
+        dampingRatio = Spring.DampingRatioNoBouncy
+    )
+
+    private val stiffness = spring<IntOffset>(
+        stiffness = Spring.StiffnessMediumLow,
+        dampingRatio = Spring.DampingRatioNoBouncy
+    )
+
+    private fun enterFromRight() = slideInHorizontally(initialOffsetX = { it }, animationSpec = stiffness)
+
+    private fun exitToLeft() = slideOutHorizontally(targetOffsetX = { -it }, animationSpec = stiffness) +
+            fadeOut(animationSpec = motionSpec) +
+            scaleOut(targetScale = 0.9f, animationSpec = motionSpec)
+
+    private fun enterFromLeft() = slideInHorizontally(initialOffsetX = { -it }, animationSpec = stiffness) +
+            fadeIn(animationSpec = motionSpec) +
+            scaleIn(initialScale = 0.9f, animationSpec = motionSpec)
+
+    private fun exitToRight() = slideOutHorizontally(targetOffsetX = { it }, animationSpec = stiffness)
+
+    val Forward = enterFromRight() togetherWith exitToLeft()
+    val Backward = enterFromLeft() togetherWith exitToRight()
+
 }

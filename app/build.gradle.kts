@@ -1,12 +1,13 @@
 plugins {
-    id("com.google.devtools.ksp")
-    id("com.android.application")
-    id("org.jetbrains.kotlin.android")
-    id("com.google.dagger.hilt.android")
-    id("kotlin-parcelize")
-    id("org.jetbrains.kotlin.plugin.compose")
-    id("com.google.gms.google-services")
-    id("com.google.firebase.crashlytics")
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.jetbrains.kotlin.serialization)
+    alias(libs.plugins.parcelize)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.google.services)
+    alias(libs.plugins.crashlytics)
 }
 
 android {
@@ -60,87 +61,69 @@ android {
 
 dependencies {
 
-    implementation("androidx.core:core-ktx:1.17.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.9.4")
-    implementation("androidx.activity:activity-compose:1.11.0")
+    // Core
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.kotlinx.serialization.core)
 
-    // Compose
-    implementation(platform("androidx.compose:compose-bom:2025.11.00"))
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.ui:ui-graphics")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.ui:ui-text:1.10.0-beta02")
-    implementation("androidx.compose.material3:material3:1.5.0-alpha08")
-    implementation("androidx.compose.material:material-icons-core")
-    implementation("androidx.compose.runtime:runtime-livedata")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.4")
-    implementation("androidx.navigation:navigation-compose:2.9.6")
-    implementation("androidx.compose.material3.adaptive:adaptive")
-    implementation("androidx.constraintlayout:constraintlayout-compose:1.1.1")
+    // Compose (Bundle + BOM)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.bundles.compose)
 
+    // Navigation 3
+    implementation(libs.bundles.nav3)
 
     // Accompanist
-    implementation("com.google.accompanist:accompanist-permissions:0.37.3")
+    implementation(libs.accompanist.permissions)
 
-    // Player
-    val media3Version = "1.8.0"
-    implementation("androidx.media3:media3-exoplayer:$media3Version")
-    implementation("androidx.media3:media3-ui:$media3Version")
-    implementation("org.jellyfin.media3:media3-ffmpeg-decoder:1.8.0+1")
+    // Media Player
+    implementation(libs.bundles.media3)
 
     // Hilt
-    implementation("com.google.dagger:hilt-android:2.57.2")
-    implementation("androidx.hilt:hilt-navigation-compose:1.3.0")
-    ksp("com.google.dagger:dagger-compiler:2.57.2")
-    ksp("com.google.dagger:hilt-android-compiler:2.57.2")
+    implementation(libs.hilt.android)
+    implementation(libs.androidx.hilt.navigation.compose)
+    ksp(libs.hilt.compiler)
+    ksp(libs.hilt.android.compiler)
 
-    // Gson
-    implementation("com.google.code.gson:gson:2.13.2")
+    // Network & Serialization (Retrofit 3, OkHttp 5, Gson)
+    implementation(libs.bundles.network)
 
-    // Retrofit
-    implementation("com.squareup.retrofit2:retrofit:3.0.0")
-    implementation("com.squareup.retrofit2:converter-scalars:3.0.0")
-    implementation("com.squareup.retrofit2:converter-gson:3.0.0")
-
-    // OKHttp
-    implementation("com.squareup.okhttp3:okhttp:5.3.0")
-
-    // Coil
-    implementation("io.coil-kt.coil3:coil-compose:3.3.0")
-    implementation("io.coil-kt.coil3:coil-network-okhttp:3.3.0")
+    // Images
+    implementation(libs.bundles.image)
 
     // DataStore
-    val datastoreVersion = "1.1.7"
-    implementation("androidx.datastore:datastore-preferences:$datastoreVersion")
-    implementation("androidx.datastore:datastore-preferences-rxjava2:$datastoreVersion")
-    implementation("androidx.datastore:datastore-preferences-rxjava3:$datastoreVersion")
+    implementation(libs.bundles.datastore)
 
     // Room
-    val roomVersion = "2.8.3"
-    implementation("androidx.room:room-runtime:$roomVersion")
-    implementation("androidx.room:room-ktx:$roomVersion")
-    ksp("androidx.room:room-compiler:$roomVersion")
+    implementation(libs.bundles.room)
+    ksp(libs.androidx.room.compiler)
 
     // Firebase
-    implementation(platform("com.google.firebase:firebase-bom:34.5.0"))
-    implementation("com.google.firebase:firebase-analytics")
-    implementation("com.google.firebase:firebase-crashlytics")
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.crashlytics)
 
-    implementation("app.cash.turbine:turbine:1.2.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
+    // Unit Testing
+    testImplementation(libs.junit)
+    testImplementation(libs.mockwebserver)
+    testImplementation(libs.mockk)
+    implementation(libs.turbine)
+    implementation(libs.kotlinx.coroutines.test)
 
-    testImplementation("junit:junit:4.13.2")
-    testImplementation("com.squareup.okhttp3:mockwebserver:5.3.0")
-    testImplementation("io.mockk:mockk:1.14.6")
+    // Android Testing
+    androidTestImplementation(libs.androidx.test.ext)
+    androidTestImplementation(libs.androidx.test.espresso)
+    androidTestImplementation(libs.truth)
+    androidTestImplementation(libs.androidx.core.testing)
+    androidTestImplementation(libs.mockk.android)
 
-    androidTestImplementation("androidx.test.ext:junit:1.3.0")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0")
-    androidTestImplementation("com.google.truth:truth:1.4.5")
-    androidTestImplementation("androidx.arch.core:core-testing:2.2.0")
-    androidTestImplementation("io.mockk:mockk-android:1.14.6")
-    androidTestImplementation(platform("androidx.compose:compose-bom:2025.11.00"))
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+    // UI Testing
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.ui.test.junit4)
 
-    debugImplementation("androidx.compose.ui:ui-tooling")
-    debugImplementation("androidx.compose.ui:ui-test-manifest")
+    // Debug
+    debugImplementation(libs.androidx.ui.tooling)
+    debugImplementation(libs.androidx.ui.test.manifest)
+
 }

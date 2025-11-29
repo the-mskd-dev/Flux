@@ -13,8 +13,8 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.window.core.layout.WindowSizeClass
 import com.kaem.flux.R
 import com.kaem.flux.model.ScreenState
-import com.kaem.flux.screens.media.composables.MediaScreenContent
-import com.kaem.flux.screens.media.composables.MediaScreenContentLarge
+import com.kaem.flux.screens.media.composables.MediaContentLarge
+import com.kaem.flux.screens.media.composables.MediaContentRegular
 import com.kaem.flux.screens.player.PlayerScreen
 import com.kaem.flux.ui.component.ErrorScreen
 import com.kaem.flux.ui.component.FluxDialog
@@ -24,7 +24,10 @@ import com.kaem.flux.ui.component.Text
 @Composable
 fun MediaScreen(
     onBack: () -> Unit,
-    viewModel: MediaViewModel = hiltViewModel()
+    mediaId: Long,
+    viewModel: MediaViewModel = hiltViewModel<MediaViewModel, MediaViewModel.Factory>(
+        creationCallback = { factory -> factory.create(mediaId) }
+    )
 ) {
 
     val uiState by viewModel.uiState.collectAsState()
@@ -73,7 +76,7 @@ fun MediaScreen(
                     } else {
 
                         if (isLargeScreen) {
-                            MediaScreenContentLarge(
+                            MediaContentLarge(
                                 overview = uiState.overview,
                                 media = uiState.media,
                                 episodes = uiState.episodes,
@@ -81,7 +84,7 @@ fun MediaScreen(
                                 sendIntent = viewModel::handleIntent,
                             )
                         } else {
-                            MediaScreenContent(
+                            MediaContentRegular(
                                 overview = uiState.overview,
                                 media = uiState.media,
                                 episodes = uiState.episodes,

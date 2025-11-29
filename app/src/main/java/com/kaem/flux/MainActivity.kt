@@ -14,10 +14,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.ui.NavDisplay
 import com.kaem.flux.data.repository.DataStoreRepository
-import com.kaem.flux.navigation.Navigation
+import com.kaem.flux.navigation.Route
+import com.kaem.flux.navigation.Transition
 import com.kaem.flux.screens.about.AboutScreen
 import com.kaem.flux.screens.category.CategoryScreen
 import com.kaem.flux.screens.home.HomeScreen
@@ -27,7 +29,6 @@ import com.kaem.flux.screens.search.SearchScreen
 import com.kaem.flux.screens.settings.SettingsScreen
 import com.kaem.flux.ui.theme.FluxTheme
 import com.kaem.flux.ui.theme.Ui
-import com.kaem.flux.utils.FluxNavHost
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -48,83 +49,60 @@ class MainActivity : ComponentActivity() {
 
             FluxTheme(theme = uiTheme) {
 
-                val navController = rememberNavController()
-                
-                FluxNavHost(
+                val backStack = rememberNavBackStack(Route.Library)
+
+                NavDisplay(
                     modifier = Modifier
                         .fillMaxSize()
                         .background(color = MaterialTheme.colorScheme.background),
-                    navController = navController,
-                    startDestination = Navigation.LIBRARY.route
-                ) {
-
-                    composable(
-                        route = Navigation.LIBRARY.route,
-                        arguments = Navigation.LIBRARY.arguments
-                    ) {
-                        HomeScreen(
-                            navigate = { route -> navController.navigate(route) },
-                        )
+                    backStack = backStack,
+                    onBack = { backStack.removeLastOrNull() },
+                    transitionSpec = { Transition.Forward },
+                    popTransitionSpec = { Transition.Backward },
+                    predictivePopTransitionSpec = { Transition.Backward },
+                    entryProvider = entryProvider {
+                        entry<Route.Library> {
+                            HomeScreen(
+                                navigate = { route -> backStack.add(route) },
+                            )
+                        }
+                        entry<Route.Media> { entry ->
+                            MediaScreen(
+                                onBack = { backStack.removeLastOrNull() },
+                                mediaId = entry.mediaId
+                            )
+                        }
+                        entry<Route.Category> { entry ->
+                            CategoryScreen(
+                                navigate = { route -> backStack.add(route) },
+                                onBack = { backStack.removeLastOrNull() },
+                                contentType = entry.contentType
+                            )
+                        }
+                        entry<Route.Search> {
+                            SearchScreen(
+                                navigate = { route -> backStack.add(route) },
+                                onBack = { backStack.removeLastOrNull() },
+                            )
+                        }
+                        entry<Route.Settings> {
+                            SettingsScreen(
+                                navigate = { route -> backStack.add(route) },
+                                onBack = { backStack.removeLastOrNull() },
+                            )
+                        }
+                        entry<Route.HowTo> {
+                            HowToScreen(
+                                onBack = { backStack.removeLastOrNull() }
+                            )
+                        }
+                        entry<Route.About> {
+                            AboutScreen(
+                                onBack = { backStack.removeLastOrNull() }
+                            )
+                        }
                     }
-
-                    composable(
-                        route = Navigation.MEDIA.route,
-                        arguments = Navigation.MEDIA.arguments,
-                    ) {
-                        MediaScreen(
-                            onBack = { navController.popBackStack() }
-                        )
-                    }
-
-                    composable(
-                        route = Navigation.CATEGORY.route,
-                        arguments = Navigation.CATEGORY.arguments,
-                    ) {
-                        CategoryScreen(
-                            navigate = { route -> navController.navigate(route) },
-                            onBack = { navController.popBackStack() },
-                        )
-                    }
-
-                    composable(
-                        route = Navigation.SEARCH.route,
-                        arguments = Navigation.SEARCH.arguments
-                    ) {
-                        SearchScreen(
-                            navigate = { route -> navController.navigate(route) },
-                            onBack = { navController.popBackStack() },
-                        )
-                    }
-
-                    composable(
-                        route = Navigation.SETTINGS.route,
-                        arguments = Navigation.SETTINGS.arguments
-                    ) {
-                        SettingsScreen(
-                            navigate = { route -> navController.navigate(route) },
-                            onBack = { navController.popBackStack() },
-                        )
-                    }
-
-                    composable(
-                        route = Navigation.HOW_TO.route,
-                        arguments = Navigation.HOW_TO.arguments
-                    ) {
-                        HowToScreen(
-                            onBack = { navController.popBackStack() }
-                        )
-                    }
-
-                    composable(
-                        route = Navigation.ABOUT.route,
-                        arguments = Navigation.ABOUT.arguments
-                    ) {
-                        AboutScreen(
-                            onBack = { navController.popBackStack() }
-                        )
-                    }
-
-                }
+                )
 
             }
 

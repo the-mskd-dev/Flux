@@ -36,7 +36,7 @@ import com.kaem.flux.ui.theme.FluxTheme
 import com.kaem.flux.ui.theme.Ui
 
 @Composable
-fun MediaScreenContentLarge(
+fun MediaContentLarge(
     overview: MediaOverview,
     media: Media,
     episodes: List<Episode>,
@@ -143,7 +143,7 @@ fun MediaScreenContentLarge(
 @Composable
 fun MediaContentLargeMovie_Preview() {
     FluxTheme {
-        MediaScreenContentLarge(
+        MediaContentLarge(
             overview = MediaMockups.movieOverview,
             media = MediaMockups.movie,
             episodes = emptyList(),
@@ -157,7 +157,7 @@ fun MediaContentLargeMovie_Preview() {
 @Composable
 fun MediaContentLargeShow_Preview() {
     FluxTheme {
-        MediaScreenContentLarge(
+        MediaContentLarge(
             overview = MediaMockups.showOverview,
             media = MediaMockups.episode1,
             episodes = MediaMockups.episodes,

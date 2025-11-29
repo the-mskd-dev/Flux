@@ -54,7 +54,7 @@ import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.ScreenState
 import com.kaem.flux.model.media.ContentType
 import com.kaem.flux.model.media.MediaOverview
-import com.kaem.flux.navigation.Navigation
+import com.kaem.flux.navigation.Route
 import com.kaem.flux.screens.welcome.WelcomeScreen
 import com.kaem.flux.screens.welcome.fluxPermissionState
 import com.kaem.flux.ui.component.FluxButton
@@ -70,7 +70,7 @@ import com.kaem.flux.utils.Constants
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun HomeScreen(
-    navigate: (String) -> Unit,
+    navigate: (Route) -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
 
@@ -80,11 +80,11 @@ fun HomeScreen(
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
             when (event) {
-                is HomeEvent.NavigateToCategory -> navigate(Navigation.CATEGORY.build(listOf(event.category.name)))
-                is HomeEvent.NavigateToMedia -> navigate(Navigation.MEDIA.build(listOf(event.mediaId)))
-                HomeEvent.NavigateToHowTo -> navigate(Navigation.HOW_TO.build())
-                HomeEvent.NavigateToSearch -> navigate(Navigation.SEARCH.build())
-                HomeEvent.NavigateToSettings -> navigate(Navigation.SETTINGS.build())
+                is HomeEvent.NavigateToCategory -> navigate(Route.Category(contentType = event.category))
+                is HomeEvent.NavigateToMedia -> navigate(Route.Media(event.mediaId))
+                HomeEvent.NavigateToHowTo -> navigate(Route.HowTo)
+                HomeEvent.NavigateToSearch -> navigate(Route.Search)
+                HomeEvent.NavigateToSettings -> navigate(Route.Settings)
                 HomeEvent.OpenPermissionDialog -> permissions.launchPermissionRequest()
             }
         }
@@ -111,45 +111,31 @@ fun HomeScreen(
             when (it) {
 
                 ScreenState.LOADING -> LoadingScreen()
+
                 else -> {
 
-                    HomeContent(
-                        overviews = uiState.overviews,
-                        lastWatchedIds = uiState.lastWatchedMediaIds,
-                        isSyncing = uiState.isRefreshing,
-                        sendIntent = viewModel::handleIntent
-                    )
+                    if (uiState.overviews.isEmpty()) {
+
+                        HomeEmpty(sendIntent = viewModel::handleIntent)
+
+                    } else {
+
+                        HomeContent(
+                            overviews = uiState.overviews,
+                            lastWatchedIds = uiState.lastWatchedMediaIds,
+                            isRefreshing = uiState.isRefreshing,
+                            sendIntent = viewModel::handleIntent
+                        )
+
+                    }
+
+
 
                 }
 
             }
 
         }
-
-    }
-
-}
-
-@Composable
-fun HomeContent(
-    overviews: List<MediaOverview>,
-    lastWatchedIds: List<Long>,
-    isSyncing: Boolean,
-    sendIntent: (HomeIntent) -> Unit
-) {
-
-    if (overviews.isEmpty()) {
-
-        HomeEmpty(sendIntent = sendIntent)
-
-    } else {
-
-        HomeLists(
-            overviews = overviews,
-            lastWatchedIds = lastWatchedIds,
-            isRefreshing = isSyncing,
-            sendIntent = sendIntent
-        )
 
     }
 
@@ -192,7 +178,7 @@ fun HomeEmpty(sendIntent: (HomeIntent) -> Unit) {
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun HomeLists(
+fun HomeContent(
     overviews: List<MediaOverview>,
     lastWatchedIds: List<Long>,
     isRefreshing: Boolean,
@@ -406,7 +392,7 @@ fun HomeScreen_Preview() {
         HomeContent(
             overviews = MediaMockups.overviews,
             lastWatchedIds = MediaMockups.overviews.map { it.id },
-            isSyncing = false,
+            isRefreshing = false,
             sendIntent = {}
         )
     }

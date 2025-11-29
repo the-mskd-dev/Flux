@@ -257,46 +257,43 @@ class MediaViewModel @AssistedInject constructor(
 
     private suspend fun saveWatchTime(time: Long) {
 
-        val media = uiState.value.media
-        val status = if (time.msToMin >= media.duration * .9) Status.WATCHED else Status.IS_WATCHING
+        val currentState = uiState.value
+        val currentMedia = currentState.media
 
-        uiState.value.let { state ->
+        val newStatus = if (time.msToMin >= currentMedia.duration * .9) Status.WATCHED else Status.IS_WATCHING
+        val newTime = if (newStatus == Status.WATCHED) 0L else time
 
-            media.currentTime = if (status == Status.WATCHED) 0L else time
-            media.status = status
-
-            when (media) {
-                is Movie -> {
-
-                    repository.saveMovie(media)
-
-                    if (status == Status.WATCHED) userRepository.removeWatchedMedia(mediaId)
-                    else userRepository.addWatchedMedia(mediaId)
-
-                }
-                is Episode -> {
-
-                    repository.saveEpisode(media)
-
-                    _uiState.update { currentState ->
-                        val episodes = currentState.episodes.toMutableList()
-                        episodes.replaceAll { episode ->
-                            if (episode.id == media.id) media else episode
-                        }
-                        currentState.copy(
-                            episodes = episodes
-                        )
-                    }
-
-                    addOrRemoveToWatchedMedias()
-
-                }
-                else -> {}
-            }
-
-            Log.i("MediaViewModel", "${state.overview.title} saved at ${time.timeDescription()}")
-
+        val updatedMedia = when (currentMedia) {
+            is Movie -> currentMedia.copy(currentTime = newTime, status = newStatus)
+            is Episode -> currentMedia.copy(currentTime = newTime, status = newStatus)
+            else -> currentMedia
         }
+
+        _uiState.update { state ->
+
+            val updatedEpisodes = if (updatedMedia is Episode) {
+                state.episodes.map { if (it.id == updatedMedia.id) updatedMedia else it }
+            } else state.episodes
+
+            state.copy(
+                media = updatedMedia,
+                episodes = updatedEpisodes
+            )
+        }
+
+        when (updatedMedia) {
+            is Movie -> {
+                if (newStatus == Status.WATCHED) userRepository.removeWatchedMedia(mediaId)
+                else userRepository.addWatchedMedia(mediaId)
+                repository.saveMovie(updatedMedia)
+            }
+            is Episode -> {
+                repository.saveEpisode(updatedMedia)
+                addOrRemoveToWatchedMedias()
+            }
+        }
+
+        Log.i("MediaViewModel", "${updatedMedia.title} saved at ${time.timeDescription()}")
 
     }
 

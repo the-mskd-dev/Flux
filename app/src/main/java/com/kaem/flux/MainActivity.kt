@@ -18,8 +18,10 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.kaem.flux.data.repository.DataStoreRepository
 import com.kaem.flux.data.repository.SettingsPreferences
@@ -70,6 +72,10 @@ class MainActivity : ComponentActivity() {
                         .background(color = MaterialTheme.colorScheme.background),
                     backStack = backStack,
                     onBack = { backStack.removeLastOrNull() },
+                    entryDecorators = listOf(
+                        rememberSaveableStateHolderNavEntryDecorator(),
+                        rememberViewModelStoreNavEntryDecorator()
+                    ),
                     transitionSpec = { Transition.Forward },
                     popTransitionSpec = { Transition.Backward },
                     predictivePopTransitionSpec = { Transition.Backward },

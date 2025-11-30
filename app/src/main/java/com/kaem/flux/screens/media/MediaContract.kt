@@ -1,19 +1,26 @@
 package com.kaem.flux.screens.media
 
+import androidx.compose.runtime.Immutable
 import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.ScreenState
 import com.kaem.flux.model.media.Episode
 import com.kaem.flux.model.media.Media
 import com.kaem.flux.model.media.MediaOverview
+import java.util.Locale
+import kotlin.time.Duration.Companion.seconds
 
+@Immutable
 data class MediaUiState(
-    val overview: MediaOverview = MediaOverview(),
     val screen: ScreenState = ScreenState.LOADING,
+    val overview: MediaOverview = MediaOverview(),
     val media: Media = MediaMockups.episode1,
     val episodes: List<Episode> = emptyList(),
     val season: Int = -1,
     val showPlayer: Boolean = false,
     val showStatusDialog: Boolean = false,
+    val playerBackward: Long = 10.seconds.inWholeMilliseconds,
+    val playerForward: Long = 10.seconds.inWholeMilliseconds,
+    val subtitlesLanguage: Locale = Locale.getDefault()
 )
 
 sealed class MediaIntent {

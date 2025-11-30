@@ -67,9 +67,9 @@ fun MediaScreen(
 
                         PlayerScreen(
                             media = uiState.media,
-                            backward = viewModel.backwardValue,
-                            forward = viewModel.forwardValue,
-                            subtitlesLanguage = viewModel.subtitlesLanguage,
+                            backward = uiState.playerBackward,
+                            forward = uiState.playerForward,
+                            subtitlesLanguage = uiState.subtitlesLanguage,
                             sendIntent = viewModel::handleIntent,
                         )
 

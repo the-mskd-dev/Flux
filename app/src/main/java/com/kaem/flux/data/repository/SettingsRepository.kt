@@ -1,6 +1,9 @@
 package com.kaem.flux.data.repository
 
 import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
+import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.intPreferencesKey
@@ -14,7 +17,12 @@ import java.io.IOException
 import java.util.Locale
 import javax.inject.Inject
 
-val Context.settingsDatastore by preferencesDataStore("SettingsDataStore")
+val Context.settingsDatastore by preferencesDataStore(
+    name = "SettingsDataStore",
+    corruptionHandler = ReplaceFileCorruptionHandler(
+        produceNewData = { emptyPreferences() }
+    )
+)
 
 data class SettingsPreferences(
     val playerBackwardValue: Int = 10,
@@ -23,7 +31,9 @@ data class SettingsPreferences(
     val subtitlesLanguage: Locale = Locale.getDefault()
 )
 
-class SettingsRepository @Inject constructor(private val context: Context) {
+class SettingsRepository @Inject constructor(
+    val settingsDataStore: DataStore<Preferences>
+) {
 
     object Keys {
         val PLAYER_BACKWARD = intPreferencesKey("player_backward")
@@ -32,10 +42,8 @@ class SettingsRepository @Inject constructor(private val context: Context) {
         val SUBTITLES_LANGUAGE = stringPreferencesKey("subtitles_language")
     }
 
-    val settingsPreferencesFlow: Flow<SettingsPreferences> = context.settingsDatastore.data
-        .catch { exception ->
-            if (exception is IOException) emit(emptyPreferences()) else throw exception
-        }
+    val flow: Flow<SettingsPreferences> = settingsDataStore.data
+        .catch { exception -> if (exception is IOException) emit(emptyPreferences()) else throw exception }
         .map { preferences ->
 
             val playerBackwardValue = preferences[Keys.PLAYER_BACKWARD] ?: 10
@@ -52,26 +60,26 @@ class SettingsRepository @Inject constructor(private val context: Context) {
         }
 
     suspend fun setPlayerBackwardValue(value: Int) {
-        context.settingsDatastore.edit { preferences ->
+        settingsDataStore.edit { preferences ->
             preferences[Keys.PLAYER_BACKWARD] = value
         }
     }
 
 
     suspend fun setPlayerForwardValue(value: Int) {
-        context.settingsDatastore.edit { preferences ->
+        settingsDataStore.edit { preferences ->
             preferences[Keys.PLAYER_FORWARD] = value
         }
     }
 
     suspend fun setUiTheme(theme: Ui.THEME) {
-        context.settingsDatastore.edit { preferences ->
+        settingsDataStore.edit { preferences ->
             preferences[Keys.UI_THEME] = theme.toString()
         }
     }
 
     suspend fun setSubtitlesLanguage(locale: Locale) {
-        context.settingsDatastore.edit { preferences ->
+        settingsDataStore.edit { preferences ->
             preferences[Keys.SUBTITLES_LANGUAGE] = locale.language
         }
     }

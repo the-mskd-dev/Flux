@@ -31,7 +31,6 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.Boolean
 import kotlin.time.Duration.Companion.seconds
 
 @HiltViewModel(assistedFactory = MediaViewModel.Factory::class)
@@ -75,7 +74,7 @@ class MediaViewModel @AssistedInject constructor(
 
     val uiState: StateFlow<MediaUiState> = combine(
         _subState,
-        settingsRepository.settingsPreferencesFlow
+        settingsRepository.flow
     ) { subState, settings ->
         MediaUiState(
             screen = subState.screen,

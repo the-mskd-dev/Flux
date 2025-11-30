@@ -6,10 +6,10 @@ import androidx.datastore.preferences.preferencesDataStoreFile
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.filters.MediumTest
 import app.cash.turbine.test
-import com.google.gson.Gson
 import com.kaem.flux.ui.theme.Ui
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -23,14 +23,14 @@ import java.util.Locale
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @MediumTest
-class DataStoreRepositoryTest {
+class SettingsRepositoryTest {
 
     @get:Rule
     val tempFolder = TemporaryFolder()
 
     private val context: Context = ApplicationProvider.getApplicationContext()
     private val testDispatcher = StandardTestDispatcher()
-    private lateinit var dataStoreRepository: DataStoreRepository
+    private lateinit var settingsRepository: SettingsRepository
 
     @Before
     fun setUp() {
@@ -44,9 +44,8 @@ class DataStoreRepositoryTest {
             }
         )
 
-        dataStoreRepository = DataStoreRepository(
-            dataStore = testDataStore,
-            gson = Gson()
+        settingsRepository = SettingsRepository(
+            settingsDataStore = testDataStore
         )
 
         testDispatcher.scheduler.advanceUntilIdle()
@@ -60,9 +59,9 @@ class DataStoreRepositoryTest {
     @Test
     fun initial_state() = runTest {
 
-        val defaultDataStore = FluxDataStore()
+        val defaultDataStore = SettingsPreferences()
 
-        dataStoreRepository.flow.test {
+        settingsRepository.flow.test {
 
             val initialState = awaitItem()
 
@@ -70,64 +69,26 @@ class DataStoreRepositoryTest {
             assert(defaultDataStore.subtitlesLanguage == initialState.subtitlesLanguage)
             assert(defaultDataStore.playerBackwardValue == initialState.playerBackwardValue)
             assert(defaultDataStore.playerForwardValue == initialState.playerForwardValue)
-            assert(defaultDataStore.watchedIds == initialState.watchedIds)
 
             cancelAndConsumeRemainingEvents()
         }
 
-    }
-
-    @Test
-    fun add_and_remove_watched_media_id() = runTest {
-
-        val idTest = 4L
-
-        dataStoreRepository.flow.test {
-
-            var state = awaitItem()
-            assert(state.watchedIds.isEmpty())
-
-            dataStoreRepository.addWatchedMedia(idTest)
-            state = awaitItem()
-            assert(state.watchedIds.contains(idTest))
-
-            dataStoreRepository.removeWatchedMedia(idTest)
-            state = awaitItem()
-            assert(!state.watchedIds.contains(idTest))
-
-            cancelAndConsumeRemainingEvents()
-        }
-
-    }
-
-    @Test
-    fun get_and_set_sync_time() = runTest {
-
-        var syncTime = dataStoreRepository.getSyncTime()
-        assert(syncTime == 0L)
-
-        val testTime = 123456789L
-        dataStoreRepository.setSyncTime(testTime)
-
-        syncTime = dataStoreRepository.getSyncTime()
-
-        assert(syncTime == testTime)
     }
 
     @Test
     fun get_and_set_player_back_value() = runTest {
 
-        dataStoreRepository.flow.test {
+        settingsRepository.flow.test {
 
             var state = awaitItem()
 
-            assert(FluxDataStore().playerBackwardValue == state.playerBackwardValue)
+            assert(SettingsPreferences().playerBackwardValue == state.playerBackwardValue)
 
             val newValue = 20
-            dataStoreRepository.setPlayerBackwardValue(newValue)
+            settingsRepository.setPlayerBackwardValue(newValue)
             state = awaitItem()
 
-            val blockingValue = dataStoreRepository.getPlayerButtonsValues().first
+            val blockingValue = settingsRepository.flow.first().playerBackwardValue
             assert(newValue == state.playerBackwardValue)
             assert(newValue == blockingValue)
 
@@ -140,17 +101,17 @@ class DataStoreRepositoryTest {
     @Test
     fun get_and_set_player_forward_value() = runTest {
 
-        dataStoreRepository.flow.test {
+        settingsRepository.flow.test {
 
             var state = awaitItem()
 
-            assert(FluxDataStore().playerForwardValue == state.playerForwardValue)
+            assert(SettingsPreferences().playerForwardValue == state.playerForwardValue)
 
             val newValue = 20
-            dataStoreRepository.setPlayerForwardValue(newValue)
+            settingsRepository.setPlayerForwardValue(newValue)
             state = awaitItem()
 
-            val blockingValue = dataStoreRepository.getPlayerButtonsValues().second
+            val blockingValue = settingsRepository.flow.first().playerForwardValue
             assert(newValue == state.playerForwardValue)
             assert(newValue == blockingValue)
 
@@ -165,9 +126,9 @@ class DataStoreRepositoryTest {
 
         val newTheme = Ui.THEME.LIGHT
 
-        dataStoreRepository.setUiTheme(newTheme)
+        settingsRepository.setUiTheme(newTheme)
 
-        dataStoreRepository.flow.test {
+        settingsRepository.flow.test {
             val state = awaitItem()
             assert(state.uiTheme == newTheme)
             cancelAndConsumeRemainingEvents()
@@ -177,14 +138,14 @@ class DataStoreRepositoryTest {
     @Test
     fun get_and_set_subtitles_language() = runTest {
 
-        val language = dataStoreRepository.getSubtitlesLanguage()
+        val language = settingsRepository.flow.first().subtitlesLanguage
         assert(language == Locale.getDefault())
 
-        dataStoreRepository.flow.test {
+        settingsRepository.flow.test {
             awaitItem()
 
             val newLocale = Locale.JAPANESE
-            dataStoreRepository.setSubtitlesLanguage(newLocale)
+            settingsRepository.setSubtitlesLanguage(newLocale)
             val state = awaitItem()
             assert(state.subtitlesLanguage == newLocale)
 

@@ -102,7 +102,7 @@ fun MediaScreen(
 
     }
 
-    if (uiState.showStatusDialog) {
+    if (uiState.episodePendingConfirmation != null) {
         FluxDialog(
             content = {
                 Text.Body.Large(text = stringResource(R.string.mark_previous_episodes_as_watched))

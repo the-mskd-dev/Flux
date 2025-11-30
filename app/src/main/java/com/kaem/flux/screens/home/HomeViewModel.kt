@@ -29,7 +29,7 @@ class HomeViewModel @Inject constructor(
     
     val uiState: StateFlow<HomeUiState> = combine(
         repository.catalogFlow,
-        userRepository.userPreferencesFlow,
+        userRepository.flow,
     ) { catalog, preferences ->
 
         val screen = when {
@@ -63,7 +63,7 @@ class HomeViewModel @Inject constructor(
 
     private suspend fun fetchCatalog(manualSync: Boolean = false) {
 
-        val lastSyncTime = userRepository.userPreferencesFlow.first().syncTime
+        val lastSyncTime = userRepository.flow.first().syncTime
 
         val currentTime = System.currentTimeMillis()
         val sync = currentTime - lastSyncTime > 1.days.inWholeMilliseconds || manualSync

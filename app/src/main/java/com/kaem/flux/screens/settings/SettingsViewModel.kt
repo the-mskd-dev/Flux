@@ -2,7 +2,6 @@ package com.kaem.flux.screens.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kaem.flux.data.repository.DataStoreRepository
 import com.kaem.flux.data.repository.SettingsRepository
 import com.kaem.flux.ui.theme.Ui
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -11,7 +10,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -29,7 +27,7 @@ class SettingsViewModel @Inject constructor(
     private val _dialogState = MutableStateFlow<SettingsDialogState<*>?>(null)
 
     val uiState: StateFlow<SettingsUiState> = combine(
-        settingsRepository.settingsPreferencesFlow,
+        settingsRepository.flow,
         _dialogState
     ) { settings, dialog ->
         SettingsUiState(

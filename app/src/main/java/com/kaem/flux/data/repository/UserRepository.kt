@@ -1,6 +1,9 @@
 package com.kaem.flux.data.repository
 
 import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
+import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.longPreferencesKey
@@ -13,15 +16,20 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import okio.IOException
 
-val Context.userDataStore by preferencesDataStore("UserDataStore")
+val Context.userDataStore by preferencesDataStore(
+    name ="UserDataStore",
+    corruptionHandler = ReplaceFileCorruptionHandler(
+        produceNewData = { emptyPreferences() }
+    )
+)
 
-data class UserDataStore(
+data class UserPreferences(
     val watchedIds: List<Long> = listOf(),
     val syncTime: Long = 0L
 )
 
 class UserRepository(
-    private val context: Context,
+    val userDataStore: DataStore<Preferences>,
     private val gson: Gson
 ) {
 
@@ -30,7 +38,7 @@ class UserRepository(
         val LAST_SYNC_TIME = longPreferencesKey("last_sync_time")
     }
 
-    val userPreferencesFlow: Flow<UserDataStore> = context.userDataStore.data
+    val flow: Flow<UserPreferences> = userDataStore.data
         .catch { exception -> if (exception is IOException) emit(emptyPreferences()) else throw exception }
         .map { preferences ->
 
@@ -38,14 +46,14 @@ class UserRepository(
             val watchedIds = gson.fromJson<List<Double>>(watchedIdsString, List::class.java).map { it.toLong() }
             val syncTime = preferences[Keys.LAST_SYNC_TIME] ?: 0L
 
-            UserDataStore(
+            UserPreferences(
                 watchedIds = watchedIds,
                 syncTime = syncTime
             )
         }
 
     suspend fun addWatchedMedia(id: Long) {
-        context.userDataStore.edit { preferences ->
+        userDataStore.edit { preferences ->
 
             val lastWatchedIdsString = preferences[Keys.WATCHED_IDS] ?: "[]"
             val lastWatchedIds: ArrayList<Long> = gson.fromJson<ArrayList<Long>>(lastWatchedIdsString, ArrayList::class.java)
@@ -61,7 +69,7 @@ class UserRepository(
     }
 
     suspend fun removeWatchedMedia(id: Long) {
-        context.userDataStore.edit { preferences ->
+        userDataStore.edit { preferences ->
 
             val lastWatchedIdsString = preferences[Keys.WATCHED_IDS] ?: "[]"
             val type = object : TypeToken<ArrayList<Long>>() {}.type
@@ -74,7 +82,7 @@ class UserRepository(
     }
 
     suspend fun setSyncTime(syncTime: Long) {
-        context.userDataStore.edit { preferences ->
+        userDataStore.edit { preferences ->
             preferences[Keys.LAST_SYNC_TIME] = syncTime
         }
     }

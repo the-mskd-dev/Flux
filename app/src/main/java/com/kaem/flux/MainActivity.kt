@@ -9,24 +9,17 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
-import com.kaem.flux.data.repository.DataStoreRepository
 import com.kaem.flux.data.repository.SettingsPreferences
 import com.kaem.flux.data.repository.SettingsRepository
-import com.kaem.flux.data.repository.settingsDatastore
 import com.kaem.flux.navigation.Route
 import com.kaem.flux.navigation.Transition
 import com.kaem.flux.screens.about.AboutScreen
@@ -37,12 +30,7 @@ import com.kaem.flux.screens.media.MediaScreen
 import com.kaem.flux.screens.search.SearchScreen
 import com.kaem.flux.screens.settings.SettingsScreen
 import com.kaem.flux.ui.theme.FluxTheme
-import com.kaem.flux.ui.theme.Ui
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.last
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -57,7 +45,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
 
-            val settings by settingsRepository.settingsPreferencesFlow.collectAsStateWithLifecycle(
+            val settings by settingsRepository.flow.collectAsStateWithLifecycle(
                 initialValue = SettingsPreferences(),
                 lifecycleOwner = LocalLifecycleOwner.current
             )

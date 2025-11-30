@@ -1,12 +1,12 @@
 package com.kaem.flux.data.repository
 
+import com.google.firebase.Firebase
+import com.google.firebase.crashlytics.crashlytics
 import com.kaem.flux.data.ddb.DatabaseDao
 import com.kaem.flux.data.source.file.FilesSource
 import com.kaem.flux.data.source.media.MediaSource
 import com.kaem.flux.model.UserFile
-import com.kaem.flux.model.media.Episode
 import com.kaem.flux.model.media.MediaOverview
-import com.kaem.flux.model.media.Movie
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -32,12 +32,19 @@ class CatalogRepository @Inject constructor(
 
     suspend fun getCatalog(sync: Boolean = false) {
 
-        _catalogFlow.value = _catalogFlow.value.copy(isLoading = true)
+        _catalogFlow.update { it.copy(isLoading = true) }
 
-        val medias = if (sync) {
-            syncCatalog()
-        } else {
-            mediaSourceLocal.getMedias(sync = false).overviews
+        var medias: List<MediaOverview> = emptyList()
+
+        try {
+
+            medias = if (sync)
+                syncCatalog()
+            else
+                mediaSourceLocal.getMedias(sync = false).overviews
+
+        } catch (e: Exception) {
+            Firebase.crashlytics.recordException(e)
         }
 
         // Update content
@@ -94,12 +101,5 @@ class CatalogRepository @Inject constructor(
 
     }
 
-    suspend fun saveMovie(movie: Movie) {
-        db.insertMovies(listOf(movie))
-    }
-
-    suspend fun saveEpisode(episode: Episode) {
-        db.insertEpisodes(listOf(episode))
-    }
 
 }

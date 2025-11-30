@@ -16,14 +16,14 @@ class MediaRepository @Inject constructor(
     data class Content(
         val mediaOverview: MediaOverview?,
         val movie: Movie? = null,
-        val episodes: List<Episode>? = null
+        val episodes: List<Episode> = emptyList()
     )
 
     suspend fun getMedia(mediaId: Long) : Content {
 
         val media = db.getOverview(mediaId)
         var movie: Movie? = null
-        var episodes: List<Episode>? = null
+        var episodes: List<Episode> = emptyList()
 
         withContext(Dispatchers.IO) {
             when (media?.type) {

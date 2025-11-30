@@ -33,7 +33,7 @@ class SearchViewModelTest : BaseTest() {
     }
 
     @Test
-    fun `initial state`() = runTest {
+    fun initial_state() = runTest {
 
         viewModel.uiState.test {
 
@@ -47,7 +47,7 @@ class SearchViewModelTest : BaseTest() {
     }
 
     @Test
-    fun `search word with one result`() = runTest {
+    fun search_word_with_one_result() = runTest {
 
         viewModel.uiState.test {
 
@@ -66,7 +66,7 @@ class SearchViewModelTest : BaseTest() {
     }
 
     @Test
-    fun `search word with multiple results`() = runTest {
+    fun search_word_with_multiple_results() = runTest {
 
         viewModel.uiState.test {
 
@@ -85,7 +85,7 @@ class SearchViewModelTest : BaseTest() {
     }
 
     @Test
-    fun `search word with no result`() = runTest {
+    fun search_word_with_no_result() = runTest {
 
         viewModel.uiState.test {
 

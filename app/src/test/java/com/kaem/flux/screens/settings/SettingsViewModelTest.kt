@@ -2,8 +2,8 @@ package com.kaem.flux.screens.settings
 
 import app.cash.turbine.test
 import com.kaem.flux.bases.BaseTest
-import com.kaem.flux.data.repository.DataStoreRepository
-import com.kaem.flux.data.repository.FluxDataStore
+import com.kaem.flux.data.repository.SettingsPreferences
+import com.kaem.flux.data.repository.SettingsRepository
 import com.kaem.flux.ui.theme.Ui
 import io.mockk.coVerify
 import io.mockk.every
@@ -18,22 +18,22 @@ import java.util.Locale
 class SettingsViewModelTest : BaseTest() {
 
     private lateinit var viewModel: SettingsViewModel
-    private lateinit var dataStoreRepository: DataStoreRepository
+    private lateinit var settingsRepository: SettingsRepository
 
-    private val dataStoreFlow = MutableStateFlow(FluxDataStore())
+    private val dataStoreFlow = MutableStateFlow(SettingsPreferences())
 
     override fun setUp() {
         super.setUp()
 
-        dataStoreRepository = mockk(relaxed = true) {
+        settingsRepository = mockk(relaxed = true) {
             every { flow } returns dataStoreFlow
         }
 
-        viewModel = SettingsViewModel(dataStoreRepository)
+        viewModel = SettingsViewModel(settingsRepository = settingsRepository)
     }
 
     @Test
-    fun `initial state`() = runTest {
+    fun initial_state() = runTest {
         viewModel.uiState.test {
             val initialState = awaitItem()
             assert(10 == initialState.backwardValue)
@@ -45,7 +45,7 @@ class SettingsViewModelTest : BaseTest() {
     }
 
     @Test
-    fun `show backward dialog`() = runTest {
+    fun show_backward_dialog() = runTest {
         viewModel.uiState.test {
 
             awaitItem()
@@ -58,7 +58,7 @@ class SettingsViewModelTest : BaseTest() {
     }
 
     @Test
-    fun `show forward dialog`() = runTest {
+    fun show_forward_dialog() = runTest {
         viewModel.uiState.test {
 
             awaitItem()
@@ -71,7 +71,7 @@ class SettingsViewModelTest : BaseTest() {
     }
 
     @Test
-    fun `show ui theme dialog`() = runTest {
+    fun show_ui_theme_dialog() = runTest {
         viewModel.uiState.test {
 
             awaitItem()
@@ -84,7 +84,7 @@ class SettingsViewModelTest : BaseTest() {
     }
 
     @Test
-    fun `show subtitles language dialog`() = runTest {
+    fun show_subtitles_language_dialog() = runTest {
         viewModel.uiState.test {
 
             awaitItem()
@@ -98,7 +98,7 @@ class SettingsViewModelTest : BaseTest() {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `set backward value`() = runTest {
+    fun set_backward_value() = runTest {
         viewModel.uiState.test {
             awaitItem()
 
@@ -108,7 +108,7 @@ class SettingsViewModelTest : BaseTest() {
 
             val state = awaitItem()
 
-            coVerify { dataStoreRepository.setPlayerBackwardValue(20) }
+            coVerify { settingsRepository.setPlayerBackwardValue(20) }
             assert(20 == state.backwardValue)
             assert(state.dialogState == null)
 
@@ -119,7 +119,7 @@ class SettingsViewModelTest : BaseTest() {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `set forward value`() = runTest {
+    fun set_forward_value() = runTest {
         viewModel.uiState.test {
             awaitItem()
 
@@ -129,7 +129,7 @@ class SettingsViewModelTest : BaseTest() {
 
             val state = awaitItem()
 
-            coVerify { dataStoreRepository.setPlayerForwardValue(20) }
+            coVerify { settingsRepository.setPlayerForwardValue(20) }
             assert(20 == state.forwardValue)
             assert(state.dialogState == null)
 
@@ -140,7 +140,7 @@ class SettingsViewModelTest : BaseTest() {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `set ui theme`() = runTest {
+    fun set_ui_theme() = runTest {
 
         viewModel.uiState.test {
             awaitItem()
@@ -151,7 +151,7 @@ class SettingsViewModelTest : BaseTest() {
 
             val state = awaitItem()
 
-            coVerify { dataStoreRepository.setUiTheme(Ui.THEME.DARK) }
+            coVerify { settingsRepository.setUiTheme(Ui.THEME.DARK) }
             assert(Ui.THEME.DARK == state.uiTheme)
             assert(state.dialogState == null)
 
@@ -163,7 +163,7 @@ class SettingsViewModelTest : BaseTest() {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `set subtitles language`() = runTest {
+    fun set_subtitles_language() = runTest {
 
         viewModel.uiState.test {
             awaitItem()
@@ -174,7 +174,7 @@ class SettingsViewModelTest : BaseTest() {
 
             val state = awaitItem()
 
-            coVerify { dataStoreRepository.setSubtitlesLanguage(Locale.ENGLISH) }
+            coVerify { settingsRepository.setSubtitlesLanguage(Locale.ENGLISH) }
             assert(Locale.ENGLISH == state.subtitlesLanguage)
             assert(state.dialogState == null)
 

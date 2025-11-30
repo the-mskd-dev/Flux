@@ -4,11 +4,12 @@ import app.cash.turbine.test
 import com.kaem.flux.bases.BaseTest
 import com.kaem.flux.data.repository.CatalogContent
 import com.kaem.flux.data.repository.CatalogRepository
-import com.kaem.flux.data.repository.DataStoreRepository
-import com.kaem.flux.data.repository.FluxDataStore
+import com.kaem.flux.data.repository.UserPreferences
+import com.kaem.flux.data.repository.UserRepository
 import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.ScreenState
 import com.kaem.flux.model.media.MediaOverview
+import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
@@ -25,11 +26,11 @@ class HomeViewModelTest : BaseTest() {
 
     private lateinit var viewModel: HomeViewModel
     private lateinit var catalogRepository: CatalogRepository
-    private lateinit var dataStoreRepository: DataStoreRepository
+    private lateinit var userRepository: UserRepository
 
     // Mocked flows
     private val libraryFlow = MutableStateFlow(CatalogContent())
-    private val dataStoreFlow = MutableStateFlow(FluxDataStore())
+    private val dataStoreFlow = MutableStateFlow(UserPreferences())
 
     override fun setUp() {
         super.setUp()
@@ -38,16 +39,19 @@ class HomeViewModelTest : BaseTest() {
             every { catalogFlow } returns this@HomeViewModelTest.libraryFlow
         }
 
-        dataStoreRepository = mockk(relaxed = true) {
+        userRepository = mockk(relaxed = true) {
             every { flow } returns this@HomeViewModelTest.dataStoreFlow
-            every { getSyncTime() } returns 0L
         }
 
-        viewModel = HomeViewModel(catalogRepository, dataStoreRepository)
+        viewModel = HomeViewModel(
+            repository = catalogRepository,
+            userRepository = userRepository
+        )
+
     }
 
     @Test
-    fun `initial state`() = runTest {
+    fun initial_state() = runTest {
 
         viewModel.uiState.test {
             val initialState = awaitItem()
@@ -62,7 +66,7 @@ class HomeViewModelTest : BaseTest() {
     }
 
     @Test
-    fun `combine flows should update state`() = runTest {
+    fun combine_flows_should_update_state() = runTest {
 
         // Mock
         val overviews = listOf(MediaMockups.movieOverview, MediaMockups.showOverview)
@@ -71,7 +75,7 @@ class HomeViewModelTest : BaseTest() {
             isLoading = false,
             mediaOverviews = overviews
         )
-        val dataStore = FluxDataStore(
+        val dataStore = UserPreferences(
             watchedIds = lastWatchedIds
         )
 
@@ -93,40 +97,46 @@ class HomeViewModelTest : BaseTest() {
     }
 
     @Test
-    fun `should force sync when manual sync requested`() = runTest {
+    fun should_force_sync_when_manual_sync_requested() = runTest {
         viewModel.handleIntent(HomeIntent.OnSyncTap(manualSync = true))
 
         advanceUntilIdle()
 
         coVerify {
             catalogRepository.getCatalog(sync = true)
-            dataStoreRepository.setSyncTime(any())
+            userRepository.setSyncTime(any())
         }
     }
 
 
     @Test
-    fun `should sync when last sync was more than 1 day ago`() = runTest {
+    fun should_sync_when_last_sync_was_more_than_1_day_ago() = runTest {
         val oldTime = System.currentTimeMillis() - 2.days.inWholeMilliseconds
-        every { dataStoreRepository.getSyncTime() } returns oldTime
+        coEvery { userRepository.getSyncTime() } returns oldTime
 
-        viewModel = HomeViewModel(catalogRepository, dataStoreRepository)
+        viewModel = HomeViewModel(
+            repository = catalogRepository,
+            userRepository = userRepository
+        )
         viewModel.handleIntent(HomeIntent.OnSyncTap(manualSync = false))
 
         advanceUntilIdle()
 
         coVerify {
             catalogRepository.getCatalog(sync = true)
-            dataStoreRepository.setSyncTime(any())
+            userRepository.setSyncTime(any())
         }
     }
 
     @Test
-    fun `should not sync when last sync was less than 1 day ago`() = runTest {
+    fun should_not_sync_when_last_sync_was_less_than_1_day_ago() = runTest {
         val recentTime = System.currentTimeMillis() - 12.hours.inWholeMilliseconds
-        every { dataStoreRepository.getSyncTime() } returns recentTime
+        coEvery { userRepository.getSyncTime() } returns recentTime
 
-        viewModel = HomeViewModel(catalogRepository, dataStoreRepository)
+        viewModel = HomeViewModel(
+            repository = catalogRepository,
+            userRepository = userRepository
+        )
         viewModel.handleIntent(HomeIntent.OnSyncTap(manualSync = false))
 
         advanceUntilIdle()
@@ -135,7 +145,7 @@ class HomeViewModelTest : BaseTest() {
             catalogRepository.getCatalog(sync = false)
         }
         coVerify(exactly = 0) {
-            dataStoreRepository.setSyncTime(any())
+            userRepository.setSyncTime(any())
         }
     }
 

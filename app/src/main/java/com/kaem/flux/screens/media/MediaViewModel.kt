@@ -1,13 +1,17 @@
 package com.kaem.flux.screens.media
 
 import android.util.Log
+import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kaem.flux.data.repository.DataStoreRepository
 import com.kaem.flux.data.repository.MediaRepository
+import com.kaem.flux.data.repository.SettingsRepository
+import com.kaem.flux.data.repository.UserRepository
+import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.ScreenState
 import com.kaem.flux.model.media.Episode
 import com.kaem.flux.model.media.Media
+import com.kaem.flux.model.media.MediaOverview
 import com.kaem.flux.model.media.Movie
 import com.kaem.flux.model.media.Status
 import com.kaem.flux.utils.extensions.getPreviousEpisodesFor
@@ -19,48 +23,87 @@ import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.Locale
 import kotlin.time.Duration.Companion.seconds
 
 @HiltViewModel(assistedFactory = MediaViewModel.Factory::class)
 class MediaViewModel @AssistedInject constructor(
     @Assisted val mediaId: Long,
     private val repository: MediaRepository,
-    private val dataStoreRepository: DataStoreRepository
+    private val settingsRepository: SettingsRepository,
+    private val userRepository: UserRepository
 ) : ViewModel() {
+
+    //region Hilt
 
     @AssistedFactory
     interface Factory {
         fun create(mediaId: Long): MediaViewModel
     }
 
+    //endregion
+
+    //region sub states
+
+    @Immutable
+    private data class MediaSubState(
+        val screen: ScreenState = ScreenState.LOADING,
+        val overview: MediaOverview = MediaOverview(),
+        val media: Media = MediaMockups.episode1,
+        val episodes: List<Episode> = emptyList(),
+        val season: Int = -1,
+        val showPlayer: Boolean = false,
+        val episodePendingConfirmation: Episode? = null,
+    )
+
+    //endregion
+
+    //region Flow
+
     private val _event = MutableSharedFlow<MediaEvent>()
     val event = _event.asSharedFlow().distinctUntilChanged()
 
-    private val _uiState = MutableStateFlow(MediaUiState())
-    val uiState: StateFlow<MediaUiState> = _uiState.asStateFlow()
+    private val _subState = MutableStateFlow(MediaSubState())
 
-    var backwardValue: Long = 10.seconds.inWholeMilliseconds
-    var forwardValue: Long = 10.seconds.inWholeMilliseconds
-    var subtitlesLanguage: Locale = Locale.getDefault()
+    val uiState: StateFlow<MediaUiState> = combine(
+        _subState,
+        settingsRepository.flow
+    ) { subState, settings ->
+        MediaUiState(
+            screen = subState.screen,
+            overview = subState.overview,
+            episodes = subState.episodes,
+            season = subState.season,
+            media = subState.media,
+            showPlayer = subState.showPlayer,
+            episodePendingConfirmation = subState.episodePendingConfirmation,
+            playerBackward = settings.playerBackwardValue.seconds.inWholeMilliseconds,
+            playerForward = settings.playerForwardValue.seconds.inWholeMilliseconds,
+            subtitlesLanguage = settings.subtitlesLanguage
+        )
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = MediaUiState()
+    )
 
-    private var episodeTmp: Episode? = null
 
-    init {
+    //endregion
 
-        val (backward, forward) = dataStoreRepository.getPlayerButtonsValues()
-        backwardValue = backward.seconds.inWholeMilliseconds
-        forwardValue = forward.seconds.inWholeMilliseconds
-        subtitlesLanguage = dataStoreRepository.getSubtitlesLanguage()
+    //region Init
 
-        getMedias(mediaId)
-    }
+    init { getMedias(mediaId) }
+
+    //endregion
+
+    //region Public Methods
 
     fun handleIntent(intent: MediaIntent) = viewModelScope.launch {
         when (intent) {
@@ -75,47 +118,44 @@ class MediaViewModel @AssistedInject constructor(
         }
     }
 
+    //endregion
+
+    //region Private Methods
 
     private fun getMedias(id: Long) = viewModelScope.launch {
 
         val (overview, movie, episodes) = repository.getMedia(id)
 
-        _uiState.value = when {
-            overview == null -> MediaUiState(screen = ScreenState.ERROR)
-            movie != null -> MediaUiState(
-                overview = overview,
-                screen = ScreenState.CONTENT,
-                media = movie
-            )
+        val media = movie ?: episodes.firstOrNull { it.status == Status.IS_WATCHING }
+            ?: episodes.firstOrNull { it.status == Status.TO_WATCH }
+            ?: episodes.firstOrNull()
 
-            !episodes.isNullOrEmpty() -> {
-                
-                val currentEpisode = episodes.lastOrNull { it.status == Status.IS_WATCHING }
-                    ?: episodes.firstOrNull { it.status == Status.TO_WATCH }
-                    ?: episodes.first()
+        val subState = when {
+            overview == null || media == null -> MediaSubState(screen = ScreenState.ERROR)
+            else -> {
 
-                MediaUiState(
+                MediaSubState(
                     overview = overview,
                     screen = ScreenState.CONTENT,
                     episodes = episodes,
-                    season = currentEpisode.season,
-                    media = currentEpisode,
+                    season = (media as? Episode)?.season ?: -1,
+                    media = media,
                 )
-            }
-            else -> MediaUiState(screen = ScreenState.ERROR)
 
+            }
         }
 
+        _subState.emit(subState)
     }
 
     private fun selectSeason(season: Int) {
-        _uiState.update { currentState ->
+        _subState.update { currentState ->
             currentState.copy(season = season)
         }
     }
 
     private fun playMedia(media: Media) {
-        _uiState.update { currentState ->
+        _subState.update { currentState ->
             currentState.copy(
                 media = media,
                 showPlayer = true
@@ -124,25 +164,24 @@ class MediaViewModel @AssistedInject constructor(
     }
 
     private fun closePlayer() {
-        _uiState.update { currentState ->
+        _subState.update { currentState ->
             currentState.copy(showPlayer = false)
         }
     }
 
-    private fun showStatusDialog() {
-        _uiState.update { currentState ->
-            currentState.copy(showStatusDialog = true)
+    private fun showStatusDialog(episode: Episode) {
+        _subState.update { currentState ->
+            currentState.copy(episodePendingConfirmation = episode)
         }
     }
 
     private fun closeStatusDialog() {
-        _uiState.update { currentState ->
-            currentState.copy(showStatusDialog = false)
+        _subState.update { currentState ->
+            currentState.copy(episodePendingConfirmation = null)
         }
-        episodeTmp = null
     }
 
-    private suspend fun changeWatchStatus(media: Media) {
+    private fun changeWatchStatus(media: Media) {
 
         val newStatus = if (media.status != Status.WATCHED) Status.WATCHED else Status.TO_WATCH
 
@@ -154,148 +193,148 @@ class MediaViewModel @AssistedInject constructor(
         if (
             newStatus == Status.WATCHED
             && media is Episode
-            && _uiState.value.episodes.getPreviousEpisodesFor(media).any { it.status != Status.WATCHED }
+            && _subState.value.episodes.getPreviousEpisodesFor(media).any { it.status != Status.WATCHED }
         ) {
-            episodeTmp = media
-            showStatusDialog()
+            showStatusDialog(episode = media)
         }
 
     }
 
-    private suspend fun changeMovieStatus(movie: Movie, status: Status) {
+    private fun changeMovieStatus(movie: Movie, status: Status) {
 
         val movieUpdated = movie.copy(
             status = status,
             currentTime = 0L
         )
-        _uiState.update { currentState ->
-            currentState.copy(
-                media = movieUpdated,
-                showStatusDialog = false
-            )
+
+        _subState.update { currentState ->
+            currentState.copy(media = movieUpdated)
         }
 
-        // Save status in DB
-        repository.saveMovie(movieUpdated)
+        viewModelScope.launch {
+            repository.saveMovie(movieUpdated) // Save status in DB
+        }
 
         Log.i("MediaViewModel", "${movie.title} is now ${movie.status}")
 
     }
 
-    private suspend fun changeEpisodeStatus(episode: Episode, status: Status) {
-
-        val state = uiState.value
+    private fun changeEpisodeStatus(episode: Episode, status: Status) {
 
         val updatedEpisode = episode.copy(
             status = status,
             currentTime = 0L
         )
 
-        // Update list
-        val episodes = state.episodes.toMutableList()
-        episodes.replaceAll { e ->
-            if (e.id == episode.id) updatedEpisode else e
-        }
+        _subState.update { state ->
 
-        _uiState.update { currentState ->
-            currentState.copy(
-                media = if ((currentState.media as? Episode)?.id == episode.id) updatedEpisode else currentState.media, // Update media only if it's the same as selected
+            // Update list
+            val episodes = state.episodes.map { e ->
+                if (e.id == episode.id) updatedEpisode else e
+            }
+
+            state.copy(
+                media = if ((state.media as? Episode)?.id == episode.id) updatedEpisode else state.media, // Update media only if it's the same as selected
                 episodes = episodes,
-                showStatusDialog = false
             )
+
         }
 
-        // Save status in DB
-        repository.saveEpisodes(listOf(updatedEpisode))
-
-        addOrRemoveToWatchedMedias()
+        viewModelScope.launch {
+            repository.saveEpisodes(listOf(updatedEpisode)) // Save status in DB
+            addOrRemoveToWatchedMedias()
+        }
 
         Log.i("MediaViewModel", "${episode.title} season ${episode.season} episode ${episode.number} is now ${episode.status}")
 
     }
 
-    private suspend fun markPreviousEpisodesAsWatched() {
+    private fun markPreviousEpisodesAsWatched() {
 
-        val state = uiState.value
-        val episode = episodeTmp ?: return
-        val previousEpisodes = state.episodes.getPreviousEpisodesFor(episode).filter { it.status != Status.WATCHED }
+        var episodesToSave: List<Episode> = emptyList()
 
-        val updatedEpisodes = previousEpisodes.map {
-            it.copy(
-                status = Status.WATCHED,
-                currentTime = 0L
-            )
-        }
+        _subState.update { state ->
 
-        // Update list
-        val episodes = state.episodes.toMutableList()
-        episodes.replaceAll { e ->
-            updatedEpisodes.find { it.id == e.id } ?: e
-        }
-        _uiState.update { currentState ->
-            currentState.copy(
+            val episode = state.episodePendingConfirmation ?: return
+            val previousEpisodes = state.episodes.getPreviousEpisodesFor(episode).filter { it.status != Status.WATCHED }
+
+            if (previousEpisodes.isEmpty())
+                return@update state.copy(episodePendingConfirmation = null)
+
+            episodesToSave = previousEpisodes.map {
+                it.copy(
+                    status = Status.WATCHED,
+                    currentTime = 0L
+                )
+            }
+
+            // Update list
+            val episodes = state.episodes.toMutableList()
+            episodes.replaceAll { e ->
+                episodesToSave.find { it.id == e.id } ?: e
+            }
+
+            state.copy(
                 episodes = episodes,
-                showStatusDialog = false
+                episodePendingConfirmation = null
             )
+
         }
 
-        // Save status in DB
-        repository.saveEpisodes(episodes)
+        viewModelScope.launch {
+            repository.saveEpisodes(episodesToSave) // Save status in DB
+        }
 
-        episodeTmp = null
-
-        Log.i("MediaViewModel", "Episodes previous season ${episode.season} episode ${episode.number} are marked as watched")
-
+        Log.i("MediaViewModel", "${episodesToSave.size} episodes marked as watched")
     }
 
     private suspend fun saveWatchTime(time: Long) {
 
-        val media = uiState.value.media
-        val status = if (time.msToMin >= media.duration * .9) Status.WATCHED else Status.IS_WATCHING
+        val currentState = _subState.value
+        val currentMedia = currentState.media
 
-        uiState.value.let { state ->
+        val newStatus = if (time.msToMin >= currentMedia.duration * .9) Status.WATCHED else Status.IS_WATCHING
+        val newTime = if (newStatus == Status.WATCHED) 0L else time
 
-            media.currentTime = if (status == Status.WATCHED) 0L else time
-            media.status = status
-
-            when (media) {
-                is Movie -> {
-
-                    repository.saveMovie(media)
-
-                    if (status == Status.WATCHED) dataStoreRepository.removeWatchedMedia(mediaId)
-                    else dataStoreRepository.addWatchedMedia(mediaId)
-
-                }
-                is Episode -> {
-
-                    repository.saveEpisode(media)
-
-                    _uiState.update { currentState ->
-                        val episodes = currentState.episodes.toMutableList()
-                        episodes.replaceAll { episode ->
-                            if (episode.id == media.id) media else episode
-                        }
-                        currentState.copy(
-                            episodes = episodes
-                        )
-                    }
-
-                    addOrRemoveToWatchedMedias()
-
-                }
-                else -> {}
-            }
-
-            Log.i("MediaViewModel", "${state.overview.title} saved at ${time.timeDescription()}")
-
+        val updatedMedia = when (currentMedia) {
+            is Movie -> currentMedia.copy(currentTime = newTime, status = newStatus)
+            is Episode -> currentMedia.copy(currentTime = newTime, status = newStatus)
+            else -> currentMedia
         }
+
+        _subState.update { state ->
+
+            val updatedEpisodes = if (updatedMedia is Episode) {
+                state.episodes.map { if (it.id == updatedMedia.id) updatedMedia else it }
+            } else state.episodes
+
+            state.copy(
+                media = updatedMedia,
+                episodes = updatedEpisodes
+            )
+        }
+
+        when (updatedMedia) {
+            is Movie -> {
+                if (newStatus == Status.WATCHED) userRepository.removeWatchedMedia(mediaId)
+                else userRepository.addWatchedMedia(mediaId)
+                repository.saveMovie(updatedMedia)
+            }
+            is Episode -> {
+                repository.saveEpisode(updatedMedia)
+                addOrRemoveToWatchedMedias()
+            }
+        }
+
+        Log.i("MediaViewModel", "${updatedMedia.title} saved at ${time.timeDescription()}")
 
     }
 
     private suspend fun addOrRemoveToWatchedMedias() {
-        if (uiState.value.episodes.all { it.status == Status.WATCHED }) dataStoreRepository.removeWatchedMedia(mediaId)
-        else dataStoreRepository.addWatchedMedia(mediaId)
+        if (_subState.value.episodes.all { it.status == Status.WATCHED }) userRepository.removeWatchedMedia(mediaId)
+        else userRepository.addWatchedMedia(mediaId)
     }
+
+    //endregion
 
 }

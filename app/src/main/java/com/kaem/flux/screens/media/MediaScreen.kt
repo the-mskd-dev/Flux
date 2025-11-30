@@ -67,9 +67,9 @@ fun MediaScreen(
 
                         PlayerScreen(
                             media = uiState.media,
-                            backward = viewModel.backwardValue,
-                            forward = viewModel.forwardValue,
-                            subtitlesLanguage = viewModel.subtitlesLanguage,
+                            backward = uiState.playerBackward,
+                            forward = uiState.playerForward,
+                            subtitlesLanguage = uiState.subtitlesLanguage,
                             sendIntent = viewModel::handleIntent,
                         )
 
@@ -102,7 +102,7 @@ fun MediaScreen(
 
     }
 
-    if (uiState.showStatusDialog) {
+    if (uiState.episodePendingConfirmation != null) {
         FluxDialog(
             content = {
                 Text.Body.Large(text = stringResource(R.string.mark_previous_episodes_as_watched))

@@ -1,12 +1,11 @@
 package com.kaem.flux.di
 
 import android.content.Context
-import androidx.datastore.core.DataStore
-import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
-import androidx.datastore.preferences.core.PreferenceDataStoreFactory
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.emptyPreferences
-import androidx.datastore.preferences.preferencesDataStoreFile
+import com.google.gson.Gson
+import com.kaem.flux.data.repository.SettingsRepository
+import com.kaem.flux.data.repository.UserRepository
+import com.kaem.flux.data.repository.settingsDatastore
+import com.kaem.flux.data.repository.userDataStore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -23,15 +22,20 @@ object DataStoreModule {
 
     @Provides
     @Singleton
-    fun provideDataStore(@ApplicationContext context: Context) : DataStore<Preferences> {
-
-        return PreferenceDataStoreFactory.create(
-            corruptionHandler = ReplaceFileCorruptionHandler(
-                produceNewData = { emptyPreferences() }
-            ),
-            produceFile = { context.preferencesDataStoreFile(PREFERENCES) }
+    fun provideUserRepository(
+        @ApplicationContext context: Context,
+        gson: Gson
+    ) : UserRepository {
+        return UserRepository(
+            userDataStore = context.userDataStore,
+            gson = gson
         )
+    }
 
+    @Provides
+    @Singleton
+    fun provideSettingsRepository(@ApplicationContext context: Context) : SettingsRepository {
+        return SettingsRepository(settingsDataStore = context.settingsDatastore)
     }
 
 }

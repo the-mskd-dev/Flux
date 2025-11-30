@@ -1,13 +1,13 @@
 package com.kaem.flux.screens.media
 
-import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
 import com.kaem.flux.bases.BaseTest
-import com.kaem.flux.data.repository.DataStoreRepository
-import com.kaem.flux.data.repository.FluxDataStore
 import com.kaem.flux.data.repository.MediaRepository
+import com.kaem.flux.data.repository.SettingsPreferences
+import com.kaem.flux.data.repository.SettingsRepository
+import com.kaem.flux.data.repository.UserPreferences
+import com.kaem.flux.data.repository.UserRepository
 import com.kaem.flux.mockups.MediaMockups
-import com.kaem.flux.model.ScreenState
 import com.kaem.flux.model.media.Status
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -18,7 +18,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
-import java.util.Locale
 import kotlin.time.Duration.Companion.minutes
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -26,14 +25,11 @@ class MediaViewModelTest : BaseTest() {
 
     private lateinit var viewModel: MediaViewModel
     private lateinit var mediaRepository: MediaRepository
-    private lateinit var dataStoreRepository: DataStoreRepository
+    private lateinit var userRepository: UserRepository
+    private lateinit var settingsRepository: SettingsRepository
 
     override fun setUp() {
         super.setUp()
-
-        val savedStateHandle = mockk<SavedStateHandle>(relaxed = true) {
-            every { this@mockk.get<Any>(any()) } returns MediaMockups.showOverview.id
-        }
 
         mediaRepository = mockk(relaxed = true) {
             coEvery { getMedia(any()) } returns MediaRepository.Content(
@@ -42,43 +38,54 @@ class MediaViewModelTest : BaseTest() {
             )
         }
 
-        dataStoreRepository = mockk(relaxed = true) {
-            every { flow } returns MutableStateFlow(FluxDataStore())
-            every { getPlayerButtonsValues() } returns Pair(10, 10)
-            every { getSubtitlesLanguage() } returns Locale.ENGLISH
+        userRepository = mockk(relaxed = true) {
+            every { flow } returns MutableStateFlow(UserPreferences())
+        }
+        settingsRepository = mockk(relaxed = true) {
+            every { flow } returns MutableStateFlow(SettingsPreferences())
         }
 
-        viewModel = MediaViewModel(savedStateHandle, mediaRepository, dataStoreRepository)
+        viewModel = MediaViewModel(
+            mediaId = MediaMockups.showOverview.id,
+            repository = mediaRepository,
+            settingsRepository = settingsRepository,
+            userRepository = userRepository
+        )
 
     }
 
     @Test
-    fun `initial state`() = runTest {
+    fun initial_state() = runTest {
+
+        val mediaState = MediaUiState()
 
         viewModel.uiState.test {
 
             val initialState = awaitItem()
 
-            assert(initialState.overview == MediaMockups.showOverview)
-            assert(initialState.screen == ScreenState.CONTENT)
-            assert(initialState.media == MediaMockups.episode1)
-            assert(initialState.episodes.size == 3)
-            assert(initialState.season == MediaMockups.episode1.season)
+            assert(initialState.overview == mediaState.overview)
+            assert(initialState.screen == mediaState.screen)
+            assert(initialState.media == mediaState.media)
+            assert(initialState.episodes == mediaState.episodes)
+            assert(initialState.season == mediaState.season)
             assert(!initialState.showPlayer)
-            assert(!initialState.showStatusDialog)
+            assert(initialState.episodePendingConfirmation == null)
 
         }
 
     }
 
     @Test
-    fun `select season`() = runTest {
+    fun select_season() = runTest {
 
         viewModel.uiState.test {
 
             awaitItem()
 
             viewModel.handleIntent(MediaIntent.SelectSeason(2))
+
+            advanceUntilIdle()
+
             val updatedState = expectMostRecentItem()
 
             assert(updatedState.season == 2)
@@ -88,7 +95,7 @@ class MediaViewModelTest : BaseTest() {
     }
 
     @Test
-    fun `show player`() = runTest {
+    fun show_player() = runTest {
 
         viewModel.uiState.test {
 
@@ -96,6 +103,9 @@ class MediaViewModelTest : BaseTest() {
             val media = initialState.media
 
             viewModel.handleIntent(MediaIntent.PlayMedia(media = media))
+
+            advanceUntilIdle()
+
             val updatedState = expectMostRecentItem()
 
             assert(updatedState.showPlayer)
@@ -105,7 +115,7 @@ class MediaViewModelTest : BaseTest() {
     }
 
     @Test
-    fun `mark first episode as watched`() = runTest {
+    fun mark_first_episode_as_watched() = runTest {
 
         viewModel.uiState.test {
 
@@ -113,9 +123,10 @@ class MediaViewModelTest : BaseTest() {
             val media = initialState.media
 
             viewModel.handleIntent(MediaIntent.ChangeWatchStatus(media = media))
-            val updatedState = expectMostRecentItem()
 
             advanceUntilIdle()
+
+            val updatedState = expectMostRecentItem()
 
             assert(updatedState.media.status == Status.WATCHED)
             coVerify { mediaRepository.saveEpisodes(any()) }
@@ -127,7 +138,7 @@ class MediaViewModelTest : BaseTest() {
     }
 
     @Test
-    fun `request change watch status for second episode with previous`() = runTest {
+    fun request_change_watch_status_for_second_episode_with_previous() = runTest {
 
         viewModel.uiState.test {
 
@@ -136,12 +147,13 @@ class MediaViewModelTest : BaseTest() {
 
             // Request change status of episode 2
             viewModel.handleIntent(MediaIntent.ChangeWatchStatus(media = MediaMockups.episode2))
+
             advanceUntilIdle()
 
             // Final state
             val updatedState = expectMostRecentItem()
 
-            assert(updatedState.showStatusDialog)
+            assert(updatedState.episodePendingConfirmation == MediaMockups.episode2)
 
             cancelAndConsumeRemainingEvents()
 
@@ -150,7 +162,7 @@ class MediaViewModelTest : BaseTest() {
     }
 
     @Test
-    fun `request change watch status for second episode without previous`() = runTest {
+    fun request_change_watch_status_for_second_episode_without_previous() = runTest {
 
         viewModel.uiState.test {
 
@@ -163,12 +175,13 @@ class MediaViewModelTest : BaseTest() {
 
             // Change status of episode 2
             viewModel.handleIntent(MediaIntent.ChangeWatchStatus(media = MediaMockups.episode2))
+
             advanceUntilIdle()
 
             // Final state
             val updatedState = expectMostRecentItem()
 
-            assert(!updatedState.showStatusDialog)
+            assert(updatedState.episodePendingConfirmation == null)
             assert(updatedState.episodes.all { it.status == Status.WATCHED })
             coVerify { mediaRepository.saveEpisodes(any()) }
 
@@ -179,7 +192,7 @@ class MediaViewModelTest : BaseTest() {
     }
 
     @Test
-    fun `mark latest episode and previous as watched`() = runTest {
+    fun mark_latest_episode_and_previous_as_watched() = runTest {
 
         viewModel.uiState.test {
 
@@ -192,6 +205,7 @@ class MediaViewModelTest : BaseTest() {
 
             // Validate change for previous episodes
             viewModel.handleIntent(MediaIntent.MarkPreviousEpisodesAsWatched)
+
             advanceUntilIdle()
 
             // Final state
@@ -207,7 +221,7 @@ class MediaViewModelTest : BaseTest() {
     }
 
     @Test
-    fun `mark first episode as to watch`() = runTest {
+    fun mark_first_episode_as_to_watch() = runTest {
 
         viewModel.uiState.test {
 
@@ -219,9 +233,10 @@ class MediaViewModelTest : BaseTest() {
 
             // Mark as not to watch
             viewModel.handleIntent(MediaIntent.ChangeWatchStatus(media = state2.media))
-            val finalState = expectMostRecentItem()
 
             advanceUntilIdle()
+
+            val finalState = expectMostRecentItem()
 
             assert(finalState.media.status == Status.TO_WATCH)
             coVerify { mediaRepository.saveEpisodes(any()) }
@@ -233,7 +248,7 @@ class MediaViewModelTest : BaseTest() {
     }
 
     @Test
-    fun `save episode progression`() = runTest {
+    fun save_episode_progression() = runTest {
 
         viewModel.uiState.test {
 
@@ -243,7 +258,7 @@ class MediaViewModelTest : BaseTest() {
             advanceUntilIdle()
 
             coVerify { mediaRepository.saveEpisode(any()) }
-            coVerify { dataStoreRepository.addWatchedMedia(any()) }
+            coVerify { userRepository.addWatchedMedia(any()) }
 
             cancelAndConsumeRemainingEvents()
 
@@ -252,19 +267,22 @@ class MediaViewModelTest : BaseTest() {
     }
 
     @Test
-    fun `end episode watching`() = runTest {
+    fun end_episode_watching() = runTest {
 
         viewModel.uiState.test {
-            val state = awaitItem()
+
+            awaitItem()
 
             // Save progression at 5 minutes
             viewModel.handleIntent(MediaIntent.SaveWatchTime(MediaMockups.episode1.duration.minutes.inWholeMilliseconds))
 
             advanceUntilIdle()
 
+            val state = awaitItem()
+
             assert(state.media.status == Status.WATCHED)
             coVerify { mediaRepository.saveEpisode(any()) }
-            coVerify { dataStoreRepository.addWatchedMedia(any()) }
+            coVerify { userRepository.addWatchedMedia(any()) }
 
             cancelAndConsumeRemainingEvents()
 
@@ -273,7 +291,7 @@ class MediaViewModelTest : BaseTest() {
     }
 
     @Test
-    fun `end last episode watching`() = runTest {
+    fun end_last_episode_watching() = runTest {
 
         viewModel.uiState.test {
             val initialState = awaitItem()
@@ -284,16 +302,17 @@ class MediaViewModelTest : BaseTest() {
 
             // Play second episode
             viewModel.handleIntent(MediaIntent.PlayMedia(media = MediaMockups.episode2))
-            val state = expectMostRecentItem()
 
             // Save progression at the end
             viewModel.handleIntent(MediaIntent.SaveWatchTime(MediaMockups.episode2.duration.minutes.inWholeMilliseconds))
 
             advanceUntilIdle()
 
+            val state = expectMostRecentItem()
+
             assert(state.media.status == Status.WATCHED)
             coVerify { mediaRepository.saveEpisodes(any()) }
-            coVerify { dataStoreRepository.removeWatchedMedia(any()) }
+            coVerify { userRepository.removeWatchedMedia(any()) }
 
             cancelAndConsumeRemainingEvents()
 
@@ -302,11 +321,7 @@ class MediaViewModelTest : BaseTest() {
     }
 
     @Test
-    fun `mark movie as watched`() = runTest {
-
-        val savedStateHandle = mockk<SavedStateHandle>(relaxed = true) {
-            every { this@mockk.get<Any>(any()) } returns MediaMockups.movieOverview.id
-        }
+    fun mark_movie_as_watched() = runTest {
 
         mediaRepository = mockk(relaxed = true) {
             coEvery { getMedia(any()) } returns MediaRepository.Content(
@@ -315,7 +330,12 @@ class MediaViewModelTest : BaseTest() {
             )
         }
 
-        viewModel = MediaViewModel(savedStateHandle, mediaRepository, dataStoreRepository)
+        viewModel = MediaViewModel(
+            mediaId = MediaMockups.movieOverview.id,
+            repository = mediaRepository,
+            settingsRepository = settingsRepository,
+            userRepository = userRepository
+        )
 
         viewModel.uiState.test {
 
@@ -325,9 +345,10 @@ class MediaViewModelTest : BaseTest() {
             assert(initialState.media.status == Status.TO_WATCH)
 
             viewModel.handleIntent(MediaIntent.ChangeWatchStatus(media = initialState.media))
-            val updatedState = expectMostRecentItem()
 
             advanceUntilIdle()
+
+            val updatedState = expectMostRecentItem()
 
             assert(updatedState.media.status == Status.WATCHED)
             coVerify { mediaRepository.saveMovie(any()) }
@@ -339,11 +360,7 @@ class MediaViewModelTest : BaseTest() {
     }
 
     @Test
-    fun `end movie watching`() = runTest {
-
-        val savedStateHandle = mockk<SavedStateHandle>(relaxed = true) {
-            every { this@mockk.get<Any>(any()) } returns MediaMockups.movieOverview.id
-        }
+    fun end_movie_watching() = runTest {
 
         mediaRepository = mockk(relaxed = true) {
             coEvery { getMedia(any()) } returns MediaRepository.Content(
@@ -352,22 +369,29 @@ class MediaViewModelTest : BaseTest() {
             )
         }
 
-        viewModel = MediaViewModel(savedStateHandle, mediaRepository, dataStoreRepository)
+        viewModel = MediaViewModel(
+            mediaId = MediaMockups.movieOverview.id,
+            repository = mediaRepository,
+            settingsRepository = settingsRepository,
+            userRepository = userRepository
+        )
 
         viewModel.uiState.test {
 
             awaitItem()
 
-            val state = awaitItem()
+            var state = awaitItem()
             assert(state.media.status == Status.TO_WATCH)
 
             viewModel.handleIntent(MediaIntent.SaveWatchTime(MediaMockups.movie.duration.minutes.inWholeMilliseconds))
 
             advanceUntilIdle()
 
+            state = awaitItem()
+
             assert(state.media.status == Status.WATCHED)
             coVerify { mediaRepository.saveMovie(any()) }
-            coVerify { dataStoreRepository.removeWatchedMedia(any()) }
+            coVerify { userRepository.removeWatchedMedia(any()) }
 
             cancelAndConsumeRemainingEvents()
 

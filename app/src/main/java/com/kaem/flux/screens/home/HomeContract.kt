@@ -1,9 +1,11 @@
 package com.kaem.flux.screens.home
 
+import androidx.compose.runtime.Immutable
 import com.kaem.flux.model.ScreenState
 import com.kaem.flux.model.media.ContentType
 import com.kaem.flux.model.media.MediaOverview
 
+@Immutable
 data class HomeUiState(
     val screenState: ScreenState = ScreenState.LOADING,
     val overviews: List<MediaOverview> = emptyList(),

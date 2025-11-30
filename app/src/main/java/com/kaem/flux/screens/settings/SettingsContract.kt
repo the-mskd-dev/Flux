@@ -1,9 +1,11 @@
 package com.kaem.flux.screens.settings
 
+import androidx.compose.runtime.Immutable
 import com.kaem.flux.R
 import com.kaem.flux.ui.theme.Ui
 import java.util.Locale
 
+@Immutable
 data class SettingsUiState(
     val backwardValue: Int = 10,
     val forwardValue: Int = 10,

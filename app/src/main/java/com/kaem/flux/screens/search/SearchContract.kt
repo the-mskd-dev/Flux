@@ -1,7 +1,9 @@
 package com.kaem.flux.screens.search
 
+import androidx.compose.runtime.Immutable
 import com.kaem.flux.model.media.MediaOverview
 
+@Immutable
 data class SearchUIState(
     val searchWord: String = "",
     val overviews: List<MediaOverview> = emptyList()

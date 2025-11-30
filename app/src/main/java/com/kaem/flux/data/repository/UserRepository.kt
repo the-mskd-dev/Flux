@@ -13,6 +13,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import okio.IOException
 
@@ -85,6 +86,10 @@ class UserRepository(
         userDataStore.edit { preferences ->
             preferences[Keys.LAST_SYNC_TIME] = syncTime
         }
+    }
+
+    suspend fun getSyncTime() : Long {
+        return flow.first().syncTime
     }
 
 }

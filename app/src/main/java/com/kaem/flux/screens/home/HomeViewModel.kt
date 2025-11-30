@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -63,7 +62,7 @@ class HomeViewModel @Inject constructor(
 
     private suspend fun fetchCatalog(manualSync: Boolean = false) {
 
-        val lastSyncTime = userRepository.flow.first().syncTime
+        val lastSyncTime = userRepository.getSyncTime()
 
         val currentTime = System.currentTimeMillis()
         val sync = currentTime - lastSyncTime > 1.days.inWholeMilliseconds || manualSync

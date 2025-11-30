@@ -9,7 +9,7 @@ class UserFileTest {
 
 
     @Test
-    fun `test file name properties parsing`() {
+    fun test_file_name_properties_parsing() {
         // Movies
         asserFileProperties("Spider-man(2001).mp4", "spider man", 2001, null, null)
         asserFileProperties("Pulp Fiction (1994).mkv", "pulp fiction", 1994, null, null)

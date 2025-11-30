@@ -34,7 +34,7 @@ class TMDBServiceTest : ApiTest() {
         try {
             api.getMovie("your name")
             assert(false) { "we should have an exception" }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             assert(true)
         }
 
@@ -66,7 +66,7 @@ class TMDBServiceTest : ApiTest() {
         try {
             api.getShow("naruto")
             assert(false) { "we should have an exception" }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             assert(true)
         }
 

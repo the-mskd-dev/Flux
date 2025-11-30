@@ -12,7 +12,7 @@ import kotlin.time.Duration.Companion.seconds
 @Immutable
 data class MediaUiState(
     val screen: ScreenState = ScreenState.LOADING,
-    val overview: MediaOverview = MediaOverview(),
+    val overview: MediaOverview = MediaMockups.showOverview,
     val media: Media = MediaMockups.episode1,
     val episodes: List<Episode> = emptyList(),
     val season: Int = -1,

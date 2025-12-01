@@ -29,7 +29,7 @@ sealed class MediaIntent {
     object MarkPreviousEpisodesAsWatched: MediaIntent()
     object CloseEpisodesStatusDialog: MediaIntent()
     data class SelectSeason(val season: Int): MediaIntent()
-    data class SaveWatchTime(val time: Long): MediaIntent()
+    data class SaveWatchTime(val media: Media, val time: Long): MediaIntent()
 
     data class PlayMedia(val media: Media): MediaIntent()
     object ClosePlayer: MediaIntent()

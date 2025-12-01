@@ -46,32 +46,6 @@ class MediaRepository @Inject constructor(
         }
     }
 
-    suspend fun getMedia(mediaId: Long) : Content {
-
-        val media = db.getOverview(mediaId)
-        var movie: Movie? = null
-        var episodes: List<Episode> = emptyList()
-
-        withContext(Dispatchers.IO) {
-            when (media?.type) {
-                ContentType.MOVIE -> {
-                    movie = db.getMovie(mediaId)
-                }
-                ContentType.SHOW -> {
-                    episodes = db.getEpisodes(mediaId)
-                }
-                else -> {}
-            }
-        }
-
-        return Content(
-            mediaOverview = media,
-            movie = movie,
-            episodes = episodes
-        )
-
-    }
-
     suspend fun saveMovie(movie: Movie) {
         db.insertMovies(listOf(movie))
     }

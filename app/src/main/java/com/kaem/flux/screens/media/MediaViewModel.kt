@@ -5,6 +5,7 @@ import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kaem.flux.data.repository.MediaRepository
+import com.kaem.flux.data.repository.SettingsPreferences
 import com.kaem.flux.data.repository.SettingsRepository
 import com.kaem.flux.data.repository.UserRepository
 import com.kaem.flux.mockups.MediaMockups
@@ -75,47 +76,13 @@ class MediaViewModel @AssistedInject constructor(
         repository.getMediaFlow(mediaId = mediaId),
         _subState,
         settingsRepository.flow
-    ) { (overview, movie, episodes), subState, settings ->
+    ) { mediaContent, subState, settings ->
 
-        val nextEpisode = episodes.firstOrNull { it.status == Status.IS_WATCHING }
-            ?: episodes.firstOrNull { it.status == Status.TO_WATCH }
-            ?: episodes.firstOrNull()
-
-        val media = when (subState.selectedMedia) {
-            is Movie -> movie
-            is Episode -> {
-
-                if (subState.selectedMedia.id == nextEpisode?.id)
-                    nextEpisode
-                else
-                    subState.selectedMedia
-
-            }
-            null -> movie ?: nextEpisode
-            else -> subState.selectedMedia
-        }
-
-        val season = subState.selectedSeason ?: (media as? Episode)?.season ?: -1
-
-        when {
-            overview == null || media == null -> MediaUiState(screen = ScreenState.ERROR)
-            else -> {
-
-                MediaUiState(
-                    screen = ScreenState.CONTENT,
-                    overview = overview,
-                    episodes = episodes,
-                    season = season,
-                    media = media,
-                    showPlayer = subState.showPlayer,
-                    episodePendingConfirmation = subState.episodePendingConfirmation,
-                    playerBackward = settings.playerBackwardValue.seconds.inWholeMilliseconds,
-                    playerForward = settings.playerForwardValue.seconds.inWholeMilliseconds,
-                    subtitlesLanguage = settings.subtitlesLanguage
-                )
-
-            }
-        }
+        buildUiState(
+            mediaContent = mediaContent,
+            subState = subState,
+            settings = settings
+        )
 
     }.stateIn(
         scope = viewModelScope,
@@ -145,6 +112,53 @@ class MediaViewModel @AssistedInject constructor(
 
     //region Private Methods
 
+    private fun buildUiState(mediaContent: MediaRepository.Content, subState: MediaSubState, settings: SettingsPreferences) : MediaUiState {
+
+        val overview = mediaContent.mediaOverview
+        val movie = mediaContent.movie
+        val episodes = mediaContent.episodes
+
+        val nextEpisode = episodes.firstOrNull { it.status == Status.IS_WATCHING }
+            ?: episodes.firstOrNull { it.status == Status.TO_WATCH }
+            ?: episodes.firstOrNull()
+
+        val media = when (subState.selectedMedia) {
+            is Movie -> movie
+            is Episode -> {
+
+                if (subState.selectedMedia.id == nextEpisode?.id)
+                    nextEpisode
+                else
+                    subState.selectedMedia
+
+            }
+            null -> movie ?: nextEpisode
+            else -> subState.selectedMedia
+        }
+
+        val season = subState.selectedSeason ?: (media as? Episode)?.season ?: -1
+
+        return when {
+            overview == null || media == null -> MediaUiState(screen = ScreenState.ERROR)
+            else -> {
+
+                MediaUiState(
+                    screen = ScreenState.CONTENT,
+                    overview = overview,
+                    episodes = episodes,
+                    season = season,
+                    media = media,
+                    showPlayer = subState.showPlayer,
+                    episodePendingConfirmation = subState.episodePendingConfirmation,
+                    playerBackward = settings.playerBackwardValue.seconds.inWholeMilliseconds,
+                    playerForward = settings.playerForwardValue.seconds.inWholeMilliseconds,
+                    subtitlesLanguage = settings.subtitlesLanguage
+                )
+
+            }
+        }
+
+    }
 
     private fun selectSeason(season: Int) {
         _subState.update { currentState ->

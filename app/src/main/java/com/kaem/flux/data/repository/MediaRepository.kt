@@ -5,16 +5,11 @@ import com.kaem.flux.model.media.ContentType
 import com.kaem.flux.model.media.Episode
 import com.kaem.flux.model.media.MediaOverview
 import com.kaem.flux.model.media.Movie
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class MediaRepository @Inject constructor(
@@ -28,16 +23,16 @@ class MediaRepository @Inject constructor(
     )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun getMediaFlow(mediaId: Long) : Flow<Content> {
-        return db.getOverviewFlow(mediaId = mediaId).flatMapLatest { overview ->
+    fun flowMedia(mediaId: Long) : Flow<Content> {
+        return db.flowOverview(mediaId = mediaId).flatMapLatest { overview ->
             when (overview?.type) {
                 ContentType.MOVIE -> {
-                    db.getMovieFlow(mediaId).map { movie ->
+                    db.flowMovie(mediaId).map { movie ->
                         Content(mediaOverview = overview, movie = movie)
                     }
                 }
                 ContentType.SHOW -> {
-                    db.getEpisodesFlow(mediaId).map { episodes ->
+                    db.flowEpisodes(mediaId).map { episodes ->
                         Content(mediaOverview = overview, episodes = episodes)
                     }
                 }

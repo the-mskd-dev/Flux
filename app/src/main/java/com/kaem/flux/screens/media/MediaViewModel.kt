@@ -8,11 +8,9 @@ import com.kaem.flux.data.repository.MediaRepository
 import com.kaem.flux.data.repository.SettingsPreferences
 import com.kaem.flux.data.repository.SettingsRepository
 import com.kaem.flux.data.repository.UserRepository
-import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.ScreenState
 import com.kaem.flux.model.media.Episode
 import com.kaem.flux.model.media.Media
-import com.kaem.flux.model.media.MediaOverview
 import com.kaem.flux.model.media.Movie
 import com.kaem.flux.model.media.Status
 import com.kaem.flux.utils.extensions.getPreviousEpisodesFor
@@ -29,11 +27,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
 @HiltViewModel(assistedFactory = MediaViewModel.Factory::class)
@@ -56,7 +52,7 @@ class MediaViewModel @AssistedInject constructor(
     //region sub states
 
     @Immutable
-    private data class MediaSubState(
+    private data class UserState(
         val selectedMedia: Media? = null,
         val selectedSeason: Int? = null,
         val showPlayer: Boolean = false,
@@ -70,20 +66,18 @@ class MediaViewModel @AssistedInject constructor(
     private val _event = MutableSharedFlow<MediaEvent>()
     val event = _event.asSharedFlow().distinctUntilChanged()
 
-    private val _subState = MutableStateFlow(MediaSubState())
+    private val _subState = MutableStateFlow(UserState())
 
     val uiState: StateFlow<MediaUiState> = combine(
-        repository.getMediaFlow(mediaId = mediaId),
+        repository.flowMedia(mediaId = mediaId),
         _subState,
         settingsRepository.flow
     ) { mediaContent, subState, settings ->
-
         buildUiState(
             mediaContent = mediaContent,
             subState = subState,
             settings = settings
         )
-
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000),
@@ -112,7 +106,7 @@ class MediaViewModel @AssistedInject constructor(
 
     //region Private Methods
 
-    private fun buildUiState(mediaContent: MediaRepository.Content, subState: MediaSubState, settings: SettingsPreferences) : MediaUiState {
+    private fun buildUiState(mediaContent: MediaRepository.Content, subState: UserState, settings: SettingsPreferences) : MediaUiState {
 
         val overview = mediaContent.mediaOverview
         val movie = mediaContent.movie

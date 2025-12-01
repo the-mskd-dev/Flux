@@ -38,19 +38,19 @@ interface DatabaseDao {
 //region Flow
 
     @Query("SELECT * FROM medias WHERE id = :mediaId")
-    fun getOverviewFlow(mediaId: Long) : Flow<MediaOverview?>
+    fun flowOverview(mediaId: Long) : Flow<MediaOverview?>
 
     @Query("SELECT * FROM medias")
-    fun getOverviewsFlow() : Flow<List<MediaOverview>>
+    fun flowOverviews() : Flow<List<MediaOverview>>
 
     @Query("SELECT * FROM movies WHERE mediaId = :mediaId")
-    fun getMovieFlow(mediaId: Long) : Flow<Movie?>
+    fun flowMovie(mediaId: Long) : Flow<Movie?>
 
     @Query("SELECT * FROM movies")
-    fun getMoviesFlow() : Flow<List<Movie>>
+    fun flowMovies() : Flow<List<Movie>>
 
     @Query("SELECT * FROM episodes WHERE mediaId = :mediaId")
-    fun getEpisodesFlow(mediaId: Long) : Flow<List<Episode>>
+    fun flowEpisodes(mediaId: Long) : Flow<List<Episode>>
 
 //endregion
 

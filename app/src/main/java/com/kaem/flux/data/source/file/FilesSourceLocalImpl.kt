@@ -3,15 +3,14 @@ package com.kaem.flux.data.source.file
 import android.content.ContentUris
 import android.content.Context
 import android.media.MediaMetadataRetriever
-import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
+import androidx.core.net.toUri
 import com.kaem.flux.model.FileSource
 import com.kaem.flux.model.UserFile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
-import androidx.core.net.toUri
 
 class FilesSourceLocalImpl(
     private val context: Context

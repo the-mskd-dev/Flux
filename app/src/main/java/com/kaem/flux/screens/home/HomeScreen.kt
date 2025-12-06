@@ -2,8 +2,10 @@ package com.kaem.flux.screens.home
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -18,6 +20,8 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.Settings
@@ -26,6 +30,7 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.carousel.HorizontalCenteredHeroCarousel
 import androidx.compose.material3.carousel.rememberCarouselState
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
@@ -55,6 +60,7 @@ import com.kaem.flux.model.ScreenState
 import com.kaem.flux.model.media.ContentType
 import com.kaem.flux.model.media.MediaOverview
 import com.kaem.flux.navigation.Route
+import com.kaem.flux.screens.howTo.HowToNameFiles
 import com.kaem.flux.screens.welcome.WelcomeScreen
 import com.kaem.flux.screens.welcome.fluxPermissionState
 import com.kaem.flux.ui.component.FluxButton
@@ -144,31 +150,37 @@ fun HomeScreen(
 @Composable
 fun HomeEmpty(sendIntent: (HomeIntent) -> Unit) {
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = Ui.Space.MEDIUM),
-        verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE.times(2), Alignment.CenterVertically),
-        horizontalAlignment = Alignment.CenterHorizontally,
+    Surface(
+        color = MaterialTheme.colorScheme.background
     ) {
 
-        Text.Headline.Medium(text = stringResource(R.string.empty_catalog))
-
-        Text.Body.Large(text = stringResource(R.string.empty_catalog_desc))
-
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .statusBarsPadding()
+                .padding(all = Ui.Space.MEDIUM)
+                .navigationBarsPadding(),
+            verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE),
+            horizontalAlignment = Alignment.Start,
         ) {
 
-            FluxButton(
-                text = stringResource(R.string.how_to_name_files),
-                onTap = { sendIntent(HomeIntent.OnHowToTap) }
-            )
+            Text.Headline.Medium(text = stringResource(R.string.empty_catalog))
 
-            FluxTextButton(
-                text = stringResource(R.string.refresh),
-                onTap = { sendIntent(HomeIntent.OnSyncTap(manualSync = true)) }
-            )
+            Text.Body.Large(text = stringResource(R.string.empty_catalog_desc))
+
+            HowToNameFiles()
+
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                FluxButton(
+                    text = stringResource(R.string.refresh),
+                    onTap = { sendIntent(HomeIntent.OnSyncTap(manualSync = true)) }
+                )
+            }
+
 
         }
 
@@ -194,6 +206,7 @@ fun HomeContent(
 
     Column(
         modifier = Modifier
+            .background(MaterialTheme.colorScheme.background)
             .fillMaxSize()
             .statusBarsPadding()
     ) {
@@ -388,11 +401,23 @@ fun MediaCategory(
 @Preview
 @Composable
 fun HomeScreen_Preview() {
-    FluxTheme(theme = Ui.THEME.DARK) {
-        HomeContent(
-            overviews = MediaMockups.overviews,
-            lastWatchedIds = MediaMockups.overviews.map { it.id },
-            isRefreshing = false,
+    FluxTheme {
+        Surface {
+            HomeContent(
+                overviews = MediaMockups.overviews,
+                lastWatchedIds = MediaMockups.overviews.map { it.id },
+                isRefreshing = false,
+                sendIntent = {}
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+fun HomeEmpty_Preview() {
+    FluxTheme {
+        HomeEmpty(
             sendIntent = {}
         )
     }

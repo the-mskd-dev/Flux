@@ -52,45 +52,59 @@ fun HowToScreen(onBack: () -> Unit) {
 
                 Text.Body.Large(text = stringResource(R.string.how_to_name_files_desc))
 
-                Column(verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)) {
-
-                    Text.Headline.Small(text = stringResource(R.string.movies))
-                    Text.Body.Large(text = stringResource(R.string.how_to_name_files_movies_desc))
-
-                    Column(
-                        modifier = Modifier.alpha(.7f),
-                        verticalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)
-                    ) {
-                        Text.Body.Medium(text = "• " + stringResource(R.string.movie_file_example_1))
-                        Text.Body.Medium(text = "• " + stringResource(R.string.movie_file_example_2))
-                        Text.Body.Medium(text = "• " + stringResource(R.string.movie_file_example_3))
-
-                    }
-
-                }
-
-                Column(verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)) {
-
-                    Text.Headline.Small(text = stringResource(R.string.shows))
-                    Text.Body.Large(text = stringResource(R.string.how_to_name_files_show_desc))
-
-                    Column(
-                        modifier = Modifier.alpha(.7f),
-                        verticalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)
-                    ) {
-                        Text.Body.Medium(text = "• " + stringResource(R.string.show_file_example_1))
-                        Text.Body.Medium(text = "• " + stringResource(R.string.show_file_example_2))
-                        Text.Body.Medium(text = "• " + stringResource(R.string.show_file_example_3))
-                        Text.Body.Medium(text = "• " + stringResource(R.string.show_file_example_4))
-                        Text.Body.Medium(text = "• " + stringResource(R.string.show_file_example_5))
-                    }
-
-                }
-
+                HowToNameFiles()
 
             }
 
             Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding()))
+
+        }
+
+    }
+
+}
+
+@Composable
+fun HowToNameFiles() {
+
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE),
+        horizontalAlignment = Alignment.Start
+    ) {
+
+        Column(verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)) {
+
+            Text.Title.Large(text = stringResource(R.string.movies), emphasized = true)
+            Text.Body.Large(text = stringResource(R.string.how_to_name_files_movies_desc))
+
+            Column(
+                modifier = Modifier.alpha(.7f),
+                verticalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)
+            ) {
+                Text.Body.Medium(text = "• " + stringResource(R.string.movie_file_example_1))
+                Text.Body.Medium(text = "• " + stringResource(R.string.movie_file_example_2))
+                Text.Body.Medium(text = "• " + stringResource(R.string.movie_file_example_3))
+
+            }
+
+        }
+
+        Column(verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)) {
+
+            Text.Title.Large(text = stringResource(R.string.shows), emphasized = true)
+            Text.Body.Large(text = stringResource(R.string.how_to_name_files_show_desc))
+
+            Column(
+                modifier = Modifier.alpha(.7f),
+                verticalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)
+            ) {
+                Text.Body.Medium(text = "• " + stringResource(R.string.show_file_example_1))
+                Text.Body.Medium(text = "• " + stringResource(R.string.show_file_example_2))
+                Text.Body.Medium(text = "• " + stringResource(R.string.show_file_example_3))
+                Text.Body.Medium(text = "• " + stringResource(R.string.show_file_example_4))
+                Text.Body.Medium(text = "• " + stringResource(R.string.show_file_example_5))
+            }
 
         }
 

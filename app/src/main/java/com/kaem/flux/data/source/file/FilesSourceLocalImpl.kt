@@ -11,6 +11,7 @@ import com.kaem.flux.model.UserFile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
+import androidx.core.net.toUri
 
 class FilesSourceLocalImpl(
     private val context: Context
@@ -70,7 +71,7 @@ class FilesSourceLocalImpl(
                         ).toString()
 
                         // Check if the file is a video
-                        retriever.setDataSource(context, Uri.parse(contentPath))
+                        retriever.setDataSource(context, contentPath.toUri())
                         val isVideo = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_HAS_VIDEO) == "yes"
 
                         // Stores column values and the contentUri in a local object
@@ -112,7 +113,7 @@ class FilesSourceLocalImpl(
         withContext(Dispatchers.Default) {
 
             val cursor = context.contentResolver.query(
-                Uri.parse(path),
+                path.toUri(),
                 columns, // Empty projections are bad for performance
                 null,
                 null,

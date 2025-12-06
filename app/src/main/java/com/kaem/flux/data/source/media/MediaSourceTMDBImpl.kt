@@ -37,10 +37,7 @@ class MediaSourceTMDBImpl @Inject constructor(
 
     //region Public methods
 
-    override suspend fun getMedias(
-        files: List<UserFile>,
-        sync: Boolean
-    ): MediaSource.Library {
+    override suspend fun getMedias(files: List<UserFile>): MediaSource.Library {
 
         var movies: Map<MediaOverview, Movie> = mapOf()
         var shows: Map<MediaOverview, List<Episode>> = mapOf()
@@ -140,7 +137,8 @@ class MediaSourceTMDBImpl @Inject constructor(
 
                 async {
 
-                    getShowOverviewAndEpisodes(folder)?.let { (overview, episodes) ->
+                    getShowOverview(folder = folder)?.let { overview ->
+                        val episodes = getEpisodes(folder = folder, overview = overview)
                         shows[overview] = episodes
                     }
 
@@ -156,11 +154,9 @@ class MediaSourceTMDBImpl @Inject constructor(
 
     }
 
-    private suspend fun getShowOverviewAndEpisodes(folder: UserFolder) : Pair<MediaOverview, List<Episode>>? {
+    private suspend fun getShowOverview(folder: UserFolder) : MediaOverview? {
 
-        val overview: MediaOverview
-
-        try {
+        return try {
 
             val tmdbOverviews = tmdbService.getShow(
                 title = folder.title,
@@ -171,7 +167,7 @@ class MediaSourceTMDBImpl @Inject constructor(
                 it.type = TMDBMediaType.SHOW
             }
 
-            overview = MediaOverview(tmdbOverview)
+            MediaOverview(tmdbOverview)
 
         } catch (e: Exception) {
             Log.e(TAG, "[getShowAndEpisodes] Fail to get show overview : ${folder.title}", e)
@@ -184,10 +180,14 @@ class MediaSourceTMDBImpl @Inject constructor(
                 }
             }
 
-            return null
+            null
         }
 
-        val episodes: List<Episode> = coroutineScope {
+    }
+
+    private suspend fun getEpisodes(folder: UserFolder, overview: MediaOverview) : List<Episode> {
+
+        return coroutineScope {
 
             folder.files.map { file ->
 
@@ -227,8 +227,6 @@ class MediaSourceTMDBImpl @Inject constructor(
             }.awaitAll().filterNotNull()
 
         }
-
-        return overview to episodes
 
     }
 

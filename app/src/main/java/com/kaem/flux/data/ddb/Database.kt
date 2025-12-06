@@ -17,6 +17,7 @@ import com.kaem.flux.model.media.ContentType
 import com.kaem.flux.model.media.Episode
 import com.kaem.flux.model.media.MediaOverview
 import com.kaem.flux.model.media.Movie
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface DatabaseDao {
@@ -31,6 +32,19 @@ interface DatabaseDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertEpisodes(episodes: List<Episode>)
+
+//endregion
+
+//region Flow
+
+    @Query("SELECT * FROM medias WHERE id = :mediaId")
+    fun flowOverview(mediaId: Long) : Flow<MediaOverview?>
+
+    @Query("SELECT * FROM movies WHERE mediaId = :mediaId")
+    fun flowMovie(mediaId: Long) : Flow<Movie?>
+
+    @Query("SELECT * FROM episodes WHERE mediaId = :mediaId")
+    fun flowEpisodes(mediaId: Long) : Flow<List<Episode>>
 
 //endregion
 

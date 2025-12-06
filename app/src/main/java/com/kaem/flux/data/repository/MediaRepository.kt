@@ -5,8 +5,11 @@ import com.kaem.flux.model.media.ContentType
 import com.kaem.flux.model.media.Episode
 import com.kaem.flux.model.media.MediaOverview
 import com.kaem.flux.model.media.Movie
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class MediaRepository @Inject constructor(
@@ -19,30 +22,23 @@ class MediaRepository @Inject constructor(
         val episodes: List<Episode> = emptyList()
     )
 
-    suspend fun getMedia(mediaId: Long) : Content {
-
-        val media = db.getOverview(mediaId)
-        var movie: Movie? = null
-        var episodes: List<Episode> = emptyList()
-
-        withContext(Dispatchers.IO) {
-            when (media?.type) {
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun flowMedia(mediaId: Long) : Flow<Content> {
+        return db.flowOverview(mediaId = mediaId).flatMapLatest { overview ->
+            when (overview?.type) {
                 ContentType.MOVIE -> {
-                    movie = db.getMovie(mediaId)
+                    db.flowMovie(mediaId).map { movie ->
+                        Content(mediaOverview = overview, movie = movie)
+                    }
                 }
                 ContentType.SHOW -> {
-                    episodes = db.getEpisodes(mediaId)
+                    db.flowEpisodes(mediaId).map { episodes ->
+                        Content(mediaOverview = overview, episodes = episodes)
+                    }
                 }
-                else -> {}
+                else -> flowOf(Content(mediaOverview = overview))
             }
         }
-
-        return Content(
-            mediaOverview = media,
-            movie = movie,
-            episodes = episodes
-        )
-
     }
 
     suspend fun saveMovie(movie: Movie) {

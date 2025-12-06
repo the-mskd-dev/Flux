@@ -41,7 +41,7 @@ class CatalogRepository @Inject constructor(
             medias = if (sync)
                 syncCatalog()
             else
-                mediaSourceLocal.getMedias(sync = false).overviews
+                mediaSourceLocal.getMedias().overviews
 
         } catch (e: Exception) {
             Firebase.crashlytics.recordException(e)
@@ -68,10 +68,7 @@ class CatalogRepository @Inject constructor(
 
         // Get new medias from TMBD
         val newFiles = allFiles.filter { !dbFileNames.contains(it.name) }
-        val (newOverviews, newMovies, newEpisodes) = mediaSourceTmdb.getMedias(
-            files = newFiles,
-            sync = true
-        )
+        val (newOverviews, newMovies, newEpisodes) = mediaSourceTmdb.getMedias(files = newFiles)
 
         // Save new medias
         db.insertOverviews(newOverviews)

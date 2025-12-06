@@ -3,9 +3,9 @@ package com.kaem.flux.data.source.file
 import android.content.ContentUris
 import android.content.Context
 import android.media.MediaMetadataRetriever
-import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
+import androidx.core.net.toUri
 import com.kaem.flux.model.FileSource
 import com.kaem.flux.model.UserFile
 import kotlinx.coroutines.Dispatchers
@@ -70,7 +70,7 @@ class FilesSourceLocalImpl(
                         ).toString()
 
                         // Check if the file is a video
-                        retriever.setDataSource(context, Uri.parse(contentPath))
+                        retriever.setDataSource(context, contentPath.toUri())
                         val isVideo = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_HAS_VIDEO) == "yes"
 
                         // Stores column values and the contentUri in a local object
@@ -112,7 +112,7 @@ class FilesSourceLocalImpl(
         withContext(Dispatchers.Default) {
 
             val cursor = context.contentResolver.query(
-                Uri.parse(path),
+                path.toUri(),
                 columns, // Empty projections are bad for performance
                 null,
                 null,

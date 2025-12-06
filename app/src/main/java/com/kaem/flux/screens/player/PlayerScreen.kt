@@ -85,7 +85,7 @@ fun PlayerScreen(
                 isExiting = true
                 sendIntent(MediaIntent.ClosePlayer)
             },
-            onTimeSave = { sendIntent(MediaIntent.SaveWatchTime(it)) }
+            onTimeSave = { sendIntent(MediaIntent.SaveWatchTime(media = media, time = it)) }
         )
     }
 

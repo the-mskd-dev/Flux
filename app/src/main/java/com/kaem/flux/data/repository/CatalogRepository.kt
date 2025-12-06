@@ -8,6 +8,7 @@ import com.kaem.flux.data.source.media.MediaSource
 import com.kaem.flux.model.UserFile
 import com.kaem.flux.model.media.MediaOverview
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

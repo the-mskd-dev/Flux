@@ -40,7 +40,6 @@ import com.kaem.flux.R
 import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.media.ContentType
 import com.kaem.flux.navigation.Route
-import com.kaem.flux.screens.category.CategoryViewModel
 import com.kaem.flux.ui.component.FluxScaffold
 import com.kaem.flux.ui.component.MediaItem
 import com.kaem.flux.ui.component.Text

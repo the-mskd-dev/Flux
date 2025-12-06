@@ -23,7 +23,6 @@ import com.kaem.flux.data.repository.SettingsRepository
 import com.kaem.flux.navigation.Route
 import com.kaem.flux.navigation.Transition
 import com.kaem.flux.screens.about.AboutScreen
-import com.kaem.flux.screens.category.CategoryScreen
 import com.kaem.flux.screens.home.HomeScreen
 import com.kaem.flux.screens.howTo.HowToScreen
 import com.kaem.flux.screens.media.MediaScreen
@@ -79,17 +78,11 @@ class MainActivity : ComponentActivity() {
                                 mediaId = entry.mediaId
                             )
                         }
-                        entry<Route.Category> { entry ->
-                            CategoryScreen(
-                                navigate = { route -> backStack.add(route) },
-                                onBack = { backStack.removeLastOrNull() },
-                                contentType = entry.contentType
-                            )
-                        }
-                        entry<Route.Search> {
+                        entry<Route.Search> { entry ->
                             SearchScreen(
                                 navigate = { route -> backStack.add(route) },
                                 onBack = { backStack.removeLastOrNull() },
+                                contentType = entry.contentType
                             )
                         }
                         entry<Route.Settings> {

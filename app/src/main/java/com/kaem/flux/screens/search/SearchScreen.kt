@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,7 +15,10 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.rounded.Clear
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -34,19 +38,23 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.kaem.flux.R
 import com.kaem.flux.mockups.MediaMockups
-import com.kaem.flux.model.media.MediaOverview
+import com.kaem.flux.model.media.ContentType
 import com.kaem.flux.navigation.Route
 import com.kaem.flux.ui.component.FluxScaffold
 import com.kaem.flux.ui.component.MediaItem
+import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.FluxTheme
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.Constants
 
 @Composable
 fun SearchScreen(
+    contentType: ContentType? = null,
     navigate: (Route) -> Unit,
     onBack: () -> Unit,
-    viewModel: SearchViewModel = hiltViewModel()
+    viewModel: SearchViewModel = hiltViewModel<SearchViewModel, SearchViewModel.Factory>(
+        creationCallback = { factory -> factory.create(contentType) }
+    )
 ) {
 
     val state by viewModel.uiState.collectAsState()
@@ -61,8 +69,7 @@ fun SearchScreen(
     }
 
     SearchContent(
-        searchWord = state.searchWord,
-        filteredOverviews = state.filteredOverviews,
+        state = state,
         sendIntent = viewModel::handleIntent
     )
 
@@ -70,8 +77,7 @@ fun SearchScreen(
 
 @Composable
 fun SearchContent(
-    searchWord: String,
-    filteredOverviews: List<MediaOverview>,
+    state: SearchUIState,
     sendIntent: (SearchIntent) -> Unit,
 ) {
 
@@ -98,7 +104,7 @@ fun SearchContent(
 
                 TextField(
                     modifier = Modifier.fillMaxWidth(),
-                    value = searchWord,
+                    value = state.searchWord,
                     onValueChange = { sendIntent(SearchIntent.DoSearch(it)) },
                     singleLine = true,
                     shape = Ui.Shape.Corner.Small,
@@ -109,7 +115,7 @@ fun SearchContent(
                     ),
                     placeholder = { Text(stringResource(R.string.enter_search)) },
                     trailingIcon = {
-                        if (searchWord.isNotEmpty()) {
+                        if (state.searchWord.isNotEmpty()) {
                             IconButton(
                                 modifier = Modifier.size(18.dp),
                                 onClick = { sendIntent(SearchIntent.DoSearch("")) },
@@ -121,8 +127,17 @@ fun SearchContent(
 
             }
 
+            item(span = { GridItemSpan(3) }) {
+
+                SearchTypeFilters(
+                    selectedType = state.contentType,
+                    sendIntent = sendIntent
+                )
+
+            }
+
             items(
-                items = filteredOverviews,
+                items = state.filteredOverviews,
                 key = { it.id }
             ) { overview ->
 
@@ -156,13 +171,67 @@ fun SearchContent(
 
 }
 
+@Composable
+fun SearchTypeFilters(
+    selectedType: ContentType?,
+    sendIntent: (SearchIntent) -> Unit
+) {
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)
+    ) {
+
+        FilterChip(
+            onClick = { sendIntent(SearchIntent.FilterOnType(ContentType.MOVIE)) },
+            label = {
+                Text.Label.Medium(
+                    text = stringResource(id = R.string.movies).uppercase(),
+                )
+            },
+            selected = selectedType == ContentType.MOVIE,
+            leadingIcon = if (selectedType == ContentType.MOVIE) {
+                {
+                    Icon(
+                        imageVector = Icons.Filled.Done,
+                        contentDescription = "Movies selected",
+                        modifier = Modifier.size(FilterChipDefaults.IconSize)
+                    )
+                }
+            } else { null },
+        )
+
+        FilterChip(
+            onClick = { sendIntent(SearchIntent.FilterOnType(ContentType.SHOW)) },
+            label = {
+                Text.Label.Medium(
+                    text = stringResource(id = R.string.shows).uppercase(),
+                )
+            },
+            selected = selectedType == ContentType.SHOW,
+            leadingIcon = if (selectedType == ContentType.SHOW) {
+                {
+                    Icon(
+                        imageVector = Icons.Filled.Done,
+                        contentDescription = "Shows selected",
+                        modifier = Modifier.size(FilterChipDefaults.IconSize)
+                    )
+                }
+            } else { null },
+        )
+
+    }
+}
+
 @Preview
 @Composable
 fun SearchContent_Preview() {
     FluxTheme {
         SearchContent(
-            searchWord = "preview",
-            filteredOverviews = MediaMockups.overviews,
+            state = SearchUIState(
+                searchWord = "preview",
+                overviews = MediaMockups.overviews
+            ),
             sendIntent = {}
         )
     }

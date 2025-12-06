@@ -80,10 +80,10 @@ fun HomeScreen(
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
             when (event) {
-                is HomeEvent.NavigateToCategory -> navigate(Route.Category(contentType = event.category))
+                is HomeEvent.NavigateToCategory -> navigate(Route.Search(contentType = event.category))
                 is HomeEvent.NavigateToMedia -> navigate(Route.Media(event.mediaId))
                 HomeEvent.NavigateToHowTo -> navigate(Route.HowTo)
-                HomeEvent.NavigateToSearch -> navigate(Route.Search)
+                HomeEvent.NavigateToSearch -> navigate(Route.Search())
                 HomeEvent.NavigateToSettings -> navigate(Route.Settings)
                 HomeEvent.OpenPermissionDialog -> permissions.launchPermissionRequest()
             }

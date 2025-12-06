@@ -20,13 +20,10 @@ sealed class Route : NavKey {
     data object Library: Route()
 
     @Serializable
-    data class Category(val contentType: ContentType): Route()
-
-    @Serializable
     data class Media(val mediaId: Long): Route()
 
     @Serializable
-    data object Search: Route()
+    data class Search(val contentType: ContentType? = null): Route()
 
     @Serializable
     data object Settings: Route()

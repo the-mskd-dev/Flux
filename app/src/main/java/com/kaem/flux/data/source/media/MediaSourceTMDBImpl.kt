@@ -37,10 +37,7 @@ class MediaSourceTMDBImpl @Inject constructor(
 
     //region Public methods
 
-    override suspend fun getMedias(
-        files: List<UserFile>,
-        sync: Boolean
-    ): MediaSource.Library {
+    override suspend fun getMedias(files: List<UserFile>): MediaSource.Library {
 
         var movies: Map<MediaOverview, Movie> = mapOf()
         var shows: Map<MediaOverview, List<Episode>> = mapOf()

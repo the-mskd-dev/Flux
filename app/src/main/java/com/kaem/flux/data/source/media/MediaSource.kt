@@ -13,9 +13,6 @@ interface MediaSource {
         val episodes: List<Episode> = emptyList()
     )
 
-    suspend fun getMedias(
-        files: List<UserFile> = emptyList(),
-        sync: Boolean
-    ) : Library
+    suspend fun getMedias(files: List<UserFile> = emptyList()) : Library
 
 }

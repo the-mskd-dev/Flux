@@ -16,54 +16,10 @@ class MediaSourceDBImpl @Inject constructor(
 ) : MediaSource {
 
     override suspend fun getMedias(
-        files: List<UserFile>,
-        sync: Boolean
+        files: List<UserFile>
     ): MediaSource.Library {
 
-        if (sync) {
-
-            val overviews = arrayListOf<MediaOverview>()
-            val movies = arrayListOf<Movie>()
-            val episodes = arrayListOf<Episode>()
-
-            withContext(Dispatchers.IO) {
-                coroutineScope {
-
-                    launch {
-
-                        val dbOverviews = db.getOverviews()
-                        overviews.addAll(dbOverviews)
-
-                    }
-
-                    launch {
-
-                        val dbMovies = db.getMovies()
-                        movies.addAll(dbMovies)
-
-                    }
-
-                    launch {
-
-                        val dbEpisodes = db.getEpisodes()
-                        episodes.addAll(dbEpisodes)
-
-                    }
-
-                }
-            }
-
-            return MediaSource.Library(
-                overviews = overviews,
-                movies = movies,
-                episodes = episodes
-            )
-
-        } else {
-
-            return MediaSource.Library(overviews = db.getOverviews())
-
-        }
+        return MediaSource.Library(overviews = db.getOverviews())
 
     }
 

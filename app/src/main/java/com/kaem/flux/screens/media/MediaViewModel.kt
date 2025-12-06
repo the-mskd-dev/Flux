@@ -112,13 +112,13 @@ class MediaViewModel @AssistedInject constructor(
         val movie = mediaContent.movie
         val episodes = mediaContent.episodes
 
-        val nextEpisode = episodes.firstOrNull { it.id == (subState.selectedMedia as? Episode)?.id }
-            ?: episodes.firstOrNull { it.status == Status.IS_WATCHING }
-            ?: episodes.firstOrNull { it.status == Status.TO_WATCH }
-            ?: episodes.firstOrNull()
+        val episode = episodes.firstOrNull { it.id == (subState.selectedMedia as? Episode)?.id } // Selected media by user
+            ?: episodes.firstOrNull { it.id == (uiState.value.media as? Episode)?.id } // Current selected media
+            ?: episodes.firstOrNull { it.status == Status.IS_WATCHING } // First episode watching
+            ?: episodes.firstOrNull { it.status == Status.TO_WATCH } // First episode to watch
+            ?: episodes.firstOrNull() // First episode
 
-
-        val media = movie ?: nextEpisode ?: subState.selectedMedia
+        val media = movie ?: episode
 
         val season = subState.selectedSeason ?: (media as? Episode)?.season ?: -1
 

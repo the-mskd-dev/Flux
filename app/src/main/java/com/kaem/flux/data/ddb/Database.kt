@@ -40,14 +40,8 @@ interface DatabaseDao {
     @Query("SELECT * FROM medias WHERE id = :mediaId")
     fun flowOverview(mediaId: Long) : Flow<MediaOverview?>
 
-    @Query("SELECT * FROM medias")
-    fun flowOverviews() : Flow<List<MediaOverview>>
-
     @Query("SELECT * FROM movies WHERE mediaId = :mediaId")
     fun flowMovie(mediaId: Long) : Flow<Movie?>
-
-    @Query("SELECT * FROM movies")
-    fun flowMovies() : Flow<List<Movie>>
 
     @Query("SELECT * FROM episodes WHERE mediaId = :mediaId")
     fun flowEpisodes(mediaId: Long) : Flow<List<Episode>>

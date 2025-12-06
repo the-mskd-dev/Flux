@@ -3,6 +3,11 @@ package com.kaem.flux.screens.search
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kaem.flux.data.repository.CatalogRepository
+import com.kaem.flux.model.media.ContentType
+import com.kaem.flux.screens.category.CategoryViewModel
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,12 +18,18 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@HiltViewModel
-class SearchViewModel @Inject constructor(
+@HiltViewModel(assistedFactory = SearchViewModel.Factory::class)
+class SearchViewModel @AssistedInject constructor(
+    @Assisted contentType: ContentType? = null,
     private val repository: CatalogRepository
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(SearchUIState())
+    @AssistedFactory
+    interface Factory {
+        fun create(contentType: ContentType?): SearchViewModel
+    }
+
+    private val _uiState = MutableStateFlow(SearchUIState(contentType = contentType))
     val uiState: StateFlow<SearchUIState> = _uiState.asStateFlow()
 
     private val _event = MutableSharedFlow<SearchEvent>()
@@ -36,6 +47,7 @@ class SearchViewModel @Inject constructor(
         when (intent) {
             SearchIntent.OnBackTap -> _event.emit(SearchEvent.BackToPreviousScreen)
             is SearchIntent.OnMediaTap -> _event.emit(SearchEvent.NavigateToMedia(intent.mediaId))
+            is SearchIntent.FilterOnType -> filterOnType(type = intent.contentType)
             is SearchIntent.DoSearch -> doSearch(query = intent.query)
         }
     }
@@ -44,4 +56,14 @@ class SearchViewModel @Inject constructor(
         _uiState.update { it.copy(searchWord = query) }
     }
 
+    private fun filterOnType(type: ContentType) {
+        _uiState.update {
+            if (it.contentType == type)
+                it.copy(contentType = null)
+            else
+                it.copy(contentType = type)
+
+        }
+
+    }
 }

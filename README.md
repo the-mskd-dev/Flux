@@ -57,7 +57,7 @@ And that all! The rest is up to you.
 
 ## License
 
-Copyright (C) 2025 KevynBct
+Copyright (C) 2025 adyBct
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

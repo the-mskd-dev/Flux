@@ -1,5 +1,7 @@
 # Flux
-## _Local shows/movies/animes library_
+## _Local shows/movies/animes library and player_
+
+DISCLAIMER: This app is mainly used for my own personal use, and as a sandbox for Android Development.
 
 ## Features
 

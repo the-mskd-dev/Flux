@@ -5,8 +5,8 @@
     android:viewportHeight="108">
 
 <gradient
-    android:startColor="#60B8F2"
-    android:endColor="#8F80E9"
+    android:startColor="#CE9990"
+    android:endColor="#B55E50"
     android:type="linear"
     android:angle="-45" />
 

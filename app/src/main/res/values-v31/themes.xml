@@ -2,6 +2,6 @@
 <resources>
 
     <style name="Theme.Flux" parent="android:Theme.Material.Light.NoActionBar">
-        <item name="android:windowSplashScreenBackground">#4B4358</item>
+        <item name="android:windowSplashScreenBackground">#110D3F</item>
     </style>
 </resources>

@@ -32,7 +32,7 @@ import com.kaem.flux.screens.media.MediaIntent
 import com.kaem.flux.ui.component.FluxTextButton
 import com.kaem.flux.ui.component.ProgressBar
 import com.kaem.flux.ui.component.Text
-import com.kaem.flux.ui.theme.FluxTheme
+import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.extensions.minToMs
 import com.kaem.flux.utils.extensions.timeDescription
@@ -149,7 +149,7 @@ fun MediaStatusProgression(
 @Preview
 @Composable
 fun MediaButtons_Preview() {
-    FluxTheme {
+    AppTheme {
         MediaButtons(
             media = MediaMockups.episode1,
             sendIntent = {}
@@ -160,7 +160,7 @@ fun MediaButtons_Preview() {
 @Preview
 @Composable
 fun MediaButtonsWatching_Preview() {
-    FluxTheme {
+    AppTheme {
         MediaButtons(
             media = MediaMockups.episode1.copy(
                 currentTime = (MediaMockups.episode1.duration.minToMs / 2f).toLong(),
@@ -174,7 +174,7 @@ fun MediaButtonsWatching_Preview() {
 @Preview
 @Composable
 fun MediaButtonsWatched_Preview() {
-    FluxTheme {
+    AppTheme {
         MediaButtons(
             media = MediaMockups.episode1.copy(status = Status.WATCHED),
             sendIntent = {}

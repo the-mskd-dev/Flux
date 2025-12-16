@@ -35,7 +35,7 @@ import com.kaem.flux.model.media.MediaOverview
 import com.kaem.flux.screens.media.MediaIntent
 import com.kaem.flux.ui.component.BackButton
 import com.kaem.flux.ui.component.Image
-import com.kaem.flux.ui.theme.FluxTheme
+import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.Constants
 
@@ -119,7 +119,7 @@ fun MediaImage(
 @Preview
 @Composable
 fun MediaImage_Preview() {
-    FluxTheme {
+    AppTheme {
         MediaImage(
             modifier = Modifier.aspectRatio(6f / 5f),
             overview = MediaMockups.showOverview,

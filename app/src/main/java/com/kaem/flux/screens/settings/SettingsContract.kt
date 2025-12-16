@@ -55,7 +55,7 @@ data class SettingsDialogState<T>(
             title = R.string.app_theme,
             currentValue = currentValue,
             options = mapOf(
-                //Ui.THEME.LIGHT to (null to Ui.THEME.LIGHT.stringResourceId),
+                Ui.THEME.LIGHT to (null to Ui.THEME.LIGHT.stringResourceId),
                 Ui.THEME.DARK to (null to Ui.THEME.DARK.stringResourceId),
                 Ui.THEME.SYSTEM to (null to Ui.THEME.SYSTEM.stringResourceId)
             ),

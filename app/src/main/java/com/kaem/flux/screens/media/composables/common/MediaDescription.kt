@@ -18,7 +18,7 @@ import com.kaem.flux.model.media.Episode
 import com.kaem.flux.model.media.Media
 import com.kaem.flux.ui.component.FixedChip
 import com.kaem.flux.ui.component.Text
-import com.kaem.flux.ui.theme.FluxTheme
+import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.extensions.formattedText
 import com.kaem.flux.utils.extensions.minToMs
@@ -102,7 +102,7 @@ fun MediaDescriptionDetails(media: Media) {
 @Preview
 @Composable
 fun MediaDescription_Movie_Preview() {
-    FluxTheme {
+    AppTheme {
         MediaDescription(media = MediaMockups.movie)
     }
 
@@ -111,7 +111,7 @@ fun MediaDescription_Movie_Preview() {
 @Preview
 @Composable
 fun MediaDescription_Show_Preview() {
-    FluxTheme {
+    AppTheme {
         MediaDescription(media = MediaMockups.episode1)
     }
 }

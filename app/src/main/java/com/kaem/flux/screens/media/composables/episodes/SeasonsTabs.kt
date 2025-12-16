@@ -17,7 +17,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.kaem.flux.R
 import com.kaem.flux.ui.component.Text
-import com.kaem.flux.ui.theme.FluxTheme
+import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
 
 @Composable
@@ -65,7 +65,7 @@ fun SeasonsTabs(
 @Preview
 @Composable
 fun MediaSeasonsTabs_Preview() {
-    FluxTheme {
+    AppTheme {
         SeasonsTabs(
             selectedSeason = 2,
             seasons = listOf(1,2,3),

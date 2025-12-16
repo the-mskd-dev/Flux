@@ -28,7 +28,7 @@ import com.kaem.flux.screens.howTo.HowToScreen
 import com.kaem.flux.screens.media.MediaScreen
 import com.kaem.flux.screens.search.SearchScreen
 import com.kaem.flux.screens.settings.SettingsScreen
-import com.kaem.flux.ui.theme.FluxTheme
+import com.kaem.flux.ui.theme.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -49,7 +49,7 @@ class MainActivity : ComponentActivity() {
                 lifecycleOwner = LocalLifecycleOwner.current
             )
 
-            FluxTheme(theme = settings.uiTheme) {
+            AppTheme(theme = settings.uiTheme) {
 
                 val backStack = rememberNavBackStack(Route.Library)
 

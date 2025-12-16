@@ -14,7 +14,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kaem.flux.R
-import com.kaem.flux.ui.theme.FluxTheme
+import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
 
 @Composable
@@ -41,7 +41,7 @@ fun FixedChip(
 @Preview
 @Composable
 fun FixedChip_Preview() {
-    FluxTheme {
+    AppTheme {
         FixedChip(text = stringResource(id = R.string.app_name))
     }
 }

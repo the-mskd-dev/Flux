@@ -32,7 +32,7 @@ import com.kaem.flux.screens.media.composables.common.MediaImage
 import com.kaem.flux.screens.media.composables.episodes.EpisodeItem
 import com.kaem.flux.screens.media.composables.episodes.SeasonsTabs
 import com.kaem.flux.ui.component.Text
-import com.kaem.flux.ui.theme.FluxTheme
+import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
 
 @Composable
@@ -142,7 +142,7 @@ fun MediaContentLarge(
 @Preview(device = Devices.AUTOMOTIVE_1024p, widthDp = 720, heightDp = 360)
 @Composable
 fun MediaContentLargeMovie_Preview() {
-    FluxTheme {
+    AppTheme {
         MediaContentLarge(
             overview = MediaMockups.movieOverview,
             media = MediaMockups.movie,
@@ -156,7 +156,7 @@ fun MediaContentLargeMovie_Preview() {
 @Preview(device = Devices.AUTOMOTIVE_1024p, widthDp = 720, heightDp = 360)
 @Composable
 fun MediaContentLargeShow_Preview() {
-    FluxTheme {
+    AppTheme {
         MediaContentLarge(
             overview = MediaMockups.showOverview,
             media = MediaMockups.episode1,

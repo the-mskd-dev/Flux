@@ -64,12 +64,11 @@ import com.kaem.flux.screens.howTo.HowToNameFiles
 import com.kaem.flux.screens.welcome.WelcomeScreen
 import com.kaem.flux.screens.welcome.fluxPermissionState
 import com.kaem.flux.ui.component.FluxButton
-import com.kaem.flux.ui.component.FluxTextButton
 import com.kaem.flux.ui.component.Image
 import com.kaem.flux.ui.component.LoadingScreen
 import com.kaem.flux.ui.component.MediaItem
 import com.kaem.flux.ui.component.Text
-import com.kaem.flux.ui.theme.FluxTheme
+import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.Constants
 
@@ -401,7 +400,7 @@ fun MediaCategory(
 @Preview
 @Composable
 fun HomeScreen_Preview() {
-    FluxTheme {
+    AppTheme {
         Surface {
             HomeContent(
                 overviews = MediaMockups.overviews,
@@ -416,7 +415,7 @@ fun HomeScreen_Preview() {
 @Preview
 @Composable
 fun HomeEmpty_Preview() {
-    FluxTheme {
+    AppTheme {
         HomeEmpty(
             sendIntent = {}
         )

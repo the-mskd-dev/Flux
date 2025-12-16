@@ -43,7 +43,7 @@ import com.kaem.flux.navigation.Route
 import com.kaem.flux.ui.component.FluxScaffold
 import com.kaem.flux.ui.component.MediaItem
 import com.kaem.flux.ui.component.Text
-import com.kaem.flux.ui.theme.FluxTheme
+import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.Constants
 
@@ -226,7 +226,7 @@ fun SearchTypeFilters(
 @Preview
 @Composable
 fun SearchContent_Preview() {
-    FluxTheme {
+    AppTheme {
         SearchContent(
             state = SearchUIState(
                 searchWord = "preview",

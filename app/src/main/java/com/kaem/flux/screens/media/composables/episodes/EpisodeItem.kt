@@ -45,7 +45,7 @@ import com.kaem.flux.screens.media.MediaIntent
 import com.kaem.flux.ui.component.Image
 import com.kaem.flux.ui.component.ProgressBar
 import com.kaem.flux.ui.component.Text
-import com.kaem.flux.ui.theme.FluxTheme
+import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.Constants
 import com.kaem.flux.utils.extensions.formattedText
@@ -258,7 +258,7 @@ fun EpisodeDropDownMenu(
 @Preview
 @Composable
 fun EpisodeItem_Preview() {
-    FluxTheme {
+    AppTheme {
         EpisodeItem(
             episode = MediaMockups.episode1,
             sendIntent = {}
@@ -269,7 +269,7 @@ fun EpisodeItem_Preview() {
 @Preview
 @Composable
 fun EpisodeItemWatching_Preview() {
-    FluxTheme {
+    AppTheme {
         EpisodeItem(
             episode = MediaMockups.episode1.copy(
                 status = Status.IS_WATCHING,
@@ -283,7 +283,7 @@ fun EpisodeItemWatching_Preview() {
 @Preview
 @Composable
 fun EpisodeItemWatched_Preview() {
-    FluxTheme {
+    AppTheme {
         EpisodeItem(
             episode = MediaMockups.episode1.copy(
                 status = Status.WATCHED,

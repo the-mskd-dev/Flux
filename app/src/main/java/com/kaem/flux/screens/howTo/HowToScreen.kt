@@ -20,7 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.kaem.flux.R
 import com.kaem.flux.ui.component.FluxScaffold
 import com.kaem.flux.ui.component.Text
-import com.kaem.flux.ui.theme.FluxTheme
+import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
 
 @Composable
@@ -115,7 +115,7 @@ fun HowToNameFiles() {
 @Preview
 @Composable
 fun HowToScreen_Preview() {
-    FluxTheme {
+    AppTheme {
         HowToScreen(onBack = {})
     }
 }

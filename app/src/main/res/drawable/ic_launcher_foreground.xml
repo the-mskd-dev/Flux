@@ -1,4 +1,9 @@
-<vector xmlns:android="http://schemas.android.com/apk/res/android" android:height="190.54726dp" android:viewportHeight="383" android:viewportWidth="402" android:width="200dp">
+<vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:height="190.54726dp"
+    android:viewportHeight="383"
+    android:viewportWidth="402"
+    android:width="200dp">
 
     <group
         android:scaleX="0.6"

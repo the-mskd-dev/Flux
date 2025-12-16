@@ -35,7 +35,7 @@ import com.kaem.flux.navigation.Route
 import com.kaem.flux.ui.component.FluxDialog
 import com.kaem.flux.ui.component.FluxScaffold
 import com.kaem.flux.ui.component.Text
-import com.kaem.flux.ui.theme.FluxTheme
+import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.WebLink
 import com.kaem.flux.utils.extensions.uppercaseFirstLetter
@@ -300,7 +300,7 @@ fun <T> SettingsDialog(
 @Preview
 @Composable
 fun SettingsScreen_Preview() {
-    FluxTheme {
+    AppTheme {
         SettingsContent(
             state = SettingsUiState(),
             context = LocalContext.current,
@@ -312,7 +312,7 @@ fun SettingsScreen_Preview() {
 @Preview
 @Composable
 fun SettingsDialog_Preview() {
-    FluxTheme {
+    AppTheme {
         SettingsDialog(
             state = SettingsDialogState.forward(5),
             sendIntent = {},

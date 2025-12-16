@@ -19,7 +19,7 @@ import androidx.compose.ui.text.font.FontVariation
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import com.kaem.flux.R
-import com.kaem.flux.ui.theme.FluxTheme
+import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
 
 // Region Normal
@@ -54,7 +54,7 @@ val RobotoFlexEmphasized = FontFamily(
 @Preview(widthDp = 500)
 @Composable
 fun FontFamily_Preview() {
-    FluxTheme {
+    AppTheme {
         Column(
             modifier = Modifier
                 .background(Color.White)

@@ -32,6 +32,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
 import androidx.core.net.toUri
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
@@ -41,6 +42,7 @@ import androidx.media3.ui.PlayerView
 import com.kaem.flux.R
 import com.kaem.flux.model.media.Episode
 import com.kaem.flux.model.media.Media
+import com.kaem.flux.screens.home.HomeViewModel
 import com.kaem.flux.screens.media.MediaIntent
 import com.kaem.flux.ui.component.BackButton
 import com.kaem.flux.ui.component.LifecycleComponent
@@ -59,7 +61,10 @@ fun PlayerScreen(
     backward: Long,
     forward: Long,
     subtitlesLanguage: Locale,
-    sendIntent: (MediaIntent) -> Unit
+    sendIntent: (MediaIntent) -> Unit,
+    viewModel: PlayerViewModel = hiltViewModel<PlayerViewModel, PlayerViewModel.Factory>(
+        creationCallback = { factory -> factory.create(media = media) }
+    )
 ) {
 
     var isExiting by remember { mutableStateOf(false) }

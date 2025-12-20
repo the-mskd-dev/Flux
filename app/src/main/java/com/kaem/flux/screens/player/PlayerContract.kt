@@ -18,3 +18,7 @@ sealed class PlayerScreenState {
     data object Error : PlayerScreenState()
     data class Content(val media: Media) : PlayerScreenState()
 }
+
+sealed class PlayerIntent {
+    data class SaveTime(val time: Long) : PlayerIntent()
+}

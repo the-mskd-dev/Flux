@@ -26,6 +26,7 @@ import com.kaem.flux.screens.about.AboutScreen
 import com.kaem.flux.screens.home.HomeScreen
 import com.kaem.flux.screens.howTo.HowToScreen
 import com.kaem.flux.screens.artwork.ArtworkScreen
+import com.kaem.flux.screens.player.PlayerScreen
 import com.kaem.flux.screens.search.SearchScreen
 import com.kaem.flux.screens.settings.SettingsScreen
 import com.kaem.flux.ui.theme.AppTheme
@@ -74,6 +75,7 @@ class MainActivity : ComponentActivity() {
                         }
                         entry<Route.Artwork> { entry ->
                             ArtworkScreen(
+                                navigate = { route -> backStack.add(route) },
                                 onBack = { backStack.removeLastOrNull() },
                                 mediaId = entry.artworkId
                             )
@@ -83,6 +85,12 @@ class MainActivity : ComponentActivity() {
                                 navigate = { route -> backStack.add(route) },
                                 onBack = { backStack.removeLastOrNull() },
                                 contentType = entry.contentType
+                            )
+                        }
+                        entry<Route.Player> { entry ->
+                            PlayerScreen(
+                                media = entry.media,
+                                onBack = { backStack.removeLastOrNull() },
                             )
                         }
                         entry<Route.Settings> {

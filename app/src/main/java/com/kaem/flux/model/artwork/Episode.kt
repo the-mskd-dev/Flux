@@ -6,6 +6,8 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.kaem.flux.model.UserFile
 import com.kaem.flux.model.tmdb.TMDBEpisode
+import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.Serializable
 
 /**
  * Represents an episode of a TV show.
@@ -38,6 +40,8 @@ import com.kaem.flux.model.tmdb.TMDBEpisode
         )
     ]
 )
+@Parcelize
+@Serializable
 data class Episode(
     @PrimaryKey
     val id: Long,
@@ -78,14 +82,5 @@ data class Episode(
         status = Status.TO_WATCH,
         file = file
     )
-
-
-
-    companion object {
-
-        /** Constant used when no ID is available. */
-        const val NO_ID = -1
-
-    }
 
 }

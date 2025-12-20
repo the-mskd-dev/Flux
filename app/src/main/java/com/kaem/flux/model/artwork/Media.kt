@@ -1,7 +1,9 @@
 package com.kaem.flux.model.artwork
 
+import android.os.Parcelable
 import com.kaem.flux.model.UserFile
 import com.kaem.flux.utils.extensions.parseTMDBDate
+import kotlinx.serialization.Serializable
 import java.util.Date
 
 /**
@@ -18,7 +20,8 @@ import java.util.Date
  * @property status Viewing status of the media.
  * @property releaseDate Parsed release date as a [Date], derived from [releaseDateString].
  */
-abstract class Media {
+@Serializable
+sealed class Media : Parcelable {
     abstract val artworkId: Long
     abstract val title: String
     abstract  val releaseDateString: String

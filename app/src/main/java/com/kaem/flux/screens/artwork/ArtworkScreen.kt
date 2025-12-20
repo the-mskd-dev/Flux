@@ -13,6 +13,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.window.core.layout.WindowSizeClass
 import com.kaem.flux.R
 import com.kaem.flux.model.ScreenState
+import com.kaem.flux.navigation.Route
 import com.kaem.flux.screens.artwork.composables.ArtworkContentLarge
 import com.kaem.flux.screens.artwork.composables.ArtworkContentRegular
 import com.kaem.flux.screens.player.PlayerScreen
@@ -23,8 +24,9 @@ import com.kaem.flux.ui.component.Text
 
 @Composable
 fun ArtworkScreen(
-    onBack: () -> Unit,
     mediaId: Long,
+    navigate: (Route) -> Unit,
+    onBack: () -> Unit,
     viewModel: ArtworkViewModel = hiltViewModel<ArtworkViewModel, ArtworkViewModel.Factory>(
         creationCallback = { factory -> factory.create(mediaId) }
     )
@@ -38,6 +40,7 @@ fun ArtworkScreen(
         viewModel.event.collect { event ->
             when (event) {
                 ArtworkEvent.BackToPreviousScreen -> onBack()
+                is ArtworkEvent.PlayMedia -> navigate(Route.Player(media = event.media))
             }
         }
     }
@@ -58,42 +61,22 @@ fun ArtworkScreen(
             }
             else -> {
 
-                Crossfade(
-                    modifier = Modifier.fillMaxSize(),
-                    targetState = uiState.showPlayer,
-                    label = "MediaScreenAnimation"
-                ) { showPlayer ->
-                    if (showPlayer) {
-
-                        PlayerScreen(
-                            media = uiState.media,
-                            backward = uiState.playerBackward,
-                            forward = uiState.playerForward,
-                            subtitlesLanguage = uiState.subtitlesLanguage,
-                            sendIntent = viewModel::handleIntent,
-                        )
-
-                    } else {
-
-                        if (isLargeScreen) {
-                            ArtworkContentLarge(
-                                artwork = uiState.artwork,
-                                media = uiState.media,
-                                episodes = uiState.episodes,
-                                currentSeason = uiState.season,
-                                sendIntent = viewModel::handleIntent,
-                            )
-                        } else {
-                            ArtworkContentRegular(
-                                artwork = uiState.artwork,
-                                media = uiState.media,
-                                episodes = uiState.episodes,
-                                currentSeason = uiState.season,
-                                sendIntent = viewModel::handleIntent,
-                            )
-                        }
-
-                    }
+                if (isLargeScreen) {
+                    ArtworkContentLarge(
+                        artwork = uiState.artwork,
+                        media = uiState.media,
+                        episodes = uiState.episodes,
+                        currentSeason = uiState.season,
+                        sendIntent = viewModel::handleIntent,
+                    )
+                } else {
+                    ArtworkContentRegular(
+                        artwork = uiState.artwork,
+                        media = uiState.media,
+                        episodes = uiState.episodes,
+                        currentSeason = uiState.season,
+                        sendIntent = viewModel::handleIntent,
+                    )
                 }
 
             }

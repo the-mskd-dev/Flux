@@ -12,6 +12,7 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.ui.unit.IntOffset
 import androidx.navigation3.runtime.NavKey
 import com.kaem.flux.model.artwork.ContentType
+import com.kaem.flux.model.artwork.Media
 import kotlinx.serialization.Serializable
 
 sealed class Route : NavKey {
@@ -24,6 +25,9 @@ sealed class Route : NavKey {
 
     @Serializable
     data class Search(val contentType: ContentType? = null): Route()
+
+    @Serializable
+    data class Player(val media: Media) : Route()
 
     @Serializable
     data object Settings: Route()

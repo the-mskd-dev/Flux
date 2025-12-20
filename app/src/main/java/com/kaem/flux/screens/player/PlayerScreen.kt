@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -57,15 +58,13 @@ import java.util.Locale
 @Composable
 fun PlayerScreen(
     media: Media,
-    backward: Long,
-    forward: Long,
-    subtitlesLanguage: Locale,
-    sendIntent: (ArtworkIntent) -> Unit,
+    onBack: () -> Unit,
     viewModel: PlayerViewModel = hiltViewModel<PlayerViewModel, PlayerViewModel.Factory>(
         creationCallback = { factory -> factory.create(media = media) }
     )
 ) {
 
+    val state by viewModel.uiState.collectAsState()
     var isExiting by remember { mutableStateOf(false) }
     val activity = LocalActivity.current as ComponentActivity
     val orientation = remember { activity.requestedOrientation }
@@ -81,15 +80,14 @@ fun PlayerScreen(
     if (!isExiting) {
         PlayerContent(
             media = media,
-            backward = backward,
-            forward = forward,
-            subtitlesLanguage = subtitlesLanguage,
+            backward = state.playerBackward,
+            forward = state.playerForward,
+            subtitlesLanguage = state.subtitlesLanguage,
             onBackButtonTap = {
                 activity.setAppOrientation(orientation)
-                isExiting = true
-                sendIntent(ArtworkIntent.ClosePlayer)
+                onBack()
             },
-            onTimeSave = { sendIntent(ArtworkIntent.SaveWatchTime(media = media, time = it)) }
+            onTimeSave = { viewModel.handleIntent(PlayerIntent.SaveTime(time = it)) }
         )
     }
 

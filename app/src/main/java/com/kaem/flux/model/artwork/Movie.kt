@@ -6,6 +6,8 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.kaem.flux.model.UserFile
 import com.kaem.flux.model.tmdb.TMDBMovie
+import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.Serializable
 
 /**
  * Represents a movie with specific details.
@@ -31,6 +33,8 @@ import com.kaem.flux.model.tmdb.TMDBMovie
         )
     ]
 )
+@Parcelize
+@Serializable
 data class Movie(
     @PrimaryKey
     override val artworkId: Long,

@@ -55,7 +55,6 @@ class ArtworkViewModel @AssistedInject constructor(
     private data class UserState(
         val selectedMedia: Media? = null,
         val selectedSeason: Int? = null,
-        val showPlayer: Boolean = false,
         val episodePendingConfirmation: Episode? = null,
     )
 
@@ -96,7 +95,6 @@ class ArtworkViewModel @AssistedInject constructor(
             is ArtworkIntent.SaveWatchTime -> saveWatchTime(media = intent.media, time = intent.time)
             is ArtworkIntent.PlayMedia -> playMedia(media = intent.media)
             ArtworkIntent.CloseEpisodesStatusDialog -> closeStatusDialog()
-            ArtworkIntent.ClosePlayer -> closePlayer()
             is ArtworkIntent.ChangeWatchStatus -> changeWatchStatus(media = intent.media)
             ArtworkIntent.MarkPreviousEpisodesAsWatched -> markPreviousEpisodesAsWatched()
         }
@@ -132,7 +130,6 @@ class ArtworkViewModel @AssistedInject constructor(
                     episodes = episodes,
                     season = season,
                     media = media,
-                    showPlayer = subState.showPlayer,
                     episodePendingConfirmation = subState.episodePendingConfirmation,
                     playerBackward = settings.playerBackwardValue.seconds.inWholeMilliseconds,
                     playerForward = settings.playerForwardValue.seconds.inWholeMilliseconds,
@@ -145,36 +142,20 @@ class ArtworkViewModel @AssistedInject constructor(
     }
 
     private fun selectSeason(season: Int) {
-        _subState.update { currentState ->
-            currentState.copy(selectedSeason = season)
-        }
+        _subState.update { it.copy(selectedSeason = season) }
     }
 
-    private fun playMedia(media: Media) {
-        _subState.update { currentState ->
-            currentState.copy(
-                selectedMedia = media,
-                showPlayer = true
-            )
-        }
-    }
-
-    private fun closePlayer() {
-        _subState.update { currentState ->
-            currentState.copy(showPlayer = false)
-        }
+    private suspend fun playMedia(media: Media) {
+        _subState.update { it.copy(selectedMedia = media) }
+        _event.emit(ArtworkEvent.PlayMedia(media = media))
     }
 
     private fun showStatusDialog(episode: Episode) {
-        _subState.update { currentState ->
-            currentState.copy(episodePendingConfirmation = episode)
-        }
+        _subState.update { it.copy(episodePendingConfirmation = episode) }
     }
 
     private fun closeStatusDialog() {
-        _subState.update { currentState ->
-            currentState.copy(episodePendingConfirmation = null)
-        }
+        _subState.update { it.copy(episodePendingConfirmation = null) }
     }
 
     private suspend fun changeWatchStatus(media: Media) {

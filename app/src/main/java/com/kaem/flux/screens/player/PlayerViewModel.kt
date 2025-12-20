@@ -10,6 +10,7 @@ import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.model.artwork.Media
 import com.kaem.flux.model.artwork.Movie
 import com.kaem.flux.model.artwork.Status
+import com.kaem.flux.utils.extensions.lastEpisode
 import com.kaem.flux.utils.extensions.msToMin
 import com.kaem.flux.utils.extensions.timeDescription
 import dagger.assisted.Assisted
@@ -88,7 +89,7 @@ class PlayerViewModel @AssistedInject constructor(
             }
             is Episode -> {
                 val episodes = repository.flow.first().episodes
-                val lastEpisode = episodes.maxWith(compareBy<Episode> { it.season }.thenBy { it.number })
+                val lastEpisode = episodes.lastEpisode
                 if (lastEpisode.id == updatedMedia.id && newStatus == Status.WATCHED)
                     userRepository.removeWatchedMedia(media.artworkId)
                 else

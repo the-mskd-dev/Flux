@@ -7,3 +7,5 @@ fun List<Episode>.getPreviousEpisodesFor(episode: Episode) : List<Episode> {
         it.season < episode.season || (it.season == episode.season && it.number < episode.number)
     }
 }
+
+val List<Episode>.lastEpisode get() = this.maxWith(compareBy<Episode> { it.season }.thenBy { it.number })

@@ -18,6 +18,7 @@ import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -31,10 +32,16 @@ class PlayerViewModel @AssistedInject constructor(
     settingsRepository: SettingsRepository,
 ) : ViewModel() {
 
+    //region Factory
+
     @AssistedFactory
     interface Factory {
         fun create(media: Media): PlayerViewModel
     }
+
+    //endregion
+
+    //region Flow
 
     val uiState: StateFlow<PlayerUiState> = settingsRepository.flow.map { settings ->
         PlayerUiState(
@@ -49,11 +56,19 @@ class PlayerViewModel @AssistedInject constructor(
         initialValue = PlayerUiState()
     )
 
+    //endregion
+
+    //region Public methods
+
     fun handleIntent(intent: PlayerIntent) = viewModelScope.launch {
         when (intent) {
             is PlayerIntent.SaveTime -> saveTime(time = intent.time)
         }
     }
+
+    //endregion
+
+    //region Private methods
 
     private suspend fun saveTime(time: Long) {
 
@@ -67,19 +82,25 @@ class PlayerViewModel @AssistedInject constructor(
 
         when (updatedMedia) {
             is Movie -> {
+                repository.saveMovie(updatedMedia)
                 if (newStatus == Status.WATCHED) userRepository.removeWatchedMedia(media.artworkId)
                 else userRepository.addWatchedMedia(media.artworkId)
-                repository.saveMovie(updatedMedia)
             }
             is Episode -> {
+                val episodes = repository.flow.first().episodes
+                val lastEpisode = episodes.maxWith(compareBy<Episode> { it.season }.thenBy { it.number })
+                if (lastEpisode.id == updatedMedia.id && newStatus == Status.WATCHED)
+                    userRepository.removeWatchedMedia(media.artworkId)
+                else
+                    userRepository.addWatchedMedia(media.artworkId)
                 repository.saveEpisode(updatedMedia)
-                //addOrRemoveToWatchedMedias()
-
             }
         }
 
         Log.i("PlayerViewModel", "${updatedMedia.title} saved at ${time.timeDescription()}")
 
     }
+
+    //endregion
 
 }

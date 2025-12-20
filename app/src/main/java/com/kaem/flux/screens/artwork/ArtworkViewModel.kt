@@ -27,6 +27,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -67,7 +68,7 @@ class ArtworkViewModel @AssistedInject constructor(
     private val _subState = MutableStateFlow(UserState())
 
     val uiState: StateFlow<ArtworkUiState> = combine(
-        repository.flow(mediaId = mediaId),
+        repository.flow,
         _subState
     ) { mediaContent, subState ->
         buildUiState(
@@ -80,6 +81,14 @@ class ArtworkViewModel @AssistedInject constructor(
         initialValue = ArtworkUiState()
     )
 
+
+    //endregion
+
+    //regin Init
+
+    init {
+        repository.searchArtwork(mediaId = mediaId)
+    }
 
     //endregion
 
@@ -226,7 +235,7 @@ class ArtworkViewModel @AssistedInject constructor(
     }
 
     private suspend fun addOrRemoveToWatchedMedias() {
-        if (uiState.value.episodes.all { it.status == Status.WATCHED }) userRepository.removeWatchedMedia(mediaId)
+        if (uiState.first().episodes.all { it.status == Status.WATCHED }) userRepository.removeWatchedMedia(mediaId)
         else userRepository.addWatchedMedia(mediaId)
     }
 

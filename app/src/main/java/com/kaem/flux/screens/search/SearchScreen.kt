@@ -38,7 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.kaem.flux.R
 import com.kaem.flux.mockups.MediaMockups
-import com.kaem.flux.model.media.ContentType
+import com.kaem.flux.model.artwork.ContentType
 import com.kaem.flux.navigation.Route
 import com.kaem.flux.ui.component.FluxScaffold
 import com.kaem.flux.ui.component.MediaItem
@@ -62,7 +62,7 @@ fun SearchScreen(
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
             when (event) {
-                is SearchEvent.NavigateToMedia -> navigate(Route.Media(mediaId = event.mediaId))
+                is SearchEvent.NavigateToMedia -> navigate(Route.Artwork(artworkId = event.mediaId))
                 SearchEvent.BackToPreviousScreen -> onBack()
             }
         }
@@ -137,9 +137,9 @@ fun SearchContent(
             }
 
             items(
-                items = state.filteredOverviews,
+                items = state.filteredArtworks,
                 key = { it.id }
-            ) { overview ->
+            ) { artwork ->
 
                 BoxWithConstraints(
                     modifier = Modifier
@@ -150,10 +150,10 @@ fun SearchContent(
 
                     MediaItem(
                         width = maxWidth,
-                        url = Constants.TMDB.IMAGE_SMALL + overview.imagePath,
+                        url = Constants.TMDB.IMAGE_SMALL + artwork.imagePath,
                         ratio = 2f/3f,
-                        description = overview.title,
-                        onTap = { sendIntent(SearchIntent.OnMediaTap(overview.id)) }
+                        description = artwork.title,
+                        onTap = { sendIntent(SearchIntent.OnArtworkTap(artwork.id)) }
                     )
 
                 }
@@ -230,7 +230,7 @@ fun SearchContent_Preview() {
         SearchContent(
             state = SearchUIState(
                 searchWord = "preview",
-                overviews = MediaMockups.overviews
+                artworks = MediaMockups.artworks
             ),
             sendIntent = {}
         )

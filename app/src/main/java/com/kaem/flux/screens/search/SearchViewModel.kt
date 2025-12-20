@@ -3,7 +3,7 @@ package com.kaem.flux.screens.search
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kaem.flux.data.repository.CatalogRepository
-import com.kaem.flux.model.media.ContentType
+import com.kaem.flux.model.artwork.ContentType
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -36,7 +36,7 @@ class SearchViewModel @AssistedInject constructor(
     init {
         viewModelScope.launch {
             repository.catalogFlow.collect { library ->
-                _uiState.update { it.copy(overviews = library.mediaOverviews) }
+                _uiState.update { it.copy(artworks = library.artworks) }
             }
         }
     }
@@ -44,7 +44,7 @@ class SearchViewModel @AssistedInject constructor(
     fun handleIntent(intent: SearchIntent) = viewModelScope.launch {
         when (intent) {
             SearchIntent.OnBackTap -> _event.emit(SearchEvent.BackToPreviousScreen)
-            is SearchIntent.OnMediaTap -> _event.emit(SearchEvent.NavigateToMedia(intent.mediaId))
+            is SearchIntent.OnArtworkTap -> _event.emit(SearchEvent.NavigateToMedia(intent.artworkId))
             is SearchIntent.FilterOnType -> filterOnType(type = intent.contentType)
             is SearchIntent.DoSearch -> doSearch(query = intent.query)
         }

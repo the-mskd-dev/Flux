@@ -1,8 +1,8 @@
-package com.kaem.flux.model.media
+package com.kaem.flux.model.artwork
 
-import com.kaem.flux.model.media.Status.IS_WATCHING
-import com.kaem.flux.model.media.Status.TO_WATCH
-import com.kaem.flux.model.media.Status.WATCHED
+import com.kaem.flux.model.artwork.Status.IS_WATCHING
+import com.kaem.flux.model.artwork.Status.TO_WATCH
+import com.kaem.flux.model.artwork.Status.WATCHED
 
 
 /**

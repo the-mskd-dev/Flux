@@ -1,10 +1,10 @@
 package com.kaem.flux.data.repository
 
 import com.kaem.flux.data.ddb.DatabaseDao
-import com.kaem.flux.model.media.ContentType
-import com.kaem.flux.model.media.Episode
-import com.kaem.flux.model.media.MediaOverview
-import com.kaem.flux.model.media.Movie
+import com.kaem.flux.model.artwork.ContentType
+import com.kaem.flux.model.artwork.Episode
+import com.kaem.flux.model.artwork.Artwork
+import com.kaem.flux.model.artwork.Movie
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
@@ -12,31 +12,31 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class MediaRepository @Inject constructor(
+class ArtworkRepository @Inject constructor(
     private val db: DatabaseDao
 ) {
 
     data class Content(
-        val mediaOverview: MediaOverview?,
+        val artwork: Artwork?,
         val movie: Movie? = null,
         val episodes: List<Episode> = emptyList()
     )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun flowMedia(mediaId: Long) : Flow<Content> {
-        return db.flowOverview(mediaId = mediaId).flatMapLatest { overview ->
-            when (overview?.type) {
+    fun flow(mediaId: Long) : Flow<Content> {
+        return db.flowArtwork(artworkId = mediaId).flatMapLatest { artwork ->
+            when (artwork?.type) {
                 ContentType.MOVIE -> {
                     db.flowMovie(mediaId).map { movie ->
-                        Content(mediaOverview = overview, movie = movie)
+                        Content(artwork = artwork, movie = movie)
                     }
                 }
                 ContentType.SHOW -> {
                     db.flowEpisodes(mediaId).map { episodes ->
-                        Content(mediaOverview = overview, episodes = episodes)
+                        Content(artwork = artwork, episodes = episodes)
                     }
                 }
-                else -> flowOf(Content(mediaOverview = overview))
+                else -> flowOf(Content(artwork = artwork))
             }
         }
     }

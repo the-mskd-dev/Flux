@@ -18,7 +18,7 @@ class SearchViewModelTest : BaseTest() {
 
     // Mocked data
     private val libraryFlow = MutableStateFlow(
-        CatalogContent(mediaOverviews = MediaMockups.overviews)
+        CatalogContent(artworks = MediaMockups.artworks)
     )
 
     override fun setUp() {
@@ -40,7 +40,7 @@ class SearchViewModelTest : BaseTest() {
             val initialState = awaitItem()
 
             assert(initialState.searchWord == "")
-            assert(initialState.overviews == MediaMockups.overviews)
+            assert(initialState.artworks == MediaMockups.artworks)
 
         }
 
@@ -58,8 +58,8 @@ class SearchViewModelTest : BaseTest() {
             val state = awaitItem()
 
             assert(state.searchWord == "nar")
-            assert(state.filteredOverviews.size == 1)
-            assert(state.filteredOverviews.any { it.title.contains("naruto", ignoreCase = true) })
+            assert(state.filteredArtworks.size == 1)
+            assert(state.filteredArtworks.any { it.title.contains("naruto", ignoreCase = true) })
 
         }
 
@@ -77,8 +77,8 @@ class SearchViewModelTest : BaseTest() {
             val state = awaitItem()
 
             assert(state.searchWord == "na")
-            assert(state.filteredOverviews.size == 2)
-            assert(state.filteredOverviews == MediaMockups.overviews)
+            assert(state.filteredArtworks.size == 2)
+            assert(state.filteredArtworks == MediaMockups.artworks)
 
         }
 
@@ -96,7 +96,7 @@ class SearchViewModelTest : BaseTest() {
             val state = awaitItem()
 
             assert(state.searchWord == "spider-man")
-            assert(state.filteredOverviews.isEmpty())
+            assert(state.filteredArtworks.isEmpty())
 
         }
 

@@ -19,7 +19,7 @@ import com.google.gson.annotations.SerializedName
  * @property originalTitle Original title of the media.
  * @property relatedContent List of related medias (used for persons).
  */
-data class TMDBOverview(
+data class TMDBArtwork(
     val id: Long,
     @SerializedName("overview")
     val description: String,
@@ -46,7 +46,7 @@ data class TMDBOverview(
 
     // For Persons
     @SerializedName("known_for")
-    val relatedContent: List<TMDBOverview>
+    val relatedContent: List<TMDBArtwork>
 )
 
 /**
@@ -57,9 +57,9 @@ data class TMDBOverview(
  * @property pageCount Total number of pages available.
  * @property resultCount Total number of medias in the result set.
  */
-data class TMDBOverviewsResult(
+data class TMDBArtworksResult(
     val page: Int,
-    val results: List<TMDBOverview>,
+    val results: List<TMDBArtwork>,
     @SerializedName("total_pages")
     val pageCount: Int,
     @SerializedName("total_results")

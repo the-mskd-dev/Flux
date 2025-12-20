@@ -1,6 +1,6 @@
 package com.kaem.flux.utils.extensions
 
-import com.kaem.flux.model.media.Episode
+import com.kaem.flux.model.artwork.Episode
 
 fun List<Episode>.getPreviousEpisodesFor(episode: Episode) : List<Episode> {
     return this.filter {

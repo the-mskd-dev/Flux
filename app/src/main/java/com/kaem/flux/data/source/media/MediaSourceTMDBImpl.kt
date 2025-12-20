@@ -7,10 +7,10 @@ import com.google.gson.JsonSyntaxException
 import com.kaem.flux.data.tmdb.TMDBService
 import com.kaem.flux.model.UserFile
 import com.kaem.flux.model.UserFolder
-import com.kaem.flux.model.media.ContentType
-import com.kaem.flux.model.media.Episode
-import com.kaem.flux.model.media.MediaOverview
-import com.kaem.flux.model.media.Movie
+import com.kaem.flux.model.artwork.ContentType
+import com.kaem.flux.model.artwork.Episode
+import com.kaem.flux.model.artwork.Artwork
+import com.kaem.flux.model.artwork.Movie
 import com.kaem.flux.model.tmdb.TMDBMediaType
 import com.kaem.flux.utils.Analytics
 import com.kaem.flux.utils.extensions.groupInFolders
@@ -39,8 +39,8 @@ class MediaSourceTMDBImpl @Inject constructor(
 
     override suspend fun getMedias(files: List<UserFile>): MediaSource.Library {
 
-        var movies: Map<MediaOverview, Movie> = mapOf()
-        var shows: Map<MediaOverview, List<Episode>> = mapOf()
+        var movies: Map<Artwork, Movie> = mapOf()
+        var shows: Map<Artwork, List<Episode>> = mapOf()
 
         withContext(Dispatchers.Default) {
 
@@ -63,11 +63,11 @@ class MediaSourceTMDBImpl @Inject constructor(
         }
 
         return MediaSource.Library(
-            overviews = (movies.keys + shows.keys).toList(),
+            artworks = (movies.keys + shows.keys).toList(),
             movies = movies.values.toList(),
             episodes = shows.values.flatten()
         ).also {
-            Log.d(TAG, "[getMedias] Found ${it.overviews.size} overviews, ${it.movies.size} movies, ${it.episodes.size} episodes")
+            Log.d(TAG, "[getMedias] Found ${it.artworks.size} artworks, ${it.movies.size} movies, ${it.episodes.size} episodes")
         }
     }
 
@@ -75,7 +75,7 @@ class MediaSourceTMDBImpl @Inject constructor(
 
     //region Private methods
 
-    private suspend fun getMovies(folders: List<UserFolder>) : Map<MediaOverview, Movie> {
+    private suspend fun getMovies(folders: List<UserFolder>) : Map<Artwork, Movie> {
 
         val movies = coroutineScope {
 
@@ -87,20 +87,20 @@ class MediaSourceTMDBImpl @Inject constructor(
 
                         val file = folder.files.first()
 
-                        val tmdbOverviews = tmdbService.getMovie(
+                        val tmdbArtworks = tmdbService.getMovie(
                             title = folder.title,
                             year = file.nameProperties.year
                         )
 
-                        val tmdbOverview = tmdbOverviews.results.maxBy { it.popularity }.also {
+                        val tmdbArtwork = tmdbArtworks.results.maxBy { it.popularity }.also {
                             it.type = TMDBMediaType.MOVIE
                         }
 
-                        val tmdbMovie = tmdbService.getMovieDetails(id = tmdbOverview.id)
-                        val overview = MediaOverview(tmdbMovie = tmdbMovie)
+                        val tmdbMovie = tmdbService.getMovieDetails(id = tmdbArtwork.id)
+                        val artwork = Artwork(tmdbMovie = tmdbMovie)
                         val movie = Movie(tmdbMovie = tmdbMovie, file = file)
 
-                        overview to movie
+                        artwork to movie
 
                     } catch (e: Exception) {
                         Log.i(TAG, "[getMovies] Fail to get movie : ${folder.title}", e)
@@ -127,9 +127,9 @@ class MediaSourceTMDBImpl @Inject constructor(
 
     }
 
-    private suspend fun getShows(folders: List<UserFolder>) : Map<MediaOverview, List<Episode>> {
+    private suspend fun getShows(folders: List<UserFolder>) : Map<Artwork, List<Episode>> {
 
-        val shows = mutableMapOf<MediaOverview, List<Episode>>()
+        val shows = mutableMapOf<Artwork, List<Episode>>()
 
         coroutineScope {
 
@@ -137,9 +137,9 @@ class MediaSourceTMDBImpl @Inject constructor(
 
                 async {
 
-                    getShowOverview(folder = folder)?.let { overview ->
-                        val episodes = getEpisodes(folder = folder, overview = overview)
-                        shows[overview] = episodes
+                    getShowArtwork(folder = folder)?.let { artwork ->
+                        val episodes = getEpisodes(folder = folder, artwork = artwork)
+                        shows[artwork] = episodes
                     }
 
                 }
@@ -154,28 +154,28 @@ class MediaSourceTMDBImpl @Inject constructor(
 
     }
 
-    private suspend fun getShowOverview(folder: UserFolder) : MediaOverview? {
+    private suspend fun getShowArtwork(folder: UserFolder) : Artwork? {
 
         return try {
 
-            val tmdbOverviews = tmdbService.getShow(
+            val tmdbArtworks = tmdbService.getShow(
                 title = folder.title,
                 year = folder.files.firstOrNull { it.nameProperties.year != null }?.nameProperties?.year
             )
 
-            val tmdbOverview = tmdbOverviews.results.maxBy { it.popularity }.also {
+            val tmdbArtwork = tmdbArtworks.results.maxBy { it.popularity }.also {
                 it.type = TMDBMediaType.SHOW
             }
 
-            MediaOverview(tmdbOverview)
+            Artwork(tmdbArtwork)
 
         } catch (e: Exception) {
-            Log.e(TAG, "[getShowAndEpisodes] Fail to get show overview : ${folder.title}", e)
+            Log.e(TAG, "[getShowAndEpisodes] Fail to get show artwork : ${folder.title}", e)
 
             if (e is IllegalStateException || e is JsonSyntaxException) {
                 firebaseAnalytics.logEvent(Analytics.Event.TMDB_ERROR) {
                     param(Analytics.Param.TITLE, folder.title)
-                    param(Analytics.Param.TYPE, "show overview")
+                    param(Analytics.Param.TYPE, "show artwork")
                     param(Analytics.Param.MESSAGE, e.message ?: "Unknown")
                 }
             }
@@ -185,7 +185,7 @@ class MediaSourceTMDBImpl @Inject constructor(
 
     }
 
-    private suspend fun getEpisodes(folder: UserFolder, overview: MediaOverview) : List<Episode> {
+    private suspend fun getEpisodes(folder: UserFolder, artwork: Artwork) : List<Episode> {
 
         return coroutineScope {
 
@@ -196,14 +196,14 @@ class MediaSourceTMDBImpl @Inject constructor(
                     try {
 
                         val tmdbEpisode = tmdbService.getEpisode(
-                            id = overview.id,
+                            id = artwork.id,
                             season = file.nameProperties.season!!,
                             episode = file.nameProperties.episode!!
                         )
 
                         Episode(
                             tmdbEpisode = tmdbEpisode,
-                            mediaId = overview.id,
+                            mediaId = artwork.id,
                             file = file
                         )
 

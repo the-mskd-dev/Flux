@@ -1,11 +1,11 @@
-package com.kaem.flux.model.media
+package com.kaem.flux.model.artwork
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.kaem.flux.R
 import com.kaem.flux.model.UserFile
 import com.kaem.flux.model.tmdb.TMDBMovie
-import com.kaem.flux.model.tmdb.TMDBOverview
+import com.kaem.flux.model.tmdb.TMDBArtwork
 
 /**
  * Represents a media, such as a movie or a TV show.
@@ -16,8 +16,8 @@ import com.kaem.flux.model.tmdb.TMDBOverview
  * @property bannerPath Path to the banner image of the media.
  * @property type Content of the media, which can be a movie or a show.
  */
-@Entity(tableName = "medias")
-data class MediaOverview(
+@Entity(tableName = "artworks")
+data class Artwork(
     @PrimaryKey
     val id: Long = 0,
     val title: String = "",
@@ -27,7 +27,7 @@ data class MediaOverview(
 ) {
 
     /**
-     * Constructs an [MediaOverview] instance using a [TMDBMovie] and a [UserFile].
+     * Constructs an [Artwork] instance using a [TMDBMovie] and a [UserFile].
      */
     constructor(
         tmdbMovie: TMDBMovie,
@@ -40,13 +40,13 @@ data class MediaOverview(
     )
 
     /**
-     * Constructs an [MediaOverview] instance using a [TMDBOverview].
+     * Constructs an [Artwork] instance using a [TMDBArtwork].
      */
-    constructor(tmdbOverview: TMDBOverview) : this(
-        id = tmdbOverview.id,
-        title = tmdbOverview.title,
-        imagePath = tmdbOverview.imagePath,
-        bannerPath = tmdbOverview.bannerPath,
+    constructor(tmdbArtwork: TMDBArtwork) : this(
+        id = tmdbArtwork.id,
+        title = tmdbArtwork.title,
+        imagePath = tmdbArtwork.imagePath,
+        bannerPath = tmdbArtwork.bannerPath,
         type = ContentType.SHOW
     )
 

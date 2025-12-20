@@ -57,8 +57,8 @@ import com.google.accompanist.permissions.isGranted
 import com.kaem.flux.R
 import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.ScreenState
-import com.kaem.flux.model.media.ContentType
-import com.kaem.flux.model.media.MediaOverview
+import com.kaem.flux.model.artwork.ContentType
+import com.kaem.flux.model.artwork.Artwork
 import com.kaem.flux.navigation.Route
 import com.kaem.flux.screens.howTo.HowToNameFiles
 import com.kaem.flux.screens.welcome.WelcomeScreen
@@ -86,7 +86,7 @@ fun HomeScreen(
         viewModel.event.collect { event ->
             when (event) {
                 is HomeEvent.NavigateToCategory -> navigate(Route.Search(contentType = event.category))
-                is HomeEvent.NavigateToMedia -> navigate(Route.Media(event.mediaId))
+                is HomeEvent.NavigateToArtwork -> navigate(Route.Artwork(event.mediaId))
                 HomeEvent.NavigateToHowTo -> navigate(Route.HowTo)
                 HomeEvent.NavigateToSearch -> navigate(Route.Search())
                 HomeEvent.NavigateToSettings -> navigate(Route.Settings)
@@ -119,14 +119,14 @@ fun HomeScreen(
 
                 else -> {
 
-                    if (uiState.overviews.isEmpty()) {
+                    if (uiState.artworks.isEmpty()) {
 
                         HomeEmpty(sendIntent = viewModel::handleIntent)
 
                     } else {
 
                         HomeContent(
-                            overviews = uiState.overviews,
+                            artworks = uiState.artworks,
                             lastWatchedIds = uiState.lastWatchedMediaIds,
                             isRefreshing = uiState.isRefreshing,
                             sendIntent = viewModel::handleIntent
@@ -190,7 +190,7 @@ fun HomeEmpty(sendIntent: (HomeIntent) -> Unit) {
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun HomeContent(
-    overviews: List<MediaOverview>,
+    artworks: List<Artwork>,
     lastWatchedIds: List<Long>,
     isRefreshing: Boolean,
     sendIntent: (HomeIntent) -> Unit
@@ -237,7 +237,7 @@ fun HomeContent(
 
                 item {
                     LastWatchedCarousel(
-                        overviews = lastWatchedIds.mapNotNull { overviews.find { o -> o.id == it } },
+                        artworks = lastWatchedIds.mapNotNull { artworks.find { o -> o.id == it } },
                         sendIntent = sendIntent
                     )
                 }
@@ -246,7 +246,7 @@ fun HomeContent(
                     MediaCategory(
                         name = stringResource(id = ContentType.SHOW.stringResource),
                         category = ContentType.SHOW,
-                        overviews = overviews.filter { it.type == ContentType.SHOW },
+                        artworks = artworks.filter { it.type == ContentType.SHOW },
                         sendIntent = sendIntent
                     )
                 }
@@ -255,7 +255,7 @@ fun HomeContent(
                     MediaCategory(
                         name = stringResource(id = ContentType.MOVIE.stringResource),
                         category = ContentType.MOVIE,
-                        overviews = overviews.filter { it.type == ContentType.MOVIE },
+                        artworks = artworks.filter { it.type == ContentType.MOVIE },
                         sendIntent = sendIntent
                     )
                 }
@@ -310,16 +310,16 @@ fun HomeTopButtons(sendIntent: (HomeIntent) -> Unit) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LastWatchedCarousel(
-    overviews: List<MediaOverview>,
+    artworks: List<Artwork>,
     sendIntent: (HomeIntent) -> Unit
 ) {
 
-    if (overviews.isEmpty())
+    if (artworks.isEmpty())
         return
 
     val ratio = 1920f/1080f
 
-    val carouselState = rememberCarouselState { overviews.size }
+    val carouselState = rememberCarouselState { artworks.size }
 
     HorizontalCenteredHeroCarousel(
         modifier = Modifier.fillMaxWidth(),
@@ -328,13 +328,13 @@ fun LastWatchedCarousel(
         contentPadding = PaddingValues(horizontal = Ui.Space.MEDIUM)
     ) { i ->
 
-        val overview = overviews[i]
+        val overview = artworks[i]
         val url = Constants.TMDB.IMAGE + overview.bannerPath
 
         Image(
             modifier = Modifier
                 .maskClip(MaterialTheme.shapes.extraLarge)
-                .clickable { sendIntent(HomeIntent.OnMediaTap(mediaId = overview.id)) }
+                .clickable { sendIntent(HomeIntent.OnArtworkTap(artworkId = overview.id)) }
                 .aspectRatio(ratio),
             url = url,
             contentDescription = overview.title
@@ -349,11 +349,11 @@ fun LastWatchedCarousel(
 fun MediaCategory(
     name: String? = null,
     category: ContentType,
-    overviews: List<MediaOverview>,
+    artworks: List<Artwork>,
     sendIntent: (HomeIntent) -> Unit
 ) {
 
-    if (overviews.isEmpty())
+    if (artworks.isEmpty())
         return
 
     val width = 120.dp
@@ -380,13 +380,13 @@ fun MediaCategory(
             horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)
         ) {
 
-            items(overviews, key = { it.id }) {
+            items(artworks, key = { it.id }) {
 
                 MediaItem(
                     width = width,
                     ratio = ratio,
                     url = Constants.TMDB.IMAGE_SMALL + it.imagePath,
-                    onTap = { sendIntent(HomeIntent.OnMediaTap(mediaId = it.id)) },
+                    onTap = { sendIntent(HomeIntent.OnArtworkTap(artworkId = it.id)) },
                     description = it.title
                 )
 
@@ -403,8 +403,8 @@ fun HomeScreen_Preview() {
     AppTheme {
         Surface {
             HomeContent(
-                overviews = MediaMockups.overviews,
-                lastWatchedIds = MediaMockups.overviews.map { it.id },
+                artworks = MediaMockups.artworks,
+                lastWatchedIds = MediaMockups.artworks.map { it.id },
                 isRefreshing = false,
                 sendIntent = {}
             )

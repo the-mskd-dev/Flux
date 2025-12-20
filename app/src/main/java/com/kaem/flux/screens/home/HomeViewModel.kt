@@ -32,13 +32,13 @@ class HomeViewModel @Inject constructor(
     ) { catalog, preferences ->
 
         val screen = when {
-            catalog.isLoading && catalog.mediaOverviews.isEmpty() -> ScreenState.LOADING
+            catalog.isLoading && catalog.artworks.isEmpty() -> ScreenState.LOADING
             else -> ScreenState.CONTENT
         }
 
         HomeUiState(
             screenState = screen,
-            overviews = catalog.mediaOverviews,
+            artworks = catalog.artworks,
             lastWatchedMediaIds = preferences.watchedIds,
             isRefreshing = catalog.isLoading
         )
@@ -51,7 +51,7 @@ class HomeViewModel @Inject constructor(
     fun handleIntent(intent: HomeIntent) = viewModelScope.launch {
         when (intent) {
             is HomeIntent.OnSyncTap -> fetchCatalog(manualSync = intent.manualSync)
-            is HomeIntent.OnMediaTap -> _event.emit(HomeEvent.NavigateToMedia(mediaId = intent.mediaId))
+            is HomeIntent.OnArtworkTap -> _event.emit(HomeEvent.NavigateToArtwork(mediaId = intent.artworkId))
             is HomeIntent.OnCategoryTap -> _event.emit(HomeEvent.NavigateToCategory(category = intent.category))
             HomeIntent.OnSearchTap -> _event.emit(HomeEvent.NavigateToSearch)
             HomeIntent.OnSettingsTap -> _event.emit(HomeEvent.NavigateToSettings)

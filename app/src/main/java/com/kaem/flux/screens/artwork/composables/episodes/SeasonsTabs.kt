@@ -1,4 +1,4 @@
-package com.kaem.flux.screens.media.composables.episodes
+package com.kaem.flux.screens.artwork.composables.episodes
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues

@@ -1,4 +1,4 @@
-package com.kaem.flux.screens.media
+package com.kaem.flux.screens.artwork
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,8 +13,8 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.window.core.layout.WindowSizeClass
 import com.kaem.flux.R
 import com.kaem.flux.model.ScreenState
-import com.kaem.flux.screens.media.composables.MediaContentLarge
-import com.kaem.flux.screens.media.composables.MediaContentRegular
+import com.kaem.flux.screens.artwork.composables.ArtworkContentLarge
+import com.kaem.flux.screens.artwork.composables.ArtworkContentRegular
 import com.kaem.flux.screens.player.PlayerScreen
 import com.kaem.flux.ui.component.ErrorScreen
 import com.kaem.flux.ui.component.FluxDialog
@@ -22,10 +22,10 @@ import com.kaem.flux.ui.component.LoadingScreen
 import com.kaem.flux.ui.component.Text
 
 @Composable
-fun MediaScreen(
+fun ArtworkScreen(
     onBack: () -> Unit,
     mediaId: Long,
-    viewModel: MediaViewModel = hiltViewModel<MediaViewModel, MediaViewModel.Factory>(
+    viewModel: ArtworkViewModel = hiltViewModel<ArtworkViewModel, ArtworkViewModel.Factory>(
         creationCallback = { factory -> factory.create(mediaId) }
     )
 ) {
@@ -37,7 +37,7 @@ fun MediaScreen(
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
             when (event) {
-                MediaEvent.BackToPreviousScreen -> onBack()
+                ArtworkEvent.BackToPreviousScreen -> onBack()
             }
         }
     }
@@ -53,7 +53,7 @@ fun MediaScreen(
             ScreenState.ERROR -> {
                 ErrorScreen(
                     message = stringResource(R.string.oups_an_error_occured),
-                    onBackButtonTap = { viewModel.handleIntent(MediaIntent.OnBackTap) }
+                    onBackButtonTap = { viewModel.handleIntent(ArtworkIntent.OnBackTap) }
                 )
             }
             else -> {
@@ -76,16 +76,16 @@ fun MediaScreen(
                     } else {
 
                         if (isLargeScreen) {
-                            MediaContentLarge(
-                                overview = uiState.overview,
+                            ArtworkContentLarge(
+                                artwork = uiState.artwork,
                                 media = uiState.media,
                                 episodes = uiState.episodes,
                                 currentSeason = uiState.season,
                                 sendIntent = viewModel::handleIntent,
                             )
                         } else {
-                            MediaContentRegular(
-                                overview = uiState.overview,
+                            ArtworkContentRegular(
+                                artwork = uiState.artwork,
                                 media = uiState.media,
                                 episodes = uiState.episodes,
                                 currentSeason = uiState.season,
@@ -107,8 +107,8 @@ fun MediaScreen(
             content = {
                 Text.Body.Large(text = stringResource(R.string.mark_previous_episodes_as_watched))
             },
-            onDismiss = { viewModel.handleIntent(MediaIntent.CloseEpisodesStatusDialog) },
-            onValidate = { viewModel.handleIntent(MediaIntent.MarkPreviousEpisodesAsWatched) }
+            onDismiss = { viewModel.handleIntent(ArtworkIntent.CloseEpisodesStatusDialog) },
+            onValidate = { viewModel.handleIntent(ArtworkIntent.MarkPreviousEpisodesAsWatched) }
         )
     }
 

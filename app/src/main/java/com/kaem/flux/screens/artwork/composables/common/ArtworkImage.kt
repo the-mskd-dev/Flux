@@ -1,4 +1,4 @@
-package com.kaem.flux.screens.media.composables.common
+package com.kaem.flux.screens.artwork.composables.common
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -31,8 +31,8 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.kaem.flux.mockups.MediaMockups
-import com.kaem.flux.model.media.MediaOverview
-import com.kaem.flux.screens.media.MediaIntent
+import com.kaem.flux.model.artwork.Artwork
+import com.kaem.flux.screens.artwork.ArtworkIntent
 import com.kaem.flux.ui.component.BackButton
 import com.kaem.flux.ui.component.Image
 import com.kaem.flux.ui.theme.AppTheme
@@ -41,15 +41,15 @@ import com.kaem.flux.utils.Constants
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MediaImage(
+fun ArtworkImage(
     modifier: Modifier,
-    overview: MediaOverview,
-    sendIntent: (MediaIntent) -> Unit
+    artwork: Artwork,
+    sendIntent: (ArtworkIntent) -> Unit
 ) {
 
     var imageHeight by remember { mutableIntStateOf(0) }
     val imageRequest = ImageRequest.Builder(LocalContext.current)
-        .data(Constants.TMDB.IMAGE_SMALL + overview.imagePath)
+        .data(Constants.TMDB.IMAGE_SMALL + artwork.imagePath)
         .crossfade(true)
         .build()
 
@@ -64,7 +64,7 @@ fun MediaImage(
             placeholder = Image.placeholder,
             error = Image.error,
             alpha = .2f,
-            contentDescription = "background ${overview.title}"
+            contentDescription = "background ${artwork.title}"
         )
 
         Box(
@@ -94,7 +94,7 @@ fun MediaImage(
                 title = {  },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
                 navigationIcon = {
-                    BackButton(onTap = {sendIntent(MediaIntent.OnBackTap)})
+                    BackButton(onTap = {sendIntent(ArtworkIntent.OnBackTap)})
                 },
             )
 
@@ -107,7 +107,7 @@ fun MediaImage(
                 contentScale = ContentScale.Crop,
                 placeholder = Image.placeholder,
                 error = Image.error,
-                contentDescription = overview.title
+                contentDescription = artwork.title
             )
 
         }
@@ -118,11 +118,11 @@ fun MediaImage(
 
 @Preview
 @Composable
-fun MediaImage_Preview() {
+fun ArtworkImage_Preview() {
     AppTheme {
-        MediaImage(
+        ArtworkImage(
             modifier = Modifier.aspectRatio(6f / 5f),
-            overview = MediaMockups.showOverview,
+            artwork = MediaMockups.showArtwork,
             sendIntent = {},
         )
     }

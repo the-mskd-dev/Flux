@@ -40,10 +40,9 @@ import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import com.kaem.flux.R
-import com.kaem.flux.model.media.Episode
-import com.kaem.flux.model.media.Media
-import com.kaem.flux.screens.home.HomeViewModel
-import com.kaem.flux.screens.media.MediaIntent
+import com.kaem.flux.model.artwork.Episode
+import com.kaem.flux.model.artwork.Media
+import com.kaem.flux.screens.artwork.ArtworkIntent
 import com.kaem.flux.ui.component.BackButton
 import com.kaem.flux.ui.component.LifecycleComponent
 import com.kaem.flux.ui.component.Text
@@ -61,7 +60,7 @@ fun PlayerScreen(
     backward: Long,
     forward: Long,
     subtitlesLanguage: Locale,
-    sendIntent: (MediaIntent) -> Unit,
+    sendIntent: (ArtworkIntent) -> Unit,
     viewModel: PlayerViewModel = hiltViewModel<PlayerViewModel, PlayerViewModel.Factory>(
         creationCallback = { factory -> factory.create(media = media) }
     )
@@ -88,9 +87,9 @@ fun PlayerScreen(
             onBackButtonTap = {
                 activity.setAppOrientation(orientation)
                 isExiting = true
-                sendIntent(MediaIntent.ClosePlayer)
+                sendIntent(ArtworkIntent.ClosePlayer)
             },
-            onTimeSave = { sendIntent(MediaIntent.SaveWatchTime(media = media, time = it)) }
+            onTimeSave = { sendIntent(ArtworkIntent.SaveWatchTime(media = media, time = it)) }
         )
     }
 

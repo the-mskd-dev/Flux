@@ -1,4 +1,4 @@
-package com.kaem.flux.screens.media.composables.common
+package com.kaem.flux.screens.artwork.composables.common
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,8 +14,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.kaem.flux.R
 import com.kaem.flux.mockups.MediaMockups
-import com.kaem.flux.model.media.Episode
-import com.kaem.flux.model.media.Media
+import com.kaem.flux.model.artwork.Episode
+import com.kaem.flux.model.artwork.Media
 import com.kaem.flux.ui.component.FixedChip
 import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.AppTheme
@@ -27,7 +27,7 @@ import java.util.Locale
 
 
 @Composable
-fun MediaDescription(media: Media) {
+fun ArtworkDescription(media: Media) {
 
     Column(
         modifier = Modifier
@@ -101,17 +101,17 @@ fun MediaDescriptionDetails(media: Media) {
 
 @Preview
 @Composable
-fun MediaDescription_Movie_Preview() {
+fun ArtworkDescription_Movie_Preview() {
     AppTheme {
-        MediaDescription(media = MediaMockups.movie)
+        ArtworkDescription(media = MediaMockups.movie)
     }
 
 }
 
 @Preview
 @Composable
-fun MediaDescription_Show_Preview() {
+fun ArtworkDescription_Show_Preview() {
     AppTheme {
-        MediaDescription(media = MediaMockups.episode1)
+        ArtworkDescription(media = MediaMockups.episode1)
     }
 }

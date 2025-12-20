@@ -31,12 +31,12 @@ class LibraryRepositoryTest {
     @Test
     fun getLibrary_without_sync() = runTest {
         // Given
-        val localMedias = MediaMockups.overviews
+        val localMedias = MediaMockups.artworks
         val localMovies = listOf(MediaMockups.movie)
         val localEpisodes = MediaMockups.episodes
 
-        coEvery { localSource.getMedias(sync = false) } returns MediaSource.Library(
-            overviews = localMedias,
+        coEvery { localSource.getMedias() } returns MediaSource.Library(
+            artworks = localMedias,
             movies = localMovies,
             episodes = localEpisodes
         )
@@ -49,12 +49,12 @@ class LibraryRepositoryTest {
 
             val loadedState = awaitItem()
             assert(!loadedState.isLoading)
-            assert(loadedState.mediaOverviews.containsAll(localMedias))
+            assert(loadedState.artworks.containsAll(localMedias))
 
             cancelAndIgnoreRemainingEvents()
         }
 
-        coVerify { localSource.getMedias(sync = false) }
+        coVerify { localSource.getMedias() }
 
     }
 
@@ -75,11 +75,11 @@ class LibraryRepositoryTest {
 
         coVerify { db.getAllFileNames() }
         coVerify { db.deleteMediasWithNoFiles(any()) }
-        coVerify { tmdbSource.getMedias(files = any(), sync = true) }
-        coVerify { db.insertOverviews(any()) }
+        coVerify { tmdbSource.getMedias(files = any()) }
+        coVerify { db.insertArtworks(any()) }
         coVerify { db.insertMovies(any()) }
         coVerify { db.insertEpisodes(any()) }
-        coVerify { db.getOverviews() }
+        coVerify { db.getArtworks() }
 
     }
 

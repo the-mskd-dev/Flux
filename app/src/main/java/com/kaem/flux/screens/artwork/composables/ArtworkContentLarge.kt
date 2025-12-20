@@ -1,4 +1,4 @@
-package com.kaem.flux.screens.media.composables
+package com.kaem.flux.screens.artwork.composables
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,35 +22,35 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import com.kaem.flux.R
 import com.kaem.flux.mockups.MediaMockups
-import com.kaem.flux.model.media.Episode
-import com.kaem.flux.model.media.Media
-import com.kaem.flux.model.media.MediaOverview
-import com.kaem.flux.screens.media.MediaIntent
-import com.kaem.flux.screens.media.composables.common.MediaButtons
-import com.kaem.flux.screens.media.composables.common.MediaDescription
-import com.kaem.flux.screens.media.composables.common.MediaImage
-import com.kaem.flux.screens.media.composables.episodes.EpisodeItem
-import com.kaem.flux.screens.media.composables.episodes.SeasonsTabs
+import com.kaem.flux.model.artwork.Episode
+import com.kaem.flux.model.artwork.Media
+import com.kaem.flux.model.artwork.Artwork
+import com.kaem.flux.screens.artwork.ArtworkIntent
+import com.kaem.flux.screens.artwork.composables.common.ArtworkButtons
+import com.kaem.flux.screens.artwork.composables.common.ArtworkDescription
+import com.kaem.flux.screens.artwork.composables.common.ArtworkImage
+import com.kaem.flux.screens.artwork.composables.episodes.EpisodeItem
+import com.kaem.flux.screens.artwork.composables.episodes.SeasonsTabs
 import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
 
 @Composable
-fun MediaContentLarge(
-    overview: MediaOverview,
+fun ArtworkContentLarge(
+    artwork: Artwork,
     media: Media,
     episodes: List<Episode>,
     currentSeason: Int,
-    sendIntent: (MediaIntent) -> Unit,
+    sendIntent: (ArtworkIntent) -> Unit,
 ) {
 
     Row(
         modifier = Modifier.fillMaxSize()
     ) {
 
-        MediaImage(
+        ArtworkImage(
             modifier = Modifier.weight(.5f),
-            overview = overview,
+            artwork = artwork,
             sendIntent = sendIntent
         )
 
@@ -66,7 +66,7 @@ fun MediaContentLarge(
 
             item {
 
-                MediaButtons(
+                ArtworkButtons(
                     media = media,
                     sendIntent = sendIntent
                 )
@@ -75,7 +75,7 @@ fun MediaContentLarge(
 
             item {
 
-                MediaDescription(media = media)
+                ArtworkDescription(media = media)
 
             }
 
@@ -99,7 +99,7 @@ fun MediaContentLarge(
                         SeasonsTabs(
                             selectedSeason = currentSeason,
                             seasons = episodes.map { it.season }.distinct(),
-                            onSeasonTap = { sendIntent(MediaIntent.SelectSeason(it)) }
+                            onSeasonTap = { sendIntent(ArtworkIntent.SelectSeason(it)) }
                         )
 
                     }
@@ -141,10 +141,10 @@ fun MediaContentLarge(
 
 @Preview(device = Devices.AUTOMOTIVE_1024p, widthDp = 720, heightDp = 360)
 @Composable
-fun MediaContentLargeMovie_Preview() {
+fun ArtworkContentLargeMovie_Preview() {
     AppTheme {
-        MediaContentLarge(
-            overview = MediaMockups.movieOverview,
+        ArtworkContentLarge(
+            artwork = MediaMockups.movieArtwork,
             media = MediaMockups.movie,
             episodes = emptyList(),
             currentSeason = -1,
@@ -155,10 +155,10 @@ fun MediaContentLargeMovie_Preview() {
 
 @Preview(device = Devices.AUTOMOTIVE_1024p, widthDp = 720, heightDp = 360)
 @Composable
-fun MediaContentLargeShow_Preview() {
+fun ArtworkContentLargeShow_Preview() {
     AppTheme {
-        MediaContentLarge(
-            overview = MediaMockups.showOverview,
+        ArtworkContentLarge(
+            artwork = MediaMockups.showArtwork,
             media = MediaMockups.episode1,
             episodes = MediaMockups.episodes,
             currentSeason = 1,

@@ -1,4 +1,4 @@
-package com.kaem.flux.screens.media.composables.episodes
+package com.kaem.flux.screens.artwork.composables.episodes
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
@@ -39,9 +39,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kaem.flux.R
 import com.kaem.flux.mockups.MediaMockups
-import com.kaem.flux.model.media.Episode
-import com.kaem.flux.model.media.Status
-import com.kaem.flux.screens.media.MediaIntent
+import com.kaem.flux.model.artwork.Episode
+import com.kaem.flux.model.artwork.Status
+import com.kaem.flux.screens.artwork.ArtworkIntent
 import com.kaem.flux.ui.component.Image
 import com.kaem.flux.ui.component.ProgressBar
 import com.kaem.flux.ui.component.Text
@@ -57,7 +57,7 @@ import com.kaem.flux.utils.extensions.timeDescription
 fun EpisodeItem(
     modifier: Modifier = Modifier,
     episode: Episode,
-    sendIntent: (MediaIntent) -> Unit
+    sendIntent: (ArtworkIntent) -> Unit
 ) {
 
     var showMenu by remember { mutableStateOf(false) }
@@ -65,7 +65,7 @@ fun EpisodeItem(
     Column(
         modifier = modifier
             .combinedClickable(
-                onClick = { sendIntent(MediaIntent.PlayMedia(episode)) },
+                onClick = { sendIntent(ArtworkIntent.PlayMedia(episode)) },
                 onLongClick = { showMenu = true }
             )
             .animateContentSize()
@@ -198,7 +198,7 @@ fun EpisodeImage(
 fun EpisodeDropDownMenu(
     episode: Episode,
     onDismissRequest: () -> Unit,
-    sendIntent: (MediaIntent) -> Unit
+    sendIntent: (ArtworkIntent) -> Unit
 ) {
 
     val text = when (episode.status) {
@@ -219,7 +219,7 @@ fun EpisodeDropDownMenu(
                     leadingIconColor = MaterialTheme.colorScheme.onTertiaryContainer,
                 ),
                 onClick = {
-                    sendIntent(MediaIntent.PlayMedia(media = episode))
+                    sendIntent(ArtworkIntent.PlayMedia(media = episode))
                     onDismissRequest()
                 },
                 text = {
@@ -236,7 +236,7 @@ fun EpisodeDropDownMenu(
                     leadingIconColor = MaterialTheme.colorScheme.onTertiaryContainer,
                 ),
                 onClick = {
-                    sendIntent(MediaIntent.ChangeWatchStatus(media = episode))
+                    sendIntent(ArtworkIntent.ChangeWatchStatus(media = episode))
                     onDismissRequest()
                 },
                 text = {

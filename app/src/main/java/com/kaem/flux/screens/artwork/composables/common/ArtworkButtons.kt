@@ -1,4 +1,4 @@
-package com.kaem.flux.screens.media.composables.common
+package com.kaem.flux.screens.artwork.composables.common
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
@@ -26,9 +26,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kaem.flux.R
 import com.kaem.flux.mockups.MediaMockups
-import com.kaem.flux.model.media.Media
-import com.kaem.flux.model.media.Status
-import com.kaem.flux.screens.media.MediaIntent
+import com.kaem.flux.model.artwork.Media
+import com.kaem.flux.model.artwork.Status
+import com.kaem.flux.screens.artwork.ArtworkIntent
 import com.kaem.flux.ui.component.FluxTextButton
 import com.kaem.flux.ui.component.ProgressBar
 import com.kaem.flux.ui.component.Text
@@ -39,9 +39,9 @@ import com.kaem.flux.utils.extensions.timeDescription
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun MediaButtons(
+fun ArtworkButtons(
     media: Media,
-    sendIntent: (MediaIntent) -> Unit
+    sendIntent: (ArtworkIntent) -> Unit
 ) {
 
     val buttonHeight = ButtonDefaults.MediumContainerHeight
@@ -68,7 +68,7 @@ fun MediaButtons(
                 .height(buttonHeight)
                 .fillMaxWidth(),
             checked = media.status == Status.WATCHED,
-            onCheckedChange = { sendIntent(MediaIntent.PlayMedia(media)) },
+            onCheckedChange = { sendIntent(ArtworkIntent.PlayMedia(media)) },
             colors = ToggleButtonDefaults.toggleButtonColors(
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary,
@@ -104,7 +104,7 @@ fun MediaButtons(
         FluxTextButton(
             text = stringResource(if (media.status == Status.WATCHED) R.string.mark_as_not_watched else R.string.mark_as_watched),
             height = buttonHeight,
-            onTap = { sendIntent(MediaIntent.ChangeWatchStatus(media = media)) }
+            onTap = { sendIntent(ArtworkIntent.ChangeWatchStatus(media = media)) }
         )
 
     }
@@ -148,9 +148,9 @@ fun MediaStatusProgression(
 
 @Preview
 @Composable
-fun MediaButtons_Preview() {
+fun ArtworkButtons_Preview() {
     AppTheme {
-        MediaButtons(
+        ArtworkButtons(
             media = MediaMockups.episode1,
             sendIntent = {}
         )
@@ -159,9 +159,9 @@ fun MediaButtons_Preview() {
 
 @Preview
 @Composable
-fun MediaButtonsWatching_Preview() {
+fun ArtworkButtonsWatching_Preview() {
     AppTheme {
-        MediaButtons(
+        ArtworkButtons(
             media = MediaMockups.episode1.copy(
                 currentTime = (MediaMockups.episode1.duration.minToMs / 2f).toLong(),
                 status = Status.IS_WATCHING
@@ -173,9 +173,9 @@ fun MediaButtonsWatching_Preview() {
 
 @Preview
 @Composable
-fun MediaButtonsWatched_Preview() {
+fun ArtworkButtonsWatched_Preview() {
     AppTheme {
-        MediaButtons(
+        ArtworkButtons(
             media = MediaMockups.episode1.copy(status = Status.WATCHED),
             sendIntent = {}
         )

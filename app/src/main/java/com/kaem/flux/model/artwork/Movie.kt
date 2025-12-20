@@ -1,4 +1,4 @@
-package com.kaem.flux.model.media
+package com.kaem.flux.model.artwork
 
 import androidx.room.Embedded
 import androidx.room.Entity
@@ -24,16 +24,16 @@ import com.kaem.flux.model.tmdb.TMDBMovie
     tableName = "movies",
     foreignKeys = [
         ForeignKey(
-            entity = MediaOverview::class,
+            entity = Artwork::class,
             parentColumns = ["id"],
-            childColumns = ["mediaId"],
+            childColumns = ["artworkId"],
             onDelete = ForeignKey.CASCADE
         )
     ]
 )
 data class Movie(
     @PrimaryKey
-    override val mediaId: Long,
+    override val artworkId: Long,
     override val title: String,
     override val releaseDateString: String,
     override val description: String,
@@ -53,7 +53,7 @@ data class Movie(
         tmdbMovie: TMDBMovie,
         file: UserFile
     ) : this(
-        mediaId = tmdbMovie.id,
+        artworkId = tmdbMovie.id,
         title = tmdbMovie.title,
         releaseDateString = tmdbMovie.releaseDateString,
         description = tmdbMovie.description,

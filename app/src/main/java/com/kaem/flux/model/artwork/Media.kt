@@ -1,4 +1,4 @@
-package com.kaem.flux.model.media
+package com.kaem.flux.model.artwork
 
 import com.kaem.flux.model.UserFile
 import com.kaem.flux.utils.extensions.parseTMDBDate
@@ -7,7 +7,7 @@ import java.util.Date
 /**
  * Represents detailed information about a media, such as a movie or an episode.
  *
- * @property mediaId Id of the artwork
+ * @property artworkId Id of the artwork
  * @property releaseDateString The release date of the media as a string.
  * @property description Description or synopsis of the media.
  * @property voteAverage Average rating of the media.
@@ -19,7 +19,7 @@ import java.util.Date
  * @property releaseDate Parsed release date as a [Date], derived from [releaseDateString].
  */
 abstract class Media {
-    abstract val mediaId: Long
+    abstract val artworkId: Long
     abstract val title: String
     abstract  val releaseDateString: String
     abstract  val description: String

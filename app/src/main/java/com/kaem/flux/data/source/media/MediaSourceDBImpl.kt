@@ -12,7 +12,7 @@ class MediaSourceDBImpl @Inject constructor(
         files: List<UserFile>
     ): MediaSource.Library {
 
-        return MediaSource.Library(overviews = db.getOverviews())
+        return MediaSource.Library(artworks = db.getArtworks())
 
     }
 

@@ -1,7 +1,7 @@
 package com.kaem.flux.model
 
 import android.os.Parcelable
-import com.kaem.flux.model.media.ContentType
+import com.kaem.flux.model.artwork.ContentType
 import kotlinx.parcelize.Parcelize
 import java.util.Date
 import java.util.regex.Pattern

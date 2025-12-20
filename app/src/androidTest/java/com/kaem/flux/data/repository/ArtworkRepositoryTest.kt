@@ -12,11 +12,11 @@ import org.junit.Before
 import org.junit.Test
 
 @MediumTest
-class MediaRepositoryTest {
+class ArtworkRepositoryTest {
 
     private lateinit var database: FluxDatabase
     private lateinit var db: DatabaseDao
-    private lateinit var repository: MediaRepository
+    private lateinit var repository: ArtworkRepository
 
 
     @Before
@@ -29,10 +29,10 @@ class MediaRepositoryTest {
 
         db = database.dao()
 
-        repository = MediaRepository(db)
+        repository = ArtworkRepository(db)
 
-        // Insert overviews
-        db.insertOverviews(listOf(MediaMockups.movieOverview, MediaMockups.showOverview))
+        // Insert artworks
+        db.insertArtworks(listOf(MediaMockups.movieArtwork, MediaMockups.showArtwork))
 
     }
 
@@ -49,10 +49,10 @@ class MediaRepositoryTest {
         db.insertMovies(listOf(MediaMockups.movie))
 
         // When
-        val content = repository.getMedia(MediaMockups.movieOverview.id)
+        val content = repository.getMedia(MediaMockups.movieArtwork.id)
 
         // Then
-        assert(content.mediaOverview == MediaMockups.movieOverview)
+        assert(content.mediaArtwork == MediaMockups.movieArtwork)
         assert(content.movie == MediaMockups.movie)
     }
 
@@ -63,10 +63,10 @@ class MediaRepositoryTest {
         db.insertEpisodes(listOf(MediaMockups.episode1, MediaMockups.episode2))
 
         // When
-        val content = repository.getMedia(MediaMockups.showOverview.id)
+        val content = repository.getMedia(MediaMockups.showArtwork.id)
 
         // Then
-        assert(content.mediaOverview == MediaMockups.showOverview)
+        assert(content.mediaArtwork == MediaMockups.showArtwork)
         assert(content.episodes?.size == 2)
     }
 
@@ -80,7 +80,7 @@ class MediaRepositoryTest {
         repository.saveMovie(movie)
 
         // Then
-        val savedMovie = db.getMovie(movie.mediaId)
+        val savedMovie = db.getMovie(movie.artworkId)
         assert(movie == savedMovie)
     }
 
@@ -108,7 +108,7 @@ class MediaRepositoryTest {
         repository.saveEpisodes(episodes)
 
         // Then
-        val savedEpisodes = db.getEpisodes(episodes.first().mediaId)
+        val savedEpisodes = db.getEpisodes(episodes.first().artworkId)
         assert(episodes == savedEpisodes)
     }
 }

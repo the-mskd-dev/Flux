@@ -1,4 +1,4 @@
-package com.kaem.flux.model.media
+package com.kaem.flux.model.artwork
 
 import androidx.room.Embedded
 import androidx.room.Entity
@@ -31,9 +31,9 @@ import com.kaem.flux.model.tmdb.TMDBEpisode
     tableName = "episodes",
     foreignKeys = [
         ForeignKey(
-            entity = MediaOverview::class,
+            entity = Artwork::class,
             parentColumns = ["id"],
-            childColumns = ["mediaId"],
+            childColumns = ["artworkId"],
             onDelete = ForeignKey.CASCADE
         )
     ]
@@ -45,7 +45,7 @@ data class Episode(
     val season: Int,
     val imagePath: String,
     //val crew: List<TMDBCrew>,
-    override val mediaId: Long,
+    override val artworkId: Long,
     override val title: String,
     override val releaseDateString: String,
     override val description: String,
@@ -63,7 +63,7 @@ data class Episode(
         file: UserFile
     ) : this (
         id = tmdbEpisode.id,
-        mediaId = mediaId,
+        artworkId = mediaId,
         title = tmdbEpisode.title,
         number = tmdbEpisode.number,
         season = tmdbEpisode.season,

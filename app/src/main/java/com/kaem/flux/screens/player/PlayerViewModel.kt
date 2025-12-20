@@ -2,9 +2,9 @@ package com.kaem.flux.screens.player
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kaem.flux.data.repository.MediaRepository
+import com.kaem.flux.data.repository.ArtworkRepository
 import com.kaem.flux.data.repository.SettingsRepository
-import com.kaem.flux.model.media.Media
+import com.kaem.flux.model.artwork.Media
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -18,7 +18,7 @@ import kotlin.time.Duration.Companion.seconds
 @HiltViewModel(assistedFactory = PlayerViewModel.Factory::class)
 class PlayerViewModel @AssistedInject constructor(
     @Assisted private val media: Media,
-    private val repository: MediaRepository,
+    private val repository: ArtworkRepository,
     settingsRepository: SettingsRepository,
 ) : ViewModel() {
 

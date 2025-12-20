@@ -6,9 +6,8 @@ import com.kaem.flux.data.ddb.DatabaseDao
 import com.kaem.flux.data.source.file.FilesSource
 import com.kaem.flux.data.source.media.MediaSource
 import com.kaem.flux.model.UserFile
-import com.kaem.flux.model.media.MediaOverview
+import com.kaem.flux.model.artwork.Artwork
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,7 +17,7 @@ import javax.inject.Inject
 
 data class CatalogContent(
     val isLoading: Boolean = true,
-    val mediaOverviews: List<MediaOverview> = emptyList()
+    val artworks: List<Artwork> = emptyList()
 )
 
 class CatalogRepository @Inject constructor(
@@ -35,14 +34,14 @@ class CatalogRepository @Inject constructor(
 
         _catalogFlow.update { it.copy(isLoading = true) }
 
-        var medias: List<MediaOverview> = emptyList()
+        var medias: List<Artwork> = emptyList()
 
         try {
 
             medias = if (sync)
                 syncCatalog()
             else
-                mediaSourceLocal.getMedias().overviews
+                mediaSourceLocal.getMedias().artworks
 
         } catch (e: Exception) {
             Firebase.crashlytics.recordException(e)
@@ -52,13 +51,13 @@ class CatalogRepository @Inject constructor(
         _catalogFlow.update { content ->
             content.copy(
                 isLoading = false,
-                mediaOverviews = medias.sortedBy { it.title }
+                artworks = medias.sortedBy { it.title }
             )
         }
 
     }
 
-    private suspend fun syncCatalog() : List<MediaOverview> {
+    private suspend fun syncCatalog() : List<Artwork> {
 
         // Fetch all files, local and online (if possible)
         val allFiles = getFiles()
@@ -69,15 +68,15 @@ class CatalogRepository @Inject constructor(
 
         // Get new medias from TMBD
         val newFiles = allFiles.filter { !dbFileNames.contains(it.name) }
-        val (newOverviews, newMovies, newEpisodes) = mediaSourceTmdb.getMedias(files = newFiles)
+        val (newArtworks, newMovies, newEpisodes) = mediaSourceTmdb.getMedias(files = newFiles)
 
         // Save new medias
-        db.insertOverviews(newOverviews)
+        db.insertArtworks(newArtworks)
         db.insertMovies(newMovies)
         db.insertEpisodes(newEpisodes)
 
         // Return all overviews
-        return db.getOverviews()
+        return db.getArtworks()
 
     }
 

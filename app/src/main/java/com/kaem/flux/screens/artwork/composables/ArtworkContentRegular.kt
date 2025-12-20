@@ -1,4 +1,4 @@
-package com.kaem.flux.screens.media.composables
+package com.kaem.flux.screens.artwork.composables
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,27 +22,27 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.kaem.flux.R
 import com.kaem.flux.mockups.MediaMockups
-import com.kaem.flux.model.media.Episode
-import com.kaem.flux.model.media.Media
-import com.kaem.flux.model.media.MediaOverview
-import com.kaem.flux.screens.media.MediaIntent
-import com.kaem.flux.screens.media.composables.common.MediaButtons
-import com.kaem.flux.screens.media.composables.common.MediaDescription
-import com.kaem.flux.screens.media.composables.common.MediaImage
-import com.kaem.flux.screens.media.composables.episodes.EpisodeItem
-import com.kaem.flux.screens.media.composables.episodes.SeasonsTabs
+import com.kaem.flux.model.artwork.Episode
+import com.kaem.flux.model.artwork.Media
+import com.kaem.flux.model.artwork.Artwork
+import com.kaem.flux.screens.artwork.ArtworkIntent
+import com.kaem.flux.screens.artwork.composables.common.ArtworkButtons
+import com.kaem.flux.screens.artwork.composables.common.ArtworkDescription
+import com.kaem.flux.screens.artwork.composables.common.ArtworkImage
+import com.kaem.flux.screens.artwork.composables.episodes.EpisodeItem
+import com.kaem.flux.screens.artwork.composables.episodes.SeasonsTabs
 import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MediaContentRegular(
-    overview: MediaOverview,
+fun ArtworkContentRegular(
+    artwork: Artwork,
     media: Media,
     episodes: List<Episode>,
     currentSeason: Int,
-    sendIntent: (MediaIntent) -> Unit,
+    sendIntent: (ArtworkIntent) -> Unit,
 ) {
 
     val state = rememberLazyListState()
@@ -64,18 +64,18 @@ fun MediaContentRegular(
                 verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM),
             ) {
 
-                MediaImage(
+                ArtworkImage(
                     modifier = Modifier.aspectRatio(6f / 5f),
-                    overview = overview,
+                    artwork = artwork,
                     sendIntent = sendIntent
                 )
 
-                MediaButtons(
+                ArtworkButtons(
                     media = media,
                     sendIntent = sendIntent
                 )
 
-                MediaDescription(media = media)
+                ArtworkDescription(media = media)
 
             }
 
@@ -101,7 +101,7 @@ fun MediaContentRegular(
                     SeasonsTabs(
                         selectedSeason = currentSeason,
                         seasons = episodes.map { it.season }.distinct(),
-                        onSeasonTap = { sendIntent(MediaIntent.SelectSeason(it)) }
+                        onSeasonTap = { sendIntent(ArtworkIntent.SelectSeason(it)) }
                     )
 
                 }
@@ -140,10 +140,10 @@ fun MediaContentRegular(
 
 @Preview
 @Composable
-fun MediaContentMovie_Preview() {
+fun ArtworkContentMovie_Preview() {
     AppTheme {
-        MediaContentRegular(
-            overview = MediaMockups.movieOverview,
+        ArtworkContentRegular(
+            artwork = MediaMockups.movieArtwork,
             media = MediaMockups.movie,
             episodes = emptyList(),
             currentSeason = -1,
@@ -154,10 +154,10 @@ fun MediaContentMovie_Preview() {
 
 @Preview
 @Composable
-fun MediaContentShow_Preview() {
+fun ArtworkContentShow_Preview() {
     AppTheme {
-        MediaContentRegular(
-            overview = MediaMockups.showOverview,
+        ArtworkContentRegular(
+            artwork = MediaMockups.showArtwork,
             media = MediaMockups.episode1,
             episodes = MediaMockups.episodes,
             currentSeason = 1,

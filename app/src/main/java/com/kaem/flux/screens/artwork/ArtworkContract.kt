@@ -17,9 +17,6 @@ data class ArtworkUiState(
     val episodes: List<Episode> = emptyList(),
     val season: Int = -1,
     val episodePendingConfirmation: Episode? = null,
-    val playerBackward: Long = 10.seconds.inWholeMilliseconds,
-    val playerForward: Long = 10.seconds.inWholeMilliseconds,
-    val subtitlesLanguage: Locale = Locale.getDefault()
 )
 
 sealed class ArtworkIntent {
@@ -28,8 +25,6 @@ sealed class ArtworkIntent {
     object MarkPreviousEpisodesAsWatched: ArtworkIntent()
     object CloseEpisodesStatusDialog: ArtworkIntent()
     data class SelectSeason(val season: Int): ArtworkIntent()
-    data class SaveWatchTime(val media: Media, val time: Long): ArtworkIntent()
-
     data class PlayMedia(val media: Media): ArtworkIntent()
 }
 

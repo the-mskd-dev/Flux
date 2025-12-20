@@ -36,7 +36,6 @@ import kotlin.time.Duration.Companion.seconds
 class ArtworkViewModel @AssistedInject constructor(
     @Assisted val mediaId: Long,
     private val repository: ArtworkRepository,
-    private val settingsRepository: SettingsRepository,
     private val userRepository: UserRepository
 ) : ViewModel() {
 
@@ -69,13 +68,11 @@ class ArtworkViewModel @AssistedInject constructor(
 
     val uiState: StateFlow<ArtworkUiState> = combine(
         repository.flow(mediaId = mediaId),
-        _subState,
-        settingsRepository.flow
-    ) { mediaContent, subState, settings ->
+        _subState
+    ) { mediaContent, subState ->
         buildUiState(
             mediaContent = mediaContent,
-            subState = subState,
-            settings = settings
+            subState = subState
         )
     }.stateIn(
         scope = viewModelScope,
@@ -92,7 +89,6 @@ class ArtworkViewModel @AssistedInject constructor(
         when (intent) {
             ArtworkIntent.OnBackTap -> _event.emit(ArtworkEvent.BackToPreviousScreen)
             is ArtworkIntent.SelectSeason -> selectSeason(season = intent.season)
-            is ArtworkIntent.SaveWatchTime -> saveWatchTime(media = intent.media, time = intent.time)
             is ArtworkIntent.PlayMedia -> playMedia(media = intent.media)
             ArtworkIntent.CloseEpisodesStatusDialog -> closeStatusDialog()
             is ArtworkIntent.ChangeWatchStatus -> changeWatchStatus(media = intent.media)
@@ -104,7 +100,7 @@ class ArtworkViewModel @AssistedInject constructor(
 
     //region Private Methods
 
-    private fun buildUiState(mediaContent: ArtworkRepository.Content, subState: UserState, settings: SettingsPreferences) : ArtworkUiState {
+    private fun buildUiState(mediaContent: ArtworkRepository.Content, subState: UserState) : ArtworkUiState {
 
         val artwork = mediaContent.artwork
         val movie = mediaContent.movie
@@ -131,9 +127,6 @@ class ArtworkViewModel @AssistedInject constructor(
                     season = season,
                     media = media,
                     episodePendingConfirmation = subState.episodePendingConfirmation,
-                    playerBackward = settings.playerBackwardValue.seconds.inWholeMilliseconds,
-                    playerForward = settings.playerForwardValue.seconds.inWholeMilliseconds,
-                    subtitlesLanguage = settings.subtitlesLanguage
                 )
 
             }
@@ -230,33 +223,6 @@ class ArtworkViewModel @AssistedInject constructor(
         repository.saveEpisodes(episodesToSave) // Save status in DB
 
         Log.i("MediaViewModel", "${episodesToSave.size} episodes marked as watched")
-    }
-
-    private suspend fun saveWatchTime(media: Media, time: Long) {
-
-        val newStatus = if (time.msToMin >= media.duration * .9) Status.WATCHED else Status.IS_WATCHING
-        val newTime = if (newStatus == Status.WATCHED) 0L else time
-
-        val updatedMedia = when (media) {
-            is Movie -> media.copy(currentTime = newTime, status = newStatus)
-            is Episode -> media.copy(currentTime = newTime, status = newStatus)
-            else -> media
-        }
-
-        when (updatedMedia) {
-            is Movie -> {
-                if (newStatus == Status.WATCHED) userRepository.removeWatchedMedia(mediaId)
-                else userRepository.addWatchedMedia(mediaId)
-                repository.saveMovie(updatedMedia)
-            }
-            is Episode -> {
-                repository.saveEpisode(updatedMedia)
-                addOrRemoveToWatchedMedias()
-            }
-        }
-
-        Log.i("MediaViewModel", "${updatedMedia.title} saved at ${time.timeDescription()}")
-
     }
 
     private suspend fun addOrRemoveToWatchedMedias() {

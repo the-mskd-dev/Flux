@@ -1,6 +1,7 @@
 package com.kaem.flux.di
 
 import com.kaem.flux.data.ddb.DatabaseDao
+import com.kaem.flux.data.repository.ArtworkRepository
 import com.kaem.flux.data.repository.CatalogRepository
 import com.kaem.flux.data.source.file.FilesSource
 import com.kaem.flux.data.source.media.MediaSource
@@ -12,11 +13,11 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object CatalogModule {
+object RepositoriesModule {
 
     @Provides
     @Singleton
-    fun provideLibraryRepository(
+    fun provideCatalogRepository(
         @FilesModule.LocalFilesDataSource localFilesSource: FilesSource,
         @MediaModule.MediaDataSourceLocal mediaSourceLocal: MediaSource,
         @MediaModule.MediaDataSourceTMDB mediaSourceTMDB: MediaSource,
@@ -25,6 +26,14 @@ object CatalogModule {
         fileSource = localFilesSource,
         mediaSourceLocal = mediaSourceLocal,
         mediaSourceTmdb = mediaSourceTMDB,
+        db = db
+    )
+
+    @Provides
+    @Singleton
+    fun provideArtworkRepository(
+        db: DatabaseDao
+    ) : ArtworkRepository = ArtworkRepository(
         db = db
     )
 

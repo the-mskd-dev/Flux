@@ -66,7 +66,6 @@ fun PlayerScreen(
 ) {
 
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-    var isExiting by remember { mutableStateOf(false) }
     val activity = LocalActivity.current as ComponentActivity
     val orientation = remember { activity.requestedOrientation }
 
@@ -78,19 +77,24 @@ fun PlayerScreen(
         }
     }
 
-    if (!isExiting) {
-        PlayerContent(
-            media = media,
-            backward = state.playerBackward,
-            forward = state.playerForward,
-            subtitlesLanguage = state.subtitlesLanguage,
-            onBackButtonTap = {
-                activity.setAppOrientation(orientation)
-                onBack()
-            },
-            onTimeSave = { viewModel.handleIntent(PlayerIntent.SaveTime(time = it)) }
-        )
+    LaunchedEffect(Unit) {
+        viewModel.event.collect { event ->
+            when (event) {
+                PlayerEvent.BackToPreviousScreen -> {
+                    activity.setAppOrientation(orientation)
+                    onBack()
+                }
+            }
+        }
     }
+
+    PlayerContent(
+        media = media,
+        backward = state.playerBackward,
+        forward = state.playerForward,
+        subtitlesLanguage = state.subtitlesLanguage,
+        sendIntent = viewModel::handleIntent
+    )
 
 }
 
@@ -101,8 +105,7 @@ fun PlayerContent(
     backward: Long,
     forward: Long,
     subtitlesLanguage: Locale,
-    onBackButtonTap: () -> Unit,
-    onTimeSave: (Long) -> Unit
+    sendIntent: (PlayerIntent) -> Unit
 ) {
 
     val activity = LocalActivity.current as ComponentActivity
@@ -144,7 +147,7 @@ fun PlayerContent(
     LifecycleComponent(
         onBackground = {
             exoPlayer.pause()
-            onTimeSave(exoPlayer.currentPosition)
+            sendIntent(PlayerIntent.SaveTime(time = exoPlayer.currentPosition))
         },
         onForeground = {
             if (!exoPlayer.isPlaying) exoPlayer.play()
@@ -153,8 +156,7 @@ fun PlayerContent(
 
     BackHandler(enabled = true) {
         if (showButtons) {
-            onTimeSave(exoPlayer.currentPosition)
-            onBackButtonTap()
+            sendIntent(PlayerIntent.OnBackTap(time = exoPlayer.currentPosition))
         } else {
             showButtons = true
         }
@@ -191,10 +193,7 @@ fun PlayerContent(
     PlayerButtons(
         media = media,
         showButtons = showButtons,
-        onBackButtonTap = {
-            onTimeSave(exoPlayer.currentPosition)
-            onBackButtonTap()
-        }
+        onBackButtonTap = { sendIntent(PlayerIntent.OnBackTap(time = exoPlayer.currentPosition)) }
     )
 
 }

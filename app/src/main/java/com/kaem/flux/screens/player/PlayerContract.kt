@@ -15,10 +15,14 @@ data class PlayerUiState(
 
 sealed class PlayerScreenState {
     data object Loading : PlayerScreenState()
-    data object Error : PlayerScreenState()
     data class Content(val media: Media) : PlayerScreenState()
 }
 
 sealed class PlayerIntent {
     data class SaveTime(val time: Long) : PlayerIntent()
+    data class OnBackTap(val time: Long) : PlayerIntent()
+}
+
+sealed class PlayerEvent {
+    data object BackToPreviousScreen : PlayerEvent()
 }

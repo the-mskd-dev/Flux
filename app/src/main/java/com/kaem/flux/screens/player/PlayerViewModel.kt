@@ -17,8 +17,12 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -44,6 +48,9 @@ class PlayerViewModel @AssistedInject constructor(
 
     //region Flow
 
+    private val _event = MutableSharedFlow<PlayerEvent>()
+    val event = _event.asSharedFlow().distinctUntilChanged()
+
     val uiState: StateFlow<PlayerUiState> = settingsRepository.flow.map { settings ->
         PlayerUiState(
             state = PlayerScreenState.Content(media = media),
@@ -64,6 +71,10 @@ class PlayerViewModel @AssistedInject constructor(
     fun handleIntent(intent: PlayerIntent) = viewModelScope.launch {
         when (intent) {
             is PlayerIntent.SaveTime -> saveTime(time = intent.time)
+            is PlayerIntent.OnBackTap -> {
+                saveTime(time = intent.time)
+                _event.emit(PlayerEvent.BackToPreviousScreen)
+            }
         }
     }
 

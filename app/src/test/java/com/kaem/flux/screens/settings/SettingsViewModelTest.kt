@@ -36,7 +36,7 @@ class SettingsViewModelTest : BaseTest() {
     fun initial_state() = runTest {
         viewModel.uiState.test {
             val initialState = awaitItem()
-            assert(10 == initialState.backwardValue)
+            assert(10 == initialState.rewindValue)
             assert(10 == initialState.forwardValue)
             assert(Ui.THEME.SYSTEM == initialState.uiTheme)
             assert(Locale.getDefault() == initialState.subtitlesLanguage)
@@ -45,11 +45,11 @@ class SettingsViewModelTest : BaseTest() {
     }
 
     @Test
-    fun show_backward_dialog() = runTest {
+    fun show_rewind_dialog() = runTest {
         viewModel.uiState.test {
 
             awaitItem()
-            viewModel.handleIntent(SettingsIntent.ShowBackwardDialog)
+            viewModel.handleIntent(SettingsIntent.ShowRewindDialog)
 
             val state = awaitItem()
             assert(state.dialogState != null)
@@ -98,18 +98,18 @@ class SettingsViewModelTest : BaseTest() {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun set_backward_value() = runTest {
+    fun set_rewind_value() = runTest {
         viewModel.uiState.test {
             awaitItem()
 
-            viewModel.handleIntent(SettingsIntent.SetBackwardValue(20))
-            dataStoreFlow.value = dataStoreFlow.value.copy(playerBackwardValue = 20)
+            viewModel.handleIntent(SettingsIntent.SetRewindValue(20))
+            dataStoreFlow.value = dataStoreFlow.value.copy(playerRewindValue = 20)
             advanceUntilIdle()
 
             val state = awaitItem()
 
-            coVerify { settingsRepository.setPlayerBackwardValue(20) }
-            assert(20 == state.backwardValue)
+            coVerify { settingsRepository.setPlayerRewindValue(20) }
+            assert(20 == state.rewindValue)
             assert(state.dialogState == null)
 
             cancelAndConsumeRemainingEvents()

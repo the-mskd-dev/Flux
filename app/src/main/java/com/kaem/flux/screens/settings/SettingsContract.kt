@@ -7,7 +7,7 @@ import java.util.Locale
 
 @Immutable
 data class SettingsUiState(
-    val backwardValue: Int = 10,
+    val rewindValue: Int = 10,
     val forwardValue: Int = 10,
     val uiTheme: Ui.THEME = Ui.THEME.SYSTEM,
     val subtitlesLanguage: Locale = Locale.getDefault(),
@@ -23,8 +23,8 @@ data class SettingsDialogState<T>(
 
     companion object {
 
-        fun backward(currentValue: Int) = SettingsDialogState(
-            title = R.string.button_backward,
+        fun rewind(currentValue: Int) = SettingsDialogState(
+            title = R.string.button_rewind,
             currentValue = currentValue,
             options = mapOf(
                 5 to ("5sec" to null),
@@ -34,7 +34,7 @@ data class SettingsDialogState<T>(
                 25 to ("25sec" to null),
                 30 to ("30sec" to null),
             ),
-            applyValue = { value -> SettingsIntent.SetBackwardValue(value) }
+            applyValue = { value -> SettingsIntent.SetRewindValue(value) }
         )
 
         fun forward(currentValue: Int) = SettingsDialogState(
@@ -81,8 +81,8 @@ data class SettingsDialogState<T>(
 }
 
 sealed class SettingsIntent {
-    object ShowBackwardDialog: SettingsIntent()
-    data class SetBackwardValue(val value: Int): SettingsIntent()
+    object ShowRewindDialog: SettingsIntent()
+    data class SetRewindValue(val value: Int): SettingsIntent()
     object ShowForwardDialog: SettingsIntent()
     data class SetForwardValue(val value: Int): SettingsIntent()
     object ShowThemeDialog: SettingsIntent()

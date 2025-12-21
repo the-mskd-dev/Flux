@@ -28,7 +28,7 @@
     <string name="validate">Valider</string>
     <string name="cancel">Annuler</string>
     <string name="app_theme">Thème de l\'application</string>
-    <string name="button_backward">Réglage du saut arrière</string>
+    <string name="button_rewind">Réglage du saut arrière</string>
     <string name="button_forward">Réglage du saut avant</string>
     <string name="app_version">Numéro de version</string>
     <string name="subtitles_language">Langue des sous-titres</string>

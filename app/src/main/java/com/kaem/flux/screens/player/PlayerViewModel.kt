@@ -1,8 +1,13 @@
 package com.kaem.flux.screens.player
 
+import android.content.Context
 import android.util.Log
+import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.media3.common.Player
+import androidx.media3.exoplayer.DefaultRenderersFactory
+import androidx.media3.exoplayer.ExoPlayer
 import com.kaem.flux.data.repository.ArtworkRepository
 import com.kaem.flux.data.repository.SettingsRepository
 import com.kaem.flux.data.repository.UserRepository
@@ -18,18 +23,17 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
@@ -39,6 +43,7 @@ class PlayerViewModel @AssistedInject constructor(
     private val repository: ArtworkRepository,
     private val userRepository: UserRepository,
     settingsRepository: SettingsRepository,
+    @ApplicationContext context: Context
 ) : ViewModel() {
 
     //region Factory
@@ -50,22 +55,41 @@ class PlayerViewModel @AssistedInject constructor(
 
     //endregion
 
+    //region Player
+
+    private val _player = ExoPlayer.Builder(context)
+        .setRenderersFactory(
+            DefaultRenderersFactory(context)
+                .setExtensionRendererMode(
+                    DefaultRenderersFactory.EXTENSION_RENDERER_MODE_PREFER
+                )
+        )
+        .build()
+        .apply {
+            playWhenReady = true
+        }
+    val player = _player
+
+    //endregion
+
     //region Flow
 
     private val _event = MutableSharedFlow<PlayerEvent>()
     val event = _event.asSharedFlow().distinctUntilChanged()
 
-    private val _showInterface = MutableStateFlow(false)
+    private val _subState = MutableStateFlow(PlayerUiState.SubState())
+
 
     val uiState: StateFlow<PlayerUiState> = combine(
         settingsRepository.flow,
-        _showInterface
-    ) { settings, showInterface ->
+        _subState
+    ) { settings, subState ->
         PlayerUiState(
             screen = ScreenState.CONTENT,
-            showInterface = showInterface,
+            isPlaying = subState.isPlaying,
+            showInterface = subState.showInterface,
             playerForward = settings.playerForwardValue.seconds.inWholeMilliseconds,
-            playerBackward = settings.playerBackwardValue.seconds.inWholeMilliseconds,
+            playerRewind = settings.playerRewindValue.seconds.inWholeMilliseconds,
             subtitlesLanguage = settings.subtitlesLanguage
         )
     }.stateIn(
@@ -76,19 +100,53 @@ class PlayerViewModel @AssistedInject constructor(
 
     //endregion
 
+    //region Init
+
+    init {
+        _player.addListener(
+            object : Player.Listener {
+                override fun onIsPlayingChanged(isPlaying: Boolean) {
+                    super.onIsPlayingChanged(isPlaying)
+                    _subState.update { it.copy(isPlaying = isPlaying) }
+                }
+            }
+        )
+    }
+
+    //endregion
+
     //region Public methods
 
     fun handleIntent(intent: PlayerIntent) = viewModelScope.launch {
         when (intent) {
-            is PlayerIntent.ShowInterface -> _showInterface.value = intent.show
+            is PlayerIntent.ShowInterface -> showInterface()
             is PlayerIntent.SaveTime -> saveTime(time = intent.time)
             is PlayerIntent.OnBackTap -> onBackTap(time = intent.time)
+            PlayerIntent.TogglePlayButton -> togglePlayButton()
+            PlayerIntent.OnFastRewind -> onFastRewind()
+            PlayerIntent.OnFastForward -> onFastForward()
         }
     }
 
     //endregion
 
     //region Private methods
+
+    private fun togglePlayButton() {
+        if (_player.isPlaying) player.pause() else _player.play()
+    }
+
+    private fun onFastRewind() {
+        //TODO
+    }
+
+    private fun onFastForward() {
+        //TODO
+    }
+
+    private fun showInterface() {
+        _subState.update { it.copy(showInterface = !it.showInterface) }
+    }
 
     private suspend fun onBackTap(time: Long?) {
 
@@ -99,7 +157,7 @@ class PlayerViewModel @AssistedInject constructor(
         if (showInterface) {
             _event.emit(PlayerEvent.BackToPreviousScreen)
         } else {
-            _showInterface.value = true
+            showInterface()
         }
 
     }

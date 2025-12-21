@@ -1,19 +1,45 @@
 package com.kaem.flux.screens.player
 
 import android.view.View
+import android.view.ViewGroup
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalActivity
 import androidx.annotation.OptIn
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.displayCutoutPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowLeft
+import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
+import androidx.compose.material.icons.rounded.KeyboardArrowLeft
+import androidx.compose.material.icons.rounded.PlayArrow
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MediumExtendedFloatingActionButton
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -23,9 +49,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
@@ -40,6 +70,7 @@ import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import com.kaem.flux.R
+import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.ScreenState
 import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.model.artwork.Media
@@ -48,6 +79,7 @@ import com.kaem.flux.ui.component.ErrorScreen
 import com.kaem.flux.ui.component.LifecycleComponent
 import com.kaem.flux.ui.component.LoadingScreen
 import com.kaem.flux.ui.component.Text
+import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.extensions.forceScreenOn
 import com.kaem.flux.utils.extensions.hideSystemBars
@@ -97,6 +129,7 @@ fun PlayerScreen(
             ScreenState.CONTENT -> {
                 PlayerContent(
                     media = media,
+                    exoPlayer = viewModel.player,
                     state = state,
                     sendIntent = viewModel::handleIntent
                 )
@@ -117,6 +150,7 @@ fun PlayerScreen(
 @Composable
 fun PlayerContent(
     media: Media,
+    exoPlayer: ExoPlayer,
     state: PlayerUiState,
     sendIntent: (PlayerIntent) -> Unit
 ) {
@@ -126,25 +160,13 @@ fun PlayerContent(
     val renderersFactory = DefaultRenderersFactory(activity)
     renderersFactory.setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_PREFER)
 
-    val exoPlayer = remember {
-        ExoPlayer.Builder(activity)
-            .setRenderersFactory(renderersFactory)
-            .setSeekBackIncrementMs(state.playerBackward)
-            .setSeekForwardIncrementMs(state.playerForward)
-            .build()
-            .apply {
-                trackSelectionParameters = trackSelectionParameters
-                    .buildUpon()
-                    .setPreferredTextLanguage(state.subtitlesLanguage.language)
-                    .setPreferredTextRoleFlags(C.ROLE_FLAG_SUBTITLE)
-                    .build()
-                setMediaItem(MediaItem.fromUri(media.file.path.toUri()), media.currentTime)
-                prepare()
-                play()
-        }
+    LaunchedEffect(media) {
+        exoPlayer.setMediaItem(MediaItem.fromUri(media.file.path.toUri()))
+        exoPlayer.seekTo(media.currentTime)
+        exoPlayer.prepare()
     }
 
-    PlayerLifecycle(
+    LifecycleComponent(
         onDispose = {
             activity.showSystemBars()
             exoPlayer.release()
@@ -165,21 +187,21 @@ fun PlayerContent(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color.Black)
+            .background(MaterialTheme.colorScheme.background)
+            .clickable {
+                sendIntent(PlayerIntent.ShowInterface(!state.showInterface))
+            }
     ) {
 
         AndroidView(
-            modifier = Modifier.fillMaxSize(),
             factory = { context ->
                 PlayerView(context).apply {
                     player = exoPlayer
-                    showController()
-                    setShowSubtitleButton(true)
-                    setShowPreviousButton(false)
-                    setShowNextButton(false)
-                    setControllerVisibilityListener(PlayerView.ControllerVisibilityListener {
-                        sendIntent(PlayerIntent.ShowInterface(show = it == View.VISIBLE))
-                    })
+                    useController = false
+                    layoutParams = ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT
+                    )
                 }
             },
             update = {
@@ -190,39 +212,47 @@ fun PlayerContent(
 
     }
 
-    PlayerButtons(
+    PlayerInterface(
         media = media,
-        show = state.showInterface,
-        onBackButtonTap = { sendIntent(PlayerIntent.OnBackTap(time = exoPlayer.currentPosition)) }
+        state = state,
+        exoPlayer = exoPlayer,
+        sendIntent = sendIntent,
     )
 
 }
 
 @Composable
-fun PlayerButtons(
+fun PlayerInterface(
     media: Media,
-    show: Boolean,
-    onBackButtonTap: () -> Unit
+    state: PlayerUiState,
+    exoPlayer: ExoPlayer,
+    sendIntent: (PlayerIntent) -> Unit
 ) {
 
-    AnimatedVisibility(visible = show) {
+    AnimatedVisibility(
+        visible = state.showInterface,
+        enter = fadeIn(animationSpec = spring(stiffness = Spring.StiffnessLow)),
+        exit = fadeOut(animationSpec = spring(stiffness = Spring.StiffnessLow)),
+    ) {
 
         ConstraintLayout(
             modifier = Modifier
+                .background(MaterialTheme.colorScheme.scrim.copy(alpha = .5f))
                 .fillMaxSize()
                 .statusBarsPadding(),
             constraintSet = PlayerButtonsConstraintSet
         ) {
 
-            BackButton(
-                modifier = Modifier.layoutId("back"),
-                tint = Color.White,
-                onTap = onBackButtonTap
+            PlayerTopBar(
+                layoutId = "topBar",
+                media = media,
+                onBackTap = { sendIntent(PlayerIntent.OnBackTap(exoPlayer.currentPosition)) }
             )
 
-            PlayerTitle(
-                layoutId = "title",
-                media = media
+            PlayerControlButtons(
+                layoutId = "controlButtons",
+                isPlaying = state.isPlaying,
+                sendIntent = sendIntent
             )
 
         }
@@ -231,79 +261,127 @@ fun PlayerButtons(
 
 }
 
+@kotlin.OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun PlayerTitle(
+fun PlayerTopBar(
     layoutId: String,
-    media: Media
+    media: Media,
+    onBackTap: () -> Unit
 ) {
 
-    Column(
+    TopAppBar(
+        modifier = Modifier
+            .layoutId(layoutId)
+            .fillMaxWidth(),
+        title = { Text.Headline.Medium(text = media.title) },
+        subtitle = {
+
+            (media as? Episode)?.let { episode ->
+
+                val season = stringResource(R.string.season, episode.season)
+                val number = stringResource(R.string.episode, episode.number)
+
+                Text.Body.Small(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = "$season, $number",
+                    color = Color.White,
+                    maxLines = 1,
+                    textAlign = TextAlign.Start,
+                    overflow = TextOverflow.Ellipsis
+                )
+
+            }
+
+        },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = Color.Transparent,
+            titleContentColor = MaterialTheme.colorScheme.onSurface,
+        ),
+        navigationIcon = {
+            BackButton(onTap = onBackTap)
+        },
+    )
+
+}
+
+@kotlin.OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+fun PlayerControlButtons(
+    layoutId: String,
+    isPlaying: Boolean,
+    sendIntent: (PlayerIntent) -> Unit
+) {
+
+    Row(
         modifier = Modifier.layoutId(layoutId),
-        horizontalAlignment = Alignment.Start,
-        verticalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)
+        horizontalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM),
+        verticalAlignment = Alignment.CenterVertically
     ) {
 
-        Text.Body.Large(
-            modifier = Modifier.fillMaxWidth(),
-            text = media.title,
-            color = Color.White,
-            maxLines = 1,
-            textAlign = TextAlign.Start,
-            overflow = TextOverflow.Ellipsis
-        )
-
-        (media as? Episode)?.let { episode ->
-
-            val season = stringResource(R.string.season, episode.season)
-            val number = stringResource(R.string.episode, episode.number)
-
-            Text.Body.Small(
-                modifier = Modifier.fillMaxWidth(),
-                text = "$season, $number",
-                color = Color.White,
-                maxLines = 1,
-                textAlign = TextAlign.Start,
-                overflow = TextOverflow.Ellipsis
+        FloatingActionButton(
+            onClick = { sendIntent(PlayerIntent.OnFastRewind) },
+            shape = FloatingActionButtonDefaults.largeShape
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.fast_rewind),
+                contentDescription = "backward button"
             )
+        }
 
+        MediumExtendedFloatingActionButton(
+            onClick = { sendIntent(PlayerIntent.TogglePlayButton) },
+            shape = FloatingActionButtonDefaults.largeExtendedFabShape
+        ) {
+            Icon(
+                modifier = Modifier.size(28.dp),
+                painter = painterResource(if (isPlaying) R.drawable.pause else R.drawable.play),
+                contentDescription = "play button"
+            )
+        }
+
+        FloatingActionButton(
+            onClick = { sendIntent(PlayerIntent.OnFastForward) },
+            shape = FloatingActionButtonDefaults.largeShape
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.fast_forward),
+                contentDescription = "forward button"
+            )
         }
 
     }
 
-}
-
-@Composable
-fun PlayerLifecycle(
-    onBackground: () -> Unit,
-    onForeground: () -> Unit,
-    onDispose: () -> Unit
-) {
-
-    DisposableEffect(Unit) {
-        onDispose { onDispose() }
-    }
-
-    LifecycleComponent(
-        onBackground = onBackground,
-        onForeground = onForeground
-    )
 
 }
 
 val PlayerButtonsConstraintSet = ConstraintSet {
 
-    val back = createRefFor("back")
-    constrain(back) {
+    val topBar = createRefFor("topBar")
+    constrain(topBar) {
         top.linkTo(parent.top)
-        start.linkTo(parent.start, Ui.Space.MEDIUM)
+        start.linkTo(parent.start)
+        end.linkTo(parent.end)
     }
 
-    val title = createRefFor("title")
-    constrain(title) {
-        top.linkTo(parent.top, Ui.Space.EXTRA_SMALL)
-        start.linkTo(back.end, Ui.Space.SMALL)
-        end.linkTo(parent.end, Ui.Space.MEDIUM)
-        width = Dimension.fillToConstraints
+    val controlButtons = createRefFor("controlButtons")
+    constrain(controlButtons) {
+        top.linkTo(parent.top)
+        start.linkTo(parent.start)
+        end.linkTo(parent.end)
+        bottom.linkTo(parent.bottom)
     }
 
+}
+
+@Preview
+@Composable
+fun PlayerControlButtons_Preview() {
+
+    AppTheme {
+        PlayerControlButtons(
+            layoutId = "",
+            isPlaying = true,
+            sendIntent = {}
+        )
+    }
 }

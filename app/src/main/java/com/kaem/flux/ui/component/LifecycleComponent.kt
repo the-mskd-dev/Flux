@@ -9,10 +9,15 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 
 @Composable
 fun LifecycleComponent(
+    onDispose: () -> Unit = {},
     onBackground: () -> Unit = {},
     onForeground: () -> Unit = {}
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
+
+    DisposableEffect(Unit) {
+        onDispose { onDispose() }
+    }
 
     DisposableEffect (lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->

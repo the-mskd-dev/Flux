@@ -18,7 +18,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -116,9 +115,9 @@ fun SettingsContent(
                 SettingsDivider()
 
                 SettingsItem(
-                    text = stringResource(R.string.button_backward),
-                    value = "${state.backwardValue}sec",
-                    onTap = { sendIntent(SettingsIntent.ShowBackwardDialog) }
+                    text = stringResource(R.string.button_rewind),
+                    value = "${state.rewindValue}sec",
+                    onTap = { sendIntent(SettingsIntent.ShowRewindDialog) }
                 )
 
                 SettingsDivider()

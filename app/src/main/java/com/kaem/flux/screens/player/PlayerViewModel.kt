@@ -100,21 +100,6 @@ class PlayerViewModel @AssistedInject constructor(
 
     //endregion
 
-    //region Init
-
-    init {
-        _player.addListener(
-            object : Player.Listener {
-                override fun onIsPlayingChanged(isPlaying: Boolean) {
-                    super.onIsPlayingChanged(isPlaying)
-                    _subState.update { it.copy(isPlaying = isPlaying) }
-                }
-            }
-        )
-    }
-
-    //endregion
-
     //region Public methods
 
     fun handleIntent(intent: PlayerIntent) = viewModelScope.launch {
@@ -137,11 +122,11 @@ class PlayerViewModel @AssistedInject constructor(
     }
 
     private fun onFastRewind() {
-        //TODO
+        _player.seekTo(_player.currentPosition - uiState.value.playerRewind)
     }
 
     private fun onFastForward() {
-        //TODO
+        _player.seekTo(_player.currentPosition + uiState.value.playerForward)
     }
 
     private fun showInterface() {
@@ -199,6 +184,27 @@ class PlayerViewModel @AssistedInject constructor(
 
         Log.i("PlayerViewModel", "${updatedMedia.title} saved at ${time.timeDescription()}")
 
+    }
+
+    //endregion
+
+    //region Listener
+
+    private val playerListener = object : Player.Listener {
+
+        override fun onIsPlayingChanged(isPlaying: Boolean) {
+            super.onIsPlayingChanged(isPlaying)
+            _subState.update { it.copy(isPlaying = isPlaying) }
+        }
+
+    }
+
+    //endregion
+
+    //region Init
+
+    init {
+        _player.addListener(playerListener)
     }
 
     //endregion

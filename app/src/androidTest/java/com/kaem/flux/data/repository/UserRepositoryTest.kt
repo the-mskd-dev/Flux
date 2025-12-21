@@ -65,7 +65,7 @@ class UserRepositoryTest {
 
             val initialState = awaitItem()
 
-            assert(defaultPreferences.watchedIds == initialState.watchedIds)
+            assert(defaultPreferences.recentlyWatchedIds == initialState.recentlyWatchedIds)
 
             cancelAndConsumeRemainingEvents()
         }
@@ -80,15 +80,15 @@ class UserRepositoryTest {
         userRepository.flow.test {
 
             var state = awaitItem()
-            assert(state.watchedIds.isEmpty())
+            assert(state.recentlyWatchedIds.isEmpty())
 
-            userRepository.addWatchedMedia(idTest)
+            userRepository.addToRecentlyWatched(idTest)
             state = awaitItem()
-            assert(state.watchedIds.contains(idTest))
+            assert(state.recentlyWatchedIds.contains(idTest))
 
-            userRepository.removeWatchedMedia(idTest)
+            userRepository.removeFromRecentlyWatched(idTest)
             state = awaitItem()
-            assert(!state.watchedIds.contains(idTest))
+            assert(!state.recentlyWatchedIds.contains(idTest))
 
             cancelAndConsumeRemainingEvents()
         }

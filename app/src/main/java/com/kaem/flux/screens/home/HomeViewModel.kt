@@ -39,7 +39,7 @@ class HomeViewModel @Inject constructor(
         HomeUiState(
             screenState = screen,
             artworks = catalog.artworks,
-            lastWatchedMediaIds = preferences.watchedIds,
+            lastWatchedMediaIds = preferences.recentlyWatchedIds,
             isRefreshing = catalog.isLoading
         )
     }.stateIn(

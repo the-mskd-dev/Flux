@@ -76,7 +76,7 @@ class HomeViewModelTest : BaseTest() {
             artworks = artworks
         )
         val dataStore = UserPreferences(
-            watchedIds = lastWatchedIds
+            recentlyWatchedIds = lastWatchedIds
         )
 
         viewModel.uiState.test {

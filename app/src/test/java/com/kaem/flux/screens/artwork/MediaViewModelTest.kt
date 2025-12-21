@@ -258,7 +258,7 @@ class MediaViewModelTest : BaseTest() {
             advanceUntilIdle()
 
             coVerify { artworkRepository.saveEpisode(any()) }
-            coVerify { userRepository.addWatchedMedia(any()) }
+            coVerify { userRepository.addToRecentlyWatched(any()) }
 
             cancelAndConsumeRemainingEvents()
 
@@ -282,7 +282,7 @@ class MediaViewModelTest : BaseTest() {
 
             assert(state.media.status == Status.WATCHED)
             coVerify { artworkRepository.saveEpisode(any()) }
-            coVerify { userRepository.addWatchedMedia(any()) }
+            coVerify { userRepository.addToRecentlyWatched(any()) }
 
             cancelAndConsumeRemainingEvents()
 
@@ -312,7 +312,7 @@ class MediaViewModelTest : BaseTest() {
 
             assert(state.media.status == Status.WATCHED)
             coVerify { artworkRepository.saveEpisodes(any()) }
-            coVerify { userRepository.removeWatchedMedia(any()) }
+            coVerify { userRepository.removeFromRecentlyWatched(any()) }
 
             cancelAndConsumeRemainingEvents()
 
@@ -391,7 +391,7 @@ class MediaViewModelTest : BaseTest() {
 
             assert(state.media.status == Status.WATCHED)
             coVerify { artworkRepository.saveMovie(any()) }
-            coVerify { userRepository.removeWatchedMedia(any()) }
+            coVerify { userRepository.removeFromRecentlyWatched(any()) }
 
             cancelAndConsumeRemainingEvents()
 

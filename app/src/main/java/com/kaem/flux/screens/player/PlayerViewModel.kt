@@ -84,16 +84,16 @@ class PlayerViewModel @AssistedInject constructor(
         when (updatedMedia) {
             is Movie -> {
                 repository.saveMovie(updatedMedia)
-                if (newStatus == Status.WATCHED) userRepository.removeWatchedMedia(media.artworkId)
-                else userRepository.addWatchedMedia(media.artworkId)
+                if (newStatus == Status.WATCHED) userRepository.removeFromRecentlyWatched(media.artworkId)
+                else userRepository.addToRecentlyWatched(media.artworkId)
             }
             is Episode -> {
                 val episodes = repository.flow.first().episodes
                 val lastEpisode = episodes.lastEpisode
                 if (lastEpisode.id == updatedMedia.id && newStatus == Status.WATCHED)
-                    userRepository.removeWatchedMedia(media.artworkId)
+                    userRepository.removeFromRecentlyWatched(media.artworkId)
                 else
-                    userRepository.addWatchedMedia(media.artworkId)
+                    userRepository.addToRecentlyWatched(media.artworkId)
                 repository.saveEpisode(updatedMedia)
             }
         }

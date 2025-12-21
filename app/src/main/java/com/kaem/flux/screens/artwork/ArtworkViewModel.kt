@@ -5,8 +5,6 @@ import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kaem.flux.data.repository.ArtworkRepository
-import com.kaem.flux.data.repository.SettingsPreferences
-import com.kaem.flux.data.repository.SettingsRepository
 import com.kaem.flux.data.repository.UserRepository
 import com.kaem.flux.model.ScreenState
 import com.kaem.flux.model.artwork.Episode
@@ -14,8 +12,7 @@ import com.kaem.flux.model.artwork.Media
 import com.kaem.flux.model.artwork.Movie
 import com.kaem.flux.model.artwork.Status
 import com.kaem.flux.utils.extensions.getPreviousEpisodesFor
-import com.kaem.flux.utils.extensions.msToMin
-import com.kaem.flux.utils.extensions.timeDescription
+import com.kaem.flux.utils.extensions.lastEpisode
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -31,7 +28,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.seconds
 
 @HiltViewModel(assistedFactory = ArtworkViewModel.Factory::class)
 class ArtworkViewModel @AssistedInject constructor(
@@ -199,8 +195,12 @@ class ArtworkViewModel @AssistedInject constructor(
             currentTime = 0L
         )
 
+        // Remove from recently watched if last episode is watched
+        val lastEpisode = uiState.first().episodes.lastEpisode
+        if (lastEpisode.id == updatedEpisode.id && status == Status.WATCHED)
+            userRepository.removeFromRecentlyWatched(mediaId)
+
         repository.saveEpisodes(listOf(updatedEpisode)) // Save status in DB
-        addOrRemoveToWatchedMedias()
 
         Log.i("MediaViewModel", "${episode.title} season ${episode.season} episode ${episode.number} is now ${episode.status}")
 
@@ -232,11 +232,6 @@ class ArtworkViewModel @AssistedInject constructor(
         repository.saveEpisodes(episodesToSave) // Save status in DB
 
         Log.i("MediaViewModel", "${episodesToSave.size} episodes marked as watched")
-    }
-
-    private suspend fun addOrRemoveToWatchedMedias() {
-        if (uiState.first().episodes.all { it.status == Status.WATCHED }) userRepository.removeWatchedMedia(mediaId)
-        else userRepository.addWatchedMedia(mediaId)
     }
 
     //endregion

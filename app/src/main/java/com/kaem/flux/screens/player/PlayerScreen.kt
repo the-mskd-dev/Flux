@@ -17,11 +17,8 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -46,7 +43,6 @@ import com.kaem.flux.R
 import com.kaem.flux.model.ScreenState
 import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.model.artwork.Media
-import com.kaem.flux.screens.artwork.ArtworkIntent
 import com.kaem.flux.ui.component.BackButton
 import com.kaem.flux.ui.component.ErrorScreen
 import com.kaem.flux.ui.component.LifecycleComponent
@@ -58,7 +54,6 @@ import com.kaem.flux.utils.extensions.hideSystemBars
 import com.kaem.flux.utils.extensions.setAppInLandscape
 import com.kaem.flux.utils.extensions.setAppOrientation
 import com.kaem.flux.utils.extensions.showSystemBars
-import java.util.Locale
 
 @Composable
 fun PlayerScreen(
@@ -92,15 +87,17 @@ fun PlayerScreen(
         }
     }
 
+    LaunchedEffect(state.showInterface) {
+        if (state.showInterface) activity.showSystemBars() else activity.hideSystemBars()
+    }
+
     Crossfade(state.screen) { screen ->
         when (screen) {
             ScreenState.LOADING -> LoadingScreen()
             ScreenState.CONTENT -> {
                 PlayerContent(
                     media = media,
-                    backward = state.playerBackward,
-                    forward = state.playerForward,
-                    subtitlesLanguage = state.subtitlesLanguage,
+                    state = state,
                     sendIntent = viewModel::handleIntent
                 )
             }
@@ -120,14 +117,11 @@ fun PlayerScreen(
 @Composable
 fun PlayerContent(
     media: Media,
-    backward: Long,
-    forward: Long,
-    subtitlesLanguage: Locale,
+    state: PlayerUiState,
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
     val activity = LocalActivity.current as ComponentActivity
-    var showButtons by remember { mutableStateOf(false) }
 
     val renderersFactory = DefaultRenderersFactory(activity)
     renderersFactory.setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_PREFER)
@@ -135,13 +129,13 @@ fun PlayerContent(
     val exoPlayer = remember {
         ExoPlayer.Builder(activity)
             .setRenderersFactory(renderersFactory)
-            .setSeekBackIncrementMs(backward)
-            .setSeekForwardIncrementMs(forward)
+            .setSeekBackIncrementMs(state.playerBackward)
+            .setSeekForwardIncrementMs(state.playerForward)
             .build()
             .apply {
                 trackSelectionParameters = trackSelectionParameters
                     .buildUpon()
-                    .setPreferredTextLanguage(subtitlesLanguage.language)
+                    .setPreferredTextLanguage(state.subtitlesLanguage.language)
                     .setPreferredTextRoleFlags(C.ROLE_FLAG_SUBTITLE)
                     .build()
                 setMediaItem(MediaItem.fromUri(media.file.path.toUri()), media.currentTime)
@@ -150,19 +144,11 @@ fun PlayerContent(
         }
     }
 
-    // Manage lifecycle events
-    DisposableEffect(Unit) {
-        onDispose {
+    PlayerLifecycle(
+        onDispose = {
             activity.showSystemBars()
             exoPlayer.release()
-        }
-    }
-
-    LaunchedEffect(showButtons) {
-        if (showButtons) activity.showSystemBars() else activity.hideSystemBars()
-    }
-
-    LifecycleComponent(
+        },
         onBackground = {
             exoPlayer.pause()
             sendIntent(PlayerIntent.SaveTime(time = exoPlayer.currentPosition))
@@ -173,11 +159,7 @@ fun PlayerContent(
     )
 
     BackHandler(enabled = true) {
-        if (showButtons) {
-            sendIntent(PlayerIntent.OnBackTap(time = exoPlayer.currentPosition))
-        } else {
-            showButtons = true
-        }
+        sendIntent(PlayerIntent.OnBackTap(time = exoPlayer.currentPosition))
     }
 
     Box(
@@ -196,12 +178,12 @@ fun PlayerContent(
                     setShowPreviousButton(false)
                     setShowNextButton(false)
                     setControllerVisibilityListener(PlayerView.ControllerVisibilityListener {
-                        showButtons = it == View.VISIBLE
+                        sendIntent(PlayerIntent.ShowInterface(show = it == View.VISIBLE))
                     })
                 }
             },
             update = {
-                if (showButtons)
+                if (state.showInterface)
                     it.showController()
             }
         )
@@ -210,7 +192,7 @@ fun PlayerContent(
 
     PlayerButtons(
         media = media,
-        showButtons = showButtons,
+        show = state.showInterface,
         onBackButtonTap = { sendIntent(PlayerIntent.OnBackTap(time = exoPlayer.currentPosition)) }
     )
 
@@ -219,11 +201,11 @@ fun PlayerContent(
 @Composable
 fun PlayerButtons(
     media: Media,
-    showButtons: Boolean,
+    show: Boolean,
     onBackButtonTap: () -> Unit
 ) {
 
-    AnimatedVisibility(visible = showButtons) {
+    AnimatedVisibility(visible = show) {
 
         ConstraintLayout(
             modifier = Modifier
@@ -287,6 +269,24 @@ fun PlayerTitle(
         }
 
     }
+
+}
+
+@Composable
+fun PlayerLifecycle(
+    onBackground: () -> Unit,
+    onForeground: () -> Unit,
+    onDispose: () -> Unit
+) {
+
+    DisposableEffect(Unit) {
+        onDispose { onDispose() }
+    }
+
+    LifecycleComponent(
+        onBackground = onBackground,
+        onForeground = onForeground
+    )
 
 }
 

@@ -9,6 +9,7 @@ import kotlin.time.Duration.Companion.seconds
 @Immutable
 data class PlayerUiState(
     val screen: ScreenState = ScreenState.LOADING,
+    val showInterface: Boolean = false,
     val playerBackward: Long = 10.seconds.inWholeMilliseconds,
     val playerForward: Long = 10.seconds.inWholeMilliseconds,
     val subtitlesLanguage: Locale = Locale.getDefault()
@@ -17,6 +18,7 @@ data class PlayerUiState(
 sealed class PlayerIntent {
     data class SaveTime(val time: Long) : PlayerIntent()
     data class OnBackTap(val time: Long? = null) : PlayerIntent()
+    data class ShowInterface(val show: Boolean) : PlayerIntent()
 }
 
 sealed class PlayerEvent {

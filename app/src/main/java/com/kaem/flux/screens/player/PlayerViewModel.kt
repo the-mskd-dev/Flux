@@ -20,10 +20,12 @@ import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -53,9 +55,15 @@ class PlayerViewModel @AssistedInject constructor(
     private val _event = MutableSharedFlow<PlayerEvent>()
     val event = _event.asSharedFlow().distinctUntilChanged()
 
-    val uiState: StateFlow<PlayerUiState> = settingsRepository.flow.map { settings ->
+    private val _showInterface = MutableStateFlow(false)
+
+    val uiState: StateFlow<PlayerUiState> = combine(
+        settingsRepository.flow,
+        _showInterface
+    ) { settings, showInterface ->
         PlayerUiState(
             screen = ScreenState.CONTENT,
+            showInterface = showInterface,
             playerForward = settings.playerForwardValue.seconds.inWholeMilliseconds,
             playerBackward = settings.playerBackwardValue.seconds.inWholeMilliseconds,
             subtitlesLanguage = settings.subtitlesLanguage
@@ -72,17 +80,29 @@ class PlayerViewModel @AssistedInject constructor(
 
     fun handleIntent(intent: PlayerIntent) = viewModelScope.launch {
         when (intent) {
+            is PlayerIntent.ShowInterface -> _showInterface.value = intent.show
             is PlayerIntent.SaveTime -> saveTime(time = intent.time)
-            is PlayerIntent.OnBackTap -> {
-                intent.time?.let { saveTime(time = it) }
-                _event.emit(PlayerEvent.BackToPreviousScreen)
-            }
+            is PlayerIntent.OnBackTap -> onBackTap(time = intent.time)
         }
     }
 
     //endregion
 
     //region Private methods
+
+    private suspend fun onBackTap(time: Long?) {
+
+        time?.let { saveTime(time = it) }
+
+        val showInterface = uiState.first().showInterface
+
+        if (showInterface) {
+            _event.emit(PlayerEvent.BackToPreviousScreen)
+        } else {
+            _showInterface.value = true
+        }
+
+    }
 
     private suspend fun saveTime(time: Long) {
 

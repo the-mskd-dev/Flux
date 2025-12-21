@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.kaem.flux.data.repository.ArtworkRepository
 import com.kaem.flux.data.repository.SettingsRepository
 import com.kaem.flux.data.repository.UserRepository
+import com.kaem.flux.model.ScreenState
 import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.model.artwork.Media
 import com.kaem.flux.model.artwork.Movie
@@ -17,6 +18,7 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -53,7 +55,7 @@ class PlayerViewModel @AssistedInject constructor(
 
     val uiState: StateFlow<PlayerUiState> = settingsRepository.flow.map { settings ->
         PlayerUiState(
-            state = PlayerScreenState.Content(media = media),
+            screen = ScreenState.CONTENT,
             playerForward = settings.playerForwardValue.seconds.inWholeMilliseconds,
             playerBackward = settings.playerBackwardValue.seconds.inWholeMilliseconds,
             subtitlesLanguage = settings.subtitlesLanguage
@@ -72,7 +74,7 @@ class PlayerViewModel @AssistedInject constructor(
         when (intent) {
             is PlayerIntent.SaveTime -> saveTime(time = intent.time)
             is PlayerIntent.OnBackTap -> {
-                saveTime(time = intent.time)
+                intent.time?.let { saveTime(time = it) }
                 _event.emit(PlayerEvent.BackToPreviousScreen)
             }
         }

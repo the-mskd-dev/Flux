@@ -6,6 +6,7 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalActivity
 import androidx.annotation.OptIn
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -42,11 +43,14 @@ import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import com.kaem.flux.R
+import com.kaem.flux.model.ScreenState
 import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.model.artwork.Media
 import com.kaem.flux.screens.artwork.ArtworkIntent
 import com.kaem.flux.ui.component.BackButton
+import com.kaem.flux.ui.component.ErrorScreen
 import com.kaem.flux.ui.component.LifecycleComponent
+import com.kaem.flux.ui.component.LoadingScreen
 import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.extensions.forceScreenOn
@@ -88,13 +92,27 @@ fun PlayerScreen(
         }
     }
 
-    PlayerContent(
-        media = media,
-        backward = state.playerBackward,
-        forward = state.playerForward,
-        subtitlesLanguage = state.subtitlesLanguage,
-        sendIntent = viewModel::handleIntent
-    )
+    Crossfade(state.screen) { screen ->
+        when (screen) {
+            ScreenState.LOADING -> LoadingScreen()
+            ScreenState.CONTENT -> {
+                PlayerContent(
+                    media = media,
+                    backward = state.playerBackward,
+                    forward = state.playerForward,
+                    subtitlesLanguage = state.subtitlesLanguage,
+                    sendIntent = viewModel::handleIntent
+                )
+            }
+            ScreenState.ERROR -> {
+                ErrorScreen(
+                    message = stringResource(R.string.oups_an_error_occured),
+                    onBackButtonTap = { viewModel.handleIntent(PlayerIntent.OnBackTap()) }
+                )
+            }
+        }
+
+    }
 
 }
 

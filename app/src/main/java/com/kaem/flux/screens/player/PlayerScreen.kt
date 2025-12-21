@@ -188,7 +188,7 @@ fun PlayerContent(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+            .background(Color.Black)
             .clickable {
                 sendIntent(PlayerIntent.ShowInterface(!state.showInterface))
             }

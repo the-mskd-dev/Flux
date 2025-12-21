@@ -6,6 +6,7 @@ import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import com.kaem.flux.data.repository.ArtworkRepository
@@ -24,6 +25,7 @@ import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -32,11 +34,13 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
+@UnstableApi
 @HiltViewModel(assistedFactory = PlayerViewModel.Factory::class)
 class PlayerViewModel @AssistedInject constructor(
     @Assisted private val media: Media,
@@ -110,6 +114,7 @@ class PlayerViewModel @AssistedInject constructor(
             PlayerIntent.TogglePlayButton -> togglePlayButton()
             PlayerIntent.OnFastRewind -> onFastRewind()
             PlayerIntent.OnFastForward -> onFastForward()
+            is PlayerIntent.UpdateProgress -> updateProgress(progress = intent.progress)
         }
     }
 
@@ -131,6 +136,10 @@ class PlayerViewModel @AssistedInject constructor(
 
     private fun showInterface() {
         _subState.update { it.copy(showInterface = !it.showInterface) }
+    }
+
+    private fun updateProgress(progress: Long) {
+        _player.seekTo(progress)
     }
 
     private suspend fun onBackTap(time: Long?) {
@@ -197,14 +206,32 @@ class PlayerViewModel @AssistedInject constructor(
             _subState.update { it.copy(isPlaying = isPlaying) }
         }
 
+        /*override fun onEvents(player: Player, events: Player.Events) {
+            if (events.containsAny(
+                    Player.EVENT_IS_PLAYING_CHANGED,
+                    Player.EVENT_POSITION_DISCONTINUITY,
+                    Player.EVENT_PLAYBACK_STATE_CHANGED
+                )
+            ) {
+                _subState.update {
+                    it.copy(currentPosition = player.currentPosition.coerceAtLeast(0L))
+                }
+            }
+        }*/
+
     }
 
     //endregion
 
-    //region Init
+    //region Lifecycle
 
     init {
         _player.addListener(playerListener)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        _player.removeListener(playerListener)
     }
 
     //endregion

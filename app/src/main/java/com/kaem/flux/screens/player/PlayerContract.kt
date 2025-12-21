@@ -30,6 +30,7 @@ sealed class PlayerIntent {
     data object TogglePlayButton : PlayerIntent()
     data object OnFastRewind : PlayerIntent()
     data object OnFastForward : PlayerIntent()
+    data class UpdateProgress(val progress: Long) : PlayerIntent()
 }
 
 sealed class PlayerEvent {

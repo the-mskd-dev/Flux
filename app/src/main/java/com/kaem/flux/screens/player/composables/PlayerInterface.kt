@@ -7,9 +7,11 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -35,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.room.util.TableInfo
 import com.kaem.flux.R
 import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.model.artwork.Media
@@ -44,6 +47,7 @@ import com.kaem.flux.ui.component.BackButton
 import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
+import org.checkerframework.checker.guieffect.qual.UI
 
 @Composable
 fun PlayerInterface(
@@ -62,8 +66,7 @@ fun PlayerInterface(
         ConstraintLayout(
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.scrim.copy(alpha = .5f))
-                .fillMaxSize()
-                .statusBarsPadding(),
+                .fillMaxSize(),
             constraintSet = PlayerButtonsConstraintSet
         ) {
 
@@ -76,6 +79,13 @@ fun PlayerInterface(
             PlayerControlButtons(
                 layoutId = "controlButtons",
                 isPlaying = state.isPlaying,
+                sendIntent = sendIntent
+            )
+
+            PlayerSeekBar(
+                layoutId = "seekBar",
+                exoPlayer = exoPlayer,
+                state = state,
                 sendIntent = sendIntent
             )
 
@@ -93,12 +103,31 @@ fun PlayerTopBar(
     onBackTap: () -> Unit
 ) {
 
-    TopAppBar(
+    Row(
         modifier = Modifier
             .layoutId(layoutId)
-            .fillMaxWidth(),
-        title = { Text.Headline.Medium(text = media.title) },
-        subtitle = {
+            .statusBarsPadding()
+            .fillMaxWidth()
+            .padding(horizontal = Ui.Space.MEDIUM),
+        horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+
+        BackButton(
+            onTap = onBackTap,
+            tint = Color.White
+        )
+
+        Column(
+            modifier = Modifier.weight(1f),
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)
+        ) {
+
+            Text.Headline.Medium(
+                text = media.title,
+                color = Color.White
+            )
 
             (media as? Episode)?.let { episode ->
 
@@ -116,19 +145,13 @@ fun PlayerTopBar(
 
             }
 
-        },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = Color.Transparent,
-            titleContentColor = MaterialTheme.colorScheme.onSurface,
-        ),
-        navigationIcon = {
-            BackButton(onTap = onBackTap)
-        },
-    )
+        }
+
+    }
 
 }
 
-@kotlin.OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun PlayerControlButtons(
     layoutId: String,
@@ -179,19 +202,25 @@ fun PlayerControlButtons(
 
 val PlayerButtonsConstraintSet = ConstraintSet {
 
-    val topBar = createRefFor("topBar")
+    val (topBar, controlButtons, seekBar) = createRefsFor("topBar", "controlButtons", "seekBar")
+
     constrain(topBar) {
         top.linkTo(parent.top)
         start.linkTo(parent.start)
         end.linkTo(parent.end)
     }
 
-    val controlButtons = createRefFor("controlButtons")
     constrain(controlButtons) {
         top.linkTo(parent.top)
         start.linkTo(parent.start)
         end.linkTo(parent.end)
         bottom.linkTo(parent.bottom)
+    }
+
+    constrain(seekBar) {
+        start.linkTo(parent.start)
+        end.linkTo(parent.end)
+        bottom.linkTo(parent.bottom, Ui.Space.MEDIUM)
     }
 
 }

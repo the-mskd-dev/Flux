@@ -1,8 +1,8 @@
 package com.kaem.flux.screens.search
 
 import androidx.compose.runtime.Immutable
-import com.kaem.flux.model.artwork.ContentType
 import com.kaem.flux.model.artwork.Artwork
+import com.kaem.flux.model.artwork.ContentType
 
 @Immutable
 data class SearchUIState(

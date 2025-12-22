@@ -1,15 +1,10 @@
 package com.kaem.flux.data.repository
 
-import android.util.Log
 import com.kaem.flux.data.ddb.DatabaseDao
+import com.kaem.flux.model.artwork.Artwork
 import com.kaem.flux.model.artwork.ContentType
 import com.kaem.flux.model.artwork.Episode
-import com.kaem.flux.model.artwork.Artwork
-import com.kaem.flux.model.artwork.Media
 import com.kaem.flux.model.artwork.Movie
-import com.kaem.flux.model.artwork.Status
-import com.kaem.flux.utils.extensions.msToMin
-import com.kaem.flux.utils.extensions.timeDescription
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow

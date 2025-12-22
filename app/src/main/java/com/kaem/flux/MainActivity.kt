@@ -23,9 +23,9 @@ import com.kaem.flux.data.repository.SettingsRepository
 import com.kaem.flux.navigation.Route
 import com.kaem.flux.navigation.Transition
 import com.kaem.flux.screens.about.AboutScreen
+import com.kaem.flux.screens.artwork.ArtworkScreen
 import com.kaem.flux.screens.home.HomeScreen
 import com.kaem.flux.screens.howTo.HowToScreen
-import com.kaem.flux.screens.artwork.ArtworkScreen
 import com.kaem.flux.screens.player.PlayerScreen
 import com.kaem.flux.screens.search.SearchScreen
 import com.kaem.flux.screens.settings.SettingsScreen

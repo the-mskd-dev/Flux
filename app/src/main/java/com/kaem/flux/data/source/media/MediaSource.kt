@@ -1,8 +1,8 @@
 package com.kaem.flux.data.source.media
 
 import com.kaem.flux.model.UserFile
-import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.model.artwork.Artwork
+import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.model.artwork.Movie
 
 interface MediaSource {

@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -17,7 +16,6 @@ import com.kaem.flux.model.ScreenState
 import com.kaem.flux.navigation.Route
 import com.kaem.flux.screens.artwork.composables.ArtworkContentLarge
 import com.kaem.flux.screens.artwork.composables.ArtworkContentRegular
-import com.kaem.flux.screens.player.PlayerScreen
 import com.kaem.flux.ui.component.ErrorScreen
 import com.kaem.flux.ui.component.FluxDialog
 import com.kaem.flux.ui.component.LoadingScreen

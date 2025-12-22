@@ -22,9 +22,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.kaem.flux.R
 import com.kaem.flux.mockups.MediaMockups
+import com.kaem.flux.model.artwork.Artwork
 import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.model.artwork.Media
-import com.kaem.flux.model.artwork.Artwork
 import com.kaem.flux.screens.artwork.ArtworkIntent
 import com.kaem.flux.screens.artwork.composables.common.ArtworkButtons
 import com.kaem.flux.screens.artwork.composables.common.ArtworkDescription

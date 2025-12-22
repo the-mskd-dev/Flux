@@ -38,7 +38,6 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
@@ -58,8 +57,8 @@ import com.google.accompanist.permissions.isGranted
 import com.kaem.flux.R
 import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.ScreenState
-import com.kaem.flux.model.artwork.ContentType
 import com.kaem.flux.model.artwork.Artwork
+import com.kaem.flux.model.artwork.ContentType
 import com.kaem.flux.navigation.Route
 import com.kaem.flux.screens.howTo.HowToNameFiles
 import com.kaem.flux.screens.welcome.WelcomeScreen

@@ -3,11 +3,9 @@ package com.kaem.flux.screens.artwork
 import androidx.compose.runtime.Immutable
 import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.ScreenState
+import com.kaem.flux.model.artwork.Artwork
 import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.model.artwork.Media
-import com.kaem.flux.model.artwork.Artwork
-import java.util.Locale
-import kotlin.time.Duration.Companion.seconds
 
 @Immutable
 data class ArtworkUiState(

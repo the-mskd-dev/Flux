@@ -21,8 +21,6 @@ import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MediumExtendedFloatingActionButton
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,7 +35,6 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.media3.exoplayer.ExoPlayer
-import androidx.room.util.TableInfo
 import com.kaem.flux.R
 import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.model.artwork.Media
@@ -47,7 +44,6 @@ import com.kaem.flux.ui.component.BackButton
 import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
-import org.checkerframework.checker.guieffect.qual.UI
 
 @Composable
 fun PlayerInterface(

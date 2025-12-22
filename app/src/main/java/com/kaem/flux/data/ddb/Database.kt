@@ -13,9 +13,9 @@ import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 import com.kaem.flux.model.FileSource
 import com.kaem.flux.model.UserFile
+import com.kaem.flux.model.artwork.Artwork
 import com.kaem.flux.model.artwork.ContentType
 import com.kaem.flux.model.artwork.Episode
-import com.kaem.flux.model.artwork.Artwork
 import com.kaem.flux.model.artwork.Movie
 import kotlinx.coroutines.flow.Flow
 

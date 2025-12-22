@@ -2,9 +2,9 @@ package com.kaem.flux.mockups
 
 import com.kaem.flux.model.FileSource
 import com.kaem.flux.model.UserFile
+import com.kaem.flux.model.artwork.Artwork
 import com.kaem.flux.model.artwork.ContentType
 import com.kaem.flux.model.artwork.Episode
-import com.kaem.flux.model.artwork.Artwork
 import com.kaem.flux.model.artwork.Movie
 import com.kaem.flux.model.artwork.Status
 

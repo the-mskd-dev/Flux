@@ -7,9 +7,9 @@ import com.google.gson.JsonSyntaxException
 import com.kaem.flux.data.tmdb.TMDBService
 import com.kaem.flux.model.UserFile
 import com.kaem.flux.model.UserFolder
+import com.kaem.flux.model.artwork.Artwork
 import com.kaem.flux.model.artwork.ContentType
 import com.kaem.flux.model.artwork.Episode
-import com.kaem.flux.model.artwork.Artwork
 import com.kaem.flux.model.artwork.Movie
 import com.kaem.flux.model.tmdb.TMDBMediaType
 import com.kaem.flux.utils.Analytics

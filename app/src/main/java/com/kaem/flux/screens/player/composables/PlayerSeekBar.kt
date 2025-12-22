@@ -3,6 +3,7 @@ package com.kaem.flux.screens.player.composables
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,9 +11,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.LinearWavyProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
+import androidx.compose.material3.WavyProgressIndicatorDefaults
 import androidx.compose.material3.rememberSliderState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -35,7 +39,7 @@ import com.kaem.flux.ui.component.ProgressBar
 import com.kaem.flux.ui.theme.Ui
 import kotlinx.coroutines.delay
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun PlayerSeekBar(
     layoutId: String,
@@ -45,8 +49,8 @@ fun PlayerSeekBar(
 ) {
 
     var sliderPosition by rememberSaveable { mutableFloatStateOf(exoPlayer.currentPosition.toFloat()) }
-    var isPressed by remember { mutableStateOf(false) }
     val interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
 
     LaunchedEffect(state.showInterface) {
         while (state.showInterface) {
@@ -57,43 +61,26 @@ fun PlayerSeekBar(
         }
     }
 
-    Column(
+    Slider(
         modifier = Modifier
             .layoutId(layoutId)
-            .padding(horizontal = Ui.Space.MEDIUM)
-    ) {
-        Slider(
-            value = sliderPosition,
-            valueRange = 0f..exoPlayer.duration.toFloat(),
-            interactionSource = interactionSource,
-            onValueChange = {
-                isPressed = true
-                sliderPosition = it
-            },
-            onValueChangeFinished = {
-                isPressed = false
-                sendIntent(PlayerIntent.UpdateProgress(sliderPosition.toLong()))
-            },
-            track = { sliderState ->
+            .fillMaxWidth()
+            .padding(horizontal = Ui.Space.MEDIUM),
+        value = sliderPosition,
+        valueRange = 0f..exoPlayer.duration.toFloat(),
+        interactionSource = interactionSource,
+        onValueChange = { sliderPosition = it },
+        onValueChangeFinished = { sendIntent(PlayerIntent.UpdateProgress(sliderPosition.toLong())) },
+        track = { sliderState ->
 
-                // Background
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(8.dp)
-                        .background(MaterialTheme.colorScheme.secondaryContainer, RoundedCornerShape(4.dp))
-                ) {
+            LinearWavyProgressIndicator(
+                modifier = Modifier.fillMaxWidth(),
+                amplitude = { if (state.isPlaying && it in 0.1f..0.95f) 1f else 0f },
+                progress = { if (exoPlayer.duration > 0) sliderState.value / exoPlayer.duration else 0f },
+                stopSize = 10.dp
+            )
 
-                    // Progress
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth(fraction = if (exoPlayer.duration > 0) sliderState.value / exoPlayer.duration else 0f)
-                            .height(8.dp)
-                            .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(topStart = 4.dp, bottomStart = 4.dp))
-                    )
-                }
-            }
-        )
-    }
+        }
+    )
 
 }

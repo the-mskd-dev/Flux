@@ -89,7 +89,7 @@ class MainActivity : ComponentActivity() {
                         }
                         entry<Route.Player> { entry ->
                             PlayerScreen(
-                                media = entry.media,
+                                mediaId = entry.mediaId,
                                 onBack = { backStack.removeLastOrNull() },
                             )
                         }

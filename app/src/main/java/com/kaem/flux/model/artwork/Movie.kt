@@ -33,8 +33,6 @@ import kotlinx.serialization.Serializable
         )
     ]
 )
-@Parcelize
-@Serializable
 data class Movie(
     @PrimaryKey
     override val artworkId: Long,

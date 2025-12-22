@@ -145,7 +145,7 @@ class ArtworkViewModel @AssistedInject constructor(
 
     private suspend fun playMedia(media: Media) {
         _subState.update { it.copy(selectedMedia = media) }
-        _event.emit(ArtworkEvent.PlayMedia(media = media))
+        _event.emit(ArtworkEvent.PlayMedia(mediaId = media.mediaId))
     }
 
     private fun showStatusDialog(episode: Episode) {

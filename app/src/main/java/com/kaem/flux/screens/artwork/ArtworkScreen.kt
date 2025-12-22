@@ -39,7 +39,7 @@ fun ArtworkScreen(
         viewModel.event.collect { event ->
             when (event) {
                 ArtworkEvent.BackToPreviousScreen -> onBack()
-                is ArtworkEvent.PlayMedia -> navigate(Route.Player(media = event.media))
+                is ArtworkEvent.PlayMedia -> navigate(Route.Player(mediaId = event.mediaId))
             }
         }
     }

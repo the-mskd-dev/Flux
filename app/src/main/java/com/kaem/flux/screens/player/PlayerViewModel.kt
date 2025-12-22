@@ -33,6 +33,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -41,8 +42,8 @@ import kotlin.time.Duration.Companion.seconds
 @UnstableApi
 @HiltViewModel(assistedFactory = PlayerViewModel.Factory::class)
 class PlayerViewModel @AssistedInject constructor(
-    @Assisted private val media: Media,
-    private val repository: ArtworkRepository,
+    @Assisted mediaId: Long,
+    private val artworkRepository: ArtworkRepository,
     private val userRepository: UserRepository,
     settingsRepository: SettingsRepository,
     @ApplicationContext context: Context
@@ -52,7 +53,7 @@ class PlayerViewModel @AssistedInject constructor(
 
     @AssistedFactory
     interface Factory {
-        fun create(media: Media): PlayerViewModel
+        fun create(mediaId: Long): PlayerViewModel
     }
 
     //endregion
@@ -84,11 +85,15 @@ class PlayerViewModel @AssistedInject constructor(
 
 
     val uiState: StateFlow<PlayerUiState> = combine(
+        artworkRepository.flow,
         settingsRepository.flow,
         _subState
-    ) { settings, subState ->
+    ) { artwork, settings, subState ->
+
+        val media = artwork.movie ?: artwork.episodes.find { it.id == mediaId }
+
         PlayerUiState(
-            screen = ScreenState.CONTENT,
+            screen = media?.let { PlayerScreen.Content(media = media) } ?: PlayerScreen.Error,
             isPlaying = subState.isPlaying,
             showInterface = subState.showInterface,
             playerForward = settings.playerForwardValue.seconds.inWholeMilliseconds,
@@ -157,6 +162,7 @@ class PlayerViewModel @AssistedInject constructor(
 
     private suspend fun saveTime(time: Long) {
 
+        val media = (uiState.firstOrNull()?.screen as? PlayerScreen.Content)?.media ?: return
         val newStatus = if (time.msToMin >= media.duration * .9) Status.WATCHED else Status.IS_WATCHING
         val newTime = if (newStatus == Status.WATCHED) 0L else time
 
@@ -173,12 +179,12 @@ class PlayerViewModel @AssistedInject constructor(
                 else userRepository.addToRecentlyWatched(media.artworkId)
 
                 // Save in DB
-                repository.saveMovie(updatedMedia)
+                artworkRepository.saveMovie(updatedMedia)
             }
             is Episode -> {
 
                 // Add/Remove from recently watched
-                val episodes = repository.flow.first().episodes
+                val episodes = artworkRepository.flow.first().episodes
                 val lastEpisode = episodes.lastEpisode
                 if (lastEpisode.id == updatedMedia.id && newStatus == Status.WATCHED)
                     userRepository.removeFromRecentlyWatched(media.artworkId)
@@ -186,7 +192,7 @@ class PlayerViewModel @AssistedInject constructor(
                     userRepository.addToRecentlyWatched(media.artworkId)
 
                 // Save in DB
-                repository.saveEpisode(updatedMedia)
+                artworkRepository.saveEpisode(updatedMedia)
             }
         }
 

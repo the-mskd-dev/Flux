@@ -20,8 +20,7 @@ import java.util.Date
  * @property status Viewing status of the media.
  * @property releaseDate Parsed release date as a [Date], derived from [releaseDateString].
  */
-@Serializable
-sealed class Media : Parcelable {
+sealed class Media {
     abstract val artworkId: Long
     abstract val title: String
     abstract  val releaseDateString: String
@@ -35,5 +34,7 @@ sealed class Media : Parcelable {
     abstract  val file: UserFile
 
     val releaseDate: Date? get() = releaseDateString.parseTMDBDate()
+
+    open val mediaId: Long get() = artworkId
 
 }

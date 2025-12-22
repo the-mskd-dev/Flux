@@ -27,7 +27,7 @@ sealed class Route : NavKey {
     data class Search(val contentType: ContentType? = null): Route()
 
     @Serializable
-    data class Player(val media: Media) : Route()
+    data class Player(val mediaId: Long) : Route()
 
     @Serializable
     data object Settings: Route()

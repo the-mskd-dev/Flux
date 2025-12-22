@@ -28,5 +28,5 @@ sealed class ArtworkIntent {
 
 sealed class ArtworkEvent {
     object BackToPreviousScreen : ArtworkEvent()
-    data class PlayMedia(val media: Media) : ArtworkEvent()
+    data class PlayMedia(val mediaId: Long) : ArtworkEvent()
 }

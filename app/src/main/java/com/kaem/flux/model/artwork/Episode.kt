@@ -40,8 +40,6 @@ import kotlinx.serialization.Serializable
         )
     ]
 )
-@Parcelize
-@Serializable
 data class Episode(
     @PrimaryKey
     val id: Long,
@@ -60,6 +58,8 @@ data class Episode(
     @Embedded override val file: UserFile,
     override val status: Status = Status.TO_WATCH,
 ) : Media() {
+
+    override val mediaId: Long get() = id
 
     constructor(
         mediaId: Long,

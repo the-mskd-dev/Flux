@@ -40,12 +40,13 @@ import com.kaem.flux.utils.extensions.setAppInLandscape
 import com.kaem.flux.utils.extensions.setAppOrientation
 import com.kaem.flux.utils.extensions.showSystemBars
 
+@OptIn(UnstableApi::class)
 @Composable
 fun PlayerScreen(
-    media: Media,
+    mediaId: Long,
     onBack: () -> Unit,
     viewModel: PlayerViewModel = hiltViewModel<PlayerViewModel, PlayerViewModel.Factory>(
-        creationCallback = { factory -> factory.create(media = media) }
+        creationCallback = { factory -> factory.create(mediaId = mediaId) }
     )
 ) {
 
@@ -78,19 +79,20 @@ fun PlayerScreen(
 
     Crossfade(state.screen) { screen ->
         when (screen) {
-            ScreenState.LOADING -> LoadingScreen()
-            ScreenState.CONTENT -> {
-                PlayerContent(
-                    media = media,
-                    exoPlayer = viewModel.player,
-                    state = state,
-                    sendIntent = viewModel::handleIntent
-                )
-            }
-            ScreenState.ERROR -> {
+            PlayerScreen.Loading -> LoadingScreen()
+            PlayerScreen.Error -> {
                 ErrorScreen(
                     message = stringResource(R.string.oups_an_error_occured),
                     onBackButtonTap = { viewModel.handleIntent(PlayerIntent.OnBackTap()) }
+                )
+            }
+            is PlayerScreen.Content -> {
+                PlayerContent(
+                    media = screen.media,
+                    exoPlayer = viewModel.player,
+                    showInterface = state.showInterface,
+                    isPlaying = state.isPlaying,
+                    sendIntent = viewModel::handleIntent
                 )
             }
         }
@@ -104,7 +106,8 @@ fun PlayerScreen(
 fun PlayerContent(
     media: Media,
     exoPlayer: ExoPlayer,
-    state: PlayerUiState,
+    showInterface: Boolean,
+    isPlaying: Boolean,
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
@@ -142,7 +145,7 @@ fun PlayerContent(
             .fillMaxSize()
             .background(Color.Black)
             .clickable {
-                sendIntent(PlayerIntent.ShowInterface(!state.showInterface))
+                sendIntent(PlayerIntent.ShowInterface(!showInterface))
             }
     ) {
 
@@ -158,7 +161,7 @@ fun PlayerContent(
                 }
             },
             update = {
-                if (state.showInterface)
+                if (showInterface)
                     it.showController()
             }
         )
@@ -167,7 +170,8 @@ fun PlayerContent(
 
     PlayerInterface(
         media = media,
-        state = state,
+        showInterface = showInterface,
+        isPlaying = isPlaying,
         exoPlayer = exoPlayer,
         sendIntent = sendIntent,
     )

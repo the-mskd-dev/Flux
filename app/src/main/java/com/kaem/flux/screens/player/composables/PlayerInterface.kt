@@ -21,13 +21,14 @@ import com.kaem.flux.ui.theme.Ui
 @Composable
 fun PlayerInterface(
     media: Media,
-    state: PlayerUiState,
+    showInterface: Boolean,
+    isPlaying: Boolean,
     exoPlayer: ExoPlayer,
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
     AnimatedVisibility(
-        visible = state.showInterface,
+        visible = showInterface,
         enter = fadeIn(animationSpec = spring(stiffness = Spring.StiffnessLow)),
         exit = fadeOut(animationSpec = spring(stiffness = Spring.StiffnessLow)),
     ) {
@@ -47,14 +48,15 @@ fun PlayerInterface(
 
             PlayerControlButtons(
                 layoutId = "controlButtons",
-                isPlaying = state.isPlaying,
+                isPlaying = isPlaying,
                 sendIntent = sendIntent
             )
 
             PlayerSeekBar(
                 layoutId = "seekBar",
                 exoPlayer = exoPlayer,
-                state = state,
+                showInterface = showInterface,
+                isPlaying = isPlaying,
                 sendIntent = sendIntent
             )
 

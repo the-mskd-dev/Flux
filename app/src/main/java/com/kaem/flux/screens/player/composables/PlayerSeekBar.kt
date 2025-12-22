@@ -45,7 +45,8 @@ import kotlin.time.Duration
 fun PlayerSeekBar(
     layoutId: String,
     exoPlayer: ExoPlayer,
-    state: PlayerUiState,
+    showInterface: Boolean,
+    isPlaying: Boolean,
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
@@ -53,8 +54,8 @@ fun PlayerSeekBar(
     val interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
     val isDragged by interactionSource.collectIsDraggedAsState()
 
-    LaunchedEffect(state.showInterface, isDragged) {
-        while (state.showInterface && !isDragged) {
+    LaunchedEffect(showInterface, isDragged) {
+        while (showInterface && !isDragged) {
             sliderPosition = exoPlayer.currentPosition.coerceAtLeast(0L).toFloat()
             delay(200)
         }
@@ -81,7 +82,7 @@ fun PlayerSeekBar(
             valueRange = 0f..exoPlayer.duration.toFloat(),
             onValueChangeFinished = { sendIntent(PlayerIntent.UpdateProgress(sliderPosition.toLong())) },
             interactionSource = interactionSource,
-            isPlaying = state.isPlaying,
+            isPlaying = isPlaying,
             duration = exoPlayer.duration
         )
 

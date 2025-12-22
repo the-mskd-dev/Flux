@@ -2,12 +2,13 @@ package com.kaem.flux.screens.player
 
 import androidx.compose.runtime.Immutable
 import com.kaem.flux.model.ScreenState
+import com.kaem.flux.model.artwork.Media
 import java.util.Locale
 import kotlin.time.Duration.Companion.seconds
 
 @Immutable
 data class PlayerUiState(
-    val screen: ScreenState = ScreenState.LOADING,
+    val screen: PlayerScreen = PlayerScreen.Loading,
     val isPlaying: Boolean = false,
     val showInterface: Boolean = false,
     val playerRewind: Long = 10.seconds.inWholeMilliseconds,
@@ -21,6 +22,12 @@ data class PlayerUiState(
         val showInterface: Boolean = false
     )
 
+}
+
+sealed class PlayerScreen {
+    data object Loading : PlayerScreen()
+    data object Error : PlayerScreen()
+    data class Content(val media: Media) : PlayerScreen()
 }
 
 sealed class PlayerIntent {

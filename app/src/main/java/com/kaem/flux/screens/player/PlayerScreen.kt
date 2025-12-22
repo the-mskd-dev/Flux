@@ -113,9 +113,6 @@ fun PlayerContent(
 
     val activity = LocalActivity.current as ComponentActivity
 
-    val renderersFactory = DefaultRenderersFactory(activity)
-    renderersFactory.setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_PREFER)
-
     LaunchedEffect(media) {
         exoPlayer.setMediaItem(MediaItem.fromUri(media.file.path.toUri()))
         exoPlayer.seekTo(media.currentTime)
@@ -150,8 +147,9 @@ fun PlayerContent(
     ) {
 
         AndroidView(
-            factory = { context ->
-                PlayerView(context).apply {
+            modifier = Modifier.fillMaxSize(),
+            factory = { ctx ->
+                PlayerView(ctx).apply {
                     player = exoPlayer
                     useController = false
                     layoutParams = ViewGroup.LayoutParams(
@@ -159,21 +157,17 @@ fun PlayerContent(
                         ViewGroup.LayoutParams.MATCH_PARENT
                     )
                 }
-            },
-            update = {
-                if (showInterface)
-                    it.showController()
             }
         )
 
-    }
+        PlayerInterface(
+            media = media,
+            showInterface = showInterface,
+            isPlaying = isPlaying,
+            exoPlayer = exoPlayer,
+            sendIntent = sendIntent,
+        )
 
-    PlayerInterface(
-        media = media,
-        showInterface = showInterface,
-        isPlaying = isPlaying,
-        exoPlayer = exoPlayer,
-        sendIntent = sendIntent,
-    )
+    }
 
 }

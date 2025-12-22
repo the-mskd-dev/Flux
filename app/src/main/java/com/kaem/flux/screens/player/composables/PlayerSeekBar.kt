@@ -1,5 +1,9 @@
 package com.kaem.flux.screens.player.composables
 
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.foundation.interaction.InteractionSource
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.layout.Arrangement
@@ -12,6 +16,7 @@ import androidx.compose.material3.LinearWavyProgressIndicator
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberSliderState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -32,6 +37,7 @@ import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.extensions.formatMinSec
 import kotlinx.coroutines.delay
+import kotlin.time.Duration
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -62,42 +68,78 @@ fun PlayerSeekBar(
         horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)
     ) {
 
-        Text.Label.Medium(
-            text = sliderPosition.toLong().formatMinSec(),
-            color = Color.White
+        PlayerSeekBarTime(
+            time = { sliderPosition.toLong() }
         )
 
-        Slider(
+        PlayerSlider(
             modifier = Modifier.weight(1f),
-            value = sliderPosition,
-            valueRange = 0f..exoPlayer.duration.toFloat(),
-            interactionSource = interactionSource,
+            value = { sliderPosition },
             onValueChange = { sliderPosition = it },
+            valueRange = 0f..exoPlayer.duration.toFloat(),
             onValueChangeFinished = { sendIntent(PlayerIntent.UpdateProgress(sliderPosition.toLong())) },
-            track = { sliderState ->
-
-                LinearWavyProgressIndicator(
-                    modifier = Modifier.fillMaxWidth(),
-                    amplitude = { if (state.isPlaying && it in 0.1f..0.95f) 1f else 0f },
-                    progress = { if (exoPlayer.duration > 0) sliderState.value / exoPlayer.duration else 0f },
-                    stopSize = 10.dp
-                )
-
-            },
-            thumb = {
-
-                SliderDefaults.Thumb(
-                    interactionSource = interactionSource,
-                    thumbSize = DpSize(4.dp, 22.dp)
-                )
-            }
+            interactionSource = interactionSource,
+            isPlaying = state.isPlaying,
+            duration = exoPlayer.duration
         )
 
-        Text.Label.Medium(
-            text = exoPlayer.duration.formatMinSec(),
-            color = Color.White
+        PlayerSeekBarTime(
+            time = { exoPlayer.duration }
         )
 
     }
+
+}
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+fun PlayerSlider(
+    modifier: Modifier = Modifier,
+    value: () -> Float,
+    onValueChange: (Float) -> Unit,
+    onValueChangeFinished: (() -> Unit),
+    valueRange: ClosedFloatingPointRange<Float>,
+    interactionSource : MutableInteractionSource,
+    isPlaying: Boolean,
+    duration: Long,
+) {
+
+    Slider(
+        modifier = modifier,
+        value = value(),
+        onValueChange = onValueChange,
+        valueRange = valueRange,
+        onValueChangeFinished = onValueChangeFinished,
+        interactionSource = interactionSource,
+        track = { sliderState ->
+
+            LinearWavyProgressIndicator(
+                modifier = Modifier.fillMaxWidth(),
+                amplitude = { if (isPlaying && it in 0.1f..0.95f) 1f else 0f },
+                progress = { if (duration > 0) sliderState.value / duration else 0f },
+                stopSize = 10.dp
+            )
+
+        },
+        thumb = {
+
+            SliderDefaults.Thumb(
+                interactionSource = interactionSource,
+                thumbSize = DpSize(4.dp, 22.dp)
+            )
+        },
+    )
+
+}
+
+@Composable
+fun PlayerSeekBarTime(
+    time : () -> Long
+) {
+
+    Text.Label.Medium(
+        text = time().formatMinSec(),
+        color = Color.White
+    )
 
 }

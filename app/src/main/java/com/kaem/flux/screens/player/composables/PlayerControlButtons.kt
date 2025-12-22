@@ -1,0 +1,83 @@
+package com.kaem.flux.screens.player.composables
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MediumExtendedFloatingActionButton
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.layoutId
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.kaem.flux.R
+import com.kaem.flux.screens.player.PlayerIntent
+import com.kaem.flux.ui.theme.AppTheme
+import com.kaem.flux.ui.theme.Ui
+
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+fun PlayerControlButtons(
+    layoutId: String,
+    isPlaying: Boolean,
+    sendIntent: (PlayerIntent) -> Unit
+) {
+
+    Row(
+        modifier = Modifier.layoutId(layoutId),
+        horizontalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+
+        FloatingActionButton(
+            onClick = { sendIntent(PlayerIntent.OnFastRewind) },
+            shape = FloatingActionButtonDefaults.largeShape
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.fast_rewind),
+                contentDescription = "backward button"
+            )
+        }
+
+        MediumExtendedFloatingActionButton(
+            onClick = { sendIntent(PlayerIntent.TogglePlayButton) },
+            shape = FloatingActionButtonDefaults.largeExtendedFabShape
+        ) {
+            Icon(
+                modifier = Modifier.size(28.dp),
+                painter = painterResource(if (isPlaying) R.drawable.pause else R.drawable.play),
+                contentDescription = "play button"
+            )
+        }
+
+        FloatingActionButton(
+            onClick = { sendIntent(PlayerIntent.OnFastForward) },
+            shape = FloatingActionButtonDefaults.largeShape
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.fast_forward),
+                contentDescription = "forward button"
+            )
+        }
+
+    }
+
+}
+
+@Preview
+@Composable
+fun PlayerControlButtons_Preview() {
+
+    AppTheme {
+        PlayerControlButtons(
+            layoutId = "",
+            isPlaying = true,
+            sendIntent = {}
+        )
+    }
+}

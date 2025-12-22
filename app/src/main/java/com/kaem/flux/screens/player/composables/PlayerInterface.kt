@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
+import androidx.constraintlayout.compose.Dimension
 import androidx.media3.exoplayer.ExoPlayer
 import com.kaem.flux.model.artwork.Media
 import com.kaem.flux.screens.player.PlayerIntent
@@ -46,6 +47,11 @@ fun PlayerInterface(
                 onBackTap = { sendIntent(PlayerIntent.OnBackTap(exoPlayer.currentPosition)) }
             )
 
+            PlayerSettings(
+                layoutId = "settings",
+                sendIntent = sendIntent
+            )
+
             PlayerControlButtons(
                 layoutId = "controlButtons",
                 isPlaying = isPlaying,
@@ -68,11 +74,17 @@ fun PlayerInterface(
 
 val PlayerInterfaceConstraintSet = ConstraintSet {
 
-    val (topBar, controlButtons, seekBar) = createRefsFor("topBar", "controlButtons", "seekBar")
+    val (topBar, controlButtons, seekBar, settings) = createRefsFor("topBar", "controlButtons", "seekBar", "settings")
 
     constrain(topBar) {
-        top.linkTo(parent.top)
+        top.linkTo(parent.top, Ui.Space.MEDIUM)
         start.linkTo(parent.start)
+        end.linkTo(settings.start, Ui.Space.MEDIUM)
+        width = Dimension.fillToConstraints
+    }
+
+    constrain(settings) {
+        top.linkTo(parent.top)
         end.linkTo(parent.end)
     }
 

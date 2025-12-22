@@ -142,7 +142,7 @@ fun PlayerContent(
             .fillMaxSize()
             .background(Color.Black)
             .clickable {
-                sendIntent(PlayerIntent.ShowInterface(!showInterface))
+                sendIntent(PlayerIntent.ShowInterface)
             }
     ) {
 

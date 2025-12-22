@@ -112,7 +112,8 @@ class PlayerViewModel @AssistedInject constructor(
 
     fun handleIntent(intent: PlayerIntent) = viewModelScope.launch {
         when (intent) {
-            is PlayerIntent.ShowInterface -> showInterface()
+            PlayerIntent.ShowInterface -> showInterface()
+            PlayerIntent.ShowSettings -> showSettings()
             is PlayerIntent.SaveTime -> saveTime(time = intent.time)
             is PlayerIntent.OnBackTap -> onBackTap(time = intent.time)
             PlayerIntent.TogglePlayButton -> togglePlayButton()
@@ -138,12 +139,16 @@ class PlayerViewModel @AssistedInject constructor(
         _player.seekTo(_player.currentPosition + uiState.value.playerForward)
     }
 
+    private fun updateProgress(progress: Long) {
+        _player.seekTo(progress)
+    }
+
     private fun showInterface() {
         _subState.update { it.copy(showInterface = !it.showInterface) }
     }
 
-    private fun updateProgress(progress: Long) {
-        _player.seekTo(progress)
+    private fun showSettings() {
+        _subState.update { it.copy(showSettings = !it.showSettings) }
     }
 
     private suspend fun onBackTap(time: Long?) {

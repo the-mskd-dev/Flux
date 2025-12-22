@@ -35,8 +35,7 @@ fun PlayerTopBar(
         modifier = Modifier
             .layoutId(layoutId)
             .statusBarsPadding()
-            .fillMaxWidth()
-            .padding(horizontal = Ui.Space.MEDIUM),
+            .fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL),
         verticalAlignment = Alignment.CenterVertically
     ) {

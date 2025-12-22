@@ -52,7 +52,7 @@ fun PlayerTopBar(
             verticalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)
         ) {
 
-            Text.Headline.Medium(
+            Text.Body.Large(
                 text = media.title,
                 color = Color.White
             )

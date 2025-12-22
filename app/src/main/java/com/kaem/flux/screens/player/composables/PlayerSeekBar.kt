@@ -2,6 +2,8 @@ package com.kaem.flux.screens.player.composables
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsDraggedAsState
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -9,6 +11,7 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.LinearWavyProgressIndicator
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -16,14 +19,18 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.media3.exoplayer.ExoPlayer
 import com.kaem.flux.screens.player.PlayerIntent
 import com.kaem.flux.screens.player.PlayerUiState
+import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.Ui
+import com.kaem.flux.utils.extensions.formatMinSec
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
@@ -46,33 +53,51 @@ fun PlayerSeekBar(
         }
     }
 
-    Slider(
+    Row(
         modifier = Modifier
             .layoutId(layoutId)
             .fillMaxWidth()
             .padding(horizontal = Ui.Space.MEDIUM),
-        value = sliderPosition,
-        valueRange = 0f..exoPlayer.duration.toFloat(),
-        interactionSource = interactionSource,
-        onValueChange = { sliderPosition = it },
-        onValueChangeFinished = { sendIntent(PlayerIntent.UpdateProgress(sliderPosition.toLong())) },
-        track = { sliderState ->
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)
+    ) {
 
-            LinearWavyProgressIndicator(
-                modifier = Modifier.fillMaxWidth(),
-                amplitude = { if (state.isPlaying && it in 0.1f..0.95f) 1f else 0f },
-                progress = { if (exoPlayer.duration > 0) sliderState.value / exoPlayer.duration else 0f },
-                stopSize = 10.dp
-            )
+        Text.Label.Medium(
+            text = sliderPosition.toLong().formatMinSec(),
+            color = Color.White
+        )
 
-        },
-        thumb = {
+        Slider(
+            modifier = Modifier.weight(1f),
+            value = sliderPosition,
+            valueRange = 0f..exoPlayer.duration.toFloat(),
+            interactionSource = interactionSource,
+            onValueChange = { sliderPosition = it },
+            onValueChangeFinished = { sendIntent(PlayerIntent.UpdateProgress(sliderPosition.toLong())) },
+            track = { sliderState ->
 
-            SliderDefaults.Thumb(
-                interactionSource = interactionSource,
-                thumbSize = DpSize(4.dp, 22.dp)
-            )
-        }
-    )
+                LinearWavyProgressIndicator(
+                    modifier = Modifier.fillMaxWidth(),
+                    amplitude = { if (state.isPlaying && it in 0.1f..0.95f) 1f else 0f },
+                    progress = { if (exoPlayer.duration > 0) sliderState.value / exoPlayer.duration else 0f },
+                    stopSize = 10.dp
+                )
+
+            },
+            thumb = {
+
+                SliderDefaults.Thumb(
+                    interactionSource = interactionSource,
+                    thumbSize = DpSize(4.dp, 22.dp)
+                )
+            }
+        )
+
+        Text.Label.Medium(
+            text = exoPlayer.duration.formatMinSec(),
+            color = Color.White
+        )
+
+    }
 
 }

@@ -75,22 +75,21 @@ fun PlayerSeekBar(
                 sendIntent(PlayerIntent.UpdateProgress(sliderPosition.toLong()))
             },
             track = { sliderState ->
-                // La barre elle-même
-                // On la dessine nous-même pour contrôler son épaisseur
+
+                // Background
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(4.dp) // Très fin, élégant
-                        .background(MaterialTheme.colorScheme.onSecondaryContainer, RoundedCornerShape(2.dp))
+                        .height(8.dp)
+                        .background(MaterialTheme.colorScheme.secondaryContainer, RoundedCornerShape(4.dp))
                 ) {
-                    // Partie accomplie (Progress)
+
+                    // Progress
                     Box(
                         modifier = Modifier
-                            .fillMaxWidth(fraction =
-                                if (exoPlayer.duration > 0) sliderState.value / exoPlayer.duration else 0f
-                            )
-                            .height(4.dp)
-                            .background(MaterialTheme.colorScheme.onPrimary, RoundedCornerShape(2.dp))
+                            .fillMaxWidth(fraction = if (exoPlayer.duration > 0) sliderState.value / exoPlayer.duration else 0f)
+                            .height(8.dp)
+                            .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(topStart = 4.dp, bottomStart = 4.dp))
                     )
                 }
             }

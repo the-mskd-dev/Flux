@@ -8,6 +8,7 @@ import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.SeekParameters
 import com.kaem.flux.data.repository.ArtworkRepository
 import com.kaem.flux.data.repository.SettingsRepository
 import com.kaem.flux.data.repository.UserRepository
@@ -68,6 +69,7 @@ class PlayerViewModel @AssistedInject constructor(
         .build()
         .apply {
             playWhenReady = true
+            setSeekParameters(SeekParameters.CLOSEST_SYNC)
         }
     val player = _player
 
@@ -198,23 +200,18 @@ class PlayerViewModel @AssistedInject constructor(
 
     private val playerListener = object : Player.Listener {
 
-        override fun onIsPlayingChanged(isPlaying: Boolean) {
-            super.onIsPlayingChanged(isPlaying)
-            _subState.update { it.copy(isPlaying = isPlaying) }
-        }
-
-        /*override fun onEvents(player: Player, events: Player.Events) {
+        override fun onEvents(player: Player, events: Player.Events) {
             if (events.containsAny(
-                    Player.EVENT_IS_PLAYING_CHANGED,
-                    Player.EVENT_POSITION_DISCONTINUITY,
-                    Player.EVENT_PLAYBACK_STATE_CHANGED
+                    Player.EVENT_PLAY_WHEN_READY_CHANGED,
+                    Player.EVENT_PLAYBACK_STATE_CHANGED,
+                    Player.EVENT_IS_PLAYING_CHANGED
                 )
             ) {
                 _subState.update {
-                    it.copy(currentPosition = player.currentPosition.coerceAtLeast(0L))
+                    it.copy(isPlaying = player.playWhenReady)
                 }
             }
-        }*/
+        }
 
     }
 

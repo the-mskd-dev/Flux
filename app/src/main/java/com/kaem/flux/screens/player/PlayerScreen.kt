@@ -56,12 +56,6 @@ import com.kaem.flux.utils.extensions.showSystemBars
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 
-@Immutable
-data class InterfaceState(
-    val showInterface: Boolean,
-    val isPlaying: Boolean
-)
-
 @OptIn(UnstableApi::class)
 @Composable
 fun PlayerScreen(
@@ -72,51 +66,29 @@ fun PlayerScreen(
     )
 ) {
 
+    val state = rememberPlayerStateHolder(viewModel)
     val activity = LocalActivity.current as ComponentActivity
-    val orientation = remember { activity.requestedOrientation }
+    val originalOrientation = remember { activity.requestedOrientation }
 
-    val screenState by remember(viewModel) {
-        viewModel.uiState
-            .map { it.screen }
-            .distinctUntilChanged()
-    }.collectAsStateWithLifecycle(initialValue = PlayerScreen.Loading)
+    val screen by state.screenState.collectAsStateWithLifecycle()
+    val playerInterface by state.interfaceState.collectAsStateWithLifecycle()
+    val subtitlesState = state.subtitlesState.collectAsStateWithLifecycle()
 
-    val subtitlesState = remember(viewModel) {
-        viewModel.uiState
-            .map { it.subtitles }
-            .distinctUntilChanged()
-    }.collectAsStateWithLifecycle(initialValue = emptyList())
-
-    val controlsState by remember(viewModel) {
-        viewModel.uiState
-            .map { InterfaceState(it.showInterface, it.isPlaying) } // Voir la data class plus bas
-            .distinctUntilChanged()
-    }.collectAsStateWithLifecycle(initialValue = InterfaceState(showInterface = false, isPlaying = false))
-
-    DisposableEffect(Unit) {
-        activity.setAppInLandscape()
-        activity.forceScreenOn(true)
-        onDispose {
-            activity.forceScreenOn(false)
-        }
-    }
+    PlayerWindowController(
+        state = state,
+        showInterface = playerInterface.showInterface,
+        originalOrientation = originalOrientation
+    )
 
     LaunchedEffect(Unit) {
-        viewModel.event.collect { event ->
+        state.events.collect { event ->
             when (event) {
-                PlayerEvent.BackToPreviousScreen -> {
-                    activity.setAppOrientation(orientation)
-                    onBack()
-                }
+                PlayerEvent.BackToPreviousScreen -> onBack()
             }
         }
     }
 
-    LaunchedEffect(controlsState.showInterface) {
-        if (controlsState.showInterface) activity.showSystemBars() else activity.hideSystemBars()
-    }
-
-    Crossfade(screenState) { screen ->
+    Crossfade(targetState = screen, label = "PlayerScreenState") { screen ->
         when (screen) {
             PlayerScreen.Loading -> LoadingScreen()
             PlayerScreen.Error -> {
@@ -129,8 +101,8 @@ fun PlayerScreen(
                 PlayerContent(
                     media = screen.media,
                     player = viewModel.player,
-                    showInterface = controlsState.showInterface,
-                    isPlaying = controlsState.isPlaying,
+                    showInterface = playerInterface.showInterface,
+                    isPlaying = playerInterface.isPlaying,
                     subtitlesState = subtitlesState,
                     sendIntent = viewModel::handleIntent
                 )
@@ -153,12 +125,6 @@ fun PlayerContent(
 ) {
 
     val activity = LocalActivity.current as ComponentActivity
-
-    LaunchedEffect(media) {
-        player.setMediaItem(MediaItem.fromUri(media.file.path.toUri()))
-        player.seekTo(media.currentTime)
-        player.prepare()
-    }
 
     LifecycleComponent(
         onDispose = {
@@ -221,6 +187,24 @@ fun PlayerContent(
             sendIntent = sendIntent,
         )
 
+    }
+
+}
+
+@Composable
+private fun PlayerWindowController(
+    state: PlayerStateHolder,
+    showInterface: Boolean,
+    originalOrientation: Int
+) {
+
+    DisposableEffect(Unit) {
+        state.setLandscape()
+        onDispose { state.resetOrientation(originalOrientation) }
+    }
+
+    LaunchedEffect(showInterface) {
+        state.updateSystemBars(showInterface)
     }
 
 }

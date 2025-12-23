@@ -2,9 +2,10 @@ package com.kaem.flux.screens.player
 
 import android.content.Context
 import android.util.Log
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.media3.common.C
+import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.DefaultRenderersFactory
@@ -13,7 +14,6 @@ import androidx.media3.exoplayer.SeekParameters
 import com.kaem.flux.data.repository.ArtworkRepository
 import com.kaem.flux.data.repository.SettingsRepository
 import com.kaem.flux.data.repository.UserRepository
-import com.kaem.flux.model.ScreenState
 import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.model.artwork.Media
 import com.kaem.flux.model.artwork.Movie
@@ -38,7 +38,6 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.Locale
 import kotlin.time.Duration.Companion.seconds
 
 @UnstableApi
@@ -83,33 +82,28 @@ class PlayerViewModel @AssistedInject constructor(
     private val _event = MutableSharedFlow<PlayerEvent>()
     val event = _event.asSharedFlow().distinctUntilChanged()
 
-    private val _subState = MutableStateFlow(PlayerUiState.SubState())
-
+    private val _interfaceState = MutableStateFlow(PlayerUiState.Interface())
+    private val _subtitlesState = MutableStateFlow(PlayerUiState.Subtitles())
 
     val uiState: StateFlow<PlayerUiState> = combine(
         artworkRepository.flow,
         settingsRepository.flow,
-        _subState
-    ) { artwork, settings, subState ->
+        _interfaceState,
+        _subtitlesState
+    ) { artwork, settings, interfaceState, subtitlesState ->
 
         val media = artwork.movie ?: artwork.episodes.find { it.id == mediaId }
-
-        val currentLang = player.trackSelectionParameters.preferredTextLanguages.firstOrNull()
-        if (currentLang != settings.subtitlesLanguage.language) {
-            player.trackSelectionParameters = player.trackSelectionParameters
-                .buildUpon()
-                .setPreferredTextLanguage(settings.subtitlesLanguage.language)
-                .build()
-        }
+        playMedia(media = media)
+        selectSubtitles(settings.subtitlesLanguage.language)
 
         PlayerUiState(
             screen = media?.let { PlayerScreen.Content(media = media) } ?: PlayerScreen.Error,
             playerForward = settings.playerForwardValue.seconds.inWholeMilliseconds,
             playerRewind = settings.playerRewindValue.seconds.inWholeMilliseconds,
             subtitlesLanguage = settings.subtitlesLanguage,
-            isPlaying = subState.isPlaying,
-            showInterface = subState.showInterface,
-            subtitles = subState.subtitles
+            isPlaying = interfaceState.isPlaying,
+            showInterface = interfaceState.showInterface,
+            subtitles = subtitlesState.subtitles
         )
     }.stateIn(
         scope = viewModelScope,
@@ -155,11 +149,11 @@ class PlayerViewModel @AssistedInject constructor(
     }
 
     private fun showInterface() {
-        _subState.update { it.copy(showInterface = !it.showInterface) }
+        _interfaceState.update { it.copy(showInterface = !it.showInterface) }
     }
 
     private fun showSettings() {
-        _subState.update { it.copy(showSettings = !it.showSettings) }
+        _interfaceState.update { it.copy(showSettings = !it.showSettings) }
     }
 
     private suspend fun onBackTap(time: Long?) {
@@ -216,6 +210,30 @@ class PlayerViewModel @AssistedInject constructor(
 
     }
 
+    private fun playMedia(media: Media?) {
+
+        val currentMedia = (uiState.value.screen as? PlayerScreen.Content)?.media
+
+        if (media != null && media.mediaId != currentMedia?.mediaId) {
+            _player.setMediaItem(MediaItem.fromUri(media.file.path.toUri()))
+            _player.seekTo(media.currentTime)
+            _player.prepare()
+        }
+
+    }
+
+    private fun selectSubtitles(language: String) {
+
+        val currentLang = player.trackSelectionParameters.preferredTextLanguages.firstOrNull()
+        if (currentLang != language) {
+            player.trackSelectionParameters = player.trackSelectionParameters
+                .buildUpon()
+                .setPreferredTextLanguage(language)
+                .build()
+        }
+
+    }
+
     //endregion
 
     //region Listener
@@ -229,14 +247,14 @@ class PlayerViewModel @AssistedInject constructor(
                     Player.EVENT_IS_PLAYING_CHANGED
                 )
             ) {
-                _subState.update {
+                _interfaceState.update {
                     it.copy(isPlaying = player.playWhenReady)
                 }
             }
         }
 
         override fun onCues(cueGroup: androidx.media3.common.text.CueGroup) {
-            _subState.update {
+            _subtitlesState.update {
                 it.copy(subtitles = cueGroup.cues)
             }
         }

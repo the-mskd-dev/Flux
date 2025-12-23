@@ -20,10 +20,14 @@ data class PlayerUiState(
 ) {
 
     @Immutable
-    data class SubState(
+    data class Interface(
         val isPlaying: Boolean = false,
         val showInterface: Boolean = false,
         val showSettings: Boolean = false,
+    )
+
+    @Immutable
+    data class Subtitles(
         val subtitles: List<Cue> = emptyList()
     )
 

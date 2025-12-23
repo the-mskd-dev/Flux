@@ -27,6 +27,8 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
+import androidx.media3.ui.compose.PlayerSurface
+import androidx.media3.ui.compose.buttons.PlayPauseButton
 import com.kaem.flux.R
 import com.kaem.flux.model.ScreenState
 import com.kaem.flux.model.artwork.Media
@@ -146,7 +148,7 @@ fun PlayerContent(
             }
     ) {
 
-        AndroidView(
+        /*AndroidView(
             modifier = Modifier.fillMaxSize(),
             factory = { ctx ->
                 PlayerView(ctx).apply {
@@ -158,6 +160,11 @@ fun PlayerContent(
                     )
                 }
             }
+        )*/
+
+        PlayerSurface(
+            modifier = Modifier.fillMaxSize(),
+            player = exoPlayer
         )
 
         PlayerInterface(

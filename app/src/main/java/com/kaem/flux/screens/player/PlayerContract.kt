@@ -1,6 +1,7 @@
 package com.kaem.flux.screens.player
 
 import androidx.compose.runtime.Immutable
+import androidx.media3.common.text.Cue
 import com.kaem.flux.model.ScreenState
 import com.kaem.flux.model.artwork.Media
 import java.util.Locale
@@ -14,14 +15,16 @@ data class PlayerUiState(
     val subtitlesLanguage: Locale = Locale.getDefault(),
     val isPlaying: Boolean = false,
     val showInterface: Boolean = false,
-    val showSettings: Boolean = false
+    val showSettings: Boolean = false,
+    val subtitles: List<Cue> = emptyList()
 ) {
 
     @Immutable
     data class SubState(
         val isPlaying: Boolean = false,
         val showInterface: Boolean = false,
-        val showSettings: Boolean = false
+        val showSettings: Boolean = false,
+        val subtitles: List<Cue> = emptyList()
     )
 
 }

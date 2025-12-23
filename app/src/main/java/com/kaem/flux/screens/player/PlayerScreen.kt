@@ -11,6 +11,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -26,6 +27,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
+import androidx.media3.common.text.Cue
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
@@ -39,9 +41,11 @@ import com.kaem.flux.R
 import com.kaem.flux.model.ScreenState
 import com.kaem.flux.model.artwork.Media
 import com.kaem.flux.screens.player.composables.PlayerInterface
+import com.kaem.flux.screens.player.composables.PlayerSubtitles
 import com.kaem.flux.ui.component.ErrorScreen
 import com.kaem.flux.ui.component.LifecycleComponent
 import com.kaem.flux.ui.component.LoadingScreen
+import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.extensions.forceScreenOn
 import com.kaem.flux.utils.extensions.hideSystemBars
 import com.kaem.flux.utils.extensions.setAppInLandscape
@@ -100,6 +104,7 @@ fun PlayerScreen(
                     player = viewModel.player,
                     showInterface = state.showInterface,
                     isPlaying = state.isPlaying,
+                    subtitles = state.subtitles,
                     sendIntent = viewModel::handleIntent
                 )
             }
@@ -116,6 +121,7 @@ fun PlayerContent(
     player: Player,
     showInterface: Boolean,
     isPlaying: Boolean,
+    subtitles: List<Cue>,
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
@@ -171,6 +177,13 @@ fun PlayerContent(
         ContentFrame(
             modifier = Modifier.fillMaxSize(),
             player = player
+        )
+
+        PlayerSubtitles(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = Ui.Space.LARGE),
+            subtitles = subtitles
         )
 
         PlayerInterface(

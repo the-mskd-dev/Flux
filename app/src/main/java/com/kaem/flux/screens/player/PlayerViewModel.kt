@@ -94,13 +94,22 @@ class PlayerViewModel @AssistedInject constructor(
 
         val media = artwork.movie ?: artwork.episodes.find { it.id == mediaId }
 
+        val currentLang = player.trackSelectionParameters.preferredTextLanguages.firstOrNull()
+        if (currentLang != settings.subtitlesLanguage.language) {
+            player.trackSelectionParameters = player.trackSelectionParameters
+                .buildUpon()
+                .setPreferredTextLanguage(settings.subtitlesLanguage.language)
+                .build()
+        }
+
         PlayerUiState(
             screen = media?.let { PlayerScreen.Content(media = media) } ?: PlayerScreen.Error,
-            isPlaying = subState.isPlaying,
-            showInterface = subState.showInterface,
             playerForward = settings.playerForwardValue.seconds.inWholeMilliseconds,
             playerRewind = settings.playerRewindValue.seconds.inWholeMilliseconds,
-            subtitlesLanguage = settings.subtitlesLanguage
+            subtitlesLanguage = settings.subtitlesLanguage,
+            isPlaying = subState.isPlaying,
+            showInterface = subState.showInterface,
+            subtitles = subState.subtitles
         )
     }.stateIn(
         scope = viewModelScope,
@@ -223,6 +232,12 @@ class PlayerViewModel @AssistedInject constructor(
                 _subState.update {
                     it.copy(isPlaying = player.playWhenReady)
                 }
+            }
+        }
+
+        override fun onCues(cueGroup: androidx.media3.common.text.CueGroup) {
+            _subState.update {
+                it.copy(subtitles = cueGroup.cues)
             }
         }
 

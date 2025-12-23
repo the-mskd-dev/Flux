@@ -14,7 +14,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -51,6 +53,14 @@ import com.kaem.flux.utils.extensions.hideSystemBars
 import com.kaem.flux.utils.extensions.setAppInLandscape
 import com.kaem.flux.utils.extensions.setAppOrientation
 import com.kaem.flux.utils.extensions.showSystemBars
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
+
+@Immutable
+data class InterfaceState(
+    val showInterface: Boolean,
+    val isPlaying: Boolean
+)
 
 @OptIn(UnstableApi::class)
 @Composable
@@ -62,9 +72,26 @@ fun PlayerScreen(
     )
 ) {
 
-    val state by viewModel.uiState.collectAsStateWithLifecycle()
     val activity = LocalActivity.current as ComponentActivity
     val orientation = remember { activity.requestedOrientation }
+
+    val screenState by remember(viewModel) {
+        viewModel.uiState
+            .map { it.screen }
+            .distinctUntilChanged()
+    }.collectAsStateWithLifecycle(initialValue = PlayerScreen.Loading)
+
+    val subtitlesState = remember(viewModel) {
+        viewModel.uiState
+            .map { it.subtitles }
+            .distinctUntilChanged()
+    }.collectAsStateWithLifecycle(initialValue = emptyList())
+
+    val controlsState by remember(viewModel) {
+        viewModel.uiState
+            .map { InterfaceState(it.showInterface, it.isPlaying) } // Voir la data class plus bas
+            .distinctUntilChanged()
+    }.collectAsStateWithLifecycle(initialValue = InterfaceState(showInterface = false, isPlaying = false))
 
     DisposableEffect(Unit) {
         activity.setAppInLandscape()
@@ -85,11 +112,11 @@ fun PlayerScreen(
         }
     }
 
-    LaunchedEffect(state.showInterface) {
-        if (state.showInterface) activity.showSystemBars() else activity.hideSystemBars()
+    LaunchedEffect(controlsState.showInterface) {
+        if (controlsState.showInterface) activity.showSystemBars() else activity.hideSystemBars()
     }
 
-    Crossfade(state.screen) { screen ->
+    Crossfade(screenState) { screen ->
         when (screen) {
             PlayerScreen.Loading -> LoadingScreen()
             PlayerScreen.Error -> {
@@ -102,9 +129,9 @@ fun PlayerScreen(
                 PlayerContent(
                     media = screen.media,
                     player = viewModel.player,
-                    showInterface = state.showInterface,
-                    isPlaying = state.isPlaying,
-                    subtitles = state.subtitles,
+                    showInterface = controlsState.showInterface,
+                    isPlaying = controlsState.isPlaying,
+                    subtitlesState = subtitlesState,
                     sendIntent = viewModel::handleIntent
                 )
             }
@@ -121,7 +148,7 @@ fun PlayerContent(
     player: Player,
     showInterface: Boolean,
     isPlaying: Boolean,
-    subtitles: List<Cue>,
+    subtitlesState: State<List<Cue>>,
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
@@ -183,7 +210,7 @@ fun PlayerContent(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(bottom = Ui.Space.LARGE),
-            subtitles = subtitles
+            subtitlesState = subtitlesState
         )
 
         PlayerInterface(

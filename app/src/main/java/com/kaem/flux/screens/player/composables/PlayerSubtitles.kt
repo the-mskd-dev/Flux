@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,9 +21,11 @@ import com.kaem.flux.ui.theme.Ui
 
 @Composable
 fun PlayerSubtitles(
-    subtitles: List<Cue>,
+    subtitlesState: State<List<Cue>>,
     modifier: Modifier = Modifier
 ) {
+
+    val subtitles = subtitlesState.value
 
     Box(
         contentAlignment = Alignment.BottomCenter,

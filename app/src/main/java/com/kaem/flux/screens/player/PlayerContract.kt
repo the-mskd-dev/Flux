@@ -2,7 +2,6 @@ package com.kaem.flux.screens.player
 
 import androidx.compose.runtime.Immutable
 import androidx.media3.common.text.Cue
-import com.kaem.flux.model.ScreenState
 import com.kaem.flux.model.artwork.Media
 import java.util.Locale
 import kotlin.time.Duration.Companion.seconds

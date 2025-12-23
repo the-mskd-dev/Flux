@@ -14,10 +14,8 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
 import androidx.media3.common.Player
-import androidx.media3.exoplayer.ExoPlayer
 import com.kaem.flux.model.artwork.Media
 import com.kaem.flux.screens.player.PlayerIntent
-import com.kaem.flux.screens.player.PlayerUiState
 import com.kaem.flux.ui.theme.Ui
 
 @Composable

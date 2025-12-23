@@ -1,9 +1,7 @@
 package com.kaem.flux.model.artwork
 
-import android.os.Parcelable
 import com.kaem.flux.model.UserFile
 import com.kaem.flux.utils.extensions.parseTMDBDate
-import kotlinx.serialization.Serializable
 import java.util.Date
 
 /**

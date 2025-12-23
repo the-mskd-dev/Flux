@@ -6,8 +6,6 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.kaem.flux.model.UserFile
 import com.kaem.flux.model.tmdb.TMDBEpisode
-import kotlinx.parcelize.Parcelize
-import kotlinx.serialization.Serializable
 
 /**
  * Represents an episode of a TV show.

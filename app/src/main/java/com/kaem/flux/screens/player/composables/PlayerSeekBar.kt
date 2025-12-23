@@ -70,7 +70,10 @@ fun PlayerSeekBar(
         PlayerSlider(
             modifier = Modifier.weight(1f),
             value = { sliderPosition },
-            onValueChange = { sliderPosition = it },
+            onValueChange = {
+                sliderPosition = it
+                sendIntent(PlayerIntent.UpdateProgress(it.toLong()))
+            },
             valueRange = 0f..player.duration.toFloat(),
             onValueChangeFinished = { sendIntent(PlayerIntent.UpdateProgress(sliderPosition.toLong())) },
             interactionSource = interactionSource,

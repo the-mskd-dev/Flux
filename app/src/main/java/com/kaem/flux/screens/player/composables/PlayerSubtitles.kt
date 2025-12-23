@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -15,17 +14,15 @@ import com.kaem.flux.ui.theme.Ui
 
 @Composable
 fun PlayerSubtitles(
-    subtitlesState: State<List<Cue>>,
+    subtitles: () -> List<Cue>,
     modifier: Modifier = Modifier
 ) {
-
-    val subtitles = subtitlesState.value
 
     Box(
         contentAlignment = Alignment.BottomCenter,
         modifier = modifier.padding(horizontal = Ui.Space.LARGE)
     ) {
-        subtitles.forEach {
+        subtitles().forEach {
             SubtitleItem(text = it.text)
         }
     }

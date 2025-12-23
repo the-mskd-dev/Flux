@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -46,29 +45,41 @@ fun PlayerScreen(
     )
 ) {
 
-    val state = rememberPlayerStateHolder(viewModel)
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val stateHolder = rememberPlayerStateHolder()
+
+    val isPlaying by stateHolder.isPlaying.collectAsStateWithLifecycle()
+    val subtitles by stateHolder.subtitlesState.collectAsStateWithLifecycle()
+
     val activity = LocalActivity.current as ComponentActivity
     val originalOrientation = remember { activity.requestedOrientation }
 
-    val screen by state.screenState.collectAsStateWithLifecycle()
-    val playerInterface by state.interfaceState.collectAsStateWithLifecycle()
-    val subtitlesState = state.subtitlesState.collectAsStateWithLifecycle()
-
     PlayerWindowController(
-        state = state,
-        showInterface = playerInterface.showInterface,
+        stateHolder = stateHolder,
+        showInterface = state.controls.showInterface,
         originalOrientation = originalOrientation
     )
 
+    LaunchedEffect(state.screen) {
+        (state.screen as? PlayerScreen.Content)?.let {
+            stateHolder.playMedia(it.media)
+        }
+    }
+
+
     LaunchedEffect(Unit) {
-        state.events.collect { event ->
+        viewModel.event.collect { event ->
             when (event) {
                 PlayerEvent.BackToPreviousScreen -> onBack()
+                is PlayerEvent.SeekRewind -> stateHolder.onFastRewind(event.time)
+                is PlayerEvent.SeekForward -> stateHolder.onFastForward(event.time)
+                is PlayerEvent.UpdateProgress -> stateHolder.updateProgress(event.progress)
+                PlayerEvent.TogglePlayButton -> stateHolder.togglePlayButton()
             }
         }
     }
 
-    Crossfade(targetState = screen, label = "PlayerScreenState") { screen ->
+    Crossfade(targetState = state.screen, label = "PlayerScreenState") { screen ->
         when (screen) {
             PlayerScreen.Loading -> LoadingScreen()
             PlayerScreen.Error -> {
@@ -80,10 +91,10 @@ fun PlayerScreen(
             is PlayerScreen.Content -> {
                 PlayerContent(
                     media = screen.media,
-                    player = viewModel.player,
-                    showInterface = playerInterface.showInterface,
-                    isPlaying = playerInterface.isPlaying,
-                    subtitlesState = subtitlesState,
+                    player = stateHolder.player,
+                    showInterface = state.controls.showInterface,
+                    isPlaying = isPlaying,
+                    subtitles =  { subtitles },
                     sendIntent = viewModel::handleIntent
                 )
             }
@@ -100,19 +111,13 @@ fun PlayerContent(
     player: Player,
     showInterface: Boolean,
     isPlaying: Boolean,
-    subtitlesState: State<List<Cue>>,
+    subtitles: () -> List<Cue>,
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
-    val activity = LocalActivity.current as ComponentActivity
-
     LifecycleComponent(
-        onDispose = {
-            activity.showSystemBars()
-            player.release()
-        },
         onBackground = {
-            player.pause()
+            if (player.isPlaying) sendIntent(PlayerIntent.TogglePlayButton)
             sendIntent(PlayerIntent.SaveTime(time = player.currentPosition))
         },
         onForeground = {
@@ -142,7 +147,7 @@ fun PlayerContent(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(bottom = Ui.Space.LARGE),
-            subtitlesState = subtitlesState
+            subtitles = subtitles
         )
 
         PlayerInterface(
@@ -159,18 +164,21 @@ fun PlayerContent(
 
 @Composable
 private fun PlayerWindowController(
-    state: PlayerStateHolder,
+    stateHolder: PlayerStateHolder,
     showInterface: Boolean,
     originalOrientation: Int
 ) {
 
     DisposableEffect(Unit) {
-        state.setLandscape()
-        onDispose { state.resetOrientation(originalOrientation) }
+        stateHolder.setLandscape()
+        onDispose {
+            stateHolder.updateSystemBars(true)
+            stateHolder.resetOrientation(originalOrientation)
+        }
     }
 
     LaunchedEffect(showInterface) {
-        state.updateSystemBars(showInterface)
+        stateHolder.updateSystemBars(showInterface)
     }
 
 }

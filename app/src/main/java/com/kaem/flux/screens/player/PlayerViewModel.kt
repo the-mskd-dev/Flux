@@ -2,20 +2,13 @@ package com.kaem.flux.screens.player
 
 import android.content.Context
 import android.util.Log
-import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.media3.common.MediaItem
-import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.exoplayer.DefaultRenderersFactory
-import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.exoplayer.SeekParameters
 import com.kaem.flux.data.repository.ArtworkRepository
 import com.kaem.flux.data.repository.SettingsRepository
 import com.kaem.flux.data.repository.UserRepository
 import com.kaem.flux.model.artwork.Episode
-import com.kaem.flux.model.artwork.Media
 import com.kaem.flux.model.artwork.Movie
 import com.kaem.flux.model.artwork.Status
 import com.kaem.flux.utils.extensions.lastEpisode
@@ -32,7 +25,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.stateIn
@@ -59,51 +51,30 @@ class PlayerViewModel @AssistedInject constructor(
 
     //endregion
 
-    //region Player
-
-    private val _player : Player = ExoPlayer.Builder(context)
-        .setRenderersFactory(
-            DefaultRenderersFactory(context)
-                .setExtensionRendererMode(
-                    DefaultRenderersFactory.EXTENSION_RENDERER_MODE_PREFER
-                )
-        )
-        .build()
-        .apply {
-            playWhenReady = true
-            setSeekParameters(SeekParameters.CLOSEST_SYNC)
-        }
-    val player = _player
-
-    //endregion
-
     //region Flow
 
     private val _event = MutableSharedFlow<PlayerEvent>()
-    val event = _event.asSharedFlow().distinctUntilChanged()
+    val event = _event.asSharedFlow()
 
-    private val _interfaceState = MutableStateFlow(PlayerUiState.Interface())
-    private val _subtitlesState = MutableStateFlow(PlayerUiState.Subtitles())
+    private val _controlsState = MutableStateFlow(PlayerUiState.Controls())
 
     val uiState: StateFlow<PlayerUiState> = combine(
         artworkRepository.flow,
         settingsRepository.flow,
-        _interfaceState,
-        _subtitlesState
-    ) { artwork, settings, interfaceState, subtitlesState ->
+        _controlsState,
+    ) { artwork, settings, controls ->
 
         val media = artwork.movie ?: artwork.episodes.find { it.id == mediaId }
-        playMedia(media = media)
-        selectSubtitles(settings.subtitlesLanguage.language)
 
         PlayerUiState(
             screen = media?.let { PlayerScreen.Content(media = media) } ?: PlayerScreen.Error,
             playerForward = settings.playerForwardValue.seconds.inWholeMilliseconds,
             playerRewind = settings.playerRewindValue.seconds.inWholeMilliseconds,
             subtitlesLanguage = settings.subtitlesLanguage,
-            isPlaying = interfaceState.isPlaying,
-            showInterface = interfaceState.showInterface,
-            subtitles = subtitlesState.subtitles
+            controls = PlayerUiState.Controls(
+                showInterface = controls.showInterface,
+                showSettings = controls.showSettings
+            )
         )
     }.stateIn(
         scope = viewModelScope,
@@ -132,35 +103,35 @@ class PlayerViewModel @AssistedInject constructor(
 
     //region Private methods
 
-    private fun togglePlayButton() {
-        if (_player.isPlaying) player.pause() else _player.play()
+    private suspend fun togglePlayButton() {
+        _event.emit(PlayerEvent.TogglePlayButton)
     }
 
-    private fun onFastRewind() {
-        _player.seekTo(_player.currentPosition - uiState.value.playerRewind)
+    private suspend fun onFastRewind() {
+        _event.emit(PlayerEvent.SeekRewind(uiState.value.playerRewind))
     }
 
-    private fun onFastForward() {
-        _player.seekTo(_player.currentPosition + uiState.value.playerForward)
+    private suspend fun onFastForward() {
+        _event.emit(PlayerEvent.SeekForward(uiState.value.playerForward))
     }
 
-    private fun updateProgress(progress: Long) {
-        _player.seekTo(progress)
+    private suspend fun updateProgress(progress: Long) {
+        _event.emit(PlayerEvent.UpdateProgress(progress = progress))
     }
 
     private fun showInterface() {
-        _interfaceState.update { it.copy(showInterface = !it.showInterface) }
+        _controlsState.update { it.copy(showInterface = !it.showInterface) }
     }
 
     private fun showSettings() {
-        _interfaceState.update { it.copy(showSettings = !it.showSettings) }
+        _controlsState.update { it.copy(showSettings = !it.showSettings) }
     }
 
     private suspend fun onBackTap(time: Long?) {
 
         time?.let { saveTime(time = it) }
 
-        val showInterface = uiState.first().showInterface
+        val showInterface = uiState.first().controls.showInterface
 
         if (showInterface) {
             _event.emit(PlayerEvent.BackToPreviousScreen)
@@ -208,70 +179,6 @@ class PlayerViewModel @AssistedInject constructor(
 
         Log.i("PlayerViewModel", "${updatedMedia.title} saved at ${time.timeDescription()}")
 
-    }
-
-    private fun playMedia(media: Media?) {
-
-        val currentMedia = (uiState.value.screen as? PlayerScreen.Content)?.media
-
-        if (media != null && media.mediaId != currentMedia?.mediaId) {
-            _player.setMediaItem(MediaItem.fromUri(media.file.path.toUri()))
-            _player.seekTo(media.currentTime)
-            _player.prepare()
-        }
-
-    }
-
-    private fun selectSubtitles(language: String) {
-
-        val currentLang = player.trackSelectionParameters.preferredTextLanguages.firstOrNull()
-        if (currentLang != language) {
-            player.trackSelectionParameters = player.trackSelectionParameters
-                .buildUpon()
-                .setPreferredTextLanguage(language)
-                .build()
-        }
-
-    }
-
-    //endregion
-
-    //region Listener
-
-    private val playerListener = object : Player.Listener {
-
-        override fun onEvents(player: Player, events: Player.Events) {
-            if (events.containsAny(
-                    Player.EVENT_PLAY_WHEN_READY_CHANGED,
-                    Player.EVENT_PLAYBACK_STATE_CHANGED,
-                    Player.EVENT_IS_PLAYING_CHANGED
-                )
-            ) {
-                _interfaceState.update {
-                    it.copy(isPlaying = player.playWhenReady)
-                }
-            }
-        }
-
-        override fun onCues(cueGroup: androidx.media3.common.text.CueGroup) {
-            _subtitlesState.update {
-                it.copy(subtitles = cueGroup.cues)
-            }
-        }
-
-    }
-
-    //endregion
-
-    //region Lifecycle
-
-    init {
-        _player.addListener(playerListener)
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        _player.removeListener(playerListener)
     }
 
     //endregion

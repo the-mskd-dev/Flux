@@ -3,54 +3,117 @@ package com.kaem.flux.screens.player
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivity
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
-import androidx.lifecycle.viewModelScope
+import androidx.core.net.toUri
+import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.text.Cue
+import androidx.media3.exoplayer.DefaultRenderersFactory
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.SeekParameters
+import com.kaem.flux.model.artwork.Media
 import com.kaem.flux.utils.extensions.forceScreenOn
 import com.kaem.flux.utils.extensions.hideSystemBars
 import com.kaem.flux.utils.extensions.setAppInLandscape
 import com.kaem.flux.utils.extensions.setAppOrientation
 import com.kaem.flux.utils.extensions.showSystemBars
-import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.asStateFlow
 
 @Stable
-class PlayerStateHolder(
-    private val viewModel: PlayerViewModel,
-    private val activity: ComponentActivity
-) {
+class PlayerStateHolder(private val activity: ComponentActivity) : Player.Listener {
 
-    val screenState: StateFlow<PlayerScreen> = viewModel.uiState
-        .map { it.screen }
-        .distinctUntilChanged()
-        .stateIn(viewModel.viewModelScope, SharingStarted.WhileSubscribed(5_000), PlayerScreen.Loading)
+    //region States
 
-    val interfaceState: StateFlow<PlayerUiState.Interface> = viewModel.uiState
-        .map {
-            PlayerUiState.Interface(
-                isPlaying =  it.isPlaying,
-                showInterface = it.showInterface,
-                showSettings = it.showSettings
-            )
+    private val _subtitlesState = MutableStateFlow<List<Cue>>(emptyList())
+    val subtitlesState: StateFlow<List<Cue>> = _subtitlesState.asStateFlow()
+
+    private val _isPlaying = MutableStateFlow(false)
+    val isPlaying: StateFlow<Boolean> = _isPlaying.asStateFlow()
+
+    //endregion
+
+    //region Player
+
+    val player : Player = ExoPlayer.Builder(activity)
+        .setRenderersFactory(
+            DefaultRenderersFactory(activity)
+                .setExtensionRendererMode(
+                    DefaultRenderersFactory.EXTENSION_RENDERER_MODE_PREFER
+                )
+        )
+        .build()
+        .apply {
+            playWhenReady = true
+            setSeekParameters(SeekParameters.CLOSEST_SYNC)
+            addListener(this@PlayerStateHolder)
         }
-        .distinctUntilChanged()
-        .stateIn(viewModel.viewModelScope, SharingStarted.WhileSubscribed(5_000), PlayerUiState.Interface())
 
-    val subtitlesState: StateFlow<List<Cue>> = viewModel.uiState
-        .map { it.subtitles }
-        .distinctUntilChanged()
-        .stateIn(viewModel.viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+    private var currentMediaId: Long = -1L
 
-    val events = viewModel.event
+    override fun onCues(cueGroup: androidx.media3.common.text.CueGroup) {
+        _subtitlesState.value = cueGroup.cues
+    }
 
-    fun handleIntent(intent: PlayerIntent) = viewModel.handleIntent(intent)
+    override fun onEvents(player: Player, events: Player.Events) {
+        if (events.containsAny(
+                Player.EVENT_PLAY_WHEN_READY_CHANGED,
+                Player.EVENT_PLAYBACK_STATE_CHANGED,
+                Player.EVENT_IS_PLAYING_CHANGED
+            )
+        ) {
+            _isPlaying.value = player.playWhenReady
+        }
+    }
 
-    val player: Player get() = viewModel.player
+    fun playMedia(media: Media?) {
+
+        if (media != null && media.mediaId != currentMediaId) {
+            player.setMediaItem(MediaItem.fromUri(media.file.path.toUri()))
+            player.seekTo(media.currentTime)
+            player.prepare()
+        }
+
+    }
+
+    private fun selectSubtitles(language: String) {
+
+        val currentLang = player.trackSelectionParameters.preferredTextLanguages.firstOrNull()
+        if (currentLang != language) {
+            player.trackSelectionParameters = player.trackSelectionParameters
+                .buildUpon()
+                .setPreferredTextLanguage(language)
+                .build()
+        }
+
+    }
+
+    fun togglePlayButton() {
+        if (player.isPlaying) player.pause() else player.play()
+    }
+
+    fun onFastRewind(value: Long) {
+        player.seekTo(player.currentPosition - value)
+    }
+
+    fun onFastForward(value: Long) {
+        player.seekTo(player.currentPosition + value)
+    }
+
+    fun updateProgress(progress: Long) {
+        player.seekTo(progress)
+    }
+
+    fun releasePlayer() {
+        player.release()
+    }
+
+    //endregion
+
+    //region Screen
 
     fun setLandscape() {
         activity.setAppInLandscape()
@@ -65,14 +128,23 @@ class PlayerStateHolder(
     fun updateSystemBars(show: Boolean) {
         if (show) activity.showSystemBars() else activity.hideSystemBars()
     }
+
+    //endregion
 }
 
 @Composable
 fun rememberPlayerStateHolder(
-    viewModel: PlayerViewModel,
     activity: ComponentActivity = LocalActivity.current as ComponentActivity
 ): PlayerStateHolder {
-    return remember(viewModel, activity) {
-        PlayerStateHolder(viewModel, activity)
+    val holder = remember(activity) {
+        PlayerStateHolder(activity)
     }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            holder.releasePlayer()
+        }
+    }
+
+    return holder
 }

@@ -1,5 +1,6 @@
 package com.kaem.flux.screens.player
 
+import android.content.Context
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivity
 import androidx.compose.runtime.Composable
@@ -14,6 +15,7 @@ import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.SeekParameters
 import com.kaem.flux.model.artwork.Media
+import com.kaem.flux.utils.extensions.findActivity
 import com.kaem.flux.utils.extensions.forceScreenOn
 import com.kaem.flux.utils.extensions.hideSystemBars
 import com.kaem.flux.utils.extensions.setAppInLandscape
@@ -24,7 +26,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 @Stable
-class PlayerStateHolder(private val activity: ComponentActivity) : Player.Listener {
+class PlayerStateHolder(private val context: Context) : Player.Listener {
 
     //region States
 
@@ -38,9 +40,9 @@ class PlayerStateHolder(private val activity: ComponentActivity) : Player.Listen
 
     //region Player
 
-    val player : Player = ExoPlayer.Builder(activity)
+    val player : Player = ExoPlayer.Builder(context)
         .setRenderersFactory(
-            DefaultRenderersFactory(activity)
+            DefaultRenderersFactory(context)
                 .setExtensionRendererMode(
                     DefaultRenderersFactory.EXTENSION_RENDERER_MODE_PREFER
                 )
@@ -115,18 +117,20 @@ class PlayerStateHolder(private val activity: ComponentActivity) : Player.Listen
 
     //region Screen
 
+    private val activity = context.findActivity()
+
     fun setLandscape() {
-        activity.setAppInLandscape()
-        activity.forceScreenOn(true)
+        activity?.setAppInLandscape()
+        activity?.forceScreenOn(true)
     }
 
     fun resetOrientation(originalOrientation: Int) {
-        activity.setAppOrientation(originalOrientation)
-        activity.forceScreenOn(false)
+        activity?.setAppOrientation(originalOrientation)
+        activity?.forceScreenOn(false)
     }
 
     fun updateSystemBars(show: Boolean) {
-        if (show) activity.showSystemBars() else activity.hideSystemBars()
+        if (show) activity?.showSystemBars() else activity?.hideSystemBars()
     }
 
     //endregion

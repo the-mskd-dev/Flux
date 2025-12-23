@@ -131,7 +131,7 @@ class PlayerViewModel @AssistedInject constructor(
 
         time?.let { saveTime(time = it) }
 
-        val showInterface = uiState.first().controls.showInterface
+        val showInterface = uiState.value.controls.showInterface
 
         if (showInterface) {
             _event.emit(PlayerEvent.BackToPreviousScreen)
@@ -143,7 +143,7 @@ class PlayerViewModel @AssistedInject constructor(
 
     private suspend fun saveTime(time: Long) {
 
-        val media = (uiState.firstOrNull()?.screen as? PlayerScreen.Content)?.media ?: return
+        val media = (uiState.value.screen as? PlayerScreen.Content)?.media ?: return
         val newStatus = if (time.msToMin >= media.duration * .9) Status.WATCHED else Status.IS_WATCHING
         val newTime = if (newStatus == Status.WATCHED) 0L else time
 

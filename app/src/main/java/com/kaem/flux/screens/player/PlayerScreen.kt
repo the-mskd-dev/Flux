@@ -20,7 +20,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.media3.common.Player
 import androidx.media3.common.text.Cue
 import androidx.media3.common.util.UnstableApi
@@ -66,15 +69,17 @@ fun PlayerScreen(
         }
     }
 
-
-    LaunchedEffect(Unit) {
-        viewModel.event.collect { event ->
-            when (event) {
-                PlayerEvent.BackToPreviousScreen -> onBack()
-                is PlayerEvent.SeekRewind -> stateHolder.onFastRewind(event.time)
-                is PlayerEvent.SeekForward -> stateHolder.onFastForward(event.time)
-                is PlayerEvent.UpdateProgress -> stateHolder.updateProgress(event.progress)
-                PlayerEvent.TogglePlayButton -> stateHolder.togglePlayButton()
+    val lifecycleOwner = LocalLifecycleOwner.current
+    LaunchedEffect(lifecycleOwner.lifecycle) {
+        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewModel.event.collect { event ->
+                when (event) {
+                    PlayerEvent.BackToPreviousScreen -> onBack()
+                    is PlayerEvent.SeekRewind -> stateHolder.onFastRewind(event.time)
+                    is PlayerEvent.SeekForward -> stateHolder.onFastForward(event.time)
+                    is PlayerEvent.UpdateProgress -> stateHolder.updateProgress(event.progress)
+                    PlayerEvent.TogglePlayButton -> stateHolder.togglePlayButton()
+                }
             }
         }
     }

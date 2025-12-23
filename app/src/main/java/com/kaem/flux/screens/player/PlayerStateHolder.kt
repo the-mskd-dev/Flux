@@ -1,12 +1,11 @@
 package com.kaem.flux.screens.player
 
 import android.content.Context
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.LocalActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import androidx.core.net.toUri
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
@@ -26,7 +25,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 @Stable
-class PlayerStateHolder(private val context: Context) : Player.Listener {
+class PlayerStateHolder(context: Context) : Player.Listener {
 
     //region States
 
@@ -138,10 +137,10 @@ class PlayerStateHolder(private val context: Context) : Player.Listener {
 
 @Composable
 fun rememberPlayerStateHolder(
-    activity: ComponentActivity = LocalActivity.current as ComponentActivity
+    context: Context = LocalContext.current
 ): PlayerStateHolder {
-    val holder = remember(activity) {
-        PlayerStateHolder(activity)
+    val holder = remember(context) {
+        PlayerStateHolder(context)
     }
 
     DisposableEffect(Unit) {

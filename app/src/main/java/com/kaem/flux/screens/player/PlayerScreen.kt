@@ -1,8 +1,6 @@
 package com.kaem.flux.screens.player
 
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
-import androidx.activity.compose.LocalActivity
 import androidx.annotation.OptIn
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
@@ -18,6 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -36,7 +35,7 @@ import com.kaem.flux.ui.component.ErrorScreen
 import com.kaem.flux.ui.component.LifecycleComponent
 import com.kaem.flux.ui.component.LoadingScreen
 import com.kaem.flux.ui.theme.Ui
-import com.kaem.flux.utils.extensions.showSystemBars
+import com.kaem.flux.utils.extensions.findActivity
 
 @OptIn(UnstableApi::class)
 @Composable
@@ -54,8 +53,8 @@ fun PlayerScreen(
     val isPlaying by stateHolder.isPlaying.collectAsStateWithLifecycle()
     val subtitles by stateHolder.subtitlesState.collectAsStateWithLifecycle()
 
-    val activity = LocalActivity.current as ComponentActivity
-    val originalOrientation = remember { activity.requestedOrientation }
+    val activity = LocalContext.current.findActivity()
+    val originalOrientation = remember { activity?.requestedOrientation }
 
     PlayerWindowController(
         stateHolder = stateHolder,
@@ -171,14 +170,14 @@ fun PlayerContent(
 private fun PlayerWindowController(
     stateHolder: PlayerStateHolder,
     showInterface: Boolean,
-    originalOrientation: Int
+    originalOrientation: Int?
 ) {
 
     DisposableEffect(Unit) {
         stateHolder.setLandscape()
         onDispose {
             stateHolder.updateSystemBars(true)
-            stateHolder.resetOrientation(originalOrientation)
+            originalOrientation?.let { stateHolder.resetOrientation(originalOrientation) }
         }
     }
 

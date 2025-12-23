@@ -31,6 +31,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
+import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import com.kaem.flux.screens.player.PlayerIntent
 import com.kaem.flux.screens.player.PlayerUiState
@@ -44,19 +45,19 @@ import kotlin.time.Duration
 @Composable
 fun PlayerSeekBar(
     layoutId: String,
-    exoPlayer: ExoPlayer,
+    player: Player,
     showInterface: Boolean,
     isPlaying: Boolean,
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
-    var sliderPosition by rememberSaveable { mutableFloatStateOf(exoPlayer.currentPosition.toFloat()) }
+    var sliderPosition by rememberSaveable { mutableFloatStateOf(player.currentPosition.toFloat()) }
     val interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
     val isDragged by interactionSource.collectIsDraggedAsState()
 
     LaunchedEffect(showInterface, isDragged) {
         while (showInterface && !isDragged) {
-            sliderPosition = exoPlayer.currentPosition.coerceAtLeast(0L).toFloat()
+            sliderPosition = player.currentPosition.coerceAtLeast(0L).toFloat()
             delay(200)
         }
     }
@@ -79,15 +80,15 @@ fun PlayerSeekBar(
             modifier = Modifier.weight(1f),
             value = { sliderPosition },
             onValueChange = { sliderPosition = it },
-            valueRange = 0f..exoPlayer.duration.toFloat(),
+            valueRange = 0f..player.duration.toFloat(),
             onValueChangeFinished = { sendIntent(PlayerIntent.UpdateProgress(sliderPosition.toLong())) },
             interactionSource = interactionSource,
             isPlaying = isPlaying,
-            duration = exoPlayer.duration
+            duration = player.duration
         )
 
         PlayerSeekBarTime(
-            time = { exoPlayer.duration }
+            time = { player.duration }
         )
 
     }

@@ -23,12 +23,16 @@ import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
+import androidx.media3.ui.SubtitleView
+import androidx.media3.ui.compose.ContentFrame
 import androidx.media3.ui.compose.PlayerSurface
 import androidx.media3.ui.compose.buttons.PlayPauseButton
+import androidx.media3.ui.compose.buttons.SeekBackButton
 import com.kaem.flux.R
 import com.kaem.flux.model.ScreenState
 import com.kaem.flux.model.artwork.Media
@@ -91,7 +95,7 @@ fun PlayerScreen(
             is PlayerScreen.Content -> {
                 PlayerContent(
                     media = screen.media,
-                    exoPlayer = viewModel.player,
+                    player = viewModel.player,
                     showInterface = state.showInterface,
                     isPlaying = state.isPlaying,
                     sendIntent = viewModel::handleIntent
@@ -107,7 +111,7 @@ fun PlayerScreen(
 @Composable
 fun PlayerContent(
     media: Media,
-    exoPlayer: ExoPlayer,
+    player: Player,
     showInterface: Boolean,
     isPlaying: Boolean,
     sendIntent: (PlayerIntent) -> Unit
@@ -116,27 +120,27 @@ fun PlayerContent(
     val activity = LocalActivity.current as ComponentActivity
 
     LaunchedEffect(media) {
-        exoPlayer.setMediaItem(MediaItem.fromUri(media.file.path.toUri()))
-        exoPlayer.seekTo(media.currentTime)
-        exoPlayer.prepare()
+        player.setMediaItem(MediaItem.fromUri(media.file.path.toUri()))
+        player.seekTo(media.currentTime)
+        player.prepare()
     }
 
     LifecycleComponent(
         onDispose = {
             activity.showSystemBars()
-            exoPlayer.release()
+            player.release()
         },
         onBackground = {
-            exoPlayer.pause()
-            sendIntent(PlayerIntent.SaveTime(time = exoPlayer.currentPosition))
+            player.pause()
+            sendIntent(PlayerIntent.SaveTime(time = player.currentPosition))
         },
         onForeground = {
-            if (!exoPlayer.isPlaying) exoPlayer.play()
+            if (!player.isPlaying) player.play()
         }
     )
 
     BackHandler(enabled = true) {
-        sendIntent(PlayerIntent.OnBackTap(time = exoPlayer.currentPosition))
+        sendIntent(PlayerIntent.OnBackTap(time = player.currentPosition))
     }
 
     Box(
@@ -162,16 +166,16 @@ fun PlayerContent(
             }
         )*/
 
-        PlayerSurface(
+        ContentFrame(
             modifier = Modifier.fillMaxSize(),
-            player = exoPlayer
+            player = player
         )
 
         PlayerInterface(
             media = media,
             showInterface = showInterface,
             isPlaying = isPlaying,
-            exoPlayer = exoPlayer,
+            player = player,
             sendIntent = sendIntent,
         )
 

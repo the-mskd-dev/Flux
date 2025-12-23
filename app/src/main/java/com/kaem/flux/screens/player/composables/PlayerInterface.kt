@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
+import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import com.kaem.flux.model.artwork.Media
 import com.kaem.flux.screens.player.PlayerIntent
@@ -24,7 +25,7 @@ fun PlayerInterface(
     media: Media,
     showInterface: Boolean,
     isPlaying: Boolean,
-    exoPlayer: ExoPlayer,
+    player: Player,
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
@@ -44,7 +45,7 @@ fun PlayerInterface(
             PlayerTopBar(
                 layoutId = "topBar",
                 media = media,
-                onBackTap = { sendIntent(PlayerIntent.OnBackTap(exoPlayer.currentPosition)) }
+                onBackTap = { sendIntent(PlayerIntent.OnBackTap(player.currentPosition)) }
             )
 
             PlayerSettings(
@@ -60,7 +61,7 @@ fun PlayerInterface(
 
             PlayerSeekBar(
                 layoutId = "seekBar",
-                exoPlayer = exoPlayer,
+                player = player,
                 showInterface = showInterface,
                 isPlaying = isPlaying,
                 sendIntent = sendIntent

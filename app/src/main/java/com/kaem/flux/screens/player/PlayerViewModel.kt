@@ -60,7 +60,7 @@ class PlayerViewModel @AssistedInject constructor(
 
     //region Player
 
-    private val _player = ExoPlayer.Builder(context)
+    private val _player : Player = ExoPlayer.Builder(context)
         .setRenderersFactory(
             DefaultRenderersFactory(context)
                 .setExtensionRendererMode(

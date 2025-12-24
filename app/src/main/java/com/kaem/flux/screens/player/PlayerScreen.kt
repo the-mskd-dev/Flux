@@ -51,7 +51,9 @@ fun PlayerScreen(
     val stateHolder = rememberPlayerStateHolder()
 
     val isPlaying by stateHolder.isPlaying.collectAsStateWithLifecycle()
-    val subtitles by stateHolder.subtitlesState.collectAsStateWithLifecycle()
+    val subtitles by stateHolder.subtitles.collectAsStateWithLifecycle()
+    val audiosTracks by stateHolder.audiosTracks.collectAsStateWithLifecycle()
+    val subtitlesTracks by stateHolder.subtitlesTracks.collectAsStateWithLifecycle()
 
     val activity = LocalContext.current.findActivity()
     val originalOrientation = remember { activity?.requestedOrientation }
@@ -66,6 +68,10 @@ fun PlayerScreen(
         (state.screen as? PlayerScreen.Content)?.let {
             stateHolder.playMedia(it.media)
         }
+    }
+
+    LaunchedEffect(audiosTracks, subtitlesTracks) {
+        viewModel.handleIntent(PlayerIntent.UpdateTracks(audioTracks = audiosTracks, subtitlesTracks = subtitlesTracks))
     }
 
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -166,6 +172,7 @@ fun PlayerContent(
 
 }
 
+@OptIn(UnstableApi::class)
 @Composable
 private fun PlayerWindowController(
     stateHolder: PlayerStateHolder,

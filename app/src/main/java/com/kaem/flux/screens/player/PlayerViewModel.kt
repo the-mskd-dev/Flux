@@ -53,12 +53,14 @@ class PlayerViewModel @AssistedInject constructor(
     val event = _event.asSharedFlow()
 
     private val _controlsState = MutableStateFlow(PlayerUiState.Controls())
+    private val _tracksState = MutableStateFlow(PlayerUiState.Tracks())
 
     val uiState: StateFlow<PlayerUiState> = combine(
         artworkRepository.flow,
         settingsRepository.flow,
         _controlsState,
-    ) { artwork, settings, controls ->
+        _tracksState
+    ) { artwork, settings, controls, tracks ->
 
         val media = artwork.movie ?: artwork.episodes.find { it.id == mediaId }
 
@@ -70,6 +72,10 @@ class PlayerViewModel @AssistedInject constructor(
             controls = PlayerUiState.Controls(
                 showInterface = controls.showInterface,
                 showSettings = controls.showSettings
+            ),
+            tracks = PlayerUiState.Tracks(
+                audioTracks = tracks.audioTracks,
+                subtitlesTracks = tracks.subtitlesTracks,
             )
         )
     }.stateIn(
@@ -92,6 +98,7 @@ class PlayerViewModel @AssistedInject constructor(
             PlayerIntent.OnFastRewind -> onFastRewind()
             PlayerIntent.OnFastForward -> onFastForward()
             is PlayerIntent.UpdateProgress -> updateProgress(progress = intent.progress)
+            is PlayerIntent.UpdateTracks -> updateTracks(audioTracks = intent.audioTracks, subtitlesTracks = intent.subtitlesTracks)
         }
     }
 
@@ -121,6 +128,10 @@ class PlayerViewModel @AssistedInject constructor(
 
     private fun showSettings() {
         _controlsState.update { it.copy(showSettings = !it.showSettings) }
+    }
+
+    private fun updateTracks(audioTracks: List<PlayerTrack>, subtitlesTracks: List<PlayerTrack>) {
+        _tracksState.update { it.copy(audioTracks = audioTracks, subtitlesTracks = subtitlesTracks) }
     }
 
     private suspend fun onBackTap(time: Long?) {

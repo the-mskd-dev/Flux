@@ -27,6 +27,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.Locale
 import kotlin.time.Duration.Companion.seconds
 
 @UnstableApi
@@ -142,6 +143,7 @@ class PlayerViewModel @AssistedInject constructor(
             _tracksState.update { state ->
                 state.copy(selectedSubtitles = tracks.find { it.language == preferredLang })
             }
+
         }
     }
 
@@ -153,6 +155,19 @@ class PlayerViewModel @AssistedInject constructor(
             }
         }
         _event.emit(PlayerEvent.SelectTrack(type = track.type, language = track.language))
+
+        try {
+
+            if (track.type == PlayerTrack.Type.SUBTITLES && track.language != null) {
+                val locale = Locale.of(track.language)
+                settingsRepository.setSubtitlesLanguage(locale)
+            }
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Log.e("PlayerViewModel", "Locale not found for ${track.language}", e)
+        }
+
     }
     private suspend fun onBackTap(time: Long?) {
 

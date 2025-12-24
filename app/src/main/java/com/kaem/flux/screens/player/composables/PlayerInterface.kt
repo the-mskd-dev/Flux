@@ -46,7 +46,7 @@ fun PlayerInterface(
                 onBackTap = { sendIntent(PlayerIntent.OnBackTap(player.currentPosition)) }
             )
 
-            PlayerSettings(
+            PlayerSettingsButton(
                 layoutId = "settings",
                 sendIntent = sendIntent
             )

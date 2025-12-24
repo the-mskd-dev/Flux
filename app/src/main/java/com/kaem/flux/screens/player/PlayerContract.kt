@@ -2,7 +2,6 @@ package com.kaem.flux.screens.player
 
 import androidx.compose.runtime.Immutable
 import com.kaem.flux.model.artwork.Media
-import java.util.Locale
 import kotlin.time.Duration.Companion.seconds
 
 @Immutable
@@ -59,17 +58,10 @@ sealed class PlayerEvent {
 
 data class PlayerTrack(
     val id: String? = null,
-    val name: String,
+    val label: String,
     val language: String? = null,
     val type: Type
 ) {
-
-    constructor(language: String, type: Type) : this(
-        id = null,
-        name = language,
-        language = language,
-        type = type
-    )
 
     enum class Type {
         AUDIO, SUBTITLES

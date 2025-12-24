@@ -1,14 +1,21 @@
 package com.kaem.flux.screens.player.composables
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -20,12 +27,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.tooling.preview.Preview
 import com.kaem.flux.screens.player.PlayerIntent
+import com.kaem.flux.screens.player.PlayerTrack
 import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.AppTheme
+import com.kaem.flux.ui.theme.Ui
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun PlayerSettings(
+fun PlayerSettingsButton(
     layoutId: String,
     sendIntent: (PlayerIntent) -> Unit
 ) {
@@ -52,6 +61,7 @@ fun PlayerSettings(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlayerSettingsSheet(
+    tracks: List<PlayerTrack>,
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
@@ -59,20 +69,32 @@ fun PlayerSettingsSheet(
         onDismissRequest = { sendIntent(PlayerIntent.ShowSettings) }
     ) {
         // Sheet content
-        Column(modifier = Modifier.fillMaxWidth()) {
+        LazyColumn(
+            modifier = Modifier.fillMaxWidth()
+        ) {
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
+            itemsIndexed(tracks) { index, track ->
 
-                Text.Headline.Small("Sous-titre")
-                Text.Label.Medium("Français")
+                if (index != 0)
+                    HorizontalDivider(modifier = Modifier.fillMaxWidth().padding(horizontal = Ui.Space.MEDIUM))
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            sendIntent(PlayerIntent.SelectTrack(track = track))
+                            sendIntent(PlayerIntent.ShowSettings)
+                        }
+                        .padding(horizontal = Ui.Space.MEDIUM, vertical = Ui.Space.MEDIUM),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text.Headline.Small(track.label)
+                }
+
             }
-
-
         }
+
     }
 
 }
@@ -80,7 +102,15 @@ fun PlayerSettingsSheet(
 @Preview
 @Composable
 fun PlayerSettingsSheet_Preview() {
-    AppTheme() {
-        PlayerSettingsSheet {  }
+    AppTheme {
+        PlayerSettingsSheet(
+            tracks = listOf(
+                PlayerTrack(id = "1", label = "English", type = PlayerTrack.Type.SUBTITLES),
+                PlayerTrack(id = "2", label = "French", type = PlayerTrack.Type.SUBTITLES),
+                PlayerTrack(id = "3", label = "German", type = PlayerTrack.Type.SUBTITLES),
+                PlayerTrack(id = "4", label = "Italian", type = PlayerTrack.Type.SUBTITLES),
+            ),
+            sendIntent = {}
+        )
     }
 }

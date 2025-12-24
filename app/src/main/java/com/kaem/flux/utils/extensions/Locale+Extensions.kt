@@ -6,7 +6,7 @@ import java.util.Locale
 
 fun Locale.toPlayerTrack(type: PlayerTrack.Type) = PlayerTrack(
     id = null,
-    name = this.displayName,
+    label = this.displayName,
     language = this.language,
     type = type
 )

@@ -30,6 +30,7 @@ import androidx.media3.ui.compose.ContentFrame
 import com.kaem.flux.R
 import com.kaem.flux.model.artwork.Media
 import com.kaem.flux.screens.player.composables.PlayerInterface
+import com.kaem.flux.screens.player.composables.PlayerSettingsSheet
 import com.kaem.flux.screens.player.composables.PlayerSubtitles
 import com.kaem.flux.ui.component.ErrorScreen
 import com.kaem.flux.ui.component.LifecycleComponent
@@ -102,9 +103,11 @@ fun PlayerScreen(
                 PlayerContent(
                     media = screen.media,
                     player = stateHolder.player,
-                    showInterface = state.controls.showInterface,
                     isPlaying = isPlaying,
                     subtitles =  { subtitles },
+                    tracks = state.tracks.tracks,
+                    showInterface = state.controls.showInterface,
+                    showSettings = state.controls.showSettings,
                     sendIntent = viewModel::handleIntent
                 )
             }
@@ -119,9 +122,11 @@ fun PlayerScreen(
 fun PlayerContent(
     media: Media,
     player: Player,
-    showInterface: Boolean,
     isPlaying: Boolean,
     subtitles: () -> List<Cue>,
+    tracks: List<PlayerTrack>,
+    showInterface: Boolean,
+    showSettings: Boolean,
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
@@ -168,6 +173,13 @@ fun PlayerContent(
             sendIntent = sendIntent,
         )
 
+    }
+
+    if (showSettings) {
+        PlayerSettingsSheet(
+            tracks = tracks,
+            sendIntent = sendIntent
+        )
     }
 
 }

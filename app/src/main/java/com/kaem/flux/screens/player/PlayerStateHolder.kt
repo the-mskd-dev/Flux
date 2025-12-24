@@ -21,8 +21,6 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.SeekParameters
-import androidx.media3.extractor.text.Subtitle
-import androidx.room.Index
 import com.kaem.flux.model.artwork.Media
 import com.kaem.flux.utils.extensions.findActivity
 import com.kaem.flux.utils.extensions.forceScreenOn
@@ -96,7 +94,7 @@ class PlayerStateHolder(context: Context) : Player.Listener {
                     val id = "${tracks.groups.indexOf(group)}:$index:${format.id}"
                     PlayerTrack(
                         id = id,
-                        name = format.label ?: buildLabel(format = format) ?: "Audio #${index + 1}",
+                        label = format.label ?: buildLabel(format = format) ?: "Audio #${index + 1}",
                         language = format.language,
                         type = PlayerTrack.Type.AUDIO
                     )
@@ -111,7 +109,7 @@ class PlayerStateHolder(context: Context) : Player.Listener {
                     val id = "${tracks.groups.indexOf(group)}:$index:${format.id}"
                     PlayerTrack(
                         id = id,
-                        name = format.label ?: buildLabel(format = format) ?: "Subtitles #${index + 1}",
+                        label = format.label ?: buildLabel(format = format) ?: "Subtitles #${index + 1}",
                         language = format.language,
                         type = PlayerTrack.Type.SUBTITLES
                     )

@@ -13,6 +13,7 @@ import com.kaem.flux.model.artwork.Status
 import com.kaem.flux.utils.extensions.lastEpisode
 import com.kaem.flux.utils.extensions.msToMin
 import com.kaem.flux.utils.extensions.timeDescription
+import com.kaem.flux.utils.extensions.toPlayerTrack
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -136,12 +137,12 @@ class PlayerViewModel @AssistedInject constructor(
         if (_tracksState.value.selectedSubtitles == null) {
 
             val currentSettings = settingsRepository.flow.first()
-            val preferredLang = currentSettings.subtitlesLanguage.language
+            val preferredLang = currentSettings.subtitlesLanguage.toPlayerTrack(type = PlayerTrack.Type.SUBTITLES)
 
-            _event.emit(PlayerEvent.SelectTrack(type = PlayerTrack.Type.SUBTITLES, language = preferredLang))
+            _event.emit(PlayerEvent.SelectTrack(preferredLang))
 
             _tracksState.update { state ->
-                state.copy(selectedSubtitles = tracks.find { it.language == preferredLang })
+                state.copy(selectedSubtitles = tracks.find { it.language == preferredLang.language })
             }
 
         }
@@ -155,12 +156,12 @@ class PlayerViewModel @AssistedInject constructor(
                 PlayerTrack.Type.SUBTITLES -> it.copy(selectedSubtitles = track)
             }
         }
-        _event.emit(PlayerEvent.SelectTrack(type = track.type, language = track.language))
+        _event.emit(PlayerEvent.SelectTrack(track = track))
 
         try {
 
             if (track.type == PlayerTrack.Type.SUBTITLES && track.language != null) {
-                val locale = Locale.of(track.language)
+                val locale = Locale.forLanguageTag(track.language)
                 settingsRepository.setSubtitlesLanguage(locale)
             }
 

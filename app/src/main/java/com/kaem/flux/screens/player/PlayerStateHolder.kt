@@ -1,6 +1,7 @@
 package com.kaem.flux.screens.player
 
 import android.content.Context
+import android.util.Log
 import androidx.annotation.OptIn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -12,6 +13,8 @@ import androidx.media3.common.C
 import androidx.media3.common.Format
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
+import androidx.media3.common.TrackSelectionOverride
+import androidx.media3.common.TrackSelectionParameters
 import androidx.media3.common.Tracks
 import androidx.media3.common.text.Cue
 import androidx.media3.common.util.UnstableApi
@@ -136,24 +139,64 @@ class PlayerStateHolder(context: Context) : Player.Listener {
 
     }
 
-    fun selectTrack(type: PlayerTrack.Type, language: String?) {
+    fun selectTrack(track: PlayerTrack) {
+
+        val currentTracks = player.currentTracks
 
         player.trackSelectionParameters = player.trackSelectionParameters
             .buildUpon()
             .apply {
-                when (type) {
+                when (track.type) {
                     PlayerTrack.Type.AUDIO -> {
-                        language?.let { setPreferredAudioLanguage(it) }
+
+                        clearOverridesOfType(C.TRACK_TYPE_AUDIO)
+
+                        if (track.id != null) {
+                            applyTrackOverride(trackId = track.id, groups = currentTracks.groups)
+                        } else {
+                            track.language?.let { setPreferredAudioLanguage(it) }
+                        }
+
                     }
                     PlayerTrack.Type.SUBTITLES -> {
 
-                        setTrackTypeDisabled(C.TRACK_TYPE_TEXT, language == null)
-                        if (language != null) setPreferredTextLanguage(language)
+                        clearOverridesOfType(C.TRACK_TYPE_TEXT)
+
+                        if (track.language == null) { // If no subtitle
+                            setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
+                        } else {
+                            setTrackTypeDisabled(C.TRACK_TYPE_TEXT, false)
+
+                            // Select track from player tracks or user preferences
+                            if (track.id != null) {
+                                applyTrackOverride(trackId = track.id, groups = currentTracks.groups)
+                            } else {
+                                setPreferredTextLanguage(track.language)
+                            }
+                        }
                     }
                 }
             }
             .build()
 
+    }
+
+    private fun TrackSelectionParameters.Builder.applyTrackOverride(
+        trackId: String,
+        groups: List<Tracks.Group>
+    ) {
+        try {
+            val parts = trackId.split(":")
+            val groupIndex = parts[0].toInt()
+            val trackIndex = parts[1].toInt()
+
+            if (groupIndex < groups.size) {
+                val group = groups[groupIndex].mediaTrackGroup
+                addOverride(TrackSelectionOverride(group, trackIndex))
+            }
+        } catch (e: Exception) {
+            Log.e("PlayerStateHolder", "Fail to apply track", e)
+        }
     }
 
     fun togglePlayButton() {

@@ -82,7 +82,7 @@ fun PlayerScreen(
                     is PlayerEvent.SeekRewind -> stateHolder.onFastRewind(value = event.time)
                     is PlayerEvent.SeekForward -> stateHolder.onFastForward(value = event.time)
                     is PlayerEvent.UpdateProgress -> stateHolder.updateProgress(progress = event.progress)
-                    is PlayerEvent.SelectTrack -> stateHolder.selectTrack(type = event.type, language = event.language)
+                    is PlayerEvent.SelectTrack -> stateHolder.selectTrack(track = event.track)
                     PlayerEvent.TogglePlayButton -> stateHolder.togglePlayButton()
                 }
             }

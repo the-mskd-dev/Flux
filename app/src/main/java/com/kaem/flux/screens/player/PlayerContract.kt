@@ -54,15 +54,22 @@ sealed class PlayerEvent {
     data class SeekForward(val time: Long) : PlayerEvent()
     data class UpdateProgress(val progress: Long) : PlayerEvent()
     data object TogglePlayButton : PlayerEvent()
-    data class SelectTrack(val type: PlayerTrack.Type, val language: String?) : PlayerEvent()
+    data class SelectTrack(val track: PlayerTrack) : PlayerEvent()
 }
 
 data class PlayerTrack(
-    val id: String,
+    val id: String? = null,
     val name: String,
-    val language: String?,
+    val language: String? = null,
     val type: Type
 ) {
+
+    constructor(language: String, type: Type) : this(
+        id = null,
+        name = language,
+        language = language,
+        type = type
+    )
 
     enum class Type {
         AUDIO, SUBTITLES

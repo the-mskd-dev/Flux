@@ -10,7 +10,6 @@ data class PlayerUiState(
     val screen: PlayerScreen = PlayerScreen.Loading,
     val playerRewind: Long = 10.seconds.inWholeMilliseconds,
     val playerForward: Long = 10.seconds.inWholeMilliseconds,
-    val subtitlesLanguage: Locale = Locale.getDefault(),
     val controls: Controls = Controls(),
     val tracks: Tracks = Tracks()
 ) {
@@ -23,8 +22,7 @@ data class PlayerUiState(
 
     @Immutable
     data class Tracks(
-        val audioTracks: List<PlayerTrack> = emptyList(),
-        val subtitlesTracks: List<PlayerTrack> = emptyList(),
+        val tracks: List<PlayerTrack> = emptyList(),
         val selectedAudio: PlayerTrack? = null,
         val selectedSubtitles: PlayerTrack? = null,
     )
@@ -46,7 +44,8 @@ sealed class PlayerIntent {
     data object OnFastForward : PlayerIntent()
     data class UpdateProgress(val progress: Long) : PlayerIntent()
     data object ShowSettings : PlayerIntent()
-    data class UpdateTracks(val audioTracks: List<PlayerTrack>, val subtitlesTracks: List<PlayerTrack>) : PlayerIntent()
+    data class UpdateTracks(val tracks: List<PlayerTrack>) : PlayerIntent()
+    data class SelectTrack(val track: PlayerTrack) : PlayerIntent()
 }
 
 sealed class PlayerEvent {
@@ -55,10 +54,18 @@ sealed class PlayerEvent {
     data class SeekForward(val time: Long) : PlayerEvent()
     data class UpdateProgress(val progress: Long) : PlayerEvent()
     data object TogglePlayButton : PlayerEvent()
+    data class SelectTrack(val type: PlayerTrack.Type, val language: String?) : PlayerEvent()
 }
 
 data class PlayerTrack(
     val id: String,
     val name: String,
-    val language: String?
-)
+    val language: String?,
+    val type: Type
+) {
+
+    enum class Type {
+        AUDIO, SUBTITLES
+    }
+
+}

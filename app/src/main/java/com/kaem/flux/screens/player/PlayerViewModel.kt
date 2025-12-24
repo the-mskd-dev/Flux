@@ -64,18 +64,20 @@ class PlayerViewModel @AssistedInject constructor(
 
         val media = artwork.movie ?: artwork.episodes.find { it.id == mediaId }
 
+        if (tracks.selectedSubtitles == null) {
+            _event.emit(PlayerEvent.SelectTrack(type = PlayerTrack.Type.SUBTITLES, language = settings.subtitlesLanguage.language))
+        }
+
         PlayerUiState(
             screen = media?.let { PlayerScreen.Content(media = media) } ?: PlayerScreen.Error,
             playerForward = settings.playerForwardValue.seconds.inWholeMilliseconds,
             playerRewind = settings.playerRewindValue.seconds.inWholeMilliseconds,
-            subtitlesLanguage = settings.subtitlesLanguage,
             controls = PlayerUiState.Controls(
                 showInterface = controls.showInterface,
                 showSettings = controls.showSettings
             ),
             tracks = PlayerUiState.Tracks(
-                audioTracks = tracks.audioTracks,
-                subtitlesTracks = tracks.subtitlesTracks,
+                tracks = tracks.tracks,
             )
         )
     }.stateIn(
@@ -98,7 +100,8 @@ class PlayerViewModel @AssistedInject constructor(
             PlayerIntent.OnFastRewind -> onFastRewind()
             PlayerIntent.OnFastForward -> onFastForward()
             is PlayerIntent.UpdateProgress -> updateProgress(progress = intent.progress)
-            is PlayerIntent.UpdateTracks -> updateTracks(audioTracks = intent.audioTracks, subtitlesTracks = intent.subtitlesTracks)
+            is PlayerIntent.UpdateTracks -> updateTracks(tracks = intent.tracks)
+            is PlayerIntent.SelectTrack -> selectTracks(track = intent.track)
         }
     }
 
@@ -130,10 +133,19 @@ class PlayerViewModel @AssistedInject constructor(
         _controlsState.update { it.copy(showSettings = !it.showSettings) }
     }
 
-    private fun updateTracks(audioTracks: List<PlayerTrack>, subtitlesTracks: List<PlayerTrack>) {
-        _tracksState.update { it.copy(audioTracks = audioTracks, subtitlesTracks = subtitlesTracks) }
+    private fun updateTracks(tracks: List<PlayerTrack>) {
+        _tracksState.update { it.copy(tracks = tracks) }
     }
 
+    private suspend fun selectTracks(track: PlayerTrack) {
+        _tracksState.update {
+            when (track.type) {
+                PlayerTrack.Type.AUDIO -> it.copy(selectedAudio = track)
+                PlayerTrack.Type.SUBTITLES -> it.copy(selectedSubtitles = track)
+            }
+        }
+        _event.emit(PlayerEvent.SelectTrack(type = track.type, language = track.language))
+    }
     private suspend fun onBackTap(time: Long?) {
 
         time?.let { saveTime(time = it) }

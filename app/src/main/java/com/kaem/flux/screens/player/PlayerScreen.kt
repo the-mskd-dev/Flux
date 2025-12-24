@@ -52,8 +52,7 @@ fun PlayerScreen(
 
     val isPlaying by stateHolder.isPlaying.collectAsStateWithLifecycle()
     val subtitles by stateHolder.subtitles.collectAsStateWithLifecycle()
-    val audiosTracks by stateHolder.audiosTracks.collectAsStateWithLifecycle()
-    val subtitlesTracks by stateHolder.subtitlesTracks.collectAsStateWithLifecycle()
+    val tracks by stateHolder.tracks.collectAsStateWithLifecycle()
 
     val activity = LocalContext.current.findActivity()
     val originalOrientation = remember { activity?.requestedOrientation }
@@ -70,8 +69,8 @@ fun PlayerScreen(
         }
     }
 
-    LaunchedEffect(audiosTracks, subtitlesTracks) {
-        viewModel.handleIntent(PlayerIntent.UpdateTracks(audioTracks = audiosTracks, subtitlesTracks = subtitlesTracks))
+    LaunchedEffect(tracks) {
+        viewModel.handleIntent(PlayerIntent.UpdateTracks(tracks = tracks))
     }
 
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -80,9 +79,10 @@ fun PlayerScreen(
             viewModel.event.collect { event ->
                 when (event) {
                     PlayerEvent.BackToPreviousScreen -> onBack()
-                    is PlayerEvent.SeekRewind -> stateHolder.onFastRewind(event.time)
-                    is PlayerEvent.SeekForward -> stateHolder.onFastForward(event.time)
-                    is PlayerEvent.UpdateProgress -> stateHolder.updateProgress(event.progress)
+                    is PlayerEvent.SeekRewind -> stateHolder.onFastRewind(value = event.time)
+                    is PlayerEvent.SeekForward -> stateHolder.onFastForward(value = event.time)
+                    is PlayerEvent.UpdateProgress -> stateHolder.updateProgress(progress = event.progress)
+                    is PlayerEvent.SelectTrack -> stateHolder.selectTrack(type = event.type, language = event.language)
                     PlayerEvent.TogglePlayButton -> stateHolder.togglePlayButton()
                 }
             }

@@ -40,11 +40,8 @@ class PlayerStateHolder(context: Context) : Player.Listener {
     private val _isPlaying = MutableStateFlow(false)
     val isPlaying: StateFlow<Boolean> = _isPlaying.asStateFlow()
 
-    private val _audiosTracks = MutableStateFlow<List<PlayerTrack>>(emptyList())
-    val audiosTracks = _audiosTracks.asStateFlow()
-
-    private val _subtitlesTracks = MutableStateFlow<List<PlayerTrack>>(emptyList())
-    val subtitlesTracks = _subtitlesTracks.asStateFlow()
+    private val _tracks = MutableStateFlow<List<PlayerTrack>>(emptyList())
+    val tracks = _tracks.asStateFlow()
 
     //endregion
 
@@ -84,7 +81,8 @@ class PlayerStateHolder(context: Context) : Player.Listener {
     override fun onTracksChanged(tracks: Tracks) {
         super.onTracksChanged(tracks)
 
-        _audiosTracks.value = tracks.groups
+
+        val audiosTracks = tracks.groups
             .filter { it.type == C.TRACK_TYPE_AUDIO }
             .flatMap { group ->
                 (0 until group.length).map { index ->
@@ -92,12 +90,13 @@ class PlayerStateHolder(context: Context) : Player.Listener {
                     PlayerTrack(
                         id = format.id ?: "${format.language}_$index",
                         name = format.label ?: format.language ?: "Audio ${index + 1}",
-                        language = format.language
+                        language = format.language,
+                        type = PlayerTrack.Type.AUDIO
                     )
                 }
             }
 
-        _subtitlesTracks.value = tracks.groups
+        val subtitlesTracks = tracks.groups
             .filter { it.type == C.TRACK_TYPE_TEXT }
             .flatMap { group ->
                 (0 until group.length).map { index ->
@@ -105,10 +104,14 @@ class PlayerStateHolder(context: Context) : Player.Listener {
                     PlayerTrack(
                         id = format.id ?: "${format.language}_$index",
                         name = format.label ?: format.language ?: "Subtitle ${index + 1}",
-                        language = format.language
+                        language = format.language,
+                        type = PlayerTrack.Type.SUBTITLES
                     )
                 }
             }
+
+        _tracks.value = audiosTracks + subtitlesTracks
+
     }
 
     fun playMedia(media: Media?) {
@@ -118,6 +121,26 @@ class PlayerStateHolder(context: Context) : Player.Listener {
             player.seekTo(media.currentTime)
             player.prepare()
         }
+
+    }
+
+    fun selectTrack(type: PlayerTrack.Type, language: String?) {
+
+        player.trackSelectionParameters = player.trackSelectionParameters
+            .buildUpon()
+            .apply {
+                when (type) {
+                    PlayerTrack.Type.AUDIO -> {
+                        language?.let { setPreferredAudioLanguage(it) }
+                    }
+                    PlayerTrack.Type.SUBTITLES -> {
+
+                        setTrackTypeDisabled(C.TRACK_TYPE_TEXT, language == null)
+                        if (language != null) setPreferredTextLanguage(language)
+                    }
+                }
+            }
+            .build()
 
     }
 

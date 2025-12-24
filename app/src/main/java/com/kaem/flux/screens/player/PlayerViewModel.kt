@@ -35,7 +35,7 @@ class PlayerViewModel @AssistedInject constructor(
     @Assisted mediaId: Long,
     private val artworkRepository: ArtworkRepository,
     private val userRepository: UserRepository,
-    settingsRepository: SettingsRepository
+    private val settingsRepository: SettingsRepository
 ) : ViewModel() {
 
     //region Factory
@@ -63,10 +63,6 @@ class PlayerViewModel @AssistedInject constructor(
     ) { artwork, settings, controls, tracks ->
 
         val media = artwork.movie ?: artwork.episodes.find { it.id == mediaId }
-
-        if (tracks.selectedSubtitles == null) {
-            _event.emit(PlayerEvent.SelectTrack(type = PlayerTrack.Type.SUBTITLES, language = settings.subtitlesLanguage.language))
-        }
 
         PlayerUiState(
             screen = media?.let { PlayerScreen.Content(media = media) } ?: PlayerScreen.Error,
@@ -133,8 +129,20 @@ class PlayerViewModel @AssistedInject constructor(
         _controlsState.update { it.copy(showSettings = !it.showSettings) }
     }
 
-    private fun updateTracks(tracks: List<PlayerTrack>) {
+    private suspend fun updateTracks(tracks: List<PlayerTrack>) {
         _tracksState.update { it.copy(tracks = tracks) }
+
+        if (_tracksState.value.selectedSubtitles == null) {
+
+            val currentSettings = settingsRepository.flow.first()
+            val preferredLang = currentSettings.subtitlesLanguage.language
+
+            _event.emit(PlayerEvent.SelectTrack(type = PlayerTrack.Type.SUBTITLES, language = preferredLang))
+
+            _tracksState.update { state ->
+                state.copy(selectedSubtitles = tracks.find { it.language == preferredLang })
+            }
+        }
     }
 
     private suspend fun selectTracks(track: PlayerTrack) {

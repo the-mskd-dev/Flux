@@ -145,6 +145,14 @@ class PlayerViewModel @AssistedInject constructor(
             }
 
         }
+
+        tracks.filter { it.type == PlayerTrack.Type.AUDIO }.forEach {
+            Log.i("PlayerViewModel", "Audio: $it")
+        }
+
+        tracks.filter { it.type == PlayerTrack.Type.SUBTITLES }.forEach {
+            Log.i("PlayerViewModel", "Subtitles: $it")
+        }
     }
 
     private suspend fun selectTracks(track: PlayerTrack) {

@@ -9,6 +9,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.net.toUri
 import androidx.media3.common.C
+import androidx.media3.common.Format
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.Tracks
@@ -17,6 +18,8 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.SeekParameters
+import androidx.media3.extractor.text.Subtitle
+import androidx.room.Index
 import com.kaem.flux.model.artwork.Media
 import com.kaem.flux.utils.extensions.findActivity
 import com.kaem.flux.utils.extensions.forceScreenOn
@@ -27,6 +30,7 @@ import com.kaem.flux.utils.extensions.showSystemBars
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import java.util.Locale
 
 @UnstableApi
 @Stable
@@ -81,15 +85,15 @@ class PlayerStateHolder(context: Context) : Player.Listener {
     override fun onTracksChanged(tracks: Tracks) {
         super.onTracksChanged(tracks)
 
-
         val audiosTracks = tracks.groups
             .filter { it.type == C.TRACK_TYPE_AUDIO }
             .flatMap { group ->
                 (0 until group.length).map { index ->
                     val format = group.getTrackFormat(index)
+                    val id = "${tracks.groups.indexOf(group)}:$index:${format.id}"
                     PlayerTrack(
-                        id = format.id ?: "${format.language}_$index",
-                        name = format.label ?: format.language ?: "Audio ${index + 1}",
+                        id = id,
+                        name = format.label ?: buildLabel(format = format) ?: "Audio #${index + 1}",
                         language = format.language,
                         type = PlayerTrack.Type.AUDIO
                     )
@@ -101,9 +105,10 @@ class PlayerStateHolder(context: Context) : Player.Listener {
             .flatMap { group ->
                 (0 until group.length).map { index ->
                     val format = group.getTrackFormat(index)
+                    val id = "${tracks.groups.indexOf(group)}:$index:${format.id}"
                     PlayerTrack(
-                        id = format.id ?: "${format.language}_$index",
-                        name = format.label ?: format.language ?: "Subtitle ${index + 1}",
+                        id = id,
+                        name = format.label ?: buildLabel(format = format) ?: "Subtitles #${index + 1}",
                         language = format.language,
                         type = PlayerTrack.Type.SUBTITLES
                     )
@@ -112,6 +117,13 @@ class PlayerStateHolder(context: Context) : Player.Listener {
 
         _tracks.value = audiosTracks + subtitlesTracks
 
+    }
+
+    private fun buildLabel(format: Format): String? {
+        return format.language?.let { language ->
+            val locale = Locale.forLanguageTag(language)
+            locale.getDisplayName(locale)
+        }
     }
 
     fun playMedia(media: Media?) {
@@ -141,18 +153,6 @@ class PlayerStateHolder(context: Context) : Player.Listener {
                 }
             }
             .build()
-
-    }
-
-    private fun selectSubtitles(language: String) {
-
-        val currentLang = player.trackSelectionParameters.preferredTextLanguages.firstOrNull()
-        if (currentLang != language) {
-            player.trackSelectionParameters = player.trackSelectionParameters
-                .buildUpon()
-                .setPreferredTextLanguage(language)
-                .build()
-        }
 
     }
 

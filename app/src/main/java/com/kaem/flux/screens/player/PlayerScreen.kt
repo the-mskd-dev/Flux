@@ -82,9 +82,8 @@ fun PlayerScreen(
                     player = stateHolder.player,
                     isPlaying = isPlaying,
                     subtitles =  { subtitles },
+                    controlsState = { state.controls },
                     tracksState = { state.tracks },
-                    showInterface = state.controls.showInterface,
-                    showSettings = state.controls.showSettings,
                     sendIntent = viewModel::handleIntent
                 )
             }
@@ -101,12 +100,12 @@ fun PlayerContent(
     player: Player,
     isPlaying: Boolean,
     subtitles: () -> List<Cue>,
+    controlsState: () -> PlayerUiState.Controls,
     tracksState: () -> PlayerUiState.Tracks,
-    showInterface: Boolean,
-    showSettings: Boolean,
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
+    val controls = controlsState()
     var wasPlayingBeforeBackground by remember { mutableStateOf(false) }
 
     LifecycleComponent(
@@ -147,7 +146,7 @@ fun PlayerContent(
 
         PlayerInterface(
             media = media,
-            showInterface = showInterface,
+            showInterface = controls.showInterface,
             isPlaying = isPlaying,
             player = player,
             sendIntent = sendIntent,
@@ -155,7 +154,7 @@ fun PlayerContent(
 
     }
 
-    if (showSettings) {
+    if (controls.showSettings) {
         PlayerSettingsSheet(
             tracksState = tracksState,
             sendIntent = sendIntent

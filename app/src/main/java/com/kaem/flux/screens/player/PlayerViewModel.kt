@@ -17,6 +17,7 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -24,6 +25,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -50,8 +52,8 @@ class PlayerViewModel @AssistedInject constructor(
 
     //region Flow
 
-    private val _event = MutableSharedFlow<PlayerEvent>()
-    val event = _event.asSharedFlow()
+    private val _event = Channel<PlayerEvent>(Channel.BUFFERED)
+    val event = _event.receiveAsFlow()
 
     private val _controlsState = MutableStateFlow(PlayerUiState.Controls())
     private val _tracksState = MutableStateFlow(PlayerUiState.Tracks())
@@ -104,7 +106,7 @@ class PlayerViewModel @AssistedInject constructor(
     //region Private methods
 
     private suspend fun togglePlayButton() {
-        _event.emit(PlayerEvent.TogglePlayButton)
+        _event.send(PlayerEvent.TogglePlayButton)
     }
 
     private fun setPlayingStatus(isPlaying: Boolean) {
@@ -112,15 +114,15 @@ class PlayerViewModel @AssistedInject constructor(
     }
 
     private suspend fun onFastRewind() {
-        _event.emit(PlayerEvent.SeekRewind(uiState.value.playerRewind))
+        _event.send(PlayerEvent.SeekRewind(uiState.value.playerRewind))
     }
 
     private suspend fun onFastForward() {
-        _event.emit(PlayerEvent.SeekForward(uiState.value.playerForward))
+        _event.send(PlayerEvent.SeekForward(uiState.value.playerForward))
     }
 
     private suspend fun updateProgress(progress: Long) {
-        _event.emit(PlayerEvent.UpdateProgress(progress = progress))
+        _event.send(PlayerEvent.UpdateProgress(progress = progress))
     }
 
     private fun showInterface() {
@@ -139,14 +141,14 @@ class PlayerViewModel @AssistedInject constructor(
             val currentSettings = settingsRepository.flow.first()
             val preferredLang = currentSettings.subtitlesLanguage.toPlayerTrack(type = PlayerTrack.Type.SUBTITLES)
 
-            _event.emit(PlayerEvent.SelectTrack(preferredLang))
+            _event.send(PlayerEvent.SelectTrack(preferredLang))
 
         }
 
     }
 
     private suspend fun selectTracks(track: PlayerTrack) {
-        _event.emit(PlayerEvent.SelectTrack(track = track))
+        _event.send(PlayerEvent.SelectTrack(track = track))
     }
 
     private suspend fun onTrackSelected(track: PlayerTrack) {
@@ -179,7 +181,7 @@ class PlayerViewModel @AssistedInject constructor(
         val showInterface = uiState.value.controls.showInterface
 
         if (showInterface) {
-            _event.emit(PlayerEvent.BackToPreviousScreen)
+            _event.send(PlayerEvent.BackToPreviousScreen)
         } else {
             showInterface()
         }

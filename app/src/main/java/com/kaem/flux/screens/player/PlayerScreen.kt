@@ -98,19 +98,6 @@ fun PlayerContent(
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
-    var wasPlayingBeforeBackground by remember { mutableStateOf(false) }
-
-    LifecycleComponent(
-        onBackground = {
-            wasPlayingBeforeBackground = player.isPlaying
-            if (player.isPlaying) sendIntent(PlayerIntent.TogglePlayButton)
-            sendIntent(PlayerIntent.SaveTime(time = player.currentPosition))
-        },
-        onForeground = {
-            if (wasPlayingBeforeBackground) player.play()
-        }
-    )
-
     BackHandler(enabled = true) {
         sendIntent(PlayerIntent.OnBackTap(time = player.currentPosition))
     }

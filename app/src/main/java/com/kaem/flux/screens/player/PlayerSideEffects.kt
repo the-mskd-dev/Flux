@@ -1,15 +1,20 @@
 package com.kaem.flux.screens.player
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
+import com.kaem.flux.ui.component.LifecycleComponent
 import com.kaem.flux.utils.extensions.findActivity
 import kotlinx.coroutines.launch
 
@@ -24,6 +29,7 @@ fun PlayerSideEffects(
     val lifecycleOwner = LocalLifecycleOwner.current
     val activity = LocalContext.current.findActivity()
     val originalOrientation = remember { activity?.requestedOrientation }
+    var wasPlayingBeforeBackground by rememberSaveable { mutableStateOf(false) }
 
     // Set landscape and reset orientation on dispose
     DisposableEffect(Unit) {
@@ -77,4 +83,22 @@ fun PlayerSideEffects(
             }
         }
     }
+
+    LifecycleComponent(
+        onBackground = {
+            wasPlayingBeforeBackground = stateHolder.player.isPlaying
+            if (wasPlayingBeforeBackground) {
+                viewModel.handleIntent(PlayerIntent.TogglePlayButton)
+            }
+
+            viewModel.handleIntent(PlayerIntent.SaveTime(time = stateHolder.player.currentPosition))
+        },
+        onForeground = {
+            if (wasPlayingBeforeBackground) {
+                viewModel.handleIntent(PlayerIntent.TogglePlayButton)
+                wasPlayingBeforeBackground = false
+            }
+        }
+    )
+
 }

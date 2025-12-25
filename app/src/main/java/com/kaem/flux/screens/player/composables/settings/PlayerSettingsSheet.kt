@@ -38,22 +38,22 @@ fun PlayerSettingsSheet(
         Column(modifier = Modifier.fillMaxWidth()) {
 
             PlayerSettingsItem(
-                label = "Subtitles",
-                value = tracksState().selectedSubtitles?.label ?: "None",
-                onTap = {
-                    val intent =PlayerUiState.SettingsSheet.Tracks(type = PlayerTrack.Type.SUBTITLES)
-                    sendIntent(PlayerIntent.ShowSettings(sheet = intent)) }
-            )
-
-            HorizontalDivider(modifier = Modifier.padding(horizontal = Ui.Space.MEDIUM))
-
-            PlayerSettingsItem(
                 label = "Audio",
                 value = tracksState().selectedAudio?.label ?: "None",
                 onTap = {
                     val intent =PlayerUiState.SettingsSheet.Tracks(type = PlayerTrack.Type.AUDIO)
                     sendIntent(PlayerIntent.ShowSettings(sheet = intent))
                 }
+            )
+
+            HorizontalDivider(modifier = Modifier.padding(horizontal = Ui.Space.MEDIUM))
+
+            PlayerSettingsItem(
+                label = "Subtitles",
+                value = tracksState().selectedSubtitles?.label ?: "None",
+                onTap = {
+                    val intent =PlayerUiState.SettingsSheet.Tracks(type = PlayerTrack.Type.SUBTITLES)
+                    sendIntent(PlayerIntent.ShowSettings(sheet = intent)) }
             )
 
         }

@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.net.toUri
 import androidx.media3.common.C
@@ -21,6 +22,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.SeekParameters
+import com.kaem.flux.R
 import com.kaem.flux.model.artwork.Media
 import com.kaem.flux.utils.extensions.findActivity
 import com.kaem.flux.utils.extensions.forceScreenOn
@@ -28,18 +30,23 @@ import com.kaem.flux.utils.extensions.hideSystemBars
 import com.kaem.flux.utils.extensions.setAppInLandscape
 import com.kaem.flux.utils.extensions.setAppOrientation
 import com.kaem.flux.utils.extensions.showSystemBars
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import java.util.Locale
 
 
 @OptIn(UnstableApi::class)
 @Stable
-class PlayerStateHolder(context: Context) : Player.Listener {
+class PlayerStateHolder(
+    private val context: Context,
+    private val scope: CoroutineScope
+) : Player.Listener {
 
     //region States
 
@@ -94,37 +101,46 @@ class PlayerStateHolder(context: Context) : Player.Listener {
     override fun onTracksChanged(tracks: Tracks) {
         super.onTracksChanged(tracks)
 
-        val audiosTracks = tracks.groups
-            .filter { it.type == C.TRACK_TYPE_AUDIO }
-            .flatMap { group ->
-                (0 until group.length).map { index ->
-                    val format = group.getTrackFormat(index)
-                    val id = "${tracks.groups.indexOf(group)}:$index:${format.id}"
-                    PlayerTrack(
-                        id = id,
-                        label = format.label ?: buildLabel(format = format) ?: "Audio #${index + 1}",
-                        language = format.language,
-                        type = PlayerTrack.Type.AUDIO
-                    )
+        val allTracks = mutableListOf<PlayerTrack>()
+
+        tracks.groups
+            .filter { it.type == C.TRACK_TYPE_AUDIO || it.type == C.TRACK_TYPE_TEXT }
+            .forEachIndexed { groupIndex, group ->
+
+                val type = group.type
+
+                if (type == C.TRACK_TYPE_AUDIO || type == C.TRACK_TYPE_TEXT) {
+
+                    for (index in 0 until group.length) {
+                        val format = group.getTrackFormat(index)
+                        val isSelected = group.isTrackSelected(index)
+
+                        val trackType = if (type == C.TRACK_TYPE_AUDIO) PlayerTrack.Type.AUDIO else PlayerTrack.Type.SUBTITLES
+                        val defaultLabel = if (type == C.TRACK_TYPE_AUDIO) context.getString(R.string.audio_track) else context.getString(R.string.subtitles)
+
+                        val id = "$groupIndex:$index:${format.id}"
+
+                        val playerTrack = PlayerTrack(
+                            id = id,
+                            label = format.label ?: buildLabel(format) ?: "$defaultLabel #${index + 1}",
+                            language = format.language,
+                            type = trackType
+                        )
+
+                        allTracks.add(playerTrack)
+
+                        // Get default selected tracks
+                        if (isSelected) {
+                            scope.launch {
+                                _selectedTrack.emit(playerTrack)
+                            }
+                        }
+                    }
                 }
+
             }
 
-        val subtitlesTracks = tracks.groups
-            .filter { it.type == C.TRACK_TYPE_TEXT }
-            .flatMap { group ->
-                (0 until group.length).map { index ->
-                    val format = group.getTrackFormat(index)
-                    val id = "${tracks.groups.indexOf(group)}:$index:${format.id}"
-                    PlayerTrack(
-                        id = id,
-                        label = format.label ?: buildLabel(format = format) ?: "Subtitles #${index + 1}",
-                        language = format.language,
-                        type = PlayerTrack.Type.SUBTITLES
-                    )
-                }
-            }
-
-        _tracks.value = audiosTracks + subtitlesTracks
+        _tracks.value = allTracks
 
     }
 
@@ -294,10 +310,15 @@ class PlayerStateHolder(context: Context) : Player.Listener {
 @OptIn(UnstableApi::class)
 @Composable
 fun rememberPlayerStateHolder(
-    context: Context = LocalContext.current
+    context: Context = LocalContext.current,
+    scope: CoroutineScope = rememberCoroutineScope()
 ): PlayerStateHolder {
+
     val holder = remember(context) {
-        PlayerStateHolder(context)
+        PlayerStateHolder(
+            context = context,
+            scope = scope
+        )
     }
 
     DisposableEffect(Unit) {

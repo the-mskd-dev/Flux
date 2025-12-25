@@ -66,4 +66,6 @@
     <string name="make_a_donation">Make a donation</string>
     <string name="episode_list">Episode list</string>
     <string name="watched">Watched</string>
+    <string name="subtitles">Subtitles</string>
+    <string name="audio_track">Audio track</string>
 </resources>

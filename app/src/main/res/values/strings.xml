@@ -70,4 +70,6 @@
     <string name="make_a_donation">Faire un don</string>
     <string name="episode_list">Liste des épisodes</string>
     <string name="watched">Vu</string>
+    <string name="subtitles">Sous-titres</string>
+    <string name="audio_track">Piste audio</string>
 </resources>

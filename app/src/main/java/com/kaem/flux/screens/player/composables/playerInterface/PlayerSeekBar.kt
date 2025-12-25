@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
+import androidx.media3.common.C
 import androidx.media3.common.Player
 import com.kaem.flux.screens.player.PlayerIntent
 import com.kaem.flux.ui.component.Text
@@ -46,6 +47,9 @@ fun PlayerSeekBar(
     var sliderPosition by rememberSaveable { mutableFloatStateOf(player.currentPosition.toFloat()) }
     val interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
     val isDragged by interactionSource.collectIsDraggedAsState()
+    val duration = remember(player.contentDuration) {
+        if (player.contentDuration == C.TIME_UNSET) 0L else player.contentDuration
+    }
 
     LaunchedEffect(showInterface, isDragged) {
         while (showInterface && !isDragged) {
@@ -75,15 +79,15 @@ fun PlayerSeekBar(
                 sliderPosition = it
                 sendIntent(PlayerIntent.UpdateProgress(it.toLong()))
             },
-            valueRange = 0f..player.duration.toFloat(),
+            valueRange = 0f..duration.toFloat(),
             onValueChangeFinished = { sendIntent(PlayerIntent.UpdateProgress(sliderPosition.toLong())) },
             interactionSource = interactionSource,
             isPlaying = isPlaying,
-            duration = player.duration
+            duration = duration
         )
 
         PlayerSeekBarTime(
-            time = { player.duration }
+            time = { duration }
         )
 
     }

@@ -143,9 +143,11 @@ class PlayerStateHolder(
     fun playMedia(media: Media?) {
 
         if (media != null && media.mediaId != currentMediaId) {
+            Log.d("TEST", "playMedia, mediaId : ${media?.mediaId} - currentMediaId : $currentMediaId")
             player.setMediaItem(MediaItem.fromUri(media.file.path.toUri()))
             player.seekTo(media.currentTime)
             player.prepare()
+            currentMediaId = media.mediaId
         }
 
     }

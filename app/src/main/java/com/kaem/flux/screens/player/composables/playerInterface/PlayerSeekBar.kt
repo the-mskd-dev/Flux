@@ -47,9 +47,7 @@ fun PlayerSeekBar(
     var sliderPosition by rememberSaveable { mutableFloatStateOf(player.currentPosition.toFloat()) }
     val interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
     val isDragged by interactionSource.collectIsDraggedAsState()
-    val duration = remember(player.contentDuration) {
-        if (player.contentDuration == C.TIME_UNSET) 0L else player.contentDuration
-    }
+    val duration = player.contentDuration
 
     LaunchedEffect(showInterface, isDragged) {
         while (showInterface && !isDragged) {

@@ -15,8 +15,9 @@ data class PlayerUiState(
 
     @Immutable
     data class Controls(
+        val isPlaying: Boolean = false,
         val showInterface: Boolean = false,
-        val settingsSheetSheets: SettingsSheet? = null
+        val settingsSheet: SettingsSheet? = null
     )
 
     @Immutable
@@ -44,6 +45,7 @@ sealed class PlayerIntent {
     data class OnBackTap(val time: Long? = null) : PlayerIntent()
     data object ShowInterface : PlayerIntent()
     data object TogglePlayButton : PlayerIntent()
+    data class SetPlayingStatus(val isPlaying: Boolean) : PlayerIntent()
     data object OnFastRewind : PlayerIntent()
     data object OnFastForward : PlayerIntent()
     data class UpdateProgress(val progress: Long) : PlayerIntent()

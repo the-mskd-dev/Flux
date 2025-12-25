@@ -16,19 +16,21 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.media3.common.Player
 import com.kaem.flux.model.artwork.Media
 import com.kaem.flux.screens.player.PlayerIntent
+import com.kaem.flux.screens.player.PlayerUiState
 import com.kaem.flux.ui.theme.Ui
 
 @Composable
 fun PlayerInterface(
     media: Media,
-    showInterface: Boolean,
-    isPlaying: Boolean,
     player: Player,
+    controlsState: () -> PlayerUiState.Controls,
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
+    val controls = controlsState()
+
     AnimatedVisibility(
-        visible = showInterface,
+        visible = controls.showInterface,
         enter = fadeIn(animationSpec = spring(stiffness = Spring.StiffnessLow)),
         exit = fadeOut(animationSpec = spring(stiffness = Spring.StiffnessLow)),
     ) {
@@ -53,15 +55,15 @@ fun PlayerInterface(
 
             PlayerControlButtons(
                 layoutId = "controlButtons",
-                isPlaying = isPlaying,
+                isPlaying = controls.isPlaying,
                 sendIntent = sendIntent
             )
 
             PlayerSeekBar(
                 layoutId = "seekBar",
                 player = player,
-                showInterface = showInterface,
-                isPlaying = isPlaying,
+                showInterface = controls.showInterface,
+                isPlaying = controls.isPlaying,
                 sendIntent = sendIntent
             )
 

@@ -53,8 +53,8 @@ class PlayerStateHolder(
     private val _subtitles = MutableStateFlow<List<Cue>>(emptyList())
     val subtitles: StateFlow<List<Cue>> = _subtitles.asStateFlow()
 
-    private val _isPlaying = MutableStateFlow(false)
-    val isPlaying: StateFlow<Boolean> = _isPlaying.asStateFlow()
+    private val _isPlaying = MutableSharedFlow<Boolean>()
+    val isPlaying = _isPlaying.asSharedFlow()
 
     private val _tracks = MutableStateFlow<List<PlayerTrack>>(emptyList())
     val tracks = _tracks.asStateFlow()
@@ -94,7 +94,10 @@ class PlayerStateHolder(
                 Player.EVENT_IS_PLAYING_CHANGED
             )
         ) {
-            _isPlaying.value = player.playWhenReady
+            scope.launch {
+                _isPlaying.emit(player.playWhenReady)
+
+            }
         }
     }
 

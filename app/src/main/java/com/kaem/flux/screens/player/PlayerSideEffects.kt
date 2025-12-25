@@ -49,14 +49,20 @@ fun PlayerSideEffects(
     LaunchedEffect(lifecycleOwner) {
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
 
-            // Events from VM
+            // Events from SH
             launch {
                 stateHolder.selectedTrack.collect { track ->
                     viewModel.handleIntent(PlayerIntent.OnTrackSelected(track))
                 }
             }
 
-            // Events from SH
+            launch {
+                stateHolder.isPlaying.collect { isPlaying ->
+                    viewModel.handleIntent(PlayerIntent.SetPlayingStatus(isPlaying = isPlaying))
+                }
+            }
+
+            // Events from VM
             launch {
                 viewModel.event.collect { event ->
                     when (event) {

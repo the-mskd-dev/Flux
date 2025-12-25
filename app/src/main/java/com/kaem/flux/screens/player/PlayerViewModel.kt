@@ -89,6 +89,7 @@ class PlayerViewModel @AssistedInject constructor(
             is PlayerIntent.SaveTime -> saveTime(time = intent.time)
             is PlayerIntent.OnBackTap -> onBackTap(time = intent.time)
             PlayerIntent.TogglePlayButton -> togglePlayButton()
+            is PlayerIntent.SetPlayingStatus -> setPlayingStatus(isPlaying = intent.isPlaying)
             PlayerIntent.OnFastRewind -> onFastRewind()
             PlayerIntent.OnFastForward -> onFastForward()
             is PlayerIntent.UpdateProgress -> updateProgress(progress = intent.progress)
@@ -104,6 +105,10 @@ class PlayerViewModel @AssistedInject constructor(
 
     private suspend fun togglePlayButton() {
         _event.emit(PlayerEvent.TogglePlayButton)
+    }
+
+    private fun setPlayingStatus(isPlaying: Boolean) {
+        _controlsState.update { it.copy(isPlaying = isPlaying) }
     }
 
     private suspend fun onFastRewind() {
@@ -123,7 +128,7 @@ class PlayerViewModel @AssistedInject constructor(
     }
 
     private fun showSettingsSheet(sheet: PlayerUiState.SettingsSheet?) {
-        _controlsState.update { it.copy(settingsSheetSheets = sheet) }
+        _controlsState.update { it.copy(settingsSheet = sheet) }
     }
 
     private suspend fun updateTracks(tracks: List<PlayerTrack>) {

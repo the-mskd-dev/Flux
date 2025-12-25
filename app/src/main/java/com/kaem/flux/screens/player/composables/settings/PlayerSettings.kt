@@ -6,12 +6,14 @@ import com.kaem.flux.screens.player.PlayerUiState
 
 @Composable
 fun PlayerSettings(
-    settingsSheet: PlayerUiState.SettingsSheet?,
+    controlsState: () -> PlayerUiState.Controls,
     tracksState: () -> PlayerUiState.Tracks,
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
-    when (settingsSheet) {
+    val controls = controlsState()
+
+    when (controls.settingsSheet) {
         PlayerUiState.SettingsSheet.Settings -> {
             PlayerSettingsSheet(
                 tracksState = tracksState,
@@ -21,7 +23,7 @@ fun PlayerSettings(
         is PlayerUiState.SettingsSheet.Tracks -> {
             PlayerTracksSheet(
                 tracksState = tracksState,
-                type = settingsSheet.type,
+                type = controls.settingsSheet.type,
                 sendIntent = sendIntent
             )
         }

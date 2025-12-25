@@ -1,5 +1,6 @@
 package com.kaem.flux.screens.player.composables.playerInterface
 
+import android.util.Log
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.layout.Arrangement
@@ -102,6 +103,8 @@ fun PlayerSlider(
     duration: Long,
 ) {
 
+    Log.d("PlayerSlider", "isPlaying: $isPlaying")
+
     Slider(
         modifier = modifier,
         value = value(),
@@ -113,7 +116,7 @@ fun PlayerSlider(
 
             LinearWavyProgressIndicator(
                 modifier = Modifier.fillMaxWidth(),
-                amplitude = { if (isPlaying && it in 0.1f..0.95f) 1f else 0f },
+                amplitude = { if (isPlaying) 1f else 0f },
                 progress = { if (duration > 0) sliderState.value / duration else 0f },
                 stopSize = 10.dp
             )

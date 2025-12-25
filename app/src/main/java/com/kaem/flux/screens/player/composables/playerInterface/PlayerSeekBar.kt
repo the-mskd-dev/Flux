@@ -103,8 +103,6 @@ fun PlayerSlider(
     duration: Long,
 ) {
 
-    Log.d("PlayerSlider", "isPlaying: $isPlaying")
-
     Slider(
         modifier = modifier,
         value = value(),

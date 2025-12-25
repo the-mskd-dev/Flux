@@ -3,6 +3,7 @@ package com.kaem.flux.model.artwork
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.kaem.flux.model.UserFile
 import com.kaem.flux.model.tmdb.TMDBMovie
@@ -29,6 +30,9 @@ import com.kaem.flux.model.tmdb.TMDBMovie
             childColumns = ["artworkId"],
             onDelete = ForeignKey.CASCADE
         )
+    ],
+    indices = [
+        Index(value = ["artworkId"])
     ]
 )
 data class Movie(

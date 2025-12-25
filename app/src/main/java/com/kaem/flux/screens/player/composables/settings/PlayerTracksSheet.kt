@@ -28,21 +28,23 @@ import com.kaem.flux.ui.theme.Ui
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlayerTracksSheet(
+    type: PlayerTrack.Type,
     tracksState: () -> PlayerUiState.Tracks,
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
     val (tracks, selectedAudio, selectedSubtitles) = tracksState()
+    val selectedTrack = if (type == PlayerTrack.Type.AUDIO) selectedAudio else selectedSubtitles
 
     ModalBottomSheet(
         onDismissRequest = { sendIntent(PlayerIntent.ShowSettings(sheet = null)) }
     ) {
-        // Sheet content
+
         LazyColumn(
             modifier = Modifier.fillMaxWidth()
         ) {
 
-            itemsIndexed(tracks.filter { it.type == PlayerTrack.Type.SUBTITLES }) { index, track ->
+            itemsIndexed(tracks.filter { it.type == type }) { index, track ->
 
                 if (index != 0)
                     HorizontalDivider(modifier = Modifier.fillMaxWidth().padding(horizontal = Ui.Space.MEDIUM))
@@ -58,9 +60,9 @@ fun PlayerTracksSheet(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text.Headline.Small(track.label)
+                    Text.Title.Medium(track.label)
 
-                    if (track == selectedSubtitles)
+                    if (track == selectedTrack)
                         Icon(Icons.Default.Check, "selected subtitles")
                 }
 
@@ -83,6 +85,7 @@ fun PlayerTracksSheet_Preview() {
                     selectedSubtitles = PlayerMockups.Subtitles.french,
                 )
             },
+            type = PlayerTrack.Type.SUBTITLES,
             sendIntent = {}
         )
     }

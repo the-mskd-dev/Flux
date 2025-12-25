@@ -12,15 +12,16 @@ fun PlayerSettings(
 ) {
 
     when (settingsSheet) {
-        PlayerUiState.SettingsSheet.SETTINGS -> {
+        PlayerUiState.SettingsSheet.Settings -> {
             PlayerSettingsSheet(
                 tracksState = tracksState,
                 sendIntent = sendIntent
             )
         }
-        PlayerUiState.SettingsSheet.TRACKS -> {
+        is PlayerUiState.SettingsSheet.Tracks -> {
             PlayerTracksSheet(
                 tracksState = tracksState,
+                type = settingsSheet.type,
                 sendIntent = sendIntent
             )
         }

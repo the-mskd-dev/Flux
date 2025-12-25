@@ -26,8 +26,9 @@ data class PlayerUiState(
         val selectedSubtitles: PlayerTrack? = null,
     )
 
-    enum class SettingsSheet {
-        SETTINGS, TRACKS
+    sealed class SettingsSheet {
+        data object Settings : SettingsSheet()
+        data class Tracks(val type: PlayerTrack.Type) : SettingsSheet()
     }
 
 }

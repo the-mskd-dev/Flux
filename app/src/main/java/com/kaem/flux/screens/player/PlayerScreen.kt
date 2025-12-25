@@ -27,10 +27,8 @@ import androidx.media3.ui.compose.ContentFrame
 import com.kaem.flux.R
 import com.kaem.flux.model.artwork.Media
 import com.kaem.flux.screens.player.composables.playerInterface.PlayerInterface
-import com.kaem.flux.screens.player.composables.settings.PlayerTracksSheet
 import com.kaem.flux.screens.player.composables.playerInterface.PlayerSubtitles
 import com.kaem.flux.screens.player.composables.settings.PlayerSettings
-import com.kaem.flux.screens.player.composables.settings.PlayerSettingsSheet
 import com.kaem.flux.ui.component.ErrorScreen
 import com.kaem.flux.ui.component.LifecycleComponent
 import com.kaem.flux.ui.component.LoadingScreen

@@ -67,11 +67,6 @@ fun PlayerSettingsSheet(
 
     val (tracks, selectedAudio, selectedSubtitles) = tracksState()
 
-    Log.i("PlayerSettingsSheet", "Tracks: $tracks")
-    Log.i("PlayerSettingsSheet", "Selected audio: $selectedAudio")
-    Log.i("PlayerSettingsSheet", "Selected subtitles: $selectedSubtitles")
-
-
     ModalBottomSheet(
         onDismissRequest = { sendIntent(PlayerIntent.ShowSettings) }
     ) {

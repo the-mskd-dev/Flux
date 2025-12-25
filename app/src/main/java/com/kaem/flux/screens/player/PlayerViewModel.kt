@@ -70,13 +70,8 @@ class PlayerViewModel @AssistedInject constructor(
             screen = media?.let { PlayerScreen.Content(media = media) } ?: PlayerScreen.Error,
             playerForward = settings.playerForwardValue.seconds.inWholeMilliseconds,
             playerRewind = settings.playerRewindValue.seconds.inWholeMilliseconds,
-            controls = PlayerUiState.Controls(
-                showInterface = controls.showInterface,
-                showSettings = controls.showSettings
-            ),
-            tracks = PlayerUiState.Tracks(
-                tracks = tracks.tracks,
-            )
+            controls = controls,
+            tracks = tracks
         )
     }.stateIn(
         scope = viewModelScope,

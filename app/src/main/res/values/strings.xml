@@ -71,4 +71,6 @@
     <string name="episode_list">Liste des épisodes</string>
     <string name="watched">Vu</string>
     <string name="track">Piste</string>
+    <string name="subtitles">Sous-titres</string>
+    <string name="audio_tracks">Pistes audio</string>
 </resources>

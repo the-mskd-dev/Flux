@@ -1,7 +1,9 @@
 package com.kaem.flux.screens.player.composables.settings
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -9,14 +11,21 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.AlertDialogDefaults
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.kaem.flux.R
 import com.kaem.flux.mockups.PlayerMockups
 import com.kaem.flux.screens.player.PlayerIntent
 import com.kaem.flux.screens.player.PlayerTrack
@@ -36,13 +45,93 @@ fun PlayerTracksSheet(
     val (tracks, selectedAudio, selectedSubtitles) = tracksState()
     val selectedTrack = if (type == PlayerTrack.Type.AUDIO) selectedAudio else selectedSubtitles
 
-    ModalBottomSheet(
-        onDismissRequest = { sendIntent(PlayerIntent.ShowSettings(sheet = null)) }
+    val title = stringResource(if (type == PlayerTrack.Type.AUDIO) R.string.audio_tracks else R.string.subtitles)
+    Text.Headline.Small(text = title)
+
+    /*AlertDialog(
+        onDismissRequest = { sendIntent(PlayerIntent.ShowSettings(sheet = null)) },
+        title = {
+            val title = stringResource(if (type == PlayerTrack.Type.AUDIO) R.string.audio_tracks else R.string.subtitles)
+            Text.Headline.Small(text = title)
+        },
+        confirmButton = {},
+        text = {
+
+            LazyColumn(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+
+
+                itemsIndexed(tracks.filter { it.type == type }) { index, track ->
+
+                    if (index != 0)
+                        HorizontalDivider(modifier = Modifier.fillMaxWidth().padding(horizontal = Ui.Space.MEDIUM))
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                sendIntent(PlayerIntent.SelectTrack(track = track))
+                                sendIntent(PlayerIntent.ShowSettings(sheet = null))
+                            }
+                            .padding(horizontal = Ui.Space.MEDIUM, vertical = Ui.Space.MEDIUM),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+
+                        Text.Title.Medium(
+                            text = track.label,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+
+                        if (track == selectedTrack) {
+                            Icon(
+                                imageVector = Icons.Default.Check,
+                                tint = MaterialTheme.colorScheme.onSurface,
+                                contentDescription = "selected subtitles"
+                            )
+                        }
+                    }
+
+                }
+            }
+
+        }
+    )*/
+    BasicAlertDialog(
+        modifier = Modifier
+            .clip(AlertDialogDefaults.shape)
+            .background(MaterialTheme.colorScheme.surface),
+        onDismissRequest = { sendIntent(PlayerIntent.ShowSettings(sheet = null)) },
     ) {
 
         LazyColumn(
             modifier = Modifier.fillMaxWidth()
         ) {
+
+            stickyHeader {
+
+                val title = stringResource(if (type == PlayerTrack.Type.AUDIO) R.string.audio_tracks else R.string.subtitles)
+
+                Column(
+                    modifier = Modifier
+                        .background(MaterialTheme.colorScheme.surface)
+                        .fillMaxWidth()
+                ) {
+
+                    Text.Headline.Small(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = Ui.Space.LARGE, start = Ui.Space.MEDIUM, end = Ui.Space.MEDIUM, bottom = Ui.Space.MEDIUM),
+                        text = title,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+
+                    HorizontalDivider(modifier = Modifier.fillMaxWidth())
+
+                }
+
+            }
 
             itemsIndexed(tracks.filter { it.type == type }) { index, track ->
 
@@ -60,10 +149,19 @@ fun PlayerTracksSheet(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text.Title.Medium(track.label)
 
-                    if (track == selectedTrack)
-                        Icon(Icons.Default.Check, "selected subtitles")
+                    Text.Label.Large(
+                        text = track.label,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+
+                    if (track == selectedTrack) {
+                        Icon(
+                            imageVector = Icons.Default.Check,
+                            tint = MaterialTheme.colorScheme.onSurface,
+                            contentDescription = "selected subtitles"
+                        )
+                    }
                 }
 
             }

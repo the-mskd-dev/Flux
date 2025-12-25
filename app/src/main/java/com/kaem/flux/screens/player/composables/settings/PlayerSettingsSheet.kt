@@ -1,5 +1,6 @@
 package com.kaem.flux.screens.player.composables.settings
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -8,14 +9,21 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.AlertDialogDefaults
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.kaem.flux.mockups.PlayerMockups
 import com.kaem.flux.screens.player.PlayerIntent
 import com.kaem.flux.screens.player.PlayerTrack
@@ -31,8 +39,12 @@ fun PlayerSettingsSheet(
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
-    ModalBottomSheet(
-        onDismissRequest = { sendIntent(PlayerIntent.ShowSettings(sheet = null)) }
+    BasicAlertDialog(
+        modifier = Modifier
+            .clip(AlertDialogDefaults.shape)
+            .background(MaterialTheme.colorScheme.surface)
+            .padding(vertical = Ui.Space.LARGE),
+        onDismissRequest = { sendIntent(PlayerIntent.ShowSettings(sheet = null)) },
     ) {
 
         Column(modifier = Modifier.fillMaxWidth()) {
@@ -80,14 +92,19 @@ fun PlayerSettingsItem(
 
         Text.Title.Medium(
             modifier = Modifier.weight(1f),
-            text = label
+            text = label,
+            color = MaterialTheme.colorScheme.onSurface
         )
 
-        Text.Body.Small(text = value)
+        Text.Label.Large(
+            text = value,
+            color = MaterialTheme.colorScheme.onSurface
+        )
 
         Icon(
             imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-            contentDescription = "settings for $label"
+            tint = MaterialTheme.colorScheme.onSurface,
+            contentDescription = "settings for $label",
         )
 
     }

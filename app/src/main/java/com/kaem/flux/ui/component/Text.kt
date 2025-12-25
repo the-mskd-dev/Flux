@@ -19,6 +19,7 @@ object Text {
 
         /**
          * - **Usage**: Main hero text.
+         * - **Size** : 57dp
          * - **Examples**: Success screens ("Done!"), main metric on a dashboard ("10,000 steps"),
          * clock app home screen ("00:00").
          */
@@ -52,6 +53,7 @@ object Text {
 
         /**
          * - **Usage**: Secondary headline or catchphrase.
+         * - **Size** : 45dp
          * - **Examples**: A hero subtitle, an important but secondary metric.
          */
         @Composable
@@ -84,6 +86,7 @@ object Text {
 
         /**
          * - **Usage**: Very important page titles on large screens (tablet).
+         * - **Size** : 36dp
          * - **Examples**: The "Welcome" on a login screen.
          */
         @Composable
@@ -123,6 +126,7 @@ object Text {
 
         /**
          * - **Usage**: Main title for a screen on a tablet, or the title of a `LargeTopAppBar` (when expanded).
+         * - **Size** : 32dp
          * - **Examples**: "My Files", "My Day".
          */
         @Composable
@@ -155,6 +159,7 @@ object Text {
 
         /**
          * - **Usage**: The default screen title.
+         * - **Size** : 28dp
          * - **Examples**: The title in a `CenterAlignedTopAppBar` or `MediumTopAppBar`. "Settings", "Profile".
          */
         @Composable
@@ -187,6 +192,7 @@ object Text {
 
         /**
          * - **Usage**: Section titles, dialog titles.
+         * - **Size** : 24dp
          * - **Examples**: In "Settings", this would be "Notifications" or "Account". Title of an `AlertDialog`.
          */
         @Composable
@@ -226,6 +232,7 @@ object Text {
 
         /**
          * - **Usage**: Title within a `Card`, subject of an email (in detail view).
+         * - **Size** : 22dp
          * - **Examples**: "Recipe of the week", "Your order has arrived".
          */
         @Composable
@@ -258,6 +265,7 @@ object Text {
 
         /**
          * - **Usage**: The main line in a `ListItem`.
+         * - **Size** : 16dp
          * - **Examples**: A contact's name in a list, a song title in a playlist.
          */
         @Composable
@@ -291,6 +299,7 @@ object Text {
 
         /**
          * - **Usage**: Sub-section titles or less important elements.
+         * - **Size** : 14dp
          * - **Examples**: Date headers ("Today"), subtitles within a card.
          */
         @Composable
@@ -330,6 +339,7 @@ object Text {
 
         /**
          * - **Usage**: The main body text.
+         * - **Size** : 16dp
          * - **Examples**: Blog post content, email body, long descriptions.
          */
         @Composable
@@ -362,6 +372,7 @@ object Text {
 
         /**
          * - **Usage**: Secondary text, short descriptions.
+         * - **Size** : 14dp
          * - **Examples**: The 2nd line of a `ListItem` (email preview), text for a menu item in a `DropdownMenu`.
          */
         @Composable
@@ -394,6 +405,7 @@ object Text {
 
         /**
          * - **Usage**: Support text, captions.
+         * - **Size** : 12dp
          * - **Examples**: Helper text under a `TextField`, legal mentions, 'meta' info (e.g., "3 min ago").
          */
         @Composable
@@ -433,7 +445,8 @@ object Text {
 
         /**
          * - **Usage**: The default text for buttons.
-         * - **Examples**: Text within a `Button`, `FilledButton`, `TextButton`, `FloatingActionButton`.
+         * - **Size** : 14dp
+         * - **Examples**: Text within a `Button`, `FilledButton`, `TextButton`, `FloatingActionButton`, within a Dialog
          */
         @Composable
         fun Large(
@@ -465,6 +478,7 @@ object Text {
 
         /**
          * - **Usage**: Smaller functional text.
+         * - **Size** : 12dp
          * - **Examples**: Text within a `Chip`, the label for a `NavigationBar` item.
          */
         @Composable
@@ -497,6 +511,7 @@ object Text {
 
         /**
          * - **Usage**: The smallest functional text.
+         * - **Size** : 11dp
          * - **Examples**: Overline text (a small label above a title, e.g., "CATEGORY").
          */
         @Composable

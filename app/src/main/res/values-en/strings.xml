@@ -67,4 +67,6 @@
     <string name="episode_list">Episode list</string>
     <string name="watched">Watched</string>
     <string name="track">Track</string>
+    <string name="subtitles">Subtitles</string>
+    <string name="audio_tracks">Audio tracks</string>
 </resources>

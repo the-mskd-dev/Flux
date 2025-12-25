@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.kaem.flux.mockups.PlayerMockups
 import com.kaem.flux.screens.player.PlayerIntent
 import com.kaem.flux.screens.player.PlayerTrack
 import com.kaem.flux.screens.player.PlayerUiState
@@ -34,7 +35,7 @@ fun PlayerTracksSheet(
     val (tracks, selectedAudio, selectedSubtitles) = tracksState()
 
     ModalBottomSheet(
-        onDismissRequest = { sendIntent(PlayerIntent.ShowSettings) }
+        onDismissRequest = { sendIntent(PlayerIntent.ShowSettings(sheet = null)) }
     ) {
         // Sheet content
         LazyColumn(
@@ -51,7 +52,7 @@ fun PlayerTracksSheet(
                         .fillMaxWidth()
                         .clickable {
                             sendIntent(PlayerIntent.SelectTrack(track = track))
-                            sendIntent(PlayerIntent.ShowSettings)
+                            sendIntent(PlayerIntent.ShowSettings(sheet = null))
                         }
                         .padding(horizontal = Ui.Space.MEDIUM, vertical = Ui.Space.MEDIUM),
                     verticalAlignment = Alignment.CenterVertically,
@@ -77,18 +78,9 @@ fun PlayerTracksSheet_Preview() {
         PlayerTracksSheet(
             tracksState = {
                 PlayerUiState.Tracks(
-                    tracks = listOf(
-                        PlayerTrack(id = "1", label = "English", type = PlayerTrack.Type.SUBTITLES),
-                        PlayerTrack(id = "2", label = "French", type = PlayerTrack.Type.SUBTITLES),
-                        PlayerTrack(id = "3", label = "German", type = PlayerTrack.Type.SUBTITLES),
-                        PlayerTrack(id = "4", label = "Italian", type = PlayerTrack.Type.SUBTITLES),
-                    ),
-                    selectedAudio = null,
-                    selectedSubtitles = PlayerTrack(
-                        id = "2",
-                        label = "French",
-                        type = PlayerTrack.Type.SUBTITLES
-                    ),
+                    tracks = PlayerMockups.tracks,
+                    selectedAudio = PlayerMockups.Audio.japanese,
+                    selectedSubtitles = PlayerMockups.Subtitles.french,
                 )
             },
             sendIntent = {}

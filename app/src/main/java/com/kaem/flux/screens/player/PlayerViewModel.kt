@@ -142,10 +142,6 @@ class PlayerViewModel @AssistedInject constructor(
 
             _event.emit(PlayerEvent.SelectTrack(preferredLang))
 
-            _tracksState.update { state ->
-                state.copy(selectedSubtitles = tracks.find { it.language == preferredLang.language })
-            }
-
         }
 
     }

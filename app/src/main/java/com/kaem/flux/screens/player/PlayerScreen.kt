@@ -25,6 +25,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.media3.common.Player
 import androidx.media3.common.text.Cue
+import androidx.media3.common.util.Log
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.ui.compose.ContentFrame
 import com.kaem.flux.R
@@ -88,7 +89,9 @@ fun PlayerScreen(
                 }
             }
         }
+    }
 
+    LaunchedEffect(lifecycleOwner.lifecycle) {
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
             stateHolder.selectedTrack.collect { selectedTrack ->
                 viewModel.handleIntent(PlayerIntent.OnTrackSelected(track = selectedTrack))

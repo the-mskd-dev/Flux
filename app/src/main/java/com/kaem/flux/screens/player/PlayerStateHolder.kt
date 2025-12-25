@@ -159,7 +159,10 @@ class PlayerStateHolder(context: Context) : Player.Listener {
             }
             .build()
 
-        trackResult?.let { _selectedTrack.emit(it) }
+        trackResult?.let {
+            _selectedTrack.emit(it)
+            Log.i("PlayerStateHolder", "Selected track: $it")
+        }
 
     }
 

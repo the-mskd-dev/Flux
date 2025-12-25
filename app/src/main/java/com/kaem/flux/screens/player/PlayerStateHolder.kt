@@ -101,46 +101,55 @@ class PlayerStateHolder(
     override fun onTracksChanged(tracks: Tracks) {
         super.onTracksChanged(tracks)
 
-        val allTracks = mutableListOf<PlayerTrack>()
+        val audiosTracks = tracks.groups
+            .filter { it.type == C.TRACK_TYPE_AUDIO }
+            .flatMap { group ->
+                (0 until group.length).map { index ->
+                    val format = group.getTrackFormat(index)
+                    val isSelected = group.isTrackSelected(index)
+                    val id = "${tracks.groups.indexOf(group)}:$index:${format.id}"
+                    val playerTrack = PlayerTrack(
+                        id = id,
+                        label = format.label ?: buildLabel(format = format) ?: "Audio #${index + 1}",
+                        language = format.language,
+                        type = PlayerTrack.Type.AUDIO
+                    )
 
-        tracks.groups
-            .filter { it.type == C.TRACK_TYPE_AUDIO || it.type == C.TRACK_TYPE_TEXT }
-            .forEachIndexed { groupIndex, group ->
-
-                val type = group.type
-
-                if (type == C.TRACK_TYPE_AUDIO || type == C.TRACK_TYPE_TEXT) {
-
-                    for (index in 0 until group.length) {
-                        val format = group.getTrackFormat(index)
-                        val isSelected = group.isTrackSelected(index)
-
-                        val trackType = if (type == C.TRACK_TYPE_AUDIO) PlayerTrack.Type.AUDIO else PlayerTrack.Type.SUBTITLES
-                        val defaultLabel = if (type == C.TRACK_TYPE_AUDIO) context.getString(R.string.audio_track) else context.getString(R.string.subtitles)
-
-                        val id = "$groupIndex:$index:${format.id}"
-
-                        val playerTrack = PlayerTrack(
-                            id = id,
-                            label = format.label ?: buildLabel(format) ?: "$defaultLabel #${index + 1}",
-                            language = format.language,
-                            type = trackType
-                        )
-
-                        allTracks.add(playerTrack)
-
-                        // Get default selected tracks
-                        if (isSelected) {
-                            scope.launch {
-                                _selectedTrack.emit(playerTrack)
-                            }
+                    if (isSelected) {
+                        scope.launch {
+                            _selectedTrack.emit(playerTrack)
                         }
                     }
-                }
 
+                    playerTrack
+                }
             }
 
-        _tracks.value = allTracks
+        val subtitlesTracks = tracks.groups
+            .filter { it.type == C.TRACK_TYPE_TEXT }
+            .flatMap { group ->
+                (0 until group.length).map { index ->
+                    val format = group.getTrackFormat(index)
+                    val isSelected = group.isTrackSelected(index)
+                    val id = "${tracks.groups.indexOf(group)}:$index:${format.id}"
+                    val playerTrack = PlayerTrack(
+                        id = id,
+                        label = format.label ?: buildLabel(format = format) ?: "Subtitles #${index + 1}",
+                        language = format.language,
+                        type = PlayerTrack.Type.SUBTITLES
+                    )
+
+                    if (isSelected) {
+                        scope.launch {
+                            _selectedTrack.emit(playerTrack)
+                        }
+                    }
+
+                    playerTrack
+                }
+            }
+
+        _tracks.value = audiosTracks + subtitlesTracks
 
     }
 

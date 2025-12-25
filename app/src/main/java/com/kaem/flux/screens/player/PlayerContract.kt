@@ -16,7 +16,7 @@ data class PlayerUiState(
     @Immutable
     data class Controls(
         val showInterface: Boolean = false,
-        val showSettings: Boolean = false,
+        val settingsSheetSheets: SettingsSheet? = null
     )
 
     @Immutable
@@ -25,6 +25,10 @@ data class PlayerUiState(
         val selectedAudio: PlayerTrack? = null,
         val selectedSubtitles: PlayerTrack? = null,
     )
+
+    enum class SettingsSheet {
+        SETTINGS, TRACKS
+    }
 
 }
 
@@ -42,7 +46,7 @@ sealed class PlayerIntent {
     data object OnFastRewind : PlayerIntent()
     data object OnFastForward : PlayerIntent()
     data class UpdateProgress(val progress: Long) : PlayerIntent()
-    data object ShowSettings : PlayerIntent()
+    data class ShowSettings(val sheet: PlayerUiState.SettingsSheet?) : PlayerIntent()
     data class UpdateTracks(val tracks: List<PlayerTrack>) : PlayerIntent()
     data class SelectTrack(val track: PlayerTrack) : PlayerIntent()
     data class OnTrackSelected(val track: PlayerTrack) : PlayerIntent()

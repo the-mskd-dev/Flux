@@ -3,7 +3,6 @@ package com.kaem.flux.screens.player
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.media3.common.util.UnstableApi
 import com.kaem.flux.data.repository.ArtworkRepository
 import com.kaem.flux.data.repository.SettingsRepository
 import com.kaem.flux.data.repository.UserRepository
@@ -86,7 +85,7 @@ class PlayerViewModel @AssistedInject constructor(
     fun handleIntent(intent: PlayerIntent) = viewModelScope.launch {
         when (intent) {
             PlayerIntent.ShowInterface -> showInterface()
-            PlayerIntent.ShowSettings -> showSettings()
+            is PlayerIntent.ShowSettings -> showSettingsSheet(sheet = intent.sheet)
             is PlayerIntent.SaveTime -> saveTime(time = intent.time)
             is PlayerIntent.OnBackTap -> onBackTap(time = intent.time)
             PlayerIntent.TogglePlayButton -> togglePlayButton()
@@ -123,8 +122,8 @@ class PlayerViewModel @AssistedInject constructor(
         _controlsState.update { it.copy(showInterface = !it.showInterface) }
     }
 
-    private fun showSettings() {
-        _controlsState.update { it.copy(showSettings = !it.showSettings) }
+    private fun showSettingsSheet(sheet: PlayerUiState.SettingsSheet?) {
+        _controlsState.update { it.copy(settingsSheetSheets = sheet) }
     }
 
     private suspend fun updateTracks(tracks: List<PlayerTrack>) {

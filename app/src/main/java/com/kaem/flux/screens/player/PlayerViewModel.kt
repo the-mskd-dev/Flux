@@ -31,7 +31,7 @@ import kotlinx.coroutines.launch
 import java.util.Locale
 import kotlin.time.Duration.Companion.seconds
 
-@UnstableApi
+
 @HiltViewModel(assistedFactory = PlayerViewModel.Factory::class)
 class PlayerViewModel @AssistedInject constructor(
     @Assisted mediaId: Long,

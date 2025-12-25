@@ -12,7 +12,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,7 +38,6 @@ import com.kaem.flux.ui.component.ErrorScreen
 import com.kaem.flux.ui.component.LifecycleComponent
 import com.kaem.flux.ui.component.LoadingScreen
 import com.kaem.flux.ui.theme.Ui
-import com.kaem.flux.utils.extensions.findActivity
 
 @OptIn(UnstableApi::class)
 @Composable
@@ -50,51 +51,19 @@ fun PlayerScreen(
 
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val stateHolder = rememberPlayerStateHolder()
-
     val isPlaying by stateHolder.isPlaying.collectAsStateWithLifecycle()
     val subtitles by stateHolder.subtitles.collectAsStateWithLifecycle()
-    val tracks by stateHolder.tracks.collectAsStateWithLifecycle()
 
-    val activity = LocalContext.current.findActivity()
-    val originalOrientation = remember { activity?.requestedOrientation }
-
-    PlayerWindowController(
+    PlayerSideEffects(
+        viewModel = viewModel,
         stateHolder = stateHolder,
         showInterface = state.controls.showInterface,
-        originalOrientation = originalOrientation
+        onBack = onBack
     )
 
     LaunchedEffect(state.screen) {
         (state.screen as? PlayerScreen.Content)?.let {
             stateHolder.playMedia(it.media)
-        }
-    }
-
-    LaunchedEffect(tracks) {
-        viewModel.handleIntent(PlayerIntent.UpdateTracks(tracks = tracks))
-    }
-
-    val lifecycleOwner = LocalLifecycleOwner.current
-    LaunchedEffect(lifecycleOwner.lifecycle) {
-        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-            viewModel.event.collect { event ->
-                when (event) {
-                    PlayerEvent.BackToPreviousScreen -> onBack()
-                    is PlayerEvent.SeekRewind -> stateHolder.onFastRewind(value = event.time)
-                    is PlayerEvent.SeekForward -> stateHolder.onFastForward(value = event.time)
-                    is PlayerEvent.UpdateProgress -> stateHolder.updateProgress(progress = event.progress)
-                    is PlayerEvent.SelectTrack -> stateHolder.selectTrack(track = event.track)
-                    PlayerEvent.TogglePlayButton -> stateHolder.togglePlayButton()
-                }
-            }
-        }
-    }
-
-    LaunchedEffect(lifecycleOwner.lifecycle) {
-        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-            stateHolder.selectedTrack.collect { selectedTrack ->
-                viewModel.handleIntent(PlayerIntent.OnTrackSelected(track = selectedTrack))
-            }
         }
     }
 
@@ -138,13 +107,16 @@ fun PlayerContent(
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
+    var wasPlayingBeforeBackground by remember { mutableStateOf(false) }
+
     LifecycleComponent(
         onBackground = {
+            wasPlayingBeforeBackground = player.isPlaying
             if (player.isPlaying) sendIntent(PlayerIntent.TogglePlayButton)
             sendIntent(PlayerIntent.SaveTime(time = player.currentPosition))
         },
         onForeground = {
-            if (!player.isPlaying) player.play()
+            if (wasPlayingBeforeBackground) player.play()
         }
     )
 
@@ -188,28 +160,6 @@ fun PlayerContent(
             tracksState = tracksState,
             sendIntent = sendIntent
         )
-    }
-
-}
-
-@OptIn(UnstableApi::class)
-@Composable
-private fun PlayerWindowController(
-    stateHolder: PlayerStateHolder,
-    showInterface: Boolean,
-    originalOrientation: Int?
-) {
-
-    DisposableEffect(Unit) {
-        stateHolder.setLandscape()
-        onDispose {
-            stateHolder.updateSystemBars(true)
-            originalOrientation?.let { stateHolder.resetOrientation(originalOrientation) }
-        }
-    }
-
-    LaunchedEffect(showInterface) {
-        stateHolder.updateSystemBars(showInterface)
     }
 
 }

@@ -36,7 +36,8 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import java.util.Locale
 
-@UnstableApi
+
+@OptIn(UnstableApi::class)
 @Stable
 class PlayerStateHolder(context: Context) : Player.Listener {
 

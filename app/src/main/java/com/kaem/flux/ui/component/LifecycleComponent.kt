@@ -15,10 +15,6 @@ fun LifecycleComponent(
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
 
-    DisposableEffect(Unit) {
-        onDispose { onDispose() }
-    }
-
     DisposableEffect (lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             when (event) {
@@ -38,6 +34,7 @@ fun LifecycleComponent(
 
         onDispose {
             lifecycleOwner.lifecycle.removeObserver(observer)
+            onDispose()
         }
     }
 }

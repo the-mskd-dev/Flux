@@ -1,4 +1,4 @@
-package com.kaem.flux.screens.player.composables
+package com.kaem.flux.screens.player.composables.playerInterface
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

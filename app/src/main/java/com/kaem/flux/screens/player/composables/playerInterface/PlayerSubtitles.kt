@@ -1,4 +1,4 @@
-package com.kaem.flux.screens.player.composables
+package com.kaem.flux.screens.player.composables.playerInterface
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

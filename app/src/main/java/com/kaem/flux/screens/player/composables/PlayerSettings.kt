@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -62,6 +63,8 @@ fun PlayerSettingsButton(
 @Composable
 fun PlayerSettingsSheet(
     tracks: List<PlayerTrack>,
+    selectedAudio: PlayerTrack?,
+    selectedSubtitles: PlayerTrack?,
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
@@ -73,7 +76,7 @@ fun PlayerSettingsSheet(
             modifier = Modifier.fillMaxWidth()
         ) {
 
-            itemsIndexed(tracks) { index, track ->
+            itemsIndexed(tracks.filter { it.type == PlayerTrack.Type.SUBTITLES }) { index, track ->
 
                 if (index != 0)
                     HorizontalDivider(modifier = Modifier.fillMaxWidth().padding(horizontal = Ui.Space.MEDIUM))
@@ -90,6 +93,9 @@ fun PlayerSettingsSheet(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text.Headline.Small(track.label)
+
+                    if (track == selectedSubtitles)
+                        Icon(Icons.Default.Check, "selected subtitles")
                 }
 
             }
@@ -110,6 +116,8 @@ fun PlayerSettingsSheet_Preview() {
                 PlayerTrack(id = "3", label = "German", type = PlayerTrack.Type.SUBTITLES),
                 PlayerTrack(id = "4", label = "Italian", type = PlayerTrack.Type.SUBTITLES),
             ),
+            selectedAudio = null,
+            selectedSubtitles = PlayerTrack(id = "2", label = "French", type = PlayerTrack.Type.SUBTITLES),
             sendIntent = {}
         )
     }

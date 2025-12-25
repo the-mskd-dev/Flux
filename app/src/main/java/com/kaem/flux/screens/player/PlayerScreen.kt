@@ -88,6 +88,12 @@ fun PlayerScreen(
                 }
             }
         }
+
+        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            stateHolder.selectedTrack.collect { selectedTrack ->
+                viewModel.handleIntent(PlayerIntent.OnTrackSelected(track = selectedTrack))
+            }
+        }
     }
 
     Crossfade(targetState = state.screen, label = "PlayerScreenState") { screen ->
@@ -106,6 +112,8 @@ fun PlayerScreen(
                     isPlaying = isPlaying,
                     subtitles =  { subtitles },
                     tracks = state.tracks.tracks,
+                    selectedAudio = state.tracks.selectedAudio,
+                    selectedSubtitles = state.tracks.selectedSubtitles,
                     showInterface = state.controls.showInterface,
                     showSettings = state.controls.showSettings,
                     sendIntent = viewModel::handleIntent
@@ -125,6 +133,8 @@ fun PlayerContent(
     isPlaying: Boolean,
     subtitles: () -> List<Cue>,
     tracks: List<PlayerTrack>,
+    selectedAudio: PlayerTrack?,
+    selectedSubtitles: PlayerTrack?,
     showInterface: Boolean,
     showSettings: Boolean,
     sendIntent: (PlayerIntent) -> Unit
@@ -178,6 +188,8 @@ fun PlayerContent(
     if (showSettings) {
         PlayerSettingsSheet(
             tracks = tracks,
+            selectedAudio = selectedAudio,
+            selectedSubtitles = selectedSubtitles,
             sendIntent = sendIntent
         )
     }

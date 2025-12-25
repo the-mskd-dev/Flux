@@ -100,6 +100,7 @@ class PlayerViewModel @AssistedInject constructor(
             is PlayerIntent.UpdateProgress -> updateProgress(progress = intent.progress)
             is PlayerIntent.UpdateTracks -> updateTracks(tracks = intent.tracks)
             is PlayerIntent.SelectTrack -> selectTracks(track = intent.track)
+            is PlayerIntent.OnTrackSelected -> onTrackSelected(track = intent.track)
         }
     }
 
@@ -150,13 +151,17 @@ class PlayerViewModel @AssistedInject constructor(
     }
 
     private suspend fun selectTracks(track: PlayerTrack) {
+        _event.emit(PlayerEvent.SelectTrack(track = track))
+    }
+
+    private suspend fun onTrackSelected(track: PlayerTrack) {
+
         _tracksState.update {
             when (track.type) {
                 PlayerTrack.Type.AUDIO -> it.copy(selectedAudio = track)
                 PlayerTrack.Type.SUBTITLES -> it.copy(selectedSubtitles = track)
             }
         }
-        _event.emit(PlayerEvent.SelectTrack(track = track))
 
         try {
 
@@ -171,6 +176,7 @@ class PlayerViewModel @AssistedInject constructor(
         }
 
     }
+
     private suspend fun onBackTap(time: Long?) {
 
         time?.let { saveTime(time = it) }

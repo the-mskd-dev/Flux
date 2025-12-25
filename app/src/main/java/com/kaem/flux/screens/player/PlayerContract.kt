@@ -45,6 +45,7 @@ sealed class PlayerIntent {
     data object ShowSettings : PlayerIntent()
     data class UpdateTracks(val tracks: List<PlayerTrack>) : PlayerIntent()
     data class SelectTrack(val track: PlayerTrack) : PlayerIntent()
+    data class OnTrackSelected(val track: PlayerTrack) : PlayerIntent()
 }
 
 sealed class PlayerEvent {

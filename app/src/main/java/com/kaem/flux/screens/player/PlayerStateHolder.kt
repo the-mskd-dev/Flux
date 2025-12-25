@@ -28,8 +28,11 @@ import com.kaem.flux.utils.extensions.hideSystemBars
 import com.kaem.flux.utils.extensions.setAppInLandscape
 import com.kaem.flux.utils.extensions.setAppOrientation
 import com.kaem.flux.utils.extensions.showSystemBars
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import java.util.Locale
 
@@ -47,6 +50,10 @@ class PlayerStateHolder(context: Context) : Player.Listener {
 
     private val _tracks = MutableStateFlow<List<PlayerTrack>>(emptyList())
     val tracks = _tracks.asStateFlow()
+
+    private val _selectedTrack = MutableSharedFlow<PlayerTrack>()
+    val selectedTrack = _selectedTrack.asSharedFlow()
+
 
     //endregion
 
@@ -137,52 +144,86 @@ class PlayerStateHolder(context: Context) : Player.Listener {
 
     }
 
-    fun selectTrack(track: PlayerTrack) {
+    suspend fun selectTrack(track: PlayerTrack) {
 
         val currentTracks = player.currentTracks
+        var trackResult: PlayerTrack? = null
 
         player.trackSelectionParameters = player.trackSelectionParameters
             .buildUpon()
             .apply {
-                when (track.type) {
-                    PlayerTrack.Type.AUDIO -> {
-
-                        clearOverridesOfType(C.TRACK_TYPE_AUDIO)
-
-                        if (track.id != null) {
-                            applyTrackOverride(trackId = track.id, groups = currentTracks.groups)
-                        } else {
-                            track.language?.let { setPreferredAudioLanguage(it) }
-                        }
-
-                    }
-                    PlayerTrack.Type.SUBTITLES -> {
-
-                        clearOverridesOfType(C.TRACK_TYPE_TEXT)
-
-                        if (track.language == null) { // If no subtitle
-                            setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
-                        } else {
-                            setTrackTypeDisabled(C.TRACK_TYPE_TEXT, false)
-
-                            // Select track from player tracks or user preferences
-                            if (track.id != null) {
-                                applyTrackOverride(trackId = track.id, groups = currentTracks.groups)
-                            } else {
-                                setPreferredTextLanguage(track.language)
-                            }
-                        }
-                    }
+                trackResult = when (track.type) {
+                    PlayerTrack.Type.AUDIO -> applyAudioTrack(track = track, currentTracks = currentTracks)
+                    PlayerTrack.Type.SUBTITLES -> applySubtitlesTrack(track = track, currentTracks = currentTracks)
                 }
             }
             .build()
+
+        trackResult?.let { _selectedTrack.emit(it) }
+
+    }
+
+    private fun TrackSelectionParameters.Builder.applyAudioTrack(track: PlayerTrack, currentTracks: Tracks) : PlayerTrack? {
+        clearOverridesOfType(C.TRACK_TYPE_AUDIO)
+
+        if (track.id != null) {
+
+            val result = applyTrackOverride(trackId = track.id, groups = currentTracks.groups)
+            if (result) return track
+
+        } else {
+
+            val playerTrack = _tracks.value.filter { it.type == PlayerTrack.Type.SUBTITLES }.firstOrNull { it.language == track.language }
+            playerTrack?.language?.let {
+                setPreferredAudioLanguage(it)
+                return playerTrack
+            }
+
+        }
+
+        return null
+
+    }
+
+    private fun TrackSelectionParameters.Builder.applySubtitlesTrack(track: PlayerTrack, currentTracks: Tracks) : PlayerTrack? {
+
+        clearOverridesOfType(C.TRACK_TYPE_TEXT)
+
+        if (track.language == null) { // If no subtitle
+
+            setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
+
+        } else {
+
+            setTrackTypeDisabled(C.TRACK_TYPE_TEXT, false)
+
+            // Select track from player tracks or user preferences
+            if (track.id != null) {
+
+                val result = applyTrackOverride(trackId = track.id, groups = currentTracks.groups)
+                if (result) return track
+
+            } else {
+
+                val playerTrack = _tracks.value.filter { it.type == PlayerTrack.Type.SUBTITLES }.firstOrNull { it.language == track.language }
+                playerTrack?.language?.let {
+                    setPreferredTextLanguage(it)
+                    return playerTrack
+                }
+
+            }
+
+        }
+
+        return null
 
     }
 
     private fun TrackSelectionParameters.Builder.applyTrackOverride(
         trackId: String,
         groups: List<Tracks.Group>
-    ) {
+    ) : Boolean {
+
         try {
             val parts = trackId.split(":")
             val groupIndex = parts[0].toInt()
@@ -191,10 +232,16 @@ class PlayerStateHolder(context: Context) : Player.Listener {
             if (groupIndex < groups.size) {
                 val group = groups[groupIndex].mediaTrackGroup
                 addOverride(TrackSelectionOverride(group, trackIndex))
+                return true
             }
+
+            return false
+
         } catch (e: Exception) {
             Log.e("PlayerStateHolder", "Fail to apply track", e)
+            return false
         }
+
     }
 
     fun togglePlayButton() {

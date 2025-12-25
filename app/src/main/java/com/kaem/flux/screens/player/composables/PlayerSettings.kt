@@ -1,16 +1,14 @@
 package com.kaem.flux.screens.player.composables
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Settings
@@ -29,6 +27,7 @@ import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.tooling.preview.Preview
 import com.kaem.flux.screens.player.PlayerIntent
 import com.kaem.flux.screens.player.PlayerTrack
+import com.kaem.flux.screens.player.PlayerUiState
 import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
@@ -62,11 +61,16 @@ fun PlayerSettingsButton(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlayerSettingsSheet(
-    tracks: List<PlayerTrack>,
-    selectedAudio: PlayerTrack?,
-    selectedSubtitles: PlayerTrack?,
+    tracksState: () -> PlayerUiState.Tracks,
     sendIntent: (PlayerIntent) -> Unit
 ) {
+
+    val (tracks, selectedAudio, selectedSubtitles) = tracksState()
+
+    Log.i("PlayerSettingsSheet", "Tracks: $tracks")
+    Log.i("PlayerSettingsSheet", "Selected audio: $selectedAudio")
+    Log.i("PlayerSettingsSheet", "Selected subtitles: $selectedSubtitles")
+
 
     ModalBottomSheet(
         onDismissRequest = { sendIntent(PlayerIntent.ShowSettings) }
@@ -110,14 +114,22 @@ fun PlayerSettingsSheet(
 fun PlayerSettingsSheet_Preview() {
     AppTheme {
         PlayerSettingsSheet(
-            tracks = listOf(
-                PlayerTrack(id = "1", label = "English", type = PlayerTrack.Type.SUBTITLES),
-                PlayerTrack(id = "2", label = "French", type = PlayerTrack.Type.SUBTITLES),
-                PlayerTrack(id = "3", label = "German", type = PlayerTrack.Type.SUBTITLES),
-                PlayerTrack(id = "4", label = "Italian", type = PlayerTrack.Type.SUBTITLES),
-            ),
-            selectedAudio = null,
-            selectedSubtitles = PlayerTrack(id = "2", label = "French", type = PlayerTrack.Type.SUBTITLES),
+            tracksState = {
+                PlayerUiState.Tracks(
+                    tracks = listOf(
+                        PlayerTrack(id = "1", label = "English", type = PlayerTrack.Type.SUBTITLES),
+                        PlayerTrack(id = "2", label = "French", type = PlayerTrack.Type.SUBTITLES),
+                        PlayerTrack(id = "3", label = "German", type = PlayerTrack.Type.SUBTITLES),
+                        PlayerTrack(id = "4", label = "Italian", type = PlayerTrack.Type.SUBTITLES),
+                    ),
+                    selectedAudio = null,
+                    selectedSubtitles = PlayerTrack(
+                        id = "2",
+                        label = "French",
+                        type = PlayerTrack.Type.SUBTITLES
+                    ),
+                )
+            },
             sendIntent = {}
         )
     }

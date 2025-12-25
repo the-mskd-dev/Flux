@@ -25,7 +25,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.media3.common.Player
 import androidx.media3.common.text.Cue
-import androidx.media3.common.util.Log
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.ui.compose.ContentFrame
 import com.kaem.flux.R
@@ -114,9 +113,7 @@ fun PlayerScreen(
                     player = stateHolder.player,
                     isPlaying = isPlaying,
                     subtitles =  { subtitles },
-                    tracks = state.tracks.tracks,
-                    selectedAudio = state.tracks.selectedAudio,
-                    selectedSubtitles = state.tracks.selectedSubtitles,
+                    tracksState = { state.tracks },
                     showInterface = state.controls.showInterface,
                     showSettings = state.controls.showSettings,
                     sendIntent = viewModel::handleIntent
@@ -135,9 +132,7 @@ fun PlayerContent(
     player: Player,
     isPlaying: Boolean,
     subtitles: () -> List<Cue>,
-    tracks: List<PlayerTrack>,
-    selectedAudio: PlayerTrack?,
-    selectedSubtitles: PlayerTrack?,
+    tracksState: () -> PlayerUiState.Tracks,
     showInterface: Boolean,
     showSettings: Boolean,
     sendIntent: (PlayerIntent) -> Unit
@@ -190,9 +185,7 @@ fun PlayerContent(
 
     if (showSettings) {
         PlayerSettingsSheet(
-            tracks = tracks,
-            selectedAudio = selectedAudio,
-            selectedSubtitles = selectedSubtitles,
+            tracksState = tracksState,
             sendIntent = sendIntent
         )
     }

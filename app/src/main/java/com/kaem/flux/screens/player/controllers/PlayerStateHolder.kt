@@ -31,10 +31,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.isActive
@@ -73,8 +71,6 @@ class PlayerStateHolder(
     private var currentMediaId: Long = -1L
 
     private var progressJob: Job? = null
-
-    private var enableNextEpisodeEvent = true
 
     val player : Player = ExoPlayer.Builder(context)
         .setRenderersFactory(
@@ -241,14 +237,24 @@ class PlayerStateHolder(
 
     private fun startProgressMonitoring() {
         stopProgressMonitoring()
-        enableNextEpisodeEvent = true
         progressJob = scope.launch {
+
+            var lastNextEpisodeEvent: Boolean? = null
+
             while (isActive) {
-                if (player.duration > 0 && enableNextEpisodeEvent) {
+
+                if (player.duration > 0) {
+
                     val percentage = player.currentPosition.toFloat() / player.duration.toFloat()
-                    _event.send(Event.ShowNext(show = percentage >= 0.95f))
-                    enableNextEpisodeEvent = false
+                    val showNext = percentage >= 0.5f
+
+                    if (lastNextEpisodeEvent != showNext) {
+                        _event.send(Event.ShowNext(show = showNext))
+                        lastNextEpisodeEvent = showNext
+                    }
+
                 }
+
                 delay(1000)
             }
         }
@@ -269,17 +275,14 @@ class PlayerStateHolder(
 
     fun onFastRewind(value: Long) {
         player.seekTo(player.currentPosition - value)
-        enableNextEpisodeEvent = true
     }
 
     fun onFastForward(value: Long) {
         player.seekTo(player.currentPosition + value)
-        enableNextEpisodeEvent = true
     }
 
     fun updateProgress(progress: Long) {
         player.seekTo(progress)
-        enableNextEpisodeEvent = true
     }
 
     fun playMedia(media: Media?) {

@@ -1,6 +1,5 @@
 package com.kaem.flux.screens.player.composables.playerInterface
 
-import android.util.Log
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.layout.Arrangement
@@ -26,7 +25,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import androidx.media3.common.C
 import androidx.media3.common.Player
 import com.kaem.flux.screens.player.PlayerIntent
 import com.kaem.flux.ui.component.Text

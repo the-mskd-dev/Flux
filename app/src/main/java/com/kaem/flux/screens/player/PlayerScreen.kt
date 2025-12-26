@@ -1,6 +1,5 @@
 package com.kaem.flux.screens.player
 
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.annotation.OptIn
 import androidx.compose.animation.Crossfade
@@ -12,9 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,7 +27,6 @@ import com.kaem.flux.screens.player.composables.playerInterface.PlayerInterface
 import com.kaem.flux.screens.player.composables.playerInterface.PlayerSubtitles
 import com.kaem.flux.screens.player.composables.settings.PlayerSettings
 import com.kaem.flux.ui.component.ErrorScreen
-import com.kaem.flux.ui.component.LifecycleComponent
 import com.kaem.flux.ui.component.LoadingScreen
 import com.kaem.flux.ui.theme.Ui
 

@@ -1,6 +1,5 @@
 package com.kaem.flux.screens.player
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -96,7 +95,6 @@ fun PlayerSideEffects(
         onForeground = {
             if (wasPlayingBeforeBackground) {
                 viewModel.handleIntent(PlayerIntent.TogglePlayButton)
-                wasPlayingBeforeBackground = false
             }
         }
     )

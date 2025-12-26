@@ -26,6 +26,9 @@ import com.kaem.flux.model.artwork.Media
 import com.kaem.flux.screens.player.composables.playerInterface.PlayerInterface
 import com.kaem.flux.screens.player.composables.playerInterface.PlayerSubtitles
 import com.kaem.flux.screens.player.composables.settings.PlayerSettings
+import com.kaem.flux.screens.player.controllers.PlayerSideEffects
+import com.kaem.flux.screens.player.controllers.rememberPlayerStateHolder
+import com.kaem.flux.screens.player.controllers.rememberScreenStateHolder
 import com.kaem.flux.ui.component.ErrorScreen
 import com.kaem.flux.ui.component.LoadingScreen
 import com.kaem.flux.ui.theme.Ui
@@ -41,19 +44,21 @@ fun PlayerScreen(
 ) {
 
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-    val stateHolder = rememberPlayerStateHolder()
-    val subtitles by stateHolder.subtitles.collectAsStateWithLifecycle()
+    val playerStateHolder = rememberPlayerStateHolder()
+    val screenStateHolder = rememberScreenStateHolder()
+    val subtitles by playerStateHolder.subtitles.collectAsStateWithLifecycle()
 
     PlayerSideEffects(
         viewModel = viewModel,
-        stateHolder = stateHolder,
+        stateHolder = playerStateHolder,
+        screenStateHolder = screenStateHolder,
         showInterface = state.controls.showInterface,
         onBack = onBack
     )
 
     LaunchedEffect(state.screen) {
         (state.screen as? PlayerScreen.Content)?.let {
-            stateHolder.playMedia(it.media)
+            playerStateHolder.playMedia(it.media)
         }
     }
 
@@ -69,7 +74,7 @@ fun PlayerScreen(
             is PlayerScreen.Content -> {
                 PlayerContent(
                     media = screen.media,
-                    player = stateHolder.player,
+                    player = playerStateHolder.player,
                     subtitles =  { subtitles },
                     controlsState = { state.controls },
                     tracksState = { state.tracks },

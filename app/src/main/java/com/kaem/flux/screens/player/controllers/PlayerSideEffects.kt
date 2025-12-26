@@ -1,4 +1,4 @@
-package com.kaem.flux.screens.player
+package com.kaem.flux.screens.player.controllers
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -13,6 +13,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
+import com.kaem.flux.screens.player.PlayerEvent
+import com.kaem.flux.screens.player.PlayerIntent
+import com.kaem.flux.screens.player.PlayerViewModel
 import com.kaem.flux.ui.component.LifecycleComponent
 import com.kaem.flux.utils.extensions.findActivity
 import kotlinx.coroutines.launch
@@ -21,6 +24,7 @@ import kotlinx.coroutines.launch
 fun PlayerSideEffects(
     viewModel: PlayerViewModel,
     stateHolder: PlayerStateHolder,
+    screenStateHolder: ScreenStateHolder,
     showInterface: Boolean,
     onBack: () -> Unit
 ) {
@@ -32,16 +36,16 @@ fun PlayerSideEffects(
 
     // Set landscape and reset orientation on dispose
     DisposableEffect(Unit) {
-        stateHolder.setLandscape()
+        screenStateHolder.setLandscape()
         onDispose {
-            stateHolder.updateSystemBars(true)
-            originalOrientation?.let { stateHolder.resetOrientation(originalOrientation) }
+            screenStateHolder.updateSystemBars(true)
+            originalOrientation?.let { screenStateHolder.resetOrientation(originalOrientation) }
         }
     }
 
     // Show system bars at the same time than interface
     LaunchedEffect(showInterface) {
-        stateHolder.updateSystemBars(showInterface)
+        screenStateHolder.updateSystemBars(showInterface)
     }
 
     // Observe tracks

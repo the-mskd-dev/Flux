@@ -1,4 +1,4 @@
-package com.kaem.flux.screens.player
+package com.kaem.flux.screens.player.controllers
 
 import android.content.Context
 import android.util.Log
@@ -18,18 +18,14 @@ import androidx.media3.common.TrackSelectionOverride
 import androidx.media3.common.TrackSelectionParameters
 import androidx.media3.common.Tracks
 import androidx.media3.common.text.Cue
+import androidx.media3.common.text.CueGroup
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.SeekParameters
 import com.kaem.flux.R
 import com.kaem.flux.model.artwork.Media
-import com.kaem.flux.utils.extensions.findActivity
-import com.kaem.flux.utils.extensions.forceScreenOn
-import com.kaem.flux.utils.extensions.hideSystemBars
-import com.kaem.flux.utils.extensions.setAppInLandscape
-import com.kaem.flux.utils.extensions.setAppOrientation
-import com.kaem.flux.utils.extensions.showSystemBars
+import com.kaem.flux.screens.player.PlayerTrack
 import com.kaem.flux.utils.extensions.uppercaseFirstLetter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -53,7 +49,7 @@ class PlayerStateHolder(
     private val scope: CoroutineScope
 ) : Player.Listener {
 
-    //region Variables
+    //region States
 
     private val _subtitles = MutableStateFlow<List<Cue>>(emptyList())
     val subtitles: StateFlow<List<Cue>> = _subtitles.asStateFlow()
@@ -70,13 +66,13 @@ class PlayerStateHolder(
     private val _showNext = Channel<Boolean>(Channel.BUFFERED)
     val showNext = _showNext.receiveAsFlow()
 
+    //endregion
+
+    //region Variables
+
     private var currentMediaId: Long = -1L
 
     private var progressJob: Job? = null
-
-    //endregion
-
-    //region Player
 
     val player : Player = ExoPlayer.Builder(context)
         .setRenderersFactory(
@@ -92,7 +88,11 @@ class PlayerStateHolder(
             addListener(this@PlayerStateHolder)
         }
 
-    override fun onCues(cueGroup: androidx.media3.common.text.CueGroup) {
+    //endregion
+
+    //region Listener methods
+
+    override fun onCues(cueGroup: CueGroup) {
         _subtitles.value = cueGroup.cues
     }
 
@@ -127,7 +127,8 @@ class PlayerStateHolder(
 
                     val playerTrack = PlayerTrack(
                         id = id,
-                        label = format.label ?: buildLabel(format = format) ?: "$defaultLabel #${index + 1}",
+                        label = format.label ?: buildLabel(format = format)
+                        ?: "$defaultLabel #${index + 1}",
                         language = format.language,
                         type = if (group.type == C.TRACK_TYPE_AUDIO) PlayerTrack.Type.AUDIO else PlayerTrack.Type.SUBTITLES
                     )
@@ -144,44 +145,15 @@ class PlayerStateHolder(
 
     }
 
+    //endregion
+
+    //region Private methods
+
     private fun buildLabel(format: Format): String? {
         return format.language?.let { language ->
             val locale = Locale.forLanguageTag(language)
             locale.getDisplayName(locale).uppercaseFirstLetter()
         }
-    }
-
-    fun playMedia(media: Media?) {
-
-        if (media != null && media.mediaId != currentMediaId) {
-            player.setMediaItem(MediaItem.fromUri(media.file.path.toUri()))
-            player.seekTo(media.currentTime)
-            player.prepare()
-            currentMediaId = media.mediaId
-        }
-
-    }
-
-    suspend fun selectTrack(track: PlayerTrack) {
-
-        val currentTracks = player.currentTracks
-        var trackResult: PlayerTrack? = null
-
-        player.trackSelectionParameters = player.trackSelectionParameters
-            .buildUpon()
-            .apply {
-                trackResult = when (track.type) {
-                    PlayerTrack.Type.AUDIO -> applyAudioTrack(track = track, currentTracks = currentTracks)
-                    PlayerTrack.Type.SUBTITLES -> applySubtitlesTrack(track = track, currentTracks = currentTracks)
-                }
-            }
-            .build()
-
-        trackResult?.let {
-            _selectedTrack.emit(it)
-            Log.i("PlayerStateHolder", "Selected track: $it")
-        }
-
     }
 
     private fun TrackSelectionParameters.Builder.applyAudioTrack(track: PlayerTrack, currentTracks: Tracks) : PlayerTrack? {
@@ -283,6 +255,10 @@ class PlayerStateHolder(
         progressJob = null
     }
 
+    //endregion
+
+    //region Public methods
+
     fun togglePlayButton() {
         if (player.isPlaying) player.pause() else player.play()
     }
@@ -299,31 +275,45 @@ class PlayerStateHolder(
         player.seekTo(progress)
     }
 
+    fun playMedia(media: Media?) {
+
+        if (media != null && media.mediaId != currentMediaId) {
+            player.setMediaItem(MediaItem.fromUri(media.file.path.toUri()))
+            player.seekTo(media.currentTime)
+            player.prepare()
+            currentMediaId = media.mediaId
+        }
+
+    }
+
     fun releasePlayer() {
         player.release()
     }
 
+    suspend fun selectTrack(track: PlayerTrack) {
+
+        val currentTracks = player.currentTracks
+        var trackResult: PlayerTrack? = null
+
+        player.trackSelectionParameters = player.trackSelectionParameters
+            .buildUpon()
+            .apply {
+                trackResult = when (track.type) {
+                    PlayerTrack.Type.AUDIO -> applyAudioTrack(track = track, currentTracks = currentTracks)
+                    PlayerTrack.Type.SUBTITLES -> applySubtitlesTrack(track = track, currentTracks = currentTracks)
+                }
+            }
+            .build()
+
+        trackResult?.let {
+            _selectedTrack.emit(it)
+            Log.i("PlayerStateHolder", "Selected track: $it")
+        }
+
+    }
+
     //endregion
 
-    //region Screen
-
-    private val activity = context.findActivity()
-
-    fun setLandscape() {
-        activity?.setAppInLandscape()
-        activity?.forceScreenOn(true)
-    }
-
-    fun resetOrientation(originalOrientation: Int) {
-        activity?.setAppOrientation(originalOrientation)
-        activity?.forceScreenOn(false)
-    }
-
-    fun updateSystemBars(show: Boolean) {
-        if (show) activity?.showSystemBars() else activity?.hideSystemBars()
-    }
-
-    //endregion
 }
 
 @OptIn(UnstableApi::class)

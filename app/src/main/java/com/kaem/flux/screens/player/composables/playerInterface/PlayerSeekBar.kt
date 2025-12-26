@@ -116,7 +116,8 @@ fun PlayerSlider(
                 modifier = Modifier.fillMaxWidth(),
                 amplitude = { if (isPlaying) 1f else 0f },
                 progress = { if (duration > 0) sliderState.value / duration else 0f },
-                stopSize = 10.dp
+                stopSize = 10.dp,
+                waveSpeed = 20.dp
             )
 
         },

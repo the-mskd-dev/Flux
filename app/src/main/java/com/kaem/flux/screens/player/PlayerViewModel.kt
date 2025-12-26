@@ -147,16 +147,6 @@ class PlayerViewModel @AssistedInject constructor(
 
     private suspend fun selectTracks(track: PlayerTrack) {
         _event.send(PlayerEvent.SelectTrack(track = track))
-    }
-
-    private suspend fun onTrackSelected(track: PlayerTrack) {
-
-        _tracksState.update {
-            when (track.type) {
-                PlayerTrack.Type.AUDIO -> it.copy(selectedAudio = track)
-                PlayerTrack.Type.SUBTITLES -> it.copy(selectedSubtitles = track)
-            }
-        }
 
         try {
 
@@ -168,6 +158,16 @@ class PlayerViewModel @AssistedInject constructor(
         } catch (e: Exception) {
             e.printStackTrace()
             Log.e("PlayerViewModel", "Locale not found for ${track.language}", e)
+        }
+    }
+
+    private fun onTrackSelected(track: PlayerTrack) {
+
+        _tracksState.update {
+            when (track.type) {
+                PlayerTrack.Type.AUDIO -> it.copy(selectedAudio = track)
+                PlayerTrack.Type.SUBTITLES -> it.copy(selectedSubtitles = track)
+            }
         }
 
     }

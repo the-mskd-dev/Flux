@@ -7,6 +7,7 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MediumExtendedFloatingActionButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -36,7 +37,8 @@ fun PlayerControlButtons(
 
         FloatingActionButton(
             onClick = { sendIntent(PlayerIntent.OnFastRewind) },
-            shape = FloatingActionButtonDefaults.largeShape
+            shape = FloatingActionButtonDefaults.largeShape,
+            containerColor = MaterialTheme.colorScheme.tertiaryContainer
         ) {
             Icon(
                 painter = painterResource(R.drawable.fast_rewind),
@@ -57,7 +59,8 @@ fun PlayerControlButtons(
 
         FloatingActionButton(
             onClick = { sendIntent(PlayerIntent.OnFastForward) },
-            shape = FloatingActionButtonDefaults.largeShape
+            shape = FloatingActionButtonDefaults.largeShape,
+            containerColor = MaterialTheme.colorScheme.tertiaryContainer
         ) {
             Icon(
                 painter = painterResource(R.drawable.fast_forward),

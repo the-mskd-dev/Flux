@@ -71,7 +71,7 @@ fun PlayerTracksSheet(
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(MaterialTheme.colorScheme.surface)
+                            .background(MaterialTheme.colorScheme.surfaceContainerHigh)
                     ) {
 
                         Text.Headline.Small(

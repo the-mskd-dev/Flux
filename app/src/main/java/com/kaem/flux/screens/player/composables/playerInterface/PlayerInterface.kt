@@ -80,7 +80,7 @@ val PlayerInterfaceConstraintSet = ConstraintSet {
     constrain(topBar) {
         top.linkTo(parent.top, Ui.Space.MEDIUM)
         start.linkTo(parent.start)
-        end.linkTo(parent.end)
+        end.linkTo(settings.start, Ui.Space.MEDIUM)
         width = Dimension.fillToConstraints
     }
 
@@ -92,7 +92,7 @@ val PlayerInterfaceConstraintSet = ConstraintSet {
     }
 
     constrain(settings) {
-        bottom.linkTo(seekBar.top)
+        top.linkTo(parent.top)
         end.linkTo(parent.end)
     }
 

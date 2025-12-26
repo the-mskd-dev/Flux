@@ -30,6 +30,7 @@ import com.kaem.flux.utils.extensions.hideSystemBars
 import com.kaem.flux.utils.extensions.setAppInLandscape
 import com.kaem.flux.utils.extensions.setAppOrientation
 import com.kaem.flux.utils.extensions.showSystemBars
+import com.kaem.flux.utils.extensions.uppercaseFirstLetter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -135,7 +136,7 @@ class PlayerStateHolder(
     private fun buildLabel(format: Format): String? {
         return format.language?.let { language ->
             val locale = Locale.forLanguageTag(language)
-            locale.getDisplayName(locale)
+            locale.getDisplayName(locale).uppercaseFirstLetter()
         }
     }
 

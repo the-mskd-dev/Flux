@@ -24,7 +24,7 @@ import kotlinx.coroutines.launch
 fun PlayerSideEffects(
     viewModel: PlayerViewModel,
     stateHolder: PlayerStateHolder,
-    screenStateHolder: ScreenStateHolder,
+    windowStateHolder: WindowStateHolder,
     showInterface: Boolean,
     onBack: () -> Unit
 ) {
@@ -36,16 +36,16 @@ fun PlayerSideEffects(
 
     // Set landscape and reset orientation on dispose
     DisposableEffect(Unit) {
-        screenStateHolder.setLandscape()
+        windowStateHolder.setLandscape()
         onDispose {
-            screenStateHolder.updateSystemBars(true)
-            originalOrientation?.let { screenStateHolder.resetOrientation(originalOrientation) }
+            windowStateHolder.updateSystemBars(true)
+            originalOrientation?.let { windowStateHolder.resetOrientation(originalOrientation) }
         }
     }
 
     // Show system bars at the same time than interface
     LaunchedEffect(showInterface) {
-        screenStateHolder.updateSystemBars(showInterface)
+        windowStateHolder.updateSystemBars(showInterface)
     }
 
     // Observe tracks

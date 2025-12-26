@@ -8,7 +8,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Snackbar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -32,7 +31,6 @@ import com.kaem.flux.screens.player.controllers.rememberPlayerStateHolder
 import com.kaem.flux.screens.player.controllers.rememberScreenStateHolder
 import com.kaem.flux.ui.component.ErrorScreen
 import com.kaem.flux.ui.component.LoadingScreen
-import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.Ui
 
 @OptIn(UnstableApi::class)
@@ -53,7 +51,7 @@ fun PlayerScreen(
     PlayerSideEffects(
         viewModel = viewModel,
         stateHolder = playerStateHolder,
-        screenStateHolder = screenStateHolder,
+        windowStateHolder = screenStateHolder,
         showInterface = state.controls.showInterface,
         onBack = onBack
     )

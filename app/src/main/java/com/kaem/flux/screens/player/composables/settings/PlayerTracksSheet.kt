@@ -20,7 +20,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -63,9 +62,7 @@ fun PlayerTracksSheet(
             tonalElevation = AlertDialogDefaults.TonalElevation
         ) {
 
-            LazyColumn(
-                modifier = Modifier.fillMaxWidth()
-            ) {
+            LazyColumn(modifier = Modifier.fillMaxWidth()) {
 
                 stickyHeader {
 
@@ -107,9 +104,7 @@ fun PlayerTracksSheet(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
 
-                        Text.Label.Large(
-                            text = track.label,
-                        )
+                        Text.Label.Large(text = track.label)
 
                         if (track == selectedTrack) {
                             Icon(

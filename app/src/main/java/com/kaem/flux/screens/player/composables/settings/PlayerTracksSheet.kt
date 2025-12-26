@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
@@ -17,6 +19,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,19 +50,45 @@ fun PlayerTracksSheet(
     val title = stringResource(if (type == PlayerTrack.Type.AUDIO) R.string.audio_tracks else R.string.subtitles)
     Text.Headline.Small(text = title)
 
-    /*AlertDialog(
+    BasicAlertDialog(
+        modifier = Modifier
+            .clip(AlertDialogDefaults.shape),
         onDismissRequest = { sendIntent(PlayerIntent.ShowSettings(sheet = null)) },
-        title = {
-            val title = stringResource(if (type == PlayerTrack.Type.AUDIO) R.string.audio_tracks else R.string.subtitles)
-            Text.Headline.Small(text = title)
-        },
-        confirmButton = {},
-        text = {
+    ) {
+
+        Surface(
+            modifier = Modifier.wrapContentWidth().wrapContentHeight(),
+            shape = AlertDialogDefaults.shape,
+            color = AlertDialogDefaults.containerColor,
+            tonalElevation = AlertDialogDefaults.TonalElevation
+        ) {
 
             LazyColumn(
                 modifier = Modifier.fillMaxWidth()
             ) {
 
+                stickyHeader {
+
+                    val title = stringResource(if (type == PlayerTrack.Type.AUDIO) R.string.audio_tracks else R.string.subtitles)
+
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(MaterialTheme.colorScheme.surface)
+                    ) {
+
+                        Text.Headline.Small(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = Ui.Space.LARGE, start = Ui.Space.MEDIUM, end = Ui.Space.MEDIUM, bottom = Ui.Space.MEDIUM),
+                            text = title,
+                        )
+
+                        HorizontalDivider(modifier = Modifier.fillMaxWidth())
+
+                    }
+
+                }
 
                 itemsIndexed(tracks.filter { it.type == type }) { index, track ->
 
@@ -77,92 +107,22 @@ fun PlayerTracksSheet(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
 
-                        Text.Title.Medium(
+                        Text.Label.Large(
                             text = track.label,
-                            color = MaterialTheme.colorScheme.onSurface
                         )
 
                         if (track == selectedTrack) {
                             Icon(
                                 imageVector = Icons.Default.Check,
-                                tint = MaterialTheme.colorScheme.onSurface,
                                 contentDescription = "selected subtitles"
                             )
                         }
+
                     }
 
                 }
             }
 
-        }
-    )*/
-    BasicAlertDialog(
-        modifier = Modifier
-            .clip(AlertDialogDefaults.shape)
-            .background(MaterialTheme.colorScheme.surface),
-        onDismissRequest = { sendIntent(PlayerIntent.ShowSettings(sheet = null)) },
-    ) {
-
-        LazyColumn(
-            modifier = Modifier.fillMaxWidth()
-        ) {
-
-            stickyHeader {
-
-                val title = stringResource(if (type == PlayerTrack.Type.AUDIO) R.string.audio_tracks else R.string.subtitles)
-
-                Column(
-                    modifier = Modifier
-                        .background(MaterialTheme.colorScheme.surface)
-                        .fillMaxWidth()
-                ) {
-
-                    Text.Headline.Small(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = Ui.Space.LARGE, start = Ui.Space.MEDIUM, end = Ui.Space.MEDIUM, bottom = Ui.Space.MEDIUM),
-                        text = title,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-
-                    HorizontalDivider(modifier = Modifier.fillMaxWidth())
-
-                }
-
-            }
-
-            itemsIndexed(tracks.filter { it.type == type }) { index, track ->
-
-                if (index != 0)
-                    HorizontalDivider(modifier = Modifier.fillMaxWidth().padding(horizontal = Ui.Space.MEDIUM))
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable {
-                            sendIntent(PlayerIntent.SelectTrack(track = track))
-                            sendIntent(PlayerIntent.ShowSettings(sheet = null))
-                        }
-                        .padding(horizontal = Ui.Space.MEDIUM, vertical = Ui.Space.MEDIUM),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-
-                    Text.Label.Large(
-                        text = track.label,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-
-                    if (track == selectedTrack) {
-                        Icon(
-                            imageVector = Icons.Default.Check,
-                            tint = MaterialTheme.colorScheme.onSurface,
-                            contentDescription = "selected subtitles"
-                        )
-                    }
-                }
-
-            }
         }
 
     }

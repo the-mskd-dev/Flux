@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.AlertDialogDefaults
@@ -15,6 +17,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,31 +41,39 @@ fun PlayerSettingsSheet(
     BasicAlertDialog(
         modifier = Modifier
             .clip(AlertDialogDefaults.shape)
-            .background(MaterialTheme.colorScheme.surface)
             .padding(vertical = Ui.Space.LARGE),
         onDismissRequest = { sendIntent(PlayerIntent.ShowSettings(sheet = null)) },
     ) {
 
-        Column(modifier = Modifier.fillMaxWidth()) {
+        Surface(
+            modifier = Modifier.wrapContentWidth().wrapContentHeight(),
+            shape = AlertDialogDefaults.shape,
+            color = AlertDialogDefaults.containerColor,
+            tonalElevation = AlertDialogDefaults.TonalElevation
+        ) {
 
-            PlayerSettingsItem(
-                label = "Audio",
-                value = tracksState().selectedAudio?.label ?: "None",
-                onTap = {
-                    val intent =PlayerUiState.SettingsSheet.Tracks(type = PlayerTrack.Type.AUDIO)
-                    sendIntent(PlayerIntent.ShowSettings(sheet = intent))
-                }
-            )
+            Column(modifier = Modifier.fillMaxWidth()) {
 
-            HorizontalDivider(modifier = Modifier.padding(horizontal = Ui.Space.MEDIUM))
+                PlayerSettingsItem(
+                    label = "Audio",
+                    value = tracksState().selectedAudio?.label ?: "None",
+                    onTap = {
+                        val intent =PlayerUiState.SettingsSheet.Tracks(type = PlayerTrack.Type.AUDIO)
+                        sendIntent(PlayerIntent.ShowSettings(sheet = intent))
+                    }
+                )
 
-            PlayerSettingsItem(
-                label = "Subtitles",
-                value = tracksState().selectedSubtitles?.label ?: "None",
-                onTap = {
-                    val intent =PlayerUiState.SettingsSheet.Tracks(type = PlayerTrack.Type.SUBTITLES)
-                    sendIntent(PlayerIntent.ShowSettings(sheet = intent)) }
-            )
+                HorizontalDivider(modifier = Modifier.padding(horizontal = Ui.Space.MEDIUM))
+
+                PlayerSettingsItem(
+                    label = "Subtitles",
+                    value = tracksState().selectedSubtitles?.label ?: "None",
+                    onTap = {
+                        val intent =PlayerUiState.SettingsSheet.Tracks(type = PlayerTrack.Type.SUBTITLES)
+                        sendIntent(PlayerIntent.ShowSettings(sheet = intent)) }
+                )
+
+            }
 
         }
 
@@ -89,17 +100,14 @@ fun PlayerSettingsItem(
         Text.Title.Medium(
             modifier = Modifier.weight(1f),
             text = label,
-            color = MaterialTheme.colorScheme.onSurface
         )
 
         Text.Label.Large(
             text = value,
-            color = MaterialTheme.colorScheme.onSurface
         )
 
         Icon(
             imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-            tint = MaterialTheme.colorScheme.onSurface,
             contentDescription = "settings for $label",
         )
 

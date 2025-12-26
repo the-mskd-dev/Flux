@@ -28,7 +28,8 @@ data class SettingsPreferences(
     val playerRewindValue: Int = 10,
     val playerForwardValue: Int = 10,
     val uiTheme: Ui.THEME = Ui.THEME.SYSTEM,
-    val subtitlesLanguage: Locale = Locale.getDefault()
+    val subtitlesLanguage: Locale = Locale.getDefault(),
+    val audioLanguage: Locale = Locale.getDefault()
 )
 
 class SettingsRepository @Inject constructor(
@@ -40,6 +41,7 @@ class SettingsRepository @Inject constructor(
         val PLAYER_FORWARD = intPreferencesKey("player_forward")
         val UI_THEME = stringPreferencesKey("ui_theme")
         val SUBTITLES_LANGUAGE = stringPreferencesKey("subtitles_language")
+        val AUDIO_LANGUAGE = stringPreferencesKey("audio_language")
     }
 
     val flow: Flow<SettingsPreferences> = settingsDataStore.data
@@ -50,12 +52,14 @@ class SettingsRepository @Inject constructor(
             val playerForwardValue = preferences[Keys.PLAYER_FORWARD] ?: 10
             val uiTheme = preferences[Keys.UI_THEME]?.let { Ui.THEME.valueOf(it) } ?: Ui.THEME.SYSTEM
             val subtitlesLanguage = preferences[Keys.SUBTITLES_LANGUAGE]?.let { Locale.forLanguageTag(it) } ?: Locale.getDefault()
+            val audioLanguage = preferences[Keys.AUDIO_LANGUAGE]?.let { Locale.forLanguageTag(it) } ?: Locale.getDefault()
 
             SettingsPreferences(
                 playerRewindValue = playerRewindValue,
                 playerForwardValue = playerForwardValue,
                 uiTheme = uiTheme,
-                subtitlesLanguage = subtitlesLanguage
+                subtitlesLanguage = subtitlesLanguage,
+                audioLanguage = audioLanguage
             )
         }
 
@@ -81,6 +85,12 @@ class SettingsRepository @Inject constructor(
     suspend fun setSubtitlesLanguage(locale: Locale) {
         settingsDataStore.edit { preferences ->
             preferences[Keys.SUBTITLES_LANGUAGE] = locale.language
+        }
+    }
+
+    suspend fun setAudioLanguage(locale: Locale) {
+        settingsDataStore.edit { preferences ->
+            preferences[Keys.AUDIO_LANGUAGE] = locale.language
         }
     }
 

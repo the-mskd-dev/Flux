@@ -134,14 +134,10 @@ class PlayerViewModel @AssistedInject constructor(
     private suspend fun updateTracks(tracks: List<PlayerTrack>) {
         _tracksState.update { it.copy(tracks = tracks) }
 
-        if (_tracksState.value.selectedSubtitles == null) {
+        val currentSettings = settingsRepository.flow.first()
+        val preferredLang = currentSettings.subtitlesLanguage.toPlayerTrack(type = PlayerTrack.Type.SUBTITLES)
 
-            val currentSettings = settingsRepository.flow.first()
-            val preferredLang = currentSettings.subtitlesLanguage.toPlayerTrack(type = PlayerTrack.Type.SUBTITLES)
-
-            _event.send(PlayerEvent.SelectTrack(preferredLang))
-
-        }
+        _event.send(PlayerEvent.SelectTrack(preferredLang))
 
     }
 
@@ -150,9 +146,12 @@ class PlayerViewModel @AssistedInject constructor(
 
         try {
 
-            if (track.type == PlayerTrack.Type.SUBTITLES && track.language != null) {
+            if (track.language != null) {
                 val locale = Locale.forLanguageTag(track.language)
-                settingsRepository.setSubtitlesLanguage(locale)
+                if (track.type == PlayerTrack.Type.SUBTITLES)
+                    settingsRepository.setSubtitlesLanguage(locale)
+                else
+                    settingsRepository.setAudioLanguage(locale)
             }
 
         } catch (e: Exception) {

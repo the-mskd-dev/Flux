@@ -9,6 +9,7 @@ import com.kaem.flux.data.repository.UserRepository
 import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.model.artwork.Movie
 import com.kaem.flux.model.artwork.Status
+import com.kaem.flux.utils.extensions.getNextEpisodeFor
 import com.kaem.flux.utils.extensions.lastEpisode
 import com.kaem.flux.utils.extensions.msToMin
 import com.kaem.flux.utils.extensions.timeDescription
@@ -96,6 +97,7 @@ class PlayerViewModel @AssistedInject constructor(
             is PlayerIntent.UpdateTracks -> updateTracks(tracks = intent.tracks)
             is PlayerIntent.SelectTrack -> selectTracks(track = intent.track)
             is PlayerIntent.OnTrackSelected -> onTrackSelected(track = intent.track)
+            is PlayerIntent.ShowNextEpisode -> showNextEpisode(show = intent.show)
         }
     }
 
@@ -129,6 +131,25 @@ class PlayerViewModel @AssistedInject constructor(
 
     private fun showSettingsSheet(sheet: PlayerUiState.SettingsSheet?) {
         _controlsState.update { it.copy(settingsSheet = sheet) }
+    }
+
+    private suspend fun showNextEpisode(show: Boolean) {
+
+        val currentEpisode = uiState.first().media as? Episode ?: return
+
+        if (show) {
+
+            val episodes = artworkRepository.flow.first().episodes
+            val nextEpisode = episodes.getNextEpisodeFor(currentEpisode)
+
+            _controlsState.update { it.copy(nextEpisode = nextEpisode) }
+
+        } else {
+
+            _controlsState.update { it.copy(nextEpisode = null) }
+
+        }
+
     }
 
     private suspend fun updateTracks(tracks: List<PlayerTrack>) {

@@ -67,6 +67,12 @@ fun PlayerSideEffects(
                 }
             }
 
+            launch {
+                stateHolder.showNext.collect { showNext ->
+                    viewModel.handleIntent(PlayerIntent.ShowNextEpisode(show = showNext))
+                }
+            }
+
             // Events from VM
             launch {
                 viewModel.event.collect { event ->

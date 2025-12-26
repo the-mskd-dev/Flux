@@ -1,6 +1,7 @@
 package com.kaem.flux.screens.player
 
 import androidx.compose.runtime.Immutable
+import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.model.artwork.Media
 import kotlin.time.Duration.Companion.seconds
 
@@ -13,11 +14,14 @@ data class PlayerUiState(
     val tracks: Tracks = Tracks()
 ) {
 
+    val media: Media? get() = (screen as? PlayerScreen.Content)?.media
+
     @Immutable
     data class Controls(
         val isPlaying: Boolean = false,
         val showInterface: Boolean = false,
-        val settingsSheet: SettingsSheet? = null
+        val settingsSheet: SettingsSheet? = null,
+        val nextEpisode: Episode? = null
     )
 
     @Immutable
@@ -53,6 +57,7 @@ sealed class PlayerIntent {
     data class UpdateTracks(val tracks: List<PlayerTrack>) : PlayerIntent()
     data class SelectTrack(val track: PlayerTrack) : PlayerIntent()
     data class OnTrackSelected(val track: PlayerTrack) : PlayerIntent()
+    data class ShowNextEpisode(val show: Boolean) : PlayerIntent()
 }
 
 sealed class PlayerEvent {

@@ -32,11 +32,16 @@ import com.kaem.flux.utils.extensions.setAppOrientation
 import com.kaem.flux.utils.extensions.showSystemBars
 import com.kaem.flux.utils.extensions.uppercaseFirstLetter
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.util.Locale
 
@@ -48,7 +53,7 @@ class PlayerStateHolder(
     private val scope: CoroutineScope
 ) : Player.Listener {
 
-    //region States
+    //region Variables
 
     private val _subtitles = MutableStateFlow<List<Cue>>(emptyList())
     val subtitles: StateFlow<List<Cue>> = _subtitles.asStateFlow()
@@ -62,6 +67,12 @@ class PlayerStateHolder(
     private val _selectedTrack = MutableSharedFlow<PlayerTrack>()
     val selectedTrack = _selectedTrack.asSharedFlow()
 
+    private val _showNext = Channel<Boolean>(Channel.BUFFERED)
+    val showNext = _showNext.receiveAsFlow()
+
+    private var currentMediaId: Long = -1L
+
+    private var progressJob: Job? = null
 
     //endregion
 
@@ -81,8 +92,6 @@ class PlayerStateHolder(
             addListener(this@PlayerStateHolder)
         }
 
-    private var currentMediaId: Long = -1L
-
     override fun onCues(cueGroup: androidx.media3.common.text.CueGroup) {
         _subtitles.value = cueGroup.cues
     }
@@ -96,8 +105,10 @@ class PlayerStateHolder(
         ) {
             scope.launch {
                 _isPlaying.emit(player.playWhenReady)
-
             }
+
+            if (player.isPlaying) startProgressMonitoring() else stopProgressMonitoring()
+
         }
     }
 
@@ -252,6 +263,24 @@ class PlayerStateHolder(
             return false
         }
 
+    }
+
+    private fun startProgressMonitoring() {
+        stopProgressMonitoring()
+        progressJob = scope.launch {
+            while (isActive) {
+                if (player.duration > 0) {
+                    val percentage = player.currentPosition.toFloat() / player.duration.toFloat()
+                    _showNext.send(percentage >= 0.95f)
+                }
+                delay(1000)
+            }
+        }
+    }
+
+    private fun stopProgressMonitoring() {
+        progressJob?.cancel()
+        progressJob = null
     }
 
     fun togglePlayButton() {

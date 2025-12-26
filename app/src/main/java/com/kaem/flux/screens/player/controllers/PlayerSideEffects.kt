@@ -60,20 +60,12 @@ fun PlayerSideEffects(
 
             // Events from SH
             launch {
-                stateHolder.selectedTrack.collect { track ->
-                    viewModel.handleIntent(PlayerIntent.OnTrackSelected(track))
-                }
-            }
-
-            launch {
-                stateHolder.isPlaying.collect { isPlaying ->
-                    viewModel.handleIntent(PlayerIntent.SetPlayingStatus(isPlaying = isPlaying))
-                }
-            }
-
-            launch {
-                stateHolder.showNext.collect { showNext ->
-                    viewModel.handleIntent(PlayerIntent.ShowNextEpisode(show = showNext))
+                stateHolder.event.collect { event ->
+                    when (event) {
+                        is PlayerStateHolder.Event.IsPlaying -> viewModel.handleIntent(PlayerIntent.SetPlayingStatus(isPlaying = event.isPlaying))
+                        is PlayerStateHolder.Event.SelectedTrack -> viewModel.handleIntent(PlayerIntent.OnTrackSelected(event.track))
+                        is PlayerStateHolder.Event.ShowNext -> viewModel.handleIntent(PlayerIntent.ShowNextEpisode(show = event.show))
+                    }
                 }
             }
 

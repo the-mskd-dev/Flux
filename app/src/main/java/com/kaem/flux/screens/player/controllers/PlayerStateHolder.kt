@@ -54,17 +54,17 @@ class PlayerStateHolder(
     private val _subtitles = MutableStateFlow<List<Cue>>(emptyList())
     val subtitles: StateFlow<List<Cue>> = _subtitles.asStateFlow()
 
-    private val _isPlaying = MutableSharedFlow<Boolean>()
-    val isPlaying = _isPlaying.asSharedFlow()
-
     private val _tracks = MutableStateFlow<List<PlayerTrack>>(emptyList())
     val tracks = _tracks.asStateFlow()
 
-    private val _selectedTrack = MutableSharedFlow<PlayerTrack>()
-    val selectedTrack = _selectedTrack.asSharedFlow()
+    private val _event = Channel<Event>(Channel.BUFFERED)
+    val event = _event.receiveAsFlow()
 
-    private val _showNext = Channel<Boolean>(Channel.BUFFERED)
-    val showNext = _showNext.receiveAsFlow()
+    sealed class Event {
+        data class IsPlaying(val isPlaying: Boolean) : Event()
+        data class SelectedTrack(val track: PlayerTrack) : Event()
+        data class ShowNext(val show: Boolean) : Event()
+    }
 
     //endregion
 
@@ -73,6 +73,8 @@ class PlayerStateHolder(
     private var currentMediaId: Long = -1L
 
     private var progressJob: Job? = null
+
+    private var enableNextEpisodeEvent = true
 
     val player : Player = ExoPlayer.Builder(context)
         .setRenderersFactory(
@@ -104,7 +106,7 @@ class PlayerStateHolder(
             )
         ) {
             scope.launch {
-                _isPlaying.emit(player.playWhenReady)
+                _event.send(Event.IsPlaying(isPlaying = player.playWhenReady))
             }
 
             if (player.isPlaying) startProgressMonitoring() else stopProgressMonitoring()
@@ -135,7 +137,7 @@ class PlayerStateHolder(
 
                     if (isSelected) {
                         scope.launch {
-                            _selectedTrack.emit(playerTrack)
+                            _event.send(Event.SelectedTrack(track = playerTrack))
                         }
                     }
 
@@ -239,11 +241,13 @@ class PlayerStateHolder(
 
     private fun startProgressMonitoring() {
         stopProgressMonitoring()
+        enableNextEpisodeEvent = true
         progressJob = scope.launch {
             while (isActive) {
-                if (player.duration > 0) {
+                if (player.duration > 0 && enableNextEpisodeEvent) {
                     val percentage = player.currentPosition.toFloat() / player.duration.toFloat()
-                    _showNext.send(percentage >= 0.95f)
+                    _event.send(Event.ShowNext(show = percentage >= 0.95f))
+                    enableNextEpisodeEvent = false
                 }
                 delay(1000)
             }
@@ -265,14 +269,17 @@ class PlayerStateHolder(
 
     fun onFastRewind(value: Long) {
         player.seekTo(player.currentPosition - value)
+        enableNextEpisodeEvent = true
     }
 
     fun onFastForward(value: Long) {
         player.seekTo(player.currentPosition + value)
+        enableNextEpisodeEvent = true
     }
 
     fun updateProgress(progress: Long) {
         player.seekTo(progress)
+        enableNextEpisodeEvent = true
     }
 
     fun playMedia(media: Media?) {
@@ -282,6 +289,7 @@ class PlayerStateHolder(
             player.seekTo(media.currentTime)
             player.prepare()
             currentMediaId = media.mediaId
+            startProgressMonitoring()
         }
 
     }
@@ -306,7 +314,7 @@ class PlayerStateHolder(
             .build()
 
         trackResult?.let {
-            _selectedTrack.emit(it)
+            _event.send(Event.SelectedTrack(track = it))
             Log.i("PlayerStateHolder", "Selected track: $it")
         }
 

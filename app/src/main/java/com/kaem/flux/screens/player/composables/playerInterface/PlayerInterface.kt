@@ -6,9 +6,12 @@ import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
@@ -29,45 +32,57 @@ fun PlayerInterface(
 
     val controls = controlsState()
 
-    AnimatedVisibility(
-        visible = controls.showInterface,
-        enter = fadeIn(animationSpec = spring(stiffness = Spring.StiffnessLow)),
-        exit = fadeOut(animationSpec = spring(stiffness = Spring.StiffnessLow)),
-    ) {
+    Box(modifier = Modifier.fillMaxSize()) {
 
-        ConstraintLayout(
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.scrim.copy(alpha = .5f))
-                .fillMaxSize(),
-            constraintSet = PlayerInterfaceConstraintSet
+        AnimatedVisibility(
+            visible = controls.showInterface,
+            enter = fadeIn(animationSpec = spring(stiffness = Spring.StiffnessLow)),
+            exit = fadeOut(animationSpec = spring(stiffness = Spring.StiffnessLow)),
         ) {
 
-            PlayerTopBar(
-                layoutId = "topBar",
-                media = media,
-                onBackTap = { sendIntent(PlayerIntent.OnBackTap(player.currentPosition)) }
-            )
+            ConstraintLayout(
+                modifier = Modifier
+                    .background(MaterialTheme.colorScheme.scrim.copy(alpha = .5f))
+                    .fillMaxSize(),
+                constraintSet = PlayerInterfaceConstraintSet
+            ) {
 
-            PlayerSettingsButton(
-                layoutId = "settings",
-                sendIntent = sendIntent
-            )
+                PlayerTopBar(
+                    layoutId = "topBar",
+                    media = media,
+                    onBackTap = { sendIntent(PlayerIntent.OnBackTap(player.currentPosition)) }
+                )
 
-            PlayerControlButtons(
-                layoutId = "controlButtons",
-                isPlaying = controls.isPlaying,
-                sendIntent = sendIntent
-            )
+                PlayerSettingsButton(
+                    layoutId = "settings",
+                    sendIntent = sendIntent
+                )
 
-            PlayerSeekBar(
-                layoutId = "seekBar",
-                player = player,
-                showInterface = controls.showInterface,
-                isPlaying = controls.isPlaying,
-                sendIntent = sendIntent
-            )
+                PlayerControlButtons(
+                    layoutId = "controlButtons",
+                    isPlaying = controls.isPlaying,
+                    sendIntent = sendIntent
+                )
+
+                PlayerSeekBar(
+                    layoutId = "seekBar",
+                    player = player,
+                    showInterface = controls.showInterface,
+                    isPlaying = controls.isPlaying,
+                    sendIntent = sendIntent
+                )
+
+            }
 
         }
+
+        PlayerNextEpisode(
+            modifier = Modifier
+                .align(Alignment.CenterEnd)
+                .padding(end = Ui.Space.MEDIUM),
+            episode = controls.nextEpisode,
+            sendIntent = sendIntent
+        )
 
     }
 
@@ -75,7 +90,13 @@ fun PlayerInterface(
 
 val PlayerInterfaceConstraintSet = ConstraintSet {
 
-    val (topBar, controlButtons, seekBar, settings) = createRefsFor("topBar", "controlButtons", "seekBar", "settings")
+    val (topBar, controlButtons, seekBar, settings, nextEpisode) = createRefsFor(
+        "topBar",
+        "controlButtons",
+        "seekBar",
+        "settings",
+        "nextEpisode"
+    )
 
     constrain(topBar) {
         top.linkTo(parent.top, Ui.Space.MEDIUM)
@@ -100,6 +121,11 @@ val PlayerInterfaceConstraintSet = ConstraintSet {
         start.linkTo(parent.start)
         end.linkTo(parent.end)
         bottom.linkTo(parent.bottom, Ui.Space.MEDIUM)
+    }
+
+    constrain(nextEpisode) {
+        end.linkTo(parent.end, Ui.Space.MEDIUM)
+        bottom.linkTo(seekBar.top)
     }
 
 }

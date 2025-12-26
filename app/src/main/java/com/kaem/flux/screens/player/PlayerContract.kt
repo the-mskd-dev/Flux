@@ -58,6 +58,7 @@ sealed class PlayerIntent {
     data class SelectTrack(val track: PlayerTrack) : PlayerIntent()
     data class OnTrackSelected(val track: PlayerTrack) : PlayerIntent()
     data class ShowNextEpisode(val show: Boolean) : PlayerIntent()
+    data class PlayNextEpisode(val episode: Episode) : PlayerIntent()
 }
 
 sealed class PlayerEvent {
@@ -67,6 +68,7 @@ sealed class PlayerEvent {
     data class UpdateProgress(val progress: Long) : PlayerEvent()
     data object TogglePlayButton : PlayerEvent()
     data class SelectTrack(val track: PlayerTrack) : PlayerEvent()
+    //data class PlayNextEpisode(val episode: Episode) : PlayerIntent()
 }
 
 data class PlayerTrack(

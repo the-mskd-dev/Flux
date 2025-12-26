@@ -47,11 +47,11 @@ import com.kaem.flux.ui.component.ProgressBar
 import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
-import com.kaem.flux.utils.Constants
 import com.kaem.flux.utils.extensions.formattedText
 import com.kaem.flux.utils.extensions.grayScale
 import com.kaem.flux.utils.extensions.minToMs
 import com.kaem.flux.utils.extensions.timeDescription
+import com.kaem.flux.utils.extensions.tmdbImage
 
 @Composable
 fun EpisodeItem(
@@ -153,7 +153,7 @@ fun EpisodeImage(
                 modifier = Modifier
                     .fillMaxSize()
                     .let { if (episode.status == Status.WATCHED) it.grayScale() else it },
-                url = Constants.TMDB.IMAGE + episode.imagePath,
+                url = episode.imagePath.tmdbImage,
                 contentDescription = "Season ${episode.season} episode ${episode.number}, ${episode.title}"
             )
 

@@ -70,7 +70,8 @@ import com.kaem.flux.ui.component.MediaItem
 import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
-import com.kaem.flux.utils.Constants
+import com.kaem.flux.utils.extensions.tmdbImageLarge
+import com.kaem.flux.utils.extensions.tmdbImage
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -329,7 +330,7 @@ fun LastWatchedCarousel(
     ) { i ->
 
         val overview = artworks[i]
-        val url = Constants.TMDB.IMAGE + overview.bannerPath
+        val url = overview.bannerPath.tmdbImageLarge
 
         Image(
             modifier = Modifier
@@ -385,7 +386,7 @@ fun MediaCategory(
                 MediaItem(
                     width = width,
                     ratio = ratio,
-                    url = Constants.TMDB.IMAGE_SMALL + it.imagePath,
+                    url = it.imagePath.tmdbImage,
                     onTap = { sendIntent(HomeIntent.OnArtworkTap(artworkId = it.id)) },
                     description = it.title
                 )

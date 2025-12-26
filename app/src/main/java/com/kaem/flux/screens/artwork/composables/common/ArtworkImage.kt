@@ -37,7 +37,7 @@ import com.kaem.flux.ui.component.BackButton
 import com.kaem.flux.ui.component.Image
 import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
-import com.kaem.flux.utils.Constants
+import com.kaem.flux.utils.extensions.tmdbImage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,7 +49,7 @@ fun ArtworkImage(
 
     var imageHeight by remember { mutableIntStateOf(0) }
     val imageRequest = ImageRequest.Builder(LocalContext.current)
-        .data(Constants.TMDB.IMAGE_SMALL + artwork.imagePath)
+        .data(artwork.imagePath.tmdbImage)
         .crossfade(true)
         .build()
 

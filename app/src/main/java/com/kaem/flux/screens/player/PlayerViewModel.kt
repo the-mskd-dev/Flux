@@ -51,6 +51,8 @@ class PlayerViewModel @AssistedInject constructor(
 
     //region Flow
 
+    private val _mediaId = MutableStateFlow(mediaId)
+
     private val _event = Channel<PlayerEvent>(Channel.BUFFERED)
     val event = _event.receiveAsFlow()
 
@@ -61,10 +63,11 @@ class PlayerViewModel @AssistedInject constructor(
         artworkRepository.flow,
         settingsRepository.flow,
         _controlsState,
-        _tracksState
-    ) { artwork, settings, controls, tracks ->
+        _tracksState,
+        _mediaId
+    ) { artwork, settings, controls, tracks, id ->
 
-        val media = artwork.movie ?: artwork.episodes.find { it.id == mediaId }
+        val media = artwork.movie ?: artwork.episodes.find { it.id == id }
 
         PlayerUiState(
             screen = media?.let { PlayerScreen.Content(media = media) } ?: PlayerScreen.Error,
@@ -98,6 +101,7 @@ class PlayerViewModel @AssistedInject constructor(
             is PlayerIntent.SelectTrack -> selectTracks(track = intent.track)
             is PlayerIntent.OnTrackSelected -> onTrackSelected(track = intent.track)
             is PlayerIntent.ShowNextEpisode -> showNextEpisode(show = intent.show)
+            is PlayerIntent.PlayNextEpisode -> playNextEpisode(episode = intent.episode)
         }
     }
 
@@ -190,6 +194,10 @@ class PlayerViewModel @AssistedInject constructor(
             }
         }
 
+    }
+
+    private fun playNextEpisode(episode: Episode) {
+        _mediaId.value = episode.mediaId
     }
 
     private suspend fun onBackTap(time: Long?) {

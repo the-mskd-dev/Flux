@@ -45,7 +45,7 @@ import com.kaem.flux.ui.component.MediaItem
 import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
-import com.kaem.flux.utils.Constants
+import com.kaem.flux.utils.extensions.tmdbImage
 
 @Composable
 fun SearchScreen(
@@ -150,7 +150,7 @@ fun SearchContent(
 
                     MediaItem(
                         width = maxWidth,
-                        url = Constants.TMDB.IMAGE_SMALL + artwork.imagePath,
+                        url = artwork.imagePath.tmdbImage,
                         ratio = 2f/3f,
                         description = artwork.title,
                         onTap = { sendIntent(SearchIntent.OnArtworkTap(artwork.id)) }

@@ -13,6 +13,7 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -63,7 +64,7 @@ fun PlayerNextEpisode(
 ) {
 
     AnimatedVisibility(
-        modifier = modifier,
+        modifier = modifier.clickable { episode?.let { sendIntent(PlayerIntent.PlayNextEpisode(it)) } },
         visible = episode != null,
         enter = fadeIn() + slideInHorizontally { it / 2 },
         exit = fadeOut() + slideOutHorizontally { it / 2 }
@@ -86,6 +87,7 @@ fun PlayerNextEpisode(
                 progress += 0.1f
                 delay(500L)
             }
+            sendIntent(PlayerIntent.PlayNextEpisode(episode))
         }
 
         ProgressiveText(progress = animatedProgress)

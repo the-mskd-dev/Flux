@@ -69,4 +69,5 @@
     <string name="track">Track</string>
     <string name="subtitles">Subtitles</string>
     <string name="audio_tracks">Audio tracks</string>
+    <string name="next_episode">Next episode</string>
 </resources>

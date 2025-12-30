@@ -73,4 +73,5 @@
     <string name="track">Piste</string>
     <string name="subtitles">Sous-titres</string>
     <string name="audio_tracks">Pistes audio</string>
+    <string name="next_episode">Épisode suivant</string>
 </resources>

@@ -1,6 +1,11 @@
 package com.kaem.flux.screens.player.composables.playerInterface
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
@@ -14,18 +19,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.artwork.Episode
-import com.kaem.flux.model.artwork.Status
 import com.kaem.flux.screens.player.PlayerIntent
 import com.kaem.flux.ui.component.Image
 import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
-import com.kaem.flux.utils.extensions.grayScale
 import com.kaem.flux.utils.extensions.tmdbImage
 
 @Composable
@@ -37,7 +39,9 @@ fun PlayerNextEpisode(
 
     AnimatedVisibility(
         modifier = modifier,
-        visible = episode != null
+        visible = episode != null,
+        enter = fadeIn() + slideInHorizontally { it / 2 },
+        exit = fadeOut() + slideOutHorizontally { it / 2 }
     ) {
 
         episode ?: return@AnimatedVisibility

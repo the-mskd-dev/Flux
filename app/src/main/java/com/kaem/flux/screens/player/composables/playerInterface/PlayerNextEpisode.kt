@@ -128,7 +128,7 @@ fun ProgressiveText(
                     color = progressColor
                 )
             }
-            .padding(Ui.Space.MEDIUM),
+            .padding(Ui.Space.LARGE),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)
     ) {
@@ -139,7 +139,7 @@ fun ProgressiveText(
             contentDescription = "next episode button"
         )
 
-        Text.Label.Large(
+        Text.Title.Large(
             text = stringResource(R.string.next_episode).uppercase(),
             color = contentColor
         )

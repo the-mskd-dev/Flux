@@ -81,7 +81,7 @@ fun PlayerInterface(
             PlayerNextEpisode(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
-                    .padding(end = Ui.Space.MEDIUM),
+                    .padding(Ui.Space.LARGE),
                 episode = controls.nextEpisode,
                 sendIntent = sendIntent
             )

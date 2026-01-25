@@ -1,6 +1,8 @@
 package com.kaem.flux.screens.player.composables.playerInterface
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
@@ -46,7 +48,13 @@ fun PlayerNextEpisode(
     AnimatedVisibility(
         modifier = modifier.clickable { episode?.let { sendIntent(PlayerIntent.PlayNextEpisode(it)) } },
         visible = episode != null,
-        enter = fadeIn() + slideInHorizontally { it / 2 },
+        enter = slideInHorizontally(
+            animationSpec = spring(
+                dampingRatio = Spring.DampingRatioMediumBouncy,
+                stiffness = Spring.StiffnessLow
+            ),
+            initialOffsetX = { it / 2 }
+        ) + fadeIn() ,
         exit = fadeOut() + slideOutHorizontally { it / 2 }
     ) {
 
@@ -56,6 +64,7 @@ fun PlayerNextEpisode(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
         ) {
+
             FloatingActionButton(
                 onClick = { sendIntent(PlayerIntent.TogglePlayButton) },
                 shape = FloatingActionButtonDefaults.mediumShape,

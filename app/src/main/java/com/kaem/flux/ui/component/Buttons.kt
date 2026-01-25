@@ -1,6 +1,7 @@
 package com.kaem.flux.ui.component
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -39,6 +40,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -194,6 +196,9 @@ fun CountDownButton(
     var count by remember { mutableIntStateOf(duration) }
     val size = ButtonDefaults.MediumContainerHeight
     val shape = ButtonDefaults.shape
+    val style = ButtonDefaults.textStyleFor(size).copy(
+        fontFeatureSettings = "tnum"
+    )
 
     LaunchedEffect(Unit) {
         while (count > 0) {
@@ -214,11 +219,22 @@ fun CountDownButton(
         contentPadding = ButtonDefaults.contentPaddingFor(size),
         content = {
 
-            Text.Adaptive(
-                text = text(count),
-                color = contentColorFor(backgroundColor),
-                style = ButtonDefaults.textStyleFor(size)
-            )
+            Box {
+
+                Text.Adaptive(
+                    modifier = Modifier.clearAndSetSemantics { }, // To ignore TalkBack
+                    text = text(duration),
+                    color = Color.Transparent,
+                    style = style
+                )
+
+                Text.Adaptive(
+                    text = text(count),
+                    color = contentColorFor(backgroundColor),
+                    style = style
+                )
+
+            }
 
         }
     )

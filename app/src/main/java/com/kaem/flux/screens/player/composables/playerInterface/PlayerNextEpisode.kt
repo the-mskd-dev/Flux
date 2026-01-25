@@ -30,7 +30,7 @@ import com.kaem.flux.R
 import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.screens.player.PlayerIntent
-import com.kaem.flux.ui.component.ProgressButton
+import com.kaem.flux.ui.component.CountDownButton
 import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
@@ -58,7 +58,8 @@ fun PlayerNextEpisode(
         ) {
             FloatingActionButton(
                 onClick = { sendIntent(PlayerIntent.TogglePlayButton) },
-                shape = FloatingActionButtonDefaults.mediumShape
+                shape = FloatingActionButtonDefaults.mediumShape,
+                containerColor = MaterialTheme.colorScheme.tertiaryContainer
             ) {
                 Icon(
                     modifier = Modifier.size(28.dp),
@@ -67,23 +68,9 @@ fun PlayerNextEpisode(
                 )
             }
 
-            ProgressButton(
-                onFinish = { sendIntent(PlayerIntent.PlayNextEpisode(episode)) },
-                icon = { size ->
-                    Icon(
-                        modifier = Modifier.size(ButtonDefaults.iconSizeFor(size)),
-                        painter = painterResource(R.drawable.skip_next),
-                        tint = MaterialTheme.colorScheme.onTertiary,
-                        contentDescription = "cancel next episode button"
-                    )
-                },
-                text = { size ->
-                    Text.Adaptive(
-                        text = stringResource(R.string.next_episode).uppercase(),
-                        color = MaterialTheme.colorScheme.onTertiary,
-                        style = ButtonDefaults.textStyleFor(size)
-                    )
-                }
+            CountDownButton(
+                onTap = { sendIntent(PlayerIntent.PlayNextEpisode(episode)) },
+                text = { stringResource(R.string.next_episode, it) }
             )
 
         }

@@ -186,7 +186,7 @@ fun FluxTextButton(
 @Composable
 fun CountDownButton(
     text: @Composable (Int) -> String,
-    duration: Int = 5,
+    duration: Int = 10,
     onTap: () -> Unit,
     backgroundColor: Color = MaterialTheme.colorScheme.primaryContainer,
 ) {

@@ -5,6 +5,7 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.clickable
@@ -49,13 +50,13 @@ fun PlayerNextEpisode(
         modifier = modifier.clickable { episode?.let { sendIntent(PlayerIntent.PlayNextEpisode(it)) } },
         visible = episode != null,
         enter = slideInHorizontally(
+            initialOffsetX = { fullWidth -> fullWidth },
             animationSpec = spring(
                 dampingRatio = Spring.DampingRatioMediumBouncy,
                 stiffness = Spring.StiffnessLow
-            ),
-            initialOffsetX = { it / 2 }
-        ) + fadeIn() ,
-        exit = fadeOut() + slideOutHorizontally { it / 2 }
+            )
+        ) + fadeIn(),
+        exit = slideOutHorizontally { it } + fadeOut()
     ) {
 
         episode ?: return@AnimatedVisibility
@@ -66,6 +67,17 @@ fun PlayerNextEpisode(
         ) {
 
             FloatingActionButton(
+                modifier = Modifier.animateEnterExit(
+                    enter = slideInHorizontally(
+                        initialOffsetX = { fullWidth -> fullWidth },
+                        animationSpec = spring(
+                            dampingRatio = Spring.DampingRatioMediumBouncy,
+                            stiffness = Spring.StiffnessLow
+                        )
+                    ) + scaleIn(
+                        animationSpec = spring(stiffness = Spring.StiffnessLow)
+                    ) + fadeIn()
+                ),
                 onClick = { sendIntent(PlayerIntent.TogglePlayButton) },
                 shape = FloatingActionButtonDefaults.mediumShape,
                 containerColor = MaterialTheme.colorScheme.tertiaryContainer

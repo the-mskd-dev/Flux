@@ -36,6 +36,23 @@ object Ui {
 
     }
 
+    /**
+     * - **Level 0** : base level.
+     * - **Level 1** : filled cards and low emphasis items.
+     * - **Level 2** : elevated cards and navigation bars.
+     * - **Level 3** : cards and floating buttons.
+     * - **Level 4** : dialogs and menus.
+     * - **Level 5** : modals and navigation drawers.
+     */
+    object Elevation {
+        val Level0 = 0.0.dp
+        val Level1 = 1.0.dp
+        val Level2 = 3.0.dp
+        val Level3 = 6.0.dp
+        val Level4 = 8.0.dp
+        val Level5 = 12.0.dp
+    }
+
     object Card {
 
         val selectedCardColors @Composable get() = CardDefaults.cardColors(

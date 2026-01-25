@@ -1,16 +1,46 @@
 package com.kaem.flux.ui.component
 
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 object Text {
+
+    @Composable
+    fun Adaptive(
+        text: String?,
+        modifier: Modifier = Modifier,
+        textAlign: TextAlign = TextAlign.Start,
+        color: Color = Color.Unspecified,
+        style: TextStyle = LocalTextStyle.current,
+        overflow: TextOverflow = TextOverflow.Clip,
+        maxLines: Int = Int.MAX_VALUE,
+        minLines: Int = 1,
+    ) {
+
+        if (text.isNullOrBlank())
+            return
+
+        Text(
+            modifier = modifier,
+            text = text,
+            color = color,
+            style = style,
+            textAlign = textAlign,
+            overflow = overflow,
+            maxLines = maxLines,
+            minLines = minLines
+        )
+
+    }
 
     /**
      * Very short, high-impact "hero" text. Use for marketing or key moments.

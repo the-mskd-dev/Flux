@@ -221,6 +221,7 @@ fun CountDownButton(
 
             Box {
 
+                // Invisible text to avoid button size change
                 Text.Adaptive(
                     modifier = Modifier.clearAndSetSemantics { }, // To ignore TalkBack
                     text = text(duration),

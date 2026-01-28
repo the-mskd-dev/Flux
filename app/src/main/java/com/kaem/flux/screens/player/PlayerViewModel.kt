@@ -144,13 +144,13 @@ class PlayerViewModel @AssistedInject constructor(
         if (show) {
 
             val episodes = artworkRepository.flow.first().episodes
-            val nextEpisode = episodes.getNextEpisodeFor(currentEpisode)
+            val nextEpisode = episodes.getNextEpisodeFor(currentEpisode) ?: return
 
-            _controlsState.update { it.copy(nextEpisode = nextEpisode) }
+            _controlsState.update { it.copy(nextButton = PlayerUiState.NextButton.Showed(episode = nextEpisode)) }
 
         } else {
 
-            _controlsState.update { it.copy(nextEpisode = null) }
+            _controlsState.update { it.copy(nextButton = PlayerUiState.NextButton.Hidden) }
 
         }
 
@@ -197,6 +197,7 @@ class PlayerViewModel @AssistedInject constructor(
     }
 
     private fun playNextEpisode(episode: Episode) {
+        _controlsState.update { it.copy(nextButton = PlayerUiState.NextButton.Hidden) }
         _mediaId.value = episode.mediaId
     }
 

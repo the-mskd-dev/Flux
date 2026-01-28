@@ -21,7 +21,7 @@ data class PlayerUiState(
         val isPlaying: Boolean = false,
         val showInterface: Boolean = false,
         val settingsSheet: SettingsSheet? = null,
-        val nextEpisode: Episode? = null
+        val nextButton: NextButton = NextButton.Hidden
     )
 
     @Immutable
@@ -34,6 +34,12 @@ data class PlayerUiState(
     sealed class SettingsSheet {
         data object Settings : SettingsSheet()
         data class Tracks(val type: PlayerTrack.Type) : SettingsSheet()
+    }
+
+    sealed class NextButton() {
+        data class Showed(val episode: Episode) : NextButton()
+        data object Hidden : NextButton()
+        data object Canceled : NextButton()
     }
 
 }

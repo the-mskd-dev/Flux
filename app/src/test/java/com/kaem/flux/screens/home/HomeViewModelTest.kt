@@ -8,7 +8,7 @@ import com.kaem.flux.data.repository.UserPreferences
 import com.kaem.flux.data.repository.UserRepository
 import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.ScreenState
-import com.kaem.flux.model.media.MediaOverview
+import com.kaem.flux.model.artwork.Artwork
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -56,7 +56,7 @@ class HomeViewModelTest : BaseTest() {
         viewModel.uiState.test {
             val initialState = awaitItem()
             assert(ScreenState.LOADING == initialState.screenState)
-            assert(emptyList<MediaOverview>() == initialState.overviews)
+            assert(emptyList<Artwork>() == initialState.artworks)
             assert(emptyList<Long>() == initialState.lastWatchedMediaIds)
             assert(initialState.isRefreshing)
 
@@ -69,14 +69,14 @@ class HomeViewModelTest : BaseTest() {
     fun combine_flows_should_update_state() = runTest {
 
         // Mock
-        val overviews = listOf(MediaMockups.movieOverview, MediaMockups.showOverview)
-        val lastWatchedIds = listOf(MediaMockups.showOverview.id)
+        val artworks = listOf(MediaMockups.movieArtwork, MediaMockups.showArtwork)
+        val lastWatchedIds = listOf(MediaMockups.showArtwork.id)
         val catalogContent = CatalogContent(
             isLoading = false,
-            mediaOverviews = overviews
+            artworks = artworks
         )
         val dataStore = UserPreferences(
-            watchedIds = lastWatchedIds
+            recentlyWatchedIds = lastWatchedIds
         )
 
         viewModel.uiState.test {
@@ -88,7 +88,7 @@ class HomeViewModelTest : BaseTest() {
             val updatedState = awaitItem()
 
             assert(ScreenState.CONTENT == updatedState.screenState)
-            assert(overviews == updatedState.overviews)
+            assert(artworks == updatedState.artworks)
             assert(lastWatchedIds == updatedState.lastWatchedMediaIds)
             assert(!updatedState.isRefreshing)
 

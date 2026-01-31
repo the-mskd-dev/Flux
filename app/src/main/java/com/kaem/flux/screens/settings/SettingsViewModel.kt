@@ -31,7 +31,7 @@ class SettingsViewModel @Inject constructor(
         _dialogState
     ) { settings, dialog ->
         SettingsUiState(
-            backwardValue = settings.playerBackwardValue,
+            rewindValue = settings.playerRewindValue,
             forwardValue = settings.playerForwardValue,
             uiTheme = settings.uiTheme,
             subtitlesLanguage = settings.subtitlesLanguage,
@@ -52,8 +52,8 @@ class SettingsViewModel @Inject constructor(
 
     fun handleIntent(intent: SettingsIntent) = viewModelScope.launch {
         when (intent) {
-            SettingsIntent.ShowBackwardDialog -> showBackwardDialog()
-            is SettingsIntent.SetBackwardValue -> setBackwardValue(intent.value)
+            SettingsIntent.ShowRewindDialog -> showRewindDialog()
+            is SettingsIntent.SetRewindValue -> setRewindValue(intent.value)
             SettingsIntent.ShowForwardDialog -> showForwardDialog()
             is SettingsIntent.SetForwardValue -> setForwardValue(intent.value)
             SettingsIntent.ShowSubtitlesDialog -> showSubtitlesLanguageDialog()
@@ -73,13 +73,13 @@ class SettingsViewModel @Inject constructor(
         _dialogState.update { null }
     }
 
-    private fun showBackwardDialog() {
-        val currentValue = uiState.value.backwardValue
-        _dialogState.update { SettingsDialogState.backward(currentValue) }
+    private fun showRewindDialog() {
+        val currentValue = uiState.value.rewindValue
+        _dialogState.update { SettingsDialogState.rewind(currentValue) }
     }
 
-    private suspend fun setBackwardValue(value: Int) {
-        settingsRepository.setPlayerBackwardValue(value)
+    private suspend fun setRewindValue(value: Int) {
+        settingsRepository.setPlayerRewindValue(value)
         hideDialog()
     }
 

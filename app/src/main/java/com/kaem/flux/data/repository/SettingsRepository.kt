@@ -25,10 +25,11 @@ val Context.settingsDatastore by preferencesDataStore(
 )
 
 data class SettingsPreferences(
-    val playerBackwardValue: Int = 10,
+    val playerRewindValue: Int = 10,
     val playerForwardValue: Int = 10,
     val uiTheme: Ui.THEME = Ui.THEME.SYSTEM,
-    val subtitlesLanguage: Locale = Locale.getDefault()
+    val subtitlesLanguage: Locale = Locale.getDefault(),
+    val audioLanguage: Locale = Locale.getDefault()
 )
 
 class SettingsRepository @Inject constructor(
@@ -36,32 +37,35 @@ class SettingsRepository @Inject constructor(
 ) {
 
     object Keys {
-        val PLAYER_BACKWARD = intPreferencesKey("player_backward")
+        val PLAYER_REWIND = intPreferencesKey("player_rewind")
         val PLAYER_FORWARD = intPreferencesKey("player_forward")
         val UI_THEME = stringPreferencesKey("ui_theme")
         val SUBTITLES_LANGUAGE = stringPreferencesKey("subtitles_language")
+        val AUDIO_LANGUAGE = stringPreferencesKey("audio_language")
     }
 
     val flow: Flow<SettingsPreferences> = settingsDataStore.data
         .catch { exception -> if (exception is IOException) emit(emptyPreferences()) else throw exception }
         .map { preferences ->
 
-            val playerBackwardValue = preferences[Keys.PLAYER_BACKWARD] ?: 10
+            val playerRewindValue = preferences[Keys.PLAYER_REWIND] ?: 10
             val playerForwardValue = preferences[Keys.PLAYER_FORWARD] ?: 10
             val uiTheme = preferences[Keys.UI_THEME]?.let { Ui.THEME.valueOf(it) } ?: Ui.THEME.SYSTEM
             val subtitlesLanguage = preferences[Keys.SUBTITLES_LANGUAGE]?.let { Locale.forLanguageTag(it) } ?: Locale.getDefault()
+            val audioLanguage = preferences[Keys.AUDIO_LANGUAGE]?.let { Locale.forLanguageTag(it) } ?: Locale.getDefault()
 
             SettingsPreferences(
-                playerBackwardValue = playerBackwardValue,
+                playerRewindValue = playerRewindValue,
                 playerForwardValue = playerForwardValue,
                 uiTheme = uiTheme,
-                subtitlesLanguage = subtitlesLanguage
+                subtitlesLanguage = subtitlesLanguage,
+                audioLanguage = audioLanguage
             )
         }
 
-    suspend fun setPlayerBackwardValue(value: Int) {
+    suspend fun setPlayerRewindValue(value: Int) {
         settingsDataStore.edit { preferences ->
-            preferences[Keys.PLAYER_BACKWARD] = value
+            preferences[Keys.PLAYER_REWIND] = value
         }
     }
 
@@ -81,6 +85,12 @@ class SettingsRepository @Inject constructor(
     suspend fun setSubtitlesLanguage(locale: Locale) {
         settingsDataStore.edit { preferences ->
             preferences[Keys.SUBTITLES_LANGUAGE] = locale.language
+        }
+    }
+
+    suspend fun setAudioLanguage(locale: Locale) {
+        settingsDataStore.edit { preferences ->
+            preferences[Keys.AUDIO_LANGUAGE] = locale.language
         }
     }
 

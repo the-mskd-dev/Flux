@@ -2,15 +2,15 @@ package com.kaem.flux.mockups
 
 import com.kaem.flux.model.FileSource
 import com.kaem.flux.model.UserFile
-import com.kaem.flux.model.media.ContentType
-import com.kaem.flux.model.media.Episode
-import com.kaem.flux.model.media.MediaOverview
-import com.kaem.flux.model.media.Movie
-import com.kaem.flux.model.media.Status
+import com.kaem.flux.model.artwork.Artwork
+import com.kaem.flux.model.artwork.ContentType
+import com.kaem.flux.model.artwork.Episode
+import com.kaem.flux.model.artwork.Movie
+import com.kaem.flux.model.artwork.Status
 
 object MediaMockups {
 
-    val movieOverview get() = MediaOverview(
+    val movieArtwork get() = Artwork(
         id = 372058L,
         title = "Your name",
         type = ContentType.MOVIE,
@@ -19,7 +19,7 @@ object MediaMockups {
     )
 
     val movie get() = Movie(
-        mediaId = 372058L,
+        artworkId = 372058L,
         title = "Your name",
         releaseDateString = "2016-08-26",
         description = "High schoolers Mitsuha and Taki are complete strangers living separate lives. But one night, they suddenly switch places. Mitsuha wakes up in Taki’s body, and he in hers. This bizarre occurrence continues to happen randomly, and the two must adjust their lives around each other.",
@@ -36,7 +36,7 @@ object MediaMockups {
         )
     )
 
-    val showOverview get() = MediaOverview(
+    val showArtwork get() = Artwork(
         id = 31910L,
         title = "Naruto Shippūden",
         type = ContentType.SHOW,
@@ -49,7 +49,7 @@ object MediaMockups {
         number = 1,
         season = 1,
         imagePath = "/lFg0YnHI7sJkPSv38a8ctE96sqr.jpg",
-        mediaId = 31910L,
+        artworkId = 31910L,
         title = "Homecoming",
         releaseDateString = "2007-02-15",
         description = "A figure passes through the gates. It's an older Naruto, who has returned from a long training journey with Jiraiya. Naruto Uzumaki is back!",
@@ -71,7 +71,7 @@ object MediaMockups {
         number = 2,
         season = 1,
         imagePath = "/zbvJ4ts4JJmqP6koMNnLzBX6qiJ.jpg",
-        mediaId = 31910L,
+        artworkId = 31910L,
         title = "The Akatsuki Makes Its Move",
         releaseDateString = "2007-02-15",
         description = "Naruto and Sakura team up and challenge Kakashi to a survival challenge to show off their progress.",
@@ -93,7 +93,7 @@ object MediaMockups {
         number =33,
         season = 2,
         imagePath = "/97O9irZPuV08ZLPQIPea434UG6R.jpg",
-        mediaId = 31910L,
+        artworkId = 31910L,
         title = "The New Target",
         releaseDateString = "2007-11-08",
         description = "Teams Kakashi and Guy return home to Konoha. As Kakashi rests in the infirmary, Sakura tells Tsunade about the information Sasori gave her as a reward for defeating him. Sasori had a meeting scheduled with a spy from within Orochimaru's ranks in 10 days. 4 days have passed since Sakura received this information, and now Naruto and Sakura need to recruit a new team member to go and investigate. As Naruto searches Konoha for a willing recruit, he meets some of his old friends. Just as Choji agrees to help, Shikamaru, Choji, and Naruto are attacked by a Konoha shinobi unknown to them, Sai.",
@@ -110,9 +110,9 @@ object MediaMockups {
         )
     )
 
-    val overviews get() = listOf(
-        movieOverview,
-        showOverview
+    val artworks get() = listOf(
+        movieArtwork,
+        showArtwork
     )
 
     val movies get() = listOf(

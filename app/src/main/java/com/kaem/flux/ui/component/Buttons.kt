@@ -1,11 +1,15 @@
 package com.kaem.flux.ui.component
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -15,12 +19,16 @@ import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -31,9 +39,17 @@ import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.kaem.flux.R
+import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
+import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.seconds
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -167,4 +183,85 @@ fun FluxTextButton(
         }
     )
 
+}
+
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+fun CountDownButton(
+    text: @Composable (Int) -> String,
+    duration: Int = 10,
+    onTap: () -> Unit,
+    backgroundColor: Color = MaterialTheme.colorScheme.primaryContainer,
+) {
+
+    var count by remember { mutableIntStateOf(duration) }
+    val size = ButtonDefaults.MediumContainerHeight
+    val shape = ButtonDefaults.shape
+    val style = ButtonDefaults.textStyleFor(size).copy(
+        fontFeatureSettings = "tnum"
+    )
+
+    LaunchedEffect(Unit) {
+        while (count > 0) {
+            delay(1.seconds)
+            count -= 1
+        }
+        onTap()
+    }
+
+    Button(
+        modifier = Modifier.heightIn(size),
+        onClick = onTap,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = backgroundColor,
+            contentColor = contentColorFor(backgroundColor)
+        ),
+        shape = shape,
+        contentPadding = ButtonDefaults.contentPaddingFor(size),
+        elevation = ButtonDefaults.buttonElevation(
+            defaultElevation = Ui.Elevation.Level3,
+            pressedElevation = Ui.Elevation.Level3,
+            hoveredElevation = Ui.Elevation.Level4,
+            focusedElevation = Ui.Elevation.Level3
+        ),
+        content = {
+
+            Box {
+
+                // Invisible text to avoid button size change
+                Text.Adaptive(
+                    modifier = Modifier.clearAndSetSemantics { }, // To ignore TalkBack
+                    text = text(duration),
+                    color = Color.Transparent,
+                    style = style
+                )
+
+                Text.Adaptive(
+                    text = text(count),
+                    color = contentColorFor(backgroundColor),
+                    style = style
+                )
+
+            }
+
+        }
+    )
+
+}
+
+@Preview
+@Composable
+fun CountDownButton_Preview() {
+    AppTheme {
+        Column(
+            modifier = Modifier
+                .background(MaterialTheme.colorScheme.background)
+                .padding(Ui.Space.LARGE)
+        ) {
+            CountDownButton(
+                onTap = {  },
+                text = { stringResource(R.string.next_episode, it) }
+            )
+        }
+    }
 }

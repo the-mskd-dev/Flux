@@ -67,7 +67,7 @@ class SettingsRepositoryTest {
 
             assert(defaultDataStore.uiTheme == initialState.uiTheme)
             assert(defaultDataStore.subtitlesLanguage == initialState.subtitlesLanguage)
-            assert(defaultDataStore.playerBackwardValue == initialState.playerBackwardValue)
+            assert(defaultDataStore.playerRewindValue == initialState.playerRewindValue)
             assert(defaultDataStore.playerForwardValue == initialState.playerForwardValue)
 
             cancelAndConsumeRemainingEvents()
@@ -82,14 +82,14 @@ class SettingsRepositoryTest {
 
             var state = awaitItem()
 
-            assert(SettingsPreferences().playerBackwardValue == state.playerBackwardValue)
+            assert(SettingsPreferences().playerRewindValue == state.playerRewindValue)
 
             val newValue = 20
-            settingsRepository.setPlayerBackwardValue(newValue)
+            settingsRepository.setPlayerRewindValue(newValue)
             state = awaitItem()
 
-            val blockingValue = settingsRepository.flow.first().playerBackwardValue
-            assert(newValue == state.playerBackwardValue)
+            val blockingValue = settingsRepository.flow.first().playerRewindValue
+            assert(newValue == state.playerRewindValue)
             assert(newValue == blockingValue)
 
             cancelAndConsumeRemainingEvents()

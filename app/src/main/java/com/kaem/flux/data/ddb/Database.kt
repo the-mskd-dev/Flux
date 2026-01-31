@@ -13,10 +13,10 @@ import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 import com.kaem.flux.model.FileSource
 import com.kaem.flux.model.UserFile
-import com.kaem.flux.model.media.ContentType
-import com.kaem.flux.model.media.Episode
-import com.kaem.flux.model.media.MediaOverview
-import com.kaem.flux.model.media.Movie
+import com.kaem.flux.model.artwork.Artwork
+import com.kaem.flux.model.artwork.ContentType
+import com.kaem.flux.model.artwork.Episode
+import com.kaem.flux.model.artwork.Movie
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -25,7 +25,7 @@ interface DatabaseDao {
 //region Insert
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertOverviews(mediaOverviews: List<MediaOverview>)
+    suspend fun insertArtworks(artworks: List<Artwork>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMovies(movies: List<Movie>)
@@ -37,27 +37,27 @@ interface DatabaseDao {
 
 //region Flow
 
-    @Query("SELECT * FROM medias WHERE id = :mediaId")
-    fun flowOverview(mediaId: Long) : Flow<MediaOverview?>
+    @Query("SELECT * FROM artworks WHERE id = :artworkId")
+    fun flowArtwork(artworkId: Long) : Flow<Artwork?>
 
-    @Query("SELECT * FROM movies WHERE mediaId = :mediaId")
-    fun flowMovie(mediaId: Long) : Flow<Movie?>
+    @Query("SELECT * FROM movies WHERE artworkId = :artworkId")
+    fun flowMovie(artworkId: Long) : Flow<Movie?>
 
-    @Query("SELECT * FROM episodes WHERE mediaId = :mediaId")
-    fun flowEpisodes(mediaId: Long) : Flow<List<Episode>>
+    @Query("SELECT * FROM episodes WHERE artworkId = :artworkId")
+    fun flowEpisodes(artworkId: Long) : Flow<List<Episode>>
 
 //endregion
 
 //region Get
 
-    @Query("SELECT * FROM medias WHERE id = :mediaId")
-    suspend fun getOverview(mediaId: Long) : MediaOverview?
+    @Query("SELECT * FROM artworks WHERE id = :artworkId")
+    suspend fun getArtwork(artworkId: Long) : Artwork?
 
-    @Query("SELECT * FROM medias")
-    suspend fun getOverviews() : List<MediaOverview>
+    @Query("SELECT * FROM artworks")
+    suspend fun getArtworks() : List<Artwork>
 
-    @Query("SELECT * FROM movies WHERE mediaId = :mediaId")
-    suspend fun getMovie(mediaId: Long) : Movie?
+    @Query("SELECT * FROM movies WHERE artworkId = :artworkId")
+    suspend fun getMovie(artworkId: Long) : Movie?
 
     @Query("SELECT * FROM movies")
     suspend fun getMovies() : List<Movie>
@@ -71,8 +71,8 @@ interface DatabaseDao {
     @Query("SELECT * FROM episodes WHERE id = :episodeId")
     suspend fun getEpisode(episodeId: Long) : Episode?
 
-    @Query("SELECT * FROM episodes WHERE mediaId = :mediaId")
-    suspend fun getEpisodes(mediaId: Long) : List<Episode>
+    @Query("SELECT * FROM episodes WHERE artworkId = :artworkId")
+    suspend fun getEpisodes(artworkId: Long) : List<Episode>
 
     @Query("SELECT * FROM episodes")
     suspend fun getEpisodes() : List<Episode>
@@ -93,10 +93,10 @@ interface DatabaseDao {
 
 //region Delete
 
-    @Query("DELETE FROM medias WHERE id IN (:ids)")
-    suspend fun deleteOverviews(ids: List<Long>)
+    @Query("DELETE FROM artworks WHERE id IN (:ids)")
+    suspend fun deleteArtworks(ids: List<Long>)
 
-    @Query("DELETE FROM movies WHERE mediaId IN (:ids)")
+    @Query("DELETE FROM movies WHERE artworkId IN (:ids)")
     suspend fun deleteMoviesByIds(ids: List<Long>)
 
     @Query("DELETE FROM episodes WHERE id IN (:ids)")
@@ -105,8 +105,8 @@ interface DatabaseDao {
     @Transaction
     suspend fun deleteMovies(movies: List<Movie>) {
 
-        // Delete overviews, it will also delete related movies
-        deleteOverviews(movies.map { it.mediaId })
+        // Delete artworks, it will also delete related movies
+        deleteArtworks(movies.map { it.artworkId })
 
     }
 
@@ -116,18 +116,18 @@ interface DatabaseDao {
         // Delete episodes
         deleteEpisodesByIds(episodes.map { it.id })
 
-        // Delete overviews if needed
+        // Delete artworks if needed
         episodes
-            .map { it.mediaId }
+            .map { it.artworkId }
             .distinct()
             .forEach { mediaId ->
 
                 // Check if it remains episode for show
-                val remainingEpisodes = getEpisodeCountByOverviewId(mediaId)
+                val remainingEpisodes = getEpisodeCountByArtworkId(mediaId)
 
                 // If no, delete the show
                 if (remainingEpisodes == 0) {
-                    deleteOverviews(listOf(mediaId))
+                    deleteArtworks(listOf(mediaId))
                 }
 
             }
@@ -149,8 +149,8 @@ interface DatabaseDao {
 
 //region Count
 
-    @Query("SELECT COUNT(*) FROM episodes WHERE mediaId = :mediaId")
-    suspend fun getEpisodeCountByOverviewId(mediaId: Long): Int
+    @Query("SELECT COUNT(*) FROM episodes WHERE artworkId = :mediaId")
+    suspend fun getEpisodeCountByArtworkId(mediaId: Long): Int
 
 //endregion
 
@@ -180,7 +180,7 @@ class Converters {
 }
 
 @Database(entities = [
-    MediaOverview::class,
+    Artwork::class,
     Movie::class,
     Episode::class
  ], version = 1)

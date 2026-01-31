@@ -27,7 +27,6 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,16 +35,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kaem.flux.R
 import com.kaem.flux.mockups.MediaMockups
-import com.kaem.flux.model.media.ContentType
+import com.kaem.flux.model.artwork.ContentType
 import com.kaem.flux.navigation.Route
 import com.kaem.flux.ui.component.FluxScaffold
 import com.kaem.flux.ui.component.MediaItem
 import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
-import com.kaem.flux.utils.Constants
+import com.kaem.flux.utils.extensions.tmdbImage
 
 @Composable
 fun SearchScreen(
@@ -57,12 +57,12 @@ fun SearchScreen(
     )
 ) {
 
-    val state by viewModel.uiState.collectAsState()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
             when (event) {
-                is SearchEvent.NavigateToMedia -> navigate(Route.Media(mediaId = event.mediaId))
+                is SearchEvent.NavigateToMedia -> navigate(Route.Artwork(artworkId = event.mediaId))
                 SearchEvent.BackToPreviousScreen -> onBack()
             }
         }
@@ -137,9 +137,9 @@ fun SearchContent(
             }
 
             items(
-                items = state.filteredOverviews,
+                items = state.filteredArtworks,
                 key = { it.id }
-            ) { overview ->
+            ) { artwork ->
 
                 BoxWithConstraints(
                     modifier = Modifier
@@ -150,10 +150,10 @@ fun SearchContent(
 
                     MediaItem(
                         width = maxWidth,
-                        url = Constants.TMDB.IMAGE_SMALL + overview.imagePath,
+                        url = artwork.imagePath.tmdbImage,
                         ratio = 2f/3f,
-                        description = overview.title,
-                        onTap = { sendIntent(SearchIntent.OnMediaTap(overview.id)) }
+                        description = artwork.title,
+                        onTap = { sendIntent(SearchIntent.OnArtworkTap(artwork.id)) }
                     )
 
                 }
@@ -230,7 +230,7 @@ fun SearchContent_Preview() {
         SearchContent(
             state = SearchUIState(
                 searchWord = "preview",
-                overviews = MediaMockups.overviews
+                artworks = MediaMockups.artworks
             ),
             sendIntent = {}
         )

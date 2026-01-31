@@ -25,7 +25,7 @@ val Context.userDataStore by preferencesDataStore(
 )
 
 data class UserPreferences(
-    val watchedIds: List<Long> = listOf(),
+    val recentlyWatchedIds: List<Long> = listOf(),
     val syncTime: Long = 0L
 )
 
@@ -35,7 +35,7 @@ class UserRepository(
 ) {
 
     object Keys {
-        val WATCHED_IDS = stringPreferencesKey("last_watched_ids")
+        val RECENTYL_WATCHED_IDS = stringPreferencesKey("last_watched_ids")
         val LAST_SYNC_TIME = longPreferencesKey("last_sync_time")
     }
 
@@ -43,41 +43,41 @@ class UserRepository(
         .catch { exception -> if (exception is IOException) emit(emptyPreferences()) else throw exception }
         .map { preferences ->
 
-            val watchedIdsString = preferences[Keys.WATCHED_IDS] ?: "[]"
+            val watchedIdsString = preferences[Keys.RECENTYL_WATCHED_IDS] ?: "[]"
             val watchedIds = gson.fromJson<List<Double>>(watchedIdsString, List::class.java).map { it.toLong() }
             val syncTime = preferences[Keys.LAST_SYNC_TIME] ?: 0L
 
             UserPreferences(
-                watchedIds = watchedIds,
+                recentlyWatchedIds = watchedIds,
                 syncTime = syncTime
             )
         }
 
-    suspend fun addWatchedMedia(id: Long) {
+    suspend fun addToRecentlyWatched(artworkId: Long) {
         userDataStore.edit { preferences ->
 
-            val lastWatchedIdsString = preferences[Keys.WATCHED_IDS] ?: "[]"
+            val lastWatchedIdsString = preferences[Keys.RECENTYL_WATCHED_IDS] ?: "[]"
             val lastWatchedIds: ArrayList<Long> = gson.fromJson<ArrayList<Long>>(lastWatchedIdsString, ArrayList::class.java)
 
-            if (lastWatchedIds.none { it == id }) {
+            if (lastWatchedIds.none { it == artworkId }) {
 
-                lastWatchedIds.add(0, id)
+                lastWatchedIds.add(0, artworkId)
 
-                preferences[Keys.WATCHED_IDS] = gson.toJson(lastWatchedIds.take(4))
+                preferences[Keys.RECENTYL_WATCHED_IDS] = gson.toJson(lastWatchedIds.take(4))
             }
 
         }
     }
 
-    suspend fun removeWatchedMedia(id: Long) {
+    suspend fun removeFromRecentlyWatched(artworkId: Long) {
         userDataStore.edit { preferences ->
 
-            val lastWatchedIdsString = preferences[Keys.WATCHED_IDS] ?: "[]"
+            val lastWatchedIdsString = preferences[Keys.RECENTYL_WATCHED_IDS] ?: "[]"
             val type = object : TypeToken<ArrayList<Long>>() {}.type
             val lastWatchedIds: ArrayList<Long> = gson.fromJson(lastWatchedIdsString, type)
 
-            lastWatchedIds.remove(id)
-            preferences[Keys.WATCHED_IDS] = gson.toJson(lastWatchedIds.take(4))
+            lastWatchedIds.remove(artworkId)
+            preferences[Keys.RECENTYL_WATCHED_IDS] = gson.toJson(lastWatchedIds)
 
         }
     }

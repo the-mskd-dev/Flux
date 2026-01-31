@@ -23,9 +23,10 @@ import com.kaem.flux.data.repository.SettingsRepository
 import com.kaem.flux.navigation.Route
 import com.kaem.flux.navigation.Transition
 import com.kaem.flux.screens.about.AboutScreen
+import com.kaem.flux.screens.artwork.ArtworkScreen
 import com.kaem.flux.screens.home.HomeScreen
 import com.kaem.flux.screens.howTo.HowToScreen
-import com.kaem.flux.screens.media.MediaScreen
+import com.kaem.flux.screens.player.PlayerScreen
 import com.kaem.flux.screens.search.SearchScreen
 import com.kaem.flux.screens.settings.SettingsScreen
 import com.kaem.flux.ui.theme.AppTheme
@@ -72,10 +73,11 @@ class MainActivity : ComponentActivity() {
                                 navigate = { route -> backStack.add(route) },
                             )
                         }
-                        entry<Route.Media> { entry ->
-                            MediaScreen(
+                        entry<Route.Artwork> { entry ->
+                            ArtworkScreen(
+                                navigate = { route -> backStack.add(route) },
                                 onBack = { backStack.removeLastOrNull() },
-                                mediaId = entry.mediaId
+                                mediaId = entry.artworkId
                             )
                         }
                         entry<Route.Search> { entry ->
@@ -83,6 +85,12 @@ class MainActivity : ComponentActivity() {
                                 navigate = { route -> backStack.add(route) },
                                 onBack = { backStack.removeLastOrNull() },
                                 contentType = entry.contentType
+                            )
+                        }
+                        entry<Route.Player> { entry ->
+                            PlayerScreen(
+                                mediaId = entry.mediaId,
+                                onBack = { backStack.removeLastOrNull() },
                             )
                         }
                         entry<Route.Settings> {

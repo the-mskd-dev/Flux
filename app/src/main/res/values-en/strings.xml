@@ -27,7 +27,7 @@
     <string name="validate">Validate</string>
     <string name="cancel">Cancel</string>
     <string name="app_theme">Theme</string>
-    <string name="button_backward">Player back button</string>
+    <string name="button_rewind">Player back button</string>
     <string name="button_forward">Player forward button</string>
     <string name="app_version">Version</string>
     <string name="subtitles_language">Subtitles language</string>
@@ -66,4 +66,8 @@
     <string name="make_a_donation">Make a donation</string>
     <string name="episode_list">Episode list</string>
     <string name="watched">Watched</string>
+    <string name="track">Track</string>
+    <string name="subtitles">Subtitles</string>
+    <string name="audio_tracks">Audio tracks</string>
+    <string name="next_episode">Next episode (%1$1dsec)</string>
 </resources>

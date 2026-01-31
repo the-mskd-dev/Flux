@@ -28,7 +28,7 @@
     <string name="validate">Valider</string>
     <string name="cancel">Annuler</string>
     <string name="app_theme">Thème de l\'application</string>
-    <string name="button_backward">Réglage du saut arrière</string>
+    <string name="button_rewind">Réglage du saut arrière</string>
     <string name="button_forward">Réglage du saut avant</string>
     <string name="app_version">Numéro de version</string>
     <string name="subtitles_language">Langue des sous-titres</string>
@@ -70,4 +70,8 @@
     <string name="make_a_donation">Faire un don</string>
     <string name="episode_list">Liste des épisodes</string>
     <string name="watched">Vu</string>
+    <string name="track">Piste</string>
+    <string name="subtitles">Sous-titres</string>
+    <string name="audio_tracks">Pistes audio</string>
+    <string name="next_episode">Épisode suivant (%1$1dsec)</string>
 </resources>

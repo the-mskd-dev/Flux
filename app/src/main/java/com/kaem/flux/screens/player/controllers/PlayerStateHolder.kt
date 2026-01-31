@@ -246,7 +246,7 @@ class PlayerStateHolder(
                 if (player.duration > 0) {
 
                     val percentage = player.currentPosition.toFloat() / player.duration.toFloat()
-                    val showNext = percentage >= 0.5f
+                    val showNext = percentage >= 0.95f
 
                     if (lastNextEpisodeEvent != showNext) {
                         _event.send(Event.ShowNext(show = showNext))

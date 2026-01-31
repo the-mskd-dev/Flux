@@ -17,14 +17,12 @@ import com.kaem.flux.screens.player.PlayerUiState
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun PlayerSettingsButton(
-    layoutId: String,
+    modifier: Modifier,
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
     IconButton(
-        modifier = Modifier
-            .layoutId(layoutId)
-            .statusBarsPadding(),
+        modifier = modifier.statusBarsPadding(),
         colors = IconButtonDefaults.iconButtonColors(
             contentColor = Color.White
         ),

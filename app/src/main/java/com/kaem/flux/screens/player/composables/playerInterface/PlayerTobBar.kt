@@ -25,14 +25,13 @@ import com.kaem.flux.ui.theme.Ui
 @OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun PlayerTopBar(
-    layoutId: String,
+    modifier: Modifier,
     media: Media,
     onBackTap: () -> Unit
 ) {
 
     Row(
-        modifier = Modifier
-            .layoutId(layoutId)
+        modifier = modifier
             .statusBarsPadding()
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL),

@@ -35,7 +35,7 @@ import kotlinx.coroutines.delay
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun PlayerSeekBar(
-    layoutId: String,
+    modifier: Modifier,
     player: Player,
     showInterface: Boolean,
     isPlaying: Boolean,
@@ -55,8 +55,7 @@ fun PlayerSeekBar(
     }
 
     Row(
-        modifier = Modifier
-            .layoutId(layoutId)
+        modifier = modifier
             .fillMaxWidth()
             .navigationBarsPadding()
             .padding(horizontal = Ui.Space.MEDIUM),

@@ -24,13 +24,13 @@ import com.kaem.flux.ui.theme.Ui
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun PlayerControlButtons(
-    layoutId: String,
+    modifier: Modifier,
     isPlaying: Boolean,
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
     Row(
-        modifier = Modifier.layoutId(layoutId),
+        modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -78,7 +78,7 @@ fun PlayerControlButtons_Preview() {
 
     AppTheme {
         PlayerControlButtons(
-            layoutId = "",
+            modifier = Modifier,
             isPlaying = true,
             sendIntent = {}
         )

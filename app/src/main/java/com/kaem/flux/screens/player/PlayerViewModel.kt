@@ -98,7 +98,7 @@ class PlayerViewModel @AssistedInject constructor(
             PlayerIntent.OnFastForward -> onFastForward()
             is PlayerIntent.UpdateProgress -> updateProgress(progress = intent.progress)
             is PlayerIntent.UpdateTracks -> updateTracks(tracks = intent.tracks)
-            is PlayerIntent.SelectTrack -> selectTracks(track = intent.track)
+            is PlayerIntent.SelectTrack -> selectTrack(track = intent.track)
             is PlayerIntent.OnTrackSelected -> onTrackSelected(track = intent.track)
             is PlayerIntent.ShowNextEpisode -> showNextEpisode(show = intent.show)
             is PlayerIntent.CancelNextEpisode -> cancelNextEpisode()
@@ -138,29 +138,6 @@ class PlayerViewModel @AssistedInject constructor(
         _controlsState.update { it.copy(settingsSheet = sheet) }
     }
 
-    private suspend fun showNextEpisode(show: Boolean) {
-
-        val currentEpisode = uiState.first().media as? Episode ?: return
-
-        // If button is canceled, don't show anymore
-        if (_controlsState.first().nextButton is PlayerUiState.NextButton.Canceled)
-            return
-
-        if (show) {
-
-            val episodes = artworkRepository.flow.first().episodes
-            val nextEpisode = episodes.getNextEpisodeFor(currentEpisode) ?: return
-
-            _controlsState.update { it.copy(nextButton = PlayerUiState.NextButton.Showed(episode = nextEpisode)) }
-
-        } else {
-
-            _controlsState.update { it.copy(nextButton = PlayerUiState.NextButton.Hidden) }
-
-        }
-
-    }
-
     private suspend fun updateTracks(tracks: List<PlayerTrack>) {
         _tracksState.update { it.copy(tracks = tracks) }
 
@@ -171,7 +148,7 @@ class PlayerViewModel @AssistedInject constructor(
 
     }
 
-    private suspend fun selectTracks(track: PlayerTrack) {
+    private suspend fun selectTrack(track: PlayerTrack) {
         _event.send(PlayerEvent.SelectTrack(track = track))
 
         try {
@@ -197,6 +174,29 @@ class PlayerViewModel @AssistedInject constructor(
                 PlayerTrack.Type.AUDIO -> it.copy(selectedAudio = track)
                 PlayerTrack.Type.SUBTITLES -> it.copy(selectedSubtitles = track)
             }
+        }
+
+    }
+
+    private suspend fun showNextEpisode(show: Boolean) {
+
+        val currentEpisode = uiState.first().media as? Episode ?: return
+
+        // If button is canceled, don't show anymore
+        if (_controlsState.first().nextButton is PlayerUiState.NextButton.Canceled)
+            return
+
+        if (show) {
+
+            val episodes = artworkRepository.flow.first().episodes
+            val nextEpisode = episodes.getNextEpisodeFor(currentEpisode) ?: return
+
+            _controlsState.update { it.copy(nextButton = PlayerUiState.NextButton.Showed(episode = nextEpisode)) }
+
+        } else {
+
+            _controlsState.update { it.copy(nextButton = PlayerUiState.NextButton.Hidden) }
+
         }
 
     }

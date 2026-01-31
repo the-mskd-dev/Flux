@@ -2,6 +2,7 @@ package com.kaem.flux.screens.player.composables.playerInterface
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -11,8 +12,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.layoutId
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
@@ -32,6 +41,19 @@ fun PlayerInterface(
 
     val controls = controlsState()
 
+    val density = LocalDensity.current
+    var seekBarHeight by remember { mutableStateOf(0.dp) }
+
+    val nextButtonBottomMargin by animateDpAsState(
+        targetValue = if (controls.showInterface) {
+            seekBarHeight + Ui.Space.MEDIUM
+        } else {
+            Ui.Space.LARGE
+        },
+        animationSpec = spring(stiffness = Spring.StiffnessLow),
+        label = "NextEpisodeButtonPosition"
+    )
+
     Box(modifier = Modifier.fillMaxSize()) {
 
         AnimatedVisibility(
@@ -48,24 +70,29 @@ fun PlayerInterface(
             ) {
 
                 PlayerTopBar(
-                    layoutId = "topBar",
+                    modifier = Modifier.layoutId("topBar"),
                     media = media,
                     onBackTap = { sendIntent(PlayerIntent.OnBackTap(player.currentPosition)) }
                 )
 
                 PlayerSettingsButton(
-                    layoutId = "settings",
+                    modifier = Modifier.layoutId("settings"),
                     sendIntent = sendIntent
                 )
 
                 PlayerControlButtons(
-                    layoutId = "controlButtons",
+                    modifier = Modifier.layoutId("controlButtons"),
                     isPlaying = controls.isPlaying,
                     sendIntent = sendIntent
                 )
 
                 PlayerSeekBar(
-                    layoutId = "seekBar",
+                    modifier = Modifier
+                        .layoutId("seekBar")
+                        .onGloballyPositioned { coordinates ->
+                            val height = with(density) { coordinates.size.height.toDp() }
+                            if (seekBarHeight != height) seekBarHeight = height
+                        },
                     player = player,
                     showInterface = controls.showInterface,
                     isPlaying = controls.isPlaying,
@@ -79,7 +106,7 @@ fun PlayerInterface(
         PlayerNextEpisode(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(Ui.Space.LARGE),
+                .padding(end = Ui.Space.LARGE, bottom = nextButtonBottomMargin),
             nextButton = controls.nextButton,
             sendIntent = sendIntent
         )

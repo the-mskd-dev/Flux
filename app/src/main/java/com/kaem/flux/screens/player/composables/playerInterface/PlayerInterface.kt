@@ -6,6 +6,8 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -81,7 +83,17 @@ fun PlayerInterface(
                 )
 
                 PlayerControlButtons(
-                    modifier = Modifier.layoutId("controlButtons"),
+                    modifier = Modifier
+                        .layoutId("controlButtons")
+                        .animateEnterExit(
+                            enter = scaleIn(
+                                animationSpec = spring(
+                                    dampingRatio = Spring.DampingRatioMediumBouncy,
+                                    stiffness = Spring.StiffnessLow
+                                )
+                            ),
+                            exit = scaleOut()
+                        ),
                     isPlaying = controls.isPlaying,
                     sendIntent = sendIntent
                 )

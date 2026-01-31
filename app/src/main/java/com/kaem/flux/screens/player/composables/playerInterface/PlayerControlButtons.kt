@@ -1,5 +1,12 @@
 package com.kaem.flux.screens.player.composables.playerInterface
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
@@ -23,7 +30,7 @@ import com.kaem.flux.ui.theme.Ui
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun PlayerControlButtons(
+fun AnimatedVisibilityScope.PlayerControlButtons(
     modifier: Modifier,
     isPlaying: Boolean,
     sendIntent: (PlayerIntent) -> Unit
@@ -36,6 +43,10 @@ fun PlayerControlButtons(
     ) {
 
         FloatingActionButton(
+            modifier = Modifier.animateEnterExit(
+                enter = slideInHorizontally{ fullWidth -> fullWidth },
+                exit = slideOutHorizontally { fullWidth -> fullWidth }
+            ),
             onClick = { sendIntent(PlayerIntent.OnFastRewind) },
             shape = FloatingActionButtonDefaults.largeShape,
             containerColor = MaterialTheme.colorScheme.tertiaryContainer
@@ -58,6 +69,10 @@ fun PlayerControlButtons(
         }
 
         FloatingActionButton(
+            modifier = Modifier.animateEnterExit(
+                enter = slideInHorizontally{ fullWidth -> -fullWidth },
+                exit = slideOutHorizontally { fullWidth -> -fullWidth }
+            ),
             onClick = { sendIntent(PlayerIntent.OnFastForward) },
             shape = FloatingActionButtonDefaults.largeShape,
             containerColor = MaterialTheme.colorScheme.tertiaryContainer
@@ -77,10 +92,12 @@ fun PlayerControlButtons(
 fun PlayerControlButtons_Preview() {
 
     AppTheme {
-        PlayerControlButtons(
-            modifier = Modifier,
-            isPlaying = true,
-            sendIntent = {}
-        )
+        AnimatedContent(targetState = true) {
+            PlayerControlButtons(
+                modifier = Modifier,
+                isPlaying = true,
+                sendIntent = {}
+            )
+        }
     }
 }

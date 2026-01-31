@@ -19,6 +19,7 @@ import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -217,6 +218,12 @@ fun CountDownButton(
         ),
         shape = shape,
         contentPadding = ButtonDefaults.contentPaddingFor(size),
+        elevation = ButtonDefaults.buttonElevation(
+            defaultElevation = Ui.Elevation.Level3,
+            pressedElevation = Ui.Elevation.Level3,
+            hoveredElevation = Ui.Elevation.Level4,
+            focusedElevation = Ui.Elevation.Level3
+        ),
         content = {
 
             Box {

@@ -1,6 +1,7 @@
 package com.kaem.flux.screens.player.composables.playerInterface
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -26,6 +28,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -50,16 +53,16 @@ fun PlayerNextEpisode(
 
     val episode = (nextButton as? PlayerUiState.NextButton.Showed)?.episode
 
-    val animationSpec = spring<Float>(
-        dampingRatio = Spring.DampingRatioMediumBouncy,
-        stiffness = Spring.StiffnessLow
-    )
-
     AnimatedVisibility(
         modifier = modifier.clickable { episode?.let { sendIntent(PlayerIntent.PlayNextEpisode(it)) } },
         visible = nextButton is PlayerUiState.NextButton.Showed,
-        enter = fadeIn(animationSpec = animationSpec),
-        exit = fadeOut(animationSpec = animationSpec)
+        enter = scaleIn(
+            animationSpec = spring(
+                dampingRatio = Spring.DampingRatioLowBouncy,
+                stiffness = Spring.StiffnessLow
+            )
+        ) + fadeIn(),
+        exit = scaleOut() + fadeOut()
     ) {
 
         Row(
@@ -68,26 +71,18 @@ fun PlayerNextEpisode(
         ) {
 
             FloatingActionButton(
-                modifier = Modifier.animateEnterExit(
-                    enter = slideInHorizontally(
-                        initialOffsetX = { fullWidth -> fullWidth },
-                        animationSpec = spring(
-                            dampingRatio = Spring.DampingRatioMediumBouncy,
-                            stiffness = Spring.StiffnessLow
-                        )
-                    ) + scaleIn(
-                        animationSpec = spring(stiffness = Spring.StiffnessLow)
-                    ) + fadeIn(),
-                    exit = slideOutHorizontally(
-                            targetOffsetX = { fullWidth -> fullWidth },
+                modifier = Modifier
+                    .padding(start = 20.dp)
+                    .animateEnterExit(
+                        enter = slideInHorizontally(
+                            initialOffsetX = { fullWidth -> fullWidth },
                             animationSpec = spring(
                                 dampingRatio = Spring.DampingRatioMediumBouncy,
                                 stiffness = Spring.StiffnessLow
                             )
-                        ) + scaleOut(
-                        animationSpec = spring(stiffness = Spring.StiffnessLow)
-                        ) + fadeOut()
-                ),
+                        ) + scaleIn(),
+                        exit = slideOutHorizontally { fullWidth -> fullWidth } + scaleOut()
+                    ),
                 onClick = { sendIntent(PlayerIntent.CancelNextEpisode) },
                 shape = FloatingActionButtonDefaults.mediumShape,
                 containerColor = MaterialTheme.colorScheme.tertiaryContainer

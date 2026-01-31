@@ -101,6 +101,7 @@ class PlayerViewModel @AssistedInject constructor(
             is PlayerIntent.SelectTrack -> selectTracks(track = intent.track)
             is PlayerIntent.OnTrackSelected -> onTrackSelected(track = intent.track)
             is PlayerIntent.ShowNextEpisode -> showNextEpisode(show = intent.show)
+            is PlayerIntent.CancelNextEpisode -> cancelNextEpisode()
             is PlayerIntent.PlayNextEpisode -> playNextEpisode(episode = intent.episode)
         }
     }
@@ -140,6 +141,10 @@ class PlayerViewModel @AssistedInject constructor(
     private suspend fun showNextEpisode(show: Boolean) {
 
         val currentEpisode = uiState.first().media as? Episode ?: return
+
+        // If button is canceled, don't show anymore
+        if (_controlsState.first().nextButton is PlayerUiState.NextButton.Canceled)
+            return
 
         if (show) {
 
@@ -199,6 +204,10 @@ class PlayerViewModel @AssistedInject constructor(
     private fun playNextEpisode(episode: Episode) {
         _controlsState.update { it.copy(nextButton = PlayerUiState.NextButton.Hidden) }
         _mediaId.value = episode.mediaId
+    }
+
+    private fun cancelNextEpisode() {
+        _controlsState.update { it.copy(nextButton = PlayerUiState.NextButton.Canceled) }
     }
 
     private suspend fun onBackTap(time: Long?) {

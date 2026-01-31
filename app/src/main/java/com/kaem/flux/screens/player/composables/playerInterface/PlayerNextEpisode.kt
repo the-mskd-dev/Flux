@@ -6,6 +6,7 @@ import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.clickable
@@ -33,6 +34,7 @@ import com.kaem.flux.R
 import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.screens.player.PlayerIntent
+import com.kaem.flux.screens.player.PlayerUiState
 import com.kaem.flux.ui.component.CountDownButton
 import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.AppTheme
@@ -42,24 +44,23 @@ import com.kaem.flux.ui.theme.Ui
 @Composable
 fun PlayerNextEpisode(
     modifier: Modifier,
-    episode: Episode?,
+    nextButton: PlayerUiState.NextButton,
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
+    val episode = (nextButton as? PlayerUiState.NextButton.Showed)?.episode
+
+    val animationSpec = spring<Float>(
+        dampingRatio = Spring.DampingRatioMediumBouncy,
+        stiffness = Spring.StiffnessLow
+    )
+
     AnimatedVisibility(
         modifier = modifier.clickable { episode?.let { sendIntent(PlayerIntent.PlayNextEpisode(it)) } },
-        visible = episode != null,
-        enter = slideInHorizontally(
-            initialOffsetX = { fullWidth -> fullWidth },
-            animationSpec = spring(
-                dampingRatio = Spring.DampingRatioMediumBouncy,
-                stiffness = Spring.StiffnessLow
-            )
-        ) + fadeIn(),
-        exit = slideOutHorizontally { it } + fadeOut()
+        visible = nextButton is PlayerUiState.NextButton.Showed,
+        enter = fadeIn(animationSpec = animationSpec),
+        exit = fadeOut(animationSpec = animationSpec)
     ) {
-
-        episode ?: return@AnimatedVisibility
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -76,9 +77,18 @@ fun PlayerNextEpisode(
                         )
                     ) + scaleIn(
                         animationSpec = spring(stiffness = Spring.StiffnessLow)
-                    ) + fadeIn()
+                    ) + fadeIn(),
+                    exit = slideOutHorizontally(
+                            targetOffsetX = { fullWidth -> fullWidth },
+                            animationSpec = spring(
+                                dampingRatio = Spring.DampingRatioMediumBouncy,
+                                stiffness = Spring.StiffnessLow
+                            )
+                        ) + scaleOut(
+                        animationSpec = spring(stiffness = Spring.StiffnessLow)
+                        ) + fadeOut()
                 ),
-                onClick = { sendIntent(PlayerIntent.TogglePlayButton) },
+                onClick = { sendIntent(PlayerIntent.CancelNextEpisode) },
                 shape = FloatingActionButtonDefaults.mediumShape,
                 containerColor = MaterialTheme.colorScheme.tertiaryContainer
             ) {
@@ -90,7 +100,7 @@ fun PlayerNextEpisode(
             }
 
             CountDownButton(
-                onTap = { sendIntent(PlayerIntent.PlayNextEpisode(episode)) },
+                onTap = { episode?.let { sendIntent(PlayerIntent.PlayNextEpisode(it)) } },
                 text = { stringResource(R.string.next_episode, it) }
             )
 
@@ -107,7 +117,7 @@ fun PlayerNextEpisode_Preview() {
         Box(modifier = Modifier.fillMaxWidth()) {
             PlayerNextEpisode(
                 modifier = Modifier,
-                episode = MediaMockups.episode1,
+                nextButton = PlayerUiState.NextButton.Showed(MediaMockups.episode1),
                 sendIntent = {}
             )
         }

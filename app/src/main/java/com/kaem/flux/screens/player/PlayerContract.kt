@@ -65,6 +65,7 @@ sealed class PlayerIntent {
     data class OnTrackSelected(val track: PlayerTrack) : PlayerIntent()
     data class ShowNextEpisode(val show: Boolean) : PlayerIntent()
     data class PlayNextEpisode(val episode: Episode) : PlayerIntent()
+    data object CancelNextEpisode : PlayerIntent()
 }
 
 sealed class PlayerEvent {

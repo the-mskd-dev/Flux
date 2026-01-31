@@ -76,17 +76,13 @@ fun PlayerInterface(
 
         }
 
-        if (!controls.showInterface) {
-
-            PlayerNextEpisode(
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(Ui.Space.LARGE),
-                episode = controls.nextEpisode,
-                sendIntent = sendIntent
-            )
-
-        }
+        PlayerNextEpisode(
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(Ui.Space.LARGE),
+            nextButton = controls.nextButton,
+            sendIntent = sendIntent
+        )
 
     }
 

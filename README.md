@@ -8,13 +8,14 @@ DISCLAIMER: This app is mainly used for my own personal use, and as a sandbox fo
 - Show your local files in a library
 - Play your files as a media player and save your progress
 - Get information thanks to TMDB
+- Totally free and ad-free
 
 ## Tech
 
 - Android : A full native Android app
 - Koltin : Native Android language
 - Jetpack Compose : To build the UI
-- Material 3 : To get a fresh UI (I did my best)
+- Material 3 Expressive : To get a fresh UI (I did my best)
 - Jetpack Navigation 3 : New Navigation framework from Jetpack library
 - Media3 : Media player
 - TMDB API : To get medias information
@@ -23,7 +24,7 @@ DISCLAIMER: This app is mainly used for my own personal use, and as a sandbox fo
 - Coil : Image managment
 - Room : Database
 
-## Installation
+## How to use
 
 This app use your video files (>5min) and then use TMBD to get information.
 

@@ -10,7 +10,6 @@ data class SettingsUiState(
     val rewindValue: Int = 10,
     val forwardValue: Int = 10,
     val uiTheme: Ui.THEME = Ui.THEME.SYSTEM,
-    val subtitlesLanguage: Locale = Locale.getDefault(),
     val dialogState: SettingsDialogState<*>? = null
 )
 
@@ -62,20 +61,6 @@ data class SettingsDialogState<T>(
             applyValue = { value -> SettingsIntent.SetThemeValue(value) }
         )
 
-        fun subtitles(currentValue: Locale) = SettingsDialogState(
-            title = R.string.subtitles_language,
-            currentValue = currentValue,
-            options = mapOf(
-                Locale.ENGLISH to (Locale.ENGLISH.displayLanguage to null),
-                Locale.FRENCH to (Locale.FRENCH.displayLanguage to null),
-                Locale.ITALIAN to (Locale.ITALIAN.displayLanguage to null),
-                Locale.JAPANESE to (Locale.JAPANESE.displayLanguage to null),
-                Locale.CHINESE to (Locale.CHINESE.displayLanguage to null),
-                Locale.KOREAN to (Locale.KOREAN.displayLanguage to null),
-            ),
-            applyValue = { value -> SettingsIntent.SetSubtitlesValue(value) }
-        )
-
     }
 
 }
@@ -87,8 +72,6 @@ sealed class SettingsIntent {
     data class SetForwardValue(val value: Int): SettingsIntent()
     object ShowThemeDialog: SettingsIntent()
     data class SetThemeValue(val theme: Ui.THEME): SettingsIntent()
-    object ShowSubtitlesDialog: SettingsIntent()
-    data class SetSubtitlesValue(val locale: Locale): SettingsIntent()
     object HideDialog : SettingsIntent()
     object OnBackTap: SettingsIntent()
     object OnHowToTap: SettingsIntent()

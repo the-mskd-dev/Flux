@@ -34,7 +34,6 @@ class SettingsViewModel @Inject constructor(
             rewindValue = settings.playerRewindValue,
             forwardValue = settings.playerForwardValue,
             uiTheme = settings.uiTheme,
-            subtitlesLanguage = settings.subtitlesLanguage,
             dialogState = dialog
         )
     }.stateIn(
@@ -56,8 +55,6 @@ class SettingsViewModel @Inject constructor(
             is SettingsIntent.SetRewindValue -> setRewindValue(intent.value)
             SettingsIntent.ShowForwardDialog -> showForwardDialog()
             is SettingsIntent.SetForwardValue -> setForwardValue(intent.value)
-            SettingsIntent.ShowSubtitlesDialog -> showSubtitlesLanguageDialog()
-            is SettingsIntent.SetSubtitlesValue -> setSubtitlesLanguage(intent.locale)
             SettingsIntent.ShowThemeDialog -> showThemeDialog()
             is SettingsIntent.SetThemeValue -> setTheme(intent.theme)
             SettingsIntent.HideDialog -> hideDialog()
@@ -100,16 +97,6 @@ class SettingsViewModel @Inject constructor(
 
     private suspend fun setTheme(theme: Ui.THEME) {
         settingsRepository.setUiTheme(theme)
-        hideDialog()
-    }
-
-    private fun showSubtitlesLanguageDialog() {
-        val currentValue = uiState.value.subtitlesLanguage
-        _dialogState.update { SettingsDialogState.subtitles(currentValue) }
-    }
-
-    private suspend fun setSubtitlesLanguage(value: Locale) {
-        settingsRepository.setSubtitlesLanguage(value)
         hideDialog()
     }
 

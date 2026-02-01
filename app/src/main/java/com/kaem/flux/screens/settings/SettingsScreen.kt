@@ -128,14 +128,6 @@ fun SettingsContent(
                     onTap = { sendIntent(SettingsIntent.ShowForwardDialog) }
                 )
 
-                SettingsDivider()
-
-                SettingsItem(
-                    text = stringResource(R.string.subtitles_language),
-                    value = state.subtitlesLanguage.displayLanguage,
-                    onTap = { sendIntent(SettingsIntent.ShowSubtitlesDialog) }
-                )
-
             }
 
             SettingsSection {

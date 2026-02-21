@@ -45,7 +45,7 @@ media3 = "1.9.0"
 jellyfinFfmpeg = "1.8.0+1"
 
 # -- Firebase --
-firebaseBom = "34.6.0"
+firebaseBom = "34.9.0"
 
 # -- Testing --
 junit = "4.13.2"
@@ -128,6 +128,7 @@ androidx-room-compiler = { group = "androidx.room", name = "room-compiler", vers
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
 firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics" }
+firebase-remote-config = { group = "com.google.firebase", name = "firebase-config" }
 
 # -- Test --
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -197,4 +198,9 @@ datastore = [
 room = [
     "androidx-room-runtime",
     "androidx-room-ktx"
+]
+firebase = [
+    "firebase-analytics",
+    "firebase-crashlytics",
+    "firebase-remote-config"
 ]

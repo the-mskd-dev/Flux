@@ -37,7 +37,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    @Inject lateinit var firebaseRepository: FirebaseRepository
+    @Inject lateinit var mainViewModel: MainViewModel
     @Inject lateinit var settingsRepository: SettingsRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {

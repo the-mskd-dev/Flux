@@ -4,13 +4,15 @@ import androidx.compose.runtime.Immutable
 import com.kaem.flux.model.ScreenState
 import com.kaem.flux.model.artwork.Artwork
 import com.kaem.flux.model.artwork.ContentType
+import com.kaem.flux.model.remoteConfig.Message
 
 @Immutable
 data class HomeUiState(
     val screenState: ScreenState = ScreenState.LOADING,
     val artworks: List<Artwork> = emptyList(),
     val lastWatchedMediaIds: List<Long> = emptyList(),
-    val isRefreshing: Boolean = true
+    val isRefreshing: Boolean = true,
+    val message: Message? = null
 )
 
 sealed class HomeIntent {
@@ -21,6 +23,9 @@ sealed class HomeIntent {
     object OnSettingsTap: HomeIntent()
     object OnHowToTap: HomeIntent()
     object OnPermissionTap: HomeIntent()
+    object FetchMessages: HomeIntent()
+    object CloseMessage: HomeIntent()
+    object DoNotShowMessage: HomeIntent()
 }
 
 sealed class HomeEvent {

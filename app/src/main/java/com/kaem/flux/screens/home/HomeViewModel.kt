@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kaem.flux.data.repository.CatalogRepository
+import com.kaem.flux.data.repository.FirebaseRepository
 import com.kaem.flux.data.repository.UserRepository
 import com.kaem.flux.model.ScreenState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,7 +21,8 @@ import kotlin.time.Duration.Companion.days
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val repository: CatalogRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val firebaseRepository: FirebaseRepository
 ): ViewModel() {
 
     private val _event = MutableSharedFlow<HomeEvent>()
@@ -29,7 +31,8 @@ class HomeViewModel @Inject constructor(
     val uiState: StateFlow<HomeUiState> = combine(
         repository.catalogFlow,
         userRepository.flow,
-    ) { catalog, preferences ->
+        firebaseRepository.message
+    ) { catalog, preferences, message ->
 
         val screen = when {
             catalog.isLoading && catalog.artworks.isEmpty() -> ScreenState.LOADING
@@ -40,8 +43,10 @@ class HomeViewModel @Inject constructor(
             screenState = screen,
             artworks = catalog.artworks,
             lastWatchedMediaIds = preferences.recentlyWatchedIds,
-            isRefreshing = catalog.isLoading
+            isRefreshing = catalog.isLoading,
+            message = message
         )
+
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000),

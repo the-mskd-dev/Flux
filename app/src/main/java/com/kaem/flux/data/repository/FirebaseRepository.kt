@@ -22,8 +22,8 @@ class FirebaseRepository @Inject constructor(
     private val gson: Gson
 ) {
 
-    private val _changelog = MutableStateFlow<List<Message>>(emptyList())
-    val changelog = _changelog.asStateFlow()
+    private val _message = MutableStateFlow<Message?>(null)
+    val message = _message.asStateFlow()
 
     init {
         initRemoteConfig()
@@ -41,19 +41,25 @@ class FirebaseRepository @Inject constructor(
 
     }
 
-    suspend fun fetchChangelog() {
+    suspend fun fetchMessages() {
 
         try {
 
             remoteConfig.fetchAndActivate().await()
-            val changelogString = remoteConfig.getString("changelog")
+            val changelogString = remoteConfig.getString("messages")
 
+            // Retrieve all messages
             val type = object : TypeToken<ArrayList<Message>>() {}.type
-            val fullChangelog: ArrayList<Message> = gson.fromJson(changelogString, type)
-            _changelog.update { fullChangelog }
+            val allMessages: List<Message> = gson.fromJson(changelogString, type)
+            val sortedMessages = allMessages.sortedByDescending { it.versionCode }
+
+            // Filter message
+            val version = BuildConfig.VERSION_CODE
+            val filteredMessage = sortedMessages.find { it.versionCode == version } ?: sortedMessages.find { it.versionCode <= 0 }
+            _message.update { filteredMessage }
 
         } catch (e: Exception) {
-            Log.e("FirebaseRepository", "Fail to fetch changelog", e)
+            Log.e("FirebaseRepository", "Fail to fetch messages", e)
         }
 
     }

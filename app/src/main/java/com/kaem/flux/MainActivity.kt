@@ -11,16 +11,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
-import com.kaem.flux.data.repository.FirebaseRepository
-import com.kaem.flux.data.repository.SettingsPreferences
-import com.kaem.flux.data.repository.SettingsRepository
 import com.kaem.flux.navigation.Route
 import com.kaem.flux.navigation.Transition
 import com.kaem.flux.screens.about.AboutScreen
@@ -37,8 +33,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    @Inject lateinit var mainViewModel: MainViewModel
-    @Inject lateinit var settingsRepository: SettingsRepository
+    @Inject lateinit var viewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,10 +42,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
 
-            val settings by settingsRepository.flow.collectAsStateWithLifecycle(
-                initialValue = SettingsPreferences(),
-                lifecycleOwner = LocalLifecycleOwner.current
-            )
+            val settings by viewModel.settings.collectAsStateWithLifecycle()
 
             AppTheme(theme = settings.uiTheme) {
 

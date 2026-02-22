@@ -1,3 +1,4 @@
+import com.android.build.api.dsl.ApplicationExtension
 import java.io.FileInputStream
 import java.util.Properties
 
@@ -19,7 +20,7 @@ if (localPropertiesFile.exists()) {
     localProperties.load(FileInputStream(localPropertiesFile))
 }
 
-android {
+configure<ApplicationExtension> {
     namespace = "com.kaem.flux"
     compileSdk = 36
 
@@ -49,11 +50,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-    kotlinOptions {
-        jvmTarget = "1.8"
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     buildFeatures {
         compose = true
@@ -70,6 +68,10 @@ android {
         }
     }
 
+}
+
+kotlin {
+    jvmToolchain(17)
 }
 
 dependencies {

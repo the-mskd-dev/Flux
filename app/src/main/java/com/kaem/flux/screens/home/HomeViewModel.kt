@@ -7,12 +7,17 @@ import com.kaem.flux.data.repository.CatalogRepository
 import com.kaem.flux.data.repository.FirebaseRepository
 import com.kaem.flux.data.repository.UserRepository
 import com.kaem.flux.model.ScreenState
+import com.kaem.flux.screens.home.HomeEvent.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -27,17 +32,22 @@ class HomeViewModel @Inject constructor(
 
     private val _event = MutableSharedFlow<HomeEvent>()
     val event = _event.asSharedFlow()
+
+    private val _showMessage = MutableStateFlow(true)
     
     val uiState: StateFlow<HomeUiState> = combine(
         repository.catalogFlow,
         userRepository.flow,
-        firebaseRepository.message
-    ) { catalog, preferences, message ->
+        firebaseRepository.message,
+        _showMessage
+    ) { catalog, preferences, firebaseMessage, showMessage ->
 
         val screen = when {
             catalog.isLoading && catalog.artworks.isEmpty() -> ScreenState.LOADING
             else -> ScreenState.CONTENT
         }
+
+        val message = firebaseMessage?.let { if (!preferences.watchedMessagesIds.contains(it.id) && showMessage) it else null }
 
         HomeUiState(
             screenState = screen,
@@ -56,12 +66,14 @@ class HomeViewModel @Inject constructor(
     fun handleIntent(intent: HomeIntent) = viewModelScope.launch {
         when (intent) {
             is HomeIntent.OnSyncTap -> fetchCatalog(manualSync = intent.manualSync)
-            is HomeIntent.OnArtworkTap -> _event.emit(HomeEvent.NavigateToArtwork(mediaId = intent.artworkId))
-            is HomeIntent.OnCategoryTap -> _event.emit(HomeEvent.NavigateToCategory(category = intent.category))
+            is HomeIntent.OnArtworkTap -> _event.emit(NavigateToArtwork(mediaId = intent.artworkId))
+            is HomeIntent.OnCategoryTap -> _event.emit(NavigateToCategory(category = intent.category))
             HomeIntent.OnSearchTap -> _event.emit(HomeEvent.NavigateToSearch)
             HomeIntent.OnSettingsTap -> _event.emit(HomeEvent.NavigateToSettings)
             HomeIntent.OnHowToTap -> _event.emit(HomeEvent.NavigateToHowTo)
             HomeIntent.OnPermissionTap -> _event.emit(HomeEvent.OpenPermissionDialog)
+            HomeIntent.CloseMessage -> closeMessage()
+            HomeIntent.DoNotShowMessage -> doNotShowMessage()
         }
     }
 
@@ -80,6 +92,16 @@ class HomeViewModel @Inject constructor(
             userRepository.setSyncTime(currentTime)
         }
 
+    }
+
+    private suspend fun closeMessage() {
+        _showMessage.emit(false)
+    }
+
+    private suspend fun doNotShowMessage() {
+        val message = uiState.first().message ?: return
+        _showMessage.emit(false)
+        userRepository.setMessageAsWatched(message.id)
     }
 
 }

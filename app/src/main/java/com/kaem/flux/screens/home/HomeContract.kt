@@ -23,6 +23,7 @@ sealed class HomeIntent {
     object OnSettingsTap: HomeIntent()
     object OnHowToTap: HomeIntent()
     object OnPermissionTap: HomeIntent()
+    object FetchMessages: HomeIntent()
     object CloseMessage: HomeIntent()
     object DoNotShowMessage: HomeIntent()
 }

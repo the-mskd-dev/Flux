@@ -55,7 +55,7 @@ class FirebaseRepository @Inject constructor(
 
             // Filter message
             val version = BuildConfig.VERSION_CODE
-            val filteredMessage = sortedMessages.find { it.versionCode == version } ?: sortedMessages.find { it.versionCode <= 0 }
+            val filteredMessage = sortedMessages.find { it.versionCode == version } ?: sortedMessages.find { it.versionCode < 0 }
             _message.update { filteredMessage }
 
         } catch (e: Exception) {

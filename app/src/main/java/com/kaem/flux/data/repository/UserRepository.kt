@@ -51,7 +51,7 @@ class UserRepository(
             val watchedIds = gson.fromJson<List<Double>>(watchedIdsString, List::class.java).map { it.toLong() }
             val syncTime = preferences[Keys.LAST_SYNC_TIME] ?: 0L
             val watchedMessagesIdsString = preferences[Keys.WATCHED_MESSAGES_IDS] ?: "[]"
-            val watchedMessagesIds = gson.fromJson<List<Int>>(watchedMessagesIdsString, List::class.java)
+            val watchedMessagesIds = gson.fromJson<List<Double>>(watchedMessagesIdsString, List::class.java).map { it.toInt() }
 
             UserPreferences(
                 recentlyWatchedIds = watchedIds,

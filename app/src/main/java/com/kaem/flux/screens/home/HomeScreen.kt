@@ -60,6 +60,7 @@ import com.kaem.flux.model.ScreenState
 import com.kaem.flux.model.artwork.Artwork
 import com.kaem.flux.model.artwork.ContentType
 import com.kaem.flux.navigation.Route
+import com.kaem.flux.screens.home.composables.HomeMessage
 import com.kaem.flux.screens.howTo.HowToNameFiles
 import com.kaem.flux.screens.welcome.WelcomeScreen
 import com.kaem.flux.screens.welcome.fluxPermissionState
@@ -106,6 +107,7 @@ fun HomeScreen(
 
         LaunchedEffect(Unit) {
             viewModel.handleIntent(HomeIntent.OnSyncTap(manualSync = false))
+            viewModel.handleIntent(HomeIntent.FetchMessages)
         }
 
         Crossfade(
@@ -132,6 +134,14 @@ fun HomeScreen(
                             isRefreshing = uiState.isRefreshing,
                             sendIntent = viewModel::handleIntent
                         )
+
+                        uiState.message?.let {
+                            HomeMessage(
+                                message = it,
+                                sendIntent = viewModel::handleIntent
+                            )
+
+                        }
 
                     }
 

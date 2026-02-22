@@ -47,7 +47,12 @@ class HomeViewModel @Inject constructor(
             else -> ScreenState.CONTENT
         }
 
-        val message = firebaseMessage?.let { if (!preferences.watchedMessagesIds.contains(it.id) && showMessage) it else null }
+        val message = firebaseMessage?.let {
+            if (!preferences.watchedMessagesIds.contains(it.id) && showMessage)
+                it
+            else
+                null
+        }
 
         HomeUiState(
             screenState = screen,
@@ -72,6 +77,7 @@ class HomeViewModel @Inject constructor(
             HomeIntent.OnSettingsTap -> _event.emit(HomeEvent.NavigateToSettings)
             HomeIntent.OnHowToTap -> _event.emit(HomeEvent.NavigateToHowTo)
             HomeIntent.OnPermissionTap -> _event.emit(HomeEvent.OpenPermissionDialog)
+            HomeIntent.FetchMessages -> fetchMessages()
             HomeIntent.CloseMessage -> closeMessage()
             HomeIntent.DoNotShowMessage -> doNotShowMessage()
         }
@@ -92,6 +98,10 @@ class HomeViewModel @Inject constructor(
             userRepository.setSyncTime(currentTime)
         }
 
+    }
+
+    private suspend fun fetchMessages() {
+        firebaseRepository.fetchMessages()
     }
 
     private suspend fun closeMessage() {

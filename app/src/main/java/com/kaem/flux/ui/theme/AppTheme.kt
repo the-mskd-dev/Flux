@@ -40,7 +40,7 @@ fun AppTheme(
         Ui.THEME.LIGHT -> fluxLightScheme
         else -> fluxDarkScheme
     }
-    val view = LocalView.current
+    /*val view = LocalView.current
     if (!view.isInEditMode) {
 
         val transparent = Color(0x00000000)
@@ -52,7 +52,7 @@ fun AppTheme(
             window.navigationBarColor = transparent.toArgb()
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = false//darkTheme
         }
-    }
+    }*/
 
     colorScheme.logDescription()
 

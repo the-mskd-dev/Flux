@@ -5,6 +5,7 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.remoteConfigSettings
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.kaem.flux.BuildConfig
 import com.kaem.flux.model.remoteConfig.Message
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,7 +34,7 @@ class FirebaseRepository @Inject constructor(
         Log.d("FirebaseRepository", "initRemoteConfig")
 
         val configSettings = remoteConfigSettings {
-            minimumFetchIntervalInSeconds = 3600
+            minimumFetchIntervalInSeconds = if (BuildConfig.DEBUG) 1 else 3600
         }
 
         remoteConfig.setConfigSettingsAsync(configSettings)

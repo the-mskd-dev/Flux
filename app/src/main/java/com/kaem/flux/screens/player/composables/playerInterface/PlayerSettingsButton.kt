@@ -10,7 +10,6 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.layoutId
 import com.kaem.flux.screens.player.PlayerIntent
 import com.kaem.flux.screens.player.PlayerUiState
 

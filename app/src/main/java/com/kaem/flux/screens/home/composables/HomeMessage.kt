@@ -9,7 +9,6 @@ import com.kaem.flux.R
 import com.kaem.flux.mockups.FirebaseMockups
 import com.kaem.flux.model.remoteConfig.Message
 import com.kaem.flux.screens.home.HomeIntent
-import com.kaem.flux.ui.component.FluxDialog
 import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.AppTheme
 

@@ -4,11 +4,13 @@ import app.cash.turbine.test
 import com.kaem.flux.bases.BaseTest
 import com.kaem.flux.data.repository.CatalogContent
 import com.kaem.flux.data.repository.CatalogRepository
+import com.kaem.flux.data.repository.FirebaseRepository
 import com.kaem.flux.data.repository.UserPreferences
 import com.kaem.flux.data.repository.UserRepository
 import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.ScreenState
 import com.kaem.flux.model.artwork.Artwork
+import com.kaem.flux.model.remoteConfig.Message
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -28,9 +30,13 @@ class HomeViewModelTest : BaseTest() {
     private lateinit var catalogRepository: CatalogRepository
     private lateinit var userRepository: UserRepository
 
+    private lateinit var firebaseRepository: FirebaseRepository
+
     // Mocked flows
     private val libraryFlow = MutableStateFlow(CatalogContent())
     private val dataStoreFlow = MutableStateFlow(UserPreferences())
+
+    private val messageFlow = MutableStateFlow<Message?>(null)
 
     override fun setUp() {
         super.setUp()
@@ -43,9 +49,14 @@ class HomeViewModelTest : BaseTest() {
             every { flow } returns this@HomeViewModelTest.dataStoreFlow
         }
 
+        firebaseRepository = mockk(relaxed = true) {
+            every { message } returns this@HomeViewModelTest.messageFlow
+        }
+
         viewModel = HomeViewModel(
             repository = catalogRepository,
-            userRepository = userRepository
+            userRepository = userRepository,
+            firebaseRepository = firebaseRepository
         )
 
     }
@@ -116,7 +127,8 @@ class HomeViewModelTest : BaseTest() {
 
         viewModel = HomeViewModel(
             repository = catalogRepository,
-            userRepository = userRepository
+            userRepository = userRepository,
+            firebaseRepository = firebaseRepository
         )
         viewModel.handleIntent(HomeIntent.OnSyncTap(manualSync = false))
 
@@ -135,7 +147,8 @@ class HomeViewModelTest : BaseTest() {
 
         viewModel = HomeViewModel(
             repository = catalogRepository,
-            userRepository = userRepository
+            userRepository = userRepository,
+            firebaseRepository = firebaseRepository
         )
         viewModel.handleIntent(HomeIntent.OnSyncTap(manualSync = false))
 

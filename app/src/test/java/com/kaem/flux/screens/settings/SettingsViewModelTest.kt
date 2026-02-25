@@ -39,7 +39,6 @@ class SettingsViewModelTest : BaseTest() {
             assert(10 == initialState.rewindValue)
             assert(10 == initialState.forwardValue)
             assert(Ui.THEME.SYSTEM == initialState.uiTheme)
-            assert(Locale.getDefault() == initialState.subtitlesLanguage)
             assert(initialState.dialogState == null)
         }
     }
@@ -76,19 +75,6 @@ class SettingsViewModelTest : BaseTest() {
 
             awaitItem()
             viewModel.handleIntent(SettingsIntent.ShowThemeDialog)
-
-            val state = awaitItem()
-            assert(state.dialogState != null)
-
-        }
-    }
-
-    @Test
-    fun show_subtitles_language_dialog() = runTest {
-        viewModel.uiState.test {
-
-            awaitItem()
-            viewModel.handleIntent(SettingsIntent.ShowSubtitlesDialog)
 
             val state = awaitItem()
             assert(state.dialogState != null)
@@ -153,29 +139,6 @@ class SettingsViewModelTest : BaseTest() {
 
             coVerify { settingsRepository.setUiTheme(Ui.THEME.DARK) }
             assert(Ui.THEME.DARK == state.uiTheme)
-            assert(state.dialogState == null)
-
-            cancelAndConsumeRemainingEvents()
-
-        }
-
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
-    fun set_subtitles_language() = runTest {
-
-        viewModel.uiState.test {
-            awaitItem()
-
-            viewModel.handleIntent(SettingsIntent.SetSubtitlesValue(Locale.ENGLISH))
-            dataStoreFlow.value = dataStoreFlow.value.copy(subtitlesLanguage = Locale.ENGLISH)
-            advanceUntilIdle()
-
-            val state = awaitItem()
-
-            coVerify { settingsRepository.setSubtitlesLanguage(Locale.ENGLISH) }
-            assert(Locale.ENGLISH == state.subtitlesLanguage)
             assert(state.dialogState == null)
 
             cancelAndConsumeRemainingEvents()

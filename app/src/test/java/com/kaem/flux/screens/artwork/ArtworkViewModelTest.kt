@@ -21,34 +21,31 @@ import org.junit.Test
 import kotlin.time.Duration.Companion.minutes
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class MediaViewModelTest : BaseTest() {
+class ArtworkViewModelTest : BaseTest() {
 
     private lateinit var viewModel: ArtworkViewModel
     private lateinit var artworkRepository: ArtworkRepository
     private lateinit var userRepository: UserRepository
-    private lateinit var settingsRepository: SettingsRepository
 
     override fun setUp() {
         super.setUp()
 
         artworkRepository = mockk(relaxed = true) {
-            coEvery { getMedia(any()) } returns ArtworkRepository.Content(
-                artwork = MediaMockups.showArtwork,
-                episodes = MediaMockups.episodes
+            every { flow } returns MutableStateFlow(
+        ArtworkRepository.Content(
+                    artwork = MediaMockups.showArtwork,
+                    episodes = MediaMockups.episodes
+                )
             )
         }
 
         userRepository = mockk(relaxed = true) {
             every { flow } returns MutableStateFlow(UserPreferences())
         }
-        settingsRepository = mockk(relaxed = true) {
-            every { flow } returns MutableStateFlow(SettingsPreferences())
-        }
 
         viewModel = ArtworkViewModel(
             mediaId = MediaMockups.showArtwork.id,
             repository = artworkRepository,
-            settingsRepository = settingsRepository,
             userRepository = userRepository
         )
 
@@ -68,7 +65,6 @@ class MediaViewModelTest : BaseTest() {
             assert(initialState.media == mediaState.media)
             assert(initialState.episodes == mediaState.episodes)
             assert(initialState.season == mediaState.season)
-            assert(!initialState.showPlayer)
             assert(initialState.episodePendingConfirmation == null)
 
         }
@@ -106,9 +102,12 @@ class MediaViewModelTest : BaseTest() {
 
             advanceUntilIdle()
 
-            val updatedState = expectMostRecentItem()
+            viewModel.event.test {
 
-            assert(updatedState.showPlayer)
+                val event = expectMostRecentItem()
+                assert(event is ArtworkEvent.PlayMedia)
+
+            }
 
         }
 
@@ -248,92 +247,20 @@ class MediaViewModelTest : BaseTest() {
     }
 
     @Test
-    fun save_episode_progression() = runTest {
-
-        viewModel.uiState.test {
-
-            // Save progression at 5 minutes
-            viewModel.handleIntent(ArtworkIntent.SaveWatchTime(5.minutes.inWholeMilliseconds))
-
-            advanceUntilIdle()
-
-            coVerify { artworkRepository.saveEpisode(any()) }
-            coVerify { userRepository.addToRecentlyWatched(any()) }
-
-            cancelAndConsumeRemainingEvents()
-
-        }
-
-    }
-
-    @Test
-    fun end_episode_watching() = runTest {
-
-        viewModel.uiState.test {
-
-            awaitItem()
-
-            // Save progression at 5 minutes
-            viewModel.handleIntent(ArtworkIntent.SaveWatchTime(MediaMockups.episode1.duration.minutes.inWholeMilliseconds))
-
-            advanceUntilIdle()
-
-            val state = awaitItem()
-
-            assert(state.media.status == Status.WATCHED)
-            coVerify { artworkRepository.saveEpisode(any()) }
-            coVerify { userRepository.addToRecentlyWatched(any()) }
-
-            cancelAndConsumeRemainingEvents()
-
-        }
-
-    }
-
-    @Test
-    fun end_last_episode_watching() = runTest {
-
-        viewModel.uiState.test {
-            val initialState = awaitItem()
-
-            // Set first episode as watched
-            viewModel.handleIntent(ArtworkIntent.ChangeWatchStatus(media = initialState.media))
-            awaitItem()
-
-            // Play second episode
-            viewModel.handleIntent(ArtworkIntent.PlayMedia(media = MediaMockups.episode2))
-
-            // Save progression at the end
-            viewModel.handleIntent(ArtworkIntent.SaveWatchTime(MediaMockups.episode2.duration.minutes.inWholeMilliseconds))
-
-            advanceUntilIdle()
-
-            val state = expectMostRecentItem()
-
-            assert(state.media.status == Status.WATCHED)
-            coVerify { artworkRepository.saveEpisodes(any()) }
-            coVerify { userRepository.removeFromRecentlyWatched(any()) }
-
-            cancelAndConsumeRemainingEvents()
-
-        }
-
-    }
-
-    @Test
     fun mark_movie_as_watched() = runTest {
 
         artworkRepository = mockk(relaxed = true) {
-            coEvery { getMedia(any()) } returns ArtworkRepository.Content(
-                artwork = MediaMockups.movieArtwork,
-                movie = MediaMockups.movie
+            coEvery { flow } returns MutableStateFlow(
+        ArtworkRepository.Content(
+                    artwork = MediaMockups.movieArtwork,
+                    movie = MediaMockups.movie
+                )
             )
         }
 
         viewModel = ArtworkViewModel(
             mediaId = MediaMockups.movieArtwork.id,
             repository = artworkRepository,
-            settingsRepository = settingsRepository,
             userRepository = userRepository
         )
 
@@ -352,46 +279,6 @@ class MediaViewModelTest : BaseTest() {
 
             assert(updatedState.media.status == Status.WATCHED)
             coVerify { artworkRepository.saveMovie(any()) }
-
-            cancelAndConsumeRemainingEvents()
-
-        }
-
-    }
-
-    @Test
-    fun end_movie_watching() = runTest {
-
-        artworkRepository = mockk(relaxed = true) {
-            coEvery { getMedia(any()) } returns ArtworkRepository.Content(
-                artwork = MediaMockups.movieArtwork,
-                movie = MediaMockups.movie
-            )
-        }
-
-        viewModel = ArtworkViewModel(
-            mediaId = MediaMockups.movieArtwork.id,
-            repository = artworkRepository,
-            settingsRepository = settingsRepository,
-            userRepository = userRepository
-        )
-
-        viewModel.uiState.test {
-
-            awaitItem()
-
-            var state = awaitItem()
-            assert(state.media.status == Status.TO_WATCH)
-
-            viewModel.handleIntent(ArtworkIntent.SaveWatchTime(MediaMockups.movie.duration.minutes.inWholeMilliseconds))
-
-            advanceUntilIdle()
-
-            state = awaitItem()
-
-            assert(state.media.status == Status.WATCHED)
-            coVerify { artworkRepository.saveMovie(any()) }
-            coVerify { userRepository.removeFromRecentlyWatched(any()) }
 
             cancelAndConsumeRemainingEvents()
 

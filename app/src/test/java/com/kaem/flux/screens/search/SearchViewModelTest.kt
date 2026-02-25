@@ -136,7 +136,7 @@ class SearchViewModelTest : BaseTest() {
             val state = awaitItem()
 
             assert(state.contentType == ContentType.SHOW)
-            assert(state.filteredArtworks.all { it.type == ContentType.MOVIE })
+            assert(state.filteredArtworks.all { it.type == ContentType.SHOW })
 
         }
 

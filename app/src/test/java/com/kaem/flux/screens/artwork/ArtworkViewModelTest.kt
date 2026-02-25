@@ -8,6 +8,7 @@ import com.kaem.flux.data.repository.SettingsRepository
 import com.kaem.flux.data.repository.UserPreferences
 import com.kaem.flux.data.repository.UserRepository
 import com.kaem.flux.mockups.MediaMockups
+import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.model.artwork.Status
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -27,16 +28,34 @@ class ArtworkViewModelTest : BaseTest() {
     private lateinit var artworkRepository: ArtworkRepository
     private lateinit var userRepository: UserRepository
 
+    private val repositoryFlow = MutableStateFlow(
+        ArtworkRepository.Content(
+            artwork = MediaMockups.showArtwork,
+            episodes = MediaMockups.episodes
+        )
+    )
+
     override fun setUp() {
         super.setUp()
 
         artworkRepository = mockk(relaxed = true) {
-            every { flow } returns MutableStateFlow(
-        ArtworkRepository.Content(
-                    artwork = MediaMockups.showArtwork,
-                    episodes = MediaMockups.episodes
-                )
-            )
+            every { flow } returns repositoryFlow
+
+            coEvery { saveEpisodes(any()) } answers {
+                val episodesToSave = firstArg<List<Episode>>()
+
+                val currentContent = repositoryFlow.value
+                val currentEpisodes = currentContent.episodes.toMutableList()
+
+                episodesToSave.forEach { savedEpisode ->
+                    val index = currentEpisodes.indexOfFirst { it.id == savedEpisode.id }
+                    if (index != -1) {
+                        currentEpisodes[index] = savedEpisode
+                    }
+                }
+
+                repositoryFlow.value = currentContent.copy(episodes = currentEpisodes)
+            }
         }
 
         userRepository = mockk(relaxed = true) {
@@ -198,9 +217,15 @@ class ArtworkViewModelTest : BaseTest() {
             // Initial state
             awaitItem()
 
+            val loadedState = awaitItem()
+
             // Change status of the latest episode
-            viewModel.handleIntent(ArtworkIntent.ChangeWatchStatus(media = MediaMockups.episodes.last()))
-            awaitItem()
+            viewModel.handleIntent(ArtworkIntent.ChangeWatchStatus(media = loadedState.episodes.last()))
+
+            advanceUntilIdle()
+
+            val stateWithDialog = expectMostRecentItem()
+            assert(stateWithDialog.episodePendingConfirmation != null)
 
             // Validate change for previous episodes
             viewModel.handleIntent(ArtworkIntent.MarkPreviousEpisodesAsWatched)

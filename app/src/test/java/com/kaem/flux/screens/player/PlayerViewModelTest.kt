@@ -3,6 +3,8 @@ package com.kaem.flux.screens.player
 import app.cash.turbine.test
 import com.kaem.flux.bases.BaseTest
 import com.kaem.flux.data.repository.ArtworkRepository
+import com.kaem.flux.data.repository.SettingsRepository
+import com.kaem.flux.data.repository.UserRepository
 import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.artwork.Status
 import com.kaem.flux.screens.artwork.ArtworkIntent
@@ -11,6 +13,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
@@ -19,7 +22,28 @@ import kotlin.time.Duration.Companion.minutes
 @OptIn(ExperimentalCoroutinesApi::class)
 class PlayerViewModelTest : BaseTest() {
 
-    //TODO : Unit test
+
+    private lateinit var viewModel: PlayerViewModel
+
+    private lateinit var artworkRepository: ArtworkRepository
+
+    private lateinit var userRepository: UserRepository
+
+    private lateinit var settingsRepository: SettingsRepository
+
+    private val repositoryFlow = MutableStateFlow(
+        ArtworkRepository.Content(
+            artwork = MediaMockups.showArtwork,
+            episodes = MediaMockups.episodes
+        )
+    )
+
+    override fun setUp() {
+        super.setUp()
+
+
+
+    }
 
     /*@Test
     fun save_episode_progression() = runTest {

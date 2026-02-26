@@ -3,15 +3,11 @@ package com.kaem.flux.screens.artwork
 import app.cash.turbine.test
 import com.kaem.flux.bases.BaseTest
 import com.kaem.flux.data.repository.ArtworkRepository
-import com.kaem.flux.data.repository.SettingsPreferences
-import com.kaem.flux.data.repository.SettingsRepository
 import com.kaem.flux.data.repository.UserPreferences
 import com.kaem.flux.data.repository.UserRepository
+import com.kaem.flux.mockups.FakeArtworkRepository
 import com.kaem.flux.mockups.MediaMockups
-import com.kaem.flux.model.artwork.Episode
-import com.kaem.flux.model.artwork.Movie
 import com.kaem.flux.model.artwork.Status
-import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
@@ -20,30 +16,24 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
-import kotlin.time.Duration.Companion.minutes
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ArtworkViewModelTest : BaseTest() {
 
     private lateinit var viewModel: ArtworkViewModel
-    private lateinit var artworkRepository: ArtworkRepository
+    private lateinit var artworkRepository: FakeArtworkRepository
     private lateinit var userRepository: UserRepository
 
-    private val repositoryFlow = MutableStateFlow(
-        ArtworkRepository.Content(
-            artwork = MediaMockups.showArtwork,
-            episodes = MediaMockups.episodes
-        )
-    )
 
     override fun setUp() {
         super.setUp()
 
-        artworkRepository = mockk(relaxed = true) {
-            every { flow } returns repositoryFlow
-            coEvery { saveEpisodes(any()) } answers { updateEpisodes(firstArg()) }
-            coEvery { saveMovie(any()) } answers { updateMovie(firstArg()) }
-        }
+        artworkRepository = FakeArtworkRepository(
+            initialContent = ArtworkRepository.Content(
+                artwork = MediaMockups.showArtwork,
+                episodes = MediaMockups.episodes
+            )
+        )
 
         userRepository = mockk(relaxed = true) {
             every { flow } returns MutableStateFlow(UserPreferences())
@@ -55,26 +45,6 @@ class ArtworkViewModelTest : BaseTest() {
             userRepository = userRepository
         )
 
-    }
-
-    private fun updateEpisodes(episodesToSave: List<Episode>) {
-
-        val currentContent = repositoryFlow.value
-        val currentEpisodes = currentContent.episodes.toMutableList()
-
-        episodesToSave.forEach { savedEpisode ->
-            val index = currentEpisodes.indexOfFirst { it.id == savedEpisode.id }
-            if (index != -1) {
-                currentEpisodes[index] = savedEpisode
-            }
-        }
-
-        repositoryFlow.value = currentContent.copy(episodes = currentEpisodes)
-
-    }
-
-    private fun updateMovie(movieToSave: Movie) {
-        repositoryFlow.value = repositoryFlow.value.copy(movie = movieToSave)
     }
 
     @Test
@@ -156,7 +126,6 @@ class ArtworkViewModelTest : BaseTest() {
             val updatedState = expectMostRecentItem()
 
             assert(updatedState.media.status == Status.WATCHED)
-            coVerify { artworkRepository.saveEpisodes(any()) }
 
             cancelAndConsumeRemainingEvents()
 
@@ -213,7 +182,6 @@ class ArtworkViewModelTest : BaseTest() {
             assert(updatedState.episodePendingConfirmation == null)
             assert(updatedState.episodes.find { it.id == MediaMockups.episode1.id }?.status == Status.WATCHED)
             assert(updatedState.episodes.find { it.id == MediaMockups.episode2.id }?.status == Status.WATCHED)
-            coVerify { artworkRepository.saveEpisodes(any()) }
 
             cancelAndConsumeRemainingEvents()
 
@@ -248,7 +216,6 @@ class ArtworkViewModelTest : BaseTest() {
             val updatedState = expectMostRecentItem()
 
             assert(updatedState.episodes.all { it.status == Status.WATCHED })
-            coVerify { artworkRepository.saveEpisodes(any()) }
 
             cancelAndConsumeRemainingEvents()
 
@@ -276,7 +243,6 @@ class ArtworkViewModelTest : BaseTest() {
             val finalState = expectMostRecentItem()
 
             assert(finalState.media.status == Status.TO_WATCH)
-            coVerify { artworkRepository.saveEpisodes(any()) }
 
             cancelAndConsumeRemainingEvents()
 
@@ -287,7 +253,7 @@ class ArtworkViewModelTest : BaseTest() {
     @Test
     fun mark_movie_as_watched() = runTest {
 
-        repositoryFlow.value = ArtworkRepository.Content(
+        artworkRepository.repositoryFlow.value = ArtworkRepository.Content(
             artwork = MediaMockups.movieArtwork,
             movie = MediaMockups.movie
         )
@@ -312,7 +278,6 @@ class ArtworkViewModelTest : BaseTest() {
             val updatedState = expectMostRecentItem()
 
             assert(updatedState.media.status == Status.WATCHED)
-            coVerify { artworkRepository.saveMovie(any()) }
 
             cancelAndConsumeRemainingEvents()
 

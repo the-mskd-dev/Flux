@@ -4,6 +4,7 @@ import androidx.test.filters.MediumTest
 import app.cash.turbine.test
 import com.kaem.flux.data.ddb.DatabaseDao
 import com.kaem.flux.data.repository.catalog.CatalogRepository
+import com.kaem.flux.data.repository.catalog.CatalogRepositoryImpl
 import com.kaem.flux.data.source.file.FilesSource
 import com.kaem.flux.data.source.media.MediaSource
 import com.kaem.flux.mockups.MediaMockups
@@ -26,7 +27,7 @@ class LibraryRepositoryTest {
 
     @Before
     fun setUp() {
-        repository = CatalogRepository(fileSource, localSource, tmdbSource, db)
+        repository = CatalogRepositoryImpl(fileSource, localSource, tmdbSource, db)
     }
 
     @Test

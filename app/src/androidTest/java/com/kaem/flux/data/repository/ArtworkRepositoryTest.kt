@@ -7,6 +7,7 @@ import app.cash.turbine.test
 import com.kaem.flux.data.ddb.DatabaseDao
 import com.kaem.flux.data.ddb.FluxDatabase
 import com.kaem.flux.data.repository.artwork.ArtworkRepository
+import com.kaem.flux.data.repository.artwork.ArtworkRepositoryImpl
 import com.kaem.flux.mockups.MediaMockups
 import kotlinx.coroutines.test.runTest
 import org.junit.After
@@ -31,7 +32,7 @@ class ArtworkRepositoryTest {
 
         db = database.dao()
 
-        repository = com.kaem.flux.data.repository.artwork.ArtworkRepository(db)
+        repository = ArtworkRepositoryImpl(db)
 
         // Insert artworks
         db.insertArtworks(listOf(MediaMockups.movieArtwork, MediaMockups.showArtwork))

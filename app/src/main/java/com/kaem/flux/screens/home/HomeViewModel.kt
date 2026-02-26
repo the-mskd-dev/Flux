@@ -3,7 +3,7 @@ package com.kaem.flux.screens.home
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kaem.flux.data.repository.CatalogRepository
+import com.kaem.flux.data.repository.catalog.CatalogRepository
 import com.kaem.flux.data.repository.FirebaseRepository
 import com.kaem.flux.data.repository.UserRepository
 import com.kaem.flux.model.ScreenState

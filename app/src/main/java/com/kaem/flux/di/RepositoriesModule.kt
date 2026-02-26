@@ -1,9 +1,10 @@
 package com.kaem.flux.di
 
 import com.kaem.flux.data.ddb.DatabaseDao
-import com.kaem.flux.data.repository.ArtworkRepository
-import com.kaem.flux.data.repository.ArtworkRepositoryImpl
-import com.kaem.flux.data.repository.CatalogRepository
+import com.kaem.flux.data.repository.artwork.ArtworkRepository
+import com.kaem.flux.data.repository.artwork.ArtworkRepositoryImpl
+import com.kaem.flux.data.repository.catalog.CatalogRepository
+import com.kaem.flux.data.repository.catalog.CatalogRepositoryImpl
 import com.kaem.flux.data.source.file.FilesSource
 import com.kaem.flux.data.source.media.MediaSource
 import dagger.Module
@@ -18,23 +19,23 @@ object RepositoriesModule {
 
     @Provides
     @Singleton
-    fun provideCatalogRepository(
-        @FilesModule.LocalFilesDataSource localFilesSource: FilesSource,
-        @MediaModule.MediaDataSourceLocal mediaSourceLocal: MediaSource,
-        @MediaModule.MediaDataSourceTMDB mediaSourceTMDB: MediaSource,
+    fun provideArtworkRepository(
         db: DatabaseDao
-    ) : CatalogRepository = CatalogRepository(
-        fileSource = localFilesSource,
-        mediaSourceLocal = mediaSourceLocal,
-        mediaSourceTmdb = mediaSourceTMDB,
+    ) : ArtworkRepository = ArtworkRepositoryImpl(
         db = db
     )
 
     @Provides
     @Singleton
-    fun provideArtworkRepository(
+    fun provideCatalogRepository(
+        @FilesModule.LocalFilesDataSource localFilesSource: FilesSource,
+        @MediaModule.MediaDataSourceLocal mediaSourceLocal: MediaSource,
+        @MediaModule.MediaDataSourceTMDB mediaSourceTMDB: MediaSource,
         db: DatabaseDao
-    ) : ArtworkRepository = ArtworkRepositoryImpl(
+    ) : CatalogRepository = CatalogRepositoryImpl(
+        fileSource = localFilesSource,
+        mediaSourceLocal = mediaSourceLocal,
+        mediaSourceTmdb = mediaSourceTMDB,
         db = db
     )
 

@@ -1,23 +1,12 @@
 package com.kaem.flux.screens.player
 
-import app.cash.turbine.test
 import com.kaem.flux.bases.BaseTest
-import com.kaem.flux.data.repository.ArtworkRepository
+import com.kaem.flux.data.repository.artwork.ArtworkRepository
 import com.kaem.flux.data.repository.SettingsRepository
 import com.kaem.flux.data.repository.UserRepository
 import com.kaem.flux.mockups.MediaMockups
-import com.kaem.flux.model.artwork.Status
-import com.kaem.flux.screens.artwork.ArtworkIntent
-import com.kaem.flux.screens.artwork.ArtworkViewModel
-import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.test.advanceUntilIdle
-import kotlinx.coroutines.test.runTest
-import org.junit.Test
-import kotlin.time.Duration.Companion.minutes
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class PlayerViewModelTest : BaseTest() {

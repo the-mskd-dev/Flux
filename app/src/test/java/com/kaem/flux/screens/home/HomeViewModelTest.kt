@@ -4,7 +4,7 @@ import app.cash.turbine.test
 import com.kaem.flux.bases.BaseTest
 import com.kaem.flux.data.repository.catalog.CatalogContent
 import com.kaem.flux.data.repository.catalog.CatalogRepository
-import com.kaem.flux.data.repository.FirebaseRepository
+import com.kaem.flux.data.repository.firebase.FirebaseRepository
 import com.kaem.flux.data.repository.UserPreferences
 import com.kaem.flux.data.repository.UserRepository
 import com.kaem.flux.mockups.MediaMockups

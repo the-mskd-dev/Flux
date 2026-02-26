@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kaem.flux.data.repository.catalog.CatalogRepository
-import com.kaem.flux.data.repository.FirebaseRepository
+import com.kaem.flux.data.repository.firebase.FirebaseRepository
 import com.kaem.flux.data.repository.UserRepository
 import com.kaem.flux.model.ScreenState
 import com.kaem.flux.screens.home.HomeEvent.NavigateToArtwork

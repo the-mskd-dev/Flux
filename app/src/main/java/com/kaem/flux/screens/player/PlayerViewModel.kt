@@ -3,9 +3,9 @@ package com.kaem.flux.screens.player
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kaem.flux.data.repository.ArtworkRepository
-import com.kaem.flux.data.repository.SettingsRepository
-import com.kaem.flux.data.repository.UserRepository
+import com.kaem.flux.data.repository.artwork.ArtworkRepository
+import com.kaem.flux.data.repository.settings.SettingsRepository
+import com.kaem.flux.data.repository.user.UserRepository
 import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.model.artwork.Movie
 import com.kaem.flux.model.artwork.Status

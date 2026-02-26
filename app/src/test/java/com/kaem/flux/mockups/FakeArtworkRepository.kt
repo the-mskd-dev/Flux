@@ -1,6 +1,6 @@
 package com.kaem.flux.mockups
 
-import com.kaem.flux.data.repository.ArtworkRepository
+import com.kaem.flux.data.repository.artwork.ArtworkRepository
 import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.model.artwork.Movie
 import kotlinx.coroutines.flow.MutableStateFlow

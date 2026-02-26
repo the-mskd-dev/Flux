@@ -1,14 +1,11 @@
-package com.kaem.flux.data.repository
+package com.kaem.flux.data.repository.settings
 
-import android.content.Context
 import androidx.datastore.core.DataStore
-import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
 import com.kaem.flux.ui.theme.Ui
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -17,24 +14,9 @@ import java.io.IOException
 import java.util.Locale
 import javax.inject.Inject
 
-val Context.settingsDatastore by preferencesDataStore(
-    name = "SettingsDataStore",
-    corruptionHandler = ReplaceFileCorruptionHandler(
-        produceNewData = { emptyPreferences() }
-    )
-)
-
-data class SettingsPreferences(
-    val playerRewindValue: Int = 10,
-    val playerForwardValue: Int = 10,
-    val uiTheme: Ui.THEME = Ui.THEME.SYSTEM,
-    val subtitlesLanguage: Locale = Locale.getDefault(),
-    val audioLanguage: Locale = Locale.getDefault()
-)
-
-class SettingsRepository @Inject constructor(
+class SettingsRepositoryImpl @Inject constructor(
     val settingsDataStore: DataStore<Preferences>
-) {
+) : SettingsRepository {
 
     object Keys {
         val PLAYER_REWIND = intPreferencesKey("player_rewind")
@@ -44,7 +26,7 @@ class SettingsRepository @Inject constructor(
         val AUDIO_LANGUAGE = stringPreferencesKey("audio_language")
     }
 
-    val flow: Flow<SettingsPreferences> = settingsDataStore.data
+    override val flow: Flow<SettingsPreferences> = settingsDataStore.data
         .catch { exception -> if (exception is IOException) emit(emptyPreferences()) else throw exception }
         .map { preferences ->
 
@@ -63,32 +45,32 @@ class SettingsRepository @Inject constructor(
             )
         }
 
-    suspend fun setPlayerRewindValue(value: Int) {
+    override suspend fun setPlayerRewindValue(value: Int) {
         settingsDataStore.edit { preferences ->
             preferences[Keys.PLAYER_REWIND] = value
         }
     }
 
 
-    suspend fun setPlayerForwardValue(value: Int) {
+    override suspend fun setPlayerForwardValue(value: Int) {
         settingsDataStore.edit { preferences ->
             preferences[Keys.PLAYER_FORWARD] = value
         }
     }
 
-    suspend fun setUiTheme(theme: Ui.THEME) {
+    override suspend fun setUiTheme(theme: Ui.THEME) {
         settingsDataStore.edit { preferences ->
             preferences[Keys.UI_THEME] = theme.toString()
         }
     }
 
-    suspend fun setSubtitlesLanguage(locale: Locale) {
+    override suspend fun setSubtitlesLanguage(locale: Locale) {
         settingsDataStore.edit { preferences ->
             preferences[Keys.SUBTITLES_LANGUAGE] = locale.language
         }
     }
 
-    suspend fun setAudioLanguage(locale: Locale) {
+    override suspend fun setAudioLanguage(locale: Locale) {
         settingsDataStore.edit { preferences ->
             preferences[Keys.AUDIO_LANGUAGE] = locale.language
         }

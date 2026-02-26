@@ -7,6 +7,9 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.filters.MediumTest
 import app.cash.turbine.test
 import com.google.gson.Gson
+import com.kaem.flux.data.repository.user.UserPreferences
+import com.kaem.flux.data.repository.user.UserRepository
+import com.kaem.flux.data.repository.user.UserRepositoryImpl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
@@ -43,7 +46,7 @@ class UserRepositoryTest {
             }
         )
 
-        userRepository = UserRepository(
+        userRepository = UserRepositoryImpl(
             userDataStore = testDataStore,
             gson = Gson()
         )

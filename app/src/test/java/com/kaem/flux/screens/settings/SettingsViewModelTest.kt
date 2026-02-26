@@ -2,8 +2,8 @@ package com.kaem.flux.screens.settings
 
 import app.cash.turbine.test
 import com.kaem.flux.bases.BaseTest
-import com.kaem.flux.data.repository.SettingsPreferences
-import com.kaem.flux.data.repository.SettingsRepository
+import com.kaem.flux.data.repository.settings.SettingsPreferences
+import com.kaem.flux.data.repository.settings.SettingsRepository
 import com.kaem.flux.ui.theme.Ui
 import io.mockk.coVerify
 import io.mockk.every
@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
-import java.util.Locale
 
 class SettingsViewModelTest : BaseTest() {
 

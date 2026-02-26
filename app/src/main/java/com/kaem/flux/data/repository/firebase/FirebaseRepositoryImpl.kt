@@ -1,4 +1,4 @@
-package com.kaem.flux.data.repository
+package com.kaem.flux.data.repository.firebase
 
 import android.util.Log
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
@@ -8,18 +8,19 @@ import com.google.gson.reflect.TypeToken
 import com.kaem.flux.BuildConfig
 import com.kaem.flux.model.remoteConfig.Message
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
-class FirebaseRepository @Inject constructor(
+class FirebaseRepositoryImpl @Inject constructor(
     private val remoteConfig: FirebaseRemoteConfig,
     private val gson: Gson
-) {
+) : FirebaseRepository {
 
     private val _message = MutableStateFlow<Message?>(null)
-    val message = _message.asStateFlow()
+    override val message: StateFlow<Message?> = _message.asStateFlow()
 
     init {
         initRemoteConfig()
@@ -37,7 +38,7 @@ class FirebaseRepository @Inject constructor(
 
     }
 
-    suspend fun fetchMessages() {
+    override suspend fun fetchMessages() {
 
         try {
 

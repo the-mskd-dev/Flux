@@ -2,13 +2,12 @@ package com.kaem.flux.screens.artwork
 
 import app.cash.turbine.test
 import com.kaem.flux.bases.BaseTest
-import com.kaem.flux.data.repository.ArtworkRepository
-import com.kaem.flux.data.repository.UserPreferences
-import com.kaem.flux.data.repository.UserRepository
+import com.kaem.flux.data.repository.artwork.ArtworkRepository
+import com.kaem.flux.data.repository.user.UserPreferences
+import com.kaem.flux.data.repository.user.UserRepository
 import com.kaem.flux.mockups.FakeArtworkRepository
 import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.artwork.Status
-import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi

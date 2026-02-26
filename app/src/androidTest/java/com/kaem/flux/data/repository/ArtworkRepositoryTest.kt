@@ -6,8 +6,9 @@ import androidx.test.filters.MediumTest
 import app.cash.turbine.test
 import com.kaem.flux.data.ddb.DatabaseDao
 import com.kaem.flux.data.ddb.FluxDatabase
+import com.kaem.flux.data.repository.artwork.ArtworkRepository
+import com.kaem.flux.data.repository.artwork.ArtworkRepositoryImpl
 import com.kaem.flux.mockups.MediaMockups
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
@@ -31,7 +32,7 @@ class ArtworkRepositoryTest {
 
         db = database.dao()
 
-        repository = ArtworkRepository(db)
+        repository = ArtworkRepositoryImpl(db)
 
         // Insert artworks
         db.insertArtworks(listOf(MediaMockups.movieArtwork, MediaMockups.showArtwork))

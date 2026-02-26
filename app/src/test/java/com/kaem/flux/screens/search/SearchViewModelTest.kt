@@ -2,8 +2,7 @@ package com.kaem.flux.screens.search
 
 import app.cash.turbine.test
 import com.kaem.flux.bases.BaseTest
-import com.kaem.flux.data.repository.CatalogContent
-import com.kaem.flux.data.repository.CatalogRepository
+import com.kaem.flux.data.repository.catalog.CatalogRepository
 import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.artwork.ContentType
 import io.mockk.every
@@ -19,7 +18,7 @@ class SearchViewModelTest : BaseTest() {
 
     // Mocked data
     private val libraryFlow = MutableStateFlow(
-        CatalogContent(artworks = MediaMockups.artworks)
+        CatalogRepository.Content(artworks = MediaMockups.artworks)
     )
 
     override fun setUp() {

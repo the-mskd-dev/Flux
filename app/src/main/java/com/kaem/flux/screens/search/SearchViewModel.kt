@@ -2,7 +2,7 @@ package com.kaem.flux.screens.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kaem.flux.data.repository.CatalogRepository
+import com.kaem.flux.data.repository.catalog.CatalogRepository
 import com.kaem.flux.model.artwork.ContentType
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory

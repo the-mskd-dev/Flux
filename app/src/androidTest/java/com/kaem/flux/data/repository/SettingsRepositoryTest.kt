@@ -6,6 +6,9 @@ import androidx.datastore.preferences.preferencesDataStoreFile
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.filters.MediumTest
 import app.cash.turbine.test
+import com.kaem.flux.data.repository.settings.SettingsPreferences
+import com.kaem.flux.data.repository.settings.SettingsRepository
+import com.kaem.flux.data.repository.settings.SettingsRepositoryImpl
 import com.kaem.flux.ui.theme.Ui
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -44,7 +47,7 @@ class SettingsRepositoryTest {
             }
         )
 
-        settingsRepository = SettingsRepository(
+        settingsRepository = SettingsRepositoryImpl(
             settingsDataStore = testDataStore
         )
 

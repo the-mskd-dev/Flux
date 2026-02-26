@@ -2,11 +2,10 @@ package com.kaem.flux.screens.home
 
 import app.cash.turbine.test
 import com.kaem.flux.bases.BaseTest
-import com.kaem.flux.data.repository.CatalogContent
-import com.kaem.flux.data.repository.CatalogRepository
-import com.kaem.flux.data.repository.FirebaseRepository
-import com.kaem.flux.data.repository.UserPreferences
-import com.kaem.flux.data.repository.UserRepository
+import com.kaem.flux.data.repository.catalog.CatalogRepository
+import com.kaem.flux.data.repository.firebase.FirebaseRepository
+import com.kaem.flux.data.repository.user.UserPreferences
+import com.kaem.flux.data.repository.user.UserRepository
 import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.ScreenState
 import com.kaem.flux.model.artwork.Artwork
@@ -33,7 +32,7 @@ class HomeViewModelTest : BaseTest() {
     private lateinit var firebaseRepository: FirebaseRepository
 
     // Mocked flows
-    private val libraryFlow = MutableStateFlow(CatalogContent())
+    private val libraryFlow = MutableStateFlow(CatalogRepository.Content())
     private val dataStoreFlow = MutableStateFlow(UserPreferences())
 
     private val messageFlow = MutableStateFlow<Message?>(null)
@@ -82,7 +81,7 @@ class HomeViewModelTest : BaseTest() {
         // Mock
         val artworks = listOf(MediaMockups.movieArtwork, MediaMockups.showArtwork)
         val lastWatchedIds = listOf(MediaMockups.showArtwork.id)
-        val catalogContent = CatalogContent(
+        val catalogContent = CatalogRepository.Content(
             isLoading = false,
             artworks = artworks
         )

@@ -1,4 +1,4 @@
-package com.kaem.flux.data.repository
+package com.kaem.flux.data.repository.catalog
 
 import com.google.firebase.Firebase
 import com.google.firebase.crashlytics.crashlytics
@@ -15,22 +15,17 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-data class CatalogContent(
-    val isLoading: Boolean = true,
-    val artworks: List<Artwork> = emptyList()
-)
-
-class CatalogRepository @Inject constructor(
+class CatalogRepositoryImpl @Inject constructor(
     private val fileSource: FilesSource,
     private val mediaSourceLocal: MediaSource,
     private val mediaSourceTmdb: MediaSource,
     private val db: DatabaseDao
-) {
+) : CatalogRepository {
 
-    private val _catalogFlow = MutableStateFlow(CatalogContent())
-    val catalogFlow: StateFlow<CatalogContent> = _catalogFlow.asStateFlow()
+    private val _catalogFlow = MutableStateFlow(CatalogRepository.Content())
+    override val catalogFlow: StateFlow<CatalogRepository.Content> = _catalogFlow.asStateFlow()
 
-    suspend fun getCatalog(sync: Boolean = false) {
+    override suspend fun getCatalog(sync: Boolean) {
 
         _catalogFlow.update { it.copy(isLoading = true) }
 
@@ -57,7 +52,7 @@ class CatalogRepository @Inject constructor(
 
     }
 
-    private suspend fun syncCatalog() : List<Artwork> {
+    override suspend fun syncCatalog() : List<Artwork> {
 
         // Fetch all files, local and online (if possible)
         val allFiles = getFiles()
@@ -80,7 +75,7 @@ class CatalogRepository @Inject constructor(
 
     }
 
-    private suspend fun getFiles() : List<UserFile> {
+    override suspend fun getFiles() : List<UserFile> {
 
         val localFiles = arrayListOf<UserFile>()
 

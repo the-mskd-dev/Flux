@@ -5,7 +5,8 @@ import com.google.firebase.Firebase
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.remoteconfig.remoteConfig
 import com.google.gson.Gson
-import com.kaem.flux.data.repository.FirebaseRepository
+import com.kaem.flux.data.repository.firebase.FirebaseRepository
+import com.kaem.flux.data.repository.firebase.FirebaseRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -27,7 +28,7 @@ object FirebaseModule {
     @Singleton
     fun provideFirebaseRepository(gson: Gson) : FirebaseRepository {
         val remoteConfig = Firebase.remoteConfig
-        return FirebaseRepository(remoteConfig = remoteConfig, gson = gson)
+        return FirebaseRepositoryImpl(remoteConfig = remoteConfig, gson = gson)
     }
 
 }

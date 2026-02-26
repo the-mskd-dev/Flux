@@ -2,7 +2,7 @@ package com.kaem.flux.screens.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kaem.flux.data.repository.SettingsRepository
+import com.kaem.flux.data.repository.settings.SettingsRepository
 import com.kaem.flux.ui.theme.Ui
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow

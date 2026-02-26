@@ -2,8 +2,8 @@ package com.kaem.flux
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kaem.flux.data.repository.SettingsPreferences
-import com.kaem.flux.data.repository.SettingsRepository
+import com.kaem.flux.data.repository.settings.SettingsPreferences
+import com.kaem.flux.data.repository.settings.SettingsRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update

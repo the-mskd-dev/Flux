@@ -4,8 +4,8 @@ import android.util.Log
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kaem.flux.data.repository.ArtworkRepository
-import com.kaem.flux.data.repository.UserRepository
+import com.kaem.flux.data.repository.artwork.ArtworkRepository
+import com.kaem.flux.data.repository.user.UserRepository
 import com.kaem.flux.model.ScreenState
 import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.model.artwork.Media

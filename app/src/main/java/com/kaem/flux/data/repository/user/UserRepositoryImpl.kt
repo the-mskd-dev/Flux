@@ -1,14 +1,11 @@
-package com.kaem.flux.data.repository
+package com.kaem.flux.data.repository.user
 
-import android.content.Context
 import androidx.datastore.core.DataStore
-import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -16,23 +13,10 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import okio.IOException
 
-val Context.userDataStore by preferencesDataStore(
-    name ="UserDataStore",
-    corruptionHandler = ReplaceFileCorruptionHandler(
-        produceNewData = { emptyPreferences() }
-    )
-)
-
-data class UserPreferences(
-    val recentlyWatchedIds: List<Long> = listOf(),
-    val watchedMessagesIds: List<Int> = listOf(),
-    val syncTime: Long = 0L
-)
-
-class UserRepository(
+class UserRepositoryImpl(
     val userDataStore: DataStore<Preferences>,
     private val gson: Gson
-) {
+) : UserRepository {
 
     object Keys {
         val RECENTYL_WATCHED_IDS = stringPreferencesKey("last_watched_ids")
@@ -42,7 +26,7 @@ class UserRepository(
 
     }
 
-    val flow: Flow<UserPreferences> = userDataStore.data
+    override val flow: Flow<UserPreferences> = userDataStore.data
         .catch { exception -> if (exception is IOException) emit(emptyPreferences()) else throw exception }
         .map { preferences ->
 
@@ -59,7 +43,7 @@ class UserRepository(
             )
         }
 
-    suspend fun addToRecentlyWatched(artworkId: Long) {
+    override suspend fun addToRecentlyWatched(artworkId: Long) {
         userDataStore.edit { preferences ->
             val lastWatchedIds = ArrayList(flow.first().recentlyWatchedIds)
 
@@ -73,7 +57,7 @@ class UserRepository(
         }
     }
 
-    suspend fun removeFromRecentlyWatched(artworkId: Long) {
+    override suspend fun removeFromRecentlyWatched(artworkId: Long) {
         userDataStore.edit { preferences ->
             val lastWatchedIds = ArrayList(flow.first().recentlyWatchedIds)
             lastWatchedIds.remove(artworkId)
@@ -82,20 +66,21 @@ class UserRepository(
         }
     }
 
-    suspend fun setSyncTime(syncTime: Long) {
+    override suspend fun setSyncTime(syncTime: Long) {
         userDataStore.edit { preferences ->
             preferences[Keys.LAST_SYNC_TIME] = syncTime
         }
     }
 
-    suspend fun getSyncTime() : Long {
+    override suspend fun getSyncTime() : Long {
         return flow.first().syncTime
     }
 
-    suspend fun setMessageAsWatched(messageId: Int) {
+    override suspend fun setMessageAsWatched(messageId: Int) {
         userDataStore.edit { preferences ->
             val watchedMessagesIds = flow.first().watchedMessagesIds
             preferences[Keys.WATCHED_MESSAGES_IDS] = gson.toJson(watchedMessagesIds + messageId)
         }
     }
+
 }

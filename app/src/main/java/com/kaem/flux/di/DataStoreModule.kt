@@ -2,9 +2,10 @@ package com.kaem.flux.di
 
 import android.content.Context
 import com.google.gson.Gson
-import com.kaem.flux.data.repository.SettingsRepository
+import com.kaem.flux.data.repository.settings.SettingsRepository
 import com.kaem.flux.data.repository.UserRepository
-import com.kaem.flux.data.repository.settingsDatastore
+import com.kaem.flux.data.repository.settings.SettingsRepositoryImpl
+import com.kaem.flux.data.repository.settings.settingsDatastore
 import com.kaem.flux.data.repository.userDataStore
 import dagger.Module
 import dagger.Provides
@@ -35,7 +36,7 @@ object DataStoreModule {
     @Provides
     @Singleton
     fun provideSettingsRepository(@ApplicationContext context: Context) : SettingsRepository {
-        return SettingsRepository(settingsDataStore = context.settingsDatastore)
+        return SettingsRepositoryImpl(settingsDataStore = context.settingsDatastore)
     }
 
 }

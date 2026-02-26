@@ -2,7 +2,7 @@ package com.kaem.flux.screens.player
 
 import com.kaem.flux.bases.BaseTest
 import com.kaem.flux.data.repository.artwork.ArtworkRepository
-import com.kaem.flux.data.repository.SettingsRepository
+import com.kaem.flux.data.repository.settings.SettingsRepository
 import com.kaem.flux.data.repository.UserRepository
 import com.kaem.flux.mockups.MediaMockups
 import kotlinx.coroutines.ExperimentalCoroutinesApi

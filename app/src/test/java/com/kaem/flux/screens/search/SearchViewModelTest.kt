@@ -5,6 +5,7 @@ import com.kaem.flux.bases.BaseTest
 import com.kaem.flux.data.repository.CatalogContent
 import com.kaem.flux.data.repository.CatalogRepository
 import com.kaem.flux.mockups.MediaMockups
+import com.kaem.flux.model.artwork.ContentType
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,7 +29,10 @@ class SearchViewModelTest : BaseTest() {
             every { catalogFlow } returns this@SearchViewModelTest.libraryFlow
         }
 
-        viewModel = SearchViewModel(catalogRepository)
+        viewModel = SearchViewModel(
+            contentType = null,
+            repository = catalogRepository
+        )
 
     }
 
@@ -97,6 +101,42 @@ class SearchViewModelTest : BaseTest() {
 
             assert(state.searchWord == "spider-man")
             assert(state.filteredArtworks.isEmpty())
+
+        }
+
+    }
+
+    @Test
+    fun filter_on_movie_type() = runTest {
+
+        viewModel.uiState.test {
+
+            awaitItem()
+
+            viewModel.handleIntent(SearchIntent.FilterOnType(contentType = ContentType.MOVIE))
+
+            val state = awaitItem()
+
+            assert(state.contentType == ContentType.MOVIE)
+            assert(state.filteredArtworks.all { it.type == ContentType.MOVIE })
+
+        }
+
+    }
+
+    @Test
+    fun filter_on_show_type() = runTest {
+
+        viewModel.uiState.test {
+
+            awaitItem()
+
+            viewModel.handleIntent(SearchIntent.FilterOnType(contentType = ContentType.SHOW))
+
+            val state = awaitItem()
+
+            assert(state.contentType == ContentType.SHOW)
+            assert(state.filteredArtworks.all { it.type == ContentType.SHOW })
 
         }
 

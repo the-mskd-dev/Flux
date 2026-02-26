@@ -2,6 +2,7 @@ package com.kaem.flux.di
 
 import com.kaem.flux.data.ddb.DatabaseDao
 import com.kaem.flux.data.repository.ArtworkRepository
+import com.kaem.flux.data.repository.ArtworkRepositoryImpl
 import com.kaem.flux.data.repository.CatalogRepository
 import com.kaem.flux.data.source.file.FilesSource
 import com.kaem.flux.data.source.media.MediaSource
@@ -33,7 +34,7 @@ object RepositoriesModule {
     @Singleton
     fun provideArtworkRepository(
         db: DatabaseDao
-    ) : ArtworkRepository = ArtworkRepository(
+    ) : ArtworkRepository = ArtworkRepositoryImpl(
         db = db
     )
 

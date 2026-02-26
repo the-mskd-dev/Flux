@@ -15,9 +15,17 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class ArtworkRepository @Inject constructor(
-    private val db: DatabaseDao
-) {
+interface ArtworkRepository {
+
+    val flow: Flow<Content>
+
+    fun searchArtwork(mediaId: Long)
+
+    suspend fun saveMovie(movie: Movie)
+
+    suspend fun saveEpisode(episode: Episode)
+
+    suspend fun saveEpisodes(episodes: List<Episode>)
 
     data class Content(
         val artwork: Artwork? = null,
@@ -25,10 +33,16 @@ class ArtworkRepository @Inject constructor(
         val episodes: List<Episode> = emptyList()
     )
 
+}
+
+class ArtworkRepositoryImpl @Inject constructor(
+    private val db: DatabaseDao
+) : ArtworkRepository {
+
     private val _mediaId = MutableStateFlow<Long?>(null)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val flow: Flow<Content> = _mediaId
+    override val flow: Flow<ArtworkRepository.Content> = _mediaId
         .filterNotNull()
         .distinctUntilChanged()
         .flatMapLatest { mediaId ->
@@ -36,33 +50,33 @@ class ArtworkRepository @Inject constructor(
                 when (artwork?.type) {
                     ContentType.MOVIE -> {
                         db.flowMovie(mediaId).map { movie ->
-                            Content(artwork = artwork, movie = movie)
+                            ArtworkRepository.Content(artwork = artwork, movie = movie)
                         }
                     }
                     ContentType.SHOW -> {
                         db.flowEpisodes(mediaId).map { episodes ->
-                            Content(artwork = artwork, episodes = episodes)
+                            ArtworkRepository.Content(artwork = artwork, episodes = episodes)
                         }
                     }
-                    else -> flowOf(Content(artwork = artwork))
+                    else -> flowOf(ArtworkRepository.Content(artwork = artwork))
                 }
             }
         }
         .distinctUntilChanged()
 
-    fun searchArtwork(mediaId: Long) {
+    override fun searchArtwork(mediaId: Long) {
         _mediaId.value = mediaId
     }
 
-    suspend fun saveMovie(movie: Movie) {
+    override suspend fun saveMovie(movie: Movie) {
         db.insertMovies(listOf(movie))
     }
 
-    suspend fun saveEpisode(episode: Episode) {
+    override suspend fun saveEpisode(episode: Episode) {
         db.insertEpisodes(listOf(episode))
     }
 
-    suspend fun saveEpisodes(episodes: List<Episode>) {
+    override suspend fun saveEpisodes(episodes: List<Episode>) {
         db.insertEpisodes(episodes)
     }
 

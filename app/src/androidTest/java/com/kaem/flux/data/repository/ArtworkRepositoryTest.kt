@@ -3,9 +3,11 @@ package com.kaem.flux.data.repository
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.filters.MediumTest
+import app.cash.turbine.test
 import com.kaem.flux.data.ddb.DatabaseDao
 import com.kaem.flux.data.ddb.FluxDatabase
 import com.kaem.flux.mockups.MediaMockups
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
@@ -48,12 +50,17 @@ class ArtworkRepositoryTest {
         // Given
         db.insertMovies(listOf(MediaMockups.movie))
 
-        // When
-        val content = repository.getMedia(MediaMockups.movieArtwork.id)
+        repository.flow.test {
 
-        // Then
-        assert(content.mediaArtwork == MediaMockups.movieArtwork)
-        assert(content.movie == MediaMockups.movie)
+            // When
+            repository.searchArtwork(MediaMockups.movieArtwork.id)
+            val content = awaitItem()
+
+            // Then
+            assert(content.artwork == MediaMockups.movieArtwork)
+            assert(content.movie == MediaMockups.movie)
+
+        }
     }
 
     @Test
@@ -62,12 +69,18 @@ class ArtworkRepositoryTest {
         // Given
         db.insertEpisodes(listOf(MediaMockups.episode1, MediaMockups.episode2))
 
-        // When
-        val content = repository.getMedia(MediaMockups.showArtwork.id)
+        repository.flow.test {
 
-        // Then
-        assert(content.mediaArtwork == MediaMockups.showArtwork)
-        assert(content.episodes?.size == 2)
+            // When
+            repository.searchArtwork(MediaMockups.showArtwork.id)
+            val content = awaitItem()
+
+            // Then
+            assert(content.artwork == MediaMockups.showArtwork)
+            assert(content.episodes.size == 2)
+
+        }
+
     }
 
     @Test

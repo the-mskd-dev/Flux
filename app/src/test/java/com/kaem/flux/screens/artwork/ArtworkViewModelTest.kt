@@ -9,6 +9,7 @@ import com.kaem.flux.data.repository.UserPreferences
 import com.kaem.flux.data.repository.UserRepository
 import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.artwork.Episode
+import com.kaem.flux.model.artwork.Movie
 import com.kaem.flux.model.artwork.Status
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -40,22 +41,8 @@ class ArtworkViewModelTest : BaseTest() {
 
         artworkRepository = mockk(relaxed = true) {
             every { flow } returns repositoryFlow
-
-            coEvery { saveEpisodes(any()) } answers {
-                val episodesToSave = firstArg<List<Episode>>()
-
-                val currentContent = repositoryFlow.value
-                val currentEpisodes = currentContent.episodes.toMutableList()
-
-                episodesToSave.forEach { savedEpisode ->
-                    val index = currentEpisodes.indexOfFirst { it.id == savedEpisode.id }
-                    if (index != -1) {
-                        currentEpisodes[index] = savedEpisode
-                    }
-                }
-
-                repositoryFlow.value = currentContent.copy(episodes = currentEpisodes)
-            }
+            coEvery { saveEpisodes(any()) } answers { updateEpisodes(firstArg()) }
+            coEvery { saveMovie(any()) } answers { updateMovie(firstArg()) }
         }
 
         userRepository = mockk(relaxed = true) {
@@ -68,6 +55,26 @@ class ArtworkViewModelTest : BaseTest() {
             userRepository = userRepository
         )
 
+    }
+
+    private fun updateEpisodes(episodesToSave: List<Episode>) {
+
+        val currentContent = repositoryFlow.value
+        val currentEpisodes = currentContent.episodes.toMutableList()
+
+        episodesToSave.forEach { savedEpisode ->
+            val index = currentEpisodes.indexOfFirst { it.id == savedEpisode.id }
+            if (index != -1) {
+                currentEpisodes[index] = savedEpisode
+            }
+        }
+
+        repositoryFlow.value = currentContent.copy(episodes = currentEpisodes)
+
+    }
+
+    private fun updateMovie(movieToSave: Movie) {
+        repositoryFlow.value = repositoryFlow.value.copy(movie = movieToSave)
     }
 
     @Test
@@ -114,17 +121,18 @@ class ArtworkViewModelTest : BaseTest() {
 
         viewModel.uiState.test {
 
-            val initialState = awaitItem()
-            val media = initialState.media
-
-            viewModel.handleIntent(ArtworkIntent.PlayMedia(media = media))
-
             advanceUntilIdle()
+            val initialState = expectMostRecentItem()
+            val media = initialState.media
 
             viewModel.event.test {
 
-                val event = expectMostRecentItem()
+                viewModel.handleIntent(ArtworkIntent.PlayMedia(media = media))
+
+                val event = awaitItem()
+
                 assert(event is ArtworkEvent.PlayMedia)
+                assert((event as ArtworkEvent.PlayMedia).mediaId == media.mediaId)
 
             }
 
@@ -137,7 +145,8 @@ class ArtworkViewModelTest : BaseTest() {
 
         viewModel.uiState.test {
 
-            val initialState = awaitItem()
+            advanceUntilIdle()
+            val initialState = expectMostRecentItem()
             val media = initialState.media
 
             viewModel.handleIntent(ArtworkIntent.ChangeWatchStatus(media = media))
@@ -161,7 +170,8 @@ class ArtworkViewModelTest : BaseTest() {
         viewModel.uiState.test {
 
             // Initial state
-            awaitItem()
+            advanceUntilIdle()
+            expectMostRecentItem()
 
             // Request change status of episode 2
             viewModel.handleIntent(ArtworkIntent.ChangeWatchStatus(media = MediaMockups.episode2))
@@ -185,7 +195,8 @@ class ArtworkViewModelTest : BaseTest() {
         viewModel.uiState.test {
 
             // Initial state
-            awaitItem()
+            advanceUntilIdle()
+            expectMostRecentItem()
 
             // Change status of episode 1
             viewModel.handleIntent(ArtworkIntent.ChangeWatchStatus(media = MediaMockups.episode1))
@@ -200,7 +211,8 @@ class ArtworkViewModelTest : BaseTest() {
             val updatedState = expectMostRecentItem()
 
             assert(updatedState.episodePendingConfirmation == null)
-            assert(updatedState.episodes.all { it.status == Status.WATCHED })
+            assert(updatedState.episodes.find { it.id == MediaMockups.episode1.id }?.status == Status.WATCHED)
+            assert(updatedState.episodes.find { it.id == MediaMockups.episode2.id }?.status == Status.WATCHED)
             coVerify { artworkRepository.saveEpisodes(any()) }
 
             cancelAndConsumeRemainingEvents()
@@ -249,7 +261,8 @@ class ArtworkViewModelTest : BaseTest() {
 
         viewModel.uiState.test {
 
-            val initialState = awaitItem()
+            advanceUntilIdle()
+            val initialState = expectMostRecentItem()
 
             // Mark as watched
             viewModel.handleIntent(ArtworkIntent.ChangeWatchStatus(media = initialState.media))
@@ -274,14 +287,10 @@ class ArtworkViewModelTest : BaseTest() {
     @Test
     fun mark_movie_as_watched() = runTest {
 
-        artworkRepository = mockk(relaxed = true) {
-            coEvery { flow } returns MutableStateFlow(
-        ArtworkRepository.Content(
-                    artwork = MediaMockups.movieArtwork,
-                    movie = MediaMockups.movie
-                )
-            )
-        }
+        repositoryFlow.value = ArtworkRepository.Content(
+            artwork = MediaMockups.movieArtwork,
+            movie = MediaMockups.movie
+        )
 
         viewModel = ArtworkViewModel(
             mediaId = MediaMockups.movieArtwork.id,
@@ -291,9 +300,9 @@ class ArtworkViewModelTest : BaseTest() {
 
         viewModel.uiState.test {
 
-            awaitItem()
+            advanceUntilIdle()
+            val initialState = expectMostRecentItem()
 
-            val initialState = awaitItem()
             assert(initialState.media.status == Status.TO_WATCH)
 
             viewModel.handleIntent(ArtworkIntent.ChangeWatchStatus(media = initialState.media))

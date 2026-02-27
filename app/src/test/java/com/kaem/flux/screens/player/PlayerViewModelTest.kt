@@ -2,17 +2,22 @@ package com.kaem.flux.screens.player
 
 import com.kaem.flux.bases.BaseTest
 import com.kaem.flux.data.repository.artwork.ArtworkRepository
+import com.kaem.flux.data.repository.settings.SettingsPreferences
 import com.kaem.flux.data.repository.settings.SettingsRepository
+import com.kaem.flux.data.repository.user.UserPreferences
 import com.kaem.flux.data.repository.user.UserRepository
 import com.kaem.flux.mockups.FakeArtworkRepository
 import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.artwork.ContentType
+import io.mockk.every
+import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.test.runTest
+import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class PlayerViewModelTest : BaseTest() {
-
 
     private lateinit var viewModel: PlayerViewModel
 
@@ -22,18 +27,29 @@ class PlayerViewModelTest : BaseTest() {
 
     private lateinit var settingsRepository: SettingsRepository
 
-    private val repositoryFlow = MutableStateFlow(
-        ArtworkRepository.Content(
-            artwork = MediaMockups.showArtwork,
-            episodes = MediaMockups.episodes
-        )
-    )
-
     override fun setUp() {
         super.setUp()
 
         artworkRepository = FakeArtworkRepository(initialContentType = ContentType.SHOW)
 
+        userRepository = mockk(relaxed = true) {
+            every { flow } returns MutableStateFlow(UserPreferences())
+        }
+
+        settingsRepository = mockk(relaxed = true) {
+            every { flow } returns MutableStateFlow(SettingsPreferences())
+        }
+
+        viewModel = PlayerViewModel(
+            mediaId = MediaMockups.episode1.mediaId,
+            artworkRepository = artworkRepository,
+            userRepository = userRepository,
+            settingsRepository = settingsRepository
+        )
+    }
+
+    @Test
+    fun show_interface() = runTest {
 
     }
 

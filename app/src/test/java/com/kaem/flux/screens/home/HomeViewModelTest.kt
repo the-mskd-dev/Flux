@@ -6,6 +6,7 @@ import com.kaem.flux.data.repository.catalog.CatalogRepository
 import com.kaem.flux.data.repository.firebase.FirebaseRepository
 import com.kaem.flux.data.repository.user.UserPreferences
 import com.kaem.flux.data.repository.user.UserRepository
+import com.kaem.flux.mockups.FakeCatalogRepository
 import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.ScreenState
 import com.kaem.flux.model.artwork.Artwork
@@ -26,13 +27,12 @@ import kotlin.time.Duration.Companion.hours
 class HomeViewModelTest : BaseTest() {
 
     private lateinit var viewModel: HomeViewModel
-    private lateinit var catalogRepository: CatalogRepository
+    private lateinit var catalogRepository: FakeCatalogRepository
     private lateinit var userRepository: UserRepository
 
     private lateinit var firebaseRepository: FirebaseRepository
 
     // Mocked flows
-    private val libraryFlow = MutableStateFlow(CatalogRepository.Content())
     private val dataStoreFlow = MutableStateFlow(UserPreferences())
 
     private val messageFlow = MutableStateFlow<Message?>(null)
@@ -40,9 +40,7 @@ class HomeViewModelTest : BaseTest() {
     override fun setUp() {
         super.setUp()
 
-        catalogRepository = mockk(relaxed = true) {
-            every { catalogFlow } returns this@HomeViewModelTest.libraryFlow
-        }
+        catalogRepository = FakeCatalogRepository()
 
         userRepository = mockk(relaxed = true) {
             every { flow } returns this@HomeViewModelTest.dataStoreFlow
@@ -81,21 +79,19 @@ class HomeViewModelTest : BaseTest() {
         // Mock
         val artworks = listOf(MediaMockups.movieArtwork, MediaMockups.showArtwork)
         val lastWatchedIds = listOf(MediaMockups.showArtwork.id)
-        val catalogContent = CatalogRepository.Content(
-            isLoading = false,
-            artworks = artworks
-        )
         val dataStore = UserPreferences(
             recentlyWatchedIds = lastWatchedIds
         )
 
         viewModel.uiState.test {
+
             awaitItem() // Ignore initial state
 
-            libraryFlow.value = catalogContent
+            catalogRepository.getCatalog()
             dataStoreFlow.value = dataStore
 
-            val updatedState = awaitItem()
+            advanceUntilIdle()
+            val updatedState = expectMostRecentItem()
 
             assert(ScreenState.CONTENT == updatedState.screenState)
             assert(artworks == updatedState.artworks)
@@ -149,13 +145,13 @@ class HomeViewModelTest : BaseTest() {
             userRepository = userRepository,
             firebaseRepository = firebaseRepository
         )
-        viewModel.handleIntent(HomeIntent.OnSyncTap(manualSync = false))
 
-        advanceUntilIdle()
+        val job = viewModel.handleIntent(HomeIntent.OnSyncTap(manualSync = false))
 
-        coVerify {
-            catalogRepository.getCatalog(sync = false)
-        }
+        job.join()
+
+        assert(catalogRepository.lastSyncParam == false)
+
         coVerify(exactly = 0) {
             userRepository.setSyncTime(any())
         }

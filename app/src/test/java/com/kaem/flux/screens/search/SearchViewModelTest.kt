@@ -3,6 +3,7 @@ package com.kaem.flux.screens.search
 import app.cash.turbine.test
 import com.kaem.flux.bases.BaseTest
 import com.kaem.flux.data.repository.catalog.CatalogRepository
+import com.kaem.flux.mockups.FakeCatalogRepository
 import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.artwork.ContentType
 import io.mockk.every
@@ -14,19 +15,18 @@ import org.junit.Test
 class SearchViewModelTest : BaseTest() {
 
     private lateinit var viewModel: SearchViewModel
-    private lateinit var catalogRepository: CatalogRepository
+    private lateinit var catalogRepository: FakeCatalogRepository
 
-    // Mocked data
-    private val libraryFlow = MutableStateFlow(
-        CatalogRepository.Content(artworks = MediaMockups.artworks)
-    )
 
     override fun setUp() {
         super.setUp()
 
-        catalogRepository = mockk(relaxed = true) {
-            every { catalogFlow } returns this@SearchViewModelTest.libraryFlow
-        }
+        catalogRepository = FakeCatalogRepository(
+            initialContent = CatalogRepository.Content(
+                isLoading = false,
+                artworks = MediaMockups.artworks
+            )
+        )
 
         viewModel = SearchViewModel(
             contentType = null,

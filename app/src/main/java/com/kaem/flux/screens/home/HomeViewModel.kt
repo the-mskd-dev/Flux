@@ -35,7 +35,7 @@ class HomeViewModel @Inject constructor(
     private val _showMessage = MutableStateFlow(true)
     
     val uiState: StateFlow<HomeUiState> = combine(
-        repository.catalogFlow,
+        repository.flow,
         userRepository.flow,
         firebaseRepository.message,
         _showMessage

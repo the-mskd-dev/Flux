@@ -73,116 +73,74 @@ class PlayerViewModelTest : BaseTest() {
 
     }
 
-    /*@Test
-    fun save_episode_progression() = runTest {
-
-        viewModel.uiState.test {
-
-            // Save progression at 5 minutes
-            viewModel.handleIntent(ArtworkIntent.SaveWatchTime(5.minutes.inWholeMilliseconds))
-
-            advanceUntilIdle()
-
-            coVerify { artworkRepository.saveEpisode(any()) }
-            coVerify { userRepository.addToRecentlyWatched(any()) }
-
-            cancelAndConsumeRemainingEvents()
-
-        }
-
+    @Test
+    fun show_settings() = runTest {
+        //TODO
     }
 
     @Test
-    fun end_episode_watching() = runTest {
-
-        viewModel.uiState.test {
-
-            awaitItem()
-
-            // Save progression at 5 minutes
-            viewModel.handleIntent(ArtworkIntent.SaveWatchTime(MediaMockups.episode1.duration.minutes.inWholeMilliseconds))
-
-            advanceUntilIdle()
-
-            val state = awaitItem()
-
-            assert(state.media.status == Status.WATCHED)
-            coVerify { artworkRepository.saveEpisode(any()) }
-            coVerify { userRepository.addToRecentlyWatched(any()) }
-
-            cancelAndConsumeRemainingEvents()
-
-        }
-
+    fun save_time() = runTest {
+        //TODO
     }
 
     @Test
-    fun end_last_episode_watching() = runTest {
-
-        viewModel.uiState.test {
-            val initialState = awaitItem()
-
-            // Set first episode as watched
-            viewModel.handleIntent(ArtworkIntent.ChangeWatchStatus(media = initialState.media))
-            awaitItem()
-
-            // Play second episode
-            viewModel.handleIntent(ArtworkIntent.PlayMedia(media = MediaMockups.episode2))
-
-            // Save progression at the end
-            viewModel.handleIntent(ArtworkIntent.SaveWatchTime(MediaMockups.episode2.duration.minutes.inWholeMilliseconds))
-
-            advanceUntilIdle()
-
-            val state = expectMostRecentItem()
-
-            assert(state.media.status == Status.WATCHED)
-            coVerify { artworkRepository.saveEpisodes(any()) }
-            coVerify { userRepository.removeFromRecentlyWatched(any()) }
-
-            cancelAndConsumeRemainingEvents()
-
-        }
-
+    fun back_tap() = runTest {
+        //TODO
     }
 
     @Test
-    fun end_movie_watching() = runTest {
+    fun toggle_play_button() = runTest {
+        //TODO
+    }
 
-        artworkRepository = mockk(relaxed = true) {
-            coEvery { getMedia(any()) } returns ArtworkRepository.Content(
-                artwork = MediaMockups.movieArtwork,
-                movie = MediaMockups.movie
-            )
-        }
+    @Test
+    fun set_playing_status() = runTest {
+        //TODO
+    }
 
-        viewModel = ArtworkViewModel(
-            mediaId = MediaMockups.movieArtwork.id,
-            repository = artworkRepository,
-            settingsRepository = settingsRepository,
-            userRepository = userRepository
-        )
+    @Test
+    fun fast_rewind() = runTest {
+        //TODO
+    }
 
-        viewModel.uiState.test {
+    @Test
+    fun fast_forward() = runTest {
+        //TODO
+    }
 
-            awaitItem()
+    @Test
+    fun update_progress() = runTest {
+        //TODO
+    }
 
-            var state = awaitItem()
-            assert(state.media.status == Status.TO_WATCH)
+    @Test
+    fun update_tracks() = runTest {
+        //TODO
+    }
 
-            viewModel.handleIntent(ArtworkIntent.SaveWatchTime(MediaMockups.movie.duration.minutes.inWholeMilliseconds))
+    @Test
+    fun select_track() = runTest {
+        //TODO
+    }
 
-            advanceUntilIdle()
+    @Test
+    fun on_track_selected() = runTest {
+        //TODO
+    }
 
-            state = awaitItem()
+    @Test
+    fun show_next_episode() = runTest {
+        //TODO
+    }
 
-            assert(state.media.status == Status.WATCHED)
-            coVerify { artworkRepository.saveMovie(any()) }
-            coVerify { userRepository.removeFromRecentlyWatched(any()) }
+    @Test
+    fun cancel_next_episode() = runTest {
+        //TODO
+    }
 
-            cancelAndConsumeRemainingEvents()
+    @Test
+    fun play_next_episode() = runTest {
+        //TODO
+    }
 
-        }
-
-    }*/
 }

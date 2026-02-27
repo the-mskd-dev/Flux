@@ -7,6 +7,7 @@ import com.kaem.flux.data.repository.user.UserPreferences
 import com.kaem.flux.data.repository.user.UserRepository
 import com.kaem.flux.mockups.FakeArtworkRepository
 import com.kaem.flux.mockups.MediaMockups
+import com.kaem.flux.model.artwork.ContentType
 import com.kaem.flux.model.artwork.Status
 import io.mockk.every
 import io.mockk.mockk
@@ -27,12 +28,7 @@ class ArtworkViewModelTest : BaseTest() {
     override fun setUp() {
         super.setUp()
 
-        artworkRepository = FakeArtworkRepository(
-            initialContent = ArtworkRepository.Content(
-                artwork = MediaMockups.showArtwork,
-                episodes = MediaMockups.episodes
-            )
-        )
+        artworkRepository = FakeArtworkRepository(initialContentType = ContentType.SHOW)
 
         userRepository = mockk(relaxed = true) {
             every { flow } returns MutableStateFlow(UserPreferences())
@@ -252,9 +248,11 @@ class ArtworkViewModelTest : BaseTest() {
     @Test
     fun mark_movie_as_watched() = runTest {
 
-        artworkRepository.repositoryFlow.value = ArtworkRepository.Content(
-            artwork = MediaMockups.movieArtwork,
-            movie = MediaMockups.movie
+        artworkRepository.setContent(
+            ArtworkRepository.Content(
+                artwork = MediaMockups.movieArtwork,
+                movie = MediaMockups.movie
+            )
         )
 
         viewModel = ArtworkViewModel(

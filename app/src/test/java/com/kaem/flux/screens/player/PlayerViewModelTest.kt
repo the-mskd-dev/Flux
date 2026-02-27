@@ -1,5 +1,6 @@
 package com.kaem.flux.screens.player
 
+import app.cash.turbine.test
 import com.kaem.flux.bases.BaseTest
 import com.kaem.flux.data.repository.artwork.ArtworkRepository
 import com.kaem.flux.data.repository.settings.SettingsPreferences
@@ -46,10 +47,29 @@ class PlayerViewModelTest : BaseTest() {
             userRepository = userRepository,
             settingsRepository = settingsRepository
         )
+
     }
 
     @Test
     fun show_interface() = runTest {
+
+        viewModel.uiState.test { viewModel
+
+            // Hidden by default
+            val initialState = awaitItem()
+            assert(!initialState.controls.showInterface)
+
+            // Test show
+            viewModel.handleIntent(PlayerIntent.ShowInterface)
+            val showedState = awaitItem()
+            assert(showedState.controls.showInterface)
+
+            // Test hide
+            viewModel.handleIntent(PlayerIntent.ShowInterface)
+            val hiddenState = awaitItem()
+            assert(!hiddenState.controls.showInterface)
+
+        }
 
     }
 

@@ -4,7 +4,9 @@ import com.kaem.flux.bases.BaseTest
 import com.kaem.flux.data.repository.artwork.ArtworkRepository
 import com.kaem.flux.data.repository.settings.SettingsRepository
 import com.kaem.flux.data.repository.user.UserRepository
+import com.kaem.flux.mockups.FakeArtworkRepository
 import com.kaem.flux.mockups.MediaMockups
+import com.kaem.flux.model.artwork.ContentType
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -14,7 +16,7 @@ class PlayerViewModelTest : BaseTest() {
 
     private lateinit var viewModel: PlayerViewModel
 
-    private lateinit var artworkRepository: ArtworkRepository
+    private lateinit var artworkRepository: FakeArtworkRepository
 
     private lateinit var userRepository: UserRepository
 
@@ -30,6 +32,7 @@ class PlayerViewModelTest : BaseTest() {
     override fun setUp() {
         super.setUp()
 
+        artworkRepository = FakeArtworkRepository(initialContentType = ContentType.SHOW)
 
 
     }

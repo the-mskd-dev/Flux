@@ -76,18 +76,36 @@ class PlayerViewModelTest : BaseTest() {
     @Test
     fun show_settings() = runTest {
 
-        viewModel.uiState.test {
+        val testCases = listOf(
+            ShowSettingsTestCase(
+                description = "Show settings sheet",
+                sheet = PlayerUiState.SettingsSheet.Settings,
+            ),
+            ShowSettingsTestCase(
+                description = "Show audio sheet",
+                sheet = PlayerUiState.SettingsSheet.Tracks(PlayerTrack.Type.AUDIO),
+            ),
+            ShowSettingsTestCase(
+                description = "Show subtitles sheet",
+                sheet = PlayerUiState.SettingsSheet.Settings,
+            ),
+        )
 
-            // Given
-            val initialState = awaitItem()
-            assert(initialState.controls.settingsSheet == null)
+        testCases.forEach { testCase ->
 
-            // When
-            viewModel.handleIntent(PlayerIntent.ShowSettings(sheet = PlayerUiState.SettingsSheet.Settings))
+            viewModel.uiState.test {
 
-            // Then
-            val settingsState = awaitItem()
-            assert(settingsState.controls.settingsSheet == PlayerUiState.SettingsSheet.Settings)
+                // Given
+                awaitItem()
+
+                // When
+                viewModel.handleIntent(PlayerIntent.ShowSettings(sheet = testCase.sheet))
+
+                // Then
+                val settingsState = awaitItem()
+                assert(settingsState.controls.settingsSheet == testCase.sheet)
+
+            }
 
         }
 

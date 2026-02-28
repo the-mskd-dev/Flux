@@ -53,7 +53,7 @@ class PlayerViewModelTest : BaseTest() {
     @Test
     fun show_interface() = runTest {
 
-        viewModel.uiState.test { viewModel
+        viewModel.uiState.test {
 
             // Hidden by default
             val initialState = awaitItem()
@@ -75,7 +75,42 @@ class PlayerViewModelTest : BaseTest() {
 
     @Test
     fun show_settings() = runTest {
-        //TODO
+
+        viewModel.uiState.test {
+
+            // Given
+            val initialState = awaitItem()
+            assert(initialState.controls.settingsSheet == null)
+
+            // When
+            viewModel.handleIntent(PlayerIntent.ShowSettings(sheet = PlayerUiState.SettingsSheet.Settings))
+
+            // Then
+            val settingsState = awaitItem()
+            assert(settingsState.controls.settingsSheet == PlayerUiState.SettingsSheet.Settings)
+
+        }
+
+    }
+
+    @Test
+    fun show_settings_tracks() = runTest {
+
+        viewModel.uiState.test {
+
+            // Given
+            val initialState = awaitItem()
+            assert(initialState.controls.settingsSheet == null)
+
+            // When
+            viewModel.handleIntent(PlayerIntent.ShowSettings(sheet = PlayerUiState.SettingsSheet.Tracks(PlayerTrack.Type.entries.random())))
+
+            // Then
+            val settingsState = awaitItem()
+            assert(settingsState.controls.settingsSheet is PlayerUiState.SettingsSheet.Tracks)
+
+        }
+
     }
 
     @Test

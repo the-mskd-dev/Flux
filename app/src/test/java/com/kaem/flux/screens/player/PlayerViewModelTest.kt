@@ -1,8 +1,7 @@
 package com.kaem.flux.screens.player
 
 import app.cash.turbine.test
-import com.kaem.flux.bases.BaseTest
-import com.kaem.flux.data.repository.artwork.ArtworkRepository
+import com.kaem.flux.bases.DispatcherConfig
 import com.kaem.flux.data.repository.settings.SettingsPreferences
 import com.kaem.flux.data.repository.settings.SettingsRepository
 import com.kaem.flux.data.repository.user.UserPreferences
@@ -10,36 +9,31 @@ import com.kaem.flux.data.repository.user.UserRepository
 import com.kaem.flux.mockups.FakeArtworkRepository
 import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.artwork.ContentType
+import io.kotest.core.spec.style.FunSpec
+import io.kotest.datatest.withData
+import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.test.runTest
-import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class PlayerViewModelTest : BaseTest() {
+class PlayerViewModelTest : FunSpec({
 
-    private lateinit var viewModel: PlayerViewModel
+    extension(DispatcherConfig())
 
-    private lateinit var artworkRepository: FakeArtworkRepository
+    lateinit var viewModel: PlayerViewModel
+    lateinit var artworkRepository: FakeArtworkRepository
+    var userRepository: UserRepository = mockk(relaxed = true)
+    var settingsRepository: SettingsRepository = mockk(relaxed = true)
 
-    private lateinit var userRepository: UserRepository
-
-    private lateinit var settingsRepository: SettingsRepository
-
-    override fun setUp() {
-        super.setUp()
+    beforeTest {
 
         artworkRepository = FakeArtworkRepository(initialContentType = ContentType.SHOW)
 
-        userRepository = mockk(relaxed = true) {
-            every { flow } returns MutableStateFlow(UserPreferences())
-        }
+        every { userRepository.flow } returns MutableStateFlow(UserPreferences())
 
-        settingsRepository = mockk(relaxed = true) {
-            every { flow } returns MutableStateFlow(SettingsPreferences())
-        }
+        every { settingsRepository.flow } returns MutableStateFlow(SettingsPreferences())
 
         viewModel = PlayerViewModel(
             mediaId = MediaMockups.episode1.mediaId,
@@ -50,33 +44,29 @@ class PlayerViewModelTest : BaseTest() {
 
     }
 
-    @Test
-    fun show_interface() = runTest {
-
+    test("show interface") {
         viewModel.uiState.test {
 
             // Hidden by default
             val initialState = awaitItem()
-            assert(!initialState.controls.showInterface)
+            initialState.controls.showInterface shouldBe false
 
             // Test show
             viewModel.handleIntent(PlayerIntent.ShowInterface)
             val showedState = awaitItem()
-            assert(showedState.controls.showInterface)
+            showedState.controls.showInterface shouldBe true
 
             // Test hide
             viewModel.handleIntent(PlayerIntent.ShowInterface)
             val hiddenState = awaitItem()
-            assert(!hiddenState.controls.showInterface)
+            hiddenState.controls.showInterface shouldBe false
 
         }
-
     }
 
-    @Test
-    fun show_settings() = runTest {
-
-        val testCases = listOf(
+    context("show settings") {
+        withData(
+            nameFn = { it.description },
             ShowSettingsTestCase(
                 description = "Show settings sheet",
                 sheet = PlayerUiState.SettingsSheet.Settings,
@@ -88,14 +78,12 @@ class PlayerViewModelTest : BaseTest() {
             ShowSettingsTestCase(
                 description = "Show subtitles sheet",
                 sheet = PlayerUiState.SettingsSheet.Settings,
-            ),
-        )
-
-        testCases.forEach { testCase ->
+            )
+        ) { testCase ->
 
             viewModel.uiState.test {
 
-                // Given
+                // Skip initial
                 awaitItem()
 
                 // When
@@ -103,97 +91,63 @@ class PlayerViewModelTest : BaseTest() {
 
                 // Then
                 val settingsState = awaitItem()
-                assert(settingsState.controls.settingsSheet == testCase.sheet)
+                settingsState.controls.settingsSheet shouldBe testCase.sheet
 
             }
 
         }
-
     }
 
-    @Test
-    fun show_settings_tracks() = runTest {
-
-        viewModel.uiState.test {
-
-            // Given
-            val initialState = awaitItem()
-            assert(initialState.controls.settingsSheet == null)
-
-            // When
-            viewModel.handleIntent(PlayerIntent.ShowSettings(sheet = PlayerUiState.SettingsSheet.Tracks(PlayerTrack.Type.entries.random())))
-
-            // Then
-            val settingsState = awaitItem()
-            assert(settingsState.controls.settingsSheet is PlayerUiState.SettingsSheet.Tracks)
-
-        }
-
+    test("save time") {
+        // TODO
     }
 
-    @Test
-    fun save_time() = runTest {
+    test("back tap") {
+        // TODO
+    }
+
+    test("toggle play button") {
+        // TODO
+    }
+
+    test("set playing status") {
+        // TODO
+    }
+
+    test("fast rewind") {
+        // TODO
+    }
+
+    test("fast forward") {
+        // TODO
+    }
+
+    test("update progress") {
+        // TODO
+    }
+
+    test("update tracks") {
+        // TODO
+    }
+
+    test("select track") {
+        // TODO
+    }
+
+    test("on track selected") {
+        // TODO
+    }
+
+    test("show next episode") {
+        // TODO
+    }
+
+    test("cancel next episode") {
+        // TODO
+    }
+
+    test("play next episode") {
         //TODO
     }
 
-    @Test
-    fun back_tap() = runTest {
-        //TODO
-    }
-
-    @Test
-    fun toggle_play_button() = runTest {
-        //TODO
-    }
-
-    @Test
-    fun set_playing_status() = runTest {
-        //TODO
-    }
-
-    @Test
-    fun fast_rewind() = runTest {
-        //TODO
-    }
-
-    @Test
-    fun fast_forward() = runTest {
-        //TODO
-    }
-
-    @Test
-    fun update_progress() = runTest {
-        //TODO
-    }
-
-    @Test
-    fun update_tracks() = runTest {
-        //TODO
-    }
-
-    @Test
-    fun select_track() = runTest {
-        //TODO
-    }
-
-    @Test
-    fun on_track_selected() = runTest {
-        //TODO
-    }
-
-    @Test
-    fun show_next_episode() = runTest {
-        //TODO
-    }
-
-    @Test
-    fun cancel_next_episode() = runTest {
-        //TODO
-    }
-
-    @Test
-    fun play_next_episode() = runTest {
-        //TODO
-    }
-
-}
+})

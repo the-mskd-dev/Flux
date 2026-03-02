@@ -1,4 +1,4 @@
-package com.kaem.flux.bases
+package com.kaem.flux.configs
 
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.Spec

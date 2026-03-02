@@ -254,11 +254,25 @@ class PlayerViewModelTest : FunSpec({
     }
 
     test("fast rewind") {
-        // TODO
+        viewModel.uiState.test {
+            val state = awaitItem()
+
+            viewModel.event.test {
+                viewModel.handleIntent(PlayerIntent.OnFastRewind)
+                awaitItem() shouldBe PlayerEvent.SeekRewind(state.playerRewind)
+            }
+        }
     }
 
     test("fast forward") {
-        // TODO
+        viewModel.uiState.test {
+            val state = awaitItem()
+
+            viewModel.event.test {
+                viewModel.handleIntent(PlayerIntent.OnFastForward)
+                awaitItem() shouldBe PlayerEvent.SeekForward(state.playerForward)
+            }
+        }
     }
 
     test("update progress") {

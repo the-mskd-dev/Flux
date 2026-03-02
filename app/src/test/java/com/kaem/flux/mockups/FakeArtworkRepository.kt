@@ -53,4 +53,17 @@ class FakeArtworkRepository(initialContentType: ContentType) : ArtworkRepository
         _flow.value = content
     }
 
+    fun setContentType(contentType: ContentType) {
+        _flow.value = when (contentType) {
+            ContentType.MOVIE -> ArtworkRepository.Content(
+                artwork = MediaMockups.movieArtwork,
+                movie = MediaMockups.movie
+            )
+            ContentType.SHOW -> ArtworkRepository.Content(
+                artwork = MediaMockups.showArtwork,
+                episodes = MediaMockups.episodes
+            )
+        }
+    }
+
 }

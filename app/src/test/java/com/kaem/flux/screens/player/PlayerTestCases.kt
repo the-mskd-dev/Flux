@@ -14,7 +14,6 @@ data class SaveTimeTestCase(
     val artwork: Artwork,
     val media: Media,
     val time: Long,
-    val shouldBeRemovedFromRecentlyWatched: Boolean,
-    val shouldBeAddedFromRecentlyWatched: Boolean,
+    val shouldBeAddedToRecentlyWatched: Boolean,
     val statusExpected: Status
 )

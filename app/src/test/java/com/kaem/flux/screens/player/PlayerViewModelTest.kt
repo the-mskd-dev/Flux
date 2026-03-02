@@ -9,11 +9,15 @@ import com.kaem.flux.data.repository.user.UserRepository
 import com.kaem.flux.mockups.FakeArtworkRepository
 import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.artwork.ContentType
+import com.kaem.flux.model.artwork.Movie
 import com.kaem.flux.model.artwork.Status
+import com.kaem.flux.utils.extensions.lastEpisode
 import com.kaem.flux.utils.extensions.minToMs
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData
+import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -105,25 +109,87 @@ class PlayerViewModelTest : FunSpec({
         withData(
             nameFn = { it.description },
             SaveTimeTestCase(
-                description = "Save time",
+                description = "Movie - save time at the middle",
                 artwork = MediaMockups.movieArtwork,
                 media = MediaMockups.movie,
                 time = MediaMockups.movie.duration.minToMs.times(0.5).roundToLong(),
-                shouldBeRemovedFromRecentlyWatched = false,
-                shouldBeAddedFromRecentlyWatched = true,
+                shouldBeAddedToRecentlyWatched = true,
                 statusExpected = Status.IS_WATCHING
             ),
             SaveTimeTestCase(
-                description = "Save time",
+                description = "Movie - save time at the end",
                 artwork = MediaMockups.movieArtwork,
                 media = MediaMockups.movie,
                 time = MediaMockups.movie.duration.minToMs.times(0.95).roundToLong(),
-                shouldBeRemovedFromRecentlyWatched = true,
-                shouldBeAddedFromRecentlyWatched = false,
+                shouldBeAddedToRecentlyWatched = false,
+                statusExpected = Status.WATCHED
+            ),
+            SaveTimeTestCase(
+                description = "Show - save time at the middle",
+                artwork = MediaMockups.showArtwork,
+                media = MediaMockups.episode1,
+                time = MediaMockups.episode1.duration.minToMs.times(0.5).roundToLong(),
+                shouldBeAddedToRecentlyWatched = true,
+                statusExpected = Status.IS_WATCHING
+            ),
+            SaveTimeTestCase(
+                description = "Show - save time at the end",
+                artwork = MediaMockups.showArtwork,
+                media = MediaMockups.episode1,
+                time = MediaMockups.episode1.duration.minToMs.times(0.95).roundToLong(),
+                shouldBeAddedToRecentlyWatched = true,
+                statusExpected = Status.WATCHED
+            ),
+            SaveTimeTestCase(
+                description = "Show - save time for last episode at the middle",
+                artwork = MediaMockups.showArtwork,
+                media = MediaMockups.episodes.lastEpisode,
+                time = MediaMockups.episodes.lastEpisode.duration.minToMs.times(0.5).roundToLong(),
+                shouldBeAddedToRecentlyWatched = true,
+                statusExpected = Status.IS_WATCHING
+            ),
+            SaveTimeTestCase(
+                description = "Show - save time for last episode at the end",
+                artwork = MediaMockups.showArtwork,
+                media = MediaMockups.episodes.lastEpisode,
+                time = MediaMockups.episodes.lastEpisode.duration.minToMs.times(0.95).roundToLong(),
+                shouldBeAddedToRecentlyWatched = false,
                 statusExpected = Status.WATCHED
             )
         ) { testCase ->
-            //TODO
+
+            artworkRepository.setContentType(if (testCase.media is Movie) ContentType.MOVIE else ContentType.SHOW)
+
+            viewModel = PlayerViewModel(
+                mediaId = testCase.media.mediaId,
+                artworkRepository = artworkRepository,
+                userRepository = userRepository,
+                settingsRepository = settingsRepository
+            )
+
+
+            viewModel.uiState.test {
+
+                // Skip initial
+                awaitItem()
+
+                // When
+                viewModel.handleIntent(PlayerIntent.SaveTime(time = testCase.time))
+
+                // Then
+                val state = awaitItem()
+                state.media.shouldNotBeNull {
+                    status shouldBe testCase.statusExpected
+                }
+                if (testCase.shouldBeAddedToRecentlyWatched) {
+                    coVerify { userRepository.addToRecentlyWatched(testCase.artwork.id) }
+                } else {
+                    coVerify { userRepository.removeFromRecentlyWatched(testCase.artwork.id) }
+                }
+
+            }
+
+
         }
     }
 

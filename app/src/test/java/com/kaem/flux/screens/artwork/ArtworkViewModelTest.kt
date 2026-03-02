@@ -1,10 +1,6 @@
 package com.kaem.flux.screens.artwork
 
-import android.util.Log
 import app.cash.turbine.test
-import com.kaem.flux.bases.BaseTest
-import com.kaem.flux.configs.DispatcherConfig
-import com.kaem.flux.configs.LogConfig
 import com.kaem.flux.configs.fluxExtensions
 import com.kaem.flux.data.repository.artwork.ArtworkRepository
 import com.kaem.flux.data.repository.user.UserPreferences
@@ -15,7 +11,6 @@ import com.kaem.flux.model.ScreenState
 import com.kaem.flux.model.artwork.ContentType
 import com.kaem.flux.model.artwork.Status
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.matchers.collections.shouldMatchEach
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.types.shouldBeInstanceOf
@@ -23,9 +18,6 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.test.advanceUntilIdle
-import kotlinx.coroutines.test.runTest
-import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ArtworkViewModelTest : FunSpec({

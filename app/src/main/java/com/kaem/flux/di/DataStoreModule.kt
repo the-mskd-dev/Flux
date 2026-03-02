@@ -3,9 +3,9 @@ package com.kaem.flux.di
 import android.content.Context
 import com.google.gson.Gson
 import com.kaem.flux.data.repository.settings.SettingsRepository
-import com.kaem.flux.data.repository.user.UserRepository
 import com.kaem.flux.data.repository.settings.SettingsRepositoryImpl
 import com.kaem.flux.data.repository.settings.settingsDatastore
+import com.kaem.flux.data.repository.user.UserRepository
 import com.kaem.flux.data.repository.user.UserRepositoryImpl
 import com.kaem.flux.data.repository.user.userDataStore
 import dagger.Module

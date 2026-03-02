@@ -1,7 +1,6 @@
 package com.kaem.flux.screens.player
 
 import app.cash.turbine.test
-import com.kaem.flux.configs.DispatcherConfig
 import com.kaem.flux.configs.fluxExtensions
 import com.kaem.flux.data.repository.settings.SettingsPreferences
 import com.kaem.flux.data.repository.settings.SettingsRepository

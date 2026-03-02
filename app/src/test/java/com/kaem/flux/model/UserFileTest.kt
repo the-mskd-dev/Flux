@@ -4,7 +4,6 @@ import com.kaem.flux.mockups.FilesMockups
 import com.kaem.flux.utils.extensions.groupInFolders
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
-import org.junit.Test
 
 
 class UserFileTest : FunSpec ({

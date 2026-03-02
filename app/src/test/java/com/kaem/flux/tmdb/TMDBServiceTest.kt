@@ -1,15 +1,12 @@
 package com.kaem.flux.tmdb
 
-import com.kaem.flux.bases.ApiTest
 import com.kaem.flux.configs.ApiConfig
 import com.kaem.flux.mockups.TMDBResponseMockups
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
-import kotlinx.coroutines.runBlocking
 import okhttp3.mockwebserver.MockResponse
-import org.junit.Test
 
 class TMDBServiceTest : FunSpec({
 

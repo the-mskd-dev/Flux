@@ -1,22 +1,13 @@
 package com.kaem.flux.screens.search
 
 import app.cash.turbine.test
-import com.kaem.flux.bases.BaseTest
-import com.kaem.flux.configs.DispatcherConfig
-import com.kaem.flux.configs.LogConfig
 import com.kaem.flux.configs.fluxExtensions
 import com.kaem.flux.data.repository.catalog.CatalogRepository
 import com.kaem.flux.mockups.FakeCatalogRepository
 import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.artwork.ContentType
-import io.kotest.core.spec.Extendable
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
-import io.mockk.every
-import io.mockk.mockk
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.test.runTest
-import org.junit.Test
 
 class SearchViewModelTest : FunSpec({
 

@@ -9,6 +9,7 @@ import com.kaem.flux.data.repository.user.UserRepository
 import com.kaem.flux.mockups.FakeArtworkRepository
 import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.artwork.ContentType
+import com.kaem.flux.utils.extensions.minToMs
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData
 import io.kotest.matchers.shouldBe
@@ -16,6 +17,7 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlin.math.roundToLong
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class PlayerViewModelTest : FunSpec({
@@ -98,8 +100,28 @@ class PlayerViewModelTest : FunSpec({
         }
     }
 
-    test("save time") {
-        // TODO
+    context("save time") {
+        withData(
+            nameFn = { it.description },
+            SaveTimeTestCase(
+                description = "Save time",
+                artwork = MediaMockups.movieArtwork,
+                media = MediaMockups.movie,
+                time = MediaMockups.movie.duration.minToMs.times(0.5).roundToLong(),
+                shouldBeRemovedFromRecentlyWatched = false,
+                shouldBeAddedFromRecentlyWatched = true
+            ),
+            SaveTimeTestCase(
+                description = "Save time",
+                artwork = MediaMockups.movieArtwork,
+                media = MediaMockups.movie,
+                time = MediaMockups.movie.duration.minToMs.times(0.95).roundToLong(),
+                shouldBeRemovedFromRecentlyWatched = true,
+                shouldBeAddedFromRecentlyWatched = false
+            )
+        ) { testCase ->
+            //TODO
+        }
     }
 
     test("back tap") {

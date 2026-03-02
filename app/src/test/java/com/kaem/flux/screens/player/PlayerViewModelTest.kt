@@ -9,6 +9,7 @@ import com.kaem.flux.data.repository.user.UserRepository
 import com.kaem.flux.mockups.FakeArtworkRepository
 import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.artwork.ContentType
+import com.kaem.flux.model.artwork.Status
 import com.kaem.flux.utils.extensions.minToMs
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData
@@ -109,7 +110,8 @@ class PlayerViewModelTest : FunSpec({
                 media = MediaMockups.movie,
                 time = MediaMockups.movie.duration.minToMs.times(0.5).roundToLong(),
                 shouldBeRemovedFromRecentlyWatched = false,
-                shouldBeAddedFromRecentlyWatched = true
+                shouldBeAddedFromRecentlyWatched = true,
+                statusExpected = Status.IS_WATCHING
             ),
             SaveTimeTestCase(
                 description = "Save time",
@@ -117,7 +119,8 @@ class PlayerViewModelTest : FunSpec({
                 media = MediaMockups.movie,
                 time = MediaMockups.movie.duration.minToMs.times(0.95).roundToLong(),
                 shouldBeRemovedFromRecentlyWatched = true,
-                shouldBeAddedFromRecentlyWatched = false
+                shouldBeAddedFromRecentlyWatched = false,
+                statusExpected = Status.WATCHED
             )
         ) { testCase ->
             //TODO

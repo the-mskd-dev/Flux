@@ -2,6 +2,7 @@ package com.kaem.flux.screens.player
 
 import com.kaem.flux.model.artwork.Artwork
 import com.kaem.flux.model.artwork.Media
+import com.kaem.flux.model.artwork.Status
 
 data class ShowSettingsTestCase(
     val description: String,
@@ -14,5 +15,6 @@ data class SaveTimeTestCase(
     val media: Media,
     val time: Long,
     val shouldBeRemovedFromRecentlyWatched: Boolean,
-    val shouldBeAddedFromRecentlyWatched: Boolean
+    val shouldBeAddedFromRecentlyWatched: Boolean,
+    val statusExpected: Status
 )

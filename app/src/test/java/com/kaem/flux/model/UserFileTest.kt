@@ -2,14 +2,29 @@ package com.kaem.flux.model
 
 import com.kaem.flux.mockups.FilesMockups
 import com.kaem.flux.utils.extensions.groupInFolders
+import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.shouldBe
 import org.junit.Test
 
 
-class UserFileTest {
+class UserFileTest : FunSpec ({
+
+    fun asserFileProperties(
+        filename: String,
+        expectedTitle: String,
+        expectedYear: Int?,
+        expectedSeason: Int?,
+        expectedEpisode: Int?
+    ) {
+        val mediaInfo = FileProperties.extractFileProperties(filename)
+        expectedTitle.shouldBe(mediaInfo.title, "Title mismatch for file: $filename, found ${mediaInfo.title}")
+        expectedYear.shouldBe(mediaInfo.year, "Year mismatch for file: $filename, found ${mediaInfo.year}")
+        expectedSeason.shouldBe(mediaInfo.season, "Season mismatch for file: $filename, found ${mediaInfo.season}")
+        expectedEpisode.shouldBe(mediaInfo.episode, "Episode mismatch for file: $filename, found ${mediaInfo.episode}")
+    }
 
 
-    @Test
-    fun test_file_name_properties_parsing() {
+    test("test file name properties parsing") {
         // Movies
         asserFileProperties("Spider-man(2001).mp4", "spider man", 2001, null, null)
         asserFileProperties("Pulp Fiction (1994).mkv", "pulp fiction", 1994, null, null)
@@ -32,32 +47,15 @@ class UserFileTest {
         asserFileProperties("Detective-Conan-season1.episode2.mkv", "detective conan", null, 1, 2)
     }
 
-    @Test
-    fun group_files_in_folders() {
+    test("group files in folders") {
 
         val files = FilesMockups.localFiles
 
         val folders = files.groupInFolders()
-
-        assert(folders.size == 3)
-
         val narutoFolder = folders.firstOrNull { it.title == "naruto" }
 
-        assert(narutoFolder?.files?.size == 4)
+        folders.size shouldBe 3
+        narutoFolder?.files?.size shouldBe 4
     }
 
-    private fun asserFileProperties(
-        filename: String,
-        expectedTitle: String,
-        expectedYear: Int?,
-        expectedSeason: Int?,
-        expectedEpisode: Int?
-    ) {
-        val mediaInfo = FileProperties.extractFileProperties(filename)
-        assert(expectedTitle == mediaInfo.title) { "Title mismatch for file: $filename, found ${mediaInfo.title}" }
-        assert(expectedYear == mediaInfo.year) { "Year mismatch for file: $filename, found ${mediaInfo.year}" }
-        assert(expectedSeason == mediaInfo.season) { "Season mismatch for file: $filename, found ${mediaInfo.season}" }
-        assert(expectedEpisode == mediaInfo.episode) { "Episode mismatch for file: $filename, found ${mediaInfo.episode}" }
-    }
-
-}
+})

@@ -5,6 +5,7 @@ import app.cash.turbine.test
 import com.kaem.flux.bases.BaseTest
 import com.kaem.flux.configs.DispatcherConfig
 import com.kaem.flux.configs.LogConfig
+import com.kaem.flux.configs.fluxExtensions
 import com.kaem.flux.data.repository.artwork.ArtworkRepository
 import com.kaem.flux.data.repository.user.UserPreferences
 import com.kaem.flux.data.repository.user.UserRepository
@@ -29,8 +30,7 @@ import org.junit.Test
 @OptIn(ExperimentalCoroutinesApi::class)
 class ArtworkViewModelTest : FunSpec({
 
-    extension(DispatcherConfig())
-    extension(LogConfig())
+    fluxExtensions()
 
     lateinit var viewModel: ArtworkViewModel
     lateinit var artworkRepository: FakeArtworkRepository

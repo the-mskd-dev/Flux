@@ -2,6 +2,7 @@ package com.kaem.flux.screens.player
 
 import app.cash.turbine.test
 import com.kaem.flux.configs.DispatcherConfig
+import com.kaem.flux.configs.fluxExtensions
 import com.kaem.flux.data.repository.settings.SettingsPreferences
 import com.kaem.flux.data.repository.settings.SettingsRepository
 import com.kaem.flux.data.repository.user.UserPreferences
@@ -20,7 +21,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 @OptIn(ExperimentalCoroutinesApi::class)
 class PlayerViewModelTest : FunSpec({
 
-    extension(DispatcherConfig())
+    fluxExtensions()
 
     lateinit var viewModel: PlayerViewModel
     lateinit var artworkRepository: FakeArtworkRepository

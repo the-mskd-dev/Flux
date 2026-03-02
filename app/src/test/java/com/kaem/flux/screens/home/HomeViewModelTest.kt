@@ -4,6 +4,7 @@ import app.cash.turbine.test
 import com.kaem.flux.bases.BaseTest
 import com.kaem.flux.configs.DispatcherConfig
 import com.kaem.flux.configs.LogConfig
+import com.kaem.flux.configs.fluxExtensions
 import com.kaem.flux.data.repository.catalog.CatalogRepository
 import com.kaem.flux.data.repository.firebase.FirebaseRepository
 import com.kaem.flux.data.repository.user.UserPreferences
@@ -30,8 +31,7 @@ import kotlin.time.Duration.Companion.hours
 @OptIn(ExperimentalCoroutinesApi::class)
 class HomeViewModelTest : FunSpec({
 
-    extension(DispatcherConfig())
-    extension(LogConfig())
+    fluxExtensions()
 
     lateinit var viewModel: HomeViewModel
     lateinit var catalogRepository: FakeCatalogRepository

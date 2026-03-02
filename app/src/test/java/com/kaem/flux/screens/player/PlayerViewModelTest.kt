@@ -17,6 +17,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.types.shouldBeInstanceOf
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
@@ -276,7 +277,12 @@ class PlayerViewModelTest : FunSpec({
     }
 
     test("update progress") {
-        // TODO
+        viewModel.event.test {
+            viewModel.handleIntent(PlayerIntent.UpdateProgress(4L))
+            awaitItem().shouldBeInstanceOf<PlayerEvent.UpdateProgress> {
+                it.progress shouldBe 4L
+            }
+        }
     }
 
     test("update tracks") {

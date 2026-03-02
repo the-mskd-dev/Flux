@@ -242,7 +242,15 @@ class PlayerViewModelTest : FunSpec({
     }
 
     test("set playing status") {
-        // TODO
+        viewModel.uiState.test {
+            awaitItem()
+
+            viewModel.handleIntent(PlayerIntent.SetPlayingStatus(isPlaying = true))
+            awaitItem().controls.isPlaying shouldBe true
+
+            viewModel.handleIntent(PlayerIntent.SetPlayingStatus(isPlaying = false))
+            awaitItem().controls.isPlaying shouldBe false
+        }
     }
 
     test("fast rewind") {

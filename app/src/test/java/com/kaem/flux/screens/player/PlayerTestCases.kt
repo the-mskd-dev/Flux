@@ -17,3 +17,8 @@ data class SaveTimeTestCase(
     val shouldBeAddedToRecentlyWatched: Boolean,
     val statusExpected: Status
 )
+
+data class PlayerBackTapTestCase(
+    val description: String,
+    val interfaceShowed: Boolean,
+)

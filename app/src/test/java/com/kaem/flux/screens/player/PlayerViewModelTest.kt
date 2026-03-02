@@ -193,8 +193,45 @@ class PlayerViewModelTest : FunSpec({
         }
     }
 
-    test("back tap") {
-        // TODO
+    context("back tap") {
+        withData(
+            nameFn = { it.description },
+            PlayerBackTapTestCase(
+                description = "Back tap when interface is showed",
+                interfaceShowed = true
+            ),
+            PlayerBackTapTestCase(
+                description = "Back tap when interface is not showed",
+                interfaceShowed = false
+            )
+        ) { testCase ->
+
+            viewModel.uiState.test {
+                awaitItem()
+
+                if (testCase.interfaceShowed) {
+                    viewModel.handleIntent(PlayerIntent.ShowInterface)
+                    awaitItem().controls.showInterface shouldBe true
+                }
+
+                viewModel.event.test {
+                    viewModel.handleIntent(PlayerIntent.OnBackTap(time = null))
+
+                    if (testCase.interfaceShowed) {
+                        expectNoEvents()
+                    } else {
+                        awaitItem() shouldBe PlayerEvent.BackToPreviousScreen
+                    }
+                }
+
+                if (testCase.interfaceShowed) {
+                    awaitItem().controls.showInterface shouldBe false
+                }
+
+                cancelAndIgnoreRemainingEvents()
+            }
+
+        }
     }
 
     test("toggle play button") {

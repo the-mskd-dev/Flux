@@ -306,7 +306,16 @@ class PlayerViewModelTest : FunSpec({
     }
 
     test("play next episode") {
-        //TODO
+        viewModel.uiState.test {
+            awaitItem()
+
+            viewModel.handleIntent(PlayerIntent.PlayNextEpisode(MediaMockups.episode2))
+
+            val state = awaitItem()
+            state.media.shouldNotBeNull {
+                mediaId shouldBe MediaMockups.episode2.mediaId
+            }
+        }
     }
 
 })

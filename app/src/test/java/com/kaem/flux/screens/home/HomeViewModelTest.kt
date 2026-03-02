@@ -2,6 +2,8 @@ package com.kaem.flux.screens.home
 
 import app.cash.turbine.test
 import com.kaem.flux.bases.BaseTest
+import com.kaem.flux.configs.DispatcherConfig
+import com.kaem.flux.configs.LogConfig
 import com.kaem.flux.data.repository.catalog.CatalogRepository
 import com.kaem.flux.data.repository.firebase.FirebaseRepository
 import com.kaem.flux.data.repository.user.UserPreferences
@@ -11,6 +13,8 @@ import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.ScreenState
 import com.kaem.flux.model.artwork.Artwork
 import com.kaem.flux.model.remoteConfig.Message
+import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -24,30 +28,32 @@ import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class HomeViewModelTest : BaseTest() {
+class HomeViewModelTest : FunSpec({
 
-    private lateinit var viewModel: HomeViewModel
-    private lateinit var catalogRepository: FakeCatalogRepository
-    private lateinit var userRepository: UserRepository
+    extension(DispatcherConfig())
+    extension(LogConfig())
 
-    private lateinit var firebaseRepository: FirebaseRepository
+    lateinit var viewModel: HomeViewModel
+    lateinit var catalogRepository: FakeCatalogRepository
+    lateinit var userRepository: UserRepository
+
+    lateinit var firebaseRepository: FirebaseRepository
 
     // Mocked flows
-    private val dataStoreFlow = MutableStateFlow(UserPreferences())
+    val dataStoreFlow = MutableStateFlow(UserPreferences())
 
-    private val messageFlow = MutableStateFlow<Message?>(null)
+    val messageFlow = MutableStateFlow<Message?>(null)
 
-    override fun setUp() {
-        super.setUp()
+    beforeTest {
 
         catalogRepository = FakeCatalogRepository()
 
         userRepository = mockk(relaxed = true) {
-            every { flow } returns this@HomeViewModelTest.dataStoreFlow
+            every { flow } returns dataStoreFlow
         }
 
         firebaseRepository = mockk(relaxed = true) {
-            every { message } returns this@HomeViewModelTest.messageFlow
+            every { message } returns messageFlow
         }
 
         viewModel = HomeViewModel(
@@ -58,23 +64,21 @@ class HomeViewModelTest : BaseTest() {
 
     }
 
-    @Test
-    fun initial_state() = runTest {
+    test("initial state") {
 
         viewModel.uiState.test {
             val initialState = awaitItem()
-            assert(ScreenState.LOADING == initialState.screenState)
-            assert(emptyList<Artwork>() == initialState.artworks)
-            assert(emptyList<Long>() == initialState.lastWatchedMediaIds)
-            assert(initialState.isRefreshing)
+            initialState.screenState shouldBe ScreenState.LOADING
+            initialState.artworks shouldBe emptyList()
+            initialState.lastWatchedMediaIds shouldBe emptyList()
+            initialState.isRefreshing shouldBe true
 
             cancelAndConsumeRemainingEvents()
         }
 
     }
 
-    @Test
-    fun combine_flows_should_update_state() = runTest {
+    test("combine flows should update state") {
 
         // Mock
         val artworks = listOf(MediaMockups.movieArtwork, MediaMockups.showArtwork)
@@ -90,23 +94,19 @@ class HomeViewModelTest : BaseTest() {
             catalogRepository.getCatalog()
             dataStoreFlow.value = dataStore
 
-            advanceUntilIdle()
             val updatedState = expectMostRecentItem()
 
-            assert(ScreenState.CONTENT == updatedState.screenState)
-            assert(artworks == updatedState.artworks)
-            assert(lastWatchedIds == updatedState.lastWatchedMediaIds)
-            assert(!updatedState.isRefreshing)
+            updatedState.screenState shouldBe ScreenState.CONTENT
+            updatedState.artworks shouldBe artworks
+            updatedState.lastWatchedMediaIds shouldBe lastWatchedIds
+            updatedState.isRefreshing shouldBe false
 
             cancelAndConsumeRemainingEvents()
         }
     }
 
-    @Test
-    fun should_force_sync_when_manual_sync_requested() = runTest {
+    test("should force sync when manual sync requested") {
         viewModel.handleIntent(HomeIntent.OnSyncTap(manualSync = true))
-
-        advanceUntilIdle()
 
         coVerify {
             catalogRepository.getCatalog(sync = true)
@@ -115,8 +115,7 @@ class HomeViewModelTest : BaseTest() {
     }
 
 
-    @Test
-    fun should_sync_when_last_sync_was_more_than_1_day_ago() = runTest {
+    test("should sync when last sync was more than 1 day ago") {
         val oldTime = System.currentTimeMillis() - 2.days.inWholeMilliseconds
         coEvery { userRepository.getSyncTime() } returns oldTime
 
@@ -127,16 +126,13 @@ class HomeViewModelTest : BaseTest() {
         )
         viewModel.handleIntent(HomeIntent.OnSyncTap(manualSync = false))
 
-        advanceUntilIdle()
-
         coVerify {
             catalogRepository.getCatalog(sync = true)
             userRepository.setSyncTime(any())
         }
     }
 
-    @Test
-    fun should_not_sync_when_last_sync_was_less_than_1_day_ago() = runTest {
+    test("should not sync when last sync was less than 1 day ago") {
         val recentTime = System.currentTimeMillis() - 12.hours.inWholeMilliseconds
         coEvery { userRepository.getSyncTime() } returns recentTime
 
@@ -150,11 +146,11 @@ class HomeViewModelTest : BaseTest() {
 
         job.join()
 
-        assert(catalogRepository.lastSyncParam == false)
+        catalogRepository.lastSyncParam shouldBe false
 
         coVerify(exactly = 0) {
             userRepository.setSyncTime(any())
         }
     }
 
-}
+})

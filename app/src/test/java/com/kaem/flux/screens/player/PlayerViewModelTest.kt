@@ -235,7 +235,10 @@ class PlayerViewModelTest : FunSpec({
     }
 
     test("toggle play button") {
-        // TODO
+        viewModel.event.test {
+            viewModel.handleIntent(PlayerIntent.TogglePlayButton)
+            awaitItem() shouldBe PlayerEvent.TogglePlayButton
+        }
     }
 
     test("set playing status") {

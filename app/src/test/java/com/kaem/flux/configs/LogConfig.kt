@@ -6,7 +6,7 @@ import io.kotest.core.spec.Spec
 import io.mockk.every
 import io.mockk.mockkStatic
 
-class LogConfig() : TestListener {
+class LogConfig : TestListener {
 
     override suspend fun beforeSpec(spec: Spec) {
         mockkStatic(Log::class)

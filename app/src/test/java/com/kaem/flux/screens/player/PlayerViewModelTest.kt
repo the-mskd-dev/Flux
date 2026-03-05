@@ -306,8 +306,41 @@ class PlayerViewModelTest : FunSpec({
         }
     }
 
-    test("select track") {
-        // TODO
+    context("select track") {
+
+        withData(
+            nameFn = { it.description },
+            SelectTrackTestCase(
+                description = "Select subtitle",
+                track = PlayerMockups.Subtitles.english
+            ),
+            SelectTrackTestCase(
+                description = "Select audio",
+                track = PlayerMockups.Audio.english
+            ),
+        ) { testCase ->
+
+            viewModel.uiState.test {
+
+                awaitItem()
+
+                viewModel.event.test {
+                    viewModel.handleIntent(PlayerIntent.SelectTrack(testCase.track))
+
+                    val event = awaitItem()
+                    event shouldBe PlayerEvent.SelectTrack(testCase.track)
+                }
+
+                if (testCase.track.type == PlayerTrack.Type.SUBTITLES) {
+                    coVerify { settingsRepository.setSubtitlesLanguage(any()) }
+                } else {
+                    coVerify { settingsRepository.setAudioLanguage(any()) }
+                }
+
+            }
+
+        }
+
     }
 
     test("on track selected") {

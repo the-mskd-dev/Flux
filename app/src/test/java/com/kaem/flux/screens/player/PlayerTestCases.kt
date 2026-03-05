@@ -30,3 +30,9 @@ data class ShowNextEpisodeTestCase(
     val show: Boolean,
     val expectedNexTButton: PlayerUiState.NextButton
 )
+
+data class SelectTrackTestCase(
+    val description: String,
+    val track: PlayerTrack,
+
+)

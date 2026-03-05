@@ -22,11 +22,9 @@ import io.kotest.matchers.types.shouldBeInstanceOf
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.math.roundToLong
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class PlayerViewModelTest : FunSpec({
 
     fluxExtensions()

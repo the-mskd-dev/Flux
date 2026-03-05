@@ -33,16 +33,20 @@ class PlayerViewModelTest : FunSpec({
 
     lateinit var viewModel: PlayerViewModel
     lateinit var artworkRepository: FakeArtworkRepository
-    var userRepository: UserRepository = mockk(relaxed = true)
-    var settingsRepository: SettingsRepository = mockk(relaxed = true)
+    lateinit var userRepository: UserRepository
+    lateinit var settingsRepository: SettingsRepository
 
     beforeTest {
 
         artworkRepository = FakeArtworkRepository(initialContentType = ContentType.SHOW)
 
-        every { userRepository.flow } returns MutableStateFlow(UserPreferences())
+        userRepository = mockk(relaxed = true) {
+            every { flow } returns MutableStateFlow(UserPreferences())
+        }
 
-        every { settingsRepository.flow } returns MutableStateFlow(SettingsPreferences())
+        settingsRepository = mockk(relaxed = true) {
+            every { flow } returns MutableStateFlow(SettingsPreferences())
+        }
 
         viewModel = PlayerViewModel(
             mediaId = MediaMockups.episode1.mediaId,
@@ -160,6 +164,7 @@ class PlayerViewModelTest : FunSpec({
             )
         ) { testCase ->
 
+            // Given
             artworkRepository.setContentType(if (testCase.media is Movie) ContentType.MOVIE else ContentType.SHOW)
 
             viewModel = PlayerViewModel(

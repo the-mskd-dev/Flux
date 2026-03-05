@@ -297,8 +297,56 @@ class PlayerViewModelTest : FunSpec({
         // TODO
     }
 
-    test("show next episode") {
-        // TODO
+    context("show next episode") {
+        withData(
+            nameFn = { it.description },
+            ShowNextEpisodeTestCase(
+                description = "Next episode exists",
+                currentEpisode = MediaMockups.episode1,
+                show = true,
+                expectedNexTButton = PlayerUiState.NextButton.Showed(episode = MediaMockups.episode2)
+            ),
+            ShowNextEpisodeTestCase(
+                description = "Next episode doesn't exist",
+                currentEpisode = MediaMockups.episodes.lastEpisode,
+                show = true,
+                expectedNexTButton = PlayerUiState.NextButton.Hidden
+            ),
+            ShowNextEpisodeTestCase(
+                description = "Hide next episode",
+                currentEpisode = MediaMockups.episode1,
+                show = false,
+                expectedNexTButton = PlayerUiState.NextButton.Hidden
+            ),
+        ) { testCase ->
+
+            artworkRepository.setContentType(ContentType.SHOW)
+
+            viewModel = PlayerViewModel(
+                mediaId = testCase.currentEpisode.mediaId,
+                artworkRepository = artworkRepository,
+                userRepository = userRepository,
+                settingsRepository = settingsRepository
+            )
+
+            viewModel.uiState.test {
+
+                val initialState = awaitItem()
+
+                viewModel.handleIntent(PlayerIntent.ShowNextEpisode(show = testCase.show))
+
+                if (initialState.controls.nextButton != testCase.expectedNexTButton) {
+                    val finalState = awaitItem()
+                    finalState.controls.nextButton shouldBe testCase.expectedNexTButton
+                } else {
+                    expectNoEvents()
+                    initialState.controls.nextButton shouldBe testCase.expectedNexTButton
+                }
+
+            }
+
+        }
+
     }
 
     test("cancel next episode") {

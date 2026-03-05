@@ -1,6 +1,7 @@
 package com.kaem.flux.screens.player
 
 import com.kaem.flux.model.artwork.Artwork
+import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.model.artwork.Media
 import com.kaem.flux.model.artwork.Status
 
@@ -21,4 +22,11 @@ data class SaveTimeTestCase(
 data class PlayerBackTapTestCase(
     val description: String,
     val interfaceShowed: Boolean,
+)
+
+data class ShowNextEpisodeTestCase(
+    val description: String,
+    val currentEpisode: Episode,
+    val show: Boolean,
+    val expectedNexTButton: PlayerUiState.NextButton
 )

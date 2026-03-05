@@ -43,8 +43,7 @@ import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.rememberPermissionState
 import com.kaem.flux.R
 import com.kaem.flux.ui.component.FluxButton
-import com.kaem.flux.ui.component.MediumText
-import com.kaem.flux.ui.component.Title
+import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.Ui
 import kotlinx.coroutines.launch
 
@@ -62,13 +61,32 @@ fun WelcomeScreen(
     val pagerState = rememberPagerState(0) { presentations.size }
     val backgroundImage = when (pagerState.currentPage) {
         0 -> R.drawable.home_screen
-        1 -> R.drawable.artwork_screen
+        1 -> R.drawable.media_screen
         else -> R.drawable.search_screen
     }
 
     BackHandler(enabled = pagerState.currentPage > 0) {
         scope.launch { pagerState.animateScrollToPage(pagerState.currentPage - 1) }
     }
+
+    WelcomeContent(
+        backgroundImage = backgroundImage,
+        pagerState = pagerState,
+        presentations = presentations,
+        onPermissionsTap = onPermissionsTap,
+        onIndexChange = { scope.launch { pagerState.animateScrollToPage(it) } }
+    )
+
+}
+
+@Composable
+fun WelcomeContent(
+    backgroundImage: Int,
+    pagerState: PagerState,
+    presentations: List<Pair<String, String>>,
+    onPermissionsTap: () -> Unit,
+    onIndexChange: (Int) -> Unit
+) {
 
     ConstraintLayout(
         modifier = Modifier.fillMaxSize()
@@ -91,13 +109,13 @@ fun WelcomeScreen(
 
         WelcomePager(
             modifier = Modifier.constrainAs(descriptions) {
-                    top.linkTo(parent.top)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                    bottom.linkTo(guideline)
-                    height = Dimension.fillToConstraints
-                    width = Dimension.fillToConstraints
-                },
+                top.linkTo(parent.top)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+                bottom.linkTo(guideline)
+                height = Dimension.fillToConstraints
+                width = Dimension.fillToConstraints
+            },
             pagerState = pagerState,
             presentations = presentations
         )
@@ -111,7 +129,7 @@ fun WelcomeScreen(
             },
             index = pagerState.currentPage,
             lastIndex = presentations.lastIndex,
-            onIndexChange = { scope.launch { pagerState.animateScrollToPage(it) } },
+            onIndexChange = onIndexChange,
             onPermissionsTap = onPermissionsTap
         )
 
@@ -217,13 +235,13 @@ fun WelcomeItem(
             verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE)
         ) {
 
-            Title(
+            Text.Headline.Large(
                 modifier = Modifier.fillMaxWidth(),
                 text = title,
                 color = textColor
             )
 
-            MediumText(
+            Text.Body.Large(
                 modifier = Modifier.fillMaxWidth(),
                 text = description,
                 color = textColor

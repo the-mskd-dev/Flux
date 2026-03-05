@@ -3,8 +3,10 @@ package com.kaem.flux.screens.howTo
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -16,73 +18,93 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.kaem.flux.R
-import com.kaem.flux.ui.component.BoldText
-import com.kaem.flux.ui.component.FluxTopBar
-import com.kaem.flux.ui.component.MediumText
+import com.kaem.flux.ui.component.FluxScaffold
+import com.kaem.flux.ui.component.Text
+import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
 
 @Composable
-fun HowToScreen(onBackButtonTap: () -> Unit) {
+fun HowToScreen(onBack: () -> Unit) {
 
-    Column(
-        modifier = Modifier
-            .background(MaterialTheme.colorScheme.background)
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE),
-        horizontalAlignment = Alignment.Start
-    ) {
-
-        FluxTopBar(
-            text = stringResource(R.string.how_to_name_files),
-            onBackButtonTap = onBackButtonTap
-        )
+    FluxScaffold(
+        title = stringResource(R.string.how_to_name_files),
+        onBackTap = onBack
+    ) { innerPadding ->
 
         Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = Ui.Space.MEDIUM),
+                .background(MaterialTheme.colorScheme.background)
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE),
             horizontalAlignment = Alignment.Start
         ) {
 
-            MediumText(text = stringResource(R.string.how_to_name_files_desc))
+            Spacer(modifier = Modifier.height(innerPadding.calculateTopPadding()))
 
-            Column(verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = Ui.Space.MEDIUM),
+                verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE),
+                horizontalAlignment = Alignment.Start
+            ) {
 
-                BoldText(text = stringResource(R.string.how_to_name_files_movies))
-                MediumText(text = stringResource(R.string.how_to_name_files_movies_desc))
+                Text.Body.Large(text = stringResource(R.string.how_to_name_files_desc))
 
-                Column(
-                    modifier = Modifier.alpha(.6f),
-                    verticalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)
-                ) {
-                    MediumText(text = "• " + stringResource(R.string.movie_file_example_1))
-                    MediumText(text = "• " + stringResource(R.string.movie_file_example_2))
-                    MediumText(text = "• " + stringResource(R.string.movie_file_example_3))
-
-                }
+                HowToNameFiles()
 
             }
 
-            Column(verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)) {
+            Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding()))
 
-                BoldText(text = stringResource(R.string.how_to_name_files_show))
-                MediumText(text = stringResource(R.string.how_to_name_files_show_desc))
+        }
 
-                Column(
-                    modifier = Modifier.alpha(.6f),
-                    verticalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)
-                ) {
-                    MediumText(text = "• " + stringResource(R.string.show_file_example_1))
-                    MediumText(text = "• " + stringResource(R.string.show_file_example_2))
-                    MediumText(text = "• " + stringResource(R.string.show_file_example_3))
-                    MediumText(text = "• " + stringResource(R.string.show_file_example_4))
-                    MediumText(text = "• " + stringResource(R.string.show_file_example_5))
-                }
+    }
+
+}
+
+@Composable
+fun HowToNameFiles() {
+
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE),
+        horizontalAlignment = Alignment.Start
+    ) {
+
+        Column(verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)) {
+
+            Text.Title.Large(text = stringResource(R.string.movies), emphasized = true)
+            Text.Body.Large(text = stringResource(R.string.how_to_name_files_movies_desc))
+
+            Column(
+                modifier = Modifier.alpha(.7f),
+                verticalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)
+            ) {
+                Text.Body.Medium(text = "• " + stringResource(R.string.movie_file_example_1))
+                Text.Body.Medium(text = "• " + stringResource(R.string.movie_file_example_2))
+                Text.Body.Medium(text = "• " + stringResource(R.string.movie_file_example_3))
 
             }
 
+        }
+
+        Column(verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)) {
+
+            Text.Title.Large(text = stringResource(R.string.shows), emphasized = true)
+            Text.Body.Large(text = stringResource(R.string.how_to_name_files_show_desc))
+
+            Column(
+                modifier = Modifier.alpha(.7f),
+                verticalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)
+            ) {
+                Text.Body.Medium(text = "• " + stringResource(R.string.show_file_example_1))
+                Text.Body.Medium(text = "• " + stringResource(R.string.show_file_example_2))
+                Text.Body.Medium(text = "• " + stringResource(R.string.show_file_example_3))
+                Text.Body.Medium(text = "• " + stringResource(R.string.show_file_example_4))
+                Text.Body.Medium(text = "• " + stringResource(R.string.show_file_example_5))
+            }
 
         }
 
@@ -93,5 +115,7 @@ fun HowToScreen(onBackButtonTap: () -> Unit) {
 @Preview
 @Composable
 fun HowToScreen_Preview() {
-    HowToScreen(onBackButtonTap = {})
+    AppTheme {
+        HowToScreen(onBack = {})
+    }
 }

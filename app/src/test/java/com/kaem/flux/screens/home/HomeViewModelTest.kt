@@ -1,142 +1,148 @@
 package com.kaem.flux.screens.home
 
 import app.cash.turbine.test
-import com.kaem.flux.bases.BaseTest
-import com.kaem.flux.data.repository.DataStoreRepository
-import com.kaem.flux.data.repository.FluxDataStore
-import com.kaem.flux.data.repository.LibraryContent
-import com.kaem.flux.data.repository.LibraryRepository
-import com.kaem.flux.mockups.ArtworkMockups
+import com.kaem.flux.configs.fluxExtensions
+import com.kaem.flux.data.repository.firebase.FirebaseRepository
+import com.kaem.flux.data.repository.user.UserPreferences
+import com.kaem.flux.data.repository.user.UserRepository
+import com.kaem.flux.mockups.FakeCatalogRepository
+import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.ScreenState
-import com.kaem.flux.model.artwork.ArtworkOverview
+import com.kaem.flux.model.remoteConfig.Message
+import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.shouldBe
+import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.test.advanceUntilIdle
-import kotlinx.coroutines.test.runTest
-import org.junit.Test
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class HomeViewModelTest : BaseTest() {
+class HomeViewModelTest : FunSpec({
 
-    private lateinit var viewModel: HomeViewModel
-    private lateinit var libraryRepository: LibraryRepository
-    private lateinit var dataStoreRepository: DataStoreRepository
+    fluxExtensions()
+
+    lateinit var viewModel: HomeViewModel
+    lateinit var catalogRepository: FakeCatalogRepository
+    lateinit var userRepository: UserRepository
+
+    lateinit var firebaseRepository: FirebaseRepository
 
     // Mocked flows
-    private val libraryFlow = MutableStateFlow(LibraryContent())
-    private val dataStoreFlow = MutableStateFlow(FluxDataStore())
+    val dataStoreFlow = MutableStateFlow(UserPreferences())
 
-    override fun setUp() {
-        super.setUp()
+    val messageFlow = MutableStateFlow<Message?>(null)
 
-        libraryRepository = mockk(relaxed = true) {
-            every { libraryFlow } returns this@HomeViewModelTest.libraryFlow
+    beforeTest {
+
+        catalogRepository = FakeCatalogRepository()
+
+        userRepository = mockk(relaxed = true) {
+            every { flow } returns dataStoreFlow
         }
 
-        dataStoreRepository = mockk(relaxed = true) {
-            every { flow } returns this@HomeViewModelTest.dataStoreFlow
-            every { getSyncTime() } returns 0L
+        firebaseRepository = mockk(relaxed = true) {
+            every { message } returns messageFlow
         }
 
-        viewModel = HomeViewModel(libraryRepository, dataStoreRepository)
+        viewModel = HomeViewModel(
+            repository = catalogRepository,
+            userRepository = userRepository,
+            firebaseRepository = firebaseRepository
+        )
+
     }
 
-    @Test
-    fun `initial state`() = runTest {
+    test("initial state") {
 
         viewModel.uiState.test {
             val initialState = awaitItem()
-            assert(ScreenState.LOADING == initialState.screenState)
-            assert(emptyList<ArtworkOverview>() == initialState.overviews)
-            assert(emptyList<Long>() == initialState.lastWatchedArtworkIds)
-            assert(initialState.isSyncing)
+            initialState.screenState shouldBe ScreenState.LOADING
+            initialState.artworks shouldBe emptyList()
+            initialState.lastWatchedMediaIds shouldBe emptyList()
+            initialState.isRefreshing shouldBe true
 
             cancelAndConsumeRemainingEvents()
         }
 
     }
 
-    @Test
-    fun `combine flows should update state`() = runTest {
+    test("combine flows should update state") {
 
         // Mock
-        val overviews = listOf(ArtworkMockups.movieOverview, ArtworkMockups.showOverview)
-        val lastWatchedIds = listOf(ArtworkMockups.showOverview.id)
-        val libraryContent = LibraryContent(
-            isLoading = false,
-            artworkOverviews = overviews
-        )
-        val dataStore = FluxDataStore(
-            watchedIds = lastWatchedIds
+        val artworks = listOf(MediaMockups.movieArtwork, MediaMockups.showArtwork)
+        val lastWatchedIds = listOf(MediaMockups.showArtwork.id)
+        val dataStore = UserPreferences(
+            recentlyWatchedIds = lastWatchedIds
         )
 
         viewModel.uiState.test {
+
             awaitItem() // Ignore initial state
 
-            libraryFlow.value = libraryContent
+            catalogRepository.getCatalog()
             dataStoreFlow.value = dataStore
 
-            val updatedState = awaitItem()
+            val updatedState = expectMostRecentItem()
 
-            assert(ScreenState.CONTENT == updatedState.screenState)
-            assert(overviews == updatedState.overviews)
-            assert(lastWatchedIds == updatedState.lastWatchedArtworkIds)
-            assert(!updatedState.isSyncing)
+            updatedState.screenState shouldBe ScreenState.CONTENT
+            updatedState.artworks shouldBe artworks
+            updatedState.lastWatchedMediaIds shouldBe lastWatchedIds
+            updatedState.isRefreshing shouldBe false
 
             cancelAndConsumeRemainingEvents()
         }
     }
 
-    @Test
-    fun `should force sync when manual sync requested`() = runTest {
-        viewModel.getLibrary(manualSync = true)
-
-        advanceUntilIdle()
+    test("should force sync when manual sync requested") {
+        viewModel.handleIntent(HomeIntent.OnSyncTap(manualSync = true))
 
         coVerify {
-            libraryRepository.getLibrary(sync = true)
-            dataStoreRepository.setSyncTime(any())
+            catalogRepository.getCatalog(sync = true)
+            userRepository.setSyncTime(any())
         }
     }
 
 
-    @Test
-    fun `should sync when last sync was more than 1 day ago`() = runTest {
+    test("should sync when last sync was more than 1 day ago") {
         val oldTime = System.currentTimeMillis() - 2.days.inWholeMilliseconds
-        every { dataStoreRepository.getSyncTime() } returns oldTime
+        coEvery { userRepository.getSyncTime() } returns oldTime
 
-        viewModel = HomeViewModel(libraryRepository, dataStoreRepository)
-        viewModel.getLibrary(manualSync = false)
-
-        advanceUntilIdle()
+        viewModel = HomeViewModel(
+            repository = catalogRepository,
+            userRepository = userRepository,
+            firebaseRepository = firebaseRepository
+        )
+        viewModel.handleIntent(HomeIntent.OnSyncTap(manualSync = false))
 
         coVerify {
-            libraryRepository.getLibrary(sync = true)
-            dataStoreRepository.setSyncTime(any())
+            catalogRepository.getCatalog(sync = true)
+            userRepository.setSyncTime(any())
         }
     }
 
-    @Test
-    fun `should not sync when last sync was less than 1 day ago`() = runTest {
+    test("should not sync when last sync was less than 1 day ago") {
         val recentTime = System.currentTimeMillis() - 12.hours.inWholeMilliseconds
-        every { dataStoreRepository.getSyncTime() } returns recentTime
+        coEvery { userRepository.getSyncTime() } returns recentTime
 
-        viewModel = HomeViewModel(libraryRepository, dataStoreRepository)
-        viewModel.getLibrary(manualSync = false)
+        viewModel = HomeViewModel(
+            repository = catalogRepository,
+            userRepository = userRepository,
+            firebaseRepository = firebaseRepository
+        )
 
-        advanceUntilIdle()
+        val job = viewModel.handleIntent(HomeIntent.OnSyncTap(manualSync = false))
 
-        coVerify {
-            libraryRepository.getLibrary(sync = false)
-        }
+        job.join()
+
+        catalogRepository.lastSyncParam shouldBe false
+
         coVerify(exactly = 0) {
-            dataStoreRepository.setSyncTime(any())
+            userRepository.setSyncTime(any())
         }
     }
 
-}
+})

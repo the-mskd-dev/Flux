@@ -1,171 +1,113 @@
 package com.kaem.flux
 
-import android.graphics.Color
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavType
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
-import com.kaem.flux.data.repository.DataStoreRepository
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
+import androidx.navigation3.ui.NavDisplay
+import com.kaem.flux.navigation.Route
+import com.kaem.flux.navigation.Transition
 import com.kaem.flux.screens.about.AboutScreen
 import com.kaem.flux.screens.artwork.ArtworkScreen
-import com.kaem.flux.screens.category.CategoryScreen
 import com.kaem.flux.screens.home.HomeScreen
 import com.kaem.flux.screens.howTo.HowToScreen
+import com.kaem.flux.screens.player.PlayerScreen
 import com.kaem.flux.screens.search.SearchScreen
 import com.kaem.flux.screens.settings.SettingsScreen
-import com.kaem.flux.ui.theme.FluxTheme
-import com.kaem.flux.ui.theme.Ui
-import com.kaem.flux.utils.Constants
-import com.kaem.flux.utils.FluxNavHost
+import com.kaem.flux.ui.theme.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    @Inject lateinit var dataStoreRepository: DataStoreRepository
-    private var uiTheme by mutableStateOf(Ui.THEME.SYSTEM)
+    @Inject lateinit var viewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        enableEdgeToEdge(SystemBarStyle.dark(Color.TRANSPARENT))
-        observeDataStore()
+        enableEdgeToEdge()
 
         setContent {
 
-            FluxTheme(theme = uiTheme) {
+            val settings by viewModel.settings.collectAsStateWithLifecycle()
 
-                val navController = rememberNavController()
-                
-                FluxNavHost(
+            AppTheme(theme = settings.uiTheme) {
+
+                val backStack = rememberNavBackStack(Route.Library)
+
+                NavDisplay(
                     modifier = Modifier
                         .fillMaxSize()
                         .background(color = MaterialTheme.colorScheme.background),
-                    navController = navController,
-                    startDestination = Constants.Navigation.LIBRARY
-                ) {
-
-                    composable(Constants.Navigation.LIBRARY) {
-                        HomeScreen(
-                            navigateToDetails = {
-                                navController.navigate(
-                                    route = "${Constants.Navigation.ARTWORK}/$it"
-                                )
-                            },
-                            navigateToCategory = {
-                                navController.navigate(
-                                    route = "${Constants.Navigation.CATEGORY}/${it.name}"
-                                )
-                            },
-                            navigateToSearch = {
-                                navController.navigate(
-                                    route = Constants.Navigation.SEARCH
-                                )
-                            },
-                            navigateToHowTo = {
-                                navController.navigate(
-                                    route = Constants.Navigation.HOW_TO
-                                )
-                            },
-                            navigateToSettings = {
-                                navController.navigate(
-                                    route = Constants.Navigation.SETTINGS
-                                )
-                            }
-                        )
+                    backStack = backStack,
+                    onBack = { backStack.removeLastOrNull() },
+                    entryDecorators = listOf(
+                        rememberSaveableStateHolderNavEntryDecorator(),
+                        rememberViewModelStoreNavEntryDecorator()
+                    ),
+                    transitionSpec = { Transition.Forward },
+                    popTransitionSpec = { Transition.Backward },
+                    predictivePopTransitionSpec = { Transition.Backward },
+                    entryProvider = entryProvider {
+                        entry<Route.Library> {
+                            HomeScreen(
+                                navigate = { route -> backStack.add(route) },
+                            )
+                        }
+                        entry<Route.Artwork> { entry ->
+                            ArtworkScreen(
+                                navigate = { route -> backStack.add(route) },
+                                onBack = { backStack.removeLastOrNull() },
+                                mediaId = entry.artworkId
+                            )
+                        }
+                        entry<Route.Search> { entry ->
+                            SearchScreen(
+                                navigate = { route -> backStack.add(route) },
+                                onBack = { backStack.removeLastOrNull() },
+                                contentType = entry.contentType
+                            )
+                        }
+                        entry<Route.Player> { entry ->
+                            PlayerScreen(
+                                mediaId = entry.mediaId,
+                                onBack = { backStack.removeLastOrNull() },
+                            )
+                        }
+                        entry<Route.Settings> {
+                            SettingsScreen(
+                                navigate = { route -> backStack.add(route) },
+                                onBack = { backStack.removeLastOrNull() },
+                            )
+                        }
+                        entry<Route.HowTo> {
+                            HowToScreen(
+                                onBack = { backStack.removeLastOrNull() }
+                            )
+                        }
+                        entry<Route.About> {
+                            AboutScreen(
+                                onBack = { backStack.removeLastOrNull() }
+                            )
+                        }
                     }
-
-                    composable(
-                        "${Constants.Navigation.ARTWORK}/{artworkId}",
-                        arguments = listOf(navArgument("artworkId") { type = NavType.LongType }),
-                    ) {
-                        ArtworkScreen(
-                            onBackButtonTap = { navController.popBackStack() }
-                        )
-                    }
-
-                    composable(
-                        "${Constants.Navigation.CATEGORY}/{contentType}",
-                        arguments = listOf(navArgument("contentType") { type = NavType.StringType }),
-                    ) {
-                        CategoryScreen(
-                            onBackButtonTap = { navController.popBackStack() },
-                            navigateToDetails = {
-                                navController.navigate(
-                                    route = "${Constants.Navigation.ARTWORK}/$it"
-                                )
-                            }
-                        )
-                    }
-
-                    composable(Constants.Navigation.SEARCH) {
-                        SearchScreen(
-                            onBackButtonTap = { navController.popBackStack() },
-                            navigateToDetails = {
-                                navController.navigate(
-                                    route = "${Constants.Navigation.ARTWORK}/$it"
-                                )
-                            }
-                        )
-                    }
-
-                    composable(Constants.Navigation.SETTINGS) {
-                        SettingsScreen(
-                            onBackButtonTap = { navController.popBackStack() },
-                            navigateToHowToScreen = {
-                                navController.navigate(
-                                    route = Constants.Navigation.HOW_TO
-                                )
-                            },
-                            navigateToAboutScreen = {
-                                navController.navigate(
-                                    route = Constants.Navigation.ABOUT
-                                )
-                            }
-                        )
-                    }
-
-                    composable(Constants.Navigation.HOW_TO) {
-                        HowToScreen(
-                            onBackButtonTap = { navController.popBackStack() }
-                        )
-                    }
-
-                    composable(Constants.Navigation.ABOUT) {
-                        AboutScreen(
-                            onBackButtonTap = { navController.popBackStack() }
-                        )
-                    }
-
-                }
+                )
 
             }
 
         }
 
-    }
-
-    private fun observeDataStore() {
-        lifecycleScope.launch {
-            dataStoreRepository.flow.collect {
-                uiTheme = it.uiTheme
-            }
-        }
     }
 
 }

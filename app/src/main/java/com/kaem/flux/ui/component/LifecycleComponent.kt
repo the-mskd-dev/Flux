@@ -9,6 +9,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 
 @Composable
 fun LifecycleComponent(
+    onDispose: () -> Unit = {},
     onBackground: () -> Unit = {},
     onForeground: () -> Unit = {}
 ) {
@@ -33,6 +34,7 @@ fun LifecycleComponent(
 
         onDispose {
             lifecycleOwner.lifecycle.removeObserver(observer)
+            onDispose()
         }
     }
 }

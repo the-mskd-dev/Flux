@@ -1,6 +1,7 @@
 package com.kaem.flux.utils.extensions
 
 import android.util.Log
+import com.kaem.flux.utils.Constants
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -25,3 +26,7 @@ fun String.parseTMDBDate() : Date? {
 fun String?.uppercaseFirstLetter() : String? {
     return this?.replaceFirstChar { if (it.isLowerCase()) it. titlecase(Locale.getDefault()) else it.toString() }
 }
+
+val String.tmdbImage : String get() = Constants.TMDB.IMAGE + this
+
+val String.tmdbImageLarge : String get() = Constants.TMDB.IMAGE_LARGE + this

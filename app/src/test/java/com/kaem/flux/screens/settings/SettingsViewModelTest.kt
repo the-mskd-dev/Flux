@@ -1,143 +1,142 @@
 package com.kaem.flux.screens.settings
 
 import app.cash.turbine.test
-import com.kaem.flux.bases.BaseTest
-import com.kaem.flux.data.repository.DataStoreRepository
-import com.kaem.flux.data.repository.FluxDataStore
+import com.kaem.flux.configs.fluxExtensions
+import com.kaem.flux.data.repository.settings.SettingsPreferences
+import com.kaem.flux.data.repository.settings.SettingsRepository
 import com.kaem.flux.ui.theme.Ui
+import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
+import io.kotest.matchers.types.shouldBeInstanceOf
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.test.advanceUntilIdle
-import kotlinx.coroutines.test.runTest
-import org.junit.Test
-import java.util.Locale
 
-class SettingsViewModelTest : BaseTest() {
+class SettingsViewModelTest : FunSpec({
 
-    private lateinit var viewModel: SettingsViewModel
-    private lateinit var dataStoreRepository: DataStoreRepository
+    fluxExtensions()
 
-    private val dataStoreFlow = MutableStateFlow(FluxDataStore())
+    lateinit var viewModel: SettingsViewModel
+    lateinit var settingsRepository: SettingsRepository
 
-    override fun setUp() {
-        super.setUp()
+    val dataStoreFlow = MutableStateFlow(SettingsPreferences())
 
-        dataStoreRepository = mockk(relaxed = true) {
+    beforeTest {
+
+        settingsRepository = mockk(relaxed = true) {
             every { flow } returns dataStoreFlow
         }
 
-        viewModel = SettingsViewModel(dataStoreRepository)
+        viewModel = SettingsViewModel(settingsRepository = settingsRepository)
+
     }
 
-    @Test
-    fun `initial state`() = runTest {
+    test("initial state") {
         viewModel.uiState.test {
             val initialState = awaitItem()
-            assert(10 == initialState.backwardValue)
-            assert(!initialState.showBackwardDialog)
-            assert(10 == initialState.forwardValue)
-            assert(!initialState.showForwardDialog)
-            assert(Ui.THEME.SYSTEM == initialState.uiTheme)
-            assert(!initialState.showUiThemeDialog)
-            assert(Locale.getDefault() == initialState.subtitlesLanguage)
-            assert(!initialState.showSubtitlesLanguage)
+            initialState.rewindValue shouldBe 10
+            initialState.forwardValue shouldBe 10
+            initialState.uiTheme shouldBe Ui.THEME.SYSTEM
+            initialState.dialogState shouldBe null
         }
     }
 
-    @Test
-    fun `show backward dialog`() = runTest {
-        viewModel.showBackwardDialog(true)
+    test("show rewind dialog") {
         viewModel.uiState.test {
+
+            awaitItem()
+            viewModel.handleIntent(SettingsIntent.ShowRewindDialog)
+
             val state = awaitItem()
-            assert(state.showBackwardDialog)
+            state.dialogState shouldNotBe null
+            state.dialogState.shouldBeInstanceOf<SettingsDialogState<Int>>().should {
+                it.currentValue.shouldBeInstanceOf<Int>()
+            }
+
         }
     }
 
-    @Test
-    fun `show forward dialog`() = runTest {
-        viewModel.showForwardDialog(true)
+    test("show forward dialog") {
         viewModel.uiState.test {
+
+            awaitItem()
+            viewModel.handleIntent(SettingsIntent.ShowForwardDialog)
+
             val state = awaitItem()
-            assert(state.showForwardDialog)
+            state.dialogState shouldNotBe null
+            state.dialogState.shouldBeInstanceOf<SettingsDialogState<Int>>().should {
+                it.currentValue.shouldBeInstanceOf<Int>()
+            }
+
         }
     }
 
-    @Test
-    fun `show ui theme dialog`() = runTest {
-        viewModel.showUiThemeDialog(true)
+    test("show ui theme dialog") {
         viewModel.uiState.test {
+
+            awaitItem()
+            viewModel.handleIntent(SettingsIntent.ShowThemeDialog)
+
             val state = awaitItem()
-            assert(state.showUiThemeDialog)
+            state.dialogState shouldNotBe null
+            state.dialogState.shouldBeInstanceOf<SettingsDialogState<Ui.THEME>>().should {
+                it.currentValue.shouldBeInstanceOf<Ui.THEME>()
+            }
         }
     }
 
-    @Test
-    fun `show subtitles language dialog`() = runTest {
-        viewModel.showSubtitlesLanguageDialog(true)
-        viewModel.uiState.test {
-            val state = awaitItem()
-            assert(state.showSubtitlesLanguage)
-        }
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
-    fun `set backward value`() = runTest {
+    test("set rewind value") {
         viewModel.uiState.test {
             awaitItem()
 
-            viewModel.setBackwardValue(20)
-            dataStoreFlow.value = dataStoreFlow.value.copy(playerBackwardValue = 20)
-            advanceUntilIdle()
+            viewModel.handleIntent(SettingsIntent.SetRewindValue(20))
+            dataStoreFlow.value = dataStoreFlow.value.copy(playerRewindValue = 20)
 
             val state = awaitItem()
 
-            coVerify { dataStoreRepository.setPlayerBackwardValue(20) }
-            assert(20 == state.backwardValue)
+            coVerify { settingsRepository.setPlayerRewindValue(20) }
+            state.rewindValue shouldBe 20
+            state.dialogState shouldBe null
 
             cancelAndConsumeRemainingEvents()
 
         }
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
-    fun `set forward value`() = runTest {
+    test("set_forward_value") {
         viewModel.uiState.test {
             awaitItem()
 
-            viewModel.setForwardValue(20)
+            viewModel.handleIntent(SettingsIntent.SetForwardValue(20))
             dataStoreFlow.value = dataStoreFlow.value.copy(playerForwardValue = 20)
-            advanceUntilIdle()
 
             val state = awaitItem()
 
-            coVerify { dataStoreRepository.setPlayerForwardValue(20) }
-            assert(20 == state.forwardValue)
+            coVerify { settingsRepository.setPlayerForwardValue(20) }
+            state.forwardValue shouldBe 20
+            state.dialogState shouldBe null
 
             cancelAndConsumeRemainingEvents()
 
         }
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
-    fun `set ui theme`() = runTest {
+    test("set ui theme") {
 
         viewModel.uiState.test {
             awaitItem()
 
-            viewModel.setUiTheme(Ui.THEME.DARK)
+            viewModel.handleIntent(SettingsIntent.SetThemeValue(Ui.THEME.DARK))
             dataStoreFlow.value = dataStoreFlow.value.copy(uiTheme = Ui.THEME.DARK)
-            advanceUntilIdle()
 
             val state = awaitItem()
 
-            coVerify { dataStoreRepository.setUiTheme(Ui.THEME.DARK) }
-            assert(Ui.THEME.DARK == state.uiTheme)
+            coVerify { settingsRepository.setUiTheme(Ui.THEME.DARK) }
+            state.uiTheme shouldBe Ui.THEME.DARK
+            state.dialogState shouldBe null
 
             cancelAndConsumeRemainingEvents()
 
@@ -145,26 +144,4 @@ class SettingsViewModelTest : BaseTest() {
 
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
-    fun `set subtitles language`() = runTest {
-
-        viewModel.uiState.test {
-            awaitItem()
-
-            viewModel.setSubtitlesLanguage(Locale.ENGLISH)
-            dataStoreFlow.value = dataStoreFlow.value.copy(subtitlesLanguage = Locale.ENGLISH)
-            advanceUntilIdle()
-
-            val state = awaitItem()
-
-            coVerify { dataStoreRepository.setSubtitlesLanguage(Locale.ENGLISH) }
-            assert(Locale.ENGLISH == state.subtitlesLanguage)
-
-            cancelAndConsumeRemainingEvents()
-
-        }
-
-    }
-
-}
+})

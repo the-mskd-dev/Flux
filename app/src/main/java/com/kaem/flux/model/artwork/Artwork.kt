@@ -1,35 +1,64 @@
 package com.kaem.flux.model.artwork
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import com.kaem.flux.R
 import com.kaem.flux.model.UserFile
-import com.kaem.flux.utils.extensions.parseTMDBDate
-import java.util.Date
+import com.kaem.flux.model.tmdb.TMDBArtwork
+import com.kaem.flux.model.tmdb.TMDBMovie
 
 /**
- * Represents detailed information about an artwork, such as a movie or an episode.
+ * Represents a media, such as a movie or a TV show.
  *
- * @property releaseDateString The release date of the artwork as a string.
- * @property description Description or synopsis of the artwork.
- * @property voteAverage Average rating of the artwork.
- * @property voteCount Number of votes received for the artwork.
- * @property duration Duration of the artwork in minutes.
- * @property currentTime Current playback position in milliseconds.
- * @property file The associated local file.
- * @property status Viewing status of the artwork.
- * @property releaseDate Parsed release date as a [Date], derived from [releaseDateString].
+ * @property id Unique identifier for the media.
+ * @property title Title of the media.
+ * @property imagePath Path to the main image of the media.
+ * @property bannerPath Path to the banner image of the media.
+ * @property type Content of the media, which can be a movie or a show.
  */
-abstract class Artwork(
-    open val artworkId: Long,
-    open val title: String,
-    open val releaseDateString: String,
-    open val description: String,
-    open val voteAverage: Float,
-    open val voteCount: Int,
-    open val duration: Int,
-    open var currentTime: Long = 0L,
-    open var status: Status = Status.TO_WATCH,
-    open val file: UserFile,
+@Entity(tableName = "artworks")
+data class Artwork(
+    @PrimaryKey
+    val id: Long = 0,
+    val title: String = "",
+    val imagePath: String = "",
+    val bannerPath: String = "",
+    val type: ContentType = ContentType.SHOW
 ) {
 
-    val releaseDate: Date? get() = releaseDateString.parseTMDBDate()
+    /**
+     * Constructs an [Artwork] instance using a [TMDBMovie] and a [UserFile].
+     */
+    constructor(
+        tmdbMovie: TMDBMovie,
+    ) : this (
+        id = tmdbMovie.id,
+        title = tmdbMovie.title,
+        imagePath = tmdbMovie.imagePath,
+        bannerPath = tmdbMovie.bannerPath,
+        type = ContentType.MOVIE
+    )
+
+    /**
+     * Constructs an [Artwork] instance using a [TMDBArtwork].
+     */
+    constructor(tmdbArtwork: TMDBArtwork) : this(
+        id = tmdbArtwork.id,
+        title = tmdbArtwork.title,
+        imagePath = tmdbArtwork.imagePath,
+        bannerPath = tmdbArtwork.bannerPath,
+        type = ContentType.SHOW
+    )
+
+}
+
+enum class ContentType {
+    MOVIE,
+    SHOW;
+
+    val stringResource: Int get() = when (this) {
+        MOVIE -> R.string.movies
+        SHOW -> R.string.shows
+    }
 
 }

@@ -1,266 +1,239 @@
 package com.kaem.flux.screens.artwork
 
 import android.util.Log
-import androidx.lifecycle.SavedStateHandle
+import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kaem.flux.data.repository.ArtworkRepository
-import com.kaem.flux.data.repository.DataStoreRepository
+import com.kaem.flux.data.repository.artwork.ArtworkRepository
+import com.kaem.flux.data.repository.user.UserRepository
 import com.kaem.flux.model.ScreenState
-import com.kaem.flux.model.artwork.Artwork
-import com.kaem.flux.model.artwork.ArtworkOverview
 import com.kaem.flux.model.artwork.Episode
+import com.kaem.flux.model.artwork.Media
 import com.kaem.flux.model.artwork.Movie
 import com.kaem.flux.model.artwork.Status
 import com.kaem.flux.utils.extensions.getPreviousEpisodesFor
-import com.kaem.flux.utils.extensions.msToMin
-import com.kaem.flux.utils.extensions.timeDescription
+import com.kaem.flux.utils.extensions.lastEpisode
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.Locale
-import javax.inject.Inject
-import kotlin.time.Duration.Companion.seconds
 
-
-data class ArtworkUiState(
-    val overview: ArtworkOverview = ArtworkOverview(),
-    val screen: ScreenState = ScreenState.LOADING,
-    val selectedArtwork: Artwork? = null,
-    val episodes: List<Episode> = emptyList(),
-    val currentSeason: Int = -1,
-    val showPlayer: Boolean = false,
-    val showStatusDialog: Boolean = false
-)
-
-@HiltViewModel
-class ArtworkViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
+@HiltViewModel(assistedFactory = ArtworkViewModel.Factory::class)
+class ArtworkViewModel @AssistedInject constructor(
+    @Assisted val mediaId: Long,
     private val repository: ArtworkRepository,
-    private val dataStoreRepository: DataStoreRepository
+    private val userRepository: UserRepository
 ) : ViewModel() {
 
-    private val artworkId: Long = checkNotNull(savedStateHandle["artworkId"])
+    //region Hilt
 
-    private val _uiState = MutableStateFlow(ArtworkUiState())
-    val uiState: StateFlow<ArtworkUiState> = _uiState.asStateFlow()
+    @AssistedFactory
+    interface Factory {
+        fun create(mediaId: Long): ArtworkViewModel
+    }
 
-    var backwardValue: Long = 10.seconds.inWholeMilliseconds
-    var forwardValue: Long = 10.seconds.inWholeMilliseconds
-    var subtitlesLanguage: Locale = Locale.getDefault()
+    //endregion
+
+    //region sub states
+
+    @Immutable
+    private data class UserState(
+        val selectedMedia: Media? = null,
+        val selectedSeason: Int? = null,
+        val episodePendingConfirmation: Episode? = null,
+    )
+
+    //endregion
+
+    //region Flow
+
+    private val _event = MutableSharedFlow<ArtworkEvent>()
+    val event = _event.asSharedFlow().distinctUntilChanged()
+
+    private val _subState = MutableStateFlow(UserState())
+
+    val uiState: StateFlow<ArtworkUiState> = combine(
+        repository.flow,
+        _subState
+    ) { mediaContent, subState ->
+        buildUiState(
+            mediaContent = mediaContent,
+            subState = subState
+        )
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = ArtworkUiState()
+    )
+
+
+    //endregion
+
+    //regin Init
 
     init {
-
-        val (backward, forward) = dataStoreRepository.getPlayerButtonsValues()
-        backwardValue = backward.seconds.inWholeMilliseconds
-        forwardValue = forward.seconds.inWholeMilliseconds
-
-        subtitlesLanguage = dataStoreRepository.getSubtitlesLanguage()
-
-        getArtworks(artworkId)
+        repository.searchArtwork(mediaId = mediaId)
     }
 
-    private fun getArtworks(id: Long) = viewModelScope.launch {
+    //endregion
 
-        val (overview, movie, episodes) = repository.getArtwork(id)
+    //region Public Methods
 
-        _uiState.value = when {
-            overview == null -> ArtworkUiState(screen = ScreenState.ERROR)
-            movie != null -> ArtworkUiState(
-                overview = overview,
-                screen = ScreenState.CONTENT,
-                selectedArtwork = movie
-            )
+    fun handleIntent(intent: ArtworkIntent) = viewModelScope.launch {
+        when (intent) {
+            ArtworkIntent.OnBackTap -> _event.emit(ArtworkEvent.BackToPreviousScreen)
+            is ArtworkIntent.SelectSeason -> selectSeason(season = intent.season)
+            is ArtworkIntent.PlayMedia -> playMedia(media = intent.media)
+            ArtworkIntent.CloseEpisodesStatusDialog -> closeStatusDialog()
+            is ArtworkIntent.ChangeWatchStatus -> changeWatchStatus(media = intent.media)
+            ArtworkIntent.MarkPreviousEpisodesAsWatched -> markPreviousEpisodesAsWatched()
+        }
+    }
 
-            !episodes.isNullOrEmpty() -> {
-                
-                val currentEpisode = episodes.lastOrNull { it.status == Status.IS_WATCHING }
-                    ?: episodes.firstOrNull { it.status == Status.TO_WATCH }
-                    ?: episodes.first()
+    //endregion
+
+    //region Private Methods
+
+    private fun buildUiState(mediaContent: ArtworkRepository.Content, subState: UserState) : ArtworkUiState {
+
+        val artwork = mediaContent.artwork
+        val movie = mediaContent.movie
+        val episodes = mediaContent.episodes
+
+        val episode = episodes.firstOrNull { it.id == (subState.selectedMedia as? Episode)?.id } // Selected media by user
+            ?: episodes.firstOrNull { it.id == (uiState.value.media as? Episode)?.id } // Current selected media
+            ?: episodes.firstOrNull { it.status == Status.IS_WATCHING } // First episode watching
+            ?: episodes.firstOrNull { it.status == Status.TO_WATCH } // First episode to watch
+            ?: episodes.firstOrNull() // First episode
+
+        val media = movie ?: episode
+
+        val season = subState.selectedSeason ?: (media as? Episode)?.season ?: -1
+
+        return when {
+            artwork == null || media == null -> ArtworkUiState(screen = ScreenState.ERROR)
+            else -> {
 
                 ArtworkUiState(
-                    overview = overview,
                     screen = ScreenState.CONTENT,
+                    artwork = artwork,
                     episodes = episodes,
-                    currentSeason = currentEpisode.season,
-                    selectedArtwork = currentEpisode
+                    season = season,
+                    media = media,
+                    episodePendingConfirmation = subState.episodePendingConfirmation,
                 )
+
             }
-            else -> ArtworkUiState(screen = ScreenState.ERROR)
-
         }
 
     }
 
-    fun selectArtwork(artwork: Artwork?) {
-        _uiState.update { currentState ->
-            currentState.copy(selectedArtwork = artwork)
-        }
+    private fun selectSeason(season: Int) {
+        _subState.update { it.copy(selectedSeason = season) }
     }
 
-    fun selectSeason(season: Int) {
-        _uiState.update { currentState ->
-            currentState.copy(currentSeason = season)
-        }
+    private suspend fun playMedia(media: Media) {
+        _subState.update { it.copy(selectedMedia = media) }
+        _event.emit(ArtworkEvent.PlayMedia(mediaId = media.mediaId))
     }
 
-    fun showPlayer(show: Boolean) {
-        _uiState.update { currentState ->
-            currentState.copy(showPlayer = show)
-        }
+    private fun showStatusDialog(episode: Episode) {
+        _subState.update { it.copy(episodePendingConfirmation = episode) }
     }
 
-    private fun showStatusDialog() {
-        _uiState.update { currentState ->
-            currentState.copy(showStatusDialog = true)
-        }
+    private fun closeStatusDialog() {
+        _subState.update { it.copy(episodePendingConfirmation = null) }
     }
 
-    fun changeWatchStatus(checkPrevious: Boolean = true) {
+    private suspend fun changeWatchStatus(media: Media) {
 
-        val artwork = uiState.value.selectedArtwork ?: return
+        val newStatus = if (media.status != Status.WATCHED) Status.WATCHED else Status.TO_WATCH
 
-        val newStatus = if (artwork.status != Status.WATCHED) Status.WATCHED else Status.TO_WATCH
+        when (media) {
+            is Movie -> changeMovieStatus(movie = media, status = newStatus)
+            is Episode -> changeEpisodeStatus(episode = media, status = newStatus)
+        }
 
         if (
-            checkPrevious
-            && newStatus == Status.WATCHED
-            && artwork is Episode
-            && _uiState.value.episodes.getPreviousEpisodesFor(artwork).any { it.status != Status.WATCHED }
+            newStatus == Status.WATCHED
+            && media is Episode
+            && uiState.value.episodes.getPreviousEpisodesFor(media).any { it.status != Status.WATCHED }
         ) {
-            showStatusDialog()
-            return
-        }
-
-        when (artwork) {
-            is Movie -> {
-
-                val movie = artwork.copy(
-                    status = newStatus,
-                    currentTime = 0L
-                )
-                _uiState.update { currentState ->
-                    currentState.copy(
-                        selectedArtwork = movie,
-                        showStatusDialog = false
-                    )
-                }
-
-                // Save status in DB
-                viewModelScope.launch { repository.saveMovie(movie) }
-
-                Log.i("ArtworkViewModel", "${movie.title} is now ${movie.status}")
-
-            }
-            is Episode -> {
-
-                val episode = artwork.copy(
-                    status = newStatus,
-                    currentTime = 0L
-                )
-
-                // Update list
-                val episodes = _uiState.value.episodes.toMutableList()
-                episodes.replaceAll { if (it.id == episode.id) episode else it }
-                _uiState.update { currentState ->
-                    currentState.copy(
-                        selectedArtwork = episode,
-                        episodes = episodes,
-                        showStatusDialog = false
-                    )
-                }
-
-                // Save status in DB
-                viewModelScope.launch { repository.saveEpisode(episode) }
-
-                viewModelScope.launch { addOrRemoveToWatchedArtworks() }
-
-                Log.i("ArtworkViewModel", "${episode.title} season ${episode.season} episode ${episode.number} is now ${episode.status}")
-
-            }
-            else -> return
+            showStatusDialog(episode = media)
         }
 
     }
 
-    fun changeWatchStatusForEpisodeAndPrevious() {
+    private suspend fun changeMovieStatus(movie: Movie, status: Status) {
 
-        val episode = uiState.value.selectedArtwork as? Episode ?: return
-        val previousEpisodes = _uiState.value.episodes.getPreviousEpisodesFor(episode).filter { it.status != Status.WATCHED }
-
-        val updatedEpisode = episode.copy(
-            status = Status.WATCHED,
+        val movieUpdated = movie.copy(
+            status = status,
             currentTime = 0L
         )
 
-        val updatedEpisodes = previousEpisodes.map {
-            it.copy(
-                status = Status.WATCHED,
-                currentTime = 0L
-            )
-        } + updatedEpisode
+        repository.saveMovie(movieUpdated) // Save status in DB
 
-        // Update list
-        val episodes = _uiState.value.episodes.toMutableList()
-        episodes.replaceAll { e ->
-            updatedEpisodes.find { it.id == e.id } ?: e
-        }
-        _uiState.update { currentState ->
-            currentState.copy(
-                selectedArtwork = updatedEpisode,
-                episodes = episodes,
-                showStatusDialog = false
-            )
-        }
-
-        // Save status in DB
-        viewModelScope.launch { repository.saveEpisodes(episodes) }
-
-        viewModelScope.launch { addOrRemoveToWatchedArtworks() }
+        Log.i("MediaViewModel", "${movie.title} is now ${movie.status}")
 
     }
 
-    fun saveTime(time: Long) = viewModelScope.launch {
+    private suspend fun changeEpisodeStatus(episode: Episode, status: Status) {
 
-        val artwork = uiState.value.selectedArtwork ?: return@launch
-        val status = if (time.msToMin >= artwork.duration * .9) Status.WATCHED else Status.IS_WATCHING
+        val updatedEpisode = episode.copy(
+            status = status,
+            currentTime = 0L
+        )
 
-        uiState.value.let { state ->
+        // Remove from recently watched if last episode is watched
+        val lastEpisode = uiState.first().episodes.lastEpisode
+        if (lastEpisode.id == updatedEpisode.id && status == Status.WATCHED)
+            userRepository.removeFromRecentlyWatched(mediaId)
 
-            artwork.currentTime = if (status == Status.WATCHED) 0L else time
-            artwork.status = status
+        repository.saveEpisodes(listOf(updatedEpisode)) // Save status in DB
 
-            when (artwork) {
-                is Movie -> {
+        Log.i("MediaViewModel", "${episode.title} season ${episode.season} episode ${episode.number} is now ${episode.status}")
 
-                    repository.saveMovie(artwork)
+    }
 
-                    if (status == Status.WATCHED) dataStoreRepository.removeWatchedArtwork(artworkId)
-                    else dataStoreRepository.addWatchedArtwork(artworkId)
+    private suspend fun markPreviousEpisodesAsWatched() {
 
-                }
-                is Episode -> {
+        var episodesToSave: List<Episode> = emptyList()
 
-                    repository.saveEpisode(artwork)
+        _subState.update { state ->
 
-                    addOrRemoveToWatchedArtworks()
+            val episode = state.episodePendingConfirmation ?: return
+            val previousEpisodes = uiState.value.episodes.getPreviousEpisodesFor(episode).filter { it.status != Status.WATCHED }
 
-                }
-                else -> {}
+            if (previousEpisodes.isEmpty())
+                return@update state.copy(episodePendingConfirmation = null)
+
+            episodesToSave = previousEpisodes.map {
+                it.copy(
+                    status = Status.WATCHED,
+                    currentTime = 0L
+                )
             }
 
-            Log.i("ArtworkViewModel", "${state.overview.title} saved at ${time.timeDescription()}")
+            state.copy(episodePendingConfirmation = null)
 
         }
 
+        repository.saveEpisodes(episodesToSave) // Save status in DB
+
+        Log.i("MediaViewModel", "${episodesToSave.size} episodes marked as watched")
     }
 
-    private suspend fun addOrRemoveToWatchedArtworks() {
-        if (uiState.value.episodes.all { it.status == Status.WATCHED }) dataStoreRepository.removeWatchedArtwork(artworkId)
-        else dataStoreRepository.addWatchedArtwork(artworkId)
-    }
+    //endregion
 
 }

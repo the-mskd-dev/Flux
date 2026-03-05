@@ -2,10 +2,12 @@ package com.kaem.flux.data.repository
 
 import androidx.test.filters.MediumTest
 import app.cash.turbine.test
-import com.kaem.flux.data.ddb.FluxDao
-import com.kaem.flux.data.source.artwork.ArtworkDataSource
-import com.kaem.flux.data.source.file.FilesDataSource
-import com.kaem.flux.mockups.ArtworkMockups
+import com.kaem.flux.data.ddb.DatabaseDao
+import com.kaem.flux.data.repository.catalog.CatalogRepository
+import com.kaem.flux.data.repository.catalog.CatalogRepositoryImpl
+import com.kaem.flux.data.source.file.FilesSource
+import com.kaem.flux.data.source.media.MediaSource
+import com.kaem.flux.mockups.MediaMockups
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -16,45 +18,45 @@ import org.junit.Test
 @MediumTest
 class LibraryRepositoryTest {
 
-    private lateinit var repository: LibraryRepository
+    private lateinit var repository: CatalogRepository
 
-    private val fileSource: FilesDataSource = mockk(relaxed = true)
-    private val localSource: ArtworkDataSource = mockk(relaxed = true)
-    private val tmdbSource: ArtworkDataSource = mockk(relaxed = true)
-    private val db: FluxDao = mockk(relaxed = true)
+    private val fileSource: FilesSource = mockk(relaxed = true)
+    private val localSource: MediaSource = mockk(relaxed = true)
+    private val tmdbSource: MediaSource = mockk(relaxed = true)
+    private val db: DatabaseDao = mockk(relaxed = true)
 
     @Before
     fun setUp() {
-        repository = LibraryRepository(fileSource, localSource, tmdbSource, db)
+        repository = CatalogRepositoryImpl(fileSource, localSource, tmdbSource, db)
     }
 
     @Test
     fun getLibrary_without_sync() = runTest {
         // Given
-        val localArtworks = ArtworkMockups.overviews
-        val localMovies = listOf(ArtworkMockups.movie)
-        val localEpisodes = ArtworkMockups.episodes
+        val localMedias = MediaMockups.artworks
+        val localMovies = listOf(MediaMockups.movie)
+        val localEpisodes = MediaMockups.episodes
 
-        coEvery { localSource.getArtworks(sync = false) } returns ArtworkDataSource.Library(
-            overviews = localArtworks,
+        coEvery { localSource.getMedias() } returns MediaSource.Library(
+            artworks = localMedias,
             movies = localMovies,
             episodes = localEpisodes
         )
 
         // When
-        repository.getLibrary(sync = false)
+        repository.getCatalog(sync = false)
 
         // Then
-        repository.libraryFlow.test {
+        repository.flow.test {
 
             val loadedState = awaitItem()
             assert(!loadedState.isLoading)
-            assert(loadedState.artworkOverviews.containsAll(localArtworks))
+            assert(loadedState.artworks.containsAll(localMedias))
 
             cancelAndIgnoreRemainingEvents()
         }
 
-        coVerify { localSource.getArtworks(sync = false) }
+        coVerify { localSource.getMedias() }
 
     }
 
@@ -62,10 +64,10 @@ class LibraryRepositoryTest {
     fun getLibrary_with_sync() = runTest {
 
         // When
-        repository.getLibrary(sync = true)
+        repository.getCatalog(sync = true)
 
         // Then
-        repository.libraryFlow.test {
+        repository.flow.test {
 
             val loadedState = awaitItem()
             assert(!loadedState.isLoading)
@@ -74,40 +76,13 @@ class LibraryRepositoryTest {
         }
 
         coVerify { db.getAllFileNames() }
-        coVerify { db.deleteArtworksWithNoFiles(any()) }
-        coVerify { tmdbSource.getArtworks(files = any(), sync = true) }
-        coVerify { db.insertOverviews(any()) }
+        coVerify { db.deleteMediasWithNoFiles(any()) }
+        coVerify { tmdbSource.getMedias(files = any()) }
+        coVerify { db.insertArtworks(any()) }
         coVerify { db.insertMovies(any()) }
         coVerify { db.insertEpisodes(any()) }
-        coVerify { db.getOverviews() }
+        coVerify { db.getArtworks() }
 
-    }
-
-
-    @Test
-    fun saveMovie_should_insert_movie_into_db() = runTest {
-        // Arrange
-        val movie = ArtworkMockups.movie
-        coEvery { db.insertMovies(listOf(movie)) } returns Unit
-
-        // Act
-        repository.saveMovie(movie)
-
-        // Assert
-        coVerify { db.insertMovies(listOf(movie)) }
-    }
-
-    @Test
-    fun saveEpisode_should_insert_episode_into_db() = runTest {
-        // Arrange
-        val episode = ArtworkMockups.episode1
-        coEvery { db.insertEpisodes(listOf(episode)) } returns Unit
-
-        // Act
-        repository.saveEpisode(episode)
-
-        // Assert
-        coVerify { db.insertEpisodes(listOf(episode)) }
     }
 
 }

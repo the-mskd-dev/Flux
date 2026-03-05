@@ -1,8 +1,8 @@
 package com.kaem.flux.di
 
 import android.content.Context
-import com.kaem.flux.data.source.file.FilesDataSource
-import com.kaem.flux.data.source.file.FilesDataSourceLocalImpl
+import com.kaem.flux.data.source.file.FilesSource
+import com.kaem.flux.data.source.file.FilesSourceLocalImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -24,7 +24,7 @@ object FilesModule {
     @LocalFilesDataSource
     fun provideLocalFilesDataSource(
         @ApplicationContext context: Context
-    ) : FilesDataSource = FilesDataSourceLocalImpl(context)
+    ) : FilesSource = FilesSourceLocalImpl(context)
 
 }
 

@@ -3,10 +3,12 @@ package com.kaem.flux.model
 import android.os.Parcelable
 import com.kaem.flux.model.artwork.ContentType
 import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.Serializable
 import java.util.Date
 import java.util.regex.Pattern
 
 @Parcelize
+@Serializable
 data class UserFile(
     val name: String,
     val addedDateTime: Long,

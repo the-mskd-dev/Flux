@@ -4,7 +4,7 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
-import com.kaem.flux.mockups.ArtworkMockups
+import com.kaem.flux.mockups.MediaMockups
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
@@ -16,7 +16,7 @@ import org.junit.runner.RunWith
 class FluxDatabaseTest {
 
     private lateinit var database: FluxDatabase
-    private lateinit var db: FluxDao
+    private lateinit var db: DatabaseDao
 
     @Before
     fun setUpDatabase() {
@@ -26,7 +26,7 @@ class FluxDatabaseTest {
             FluxDatabase::class.java
         ).build()
 
-        db = database.fluxDao()
+        db = database.dao()
 
     }
 
@@ -39,38 +39,18 @@ class FluxDatabaseTest {
     fun insert_movie() = runTest {
 
         // Given
-        val overview = ArtworkMockups.movieOverview
-        val movie = ArtworkMockups.movie
+        val artwork = MediaMockups.movieArtwork
+        val movie = MediaMockups.movie
 
         // When
-        db.insertOverviews(listOf(overview))
+        db.insertArtworks(listOf(artwork))
         db.insertMovies(listOf(movie))
 
         // Then
-        val dbOverview = db.getOverview(overview.id)
-        val dbMovie = db.getMovie(overview.id)
-        assert(dbOverview == overview)
+        val dbArtwork = db.getArtwork(artwork.id)
+        val dbMovie = db.getMovie(artwork.id)
+        assert(dbArtwork == artwork)
         assert(dbMovie == movie)
-
-    }
-
-    @Test
-    fun delete_movie_by_overview() = runTest {
-
-        // Given
-        val overview = ArtworkMockups.movieOverview
-        val movie = ArtworkMockups.movie
-
-        // When
-        db.insertOverviews(listOf(overview))
-        db.insertMovies(listOf(movie))
-        db.deleteOverviews(listOf(overview.id))
-
-        // Then
-        val dbOverview = db.getOverview(overview.id)
-        val dbMovie = db.getMovie(overview.id)
-        assert(dbOverview == null)
-        assert(dbMovie == null)
 
     }
 
@@ -78,18 +58,38 @@ class FluxDatabaseTest {
     fun delete_movie_by_artwork() = runTest {
 
         // Given
-        val overview = ArtworkMockups.movieOverview
-        val movie = ArtworkMockups.movie
+        val artwork = MediaMockups.movieArtwork
+        val movie = MediaMockups.movie
 
         // When
-        db.insertOverviews(listOf(overview))
+        db.insertArtworks(listOf(artwork))
+        db.insertMovies(listOf(movie))
+        db.deleteArtworks(listOf(artwork.id))
+
+        // Then
+        val dbArtwork = db.getArtwork(artwork.id)
+        val dbMovie = db.getMovie(artwork.id)
+        assert(dbArtwork == null)
+        assert(dbMovie == null)
+
+    }
+
+    @Test
+    fun delete_movie_by_media() = runTest {
+
+        // Given
+        val artwork = MediaMockups.movieArtwork
+        val movie = MediaMockups.movie
+
+        // When
+        db.insertArtworks(listOf(artwork))
         db.insertMovies(listOf(movie))
         db.deleteMovies(listOf(movie))
 
         // Then
-        val dbOverview = db.getOverview(overview.id)
-        val dbMovie = db.getMovie(overview.id)
-        assert(dbOverview == null)
+        val dbArtwork = db.getArtwork(artwork.id)
+        val dbMovie = db.getMovie(artwork.id)
+        assert(dbArtwork == null)
         assert(dbMovie == null)
 
     }
@@ -98,40 +98,40 @@ class FluxDatabaseTest {
     fun insert_show() = runTest {
 
         // Given
-        val overview = ArtworkMockups.showOverview
-        val episode1 = ArtworkMockups.episode1
-        val episode2 = ArtworkMockups.episode2
+        val artwork = MediaMockups.showArtwork
+        val episode1 = MediaMockups.episode1
+        val episode2 = MediaMockups.episode2
 
         // When
-        db.insertOverviews(listOf(overview))
+        db.insertArtworks(listOf(artwork))
         db.insertEpisodes(listOf(episode1, episode2))
 
         // Then
-        val dbOverview = db.getOverview(overview.id)
-        val dbEpisodes = db.getEpisodes(overview.id)
-        assert(dbOverview == overview)
+        val dbArtwork = db.getArtwork(artwork.id)
+        val dbEpisodes = db.getEpisodes(artwork.id)
+        assert(dbArtwork == artwork)
         assert(dbEpisodes.size == 2)
         assert(dbEpisodes == listOf(episode1, episode2))
 
     }
 
     @Test
-    fun delete_show_by_overview() = runTest {
+    fun delete_show_by_artwork() = runTest {
 
         // Given
-        val overview = ArtworkMockups.showOverview
-        val episode1 = ArtworkMockups.episode1
-        val episode2 = ArtworkMockups.episode2
+        val artwork = MediaMockups.showArtwork
+        val episode1 = MediaMockups.episode1
+        val episode2 = MediaMockups.episode2
 
         // When
-        db.insertOverviews(listOf(overview))
+        db.insertArtworks(listOf(artwork))
         db.insertEpisodes(listOf(episode1, episode2))
-        db.deleteOverviews(listOf(overview.id))
+        db.deleteArtworks(listOf(artwork.id))
 
         // Then
-        val dbOverview = db.getOverview(overview.id)
-        val dbEpisodes = db.getEpisodes(overview.id)
-        assert(dbOverview == null)
+        val dbArtwork = db.getArtwork(artwork.id)
+        val dbEpisodes = db.getEpisodes(artwork.id)
+        assert(dbArtwork == null)
         assert(dbEpisodes.isEmpty())
 
     }
@@ -140,25 +140,25 @@ class FluxDatabaseTest {
     fun delete_show_by_episodes() = runTest {
 
         // Given
-        val overview = ArtworkMockups.showOverview
-        val episode1 = ArtworkMockups.episode1
-        val episode2 = ArtworkMockups.episode2
+        val artwork = MediaMockups.showArtwork
+        val episode1 = MediaMockups.episode1
+        val episode2 = MediaMockups.episode2
 
         // When
-        db.insertOverviews(listOf(overview))
+        db.insertArtworks(listOf(artwork))
         db.insertEpisodes(listOf(episode1, episode2))
         db.deleteEpisodes(listOf(episode1))
 
         // Then
-        val dbOverview = db.getOverview(overview.id)
-        val dbEpisodes = db.getEpisodes(overview.id)
-        assert(dbOverview == overview)
+        val dbArtwork = db.getArtwork(artwork.id)
+        val dbEpisodes = db.getEpisodes(artwork.id)
+        assert(dbArtwork == artwork)
         assert(dbEpisodes == listOf(episode2))
 
         db.deleteEpisodes(listOf(episode2))
-        val dbOverview2 = db.getOverview(overview.id)
-        val dbEpisodes2 = db.getEpisodes(overview.id)
-        assert(dbOverview2 == null)
+        val dbArtwork2 = db.getArtwork(artwork.id)
+        val dbEpisodes2 = db.getEpisodes(artwork.id)
+        assert(dbArtwork2 == null)
         assert(dbEpisodes2.isEmpty())
 
     }
@@ -167,19 +167,19 @@ class FluxDatabaseTest {
     fun delete_show_by_all_episodes() = runTest {
 
         // Given
-        val overview = ArtworkMockups.showOverview
-        val episode1 = ArtworkMockups.episode1
-        val episode2 = ArtworkMockups.episode2
+        val artwork = MediaMockups.showArtwork
+        val episode1 = MediaMockups.episode1
+        val episode2 = MediaMockups.episode2
 
         // When
-        db.insertOverviews(listOf(overview))
+        db.insertArtworks(listOf(artwork))
         db.insertEpisodes(listOf(episode1, episode2))
         db.deleteEpisodes(listOf(episode1, episode2))
 
         // Then
-        val dbOverview = db.getOverview(overview.id)
-        val dbEpisodes = db.getEpisodes(overview.id)
-        assert(dbOverview == null)
+        val dbArtwork = db.getArtwork(artwork.id)
+        val dbEpisodes = db.getEpisodes(artwork.id)
+        assert(dbArtwork == null)
         assert(dbEpisodes.isEmpty())
 
     }
@@ -188,13 +188,13 @@ class FluxDatabaseTest {
     fun get_all_file_names() = runTest {
 
         // Given
-        val overviews = listOf(ArtworkMockups.movieOverview, ArtworkMockups.showOverview)
-        val movie = ArtworkMockups.movie
-        val episodes = listOf(ArtworkMockups.episode1, ArtworkMockups.episode2)
+        val artworks = listOf(MediaMockups.movieArtwork, MediaMockups.showArtwork)
+        val movie = MediaMockups.movie
+        val episodes = listOf(MediaMockups.episode1, MediaMockups.episode2)
         val fileNames = episodes.map { it.file.name } + movie.file.name
 
         // When
-        db.insertOverviews(overviews)
+        db.insertArtworks(artworks)
         db.insertMovies(listOf(movie))
         db.insertEpisodes(episodes)
 
@@ -205,29 +205,29 @@ class FluxDatabaseTest {
     }
 
     @Test
-    fun delete_artworks_with_no_files() = runTest {
+    fun delete_media_with_no_files() = runTest {
 
         // Given
-        val overviews = listOf(ArtworkMockups.movieOverview, ArtworkMockups.showOverview)
-        val movie = ArtworkMockups.movie
-        val episodes = listOf(ArtworkMockups.episode1, ArtworkMockups.episode2)
-        val files = listOf(ArtworkMockups.episode2.file)
+        val artworks = listOf(MediaMockups.movieArtwork, MediaMockups.showArtwork)
+        val movie = MediaMockups.movie
+        val episodes = listOf(MediaMockups.episode1, MediaMockups.episode2)
+        val files = listOf(MediaMockups.episode2.file)
 
         // When
-        db.insertOverviews(overviews)
+        db.insertArtworks(artworks)
         db.insertMovies(listOf(movie))
         db.insertEpisodes(episodes)
-        db.deleteArtworksWithNoFiles(files)
+        db.deleteMediasWithNoFiles(files)
 
         // Then
-        val dbOverviews = db.getOverviews()
+        val dbArtworks = db.getArtworks()
         val dbMovies = db.getMovies()
         val dbEpisodes = db.getEpisodes()
-        assert(dbOverviews.size == 1)
-        assert(dbOverviews.contains(ArtworkMockups.showOverview))
+        assert(dbArtworks.size == 1)
+        assert(dbArtworks.contains(MediaMockups.showArtwork))
         assert(dbMovies.isEmpty())
         assert(dbEpisodes.size == 1)
-        assert(dbEpisodes.contains(ArtworkMockups.episode2))
+        assert(dbEpisodes.contains(MediaMockups.episode2))
 
     }
 

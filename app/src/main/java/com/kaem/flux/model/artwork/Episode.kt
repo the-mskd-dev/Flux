@@ -3,6 +3,7 @@ package com.kaem.flux.model.artwork
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.kaem.flux.model.UserFile
 import com.kaem.flux.model.tmdb.TMDBEpisode
@@ -17,25 +18,28 @@ import com.kaem.flux.model.tmdb.TMDBEpisode
  * @property season Season number.
  * @property imagePath Path to the episode's image.
  * @property crew List of crew members involved in the episode.
- * @property releaseDateString The release date of the artwork as a string.
- * @property description Description or synopsis of the artwork.
- * @property voteAverage Average rating of the artwork.
- * @property voteCount Number of votes received for the artwork.
- * @property duration Duration of the artwork in minutes.
+ * @property releaseDateString The release date of the media as a string.
+ * @property description Description or synopsis of the media.
+ * @property voteAverage Average rating of the media.
+ * @property voteCount Number of votes received for the media.
+ * @property duration Duration of the media in minutes.
  * @property currentTime Current playback position in milliseconds.
  * @property file The associated local file.
- * @property status Viewing status of the artwork.
+ * @property status Viewing status of the media.
  * @property releaseDateString Release date of the episode as a string.
  */
 @Entity(
     tableName = "episodes",
     foreignKeys = [
         ForeignKey(
-            entity = ArtworkOverview::class,
+            entity = Artwork::class,
             parentColumns = ["id"],
             childColumns = ["artworkId"],
             onDelete = ForeignKey.CASCADE
         )
+    ],
+    indices = [
+        Index(value = ["artworkId"])
     ]
 )
 data class Episode(
@@ -50,31 +54,22 @@ data class Episode(
     override val releaseDateString: String,
     override val description: String,
     override val duration: Int,
-    override var currentTime: Long = 0L,
+    override val currentTime: Long = 0L,
     override val voteAverage: Float,
     override val voteCount: Int,
     @Embedded override val file: UserFile,
-    override var status: Status = Status.TO_WATCH,
-) : Artwork(
-    artworkId = artworkId,
-    title = title,
-    file = file,
-    releaseDateString = releaseDateString,
-    description = description,
-    voteAverage = voteAverage,
-    voteCount = voteCount,
-    duration = duration,
-    currentTime = currentTime,
-    status = status
-) {
+    override val status: Status = Status.TO_WATCH,
+) : Media() {
+
+    override val mediaId: Long get() = id
 
     constructor(
-        artworkId: Long,
+        mediaId: Long,
         tmdbEpisode: TMDBEpisode,
         file: UserFile
     ) : this (
         id = tmdbEpisode.id,
-        artworkId = artworkId,
+        artworkId = mediaId,
         title = tmdbEpisode.title,
         number = tmdbEpisode.number,
         season = tmdbEpisode.season,
@@ -89,14 +84,5 @@ data class Episode(
         status = Status.TO_WATCH,
         file = file
     )
-
-
-
-    companion object {
-
-        /** Constant used when no ID is available. */
-        const val NO_ID = -1
-
-    }
 
 }

@@ -3,6 +3,7 @@ package com.kaem.flux.model.artwork
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.kaem.flux.model.UserFile
 import com.kaem.flux.model.tmdb.TMDBMovie
@@ -10,25 +11,28 @@ import com.kaem.flux.model.tmdb.TMDBMovie
 /**
  * Represents a movie with specific details.
  *
- * @property releaseDateString The release date of the artwork as a string.
- * @property description Description or synopsis of the artwork.
- * @property voteAverage Average rating of the artwork.
- * @property voteCount Number of votes received for the artwork.
- * @property duration Duration of the artwork in minutes.
+ * @property releaseDateString The release date of the media as a string.
+ * @property description Description or synopsis of the media.
+ * @property voteAverage Average rating of the media.
+ * @property voteCount Number of votes received for the media.
+ * @property duration Duration of the media in minutes.
  * @property currentTime Current playback position in milliseconds.
  * @property file The associated local file.
- * @property status Viewing status of the artwork.
+ * @property status Viewing status of the media.
  * @property genres List of genres associated with the movie.
  */
 @Entity(
     tableName = "movies",
     foreignKeys = [
         ForeignKey(
-            entity = ArtworkOverview::class,
+            entity = Artwork::class,
             parentColumns = ["id"],
             childColumns = ["artworkId"],
             onDelete = ForeignKey.CASCADE
         )
+    ],
+    indices = [
+        Index(value = ["artworkId"])
     ]
 )
 data class Movie(
@@ -40,22 +44,11 @@ data class Movie(
     override val voteAverage: Float,
     override val voteCount: Int,
     override val duration: Int,
-    override var currentTime: Long = 0L,
-    override var status: Status,
+    override val currentTime: Long = 0L,
+    override val status: Status = Status.TO_WATCH,
     @Embedded override val file: UserFile,
     //val genres: List<String> = listOf()
-) : Artwork(
-    artworkId = artworkId,
-    title = title,
-    releaseDateString = releaseDateString,
-    description = description,
-    voteAverage = voteAverage,
-    voteCount = voteCount,
-    duration = duration,
-    currentTime = currentTime,
-    file = file,
-    status = status
-) {
+) : Media() {
 
     /**
      * Constructs a [Movie] instance using a [TMDBMovie] and a [UserFile].

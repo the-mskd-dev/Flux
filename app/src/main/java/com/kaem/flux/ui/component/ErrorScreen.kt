@@ -10,33 +10,46 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import com.kaem.flux.ui.theme.AppTheme
 
 @Composable
 fun ErrorScreen(
-    modifier: Modifier = Modifier.fillMaxSize(),
+    modifier: Modifier = Modifier,
     message: String,
-    onBackButtonTap: (() -> Unit)? = null
+    onBackButtonTap: () -> Unit
 ) {
 
     Box(
         modifier = modifier
+            .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .systemBarsPadding(),
         contentAlignment = Alignment.TopStart
     ) {
 
-        onBackButtonTap?.let {
-            BackButton(onTap = onBackButtonTap)
-        }
+        BackButton(onTap = onBackButtonTap)
 
-        MediumText(
+        Text.Body.Large(
             modifier = Modifier
                 .align(Alignment.Center)
                 .fillMaxWidth(),
             text = message,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            color = MaterialTheme.colorScheme.onBackground
         )
 
     }
 
+}
+
+@Preview
+@Composable
+fun ErrorScreen_preview() {
+    AppTheme {
+        ErrorScreen(
+            message = "An error occured",
+            onBackButtonTap = {}
+        )
+    }
 }

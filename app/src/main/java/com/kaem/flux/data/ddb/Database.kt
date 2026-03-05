@@ -13,18 +13,19 @@ import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 import com.kaem.flux.model.FileSource
 import com.kaem.flux.model.UserFile
-import com.kaem.flux.model.artwork.ArtworkOverview
+import com.kaem.flux.model.artwork.Artwork
 import com.kaem.flux.model.artwork.ContentType
 import com.kaem.flux.model.artwork.Episode
 import com.kaem.flux.model.artwork.Movie
+import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface FluxDao {
+interface DatabaseDao {
 
 //region Insert
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertOverviews(artworkOverviews: List<ArtworkOverview>)
+    suspend fun insertArtworks(artworks: List<Artwork>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMovies(movies: List<Movie>)
@@ -34,13 +35,26 @@ interface FluxDao {
 
 //endregion
 
+//region Flow
+
+    @Query("SELECT * FROM artworks WHERE id = :artworkId")
+    fun flowArtwork(artworkId: Long) : Flow<Artwork?>
+
+    @Query("SELECT * FROM movies WHERE artworkId = :artworkId")
+    fun flowMovie(artworkId: Long) : Flow<Movie?>
+
+    @Query("SELECT * FROM episodes WHERE artworkId = :artworkId")
+    fun flowEpisodes(artworkId: Long) : Flow<List<Episode>>
+
+//endregion
+
 //region Get
 
     @Query("SELECT * FROM artworks WHERE id = :artworkId")
-    suspend fun getOverview(artworkId: Long) : ArtworkOverview?
+    suspend fun getArtwork(artworkId: Long) : Artwork?
 
     @Query("SELECT * FROM artworks")
-    suspend fun getOverviews() : List<ArtworkOverview>
+    suspend fun getArtworks() : List<Artwork>
 
     @Query("SELECT * FROM movies WHERE artworkId = :artworkId")
     suspend fun getMovie(artworkId: Long) : Movie?
@@ -80,7 +94,7 @@ interface FluxDao {
 //region Delete
 
     @Query("DELETE FROM artworks WHERE id IN (:ids)")
-    suspend fun deleteOverviews(ids: List<Long>)
+    suspend fun deleteArtworks(ids: List<Long>)
 
     @Query("DELETE FROM movies WHERE artworkId IN (:ids)")
     suspend fun deleteMoviesByIds(ids: List<Long>)
@@ -91,8 +105,8 @@ interface FluxDao {
     @Transaction
     suspend fun deleteMovies(movies: List<Movie>) {
 
-        // Delete overviews, it will also delete related movies
-        deleteOverviews(movies.map { it.artworkId })
+        // Delete artworks, it will also delete related movies
+        deleteArtworks(movies.map { it.artworkId })
 
     }
 
@@ -102,18 +116,18 @@ interface FluxDao {
         // Delete episodes
         deleteEpisodesByIds(episodes.map { it.id })
 
-        // Delete overviews if needed
+        // Delete artworks if needed
         episodes
             .map { it.artworkId }
             .distinct()
-            .forEach { artworkId ->
+            .forEach { mediaId ->
 
                 // Check if it remains episode for show
-                val remainingEpisodes = getEpisodeCountByOverviewId(artworkId)
+                val remainingEpisodes = getEpisodeCountByArtworkId(mediaId)
 
                 // If no, delete the show
                 if (remainingEpisodes == 0) {
-                    deleteOverviews(listOf(artworkId))
+                    deleteArtworks(listOf(mediaId))
                 }
 
             }
@@ -121,7 +135,7 @@ interface FluxDao {
     }
 
     @Transaction
-    suspend fun deleteArtworksWithNoFiles(existingFiles: List<UserFile>) {
+    suspend fun deleteMediasWithNoFiles(existingFiles: List<UserFile>) {
 
         val moviesToDelete = getMoviesWithNoFiles(fileNames = existingFiles.map { it.name })
         val episodesToDelete = getEpisodesWithNoFiles(fileNames = existingFiles.map { it.name })
@@ -135,8 +149,8 @@ interface FluxDao {
 
 //region Count
 
-    @Query("SELECT COUNT(*) FROM episodes WHERE artworkId = :artworkId")
-    suspend fun getEpisodeCountByOverviewId(artworkId: Long): Int
+    @Query("SELECT COUNT(*) FROM episodes WHERE artworkId = :mediaId")
+    suspend fun getEpisodeCountByArtworkId(mediaId: Long): Int
 
 //endregion
 
@@ -166,13 +180,13 @@ class Converters {
 }
 
 @Database(entities = [
-    ArtworkOverview::class,
+    Artwork::class,
     Movie::class,
     Episode::class
  ], version = 1)
 @TypeConverters(Converters::class)
 abstract class FluxDatabase : RoomDatabase() {
-    abstract fun fluxDao(): FluxDao
+    abstract fun dao(): DatabaseDao
 
     companion object {
 

@@ -3,9 +3,12 @@ package com.kaem.flux.data.repository
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.filters.MediumTest
-import com.kaem.flux.data.ddb.FluxDao
+import app.cash.turbine.test
+import com.kaem.flux.data.ddb.DatabaseDao
 import com.kaem.flux.data.ddb.FluxDatabase
-import com.kaem.flux.mockups.ArtworkMockups
+import com.kaem.flux.data.repository.artwork.ArtworkRepository
+import com.kaem.flux.data.repository.artwork.ArtworkRepositoryImpl
+import com.kaem.flux.mockups.MediaMockups
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
@@ -15,7 +18,7 @@ import org.junit.Test
 class ArtworkRepositoryTest {
 
     private lateinit var database: FluxDatabase
-    private lateinit var db: FluxDao
+    private lateinit var db: DatabaseDao
     private lateinit var repository: ArtworkRepository
 
 
@@ -27,12 +30,12 @@ class ArtworkRepositoryTest {
             FluxDatabase::class.java
         ).build()
 
-        db = database.fluxDao()
+        db = database.dao()
 
-        repository = ArtworkRepository(db)
+        repository = ArtworkRepositoryImpl(db)
 
-        // Insert overviews
-        db.insertOverviews(listOf(ArtworkMockups.movieOverview, ArtworkMockups.showOverview))
+        // Insert artworks
+        db.insertArtworks(listOf(MediaMockups.movieArtwork, MediaMockups.showArtwork))
 
     }
 
@@ -43,38 +46,49 @@ class ArtworkRepositoryTest {
 
 
     @Test
-    fun get_artwork_movie() = runTest {
+    fun get_media_movie() = runTest {
 
         // Given
-        db.insertMovies(listOf(ArtworkMockups.movie))
+        db.insertMovies(listOf(MediaMockups.movie))
 
-        // When
-        val content = repository.getArtwork(ArtworkMockups.movieOverview.id)
+        repository.flow.test {
 
-        // Then
-        assert(content.artworkOverview == ArtworkMockups.movieOverview)
-        assert(content.movie == ArtworkMockups.movie)
+            // When
+            repository.searchArtwork(MediaMockups.movieArtwork.id)
+            val content = awaitItem()
+
+            // Then
+            assert(content.artwork == MediaMockups.movieArtwork)
+            assert(content.movie == MediaMockups.movie)
+
+        }
     }
 
     @Test
-    fun get_artwork_show() = runTest {
+    fun get_media_show() = runTest {
 
         // Given
-        db.insertEpisodes(listOf(ArtworkMockups.episode1, ArtworkMockups.episode2))
+        db.insertEpisodes(listOf(MediaMockups.episode1, MediaMockups.episode2))
 
-        // When
-        val content = repository.getArtwork(ArtworkMockups.showOverview.id)
+        repository.flow.test {
 
-        // Then
-        assert(content.artworkOverview == ArtworkMockups.showOverview)
-        assert(content.episodes?.size == 2)
+            // When
+            repository.searchArtwork(MediaMockups.showArtwork.id)
+            val content = awaitItem()
+
+            // Then
+            assert(content.artwork == MediaMockups.showArtwork)
+            assert(content.episodes.size == 2)
+
+        }
+
     }
 
     @Test
     fun save_movie() = runTest {
 
         // Given
-        val movie = ArtworkMockups.movie
+        val movie = MediaMockups.movie
 
         // When
         repository.saveMovie(movie)
@@ -88,7 +102,7 @@ class ArtworkRepositoryTest {
     fun save_episode() = runTest {
 
         // Given
-        val episode = ArtworkMockups.episode1
+        val episode = MediaMockups.episode1
 
         // When
         repository.saveEpisode(episode)
@@ -102,7 +116,7 @@ class ArtworkRepositoryTest {
     fun save_episodes() = runTest {
 
         // Given
-        val episodes = listOf(ArtworkMockups.episode1, ArtworkMockups.episode2)
+        val episodes = listOf(MediaMockups.episode1, MediaMockups.episode2)
 
         // When
         repository.saveEpisodes(episodes)

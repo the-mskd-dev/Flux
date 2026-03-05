@@ -1,7 +1,8 @@
 package com.kaem.flux.model.artwork
 
+
 /**
- * Represents the viewing status of an artwork or episode.
+ * Represents the viewing status of an media or episode.
  *
  * @property TO_WATCH Indicates the item is yet to be watched.
  * @property IS_WATCHING Indicates the item is currently being watched.

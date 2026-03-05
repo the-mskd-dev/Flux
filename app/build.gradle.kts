@@ -1,22 +1,33 @@
+import com.android.build.api.dsl.ApplicationExtension
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
-    id("com.google.devtools.ksp")
-    id("com.android.application")
-    id("org.jetbrains.kotlin.android")
-    id("com.google.dagger.hilt.android")
-    id("kotlin-parcelize")
-    id("org.jetbrains.kotlin.plugin.compose")
-    id("com.google.gms.google-services")
-    id("com.google.firebase.crashlytics")
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.jetbrains.kotlin.serialization)
+    alias(libs.plugins.parcelize)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.google.services)
+    alias(libs.plugins.crashlytics)
 }
 
-android {
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(FileInputStream(localPropertiesFile))
+}
+
+configure<ApplicationExtension> {
     namespace = "com.kaem.flux"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.kaem.flux"
         minSdk = 29
-        targetSdk = 34
+        targetSdk = 36
         versionCode = 2
         versionName = "1.0"
 
@@ -24,6 +35,9 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        val tmdbToken = localProperties.getProperty("tmdb_token") ?: ""
+        buildConfigField("String", "TMDB_TOKEN", "\"$tmdbToken\"")
     }
 
     buildTypes {
@@ -36,14 +50,12 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-    kotlinOptions {
-        jvmTarget = "1.8"
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     packaging {
         resources {
@@ -58,84 +70,79 @@ android {
 
 }
 
+kotlin {
+    jvmToolchain(17)
+}
+
 dependencies {
 
-    implementation("androidx.core:core-ktx:1.15.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.7")
-    implementation("androidx.activity:activity-compose:1.10.0")
+    // Core
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.kotlinx.serialization.core)
 
-    // Compose
-    implementation(platform("androidx.compose:compose-bom:2025.02.00"))
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.ui:ui-graphics")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material3:material3")
-    implementation("androidx.compose.runtime:runtime-livedata")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
-    implementation("androidx.navigation:navigation-compose:2.8.7")
-    implementation("androidx.constraintlayout:constraintlayout-compose:1.1.0")
+    // Compose (Bundle + BOM)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.bundles.compose)
+
+    // Navigation 3
+    implementation(libs.bundles.nav3)
 
     // Accompanist
-    implementation("com.google.accompanist:accompanist-permissions:0.37.0")
+    implementation(libs.accompanist.permissions)
 
-    // Player
-    val media3Version = "1.5.1"
-    implementation("androidx.media3:media3-exoplayer:$media3Version")
-    implementation("androidx.media3:media3-ui:$media3Version")
-    implementation("org.jellyfin.media3:media3-ffmpeg-decoder:1.5.0+1")
+    // Media Player
+    implementation(libs.bundles.media3)
 
     // Hilt
-    implementation("com.google.dagger:hilt-android:2.55")
-    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
-    ksp("com.google.dagger:dagger-compiler:2.55")
-    ksp("com.google.dagger:hilt-android-compiler:2.55")
+    implementation(libs.hilt.android)
+    implementation(libs.androidx.hilt.navigation.compose)
+    ksp(libs.hilt.compiler)
+    ksp(libs.hilt.android.compiler)
 
-    // Gson
-    implementation("com.google.code.gson:gson:2.11.0")
+    // Network & Serialization (Retrofit 3, OkHttp 5, Gson)
+    implementation(libs.bundles.network)
 
-    // Retrofit
-    implementation("com.squareup.retrofit2:retrofit:2.11.0")
-    implementation("com.squareup.retrofit2:converter-scalars:2.11.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
-
-    // OKHttp
-    implementation("com.squareup.okhttp3:okhttp:4.12.0")
-
-    // Glide
-    implementation("com.github.bumptech.glide:compose:1.0.0-beta01")
+    // Images
+    implementation(libs.bundles.image)
 
     // DataStore
-    val datastoreVersion = "1.1.2"
-    implementation("androidx.datastore:datastore-preferences:$datastoreVersion")
-    implementation("androidx.datastore:datastore-preferences-rxjava2:$datastoreVersion")
-    implementation("androidx.datastore:datastore-preferences-rxjava3:$datastoreVersion")
+    implementation(libs.bundles.datastore)
 
     // Room
-    val roomVersion = "2.6.1"
-    implementation("androidx.room:room-runtime:$roomVersion")
-    implementation("androidx.room:room-ktx:$roomVersion")
-    ksp("androidx.room:room-compiler:$roomVersion")
+    implementation(libs.bundles.room)
+    ksp(libs.androidx.room.compiler)
 
     // Firebase
-    implementation(platform("com.google.firebase:firebase-bom:33.9.0"))
-    implementation("com.google.firebase:firebase-analytics")
-    implementation("com.google.firebase:firebase-crashlytics")
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.bundles.firebase)
 
-    implementation("app.cash.turbine:turbine:1.2.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.1")
+    // Unit Testing
+    testImplementation(libs.junit)
+    testImplementation(libs.kotest)
+    testImplementation(libs.mockwebserver)
+    testImplementation(libs.mockk)
+    implementation(libs.turbine)
+    implementation(libs.kotlinx.coroutines.test)
 
-    testImplementation("junit:junit:4.13.2")
-    testImplementation("com.squareup.okhttp3:mockwebserver:4.12.0")
-    testImplementation("io.mockk:mockk:1.13.16")
+    // Android Testing
+    androidTestImplementation(libs.androidx.test.ext)
+    androidTestImplementation(libs.androidx.test.espresso)
+    androidTestImplementation(libs.truth)
+    androidTestImplementation(libs.androidx.core.testing)
+    androidTestImplementation(libs.mockk.android)
 
-    androidTestImplementation("androidx.test.ext:junit:1.2.1")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
-    androidTestImplementation("com.google.truth:truth:1.4.4")
-    androidTestImplementation("androidx.arch.core:core-testing:2.2.0")
-    androidTestImplementation("io.mockk:mockk-android:1.13.16")
-    androidTestImplementation(platform("androidx.compose:compose-bom:2025.02.00"))
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+    // UI Testing
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.ui.test.junit4)
 
-    debugImplementation("androidx.compose.ui:ui-tooling")
-    debugImplementation("androidx.compose.ui:ui-test-manifest")
+    // Debug
+    debugImplementation(libs.androidx.ui.tooling)
+    debugImplementation(libs.androidx.ui.test.manifest)
+
+}
+
+tasks.withType<Test>().configureEach {
+    useJUnitPlatform()
 }

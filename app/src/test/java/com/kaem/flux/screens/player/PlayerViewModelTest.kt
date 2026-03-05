@@ -8,6 +8,7 @@ import com.kaem.flux.data.repository.user.UserPreferences
 import com.kaem.flux.data.repository.user.UserRepository
 import com.kaem.flux.mockups.FakeArtworkRepository
 import com.kaem.flux.mockups.MediaMockups
+import com.kaem.flux.mockups.PlayerMockups
 import com.kaem.flux.model.artwork.ContentType
 import com.kaem.flux.model.artwork.Movie
 import com.kaem.flux.model.artwork.Status
@@ -286,7 +287,23 @@ class PlayerViewModelTest : FunSpec({
     }
 
     test("update tracks") {
-        // TODO
+        viewModel.uiState.test {
+
+            awaitItem()
+
+            viewModel.event.test {
+
+                viewModel.handleIntent(PlayerIntent.UpdateTracks(PlayerMockups.tracks))
+
+                val event = awaitItem()
+                event.shouldBeInstanceOf<PlayerEvent.SelectTrack>()
+
+            }
+
+            val state = awaitItem()
+            state.tracks.tracks shouldBe PlayerMockups.tracks
+
+        }
     }
 
     test("select track") {

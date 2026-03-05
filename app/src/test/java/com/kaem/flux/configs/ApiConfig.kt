@@ -1,20 +1,19 @@
-package com.kaem.flux.bases
+package com.kaem.flux.configs
 
 import com.kaem.flux.data.tmdb.TMDBService
+import io.kotest.core.listeners.TestListener
+import io.kotest.core.spec.Spec
 import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockWebServer
-import org.junit.After
-import org.junit.Before
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-abstract class ApiTest {
+class ApiConfig : TestListener {
 
-    protected lateinit var mockWebServer: MockWebServer
-    protected lateinit var api: TMDBService
+    lateinit var mockWebServer: MockWebServer
+    lateinit var api: TMDBService
 
-    @Before
-    open fun setUp() {
+    override suspend fun beforeSpec(spec: Spec) {
 
         // Start server
         mockWebServer = MockWebServer()
@@ -28,11 +27,9 @@ abstract class ApiTest {
             .build()
 
         api = retrofit.create(TMDBService::class.java)
-
     }
 
-    @After
-    open fun tearDown() {
+    override suspend fun afterSpec(spec: Spec) {
         mockWebServer.close()
     }
 

@@ -214,12 +214,13 @@ class PlayerViewModel @AssistedInject constructor(
 
         time?.let { saveTime(time = it) }
 
-        val showInterface = uiState.value.controls.showInterface
+        // Vérifie si l'interface est affichée
+        val interfaceShowed = uiState.value.controls.showInterface
 
-        if (showInterface) {
-            _event.send(PlayerEvent.BackToPreviousScreen)
-        } else {
+        if (interfaceShowed) {
             showInterface()
+        } else {
+            _event.send(PlayerEvent.BackToPreviousScreen)
         }
 
     }

@@ -120,6 +120,7 @@ dependencies {
 
     // Unit Testing
     testImplementation(libs.junit)
+    testImplementation(libs.kotest)
     testImplementation(libs.mockwebserver)
     testImplementation(libs.mockk)
     implementation(libs.turbine)
@@ -140,4 +141,8 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+}
+
+tasks.withType<Test>().configureEach {
+    useJUnitPlatform()
 }

@@ -1,103 +1,96 @@
 package com.kaem.flux.tmdb
 
-import com.kaem.flux.bases.ApiTest
+import com.kaem.flux.configs.ApiConfig
 import com.kaem.flux.mockups.TMDBResponseMockups
-import kotlinx.coroutines.runBlocking
+import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.comparables.shouldBeGreaterThan
+import io.kotest.matchers.shouldBe
 import okhttp3.mockwebserver.MockResponse
-import org.junit.Test
 
-class TMDBServiceTest : ApiTest() {
+class TMDBServiceTest : FunSpec({
 
-    @Test
-    fun get_movies_success() = runBlocking {
+    val apiConfig = ApiConfig()
+    extension(apiConfig)
+
+    test("get movies success") {
 
         val mockResponse = MockResponse()
             .setBody(TMDBResponseMockups.movies)
             .setResponseCode(200)
-        mockWebServer.enqueue(mockResponse)
+        apiConfig.mockWebServer.enqueue(mockResponse)
 
-        val tmdbResult = api.getMovie("your name")
+        val tmdbResult = apiConfig.api.getMovie("your name")
 
-        assert(tmdbResult.results.isNotEmpty())
-        assert(tmdbResult.resultCount > 0)
-        assert(tmdbResult.pageCount > 0)
+        tmdbResult.results.isNotEmpty() shouldBe true
+        tmdbResult.resultCount shouldBeGreaterThan 0
+        tmdbResult.pageCount shouldBeGreaterThan 0
 
     }
 
-    @Test
-    fun get_movies_fail() = runBlocking {
+    test("get movies fail") {
 
         val mockResponse = MockResponse()
             .setResponseCode(404)
-        mockWebServer.enqueue(mockResponse)
+        apiConfig.mockWebServer.enqueue(mockResponse)
 
-        try {
-            api.getMovie("your name")
-            assert(false) { "we should have an exception" }
-        } catch (_: Exception) {
-            assert(true)
+        shouldThrow<Exception> {
+            apiConfig.api.getMovie("your name")
         }
 
     }
 
-    @Test
-    fun get_shows_success() = runBlocking {
+    test("get shows success") {
 
         val mockResponse = MockResponse()
             .setBody(TMDBResponseMockups.shows)
             .setResponseCode(200)
-        mockWebServer.enqueue(mockResponse)
+        apiConfig.mockWebServer.enqueue(mockResponse)
 
-        val tmdbResult = api.getShow("naruto")
+        val tmdbResult = apiConfig.api.getShow("naruto")
 
-        assert(tmdbResult.results.isNotEmpty())
-        assert(tmdbResult.resultCount > 0)
-        assert(tmdbResult.pageCount > 0)
+        tmdbResult.results.isNotEmpty() shouldBe true
+        tmdbResult.resultCount shouldBeGreaterThan 0
+        tmdbResult.pageCount shouldBeGreaterThan 0
 
     }
 
-    @Test
-    fun get_shows_fail() = runBlocking {
+    test("get shows fail") {
 
         val mockResponse = MockResponse()
             .setResponseCode(404)
-        mockWebServer.enqueue(mockResponse)
+        apiConfig.mockWebServer.enqueue(mockResponse)
 
-        try {
-            api.getShow("naruto")
-            assert(false) { "we should have an exception" }
-        } catch (_: Exception) {
-            assert(true)
+        shouldThrow<Exception> {
+            apiConfig.api.getShow("naruto")
         }
 
     }
 
-    @Test
-    fun get_movie_details() = runBlocking {
+    test("get movie details") {
 
         val mockResponse = MockResponse()
             .setBody(TMDBResponseMockups.movie)
             .setResponseCode(200)
-        mockWebServer.enqueue(mockResponse)
+        apiConfig.mockWebServer.enqueue(mockResponse)
 
-        val tmdbResult = api.getMovieDetails(0L)
+        val tmdbResult = apiConfig.api.getMovieDetails(0L)
 
-        assert(tmdbResult.title.isNotEmpty())
+        tmdbResult.title.isNotEmpty() shouldBe true
 
     }
 
-    @Test
-    fun get_episode_details() = runBlocking {
+    test("get episode details") {
 
         val mockResponse = MockResponse()
             .setBody(TMDBResponseMockups.episode)
             .setResponseCode(200)
-        mockWebServer.enqueue(mockResponse)
+        apiConfig.mockWebServer.enqueue(mockResponse)
 
-        val tmdbResult = api.getEpisode(0L, 1, 1)
+        val tmdbResult = apiConfig.api.getEpisode(0L, 1, 1)
 
-        assert(tmdbResult.title.isNotEmpty())
+        tmdbResult.title.isNotEmpty() shouldBe true
 
     }
 
-}
+})

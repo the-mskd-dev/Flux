@@ -47,7 +47,7 @@ class LibraryRepositoryTest {
         repository.getCatalog(sync = false)
 
         // Then
-        repository.catalogFlow.test {
+        repository.flow.test {
 
             val loadedState = awaitItem()
             assert(!loadedState.isLoading)
@@ -67,7 +67,7 @@ class LibraryRepositoryTest {
         repository.getCatalog(sync = true)
 
         // Then
-        repository.catalogFlow.test {
+        repository.flow.test {
 
             val loadedState = awaitItem()
             assert(!loadedState.isLoading)

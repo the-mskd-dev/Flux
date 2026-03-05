@@ -1,32 +1,30 @@
 package com.kaem.flux.screens.search
 
 import app.cash.turbine.test
-import com.kaem.flux.bases.BaseTest
+import com.kaem.flux.configs.fluxExtensions
 import com.kaem.flux.data.repository.catalog.CatalogRepository
+import com.kaem.flux.mockups.FakeCatalogRepository
 import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.artwork.ContentType
-import io.mockk.every
-import io.mockk.mockk
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.test.runTest
-import org.junit.Test
+import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.shouldBe
 
-class SearchViewModelTest : BaseTest() {
+class SearchViewModelTest : FunSpec({
 
-    private lateinit var viewModel: SearchViewModel
-    private lateinit var catalogRepository: CatalogRepository
+    fluxExtensions()
 
-    // Mocked data
-    private val libraryFlow = MutableStateFlow(
-        CatalogRepository.Content(artworks = MediaMockups.artworks)
-    )
+    lateinit var viewModel: SearchViewModel
+    lateinit var catalogRepository: FakeCatalogRepository
 
-    override fun setUp() {
-        super.setUp()
 
-        catalogRepository = mockk(relaxed = true) {
-            every { catalogFlow } returns this@SearchViewModelTest.libraryFlow
-        }
+    beforeTest {
+
+        catalogRepository = FakeCatalogRepository(
+            initialContent = CatalogRepository.Content(
+                isLoading = false,
+                artworks = MediaMockups.artworks
+            )
+        )
 
         viewModel = SearchViewModel(
             contentType = null,
@@ -35,22 +33,20 @@ class SearchViewModelTest : BaseTest() {
 
     }
 
-    @Test
-    fun initial_state() = runTest {
+    test("initial state") {
 
         viewModel.uiState.test {
 
             val initialState = awaitItem()
 
-            assert(initialState.searchWord == "")
-            assert(initialState.artworks == MediaMockups.artworks)
+            initialState.searchWord shouldBe ""
+            initialState.artworks shouldBe MediaMockups.artworks
 
         }
 
     }
 
-    @Test
-    fun search_word_with_one_result() = runTest {
+    test("search word with one result") {
 
         viewModel.uiState.test {
 
@@ -60,16 +56,15 @@ class SearchViewModelTest : BaseTest() {
 
             val state = awaitItem()
 
-            assert(state.searchWord == "nar")
-            assert(state.filteredArtworks.size == 1)
-            assert(state.filteredArtworks.any { it.title.contains("naruto", ignoreCase = true) })
+            state.searchWord shouldBe "nar"
+            state.filteredArtworks.size shouldBe 1
+            state.filteredArtworks.any { it.title.contains("naruto", ignoreCase = true) } shouldBe true
 
         }
 
     }
 
-    @Test
-    fun search_word_with_multiple_results() = runTest {
+    test("search word with multiple results") {
 
         viewModel.uiState.test {
 
@@ -79,16 +74,15 @@ class SearchViewModelTest : BaseTest() {
 
             val state = awaitItem()
 
-            assert(state.searchWord == "na")
-            assert(state.filteredArtworks.size == 2)
-            assert(state.filteredArtworks == MediaMockups.artworks)
+            state.searchWord shouldBe "na"
+            state.filteredArtworks.size shouldBe 2
+            state.filteredArtworks shouldBe MediaMockups.artworks
 
         }
 
     }
 
-    @Test
-    fun search_word_with_no_result() = runTest {
+    test("search word with no result") {
 
         viewModel.uiState.test {
 
@@ -98,15 +92,14 @@ class SearchViewModelTest : BaseTest() {
 
             val state = awaitItem()
 
-            assert(state.searchWord == "spider-man")
-            assert(state.filteredArtworks.isEmpty())
+            state.searchWord shouldBe "spider-man"
+            state.filteredArtworks.isEmpty() shouldBe true
 
         }
 
     }
 
-    @Test
-    fun filter_on_movie_type() = runTest {
+    test("filter on movie type") {
 
         viewModel.uiState.test {
 
@@ -116,15 +109,14 @@ class SearchViewModelTest : BaseTest() {
 
             val state = awaitItem()
 
-            assert(state.contentType == ContentType.MOVIE)
-            assert(state.filteredArtworks.all { it.type == ContentType.MOVIE })
+            state.contentType shouldBe ContentType.MOVIE
+            state.filteredArtworks.all { it.type == ContentType.MOVIE } shouldBe true
 
         }
 
     }
 
-    @Test
-    fun filter_on_show_type() = runTest {
+    test("filter_on_show_type") {
 
         viewModel.uiState.test {
 
@@ -134,11 +126,11 @@ class SearchViewModelTest : BaseTest() {
 
             val state = awaitItem()
 
-            assert(state.contentType == ContentType.SHOW)
-            assert(state.filteredArtworks.all { it.type == ContentType.SHOW })
+            state.contentType shouldBe ContentType.SHOW
+            state.filteredArtworks.all { it.type == ContentType.SHOW } shouldBe true
 
         }
 
     }
 
-}
+})

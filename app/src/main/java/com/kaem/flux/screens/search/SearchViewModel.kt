@@ -35,7 +35,7 @@ class SearchViewModel @AssistedInject constructor(
 
     init {
         viewModelScope.launch {
-            repository.catalogFlow.collect { library ->
+            repository.flow.collect { library ->
                 _uiState.update { it.copy(artworks = library.artworks) }
             }
         }

@@ -331,17 +331,17 @@ class PlayerViewModelTest : FunSpec({
 
             viewModel.uiState.test {
 
-                val initialState = awaitItem()
+                var state = awaitItem()
 
                 viewModel.handleIntent(PlayerIntent.ShowNextEpisode(show = testCase.show))
 
-                if (initialState.controls.nextButton != testCase.expectedNexTButton) {
-                    val finalState = awaitItem()
-                    finalState.controls.nextButton shouldBe testCase.expectedNexTButton
+                if (state.controls.nextButton != testCase.expectedNexTButton) {
+                    state = awaitItem()
                 } else {
                     expectNoEvents()
-                    initialState.controls.nextButton shouldBe testCase.expectedNexTButton
                 }
+
+                state.controls.nextButton shouldBe testCase.expectedNexTButton
 
             }
 

@@ -302,7 +302,17 @@ class PlayerViewModelTest : FunSpec({
     }
 
     test("cancel next episode") {
-        // TODO
+
+        viewModel.uiState.test {
+            awaitItem()
+
+            viewModel.handleIntent(PlayerIntent.CancelNextEpisode)
+
+            val state = awaitItem()
+            state.controls.nextButton.shouldBeInstanceOf<PlayerUiState.NextButton.Canceled>()
+
+        }
+
     }
 
     test("play next episode") {

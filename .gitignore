@@ -1,3 +1,4 @@
+# --- Android / Gradle ---
 *.iml
 .gradle
 /.idea/*
@@ -11,3 +12,17 @@ local.properties
 /app/debug
 /app/release
 /app/google-services.json
+
+# --- Fastlane ---
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
+fastlane/*.json
+
+# --- Keys ---
+*.jks
+*.keystore
+*.p12
+*.pem
+.env*

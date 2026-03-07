@@ -11,7 +11,8 @@ local.properties
 /private
 /app/debug
 /app/release
-/app/google-services.json
+/app/src/release/google-services.json
+/app/src/debug/google-services.json
 
 # --- Fastlane ---
 fastlane/report.xml

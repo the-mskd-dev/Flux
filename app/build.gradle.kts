@@ -48,6 +48,12 @@ configure<ApplicationExtension> {
                 "proguard-rules.pro"
             )
         }
+
+        debug {
+            applicationIdSuffix = ".debug"
+            versionNameSuffix = "-debug"
+            manifestPlaceholders["appName"] = "Flux (Debug)"
+        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17

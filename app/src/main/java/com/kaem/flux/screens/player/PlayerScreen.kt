@@ -48,6 +48,10 @@ fun PlayerScreen(
     val screenStateHolder = rememberScreenStateHolder()
     val subtitles by playerStateHolder.subtitles.collectAsStateWithLifecycle()
 
+    BackHandler(enabled = true) {
+        viewModel.handleIntent(PlayerIntent.OnBackTap(backSystem = true, time = playerStateHolder.player.currentPosition))
+    }
+
     PlayerSideEffects(
         viewModel = viewModel,
         stateHolder = playerStateHolder,
@@ -97,10 +101,6 @@ fun PlayerContent(
     tracksState: () -> PlayerUiState.Tracks,
     sendIntent: (PlayerIntent) -> Unit
 ) {
-
-    BackHandler(enabled = true) {
-        sendIntent(PlayerIntent.OnBackTap(backSystem = true, time = player.currentPosition))
-    }
 
     Box(
         modifier = Modifier

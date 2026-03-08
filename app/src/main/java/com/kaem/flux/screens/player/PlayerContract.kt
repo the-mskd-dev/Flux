@@ -52,8 +52,8 @@ sealed class PlayerScreen {
 
 sealed class PlayerIntent {
     data class SaveTime(val time: Long) : PlayerIntent()
-    data class OnBackTap(val time: Long? = null) : PlayerIntent()
-    data object ShowInterface : PlayerIntent()
+    data class OnBackTap(val backSystem: Boolean, val time: Long? = null) : PlayerIntent()
+    data object ChangeInterfaceVisibility : PlayerIntent()
     data object TogglePlayButton : PlayerIntent()
     data class SetPlayingStatus(val isPlaying: Boolean) : PlayerIntent()
     data object OnFastRewind : PlayerIntent()

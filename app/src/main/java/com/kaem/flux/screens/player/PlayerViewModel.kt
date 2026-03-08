@@ -88,10 +88,10 @@ class PlayerViewModel @AssistedInject constructor(
 
     fun handleIntent(intent: PlayerIntent) = viewModelScope.launch {
         when (intent) {
-            PlayerIntent.ShowInterface -> showInterface()
+            PlayerIntent.ChangeInterfaceVisibility -> changeInterfaceVisibility()
             is PlayerIntent.ShowSettings -> showSettingsSheet(sheet = intent.sheet)
             is PlayerIntent.SaveTime -> saveTime(time = intent.time)
-            is PlayerIntent.OnBackTap -> onBackTap(time = intent.time)
+            is PlayerIntent.OnBackTap -> onBackTap(backSystem = intent.backSystem, time = intent.time)
             PlayerIntent.TogglePlayButton -> togglePlayButton()
             is PlayerIntent.SetPlayingStatus -> setPlayingStatus(isPlaying = intent.isPlaying)
             PlayerIntent.OnFastRewind -> onFastRewind()
@@ -130,7 +130,7 @@ class PlayerViewModel @AssistedInject constructor(
         _event.send(PlayerEvent.UpdateProgress(progress = progress))
     }
 
-    private fun showInterface() {
+    private fun changeInterfaceVisibility() {
         _controlsState.update { it.copy(showInterface = !it.showInterface) }
     }
 
@@ -210,15 +210,14 @@ class PlayerViewModel @AssistedInject constructor(
         _controlsState.update { it.copy(nextButton = PlayerUiState.NextButton.Canceled) }
     }
 
-    private suspend fun onBackTap(time: Long?) {
+    private suspend fun onBackTap(backSystem: Boolean, time: Long?) {
 
         time?.let { saveTime(time = it) }
 
-        // Vérifie si l'interface est affichée
         val interfaceShowed = uiState.value.controls.showInterface
 
-        if (interfaceShowed) {
-            showInterface()
+        if (interfaceShowed && backSystem) {
+            changeInterfaceVisibility()
         } else {
             _event.send(PlayerEvent.BackToPreviousScreen)
         }

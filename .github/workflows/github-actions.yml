@@ -13,30 +13,30 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: set up JDK 17
+      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
           cache: gradle
 
-      - name: Setup Ruby
+      - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.2'
           bundler-cache: true
 
-      - name: Prepare Local Properties
+      - name: Set up Local Properties
         run: |
             echo "tmdb_token=${{ secrets.TMDB_TOKEN }}" > local.properties
             echo "firebase_beta_id=${{ secrets.FIREBASE_BETA_ID }}" >> local.properties
 
-      - name: Decode Keystore
-        run: |
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > keystore.jks
+      - name: Set up Google Services
+        run: echo "${{ secrets.GOOGLE_SERVICES_BETA }}" | base64 --decode > app/google-services.json
 
       #- name: Create Keystore Properties
       #  run: |
+      #    echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > keystore.jks
       #    echo "keyAlias=${{ secrets.KEYSTORE_ALIAS }}" > keystore.properties
       #    echo "keyPassword=${{ secrets.KEYSTORE_PASSWORD }}" >> keystore.properties
       #    echo "storeFile=../keystore.jks" >> keystore.properties

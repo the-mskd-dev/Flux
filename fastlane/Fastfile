@@ -28,7 +28,7 @@ platform :android do
       build_type: "Debug"
     )
     release = firebase_app_distribution(
-      app: "1:745123580180:android:1398ae6812f724e10eda01",
+      app: "1:745123580180:android:08b3e0e28981bb6b0eda01",
       groups: "testers",
     )
   end

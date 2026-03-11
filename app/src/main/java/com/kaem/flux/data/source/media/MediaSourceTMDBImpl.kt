@@ -103,7 +103,7 @@ class MediaSourceTMDBImpl @Inject constructor(
                         artwork to movie
 
                     } catch (e: Exception) {
-                        Log.i(TAG, "[getMovies] Fail to get movie : ${folder.title}", e)
+                        Log.e(TAG, "[getMovies] Fail to get movie : ${folder.title}", e)
 
                         if (e is IllegalStateException || e is JsonSyntaxException) {
                             firebaseAnalytics.logEvent(Analytics.Event.TMDB_ERROR) {
@@ -148,7 +148,7 @@ class MediaSourceTMDBImpl @Inject constructor(
 
         }
 
-        Log.i(TAG, "[getShows] Found ${shows.size}/${folders.size} shows and ${shows.values.flatten().size}/${folders.map { it.files }.flatten().size} episodes")
+        Log.i(TAG, "[getShows] Found ${shows.size}/${folders.size} shows and ${shows.values.flatten().size}/${folders.flatMap { it.files }.size} episodes")
 
         return shows
 

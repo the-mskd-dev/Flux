@@ -68,9 +68,9 @@ configure<ApplicationExtension> {
         }
 
         debug {
-            applicationIdSuffix = ".debug"
-            versionNameSuffix = "-debug"
-            manifestPlaceholders["appName"] = "Flux (Debug)"
+            applicationIdSuffix = ".beta"
+            versionNameSuffix = "-beta"
+            manifestPlaceholders["appName"] = "Flux Beta"
         }
     }
     compileOptions {

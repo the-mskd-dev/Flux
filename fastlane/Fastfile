@@ -22,10 +22,10 @@ platform :android do
     gradle(task: "testDebugUnitTest")
   end
 
-  desc "Release a beta debug version on Firebase"
+  desc "Create a beta version and send it to Firebase"
   lane :beta do
 
-    def get_local_property(key)
+    def get_local_properties(key)
       properties_file = '../local.properties'
       if File.exist?(properties_file)
         File.foreach(properties_file) do |line|
@@ -35,11 +35,43 @@ platform :android do
       nil
     end
 
-    firebase_id = get_local_property("firebase_beta_id")
+    firebase_id = get_local_properties("firebase_beta_id")
 
     gradle(
       task: "assemble",
       build_type: "Debug"
+    )
+
+    firebase_app_distribution(
+      app: "#{firebase_id}",
+      groups: "testers",
+      service_credentials_file: "firebase-distribution.json"
+    )
+
+  end
+
+  desc "Create a beta version and send it to Firebase"
+  lane :beta do
+
+    def get_keystore_properties(key)
+      properties_file = '../keystore.properties'
+      if File.exist?(properties_file)
+        File.foreach(properties_file) do |line|
+          return line.split('=')[1].strip if line.start_with?(key)
+        end
+      end
+      nil
+    end
+
+    firebase_id = get_keystore_properties("firebase_beta_id")
+    storePassword = get_keystore_properties("storePassword")
+    keyPassword = get_keystore_properties("keyPassword")
+    keyAlias = get_keystore_properties("keyAlias")
+    storeFile = get_keystore_properties("storeFile")
+
+    gradle(
+      task: "assemble",
+      build_type: "Release"
     )
 
     firebase_app_distribution(

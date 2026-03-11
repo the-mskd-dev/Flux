@@ -21,7 +21,8 @@ fastlane/screenshots
 fastlane/test_output
 fastlane/*.json
 
-# --- Keys ---
+# --- Keys & Signing ---
+keystore.properties
 *.jks
 *.keystore
 *.p12

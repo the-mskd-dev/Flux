@@ -32,7 +32,7 @@ jobs:
             echo "firebase_beta_id=${{ secrets.FIREBASE_BETA_ID }}" >> local.properties
 
       - name: Decode Google Services
-        run: echo "${{ secrets.GOOGLE_SERVICES_BETA }}" | base64 --decode > app/google-services.json
+        run: echo "${{ secrets.GOOGLE_SERVICES }}" | base64 --decode > app/google-services.json
 
       - name: Decode Firebase Distribution services
         run: echo "${{ secrets.FIREBASE_DISTRIBUTION }}" | base64 --decode > firebase-distribution.json

@@ -41,11 +41,13 @@ platform :android do
       task: "assemble",
       build_type: "Debug"
     )
-    release = firebase_app_distribution(
+
+    firebase_app_distribution(
       app: "#{firebase_id}",
       groups: "testers",
-      service_credentials_file: "firebase-services.json"
+      service_credentials_file: "firebase-distribution.json"
     )
+
   end
 
 end

@@ -11,11 +11,10 @@ local.properties
 /private
 /app/debug
 /app/release
-/app/src/release/google-services.json
-/app/src/debug/google-services.json
+/app/google-services.json
 
 # --- Firebase ---
-firebase-services.json
+firebase-distribution.json
 
 # --- Fastlane ---
 fastlane/report.xml

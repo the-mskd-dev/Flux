@@ -14,10 +14,18 @@ plugins {
     alias(libs.plugins.crashlytics)
 }
 
-val localProperties = Properties()
+// Local properties
 val localPropertiesFile = rootProject.file("local.properties")
+val localProperties = Properties()
 if (localPropertiesFile.exists()) {
     localProperties.load(FileInputStream(localPropertiesFile))
+}
+
+// Keystore properties
+val keystorePropertiesFile = rootProject.file("keystore.properties")
+val keystoreProperties = Properties()
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 }
 
 configure<ApplicationExtension> {
@@ -71,6 +79,15 @@ configure<ApplicationExtension> {
             excludes += "META-INF/LICENSE.txt"
             excludes += "META-INF/DEPENDENCIES"
             excludes += "META-INF/*.kotlin_module"
+        }
+    }
+
+    signingConfigs {
+        create("config") {
+            keyAlias = keystoreProperties["keyAlias"] as String
+            keyPassword = keystoreProperties["keyPassword"] as String
+            storeFile = file(keystoreProperties["storeFile"] as String)
+            storePassword = keystoreProperties["storePassword"] as String
         }
     }
 

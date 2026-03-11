@@ -68,7 +68,7 @@ fun PlayerScreen(
             PlayerScreen.Error -> {
                 ErrorScreen(
                     message = stringResource(R.string.oups_an_error_occured),
-                    onBackButtonTap = { viewModel.handleIntent(PlayerIntent.OnBackTap()) }
+                    onBackButtonTap = { viewModel.handleIntent(PlayerIntent.OnBackTap(backSystem = true)) }
                 )
             }
             is PlayerScreen.Content -> {
@@ -99,7 +99,7 @@ fun PlayerContent(
 ) {
 
     BackHandler(enabled = true) {
-        sendIntent(PlayerIntent.OnBackTap(time = player.currentPosition))
+        sendIntent(PlayerIntent.OnBackTap(backSystem = true, time = player.currentPosition))
     }
 
     Box(
@@ -107,7 +107,7 @@ fun PlayerContent(
             .fillMaxSize()
             .background(Color.Black)
             .clickable {
-                sendIntent(PlayerIntent.ShowInterface)
+                sendIntent(PlayerIntent.ChangeInterfaceVisibility)
             }
     ) {
 

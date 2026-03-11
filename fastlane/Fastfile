@@ -1,0 +1,50 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:android)
+
+platform :android do
+
+  desc "Runs all the tests"
+  lane :test do
+    gradle(task: "testDebugUnitTest")
+  end
+
+  desc "Release a beta debug version on Firebase"
+  lane :beta do
+
+    def get_local_property(key)
+      properties_file = '../local.properties'
+      if File.exist?(properties_file)
+        File.foreach(properties_file) do |line|
+          return line.split('=')[1].strip if line.start_with?(key)
+        end
+      end
+      nil
+    end
+
+    firebase_id = get_local_property("firebase_beta_id")
+
+    gradle(
+      task: "assemble",
+      build_type: "Debug"
+    )
+    release = firebase_app_distribution(
+      app: "#{firebase_id}",
+      groups: "testers",
+    )
+  end
+
+end

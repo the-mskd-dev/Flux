@@ -22,6 +22,7 @@ data class SaveTimeTestCase(
 data class PlayerBackTapTestCase(
     val description: String,
     val interfaceShowed: Boolean,
+    val backSystem: Boolean
 )
 
 data class ShowNextEpisodeTestCase(

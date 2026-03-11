@@ -55,7 +55,7 @@ class PlayerViewModelTest : FunSpec({
 
     }
 
-    test("show interface") {
+    test("interface visibility") {
         viewModel.uiState.test {
 
             // Hidden by default
@@ -63,12 +63,12 @@ class PlayerViewModelTest : FunSpec({
             initialState.controls.showInterface shouldBe false
 
             // Test show
-            viewModel.handleIntent(PlayerIntent.ShowInterface)
+            viewModel.handleIntent(PlayerIntent.ChangeInterfaceVisibility)
             val showedState = awaitItem()
             showedState.controls.showInterface shouldBe true
 
             // Test hide
-            viewModel.handleIntent(PlayerIntent.ShowInterface)
+            viewModel.handleIntent(PlayerIntent.ChangeInterfaceVisibility)
             val hiddenState = awaitItem()
             hiddenState.controls.showInterface shouldBe false
 
@@ -202,12 +202,24 @@ class PlayerViewModelTest : FunSpec({
         withData(
             nameFn = { it.description },
             PlayerBackTapTestCase(
-                description = "Back tap when interface is showed",
-                interfaceShowed = true
+                description = "System back tap when interface is showed",
+                interfaceShowed = true,
+                backSystem = true
             ),
             PlayerBackTapTestCase(
-                description = "Back tap when interface is not showed",
-                interfaceShowed = false
+                description = "Button back tap when interface is showed",
+                interfaceShowed = true,
+                backSystem = false
+            ),
+            PlayerBackTapTestCase(
+                description = "System back tap when interface is not showed",
+                interfaceShowed = false,
+                backSystem = true
+            ),
+            PlayerBackTapTestCase(
+                description = "Button back tap when interface is not showed",
+                interfaceShowed = false,
+                backSystem = false
             )
         ) { testCase ->
 
@@ -215,21 +227,21 @@ class PlayerViewModelTest : FunSpec({
                 awaitItem()
 
                 if (testCase.interfaceShowed) {
-                    viewModel.handleIntent(PlayerIntent.ShowInterface)
+                    viewModel.handleIntent(PlayerIntent.ChangeInterfaceVisibility)
                     awaitItem().controls.showInterface shouldBe true
                 }
 
                 viewModel.event.test {
-                    viewModel.handleIntent(PlayerIntent.OnBackTap(time = null))
+                    viewModel.handleIntent(PlayerIntent.OnBackTap(backSystem = testCase.backSystem, time = null))
 
-                    if (testCase.interfaceShowed) {
+                    if (testCase.interfaceShowed && testCase.backSystem) {
                         expectNoEvents()
                     } else {
                         awaitItem() shouldBe PlayerEvent.BackToPreviousScreen
                     }
                 }
 
-                if (testCase.interfaceShowed) {
+                if (testCase.interfaceShowed && testCase.backSystem) {
                     awaitItem().controls.showInterface shouldBe false
                 }
 

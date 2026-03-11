@@ -20,6 +20,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.kaem.flux.mockups.PlayerMockups
 import com.kaem.flux.screens.player.PlayerIntent
@@ -91,16 +93,19 @@ fun PlayerSettingsItem(
             .clickable { onTap() }
             .fillMaxWidth()
             .padding(all = Ui.Space.MEDIUM),
-        horizontalArrangement = Arrangement.SpaceBetween,
+        horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL),
         verticalAlignment = Alignment.CenterVertically
     ) {
 
         Text.Title.Medium(
-            modifier = Modifier.weight(1f),
             text = label,
         )
 
         Text.Label.Large(
+            modifier = Modifier.weight(1f),
+            textAlign = TextAlign.End,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
             text = value,
         )
 

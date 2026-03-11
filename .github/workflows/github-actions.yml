@@ -31,8 +31,16 @@ jobs:
             echo "tmdb_token=${{ secrets.TMDB_TOKEN }}" > local.properties
             echo "firebase_beta_id=${{ secrets.FIREBASE_BETA_ID }}" >> local.properties
 
-      # - name: Decode Keystore
-      #   run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > keystore.jks
+      - name: Decode Keystore
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > keystore.jks
+
+      #- name: Create Keystore Properties
+      #  run: |
+      #    echo "keyAlias=${{ secrets.KEYSTORE_ALIAS }}" > keystore.properties
+      #    echo "keyPassword=${{ secrets.KEYSTORE_PASSWORD }}" >> keystore.properties
+      #    echo "storeFile=../keystore.jks" >> keystore.properties
+      #    echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" >> keystore.properties
 
       - name: Run Fastlane Beta
         run: bundle exec fastlane beta

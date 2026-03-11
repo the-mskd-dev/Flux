@@ -50,10 +50,10 @@ configure<ApplicationExtension> {
 
     signingConfigs {
         create("config") {
-            keyAlias = keystoreProperties["keyAlias"] as String
-            keyPassword = keystoreProperties["keyPassword"] as String
-            storeFile = file(keystoreProperties["storeFile"] as String)
-            storePassword = keystoreProperties["storePassword"] as String
+            keyAlias = keystoreProperties["keyAlias"]?.toString() ?: ""
+            keyPassword = keystoreProperties["keyPassword"]?.toString() ?: ""
+            storeFile = keystoreProperties["storeFile"]?.toString()?.let { rootProject.file(it) }
+            storePassword = keystoreProperties["storePassword"]?.toString() ?: ""
         }
     }
 

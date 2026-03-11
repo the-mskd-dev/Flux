@@ -44,6 +44,7 @@ platform :android do
     release = firebase_app_distribution(
       app: "#{firebase_id}",
       groups: "testers",
+      service_credentials_file: "firebase-services.json"
     )
   end
 

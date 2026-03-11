@@ -74,12 +74,6 @@ platform :android do
       build_type: "Release"
     )
 
-    firebase_app_distribution(
-      app: "#{firebase_id}",
-      groups: "testers",
-      service_credentials_file: "firebase-distribution.json"
-    )
-
   end
 
 end

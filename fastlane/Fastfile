@@ -74,16 +74,24 @@ platform :android do
     #version_code = get_version_code(gradle_file_path: "app/build.gradle.kts")
     version_name = get_version_name(gradle_file_path: "app/build.gradle.kts")
     tag_name = "v#{version_name}"
+    current_branch = "prepare_release"
 
-    add_git_tag(tag: tag_name)
-    push_to_git_remote
+    if `git tag -l #{tag_name}`.strip.length > 0
+      puts "Delete existing tag : #{tag_name}"
+      sh("git tag -d #{tag_name}")
+    end
+
+    #add_git_tag(tag: tag_name)
+    #push_to_git_remote(force: true)
+    #sh("git push origin #{current_branch} --tags --force")
 
     set_github_release(
           repository_name: "ady-kaem/Flux",
           tag_name: tag_name,
           name: "Release #{tag_name}",
-          description: "First release",
-          commitish: "main",
+          description: (File.read("CHANGELOG.md") rescue "No changelog provided"),
+          #commitish: "main",
+          commitish: "current_branch",
           upload_assets: ["app/build/outputs/apk/release/app-release.apk"]
         )
 

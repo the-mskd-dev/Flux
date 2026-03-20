@@ -69,16 +69,14 @@ platform :android do
 #     keyAlias = get_keystore_properties("keyAlias")
 #     storeFile = get_keystore_properties("storeFile")
 
-    version_name = get_version_name(gradle_file: "app/build.gradle.kts")
-    version_code = get_version_code(gradle_file: "app/build.gradle.kts")
-    tag_name = "v#{version_name}-#{version_code}"
+    gradle(task: "assemble",build_type: "Release")
+
+    #version_code = get_version_code(gradle_file_path: "app/build.gradle.kts")
+    version_name = get_version_name(gradle_file_path: "app/build.gradle.kts")
+    tag_name = "v#{version_name}"
 
     add_git_tag(tag: tag_name)
-
-    gradle(
-      task: "assemble",
-      build_type: "Release"
-    )
+    push_to_git_remote
 
     set_github_release(
           repository_name: "ady-kaem/Flux",

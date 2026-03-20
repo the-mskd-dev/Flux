@@ -46,3 +46,5 @@ jobs:
         run: |
           bundle exec fastlane test
           bundle exec fastlane release
+        env:
+          GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}

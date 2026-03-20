@@ -29,7 +29,15 @@ Runs all the tests
 [bundle exec] fastlane android beta
 ```
 
-Release a beta debug version on Firebase
+Create a beta version and send it to Firebase
+
+### android release
+
+```sh
+[bundle exec] fastlane android release
+```
+
+Create a release version and send it to Github
 
 ----
 

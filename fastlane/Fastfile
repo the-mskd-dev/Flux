@@ -22,10 +22,10 @@ platform :android do
     gradle(task: "testDebugUnitTest")
   end
 
-  desc "Release a beta debug version on Firebase"
+  desc "Create a beta version and send it to Firebase"
   lane :beta do
 
-    def get_local_property(key)
+    def get_local_properties(key)
       properties_file = '../local.properties'
       if File.exist?(properties_file)
         File.foreach(properties_file) do |line|
@@ -35,7 +35,7 @@ platform :android do
       nil
     end
 
-    firebase_id = get_local_property("firebase_beta_id")
+    firebase_id = get_local_properties("firebase_beta_id")
 
     gradle(
       task: "assemble",
@@ -47,6 +47,56 @@ platform :android do
       groups: "testers",
       service_credentials_file: "firebase-distribution.json"
     )
+
+  end
+
+  desc "Create a release version and send it to Github"
+  lane :release do
+
+    # Build APK
+    gradle(task: "assemble",build_type: "Release")
+
+    # Check apk file
+    source_apk = lane_context[SharedValues::GRADLE_APK_OUTPUT_PATH]
+    if source_apk.nil? || !File.exist?(source_apk)
+      UI.user_error!("APK not founded")
+    end
+
+    # Create release name
+    version_code = get_version_code(gradle_file_path: "app/build.gradle.kts")
+    version_name = get_version_name(gradle_file_path: "app/build.gradle.kts")
+    tag_name = "release-v#{version_name}-#{version_code}"
+
+    # Rename apk file
+    target_apk = File.join(File.dirname(source_apk), "flux-#{tag_name}.apk")
+    sh("cp #{source_apk} #{target_apk}")
+
+    # Create tag
+    if `git tag -l #{tag_name}`.strip.length > 0
+      puts "Delete existing tag : #{tag_name}"
+      sh("git tag -d #{tag_name}")
+    end
+
+    # Get changelog
+    changelog_path = "../CHANGELOG.md"
+    release_notes = "No changelog"
+
+    if File.exist?(changelog_path)
+        release_notes = File.read(changelog_path)
+        puts "✅ Changelog loaded"
+    else
+        puts "⚠️ Changelog not founded"
+    end
+
+    #Publish release on github
+    set_github_release(
+          repository_name: "ady-kaem/Flux",
+          tag_name: tag_name,
+          name: "Release #{tag_name}",
+          description: release_notes,
+          commitish: "main",
+          upload_assets: [target_apk]
+        )
 
   end
 

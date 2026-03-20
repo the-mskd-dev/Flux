@@ -22,6 +22,7 @@ fastlane/Preview.html
 fastlane/screenshots
 fastlane/test_output
 fastlane/*.json
+fastlane/.env.default
 
 # --- Keys & Signing ---
 keystore.properties

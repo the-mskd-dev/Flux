@@ -1,6 +1,5 @@
 package com.kaem.flux.di
 
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.kaem.flux.data.ddb.DatabaseDao
 import com.kaem.flux.data.source.media.MediaSource
 import com.kaem.flux.data.source.media.MediaSourceDBImpl
@@ -35,13 +34,9 @@ object MediaModule {
     @Provides
     @MediaDataSourceTMDB
     fun provideMediaDataSourceTMDB(
-        tmdbService: TMDBService,
-        firebaseAnalytics: FirebaseAnalytics
+        tmdbService: TMDBService
     ) : MediaSource {
-        return MediaSourceTMDBImpl(
-            tmdbService = tmdbService,
-            firebaseAnalytics = firebaseAnalytics
-        )
+        return MediaSourceTMDBImpl(tmdbService = tmdbService)
     }
 
 }

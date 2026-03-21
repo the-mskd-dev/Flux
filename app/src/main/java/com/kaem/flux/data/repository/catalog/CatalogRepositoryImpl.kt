@@ -1,12 +1,13 @@
 package com.kaem.flux.data.repository.catalog
 
-import com.google.firebase.Firebase
-import com.google.firebase.crashlytics.crashlytics
+import android.util.Log
 import com.kaem.flux.data.ddb.DatabaseDao
 import com.kaem.flux.data.source.file.FilesSource
 import com.kaem.flux.data.source.media.MediaSource
+import com.kaem.flux.data.source.media.MediaSourceTMDBImpl.Companion.TAG
 import com.kaem.flux.model.UserFile
 import com.kaem.flux.model.artwork.Artwork
+import io.sentry.Sentry
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -39,7 +40,8 @@ class CatalogRepositoryImpl @Inject constructor(
                 mediaSourceLocal.getMedias().artworks
 
         } catch (e: Exception) {
-            Firebase.crashlytics.recordException(e)
+            Log.e(TAG, "[getCatalog] Fail to get catalog", e)
+            Sentry.captureException(e)
         }
 
         // Update content

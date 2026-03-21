@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kaem.flux.data.repository.catalog.CatalogRepository
-import com.kaem.flux.data.repository.firebase.FirebaseRepository
 import com.kaem.flux.data.repository.user.UserRepository
 import com.kaem.flux.model.ScreenState
 import com.kaem.flux.screens.home.HomeEvent.NavigateToArtwork
@@ -25,40 +24,27 @@ import kotlin.time.Duration.Companion.days
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val repository: CatalogRepository,
-    private val userRepository: UserRepository,
-    private val firebaseRepository: FirebaseRepository
+    private val userRepository: UserRepository
 ): ViewModel() {
 
     private val _event = MutableSharedFlow<HomeEvent>()
     val event = _event.asSharedFlow()
-
-    private val _showMessage = MutableStateFlow(true)
     
     val uiState: StateFlow<HomeUiState> = combine(
         repository.flow,
-        userRepository.flow,
-        firebaseRepository.message,
-        _showMessage
-    ) { catalog, preferences, firebaseMessage, showMessage ->
+        userRepository.flow
+    ) { catalog, preferences ->
 
         val screen = when {
             catalog.isLoading && catalog.artworks.isEmpty() -> ScreenState.LOADING
             else -> ScreenState.CONTENT
         }
 
-        val message = firebaseMessage?.let {
-            if (!preferences.watchedMessagesIds.contains(it.id) && showMessage)
-                it
-            else
-                null
-        }
-
         HomeUiState(
             screenState = screen,
             artworks = catalog.artworks,
             lastWatchedMediaIds = preferences.recentlyWatchedIds,
-            isRefreshing = catalog.isLoading,
-            message = message
+            isRefreshing = catalog.isLoading
         )
 
     }.stateIn(
@@ -76,9 +62,6 @@ class HomeViewModel @Inject constructor(
             HomeIntent.OnSettingsTap -> _event.emit(HomeEvent.NavigateToSettings)
             HomeIntent.OnHowToTap -> _event.emit(HomeEvent.NavigateToHowTo)
             HomeIntent.OnPermissionTap -> _event.emit(HomeEvent.OpenPermissionDialog)
-            HomeIntent.FetchMessages -> fetchMessages()
-            HomeIntent.CloseMessage -> closeMessage()
-            HomeIntent.DoNotShowMessage -> doNotShowMessage()
         }
     }
 
@@ -97,20 +80,6 @@ class HomeViewModel @Inject constructor(
             userRepository.setSyncTime(currentTime)
         }
 
-    }
-
-    private suspend fun fetchMessages() {
-        firebaseRepository.fetchMessages()
-    }
-
-    private suspend fun closeMessage() {
-        _showMessage.emit(false)
-    }
-
-    private suspend fun doNotShowMessage() {
-        val message = uiState.first().message ?: return
-        _showMessage.emit(false)
-        userRepository.setMessageAsWatched(message.id)
     }
 
 }

@@ -10,8 +10,7 @@ plugins {
     alias(libs.plugins.parcelize)
     alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.google.services)
-    alias(libs.plugins.crashlytics)
+    alias(libs.plugins.sentry)
 }
 
 // Local properties
@@ -137,10 +136,6 @@ dependencies {
     // Room
     implementation(libs.bundles.room)
     ksp(libs.androidx.room.compiler)
-
-    // Firebase
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.bundles.firebase)
 
     // Unit Testing
     testImplementation(libs.junit)

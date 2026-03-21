@@ -2,13 +2,11 @@ package com.kaem.flux.screens.home
 
 import app.cash.turbine.test
 import com.kaem.flux.configs.fluxExtensions
-import com.kaem.flux.data.repository.firebase.FirebaseRepository
 import com.kaem.flux.data.repository.user.UserPreferences
 import com.kaem.flux.data.repository.user.UserRepository
 import com.kaem.flux.mockups.FakeCatalogRepository
 import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.ScreenState
-import com.kaem.flux.model.remoteConfig.Message
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
@@ -29,12 +27,8 @@ class HomeViewModelTest : FunSpec({
     lateinit var catalogRepository: FakeCatalogRepository
     lateinit var userRepository: UserRepository
 
-    lateinit var firebaseRepository: FirebaseRepository
-
     // Mocked flows
     val dataStoreFlow = MutableStateFlow(UserPreferences())
-
-    val messageFlow = MutableStateFlow<Message?>(null)
 
     beforeTest {
 
@@ -44,14 +38,9 @@ class HomeViewModelTest : FunSpec({
             every { flow } returns dataStoreFlow
         }
 
-        firebaseRepository = mockk(relaxed = true) {
-            every { message } returns messageFlow
-        }
-
         viewModel = HomeViewModel(
             repository = catalogRepository,
-            userRepository = userRepository,
-            firebaseRepository = firebaseRepository
+            userRepository = userRepository
         )
 
     }
@@ -113,8 +102,7 @@ class HomeViewModelTest : FunSpec({
 
         viewModel = HomeViewModel(
             repository = catalogRepository,
-            userRepository = userRepository,
-            firebaseRepository = firebaseRepository
+            userRepository = userRepository
         )
         viewModel.handleIntent(HomeIntent.OnSyncTap(manualSync = false))
 
@@ -130,8 +118,7 @@ class HomeViewModelTest : FunSpec({
 
         viewModel = HomeViewModel(
             repository = catalogRepository,
-            userRepository = userRepository,
-            firebaseRepository = firebaseRepository
+            userRepository = userRepository
         )
 
         val job = viewModel.handleIntent(HomeIntent.OnSyncTap(manualSync = false))

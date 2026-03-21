@@ -4,7 +4,6 @@ agp = "9.0.1"
 kotlin = "2.3.10"
 ksp = "2.3.2"
 googleServices = "4.4.4"
-crashlyticsPlugin = "3.0.6"
 hiltPlugin = "2.59.2"
 
 # -- Android Core --
@@ -43,9 +42,6 @@ room = "2.8.4"
 # -- Media --
 media3 = "1.9.2"
 jellyfinFfmpeg = "1.9.0+1"
-
-# -- Firebase --
-firebaseBom = "34.9.0"
 
 # -- Testing --
 junit = "4.13.2"
@@ -125,12 +121,6 @@ androidx-room-runtime = { group = "androidx.room", name = "room-runtime", versio
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 
-# -- Firebase --
-firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
-firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
-firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics" }
-firebase-remote-config = { group = "com.google.firebase", name = "firebase-config" }
-
 # -- Test --
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 kotest = { group = "io.kotest", name = "kotest-runner-junit5", version.ref = "kotest"}
@@ -154,7 +144,6 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hiltPlugin" }
 google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "crashlyticsPlugin" }
 
 [bundles]
 compose = [
@@ -200,9 +189,4 @@ datastore = [
 room = [
     "androidx-room-runtime",
     "androidx-room-ktx"
-]
-firebase = [
-    "firebase-analytics",
-    "firebase-crashlytics",
-    "firebase-remote-config"
 ]

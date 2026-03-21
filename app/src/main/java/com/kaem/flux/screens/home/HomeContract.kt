@@ -11,8 +11,7 @@ data class HomeUiState(
     val screenState: ScreenState = ScreenState.LOADING,
     val artworks: List<Artwork> = emptyList(),
     val lastWatchedMediaIds: List<Long> = emptyList(),
-    val isRefreshing: Boolean = true,
-    val message: Message? = null
+    val isRefreshing: Boolean = true
 )
 
 sealed class HomeIntent {
@@ -23,9 +22,6 @@ sealed class HomeIntent {
     object OnSettingsTap: HomeIntent()
     object OnHowToTap: HomeIntent()
     object OnPermissionTap: HomeIntent()
-    object FetchMessages: HomeIntent()
-    object CloseMessage: HomeIntent()
-    object DoNotShowMessage: HomeIntent()
 }
 
 sealed class HomeEvent {

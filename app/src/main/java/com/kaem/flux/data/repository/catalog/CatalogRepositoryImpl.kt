@@ -1,7 +1,5 @@
 package com.kaem.flux.data.repository.catalog
 
-import com.google.firebase.Firebase
-import com.google.firebase.crashlytics.crashlytics
 import com.kaem.flux.data.ddb.DatabaseDao
 import com.kaem.flux.data.source.file.FilesSource
 import com.kaem.flux.data.source.media.MediaSource
@@ -39,7 +37,7 @@ class CatalogRepositoryImpl @Inject constructor(
                 mediaSourceLocal.getMedias().artworks
 
         } catch (e: Exception) {
-            Firebase.crashlytics.recordException(e)
+            //TODO Crash reporting
         }
 
         // Update content

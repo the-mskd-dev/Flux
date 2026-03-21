@@ -62,7 +62,7 @@
     <string name="how_it_works">Comment fonctionne cette application ?</string>
     <string name="how_it_works_desc">Cette application va scanner vos fichiers vidéo de plus de 5 minutes et en extraire des informations à partir du nom du fichier (titre, saison, épisode, année). Ensuite, l\'API de TMDB est utilisée pour récupérer des informations supplémentaires comme le synopsis, la note, le genre, etc.</string>
     <string name="which_technologies">Quelles sont les technologies utilisées ?</string>
-    <string name="which_technologies_desc">Cette application est entièrement développée en Kotlin avec Jetpack Compose. J\'utilise Room pour la base de données, Retrofit pour les appels réseau et Hilt pour les injections de dépendances. Hors application, j\'utilise également Firebase et GitHub. Pour ce qui est de l\'UI/UX, j\'utilise Material 3 et j\'ai fait ce que j\'ai pu. C\'est pas si moche, non ?</string>
+    <string name="which_technologies_desc">Cette application est entièrement développée en Kotlin avec Jetpack Compose. J\'utilise Room pour la base de données, Retrofit pour les appels réseau et Hilt pour les injections de dépendances. Hors application, j\'utilise également Sentry et GitHub. Pour ce qui est de l\'UI/UX, j\'utilise Material 3 et j\'ai fait ce que j\'ai pu. C\'est pas si moche, non ?</string>
     <string name="how_to_suggest">Comment me contacter ou suggérer des améliorations ?</string>
     <string name="how_to_suggest_desc">Si c\'est un avis positif, le Play Store est l\'endroit idéal ! Sinon, j\'espère que vous n\'aurez pas à le faire, mais vous pouvez me contacter sur GitHub ou bien par mail à l\'adresse suivante : kevyn.buchet.pro@gmail.com</string>
     <string name="what_is_next">Et la suite ?</string>

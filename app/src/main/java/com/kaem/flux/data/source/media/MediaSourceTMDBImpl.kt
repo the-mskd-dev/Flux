@@ -98,15 +98,6 @@ class MediaSourceTMDBImpl @Inject constructor(private val tmdbService: TMDBServi
 
                     } catch (e: Exception) {
                         Log.e(TAG, "[getMovies] Fail to get movie : ${folder.title}", e)
-
-                        if (e is IllegalStateException || e is JsonSyntaxException) {
-                            //TODO Crash reporting
-                            /*firebaseAnalytics.logEvent(Analytics.Event.TMDB_ERROR) {
-                                param(Analytics.Param.TITLE, folder.title)
-                                param(Analytics.Param.TYPE, "movie")
-                                param(Analytics.Param.MESSAGE, e.message ?: "Unknown")
-                            }*/
-                        }
                         null
                     }
 
@@ -166,16 +157,6 @@ class MediaSourceTMDBImpl @Inject constructor(private val tmdbService: TMDBServi
 
         } catch (e: Exception) {
             Log.e(TAG, "[getShowAndEpisodes] Fail to get show artwork : ${folder.title}", e)
-
-            if (e is IllegalStateException || e is JsonSyntaxException) {
-                //TODO Crash reporting
-                /*firebaseAnalytics.logEvent(Analytics.Event.TMDB_ERROR) {
-                    param(Analytics.Param.TITLE, folder.title)
-                    param(Analytics.Param.TYPE, "show artwork")
-                    param(Analytics.Param.MESSAGE, e.message ?: "Unknown")
-                }*/
-            }
-
             null
         }
 
@@ -205,17 +186,6 @@ class MediaSourceTMDBImpl @Inject constructor(private val tmdbService: TMDBServi
 
                     } catch (e: Exception) {
                         Log.e(TAG, "[getShowAndEpisodes] Fail to get episode : ${folder.title} (season ${file.nameProperties.season}, episode ${file.nameProperties.episode})", e)
-
-                        if (e is IllegalStateException || e is JsonSyntaxException) {
-                            //TODO Crash reporting
-                            /*firebaseAnalytics.logEvent(Analytics.Event.TMDB_ERROR) {
-                                param(Analytics.Param.TITLE, folder.title)
-                                param(Analytics.Param.SEASON, file.nameProperties.season.toString())
-                                param(Analytics.Param.EPISODE, file.nameProperties.episode.toString())
-                                param(Analytics.Param.TYPE, "show episode")
-                                param(Analytics.Param.MESSAGE, e.message ?: "Unknown")
-                            }*/
-                        }
                         null
                     }
 

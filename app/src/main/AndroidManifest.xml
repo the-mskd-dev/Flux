@@ -18,6 +18,17 @@
         android:theme="@style/Theme.Flux"
         tools:targetApi="31"
         android:name=".FluxApp">
+
+        <meta-data
+            android:name="io.sentry.dsn"
+            android:value="https://73ba81ff6e49b19198ffb88d0dd220aa@o4511082196631552.ingest.de.sentry.io/4511082393305168"
+            />
+
+        <meta-data
+            android:name="io.sentry.attach-view-hierarchy"
+            android:value="true"
+            />
+
         <activity
             android:name=".MainActivity"
             android:exported="true"

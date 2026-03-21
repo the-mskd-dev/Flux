@@ -10,7 +10,7 @@ plugins {
     alias(libs.plugins.parcelize)
     alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.google.services)
+    alias(libs.plugins.sentry)
 }
 
 // Local properties

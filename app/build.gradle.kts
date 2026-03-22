@@ -48,17 +48,21 @@ configure<ApplicationExtension> {
     }
 
     signingConfigs {
-        create("config") {
-            keyAlias = keystoreProperties["keyAlias"]?.toString() ?: ""
-            keyPassword = keystoreProperties["keyPassword"]?.toString() ?: ""
-            storeFile = keystoreProperties["storeFile"]?.toString()?.let { rootProject.file(it) }
-            storePassword = keystoreProperties["storePassword"]?.toString() ?: ""
+        if (keystorePropertiesFile.exists()) {
+            create("config") {
+                keyAlias = keystoreProperties["keyAlias"]?.toString() ?: ""
+                keyPassword = keystoreProperties["keyPassword"]?.toString() ?: ""
+                storeFile = keystoreProperties["storeFile"]?.toString()?.let { rootProject.file(it) }
+                storePassword = keystoreProperties["storePassword"]?.toString() ?: ""
+            }
         }
     }
 
     buildTypes {
         release {
-            signingConfig = signingConfigs.getByName("config")
+            if (signingConfigs.findByName("config") != null) {
+                signingConfig = signingConfigs.getByName("config")
+            }
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),

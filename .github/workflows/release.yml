@@ -31,8 +31,8 @@ jobs:
             echo "tmdb_token=${{ secrets.TMDB_TOKEN }}" > local.properties
             echo "firebase_beta_id=${{ secrets.FIREBASE_BETA_ID }}" >> local.properties
 
-      - name: Decode Google Services
-        run: echo "${{ secrets.GOOGLE_SERVICES }}" | base64 --decode > app/google-services.json
+      #- name: Decode Google Services
+      #  run: echo "${{ secrets.GOOGLE_SERVICES }}" | base64 --decode > app/google-services.json
 
       - name: Create Keystore Properties
         run: |

@@ -6,27 +6,41 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Clear
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kaem.flux.R
 import com.kaem.flux.navigation.Route
+import com.kaem.flux.screens.home.HomeIntent
+import com.kaem.flux.screens.search.SearchIntent
 import com.kaem.flux.screens.search.SearchViewModel
+import com.kaem.flux.ui.component.FluxButton
 import com.kaem.flux.ui.component.FluxScaffold
 import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.AppTheme
@@ -88,7 +102,7 @@ fun TokenScreenContent(
                 text = "Pour cela, veuillez suivre la démarche suivante :"
             )
 
-            androidx.compose.material3.Text(
+            Text(
                 text = buildAnnotatedString {
                     append("1. ")
                     withLink(
@@ -110,7 +124,7 @@ fun TokenScreenContent(
                 }
             )
 
-            androidx.compose.material3.Text(
+            Text(
                 text = buildAnnotatedString {
                     append("2. Récupérez votre ")
                     withLink(
@@ -122,6 +136,35 @@ fun TokenScreenContent(
                     }
                     append(" et copiez-la dans le champ ci-dessous.")
                 }
+            )
+
+            TextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = state.token,
+                onValueChange = { sendIntent(TokenIntent.SetToken(it)) },
+                singleLine = true,
+                shape = Ui.Shape.Corner.Small,
+                colors = TextFieldDefaults.colors(
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent
+                ),
+                placeholder = { Text("Saisir votre clé d'API") },
+                trailingIcon = {
+                    if (state.token.isNotEmpty()) {
+                        IconButton(
+                            modifier = Modifier.size(18.dp),
+                            onClick = { sendIntent(TokenIntent.SetToken("")) },
+                            content = { Icon(imageVector = Icons.Rounded.Clear, contentDescription = "clear button") }
+                        )
+                    }
+                }
+            )
+
+            FluxButton(
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                text = "Valider",
+                onTap = { sendIntent(TokenIntent.SaveToken) }
             )
 
         }

@@ -8,6 +8,7 @@ import com.kaem.flux.screens.artwork.ArtworkViewModel
 import com.kaem.flux.screens.settings.SettingsUiState
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,7 +22,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel(assistedFactory = TokenViewModel.Factory::class)
-class TokenViewModel @Inject constructor(
+class TokenViewModel @AssistedInject constructor(
     @Assisted val fromSettings: Boolean,
     private val tokenProvider: TokenProvider
 ) : ViewModel() {

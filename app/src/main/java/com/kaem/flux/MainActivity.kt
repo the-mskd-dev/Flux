@@ -24,6 +24,7 @@ import com.kaem.flux.screens.howTo.HowToScreen
 import com.kaem.flux.screens.player.PlayerScreen
 import com.kaem.flux.screens.search.SearchScreen
 import com.kaem.flux.screens.settings.SettingsScreen
+import com.kaem.flux.screens.token.TokenScreen
 import com.kaem.flux.ui.theme.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -99,6 +100,12 @@ class MainActivity : ComponentActivity() {
                         entry<Route.About> {
                             AboutScreen(
                                 onBack = { backStack.removeLastOrNull() }
+                            )
+                        }
+                        entry<Route.Token> { entry ->
+                            TokenScreen(
+                                navigate = { route -> backStack.add(route) },
+                                fromSettings = entry.fromSettings
                             )
                         }
                     }

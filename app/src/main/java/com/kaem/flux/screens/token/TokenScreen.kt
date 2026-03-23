@@ -1,10 +1,12 @@
 package com.kaem.flux.screens.token
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.kaem.flux.navigation.Route
 import com.kaem.flux.screens.search.SearchViewModel
 import com.kaem.flux.ui.component.FluxScaffold
+import com.kaem.flux.ui.theme.AppTheme
 
 @Composable
 fun TokenScreen(
@@ -16,8 +18,23 @@ fun TokenScreen(
 ) {
 
     FluxScaffold(
-        title = "",
+        title = "TMDB Token",
         onBackTap = if (fromSettings) { {} } else null
-    ) { }
+    ) {
 
+        
+
+    }
+
+}
+
+@Preview
+@Composable
+fun TokenScreen_Preview() {
+    AppTheme {
+        TokenScreen(
+            navigate = {},
+            fromSettings = true
+        )
+    }
 }

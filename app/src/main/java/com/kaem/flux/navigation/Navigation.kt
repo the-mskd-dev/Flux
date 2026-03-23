@@ -36,6 +36,10 @@ sealed class Route : NavKey {
 
     @Serializable
     data object About: Route()
+
+    @Serializable
+    data class Token(val fromSettings: Boolean = false): Route()
+
 }
 
 object Transition {

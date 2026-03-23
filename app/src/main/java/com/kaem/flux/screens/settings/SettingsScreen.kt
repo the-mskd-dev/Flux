@@ -58,6 +58,7 @@ fun SettingsScreen(
         viewModel.event.collect { event ->
             when (event) {
                 SettingsEvent.BackToPreviousScreen -> onBack()
+                SettingsEvent.NavigateToTokenScreen -> navigate(Route.Token(fromSettings = true))
                 SettingsEvent.NavigateToAboutScreen -> navigate(Route.About)
                 SettingsEvent.NavigateToHowToScreen -> navigate(Route.HowTo)
             }
@@ -126,6 +127,16 @@ fun SettingsContent(
                     text = stringResource(R.string.button_forward),
                     value = "${state.forwardValue}sec",
                     onTap = { sendIntent(SettingsIntent.ShowForwardDialog) }
+                )
+
+            }
+
+            SettingsSection {
+
+                SettingsItem(
+                    text = stringResource(R.string.tmdb_api_key),
+                    value = "",
+                    onTap = { sendIntent(SettingsIntent.OnTokenTap) }
                 )
 
             }

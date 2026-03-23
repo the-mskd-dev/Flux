@@ -104,7 +104,7 @@ class MainActivity : ComponentActivity() {
                         }
                         entry<Route.Token> { entry ->
                             TokenScreen(
-                                navigate = { route -> backStack.add(route) },
+                                onBack = { backStack.removeLastOrNull() },
                                 fromSettings = entry.fromSettings
                             )
                         }

@@ -1,15 +1,36 @@
 package com.kaem.flux.screens.token
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.ClickableText
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.LinkAnnotation
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withLink
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kaem.flux.R
 import com.kaem.flux.navigation.Route
 import com.kaem.flux.screens.search.SearchViewModel
 import com.kaem.flux.ui.component.FluxScaffold
+import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.AppTheme
+import com.kaem.flux.ui.theme.Ui
 
 @Composable
 fun TokenScreen(
@@ -20,16 +41,90 @@ fun TokenScreen(
     )
 ) {
 
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     BackHandler(true) {
         if (fromSettings) onBack()
     }
 
+    TokenScreenContent(
+        state = uiState,
+        sendIntent = viewModel::handleIntent
+    )
+
+}
+
+@Composable
+fun TokenScreenContent(
+    state: TokenUiState,
+    sendIntent: (TokenIntent) -> Unit
+) {
+
     FluxScaffold(
         title = stringResource(R.string.tmdb_api_key),
-        onBackTap = if (fromSettings) { { onBack() } } else null
-    ) {
+        onBackTap = if (state.showBackButton) { { sendIntent(TokenIntent.OnBackTap) } } else null
+    ) { innerPadding ->
 
+        Column(
+            modifier = Modifier
+                .background(MaterialTheme.colorScheme.background)
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = Ui.Space.MEDIUM)
+                .padding(top = innerPadding.calculateTopPadding(), bottom = innerPadding.calculateBottomPadding()),
+            verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE),
+            horizontalAlignment = Alignment.Start
+        ) {
 
+            Text.Body.Large(
+                text = "Dans le but d'être une application complètement FOSS (Free and Open-Source Software), et de garantir un meilleur contrôle des données, la clé d'API pour le service TheMovieDB n'est pas fournie.",
+            )
+
+            Text.Body.Large(
+                text = "La clé d'API étant essentielle pour le bon fonctionnement de l'application, il est nécessaire que vous fournissiez votre propre clé."
+            )
+
+            Text.Body.Large(
+                text = "Pour cela, veuillez suivre la démarche suivante :"
+            )
+
+            androidx.compose.material3.Text(
+                text = buildAnnotatedString {
+                    append("1. ")
+                    withLink(
+                        LinkAnnotation.Url(
+                            url = "https://www.themoviedb.org/login?to=read_me&redirect=%2Fdocs%2Fgetting-started"
+                        )
+                    ) {
+                        append("Connectez vous")
+                    }
+                    append(" ou ")
+                    withLink(
+                        LinkAnnotation.Url(
+                            url = "https://www.themoviedb.org/signup"
+                        )
+                    ) {
+                        append("créez un compte")
+                    }
+                    append(" sur le service TMDB.")
+                }
+            )
+
+            androidx.compose.material3.Text(
+                text = buildAnnotatedString {
+                    append("2. Récupérez votre ")
+                    withLink(
+                        LinkAnnotation.Url(
+                            url = "https://www.themoviedb.org/settings/api"
+                        )
+                    ) {
+                        append("clé d'API")
+                    }
+                    append(" et copiez-la dans le champ ci-dessous.")
+                }
+            )
+
+        }
 
     }
 
@@ -39,9 +134,12 @@ fun TokenScreen(
 @Composable
 fun TokenScreen_Preview() {
     AppTheme {
-        TokenScreen(
-            onBack = {},
-            fromSettings = true
+        TokenScreenContent(
+            state = TokenUiState(
+                token = "azERTyuiOQSdfghJKLmwxCvbn",
+                showBackButton = true,
+            ),
+            sendIntent = {},
         )
     }
 }

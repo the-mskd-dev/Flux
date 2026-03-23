@@ -3,10 +3,12 @@ package com.kaem.flux.di
 import com.google.gson.Gson
 import com.kaem.flux.BuildConfig
 import com.kaem.flux.data.tmdb.TMDBService
+import com.kaem.flux.data.tmdb.token.TokenProvider
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -20,13 +22,23 @@ object RetrofitModule {
 
     @Provides
     @Singleton
-    fun provideHttpClient() : OkHttpClient {
+    fun provideHttpClient(tokenProvider: TokenProvider) : OkHttpClient {
         return OkHttpClient.Builder()
-            .addNetworkInterceptor {
-                val requestBuilder = it.request().newBuilder()
-                requestBuilder.addHeader("accept", "application/json")
-                requestBuilder.addHeader("Authorization", "Bearer ${BuildConfig.TMDB_TOKEN}")
-                it.proceed(requestBuilder.build())
+            .addInterceptor { chain ->
+                val request = chain.request()
+                val token = runBlocking { tokenProvider.getToken() }
+                val finalToken = if (!token.isNullOrBlank()) token else BuildConfig.TMDB_TOKEN
+
+                val newRequest = request.newBuilder()
+                    .addHeader("accept", "application/json")
+                    .apply {
+                        if (finalToken.isNotEmpty()) {
+                            addHeader("Authorization", "Bearer $finalToken")
+                        }
+                    }
+                    .build()
+
+                chain.proceed(newRequest)
             }
             .build()
     }

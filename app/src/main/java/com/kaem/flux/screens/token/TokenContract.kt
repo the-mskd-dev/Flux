@@ -14,13 +14,14 @@ data class TokenUiState(
 sealed class TokenIntent {
     data class SetToken(val token: String) : TokenIntent()
     data object SaveToken : TokenIntent()
-    data object TapOnTMDB : TokenIntent()
-    data object TapOnGetToken : TokenIntent()
     object OnBackTap: TokenIntent()
 }
 
 sealed class TokenEvent {
-    data object NavigateToTMDB : TokenEvent()
-    data object NavigateToGetToken : TokenEvent()
+    object TokenValidated: TokenEvent()
     object BackToPreviousScreen: TokenEvent()
+}
+
+sealed class TokenUiEffect {
+    data object TokenError: TokenUiEffect()
 }

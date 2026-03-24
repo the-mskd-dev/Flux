@@ -3,6 +3,7 @@ package com.kaem.flux.screens.token
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kaem.flux.data.repository.settings.SettingsRepository
+import com.kaem.flux.data.tmdb.TMDBService
 import com.kaem.flux.data.tmdb.token.TokenProvider
 import com.kaem.flux.screens.artwork.ArtworkViewModel
 import com.kaem.flux.screens.settings.SettingsUiState
@@ -10,12 +11,14 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -24,13 +27,17 @@ import javax.inject.Inject
 @HiltViewModel(assistedFactory = TokenViewModel.Factory::class)
 class TokenViewModel @AssistedInject constructor(
     @Assisted val fromSettings: Boolean,
-    private val tokenProvider: TokenProvider
+    private val tokenProvider: TokenProvider,
+    private val tmdbService: TMDBService
 ) : ViewModel() {
 
     @AssistedFactory
     interface Factory {
         fun create(fromSettings: Boolean): TokenViewModel
     }
+
+    private val _effect = Channel<TokenUiEffect>(Channel.BUFFERED)
+    val effect = _effect.receiveAsFlow()
 
     private val _event = MutableSharedFlow<TokenEvent>()
     val event = _event.asSharedFlow()
@@ -49,13 +56,9 @@ class TokenViewModel @AssistedInject constructor(
     )
 
     init {
-        tokenProvider.flow.map {
-            setToken(it.orEmpty())
-        }.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = TokenUiState()
-        )
+        viewModelScope.launch {
+            tokenProvider.getToken()?.let { setToken(it) }
+        }
     }
 
     fun handleIntent(intent: TokenIntent) = viewModelScope.launch {
@@ -63,8 +66,6 @@ class TokenViewModel @AssistedInject constructor(
             is TokenIntent.SetToken -> setToken(intent.token)
             TokenIntent.SaveToken -> saveToken()
             TokenIntent.OnBackTap -> onBackTap()
-            TokenIntent.TapOnGetToken -> tapOnGetToken()
-            TokenIntent.TapOnTMDB -> tapOnTMDB()
         }
     }
 
@@ -74,18 +75,25 @@ class TokenViewModel @AssistedInject constructor(
 
     private suspend fun saveToken() {
         tokenProvider.saveToken(_token.value)
+
+        try {
+            val result = tmdbService.authenticate()
+
+            if (result.success) {
+                _event.emit(TokenEvent.TokenValidated)
+            } else {
+                _effect.send(TokenUiEffect.TokenError)
+            }
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+            _effect.send(TokenUiEffect.TokenError)
+        }
+
     }
 
     private suspend fun onBackTap() {
         _event.emit(TokenEvent.BackToPreviousScreen)
-    }
-
-    private suspend fun tapOnGetToken() {
-        _event.emit(TokenEvent.NavigateToGetToken)
-    }
-
-    private suspend fun tapOnTMDB() {
-        _event.emit(TokenEvent.NavigateToTMDB)
     }
 
 }

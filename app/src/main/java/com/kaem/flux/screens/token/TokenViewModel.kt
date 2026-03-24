@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
@@ -42,18 +43,9 @@ class TokenViewModel @AssistedInject constructor(
     private val _event = MutableSharedFlow<TokenEvent>()
     val event = _event.asSharedFlow()
 
-    private val _token = MutableStateFlow("")
+    private val _uiState = MutableStateFlow(TokenUiState(showBackButton = fromSettings))
+    val uiState: StateFlow<TokenUiState> = _uiState.asStateFlow()
 
-    val uiState: StateFlow<TokenUiState> = _token.map { token ->
-        TokenUiState(
-            token = token,
-            showBackButton = fromSettings
-        )
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5_000),
-        initialValue = TokenUiState()
-    )
 
     init {
         viewModelScope.launch {
@@ -70,11 +62,14 @@ class TokenViewModel @AssistedInject constructor(
     }
 
     private fun setToken(token: String) {
-        _token.update { token }
+        _uiState.update { it.copy(token = token) }
     }
 
     private suspend fun saveToken() {
-        tokenProvider.saveToken(_token.value)
+
+        _uiState.update { it.copy(isLoading = true) }
+
+        tokenProvider.saveToken(_uiState.value.token)
 
         try {
             val result = tmdbService.authenticate()
@@ -89,6 +84,8 @@ class TokenViewModel @AssistedInject constructor(
             e.printStackTrace()
             _effect.send(TokenUiEffect.TokenError)
         }
+
+        _uiState.update { it.copy(isLoading = false) }
 
     }
 

@@ -8,7 +8,8 @@ import com.kaem.flux.screens.settings.SettingsIntent
 @Immutable
 data class TokenUiState(
     val token: String = "",
-    val showBackButton: Boolean = false
+    val showBackButton: Boolean = false,
+    val isLoading: Boolean = false
 )
 
 sealed class TokenIntent {

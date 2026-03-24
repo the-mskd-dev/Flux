@@ -14,8 +14,6 @@ class TokenProviderImp(
 
     private val TOKEN_KEY = stringPreferencesKey("TMBD_TOKEN")
 
-    override val flow: Flow<String?> = tokenDataStore.data.map { it[TOKEN_KEY] }
-
     override suspend fun getToken(): String? {
         return tokenDataStore.data.map { it[TOKEN_KEY] }.first()
     }

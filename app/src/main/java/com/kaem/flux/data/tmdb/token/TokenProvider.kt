@@ -14,7 +14,6 @@ val Context.tokenDatastore by preferencesDataStore(
 )
 
 interface TokenProvider {
-    val flow: Flow<String?>
     suspend fun getToken(): String?
     suspend fun saveToken(token: String)
     suspend fun clearToken()

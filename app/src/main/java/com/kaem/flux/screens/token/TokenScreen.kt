@@ -4,19 +4,25 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.IconButtonShapes
 import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarDuration
@@ -224,11 +230,12 @@ fun TokenInput(
     sendIntent: (TokenIntent) -> Unit
 ) {
 
-    Column(verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)) {
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         TextField(
-            modifier = Modifier
-                .padding(top = Ui.Space.MEDIUM)
-                .fillMaxWidth(),
+            modifier = Modifier.weight(.85f),
             value = token,
             onValueChange = { sendIntent(TokenIntent.SetToken(it)) },
             singleLine = true,
@@ -251,20 +258,46 @@ fun TokenInput(
         )
 
         Crossfade(
-            modifier = Modifier.align(Alignment.CenterHorizontally),
+            modifier = Modifier
+                .height(TextFieldDefaults.MinHeight)
+                .weight(.15f),
             targetState = isLoading
         ) { loading ->
 
             when (loading) {
                 true -> {
-                    LoadingIndicator()
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        LoadingIndicator()
+                    }
                 }
                 false -> {
-                    FluxButton(
-                        modifier = Modifier.align(Alignment.End),
-                        text = "Valider",
-                        onTap = { sendIntent(TokenIntent.SaveToken) }
-                    )
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        IconButton(
+                            modifier =
+                                Modifier.size(
+                                    IconButtonDefaults.mediumContainerSize(
+                                        IconButtonDefaults.IconButtonWidthOption.Wide
+                                    )
+                                ),
+                            onClick = { sendIntent(TokenIntent.SaveToken) },
+                            colors = IconButtonDefaults.iconButtonColors(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                contentColor = MaterialTheme.colorScheme.onPrimary
+                            ),
+                            shape = IconButtonDefaults.mediumSquareShape
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Check,
+                                contentDescription = "validate token button"
+                            )
+                        }
+                    }
                 }
             }
 
@@ -282,6 +315,7 @@ fun TokenScreen_Preview() {
             state = TokenUiState(
                 token = "azERTyuiOQSdfghJKLmwxCvbn",
                 showBackButton = true,
+                isLoading = false
             ),
             snackbarHostState = SnackbarHostState(),
             sendIntent = {},

@@ -61,7 +61,7 @@ fun WelcomeScreen(
     val pagerState = rememberPagerState(0) { presentations.size }
     val backgroundImage = when (pagerState.currentPage) {
         0 -> R.drawable.home_screen
-        1 -> R.drawable.media_screen
+        1 -> R.drawable.artwork_screen
         else -> R.drawable.search_screen
     }
 

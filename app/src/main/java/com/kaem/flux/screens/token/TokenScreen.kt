@@ -165,16 +165,19 @@ fun TokenDescription() {
         horizontalAlignment = Alignment.Start
     ) {
 
-        Text.Body.Large(
-            text = "Dans le but d'être une application complètement FOSS (Free and Open-Source Software), et de garantir un meilleur contrôle des données, la clé d'API pour le service TheMovieDB n'est pas fournie.",
+        Text.Annotated(
+            text = buildLinkedString(
+                template = stringResource(R.string.token_desc_1),
+                stringResource(R.string.tmdb) to Constants.TMDB.WEBSITE
+            )
         )
 
         Text.Body.Large(
-            text = "La clé d'API étant essentielle pour le bon fonctionnement de l'application, il est nécessaire que vous fournissiez votre propre clé."
+            text = stringResource(R.string.token_desc_2)
         )
 
         Text.Body.Large(
-            text = "Pour cela, veuillez suivre la démarche suivante :"
+            text = stringResource(R.string.token_desc_3)
         )
 
     }
@@ -247,7 +250,7 @@ fun TokenInput(
                 unfocusedIndicatorColor = Color.Transparent,
                 disabledIndicatorColor = Color.Transparent
             ),
-            placeholder = { Text("Saisir votre clé d'API") },
+            placeholder = { Text(stringResource(R.string.token_input)) },
             trailingIcon = {
                 if (token.isNotEmpty()) {
                     IconButton(

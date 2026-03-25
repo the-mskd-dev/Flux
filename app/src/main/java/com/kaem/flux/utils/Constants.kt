@@ -18,6 +18,7 @@ object Constants {
 
         const val LOG_IN = "https://www.themoviedb.org/login?to=read_me&redirect=%2Fdocs%2Fgetting-started"
 
+        const val WEBSITE = "https://www.themoviedb.org/"
         const val SIGN_UP = "https://www.themoviedb.org/signup"
         const val GET_API_KEY = "https://www.themoviedb.org/settings/api"
     }

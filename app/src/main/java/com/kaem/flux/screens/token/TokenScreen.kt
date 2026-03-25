@@ -1,7 +1,10 @@
 package com.kaem.flux.screens.token
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -65,8 +68,6 @@ fun TokenScreen(
     )
 ) {
 
-    val scope = rememberCoroutineScope()
-    val snackbarHostState = remember { SnackbarHostState() }
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
@@ -75,30 +76,7 @@ fun TokenScreen(
                 TokenEvent.BackToPreviousScreen -> onBack()
                 TokenEvent.TokenValidated -> {
 
-                    val result = snackbarHostState.showSnackbar(
-                        message = "Token sauvegardé",
-                        withDismissAction = true
-                    )
 
-                    if (result == SnackbarResult.Dismissed) {
-                        onBack()
-                    }
-
-                }
-            }
-        }
-    }
-
-    LaunchedEffect(Unit) {
-        viewModel.effect.collect { effect ->
-            when (effect) {
-                TokenUiEffect.TokenError -> {
-                    scope.launch {
-                        snackbarHostState.showSnackbar(
-                            message = "Le token n'est pas valide",
-                            withDismissAction = true
-                        )
-                    }
                 }
             }
         }
@@ -110,7 +88,6 @@ fun TokenScreen(
 
     TokenScreenContent(
         state = uiState,
-        snackbarHostState = snackbarHostState,
         sendIntent = viewModel::handleIntent
     )
 
@@ -119,13 +96,11 @@ fun TokenScreen(
 @Composable
 fun TokenScreenContent(
     state: TokenUiState,
-    snackbarHostState: SnackbarHostState,
     sendIntent: (TokenIntent) -> Unit
 ) {
 
     FluxScaffold(
         title = stringResource(R.string.tmdb_api_key),
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         onBackTap = if (state.showBackButton) { { sendIntent(TokenIntent.OnBackTap) } } else null
     ) { innerPadding ->
 
@@ -135,7 +110,10 @@ fun TokenScreenContent(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = Ui.Space.MEDIUM)
-                .padding(top = innerPadding.calculateTopPadding(), bottom = innerPadding.calculateBottomPadding()),
+                .padding(
+                    top = innerPadding.calculateTopPadding(),
+                    bottom = innerPadding.calculateBottomPadding()
+                ),
             verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -144,11 +122,33 @@ fun TokenScreenContent(
 
             TokenTutorial()
 
-            TokenInput(
-                token = state.token,
-                isLoading = state.isLoading,
-                sendIntent = sendIntent
-            )
+            Column {
+                TokenInput(
+                    token = state.token,
+                    isLoading = state.isLoading,
+                    message = state.message,
+                    sendIntent = sendIntent
+                )
+
+                AnimatedVisibility(
+                    modifier = Modifier.padding(start = Ui.Space.EXTRA_SMALL, top = Ui.Space.SMALL),
+                    visible = state.message != TokenMessage.None,
+                ) {
+
+                    when (state.message) {
+                        TokenMessage.Success -> Text.Label.Small(
+                            text = stringResource(R.string.token_validated),
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                        TokenMessage.Error -> Text.Label.Small(
+                            text = stringResource(R.string.token_error),
+                            color = MaterialTheme.colorScheme.error
+                        )
+                        TokenMessage.None -> {}
+                    }
+
+                }
+            }
 
         }
 
@@ -231,11 +231,14 @@ fun TokenTutorial() {
 fun TokenInput(
     token: String,
     isLoading: Boolean,
+    message: TokenMessage,
     sendIntent: (TokenIntent) -> Unit
 ) {
 
     Row(
-        modifier = Modifier.widthIn(max = 700.dp).padding(top = Ui.Space.LARGE),
+        modifier = Modifier
+            .widthIn(max = 700.dp)
+            .padding(top = Ui.Space.LARGE),
         horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -320,9 +323,9 @@ fun TokenScreen_Preview() {
             state = TokenUiState(
                 token = "azERTyuiOQSdfghJKLmwxCvbn",
                 showBackButton = true,
-                isLoading = false
+                isLoading = false,
+                message = TokenMessage.Success
             ),
-            snackbarHostState = SnackbarHostState(),
             sendIntent = {},
         )
     }

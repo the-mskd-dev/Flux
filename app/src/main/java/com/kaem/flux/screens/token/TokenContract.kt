@@ -9,8 +9,15 @@ import com.kaem.flux.screens.settings.SettingsIntent
 data class TokenUiState(
     val token: String = "",
     val showBackButton: Boolean = false,
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val message: TokenMessage = TokenMessage.None
 )
+
+sealed class TokenMessage {
+    data object Success : TokenMessage()
+    data object Error : TokenMessage()
+    data object None : TokenMessage()
+}
 
 sealed class TokenIntent {
     data class SetToken(val token: String) : TokenIntent()

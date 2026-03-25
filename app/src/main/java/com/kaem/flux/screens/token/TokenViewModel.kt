@@ -37,9 +37,6 @@ class TokenViewModel @AssistedInject constructor(
         fun create(fromSettings: Boolean): TokenViewModel
     }
 
-    private val _effect = Channel<TokenUiEffect>(Channel.BUFFERED)
-    val effect = _effect.receiveAsFlow()
-
     private val _event = MutableSharedFlow<TokenEvent>()
     val event = _event.asSharedFlow()
 
@@ -62,7 +59,7 @@ class TokenViewModel @AssistedInject constructor(
     }
 
     private fun setToken(token: String) {
-        _uiState.update { it.copy(token = token) }
+        _uiState.update { it.copy(token = token, message = TokenMessage.None) }
     }
 
     private suspend fun saveToken() {
@@ -76,13 +73,14 @@ class TokenViewModel @AssistedInject constructor(
 
             if (result.success) {
                 _event.emit(TokenEvent.TokenValidated)
+                _uiState.update { it.copy(message = TokenMessage.Success) }
             } else {
-                _effect.send(TokenUiEffect.TokenError)
+                _uiState.update { it.copy(message = TokenMessage.Error) }
             }
 
         } catch (e: Exception) {
             e.printStackTrace()
-            _effect.send(TokenUiEffect.TokenError)
+            _uiState.update { it.copy(message = TokenMessage.Error) }
         }
 
         _uiState.update { it.copy(isLoading = false) }

@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -138,7 +139,7 @@ fun TokenScreenContent(
                 .padding(horizontal = Ui.Space.MEDIUM)
                 .padding(top = innerPadding.calculateTopPadding(), bottom = innerPadding.calculateBottomPadding()),
             verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE),
-            horizontalAlignment = Alignment.Start
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
             TokenDescription()
@@ -160,7 +161,11 @@ fun TokenScreenContent(
 @Composable
 fun TokenDescription() {
 
-    Column(verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE)) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE),
+        horizontalAlignment = Alignment.Start
+    ) {
 
         Text.Body.Large(
             text = "Dans le but d'être une application complètement FOSS (Free and Open-Source Software), et de garantir un meilleur contrôle des données, la clé d'API pour le service TheMovieDB n'est pas fournie.",
@@ -181,7 +186,11 @@ fun TokenDescription() {
 @Composable
 fun TokenTutorial() {
 
-    Column(verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE)) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE),
+        horizontalAlignment = Alignment.Start
+    ) {
 
         Text.Annotated(
             text = buildAnnotatedString {
@@ -232,6 +241,7 @@ fun TokenInput(
 ) {
 
     Row(
+        modifier = Modifier.widthIn(max = 700.dp).padding(top = Ui.Space.LARGE),
         horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL),
         verticalAlignment = Alignment.CenterVertically
     ) {

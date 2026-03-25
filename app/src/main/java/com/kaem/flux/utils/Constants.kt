@@ -15,6 +15,11 @@ object Constants {
     object TMDB {
         const val IMAGE_LARGE = "https://image.tmdb.org/t/p/original"
         const val IMAGE = "https://image.tmdb.org/t/p/w500"
+
+        const val LOG_IN = "https://www.themoviedb.org/login?to=read_me&redirect=%2Fdocs%2Fgetting-started"
+
+        const val SIGN_UP = "https://www.themoviedb.org/signup"
+        const val GET_API_KEY = "https://www.themoviedb.org/settings/api"
     }
 
 }

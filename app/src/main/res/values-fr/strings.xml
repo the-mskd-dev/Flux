@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name" translatable="false">Flux</string>
 
     <string name="give_permission">Accorder les permissions</string>
     <string name="movies">Films</string>
@@ -74,4 +73,10 @@
     <string name="close">Fermer</string>
     <string name="do_not_show_again">Ne plus afficher</string>
     <string name="tmdb_api_key">Clé d\'API TMDB</string>
+
+    <string name="token_tutorial_step_1">%1$s ou %2$s sur le site TMDB.</string>
+    <string name="token_tutorial_step_2">Récupérez votre %1$s et copiez-la dans le champ ci-dessous.</string>
+    <string name="log_in">Connectez-vous</string>
+    <string name="sign_up">inscrivez-vous</string>
+    <string name="api_key">clé d\'API</string>
 </resources>

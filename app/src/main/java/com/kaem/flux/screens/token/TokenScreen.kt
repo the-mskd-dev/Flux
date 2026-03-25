@@ -6,7 +6,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,10 +22,8 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.IconButtonShapes
 import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
@@ -42,20 +39,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withLink
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kaem.flux.R
-import com.kaem.flux.ui.component.FluxButton
 import com.kaem.flux.ui.component.FluxScaffold
 import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
+import com.kaem.flux.utils.Constants
 import com.kaem.flux.utils.FluxPreview
+import com.kaem.flux.utils.buildLinkedString
 import kotlinx.coroutines.launch
 
 @Composable
@@ -192,41 +190,34 @@ fun TokenTutorial() {
         horizontalAlignment = Alignment.Start
     ) {
 
-        Text.Annotated(
-            text = buildAnnotatedString {
-                append("1. ")
-                withLink(
-                    LinkAnnotation.Url(
-                        url = "https://www.themoviedb.org/login?to=read_me&redirect=%2Fdocs%2Fgetting-started"
-                    )
-                ) {
-                    append("Connectez vous")
-                }
-                append(" ou ")
-                withLink(
-                    LinkAnnotation.Url(
-                        url = "https://www.themoviedb.org/signup"
-                    )
-                ) {
-                    append("créez un compte")
-                }
-                append(" sur le service TMDB.")
-            }
-        )
 
-        Text.Annotated(
-            text = buildAnnotatedString {
-                append("2. Récupérez votre ")
-                withLink(
-                    LinkAnnotation.Url(
-                        url = "https://www.themoviedb.org/settings/api"
-                    )
-                ) {
-                    append("clé d'API")
-                }
-                append(" et copiez-la dans le champ ci-dessous.")
-            }
-        )
+        Row {
+
+            Text.Body.Large(text = "1. ")
+
+            Text.Annotated(
+                text = buildLinkedString(
+                    template = stringResource(R.string.token_tutorial_step_1),
+                    stringResource(R.string.log_in) to Constants.TMDB.LOG_IN,
+                    stringResource(R.string.sign_up) to Constants.TMDB.SIGN_UP,
+                )
+            )
+
+        }
+
+        Row {
+
+            Text.Body.Large(text = "2. ")
+
+            Text.Annotated(
+                text = buildLinkedString(
+                    template = stringResource(R.string.token_tutorial_step_2),
+                    stringResource(R.string.api_key) to Constants.TMDB.GET_API_KEY,
+                )
+            )
+
+        }
+
 
     }
 

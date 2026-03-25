@@ -22,6 +22,7 @@ import com.kaem.flux.ui.component.FluxScaffold
 import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
+import com.kaem.flux.utils.FluxPreview
 
 @Composable
 fun HowToScreen(onBack: () -> Unit) {
@@ -112,7 +113,7 @@ fun HowToNameFiles() {
 
 }
 
-@Preview
+@FluxPreview
 @Composable
 fun HowToScreen_Preview() {
     AppTheme {

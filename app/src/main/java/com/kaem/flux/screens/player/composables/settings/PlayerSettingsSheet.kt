@@ -30,6 +30,7 @@ import com.kaem.flux.screens.player.PlayerUiState
 import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
+import com.kaem.flux.utils.FluxPreview
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -118,7 +119,7 @@ fun PlayerSettingsItem(
 
 }
 
-@Preview
+@FluxPreview
 @Composable
 fun PlayerSettingsSheet_Preview() {
     AppTheme {

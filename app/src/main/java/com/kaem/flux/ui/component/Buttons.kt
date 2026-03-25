@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.dp
 import com.kaem.flux.R
 import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
+import com.kaem.flux.utils.FluxPreview
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.seconds
 
@@ -246,7 +247,7 @@ fun CountDownButton(
 
 }
 
-@Preview
+@FluxPreview
 @Composable
 fun CountDownButton_Preview() {
     AppTheme {

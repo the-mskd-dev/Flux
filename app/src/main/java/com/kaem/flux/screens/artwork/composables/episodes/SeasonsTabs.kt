@@ -19,6 +19,7 @@ import com.kaem.flux.R
 import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
+import com.kaem.flux.utils.FluxPreview
 
 @Composable
 fun SeasonsTabs(
@@ -62,7 +63,7 @@ fun SeasonsTabs(
 
 }
 
-@Preview
+@FluxPreview
 @Composable
 fun MediaSeasonsTabs_Preview() {
     AppTheme {

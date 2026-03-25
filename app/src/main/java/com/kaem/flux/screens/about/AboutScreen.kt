@@ -22,6 +22,7 @@ import com.kaem.flux.ui.component.FluxScaffold
 import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
+import com.kaem.flux.utils.FluxPreview
 
 @Composable
 fun AboutScreen(onBack: () -> Unit) {
@@ -102,7 +103,7 @@ fun AboutSection(
     }
 }
 
-@Preview
+@FluxPreview
 @Composable
 fun AboutScreen_Preview() {
     AppTheme {

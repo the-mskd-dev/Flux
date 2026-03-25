@@ -37,6 +37,7 @@ import com.kaem.flux.ui.component.FluxScaffold
 import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
+import com.kaem.flux.utils.FluxPreview
 import com.kaem.flux.utils.WebLink
 import com.kaem.flux.utils.extensions.uppercaseFirstLetter
 
@@ -300,7 +301,7 @@ fun <T> SettingsDialog(
 
 }
 
-@Preview
+@FluxPreview
 @Composable
 fun SettingsScreen_Preview() {
     AppTheme {
@@ -312,7 +313,7 @@ fun SettingsScreen_Preview() {
     }
 }
 
-@Preview
+@FluxPreview
 @Composable
 fun SettingsDialog_Preview() {
     AppTheme {

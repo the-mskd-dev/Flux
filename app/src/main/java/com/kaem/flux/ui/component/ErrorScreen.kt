@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.kaem.flux.ui.theme.AppTheme
+import com.kaem.flux.utils.FluxPreview
 
 @Composable
 fun ErrorScreen(
@@ -43,7 +44,7 @@ fun ErrorScreen(
 
 }
 
-@Preview
+@FluxPreview
 @Composable
 fun ErrorScreen_preview() {
     AppTheme {

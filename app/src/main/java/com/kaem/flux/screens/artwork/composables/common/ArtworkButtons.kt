@@ -34,6 +34,7 @@ import com.kaem.flux.ui.component.ProgressBar
 import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
+import com.kaem.flux.utils.FluxPreview
 import com.kaem.flux.utils.extensions.minToMs
 import com.kaem.flux.utils.extensions.timeDescription
 
@@ -146,7 +147,7 @@ fun MediaStatusProgression(
 
 }
 
-@Preview
+@FluxPreview
 @Composable
 fun ArtworkButtons_Preview() {
     AppTheme {
@@ -157,7 +158,7 @@ fun ArtworkButtons_Preview() {
     }
 }
 
-@Preview
+@FluxPreview
 @Composable
 fun ArtworkButtonsWatching_Preview() {
     AppTheme {
@@ -171,7 +172,7 @@ fun ArtworkButtonsWatching_Preview() {
     }
 }
 
-@Preview
+@FluxPreview
 @Composable
 fun ArtworkButtonsWatched_Preview() {
     AppTheme {

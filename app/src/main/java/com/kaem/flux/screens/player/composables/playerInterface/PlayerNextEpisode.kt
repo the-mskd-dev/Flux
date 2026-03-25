@@ -36,6 +36,7 @@ import com.kaem.flux.screens.player.PlayerUiState
 import com.kaem.flux.ui.component.CountDownButton
 import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
+import com.kaem.flux.utils.FluxPreview
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -99,7 +100,7 @@ fun PlayerNextEpisode(
 
 }
 
-@Preview
+@FluxPreview
 @Composable
 fun PlayerNextEpisode_Preview() {
     AppTheme {

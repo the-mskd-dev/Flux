@@ -54,6 +54,7 @@ import com.kaem.flux.ui.component.FluxScaffold
 import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
+import com.kaem.flux.utils.FluxPreview
 import kotlinx.coroutines.launch
 
 @Composable
@@ -307,7 +308,7 @@ fun TokenInput(
 
 }
 
-@Preview
+@FluxPreview
 @Composable
 fun TokenScreen_Preview() {
     AppTheme {

@@ -23,6 +23,7 @@ import com.kaem.flux.R
 import com.kaem.flux.screens.player.PlayerIntent
 import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
+import com.kaem.flux.utils.FluxPreview
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -83,7 +84,7 @@ fun AnimatedVisibilityScope.PlayerControlButtons(
 
 }
 
-@Preview
+@FluxPreview
 @Composable
 fun PlayerControlButtons_Preview() {
 
@@ -91,7 +92,7 @@ fun PlayerControlButtons_Preview() {
         AnimatedContent(targetState = true) {
             PlayerControlButtons(
                 modifier = Modifier,
-                isPlaying = true,
+                isPlaying = it,
                 sendIntent = {}
             )
         }

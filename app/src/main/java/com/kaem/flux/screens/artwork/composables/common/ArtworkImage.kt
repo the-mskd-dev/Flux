@@ -37,6 +37,7 @@ import com.kaem.flux.ui.component.BackButton
 import com.kaem.flux.ui.component.Image
 import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
+import com.kaem.flux.utils.FluxPreview
 import com.kaem.flux.utils.extensions.tmdbImage
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -116,7 +117,7 @@ fun ArtworkImage(
 
 }
 
-@Preview
+@FluxPreview
 @Composable
 fun ArtworkImage_Preview() {
     AppTheme {

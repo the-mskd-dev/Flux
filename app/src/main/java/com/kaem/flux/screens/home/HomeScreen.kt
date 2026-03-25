@@ -70,6 +70,7 @@ import com.kaem.flux.ui.component.MediaItem
 import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
+import com.kaem.flux.utils.FluxPreview
 import com.kaem.flux.utils.extensions.tmdbImage
 import com.kaem.flux.utils.extensions.tmdbImageLarge
 
@@ -398,7 +399,7 @@ fun MediaCategory(
     }
 }
 
-@Preview
+@FluxPreview
 @Composable
 fun HomeScreen_Preview() {
     AppTheme {
@@ -413,7 +414,7 @@ fun HomeScreen_Preview() {
     }
 }
 
-@Preview
+@FluxPreview
 @Composable
 fun HomeEmpty_Preview() {
     AppTheme {

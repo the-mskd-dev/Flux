@@ -34,6 +34,7 @@ import com.kaem.flux.screens.artwork.composables.episodes.SeasonsTabs
 import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
+import com.kaem.flux.utils.FluxPreview
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -138,7 +139,7 @@ fun ArtworkContentRegular(
 
 }
 
-@Preview
+@FluxPreview
 @Composable
 fun ArtworkContentMovie_Preview() {
     AppTheme {
@@ -152,7 +153,7 @@ fun ArtworkContentMovie_Preview() {
     }
 }
 
-@Preview
+@FluxPreview
 @Composable
 fun ArtworkContentShow_Preview() {
     AppTheme {

@@ -47,6 +47,7 @@ import com.kaem.flux.ui.component.ProgressBar
 import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
+import com.kaem.flux.utils.FluxPreview
 import com.kaem.flux.utils.extensions.formattedText
 import com.kaem.flux.utils.extensions.grayScale
 import com.kaem.flux.utils.extensions.minToMs
@@ -255,7 +256,7 @@ fun EpisodeDropDownMenu(
 
 }
 
-@Preview
+@FluxPreview
 @Composable
 fun EpisodeItem_Preview() {
     AppTheme {
@@ -266,7 +267,7 @@ fun EpisodeItem_Preview() {
     }
 }
 
-@Preview
+@FluxPreview
 @Composable
 fun EpisodeItemWatching_Preview() {
     AppTheme {
@@ -280,7 +281,7 @@ fun EpisodeItemWatching_Preview() {
     }
 }
 
-@Preview
+@FluxPreview
 @Composable
 fun EpisodeItemWatched_Preview() {
     AppTheme {

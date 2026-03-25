@@ -16,7 +16,7 @@ import org.junit.Before
 import org.junit.Test
 
 @MediumTest
-class LibraryRepositoryTest {
+class CatalogRepositoryTest {
 
     private lateinit var repository: CatalogRepository
 

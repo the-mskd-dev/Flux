@@ -2,6 +2,7 @@ package com.kaem.flux.screens.token
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kaem.flux.data.repository.catalog.CatalogRepository
 import com.kaem.flux.data.repository.settings.SettingsRepository
 import com.kaem.flux.data.tmdb.TMDBService
 import com.kaem.flux.data.tmdb.token.TokenProvider
@@ -29,7 +30,8 @@ import javax.inject.Inject
 class TokenViewModel @AssistedInject constructor(
     @Assisted val fromSettings: Boolean,
     private val tokenProvider: TokenProvider,
-    private val tmdbService: TMDBService
+    private val tmdbService: TMDBService,
+    private val catalogRepository: CatalogRepository
 ) : ViewModel() {
 
     @AssistedFactory
@@ -66,14 +68,15 @@ class TokenViewModel @AssistedInject constructor(
 
         _uiState.update { it.copy(isLoading = true) }
 
-        tokenProvider.saveToken(_uiState.value.token)
-
         try {
+
             val result = tmdbService.authenticate()
 
             if (result.success) {
+                tokenProvider.saveToken(_uiState.value.token)
                 _event.emit(TokenEvent.TokenValidated)
                 _uiState.update { it.copy(message = TokenMessage.Success) }
+                catalogRepository.getCatalog()
             } else {
                 _uiState.update { it.copy(message = TokenMessage.Error) }
             }

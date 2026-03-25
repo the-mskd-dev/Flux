@@ -31,7 +31,7 @@ class CatalogRepositoryTest {
     }
 
     @Test
-    fun getLibrary_without_sync() = runTest {
+    fun load_catalog_without_sync() = runTest {
         // Given
         val localMedias = MediaMockups.artworks
         val localMovies = listOf(MediaMockups.movie)
@@ -44,7 +44,7 @@ class CatalogRepositoryTest {
         )
 
         // When
-        repository.getCatalog(sync = false)
+        repository.loadCatalog(sync = false)
 
         // Then
         repository.flow.test {
@@ -61,10 +61,10 @@ class CatalogRepositoryTest {
     }
 
     @Test
-    fun getLibrary_with_sync() = runTest {
+    fun load_catalog_with_sync() = runTest {
 
         // When
-        repository.getCatalog(sync = true)
+        repository.loadCatalog(sync = true)
 
         // Then
         repository.flow.test {

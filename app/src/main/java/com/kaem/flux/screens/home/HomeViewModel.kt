@@ -10,12 +10,10 @@ import com.kaem.flux.screens.home.HomeEvent.NavigateToArtwork
 import com.kaem.flux.screens.home.HomeEvent.NavigateToCategory
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -74,7 +72,7 @@ class HomeViewModel @Inject constructor(
 
         Log.i("LibraryViewModel", "getLibrary, sync : $sync")
 
-        repository.getCatalog(sync)
+        repository.loadCatalog(sync)
 
         if (sync) {
             userRepository.setSyncTime(currentTime)

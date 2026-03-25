@@ -72,7 +72,7 @@ class HomeViewModelTest : FunSpec({
 
             awaitItem() // Ignore initial state
 
-            catalogRepository.getCatalog()
+            catalogRepository.loadCatalog()
             dataStoreFlow.value = dataStore
 
             val updatedState = expectMostRecentItem()
@@ -90,7 +90,7 @@ class HomeViewModelTest : FunSpec({
         viewModel.handleIntent(HomeIntent.OnSyncTap(manualSync = true))
 
         coVerify {
-            catalogRepository.getCatalog(sync = true)
+            catalogRepository.loadCatalog(sync = true)
             userRepository.setSyncTime(any())
         }
     }
@@ -107,7 +107,7 @@ class HomeViewModelTest : FunSpec({
         viewModel.handleIntent(HomeIntent.OnSyncTap(manualSync = false))
 
         coVerify {
-            catalogRepository.getCatalog(sync = true)
+            catalogRepository.loadCatalog(sync = true)
             userRepository.setSyncTime(any())
         }
     }

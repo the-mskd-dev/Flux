@@ -3,28 +3,19 @@ package com.kaem.flux.screens.token
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kaem.flux.data.repository.catalog.CatalogRepository
-import com.kaem.flux.data.repository.settings.SettingsRepository
 import com.kaem.flux.data.tmdb.TMDBService
 import com.kaem.flux.data.tmdb.token.TokenProvider
-import com.kaem.flux.screens.artwork.ArtworkViewModel
-import com.kaem.flux.screens.settings.SettingsUiState
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel(assistedFactory = TokenViewModel.Factory::class)
 class TokenViewModel @AssistedInject constructor(
@@ -76,7 +67,7 @@ class TokenViewModel @AssistedInject constructor(
                 tokenProvider.saveToken(_uiState.value.token)
                 _event.emit(TokenEvent.TokenValidated)
                 _uiState.update { it.copy(message = TokenMessage.Success) }
-                catalogRepository.getCatalog()
+                catalogRepository.loadCatalog()
             } else {
                 _uiState.update { it.copy(message = TokenMessage.Error) }
             }

@@ -26,7 +26,7 @@ class CatalogRepositoryImpl @Inject constructor(
     private val _catalogFlow = MutableStateFlow(CatalogRepository.Content())
     override val flow: StateFlow<CatalogRepository.Content> = _catalogFlow.asStateFlow()
 
-    override suspend fun getCatalog(sync: Boolean) {
+    override suspend fun loadCatalog(sync: Boolean) {
 
         _catalogFlow.update { it.copy(isLoading = true) }
 
@@ -35,7 +35,7 @@ class CatalogRepositoryImpl @Inject constructor(
         try {
 
             medias = if (sync)
-                syncCatalog()
+                getCatalog()
             else
                 mediaSourceLocal.getMedias().artworks
 
@@ -54,7 +54,7 @@ class CatalogRepositoryImpl @Inject constructor(
 
     }
 
-    override suspend fun syncCatalog() : List<Artwork> {
+    override suspend fun getCatalog() : List<Artwork> {
 
         // Fetch all files, local and online (if possible)
         val allFiles = getFiles()

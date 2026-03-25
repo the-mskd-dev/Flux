@@ -17,7 +17,7 @@ class FakeCatalogRepository(
 
     var lastSyncParam: Boolean? = null
 
-    override suspend fun getCatalog(sync: Boolean) {
+    override suspend fun loadCatalog(sync: Boolean) {
 
         lastSyncParam = sync
 
@@ -32,7 +32,7 @@ class FakeCatalogRepository(
 
     }
 
-    override suspend fun syncCatalog(): List<Artwork> {
+    override suspend fun getCatalog(): List<Artwork> {
         return MediaMockups.artworks
     }
 

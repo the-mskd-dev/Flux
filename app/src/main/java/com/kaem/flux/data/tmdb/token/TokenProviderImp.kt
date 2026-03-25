@@ -4,6 +4,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.kaem.flux.BuildConfig
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -12,10 +13,17 @@ class TokenProviderImp(
     private val tokenDataStore: DataStore<Preferences>
 ) : TokenProvider {
 
-    private val TOKEN_KEY = stringPreferencesKey("TMBD_TOKEN")
+    companion object {
+        private val TOKEN_KEY = stringPreferencesKey("TMBD_TOKEN")
+    }
 
     override suspend fun getToken(): String? {
-        return tokenDataStore.data.map { it[TOKEN_KEY] }.first()
+        val token = tokenDataStore.data.map { it[TOKEN_KEY] }.first()
+        return when {
+            !token.isNullOrBlank() -> token
+            BuildConfig.DEBUG -> BuildConfig.TMDB_TOKEN
+            else -> null
+        }
     }
 
     override suspend fun saveToken(token: String) {

@@ -26,14 +26,13 @@ object RetrofitModule {
         return OkHttpClient.Builder()
             .addInterceptor { chain ->
                 val request = chain.request()
-                val token = runBlocking { tokenProvider.getToken() }
-                val finalToken = if (!token.isNullOrBlank()) token else BuildConfig.TMDB_TOKEN
+                val token = runBlocking { tokenProvider.getToken().orEmpty() }
 
                 val newRequest = request.newBuilder()
                     .addHeader("accept", "application/json")
                     .apply {
-                        if (finalToken.isNotEmpty()) {
-                            addHeader("Authorization", "Bearer $finalToken")
+                        if (token.isNotEmpty()) {
+                            addHeader("Authorization", "Bearer $token")
                         }
                     }
                     .build()

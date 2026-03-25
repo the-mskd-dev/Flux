@@ -19,7 +19,7 @@ class UserRepositoryImpl(
 ) : UserRepository {
 
     object Keys {
-        val RECENTYL_WATCHED_IDS = stringPreferencesKey("last_watched_ids")
+        val RECENTLY_WATCHED_IDS = stringPreferencesKey("last_watched_ids")
         val LAST_SYNC_TIME = longPreferencesKey("last_sync_time")
 
         val WATCHED_MESSAGES_IDS = stringPreferencesKey("watched_messages_ids")
@@ -30,7 +30,7 @@ class UserRepositoryImpl(
         .catch { exception -> if (exception is IOException) emit(emptyPreferences()) else throw exception }
         .map { preferences ->
 
-            val watchedIdsString = preferences[Keys.RECENTYL_WATCHED_IDS] ?: "[]"
+            val watchedIdsString = preferences[Keys.RECENTLY_WATCHED_IDS] ?: "[]"
             val watchedIds = gson.fromJson<List<Double>>(watchedIdsString, List::class.java).map { it.toLong() }
             val syncTime = preferences[Keys.LAST_SYNC_TIME] ?: 0L
             val watchedMessagesIdsString = preferences[Keys.WATCHED_MESSAGES_IDS] ?: "[]"
@@ -51,7 +51,7 @@ class UserRepositoryImpl(
 
                 lastWatchedIds.add(0, artworkId)
 
-                preferences[Keys.RECENTYL_WATCHED_IDS] = gson.toJson(lastWatchedIds.take(4))
+                preferences[Keys.RECENTLY_WATCHED_IDS] = gson.toJson(lastWatchedIds.take(4))
             }
 
         }
@@ -61,7 +61,7 @@ class UserRepositoryImpl(
         userDataStore.edit { preferences ->
             val lastWatchedIds = ArrayList(flow.first().recentlyWatchedIds)
             lastWatchedIds.remove(artworkId)
-            preferences[Keys.RECENTYL_WATCHED_IDS] = gson.toJson(lastWatchedIds)
+            preferences[Keys.RECENTLY_WATCHED_IDS] = gson.toJson(lastWatchedIds)
 
         }
     }

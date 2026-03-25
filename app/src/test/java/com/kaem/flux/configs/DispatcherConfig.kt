@@ -10,9 +10,7 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class DispatcherConfig(
-    private val testDispatcher: TestDispatcher = UnconfinedTestDispatcher()
-) : TestListener {
+class DispatcherConfig(private val testDispatcher: TestDispatcher) : TestListener {
 
     override suspend fun beforeSpec(spec: Spec) {
         Dispatchers.setMain(testDispatcher)

@@ -3,6 +3,7 @@ package com.kaem.flux.screens.welcome
 import android.os.Build
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -13,31 +14,34 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.PageSize
-import androidx.compose.foundation.pager.PagerState
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.KeyboardArrowLeft
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -46,11 +50,12 @@ import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.rememberPermissionState
 import com.kaem.flux.R
 import com.kaem.flux.navigation.Route
-import com.kaem.flux.screens.home.HomeViewModel
+import com.kaem.flux.screens.token.TokenIntent
 import com.kaem.flux.ui.component.FluxButton
 import com.kaem.flux.ui.component.Text
+import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
-import kotlinx.coroutines.launch
+import com.kaem.flux.utils.FluxPreview
 
 @Composable
 fun WelcomeScreen(
@@ -60,81 +65,42 @@ fun WelcomeScreen(
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    val presentations = listOf(
-        stringResource(R.string.presentation_1_title) to stringResource(R.string.presentation_1_description),
-        stringResource(R.string.presentation_2_title) to stringResource(R.string.presentation_2_description),
-    )
-
-    val pagerState = rememberPagerState(0) { presentations.size }
-
-    BackHandler(enabled = uiState.page > 0) {
-        viewModel.handleIntent(WelcomeIntent.SelectPage(uiState.page - 1))
+    BackHandler(enabled = uiState.index > 0) {
+        viewModel.handleIntent(WelcomeIntent.OnPreviousTap)
     }
 
-    LaunchedEffect(uiState.page) {
-        pagerState.animateScrollToPage(pagerState.currentPage - 1)
-    }
-
-    WelcomeContent(
-        backgroundImage = uiState.backgroundImage,
-        pagerState = pagerState,
-        presentations = presentations,
+    WelcomeScreenContent(
+        uiState = uiState,
         sendIntent = viewModel::handleIntent,
     )
 
 }
 
 @Composable
-fun WelcomeContent(
-    backgroundImage: Int,
-    pagerState: PagerState,
-    presentations: List<Pair<String, String>>,
+fun WelcomeScreenContent(
+    uiState: WelcomeUiState,
     sendIntent: (WelcomeIntent) -> Unit
 ) {
 
     ConstraintLayout(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
+        constraintSet = WelcomeScreenConstraintSet
     ) {
 
-        val (background, descriptions, buttons) = createRefs()
-        val guideline = createGuidelineFromTop(.7f)
-
         WelcomeBackground(
-            modifier = Modifier.constrainAs(background) {
-                top.linkTo(parent.top)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-                bottom.linkTo(parent.bottom)
-                height = Dimension.fillToConstraints
-                width = Dimension.fillToConstraints
-            },
-            drawableId = backgroundImage
+            modifier = Modifier.layoutId("background"),
+            drawableId = uiState.backgroundId
         )
 
-        WelcomePager(
-            modifier = Modifier.constrainAs(descriptions) {
-                top.linkTo(parent.top)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-                bottom.linkTo(guideline)
-                height = Dimension.fillToConstraints
-                width = Dimension.fillToConstraints
-            },
-            pagerState = pagerState,
-            presentations = presentations
+        WelcomeContent(
+            modifier = Modifier.layoutId("content"),
+            contentIds = uiState.contentIds
         )
 
         WelcomeButtons(
-            modifier = Modifier.constrainAs(buttons) {
-                top.linkTo(guideline)
-                bottom.linkTo(parent.bottom)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-            },
-            index = pagerState.currentPage,
-            lastIndex = presentations.lastIndex,
-            onIndexChange = onIndexChange,
-            onPermissionsTap = onPermissionsTap
+            modifier = Modifier.layoutId("buttons"),
+            buttons = uiState.buttons,
+            sendIntent = sendIntent
         )
 
     }
@@ -194,28 +160,28 @@ fun WelcomeBackground(
 }
 
 @Composable
-fun WelcomePager(
+fun WelcomeContent(
     modifier: Modifier,
-    pagerState: PagerState,
-    presentations: List<Pair<String, String>>
+    contentIds: Pair<Int, Int>,
 ) {
 
-    HorizontalPager(
-        modifier = modifier,
-        state = pagerState,
-        pageSize = PageSize.Fill,
-        pageContent = { page ->
+    Box(modifier = modifier) {
 
-            val presentation = presentations[page]
+        AnimatedContent(
+            targetState = contentIds
+        ) { content ->
+
+            val (title, description) = content
 
             WelcomeItem(
-                title = presentation.first,
-                description = presentation.second,
+                title = stringResource(title),
+                description = stringResource(description),
                 textColor = MaterialTheme.colorScheme.onBackground
             )
 
         }
-    )
+
+    }
 
 }
 
@@ -257,65 +223,122 @@ fun WelcomeItem(
 
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun WelcomeButtons(
     modifier: Modifier,
-    index: Int,
-    lastIndex: Int,
-    onIndexChange: (Int) -> Unit,
-    onPermissionsTap: () -> Unit
+    buttons: List<WelcomeButton>,
+    sendIntent: (WelcomeIntent) -> Unit
 ) {
 
-    val backVisibility by animateFloatAsState(if (index == 0) 0f else 1f, label = "back animation")
-
-    AnimatedContent(
+    Box(
         modifier = modifier,
-        targetState = index == lastIndex,
-        label = "welcome buttons anim"
-    ) { isLastText ->
+    ) {
 
-        if (isLastText) {
+        AnimatedVisibility(
+            modifier = Modifier.align(Alignment.CenterStart),
+            visible = buttons.contains(WelcomeButton.PREVIOUS)
+        ) {
 
-            FluxButton(
-                text = stringResource(id = R.string.give_permission),
-                onTap = onPermissionsTap
-            )
-
-        } else {
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(200.dp)
+            IconButton(
+                modifier =
+                    Modifier.size(
+                        IconButtonDefaults.mediumContainerSize(
+                            IconButtonDefaults.IconButtonWidthOption.Wide
+                        )
+                    ),
+                onClick = { sendIntent(WelcomeIntent.OnPreviousTap) },
+                colors = IconButtonDefaults.iconButtonColors(
+                    containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onTertiaryContainer
+                ),
+                shape = IconButtonDefaults.mediumSquareShape
             ) {
-
-                IconButton(
-                    modifier = Modifier.alpha(backVisibility),
-                    onClick = { if (index != 0) onIndexChange(index - 1) },
-                    content = {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowLeft,
-                            tint = MaterialTheme.colorScheme.onBackground,
-                            contentDescription = "Back button"
-                        )
-                    }
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                    contentDescription = "validate token button"
                 )
-
-                IconButton(
-                    onClick = { onIndexChange(index + 1) },
-                    content = {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowRight,
-                            tint = MaterialTheme.colorScheme.onBackground,
-                            contentDescription = "Next button"
-                        )
-                    }
-                )
-
-
             }
 
         }
 
+        AnimatedVisibility(
+            modifier = Modifier.align(Alignment.Center),
+            visible = buttons.contains(WelcomeButton.PERMISSIONS)
+        ) {
+
+            FluxButton(
+                text = stringResource(id = R.string.give_permission),
+                onTap = { sendIntent(WelcomeIntent.OnPermissionTap) }
+            )
+
+        }
+
+        AnimatedVisibility(
+            modifier = Modifier.align(Alignment.CenterEnd),
+            visible = buttons.contains(WelcomeButton.NEXT)
+        ) {
+
+            IconButton(
+                modifier =
+                    Modifier.size(
+                        IconButtonDefaults.mediumContainerSize(
+                            IconButtonDefaults.IconButtonWidthOption.Wide
+                        )
+                    ),
+                onClick = { sendIntent(WelcomeIntent.OnNextTap) },
+                colors = IconButtonDefaults.iconButtonColors(
+                    containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onTertiaryContainer
+                ),
+                shape = IconButtonDefaults.mediumSquareShape
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                    contentDescription = "validate token button"
+                )
+            }
+
+        }
+
+    }
+
+}
+
+val WelcomeScreenConstraintSet = ConstraintSet {
+
+    val (background, content, buttons) = createRefsFor(
+        "background",
+        "content",
+        "buttons"
+    )
+
+    val guideline = createGuidelineFromTop(.7f)
+
+    constrain(background) {
+        top.linkTo(parent.top)
+        start.linkTo(parent.start)
+        end.linkTo(parent.end)
+        bottom.linkTo(parent.bottom)
+        height = Dimension.fillToConstraints
+        width = Dimension.fillToConstraints
+    }
+
+    constrain(content) {
+        top.linkTo(parent.top)
+        start.linkTo(parent.start)
+        end.linkTo(parent.end)
+        bottom.linkTo(guideline)
+        height = Dimension.fillToConstraints
+        width = Dimension.fillToConstraints
+    }
+
+    constrain(buttons) {
+        top.linkTo(guideline)
+        bottom.linkTo(parent.bottom)
+        start.linkTo(parent.start, Ui.Space.MEDIUM)
+        end.linkTo(parent.end, Ui.Space.MEDIUM)
+        width = Dimension.fillToConstraints
     }
 
 }
@@ -331,4 +354,17 @@ fun fluxPermissionState(): PermissionState {
 
     return rememberPermissionState(permission = permission)
 
+}
+
+@FluxPreview
+@Composable
+fun WelcomeScreen_Preview() {
+    AppTheme {
+        WelcomeScreenContent(
+            uiState = WelcomeUiState(
+                buttons = WelcomeButton.entries
+            ),
+            sendIntent = {}
+        )
+    }
 }

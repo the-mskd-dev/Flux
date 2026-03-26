@@ -51,6 +51,10 @@ class HomeViewModel @Inject constructor(
         initialValue = HomeUiState()
     )
 
+    init {
+        handleIntent(HomeIntent.OnSyncTap(manualSync = false))
+    }
+
     fun handleIntent(intent: HomeIntent) = viewModelScope.launch {
         when (intent) {
             is HomeIntent.OnSyncTap -> fetchCatalog(manualSync = intent.manualSync)
@@ -59,7 +63,6 @@ class HomeViewModel @Inject constructor(
             HomeIntent.OnSearchTap -> _event.emit(HomeEvent.NavigateToSearch)
             HomeIntent.OnSettingsTap -> _event.emit(HomeEvent.NavigateToSettings)
             HomeIntent.OnHowToTap -> _event.emit(HomeEvent.NavigateToHowTo)
-            HomeIntent.OnPermissionTap -> _event.emit(HomeEvent.OpenPermissionDialog)
         }
     }
 

@@ -29,6 +29,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,6 +48,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
+import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.kaem.flux.R
 import com.kaem.flux.navigation.Route
@@ -58,6 +60,7 @@ import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.FluxPreview
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun WelcomeScreen(
     navigate: (Route) -> Unit,
@@ -65,6 +68,21 @@ fun WelcomeScreen(
 ) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val permissions = fluxPermissionState()
+
+    LaunchedEffect(Unit) {
+        viewModel.event.collect { event ->
+            when (event) {
+                WelcomeEvent.NavigateToLibrary -> navigate(Route.Library)
+                WelcomeEvent.NavigateToToken -> navigate(Route.Token(fromSettings = false))
+                WelcomeEvent.OpenPermissionDialog -> permissions.launchPermissionRequest()
+            }
+        }
+    }
+
+    if (!permissions.status.isGranted) {
+        viewModel.handleIntent(WelcomeIntent.OnPermissionGranted)
+    }
 
     BackHandler(enabled = uiState.index > 0) {
         viewModel.handleIntent(WelcomeIntent.OnPreviousTap)

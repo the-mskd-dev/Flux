@@ -82,7 +82,6 @@ fun HomeScreen(
 ) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val permissions = fluxPermissionState()
 
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
@@ -92,53 +91,38 @@ fun HomeScreen(
                 HomeEvent.NavigateToHowTo -> navigate(Route.HowTo)
                 HomeEvent.NavigateToSearch -> navigate(Route.Search())
                 HomeEvent.NavigateToSettings -> navigate(Route.Settings)
-                HomeEvent.OpenPermissionDialog -> permissions.launchPermissionRequest()
             }
         }
     }
 
-    if (!permissions.status.isGranted) {
+    Crossfade(
+        modifier = Modifier.fillMaxSize(),
+        targetState = uiState.screenState,
+        label = "CatalogAnimation"
+    ) {
 
-        WelcomeScreen(
-            onPermissionsTap = { viewModel.handleIntent(HomeIntent.OnPermissionTap) }
-        )
+        when (it) {
 
-    } else {
+            ScreenState.LOADING -> LoadingScreen()
 
-        LaunchedEffect(Unit) {
-            viewModel.handleIntent(HomeIntent.OnSyncTap(manualSync = false))
-        }
+            else -> {
 
-        Crossfade(
-            modifier = Modifier.fillMaxSize(),
-            targetState = uiState.screenState,
-            label = "CatalogAnimation"
-        ) {
+                if (uiState.artworks.isEmpty()) {
 
-            when (it) {
+                    HomeEmpty(sendIntent = viewModel::handleIntent)
 
-                ScreenState.LOADING -> LoadingScreen()
+                } else {
 
-                else -> {
-
-                    if (uiState.artworks.isEmpty()) {
-
-                        HomeEmpty(sendIntent = viewModel::handleIntent)
-
-                    } else {
-
-                        HomeContent(
-                            artworks = uiState.artworks,
-                            lastWatchedIds = uiState.lastWatchedMediaIds,
-                            isRefreshing = uiState.isRefreshing,
-                            sendIntent = viewModel::handleIntent
-                        )
-
-                    }
-
-
+                    HomeContent(
+                        artworks = uiState.artworks,
+                        lastWatchedIds = uiState.lastWatchedMediaIds,
+                        isRefreshing = uiState.isRefreshing,
+                        sendIntent = viewModel::handleIntent
+                    )
 
                 }
+
+
 
             }
 

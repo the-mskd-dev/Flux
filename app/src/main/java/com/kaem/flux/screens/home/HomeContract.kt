@@ -21,7 +21,6 @@ sealed class HomeIntent {
     object OnSearchTap: HomeIntent()
     object OnSettingsTap: HomeIntent()
     object OnHowToTap: HomeIntent()
-    object OnPermissionTap: HomeIntent()
 }
 
 sealed class HomeEvent {
@@ -30,5 +29,4 @@ sealed class HomeEvent {
     object NavigateToSearch: HomeEvent()
     object NavigateToSettings: HomeEvent()
     object NavigateToHowTo: HomeEvent()
-    object OpenPermissionDialog: HomeEvent()
 }

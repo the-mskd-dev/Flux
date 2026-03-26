@@ -17,6 +17,7 @@ sealed class WelcomeIntent {
     data object OnPreviousTap: WelcomeIntent()
     data object OnNextTap: WelcomeIntent()
     data object OnPermissionTap: WelcomeIntent()
+    data object OnPermissionGranted: WelcomeIntent()
 }
 
 sealed class WelcomeEvent {

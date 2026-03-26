@@ -3,7 +3,6 @@ package com.kaem.flux.screens.artwork
 import app.cash.turbine.test
 import com.kaem.flux.configs.fluxExtensions
 import com.kaem.flux.data.repository.artwork.ArtworkRepository
-import com.kaem.flux.data.repository.user.UserPreferences
 import com.kaem.flux.data.repository.user.UserRepository
 import com.kaem.flux.mockups.FakeArtworkRepository
 import com.kaem.flux.mockups.MediaMockups
@@ -33,7 +32,7 @@ class ArtworkViewModelTest : FunSpec({
         artworkRepository = FakeArtworkRepository(initialContentType = ContentType.SHOW)
 
         userRepository = mockk(relaxed = true) {
-            every { flow } returns MutableStateFlow(UserPreferences())
+            every { flow } returns MutableStateFlow(UserRepository.State())
         }
 
         viewModel = ArtworkViewModel(
@@ -219,7 +218,7 @@ class ArtworkViewModelTest : FunSpec({
     test("mark movie as watched") {
 
         artworkRepository.setContent(
-            ArtworkRepository.Content(
+            ArtworkRepository.State(
                 artwork = MediaMockups.movieArtwork,
                 movie = MediaMockups.movie
             )

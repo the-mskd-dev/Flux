@@ -68,7 +68,7 @@ class ArtworkViewModel @AssistedInject constructor(
         _subState
     ) { mediaContent, subState ->
         buildUiState(
-            mediaContent = mediaContent,
+            mediaState = mediaContent,
             subState = subState
         )
     }.stateIn(
@@ -105,11 +105,11 @@ class ArtworkViewModel @AssistedInject constructor(
 
     //region Private Methods
 
-    private fun buildUiState(mediaContent: ArtworkRepository.Content, subState: UserState) : ArtworkUiState {
+    private fun buildUiState(mediaState: ArtworkRepository.State, subState: UserState) : ArtworkUiState {
 
-        val artwork = mediaContent.artwork
-        val movie = mediaContent.movie
-        val episodes = mediaContent.episodes
+        val artwork = mediaState.artwork
+        val movie = mediaState.movie
+        val episodes = mediaState.episodes
 
         val episode = episodes.firstOrNull { it.id == (subState.selectedMedia as? Episode)?.id } // Selected media by user
             ?: episodes.firstOrNull { it.id == (uiState.value.media as? Episode)?.id } // Current selected media

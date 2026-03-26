@@ -26,7 +26,7 @@ class UserRepositoryImpl(
 
     }
 
-    override val flow: Flow<UserPreferences> = userDataStore.data
+    override val flow: Flow<UserRepository.State> = userDataStore.data
         .catch { exception -> if (exception is IOException) emit(emptyPreferences()) else throw exception }
         .map { preferences ->
 
@@ -36,7 +36,7 @@ class UserRepositoryImpl(
             val watchedMessagesIdsString = preferences[Keys.WATCHED_MESSAGES_IDS] ?: "[]"
             val watchedMessagesIds = gson.fromJson<List<Double>>(watchedMessagesIdsString, List::class.java).map { it.toInt() }
 
-            UserPreferences(
+            UserRepository.State(
                 recentlyWatchedIds = watchedIds,
                 syncTime = syncTime,
                 watchedMessagesIds = watchedMessagesIds

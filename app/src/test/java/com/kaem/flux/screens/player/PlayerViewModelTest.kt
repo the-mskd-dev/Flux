@@ -2,9 +2,7 @@ package com.kaem.flux.screens.player
 
 import app.cash.turbine.test
 import com.kaem.flux.configs.fluxExtensions
-import com.kaem.flux.data.repository.settings.SettingsPreferences
 import com.kaem.flux.data.repository.settings.SettingsRepository
-import com.kaem.flux.data.repository.user.UserPreferences
 import com.kaem.flux.data.repository.user.UserRepository
 import com.kaem.flux.mockups.FakeArtworkRepository
 import com.kaem.flux.mockups.MediaMockups
@@ -39,11 +37,11 @@ class PlayerViewModelTest : FunSpec({
         artworkRepository = FakeArtworkRepository(initialContentType = ContentType.SHOW)
 
         userRepository = mockk(relaxed = true) {
-            every { flow } returns MutableStateFlow(UserPreferences())
+            every { flow } returns MutableStateFlow(UserRepository.State())
         }
 
         settingsRepository = mockk(relaxed = true) {
-            every { flow } returns MutableStateFlow(SettingsPreferences())
+            every { flow } returns MutableStateFlow(SettingsRepository.State())
         }
 
         viewModel = PlayerViewModel(

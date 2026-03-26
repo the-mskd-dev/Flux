@@ -8,12 +8,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 
 class FakeCatalogRepository(
-    initialContent: CatalogRepository.Content = CatalogRepository.Content()
+    initialState: CatalogRepository.State = CatalogRepository.State()
 ) : CatalogRepository {
 
-    private val _flow = MutableStateFlow(initialContent)
+    private val _flow = MutableStateFlow(initialState)
 
-    override val flow: StateFlow<CatalogRepository.Content> = _flow
+    override val flow: StateFlow<CatalogRepository.State> = _flow
 
     var lastSyncParam: Boolean? = null
 

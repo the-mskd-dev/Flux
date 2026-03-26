@@ -23,8 +23,8 @@ class CatalogRepositoryImpl @Inject constructor(
     private val db: DatabaseDao
 ) : CatalogRepository {
 
-    private val _catalogFlow = MutableStateFlow(CatalogRepository.Content())
-    override val flow: StateFlow<CatalogRepository.Content> = _catalogFlow.asStateFlow()
+    private val _catalogFlow = MutableStateFlow(CatalogRepository.State())
+    override val flow: StateFlow<CatalogRepository.State> = _catalogFlow.asStateFlow()
 
     override suspend fun loadCatalog(sync: Boolean) {
 

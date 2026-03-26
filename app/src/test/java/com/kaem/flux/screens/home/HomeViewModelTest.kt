@@ -2,7 +2,6 @@ package com.kaem.flux.screens.home
 
 import app.cash.turbine.test
 import com.kaem.flux.configs.fluxExtensions
-import com.kaem.flux.data.repository.user.UserPreferences
 import com.kaem.flux.data.repository.user.UserRepository
 import com.kaem.flux.mockups.FakeCatalogRepository
 import com.kaem.flux.mockups.MediaMockups
@@ -28,7 +27,7 @@ class HomeViewModelTest : FunSpec({
     lateinit var userRepository: UserRepository
 
     // Mocked flows
-    val dataStoreFlow = MutableStateFlow(UserPreferences())
+    val dataStoreFlow = MutableStateFlow(UserRepository.State())
 
     beforeTest {
 
@@ -64,7 +63,7 @@ class HomeViewModelTest : FunSpec({
         // Mock
         val artworks = listOf(MediaMockups.movieArtwork, MediaMockups.showArtwork)
         val lastWatchedIds = listOf(MediaMockups.showArtwork.id)
-        val dataStore = UserPreferences(
+        val dataStore = UserRepository.State(
             recentlyWatchedIds = lastWatchedIds
         )
 

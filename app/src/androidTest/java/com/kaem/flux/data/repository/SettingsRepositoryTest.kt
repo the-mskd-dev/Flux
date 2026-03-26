@@ -6,7 +6,6 @@ import androidx.datastore.preferences.preferencesDataStoreFile
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.filters.MediumTest
 import app.cash.turbine.test
-import com.kaem.flux.data.repository.settings.SettingsPreferences
 import com.kaem.flux.data.repository.settings.SettingsRepository
 import com.kaem.flux.data.repository.settings.SettingsRepositoryImpl
 import com.kaem.flux.ui.theme.Ui
@@ -62,7 +61,7 @@ class SettingsRepositoryTest {
     @Test
     fun initial_state() = runTest {
 
-        val defaultDataStore = SettingsPreferences()
+        val defaultDataStore = SettingsRepository.State()
 
         settingsRepository.flow.test {
 
@@ -85,7 +84,7 @@ class SettingsRepositoryTest {
 
             var state = awaitItem()
 
-            assert(SettingsPreferences().playerRewindValue == state.playerRewindValue)
+            assert(SettingsRepository.State().playerRewindValue == state.playerRewindValue)
 
             val newValue = 20
             settingsRepository.setPlayerRewindValue(newValue)
@@ -108,7 +107,7 @@ class SettingsRepositoryTest {
 
             var state = awaitItem()
 
-            assert(SettingsPreferences().playerForwardValue == state.playerForwardValue)
+            assert(SettingsRepository.State().playerForwardValue == state.playerForwardValue)
 
             val newValue = 20
             settingsRepository.setPlayerForwardValue(newValue)

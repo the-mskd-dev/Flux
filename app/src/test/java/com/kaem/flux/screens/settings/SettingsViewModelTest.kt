@@ -2,7 +2,6 @@ package com.kaem.flux.screens.settings
 
 import app.cash.turbine.test
 import com.kaem.flux.configs.fluxExtensions
-import com.kaem.flux.data.repository.settings.SettingsPreferences
 import com.kaem.flux.data.repository.settings.SettingsRepository
 import com.kaem.flux.ui.theme.Ui
 import io.kotest.core.spec.style.FunSpec
@@ -22,7 +21,7 @@ class SettingsViewModelTest : FunSpec({
     lateinit var viewModel: SettingsViewModel
     lateinit var settingsRepository: SettingsRepository
 
-    val dataStoreFlow = MutableStateFlow(SettingsPreferences())
+    val dataStoreFlow = MutableStateFlow(SettingsRepository.State())
 
     beforeTest {
 

@@ -17,6 +17,12 @@ import kotlinx.serialization.Serializable
 sealed class Route : NavKey {
 
     @Serializable
+    data object Welcome: Route()
+
+    @Serializable
+    data class Token(val fromSettings: Boolean = false): Route()
+
+    @Serializable
     data object Library: Route()
 
     @Serializable
@@ -36,9 +42,6 @@ sealed class Route : NavKey {
 
     @Serializable
     data object About: Route()
-
-    @Serializable
-    data class Token(val fromSettings: Boolean = false): Route()
 
 }
 

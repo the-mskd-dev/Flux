@@ -66,7 +66,7 @@ class TokenViewModel @AssistedInject constructor(
             if (authentication.success) {
 
                 tokenProvider.saveToken(_uiState.value.token)
-                catalogRepository.loadCatalog()
+                catalogRepository.loadCatalog(sync = true)
 
                 _uiState.update { it.copy(message = TokenMessage.Success, showBackButton = true) }
 

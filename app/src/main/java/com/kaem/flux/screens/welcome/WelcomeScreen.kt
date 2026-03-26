@@ -25,6 +25,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -38,10 +39,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.rememberPermissionState
 import com.kaem.flux.R
+import com.kaem.flux.navigation.Route
+import com.kaem.flux.screens.home.HomeViewModel
 import com.kaem.flux.ui.component.FluxButton
 import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.Ui
@@ -49,32 +54,32 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun WelcomeScreen(
-    onPermissionsTap: () -> Unit
+    navigate: (Route) -> Unit,
+    viewModel: WelcomeViewModel = hiltViewModel()
 ) {
+
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     val presentations = listOf(
         stringResource(R.string.presentation_1_title) to stringResource(R.string.presentation_1_description),
         stringResource(R.string.presentation_2_title) to stringResource(R.string.presentation_2_description),
     )
 
-    val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState(0) { presentations.size }
-    val backgroundImage = when (pagerState.currentPage) {
-        0 -> R.drawable.home_screen
-        1 -> R.drawable.artwork_screen
-        else -> R.drawable.search_screen
+
+    BackHandler(enabled = uiState.page > 0) {
+        viewModel.handleIntent(WelcomeIntent.SelectPage(uiState.page - 1))
     }
 
-    BackHandler(enabled = pagerState.currentPage > 0) {
-        scope.launch { pagerState.animateScrollToPage(pagerState.currentPage - 1) }
+    LaunchedEffect(uiState.page) {
+        pagerState.animateScrollToPage(pagerState.currentPage - 1)
     }
 
     WelcomeContent(
-        backgroundImage = backgroundImage,
+        backgroundImage = uiState.backgroundImage,
         pagerState = pagerState,
         presentations = presentations,
-        onPermissionsTap = onPermissionsTap,
-        onIndexChange = { scope.launch { pagerState.animateScrollToPage(it) } }
+        sendIntent = viewModel::handleIntent,
     )
 
 }
@@ -84,8 +89,7 @@ fun WelcomeContent(
     backgroundImage: Int,
     pagerState: PagerState,
     presentations: List<Pair<String, String>>,
-    onPermissionsTap: () -> Unit,
-    onIndexChange: (Int) -> Unit
+    sendIntent: (WelcomeIntent) -> Unit
 ) {
 
     ConstraintLayout(

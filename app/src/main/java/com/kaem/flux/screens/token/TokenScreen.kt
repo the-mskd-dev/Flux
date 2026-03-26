@@ -54,6 +54,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kaem.flux.R
 import com.kaem.flux.navigation.Route
+import com.kaem.flux.ui.component.FluxIconButton
 import com.kaem.flux.ui.component.FluxScaffold
 import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.AppTheme
@@ -305,25 +306,12 @@ fun TokenInput(
                         contentAlignment = Alignment.Center
                     ) {
 
-                        IconButton(
-                            modifier =
-                                Modifier.size(
-                                    IconButtonDefaults.mediumContainerSize(
-                                        IconButtonDefaults.IconButtonWidthOption.Wide
-                                    )
-                                ),
-                            onClick = { sendIntent(TokenIntent.SaveToken) },
-                            colors = IconButtonDefaults.iconButtonColors(
-                                containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                                contentColor = MaterialTheme.colorScheme.onTertiaryContainer
-                            ),
-                            shape = IconButtonDefaults.mediumSquareShape
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Check,
-                                contentDescription = "validate token button"
-                            )
-                        }
+                        FluxIconButton(
+                            imageVector = Icons.Default.Check,
+                            onTap = { sendIntent(TokenIntent.SaveToken) },
+                            contentDescription = "validate token button"
+                        )
+
                     }
                 }
             }

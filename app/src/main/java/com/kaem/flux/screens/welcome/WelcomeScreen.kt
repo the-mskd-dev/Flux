@@ -52,6 +52,7 @@ import com.kaem.flux.R
 import com.kaem.flux.navigation.Route
 import com.kaem.flux.screens.token.TokenIntent
 import com.kaem.flux.ui.component.FluxButton
+import com.kaem.flux.ui.component.FluxIconButton
 import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
@@ -240,25 +241,11 @@ fun WelcomeButtons(
             visible = buttons.contains(WelcomeButton.PREVIOUS)
         ) {
 
-            IconButton(
-                modifier =
-                    Modifier.size(
-                        IconButtonDefaults.mediumContainerSize(
-                            IconButtonDefaults.IconButtonWidthOption.Wide
-                        )
-                    ),
-                onClick = { sendIntent(WelcomeIntent.OnPreviousTap) },
-                colors = IconButtonDefaults.iconButtonColors(
-                    containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onTertiaryContainer
-                ),
-                shape = IconButtonDefaults.mediumSquareShape
-            ) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-                    contentDescription = "validate token button"
-                )
-            }
+            FluxIconButton(
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                onTap = { sendIntent(WelcomeIntent.OnPreviousTap) },
+                contentDescription = "previous button"
+            )
 
         }
 
@@ -279,25 +266,11 @@ fun WelcomeButtons(
             visible = buttons.contains(WelcomeButton.NEXT)
         ) {
 
-            IconButton(
-                modifier =
-                    Modifier.size(
-                        IconButtonDefaults.mediumContainerSize(
-                            IconButtonDefaults.IconButtonWidthOption.Wide
-                        )
-                    ),
-                onClick = { sendIntent(WelcomeIntent.OnNextTap) },
-                colors = IconButtonDefaults.iconButtonColors(
-                    containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onTertiaryContainer
-                ),
-                shape = IconButtonDefaults.mediumSquareShape
-            ) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                    contentDescription = "validate token button"
-                )
-            }
+            FluxIconButton(
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                onTap = { sendIntent(WelcomeIntent.OnNextTap) },
+                contentDescription = "next button"
+            )
 
         }
 

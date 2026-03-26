@@ -14,11 +14,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -43,6 +46,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.kaem.flux.R
+import com.kaem.flux.screens.welcome.WelcomeIntent
 import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.FluxPreview
@@ -180,6 +184,37 @@ fun FluxTextButton(
             )
         }
     )
+
+}
+
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+fun FluxIconButton(
+    modifier: Modifier = Modifier,
+    imageVector: ImageVector,
+    onTap: () -> Unit,
+    contentDescription: String
+) {
+
+    IconButton(
+        modifier =
+            modifier.size(
+                IconButtonDefaults.mediumContainerSize(
+                    IconButtonDefaults.IconButtonWidthOption.Wide
+                )
+            ),
+        onClick = onTap,
+        colors = IconButtonDefaults.iconButtonColors(
+            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+            contentColor = MaterialTheme.colorScheme.onTertiaryContainer
+        ),
+        shape = IconButtonDefaults.mediumSquareShape
+    ) {
+        Icon(
+            imageVector = imageVector,
+            contentDescription = contentDescription
+        )
+    }
 
 }
 

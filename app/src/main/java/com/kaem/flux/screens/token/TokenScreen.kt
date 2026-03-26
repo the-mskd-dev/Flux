@@ -22,6 +22,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -50,6 +53,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kaem.flux.R
+import com.kaem.flux.navigation.Route
 import com.kaem.flux.ui.component.FluxScaffold
 import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.AppTheme
@@ -62,6 +66,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun TokenScreen(
     onBack: () -> Unit,
+    navigate: (Route) -> Unit,
     fromSettings: Boolean,
     viewModel: TokenViewModel = hiltViewModel<TokenViewModel, TokenViewModel.Factory>(
         creationCallback = { factory -> factory.create(fromSettings) }
@@ -74,10 +79,7 @@ fun TokenScreen(
         viewModel.event.collect { event ->
             when (event) {
                 TokenEvent.BackToPreviousScreen -> onBack()
-                TokenEvent.TokenValidated -> {
-
-
-                }
+                TokenEvent.NavigateToHomeScreen -> navigate(Route.Library)
             }
         }
     }
@@ -93,6 +95,7 @@ fun TokenScreen(
 
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun TokenScreenContent(
     state: TokenUiState,
@@ -101,7 +104,22 @@ fun TokenScreenContent(
 
     FluxScaffold(
         title = stringResource(R.string.tmdb_api_key),
-        onBackTap = if (state.showBackButton) { { sendIntent(TokenIntent.OnBackTap) } } else null
+        onBackTap = if (state.showBackButton) { { sendIntent(TokenIntent.OnBackTap) } } else null,
+        floatingActionButton = {
+
+            AnimatedVisibility(
+                visible = !state.showBackButton && state.showNextButton
+            ) {
+
+                ExtendedFloatingActionButton(
+                    onClick = {}
+                ) {
+                    Text.Label.Large("Continuer")
+                }
+
+            }
+
+        }
     ) { innerPadding ->
 
         Column(
@@ -286,6 +304,7 @@ fun TokenInput(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) {
+
                         IconButton(
                             modifier =
                                 Modifier.size(
@@ -295,8 +314,8 @@ fun TokenInput(
                                 ),
                             onClick = { sendIntent(TokenIntent.SaveToken) },
                             colors = IconButtonDefaults.iconButtonColors(
-                                containerColor = MaterialTheme.colorScheme.primary,
-                                contentColor = MaterialTheme.colorScheme.onPrimary
+                                containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                                contentColor = MaterialTheme.colorScheme.onTertiaryContainer
                             ),
                             shape = IconButtonDefaults.mediumSquareShape
                         ) {
@@ -322,7 +341,8 @@ fun TokenScreen_Preview() {
         TokenScreenContent(
             state = TokenUiState(
                 token = "azERTyuiOQSdfghJKLmwxCvbn",
-                showBackButton = true,
+                showBackButton = false,
+                showNextButton = true,
                 isLoading = false,
                 message = TokenMessage.Success
             ),

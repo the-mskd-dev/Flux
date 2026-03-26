@@ -9,6 +9,7 @@ import com.kaem.flux.screens.settings.SettingsIntent
 data class TokenUiState(
     val token: String = "",
     val showBackButton: Boolean = false,
+    val showNextButton: Boolean = false,
     val isLoading: Boolean = false,
     val message: TokenMessage = TokenMessage.None
 )
@@ -23,13 +24,10 @@ sealed class TokenIntent {
     data class SetToken(val token: String) : TokenIntent()
     data object SaveToken : TokenIntent()
     object OnBackTap: TokenIntent()
+    object OnNextTap: TokenIntent()
 }
 
 sealed class TokenEvent {
-    object TokenValidated: TokenEvent()
     object BackToPreviousScreen: TokenEvent()
-}
-
-sealed class TokenUiEffect {
-    data object TokenError: TokenUiEffect()
+    object NavigateToHomeScreen: TokenEvent()
 }

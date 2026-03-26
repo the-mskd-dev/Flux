@@ -19,6 +19,7 @@ fun FluxScaffold(
     title: String,
     onBackTap: (() -> Unit)?,
     snackbarHost: @Composable (() -> Unit) = {},
+    floatingActionButton: @Composable (() -> Unit) = {},
     content: @Composable (PaddingValues) -> Unit
 ) {
 
@@ -27,6 +28,7 @@ fun FluxScaffold(
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         snackbarHost = snackbarHost,
+        floatingActionButton = floatingActionButton,
         topBar = {
 
             CenterAlignedTopAppBar(

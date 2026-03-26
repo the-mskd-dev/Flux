@@ -36,7 +36,6 @@ class TokenViewModel @AssistedInject constructor(
     private val _uiState = MutableStateFlow(TokenUiState(showBackButton = fromSettings))
     val uiState: StateFlow<TokenUiState> = _uiState.asStateFlow()
 
-
     init {
         viewModelScope.launch {
             tokenProvider.getToken()?.let { setToken(it) }
@@ -48,6 +47,7 @@ class TokenViewModel @AssistedInject constructor(
             is TokenIntent.SetToken -> setToken(intent.token)
             TokenIntent.SaveToken -> saveToken()
             TokenIntent.OnBackTap -> onBackTap()
+            TokenIntent.OnNextTap -> onNextTap()
         }
     }
 
@@ -61,20 +61,26 @@ class TokenViewModel @AssistedInject constructor(
 
         try {
 
-            val result = tmdbService.authenticate()
+            val authentication = tmdbService.authenticate()
 
-            if (result.success) {
+            if (authentication.success) {
+
                 tokenProvider.saveToken(_uiState.value.token)
-                _event.emit(TokenEvent.TokenValidated)
-                _uiState.update { it.copy(message = TokenMessage.Success) }
                 catalogRepository.loadCatalog()
+
+                _uiState.update { it.copy(message = TokenMessage.Success, showBackButton = true) }
+
             } else {
-                _uiState.update { it.copy(message = TokenMessage.Error) }
+
+                _uiState.update { it.copy(message = TokenMessage.Error, showBackButton = true) }
+
             }
 
         } catch (e: Exception) {
+
             e.printStackTrace()
-            _uiState.update { it.copy(message = TokenMessage.Error) }
+            _uiState.update { it.copy(message = TokenMessage.Error, showBackButton = true) }
+
         }
 
         _uiState.update { it.copy(isLoading = false) }
@@ -83,6 +89,10 @@ class TokenViewModel @AssistedInject constructor(
 
     private suspend fun onBackTap() {
         _event.emit(TokenEvent.BackToPreviousScreen)
+    }
+
+    private suspend fun onNextTap() {
+        _event.emit(TokenEvent.NavigateToHomeScreen)
     }
 
 }

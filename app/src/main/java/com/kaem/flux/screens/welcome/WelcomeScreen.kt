@@ -5,6 +5,8 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -111,7 +113,7 @@ fun WelcomeScreenContent(
             drawableId = uiState.backgroundId
         )
 
-        WelcomeContent(
+        WelcomePage(
             modifier = Modifier.layoutId("content"),
             contentIds = uiState.contentIds
         )
@@ -179,62 +181,44 @@ fun WelcomeBackground(
 }
 
 @Composable
-fun WelcomeContent(
+fun WelcomePage(
     modifier: Modifier,
     contentIds: Pair<Int, Int>,
 ) {
 
-    Box(modifier = modifier) {
+    AnimatedContent(
+        modifier = modifier,
+        targetState = contentIds
+    ) { content ->
 
-        AnimatedContent(
-            targetState = contentIds
-        ) { content ->
+        val (title, description) = content
 
-            val (title, description) = content
-
-            WelcomeItem(
-                title = stringResource(title),
-                description = stringResource(description),
-                textColor = MaterialTheme.colorScheme.onBackground
-            )
-
-        }
-
-    }
-
-}
-
-@Composable
-fun WelcomeItem(
-    title: String,
-    description: String,
-    textColor: Color
-) {
-
-    Box(
-        modifier = Modifier
-            .statusBarsPadding()
-            .fillMaxSize()
-            .padding(horizontal = Ui.Space.MEDIUM),
-        contentAlignment = Alignment.Center
-    ) {
-
-        Column(
-            horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE)
+        Box(
+            modifier = Modifier
+                .statusBarsPadding()
+                .fillMaxSize()
+                .padding(horizontal = Ui.Space.MEDIUM),
+            contentAlignment = Alignment.Center
         ) {
 
-            Text.Headline.Large(
-                modifier = Modifier.fillMaxWidth(),
-                text = title,
-                color = textColor
-            )
+            Column(
+                horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE)
+            ) {
 
-            Text.Body.Large(
-                modifier = Modifier.fillMaxWidth(),
-                text = description,
-                color = textColor
-            )
+                Text.Headline.Large(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = stringResource(title),
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+
+                Text.Body.Large(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = stringResource(description),
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+
+            }
 
         }
 
@@ -256,7 +240,9 @@ fun WelcomeButtons(
 
         AnimatedVisibility(
             modifier = Modifier.align(Alignment.CenterStart),
-            visible = buttons.contains(WelcomeButton.PREVIOUS)
+            visible = buttons.contains(WelcomeButton.PREVIOUS),
+            enter = fadeIn(),
+            exit = fadeOut()
         ) {
 
             FluxIconButton(
@@ -269,7 +255,9 @@ fun WelcomeButtons(
 
         AnimatedVisibility(
             modifier = Modifier.align(Alignment.Center),
-            visible = buttons.contains(WelcomeButton.PERMISSIONS)
+            visible = buttons.contains(WelcomeButton.PERMISSIONS),
+            enter = fadeIn(),
+            exit = fadeOut()
         ) {
 
             FluxButton(
@@ -281,7 +269,9 @@ fun WelcomeButtons(
 
         AnimatedVisibility(
             modifier = Modifier.align(Alignment.CenterEnd),
-            visible = buttons.contains(WelcomeButton.NEXT)
+            visible = buttons.contains(WelcomeButton.NEXT),
+            enter = fadeIn(),
+            exit = fadeOut()
         ) {
 
             FluxIconButton(

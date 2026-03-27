@@ -35,7 +35,7 @@ fun AnimatedVisibilityScope.PlayerControlButtons(
 
     Row(
         modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM),
+        horizontalArrangement = Arrangement.spacedBy(Ui.Space.LARGE),
         verticalAlignment = Alignment.CenterVertically
     ) {
 

@@ -27,6 +27,8 @@ import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButton
@@ -266,14 +268,11 @@ fun WelcomeButtons(
             exit = fadeOut()
         ) {
 
-            ExtendedFloatingActionButton(
-                onClick = { sendIntent(WelcomeIntent.OnPermissionTap) },
-                text = {
-                    Text.Label.Large(stringResource(id = R.string.give_permission))
-                },
-                icon = {},
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary,
+            FluxButton(
+                onTap = { sendIntent(WelcomeIntent.OnPermissionTap) },
+                text = stringResource(id = R.string.give_permission),
+                backgroundColor = MaterialTheme.colorScheme.primary,
+                textColor = MaterialTheme.colorScheme.onPrimary,
             )
 
         }

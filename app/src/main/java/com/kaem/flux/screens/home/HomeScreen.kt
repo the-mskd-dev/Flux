@@ -27,6 +27,7 @@ import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -61,6 +62,7 @@ import com.kaem.flux.model.artwork.Artwork
 import com.kaem.flux.model.artwork.ContentType
 import com.kaem.flux.navigation.Route
 import com.kaem.flux.screens.howTo.HowToNameFiles
+import com.kaem.flux.screens.welcome.WelcomeIntent
 import com.kaem.flux.screens.welcome.WelcomeScreen
 import com.kaem.flux.screens.welcome.fluxPermissionState
 import com.kaem.flux.ui.component.FluxButton

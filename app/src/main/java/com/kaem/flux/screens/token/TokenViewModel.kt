@@ -61,17 +61,19 @@ class TokenViewModel @AssistedInject constructor(
 
         try {
 
+            tokenProvider.saveToken(_uiState.value.token)
+
             val authentication = tmdbService.authenticate()
 
             if (authentication.success) {
 
-                tokenProvider.saveToken(_uiState.value.token)
                 catalogRepository.loadCatalog(sync = true)
 
                 _uiState.update { it.copy(message = TokenMessage.Success, showBackButton = true) }
 
             } else {
 
+                tokenProvider.clearToken()
                 _uiState.update { it.copy(message = TokenMessage.Error, showBackButton = true) }
 
             }
@@ -79,6 +81,7 @@ class TokenViewModel @AssistedInject constructor(
         } catch (e: Exception) {
 
             e.printStackTrace()
+            tokenProvider.clearToken()
             _uiState.update { it.copy(message = TokenMessage.Error, showBackButton = true) }
 
         }

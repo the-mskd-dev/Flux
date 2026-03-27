@@ -22,7 +22,7 @@ class TokenProviderImp(
         val token = tokenDataStore.data.map { it[TOKEN_KEY] }.first()
         return when {
             !token.isNullOrBlank() -> token
-            BuildConfig.DEBUG -> BuildConfig.TMDB_TOKEN
+            //BuildConfig.DEBUG -> BuildConfig.TMDB_TOKEN
             else -> null
         }
     }

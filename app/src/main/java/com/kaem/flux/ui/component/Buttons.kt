@@ -15,10 +15,12 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -196,19 +198,9 @@ fun FluxIconButton(
     contentDescription: String
 ) {
 
-    IconButton(
-        modifier =
-            modifier.size(
-                IconButtonDefaults.mediumContainerSize(
-                    IconButtonDefaults.IconButtonWidthOption.Wide
-                )
-            ),
+    FloatingActionButton(
+        modifier = modifier,
         onClick = onTap,
-        colors = IconButtonDefaults.iconButtonColors(
-            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-            contentColor = MaterialTheme.colorScheme.onTertiaryContainer
-        ),
-        shape = IconButtonDefaults.mediumSquareShape
     ) {
         Icon(
             imageVector = imageVector,

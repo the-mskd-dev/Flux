@@ -1,5 +1,6 @@
 package com.kaem.flux.screens.welcome
 
+import android.Manifest
 import android.os.Build
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -26,6 +28,8 @@ import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -119,7 +123,9 @@ fun WelcomeScreenContent(
         )
 
         WelcomeButtons(
-            modifier = Modifier.layoutId("buttons"),
+            modifier = Modifier
+                .layoutId("buttons")
+                .navigationBarsPadding(),
             buttons = uiState.buttons,
             sendIntent = sendIntent
         )
@@ -260,9 +266,14 @@ fun WelcomeButtons(
             exit = fadeOut()
         ) {
 
-            FluxButton(
-                text = stringResource(id = R.string.give_permission),
-                onTap = { sendIntent(WelcomeIntent.OnPermissionTap) }
+            ExtendedFloatingActionButton(
+                onClick = { sendIntent(WelcomeIntent.OnPermissionTap) },
+                text = {
+                    Text.Label.Large(stringResource(id = R.string.give_permission))
+                },
+                icon = {},
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
             )
 
         }
@@ -281,6 +292,7 @@ fun WelcomeButtons(
             )
 
         }
+
 
     }
 
@@ -315,8 +327,8 @@ val WelcomeScreenConstraintSet = ConstraintSet {
     }
 
     constrain(buttons) {
-        top.linkTo(guideline)
-        bottom.linkTo(parent.bottom)
+        //top.linkTo(guideline)
+        bottom.linkTo(parent.bottom, Ui.Space.MEDIUM)
         start.linkTo(parent.start, Ui.Space.MEDIUM)
         end.linkTo(parent.end, Ui.Space.MEDIUM)
         width = Dimension.fillToConstraints
@@ -329,9 +341,9 @@ val WelcomeScreenConstraintSet = ConstraintSet {
 fun fluxPermissionState(): PermissionState {
 
     val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-        android.Manifest.permission.READ_MEDIA_VIDEO
+        Manifest.permission.READ_MEDIA_VIDEO
     else
-        android.Manifest.permission.READ_EXTERNAL_STORAGE
+        Manifest.permission.READ_EXTERNAL_STORAGE
 
     return rememberPermissionState(permission = permission)
 

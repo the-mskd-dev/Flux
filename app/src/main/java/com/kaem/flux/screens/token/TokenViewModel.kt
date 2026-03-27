@@ -52,7 +52,7 @@ class TokenViewModel @AssistedInject constructor(
     }
 
     private fun setToken(token: String) {
-        _uiState.update { it.copy(token = token, message = TokenMessage.None) }
+        _uiState.update { it.copy(token = token, message = TokenMessage.None, showNextButton = false) }
     }
 
     private suspend fun saveToken() {
@@ -69,7 +69,7 @@ class TokenViewModel @AssistedInject constructor(
 
                 catalogRepository.loadCatalog(sync = true)
 
-                _uiState.update { it.copy(message = TokenMessage.Success, showBackButton = true) }
+                _uiState.update { it.copy(message = TokenMessage.Success, showNextButton = true) }
 
             } else {
 

@@ -35,7 +35,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kaem.flux.R
 import com.kaem.flux.mockups.MediaMockups
@@ -205,7 +204,7 @@ fun EpisodeDropDownMenu(
     val text = when (episode.status) {
         Status.WATCHED -> stringResource(R.string.rewatch)
         Status.IS_WATCHING -> stringResource(R.string.resume)
-        else -> stringResource(R.string.start)
+        else -> stringResource(R.string.play)
     }
 
     DropdownMenu(

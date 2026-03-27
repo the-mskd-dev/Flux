@@ -113,9 +113,9 @@ fun TokenScreenContent(
             ) {
 
                 ExtendedFloatingActionButton(
-                    onClick = {}
+                    onClick = { sendIntent(TokenIntent.OnNextTap) }
                 ) {
-                    Text.Label.Large("Continuer")
+                    Text.Label.Large(stringResource(R.string.start))
                 }
 
             }
@@ -142,10 +142,10 @@ fun TokenScreenContent(
             TokenTutorial()
 
             Column {
+
                 TokenInput(
                     token = state.token,
                     isLoading = state.isLoading,
-                    message = state.message,
                     sendIntent = sendIntent
                 )
 
@@ -250,7 +250,6 @@ fun TokenTutorial() {
 fun TokenInput(
     token: String,
     isLoading: Boolean,
-    message: TokenMessage,
     sendIntent: (TokenIntent) -> Unit
 ) {
 

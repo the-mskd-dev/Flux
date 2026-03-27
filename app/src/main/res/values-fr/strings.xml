@@ -7,7 +7,7 @@
     <string name="season_and_episode">Saison %1$d - épisode %2$d</string>
     <string name="season">Saison %1$d</string>
     <string name="episode">Épisode %1$d</string>
-    <string name="start">Lire</string>
+    <string name="play">Lire</string>
     <string name="resume">Reprendre</string>
     <string name="mark_as_watched">Marquer comme vu</string>
     <string name="mark_as_not_watched">Marquer comme non vu</string>
@@ -84,4 +84,5 @@
     <string name="log_in">Connectez-vous</string>
     <string name="sign_up">inscrivez-vous</string>
     <string name="api_key">clé d\'API</string>
+    <string name="start">Commencer</string>
 </resources>

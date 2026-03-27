@@ -80,7 +80,7 @@ fun WelcomeScreen(
         }
     }
 
-    if (!permissions.status.isGranted) {
+    if (permissions.status.isGranted) {
         viewModel.handleIntent(WelcomeIntent.OnPermissionGranted)
     }
 

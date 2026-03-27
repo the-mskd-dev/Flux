@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kaem.flux.data.repository.settings.SettingsRepository
 import com.kaem.flux.data.tmdb.token.TokenProvider
+import com.kaem.flux.navigation.Route
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -26,6 +27,17 @@ class MainViewModel @Inject constructor(
             }
         }
 
+    }
+
+    fun getStartingScreen(permissionsGranted: Boolean) : Route {
+        return when {
+            !permissionsGranted ->
+                Route.Welcome
+            tokenProvider.hasToken ->
+                Route.Library
+            else ->
+                Route.Token(fromSettings = false)
+        }
     }
 
 }

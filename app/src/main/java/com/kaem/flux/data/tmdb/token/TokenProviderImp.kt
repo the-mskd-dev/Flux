@@ -8,6 +8,7 @@ import com.kaem.flux.BuildConfig
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.runBlocking
 
 class TokenProviderImp(
     private val tokenDataStore: DataStore<Preferences>
@@ -35,5 +36,8 @@ class TokenProviderImp(
     override suspend fun clearToken() {
         tokenDataStore.edit { it[TOKEN_KEY] = "" }
     }
+
+    override val hasToken: Boolean
+        get() = runBlocking { !getToken().isNullOrBlank() }
 
 }

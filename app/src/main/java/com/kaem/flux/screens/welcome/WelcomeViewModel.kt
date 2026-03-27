@@ -72,6 +72,7 @@ class WelcomeViewModel @Inject constructor(
             val index = (it.index - 1).coerceAtLeast(0)
 
             val buttons = buildList {
+                add(WelcomeButton.NEXT)
                 if (index > 0) add(WelcomeButton.PREVIOUS)
             }
 
@@ -87,14 +88,11 @@ class WelcomeViewModel @Inject constructor(
 
     private suspend fun onPermissionGranted() {
 
-        val token = tokenProvider.getToken()
-
-        if (token.isNullOrBlank()) {
-            _event.emit(WelcomeEvent.NavigateToToken)
-        } else {
+        if (tokenProvider.hasToken) {
             _event.emit(WelcomeEvent.NavigateToLibrary)
+        } else {
+            _event.emit(WelcomeEvent.NavigateToToken)
         }
-
 
     }
 

@@ -54,6 +54,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kaem.flux.R
 import com.kaem.flux.navigation.Route
+import com.kaem.flux.ui.component.FluxButton
 import com.kaem.flux.ui.component.FluxIconButton
 import com.kaem.flux.ui.component.FluxScaffold
 import com.kaem.flux.ui.component.Text
@@ -109,14 +110,15 @@ fun TokenScreenContent(
         floatingActionButton = {
 
             AnimatedVisibility(
-                visible = !state.showBackButton && state.showNextButton
+                visible = !state.showBackButton && state.showNextButton,
+                enter = Ui.Animation.buttonEnter,
+                exit = Ui.Animation.buttonExit
             ) {
 
-                ExtendedFloatingActionButton(
-                    onClick = { sendIntent(TokenIntent.OnNextTap) }
-                ) {
-                    Text.Label.Large(stringResource(R.string.start))
-                }
+                FluxButton(
+                    onTap = { sendIntent(TokenIntent.OnNextTap) },
+                    text = stringResource(R.string.start),
+                )
 
             }
 

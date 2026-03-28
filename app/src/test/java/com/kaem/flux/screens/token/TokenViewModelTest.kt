@@ -79,21 +79,21 @@ class TokenViewModelTest : FunSpec({
                 apiResult = TMDBAuthentication(success = true, status_code = 0, status_message = ""),
                 expectedMessage = TokenMessage.Success,
                 expectedLoadCatalog = true,
-                expectedEvent = TokenEvent.TokenValidated
+                expectedNextButton = true
             ),
             SaveTokenTestCase(
                 description = "Fail token",
                 apiResult = TMDBAuthentication(success = false, status_code = 401, status_message = "Fail"),
                 expectedMessage = TokenMessage.Error,
                 expectedLoadCatalog = false,
-                expectedEvent = null
+                expectedNextButton = false
             ),
             SaveTokenTestCase(
                 description = "Fail token with exception",
                 apiResult = Exception("Fail"),
                 expectedMessage = TokenMessage.Error,
                 expectedLoadCatalog = false,
-                expectedEvent = null
+                expectedNextButton = false
             )
         ) { testCase ->
 
@@ -115,24 +115,16 @@ class TokenViewModelTest : FunSpec({
 
                 awaitItem()
 
-                viewModel.event.test {
-                    viewModel.handleIntent(TokenIntent.SaveToken)
+                viewModel.handleIntent(TokenIntent.SaveToken)
 
-                    if (testCase.expectedEvent != null) {
-                        awaitItem() shouldBe testCase.expectedEvent
-                    } else {
-                        expectNoEvents()
-                    }
-
-                }
-
-                val state = expectMostRecentItem()
+                val state = awaitItem()
 
                 if (testCase.expectedLoadCatalog) {
                     coEvery { catalogRepository.loadCatalog() }
                 }
                 state.message shouldBe testCase.expectedMessage
                 state.isLoading shouldBe false
+                state.showNextButton shouldBe testCase.expectedNextButton
 
             }
 

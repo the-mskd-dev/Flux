@@ -1,5 +1,6 @@
 package com.kaem.flux.screens.token
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kaem.flux.data.repository.catalog.CatalogRepository
@@ -74,7 +75,7 @@ class TokenViewModel @AssistedInject constructor(
             } else {
 
                 tokenProvider.clearToken()
-                _uiState.update { it.copy(message = TokenMessage.Error, showBackButton = true) }
+                _uiState.update { it.copy(message = TokenMessage.Error, showNextButton = false) }
 
             }
 
@@ -82,7 +83,7 @@ class TokenViewModel @AssistedInject constructor(
 
             e.printStackTrace()
             tokenProvider.clearToken()
-            _uiState.update { it.copy(message = TokenMessage.Error, showBackButton = true) }
+            _uiState.update { it.copy(message = TokenMessage.Error, showNextButton = false) }
 
         }
 

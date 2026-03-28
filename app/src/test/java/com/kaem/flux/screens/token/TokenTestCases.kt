@@ -7,5 +7,5 @@ data class SaveTokenTestCase(
     val apiResult: Any,
     val expectedMessage: TokenMessage,
     val expectedLoadCatalog: Boolean,
-    val expectedEvent: TokenEvent?
+    val expectedNextButton: Boolean
 )

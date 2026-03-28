@@ -5,9 +5,16 @@ import android.os.Build
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -150,6 +157,7 @@ fun WelcomeBackground(
         AnimatedContent(
             modifier = Modifier.fillMaxSize(),
             targetState = drawableId,
+            transitionSpec = { slideInHorizontally { it } togetherWith slideOutHorizontally { -it } } ,
             label = "background animation"
         ) { id ->
 
@@ -249,8 +257,8 @@ fun WelcomeButtons(
         AnimatedVisibility(
             modifier = Modifier.align(Alignment.CenterStart),
             visible = buttons.contains(WelcomeButton.PREVIOUS),
-            enter = fadeIn(),
-            exit = fadeOut()
+            enter = Ui.Animation.buttonEnter,
+            exit = Ui.Animation.buttonExit,
         ) {
 
             FluxIconButton(
@@ -264,8 +272,8 @@ fun WelcomeButtons(
         AnimatedVisibility(
             modifier = Modifier.align(Alignment.Center),
             visible = buttons.contains(WelcomeButton.PERMISSIONS),
-            enter = fadeIn(),
-            exit = fadeOut()
+            enter = Ui.Animation.buttonEnter,
+            exit = Ui.Animation.buttonExit,
         ) {
 
             FluxButton(
@@ -280,8 +288,8 @@ fun WelcomeButtons(
         AnimatedVisibility(
             modifier = Modifier.align(Alignment.CenterEnd),
             visible = buttons.contains(WelcomeButton.NEXT),
-            enter = fadeIn(),
-            exit = fadeOut()
+            enter = Ui.Animation.buttonEnter,
+            exit = Ui.Animation.buttonExit,
         ) {
 
             FluxIconButton(

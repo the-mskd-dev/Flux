@@ -202,6 +202,7 @@ fun FluxIconButton(
 
     FloatingActionButton(
         modifier = modifier,
+        elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp, 0.dp, 0.dp),
         onClick = onTap,
     ) {
         Icon(

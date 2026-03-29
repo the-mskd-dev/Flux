@@ -5,6 +5,11 @@ import android.os.Build
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -35,6 +40,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.util.lerp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
@@ -52,6 +58,8 @@ import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
 import com.kaem.flux.utils.FluxPreview
+import kotlin.math.absoluteValue
+import kotlin.random.Random
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -142,14 +150,27 @@ fun WelcomePager(
     HorizontalPager(
         modifier = modifier,
         state = pagerState
-    ) { pageIndex ->
+    ) { index ->
 
-        val page = WelcomePage.entries[pageIndex]
+        val page = WelcomePage.entries[index]
 
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = Ui.Space.MEDIUM),
+                .padding(horizontal = Ui.Space.MEDIUM)
+                .graphicsLayer {
+                    val pageOffset = (
+                            (pagerState.currentPage - index) + pagerState
+                                .currentPageOffsetFraction
+                            ).absoluteValue
+
+                    // We animate the alpha, between 50% and 100%
+                    alpha = lerp(
+                        start = 0.2f,
+                        stop = 1f,
+                        fraction = 1f - pageOffset.coerceIn(0f, 1f)
+                    )
+                },
             contentAlignment = Alignment.Center
         ) {
 
@@ -193,6 +214,7 @@ fun WelcomeBackground(
         AnimatedContent(
             modifier = Modifier.fillMaxSize(),
             targetState = drawableId,
+            transitionSpec = { (fadeIn()  + scaleIn(initialScale = 0.92f)) togetherWith fadeOut() },
             label = "background animation"
         ) { id ->
 
@@ -200,10 +222,17 @@ fun WelcomeBackground(
                 modifier = Modifier
                     .fillMaxSize()
                     .graphicsLayer {
-                        translationY = -15f
-                        translationX = 15f
-                        rotationZ = -15f
-                        rotationX = 15f
+                        if (Random.nextBoolean()) {
+                            translationY = -15f
+                            translationX = -15f
+                            rotationZ = 30f
+                            rotationX = 30f
+                        } else {
+                            translationY = -15f
+                            translationX = 15f
+                            rotationZ = -15f
+                            rotationX = 15f
+                        }
                         cameraDistance = 15f
                     },
                 painter = painterResource(id),

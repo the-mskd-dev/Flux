@@ -3,11 +3,11 @@ package com.kaem.flux.screens.welcome
 import com.kaem.flux.R
 
 data class WelcomeUiState(
-    val page: WelcomePage = WelcomePage.WELCOME,
+    val pageIndex: Int = 0,
     val buttons: List<WelcomeButton> = listOf(WelcomeButton.NEXT),
 )
 
-enum class WelcomePage(val title: Int, val description: Int, val drawable: Int) {
+enum class WelcomePage(val titleId: Int, val descriptionId: Int, val drawableId: Int) {
     WELCOME(R.string.presentation_1_title, R.string.presentation_1_description, R.drawable.home_screen),
     PERMISSIONS(R.string.presentation_2_title, R.string.presentation_2_description, R.drawable.artwork_screen);
 

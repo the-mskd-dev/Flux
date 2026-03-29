@@ -24,12 +24,6 @@ class WelcomeViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(WelcomeUiState())
     val uiState = _uiState.asStateFlow()
 
-    private val backgroundIds = listOf(
-        R.drawable.home_screen,
-        R.drawable.artwork_screen,
-        R.drawable.search_screen
-    )
-
     private val contentIds = listOf(
         R.string.presentation_1_title to R.string.presentation_1_description,
         R.string.presentation_2_title to R.string.presentation_2_description
@@ -64,7 +58,7 @@ class WelcomeViewModel @Inject constructor(
             }
 
             it.copy(
-                page = page,
+                pageIndex = pageIndex,
                 buttons = buttons
             )
 
@@ -72,12 +66,12 @@ class WelcomeViewModel @Inject constructor(
     }
 
     private suspend fun onNextPage() {
-        val nextIndex = (_uiState.value.page.ordinal + 1).coerceAtMost(WelcomePage.lastIndex)
+        val nextIndex = (_uiState.value.pageIndex + 1).coerceAtMost(WelcomePage.lastIndex)
         _event.emit(WelcomeEvent.ScrollToPage(nextIndex))
     }
 
     private suspend fun onPreviousPage() {
-        val previousIndex = (_uiState.value.page.ordinal - 1).coerceAtLeast(0)
+        val previousIndex = (_uiState.value.pageIndex - 1).coerceAtLeast(0)
         _event.emit(WelcomeEvent.ScrollToPage(previousIndex))
     }
 

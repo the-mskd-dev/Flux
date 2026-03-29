@@ -5,14 +5,12 @@ import android.os.Build
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -83,7 +81,7 @@ fun WelcomeScreen(
         viewModel.handleIntent(WelcomeIntent.OnPermissionGranted)
     }
 
-    BackHandler(enabled = uiState.page.ordinal > 0) {
+    BackHandler(enabled = uiState.pageIndex > 0) {
         viewModel.handleIntent(WelcomeIntent.OnPreviousTap)
     }
 
@@ -115,13 +113,12 @@ fun WelcomeScreenContent(
 
         WelcomeBackground(
             modifier = Modifier.layoutId("background"),
-            drawableId = uiState.page.drawable
+            drawableId = WelcomePage.entries[uiState.pageIndex].drawableId
         )
 
         WelcomePager(
             modifier = Modifier.layoutId("pager"),
-            pagerState = pagerState,
-            page = uiState.page
+            pagerState = pagerState
         )
 
         WelcomeButtons(
@@ -140,17 +137,17 @@ fun WelcomeScreenContent(
 fun WelcomePager(
     modifier: Modifier,
     pagerState: PagerState,
-    page: WelcomePage
 ) {
 
     HorizontalPager(
         modifier = modifier,
         state = pagerState
-    ) {
+    ) { pageIndex ->
+
+        val page = WelcomePage.entries[pageIndex]
 
         Box(
             modifier = Modifier
-                .statusBarsPadding()
                 .fillMaxSize()
                 .padding(horizontal = Ui.Space.MEDIUM),
             contentAlignment = Alignment.Center
@@ -163,13 +160,13 @@ fun WelcomePager(
 
                 Text.Headline.Large(
                     modifier = Modifier.fillMaxWidth(),
-                    text = stringResource(page.title),
+                    text = stringResource(page.titleId),
                     color = MaterialTheme.colorScheme.onBackground
                 )
 
                 Text.Body.Large(
                     modifier = Modifier.fillMaxWidth(),
-                    text = stringResource(page.description),
+                    text = stringResource(page.descriptionId),
                     color = MaterialTheme.colorScheme.onBackground
                 )
 
@@ -305,9 +302,6 @@ val WelcomeScreenConstraintSet = ConstraintSet {
         "buttons"
     )
 
-    val topGuideline = createGuidelineFromTop(.3f)
-    val bottomGuideline = createGuidelineFromTop(.7f)
-
     constrain(background) {
         top.linkTo(parent.top)
         start.linkTo(parent.start)
@@ -318,10 +312,10 @@ val WelcomeScreenConstraintSet = ConstraintSet {
     }
 
     constrain(pager) {
-        top.linkTo(topGuideline)
+        top.linkTo(parent.top)
         start.linkTo(parent.start)
         end.linkTo(parent.end)
-        bottom.linkTo(bottomGuideline)
+        bottom.linkTo(parent.bottom)
         height = Dimension.fillToConstraints
         width = Dimension.fillToConstraints
     }

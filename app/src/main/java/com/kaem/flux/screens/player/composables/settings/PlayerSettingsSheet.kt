@@ -22,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import com.kaem.flux.mockups.PlayerMockups
 import com.kaem.flux.screens.player.PlayerIntent
 import com.kaem.flux.screens.player.PlayerTrack

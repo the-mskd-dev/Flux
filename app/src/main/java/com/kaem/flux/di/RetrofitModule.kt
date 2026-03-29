@@ -1,7 +1,6 @@
 package com.kaem.flux.di
 
 import com.google.gson.Gson
-import com.kaem.flux.BuildConfig
 import com.kaem.flux.data.tmdb.TMDBService
 import com.kaem.flux.data.tmdb.token.TokenProvider
 import dagger.Module

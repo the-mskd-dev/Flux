@@ -1,6 +1,5 @@
 package com.kaem.flux.screens.token
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kaem.flux.data.repository.catalog.CatalogRepository

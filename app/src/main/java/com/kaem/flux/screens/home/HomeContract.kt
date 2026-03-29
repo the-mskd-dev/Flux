@@ -4,7 +4,6 @@ import androidx.compose.runtime.Immutable
 import com.kaem.flux.model.ScreenState
 import com.kaem.flux.model.artwork.Artwork
 import com.kaem.flux.model.artwork.ContentType
-import com.kaem.flux.model.remoteConfig.Message
 
 @Immutable
 data class HomeUiState(

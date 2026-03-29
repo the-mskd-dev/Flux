@@ -1,8 +1,6 @@
 package com.kaem.flux.screens.token
 
 import androidx.compose.runtime.Immutable
-import com.kaem.flux.screens.settings.SettingsEvent
-import com.kaem.flux.screens.settings.SettingsIntent
 
 
 @Immutable

@@ -3,10 +3,8 @@ package com.kaem.flux.screens.welcome
 import app.cash.turbine.test
 import com.kaem.flux.configs.fluxExtensions
 import com.kaem.flux.data.tmdb.token.TokenProvider
-import io.kotest.core.spec.style.FreeSpec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData
-import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk

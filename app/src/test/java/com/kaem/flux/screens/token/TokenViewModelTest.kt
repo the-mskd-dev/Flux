@@ -6,13 +6,10 @@ import com.kaem.flux.data.repository.catalog.CatalogRepository
 import com.kaem.flux.data.tmdb.TMDBService
 import com.kaem.flux.data.tmdb.token.TokenProvider
 import com.kaem.flux.model.tmdb.TMDBAuthentication
-import com.kaem.flux.screens.settings.SettingsViewModel
-import com.kaem.flux.ui.theme.Ui
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData
 import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.mockk
 
 class TokenViewModelTest : FunSpec({

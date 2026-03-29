@@ -2,7 +2,6 @@ package com.kaem.flux.screens.welcome
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kaem.flux.R
 import com.kaem.flux.data.tmdb.token.TokenProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow

@@ -11,6 +11,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineScope
 import javax.inject.Singleton
 
 @Module
@@ -31,12 +32,14 @@ object RepositoriesModule {
         @FilesModule.LocalFilesDataSource localFilesSource: FilesSource,
         @MediaModule.MediaDataSourceLocal mediaSourceLocal: MediaSource,
         @MediaModule.MediaDataSourceTMDB mediaSourceTMDB: MediaSource,
-        db: DatabaseDao
+        db: DatabaseDao,
+        @CoroutineModule.ApplicationScope scope: CoroutineScope
     ) : CatalogRepository = CatalogRepositoryImpl(
         fileSource = localFilesSource,
         mediaSourceLocal = mediaSourceLocal,
         mediaSourceTmdb = mediaSourceTMDB,
-        db = db
+        db = db,
+        scope = scope
     )
 
 }

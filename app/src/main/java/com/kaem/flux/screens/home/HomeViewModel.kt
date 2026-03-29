@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.days
+import kotlin.time.Duration.Companion.minutes
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -51,13 +52,16 @@ class HomeViewModel @Inject constructor(
         initialValue = HomeUiState()
     )
 
+
     init {
-        handleIntent(HomeIntent.OnSyncTap(manualSync = false))
+        viewModelScope.launch {
+            syncCatalog(manualSync = false)
+        }
     }
 
     fun handleIntent(intent: HomeIntent) = viewModelScope.launch {
         when (intent) {
-            is HomeIntent.OnSyncTap -> fetchCatalog(manualSync = intent.manualSync)
+            is HomeIntent.SyncCatalog -> syncCatalog(manualSync = true)
             is HomeIntent.OnArtworkTap -> _event.emit(NavigateToArtwork(mediaId = intent.artworkId))
             is HomeIntent.OnCategoryTap -> _event.emit(NavigateToCategory(category = intent.category))
             HomeIntent.OnSearchTap -> _event.emit(HomeEvent.NavigateToSearch)
@@ -66,19 +70,24 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private suspend fun fetchCatalog(manualSync: Boolean = false) {
+    private suspend fun syncCatalog(manualSync: Boolean = false) {
 
         val lastSyncTime = userRepository.getSyncTime()
 
         val currentTime = System.currentTimeMillis()
         val sync = currentTime - lastSyncTime > 1.days.inWholeMilliseconds || manualSync
 
-        Log.i("LibraryViewModel", "getLibrary, sync : $sync")
-
-        repository.loadCatalog(sync)
-
         if (sync) {
+
+            Log.i("HomeViewModel", "syncCatalog, catalog sync requested")
+
+            repository.syncCatalog()
             userRepository.setSyncTime(currentTime)
+
+        } else {
+
+            Log.i("HomeViewModel", "syncCatalog, catalog sync not needed")
+
         }
 
     }

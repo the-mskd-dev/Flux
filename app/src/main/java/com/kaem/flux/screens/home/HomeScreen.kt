@@ -158,7 +158,7 @@ fun HomeEmpty(sendIntent: (HomeIntent) -> Unit) {
             ) {
                 FluxButton(
                     text = stringResource(R.string.refresh),
-                    onTap = { sendIntent(HomeIntent.OnSyncTap(manualSync = true)) }
+                    onTap = { sendIntent(HomeIntent.SyncCatalog) }
                 )
             }
 
@@ -197,7 +197,7 @@ fun HomeContent(
         PullToRefreshBox(
             modifier = Modifier.weight(1f),
             isRefreshing = isRefreshing,
-            onRefresh = { sendIntent(HomeIntent.OnSyncTap(true)) },
+            onRefresh = { sendIntent(HomeIntent.SyncCatalog) },
             state = pullToRefreshState,
             indicator = {
                 PullToRefreshDefaults.LoadingIndicator(

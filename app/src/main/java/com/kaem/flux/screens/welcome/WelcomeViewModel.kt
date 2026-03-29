@@ -24,11 +24,6 @@ class WelcomeViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(WelcomeUiState())
     val uiState = _uiState.asStateFlow()
 
-    private val contentIds = listOf(
-        R.string.presentation_1_title to R.string.presentation_1_description,
-        R.string.presentation_2_title to R.string.presentation_2_description
-    )
-
     fun handleIntent(intent: WelcomeIntent) = viewModelScope.launch {
         when (intent) {
             is WelcomeIntent.OnPageChange -> onPageChange(pageIndex = intent.pageIndex)
@@ -42,17 +37,15 @@ class WelcomeViewModel @Inject constructor(
     private fun onPageChange(pageIndex: Int) {
         _uiState.update {
 
-            val page = WelcomePage.entries[pageIndex]
-
             val buttons = buildList {
 
                 if (pageIndex > 0)
                     add(WelcomeButton.PREVIOUS)
 
-                if (pageIndex < contentIds.lastIndex)
+                if (pageIndex < WelcomePage.lastIndex)
                     add(WelcomeButton.NEXT)
 
-                if (page == WelcomePage.PERMISSIONS)
+                if (pageIndex == WelcomePage.PERMISSIONS.ordinal)
                     add(WelcomeButton.PERMISSIONS)
 
             }

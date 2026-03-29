@@ -5,13 +5,6 @@ import android.os.Build
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.spring
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
@@ -20,42 +13,30 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowLeft
-import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.KeyboardArrowLeft
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
@@ -67,7 +48,6 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.kaem.flux.R
 import com.kaem.flux.navigation.Route
-import com.kaem.flux.screens.token.TokenIntent
 import com.kaem.flux.ui.component.FluxButton
 import com.kaem.flux.ui.component.FluxIconButton
 import com.kaem.flux.ui.component.Text
@@ -84,6 +64,7 @@ fun WelcomeScreen(
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val permissions = fluxPermissionState()
+    val pagerState = rememberPagerState(pageCount = { WelcomePage.entries.size })
 
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
@@ -91,6 +72,9 @@ fun WelcomeScreen(
                 WelcomeEvent.NavigateToLibrary -> navigate(Route.Library)
                 WelcomeEvent.NavigateToToken -> navigate(Route.Token(fromSettings = false))
                 WelcomeEvent.OpenPermissionDialog -> permissions.launchPermissionRequest()
+                is WelcomeEvent.ScrollToPage -> {
+                    pagerState.animateScrollToPage(event.pageIndex)
+                }
             }
         }
     }
@@ -99,12 +83,19 @@ fun WelcomeScreen(
         viewModel.handleIntent(WelcomeIntent.OnPermissionGranted)
     }
 
-    BackHandler(enabled = uiState.index > 0) {
+    BackHandler(enabled = uiState.page.ordinal > 0) {
         viewModel.handleIntent(WelcomeIntent.OnPreviousTap)
+    }
+
+    LaunchedEffect(pagerState) {
+        snapshotFlow { pagerState.targetPage }.collect { pageIndex ->
+            viewModel.handleIntent(WelcomeIntent.OnPageChange(pageIndex))
+        }
     }
 
     WelcomeScreenContent(
         uiState = uiState,
+        pagerState = pagerState,
         sendIntent = viewModel::handleIntent,
     )
 
@@ -113,6 +104,7 @@ fun WelcomeScreen(
 @Composable
 fun WelcomeScreenContent(
     uiState: WelcomeUiState,
+    pagerState: PagerState,
     sendIntent: (WelcomeIntent) -> Unit
 ) {
 
@@ -123,12 +115,13 @@ fun WelcomeScreenContent(
 
         WelcomeBackground(
             modifier = Modifier.layoutId("background"),
-            drawableId = uiState.backgroundId
+            drawableId = uiState.page.drawable
         )
 
-        WelcomePage(
-            modifier = Modifier.layoutId("content"),
-            contentIds = uiState.contentIds
+        WelcomePager(
+            modifier = Modifier.layoutId("pager"),
+            pagerState = pagerState,
+            page = uiState.page
         )
 
         WelcomeButtons(
@@ -138,6 +131,52 @@ fun WelcomeScreenContent(
             buttons = uiState.buttons,
             sendIntent = sendIntent
         )
+
+    }
+
+}
+
+@Composable
+fun WelcomePager(
+    modifier: Modifier,
+    pagerState: PagerState,
+    page: WelcomePage
+) {
+
+    HorizontalPager(
+        modifier = modifier,
+        state = pagerState
+    ) {
+
+        Box(
+            modifier = Modifier
+                .statusBarsPadding()
+                .fillMaxSize()
+                .padding(horizontal = Ui.Space.MEDIUM),
+            contentAlignment = Alignment.Center
+        ) {
+
+            Column(
+                horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE)
+            ) {
+
+                Text.Headline.Large(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = stringResource(page.title),
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+
+                Text.Body.Large(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = stringResource(page.description),
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+
+            }
+
+        }
+
 
     }
 
@@ -157,7 +196,6 @@ fun WelcomeBackground(
         AnimatedContent(
             modifier = Modifier.fillMaxSize(),
             targetState = drawableId,
-            transitionSpec = { slideInHorizontally { it } togetherWith slideOutHorizontally { -it } } ,
             label = "background animation"
         ) { id ->
 
@@ -191,52 +229,6 @@ fun WelcomeBackground(
                     )
                 )
         )
-
-    }
-
-}
-
-@Composable
-fun WelcomePage(
-    modifier: Modifier,
-    contentIds: Pair<Int, Int>,
-) {
-
-    AnimatedContent(
-        modifier = modifier,
-        targetState = contentIds
-    ) { content ->
-
-        val (title, description) = content
-
-        Box(
-            modifier = Modifier
-                .statusBarsPadding()
-                .fillMaxSize()
-                .padding(horizontal = Ui.Space.MEDIUM),
-            contentAlignment = Alignment.Center
-        ) {
-
-            Column(
-                horizontalAlignment = Alignment.Start,
-                verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE)
-            ) {
-
-                Text.Headline.Large(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = stringResource(title),
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-
-                Text.Body.Large(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = stringResource(description),
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-
-            }
-
-        }
 
     }
 
@@ -307,13 +299,14 @@ fun WelcomeButtons(
 
 val WelcomeScreenConstraintSet = ConstraintSet {
 
-    val (background, content, buttons) = createRefsFor(
+    val (background, pager, buttons) = createRefsFor(
         "background",
-        "content",
+        "pager",
         "buttons"
     )
 
-    val guideline = createGuidelineFromTop(.7f)
+    val topGuideline = createGuidelineFromTop(.3f)
+    val bottomGuideline = createGuidelineFromTop(.7f)
 
     constrain(background) {
         top.linkTo(parent.top)
@@ -324,17 +317,16 @@ val WelcomeScreenConstraintSet = ConstraintSet {
         width = Dimension.fillToConstraints
     }
 
-    constrain(content) {
-        top.linkTo(parent.top)
+    constrain(pager) {
+        top.linkTo(topGuideline)
         start.linkTo(parent.start)
         end.linkTo(parent.end)
-        bottom.linkTo(guideline)
+        bottom.linkTo(bottomGuideline)
         height = Dimension.fillToConstraints
         width = Dimension.fillToConstraints
     }
 
     constrain(buttons) {
-        //top.linkTo(guideline)
         bottom.linkTo(parent.bottom, Ui.Space.MEDIUM)
         start.linkTo(parent.start, Ui.Space.MEDIUM)
         end.linkTo(parent.end, Ui.Space.MEDIUM)
@@ -364,6 +356,7 @@ fun WelcomeScreen_Preview() {
             uiState = WelcomeUiState(
                 buttons = WelcomeButton.entries
             ),
+            pagerState = rememberPagerState(pageCount = { WelcomePage.entries.size }),
             sendIntent = {}
         )
     }

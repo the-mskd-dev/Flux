@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kaem.flux.R
 import com.kaem.flux.data.tmdb.token.TokenProvider
-import com.kaem.flux.screens.home.HomeEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -38,6 +37,7 @@ class WelcomeViewModel @Inject constructor(
 
     fun handleIntent(intent: WelcomeIntent) = viewModelScope.launch {
         when (intent) {
+            is WelcomeIntent.OnPageChange -> onPageChange(pageIndex = intent.pageIndex)
             WelcomeIntent.OnPreviousTap -> onPreviousPage()
             WelcomeIntent.OnNextTap -> onNextPage()
             WelcomeIntent.OnPermissionTap -> _event.emit(WelcomeEvent.OpenPermissionDialog)
@@ -45,45 +45,40 @@ class WelcomeViewModel @Inject constructor(
         }
     }
 
-    private fun onNextPage() {
+    private fun onPageChange(pageIndex: Int) {
         _uiState.update {
 
-            val index = (it.index + 1).coerceAtMost(contentIds.lastIndex)
+            val page = WelcomePage.entries[pageIndex]
 
             val buttons = buildList {
-                add(WelcomeButton.PREVIOUS)
-                add(if (index < contentIds.lastIndex) WelcomeButton.NEXT else WelcomeButton.PERMISSIONS)
+
+                if (pageIndex > 0)
+                    add(WelcomeButton.PREVIOUS)
+
+                if (pageIndex < contentIds.lastIndex)
+                    add(WelcomeButton.NEXT)
+
+                if (page == WelcomePage.PERMISSIONS)
+                    add(WelcomeButton.PERMISSIONS)
 
             }
 
             it.copy(
-                index = index,
-                backgroundId = backgroundIds[index],
-                contentIds = contentIds[index],
+                page = page,
                 buttons = buttons
             )
 
         }
     }
 
-    private fun onPreviousPage() {
-        _uiState.update {
+    private suspend fun onNextPage() {
+        val nextIndex = (_uiState.value.page.ordinal + 1).coerceAtMost(WelcomePage.lastIndex)
+        _event.emit(WelcomeEvent.ScrollToPage(nextIndex))
+    }
 
-            val index = (it.index - 1).coerceAtLeast(0)
-
-            val buttons = buildList {
-                add(WelcomeButton.NEXT)
-                if (index > 0) add(WelcomeButton.PREVIOUS)
-            }
-
-            it.copy(
-                index = index,
-                backgroundId = backgroundIds[index],
-                contentIds = contentIds[index],
-                buttons = buttons
-            )
-
-        }
+    private suspend fun onPreviousPage() {
+        val previousIndex = (_uiState.value.page.ordinal - 1).coerceAtLeast(0)
+        _event.emit(WelcomeEvent.ScrollToPage(previousIndex))
     }
 
     private suspend fun onPermissionGranted() {

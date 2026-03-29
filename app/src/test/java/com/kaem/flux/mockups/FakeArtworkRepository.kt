@@ -11,18 +11,18 @@ class FakeArtworkRepository(initialContentType: ContentType) : ArtworkRepository
 
     private val _flow = MutableStateFlow(
         when (initialContentType) {
-            ContentType.MOVIE -> ArtworkRepository.Content(
+            ContentType.MOVIE -> ArtworkRepository.State(
                 artwork = MediaMockups.movieArtwork,
                 movie = MediaMockups.movie
             )
-            ContentType.SHOW -> ArtworkRepository.Content(
+            ContentType.SHOW -> ArtworkRepository.State(
                 artwork = MediaMockups.showArtwork,
                 episodes = MediaMockups.episodes
             )
         }
     )
 
-    override val flow: StateFlow<ArtworkRepository.Content> = _flow
+    override val flow: StateFlow<ArtworkRepository.State> = _flow
 
     override suspend fun saveEpisodes(episodes: List<Episode>) {
         val currentContent = _flow.value
@@ -49,17 +49,17 @@ class FakeArtworkRepository(initialContentType: ContentType) : ArtworkRepository
     override fun searchArtwork(mediaId: Long) {
     }
 
-    fun setContent(content: ArtworkRepository.Content) {
-        _flow.value = content
+    fun setContent(state: ArtworkRepository.State) {
+        _flow.value = state
     }
 
     fun setContentType(contentType: ContentType) {
         _flow.value = when (contentType) {
-            ContentType.MOVIE -> ArtworkRepository.Content(
+            ContentType.MOVIE -> ArtworkRepository.State(
                 artwork = MediaMockups.movieArtwork,
                 movie = MediaMockups.movie
             )
-            ContentType.SHOW -> ArtworkRepository.Content(
+            ContentType.SHOW -> ArtworkRepository.State(
                 artwork = MediaMockups.showArtwork,
                 episodes = MediaMockups.episodes
             )

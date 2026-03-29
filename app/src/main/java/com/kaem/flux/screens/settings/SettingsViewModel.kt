@@ -58,6 +58,7 @@ class SettingsViewModel @Inject constructor(
             is SettingsIntent.SetThemeValue -> setTheme(intent.theme)
             SettingsIntent.HideDialog -> hideDialog()
             SettingsIntent.OnBackTap -> _event.emit(SettingsEvent.BackToPreviousScreen)
+            SettingsIntent.OnTokenTap -> _event.emit(SettingsEvent.NavigateToTokenScreen)
             SettingsIntent.OnAboutTap -> _event.emit(SettingsEvent.NavigateToAboutScreen)
             SettingsIntent.OnHowToTap -> _event.emit(SettingsEvent.NavigateToHowToScreen)
         }

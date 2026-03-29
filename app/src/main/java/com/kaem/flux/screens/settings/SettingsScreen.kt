@@ -27,7 +27,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kaem.flux.R
@@ -37,6 +36,7 @@ import com.kaem.flux.ui.component.FluxScaffold
 import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
+import com.kaem.flux.utils.FluxPreview
 import com.kaem.flux.utils.WebLink
 import com.kaem.flux.utils.extensions.uppercaseFirstLetter
 
@@ -58,6 +58,7 @@ fun SettingsScreen(
         viewModel.event.collect { event ->
             when (event) {
                 SettingsEvent.BackToPreviousScreen -> onBack()
+                SettingsEvent.NavigateToTokenScreen -> navigate(Route.Token(fromSettings = true))
                 SettingsEvent.NavigateToAboutScreen -> navigate(Route.About)
                 SettingsEvent.NavigateToHowToScreen -> navigate(Route.HowTo)
             }
@@ -126,6 +127,16 @@ fun SettingsContent(
                     text = stringResource(R.string.button_forward),
                     value = "${state.forwardValue}sec",
                     onTap = { sendIntent(SettingsIntent.ShowForwardDialog) }
+                )
+
+            }
+
+            SettingsSection {
+
+                SettingsItem(
+                    text = stringResource(R.string.tmdb_api_key),
+                    value = "",
+                    onTap = { sendIntent(SettingsIntent.OnTokenTap) }
                 )
 
             }
@@ -289,7 +300,7 @@ fun <T> SettingsDialog(
 
 }
 
-@Preview
+@FluxPreview
 @Composable
 fun SettingsScreen_Preview() {
     AppTheme {
@@ -301,7 +312,7 @@ fun SettingsScreen_Preview() {
     }
 }
 
-@Preview
+@FluxPreview
 @Composable
 fun SettingsDialog_Preview() {
     AppTheme {

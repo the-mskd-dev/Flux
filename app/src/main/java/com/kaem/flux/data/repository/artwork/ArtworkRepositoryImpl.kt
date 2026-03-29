@@ -21,7 +21,7 @@ class ArtworkRepositoryImpl @Inject constructor(
     private val _mediaId = MutableStateFlow<Long?>(null)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    override val flow: Flow<ArtworkRepository.Content> = _mediaId
+    override val flow: Flow<ArtworkRepository.State> = _mediaId
         .filterNotNull()
         .distinctUntilChanged()
         .flatMapLatest { mediaId ->
@@ -29,15 +29,15 @@ class ArtworkRepositoryImpl @Inject constructor(
                 when (artwork?.type) {
                     ContentType.MOVIE -> {
                         db.flowMovie(mediaId).map { movie ->
-                            ArtworkRepository.Content(artwork = artwork, movie = movie)
+                            ArtworkRepository.State(artwork = artwork, movie = movie)
                         }
                     }
                     ContentType.SHOW -> {
                         db.flowEpisodes(mediaId).map { episodes ->
-                            ArtworkRepository.Content(artwork = artwork, episodes = episodes)
+                            ArtworkRepository.State(artwork = artwork, episodes = episodes)
                         }
                     }
-                    else -> flowOf(ArtworkRepository.Content(artwork = artwork))
+                    else -> flowOf(ArtworkRepository.State(artwork = artwork))
                 }
             }
         }

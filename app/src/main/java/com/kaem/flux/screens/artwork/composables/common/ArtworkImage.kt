@@ -25,7 +25,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
@@ -37,6 +36,7 @@ import com.kaem.flux.ui.component.BackButton
 import com.kaem.flux.ui.component.Image
 import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
+import com.kaem.flux.utils.FluxPreview
 import com.kaem.flux.utils.extensions.tmdbImage
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -116,7 +116,7 @@ fun ArtworkImage(
 
 }
 
-@Preview
+@FluxPreview
 @Composable
 fun ArtworkImage_Preview() {
     AppTheme {

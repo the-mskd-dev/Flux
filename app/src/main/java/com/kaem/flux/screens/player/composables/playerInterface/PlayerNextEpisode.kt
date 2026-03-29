@@ -27,7 +27,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kaem.flux.R
 import com.kaem.flux.mockups.MediaMockups
@@ -36,6 +35,7 @@ import com.kaem.flux.screens.player.PlayerUiState
 import com.kaem.flux.ui.component.CountDownButton
 import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
+import com.kaem.flux.utils.FluxPreview
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -99,7 +99,7 @@ fun PlayerNextEpisode(
 
 }
 
-@Preview
+@FluxPreview
 @Composable
 fun PlayerNextEpisode_Preview() {
     AppTheme {

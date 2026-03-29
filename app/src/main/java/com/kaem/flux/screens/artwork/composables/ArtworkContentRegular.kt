@@ -19,7 +19,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import com.kaem.flux.R
 import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.artwork.Artwork
@@ -34,6 +33,7 @@ import com.kaem.flux.screens.artwork.composables.episodes.SeasonsTabs
 import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
+import com.kaem.flux.utils.FluxPreview
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -138,7 +138,7 @@ fun ArtworkContentRegular(
 
 }
 
-@Preview
+@FluxPreview
 @Composable
 fun ArtworkContentMovie_Preview() {
     AppTheme {
@@ -152,7 +152,7 @@ fun ArtworkContentMovie_Preview() {
     }
 }
 
-@Preview
+@FluxPreview
 @Composable
 fun ArtworkContentShow_Preview() {
     AppTheme {

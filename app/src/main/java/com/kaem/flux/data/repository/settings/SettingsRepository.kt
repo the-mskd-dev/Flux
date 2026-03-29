@@ -15,17 +15,9 @@ val Context.settingsDatastore by preferencesDataStore(
     )
 )
 
-data class SettingsPreferences(
-    val playerRewindValue: Int = 10,
-    val playerForwardValue: Int = 10,
-    val uiTheme: Ui.THEME = Ui.THEME.SYSTEM,
-    val subtitlesLanguage: Locale = Locale.getDefault(),
-    val audioLanguage: Locale = Locale.getDefault()
-)
-
 interface SettingsRepository {
 
-    val flow: Flow<SettingsPreferences>
+    val flow: Flow<State>
 
     suspend fun setPlayerRewindValue(value: Int)
 
@@ -37,4 +29,11 @@ interface SettingsRepository {
 
     suspend fun setAudioLanguage(locale: Locale)
 
+    data class State(
+        val playerRewindValue: Int = 10,
+        val playerForwardValue: Int = 10,
+        val uiTheme: Ui.THEME = Ui.THEME.SYSTEM,
+        val subtitlesLanguage: Locale = Locale.getDefault(),
+        val audioLanguage: Locale = Locale.getDefault()
+    )
 }

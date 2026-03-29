@@ -2,9 +2,7 @@ package com.kaem.flux.screens.player
 
 import app.cash.turbine.test
 import com.kaem.flux.configs.fluxExtensions
-import com.kaem.flux.data.repository.settings.SettingsPreferences
 import com.kaem.flux.data.repository.settings.SettingsRepository
-import com.kaem.flux.data.repository.user.UserPreferences
 import com.kaem.flux.data.repository.user.UserRepository
 import com.kaem.flux.mockups.FakeArtworkRepository
 import com.kaem.flux.mockups.MediaMockups
@@ -39,11 +37,11 @@ class PlayerViewModelTest : FunSpec({
         artworkRepository = FakeArtworkRepository(initialContentType = ContentType.SHOW)
 
         userRepository = mockk(relaxed = true) {
-            every { flow } returns MutableStateFlow(UserPreferences())
+            every { flow } returns MutableStateFlow(UserRepository.State())
         }
 
         settingsRepository = mockk(relaxed = true) {
-            every { flow } returns MutableStateFlow(SettingsPreferences())
+            every { flow } returns MutableStateFlow(SettingsRepository.State())
         }
 
         viewModel = PlayerViewModel(
@@ -78,15 +76,15 @@ class PlayerViewModelTest : FunSpec({
     context("show settings") {
         withData(
             nameFn = { it.description },
-            ShowSettingsTestCase(
+            PlayerTestCases.ShowSettings(
                 description = "Show settings sheet",
                 sheet = PlayerUiState.SettingsSheet.Settings,
             ),
-            ShowSettingsTestCase(
+            PlayerTestCases.ShowSettings(
                 description = "Show audio sheet",
                 sheet = PlayerUiState.SettingsSheet.Tracks(PlayerTrack.Type.AUDIO),
             ),
-            ShowSettingsTestCase(
+            PlayerTestCases.ShowSettings(
                 description = "Show subtitles sheet",
                 sheet = PlayerUiState.SettingsSheet.Settings,
             )
@@ -112,7 +110,7 @@ class PlayerViewModelTest : FunSpec({
     context("save time") {
         withData(
             nameFn = { it.description },
-            SaveTimeTestCase(
+            PlayerTestCases.SaveTime(
                 description = "Movie - save time at the middle",
                 artwork = MediaMockups.movieArtwork,
                 media = MediaMockups.movie,
@@ -120,7 +118,7 @@ class PlayerViewModelTest : FunSpec({
                 shouldBeAddedToRecentlyWatched = true,
                 statusExpected = Status.IS_WATCHING
             ),
-            SaveTimeTestCase(
+            PlayerTestCases.SaveTime(
                 description = "Movie - save time at the end",
                 artwork = MediaMockups.movieArtwork,
                 media = MediaMockups.movie,
@@ -128,7 +126,7 @@ class PlayerViewModelTest : FunSpec({
                 shouldBeAddedToRecentlyWatched = false,
                 statusExpected = Status.WATCHED
             ),
-            SaveTimeTestCase(
+            PlayerTestCases.SaveTime(
                 description = "Show - save time at the middle",
                 artwork = MediaMockups.showArtwork,
                 media = MediaMockups.episode1,
@@ -136,7 +134,7 @@ class PlayerViewModelTest : FunSpec({
                 shouldBeAddedToRecentlyWatched = true,
                 statusExpected = Status.IS_WATCHING
             ),
-            SaveTimeTestCase(
+            PlayerTestCases.SaveTime(
                 description = "Show - save time at the end",
                 artwork = MediaMockups.showArtwork,
                 media = MediaMockups.episode1,
@@ -144,7 +142,7 @@ class PlayerViewModelTest : FunSpec({
                 shouldBeAddedToRecentlyWatched = true,
                 statusExpected = Status.WATCHED
             ),
-            SaveTimeTestCase(
+            PlayerTestCases.SaveTime(
                 description = "Show - save time for last episode at the middle",
                 artwork = MediaMockups.showArtwork,
                 media = MediaMockups.episodes.lastEpisode,
@@ -152,7 +150,7 @@ class PlayerViewModelTest : FunSpec({
                 shouldBeAddedToRecentlyWatched = true,
                 statusExpected = Status.IS_WATCHING
             ),
-            SaveTimeTestCase(
+            PlayerTestCases.SaveTime(
                 description = "Show - save time for last episode at the end",
                 artwork = MediaMockups.showArtwork,
                 media = MediaMockups.episodes.lastEpisode,
@@ -201,22 +199,22 @@ class PlayerViewModelTest : FunSpec({
     context("back tap") {
         withData(
             nameFn = { it.description },
-            PlayerBackTapTestCase(
+            PlayerTestCases.PlayerBackTap(
                 description = "System back tap when interface is showed",
                 interfaceShowed = true,
                 backSystem = true
             ),
-            PlayerBackTapTestCase(
+            PlayerTestCases.PlayerBackTap(
                 description = "Button back tap when interface is showed",
                 interfaceShowed = true,
                 backSystem = false
             ),
-            PlayerBackTapTestCase(
+            PlayerTestCases.PlayerBackTap(
                 description = "System back tap when interface is not showed",
                 interfaceShowed = false,
                 backSystem = true
             ),
-            PlayerBackTapTestCase(
+            PlayerTestCases.PlayerBackTap(
                 description = "Button back tap when interface is not showed",
                 interfaceShowed = false,
                 backSystem = false
@@ -325,11 +323,11 @@ class PlayerViewModelTest : FunSpec({
 
         withData(
             nameFn = { it.description },
-            SelectTrackTestCase(
+            PlayerTestCases.SelectTrack(
                 description = "Select subtitle",
                 track = PlayerMockups.Subtitles.english
             ),
-            SelectTrackTestCase(
+            PlayerTestCases.SelectTrack(
                 description = "Select audio",
                 track = PlayerMockups.Audio.english
             ),
@@ -362,11 +360,11 @@ class PlayerViewModelTest : FunSpec({
 
         withData(
             nameFn = { it.description },
-            SelectTrackTestCase(
+            PlayerTestCases.SelectTrack(
                 description = "Subtitle selected",
                 track = PlayerMockups.Subtitles.english
             ),
-            SelectTrackTestCase(
+            PlayerTestCases.SelectTrack(
                 description = "Audio selected",
                 track = PlayerMockups.Audio.english
             ),
@@ -394,19 +392,19 @@ class PlayerViewModelTest : FunSpec({
     context("show next episode") {
         withData(
             nameFn = { it.description },
-            ShowNextEpisodeTestCase(
+            PlayerTestCases.ShowNextEpisode(
                 description = "Next episode exists",
                 currentEpisode = MediaMockups.episode1,
                 show = true,
                 expectedNexTButton = PlayerUiState.NextButton.Showed(episode = MediaMockups.episode2)
             ),
-            ShowNextEpisodeTestCase(
+            PlayerTestCases.ShowNextEpisode(
                 description = "Next episode doesn't exist",
                 currentEpisode = MediaMockups.episodes.lastEpisode,
                 show = true,
                 expectedNexTButton = PlayerUiState.NextButton.Hidden
             ),
-            ShowNextEpisodeTestCase(
+            PlayerTestCases.ShowNextEpisode(
                 description = "Hide next episode",
                 currentEpisode = MediaMockups.episode1,
                 show = false,

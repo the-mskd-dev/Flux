@@ -18,6 +18,8 @@ import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -39,12 +41,12 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.kaem.flux.R
 import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
+import com.kaem.flux.utils.FluxPreview
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.seconds
 
@@ -70,6 +72,7 @@ fun FluxButton(
             containerColor = backgroundColor,
             contentColor = textColor,
         ),
+        elevation = ButtonDefaults.elevatedButtonElevation(),
         shape = shape,
         border = border,
         contentPadding = ButtonDefaults.contentPaddingFor(height),
@@ -184,6 +187,28 @@ fun FluxTextButton(
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
+fun FluxIconButton(
+    modifier: Modifier = Modifier,
+    imageVector: ImageVector,
+    onTap: () -> Unit,
+    contentDescription: String
+) {
+
+    FloatingActionButton(
+        modifier = modifier,
+        elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp, 0.dp, 0.dp),
+        onClick = onTap,
+    ) {
+        Icon(
+            imageVector = imageVector,
+            contentDescription = contentDescription
+        )
+    }
+
+}
+
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
 fun CountDownButton(
     text: @Composable (Int) -> String,
     duration: Int = 10,
@@ -246,7 +271,7 @@ fun CountDownButton(
 
 }
 
-@Preview
+@FluxPreview
 @Composable
 fun CountDownButton_Preview() {
     AppTheme {

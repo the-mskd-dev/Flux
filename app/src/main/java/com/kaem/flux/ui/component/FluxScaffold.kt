@@ -17,7 +17,9 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 fun FluxScaffold(
     modifier: Modifier = Modifier,
     title: String,
-    onBackTap: () -> Unit,
+    onBackTap: (() -> Unit)?,
+    snackbarHost: @Composable (() -> Unit) = {},
+    floatingActionButton: @Composable (() -> Unit) = {},
     content: @Composable (PaddingValues) -> Unit
 ) {
 
@@ -25,6 +27,8 @@ fun FluxScaffold(
 
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        snackbarHost = snackbarHost,
+        floatingActionButton = floatingActionButton,
         topBar = {
 
             CenterAlignedTopAppBar(
@@ -37,7 +41,9 @@ fun FluxScaffold(
                     titleContentColor = MaterialTheme.colorScheme.onSurface,
                 ),
                 navigationIcon = {
-                    BackButton(onTap = onBackTap)
+                    onBackTap?.let {
+                        BackButton(onTap = it)
+                    }
                 },
                 scrollBehavior = scrollBehavior
             )

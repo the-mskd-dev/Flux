@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name" translatable="false">Flux</string>
 
     <string name="give_permission">Accorder les permissions</string>
     <string name="movies">Films</string>
@@ -8,7 +7,7 @@
     <string name="season_and_episode">Saison %1$d - épisode %2$d</string>
     <string name="season">Saison %1$d</string>
     <string name="episode">Épisode %1$d</string>
-    <string name="start">Lire</string>
+    <string name="play">Lire</string>
     <string name="resume">Reprendre</string>
     <string name="mark_as_watched">Marquer comme vu</string>
     <string name="mark_as_not_watched">Marquer comme non vu</string>
@@ -73,4 +72,17 @@
     <string name="next_episode">Épisode suivant (%1$1dsec)</string>
     <string name="close">Fermer</string>
     <string name="do_not_show_again">Ne plus afficher</string>
+    <string name="tmdb_api_key">Clé d\'API TMDB</string>
+    <string name="token_desc_1">Pour fonctionner, cette application utilise les services de The Movie Database. Ce site permet de récupérer les différentes informations (images, titres, résumés…) de vos oeuvres. Pour utiliser ce service, nous avons besoin d\'une clé API.</string>
+    <string name="token_desc_2">Cependant, dans le but d\'être une application complètement FOSS (Free and Open-Source Software), et de vous garantir un meilleur contrôle de vos données, la clé d\'API pour le service TMDB n\'est pas fournie.</string>
+    <string name="token_desc_3">Par conséquent, il est nécessaire que vous fournissiez votre propre clé. Pour cela, veuillez suivre la démarche suivante :</string>
+    <string name="token_tutorial_step_1">%1$s ou %2$s sur le site TMDB.</string>
+    <string name="token_tutorial_step_2">Récupérez votre %1$s et copiez-la dans le champ ci-dessous.</string>
+    <string name="token_validated">Clé d\'API enregistrée</string>
+    <string name="token_error">Votre clé d\'API n\'est pas valide</string>
+    <string name="token_input">Saissisez votre clé d\'API</string>
+    <string name="log_in">Connectez-vous</string>
+    <string name="sign_up">inscrivez-vous</string>
+    <string name="api_key">clé d\'API</string>
+    <string name="start">Commencer</string>
 </resources>

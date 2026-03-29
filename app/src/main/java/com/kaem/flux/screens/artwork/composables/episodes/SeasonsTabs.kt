@@ -14,11 +14,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import com.kaem.flux.R
 import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
+import com.kaem.flux.utils.FluxPreview
 
 @Composable
 fun SeasonsTabs(
@@ -62,7 +62,7 @@ fun SeasonsTabs(
 
 }
 
-@Preview
+@FluxPreview
 @Composable
 fun MediaSeasonsTabs_Preview() {
     AppTheme {

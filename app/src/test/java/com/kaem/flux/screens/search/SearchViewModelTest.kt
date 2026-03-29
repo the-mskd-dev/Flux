@@ -20,7 +20,7 @@ class SearchViewModelTest : FunSpec({
     beforeTest {
 
         catalogRepository = FakeCatalogRepository(
-            initialContent = CatalogRepository.Content(
+            initialState = CatalogRepository.State(
                 isLoading = false,
                 artworks = MediaMockups.artworks
             )

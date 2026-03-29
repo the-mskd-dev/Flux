@@ -7,7 +7,6 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.filters.MediumTest
 import app.cash.turbine.test
 import com.google.gson.Gson
-import com.kaem.flux.data.repository.user.UserPreferences
 import com.kaem.flux.data.repository.user.UserRepository
 import com.kaem.flux.data.repository.user.UserRepositoryImpl
 import kotlinx.coroutines.Dispatchers
@@ -62,7 +61,7 @@ class UserRepositoryTest {
     @Test
     fun initial_state() = runTest {
 
-        val defaultPreferences = UserPreferences()
+        val defaultPreferences = UserRepository.State()
 
         userRepository.flow.test {
 

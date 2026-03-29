@@ -17,12 +17,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kaem.flux.R
 import com.kaem.flux.screens.player.PlayerIntent
 import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
+import com.kaem.flux.utils.FluxPreview
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -34,7 +34,7 @@ fun AnimatedVisibilityScope.PlayerControlButtons(
 
     Row(
         modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM),
+        horizontalArrangement = Arrangement.spacedBy(Ui.Space.LARGE),
         verticalAlignment = Alignment.CenterVertically
     ) {
 
@@ -83,7 +83,7 @@ fun AnimatedVisibilityScope.PlayerControlButtons(
 
 }
 
-@Preview
+@FluxPreview
 @Composable
 fun PlayerControlButtons_Preview() {
 
@@ -91,7 +91,7 @@ fun PlayerControlButtons_Preview() {
         AnimatedContent(targetState = true) {
             PlayerControlButtons(
                 modifier = Modifier,
-                isPlaying = true,
+                isPlaying = it,
                 sendIntent = {}
             )
         }

@@ -35,7 +35,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kaem.flux.R
 import com.kaem.flux.mockups.MediaMockups
@@ -47,6 +46,7 @@ import com.kaem.flux.ui.component.ProgressBar
 import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
+import com.kaem.flux.utils.FluxPreview
 import com.kaem.flux.utils.extensions.formattedText
 import com.kaem.flux.utils.extensions.grayScale
 import com.kaem.flux.utils.extensions.minToMs
@@ -204,7 +204,7 @@ fun EpisodeDropDownMenu(
     val text = when (episode.status) {
         Status.WATCHED -> stringResource(R.string.rewatch)
         Status.IS_WATCHING -> stringResource(R.string.resume)
-        else -> stringResource(R.string.start)
+        else -> stringResource(R.string.play)
     }
 
     DropdownMenu(
@@ -255,7 +255,7 @@ fun EpisodeDropDownMenu(
 
 }
 
-@Preview
+@FluxPreview
 @Composable
 fun EpisodeItem_Preview() {
     AppTheme {
@@ -266,7 +266,7 @@ fun EpisodeItem_Preview() {
     }
 }
 
-@Preview
+@FluxPreview
 @Composable
 fun EpisodeItemWatching_Preview() {
     AppTheme {
@@ -280,7 +280,7 @@ fun EpisodeItemWatching_Preview() {
     }
 }
 
-@Preview
+@FluxPreview
 @Composable
 fun EpisodeItemWatched_Preview() {
     AppTheme {

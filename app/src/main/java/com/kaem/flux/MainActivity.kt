@@ -15,6 +15,8 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
 import com.kaem.flux.navigation.Route
 import com.kaem.flux.navigation.Transition
 import com.kaem.flux.screens.about.AboutScreen
@@ -24,6 +26,9 @@ import com.kaem.flux.screens.howTo.HowToScreen
 import com.kaem.flux.screens.player.PlayerScreen
 import com.kaem.flux.screens.search.SearchScreen
 import com.kaem.flux.screens.settings.SettingsScreen
+import com.kaem.flux.screens.token.TokenScreen
+import com.kaem.flux.screens.welcome.WelcomeScreen
+import com.kaem.flux.screens.welcome.fluxPermissionState
 import com.kaem.flux.ui.theme.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -33,6 +38,7 @@ class MainActivity : ComponentActivity() {
 
     @Inject lateinit var viewModel: MainViewModel
 
+    @OptIn(ExperimentalPermissionsApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -41,10 +47,13 @@ class MainActivity : ComponentActivity() {
         setContent {
 
             val settings by viewModel.settings.collectAsStateWithLifecycle()
+            val permissions = fluxPermissionState()
+
+            val startingScreen = viewModel.getStartingScreen(permissions.status.isGranted)
 
             AppTheme(theme = settings.uiTheme) {
 
-                val backStack = rememberNavBackStack(Route.Library)
+                val backStack = rememberNavBackStack(startingScreen)
 
                 NavDisplay(
                     modifier = Modifier
@@ -60,6 +69,14 @@ class MainActivity : ComponentActivity() {
                     popTransitionSpec = { Transition.Backward },
                     predictivePopTransitionSpec = { Transition.Backward },
                     entryProvider = entryProvider {
+                        entry<Route.Welcome> {
+                            WelcomeScreen(
+                                navigate = { route ->
+                                    backStack.clear()
+                                    backStack.add(route)
+                                },
+                            )
+                        }
                         entry<Route.Library> {
                             HomeScreen(
                                 navigate = { route -> backStack.add(route) },
@@ -99,6 +116,16 @@ class MainActivity : ComponentActivity() {
                         entry<Route.About> {
                             AboutScreen(
                                 onBack = { backStack.removeLastOrNull() }
+                            )
+                        }
+                        entry<Route.Token> { entry ->
+                            TokenScreen(
+                                onBack = { backStack.removeLastOrNull() },
+                                navigate = { route ->
+                                    backStack.clear()
+                                    backStack.add(route)
+                                },
+                                fromSettings = entry.fromSettings
                             )
                         }
                     }

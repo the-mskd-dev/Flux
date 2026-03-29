@@ -48,12 +48,10 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.isGranted
 import com.kaem.flux.R
 import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.ScreenState
@@ -61,8 +59,6 @@ import com.kaem.flux.model.artwork.Artwork
 import com.kaem.flux.model.artwork.ContentType
 import com.kaem.flux.navigation.Route
 import com.kaem.flux.screens.howTo.HowToNameFiles
-import com.kaem.flux.screens.welcome.WelcomeScreen
-import com.kaem.flux.screens.welcome.fluxPermissionState
 import com.kaem.flux.ui.component.FluxButton
 import com.kaem.flux.ui.component.Image
 import com.kaem.flux.ui.component.LoadingScreen
@@ -70,6 +66,7 @@ import com.kaem.flux.ui.component.MediaItem
 import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
+import com.kaem.flux.utils.FluxPreview
 import com.kaem.flux.utils.extensions.tmdbImage
 import com.kaem.flux.utils.extensions.tmdbImageLarge
 
@@ -81,7 +78,6 @@ fun HomeScreen(
 ) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val permissions = fluxPermissionState()
 
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
@@ -91,53 +87,38 @@ fun HomeScreen(
                 HomeEvent.NavigateToHowTo -> navigate(Route.HowTo)
                 HomeEvent.NavigateToSearch -> navigate(Route.Search())
                 HomeEvent.NavigateToSettings -> navigate(Route.Settings)
-                HomeEvent.OpenPermissionDialog -> permissions.launchPermissionRequest()
             }
         }
     }
 
-    if (!permissions.status.isGranted) {
+    Crossfade(
+        modifier = Modifier.fillMaxSize(),
+        targetState = uiState.screenState,
+        label = "CatalogAnimation"
+    ) {
 
-        WelcomeScreen(
-            onPermissionsTap = { viewModel.handleIntent(HomeIntent.OnPermissionTap) }
-        )
+        when (it) {
 
-    } else {
+            ScreenState.LOADING -> LoadingScreen()
 
-        LaunchedEffect(Unit) {
-            viewModel.handleIntent(HomeIntent.OnSyncTap(manualSync = false))
-        }
+            else -> {
 
-        Crossfade(
-            modifier = Modifier.fillMaxSize(),
-            targetState = uiState.screenState,
-            label = "CatalogAnimation"
-        ) {
+                if (uiState.artworks.isEmpty()) {
 
-            when (it) {
+                    HomeEmpty(sendIntent = viewModel::handleIntent)
 
-                ScreenState.LOADING -> LoadingScreen()
+                } else {
 
-                else -> {
-
-                    if (uiState.artworks.isEmpty()) {
-
-                        HomeEmpty(sendIntent = viewModel::handleIntent)
-
-                    } else {
-
-                        HomeContent(
-                            artworks = uiState.artworks,
-                            lastWatchedIds = uiState.lastWatchedMediaIds,
-                            isRefreshing = uiState.isRefreshing,
-                            sendIntent = viewModel::handleIntent
-                        )
-
-                    }
-
-
+                    HomeContent(
+                        artworks = uiState.artworks,
+                        lastWatchedIds = uiState.lastWatchedMediaIds,
+                        isRefreshing = uiState.isRefreshing,
+                        sendIntent = viewModel::handleIntent
+                    )
 
                 }
+
+
 
             }
 
@@ -398,7 +379,7 @@ fun MediaCategory(
     }
 }
 
-@Preview
+@FluxPreview
 @Composable
 fun HomeScreen_Preview() {
     AppTheme {
@@ -413,7 +394,7 @@ fun HomeScreen_Preview() {
     }
 }
 
-@Preview
+@FluxPreview
 @Composable
 fun HomeEmpty_Preview() {
     AppTheme {

@@ -7,6 +7,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -27,6 +28,34 @@ object Text {
     ) {
 
         if (text.isNullOrBlank())
+            return
+
+        Text(
+            modifier = modifier,
+            text = text,
+            color = color,
+            style = style,
+            textAlign = textAlign,
+            overflow = overflow,
+            maxLines = maxLines,
+            minLines = minLines
+        )
+
+    }
+
+    @Composable
+    fun Annotated(
+        text: AnnotatedString,
+        modifier: Modifier = Modifier,
+        textAlign: TextAlign = TextAlign.Start,
+        color: Color = Color.Unspecified,
+        style: TextStyle = MaterialTheme.typography.bodyLarge,
+        overflow: TextOverflow = TextOverflow.Clip,
+        maxLines: Int = Int.MAX_VALUE,
+        minLines: Int = 1,
+    ) {
+
+        if (text.isBlank())
             return
 
         Text(

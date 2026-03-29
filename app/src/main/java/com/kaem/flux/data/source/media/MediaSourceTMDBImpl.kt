@@ -1,7 +1,6 @@
 package com.kaem.flux.data.source.media
 
 import android.util.Log
-import com.google.gson.JsonSyntaxException
 import com.kaem.flux.data.tmdb.TMDBService
 import com.kaem.flux.model.UserFile
 import com.kaem.flux.model.UserFolder

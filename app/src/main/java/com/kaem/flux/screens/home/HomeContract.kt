@@ -4,7 +4,6 @@ import androidx.compose.runtime.Immutable
 import com.kaem.flux.model.ScreenState
 import com.kaem.flux.model.artwork.Artwork
 import com.kaem.flux.model.artwork.ContentType
-import com.kaem.flux.model.remoteConfig.Message
 
 @Immutable
 data class HomeUiState(
@@ -21,7 +20,6 @@ sealed class HomeIntent {
     object OnSearchTap: HomeIntent()
     object OnSettingsTap: HomeIntent()
     object OnHowToTap: HomeIntent()
-    object OnPermissionTap: HomeIntent()
 }
 
 sealed class HomeEvent {
@@ -30,5 +28,4 @@ sealed class HomeEvent {
     object NavigateToSearch: HomeEvent()
     object NavigateToSettings: HomeEvent()
     object NavigateToHowTo: HomeEvent()
-    object OpenPermissionDialog: HomeEvent()
 }

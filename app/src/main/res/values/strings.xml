@@ -7,7 +7,7 @@
     <string name="season_and_episode">Season %1$d - episode %2$d</string>
     <string name="season">Season %1$d</string>
     <string name="episode">Episode %1$d</string>
-    <string name="start">Play</string>
+    <string name="play">Play</string>
     <string name="resume">Resume</string>
     <string name="mark_as_watched">Mark as watched</string>
     <string name="mark_as_not_watched">Mark as not watched</string>
@@ -75,4 +75,18 @@
     <string name="next_episode">Next episode (%1$1dsec)</string>
     <string name="close">Close</string>
     <string name="do_not_show_again">Don\'t show again</string>
+    <string name="tmdb_api_key">TMDB API Key</string>
+    <string name="tmdb" translatable="false">The Movie Database</string>
+    <string name="token_desc_1">To function, this application uses %1$s services. This site allows the retrieval of various information (images, titles, summaries, etc.) for your media. To use this service, an API key is required.</string>
+    <string name="token_desc_2">However, in order to be a completely FOSS (Free and Open-Source Software) application and ensure better control over your data, the API key for the TMDB service is not provided.</string>
+    <string name="token_desc_3">Consequently, you must provide your own key. To do so, please follow these steps:</string>
+    <string name="token_tutorial_step_1">%1$s or %2$s on TMDB.</string>
+    <string name="token_tutorial_step_2">Retrieve your %1$s and copy it into the field below.</string>
+    <string name="token_validated">API key saved</string>
+    <string name="token_error">Your API key is invalid</string>
+    <string name="token_input">Enter your API key</string>
+    <string name="log_in">Log in</string>
+    <string name="sign_up">sign up</string>
+    <string name="api_key">API key</string>
+    <string name="start">Start</string>
 </resources>

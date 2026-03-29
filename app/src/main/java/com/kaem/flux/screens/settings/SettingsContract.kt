@@ -73,12 +73,14 @@ sealed class SettingsIntent {
     data class SetThemeValue(val theme: Ui.THEME): SettingsIntent()
     object HideDialog : SettingsIntent()
     object OnBackTap: SettingsIntent()
+    object OnTokenTap: SettingsIntent()
     object OnHowToTap: SettingsIntent()
     object OnAboutTap: SettingsIntent()
 }
 
 sealed class SettingsEvent {
     object BackToPreviousScreen: SettingsEvent()
+    object NavigateToTokenScreen: SettingsEvent()
     object NavigateToHowToScreen: SettingsEvent()
     object NavigateToAboutScreen: SettingsEvent()
 }

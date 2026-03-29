@@ -13,15 +13,9 @@ val Context.userDataStore by preferencesDataStore(
     )
 )
 
-data class UserPreferences(
-    val recentlyWatchedIds: List<Long> = listOf(),
-    val watchedMessagesIds: List<Int> = listOf(),
-    val syncTime: Long = 0L
-)
-
 interface UserRepository {
 
-    val flow: Flow<UserPreferences>
+    val flow: Flow<State>
 
     suspend fun addToRecentlyWatched(artworkId: Long)
 
@@ -32,5 +26,11 @@ interface UserRepository {
     suspend fun getSyncTime() : Long
 
     suspend fun setMessageAsWatched(messageId: Int)
+
+    data class State(
+        val recentlyWatchedIds: List<Long> = listOf(),
+        val watchedMessagesIds: List<Int> = listOf(),
+        val syncTime: Long = 0L
+    )
 
 }

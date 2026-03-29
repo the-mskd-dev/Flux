@@ -11,11 +11,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kaem.flux.R
 import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
+import com.kaem.flux.utils.FluxPreview
 
 @Composable
 fun FixedChip(
@@ -38,7 +38,7 @@ fun FixedChip(
     }
 }
 
-@Preview
+@FluxPreview
 @Composable
 fun FixedChip_Preview() {
     AppTheme {

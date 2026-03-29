@@ -8,6 +8,9 @@ import com.kaem.flux.data.repository.settings.settingsDatastore
 import com.kaem.flux.data.repository.user.UserRepository
 import com.kaem.flux.data.repository.user.UserRepositoryImpl
 import com.kaem.flux.data.repository.user.userDataStore
+import com.kaem.flux.data.tmdb.token.TokenProvider
+import com.kaem.flux.data.tmdb.token.TokenProviderImp
+import com.kaem.flux.data.tmdb.token.tokenDatastore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -38,6 +41,12 @@ object DataStoreModule {
     @Singleton
     fun provideSettingsRepository(@ApplicationContext context: Context) : SettingsRepository {
         return SettingsRepositoryImpl(settingsDataStore = context.settingsDatastore)
+    }
+
+    @Provides
+    @Singleton
+    fun provideTokenProvider(@ApplicationContext context: Context) : TokenProvider {
+        return TokenProviderImp(tokenDataStore = context.tokenDatastore)
     }
 
 }

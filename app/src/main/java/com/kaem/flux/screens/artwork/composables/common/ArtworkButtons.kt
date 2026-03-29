@@ -22,7 +22,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kaem.flux.R
 import com.kaem.flux.mockups.MediaMockups
@@ -34,6 +33,7 @@ import com.kaem.flux.ui.component.ProgressBar
 import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
+import com.kaem.flux.utils.FluxPreview
 import com.kaem.flux.utils.extensions.minToMs
 import com.kaem.flux.utils.extensions.timeDescription
 
@@ -49,7 +49,7 @@ fun ArtworkButtons(
     val text = when (media.status) {
         Status.WATCHED -> stringResource(R.string.rewatch)
         Status.IS_WATCHING -> stringResource(R.string.resume)
-        else -> stringResource(R.string.start)
+        else -> stringResource(R.string.play)
     }
 
     Column(
@@ -146,7 +146,7 @@ fun MediaStatusProgression(
 
 }
 
-@Preview
+@FluxPreview
 @Composable
 fun ArtworkButtons_Preview() {
     AppTheme {
@@ -157,7 +157,7 @@ fun ArtworkButtons_Preview() {
     }
 }
 
-@Preview
+@FluxPreview
 @Composable
 fun ArtworkButtonsWatching_Preview() {
     AppTheme {
@@ -171,7 +171,7 @@ fun ArtworkButtonsWatching_Preview() {
     }
 }
 
-@Preview
+@FluxPreview
 @Composable
 fun ArtworkButtonsWatched_Preview() {
     AppTheme {

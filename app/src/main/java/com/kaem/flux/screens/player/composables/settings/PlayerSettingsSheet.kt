@@ -22,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import com.kaem.flux.mockups.PlayerMockups
 import com.kaem.flux.screens.player.PlayerIntent
 import com.kaem.flux.screens.player.PlayerTrack
@@ -30,6 +29,7 @@ import com.kaem.flux.screens.player.PlayerUiState
 import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
+import com.kaem.flux.utils.FluxPreview
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -118,7 +118,7 @@ fun PlayerSettingsItem(
 
 }
 
-@Preview
+@FluxPreview
 @Composable
 fun PlayerSettingsSheet_Preview() {
     AppTheme {

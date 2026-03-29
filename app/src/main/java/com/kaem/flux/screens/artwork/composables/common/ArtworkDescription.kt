@@ -11,7 +11,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import com.kaem.flux.R
 import com.kaem.flux.mockups.MediaMockups
 import com.kaem.flux.model.artwork.Episode
@@ -20,6 +19,7 @@ import com.kaem.flux.ui.component.FixedChip
 import com.kaem.flux.ui.component.Text
 import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
+import com.kaem.flux.utils.FluxPreview
 import com.kaem.flux.utils.extensions.formattedText
 import com.kaem.flux.utils.extensions.minToMs
 import com.kaem.flux.utils.extensions.timeDescription
@@ -99,7 +99,7 @@ fun MediaDescriptionDetails(media: Media) {
     }
 }
 
-@Preview
+@FluxPreview
 @Composable
 fun ArtworkDescription_Movie_Preview() {
     AppTheme {
@@ -108,7 +108,7 @@ fun ArtworkDescription_Movie_Preview() {
 
 }
 
-@Preview
+@FluxPreview
 @Composable
 fun ArtworkDescription_Show_Preview() {
     AppTheme {

@@ -26,7 +26,7 @@ class SettingsRepositoryImpl @Inject constructor(
         val AUDIO_LANGUAGE = stringPreferencesKey("audio_language")
     }
 
-    override val flow: Flow<SettingsPreferences> = settingsDataStore.data
+    override val flow: Flow<SettingsRepository.State> = settingsDataStore.data
         .catch { exception -> if (exception is IOException) emit(emptyPreferences()) else throw exception }
         .map { preferences ->
 
@@ -36,7 +36,7 @@ class SettingsRepositoryImpl @Inject constructor(
             val subtitlesLanguage = preferences[Keys.SUBTITLES_LANGUAGE]?.let { Locale.forLanguageTag(it) } ?: Locale.getDefault()
             val audioLanguage = preferences[Keys.AUDIO_LANGUAGE]?.let { Locale.forLanguageTag(it) } ?: Locale.getDefault()
 
-            SettingsPreferences(
+            SettingsRepository.State(
                 playerRewindValue = playerRewindValue,
                 playerForwardValue = playerForwardValue,
                 uiTheme = uiTheme,

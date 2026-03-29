@@ -1,137 +1,197 @@
 package com.kaem.flux.screens.welcome
 
+import android.Manifest
 import android.os.Build
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowLeft
-import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.lerp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
+import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.kaem.flux.R
+import com.kaem.flux.navigation.Route
 import com.kaem.flux.ui.component.FluxButton
+import com.kaem.flux.ui.component.FluxIconButton
 import com.kaem.flux.ui.component.Text
+import com.kaem.flux.ui.theme.AppTheme
 import com.kaem.flux.ui.theme.Ui
-import kotlinx.coroutines.launch
+import com.kaem.flux.utils.FluxPreview
+import kotlin.math.absoluteValue
+import kotlin.random.Random
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun WelcomeScreen(
-    onPermissionsTap: () -> Unit
+    navigate: (Route) -> Unit,
+    viewModel: WelcomeViewModel = hiltViewModel()
 ) {
 
-    val presentations = listOf(
-        stringResource(R.string.presentation_1_title) to stringResource(R.string.presentation_1_description),
-        stringResource(R.string.presentation_2_title) to stringResource(R.string.presentation_2_description),
-    )
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val permissions = fluxPermissionState()
+    val pagerState = rememberPagerState(pageCount = { WelcomePage.entries.size })
 
-    val scope = rememberCoroutineScope()
-    val pagerState = rememberPagerState(0) { presentations.size }
-    val backgroundImage = when (pagerState.currentPage) {
-        0 -> R.drawable.home_screen
-        1 -> R.drawable.media_screen
-        else -> R.drawable.search_screen
+    LaunchedEffect(Unit) {
+        viewModel.event.collect { event ->
+            when (event) {
+                WelcomeEvent.NavigateToLibrary -> navigate(Route.Library)
+                WelcomeEvent.NavigateToToken -> navigate(Route.Token(fromSettings = false))
+                WelcomeEvent.OpenPermissionDialog -> permissions.launchPermissionRequest()
+                is WelcomeEvent.ScrollToPage -> {
+                    pagerState.animateScrollToPage(event.pageIndex)
+                }
+            }
+        }
     }
 
-    BackHandler(enabled = pagerState.currentPage > 0) {
-        scope.launch { pagerState.animateScrollToPage(pagerState.currentPage - 1) }
+    if (permissions.status.isGranted) {
+        viewModel.handleIntent(WelcomeIntent.OnPermissionGranted)
     }
 
-    WelcomeContent(
-        backgroundImage = backgroundImage,
+    BackHandler(enabled = uiState.pageIndex > 0) {
+        viewModel.handleIntent(WelcomeIntent.OnPreviousTap)
+    }
+
+    LaunchedEffect(pagerState) {
+        snapshotFlow { pagerState.targetPage }.collect { pageIndex ->
+            viewModel.handleIntent(WelcomeIntent.OnPageChange(pageIndex))
+        }
+    }
+
+    WelcomeScreenContent(
+        uiState = uiState,
         pagerState = pagerState,
-        presentations = presentations,
-        onPermissionsTap = onPermissionsTap,
-        onIndexChange = { scope.launch { pagerState.animateScrollToPage(it) } }
+        sendIntent = viewModel::handleIntent,
     )
 
 }
 
 @Composable
-fun WelcomeContent(
-    backgroundImage: Int,
+fun WelcomeScreenContent(
+    uiState: WelcomeUiState,
     pagerState: PagerState,
-    presentations: List<Pair<String, String>>,
-    onPermissionsTap: () -> Unit,
-    onIndexChange: (Int) -> Unit
+    sendIntent: (WelcomeIntent) -> Unit
 ) {
 
     ConstraintLayout(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
+        constraintSet = WelcomeScreenConstraintSet
     ) {
 
-        val (background, descriptions, buttons) = createRefs()
-        val guideline = createGuidelineFromTop(.7f)
-
         WelcomeBackground(
-            modifier = Modifier.constrainAs(background) {
-                top.linkTo(parent.top)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-                bottom.linkTo(parent.bottom)
-                height = Dimension.fillToConstraints
-                width = Dimension.fillToConstraints
-            },
-            drawableId = backgroundImage
+            modifier = Modifier.layoutId("background"),
+            drawableId = WelcomePage.entries[uiState.pageIndex].drawableId
         )
 
         WelcomePager(
-            modifier = Modifier.constrainAs(descriptions) {
-                top.linkTo(parent.top)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-                bottom.linkTo(guideline)
-                height = Dimension.fillToConstraints
-                width = Dimension.fillToConstraints
-            },
-            pagerState = pagerState,
-            presentations = presentations
+            modifier = Modifier.layoutId("pager"),
+            pagerState = pagerState
         )
 
         WelcomeButtons(
-            modifier = Modifier.constrainAs(buttons) {
-                top.linkTo(guideline)
-                bottom.linkTo(parent.bottom)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-            },
-            index = pagerState.currentPage,
-            lastIndex = presentations.lastIndex,
-            onIndexChange = onIndexChange,
-            onPermissionsTap = onPermissionsTap
+            modifier = Modifier
+                .layoutId("buttons")
+                .navigationBarsPadding(),
+            buttons = uiState.buttons,
+            sendIntent = sendIntent
         )
+
+    }
+
+}
+
+@Composable
+fun WelcomePager(
+    modifier: Modifier,
+    pagerState: PagerState,
+) {
+
+    HorizontalPager(
+        modifier = modifier,
+        state = pagerState
+    ) { index ->
+
+        val page = WelcomePage.entries[index]
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = Ui.Space.MEDIUM)
+                .graphicsLayer {
+                    val pageOffset = (
+                            (pagerState.currentPage - index) + pagerState
+                                .currentPageOffsetFraction
+                            ).absoluteValue
+
+                    // We animate the alpha, between 50% and 100%
+                    alpha = lerp(
+                        start = 0.2f,
+                        stop = 1f,
+                        fraction = 1f - pageOffset.coerceIn(0f, 1f)
+                    )
+                },
+            contentAlignment = Alignment.Center
+        ) {
+
+            Column(
+                horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE)
+            ) {
+
+                Text.Headline.Large(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = stringResource(page.titleId),
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+
+                Text.Body.Large(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = stringResource(page.descriptionId),
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+
+            }
+
+        }
+
 
     }
 
@@ -151,6 +211,7 @@ fun WelcomeBackground(
         AnimatedContent(
             modifier = Modifier.fillMaxSize(),
             targetState = drawableId,
+            transitionSpec = { (fadeIn()  + scaleIn(initialScale = 0.92f)) togetherWith fadeOut() },
             label = "background animation"
         ) { id ->
 
@@ -158,10 +219,17 @@ fun WelcomeBackground(
                 modifier = Modifier
                     .fillMaxSize()
                     .graphicsLayer {
-                        translationY = -15f
-                        translationX = 15f
-                        rotationZ = -15f
-                        rotationX = 15f
+                        if (Random.nextBoolean()) {
+                            translationY = -15f
+                            translationX = -15f
+                            rotationZ = 30f
+                            rotationX = 30f
+                        } else {
+                            translationY = -15f
+                            translationX = 15f
+                            rotationZ = -15f
+                            rotationX = 15f
+                        }
                         cameraDistance = 15f
                     },
                 painter = painterResource(id),
@@ -189,129 +257,100 @@ fun WelcomeBackground(
 
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun WelcomePager(
+fun WelcomeButtons(
     modifier: Modifier,
-    pagerState: PagerState,
-    presentations: List<Pair<String, String>>
-) {
-
-    HorizontalPager(
-        modifier = modifier,
-        state = pagerState,
-        pageSize = PageSize.Fill,
-        pageContent = { page ->
-
-            val presentation = presentations[page]
-
-            WelcomeItem(
-                title = presentation.first,
-                description = presentation.second,
-                textColor = MaterialTheme.colorScheme.onBackground
-            )
-
-        }
-    )
-
-}
-
-@Composable
-fun WelcomeItem(
-    title: String,
-    description: String,
-    textColor: Color
+    buttons: List<WelcomeButton>,
+    sendIntent: (WelcomeIntent) -> Unit
 ) {
 
     Box(
-        modifier = Modifier
-            .statusBarsPadding()
-            .fillMaxSize()
-            .padding(horizontal = Ui.Space.MEDIUM),
-        contentAlignment = Alignment.Center
+        modifier = modifier,
     ) {
 
-        Column(
-            horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE)
+        AnimatedVisibility(
+            modifier = Modifier.align(Alignment.CenterStart),
+            visible = buttons.contains(WelcomeButton.PREVIOUS),
+            enter = Ui.Animation.buttonEnter,
+            exit = Ui.Animation.buttonExit,
         ) {
 
-            Text.Headline.Large(
-                modifier = Modifier.fillMaxWidth(),
-                text = title,
-                color = textColor
-            )
-
-            Text.Body.Large(
-                modifier = Modifier.fillMaxWidth(),
-                text = description,
-                color = textColor
+            FluxIconButton(
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                onTap = { sendIntent(WelcomeIntent.OnPreviousTap) },
+                contentDescription = "previous button"
             )
 
         }
+
+        AnimatedVisibility(
+            modifier = Modifier.align(Alignment.Center),
+            visible = buttons.contains(WelcomeButton.PERMISSIONS),
+            enter = Ui.Animation.buttonEnter,
+            exit = Ui.Animation.buttonExit,
+        ) {
+
+            FluxButton(
+                onTap = { sendIntent(WelcomeIntent.OnPermissionTap) },
+                text = stringResource(id = R.string.give_permission),
+                backgroundColor = MaterialTheme.colorScheme.primary,
+                textColor = MaterialTheme.colorScheme.onPrimary,
+            )
+
+        }
+
+        AnimatedVisibility(
+            modifier = Modifier.align(Alignment.CenterEnd),
+            visible = buttons.contains(WelcomeButton.NEXT),
+            enter = Ui.Animation.buttonEnter,
+            exit = Ui.Animation.buttonExit,
+        ) {
+
+            FluxIconButton(
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                onTap = { sendIntent(WelcomeIntent.OnNextTap) },
+                contentDescription = "next button"
+            )
+
+        }
+
 
     }
 
 }
 
-@Composable
-fun WelcomeButtons(
-    modifier: Modifier,
-    index: Int,
-    lastIndex: Int,
-    onIndexChange: (Int) -> Unit,
-    onPermissionsTap: () -> Unit
-) {
+val WelcomeScreenConstraintSet = ConstraintSet {
 
-    val backVisibility by animateFloatAsState(if (index == 0) 0f else 1f, label = "back animation")
+    val (background, pager, buttons) = createRefsFor(
+        "background",
+        "pager",
+        "buttons"
+    )
 
-    AnimatedContent(
-        modifier = modifier,
-        targetState = index == lastIndex,
-        label = "welcome buttons anim"
-    ) { isLastText ->
+    constrain(background) {
+        top.linkTo(parent.top)
+        start.linkTo(parent.start)
+        end.linkTo(parent.end)
+        bottom.linkTo(parent.bottom)
+        height = Dimension.fillToConstraints
+        width = Dimension.fillToConstraints
+    }
 
-        if (isLastText) {
+    constrain(pager) {
+        top.linkTo(parent.top)
+        start.linkTo(parent.start)
+        end.linkTo(parent.end)
+        bottom.linkTo(parent.bottom)
+        height = Dimension.fillToConstraints
+        width = Dimension.fillToConstraints
+    }
 
-            FluxButton(
-                text = stringResource(id = R.string.give_permission),
-                onTap = onPermissionsTap
-            )
-
-        } else {
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(200.dp)
-            ) {
-
-                IconButton(
-                    modifier = Modifier.alpha(backVisibility),
-                    onClick = { if (index != 0) onIndexChange(index - 1) },
-                    content = {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowLeft,
-                            tint = MaterialTheme.colorScheme.onBackground,
-                            contentDescription = "Back button"
-                        )
-                    }
-                )
-
-                IconButton(
-                    onClick = { onIndexChange(index + 1) },
-                    content = {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowRight,
-                            tint = MaterialTheme.colorScheme.onBackground,
-                            contentDescription = "Next button"
-                        )
-                    }
-                )
-
-
-            }
-
-        }
-
+    constrain(buttons) {
+        bottom.linkTo(parent.bottom, Ui.Space.MEDIUM)
+        start.linkTo(parent.start, Ui.Space.MEDIUM)
+        end.linkTo(parent.end, Ui.Space.MEDIUM)
+        width = Dimension.fillToConstraints
     }
 
 }
@@ -321,10 +360,24 @@ fun WelcomeButtons(
 fun fluxPermissionState(): PermissionState {
 
     val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-        android.Manifest.permission.READ_MEDIA_VIDEO
+        Manifest.permission.READ_MEDIA_VIDEO
     else
-        android.Manifest.permission.READ_EXTERNAL_STORAGE
+        Manifest.permission.READ_EXTERNAL_STORAGE
 
     return rememberPermissionState(permission = permission)
 
+}
+
+@FluxPreview
+@Composable
+fun WelcomeScreen_Preview() {
+    AppTheme {
+        WelcomeScreenContent(
+            uiState = WelcomeUiState(
+                buttons = WelcomeButton.entries
+            ),
+            pagerState = rememberPagerState(pageCount = { WelcomePage.entries.size }),
+            sendIntent = {}
+        )
+    }
 }

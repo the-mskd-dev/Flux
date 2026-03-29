@@ -74,21 +74,21 @@ class TokenViewModelTest : FunSpec({
     context("save token") {
         withData(
             nameFn = { it.description },
-            SaveTokenTestCase(
+            TokenTestCases.SaveToken(
                 description = "Success",
                 apiResult = TMDBAuthentication(success = true, status_code = 0, status_message = ""),
                 expectedMessage = TokenMessage.Success,
                 expectedLoadCatalog = true,
                 expectedNextButton = true
             ),
-            SaveTokenTestCase(
+            TokenTestCases.SaveToken(
                 description = "Fail token",
                 apiResult = TMDBAuthentication(success = false, status_code = 401, status_message = "Fail"),
                 expectedMessage = TokenMessage.Error,
                 expectedLoadCatalog = false,
                 expectedNextButton = false
             ),
-            SaveTokenTestCase(
+            TokenTestCases.SaveToken(
                 description = "Fail token with exception",
                 apiResult = Exception("Fail"),
                 expectedMessage = TokenMessage.Error,

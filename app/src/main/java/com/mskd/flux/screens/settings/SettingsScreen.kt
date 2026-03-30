@@ -165,7 +165,7 @@ fun SettingsContent(
                     onTap = {
                         WebLink.openPage(
                             context = context,
-                            url = "buymeacoffee.com/the.masked.dev"
+                            url = "https://buymeacoffee.com/the.masked.dev"
                         )
                     }
                 )

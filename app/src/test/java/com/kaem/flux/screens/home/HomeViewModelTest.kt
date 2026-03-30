@@ -37,21 +37,21 @@ class HomeViewModelTest : FunSpec({
             every { flow } returns dataStoreFlow
         }
 
+    }
+
+    test("initial state") {
+
         viewModel = HomeViewModel(
             repository = catalogRepository,
             userRepository = userRepository
         )
 
-    }
-
-    test("initial state") {
-
         viewModel.uiState.test {
             val initialState = awaitItem()
-            initialState.screenState shouldBe ScreenState.LOADING
-            initialState.artworks shouldBe emptyList()
+            initialState.screenState shouldBe ScreenState.CONTENT
+            initialState.artworks shouldBe MediaMockups.artworks
             initialState.lastWatchedMediaIds shouldBe emptyList()
-            initialState.isRefreshing shouldBe true
+            initialState.isRefreshing shouldBe false
 
             cancelAndConsumeRemainingEvents()
         }
@@ -59,6 +59,11 @@ class HomeViewModelTest : FunSpec({
     }
 
     test("combine flows should update state") {
+
+        viewModel = HomeViewModel(
+            repository = catalogRepository,
+            userRepository = userRepository
+        )
 
         // Mock
         val artworks = listOf(MediaMockups.movieArtwork, MediaMockups.showArtwork)
@@ -71,7 +76,7 @@ class HomeViewModelTest : FunSpec({
 
             awaitItem() // Ignore initial state
 
-            catalogRepository.loadCatalog()
+            catalogRepository.syncCatalog()
             dataStoreFlow.value = dataStore
 
             val updatedState = expectMostRecentItem()
@@ -86,10 +91,16 @@ class HomeViewModelTest : FunSpec({
     }
 
     test("should force sync when manual sync requested") {
-        viewModel.handleIntent(HomeIntent.OnSyncTap(manualSync = true))
+
+        viewModel = HomeViewModel(
+            repository = catalogRepository,
+            userRepository = userRepository
+        )
+
+        viewModel.handleIntent(HomeIntent.SyncCatalog)
 
         coVerify {
-            catalogRepository.loadCatalog(sync = true)
+            catalogRepository.syncCatalog()
             userRepository.setSyncTime(any())
         }
     }
@@ -103,10 +114,9 @@ class HomeViewModelTest : FunSpec({
             repository = catalogRepository,
             userRepository = userRepository
         )
-        viewModel.handleIntent(HomeIntent.OnSyncTap(manualSync = false))
 
-        coVerify {
-            catalogRepository.loadCatalog(sync = true)
+        coVerify(exactly = 1) {
+            catalogRepository.syncCatalog()
             userRepository.setSyncTime(any())
         }
     }
@@ -120,13 +130,8 @@ class HomeViewModelTest : FunSpec({
             userRepository = userRepository
         )
 
-        val job = viewModel.handleIntent(HomeIntent.OnSyncTap(manualSync = false))
-
-        job.join()
-
-        catalogRepository.lastSyncParam shouldBe false
-
         coVerify(exactly = 0) {
+            catalogRepository.syncCatalog()
             userRepository.setSyncTime(any())
         }
     }

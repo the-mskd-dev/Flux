@@ -117,7 +117,7 @@ class TokenViewModelTest : FunSpec({
                 val state = awaitItem()
 
                 if (testCase.expectedLoadCatalog) {
-                    coEvery { catalogRepository.loadCatalog() }
+                    coEvery { catalogRepository.syncCatalog() }
                 }
                 state.message shouldBe testCase.expectedMessage
                 state.isLoading shouldBe false

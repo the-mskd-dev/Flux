@@ -179,7 +179,8 @@ fun WelcomePager(
                 Text.Headline.Large(
                     modifier = Modifier.fillMaxWidth(),
                     text = stringResource(page.titleId),
-                    color = MaterialTheme.colorScheme.onBackground
+                    color = MaterialTheme.colorScheme.onBackground,
+                    emphasized = true
                 )
 
                 Text.Body.Large(

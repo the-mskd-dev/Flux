@@ -11,27 +11,61 @@ import com.kaem.flux.mockups.MediaMockups
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
+import kotlin.collections.listOf
 
 @MediumTest
 class CatalogRepositoryTest {
 
-    private lateinit var repository: CatalogRepository
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val testDispatcher = UnconfinedTestDispatcher()
+    private val testScope = TestScope(testDispatcher + Job())
 
-    private val fileSource: FilesSource = mockk(relaxed = true)
-    private val localSource: MediaSource = mockk(relaxed = true)
-    private val tmdbSource: MediaSource = mockk(relaxed = true)
-    private val db: DatabaseDao = mockk(relaxed = true)
+    private lateinit var repository: CatalogRepository
+    private lateinit var fileSource: FilesSource
+    private lateinit var localSource: MediaSource
+    private lateinit var tmdbSource: MediaSource
+    private lateinit var db: DatabaseDao
 
     @Before
     fun setUp() {
-        repository = CatalogRepositoryImpl(fileSource, localSource, tmdbSource, db)
+
+        db = mockk(relaxed = true)
+
+        fileSource = mockk(relaxed = true)
+
+        tmdbSource = mockk(relaxed = true)
+
+        localSource = mockk(relaxed = true) {
+            coEvery { getMedias() } returns MediaSource.Library(
+                artworks = MediaMockups.artworks,
+                movies = listOf(MediaMockups.movie),
+                episodes = MediaMockups.episodes
+            )
+        }
+
+        repository = CatalogRepositoryImpl(
+            fileSource = fileSource,
+            mediaSourceLocal = localSource,
+            mediaSourceTmdb = tmdbSource,
+            db = db,
+            scope = testScope
+        )
+
     }
 
     @Test
     fun load_catalog_without_sync() = runTest {
+
         // Given
         val localMedias = MediaMockups.artworks
         val localMovies = listOf(MediaMockups.movie)
@@ -44,7 +78,7 @@ class CatalogRepositoryTest {
         )
 
         // When
-        repository.loadCatalog(sync = false)
+        testScope.testScheduler.advanceUntilIdle()
 
         // Then
         repository.flow.test {
@@ -64,7 +98,7 @@ class CatalogRepositoryTest {
     fun load_catalog_with_sync() = runTest {
 
         // When
-        repository.loadCatalog(sync = true)
+        repository.syncCatalog()
 
         // Then
         repository.flow.test {

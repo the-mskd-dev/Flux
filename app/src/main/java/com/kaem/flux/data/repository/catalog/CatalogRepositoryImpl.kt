@@ -33,8 +33,6 @@ class CatalogRepositoryImpl @Inject constructor(
     init {
         scope.launch {
 
-            _catalogFlow.update { it.copy(isLoading = true) }
-
             var medias: List<Artwork> = emptyList()
 
             try {

@@ -2,7 +2,6 @@ package com.kaem.flux.mockups
 
 import com.kaem.flux.data.repository.catalog.CatalogRepository
 import com.kaem.flux.model.UserFile
-import com.kaem.flux.model.artwork.Artwork
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update

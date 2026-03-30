@@ -18,7 +18,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.days
-import kotlin.time.Duration.Companion.minutes
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(

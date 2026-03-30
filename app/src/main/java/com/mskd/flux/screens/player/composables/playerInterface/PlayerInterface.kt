@@ -38,6 +38,7 @@ fun PlayerInterface(
     media: Media,
     player: Player,
     controlsState: () -> PlayerUiState.Controls,
+    rewindAndForward: () -> Pair<Int, Int>,
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
@@ -95,6 +96,7 @@ fun PlayerInterface(
                             exit = scaleOut()
                         ),
                     isPlaying = controls.isPlaying,
+                    rewindAndForward = rewindAndForward,
                     sendIntent = sendIntent
                 )
 

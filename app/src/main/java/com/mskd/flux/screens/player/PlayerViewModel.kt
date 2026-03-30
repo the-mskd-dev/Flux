@@ -71,8 +71,8 @@ class PlayerViewModel @AssistedInject constructor(
 
         PlayerUiState(
             screen = media?.let { PlayerScreen.Content(media = media) } ?: PlayerScreen.Error,
-            playerForward = settings.playerForwardValue.seconds.inWholeMilliseconds,
-            playerRewind = settings.playerRewindValue.seconds.inWholeMilliseconds,
+            playerForward = settings.playerForwardValue,
+            playerRewind = settings.playerRewindValue,
             controls = controls,
             tracks = tracks
         )
@@ -119,11 +119,11 @@ class PlayerViewModel @AssistedInject constructor(
     }
 
     private suspend fun onFastRewind() {
-        _event.send(PlayerEvent.SeekRewind(uiState.value.playerRewind))
+        _event.send(PlayerEvent.SeekRewind(uiState.value.playerRewind.seconds.inWholeMilliseconds))
     }
 
     private suspend fun onFastForward() {
-        _event.send(PlayerEvent.SeekForward(uiState.value.playerForward))
+        _event.send(PlayerEvent.SeekForward(uiState.value.playerForward.seconds.inWholeMilliseconds))
     }
 
     private suspend fun updateProgress(progress: Long) {

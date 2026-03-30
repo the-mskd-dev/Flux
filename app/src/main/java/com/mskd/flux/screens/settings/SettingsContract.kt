@@ -27,9 +27,6 @@ data class SettingsDialogState<T>(
             options = mapOf(
                 5 to ("5sec" to null),
                 10 to ("10sec" to null),
-                15 to ("15sec" to null),
-                20 to ("20sec" to null),
-                25 to ("25sec" to null),
                 30 to ("30sec" to null),
             ),
             applyValue = { value -> SettingsIntent.SetRewindValue(value) }
@@ -41,9 +38,6 @@ data class SettingsDialogState<T>(
             options = mapOf(
                 5 to ("5sec" to null),
                 10 to ("10sec" to null),
-                15 to ("15sec" to null),
-                20 to ("20sec" to null),
-                25 to ("25sec" to null),
                 30 to ("30sec" to null),
             ),
             applyValue = { value -> SettingsIntent.SetForwardValue(value) }

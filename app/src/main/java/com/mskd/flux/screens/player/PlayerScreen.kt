@@ -76,6 +76,7 @@ fun PlayerScreen(
                     media = screen.media,
                     player = playerStateHolder.player,
                     subtitles =  { subtitles },
+                    rewindAndForward = { state.playerRewind to state.playerForward },
                     controlsState = { state.controls },
                     tracksState = { state.tracks },
                     sendIntent = viewModel::handleIntent
@@ -93,6 +94,7 @@ fun PlayerContent(
     media: Media,
     player: Player,
     subtitles: () -> List<Cue>,
+    rewindAndForward: () -> Pair<Int, Int>,
     controlsState: () -> PlayerUiState.Controls,
     tracksState: () -> PlayerUiState.Tracks,
     sendIntent: (PlayerIntent) -> Unit
@@ -127,6 +129,7 @@ fun PlayerContent(
             media = media,
             player = player,
             controlsState = controlsState,
+            rewindAndForward = rewindAndForward,
             sendIntent = sendIntent,
         )
 

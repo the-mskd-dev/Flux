@@ -4,12 +4,13 @@ import androidx.compose.runtime.Immutable
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
 import kotlin.time.Duration.Companion.seconds
+import kotlin.time.DurationUnit
 
 @Immutable
 data class PlayerUiState(
     val screen: PlayerScreen = PlayerScreen.Loading,
-    val playerRewind: Long = 10.seconds.inWholeMilliseconds,
-    val playerForward: Long = 10.seconds.inWholeMilliseconds,
+    val playerRewind: Int = 10,
+    val playerForward: Int = 10,
     val controls: Controls = Controls(),
     val tracks: Tracks = Tracks()
 ) {

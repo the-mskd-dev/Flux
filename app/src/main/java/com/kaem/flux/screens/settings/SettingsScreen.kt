@@ -165,7 +165,7 @@ fun SettingsContent(
                     onTap = {
                         WebLink.openPage(
                             context = context,
-                            url = "https://paypal.me/kevynbct"
+                            url = "buymeacoffee.com/the.masked.dev"
                         )
                     }
                 )

@@ -1,5 +1,6 @@
 package com.mskd.flux.screens.player
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.annotation.OptIn
 import androidx.compose.animation.Crossfade
@@ -11,6 +12,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,6 +36,8 @@ import com.mskd.flux.screens.player.controllers.rememberScreenStateHolder
 import com.mskd.flux.ui.component.ErrorScreen
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.theme.Ui
+import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.seconds
 
 @OptIn(UnstableApi::class)
 @Composable
@@ -47,6 +53,7 @@ fun PlayerScreen(
     val playerStateHolder = rememberPlayerStateHolder()
     val screenStateHolder = rememberScreenStateHolder()
     val subtitles by playerStateHolder.subtitles.collectAsStateWithLifecycle()
+    var interfaceVisibilityCountdown by remember { mutableIntStateOf(5) }
 
     PlayerSideEffects(
         viewModel = viewModel,
@@ -59,6 +66,17 @@ fun PlayerScreen(
     LaunchedEffect(state.screen) {
         (state.screen as? PlayerScreen.Content)?.let {
             playerStateHolder.playMedia(it.media)
+        }
+    }
+
+    // Automatically hide interface after 5 seconds
+    LaunchedEffect(state.controls.showInterface) {
+        if (state.controls.showInterface) {
+            while (interfaceVisibilityCountdown > 0) {
+                delay(1.seconds)
+                interfaceVisibilityCountdown--
+            }
+            viewModel.handleIntent(PlayerIntent.ChangeInterfaceVisibility)
         }
     }
 
@@ -79,7 +97,11 @@ fun PlayerScreen(
                     rewindAndForward = { state.playerRewind to state.playerForward },
                     controlsState = { state.controls },
                     tracksState = { state.tracks },
-                    sendIntent = viewModel::handleIntent
+                    sendIntent = {
+                        Log.d("TEST", "Intent sendend")
+                        interfaceVisibilityCountdown = 5
+                        viewModel.handleIntent(it)
+                    }
                 )
             }
         }

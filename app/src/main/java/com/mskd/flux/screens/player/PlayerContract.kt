@@ -76,6 +76,7 @@ sealed class PlayerEvent {
     data class UpdateProgress(val progress: Long) : PlayerEvent()
     data object TogglePlayButton : PlayerEvent()
     data class SelectTrack(val track: PlayerTrack) : PlayerEvent()
+    data object SaveTimeRequested : PlayerEvent()
     //data class PlayNextEpisode(val episode: Episode) : PlayerIntent()
 }
 

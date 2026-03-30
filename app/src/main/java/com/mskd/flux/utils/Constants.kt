@@ -23,4 +23,8 @@ object Constants {
         const val GET_API_KEY = "https://www.themoviedb.org/settings/api"
     }
 
+    object PLAYER {
+        const val PROGRESS_THRESHOLD = 0.92
+    }
+
 }

@@ -9,6 +9,7 @@ import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Status
+import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.extensions.getNextEpisodeFor
 import com.mskd.flux.utils.extensions.lastEpisode
 import com.mskd.flux.utils.extensions.msToMin
@@ -201,7 +202,8 @@ class PlayerViewModel @AssistedInject constructor(
 
     }
 
-    private fun playNextEpisode(episode: Episode) {
+    private suspend fun playNextEpisode(episode: Episode) {
+        _event.send(PlayerEvent.SaveTimeRequested)
         _controlsState.update { it.copy(nextButton = PlayerUiState.NextButton.Hidden) }
         _mediaId.value = episode.mediaId
     }
@@ -226,7 +228,7 @@ class PlayerViewModel @AssistedInject constructor(
     private suspend fun saveTime(time: Long) {
 
         val media = (uiState.value.screen as? PlayerScreen.Content)?.media ?: return
-        val newStatus = if (time.msToMin >= media.duration * .9) Status.WATCHED else Status.IS_WATCHING
+        val newStatus = if (time.msToMin >= media.duration * Constants.PLAYER.PROGRESS_THRESHOLD) Status.WATCHED else Status.IS_WATCHING
         val newTime = if (newStatus == Status.WATCHED) 0L else time
 
         val updatedMedia = when (media) {

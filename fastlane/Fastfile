@@ -67,7 +67,7 @@ platform :android do
     # Create release name
     version_code = get_version_code(gradle_file_path: "app/build.gradle.kts")
     version_name = get_version_name(gradle_file_path: "app/build.gradle.kts")
-    tag_name = "release-v#{version_name}-#{version_code}"
+    tag_name = "#{version_name}"
 
     # Rename apk file
     target_apk = File.join(File.dirname(source_apk), "flux-#{tag_name}.apk")
@@ -92,7 +92,7 @@ platform :android do
 
     #Publish release on github
     set_github_release(
-          repository_name: "ady-kaem/Flux",
+          repository_name: "the-mskd-dev/Flux",
           tag_name: tag_name,
           name: "Release #{tag_name}",
           description: release_notes,

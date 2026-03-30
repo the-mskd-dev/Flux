@@ -28,11 +28,11 @@ if (keystorePropertiesFile.exists()) {
 }
 
 configure<ApplicationExtension> {
-    namespace = "com.kaem.flux"
+    namespace = "com.mskd.flux"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.kaem.flux"
+        applicationId = "com.mskd.flux"
         minSdk = 29
         targetSdk = 36
         versionCode = 2

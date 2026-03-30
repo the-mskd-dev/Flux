@@ -92,7 +92,7 @@ platform :android do
 
     #Publish release on github
     set_github_release(
-          repository_name: "ady-kaem/Flux",
+          repository_name: "the-mskd-dev/Flux",
           tag_name: tag_name,
           name: "Release #{tag_name}",
           description: release_notes,

@@ -15,11 +15,7 @@ class FakeCatalogRepository(
 
     override val flow: StateFlow<CatalogRepository.State> = _flow
 
-    var lastSyncParam: Boolean? = null
-
-    override suspend fun loadCatalog(sync: Boolean) {
-
-        lastSyncParam = sync
+    override suspend fun syncCatalog() {
 
         _flow.update { it.copy(isLoading = true) }
 
@@ -30,10 +26,6 @@ class FakeCatalogRepository(
             )
         }
 
-    }
-
-    override suspend fun getCatalog(): List<Artwork> {
-        return MediaMockups.artworks
     }
 
     override suspend fun getFiles(): List<UserFile> {

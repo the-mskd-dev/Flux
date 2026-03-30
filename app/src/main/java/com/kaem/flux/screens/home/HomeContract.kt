@@ -16,7 +16,7 @@ data class HomeUiState(
 sealed class HomeIntent {
     data class OnArtworkTap(val artworkId: Long): HomeIntent()
     data class OnCategoryTap(val category: ContentType): HomeIntent()
-    data class OnSyncTap(val manualSync: Boolean): HomeIntent()
+    data object SyncCatalog: HomeIntent()
     object OnSearchTap: HomeIntent()
     object OnSettingsTap: HomeIntent()
     object OnHowToTap: HomeIntent()

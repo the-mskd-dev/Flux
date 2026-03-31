@@ -2,13 +2,16 @@ package com.mskd.flux.screens.player
 
 import androidx.activity.compose.BackHandler
 import androidx.annotation.OptIn
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -30,6 +33,7 @@ import androidx.media3.ui.compose.ContentFrame
 import com.mskd.flux.R
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.screens.player.composables.playerInterface.PlayerInterface
+import com.mskd.flux.screens.player.composables.playerInterface.PlayerSeekOverlay
 import com.mskd.flux.screens.player.composables.playerInterface.PlayerSubtitles
 import com.mskd.flux.screens.player.composables.settings.PlayerSettings
 import com.mskd.flux.screens.player.controllers.PlayerSideEffects
@@ -37,6 +41,7 @@ import com.mskd.flux.screens.player.controllers.rememberPlayerStateHolder
 import com.mskd.flux.screens.player.controllers.rememberWindowStateHolder
 import com.mskd.flux.ui.component.ErrorScreen
 import com.mskd.flux.ui.component.LoadingScreen
+import com.mskd.flux.ui.component.Text
 import com.mskd.flux.ui.theme.Ui
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.seconds
@@ -99,6 +104,7 @@ fun PlayerScreen(
                     rewindAndForward = { state.playerRewind to state.playerForward },
                     controlsState = { state.controls },
                     tracksState = { state.tracks },
+                    seekOverlay = { state.seekOverlay },
                     sendIntent = {
                         interfaceVisibilityCountdown = 5
                         viewModel.handleIntent(it)
@@ -120,6 +126,7 @@ fun PlayerContent(
     rewindAndForward: () -> Pair<Int, Int>,
     controlsState: () -> PlayerUiState.Controls,
     tracksState: () -> PlayerUiState.Tracks,
+    seekOverlay: () -> PlayerUiState.SeekOverlay?,
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
@@ -145,11 +152,10 @@ fun PlayerContent(
 
                         if (secondDown != null) {
                             val width = size.width
-                            val thirdOfWidth = width / 3f
-                            if (secondDown.position.x < thirdOfWidth) {
+                            if (secondDown.position.x < (width * .4f)) {
                                 sendIntent(PlayerIntent.OnFastRewind)
                                 sendIntent(PlayerIntent.ChangeInterfaceVisibility)
-                            } else if (secondDown.position.x > (2 * thirdOfWidth)) {
+                            } else if (secondDown.position.x > (width * .6f)) {
                                 sendIntent(PlayerIntent.OnFastForward)
                                 sendIntent(PlayerIntent.ChangeInterfaceVisibility)
                             }
@@ -180,7 +186,7 @@ fun PlayerContent(
             sendIntent = sendIntent,
         )
 
-        //TODO: Animation rewind/forward
+        PlayerSeekOverlay(seekOverlay = seekOverlay)
 
     }
 

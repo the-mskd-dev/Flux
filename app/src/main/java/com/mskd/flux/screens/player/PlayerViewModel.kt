@@ -12,7 +12,6 @@ import com.mskd.flux.model.artwork.Status
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.extensions.getNextEpisodeFor
 import com.mskd.flux.utils.extensions.lastEpisode
-import com.mskd.flux.utils.extensions.msToMin
 import com.mskd.flux.utils.extensions.timeDescription
 import com.mskd.flux.utils.extensions.toPlayerTrack
 import dagger.assisted.Assisted
@@ -142,7 +141,7 @@ class PlayerViewModel @AssistedInject constructor(
     private suspend fun onFastRewind() {
         val value = uiState.value.playerRewind
         _event.send(PlayerEvent.SeekRewind(value.seconds.inWholeMilliseconds))
-        updateSeekOverlay(type = PlayerUiState.SeekOverlay.Type.BACKWARD, value = value)
+        updateSeekOverlay(type = PlayerUiState.SeekOverlay.Type.REWIND, value = value)
 
     }
 

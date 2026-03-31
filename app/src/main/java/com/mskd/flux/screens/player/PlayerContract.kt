@@ -3,8 +3,6 @@ package com.mskd.flux.screens.player
 import androidx.compose.runtime.Immutable
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
-import kotlin.time.Duration.Companion.seconds
-import kotlin.time.DurationUnit
 
 @Immutable
 data class PlayerUiState(
@@ -38,7 +36,7 @@ data class PlayerUiState(
         val amount: Int,
         val type: Type
     ) {
-        enum class Type { BACKWARD, FORWARD }
+        enum class Type { REWIND, FORWARD }
     }
 
     sealed class SettingsSheet {

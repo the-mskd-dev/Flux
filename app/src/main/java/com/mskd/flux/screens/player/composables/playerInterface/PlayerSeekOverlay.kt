@@ -2,7 +2,6 @@ package com.mskd.flux.screens.player.composables.playerInterface
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -13,11 +12,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import com.mskd.flux.screens.player.PlayerUiState
 import com.mskd.flux.ui.component.Text
 import com.mskd.flux.ui.theme.AppTheme
-import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.LandscapePreview
 
 @Composable
@@ -29,7 +26,7 @@ fun BoxScope.PlayerSeekOverlay(seekOverlay: () -> PlayerUiState.SeekOverlay?) {
         modifier = Modifier
             .fillMaxHeight()
             .fillMaxWidth(.33f),
-        visible = overlay?.type == PlayerUiState.SeekOverlay.Type.BACKWARD
+        visible = overlay?.type == PlayerUiState.SeekOverlay.Type.REWIND
     ) {
         PlayerSeekOverlayText(amount = overlay?.amount)
     }
@@ -69,10 +66,12 @@ fun PlayerSeekOverlayText(amount: Int?) {
 fun PlayerSeekOverlay_Preview() {
     AppTheme {
         Surface(color = Color.Black) {
-
             Box(modifier = Modifier.fillMaxSize()) {
                 PlayerSeekOverlay(
-                    seekOverlay = { PlayerUiState.SeekOverlay(amount = 10, type = PlayerUiState.SeekOverlay.Type.BACKWARD) }
+                    seekOverlay = { PlayerUiState.SeekOverlay(amount = 10, type = PlayerUiState.SeekOverlay.Type.REWIND) }
+                )
+                PlayerSeekOverlay(
+                    seekOverlay = { PlayerUiState.SeekOverlay(amount = 10, type = PlayerUiState.SeekOverlay.Type.FORWARD) }
                 )
             }
 

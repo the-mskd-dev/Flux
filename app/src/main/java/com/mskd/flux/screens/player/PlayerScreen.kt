@@ -6,8 +6,14 @@ import androidx.annotation.OptIn
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -18,6 +24,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -130,8 +137,32 @@ fun PlayerContent(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black)
-            .clickable {
-                sendIntent(PlayerIntent.ChangeInterfaceVisibility)
+            .pointerInput(Unit) {
+                awaitEachGesture {
+                    awaitFirstDown(requireUnconsumed = false)
+                    sendIntent(PlayerIntent.ChangeInterfaceVisibility)
+
+                    val firstUp = waitForUpOrCancellation()
+
+                    if (firstUp != null) {
+                        val secondDown = withTimeoutOrNull(100) {
+                            awaitFirstDown(requireUnconsumed = false)
+                        }
+
+                        if (secondDown != null) {
+                            val width = size.width
+                            val thirdOfWidth = width / 3f
+                            if (secondDown.position.x < thirdOfWidth) {
+                                sendIntent(PlayerIntent.OnFastRewind)
+                                sendIntent(PlayerIntent.ChangeInterfaceVisibility)
+                            } else if (secondDown.position.x > (2 * thirdOfWidth)) {
+                                sendIntent(PlayerIntent.OnFastForward)
+                                sendIntent(PlayerIntent.ChangeInterfaceVisibility)
+                            }
+                            secondDown.consume()
+                        }
+                    }
+                }
             }
     ) {
 

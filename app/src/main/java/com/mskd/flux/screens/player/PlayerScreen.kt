@@ -105,7 +105,6 @@ fun PlayerScreen(
                     controlsState = { state.controls },
                     tracksState = { state.tracks },
                     sendIntent = {
-                        Log.d("TEST", "Intent sendend")
                         interfaceVisibilityCountdown = 5
                         viewModel.handleIntent(it)
                     }

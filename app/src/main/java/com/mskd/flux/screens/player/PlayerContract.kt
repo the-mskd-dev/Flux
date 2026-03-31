@@ -12,7 +12,8 @@ data class PlayerUiState(
     val playerRewind: Int = 10,
     val playerForward: Int = 10,
     val controls: Controls = Controls(),
-    val tracks: Tracks = Tracks()
+    val tracks: Tracks = Tracks(),
+    val seekOverlay: SeekOverlay? = null
 ) {
 
     val media: Media? get() = (screen as? PlayerScreen.Content)?.media
@@ -31,6 +32,14 @@ data class PlayerUiState(
         val selectedAudio: PlayerTrack? = null,
         val selectedSubtitles: PlayerTrack? = null,
     )
+
+    @Immutable
+    data class SeekOverlay(
+        val amount: Int,
+        val type: Type
+    ) {
+        enum class Type { BACKWARD, FORWARD }
+    }
 
     sealed class SettingsSheet {
         data object Settings : SettingsSheet()

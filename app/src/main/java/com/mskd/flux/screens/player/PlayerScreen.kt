@@ -1,19 +1,14 @@
 package com.mskd.flux.screens.player
 
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.annotation.OptIn
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -39,7 +34,7 @@ import com.mskd.flux.screens.player.composables.playerInterface.PlayerSubtitles
 import com.mskd.flux.screens.player.composables.settings.PlayerSettings
 import com.mskd.flux.screens.player.controllers.PlayerSideEffects
 import com.mskd.flux.screens.player.controllers.rememberPlayerStateHolder
-import com.mskd.flux.screens.player.controllers.rememberScreenStateHolder
+import com.mskd.flux.screens.player.controllers.rememberWindowStateHolder
 import com.mskd.flux.ui.component.ErrorScreen
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.theme.Ui
@@ -58,14 +53,14 @@ fun PlayerScreen(
 
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val playerStateHolder = rememberPlayerStateHolder()
-    val screenStateHolder = rememberScreenStateHolder()
+    val windowStateHolder = rememberWindowStateHolder()
     val subtitles by playerStateHolder.subtitles.collectAsStateWithLifecycle()
     var interfaceVisibilityCountdown by remember { mutableIntStateOf(5) }
 
     PlayerSideEffects(
         viewModel = viewModel,
         stateHolder = playerStateHolder,
-        windowStateHolder = screenStateHolder,
+        windowStateHolder = windowStateHolder,
         showInterface = state.controls.showInterface,
         onBack = onBack
     )
@@ -184,6 +179,8 @@ fun PlayerContent(
             rewindAndForward = rewindAndForward,
             sendIntent = sendIntent,
         )
+
+        //TODO: Animation rewind/forward
 
     }
 

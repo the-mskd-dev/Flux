@@ -32,7 +32,7 @@ class WindowStateHolder(context: Context) {
 }
 
 @Composable
-fun rememberScreenStateHolder(
+fun rememberWindowStateHolder(
     context: Context = LocalContext.current,
 ): WindowStateHolder {
     return remember(context) {

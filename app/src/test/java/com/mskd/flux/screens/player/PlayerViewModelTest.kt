@@ -10,6 +10,7 @@ import com.mskd.flux.mockups.PlayerMockups
 import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Status
+import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.extensions.lastEpisode
 import com.mskd.flux.utils.extensions.minToMs
 import io.kotest.core.spec.style.FunSpec
@@ -22,6 +23,7 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.math.roundToLong
+import kotlin.time.Duration.Companion.seconds
 
 class PlayerViewModelTest : FunSpec({
 
@@ -114,7 +116,7 @@ class PlayerViewModelTest : FunSpec({
                 description = "Movie - save time at the middle",
                 artwork = MediaMockups.movieArtwork,
                 media = MediaMockups.movie,
-                time = MediaMockups.movie.duration.minToMs.times(0.5).roundToLong(),
+                time = MediaMockups.movie.duration.minToMs.times(0.5).toLong(),
                 shouldBeAddedToRecentlyWatched = true,
                 statusExpected = Status.IS_WATCHING
             ),
@@ -122,7 +124,7 @@ class PlayerViewModelTest : FunSpec({
                 description = "Movie - save time at the end",
                 artwork = MediaMockups.movieArtwork,
                 media = MediaMockups.movie,
-                time = MediaMockups.movie.duration.minToMs.times(0.95).roundToLong(),
+                time = MediaMockups.movie.duration.minToMs.times(Constants.PLAYER.PROGRESS_THRESHOLD).toLong(),
                 shouldBeAddedToRecentlyWatched = false,
                 statusExpected = Status.WATCHED
             ),
@@ -130,7 +132,7 @@ class PlayerViewModelTest : FunSpec({
                 description = "Show - save time at the middle",
                 artwork = MediaMockups.showArtwork,
                 media = MediaMockups.episode1,
-                time = MediaMockups.episode1.duration.minToMs.times(0.5).roundToLong(),
+                time = MediaMockups.episode1.duration.minToMs.times(0.5).toLong(),
                 shouldBeAddedToRecentlyWatched = true,
                 statusExpected = Status.IS_WATCHING
             ),
@@ -138,7 +140,7 @@ class PlayerViewModelTest : FunSpec({
                 description = "Show - save time at the end",
                 artwork = MediaMockups.showArtwork,
                 media = MediaMockups.episode1,
-                time = MediaMockups.episode1.duration.minToMs.times(0.95).roundToLong(),
+                time = MediaMockups.episode1.duration.minToMs.times(Constants.PLAYER.PROGRESS_THRESHOLD).toLong(),
                 shouldBeAddedToRecentlyWatched = true,
                 statusExpected = Status.WATCHED
             ),
@@ -146,7 +148,7 @@ class PlayerViewModelTest : FunSpec({
                 description = "Show - save time for last episode at the middle",
                 artwork = MediaMockups.showArtwork,
                 media = MediaMockups.episodes.lastEpisode,
-                time = MediaMockups.episodes.lastEpisode.duration.minToMs.times(0.5).roundToLong(),
+                time = MediaMockups.episodes.lastEpisode.duration.minToMs.times(0.5).toLong(),
                 shouldBeAddedToRecentlyWatched = true,
                 statusExpected = Status.IS_WATCHING
             ),
@@ -154,7 +156,7 @@ class PlayerViewModelTest : FunSpec({
                 description = "Show - save time for last episode at the end",
                 artwork = MediaMockups.showArtwork,
                 media = MediaMockups.episodes.lastEpisode,
-                time = MediaMockups.episodes.lastEpisode.duration.minToMs.times(0.95).roundToLong(),
+                time = MediaMockups.episodes.lastEpisode.duration.minToMs.times(Constants.PLAYER.PROGRESS_THRESHOLD).toLong(),
                 shouldBeAddedToRecentlyWatched = false,
                 statusExpected = Status.WATCHED
             )
@@ -274,7 +276,7 @@ class PlayerViewModelTest : FunSpec({
 
             viewModel.event.test {
                 viewModel.handleIntent(PlayerIntent.OnFastRewind)
-                awaitItem() shouldBe PlayerEvent.SeekRewind(state.playerRewind)
+                awaitItem() shouldBe PlayerEvent.SeekRewind(state.playerRewind.seconds.inWholeMilliseconds)
             }
         }
     }
@@ -285,7 +287,7 @@ class PlayerViewModelTest : FunSpec({
 
             viewModel.event.test {
                 viewModel.handleIntent(PlayerIntent.OnFastForward)
-                awaitItem() shouldBe PlayerEvent.SeekForward(state.playerForward)
+                awaitItem() shouldBe PlayerEvent.SeekForward(state.playerForward.seconds.inWholeMilliseconds)
             }
         }
     }
@@ -458,6 +460,16 @@ class PlayerViewModelTest : FunSpec({
     test("play next episode") {
         viewModel.uiState.test {
             awaitItem()
+
+            viewModel.event.test {
+
+                viewModel.handleIntent(PlayerIntent.PlayNextEpisode(MediaMockups.episode2))
+
+                val event = awaitItem()
+
+                event shouldBe PlayerEvent.SaveTimeRequested
+
+            }
 
             viewModel.handleIntent(PlayerIntent.PlayNextEpisode(MediaMockups.episode2))
 

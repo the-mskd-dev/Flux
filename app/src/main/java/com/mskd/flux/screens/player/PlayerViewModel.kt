@@ -30,6 +30,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.Locale
+import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
 
@@ -228,7 +229,7 @@ class PlayerViewModel @AssistedInject constructor(
     private suspend fun saveTime(time: Long) {
 
         val media = (uiState.value.screen as? PlayerScreen.Content)?.media ?: return
-        val newStatus = if (time.msToMin >= media.duration * Constants.PLAYER.PROGRESS_THRESHOLD) Status.WATCHED else Status.IS_WATCHING
+        val newStatus = if (time >= (media.duration * Constants.PLAYER.PROGRESS_THRESHOLD).minutes.inWholeMilliseconds) Status.WATCHED else Status.IS_WATCHING
         val newTime = if (newStatus == Status.WATCHED) 0L else time
 
         val updatedMedia = when (media) {

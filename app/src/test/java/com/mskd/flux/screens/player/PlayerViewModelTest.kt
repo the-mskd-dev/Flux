@@ -278,6 +278,10 @@ class PlayerViewModelTest : FunSpec({
                 viewModel.handleIntent(PlayerIntent.OnFastRewind)
                 awaitItem() shouldBe PlayerEvent.SeekRewind(state.playerRewind.seconds.inWholeMilliseconds)
             }
+
+            val finalState = awaitItem()
+            finalState.seekOverlay shouldBe PlayerUiState.SeekOverlay(amount = state.playerForward, type = PlayerUiState.SeekOverlay.Type.REWIND)
+
         }
     }
 
@@ -289,6 +293,10 @@ class PlayerViewModelTest : FunSpec({
                 viewModel.handleIntent(PlayerIntent.OnFastForward)
                 awaitItem() shouldBe PlayerEvent.SeekForward(state.playerForward.seconds.inWholeMilliseconds)
             }
+
+            val finalState = awaitItem()
+            finalState.seekOverlay shouldBe PlayerUiState.SeekOverlay(amount = state.playerForward, type = PlayerUiState.SeekOverlay.Type.FORWARD)
+
         }
     }
 

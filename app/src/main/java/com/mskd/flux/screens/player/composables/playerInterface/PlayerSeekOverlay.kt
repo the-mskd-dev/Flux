@@ -61,7 +61,7 @@ fun BoxScope.PlayerSeekOverlay(seekOverlay: () -> PlayerUiState.SeekOverlay?) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 PlayerSeekOverlayIcon(
-                    painter = painterResource(R.drawable.fast_rewind),
+                    painter = painterResource(R.drawable.ic_fast_rewind),
                     offsetX = { fullWidth -> fullWidth },
                     label = "Left arrow"
                 )
@@ -91,7 +91,7 @@ fun BoxScope.PlayerSeekOverlay(seekOverlay: () -> PlayerUiState.SeekOverlay?) {
             ) {
                 PlayerSeekOverlayText(amount = overlay?.amount)
                 PlayerSeekOverlayIcon(
-                    painter = painterResource(R.drawable.fast_forward),
+                    painter = painterResource(R.drawable.ic_fast_forward),
                     offsetX = { fullWidth -> -fullWidth },
                     label = "Right arrow"
                 )
@@ -109,7 +109,7 @@ fun AnimatedVisibilityScope.PlayerSeekOverlayIcon(
     label: String
 ) {
 
-    Icon(
+    Box(
         modifier = Modifier
             .animateEnterExit(
                 enter = slideInHorizontally(
@@ -122,9 +122,16 @@ fun AnimatedVisibilityScope.PlayerSeekOverlayIcon(
                 exit = slideOutHorizontally(targetOffsetX = offsetX),
                 label = "$label anim"
             ),
-        painter = painter,
-        contentDescription = label
-    )
+        contentAlignment = Alignment.Center
+    ) {
+
+        Icon(
+            painter = painter,
+            contentDescription = label,
+            tint = Color.Unspecified
+        )
+
+    }
 
 }
 
@@ -170,7 +177,7 @@ fun PlayerSeekOverlayText(amount: Int?) {
 @Composable
 fun PlayerSeekOverlay_Preview() {
     AppTheme {
-        Surface(color = Color.White) {
+        Surface(color = Color.Gray) {
             Box(modifier = Modifier.fillMaxSize()) {
                 PlayerSeekOverlay(
                     seekOverlay = { PlayerUiState.SeekOverlay(amount = 10, type = PlayerUiState.SeekOverlay.Type.REWIND) }

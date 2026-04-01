@@ -4,16 +4,22 @@ import androidx.activity.compose.BackHandler
 import androidx.annotation.OptIn
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -24,14 +30,17 @@ import androidx.media3.ui.compose.ContentFrame
 import com.mskd.flux.R
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.screens.player.composables.playerInterface.PlayerInterface
+import com.mskd.flux.screens.player.composables.playerInterface.PlayerSeekOverlay
 import com.mskd.flux.screens.player.composables.playerInterface.PlayerSubtitles
 import com.mskd.flux.screens.player.composables.settings.PlayerSettings
 import com.mskd.flux.screens.player.controllers.PlayerSideEffects
 import com.mskd.flux.screens.player.controllers.rememberPlayerStateHolder
-import com.mskd.flux.screens.player.controllers.rememberScreenStateHolder
+import com.mskd.flux.screens.player.controllers.rememberWindowStateHolder
 import com.mskd.flux.ui.component.ErrorScreen
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.theme.Ui
+import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.seconds
 
 @OptIn(UnstableApi::class)
 @Composable
@@ -45,13 +54,14 @@ fun PlayerScreen(
 
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val playerStateHolder = rememberPlayerStateHolder()
-    val screenStateHolder = rememberScreenStateHolder()
+    val windowStateHolder = rememberWindowStateHolder()
     val subtitles by playerStateHolder.subtitles.collectAsStateWithLifecycle()
+    var interfaceVisibilityCountdown by remember { mutableIntStateOf(5) }
 
     PlayerSideEffects(
         viewModel = viewModel,
         stateHolder = playerStateHolder,
-        windowStateHolder = screenStateHolder,
+        windowStateHolder = windowStateHolder,
         showInterface = state.controls.showInterface,
         onBack = onBack
     )
@@ -59,6 +69,17 @@ fun PlayerScreen(
     LaunchedEffect(state.screen) {
         (state.screen as? PlayerScreen.Content)?.let {
             playerStateHolder.playMedia(it.media)
+        }
+    }
+
+    // Automatically hide interface after 5 seconds
+    LaunchedEffect(state.controls.showInterface) {
+        if (state.controls.showInterface) {
+            while (interfaceVisibilityCountdown > 0) {
+                delay(1.seconds)
+                interfaceVisibilityCountdown--
+            }
+            viewModel.handleIntent(PlayerIntent.ChangeInterfaceVisibility)
         }
     }
 
@@ -76,9 +97,14 @@ fun PlayerScreen(
                     media = screen.media,
                     player = playerStateHolder.player,
                     subtitles =  { subtitles },
+                    rewindAndForward = { state.playerRewind to state.playerForward },
                     controlsState = { state.controls },
                     tracksState = { state.tracks },
-                    sendIntent = viewModel::handleIntent
+                    seekOverlay = { state.seekOverlay },
+                    sendIntent = {
+                        interfaceVisibilityCountdown = 5
+                        viewModel.handleIntent(it)
+                    }
                 )
             }
         }
@@ -93,8 +119,10 @@ fun PlayerContent(
     media: Media,
     player: Player,
     subtitles: () -> List<Cue>,
+    rewindAndForward: () -> Pair<Int, Int>,
     controlsState: () -> PlayerUiState.Controls,
     tracksState: () -> PlayerUiState.Tracks,
+    seekOverlay: () -> PlayerUiState.SeekOverlay?,
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
@@ -106,8 +134,31 @@ fun PlayerContent(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black)
-            .clickable {
-                sendIntent(PlayerIntent.ChangeInterfaceVisibility)
+            .pointerInput(Unit) {
+                awaitEachGesture {
+                    awaitFirstDown(requireUnconsumed = false)
+                    sendIntent(PlayerIntent.ChangeInterfaceVisibility)
+
+                    val firstUp = waitForUpOrCancellation()
+
+                    if (firstUp != null) {
+                        val secondDown = withTimeoutOrNull(100) {
+                            awaitFirstDown(requireUnconsumed = false)
+                        }
+
+                        if (secondDown != null) {
+                            val width = size.width
+                            if (secondDown.position.x < (width * .4f)) {
+                                sendIntent(PlayerIntent.OnFastRewind)
+                                sendIntent(PlayerIntent.ChangeInterfaceVisibility)
+                            } else if (secondDown.position.x > (width * .6f)) {
+                                sendIntent(PlayerIntent.OnFastForward)
+                                sendIntent(PlayerIntent.ChangeInterfaceVisibility)
+                            }
+                            secondDown.consume()
+                        }
+                    }
+                }
             }
     ) {
 
@@ -127,8 +178,11 @@ fun PlayerContent(
             media = media,
             player = player,
             controlsState = controlsState,
+            rewindAndForward = rewindAndForward,
             sendIntent = sendIntent,
         )
+
+        PlayerSeekOverlay(seekOverlay = seekOverlay)
 
     }
 

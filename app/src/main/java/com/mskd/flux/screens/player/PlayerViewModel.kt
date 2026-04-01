@@ -9,16 +9,18 @@ import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Status
+import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.extensions.getNextEpisodeFor
 import com.mskd.flux.utils.extensions.lastEpisode
-import com.mskd.flux.utils.extensions.msToMin
 import com.mskd.flux.utils.extensions.timeDescription
 import com.mskd.flux.utils.extensions.toPlayerTrack
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -29,6 +31,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.Locale
+import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
 
@@ -49,6 +52,12 @@ class PlayerViewModel @AssistedInject constructor(
 
     //endregion
 
+    //region Variables
+
+    private var seekResetJob: Job? = null
+
+    //endregion
+
     //region Flow
 
     private val _mediaId = MutableStateFlow(mediaId)
@@ -58,24 +67,35 @@ class PlayerViewModel @AssistedInject constructor(
 
     private val _controlsState = MutableStateFlow(PlayerUiState.Controls())
     private val _tracksState = MutableStateFlow(PlayerUiState.Tracks())
+    private val _seekOverlayState = MutableStateFlow<PlayerUiState.SeekOverlay?>(null)
 
     val uiState: StateFlow<PlayerUiState> = combine(
         artworkRepository.flow,
         settingsRepository.flow,
         _controlsState,
         _tracksState,
-        _mediaId
-    ) { artwork, settings, controls, tracks, id ->
+        _seekOverlayState,
+        _mediaId,
+    ) { flows ->
+
+        val artwork = flows[0] as ArtworkRepository.State
+        val settings = flows[1] as SettingsRepository.State
+        val controls = flows[2] as PlayerUiState.Controls
+        val tracks = flows[3] as PlayerUiState.Tracks
+        val seekOverlay = flows[4] as PlayerUiState.SeekOverlay?
+        val id = flows[5] as Long
 
         val media = artwork.movie ?: artwork.episodes.find { it.id == id }
 
         PlayerUiState(
             screen = media?.let { PlayerScreen.Content(media = media) } ?: PlayerScreen.Error,
-            playerForward = settings.playerForwardValue.seconds.inWholeMilliseconds,
-            playerRewind = settings.playerRewindValue.seconds.inWholeMilliseconds,
+            playerForward = settings.playerForwardValue,
+            playerRewind = settings.playerRewindValue,
             controls = controls,
-            tracks = tracks
+            tracks = tracks,
+            seekOverlay = seekOverlay
         )
+
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000),
@@ -119,11 +139,16 @@ class PlayerViewModel @AssistedInject constructor(
     }
 
     private suspend fun onFastRewind() {
-        _event.send(PlayerEvent.SeekRewind(uiState.value.playerRewind))
+        val value = uiState.value.playerRewind
+        _event.send(PlayerEvent.SeekRewind(value.seconds.inWholeMilliseconds))
+        updateSeekOverlay(type = PlayerUiState.SeekOverlay.Type.REWIND, value = value)
+
     }
 
     private suspend fun onFastForward() {
-        _event.send(PlayerEvent.SeekForward(uiState.value.playerForward))
+        val value = uiState.value.playerForward
+        _event.send(PlayerEvent.SeekForward(value.seconds.inWholeMilliseconds))
+        updateSeekOverlay(type = PlayerUiState.SeekOverlay.Type.FORWARD, value = value)
     }
 
     private suspend fun updateProgress(progress: Long) {
@@ -201,7 +226,8 @@ class PlayerViewModel @AssistedInject constructor(
 
     }
 
-    private fun playNextEpisode(episode: Episode) {
+    private suspend fun playNextEpisode(episode: Episode) {
+        _event.send(PlayerEvent.SaveTimeRequested)
         _controlsState.update { it.copy(nextButton = PlayerUiState.NextButton.Hidden) }
         _mediaId.value = episode.mediaId
     }
@@ -226,7 +252,7 @@ class PlayerViewModel @AssistedInject constructor(
     private suspend fun saveTime(time: Long) {
 
         val media = (uiState.value.screen as? PlayerScreen.Content)?.media ?: return
-        val newStatus = if (time.msToMin >= media.duration * .9) Status.WATCHED else Status.IS_WATCHING
+        val newStatus = if (time >= (media.duration * Constants.PLAYER.PROGRESS_THRESHOLD).minutes.inWholeMilliseconds) Status.WATCHED else Status.IS_WATCHING
         val newTime = if (newStatus == Status.WATCHED) 0L else time
 
         val updatedMedia = when (media) {
@@ -260,6 +286,21 @@ class PlayerViewModel @AssistedInject constructor(
         }
 
         Log.i("PlayerViewModel", "${updatedMedia.title} saved at ${time.timeDescription()}")
+
+    }
+
+    private fun updateSeekOverlay(type: PlayerUiState.SeekOverlay.Type, value: Int) {
+        seekResetJob?.cancel()
+
+        _seekOverlayState.update { state ->
+            val amount = if (state?.type == type) state.amount + value else value
+            PlayerUiState.SeekOverlay(type = type, amount = amount)
+        }
+
+        seekResetJob = viewModelScope.launch {
+            delay(2000)
+            _seekOverlayState.update { null }
+        }
 
     }
 

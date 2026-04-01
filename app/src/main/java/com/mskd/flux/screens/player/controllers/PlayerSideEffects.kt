@@ -79,6 +79,7 @@ fun PlayerSideEffects(
                         is PlayerEvent.UpdateProgress -> stateHolder.updateProgress(event.progress)
                         is PlayerEvent.SelectTrack -> stateHolder.selectTrack(event.track)
                         PlayerEvent.TogglePlayButton -> stateHolder.togglePlayButton()
+                        PlayerEvent.SaveTimeRequested -> viewModel.handleIntent(PlayerIntent.SaveTime(time = stateHolder.player.currentPosition))
                     }
                 }
             }

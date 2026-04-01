@@ -26,6 +26,7 @@ import androidx.media3.exoplayer.SeekParameters
 import com.mskd.flux.R
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.screens.player.PlayerTrack
+import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.extensions.uppercaseFirstLetter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -246,7 +247,7 @@ class PlayerStateHolder(
                 if (player.duration > 0) {
 
                     val percentage = player.currentPosition.toFloat() / player.duration.toFloat()
-                    val showNext = percentage >= 0.95f
+                    val showNext = percentage >= Constants.PLAYER.PROGRESS_THRESHOLD
 
                     if (lastNextEpisodeEvent != showNext) {
                         _event.send(Event.ShowNext(show = showNext))

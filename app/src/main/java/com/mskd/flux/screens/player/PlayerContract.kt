@@ -3,15 +3,15 @@ package com.mskd.flux.screens.player
 import androidx.compose.runtime.Immutable
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
-import kotlin.time.Duration.Companion.seconds
 
 @Immutable
 data class PlayerUiState(
     val screen: PlayerScreen = PlayerScreen.Loading,
-    val playerRewind: Long = 10.seconds.inWholeMilliseconds,
-    val playerForward: Long = 10.seconds.inWholeMilliseconds,
+    val playerRewind: Int = 10,
+    val playerForward: Int = 10,
     val controls: Controls = Controls(),
-    val tracks: Tracks = Tracks()
+    val tracks: Tracks = Tracks(),
+    val seekOverlay: SeekOverlay? = null
 ) {
 
     val media: Media? get() = (screen as? PlayerScreen.Content)?.media
@@ -30,6 +30,14 @@ data class PlayerUiState(
         val selectedAudio: PlayerTrack? = null,
         val selectedSubtitles: PlayerTrack? = null,
     )
+
+    @Immutable
+    data class SeekOverlay(
+        val amount: Int,
+        val type: Type
+    ) {
+        enum class Type { REWIND, FORWARD }
+    }
 
     sealed class SettingsSheet {
         data object Settings : SettingsSheet()
@@ -75,6 +83,7 @@ sealed class PlayerEvent {
     data class UpdateProgress(val progress: Long) : PlayerEvent()
     data object TogglePlayButton : PlayerEvent()
     data class SelectTrack(val track: PlayerTrack) : PlayerEvent()
+    data object SaveTimeRequested : PlayerEvent()
     //data class PlayNextEpisode(val episode: Episode) : PlayerIntent()
 }
 

@@ -2,16 +2,13 @@ package com.mskd.flux.screens.player
 
 import androidx.activity.compose.BackHandler
 import androidx.annotation.OptIn
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -41,7 +38,6 @@ import com.mskd.flux.screens.player.controllers.rememberPlayerStateHolder
 import com.mskd.flux.screens.player.controllers.rememberWindowStateHolder
 import com.mskd.flux.ui.component.ErrorScreen
 import com.mskd.flux.ui.component.LoadingScreen
-import com.mskd.flux.ui.component.Text
 import com.mskd.flux.ui.theme.Ui
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.seconds

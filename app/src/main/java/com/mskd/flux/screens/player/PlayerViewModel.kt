@@ -111,7 +111,7 @@ class PlayerViewModel @AssistedInject constructor(
             PlayerIntent.ChangeInterfaceVisibility -> changeInterfaceVisibility()
             is PlayerIntent.ShowSettings -> showSettingsSheet(sheet = intent.sheet)
             is PlayerIntent.SaveTime -> saveTime(time = intent.time)
-            is PlayerIntent.OnBackTap -> onBackTap(backSystem = intent.backSystem, time = intent.time)
+            is PlayerIntent.OnBackTap -> onBackTap(time = intent.time)
             PlayerIntent.TogglePlayButton -> togglePlayButton()
             is PlayerIntent.SetPlayingStatus -> setPlayingStatus(isPlaying = intent.isPlaying)
             PlayerIntent.OnFastRewind -> onFastRewind()
@@ -236,15 +236,15 @@ class PlayerViewModel @AssistedInject constructor(
         _controlsState.update { it.copy(nextButton = PlayerUiState.NextButton.Canceled) }
     }
 
-    private suspend fun onBackTap(backSystem: Boolean, time: Long?) {
+    private suspend fun onBackTap(time: Long?) {
 
         val interfaceShowed = uiState.value.controls.showInterface
 
-        if (interfaceShowed && backSystem) {
-            changeInterfaceVisibility()
-        } else {
+        if (interfaceShowed) {
             time?.let { saveTime(time = it) }
             _event.send(PlayerEvent.BackToPreviousScreen)
+        } else {
+            changeInterfaceVisibility()
         }
 
     }

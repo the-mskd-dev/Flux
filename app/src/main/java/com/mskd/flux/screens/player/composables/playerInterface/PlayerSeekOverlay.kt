@@ -19,6 +19,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -28,9 +30,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import com.mskd.flux.R
 import com.mskd.flux.screens.player.PlayerUiState
 import com.mskd.flux.ui.component.Text
@@ -57,15 +61,16 @@ fun BoxScope.PlayerSeekOverlay(seekOverlay: () -> PlayerUiState.SeekOverlay?) {
             label = "Visibility left seek overlay"
         ) {
             Row(
-                horizontalArrangement = Arrangement.spacedBy(Ui.Space.LARGE),
+                modifier = Modifier.padding(horizontal = Ui.Space.LARGE),
+                horizontalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 PlayerSeekOverlayIcon(
-                    painter = painterResource(R.drawable.ic_fast_rewind),
+                    painter = painterResource(R.drawable.ic_rewind),
                     offsetX = { fullWidth -> fullWidth },
                     label = "Left arrow"
                 )
-                PlayerSeekOverlayText(amount = overlay?.amount)
+                PlayerSeekOverlayText(amount = overlay?.amount?.let { "-$it" })
             }
         }
 
@@ -86,12 +91,13 @@ fun BoxScope.PlayerSeekOverlay(seekOverlay: () -> PlayerUiState.SeekOverlay?) {
             label = "Visibility right seek overlay"
         ) {
             Row(
-                horizontalArrangement = Arrangement.spacedBy(Ui.Space.LARGE),
+                modifier = Modifier.padding(horizontal = Ui.Space.LARGE),
+                horizontalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                PlayerSeekOverlayText(amount = overlay?.amount)
+                PlayerSeekOverlayText(amount = overlay?.amount?.let { "+$it" })
                 PlayerSeekOverlayIcon(
-                    painter = painterResource(R.drawable.ic_fast_forward),
+                    painter = painterResource(R.drawable.ic_forward),
                     offsetX = { fullWidth -> -fullWidth },
                     label = "Right arrow"
                 )
@@ -136,8 +142,7 @@ fun AnimatedVisibilityScope.PlayerSeekOverlayIcon(
 }
 
 @Composable
-fun PlayerSeekOverlayText(amount: Int?) {
-
+fun PlayerSeekOverlayText(amount: String?) {
     AnimatedContent(
         transitionSpec = {
             scaleIn(
@@ -147,26 +152,25 @@ fun PlayerSeekOverlayText(amount: Int?) {
                 )
             ) togetherWith scaleOut()
         },
-        targetState = amount?.toString(),
+        targetState = amount,
         label = "SeekOverlayText change"
     ) { text ->
-        Box {
+        Box(modifier = Modifier.padding(all = Ui.Space.SMALL)) {
             Text.Adaptive(
                 text = text,
                 style = MaterialTheme.typography.headlineSmall.copy(
-                    fontWeight = FontWeight.Black,
+                    fontWeight = FontWeight.Bold,
                     drawStyle = Stroke(
                         miter = 10f,
-                        width = 10f,
+                        width = 6f,
                         join = StrokeJoin.Round
                     ),
                     color = Color.Black
                 )
             )
-            Text.Adaptive(
+            Text.Headline.Small(
                 text = text,
                 color = Color.White,
-                style = MaterialTheme.typography.headlineSmall
             )
         }
     }

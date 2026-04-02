@@ -59,7 +59,7 @@ fun PlayerScreen(
     val playerStateHolder = rememberPlayerStateHolder()
     val windowStateHolder = rememberWindowStateHolder()
     val subtitles by playerStateHolder.subtitles.collectAsStateWithLifecycle()
-    var interfaceVisibilityCountdown by remember { mutableIntStateOf(5) }
+    var interfaceVisibilityCountdown by remember { mutableIntStateOf(3) }
 
     PlayerSideEffects(
         viewModel = viewModel,
@@ -76,8 +76,8 @@ fun PlayerScreen(
     }
 
     // Automatically hide interface after 5 seconds
-    LaunchedEffect(state.controls.showInterface) {
-        if (state.controls.showInterface) {
+    LaunchedEffect(state.controls) {
+        if (state.controls.showInterface && state.controls.settingsSheet == null) {
             while (interfaceVisibilityCountdown > 0) {
                 delay(1.seconds)
                 interfaceVisibilityCountdown--
@@ -105,7 +105,7 @@ fun PlayerScreen(
                     tracksState = { state.tracks },
                     seekOverlay = { state.seekOverlay },
                     sendIntent = {
-                        interfaceVisibilityCountdown = 5
+                        interfaceVisibilityCountdown = 3
                         viewModel.handleIntent(it)
                     }
                 )

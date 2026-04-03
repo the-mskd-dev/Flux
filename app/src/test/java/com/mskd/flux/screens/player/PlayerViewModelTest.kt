@@ -201,24 +201,12 @@ class PlayerViewModelTest : FunSpec({
         withData(
             nameFn = { it.description },
             PlayerTestCases.PlayerBackTap(
-                description = "System back tap when interface is showed",
+                description = "Back tap when interface is showed",
                 interfaceShowed = true,
-                backSystem = true
             ),
             PlayerTestCases.PlayerBackTap(
-                description = "Button back tap when interface is showed",
-                interfaceShowed = true,
-                backSystem = false
-            ),
-            PlayerTestCases.PlayerBackTap(
-                description = "System back tap when interface is not showed",
+                description = "Back tap when interface is not showed",
                 interfaceShowed = false,
-                backSystem = true
-            ),
-            PlayerTestCases.PlayerBackTap(
-                description = "Button back tap when interface is not showed",
-                interfaceShowed = false,
-                backSystem = false
             )
         ) { testCase ->
 
@@ -233,15 +221,11 @@ class PlayerViewModelTest : FunSpec({
                 viewModel.event.test {
                     viewModel.handleIntent(PlayerIntent.OnBackTap(time = null))
 
-                    if (testCase.interfaceShowed && testCase.backSystem) {
-                        expectNoEvents()
-                    } else {
+                    if (testCase.interfaceShowed) {
                         awaitItem() shouldBe PlayerEvent.BackToPreviousScreen
+                    } else {
+                        expectNoEvents()
                     }
-                }
-
-                if (testCase.interfaceShowed && testCase.backSystem) {
-                    awaitItem().controls.showInterface shouldBe false
                 }
 
                 cancelAndIgnoreRemainingEvents()

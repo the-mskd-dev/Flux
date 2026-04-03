@@ -47,6 +47,7 @@ class UserRepositoryImpl(
         userDataStore.edit { preferences ->
             val lastWatchedIds = ArrayList(flow.first().recentlyWatchedIds)
 
+            // Place recently watch in first position
             lastWatchedIds.remove(artworkId)
             lastWatchedIds.add(0, artworkId)
 

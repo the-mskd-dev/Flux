@@ -3,7 +3,7 @@ name: Android Beta CI
 on:
   push:
     branches:
-      - fix-release
+      - main
 
 jobs:
   distribute:
@@ -40,7 +40,7 @@ jobs:
             echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > keystore.jks
             echo "keyAlias=${{ secrets.KEYSTORE_ALIAS }}" > keystore.properties
             echo "keyPassword=${{ secrets.KEYSTORE_PASSWORD }}" >> keystore.properties
-            echo "storeFile=../keystore.jks" >> keystore.properties
+            echo "storeFile=keystore.jks" >> keystore.properties
             echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" >> keystore.properties
             pwd
 

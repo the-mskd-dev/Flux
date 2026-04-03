@@ -24,7 +24,6 @@ object PlayerTestCases {
     data class PlayerBackTap(
         val description: String,
         val interfaceShowed: Boolean,
-        val backSystem: Boolean
     )
 
     data class ShowNextEpisode(

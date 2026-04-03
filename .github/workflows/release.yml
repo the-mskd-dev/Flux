@@ -44,9 +44,9 @@ jobs:
             echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" >> keystore.properties
             pwd
 
-#      - name: Run Fastlane Release
-#        run: |
-#          bundle exec fastlane test
-#          bundle exec fastlane release
-#        env:
-#          GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Run Fastlane Release
+        run: |
+          bundle exec fastlane test
+          bundle exec fastlane release
+        env:
+          GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}

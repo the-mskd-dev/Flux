@@ -44,7 +44,7 @@ platform :android do
 
     firebase_app_distribution(
       app: "#{firebase_id}",
-      groups: "testers",
+      groups: "distribution",
       service_credentials_file: "firebase-distribution.json",
       release_notes_file: "CHANGELOG.md",
       android_artifact_path: "app/build/outputs/apk/debug/app-debug.apk"

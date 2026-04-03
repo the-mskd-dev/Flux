@@ -10,22 +10,29 @@ plugins {
     alias(libs.plugins.parcelize)
     alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.google.services)
-    alias(libs.plugins.crashlytics)
+    alias(libs.plugins.sentry)
 }
 
-val localProperties = Properties()
+// Local properties
 val localPropertiesFile = rootProject.file("local.properties")
+val localProperties = Properties()
 if (localPropertiesFile.exists()) {
     localProperties.load(FileInputStream(localPropertiesFile))
 }
 
+// Keystore properties
+val keystorePropertiesFile = rootProject.file("keystore.properties")
+val keystoreProperties = Properties()
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+}
+
 configure<ApplicationExtension> {
-    namespace = "com.kaem.flux"
+    namespace = "com.mskd.flux"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.kaem.flux"
+        applicationId = "com.mskd.flux"
         minSdk = 29
         targetSdk = 36
         versionCode = 2
@@ -40,13 +47,33 @@ configure<ApplicationExtension> {
         buildConfigField("String", "TMDB_TOKEN", "\"$tmdbToken\"")
     }
 
+    signingConfigs {
+        if (keystorePropertiesFile.exists()) {
+            create("config") {
+                keyAlias = keystoreProperties["keyAlias"]?.toString() ?: ""
+                keyPassword = keystoreProperties["keyPassword"]?.toString() ?: ""
+                storeFile = keystoreProperties["storeFile"]?.toString()?.let { rootProject.file(it) }
+                storePassword = keystoreProperties["storePassword"]?.toString() ?: ""
+            }
+        }
+    }
+
     buildTypes {
         release {
+            if (signingConfigs.findByName("config") != null) {
+                signingConfig = signingConfigs.getByName("config")
+            }
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+        }
+
+        debug {
+            applicationIdSuffix = ".beta"
+            versionNameSuffix = "-beta"
+            manifestPlaceholders["appName"] = "Flux Beta"
         }
     }
     compileOptions {
@@ -114,10 +141,6 @@ dependencies {
     implementation(libs.bundles.room)
     ksp(libs.androidx.room.compiler)
 
-    // Firebase
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.bundles.firebase)
-
     // Unit Testing
     testImplementation(libs.junit)
     testImplementation(libs.kotest)
@@ -145,4 +168,9 @@ dependencies {
 
 tasks.withType<Test>().configureEach {
     useJUnitPlatform()
+    testLogging {
+        events("passed", "skipped", "failed")
+        showStandardStreams = true
+        exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+    }
 }

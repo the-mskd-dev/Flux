@@ -1,0 +1,16 @@
+**Flow** is a modern and elegant video player designed to transform your local files into an immersive library.
+
+**Why choose Flow?**
+
+-   **Organized Library:** Movie, show, and anime information is automatically retrieved via the TMDB service, allowing you to organize your media into a simple and efficient library.
+    
+-   **Modern Interface:** Enjoy a cutting-edge design, thanks to an application developed according to Material 3 Expressive principles. Additionally, the app's colors harmonize with your phone's theme through Material You dynamic coloring.
+    
+-   **Built-in Player:** More than just a beautiful library, you can play your files directly within the application.
+    
+-   **Local & Private:** No accounts, no servers, no trackers. Your data and viewing habits stay strictly on your device.
+    
+
+Whether you are an anime fan or a movie buff, Flow breathes new life into your locally stored video collection.
+
+**Note:** Flow is an Open Source project developed by a passionate Android enthusiast dedicated to providing a pleasant, simple, and high-performance experience.

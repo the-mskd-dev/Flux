@@ -183,7 +183,7 @@ class Converters {
     Artwork::class,
     Movie::class,
     Episode::class
- ], version = 1)
+], version = 1)
 @TypeConverters(Converters::class)
 abstract class FluxDatabase : RoomDatabase() {
     abstract fun dao(): DatabaseDao

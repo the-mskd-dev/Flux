@@ -1,6 +1,7 @@
 package com.mskd.flux.model.artwork
 
 
+
 /**
  * Represents the viewing status of an media or episode.
  *

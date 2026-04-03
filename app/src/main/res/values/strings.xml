@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name" translatable="false">Flux</string>
     <string name="give_permission">Grant permissions</string>
     <string name="movies">Movies</string>
     <string name="shows">Shows</string>

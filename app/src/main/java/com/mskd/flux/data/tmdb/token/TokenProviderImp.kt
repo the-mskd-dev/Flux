@@ -4,6 +4,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.mskd.flux.BuildConfig
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
@@ -20,7 +21,7 @@ class TokenProviderImp(
         val token = tokenDataStore.data.map { it[TOKEN_KEY] }.first()
         return when {
             !token.isNullOrBlank() -> token
-            //BuildConfig.DEBUG -> BuildConfig.TMDB_TOKEN
+            BuildConfig.DEBUG -> BuildConfig.TMDB_TOKEN
             else -> null
         }
     }

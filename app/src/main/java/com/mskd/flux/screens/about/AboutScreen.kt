@@ -52,13 +52,13 @@ fun AboutScreen(onBack: () -> Unit) {
             ) {
 
                 AboutSection(
-                    title = stringResource(R.string.who_am_i),
-                    content = stringResource(R.string.who_am_i_desc),
+                    title = stringResource(R.string.why_this_app),
+                    content = stringResource(R.string.why_this_app_desc),
                 )
 
                 AboutSection(
-                    title = stringResource(R.string.why_this_app),
-                    content = stringResource(R.string.why_this_app_desc),
+                    title = stringResource(R.string.who_am_i),
+                    content = stringResource(R.string.who_am_i_desc),
                 )
 
                 AboutSection(

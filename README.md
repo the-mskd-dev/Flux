@@ -1,13 +1,21 @@
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-ffdd00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://www.buymeacoffee.com/the.masked.dev)
+
 # Flux
 ## _Local shows/movies/animes library and player_
 
-DISCLAIMER: This app is mainly used for my own personal use, and as a sandbox for Android Development.
+Welcome to **FLUX**!
+This app allows you to organize your local files (movies, shows, anime) in a beautiful library, and to play them in a beautiful player (okay, "beautiful" maybe means "not to ugly").
+
+**DISCLAIMER**: This app is mainly used for my own personal use, and as a sandbox for Android Development. I currently have no job, so I'm trying to improve my skills to find one more quickly.
+If you ever want to support me, or if you are a philanthropist, I accept all donations!
+
+Don't hesitate to give me feedback!
 
 ## Features
 
 - Show your local files in a library
 - Play your files as a media player and save your progress
-- Get information thanks to TMDB
+- Get information thanks to TheMovieDatabase (TMDB)
 - Totally free and ad-free
 - No trackers
 
@@ -22,7 +30,7 @@ DISCLAIMER: This app is mainly used for my own personal use, and as a sandbox fo
 - TMDB API : To get medias information
 - HILT : Dependencies injection
 - Retrofit : HTTP requests
-- Coil : Image managment
+- Coil : Image management
 - Room : Database
 - Sentry : Error tracking
 
@@ -30,7 +38,7 @@ DISCLAIMER: This app is mainly used for my own personal use, and as a sandbox fo
 
 This app use your video files (>5min) and then use TMBD to get information.
 
-To use TMDB, files need to have a specific formatted name
+To use TMDB, you need to **pass a TMDB Token**, and your files need to have a **specific formatted name**
 
 ### Movies
 
@@ -52,7 +60,7 @@ For TV show episodes, use a format that includes the season and episode number. 
 
 ## Development
 
-If you want to create a fork of this app and use your own API Key, you have just to create a file local.properties and create a variable called tmdb_token with your API key
+If you want to create a fork of this app and use your own API Key, you can create a file local.properties and create a variable called tmdb_token with your API key
 
 ```
 tmdb_token=<you_api_key>
@@ -62,16 +70,10 @@ And that all! The rest is up to you.
 
 ## License
 
-Copyright (C) 2025 adyBct
+Copyright (C) 2026 the-mskd-dev
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or(at your option) any later version.
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
 See the full license in the [LICENSE](LICENSE) file.

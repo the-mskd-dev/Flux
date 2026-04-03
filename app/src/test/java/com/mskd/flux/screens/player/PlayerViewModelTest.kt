@@ -231,7 +231,7 @@ class PlayerViewModelTest : FunSpec({
                 }
 
                 viewModel.event.test {
-                    viewModel.handleIntent(PlayerIntent.OnBackTap(backSystem = testCase.backSystem, time = null))
+                    viewModel.handleIntent(PlayerIntent.OnBackTap(time = null))
 
                     if (testCase.interfaceShowed && testCase.backSystem) {
                         expectNoEvents()

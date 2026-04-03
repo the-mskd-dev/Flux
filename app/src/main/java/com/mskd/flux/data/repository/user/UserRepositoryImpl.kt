@@ -47,12 +47,11 @@ class UserRepositoryImpl(
         userDataStore.edit { preferences ->
             val lastWatchedIds = ArrayList(flow.first().recentlyWatchedIds)
 
-            if (lastWatchedIds.none { it == artworkId }) {
+            // Place recently watch in first position
+            lastWatchedIds.remove(artworkId)
+            lastWatchedIds.add(0, artworkId)
 
-                lastWatchedIds.add(0, artworkId)
-
-                preferences[Keys.RECENTLY_WATCHED_IDS] = gson.toJson(lastWatchedIds.take(4))
-            }
+            preferences[Keys.RECENTLY_WATCHED_IDS] = gson.toJson(lastWatchedIds.take(4))
 
         }
     }

@@ -6,6 +6,8 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.awaitLongPressOrCancellation
+import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.Player
@@ -56,7 +59,7 @@ fun PlayerScreen(
     val playerStateHolder = rememberPlayerStateHolder()
     val windowStateHolder = rememberWindowStateHolder()
     val subtitles by playerStateHolder.subtitles.collectAsStateWithLifecycle()
-    var interfaceVisibilityCountdown by remember { mutableIntStateOf(5) }
+    var interfaceVisibilityCountdown by remember { mutableIntStateOf(3) }
 
     PlayerSideEffects(
         viewModel = viewModel,
@@ -73,8 +76,8 @@ fun PlayerScreen(
     }
 
     // Automatically hide interface after 5 seconds
-    LaunchedEffect(state.controls.showInterface) {
-        if (state.controls.showInterface) {
+    LaunchedEffect(state.controls) {
+        if (state.controls.showInterface && state.controls.settingsSheet == null) {
             while (interfaceVisibilityCountdown > 0) {
                 delay(1.seconds)
                 interfaceVisibilityCountdown--
@@ -89,7 +92,7 @@ fun PlayerScreen(
             PlayerScreen.Error -> {
                 ErrorScreen(
                     message = stringResource(R.string.oups_an_error_occured),
-                    onBackButtonTap = { viewModel.handleIntent(PlayerIntent.OnBackTap(backSystem = true)) }
+                    onBackButtonTap = { viewModel.handleIntent(PlayerIntent.OnBackTap()) }
                 )
             }
             is PlayerScreen.Content -> {
@@ -102,7 +105,7 @@ fun PlayerScreen(
                     tracksState = { state.tracks },
                     seekOverlay = { state.seekOverlay },
                     sendIntent = {
-                        interfaceVisibilityCountdown = 5
+                        interfaceVisibilityCountdown = 3
                         viewModel.handleIntent(it)
                     }
                 )
@@ -127,7 +130,7 @@ fun PlayerContent(
 ) {
 
     BackHandler(enabled = true) {
-        sendIntent(PlayerIntent.OnBackTap(backSystem = true, time = player.currentPosition))
+        sendIntent(PlayerIntent.OnBackTap(time = player.currentPosition))
     }
 
     Box(
@@ -135,15 +138,22 @@ fun PlayerContent(
             .fillMaxSize()
             .background(Color.Black)
             .pointerInput(Unit) {
+
+                val edgeMargin = 32.dp.toPx()
+
                 awaitEachGesture {
-                    awaitFirstDown(requireUnconsumed = false)
+                    val firstDown = awaitFirstDown(requireUnconsumed = true)
+
+                    val handleTap = firstDown.position.x > edgeMargin && firstDown.position.x < (size.width - edgeMargin)
+                    if (!handleTap) return@awaitEachGesture
+
                     sendIntent(PlayerIntent.ChangeInterfaceVisibility)
 
                     val firstUp = waitForUpOrCancellation()
 
                     if (firstUp != null) {
                         val secondDown = withTimeoutOrNull(100) {
-                            awaitFirstDown(requireUnconsumed = false)
+                            awaitFirstDown(requireUnconsumed = true)
                         }
 
                         if (secondDown != null) {

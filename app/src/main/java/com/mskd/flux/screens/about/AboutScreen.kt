@@ -16,12 +16,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import com.mskd.flux.R
 import com.mskd.flux.ui.component.FluxScaffold
 import com.mskd.flux.ui.component.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.FluxPreview
+import com.mskd.flux.utils.buildLinkedString
 
 @Composable
 fun AboutScreen(onBack: () -> Unit) {
@@ -76,11 +79,14 @@ fun AboutScreen(onBack: () -> Unit) {
                     content = stringResource(R.string.what_is_next_desc)
                 )
 
-                AboutSection(
+                AboutSectionWithLinks(
                     title = stringResource(R.string.how_to_suggest),
-                    content = stringResource(R.string.how_to_suggest_desc)
+                    content = buildLinkedString(
+                        template = stringResource(R.string.how_to_suggest_desc),
+                        stringResource(R.string.mail) to Constants.CONTACT.MAIL,
+                        stringResource(R.string.github) to Constants.CONTACT.ISSUES
+                    )
                 )
-
             }
 
             Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding()))
@@ -99,6 +105,20 @@ fun AboutSection(
     Column(verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)) {
         Text.Headline.Small(text = title)
         Text.Body.Large(text = content)
+    }
+}
+
+@Composable
+fun AboutSectionWithLinks(
+    title: String,
+    content: AnnotatedString
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)) {
+        Text.Headline.Small(text = title)
+        Text.Annotated(
+            text = content,
+            style = MaterialTheme.typography.bodyLarge
+        )
     }
 }
 

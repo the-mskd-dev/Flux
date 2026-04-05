@@ -36,6 +36,7 @@ import com.mskd.flux.ui.component.FluxScaffold
 import com.mskd.flux.ui.component.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.WebLink
 import com.mskd.flux.utils.extensions.uppercaseFirstLetter
@@ -165,21 +166,37 @@ fun SettingsContent(
                     onTap = {
                         WebLink.openPage(
                             context = context,
-                            url = "https://buymeacoffee.com/the.masked.dev"
+                            url = Constants.CONTACT.BUY_COFFEE
                         )
                     }
                 )
 
             }
 
-            appVersion?.let {
+            SettingsSection {
 
-                SettingsSection {
+                SettingsItem(
+                    text = stringResource(R.string.sources),
+                    value = "",
+                    onTap = {
+                        WebLink.openPage(
+                            context = context,
+                            url = Constants.CONTACT.GITHUB
+                        )
+                    }
+                )
+
+                appVersion?.let {
 
                     SettingsItem(
                         text = stringResource(R.string.app_version),
                         value = it,
-                        onTap = {}
+                        onTap = {
+                            WebLink.openPage(
+                                context = context,
+                                url = Constants.CONTACT.RELEASES
+                            )
+                        }
                     )
 
                 }

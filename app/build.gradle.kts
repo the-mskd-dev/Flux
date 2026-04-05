@@ -10,7 +10,6 @@ plugins {
     alias(libs.plugins.parcelize)
     alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.sentry)
 }
 
 // Local properties
@@ -35,8 +34,8 @@ configure<ApplicationExtension> {
         applicationId = "com.mskd.flux"
         minSdk = 29
         targetSdk = 36
-        versionCode = 2
-        versionName = "1.0"
+        versionCode = 3
+        versionName = "1.0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

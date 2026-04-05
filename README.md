@@ -32,7 +32,6 @@ Don't hesitate to give me feedback!
 - Retrofit : HTTP requests
 - Coil : Image management
 - Room : Database
-- Sentry : Error tracking
 
 ## How to use
 

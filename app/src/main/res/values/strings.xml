@@ -62,7 +62,7 @@
     <string name="how_it_works">How does this app work?</string>
     <string name="how_it_works_desc">This app will scan your video files longer than 5 minutes and extract information from the file name (title, season, episode, year). Then, the TMDB API is used to fetch additional information like the synopsis, rating, genre, etc.</string>
     <string name="which_technologies">What technologies are used?</string>
-    <string name="which_technologies_desc">This app is entirely developed in Kotlin with Jetpack Compose. I use Room for the database, Retrofit for network calls, and Hilt for dependency injection. I use also Sentry and GitHub. As for the UI/UX, I use Material 3, and I did my best. Not too shabby, right?</string>
+    <string name="which_technologies_desc">This app is entirely developed in Kotlin with Jetpack Compose. I use Room for the database, Retrofit for network calls, and Hilt for dependency injection. I use also GitHub. As for the UI/UX, I use Material 3, and I did my best. Not too shabby, right?</string>
     <string name="how_to_suggest">How to contact me or suggest improvements?</string>
     <string name="how_to_suggest_desc">If it\'s positive feedback, you can contact me on the.masked.dev@proton.me! Otherwise, do the same thing, but with as much kindness as if it were positive.</string>
     <string name="what_is_next">What\'s next?</string>

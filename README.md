@@ -17,7 +17,7 @@ Don't hesitate to give me feedback!
 - Play your files as a media player and save your progress
 - Get information thanks to TheMovieDatabase (TMDB)
 - Totally free and ad-free
-- No trackers (except for crashes, but maybe the job is good and we won't even need it)
+- No trackers
 
 ## Tech
 
@@ -32,7 +32,6 @@ Don't hesitate to give me feedback!
 - Retrofit : HTTP requests
 - Coil : Image management
 - Room : Database
-- Sentry : Error tracking
 
 ## How to use
 

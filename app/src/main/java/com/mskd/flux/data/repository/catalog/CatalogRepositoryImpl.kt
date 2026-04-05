@@ -7,7 +7,6 @@ import com.mskd.flux.data.source.media.MediaSource
 import com.mskd.flux.data.source.media.MediaSourceTMDBImpl.Companion.TAG
 import com.mskd.flux.model.UserFile
 import com.mskd.flux.model.artwork.Artwork
-import io.sentry.Sentry
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -41,7 +40,6 @@ class CatalogRepositoryImpl @Inject constructor(
 
             } catch (e: Exception) {
                 Log.e(TAG, "Fail to init catalog", e)
-                Sentry.captureException(e)
             }
 
             // Update content
@@ -91,7 +89,6 @@ class CatalogRepositoryImpl @Inject constructor(
 
         } catch (e: Exception) {
             Log.e(TAG, "[syncCatalog] Fail to sync catalog", e)
-            Sentry.captureException(e)
 
             _catalogFlow.update { content ->
                 content.copy(isLoading = false)

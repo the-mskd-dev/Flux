@@ -58,9 +58,9 @@
     <string name="how_it_works">Comment fonctionne cette application ?</string>
     <string name="how_it_works_desc">Cette application va scanner vos fichiers vidéo de plus de 5 minutes et en extraire des informations à partir du nom du fichier (titre, saison, épisode, année). Ensuite, l\'API de TMDB est utilisée pour récupérer des informations supplémentaires comme le synopsis, la note, le genre, etc.</string>
     <string name="which_technologies">Quelles sont les technologies utilisées ?</string>
-    <string name="which_technologies_desc">Cette application est entièrement développée en Kotlin avec Jetpack Compose. J\'utilise Room pour la base de données, Retrofit pour les appels réseau et Hilt pour les injections de dépendances. Hors application, j\'utilise également Sentry et GitHub. Pour ce qui est de l\'UI/UX, j\'utilise Material 3 et j\'ai fait ce que j\'ai pu. C\'est pas si moche, non ?</string>
+    <string name="which_technologies_desc">Cette application est entièrement développée en Kotlin avec Jetpack Compose. J\'utilise Room pour la base de données, Retrofit pour les appels réseau et Hilt pour les injections de dépendances. Hors application, j\'utilise également GitHub. Pour ce qui est de l\'UI/UX, j\'utilise Material 3 et j\'ai fait ce que j\'ai pu. C\'est pas si moche, non ?</string>
     <string name="how_to_suggest">Comment me contacter ou suggérer des améliorations ?</string>
-    <string name="how_to_suggest_desc">Si c\'est un avis positif, vous pouvez me contacter via the.masked.dev@proton.me! Sinon, faites la même chose mais avec autant de gentillesse que si c\'était positif.</string>
+    <string name="how_to_suggest_desc">Si c\'est un avis positif, vous pouvez me contacter via the.masked.dev@proton.me! Sinon, faites la même chose, mais avec autant de gentillesse que si c\'était positif.</string>
     <string name="what_is_next">Et la suite ?</string>
     <string name="what_is_next_desc">L\'objectif est d\'améliorer toujours plus l\'application. Que ce soit au niveau de l\'UI, de l\'UX ou des performances. Je prévois de récupérer plus d\'informations (genre, casting, etc), mais je prévois également d\'ajouter de nouvelles sources de données et non seulement les fichiers sur l\'appareil.</string>
     <string name="make_a_donation">Buy me a coffee</string>
@@ -73,7 +73,7 @@
     <string name="close">Fermer</string>
     <string name="do_not_show_again">Ne plus afficher</string>
     <string name="tmdb_api_key">Clé d\'API TMDB</string>
-    <string name="token_desc_1">Pour fonctionner, cette application utilise les services de The Movie Database. Ce site permet de récupérer les différentes informations (images, titres, résumés…) de vos oeuvres. Pour utiliser ce service, nous avons besoin d\'une clé API.</string>
+    <string name="token_desc_1">Pour fonctionner, cette application utilise les services de The Movie Database. Ce site permet de récupérer les différentes informations (images, titres, résumés…) de vos œuvres. Pour utiliser ce service, nous avons besoin d\'une clé API.</string>
     <string name="token_desc_2">Cependant, dans le but d\'être une application complètement FOSS (Free and Open-Source Software), et de vous garantir un meilleur contrôle de vos données, la clé d\'API pour le service TMDB n\'est pas fournie.</string>
     <string name="token_desc_3">Par conséquent, il est nécessaire que vous fournissiez votre propre clé. Pour cela, veuillez suivre la démarche suivante :</string>
     <string name="token_tutorial_step_1">%1$s ou %2$s sur le site TMDB.</string>

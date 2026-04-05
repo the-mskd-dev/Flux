@@ -54,9 +54,6 @@ espresso = "3.7.0"
 truth = "1.4.5"
 coreTesting = "2.2.0"
 
-# Sentry
-sentry = "6.2.0"
-
 [libraries]
 # -- Core --
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -145,7 +142,6 @@ jetbrains-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serializati
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hiltPlugin" }
-sentry = { id = "io.sentry.android.gradle", version.ref = "sentry" }
 
 [bundles]
 compose = [

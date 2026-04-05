@@ -26,6 +26,7 @@ object Constants {
     object CONTACT {
         const val MAIL = "mailto:the.masked.dev@proton.me"
         const val GITHUB = "https://github.com/the-mskd-dev/Flux"
+        const val RELEASES = "https://github.com/the-mskd-dev/Flux/releases"
         const val ISSUES = "https://github.com/the-mskd-dev/Flux/issues"
         const val BUY_COFFEE = "https://buymeacoffee.com/the.masked.dev"
     }

@@ -191,7 +191,12 @@ fun SettingsContent(
                     SettingsItem(
                         text = stringResource(R.string.app_version),
                         value = it,
-                        onTap = {}
+                        onTap = {
+                            WebLink.openPage(
+                                context = context,
+                                url = Constants.CONTACT.RELEASES
+                            )
+                        }
                     )
 
                 }

@@ -85,4 +85,5 @@
     <string name="sign_up">inscrivez-vous</string>
     <string name="api_key">clé d\'API</string>
     <string name="start">Commencer</string>
+    <string name="sources">Sources</string>
 </resources>

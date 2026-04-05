@@ -4,7 +4,7 @@
 * **Bibliothèque organisée :** Les informations de vos films, séries et animes sont récupérés grâce au service TMDB, pour permettre de les organiser en une bibliothèque simple et efficace.
 * **Une interface moderne :** Profitez d'un design moderne, grâce à une application développée selon les principes de Material 3 Expressive. De plus, les couleurs de l'application s'accordent au thème de votre téléphone grâce à Material You.
 * **Lecteur intégré :** En plus d'être une belle bibliothèque, vous pouvez lire directement vos fichiers depuis cette application.
-* **Local & Privé :** Pas de comptes, pas de serveurs, pas de trackers. Vos données et vos habitudes de lecture restent sur votre téléphone.
+* **Local & Privé :** Pas de comptes, pas de serveurs, pas de trackers (sauf pour les erreurs, mais peut-être que le travail est bien fait et que l'on ne va même pas en avoir besoin...). Vos données et vos habitudes de lecture restent sur votre téléphone.
 
 Que vous soyez un fan d'anime ou un cinéphile, Flow redonne vie à votre collection de vidéos stockée localement.
 

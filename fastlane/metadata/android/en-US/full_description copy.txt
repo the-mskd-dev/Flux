@@ -8,7 +8,7 @@
     
 -   **Built-in Player:** More than just a beautiful library, you can play your files directly within the application.
     
--   **Local & Private:** No accounts, no servers, no trackers. Your data and viewing habits stay strictly on your device.
+-   **Local & Private:** No accounts, no servers, no trackers (except for the errors, but maybe the work is well done, and we won't even need it...). Your data and viewing habits stay strictly on your device.
     
 
 Whether you are an anime fan or a movie buff, Flow breathes new life into your locally stored video collection.

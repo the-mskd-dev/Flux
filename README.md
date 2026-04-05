@@ -17,7 +17,7 @@ Don't hesitate to give me feedback!
 - Play your files as a media player and save your progress
 - Get information thanks to TheMovieDatabase (TMDB)
 - Totally free and ad-free
-- No trackers
+- No trackers (except for crashes, but maybe the job is good and we won't even need it)
 
 ## Tech
 

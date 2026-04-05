@@ -23,6 +23,12 @@ object Constants {
         const val GET_API_KEY = "https://www.themoviedb.org/settings/api"
     }
 
+    object CONTACT {
+        const val MAIL = "mailto:the.masked.dev@proton.me"
+        const val GITHUB = "https://github.com/the-mskd-dev/Flux"
+        const val ISSUES = "https://github.com/the-mskd-dev/Flux/issues"
+    }
+
     object PLAYER {
         const val PROGRESS_THRESHOLD = 0.92
     }

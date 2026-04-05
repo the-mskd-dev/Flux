@@ -1,1 +1,1 @@
-Flux - Movies, Shows & Anime player
+Flux - Movies, Shows & Anime local player

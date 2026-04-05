@@ -10,7 +10,6 @@ plugins {
     alias(libs.plugins.parcelize)
     alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.sentry)
 }
 
 // Local properties
@@ -36,7 +35,7 @@ configure<ApplicationExtension> {
         minSdk = 29
         targetSdk = 36
         versionCode = 3
-        versionName = "1.1"
+        versionName = "1.0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

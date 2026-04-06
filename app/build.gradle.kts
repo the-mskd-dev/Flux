@@ -70,11 +70,19 @@ configure<ApplicationExtension> {
                 "proguard-rules.pro"
             )
         }
-
         debug {
+            applicationIdSuffix = ".debug"
+            versionNameSuffix = "-debug"
+            manifestPlaceholders["appName"] = "Flux Debug"
+        }
+        create("beta") {
             applicationIdSuffix = ".beta"
             versionNameSuffix = "-beta"
             manifestPlaceholders["appName"] = "Flux Beta"
+
+            if (signingConfigs.findByName("config") != null) {
+                signingConfig = signingConfigs.getByName("config")
+            }
 
             isMinifyEnabled = true
             isShrinkResources = true

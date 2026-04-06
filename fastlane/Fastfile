@@ -39,7 +39,7 @@ platform :android do
 
     gradle(
       task: "assemble",
-      build_type: "Debug"
+      build_type: "Beta"
     )
 
     firebase_app_distribution(
@@ -47,7 +47,7 @@ platform :android do
       groups: "distribution",
       service_credentials_file: "firebase-distribution.json",
       release_notes_file: "CHANGELOG.md",
-      android_artifact_path: "app/build/outputs/apk/debug/app-debug.apk"
+      android_artifact_path: "app/build/outputs/apk/beta/app-beta.apk"
     )
 
   end

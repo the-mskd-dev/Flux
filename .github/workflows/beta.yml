@@ -34,6 +34,14 @@ jobs:
       - name: Decode Firebase Distribution services
         run: echo "${{ secrets.FIREBASE_DISTRIBUTION }}" | base64 --decode > firebase-distribution.json
 
+      - name: Create Keystore Properties
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > keystore.jks
+          echo "keyAlias=${{ secrets.KEYSTORE_ALIAS }}" > keystore.properties
+          echo "keyPassword=${{ secrets.KEYSTORE_PASSWORD }}" >> keystore.properties
+          echo "storeFile=keystore.jks" >> keystore.properties
+          echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" >> keystore.properties
+
       - name: Run Fastlane Beta
         run: |
             bundle exec fastlane test

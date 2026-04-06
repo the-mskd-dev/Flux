@@ -58,15 +58,11 @@ configure<ApplicationExtension> {
     }
 
     buildTypes {
-
         release {
             if (signingConfigs.findByName("config") != null) {
                 signingConfig = signingConfigs.getByName("config")
             }
-
-            isMinifyEnabled = true
-            isShrinkResources = true
-
+            isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -74,29 +70,10 @@ configure<ApplicationExtension> {
         }
 
         debug {
-            applicationIdSuffix = ".debug"
-            versionNameSuffix = "-debug"
-            manifestPlaceholders["appName"] = "Flux Debug"
-        }
-
-        create("beta") {
             applicationIdSuffix = ".beta"
             versionNameSuffix = "-beta"
             manifestPlaceholders["appName"] = "Flux Beta"
-
-            if (signingConfigs.findByName("config") != null) {
-                signingConfig = signingConfigs.getByName("config")
-            }
-
-            isMinifyEnabled = true
-            isShrinkResources = true
-
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
         }
-
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
@@ -115,10 +92,6 @@ configure<ApplicationExtension> {
             excludes += "META-INF/DEPENDENCIES"
             excludes += "META-INF/*.kotlin_module"
         }
-    }
-    dependenciesInfo {
-        includeInApk = false
-        includeInBundle = false
     }
 
 }

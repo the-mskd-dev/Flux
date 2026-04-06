@@ -1,1 +1,0 @@
-Lecteur vidéo et bibliothèque locale moderne pour vos films, séries et animes.

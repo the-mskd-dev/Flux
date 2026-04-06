@@ -30,15 +30,6 @@ jobs:
           ruby-version: '3.2'
           bundler-cache: true
 
-      - name: Set up Local Properties
-        run: |
-            echo "tmdb_token=${{ secrets.TMDB_TOKEN }}" > local.properties
-            echo "firebase_beta_id=${{ secrets.FIREBASE_BETA_ID }}" >> local.properties
-            pwd
-
-      #- name: Decode Google Services
-      #  run: echo "${{ secrets.GOOGLE_SERVICES }}" | base64 --decode > app/google-services.json
-
       - name: Create Keystore Properties
         run: |
             echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > keystore.jks

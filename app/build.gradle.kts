@@ -28,7 +28,7 @@ if (keystorePropertiesFile.exists()) {
 configure<ApplicationExtension> {
     namespace = "com.mskd.flux"
     compileSdk = 36
-
+    ndkVersion = "29.0.13113456"
     defaultConfig {
         applicationId = "com.mskd.flux"
         minSdk = 29

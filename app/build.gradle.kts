@@ -29,6 +29,7 @@ configure<ApplicationExtension> {
     namespace = "com.mskd.flux"
     compileSdk = 36
     ndkVersion = "29.0.13113456"
+
     defaultConfig {
         applicationId = "com.mskd.flux"
         minSdk = 29
@@ -57,6 +58,7 @@ configure<ApplicationExtension> {
     }
 
     buildTypes {
+
         release {
             if (signingConfigs.findByName("config") != null) {
                 signingConfig = signingConfigs.getByName("config")
@@ -70,11 +72,13 @@ configure<ApplicationExtension> {
                 "proguard-rules.pro"
             )
         }
+
         debug {
             applicationIdSuffix = ".debug"
             versionNameSuffix = "-debug"
             manifestPlaceholders["appName"] = "Flux Debug"
         }
+
         create("beta") {
             applicationIdSuffix = ".beta"
             versionNameSuffix = "-beta"
@@ -92,6 +96,7 @@ configure<ApplicationExtension> {
                 "proguard-rules.pro"
             )
         }
+
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21

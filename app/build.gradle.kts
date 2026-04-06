@@ -61,7 +61,10 @@ configure<ApplicationExtension> {
             if (signingConfigs.findByName("config") != null) {
                 signingConfig = signingConfigs.getByName("config")
             }
-            isMinifyEnabled = false
+
+            isMinifyEnabled = true
+            isShrinkResources = true
+
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -72,6 +75,14 @@ configure<ApplicationExtension> {
             applicationIdSuffix = ".beta"
             versionNameSuffix = "-beta"
             manifestPlaceholders["appName"] = "Flux Beta"
+
+            isMinifyEnabled = true
+            isShrinkResources = true
+
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
     compileOptions {

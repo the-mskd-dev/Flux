@@ -1,6 +1,3 @@
-## Version 1.0.1
+## Version 1.0.2
 
-- Preparation for F-Droid
-- Update to JAVA 21
-- Remove Sentry
-- Link to sources, releases, issues
+- Minify and Shrink Resources

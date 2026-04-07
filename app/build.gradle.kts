@@ -116,6 +116,10 @@ configure<ApplicationExtension> {
             excludes += "META-INF/*.kotlin_module"
         }
     }
+    dependenciesInfo {
+        includeInApk = false
+        includeInBundle = false
+    }
 
 }
 

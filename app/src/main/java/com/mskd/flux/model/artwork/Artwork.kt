@@ -54,11 +54,13 @@ data class Artwork(
 
 enum class ContentType {
     MOVIE,
-    SHOW;
+    SHOW,
+    OTHER;
 
     val stringResource: Int get() = when (this) {
         MOVIE -> R.string.movies
         SHOW -> R.string.shows
+        OTHER -> R.string.others
     }
 
 }

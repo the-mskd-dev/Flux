@@ -85,15 +85,12 @@ data class Episode(
         file = file
     )
 
-    constructor(
-        title: String,
-        file: UserFile
-    ) : this (
-        id = Random.nextLong(),
+    constructor(file: UserFile) : this (
+        id = -Random.nextLong(),
         artworkId = Artwork.UNKNOWN_ID,
-        title = title,
-        number = -1,
-        season = -1,
+        title = file.nameProperties.title,
+        number = file.nameProperties.episode ?: -1,
+        season = file.nameProperties.season ?: -1,
         imagePath = "",
         releaseDateString = "",
         description = "",

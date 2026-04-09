@@ -7,6 +7,7 @@ import com.mskd.flux.model.UserFolder
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.model.artwork.Episode
+import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.tmdb.TMDBMediaType
 import com.mskd.flux.utils.extensions.groupInFolders
@@ -32,7 +33,7 @@ class MediaSourceTMDBImpl @Inject constructor(private val tmdbService: TMDBServi
 
     override suspend fun getMedias(files: List<UserFile>): MediaSource.Library {
 
-        var movies: Map<Artwork, Movie> = mapOf()
+        var movies: Map<Artwork, Media> = mapOf()
         var shows: Map<Artwork, List<Episode>> = mapOf()
 
         withContext(Dispatchers.Default) {
@@ -55,10 +56,13 @@ class MediaSourceTMDBImpl @Inject constructor(private val tmdbService: TMDBServi
 
         }
 
+        val moviesFiltered = movies.values.filterIsInstance<Movie>()
+        val unknownMedias = movies.values.mapNotNull { it as? Episode }.filter { it.isUnknown }
+
         return MediaSource.Library(
-            artworks = (movies.keys + shows.keys).toList(),
-            movies = movies.values.toList(),
-            episodes = shows.values.flatten()
+            artworks = (movies.keys + shows.keys).distinctBy { it.id }.toList(),
+            movies = moviesFiltered,
+            episodes = shows.values.flatten() + unknownMedias
         ).also {
             Log.d(TAG, "[getMedias] Found ${it.artworks.size} artworks, ${it.movies.size} movies, ${it.episodes.size} episodes")
         }
@@ -68,7 +72,7 @@ class MediaSourceTMDBImpl @Inject constructor(private val tmdbService: TMDBServi
 
     //region Private methods
 
-    private suspend fun getMovies(folders: List<UserFolder>) : Map<Artwork, Movie> {
+    private suspend fun getMovies(folders: List<UserFolder>) : Map<Artwork, Media> {
 
         val movies = coroutineScope {
 
@@ -76,9 +80,9 @@ class MediaSourceTMDBImpl @Inject constructor(private val tmdbService: TMDBServi
 
                 async {
 
-                    try {
+                    val file = folder.files.first()
 
-                        val file = folder.files.first()
+                    try {
 
                         val tmdbArtworks = tmdbService.getMovie(
                             title = folder.title,
@@ -97,16 +101,18 @@ class MediaSourceTMDBImpl @Inject constructor(private val tmdbService: TMDBServi
 
                     } catch (e: Exception) {
                         Log.e(TAG, "[getMovies] Fail to get movie : ${folder.title}", e)
-                        null
+
+                        Artwork.UNKNOWN to Episode(file = file)
+
                     }
 
                 }
 
-            }.awaitAll().filterNotNull().toMap()
+            }.awaitAll().toMap()
 
         }
 
-        Log.i(TAG, "[getShows] Found ${movies.size}/${folders.size} movies")
+        Log.i(TAG, "[getMovies] Found ${movies.size}/${folders.size} movies")
 
         return movies
 
@@ -122,10 +128,9 @@ class MediaSourceTMDBImpl @Inject constructor(private val tmdbService: TMDBServi
 
                 async {
 
-                    getShowArtwork(folder = folder)?.let { artwork ->
-                        val episodes = getEpisodes(folder = folder, artwork = artwork)
-                        shows[artwork] = episodes
-                    }
+                    val artwork = getShowArtwork(folder = folder)
+                    val episodes = getEpisodes(folder = folder, artwork = artwork)
+                    shows[artwork] = episodes
 
                 }
 
@@ -139,7 +144,7 @@ class MediaSourceTMDBImpl @Inject constructor(private val tmdbService: TMDBServi
 
     }
 
-    private suspend fun getShowArtwork(folder: UserFolder) : Artwork? {
+    private suspend fun getShowArtwork(folder: UserFolder) : Artwork {
 
         return try {
 
@@ -156,7 +161,7 @@ class MediaSourceTMDBImpl @Inject constructor(private val tmdbService: TMDBServi
 
         } catch (e: Exception) {
             Log.e(TAG, "[getShowAndEpisodes] Fail to get show artwork : ${folder.title}", e)
-            null
+            Artwork.UNKNOWN
         }
 
     }
@@ -185,12 +190,12 @@ class MediaSourceTMDBImpl @Inject constructor(private val tmdbService: TMDBServi
 
                     } catch (e: Exception) {
                         Log.e(TAG, "[getShowAndEpisodes] Fail to get episode : ${folder.title} (season ${file.nameProperties.season}, episode ${file.nameProperties.episode})", e)
-                        null
+                        Episode(file = file)
                     }
 
                 }
 
-            }.awaitAll().filterNotNull()
+            }.awaitAll()
 
         }
 

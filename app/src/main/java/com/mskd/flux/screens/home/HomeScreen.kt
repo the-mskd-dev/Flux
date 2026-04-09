@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -46,13 +47,24 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.compose.foundation.Image
+import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.draw.paint
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.vectorResource
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.mskd.flux.R
 import com.mskd.flux.mockups.MediaMockups
@@ -245,12 +257,10 @@ fun HomeContent(
                     )
                 }
 
-                item {
-                    UnknownCategory(
-                        name = "Autres",
-                        artworks = artworks.filter { it.isUnknown },
-                        sendIntent = sendIntent
-                    )
+                if (artworks.any { it.isUnknown }) {
+                    item {
+                        UnknownCategory(sendIntent = sendIntent)
+                    }
                 }
 
                 item {
@@ -392,17 +402,17 @@ fun MediaCategory(
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun UnknownCategory(
-    name: String? = null,
-    artworks: List<Artwork>,
-    sendIntent: (HomeIntent) -> Unit
-) {
-
-    if (artworks.isEmpty())
-        return
+fun UnknownCategory(sendIntent: (HomeIntent) -> Unit) {
 
     val width = 120.dp
     val ratio = 2f/3f
+    val foregroundPainter = rememberVectorPainter(ImageVector.vectorResource(R.drawable.ic_launcher_foreground))
+    val backgroundGradient = Brush.linearGradient(
+        colors = listOf(
+            MaterialTheme.colorScheme.primaryContainer,
+            MaterialTheme.colorScheme.tertiaryContainer
+        )
+    )
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -413,28 +423,28 @@ fun UnknownCategory(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = Ui.Space.MEDIUM, top = Ui.Space.LARGE),
-            text = name,
+            text = "Autres",
             emphasized = true,
             color = MaterialTheme.colorScheme.onBackground
         )
 
-        LazyRow(
-            modifier = Modifier.fillMaxWidth(),
-            contentPadding = PaddingValues(horizontal = Ui.Space.MEDIUM),
-            horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)
+        Box(
+            modifier = Modifier
+                .padding(horizontal = Ui.Space.MEDIUM)
+                .clickable { sendIntent(HomeIntent.OnArtworkTap(artworkId = Artwork.UNKNOWN_ID)) }
+                .clip(Ui.Shape.Corner.Small)
+                .width(width)
+                .aspectRatio(ratio)
+                .background(brush = backgroundGradient),
+            contentAlignment = Alignment.Center
         ) {
 
-            items(artworks, key = { it.id }) {
-
-                MediaItem(
-                    width = width,
-                    ratio = ratio,
-                    url = it.imagePath.tmdbImage,
-                    onTap = { sendIntent(HomeIntent.OnArtworkTap(artworkId = it.id)) },
-                    description = it.title
-                )
-
-            }
+            Image(
+                modifier = Modifier.fillMaxSize(),
+                painter = foregroundPainter,
+                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimaryContainer),
+                contentDescription = "Unknown"
+            )
 
         }
 

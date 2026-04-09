@@ -28,7 +28,6 @@ fun Image(
         error = Image.error,
         contentDescription = contentDescription
     )
-
 }
 
 object Image {

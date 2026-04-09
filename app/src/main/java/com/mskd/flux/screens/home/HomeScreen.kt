@@ -1,5 +1,7 @@
 package com.mskd.flux.screens.home
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
@@ -83,7 +85,8 @@ fun HomeScreen(
         viewModel.event.collect { event ->
             when (event) {
                 is HomeEvent.NavigateToCategory -> navigate(Route.Search(contentType = event.category))
-                is HomeEvent.NavigateToArtwork -> navigate(Route.Artwork(event.mediaId))
+                is HomeEvent.NavigateToArtwork -> navigate(Route.Artwork(event.artworkId))
+                HomeEvent.NavigateToUnknown -> Log.d("TEST", "test unknown")
                 HomeEvent.NavigateToHowTo -> navigate(Route.HowTo)
                 HomeEvent.NavigateToSearch -> navigate(Route.Search())
                 HomeEvent.NavigateToSettings -> navigate(Route.Settings)
@@ -228,7 +231,7 @@ fun HomeContent(
                     MediaCategory(
                         name = stringResource(id = ContentType.SHOW.stringResource),
                         category = ContentType.SHOW,
-                        artworks = artworks.filter { it.type == ContentType.SHOW },
+                        artworks = artworks.filter { it.type == ContentType.SHOW && !it.isUnknown },
                         sendIntent = sendIntent
                     )
                 }
@@ -237,7 +240,15 @@ fun HomeContent(
                     MediaCategory(
                         name = stringResource(id = ContentType.MOVIE.stringResource),
                         category = ContentType.MOVIE,
-                        artworks = artworks.filter { it.type == ContentType.MOVIE },
+                        artworks = artworks.filter { it.type == ContentType.MOVIE && !it.isUnknown },
+                        sendIntent = sendIntent
+                    )
+                }
+
+                item {
+                    UnknownCategory(
+                        name = "Autres",
+                        artworks = artworks.filter { it.isUnknown },
                         sendIntent = sendIntent
                     )
                 }
@@ -349,6 +360,57 @@ fun MediaCategory(
         Text.Title.Large(
             modifier = Modifier
                 .clickable { sendIntent(HomeIntent.OnCategoryTap(category)) }
+                .fillMaxWidth()
+                .padding(start = Ui.Space.MEDIUM, top = Ui.Space.LARGE),
+            text = name,
+            emphasized = true,
+            color = MaterialTheme.colorScheme.onBackground
+        )
+
+        LazyRow(
+            modifier = Modifier.fillMaxWidth(),
+            contentPadding = PaddingValues(horizontal = Ui.Space.MEDIUM),
+            horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)
+        ) {
+
+            items(artworks, key = { it.id }) {
+
+                MediaItem(
+                    width = width,
+                    ratio = ratio,
+                    url = it.imagePath.tmdbImage,
+                    onTap = { sendIntent(HomeIntent.OnArtworkTap(artworkId = it.id)) },
+                    description = it.title
+                )
+
+            }
+
+        }
+
+    }
+}
+
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+fun UnknownCategory(
+    name: String? = null,
+    artworks: List<Artwork>,
+    sendIntent: (HomeIntent) -> Unit
+) {
+
+    if (artworks.isEmpty())
+        return
+
+    val width = 120.dp
+    val ratio = 2f/3f
+
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
+    ) {
+
+        Text.Title.Large(
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = Ui.Space.MEDIUM, top = Ui.Space.LARGE),
             text = name,

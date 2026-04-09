@@ -112,7 +112,8 @@ object MediaMockups {
 
     val artworks get() = listOf(
         movieArtwork,
-        showArtwork
+        showArtwork,
+        Artwork.UNKNOWN
     )
 
     val movies get() = listOf(

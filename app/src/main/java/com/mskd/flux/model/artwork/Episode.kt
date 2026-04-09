@@ -7,6 +7,7 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.mskd.flux.model.UserFile
 import com.mskd.flux.model.tmdb.TMDBEpisode
+import kotlin.random.Random
 
 /**
  * Represents an episode of a TV show.
@@ -81,6 +82,26 @@ data class Episode(
         currentTime = 0L,
         voteAverage = tmdbEpisode.voteAverage,
         voteCount = tmdbEpisode.voteCount,
+        status = Status.TO_WATCH,
+        file = file
+    )
+
+    constructor(
+        title: String,
+        file: UserFile
+    ) : this (
+        id = Random.nextLong(),
+        artworkId = Artwork.UNKNOWN_ID,
+        title = title,
+        number = -1,
+        season = -1,
+        imagePath = "",
+        releaseDateString = "",
+        description = "",
+        duration = 0, // TODO
+        currentTime = 0L,
+        voteAverage = 0f,
+        voteCount = 0,
         status = Status.TO_WATCH,
         file = file
     )

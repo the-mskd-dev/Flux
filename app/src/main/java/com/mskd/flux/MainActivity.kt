@@ -27,6 +27,7 @@ import com.mskd.flux.screens.player.PlayerScreen
 import com.mskd.flux.screens.search.SearchScreen
 import com.mskd.flux.screens.settings.SettingsScreen
 import com.mskd.flux.screens.token.TokenScreen
+import com.mskd.flux.screens.unknown.UnknownScreen
 import com.mskd.flux.screens.welcome.WelcomeScreen
 import com.mskd.flux.screens.welcome.fluxPermissionState
 import com.mskd.flux.ui.theme.AppTheme
@@ -87,6 +88,12 @@ class MainActivity : ComponentActivity() {
                                 navigate = { route -> backStack.add(route) },
                                 onBack = { backStack.removeLastOrNull() },
                                 mediaId = entry.artworkId
+                            )
+                        }
+                        entry<Route.UnknownArtwork> {
+                            UnknownScreen(
+                                navigate = { route -> backStack.add(route) },
+                                onBack = { backStack.removeLastOrNull() },
                             )
                         }
                         entry<Route.Search> { entry ->

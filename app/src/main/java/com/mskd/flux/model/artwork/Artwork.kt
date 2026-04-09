@@ -51,6 +51,8 @@ data class Artwork(
         type = ContentType.SHOW
     )
 
+    val isUnknown: Boolean get() = id == UNKNOWN_ID
+
     companion object {
 
         const val UNKNOWN_ID = -616L

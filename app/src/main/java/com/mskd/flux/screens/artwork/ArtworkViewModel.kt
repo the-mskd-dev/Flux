@@ -10,7 +10,6 @@ import com.mskd.flux.model.ScreenState
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.artwork.Movie
-import com.mskd.flux.model.artwork.Other
 import com.mskd.flux.model.artwork.Status
 import com.mskd.flux.utils.extensions.getPreviousEpisodesFor
 import com.mskd.flux.utils.extensions.lastEpisode
@@ -164,7 +163,6 @@ class ArtworkViewModel @AssistedInject constructor(
         when (media) {
             is Movie -> changeMovieStatus(movie = media, status = newStatus)
             is Episode -> changeEpisodeStatus(episode = media, status = newStatus)
-            is Other -> changeOtherStatus(other = media, status = newStatus)
         }
 
         if (
@@ -206,10 +204,6 @@ class ArtworkViewModel @AssistedInject constructor(
 
         Log.i("MediaViewModel", "${episode.title} season ${episode.season} episode ${episode.number} is now ${episode.status}")
 
-    }
-
-    private suspend fun changeOtherStatus(other: Other, status: Status) {
-        //TODO
     }
 
     private suspend fun markPreviousEpisodesAsWatched() {

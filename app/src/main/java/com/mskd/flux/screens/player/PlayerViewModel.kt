@@ -8,7 +8,6 @@ import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Movie
-import com.mskd.flux.model.artwork.Other
 import com.mskd.flux.model.artwork.Status
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.extensions.getNextEpisodeFor
@@ -259,7 +258,6 @@ class PlayerViewModel @AssistedInject constructor(
         val updatedMedia = when (media) {
             is Movie -> media.copy(currentTime = newTime, status = newStatus)
             is Episode -> media.copy(currentTime = newTime, status = newStatus)
-            is Other -> media.copy(currentTime = newTime, status = newStatus)
         }
 
         when (updatedMedia) {
@@ -284,11 +282,6 @@ class PlayerViewModel @AssistedInject constructor(
 
                 // Save in DB
                 artworkRepository.saveEpisode(updatedMedia)
-            }
-            is Other -> {
-
-                // Save in DB
-                //TODO
             }
         }
 

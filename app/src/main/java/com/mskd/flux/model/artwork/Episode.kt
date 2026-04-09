@@ -13,10 +13,11 @@ import com.mskd.flux.model.tmdb.TMDBEpisode
  *
  * @property id Unique identifier for the episode.
  * @property title Title of the episode.
- * @property artworkId Identifier of the parent show.
+ * @property showId Identifier of the parent show.
  * @property number Episode number.
  * @property season Season number.
  * @property imagePath Path to the episode's image.
+ * @property crew List of crew members involved in the episode.
  * @property releaseDateString The release date of the media as a string.
  * @property description Description or synopsis of the media.
  * @property voteAverage Average rating of the media.

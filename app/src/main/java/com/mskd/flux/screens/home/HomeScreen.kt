@@ -1,7 +1,5 @@
 package com.mskd.flux.screens.home
 
-import android.util.Log
-import android.widget.Toast
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
@@ -50,20 +48,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.foundation.Image
-import androidx.compose.ui.draw.drawWithCache
-import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.mskd.flux.R
@@ -98,7 +92,7 @@ fun HomeScreen(
             when (event) {
                 is HomeEvent.NavigateToCategory -> navigate(Route.Search(contentType = event.category))
                 is HomeEvent.NavigateToArtwork -> navigate(Route.Artwork(event.artworkId))
-                HomeEvent.NavigateToUnknown -> Log.d("TEST", "test unknown")
+                HomeEvent.NavigateToUnknown -> navigate(Route.UnknownArtworks)
                 HomeEvent.NavigateToHowTo -> navigate(Route.HowTo)
                 HomeEvent.NavigateToSearch -> navigate(Route.Search())
                 HomeEvent.NavigateToSettings -> navigate(Route.Settings)

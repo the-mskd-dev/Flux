@@ -90,7 +90,7 @@ class MainActivity : ComponentActivity() {
                                 artworkId = entry.artworkId
                             )
                         }
-                        entry<Route.UnknownArtwork> {
+                        entry<Route.UnknownArtworks> {
                             UnknownScreen(
                                 navigate = { route -> backStack.add(route) },
                                 onBack = { backStack.removeLastOrNull() },

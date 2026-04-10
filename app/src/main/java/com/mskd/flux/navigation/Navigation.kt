@@ -29,7 +29,7 @@ sealed class Route : NavKey {
     data class Artwork(val artworkId: Long): Route()
 
     @Serializable
-    data object UnknownArtwork: Route()
+    data object UnknownArtworks: Route()
 
     @Serializable
     data class Search(val contentType: ContentType? = null): Route()

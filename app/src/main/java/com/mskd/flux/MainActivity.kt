@@ -87,7 +87,7 @@ class MainActivity : ComponentActivity() {
                             ArtworkScreen(
                                 navigate = { route -> backStack.add(route) },
                                 onBack = { backStack.removeLastOrNull() },
-                                mediaId = entry.artworkId
+                                artworkId = entry.artworkId
                             )
                         }
                         entry<Route.UnknownArtwork> {

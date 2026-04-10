@@ -46,7 +46,7 @@ class FakeArtworkRepository(initialContentType: ContentType) : ArtworkRepository
         saveEpisodes(listOf(episode))
     }
 
-    override fun searchArtwork(mediaId: Long) {
+    override fun searchArtwork(artworkId: Long) {
     }
 
     fun setContent(state: ArtworkRepository.State) {

@@ -31,7 +31,7 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel(assistedFactory = ArtworkViewModel.Factory::class)
 class ArtworkViewModel @AssistedInject constructor(
-    @Assisted val mediaId: Long,
+    @Assisted val artworkId: Long,
     private val repository: ArtworkRepository,
     private val userRepository: UserRepository
 ) : ViewModel() {
@@ -40,7 +40,7 @@ class ArtworkViewModel @AssistedInject constructor(
 
     @AssistedFactory
     interface Factory {
-        fun create(mediaId: Long): ArtworkViewModel
+        fun create(artworkId: Long): ArtworkViewModel
     }
 
     //endregion
@@ -83,7 +83,7 @@ class ArtworkViewModel @AssistedInject constructor(
     //regin Init
 
     init {
-        repository.searchArtwork(mediaId = mediaId)
+        repository.searchArtwork(artworkId = artworkId)
     }
 
     //endregion
@@ -198,7 +198,7 @@ class ArtworkViewModel @AssistedInject constructor(
         // Remove from recently watched if last episode is watched
         val lastEpisode = uiState.first().episodes.lastEpisode
         if (lastEpisode.id == updatedEpisode.id && status == Status.WATCHED)
-            userRepository.removeFromRecentlyWatched(mediaId)
+            userRepository.removeFromRecentlyWatched(artworkId)
 
         repository.saveEpisodes(listOf(updatedEpisode)) // Save status in DB
 

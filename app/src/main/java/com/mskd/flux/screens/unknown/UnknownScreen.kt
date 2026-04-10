@@ -1,10 +1,40 @@
 package com.mskd.flux.screens.unknown
 
 import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Clear
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -13,10 +43,18 @@ import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.ScreenState
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.navigation.Route
+import com.mskd.flux.screens.search.SearchIntent
+import com.mskd.flux.screens.search.SearchTypeFilters
+import com.mskd.flux.ui.component.BackButton
 import com.mskd.flux.ui.component.ErrorScreen
+import com.mskd.flux.ui.component.FluxScaffold
 import com.mskd.flux.ui.component.LoadingScreen
+import com.mskd.flux.ui.component.MediaItem
+import com.mskd.flux.ui.component.Text
 import com.mskd.flux.ui.theme.AppTheme
+import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.FluxPreview
+import com.mskd.flux.utils.extensions.tmdbImage
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -64,6 +102,67 @@ fun UnknownScreenContent(
     medias: List<Episode>,
     sendIntent: (UnknownIntent) -> Unit
 ) {
+
+    FluxScaffold(
+        title = stringResource(R.string.my_files),
+        onBackTap = { sendIntent(UnknownIntent.OnBackTap) }
+    ) { innerPadding ->
+
+        if (medias.isNotEmpty()) {
+
+            LazyVerticalGrid(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background),
+                columns = GridCells.Fixed(3),
+                horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL),
+                verticalArrangement = Arrangement.spacedBy(Ui.Space.SMALL),
+                contentPadding = PaddingValues(horizontal = Ui.Space.MEDIUM)
+            ) {
+
+                item(span = { GridItemSpan(3) }) {
+                    Spacer(modifier = Modifier.height(innerPadding.calculateTopPadding()))
+                }
+
+                items(items = medias, key = { it.id }) {
+
+                    UnknownItem(
+                        media = it,
+                        sendIntent = sendIntent
+                    )
+
+                }
+
+                item(span = { GridItemSpan(3) }) {
+                    Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding()))
+                }
+
+            }
+
+        } else {
+
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .systemBarsPadding(),
+                contentAlignment = Alignment.TopStart
+            ) {
+
+                Text.Body.Large(
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .fillMaxWidth(),
+                    text = stringResource(R.string.no_item),
+                    textAlign = TextAlign.Center
+                )
+
+            }
+
+        }
+
+
+    }
 
 }
 

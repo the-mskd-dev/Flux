@@ -1,18 +1,23 @@
 package com.mskd.flux.screens.unknown
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -31,29 +36,44 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.ColorPainter
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
+import coil3.request.crossfade
+import coil3.size.Size
+import coil3.video.videoFrameMillis
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.mskd.flux.R
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.ScreenState
 import com.mskd.flux.model.artwork.Episode
+import com.mskd.flux.model.artwork.Media
+import com.mskd.flux.model.artwork.Status
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.screens.search.SearchIntent
 import com.mskd.flux.screens.search.SearchTypeFilters
 import com.mskd.flux.ui.component.BackButton
 import com.mskd.flux.ui.component.ErrorScreen
 import com.mskd.flux.ui.component.FluxScaffold
+import com.mskd.flux.ui.component.Image
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.component.MediaItem
+import com.mskd.flux.ui.component.MediaThumbnail
+import com.mskd.flux.ui.component.ProgressBar
 import com.mskd.flux.ui.component.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.FluxPreview
+import com.mskd.flux.utils.extensions.grayScale
 import com.mskd.flux.utils.extensions.tmdbImage
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -171,6 +191,19 @@ fun UnknownItem(
     media: Episode,
     sendIntent: (UnknownIntent) -> Unit
 ) {
+
+    Column {
+
+        MediaThumbnail(
+            modifier = Modifier.weight(.4f),
+            media = media,
+        )
+
+        Row(modifier = Modifier.weight(.6f)) {
+
+        }
+
+    }
 
 }
 

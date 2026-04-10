@@ -9,12 +9,14 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.mskd.flux.R
+import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.ScreenState
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.navigation.Route
-import com.mskd.flux.screens.artwork.ArtworkIntent
 import com.mskd.flux.ui.component.ErrorScreen
 import com.mskd.flux.ui.component.LoadingScreen
+import com.mskd.flux.ui.theme.AppTheme
+import com.mskd.flux.utils.FluxPreview
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -63,4 +65,23 @@ fun UnknownScreenContent(
     sendIntent: (UnknownIntent) -> Unit
 ) {
 
+}
+
+@Composable
+fun UnknownItem(
+    media: Episode,
+    sendIntent: (UnknownIntent) -> Unit
+) {
+
+}
+
+@FluxPreview
+@Composable
+fun UnknownScreen_Preview() {
+    AppTheme {
+        UnknownScreenContent(
+            medias = MediaMockups.episodes,
+            sendIntent = {}
+        )
+    }
 }

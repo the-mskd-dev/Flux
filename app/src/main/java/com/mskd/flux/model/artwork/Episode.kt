@@ -85,7 +85,7 @@ data class Episode(
         file = file
     )
 
-    constructor(file: UserFile) : this (
+    constructor(file: UserFile, duration: Int = 0) : this (
         id = -Random.nextLong(),
         artworkId = Artwork.UNKNOWN_ID,
         title = file.nameProperties.title,

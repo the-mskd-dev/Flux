@@ -1,5 +1,6 @@
 package com.mskd.flux.data.source.media
 
+import android.media.MediaMetadataRetriever
 import android.util.Log
 import com.mskd.flux.data.tmdb.TMDBService
 import com.mskd.flux.model.UserFile
@@ -11,6 +12,7 @@ import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.tmdb.TMDBMediaType
 import com.mskd.flux.utils.extensions.groupInFolders
+import com.mskd.flux.utils.extensions.msToMin
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -18,8 +20,15 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.milliseconds
 
 class MediaSourceTMDBImpl @Inject constructor(private val tmdbService: TMDBService) : MediaSource {
+
+    //region Variables
+
+    private val limitedDispatcher = Dispatchers.IO.limitedParallelism(10)
+
+    //endregion
 
     //region Companion object
 
@@ -72,7 +81,7 @@ class MediaSourceTMDBImpl @Inject constructor(private val tmdbService: TMDBServi
 
     //region Private methods
 
-    private suspend fun getMovies(folders: List<UserFolder>) : Map<Artwork, Media> {
+    private suspend fun getMovies(folders: List<UserFolder>) : Map<Artwork, Media> = withContext(limitedDispatcher) {
 
         val movies = coroutineScope {
 
@@ -100,9 +109,10 @@ class MediaSourceTMDBImpl @Inject constructor(private val tmdbService: TMDBServi
                         artwork to movie
 
                     } catch (e: Exception) {
-                        Log.e(TAG, "[getMovies] Fail to get movie : ${folder.title}", e)
 
-                        Artwork.UNKNOWN to Episode(file = file)
+                        Log.e(TAG, "[getMovies] Fail to get movie : ${folder.title}", e)
+                        val unknownMedia = getUnknownMediaFrom(file = file)
+                        Artwork.UNKNOWN to unknownMedia
 
                     }
 
@@ -114,11 +124,11 @@ class MediaSourceTMDBImpl @Inject constructor(private val tmdbService: TMDBServi
 
         Log.i(TAG, "[getMovies] Found ${movies.size}/${folders.size} movies")
 
-        return movies
+        movies
 
     }
 
-    private suspend fun getShows(folders: List<UserFolder>) : Map<Artwork, List<Episode>> {
+    private suspend fun getShows(folders: List<UserFolder>) : Map<Artwork, List<Episode>> = withContext(limitedDispatcher) {
 
         val shows = mutableMapOf<Artwork, List<Episode>>()
 
@@ -140,7 +150,7 @@ class MediaSourceTMDBImpl @Inject constructor(private val tmdbService: TMDBServi
 
         Log.i(TAG, "[getShows] Found ${shows.size}/${folders.size} shows and ${shows.values.flatten().size}/${folders.flatMap { it.files }.size} episodes")
 
-        return shows
+        shows
 
     }
 
@@ -190,12 +200,36 @@ class MediaSourceTMDBImpl @Inject constructor(private val tmdbService: TMDBServi
 
                     } catch (e: Exception) {
                         Log.e(TAG, "[getShowAndEpisodes] Fail to get episode : ${folder.title} (season ${file.nameProperties.season}, episode ${file.nameProperties.episode})", e)
-                        Episode(file = file)
+                        getUnknownMediaFrom(file = file)
                     }
 
                 }
 
             }.awaitAll()
+
+        }
+
+    }
+
+    private suspend fun getUnknownMediaFrom(file: UserFile) : Episode = withContext(limitedDispatcher) {
+
+        val retriever = MediaMetadataRetriever()
+
+        try {
+
+            retriever.setDataSource(file.path)
+            val durationInMs = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)?.toLong() ?: 0L
+            val duration = durationInMs.msToMin.toInt()
+            Episode(file = file, duration = duration)
+
+        } catch (e: Exception) {
+
+            Log.e(TAG, "[getUnknownMediaFrom] Fail to get duration for ${file.path}", e)
+            Episode(file = file)
+
+        } finally {
+
+            retriever.release()
 
         }
 

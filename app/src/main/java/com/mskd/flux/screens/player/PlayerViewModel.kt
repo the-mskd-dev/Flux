@@ -208,7 +208,7 @@ class PlayerViewModel @AssistedInject constructor(
         val currentEpisode = uiState.first().media as? Episode ?: return
 
         // If button is canceled, don't show anymore
-        if (_controlsState.first().nextButton is PlayerUiState.NextButton.Canceled)
+        if (_controlsState.first().nextButton is PlayerUiState.NextButton.Canceled || currentEpisode.isUnknown)
             return
 
         if (show) {
@@ -273,13 +273,15 @@ class PlayerViewModel @AssistedInject constructor(
             is Episode -> {
 
                 // Add/Remove from recently watched
-                val episodes = artworkRepository.flow.first().episodes
-                val lastEpisode = episodes.lastEpisode
-                if (lastEpisode.id == updatedMedia.id && newStatus == Status.WATCHED)
-                    userRepository.removeFromRecentlyWatched(media.artworkId)
-                else
-                    userRepository.addToRecentlyWatched(media.artworkId)
+                if (!updatedMedia.isUnknown) {
+                    val episodes = artworkRepository.flow.first().episodes
+                    val lastEpisode = episodes.lastEpisode
+                    if (lastEpisode.id == updatedMedia.id && newStatus == Status.WATCHED)
+                        userRepository.removeFromRecentlyWatched(updatedMedia.artworkId)
+                    else
+                        userRepository.addToRecentlyWatched(updatedMedia.artworkId)
 
+                }
                 // Save in DB
                 artworkRepository.saveEpisode(updatedMedia)
             }

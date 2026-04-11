@@ -10,6 +10,7 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import coil3.video.videoFrameMillis
+import coil3.video.videoFramePercent
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.artwork.Movie
@@ -53,7 +54,7 @@ fun Image(
                     data(media.imagePath.tmdbImage)
                 } else {
                     data(media.file.path)
-                    videoFrameMillis(1.seconds.inWholeMilliseconds)
+                    videoFramePercent(.1)
                 }
 
             }

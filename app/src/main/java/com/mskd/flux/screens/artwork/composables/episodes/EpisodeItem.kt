@@ -42,6 +42,7 @@ import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Status
 import com.mskd.flux.screens.artwork.ArtworkIntent
 import com.mskd.flux.ui.component.Image
+import com.mskd.flux.ui.component.MediaThumbnail
 import com.mskd.flux.ui.component.ProgressBar
 import com.mskd.flux.ui.component.Text
 import com.mskd.flux.ui.theme.AppTheme
@@ -79,9 +80,9 @@ fun EpisodeItem(
             horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)
         ) {
 
-            EpisodeImage(
+            MediaThumbnail(
                 modifier = Modifier.weight(.4f),
-                episode = episode,
+                media = episode,
             )
 
             Column(
@@ -133,64 +134,6 @@ fun EpisodeItem(
         }
 
     }
-
-}
-
-@Composable
-fun EpisodeImage(
-    modifier: Modifier,
-    episode: Episode
-) {
-
-    Box(
-        modifier = modifier
-            .clip(Ui.Shape.Corner.Small)
-            .aspectRatio(16f / 9f),
-        contentAlignment = Alignment.BottomCenter,
-        content = {
-
-            Image(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .let { if (episode.status == Status.WATCHED) it.grayScale() else it },
-                url = episode.imagePath.tmdbImage,
-                contentDescription = "Season ${episode.season} episode ${episode.number}, ${episode.title}"
-            )
-
-            AnimatedVisibility(
-                modifier = Modifier.align(Alignment.BottomCenter),
-                visible = episode.status == Status.IS_WATCHING
-            ) {
-                ProgressBar(
-                    modifier = Modifier
-                        .height(8.dp)
-                        .fillMaxWidth(),
-                    media = episode
-                )
-            }
-
-            AnimatedVisibility(
-                modifier = Modifier.align(Alignment.Center),
-                visible = episode.status == Status.WATCHED
-            ) {
-                Box(
-                    modifier = Modifier
-                        .clip(Ui.Shape.Corner.Small)
-                        .background(MaterialTheme.colorScheme.tertiary)
-                        .height(32.dp)
-                        .widthIn(min = 40.dp)
-                        .padding(horizontal = Ui.Space.SMALL),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text.Label.Medium(
-                        color = MaterialTheme.colorScheme.onTertiary,
-                        text = stringResource(R.string.watched)
-                    )
-                }
-            }
-
-        }
-    )
 
 }
 

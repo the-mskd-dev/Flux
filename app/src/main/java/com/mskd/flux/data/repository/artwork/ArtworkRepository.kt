@@ -9,7 +9,7 @@ interface ArtworkRepository {
 
     val flow: Flow<State>
 
-    fun searchArtwork(mediaId: Long)
+    fun searchArtwork(artworkId: Long)
 
     suspend fun saveMovie(movie: Movie)
 

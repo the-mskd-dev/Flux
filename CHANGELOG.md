@@ -1,3 +1,3 @@
-## Version 1.0.2
+## Version 1.1.0
 
-- Minify and Shrink Resources
+- Add access to other files (those whose information TMDB was unable to retrieve)

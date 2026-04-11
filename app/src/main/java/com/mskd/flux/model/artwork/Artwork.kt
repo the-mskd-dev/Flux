@@ -6,6 +6,7 @@ import com.mskd.flux.R
 import com.mskd.flux.model.UserFile
 import com.mskd.flux.model.tmdb.TMDBArtwork
 import com.mskd.flux.model.tmdb.TMDBMovie
+import kotlin.String
 
 /**
  * Represents a media, such as a movie or a TV show.
@@ -49,6 +50,20 @@ data class Artwork(
         bannerPath = tmdbArtwork.bannerPath,
         type = ContentType.SHOW
     )
+
+    val isUnknown: Boolean get() = id == UNKNOWN_ID
+
+    companion object {
+
+        const val UNKNOWN_ID = -616L
+
+        val UNKNOWN = Artwork(
+            id = UNKNOWN_ID,
+            title = "Others",
+            type = ContentType.SHOW
+        )
+
+    }
 
 }
 

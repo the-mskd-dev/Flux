@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -44,6 +45,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
@@ -51,6 +53,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.compose.foundation.Image
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.res.vectorResource
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.mskd.flux.R
 import com.mskd.flux.mockups.MediaMockups
@@ -83,7 +91,8 @@ fun HomeScreen(
         viewModel.event.collect { event ->
             when (event) {
                 is HomeEvent.NavigateToCategory -> navigate(Route.Search(contentType = event.category))
-                is HomeEvent.NavigateToArtwork -> navigate(Route.Artwork(event.mediaId))
+                is HomeEvent.NavigateToArtwork -> navigate(Route.Artwork(event.artworkId))
+                HomeEvent.NavigateToUnknown -> navigate(Route.UnknownArtworks)
                 HomeEvent.NavigateToHowTo -> navigate(Route.HowTo)
                 HomeEvent.NavigateToSearch -> navigate(Route.Search())
                 HomeEvent.NavigateToSettings -> navigate(Route.Settings)
@@ -228,7 +237,7 @@ fun HomeContent(
                     MediaCategory(
                         name = stringResource(id = ContentType.SHOW.stringResource),
                         category = ContentType.SHOW,
-                        artworks = artworks.filter { it.type == ContentType.SHOW },
+                        artworks = artworks.filter { it.type == ContentType.SHOW && !it.isUnknown },
                         sendIntent = sendIntent
                     )
                 }
@@ -237,9 +246,15 @@ fun HomeContent(
                     MediaCategory(
                         name = stringResource(id = ContentType.MOVIE.stringResource),
                         category = ContentType.MOVIE,
-                        artworks = artworks.filter { it.type == ContentType.MOVIE },
+                        artworks = artworks.filter { it.type == ContentType.MOVIE && !it.isUnknown },
                         sendIntent = sendIntent
                     )
+                }
+
+                if (artworks.any { it.isUnknown }) {
+                    item {
+                        UnknownCategory(sendIntent = sendIntent)
+                    }
                 }
 
                 item {
@@ -373,6 +388,57 @@ fun MediaCategory(
                 )
 
             }
+
+        }
+
+    }
+}
+
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+fun UnknownCategory(sendIntent: (HomeIntent) -> Unit) {
+
+    val width = 120.dp
+    val ratio = 2f/3f
+    val foregroundPainter = rememberVectorPainter(ImageVector.vectorResource(R.drawable.ic_launcher_foreground))
+    val backgroundGradient = Brush.linearGradient(
+        colors = listOf(
+            MaterialTheme.colorScheme.primaryContainer,
+            MaterialTheme.colorScheme.tertiaryContainer
+        )
+    )
+
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
+    ) {
+
+        Text.Title.Large(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = Ui.Space.MEDIUM, top = Ui.Space.LARGE),
+            text = stringResource(R.string.my_files),
+            emphasized = true,
+            color = MaterialTheme.colorScheme.onBackground
+        )
+
+        Box(
+            modifier = Modifier
+                .padding(horizontal = Ui.Space.MEDIUM)
+                .clickable { sendIntent(HomeIntent.OnArtworkTap(artworkId = Artwork.UNKNOWN_ID)) }
+                .clip(Ui.Shape.Corner.Small)
+                .width(width)
+                .aspectRatio(ratio)
+                .background(brush = backgroundGradient),
+            contentAlignment = Alignment.Center
+        ) {
+
+            Image(
+                modifier = Modifier.fillMaxSize(),
+                painter = foregroundPainter,
+                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimaryContainer),
+                contentDescription = stringResource(R.string.my_files)
+            )
 
         }
 

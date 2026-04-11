@@ -7,10 +7,11 @@ import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Status
+import kotlin.time.Duration.Companion.minutes
 
 object MediaMockups {
 
-    val movieArtwork get() = Artwork(
+    val movieArtwork = Artwork(
         id = 372058L,
         title = "Your name",
         type = ContentType.MOVIE,
@@ -18,7 +19,7 @@ object MediaMockups {
         bannerPath = "/8x9iKH8kWA0zdkgNdpAew7OstYe.jpg"
     )
 
-    val movie get() = Movie(
+    val movie = Movie(
         artworkId = 372058L,
         title = "Your name",
         releaseDateString = "2016-08-26",
@@ -36,7 +37,7 @@ object MediaMockups {
         )
     )
 
-    val showArtwork get() = Artwork(
+    val showArtwork = Artwork(
         id = 31910L,
         title = "Naruto Shippūden",
         type = ContentType.SHOW,
@@ -44,7 +45,7 @@ object MediaMockups {
         bannerPath = "/71mASgFgSiPl9QUexVH8BubU0lD.jpg"
     )
 
-    val episode1 get() = Episode(
+    val episode1 = Episode(
         id = 761472L,
         number = 1,
         season = 1,
@@ -66,7 +67,7 @@ object MediaMockups {
         )
     )
 
-    val episode2 get() = Episode(
+    val episode2 = Episode(
         id = 761473L,
         number = 2,
         season = 1,
@@ -88,7 +89,7 @@ object MediaMockups {
         )
     )
 
-    val episode3 get() = Episode(
+    val episode3 = Episode(
         id = 761474L,
         number =33,
         season = 2,
@@ -110,19 +111,55 @@ object MediaMockups {
         )
     )
 
-    val artworks get() = listOf(
-        movieArtwork,
-        showArtwork
+    val unknownArtwork = Artwork.UNKNOWN
+
+    val unknownEpisode = Episode(
+        file = UserFile(
+            name = "unknown episode S02E03.mkv",
+            addedDateTime = 0L,
+            path = "path/unknown_episode_S02E03.mkv",
+            source = FileSource.LOCAL
+        ),
+        duration = 23
     )
 
-    val movies get() = listOf(
+    val unknownMovie = Episode(
+        file = UserFile(
+            name = "unknown movie.mkv",
+            addedDateTime = 0L,
+            path = "path/unknown_movie.mkv",
+            source = FileSource.LOCAL
+        ),
+        duration = 95
+    )
+
+    val artworks = listOf(
+        movieArtwork,
+        showArtwork,
+        unknownArtwork
+    )
+
+    val movies = listOf(
         movie
     )
 
-    val episodes get() = listOf(
+    val episodes = listOf(
         episode1,
         episode2,
         episode3
     )
+
+    val episodesWithStatus = listOf(
+        episode1,
+        episode2.copy(status = Status.IS_WATCHING, currentTime = 10.minutes.inWholeMilliseconds),
+        episode3.copy(status = Status.WATCHED),
+    )
+
+    val unknowns = listOf(
+        unknownEpisode,
+        unknownMovie
+    )
+
+    val allMedias = movies + episodes + unknowns
 
 }

@@ -42,6 +42,8 @@ fun FixedChip(
 @Composable
 fun FixedChip_Preview() {
     AppTheme {
-        FixedChip(text = stringResource(id = R.string.app_name))
+        Box(modifier = Modifier.padding(all = Ui.Space.LARGE)) {
+            FixedChip(text = stringResource(id = R.string.app_name))
+        }
     }
 }

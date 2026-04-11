@@ -1,5 +1,6 @@
 package com.mskd.flux.di
 
+import android.content.Context
 import com.mskd.flux.data.ddb.DatabaseDao
 import com.mskd.flux.data.source.media.MediaSource
 import com.mskd.flux.data.source.media.MediaSourceDBImpl
@@ -8,6 +9,7 @@ import com.mskd.flux.data.tmdb.TMDBService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Qualifier
 
@@ -34,9 +36,10 @@ object MediaModule {
     @Provides
     @MediaDataSourceTMDB
     fun provideMediaDataSourceTMDB(
-        tmdbService: TMDBService
+        tmdbService: TMDBService,
+        @ApplicationContext context: Context
     ) : MediaSource {
-        return MediaSourceTMDBImpl(tmdbService = tmdbService)
+        return MediaSourceTMDBImpl(tmdbService = tmdbService, context = context)
     }
 
 }

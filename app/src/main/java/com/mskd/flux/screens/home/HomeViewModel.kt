@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.mskd.flux.data.repository.catalog.CatalogRepository
 import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.model.ScreenState
+import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.screens.home.HomeEvent.NavigateToArtwork
 import com.mskd.flux.screens.home.HomeEvent.NavigateToCategory
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -61,7 +62,7 @@ class HomeViewModel @Inject constructor(
     fun handleIntent(intent: HomeIntent) = viewModelScope.launch {
         when (intent) {
             is HomeIntent.SyncCatalog -> syncCatalog(manualSync = true)
-            is HomeIntent.OnArtworkTap -> _event.emit(NavigateToArtwork(mediaId = intent.artworkId))
+            is HomeIntent.OnArtworkTap -> onArtworkTap(artworkId = intent.artworkId)
             is HomeIntent.OnCategoryTap -> _event.emit(NavigateToCategory(category = intent.category))
             HomeIntent.OnSearchTap -> _event.emit(HomeEvent.NavigateToSearch)
             HomeIntent.OnSettingsTap -> _event.emit(HomeEvent.NavigateToSettings)
@@ -88,6 +89,17 @@ class HomeViewModel @Inject constructor(
             Log.i("HomeViewModel", "syncCatalog, catalog sync not needed")
 
         }
+
+    }
+
+    private suspend fun onArtworkTap(artworkId: Long) {
+
+        val event = when (artworkId) {
+            Artwork.UNKNOWN_ID -> HomeEvent.NavigateToUnknown
+            else -> NavigateToArtwork(artworkId = artworkId)
+        }
+
+        _event.emit(event)
 
     }
 

@@ -41,10 +41,19 @@ fun ArtworkDescription(media: Media) {
             verticalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)
         ) {
 
+
             if (media is Episode) {
-                Row(horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)) {
-                    FixedChip(text = stringResource(id = R.string.season, media.season).uppercase())
-                    FixedChip(text = stringResource(id = R.string.episode, media.number).uppercase())
+                Row(horizontalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)) {
+                    Text.Label.Medium(
+                        text = stringResource(id = R.string.season, media.season).uppercase(),
+                        emphasized = true,
+                        color = MaterialTheme.colorScheme.primary,
+                    )
+                    Text.Label.Medium(
+                        text = stringResource(id = R.string.episode, media.number).uppercase(),
+                        emphasized = true,
+                        color = MaterialTheme.colorScheme.secondary
+                    )
                 }
             }
 
@@ -105,7 +114,6 @@ fun ArtworkDescription_Movie_Preview() {
     AppTheme {
         ArtworkDescription(media = MediaMockups.movie)
     }
-
 }
 
 @FluxPreview

@@ -23,8 +23,9 @@ sealed class HomeIntent {
 }
 
 sealed class HomeEvent {
-    data class NavigateToArtwork(val mediaId: Long): HomeEvent()
+    data class NavigateToArtwork(val artworkId: Long): HomeEvent()
     data class NavigateToCategory(val category: ContentType): HomeEvent()
+    object NavigateToUnknown: HomeEvent()
     object NavigateToSearch: HomeEvent()
     object NavigateToSettings: HomeEvent()
     object NavigateToHowTo: HomeEvent()

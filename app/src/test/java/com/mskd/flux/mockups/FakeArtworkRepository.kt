@@ -7,19 +7,15 @@ import com.mskd.flux.model.artwork.Movie
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class FakeArtworkRepository(initialContentType: ContentType = ContentType.MOVIE, unknown: Boolean = false) : ArtworkRepository {
+class FakeArtworkRepository(initialContentType: ContentType = ContentType.MOVIE) : ArtworkRepository {
 
     private val _flow = MutableStateFlow(
-        when {
-            unknown -> ArtworkRepository.State(
-                artwork = MediaMockups.unknownArtwork,
-                episodes = MediaMockups.unknownMedias
-            )
-            initialContentType == ContentType.MOVIE -> ArtworkRepository.State(
+        when (initialContentType) {
+            ContentType.MOVIE -> ArtworkRepository.State(
                 artwork = MediaMockups.movieArtwork,
                 movie = MediaMockups.movie
             )
-            else -> ArtworkRepository.State(
+            ContentType.SHOW -> ArtworkRepository.State(
                 artwork = MediaMockups.showArtwork,
                 episodes = MediaMockups.episodes
             )
@@ -51,23 +47,24 @@ class FakeArtworkRepository(initialContentType: ContentType = ContentType.MOVIE,
     }
 
     override fun searchArtwork(artworkId: Long) {
+        _flow.value = ArtworkRepository.State(
+            artwork = MediaMockups.artworks.find { it.id == artworkId },
+            episodes = MediaMockups.allMedias.filterIsInstance<Episode>().filter { it.artworkId == artworkId },
+            movie = MediaMockups.allMedias.filterIsInstance<Movie>().find { it.artworkId == artworkId }
+        )
     }
 
     fun setContent(state: ArtworkRepository.State) {
         _flow.value = state
     }
 
-    fun setContentType(contentType: ContentType, unknown: Boolean = false) {
-        _flow.value = when {
-            unknown -> ArtworkRepository.State(
-                artwork = MediaMockups.unknownArtwork,
-                episodes = MediaMockups.unknownMedias
-            )
-            contentType == ContentType.MOVIE -> ArtworkRepository.State(
+    fun setContentType(contentType: ContentType) {
+        _flow.value = when (contentType) {
+            ContentType.MOVIE -> ArtworkRepository.State(
                 artwork = MediaMockups.movieArtwork,
                 movie = MediaMockups.movie
             )
-            else -> ArtworkRepository.State(
+            ContentType.SHOW -> ArtworkRepository.State(
                 artwork = MediaMockups.showArtwork,
                 episodes = MediaMockups.episodes
             )

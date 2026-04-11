@@ -1,13 +1,12 @@
 package com.mskd.flux.screens.unknown
 
+import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
-import com.mskd.flux.data.repository.catalog.CatalogRepository
 import com.mskd.flux.mockups.FakeArtworkRepository
-import com.mskd.flux.mockups.FakeCatalogRepository
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.model.artwork.ContentType
-import com.mskd.flux.screens.search.SearchViewModel
+import com.mskd.flux.model.ScreenState
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.shouldBe
 
 class UnknownViewModelTest : FunSpec ({
 
@@ -18,9 +17,22 @@ class UnknownViewModelTest : FunSpec ({
 
     beforeTest {
 
-        artworkRepository = FakeArtworkRepository(unknown = true)
+        artworkRepository = FakeArtworkRepository()
 
         viewModel = UnknownViewModel(repository = artworkRepository)
+
+    }
+
+    test("initial state") {
+
+        viewModel.uiState.test {
+
+            val initialState = awaitItem()
+
+            initialState.medias shouldBe MediaMockups.unknowns
+            initialState.screen shouldBe ScreenState.CONTENT
+
+        }
 
     }
 

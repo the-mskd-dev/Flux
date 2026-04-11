@@ -50,6 +50,7 @@ import com.mskd.flux.navigation.Route
 import com.mskd.flux.ui.component.FluxButton
 import com.mskd.flux.ui.component.FluxIconButton
 import com.mskd.flux.ui.component.FluxScaffold
+import com.mskd.flux.ui.component.FluxTextButton
 import com.mskd.flux.ui.component.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
@@ -125,7 +126,7 @@ fun TokenScreenContent(
                 .imePadding()
                 .padding(horizontal = Ui.Space.MEDIUM)
                 .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE),
+            verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
@@ -161,6 +162,15 @@ fun TokenScreenContent(
                     }
 
                 }
+            }
+
+            AnimatedVisibility(visible = !state.showBackButton && !state.showNextButton) {
+
+                FluxTextButton(
+                    stringResource(R.string.continue_without_api_key),
+                    onTap = { sendIntent(TokenIntent.OnCancelTap) }
+                )
+
             }
 
             Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding()))
@@ -341,7 +351,7 @@ fun TokenScreen_Preview() {
             state = TokenUiState(
                 token = "azERTyuiOQSdfghJKLmwxCvbn",
                 showBackButton = false,
-                showNextButton = true,
+                showNextButton = false,
                 isLoading = false,
                 message = TokenMessage.Success
             ),

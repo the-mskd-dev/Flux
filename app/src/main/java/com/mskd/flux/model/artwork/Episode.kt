@@ -94,7 +94,7 @@ data class Episode(
         imagePath = "",
         releaseDateString = "",
         description = "",
-        duration = 0, // TODO
+        duration = duration,
         currentTime = 0L,
         voteAverage = 0f,
         voteCount = 0,

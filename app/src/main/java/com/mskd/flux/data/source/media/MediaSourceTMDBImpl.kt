@@ -1,7 +1,9 @@
 package com.mskd.flux.data.source.media
 
+import android.content.Context
 import android.media.MediaMetadataRetriever
 import android.util.Log
+import androidx.core.net.toUri
 import com.mskd.flux.data.tmdb.TMDBService
 import com.mskd.flux.model.UserFile
 import com.mskd.flux.model.UserFolder
@@ -22,7 +24,10 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.milliseconds
 
-class MediaSourceTMDBImpl @Inject constructor(private val tmdbService: TMDBService) : MediaSource {
+class MediaSourceTMDBImpl @Inject constructor(
+    private val tmdbService: TMDBService,
+    private val context: Context
+) : MediaSource {
 
     //region Variables
 
@@ -217,9 +222,12 @@ class MediaSourceTMDBImpl @Inject constructor(private val tmdbService: TMDBServi
 
         try {
 
-            retriever.setDataSource(file.path)
-            val durationInMs = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)?.toLong() ?: 0L
-            val duration = durationInMs.msToMin.toInt()
+            val duration = context.contentResolver.openAssetFileDescriptor(file.path.toUri(), "r")?.use { afd ->
+                retriever.setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
+                val durationInMs = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)?.toLong() ?: 0L
+                durationInMs.msToMin.toInt()
+            } ?: 0
+
             Episode(file = file, duration = duration)
 
         } catch (e: Exception) {

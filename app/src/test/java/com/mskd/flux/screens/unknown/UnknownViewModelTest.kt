@@ -36,4 +36,27 @@ class UnknownViewModelTest : FunSpec ({
 
     }
 
+    test("play media") {
+        viewModel.event.test {
+
+
+            viewModel.handleIntent(UnknownIntent.PlayMedia(media = MediaMockups.unknownEpisode))
+            val event = awaitItem()
+
+            event shouldBe UnknownEvent.PlayMedia(MediaMockups.unknownEpisode.id)
+
+        }
+    }
+
+    test("back button") {
+        viewModel.event.test {
+
+            viewModel.handleIntent(UnknownIntent.OnBackTap)
+            val event = awaitItem()
+
+            event shouldBe UnknownEvent.BackToPreviousScreen
+
+        }
+    }
+
 })

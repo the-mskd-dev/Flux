@@ -3,6 +3,7 @@ package com.mskd.flux.screens.unknown
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -14,15 +15,20 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material3.Icon
@@ -130,17 +136,15 @@ fun UnknownScreenContent(
 
         if (medias.isNotEmpty()) {
 
-            LazyVerticalGrid(
+            LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(MaterialTheme.colorScheme.background),
-                columns = GridCells.Fixed(3),
-                horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL),
                 verticalArrangement = Arrangement.spacedBy(Ui.Space.SMALL),
                 contentPadding = PaddingValues(horizontal = Ui.Space.MEDIUM)
             ) {
 
-                item(span = { GridItemSpan(3) }) {
+                item {
                     Spacer(modifier = Modifier.height(innerPadding.calculateTopPadding()))
                 }
 
@@ -153,7 +157,7 @@ fun UnknownScreenContent(
 
                 }
 
-                item(span = { GridItemSpan(3) }) {
+                item {
                     Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding()))
                 }
 
@@ -181,7 +185,6 @@ fun UnknownScreenContent(
 
         }
 
-
     }
 
 }
@@ -192,14 +195,20 @@ fun UnknownItem(
     sendIntent: (UnknownIntent) -> Unit
 ) {
 
-    Column {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { sendIntent(UnknownIntent.PlayMedia(media)) }
+    ) {
 
         MediaThumbnail(
-            modifier = Modifier.weight(.4f),
+            modifier = Modifier.width(170.dp),
             media = media,
         )
 
-        Row(modifier = Modifier.weight(.6f)) {
+        Column(modifier = Modifier.weight(.6f)) {
+
+            Text.Title.Medium(text = media.title)
 
         }
 

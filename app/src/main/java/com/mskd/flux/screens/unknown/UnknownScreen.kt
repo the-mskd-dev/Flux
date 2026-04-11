@@ -80,6 +80,8 @@ import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.extensions.grayScale
+import com.mskd.flux.utils.extensions.minToMs
+import com.mskd.flux.utils.extensions.timeDescription
 import com.mskd.flux.utils.extensions.tmdbImage
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -198,7 +200,8 @@ fun UnknownItem(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { sendIntent(UnknownIntent.PlayMedia(media)) }
+            .clickable { sendIntent(UnknownIntent.PlayMedia(media)) },
+        horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL),
     ) {
 
         MediaThumbnail(
@@ -206,9 +209,57 @@ fun UnknownItem(
             media = media,
         )
 
-        Column(modifier = Modifier.weight(.6f)) {
+        Column(
+            modifier = Modifier.weight(.6f),
+            verticalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL),
+            horizontalAlignment = Alignment.Start
+        ) {
 
-            Text.Title.Medium(text = media.title)
+            Text.Title.Medium(
+                text = media.title,
+                emphasized = true
+            )
+
+            if (media.season > 0 && media.number > 0) {
+                Row(horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)) {
+                    Text.Label.Small(
+                        text = stringResource(id = R.string.season, media.season).uppercase(),
+                        emphasized = true,
+                        color = MaterialTheme.colorScheme.primary,
+                    )
+                    Text.Label.Small(
+                        text = stringResource(id = R.string.episode, media.number).uppercase(),
+                        emphasized = true,
+                        color = MaterialTheme.colorScheme.secondary
+                    )
+                }
+            }
+
+            Row(horizontalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)) {
+
+                Text.Label.Small(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = media.duration.minToMs.timeDescription(),
+                    textAlign = TextAlign.Start,
+                    color = MaterialTheme.colorScheme.secondary
+                )
+
+                if (media.status == Status.IS_WATCHING) {
+                    Text.Label.Small(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = media.duration.minToMs.timeDescription(),
+                        textAlign = TextAlign.Start,
+                        color = MaterialTheme.colorScheme.secondary
+                    )
+
+                    val remainingTime = (media.duration.minToMs - media.currentTime).timeDescription(withoutSeconds = true)
+                    Text.Label.Medium(
+                        text = "(" + stringResource(R.string.remaining_time, remainingTime) + ")",
+                        color = MaterialTheme.colorScheme.secondary
+                    )
+                }
+
+            }
 
         }
 

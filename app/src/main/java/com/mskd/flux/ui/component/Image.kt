@@ -14,6 +14,7 @@ import coil3.video.videoFramePercent
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.artwork.Movie
+import com.mskd.flux.model.artwork.Status
 import com.mskd.flux.utils.extensions.tmdbImage
 import kotlin.time.Duration.Companion.seconds
 
@@ -54,7 +55,10 @@ fun Image(
                     data(media.imagePath.tmdbImage)
                 } else {
                     data(media.file.path)
-                    videoFramePercent(.05)
+                    if (media.status == Status.IS_WATCHING)
+                        videoFrameMillis(media.currentTime)
+                    else
+                        videoFramePercent(.05)
                 }
 
             }

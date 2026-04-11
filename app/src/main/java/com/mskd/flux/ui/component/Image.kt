@@ -54,7 +54,7 @@ fun Image(
                     data(media.imagePath.tmdbImage)
                 } else {
                     data(media.file.path)
-                    videoFramePercent(.1)
+                    videoFramePercent(.05)
                 }
 
             }

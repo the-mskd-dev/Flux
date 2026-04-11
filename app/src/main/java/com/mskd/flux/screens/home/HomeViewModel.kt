@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.data.repository.catalog.CatalogRepository
 import com.mskd.flux.data.repository.user.UserRepository
+import com.mskd.flux.data.tmdb.token.TokenProvider
 import com.mskd.flux.model.ScreenState
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.screens.home.HomeEvent.NavigateToArtwork
@@ -23,7 +24,8 @@ import kotlin.time.Duration.Companion.days
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val repository: CatalogRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val tokenProvider: TokenProvider
 ): ViewModel() {
 
     private val _event = MutableSharedFlow<HomeEvent>()
@@ -56,6 +58,11 @@ class HomeViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             syncCatalog(manualSync = false)
+        }
+
+        viewModelScope.launch {
+            if (tokenProvider.getToken().isNullOrBlank())
+                _event.emit(HomeEvent.ShowTokenRequest)
         }
     }
 

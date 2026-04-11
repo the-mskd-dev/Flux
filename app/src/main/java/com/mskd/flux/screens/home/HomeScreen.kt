@@ -54,6 +54,12 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.foundation.Image
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -77,6 +83,7 @@ import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.extensions.tmdbImage
 import com.mskd.flux.utils.extensions.tmdbImageLarge
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -86,6 +93,8 @@ fun HomeScreen(
 ) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
@@ -96,6 +105,13 @@ fun HomeScreen(
                 HomeEvent.NavigateToHowTo -> navigate(Route.HowTo)
                 HomeEvent.NavigateToSearch -> navigate(Route.Search())
                 HomeEvent.NavigateToSettings -> navigate(Route.Settings)
+                HomeEvent.ShowTokenRequest -> scope.launch {
+                    snackbarHostState.showSnackbar(
+                        message = "Saisir un Token pour profiter d'une meilleure expérience",
+                        withDismissAction = true,
+                        duration = SnackbarDuration.Indefinite
+                    )
+                }
             }
         }
     }
@@ -122,6 +138,7 @@ fun HomeScreen(
                         artworks = uiState.artworks,
                         lastWatchedIds = uiState.lastWatchedMediaIds,
                         isRefreshing = uiState.isRefreshing,
+                        snackbarHostState = snackbarHostState,
                         sendIntent = viewModel::handleIntent
                     )
 
@@ -184,6 +201,7 @@ fun HomeContent(
     artworks: List<Artwork>,
     lastWatchedIds: List<Long>,
     isRefreshing: Boolean,
+    snackbarHostState: SnackbarHostState,
     sendIntent: (HomeIntent) -> Unit
 ) {
 
@@ -194,75 +212,93 @@ fun HomeContent(
         offsetY = 100.dp.toPx() * pullToRefreshState.distanceFraction
     }
 
-    Column(
-        modifier = Modifier
-            .background(MaterialTheme.colorScheme.background)
-            .fillMaxSize()
-            .statusBarsPadding()
-    ) {
+    Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackbarHostState,
+                snackbar = {
+                    Snackbar(
+                        snackbarData = it,
+                        containerColor = MaterialTheme.colorScheme.errorContainer,
+                        contentColor = MaterialTheme.colorScheme.onErrorContainer,
+                        dismissActionContentColor = MaterialTheme.colorScheme.onErrorContainer
+                    )
+                }
+            )
+        }
+    ) { paddingValues ->
 
-        HomeTopButtons(sendIntent = sendIntent)
-
-        PullToRefreshBox(
-            modifier = Modifier.weight(1f),
-            isRefreshing = isRefreshing,
-            onRefresh = { sendIntent(HomeIntent.SyncCatalog) },
-            state = pullToRefreshState,
-            indicator = {
-                PullToRefreshDefaults.LoadingIndicator(
-                    modifier = Modifier
-                        .scale(loaderAnim)
-                        .align(Alignment.TopCenter),
-                    state = pullToRefreshState,
-                    isRefreshing = isRefreshing
-                )
-            }
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
         ) {
 
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .graphicsLayer { translationY = offsetY },
-                verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
+            HomeTopButtons(sendIntent = sendIntent)
+
+            PullToRefreshBox(
+                modifier = Modifier.weight(1f),
+                isRefreshing = isRefreshing,
+                onRefresh = { sendIntent(HomeIntent.SyncCatalog) },
+                state = pullToRefreshState,
+                indicator = {
+                    PullToRefreshDefaults.LoadingIndicator(
+                        modifier = Modifier
+                            .scale(loaderAnim)
+                            .align(Alignment.TopCenter),
+                        state = pullToRefreshState,
+                        isRefreshing = isRefreshing
+                    )
+                }
             ) {
 
-                item {
-                    LastWatchedCarousel(
-                        artworks = lastWatchedIds.mapNotNull { artworks.find { o -> o.id == it } },
-                        sendIntent = sendIntent
-                    )
-                }
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .graphicsLayer { translationY = offsetY },
+                    verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
+                ) {
 
-                item {
-                    MediaCategory(
-                        name = stringResource(id = ContentType.SHOW.stringResource),
-                        category = ContentType.SHOW,
-                        artworks = artworks.filter { it.type == ContentType.SHOW && !it.isUnknown },
-                        sendIntent = sendIntent
-                    )
-                }
-
-                item {
-                    MediaCategory(
-                        name = stringResource(id = ContentType.MOVIE.stringResource),
-                        category = ContentType.MOVIE,
-                        artworks = artworks.filter { it.type == ContentType.MOVIE && !it.isUnknown },
-                        sendIntent = sendIntent
-                    )
-                }
-
-                if (artworks.any { it.isUnknown }) {
                     item {
-                        UnknownCategory(sendIntent = sendIntent)
+                        LastWatchedCarousel(
+                            artworks = lastWatchedIds.mapNotNull { artworks.find { o -> o.id == it } },
+                            sendIntent = sendIntent
+                        )
                     }
-                }
 
-                item {
-                    Spacer(
-                        Modifier
-                            .navigationBarsPadding()
-                            .size(Ui.Space.LARGE)
-                    )
+                    item {
+                        MediaCategory(
+                            name = stringResource(id = ContentType.SHOW.stringResource),
+                            category = ContentType.SHOW,
+                            artworks = artworks.filter { it.type == ContentType.SHOW && !it.isUnknown },
+                            sendIntent = sendIntent
+                        )
+                    }
+
+                    item {
+                        MediaCategory(
+                            name = stringResource(id = ContentType.MOVIE.stringResource),
+                            category = ContentType.MOVIE,
+                            artworks = artworks.filter { it.type == ContentType.MOVIE && !it.isUnknown },
+                            sendIntent = sendIntent
+                        )
+                    }
+
+                    if (artworks.any { it.isUnknown }) {
+                        item {
+                            UnknownCategory(sendIntent = sendIntent)
+                        }
+                    }
+
+                    item {
+                        Spacer(
+                            Modifier
+                                .navigationBarsPadding()
+                                .size(Ui.Space.LARGE)
+                        )
+                    }
+
                 }
 
             }
@@ -270,6 +306,7 @@ fun HomeContent(
         }
 
     }
+
 
 }
 
@@ -454,6 +491,7 @@ fun HomeScreen_Preview() {
                 artworks = MediaMockups.artworks,
                 lastWatchedIds = MediaMockups.artworks.map { it.id },
                 isRefreshing = false,
+                snackbarHostState = SnackbarHostState(),
                 sendIntent = {}
             )
         }

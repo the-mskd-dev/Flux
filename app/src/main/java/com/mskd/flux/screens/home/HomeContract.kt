@@ -29,4 +29,5 @@ sealed class HomeEvent {
     object NavigateToSearch: HomeEvent()
     object NavigateToSettings: HomeEvent()
     object NavigateToHowTo: HomeEvent()
+    object ShowTokenRequest: HomeEvent()
 }

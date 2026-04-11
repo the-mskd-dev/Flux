@@ -79,8 +79,8 @@ object MediaMockups {
         voteAverage = 6.8f,
         voteCount = 6,
         duration = 23,
-        currentTime = 12.minutes.inWholeMilliseconds,
-        status = Status.IS_WATCHING,
+        currentTime = 0L,
+        status = Status.TO_WATCH,
         file = UserFile(
             name = "naruto_shippuuden_S01E02.mkv",
             addedDateTime = 0L,
@@ -102,7 +102,7 @@ object MediaMockups {
         voteCount = 6,
         duration = 23,
         currentTime = 0L,
-        status = Status.WATCHED,
+        status = Status.TO_WATCH,
         file = UserFile(
             name = "naruto_shippuuden_S02E33.mkv",
             addedDateTime = 0L,
@@ -125,6 +125,12 @@ object MediaMockups {
         episode1,
         episode2,
         episode3
+    )
+
+    val episodesWithStatus get() = listOf(
+        episode1,
+        episode2.copy(status = Status.IS_WATCHING, currentTime = 10.minutes.inWholeMilliseconds),
+        episode3.copy(status = Status.WATCHED),
     )
 
 }

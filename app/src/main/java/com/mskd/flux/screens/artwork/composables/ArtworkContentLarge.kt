@@ -160,7 +160,7 @@ fun ArtworkContentLargeShow_Preview() {
         ArtworkContentLarge(
             artwork = MediaMockups.showArtwork,
             media = MediaMockups.episode1,
-            episodes = MediaMockups.episodes,
+            episodes = MediaMockups.episodesWithStatus,
             currentSeason = 1,
             sendIntent = {}
         )

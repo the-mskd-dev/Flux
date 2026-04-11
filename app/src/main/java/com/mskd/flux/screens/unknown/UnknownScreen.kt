@@ -270,7 +270,7 @@ fun UnknownItem(
 fun UnknownScreen_Preview() {
     AppTheme {
         UnknownScreenContent(
-            medias = MediaMockups.episodes,
+            medias = MediaMockups.episodesWithStatus,
             sendIntent = {}
         )
     }

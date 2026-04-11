@@ -33,7 +33,7 @@ class MainViewModel @Inject constructor(
         return when {
             !permissionsGranted ->
                 Route.Welcome
-            tokenProvider.hasToken ->
+            tokenProvider.tokenRequested ->
                 Route.Library
             else ->
                 Route.Token(fromSettings = false)

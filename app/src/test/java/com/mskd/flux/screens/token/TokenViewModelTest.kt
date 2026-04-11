@@ -10,6 +10,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData
 import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.mockk
 
 class TokenViewModelTest : FunSpec({
@@ -65,6 +66,16 @@ class TokenViewModelTest : FunSpec({
             val state = awaitItem()
             state.token shouldBe "new token"
             state.message shouldBe TokenMessage.None
+        }
+    }
+
+    test("cancel token") {
+        viewModel.event.test {
+
+            viewModel.handleIntent(TokenIntent.OnCancelTap)
+
+            awaitItem() shouldBe TokenEvent.NavigateToHomeScreen
+            coVerify { tokenProvider.dontRequestToken() }
         }
     }
 

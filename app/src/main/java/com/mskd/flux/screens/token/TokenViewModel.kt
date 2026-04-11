@@ -47,6 +47,7 @@ class TokenViewModel @AssistedInject constructor(
             is TokenIntent.SetToken -> setToken(intent.token)
             TokenIntent.SaveToken -> saveToken()
             TokenIntent.OnBackTap -> onBackTap()
+            TokenIntent.OnCancelTap -> onCancelTap()
             TokenIntent.OnNextTap -> onNextTap()
         }
     }
@@ -92,6 +93,11 @@ class TokenViewModel @AssistedInject constructor(
 
     private suspend fun onBackTap() {
         _event.emit(TokenEvent.BackToPreviousScreen)
+    }
+
+    private suspend fun onCancelTap() {
+        tokenProvider.dontRequestToken()
+        _event.emit(TokenEvent.NavigateToHomeScreen)
     }
 
     private suspend fun onNextTap() {

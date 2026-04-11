@@ -2,6 +2,7 @@ package com.mskd.flux.data.tmdb.token
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.mskd.flux.BuildConfig
@@ -15,6 +16,7 @@ class TokenProviderImp(
 
     companion object {
         private val TOKEN_KEY = stringPreferencesKey("TMBD_TOKEN")
+        private val REQUEST_TOKEN = booleanPreferencesKey("REQUEST_TOKEN")
     }
 
     override suspend fun getToken(): String? {
@@ -29,6 +31,7 @@ class TokenProviderImp(
     override suspend fun saveToken(token: String) {
         tokenDataStore.edit {
             it[TOKEN_KEY] = token
+            it[REQUEST_TOKEN] = false
         }
     }
 
@@ -36,7 +39,15 @@ class TokenProviderImp(
         tokenDataStore.edit { it[TOKEN_KEY] = "" }
     }
 
-    override val hasToken: Boolean
-        get() = runBlocking { !getToken().isNullOrBlank() }
+    override suspend fun dontRequestToken() {
+        tokenDataStore.edit {
+            it[REQUEST_TOKEN] = false
+        }
+    }
+
+    override val tokenRequested: Boolean
+        get() = runBlocking {
+            tokenDataStore.data.map { it[REQUEST_TOKEN] }.first() ?: true
+        }
 
 }

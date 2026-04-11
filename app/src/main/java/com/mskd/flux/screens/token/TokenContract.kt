@@ -22,6 +22,7 @@ sealed class TokenIntent {
     data class SetToken(val token: String) : TokenIntent()
     data object SaveToken : TokenIntent()
     object OnBackTap: TokenIntent()
+    object OnCancelTap: TokenIntent()
     object OnNextTap: TokenIntent()
 }
 

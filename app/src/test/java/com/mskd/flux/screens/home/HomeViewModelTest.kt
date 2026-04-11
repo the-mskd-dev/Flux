@@ -66,7 +66,7 @@ class HomeViewModelTest : FunSpec({
         )
 
         // Mock
-        val artworks = listOf(MediaMockups.movieArtwork, MediaMockups.showArtwork)
+        val artworks = listOf(MediaMockups.movieArtwork, MediaMockups.showArtwork, MediaMockups.unknownArtwork)
         val lastWatchedIds = listOf(MediaMockups.showArtwork.id)
         val dataStore = UserRepository.State(
             recentlyWatchedIds = lastWatchedIds

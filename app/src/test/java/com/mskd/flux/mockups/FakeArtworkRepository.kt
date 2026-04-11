@@ -7,15 +7,19 @@ import com.mskd.flux.model.artwork.Movie
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class FakeArtworkRepository(initialContentType: ContentType) : ArtworkRepository {
+class FakeArtworkRepository(initialContentType: ContentType = ContentType.MOVIE, unknown: Boolean = false) : ArtworkRepository {
 
     private val _flow = MutableStateFlow(
-        when (initialContentType) {
-            ContentType.MOVIE -> ArtworkRepository.State(
+        when {
+            unknown -> ArtworkRepository.State(
+                artwork = MediaMockups.unknownArtwork,
+                episodes = MediaMockups.unknownMedias
+            )
+            initialContentType == ContentType.MOVIE -> ArtworkRepository.State(
                 artwork = MediaMockups.movieArtwork,
                 movie = MediaMockups.movie
             )
-            ContentType.SHOW -> ArtworkRepository.State(
+            else -> ArtworkRepository.State(
                 artwork = MediaMockups.showArtwork,
                 episodes = MediaMockups.episodes
             )
@@ -53,13 +57,17 @@ class FakeArtworkRepository(initialContentType: ContentType) : ArtworkRepository
         _flow.value = state
     }
 
-    fun setContentType(contentType: ContentType) {
-        _flow.value = when (contentType) {
-            ContentType.MOVIE -> ArtworkRepository.State(
+    fun setContentType(contentType: ContentType, unknown: Boolean = false) {
+        _flow.value = when {
+            unknown -> ArtworkRepository.State(
+                artwork = MediaMockups.unknownArtwork,
+                episodes = MediaMockups.unknownMedias
+            )
+            contentType == ContentType.MOVIE -> ArtworkRepository.State(
                 artwork = MediaMockups.movieArtwork,
                 movie = MediaMockups.movie
             )
-            ContentType.SHOW -> ArtworkRepository.State(
+            else -> ArtworkRepository.State(
                 artwork = MediaMockups.showArtwork,
                 episodes = MediaMockups.episodes
             )

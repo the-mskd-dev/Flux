@@ -22,10 +22,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class UnknownViewModel @Inject constructor(
-    private val repository: ArtworkRepository,
-    private val userRepository: UserRepository
-) : ViewModel() {
+class UnknownViewModel @Inject constructor(private val repository: ArtworkRepository) : ViewModel() {
 
     //region Flow
 

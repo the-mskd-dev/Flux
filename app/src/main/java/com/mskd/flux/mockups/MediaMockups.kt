@@ -7,6 +7,7 @@ import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Status
+import kotlin.time.Duration.Companion.minutes
 
 object MediaMockups {
 
@@ -78,8 +79,8 @@ object MediaMockups {
         voteAverage = 6.8f,
         voteCount = 6,
         duration = 23,
-        currentTime = 0L,
-        status = Status.TO_WATCH,
+        currentTime = 12.minutes.inWholeMilliseconds,
+        status = Status.IS_WATCHING,
         file = UserFile(
             name = "naruto_shippuuden_S01E02.mkv",
             addedDateTime = 0L,
@@ -101,7 +102,7 @@ object MediaMockups {
         voteCount = 6,
         duration = 23,
         currentTime = 0L,
-        status = Status.TO_WATCH,
+        status = Status.WATCHED,
         file = UserFile(
             name = "naruto_shippuuden_S02E33.mkv",
             addedDateTime = 0L,

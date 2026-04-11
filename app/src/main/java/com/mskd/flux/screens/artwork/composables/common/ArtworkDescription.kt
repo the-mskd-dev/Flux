@@ -108,13 +108,13 @@ fun MediaDescriptionDetails(media: Media) {
     }
 }
 
-/*@FluxPreview
+@FluxPreview
 @Composable
 fun ArtworkDescription_Movie_Preview() {
     AppTheme {
         ArtworkDescription(media = MediaMockups.movie)
     }
-}*/
+}
 
 @FluxPreview
 @Composable

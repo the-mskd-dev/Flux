@@ -27,10 +27,12 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Clear
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -142,7 +144,6 @@ fun UnknownScreenContent(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(MaterialTheme.colorScheme.background),
-                verticalArrangement = Arrangement.spacedBy(Ui.Space.SMALL),
                 contentPadding = PaddingValues(horizontal = Ui.Space.MEDIUM)
             ) {
 
@@ -150,10 +151,14 @@ fun UnknownScreenContent(
                     Spacer(modifier = Modifier.height(innerPadding.calculateTopPadding()))
                 }
 
-                items(items = medias, key = { it.id }) {
+                itemsIndexed(items = medias, key = { i, m -> m.id }) { i, media ->
+
+                    if (i != 0) {
+                        HorizontalDivider(modifier = Modifier.padding(horizontal = Ui.Space.MEDIUM))
+                    }
 
                     UnknownItem(
-                        media = it,
+                        media = media,
                         sendIntent = sendIntent
                     )
 
@@ -200,7 +205,8 @@ fun UnknownItem(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { sendIntent(UnknownIntent.PlayMedia(media)) },
+            .clickable { sendIntent(UnknownIntent.PlayMedia(media)) }
+            .padding(vertical = Ui.Space.MEDIUM),
         horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL),
     ) {
 
@@ -238,22 +244,14 @@ fun UnknownItem(
             Row(horizontalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)) {
 
                 Text.Label.Small(
-                    modifier = Modifier.fillMaxWidth(),
                     text = media.duration.minToMs.timeDescription(),
                     textAlign = TextAlign.Start,
                     color = MaterialTheme.colorScheme.secondary
                 )
 
                 if (media.status == Status.IS_WATCHING) {
-                    Text.Label.Small(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = media.duration.minToMs.timeDescription(),
-                        textAlign = TextAlign.Start,
-                        color = MaterialTheme.colorScheme.secondary
-                    )
-
                     val remainingTime = (media.duration.minToMs - media.currentTime).timeDescription(withoutSeconds = true)
-                    Text.Label.Medium(
+                    Text.Label.Small(
                         text = "(" + stringResource(R.string.remaining_time, remainingTime) + ")",
                         color = MaterialTheme.colorScheme.secondary
                     )

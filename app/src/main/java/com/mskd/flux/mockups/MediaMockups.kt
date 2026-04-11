@@ -111,10 +111,32 @@ object MediaMockups {
         )
     )
 
+    val unknownArtwork get() = Artwork.UNKNOWN
+
+    val unknownEpisode get() = Episode(
+        file = UserFile(
+            name = "unknown episode S02E03.mkv",
+            addedDateTime = 0L,
+            path = "path/unknown_episode_S02E03.mkv",
+            source = FileSource.LOCAL
+        ),
+        duration = 23
+    )
+
+    val unknownMovie get() = Episode(
+        file = UserFile(
+            name = "unknown movie.mkv",
+            addedDateTime = 0L,
+            path = "path/unknown_movie.mkv",
+            source = FileSource.LOCAL
+        ),
+        duration = 95
+    )
+
     val artworks get() = listOf(
         movieArtwork,
         showArtwork,
-        Artwork.UNKNOWN
+        unknownArtwork
     )
 
     val movies get() = listOf(
@@ -131,6 +153,11 @@ object MediaMockups {
         episode1,
         episode2.copy(status = Status.IS_WATCHING, currentTime = 10.minutes.inWholeMilliseconds),
         episode3.copy(status = Status.WATCHED),
+    )
+
+    val unknownMedias get() = listOf(
+        unknownEpisode,
+        unknownMovie
     )
 
 }

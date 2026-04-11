@@ -6,6 +6,7 @@ import com.mskd.flux.R
 import com.mskd.flux.model.UserFile
 import com.mskd.flux.model.tmdb.TMDBArtwork
 import com.mskd.flux.model.tmdb.TMDBMovie
+import kotlin.String
 
 /**
  * Represents a media, such as a movie or a TV show.

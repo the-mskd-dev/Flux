@@ -82,7 +82,7 @@
     <string name="tmdb" translatable="false">The Movie Database</string>
     <string name="token_desc_1">To function, this application uses %1$s services. This site allows the retrieval of various information (images, titles, summaries, etc.) for your media. To use this service, an API key is required.</string>
     <string name="token_desc_2">However, in order to be a completely FOSS (Free and Open-Source Software) application and ensure better control over your data, the API key for the TMDB service is not provided.</string>
-    <string name="token_desc_3">Consequently, you must provide your own key. To do so, please follow these steps:</string>
+    <string name="token_desc_3">It is possible to continue without using the TMDB service; however, to take full advantage of the application\'s features, it is recommended to provide an API key. To do so, please follow these steps:</string>
     <string name="token_tutorial_step_1">%1$s or %2$s on TMDB.</string>
     <string name="token_tutorial_step_2">Retrieve your %1$s and copy it into the field below.</string>
     <string name="token_validated">API key saved</string>

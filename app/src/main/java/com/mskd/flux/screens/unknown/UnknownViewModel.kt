@@ -3,13 +3,9 @@ package com.mskd.flux.screens.unknown
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.data.repository.artwork.ArtworkRepository
-import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.model.ScreenState
 import com.mskd.flux.model.artwork.Artwork
-import com.mskd.flux.model.artwork.Media
-import com.mskd.flux.screens.artwork.ArtworkEvent
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedInject
+import com.mskd.flux.model.artwork.Episode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -30,10 +26,12 @@ class UnknownViewModel @Inject constructor(private val repository: ArtworkReposi
     val event = _event.asSharedFlow().distinctUntilChanged()
 
     val uiState: StateFlow<UnknownUiState> = repository.flow
-        .map {
+        .map { artwork ->
             UnknownUiState(
                 screen = ScreenState.CONTENT,
-                medias = it.episodes
+                medias = artwork.episodes.sortedWith(
+                    compareBy<Episode> { it.title }.thenBy { it.season }.thenBy { it.number }
+                )
             )
         }
         .stateIn(

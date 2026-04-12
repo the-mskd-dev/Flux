@@ -23,7 +23,6 @@ import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Status
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.extensions.grayScale
-import com.mskd.flux.utils.extensions.tmdbImage
 
 @Composable
 fun MediaThumbnail(

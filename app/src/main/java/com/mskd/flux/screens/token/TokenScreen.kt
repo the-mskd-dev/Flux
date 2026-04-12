@@ -24,6 +24,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LoadingIndicator
@@ -47,9 +48,9 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.R
 import com.mskd.flux.navigation.Route
-import com.mskd.flux.ui.component.FluxButton
 import com.mskd.flux.ui.component.FluxIconButton
 import com.mskd.flux.ui.component.FluxScaffold
+import com.mskd.flux.ui.component.FluxTextButton
 import com.mskd.flux.ui.component.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
@@ -103,19 +104,20 @@ fun TokenScreenContent(
         floatingActionButton = {
 
             AnimatedVisibility(
-                visible = !state.showBackButton && state.showNextButton,
+                visible = !state.showBackButton,
                 enter = Ui.Animation.buttonEnter,
                 exit = Ui.Animation.buttonExit
             ) {
 
-                FluxButton(
-                    onTap = { sendIntent(TokenIntent.OnNextTap) },
-                    text = stringResource(R.string.start),
+                FluxTextButton(
+                    stringResource(R.string.skip),
+                    onTap = { sendIntent(TokenIntent.OnCancelTap) }
                 )
 
             }
 
-        }
+        },
+        floatingActionButtonPosition = FabPosition.Center
     ) { innerPadding ->
 
         Column(
@@ -125,7 +127,7 @@ fun TokenScreenContent(
                 .imePadding()
                 .padding(horizontal = Ui.Space.MEDIUM)
                 .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE),
+            verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
@@ -341,7 +343,6 @@ fun TokenScreen_Preview() {
             state = TokenUiState(
                 token = "azERTyuiOQSdfghJKLmwxCvbn",
                 showBackButton = false,
-                showNextButton = true,
                 isLoading = false,
                 message = TokenMessage.Success
             ),

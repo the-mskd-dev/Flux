@@ -109,18 +109,18 @@ class WelcomeVIewModelTest : FunSpec({
             nameFn = { it.description },
             WelcomeTestCases.OnPermissionGranted(
                 description = "has token",
-                hasToken = true,
+                tokenRequested = false,
                 expectedEvent = WelcomeEvent.NavigateToLibrary
             ),
             WelcomeTestCases.OnPermissionGranted(
                 description = "no token",
-                hasToken = false,
+                tokenRequested = true,
                 expectedEvent = WelcomeEvent.NavigateToToken
             )
         ) { testCase ->
 
             tokenProvider = mockk(relaxed = true) {
-                every { hasToken } returns testCase.hasToken
+                every { tokenRequested } returns testCase.tokenRequested
             }
 
             viewModel = WelcomeViewModel(tokenProvider = tokenProvider)

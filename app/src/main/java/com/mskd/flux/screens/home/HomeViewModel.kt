@@ -5,17 +5,20 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.data.repository.catalog.CatalogRepository
 import com.mskd.flux.data.repository.user.UserRepository
+import com.mskd.flux.data.tmdb.token.TokenProvider
 import com.mskd.flux.model.ScreenState
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.screens.home.HomeEvent.NavigateToArtwork
 import com.mskd.flux.screens.home.HomeEvent.NavigateToCategory
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.days
@@ -23,16 +26,20 @@ import kotlin.time.Duration.Companion.days
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val repository: CatalogRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val tokenProvider: TokenProvider
 ): ViewModel() {
 
     private val _event = MutableSharedFlow<HomeEvent>()
     val event = _event.asSharedFlow()
+
+    private val _snackbarState = MutableStateFlow(HomeUiState.SnackbarState())
     
     val uiState: StateFlow<HomeUiState> = combine(
         repository.flow,
-        userRepository.flow
-    ) { catalog, preferences ->
+        userRepository.flow,
+        _snackbarState
+    ) { catalog, preferences, snackbar ->
 
         val screen = when {
             catalog.isLoading && catalog.artworks.isEmpty() -> ScreenState.LOADING
@@ -43,7 +50,8 @@ class HomeViewModel @Inject constructor(
             screenState = screen,
             artworks = catalog.artworks,
             lastWatchedMediaIds = preferences.recentlyWatchedIds,
-            isRefreshing = catalog.isLoading
+            isRefreshing = catalog.isLoading,
+            snackbarState = snackbar
         )
 
     }.stateIn(
@@ -57,6 +65,11 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             syncCatalog(manualSync = false)
         }
+
+        viewModelScope.launch {
+            if (tokenProvider.getToken().isBlank())
+                _snackbarState.update { it.copy(show = true) }
+        }
     }
 
     fun handleIntent(intent: HomeIntent) = viewModelScope.launch {
@@ -65,8 +78,10 @@ class HomeViewModel @Inject constructor(
             is HomeIntent.OnArtworkTap -> onArtworkTap(artworkId = intent.artworkId)
             is HomeIntent.OnCategoryTap -> _event.emit(NavigateToCategory(category = intent.category))
             HomeIntent.OnSearchTap -> _event.emit(HomeEvent.NavigateToSearch)
+            HomeIntent.OnSnackbarActionTap -> onSnackbarActionTap()
             HomeIntent.OnSettingsTap -> _event.emit(HomeEvent.NavigateToSettings)
             HomeIntent.OnHowToTap -> _event.emit(HomeEvent.NavigateToHowTo)
+            HomeIntent.OnDismissSnackbar -> onDismissSnackbar()
         }
     }
 
@@ -101,6 +116,15 @@ class HomeViewModel @Inject constructor(
 
         _event.emit(event)
 
+    }
+
+    private suspend fun onSnackbarActionTap() {
+        _snackbarState.update { it.copy(show = false) }
+        _event.emit(HomeEvent.NavigateToToken)
+    }
+
+    private fun onDismissSnackbar() {
+        _snackbarState.update { it.copy(show = false) }
     }
 
 }

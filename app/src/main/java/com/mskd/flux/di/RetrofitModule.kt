@@ -25,7 +25,7 @@ object RetrofitModule {
         return OkHttpClient.Builder()
             .addInterceptor { chain ->
                 val request = chain.request()
-                val token = runBlocking { tokenProvider.getToken().orEmpty() }
+                val token = runBlocking { tokenProvider.getToken() }
 
                 val newRequest = request.newBuilder()
                     .addHeader("accept", "application/json")

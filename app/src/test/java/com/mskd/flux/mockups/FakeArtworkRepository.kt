@@ -7,7 +7,7 @@ import com.mskd.flux.model.artwork.Movie
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class FakeArtworkRepository(initialContentType: ContentType) : ArtworkRepository {
+class FakeArtworkRepository(initialContentType: ContentType = ContentType.MOVIE) : ArtworkRepository {
 
     private val _flow = MutableStateFlow(
         when (initialContentType) {
@@ -46,7 +46,12 @@ class FakeArtworkRepository(initialContentType: ContentType) : ArtworkRepository
         saveEpisodes(listOf(episode))
     }
 
-    override fun searchArtwork(mediaId: Long) {
+    override fun searchArtwork(artworkId: Long) {
+        _flow.value = ArtworkRepository.State(
+            artwork = MediaMockups.artworks.find { it.id == artworkId },
+            episodes = MediaMockups.allMedias.filterIsInstance<Episode>().filter { it.artworkId == artworkId },
+            movie = MediaMockups.allMedias.filterIsInstance<Movie>().find { it.artworkId == artworkId }
+        )
     }
 
     fun setContent(state: ArtworkRepository.State) {

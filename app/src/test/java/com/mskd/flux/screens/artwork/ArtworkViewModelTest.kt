@@ -36,7 +36,7 @@ class ArtworkViewModelTest : FunSpec({
         }
 
         viewModel = ArtworkViewModel(
-            mediaId = MediaMockups.showArtwork.id,
+            artworkId = MediaMockups.showArtwork.id,
             repository = artworkRepository,
             userRepository = userRepository
         )
@@ -225,7 +225,7 @@ class ArtworkViewModelTest : FunSpec({
         )
 
         viewModel = ArtworkViewModel(
-            mediaId = MediaMockups.movieArtwork.id,
+            artworkId = MediaMockups.movieArtwork.id,
             repository = artworkRepository,
             userRepository = userRepository
         )

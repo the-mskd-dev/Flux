@@ -9,6 +9,12 @@ import androidx.compose.ui.platform.LocalContext
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
+import coil3.video.videoFrameMillis
+import coil3.video.videoFramePercent
+import com.mskd.flux.model.artwork.Episode
+import com.mskd.flux.model.artwork.Media
+import com.mskd.flux.model.artwork.Status
+import com.mskd.flux.utils.extensions.tmdbImage
 
 @Composable
 fun Image(
@@ -28,7 +34,39 @@ fun Image(
         error = Image.error,
         contentDescription = contentDescription
     )
+}
 
+@Composable
+fun Image(
+    modifier: Modifier,
+    media: Media,
+    contentScale: ContentScale = ContentScale.Crop,
+    contentDescription: String
+) {
+
+    AsyncImage(
+        modifier = modifier,
+        model = ImageRequest.Builder(LocalContext.current)
+            .apply {
+
+                if (media is Episode && media.imagePath.isNotBlank()) {
+                    data(media.imagePath.tmdbImage)
+                } else {
+                    data(media.file.path)
+                    if (media.status == Status.IS_WATCHING)
+                        videoFrameMillis(media.currentTime)
+                    else
+                        videoFramePercent(.05)
+                }
+
+            }
+            .crossfade(true)
+            .build(),
+        contentScale = contentScale,
+        placeholder = Image.placeholder,
+        error = Image.error,
+        contentDescription = contentDescription
+    )
 }
 
 object Image {

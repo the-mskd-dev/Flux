@@ -69,10 +69,10 @@ class WelcomeViewModel @Inject constructor(
 
     private suspend fun onPermissionGranted() {
 
-        if (tokenProvider.hasToken) {
-            _event.emit(WelcomeEvent.NavigateToLibrary)
-        } else {
+        if (tokenProvider.tokenRequested) {
             _event.emit(WelcomeEvent.NavigateToToken)
+        } else {
+            _event.emit(WelcomeEvent.NavigateToLibrary)
         }
 
     }

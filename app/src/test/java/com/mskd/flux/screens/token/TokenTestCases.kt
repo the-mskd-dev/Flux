@@ -7,7 +7,6 @@ object TokenTestCases {
         val apiResult: Any,
         val expectedMessage: TokenMessage,
         val expectedLoadCatalog: Boolean,
-        val expectedNextButton: Boolean
     )
 
 }

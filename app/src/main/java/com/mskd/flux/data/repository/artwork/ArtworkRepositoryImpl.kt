@@ -18,10 +18,10 @@ class ArtworkRepositoryImpl @Inject constructor(
     private val db: DatabaseDao
 ) : ArtworkRepository {
 
-    private val _mediaId = MutableStateFlow<Long?>(null)
+    private val _artworkId = MutableStateFlow<Long?>(null)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    override val flow: Flow<ArtworkRepository.State> = _mediaId
+    override val flow: Flow<ArtworkRepository.State> = _artworkId
         .filterNotNull()
         .distinctUntilChanged()
         .flatMapLatest { mediaId ->
@@ -43,8 +43,8 @@ class ArtworkRepositoryImpl @Inject constructor(
         }
         .distinctUntilChanged()
 
-    override fun searchArtwork(mediaId: Long) {
-        _mediaId.value = mediaId
+    override fun searchArtwork(artworkId: Long) {
+        _artworkId.value = artworkId
     }
 
     override suspend fun saveMovie(movie: Movie) {

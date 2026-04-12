@@ -50,6 +50,20 @@ data class Artwork(
         type = ContentType.SHOW
     )
 
+    val isUnknown: Boolean get() = id == UNKNOWN_ID
+
+    companion object {
+
+        const val UNKNOWN_ID = -616L
+
+        val UNKNOWN = Artwork(
+            id = UNKNOWN_ID,
+            title = "Others",
+            type = ContentType.SHOW
+        )
+
+    }
+
 }
 
 enum class ContentType {

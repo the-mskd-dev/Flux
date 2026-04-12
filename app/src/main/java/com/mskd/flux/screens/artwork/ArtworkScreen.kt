@@ -23,11 +23,11 @@ import com.mskd.flux.ui.component.Text
 
 @Composable
 fun ArtworkScreen(
-    mediaId: Long,
+    artworkId: Long,
     navigate: (Route) -> Unit,
     onBack: () -> Unit,
     viewModel: ArtworkViewModel = hiltViewModel<ArtworkViewModel, ArtworkViewModel.Factory>(
-        creationCallback = { factory -> factory.create(mediaId) }
+        creationCallback = { factory -> factory.create(artworkId) }
     )
 ) {
 

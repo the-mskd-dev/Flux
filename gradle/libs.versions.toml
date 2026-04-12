@@ -34,12 +34,12 @@ accompanist = "0.37.3"
 retrofit = "3.0.0"
 okhttp = "5.3.2"
 gson = "2.13.2"
-coil = "3.3.0"
 datastore = "1.2.0"
 room = "2.8.4"
 
 # -- Media --
 media3 = "1.9.2"
+coil = "3.3.0"
 jellyfinFfmpeg = "1.9.0+1"
 
 # -- Testing --
@@ -109,6 +109,7 @@ gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 # -- Coil --
 coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
 coil-network = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coil" }
+coil-video = { group = "io.coil-kt.coil3", name = "coil-video", version.ref = "coil" }
 
 # -- DataStore --
 androidx-datastore-pref = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
@@ -177,7 +178,8 @@ network = [
 ]
 image = [
     "coil-compose",
-    "coil-network"
+    "coil-network",
+    "coil-video"
 ]
 datastore = [
     "androidx-datastore-pref",

@@ -10,6 +10,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData
 import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.mockk
 
 class TokenViewModelTest : FunSpec({
@@ -68,6 +69,16 @@ class TokenViewModelTest : FunSpec({
         }
     }
 
+    test("cancel token") {
+        viewModel.event.test {
+
+            viewModel.handleIntent(TokenIntent.OnCancelTap)
+
+            awaitItem() shouldBe TokenEvent.NavigateToHomeScreen
+            coVerify { tokenProvider.dontRequestToken() }
+        }
+    }
+
     context("save token") {
         withData(
             nameFn = { it.description },
@@ -76,21 +87,18 @@ class TokenViewModelTest : FunSpec({
                 apiResult = TMDBAuthentication(success = true, status_code = 0, status_message = ""),
                 expectedMessage = TokenMessage.Success,
                 expectedLoadCatalog = true,
-                expectedNextButton = true
             ),
             TokenTestCases.SaveToken(
                 description = "Fail token",
                 apiResult = TMDBAuthentication(success = false, status_code = 401, status_message = "Fail"),
                 expectedMessage = TokenMessage.Error,
                 expectedLoadCatalog = false,
-                expectedNextButton = false
             ),
             TokenTestCases.SaveToken(
                 description = "Fail token with exception",
                 apiResult = Exception("Fail"),
                 expectedMessage = TokenMessage.Error,
                 expectedLoadCatalog = false,
-                expectedNextButton = false
             )
         ) { testCase ->
 
@@ -121,7 +129,6 @@ class TokenViewModelTest : FunSpec({
                 }
                 state.message shouldBe testCase.expectedMessage
                 state.isLoading shouldBe false
-                state.showNextButton shouldBe testCase.expectedNextButton
 
             }
 

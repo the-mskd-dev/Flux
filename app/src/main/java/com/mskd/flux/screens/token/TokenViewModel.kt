@@ -2,6 +2,7 @@ package com.mskd.flux.screens.token
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mskd.flux.BuildConfig
 import com.mskd.flux.data.repository.catalog.CatalogRepository
 import com.mskd.flux.data.tmdb.TMDBService
 import com.mskd.flux.data.tmdb.token.TokenProvider
@@ -38,7 +39,8 @@ class TokenViewModel @AssistedInject constructor(
 
     init {
         viewModelScope.launch {
-            tokenProvider.getToken()?.let { setToken(it) }
+            val token = tokenProvider.getToken().ifBlank { if (BuildConfig.DEBUG) BuildConfig.TMDB_TOKEN else "" }
+            setToken(token)
         }
     }
 
@@ -47,12 +49,13 @@ class TokenViewModel @AssistedInject constructor(
             is TokenIntent.SetToken -> setToken(intent.token)
             TokenIntent.SaveToken -> saveToken()
             TokenIntent.OnBackTap -> onBackTap()
+            TokenIntent.OnCancelTap -> onCancelTap()
             TokenIntent.OnNextTap -> onNextTap()
         }
     }
 
     private fun setToken(token: String) {
-        _uiState.update { it.copy(token = token, message = TokenMessage.None, showNextButton = false) }
+        _uiState.update { it.copy(token = token, message = TokenMessage.None) }
     }
 
     private suspend fun saveToken() {
@@ -69,12 +72,15 @@ class TokenViewModel @AssistedInject constructor(
 
                 catalogRepository.syncCatalog()
 
-                _uiState.update { it.copy(message = TokenMessage.Success, showNextButton = true) }
+                if (_uiState.value.showBackButton)
+                    _uiState.update { it.copy(message = TokenMessage.Success) }
+                else
+                    onNextTap()
 
             } else {
 
                 tokenProvider.clearToken()
-                _uiState.update { it.copy(message = TokenMessage.Error, showNextButton = false) }
+                _uiState.update { it.copy(message = TokenMessage.Error) }
 
             }
 
@@ -82,7 +88,7 @@ class TokenViewModel @AssistedInject constructor(
 
             e.printStackTrace()
             tokenProvider.clearToken()
-            _uiState.update { it.copy(message = TokenMessage.Error, showNextButton = false) }
+            _uiState.update { it.copy(message = TokenMessage.Error) }
 
         }
 
@@ -92,6 +98,11 @@ class TokenViewModel @AssistedInject constructor(
 
     private suspend fun onBackTap() {
         _event.emit(TokenEvent.BackToPreviousScreen)
+    }
+
+    private suspend fun onCancelTap() {
+        tokenProvider.dontRequestToken()
+        _event.emit(TokenEvent.NavigateToHomeScreen)
     }
 
     private suspend fun onNextTap() {

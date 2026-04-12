@@ -14,9 +14,13 @@ val Context.tokenDatastore by preferencesDataStore(
 
 interface TokenProvider {
 
-
-    suspend fun getToken(): String?
+    suspend fun getToken(): String
     suspend fun saveToken(token: String)
+
     suspend fun clearToken()
-    val hasToken: Boolean
+
+    suspend fun dontRequestToken()
+
+    val tokenRequested: Boolean
+
 }

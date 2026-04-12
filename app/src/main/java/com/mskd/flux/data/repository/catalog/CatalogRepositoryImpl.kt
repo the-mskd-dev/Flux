@@ -7,6 +7,8 @@ import com.mskd.flux.data.source.media.MediaSource
 import com.mskd.flux.data.source.media.MediaSourceTMDBImpl.Companion.TAG
 import com.mskd.flux.model.UserFile
 import com.mskd.flux.model.artwork.Artwork
+import com.mskd.flux.model.artwork.Episode
+import com.mskd.flux.model.artwork.Movie
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,13 +23,11 @@ class CatalogRepositoryImpl @Inject constructor(
     private val mediaSourceLocal: MediaSource,
     private val mediaSourceTmdb: MediaSource,
     private val db: DatabaseDao,
-    scope: CoroutineScope
+    private val scope: CoroutineScope
 ) : CatalogRepository {
 
     private val _catalogFlow = MutableStateFlow(CatalogRepository.State())
     override val flow: StateFlow<CatalogRepository.State> = _catalogFlow.asStateFlow()
-
-    private var isSyncing = false
 
     init {
         scope.launch {
@@ -44,59 +44,60 @@ class CatalogRepositoryImpl @Inject constructor(
 
             // Update content
             _catalogFlow.update { content ->
-                content.copy(
-                    isLoading = isSyncing,
-                    artworks = medias.sortedBy { it.title }
-                )
+                content.copy(artworks = medias.sortedBy { it.title })
             }
 
         }
     }
 
-    override suspend fun syncCatalog() {
+    override fun syncCatalog() {
 
-        isSyncing = true
+        if (_catalogFlow.value.isLoading)
+            return
 
-        _catalogFlow.update { it.copy(isLoading = true) }
+        scope.launch {
 
-        try {
+            _catalogFlow.update { it.copy(isLoading = true) }
 
-            // Fetch all files, local and online (if possible)
-            val allFiles = getFiles()
-            val dbFileNames = db.getAllFileNames()
+            tryToRetrieveUnknownMedias()
 
-            // Delete medias with missing files
-            db.deleteMediasWithNoFiles(allFiles)
+            try {
 
-            // Get new medias from TMBD
-            val newFiles = allFiles.filter { !dbFileNames.contains(it.name) }
-            val (newArtworks, newMovies, newEpisodes) = mediaSourceTmdb.getMedias(files = newFiles)
+                // Fetch all files, local and online (if possible)
+                val allFiles = getFiles()
+                val dbFileNames = db.getAllFileNames()
 
-            // Save new medias
-            db.insertArtworks(newArtworks)
-            db.insertMovies(newMovies)
-            db.insertEpisodes(newEpisodes)
+                // Delete medias with missing files
+                db.deleteMediasWithNoFiles(allFiles)
 
-            val allArtworks = db.getArtworks()
+                // Get new medias from TMBD
+                val newFiles = allFiles.filter { !dbFileNames.contains(it.name) }
+                val (newArtworks, newMovies, newEpisodes) = mediaSourceTmdb.getMedias(files = newFiles)
 
-            // Update content
-            _catalogFlow.update { content ->
-                content.copy(
-                    isLoading = false,
-                    artworks = allArtworks.sortedBy { it.title }
-                )
+                // Save new medias
+                db.insertArtworks(newArtworks)
+                db.insertMovies(newMovies)
+                db.insertEpisodes(newEpisodes)
+
+                val allArtworks = db.getArtworks()
+
+                // Update content
+                _catalogFlow.update { content ->
+                    content.copy(
+                        isLoading = false,
+                        artworks = allArtworks.sortedBy { it.title }
+                    )
+                }
+
+            } catch (e: Exception) {
+                Log.e(TAG, "[syncCatalog] Fail to sync catalog", e)
+
+                _catalogFlow.update { content ->
+                    content.copy(isLoading = false)
+                }
             }
 
-        } catch (e: Exception) {
-            Log.e(TAG, "[syncCatalog] Fail to sync catalog", e)
-
-            _catalogFlow.update { content ->
-                content.copy(isLoading = false)
-            }
         }
-
-        isSyncing = false
-
     }
 
     override suspend fun getFiles() : List<UserFile> {
@@ -114,6 +115,62 @@ class CatalogRepositoryImpl @Inject constructor(
         }
 
         return localFiles
+
+    }
+
+    private suspend fun tryToRetrieveUnknownMedias() {
+
+        try {
+
+            val unknownMedias = db.getUnknownMedias()
+            val files = unknownMedias.map { it.file }
+
+            val (newArtworks, newMovies, newEpisodes) = mediaSourceTmdb.getMedias(files = files)
+
+            val moviesToSave = arrayListOf<Movie>()
+            val episodesToSave = arrayListOf<Episode>()
+            val mediasToDelete = arrayListOf<Episode>()
+
+            newMovies.forEach { movie ->
+
+                unknownMedias.find { it.file == movie.file }?.let { unknownMedia ->
+
+                    val newMovie = movie.copy(
+                        currentTime = unknownMedia.currentTime,
+                        status = unknownMedia.status
+                    )
+
+                    moviesToSave.add(newMovie)
+                    mediasToDelete.add(unknownMedia)
+
+                }
+
+            }
+
+            newEpisodes.filter { !it.isUnknown }.forEach { episode ->
+
+                unknownMedias.find { it.file == episode.file }?.let { unknownMedia ->
+
+                    val newEpisode = episode.copy(
+                        currentTime = unknownMedia.currentTime,
+                        status = unknownMedia.status
+                    )
+
+                    episodesToSave.add(newEpisode)
+                    mediasToDelete.add(unknownMedia)
+
+                }
+
+            }
+
+            db.insertArtworks(newArtworks.filter { !it.isUnknown })
+            db.insertMovies(moviesToSave)
+            db.insertEpisodes(episodesToSave)
+            db.deleteEpisodes(mediasToDelete)
+
+        } catch (e: Exception) {
+            Log.e(TAG, "Fail to retrieve unknown medias", e)
+        }
 
     }
 

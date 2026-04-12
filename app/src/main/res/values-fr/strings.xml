@@ -75,7 +75,7 @@
     <string name="tmdb_api_key">Clé d\'API TMDB</string>
     <string name="token_desc_1">Pour fonctionner, cette application utilise les services de The Movie Database. Ce site permet de récupérer les différentes informations (images, titres, résumés…) de vos œuvres. Pour utiliser ce service, nous avons besoin d\'une clé API.</string>
     <string name="token_desc_2">Cependant, dans le but d\'être une application complètement FOSS (Free and Open-Source Software), et de vous garantir un meilleur contrôle de vos données, la clé d\'API pour le service TMDB n\'est pas fournie.</string>
-    <string name="token_desc_3">Par conséquent, il est nécessaire que vous fournissiez votre propre clé. Pour cela, veuillez suivre la démarche suivante :</string>
+    <string name="token_desc_3">Il est possible de continuer sans utiliser le service TMDB, cependant pour pouvoir profiter au maximum des fonctionnalités de l\'application, il est préférable de renseigner une clé d\'API. Pour cela, veuillez suivre la démarche suivante :</string>
     <string name="token_tutorial_step_1">%1$s ou %2$s sur le site TMDB.</string>
     <string name="token_tutorial_step_2">Récupérez votre %1$s et copiez-la dans le champ ci-dessous.</string>
     <string name="token_validated">Clé d\'API enregistrée</string>
@@ -86,4 +86,9 @@
     <string name="api_key">clé d\'API</string>
     <string name="start">Commencer</string>
     <string name="sources">Sources</string>
+    <string name="my_files">Mes fichiers</string>
+    <string name="no_item">Il n\'y a aucun élément à afficher</string>
+    <string name="skip">Continuer sans</string>
+    <string name="add_api_key">Ajoutez votre clé pour profiter d\'une meilleure expérience</string>
+    <string name="add">Ajouter</string>
 </resources>

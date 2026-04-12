@@ -3,6 +3,7 @@ package com.mskd.flux.screens.home
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.data.repository.user.UserRepository
+import com.mskd.flux.data.tmdb.token.TokenProvider
 import com.mskd.flux.mockups.FakeCatalogRepository
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.ScreenState
@@ -25,6 +26,7 @@ class HomeViewModelTest : FunSpec({
     lateinit var viewModel: HomeViewModel
     lateinit var catalogRepository: FakeCatalogRepository
     lateinit var userRepository: UserRepository
+    lateinit var tokenProvider: TokenProvider
 
     // Mocked flows
     val dataStoreFlow = MutableStateFlow(UserRepository.State())
@@ -32,6 +34,9 @@ class HomeViewModelTest : FunSpec({
     beforeTest {
 
         catalogRepository = FakeCatalogRepository()
+        tokenProvider = mockk(relaxed = true) {
+            coEvery { getToken() } returns "token"
+        }
 
         userRepository = mockk(relaxed = true) {
             every { flow } returns dataStoreFlow
@@ -43,6 +48,7 @@ class HomeViewModelTest : FunSpec({
 
         viewModel = HomeViewModel(
             repository = catalogRepository,
+            tokenProvider = tokenProvider,
             userRepository = userRepository
         )
 
@@ -62,11 +68,12 @@ class HomeViewModelTest : FunSpec({
 
         viewModel = HomeViewModel(
             repository = catalogRepository,
+            tokenProvider = tokenProvider,
             userRepository = userRepository
         )
 
         // Mock
-        val artworks = listOf(MediaMockups.movieArtwork, MediaMockups.showArtwork)
+        val artworks = listOf(MediaMockups.movieArtwork, MediaMockups.showArtwork, MediaMockups.unknownArtwork)
         val lastWatchedIds = listOf(MediaMockups.showArtwork.id)
         val dataStore = UserRepository.State(
             recentlyWatchedIds = lastWatchedIds
@@ -94,6 +101,7 @@ class HomeViewModelTest : FunSpec({
 
         viewModel = HomeViewModel(
             repository = catalogRepository,
+            tokenProvider = tokenProvider,
             userRepository = userRepository
         )
 
@@ -112,6 +120,7 @@ class HomeViewModelTest : FunSpec({
 
         viewModel = HomeViewModel(
             repository = catalogRepository,
+            tokenProvider = tokenProvider,
             userRepository = userRepository
         )
 
@@ -127,6 +136,7 @@ class HomeViewModelTest : FunSpec({
 
         viewModel = HomeViewModel(
             repository = catalogRepository,
+            tokenProvider = tokenProvider,
             userRepository = userRepository
         )
 

@@ -2,6 +2,7 @@ package com.mskd.flux.screens.home
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -17,6 +18,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -30,6 +32,11 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Surface
 import androidx.compose.material3.carousel.HorizontalCenteredHeroCarousel
 import androidx.compose.material3.carousel.rememberCarouselState
@@ -44,10 +51,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -78,18 +91,27 @@ fun HomeScreen(
 ) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
             when (event) {
                 is HomeEvent.NavigateToCategory -> navigate(Route.Search(contentType = event.category))
-                is HomeEvent.NavigateToArtwork -> navigate(Route.Artwork(event.mediaId))
+                is HomeEvent.NavigateToArtwork -> navigate(Route.Artwork(event.artworkId))
+                HomeEvent.NavigateToUnknown -> navigate(Route.UnknownArtworks)
                 HomeEvent.NavigateToHowTo -> navigate(Route.HowTo)
                 HomeEvent.NavigateToSearch -> navigate(Route.Search())
                 HomeEvent.NavigateToSettings -> navigate(Route.Settings)
+                HomeEvent.NavigateToToken -> navigate(Route.Token(fromSettings = true))
             }
         }
     }
+
+    HomeSnackbar(
+        snackbarState = uiState.snackbarState,
+        snackbarHostState = snackbarHostState,
+        sendIntent = viewModel::handleIntent
+    )
 
     Crossfade(
         modifier = Modifier.fillMaxSize(),
@@ -113,6 +135,7 @@ fun HomeScreen(
                         artworks = uiState.artworks,
                         lastWatchedIds = uiState.lastWatchedMediaIds,
                         isRefreshing = uiState.isRefreshing,
+                        snackbarHostState = snackbarHostState,
                         sendIntent = viewModel::handleIntent
                     )
 
@@ -175,6 +198,7 @@ fun HomeContent(
     artworks: List<Artwork>,
     lastWatchedIds: List<Long>,
     isRefreshing: Boolean,
+    snackbarHostState: SnackbarHostState,
     sendIntent: (HomeIntent) -> Unit
 ) {
 
@@ -185,75 +209,118 @@ fun HomeContent(
         offsetY = 100.dp.toPx() * pullToRefreshState.distanceFraction
     }
 
-    Column(
-        modifier = Modifier
-            .background(MaterialTheme.colorScheme.background)
-            .fillMaxSize()
-            .statusBarsPadding()
-    ) {
+    Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState,)
+        }
+    ) { paddingValues ->
 
-        HomeTopButtons(sendIntent = sendIntent)
-
-        PullToRefreshBox(
-            modifier = Modifier.weight(1f),
-            isRefreshing = isRefreshing,
-            onRefresh = { sendIntent(HomeIntent.SyncCatalog) },
-            state = pullToRefreshState,
-            indicator = {
-                PullToRefreshDefaults.LoadingIndicator(
-                    modifier = Modifier
-                        .scale(loaderAnim)
-                        .align(Alignment.TopCenter),
-                    state = pullToRefreshState,
-                    isRefreshing = isRefreshing
-                )
-            }
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
         ) {
 
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .graphicsLayer { translationY = offsetY },
-                verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
+            HomeTopButtons(sendIntent = sendIntent)
+
+            PullToRefreshBox(
+                modifier = Modifier.weight(1f),
+                isRefreshing = isRefreshing,
+                onRefresh = { sendIntent(HomeIntent.SyncCatalog) },
+                state = pullToRefreshState,
+                indicator = {
+                    PullToRefreshDefaults.LoadingIndicator(
+                        modifier = Modifier
+                            .scale(loaderAnim)
+                            .align(Alignment.TopCenter),
+                        state = pullToRefreshState,
+                        isRefreshing = isRefreshing
+                    )
+                }
             ) {
 
-                item {
-                    LastWatchedCarousel(
-                        artworks = lastWatchedIds.mapNotNull { artworks.find { o -> o.id == it } },
-                        sendIntent = sendIntent
-                    )
-                }
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .graphicsLayer { translationY = offsetY },
+                    verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
+                ) {
 
-                item {
-                    MediaCategory(
-                        name = stringResource(id = ContentType.SHOW.stringResource),
-                        category = ContentType.SHOW,
-                        artworks = artworks.filter { it.type == ContentType.SHOW },
-                        sendIntent = sendIntent
-                    )
-                }
+                    item {
+                        LastWatchedCarousel(
+                            artworks = lastWatchedIds.mapNotNull { artworks.find { o -> o.id == it } },
+                            sendIntent = sendIntent
+                        )
+                    }
 
-                item {
-                    MediaCategory(
-                        name = stringResource(id = ContentType.MOVIE.stringResource),
-                        category = ContentType.MOVIE,
-                        artworks = artworks.filter { it.type == ContentType.MOVIE },
-                        sendIntent = sendIntent
-                    )
-                }
+                    item {
+                        MediaCategory(
+                            name = stringResource(id = ContentType.SHOW.stringResource),
+                            category = ContentType.SHOW,
+                            artworks = artworks.filter { it.type == ContentType.SHOW && !it.isUnknown },
+                            sendIntent = sendIntent
+                        )
+                    }
 
-                item {
-                    Spacer(
-                        Modifier
-                            .navigationBarsPadding()
-                            .size(Ui.Space.LARGE)
-                    )
+                    item {
+                        MediaCategory(
+                            name = stringResource(id = ContentType.MOVIE.stringResource),
+                            category = ContentType.MOVIE,
+                            artworks = artworks.filter { it.type == ContentType.MOVIE && !it.isUnknown },
+                            sendIntent = sendIntent
+                        )
+                    }
+
+                    if (artworks.any { it.isUnknown }) {
+                        item {
+                            UnknownCategory(sendIntent = sendIntent)
+                        }
+                    }
+
+                    item {
+                        Spacer(
+                            Modifier
+                                .navigationBarsPadding()
+                                .size(Ui.Space.LARGE)
+                        )
+                    }
+
                 }
 
             }
 
         }
 
+    }
+
+
+}
+
+@Composable
+fun HomeSnackbar(
+    snackbarState: HomeUiState.SnackbarState,
+    snackbarHostState: SnackbarHostState,
+    sendIntent: (HomeIntent) -> Unit
+) {
+
+    val message = stringResource(R.string.add_api_key)
+    val actionLabel = stringResource(R.string.add)
+
+    LaunchedEffect(snackbarState) {
+        if (snackbarState.show) {
+            val result = snackbarHostState.showSnackbar(
+                message = message,
+                actionLabel = actionLabel,
+                withDismissAction = true,
+                duration = SnackbarDuration.Indefinite
+            )
+
+            when (result) {
+                SnackbarResult.ActionPerformed -> sendIntent(HomeIntent.OnSnackbarActionTap)
+                SnackbarResult.Dismissed -> sendIntent(HomeIntent.OnDismissSnackbar)
+            }
+        }
     }
 
 }
@@ -379,6 +446,57 @@ fun MediaCategory(
     }
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+fun UnknownCategory(sendIntent: (HomeIntent) -> Unit) {
+
+    val width = 120.dp
+    val ratio = 2f/3f
+    val foregroundPainter = rememberVectorPainter(ImageVector.vectorResource(R.drawable.ic_launcher_foreground))
+    val backgroundGradient = Brush.linearGradient(
+        colors = listOf(
+            MaterialTheme.colorScheme.primaryContainer,
+            MaterialTheme.colorScheme.tertiaryContainer
+        )
+    )
+
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
+    ) {
+
+        Text.Title.Large(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = Ui.Space.MEDIUM, top = Ui.Space.LARGE),
+            text = stringResource(R.string.my_files),
+            emphasized = true,
+            color = MaterialTheme.colorScheme.onBackground
+        )
+
+        Box(
+            modifier = Modifier
+                .padding(horizontal = Ui.Space.MEDIUM)
+                .clickable { sendIntent(HomeIntent.OnArtworkTap(artworkId = Artwork.UNKNOWN_ID)) }
+                .clip(Ui.Shape.Corner.Small)
+                .width(width)
+                .aspectRatio(ratio)
+                .background(brush = backgroundGradient),
+            contentAlignment = Alignment.Center
+        ) {
+
+            Image(
+                modifier = Modifier.fillMaxSize(),
+                painter = foregroundPainter,
+                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimaryContainer),
+                contentDescription = stringResource(R.string.my_files)
+            )
+
+        }
+
+    }
+}
+
 @FluxPreview
 @Composable
 fun HomeScreen_Preview() {
@@ -388,6 +506,7 @@ fun HomeScreen_Preview() {
                 artworks = MediaMockups.artworks,
                 lastWatchedIds = MediaMockups.artworks.map { it.id },
                 isRefreshing = false,
+                snackbarHostState = SnackbarHostState(),
                 sendIntent = {}
             )
         }

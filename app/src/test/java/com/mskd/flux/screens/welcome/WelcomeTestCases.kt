@@ -4,7 +4,7 @@ object WelcomeTestCases {
 
     data class OnPermissionGranted(
         val description: String,
-        val hasToken: Boolean,
+        val tokenRequested: Boolean,
         val expectedEvent: WelcomeEvent
     )
 

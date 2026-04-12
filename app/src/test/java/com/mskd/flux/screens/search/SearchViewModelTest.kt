@@ -40,7 +40,7 @@ class SearchViewModelTest : FunSpec({
             val initialState = awaitItem()
 
             initialState.searchWord shouldBe ""
-            initialState.artworks shouldBe MediaMockups.artworks
+            initialState.artworks shouldBe MediaMockups.artworks.filter { !it.isUnknown }
 
         }
 
@@ -76,7 +76,7 @@ class SearchViewModelTest : FunSpec({
 
             state.searchWord shouldBe "na"
             state.filteredArtworks.size shouldBe 2
-            state.filteredArtworks shouldBe MediaMockups.artworks
+            state.filteredArtworks shouldBe MediaMockups.artworks.filter { !it.isUnknown }
 
         }
 

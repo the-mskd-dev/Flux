@@ -1,3 +1,4 @@
-## Version 1.0.2
+## Version 1.1.0
 
-- Minify and Shrink Resources
+- TMDB Token is now optional (but it's a shame not to use it)
+- Add access to other files (those whose information TMDB was unable to retrieve)

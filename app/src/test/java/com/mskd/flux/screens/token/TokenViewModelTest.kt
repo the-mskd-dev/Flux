@@ -87,21 +87,18 @@ class TokenViewModelTest : FunSpec({
                 apiResult = TMDBAuthentication(success = true, status_code = 0, status_message = ""),
                 expectedMessage = TokenMessage.Success,
                 expectedLoadCatalog = true,
-                expectedNextButton = true
             ),
             TokenTestCases.SaveToken(
                 description = "Fail token",
                 apiResult = TMDBAuthentication(success = false, status_code = 401, status_message = "Fail"),
                 expectedMessage = TokenMessage.Error,
                 expectedLoadCatalog = false,
-                expectedNextButton = false
             ),
             TokenTestCases.SaveToken(
                 description = "Fail token with exception",
                 apiResult = Exception("Fail"),
                 expectedMessage = TokenMessage.Error,
                 expectedLoadCatalog = false,
-                expectedNextButton = false
             )
         ) { testCase ->
 
@@ -132,7 +129,6 @@ class TokenViewModelTest : FunSpec({
                 }
                 state.message shouldBe testCase.expectedMessage
                 state.isLoading shouldBe false
-                state.showNextButton shouldBe testCase.expectedNextButton
 
             }
 

@@ -14,7 +14,7 @@ class FakeCatalogRepository(
 
     override val flow: StateFlow<CatalogRepository.State> = _flow
 
-    override suspend fun syncCatalog() {
+    override fun syncCatalog() {
 
         _flow.update { it.copy(isLoading = true) }
 

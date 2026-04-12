@@ -85,6 +85,7 @@ class TokenViewModel @AssistedInject constructor(
         } catch (e: Exception) {
 
             e.printStackTrace()
+            tokenProvider.clearToken()
             _uiState.update { it.copy(message = TokenMessage.Error) }
 
         }

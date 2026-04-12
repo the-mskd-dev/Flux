@@ -95,7 +95,7 @@
     <string name="sources">Sources</string>
     <string name="my_files">My files</string>
     <string name="no_item">There are no items to display</string>
-    <string name="continue_without_api_key">Continue without an API key</string>
+    <string name="skip">Skip</string>
     <string name="add_api_key">Add your key to enjoy a better experience</string>
     <string name="add_api_key_button">Enter</string>
 </resources>

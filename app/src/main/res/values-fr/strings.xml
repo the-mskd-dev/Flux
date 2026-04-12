@@ -88,7 +88,7 @@
     <string name="sources">Sources</string>
     <string name="my_files">Mes fichiers</string>
     <string name="no_item">Il n\'y a aucun élément à afficher</string>
-    <string name="continue_without_api_key">Continuer sans clé API</string>
+    <string name="skip">Continuer sans</string>
     <string name="add_api_key">Ajoutez votre clé pour profiter d\'une meilleure expérience</string>
     <string name="add_api_key_button">Saisir</string>
 </resources>

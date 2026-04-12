@@ -110,7 +110,7 @@ fun TokenScreenContent(
             ) {
 
                 FluxTextButton(
-                    stringResource(R.string.continue_without_api_key),
+                    stringResource(R.string.skip),
                     onTap = { sendIntent(TokenIntent.OnCancelTap) }
                 )
 

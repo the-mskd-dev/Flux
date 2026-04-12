@@ -90,5 +90,5 @@
     <string name="no_item">Il n\'y a aucun élément à afficher</string>
     <string name="skip">Continuer sans</string>
     <string name="add_api_key">Ajoutez votre clé pour profiter d\'une meilleure expérience</string>
-    <string name="add_api_key_button">Saisir</string>
+    <string name="add">Ajouter</string>
 </resources>

@@ -305,7 +305,7 @@ fun HomeSnackbar(
 ) {
 
     val message = stringResource(R.string.add_api_key)
-    val actionLabel = stringResource(R.string.add_api_key_button)
+    val actionLabel = stringResource(R.string.add)
 
     LaunchedEffect(snackbarState) {
         if (snackbarState.show) {

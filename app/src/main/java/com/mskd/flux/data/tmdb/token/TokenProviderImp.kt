@@ -27,6 +27,13 @@ class TokenProviderImp(
         }
     }
 
+    override suspend fun clearToken() {
+        tokenDataStore.edit {
+            it[TOKEN_KEY] = ""
+            it[REQUEST_TOKEN] = false
+        }
+    }
+
     override suspend fun saveToken(token: String) {
         tokenDataStore.edit {
             it[TOKEN_KEY] = token

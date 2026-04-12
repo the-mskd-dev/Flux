@@ -2,6 +2,7 @@ package com.mskd.flux.screens.token
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mskd.flux.BuildConfig
 import com.mskd.flux.data.repository.catalog.CatalogRepository
 import com.mskd.flux.data.tmdb.TMDBService
 import com.mskd.flux.data.tmdb.token.TokenProvider
@@ -38,7 +39,8 @@ class TokenViewModel @AssistedInject constructor(
 
     init {
         viewModelScope.launch {
-            tokenProvider.getToken()?.let { setToken(it) }
+            val token = tokenProvider.getToken().ifBlank { if (BuildConfig.DEBUG) BuildConfig.TMDB_TOKEN else "" }
+            setToken(token)
         }
     }
 

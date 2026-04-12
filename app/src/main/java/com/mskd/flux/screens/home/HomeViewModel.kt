@@ -67,7 +67,7 @@ class HomeViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            if (tokenProvider.getToken().isNullOrBlank())
+            if (tokenProvider.getToken().isBlank())
                 _snackbarState.update { it.copy(show = true) }
         }
     }

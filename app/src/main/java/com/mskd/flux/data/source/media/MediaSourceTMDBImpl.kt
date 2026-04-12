@@ -48,7 +48,7 @@ class MediaSourceTMDBImpl @Inject constructor(
 
     override suspend fun getMedias(files: List<UserFile>): MediaSource.Library {
 
-        if (tokenProvider.getToken().isNullOrBlank()) {
+        if (tokenProvider.getToken().isBlank()) {
             return getUnknownMedias(files = files)
         }
 

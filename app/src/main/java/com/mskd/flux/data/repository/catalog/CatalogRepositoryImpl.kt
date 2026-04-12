@@ -21,13 +21,11 @@ class CatalogRepositoryImpl @Inject constructor(
     private val mediaSourceLocal: MediaSource,
     private val mediaSourceTmdb: MediaSource,
     private val db: DatabaseDao,
-    scope: CoroutineScope
+    private val scope: CoroutineScope
 ) : CatalogRepository {
 
     private val _catalogFlow = MutableStateFlow(CatalogRepository.State())
     override val flow: StateFlow<CatalogRepository.State> = _catalogFlow.asStateFlow()
-
-    private var isSyncing = false
 
     init {
         scope.launch {
@@ -44,59 +42,58 @@ class CatalogRepositoryImpl @Inject constructor(
 
             // Update content
             _catalogFlow.update { content ->
-                content.copy(
-                    isLoading = isSyncing,
-                    artworks = medias.sortedBy { it.title }
-                )
+                content.copy(artworks = medias.sortedBy { it.title })
             }
 
         }
     }
 
-    override suspend fun syncCatalog() {
+    override fun syncCatalog() {
 
-        isSyncing = true
+        if (_catalogFlow.value.isLoading)
+            return
 
-        _catalogFlow.update { it.copy(isLoading = true) }
+        scope.launch {
 
-        try {
+            _catalogFlow.update { it.copy(isLoading = true) }
 
-            // Fetch all files, local and online (if possible)
-            val allFiles = getFiles()
-            val dbFileNames = db.getAllFileNames()
+            try {
 
-            // Delete medias with missing files
-            db.deleteMediasWithNoFiles(allFiles)
+                // Fetch all files, local and online (if possible)
+                val allFiles = getFiles()
+                val dbFileNames = db.getAllFileNames()
 
-            // Get new medias from TMBD
-            val newFiles = allFiles.filter { !dbFileNames.contains(it.name) }
-            val (newArtworks, newMovies, newEpisodes) = mediaSourceTmdb.getMedias(files = newFiles)
+                // Delete medias with missing files
+                db.deleteMediasWithNoFiles(allFiles)
 
-            // Save new medias
-            db.insertArtworks(newArtworks)
-            db.insertMovies(newMovies)
-            db.insertEpisodes(newEpisodes)
+                // Get new medias from TMBD
+                val newFiles = allFiles.filter { !dbFileNames.contains(it.name) }
+                val (newArtworks, newMovies, newEpisodes) = mediaSourceTmdb.getMedias(files = newFiles)
 
-            val allArtworks = db.getArtworks()
+                // Save new medias
+                db.insertArtworks(newArtworks)
+                db.insertMovies(newMovies)
+                db.insertEpisodes(newEpisodes)
 
-            // Update content
-            _catalogFlow.update { content ->
-                content.copy(
-                    isLoading = false,
-                    artworks = allArtworks.sortedBy { it.title }
-                )
+                val allArtworks = db.getArtworks()
+
+                // Update content
+                _catalogFlow.update { content ->
+                    content.copy(
+                        isLoading = false,
+                        artworks = allArtworks.sortedBy { it.title }
+                    )
+                }
+
+            } catch (e: Exception) {
+                Log.e(TAG, "[syncCatalog] Fail to sync catalog", e)
+
+                _catalogFlow.update { content ->
+                    content.copy(isLoading = false)
+                }
             }
 
-        } catch (e: Exception) {
-            Log.e(TAG, "[syncCatalog] Fail to sync catalog", e)
-
-            _catalogFlow.update { content ->
-                content.copy(isLoading = false)
-            }
         }
-
-        isSyncing = false
-
     }
 
     override suspend fun getFiles() : List<UserFile> {

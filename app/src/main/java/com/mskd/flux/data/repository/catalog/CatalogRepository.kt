@@ -9,12 +9,12 @@ interface CatalogRepository {
 
     val flow: StateFlow<State>
 
-    suspend fun syncCatalog()
+    fun syncCatalog()
 
     suspend fun getFiles() : List<UserFile>
 
     data class State(
-        val isLoading: Boolean = true,
+        val isLoading: Boolean = false,
         val artworks: List<Artwork> = emptyList()
     )
 

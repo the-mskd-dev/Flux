@@ -10,8 +10,15 @@ data class HomeUiState(
     val screenState: ScreenState = ScreenState.LOADING,
     val artworks: List<Artwork> = emptyList(),
     val lastWatchedMediaIds: List<Long> = emptyList(),
-    val isRefreshing: Boolean = true
-)
+    val isRefreshing: Boolean = true,
+    val snackbarState: SnackbarState = SnackbarState()
+) {
+
+    data class SnackbarState(
+        val show: Boolean = false
+    )
+
+}
 
 sealed class HomeIntent {
     data class OnArtworkTap(val artworkId: Long): HomeIntent()
@@ -19,7 +26,9 @@ sealed class HomeIntent {
     data object SyncCatalog: HomeIntent()
     object OnSearchTap: HomeIntent()
     object OnSettingsTap: HomeIntent()
+    object OnTokenTap: HomeIntent()
     object OnHowToTap: HomeIntent()
+    object OnDismissSnackbar: HomeIntent()
 }
 
 sealed class HomeEvent {
@@ -28,6 +37,6 @@ sealed class HomeEvent {
     object NavigateToUnknown: HomeEvent()
     object NavigateToSearch: HomeEvent()
     object NavigateToSettings: HomeEvent()
+    object NavigateToToken: HomeEvent()
     object NavigateToHowTo: HomeEvent()
-    object ShowTokenRequest: HomeEvent()
 }

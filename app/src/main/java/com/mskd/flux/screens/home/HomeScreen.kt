@@ -59,7 +59,7 @@ import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -83,7 +83,6 @@ import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.extensions.tmdbImage
 import com.mskd.flux.utils.extensions.tmdbImageLarge
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -93,7 +92,6 @@ fun HomeScreen(
 ) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(Unit) {
@@ -105,16 +103,16 @@ fun HomeScreen(
                 HomeEvent.NavigateToHowTo -> navigate(Route.HowTo)
                 HomeEvent.NavigateToSearch -> navigate(Route.Search())
                 HomeEvent.NavigateToSettings -> navigate(Route.Settings)
-                HomeEvent.ShowTokenRequest -> scope.launch {
-                    snackbarHostState.showSnackbar(
-                        message = "Saisir un Token pour profiter d'une meilleure expérience",
-                        withDismissAction = true,
-                        duration = SnackbarDuration.Indefinite
-                    )
-                }
+                HomeEvent.NavigateToToken -> navigate(Route.Token(fromSettings = true))
             }
         }
     }
+
+    HomeSnackbar(
+        snackbarState = uiState.snackbarState,
+        snackbarHostState = snackbarHostState,
+        sendIntent = viewModel::handleIntent
+    )
 
     Crossfade(
         modifier = Modifier.fillMaxSize(),
@@ -215,17 +213,7 @@ fun HomeContent(
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         snackbarHost = {
-            SnackbarHost(
-                hostState = snackbarHostState,
-                snackbar = {
-                    Snackbar(
-                        snackbarData = it,
-                        containerColor = MaterialTheme.colorScheme.errorContainer,
-                        contentColor = MaterialTheme.colorScheme.onErrorContainer,
-                        dismissActionContentColor = MaterialTheme.colorScheme.onErrorContainer
-                    )
-                }
-            )
+            SnackbarHost(hostState = snackbarHostState,)
         }
     ) { paddingValues ->
 
@@ -307,6 +295,34 @@ fun HomeContent(
 
     }
 
+
+}
+
+@Composable
+fun HomeSnackbar(
+    snackbarState: HomeUiState.SnackbarState,
+    snackbarHostState: SnackbarHostState,
+    sendIntent: (HomeIntent) -> Unit
+) {
+
+    val message = stringResource(R.string.add_api_key)
+    val actionLabel = stringResource(R.string.add_api_key_button)
+
+    LaunchedEffect(snackbarState) {
+        if (snackbarState.show) {
+            val result = snackbarHostState.showSnackbar(
+                message = message,
+                actionLabel = actionLabel,
+                withDismissAction = true,
+                duration = SnackbarDuration.Indefinite
+            )
+
+            when (result) {
+                SnackbarResult.ActionPerformed -> sendIntent(HomeIntent.OnTokenTap)
+                SnackbarResult.Dismissed -> sendIntent(HomeIntent.OnDismissSnackbar)
+            }
+        }
+    }
 
 }
 

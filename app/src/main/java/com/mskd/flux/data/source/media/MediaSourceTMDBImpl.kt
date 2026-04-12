@@ -47,7 +47,7 @@ class MediaSourceTMDBImpl @Inject constructor(
 
     override suspend fun getMedias(files: List<UserFile>): MediaSource.Library {
 
-        var movies: Map<Artwork, Media> = mapOf()
+        var movies: Map<Artwork, List<Media>> = mapOf()
         var shows: Map<Artwork, List<Episode>> = mapOf()
 
         withContext(Dispatchers.Default) {
@@ -70,8 +70,8 @@ class MediaSourceTMDBImpl @Inject constructor(
 
         }
 
-        val moviesFiltered = movies.values.filterIsInstance<Movie>()
-        val unknownMedias = movies.values.mapNotNull { it as? Episode }.filter { it.isUnknown }
+        val moviesFiltered = movies.values.flatten().filterIsInstance<Movie>()
+        val unknownMedias = movies.values.flatten().filterIsInstance<Episode>().filter { it.isUnknown }
 
         return MediaSource.Library(
             artworks = (movies.keys + shows.keys).distinctBy { it.id }.toList(),
@@ -86,7 +86,7 @@ class MediaSourceTMDBImpl @Inject constructor(
 
     //region Private methods
 
-    private suspend fun getMovies(folders: List<UserFolder>) : Map<Artwork, Media> = withContext(limitedDispatcher) {
+    private suspend fun getMovies(folders: List<UserFolder>) : Map<Artwork, List<Media>> = withContext(limitedDispatcher) {
 
         val movies = coroutineScope {
 
@@ -123,21 +123,24 @@ class MediaSourceTMDBImpl @Inject constructor(
 
                 }
 
-            }.awaitAll().toMap()
+            }.awaitAll()
 
         }
 
-        Log.i(TAG, "[getMovies] Found ${movies.size}/${folders.size} movies")
+        val groupedMovies = movies.groupBy(
+            keySelector = { it.first },
+            valueTransform = { it.second }
+        )
 
-        movies
+        Log.i(TAG, "[getMovies] Found ${groupedMovies.values.flatten().size}/${folders.size} movies")
+
+        groupedMovies
 
     }
 
     private suspend fun getShows(folders: List<UserFolder>) : Map<Artwork, List<Episode>> = withContext(limitedDispatcher) {
 
-        val shows = mutableMapOf<Artwork, List<Episode>>()
-
-        coroutineScope {
+        val shows = coroutineScope {
 
             folders.map { folder ->
 
@@ -145,7 +148,7 @@ class MediaSourceTMDBImpl @Inject constructor(
 
                     val artwork = getShowArtwork(folder = folder)
                     val episodes = getEpisodes(folder = folder, artwork = artwork)
-                    shows[artwork] = episodes
+                    artwork to episodes
 
                 }
 
@@ -153,9 +156,16 @@ class MediaSourceTMDBImpl @Inject constructor(
 
         }
 
-        Log.i(TAG, "[getShows] Found ${shows.size}/${folders.size} shows and ${shows.values.flatten().size}/${folders.flatMap { it.files }.size} episodes")
+        val groupedShows = shows
+            .flatMap { (artwork, episodes) -> episodes.map { artwork to it } }
+            .groupBy(
+                keySelector = { it.first },
+                valueTransform = { it.second }
+            )
 
-        shows
+        Log.i(TAG, "[getShows] Found ${groupedShows.size}/${folders.size} shows and ${groupedShows.values.flatten().size}/${folders.flatMap { it.files }.size} episodes")
+
+        groupedShows
 
     }
 

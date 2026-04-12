@@ -34,9 +34,9 @@ class MainViewModel @Inject constructor(
             !permissionsGranted ->
                 Route.Welcome
             tokenProvider.tokenRequested ->
-                Route.Library
-            else ->
                 Route.Token(fromSettings = false)
+            else ->
+                Route.Library
         }
     }
 

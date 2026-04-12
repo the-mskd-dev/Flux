@@ -83,6 +83,9 @@ interface DatabaseDao {
     @Query("SELECT name FROM episodes")
     suspend fun getEpisodesFileNames(): List<String>
 
+    @Query("SELECT * FROM episodes WHERE artworkId = ${Artwork.UNKNOWN_ID}")
+    suspend fun getUnknownMedias() : List<Episode>
+
     suspend fun getAllFileNames() : List<String> {
         val movieFileNames = getMoviesFileNames()
         val episodeFileNames = getEpisodesFileNames()

@@ -7,6 +7,9 @@ import com.mskd.flux.data.source.media.MediaSource
 import com.mskd.flux.data.source.media.MediaSourceTMDBImpl.Companion.TAG
 import com.mskd.flux.model.UserFile
 import com.mskd.flux.model.artwork.Artwork
+import com.mskd.flux.model.artwork.Episode
+import com.mskd.flux.model.artwork.Media
+import com.mskd.flux.model.artwork.Movie
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -56,6 +59,8 @@ class CatalogRepositoryImpl @Inject constructor(
         scope.launch {
 
             _catalogFlow.update { it.copy(isLoading = true) }
+
+            tryToRetrieveUnknownMedias()
 
             try {
 
@@ -111,6 +116,62 @@ class CatalogRepositoryImpl @Inject constructor(
         }
 
         return localFiles
+
+    }
+
+    private suspend fun tryToRetrieveUnknownMedias() {
+
+        try {
+
+            val unknownMedias = db.getUnknownMedias()
+            val files = unknownMedias.map { it.file }
+
+            val (newArtworks, newMovies, newEpisodes) = mediaSourceTmdb.getMedias(files = files)
+
+            val moviesToSave = arrayListOf<Movie>()
+            val episodesToSave = arrayListOf<Episode>()
+            val mediasToDelete = arrayListOf<Episode>()
+
+            newMovies.forEach { movie ->
+
+                unknownMedias.find { it.file == movie.file }?.let { unknownMedia ->
+
+                    val newMovie = movie.copy(
+                        currentTime = unknownMedia.currentTime,
+                        status = unknownMedia.status
+                    )
+
+                    moviesToSave.add(newMovie)
+                    mediasToDelete.add(unknownMedia)
+
+                }
+
+            }
+
+            newEpisodes.filter { !it.isUnknown }.forEach { episode ->
+
+                unknownMedias.find { it.file == episode.file }?.let { unknownMedia ->
+
+                    val newEpisode = episode.copy(
+                        currentTime = unknownMedia.currentTime,
+                        status = unknownMedia.status
+                    )
+
+                    episodesToSave.add(newEpisode)
+                    mediasToDelete.add(unknownMedia)
+
+                }
+
+            }
+
+            db.insertArtworks(newArtworks.filter { !it.isUnknown })
+            db.insertMovies(moviesToSave)
+            db.insertEpisodes(episodesToSave)
+            db.deleteEpisodes(mediasToDelete)
+
+        } catch (e: Exception) {
+            Log.e(TAG, "Fail to retrieve unknown medias", e)
+        }
 
     }
 

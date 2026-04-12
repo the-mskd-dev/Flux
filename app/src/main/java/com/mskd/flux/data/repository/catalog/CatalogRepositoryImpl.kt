@@ -8,7 +8,6 @@ import com.mskd.flux.data.source.media.MediaSourceTMDBImpl.Companion.TAG
 import com.mskd.flux.model.UserFile
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.Episode
-import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.artwork.Movie
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.coroutineScope

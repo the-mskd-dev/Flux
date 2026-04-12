@@ -3,14 +3,9 @@ package com.mskd.flux.screens.unknown
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.data.repository.artwork.ArtworkRepository
-import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.model.ScreenState
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.Episode
-import com.mskd.flux.model.artwork.Media
-import com.mskd.flux.screens.artwork.ArtworkEvent
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted

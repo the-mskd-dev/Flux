@@ -13,10 +13,8 @@ import coil3.video.videoFrameMillis
 import coil3.video.videoFramePercent
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
-import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Status
 import com.mskd.flux.utils.extensions.tmdbImage
-import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun Image(

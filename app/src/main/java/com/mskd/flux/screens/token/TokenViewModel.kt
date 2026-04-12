@@ -1,6 +1,5 @@
 package com.mskd.flux.screens.token
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.data.repository.catalog.CatalogRepository
@@ -10,7 +9,6 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -77,10 +75,8 @@ class TokenViewModel @AssistedInject constructor(
                 else
                     onNextTap()
 
-
             } else {
 
-                tokenProvider.clearToken()
                 _uiState.update { it.copy(message = TokenMessage.Error) }
 
             }

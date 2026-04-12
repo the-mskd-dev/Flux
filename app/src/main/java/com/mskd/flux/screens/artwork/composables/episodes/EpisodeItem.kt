@@ -1,19 +1,12 @@
 package com.mskd.flux.screens.artwork.composables.episodes
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.PlayArrow
@@ -30,29 +23,23 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import com.mskd.flux.R
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Status
 import com.mskd.flux.screens.artwork.ArtworkIntent
-import com.mskd.flux.ui.component.Image
 import com.mskd.flux.ui.component.MediaThumbnail
-import com.mskd.flux.ui.component.ProgressBar
 import com.mskd.flux.ui.component.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.extensions.formattedText
-import com.mskd.flux.utils.extensions.grayScale
 import com.mskd.flux.utils.extensions.minToMs
 import com.mskd.flux.utils.extensions.timeDescription
-import com.mskd.flux.utils.extensions.tmdbImage
 
 @Composable
 fun EpisodeItem(

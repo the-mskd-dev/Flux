@@ -22,7 +22,6 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import kotlin.time.Duration.Companion.milliseconds
 
 class MediaSourceTMDBImpl @Inject constructor(
     private val tmdbService: TMDBService,

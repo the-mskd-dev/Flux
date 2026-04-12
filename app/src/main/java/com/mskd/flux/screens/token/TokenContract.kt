@@ -7,7 +7,6 @@ import androidx.compose.runtime.Immutable
 data class TokenUiState(
     val token: String = "",
     val showBackButton: Boolean = false,
-    val showNextButton: Boolean = false,
     val isLoading: Boolean = false,
     val message: TokenMessage = TokenMessage.None
 )

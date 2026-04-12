@@ -53,7 +53,7 @@ class TokenViewModel @AssistedInject constructor(
     }
 
     private fun setToken(token: String) {
-        _uiState.update { it.copy(token = token, message = TokenMessage.None, showNextButton = false) }
+        _uiState.update { it.copy(token = token, message = TokenMessage.None) }
     }
 
     private suspend fun saveToken() {
@@ -70,12 +70,16 @@ class TokenViewModel @AssistedInject constructor(
 
                 catalogRepository.syncCatalog()
 
-                _uiState.update { it.copy(message = TokenMessage.Success, showNextButton = true) }
+                if (_uiState.value.showBackButton)
+                    onBackTap()
+                else
+                    onNextTap()
+
 
             } else {
 
                 tokenProvider.clearToken()
-                _uiState.update { it.copy(message = TokenMessage.Error, showNextButton = false) }
+                _uiState.update { it.copy(message = TokenMessage.Error) }
 
             }
 
@@ -83,7 +87,7 @@ class TokenViewModel @AssistedInject constructor(
 
             e.printStackTrace()
             tokenProvider.clearToken()
-            _uiState.update { it.copy(message = TokenMessage.Error, showNextButton = false) }
+            _uiState.update { it.copy(message = TokenMessage.Error) }
 
         }
 

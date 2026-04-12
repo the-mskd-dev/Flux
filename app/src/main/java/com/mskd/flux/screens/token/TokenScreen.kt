@@ -24,6 +24,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LoadingIndicator
@@ -104,19 +105,20 @@ fun TokenScreenContent(
         floatingActionButton = {
 
             AnimatedVisibility(
-                visible = !state.showBackButton && state.showNextButton,
+                visible = !state.showBackButton,
                 enter = Ui.Animation.buttonEnter,
                 exit = Ui.Animation.buttonExit
             ) {
 
-                FluxButton(
-                    onTap = { sendIntent(TokenIntent.OnNextTap) },
-                    text = stringResource(R.string.start),
+                FluxTextButton(
+                    stringResource(R.string.continue_without_api_key),
+                    onTap = { sendIntent(TokenIntent.OnCancelTap) }
                 )
 
             }
 
-        }
+        },
+        floatingActionButtonPosition = FabPosition.Center
     ) { innerPadding ->
 
         Column(
@@ -162,15 +164,6 @@ fun TokenScreenContent(
                     }
 
                 }
-            }
-
-            AnimatedVisibility(visible = !state.showBackButton && !state.showNextButton) {
-
-                FluxTextButton(
-                    stringResource(R.string.continue_without_api_key),
-                    onTap = { sendIntent(TokenIntent.OnCancelTap) }
-                )
-
             }
 
             Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding()))
@@ -351,7 +344,6 @@ fun TokenScreen_Preview() {
             state = TokenUiState(
                 token = "azERTyuiOQSdfghJKLmwxCvbn",
                 showBackButton = false,
-                showNextButton = false,
                 isLoading = false,
                 message = TokenMessage.Success
             ),

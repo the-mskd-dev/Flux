@@ -26,8 +26,8 @@ sealed class HomeIntent {
     data object SyncCatalog: HomeIntent()
     object OnSearchTap: HomeIntent()
     object OnSettingsTap: HomeIntent()
-    object OnTokenTap: HomeIntent()
     object OnHowToTap: HomeIntent()
+    object OnSnackbarActionTap: HomeIntent()
     object OnDismissSnackbar: HomeIntent()
 }
 

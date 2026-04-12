@@ -55,7 +55,6 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.foundation.Image
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -318,7 +317,7 @@ fun HomeSnackbar(
             )
 
             when (result) {
-                SnackbarResult.ActionPerformed -> sendIntent(HomeIntent.OnTokenTap)
+                SnackbarResult.ActionPerformed -> sendIntent(HomeIntent.OnSnackbarActionTap)
                 SnackbarResult.Dismissed -> sendIntent(HomeIntent.OnDismissSnackbar)
             }
         }

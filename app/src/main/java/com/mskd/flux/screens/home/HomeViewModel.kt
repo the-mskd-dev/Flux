@@ -78,7 +78,7 @@ class HomeViewModel @Inject constructor(
             is HomeIntent.OnArtworkTap -> onArtworkTap(artworkId = intent.artworkId)
             is HomeIntent.OnCategoryTap -> _event.emit(NavigateToCategory(category = intent.category))
             HomeIntent.OnSearchTap -> _event.emit(HomeEvent.NavigateToSearch)
-            HomeIntent.OnTokenTap -> _event.emit(HomeEvent.NavigateToToken)
+            HomeIntent.OnSnackbarActionTap -> onSnackbarActionTap()
             HomeIntent.OnSettingsTap -> _event.emit(HomeEvent.NavigateToSettings)
             HomeIntent.OnHowToTap -> _event.emit(HomeEvent.NavigateToHowTo)
             HomeIntent.OnDismissSnackbar -> onDismissSnackbar()
@@ -116,6 +116,11 @@ class HomeViewModel @Inject constructor(
 
         _event.emit(event)
 
+    }
+
+    private suspend fun onSnackbarActionTap() {
+        _snackbarState.update { it.copy(show = false) }
+        _event.emit(HomeEvent.NavigateToToken)
     }
 
     private fun onDismissSnackbar() {

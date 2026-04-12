@@ -73,7 +73,7 @@ class TokenViewModel @AssistedInject constructor(
                 catalogRepository.syncCatalog()
 
                 if (_uiState.value.showBackButton)
-                    onBackTap()
+                    _uiState.update { it.copy(message = TokenMessage.Success) }
                 else
                     onNextTap()
 

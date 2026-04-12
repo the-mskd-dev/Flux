@@ -5,6 +5,7 @@ import android.media.MediaMetadataRetriever
 import android.util.Log
 import androidx.core.net.toUri
 import com.mskd.flux.data.tmdb.TMDBService
+import com.mskd.flux.data.tmdb.token.TokenProvider
 import com.mskd.flux.model.UserFile
 import com.mskd.flux.model.UserFolder
 import com.mskd.flux.model.artwork.Artwork
@@ -25,6 +26,7 @@ import javax.inject.Inject
 
 class MediaSourceTMDBImpl @Inject constructor(
     private val tmdbService: TMDBService,
+    private val tokenProvider: TokenProvider,
     private val context: Context
 ) : MediaSource {
 
@@ -45,6 +47,10 @@ class MediaSourceTMDBImpl @Inject constructor(
     //region Public methods
 
     override suspend fun getMedias(files: List<UserFile>): MediaSource.Library {
+
+        if (tokenProvider.getToken().isNullOrBlank()) {
+            return getUnknownMedias(files = files)
+        }
 
         var movies: Map<Artwork, List<Media>> = mapOf()
         var shows: Map<Artwork, List<Episode>> = mapOf()
@@ -221,6 +227,27 @@ class MediaSourceTMDBImpl @Inject constructor(
 
             }.awaitAll()
 
+        }
+
+    }
+
+    private suspend fun getUnknownMedias(files: List<UserFile>) : MediaSource.Library = withContext(limitedDispatcher) {
+
+        val medias = files.map { file ->
+
+            async {
+
+                getUnknownMediaFrom(file = file)
+
+            }
+
+        }.awaitAll()
+
+        MediaSource.Library(
+            artworks = listOf(Artwork.UNKNOWN),
+            episodes = medias
+        ).also {
+            Log.d(TAG, "[getUnknownMedias] No token, found ${medias.size} unknown media(s)")
         }
 
     }

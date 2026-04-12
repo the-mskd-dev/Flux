@@ -77,6 +77,7 @@ class TokenViewModel @AssistedInject constructor(
 
             } else {
 
+                tokenProvider.clearToken()
                 _uiState.update { it.copy(message = TokenMessage.Error) }
 
             }

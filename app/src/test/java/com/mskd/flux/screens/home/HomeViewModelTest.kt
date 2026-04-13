@@ -8,6 +8,7 @@ import com.mskd.flux.mockups.FakeCatalogRepository
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.ScreenState
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.datatest.withData
 import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -30,12 +31,13 @@ class HomeViewModelTest : FunSpec({
 
     // Mocked flows
     val dataStoreFlow = MutableStateFlow(UserRepository.State())
+    val tokenFlow = MutableStateFlow("token")
 
     beforeTest {
 
         catalogRepository = FakeCatalogRepository()
         tokenProvider = mockk(relaxed = true) {
-            coEvery { getToken() } returns "token"
+            coEvery { flow } returns tokenFlow
         }
 
         userRepository = mockk(relaxed = true) {
@@ -44,7 +46,46 @@ class HomeViewModelTest : FunSpec({
 
     }
 
-    test("initial state") {
+    context("initial state") {
+        withData(
+            nameFn = { it.description },
+            HomeTestCases.InitialState(
+                description = "without token",
+                tokenValue = "",
+                expectedSnackbarState = HomeUiState.SnackbarState.Token
+            ),
+            HomeTestCases.InitialState(
+                description = "with token",
+                tokenValue = "token",
+                expectedSnackbarState = HomeUiState.SnackbarState.Tutorial
+            )
+        ) { testCase ->
+
+            tokenFlow.value = testCase.tokenValue
+
+            viewModel = HomeViewModel(
+                repository = catalogRepository,
+                tokenProvider = tokenProvider,
+                userRepository = userRepository
+            )
+
+            viewModel.uiState.test {
+                val initialState = awaitItem()
+                initialState.screenState shouldBe ScreenState.CONTENT
+                initialState.artworks shouldBe MediaMockups.artworks
+                initialState.lastWatchedMediaIds shouldBe emptyList()
+                initialState.isRefreshing shouldBe false
+                initialState.snackbarState shouldBe testCase.expectedSnackbarState
+
+                cancelAndConsumeRemainingEvents()
+            }
+
+        }
+    }
+
+    test("initial state - with token") {
+
+        tokenFlow.value = "token"
 
         viewModel = HomeViewModel(
             repository = catalogRepository,
@@ -58,6 +99,7 @@ class HomeViewModelTest : FunSpec({
             initialState.artworks shouldBe MediaMockups.artworks
             initialState.lastWatchedMediaIds shouldBe emptyList()
             initialState.isRefreshing shouldBe false
+            initialState.snackbarState shouldBe HomeUiState.SnackbarState.Tutorial
 
             cancelAndConsumeRemainingEvents()
         }

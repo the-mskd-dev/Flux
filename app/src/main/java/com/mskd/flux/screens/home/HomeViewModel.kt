@@ -1,7 +1,6 @@
 package com.mskd.flux.screens.home
 
 import android.util.Log
-import androidx.compose.ui.util.fastAll
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.data.repository.catalog.CatalogRepository

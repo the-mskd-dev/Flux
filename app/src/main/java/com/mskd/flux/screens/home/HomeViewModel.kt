@@ -52,7 +52,7 @@ class HomeViewModel @Inject constructor(
             token.isBlank() && dismissedSnackbar.contains(HomeUiState.SnackbarState.Token).not() -> {
                 HomeUiState.SnackbarState.Token
             }
-            token.isNotBlank() && catalog.artworks.all { it.id == Artwork.UNKNOWN_ID } && dismissedSnackbar.contains(HomeUiState.SnackbarState.Tutorial).not() -> {
+            token.isNotBlank() && catalog.artworks.any { it.id == Artwork.UNKNOWN_ID } && dismissedSnackbar.contains(HomeUiState.SnackbarState.Tutorial).not() -> {
                 HomeUiState.SnackbarState.Tutorial
             }
             else -> null

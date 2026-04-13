@@ -4,12 +4,14 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.data.repository.catalog.CatalogRepository
+import com.mskd.flux.data.repository.snackbars.SnackbarRepository
 import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.data.tmdb.token.TokenProvider
 import com.mskd.flux.model.ScreenState
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.screens.home.HomeEvent.NavigateToArtwork
 import com.mskd.flux.screens.home.HomeEvent.NavigateToCategory
+import com.mskd.flux.utils.FluxSnackbar
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,6 +19,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -27,13 +30,14 @@ import kotlin.time.Duration.Companion.days
 class HomeViewModel @Inject constructor(
     private val repository: CatalogRepository,
     private val userRepository: UserRepository,
-    private val tokenProvider: TokenProvider
+    private val tokenProvider: TokenProvider,
+    private val snackbarRepository: SnackbarRepository
 ): ViewModel() {
 
     private val _event = MutableSharedFlow<HomeEvent>()
     val event = _event.asSharedFlow()
 
-    private val _dismissedSnackbar = MutableStateFlow<Set<HomeUiState.SnackbarState>>(emptySet())
+    private val _dismissedSnackbar = MutableStateFlow<Set<FluxSnackbar>>(emptySet())
     
     val uiState: StateFlow<HomeUiState> = combine(
         repository.flow,
@@ -47,15 +51,11 @@ class HomeViewModel @Inject constructor(
             else -> ScreenState.CONTENT
         }
 
-        val snackbar = when {
-            token.isBlank() && dismissedSnackbar.contains(HomeUiState.SnackbarState.Token).not() -> {
-                HomeUiState.SnackbarState.Token
-            }
-            token.isNotBlank() && catalog.artworks.any { it.id == Artwork.UNKNOWN_ID } && dismissedSnackbar.contains(HomeUiState.SnackbarState.Tutorial).not() -> {
-                HomeUiState.SnackbarState.Tutorial
-            }
-            else -> null
-        }
+        val snackbar = getSnackbarIfNeeded(
+            token = token,
+            dismissedSnackbar = dismissedSnackbar,
+            artworks = catalog.artworks
+        )
 
         HomeUiState(
             screenState = screen,
@@ -129,14 +129,43 @@ class HomeViewModel @Inject constructor(
         _dismissedSnackbar.update { it + snackbar }
 
         when (snackbar) {
-            HomeUiState.SnackbarState.Token -> _event.emit(HomeEvent.NavigateToToken)
-            HomeUiState.SnackbarState.Tutorial -> _event.emit(HomeEvent.NavigateToHowTo)
+            FluxSnackbar.Token -> _event.emit(HomeEvent.NavigateToToken)
+            FluxSnackbar.Tutorial -> _event.emit(HomeEvent.NavigateToHowTo)
         }
 
     }
 
     private fun onDismissSnackbar() {
         _dismissedSnackbar.update { it + (uiState.value.snackbarState ?: return) }
+    }
+
+    private suspend fun getSnackbarIfNeeded(
+        token: String,
+        dismissedSnackbar: Set<FluxSnackbar>,
+        artworks: List<Artwork>,
+    ) : FluxSnackbar? {
+
+        return when {
+            token.isBlank()
+                    && dismissedSnackbar.contains(FluxSnackbar.Token).not()
+                    && snackbarRepository.canShow(FluxSnackbar.Token.id).first() -> {
+
+                snackbarRepository.incrementCount(FluxSnackbar.Token.id)
+                FluxSnackbar.Token
+
+            }
+            token.isNotBlank()
+                    && artworks.any { it.id == Artwork.UNKNOWN_ID }
+                    && dismissedSnackbar.contains(FluxSnackbar.Tutorial).not()
+                    && snackbarRepository.canShow(FluxSnackbar.Tutorial.id).first() -> {
+
+                snackbarRepository.incrementCount(FluxSnackbar.Tutorial.id)
+                FluxSnackbar.Tutorial
+
+            }
+            else -> null
+        }
+
     }
 
 }

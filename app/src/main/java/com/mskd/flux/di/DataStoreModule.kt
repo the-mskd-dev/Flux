@@ -5,6 +5,9 @@ import com.google.gson.Gson
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.data.repository.settings.SettingsRepositoryImpl
 import com.mskd.flux.data.repository.settings.settingsDatastore
+import com.mskd.flux.data.repository.snackbars.SnackbarRepository
+import com.mskd.flux.data.repository.snackbars.SnackbarRepositoryImpl
+import com.mskd.flux.data.repository.snackbars.snackbarDataStore
 import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.data.repository.user.UserRepositoryImpl
 import com.mskd.flux.data.repository.user.userDataStore
@@ -47,6 +50,12 @@ object DataStoreModule {
     @Singleton
     fun provideTokenProvider(@ApplicationContext context: Context) : TokenProvider {
         return TokenProviderImp(tokenDataStore = context.tokenDatastore)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSnackbarRepository(@ApplicationContext context: Context) : SnackbarRepository {
+        return SnackbarRepositoryImpl(snackbarDataStore = context.snackbarDataStore)
     }
 
 }

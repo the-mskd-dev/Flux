@@ -1,6 +1,7 @@
 package com.mskd.flux.screens.home
 
 import androidx.compose.runtime.Immutable
+import com.mskd.flux.R
 import com.mskd.flux.model.ScreenState
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.ContentType
@@ -11,12 +12,14 @@ data class HomeUiState(
     val artworks: List<Artwork> = emptyList(),
     val lastWatchedMediaIds: List<Long> = emptyList(),
     val isRefreshing: Boolean = true,
-    val snackbarState: SnackbarState = SnackbarState()
+    val snackbarState: SnackbarState? = null
 ) {
 
-    data class SnackbarState(
-        val show: Boolean = false
-    )
+
+    sealed class SnackbarState(val message: Int, val action: Int) {
+        data object Token: SnackbarState(message = R.string.snackbar_add_api_key, action = R.string.add)
+        data object Tutorial: SnackbarState(message = R.string.snackbar_see_tuto, action = R.string.see)
+    }
 
 }
 

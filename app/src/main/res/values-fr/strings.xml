@@ -89,6 +89,8 @@
     <string name="my_files">Mes fichiers</string>
     <string name="no_item">Il n\'y a aucun élément à afficher</string>
     <string name="skip">Continuer sans</string>
-    <string name="add_api_key">Ajoutez votre clé pour profiter d\'une meilleure expérience</string>
+    <string name="snackbar_add_api_key">Ajoutez votre clé pour profiter d\'une meilleure expérience</string>
     <string name="add">Ajouter</string>
+    <string name="snackbar_see_tuto">Pour organiser votre bibliothèque, veuillez vérifier le nommage de vos fichiers</string>
+    <string name="see">Voir</string>
 </resources>

@@ -96,6 +96,8 @@
     <string name="my_files">My files</string>
     <string name="no_item">There are no items to display</string>
     <string name="skip">Skip</string>
-    <string name="add_api_key">Add your key to enjoy a better experience</string>
+    <string name="snackbar_add_api_key">Add your key to enjoy a better experience</string>
     <string name="add">Add</string>
+    <string name="snackbar_see_tuto">To organize your library, please check the naming of your files</string>
+    <string name="see">See</string>
 </resources>

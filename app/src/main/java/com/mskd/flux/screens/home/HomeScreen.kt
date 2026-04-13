@@ -48,6 +48,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -82,6 +83,7 @@ import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.extensions.tmdbImage
 import com.mskd.flux.utils.extensions.tmdbImageLarge
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -299,16 +301,16 @@ fun HomeContent(
 
 @Composable
 fun HomeSnackbar(
-    snackbarState: HomeUiState.SnackbarState,
+    snackbarState: HomeUiState.SnackbarState?,
     snackbarHostState: SnackbarHostState,
     sendIntent: (HomeIntent) -> Unit
 ) {
 
-    val message = stringResource(R.string.add_api_key)
-    val actionLabel = stringResource(R.string.add)
+    val message = snackbarState?.message?.let { stringResource(it) }.orEmpty()
+    val actionLabel = snackbarState?.action?.let { stringResource(it) }.orEmpty()
 
     LaunchedEffect(snackbarState) {
-        if (snackbarState.show) {
+        if (snackbarState != null) {
             val result = snackbarHostState.showSnackbar(
                 message = message,
                 actionLabel = actionLabel,

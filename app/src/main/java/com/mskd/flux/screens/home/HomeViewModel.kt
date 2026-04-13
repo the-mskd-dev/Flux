@@ -1,6 +1,7 @@
 package com.mskd.flux.screens.home
 
 import android.util.Log
+import androidx.compose.ui.util.fastAll
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.data.repository.catalog.CatalogRepository
@@ -33,17 +34,28 @@ class HomeViewModel @Inject constructor(
     private val _event = MutableSharedFlow<HomeEvent>()
     val event = _event.asSharedFlow()
 
-    private val _snackbarState = MutableStateFlow(HomeUiState.SnackbarState())
+    private val _dismissedSnackbar = MutableStateFlow<Set<HomeUiState.SnackbarState>>(emptySet())
     
     val uiState: StateFlow<HomeUiState> = combine(
         repository.flow,
         userRepository.flow,
-        _snackbarState
-    ) { catalog, preferences, snackbar ->
+        tokenProvider.flow,
+        _dismissedSnackbar
+    ) { catalog, preferences, token, dismissedSnackbar ->
 
         val screen = when {
             catalog.isLoading && catalog.artworks.isEmpty() -> ScreenState.LOADING
             else -> ScreenState.CONTENT
+        }
+
+        val snackbar = when {
+            token.isBlank() && dismissedSnackbar.contains(HomeUiState.SnackbarState.Token).not() -> {
+                HomeUiState.SnackbarState.Token
+            }
+            token.isNotBlank() && catalog.artworks.all { it.id == Artwork.UNKNOWN_ID } && dismissedSnackbar.contains(HomeUiState.SnackbarState.Tutorial).not() -> {
+                HomeUiState.SnackbarState.Tutorial
+            }
+            else -> null
         }
 
         HomeUiState(
@@ -64,11 +76,6 @@ class HomeViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             syncCatalog(manualSync = false)
-        }
-
-        viewModelScope.launch {
-            if (tokenProvider.getToken().isBlank())
-                _snackbarState.update { it.copy(show = true) }
         }
     }
 
@@ -119,12 +126,18 @@ class HomeViewModel @Inject constructor(
     }
 
     private suspend fun onSnackbarActionTap() {
-        _snackbarState.update { it.copy(show = false) }
-        _event.emit(HomeEvent.NavigateToToken)
+        val snackbar = uiState.value.snackbarState ?: return
+        _dismissedSnackbar.update { it + snackbar }
+
+        when (snackbar) {
+            HomeUiState.SnackbarState.Token -> _event.emit(HomeEvent.NavigateToToken)
+            HomeUiState.SnackbarState.Tutorial -> _event.emit(HomeEvent.NavigateToHowTo)
+        }
+
     }
 
     private fun onDismissSnackbar() {
-        _snackbarState.update { it.copy(show = false) }
+        _dismissedSnackbar.update { it + (uiState.value.snackbarState ?: return) }
     }
 
 }

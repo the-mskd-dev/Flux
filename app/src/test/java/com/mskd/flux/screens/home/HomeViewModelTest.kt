@@ -2,12 +2,15 @@ package com.mskd.flux.screens.home
 
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
+import com.mskd.flux.data.repository.snackbars.SnackbarRepository
 import com.mskd.flux.data.repository.user.UserRepository
-import com.mskd.flux.data.tmdb.token.TokenProvider
+import com.mskd.flux.data.tmdb.token.TokenRepository
 import com.mskd.flux.mockups.FakeCatalogRepository
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.ScreenState
+import com.mskd.flux.utils.FluxSnackbar
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.datatest.withData
 import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -26,30 +29,75 @@ class HomeViewModelTest : FunSpec({
     lateinit var viewModel: HomeViewModel
     lateinit var catalogRepository: FakeCatalogRepository
     lateinit var userRepository: UserRepository
-    lateinit var tokenProvider: TokenProvider
+    lateinit var tokenRepository: TokenRepository
+    lateinit var snackbarRepository: SnackbarRepository
 
     // Mocked flows
     val dataStoreFlow = MutableStateFlow(UserRepository.State())
+    val tokenFlow = MutableStateFlow("token")
 
     beforeTest {
 
         catalogRepository = FakeCatalogRepository()
-        tokenProvider = mockk(relaxed = true) {
-            coEvery { getToken() } returns "token"
+        tokenRepository = mockk(relaxed = true) {
+            coEvery { flow } returns tokenFlow
         }
-
         userRepository = mockk(relaxed = true) {
             every { flow } returns dataStoreFlow
+        }
+        snackbarRepository = mockk(relaxed = true) {
+            coEvery { canShow(any()) } returns MutableStateFlow(true)
         }
 
     }
 
-    test("initial state") {
+    context("initial state") {
+        withData(
+            nameFn = { it.description },
+            HomeTestCases.InitialState(
+                description = "without token",
+                tokenValue = "",
+                expectedSnackbarState = FluxSnackbar.Token
+            ),
+            HomeTestCases.InitialState(
+                description = "with token",
+                tokenValue = "token",
+                expectedSnackbarState = FluxSnackbar.Tutorial
+            )
+        ) { testCase ->
+
+            tokenFlow.value = testCase.tokenValue
+
+            viewModel = HomeViewModel(
+                repository = catalogRepository,
+                tokenRepository = tokenRepository,
+                userRepository = userRepository,
+                snackbarRepository = snackbarRepository
+            )
+
+            viewModel.uiState.test {
+                val initialState = awaitItem()
+                initialState.screenState shouldBe ScreenState.CONTENT
+                initialState.artworks shouldBe MediaMockups.artworks
+                initialState.lastWatchedMediaIds shouldBe emptyList()
+                initialState.isRefreshing shouldBe false
+                initialState.snackbarState shouldBe testCase.expectedSnackbarState
+
+                cancelAndConsumeRemainingEvents()
+            }
+
+        }
+    }
+
+    test("initial state - with token") {
+
+        tokenFlow.value = "token"
 
         viewModel = HomeViewModel(
             repository = catalogRepository,
-            tokenProvider = tokenProvider,
-            userRepository = userRepository
+            tokenRepository = tokenRepository,
+            userRepository = userRepository,
+            snackbarRepository = snackbarRepository
         )
 
         viewModel.uiState.test {
@@ -58,6 +106,7 @@ class HomeViewModelTest : FunSpec({
             initialState.artworks shouldBe MediaMockups.artworks
             initialState.lastWatchedMediaIds shouldBe emptyList()
             initialState.isRefreshing shouldBe false
+            initialState.snackbarState shouldBe FluxSnackbar.Tutorial
 
             cancelAndConsumeRemainingEvents()
         }
@@ -68,8 +117,9 @@ class HomeViewModelTest : FunSpec({
 
         viewModel = HomeViewModel(
             repository = catalogRepository,
-            tokenProvider = tokenProvider,
-            userRepository = userRepository
+            tokenRepository = tokenRepository,
+            userRepository = userRepository,
+            snackbarRepository = snackbarRepository
         )
 
         // Mock
@@ -101,8 +151,9 @@ class HomeViewModelTest : FunSpec({
 
         viewModel = HomeViewModel(
             repository = catalogRepository,
-            tokenProvider = tokenProvider,
-            userRepository = userRepository
+            tokenRepository = tokenRepository,
+            userRepository = userRepository,
+            snackbarRepository = snackbarRepository
         )
 
         viewModel.handleIntent(HomeIntent.SyncCatalog)
@@ -120,8 +171,9 @@ class HomeViewModelTest : FunSpec({
 
         viewModel = HomeViewModel(
             repository = catalogRepository,
-            tokenProvider = tokenProvider,
-            userRepository = userRepository
+            tokenRepository = tokenRepository,
+            userRepository = userRepository,
+            snackbarRepository = snackbarRepository
         )
 
         coVerify(exactly = 1) {
@@ -136,8 +188,9 @@ class HomeViewModelTest : FunSpec({
 
         viewModel = HomeViewModel(
             repository = catalogRepository,
-            tokenProvider = tokenProvider,
-            userRepository = userRepository
+            tokenRepository = tokenRepository,
+            userRepository = userRepository,
+            snackbarRepository = snackbarRepository
         )
 
         coVerify(exactly = 0) {

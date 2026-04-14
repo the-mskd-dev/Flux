@@ -3,7 +3,7 @@ package com.mskd.flux
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.data.repository.settings.SettingsRepository
-import com.mskd.flux.data.tmdb.token.TokenProvider
+import com.mskd.flux.data.tmdb.token.TokenRepository
 import com.mskd.flux.navigation.Route
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 class MainViewModel @Inject constructor(
     private val settingsRepository: SettingsRepository,
-    private val tokenProvider: TokenProvider
+    private val tokenRepository: TokenRepository
 ) : ViewModel() {
 
     private val _settings = MutableStateFlow(SettingsRepository.State())
@@ -33,7 +33,7 @@ class MainViewModel @Inject constructor(
         return when {
             !permissionsGranted ->
                 Route.Welcome
-            tokenProvider.tokenRequested ->
+            tokenRepository.tokenRequested ->
                 Route.Token(fromSettings = false)
             else ->
                 Route.Library

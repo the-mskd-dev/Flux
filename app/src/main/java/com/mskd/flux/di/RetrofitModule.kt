@@ -2,7 +2,7 @@ package com.mskd.flux.di
 
 import com.google.gson.Gson
 import com.mskd.flux.data.tmdb.TMDBService
-import com.mskd.flux.data.tmdb.token.TokenProvider
+import com.mskd.flux.data.tmdb.token.TokenRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -21,11 +21,11 @@ object RetrofitModule {
 
     @Provides
     @Singleton
-    fun provideHttpClient(tokenProvider: TokenProvider) : OkHttpClient {
+    fun provideHttpClient(tokenRepository: TokenRepository) : OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor { chain ->
                 val request = chain.request()
-                val token = runBlocking { tokenProvider.getToken() }
+                val token = runBlocking { tokenRepository.getToken() }
 
                 val newRequest = request.newBuilder()
                     .addHeader("accept", "application/json")

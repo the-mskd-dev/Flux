@@ -4,7 +4,7 @@ import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.data.repository.catalog.CatalogRepository
 import com.mskd.flux.data.tmdb.TMDBService
-import com.mskd.flux.data.tmdb.token.TokenProvider
+import com.mskd.flux.data.tmdb.token.TokenRepository
 import com.mskd.flux.model.tmdb.TMDBAuthentication
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData
@@ -18,13 +18,13 @@ class TokenViewModelTest : FunSpec({
     fluxExtensions()
 
     lateinit var viewModel: TokenViewModel
-    lateinit var tokenProvider: TokenProvider
+    lateinit var tokenRepository: TokenRepository
     lateinit var tmdbService: TMDBService
     lateinit var catalogRepository: CatalogRepository
 
     beforeTest {
 
-        tokenProvider = mockk(relaxed = true) {
+        tokenRepository = mockk(relaxed = true) {
             coEvery { getToken() } returns "token"
         }
 
@@ -36,7 +36,7 @@ class TokenViewModelTest : FunSpec({
 
         viewModel = TokenViewModel(
             fromSettings = true,
-            tokenProvider = tokenProvider,
+            tokenRepository = tokenRepository,
             tmdbService = tmdbService,
             catalogRepository = catalogRepository
         )
@@ -75,7 +75,7 @@ class TokenViewModelTest : FunSpec({
             viewModel.handleIntent(TokenIntent.OnCancelTap)
 
             awaitItem() shouldBe TokenEvent.NavigateToHomeScreen
-            coVerify { tokenProvider.dontRequestToken() }
+            coVerify { tokenRepository.dontRequestToken() }
         }
     }
 
@@ -111,7 +111,7 @@ class TokenViewModelTest : FunSpec({
 
             viewModel = TokenViewModel(
                 fromSettings = true,
-                tokenProvider = tokenProvider,
+                tokenRepository = tokenRepository,
                 tmdbService = tmdbService,
                 catalogRepository = catalogRepository
             )

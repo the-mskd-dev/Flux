@@ -5,7 +5,7 @@ import android.media.MediaMetadataRetriever
 import android.util.Log
 import androidx.core.net.toUri
 import com.mskd.flux.data.tmdb.TMDBService
-import com.mskd.flux.data.tmdb.token.TokenProvider
+import com.mskd.flux.data.tmdb.token.TokenRepository
 import com.mskd.flux.model.UserFile
 import com.mskd.flux.model.UserFolder
 import com.mskd.flux.model.artwork.Artwork
@@ -26,7 +26,7 @@ import javax.inject.Inject
 
 class MediaSourceTMDBImpl @Inject constructor(
     private val tmdbService: TMDBService,
-    private val tokenProvider: TokenProvider,
+    private val tokenRepository: TokenRepository,
     private val context: Context
 ) : MediaSource {
 
@@ -48,7 +48,7 @@ class MediaSourceTMDBImpl @Inject constructor(
 
     override suspend fun getMedias(files: List<UserFile>): MediaSource.Library {
 
-        if (tokenProvider.getToken().isBlank()) {
+        if (tokenRepository.getToken().isBlank()) {
             return getUnknownMedias(files = files)
         }
 

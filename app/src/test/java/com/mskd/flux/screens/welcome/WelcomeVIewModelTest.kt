@@ -2,7 +2,7 @@ package com.mskd.flux.screens.welcome
 
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
-import com.mskd.flux.data.tmdb.token.TokenProvider
+import com.mskd.flux.data.tmdb.token.TokenRepository
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData
 import io.kotest.matchers.shouldBe
@@ -14,12 +14,12 @@ class WelcomeVIewModelTest : FunSpec({
     fluxExtensions()
 
     lateinit var viewModel: WelcomeViewModel
-    lateinit var tokenProvider: TokenProvider
+    lateinit var tokenRepository: TokenRepository
 
     beforeTest {
 
-        tokenProvider = mockk(relaxed = true)
-        viewModel = WelcomeViewModel(tokenProvider = tokenProvider)
+        tokenRepository = mockk(relaxed = true)
+        viewModel = WelcomeViewModel(tokenRepository = tokenRepository)
 
     }
 
@@ -119,11 +119,11 @@ class WelcomeVIewModelTest : FunSpec({
             )
         ) { testCase ->
 
-            tokenProvider = mockk(relaxed = true) {
+            tokenRepository = mockk(relaxed = true) {
                 every { tokenRequested } returns testCase.tokenRequested
             }
 
-            viewModel = WelcomeViewModel(tokenProvider = tokenProvider)
+            viewModel = WelcomeViewModel(tokenRepository = tokenRepository)
 
             viewModel.event.test {
 

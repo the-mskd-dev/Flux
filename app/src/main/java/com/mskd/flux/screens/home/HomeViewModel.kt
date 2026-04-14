@@ -76,11 +76,6 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             syncCatalog(manualSync = false)
         }
-
-        viewModelScope.launch {
-            if (tokenProvider.getToken().isBlank())
-                _snackbarState.update { it.copy(show = true) }
-        }
     }
 
     fun handleIntent(intent: HomeIntent) = viewModelScope.launch {

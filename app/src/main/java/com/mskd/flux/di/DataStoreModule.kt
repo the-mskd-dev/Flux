@@ -48,7 +48,7 @@ object DataStoreModule {
 
     @Provides
     @Singleton
-    fun provideTokenProvider(@ApplicationContext context: Context) : TokenRepository {
+    fun provideTokenRepository(@ApplicationContext context: Context) : TokenRepository {
         return TokenRepositoryImp(tokenDataStore = context.tokenDatastore)
     }
 

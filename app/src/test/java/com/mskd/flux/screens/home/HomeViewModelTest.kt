@@ -2,11 +2,13 @@ package com.mskd.flux.screens.home
 
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
+import com.mskd.flux.data.repository.snackbars.SnackbarRepository
 import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.data.tmdb.token.TokenRepository
 import com.mskd.flux.mockups.FakeCatalogRepository
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.ScreenState
+import com.mskd.flux.utils.FluxSnackbar
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData
 import io.kotest.matchers.shouldBe
@@ -28,6 +30,7 @@ class HomeViewModelTest : FunSpec({
     lateinit var catalogRepository: FakeCatalogRepository
     lateinit var userRepository: UserRepository
     lateinit var tokenRepository: TokenRepository
+    lateinit var snackbarRepository: SnackbarRepository
 
     // Mocked flows
     val dataStoreFlow = MutableStateFlow(UserRepository.State())
@@ -39,9 +42,11 @@ class HomeViewModelTest : FunSpec({
         tokenRepository = mockk(relaxed = true) {
             coEvery { flow } returns tokenFlow
         }
-
         userRepository = mockk(relaxed = true) {
             every { flow } returns dataStoreFlow
+        }
+        snackbarRepository = mockk(relaxed = true) {
+            coEvery { canShow(any()) } returns MutableStateFlow(true)
         }
 
     }
@@ -52,12 +57,12 @@ class HomeViewModelTest : FunSpec({
             HomeTestCases.InitialState(
                 description = "without token",
                 tokenValue = "",
-                expectedSnackbarState = HomeUiState.SnackbarState.Token
+                expectedSnackbarState = FluxSnackbar.Token
             ),
             HomeTestCases.InitialState(
                 description = "with token",
                 tokenValue = "token",
-                expectedSnackbarState = HomeUiState.SnackbarState.Tutorial
+                expectedSnackbarState = FluxSnackbar.Tutorial
             )
         ) { testCase ->
 
@@ -66,7 +71,8 @@ class HomeViewModelTest : FunSpec({
             viewModel = HomeViewModel(
                 repository = catalogRepository,
                 tokenRepository = tokenRepository,
-                userRepository = userRepository
+                userRepository = userRepository,
+                snackbarRepository = snackbarRepository
             )
 
             viewModel.uiState.test {
@@ -90,7 +96,8 @@ class HomeViewModelTest : FunSpec({
         viewModel = HomeViewModel(
             repository = catalogRepository,
             tokenRepository = tokenRepository,
-            userRepository = userRepository
+            userRepository = userRepository,
+            snackbarRepository = snackbarRepository
         )
 
         viewModel.uiState.test {
@@ -99,7 +106,7 @@ class HomeViewModelTest : FunSpec({
             initialState.artworks shouldBe MediaMockups.artworks
             initialState.lastWatchedMediaIds shouldBe emptyList()
             initialState.isRefreshing shouldBe false
-            initialState.snackbarState shouldBe HomeUiState.SnackbarState.Tutorial
+            initialState.snackbarState shouldBe FluxSnackbar.Tutorial
 
             cancelAndConsumeRemainingEvents()
         }
@@ -111,7 +118,8 @@ class HomeViewModelTest : FunSpec({
         viewModel = HomeViewModel(
             repository = catalogRepository,
             tokenRepository = tokenRepository,
-            userRepository = userRepository
+            userRepository = userRepository,
+            snackbarRepository = snackbarRepository
         )
 
         // Mock
@@ -144,7 +152,8 @@ class HomeViewModelTest : FunSpec({
         viewModel = HomeViewModel(
             repository = catalogRepository,
             tokenRepository = tokenRepository,
-            userRepository = userRepository
+            userRepository = userRepository,
+            snackbarRepository = snackbarRepository
         )
 
         viewModel.handleIntent(HomeIntent.SyncCatalog)
@@ -163,7 +172,8 @@ class HomeViewModelTest : FunSpec({
         viewModel = HomeViewModel(
             repository = catalogRepository,
             tokenRepository = tokenRepository,
-            userRepository = userRepository
+            userRepository = userRepository,
+            snackbarRepository = snackbarRepository
         )
 
         coVerify(exactly = 1) {
@@ -179,7 +189,8 @@ class HomeViewModelTest : FunSpec({
         viewModel = HomeViewModel(
             repository = catalogRepository,
             tokenRepository = tokenRepository,
-            userRepository = userRepository
+            userRepository = userRepository,
+            snackbarRepository = snackbarRepository
         )
 
         coVerify(exactly = 0) {

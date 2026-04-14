@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.mskd.flux.BuildConfig
 import com.mskd.flux.data.repository.catalog.CatalogRepository
 import com.mskd.flux.data.tmdb.TMDBService
-import com.mskd.flux.data.tmdb.token.TokenProvider
+import com.mskd.flux.data.tmdb.token.TokenRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 @HiltViewModel(assistedFactory = TokenViewModel.Factory::class)
 class TokenViewModel @AssistedInject constructor(
     @Assisted val fromSettings: Boolean,
-    private val tokenProvider: TokenProvider,
+    private val tokenRepository: TokenRepository,
     private val tmdbService: TMDBService,
     private val catalogRepository: CatalogRepository
 ) : ViewModel() {
@@ -39,7 +39,7 @@ class TokenViewModel @AssistedInject constructor(
 
     init {
         viewModelScope.launch {
-            val token = tokenProvider.getToken().ifBlank { if (BuildConfig.DEBUG) BuildConfig.TMDB_TOKEN else "" }
+            val token = tokenRepository.getToken().ifBlank { if (BuildConfig.DEBUG) BuildConfig.TMDB_TOKEN else "" }
             setToken(token)
         }
     }
@@ -64,7 +64,7 @@ class TokenViewModel @AssistedInject constructor(
 
         try {
 
-            tokenProvider.saveToken(_uiState.value.token)
+            tokenRepository.saveToken(_uiState.value.token)
 
             val authentication = tmdbService.authenticate()
 
@@ -79,7 +79,7 @@ class TokenViewModel @AssistedInject constructor(
 
             } else {
 
-                tokenProvider.clearToken()
+                tokenRepository.clearToken()
                 _uiState.update { it.copy(message = TokenMessage.Error) }
 
             }
@@ -87,7 +87,7 @@ class TokenViewModel @AssistedInject constructor(
         } catch (e: Exception) {
 
             e.printStackTrace()
-            tokenProvider.clearToken()
+            tokenRepository.clearToken()
             _uiState.update { it.copy(message = TokenMessage.Error) }
 
         }
@@ -101,7 +101,7 @@ class TokenViewModel @AssistedInject constructor(
     }
 
     private suspend fun onCancelTap() {
-        tokenProvider.dontRequestToken()
+        tokenRepository.dontRequestToken()
         _event.emit(TokenEvent.NavigateToHomeScreen)
     }
 

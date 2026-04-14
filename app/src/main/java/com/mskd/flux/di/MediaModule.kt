@@ -6,7 +6,7 @@ import com.mskd.flux.data.source.media.MediaSource
 import com.mskd.flux.data.source.media.MediaSourceDBImpl
 import com.mskd.flux.data.source.media.MediaSourceTMDBImpl
 import com.mskd.flux.data.tmdb.TMDBService
-import com.mskd.flux.data.tmdb.token.TokenProvider
+import com.mskd.flux.data.tmdb.token.TokenRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -38,10 +38,10 @@ object MediaModule {
     @MediaDataSourceTMDB
     fun provideMediaDataSourceTMDB(
         tmdbService: TMDBService,
-        tokenProvider: TokenProvider,
+        tokenRepository: TokenRepository,
         @ApplicationContext context: Context
     ) : MediaSource {
-        return MediaSourceTMDBImpl(tmdbService = tmdbService, tokenProvider = tokenProvider, context = context)
+        return MediaSourceTMDBImpl(tmdbService = tmdbService, tokenRepository = tokenRepository, context = context)
     }
 
 }

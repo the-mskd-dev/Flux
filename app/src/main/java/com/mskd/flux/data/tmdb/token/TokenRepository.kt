@@ -13,7 +13,7 @@ val Context.tokenDatastore by preferencesDataStore(
     )
 )
 
-interface TokenProvider {
+interface TokenRepository {
 
     val flow: Flow<String>
 

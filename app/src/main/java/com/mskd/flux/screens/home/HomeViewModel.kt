@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.mskd.flux.data.repository.catalog.CatalogRepository
 import com.mskd.flux.data.repository.snackbars.SnackbarRepository
 import com.mskd.flux.data.repository.user.UserRepository
-import com.mskd.flux.data.tmdb.token.TokenProvider
+import com.mskd.flux.data.tmdb.token.TokenRepository
 import com.mskd.flux.model.ScreenState
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.screens.home.HomeEvent.NavigateToArtwork
@@ -30,7 +30,7 @@ import kotlin.time.Duration.Companion.days
 class HomeViewModel @Inject constructor(
     private val repository: CatalogRepository,
     private val userRepository: UserRepository,
-    private val tokenProvider: TokenProvider,
+    private val tokenRepository: TokenRepository,
     private val snackbarRepository: SnackbarRepository
 ): ViewModel() {
 
@@ -42,7 +42,7 @@ class HomeViewModel @Inject constructor(
     val uiState: StateFlow<HomeUiState> = combine(
         repository.flow,
         userRepository.flow,
-        tokenProvider.flow,
+        tokenRepository.flow,
         _dismissedSnackbar
     ) { catalog, preferences, token, dismissedSnackbar ->
 

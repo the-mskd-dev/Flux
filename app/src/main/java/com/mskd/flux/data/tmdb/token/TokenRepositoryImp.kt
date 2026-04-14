@@ -13,9 +13,9 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 import java.io.IOException
 
-class TokenProviderImp(
+class TokenRepositoryImp(
     private val tokenDataStore: DataStore<Preferences>
-) : TokenProvider {
+) : TokenRepository {
 
     companion object {
         private val TOKEN_KEY = stringPreferencesKey("TMBD_TOKEN")

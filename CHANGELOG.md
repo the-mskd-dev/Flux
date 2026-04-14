@@ -1,4 +1,3 @@
-## Version 1.1.0
+## Version 1.1.1
 
-- TMDB Token is now optional (but it's a shame not to use it)
-- Add access to other files (those whose information TMDB was unable to retrieve)
+- Show snackbar to ask for TMDB Token and file naming

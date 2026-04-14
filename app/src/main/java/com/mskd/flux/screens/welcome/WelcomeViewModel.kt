@@ -2,7 +2,7 @@ package com.mskd.flux.screens.welcome
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mskd.flux.data.tmdb.token.TokenProvider
+import com.mskd.flux.data.tmdb.token.TokenRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class WelcomeViewModel @Inject constructor(
-    private val tokenProvider: TokenProvider
+    private val tokenRepository: TokenRepository
 ) : ViewModel() {
 
     private val _event = MutableSharedFlow<WelcomeEvent>()
@@ -69,7 +69,7 @@ class WelcomeViewModel @Inject constructor(
 
     private suspend fun onPermissionGranted() {
 
-        if (tokenProvider.tokenRequested) {
+        if (tokenRepository.tokenRequested) {
             _event.emit(WelcomeEvent.NavigateToToken)
         } else {
             _event.emit(WelcomeEvent.NavigateToLibrary)

@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.preferencesDataStore
+import kotlinx.coroutines.flow.Flow
 
 val Context.tokenDatastore by preferencesDataStore(
     name = "TokenDataStore",
@@ -12,7 +13,9 @@ val Context.tokenDatastore by preferencesDataStore(
     )
 )
 
-interface TokenProvider {
+interface TokenRepository {
+
+    val flow: Flow<String>
 
     suspend fun getToken(): String
     suspend fun saveToken(token: String)

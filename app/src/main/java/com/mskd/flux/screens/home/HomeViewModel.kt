@@ -38,7 +38,7 @@ class HomeViewModel @Inject constructor(
     val event = _event.asSharedFlow()
 
     private val _dismissedSnackbar = MutableStateFlow<Set<FluxSnackbar>>(emptySet())
-    
+
     val uiState: StateFlow<HomeUiState> = combine(
         repository.flow,
         userRepository.flow,
@@ -75,6 +75,11 @@ class HomeViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             syncCatalog(manualSync = false)
+        }
+
+        viewModelScope.launch {
+            if (tokenProvider.getToken().isBlank())
+                _snackbarState.update { it.copy(show = true) }
         }
     }
 

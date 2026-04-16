@@ -14,6 +14,7 @@ plugins {
 // Local properties
 val localPropertiesFile = rootProject.file("local.properties")
 val localProperties = Properties()
+
 if (localPropertiesFile.exists()) {
     localProperties.load(FileInputStream(localPropertiesFile))
 }
@@ -21,6 +22,7 @@ if (localPropertiesFile.exists()) {
 // Keystore properties
 val keystorePropertiesFile = rootProject.file("keystore.properties")
 val keystoreProperties = Properties()
+
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 }
@@ -38,9 +40,7 @@ configure<ApplicationExtension> {
         versionName = "1.1.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        vectorDrawables {
-            useSupportLibrary = true
-        }
+        vectorDrawables { useSupportLibrary = true }
 
         val tmdbToken = localProperties.getProperty("tmdb_token") ?: ""
         buildConfigField("String", "TMDB_TOKEN", "\"$tmdbToken\"")
@@ -51,14 +51,14 @@ configure<ApplicationExtension> {
             create("config") {
                 keyAlias = keystoreProperties["keyAlias"]?.toString() ?: ""
                 keyPassword = keystoreProperties["keyPassword"]?.toString() ?: ""
-                storeFile = keystoreProperties["storeFile"]?.toString()?.let { rootProject.file(it) }
+                storeFile =
+                        keystoreProperties["storeFile"]?.toString()?.let { rootProject.file(it) }
                 storePassword = keystoreProperties["storePassword"]?.toString() ?: ""
             }
         }
     }
 
     buildTypes {
-
         release {
             if (signingConfigs.findByName("config") != null) {
                 signingConfig = signingConfigs.getByName("config")
@@ -68,8 +68,8 @@ configure<ApplicationExtension> {
             isShrinkResources = true
 
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                    getDefaultProguardFile("proguard-android-optimize.txt"),
+                    "proguard-rules.pro"
             )
         }
 
@@ -92,11 +92,10 @@ configure<ApplicationExtension> {
             isShrinkResources = true
 
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                    getDefaultProguardFile("proguard-android-optimize.txt"),
+                    "proguard-rules.pro"
             )
         }
-
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
@@ -120,12 +119,9 @@ configure<ApplicationExtension> {
         includeInApk = false
         includeInBundle = false
     }
-
 }
 
-kotlin {
-    jvmToolchain(21)
-}
+kotlin { jvmToolchain(21) }
 
 dependencies {
 
@@ -189,7 +185,6 @@ dependencies {
     // Debug
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-
 }
 
 tasks.withType<Test>().configureEach {

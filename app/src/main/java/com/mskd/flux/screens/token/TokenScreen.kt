@@ -99,7 +99,7 @@ fun TokenScreenContent(
 ) {
 
     FluxScaffold(
-        title = stringResource(R.string.tmdb_api_key),
+        title = stringResource(R.string.tmdb_api_token),
         onBackTap = if (state.showBackButton) { { sendIntent(TokenIntent.OnBackTap) } } else null,
         floatingActionButton = {
 
@@ -232,7 +232,7 @@ fun TokenTutorial() {
             Text.Annotated(
                 text = buildLinkedString(
                     template = stringResource(R.string.token_tutorial_step_2),
-                    stringResource(R.string.api_key) to Constants.TMDB.GET_API_KEY,
+                    stringResource(R.string.api_token) to Constants.TMDB.GET_API_TOKEN,
                 )
             )
 

@@ -1,3 +1,3 @@
-## Version 1.1.1
+## Version 1.X.X
 
-- Show snackbar to ask for TMDB Token and file naming
+- Update dependencies

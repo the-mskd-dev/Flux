@@ -95,7 +95,7 @@ fun UnknownScreenContent(
 ) {
 
     FluxScaffold(
-        title = stringResource(R.string.my_files),
+        title = stringResource(R.string.other_files),
         onBackTap = { sendIntent(UnknownIntent.OnBackTap) }
     ) { innerPadding ->
 

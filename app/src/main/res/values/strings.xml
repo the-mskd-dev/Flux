@@ -93,7 +93,7 @@
     <string name="api_key">API key</string>
     <string name="start">Start</string>
     <string name="sources">Sources</string>
-    <string name="my_files">My files</string>
+    <string name="other_files">Other files</string>
     <string name="no_item">There are no items to display</string>
     <string name="skip">Skip</string>
     <string name="snackbar_add_api_key">Add your key to enjoy a better experience</string>

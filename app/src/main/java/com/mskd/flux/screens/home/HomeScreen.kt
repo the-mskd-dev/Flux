@@ -470,7 +470,7 @@ fun UnknownCategory(sendIntent: (HomeIntent) -> Unit) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = Ui.Space.MEDIUM, top = Ui.Space.LARGE),
-            text = stringResource(R.string.my_files),
+            text = stringResource(R.string.other_files),
             emphasized = true,
             color = MaterialTheme.colorScheme.onBackground
         )
@@ -490,7 +490,7 @@ fun UnknownCategory(sendIntent: (HomeIntent) -> Unit) {
                 modifier = Modifier.fillMaxSize(),
                 painter = foregroundPainter,
                 colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimaryContainer),
-                contentDescription = stringResource(R.string.my_files)
+                contentDescription = stringResource(R.string.other_files)
             )
 
         }

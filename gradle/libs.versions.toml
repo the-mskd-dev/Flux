@@ -6,10 +6,10 @@ ksp = "2.3.6"
 hiltPlugin = "2.59.2"
 
 # -- Android Core --
-coreKtx = "1.17.0"
+coreKtx = "1.18.0"
 lifecycle = "2.10.0"
-activityCompose = "1.12.4"
-kotlinxSerializationCore = "1.10.0"
+activityCompose = "1.13.0"
+kotlinxSerializationCore = "1.11.0"
 
 # -- Compose & UI --
 composeBom = "2026.02.00"

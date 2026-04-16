@@ -19,10 +19,9 @@ adaptive = "1.2.0"
 constraintLayout = "1.1.1"
 
 # -- Navigation --
-navCompose = "2.9.6"
-nav3Core = "1.0.1"
+nav3Core = "1.1.0"
 lifecycleNav3 = "2.10.0"
-material3AdaptiveNav3 = "1.3.0-alpha08"
+material3AdaptiveNav3 = "1.3.0-alpha10"
 
 # -- Architecture & DI --
 hilt = "2.59.2"

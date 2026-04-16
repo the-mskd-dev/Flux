@@ -135,7 +135,7 @@ fun SettingsContent(
             SettingsSection {
 
                 SettingsItem(
-                    text = stringResource(R.string.tmdb_api_key),
+                    text = stringResource(R.string.tmdb_api_token),
                     value = "",
                     onTap = { sendIntent(SettingsIntent.OnTokenTap) }
                 )

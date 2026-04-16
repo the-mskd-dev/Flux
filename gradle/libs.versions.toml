@@ -12,10 +12,9 @@ activityCompose = "1.13.0"
 kotlinxSerializationCore = "1.11.0"
 
 # -- Compose & UI --
-composeBom = "2026.02.00"
-composeUiText = "1.10.3"
-material3 = "1.5.0-alpha14"
-materialIcons = "1.7.0"
+composeBom = "2026.03.01"
+composeUiText = "1.10.6"
+material3 = "1.5.0-alpha17"
 adaptive = "1.2.0"
 constraintLayout = "1.1.1"
 

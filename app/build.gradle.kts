@@ -29,13 +29,13 @@ if (keystorePropertiesFile.exists()) {
 
 configure<ApplicationExtension> {
     namespace = "com.mskd.flux"
-    compileSdk = 36
+    compileSdk = 37
     ndkVersion = "29.0.13113456"
 
     defaultConfig {
         applicationId = "com.mskd.flux"
         minSdk = 29
-        targetSdk = 36
+        targetSdk = 37
         versionCode = 9
         versionName = "1.1.2"
 

@@ -1,5 +1,5 @@
-<p><strong>Flow</strong> is a modern and elegant video player designed to transform your local files into an immersive library.</p>
-<p><strong>Why choose Flow?</strong></p>
+<p><strong>Flux</strong> is a modern and elegant video player designed to transform your local files into an immersive library.</p>
+<p><strong>Why choose Flux?</strong></p>
 <ul>
 <li><p><strong>Organized Library:</strong> Movie, show, and anime information is automatically retrieved via the TMDB service, allowing you to organize your media into a simple and efficient library.</p>
 </li>
@@ -10,5 +10,5 @@
 <li><p><strong>Local &amp; Private:</strong> No accounts, no servers, no trackers. Your data and viewing habits stay strictly on your device.</p>
 </li>
 </ul>
-<p>Whether you are an anime fan or a movie buff, Flow breathes new life into your locally stored video collection.</p>
-<p><strong>Note:</strong> Flow is an Open Source project developed by a passionate Android enthusiast dedicated to providing a pleasant, simple, and high-performance experience.</p>
+<p>Whether you are an anime fan or a movie buff, Flux breathes new life into your locally stored video collection.</p>
+<p><strong>Note:</strong> Flux is an Open Source project developed by a passionate Android enthusiast dedicated to providing a pleasant, simple, and high-performance experience.</p>

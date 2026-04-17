@@ -34,9 +34,9 @@ fun PlayerSideEffects(
     val originalOrientation = remember { activity?.requestedOrientation }
     var wasPlayingBeforeBackground by rememberSaveable { mutableStateOf(false) }
 
-    // Set landscape and reset orientation on dispose
+    // Set force screen on and reset orientation on dispose
     DisposableEffect(Unit) {
-        windowStateHolder.setLandscape()
+        windowStateHolder.forceScreenOn()
         onDispose {
             windowStateHolder.updateSystemBars(true)
             originalOrientation?.let { windowStateHolder.resetOrientation(originalOrientation) }

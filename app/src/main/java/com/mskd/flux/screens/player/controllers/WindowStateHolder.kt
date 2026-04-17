@@ -15,8 +15,8 @@ class WindowStateHolder(context: Context) {
 
     private val activity = context.findActivity()
 
-    fun setLandscape() {
-        activity?.setAppInLandscape()
+    fun forceScreenOn() {
+        //activity?.setAppInLandscape()
         activity?.forceScreenOn(true)
     }
 

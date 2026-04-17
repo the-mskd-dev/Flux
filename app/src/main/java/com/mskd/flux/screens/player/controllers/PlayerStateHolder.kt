@@ -45,7 +45,7 @@ import java.util.Locale
 @Stable
 class PlayerStateHolder(
     private val context: Context,
-    private val scope: CoroutineScope,
+    private val scope: CoroutineScope
 ) : Player.Listener {
 
     //region States
@@ -286,11 +286,11 @@ class PlayerStateHolder(
         player.seekTo(progress)
     }
 
-    fun playMedia(media: Media?, progress: Long? = null) {
+    fun playMedia(media: Media?) {
 
         if (media != null && media.mediaId != currentMediaId) {
             player.setMediaItem(MediaItem.fromUri(media.file.path.toUri()))
-            player.seekTo(progress ?: media.currentTime)
+            player.seekTo(media.currentTime)
             player.prepare()
             currentMediaId = media.mediaId
             startProgressMonitoring()

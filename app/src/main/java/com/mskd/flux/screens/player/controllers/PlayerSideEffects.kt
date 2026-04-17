@@ -24,7 +24,6 @@ import com.mskd.flux.screens.player.PlayerIntent.UpdateTracks
 import com.mskd.flux.screens.player.PlayerUiState
 import com.mskd.flux.screens.player.PlayerViewModel
 import com.mskd.flux.ui.component.LifecycleComponent
-import com.mskd.flux.utils.extensions.changeBrightness
 import com.mskd.flux.utils.extensions.findActivity
 import kotlinx.coroutines.launch
 
@@ -47,6 +46,7 @@ fun PlayerSideEffects(
         windowStateHolder.forceScreenOn()
         onDispose {
             windowStateHolder.updateSystemBars(true)
+            windowStateHolder.resetBrightness()
             originalOrientation?.let { windowStateHolder.resetOrientation(originalOrientation) }
         }
     }
@@ -94,7 +94,7 @@ fun PlayerSideEffects(
                             }
                         }
                         is PlayerEvent.ChangeBrightness -> {
-                            activity?.changeBrightness(delta = event.delta)?.let { brightness ->
+                            windowStateHolder.changeBrightness(delta = event.delta)?.let { brightness ->
                                 viewModel.handleIntent(UpdateAmbientOverlay(type = PlayerUiState.AmbientOverlay.Type.BRIGHTNESS, value = brightness))
                             }
                         }

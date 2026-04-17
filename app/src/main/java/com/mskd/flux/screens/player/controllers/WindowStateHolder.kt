@@ -1,5 +1,6 @@
 package com.mskd.flux.screens.player.controllers
 
+import android.app.Activity
 import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -26,6 +27,28 @@ class WindowStateHolder(context: Context) {
 
     fun updateSystemBars(show: Boolean) {
         if (show) activity?.showSystemBars() else activity?.hideSystemBars()
+    }
+
+    fun changeBrightness(delta: Float) : Int? {
+        return activity?.let {
+
+            val params = it.window.attributes
+            val current = if (params.screenBrightness < 0f) 0.5f else params.screenBrightness
+
+            params.screenBrightness = (current + delta).coerceIn(0f, 1f)
+            it.window.attributes = params
+
+            (params.screenBrightness * 100).toInt()
+
+        }
+    }
+
+    fun resetBrightness() {
+        activity?.let {
+            val params = it.window.attributes
+            params.screenBrightness = -1f
+            it.window.attributes = params
+        }
     }
 
 }

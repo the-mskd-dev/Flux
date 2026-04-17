@@ -87,7 +87,7 @@
     <string name="token_tutorial_step_2">Retrieve your %1$s and copy it into the field below.</string>
     <string name="token_validated">API token saved</string>
     <string name="token_error">Your token is invalid</string>
-    <string name="token_input">Enter your API Read Access Token</string>
+    <string name="token_input">API Read Access Token</string>
     <string name="log_in">Log in</string>
     <string name="sign_up">sign up</string>
     <string name="api_token">API Read Access Token</string>

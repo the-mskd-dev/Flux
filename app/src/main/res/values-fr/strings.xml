@@ -80,7 +80,7 @@
     <string name="token_tutorial_step_2">Récupérez votre %1$s et copiez-la dans le champ ci-dessous.</string>
     <string name="token_validated">Jeton d\'accès API enregistrée</string>
     <string name="token_error">Votre jeton d\'accès API n\'est pas valide</string>
-    <string name="token_input">Saissisez votre jeton d\'accès API</string>
+    <string name="token_input">Jeton d\'accès API</string>
     <string name="log_in">Connectez-vous</string>
     <string name="sign_up">inscrivez-vous</string>
     <string name="api_token">Jeton d\'accès en lecture à l\'API</string>

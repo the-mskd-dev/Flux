@@ -14,7 +14,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -33,6 +36,7 @@ import com.mskd.flux.ui.component.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.LandscapePreview
+import com.mskd.flux.utils.extensions.minToMs
 
 @Composable
 fun BoxScope.PlayerAmbientOverlay(ambientOverlay: () -> PlayerUiState.AmbientOverlay?) {
@@ -83,9 +87,13 @@ fun BoxScope.PlayerAmbientOverlay(ambientOverlay: () -> PlayerUiState.AmbientOve
                 }
             }
 
-            Text.Label.Large(
-                text = value.toString(),
-                color = Color.White
+            LinearProgressIndicator(
+                modifier = Modifier.width(100.dp),
+                progress = { value / 100f },
+                color = Color.White,
+                trackColor = Color.Black,
+                gapSize = 0.dp,
+                drawStopIndicator = {}
             )
 
         }

@@ -25,7 +25,6 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.Player
 import androidx.media3.common.text.Cue
-import androidx.media3.common.util.Log
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.ui.compose.ContentFrame
 import com.mskd.flux.R
@@ -41,7 +40,6 @@ import com.mskd.flux.screens.player.controllers.rememberWindowStateHolder
 import com.mskd.flux.ui.component.ErrorScreen
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.theme.Ui
-import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.enums.Side
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.seconds

@@ -6,8 +6,6 @@ import android.content.pm.ActivityInfo
 import android.view.WindowManager
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import com.mskd.flux.screens.player.PlayerIntent.UpdateAmbientOverlay
-import com.mskd.flux.screens.player.PlayerUiState
 
 fun Activity.hideSystemBars() {
 

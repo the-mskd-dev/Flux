@@ -7,7 +7,6 @@ import androidx.compose.ui.platform.LocalContext
 import com.mskd.flux.utils.extensions.findActivity
 import com.mskd.flux.utils.extensions.forceScreenOn
 import com.mskd.flux.utils.extensions.hideSystemBars
-import com.mskd.flux.utils.extensions.setAppInLandscape
 import com.mskd.flux.utils.extensions.setAppOrientation
 import com.mskd.flux.utils.extensions.showSystemBars
 

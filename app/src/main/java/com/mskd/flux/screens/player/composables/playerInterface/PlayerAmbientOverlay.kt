@@ -1,6 +1,5 @@
 package com.mskd.flux.screens.player.composables.playerInterface
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
@@ -33,7 +32,6 @@ import com.mskd.flux.ui.component.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.LandscapePreview
-import kotlin.math.roundToInt
 
 @Composable
 fun BoxScope.PlayerAmbientOverlay(ambientOverlay: () -> PlayerUiState.AmbientOverlay?) {

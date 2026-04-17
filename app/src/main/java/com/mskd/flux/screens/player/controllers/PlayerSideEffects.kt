@@ -14,7 +14,13 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.mskd.flux.screens.player.PlayerEvent
-import com.mskd.flux.screens.player.PlayerIntent.*
+import com.mskd.flux.screens.player.PlayerIntent.OnTrackSelected
+import com.mskd.flux.screens.player.PlayerIntent.SaveTime
+import com.mskd.flux.screens.player.PlayerIntent.SetPlayingStatus
+import com.mskd.flux.screens.player.PlayerIntent.ShowNextEpisode
+import com.mskd.flux.screens.player.PlayerIntent.TogglePlayButton
+import com.mskd.flux.screens.player.PlayerIntent.UpdateAmbientOverlay
+import com.mskd.flux.screens.player.PlayerIntent.UpdateTracks
 import com.mskd.flux.screens.player.PlayerUiState
 import com.mskd.flux.screens.player.PlayerViewModel
 import com.mskd.flux.ui.component.LifecycleComponent

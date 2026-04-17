@@ -329,7 +329,7 @@ class PlayerViewModel @AssistedInject constructor(
         }
 
         ambientResetJob = viewModelScope.launch {
-            delay(2000)
+            delay(1000)
             _ambientOverlayState.update { null }
         }
     }

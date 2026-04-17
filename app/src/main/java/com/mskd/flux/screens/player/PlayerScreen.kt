@@ -171,7 +171,8 @@ fun PlayerContent(
                             Side.RIGHT -> sendIntent(PlayerIntent.OnVolumeChange(delta))
                         }
                         change.consume()
-                    }
+                    },
+
                 )
             }
     ) {

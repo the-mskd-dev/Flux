@@ -6,6 +6,8 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -51,8 +53,15 @@ fun BoxScope.PlayerAmbientOverlay(ambientOverlay: () -> PlayerUiState.AmbientOve
     AnimatedVisibility(
         modifier = Modifier.align(Alignment.Center),
         visible = overlay != null,
-        enter = fadeIn(animationSpec = spring(stiffness = Spring.StiffnessLow)),
-        exit = fadeOut(animationSpec = spring(stiffness = Spring.StiffnessLow)),
+        //enter = fadeIn(animationSpec = spring(stiffness = Spring.StiffnessLow)),
+        //exit = fadeOut(animationSpec = spring(stiffness = Spring.StiffnessLow)),
+        enter = scaleIn(
+            animationSpec = spring(
+                dampingRatio = Spring.DampingRatioMediumBouncy,
+                stiffness = Spring.StiffnessLow
+            )
+        ),
+        exit = scaleOut(),
         label = "Visibility ambient overlay"
     ) {
 

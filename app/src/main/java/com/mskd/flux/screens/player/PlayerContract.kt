@@ -11,7 +11,8 @@ data class PlayerUiState(
     val playerForward: Int = 10,
     val controls: Controls = Controls(),
     val tracks: Tracks = Tracks(),
-    val seekOverlay: SeekOverlay? = null
+    val seekOverlay: SeekOverlay? = null,
+    val progress: Long = 0L
 ) {
 
     val media: Media? get() = (screen as? PlayerScreen.Content)?.media

@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun PlayerSideEffects(
     viewModel: PlayerViewModel,
-    stateHolder: PlayerStateHolder,
+    playerStateHolder: PlayerStateHolder,
     windowStateHolder: WindowStateHolder,
     showInterface: Boolean,
     onBack: () -> Unit
@@ -38,6 +38,7 @@ fun PlayerSideEffects(
     DisposableEffect(Unit) {
         windowStateHolder.forceScreenOn()
         onDispose {
+            viewModel.handleIntent(PlayerIntent.UpdateProgress(playerStateHolder.player.currentPosition))
             windowStateHolder.updateSystemBars(true)
             originalOrientation?.let { windowStateHolder.resetOrientation(originalOrientation) }
         }
@@ -49,7 +50,7 @@ fun PlayerSideEffects(
     }
 
     // Observe tracks
-    val tracks by stateHolder.tracks.collectAsStateWithLifecycle()
+    val tracks by playerStateHolder.tracks.collectAsStateWithLifecycle()
     LaunchedEffect(tracks) {
         viewModel.handleIntent(PlayerIntent.UpdateTracks(tracks))
     }
@@ -60,7 +61,7 @@ fun PlayerSideEffects(
 
             // Events from SH
             launch {
-                stateHolder.event.collect { event ->
+                playerStateHolder.event.collect { event ->
                     when (event) {
                         is PlayerStateHolder.Event.IsPlaying -> viewModel.handleIntent(PlayerIntent.SetPlayingStatus(isPlaying = event.isPlaying))
                         is PlayerStateHolder.Event.SelectedTrack -> viewModel.handleIntent(PlayerIntent.OnTrackSelected(event.track))
@@ -74,12 +75,12 @@ fun PlayerSideEffects(
                 viewModel.event.collect { event ->
                     when (event) {
                         PlayerEvent.BackToPreviousScreen -> onBack()
-                        is PlayerEvent.SeekRewind -> stateHolder.onFastRewind(event.time)
-                        is PlayerEvent.SeekForward -> stateHolder.onFastForward(event.time)
-                        is PlayerEvent.UpdateProgress -> stateHolder.updateProgress(event.progress)
-                        is PlayerEvent.SelectTrack -> stateHolder.selectTrack(event.track)
-                        PlayerEvent.TogglePlayButton -> stateHolder.togglePlayButton()
-                        PlayerEvent.SaveTimeRequested -> viewModel.handleIntent(PlayerIntent.SaveTime(time = stateHolder.player.currentPosition))
+                        is PlayerEvent.SeekRewind -> playerStateHolder.onFastRewind(event.time)
+                        is PlayerEvent.SeekForward -> playerStateHolder.onFastForward(event.time)
+                        is PlayerEvent.UpdateProgress -> playerStateHolder.updateProgress(event.progress)
+                        is PlayerEvent.SelectTrack -> playerStateHolder.selectTrack(event.track)
+                        PlayerEvent.TogglePlayButton -> playerStateHolder.togglePlayButton()
+                        PlayerEvent.SaveTimeRequested -> viewModel.handleIntent(PlayerIntent.SaveTime(time = playerStateHolder.player.currentPosition))
                     }
                 }
             }
@@ -88,12 +89,12 @@ fun PlayerSideEffects(
 
     LifecycleComponent(
         onBackground = {
-            wasPlayingBeforeBackground = stateHolder.player.isPlaying
+            wasPlayingBeforeBackground = playerStateHolder.player.isPlaying
             if (wasPlayingBeforeBackground) {
                 viewModel.handleIntent(PlayerIntent.TogglePlayButton)
             }
 
-            viewModel.handleIntent(PlayerIntent.SaveTime(time = stateHolder.player.currentPosition))
+            viewModel.handleIntent(PlayerIntent.SaveTime(time = playerStateHolder.player.currentPosition))
         },
         onForeground = {
             if (wasPlayingBeforeBackground) {

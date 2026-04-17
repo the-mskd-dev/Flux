@@ -69,6 +69,8 @@ class PlayerViewModel @AssistedInject constructor(
     private val _tracksState = MutableStateFlow(PlayerUiState.Tracks())
     private val _seekOverlayState = MutableStateFlow<PlayerUiState.SeekOverlay?>(null)
 
+    private val _progress = MutableStateFlow<Long?>(null)
+
     val uiState: StateFlow<PlayerUiState> = combine(
         artworkRepository.flow,
         settingsRepository.flow,
@@ -76,6 +78,7 @@ class PlayerViewModel @AssistedInject constructor(
         _tracksState,
         _seekOverlayState,
         _mediaId,
+        _progress
     ) { flows ->
 
         val artwork = flows[0] as ArtworkRepository.State
@@ -84,6 +87,7 @@ class PlayerViewModel @AssistedInject constructor(
         val tracks = flows[3] as PlayerUiState.Tracks
         val seekOverlay = flows[4] as PlayerUiState.SeekOverlay?
         val id = flows[5] as Long
+        val progress = flows[6] as? Long
 
         val media = artwork.movie ?: artwork.episodes.find { it.id == id }
 
@@ -93,7 +97,8 @@ class PlayerViewModel @AssistedInject constructor(
             playerRewind = settings.playerRewindValue,
             controls = controls,
             tracks = tracks,
-            seekOverlay = seekOverlay
+            seekOverlay = seekOverlay,
+            progress = progress ?: media?.currentTime ?: 0L
         )
 
     }.stateIn(
@@ -152,6 +157,7 @@ class PlayerViewModel @AssistedInject constructor(
     }
 
     private suspend fun updateProgress(progress: Long) {
+        _progress.update { progress }
         _event.send(PlayerEvent.UpdateProgress(progress = progress))
     }
 

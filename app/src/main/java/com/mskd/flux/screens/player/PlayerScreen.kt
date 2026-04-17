@@ -61,7 +61,7 @@ fun PlayerScreen(
 
     PlayerSideEffects(
         viewModel = viewModel,
-        stateHolder = playerStateHolder,
+        playerStateHolder = playerStateHolder,
         windowStateHolder = windowStateHolder,
         showInterface = state.controls.showInterface,
         onBack = onBack
@@ -69,7 +69,7 @@ fun PlayerScreen(
 
     LaunchedEffect(state.screen) {
         (state.screen as? PlayerScreen.Content)?.let {
-            playerStateHolder.playMedia(it.media)
+            playerStateHolder.playMedia(media = it.media, progress = state.progress)
         }
     }
 

@@ -1,0 +1,7 @@
+<h3>Version 1.2.0</h3>
+
+<ul>
+<li>Orientation libre dans le lecteur</li>
+<li>Ajustement du volume et de la luminosité par glissement dans le lecteur</li>
+<li>Mise à jour des dépendences</li>
+</ul>

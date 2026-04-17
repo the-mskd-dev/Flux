@@ -1,0 +1,7 @@
+<h3>Version 1.2.0</h3>
+
+<ul>
+<li>Free orientation within the player</li>
+<li>Adjust volume and brightness by swipe within the player</li>
+<li>Update dependencies</li>
+</ul>

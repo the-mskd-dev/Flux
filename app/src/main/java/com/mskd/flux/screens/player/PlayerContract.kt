@@ -11,7 +11,8 @@ data class PlayerUiState(
     val playerForward: Int = 10,
     val controls: Controls = Controls(),
     val tracks: Tracks = Tracks(),
-    val seekOverlay: SeekOverlay? = null
+    val seekOverlay: SeekOverlay? = null,
+    val edgeOverlay: EdgeOverlay? = null,
 ) {
 
     val media: Media? get() = (screen as? PlayerScreen.Content)?.media
@@ -37,6 +38,14 @@ data class PlayerUiState(
         val type: Type
     ) {
         enum class Type { REWIND, FORWARD }
+    }
+
+    @Immutable
+    data class EdgeOverlay(
+        val value: Float,
+        val type: Type
+    ) {
+        enum class Type { LUMINOSITY, VOLUME }
     }
 
     sealed class SettingsSheet {
@@ -75,6 +84,7 @@ sealed class PlayerIntent {
     data class PlayNextEpisode(val episode: Episode) : PlayerIntent()
     data object CancelNextEpisode : PlayerIntent()
     data class OnVolumeChange(val delta: Float) : PlayerIntent()
+    data class UpdateEdgeOverlay(val type: PlayerUiState.EdgeOverlay.Type, val value: Float) : PlayerIntent()
 }
 
 sealed class PlayerEvent {

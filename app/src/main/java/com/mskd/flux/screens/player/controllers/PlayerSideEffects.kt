@@ -16,6 +16,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.mskd.flux.screens.player.PlayerEvent
 import com.mskd.flux.screens.player.PlayerIntent
 import com.mskd.flux.screens.player.PlayerIntent.*
+import com.mskd.flux.screens.player.PlayerUiState
 import com.mskd.flux.screens.player.PlayerViewModel
 import com.mskd.flux.ui.component.LifecycleComponent
 import com.mskd.flux.utils.extensions.findActivity
@@ -81,7 +82,10 @@ fun PlayerSideEffects(
                         is PlayerEvent.SelectTrack -> stateHolder.selectTrack(event.track)
                         PlayerEvent.TogglePlayButton -> stateHolder.togglePlayButton()
                         PlayerEvent.SaveTimeRequested -> viewModel.handleIntent(SaveTime(time = stateHolder.player.currentPosition))
-                        is PlayerEvent.ChangeVolume -> stateHolder.changeVolume(event.delta)
+                        is PlayerEvent.ChangeVolume -> {
+                            val volume = stateHolder.changeVolume(event.delta)
+                            viewModel.handleIntent(UpdateEdgeOverlay(type = PlayerUiState.EdgeOverlay.Type.VOLUME, value = volume))
+                        }
                     }
                 }
             }

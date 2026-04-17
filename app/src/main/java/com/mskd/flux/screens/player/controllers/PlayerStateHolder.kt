@@ -286,8 +286,9 @@ class PlayerStateHolder(
         player.seekTo(progress)
     }
 
-    fun changeVolume(delta: Float) {
+    fun changeVolume(delta: Float) : Float {
         player.volume = (player.volume + delta).coerceIn(0f, 1f)
+        return player.volume
     }
 
     fun playMedia(media: Media?) {

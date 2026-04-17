@@ -129,6 +129,7 @@ class PlayerViewModel @AssistedInject constructor(
             is PlayerIntent.CancelNextEpisode -> cancelNextEpisode()
             is PlayerIntent.PlayNextEpisode -> playNextEpisode(episode = intent.episode)
             is PlayerIntent.OnVolumeChange -> onVolumeChange(delta = intent.delta)
+            is PlayerIntent.OnBrightnessChange -> onBrightnessChange(delta = intent.delta)
             is PlayerIntent.UpdateAmbientOverlay -> updateAmbientOverlay(type = intent.type, value = intent.value)
         }
     }
@@ -160,6 +161,10 @@ class PlayerViewModel @AssistedInject constructor(
 
     private suspend fun onVolumeChange(delta: Float) {
         _event.send(PlayerEvent.ChangeVolume(delta = delta))
+    }
+
+    private suspend fun onBrightnessChange(delta: Float) {
+        _event.send(PlayerEvent.ChangeBrightness(delta = delta))
     }
 
     private suspend fun updateProgress(progress: Long) {

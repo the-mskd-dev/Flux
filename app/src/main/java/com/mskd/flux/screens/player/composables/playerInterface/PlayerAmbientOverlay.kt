@@ -1,6 +1,7 @@
 package com.mskd.flux.screens.player.composables.playerInterface
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
@@ -60,12 +61,27 @@ fun BoxScope.PlayerAmbientOverlay(ambientOverlay: () -> PlayerUiState.AmbientOve
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            Icon(
-                modifier = Modifier.size(size = 36.dp),
-                painter = painterResource(R.drawable.ic_volume),
-                tint = Color.White,
-                contentDescription = "icon volume"
-            )
+            Crossfade(
+                targetState = overlay?.type,
+                label = "Crossfade ambient overlay"
+            ) {
+                when (it) {
+                    PlayerUiState.AmbientOverlay.Type.BRIGHTNESS ->
+                        Icon(
+                            modifier = Modifier.size(size = 36.dp),
+                            painter = painterResource(R.drawable.ic_brightness),
+                            tint = Color.White,
+                            contentDescription = "icon brightness"
+                        )
+                    else ->
+                        Icon(
+                            modifier = Modifier.size(size = 36.dp),
+                            painter = painterResource(R.drawable.ic_volume),
+                            tint = Color.White,
+                            contentDescription = "icon volume"
+                        )
+                }
+            }
 
             Text.Label.Large(
                 text = value.toString(),

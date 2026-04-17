@@ -45,7 +45,7 @@ data class PlayerUiState(
         val value: Int,
         val type: Type
     ) {
-        enum class Type { LUMINOSITY, VOLUME }
+        enum class Type { BRIGHTNESS, VOLUME }
     }
 
     sealed class SettingsSheet {
@@ -84,6 +84,7 @@ sealed class PlayerIntent {
     data class PlayNextEpisode(val episode: Episode) : PlayerIntent()
     data object CancelNextEpisode : PlayerIntent()
     data class OnVolumeChange(val delta: Float) : PlayerIntent()
+    data class OnBrightnessChange(val delta: Float) : PlayerIntent()
     data class UpdateAmbientOverlay(val type: PlayerUiState.AmbientOverlay.Type, val value: Int) : PlayerIntent()
 }
 
@@ -96,6 +97,7 @@ sealed class PlayerEvent {
     data class SelectTrack(val track: PlayerTrack) : PlayerEvent()
     data object SaveTimeRequested : PlayerEvent()
     data class ChangeVolume(val delta: Float) : PlayerEvent()
+    data class ChangeBrightness(val delta: Float) : PlayerEvent()
 }
 
 data class PlayerTrack(

@@ -6,6 +6,8 @@ import android.content.pm.ActivityInfo
 import android.view.WindowManager
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import com.mskd.flux.screens.player.PlayerIntent.UpdateAmbientOverlay
+import com.mskd.flux.screens.player.PlayerUiState
 
 fun Activity.hideSystemBars() {
 
@@ -42,4 +44,14 @@ fun Activity.forceScreenOn(force: Boolean) {
         this.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     else
         this.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+}
+
+fun Activity.changeBrightness(delta: Float) : Int {
+    val params = this.window.attributes
+    val current = if (params.screenBrightness < 0f) 0.5f else params.screenBrightness
+
+    params.screenBrightness = (current + delta).coerceIn(0f, 1f)
+    this.window.attributes = params
+
+    return (params.screenBrightness * 100).toInt()
 }

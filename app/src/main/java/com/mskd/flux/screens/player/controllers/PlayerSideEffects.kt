@@ -24,6 +24,7 @@ import com.mskd.flux.screens.player.PlayerIntent.UpdateTracks
 import com.mskd.flux.screens.player.PlayerUiState
 import com.mskd.flux.screens.player.PlayerViewModel
 import com.mskd.flux.ui.component.LifecycleComponent
+import com.mskd.flux.utils.extensions.changeBrightness
 import com.mskd.flux.utils.extensions.findActivity
 import kotlinx.coroutines.launch
 
@@ -88,8 +89,14 @@ fun PlayerSideEffects(
                         PlayerEvent.TogglePlayButton -> stateHolder.togglePlayButton()
                         PlayerEvent.SaveTimeRequested -> viewModel.handleIntent(SaveTime(time = stateHolder.player.currentPosition))
                         is PlayerEvent.ChangeVolume -> {
-                            val volume = stateHolder.changeVolume(event.delta)
-                            viewModel.handleIntent(UpdateAmbientOverlay(type = PlayerUiState.AmbientOverlay.Type.VOLUME, value = volume))
+                            stateHolder.changeVolume(event.delta).let { volume ->
+                                viewModel.handleIntent(UpdateAmbientOverlay(type = PlayerUiState.AmbientOverlay.Type.VOLUME, value = volume))
+                            }
+                        }
+                        is PlayerEvent.ChangeBrightness -> {
+                            activity?.changeBrightness(delta = event.delta)?.let { brightness ->
+                                viewModel.handleIntent(UpdateAmbientOverlay(type = PlayerUiState.AmbientOverlay.Type.BRIGHTNESS, value = brightness))
+                            }
                         }
                     }
                 }

@@ -41,6 +41,8 @@ import com.mskd.flux.screens.player.controllers.rememberWindowStateHolder
 import com.mskd.flux.ui.component.ErrorScreen
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.utils.Constants
+import com.mskd.flux.utils.enums.Side
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.seconds
 
@@ -157,17 +159,18 @@ fun PlayerContent(
                 )
             }
             .pointerInput(Unit) {
-                var onRightSide = false
+                var side = Side.LEFT
                 detectVerticalDragGestures(
                     onDragStart = { offset ->
-                        onRightSide = offset.x > size.width / 2
+                        side = if (offset.x > size.width / 2) Side.RIGHT else Side.LEFT
                     },
                     onVerticalDrag = { change, dragAmount ->
-                        if (onRightSide) {
-                            val volumeDelta = (-dragAmount / size.height) * 2
-                            sendIntent(PlayerIntent.OnVolumeChange(volumeDelta))
-                            change.consume()
+                        val delta = (-dragAmount / size.height) * 2
+                        when (side) {
+                            Side.LEFT -> sendIntent(PlayerIntent.OnBrightnessChange(delta))
+                            Side.RIGHT -> sendIntent(PlayerIntent.OnVolumeChange(delta))
                         }
+                        change.consume()
                     }
                 )
             }

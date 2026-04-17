@@ -1,5 +1,6 @@
 package com.mskd.flux.screens.player
 
+import androidx.annotation.IntRange
 import androidx.compose.runtime.Immutable
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
@@ -42,7 +43,7 @@ data class PlayerUiState(
 
     @Immutable
     data class AmbientOverlay(
-        val value: Float,
+        val value: Int,
         val type: Type
     ) {
         enum class Type { LUMINOSITY, VOLUME }
@@ -84,7 +85,7 @@ sealed class PlayerIntent {
     data class PlayNextEpisode(val episode: Episode) : PlayerIntent()
     data object CancelNextEpisode : PlayerIntent()
     data class OnVolumeChange(val delta: Float) : PlayerIntent()
-    data class UpdateAmbientOverlay(val type: PlayerUiState.AmbientOverlay.Type, val value: Float) : PlayerIntent()
+    data class UpdateAmbientOverlay(val type: PlayerUiState.AmbientOverlay.Type, val value: Int) : PlayerIntent()
 }
 
 sealed class PlayerEvent {

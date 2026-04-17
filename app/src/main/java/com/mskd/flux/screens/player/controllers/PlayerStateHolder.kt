@@ -39,6 +39,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.util.Locale
+import kotlin.math.roundToInt
 
 
 @OptIn(UnstableApi::class)
@@ -286,9 +287,9 @@ class PlayerStateHolder(
         player.seekTo(progress)
     }
 
-    fun changeVolume(delta: Float) : Float {
+    fun changeVolume(delta: Float) : Int {
         player.volume = (player.volume + delta).coerceIn(0f, 1f)
-        return player.volume
+        return (player.volume * 100).roundToInt()
     }
 
     fun playMedia(media: Media?) {

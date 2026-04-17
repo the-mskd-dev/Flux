@@ -32,6 +32,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.ui.compose.ContentFrame
 import com.mskd.flux.R
 import com.mskd.flux.model.artwork.Media
+import com.mskd.flux.screens.player.composables.playerInterface.PlayerAmbientOverlay
 import com.mskd.flux.screens.player.composables.playerInterface.PlayerInterface
 import com.mskd.flux.screens.player.composables.playerInterface.PlayerSeekOverlay
 import com.mskd.flux.screens.player.composables.playerInterface.PlayerSubtitles
@@ -104,6 +105,7 @@ fun PlayerScreen(
                     controlsState = { state.controls },
                     tracksState = { state.tracks },
                     seekOverlay = { state.seekOverlay },
+                    ambientOverlay = { state.ambientOverlay },
                     sendIntent = {
                         interfaceVisibilityCountdown = 3
                         viewModel.handleIntent(it)
@@ -126,6 +128,7 @@ fun PlayerContent(
     controlsState: () -> PlayerUiState.Controls,
     tracksState: () -> PlayerUiState.Tracks,
     seekOverlay: () -> PlayerUiState.SeekOverlay?,
+    ambientOverlay: () -> PlayerUiState.AmbientOverlay?,
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
@@ -137,22 +140,6 @@ fun PlayerContent(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black)
-            .pointerInput(Unit) {
-                detectVerticalDragGestures(
-                    onDragStart = { offset ->
-                        val isRightSide = offset.x > size.width / 2
-                        if (!isRightSide) return@detectVerticalDragGestures
-                    },
-                    onVerticalDrag = { change, dragAmount ->
-
-                        val volumeDelta = -dragAmount / size.height
-
-                        sendIntent(PlayerIntent.OnVolumeChange(volumeDelta))
-
-                        change.consume()
-                    }
-                )
-            }
             .pointerInput(Unit) {
 
                 val edgeMargin = 32.dp.toPx()
@@ -186,6 +173,22 @@ fun PlayerContent(
                     }
                 }
             }
+            .pointerInput(Unit) {
+                detectVerticalDragGestures(
+                    onDragStart = { offset ->
+                        val isRightSide = offset.x > size.width / 2
+                        if (!isRightSide) return@detectVerticalDragGestures
+                    },
+                    onVerticalDrag = { change, dragAmount ->
+
+                        val volumeDelta = -dragAmount / size.height
+
+                        sendIntent(PlayerIntent.OnVolumeChange(volumeDelta))
+
+                        change.consume()
+                    }
+                )
+            }
     ) {
 
         ContentFrame(
@@ -209,6 +212,8 @@ fun PlayerContent(
         )
 
         PlayerSeekOverlay(seekOverlay = seekOverlay)
+
+        PlayerAmbientOverlay(ambientOverlay = ambientOverlay)
 
     }
 

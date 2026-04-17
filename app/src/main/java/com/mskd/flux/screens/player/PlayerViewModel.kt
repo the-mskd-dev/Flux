@@ -316,7 +316,7 @@ class PlayerViewModel @AssistedInject constructor(
         }
     }
 
-    private fun updateAmbientOverlay(type: PlayerUiState.AmbientOverlay.Type, value: Float) {
+    private fun updateAmbientOverlay(type: PlayerUiState.AmbientOverlay.Type, value: Int) {
         ambientResetJob?.cancel()
 
         _ambientOverlayState.update {

@@ -21,6 +21,7 @@ import io.kotest.matchers.types.shouldBeInstanceOf
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.time.Duration.Companion.seconds
 
@@ -467,6 +468,65 @@ class PlayerViewModelTest : FunSpec({
             val state = awaitItem()
             state.media.shouldNotBeNull {
                 mediaId shouldBe MediaMockups.episode2.mediaId
+            }
+        }
+    }
+
+    test("on volume change") {
+        viewModel.uiState.test {
+            awaitItem()
+
+            viewModel.event.test {
+
+                viewModel.handleIntent(PlayerIntent.OnVolumeChange(delta = .5f))
+
+                val event = awaitItem()
+
+                event shouldBe PlayerEvent.ChangeVolume(delta = .5f)
+
+            }
+
+        }
+    }
+
+    test("on brightness change") {
+        viewModel.uiState.test {
+            awaitItem()
+
+            viewModel.event.test {
+
+                viewModel.handleIntent(PlayerIntent.OnBrightnessChange(delta = .5f))
+
+                val event = awaitItem()
+
+                event shouldBe PlayerEvent.ChangeBrightness(delta = .5f)
+
+            }
+
+        }
+    }
+
+    context("update ambient overlay") {
+        withData(
+            nameFn = { it.description },
+            PlayerTestCases.UpdateAmbientOverlay(
+                description = "Brightness",
+                type = PlayerUiState.AmbientOverlay.Type.BRIGHTNESS,
+                value = 50
+            ),
+            PlayerTestCases.UpdateAmbientOverlay(
+                description = "Volume",
+                type = PlayerUiState.AmbientOverlay.Type.VOLUME,
+                value = 50
+            )
+        ) { testCase ->
+            viewModel.uiState.test {
+                awaitItem()
+
+                viewModel.handleIntent(PlayerIntent.UpdateAmbientOverlay(type = testCase.type, value = testCase.value))
+
+                var state = awaitItem()
+                state.ambientOverlay shouldBe PlayerUiState.AmbientOverlay(type = testCase.type, value = testCase.value)
             }
         }
     }

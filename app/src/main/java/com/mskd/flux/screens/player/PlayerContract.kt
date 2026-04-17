@@ -12,7 +12,7 @@ data class PlayerUiState(
     val controls: Controls = Controls(),
     val tracks: Tracks = Tracks(),
     val seekOverlay: SeekOverlay? = null,
-    val edgeOverlay: EdgeOverlay? = null,
+    val ambientOverlay: AmbientOverlay? = null,
 ) {
 
     val media: Media? get() = (screen as? PlayerScreen.Content)?.media
@@ -41,7 +41,7 @@ data class PlayerUiState(
     }
 
     @Immutable
-    data class EdgeOverlay(
+    data class AmbientOverlay(
         val value: Float,
         val type: Type
     ) {
@@ -84,7 +84,7 @@ sealed class PlayerIntent {
     data class PlayNextEpisode(val episode: Episode) : PlayerIntent()
     data object CancelNextEpisode : PlayerIntent()
     data class OnVolumeChange(val delta: Float) : PlayerIntent()
-    data class UpdateEdgeOverlay(val type: PlayerUiState.EdgeOverlay.Type, val value: Float) : PlayerIntent()
+    data class UpdateAmbientOverlay(val type: PlayerUiState.AmbientOverlay.Type, val value: Float) : PlayerIntent()
 }
 
 sealed class PlayerEvent {

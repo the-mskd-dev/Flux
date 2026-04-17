@@ -55,7 +55,7 @@ class PlayerViewModel @AssistedInject constructor(
     //region Variables
 
     private var seekResetJob: Job? = null
-    private var edgeResetJob: Job? = null
+    private var ambientResetJob: Job? = null
 
     //endregion
 
@@ -69,7 +69,7 @@ class PlayerViewModel @AssistedInject constructor(
     private val _controlsState = MutableStateFlow(PlayerUiState.Controls())
     private val _tracksState = MutableStateFlow(PlayerUiState.Tracks())
     private val _seekOverlayState = MutableStateFlow<PlayerUiState.SeekOverlay?>(null)
-    private val _edgeOverlayState = MutableStateFlow<PlayerUiState.EdgeOverlay?>(null)
+    private val _ambientOverlayState = MutableStateFlow<PlayerUiState.AmbientOverlay?>(null)
 
     val uiState: StateFlow<PlayerUiState> = combine(
         artworkRepository.flow,
@@ -77,7 +77,7 @@ class PlayerViewModel @AssistedInject constructor(
         _controlsState,
         _tracksState,
         _seekOverlayState,
-        _edgeOverlayState,
+        _ambientOverlayState,
         _mediaId,
     ) { flows ->
 
@@ -86,7 +86,7 @@ class PlayerViewModel @AssistedInject constructor(
         val controls = flows[2] as PlayerUiState.Controls
         val tracks = flows[3] as PlayerUiState.Tracks
         val seekOverlay = flows[4] as PlayerUiState.SeekOverlay?
-        val edgeOverlay = flows[5] as PlayerUiState.EdgeOverlay?
+        val ambientOverlay = flows[5] as PlayerUiState.AmbientOverlay?
         val id = flows[6] as Long
 
         val media = artwork.movie ?: artwork.episodes.find { it.id == id }
@@ -98,7 +98,7 @@ class PlayerViewModel @AssistedInject constructor(
             controls = controls,
             tracks = tracks,
             seekOverlay = seekOverlay,
-            edgeOverlay = edgeOverlay
+            ambientOverlay = ambientOverlay
         )
 
     }.stateIn(
@@ -129,7 +129,7 @@ class PlayerViewModel @AssistedInject constructor(
             is PlayerIntent.CancelNextEpisode -> cancelNextEpisode()
             is PlayerIntent.PlayNextEpisode -> playNextEpisode(episode = intent.episode)
             is PlayerIntent.OnVolumeChange -> onVolumeChange(delta = intent.delta)
-            is PlayerIntent.UpdateEdgeOverlay -> updateEdgeOverlay(type = intent.type, value = intent.value)
+            is PlayerIntent.UpdateAmbientOverlay -> updateAmbientOverlay(type = intent.type, value = intent.value)
         }
     }
 
@@ -316,16 +316,16 @@ class PlayerViewModel @AssistedInject constructor(
         }
     }
 
-    private fun updateEdgeOverlay(type: PlayerUiState.EdgeOverlay.Type, value: Float) {
-        edgeResetJob?.cancel()
+    private fun updateAmbientOverlay(type: PlayerUiState.AmbientOverlay.Type, value: Float) {
+        ambientResetJob?.cancel()
 
-        _edgeOverlayState.update {
-            PlayerUiState.EdgeOverlay(type = type, value = value)
+        _ambientOverlayState.update {
+            PlayerUiState.AmbientOverlay(type = type, value = value)
         }
 
-        edgeResetJob = viewModelScope.launch {
+        ambientResetJob = viewModelScope.launch {
             delay(2000)
-            _edgeOverlayState.update { null }
+            _ambientOverlayState.update { null }
         }
     }
 

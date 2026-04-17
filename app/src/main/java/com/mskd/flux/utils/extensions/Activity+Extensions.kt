@@ -45,3 +45,19 @@ fun Activity.forceScreenOn(force: Boolean) {
     else
         this.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 }
+
+fun Activity.changeBrightness(delta: Float) : Int {
+    val params = this.window.attributes
+    val current = if (params.screenBrightness < 0f) 0.5f else params.screenBrightness
+
+    params.screenBrightness = (current + delta).coerceIn(0f, 1f)
+    this.window.attributes = params
+
+    return (params.screenBrightness * 100).toInt()
+}
+
+fun Activity.resetBrightness() {
+    val params = this.window.attributes
+    params.screenBrightness = -1f
+    this.window.attributes = params
+}

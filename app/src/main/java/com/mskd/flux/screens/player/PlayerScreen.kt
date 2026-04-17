@@ -7,6 +7,7 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.Box
@@ -141,37 +142,22 @@ fun PlayerContent(
             .fillMaxSize()
             .background(Color.Black)
             .pointerInput(Unit) {
-
-                val edgeMargin = 32.dp.toPx()
-
-                awaitEachGesture {
-                    val firstDown = awaitFirstDown(requireUnconsumed = true)
-
-                    val handleTap = firstDown.position.x > edgeMargin && firstDown.position.x < (size.width - edgeMargin)
-                    if (!handleTap) return@awaitEachGesture
-
-                    sendIntent(PlayerIntent.ChangeInterfaceVisibility)
-
-                    val firstUp = waitForUpOrCancellation()
-
-                    if (firstUp != null) {
-                        val secondDown = withTimeoutOrNull(100) {
-                            awaitFirstDown(requireUnconsumed = true)
+                detectTapGestures(
+                    onTap = { offset ->
+                        val edgeMargin = 32.dp.toPx()
+                        if (offset.x > edgeMargin && offset.x < (size.width - edgeMargin)) {
+                            sendIntent(PlayerIntent.ChangeInterfaceVisibility)
                         }
-
-                        if (secondDown != null) {
-                            val width = size.width
-                            if (secondDown.position.x < (width * .4f)) {
-                                sendIntent(PlayerIntent.OnFastRewind)
-                                sendIntent(PlayerIntent.ChangeInterfaceVisibility)
-                            } else if (secondDown.position.x > (width * .6f)) {
-                                sendIntent(PlayerIntent.OnFastForward)
-                                sendIntent(PlayerIntent.ChangeInterfaceVisibility)
-                            }
-                            secondDown.consume()
+                    },
+                    onDoubleTap = { offset ->
+                        val width = size.width
+                        if (offset.x < (width * .4f)) {
+                            sendIntent(PlayerIntent.OnFastRewind)
+                        } else if (offset.x > (width * .6f)) {
+                            sendIntent(PlayerIntent.OnFastForward)
                         }
                     }
-                }
+                )
             }
             .pointerInput(Unit) {
                 detectVerticalDragGestures(
@@ -180,11 +166,8 @@ fun PlayerContent(
                         if (!isRightSide) return@detectVerticalDragGestures
                     },
                     onVerticalDrag = { change, dragAmount ->
-
-                        val volumeDelta = -dragAmount / size.height
-
+                        val volumeDelta = (-dragAmount / size.height) * 2
                         sendIntent(PlayerIntent.OnVolumeChange(volumeDelta))
-
                         change.consume()
                     }
                 )

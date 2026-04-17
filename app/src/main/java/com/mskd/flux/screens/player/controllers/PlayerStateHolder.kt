@@ -286,6 +286,10 @@ class PlayerStateHolder(
         player.seekTo(progress)
     }
 
+    fun changeVolume(delta: Float) {
+        player.volume = (player.volume + delta).coerceIn(0f, 1f)
+    }
+
     fun playMedia(media: Media?) {
 
         if (media != null && media.mediaId != currentMediaId) {

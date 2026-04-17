@@ -1,11 +1,13 @@
 package com.mskd.flux.screens.player
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.annotation.OptIn
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -135,6 +137,22 @@ fun PlayerContent(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black)
+            .pointerInput(Unit) {
+                detectVerticalDragGestures(
+                    onDragStart = { offset ->
+                        val isRightSide = offset.x > size.width / 2
+                        if (!isRightSide) return@detectVerticalDragGestures
+                    },
+                    onVerticalDrag = { change, dragAmount ->
+
+                        val volumeDelta = -dragAmount / size.height
+
+                        sendIntent(PlayerIntent.OnVolumeChange(volumeDelta))
+
+                        change.consume()
+                    }
+                )
+            }
             .pointerInput(Unit) {
 
                 val edgeMargin = 32.dp.toPx()

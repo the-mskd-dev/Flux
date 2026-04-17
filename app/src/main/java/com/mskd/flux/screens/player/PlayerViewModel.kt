@@ -123,6 +123,7 @@ class PlayerViewModel @AssistedInject constructor(
             is PlayerIntent.ShowNextEpisode -> showNextEpisode(show = intent.show)
             is PlayerIntent.CancelNextEpisode -> cancelNextEpisode()
             is PlayerIntent.PlayNextEpisode -> playNextEpisode(episode = intent.episode)
+            is PlayerIntent.OnVolumeChange -> onVolumeChange(delta = intent.delta)
         }
     }
 
@@ -149,6 +150,10 @@ class PlayerViewModel @AssistedInject constructor(
         val value = uiState.value.playerForward
         _event.send(PlayerEvent.SeekForward(value.seconds.inWholeMilliseconds))
         updateSeekOverlay(type = PlayerUiState.SeekOverlay.Type.FORWARD, value = value)
+    }
+
+    private suspend fun onVolumeChange(delta: Float) {
+        _event.send(PlayerEvent.ChangeVolume(delta = delta))
     }
 
     private suspend fun updateProgress(progress: Long) {

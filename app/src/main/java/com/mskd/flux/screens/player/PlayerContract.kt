@@ -74,6 +74,7 @@ sealed class PlayerIntent {
     data class ShowNextEpisode(val show: Boolean) : PlayerIntent()
     data class PlayNextEpisode(val episode: Episode) : PlayerIntent()
     data object CancelNextEpisode : PlayerIntent()
+    data class OnVolumeChange(val delta: Float) : PlayerIntent()
 }
 
 sealed class PlayerEvent {
@@ -84,7 +85,7 @@ sealed class PlayerEvent {
     data object TogglePlayButton : PlayerEvent()
     data class SelectTrack(val track: PlayerTrack) : PlayerEvent()
     data object SaveTimeRequested : PlayerEvent()
-    //data class PlayNextEpisode(val episode: Episode) : PlayerIntent()
+    data class ChangeVolume(val delta: Float) : PlayerEvent()
 }
 
 data class PlayerTrack(

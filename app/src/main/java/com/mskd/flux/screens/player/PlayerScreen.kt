@@ -14,17 +14,16 @@ import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.gestures.rememberTransformableState
 import androidx.compose.foundation.gestures.transformable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,6 +43,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.Player
 import androidx.media3.common.VideoSize
 import androidx.media3.common.text.Cue
+import androidx.media3.common.util.Log
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.ui.compose.ContentFrame
 import com.mskd.flux.R
@@ -62,7 +62,6 @@ import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.component.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
-import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.LandscapePreview
 import com.mskd.flux.utils.enums.Side
 import kotlinx.coroutines.delay
@@ -162,8 +161,20 @@ fun PlayerContent(
     val configuration = LocalConfiguration.current
     val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
 
+    var currentVideoSize by remember { mutableStateOf(player.videoSize) }
+
+    DisposableEffect(player) {
+        val listener = object : Player.Listener {
+            override fun onVideoSizeChanged(videoSize: VideoSize) {
+                currentVideoSize = videoSize
+            }
+        }
+        player.addListener(listener)
+        onDispose { player.removeListener(listener) }
+    }
+
     val scaleState = rememberPlayerScaleEffects(
-        videoSize = player.videoSize,
+        videoSize = currentVideoSize,
         containerSize = infoWindow.containerSize,
         isPortrait = isPortrait
     )
@@ -224,7 +235,7 @@ fun PlayerContent(
 
                 )
             },
-        constraintSet = playerConstraintSet(isPortrait = isPortrait, videoSize = player.videoSize)
+        constraintSet = playerConstraintSet(videoSize = currentVideoSize)
     ) {
 
         ContentFrame(
@@ -276,8 +287,9 @@ fun PlayerContent(
 
 }
 
+@OptIn(UnstableApi::class)
 @Composable
-fun playerConstraintSet(isPortrait: Boolean, videoSize: VideoSize) = remember(isPortrait, videoSize) {
+fun playerConstraintSet(videoSize: VideoSize) = remember( videoSize) {
     ConstraintSet {
 
         val playerRatio = if (videoSize.width > 0 && videoSize.height > 0) {
@@ -285,6 +297,10 @@ fun playerConstraintSet(isPortrait: Boolean, videoSize: VideoSize) = remember(is
         } else {
             "16:9"
         }
+
+        Log.d("TEST", "videoSize.width ${videoSize.width}")
+        Log.d("TEST", "videoSize.height ${videoSize.height}")
+        Log.d("TEST", "ratio $playerRatio")
 
         val (player, subtitles, playerInterface, leftSeekOverlay, rightSeekOverlay, ambientOverlay) = createRefsFor(
             "player",
@@ -304,17 +320,13 @@ fun playerConstraintSet(isPortrait: Boolean, videoSize: VideoSize) = remember(is
             end.linkTo(parent.end)
             bottom.linkTo(parent.bottom)
             width = Dimension.fillToConstraints
-            height = if (isPortrait) Dimension.ratio(playerRatio) else Dimension.fillToConstraints
+            height = Dimension.ratio(playerRatio)
         }
 
         constrain(subtitles) {
             start.linkTo(parent.start)
             end.linkTo(parent.end)
-
-            if (isPortrait)
-                bottom.linkTo(player.bottom, Ui.Space.EXTRA_SMALL)
-            else
-                bottom.linkTo(parent.bottom, Ui.Space.SMALL)
+            bottom.linkTo(player.bottom)
         }
 
         constrain(playerInterface) {
@@ -345,10 +357,7 @@ fun playerConstraintSet(isPortrait: Boolean, videoSize: VideoSize) = remember(is
         }
 
         constrain(ambientOverlay) {
-            top.linkTo(parent.top)
-            start.linkTo(parent.start)
-            end.linkTo(parent.end)
-            bottom.linkTo(parent.bottom)
+            centerTo(parent)
         }
 
     }
@@ -362,7 +371,7 @@ fun PlayerContent_Preview() {
     AppTheme {
         ConstraintLayout(
             modifier = Modifier.fillMaxSize(),
-            constraintSet = playerConstraintSet(isPortrait = false, videoSize = VideoSize(16, 9))
+            constraintSet = playerConstraintSet(videoSize = VideoSize(16, 9))
         ) {
 
             Box(

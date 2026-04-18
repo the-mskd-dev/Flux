@@ -8,13 +8,16 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.gestures.rememberTransformableState
 import androidx.compose.foundation.gestures.transformable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -55,7 +58,11 @@ import com.mskd.flux.screens.player.controllers.rememberPlayerStateHolder
 import com.mskd.flux.screens.player.controllers.rememberWindowStateHolder
 import com.mskd.flux.ui.component.ErrorScreen
 import com.mskd.flux.ui.component.LoadingScreen
+import com.mskd.flux.ui.component.Text
+import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.utils.FluxPreview
+import com.mskd.flux.utils.LandscapePreview
 import com.mskd.flux.utils.enums.Side
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.seconds
@@ -314,7 +321,7 @@ val PlayerLandscapeConstraintSet = ConstraintSet {
         height = Dimension.fillToConstraints
     }
 
-    constrain(leftSeekOverlay) {
+    constrain(rightSeekOverlay) {
         top.linkTo(parent.top)
         start.linkTo(rightGuideline)
         end.linkTo(parent.end)
@@ -323,7 +330,7 @@ val PlayerLandscapeConstraintSet = ConstraintSet {
         height = Dimension.fillToConstraints
     }
 
-    constrain(player) {
+    constrain(ambientOverlay) {
         top.linkTo(parent.top)
         start.linkTo(parent.start)
         end.linkTo(parent.end)
@@ -357,7 +364,7 @@ val PlayerPortraitConstraintSet = ConstraintSet {
     constrain(subtitles) {
         start.linkTo(parent.start)
         end.linkTo(parent.end)
-        top.linkTo(player.bottom, Ui.Space.MEDIUM)
+        bottom.linkTo(parent.bottom, Ui.Space.MEDIUM)
     }
 
     constrain(playerInterface) {
@@ -378,7 +385,7 @@ val PlayerPortraitConstraintSet = ConstraintSet {
         height = Dimension.fillToConstraints
     }
 
-    constrain(leftSeekOverlay) {
+    constrain(rightSeekOverlay) {
         top.linkTo(parent.top)
         start.linkTo(rightGuideline)
         end.linkTo(parent.end)
@@ -387,11 +394,80 @@ val PlayerPortraitConstraintSet = ConstraintSet {
         height = Dimension.fillToConstraints
     }
 
-    constrain(player) {
+    constrain(ambientOverlay) {
         top.linkTo(parent.top)
         start.linkTo(parent.start)
         end.linkTo(parent.end)
         bottom.linkTo(parent.bottom)
     }
 
+}
+
+@Composable
+//@FluxPreview
+@LandscapePreview
+fun PlayerContent_Preview() {
+    AppTheme {
+        ConstraintLayout(
+            modifier = Modifier.fillMaxSize(),
+            //constraintSet = PlayerPortraitConstraintSet
+            constraintSet = PlayerLandscapeConstraintSet
+        ) {
+
+            Box(
+                modifier = Modifier
+                    .layoutId("player")
+                    .border(width = .5.dp, color = MaterialTheme.colorScheme.onBackground),
+                contentAlignment = Alignment.Center
+            ) {
+                Text.Label.Medium(text = "player")
+            }
+
+            Box(
+                modifier = Modifier
+                    .layoutId("subtitles")
+                    .border(width = .5.dp, color = MaterialTheme.colorScheme.onBackground),
+                contentAlignment = Alignment.Center
+            ) {
+                Text.Label.Medium(text = "subtitles")
+            }
+
+            Box(
+                modifier = Modifier
+                    .layoutId("playerInterface")
+                    .border(width = .5.dp, color = MaterialTheme.colorScheme.onBackground),
+                contentAlignment = Alignment.Center
+            ) {
+                Text.Label.Medium(text = "playerInterface")
+            }
+
+            Box(
+                modifier = Modifier
+                    .layoutId("leftSeekOverlay")
+                    .border(width = .5.dp, color = MaterialTheme.colorScheme.onBackground),
+                contentAlignment = Alignment.Center
+            ) {
+                Text.Label.Medium(text = "leftSeekOverlay")
+            }
+
+            Box(
+                modifier = Modifier
+                    .layoutId("rightSeekOverlay")
+                    .border(width = .5.dp, color = MaterialTheme.colorScheme.onBackground),
+                contentAlignment = Alignment.Center
+            ) {
+                Text.Label.Medium(text = "rightSeekOverlay")
+            }
+
+            Box(
+                modifier = Modifier
+                    .layoutId("ambientOverlay")
+                    .border(width = .5.dp, color = MaterialTheme.colorScheme.onBackground),
+                contentAlignment = Alignment.Center
+            ) {
+                Text.Label.Medium(text = "ambientOverlay")
+            }
+
+        }
+    }
 }

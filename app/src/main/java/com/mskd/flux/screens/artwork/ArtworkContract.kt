@@ -24,9 +24,11 @@ sealed class ArtworkIntent {
     object CloseEpisodesStatusDialog: ArtworkIntent()
     data class SelectSeason(val season: Int): ArtworkIntent()
     data class PlayMedia(val media: Media): ArtworkIntent()
+    data class OpenArtworkInfo(val artwork: Artwork): ArtworkIntent()
 }
 
 sealed class ArtworkEvent {
     object BackToPreviousScreen : ArtworkEvent()
     data class PlayMedia(val mediaId: Long) : ArtworkEvent()
+    data class OpenArtworkInfo(val artwork: Artwork) : ArtworkEvent()
 }

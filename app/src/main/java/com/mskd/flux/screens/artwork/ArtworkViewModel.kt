@@ -98,6 +98,7 @@ class ArtworkViewModel @AssistedInject constructor(
             ArtworkIntent.CloseEpisodesStatusDialog -> closeStatusDialog()
             is ArtworkIntent.ChangeWatchStatus -> changeWatchStatus(media = intent.media)
             ArtworkIntent.MarkPreviousEpisodesAsWatched -> markPreviousEpisodesAsWatched()
+            is ArtworkIntent.OpenArtworkInfo -> _event.emit(ArtworkEvent.OpenArtworkInfo(artwork = intent.artwork))
         }
     }
 

@@ -1,6 +1,7 @@
 package com.mskd.flux.screens.artwork.composables.common
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
@@ -95,12 +96,13 @@ fun ArtworkImage(
                 title = {  },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
                 navigationIcon = {
-                    BackButton(onTap = {sendIntent(ArtworkIntent.OnBackTap)})
+                    BackButton(onTap = { sendIntent(ArtworkIntent.OnBackTap) })
                 },
             )
 
             AsyncImage(
                 modifier = Modifier
+                    .clickable { sendIntent(ArtworkIntent.OpenArtworkInfo(artwork = artwork)) }
                     .align(Alignment.Center)
                     .clip(Ui.Shape.Corner.Small)
                     .width(160.dp)

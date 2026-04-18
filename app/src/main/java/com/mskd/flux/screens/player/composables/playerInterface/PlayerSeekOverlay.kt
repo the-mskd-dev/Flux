@@ -30,8 +30,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.constraintlayout.compose.layoutId
 import com.mskd.flux.R
 import com.mskd.flux.screens.player.PlayerUiState
 import com.mskd.flux.ui.component.Text
@@ -40,14 +42,16 @@ import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.LandscapePreview
 
 @Composable
-fun BoxScope.PlayerSeekOverlay(seekOverlay: () -> PlayerUiState.SeekOverlay?) {
+fun PlayerSeekOverlay(
+    layoutIdLeft: String,
+    layoutIdRight: String,
+    seekOverlay: () -> PlayerUiState.SeekOverlay?
+) {
 
     val overlay = seekOverlay()
 
     Box(
-        modifier = Modifier
-            .fillMaxHeight()
-            .fillMaxWidth(.33f),
+        modifier = Modifier.layoutId(layoutIdLeft),
         contentAlignment = Alignment.Center
     ) {
 
@@ -74,10 +78,7 @@ fun BoxScope.PlayerSeekOverlay(seekOverlay: () -> PlayerUiState.SeekOverlay?) {
     }
 
     Box(
-        modifier = Modifier
-            .fillMaxHeight()
-            .fillMaxWidth(.33f)
-            .align(Alignment.CenterEnd),
+        modifier = Modifier.layoutId(layoutIdRight),
         contentAlignment = Alignment.Center
     ) {
 
@@ -181,9 +182,13 @@ fun PlayerSeekOverlay_Preview() {
         Surface(color = Color.Gray) {
             Box(modifier = Modifier.fillMaxSize()) {
                 PlayerSeekOverlay(
+                    layoutIdLeft = "",
+                    layoutIdRight = "",
                     seekOverlay = { PlayerUiState.SeekOverlay(amount = 10, type = PlayerUiState.SeekOverlay.Type.REWIND) }
                 )
                 PlayerSeekOverlay(
+                    layoutIdLeft = "",
+                    layoutIdRight = "",
                     seekOverlay = { PlayerUiState.SeekOverlay(amount = 10, type = PlayerUiState.SeekOverlay.Type.FORWARD) }
                 )
             }

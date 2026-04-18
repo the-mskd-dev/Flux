@@ -55,6 +55,7 @@ class PlayerViewModel @AssistedInject constructor(
     //region Variables
 
     private var seekResetJob: Job? = null
+    private var ambientResetJob: Job? = null
 
     //endregion
 
@@ -68,6 +69,7 @@ class PlayerViewModel @AssistedInject constructor(
     private val _controlsState = MutableStateFlow(PlayerUiState.Controls())
     private val _tracksState = MutableStateFlow(PlayerUiState.Tracks())
     private val _seekOverlayState = MutableStateFlow<PlayerUiState.SeekOverlay?>(null)
+    private val _ambientOverlayState = MutableStateFlow<PlayerUiState.AmbientOverlay?>(null)
 
     val uiState: StateFlow<PlayerUiState> = combine(
         artworkRepository.flow,
@@ -75,6 +77,7 @@ class PlayerViewModel @AssistedInject constructor(
         _controlsState,
         _tracksState,
         _seekOverlayState,
+        _ambientOverlayState,
         _mediaId,
     ) { flows ->
 
@@ -83,7 +86,8 @@ class PlayerViewModel @AssistedInject constructor(
         val controls = flows[2] as PlayerUiState.Controls
         val tracks = flows[3] as PlayerUiState.Tracks
         val seekOverlay = flows[4] as PlayerUiState.SeekOverlay?
-        val id = flows[5] as Long
+        val ambientOverlay = flows[5] as PlayerUiState.AmbientOverlay?
+        val id = flows[6] as Long
 
         val media = artwork.movie ?: artwork.episodes.find { it.id == id }
 
@@ -93,7 +97,8 @@ class PlayerViewModel @AssistedInject constructor(
             playerRewind = settings.playerRewindValue,
             controls = controls,
             tracks = tracks,
-            seekOverlay = seekOverlay
+            seekOverlay = seekOverlay,
+            ambientOverlay = ambientOverlay
         )
 
     }.stateIn(
@@ -123,6 +128,9 @@ class PlayerViewModel @AssistedInject constructor(
             is PlayerIntent.ShowNextEpisode -> showNextEpisode(show = intent.show)
             is PlayerIntent.CancelNextEpisode -> cancelNextEpisode()
             is PlayerIntent.PlayNextEpisode -> playNextEpisode(episode = intent.episode)
+            is PlayerIntent.OnVolumeChange -> onVolumeChange(delta = intent.delta)
+            is PlayerIntent.OnBrightnessChange -> onBrightnessChange(delta = intent.delta)
+            is PlayerIntent.UpdateAmbientOverlay -> updateAmbientOverlay(type = intent.type, value = intent.value)
         }
     }
 
@@ -149,6 +157,14 @@ class PlayerViewModel @AssistedInject constructor(
         val value = uiState.value.playerForward
         _event.send(PlayerEvent.SeekForward(value.seconds.inWholeMilliseconds))
         updateSeekOverlay(type = PlayerUiState.SeekOverlay.Type.FORWARD, value = value)
+    }
+
+    private suspend fun onVolumeChange(delta: Float) {
+        _event.send(PlayerEvent.ChangeVolume(delta = delta))
+    }
+
+    private suspend fun onBrightnessChange(delta: Float) {
+        _event.send(PlayerEvent.ChangeBrightness(delta = delta))
     }
 
     private suspend fun updateProgress(progress: Long) {
@@ -238,13 +254,20 @@ class PlayerViewModel @AssistedInject constructor(
 
     private suspend fun onBackTap(time: Long?) {
 
-        val interfaceShowed = uiState.value.controls.showInterface
+        when (uiState.value.screen) {
+            is PlayerScreen.Content -> {
 
-        if (interfaceShowed) {
-            time?.let { saveTime(time = it) }
-            _event.send(PlayerEvent.BackToPreviousScreen)
-        } else {
-            changeInterfaceVisibility()
+                val interfaceShowed = uiState.value.controls.showInterface
+
+                if (interfaceShowed) {
+                    time?.let { saveTime(time = it) }
+                    _event.send(PlayerEvent.BackToPreviousScreen)
+                } else {
+                    changeInterfaceVisibility()
+                }
+
+            }
+            else -> _event.send(PlayerEvent.BackToPreviousScreen)
         }
 
     }
@@ -303,7 +326,19 @@ class PlayerViewModel @AssistedInject constructor(
             delay(2000)
             _seekOverlayState.update { null }
         }
+    }
 
+    private fun updateAmbientOverlay(type: PlayerUiState.AmbientOverlay.Type, value: Int) {
+        ambientResetJob?.cancel()
+
+        _ambientOverlayState.update {
+            PlayerUiState.AmbientOverlay(type = type, value = value)
+        }
+
+        ambientResetJob = viewModelScope.launch {
+            delay(1000)
+            _ambientOverlayState.update { null }
+        }
     }
 
     //endregion

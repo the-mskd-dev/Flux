@@ -1,0 +1,8 @@
+<h3>Version 1.2.0</h3>
+
+<ul>
+<li>Orientation libre dans le lecteur</li>
+<li>Ajustement du volume et de la luminosité par glissement</li>
+<li>Ajout du mode plein écran en paysage</li>
+<li>Mise à jour des dépendences</li>
+</ul>

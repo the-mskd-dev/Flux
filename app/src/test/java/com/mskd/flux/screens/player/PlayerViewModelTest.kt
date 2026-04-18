@@ -471,4 +471,63 @@ class PlayerViewModelTest : FunSpec({
         }
     }
 
+    test("on volume change") {
+        viewModel.uiState.test {
+            awaitItem()
+
+            viewModel.event.test {
+
+                viewModel.handleIntent(PlayerIntent.OnVolumeChange(delta = .5f))
+
+                val event = awaitItem()
+
+                event shouldBe PlayerEvent.ChangeVolume(delta = .5f)
+
+            }
+
+        }
+    }
+
+    test("on brightness change") {
+        viewModel.uiState.test {
+            awaitItem()
+
+            viewModel.event.test {
+
+                viewModel.handleIntent(PlayerIntent.OnBrightnessChange(delta = .5f))
+
+                val event = awaitItem()
+
+                event shouldBe PlayerEvent.ChangeBrightness(delta = .5f)
+
+            }
+
+        }
+    }
+
+    context("update ambient overlay") {
+        withData(
+            nameFn = { it.description },
+            PlayerTestCases.UpdateAmbientOverlay(
+                description = "Brightness",
+                type = PlayerUiState.AmbientOverlay.Type.BRIGHTNESS,
+                value = 50
+            ),
+            PlayerTestCases.UpdateAmbientOverlay(
+                description = "Volume",
+                type = PlayerUiState.AmbientOverlay.Type.VOLUME,
+                value = 50
+            )
+        ) { testCase ->
+            viewModel.uiState.test {
+                awaitItem()
+
+                viewModel.handleIntent(PlayerIntent.UpdateAmbientOverlay(type = testCase.type, value = testCase.value))
+
+                var state = awaitItem()
+                state.ambientOverlay shouldBe PlayerUiState.AmbientOverlay(type = testCase.type, value = testCase.value)
+            }
+        }
+    }
+
 })

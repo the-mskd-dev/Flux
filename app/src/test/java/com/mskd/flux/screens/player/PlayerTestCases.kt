@@ -36,7 +36,12 @@ object PlayerTestCases {
     data class SelectTrack(
         val description: String,
         val track: PlayerTrack,
+    )
 
-        )
+    data class UpdateAmbientOverlay(
+        val description: String,
+        val type: PlayerUiState.AmbientOverlay.Type,
+        val value: Int
+    )
 
 }

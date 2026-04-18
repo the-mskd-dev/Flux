@@ -11,7 +11,8 @@ data class PlayerUiState(
     val playerForward: Int = 10,
     val controls: Controls = Controls(),
     val tracks: Tracks = Tracks(),
-    val seekOverlay: SeekOverlay? = null
+    val seekOverlay: SeekOverlay? = null,
+    val ambientOverlay: AmbientOverlay? = null,
 ) {
 
     val media: Media? get() = (screen as? PlayerScreen.Content)?.media
@@ -37,6 +38,14 @@ data class PlayerUiState(
         val type: Type
     ) {
         enum class Type { REWIND, FORWARD }
+    }
+
+    @Immutable
+    data class AmbientOverlay(
+        val value: Int,
+        val type: Type
+    ) {
+        enum class Type { BRIGHTNESS, VOLUME }
     }
 
     sealed class SettingsSheet {
@@ -74,6 +83,9 @@ sealed class PlayerIntent {
     data class ShowNextEpisode(val show: Boolean) : PlayerIntent()
     data class PlayNextEpisode(val episode: Episode) : PlayerIntent()
     data object CancelNextEpisode : PlayerIntent()
+    data class OnVolumeChange(val delta: Float) : PlayerIntent()
+    data class OnBrightnessChange(val delta: Float) : PlayerIntent()
+    data class UpdateAmbientOverlay(val type: PlayerUiState.AmbientOverlay.Type, val value: Int) : PlayerIntent()
 }
 
 sealed class PlayerEvent {
@@ -84,7 +96,8 @@ sealed class PlayerEvent {
     data object TogglePlayButton : PlayerEvent()
     data class SelectTrack(val track: PlayerTrack) : PlayerEvent()
     data object SaveTimeRequested : PlayerEvent()
-    //data class PlayNextEpisode(val episode: Episode) : PlayerIntent()
+    data class ChangeVolume(val delta: Float) : PlayerEvent()
+    data class ChangeBrightness(val delta: Float) : PlayerEvent()
 }
 
 data class PlayerTrack(

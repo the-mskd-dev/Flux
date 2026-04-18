@@ -300,7 +300,7 @@ val PlayerLandscapeConstraintSet = ConstraintSet {
     constrain(subtitles) {
         start.linkTo(parent.start)
         end.linkTo(parent.end)
-        bottom.linkTo(parent.bottom, Ui.Space.LARGE)
+        bottom.linkTo(parent.bottom, Ui.Space.SMALL)
     }
 
     constrain(playerInterface) {

@@ -84,13 +84,14 @@ fun ArtworkImage(
                 )
         )
 
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
+        Box(
+            modifier = Modifier.fillMaxSize(),
         ) {
 
             TopAppBar(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .fillMaxWidth(),
                 title = {  },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
                 navigationIcon = {
@@ -100,6 +101,7 @@ fun ArtworkImage(
 
             AsyncImage(
                 modifier = Modifier
+                    .align(Alignment.Center)
                     .clip(Ui.Shape.Corner.Small)
                     .width(160.dp)
                     .aspectRatio(2f/3f),

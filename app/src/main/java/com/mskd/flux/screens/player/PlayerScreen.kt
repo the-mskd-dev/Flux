@@ -46,6 +46,7 @@ import com.mskd.flux.screens.player.composables.playerInterface.PlayerSeekOverla
 import com.mskd.flux.screens.player.composables.playerInterface.PlayerSubtitles
 import com.mskd.flux.screens.player.composables.settings.PlayerSettings
 import com.mskd.flux.screens.player.controllers.PlayerSideEffects
+import com.mskd.flux.screens.player.controllers.rememberPlayerScaleEffects
 import com.mskd.flux.screens.player.controllers.rememberPlayerStateHolder
 import com.mskd.flux.screens.player.controllers.rememberWindowStateHolder
 import com.mskd.flux.ui.component.ErrorScreen
@@ -148,31 +149,14 @@ fun PlayerContent(
     val infoWindow = LocalWindowInfo.current
     val configuration = LocalConfiguration.current
 
-    val fillScale = remember(infoWindow.containerSize, player.videoSize) {
-        val videoSize = player.videoSize
-        val containerSize = infoWindow.containerSize
-
-        if (videoSize.width <= 0 || videoSize.height <= 0) {
-            1f
-        } else {
-            val screenWidth = containerSize.width.toFloat()
-            val screenHeight = containerSize.height.toFloat()
-
-            val videoWidth = videoSize.width.toFloat()
-            val videoHeight = videoSize.height.toFloat()
-
-            val widthRatio = screenWidth / videoWidth
-            val heightRatio = screenHeight / videoHeight
-
-            maxOf(widthRatio / minOf(widthRatio, heightRatio), heightRatio / minOf(widthRatio, heightRatio))
-        }
-    }
-
-    var fillPlayer by rememberSaveable { mutableStateOf(false) }
-    val scaleTarget = if (fillPlayer) fillScale else 1f
+    val scaleState = rememberPlayerScaleEffects(
+        videoSize = player.videoSize,
+        containerSize = infoWindow.containerSize,
+        isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+    )
 
     val animatedScale by animateFloatAsState(
-        targetValue = scaleTarget,
+        targetValue = scaleState.targetScale,
         animationSpec = spring(
             dampingRatio = Spring.DampingRatioNoBouncy,
             stiffness = Spring.StiffnessLow
@@ -182,9 +166,8 @@ fun PlayerContent(
 
     val stateTransform = rememberTransformableState { _, zoomChange, _, _ ->
         when {
-            configuration.orientation == Configuration.ORIENTATION_PORTRAIT -> return@rememberTransformableState
-            zoomChange < 1f -> fillPlayer = false
-            zoomChange > 1f -> fillPlayer = true
+            zoomChange < 1f -> scaleState.toggleFill(false)
+            zoomChange > 1f -> scaleState.toggleFill(true)
         }
     }
 

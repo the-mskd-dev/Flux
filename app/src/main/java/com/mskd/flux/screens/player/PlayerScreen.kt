@@ -42,6 +42,7 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.Player
+import androidx.media3.common.VideoSize
 import androidx.media3.common.text.Cue
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.ui.compose.ContentFrame
@@ -223,7 +224,7 @@ fun PlayerContent(
 
                 )
             },
-        constraintSet = if (isPortrait) PlayerPortraitConstraintSet else PlayerLandscapeConstraintSet
+        constraintSet = playerConstraintSet(isPortrait = isPortrait, videoSize = player.videoSize)
     ) {
 
         ContentFrame(
@@ -274,135 +275,85 @@ fun PlayerContent(
 
 }
 
-val PlayerLandscapeConstraintSet = ConstraintSet {
+@Composable
+fun playerConstraintSet(isPortrait: Boolean, videoSize: VideoSize) = remember {
+    ConstraintSet {
 
-    val (player, subtitles, playerInterface, leftSeekOverlay, rightSeekOverlay, ambientOverlay) = createRefsFor(
-        "player",
-        "subtitles",
-        "playerInterface",
-        "leftSeekOverlay",
-        "rightSeekOverlay",
-        "ambientOverlay"
-    )
+        val playerRatio = if (videoSize.width > 0 && videoSize.height > 0) {
+            "${videoSize.width}:${videoSize.height}"
+        } else {
+            "16:9"
+        }
 
-    val leftGuideline = createGuidelineFromStart(.33f)
-    val rightGuideline = createGuidelineFromEnd(.33f)
+        val (player, subtitles, playerInterface, leftSeekOverlay, rightSeekOverlay, ambientOverlay) = createRefsFor(
+            "player",
+            "subtitles",
+            "playerInterface",
+            "leftSeekOverlay",
+            "rightSeekOverlay",
+            "ambientOverlay"
+        )
 
-    constrain(player) {
-        top.linkTo(parent.top)
-        start.linkTo(parent.start)
-        end.linkTo(parent.end)
-        bottom.linkTo(parent.bottom)
-        width = Dimension.fillToConstraints
-        height = Dimension.fillToConstraints
+        val leftGuideline = createGuidelineFromStart(.33f)
+        val rightGuideline = createGuidelineFromEnd(.33f)
+
+        constrain(player) {
+            top.linkTo(parent.top)
+            start.linkTo(parent.start)
+            end.linkTo(parent.end)
+            bottom.linkTo(parent.bottom)
+            width = Dimension.fillToConstraints
+            height = if (isPortrait) Dimension.ratio(playerRatio) else Dimension.fillToConstraints
+        }
+
+        constrain(subtitles) {
+            start.linkTo(parent.start)
+            end.linkTo(parent.end)
+
+            if (isPortrait)
+                bottom.linkTo(player.bottom, Ui.Space.EXTRA_SMALL)
+            else
+                bottom.linkTo(parent.bottom, Ui.Space.SMALL)
+        }
+
+        constrain(playerInterface) {
+            top.linkTo(parent.top)
+            start.linkTo(parent.start)
+            end.linkTo(parent.end)
+            bottom.linkTo(parent.bottom)
+            width = Dimension.fillToConstraints
+            height = Dimension.fillToConstraints
+        }
+
+        constrain(leftSeekOverlay) {
+            top.linkTo(parent.top)
+            start.linkTo(parent.start)
+            end.linkTo(leftGuideline)
+            bottom.linkTo(parent.bottom)
+            width = Dimension.fillToConstraints
+            height = Dimension.fillToConstraints
+        }
+
+        constrain(rightSeekOverlay) {
+            top.linkTo(parent.top)
+            start.linkTo(rightGuideline)
+            end.linkTo(parent.end)
+            bottom.linkTo(parent.bottom)
+            width = Dimension.fillToConstraints
+            height = Dimension.fillToConstraints
+        }
+
+        constrain(ambientOverlay) {
+            top.linkTo(parent.top)
+            start.linkTo(parent.start)
+            end.linkTo(parent.end)
+            bottom.linkTo(parent.bottom)
+        }
+
     }
-
-    constrain(subtitles) {
-        start.linkTo(parent.start)
-        end.linkTo(parent.end)
-        bottom.linkTo(parent.bottom, Ui.Space.SMALL)
-    }
-
-    constrain(playerInterface) {
-        top.linkTo(parent.top)
-        start.linkTo(parent.start)
-        end.linkTo(parent.end)
-        bottom.linkTo(parent.bottom)
-        width = Dimension.fillToConstraints
-        height = Dimension.fillToConstraints
-    }
-
-    constrain(leftSeekOverlay) {
-        top.linkTo(parent.top)
-        start.linkTo(parent.start)
-        end.linkTo(leftGuideline)
-        bottom.linkTo(parent.bottom)
-        width = Dimension.fillToConstraints
-        height = Dimension.fillToConstraints
-    }
-
-    constrain(rightSeekOverlay) {
-        top.linkTo(parent.top)
-        start.linkTo(rightGuideline)
-        end.linkTo(parent.end)
-        bottom.linkTo(parent.bottom)
-        width = Dimension.fillToConstraints
-        height = Dimension.fillToConstraints
-    }
-
-    constrain(ambientOverlay) {
-        top.linkTo(parent.top)
-        start.linkTo(parent.start)
-        end.linkTo(parent.end)
-        bottom.linkTo(parent.bottom)
-    }
-
 }
 
-val PlayerPortraitConstraintSet = ConstraintSet {
-
-    val (player, subtitles, playerInterface, leftSeekOverlay, rightSeekOverlay, ambientOverlay) = createRefsFor(
-        "player",
-        "subtitles",
-        "playerInterface",
-        "leftSeekOverlay",
-        "rightSeekOverlay",
-        "ambientOverlay"
-    )
-
-    val leftGuideline = createGuidelineFromStart(.33f)
-    val rightGuideline = createGuidelineFromEnd(.33f)
-
-    constrain(player) {
-        top.linkTo(parent.top)
-        start.linkTo(parent.start)
-        end.linkTo(parent.end)
-        bottom.linkTo(parent.bottom)
-        width = Dimension.fillToConstraints
-    }
-
-    constrain(subtitles) {
-        start.linkTo(parent.start)
-        end.linkTo(parent.end)
-        bottom.linkTo(parent.bottom, Ui.Space.MEDIUM)
-    }
-
-    constrain(playerInterface) {
-        top.linkTo(parent.top)
-        start.linkTo(parent.start)
-        end.linkTo(parent.end)
-        bottom.linkTo(parent.bottom)
-        width = Dimension.fillToConstraints
-        height = Dimension.fillToConstraints
-    }
-
-    constrain(leftSeekOverlay) {
-        top.linkTo(parent.top)
-        start.linkTo(parent.start)
-        end.linkTo(leftGuideline)
-        bottom.linkTo(parent.bottom)
-        width = Dimension.fillToConstraints
-        height = Dimension.fillToConstraints
-    }
-
-    constrain(rightSeekOverlay) {
-        top.linkTo(parent.top)
-        start.linkTo(rightGuideline)
-        end.linkTo(parent.end)
-        bottom.linkTo(parent.bottom)
-        width = Dimension.fillToConstraints
-        height = Dimension.fillToConstraints
-    }
-
-    constrain(ambientOverlay) {
-        top.linkTo(parent.top)
-        start.linkTo(parent.start)
-        end.linkTo(parent.end)
-        bottom.linkTo(parent.bottom)
-    }
-
-}
-
+@OptIn(UnstableApi::class)
 @Composable
 //@FluxPreview
 @LandscapePreview
@@ -410,8 +361,7 @@ fun PlayerContent_Preview() {
     AppTheme {
         ConstraintLayout(
             modifier = Modifier.fillMaxSize(),
-            //constraintSet = PlayerPortraitConstraintSet
-            constraintSet = PlayerLandscapeConstraintSet
+            constraintSet = playerConstraintSet(isPortrait = false, videoSize = VideoSize(16, 9))
         ) {
 
             Box(

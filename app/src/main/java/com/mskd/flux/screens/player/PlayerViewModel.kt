@@ -254,13 +254,20 @@ class PlayerViewModel @AssistedInject constructor(
 
     private suspend fun onBackTap(time: Long?) {
 
-        val interfaceShowed = uiState.value.controls.showInterface
+        when (uiState.value.screen) {
+            is PlayerScreen.Content -> {
 
-        if (interfaceShowed) {
-            time?.let { saveTime(time = it) }
-            _event.send(PlayerEvent.BackToPreviousScreen)
-        } else {
-            changeInterfaceVisibility()
+                val interfaceShowed = uiState.value.controls.showInterface
+
+                if (interfaceShowed) {
+                    time?.let { saveTime(time = it) }
+                    _event.send(PlayerEvent.BackToPreviousScreen)
+                } else {
+                    changeInterfaceVisibility()
+                }
+
+            }
+            else -> _event.send(PlayerEvent.BackToPreviousScreen)
         }
 
     }

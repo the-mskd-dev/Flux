@@ -94,6 +94,10 @@ fun PlayerScreen(
         }
     }
 
+    BackHandler(enabled = true) {
+        viewModel.handleIntent(PlayerIntent.OnBackTap(time = playerStateHolder.player.currentPosition))
+    }
+
     Crossfade(targetState = state.screen, label = "PlayerScreenState") { screen ->
         when (screen) {
             PlayerScreen.Loading -> LoadingScreen()
@@ -140,10 +144,6 @@ fun PlayerContent(
 ) {
 
     val infoWindow = LocalWindowInfo.current
-
-    BackHandler(enabled = true) {
-        sendIntent(PlayerIntent.OnBackTap(time = player.currentPosition))
-    }
 
     val fillScale = remember(infoWindow.containerSize, player.videoSize) {
         val videoSize = player.videoSize

@@ -1,5 +1,6 @@
 package com.mskd.flux.screens.player
 
+import android.content.res.Configuration
 import androidx.activity.compose.BackHandler
 import androidx.annotation.OptIn
 import androidx.compose.animation.Crossfade
@@ -27,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -144,6 +146,7 @@ fun PlayerContent(
 ) {
 
     val infoWindow = LocalWindowInfo.current
+    val configuration = LocalConfiguration.current
 
     val fillScale = remember(infoWindow.containerSize, player.videoSize) {
         val videoSize = player.videoSize
@@ -178,8 +181,11 @@ fun PlayerContent(
     )
 
     val stateTransform = rememberTransformableState { _, zoomChange, _, _ ->
-        if (zoomChange < 1f ) fillPlayer = false
-        else if (zoomChange > 1f) fillPlayer = true
+        when {
+            configuration.orientation == Configuration.ORIENTATION_PORTRAIT -> return@rememberTransformableState
+            zoomChange < 1f -> fillPlayer = false
+            zoomChange > 1f -> fillPlayer = true
+        }
     }
 
     Box(

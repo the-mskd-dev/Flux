@@ -36,7 +36,9 @@ import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.LandscapePreview
 
 @Composable
-fun BoxScope.PlayerAmbientOverlay(ambientOverlay: () -> PlayerUiState.AmbientOverlay?) {
+fun PlayerAmbientOverlay(
+    modifier: Modifier = Modifier,
+    ambientOverlay: () -> PlayerUiState.AmbientOverlay?) {
 
     val overlay = ambientOverlay()
 
@@ -46,10 +48,8 @@ fun BoxScope.PlayerAmbientOverlay(ambientOverlay: () -> PlayerUiState.AmbientOve
     }
 
     AnimatedVisibility(
-        modifier = Modifier.align(Alignment.Center),
+        modifier = modifier,
         visible = overlay != null,
-        //enter = fadeIn(animationSpec = spring(stiffness = Spring.StiffnessLow)),
-        //exit = fadeOut(animationSpec = spring(stiffness = Spring.StiffnessLow)),
         enter = scaleIn(
             animationSpec = spring(
                 dampingRatio = Spring.DampingRatioMediumBouncy,

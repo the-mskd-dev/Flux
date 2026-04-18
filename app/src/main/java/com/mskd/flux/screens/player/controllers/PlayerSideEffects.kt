@@ -14,7 +14,14 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.mskd.flux.screens.player.PlayerEvent
-import com.mskd.flux.screens.player.PlayerIntent
+import com.mskd.flux.screens.player.PlayerIntent.OnTrackSelected
+import com.mskd.flux.screens.player.PlayerIntent.SaveTime
+import com.mskd.flux.screens.player.PlayerIntent.SetPlayingStatus
+import com.mskd.flux.screens.player.PlayerIntent.ShowNextEpisode
+import com.mskd.flux.screens.player.PlayerIntent.TogglePlayButton
+import com.mskd.flux.screens.player.PlayerIntent.UpdateAmbientOverlay
+import com.mskd.flux.screens.player.PlayerIntent.UpdateTracks
+import com.mskd.flux.screens.player.PlayerUiState
 import com.mskd.flux.screens.player.PlayerViewModel
 import com.mskd.flux.ui.component.LifecycleComponent
 import com.mskd.flux.utils.extensions.findActivity
@@ -34,11 +41,12 @@ fun PlayerSideEffects(
     val originalOrientation = remember { activity?.requestedOrientation }
     var wasPlayingBeforeBackground by rememberSaveable { mutableStateOf(false) }
 
-    // Set landscape and reset orientation on dispose
+    // Set force screen on and reset orientation on dispose
     DisposableEffect(Unit) {
-        windowStateHolder.setLandscape()
+        windowStateHolder.forceScreenOn()
         onDispose {
             windowStateHolder.updateSystemBars(true)
+            windowStateHolder.resetBrightness()
             originalOrientation?.let { windowStateHolder.resetOrientation(originalOrientation) }
         }
     }
@@ -51,7 +59,7 @@ fun PlayerSideEffects(
     // Observe tracks
     val tracks by stateHolder.tracks.collectAsStateWithLifecycle()
     LaunchedEffect(tracks) {
-        viewModel.handleIntent(PlayerIntent.UpdateTracks(tracks))
+        viewModel.handleIntent(UpdateTracks(tracks))
     }
 
     // Observe events
@@ -62,9 +70,9 @@ fun PlayerSideEffects(
             launch {
                 stateHolder.event.collect { event ->
                     when (event) {
-                        is PlayerStateHolder.Event.IsPlaying -> viewModel.handleIntent(PlayerIntent.SetPlayingStatus(isPlaying = event.isPlaying))
-                        is PlayerStateHolder.Event.SelectedTrack -> viewModel.handleIntent(PlayerIntent.OnTrackSelected(event.track))
-                        is PlayerStateHolder.Event.ShowNext -> viewModel.handleIntent(PlayerIntent.ShowNextEpisode(show = event.show))
+                        is PlayerStateHolder.Event.IsPlaying -> viewModel.handleIntent(SetPlayingStatus(isPlaying = event.isPlaying))
+                        is PlayerStateHolder.Event.SelectedTrack -> viewModel.handleIntent(OnTrackSelected(event.track))
+                        is PlayerStateHolder.Event.ShowNext -> viewModel.handleIntent(ShowNextEpisode(show = event.show))
                     }
                 }
             }
@@ -79,7 +87,17 @@ fun PlayerSideEffects(
                         is PlayerEvent.UpdateProgress -> stateHolder.updateProgress(event.progress)
                         is PlayerEvent.SelectTrack -> stateHolder.selectTrack(event.track)
                         PlayerEvent.TogglePlayButton -> stateHolder.togglePlayButton()
-                        PlayerEvent.SaveTimeRequested -> viewModel.handleIntent(PlayerIntent.SaveTime(time = stateHolder.player.currentPosition))
+                        PlayerEvent.SaveTimeRequested -> viewModel.handleIntent(SaveTime(time = stateHolder.player.currentPosition))
+                        is PlayerEvent.ChangeVolume -> {
+                            stateHolder.changeVolume(event.delta).let { volume ->
+                                viewModel.handleIntent(UpdateAmbientOverlay(type = PlayerUiState.AmbientOverlay.Type.VOLUME, value = volume))
+                            }
+                        }
+                        is PlayerEvent.ChangeBrightness -> {
+                            windowStateHolder.changeBrightness(delta = event.delta)?.let { brightness ->
+                                viewModel.handleIntent(UpdateAmbientOverlay(type = PlayerUiState.AmbientOverlay.Type.BRIGHTNESS, value = brightness))
+                            }
+                        }
                     }
                 }
             }
@@ -90,14 +108,14 @@ fun PlayerSideEffects(
         onBackground = {
             wasPlayingBeforeBackground = stateHolder.player.isPlaying
             if (wasPlayingBeforeBackground) {
-                viewModel.handleIntent(PlayerIntent.TogglePlayButton)
+                viewModel.handleIntent(TogglePlayButton)
             }
 
-            viewModel.handleIntent(PlayerIntent.SaveTime(time = stateHolder.player.currentPosition))
+            viewModel.handleIntent(SaveTime(time = stateHolder.player.currentPosition))
         },
         onForeground = {
             if (wasPlayingBeforeBackground) {
-                viewModel.handleIntent(PlayerIntent.TogglePlayButton)
+                viewModel.handleIntent(TogglePlayButton)
             }
         }
     )

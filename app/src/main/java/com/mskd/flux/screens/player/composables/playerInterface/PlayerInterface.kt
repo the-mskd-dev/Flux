@@ -35,6 +35,7 @@ import com.mskd.flux.ui.theme.Ui
 
 @Composable
 fun PlayerInterface(
+    modifier: Modifier = Modifier,
     media: Media,
     player: Player,
     controlsState: () -> PlayerUiState.Controls,
@@ -57,7 +58,7 @@ fun PlayerInterface(
         label = "NextEpisodeButtonPosition"
     )
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = modifier) {
 
         AnimatedVisibility(
             visible = controls.showInterface,

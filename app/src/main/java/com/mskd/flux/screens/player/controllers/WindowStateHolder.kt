@@ -4,10 +4,11 @@ import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import com.mskd.flux.utils.extensions.changeBrightness
 import com.mskd.flux.utils.extensions.findActivity
 import com.mskd.flux.utils.extensions.forceScreenOn
 import com.mskd.flux.utils.extensions.hideSystemBars
-import com.mskd.flux.utils.extensions.setAppInLandscape
+import com.mskd.flux.utils.extensions.resetBrightness
 import com.mskd.flux.utils.extensions.setAppOrientation
 import com.mskd.flux.utils.extensions.showSystemBars
 
@@ -15,8 +16,8 @@ class WindowStateHolder(context: Context) {
 
     private val activity = context.findActivity()
 
-    fun setLandscape() {
-        activity?.setAppInLandscape()
+    fun forceScreenOn() {
+        //activity?.setAppInLandscape()
         activity?.forceScreenOn(true)
     }
 
@@ -27,6 +28,14 @@ class WindowStateHolder(context: Context) {
 
     fun updateSystemBars(show: Boolean) {
         if (show) activity?.showSystemBars() else activity?.hideSystemBars()
+    }
+
+    fun changeBrightness(delta: Float) : Int? {
+        return activity?.changeBrightness(delta = delta)
+    }
+
+    fun resetBrightness() {
+        activity?.resetBrightness()
     }
 
 }

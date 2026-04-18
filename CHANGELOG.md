@@ -1,3 +1,6 @@
-## Version 1.1.1
+## Version 1.2.0
 
-- Show snackbar to ask for TMDB Token and file naming
+- Free orientation within the player
+- Adjust volume and brightness by swipe
+- Add full screen mode in landscape
+- Update dependencies

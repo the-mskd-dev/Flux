@@ -3,9 +3,14 @@ package com.mskd.flux.screens.player
 import androidx.activity.compose.BackHandler
 import androidx.annotation.OptIn
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
+import androidx.compose.foundation.gestures.rememberTransformableState
+import androidx.compose.foundation.gestures.transformable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -13,12 +18,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -130,14 +139,54 @@ fun PlayerContent(
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
+    val infoWindow = LocalWindowInfo.current
+
     BackHandler(enabled = true) {
         sendIntent(PlayerIntent.OnBackTap(time = player.currentPosition))
+    }
+
+    val fillScale = remember(infoWindow.containerSize, player.videoSize) {
+        val videoSize = player.videoSize
+        val containerSize = infoWindow.containerSize
+
+        if (videoSize.width <= 0 || videoSize.height <= 0) {
+            1f
+        } else {
+            val screenWidth = containerSize.width.toFloat()
+            val screenHeight = containerSize.height.toFloat()
+
+            val videoWidth = videoSize.width.toFloat()
+            val videoHeight = videoSize.height.toFloat()
+
+            val widthRatio = screenWidth / videoWidth
+            val heightRatio = screenHeight / videoHeight
+
+            maxOf(widthRatio / minOf(widthRatio, heightRatio), heightRatio / minOf(widthRatio, heightRatio))
+        }
+    }
+
+    var fillPlayer by rememberSaveable { mutableStateOf(false) }
+    val scaleTarget = if (fillPlayer) fillScale else 1f
+
+    val animatedScale by animateFloatAsState(
+        targetValue = scaleTarget,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioNoBouncy,
+            stiffness = Spring.StiffnessLow
+        ),
+        label = "Player full screen animation"
+    )
+
+    val stateTransform = rememberTransformableState { _, zoomChange, _, _ ->
+        if (zoomChange < 1f ) fillPlayer = false
+        else if (zoomChange > 1f) fillPlayer = true
     }
 
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black)
+            .transformable(state = stateTransform)
             .pointerInput(Unit) {
                 detectTapGestures(
                     onTap = { offset ->
@@ -176,7 +225,13 @@ fun PlayerContent(
     ) {
 
         ContentFrame(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .graphicsLayer(
+                    scaleX = animatedScale,
+                    scaleY = animatedScale
+                )
+            ,
             player = player
         )
 

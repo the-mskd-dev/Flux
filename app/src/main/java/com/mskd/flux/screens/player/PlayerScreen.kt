@@ -242,7 +242,8 @@ fun PlayerContent(
             modifier = Modifier
                 .layoutId("subtitles")
                 .padding(bottom = Ui.Space.LARGE),
-            subtitles = subtitles
+            subtitles = subtitles,
+            smallText = isPortrait
         )
 
         PlayerInterface(

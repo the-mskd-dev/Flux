@@ -276,7 +276,7 @@ fun PlayerContent(
 }
 
 @Composable
-fun playerConstraintSet(isPortrait: Boolean, videoSize: VideoSize) = remember {
+fun playerConstraintSet(isPortrait: Boolean, videoSize: VideoSize) = remember(isPortrait, videoSize) {
     ConstraintSet {
 
         val playerRatio = if (videoSize.width > 0 && videoSize.height > 0) {

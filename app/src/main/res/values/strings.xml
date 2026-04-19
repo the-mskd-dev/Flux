@@ -69,7 +69,7 @@
     <string name="github" translatable="false">Github</string>
     <string name="what_is_next">What\'s next?</string>
     <string name="what_is_next_desc">The goal is to keep improving the app, whether it\'s the UI, UX, or performance. I plan to retrieve more datas (genre, casting, etc) and I also plan to add new data sources, not just files on the device</string>
-    <string name="make_a_donation">Buy me a coffee</string>
+    <string name="make_a_donation">Support me</string>
     <string name="episode_list">Episode list</string>
     <string name="watched">Watched</string>
     <string name="track">Track</string>

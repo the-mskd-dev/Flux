@@ -63,7 +63,7 @@
     <string name="how_to_suggest_desc">Si c\'est un avis positif, vous pouvez me contacter par %1$s! Sinon, faites la même chose ou directement sur %2$s, mais avec autant de gentillesse que si c\'était positif.</string>
     <string name="what_is_next">Et la suite ?</string>
     <string name="what_is_next_desc">L\'objectif est d\'améliorer toujours plus l\'application. Que ce soit au niveau de l\'UI, de l\'UX ou des performances. Je prévois de récupérer plus d\'informations (genre, casting, etc), mais je prévois également d\'ajouter de nouvelles sources de données et non seulement les fichiers sur l\'appareil.</string>
-    <string name="make_a_donation">Buy me a coffee</string>
+    <string name="make_a_donation">Supportez moi</string>
     <string name="episode_list">Liste des épisodes</string>
     <string name="watched">Vu</string>
     <string name="track">Piste</string>

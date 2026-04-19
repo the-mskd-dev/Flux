@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.displayCutoutPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
@@ -102,11 +103,12 @@ fun ArtworkImage(
 
             AsyncImage(
                 modifier = Modifier
-                    .clickable { sendIntent(ArtworkIntent.OpenArtworkInfo(artwork = artwork)) }
+                    .displayCutoutPadding()
                     .align(Alignment.Center)
                     .clip(Ui.Shape.Corner.Small)
                     .width(160.dp)
-                    .aspectRatio(2f/3f),
+                    .aspectRatio(2f/3f)
+                    .clickable { sendIntent(ArtworkIntent.OpenArtworkInfo(artwork = artwork)) },
                 model = imageRequest,
                 contentScale = ContentScale.Crop,
                 placeholder = Image.placeholder,

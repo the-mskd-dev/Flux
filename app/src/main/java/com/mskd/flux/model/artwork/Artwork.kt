@@ -54,8 +54,8 @@ data class Artwork(
     val isUnknown: Boolean get() = id == UNKNOWN_ID
 
     val infoUrl: String get() = when (type) {
-        ContentType.MOVIE -> Constants.TMDB.MOVIE_URL + id
-        ContentType.SHOW -> Constants.TMDB.SHOW_URL + id
+        ContentType.MOVIE -> "https://www.themoviedb.org/movie/$id"
+        ContentType.SHOW -> "https://www.themoviedb.org/tv/$id"
     }
 
     companion object {

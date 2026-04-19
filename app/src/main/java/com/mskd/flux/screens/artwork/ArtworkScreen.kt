@@ -46,12 +46,8 @@ fun ArtworkScreen(
             when (event) {
                 ArtworkEvent.BackToPreviousScreen -> onBack()
                 is ArtworkEvent.PlayMedia -> navigate(Player(mediaId = event.mediaId))
-                is ArtworkEvent.OpenArtworkInfo -> {
-                    WebLink.openPage(
-                        context = context,
-                        url = event.artwork.infoUrl
-                    )
-                }
+                is ArtworkEvent.OpenArtworkInfo -> WebLink.openPage(context = context, url = event.artwork.infoUrl)
+                is ArtworkEvent.OpenEpisodeInfo -> WebLink.openPage(context = context, url = event.episode.infoUrl)
             }
         }
     }

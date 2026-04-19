@@ -7,6 +7,7 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.mskd.flux.model.UserFile
 import com.mskd.flux.model.tmdb.TMDBEpisode
+import com.mskd.flux.utils.Constants
 import kotlin.random.Random
 
 /**
@@ -103,5 +104,7 @@ data class Episode(
     )
 
     val isUnknown: Boolean get() = artworkId == Artwork.UNKNOWN_ID
+
+    val infoUrl: String get() = "https://www.themoviedb.org/tv/$artworkId/season/$season/episode/$number"
 
 }

@@ -25,10 +25,12 @@ sealed class ArtworkIntent {
     data class SelectSeason(val season: Int): ArtworkIntent()
     data class PlayMedia(val media: Media): ArtworkIntent()
     data class OpenArtworkInfo(val artwork: Artwork): ArtworkIntent()
+    data class OpenEpisodeInfo(val episode: Episode): ArtworkIntent()
 }
 
 sealed class ArtworkEvent {
     object BackToPreviousScreen : ArtworkEvent()
     data class PlayMedia(val mediaId: Long) : ArtworkEvent()
     data class OpenArtworkInfo(val artwork: Artwork) : ArtworkEvent()
+    data class OpenEpisodeInfo(val episode: Episode): ArtworkEvent()
 }

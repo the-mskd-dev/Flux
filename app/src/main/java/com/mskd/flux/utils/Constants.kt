@@ -21,6 +21,7 @@ object Constants {
         const val WEBSITE = "https://www.themoviedb.org/"
         const val SIGN_UP = "https://www.themoviedb.org/signup"
         const val GET_API_TOKEN = "https://www.themoviedb.org/settings/api"
+
     }
 
     object CONTACT {

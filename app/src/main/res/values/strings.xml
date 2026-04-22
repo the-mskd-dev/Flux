@@ -51,6 +51,7 @@
     <string name="show_file_example_3">show_name_1x02.mkv</string>
     <string name="show_file_example_4">show_name_se1.ep2.mkv</string>
     <string name="show_file_example_5">show_name-season1.episode2.mkv</string>
+    <string name="show_file_example_6">show name (1995)_s01e02.mkv</string>
     <string name="read">read</string>
     <string name="remaining_time">%1$1s left</string>
     <string name="rewatch">Rewatch</string>

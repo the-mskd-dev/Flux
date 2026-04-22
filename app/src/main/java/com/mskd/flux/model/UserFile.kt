@@ -86,6 +86,7 @@ data class FileProperties(
 
 data class UserFolder(
     val title: String,
+    val year: Int? = null,
     val files: List<UserFile>
 ) {
 

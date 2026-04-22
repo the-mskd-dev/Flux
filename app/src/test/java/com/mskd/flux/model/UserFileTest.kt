@@ -5,6 +5,7 @@ import com.mskd.flux.utils.extensions.groupInFolders
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 
 
 class UserFileTest : FunSpec ({
@@ -140,9 +141,13 @@ class UserFileTest : FunSpec ({
         val files = FilesMockups.localFiles
 
         val folders = files.groupInFolders()
-        val narutoFolder = folders.firstOrNull { it.title == "naruto" }
+        val narutoFolder = folders.find { it.title == "naruto" }
+        val oldHxHFolder = folders.find { it.title == "hunter x hunter" && it.year == 1999 }
+        val newHxHFolder = folders.find { it.title == "hunter x hunter" && it.year == 2011 }
 
-        folders.size shouldBe 3
+        folders.size shouldBe 5
+        oldHxHFolder shouldNotBe null
+        newHxHFolder shouldNotBe null
         narutoFolder?.files?.size shouldBe 4
     }
 

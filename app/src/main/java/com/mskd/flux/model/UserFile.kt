@@ -46,25 +46,26 @@ data class FileProperties(
             // Patterns
             val moviePattern = Pattern.compile("^(.*?)[ .]*(?:\\((\\d{4})\\))?\\.[^.]+$")
             val episodePattern = Pattern.compile(
-                "^(.*?)[ ._-]*(?:[sS](\\d{1,2})[ .]*[eE](\\d{1,2})|" +
+                "^(.*?)[ ._-]*(?:\\((\\d{4})\\))?[ ._-]*(?:[sS](\\d{1,2})[ .]*[eE](\\d{1,2})|" +
                         "(\\d{1,2})[xX](\\d{1,2})|" +
                         "season[ .]*(\\d{1,2})[ .]*episode[ .]*(\\d{1,2})|" +
-                        "se(\\d{1,2})[ .]*ep(\\d{1,2})).*\\.[^.]+$"
+                        "se(\\d{1,2})[ .]*ep(\\d{1,2})).*\\.[^.]+$",
             )
 
             // Try episode pattern
             val episodeMatcher = episodePattern.matcher(filename)
             if (episodeMatcher.matches()) {
                 val title = episodeMatcher.group(1)?.replace("-", " ")?.trim()?.lowercase()
-                val season = episodeMatcher.group(2)?.toIntOrNull()
-                    ?: episodeMatcher.group(4)?.toIntOrNull()
-                    ?: episodeMatcher.group(6)?.toIntOrNull()
-                    ?: episodeMatcher.group(8)?.toIntOrNull()
-                val episode = episodeMatcher.group(3)?.toIntOrNull()
+                val year = episodeMatcher.group(2)?.toIntOrNull()
+                val season = episodeMatcher.group(3)?.toIntOrNull()
                     ?: episodeMatcher.group(5)?.toIntOrNull()
                     ?: episodeMatcher.group(7)?.toIntOrNull()
                     ?: episodeMatcher.group(9)?.toIntOrNull()
-                return FileProperties(title ?: "", null, season, episode)
+                val episode = episodeMatcher.group(4)?.toIntOrNull()
+                    ?: episodeMatcher.group(6)?.toIntOrNull()
+                    ?: episodeMatcher.group(8)?.toIntOrNull()
+                    ?: episodeMatcher.group(10)?.toIntOrNull()
+                return FileProperties(title ?: "", year, season, episode)
             }
 
             // Try movie pattern

@@ -125,6 +125,13 @@ class UserFileTest : FunSpec ({
                 expectedEpisode = 2,
                 expectedYear = 2011
             ),
+            UserFileTestCases.FileProperties(
+                fileName = "Hunter-X-Hunter (1999)_s01e02.mkv",
+                expectedTitle = "hunter x hunter",
+                expectedSeason = 1,
+                expectedEpisode = 2,
+                expectedYear = 1999
+            ),
         ) { testCase ->
 
             val mediaInfo = FileProperties.extractFileProperties(testCase.fileName)

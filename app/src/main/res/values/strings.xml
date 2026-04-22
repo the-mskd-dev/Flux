@@ -42,7 +42,7 @@
     <string name="how_to_name_files">How to name my files?</string>
     <string name="how_to_name_files_desc">Don’t worry, it’s super easy! To keep your videos well organized, here’s how to name your files:</string>
     <string name="how_to_name_files_movies_desc">Give your movies a clear name, followed by the year if you want. For example:</string>
-    <string name="how_to_name_files_show_desc">For TV show episodes, use a format that includes the season and episode number. For example:</string>
+    <string name="how_to_name_files_show_desc">For TV show episodes, use a format that includes the season and episode number. Year is optional. For example:</string>
     <string name="movie_file_example_1" translatable="false">Spider-man (2002).mkv</string>
     <string name="movie_file_example_2" translatable="false">Your name.avi</string>
     <string name="movie_file_example_3" translatable="false">Spider-man-no-way-home-(2021).mp4</string>

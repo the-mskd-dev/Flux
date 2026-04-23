@@ -36,6 +36,7 @@ fun PlayerSideEffects(
     onBack: () -> Unit
 ) {
 
+    val player by stateHolder.player.collectAsStateWithLifecycle()
     val lifecycleOwner = LocalLifecycleOwner.current
     val activity = LocalContext.current.findActivity()
     val originalOrientation = remember { activity?.requestedOrientation }
@@ -87,7 +88,7 @@ fun PlayerSideEffects(
                         is PlayerEvent.UpdateProgress -> stateHolder.updateProgress(event.progress)
                         is PlayerEvent.SelectTrack -> stateHolder.selectTrack(event.track)
                         PlayerEvent.TogglePlayButton -> stateHolder.togglePlayButton()
-                        PlayerEvent.SaveTimeRequested -> viewModel.handleIntent(SaveTime(time = stateHolder.player.currentPosition))
+                        PlayerEvent.SaveTimeRequested -> player?.let { viewModel.handleIntent(SaveTime(time = it.currentPosition)) }
                         is PlayerEvent.ChangeVolume -> {
                             stateHolder.changeVolume(event.delta).let { volume ->
                                 viewModel.handleIntent(UpdateAmbientOverlay(type = PlayerUiState.AmbientOverlay.Type.VOLUME, value = volume))
@@ -106,12 +107,12 @@ fun PlayerSideEffects(
 
     LifecycleComponent(
         onBackground = {
-            wasPlayingBeforeBackground = stateHolder.player.isPlaying
+            wasPlayingBeforeBackground = player?.isPlaying ?: false
             if (wasPlayingBeforeBackground) {
                 viewModel.handleIntent(TogglePlayButton)
             }
 
-            viewModel.handleIntent(SaveTime(time = stateHolder.player.currentPosition))
+            player?.let { viewModel.handleIntent(SaveTime(time = it.currentPosition)) }
         },
         onForeground = {
             if (wasPlayingBeforeBackground) {

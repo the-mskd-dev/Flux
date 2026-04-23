@@ -1,5 +1,6 @@
 package com.mskd.flux.screens.player.controllers
 
+import android.content.ComponentName
 import android.content.Context
 import android.util.Log
 import androidx.annotation.OptIn
@@ -20,9 +21,9 @@ import androidx.media3.common.Tracks
 import androidx.media3.common.text.Cue
 import androidx.media3.common.text.CueGroup
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.exoplayer.DefaultRenderersFactory
-import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.exoplayer.SeekParameters
+import androidx.media3.session.MediaController
+import androidx.media3.session.SessionToken
+import com.google.common.util.concurrent.MoreExecutors
 import com.mskd.flux.R
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.screens.player.PlayerTrack
@@ -74,19 +75,16 @@ class PlayerStateHolder(
 
     private var progressJob: Job? = null
 
-    val player : Player = ExoPlayer.Builder(context)
-        .setRenderersFactory(
-            DefaultRenderersFactory(context)
-                .setExtensionRendererMode(
-                    DefaultRenderersFactory.EXTENSION_RENDERER_MODE_PREFER
-                )
-        )
-        .build()
-        .apply {
-            playWhenReady = true
-            setSeekParameters(SeekParameters.CLOSEST_SYNC)
-            addListener(this@PlayerStateHolder)
-        }
+    private var _player = MutableStateFlow<Player?>(null)
+    val player: StateFlow<Player?> = _player
+
+    //endregion
+
+    //region Init
+
+    init {
+        setUpController()
+    }
 
     //endregion
 
@@ -148,6 +146,21 @@ class PlayerStateHolder(
     //endregion
 
     //region Private methods
+
+    private fun setUpController() {
+        val sessionToken = SessionToken(context, ComponentName(context, PlayerService::class.java))
+        val controllerFuture = MediaController.Builder(context, sessionToken).buildAsync()
+
+        controllerFuture.addListener({
+            _player.value = controllerFuture.get().apply {
+                addListener(this@PlayerStateHolder)
+            }
+        }, MoreExecutors.directExecutor())
+    }
+
+    private fun withPlayer(action: (Player) -> Unit) {
+        _player.value?.let(action)
+    }
 
     private fun buildLabel(format: Format): String? {
         return format.language?.let { language ->
@@ -245,9 +258,11 @@ class PlayerStateHolder(
 
             while (isActive) {
 
-                if (player.duration > 0) {
+                val currentPlayer = _player.value
 
-                    val percentage = player.currentPosition.toFloat() / player.duration.toFloat()
+                if (currentPlayer != null && currentPlayer.duration > 0) {
+
+                    val percentage = currentPlayer.currentPosition.toFloat() / currentPlayer.duration.toFloat()
                     val showNext = percentage >= Constants.PLAYER.PROGRESS_THRESHOLD
 
                     if (lastNextEpisodeEvent != showNext) {
@@ -271,28 +286,29 @@ class PlayerStateHolder(
 
     //region Public methods
 
-    fun togglePlayButton() {
+    fun togglePlayButton() = withPlayer { player ->
         if (player.isPlaying) player.pause() else player.play()
     }
 
-    fun onFastRewind(value: Long) {
+    fun onFastRewind(value: Long) = withPlayer { player ->
         player.seekTo(player.currentPosition - value)
     }
 
-    fun onFastForward(value: Long) {
+    fun onFastForward(value: Long) = withPlayer { player ->
         player.seekTo(player.currentPosition + value)
     }
 
-    fun updateProgress(progress: Long) {
+    fun updateProgress(progress: Long) = withPlayer { player ->
         player.seekTo(progress)
     }
 
-    fun changeVolume(delta: Float) : Int {
+    fun changeVolume(delta: Float) : Int  {
+        val player = _player.value ?: return 0
         player.volume = (player.volume + delta).coerceIn(0f, 1f)
         return (player.volume * 100).roundToInt()
     }
 
-    fun playMedia(media: Media?) {
+    fun playMedia(media: Media?) = withPlayer { player ->
 
         if (media != null && media.mediaId != currentMediaId) {
             player.setMediaItem(MediaItem.fromUri(media.file.path.toUri()))
@@ -304,11 +320,13 @@ class PlayerStateHolder(
 
     }
 
-    fun releasePlayer() {
+    fun releasePlayer() = withPlayer { player ->
         player.release()
     }
 
-    suspend fun selectTrack(track: PlayerTrack) {
+    suspend fun selectTrack(track: PlayerTrack)  {
+
+        val player = _player.value ?: return
 
         val currentTracks = player.currentTracks
         var trackResult: PlayerTrack? = null

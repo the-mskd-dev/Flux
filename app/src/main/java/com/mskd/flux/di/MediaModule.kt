@@ -13,6 +13,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Qualifier
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -27,6 +28,7 @@ object MediaModule {
     annotation class MediaDataSourceTMDB
 
     @Provides
+    @Singleton
     @MediaDataSourceLocal
     fun provideMediaDataSourceLocal(db: DatabaseDao) : MediaSource {
         return MediaSourceDBImpl(
@@ -35,6 +37,7 @@ object MediaModule {
     }
 
     @Provides
+    @Singleton
     @MediaDataSourceTMDB
     fun provideMediaDataSourceTMDB(
         tmdbService: TMDBService,

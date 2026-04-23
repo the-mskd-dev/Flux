@@ -94,6 +94,7 @@ androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navig
 # -- Media3 --
 androidx-media3-exoplayer = { group = "androidx.media3", name = "media3-exoplayer", version.ref = "media3" }
 androidx-media3-ui = { group = "androidx.media3", name = "media3-ui", version.ref = "media3" }
+androidx-media3-session = { group = "androidx.media3", name = "media3-session", version.ref = "media3" }
 androidx-media3-ui-compose = { group = "androidx.media3", name = "media3-ui-compose-material3", version.ref = "media3" }
 jellyfin-ffmpeg = { group = "org.jellyfin.media3", name = "media3-ffmpeg-decoder", version.ref = "jellyfinFfmpeg" }
 
@@ -164,8 +165,9 @@ nav3 = [
 media3 = [
     "androidx-media3-exoplayer",
     "androidx-media3-ui",
-    "jellyfin-ffmpeg",
     "androidx-media3-ui-compose",
+    "androidx-media3-session",
+    "jellyfin-ffmpeg",
 ]
 network = [
     "retrofit-core",

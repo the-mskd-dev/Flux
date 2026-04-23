@@ -80,6 +80,7 @@ fun PlayerScreen(
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val playerStateHolder = rememberPlayerStateHolder()
     val windowStateHolder = rememberWindowStateHolder()
+    val player by playerStateHolder.player.collectAsStateWithLifecycle()
     val subtitles by playerStateHolder.subtitles.collectAsStateWithLifecycle()
     var interfaceVisibilityCountdown by remember { mutableIntStateOf(3) }
 
@@ -109,10 +110,17 @@ fun PlayerScreen(
     }
 
     BackHandler(enabled = true) {
-        viewModel.handleIntent(PlayerIntent.OnBackTap(time = playerStateHolder.player.currentPosition))
+        viewModel.handleIntent(PlayerIntent.OnBackTap(time = player?.currentPosition))
     }
 
-    Crossfade(targetState = state.screen, label = "PlayerScreenState") { screen ->
+    Crossfade(
+        targetState = if (state.screen is PlayerScreen.Content && player != null) {
+            state.screen
+        } else {
+            state.screen.takeIf { it is PlayerScreen.Error } ?: PlayerScreen.Loading
+        },
+        label = "PlayerScreenState"
+    ) { screen ->
         when (screen) {
             PlayerScreen.Loading -> LoadingScreen()
             PlayerScreen.Error -> {
@@ -124,7 +132,7 @@ fun PlayerScreen(
             is PlayerScreen.Content -> {
                 PlayerContent(
                     media = screen.media,
-                    player = playerStateHolder.player,
+                    player = player!!,
                     subtitles =  { subtitles },
                     rewindAndForward = { state.playerRewind to state.playerForward },
                     controlsState = { state.controls },

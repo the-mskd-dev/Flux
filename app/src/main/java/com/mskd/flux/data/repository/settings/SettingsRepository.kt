@@ -29,11 +29,14 @@ interface SettingsRepository {
 
     suspend fun setAudioLanguage(locale: Locale)
 
+    suspend fun setExternalPlayer(useExternalPlayer: Boolean)
+
     data class State(
         val playerRewindValue: Int = 10,
         val playerForwardValue: Int = 10,
         val uiTheme: Ui.THEME = Ui.THEME.SYSTEM,
         val subtitlesLanguage: Locale = Locale.getDefault(),
-        val audioLanguage: Locale = Locale.getDefault()
+        val audioLanguage: Locale = Locale.getDefault(),
+        val externalPlayer: Boolean = false
     )
 }

@@ -1,4 +1,7 @@
+[![F-Droid Version](https://img.shields.io/f-droid/v/com.mskd.flux)](https://f-droid.org/ko/packages/com.mskd.flux/)
+
 [![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-ffdd00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://www.buymeacoffee.com/the.masked.dev)
+
 
 # Flux
 ## _Local shows/movies/animes library and player_
@@ -68,6 +71,8 @@ tmdb_token=<you_api_key>
 And that all! The rest is up to you.
 
 ## License
+
+[![GPL-3.0-or-later](https://img.shields.io/badge/License-GPL--3.0--or--later-blue.svg)](https://spdx.org/licenses/GPL-3.0-or-later.html)
 
 Copyright (C) 2026 the-mskd-dev
 

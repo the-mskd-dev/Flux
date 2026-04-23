@@ -6,6 +6,7 @@ import com.mskd.flux.R
 import com.mskd.flux.model.UserFile
 import com.mskd.flux.model.tmdb.TMDBArtwork
 import com.mskd.flux.model.tmdb.TMDBMovie
+import com.mskd.flux.utils.Constants
 
 /**
  * Represents a media, such as a movie or a TV show.
@@ -51,6 +52,11 @@ data class Artwork(
     )
 
     val isUnknown: Boolean get() = id == UNKNOWN_ID
+
+    val infoUrl: String get() = when (type) {
+        ContentType.MOVIE -> "https://www.themoviedb.org/movie/$id"
+        ContentType.SHOW -> "https://www.themoviedb.org/tv/$id"
+    }
 
     companion object {
 

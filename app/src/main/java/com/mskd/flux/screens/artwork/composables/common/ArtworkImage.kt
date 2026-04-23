@@ -1,9 +1,11 @@
 package com.mskd.flux.screens.artwork.composables.common
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.displayCutoutPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
@@ -84,25 +86,29 @@ fun ArtworkImage(
                 )
         )
 
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
+        Box(
+            modifier = Modifier.fillMaxSize(),
         ) {
 
             TopAppBar(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .fillMaxWidth(),
                 title = {  },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
                 navigationIcon = {
-                    BackButton(onTap = {sendIntent(ArtworkIntent.OnBackTap)})
+                    BackButton(onTap = { sendIntent(ArtworkIntent.OnBackTap) })
                 },
             )
 
             AsyncImage(
                 modifier = Modifier
+                    .displayCutoutPadding()
+                    .align(Alignment.Center)
                     .clip(Ui.Shape.Corner.Small)
                     .width(160.dp)
-                    .aspectRatio(2f/3f),
+                    .aspectRatio(2f/3f)
+                    .clickable { sendIntent(ArtworkIntent.OpenArtworkInfo(artwork = artwork)) },
                 model = imageRequest,
                 contentScale = ContentScale.Crop,
                 placeholder = Image.placeholder,

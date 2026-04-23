@@ -9,8 +9,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -143,34 +145,22 @@ fun EpisodeDropDownMenu(
         containerColor = MaterialTheme.colorScheme.tertiaryContainer,
         content = {
 
-            DropdownMenuItem(
-                colors = MenuDefaults.itemColors(
-                    textColor = MaterialTheme.colorScheme.onTertiaryContainer,
-                    leadingIconColor = MaterialTheme.colorScheme.onTertiaryContainer,
-                ),
+            EpisodeDropDownMenuItem(
+                text = text,
                 onClick = {
                     sendIntent(ArtworkIntent.PlayMedia(media = episode))
                     onDismissRequest()
-                },
-                text = {
-                    Text.Body.Medium(text = text)
                 },
                 leadingIcon = {
                     Icon(imageVector = if (episode.status == Status.WATCHED) Icons.Default.Refresh else Icons.Default.PlayArrow, contentDescription = null)
                 },
             )
 
-            DropdownMenuItem(
-                colors = MenuDefaults.itemColors(
-                    textColor = MaterialTheme.colorScheme.onTertiaryContainer,
-                    leadingIconColor = MaterialTheme.colorScheme.onTertiaryContainer,
-                ),
+            EpisodeDropDownMenuItem(
+                text = text,
                 onClick = {
                     sendIntent(ArtworkIntent.ChangeWatchStatus(media = episode))
                     onDismissRequest()
-                },
-                text = {
-                    Text.Body.Medium(stringResource(if (episode.status == Status.WATCHED) R.string.mark_as_not_watched else R.string.mark_as_watched))
                 },
                 leadingIcon = {
                     if (episode.status == Status.WATCHED)
@@ -180,7 +170,39 @@ fun EpisodeDropDownMenu(
                 },
             )
 
+            EpisodeDropDownMenuItem(
+                text = stringResource(R.string.more_info),
+                onClick = {
+                    sendIntent(ArtworkIntent.OpenEpisodeInfo(episode = episode))
+                    onDismissRequest()
+                },
+                leadingIcon = {
+                    Icon(imageVector = Icons.Outlined.Info, contentDescription = null)
+                },
+            )
+
         }
+    )
+
+}
+
+@Composable
+fun EpisodeDropDownMenuItem(
+    text: String,
+    onClick: () -> Unit,
+    leadingIcon:  @Composable (() -> Unit)?
+) {
+
+    DropdownMenuItem(
+        colors = MenuDefaults.itemColors(
+            textColor = MaterialTheme.colorScheme.onTertiaryContainer,
+            leadingIconColor = MaterialTheme.colorScheme.onTertiaryContainer,
+        ),
+        onClick = onClick,
+        text = {
+            Text.Body.Medium(text = text)
+        },
+        leadingIcon = leadingIcon,
     )
 
 }

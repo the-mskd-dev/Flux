@@ -41,6 +41,18 @@ object FilesMockups {
             addedDateTime = 0L,
             path = "localPath",
             source = FileSource.LOCAL
+        ),
+        UserFile(
+            name = "Hunter x Hunter (2011) season1.episode2.mkv",
+            addedDateTime = 0L,
+            path = "localPath",
+            source = FileSource.LOCAL
+        ),
+        UserFile(
+            name = "Hunter x Hunter (1999) season1.episode2.mkv",
+            addedDateTime = 0L,
+            path = "localPath",
+            source = FileSource.LOCAL
         )
     )
 }

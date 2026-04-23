@@ -41,12 +41,13 @@
     <string name="how_to_name_files">Comment nommer mes fichiers ?</string>
     <string name="how_to_name_files_desc">Pas de panique, c’est très simple ! Pour que vos vidéos soient bien organisées, voici comment nommer vos fichiers :</string>
     <string name="how_to_name_files_movies_desc">Donnez à vos films un nom clair, suivi de l’année si vous le souhaitez. Par exemple :</string>
-    <string name="how_to_name_files_show_desc">Pour les épisodes de séries, utilisez un format qui indique la saison et l\’épisode. Par exemple :</string>
+    <string name="how_to_name_files_show_desc">Pour les épisodes de séries, utilisez un format qui indique la saison et l\’épisode. L\'année est optionnelle. Par exemple :</string>
     <string name="show_file_example_1">nom série_s01e02.mkv</string>
     <string name="show_file_example_2">nom série_s01.e02.mkv</string>
     <string name="show_file_example_3">nom_série_1x02.mkv</string>
     <string name="show_file_example_4">nom_série_se1.ep2.mkv</string>
     <string name="show_file_example_5">nom_série-season1.episode2.mkv</string>
+    <string name="show_file_example_6">nom série (1995)_s01e02.mkv</string>
     <string name="read">lu</string>
     <string name="remaining_time">Il reste %1$1s</string>
     <string name="rewatch">Revoir</string>
@@ -63,7 +64,7 @@
     <string name="how_to_suggest_desc">Si c\'est un avis positif, vous pouvez me contacter par %1$s! Sinon, faites la même chose ou directement sur %2$s, mais avec autant de gentillesse que si c\'était positif.</string>
     <string name="what_is_next">Et la suite ?</string>
     <string name="what_is_next_desc">L\'objectif est d\'améliorer toujours plus l\'application. Que ce soit au niveau de l\'UI, de l\'UX ou des performances. Je prévois de récupérer plus d\'informations (genre, casting, etc), mais je prévois également d\'ajouter de nouvelles sources de données et non seulement les fichiers sur l\'appareil.</string>
-    <string name="make_a_donation">Buy me a coffee</string>
+    <string name="make_a_donation">Supportez moi</string>
     <string name="episode_list">Liste des épisodes</string>
     <string name="watched">Vu</string>
     <string name="track">Piste</string>
@@ -93,4 +94,5 @@
     <string name="add">Ajouter</string>
     <string name="snackbar_see_tuto">Pour organiser votre bibliothèque, veuillez vérifier le nommage de vos fichiers</string>
     <string name="see">Voir</string>
+    <string name="more_info">Plus d\'informations</string>
 </resources>

@@ -105,7 +105,7 @@ class MediaSourceTMDBImpl @Inject constructor(
 
                         val tmdbArtworks = tmdbService.getMovie(
                             title = folder.title,
-                            year = file.nameProperties.year
+                            year = folder.year
                         )
 
                         val tmdbArtwork = tmdbArtworks.results.maxBy { it.popularity }.also {
@@ -180,7 +180,7 @@ class MediaSourceTMDBImpl @Inject constructor(
 
             val tmdbArtworks = tmdbService.getShow(
                 title = folder.title,
-                year = folder.files.firstOrNull { it.nameProperties.year != null }?.nameProperties?.year
+                year = folder.year
             )
 
             val tmdbArtwork = tmdbArtworks.results.maxBy { it.popularity }.also {

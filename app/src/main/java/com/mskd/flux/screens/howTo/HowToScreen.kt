@@ -104,6 +104,7 @@ fun HowToNameFiles() {
                 Text.Body.Medium(text = "• " + stringResource(R.string.show_file_example_3))
                 Text.Body.Medium(text = "• " + stringResource(R.string.show_file_example_4))
                 Text.Body.Medium(text = "• " + stringResource(R.string.show_file_example_5))
+                Text.Body.Medium(text = "• " + stringResource(R.string.show_file_example_6))
             }
 
         }

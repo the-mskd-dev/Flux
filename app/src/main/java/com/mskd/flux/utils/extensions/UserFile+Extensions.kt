@@ -5,8 +5,15 @@ import com.mskd.flux.model.UserFolder
 
 fun List<UserFile>.groupInFolders() : List<UserFolder> {
     return this
-        .groupBy { it.nameProperties.title }
-        .map { (title, files) ->
-            UserFolder(title = title, files = files)
+        .groupBy { file ->
+            file.nameProperties.title to file.nameProperties.year
+        }
+        .map { (key, files) ->
+            val (title, year) = key
+            UserFolder(
+                title = title,
+                year = year,
+                files = files
+            )
         }
 }

@@ -1,0 +1,5 @@
+## Version 1.2.1
+
+- Nouvelle fonctionnalité : Accès à TMDB depuis les affiches et les épisodes pour obtenir plus d'informations.
+- Fix : Amélioration de la mise en cache des images.
+- Fix : Ajout de l'année pour les séries afin de faciliter la récupération des données.

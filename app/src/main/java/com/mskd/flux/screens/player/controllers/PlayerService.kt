@@ -1,5 +1,6 @@
 package com.mskd.flux.screens.player.controllers
 
+import android.app.PendingIntent
 import androidx.media3.common.Player
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
@@ -15,7 +16,13 @@ class PlayerService : MediaSessionService() {
 
     override fun onCreate() {
         super.onCreate()
-        mediaSession = MediaSession.Builder(this, player).build()
+
+        val intent = packageManager.getLaunchIntentForPackage(packageName)
+        val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
+
+        mediaSession = MediaSession.Builder(this, player)
+            .setSessionActivity(pendingIntent)
+            .build()
     }
 
     override fun onGetSession(p0: MediaSession.ControllerInfo): MediaSession? {

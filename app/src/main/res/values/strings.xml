@@ -102,5 +102,7 @@
     <string name="snackbar_see_tuto">To organize your library, please check the naming of your files</string>
     <string name="see">See</string>
     <string name="more_info">More information</string>
+    <string name="external_player">External player</string>
+    <string name="watch_on_external_player">Watch content on an external app</string>
     <string name="how_to_advice">Note: It is recommended to place your files in the Movies or Downloads folders for optimal performance.</string>
 </resources>

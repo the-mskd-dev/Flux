@@ -150,9 +150,7 @@ fun SettingsContent(
                     onTap = { sendIntent(SettingsIntent.OnTokenTap) }
                 )
 
-            }
-
-            SettingsSection {
+                SettingsDivider()
 
                 SettingsItem(
                     text = stringResource(R.string.how_to_name_files),
@@ -160,7 +158,9 @@ fun SettingsContent(
                     onTap = { sendIntent(SettingsIntent.OnHowToTap) }
                 )
 
-                SettingsDivider()
+            }
+
+            SettingsSection {
 
                 SettingsItem(
                     text = stringResource(R.string.about),

@@ -16,6 +16,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Switch
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -128,6 +129,15 @@ fun SettingsContent(
                     text = stringResource(R.string.button_forward),
                     value = "${state.forwardValue}sec",
                     onTap = { sendIntent(SettingsIntent.ShowForwardDialog) }
+                )
+
+                SettingsDivider()
+
+                SettingsSwitch(
+                    text = stringResource(R.string.external_player),
+                    subText = stringResource(R.string.watch_on_external_player),
+                    checked = state.useExternalPlayer,
+                    onCheckedChange = { sendIntent(SettingsIntent.OnExternalPlayerCheck(it)) }
                 )
 
             }
@@ -246,6 +256,49 @@ fun SettingsItem(
         Text.Title.Small(
             text = value.uppercaseFirstLetter(),
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = .8f),
+        )
+
+    }
+
+}
+
+@Composable
+fun SettingsSwitch(
+    text: String,
+    subText: String,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit
+) {
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = Ui.Space.MEDIUM),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .padding(end = Ui.Space.MEDIUM),
+            horizontalAlignment = Alignment.Start
+        ) {
+
+            Text.Title.Medium(
+                text = text,
+            )
+
+            Text.Title.Small(
+                text = subText,
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = .8f),
+            )
+
+        }
+
+        Switch(
+            checked = checked,
+            onCheckedChange = onCheckedChange,
         )
 
     }

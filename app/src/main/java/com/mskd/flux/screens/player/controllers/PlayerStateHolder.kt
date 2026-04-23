@@ -14,6 +14,7 @@ import androidx.core.net.toUri
 import androidx.media3.common.C
 import androidx.media3.common.Format
 import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
 import androidx.media3.common.TrackSelectionOverride
 import androidx.media3.common.TrackSelectionParameters
@@ -25,9 +26,11 @@ import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import com.google.common.util.concurrent.MoreExecutors
 import com.mskd.flux.R
+import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.screens.player.PlayerTrack
 import com.mskd.flux.utils.Constants
+import com.mskd.flux.utils.extensions.tmdbImage
 import com.mskd.flux.utils.extensions.uppercaseFirstLetter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -311,7 +314,24 @@ class PlayerStateHolder(
     fun playMedia(media: Media?) = withPlayer { player ->
 
         if (media != null && media.mediaId != currentMediaId) {
-            player.setMediaItem(MediaItem.fromUri(media.file.path.toUri()))
+
+            val mediaMetadata = MediaMetadata.Builder()
+                .setTitle(media.title)
+                .setArtist("Flux")
+                .apply {
+                    (media as? Episode)?.let {
+                        setArtworkUri(it.imagePath.tmdbImage.toUri())
+                        setSubtitle(context.getString(R.string.season_and_episode, it.season, it.number))
+                    }
+                }
+                .build()
+
+            val mediaItem = MediaItem.Builder()
+                .setMediaMetadata(mediaMetadata)
+                .setUri(media.file.path.toUri())
+                .build()
+
+            player.setMediaItem(mediaItem)
             player.seekTo(media.currentTime)
             player.prepare()
             currentMediaId = media.mediaId

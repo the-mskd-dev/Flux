@@ -107,16 +107,8 @@ fun PlayerSideEffects(
 
     LifecycleComponent(
         onBackground = {
-            wasPlayingBeforeBackground = player?.isPlaying ?: false
-            if (wasPlayingBeforeBackground) {
-                viewModel.handleIntent(TogglePlayButton)
-            }
-
-            player?.let { viewModel.handleIntent(SaveTime(time = it.currentPosition)) }
-        },
-        onForeground = {
-            if (wasPlayingBeforeBackground) {
-                viewModel.handleIntent(TogglePlayButton)
+            player?.let {
+                viewModel.handleIntent(SaveTime(time = it.currentPosition))
             }
         }
     )

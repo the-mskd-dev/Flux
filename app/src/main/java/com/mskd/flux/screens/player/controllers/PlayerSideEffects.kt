@@ -52,7 +52,7 @@ fun PlayerSideEffects(
         }
     }
 
-    // Show system bars at the same time than interface
+    // Show system bars at the same time as interface
     LaunchedEffect(showInterface) {
         windowStateHolder.updateSystemBars(showInterface)
     }

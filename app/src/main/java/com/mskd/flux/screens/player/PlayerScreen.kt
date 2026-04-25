@@ -55,7 +55,6 @@ import com.mskd.flux.screens.player.composables.playerInterface.PlayerSubtitles
 import com.mskd.flux.screens.player.composables.settings.PlayerSettings
 import com.mskd.flux.screens.player.controllers.PlayerSideEffects
 import com.mskd.flux.screens.player.controllers.rememberPlayerScaleEffects
-import com.mskd.flux.screens.player.controllers.rememberPlayerStateHolder
 import com.mskd.flux.screens.player.controllers.rememberWindowStateHolder
 import com.mskd.flux.ui.component.ErrorScreen
 import com.mskd.flux.ui.component.LoadingScreen
@@ -78,15 +77,12 @@ fun PlayerScreen(
 ) {
 
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-    val playerStateHolder = rememberPlayerStateHolder()
     val windowStateHolder = rememberWindowStateHolder()
-    val player by playerStateHolder.player.collectAsStateWithLifecycle()
-    val subtitles by playerStateHolder.subtitles.collectAsStateWithLifecycle()
+    val player by viewModel.playerManager.player.collectAsStateWithLifecycle()
     var interfaceVisibilityCountdown by remember { mutableIntStateOf(3) }
 
     PlayerSideEffects(
         viewModel = viewModel,
-        stateHolder = playerStateHolder,
         windowStateHolder = windowStateHolder,
         showInterface = state.controls.showInterface,
         onBack = onBack
@@ -94,7 +90,7 @@ fun PlayerScreen(
 
     LaunchedEffect(state.screen) {
         (state.screen as? PlayerScreen.Content)?.let {
-            playerStateHolder.playMedia(it.media)
+            viewModel.handleIntent(PlayerIntent.PlayMedia(it.media))
         }
     }
 
@@ -133,7 +129,6 @@ fun PlayerScreen(
                 PlayerContent(
                     media = screen.media,
                     player = player!!,
-                    subtitles =  { subtitles },
                     rewindAndForward = { state.playerRewind to state.playerForward },
                     controlsState = { state.controls },
                     tracksState = { state.tracks },
@@ -156,7 +151,6 @@ fun PlayerScreen(
 fun PlayerContent(
     media: Media,
     player: Player,
-    subtitles: () -> List<Cue>,
     rewindAndForward: () -> Pair<Int, Int>,
     controlsState: () -> PlayerUiState.Controls,
     tracksState: () -> PlayerUiState.Tracks,
@@ -241,7 +235,7 @@ fun PlayerContent(
                         change.consume()
                     },
 
-                )
+                    )
             },
         constraintSet = playerConstraintSet(videoSize = currentVideoSize)
     ) {
@@ -261,7 +255,7 @@ fun PlayerContent(
             modifier = Modifier
                 .layoutId("subtitles")
                 .padding(bottom = Ui.Space.LARGE),
-            subtitles = subtitles,
+            subtitles = { tracksState().subtitles },
             smallText = isPortrait
         )
 

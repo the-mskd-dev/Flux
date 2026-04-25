@@ -32,40 +32,30 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.util.Locale
-import javax.inject.Inject
-import javax.inject.Singleton
 import kotlin.math.roundToInt
 
 class PlayerManager(private val context: Context) : Player.Listener {
 
-    //region StateFlow
+    //region State
+
+    data class State(
+        val isPlaying: Boolean = false,
+        val tracks: List<PlayerTrack> = emptyList(),
+        val selectedAudio: PlayerTrack? = null,
+        val selectedSubtitles: PlayerTrack? = null,
+        val subtitles: List<Cue> = emptyList(),
+        val progress: Long = 0L,
+        val showNextEpisode: Boolean = false
+    )
+    private val _state = MutableStateFlow(State())
+    val state = _state.asStateFlow()
 
     private val _player = MutableStateFlow<Player?>(null)
     val player = _player.asStateFlow()
-
-    private val _isPlaying = MutableStateFlow(false)
-    val isPlaying = _isPlaying.asStateFlow()
-
-    private val _tracks = MutableStateFlow<List<PlayerTrack>>(emptyList())
-    val tracks = _tracks.asStateFlow()
-
-    private val _audioTrack = MutableStateFlow<PlayerTrack?>(null)
-    val audioTrack = _audioTrack.asStateFlow()
-
-    private val _subtitlesTrack = MutableStateFlow<PlayerTrack?>(null)
-    val subtitlesTrack = _subtitlesTrack.asStateFlow()
-
-    private val _subtitles = MutableStateFlow<List<Cue>>(emptyList())
-    val subtitles = _subtitles.asStateFlow()
-
-    private val _progress = MutableStateFlow(0L)
-    val progress = _progress.asStateFlow()
-
-    private val _shouldShowNext = MutableStateFlow(false)
-    val shouldShowNext = _shouldShowNext.asStateFlow()
 
     //endregion
 
@@ -89,13 +79,13 @@ class PlayerManager(private val context: Context) : Player.Listener {
                 Player.EVENT_IS_PLAYING_CHANGED
             )
         ) {
-            _isPlaying.value = player.isPlaying
+            _state.update { it.copy(isPlaying = player.isPlaying) }
             if (player.isPlaying) startProgressMonitoring() else stopProgressMonitoring()
         }
     }
 
     override fun onCues(cueGroup: CueGroup) {
-        _subtitles.value = cueGroup.cues
+        _state.update { it.copy(subtitles = cueGroup.cues) }
     }
 
     //endregion
@@ -169,7 +159,7 @@ class PlayerManager(private val context: Context) : Player.Listener {
     override fun onTracksChanged(tracks: Tracks) {
         val defaultLabel = context.getString(R.string.track)
 
-        _tracks.value = tracks.groups
+        val tracks = tracks.groups
             .filter { it.type == C.TRACK_TYPE_AUDIO || it.type == C.TRACK_TYPE_TEXT }
             .flatMap { group ->
                 (0 until group.length).map { index ->
@@ -186,14 +176,17 @@ class PlayerManager(private val context: Context) : Player.Listener {
 
                     if (isSelected) {
                         when (playerTrack.type) {
-                            PlayerTrack.Type.AUDIO -> _audioTrack.value = playerTrack
-                            PlayerTrack.Type.SUBTITLES -> _subtitlesTrack.value = playerTrack
+                            PlayerTrack.Type.AUDIO -> _state.update { it.copy(selectedAudio = playerTrack) }
+                            PlayerTrack.Type.SUBTITLES -> _state.update { it.copy(selectedSubtitles = playerTrack) }
                         }
                     }
 
                     playerTrack
                 }
             }
+
+        _state.update { it.copy(tracks = tracks) }
+
     }
 
     fun selectTrack(track: PlayerTrack) {
@@ -211,10 +204,10 @@ class PlayerManager(private val context: Context) : Player.Listener {
             }
             .build()
 
-        selectedTrack?.let {
-            when (it.type) {
-                PlayerTrack.Type.AUDIO -> _audioTrack.value = it
-                PlayerTrack.Type.SUBTITLES -> _subtitlesTrack.value = it
+        selectedTrack?.let { t ->
+            when (t.type) {
+                PlayerTrack.Type.AUDIO -> _state.update { it.copy(selectedAudio = t) }
+                PlayerTrack.Type.SUBTITLES -> _state.update { it.copy(selectedSubtitles = t) }
             }
         }
     }
@@ -229,7 +222,7 @@ class PlayerManager(private val context: Context) : Player.Listener {
 
         } else {
 
-            val playerTrack = _tracks.value.filter { it.type == PlayerTrack.Type.SUBTITLES }.firstOrNull { it.language == track.language }
+            val playerTrack = _state.value.tracks.filter { it.type == PlayerTrack.Type.SUBTITLES }.firstOrNull { it.language == track.language }
             playerTrack?.language?.let {
                 setPreferredAudioLanguage(it)
                 return playerTrack
@@ -261,7 +254,7 @@ class PlayerManager(private val context: Context) : Player.Listener {
 
             } else {
 
-                val playerTrack = _tracks.value.filter { it.type == PlayerTrack.Type.SUBTITLES }.firstOrNull { it.language == track.language }
+                val playerTrack = _state.value.tracks.filter { it.type == PlayerTrack.Type.SUBTITLES }.firstOrNull { it.language == track.language }
                 playerTrack?.language?.let {
                     setPreferredTextLanguage(it)
                     return playerTrack
@@ -317,10 +310,16 @@ class PlayerManager(private val context: Context) : Player.Listener {
             while (isActive) {
                 _player.value?.let { currentPlayer ->
                     if (currentPlayer.isPlaying && currentPlayer.duration > 0) {
-                        _progress.value = currentPlayer.currentPosition
 
-                        val percentage = currentPlayer.currentPosition.toFloat() / currentPlayer.duration.toFloat()
-                        _shouldShowNext.value = percentage >= Constants.PLAYER.PROGRESS_THRESHOLD
+                        val progressPercentage = currentPlayer.currentPosition.toFloat() / currentPlayer.duration.toFloat()
+
+                        _state.update {
+                            it.copy(
+                                progress = currentPlayer.currentPosition,
+                                showNextEpisode = progressPercentage >= Constants.PLAYER.PROGRESS_THRESHOLD
+                            )
+                        }
+
                     }
                 }
                 delay(1000)

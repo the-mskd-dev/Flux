@@ -16,6 +16,10 @@ class FilesSourceLocalImpl(
     private val context: Context
 ) : FilesSource {
 
+    companion object {
+        const val TAG = "FilesSourceLocalImpl"
+    }
+
     override suspend fun getFiles(): List<UserFile> {
 
         val files = mutableListOf<UserFile>()
@@ -30,7 +34,7 @@ class FilesSourceLocalImpl(
         )
 
         // Show only videos that are at least 5 minutes in duration.
-        val selection = "${MediaStore.Video.Media.DURATION} >="
+        val selection = "${MediaStore.Video.Media.DURATION} >= ?"
         val selectionArgs = arrayOf(
             TimeUnit.MILLISECONDS.convert(5, TimeUnit.MINUTES).toString(),
         )
@@ -81,7 +85,7 @@ class FilesSourceLocalImpl(
 
                     } catch (e: Exception) {
 
-                        Log.e("LocalFilesDataSource", "Fail to get file", e)
+                        Log.e(TAG, "Fail to get file", e)
 
                     }
 
@@ -92,6 +96,11 @@ class FilesSourceLocalImpl(
         }
 
         retriever.release()
+
+        Log.i(TAG, "Found ${files.size} files")
+        files.forEach {
+            Log.i(TAG, it.name)
+        }
 
         return files
 

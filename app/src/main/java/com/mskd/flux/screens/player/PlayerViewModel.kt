@@ -1,6 +1,10 @@
 package com.mskd.flux.screens.player
 
 import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.text.Cue
@@ -11,6 +15,7 @@ import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Status
+import com.mskd.flux.screens.player.PlayerIntent.TogglePlayButton
 import com.mskd.flux.screens.player.PlayerTrack.*
 import com.mskd.flux.screens.player.controllers.PlayerManager
 import com.mskd.flux.utils.Constants
@@ -64,6 +69,8 @@ class PlayerViewModel @AssistedInject constructor(
 
     private var seekResetJob: Job? = null
     private var ambientResetJob: Job? = null
+
+    private var wasPlayingBeforeBackground = false
 
     //endregion
 
@@ -165,8 +172,8 @@ class PlayerViewModel @AssistedInject constructor(
             is PlayerIntent.PlayMedia -> playMedia(media = intent.media)
             PlayerIntent.ChangeInterfaceVisibility -> changeInterfaceVisibility()
             is PlayerIntent.ShowSettings -> showSettingsSheet(sheet = intent.sheet)
-            is PlayerIntent.SaveTime -> saveTime(time = intent.time)
-            is PlayerIntent.OnBackTap -> onBackTap(time = intent.time)
+            PlayerIntent.SaveTime -> saveTime()
+            PlayerIntent.OnBackTap -> onBackTap()
             PlayerIntent.TogglePlayButton -> togglePlayButton()
             PlayerIntent.OnFastRewind -> onFastRewind()
             PlayerIntent.OnFastForward -> onFastForward()
@@ -177,6 +184,8 @@ class PlayerViewModel @AssistedInject constructor(
             is PlayerIntent.OnVolumeChange -> onVolumeChange(delta = intent.delta)
             is PlayerIntent.OnBrightnessChange -> onBrightnessChange(delta = intent.delta)
             is PlayerIntent.UpdateAmbientOverlay -> updateAmbientOverlay(type = intent.type, value = intent.value)
+            PlayerIntent.GoToBackground -> onBackground()
+            PlayerIntent.GoToForeground -> onForeground()
         }
     }
 
@@ -291,7 +300,7 @@ class PlayerViewModel @AssistedInject constructor(
         _controlsState.update { it.copy(nextButton = PlayerUiState.NextButton.Canceled) }
     }
 
-    private suspend fun onBackTap(time: Long?) {
+    private suspend fun onBackTap() {
 
         when (uiState.value.screen) {
             is PlayerScreen.Content -> {
@@ -299,7 +308,7 @@ class PlayerViewModel @AssistedInject constructor(
                 val interfaceShowed = uiState.value.controls.showInterface
 
                 if (interfaceShowed) {
-                    time?.let { saveTime(time = it) }
+                    saveTime()
                     _event.send(PlayerEvent.BackToPreviousScreen)
                 } else {
                     changeInterfaceVisibility()
@@ -311,11 +320,12 @@ class PlayerViewModel @AssistedInject constructor(
 
     }
 
-    private suspend fun saveTime(time: Long) {
+    private suspend fun saveTime() {
 
         val media = (uiState.value.screen as? PlayerScreen.Content)?.media ?: return
-        val newStatus = if (time >= (media.duration * Constants.PLAYER.PROGRESS_THRESHOLD).minutes.inWholeMilliseconds) Status.WATCHED else Status.IS_WATCHING
-        val newTime = if (newStatus == Status.WATCHED) 0L else time
+        val progress = uiState.value.controls.progress
+        val newStatus = if (progress >= (media.duration * Constants.PLAYER.PROGRESS_THRESHOLD).minutes.inWholeMilliseconds) Status.WATCHED else Status.IS_WATCHING
+        val newTime = if (newStatus == Status.WATCHED) 0L else progress
 
         val updatedMedia = when (media) {
             is Movie -> media.copy(currentTime = newTime, status = newStatus)
@@ -349,7 +359,7 @@ class PlayerViewModel @AssistedInject constructor(
             }
         }
 
-        Log.i("PlayerViewModel", "${updatedMedia.title} saved at ${time.timeDescription()}")
+        Log.i("PlayerViewModel", "${updatedMedia.title} saved at ${progress.timeDescription()}")
 
     }
 
@@ -379,6 +389,23 @@ class PlayerViewModel @AssistedInject constructor(
             _ambientOverlayState.update { null }
         }
     }
+
+    private suspend fun onBackground() {
+
+        wasPlayingBeforeBackground = uiState.value.controls.isPlaying
+        if (wasPlayingBeforeBackground) {
+            togglePlayButton()
+        }
+
+        saveTime()
+    }
+
+    private fun onForeground() {
+        if (wasPlayingBeforeBackground) {
+            togglePlayButton()
+        }
+    }
+
 
     //endregion
 

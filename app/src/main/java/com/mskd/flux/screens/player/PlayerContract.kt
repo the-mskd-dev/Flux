@@ -72,8 +72,8 @@ sealed class PlayerScreen {
 
 sealed class PlayerIntent {
     data class PlayMedia(val media: Media) : PlayerIntent()
-    data class SaveTime(val time: Long) : PlayerIntent()
-    data class OnBackTap(val time: Long? = null) : PlayerIntent()
+    data object SaveTime : PlayerIntent()
+    data object OnBackTap : PlayerIntent()
     data object ChangeInterfaceVisibility : PlayerIntent()
     data object TogglePlayButton : PlayerIntent()
     data object OnFastRewind : PlayerIntent()
@@ -86,6 +86,8 @@ sealed class PlayerIntent {
     data class OnVolumeChange(val delta: Float) : PlayerIntent()
     data class OnBrightnessChange(val delta: Float) : PlayerIntent()
     data class UpdateAmbientOverlay(val type: PlayerUiState.AmbientOverlay.Type, val value: Int) : PlayerIntent()
+    data object GoToBackground : PlayerIntent()
+    data object GoToForeground : PlayerIntent()
 }
 
 sealed class PlayerEvent {

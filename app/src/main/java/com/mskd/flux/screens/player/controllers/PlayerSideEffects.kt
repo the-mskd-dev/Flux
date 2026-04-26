@@ -14,6 +14,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.mskd.flux.screens.player.PlayerEvent
+import com.mskd.flux.screens.player.PlayerIntent
 import com.mskd.flux.screens.player.PlayerIntent.SaveTime
 import com.mskd.flux.screens.player.PlayerIntent.TogglePlayButton
 import com.mskd.flux.screens.player.PlayerIntent.UpdateAmbientOverlay
@@ -31,11 +32,9 @@ fun PlayerSideEffects(
     onBack: () -> Unit
 ) {
 
-    val player by viewModel.playerManager.player.collectAsStateWithLifecycle()
     val lifecycleOwner = LocalLifecycleOwner.current
     val activity = LocalContext.current.findActivity()
     val originalOrientation = remember { activity?.requestedOrientation }
-    var wasPlayingBeforeBackground by rememberSaveable { mutableStateOf(false) }
 
     // Set force screen on and reset orientation on dispose
     DisposableEffect(Unit) {
@@ -62,7 +61,7 @@ fun PlayerSideEffects(
                 viewModel.event.collect { event ->
                     when (event) {
                         PlayerEvent.BackToPreviousScreen -> onBack()
-                        PlayerEvent.SaveTimeRequested -> player?.let { viewModel.handleIntent(SaveTime(time = it.currentPosition)) }
+                        PlayerEvent.SaveTimeRequested -> viewModel.handleIntent(SaveTime)
                         is PlayerEvent.ChangeBrightness -> {
                             windowStateHolder.changeBrightness(delta = event.delta)?.let { brightness ->
                                 viewModel.handleIntent(UpdateAmbientOverlay(type = PlayerUiState.AmbientOverlay.Type.BRIGHTNESS, value = brightness))
@@ -75,19 +74,8 @@ fun PlayerSideEffects(
     }
 
     LifecycleComponent(
-        onBackground = {
-            wasPlayingBeforeBackground = player?.isPlaying ?: false
-            if (wasPlayingBeforeBackground) {
-                viewModel.handleIntent(TogglePlayButton)
-            }
-
-            player?.let { viewModel.handleIntent(SaveTime(time = it.currentPosition)) }
-        },
-        onForeground = {
-            if (wasPlayingBeforeBackground) {
-                viewModel.handleIntent(TogglePlayButton)
-            }
-        }
+        onBackground = { viewModel.handleIntent(PlayerIntent.GoToBackground) },
+        onForeground = { viewModel.handleIntent(PlayerIntent.GoToForeground) }
     )
 
 }

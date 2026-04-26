@@ -106,7 +106,7 @@ fun PlayerScreen(
     }
 
     BackHandler(enabled = true) {
-        viewModel.handleIntent(PlayerIntent.OnBackTap(time = player?.currentPosition))
+        viewModel.handleIntent(PlayerIntent.OnBackTap)
     }
 
     Crossfade(
@@ -122,7 +122,7 @@ fun PlayerScreen(
             PlayerScreen.Error -> {
                 ErrorScreen(
                     message = stringResource(R.string.oups_an_error_occured),
-                    onBackButtonTap = { viewModel.handleIntent(PlayerIntent.OnBackTap()) }
+                    onBackButtonTap = { viewModel.handleIntent(PlayerIntent.OnBackTap) }
                 )
             }
             is PlayerScreen.Content -> {

@@ -78,7 +78,7 @@ fun PlayerScreen(
 
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val windowStateHolder = rememberWindowStateHolder()
-    val player by viewModel.playerManager.player.collectAsStateWithLifecycle()
+    val player by viewModel.player.collectAsStateWithLifecycle()
     var interfaceVisibilityCountdown by remember { mutableIntStateOf(3) }
 
     PlayerSideEffects(

@@ -53,7 +53,7 @@ class PlayerViewModel @AssistedInject constructor(
     private val artworkRepository: ArtworkRepository,
     private val userRepository: UserRepository,
     private val settingsRepository: SettingsRepository,
-    val playerManager: PlayerManager
+    private val playerManager: PlayerManager
 ) : ViewModel() {
 
     //region Factory
@@ -86,6 +86,8 @@ class PlayerViewModel @AssistedInject constructor(
     private val _tracksState = MutableStateFlow<List<PlayerTrack>>(emptyList())
     private val _seekOverlayState = MutableStateFlow<PlayerUiState.SeekOverlay?>(null)
     private val _ambientOverlayState = MutableStateFlow<PlayerUiState.AmbientOverlay?>(null)
+
+    val player = playerManager.player
 
     val uiState: StateFlow<PlayerUiState> = combine(
         artworkRepository.flow,

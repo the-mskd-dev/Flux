@@ -3,3 +3,5 @@
 - Fix : Retrieve videos with no duration
 - Fix : Update Downloads and Movies folders before scan videos, to avoid to restart the device
 - Fix : Long press text for episodes
+- UI : Less alpha background in Artwork page
+- Other : Add a button to "How to name my files?" in other files page

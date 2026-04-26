@@ -17,7 +17,11 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -61,6 +65,7 @@ fun UnknownScreen(
         viewModel.event.collect { event ->
             when (event) {
                 UnknownEvent.BackToPreviousScreen -> onBack()
+                UnknownEvent.NavigateToHowToScreen -> navigate(Route.HowTo)
                 is UnknownEvent.PlayMedia -> navigate(Route.Player(mediaId = event.mediaId))
             }
         }
@@ -96,7 +101,15 @@ fun UnknownScreenContent(
 
     FluxScaffold(
         title = stringResource(R.string.other_files),
-        onBackTap = { sendIntent(UnknownIntent.OnBackTap) }
+        onBackTap = { sendIntent(UnknownIntent.OnBackTap) },
+        actions = {
+            IconButton(onClick = { sendIntent(UnknownIntent.OnInfoTap) }) {
+                Icon(
+                    imageVector = Icons.Outlined.Info,
+                    contentDescription = "Info icon button"
+                )
+            }
+        }
     ) { innerPadding ->
 
         if (medias.isNotEmpty()) {

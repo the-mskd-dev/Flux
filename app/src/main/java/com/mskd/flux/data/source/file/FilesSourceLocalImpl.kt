@@ -3,14 +3,18 @@ package com.mskd.flux.data.source.file
 import android.content.ContentUris
 import android.content.Context
 import android.media.MediaMetadataRetriever
+import android.media.MediaScannerConnection
+import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import androidx.core.net.toUri
 import com.mskd.flux.model.FileSource
 import com.mskd.flux.model.UserFile
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
+import kotlin.coroutines.resume
 
 class FilesSourceLocalImpl(
     private val context: Context
@@ -21,6 +25,8 @@ class FilesSourceLocalImpl(
     }
 
     override suspend fun getFiles(): List<UserFile> {
+
+        updateMediaFolders()
 
         val files = mutableListOf<UserFile>()
 
@@ -33,11 +39,12 @@ class FilesSourceLocalImpl(
             MediaStore.Video.Media.DATE_ADDED
         )
 
-        // Show only videos that are at least 5 minutes in duration.
-        val selection = "${MediaStore.Video.Media.DURATION} >= ?"
-        val selectionArgs = arrayOf(
-            TimeUnit.MILLISECONDS.convert(5, TimeUnit.MINUTES).toString(),
-        )
+        // Show only videos that are at least 5 minutes in duration, or those whose system has not found a duration
+        val minDuration = TimeUnit.MINUTES.toMillis(5).toString()
+        val selection = "${MediaStore.Video.Media.DURATION} >= ? OR " +
+                "${MediaStore.Video.Media.DURATION} = 0 OR " +
+                "${MediaStore.Video.Media.DURATION} IS NULL"
+        val selectionArgs = arrayOf(minDuration)
 
         val sortOrder = "${MediaStore.Video.Media.DATE_ADDED} DESC"
 
@@ -59,6 +66,7 @@ class FilesSourceLocalImpl(
                 val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID)
                 val nameColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME)
                 val dateColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_ADDED)
+                val durationColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION)
 
                 while (cursor.moveToNext()) {
 
@@ -68,6 +76,8 @@ class FilesSourceLocalImpl(
                         val id = cursor.getLong(idColumn)
                         val name = cursor.getString(nameColumn)
                         val date = cursor.getLong(dateColumn)
+                        val duration = cursor.getLong(durationColumn)
+                        Log.d(TAG, "Fichier trouvé: $name | Durée détectée par Android: ${duration / 1000} sec")
 
                         val contentPath = ContentUris.withAppendedId(
                             MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
@@ -127,6 +137,35 @@ class FilesSourceLocalImpl(
         }
 
         return result
+
+    }
+
+    /**
+     * When you add files to your device, the Android system doesn't always update the file structure
+     * immediately and may wait for a restart or file transfer.
+     * This feature allows you to update the **Movies** and **Downloads** folders directly.
+     */
+    private suspend fun updateMediaFolders() = suspendCancellableCoroutine { continuation ->
+
+        val foldersToScan = arrayOf(
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES).absolutePath,
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath,
+        )
+
+        var foldersScanned = 0
+
+        MediaScannerConnection.scanFile(
+            context,
+            foldersToScan,
+            null
+        ) { path, uri ->
+            Log.i(TAG, "Scan ended for $path -> Uri: $uri")
+            foldersScanned++
+
+            if (foldersScanned >= foldersToScan.size) {
+                continuation.resume(Unit)
+            }
+        }
 
     }
 }

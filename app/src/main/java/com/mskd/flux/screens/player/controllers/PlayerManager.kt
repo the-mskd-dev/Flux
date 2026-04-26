@@ -105,13 +105,16 @@ class PlayerManager(private val context: Context) : Player.Listener {
     //region Player events
 
     override fun onEvents(player: Player, events: Player.Events) {
+
+        Log.d("TEST", "player.isPlaying : ${player.isPlaying}")
+
         if (events.containsAny(
                 Player.EVENT_PLAY_WHEN_READY_CHANGED,
                 Player.EVENT_PLAYBACK_STATE_CHANGED,
                 Player.EVENT_IS_PLAYING_CHANGED
             )
         ) {
-            _state.update { it.copy(isPlaying = player.isPlaying) }
+            _state.update { it.copy(isPlaying = player.playWhenReady) }
             if (player.isPlaying) startProgressMonitoring() else stopProgressMonitoring()
         }
 
@@ -363,7 +366,6 @@ class PlayerManager(private val context: Context) : Player.Listener {
                         val progressPercentage = currentPlayer.currentPosition.toFloat() / currentPlayer.duration.toFloat()
 
                         _state.update {
-                            Log.d("TEST", "update progress in PlayerManager")
                             it.copy(
                                 progress = currentPlayer.currentPosition,
                                 showNextEpisode = progressPercentage >= Constants.PLAYER.PROGRESS_THRESHOLD

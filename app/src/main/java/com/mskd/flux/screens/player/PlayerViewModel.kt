@@ -11,6 +11,7 @@ import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Status
+import com.mskd.flux.screens.player.PlayerTrack.*
 import com.mskd.flux.screens.player.controllers.PlayerManager
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.extensions.getNextEpisodeFor
@@ -29,6 +30,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -73,7 +75,8 @@ class PlayerViewModel @AssistedInject constructor(
     val event = _event.receiveAsFlow()
 
     private val _controlsState = MutableStateFlow(PlayerUiState.Controls())
-    private val _tracksState = MutableStateFlow(PlayerUiState.Tracks())
+
+    private val _tracksState = MutableStateFlow<List<PlayerTrack>>(emptyList())
     private val _seekOverlayState = MutableStateFlow<PlayerUiState.SeekOverlay?>(null)
     private val _ambientOverlayState = MutableStateFlow<PlayerUiState.AmbientOverlay?>(null)
 
@@ -85,15 +88,17 @@ class PlayerViewModel @AssistedInject constructor(
         _seekOverlayState,
         _ambientOverlayState,
         _mediaId,
+        playerManager.state
     ) { flows ->
 
         val artwork = flows[0] as ArtworkRepository.State
         val settings = flows[1] as SettingsRepository.State
         val controls = flows[2] as PlayerUiState.Controls
-        val tracks = flows[3] as PlayerUiState.Tracks
+        val tracks = (flows[3] as? List<*>)?.filterIsInstance<PlayerTrack>() ?: emptyList()
         val seekOverlay = flows[4] as PlayerUiState.SeekOverlay?
         val ambientOverlay = flows[5] as PlayerUiState.AmbientOverlay?
         val id = flows[6] as Long
+        val playerState = flows[7] as PlayerManager.State
 
         val media = artwork.movie ?: artwork.episodes.find { it.id == id }
 
@@ -101,8 +106,16 @@ class PlayerViewModel @AssistedInject constructor(
             screen = media?.let { PlayerScreen.Content(media = media) } ?: PlayerScreen.Error,
             playerForward = settings.playerForwardValue,
             playerRewind = settings.playerRewindValue,
-            controls = controls,
-            tracks = tracks,
+            controls = controls.copy(
+                isPlaying = playerState.isPlaying,
+                progress = playerState.progress
+            ),
+            tracks = PlayerUiState.Tracks(
+                tracks = tracks,
+                selectedAudio = playerState.selectedAudio,
+                selectedSubtitles = playerState.selectedSubtitles,
+                subtitles = playerState.subtitles
+            ),
             seekOverlay = seekOverlay,
             ambientOverlay = ambientOverlay
         )
@@ -121,41 +134,18 @@ class PlayerViewModel @AssistedInject constructor(
         playerManager.connect()
 
         viewModelScope.launch {
-            playerManager.shouldShowNext.collect { showNext ->
-                showNextEpisode(show = showNext)
+
+            launch {
+                playerManager.state
+                    .map { it.showNextEpisode }
+                    .distinctUntilChanged()
+                    .collect { showNextEpisode(show = it) }
             }
-        }
-
-        viewModelScope.launch {
-            playerManager.isPlaying.collect { isPlaying ->
-                setPlayingStatus(isPlaying = isPlaying)
-            }
-        }
-
-        viewModelScope.launch {
-            playerManager.tracks.collect { tracks ->
-                updateTracks(tracks)
-            }
-        }
-
-        viewModelScope.launch {
-            playerManager.audioTrack.collect { onTrackSelected(track = it) }
-
-        }
-
-        viewModelScope.launch {
-            playerManager.subtitlesTrack.collect { onTrackSelected(track = it) }
-        }
-
-        viewModelScope.launch {
-            playerManager.subtitles.collect { subtitles ->
-                _tracksState.update { it.copy(subtitles = subtitles) }
-            }
-        }
-
-        viewModelScope.launch {
-            playerManager.progress.collect { progress ->
-                _controlsState.update { it.copy(progress = progress) }
+            launch {
+                playerManager.state
+                    .map { it.tracks }
+                    .distinctUntilChanged()
+                    .collect { updateTracks(tracks = it) }
             }
         }
 
@@ -202,10 +192,6 @@ class PlayerViewModel @AssistedInject constructor(
         playerManager.togglePlay()
     }
 
-    private fun setPlayingStatus(isPlaying: Boolean) {
-        _controlsState.update { it.copy(isPlaying = isPlaying) }
-    }
-
     private fun onFastRewind() {
         val value = uiState.value.playerRewind
         playerManager.seekRewind(value.seconds.inWholeMilliseconds)
@@ -244,10 +230,10 @@ class PlayerViewModel @AssistedInject constructor(
     }
 
     private suspend fun updateTracks(tracks: List<PlayerTrack>) {
-        _tracksState.update { it.copy(tracks = tracks) }
+        _tracksState.update { tracks }
 
         val currentSettings = settingsRepository.flow.first()
-        val preferredLang = currentSettings.subtitlesLanguage.toPlayerTrack(type = PlayerTrack.Type.SUBTITLES)
+        val preferredLang = currentSettings.subtitlesLanguage.toPlayerTrack(type = Type.SUBTITLES)
 
         playerManager.selectTrack(track = preferredLang)
 
@@ -260,7 +246,7 @@ class PlayerViewModel @AssistedInject constructor(
 
             if (track.language != null) {
                 val locale = Locale.forLanguageTag(track.language)
-                if (track.type == PlayerTrack.Type.SUBTITLES)
+                if (track.type == Type.SUBTITLES)
                     settingsRepository.setSubtitlesLanguage(locale)
                 else
                     settingsRepository.setAudioLanguage(locale)
@@ -270,18 +256,6 @@ class PlayerViewModel @AssistedInject constructor(
             e.printStackTrace()
             Log.e("PlayerViewModel", "Locale not found for ${track.language}", e)
         }
-    }
-
-    private fun onTrackSelected(track: PlayerTrack?) {
-
-        _tracksState.update {
-            when (track?.type) {
-                PlayerTrack.Type.AUDIO -> it.copy(selectedAudio = track)
-                PlayerTrack.Type.SUBTITLES -> it.copy(selectedSubtitles = track)
-                else -> it
-            }
-        }
-
     }
 
     private suspend fun showNextEpisode(show: Boolean) {

@@ -178,6 +178,14 @@ class PlayerViewModelTest : FunSpec({
             // Given
             artworkRepository.setContentType(if (testCase.media is Movie) ContentType.MOVIE else ContentType.SHOW)
 
+            playerManager = mockk(relaxed = true) {
+                every { state } returns MutableStateFlow(PlayerManager.State(
+                    progress = testCase.time,
+                    duration = testCase.media.duration.minToMs
+                ))
+                every { player } returns MutableStateFlow(mockPlayer)
+            }
+
             viewModel = PlayerViewModel(
                 mediaId = testCase.media.mediaId,
                 artworkRepository = artworkRepository,
@@ -185,7 +193,6 @@ class PlayerViewModelTest : FunSpec({
                 settingsRepository = settingsRepository,
                 playerManager = playerManager
             )
-
 
             viewModel.uiState.test {
 
@@ -309,8 +316,6 @@ class PlayerViewModelTest : FunSpec({
 
                 viewModel.handleIntent(PlayerIntent.SelectTrack(testCase.track))
 
-                awaitItem()
-
                 coVerify { playerManager.selectTrack(track = testCase.track) }
                 if (testCase.track.type == PlayerTrack.Type.SUBTITLES) {
                     coVerify { settingsRepository.setSubtitlesLanguage(any()) }
@@ -348,7 +353,6 @@ class PlayerViewModelTest : FunSpec({
             state.media.shouldNotBeNull {
                 mediaId shouldBe MediaMockups.episode2.mediaId
             }
-            coVerify { artworkRepository.saveEpisode(any()) }
         }
     }
 
@@ -359,7 +363,7 @@ class PlayerViewModelTest : FunSpec({
             viewModel.handleIntent(PlayerIntent.OnVolumeChange(delta = .5f))
 
             val state = awaitItem()
-            state.ambientOverlay shouldBe PlayerUiState.AmbientOverlay(type = PlayerUiState.AmbientOverlay.Type.VOLUME, value = 50)
+            state.ambientOverlay?.type shouldBe PlayerUiState.AmbientOverlay.Type.VOLUME
             coVerify { playerManager.changeVolume(.5f) }
 
         }

@@ -164,8 +164,6 @@ class PlayerViewModel @AssistedInject constructor(
                     .distinctUntilChanged()
                     .collect { showNextEpisode(show = it) }
             }
-
-            // Listen tracks
             launch {
                 playerManager.state
                     .map { it.tracks }

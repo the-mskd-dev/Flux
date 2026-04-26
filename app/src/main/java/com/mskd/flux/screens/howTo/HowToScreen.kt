@@ -109,6 +109,10 @@ fun HowToNameFiles() {
 
         }
 
+        Text.Body.Large(stringResource(R.string.how_to_advice))
+
+
+
     }
 
 }

@@ -82,7 +82,10 @@ class PlayerManager(private val context: Context) : Player.Listener {
         controllerFuture?.addListener({
             try {
                 val controller = controllerFuture?.get()
-                controller?.addListener(this)
+                controller?.apply {
+                    addListener(this@PlayerManager)
+                    playWhenReady = true
+                }
                 _player.value = controller
             } catch (e: Exception) {
                 Log.e("PlayerManager", "Failed to connect", e)
@@ -184,8 +187,7 @@ class PlayerManager(private val context: Context) : Player.Listener {
                 .setUri(media.file.path.toUri())
                 .build()
 
-            player.setMediaItem(mediaItem)
-            player.seekTo(media.currentTime)
+            player.setMediaItem(mediaItem, media.currentTime)
             player.prepare()
             currentMediaId = media.mediaId
             player.play()

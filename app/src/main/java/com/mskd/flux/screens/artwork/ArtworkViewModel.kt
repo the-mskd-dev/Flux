@@ -2,9 +2,11 @@ package com.mskd.flux.screens.artwork
 
 import android.util.Log
 import androidx.compose.runtime.Immutable
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.data.repository.artwork.ArtworkRepository
+import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.model.ScreenState
 import com.mskd.flux.model.artwork.Episode
@@ -33,7 +35,8 @@ import kotlinx.coroutines.launch
 class ArtworkViewModel @AssistedInject constructor(
     @Assisted val artworkId: Long,
     private val repository: ArtworkRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val settingsRepository: SettingsRepository
 ) : ViewModel() {
 
     //region Hilt
@@ -59,7 +62,7 @@ class ArtworkViewModel @AssistedInject constructor(
     //region Flow
 
     private val _event = MutableSharedFlow<ArtworkEvent>()
-    val event = _event.asSharedFlow().distinctUntilChanged()
+    val event = _event.asSharedFlow()
 
     private val _subState = MutableStateFlow(UserState())
 
@@ -147,7 +150,13 @@ class ArtworkViewModel @AssistedInject constructor(
 
     private suspend fun playMedia(media: Media) {
         _subState.update { it.copy(selectedMedia = media) }
-        _event.emit(ArtworkEvent.PlayMedia(mediaId = media.mediaId))
+
+        val event = if (settingsRepository.flow.first().externalPlayer)
+            ArtworkEvent.LaunchExternalPlayer(path = media.file.path.toUri())
+        else
+            ArtworkEvent.PlayMedia(mediaId = media.mediaId)
+
+        _event.emit(event)
     }
 
     private fun showStatusDialog(episode: Episode) {

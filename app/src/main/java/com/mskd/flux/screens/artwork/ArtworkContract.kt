@@ -1,5 +1,6 @@
 package com.mskd.flux.screens.artwork
 
+import android.net.Uri
 import androidx.compose.runtime.Immutable
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.ScreenState
@@ -31,6 +32,7 @@ sealed class ArtworkIntent {
 sealed class ArtworkEvent {
     object BackToPreviousScreen : ArtworkEvent()
     data class PlayMedia(val mediaId: Long) : ArtworkEvent()
+    data class LaunchExternalPlayer(val path: Uri) : ArtworkEvent()
     data class OpenArtworkInfo(val artwork: Artwork) : ArtworkEvent()
     data class OpenEpisodeInfo(val episode: Episode): ArtworkEvent()
 }

@@ -1,5 +1,8 @@
 package com.mskd.flux.screens.artwork
 
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.util.Log
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfoV2
@@ -46,6 +49,19 @@ fun ArtworkScreen(
                 is ArtworkEvent.PlayMedia -> navigate(Player(mediaId = event.mediaId))
                 is ArtworkEvent.OpenArtworkInfo -> WebLink.openPage(context = context, url = event.artwork.infoUrl)
                 is ArtworkEvent.OpenEpisodeInfo -> WebLink.openPage(context = context, url = event.episode.infoUrl)
+                is ArtworkEvent.LaunchExternalPlayer -> {
+
+                    val intent = Intent(Intent.ACTION_VIEW).apply {
+                        setDataAndType(event.path, "video/*")
+                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    }
+
+                    try {
+                        context.startActivity(intent)
+                    } catch (e: ActivityNotFoundException) {
+                        Log.e("ArtworkScreen", "No player founded", e)
+                    }
+                }
             }
         }
     }

@@ -1,6 +1,7 @@
 package com.mskd.flux.ui.component
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -19,6 +20,7 @@ fun FluxScaffold(
     modifier: Modifier = Modifier,
     title: String,
     onBackTap: (() -> Unit)?,
+    actions: @Composable (RowScope.() -> Unit) = {},
     snackbarHost: @Composable (() -> Unit) = {},
     floatingActionButton: @Composable (() -> Unit) = {},
     floatingActionButtonPosition: FabPosition = FabPosition.End,
@@ -43,6 +45,7 @@ fun FluxScaffold(
                     scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
                     titleContentColor = MaterialTheme.colorScheme.onSurface,
                 ),
+                actions = actions,
                 navigationIcon = {
                     onBackTap?.let {
                         BackButton(onTap = it)

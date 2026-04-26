@@ -12,9 +12,11 @@ data class UnknownUiState(
 sealed class UnknownIntent {
     object OnBackTap: UnknownIntent()
     data class PlayMedia(val media: Media): UnknownIntent()
+    object OnInfoTap: UnknownIntent()
 }
 
 sealed class UnknownEvent {
     object BackToPreviousScreen : UnknownEvent()
+    object NavigateToHowToScreen : UnknownEvent()
     data class PlayMedia(val mediaId: Long) : UnknownEvent()
 }

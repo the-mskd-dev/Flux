@@ -305,7 +305,7 @@ class PlayerViewModel @AssistedInject constructor(
     }
 
     private suspend fun playNextEpisode(episode: Episode) {
-        _event.send(PlayerEvent.SaveTimeRequested)
+        saveTime()
         _controlsState.update { it.copy(nextButton = PlayerUiState.NextButton.Hidden) }
         _mediaId.value = episode.mediaId
     }

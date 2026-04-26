@@ -61,7 +61,6 @@ fun PlayerSideEffects(
                 viewModel.event.collect { event ->
                     when (event) {
                         PlayerEvent.BackToPreviousScreen -> onBack()
-                        PlayerEvent.SaveTimeRequested -> viewModel.handleIntent(SaveTime)
                         is PlayerEvent.ChangeBrightness -> {
                             windowStateHolder.changeBrightness(delta = event.delta)?.let { brightness ->
                                 viewModel.handleIntent(UpdateAmbientOverlay(type = PlayerUiState.AmbientOverlay.Type.BRIGHTNESS, value = brightness))

@@ -94,7 +94,6 @@ sealed class PlayerIntent {
 
 sealed class PlayerEvent {
     data object BackToPreviousScreen : PlayerEvent()
-    data object SaveTimeRequested : PlayerEvent()
     data class ChangeBrightness(val delta: Float) : PlayerEvent()
 }
 

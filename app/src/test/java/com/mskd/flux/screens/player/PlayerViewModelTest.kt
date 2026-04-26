@@ -10,6 +10,7 @@ import com.mskd.flux.mockups.PlayerMockups
 import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Status
+import com.mskd.flux.screens.player.controllers.PlayerManager
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.extensions.lastEpisode
 import com.mskd.flux.utils.extensions.minToMs
@@ -32,6 +33,7 @@ class PlayerViewModelTest : FunSpec({
     lateinit var artworkRepository: FakeArtworkRepository
     lateinit var userRepository: UserRepository
     lateinit var settingsRepository: SettingsRepository
+    lateinit var playerManager: PlayerManager
 
     beforeTest {
 
@@ -45,11 +47,16 @@ class PlayerViewModelTest : FunSpec({
             every { flow } returns MutableStateFlow(SettingsRepository.State())
         }
 
+        playerManager = mockk(relaxed = true) {
+            every { state } returns MutableStateFlow(PlayerManager.State())
+        }
+
         viewModel = PlayerViewModel(
             mediaId = MediaMockups.episode1.mediaId,
             artworkRepository = artworkRepository,
             userRepository = userRepository,
-            settingsRepository = settingsRepository
+            settingsRepository = settingsRepository,
+            playerManager = playerManager
         )
 
     }
@@ -168,7 +175,8 @@ class PlayerViewModelTest : FunSpec({
                 mediaId = testCase.media.mediaId,
                 artworkRepository = artworkRepository,
                 userRepository = userRepository,
-                settingsRepository = settingsRepository
+                settingsRepository = settingsRepository,
+                playerManager = playerManager
             )
 
 
@@ -178,7 +186,7 @@ class PlayerViewModelTest : FunSpec({
                 awaitItem()
 
                 // When
-                viewModel.handleIntent(PlayerIntent.SaveTime(time = testCase.time))
+                viewModel.handleIntent(PlayerIntent.SaveTime)
 
                 // Then
                 val state = awaitItem()
@@ -219,7 +227,7 @@ class PlayerViewModelTest : FunSpec({
                 }
 
                 viewModel.event.test {
-                    viewModel.handleIntent(PlayerIntent.OnBackTap(time = null))
+                    viewModel.handleIntent(PlayerIntent.OnBackTap)
 
                     if (testCase.interfaceShowed) {
                         awaitItem() shouldBe PlayerEvent.BackToPreviousScreen
@@ -237,19 +245,7 @@ class PlayerViewModelTest : FunSpec({
     test("toggle play button") {
         viewModel.event.test {
             viewModel.handleIntent(PlayerIntent.TogglePlayButton)
-            awaitItem() shouldBe PlayerEvent.TogglePlayButton
-        }
-    }
-
-    test("set playing status") {
-        viewModel.uiState.test {
-            awaitItem()
-
-            viewModel.handleIntent(PlayerIntent.SetPlayingStatus(isPlaying = true))
-            awaitItem().controls.isPlaying shouldBe true
-
-            viewModel.handleIntent(PlayerIntent.SetPlayingStatus(isPlaying = false))
-            awaitItem().controls.isPlaying shouldBe false
+            coVerify { playerManager.togglePlay() }
         }
     }
 
@@ -257,14 +253,11 @@ class PlayerViewModelTest : FunSpec({
         viewModel.uiState.test {
             val state = awaitItem()
 
-            viewModel.event.test {
-                viewModel.handleIntent(PlayerIntent.OnFastRewind)
-                awaitItem() shouldBe PlayerEvent.SeekRewind(state.playerRewind.seconds.inWholeMilliseconds)
-            }
+            viewModel.handleIntent(PlayerIntent.OnFastRewind)
 
             val finalState = awaitItem()
             finalState.seekOverlay shouldBe PlayerUiState.SeekOverlay(amount = state.playerForward, type = PlayerUiState.SeekOverlay.Type.REWIND)
-
+            coVerify { playerManager.seekRewind(any()) }
         }
     }
 
@@ -272,13 +265,11 @@ class PlayerViewModelTest : FunSpec({
         viewModel.uiState.test {
             val state = awaitItem()
 
-            viewModel.event.test {
-                viewModel.handleIntent(PlayerIntent.OnFastForward)
-                awaitItem() shouldBe PlayerEvent.SeekForward(state.playerForward.seconds.inWholeMilliseconds)
-            }
+            viewModel.handleIntent(PlayerIntent.OnFastForward)
 
             val finalState = awaitItem()
             finalState.seekOverlay shouldBe PlayerUiState.SeekOverlay(amount = state.playerForward, type = PlayerUiState.SeekOverlay.Type.FORWARD)
+            coVerify { playerManager.seekForward(any()) }
 
         }
     }
@@ -286,29 +277,8 @@ class PlayerViewModelTest : FunSpec({
     test("update progress") {
         viewModel.event.test {
             viewModel.handleIntent(PlayerIntent.UpdateProgress(4L))
-            awaitItem().shouldBeInstanceOf<PlayerEvent.UpdateProgress> {
-                it.progress shouldBe 4L
-            }
-        }
-    }
 
-    test("update tracks") {
-        viewModel.uiState.test {
-
-            awaitItem()
-
-            viewModel.event.test {
-
-                viewModel.handleIntent(PlayerIntent.UpdateTracks(PlayerMockups.tracks))
-
-                val event = awaitItem()
-                event.shouldBeInstanceOf<PlayerEvent.SelectTrack>()
-
-            }
-
-            val state = awaitItem()
-            state.tracks.tracks shouldBe PlayerMockups.tracks
-
+            coVerify { playerManager.seekTo(progress = 4L) }
         }
     }
 
@@ -330,103 +300,16 @@ class PlayerViewModelTest : FunSpec({
 
                 awaitItem()
 
-                viewModel.event.test {
-                    viewModel.handleIntent(PlayerIntent.SelectTrack(testCase.track))
+                viewModel.handleIntent(PlayerIntent.SelectTrack(testCase.track))
 
-                    val event = awaitItem()
-                    event shouldBe PlayerEvent.SelectTrack(testCase.track)
-                }
+                awaitItem()
 
+                coVerify { playerManager.selectTrack(track = testCase.track) }
                 if (testCase.track.type == PlayerTrack.Type.SUBTITLES) {
                     coVerify { settingsRepository.setSubtitlesLanguage(any()) }
                 } else {
                     coVerify { settingsRepository.setAudioLanguage(any()) }
                 }
-
-            }
-
-        }
-
-    }
-
-    context("on track selected") {
-
-        withData(
-            nameFn = { it.description },
-            PlayerTestCases.SelectTrack(
-                description = "Subtitle selected",
-                track = PlayerMockups.Subtitles.english
-            ),
-            PlayerTestCases.SelectTrack(
-                description = "Audio selected",
-                track = PlayerMockups.Audio.english
-            ),
-        ) { testCase ->
-
-            viewModel.uiState.test {
-
-                awaitItem()
-
-                viewModel.handleIntent(PlayerIntent.OnTrackSelected(testCase.track))
-
-                val state = awaitItem()
-
-                if (testCase.track.type == PlayerTrack.Type.SUBTITLES)
-                    state.tracks.selectedSubtitles shouldBe testCase.track
-                else
-                    state.tracks.selectedAudio shouldBe testCase.track
-
-            }
-
-        }
-
-    }
-
-    context("show next episode") {
-        withData(
-            nameFn = { it.description },
-            PlayerTestCases.ShowNextEpisode(
-                description = "Next episode exists",
-                currentEpisode = MediaMockups.episode1,
-                show = true,
-                expectedNexTButton = PlayerUiState.NextButton.Showed(episode = MediaMockups.episode2)
-            ),
-            PlayerTestCases.ShowNextEpisode(
-                description = "Next episode doesn't exist",
-                currentEpisode = MediaMockups.episodes.lastEpisode,
-                show = true,
-                expectedNexTButton = PlayerUiState.NextButton.Hidden
-            ),
-            PlayerTestCases.ShowNextEpisode(
-                description = "Hide next episode",
-                currentEpisode = MediaMockups.episode1,
-                show = false,
-                expectedNexTButton = PlayerUiState.NextButton.Hidden
-            ),
-        ) { testCase ->
-
-            artworkRepository.setContentType(ContentType.SHOW)
-
-            viewModel = PlayerViewModel(
-                mediaId = testCase.currentEpisode.mediaId,
-                artworkRepository = artworkRepository,
-                userRepository = userRepository,
-                settingsRepository = settingsRepository
-            )
-
-            viewModel.uiState.test {
-
-                var state = awaitItem()
-
-                viewModel.handleIntent(PlayerIntent.ShowNextEpisode(show = testCase.show))
-
-                if (state.controls.nextButton != testCase.expectedNexTButton) {
-                    state = awaitItem()
-                } else {
-                    expectNoEvents()
-                }
-
-                state.controls.nextButton shouldBe testCase.expectedNexTButton
 
             }
 
@@ -452,22 +335,13 @@ class PlayerViewModelTest : FunSpec({
         viewModel.uiState.test {
             awaitItem()
 
-            viewModel.event.test {
-
-                viewModel.handleIntent(PlayerIntent.PlayNextEpisode(MediaMockups.episode2))
-
-                val event = awaitItem()
-
-                event shouldBe PlayerEvent.SaveTimeRequested
-
-            }
-
             viewModel.handleIntent(PlayerIntent.PlayNextEpisode(MediaMockups.episode2))
 
             val state = awaitItem()
             state.media.shouldNotBeNull {
                 mediaId shouldBe MediaMockups.episode2.mediaId
             }
+            coVerify { artworkRepository.saveEpisode(any()) }
         }
     }
 
@@ -475,15 +349,11 @@ class PlayerViewModelTest : FunSpec({
         viewModel.uiState.test {
             awaitItem()
 
-            viewModel.event.test {
+            viewModel.handleIntent(PlayerIntent.OnVolumeChange(delta = .5f))
 
-                viewModel.handleIntent(PlayerIntent.OnVolumeChange(delta = .5f))
-
-                val event = awaitItem()
-
-                event shouldBe PlayerEvent.ChangeVolume(delta = .5f)
-
-            }
+            val state = awaitItem()
+            state.ambientOverlay shouldBe PlayerUiState.AmbientOverlay(type = PlayerUiState.AmbientOverlay.Type.VOLUME, value = 50)
+            coVerify { playerManager.changeVolume(.5f) }
 
         }
     }

@@ -81,8 +81,6 @@ class PlayerViewModel @AssistedInject constructor(
     private val _seekOverlayState = MutableStateFlow<PlayerUiState.SeekOverlay?>(null)
     private val _ambientOverlayState = MutableStateFlow<PlayerUiState.AmbientOverlay?>(null)
 
-    val player = playerManager.player
-
     val uiState: StateFlow<PlayerUiState> = combine(
         artworkRepository.flow,
         settingsRepository.flow,
@@ -101,14 +99,14 @@ class PlayerViewModel @AssistedInject constructor(
         val tracks = (flows[3] as? List<*>)?.filterIsInstance<PlayerTrack>() ?: emptyList()
         val seekOverlay = flows[4] as PlayerUiState.SeekOverlay?
         val ambientOverlay = flows[5] as PlayerUiState.AmbientOverlay?
-        val id = flows[6] as Long
+        val mediaId = flows[6] as Long
         val playerState = flows[7] as PlayerManager.State
         val player = flows[8] as Player?
 
-        val media = artwork.movie ?: artwork.episodes.find { it.id == id }
+        val media = artwork.movie ?: artwork.episodes.find { it.id == mediaId }
 
         val screen = when {
-            media != null && player != null -> PlayerScreen.Content(media = media)
+            media != null && player != null -> PlayerScreen.Content(player = player, media = media)
             media != null && player == null -> PlayerScreen.Loading
             else -> PlayerScreen.Error
         }

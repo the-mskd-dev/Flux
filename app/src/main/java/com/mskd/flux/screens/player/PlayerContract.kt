@@ -1,6 +1,7 @@
 package com.mskd.flux.screens.player
 
 import androidx.compose.runtime.Immutable
+import androidx.media3.common.Player
 import androidx.media3.common.text.Cue
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
@@ -68,7 +69,7 @@ data class PlayerUiState(
 sealed class PlayerScreen {
     data object Loading : PlayerScreen()
     data object Error : PlayerScreen()
-    data class Content(val media: Media) : PlayerScreen()
+    data class Content(val player: Player, val media: Media) : PlayerScreen()
 }
 
 sealed class PlayerIntent {

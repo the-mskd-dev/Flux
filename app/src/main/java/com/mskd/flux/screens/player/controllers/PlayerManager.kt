@@ -165,11 +165,11 @@ class PlayerManager(private val context: Context) : Player.Listener {
         return (newVolume * 100).roundToInt()
     }
 
-    fun playMedia(media: Media?) {
+    fun playMedia(media: Media) {
 
         val player = _player.value ?: return
 
-        if (media != null && media.mediaId != currentMediaId) {
+        if (media.mediaId != currentMediaId) {
 
             val mediaMetadata = MediaMetadata.Builder()
                 .setTitle(media.title)

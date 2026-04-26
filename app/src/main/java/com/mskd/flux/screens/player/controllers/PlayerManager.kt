@@ -190,13 +190,16 @@ class PlayerManager(private val context: Context) : Player.Listener {
     override fun onTracksChanged(tracks: Tracks) {
         val defaultLabel = context.getString(R.string.track)
 
+        var selectedAudio: PlayerTrack? = null
+        var selectedSubtitles: PlayerTrack? = null
+
         val tracks = tracks.groups
             .filter { it.type == C.TRACK_TYPE_AUDIO || it.type == C.TRACK_TYPE_TEXT }
             .flatMap { group ->
                 (0 until group.length).map { index ->
                     val format = group.getTrackFormat(index)
-                    val isSelected = group.isTrackSelected(index)
                     val id = "${tracks.groups.indexOf(group)}:$index:${format.id}"
+                    val isSelected = group.isTrackSelected(index)
 
                     val playerTrack = PlayerTrack(
                         id = id,
@@ -207,8 +210,8 @@ class PlayerManager(private val context: Context) : Player.Listener {
 
                     if (isSelected) {
                         when (playerTrack.type) {
-                            PlayerTrack.Type.AUDIO -> _state.update { it.copy(selectedAudio = playerTrack) }
-                            PlayerTrack.Type.SUBTITLES -> _state.update { it.copy(selectedSubtitles = playerTrack) }
+                            PlayerTrack.Type.AUDIO -> selectedAudio = playerTrack
+                            PlayerTrack.Type.SUBTITLES -> selectedSubtitles = playerTrack
                         }
                     }
 
@@ -216,7 +219,13 @@ class PlayerManager(private val context: Context) : Player.Listener {
                 }
             }
 
-        _state.update { it.copy(tracks = tracks) }
+        _state.update {
+            it.copy(
+                tracks = tracks,
+                selectedAudio = selectedAudio ?: it.selectedAudio,
+                selectedSubtitles = selectedSubtitles ?: it.selectedSubtitles
+            )
+        }
 
     }
 

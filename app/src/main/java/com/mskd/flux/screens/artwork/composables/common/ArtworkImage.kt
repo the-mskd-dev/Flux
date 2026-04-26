@@ -65,7 +65,7 @@ fun ArtworkImage(
             contentScale = ContentScale.Crop,
             placeholder = Image.placeholder,
             error = Image.error,
-            alpha = .2f,
+            alpha = .9f,
             contentDescription = "background ${artwork.title}"
         )
 

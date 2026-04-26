@@ -56,6 +56,7 @@ class UnknownViewModel @Inject constructor(private val repository: ArtworkReposi
         when (intent) {
             is UnknownIntent.PlayMedia -> _event.emit(UnknownEvent.PlayMedia(mediaId = intent.media.mediaId))
             UnknownIntent.OnBackTap -> _event.emit(UnknownEvent.BackToPreviousScreen)
+            UnknownIntent.OnInfoTap -> _event.emit(UnknownEvent.NavigateToHowToScreen)
         }
     }
 

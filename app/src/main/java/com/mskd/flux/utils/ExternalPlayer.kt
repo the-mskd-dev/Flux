@@ -11,11 +11,16 @@ object ExternalPlayer {
             setDataAndType(media.file.path.toUri(), "video/*")
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
 
-            putExtra("position", media.currentTime)
-            putExtra("extra_start_time", media.currentTime)
-            putExtra("start_from", media.currentTime)
-            putExtra("video_position", media.currentTime.toInt())
-
+            progressFlags.forEach { flag ->
+                putExtra(flag, media.currentTime)
+            }
         }
     }
+
+    private val progressFlags = listOf(
+        "position",
+        "extra_start_time",
+        "start_from",
+        "video_position"
+    )
 }

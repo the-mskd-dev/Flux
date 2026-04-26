@@ -157,7 +157,7 @@ fun EpisodeDropDownMenu(
             )
 
             EpisodeDropDownMenuItem(
-                text = text,
+                text = if (episode.status == Status.WATCHED) stringResource(R.string.mark_as_not_watched) else stringResource(R.string.mark_as_watched),
                 onClick = {
                     sendIntent(ArtworkIntent.ChangeWatchStatus(media = episode))
                     onDismissRequest()

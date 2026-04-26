@@ -14,13 +14,9 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.mskd.flux.screens.player.PlayerEvent
-import com.mskd.flux.screens.player.PlayerIntent.OnTrackSelected
 import com.mskd.flux.screens.player.PlayerIntent.SaveTime
-import com.mskd.flux.screens.player.PlayerIntent.SetPlayingStatus
-import com.mskd.flux.screens.player.PlayerIntent.ShowNextEpisode
 import com.mskd.flux.screens.player.PlayerIntent.TogglePlayButton
 import com.mskd.flux.screens.player.PlayerIntent.UpdateAmbientOverlay
-import com.mskd.flux.screens.player.PlayerIntent.UpdateTracks
 import com.mskd.flux.screens.player.PlayerUiState
 import com.mskd.flux.screens.player.PlayerViewModel
 import com.mskd.flux.ui.component.LifecycleComponent
@@ -30,13 +26,12 @@ import kotlinx.coroutines.launch
 @Composable
 fun PlayerSideEffects(
     viewModel: PlayerViewModel,
-    stateHolder: PlayerStateHolder,
     windowStateHolder: WindowStateHolder,
     showInterface: Boolean,
     onBack: () -> Unit
 ) {
 
-    val player by stateHolder.player.collectAsStateWithLifecycle()
+    val player by viewModel.playerManager.player.collectAsStateWithLifecycle()
     val lifecycleOwner = LocalLifecycleOwner.current
     val activity = LocalContext.current.findActivity()
     val originalOrientation = remember { activity?.requestedOrientation }
@@ -57,43 +52,17 @@ fun PlayerSideEffects(
         windowStateHolder.updateSystemBars(showInterface)
     }
 
-    // Observe tracks
-    val tracks by stateHolder.tracks.collectAsStateWithLifecycle()
-    LaunchedEffect(tracks) {
-        viewModel.handleIntent(UpdateTracks(tracks))
-    }
 
     // Observe events
     LaunchedEffect(lifecycleOwner) {
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-
-            // Events from SH
-            launch {
-                stateHolder.event.collect { event ->
-                    when (event) {
-                        is PlayerStateHolder.Event.IsPlaying -> viewModel.handleIntent(SetPlayingStatus(isPlaying = event.isPlaying))
-                        is PlayerStateHolder.Event.SelectedTrack -> viewModel.handleIntent(OnTrackSelected(event.track))
-                        is PlayerStateHolder.Event.ShowNext -> viewModel.handleIntent(ShowNextEpisode(show = event.show))
-                    }
-                }
-            }
 
             // Events from VM
             launch {
                 viewModel.event.collect { event ->
                     when (event) {
                         PlayerEvent.BackToPreviousScreen -> onBack()
-                        is PlayerEvent.SeekRewind -> stateHolder.onFastRewind(event.time)
-                        is PlayerEvent.SeekForward -> stateHolder.onFastForward(event.time)
-                        is PlayerEvent.UpdateProgress -> stateHolder.updateProgress(event.progress)
-                        is PlayerEvent.SelectTrack -> stateHolder.selectTrack(event.track)
-                        PlayerEvent.TogglePlayButton -> stateHolder.togglePlayButton()
                         PlayerEvent.SaveTimeRequested -> player?.let { viewModel.handleIntent(SaveTime(time = it.currentPosition)) }
-                        is PlayerEvent.ChangeVolume -> {
-                            stateHolder.changeVolume(event.delta).let { volume ->
-                                viewModel.handleIntent(UpdateAmbientOverlay(type = PlayerUiState.AmbientOverlay.Type.VOLUME, value = volume))
-                            }
-                        }
                         is PlayerEvent.ChangeBrightness -> {
                             windowStateHolder.changeBrightness(delta = event.delta)?.let { brightness ->
                                 viewModel.handleIntent(UpdateAmbientOverlay(type = PlayerUiState.AmbientOverlay.Type.BRIGHTNESS, value = brightness))

@@ -8,6 +8,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.SeekParameters
+import com.mskd.flux.screens.player.controllers.PlayerManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,6 +16,7 @@ import dagger.hilt.android.components.ServiceComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ServiceScoped
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
 @Module
 @InstallIn(ServiceComponent::class)
@@ -38,5 +40,22 @@ object PlayerModule {
                 playWhenReady = true
                 setSeekParameters(SeekParameters.CLOSEST_SYNC)
             }
+    }
+
+    @Provides
+    @Singleton
+    fun providePlayerManager(@ApplicationContext context: Context) : PlayerManager {
+        return PlayerManager(context)
+    }
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+object PlayerManagerModule {
+
+    @Provides
+    @Singleton
+    fun providePlayerManager(@ApplicationContext context: Context) : PlayerManager {
+        return PlayerManager(context)
     }
 }

@@ -3,12 +3,16 @@ package com.mskd.flux.screens.player
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.media3.common.text.Cue
 import com.mskd.flux.data.repository.artwork.ArtworkRepository
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.model.artwork.Episode
+import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Status
+import com.mskd.flux.screens.player.PlayerTrack.*
+import com.mskd.flux.screens.player.controllers.PlayerManager
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.extensions.getNextEpisodeFor
 import com.mskd.flux.utils.extensions.lastEpisode
@@ -24,8 +28,11 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -40,7 +47,8 @@ class PlayerViewModel @AssistedInject constructor(
     @Assisted mediaId: Long,
     private val artworkRepository: ArtworkRepository,
     private val userRepository: UserRepository,
-    private val settingsRepository: SettingsRepository
+    private val settingsRepository: SettingsRepository,
+    val playerManager: PlayerManager
 ) : ViewModel() {
 
     //region Factory
@@ -67,7 +75,8 @@ class PlayerViewModel @AssistedInject constructor(
     val event = _event.receiveAsFlow()
 
     private val _controlsState = MutableStateFlow(PlayerUiState.Controls())
-    private val _tracksState = MutableStateFlow(PlayerUiState.Tracks())
+
+    private val _tracksState = MutableStateFlow<List<PlayerTrack>>(emptyList())
     private val _seekOverlayState = MutableStateFlow<PlayerUiState.SeekOverlay?>(null)
     private val _ambientOverlayState = MutableStateFlow<PlayerUiState.AmbientOverlay?>(null)
 
@@ -79,15 +88,17 @@ class PlayerViewModel @AssistedInject constructor(
         _seekOverlayState,
         _ambientOverlayState,
         _mediaId,
+        playerManager.state
     ) { flows ->
 
         val artwork = flows[0] as ArtworkRepository.State
         val settings = flows[1] as SettingsRepository.State
         val controls = flows[2] as PlayerUiState.Controls
-        val tracks = flows[3] as PlayerUiState.Tracks
+        val tracks = (flows[3] as? List<*>)?.filterIsInstance<PlayerTrack>() ?: emptyList()
         val seekOverlay = flows[4] as PlayerUiState.SeekOverlay?
         val ambientOverlay = flows[5] as PlayerUiState.AmbientOverlay?
         val id = flows[6] as Long
+        val playerState = flows[7] as PlayerManager.State
 
         val media = artwork.movie ?: artwork.episodes.find { it.id == id }
 
@@ -95,8 +106,16 @@ class PlayerViewModel @AssistedInject constructor(
             screen = media?.let { PlayerScreen.Content(media = media) } ?: PlayerScreen.Error,
             playerForward = settings.playerForwardValue,
             playerRewind = settings.playerRewindValue,
-            controls = controls,
-            tracks = tracks,
+            controls = controls.copy(
+                isPlaying = playerState.isPlaying,
+                progress = playerState.progress
+            ),
+            tracks = PlayerUiState.Tracks(
+                tracks = tracks,
+                selectedAudio = playerState.selectedAudio,
+                selectedSubtitles = playerState.selectedSubtitles,
+                subtitles = playerState.subtitles
+            ),
             seekOverlay = seekOverlay,
             ambientOverlay = ambientOverlay
         )
@@ -109,23 +128,50 @@ class PlayerViewModel @AssistedInject constructor(
 
     //endregion
 
+    //region Lifecycle
+
+    init {
+        playerManager.connect()
+
+        viewModelScope.launch {
+
+            launch {
+                playerManager.state
+                    .map { it.showNextEpisode }
+                    .distinctUntilChanged()
+                    .collect { showNextEpisode(show = it) }
+            }
+            launch {
+                playerManager.state
+                    .map { it.tracks }
+                    .distinctUntilChanged()
+                    .collect { updateTracks(tracks = it) }
+            }
+        }
+
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        playerManager.release()
+    }
+
+    //endregion
+
     //region Public methods
 
     fun handleIntent(intent: PlayerIntent) = viewModelScope.launch {
         when (intent) {
+            is PlayerIntent.PlayMedia -> playMedia(media = intent.media)
             PlayerIntent.ChangeInterfaceVisibility -> changeInterfaceVisibility()
             is PlayerIntent.ShowSettings -> showSettingsSheet(sheet = intent.sheet)
             is PlayerIntent.SaveTime -> saveTime(time = intent.time)
             is PlayerIntent.OnBackTap -> onBackTap(time = intent.time)
             PlayerIntent.TogglePlayButton -> togglePlayButton()
-            is PlayerIntent.SetPlayingStatus -> setPlayingStatus(isPlaying = intent.isPlaying)
             PlayerIntent.OnFastRewind -> onFastRewind()
             PlayerIntent.OnFastForward -> onFastForward()
             is PlayerIntent.UpdateProgress -> updateProgress(progress = intent.progress)
-            is PlayerIntent.UpdateTracks -> updateTracks(tracks = intent.tracks)
             is PlayerIntent.SelectTrack -> selectTrack(track = intent.track)
-            is PlayerIntent.OnTrackSelected -> onTrackSelected(track = intent.track)
-            is PlayerIntent.ShowNextEpisode -> showNextEpisode(show = intent.show)
             is PlayerIntent.CancelNextEpisode -> cancelNextEpisode()
             is PlayerIntent.PlayNextEpisode -> playNextEpisode(episode = intent.episode)
             is PlayerIntent.OnVolumeChange -> onVolumeChange(delta = intent.delta)
@@ -138,37 +184,41 @@ class PlayerViewModel @AssistedInject constructor(
 
     //region Private methods
 
-    private suspend fun togglePlayButton() {
-        _event.send(PlayerEvent.TogglePlayButton)
+    private fun playMedia(media: Media) {
+        playerManager.playMedia(media)
     }
 
-    private fun setPlayingStatus(isPlaying: Boolean) {
-        _controlsState.update { it.copy(isPlaying = isPlaying) }
+    private fun togglePlayButton() {
+        playerManager.togglePlay()
     }
 
-    private suspend fun onFastRewind() {
+    private fun onFastRewind() {
         val value = uiState.value.playerRewind
-        _event.send(PlayerEvent.SeekRewind(value.seconds.inWholeMilliseconds))
+        playerManager.seekRewind(value.seconds.inWholeMilliseconds)
         updateSeekOverlay(type = PlayerUiState.SeekOverlay.Type.REWIND, value = value)
 
     }
 
-    private suspend fun onFastForward() {
+    private fun onFastForward() {
         val value = uiState.value.playerForward
-        _event.send(PlayerEvent.SeekForward(value.seconds.inWholeMilliseconds))
+        playerManager.seekForward(value.seconds.inWholeMilliseconds)
         updateSeekOverlay(type = PlayerUiState.SeekOverlay.Type.FORWARD, value = value)
     }
 
-    private suspend fun onVolumeChange(delta: Float) {
-        _event.send(PlayerEvent.ChangeVolume(delta = delta))
+    private fun onVolumeChange(delta: Float) {
+        val value = playerManager.changeVolume(delta)
+        updateAmbientOverlay(
+            type = PlayerUiState.AmbientOverlay.Type.VOLUME,
+            value = value
+        )
     }
 
     private suspend fun onBrightnessChange(delta: Float) {
         _event.send(PlayerEvent.ChangeBrightness(delta = delta))
     }
 
-    private suspend fun updateProgress(progress: Long) {
-        _event.send(PlayerEvent.UpdateProgress(progress = progress))
+    private fun updateProgress(progress: Long) {
+        playerManager.seekTo(progress = progress)
     }
 
     private fun changeInterfaceVisibility() {
@@ -180,23 +230,23 @@ class PlayerViewModel @AssistedInject constructor(
     }
 
     private suspend fun updateTracks(tracks: List<PlayerTrack>) {
-        _tracksState.update { it.copy(tracks = tracks) }
+        _tracksState.update { tracks }
 
         val currentSettings = settingsRepository.flow.first()
-        val preferredLang = currentSettings.subtitlesLanguage.toPlayerTrack(type = PlayerTrack.Type.SUBTITLES)
+        val preferredLang = currentSettings.subtitlesLanguage.toPlayerTrack(type = Type.SUBTITLES)
 
-        _event.send(PlayerEvent.SelectTrack(preferredLang))
+        playerManager.selectTrack(track = preferredLang)
 
     }
 
     private suspend fun selectTrack(track: PlayerTrack) {
-        _event.send(PlayerEvent.SelectTrack(track = track))
+        playerManager.selectTrack(track = track)
 
         try {
 
             if (track.language != null) {
                 val locale = Locale.forLanguageTag(track.language)
-                if (track.type == PlayerTrack.Type.SUBTITLES)
+                if (track.type == Type.SUBTITLES)
                     settingsRepository.setSubtitlesLanguage(locale)
                 else
                     settingsRepository.setAudioLanguage(locale)
@@ -206,17 +256,6 @@ class PlayerViewModel @AssistedInject constructor(
             e.printStackTrace()
             Log.e("PlayerViewModel", "Locale not found for ${track.language}", e)
         }
-    }
-
-    private fun onTrackSelected(track: PlayerTrack) {
-
-        _tracksState.update {
-            when (track.type) {
-                PlayerTrack.Type.AUDIO -> it.copy(selectedAudio = track)
-                PlayerTrack.Type.SUBTITLES -> it.copy(selectedSubtitles = track)
-            }
-        }
-
     }
 
     private suspend fun showNextEpisode(show: Boolean) {

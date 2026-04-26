@@ -13,6 +13,7 @@ import com.mskd.flux.model.UserFile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
+import java.io.File
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
 
@@ -151,6 +152,13 @@ class FilesSourceLocalImpl(
             Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES).absolutePath,
             Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath,
         )
+            .filter { File(it).exists() }
+            .toTypedArray()
+
+        if (foldersToScan.isEmpty()) {
+            continuation.resume(Unit)
+            return@suspendCancellableCoroutine
+        }
 
         var foldersScanned = 0
 

@@ -1,0 +1,5 @@
+## Version 1.2.2
+
+- Fix : Récupération des videos dont la durée n'a pas été trouvée
+- Fix : Mise à jours des dossiers Downloads et Movies avant de scanner les vidéos, pour éviter de redémarrer l'appareil.
+- Fix : Correction du texte pour le menu au long press sur les épisodes

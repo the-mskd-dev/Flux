@@ -1,13 +1,8 @@
 package com.mskd.flux.screens.player
 
 import android.util.Log
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.media3.common.text.Cue
 import com.mskd.flux.data.repository.artwork.ArtworkRepository
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.data.repository.user.UserRepository
@@ -15,7 +10,6 @@ import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Status
-import com.mskd.flux.screens.player.PlayerIntent.TogglePlayButton
 import com.mskd.flux.screens.player.PlayerTrack.*
 import com.mskd.flux.screens.player.controllers.PlayerManager
 import com.mskd.flux.utils.Constants
@@ -33,7 +27,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
@@ -140,7 +133,7 @@ class PlayerViewModel @AssistedInject constructor(
     //region Lifecycle
 
     init {
-        playerManager.connect()
+        playerManager.init()
 
         viewModelScope.launch {
 

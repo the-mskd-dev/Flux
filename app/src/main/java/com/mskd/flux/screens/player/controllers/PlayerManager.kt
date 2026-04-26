@@ -70,6 +70,37 @@ class PlayerManager(private val context: Context) : Player.Listener {
 
     //endregion
 
+    //region Lifecycle
+
+    fun init() {
+        if (_player.value != null || controllerFuture != null) return
+
+        val sessionToken = SessionToken(context, ComponentName(context, PlayerService::class.java))
+        controllerFuture = MediaController.Builder(context, sessionToken).buildAsync()
+
+        controllerFuture?.addListener({
+            try {
+                val controller = controllerFuture?.get()
+                controller?.addListener(this)
+                _player.value = controller
+            } catch (e: Exception) {
+                Log.e("PlayerManager", "Failed to connect", e)
+                controllerFuture = null
+            }
+        }, MoreExecutors.directExecutor())
+    }
+
+    fun release() {
+        stopProgressMonitoring()
+        controllerFuture?.let {
+            MediaController.releaseFuture(it)
+        }
+        controllerFuture = null
+        _player.value = null
+    }
+
+    //endregion
+
     //region Player events
 
     override fun onEvents(player: Player, events: Player.Events) {
@@ -330,37 +361,6 @@ class PlayerManager(private val context: Context) : Player.Listener {
     private fun stopProgressMonitoring() {
         progressJob?.cancel()
         progressJob = null
-    }
-
-    //endregion
-
-    //region Lifecycle
-
-    fun connect() {
-        if (_player.value != null || controllerFuture != null) return
-
-        val sessionToken = SessionToken(context, ComponentName(context, PlayerService::class.java))
-        controllerFuture = MediaController.Builder(context, sessionToken).buildAsync()
-
-        controllerFuture?.addListener({
-            try {
-                val controller = controllerFuture?.get()
-                controller?.addListener(this)
-                _player.value = controller
-            } catch (e: Exception) {
-                Log.e("PlayerManager", "Failed to connect", e)
-                controllerFuture = null
-            }
-        }, MoreExecutors.directExecutor())
-    }
-
-    fun release() {
-        stopProgressMonitoring()
-        controllerFuture?.let {
-            MediaController.releaseFuture(it)
-        }
-        controllerFuture = null
-        _player.value = null
     }
 
     //endregion

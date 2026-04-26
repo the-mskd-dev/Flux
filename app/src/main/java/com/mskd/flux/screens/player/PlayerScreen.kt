@@ -300,10 +300,6 @@ fun playerConstraintSet(videoSize: VideoSize) = remember( videoSize) {
             "16:9"
         }
 
-        Log.d("TEST", "videoSize.width ${videoSize.width}")
-        Log.d("TEST", "videoSize.height ${videoSize.height}")
-        Log.d("TEST", "ratio $playerRatio")
-
         val (player, subtitles, playerInterface, leftSeekOverlay, rightSeekOverlay, ambientOverlay) = createRefsFor(
             "player",
             "subtitles",

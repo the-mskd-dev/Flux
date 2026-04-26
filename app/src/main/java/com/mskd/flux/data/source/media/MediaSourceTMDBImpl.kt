@@ -83,7 +83,7 @@ class MediaSourceTMDBImpl @Inject constructor(
             movies = moviesFiltered,
             episodes = shows.values.flatten() + unknownMedias
         ).also {
-            Log.d(TAG, "[getMedias] Found ${it.artworks.size} artworks, ${it.movies.size} movies, ${it.episodes.size} episodes")
+            Log.i(TAG, "[getMedias] Found ${it.artworks.size} artworks, ${it.movies.size} movies, ${it.episodes.size} episodes")
         }
     }
 
@@ -247,7 +247,7 @@ class MediaSourceTMDBImpl @Inject constructor(
             artworks = listOf(Artwork.UNKNOWN),
             episodes = medias
         ).also {
-            Log.d(TAG, "[getUnknownMedias] No token, found ${medias.size} unknown media(s)")
+            Log.i(TAG, "[getUnknownMedias] No token, found ${medias.size} unknown media(s)")
         }
 
     }

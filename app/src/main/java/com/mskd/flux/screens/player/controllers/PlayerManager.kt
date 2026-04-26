@@ -106,8 +106,6 @@ class PlayerManager(private val context: Context) : Player.Listener {
 
     override fun onEvents(player: Player, events: Player.Events) {
 
-        Log.d("TEST", "player.isPlaying : ${player.isPlaying}")
-
         if (events.containsAny(
                 Player.EVENT_PLAY_WHEN_READY_CHANGED,
                 Player.EVENT_PLAYBACK_STATE_CHANGED,

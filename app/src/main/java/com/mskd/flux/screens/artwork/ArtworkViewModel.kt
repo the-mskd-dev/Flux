@@ -68,10 +68,12 @@ class ArtworkViewModel @AssistedInject constructor(
 
     val uiState: StateFlow<ArtworkUiState> = combine(
         repository.flow,
+        settingsRepository.flow,
         _subState
-    ) { mediaContent, subState ->
+    ) { mediaContent, settings, subState ->
         buildUiState(
             mediaState = mediaContent,
+            settings = settings,
             subState = subState
         )
     }.stateIn(
@@ -110,7 +112,11 @@ class ArtworkViewModel @AssistedInject constructor(
 
     //region Private Methods
 
-    private fun buildUiState(mediaState: ArtworkRepository.State, subState: UserState) : ArtworkUiState {
+    private fun buildUiState(
+        mediaState: ArtworkRepository.State,
+        settings: SettingsRepository.State,
+        subState: UserState
+    ) : ArtworkUiState {
 
         val artwork = mediaState.artwork
         val movie = mediaState.movie
@@ -137,6 +143,7 @@ class ArtworkViewModel @AssistedInject constructor(
                     season = season,
                     media = media,
                     episodePendingConfirmation = subState.episodePendingConfirmation,
+                    useExternalPlayer = settings.externalPlayer
                 )
 
             }
@@ -151,7 +158,7 @@ class ArtworkViewModel @AssistedInject constructor(
     private suspend fun playMedia(media: Media, forceInternal: Boolean) {
         _subState.update { it.copy(selectedMedia = media) }
 
-        val event = if (settingsRepository.flow.first().externalPlayer && !forceInternal)
+        val event = if (uiState.value.useExternalPlayer && !forceInternal)
             ArtworkEvent.LaunchExternalPlayer(media = media)
         else
             ArtworkEvent.PlayMedia(mediaId = media.mediaId)

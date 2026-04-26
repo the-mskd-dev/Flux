@@ -44,8 +44,12 @@ fun PlayerSeekBar(
     val interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
     val isDragged by interactionSource.collectIsDraggedAsState()
     val duration = controls.duration.coerceAtLeast(0L)
-    var sliderPosition by rememberSaveable(controls.progress) {
-        mutableFloatStateOf(controls.progress.toFloat())
+    var sliderPosition by rememberSaveable { mutableFloatStateOf(controls.progress.toFloat()) }
+
+    LaunchedEffect(controls.progress) {
+        if (!isDragged) {
+            sliderPosition = controls.progress.toFloat()
+        }
     }
 
     Row(
@@ -63,8 +67,11 @@ fun PlayerSeekBar(
 
         PlayerSlider(
             modifier = Modifier.weight(1f),
-            value = { if (isDragged) sliderPosition else controls.progress.toFloat() },
-            onValueChange = { sliderPosition = it },
+            value = { sliderPosition },
+            onValueChange = {
+                sliderPosition = it
+                sendIntent(PlayerIntent.UpdateProgress(it.toLong()))
+            },
             valueRange = 0f..duration.toFloat(),
             onValueChangeFinished = { sendIntent(PlayerIntent.UpdateProgress(sliderPosition.toLong())) },
             interactionSource = interactionSource,

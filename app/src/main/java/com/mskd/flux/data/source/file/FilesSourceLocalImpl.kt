@@ -30,18 +30,19 @@ class FilesSourceLocalImpl(
         )
 
         // Show only videos that are at least 5 minutes in duration.
-        val selection = "${MediaStore.Video.Media.DURATION} >= ? AND ${MediaStore.Video.Media.MIME_TYPE} LIKE ?"
+        val selection = "${MediaStore.Video.Media.DURATION} >="
         val selectionArgs = arrayOf(
             TimeUnit.MILLISECONDS.convert(5, TimeUnit.MINUTES).toString(),
-            "video/%"
         )
+
+        val sortOrder = "${MediaStore.Video.Media.DATE_ADDED} DESC"
 
         val query = context.contentResolver.query(
             collection,
             projection,
             selection,
             selectionArgs,
-            null
+            sortOrder
         )
 
         val retriever = MediaMetadataRetriever()
@@ -69,20 +70,14 @@ class FilesSourceLocalImpl(
                             id
                         ).toString()
 
-                        // Check if the file is a video
-                        retriever.setDataSource(context, contentPath.toUri())
-                        val isVideo = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_HAS_VIDEO) == "yes"
-
                         // Stores column values and the contentUri in a local object
                         // that represents the media file.
-                        if (isVideo) {
-                            files += UserFile(
-                                name = name,
-                                addedDateTime = date,
-                                path = contentPath,
-                                source = FileSource.LOCAL
-                            )
-                        }
+                        files += UserFile(
+                            name = name,
+                            addedDateTime = date,
+                            path = contentPath,
+                            source = FileSource.LOCAL
+                        )
 
                     } catch (e: Exception) {
 
@@ -97,8 +92,6 @@ class FilesSourceLocalImpl(
         }
 
         retriever.release()
-
-        files.sortByDescending { it.addedDateTime }
 
         return files
 

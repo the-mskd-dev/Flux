@@ -76,7 +76,7 @@ fun PlayerInterface(
                 PlayerTopBar(
                     modifier = Modifier.layoutId("topBar"),
                     media = media,
-                    onBackTap = { sendIntent(PlayerIntent.OnBackTap(player.currentPosition)) }
+                    onBackTap = { sendIntent(PlayerIntent.OnBackTap) }
                 )
 
                 PlayerSettingsButton(

@@ -11,9 +11,9 @@ object ExternalPlayer {
             setDataAndType(media.file.path.toUri(), "video/*")
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
 
-            progressFlags.forEach { flag ->
+            /*progressFlags.forEach { flag ->
                 putExtra(flag, media.currentTime)
-            }
+            }*/
         }
     }
 

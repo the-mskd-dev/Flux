@@ -110,7 +110,8 @@ class PlayerViewModel @AssistedInject constructor(
             playerRewind = settings.playerRewindValue,
             controls = controls.copy(
                 isPlaying = playerState.isPlaying,
-                progress = playerState.progress
+                progress = playerState.progress,
+                duration = playerState.duration
             ),
             tracks = PlayerUiState.Tracks(
                 tracks = tracks,

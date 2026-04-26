@@ -49,6 +49,7 @@ class PlayerManager(private val context: Context) : Player.Listener {
         val selectedSubtitles: PlayerTrack? = null,
         val subtitles: List<Cue> = emptyList(),
         val progress: Long = 0L,
+        val duration: Long = 0L,
         val showNextEpisode: Boolean = false
     )
     private val _state = MutableStateFlow(State())
@@ -112,6 +113,14 @@ class PlayerManager(private val context: Context) : Player.Listener {
         ) {
             _state.update { it.copy(isPlaying = player.isPlaying) }
             if (player.isPlaying) startProgressMonitoring() else stopProgressMonitoring()
+        }
+
+        if (events.contains(Player.EVENT_PLAYBACK_STATE_CHANGED)) {
+            if (player.playbackState == Player.STATE_READY) {
+                val duration = player.duration.coerceAtLeast(0L)
+
+                _state.update { it.copy(duration = duration) }
+            }
         }
     }
 
@@ -354,6 +363,7 @@ class PlayerManager(private val context: Context) : Player.Listener {
                         val progressPercentage = currentPlayer.currentPosition.toFloat() / currentPlayer.duration.toFloat()
 
                         _state.update {
+                            Log.d("TEST", "update progress in PlayerManager")
                             it.copy(
                                 progress = currentPlayer.currentPosition,
                                 showNextEpisode = progressPercentage >= Constants.PLAYER.PROGRESS_THRESHOLD

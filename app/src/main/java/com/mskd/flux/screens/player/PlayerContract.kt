@@ -13,7 +13,7 @@ data class PlayerUiState(
     val controls: Controls = Controls(),
     val tracks: Tracks = Tracks(),
     val seekOverlay: SeekOverlay? = null,
-    val ambientOverlay: AmbientOverlay? = null,
+    val ambientOverlay: AmbientOverlay? = null
 ) {
 
     val media: Media? get() = (screen as? PlayerScreen.Content)?.media
@@ -24,7 +24,8 @@ data class PlayerUiState(
         val showInterface: Boolean = false,
         val settingsSheet: SettingsSheet? = null,
         val nextButton: NextButton = NextButton.Hidden,
-        val progress: Long = 0L
+        val progress: Long = 0L,
+        val duration: Long = 0L
     )
 
     @Immutable

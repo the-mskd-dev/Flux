@@ -1,5 +1,6 @@
 package com.mskd.flux.screens.player.composables.playerInterface
 
+import android.util.Log
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.layout.Arrangement
@@ -26,6 +27,7 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.Player
 import com.mskd.flux.screens.player.PlayerIntent
+import com.mskd.flux.screens.player.PlayerUiState
 import com.mskd.flux.ui.component.Text
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.extensions.formatMinSec
@@ -35,22 +37,15 @@ import kotlinx.coroutines.delay
 @Composable
 fun PlayerSeekBar(
     modifier: Modifier,
-    player: Player,
-    showInterface: Boolean,
-    isPlaying: Boolean,
+    controls: PlayerUiState.Controls,
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
-    var sliderPosition by rememberSaveable { mutableFloatStateOf(player.currentPosition.toFloat()) }
     val interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
     val isDragged by interactionSource.collectIsDraggedAsState()
-    val duration = player.contentDuration
-
-    LaunchedEffect(showInterface, isDragged) {
-        while (showInterface && !isDragged) {
-            sliderPosition = player.currentPosition.coerceAtLeast(0L).toFloat()
-            delay(200)
-        }
+    val duration = controls.duration.coerceAtLeast(0L)
+    var sliderPosition by rememberSaveable(controls.progress) {
+        mutableFloatStateOf(controls.progress.toFloat())
     }
 
     Row(
@@ -68,15 +63,12 @@ fun PlayerSeekBar(
 
         PlayerSlider(
             modifier = Modifier.weight(1f),
-            value = { sliderPosition },
-            onValueChange = {
-                sliderPosition = it
-                sendIntent(PlayerIntent.UpdateProgress(it.toLong()))
-            },
+            value = { if (isDragged) sliderPosition else controls.progress.toFloat() },
+            onValueChange = { sliderPosition = it },
             valueRange = 0f..duration.toFloat(),
             onValueChangeFinished = { sendIntent(PlayerIntent.UpdateProgress(sliderPosition.toLong())) },
             interactionSource = interactionSource,
-            isPlaying = isPlaying,
+            isPlaying = controls.isPlaying,
             duration = duration
         )
 

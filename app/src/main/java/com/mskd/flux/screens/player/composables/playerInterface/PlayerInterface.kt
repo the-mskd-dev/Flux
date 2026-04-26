@@ -108,9 +108,7 @@ fun PlayerInterface(
                             val height = with(density) { coordinates.size.height.toDp() }
                             if (seekBarHeight != height) seekBarHeight = height
                         },
-                    player = player,
-                    showInterface = controls.showInterface,
-                    isPlaying = controls.isPlaying,
+                    controls = controls,
                     sendIntent = sendIntent
                 )
 

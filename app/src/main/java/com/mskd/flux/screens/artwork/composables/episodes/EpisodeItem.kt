@@ -46,6 +46,7 @@ import com.mskd.flux.utils.extensions.timeDescription
 fun EpisodeItem(
     modifier: Modifier = Modifier,
     episode: Episode,
+    hideProgress: Boolean,
     sendIntent: (ArtworkIntent) -> Unit
 ) {
 
@@ -70,6 +71,7 @@ fun EpisodeItem(
 
             MediaThumbnail(
                 modifier = Modifier.weight(.4f),
+                hideProgress = hideProgress,
                 media = episode,
             )
 
@@ -212,6 +214,7 @@ fun EpisodeItem_Preview() {
     AppTheme {
         EpisodeItem(
             episode = MediaMockups.episode1,
+            hideProgress = false,
             sendIntent = {}
         )
     }
@@ -226,6 +229,7 @@ fun EpisodeItemWatching_Preview() {
                 status = Status.IS_WATCHING,
                 currentTime = (MediaMockups.episode1.duration.minToMs / 2f).toLong(),
             ),
+            hideProgress = false,
             sendIntent = {}
         )
     }
@@ -240,6 +244,7 @@ fun EpisodeItemWatched_Preview() {
                 status = Status.WATCHED,
                 currentTime = MediaMockups.episode1.duration.minToMs,
             ),
+            hideProgress = false,
             sendIntent = {}
         )
     }

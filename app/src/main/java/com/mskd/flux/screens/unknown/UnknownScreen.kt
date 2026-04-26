@@ -84,6 +84,7 @@ fun UnknownScreen(
             ScreenState.CONTENT -> {
                 UnknownScreenContent(
                     medias = uiState.medias,
+                    hideProgress = uiState.hideProgress,
                     sendIntent = viewModel::handleIntent
                 )
             }
@@ -96,6 +97,7 @@ fun UnknownScreen(
 @Composable
 fun UnknownScreenContent(
     medias: List<Episode>,
+    hideProgress: Boolean,
     sendIntent: (UnknownIntent) -> Unit
 ) {
 
@@ -125,7 +127,7 @@ fun UnknownScreenContent(
                     Spacer(modifier = Modifier.height(innerPadding.calculateTopPadding()))
                 }
 
-                itemsIndexed(items = medias, key = { i, m -> m.id }) { i, media ->
+                itemsIndexed(items = medias, key = { _, m -> m.id }) { i, media ->
 
                     if (i != 0) {
                         HorizontalDivider(modifier = Modifier.padding(horizontal = Ui.Space.MEDIUM))
@@ -133,6 +135,7 @@ fun UnknownScreenContent(
 
                     UnknownItem(
                         media = media,
+                        hideProgress = hideProgress,
                         sendIntent = sendIntent
                     )
 
@@ -173,6 +176,7 @@ fun UnknownScreenContent(
 @Composable
 fun UnknownItem(
     media: Episode,
+    hideProgress: Boolean,
     sendIntent: (UnknownIntent) -> Unit
 ) {
 
@@ -186,6 +190,7 @@ fun UnknownItem(
 
         MediaThumbnail(
             modifier = Modifier.width(160.dp),
+            hideProgress = hideProgress,
             media = media,
         )
 
@@ -245,6 +250,7 @@ fun UnknownScreen_Preview() {
     AppTheme {
         UnknownScreenContent(
             medias = MediaMockups.episodesWithStatus,
+            hideProgress = false,
             sendIntent = {}
         )
     }

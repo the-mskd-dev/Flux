@@ -6,6 +6,7 @@ import com.mskd.flux.model.artwork.Media
 
 data class UnknownUiState(
     val screen: ScreenState = ScreenState.LOADING,
+    val hideProgress: Boolean = false,
     val medias: List<Episode> = emptyList()
 )
 

@@ -12,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.window.core.layout.WindowSizeClass
@@ -25,6 +26,7 @@ import com.mskd.flux.ui.component.ErrorScreen
 import com.mskd.flux.ui.component.FluxDialog
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.component.Text
+import com.mskd.flux.utils.ExternalPlayer
 import com.mskd.flux.utils.WebLink
 
 @Composable
@@ -51,16 +53,14 @@ fun ArtworkScreen(
                 is ArtworkEvent.OpenEpisodeInfo -> WebLink.openPage(context = context, url = event.episode.infoUrl)
                 is ArtworkEvent.LaunchExternalPlayer -> {
 
-                    val intent = Intent(Intent.ACTION_VIEW).apply {
-                        setDataAndType(event.path, "video/*")
-                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                    }
-
                     try {
+                        val intent = ExternalPlayer.createIntent(media = event.media)
                         context.startActivity(intent)
                     } catch (e: ActivityNotFoundException) {
                         Log.e("ArtworkScreen", "No player founded", e)
+                        viewModel.handleIntent(ArtworkIntent.PlayMedia(media = event.media, forceInternal = true))
                     }
+
                 }
             }
         }

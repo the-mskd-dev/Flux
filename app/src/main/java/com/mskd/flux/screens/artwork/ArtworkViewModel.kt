@@ -97,7 +97,7 @@ class ArtworkViewModel @AssistedInject constructor(
         when (intent) {
             ArtworkIntent.OnBackTap -> _event.emit(ArtworkEvent.BackToPreviousScreen)
             is ArtworkIntent.SelectSeason -> selectSeason(season = intent.season)
-            is ArtworkIntent.PlayMedia -> playMedia(media = intent.media)
+            is ArtworkIntent.PlayMedia -> playMedia(media = intent.media, forceInternal = intent.forceInternal)
             ArtworkIntent.CloseEpisodesStatusDialog -> closeStatusDialog()
             is ArtworkIntent.ChangeWatchStatus -> changeWatchStatus(media = intent.media)
             ArtworkIntent.MarkPreviousEpisodesAsWatched -> markPreviousEpisodesAsWatched()
@@ -148,11 +148,11 @@ class ArtworkViewModel @AssistedInject constructor(
         _subState.update { it.copy(selectedSeason = season) }
     }
 
-    private suspend fun playMedia(media: Media) {
+    private suspend fun playMedia(media: Media, forceInternal: Boolean) {
         _subState.update { it.copy(selectedMedia = media) }
 
-        val event = if (settingsRepository.flow.first().externalPlayer)
-            ArtworkEvent.LaunchExternalPlayer(path = media.file.path.toUri())
+        val event = if (settingsRepository.flow.first().externalPlayer && !forceInternal)
+            ArtworkEvent.LaunchExternalPlayer(media = media)
         else
             ArtworkEvent.PlayMedia(mediaId = media.mediaId)
 

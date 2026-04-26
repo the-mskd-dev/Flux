@@ -87,12 +87,6 @@ fun PlayerScreen(
         onBack = onBack
     )
 
-    LaunchedEffect(state.screen) {
-        (state.screen as? PlayerScreen.Content)?.let {
-            viewModel.handleIntent(PlayerIntent.PlayMedia(it.media))
-        }
-    }
-
     // Automatically hide interface after 5 seconds
     LaunchedEffect(state.controls) {
         if (state.controls.showInterface && state.controls.settingsSheet == null) {

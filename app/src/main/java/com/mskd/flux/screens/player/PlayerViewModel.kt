@@ -30,6 +30,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -145,12 +146,26 @@ class PlayerViewModel @AssistedInject constructor(
 
         viewModelScope.launch {
 
+            // Play when media and player are available
+            launch {
+                uiState
+                    .map { it.screen }
+                    .filterIsInstance<PlayerScreen.Content>()
+                    .first()
+                    .let { content ->
+                        playerManager.playMedia(content.media)
+                    }
+            }
+
+            // Listen next episode
             launch {
                 playerManager.state
                     .map { it.showNextEpisode }
                     .distinctUntilChanged()
                     .collect { showNextEpisode(show = it) }
             }
+
+            // Listen tracks
             launch {
                 playerManager.state
                     .map { it.tracks }

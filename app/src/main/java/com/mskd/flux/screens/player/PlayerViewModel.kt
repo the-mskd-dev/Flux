@@ -152,9 +152,7 @@ class PlayerViewModel @AssistedInject constructor(
                     .map { it.screen }
                     .filterIsInstance<PlayerScreen.Content>()
                     .first()
-                    .let { content ->
-                        playerManager.playMedia(content.media)
-                    }
+                    .let {  playerManager.playMedia(it.media) }
             }
 
             // Listen next episode

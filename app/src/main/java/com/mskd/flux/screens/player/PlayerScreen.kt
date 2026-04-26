@@ -110,11 +110,7 @@ fun PlayerScreen(
     }
 
     Crossfade(
-        targetState = if (state.screen is PlayerScreen.Content && player != null) {
-            state.screen
-        } else {
-            state.screen.takeIf { it is PlayerScreen.Error } ?: PlayerScreen.Loading
-        },
+        targetState = state.screen,
         label = "PlayerScreenState"
     ) { screen ->
         when (screen) {

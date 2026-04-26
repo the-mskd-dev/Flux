@@ -3,6 +3,7 @@ package com.mskd.flux.screens.player
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.media3.common.Player
 import com.mskd.flux.data.repository.artwork.ArtworkRepository
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.data.repository.user.UserRepository
@@ -90,7 +91,8 @@ class PlayerViewModel @AssistedInject constructor(
         _seekOverlayState,
         _ambientOverlayState,
         _mediaId,
-        playerManager.state
+        playerManager.state,
+        playerManager.player
     ) { flows ->
 
         val artwork = flows[0] as ArtworkRepository.State
@@ -101,11 +103,18 @@ class PlayerViewModel @AssistedInject constructor(
         val ambientOverlay = flows[5] as PlayerUiState.AmbientOverlay?
         val id = flows[6] as Long
         val playerState = flows[7] as PlayerManager.State
+        val player = flows[8] as Player?
 
         val media = artwork.movie ?: artwork.episodes.find { it.id == id }
 
+        val screen = when {
+            media != null && player != null -> PlayerScreen.Content(media = media)
+            media != null && player == null -> PlayerScreen.Loading
+            else -> PlayerScreen.Error
+        }
+
         PlayerUiState(
-            screen = media?.let { PlayerScreen.Content(media = media) } ?: PlayerScreen.Error,
+            screen = screen,
             playerForward = settings.playerForwardValue,
             playerRewind = settings.playerRewindValue,
             controls = controls.copy(

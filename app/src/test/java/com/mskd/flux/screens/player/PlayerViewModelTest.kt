@@ -1,5 +1,6 @@
 package com.mskd.flux.screens.player
 
+import androidx.media3.common.Player
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.data.repository.settings.SettingsRepository
@@ -34,6 +35,7 @@ class PlayerViewModelTest : FunSpec({
     lateinit var userRepository: UserRepository
     lateinit var settingsRepository: SettingsRepository
     lateinit var playerManager: PlayerManager
+    lateinit var mockPlayer: Player
 
     beforeTest {
 
@@ -47,8 +49,13 @@ class PlayerViewModelTest : FunSpec({
             every { flow } returns MutableStateFlow(SettingsRepository.State())
         }
 
+        mockPlayer = mockk(relaxed = true) {
+            every { duration } returns 10000L
+        }
+
         playerManager = mockk(relaxed = true) {
             every { state } returns MutableStateFlow(PlayerManager.State())
+            every { player } returns MutableStateFlow(mockPlayer)
         }
 
         viewModel = PlayerViewModel(

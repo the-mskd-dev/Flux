@@ -211,6 +211,8 @@ class PlayerManager(private val context: Context) : Player.Listener {
             currentMediaId = media.mediaId
             player.setMediaItem(mediaItem, media.currentTime)
             player.prepare()
+        } else if (player.playbackState == Player.STATE_IDLE) {
+            player.prepare()
         }
 
         player.play()
@@ -296,7 +298,7 @@ class PlayerManager(private val context: Context) : Player.Listener {
 
         } else {
 
-            val playerTrack = _state.value.tracks.filter { it.type == PlayerTrack.Type.SUBTITLES }.firstOrNull { it.language == track.language }
+            val playerTrack = _state.value.tracks.filter { it.type == PlayerTrack.Type.AUDIO }.firstOrNull { it.language == track.language }
             playerTrack?.language?.let {
                 setPreferredAudioLanguage(it)
                 return playerTrack

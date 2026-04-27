@@ -86,6 +86,8 @@ class PlayerViewModel @AssistedInject constructor(
     private val _seekOverlayState = MutableStateFlow<PlayerUiState.SeekOverlay?>(null)
     private val _ambientOverlayState = MutableStateFlow<PlayerUiState.AmbientOverlay?>(null)
 
+    private val intentChannel = Channel<PlayerIntent>(Channel.UNLIMITED)
+
     val uiState: StateFlow<PlayerUiState> = combine(
         artworkRepository.flow,
         settingsRepository.flow,
@@ -167,11 +169,18 @@ class PlayerViewModel @AssistedInject constructor(
                     .distinctUntilChanged()
                     .collect { showNextEpisode(show = it) }
             }
+
             launch {
                 playerManager.state
                     .map { it.tracks }
                     .distinctUntilChanged()
                     .collect { updateTracks(tracks = it) }
+            }
+
+            launch {
+                intentChannel.receiveAsFlow().collect { intent ->
+                    processIntent(intent)
+                }
             }
         }
 
@@ -186,7 +195,15 @@ class PlayerViewModel @AssistedInject constructor(
 
     //region Public methods
 
-    fun handleIntent(intent: PlayerIntent) = viewModelScope.launch {
+    fun handleIntent(intent: PlayerIntent) {
+        intentChannel.trySend(intent)
+    }
+
+    //endregion
+
+    //region Private methods
+
+    private suspend fun processIntent(intent: PlayerIntent) {
         when (intent) {
             is PlayerIntent.PlayMedia -> playMedia(media = intent.media)
             PlayerIntent.ChangeInterfaceVisibility -> changeInterfaceVisibility()
@@ -207,10 +224,6 @@ class PlayerViewModel @AssistedInject constructor(
             PlayerIntent.GoToForeground -> onForeground()
         }
     }
-
-    //endregion
-
-    //region Private methods
 
     private fun playMedia(media: Media) {
         playerManager.playMedia(media)

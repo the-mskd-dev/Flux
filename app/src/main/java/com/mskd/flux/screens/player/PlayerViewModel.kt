@@ -112,7 +112,6 @@ class PlayerViewModel @AssistedInject constructor(
 
         val screen = when {
             media != null && player != null -> PlayerScreen.Content(player, media)
-            media != null && uiState.value.screen is PlayerScreen.Content -> uiState.value.screen
             media != null -> PlayerScreen.Loading
             else -> PlayerScreen.Error
         }

@@ -142,6 +142,14 @@ class PlayerManager(private val context: Context) : Player.Listener {
         _player.value?.let { if (it.isPlaying) it.pause() else it.play() }
     }
 
+    fun play() {
+        _player.value?.play()
+    }
+
+    fun pause() {
+        _player.value?.pause()
+    }
+
     fun seekTo(progress: Long) {
         _player.value?.seekTo(progress)
     }

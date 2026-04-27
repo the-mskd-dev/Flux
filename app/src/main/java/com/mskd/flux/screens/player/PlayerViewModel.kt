@@ -410,7 +410,7 @@ class PlayerViewModel @AssistedInject constructor(
 
         wasPlayingBeforeBackground = uiState.value.controls.isPlaying
         if (wasPlayingBeforeBackground) {
-            togglePlayButton()
+            playerManager.pause()
         }
 
         saveTime()
@@ -418,7 +418,7 @@ class PlayerViewModel @AssistedInject constructor(
 
     private fun onForeground() {
         if (wasPlayingBeforeBackground) {
-            togglePlayButton()
+            playerManager.play()
         }
     }
 

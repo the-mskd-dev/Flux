@@ -176,10 +176,10 @@ class PlayerViewModel @AssistedInject constructor(
 
     }
 
-    /*override fun onCleared() {
+    override fun onCleared() {
         super.onCleared()
         playerManager.stop(sessionId = sessionId)
-    }*/
+    }
 
     //endregion
 
@@ -327,7 +327,6 @@ class PlayerViewModel @AssistedInject constructor(
 
                 if (interfaceShowed) {
                     saveTime()
-                    playerManager.stop(sessionId = sessionId)
                     _event.send(PlayerEvent.BackToPreviousScreen)
                 } else {
                     changeInterfaceVisibility()
@@ -335,7 +334,6 @@ class PlayerViewModel @AssistedInject constructor(
 
             }
             else -> {
-                playerManager.stop(sessionId = sessionId)
                 _event.send(PlayerEvent.BackToPreviousScreen)
             }
         }

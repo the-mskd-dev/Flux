@@ -91,7 +91,6 @@ class PlayerManager(private val context: Context) : Player.Listener {
                 val controller = controllerFuture?.get()
                 controller?.apply {
                     addListener(this@PlayerManager)
-                    playWhenReady = true
                 }
                 _player.value = controller
             } catch (e: Exception) {

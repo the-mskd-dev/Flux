@@ -37,7 +37,7 @@ object PlayerModule {
             )
             .build()
             .apply {
-                playWhenReady = true
+                //playWhenReady = true
                 setSeekParameters(SeekParameters.CLOSEST_SYNC)
             }
     }

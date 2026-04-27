@@ -38,6 +38,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.Locale
+import java.util.UUID
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
@@ -61,6 +62,8 @@ class PlayerViewModel @AssistedInject constructor(
     //endregion
 
     //region Variables
+
+    private val sessionId: String = UUID.randomUUID().toString()
 
     private var seekResetJob: Job? = null
     private var ambientResetJob: Job? = null
@@ -143,7 +146,7 @@ class PlayerViewModel @AssistedInject constructor(
     //region Lifecycle
 
     init {
-        playerManager.init()
+        playerManager.init(sessionId = sessionId)
 
         viewModelScope.launch {
 
@@ -175,8 +178,7 @@ class PlayerViewModel @AssistedInject constructor(
 
     /*override fun onCleared() {
         super.onCleared()
-        Log.d("TEST", "VM - onCleared")
-        playerManager.release()
+        playerManager.stop(sessionId = sessionId)
     }*/
 
     //endregion
@@ -325,13 +327,17 @@ class PlayerViewModel @AssistedInject constructor(
 
                 if (interfaceShowed) {
                     saveTime()
+                    playerManager.stop(sessionId = sessionId)
                     _event.send(PlayerEvent.BackToPreviousScreen)
                 } else {
                     changeInterfaceVisibility()
                 }
 
             }
-            else -> _event.send(PlayerEvent.BackToPreviousScreen)
+            else -> {
+                playerManager.stop(sessionId = sessionId)
+                _event.send(PlayerEvent.BackToPreviousScreen)
+            }
         }
 
     }

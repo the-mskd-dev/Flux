@@ -62,6 +62,8 @@ class PlayerManager(private val context: Context) : Player.Listener {
 
     //region Variables
 
+    private var currentSessionId: String? = null
+
     private var controllerFuture: ListenableFuture<MediaController>? = null
 
     private var currentMediaId: Long = -1L
@@ -73,7 +75,10 @@ class PlayerManager(private val context: Context) : Player.Listener {
 
     //region Lifecycle
 
-    fun init() {
+    fun init(sessionId: String) {
+
+        currentSessionId = sessionId
+
         if (_player.value != null || controllerFuture?.isDone == false) {
             return
         }
@@ -96,13 +101,16 @@ class PlayerManager(private val context: Context) : Player.Listener {
         }, MoreExecutors.directExecutor())
     }
 
-    fun release() {
+    fun stop(sessionId: String) {
+
+        if (currentSessionId != sessionId) return
+
         stopProgressMonitoring()
-        controllerFuture?.let {
-            MediaController.releaseFuture(it)
+        _player.value?.let {
+            it.stop()
+            it.clearMediaItems()
         }
-        controllerFuture = null
-        _player.value = null
+        currentMediaId = -1
     }
 
     //endregion

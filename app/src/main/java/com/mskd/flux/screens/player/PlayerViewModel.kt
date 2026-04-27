@@ -107,8 +107,9 @@ class PlayerViewModel @AssistedInject constructor(
         val media = artwork.movie ?: artwork.episodes.find { it.id == mediaId }
 
         val screen = when {
-            media != null && player != null -> PlayerScreen.Content(player = player, media = media)
-            media != null && player == null -> PlayerScreen.Loading
+            media != null && player != null -> PlayerScreen.Content(player, media)
+            media != null && uiState.value.screen is PlayerScreen.Content -> uiState.value.screen
+            media != null -> PlayerScreen.Loading
             else -> PlayerScreen.Error
         }
 
@@ -172,10 +173,11 @@ class PlayerViewModel @AssistedInject constructor(
 
     }
 
-    override fun onCleared() {
+    /*override fun onCleared() {
         super.onCleared()
+        Log.d("TEST", "VM - onCleared")
         playerManager.release()
-    }
+    }*/
 
     //endregion
 

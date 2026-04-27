@@ -42,11 +42,6 @@ object PlayerModule {
             }
     }
 
-    @Provides
-    @Singleton
-    fun providePlayerManager(@ApplicationContext context: Context) : PlayerManager {
-        return PlayerManager(context)
-    }
 }
 
 @Module

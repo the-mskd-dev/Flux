@@ -74,7 +74,9 @@ class PlayerManager(private val context: Context) : Player.Listener {
     //region Lifecycle
 
     fun init() {
-        if (_player.value != null || controllerFuture != null) return
+        if (_player.value != null || controllerFuture?.isDone == false) {
+            return
+        }
 
         val sessionToken = SessionToken(context, ComponentName(context, PlayerService::class.java))
         controllerFuture = MediaController.Builder(context, sessionToken).buildAsync()
@@ -166,8 +168,9 @@ class PlayerManager(private val context: Context) : Player.Listener {
     }
 
     fun playMedia(media: Media) {
-
-        val player = _player.value ?: return
+        val player = _player.value ?: run {
+            return
+        }
 
         if (media.mediaId != currentMediaId) {
 
@@ -187,11 +190,15 @@ class PlayerManager(private val context: Context) : Player.Listener {
                 .setUri(media.file.path.toUri())
                 .build()
 
+            player.stop()
+            player.clearMediaItems()
+
+            currentMediaId = media.mediaId
             player.setMediaItem(mediaItem, media.currentTime)
             player.prepare()
-            currentMediaId = media.mediaId
-            player.play()
         }
+
+        player.play()
 
     }
 

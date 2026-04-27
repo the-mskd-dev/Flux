@@ -399,24 +399,26 @@ class PlayerManager(private val context: Context) : Player.Listener {
     //region Progress monitoring
 
     private fun startProgressMonitoring() {
-        val current = _state.value as? State.Ready ?: return
         stopProgressMonitoring()
         progressJob = scope.launch {
             while (isActive) {
-                current.player.let { player ->
+                _state.update { current ->
+                    val ready = current as? State.Ready ?: return@update current
+                    val player = ready.player
+
                     if (player.isPlaying && player.duration > 0) {
 
                         val progressPercentage = player.currentPosition.toFloat() / player.duration.toFloat()
 
-                        _state.update {
-                            current.copy(
-                                progress = player.currentPosition,
-                                showNextEpisode = progressPercentage >= Constants.PLAYER.PROGRESS_THRESHOLD
-                            )
-                        }
+                        ready.copy(
+                            progress = player.currentPosition,
+                            showNextEpisode = progressPercentage >= Constants.PLAYER.PROGRESS_THRESHOLD
+                        )
 
-                    }
+                    } else current
+
                 }
+
                 delay(1000)
             }
         }

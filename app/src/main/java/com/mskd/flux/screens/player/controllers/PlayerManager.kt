@@ -42,27 +42,29 @@ class PlayerManager(private val context: Context) : Player.Listener {
 
     //region State
 
-    data class State(
-        val isPlaying: Boolean = false,
-        val tracks: List<PlayerTrack> = emptyList(),
-        val selectedAudio: PlayerTrack? = null,
-        val selectedSubtitles: PlayerTrack? = null,
-        val subtitles: List<Cue> = emptyList(),
-        val progress: Long = 0L,
-        val duration: Long = 0L,
-        val showNextEpisode: Boolean = false
-    )
-    private val _state = MutableStateFlow(State())
-    val state = _state.asStateFlow()
+    sealed class State {
+        data object Idle : State()
+        data object Connecting : State()
+        data class Ready(
+            val player: Player,
+            val isPlaying: Boolean = false,
+            val tracks: List<PlayerTrack> = emptyList(),
+            val selectedAudio: PlayerTrack? = null,
+            val selectedSubtitles: PlayerTrack? = null,
+            val subtitles: List<Cue> = emptyList(),
+            val progress: Long = 0L,
+            val duration: Long = 0L,
+            val showNextEpisode: Boolean = false
+        ) : State()
+        data object Error : State()
+    }
 
-    private val _player = MutableStateFlow<Player?>(null)
-    val player = _player.asStateFlow()
+    private val _state = MutableStateFlow<State>(State.Idle)
+    val state = _state.asStateFlow()
 
     //endregion
 
     //region Variables
-
-    private var currentSessionId: String? = null
 
     private var controllerFuture: ListenableFuture<MediaController>? = null
 
@@ -75,11 +77,9 @@ class PlayerManager(private val context: Context) : Player.Listener {
 
     //region Lifecycle
 
-    fun init(sessionId: String) {
+    fun connect() {
 
-        currentSessionId = sessionId
-
-        if (_player.value != null || controllerFuture?.isDone == false) {
+        if (_state.value is State.Connecting || _state.value is State.Ready) {
             return
         }
 
@@ -88,28 +88,34 @@ class PlayerManager(private val context: Context) : Player.Listener {
 
         controllerFuture?.addListener({
             try {
-                val controller = controllerFuture?.get()
-                controller?.apply {
-                    addListener(this@PlayerManager)
+                val controller = controllerFuture?.get() ?: run {
+                    _state.value = State.Error
+                    return@addListener
                 }
-                _player.value = controller
+
+                controller.addListener(this@PlayerManager)
+                _state.value = State.Ready(player = controller)
             } catch (e: Exception) {
                 Log.e("PlayerManager", "Failed to connect", e)
-                controllerFuture = null
+                _state.value = State.Error
             }
         }, MoreExecutors.directExecutor())
     }
 
-    fun stop(sessionId: String) {
-
-        if (currentSessionId != sessionId) return
-
+    fun disconnect() {
         stopProgressMonitoring()
-        _player.value?.let {
-            it.stop()
-            it.clearMediaItems()
+
+        val currentState = _state.value
+        if (currentState is State.Ready) {
+            currentState.player.removeListener(this)
+            currentState.player.stop()
+            currentState.player.clearMediaItems()
         }
-        currentMediaId = -1
+
+        controllerFuture?.let { MediaController.releaseFuture(it) }
+        controllerFuture = null
+        currentMediaId = -1L
+        _state.value = State.Idle
     }
 
     //endregion
@@ -117,6 +123,7 @@ class PlayerManager(private val context: Context) : Player.Listener {
     //region Player events
 
     override fun onEvents(player: Player, events: Player.Events) {
+        val currentState = _state.value as? State.Ready ?: return
 
         if (events.containsAny(
                 Player.EVENT_PLAY_WHEN_READY_CHANGED,
@@ -124,21 +131,23 @@ class PlayerManager(private val context: Context) : Player.Listener {
                 Player.EVENT_IS_PLAYING_CHANGED
             )
         ) {
-            _state.update { it.copy(isPlaying = player.playWhenReady) }
+            _state.update { currentState.copy(isPlaying = player.playWhenReady) }
             if (player.isPlaying) startProgressMonitoring() else stopProgressMonitoring()
         }
 
-        if (events.contains(Player.EVENT_PLAYBACK_STATE_CHANGED)) {
-            if (player.playbackState == Player.STATE_READY) {
-                val duration = player.duration.coerceAtLeast(0L)
-
-                _state.update { it.copy(duration = duration) }
-            }
+        if (
+            events.contains(Player.EVENT_PLAYBACK_STATE_CHANGED)
+            && player.playbackState == Player.STATE_READY
+        ) {
+            val duration = player.duration.coerceAtLeast(0L)
+            _state.update { currentState.copy(duration = duration) }
         }
+
     }
 
     override fun onCues(cueGroup: CueGroup) {
-        _state.update { it.copy(subtitles = cueGroup.cues) }
+        val current = _state.value as? State.Ready ?: return
+        _state.update { current.copy(subtitles = cueGroup.cues) }
     }
 
     //endregion
@@ -146,46 +155,46 @@ class PlayerManager(private val context: Context) : Player.Listener {
     //region Controls
 
     fun togglePlay() {
-        _player.value?.let { if (it.isPlaying) it.pause() else it.play() }
+        (_state.value as? State.Ready)?.let {
+            if (it.isPlaying) it.player.pause() else it.player.play()
+        }
     }
 
     fun play() {
-        _player.value?.play()
+        (_state.value as? State.Ready)?.player?.play()
     }
 
     fun pause() {
-        _player.value?.pause()
+        (_state.value as? State.Ready)?.player?.pause()
     }
 
     fun seekTo(progress: Long) {
-        _player.value?.seekTo(progress)
+        (_state.value as? State.Ready)?.player?.seekTo(progress)
     }
 
     fun seekRewind(value: Long) {
-        _player.value?.let {
+        (_state.value as? State.Ready)?.player?.let {
             val targetPosition = (it.currentPosition - value).coerceAtLeast(0L)
             it.seekTo(targetPosition)
         }
     }
 
     fun seekForward(value: Long) {
-        _player.value?.let {
+        (_state.value as? State.Ready)?.player?.let {
             val targetPosition = (it.currentPosition + value).coerceAtMost(it.duration)
             it.seekTo(targetPosition)
         }
     }
 
     fun changeVolume(delta: Float): Int {
-        val p = _player.value ?: return 0
-        val newVolume = (p.volume + delta).coerceIn(0f, 1f)
-        p.volume = newVolume
+        val player = (_state.value as? State.Ready)?.player ?: return 0
+        val newVolume = (player.volume + delta).coerceIn(0f, 1f)
+        player.volume = newVolume
         return (newVolume * 100).roundToInt()
     }
 
     fun playMedia(media: Media) {
-        val player = _player.value ?: run {
-            return
-        }
+        val player = (_state.value as? State.Ready)?.player ?: return
 
         if (media.mediaId != currentMediaId) {
 
@@ -211,8 +220,6 @@ class PlayerManager(private val context: Context) : Player.Listener {
             currentMediaId = media.mediaId
             player.setMediaItem(mediaItem, media.currentTime)
             player.prepare()
-        } else if (player.playbackState == Player.STATE_IDLE) {
-            player.prepare()
         }
 
         player.play()
@@ -224,10 +231,12 @@ class PlayerManager(private val context: Context) : Player.Listener {
     //region Tracks
 
     override fun onTracksChanged(tracks: Tracks) {
+        val current = _state.value as? State.Ready ?: return
+
         val defaultLabel = context.getString(R.string.track)
 
-        var selectedAudio: PlayerTrack? = null
-        var selectedSubtitles: PlayerTrack? = null
+        var selectedAudio: PlayerTrack? = current.selectedAudio
+        var selectedSubtitles: PlayerTrack? = current.selectedSubtitles
 
         val tracks = tracks.groups
             .filter { it.type == C.TRACK_TYPE_AUDIO || it.type == C.TRACK_TYPE_TEXT }
@@ -256,17 +265,18 @@ class PlayerManager(private val context: Context) : Player.Listener {
             }
 
         _state.update {
-            it.copy(
+            current.copy(
                 tracks = tracks,
-                selectedAudio = selectedAudio ?: it.selectedAudio,
-                selectedSubtitles = selectedSubtitles ?: it.selectedSubtitles
+                selectedAudio = selectedAudio,
+                selectedSubtitles = selectedSubtitles
             )
         }
 
     }
 
     fun selectTrack(track: PlayerTrack) {
-        val player = _player.value ?: return
+        val current = _state.value as? State.Ready ?: return
+        val player = current.player
         val currentTracks = player.currentTracks
         var selectedTrack: PlayerTrack? = null
 
@@ -282,13 +292,14 @@ class PlayerManager(private val context: Context) : Player.Listener {
 
         selectedTrack?.let { t ->
             when (t.type) {
-                PlayerTrack.Type.AUDIO -> _state.update { it.copy(selectedAudio = t) }
-                PlayerTrack.Type.SUBTITLES -> _state.update { it.copy(selectedSubtitles = t) }
+                PlayerTrack.Type.AUDIO -> _state.update { current.copy(selectedAudio = t) }
+                PlayerTrack.Type.SUBTITLES -> _state.update { current.copy(selectedSubtitles = t) }
             }
         }
     }
 
     private fun TrackSelectionParameters.Builder.applyAudioTrack(track: PlayerTrack, currentTracks: Tracks) : PlayerTrack? {
+        val current = _state.value as? State.Ready ?: return null
         clearOverridesOfType(C.TRACK_TYPE_AUDIO)
 
         if (track.id != null) {
@@ -298,7 +309,7 @@ class PlayerManager(private val context: Context) : Player.Listener {
 
         } else {
 
-            val playerTrack = _state.value.tracks.filter { it.type == PlayerTrack.Type.AUDIO }.firstOrNull { it.language == track.language }
+            val playerTrack = current.tracks.filter { it.type == PlayerTrack.Type.AUDIO }.firstOrNull { it.language == track.language }
             playerTrack?.language?.let {
                 setPreferredAudioLanguage(it)
                 return playerTrack
@@ -311,7 +322,7 @@ class PlayerManager(private val context: Context) : Player.Listener {
     }
 
     private fun TrackSelectionParameters.Builder.applySubtitlesTrack(track: PlayerTrack, currentTracks: Tracks) : PlayerTrack? {
-
+        val current = _state.value as? State.Ready ?: return null
         clearOverridesOfType(C.TRACK_TYPE_TEXT)
 
         if (track.language == null) { // If no subtitle
@@ -330,7 +341,7 @@ class PlayerManager(private val context: Context) : Player.Listener {
 
             } else {
 
-                val playerTrack = _state.value.tracks.filter { it.type == PlayerTrack.Type.SUBTITLES }.firstOrNull { it.language == track.language }
+                val playerTrack = current.tracks.filter { it.type == PlayerTrack.Type.SUBTITLES }.firstOrNull { it.language == track.language }
                 playerTrack?.language?.let {
                     setPreferredTextLanguage(it)
                     return playerTrack
@@ -381,17 +392,18 @@ class PlayerManager(private val context: Context) : Player.Listener {
     //region Progress monitoring
 
     private fun startProgressMonitoring() {
+        val current = _state.value as? State.Ready ?: return
         stopProgressMonitoring()
         progressJob = scope.launch {
             while (isActive) {
-                _player.value?.let { currentPlayer ->
-                    if (currentPlayer.isPlaying && currentPlayer.duration > 0) {
+                current.player.let { player ->
+                    if (player.isPlaying && player.duration > 0) {
 
-                        val progressPercentage = currentPlayer.currentPosition.toFloat() / currentPlayer.duration.toFloat()
+                        val progressPercentage = player.currentPosition.toFloat() / player.duration.toFloat()
 
                         _state.update {
-                            it.copy(
-                                progress = currentPlayer.currentPosition,
+                            current.copy(
+                                progress = player.currentPosition,
                                 showNextEpisode = progressPercentage >= Constants.PLAYER.PROGRESS_THRESHOLD
                             )
                         }

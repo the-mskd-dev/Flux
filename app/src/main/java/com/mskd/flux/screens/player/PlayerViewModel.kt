@@ -64,8 +64,6 @@ class PlayerViewModel @AssistedInject constructor(
 
     //region Variables
 
-    private val sessionId: String = UUID.randomUUID().toString()
-
     private var seekResetJob: Job? = null
     private var ambientResetJob: Job? = null
 
@@ -97,7 +95,6 @@ class PlayerViewModel @AssistedInject constructor(
         _ambientOverlayState,
         _mediaId,
         playerManager.state,
-        playerManager.player
     ) { flows ->
 
         val artwork = flows[0] as ArtworkRepository.State
@@ -108,30 +105,31 @@ class PlayerViewModel @AssistedInject constructor(
         val ambientOverlay = flows[5] as PlayerUiState.AmbientOverlay?
         val mediaId = flows[6] as Long
         val playerState = flows[7] as PlayerManager.State
-        val player = flows[8] as Player?
 
         val media = artwork.movie ?: artwork.episodes.find { it.id == mediaId }
 
-        val screen = when {
-            media != null && player != null -> PlayerScreen.Content(player, media)
-            media != null -> PlayerScreen.Loading
-            else -> PlayerScreen.Error
+        val screen: PlayerScreen = when {
+            playerState is PlayerManager.State.Error -> PlayerScreen.Error
+            media != null && playerState is PlayerManager.State.Ready -> PlayerScreen.Content(player = playerState.player, media = media)
+            else -> PlayerScreen.Loading
         }
+
+        val ready = playerState as? PlayerManager.State.Ready
 
         PlayerUiState(
             screen = screen,
             playerForward = settings.playerForwardValue,
             playerRewind = settings.playerRewindValue,
             controls = controls.copy(
-                isPlaying = playerState.isPlaying,
-                progress = playerState.progress,
-                duration = playerState.duration
+                isPlaying = ready?.isPlaying ?: false,
+                progress = ready?.progress ?: 0L,
+                duration = ready?.duration ?: 0L
             ),
             tracks = PlayerUiState.Tracks(
                 tracks = tracks,
-                selectedAudio = playerState.selectedAudio,
-                selectedSubtitles = playerState.selectedSubtitles,
-                subtitles = playerState.subtitles
+                selectedAudio = ready?.selectedAudio,
+                selectedSubtitles = ready?.selectedSubtitles,
+                subtitles = ready?.subtitles ?: emptyList()
             ),
             seekOverlay = seekOverlay,
             ambientOverlay = ambientOverlay
@@ -148,7 +146,7 @@ class PlayerViewModel @AssistedInject constructor(
     //region Lifecycle
 
     init {
-        playerManager.init(sessionId = sessionId)
+        playerManager.connect()
 
         viewModelScope.launch {
 
@@ -165,6 +163,7 @@ class PlayerViewModel @AssistedInject constructor(
             // Listen next episode
             launch {
                 playerManager.state
+                    .filterIsInstance<PlayerManager.State.Ready>()
                     .map { it.showNextEpisode }
                     .distinctUntilChanged()
                     .collect { showNextEpisode(show = it) }
@@ -172,6 +171,7 @@ class PlayerViewModel @AssistedInject constructor(
 
             launch {
                 playerManager.state
+                    .filterIsInstance<PlayerManager.State.Ready>()
                     .map { it.tracks }
                     .distinctUntilChanged()
                     .collect { updateTracks(tracks = it) }
@@ -188,7 +188,7 @@ class PlayerViewModel @AssistedInject constructor(
 
     override fun onCleared() {
         super.onCleared()
-        playerManager.stop(sessionId = sessionId)
+        playerManager.disconnect()
     }
 
     //endregion

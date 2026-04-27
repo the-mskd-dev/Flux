@@ -36,6 +36,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.util.Locale
+import java.util.UUID
 import kotlin.math.roundToInt
 
 class PlayerManager(private val context: Context) : Player.Listener {
@@ -69,6 +70,7 @@ class PlayerManager(private val context: Context) : Player.Listener {
     private var controllerFuture: ListenableFuture<MediaController>? = null
 
     private var currentMediaId: Long = -1L
+    private var currentSessionId: String? = null
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     private var progressJob: Job? = null
@@ -77,7 +79,9 @@ class PlayerManager(private val context: Context) : Player.Listener {
 
     //region Lifecycle
 
-    fun connect() {
+    fun connect(sessionId: String) {
+
+        currentSessionId = sessionId
 
         if (_state.value is State.Connecting || _state.value is State.Ready) {
             return
@@ -102,7 +106,10 @@ class PlayerManager(private val context: Context) : Player.Listener {
         }, MoreExecutors.directExecutor())
     }
 
-    fun disconnect() {
+    fun disconnect(sessionId: String) {
+
+        if (currentSessionId != sessionId) return
+
         stopProgressMonitoring()
 
         val currentState = _state.value

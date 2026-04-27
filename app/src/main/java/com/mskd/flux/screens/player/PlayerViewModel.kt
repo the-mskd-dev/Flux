@@ -64,6 +64,8 @@ class PlayerViewModel @AssistedInject constructor(
 
     //region Variables
 
+    private val sessionId: String = UUID.randomUUID().toString()
+
     private var seekResetJob: Job? = null
     private var ambientResetJob: Job? = null
 
@@ -146,7 +148,7 @@ class PlayerViewModel @AssistedInject constructor(
     //region Lifecycle
 
     init {
-        playerManager.connect()
+        playerManager.connect(sessionId = sessionId)
 
         viewModelScope.launch {
 
@@ -188,7 +190,7 @@ class PlayerViewModel @AssistedInject constructor(
 
     override fun onCleared() {
         super.onCleared()
-        playerManager.disconnect()
+        playerManager.disconnect(sessionId = sessionId)
     }
 
     //endregion

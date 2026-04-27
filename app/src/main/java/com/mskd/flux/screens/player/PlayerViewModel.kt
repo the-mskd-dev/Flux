@@ -30,6 +30,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -155,8 +156,9 @@ class PlayerViewModel @AssistedInject constructor(
                 uiState
                     .map { it.screen }
                     .filterIsInstance<PlayerScreen.Content>()
-                    .distinctUntilChanged()
-                    .collect { playerManager.playMedia(it.media) }
+                    .map { it.media }
+                    .distinctUntilChangedBy { it.mediaId }
+                    .collect { playerManager.playMedia(it) }
             }
 
             // Listen next episode
@@ -326,6 +328,7 @@ class PlayerViewModel @AssistedInject constructor(
                 val interfaceShowed = uiState.value.controls.showInterface
 
                 if (interfaceShowed) {
+                    playerManager.pause()
                     saveTime()
                     _event.send(PlayerEvent.BackToPreviousScreen)
                 } else {

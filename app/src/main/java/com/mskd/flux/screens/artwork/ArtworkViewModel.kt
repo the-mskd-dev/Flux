@@ -2,9 +2,11 @@ package com.mskd.flux.screens.artwork
 
 import android.util.Log
 import androidx.compose.runtime.Immutable
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.data.repository.artwork.ArtworkRepository
+import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.model.ScreenState
 import com.mskd.flux.model.artwork.Episode
@@ -33,7 +35,8 @@ import kotlinx.coroutines.launch
 class ArtworkViewModel @AssistedInject constructor(
     @Assisted val artworkId: Long,
     private val repository: ArtworkRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val settingsRepository: SettingsRepository
 ) : ViewModel() {
 
     //region Hilt
@@ -59,16 +62,18 @@ class ArtworkViewModel @AssistedInject constructor(
     //region Flow
 
     private val _event = MutableSharedFlow<ArtworkEvent>()
-    val event = _event.asSharedFlow().distinctUntilChanged()
+    val event = _event.asSharedFlow()
 
     private val _subState = MutableStateFlow(UserState())
 
     val uiState: StateFlow<ArtworkUiState> = combine(
         repository.flow,
+        settingsRepository.flow,
         _subState
-    ) { mediaContent, subState ->
+    ) { mediaContent, settings, subState ->
         buildUiState(
             mediaState = mediaContent,
+            settings = settings,
             subState = subState
         )
     }.stateIn(
@@ -94,7 +99,7 @@ class ArtworkViewModel @AssistedInject constructor(
         when (intent) {
             ArtworkIntent.OnBackTap -> _event.emit(ArtworkEvent.BackToPreviousScreen)
             is ArtworkIntent.SelectSeason -> selectSeason(season = intent.season)
-            is ArtworkIntent.PlayMedia -> playMedia(media = intent.media)
+            is ArtworkIntent.PlayMedia -> playMedia(media = intent.media, forceInternal = intent.forceInternal)
             ArtworkIntent.CloseEpisodesStatusDialog -> closeStatusDialog()
             is ArtworkIntent.ChangeWatchStatus -> changeWatchStatus(media = intent.media)
             ArtworkIntent.MarkPreviousEpisodesAsWatched -> markPreviousEpisodesAsWatched()
@@ -107,7 +112,11 @@ class ArtworkViewModel @AssistedInject constructor(
 
     //region Private Methods
 
-    private fun buildUiState(mediaState: ArtworkRepository.State, subState: UserState) : ArtworkUiState {
+    private fun buildUiState(
+        mediaState: ArtworkRepository.State,
+        settings: SettingsRepository.State,
+        subState: UserState
+    ) : ArtworkUiState {
 
         val artwork = mediaState.artwork
         val movie = mediaState.movie
@@ -134,6 +143,7 @@ class ArtworkViewModel @AssistedInject constructor(
                     season = season,
                     media = media,
                     episodePendingConfirmation = subState.episodePendingConfirmation,
+                    useExternalPlayer = settings.externalPlayer
                 )
 
             }
@@ -145,9 +155,15 @@ class ArtworkViewModel @AssistedInject constructor(
         _subState.update { it.copy(selectedSeason = season) }
     }
 
-    private suspend fun playMedia(media: Media) {
+    private suspend fun playMedia(media: Media, forceInternal: Boolean) {
         _subState.update { it.copy(selectedMedia = media) }
-        _event.emit(ArtworkEvent.PlayMedia(mediaId = media.mediaId))
+
+        val event = if (uiState.value.useExternalPlayer && !forceInternal)
+            ArtworkEvent.LaunchExternalPlayer(media = media)
+        else
+            ArtworkEvent.PlayMedia(mediaId = media.mediaId)
+
+        _event.emit(event)
     }
 
     private fun showStatusDialog(episode: Episode) {

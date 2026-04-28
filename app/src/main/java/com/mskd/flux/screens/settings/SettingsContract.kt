@@ -9,6 +9,7 @@ data class SettingsUiState(
     val rewindValue: Int = 10,
     val forwardValue: Int = 10,
     val uiTheme: Ui.THEME = Ui.THEME.SYSTEM,
+    val useExternalPlayer: Boolean = false,
     val dialogState: SettingsDialogState<*>? = null
 )
 
@@ -70,6 +71,7 @@ sealed class SettingsIntent {
     object OnTokenTap: SettingsIntent()
     object OnHowToTap: SettingsIntent()
     object OnAboutTap: SettingsIntent()
+    data class OnExternalPlayerCheck(val checked: Boolean): SettingsIntent()
 }
 
 sealed class SettingsEvent {

@@ -11,6 +11,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.TextUnit
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 object Text {
@@ -89,6 +90,7 @@ object Text {
             textAlign: TextAlign = TextAlign.Start,
             color: Color = Color.Unspecified,
             emphasized: Boolean = false,
+            lineHeight: TextUnit = TextUnit.Unspecified,
             overflow: TextOverflow = TextOverflow.Clip,
             maxLines: Int = Int.MAX_VALUE,
             minLines: Int = 1
@@ -103,6 +105,7 @@ object Text {
                 color = color,
                 style = if (emphasized) MaterialTheme.typography.displayLargeEmphasized else MaterialTheme.typography.displayLarge,
                 textAlign = textAlign,
+                lineHeight = lineHeight,
                 overflow = overflow,
                 maxLines = maxLines,
                 minLines = minLines
@@ -122,6 +125,7 @@ object Text {
             textAlign: TextAlign = TextAlign.Start,
             color: Color = Color.Unspecified,
             emphasized: Boolean = false,
+            lineHeight: TextUnit = TextUnit.Unspecified,
             overflow: TextOverflow = TextOverflow.Clip,
             maxLines: Int = Int.MAX_VALUE,
             minLines: Int = 1
@@ -136,6 +140,7 @@ object Text {
                 color = color,
                 style = if (emphasized) MaterialTheme.typography.displayMediumEmphasized else MaterialTheme.typography.displayMedium,
                 textAlign = textAlign,
+                lineHeight = lineHeight,
                 overflow = overflow,
                 maxLines = maxLines,
                 minLines = minLines
@@ -155,6 +160,7 @@ object Text {
             textAlign: TextAlign = TextAlign.Start,
             color: Color = Color.Unspecified,
             emphasized: Boolean = false,
+            lineHeight: TextUnit = TextUnit.Unspecified,
             overflow: TextOverflow = TextOverflow.Clip,
             maxLines: Int = Int.MAX_VALUE,
             minLines: Int = 1
@@ -169,6 +175,7 @@ object Text {
                 color = color,
                 style = if (emphasized) MaterialTheme.typography.displaySmallEmphasized else MaterialTheme.typography.displaySmall,
                 textAlign = textAlign,
+                lineHeight = lineHeight,
                 overflow = overflow,
                 maxLines = maxLines,
                 minLines = minLines
@@ -195,6 +202,7 @@ object Text {
             textAlign: TextAlign = TextAlign.Start,
             color: Color = Color.Unspecified,
             emphasized: Boolean = false,
+            lineHeight: TextUnit = TextUnit.Unspecified,
             overflow: TextOverflow = TextOverflow.Clip,
             maxLines: Int = Int.MAX_VALUE,
             minLines: Int = 1
@@ -209,6 +217,7 @@ object Text {
                 color = color,
                 style = if (emphasized) MaterialTheme.typography.headlineLargeEmphasized else MaterialTheme.typography.headlineLarge,
                 textAlign = textAlign,
+                lineHeight = lineHeight,
                 overflow = overflow,
                 maxLines = maxLines,
                 minLines = minLines
@@ -228,6 +237,7 @@ object Text {
             textAlign: TextAlign = TextAlign.Start,
             color: Color = Color.Unspecified,
             emphasized: Boolean = false,
+            lineHeight: TextUnit = TextUnit.Unspecified,
             overflow: TextOverflow = TextOverflow.Clip,
             maxLines: Int = Int.MAX_VALUE,
             minLines: Int = 1
@@ -242,6 +252,7 @@ object Text {
                 color = color,
                 style = if (emphasized) MaterialTheme.typography.headlineMediumEmphasized else MaterialTheme.typography.headlineMedium,
                 textAlign = textAlign,
+                lineHeight = lineHeight,
                 overflow = overflow,
                 maxLines = maxLines,
                 minLines = minLines
@@ -261,6 +272,7 @@ object Text {
             textAlign: TextAlign = TextAlign.Start,
             color: Color = Color.Unspecified,
             emphasized: Boolean = false,
+            lineHeight: TextUnit = TextUnit.Unspecified,
             overflow: TextOverflow = TextOverflow.Clip,
             maxLines: Int = Int.MAX_VALUE,
             minLines: Int = 1
@@ -275,6 +287,7 @@ object Text {
                 color = color,
                 style = if (emphasized) MaterialTheme.typography.headlineSmallEmphasized else MaterialTheme.typography.headlineSmall,
                 textAlign = textAlign,
+                lineHeight = lineHeight,
                 overflow = overflow,
                 maxLines = maxLines,
                 minLines = minLines
@@ -301,6 +314,7 @@ object Text {
             textAlign: TextAlign = TextAlign.Start,
             color: Color = Color.Unspecified,
             emphasized: Boolean = false,
+            lineHeight: TextUnit = TextUnit.Unspecified,
             overflow: TextOverflow = TextOverflow.Clip,
             maxLines: Int = Int.MAX_VALUE,
             minLines: Int = 1
@@ -315,6 +329,7 @@ object Text {
                 color = color,
                 style = if (emphasized) MaterialTheme.typography.titleLargeEmphasized else MaterialTheme.typography.titleLarge,
                 textAlign = textAlign,
+                lineHeight = lineHeight,
                 overflow = overflow,
                 maxLines = maxLines,
                 minLines = minLines
@@ -334,6 +349,7 @@ object Text {
             textAlign: TextAlign = TextAlign.Start,
             color: Color = Color.Unspecified,
             emphasized: Boolean = false,
+            lineHeight: TextUnit = TextUnit.Unspecified,
             overflow: TextOverflow = TextOverflow.Clip,
             maxLines: Int = Int.MAX_VALUE,
             minLines: Int = 1
@@ -348,6 +364,7 @@ object Text {
                 color = color,
                 style = if (emphasized) MaterialTheme.typography.titleMediumEmphasized else MaterialTheme.typography.titleMedium,
                 textAlign = textAlign,
+                lineHeight = lineHeight,
                 overflow = overflow,
                 maxLines = maxLines,
                 minLines = minLines
@@ -368,6 +385,7 @@ object Text {
             textAlign: TextAlign = TextAlign.Start,
             color: Color = Color.Unspecified,
             emphasized: Boolean = false,
+            lineHeight: TextUnit = TextUnit.Unspecified,
             overflow: TextOverflow = TextOverflow.Clip,
             maxLines: Int = Int.MAX_VALUE,
             minLines: Int = 1
@@ -382,6 +400,7 @@ object Text {
                 color = color,
                 style = if (emphasized) MaterialTheme.typography.titleSmallEmphasized else MaterialTheme.typography.titleSmall,
                 textAlign = textAlign,
+                lineHeight = lineHeight,
                 overflow = overflow,
                 maxLines = maxLines,
                 minLines = minLines
@@ -408,6 +427,7 @@ object Text {
             textAlign: TextAlign = TextAlign.Start,
             color: Color = Color.Unspecified,
             emphasized: Boolean = false,
+            lineHeight: TextUnit = TextUnit.Unspecified,
             overflow: TextOverflow = TextOverflow.Clip,
             maxLines: Int = Int.MAX_VALUE,
             minLines: Int = 1
@@ -422,6 +442,7 @@ object Text {
                 color = color,
                 style = if (emphasized) MaterialTheme.typography.bodyLargeEmphasized else MaterialTheme.typography.bodyLarge,
                 textAlign = textAlign,
+                lineHeight = lineHeight,
                 overflow = overflow,
                 maxLines = maxLines,
                 minLines = minLines
@@ -441,6 +462,7 @@ object Text {
             textAlign: TextAlign = TextAlign.Start,
             color: Color = Color.Unspecified,
             emphasized: Boolean = false,
+            lineHeight: TextUnit = TextUnit.Unspecified,
             overflow: TextOverflow = TextOverflow.Clip,
             maxLines: Int = Int.MAX_VALUE,
             minLines: Int = 1
@@ -455,6 +477,7 @@ object Text {
                 color = color,
                 style = if (emphasized) MaterialTheme.typography.bodyMediumEmphasized else MaterialTheme.typography.bodyMedium,
                 textAlign = textAlign,
+                lineHeight = lineHeight,
                 overflow = overflow,
                 maxLines = maxLines,
                 minLines = minLines
@@ -474,6 +497,7 @@ object Text {
             textAlign: TextAlign = TextAlign.Start,
             color: Color = Color.Unspecified,
             emphasized: Boolean = false,
+            lineHeight: TextUnit = TextUnit.Unspecified,
             overflow: TextOverflow = TextOverflow.Clip,
             maxLines: Int = Int.MAX_VALUE,
             minLines: Int = 1
@@ -488,6 +512,7 @@ object Text {
                 color = color,
                 style = if (emphasized) MaterialTheme.typography.bodySmallEmphasized else MaterialTheme.typography.bodySmall,
                 textAlign = textAlign,
+                lineHeight = lineHeight,
                 overflow = overflow,
                 maxLines = maxLines,
                 minLines = minLines
@@ -514,6 +539,7 @@ object Text {
             textAlign: TextAlign = TextAlign.Start,
             color: Color = Color.Unspecified,
             emphasized: Boolean = false,
+            lineHeight: TextUnit = TextUnit.Unspecified,
             overflow: TextOverflow = TextOverflow.Clip,
             maxLines: Int = Int.MAX_VALUE,
             minLines: Int = 1
@@ -528,6 +554,7 @@ object Text {
                 color = color,
                 style = if (emphasized) MaterialTheme.typography.labelLargeEmphasized else MaterialTheme.typography.labelLarge,
                 textAlign = textAlign,
+                lineHeight = lineHeight,
                 overflow = overflow,
                 maxLines = maxLines,
                 minLines = minLines
@@ -547,6 +574,7 @@ object Text {
             textAlign: TextAlign = TextAlign.Start,
             color: Color = Color.Unspecified,
             emphasized: Boolean = false,
+            lineHeight: TextUnit = TextUnit.Unspecified,
             overflow: TextOverflow = TextOverflow.Clip,
             maxLines: Int = Int.MAX_VALUE,
             minLines: Int = 1
@@ -561,6 +589,7 @@ object Text {
                 color = color,
                 style = if (emphasized) MaterialTheme.typography.labelMediumEmphasized else MaterialTheme.typography.labelMedium,
                 textAlign = textAlign,
+                lineHeight = lineHeight,
                 overflow = overflow,
                 maxLines = maxLines,
                 minLines = minLines
@@ -580,6 +609,7 @@ object Text {
             textAlign: TextAlign = TextAlign.Start,
             color: Color = Color.Unspecified,
             emphasized: Boolean = false,
+            lineHeight: TextUnit = TextUnit.Unspecified,
             overflow: TextOverflow = TextOverflow.Clip,
             maxLines: Int = Int.MAX_VALUE,
             minLines: Int = 1
@@ -594,6 +624,7 @@ object Text {
                 color = color,
                 style = if (emphasized) MaterialTheme.typography.labelSmallEmphasized else MaterialTheme.typography.labelSmall,
                 textAlign = textAlign,
+                lineHeight = lineHeight,
                 overflow = overflow,
                 maxLines = maxLines,
                 minLines = minLines

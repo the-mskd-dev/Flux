@@ -16,6 +16,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Switch
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -27,6 +28,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.R
@@ -130,6 +133,15 @@ fun SettingsContent(
                     onTap = { sendIntent(SettingsIntent.ShowForwardDialog) }
                 )
 
+                SettingsDivider()
+
+                SettingsSwitch(
+                    text = stringResource(R.string.external_player),
+                    subText = stringResource(R.string.watch_on_external_player),
+                    checked = state.useExternalPlayer,
+                    onCheckedChange = { sendIntent(SettingsIntent.OnExternalPlayerCheck(it)) }
+                )
+
             }
 
             SettingsSection {
@@ -140,9 +152,7 @@ fun SettingsContent(
                     onTap = { sendIntent(SettingsIntent.OnTokenTap) }
                 )
 
-            }
-
-            SettingsSection {
+                SettingsDivider()
 
                 SettingsItem(
                     text = stringResource(R.string.how_to_name_files),
@@ -150,7 +160,9 @@ fun SettingsContent(
                     onTap = { sendIntent(SettingsIntent.OnHowToTap) }
                 )
 
-                SettingsDivider()
+            }
+
+            SettingsSection {
 
                 SettingsItem(
                     text = stringResource(R.string.about),
@@ -188,6 +200,8 @@ fun SettingsContent(
 
                 appVersion?.let {
 
+                    SettingsDivider()
+
                     SettingsItem(
                         text = stringResource(R.string.app_version),
                         value = it,
@@ -219,8 +233,7 @@ fun SettingsSection(content: @Composable () -> Unit) {
                 .fillMaxWidth()
                 .padding(horizontal = Ui.Space.MEDIUM)
                 .clip(Ui.Shape.Corner.Small)
-                .background(MaterialTheme.colorScheme.surfaceContainer)
-                .padding(horizontal = Ui.Space.MEDIUM),
+                .background(MaterialTheme.colorScheme.surfaceContainer),
             horizontalAlignment = Alignment.Start
         ) { content() }
 }
@@ -236,7 +249,8 @@ fun SettingsItem(
         modifier = Modifier
             .clickable { onTap() }
             .fillMaxWidth()
-            .padding(vertical = Ui.Space.MEDIUM),
+            .padding(all = Ui.Space.MEDIUM),
+        verticalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)
     ) {
 
         Text.Title.Medium(
@@ -246,6 +260,52 @@ fun SettingsItem(
         Text.Title.Small(
             text = value.uppercaseFirstLetter(),
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = .8f),
+        )
+
+    }
+
+}
+
+@Composable
+fun SettingsSwitch(
+    text: String,
+    subText: String,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit
+) {
+
+    Row(
+        modifier = Modifier
+            .clickable { onCheckedChange(!checked) }
+            .fillMaxWidth()
+            .padding(all = Ui.Space.MEDIUM),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .padding(end = Ui.Space.MEDIUM),
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)
+        ) {
+
+            Text.Title.Medium(
+                text = text,
+            )
+
+            Text.Title.Small(
+                text = subText,
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = .8f),
+                lineHeight = 18.sp
+            )
+
+        }
+
+        Switch(
+            checked = checked,
+            onCheckedChange = onCheckedChange,
         )
 
     }

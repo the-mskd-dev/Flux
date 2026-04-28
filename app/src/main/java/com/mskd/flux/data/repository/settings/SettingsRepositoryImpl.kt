@@ -2,6 +2,7 @@ package com.mskd.flux.data.repository.settings
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.intPreferencesKey
@@ -24,6 +25,8 @@ class SettingsRepositoryImpl @Inject constructor(
         val UI_THEME = stringPreferencesKey("ui_theme")
         val SUBTITLES_LANGUAGE = stringPreferencesKey("subtitles_language")
         val AUDIO_LANGUAGE = stringPreferencesKey("audio_language")
+
+        val EXTERNAL_PLAYER = booleanPreferencesKey("external_player")
     }
 
     override val flow: Flow<SettingsRepository.State> = settingsDataStore.data
@@ -35,13 +38,15 @@ class SettingsRepositoryImpl @Inject constructor(
             val uiTheme = preferences[Keys.UI_THEME]?.let { Ui.THEME.valueOf(it) } ?: Ui.THEME.SYSTEM
             val subtitlesLanguage = preferences[Keys.SUBTITLES_LANGUAGE]?.let { Locale.forLanguageTag(it) } ?: Locale.getDefault()
             val audioLanguage = preferences[Keys.AUDIO_LANGUAGE]?.let { Locale.forLanguageTag(it) } ?: Locale.getDefault()
+            val externalPlayer = preferences[Keys.EXTERNAL_PLAYER] ?: false
 
             SettingsRepository.State(
                 playerRewindValue = playerRewindValue,
                 playerForwardValue = playerForwardValue,
                 uiTheme = uiTheme,
                 subtitlesLanguage = subtitlesLanguage,
-                audioLanguage = audioLanguage
+                audioLanguage = audioLanguage,
+                externalPlayer = externalPlayer
             )
         }
 
@@ -73,6 +78,12 @@ class SettingsRepositoryImpl @Inject constructor(
     override suspend fun setAudioLanguage(locale: Locale) {
         settingsDataStore.edit { preferences ->
             preferences[Keys.AUDIO_LANGUAGE] = locale.language
+        }
+    }
+
+    override suspend fun setExternalPlayer(useExternalPlayer: Boolean) {
+        settingsDataStore.edit { preferences ->
+            preferences[Keys.EXTERNAL_PLAYER] = useExternalPlayer
         }
     }
 

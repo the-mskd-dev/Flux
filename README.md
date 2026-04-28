@@ -1,8 +1,6 @@
 [![F-Droid Version](https://img.shields.io/f-droid/v/com.mskd.flux)](https://f-droid.org/ko/packages/com.mskd.flux/)
 
-![X (formerly Twitter) Follow](https://img.shields.io/twitter/follow/themskddev)
-
-[![X (formerly Twitter) URL](https://img.shields.io/twitter/url)](https://x.com/themskddev)
+![X (formerly Twitter) Follow](https://img.shields.io/twitter/follow/themskddev?style=for-the-badge)
 
 [![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-ffdd00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://www.buymeacoffee.com/the.masked.dev)
 

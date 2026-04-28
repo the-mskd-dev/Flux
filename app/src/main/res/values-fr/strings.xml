@@ -98,4 +98,5 @@
     <string name="external_player">Lecteur externe</string>
     <string name="watch_on_external_player">Regarder le contenu sur une application externe. Cette option désactive le suivi de progression</string>
     <string name="how_to_advice">Note : Il est conseillé de placer vos fichiers dans les dossiers Movies ou Downloads pour un fonctionnement optimal.</string>
+    <string name="stay_informed">Restez informés sur l\'évolution de l\'application!</string>
 </resources>

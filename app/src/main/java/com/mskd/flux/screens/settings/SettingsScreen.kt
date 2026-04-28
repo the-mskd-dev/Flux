@@ -188,6 +188,19 @@ fun SettingsContent(
             SettingsSection {
 
                 SettingsItem(
+                    text = stringResource(R.string.x),
+                    value = stringResource(R.string.stay_informed),
+                    onTap = {
+                        WebLink.openPage(
+                            context = context,
+                            url = Constants.CONTACT.X
+                        )
+                    }
+                )
+
+                SettingsDivider()
+
+                SettingsItem(
                     text = stringResource(R.string.sources),
                     value = "",
                     onTap = {

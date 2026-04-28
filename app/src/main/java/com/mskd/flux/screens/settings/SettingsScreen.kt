@@ -166,7 +166,7 @@ fun SettingsContent(
 
                 SettingsItem(
                     text = stringResource(R.string.about),
-                    value = "",
+                    value = stringResource(R.string.about_desc),
                     onTap = { sendIntent(SettingsIntent.OnAboutTap) }
                 )
 
@@ -174,7 +174,7 @@ fun SettingsContent(
 
                 SettingsItem(
                     text = stringResource(R.string.make_a_donation),
-                    value = "",
+                    value = stringResource(R.string.support_me_desc),
                     onTap = {
                         WebLink.openPage(
                             context = context,

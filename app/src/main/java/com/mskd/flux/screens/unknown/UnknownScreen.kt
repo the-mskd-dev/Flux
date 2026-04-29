@@ -247,7 +247,7 @@ fun UnknownItem(
                     color = MaterialTheme.colorScheme.secondary
                 )
 
-                if (media.status == Status.IS_WATCHING) {
+                if (media.status == Status.IS_WATCHING && !hideProgress) {
                     val remainingTime = (media.duration.minToMs - media.currentTime).timeDescription(withoutSeconds = true)
                     Text.Label.Small(
                         text = "(" + stringResource(R.string.remaining_time, remainingTime) + ")",

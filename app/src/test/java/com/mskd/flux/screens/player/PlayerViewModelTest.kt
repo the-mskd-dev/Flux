@@ -34,7 +34,7 @@ class PlayerViewModelTest : FunSpec({
     lateinit var userRepository: UserRepository
     lateinit var settingsRepository: SettingsRepository
     lateinit var playerManager: PlayerManager
-    lateinit var mockPlayer: Player
+    lateinit var mockkedPlayer: Player
 
     beforeTest {
 
@@ -48,13 +48,12 @@ class PlayerViewModelTest : FunSpec({
             every { flow } returns MutableStateFlow(SettingsRepository.State())
         }
 
-        mockPlayer = mockk(relaxed = true) {
+        mockkedPlayer = mockk(relaxed = true) {
             every { duration } returns 10000L
         }
 
         playerManager = mockk(relaxed = true) {
-            every { state } returns MutableStateFlow(PlayerManager.State())
-            every { player } returns MutableStateFlow(mockPlayer)
+            every { state } returns MutableStateFlow(PlayerManager.State.Ready(player = mockkedPlayer))
         }
 
         viewModel = PlayerViewModel(
@@ -178,11 +177,11 @@ class PlayerViewModelTest : FunSpec({
             artworkRepository.setContentType(if (testCase.media is Movie) ContentType.MOVIE else ContentType.SHOW)
 
             playerManager = mockk(relaxed = true) {
-                every { state } returns MutableStateFlow(PlayerManager.State(
+                every { state } returns MutableStateFlow(PlayerManager.State.Ready(
+                    player = mockkedPlayer,
                     progress = testCase.time,
                     duration = testCase.media.duration.minToMs
                 ))
-                every { player } returns MutableStateFlow(mockPlayer)
             }
 
             viewModel = PlayerViewModel(

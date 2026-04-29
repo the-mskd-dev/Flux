@@ -1,5 +1,7 @@
 package com.mskd.flux.screens.unknown
 
+import android.content.ActivityNotFoundException
+import android.util.Log
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -28,6 +30,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -40,6 +43,8 @@ import com.mskd.flux.model.ScreenState
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Status
 import com.mskd.flux.navigation.Route
+import com.mskd.flux.navigation.Route.*
+import com.mskd.flux.screens.artwork.ArtworkIntent
 import com.mskd.flux.ui.component.ErrorScreen
 import com.mskd.flux.ui.component.FluxScaffold
 import com.mskd.flux.ui.component.LoadingScreen
@@ -47,6 +52,7 @@ import com.mskd.flux.ui.component.MediaThumbnail
 import com.mskd.flux.ui.component.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.utils.ExternalPlayer
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.extensions.minToMs
 import com.mskd.flux.utils.extensions.timeDescription
@@ -59,6 +65,7 @@ fun UnknownScreen(
     viewModel: UnknownViewModel = hiltViewModel()
 ) {
 
+    val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
@@ -66,7 +73,18 @@ fun UnknownScreen(
             when (event) {
                 UnknownEvent.BackToPreviousScreen -> onBack()
                 UnknownEvent.NavigateToHowToScreen -> navigate(Route.HowTo)
-                is UnknownEvent.PlayMedia -> navigate(Route.Player(mediaId = event.mediaId))
+                is UnknownEvent.PlayMedia -> navigate(Player(mediaId = event.mediaId))
+                is UnknownEvent.LaunchExternalPlayer -> {
+
+                    try {
+                        val intent = ExternalPlayer.createIntent(media = event.media)
+                        context.startActivity(intent)
+                    } catch (e: ActivityNotFoundException) {
+                        Log.e("UnknownScreen", "No player founded", e)
+                        viewModel.handleIntent(UnknownIntent.PlayMedia(media = event.media, forceInternal = true))
+                    }
+
+                }
             }
         }
     }
@@ -84,7 +102,7 @@ fun UnknownScreen(
             ScreenState.CONTENT -> {
                 UnknownScreenContent(
                     medias = uiState.medias,
-                    hideProgress = uiState.hideProgress,
+                    hideProgress = uiState.useExternalPlayer,
                     sendIntent = viewModel::handleIntent
                 )
             }

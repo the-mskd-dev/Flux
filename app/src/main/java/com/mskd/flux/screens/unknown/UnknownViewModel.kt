@@ -7,6 +7,8 @@ import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.model.ScreenState
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.Episode
+import com.mskd.flux.model.artwork.Media
+import com.mskd.flux.screens.artwork.ArtworkEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -14,7 +16,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -39,7 +40,7 @@ class UnknownViewModel @Inject constructor(
             medias = artworks.episodes.sortedWith(
                 compareBy<Episode> { it.title }.thenBy { it.season }.thenBy { it.number }
             ),
-            hideProgress = settings.externalPlayer
+            useExternalPlayer = settings.externalPlayer
         )
     }
     .stateIn(
@@ -62,10 +63,24 @@ class UnknownViewModel @Inject constructor(
 
     fun handleIntent(intent: UnknownIntent) = viewModelScope.launch {
         when (intent) {
-            is UnknownIntent.PlayMedia -> _event.emit(UnknownEvent.PlayMedia(mediaId = intent.media.mediaId))
+            is UnknownIntent.PlayMedia -> playMedia(media = intent.media, forceInternal = intent.forceInternal)
             UnknownIntent.OnBackTap -> _event.emit(UnknownEvent.BackToPreviousScreen)
             UnknownIntent.OnInfoTap -> _event.emit(UnknownEvent.NavigateToHowToScreen)
         }
+    }
+
+    //endregion
+
+    //region Private Methods
+
+    private suspend fun playMedia(media: Media, forceInternal: Boolean) {
+
+        val event = if (uiState.value.useExternalPlayer && !forceInternal)
+            UnknownEvent.LaunchExternalPlayer(media = media)
+        else
+            UnknownEvent.PlayMedia(mediaId = media.mediaId)
+
+        _event.emit(event)
     }
 
     //endregion

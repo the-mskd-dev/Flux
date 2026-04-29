@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -220,11 +221,9 @@ fun HomeContent(
         }
     ) { paddingValues ->
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
+        Column(modifier = Modifier.fillMaxSize()) {
+
+            Spacer(modifier = Modifier.height(paddingValues.calculateTopPadding()))
 
             HomeTopButtons(sendIntent = sendIntent)
 
@@ -283,11 +282,12 @@ fun HomeContent(
                     }
 
                     item {
+
                         Spacer(
-                            Modifier
-                                .navigationBarsPadding()
-                                .size(Ui.Space.LARGE)
+                            modifier = Modifier
+                                .height(paddingValues.calculateBottomPadding() + Ui.Space.LARGE)
                         )
+
                     }
 
                 }

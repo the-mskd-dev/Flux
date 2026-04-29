@@ -15,11 +15,13 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -220,11 +222,9 @@ fun HomeContent(
         }
     ) { paddingValues ->
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
+        Column(modifier = Modifier.fillMaxSize()) {
+
+            Spacer(modifier = Modifier.height(paddingValues.calculateTopPadding()))
 
             HomeTopButtons(sendIntent = sendIntent)
 
@@ -283,11 +283,12 @@ fun HomeContent(
                     }
 
                     item {
+
                         Spacer(
-                            Modifier
-                                .navigationBarsPadding()
-                                .size(Ui.Space.LARGE)
+                            modifier = Modifier
+                                .height(paddingValues.calculateBottomPadding() + Ui.Space.LARGE)
                         )
+
                     }
 
                 }
@@ -380,7 +381,6 @@ fun LastWatchedCarousel(
 
     val ratio = 1920f/1080f
 
-    val carouselState = rememberCarouselState { artworks.size }
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -388,31 +388,53 @@ fun LastWatchedCarousel(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        HorizontalCenteredHeroCarousel(
-            modifier = Modifier.fillMaxWidth(),
-            maxItemWidth = 350.dp,
-            state = carouselState,
-            contentPadding = PaddingValues(horizontal = Ui.Space.MEDIUM)
-        ) { i ->
+        if (artworks.size == 1) {
 
-            val overview = artworks[i]
+            val overview = artworks.first()
             val url = overview.bannerPath.tmdbImageLarge
 
             Image(
                 modifier = Modifier
-                    .maskClip(MaterialTheme.shapes.extraLarge)
+                    .clip(MaterialTheme.shapes.extraLarge)
                     .clickable { sendIntent(HomeIntent.OnArtworkTap(artworkId = overview.id)) }
+                    .widthIn(max = 350.dp)
+                    .fillMaxSize()
                     .aspectRatio(ratio),
                 url = url,
                 contentDescription = overview.title
             )
 
-        }
+        } else {
 
-        CarouselIndicator(
-            itemCount = artworks.size,
-            currentPage = carouselState.currentItem
-        )
+            val carouselState = rememberCarouselState { artworks.size }
+
+            HorizontalCenteredHeroCarousel(
+                modifier = Modifier.fillMaxWidth(),
+                maxItemWidth = 350.dp,
+                state = carouselState,
+                contentPadding = PaddingValues(horizontal = Ui.Space.MEDIUM)
+            ) { i ->
+
+                val overview = artworks[i]
+                val url = overview.bannerPath.tmdbImageLarge
+
+                Image(
+                    modifier = Modifier
+                        .maskClip(MaterialTheme.shapes.extraLarge)
+                        .clickable { sendIntent(HomeIntent.OnArtworkTap(artworkId = overview.id)) }
+                        .aspectRatio(ratio),
+                    url = url,
+                    contentDescription = overview.title
+                )
+
+            }
+
+            CarouselIndicator(
+                itemCount = artworks.size,
+                currentPage = carouselState.currentItem
+            )
+
+        }
 
     }
 

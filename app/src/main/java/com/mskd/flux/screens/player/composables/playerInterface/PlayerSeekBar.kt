@@ -24,32 +24,28 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import androidx.media3.common.Player
 import com.mskd.flux.screens.player.PlayerIntent
+import com.mskd.flux.screens.player.PlayerUiState
 import com.mskd.flux.ui.component.Text
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.extensions.formatMinSec
-import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun PlayerSeekBar(
     modifier: Modifier,
-    player: Player,
-    showInterface: Boolean,
-    isPlaying: Boolean,
+    controls: PlayerUiState.Controls,
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
-    var sliderPosition by rememberSaveable { mutableFloatStateOf(player.currentPosition.toFloat()) }
     val interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
     val isDragged by interactionSource.collectIsDraggedAsState()
-    val duration = player.contentDuration
+    val duration = controls.duration.coerceAtLeast(0L)
+    var sliderPosition by rememberSaveable { mutableFloatStateOf(controls.progress.toFloat()) }
 
-    LaunchedEffect(showInterface, isDragged) {
-        while (showInterface && !isDragged) {
-            sliderPosition = player.currentPosition.coerceAtLeast(0L).toFloat()
-            delay(200)
+    LaunchedEffect(controls.progress) {
+        if (!isDragged) {
+            sliderPosition = controls.progress.toFloat()
         }
     }
 
@@ -76,7 +72,7 @@ fun PlayerSeekBar(
             valueRange = 0f..duration.toFloat(),
             onValueChangeFinished = { sendIntent(PlayerIntent.UpdateProgress(sliderPosition.toLong())) },
             interactionSource = interactionSource,
-            isPlaying = isPlaying,
+            isPlaying = controls.isPlaying,
             duration = duration
         )
 

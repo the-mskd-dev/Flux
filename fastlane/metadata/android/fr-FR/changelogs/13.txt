@@ -1,0 +1,3 @@
+- Fonctionnalité: Ajout du support des lecteurs externes. Cependant, le suivi de progression n'est pas disponible lorsque cette option est activée
+- Fix : Meilleur gestion du cache des images
+- UI : Quelques petits ajouts

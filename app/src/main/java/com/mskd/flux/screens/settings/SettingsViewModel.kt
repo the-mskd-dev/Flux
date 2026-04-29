@@ -32,6 +32,7 @@ class SettingsViewModel @Inject constructor(
         SettingsUiState(
             rewindValue = settings.playerRewindValue,
             forwardValue = settings.playerForwardValue,
+            useExternalPlayer = settings.externalPlayer,
             uiTheme = settings.uiTheme,
             dialogState = dialog
         )
@@ -61,6 +62,7 @@ class SettingsViewModel @Inject constructor(
             SettingsIntent.OnTokenTap -> _event.emit(SettingsEvent.NavigateToTokenScreen)
             SettingsIntent.OnAboutTap -> _event.emit(SettingsEvent.NavigateToAboutScreen)
             SettingsIntent.OnHowToTap -> _event.emit(SettingsEvent.NavigateToHowToScreen)
+            is SettingsIntent.OnExternalPlayerCheck -> useExternalPlayer(value = intent.checked)
         }
     }
 
@@ -98,6 +100,10 @@ class SettingsViewModel @Inject constructor(
     private suspend fun setTheme(theme: Ui.THEME) {
         settingsRepository.setUiTheme(theme)
         hideDialog()
+    }
+
+    private suspend fun useExternalPlayer(value: Boolean) {
+        settingsRepository.setExternalPlayer(value)
     }
 
 }

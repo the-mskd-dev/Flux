@@ -14,8 +14,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Switch
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -25,8 +27,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.R
@@ -106,11 +113,17 @@ fun SettingsContent(
 
             Spacer(modifier = Modifier.height(innerPadding.calculateTopPadding()))
 
-            SettingsSection {
+            SettingsSection(
+                iconColor = MaterialTheme.colorScheme.onTertiaryContainer,
+                backgroundColor = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 1f)
+            ) { iconColor, bgColor ->
 
                 SettingsItem(
                     text = stringResource(R.string.app_theme),
                     value = stringResource(state.uiTheme.stringResourceId),
+                    painter = painterResource(R.drawable.ic_theme),
+                    iconColor = iconColor,
+                    backgroundColor = bgColor,
                     onTap = { sendIntent(SettingsIntent.ShowThemeDialog) }
                 )
 
@@ -119,6 +132,9 @@ fun SettingsContent(
                 SettingsItem(
                     text = stringResource(R.string.button_rewind),
                     value = "${state.rewindValue}sec",
+                    painter = painterResource(R.drawable.fast_rewind),
+                    iconColor = iconColor,
+                    backgroundColor = bgColor,
                     onTap = { sendIntent(SettingsIntent.ShowRewindDialog) }
                 )
 
@@ -127,34 +143,64 @@ fun SettingsContent(
                 SettingsItem(
                     text = stringResource(R.string.button_forward),
                     value = "${state.forwardValue}sec",
+                    painter = painterResource(R.drawable.fast_forward),
+                    iconColor = iconColor,
+                    backgroundColor = bgColor,
                     onTap = { sendIntent(SettingsIntent.ShowForwardDialog) }
+                )
+
+                SettingsDivider()
+
+                SettingsSwitch(
+                    text = stringResource(R.string.external_player),
+                    subText = stringResource(R.string.watch_on_external_player),
+                    checked = state.useExternalPlayer,
+                    painter = painterResource(R.drawable.ic_player),
+                    iconColor = iconColor,
+                    backgroundColor = bgColor,
+                    onCheckedChange = { sendIntent(SettingsIntent.OnExternalPlayerCheck(it)) }
                 )
 
             }
 
-            SettingsSection {
+            SettingsSection(
+                iconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                backgroundColor = MaterialTheme.colorScheme.primaryContainer
+            ) { iconColor, bgColor ->
 
                 SettingsItem(
                     text = stringResource(R.string.tmdb_api_token),
                     value = "",
+                    painter = painterResource(R.drawable.ic_api),
+                    iconColor = iconColor,
+                    backgroundColor = bgColor,
                     onTap = { sendIntent(SettingsIntent.OnTokenTap) }
-                )
-
-            }
-
-            SettingsSection {
-
-                SettingsItem(
-                    text = stringResource(R.string.how_to_name_files),
-                    value = "",
-                    onTap = { sendIntent(SettingsIntent.OnHowToTap) }
                 )
 
                 SettingsDivider()
 
                 SettingsItem(
-                    text = stringResource(R.string.about),
+                    text = stringResource(R.string.how_to_name_files),
                     value = "",
+                    painter = painterResource(R.drawable.ic_help),
+                    iconColor = iconColor,
+                    backgroundColor = bgColor,
+                    onTap = { sendIntent(SettingsIntent.OnHowToTap) }
+                )
+
+            }
+
+            SettingsSection(
+                iconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                backgroundColor = MaterialTheme.colorScheme.surfaceVariant
+            ) { iconColor, bgColor ->
+
+                SettingsItem(
+                    text = stringResource(R.string.about),
+                    value = stringResource(R.string.about_desc),
+                    painter = painterResource(R.drawable.ic_info),
+                    iconColor = iconColor,
+                    backgroundColor = bgColor,
                     onTap = { sendIntent(SettingsIntent.OnAboutTap) }
                 )
 
@@ -162,7 +208,10 @@ fun SettingsContent(
 
                 SettingsItem(
                     text = stringResource(R.string.make_a_donation),
-                    value = "",
+                    value = stringResource(R.string.support_me_desc),
+                    painter = painterResource(R.drawable.ic_money),
+                    iconColor = iconColor,
+                    backgroundColor = bgColor,
                     onTap = {
                         WebLink.openPage(
                             context = context,
@@ -173,11 +222,33 @@ fun SettingsContent(
 
             }
 
-            SettingsSection {
+            SettingsSection(
+                iconColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                backgroundColor = MaterialTheme.colorScheme.secondaryContainer
+            ) { iconColor, bgColor ->
+
+                SettingsItem(
+                    text = stringResource(R.string.x),
+                    value = stringResource(R.string.stay_informed),
+                    painter = painterResource(R.drawable.ic_social_media),
+                    iconColor = iconColor,
+                    backgroundColor = bgColor,
+                    onTap = {
+                        WebLink.openPage(
+                            context = context,
+                            url = Constants.CONTACT.X
+                        )
+                    }
+                )
+
+                SettingsDivider()
 
                 SettingsItem(
                     text = stringResource(R.string.sources),
                     value = "",
+                    painter = painterResource(R.drawable.ic_sources),
+                    iconColor = iconColor,
+                    backgroundColor = bgColor,
                     onTap = {
                         WebLink.openPage(
                             context = context,
@@ -188,9 +259,14 @@ fun SettingsContent(
 
                 appVersion?.let {
 
+                    SettingsDivider()
+
                     SettingsItem(
                         text = stringResource(R.string.app_version),
                         value = it,
+                        painter = painterResource(R.drawable.ic_version),
+                        iconColor = iconColor,
+                        backgroundColor = bgColor,
                         onTap = {
                             WebLink.openPage(
                                 context = context,
@@ -212,43 +288,141 @@ fun SettingsContent(
 }
 
 @Composable
-fun SettingsSection(content: @Composable () -> Unit) {
+fun SettingsSection(
+    iconColor: Color,
+    backgroundColor: Color,
+    content: @Composable (Color, Color) -> Unit
+) {
 
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = Ui.Space.MEDIUM)
                 .clip(Ui.Shape.Corner.Small)
-                .background(MaterialTheme.colorScheme.surfaceContainer)
-                .padding(horizontal = Ui.Space.MEDIUM),
+                .background(MaterialTheme.colorScheme.surfaceContainer),
             horizontalAlignment = Alignment.Start
-        ) { content() }
+        ) { content(iconColor, backgroundColor) }
 }
 
 @Composable
 fun SettingsItem(
     text: String,
     value: String,
+    painter: Painter,
+    backgroundColor: Color,
+    iconColor: Color,
     onTap: () -> Unit
 ) {
 
-    Column(
+    Row(
         modifier = Modifier
             .clickable { onTap() }
             .fillMaxWidth()
-            .padding(vertical = Ui.Space.MEDIUM),
+            .padding(all = Ui.Space.MEDIUM),
+        horizontalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM),
+        verticalAlignment = Alignment.CenterVertically
     ) {
 
-        Text.Title.Medium(
-            text = text,
+        SettingIcon(
+            painter = painter,
+            backgroundColor = backgroundColor,
+            iconColor = iconColor,
+            contentDescription = text
         )
 
-        Text.Title.Small(
-            text = value.uppercaseFirstLetter(),
-            color = MaterialTheme.colorScheme.onBackground.copy(alpha = .8f),
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)
+        ) {
+
+            Text.Title.Medium(
+                text = text,
+            )
+
+            Text.Title.Small(
+                text = value.uppercaseFirstLetter(),
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = .8f),
+            )
+
+        }
+
+    }
+
+}
+
+@Composable
+fun SettingsSwitch(
+    text: String,
+    subText: String,
+    checked: Boolean,
+    painter: Painter,
+    backgroundColor: Color,
+    iconColor: Color,
+    onCheckedChange: (Boolean) -> Unit
+) {
+
+    Row(
+        modifier = Modifier
+            .clickable { onCheckedChange(!checked) }
+            .fillMaxWidth()
+            .padding(all = Ui.Space.MEDIUM),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM),
+    ) {
+
+        SettingIcon(
+            painter = painter,
+            backgroundColor = backgroundColor,
+            iconColor = iconColor,
+            contentDescription = text
+        )
+
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .padding(end = Ui.Space.MEDIUM),
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)
+        ) {
+
+            Text.Title.Medium(
+                text = text,
+            )
+
+            Text.Title.Small(
+                text = subText,
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = .8f),
+                lineHeight = 18.sp
+            )
+
+        }
+
+        Switch(
+            checked = checked,
+            onCheckedChange = onCheckedChange,
         )
 
     }
+
+}
+
+@Composable
+fun SettingIcon(
+    painter: Painter,
+    backgroundColor: Color,
+    iconColor: Color,
+    contentDescription: String
+) {
+
+    Icon(
+        modifier = Modifier
+            .clip(Ui.Shape.Corner.Full)
+            .background(backgroundColor)
+            .padding(all = Ui.Space.SMALL),
+        painter = painter,
+        tint = iconColor,
+        contentDescription = contentDescription
+    )
 
 }
 

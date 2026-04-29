@@ -41,6 +41,7 @@ fun ArtworkContentLarge(
     media: Media,
     episodes: List<Episode>,
     currentSeason: Int,
+    hideProgress: Boolean,
     sendIntent: (ArtworkIntent) -> Unit,
 ) {
 
@@ -68,6 +69,7 @@ fun ArtworkContentLarge(
 
                 ArtworkButtons(
                     media = media,
+                    hideProgress = hideProgress,
                     sendIntent = sendIntent
                 )
 
@@ -121,6 +123,7 @@ fun ArtworkContentLarge(
                     EpisodeItem(
                         modifier = Modifier.animateItem(),
                         episode = episode,
+                        hideProgress = hideProgress,
                         sendIntent = sendIntent
                     )
 
@@ -148,6 +151,7 @@ fun ArtworkContentLargeMovie_Preview() {
             media = MediaMockups.movie,
             episodes = emptyList(),
             currentSeason = -1,
+            hideProgress = false,
             sendIntent = {}
         )
     }
@@ -162,6 +166,7 @@ fun ArtworkContentLargeShow_Preview() {
             media = MediaMockups.episode1,
             episodes = MediaMockups.episodesWithStatus,
             currentSeason = 1,
+            hideProgress = false,
             sendIntent = {}
         )
     }

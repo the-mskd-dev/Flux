@@ -42,8 +42,6 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.Player
 import androidx.media3.common.VideoSize
-import androidx.media3.common.text.Cue
-import androidx.media3.common.util.Log
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.ui.compose.ContentFrame
 import com.mskd.flux.R
@@ -55,7 +53,6 @@ import com.mskd.flux.screens.player.composables.playerInterface.PlayerSubtitles
 import com.mskd.flux.screens.player.composables.settings.PlayerSettings
 import com.mskd.flux.screens.player.controllers.PlayerSideEffects
 import com.mskd.flux.screens.player.controllers.rememberPlayerScaleEffects
-import com.mskd.flux.screens.player.controllers.rememberPlayerStateHolder
 import com.mskd.flux.screens.player.controllers.rememberWindowStateHolder
 import com.mskd.flux.ui.component.ErrorScreen
 import com.mskd.flux.ui.component.LoadingScreen
@@ -78,24 +75,15 @@ fun PlayerScreen(
 ) {
 
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-    val playerStateHolder = rememberPlayerStateHolder()
     val windowStateHolder = rememberWindowStateHolder()
-    val subtitles by playerStateHolder.subtitles.collectAsStateWithLifecycle()
     var interfaceVisibilityCountdown by remember { mutableIntStateOf(3) }
 
     PlayerSideEffects(
         viewModel = viewModel,
-        stateHolder = playerStateHolder,
         windowStateHolder = windowStateHolder,
         showInterface = state.controls.showInterface,
         onBack = onBack
     )
-
-    LaunchedEffect(state.screen) {
-        (state.screen as? PlayerScreen.Content)?.let {
-            playerStateHolder.playMedia(it.media)
-        }
-    }
 
     // Automatically hide interface after 5 seconds
     LaunchedEffect(state.controls) {
@@ -109,23 +97,25 @@ fun PlayerScreen(
     }
 
     BackHandler(enabled = true) {
-        viewModel.handleIntent(PlayerIntent.OnBackTap(time = playerStateHolder.player.currentPosition))
+        viewModel.handleIntent(PlayerIntent.OnBackTap)
     }
 
-    Crossfade(targetState = state.screen, label = "PlayerScreenState") { screen ->
+    Crossfade(
+        targetState = state.screen,
+        label = "PlayerScreenState"
+    ) { screen ->
         when (screen) {
             PlayerScreen.Loading -> LoadingScreen()
             PlayerScreen.Error -> {
                 ErrorScreen(
                     message = stringResource(R.string.oups_an_error_occured),
-                    onBackButtonTap = { viewModel.handleIntent(PlayerIntent.OnBackTap()) }
+                    onBackButtonTap = { viewModel.handleIntent(PlayerIntent.OnBackTap) }
                 )
             }
             is PlayerScreen.Content -> {
                 PlayerContent(
                     media = screen.media,
-                    player = playerStateHolder.player,
-                    subtitles =  { subtitles },
+                    player = screen.player,
                     rewindAndForward = { state.playerRewind to state.playerForward },
                     controlsState = { state.controls },
                     tracksState = { state.tracks },
@@ -148,7 +138,6 @@ fun PlayerScreen(
 fun PlayerContent(
     media: Media,
     player: Player,
-    subtitles: () -> List<Cue>,
     rewindAndForward: () -> Pair<Int, Int>,
     controlsState: () -> PlayerUiState.Controls,
     tracksState: () -> PlayerUiState.Tracks,
@@ -233,7 +222,7 @@ fun PlayerContent(
                         change.consume()
                     },
 
-                )
+                    )
             },
         constraintSet = playerConstraintSet(videoSize = currentVideoSize)
     ) {
@@ -253,7 +242,7 @@ fun PlayerContent(
             modifier = Modifier
                 .layoutId("subtitles")
                 .padding(bottom = Ui.Space.LARGE),
-            subtitles = subtitles,
+            subtitles = { tracksState().subtitles },
             smallText = isPortrait
         )
 
@@ -297,10 +286,6 @@ fun playerConstraintSet(videoSize: VideoSize) = remember( videoSize) {
         } else {
             "16:9"
         }
-
-        Log.d("TEST", "videoSize.width ${videoSize.width}")
-        Log.d("TEST", "videoSize.height ${videoSize.height}")
-        Log.d("TEST", "ratio $playerRatio")
 
         val (player, subtitles, playerInterface, leftSeekOverlay, rightSeekOverlay, ambientOverlay) = createRefsFor(
             "player",

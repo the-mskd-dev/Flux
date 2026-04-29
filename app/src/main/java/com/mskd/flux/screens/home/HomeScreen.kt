@@ -1,6 +1,7 @@
 package com.mskd.flux.screens.home
 
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -23,6 +24,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Search
@@ -59,6 +61,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
@@ -331,9 +334,9 @@ fun HomeTopButtons(sendIntent: (HomeIntent) -> Unit) {
 
     Row(
         modifier = Modifier
-            .padding(vertical = Ui.Space.SMALL)
+            .padding(vertical = Ui.Space.SMALL, horizontal = Ui.Space.SMALL)
             .fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL, Alignment.End),
+        horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
 
@@ -344,6 +347,14 @@ fun HomeTopButtons(sendIntent: (HomeIntent) -> Unit) {
                 contentDescription = "Search button"
             )
         }
+
+        Icon(
+            modifier = Modifier.size(32.dp),
+            painter = painterResource(R.drawable.ic_flux),
+            tint = MaterialTheme.colorScheme.primary,
+            contentDescription = "Flux icon"
+        )
+
 
         IconButton(onClick = { sendIntent(HomeIntent.OnSettingsTap) }) {
             Icon(
@@ -371,25 +382,66 @@ fun LastWatchedCarousel(
 
     val carouselState = rememberCarouselState { artworks.size }
 
-    HorizontalCenteredHeroCarousel(
+    Column(
         modifier = Modifier.fillMaxWidth(),
-        maxItemWidth = 350.dp,
-        state = carouselState,
-        contentPadding = PaddingValues(horizontal = Ui.Space.MEDIUM)
-    ) { i ->
+        verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
 
-        val overview = artworks[i]
-        val url = overview.bannerPath.tmdbImageLarge
+        HorizontalCenteredHeroCarousel(
+            modifier = Modifier.fillMaxWidth(),
+            maxItemWidth = 350.dp,
+            state = carouselState,
+            contentPadding = PaddingValues(horizontal = Ui.Space.MEDIUM)
+        ) { i ->
 
-        Image(
-            modifier = Modifier
-                .maskClip(MaterialTheme.shapes.extraLarge)
-                .clickable { sendIntent(HomeIntent.OnArtworkTap(artworkId = overview.id)) }
-                .aspectRatio(ratio),
-            url = url,
-            contentDescription = overview.title
+            val overview = artworks[i]
+            val url = overview.bannerPath.tmdbImageLarge
+
+            Image(
+                modifier = Modifier
+                    .maskClip(MaterialTheme.shapes.extraLarge)
+                    .clickable { sendIntent(HomeIntent.OnArtworkTap(artworkId = overview.id)) }
+                    .aspectRatio(ratio),
+                url = url,
+                contentDescription = overview.title
+            )
+
+        }
+
+        CarouselIndicator(
+            itemCount = artworks.size,
+            currentPage = carouselState.currentItem
         )
 
+    }
+
+}
+
+@Composable
+fun CarouselIndicator(
+    itemCount: Int,
+    currentPage: Int,
+) {
+
+    val selectedColor = MaterialTheme.colorScheme.primary
+    val unselectedColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = .5f)
+
+    Row(
+        horizontalArrangement = Arrangement.Center,
+    ) {
+        repeat(itemCount) { index ->
+
+            val color by animateColorAsState(if (currentPage == index) selectedColor else unselectedColor)
+
+            Box(
+                modifier = Modifier
+                    .padding(4.dp)
+                    .size(8.dp)
+                    .clip(CircleShape)
+                    .background(color)
+            )
+        }
     }
 
 }

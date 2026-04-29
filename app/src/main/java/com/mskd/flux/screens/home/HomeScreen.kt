@@ -59,6 +59,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
@@ -331,9 +332,9 @@ fun HomeTopButtons(sendIntent: (HomeIntent) -> Unit) {
 
     Row(
         modifier = Modifier
-            .padding(vertical = Ui.Space.SMALL)
+            .padding(vertical = Ui.Space.SMALL, horizontal = Ui.Space.MEDIUM)
             .fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL, Alignment.End),
+        horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
 
@@ -344,6 +345,14 @@ fun HomeTopButtons(sendIntent: (HomeIntent) -> Unit) {
                 contentDescription = "Search button"
             )
         }
+
+        Icon(
+            modifier = Modifier.size(32.dp),
+            painter = painterResource(R.drawable.ic_flux),
+            tint = MaterialTheme.colorScheme.onBackground,
+            contentDescription = "Flux icon"
+        )
+
 
         IconButton(onClick = { sendIntent(HomeIntent.OnSettingsTap) }) {
             Icon(

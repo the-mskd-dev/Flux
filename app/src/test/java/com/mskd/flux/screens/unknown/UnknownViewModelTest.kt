@@ -71,12 +71,18 @@ class UnknownViewModelTest : FunSpec ({
             settingsRepository = settingsRepository
         )
 
-        viewModel.event.test {
+        viewModel.uiState.test {
 
-            viewModel.handleIntent(UnknownIntent.PlayMedia(media = MediaMockups.unknownEpisode))
-            val event = awaitItem()
+            awaitItem()
 
-            event shouldBe UnknownEvent.LaunchExternalPlayer(MediaMockups.unknownEpisode)
+            viewModel.event.test {
+
+                viewModel.handleIntent(UnknownIntent.PlayMedia(media = MediaMockups.unknownEpisode))
+                val event = awaitItem()
+
+                event shouldBe UnknownEvent.LaunchExternalPlayer(MediaMockups.unknownEpisode)
+
+            }
 
         }
     }

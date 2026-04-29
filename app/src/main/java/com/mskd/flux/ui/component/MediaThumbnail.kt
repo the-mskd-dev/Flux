@@ -48,6 +48,7 @@ fun MediaThumbnail(
                     .fillMaxSize()
                     .let { if (media.status == Status.WATCHED) it.grayScale() else it },
                 media = media,
+                hideProgress = hideProgress,
                 contentDescription = contentDescription
             )
 

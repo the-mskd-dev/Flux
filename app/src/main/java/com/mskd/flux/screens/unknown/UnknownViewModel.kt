@@ -29,7 +29,7 @@ class UnknownViewModel @Inject constructor(
     //region Flow
 
     private val _event = MutableSharedFlow<UnknownEvent>()
-    val event = _event.asSharedFlow().distinctUntilChanged()
+    val event = _event.asSharedFlow()
 
     val uiState: StateFlow<UnknownUiState> = combine(
         repository.flow,

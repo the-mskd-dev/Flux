@@ -41,6 +41,7 @@ fun Image(
     modifier: Modifier,
     media: Media,
     contentScale: ContentScale = ContentScale.Crop,
+    hideProgress: Boolean = false,
     contentDescription: String
 ) {
 
@@ -53,7 +54,7 @@ fun Image(
                     data(media.imagePath.tmdbImage)
                 } else {
                     data(media.file.path)
-                    if (media.status == Status.IS_WATCHING)
+                    if (media.status == Status.IS_WATCHING && !hideProgress)
                         videoFrameMillis(media.currentTime)
                     else
                         videoFramePercent(.05)

@@ -1,5 +1,6 @@
 package com.mskd.flux.screens.artwork
 
+import android.net.Uri
 import androidx.compose.runtime.Immutable
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.ScreenState
@@ -15,6 +16,7 @@ data class ArtworkUiState(
     val episodes: List<Episode> = emptyList(),
     val season: Int = -1,
     val episodePendingConfirmation: Episode? = null,
+    val useExternalPlayer: Boolean = false
 )
 
 sealed class ArtworkIntent {
@@ -23,7 +25,7 @@ sealed class ArtworkIntent {
     object MarkPreviousEpisodesAsWatched: ArtworkIntent()
     object CloseEpisodesStatusDialog: ArtworkIntent()
     data class SelectSeason(val season: Int): ArtworkIntent()
-    data class PlayMedia(val media: Media): ArtworkIntent()
+    data class PlayMedia(val media: Media, val forceInternal: Boolean = false): ArtworkIntent()
     data class OpenArtworkInfo(val artwork: Artwork): ArtworkIntent()
     data class OpenEpisodeInfo(val episode: Episode): ArtworkIntent()
 }
@@ -31,6 +33,7 @@ sealed class ArtworkIntent {
 sealed class ArtworkEvent {
     object BackToPreviousScreen : ArtworkEvent()
     data class PlayMedia(val mediaId: Long) : ArtworkEvent()
+    data class LaunchExternalPlayer(val media: Media) : ArtworkEvent()
     data class OpenArtworkInfo(val artwork: Artwork) : ArtworkEvent()
     data class OpenEpisodeInfo(val episode: Episode): ArtworkEvent()
 }

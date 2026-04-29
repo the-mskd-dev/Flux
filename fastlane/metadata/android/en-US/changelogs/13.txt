@@ -1,5 +1,3 @@
-## Version 1.3.0
-
 - Feature: Added support for external players. However, progress tracking is not available with this feature.
 - Fix : More persistent image caching
 - UI : Some little things

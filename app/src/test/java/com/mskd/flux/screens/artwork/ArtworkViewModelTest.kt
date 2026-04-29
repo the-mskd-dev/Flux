@@ -3,6 +3,7 @@ package com.mskd.flux.screens.artwork
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.data.repository.artwork.ArtworkRepository
+import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.mockups.FakeArtworkRepository
 import com.mskd.flux.mockups.MediaMockups
@@ -26,6 +27,7 @@ class ArtworkViewModelTest : FunSpec({
     lateinit var viewModel: ArtworkViewModel
     lateinit var artworkRepository: FakeArtworkRepository
     lateinit var userRepository: UserRepository
+    lateinit var settingsRepository: SettingsRepository
 
     beforeTest {
 
@@ -35,10 +37,15 @@ class ArtworkViewModelTest : FunSpec({
             every { flow } returns MutableStateFlow(UserRepository.State())
         }
 
+        settingsRepository = mockk(relaxed = true) {
+            every { flow } returns MutableStateFlow(SettingsRepository.State())
+        }
+
         viewModel = ArtworkViewModel(
             artworkId = MediaMockups.showArtwork.id,
             repository = artworkRepository,
-            userRepository = userRepository
+            userRepository = userRepository,
+            settingsRepository = settingsRepository
         )
 
     }
@@ -76,7 +83,7 @@ class ArtworkViewModelTest : FunSpec({
 
     }
 
-    test("show player"){
+    test("show player") {
 
         viewModel.uiState.test {
 
@@ -91,6 +98,39 @@ class ArtworkViewModelTest : FunSpec({
 
                 event.shouldBeInstanceOf<ArtworkEvent.PlayMedia>()
                 event.mediaId shouldBe media.mediaId
+
+            }
+
+        }
+
+    }
+
+    test("show external player") {
+
+        settingsRepository = mockk(relaxed = true) {
+            every { flow } returns MutableStateFlow(SettingsRepository.State(externalPlayer = true))
+        }
+
+        viewModel = ArtworkViewModel(
+            artworkId = MediaMockups.movieArtwork.id,
+            repository = artworkRepository,
+            userRepository = userRepository,
+            settingsRepository = settingsRepository
+        )
+
+        viewModel.uiState.test {
+
+            val initialState = expectMostRecentItem()
+            val media = initialState.media
+
+            viewModel.event.test {
+
+                viewModel.handleIntent(ArtworkIntent.PlayMedia(media = media))
+
+                val event = awaitItem()
+
+                event.shouldBeInstanceOf<ArtworkEvent.LaunchExternalPlayer>()
+                event.media shouldBe media
 
             }
 
@@ -227,7 +267,8 @@ class ArtworkViewModelTest : FunSpec({
         viewModel = ArtworkViewModel(
             artworkId = MediaMockups.movieArtwork.id,
             repository = artworkRepository,
-            userRepository = userRepository
+            userRepository = userRepository,
+            settingsRepository = settingsRepository
         )
 
         viewModel.uiState.test {

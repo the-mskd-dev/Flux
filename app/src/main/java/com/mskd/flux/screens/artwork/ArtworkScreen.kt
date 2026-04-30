@@ -20,13 +20,11 @@ import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Route.Player
 import com.mskd.flux.screens.artwork.composables.ArtworkContentLarge
 import com.mskd.flux.screens.artwork.composables.ArtworkContentRegular
-import com.mskd.flux.screens.player.PlayerIntent
 import com.mskd.flux.ui.component.ErrorScreen
 import com.mskd.flux.ui.component.FluxDialog
-import com.mskd.flux.ui.component.LifecycleComponent
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.component.Text
-import com.mskd.flux.utils.ExternalPlayer
+import com.mskd.flux.utils.ExternalPlayerUtils
 import com.mskd.flux.utils.WebLink
 
 @Composable
@@ -54,7 +52,7 @@ fun ArtworkScreen(
                 is ArtworkEvent.LaunchExternalPlayer -> {
 
                     try {
-                        val intent = ExternalPlayer.createIntent(media = event.media, context = context)
+                        val intent = ExternalPlayerUtils.createIntent(media = event.media, context = context)
                         context.startActivity(intent)
                     } catch (e: ActivityNotFoundException) {
                         Log.e("ArtworkScreen", "No player founded", e)

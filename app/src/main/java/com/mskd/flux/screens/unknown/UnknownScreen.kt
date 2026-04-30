@@ -50,7 +50,7 @@ import com.mskd.flux.ui.component.MediaThumbnail
 import com.mskd.flux.ui.component.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
-import com.mskd.flux.utils.ExternalPlayer
+import com.mskd.flux.utils.ExternalPlayerUtils
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.extensions.minToMs
 import com.mskd.flux.utils.extensions.timeDescription
@@ -75,7 +75,7 @@ fun UnknownScreen(
                 is UnknownEvent.LaunchExternalPlayer -> {
 
                     try {
-                        val intent = ExternalPlayer.createIntent(media = event.media, context = context)
+                        val intent = ExternalPlayerUtils.createIntent(media = event.media, context = context)
                         context.startActivity(intent)
                     } catch (e: ActivityNotFoundException) {
                         Log.e("UnknownScreen", "No player founded", e)

@@ -163,6 +163,9 @@ dependencies {
     implementation(libs.bundles.room)
     ksp(libs.androidx.room.compiler)
 
+    // ACRA
+    implementation(libs.bundles.acra)
+
     // Unit Testing
     testImplementation(libs.junit)
     testImplementation(libs.kotest)

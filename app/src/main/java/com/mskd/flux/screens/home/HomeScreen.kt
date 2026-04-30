@@ -103,7 +103,10 @@ fun HomeScreen(
         viewModel.event.collect { event ->
             when (event) {
                 is HomeEvent.NavigateToCategory -> navigate(Route.Search(contentType = event.category))
-                is HomeEvent.NavigateToArtwork -> navigate(Route.Artwork(event.artworkId))
+                is HomeEvent.NavigateToArtwork -> {
+                    throw Exception("TEST Crash")
+                    navigate(Route.Artwork(event.artworkId))
+                }
                 HomeEvent.NavigateToUnknown -> navigate(Route.UnknownArtworks)
                 HomeEvent.NavigateToHowTo -> navigate(Route.HowTo)
                 HomeEvent.NavigateToSearch -> navigate(Route.Search())

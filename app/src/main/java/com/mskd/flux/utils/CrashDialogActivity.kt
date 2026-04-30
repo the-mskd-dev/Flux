@@ -1,5 +1,6 @@
 package com.mskd.flux.utils
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
@@ -46,17 +47,24 @@ class CrashDialogActivity : FragmentActivity() {
                 CrashDialogContent(
                     onSend = { comment ->
                         helper.sendCrash(comment, null)
-                        finish()
+                        restartApp()
                     },
                     onDismiss = {
                         helper.cancelReports()
-                        finish()
+                        restartApp()
                     }
                 )
             }
         }
     }
 
+    private fun restartApp() {
+        packageManager.getLaunchIntentForPackage(packageName)?.let { intent ->
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            startActivity(intent)
+        }
+        finish()
+    }
 
 }
 

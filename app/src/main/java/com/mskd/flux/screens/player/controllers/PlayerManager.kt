@@ -218,7 +218,7 @@ class PlayerManager(private val context: Context) : Player.Listener {
 
             val mediaItem = MediaItem.Builder()
                 .setMediaMetadata(mediaMetadata)
-                .setUri(media.file.path.toUri())
+                .setUri(media.file.resolvedUri(context = context))
                 .build()
 
             player.stop()

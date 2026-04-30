@@ -78,7 +78,7 @@ fun UnknownScreen(
                 is UnknownEvent.LaunchExternalPlayer -> {
 
                     try {
-                        val intent = ExternalPlayer.createIntent(media = event.media)
+                        val intent = ExternalPlayer.createIntent(media = event.media, context = context)
                         context.startActivity(intent)
                     } catch (e: ActivityNotFoundException) {
                         Log.e("UnknownScreen", "No player founded", e)

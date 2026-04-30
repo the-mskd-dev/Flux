@@ -5,11 +5,8 @@ import android.content.Context
 import coil3.ImageLoader
 import coil3.SingletonImageLoader
 import com.mskd.flux.utils.Constants
-import com.mskd.flux.utils.CrashDialog
+import com.mskd.flux.utils.CrashDialogActivity
 import dagger.hilt.android.HiltAndroidApp
-import org.acra.ACRA
-import org.acra.ReportField
-import org.acra.config.CoreConfigurationBuilder
 import org.acra.config.dialog
 import org.acra.config.mailSender
 import org.acra.data.StringFormat
@@ -35,7 +32,7 @@ class FluxApp : Application(), SingletonImageLoader.Factory {
             }
 
             dialog {
-                reportDialogClass = CrashDialog::class.java
+                reportDialogClass = CrashDialogActivity::class.java
             }
 
         }

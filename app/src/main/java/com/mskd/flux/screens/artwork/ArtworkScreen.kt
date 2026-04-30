@@ -54,7 +54,7 @@ fun ArtworkScreen(
                 is ArtworkEvent.LaunchExternalPlayer -> {
 
                     try {
-                        val intent = ExternalPlayer.createIntent(media = event.media)
+                        val intent = ExternalPlayer.createIntent(media = event.media, context = context)
                         context.startActivity(intent)
                     } catch (e: ActivityNotFoundException) {
                         Log.e("ArtworkScreen", "No player founded", e)

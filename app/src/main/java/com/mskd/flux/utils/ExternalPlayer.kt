@@ -1,14 +1,15 @@
 package com.mskd.flux.utils
 
+import android.content.Context
 import android.content.Intent
 import androidx.core.net.toUri
 import com.mskd.flux.model.artwork.Media
 
 object ExternalPlayer {
 
-    fun createIntent(media: Media) : Intent {
+    fun createIntent(media: Media, context: Context) : Intent {
         return Intent(Intent.ACTION_VIEW).apply {
-            setDataAndType(media.file.path.toUri(), "video/*")
+            setDataAndType(media.file.resolvedUri(context), "video/*")
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
 
             /*progressFlags.forEach { flag ->

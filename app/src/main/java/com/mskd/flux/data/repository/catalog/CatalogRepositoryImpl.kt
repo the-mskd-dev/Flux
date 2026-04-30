@@ -36,6 +36,7 @@ class CatalogRepositoryImpl @Inject constructor(
 
             try {
 
+                deleteMissingMedias()
                 medias = mediaSourceLocal.getMedias().artworks
 
             } catch (e: Exception) {
@@ -115,6 +116,13 @@ class CatalogRepositoryImpl @Inject constructor(
         }
 
         return localFiles
+
+    }
+
+    private suspend fun deleteMissingMedias() {
+
+        val allFiles = getFiles()
+        db.deleteMediasWithNoFiles(allFiles)
 
     }
 

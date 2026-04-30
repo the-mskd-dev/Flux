@@ -104,6 +104,7 @@ class ArtworkViewModel @AssistedInject constructor(
             ArtworkIntent.MarkPreviousEpisodesAsWatched -> markPreviousEpisodesAsWatched()
             is ArtworkIntent.OpenArtworkInfo -> _event.emit(ArtworkEvent.OpenArtworkInfo(artwork = intent.artwork))
             is ArtworkIntent.OpenEpisodeInfo -> _event.emit(ArtworkEvent.OpenEpisodeInfo(episode = intent.episode))
+            is ArtworkIntent.OnExternalPlayerResult -> onExternalPlayerResult(intent.progress)
         }
     }
 
@@ -248,6 +249,10 @@ class ArtworkViewModel @AssistedInject constructor(
         repository.saveEpisodes(episodesToSave) // Save status in DB
 
         Log.i("MediaViewModel", "${episodesToSave.size} episodes marked as watched")
+    }
+
+    private suspend fun onExternalPlayerResult(position: Long?) {
+        Log.d("TEST", "onExternalPlayerResult : $position")
     }
 
     //endregion

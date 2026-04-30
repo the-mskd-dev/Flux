@@ -12,6 +12,7 @@ import android.content.IntentFilter
 import android.os.Build
 import android.service.notification.NotificationListenerService
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import com.mskd.flux.R
 
 class ExternalPlayerService : Service() {
@@ -43,7 +44,12 @@ class ExternalPlayerService : Service() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             registerReceiver(stopReceiver, IntentFilter(ACTION_STOP), RECEIVER_NOT_EXPORTED)
         } else {
-            registerReceiver(stopReceiver, IntentFilter(ACTION_STOP))
+            ContextCompat.registerReceiver(
+                this,
+                stopReceiver,
+                IntentFilter(ACTION_STOP),
+                ContextCompat.RECEIVER_NOT_EXPORTED
+            )
         }
         startForeground(NOTIFICATION_ID, createNotification())
     }

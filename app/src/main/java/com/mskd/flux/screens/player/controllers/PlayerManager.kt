@@ -23,6 +23,7 @@ import com.mskd.flux.R
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.screens.player.PlayerTrack
+import com.mskd.flux.services.PlayerService
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.extensions.tmdbImage
 import com.mskd.flux.utils.extensions.uppercaseFirstLetter

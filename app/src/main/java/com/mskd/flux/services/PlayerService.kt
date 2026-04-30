@@ -1,4 +1,4 @@
-package com.mskd.flux.screens.player.controllers
+package com.mskd.flux.services
 
 import android.app.PendingIntent
 import androidx.media3.common.Player
@@ -10,7 +10,8 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class PlayerService : MediaSessionService() {
 
-    @Inject lateinit var player: Player
+    @Inject
+    lateinit var player: Player
 
     private var mediaSession: MediaSession? = null
 

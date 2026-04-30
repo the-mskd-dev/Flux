@@ -43,7 +43,7 @@
             android:theme="@style/Theme.Flux" />
 
         <service
-            android:name=".screens.player.controllers.PlayerService"
+            android:name=".services.PlayerService"
             android:foregroundServiceType="mediaPlayback"
             android:exported="true">
             <intent-filter>

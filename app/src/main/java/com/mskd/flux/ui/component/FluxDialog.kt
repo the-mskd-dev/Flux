@@ -14,7 +14,9 @@ import com.mskd.flux.R
 @Composable
 fun FluxDialog(
     onDismiss: () -> Unit,
+    onDismissLabel: String = stringResource(R.string.cancel),
     onValidate: (() -> Unit)? = null,
+    onValidateLabel: String = stringResource(R.string.validate),
     title: String? = null,
     content: @Composable () -> Unit
 ) {
@@ -25,7 +27,7 @@ fun FluxDialog(
             TextButton(
                 onClick = { onValidate?.invoke() },
                 content = {
-                    Text.Label.Large(text = stringResource(R.string.validate))
+                    Text.Label.Large(text = onValidateLabel)
                 }
             )
         },
@@ -33,7 +35,7 @@ fun FluxDialog(
             TextButton(
                 onClick = onDismiss,
                 content = {
-                    Text.Label.Large(text = stringResource(R.string.cancel))
+                    Text.Label.Large(text = onDismissLabel)
                 }
             )
         },

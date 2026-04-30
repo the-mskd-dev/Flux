@@ -101,4 +101,9 @@
     <string name="stay_informed">Restez informés sur l\'évolution de l\'application!</string>
     <string name="about_desc">À propos de cette application, à propos de moi, à propos de n\'importe quoi</string>
     <string name="support_me_desc">Merci pour votre soutien !</string>
+    <string name="acra_dialog_title">L\'application a planté…</string>
+    <string name="acra_dialog_message">Une erreur inattendue s\'est produite. Vous pouvez envoyer un rapport pour aider à corriger ce problème.</string>
+    <string name="acra_dialog_comment">Décrivez ce que vous faisiez au moment du crash (optionnel)</string>
+    <string name="acra_dialog_send">Envoyer</string>
+    <string name="acra_dialog_dismiss">Non merci</string>
 </resources>

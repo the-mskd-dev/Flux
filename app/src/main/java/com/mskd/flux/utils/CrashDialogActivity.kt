@@ -19,8 +19,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
+import com.mskd.flux.R
 import com.mskd.flux.ui.component.FluxDialog
 import com.mskd.flux.ui.component.Text
 import com.mskd.flux.ui.theme.AppTheme
@@ -36,7 +38,7 @@ class CrashDialogActivity : FragmentActivity() {
 
         try {
             helper = CrashReportDialogHelper(this, intent)
-        } catch (e: IllegalArgumentException) {
+        } catch (_: IllegalArgumentException) {
             finish()
             return
         }
@@ -77,24 +79,26 @@ fun CrashDialogContent(
         FluxDialog(
             onDismiss = onDismiss,
             onValidate = { onSend(comment) },
-            title = "Crash report"
+            title = stringResource(R.string.acra_dialog_title),
+            onDismissLabel = stringResource(R.string.acra_dialog_dismiss),
+            onValidateLabel = stringResource(R.string.acra_dialog_send)
         ) {
 
             Column(
                 modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)
+                verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
             ) {
 
-                Text.Body.Large("TEST")
+                Text.Body.Large(stringResource(R.string.acra_dialog_message))
 
                 OutlinedTextField(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(100.dp),
+                        .height(150.dp),
                     value = comment,
                     onValueChange = { comment = it },
                     placeholder = {
-                        Text.Body.Large("Écrivez votre commentaire")
+                        Text.Body.Large(stringResource(R.string.acra_dialog_comment))
                     },
                     textStyle = MaterialTheme.typography.bodyLarge
                 )

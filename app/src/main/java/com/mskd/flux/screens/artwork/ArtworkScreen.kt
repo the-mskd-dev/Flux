@@ -20,8 +20,10 @@ import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Route.Player
 import com.mskd.flux.screens.artwork.composables.ArtworkContentLarge
 import com.mskd.flux.screens.artwork.composables.ArtworkContentRegular
+import com.mskd.flux.screens.player.PlayerIntent
 import com.mskd.flux.ui.component.ErrorScreen
 import com.mskd.flux.ui.component.FluxDialog
+import com.mskd.flux.ui.component.LifecycleComponent
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.component.Text
 import com.mskd.flux.utils.ExternalPlayer
@@ -41,6 +43,10 @@ fun ArtworkScreen(
     val windowSizeClass = currentWindowAdaptiveInfoV2().windowSizeClass
     val isLargeScreen = windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND)
     val context = LocalContext.current
+
+    LifecycleComponent(
+        onForeground = { viewModel.handleIntent(ArtworkIntent.GoToForeground) }
+    )
 
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->

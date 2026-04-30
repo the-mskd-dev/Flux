@@ -6,6 +6,7 @@ import com.mskd.flux.model.ScreenState
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
+import com.mskd.flux.screens.player.PlayerIntent
 
 @Immutable
 data class ArtworkUiState(
@@ -27,6 +28,8 @@ sealed class ArtworkIntent {
     data class PlayMedia(val media: Media, val forceInternal: Boolean = false): ArtworkIntent()
     data class OpenArtworkInfo(val artwork: Artwork): ArtworkIntent()
     data class OpenEpisodeInfo(val episode: Episode): ArtworkIntent()
+
+    data object GoToForeground : ArtworkIntent()
 }
 
 sealed class ArtworkEvent {

@@ -37,7 +37,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.util.Locale
-import java.util.UUID
 import kotlin.math.roundToInt
 
 class PlayerManager(private val context: Context) : Player.Listener {

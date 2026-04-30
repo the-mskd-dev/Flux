@@ -5,6 +5,7 @@ import android.content.Context
 import coil3.ImageLoader
 import coil3.SingletonImageLoader
 import com.mskd.flux.utils.Constants
+import com.mskd.flux.utils.CrashDialog
 import dagger.hilt.android.HiltAndroidApp
 import org.acra.ACRA
 import org.acra.ReportField
@@ -34,11 +35,7 @@ class FluxApp : Application(), SingletonImageLoader.Factory {
             }
 
             dialog {
-                title = "Crash report"
-                text = "Il y a eu un crash"
-                commentPrompt = "Un commentaire"
-                positiveButtonText = "Envoyer"
-                negativeButtonText = "Annuler"
+                reportDialogClass = CrashDialog::class.java
             }
 
         }

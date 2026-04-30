@@ -110,8 +110,8 @@
     <string name="about_desc">About this app, about me, about whatever</string>
     <string name="support_me_desc">Thank you for your support!</string>
     <string name="acra_dialog_title">The app crashed…</string>
-    <string name="acra_dialog_message">An unexpected error occurred. You can send a report to help fix this issue.</string>
-    <string name="acra_dialog_comment">Describe what you were doing when the crash occurred (optional)</string>
+    <string name="acra_dialog_message">The app has stopped unexpectedly. To help me fix this bug, you can send a technical crash report via email.</string>
+    <string name="acra_dialog_comment">Describe what you were doing (optional)</string>
     <string name="acra_dialog_send">Send</string>
     <string name="acra_dialog_dismiss">No thanks</string>
 </resources>

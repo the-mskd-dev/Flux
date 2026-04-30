@@ -9,7 +9,6 @@ import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.SeekParameters
 import com.mskd.flux.screens.player.controllers.PlayerManager
-import com.mskd.flux.services.ExternalPlayerManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -55,9 +54,4 @@ object PlayerManagerModule {
         return PlayerManager(context)
     }
 
-    @Provides
-    @Singleton
-    fun provideExternalPlayerManager(@ApplicationContext context: Context) : ExternalPlayerManager {
-        return ExternalPlayerManager(context)
-    }
 }

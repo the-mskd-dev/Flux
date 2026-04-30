@@ -12,7 +12,6 @@ import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Status
-import com.mskd.flux.services.ExternalPlayerManager
 import com.mskd.flux.utils.extensions.formatMinSec
 import com.mskd.flux.utils.extensions.getPreviousEpisodesFor
 import com.mskd.flux.utils.extensions.lastEpisode
@@ -36,8 +35,7 @@ class ArtworkViewModel @AssistedInject constructor(
     @Assisted val artworkId: Long,
     private val repository: ArtworkRepository,
     private val userRepository: UserRepository,
-    private val settingsRepository: SettingsRepository,
-    private val externalPlayerManager: ExternalPlayerManager
+    private val settingsRepository: SettingsRepository
 ) : ViewModel() {
 
     //region Hilt
@@ -86,12 +84,6 @@ class ArtworkViewModel @AssistedInject constructor(
 
     //endregion
 
-    //region Variables
-
-    private var externalPlayerMedia: Media? = null
-
-    //endregion
-
     //regin Init
 
     init {
@@ -112,7 +104,6 @@ class ArtworkViewModel @AssistedInject constructor(
             ArtworkIntent.MarkPreviousEpisodesAsWatched -> markPreviousEpisodesAsWatched()
             is ArtworkIntent.OpenArtworkInfo -> _event.emit(ArtworkEvent.OpenArtworkInfo(artwork = intent.artwork))
             is ArtworkIntent.OpenEpisodeInfo -> _event.emit(ArtworkEvent.OpenEpisodeInfo(episode = intent.episode))
-            ArtworkIntent.GoToForeground -> onForeground()
         }
     }
 
@@ -167,26 +158,10 @@ class ArtworkViewModel @AssistedInject constructor(
         _subState.update { it.copy(selectedMedia = media) }
 
         if (uiState.value.useExternalPlayer && !forceInternal)
-            launchExternalPlayer(media = media)
+            _event.emit(ArtworkEvent.LaunchExternalPlayer(media = media))
         else
             _event.emit(ArtworkEvent.PlayMedia(mediaId = media.mediaId))
 
-    }
-
-    private suspend fun launchExternalPlayer(media: Media) {
-
-        // Vérifie la permission
-        if (!externalPlayerManager.isPermissionGranted()) {
-            // Demande la permission via les paramètres système
-            Log.d("TEST", "il faut une permission")
-            return
-        }
-
-        Log.d("TEST", "Let's go")
-
-        externalPlayerMedia = media
-        externalPlayerManager.startWatching(startPosition = media.currentTime)
-        _event.emit(ArtworkEvent.LaunchExternalPlayer(media))
     }
 
     private fun showStatusDialog(episode: Episode) {
@@ -273,29 +248,6 @@ class ArtworkViewModel @AssistedInject constructor(
         repository.saveEpisodes(episodesToSave) // Save status in DB
 
         Log.i("MediaViewModel", "${episodesToSave.size} episodes marked as watched")
-    }
-
-    private suspend fun onForeground() {
-        val media = externalPlayerMedia ?: return
-
-        val position = externalPlayerManager.stopWatching() ?: run {
-            Log.d("TEST", "pas de position")
-            return
-        }
-
-        Log.d("TEST", "position : ${position.formatMinSec()} ($position)")
-        externalPlayerMedia = null
-
-        when (media) {
-            is Movie -> {
-                val updatedMedia = media.copy(currentTime = position)
-                repository.saveMovie(updatedMedia)
-            }
-            is Episode -> {
-                val updatedMedia = media.copy(currentTime = position)
-                repository.saveEpisode(updatedMedia)
-            }
-        }
     }
 
     //endregion

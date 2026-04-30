@@ -2,7 +2,6 @@ package com.mskd.flux.utils
 
 import android.content.Context
 import android.content.Intent
-import androidx.core.net.toUri
 import com.mskd.flux.model.artwork.Media
 
 object ExternalPlayer {

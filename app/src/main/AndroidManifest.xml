@@ -33,6 +33,15 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".utils.CrashDialogActivity"
+            android:exported="false"
+            android:process=":acra"
+            android:excludeFromRecents="true"
+            android:finishOnTaskLaunch="true"
+            android:launchMode="singleInstance"
+            android:theme="@style/Theme.Flux" />
+
         <service
             android:name=".screens.player.controllers.PlayerService"
             android:foregroundServiceType="mediaPlayback"

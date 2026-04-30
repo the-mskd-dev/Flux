@@ -8,6 +8,7 @@ import androidx.media3.common.C
 import androidx.media3.common.Format
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
+import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.TrackSelectionOverride
 import androidx.media3.common.TrackSelectionParameters
@@ -155,6 +156,11 @@ class PlayerManager(private val context: Context) : Player.Listener {
     override fun onCues(cueGroup: CueGroup) {
         val current = _state.value as? State.Ready ?: return
         _state.update { current.copy(subtitles = cueGroup.cues) }
+    }
+
+    override fun onPlayerError(error: PlaybackException) {
+        super.onPlayerError(error)
+        _state.update { State.Error }
     }
 
     //endregion

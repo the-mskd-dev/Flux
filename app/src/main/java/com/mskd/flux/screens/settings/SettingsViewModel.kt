@@ -103,6 +103,11 @@ class SettingsViewModel @Inject constructor(
     }
 
     private suspend fun useExternalPlayer(value: Boolean) {
+
+        if (value) {
+            _event.emit(SettingsEvent.RequestExternalPlayerPermission)
+        }
+
         settingsRepository.setExternalPlayer(value)
     }
 

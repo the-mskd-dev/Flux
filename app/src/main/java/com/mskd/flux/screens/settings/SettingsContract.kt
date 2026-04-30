@@ -79,4 +79,5 @@ sealed class SettingsEvent {
     object NavigateToTokenScreen: SettingsEvent()
     object NavigateToHowToScreen: SettingsEvent()
     object NavigateToAboutScreen: SettingsEvent()
+    object RequestExternalPlayerPermission: SettingsEvent()
 }

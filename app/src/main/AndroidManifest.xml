@@ -54,11 +54,7 @@
         <service
             android:name=".services.ExternalPlayerService"
             android:exported="true"
-            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
-            <intent-filter>
-                <action android:name="android.service.notification.NotificationListenerService" />
-            </intent-filter>
-        </service>
+            android:foregroundServiceType="mediaPlayback"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"

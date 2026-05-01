@@ -37,6 +37,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.R
 import com.mskd.flux.navigation.Route
+import com.mskd.flux.navigation.Route.*
 import com.mskd.flux.ui.component.FluxDialog
 import com.mskd.flux.ui.component.FluxScaffold
 import com.mskd.flux.ui.component.Text
@@ -65,9 +66,10 @@ fun SettingsScreen(
         viewModel.event.collect { event ->
             when (event) {
                 SettingsEvent.BackToPreviousScreen -> onBack()
-                SettingsEvent.NavigateToTokenScreen -> navigate(Route.Token(fromSettings = true))
+                SettingsEvent.NavigateToTokenScreen -> navigate(Token(fromSettings = true))
                 SettingsEvent.NavigateToAboutScreen -> navigate(Route.About)
                 SettingsEvent.NavigateToHowToScreen -> navigate(Route.HowTo)
+                SettingsEvent.RequestExternalPlayerPermission -> {}
             }
         }
     }

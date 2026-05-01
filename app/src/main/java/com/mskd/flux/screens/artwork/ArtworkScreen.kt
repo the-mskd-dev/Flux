@@ -2,6 +2,8 @@ package com.mskd.flux.screens.artwork
 
 import android.content.ActivityNotFoundException
 import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfoV2
@@ -20,6 +22,7 @@ import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Route.Player
 import com.mskd.flux.screens.artwork.composables.ArtworkContentLarge
 import com.mskd.flux.screens.artwork.composables.ArtworkContentRegular
+import com.mskd.flux.services.ExternalPlayerService
 import com.mskd.flux.ui.component.ErrorScreen
 import com.mskd.flux.ui.component.FluxDialog
 import com.mskd.flux.ui.component.LoadingScreen
@@ -42,6 +45,14 @@ fun ArtworkScreen(
     val isLargeScreen = windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND)
     val context = LocalContext.current
 
+    val externalPlayerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        ExternalPlayerService.stop(context)
+        val progress = ExternalPlayerUtils.parsePosition(result.data)
+        viewModel.handleIntent(ArtworkIntent.OnExternalPlayerResult(progress = progress))
+    }
+
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
             when (event) {
@@ -53,9 +64,16 @@ fun ArtworkScreen(
 
                     try {
                         val intent = ExternalPlayerUtils.createIntent(media = event.media, context = context)
-                        context.startActivity(intent)
-                    } catch (e: ActivityNotFoundException) {
-                        Log.e("ArtworkScreen", "No player founded", e)
+                        ExternalPlayerService.start(context)
+                        externalPlayerLauncher.launch(intent)
+
+                    } catch (e: Exception) {
+                        when (e) {
+                            is ActivityNotFoundException -> Log.e("ArtworkScreen", "No player found", e)
+                            is SecurityException -> Log.e("ArtworkScreen", "Permission denied", e)
+                            else -> Log.e("ArtworkScreen", "Fail to launch external player", e)
+                        }
+                        ExternalPlayerService.stop(context)
                         viewModel.handleIntent(ArtworkIntent.PlayMedia(media = event.media, forceInternal = true))
                     }
 

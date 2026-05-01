@@ -28,7 +28,7 @@ sealed class ArtworkIntent {
     data class PlayMedia(val media: Media, val forceInternal: Boolean = false): ArtworkIntent()
     data class OpenArtworkInfo(val artwork: Artwork): ArtworkIntent()
     data class OpenEpisodeInfo(val episode: Episode): ArtworkIntent()
-    data class OnExternalPlayerResult(val progress: Long) : ArtworkIntent()
+    data class OnExternalPlayerResult(val progress: Long?) : ArtworkIntent()
 }
 
 sealed class ArtworkEvent {

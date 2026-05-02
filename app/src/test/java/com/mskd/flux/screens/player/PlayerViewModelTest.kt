@@ -39,7 +39,7 @@ class PlayerViewModelTest : FunSpec({
     lateinit var playerManager: PlayerManager
     lateinit var mockkedPlayer: Player
 
-    val updateVm: () -> Unit = {
+    fun updateVm(mediaId: Long = MediaMockups.episode1.mediaId) {
 
         mediaProgressUC = MediaProgressUCImpl(
             artworkRepository = artworkRepository,
@@ -47,7 +47,7 @@ class PlayerViewModelTest : FunSpec({
         )
 
         viewModel = PlayerViewModel(
-            mediaId = MediaMockups.episode1.mediaId,
+            mediaId = mediaId,
             artworkRepository = artworkRepository,
             userRepository = userRepository,
             settingsRepository = settingsRepository,
@@ -199,7 +199,7 @@ class PlayerViewModelTest : FunSpec({
                 ))
             }
 
-            updateVm()
+            updateVm(mediaId = testCase.media.mediaId)
 
             viewModel.uiState.test {
 

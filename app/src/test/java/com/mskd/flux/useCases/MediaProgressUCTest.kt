@@ -12,7 +12,7 @@ import com.mskd.flux.model.artwork.Status
 import com.mskd.flux.screens.player.PlayerIntent
 import com.mskd.flux.useCases.mediaProgress.MediaProgressUC
 import com.mskd.flux.useCases.mediaProgress.MediaProgressUCImpl
-import com.mskd.flux.useCases.mediaProgress.MediaProgressUCTestCases
+import com.mskd.flux.useCases.MediaProgressUCTestCases
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.extensions.lastEpisode
 import com.mskd.flux.utils.extensions.minToMs

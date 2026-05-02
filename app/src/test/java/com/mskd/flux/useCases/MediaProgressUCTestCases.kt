@@ -1,4 +1,4 @@
-package com.mskd.flux.useCases.mediaProgress
+package com.mskd.flux.useCases
 
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.Media

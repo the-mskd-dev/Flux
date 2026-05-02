@@ -103,7 +103,6 @@ fun UnknownScreen(
             ScreenState.CONTENT -> {
                 UnknownScreenContent(
                     medias = uiState.medias,
-                    hideProgress = uiState.useExternalPlayer,
                     sendIntent = viewModel::handleIntent
                 )
             }
@@ -116,7 +115,6 @@ fun UnknownScreen(
 @Composable
 fun UnknownScreenContent(
     medias: List<Episode>,
-    hideProgress: Boolean,
     sendIntent: (UnknownIntent) -> Unit
 ) {
 
@@ -154,7 +152,6 @@ fun UnknownScreenContent(
 
                     UnknownItem(
                         media = media,
-                        hideProgress = hideProgress,
                         sendIntent = sendIntent
                     )
 
@@ -195,7 +192,6 @@ fun UnknownScreenContent(
 @Composable
 fun UnknownItem(
     media: Episode,
-    hideProgress: Boolean,
     sendIntent: (UnknownIntent) -> Unit
 ) {
 
@@ -209,7 +205,6 @@ fun UnknownItem(
 
         MediaThumbnail(
             modifier = Modifier.width(160.dp),
-            hideProgress = hideProgress,
             media = media,
         )
 
@@ -247,7 +242,7 @@ fun UnknownItem(
                     color = MaterialTheme.colorScheme.secondary
                 )
 
-                if (media.status == Status.IS_WATCHING && !hideProgress) {
+                if (media.status == Status.IS_WATCHING) {
                     val remainingTime = (media.duration.minToMs - media.currentTime).timeDescription(withoutSeconds = true)
                     Text.Label.Small(
                         text = "(" + stringResource(R.string.remaining_time, remainingTime) + ")",
@@ -269,7 +264,6 @@ fun UnknownScreen_Preview() {
     AppTheme {
         UnknownScreenContent(
             medias = MediaMockups.episodesWithStatus,
-            hideProgress = false,
             sendIntent = {}
         )
     }

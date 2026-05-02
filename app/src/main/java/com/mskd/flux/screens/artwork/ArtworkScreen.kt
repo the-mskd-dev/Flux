@@ -89,7 +89,6 @@ fun ArtworkScreen(
                         media = uiState.media,
                         episodes = uiState.episodes,
                         currentSeason = uiState.season,
-                        hideProgress = uiState.useExternalPlayer,
                         sendIntent = viewModel::handleIntent,
                     )
                 } else {
@@ -98,7 +97,6 @@ fun ArtworkScreen(
                         media = uiState.media,
                         episodes = uiState.episodes,
                         currentSeason = uiState.season,
-                        hideProgress = uiState.useExternalPlayer,
                         sendIntent = viewModel::handleIntent,
                     )
                 }

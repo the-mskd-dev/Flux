@@ -53,7 +53,7 @@
 
         <service
             android:name=".services.ExternalPlayerService"
-            android:exported="true"
+            android:exported="false"
             android:foregroundServiceType="mediaPlayback"/>
 
         <provider

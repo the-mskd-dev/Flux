@@ -27,7 +27,7 @@ import com.mskd.flux.ui.component.ErrorScreen
 import com.mskd.flux.ui.component.FluxDialog
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.component.Text
-import com.mskd.flux.utils.ExternalPlayerUtils
+import com.mskd.flux.utils.ExternalPlayer
 import com.mskd.flux.utils.WebLink
 
 @Composable
@@ -49,7 +49,7 @@ fun ArtworkScreen(
         contract = ActivityResultContracts.StartActivityForResult()
     ) { result ->
         ExternalPlayerService.stop(context)
-        val progress = ExternalPlayerUtils.parsePosition(result.data)
+        val progress = ExternalPlayer.parsePosition(result.data)
         viewModel.handleIntent(ArtworkIntent.OnExternalPlayerResult(progress = progress))
     }
 
@@ -63,7 +63,7 @@ fun ArtworkScreen(
                 is ArtworkEvent.LaunchExternalPlayer -> {
 
                     try {
-                        val intent = ExternalPlayerUtils.createIntent(media = event.media, context = context)
+                        val intent = ExternalPlayer.createIntent(media = event.media, context = context)
                         ExternalPlayerService.start(context)
                         externalPlayerLauncher.launch(intent)
 

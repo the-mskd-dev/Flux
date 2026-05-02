@@ -4,17 +4,19 @@ import android.content.Context
 import android.content.Intent
 import com.mskd.flux.model.artwork.Media
 
-object ExternalPlayerUtils {
+object ExternalPlayer {
 
     fun createIntent(media: Media, context: Context) : Intent {
+
         val uri = media.file.resolvedUri(context)
+
         return Intent(Intent.ACTION_VIEW).apply {
+
             setDataAndType(uri, "video/*")
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             putExtra("return_result", true)
-            progressFlags.forEach { flag ->
-                putExtra(flag, media.currentTime)
-            }
+            progressFlags.forEach { putExtra(it, media.currentTime) }
+
         }
     }
 

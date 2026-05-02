@@ -9,6 +9,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.ServiceInfo
 import android.os.Build
 import android.service.notification.NotificationListenerService
 import androidx.core.app.NotificationCompat
@@ -76,9 +77,9 @@ class ExternalPlayerService : Service() {
         return NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .setCategory(NotificationCompat.CATEGORY_SERVICE)
-            .setSmallIcon(R.drawable.ic_flux) // ton icône
-            .setContentTitle("ExternalPlayerService")
-            .setContentText("ExternalPlayerService description")
+            .setSmallIcon(R.mipmap.ic_launcher)
+            .setContentTitle(getString(R.string.app_name))
+            .setContentText(getString(R.string.external_player_service_text))
             .setWhen(0)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .addAction(0, "Stop", stopIntent)
@@ -88,7 +89,7 @@ class ExternalPlayerService : Service() {
     private fun createNotificationChannel(manager: NotificationManager) {
         val channel = NotificationChannel(
             NOTIFICATION_CHANNEL_ID,
-            "ExternalPlayerService",
+            NOTIFICATION_CHANNEL_ID,
             NotificationManager.IMPORTANCE_LOW
         ).apply {
             enableVibration(false)

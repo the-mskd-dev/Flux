@@ -114,4 +114,5 @@
     <string name="acra_dialog_comment">Describe what you were doing (optional)</string>
     <string name="acra_dialog_send">Send</string>
     <string name="acra_dialog_dismiss">No thanks</string>
+    <string name="external_player_service_text">Using an external player</string>
 </resources>

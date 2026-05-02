@@ -10,7 +10,7 @@ import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.screens.player.PlayerTrack.Type
 import com.mskd.flux.screens.player.controllers.PlayerManager
-import com.mskd.flux.useCases.MediaProgressUC
+import com.mskd.flux.useCases.mediaProgress.MediaProgressUC
 import com.mskd.flux.utils.extensions.getNextEpisodeFor
 import com.mskd.flux.utils.extensions.toPlayerTrack
 import dagger.assisted.Assisted

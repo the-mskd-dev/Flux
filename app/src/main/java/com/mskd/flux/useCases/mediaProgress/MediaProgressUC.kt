@@ -1,4 +1,4 @@
-package com.mskd.flux.useCases
+package com.mskd.flux.useCases.mediaProgress
 
 import android.util.Log
 import com.mskd.flux.data.repository.artwork.ArtworkRepository
@@ -15,8 +15,10 @@ import kotlinx.coroutines.flow.first
 import kotlin.time.Duration.Companion.minutes
 
 interface MediaProgressUC {
-    suspend fun changeMediaStatus(media: Media, status: Status)
+
     suspend fun saveProgress(media: Media, progress: Long)
+
+    suspend fun changeMediaStatus(media: Media, status: Status)
     suspend fun markPreviousEpisodesAsWatchedFor(episode: Episode)
 }
 

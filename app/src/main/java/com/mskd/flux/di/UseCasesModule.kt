@@ -2,8 +2,8 @@ package com.mskd.flux.di
 
 import com.mskd.flux.data.repository.artwork.ArtworkRepository
 import com.mskd.flux.data.repository.user.UserRepository
-import com.mskd.flux.useCases.MediaProgressUC
-import com.mskd.flux.useCases.MediaProgressUCImpl
+import com.mskd.flux.useCases.mediaProgress.MediaProgressUC
+import com.mskd.flux.useCases.mediaProgress.MediaProgressUCImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

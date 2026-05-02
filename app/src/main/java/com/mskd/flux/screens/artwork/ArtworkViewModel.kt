@@ -9,7 +9,7 @@ import com.mskd.flux.model.ScreenState
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.artwork.Status
-import com.mskd.flux.useCases.MediaProgressUC
+import com.mskd.flux.useCases.mediaProgress.MediaProgressUC
 import com.mskd.flux.utils.extensions.getPreviousEpisodesFor
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory

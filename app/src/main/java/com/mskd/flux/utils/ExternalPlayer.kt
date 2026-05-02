@@ -11,7 +11,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.services.ExternalPlayerService
-import com.mskd.flux.utils.ExternalPlayer.parsePosition
 
 @Composable
 fun rememberExternalPlayerLauncher(context: Context, onProgressResult: (Long) -> Unit) : ManagedActivityResultLauncher<Intent, ActivityResult> {

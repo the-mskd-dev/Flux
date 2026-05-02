@@ -6,7 +6,6 @@ import com.mskd.flux.model.ScreenState
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
-import com.mskd.flux.screens.player.PlayerIntent
 
 @Immutable
 data class ArtworkUiState(

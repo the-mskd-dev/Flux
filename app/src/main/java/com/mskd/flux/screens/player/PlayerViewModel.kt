@@ -8,15 +8,10 @@ import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
-import com.mskd.flux.model.artwork.Movie
-import com.mskd.flux.model.artwork.Status
 import com.mskd.flux.screens.player.PlayerTrack.Type
 import com.mskd.flux.screens.player.controllers.PlayerManager
 import com.mskd.flux.useCases.MediaProgressUC
-import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.extensions.getNextEpisodeFor
-import com.mskd.flux.utils.extensions.lastEpisode
-import com.mskd.flux.utils.extensions.timeDescription
 import com.mskd.flux.utils.extensions.toPlayerTrack
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -40,7 +35,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.Locale
 import java.util.UUID
-import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
 

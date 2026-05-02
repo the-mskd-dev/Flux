@@ -10,7 +10,6 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import com.mskd.flux.model.artwork.Media
-import com.mskd.flux.screens.artwork.ArtworkIntent
 import com.mskd.flux.services.ExternalPlayerService
 
 object ExternalPlayer {

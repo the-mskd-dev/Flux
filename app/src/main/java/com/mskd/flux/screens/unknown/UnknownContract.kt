@@ -3,7 +3,6 @@ package com.mskd.flux.screens.unknown
 import com.mskd.flux.model.ScreenState
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
-import com.mskd.flux.screens.artwork.ArtworkIntent
 
 data class UnknownUiState(
     val screen: ScreenState = ScreenState.LOADING,

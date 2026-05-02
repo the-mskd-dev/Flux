@@ -1,7 +1,5 @@
 package com.mskd.flux.screens.unknown
 
-import android.content.ActivityNotFoundException
-import android.util.Log
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -43,7 +41,6 @@ import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Status
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Route.Player
-import com.mskd.flux.screens.artwork.ArtworkIntent
 import com.mskd.flux.ui.component.ErrorScreen
 import com.mskd.flux.ui.component.FluxScaffold
 import com.mskd.flux.ui.component.LoadingScreen

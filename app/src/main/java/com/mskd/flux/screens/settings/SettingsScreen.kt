@@ -37,7 +37,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.R
 import com.mskd.flux.navigation.Route
-import com.mskd.flux.navigation.Route.*
+import com.mskd.flux.navigation.Route.Token
 import com.mskd.flux.ui.component.FluxDialog
 import com.mskd.flux.ui.component.FluxScaffold
 import com.mskd.flux.ui.component.Text

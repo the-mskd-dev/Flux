@@ -56,7 +56,9 @@ object ExternalPlayer {
             setDataAndType(uri, "video/*")
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             putExtra("return_result", true)
-            progressFlags.forEach { putExtra(it, media.currentTime) }
+
+            startingProgressFlags.forEach { putExtra(it, media.currentTime) }
+            titleFlags.forEach { putExtra(it, media.title) }
 
         }
     }
@@ -75,7 +77,14 @@ object ExternalPlayer {
         return null
     }
 
-    private val progressFlags = listOf(
+    private val titleFlags = listOf(
+        "title",
+        "android.intent.extra.TITLE",
+        "filename",
+        "media_title"
+    )
+
+    private val startingProgressFlags = listOf(
         "position",
         "extra_start_time",
         "start_from",

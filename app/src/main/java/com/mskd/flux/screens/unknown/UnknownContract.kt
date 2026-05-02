@@ -14,6 +14,7 @@ sealed class UnknownIntent {
     object OnBackTap: UnknownIntent()
     data class PlayMedia(val media: Media, val forceInternal: Boolean = false): UnknownIntent()
     object OnInfoTap: UnknownIntent()
+    data class OnExternalPlayerResult(val progress: Long) : UnknownIntent()
 }
 
 sealed class UnknownEvent {

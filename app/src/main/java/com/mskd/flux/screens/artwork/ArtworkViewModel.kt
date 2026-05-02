@@ -1,19 +1,16 @@
 package com.mskd.flux.screens.artwork
 
-import android.util.Log
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.data.repository.artwork.ArtworkRepository
 import com.mskd.flux.data.repository.settings.SettingsRepository
-import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.model.ScreenState
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
-import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Status
+import com.mskd.flux.useCases.mediaProgress.MediaProgressUC
 import com.mskd.flux.utils.extensions.getPreviousEpisodesFor
-import com.mskd.flux.utils.extensions.lastEpisode
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -24,7 +21,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -33,8 +29,8 @@ import kotlinx.coroutines.launch
 class ArtworkViewModel @AssistedInject constructor(
     @Assisted val artworkId: Long,
     private val repository: ArtworkRepository,
-    private val userRepository: UserRepository,
-    private val settingsRepository: SettingsRepository
+    private val settingsRepository: SettingsRepository,
+    private val mediaProgressUC: MediaProgressUC
 ) : ViewModel() {
 
     //region Hilt
@@ -46,7 +42,7 @@ class ArtworkViewModel @AssistedInject constructor(
 
     //endregion
 
-    //region sub states
+    //region Sub states
 
     @Immutable
     private data class UserState(
@@ -54,6 +50,12 @@ class ArtworkViewModel @AssistedInject constructor(
         val selectedSeason: Int? = null,
         val episodePendingConfirmation: Episode? = null,
     )
+
+    //endregion
+
+    //region Variables
+
+    private var selectedMedia: Media? = null
 
     //endregion
 
@@ -103,6 +105,7 @@ class ArtworkViewModel @AssistedInject constructor(
             ArtworkIntent.MarkPreviousEpisodesAsWatched -> markPreviousEpisodesAsWatched()
             is ArtworkIntent.OpenArtworkInfo -> _event.emit(ArtworkEvent.OpenArtworkInfo(artwork = intent.artwork))
             is ArtworkIntent.OpenEpisodeInfo -> _event.emit(ArtworkEvent.OpenEpisodeInfo(episode = intent.episode))
+            is ArtworkIntent.OnExternalPlayerResult -> onExternalPlayerResult(intent.progress)
         }
     }
 
@@ -155,13 +158,13 @@ class ArtworkViewModel @AssistedInject constructor(
 
     private suspend fun playMedia(media: Media, forceInternal: Boolean) {
         _subState.update { it.copy(selectedMedia = media) }
+        selectedMedia = media
 
-        val event = if (uiState.value.useExternalPlayer && !forceInternal)
-            ArtworkEvent.LaunchExternalPlayer(media = media)
+        if (uiState.value.useExternalPlayer && !forceInternal)
+            _event.emit(ArtworkEvent.LaunchExternalPlayer(media = media))
         else
-            ArtworkEvent.PlayMedia(mediaId = media.mediaId)
+            _event.emit(ArtworkEvent.PlayMedia(mediaId = media.mediaId))
 
-        _event.emit(event)
     }
 
     private fun showStatusDialog(episode: Episode) {
@@ -174,15 +177,15 @@ class ArtworkViewModel @AssistedInject constructor(
 
     private suspend fun changeWatchStatus(media: Media) {
 
-        val newStatus = if (media.status != Status.WATCHED) Status.WATCHED else Status.TO_WATCH
+        val status = if (media.status != Status.WATCHED) Status.WATCHED else Status.TO_WATCH
 
-        when (media) {
-            is Movie -> changeMovieStatus(movie = media, status = newStatus)
-            is Episode -> changeEpisodeStatus(episode = media, status = newStatus)
-        }
+        mediaProgressUC.changeMediaStatus(
+            media = media,
+            status =status
+        )
 
         if (
-            newStatus == Status.WATCHED
+            status == Status.WATCHED
             && media is Episode
             && uiState.value.episodes.getPreviousEpisodesFor(media).any { it.status != Status.WATCHED }
         ) {
@@ -191,63 +194,25 @@ class ArtworkViewModel @AssistedInject constructor(
 
     }
 
-    private suspend fun changeMovieStatus(movie: Movie, status: Status) {
-
-        val movieUpdated = movie.copy(
-            status = status,
-            currentTime = 0L
-        )
-
-        repository.saveMovie(movieUpdated) // Save status in DB
-
-        Log.i("MediaViewModel", "${movie.title} is now ${movie.status}")
-
-    }
-
-    private suspend fun changeEpisodeStatus(episode: Episode, status: Status) {
-
-        val updatedEpisode = episode.copy(
-            status = status,
-            currentTime = 0L
-        )
-
-        // Remove from recently watched if last episode is watched
-        val lastEpisode = uiState.first().episodes.lastEpisode
-        if (lastEpisode.id == updatedEpisode.id && status == Status.WATCHED)
-            userRepository.removeFromRecentlyWatched(artworkId)
-
-        repository.saveEpisodes(listOf(updatedEpisode)) // Save status in DB
-
-        Log.i("MediaViewModel", "${episode.title} season ${episode.season} episode ${episode.number} is now ${episode.status}")
-
-    }
-
     private suspend fun markPreviousEpisodesAsWatched() {
-
-        var episodesToSave: List<Episode> = emptyList()
 
         _subState.update { state ->
 
             val episode = state.episodePendingConfirmation ?: return
-            val previousEpisodes = uiState.value.episodes.getPreviousEpisodesFor(episode).filter { it.status != Status.WATCHED }
 
-            if (previousEpisodes.isEmpty())
-                return@update state.copy(episodePendingConfirmation = null)
-
-            episodesToSave = previousEpisodes.map {
-                it.copy(
-                    status = Status.WATCHED,
-                    currentTime = 0L
-                )
-            }
+            mediaProgressUC.markPreviousEpisodesAsWatchedFor(episode = episode)
 
             state.copy(episodePendingConfirmation = null)
 
         }
 
-        repository.saveEpisodes(episodesToSave) // Save status in DB
+    }
 
-        Log.i("MediaViewModel", "${episodesToSave.size} episodes marked as watched")
+    private suspend fun onExternalPlayerResult(progress: Long) {
+        selectedMedia?.let { media ->
+            mediaProgressUC.saveProgress(media = media, progress = progress)
+            selectedMedia = null
+        }
     }
 
     //endregion

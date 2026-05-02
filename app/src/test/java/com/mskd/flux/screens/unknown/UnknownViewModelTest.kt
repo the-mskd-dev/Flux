@@ -3,9 +3,13 @@ package com.mskd.flux.screens.unknown
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.data.repository.settings.SettingsRepository
+import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.mockups.FakeArtworkRepository
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.ScreenState
+import com.mskd.flux.screens.player.PlayerViewModel
+import com.mskd.flux.useCases.mediaProgress.MediaProgressUC
+import com.mskd.flux.useCases.mediaProgress.MediaProgressUCImpl
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.every
@@ -19,6 +23,23 @@ class UnknownViewModelTest : FunSpec ({
     lateinit var viewModel: UnknownViewModel
     lateinit var artworkRepository: FakeArtworkRepository
     lateinit var settingsRepository: SettingsRepository
+    lateinit var userRepository: UserRepository
+    lateinit var mediaProgressUC: MediaProgressUC
+
+    val updateVm: () -> Unit = {
+
+        mediaProgressUC = MediaProgressUCImpl(
+            artworkRepository = artworkRepository,
+            userRepository = userRepository,
+        )
+
+        viewModel = UnknownViewModel(
+            repository = artworkRepository,
+            settingsRepository = settingsRepository,
+            mediaProgressUC = mediaProgressUC
+        )
+
+    }
 
     beforeTest {
 
@@ -28,10 +49,11 @@ class UnknownViewModelTest : FunSpec ({
             every { flow } returns MutableStateFlow(SettingsRepository.State())
         }
 
-        viewModel = UnknownViewModel(
-            repository = artworkRepository,
-            settingsRepository = settingsRepository
-        )
+        userRepository = mockk(relaxed = true) {
+            every { flow } returns MutableStateFlow(UserRepository.State())
+        }
+
+        updateVm()
 
     }
 
@@ -66,10 +88,7 @@ class UnknownViewModelTest : FunSpec ({
             every { flow } returns MutableStateFlow(SettingsRepository.State(externalPlayer = true))
         }
 
-        viewModel = UnknownViewModel(
-            repository = artworkRepository,
-            settingsRepository = settingsRepository
-        )
+        updateVm()
 
         viewModel.uiState.test {
 

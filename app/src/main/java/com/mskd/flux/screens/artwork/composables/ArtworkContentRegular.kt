@@ -42,7 +42,6 @@ fun ArtworkContentRegular(
     media: Media,
     episodes: List<Episode>,
     currentSeason: Int,
-    hideProgress: Boolean,
     sendIntent: (ArtworkIntent) -> Unit,
 ) {
 
@@ -73,7 +72,6 @@ fun ArtworkContentRegular(
 
                 ArtworkButtons(
                     media = media,
-                    hideProgress = hideProgress,
                     sendIntent = sendIntent
                 )
 
@@ -125,7 +123,6 @@ fun ArtworkContentRegular(
                 EpisodeItem(
                     modifier = Modifier.animateItem(),
                     episode = episode,
-                    hideProgress = hideProgress,
                     sendIntent = sendIntent
                 )
 
@@ -150,7 +147,6 @@ fun ArtworkContentMovie_Preview() {
             media = MediaMockups.movie,
             episodes = emptyList(),
             currentSeason = -1,
-            hideProgress = false,
             sendIntent = {}
         )
     }
@@ -165,7 +161,6 @@ fun ArtworkContentShow_Preview() {
             media = MediaMockups.episode1,
             episodes = MediaMockups.episodesWithStatus,
             currentSeason = 1,
-            hideProgress = false,
             sendIntent = {}
         )
     }

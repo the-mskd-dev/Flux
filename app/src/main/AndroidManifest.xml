@@ -8,6 +8,8 @@
         android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
 
     <application
         android:allowBackup="false"
@@ -43,13 +45,18 @@
             android:theme="@style/Theme.Flux" />
 
         <service
-            android:name=".screens.player.controllers.PlayerService"
+            android:name=".services.PlayerService"
             android:foregroundServiceType="mediaPlayback"
             android:exported="true">
             <intent-filter>
                 <action android:name="androidx.media3.session.MediaSessionService" />
             </intent-filter>
         </service>
+
+        <service
+            android:name=".services.ExternalPlayerService"
+            android:exported="false"
+            android:foregroundServiceType="mediaPlayback"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"

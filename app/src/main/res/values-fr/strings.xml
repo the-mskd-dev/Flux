@@ -96,7 +96,7 @@
     <string name="see">Voir</string>
     <string name="more_info">Plus d\'informations</string>
     <string name="external_player">Lecteur externe</string>
-    <string name="watch_on_external_player">Regarder le contenu sur une application externe. Cette option désactive le suivi de progression</string>
+    <string name="watch_on_external_player">Le suivi de progression n\'est pas compatible avec tous les lecteurs.\nLes notifications sont recommandées.</string>
     <string name="how_to_advice">Note : Il est conseillé de placer vos fichiers dans les dossiers Movies ou Downloads pour un fonctionnement optimal.</string>
     <string name="stay_informed">Restez informés sur l\'évolution de l\'application!</string>
     <string name="about_desc">À propos de cette application, à propos de moi, à propos de n\'importe quoi</string>

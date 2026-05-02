@@ -61,6 +61,8 @@ class ArtworkViewModelTest : FunSpec({
             every { flow } returns MutableStateFlow(SettingsRepository.State())
         }
 
+        updateVm()
+
     }
 
     test("initial state") {

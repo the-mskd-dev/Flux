@@ -45,13 +45,12 @@ fun ArtworkScreen(
     val isLargeScreen = windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND)
     val context = LocalContext.current
 
-    val externalPlayerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        ExternalPlayerService.stop(context)
-        val progress = ExternalPlayer.parsePosition(result.data)
-        viewModel.handleIntent(ArtworkIntent.OnExternalPlayerResult(progress = progress))
-    }
+    val externalPlayerLauncher = ExternalPlayer.launcher(
+        context = context,
+        onProgressResult = { progress ->
+            viewModel.handleIntent(ArtworkIntent.OnExternalPlayerResult(progress = progress))
+        }
+    )
 
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
@@ -61,22 +60,12 @@ fun ArtworkScreen(
                 is ArtworkEvent.OpenArtworkInfo -> WebLink.openPage(context = context, url = event.artwork.infoUrl)
                 is ArtworkEvent.OpenEpisodeInfo -> WebLink.openPage(context = context, url = event.episode.infoUrl)
                 is ArtworkEvent.LaunchExternalPlayer -> {
-
-                    try {
-                        val intent = ExternalPlayer.createIntent(media = event.media, context = context)
-                        ExternalPlayerService.start(context)
-                        externalPlayerLauncher.launch(intent)
-
-                    } catch (e: Exception) {
-                        when (e) {
-                            is ActivityNotFoundException -> Log.e("ArtworkScreen", "No player found", e)
-                            is SecurityException -> Log.e("ArtworkScreen", "Permission denied", e)
-                            else -> Log.e("ArtworkScreen", "Fail to launch external player", e)
-                        }
-                        ExternalPlayerService.stop(context)
-                        viewModel.handleIntent(ArtworkIntent.PlayMedia(media = event.media, forceInternal = true))
-                    }
-
+                    ExternalPlayer.launchPlayer(
+                        context = context,
+                        media = event.media,
+                        launcher = externalPlayerLauncher,
+                        onError = { viewModel.handleIntent(ArtworkIntent.PlayMedia(media = event.media, forceInternal = true)) }
+                    )
                 }
             }
         }

@@ -92,9 +92,7 @@ class UnknownViewModel @Inject constructor(
         _event.emit(event)
     }
 
-    private suspend fun onExternalPlayerResult(progress: Long?) {
-        progress ?: return
-
+    private suspend fun onExternalPlayerResult(progress: Long) {
         selectedMedia?.let { media ->
             mediaProgressUC.saveProgress(media = media, progress = progress)
         }

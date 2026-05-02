@@ -217,10 +217,8 @@ class ArtworkViewModel @AssistedInject constructor(
         Log.i("MediaViewModel", "${episodesToSave.size} episodes marked as watched")
     }
 
-    private suspend fun onExternalPlayerResult(progress: Long?) {
-        progress?.let {
-            mediaProgressUC.saveProgress(media = uiState.value.media, progress = progress)
-        }
+    private suspend fun onExternalPlayerResult(progress: Long) {
+        mediaProgressUC.saveProgress(media = uiState.value.media, progress = progress)
     }
 
     //endregion

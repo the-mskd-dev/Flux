@@ -43,6 +43,7 @@ import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Status
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Route.Player
+import com.mskd.flux.screens.artwork.ArtworkIntent
 import com.mskd.flux.ui.component.ErrorScreen
 import com.mskd.flux.ui.component.FluxScaffold
 import com.mskd.flux.ui.component.LoadingScreen
@@ -66,6 +67,13 @@ fun UnknownScreen(
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    val externalPlayerLauncher = ExternalPlayer.launcher(
+        context = context,
+        onProgressResult = { progress ->
+            viewModel.handleIntent(UnknownIntent.OnExternalPlayerResult(progress = progress))
+        }
+    )
+
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
             when (event) {
@@ -73,15 +81,12 @@ fun UnknownScreen(
                 UnknownEvent.NavigateToHowToScreen -> navigate(Route.HowTo)
                 is UnknownEvent.PlayMedia -> navigate(Player(mediaId = event.mediaId))
                 is UnknownEvent.LaunchExternalPlayer -> {
-
-                    try {
-                        val intent = ExternalPlayer.createIntent(media = event.media, context = context)
-                        context.startActivity(intent)
-                    } catch (e: ActivityNotFoundException) {
-                        Log.e("UnknownScreen", "No player founded", e)
-                        viewModel.handleIntent(UnknownIntent.PlayMedia(media = event.media, forceInternal = true))
-                    }
-
+                    ExternalPlayer.launchPlayer(
+                        context = context,
+                        media = event.media,
+                        launcher = externalPlayerLauncher,
+                        onError = { viewModel.handleIntent(UnknownIntent.PlayMedia(media = event.media, forceInternal = true)) }
+                    )
                 }
             }
         }

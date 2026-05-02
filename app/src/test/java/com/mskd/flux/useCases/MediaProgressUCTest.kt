@@ -2,6 +2,7 @@ package com.mskd.flux.useCases
 
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
+import com.mskd.flux.data.repository.artwork.ArtworkRepository
 import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.mockups.FakeArtworkRepository
 import com.mskd.flux.mockups.MediaMockups
@@ -29,13 +30,13 @@ class MediaProgressUCTest : FunSpec({
 
     fluxExtensions()
 
-    lateinit var artworkRepository: FakeArtworkRepository
+    lateinit var artworkRepository: ArtworkRepository
     lateinit var userRepository: UserRepository
     lateinit var mediaProgressUC: MediaProgressUC
 
     beforeTest {
 
-        artworkRepository = FakeArtworkRepository(initialContentType = ContentType.SHOW)
+        artworkRepository = mockk(relaxed = true)
 
         userRepository = mockk(relaxed = true) {
             every { flow } returns MutableStateFlow(UserRepository.State())
@@ -102,7 +103,13 @@ class MediaProgressUCTest : FunSpec({
         ) { testCase ->
 
             // Given
-            artworkRepository.setContentType(if (testCase.media is Movie) ContentType.MOVIE else ContentType.SHOW)
+            artworkRepository = mockk(relaxed = true) {
+                every { flow } returns MutableStateFlow(ArtworkRepository.State(
+                    artwork = testCase.artwork,
+                    movie = if (testCase.media is Movie) MediaMockups.movie else null,
+                    episodes = if (testCase.media is Movie) emptyList() else MediaMockups.episodes
+                ))
+            }
 
             mediaProgressUC = MediaProgressUCImpl(
                 artworkRepository = artworkRepository,

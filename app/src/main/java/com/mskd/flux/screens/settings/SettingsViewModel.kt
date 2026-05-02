@@ -62,7 +62,8 @@ class SettingsViewModel @Inject constructor(
             SettingsIntent.OnTokenTap -> _event.emit(SettingsEvent.NavigateToTokenScreen)
             SettingsIntent.OnAboutTap -> _event.emit(SettingsEvent.NavigateToAboutScreen)
             SettingsIntent.OnHowToTap -> _event.emit(SettingsEvent.NavigateToHowToScreen)
-            is SettingsIntent.OnExternalPlayerCheck -> useExternalPlayer(value = intent.checked)
+            is SettingsIntent.OnExternalPlayerCheck -> onExternalPlayerCheck(value = intent.checked)
+            SettingsIntent.OnNotificationPermissionGranted -> useExternalPlayer()
         }
     }
 
@@ -102,13 +103,16 @@ class SettingsViewModel @Inject constructor(
         hideDialog()
     }
 
-    private suspend fun useExternalPlayer(value: Boolean) {
-
+    private suspend fun onExternalPlayerCheck(value: Boolean) {
         if (value) {
             _event.emit(SettingsEvent.RequestExternalPlayerPermission)
+        } else {
+            settingsRepository.setExternalPlayer(false)
         }
+    }
 
-        settingsRepository.setExternalPlayer(value)
+    private suspend fun useExternalPlayer() {
+        settingsRepository.setExternalPlayer(true)
     }
 
 }

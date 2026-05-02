@@ -29,8 +29,8 @@ import com.mskd.flux.screens.settings.SettingsScreen
 import com.mskd.flux.screens.token.TokenScreen
 import com.mskd.flux.screens.unknown.UnknownScreen
 import com.mskd.flux.screens.welcome.WelcomeScreen
-import com.mskd.flux.screens.welcome.fluxPermissionState
 import com.mskd.flux.ui.theme.AppTheme
+import com.mskd.flux.utils.storagePermissionState
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -48,7 +48,7 @@ class MainActivity : ComponentActivity() {
         setContent {
 
             val settings by viewModel.settings.collectAsStateWithLifecycle()
-            val permissions = fluxPermissionState()
+            val permissions = storagePermissionState()
 
             val startingScreen = viewModel.getStartingScreen(permissions.status.isGranted)
 

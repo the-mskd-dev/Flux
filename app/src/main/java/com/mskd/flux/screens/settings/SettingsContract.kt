@@ -72,6 +72,7 @@ sealed class SettingsIntent {
     object OnHowToTap: SettingsIntent()
     object OnAboutTap: SettingsIntent()
     data class OnExternalPlayerCheck(val checked: Boolean): SettingsIntent()
+    data object OnNotificationPermissionGranted: SettingsIntent()
 }
 
 sealed class SettingsEvent {

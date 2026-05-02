@@ -1,10 +1,6 @@
 package com.mskd.flux.screens.settings
 
-import android.Manifest
 import android.content.Context
-import android.os.Build
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -40,7 +36,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.isGranted
 import com.mskd.flux.R
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Route.Token
@@ -53,7 +48,7 @@ import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.WebLink
 import com.mskd.flux.utils.extensions.uppercaseFirstLetter
-import com.mskd.flux.utils.notificationPermissionState
+import com.mskd.flux.utils.notificationsPermissionState
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -70,14 +65,7 @@ fun SettingsScreen(
         .getPackageInfo(context.packageName, 0)
         .versionName
 
-    val notificationPermission = notificationPermissionState()
-    val notificationPermissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission()
-    ) { granted ->
-        if (granted) {
-            viewModel.handleIntent(SettingsIntent.OnNotificationPermissionGranted)
-        }
-    }
+    val notificationsPermission = notificationsPermissionState()
 
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
@@ -86,21 +74,7 @@ fun SettingsScreen(
                 SettingsEvent.NavigateToTokenScreen -> navigate(Token(fromSettings = true))
                 SettingsEvent.NavigateToAboutScreen -> navigate(Route.About)
                 SettingsEvent.NavigateToHowToScreen -> navigate(Route.HowTo)
-                SettingsEvent.RequestExternalPlayerPermission -> {
-                    when {
-                        notificationPermission?.status?.isGranted == true -> {
-                            viewModel.handleIntent(SettingsIntent.OnNotificationPermissionGranted)
-                        }
-                        notificationPermission == null -> {
-                            viewModel.handleIntent(SettingsIntent.OnNotificationPermissionGranted)
-                        }
-                        else -> {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                                notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-                            }
-                        }
-                    }
-                }
+                SettingsEvent.RequestExternalPlayerPermission -> notificationsPermission?.launchPermissionRequest()
             }
         }
     }

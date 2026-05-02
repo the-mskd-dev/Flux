@@ -22,7 +22,7 @@ fun storagePermissionState(): PermissionState {
 
 @Composable
 @OptIn(ExperimentalPermissionsApi::class)
-fun notificationPermissionState(): PermissionState? {
+fun notificationsPermissionState(): PermissionState? {
 
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
         rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS)

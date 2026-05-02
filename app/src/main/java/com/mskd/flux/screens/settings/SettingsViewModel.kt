@@ -63,7 +63,6 @@ class SettingsViewModel @Inject constructor(
             SettingsIntent.OnAboutTap -> _event.emit(SettingsEvent.NavigateToAboutScreen)
             SettingsIntent.OnHowToTap -> _event.emit(SettingsEvent.NavigateToHowToScreen)
             is SettingsIntent.OnExternalPlayerCheck -> onExternalPlayerCheck(value = intent.checked)
-            SettingsIntent.OnNotificationPermissionGranted -> useExternalPlayer()
         }
     }
 
@@ -104,15 +103,13 @@ class SettingsViewModel @Inject constructor(
     }
 
     private suspend fun onExternalPlayerCheck(value: Boolean) {
+
         if (value) {
             _event.emit(SettingsEvent.RequestExternalPlayerPermission)
-        } else {
-            settingsRepository.setExternalPlayer(false)
         }
+
+        settingsRepository.setExternalPlayer(value)
     }
 
-    private suspend fun useExternalPlayer() {
-        settingsRepository.setExternalPlayer(true)
-    }
 
 }

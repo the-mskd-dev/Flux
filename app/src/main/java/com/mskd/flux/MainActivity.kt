@@ -30,7 +30,6 @@ import com.mskd.flux.screens.token.TokenScreen
 import com.mskd.flux.screens.unknown.UnknownScreen
 import com.mskd.flux.screens.welcome.WelcomeScreen
 import com.mskd.flux.ui.theme.AppTheme
-import com.mskd.flux.utils.notificationPermissionState
 import com.mskd.flux.utils.storagePermissionState
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject

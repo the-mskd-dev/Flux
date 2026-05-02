@@ -11,20 +11,21 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.services.ExternalPlayerService
+import com.mskd.flux.utils.ExternalPlayer.parsePosition
 
-object ExternalPlayer {
-
-    @Composable
-    fun launcher(context: Context, onProgressResult: (Long) -> Unit) : ManagedActivityResultLauncher<Intent, ActivityResult> {
-        return rememberLauncherForActivityResult(
-            contract = ActivityResultContracts.StartActivityForResult()
-        ) { result ->
-            ExternalPlayerService.stop(context)
-            parsePosition(result.data)?.let {
-                onProgressResult(it)
-            }
+@Composable
+fun rememberExternalPlayerLauncher(context: Context, onProgressResult: (Long) -> Unit) : ManagedActivityResultLauncher<Intent, ActivityResult> {
+    return rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        ExternalPlayerService.stop(context)
+        ExternalPlayer.parsePosition(result.data)?.let {
+            onProgressResult(it)
         }
     }
+}
+
+object ExternalPlayer {
 
     fun launchPlayer(
         context: Context,
@@ -61,7 +62,7 @@ object ExternalPlayer {
         }
     }
 
-    private fun parsePosition(data: Intent?): Long? {
+    fun parsePosition(data: Intent?): Long? {
         if (data == null) return null
 
         val intPosition = data.getIntExtra("position", -1)

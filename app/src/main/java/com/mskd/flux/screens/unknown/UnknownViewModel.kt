@@ -95,6 +95,7 @@ class UnknownViewModel @Inject constructor(
     private suspend fun onExternalPlayerResult(progress: Long) {
         selectedMedia?.let { media ->
             mediaProgressUC.saveProgress(media = media, progress = progress)
+            selectedMedia = null
         }
     }
 

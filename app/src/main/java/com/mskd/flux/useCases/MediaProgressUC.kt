@@ -8,6 +8,7 @@ import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Status
 import com.mskd.flux.utils.Constants
+import com.mskd.flux.utils.extensions.getPreviousEpisodesFor
 import com.mskd.flux.utils.extensions.lastEpisode
 import com.mskd.flux.utils.extensions.timeDescription
 import kotlinx.coroutines.flow.first
@@ -16,6 +17,7 @@ import kotlin.time.Duration.Companion.minutes
 interface MediaProgressUC {
     suspend fun changeMediaStatus(media: Media, status: Status)
     suspend fun saveProgress(media: Media, progress: Long)
+    suspend fun markPreviousEpisodesAsWatchedFor(episode: Episode)
 }
 
 class MediaProgressUCImpl(
@@ -78,6 +80,28 @@ class MediaProgressUCImpl(
             is Movie -> changeMovieStatus(movie = media, status = status)
             is Episode -> changeEpisodeStatus(episode = media, status = status)
         }
+
+    }
+
+    override suspend fun markPreviousEpisodesAsWatchedFor(episode: Episode) {
+
+        var episodesToSave: List<Episode>
+
+        val previousEpisodes = artworkRepository.flow.first().episodes.getPreviousEpisodesFor(episode).filter { it.status != Status.WATCHED }
+
+        if (previousEpisodes.isEmpty())
+            return
+
+        episodesToSave = previousEpisodes.map {
+            it.copy(
+                status = Status.WATCHED,
+                currentTime = 0L
+            )
+        }
+
+        artworkRepository.saveEpisodes(episodesToSave) // Save status in DB
+
+        Log.i(TAG, "${episodesToSave.size} episodes marked as watched")
 
     }
 

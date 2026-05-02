@@ -52,6 +52,7 @@ import com.mskd.flux.utils.ExternalPlayer
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.extensions.minToMs
 import com.mskd.flux.utils.extensions.timeDescription
+import com.mskd.flux.utils.rememberExternalPlayerLauncher
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -64,7 +65,7 @@ fun UnknownScreen(
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    val externalPlayerLauncher = ExternalPlayer.launcher(
+    val externalPlayerLauncher = rememberExternalPlayerLauncher(
         context = context,
         onProgressResult = { progress ->
             viewModel.handleIntent(UnknownIntent.OnExternalPlayerResult(progress = progress))

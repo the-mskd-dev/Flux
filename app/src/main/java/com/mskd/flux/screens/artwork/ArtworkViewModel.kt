@@ -54,6 +54,12 @@ class ArtworkViewModel @AssistedInject constructor(
 
     //endregion
 
+    //region Variables
+
+    private var selectedMedia: Media? = null
+
+    //endregion
+
     //region Flow
 
     private val _event = MutableSharedFlow<ArtworkEvent>()
@@ -153,6 +159,7 @@ class ArtworkViewModel @AssistedInject constructor(
 
     private suspend fun playMedia(media: Media, forceInternal: Boolean) {
         _subState.update { it.copy(selectedMedia = media) }
+        selectedMedia = media
 
         if (uiState.value.useExternalPlayer && !forceInternal)
             _event.emit(ArtworkEvent.LaunchExternalPlayer(media = media))
@@ -190,34 +197,23 @@ class ArtworkViewModel @AssistedInject constructor(
 
     private suspend fun markPreviousEpisodesAsWatched() {
 
-        var episodesToSave: List<Episode> = emptyList()
-
         _subState.update { state ->
 
             val episode = state.episodePendingConfirmation ?: return
-            val previousEpisodes = uiState.value.episodes.getPreviousEpisodesFor(episode).filter { it.status != Status.WATCHED }
 
-            if (previousEpisodes.isEmpty())
-                return@update state.copy(episodePendingConfirmation = null)
-
-            episodesToSave = previousEpisodes.map {
-                it.copy(
-                    status = Status.WATCHED,
-                    currentTime = 0L
-                )
-            }
+            mediaProgressUC.markPreviousEpisodesAsWatchedFor(episode = episode)
 
             state.copy(episodePendingConfirmation = null)
 
         }
 
-        repository.saveEpisodes(episodesToSave) // Save status in DB
-
-        Log.i("MediaViewModel", "${episodesToSave.size} episodes marked as watched")
     }
 
     private suspend fun onExternalPlayerResult(progress: Long) {
-        mediaProgressUC.saveProgress(media = uiState.value.media, progress = progress)
+        selectedMedia?.let { media ->
+            mediaProgressUC.saveProgress(media = media, progress = progress)
+            selectedMedia = null
+        }
     }
 
     //endregion

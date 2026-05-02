@@ -24,6 +24,7 @@ import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.component.Text
 import com.mskd.flux.utils.ExternalPlayer
 import com.mskd.flux.utils.WebLink
+import com.mskd.flux.utils.rememberExternalPlayerLauncher
 
 @Composable
 fun ArtworkScreen(
@@ -40,7 +41,7 @@ fun ArtworkScreen(
     val isLargeScreen = windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND)
     val context = LocalContext.current
 
-    val externalPlayerLauncher = ExternalPlayer.launcher(
+    val externalPlayerLauncher = rememberExternalPlayerLauncher(
         context = context,
         onProgressResult = { progress ->
             viewModel.handleIntent(ArtworkIntent.OnExternalPlayerResult(progress = progress))

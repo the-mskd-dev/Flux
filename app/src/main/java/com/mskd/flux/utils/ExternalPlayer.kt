@@ -64,11 +64,13 @@ object ExternalPlayer {
     fun parsePosition(data: Intent?): Long? {
         if (data == null) return null
 
-        val intPosition = data.getIntExtra("position", -1)
-        if (intPosition != -1) return intPosition.toLong()
+        for (key in resultProgressFlags) {
+            val longPos = data.getLongExtra(key, -1L)
+            if (longPos != -1L) return longPos
 
-        val longPosition = data.getLongExtra("extra_position", -1L)
-        if (longPosition != -1L) return longPosition
+            val intPos = data.getIntExtra(key, -1)
+            if (intPos != -1) return intPos.toLong()
+        }
 
         return null
     }
@@ -77,6 +79,17 @@ object ExternalPlayer {
         "position",
         "extra_start_time",
         "start_from",
-        "video_position"
+        "video_position",
+        "resume_from",
+        "from_start",
+        "start_position",
+        "playback_start"
+    )
+
+    private val resultProgressFlags = listOf(
+        "position",
+        "extra_position",
+        "playback_position",
+        "end_by",
     )
 }

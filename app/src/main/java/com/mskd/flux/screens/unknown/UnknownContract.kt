@@ -3,6 +3,7 @@ package com.mskd.flux.screens.unknown
 import com.mskd.flux.model.ScreenState
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
+import com.mskd.flux.screens.artwork.ArtworkIntent
 
 data class UnknownUiState(
     val screen: ScreenState = ScreenState.LOADING,
@@ -14,6 +15,7 @@ sealed class UnknownIntent {
     object OnBackTap: UnknownIntent()
     data class PlayMedia(val media: Media, val forceInternal: Boolean = false): UnknownIntent()
     object OnInfoTap: UnknownIntent()
+    data class OnExternalPlayerResult(val progress: Long?) : UnknownIntent()
 }
 
 sealed class UnknownEvent {

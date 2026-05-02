@@ -8,6 +8,7 @@ import com.mskd.flux.model.ScreenState
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
+import com.mskd.flux.useCases.MediaProgressUC
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -21,8 +22,15 @@ import javax.inject.Inject
 @HiltViewModel
 class UnknownViewModel @Inject constructor(
     private val repository: ArtworkRepository,
-    private val settingsRepository: SettingsRepository
+    private val settingsRepository: SettingsRepository,
+    private val mediaProgressUC: MediaProgressUC
 ) : ViewModel() {
+
+    //region Variables
+
+    private var selectedMedia: Media? = null
+
+    //endregion
 
     //region Flow
 
@@ -64,6 +72,7 @@ class UnknownViewModel @Inject constructor(
             is UnknownIntent.PlayMedia -> playMedia(media = intent.media, forceInternal = intent.forceInternal)
             UnknownIntent.OnBackTap -> _event.emit(UnknownEvent.BackToPreviousScreen)
             UnknownIntent.OnInfoTap -> _event.emit(UnknownEvent.NavigateToHowToScreen)
+            is UnknownIntent.OnExternalPlayerResult -> onExternalPlayerResult(progress = intent.progress)
         }
     }
 
@@ -73,12 +82,22 @@ class UnknownViewModel @Inject constructor(
 
     private suspend fun playMedia(media: Media, forceInternal: Boolean) {
 
+        selectedMedia = media
+
         val event = if (uiState.value.useExternalPlayer && !forceInternal)
             UnknownEvent.LaunchExternalPlayer(media = media)
         else
             UnknownEvent.PlayMedia(mediaId = media.mediaId)
 
         _event.emit(event)
+    }
+
+    private suspend fun onExternalPlayerResult(progress: Long?) {
+        progress ?: return
+
+        selectedMedia?.let { media ->
+            mediaProgressUC.saveProgress(media = media, progress = progress)
+        }
     }
 
     //endregion

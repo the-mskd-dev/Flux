@@ -12,6 +12,7 @@ import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Status
 import com.mskd.flux.screens.player.PlayerTrack.Type
 import com.mskd.flux.screens.player.controllers.PlayerManager
+import com.mskd.flux.useCases.MediaProgressUC
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.extensions.getNextEpisodeFor
 import com.mskd.flux.utils.extensions.lastEpisode
@@ -49,7 +50,8 @@ class PlayerViewModel @AssistedInject constructor(
     private val artworkRepository: ArtworkRepository,
     private val userRepository: UserRepository,
     private val settingsRepository: SettingsRepository,
-    private val playerManager: PlayerManager
+    private val playerManager: PlayerManager,
+    private val mediaProgressUC: MediaProgressUC
 ) : ViewModel() {
 
     //region Factory
@@ -360,42 +362,8 @@ class PlayerViewModel @AssistedInject constructor(
 
         val media = (uiState.value.screen as? PlayerScreen.Content)?.media ?: return
         val progress = uiState.value.controls.progress
-        val newStatus = if (progress >= (media.duration * Constants.PLAYER.PROGRESS_THRESHOLD).minutes.inWholeMilliseconds) Status.WATCHED else Status.IS_WATCHING
-        val newTime = if (newStatus == Status.WATCHED) 0L else progress
 
-        val updatedMedia = when (media) {
-            is Movie -> media.copy(currentTime = newTime, status = newStatus)
-            is Episode -> media.copy(currentTime = newTime, status = newStatus)
-        }
-
-        when (updatedMedia) {
-            is Movie -> {
-
-                // Add/Remove from recently watched
-                if (newStatus == Status.WATCHED) userRepository.removeFromRecentlyWatched(media.artworkId)
-                else userRepository.addToRecentlyWatched(media.artworkId)
-
-                // Save in DB
-                artworkRepository.saveMovie(updatedMedia)
-            }
-            is Episode -> {
-
-                // Add/Remove from recently watched
-                if (!updatedMedia.isUnknown) {
-                    val episodes = artworkRepository.flow.first().episodes
-                    val lastEpisode = episodes.lastEpisode
-                    if (lastEpisode.id == updatedMedia.id && newStatus == Status.WATCHED)
-                        userRepository.removeFromRecentlyWatched(updatedMedia.artworkId)
-                    else
-                        userRepository.addToRecentlyWatched(updatedMedia.artworkId)
-
-                }
-                // Save in DB
-                artworkRepository.saveEpisode(updatedMedia)
-            }
-        }
-
-        Log.i("PlayerViewModel", "${updatedMedia.title} saved at ${progress.timeDescription()}")
+        mediaProgressUC.saveProgress(media = media, progress = progress)
 
     }
 

@@ -8,6 +8,7 @@ import androidx.media3.common.C
 import androidx.media3.common.Format
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
+import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.TrackSelectionOverride
 import androidx.media3.common.TrackSelectionParameters
@@ -22,6 +23,7 @@ import com.mskd.flux.R
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.screens.player.PlayerTrack
+import com.mskd.flux.services.PlayerService
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.extensions.tmdbImage
 import com.mskd.flux.utils.extensions.uppercaseFirstLetter
@@ -36,7 +38,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.util.Locale
-import java.util.UUID
 import kotlin.math.roundToInt
 
 class PlayerManager(private val context: Context) : Player.Listener {
@@ -157,6 +158,11 @@ class PlayerManager(private val context: Context) : Player.Listener {
         _state.update { current.copy(subtitles = cueGroup.cues) }
     }
 
+    override fun onPlayerError(error: PlaybackException) {
+        super.onPlayerError(error)
+        _state.update { State.Error }
+    }
+
     //endregion
 
     //region Controls
@@ -218,7 +224,7 @@ class PlayerManager(private val context: Context) : Player.Listener {
 
             val mediaItem = MediaItem.Builder()
                 .setMediaMetadata(mediaMetadata)
-                .setUri(media.file.path.toUri())
+                .setUri(media.file.resolvedUri(context = context))
                 .build()
 
             player.stop()

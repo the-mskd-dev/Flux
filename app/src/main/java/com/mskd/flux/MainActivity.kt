@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -29,8 +30,9 @@ import com.mskd.flux.screens.settings.SettingsScreen
 import com.mskd.flux.screens.token.TokenScreen
 import com.mskd.flux.screens.unknown.UnknownScreen
 import com.mskd.flux.screens.welcome.WelcomeScreen
-import com.mskd.flux.screens.welcome.fluxPermissionState
 import com.mskd.flux.ui.theme.AppTheme
+import com.mskd.flux.utils.notificationsPermissionState
+import com.mskd.flux.utils.storagePermissionState
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -48,9 +50,16 @@ class MainActivity : ComponentActivity() {
         setContent {
 
             val settings by viewModel.settings.collectAsStateWithLifecycle()
-            val permissions = fluxPermissionState()
+            val storagePermission = storagePermissionState()
+            val notificationsPermission = notificationsPermissionState()
 
-            val startingScreen = viewModel.getStartingScreen(permissions.status.isGranted)
+            LaunchedEffect(Unit) {
+                if (notificationsPermission?.status?.isGranted == false && settings.externalPlayer) {
+                    notificationsPermission.launchPermissionRequest()
+                }
+            }
+
+            val startingScreen = viewModel.getStartingScreen(storagePermission.status.isGranted)
 
             AppTheme(theme = settings.uiTheme) {
 

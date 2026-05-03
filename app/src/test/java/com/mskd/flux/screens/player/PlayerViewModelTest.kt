@@ -12,6 +12,8 @@ import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Status
 import com.mskd.flux.screens.player.controllers.PlayerManager
+import com.mskd.flux.useCases.mediaProgress.MediaProgressUC
+import com.mskd.flux.useCases.mediaProgress.MediaProgressUCImpl
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.extensions.lastEpisode
 import com.mskd.flux.utils.extensions.minToMs
@@ -33,8 +35,27 @@ class PlayerViewModelTest : FunSpec({
     lateinit var artworkRepository: FakeArtworkRepository
     lateinit var userRepository: UserRepository
     lateinit var settingsRepository: SettingsRepository
+    lateinit var mediaProgressUC: MediaProgressUC
     lateinit var playerManager: PlayerManager
     lateinit var mockkedPlayer: Player
+
+    fun updateVm(mediaId: Long = MediaMockups.episode1.mediaId) {
+
+        mediaProgressUC = MediaProgressUCImpl(
+            artworkRepository = artworkRepository,
+            userRepository = userRepository,
+        )
+
+        viewModel = PlayerViewModel(
+            mediaId = mediaId,
+            artworkRepository = artworkRepository,
+            userRepository = userRepository,
+            settingsRepository = settingsRepository,
+            mediaProgressUC = mediaProgressUC,
+            playerManager = playerManager
+        )
+
+    }
 
     beforeTest {
 
@@ -56,13 +77,7 @@ class PlayerViewModelTest : FunSpec({
             every { state } returns MutableStateFlow(PlayerManager.State.Ready(player = mockkedPlayer))
         }
 
-        viewModel = PlayerViewModel(
-            mediaId = MediaMockups.episode1.mediaId,
-            artworkRepository = artworkRepository,
-            userRepository = userRepository,
-            settingsRepository = settingsRepository,
-            playerManager = playerManager
-        )
+        updateVm()
 
     }
 
@@ -184,13 +199,7 @@ class PlayerViewModelTest : FunSpec({
                 ))
             }
 
-            viewModel = PlayerViewModel(
-                mediaId = testCase.media.mediaId,
-                artworkRepository = artworkRepository,
-                userRepository = userRepository,
-                settingsRepository = settingsRepository,
-                playerManager = playerManager
-            )
+            updateVm(mediaId = testCase.media.mediaId)
 
             viewModel.uiState.test {
 

@@ -32,12 +32,13 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.mskd.flux.R
 import com.mskd.flux.navigation.Route
+import com.mskd.flux.navigation.Route.Token
 import com.mskd.flux.ui.component.FluxDialog
 import com.mskd.flux.ui.component.FluxScaffold
 import com.mskd.flux.ui.component.Text
@@ -47,7 +48,9 @@ import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.WebLink
 import com.mskd.flux.utils.extensions.uppercaseFirstLetter
+import com.mskd.flux.utils.notificationsPermissionState
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun SettingsScreen(
     onBack: () -> Unit,
@@ -62,13 +65,16 @@ fun SettingsScreen(
         .getPackageInfo(context.packageName, 0)
         .versionName
 
+    val notificationsPermission = notificationsPermissionState()
+
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
             when (event) {
                 SettingsEvent.BackToPreviousScreen -> onBack()
-                SettingsEvent.NavigateToTokenScreen -> navigate(Route.Token(fromSettings = true))
+                SettingsEvent.NavigateToTokenScreen -> navigate(Token(fromSettings = true))
                 SettingsEvent.NavigateToAboutScreen -> navigate(Route.About)
                 SettingsEvent.NavigateToHowToScreen -> navigate(Route.HowTo)
+                SettingsEvent.RequestExternalPlayerPermission -> notificationsPermission?.launchPermissionRequest()
             }
         }
     }

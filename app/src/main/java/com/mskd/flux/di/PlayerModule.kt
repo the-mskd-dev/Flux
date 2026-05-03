@@ -53,4 +53,5 @@ object PlayerManagerModule {
     fun providePlayerManager(@ApplicationContext context: Context) : PlayerManager {
         return PlayerManager(context)
     }
+
 }

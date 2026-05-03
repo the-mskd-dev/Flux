@@ -67,7 +67,6 @@ class FilesSourceLocalImpl(
                 val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID)
                 val nameColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME)
                 val dateColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_ADDED)
-                val durationColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION)
 
                 while (cursor.moveToNext()) {
 
@@ -77,8 +76,6 @@ class FilesSourceLocalImpl(
                         val id = cursor.getLong(idColumn)
                         val name = cursor.getString(nameColumn)
                         val date = cursor.getLong(dateColumn)
-                        val duration = cursor.getLong(durationColumn)
-                        Log.d(TAG, "Fichier trouvé: $name | Durée détectée par Android: ${duration / 1000} sec")
 
                         val contentPath = ContentUris.withAppendedId(
                             MediaStore.Video.Media.EXTERNAL_CONTENT_URI,

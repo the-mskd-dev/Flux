@@ -10,6 +10,9 @@ import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.ScreenState
 import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.model.artwork.Status
+import com.mskd.flux.screens.player.PlayerViewModel
+import com.mskd.flux.useCases.mediaProgress.MediaProgressUC
+import com.mskd.flux.useCases.mediaProgress.MediaProgressUCImpl
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -28,6 +31,23 @@ class ArtworkViewModelTest : FunSpec({
     lateinit var artworkRepository: FakeArtworkRepository
     lateinit var userRepository: UserRepository
     lateinit var settingsRepository: SettingsRepository
+    lateinit var mediaProgressUC: MediaProgressUC
+
+    val updateVm: () -> Unit = {
+
+        mediaProgressUC = MediaProgressUCImpl(
+            artworkRepository = artworkRepository,
+            userRepository = userRepository,
+        )
+
+        viewModel = ArtworkViewModel(
+            artworkId = MediaMockups.showArtwork.id,
+            repository = artworkRepository,
+            settingsRepository = settingsRepository,
+            mediaProgressUC = mediaProgressUC
+        )
+
+    }
 
     beforeTest {
 
@@ -41,12 +61,7 @@ class ArtworkViewModelTest : FunSpec({
             every { flow } returns MutableStateFlow(SettingsRepository.State())
         }
 
-        viewModel = ArtworkViewModel(
-            artworkId = MediaMockups.showArtwork.id,
-            repository = artworkRepository,
-            userRepository = userRepository,
-            settingsRepository = settingsRepository
-        )
+        updateVm()
 
     }
 
@@ -111,12 +126,7 @@ class ArtworkViewModelTest : FunSpec({
             every { flow } returns MutableStateFlow(SettingsRepository.State(externalPlayer = true))
         }
 
-        viewModel = ArtworkViewModel(
-            artworkId = MediaMockups.movieArtwork.id,
-            repository = artworkRepository,
-            userRepository = userRepository,
-            settingsRepository = settingsRepository
-        )
+        updateVm()
 
         viewModel.uiState.test {
 
@@ -264,12 +274,7 @@ class ArtworkViewModelTest : FunSpec({
             )
         )
 
-        viewModel = ArtworkViewModel(
-            artworkId = MediaMockups.movieArtwork.id,
-            repository = artworkRepository,
-            userRepository = userRepository,
-            settingsRepository = settingsRepository
-        )
+        updateVm()
 
         viewModel.uiState.test {
 

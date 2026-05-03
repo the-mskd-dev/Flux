@@ -41,7 +41,6 @@ import com.mskd.flux.utils.extensions.timeDescription
 @Composable
 fun ArtworkButtons(
     media: Media,
-    hideProgress: Boolean,
     sendIntent: (ArtworkIntent) -> Unit
 ) {
 
@@ -49,7 +48,7 @@ fun ArtworkButtons(
 
     val text = when (media.status) {
         Status.WATCHED -> stringResource(R.string.rewatch)
-        Status.IS_WATCHING if !hideProgress -> stringResource(R.string.resume)
+        Status.IS_WATCHING -> stringResource(R.string.resume)
         else -> stringResource(R.string.play)
     }
 
@@ -58,12 +57,10 @@ fun ArtworkButtons(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
 
-        if (!hideProgress) {
-            MediaStatusProgression(
-                modifier = Modifier.fillMaxWidth(),
-                media = media
-            )
-        }
+        MediaStatusProgression(
+            modifier = Modifier.fillMaxWidth(),
+            media = media
+        )
 
         ToggleButton(
             modifier = Modifier
@@ -155,7 +152,6 @@ fun ArtworkButtons_Preview() {
     AppTheme {
         ArtworkButtons(
             media = MediaMockups.episode1,
-            hideProgress = false,
             sendIntent = {}
         )
     }
@@ -170,7 +166,6 @@ fun ArtworkButtonsWatching_Preview() {
                 currentTime = (MediaMockups.episode1.duration.minToMs / 2f).toLong(),
                 status = Status.IS_WATCHING
             ),
-            hideProgress = false,
             sendIntent = {}
         )
     }
@@ -182,19 +177,6 @@ fun ArtworkButtonsWatched_Preview() {
     AppTheme {
         ArtworkButtons(
             media = MediaMockups.episode1.copy(status = Status.WATCHED),
-            hideProgress = false,
-            sendIntent = {}
-        )
-    }
-}
-
-@FluxPreview
-@Composable
-fun ArtworkButtonsHideProgress_Preview() {
-    AppTheme {
-        ArtworkButtons(
-            media = MediaMockups.episode1.copy(status = Status.WATCHED),
-            hideProgress = true,
             sendIntent = {}
         )
     }

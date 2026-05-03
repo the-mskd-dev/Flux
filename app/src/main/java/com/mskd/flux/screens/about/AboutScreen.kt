@@ -83,7 +83,7 @@ fun AboutScreen(onBack: () -> Unit) {
                     title = stringResource(R.string.how_to_suggest),
                     content = buildLinkedString(
                         template = stringResource(R.string.how_to_suggest_desc),
-                        stringResource(R.string.mail) to Constants.CONTACT.MAIL,
+                        stringResource(R.string.mail) to "mailto:" + Constants.CONTACT.MAIL,
                         stringResource(R.string.github) to Constants.CONTACT.ISSUES
                     )
                 )

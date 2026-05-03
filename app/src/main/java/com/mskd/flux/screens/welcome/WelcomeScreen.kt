@@ -1,7 +1,5 @@
 package com.mskd.flux.screens.welcome
 
-import android.Manifest
-import android.os.Build
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
@@ -44,9 +42,7 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.isGranted
-import com.google.accompanist.permissions.rememberPermissionState
 import com.mskd.flux.R
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.ui.component.FluxButton
@@ -55,6 +51,7 @@ import com.mskd.flux.ui.component.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.FluxPreview
+import com.mskd.flux.utils.storagePermissionState
 import kotlin.math.absoluteValue
 import kotlin.random.Random
 
@@ -66,7 +63,7 @@ fun WelcomeScreen(
 ) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val permissions = fluxPermissionState()
+    val permissions = storagePermissionState()
     val pagerState = rememberPagerState(pageCount = { WelcomePage.entries.size })
 
     LaunchedEffect(Unit) {
@@ -353,19 +350,6 @@ val WelcomeScreenConstraintSet = ConstraintSet {
         end.linkTo(parent.end, Ui.Space.MEDIUM)
         width = Dimension.fillToConstraints
     }
-
-}
-
-@Composable
-@OptIn(ExperimentalPermissionsApi::class)
-fun fluxPermissionState(): PermissionState {
-
-    val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-        Manifest.permission.READ_MEDIA_VIDEO
-    else
-        Manifest.permission.READ_EXTERNAL_STORAGE
-
-    return rememberPermissionState(permission = permission)
 
 }
 

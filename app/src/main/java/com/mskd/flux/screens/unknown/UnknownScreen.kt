@@ -1,7 +1,5 @@
 package com.mskd.flux.screens.unknown
 
-import android.content.ActivityNotFoundException
-import android.util.Log
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,8 +17,6 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -44,8 +40,7 @@ import com.mskd.flux.model.ScreenState
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Status
 import com.mskd.flux.navigation.Route
-import com.mskd.flux.navigation.Route.*
-import com.mskd.flux.screens.artwork.ArtworkIntent
+import com.mskd.flux.navigation.Route.Player
 import com.mskd.flux.ui.component.ErrorScreen
 import com.mskd.flux.ui.component.FluxScaffold
 import com.mskd.flux.ui.component.LoadingScreen
@@ -57,6 +52,7 @@ import com.mskd.flux.utils.ExternalPlayer
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.extensions.minToMs
 import com.mskd.flux.utils.extensions.timeDescription
+import com.mskd.flux.utils.rememberExternalPlayerLauncher
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -69,6 +65,13 @@ fun UnknownScreen(
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    val externalPlayerLauncher = rememberExternalPlayerLauncher(
+        context = context,
+        onProgressResult = { progress ->
+            viewModel.handleIntent(UnknownIntent.OnExternalPlayerResult(progress = progress))
+        }
+    )
+
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
             when (event) {
@@ -76,15 +79,12 @@ fun UnknownScreen(
                 UnknownEvent.NavigateToHowToScreen -> navigate(Route.HowTo)
                 is UnknownEvent.PlayMedia -> navigate(Player(mediaId = event.mediaId))
                 is UnknownEvent.LaunchExternalPlayer -> {
-
-                    try {
-                        val intent = ExternalPlayer.createIntent(media = event.media)
-                        context.startActivity(intent)
-                    } catch (e: ActivityNotFoundException) {
-                        Log.e("UnknownScreen", "No player founded", e)
-                        viewModel.handleIntent(UnknownIntent.PlayMedia(media = event.media, forceInternal = true))
-                    }
-
+                    ExternalPlayer.launchPlayer(
+                        context = context,
+                        media = event.media,
+                        launcher = externalPlayerLauncher,
+                        onError = { viewModel.handleIntent(UnknownIntent.PlayMedia(media = event.media, forceInternal = true)) }
+                    )
                 }
             }
         }
@@ -103,7 +103,6 @@ fun UnknownScreen(
             ScreenState.CONTENT -> {
                 UnknownScreenContent(
                     medias = uiState.medias,
-                    hideProgress = uiState.useExternalPlayer,
                     sendIntent = viewModel::handleIntent
                 )
             }
@@ -116,7 +115,6 @@ fun UnknownScreen(
 @Composable
 fun UnknownScreenContent(
     medias: List<Episode>,
-    hideProgress: Boolean,
     sendIntent: (UnknownIntent) -> Unit
 ) {
 
@@ -154,7 +152,6 @@ fun UnknownScreenContent(
 
                     UnknownItem(
                         media = media,
-                        hideProgress = hideProgress,
                         sendIntent = sendIntent
                     )
 
@@ -195,7 +192,6 @@ fun UnknownScreenContent(
 @Composable
 fun UnknownItem(
     media: Episode,
-    hideProgress: Boolean,
     sendIntent: (UnknownIntent) -> Unit
 ) {
 
@@ -209,7 +205,6 @@ fun UnknownItem(
 
         MediaThumbnail(
             modifier = Modifier.width(160.dp),
-            hideProgress = hideProgress,
             media = media,
         )
 
@@ -247,7 +242,7 @@ fun UnknownItem(
                     color = MaterialTheme.colorScheme.secondary
                 )
 
-                if (media.status == Status.IS_WATCHING && !hideProgress) {
+                if (media.status == Status.IS_WATCHING) {
                     val remainingTime = (media.duration.minToMs - media.currentTime).timeDescription(withoutSeconds = true)
                     Text.Label.Small(
                         text = "(" + stringResource(R.string.remaining_time, remainingTime) + ")",
@@ -269,7 +264,6 @@ fun UnknownScreen_Preview() {
     AppTheme {
         UnknownScreenContent(
             medias = MediaMockups.episodesWithStatus,
-            hideProgress = false,
             sendIntent = {}
         )
     }

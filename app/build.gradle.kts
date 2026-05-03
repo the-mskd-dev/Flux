@@ -36,8 +36,8 @@ configure<ApplicationExtension> {
         applicationId = "com.mskd.flux"
         minSdk = 29
         targetSdk = 37
-        versionCode = 13
-        versionName = "1.3.0"
+        versionCode = 14
+        versionName = "1.3.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables { useSupportLibrary = true }
@@ -162,6 +162,9 @@ dependencies {
     // Room
     implementation(libs.bundles.room)
     ksp(libs.androidx.room.compiler)
+
+    // ACRA
+    implementation(libs.bundles.acra)
 
     // Unit Testing
     testImplementation(libs.junit)

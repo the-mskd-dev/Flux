@@ -27,7 +27,6 @@ import com.mskd.flux.utils.extensions.grayScale
 @Composable
 fun MediaThumbnail(
     modifier: Modifier,
-    hideProgress: Boolean,
     media: Media
 ) {
 
@@ -48,13 +47,12 @@ fun MediaThumbnail(
                     .fillMaxSize()
                     .let { if (media.status == Status.WATCHED) it.grayScale() else it },
                 media = media,
-                hideProgress = hideProgress,
                 contentDescription = contentDescription
             )
 
             AnimatedVisibility(
                 modifier = Modifier.align(Alignment.BottomCenter),
-                visible = media.status == Status.IS_WATCHING && !hideProgress
+                visible = media.status == Status.IS_WATCHING
             ) {
                 ProgressBar(
                     modifier = Modifier

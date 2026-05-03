@@ -40,6 +40,9 @@ media3 = "1.10.0"
 coil = "3.4.0"
 jellyfinFfmpeg = "1.9.0+1"
 
+# -- ACRA --
+acra = "5.13.1"
+
 # -- Testing --
 junit = "4.13.2"
 kotest = "6.1.11"
@@ -120,6 +123,11 @@ androidx-room-runtime = { group = "androidx.room", name = "room-runtime", versio
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 
+# -- ACRA --
+acra-core = { group = "ch.acra", name = "acra-core", version.ref = "acra" }
+acra-mail = { group = "ch.acra", name = "acra-mail", version.ref = "acra" }
+acra-dialog = { group = "ch.acra", name = "acra-dialog", version.ref = "acra" }
+
 # -- Test --
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 kotest = { group = "io.kotest", name = "kotest-runner-junit5", version.ref = "kotest"}
@@ -189,4 +197,9 @@ datastore = [
 room = [
     "androidx-room-runtime",
     "androidx-room-ktx"
+]
+acra = [
+    "acra-core",
+    "acra-mail",
+    "acra-dialog"
 ]

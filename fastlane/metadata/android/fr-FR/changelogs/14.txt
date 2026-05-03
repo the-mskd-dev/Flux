@@ -1,0 +1,3 @@
+- Fonctionnalité: Ajout du suivi de progression pour les lecteurs externes. ATTENTION : Tous les lecteurs ne sont pas compatibles avec cette fonctionnalité
+- Fonctionnalité: Ajout de ACRA, pour avoir des rapports sur les crashs
+- Amélioration: Utilisation des chemins réels pour lire les fichiers

@@ -23,6 +23,10 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -33,6 +37,7 @@ import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
+import com.mskd.flux.screens.artwork.ArtworkDropDownMenu
 import com.mskd.flux.screens.artwork.ArtworkIntent
 import com.mskd.flux.screens.artwork.composables.common.ArtworkButtons
 import com.mskd.flux.screens.artwork.composables.common.ArtworkDescription
@@ -52,6 +57,8 @@ fun ArtworkContentLarge(
     currentSeason: Int,
     sendIntent: (ArtworkIntent) -> Unit,
 ) {
+
+    var showMenu by remember { mutableStateOf(false) }
 
     Row(
         modifier = Modifier.fillMaxSize()
@@ -91,22 +98,37 @@ fun ArtworkContentLarge(
 
             item {
 
-                Column(modifier = Modifier.fillMaxWidth()) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .statusBarsPadding()
+                        .navigationBarsPadding(),
+                    contentAlignment = Alignment.TopEnd)
+                {
 
-                    IconButton(
-                        modifier = Modifier
-                            .statusBarsPadding()
-                            .navigationBarsPadding()
-                            .align(Alignment.End),
-                        onClick = { sendIntent(ArtworkIntent.OnMenuTap) },
-                        content = {
-                            Icon(
-                                imageVector = Icons.Default.MoreVert,
-                                contentDescription = "menu button"
+                    Column {
+
+                        IconButton(
+                            onClick = { showMenu = true },
+                            content = {
+                                Icon(
+                                    imageVector = Icons.Default.MoreVert,
+                                    contentDescription = "menu button"
+                                )
+                            }
+                        )
+
+                        if (showMenu) {
+                            ArtworkDropDownMenu(
+                                onDismissRequest = { showMenu = false },
+                                sendIntent = sendIntent
                             )
                         }
-                    )
+
+                    }
+
                 }
+
             }
 
             item {

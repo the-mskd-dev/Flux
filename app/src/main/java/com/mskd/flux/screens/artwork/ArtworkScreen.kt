@@ -2,22 +2,37 @@ package com.mskd.flux.screens.artwork
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.outlined.Build
+import androidx.compose.material.icons.outlined.Create
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfoV2
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.window.core.layout.WindowSizeClass
 import com.mskd.flux.R
 import com.mskd.flux.model.ScreenState
+import com.mskd.flux.model.artwork.Status
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Route.Player
 import com.mskd.flux.screens.artwork.composables.ArtworkContentLarge
 import com.mskd.flux.screens.artwork.composables.ArtworkContentRegular
+import com.mskd.flux.screens.artwork.composables.episodes.EpisodeDropDownMenuItem
 import com.mskd.flux.ui.component.ErrorScreen
 import com.mskd.flux.ui.component.FluxDialog
 import com.mskd.flux.ui.component.LoadingScreen
@@ -116,5 +131,63 @@ fun ArtworkScreen(
             onValidate = { viewModel.handleIntent(ArtworkIntent.MarkPreviousEpisodesAsWatched) }
         )
     }
+
+}
+
+@Composable
+fun ArtworkDropDownMenu(
+    onDismissRequest: () -> Unit,
+    sendIntent: (ArtworkIntent) -> Unit
+) {
+
+    DropdownMenu(
+        expanded = true,
+        onDismissRequest = onDismissRequest,
+        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+        content = {
+
+            ArtworkDropDownMenuItem(
+                text = stringResource(R.string.more_info),
+                onClick = {
+                    sendIntent(ArtworkIntent.OpenArtworkInfo)
+                    onDismissRequest()
+                },
+                leadingIcon = {
+                    Icon(imageVector = Icons.Outlined.Info, contentDescription = null)
+                },
+            )
+
+            ArtworkDropDownMenuItem(
+                text = "Select metadatas",
+                onClick = {
+                    //sendIntent(ArtworkIntent.ChangeWatchStatus(media = episode))
+                    onDismissRequest()
+                },
+                leadingIcon = {
+                    Icon(imageVector = Icons.Outlined.Create, contentDescription = null)
+                },
+            )
+
+        }
+    )
+
+}
+
+@Composable
+fun ArtworkDropDownMenuItem(
+    text: String,
+    onClick: () -> Unit,
+    leadingIcon:  @Composable (() -> Unit)?
+) {
+
+    DropdownMenuItem(
+        colors = MenuDefaults.itemColors(
+            textColor = MaterialTheme.colorScheme.onSurface,
+            leadingIconColor = MaterialTheme.colorScheme.onSurface,
+        ),
+        onClick = onClick,
+        text = { Text.Body.Medium(text = text) },
+        leadingIcon = leadingIcon,
+    )
 
 }

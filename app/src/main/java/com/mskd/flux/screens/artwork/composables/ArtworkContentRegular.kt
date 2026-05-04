@@ -29,7 +29,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -42,6 +44,7 @@ import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
+import com.mskd.flux.screens.artwork.ArtworkDropDownMenu
 import com.mskd.flux.screens.artwork.ArtworkIntent
 import com.mskd.flux.screens.artwork.composables.common.ArtworkButtons
 import com.mskd.flux.screens.artwork.composables.common.ArtworkDescription
@@ -65,6 +68,7 @@ fun ArtworkContentRegular(
 
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val state = rememberLazyListState()
+    var showMenu by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         state.scrollToItem(0)
@@ -106,7 +110,7 @@ fun ArtworkContentRegular(
                 ),
                 actions = {
                     IconButton(
-                        onClick = { sendIntent(ArtworkIntent.OnMenuTap) },
+                        onClick = { showMenu = true },
                         content = {
                             Icon(
                                 imageVector = Icons.Default.MoreVert,
@@ -114,6 +118,14 @@ fun ArtworkContentRegular(
                             )
                         }
                     )
+
+                    if (showMenu) {
+                        ArtworkDropDownMenu(
+                            onDismissRequest = { showMenu = false },
+                            sendIntent = sendIntent
+                        )
+                    }
+
                 },
                 navigationIcon = {
                     IconButton(

@@ -98,6 +98,7 @@ class ArtworkViewModel @AssistedInject constructor(
     fun handleIntent(intent: ArtworkIntent) = viewModelScope.launch {
         when (intent) {
             ArtworkIntent.OnBackTap -> _event.emit(ArtworkEvent.BackToPreviousScreen)
+            ArtworkIntent.OnMenuTap -> onMenuTap()
             is ArtworkIntent.SelectSeason -> selectSeason(season = intent.season)
             is ArtworkIntent.PlayMedia -> playMedia(media = intent.media, forceInternal = intent.forceInternal)
             ArtworkIntent.CloseEpisodesStatusDialog -> closeStatusDialog()
@@ -164,6 +165,10 @@ class ArtworkViewModel @AssistedInject constructor(
             _event.emit(ArtworkEvent.LaunchExternalPlayer(media = media))
         else
             _event.emit(ArtworkEvent.PlayMedia(mediaId = media.mediaId))
+
+    }
+
+    private fun onMenuTap() {
 
     }
 

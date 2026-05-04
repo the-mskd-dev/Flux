@@ -25,6 +25,7 @@ sealed class ArtworkIntent {
     object CloseEpisodesStatusDialog: ArtworkIntent()
     data class SelectSeason(val season: Int): ArtworkIntent()
     data class PlayMedia(val media: Media, val forceInternal: Boolean = false): ArtworkIntent()
+    data object OnMenuTap: ArtworkIntent()
     data class OpenArtworkInfo(val artwork: Artwork): ArtworkIntent()
     data class OpenEpisodeInfo(val episode: Episode): ArtworkIntent()
     data class OnExternalPlayerResult(val progress: Long) : ArtworkIntent()

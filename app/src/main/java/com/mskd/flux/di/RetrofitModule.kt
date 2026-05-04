@@ -31,7 +31,7 @@ object RetrofitModule {
                     .addHeader("accept", "application/json")
                     .apply {
                         if (token.isNotEmpty()) {
-                            addHeader("Authorization", "Bearer $token")
+                            addHeader("Authorization", "Bearer ${token.trim()}")
                         }
                     }
                     .build()

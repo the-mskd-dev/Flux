@@ -1,26 +1,19 @@
 package com.mskd.flux.useCases
 
-import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.data.repository.artwork.ArtworkRepository
 import com.mskd.flux.data.repository.user.UserRepository
-import com.mskd.flux.mockups.FakeArtworkRepository
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Status
-import com.mskd.flux.screens.player.PlayerIntent
 import com.mskd.flux.useCases.mediaProgress.MediaProgressUC
 import com.mskd.flux.useCases.mediaProgress.MediaProgressUCImpl
-import com.mskd.flux.useCases.MediaProgressUCTestCases
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.extensions.lastEpisode
 import com.mskd.flux.utils.extensions.minToMs
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData
-import io.kotest.matchers.nulls.shouldNotBeNull
-import io.kotest.matchers.shouldBe
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk

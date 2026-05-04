@@ -1,16 +1,11 @@
 package com.mskd.flux.model
 
-import android.content.Context
 import android.net.Uri
 import android.os.Parcelable
-import android.provider.MediaStore
-import android.util.Log
-import androidx.core.content.FileProvider
 import androidx.core.net.toUri
 import com.mskd.flux.model.artwork.ContentType
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Serializable
-import java.io.File
 import java.util.Date
 import java.util.regex.Pattern
 

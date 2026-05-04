@@ -1,10 +1,12 @@
 package com.mskd.flux.screens.artwork.composables
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.displayCutoutPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -12,8 +14,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,6 +42,7 @@ import com.mskd.flux.screens.artwork.composables.episodes.SeasonsTabs
 import com.mskd.flux.ui.component.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.utils.LandscapePreview
 
 @Composable
 fun ArtworkContentLarge(
@@ -48,20 +57,56 @@ fun ArtworkContentLarge(
         modifier = Modifier.fillMaxSize()
     ) {
 
-        ArtworkImage(
-            modifier = Modifier.weight(.5f),
-            artwork = artwork,
-            sendIntent = sendIntent
-        )
+        Box(modifier = Modifier.weight(.5f),) {
+
+            ArtworkImage(
+                modifier = Modifier.fillMaxSize(),
+                artwork = artwork,
+                sendIntent = sendIntent
+            )
+
+            Column(
+                modifier = Modifier
+                    .statusBarsPadding()
+                    .displayCutoutPadding()
+            ) {
+
+                IconButton(
+                    onClick = { sendIntent(ArtworkIntent.OnBackTap) },
+                    content = {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+                            contentDescription = "back button"
+                        )
+                    }
+                )
+            }
+
+        }
 
         LazyColumn(
             modifier = Modifier.weight(.5f),
             horizontalAlignment = Alignment.CenterHorizontally,
-            contentPadding = PaddingValues(vertical = Ui.Space.MEDIUM)
         ) {
 
             item {
-                Spacer(Modifier.statusBarsPadding() )
+
+                Column(modifier = Modifier.fillMaxWidth()) {
+
+                    IconButton(
+                        modifier = Modifier
+                            .statusBarsPadding()
+                            .navigationBarsPadding()
+                            .align(Alignment.End),
+                        onClick = { sendIntent(ArtworkIntent.OnMenuTap) },
+                        content = {
+                            Icon(
+                                imageVector = Icons.Default.MoreVert,
+                                contentDescription = "menu button"
+                            )
+                        }
+                    )
+                }
             }
 
             item {
@@ -139,7 +184,7 @@ fun ArtworkContentLarge(
 }
 
 
-@Preview(device = Devices.AUTOMOTIVE_1024p, widthDp = 720, heightDp = 360)
+@LandscapePreview
 @Composable
 fun ArtworkContentLargeMovie_Preview() {
     AppTheme {
@@ -153,7 +198,7 @@ fun ArtworkContentLargeMovie_Preview() {
     }
 }
 
-@Preview(device = Devices.AUTOMOTIVE_1024p, widthDp = 720, heightDp = 360)
+@LandscapePreview
 @Composable
 fun ArtworkContentLargeShow_Preview() {
     AppTheme {

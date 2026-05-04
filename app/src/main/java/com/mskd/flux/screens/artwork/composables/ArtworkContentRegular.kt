@@ -110,7 +110,7 @@ fun ArtworkContentRegular(
                         content = {
                             Icon(
                                 imageVector = Icons.Default.MoreVert,
-                                contentDescription = "back button"
+                                contentDescription = "menu button"
                             )
                         }
                     )

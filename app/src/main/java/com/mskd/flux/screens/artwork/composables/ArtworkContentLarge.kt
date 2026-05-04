@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.displayCutoutPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -55,10 +56,9 @@ fun ArtworkContentLarge(
     media: Media,
     episodes: List<Episode>,
     currentSeason: Int,
+    scaffoldInnerPadding: PaddingValues,
     sendIntent: (ArtworkIntent) -> Unit,
 ) {
-
-    var showMenu by remember { mutableStateOf(false) }
 
     Row(
         modifier = Modifier.fillMaxSize()
@@ -72,23 +72,6 @@ fun ArtworkContentLarge(
                 sendIntent = sendIntent
             )
 
-            Column(
-                modifier = Modifier
-                    .statusBarsPadding()
-                    .displayCutoutPadding()
-            ) {
-
-                IconButton(
-                    onClick = { sendIntent(ArtworkIntent.OnBackTap) },
-                    content = {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-                            contentDescription = "back button"
-                        )
-                    }
-                )
-            }
-
         }
 
         LazyColumn(
@@ -97,38 +80,7 @@ fun ArtworkContentLarge(
         ) {
 
             item {
-
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .statusBarsPadding()
-                        .navigationBarsPadding(),
-                    contentAlignment = Alignment.TopEnd)
-                {
-
-                    Column {
-
-                        IconButton(
-                            onClick = { showMenu = true },
-                            content = {
-                                Icon(
-                                    imageVector = Icons.Default.MoreVert,
-                                    contentDescription = "menu button"
-                                )
-                            }
-                        )
-
-                        if (showMenu) {
-                            ArtworkDropDownMenu(
-                                onDismissRequest = { showMenu = false },
-                                sendIntent = sendIntent
-                            )
-                        }
-
-                    }
-
-                }
-
+                Spacer(modifier = Modifier.height(scaffoldInnerPadding.calculateTopPadding()))
             }
 
             item {
@@ -196,7 +148,7 @@ fun ArtworkContentLarge(
             }
 
             item {
-                Spacer(Modifier.navigationBarsPadding() )
+                Spacer(modifier = Modifier.height(scaffoldInnerPadding.calculateBottomPadding()))
             }
 
         }
@@ -215,6 +167,7 @@ fun ArtworkContentLargeMovie_Preview() {
             media = MediaMockups.movie,
             episodes = emptyList(),
             currentSeason = -1,
+            scaffoldInnerPadding = PaddingValues.Zero,
             sendIntent = {}
         )
     }
@@ -229,6 +182,7 @@ fun ArtworkContentLargeShow_Preview() {
             media = MediaMockups.episode1,
             episodes = MediaMockups.episodesWithStatus,
             currentSeason = 1,
+            scaffoldInnerPadding = PaddingValues.Zero,
             sendIntent = {}
         )
     }

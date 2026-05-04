@@ -5,6 +5,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -63,170 +64,93 @@ fun ArtworkContentRegular(
     media: Media,
     episodes: List<Episode>,
     currentSeason: Int,
+    scaffoldInnerPadding: PaddingValues,
     sendIntent: (ArtworkIntent) -> Unit,
 ) {
 
-    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val state = rememberLazyListState()
-    var showMenu by remember { mutableStateOf(false) }
 
-    LaunchedEffect(Unit) {
-        state.scrollToItem(0)
-    }
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        state = state,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
 
-    val titleAlpha by remember {
-        derivedStateOf {
-            if (scrollBehavior.state.contentOffset < -10f) 1f else 0f
-        }
-    }
+        item {
 
-    val animatedAlpha by animateFloatAsState(
-        targetValue = titleAlpha,
-        animationSpec = spring(
-            stiffness = Spring.StiffnessLow,
-            dampingRatio = Spring.DampingRatioNoBouncy
-        ),
-        label = "TitleAlphaAnimation"
-    )
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM),
+            ) {
 
-    Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-        topBar = {
+                ArtworkImage(
+                    modifier = Modifier.aspectRatio(6f / 5f),
+                    artwork = artwork,
+                    sendIntent = sendIntent
+                )
 
-            CenterAlignedTopAppBar(
-                modifier = Modifier.fillMaxWidth(),
-                title = {
-                    Text.Headline.Small(
-                        modifier = Modifier.graphicsLayer { alpha = animatedAlpha },
-                        text = artwork.title,
-                        overflow = TextOverflow.Ellipsis,
-                        maxLines = 1
-                    )
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent,
-                    scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
-                    titleContentColor = MaterialTheme.colorScheme.onSurface,
-                ),
-                actions = {
-                    IconButton(
-                        onClick = { showMenu = true },
-                        content = {
-                            Icon(
-                                imageVector = Icons.Default.MoreVert,
-                                contentDescription = "menu button"
-                            )
-                        }
-                    )
+                ArtworkButtons(
+                    media = media,
+                    sendIntent = sendIntent
+                )
 
-                    if (showMenu) {
-                        ArtworkDropDownMenu(
-                            onDismissRequest = { showMenu = false },
-                            sendIntent = sendIntent
-                        )
-                    }
+                ArtworkDescription(media = media)
 
-                },
-                navigationIcon = {
-                    IconButton(
-                        onClick = { sendIntent(ArtworkIntent.OnBackTap) },
-                        content = {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-                                contentDescription = "back button"
-                            )
-                        }
-                    )
-                },
-                scrollBehavior = scrollBehavior
-            )
+            }
 
         }
-    ) { innerPadding ->
 
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            state = state,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+        if (episodes.isNotEmpty()) {
 
             item {
 
                 Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM),
+                    modifier = Modifier.padding(top = Ui.Space.LARGE),
+                    verticalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)
                 ) {
 
-                    ArtworkImage(
-                        modifier = Modifier.aspectRatio(6f / 5f),
-                        artwork = artwork,
-                        sendIntent = sendIntent
+                    Text.Title.Large(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = Ui.Space.MEDIUM),
+                        text = stringResource(R.string.episode_list),
+                        color = MaterialTheme.colorScheme.onBackground
                     )
 
-                    ArtworkButtons(
-                        media = media,
-                        sendIntent = sendIntent
-                    )
-
-                    ArtworkDescription(media = media)
-
-                }
-
-            }
-
-            if (episodes.isNotEmpty()) {
-
-                item {
-
-                    Column(
-                        modifier = Modifier.padding(top = Ui.Space.LARGE),
-                        verticalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)
-                    ) {
-
-                        Text.Title.Large(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = Ui.Space.MEDIUM),
-                            text = stringResource(R.string.episode_list),
-                            color = MaterialTheme.colorScheme.onBackground
-                        )
-
-                        SeasonsTabs(
-                            selectedSeason = currentSeason,
-                            seasons = episodes.map { it.season }.distinct(),
-                            onSeasonTap = { sendIntent(ArtworkIntent.SelectSeason(it)) }
-                        )
-
-                    }
-
-                }
-
-
-                itemsIndexed(
-                    items = episodes
-                        .filter { it.season == currentSeason }
-                        .sortedBy { it.number },
-                    key = { _, e -> e.id }
-                ) { i, episode ->
-
-                    if (i != 0) {
-                        HorizontalDivider(modifier = Modifier.padding(horizontal = Ui.Space.MEDIUM))
-                    }
-
-                    EpisodeItem(
-                        modifier = Modifier.animateItem(),
-                        episode = episode,
-                        sendIntent = sendIntent
+                    SeasonsTabs(
+                        selectedSeason = currentSeason,
+                        seasons = episodes.map { it.season }.distinct(),
+                        onSeasonTap = { sendIntent(ArtworkIntent.SelectSeason(it)) }
                     )
 
                 }
 
             }
 
-            item {
-                Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding()))
+
+            itemsIndexed(
+                items = episodes
+                    .filter { it.season == currentSeason }
+                    .sortedBy { it.number },
+                key = { _, e -> e.id }
+            ) { i, episode ->
+
+                if (i != 0) {
+                    HorizontalDivider(modifier = Modifier.padding(horizontal = Ui.Space.MEDIUM))
+                }
+
+                EpisodeItem(
+                    modifier = Modifier.animateItem(),
+                    episode = episode,
+                    sendIntent = sendIntent
+                )
+
             }
 
+        }
+
+        item {
+            Spacer(modifier = Modifier.height(scaffoldInnerPadding.calculateBottomPadding()))
         }
 
     }
@@ -242,6 +166,7 @@ fun ArtworkContentMovie_Preview() {
             media = MediaMockups.movie,
             episodes = emptyList(),
             currentSeason = -1,
+            scaffoldInnerPadding = PaddingValues.Zero,
             sendIntent = {}
         )
     }
@@ -256,6 +181,7 @@ fun ArtworkContentShow_Preview() {
             media = MediaMockups.episode1,
             episodes = MediaMockups.episodesWithStatus,
             currentSeason = 1,
+            scaffoldInnerPadding = PaddingValues.Zero,
             sendIntent = {}
         )
     }

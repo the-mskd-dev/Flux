@@ -10,7 +10,6 @@ import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.ScreenState
 import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.model.artwork.Status
-import com.mskd.flux.screens.player.PlayerViewModel
 import com.mskd.flux.useCases.mediaProgress.MediaProgressUC
 import com.mskd.flux.useCases.mediaProgress.MediaProgressUCImpl
 import io.kotest.core.spec.style.FunSpec

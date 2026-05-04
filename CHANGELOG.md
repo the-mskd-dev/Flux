@@ -1,5 +1,4 @@
-## Version 1.3.1
+## Version 1.3.2
 
-- Feature: Progress tracking support with external players. WARNING: It's not compatible with all players
-- Feature: Add ACRA, to get crash reports
-- Improvement: Use real file's path to play medias 
+- Fix: Crash with files on SD card
+- Fix: Crash with malformed token API

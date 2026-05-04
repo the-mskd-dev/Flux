@@ -1,0 +1,2 @@
+- Fix: Crash avec les fichiers sur carte SD
+- Fix: Crash avec les clés d'API malformées

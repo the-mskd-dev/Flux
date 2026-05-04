@@ -33,7 +33,7 @@ object ExternalPlayer {
         onError: () -> Unit
     ) {
         try {
-            val intent = createIntent(media = media, context = context)
+            val intent = createIntent(media = media)
             ExternalPlayerService.start(context)
             launcher.launch(intent)
         } catch (e: Exception) {
@@ -47,13 +47,10 @@ object ExternalPlayer {
         }
     }
 
-    private fun createIntent(media: Media, context: Context) : Intent {
-
-        val uri = media.file.resolvedUri(context)
-
+    private fun createIntent(media: Media) : Intent {
         return Intent(Intent.ACTION_VIEW).apply {
 
-            setDataAndType(uri, "video/*")
+            setDataAndType(media.file.uri, "video/*")
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             putExtra("return_result", true)
 

@@ -7,7 +7,6 @@ import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.mockups.FakeArtworkRepository
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.ScreenState
-import com.mskd.flux.screens.player.PlayerViewModel
 import com.mskd.flux.useCases.mediaProgress.MediaProgressUC
 import com.mskd.flux.useCases.mediaProgress.MediaProgressUCImpl
 import io.kotest.core.spec.style.FunSpec

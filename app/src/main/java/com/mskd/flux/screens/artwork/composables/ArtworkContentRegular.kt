@@ -96,7 +96,7 @@ fun ArtworkContentRegular(
             CenterAlignedTopAppBar(
                 modifier = Modifier.fillMaxWidth(),
                 title = {
-                    Text.Headline.Medium(
+                    Text.Headline.Small(
                         modifier = Modifier.graphicsLayer { alpha = animatedAlpha },
                         text = artwork.title,
                         overflow = TextOverflow.Ellipsis,

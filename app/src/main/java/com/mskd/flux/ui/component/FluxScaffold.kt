@@ -39,7 +39,7 @@ fun FluxScaffold(
             CenterAlignedTopAppBar(
                 modifier = Modifier
                     .fillMaxWidth(),
-                title = { Text.Headline.Medium(text = title) },
+                title = { Text.Headline.Small(text = title) },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.background,
                     scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer,

@@ -6,7 +6,6 @@ import androidx.core.net.toUri
 import com.mskd.flux.model.artwork.ContentType
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Serializable
-import java.io.File
 import java.util.Date
 import java.util.regex.Pattern
 

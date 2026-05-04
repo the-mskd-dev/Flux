@@ -32,34 +32,8 @@ data class UserFile(
     val addedDate: Date
         get() = Date(addedDateTime)
 
-    fun resolvedUri(context: Context): Uri {
-        val contentUri = path.toUri()
-
-        val realPath = try {
-            val projection = arrayOf(MediaStore.Video.Media.DATA)
-            context.contentResolver.query(contentUri, projection, null, null, null)?.use { cursor ->
-                if (cursor.moveToFirst()) {
-                    cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA))
-                } else null
-            }
-        } catch (e: Exception) {
-            Log.e("UserFile", "Fail to get real path for $name", e)
-            null
-        }
-
-        val finalUri = when {
-            realPath != null -> {
-                FileProvider.getUriForFile(
-                    context,
-                    "${context.packageName}.fileprovider",
-                    File(realPath)
-                )
-            }
-            else -> contentUri
-        }
-
-        return finalUri
-    }
+    val uri: Uri
+        get() = path.toUri()
 
 }
 

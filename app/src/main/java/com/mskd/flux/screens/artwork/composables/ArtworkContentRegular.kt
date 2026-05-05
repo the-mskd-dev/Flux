@@ -1,29 +1,51 @@
 package com.mskd.flux.screens.artwork.composables
 
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import com.mskd.flux.R
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
+import com.mskd.flux.screens.artwork.ArtworkDropDownMenu
 import com.mskd.flux.screens.artwork.ArtworkIntent
 import com.mskd.flux.screens.artwork.composables.common.ArtworkButtons
 import com.mskd.flux.screens.artwork.composables.common.ArtworkDescription
@@ -42,14 +64,11 @@ fun ArtworkContentRegular(
     media: Media,
     episodes: List<Episode>,
     currentSeason: Int,
+    scaffoldInnerPadding: PaddingValues,
     sendIntent: (ArtworkIntent) -> Unit,
 ) {
 
     val state = rememberLazyListState()
-
-    LaunchedEffect(Unit) {
-        state.scrollToItem(0)
-    }
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -131,7 +150,7 @@ fun ArtworkContentRegular(
         }
 
         item {
-            Spacer(Modifier.navigationBarsPadding())
+            Spacer(modifier = Modifier.height(scaffoldInnerPadding.calculateBottomPadding()))
         }
 
     }
@@ -147,6 +166,7 @@ fun ArtworkContentMovie_Preview() {
             media = MediaMockups.movie,
             episodes = emptyList(),
             currentSeason = -1,
+            scaffoldInnerPadding = PaddingValues.Zero,
             sendIntent = {}
         )
     }
@@ -161,6 +181,7 @@ fun ArtworkContentShow_Preview() {
             media = MediaMockups.episode1,
             episodes = MediaMockups.episodesWithStatus,
             currentSeason = 1,
+            scaffoldInnerPadding = PaddingValues.Zero,
             sendIntent = {}
         )
     }

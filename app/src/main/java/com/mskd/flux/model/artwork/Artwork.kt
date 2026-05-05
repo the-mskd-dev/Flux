@@ -5,6 +5,7 @@ import androidx.room.PrimaryKey
 import com.mskd.flux.R
 import com.mskd.flux.model.UserFile
 import com.mskd.flux.model.tmdb.TMDBArtwork
+import com.mskd.flux.model.tmdb.TMDBMediaType
 import com.mskd.flux.model.tmdb.TMDBMovie
 
 /**
@@ -78,6 +79,10 @@ enum class ContentType {
     val stringResource: Int get() = when (this) {
         MOVIE -> R.string.movies
         SHOW -> R.string.shows
+    }
+
+    fun equalsTmdb(tmdbType: TMDBMediaType) : Boolean {
+        return (this == MOVIE && tmdbType == TMDBMediaType.MOVIE) || (this == SHOW && tmdbType == TMDBMediaType.SHOW)
     }
 
 }

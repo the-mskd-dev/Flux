@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -103,7 +104,7 @@ class ArtworkViewModel @AssistedInject constructor(
             ArtworkIntent.CloseEpisodesStatusDialog -> closeStatusDialog()
             is ArtworkIntent.ChangeWatchStatus -> changeWatchStatus(media = intent.media)
             ArtworkIntent.MarkPreviousEpisodesAsWatched -> markPreviousEpisodesAsWatched()
-            is ArtworkIntent.OpenArtworkInfo -> _event.emit(ArtworkEvent.OpenArtworkInfo(artwork = intent.artwork))
+            ArtworkIntent.OpenArtworkInfo -> openArtworkInfo()
             is ArtworkIntent.OpenEpisodeInfo -> _event.emit(ArtworkEvent.OpenEpisodeInfo(episode = intent.episode))
             is ArtworkIntent.OnExternalPlayerResult -> onExternalPlayerResult(intent.progress)
         }
@@ -144,7 +145,7 @@ class ArtworkViewModel @AssistedInject constructor(
                     season = season,
                     media = media,
                     episodePendingConfirmation = subState.episodePendingConfirmation,
-                    useExternalPlayer = settings.externalPlayer
+                    useExternalPlayer = settings.externalPlayer,
                 )
 
             }
@@ -175,13 +176,19 @@ class ArtworkViewModel @AssistedInject constructor(
         _subState.update { it.copy(episodePendingConfirmation = null) }
     }
 
+    private suspend fun openArtworkInfo() {
+        repository.flow.first().artwork?.let { artwork ->
+            _event.emit(ArtworkEvent.OpenArtworkInfo(artwork = artwork))
+        }
+    }
+
     private suspend fun changeWatchStatus(media: Media) {
 
         val status = if (media.status != Status.WATCHED) Status.WATCHED else Status.TO_WATCH
 
         mediaProgressUC.changeMediaStatus(
             media = media,
-            status =status
+            status = status
         )
 
         if (

@@ -1,20 +1,33 @@
 package com.mskd.flux.screens.artwork.composables
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.displayCutoutPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -25,6 +38,7 @@ import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
+import com.mskd.flux.screens.artwork.ArtworkDropDownMenu
 import com.mskd.flux.screens.artwork.ArtworkIntent
 import com.mskd.flux.screens.artwork.composables.common.ArtworkButtons
 import com.mskd.flux.screens.artwork.composables.common.ArtworkDescription
@@ -34,6 +48,7 @@ import com.mskd.flux.screens.artwork.composables.episodes.SeasonsTabs
 import com.mskd.flux.ui.component.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.utils.LandscapePreview
 
 @Composable
 fun ArtworkContentLarge(
@@ -41,6 +56,7 @@ fun ArtworkContentLarge(
     media: Media,
     episodes: List<Episode>,
     currentSeason: Int,
+    scaffoldInnerPadding: PaddingValues,
     sendIntent: (ArtworkIntent) -> Unit,
 ) {
 
@@ -48,20 +64,23 @@ fun ArtworkContentLarge(
         modifier = Modifier.fillMaxSize()
     ) {
 
-        ArtworkImage(
-            modifier = Modifier.weight(.5f),
-            artwork = artwork,
-            sendIntent = sendIntent
-        )
+        Box(modifier = Modifier.weight(.5f),) {
+
+            ArtworkImage(
+                modifier = Modifier.fillMaxSize(),
+                artwork = artwork,
+                sendIntent = sendIntent
+            )
+
+        }
 
         LazyColumn(
             modifier = Modifier.weight(.5f),
             horizontalAlignment = Alignment.CenterHorizontally,
-            contentPadding = PaddingValues(vertical = Ui.Space.MEDIUM)
         ) {
 
             item {
-                Spacer(Modifier.statusBarsPadding() )
+                Spacer(modifier = Modifier.height(scaffoldInnerPadding.calculateTopPadding()))
             }
 
             item {
@@ -129,7 +148,7 @@ fun ArtworkContentLarge(
             }
 
             item {
-                Spacer(Modifier.navigationBarsPadding() )
+                Spacer(modifier = Modifier.height(scaffoldInnerPadding.calculateBottomPadding()))
             }
 
         }
@@ -139,7 +158,7 @@ fun ArtworkContentLarge(
 }
 
 
-@Preview(device = Devices.AUTOMOTIVE_1024p, widthDp = 720, heightDp = 360)
+@LandscapePreview
 @Composable
 fun ArtworkContentLargeMovie_Preview() {
     AppTheme {
@@ -148,12 +167,13 @@ fun ArtworkContentLargeMovie_Preview() {
             media = MediaMockups.movie,
             episodes = emptyList(),
             currentSeason = -1,
+            scaffoldInnerPadding = PaddingValues.Zero,
             sendIntent = {}
         )
     }
 }
 
-@Preview(device = Devices.AUTOMOTIVE_1024p, widthDp = 720, heightDp = 360)
+@LandscapePreview
 @Composable
 fun ArtworkContentLargeShow_Preview() {
     AppTheme {
@@ -162,6 +182,7 @@ fun ArtworkContentLargeShow_Preview() {
             media = MediaMockups.episode1,
             episodes = MediaMockups.episodesWithStatus,
             currentSeason = 1,
+            scaffoldInnerPadding = PaddingValues.Zero,
             sendIntent = {}
         )
     }

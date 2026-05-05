@@ -108,7 +108,7 @@ class MediaSourceTMDBImpl @Inject constructor(
                             year = folder.year
                         )
 
-                        val tmdbArtwork = tmdbArtworks.results.maxBy { it.popularity }.also {
+                        val tmdbArtwork = tmdbArtworks.results.first().also {
                             it.type = TMDBMediaType.MOVIE
                         }
 
@@ -183,7 +183,7 @@ class MediaSourceTMDBImpl @Inject constructor(
                 year = folder.year
             )
 
-            val tmdbArtwork = tmdbArtworks.results.maxBy { it.popularity }.also {
+            val tmdbArtwork = tmdbArtworks.results.first().also {
                 it.type = TMDBMediaType.SHOW
             }
 

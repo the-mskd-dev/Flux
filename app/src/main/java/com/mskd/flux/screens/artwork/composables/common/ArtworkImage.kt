@@ -85,37 +85,20 @@ fun ArtworkImage(
                 )
         )
 
-        Box(
-            modifier = Modifier.fillMaxSize(),
-        ) {
-
-            TopAppBar(
-                modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .fillMaxWidth(),
-                title = {  },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
-                navigationIcon = {
-                    BackButton(onTap = { sendIntent(ArtworkIntent.OnBackTap) })
-                },
-            )
-
-            AsyncImage(
-                modifier = Modifier
-                    .displayCutoutPadding()
-                    .align(Alignment.Center)
-                    .clip(Ui.Shape.Corner.Small)
-                    .width(160.dp)
-                    .aspectRatio(2f/3f)
-                    .clickable { sendIntent(ArtworkIntent.OpenArtworkInfo(artwork = artwork)) },
-                model = imageRequest,
-                contentScale = ContentScale.Crop,
-                placeholder = Image.placeholder,
-                error = Image.error,
-                contentDescription = artwork.title
-            )
-
-        }
+        AsyncImage(
+            modifier = Modifier
+                .displayCutoutPadding()
+                .align(Alignment.Center)
+                .clip(Ui.Shape.Corner.Small)
+                .width(160.dp)
+                .aspectRatio(2f/3f)
+                .clickable { sendIntent(ArtworkIntent.OpenArtworkInfo) },
+            model = imageRequest,
+            contentScale = ContentScale.Crop,
+            placeholder = Image.placeholder,
+            error = Image.error,
+            contentDescription = artwork.title
+        )
 
     }
 

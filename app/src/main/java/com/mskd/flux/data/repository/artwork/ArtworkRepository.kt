@@ -17,6 +17,8 @@ interface ArtworkRepository {
 
     suspend fun saveEpisodes(episodes: List<Episode>)
 
+    suspend fun getArtwork(artworkId: Long) : State?
+
     data class State(
         val artwork: Artwork? = null,
         val movie: Movie? = null,

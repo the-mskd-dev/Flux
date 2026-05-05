@@ -59,4 +59,27 @@ class ArtworkRepositoryImpl @Inject constructor(
         db.insertEpisodes(episodes)
     }
 
+    override suspend fun getArtwork(artworkId: Long): ArtworkRepository.State? {
+
+        return db.getArtwork(artworkId = artworkId)?.let { artwork ->
+            when (artwork.type) {
+                ContentType.MOVIE -> {
+                    val movie = db.getMovie(artworkId = artworkId)
+                    ArtworkRepository.State(
+                        artwork = artwork,
+                        movie = movie
+                    )
+                }
+                ContentType.SHOW -> {
+                    val episodes = db.getEpisodes(artworkId = artworkId)
+                    ArtworkRepository.State(
+                        artwork = artwork,
+                        episodes = episodes
+                    )
+                }
+            }
+        }
+
+    }
+
 }

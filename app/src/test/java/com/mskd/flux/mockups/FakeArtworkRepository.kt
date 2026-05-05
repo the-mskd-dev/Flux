@@ -54,6 +54,14 @@ class FakeArtworkRepository(initialContentType: ContentType = ContentType.MOVIE)
         )
     }
 
+    override suspend fun getArtwork(artworkId: Long): ArtworkRepository.State {
+        return ArtworkRepository.State(
+            artwork = MediaMockups.artworks.find { it.id == artworkId },
+            episodes = MediaMockups.allMedias.filterIsInstance<Episode>().filter { it.artworkId == artworkId },
+            movie = MediaMockups.allMedias.filterIsInstance<Movie>().find { it.artworkId == artworkId }
+        )
+    }
+
     fun setContent(state: ArtworkRepository.State) {
         _flow.value = state
     }

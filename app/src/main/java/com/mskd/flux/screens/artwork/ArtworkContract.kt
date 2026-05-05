@@ -16,6 +16,7 @@ data class ArtworkUiState(
     val season: Int = -1,
     val episodePendingConfirmation: Episode? = null,
     val useExternalPlayer: Boolean = false,
+    val showEraseProgressDialog: Boolean = false
 )
 
 sealed class ArtworkIntent {

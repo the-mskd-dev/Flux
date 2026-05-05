@@ -5,9 +5,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.data.repository.artwork.ArtworkRepository
 import com.mskd.flux.data.repository.settings.SettingsRepository
+import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.model.ScreenState
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
+import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Status
 import com.mskd.flux.screens.artwork.ArtworkEvent.*
 import com.mskd.flux.useCases.mediaProgress.MediaProgressUC
@@ -32,6 +34,7 @@ class ArtworkViewModel @AssistedInject constructor(
     @Assisted val artworkId: Long,
     private val repository: ArtworkRepository,
     private val settingsRepository: SettingsRepository,
+    private val userRepository: UserRepository,
     private val mediaProgressUC: MediaProgressUC
 ) : ViewModel() {
 
@@ -51,6 +54,7 @@ class ArtworkViewModel @AssistedInject constructor(
         val selectedMedia: Media? = null,
         val selectedSeason: Int? = null,
         val episodePendingConfirmation: Episode? = null,
+        val showEraseProgressDialog: Boolean = false
     )
 
     //endregion
@@ -149,6 +153,7 @@ class ArtworkViewModel @AssistedInject constructor(
                     media = media,
                     episodePendingConfirmation = subState.episodePendingConfirmation,
                     useExternalPlayer = settings.externalPlayer,
+                    showEraseProgressDialog = subState.showEraseProgressDialog
                 )
 
             }
@@ -226,10 +231,38 @@ class ArtworkViewModel @AssistedInject constructor(
     }
 
     private fun showEraseProgressDialog(show: Boolean) {
-
+        _subState.update { it.copy(showEraseProgressDialog = show) }
     }
 
-    private fun eraseProgress() {
+    private suspend fun eraseProgress() {
+
+        val artwork = uiState.value.artwork
+        val media = uiState.value.media
+        val episodes = uiState.value.episodes
+
+        if (media is Movie) {
+
+            val cleanMedia = media.copy(
+                currentTime = 0L,
+                status = Status.TO_WATCH
+            )
+
+            repository.saveMovie(cleanMedia)
+
+        } else {
+
+            val cleanEpisodes = episodes.map {
+                it.copy(
+                    currentTime = 0L,
+                    status = Status.TO_WATCH
+                )
+            }
+
+            repository.saveEpisodes(cleanEpisodes)
+
+        }
+
+        userRepository.removeFromRecentlyWatched(artworkId = artwork.id)
 
     }
 

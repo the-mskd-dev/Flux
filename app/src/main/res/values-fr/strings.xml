@@ -107,4 +107,5 @@
     <string name="acra_dialog_send">Envoyer</string>
     <string name="acra_dialog_dismiss">Non merci</string>
     <string name="external_player_service_text">Utilisation d\'un lecteur externe en cours</string>
+    <string name="erase_progress">Supprimer la progressions</string>
 </resources>

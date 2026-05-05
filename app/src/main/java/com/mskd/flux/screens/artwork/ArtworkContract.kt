@@ -28,6 +28,8 @@ sealed class ArtworkIntent {
     data object OpenArtworkInfo: ArtworkIntent()
     data class OpenEpisodeInfo(val episode: Episode): ArtworkIntent()
     data class OnExternalPlayerResult(val progress: Long) : ArtworkIntent()
+    data class ShowEraseProgressDialog(val show: Boolean) : ArtworkIntent()
+    data object EraseProgress: ArtworkIntent()
 }
 
 sealed class ArtworkEvent {

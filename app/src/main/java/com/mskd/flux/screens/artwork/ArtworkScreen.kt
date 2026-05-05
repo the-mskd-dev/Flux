@@ -265,7 +265,18 @@ fun ArtworkDropDownMenu(
                     onDismissRequest()
                 },
                 leadingIcon = {
-                    Icon(imageVector = Icons.Outlined.Info, contentDescription = null)
+                    Icon(imageVector = Icons.Outlined.Info, contentDescription = stringResource(R.string.more_info))
+                },
+            )
+
+            ArtworkDropDownMenuItem(
+                text = stringResource(R.string.erase_progress),
+                onClick = {
+                    sendIntent(ArtworkIntent.ShowEraseProgressDialog(show = true))
+                    onDismissRequest()
+                },
+                leadingIcon = {
+                    Icon(painter = painterResource(R.drawable.ic_eraser), contentDescription = stringResource(R.string.erase_progress))
                 },
             )
 

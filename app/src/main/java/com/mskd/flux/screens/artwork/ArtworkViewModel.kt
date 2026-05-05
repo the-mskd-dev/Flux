@@ -9,6 +9,7 @@ import com.mskd.flux.model.ScreenState
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.artwork.Status
+import com.mskd.flux.screens.artwork.ArtworkEvent.*
 import com.mskd.flux.useCases.mediaProgress.MediaProgressUC
 import com.mskd.flux.utils.extensions.getPreviousEpisodesFor
 import dagger.assisted.Assisted
@@ -105,8 +106,10 @@ class ArtworkViewModel @AssistedInject constructor(
             is ArtworkIntent.ChangeWatchStatus -> changeWatchStatus(media = intent.media)
             ArtworkIntent.MarkPreviousEpisodesAsWatched -> markPreviousEpisodesAsWatched()
             ArtworkIntent.OpenArtworkInfo -> openArtworkInfo()
-            is ArtworkIntent.OpenEpisodeInfo -> _event.emit(ArtworkEvent.OpenEpisodeInfo(episode = intent.episode))
+            is ArtworkIntent.OpenEpisodeInfo -> _event.emit(OpenEpisodeInfo(episode = intent.episode))
             is ArtworkIntent.OnExternalPlayerResult -> onExternalPlayerResult(intent.progress)
+            is ArtworkIntent.ShowEraseProgressDialog -> showEraseProgressDialog(show = intent.show)
+            ArtworkIntent.EraseProgress -> eraseProgress()
         }
     }
 
@@ -220,6 +223,14 @@ class ArtworkViewModel @AssistedInject constructor(
             mediaProgressUC.saveProgress(media = media, progress = progress)
             selectedMedia = null
         }
+    }
+
+    private fun showEraseProgressDialog(show: Boolean) {
+
+    }
+
+    private fun eraseProgress() {
+
     }
 
     //endregion

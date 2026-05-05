@@ -269,17 +269,6 @@ fun ArtworkDropDownMenu(
                 },
             )
 
-            ArtworkDropDownMenuItem(
-                text = "Select metadatas",
-                onClick = {
-                    //sendIntent(ArtworkIntent.ChangeWatchStatus(media = episode))
-                    onDismissRequest()
-                },
-                leadingIcon = {
-                    Icon(imageVector = Icons.Outlined.Create, contentDescription = null)
-                },
-            )
-
         }
     )
 

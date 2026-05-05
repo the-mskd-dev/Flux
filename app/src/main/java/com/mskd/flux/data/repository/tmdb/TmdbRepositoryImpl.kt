@@ -46,9 +46,8 @@ class TmdbRepositoryImpl @Inject constructor(
         if (!artwork.type.equalsTmdb(tmdbType = tmdbArtwork.type))
             return
 
-
-
         TODO("Not yet implemented")
+
     }
 
 }

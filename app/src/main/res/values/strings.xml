@@ -117,4 +117,6 @@
     <string name="external_player_service_text">Using an external player</string>
     <string name="stop" translatable="false">Stop</string>
     <string name="erase_progress">Erase progress</string>
+    <string name="erase_progress_confirmation">Are you really sure you want to delete all progress?</string>
+    <string name="erase">Erase</string>
 </resources>

@@ -264,6 +264,8 @@ class ArtworkViewModel @AssistedInject constructor(
 
         userRepository.removeFromRecentlyWatched(artworkId = artwork.id)
 
+        _subState.update { it.copy(showEraseProgressDialog = false) }
+
     }
 
     //endregion

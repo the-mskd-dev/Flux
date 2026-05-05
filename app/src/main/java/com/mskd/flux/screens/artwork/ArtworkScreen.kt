@@ -63,6 +63,7 @@ import com.mskd.flux.utils.ExternalPlayer
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.LandscapePreview
 import com.mskd.flux.utils.WebLink
+import com.mskd.flux.utils.extensions.uppercaseFirstLetter
 import com.mskd.flux.utils.rememberExternalPlayerLauncher
 
 @Composable
@@ -138,6 +139,11 @@ fun ArtworkScreen(
             onValidate = { viewModel.handleIntent(ArtworkIntent.MarkPreviousEpisodesAsWatched) }
         )
     }
+
+    if (uiState.showEraseProgressDialog) {
+        ArtworkEraseProgressDialog(sendIntent = viewModel::handleIntent)
+    }
+
 
 }
 
@@ -319,4 +325,23 @@ fun ArtworkScreenContent_Preview() {
             sendIntent = {}
         )
     }
+}
+
+@Composable
+fun ArtworkEraseProgressDialog(
+    sendIntent: (ArtworkIntent) -> Unit
+) {
+
+    FluxDialog(
+        title = stringResource(R.string.erase_progress),
+        onDismiss = { sendIntent(ArtworkIntent.ShowEraseProgressDialog(show = false)) },
+        onValidateLabel = stringResource(R.string.erase),
+        onValidate = { sendIntent(ArtworkIntent.EraseProgress) },
+        content = {
+            Text.Body.Large(
+                text = stringResource(R.string.erase_progress_confirmation)
+            )
+        }
+    )
+
 }

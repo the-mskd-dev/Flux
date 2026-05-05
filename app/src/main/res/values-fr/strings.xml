@@ -108,4 +108,6 @@
     <string name="acra_dialog_dismiss">Non merci</string>
     <string name="external_player_service_text">Utilisation d\'un lecteur externe en cours</string>
     <string name="erase_progress">Supprimer la progressions</string>
+    <string name="erase_progress_confirmation">Êtes-vous vraiment sûr(e) de vouloir supprimer toute votre progression ?</string>
+    <string name="erase">Supprimer</string>
 </resources>

@@ -113,7 +113,28 @@ class ArtworkProgressUCImpl(
     }
 
     override suspend fun resetProgress(artwork: Artwork) {
-        TODO("Not yet implemented")
+        when (val artworkContent = artworkRepository.getArtwork(artworkId = artwork.id)) {
+            is ArtworkRepository.Content.SHOW -> {
+
+                val updatedEpisodes = artworkContent.episodes.map {
+                    it.copy(currentTime = 0L, status = Status.TO_WATCH)
+                }
+
+                artworkRepository.saveEpisodes(updatedEpisodes)
+
+            }
+            is ArtworkRepository.Content.MOVIE -> {
+
+                val updatedMovie = artworkContent.movie.copy(currentTime = 0L, status = Status.TO_WATCH)
+
+                artworkRepository.saveMovie(updatedMovie)
+
+            }
+            else -> {}
+        }
+
+        userRepository.removeFromRecentlyWatched(artworkId = artwork.id)
+
     }
 
     //endregion

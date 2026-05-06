@@ -116,7 +116,7 @@
     <string name="acra_dialog_dismiss">No thanks</string>
     <string name="external_player_service_text">Using an external player</string>
     <string name="stop" translatable="false">Stop</string>
-    <string name="erase_progress">Erase progress</string>
-    <string name="erase_progress_confirmation">Are you really sure you want to delete all progress?</string>
-    <string name="erase">Erase</string>
+    <string name="reset_progress">Reset progress</string>
+    <string name="reset_progress_confirmation">Are you really sure you want to delete all progress?</string>
+    <string name="reset">Reset</string>
 </resources>

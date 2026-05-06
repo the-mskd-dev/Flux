@@ -1,6 +1,5 @@
 package com.mskd.flux.screens.artwork
 
-import android.util.Log
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -55,7 +54,7 @@ class ArtworkViewModel @AssistedInject constructor(
         val selectedMedia: Media? = null,
         val selectedSeason: Int? = null,
         val episodePendingConfirmation: Episode? = null,
-        val showEraseProgressDialog: Boolean = false
+        val showResetProgressDialog: Boolean = false
     )
 
     //endregion
@@ -78,7 +77,6 @@ class ArtworkViewModel @AssistedInject constructor(
         settingsRepository.flow,
         _subState
     ) { artworkContent, settings, subState ->
-        Log.d("TEST", "$artworkContent")
         buildUiState(
             artworkContent = artworkContent,
             settings = settings,
@@ -114,8 +112,8 @@ class ArtworkViewModel @AssistedInject constructor(
             ArtworkIntent.OpenArtworkInfo -> openArtworkInfo()
             is ArtworkIntent.OpenEpisodeInfo -> _event.emit(OpenEpisodeInfo(episode = intent.episode))
             is ArtworkIntent.OnExternalPlayerResult -> onExternalPlayerResult(intent.progress)
-            is ArtworkIntent.ShowEraseProgressDialog -> showEraseProgressDialog(show = intent.show)
-            ArtworkIntent.EraseProgress -> eraseProgress()
+            is ArtworkIntent.ShowResetProgressDialog -> showResetProgressDialog(show = intent.show)
+            ArtworkIntent.ResetProgress -> resetProgress()
         }
     }
 
@@ -168,7 +166,7 @@ class ArtworkViewModel @AssistedInject constructor(
                     media = media,
                     episodePendingConfirmation = subState.episodePendingConfirmation,
                     useExternalPlayer = settings.externalPlayer,
-                    showEraseProgressDialog = subState.showEraseProgressDialog
+                    showResetProgressDialog = subState.showResetProgressDialog
                 )
 
             }
@@ -245,41 +243,15 @@ class ArtworkViewModel @AssistedInject constructor(
         }
     }
 
-    private fun showEraseProgressDialog(show: Boolean) {
-        _subState.update { it.copy(showEraseProgressDialog = show) }
+    private fun showResetProgressDialog(show: Boolean) {
+        _subState.update { it.copy(showResetProgressDialog = show) }
     }
 
-    private suspend fun eraseProgress() {
+    private suspend fun resetProgress() {
 
-        val artwork = uiState.value.artwork
-        val media = uiState.value.media
-        val episodes = uiState.value.episodes
+        artworkProgressUC.resetProgress(artwork = uiState.value.artwork)
 
-        if (media is Movie) {
-
-            val cleanMedia = media.copy(
-                currentTime = 0L,
-                status = Status.TO_WATCH
-            )
-
-            repository.saveMovie(cleanMedia)
-
-        } else {
-
-            val cleanEpisodes = episodes.map {
-                it.copy(
-                    currentTime = 0L,
-                    status = Status.TO_WATCH
-                )
-            }
-
-            repository.saveEpisodes(cleanEpisodes)
-
-        }
-
-        userRepository.removeFromRecentlyWatched(artworkId = artwork.id)
-
-        _subState.update { it.copy(showEraseProgressDialog = false) }
+        _subState.update { it.copy(showResetProgressDialog = false) }
 
     }
 

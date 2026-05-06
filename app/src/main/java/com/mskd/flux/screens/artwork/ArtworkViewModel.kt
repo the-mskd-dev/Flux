@@ -145,7 +145,6 @@ class ArtworkViewModel @AssistedInject constructor(
 
 
         val episode = episodes.firstOrNull { it.id == (subState.selectedMedia as? Episode)?.id } // Selected media by user
-            ?: episodes.firstOrNull { it.id == (uiState.value.media as? Episode)?.id } // Current selected media
             ?: episodes.firstOrNull { it.status == Status.IS_WATCHING } // First episode watching
             ?: episodes.firstOrNull { it.status == Status.TO_WATCH } // First episode to watch
             ?: episodes.firstOrNull() // First episode

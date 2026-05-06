@@ -16,6 +16,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.types.shouldBeInstanceOf
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -291,6 +292,30 @@ class ArtworkViewModelTest : FunSpec({
 
         }
 
+    }
+
+    test("show reset progress dialog") {
+        viewModel.uiState.test {
+            awaitItem()
+
+            viewModel.handleIntent(ArtworkIntent.ShowResetProgressDialog(show = true))
+            awaitItem().showResetProgressDialog shouldBe true
+
+            viewModel.handleIntent(ArtworkIntent.ShowResetProgressDialog(show = false))
+            awaitItem().showResetProgressDialog shouldBe false
+
+        }
+    }
+
+    test("reset progress") {
+        viewModel.uiState.test {
+            val state = awaitItem()
+
+            viewModel.handleIntent(ArtworkIntent.ResetProgress)
+
+            coVerify { artworkProgressUC.resetProgress(state.artwork) }
+
+        }
     }
 
 })

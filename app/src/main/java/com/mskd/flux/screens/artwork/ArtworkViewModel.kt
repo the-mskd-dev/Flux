@@ -14,6 +14,7 @@ import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Status
 import com.mskd.flux.screens.artwork.ArtworkEvent.*
 import com.mskd.flux.useCases.mediaProgress.ArtworkProgressUC
+import com.mskd.flux.utils.extensions.firstEpisode
 import com.mskd.flux.utils.extensions.getPreviousEpisodesFor
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -248,9 +249,18 @@ class ArtworkViewModel @AssistedInject constructor(
 
     private suspend fun resetProgress() {
 
-        artworkProgressUC.resetProgress(artwork = uiState.value.artwork)
+        val currentState = uiState.value
 
-        _subState.update { it.copy(showResetProgressDialog = false) }
+        artworkProgressUC.resetProgress(artwork = currentState.artwork)
+
+        _subState.update {
+
+            it.copy(
+                selectedMedia = currentState.media as? Movie ?: currentState.episodes.firstEpisode,
+                showResetProgressDialog = false
+            )
+
+        }
 
     }
 

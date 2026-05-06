@@ -77,7 +77,7 @@ class FakeArtworkRepository(initialContentType: ContentType = ContentType.MOVIE)
         }
     }
 
-    fun setContent(state: ArtworkRepository.Content.MOVIE) {
+    fun setContent(state: ArtworkRepository.Content) {
         _flow.value = state
     }
 

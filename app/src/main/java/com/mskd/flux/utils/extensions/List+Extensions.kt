@@ -8,6 +8,7 @@ fun List<Episode>.getPreviousEpisodesFor(episode: Episode) : List<Episode> {
     }
 }
 
+val List<Episode>.firstEpisode get() = this.minWith(compareBy<Episode> { it.season }.thenBy { it.number })
 val List<Episode>.lastEpisode get() = this.maxWith(compareBy<Episode> { it.season }.thenBy { it.number })
 
 fun List<Episode>.getPreviousEpisodeFor(episode: Episode) : Episode? {

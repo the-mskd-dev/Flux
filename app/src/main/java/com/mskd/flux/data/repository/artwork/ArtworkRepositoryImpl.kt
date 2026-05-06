@@ -5,6 +5,7 @@ import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Movie
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -21,7 +22,7 @@ class ArtworkRepositoryImpl @Inject constructor(
     private val _artworkId = MutableStateFlow<Long?>(null)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    override val flow: Flow<ArtworkRepository.State> = _artworkId
+    override val flow: Flow<ArtworkRepository.Content> = _artworkId
         .filterNotNull()
         .distinctUntilChanged()
         .flatMapLatest { mediaId ->
@@ -29,15 +30,17 @@ class ArtworkRepositoryImpl @Inject constructor(
                 when (artwork?.type) {
                     ContentType.MOVIE -> {
                         db.flowMovie(mediaId).map { movie ->
-                            ArtworkRepository.State(artwork = artwork, movie = movie)
+                            movie
+                                ?.let { ArtworkRepository.Content.MOVIE(artwork = artwork, movie = it) }
+                                ?: ArtworkRepository.Content.ERROR
                         }
                     }
                     ContentType.SHOW -> {
                         db.flowEpisodes(mediaId).map { episodes ->
-                            ArtworkRepository.State(artwork = artwork, episodes = episodes)
+                            ArtworkRepository.Content.SHOW(artwork = artwork, episodes = episodes)
                         }
                     }
-                    else -> flowOf(ArtworkRepository.State(artwork = artwork))
+                    else -> flowOf(ArtworkRepository.Content.ERROR)
                 }
             }
         }
@@ -59,26 +62,24 @@ class ArtworkRepositoryImpl @Inject constructor(
         db.insertEpisodes(episodes)
     }
 
-    override suspend fun getArtwork(artworkId: Long): ArtworkRepository.State? {
+    override suspend fun getArtwork(artworkId: Long): ArtworkRepository.Content {
 
         return db.getArtwork(artworkId = artworkId)?.let { artwork ->
             when (artwork.type) {
                 ContentType.MOVIE -> {
-                    val movie = db.getMovie(artworkId = artworkId)
-                    ArtworkRepository.State(
-                        artwork = artwork,
-                        movie = movie
-                    )
+                    db.getMovie(artworkId = artworkId)
+                        ?.let { ArtworkRepository.Content.MOVIE(artwork = artwork, movie = it) }
+                        ?: ArtworkRepository.Content.ERROR
                 }
                 ContentType.SHOW -> {
                     val episodes = db.getEpisodes(artworkId = artworkId)
-                    ArtworkRepository.State(
+                    ArtworkRepository.Content.SHOW(
                         artwork = artwork,
                         episodes = episodes
                     )
                 }
             }
-        }
+        } ?: ArtworkRepository.Content.ERROR
 
     }
 

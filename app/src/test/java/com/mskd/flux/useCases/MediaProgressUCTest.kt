@@ -7,8 +7,8 @@ import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Status
-import com.mskd.flux.useCases.mediaProgress.MediaProgressUC
-import com.mskd.flux.useCases.mediaProgress.MediaProgressUCImpl
+import com.mskd.flux.useCases.mediaProgress.ArtworkProgressUC
+import com.mskd.flux.useCases.mediaProgress.ArtworkProgressUCImpl
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.extensions.lastEpisode
 import com.mskd.flux.utils.extensions.minToMs
@@ -25,7 +25,7 @@ class MediaProgressUCTest : FunSpec({
 
     lateinit var artworkRepository: ArtworkRepository
     lateinit var userRepository: UserRepository
-    lateinit var mediaProgressUC: MediaProgressUC
+    lateinit var artworkProgressUC: ArtworkProgressUC
 
     beforeTest {
 
@@ -35,7 +35,7 @@ class MediaProgressUCTest : FunSpec({
             every { flow } returns MutableStateFlow(UserRepository.State())
         }
 
-        mediaProgressUC = MediaProgressUCImpl(
+        artworkProgressUC = ArtworkProgressUCImpl(
             artworkRepository = artworkRepository,
             userRepository = userRepository,
         )
@@ -104,12 +104,12 @@ class MediaProgressUCTest : FunSpec({
                 ))
             }
 
-            mediaProgressUC = MediaProgressUCImpl(
+            artworkProgressUC = ArtworkProgressUCImpl(
                 artworkRepository = artworkRepository,
                 userRepository = userRepository,
             )
 
-            mediaProgressUC.saveProgress(media = testCase.media, progress = testCase.progress)
+            artworkProgressUC.saveProgress(media = testCase.media, progress = testCase.progress)
 
             when (testCase.media) {
                 is Episode -> coVerify { artworkRepository.saveEpisode(any()) }

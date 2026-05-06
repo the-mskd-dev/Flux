@@ -3,6 +3,8 @@ package com.mskd.flux.useCases.mediaProgress
 import android.util.Log
 import com.mskd.flux.data.repository.artwork.ArtworkRepository
 import com.mskd.flux.data.repository.user.UserRepository
+import com.mskd.flux.model.artwork.Artwork
+import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.artwork.Movie
@@ -14,18 +16,18 @@ import com.mskd.flux.utils.extensions.timeDescription
 import kotlinx.coroutines.flow.first
 import kotlin.time.Duration.Companion.minutes
 
-interface MediaProgressUC {
+interface ArtworkProgressUC {
 
     suspend fun saveProgress(media: Media, progress: Long)
-
     suspend fun changeMediaStatus(media: Media, status: Status)
     suspend fun markPreviousEpisodesAsWatchedFor(episode: Episode)
+    suspend fun resetProgress(artwork: Artwork)
 }
 
-class MediaProgressUCImpl(
+class ArtworkProgressUCImpl(
     private val artworkRepository: ArtworkRepository,
     private val userRepository: UserRepository
-) : MediaProgressUC {
+) : ArtworkProgressUC {
 
     //region Public Methods
 
@@ -56,7 +58,7 @@ class MediaProgressUCImpl(
 
                 // Add/Remove from recently watched
                 if (!updatedMedia.isUnknown) {
-                    val episodes = artworkRepository.flow.first().episodes
+                    val episodes = (artworkRepository.flow.first() as? ArtworkRepository.Content.SHOW)?.episodes.orEmpty()
                     val lastEpisode = episodes.lastEpisode
                     if (lastEpisode.id == updatedMedia.id && newStatus == Status.WATCHED)
                         userRepository.removeFromRecentlyWatched(updatedMedia.artworkId)
@@ -89,7 +91,10 @@ class MediaProgressUCImpl(
 
         var episodesToSave: List<Episode>
 
-        val previousEpisodes = artworkRepository.flow.first().episodes.getPreviousEpisodesFor(episode).filter { it.status != Status.WATCHED }
+        val previousEpisodes = (artworkRepository.flow.first() as? ArtworkRepository.Content.SHOW)
+            ?.episodes.orEmpty()
+            .getPreviousEpisodesFor(episode)
+            .filter { it.status != Status.WATCHED }
 
         if (previousEpisodes.isEmpty())
             return
@@ -105,6 +110,10 @@ class MediaProgressUCImpl(
 
         Log.i(TAG, "${episodesToSave.size} episodes marked as watched")
 
+    }
+
+    override suspend fun resetProgress(artwork: Artwork) {
+        TODO("Not yet implemented")
     }
 
     //endregion
@@ -132,11 +141,17 @@ class MediaProgressUCImpl(
         )
 
         // Remove from recently watched if last episode is watched
-        val lastEpisode = artworkRepository.flow.first().episodes.lastEpisode
-        if (lastEpisode.id == updatedEpisode.id && status == Status.WATCHED)
-            userRepository.removeFromRecentlyWatched(episode.artworkId)
+        val episodes = (artworkRepository.flow.first() as? ArtworkRepository.Content.SHOW)?.episodes.orEmpty()
+        if (episodes.isNotEmpty()) {
 
-        artworkRepository.saveEpisodes(listOf(updatedEpisode)) // Save status in DB
+            val lastEpisode = episodes.lastEpisode
+            if (lastEpisode.id == updatedEpisode.id && status == Status.WATCHED)
+                userRepository.removeFromRecentlyWatched(episode.artworkId)
+
+            artworkRepository.saveEpisodes(listOf(updatedEpisode)) // Save status in DB
+
+        }
+
 
         Log.i(TAG, "${episode.title} season ${episode.season} episode ${episode.number} is now ${episode.status}")
 

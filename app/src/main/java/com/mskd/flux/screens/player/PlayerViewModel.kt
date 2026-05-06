@@ -10,7 +10,7 @@ import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.screens.player.PlayerTrack.Type
 import com.mskd.flux.screens.player.controllers.PlayerManager
-import com.mskd.flux.useCases.mediaProgress.MediaProgressUC
+import com.mskd.flux.useCases.mediaProgress.ArtworkProgressUC
 import com.mskd.flux.utils.extensions.getNextEpisodeFor
 import com.mskd.flux.utils.extensions.toPlayerTrack
 import dagger.assisted.Assisted
@@ -45,7 +45,7 @@ class PlayerViewModel @AssistedInject constructor(
     private val userRepository: UserRepository,
     private val settingsRepository: SettingsRepository,
     private val playerManager: PlayerManager,
-    private val mediaProgressUC: MediaProgressUC
+    private val artworkProgressUC: ArtworkProgressUC
 ) : ViewModel() {
 
     //region Factory
@@ -94,7 +94,7 @@ class PlayerViewModel @AssistedInject constructor(
         playerManager.state,
     ) { flows ->
 
-        val artwork = flows[0] as ArtworkRepository.State
+        val artworkContent = flows[0] as ArtworkRepository.Content
         val settings = flows[1] as SettingsRepository.State
         val controls = flows[2] as PlayerUiState.Controls
         val tracks = (flows[3] as? List<*>)?.filterIsInstance<PlayerTrack>() ?: emptyList()
@@ -103,10 +103,14 @@ class PlayerViewModel @AssistedInject constructor(
         val mediaId = flows[6] as Long
         val playerState = flows[7] as PlayerManager.State
 
-        val media = artwork.movie ?: artwork.episodes.find { it.id == mediaId }
+        val media = when (artworkContent) {
+            is ArtworkRepository.Content.MOVIE -> artworkContent.movie
+            is ArtworkRepository.Content.SHOW -> artworkContent.episodes.find { it.id == mediaId }
+            ArtworkRepository.Content.ERROR -> null
+        }
 
         val screen: PlayerScreen = when {
-            playerState is PlayerManager.State.Error -> PlayerScreen.Error
+            playerState is PlayerManager.State.Error || artworkContent is ArtworkRepository.Content.ERROR -> PlayerScreen.Error
             media != null && playerState is PlayerManager.State.Ready -> PlayerScreen.Content(player = playerState.player, media = media)
             else -> PlayerScreen.Loading
         }
@@ -306,8 +310,9 @@ class PlayerViewModel @AssistedInject constructor(
 
         if (show) {
 
-            val episodes = artworkRepository.flow.first().episodes
-            val nextEpisode = episodes.getNextEpisodeFor(currentEpisode) ?: return
+            val episodes = (artworkRepository.flow.first() as? ArtworkRepository.Content.SHOW)?.episodes
+
+            val nextEpisode = episodes?.getNextEpisodeFor(currentEpisode) ?: return
 
             _controlsState.update { it.copy(nextButton = PlayerUiState.NextButton.Showed(episode = nextEpisode)) }
 
@@ -357,7 +362,7 @@ class PlayerViewModel @AssistedInject constructor(
         val media = (uiState.value.screen as? PlayerScreen.Content)?.media ?: return
         val progress = uiState.value.controls.progress
 
-        mediaProgressUC.saveProgress(media = media, progress = progress)
+        artworkProgressUC.saveProgress(media = media, progress = progress)
 
     }
 

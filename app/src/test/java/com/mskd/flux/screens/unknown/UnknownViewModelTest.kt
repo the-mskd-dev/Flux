@@ -7,8 +7,8 @@ import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.mockups.FakeArtworkRepository
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.ScreenState
-import com.mskd.flux.useCases.mediaProgress.MediaProgressUC
-import com.mskd.flux.useCases.mediaProgress.MediaProgressUCImpl
+import com.mskd.flux.useCases.mediaProgress.ArtworkProgressUC
+import com.mskd.flux.useCases.mediaProgress.ArtworkProgressUCImpl
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.every
@@ -23,11 +23,11 @@ class UnknownViewModelTest : FunSpec ({
     lateinit var artworkRepository: FakeArtworkRepository
     lateinit var settingsRepository: SettingsRepository
     lateinit var userRepository: UserRepository
-    lateinit var mediaProgressUC: MediaProgressUC
+    lateinit var artworkProgressUC: ArtworkProgressUC
 
     val updateVm: () -> Unit = {
 
-        mediaProgressUC = MediaProgressUCImpl(
+        artworkProgressUC = ArtworkProgressUCImpl(
             artworkRepository = artworkRepository,
             userRepository = userRepository,
         )
@@ -35,7 +35,7 @@ class UnknownViewModelTest : FunSpec ({
         viewModel = UnknownViewModel(
             repository = artworkRepository,
             settingsRepository = settingsRepository,
-            mediaProgressUC = mediaProgressUC
+            artworkProgressUC = artworkProgressUC
         )
 
     }

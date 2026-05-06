@@ -10,12 +10,13 @@ import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.ScreenState
 import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.model.artwork.Status
-import com.mskd.flux.useCases.mediaProgress.MediaProgressUC
-import com.mskd.flux.useCases.mediaProgress.MediaProgressUCImpl
+import com.mskd.flux.useCases.mediaProgress.ArtworkProgressUC
+import com.mskd.flux.useCases.mediaProgress.ArtworkProgressUCImpl
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.types.shouldBeInstanceOf
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -30,11 +31,11 @@ class ArtworkViewModelTest : FunSpec({
     lateinit var artworkRepository: FakeArtworkRepository
     lateinit var userRepository: UserRepository
     lateinit var settingsRepository: SettingsRepository
-    lateinit var mediaProgressUC: MediaProgressUC
+    lateinit var artworkProgressUC: ArtworkProgressUC
 
     val updateVm: () -> Unit = {
 
-        mediaProgressUC = MediaProgressUCImpl(
+        artworkProgressUC = ArtworkProgressUCImpl(
             artworkRepository = artworkRepository,
             userRepository = userRepository,
         )
@@ -43,7 +44,7 @@ class ArtworkViewModelTest : FunSpec({
             artworkId = MediaMockups.showArtwork.id,
             repository = artworkRepository,
             settingsRepository = settingsRepository,
-            mediaProgressUC = mediaProgressUC
+            artworkProgressUC = artworkProgressUC
         )
 
     }
@@ -267,7 +268,7 @@ class ArtworkViewModelTest : FunSpec({
     test("mark movie as watched") {
 
         artworkRepository.setContent(
-            ArtworkRepository.State(
+            ArtworkRepository.Content.MOVIE(
                 artwork = MediaMockups.movieArtwork,
                 movie = MediaMockups.movie
             )
@@ -291,6 +292,30 @@ class ArtworkViewModelTest : FunSpec({
 
         }
 
+    }
+
+    test("show reset progress dialog") {
+        viewModel.uiState.test {
+            awaitItem()
+
+            viewModel.handleIntent(ArtworkIntent.ShowResetProgressDialog(show = true))
+            awaitItem().showResetProgressDialog shouldBe true
+
+            viewModel.handleIntent(ArtworkIntent.ShowResetProgressDialog(show = false))
+            awaitItem().showResetProgressDialog shouldBe false
+
+        }
+    }
+
+    test("reset progress") {
+        viewModel.uiState.test {
+            val state = awaitItem()
+
+            viewModel.handleIntent(ArtworkIntent.ResetProgress)
+
+            coVerify { artworkProgressUC.resetProgress(state.artwork) }
+
+        }
     }
 
 })

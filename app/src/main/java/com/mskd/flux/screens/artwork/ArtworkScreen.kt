@@ -4,18 +4,11 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material.icons.outlined.Build
-import androidx.compose.material.icons.outlined.Create
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DropdownMenu
@@ -48,12 +41,10 @@ import androidx.window.core.layout.WindowSizeClass
 import com.mskd.flux.R
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.ScreenState
-import com.mskd.flux.model.artwork.Status
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Route.Player
 import com.mskd.flux.screens.artwork.composables.ArtworkContentLarge
 import com.mskd.flux.screens.artwork.composables.ArtworkContentRegular
-import com.mskd.flux.screens.artwork.composables.episodes.EpisodeDropDownMenuItem
 import com.mskd.flux.ui.component.ErrorScreen
 import com.mskd.flux.ui.component.FluxDialog
 import com.mskd.flux.ui.component.LoadingScreen
@@ -61,7 +52,6 @@ import com.mskd.flux.ui.component.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.utils.ExternalPlayer
 import com.mskd.flux.utils.FluxPreview
-import com.mskd.flux.utils.LandscapePreview
 import com.mskd.flux.utils.WebLink
 import com.mskd.flux.utils.rememberExternalPlayerLauncher
 
@@ -138,6 +128,11 @@ fun ArtworkScreen(
             onValidate = { viewModel.handleIntent(ArtworkIntent.MarkPreviousEpisodesAsWatched) }
         )
     }
+
+    if (uiState.showResetProgressDialog) {
+        ArtworkResetProgressDialog(sendIntent = viewModel::handleIntent)
+    }
+
 
 }
 
@@ -265,7 +260,18 @@ fun ArtworkDropDownMenu(
                     onDismissRequest()
                 },
                 leadingIcon = {
-                    Icon(imageVector = Icons.Outlined.Info, contentDescription = null)
+                    Icon(imageVector = Icons.Outlined.Info, contentDescription = stringResource(R.string.more_info))
+                },
+            )
+
+            ArtworkDropDownMenuItem(
+                text = stringResource(R.string.reset_progress),
+                onClick = {
+                    sendIntent(ArtworkIntent.ShowResetProgressDialog(show = true))
+                    onDismissRequest()
+                },
+                leadingIcon = {
+                    Icon(painter = painterResource(R.drawable.ic_eraser), contentDescription = stringResource(R.string.reset_progress))
                 },
             )
 
@@ -308,4 +314,23 @@ fun ArtworkScreenContent_Preview() {
             sendIntent = {}
         )
     }
+}
+
+@Composable
+fun ArtworkResetProgressDialog(
+    sendIntent: (ArtworkIntent) -> Unit
+) {
+
+    FluxDialog(
+        title = stringResource(R.string.reset_progress),
+        onDismiss = { sendIntent(ArtworkIntent.ShowResetProgressDialog(show = false)) },
+        onValidateLabel = stringResource(R.string.reset),
+        onValidate = { sendIntent(ArtworkIntent.ResetProgress) },
+        content = {
+            Text.Body.Large(
+                text = stringResource(R.string.reset_progress_confirmation)
+            )
+        }
+    )
+
 }

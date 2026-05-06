@@ -8,7 +8,7 @@ import com.mskd.flux.model.ScreenState
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
-import com.mskd.flux.useCases.mediaProgress.MediaProgressUC
+import com.mskd.flux.useCases.mediaProgress.ArtworkProgressUC
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -23,7 +23,7 @@ import javax.inject.Inject
 class UnknownViewModel @Inject constructor(
     private val repository: ArtworkRepository,
     private val settingsRepository: SettingsRepository,
-    private val mediaProgressUC: MediaProgressUC
+    private val artworkProgressUC: ArtworkProgressUC
 ) : ViewModel() {
 
     //region Variables
@@ -40,12 +40,12 @@ class UnknownViewModel @Inject constructor(
     val uiState: StateFlow<UnknownUiState> = combine(
         repository.flow,
         settingsRepository.flow
-    ) { artworks, settings ->
+    ) { artworkContent, settings ->
         UnknownUiState(
             screen = ScreenState.CONTENT,
-            medias = artworks.episodes.sortedWith(
+            medias = (artworkContent as? ArtworkRepository.Content.SHOW)?.episodes?.sortedWith(
                 compareBy<Episode> { it.title }.thenBy { it.season }.thenBy { it.number }
-            ),
+            ) ?: emptyList(),
             useExternalPlayer = settings.externalPlayer
         )
     }
@@ -94,7 +94,7 @@ class UnknownViewModel @Inject constructor(
 
     private suspend fun onExternalPlayerResult(progress: Long) {
         selectedMedia?.let { media ->
-            mediaProgressUC.saveProgress(media = media, progress = progress)
+            artworkProgressUC.saveProgress(media = media, progress = progress)
             selectedMedia = null
         }
     }

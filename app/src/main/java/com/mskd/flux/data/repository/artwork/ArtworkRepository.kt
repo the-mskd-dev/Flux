@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface ArtworkRepository {
 
-    val flow: Flow<State>
+    val flow: Flow<Content>
 
     fun searchArtwork(artworkId: Long)
 
@@ -17,10 +17,12 @@ interface ArtworkRepository {
 
     suspend fun saveEpisodes(episodes: List<Episode>)
 
-    data class State(
-        val artwork: Artwork? = null,
-        val movie: Movie? = null,
-        val episodes: List<Episode> = emptyList()
-    )
+    suspend fun getArtwork(artworkId: Long) : Content
+
+    sealed class Content {
+        data class MOVIE(val artwork: Artwork, val movie: Movie) : Content()
+        data class SHOW(val artwork: Artwork, val episodes: List<Episode>) : Content()
+        data object ERROR : Content()
+    }
 
 }

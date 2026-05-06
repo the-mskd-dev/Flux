@@ -24,4 +24,10 @@ object ArtworkProgressUCTestCases {
         val expectedRemoveFromRecentlyWatched: Boolean
     )
 
+    data class ResetProgress(
+        val description: String,
+        val artwork: Artwork,
+        val artworkContent: ArtworkRepository.Content,
+    )
+
 }

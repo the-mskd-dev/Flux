@@ -15,6 +15,7 @@ import com.mskd.flux.utils.extensions.lastEpisode
 import com.mskd.flux.utils.extensions.minToMs
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData
+import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
@@ -243,8 +244,51 @@ class ArtworkProgressUCTest : FunSpec({
 
     }
 
-    test("reset progress") {
+    context("reset progress") {
+        withData(
+            nameFn = { it.description },
+            ArtworkProgressUCTestCases.ResetProgress(
+                description = "reset movie",
+                artwork = MediaMockups.movieArtwork,
+                artworkContent = ArtworkRepository.Content.MOVIE(
+                    artwork = MediaMockups.movieArtwork,
+                    movie = MediaMockups.movie
+                )
+            ),
+            ArtworkProgressUCTestCases.ResetProgress(
+                description = "reset movie",
+                artwork = MediaMockups.showArtwork,
+                artworkContent = ArtworkRepository.Content.SHOW(
+                    artwork = MediaMockups.showArtwork,
+                    episodes = MediaMockups.episodesWithStatus
+                )
+            )
+        ) { testCase ->
 
+            artworkRepository = mockk(relaxed = true) {
+                coEvery { getArtwork(any()) } returns testCase.artworkContent
+            }
+
+            artworkProgressUC = ArtworkProgressUCImpl(
+                artworkRepository = artworkRepository,
+                userRepository = userRepository,
+            )
+
+            artworkProgressUC.resetProgress(artwork = testCase.artwork)
+
+            when (testCase.artworkContent) {
+                is ArtworkRepository.Content.MOVIE -> {
+                    coVerify { artworkRepository.saveMovie(match { it.status == Status.TO_WATCH && it.currentTime == 0L }) }
+                }
+                is ArtworkRepository.Content.SHOW -> {
+                    coVerify { artworkRepository.saveEpisodes(match { episodes ->  episodes.all { it.status == Status.TO_WATCH && it.currentTime == 0L } } ) }
+                }
+                ArtworkRepository.Content.ERROR -> { assert(false) }
+            }
+
+            coVerify { userRepository.removeFromRecentlyWatched(artworkId = testCase.artwork.id) }
+
+        }
     }
 
 })

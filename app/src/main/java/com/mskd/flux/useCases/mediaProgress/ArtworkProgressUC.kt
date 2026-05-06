@@ -148,6 +148,9 @@ class ArtworkProgressUCImpl(
             currentTime = 0L
         )
 
+        if (status == Status.WATCHED)
+            userRepository.removeFromRecentlyWatched(movie.artworkId)
+
         artworkRepository.saveMovie(movieUpdated) // Save status in DB
 
         Log.i(TAG, "${movie.title} is now ${movie.status}")
@@ -169,7 +172,7 @@ class ArtworkProgressUCImpl(
             if (lastEpisode.id == updatedEpisode.id && status == Status.WATCHED)
                 userRepository.removeFromRecentlyWatched(episode.artworkId)
 
-            artworkRepository.saveEpisodes(listOf(updatedEpisode)) // Save status in DB
+            artworkRepository.saveEpisode(updatedEpisode) // Save status in DB
 
         }
 

@@ -5,6 +5,7 @@ import com.mskd.flux.data.repository.artwork.ArtworkRepository
 import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.Episode
+import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Status
 import com.mskd.flux.useCases.mediaProgress.ArtworkProgressUC
@@ -18,8 +19,9 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlin.String
 
-class MediaProgressUCTest : FunSpec({
+class ArtworkProgressUCTest : FunSpec({
 
     fluxExtensions()
 
@@ -45,7 +47,7 @@ class MediaProgressUCTest : FunSpec({
     context("save progress") {
         withData(
             nameFn = { it.description },
-            MediaProgressUCTestCases.SaveProgress(
+            ArtworkProgressUCTestCases.SaveProgress(
                 description = "Movie - save time at the middle",
                 artwork = MediaMockups.movieArtwork,
                 media = MediaMockups.movie,
@@ -53,7 +55,7 @@ class MediaProgressUCTest : FunSpec({
                 shouldBeAddedToRecentlyWatched = true,
                 statusExpected = Status.IS_WATCHING
             ),
-            MediaProgressUCTestCases.SaveProgress(
+            ArtworkProgressUCTestCases.SaveProgress(
                 description = "Movie - save time at the end",
                 artwork = MediaMockups.movieArtwork,
                 media = MediaMockups.movie,
@@ -61,7 +63,7 @@ class MediaProgressUCTest : FunSpec({
                 shouldBeAddedToRecentlyWatched = false,
                 statusExpected = Status.WATCHED
             ),
-            MediaProgressUCTestCases.SaveProgress(
+            ArtworkProgressUCTestCases.SaveProgress(
                 description = "Show - save time at the middle",
                 artwork = MediaMockups.showArtwork,
                 media = MediaMockups.episode1,
@@ -69,7 +71,7 @@ class MediaProgressUCTest : FunSpec({
                 shouldBeAddedToRecentlyWatched = true,
                 statusExpected = Status.IS_WATCHING
             ),
-            MediaProgressUCTestCases.SaveProgress(
+            ArtworkProgressUCTestCases.SaveProgress(
                 description = "Show - save time at the end",
                 artwork = MediaMockups.showArtwork,
                 media = MediaMockups.episode1,
@@ -77,7 +79,7 @@ class MediaProgressUCTest : FunSpec({
                 shouldBeAddedToRecentlyWatched = true,
                 statusExpected = Status.WATCHED
             ),
-            MediaProgressUCTestCases.SaveProgress(
+            ArtworkProgressUCTestCases.SaveProgress(
                 description = "Show - save time for last episode at the middle",
                 artwork = MediaMockups.showArtwork,
                 media = MediaMockups.episodes.lastEpisode,
@@ -85,7 +87,7 @@ class MediaProgressUCTest : FunSpec({
                 shouldBeAddedToRecentlyWatched = true,
                 statusExpected = Status.IS_WATCHING
             ),
-            MediaProgressUCTestCases.SaveProgress(
+            ArtworkProgressUCTestCases.SaveProgress(
                 description = "Show - save time for last episode at the end",
                 artwork = MediaMockups.showArtwork,
                 media = MediaMockups.episodes.lastEpisode,
@@ -132,9 +134,66 @@ class MediaProgressUCTest : FunSpec({
         }
     }
 
-    test("change status") {
+    context("change status") {
+       withData(
+           nameFn = { it.description },
+           ArtworkProgressUCTestCases.ChangeStatus(
+               description = "Change movie as watched",
+               media = MediaMockups.movie,
+               status = Status.WATCHED,
+               artworkContent = ArtworkRepository.Content.MOVIE(
+                   artwork = MediaMockups.movieArtwork,
+                   movie = MediaMockups.movie
+               ),
+               expectedRemoveFromRecentlyWatched = true
+           ),
+           ArtworkProgressUCTestCases.ChangeStatus(
+               description = "Change movie as not watched",
+               media = MediaMockups.movie,
+               status = Status.TO_WATCH,
+               artworkContent = ArtworkRepository.Content.MOVIE(
+                   artwork = MediaMockups.movieArtwork,
+                   movie = MediaMockups.movie
+               ),
+               expectedRemoveFromRecentlyWatched = false
+           ),
+           ArtworkProgressUCTestCases.ChangeStatus(
+               description = "Change episode 2 as watched",
+               media = MediaMockups.episode2,
+               status = Status.WATCHED,
+               artworkContent = ArtworkRepository.Content.SHOW(
+                   artwork = MediaMockups.showArtwork,
+                   episodes = MediaMockups.episodes
+               ),
+               expectedRemoveFromRecentlyWatched = false
+           ),
+           ArtworkProgressUCTestCases.ChangeStatus(
+               description = "Change last episode as watched",
+               media = MediaMockups.episode3,
+               status = Status.WATCHED,
+               artworkContent = ArtworkRepository.Content.SHOW(
+                   artwork = MediaMockups.showArtwork,
+                   episodes = MediaMockups.episodes
+               ),
+               expectedRemoveFromRecentlyWatched = true
+           ),
+           ArtworkProgressUCTestCases.ChangeStatus(
+               description = "Change last episode as not watched",
+               media = MediaMockups.episode3,
+               status = Status.TO_WATCH,
+               artworkContent = ArtworkRepository.Content.SHOW(
+                   artwork = MediaMockups.showArtwork,
+                   episodes = MediaMockups.episodes
+               ),
+               expectedRemoveFromRecentlyWatched = false
+           )
+       ) { testCase ->
 
+           //TODO
+
+       }
     }
+
 
     test("mark previous episodes as watched") {
 

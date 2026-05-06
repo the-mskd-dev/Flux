@@ -205,10 +205,10 @@ class ArtworkProgressUCTest : FunSpec({
 
            when (testCase.media) {
                is Episode -> {
-                   coVerify { artworkRepository.saveEpisode(any()) }
+                   coVerify { artworkRepository.saveEpisode(match { it.id == testCase.media.id }) }
                }
                is Movie -> {
-                   coVerify { artworkRepository.saveMovie(any()) }
+                   coVerify { artworkRepository.saveMovie(match { it.artworkId == testCase.media.artworkId }) }
                }
            }
 
@@ -222,6 +222,24 @@ class ArtworkProgressUCTest : FunSpec({
 
 
     test("mark previous episodes as watched") {
+
+        artworkRepository = mockk(relaxed = true) {
+            every { flow } returns MutableStateFlow(
+                ArtworkRepository.Content.SHOW(
+                    artwork = MediaMockups.showArtwork,
+                    episodes = MediaMockups.episodes
+                )
+            )
+        }
+
+        artworkProgressUC = ArtworkProgressUCImpl(
+            artworkRepository = artworkRepository,
+            userRepository = userRepository,
+        )
+
+        artworkProgressUC.markPreviousEpisodesAsWatchedFor(episode = MediaMockups.episode3)
+
+        coVerify { artworkRepository.saveEpisodes(match { episodes -> episodes.size == 2 && episodes.all { it.status == Status.WATCHED } })  }
 
     }
 

@@ -189,9 +189,35 @@ class ArtworkProgressUCTest : FunSpec({
            )
        ) { testCase ->
 
-           //TODO
+           artworkRepository = mockk(relaxed = true) {
+               every { flow } returns MutableStateFlow(testCase.artworkContent)
+           }
+
+           artworkProgressUC = ArtworkProgressUCImpl(
+               artworkRepository = artworkRepository,
+               userRepository = userRepository,
+           )
+
+           artworkProgressUC.changeMediaStatus(
+               media = testCase.media,
+               status = testCase.status
+           )
+
+           when (testCase.media) {
+               is Episode -> {
+                   coVerify { artworkRepository.saveEpisode(any()) }
+               }
+               is Movie -> {
+                   coVerify { artworkRepository.saveMovie(any()) }
+               }
+           }
+
+           if (testCase.expectedRemoveFromRecentlyWatched) {
+            coVerify { userRepository.removeFromRecentlyWatched(testCase.media.artworkId) }
+           }
 
        }
+
     }
 
 

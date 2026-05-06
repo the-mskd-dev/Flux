@@ -95,13 +95,20 @@ class MediaProgressUCTest : FunSpec({
             )
         ) { testCase ->
 
+            val content = when (testCase.media) {
+                is Episode -> ArtworkRepository.Content.SHOW(
+                    artwork = testCase.artwork,
+                    episodes = MediaMockups.episodes
+                )
+                is Movie -> ArtworkRepository.Content.MOVIE(
+                    artwork = testCase.artwork,
+                    movie = MediaMockups.movie
+                )
+            }
+
             // Given
             artworkRepository = mockk(relaxed = true) {
-                every { flow } returns MutableStateFlow(ArtworkRepository.State(
-                    artwork = testCase.artwork,
-                    movie = if (testCase.media is Movie) MediaMockups.movie else null,
-                    episodes = if (testCase.media is Movie) emptyList() else MediaMockups.episodes
-                ))
+                every { flow } returns MutableStateFlow(content)
             }
 
             artworkProgressUC = ArtworkProgressUCImpl(
@@ -130,6 +137,10 @@ class MediaProgressUCTest : FunSpec({
     }
 
     test("mark previous episodes as watched") {
+
+    }
+
+    test("reset progress") {
 
     }
 

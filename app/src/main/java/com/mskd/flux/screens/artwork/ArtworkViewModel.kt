@@ -34,7 +34,6 @@ class ArtworkViewModel @AssistedInject constructor(
     @Assisted val artworkId: Long,
     private val repository: ArtworkRepository,
     private val settingsRepository: SettingsRepository,
-    private val userRepository: UserRepository,
     private val artworkProgressUC: ArtworkProgressUC
 ) : ViewModel() {
 

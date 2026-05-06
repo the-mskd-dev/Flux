@@ -267,7 +267,7 @@ class ArtworkViewModelTest : FunSpec({
     test("mark movie as watched") {
 
         artworkRepository.setContent(
-            ArtworkRepository.State(
+            ArtworkRepository.Content.MOVIE(
                 artwork = MediaMockups.movieArtwork,
                 movie = MediaMockups.movie
             )

@@ -43,6 +43,7 @@ import com.mskd.flux.screens.settings.composables.SettingsItem
 import com.mskd.flux.screens.settings.composables.SettingsSection
 import com.mskd.flux.screens.settings.composables.SettingsSwitch
 import com.mskd.flux.ui.component.FluxDialog
+import com.mskd.flux.ui.component.FluxDivider
 import com.mskd.flux.ui.component.FluxScaffold
 import com.mskd.flux.ui.component.Text
 import com.mskd.flux.ui.theme.AppTheme
@@ -141,7 +142,7 @@ fun SettingsContent(
                     onTap = { sendIntent(SettingsIntent.ShowThemeDialog) }
                 )
 
-                SettingsDivider()
+                FluxDivider()
 
                 SettingsSwitch(
                     text = stringResource(R.string.auto_keyboard),
@@ -169,7 +170,7 @@ fun SettingsContent(
                     onTap = { sendIntent(SettingsIntent.ShowRewindDialog) }
                 )
 
-                SettingsDivider()
+                FluxDivider()
 
                 SettingsItem(
                     text = stringResource(R.string.button_forward),
@@ -180,7 +181,7 @@ fun SettingsContent(
                     onTap = { sendIntent(SettingsIntent.ShowForwardDialog) }
                 )
 
-                SettingsDivider()
+                FluxDivider()
 
                 SettingsSwitch(
                     text = stringResource(R.string.external_player),
@@ -208,7 +209,7 @@ fun SettingsContent(
                     onTap = { sendIntent(SettingsIntent.OnTokenTap) }
                 )
 
-                SettingsDivider()
+                FluxDivider()
 
                 SettingsItem(
                     text = stringResource(R.string.how_to_name_files),
@@ -235,7 +236,7 @@ fun SettingsContent(
                     onTap = { sendIntent(SettingsIntent.OnAboutTap) }
                 )
 
-                SettingsDivider()
+                FluxDivider()
 
                 SettingsItem(
                     text = stringResource(R.string.make_a_donation),
@@ -272,7 +273,7 @@ fun SettingsContent(
                     }
                 )
 
-                SettingsDivider()
+                FluxDivider()
 
                 SettingsItem(
                     text = stringResource(R.string.sources),
@@ -290,7 +291,7 @@ fun SettingsContent(
 
                 appVersion?.let {
 
-                    SettingsDivider()
+                    FluxDivider()
 
                     SettingsItem(
                         text = stringResource(R.string.app_version),
@@ -334,18 +335,6 @@ fun SettingIcon(
         painter = painter,
         tint = iconColor,
         contentDescription = contentDescription
-    )
-
-}
-
-@Composable
-fun SettingsDivider() {
-
-    HorizontalDivider(
-        modifier = Modifier
-            .height(2.dp)
-            .fillMaxWidth(),
-        color = MaterialTheme.colorScheme.surfaceContainer
     )
 
 }

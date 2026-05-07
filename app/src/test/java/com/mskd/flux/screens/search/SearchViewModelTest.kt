@@ -3,11 +3,13 @@ package com.mskd.flux.screens.search
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.data.repository.catalog.CatalogRepository
+import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.mockups.FakeCatalogRepository
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.ContentType
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import io.mockk.mockk
 
 class SearchViewModelTest : FunSpec({
 
@@ -15,6 +17,7 @@ class SearchViewModelTest : FunSpec({
 
     lateinit var viewModel: SearchViewModel
     lateinit var catalogRepository: FakeCatalogRepository
+    lateinit var settingsRepository: SettingsRepository
 
 
     beforeTest {
@@ -26,9 +29,12 @@ class SearchViewModelTest : FunSpec({
             )
         )
 
+        settingsRepository = mockk(relaxed = true)
+
         viewModel = SearchViewModel(
             contentType = null,
-            repository = catalogRepository
+            repository = catalogRepository,
+            settingsRepository = settingsRepository
         )
 
     }

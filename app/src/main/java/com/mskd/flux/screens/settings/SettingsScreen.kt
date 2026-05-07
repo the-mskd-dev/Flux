@@ -39,6 +39,9 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.mskd.flux.R
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Route.Token
+import com.mskd.flux.screens.settings.composables.SettingsItem
+import com.mskd.flux.screens.settings.composables.SettingsSection
+import com.mskd.flux.screens.settings.composables.SettingsSwitch
 import com.mskd.flux.ui.component.FluxDialog
 import com.mskd.flux.ui.component.FluxScaffold
 import com.mskd.flux.ui.component.Text
@@ -306,125 +309,6 @@ fun SettingsContent(
             Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding()))
 
         }
-
-    }
-
-}
-
-@Composable
-fun SettingsSection(
-    iconColor: Color,
-    backgroundColor: Color,
-    content: @Composable (Color, Color) -> Unit
-) {
-
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = Ui.Space.MEDIUM)
-                .clip(Ui.Shape.Corner.Small)
-                .background(MaterialTheme.colorScheme.surfaceContainer),
-            horizontalAlignment = Alignment.Start
-        ) { content(iconColor, backgroundColor) }
-}
-
-@Composable
-fun SettingsItem(
-    text: String,
-    value: String,
-    painter: Painter,
-    backgroundColor: Color,
-    iconColor: Color,
-    onTap: () -> Unit
-) {
-
-    Row(
-        modifier = Modifier
-            .clickable { onTap() }
-            .fillMaxWidth()
-            .padding(all = Ui.Space.MEDIUM),
-        horizontalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-
-        SettingIcon(
-            painter = painter,
-            backgroundColor = backgroundColor,
-            iconColor = iconColor,
-            contentDescription = text
-        )
-
-        Column(
-            modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)
-        ) {
-
-            Text.Title.Medium(
-                text = text,
-            )
-
-            Text.Title.Small(
-                text = value.uppercaseFirstLetter(),
-                color = MaterialTheme.colorScheme.onBackground.copy(alpha = .8f),
-            )
-
-        }
-
-    }
-
-}
-
-@Composable
-fun SettingsSwitch(
-    text: String,
-    subText: String,
-    checked: Boolean,
-    painter: Painter,
-    backgroundColor: Color,
-    iconColor: Color,
-    onCheckedChange: (Boolean) -> Unit
-) {
-
-    Row(
-        modifier = Modifier
-            .clickable { onCheckedChange(!checked) }
-            .fillMaxWidth()
-            .padding(all = Ui.Space.MEDIUM),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM),
-    ) {
-
-        SettingIcon(
-            painter = painter,
-            backgroundColor = backgroundColor,
-            iconColor = iconColor,
-            contentDescription = text
-        )
-
-        Column(
-            modifier = Modifier
-                .weight(1f)
-                .padding(end = Ui.Space.MEDIUM),
-            horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)
-        ) {
-
-            Text.Title.Medium(
-                text = text,
-            )
-
-            Text.Title.Small(
-                text = subText,
-                color = MaterialTheme.colorScheme.onBackground.copy(alpha = .8f),
-                lineHeight = 18.sp
-            )
-
-        }
-
-        Switch(
-            checked = checked,
-            onCheckedChange = onCheckedChange,
-        )
 
     }
 

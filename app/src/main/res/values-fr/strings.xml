@@ -112,4 +112,7 @@
     <string name="reset">Supprimer</string>
     <string name="auto_keyboard">Clavier automatique</string>
     <string name="auto_keyboard_desc">Afficher automatiquement le clavier dans l\'écran de recherche</string>
+    <string name="sync_library">Synchroniser la librairie</string>
+    <string name="sync_library_desc">Synchroniser toutes les données de la librairie</string>
+    <string name="sync_library_dialog">Souhaitez-vous synchroniser toute la librairie ? Votre progression sera conservée, cependant cela peut prendre un peu de temps.</string>
 </resources>

@@ -98,6 +98,13 @@ fun SettingsScreen(
         )
     }
 
+    if (state.showSyncDialog) {
+        SettingsFullSyncDialog(
+            sendIntent = viewModel::handleIntent,
+            onDismiss = { viewModel.handleIntent(SettingsIntent.ShowFullSyncDialog(show = false)) }
+        )
+    }
+
 }
 
 @Composable
@@ -260,8 +267,8 @@ fun SettingsContent(
             ) { iconColor, bgColor ->
 
                 SettingsItem(
-                    text = "Synchroniser la librairie",
-                    value = "Re-synchronise l'entièreté de la librairie",
+                    text = stringResource(R.string.sync_library),
+                    value = stringResource(R.string.sync_library_desc),
                     painter = painterResource(R.drawable.ic_sync),
                     iconColor = iconColor,
                     iconBackgroundColor = bgColor,
@@ -405,6 +412,23 @@ fun <T> SettingsDialog(
 
             }
 
+        }
+    )
+
+}
+
+@Composable
+fun SettingsFullSyncDialog(
+    sendIntent: (SettingsIntent) -> Unit,
+    onDismiss: () -> Unit
+) {
+
+    FluxDialog(
+        onDismiss = onDismiss,
+        onValidate = { sendIntent(SettingsIntent.ProceedFullSync) },
+        title = stringResource(R.string.sync_library),
+        content = {
+            Text.Body.Large(text = stringResource(R.string.sync_library_dialog))
         }
     )
 

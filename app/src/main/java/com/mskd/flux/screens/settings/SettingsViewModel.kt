@@ -33,6 +33,7 @@ class SettingsViewModel @Inject constructor(
             rewindValue = settings.playerRewindValue,
             forwardValue = settings.playerForwardValue,
             useExternalPlayer = settings.externalPlayer,
+            autoKeyboard = settings.autoKeyboard,
             uiTheme = settings.uiTheme,
             dialogState = dialog
         )
@@ -62,6 +63,7 @@ class SettingsViewModel @Inject constructor(
             SettingsIntent.OnTokenTap -> _event.emit(SettingsEvent.NavigateToTokenScreen)
             SettingsIntent.OnAboutTap -> _event.emit(SettingsEvent.NavigateToAboutScreen)
             SettingsIntent.OnHowToTap -> _event.emit(SettingsEvent.NavigateToHowToScreen)
+            is SettingsIntent.OnAutoKeyboardCheck -> onAutoKeyboardCheck(value = intent.checked)
             is SettingsIntent.OnExternalPlayerCheck -> onExternalPlayerCheck(value = intent.checked)
         }
     }
@@ -111,5 +113,8 @@ class SettingsViewModel @Inject constructor(
         settingsRepository.setExternalPlayer(value)
     }
 
+    private suspend fun onAutoKeyboardCheck(value: Boolean) {
+        settingsRepository.setAutoKeyboard(value)
+    }
 
 }

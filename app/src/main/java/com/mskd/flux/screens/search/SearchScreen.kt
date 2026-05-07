@@ -28,8 +28,14 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -81,6 +87,16 @@ fun SearchContent(
     sendIntent: (SearchIntent) -> Unit,
 ) {
 
+    val focusRequester = remember { FocusRequester() }
+    var focusRequested by rememberSaveable { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        if (state.autoKeyboard && !focusRequested) {
+            focusRequested = true
+            focusRequester.requestFocus()
+        }
+    }
+
     FluxScaffold(
         title = stringResource(android.R.string.search_go),
         onBackTap = { sendIntent(SearchIntent.OnBackTap) }
@@ -103,7 +119,9 @@ fun SearchContent(
             item(span = { GridItemSpan(3) }) {
 
                 TextField(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .focusRequester(focusRequester),
                     value = state.searchWord,
                     onValueChange = { sendIntent(SearchIntent.DoSearch(it)) },
                     singleLine = true,

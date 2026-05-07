@@ -8,7 +8,8 @@ import com.mskd.flux.model.artwork.ContentType
 data class SearchUIState(
     val searchWord: String = "",
     val artworks: List<Artwork> = emptyList(),
-    val contentType: ContentType? = null
+    val contentType: ContentType? = null,
+    val autoKeyboard: Boolean = true
 ) {
 
     val filteredArtworks get() = artworks

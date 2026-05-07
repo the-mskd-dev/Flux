@@ -44,6 +44,7 @@ import com.mskd.flux.ui.component.FluxScaffold
 import com.mskd.flux.ui.component.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.ui.theme.onErrorDark
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.WebLink
@@ -134,6 +135,23 @@ fun SettingsContent(
                 )
 
                 SettingsDivider()
+
+                SettingsSwitch(
+                    text = stringResource(R.string.auto_keyboard),
+                    subText = stringResource(R.string.auto_keyboard_desc),
+                    checked = state.autoKeyboard,
+                    onCheckedChange = { sendIntent(SettingsIntent.OnAutoKeyboardCheck(it)) },
+                    painter = painterResource(R.drawable.ic_keyboard),
+                    iconColor = iconColor,
+                    backgroundColor = bgColor,
+                )
+
+            }
+
+            SettingsSection(
+                iconColor = MaterialTheme.colorScheme.onErrorContainer,
+                backgroundColor = MaterialTheme.colorScheme.errorContainer.copy(alpha = 1f)
+            ) { iconColor, bgColor ->
 
                 SettingsItem(
                     text = stringResource(R.string.button_rewind),

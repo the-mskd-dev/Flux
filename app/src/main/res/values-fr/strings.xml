@@ -110,4 +110,6 @@
     <string name="reset_progress">Réinitialiser la progression</string>
     <string name="reset_progress_confirmation">Êtes-vous vraiment sûr(e) de vouloir supprimer toute votre progression ?</string>
     <string name="reset">Supprimer</string>
+    <string name="auto_keyboard">Clavier automatique</string>
+    <string name="auto_keyboard_desc">Afficher automatiquement le clavier dans l\'écran de recherche</string>
 </resources>

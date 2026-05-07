@@ -143,4 +143,38 @@ class SettingsViewModelTest : FunSpec({
 
     }
 
+    test("set auto keyboard") {
+        viewModel.uiState.test {
+            awaitItem()
+
+            viewModel.handleIntent(SettingsIntent.OnAutoKeyboardCheck(false))
+            dataStoreFlow.value = dataStoreFlow.value.copy(autoKeyboard = false)
+
+            val state = awaitItem()
+
+            coVerify { settingsRepository.setAutoKeyboard(false) }
+            state.autoKeyboard shouldBe false
+
+            cancelAndConsumeRemainingEvents()
+
+        }
+    }
+
+    test("set external player") {
+        viewModel.uiState.test {
+            awaitItem()
+
+            viewModel.handleIntent(SettingsIntent.OnExternalPlayerCheck(true))
+            dataStoreFlow.value = dataStoreFlow.value.copy(externalPlayer = true)
+
+            val state = awaitItem()
+
+            coVerify { settingsRepository.setExternalPlayer(true) }
+            state.useExternalPlayer shouldBe true
+
+            cancelAndConsumeRemainingEvents()
+
+        }
+    }
+
 })

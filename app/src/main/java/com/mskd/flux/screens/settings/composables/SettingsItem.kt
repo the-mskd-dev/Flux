@@ -1,5 +1,6 @@
 package com.mskd.flux.screens.settings.composables
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,7 +23,7 @@ fun SettingsItem(
     text: String,
     value: String,
     painter: Painter,
-    backgroundColor: Color,
+    iconBackgroundColor: Color,
     iconColor: Color,
     onTap: () -> Unit
 ) {
@@ -31,6 +32,7 @@ fun SettingsItem(
         modifier = Modifier
             .clickable { onTap() }
             .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.background)
             .padding(all = Ui.Space.MEDIUM),
         horizontalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM),
         verticalAlignment = Alignment.CenterVertically
@@ -38,7 +40,7 @@ fun SettingsItem(
 
         SettingIcon(
             painter = painter,
-            backgroundColor = backgroundColor,
+            backgroundColor = iconBackgroundColor,
             iconColor = iconColor,
             contentDescription = text
         )
@@ -50,6 +52,7 @@ fun SettingsItem(
 
             Text.Title.Medium(
                 text = text,
+                color = MaterialTheme.colorScheme.onBackground
             )
 
             Text.Title.Small(

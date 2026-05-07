@@ -17,7 +17,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
-import androidx.compose.material3.Switch
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -32,7 +32,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -47,7 +47,6 @@ import com.mskd.flux.ui.component.FluxScaffold
 import com.mskd.flux.ui.component.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
-import com.mskd.flux.ui.theme.onErrorDark
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.WebLink
@@ -110,12 +109,17 @@ fun SettingsContent(
 
     FluxScaffold(
         title = stringResource(R.string.settings),
+        topAppBarColors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainer,
+            scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+            titleContentColor = MaterialTheme.colorScheme.onSurface,
+        ),
         onBackTap = { sendIntent(SettingsIntent.OnBackTap) }
     ) { innerPadding ->
 
         Column(
             modifier = Modifier
-                .background(MaterialTheme.colorScheme.background)
+                .background(MaterialTheme.colorScheme.surfaceContainer)
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
@@ -125,7 +129,7 @@ fun SettingsContent(
 
             SettingsSection(
                 iconColor = MaterialTheme.colorScheme.onTertiaryContainer,
-                backgroundColor = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 1f)
+                iconBackgroundColor = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 1f)
             ) { iconColor, bgColor ->
 
                 SettingsItem(
@@ -133,7 +137,7 @@ fun SettingsContent(
                     value = stringResource(state.uiTheme.stringResourceId),
                     painter = painterResource(R.drawable.ic_theme),
                     iconColor = iconColor,
-                    backgroundColor = bgColor,
+                    iconBackgroundColor = bgColor,
                     onTap = { sendIntent(SettingsIntent.ShowThemeDialog) }
                 )
 
@@ -153,7 +157,7 @@ fun SettingsContent(
 
             SettingsSection(
                 iconColor = MaterialTheme.colorScheme.onErrorContainer,
-                backgroundColor = MaterialTheme.colorScheme.errorContainer.copy(alpha = 1f)
+                iconBackgroundColor = MaterialTheme.colorScheme.errorContainer.copy(alpha = 1f)
             ) { iconColor, bgColor ->
 
                 SettingsItem(
@@ -161,7 +165,7 @@ fun SettingsContent(
                     value = "${state.rewindValue}sec",
                     painter = painterResource(R.drawable.fast_rewind),
                     iconColor = iconColor,
-                    backgroundColor = bgColor,
+                    iconBackgroundColor = bgColor,
                     onTap = { sendIntent(SettingsIntent.ShowRewindDialog) }
                 )
 
@@ -172,7 +176,7 @@ fun SettingsContent(
                     value = "${state.forwardValue}sec",
                     painter = painterResource(R.drawable.fast_forward),
                     iconColor = iconColor,
-                    backgroundColor = bgColor,
+                    iconBackgroundColor = bgColor,
                     onTap = { sendIntent(SettingsIntent.ShowForwardDialog) }
                 )
 
@@ -192,7 +196,7 @@ fun SettingsContent(
 
             SettingsSection(
                 iconColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                backgroundColor = MaterialTheme.colorScheme.primaryContainer
+                iconBackgroundColor = MaterialTheme.colorScheme.primaryContainer
             ) { iconColor, bgColor ->
 
                 SettingsItem(
@@ -200,7 +204,7 @@ fun SettingsContent(
                     value = "",
                     painter = painterResource(R.drawable.ic_api),
                     iconColor = iconColor,
-                    backgroundColor = bgColor,
+                    iconBackgroundColor = bgColor,
                     onTap = { sendIntent(SettingsIntent.OnTokenTap) }
                 )
 
@@ -211,7 +215,7 @@ fun SettingsContent(
                     value = "",
                     painter = painterResource(R.drawable.ic_help),
                     iconColor = iconColor,
-                    backgroundColor = bgColor,
+                    iconBackgroundColor = bgColor,
                     onTap = { sendIntent(SettingsIntent.OnHowToTap) }
                 )
 
@@ -219,7 +223,7 @@ fun SettingsContent(
 
             SettingsSection(
                 iconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                backgroundColor = MaterialTheme.colorScheme.surfaceVariant
+                iconBackgroundColor = MaterialTheme.colorScheme.surfaceVariant
             ) { iconColor, bgColor ->
 
                 SettingsItem(
@@ -227,7 +231,7 @@ fun SettingsContent(
                     value = stringResource(R.string.about_desc),
                     painter = painterResource(R.drawable.ic_info),
                     iconColor = iconColor,
-                    backgroundColor = bgColor,
+                    iconBackgroundColor = bgColor,
                     onTap = { sendIntent(SettingsIntent.OnAboutTap) }
                 )
 
@@ -238,7 +242,7 @@ fun SettingsContent(
                     value = stringResource(R.string.support_me_desc),
                     painter = painterResource(R.drawable.ic_money),
                     iconColor = iconColor,
-                    backgroundColor = bgColor,
+                    iconBackgroundColor = bgColor,
                     onTap = {
                         WebLink.openPage(
                             context = context,
@@ -251,7 +255,7 @@ fun SettingsContent(
 
             SettingsSection(
                 iconColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                backgroundColor = MaterialTheme.colorScheme.secondaryContainer
+                iconBackgroundColor = MaterialTheme.colorScheme.secondaryContainer
             ) { iconColor, bgColor ->
 
                 SettingsItem(
@@ -259,7 +263,7 @@ fun SettingsContent(
                     value = stringResource(R.string.stay_informed),
                     painter = painterResource(R.drawable.ic_social_media),
                     iconColor = iconColor,
-                    backgroundColor = bgColor,
+                    iconBackgroundColor = bgColor,
                     onTap = {
                         WebLink.openPage(
                             context = context,
@@ -275,7 +279,7 @@ fun SettingsContent(
                     value = "",
                     painter = painterResource(R.drawable.ic_sources),
                     iconColor = iconColor,
-                    backgroundColor = bgColor,
+                    iconBackgroundColor = bgColor,
                     onTap = {
                         WebLink.openPage(
                             context = context,
@@ -293,7 +297,7 @@ fun SettingsContent(
                         value = it,
                         painter = painterResource(R.drawable.ic_version),
                         iconColor = iconColor,
-                        backgroundColor = bgColor,
+                        iconBackgroundColor = bgColor,
                         onTap = {
                             WebLink.openPage(
                                 context = context,
@@ -338,8 +342,10 @@ fun SettingIcon(
 fun SettingsDivider() {
 
     HorizontalDivider(
-        modifier = Modifier.fillMaxWidth(),
-        color = MaterialTheme.colorScheme.background
+        modifier = Modifier
+            .height(2.dp)
+            .fillMaxWidth(),
+        color = MaterialTheme.colorScheme.surfaceContainer
     )
 
 }

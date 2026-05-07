@@ -1,5 +1,6 @@
 package com.mskd.flux.screens.settings.composables
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -33,6 +34,7 @@ fun SettingsSwitch(
         modifier = Modifier
             .clickable { onCheckedChange(!checked) }
             .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.background)
             .padding(all = Ui.Space.MEDIUM),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM),
@@ -55,6 +57,7 @@ fun SettingsSwitch(
 
             Text.Title.Medium(
                 text = text,
+                color = MaterialTheme.colorScheme.onBackground
             )
 
             Text.Title.Small(

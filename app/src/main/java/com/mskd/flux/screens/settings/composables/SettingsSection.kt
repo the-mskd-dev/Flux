@@ -1,10 +1,8 @@
 package com.mskd.flux.screens.settings.composables
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -15,16 +13,15 @@ import com.mskd.flux.ui.theme.Ui
 @Composable
 fun SettingsSection(
     iconColor: Color,
-    backgroundColor: Color,
+    iconBackgroundColor: Color,
     content: @Composable (Color, Color) -> Unit
 ) {
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = Ui.Space.MEDIUM)
-            .clip(Ui.Shape.Corner.Small)
-            .background(MaterialTheme.colorScheme.surfaceContainer),
+            .padding(horizontal = Ui.Space.LARGE)
+            .clip(Ui.Shape.Corner.Medium),
         horizontalAlignment = Alignment.Start
-    ) { content(iconColor, backgroundColor) }
+    ) { content(iconColor, iconBackgroundColor) }
 }

@@ -114,7 +114,7 @@ class SettingsViewModel @Inject constructor(
     }
 
     private suspend fun onAutoKeyboardCheck(value: Boolean) {
-        settingsRepository.setExternalPlayer(value)
+        settingsRepository.setAutoKeyboard(value)
     }
 
 }

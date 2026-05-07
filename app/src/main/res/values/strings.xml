@@ -119,4 +119,6 @@
     <string name="reset_progress">Reset progress</string>
     <string name="reset_progress_confirmation">Are you really sure you want to delete all progress?</string>
     <string name="reset">Reset</string>
+    <string name="auto_keyboard">Show keyboard in search</string>
+    <string name="auto_keyboard_desc">Automatically display the keyboard in the search screen</string>
 </resources>

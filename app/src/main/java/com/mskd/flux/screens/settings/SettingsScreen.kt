@@ -255,8 +255,24 @@ fun SettingsContent(
             }
 
             SettingsSection(
-                iconColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                iconBackgroundColor = MaterialTheme.colorScheme.secondaryContainer
+                iconColor = MaterialTheme.colorScheme.onErrorContainer,
+                iconBackgroundColor = MaterialTheme.colorScheme.errorContainer
+            ) { iconColor, bgColor ->
+
+                SettingsItem(
+                    text = "Synchroniser la librairie",
+                    value = "Re-synchronise l'entièreté de la librairie",
+                    painter = painterResource(R.drawable.ic_sync),
+                    iconColor = iconColor,
+                    iconBackgroundColor = bgColor,
+                    onTap = { sendIntent(SettingsIntent.ShowFullSyncDialog(true)) }
+                )
+
+            }
+
+            SettingsSection(
+                iconColor = MaterialTheme.colorScheme.onTertiaryContainer,
+                iconBackgroundColor = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = .6f)
             ) { iconColor, bgColor ->
 
                 SettingsItem(

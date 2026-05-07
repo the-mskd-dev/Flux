@@ -24,18 +24,21 @@ class SettingsViewModel @Inject constructor(
     //region Variables
 
     private val _dialogState = MutableStateFlow<SettingsDialogState<*>?>(null)
+    private val _showFullSyncDialogState = MutableStateFlow(false)
 
     val uiState: StateFlow<SettingsUiState> = combine(
         settingsRepository.flow,
-        _dialogState
-    ) { settings, dialog ->
+        _dialogState,
+        _showFullSyncDialogState
+    ) { settings, dialog, showSyncDialog ->
         SettingsUiState(
             rewindValue = settings.playerRewindValue,
             forwardValue = settings.playerForwardValue,
             useExternalPlayer = settings.externalPlayer,
             autoKeyboard = settings.autoKeyboard,
             uiTheme = settings.uiTheme,
-            dialogState = dialog
+            dialogState = dialog,
+            showSyncDialog = showSyncDialog
         )
     }.stateIn(
         scope = viewModelScope,
@@ -65,6 +68,8 @@ class SettingsViewModel @Inject constructor(
             SettingsIntent.OnHowToTap -> _event.emit(SettingsEvent.NavigateToHowToScreen)
             is SettingsIntent.OnAutoKeyboardCheck -> onAutoKeyboardCheck(value = intent.checked)
             is SettingsIntent.OnExternalPlayerCheck -> onExternalPlayerCheck(value = intent.checked)
+            is SettingsIntent.ShowFullSyncDialog -> showFullSyncDialog(show = intent.show)
+            SettingsIntent.ProceedFullSync -> proceedFullSync()
         }
     }
 
@@ -115,6 +120,14 @@ class SettingsViewModel @Inject constructor(
 
     private suspend fun onAutoKeyboardCheck(value: Boolean) {
         settingsRepository.setAutoKeyboard(value)
+    }
+
+    private fun showFullSyncDialog(show: Boolean) {
+        _showFullSyncDialogState.update { show }
+    }
+
+    private suspend fun proceedFullSync() {
+
     }
 
 }

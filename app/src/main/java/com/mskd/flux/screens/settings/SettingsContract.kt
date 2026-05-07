@@ -11,7 +11,8 @@ data class SettingsUiState(
     val uiTheme: Ui.THEME = Ui.THEME.SYSTEM,
     val autoKeyboard: Boolean = false,
     val useExternalPlayer: Boolean = false,
-    val dialogState: SettingsDialogState<*>? = null
+    val dialogState: SettingsDialogState<*>? = null,
+    val showSyncDialog: Boolean = false
 )
 
 data class SettingsDialogState<T>(
@@ -61,17 +62,20 @@ data class SettingsDialogState<T>(
 }
 
 sealed class SettingsIntent {
-    object ShowRewindDialog: SettingsIntent()
+    data object ShowRewindDialog: SettingsIntent()
     data class SetRewindValue(val value: Int): SettingsIntent()
-    object ShowForwardDialog: SettingsIntent()
+    data object ShowForwardDialog: SettingsIntent()
     data class SetForwardValue(val value: Int): SettingsIntent()
-    object ShowThemeDialog: SettingsIntent()
+    data object ShowThemeDialog: SettingsIntent()
     data class SetThemeValue(val theme: Ui.THEME): SettingsIntent()
-    object HideDialog : SettingsIntent()
-    object OnBackTap: SettingsIntent()
-    object OnTokenTap: SettingsIntent()
-    object OnHowToTap: SettingsIntent()
-    object OnAboutTap: SettingsIntent()
+    data object HideDialog : SettingsIntent()
+    data object OnBackTap: SettingsIntent()
+    data object OnTokenTap: SettingsIntent()
+    data object OnHowToTap: SettingsIntent()
+    data object OnAboutTap: SettingsIntent()
+
+    data class ShowFullSyncDialog(val show: Boolean): SettingsIntent()
+    data object ProceedFullSync: SettingsIntent()
     data class OnAutoKeyboardCheck(val checked: Boolean): SettingsIntent()
     data class OnExternalPlayerCheck(val checked: Boolean): SettingsIntent()
 }

@@ -40,6 +40,7 @@ class SearchViewModel @AssistedInject constructor(
     init {
 
         val autoKeyboard = runBlocking { settingsRepository.flow.first().autoKeyboard }
+
         viewModelScope.launch {
             repository.flow.collect { library ->
                 _uiState.update {

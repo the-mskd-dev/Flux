@@ -31,6 +31,7 @@ import com.mskd.flux.screens.token.TokenScreen
 import com.mskd.flux.screens.unknown.UnknownScreen
 import com.mskd.flux.screens.welcome.WelcomeScreen
 import com.mskd.flux.ui.theme.AppTheme
+import com.mskd.flux.utils.extensions.popScreen
 import com.mskd.flux.utils.notificationsPermissionState
 import com.mskd.flux.utils.storagePermissionState
 import dagger.hilt.android.AndroidEntryPoint
@@ -95,48 +96,48 @@ class MainActivity : ComponentActivity() {
                         entry<Route.Artwork> { entry ->
                             ArtworkScreen(
                                 navigate = { route -> backStack.add(route) },
-                                onBack = { backStack.removeLastOrNull() },
+                                onBack = { backStack.popScreen() },
                                 artworkId = entry.artworkId
                             )
                         }
                         entry<Route.UnknownArtworks> {
                             UnknownScreen(
                                 navigate = { route -> backStack.add(route) },
-                                onBack = { backStack.removeLastOrNull() },
+                                onBack = { backStack.popScreen() },
                             )
                         }
                         entry<Route.Search> { entry ->
                             SearchScreen(
                                 navigate = { route -> backStack.add(route) },
-                                onBack = { backStack.removeLastOrNull() },
+                                onBack = { backStack.popScreen() },
                                 contentType = entry.contentType
                             )
                         }
                         entry<Route.Player> { entry ->
                             PlayerScreen(
                                 mediaId = entry.mediaId,
-                                onBack = { backStack.removeLastOrNull() },
+                                onBack = { backStack.popScreen() },
                             )
                         }
                         entry<Route.Settings> {
                             SettingsScreen(
                                 navigate = { route -> backStack.add(route) },
-                                onBack = { backStack.removeLastOrNull() },
+                                onBack = { backStack.popScreen() },
                             )
                         }
                         entry<Route.HowTo> {
                             HowToScreen(
-                                onBack = { backStack.removeLastOrNull() }
+                                onBack = { backStack.popScreen() }
                             )
                         }
                         entry<Route.About> {
                             AboutScreen(
-                                onBack = { backStack.removeLastOrNull() }
+                                onBack = { backStack.popScreen() }
                             )
                         }
                         entry<Route.Token> { entry ->
                             TokenScreen(
-                                onBack = { backStack.removeLastOrNull() },
+                                onBack = { backStack.popScreen() },
                                 navigate = { route ->
                                     backStack.clear()
                                     backStack.add(route)

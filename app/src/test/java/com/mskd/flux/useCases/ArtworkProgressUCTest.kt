@@ -5,11 +5,10 @@ import com.mskd.flux.data.repository.artwork.ArtworkRepository
 import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.Episode
-import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Status
-import com.mskd.flux.useCases.mediaProgress.ArtworkProgressUC
-import com.mskd.flux.useCases.mediaProgress.ArtworkProgressUCImpl
+import com.mskd.flux.useCases.artworkProgress.ArtworkProgressUC
+import com.mskd.flux.useCases.artworkProgress.ArtworkProgressUCImpl
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.extensions.lastEpisode
 import com.mskd.flux.utils.extensions.minToMs
@@ -20,7 +19,6 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlin.String
 
 class ArtworkProgressUCTest : FunSpec({
 

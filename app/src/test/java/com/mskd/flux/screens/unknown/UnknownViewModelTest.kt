@@ -7,8 +7,8 @@ import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.mockups.FakeArtworkRepository
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.ScreenState
-import com.mskd.flux.useCases.mediaProgress.ArtworkProgressUC
-import com.mskd.flux.useCases.mediaProgress.ArtworkProgressUCImpl
+import com.mskd.flux.useCases.artworkProgress.ArtworkProgressUC
+import com.mskd.flux.useCases.artworkProgress.ArtworkProgressUCImpl
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.every

@@ -1,10 +1,9 @@
-package com.mskd.flux.useCases.mediaProgress
+package com.mskd.flux.useCases.artworkProgress
 
 import android.util.Log
 import com.mskd.flux.data.repository.artwork.ArtworkRepository
 import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.model.artwork.Artwork
-import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.artwork.Movie

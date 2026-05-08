@@ -67,7 +67,9 @@ class TmdbRepositoryImpl @Inject constructor(
                 id = artworkId,
                 season = season,
                 episode = number
-            )
+            ).also {
+                it.artworkId = artworkId
+            }
 
         } catch (e: Exception) {
             Log.e("TmdbRepositoryImpl", "[getTmdbEpisode] Fail to get episode from tmdb for id $artworkId, season $season, number $number", e)

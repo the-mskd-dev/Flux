@@ -5,7 +5,7 @@ import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Movie
 
 data class Catalog(
-    val artworks: List<Artwork>,
-    val movies: List<Movie>,
-    val episodes: List<Episode>
+    val artworks: List<Artwork> = emptyList(),
+    val movies: List<Movie> = emptyList(),
+    val episodes: List<Episode> = emptyList()
 )

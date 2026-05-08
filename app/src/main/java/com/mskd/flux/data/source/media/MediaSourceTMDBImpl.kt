@@ -210,11 +210,12 @@ class MediaSourceTMDBImpl @Inject constructor(
                             id = artwork.id,
                             season = file.nameProperties.season!!,
                             episode = file.nameProperties.episode!!
-                        )
+                        ).also {
+                            it.artworkId = artwork.id
+                        }
 
                         Episode(
                             tmdbEpisode = tmdbEpisode,
-                            mediaId = artwork.id,
                             file = file
                         )
 

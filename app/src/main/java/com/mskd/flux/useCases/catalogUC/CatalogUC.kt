@@ -4,11 +4,27 @@ import com.mskd.flux.data.repository.ddb.DatabaseRepository
 import com.mskd.flux.data.repository.files.FilesRepository
 import com.mskd.flux.data.repository.tmdb.TmdbRepository
 import com.mskd.flux.model.Catalog
+import com.mskd.flux.model.UserFile
+import com.mskd.flux.model.artwork.Artwork
+import com.mskd.flux.model.artwork.ContentType
+import com.mskd.flux.model.artwork.Episode
+import com.mskd.flux.model.artwork.Media
+import com.mskd.flux.model.artwork.Movie
+import com.mskd.flux.model.tmdb.TMDBArtwork
+import com.mskd.flux.model.tmdb.TMDBEpisode
+import com.mskd.flux.model.tmdb.TMDBFolder
+import com.mskd.flux.model.tmdb.TMDBMovie
+import com.mskd.flux.utils.extensions.groupInFolders
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
 
 interface CatalogUC {
-
     suspend fun syncCatalog() : Catalog
+    suspend fun tmdbToFluxArtwork(tmdbArtwork: TMDBArtwork?) : Artwork
+    suspend fun tmdbToFluxMovie(tmdbMovie: TMDBMovie?, file: UserFile) : Media
+    suspend fun tmdbToFluxEpisode(tmdbEpisode: TMDBEpisode?, file: UserFile) : Episode
 
 }
 
@@ -19,7 +35,121 @@ class CatalogUCImpl @Inject constructor(
 ) : CatalogUC {
 
     override suspend fun syncCatalog(): Catalog {
-        TODO("Not yet implemented")
+
+        val allFiles = filesRepository.getFiles()
+        val dbFilesNames = databaseRepository.getAllFileNames()
+
+        val newFiles = allFiles.filter { !dbFilesNames.contains(it.name) }
+
+        val folders = newFiles.groupInFolders()
+
+        val artworksFolders = coroutineScope {
+
+            folders.map { folder ->
+
+                async {
+
+                    val tmdbArtwork = tmdbRepository.getTmdbArtwork(file = folder.files.first())
+                    val artwork = tmdbToFluxArtwork(tmdbArtwork = tmdbArtwork)
+
+                    artwork to folder.files
+
+                }
+
+            }.awaitAll()
+
+        }
+
+        val movies = coroutineScope {
+
+            artworksFolders.filter { it.first.type == ContentType.MOVIE }.map { (artwork, files) ->
+
+                async {
+
+                    val tmdbMovie = tmdbRepository.getTmdbMovie(artworkId = artwork.id)
+                    tmdbToFluxMovie(tmdbMovie = tmdbMovie, file = files.first())
+
+                }
+
+            }.awaitAll()
+        }
+
+        val episodes = coroutineScope {
+
+            artworksFolders.filter { it.first.type == ContentType.SHOW }.flatMap { (artwork, files) ->
+
+                files.map { file ->
+
+                    val season = file.nameProperties.season
+                    val number = file.nameProperties.episode
+
+                    async {
+
+                        if (season != null && number != null) {
+
+                            val tmdbEpisode = tmdbRepository.getTmdbEpisode(
+                                artworkId = artwork.id,
+                                season = season,
+                                number = number
+                            )
+
+                            tmdbToFluxEpisode(tmdbEpisode = tmdbEpisode, file = file)
+
+                        } else {
+                            null
+                        }
+
+                    }
+
+                }.awaitAll().filterNotNull()
+
+            }
+
+        }
+
+        return Catalog()
+
+    }
+
+    override suspend fun tmdbToFluxArtwork(tmdbArtwork: TMDBArtwork?): Artwork {
+
+        if (tmdbArtwork == null) {
+            return Artwork.UNKNOWN
+        }
+
+        return Artwork(tmdbArtwork = tmdbArtwork)
+
+    }
+
+    override suspend fun tmdbToFluxMovie(
+        tmdbMovie: TMDBMovie?,
+        file: UserFile
+    ): Media {
+
+        if (tmdbMovie == null) {
+            return Episode(file = file)
+        }
+
+        return Movie(
+            tmdbMovie = tmdbMovie,
+            file = file
+        )
+
+    }
+
+    override suspend fun tmdbToFluxEpisode(
+        tmdbEpisode: TMDBEpisode?,
+        file: UserFile
+    ): Episode {
+
+        if (tmdbEpisode == null) {
+            return Episode(file = file)
+        }
+
+        return Episode(
+            tmdbEpisode = tmdbEpisode,
+            file = file,
+        )
     }
 
 }

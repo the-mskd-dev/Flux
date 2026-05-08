@@ -38,4 +38,7 @@ data class TMDBEpisode(
     @SerializedName("air_date")
     val releaseDateString: String,
     val crew: List<TMDBCrew>,
+
+    @Transient
+    var artworkId: Long = 0L
 )

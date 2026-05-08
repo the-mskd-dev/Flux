@@ -5,6 +5,8 @@ import com.mskd.flux.data.repository.artwork.ArtworkRepository
 import com.mskd.flux.data.repository.artwork.ArtworkRepositoryImpl
 import com.mskd.flux.data.repository.catalog.CatalogRepository
 import com.mskd.flux.data.repository.catalog.CatalogRepositoryImpl
+import com.mskd.flux.data.repository.ddb.DatabaseRepository
+import com.mskd.flux.data.repository.ddb.DatabaseRepositoryImpl
 import com.mskd.flux.data.source.file.FilesSource
 import com.mskd.flux.data.source.media.MediaSource
 import dagger.Module
@@ -41,5 +43,11 @@ object RepositoriesModule {
         db = db,
         scope = scope
     )
+
+    @Provides
+    @Singleton
+    fun provideDatabaseRepository(
+        dao: DatabaseDao
+    ) : DatabaseRepository = DatabaseRepositoryImpl(dao = dao)
 
 }

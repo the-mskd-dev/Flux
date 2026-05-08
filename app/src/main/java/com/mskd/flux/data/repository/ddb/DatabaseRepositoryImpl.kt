@@ -10,6 +10,10 @@ import javax.inject.Inject
 
 class DatabaseRepositoryImpl @Inject constructor(private val dao: DatabaseDao) : DatabaseRepository {
 
+    override fun flowArtworks(): Flow<List<Artwork>> {
+        return dao.flowArtworks()
+    }
+
     override fun flowArtwork(artworkId: Long): Flow<Artwork?> {
         return dao.flowArtwork(artworkId = artworkId)
     }

@@ -15,10 +15,12 @@ import com.mskd.flux.utils.extensions.groupInFolders
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 interface CatalogUC {
 
+    suspend fun flowCatalog() : Flow<List<Artwork>>
 
     suspend fun syncCatalog() : Catalog
 
@@ -34,6 +36,10 @@ class CatalogUCImpl @Inject constructor(
         val artwork: Artwork,
         val files: List<UserFile>
     )
+
+    override suspend fun flowCatalog(): Flow<List<Artwork>> {
+        return databaseRepository.flowArtworks()
+    }
 
     override suspend fun syncCatalog(): Catalog {
 

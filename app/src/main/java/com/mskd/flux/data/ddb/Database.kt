@@ -37,6 +37,9 @@ interface DatabaseDao {
 
 //region Flow
 
+    @Query("SELECT * FROM artworks")
+    fun flowArtworks() : Flow<List<Artwork>>
+
     @Query("SELECT * FROM artworks WHERE id = :artworkId")
     fun flowArtwork(artworkId: Long) : Flow<Artwork?>
 

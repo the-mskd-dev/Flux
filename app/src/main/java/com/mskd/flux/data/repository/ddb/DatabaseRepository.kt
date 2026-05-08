@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.Flow
 interface DatabaseRepository {
 
     // Flows
+    fun flowArtworks() : Flow<List<Artwork>>
     fun flowArtwork(artworkId: Long) : Flow<Artwork?>
     fun flowMovie(artworkId: Long) : Flow<Movie?>
     fun flowEpisodes(artworkId: Long) : Flow<List<Episode>>

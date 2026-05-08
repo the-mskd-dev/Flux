@@ -1,8 +1,10 @@
 package com.mskd.flux.useCases.catalogUC
 
+import android.util.Log
 import com.mskd.flux.data.repository.ddb.DatabaseRepository
 import com.mskd.flux.data.repository.files.FilesRepository
 import com.mskd.flux.data.repository.tmdb.TmdbRepository
+import com.mskd.flux.data.source.media.MediaSourceTMDBImpl.Companion.TAG
 import com.mskd.flux.model.Catalog
 import com.mskd.flux.model.UserFile
 import com.mskd.flux.model.UserFolder
@@ -16,11 +18,14 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
+import java.nio.file.Files
 import javax.inject.Inject
 
 interface CatalogUC {
 
     suspend fun flowCatalog() : Flow<List<Artwork>>
+
+    suspend fun cleanCatalog()
 
     suspend fun syncCatalog() : Catalog
 
@@ -32,10 +37,15 @@ class CatalogUCImpl(
     private val filesRepository: FilesRepository
 ) : CatalogUC {
 
+    //region Data class
     private data class ArtworkFolder(
         val artwork: Artwork,
         val files: List<UserFile>
     )
+
+    //endregion
+
+    //region Public methods
 
     override suspend fun flowCatalog(): Flow<List<Artwork>> {
         return databaseRepository.flowArtworks()
@@ -47,20 +57,46 @@ class CatalogUCImpl(
         val allFiles = filesRepository.getFiles()
         val dbFilesNames = databaseRepository.getAllFileNames()
         val newFiles = allFiles.filter { !dbFilesNames.contains(it.name) }
-        val folders = newFiles.groupInFolders()
+
+        // Get data
+        val catalog = getCatalog(files = newFiles)
+
+        // Save data
+        databaseRepository.saveArtworks(artworks = catalog.artworks)
+        databaseRepository.saveMovies(movies = catalog.movies)
+        databaseRepository.saveEpisodes(episodes = catalog.episodes)
+
+        return Catalog()
+
+    }
+
+    override suspend fun cleanCatalog() {
+
+        val allFiles = filesRepository.getFiles()
+        databaseRepository.deleteMediasNotInFiles(allFiles)
+
+        tryToRetrieveUnknownMedias()
+
+    }
+
+    //endregion
+
+    //region Private methods
+
+    private suspend fun getCatalog(files: List<UserFile>) : Catalog {
+
+        val folders = files.groupInFolders()
 
         // Get data
         val artworksFolders = getArtworksFolders(folders = folders)
         val movies = getMovies(artworkFolders = artworksFolders)
         val episodes = getEpisodes(artworkFolders = artworksFolders)
 
-        // Save data
-        databaseRepository.saveArtworks(artworks = artworksFolders.map { it.artwork })
-        databaseRepository.saveMovies(movies = movies.filterIsInstance<Movie>())
-        databaseRepository.saveEpisodes(episodes = movies.filterIsInstance<Episode>())
-        databaseRepository.saveEpisodes(episodes = episodes)
-
-        return Catalog()
+        return Catalog(
+            artworks = artworksFolders.map { it.artwork },
+            movies = movies.filterIsInstance<Movie>(),
+            episodes = movies.filterIsInstance<Episode>() + episodes
+        )
 
     }
 
@@ -159,7 +195,64 @@ class CatalogUCImpl(
 
         }
 
+    }
+
+    private suspend fun tryToRetrieveUnknownMedias() {
+
+        try {
+
+            val unknownMedias = databaseRepository.getUnknownMedias()
+            val files = unknownMedias.map { it.file }
+
+            val (newArtworks, newMovies, newEpisodes) = getCatalog(files = files)
+
+            val moviesToSave = arrayListOf<Movie>()
+            val episodesToSave = arrayListOf<Episode>()
+            val mediasToDelete = arrayListOf<Episode>()
+
+            newMovies.forEach { movie ->
+
+                unknownMedias.find { it.file == movie.file }?.let { unknownMedia ->
+
+                    val newMovie = movie.copy(
+                        currentTime = unknownMedia.currentTime,
+                        status = unknownMedia.status
+                    )
+
+                    moviesToSave.add(newMovie)
+                    mediasToDelete.add(unknownMedia)
+
+                }
+
+            }
+
+            newEpisodes.filter { !it.isUnknown }.forEach { episode ->
+
+                unknownMedias.find { it.file == episode.file }?.let { unknownMedia ->
+
+                    val newEpisode = episode.copy(
+                        currentTime = unknownMedia.currentTime,
+                        status = unknownMedia.status
+                    )
+
+                    episodesToSave.add(newEpisode)
+                    mediasToDelete.add(unknownMedia)
+
+                }
+
+            }
+
+            databaseRepository.saveArtworks(newArtworks.filter { !it.isUnknown })
+            databaseRepository.saveMovies(moviesToSave)
+            databaseRepository.saveEpisodes(episodesToSave)
+            databaseRepository.deleteEpisodes(mediasToDelete)
+
+        } catch (e: Exception) {
+            Log.e(TAG, "Fail to retrieve unknown medias", e)
+        }
 
     }
+
+    //endregion
 
 }

@@ -64,7 +64,11 @@ class CatalogUCImpl(
         }
 
         // Get data
-        val catalog = getCatalog(files = newFiles)
+        var catalog = getCatalog(files = newFiles)
+
+        if (!onlyNew) {
+            catalog = applyCurrentProgress(catalog = catalog)
+        }
 
         // Save data
         databaseRepository.saveArtworks(artworks = catalog.artworks)
@@ -102,6 +106,45 @@ class CatalogUCImpl(
             artworks = artworksFolders.map { it.artwork },
             movies = movies.filterIsInstance<Movie>(),
             episodes = movies.filterIsInstance<Episode>() + episodes
+        )
+
+    }
+
+    private suspend fun applyCurrentProgress(catalog: Catalog) : Catalog {
+
+        val dbMovies = databaseRepository.getMovies()
+        val dbEpisodes = databaseRepository.getEpisodes()
+
+        val movies = catalog.movies.map { newMovie ->
+
+            dbMovies.find { it.mediaId == newMovie.mediaId }?.let { oldMovie ->
+
+                newMovie.copy(
+                    currentTime = oldMovie.currentTime,
+                    status = oldMovie.status
+                )
+
+            } ?: newMovie
+
+        }
+
+        val episodes = catalog.episodes.map { newEpisode ->
+
+            dbEpisodes.find { it.mediaId == newEpisode.mediaId }?.let { oldEpisode ->
+
+                newEpisode.copy(
+                    currentTime = oldEpisode.currentTime,
+                    status = oldEpisode.status
+                )
+
+            } ?: newEpisode
+
+        }
+
+        return Catalog(
+            artworks = catalog.artworks,
+            movies = movies,
+            episodes = episodes
         )
 
     }

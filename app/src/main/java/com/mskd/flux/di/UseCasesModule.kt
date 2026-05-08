@@ -16,7 +16,7 @@ object UseCasesModule {
 
     @Provides
     @Singleton
-    fun provideMediaProgressUC(
+    fun provideArtworkProgressUC(
         artworkRepository: ArtworkRepository,
         userRepository: UserRepository
     ) : ArtworkProgressUC {
@@ -25,4 +25,5 @@ object UseCasesModule {
             userRepository = userRepository
         )
     }
+    
 }

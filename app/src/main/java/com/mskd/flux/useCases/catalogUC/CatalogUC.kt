@@ -11,10 +11,6 @@ import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.artwork.Movie
-import com.mskd.flux.model.tmdb.TMDBArtwork
-import com.mskd.flux.model.tmdb.TMDBEpisode
-import com.mskd.flux.model.tmdb.TMDBFolder
-import com.mskd.flux.model.tmdb.TMDBMovie
 import com.mskd.flux.utils.extensions.groupInFolders
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -32,69 +28,29 @@ class CatalogUCImpl @Inject constructor(
     private val filesRepository: FilesRepository
 ) : CatalogUC {
 
+    private data class ArtworkFolder(
+        val artwork: Artwork,
+        val files: List<UserFile>
+    )
+
     override suspend fun syncCatalog(): Catalog {
 
+        // Get files
         val allFiles = filesRepository.getFiles()
         val dbFilesNames = databaseRepository.getAllFileNames()
-
         val newFiles = allFiles.filter { !dbFilesNames.contains(it.name) }
-
         val folders = newFiles.groupInFolders()
 
+        // Get data
         val artworksFolders = getArtworksFolders(folders = folders)
-
-        val movies = coroutineScope {
-
-            artworksFolders.filter { it.first.type == ContentType.MOVIE }.map { (artwork, files) ->
-
-                async {
-
-                    val tmdbMovie = tmdbRepository.getTmdbMovie(artworkId = artwork.id)
-                    tmdbToFluxMovie(tmdbMovie = tmdbMovie, file = files.first())
-
-                }
-
-            }.awaitAll()
-        }
-
-        val episodes = coroutineScope {
-
-            artworksFolders.filter { it.first.type == ContentType.SHOW }.flatMap { (artwork, files) ->
-
-                files.map { file ->
-
-                    val season = file.nameProperties.season
-                    val number = file.nameProperties.episode
-
-                    async {
-
-                        if (season != null && number != null) {
-
-                            val tmdbEpisode = tmdbRepository.getTmdbEpisode(
-                                artworkId = artwork.id,
-                                season = season,
-                                number = number
-                            )
-
-                            tmdbToFluxEpisode(tmdbEpisode = tmdbEpisode, file = file)
-
-                        } else {
-                            null
-                        }
-
-                    }
-
-                }.awaitAll().filterNotNull()
-
-            }
-
-        }
+        val movies = getMovies(artworkFolders = artworksFolders)
+        val episodes = getEpisodes(artworkFolders = artworksFolders)
 
         return Catalog()
 
     }
 
-    private suspend fun getArtworksFolders(folders: List<UserFolder>) : List<Pair<Artwork, List<UserFile>>> {
+    private suspend fun getArtworksFolders(folders: List<UserFolder>) : List<ArtworkFolder> {
 
         return coroutineScope {
 
@@ -110,7 +66,10 @@ class CatalogUCImpl @Inject constructor(
                         Artwork(tmdbArtwork = tmdbArtwork)
                     }
 
-                    artwork to folder.files
+                    ArtworkFolder(
+                        artwork = artwork,
+                        files = folder.files
+                    )
 
                 }
 
@@ -120,11 +79,11 @@ class CatalogUCImpl @Inject constructor(
 
     }
 
-    private suspend fun getMovies(artworksFolders: List<Pair<Artwork, List<UserFile>>>) : List<Media> {
+    private suspend fun getMovies(artworkFolders: List<ArtworkFolder>) : List<Media> {
 
         return coroutineScope {
 
-            artworksFolders.filter { it.first.type == ContentType.MOVIE }.map { (artwork, files) ->
+            artworkFolders.filter { it.artwork.type == ContentType.MOVIE }.map { (artwork, files) ->
 
                 async {
 
@@ -144,19 +103,49 @@ class CatalogUCImpl @Inject constructor(
 
     }
 
-    private suspend fun tmdbToFluxEpisode(
-        tmdbEpisode: TMDBEpisode?,
-        file: UserFile
-    ): Episode {
+    private suspend fun getEpisodes(artworkFolders: List<ArtworkFolder>) : List<Episode> {
 
-        if (tmdbEpisode == null) {
-            return Episode(file = file)
+        return coroutineScope {
+
+            artworkFolders.filter { it.artwork.type == ContentType.SHOW }.flatMap { (artwork, files) ->
+
+                files.map { file ->
+
+                    val season = file.nameProperties.season
+                    val number = file.nameProperties.episode
+
+                    async {
+
+                        if (season != null && number != null) {
+
+                            val tmdbEpisode = tmdbRepository.getTmdbEpisode(
+                                artworkId = artwork.id,
+                                season = season,
+                                number = number
+                            )
+
+                            if (tmdbEpisode == null) {
+                                Episode(file = file)
+                            } else {
+                                Episode(
+                                    tmdbEpisode = tmdbEpisode,
+                                    file = file,
+                                )
+                            }
+
+                        } else {
+                            null
+                        }
+
+                    }
+
+                }.awaitAll().filterNotNull()
+
+            }
+
         }
 
-        return Episode(
-            tmdbEpisode = tmdbEpisode,
-            file = file,
-        )
+
     }
 
 }

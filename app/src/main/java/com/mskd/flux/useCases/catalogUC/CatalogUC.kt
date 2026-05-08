@@ -4,6 +4,7 @@ import android.util.Log
 import com.mskd.flux.data.repository.ddb.DatabaseRepository
 import com.mskd.flux.data.repository.files.FilesRepository
 import com.mskd.flux.data.repository.tmdb.TmdbRepository
+import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.data.source.media.MediaSourceTMDBImpl.Companion.TAG
 import com.mskd.flux.model.Catalog
 import com.mskd.flux.model.UserFile
@@ -30,7 +31,8 @@ interface CatalogUC {
 class CatalogUCImpl(
     private val tmdbRepository: TmdbRepository,
     private val databaseRepository: DatabaseRepository,
-    private val filesRepository: FilesRepository
+    private val filesRepository: FilesRepository,
+    private val userRepository: UserRepository
 ) : CatalogUC {
 
     //region Data class
@@ -56,8 +58,10 @@ class CatalogUCImpl(
             allFiles.filter { !dbFilesNames.contains(it.name) }
         }
 
-        if (newFiles.isEmpty())
+        if (newFiles.isEmpty()) {
+            userRepository.setSyncTime(System.currentTimeMillis())
             return
+        }
 
         // Get data
         val catalog = getCatalog(files = newFiles)
@@ -66,6 +70,9 @@ class CatalogUCImpl(
         databaseRepository.saveArtworks(artworks = catalog.artworks)
         databaseRepository.saveMovies(movies = catalog.movies)
         databaseRepository.saveEpisodes(episodes = catalog.episodes)
+
+        // Save time
+        userRepository.setSyncTime(System.currentTimeMillis())
 
     }
 

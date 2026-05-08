@@ -108,7 +108,6 @@ class HomeViewModel @Inject constructor(
             Log.i("HomeViewModel", "syncCatalog, catalog sync requested")
 
             catalogUC.syncCatalog(onlyNew = true)
-            userRepository.setSyncTime(currentTime)
 
         } else {
 

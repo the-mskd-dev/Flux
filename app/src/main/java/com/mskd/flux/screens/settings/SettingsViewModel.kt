@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.useCases.catalogUC.CatalogUC
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,7 +19,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    private val settingsRepository: SettingsRepository
+    private val settingsRepository: SettingsRepository,
+    private val catalogUC: CatalogUC
 ) : ViewModel() {
 
     //region Variables
@@ -127,7 +129,8 @@ class SettingsViewModel @Inject constructor(
     }
 
     private suspend fun proceedFullSync() {
-
+        catalogUC.syncCatalog(onlyNew = false)
+        _event.emit(SettingsEvent.BackToPreviousScreen)
     }
 
 }

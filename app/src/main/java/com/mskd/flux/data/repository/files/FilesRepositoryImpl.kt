@@ -23,7 +23,7 @@ import kotlin.coroutines.resume
 class FilesRepositoryImpl(
     private val context: Context,
     private val userRepository: UserRepository
-) : FilesSource {
+) : FilesRepository {
 
     companion object {
         const val TAG = "FilesRepositoryImpl"

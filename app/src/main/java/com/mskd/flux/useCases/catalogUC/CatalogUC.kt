@@ -18,16 +18,12 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import java.nio.file.Files
-import javax.inject.Inject
 
 interface CatalogUC {
 
-    suspend fun flowCatalog() : Flow<List<Artwork>>
-
+    fun flowArtworks() : Flow<List<Artwork>>
+    suspend fun syncCatalog(onlyNew: Boolean)
     suspend fun cleanCatalog()
-
-    suspend fun syncCatalog() : Catalog
 
 }
 
@@ -47,16 +43,21 @@ class CatalogUCImpl(
 
     //region Public methods
 
-    override suspend fun flowCatalog(): Flow<List<Artwork>> {
+    override fun flowArtworks(): Flow<List<Artwork>> {
         return databaseRepository.flowArtworks()
     }
 
-    override suspend fun syncCatalog(): Catalog {
+    override suspend fun syncCatalog(onlyNew: Boolean) {
 
         // Get files
         val allFiles = filesRepository.getFiles()
-        val dbFilesNames = databaseRepository.getAllFileNames()
-        val newFiles = allFiles.filter { !dbFilesNames.contains(it.name) }
+        val newFiles = if (!onlyNew) { allFiles } else {
+            val dbFilesNames = databaseRepository.getAllFileNames()
+            allFiles.filter { !dbFilesNames.contains(it.name) }
+        }
+
+        if (newFiles.isEmpty())
+            return
 
         // Get data
         val catalog = getCatalog(files = newFiles)
@@ -65,8 +66,6 @@ class CatalogUCImpl(
         databaseRepository.saveArtworks(artworks = catalog.artworks)
         databaseRepository.saveMovies(movies = catalog.movies)
         databaseRepository.saveEpisodes(episodes = catalog.episodes)
-
-        return Catalog()
 
     }
 
@@ -110,11 +109,10 @@ class CatalogUCImpl(
 
                     val tmdbArtwork = tmdbRepository.getTmdbArtwork(file = folder.files.first())
 
-                    val artwork = if (tmdbArtwork == null) {
+                    val artwork = if (tmdbArtwork == null)
                         Artwork.UNKNOWN
-                    } else {
+                    else
                         Artwork(tmdbArtwork = tmdbArtwork)
-                    }
 
                     ArtworkFolder(
                         artwork = artwork,
@@ -139,11 +137,10 @@ class CatalogUCImpl(
 
                     val tmdbMovie = tmdbRepository.getTmdbMovie(artworkId = artwork.id)
 
-                    if (tmdbMovie == null) {
+                    if (tmdbMovie == null)
                         Episode(file = files.first())
-                    } else {
+                    else
                         Movie(tmdbMovie = tmdbMovie, file = files.first())
-                    }
 
                 }
 
@@ -174,14 +171,10 @@ class CatalogUCImpl(
                                 number = number
                             )
 
-                            if (tmdbEpisode == null) {
+                            if (tmdbEpisode == null)
                                 Episode(file = file)
-                            } else {
-                                Episode(
-                                    tmdbEpisode = tmdbEpisode,
-                                    file = file,
-                                )
-                            }
+                            else
+                                Episode(tmdbEpisode = tmdbEpisode, file = file,)
 
                         } else {
                             null

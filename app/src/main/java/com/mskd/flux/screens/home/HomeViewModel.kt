@@ -1,9 +1,9 @@
 package com.mskd.flux.screens.home
 
 import android.util.Log
+import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mskd.flux.data.repository.catalog.CatalogRepository
 import com.mskd.flux.data.repository.snackbars.SnackbarRepository
 import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.data.tmdb.token.TokenRepository
@@ -11,6 +11,7 @@ import com.mskd.flux.model.ScreenState
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.screens.home.HomeEvent.NavigateToArtwork
 import com.mskd.flux.screens.home.HomeEvent.NavigateToCategory
+import com.mskd.flux.useCases.catalogUC.CatalogUC
 import com.mskd.flux.utils.FluxSnackbar
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -28,7 +29,7 @@ import kotlin.time.Duration.Companion.days
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val repository: CatalogRepository,
+    private val catalogUC: CatalogUC,
     private val userRepository: UserRepository,
     private val tokenRepository: TokenRepository,
     private val snackbarRepository: SnackbarRepository
@@ -37,31 +38,33 @@ class HomeViewModel @Inject constructor(
     private val _event = MutableSharedFlow<HomeEvent>()
     val event = _event.asSharedFlow()
 
+    private val _isLoading = MutableStateFlow(true)
     private val _dismissedSnackbar = MutableStateFlow<Set<FluxSnackbar>>(emptySet())
 
     val uiState: StateFlow<HomeUiState> = combine(
-        repository.flow,
+        catalogUC.flowArtworks(),
         userRepository.flow,
         tokenRepository.flow,
-        _dismissedSnackbar
-    ) { catalog, preferences, token, dismissedSnackbar ->
+        _dismissedSnackbar,
+        _isLoading
+    ) { artworks, preferences, token, dismissedSnackbar, isLoading ->
 
         val screen = when {
-            catalog.isLoading && catalog.artworks.isEmpty() -> ScreenState.LOADING
+            isLoading && artworks.isEmpty() -> ScreenState.LOADING
             else -> ScreenState.CONTENT
         }
 
         val snackbar = getSnackbarIfNeeded(
             token = token,
             dismissedSnackbar = dismissedSnackbar,
-            artworks = catalog.artworks
+            artworks = artworks
         )
 
         HomeUiState(
             screenState = screen,
-            artworks = catalog.artworks,
+            artworks = artworks,
             lastWatchedMediaIds = preferences.recentlyWatchedIds,
-            isRefreshing = catalog.isLoading,
+            isRefreshing = isLoading,
             snackbarState = snackbar
         )
 
@@ -93,6 +96,8 @@ class HomeViewModel @Inject constructor(
 
     private suspend fun syncCatalog(manualSync: Boolean = false) {
 
+        _isLoading.update { true }
+
         val lastSyncTime = userRepository.getSyncTime()
 
         val currentTime = System.currentTimeMillis()
@@ -102,7 +107,7 @@ class HomeViewModel @Inject constructor(
 
             Log.i("HomeViewModel", "syncCatalog, catalog sync requested")
 
-            repository.syncCatalog()
+            catalogUC.syncCatalog(onlyNew = true)
             userRepository.setSyncTime(currentTime)
 
         } else {
@@ -110,6 +115,8 @@ class HomeViewModel @Inject constructor(
             Log.i("HomeViewModel", "syncCatalog, catalog sync not needed")
 
         }
+
+        _isLoading.update { false }
 
     }
 

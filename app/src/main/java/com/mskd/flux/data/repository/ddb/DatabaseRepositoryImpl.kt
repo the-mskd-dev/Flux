@@ -110,5 +110,16 @@ class DatabaseRepositoryImpl @Inject constructor(private val dao: DatabaseDao) :
                 }
 
             }
+
+    }
+
+    override suspend fun deleteMediasNotInFiles(files: List<UserFile>) {
+
+        val moviesToDelete = getMoviesNotInFiles(files = files)
+        val episodesToDelete = getEpisodesNotInFiles(files = files)
+
+        deleteMovies(moviesToDelete)
+        deleteEpisodes(episodesToDelete)
+
     }
 }

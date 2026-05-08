@@ -105,49 +105,6 @@ interface DatabaseDao {
     @Query("DELETE FROM episodes WHERE id IN (:ids)")
     suspend fun deleteEpisodesByIds(ids: List<Long>)
 
-    @Transaction
-    suspend fun deleteMovies(movies: List<Movie>) {
-
-        // Delete artworks, it will also delete related movies
-        deleteArtworks(movies.map { it.artworkId })
-
-    }
-
-    @Transaction
-    suspend fun deleteEpisodes(episodes: List<Episode>) {
-
-        // Delete episodes
-        deleteEpisodesByIds(episodes.map { it.id })
-
-        // Delete artworks if needed
-        episodes
-            .map { it.artworkId }
-            .distinct()
-            .forEach { mediaId ->
-
-                // Check if it remains episode for show
-                val remainingEpisodes = getEpisodeCountByArtworkId(mediaId)
-
-                // If no, delete the show
-                if (remainingEpisodes == 0) {
-                    deleteArtworks(listOf(mediaId))
-                }
-
-            }
-
-    }
-
-    @Transaction
-    suspend fun deleteMediasWithNoFiles(existingFiles: List<UserFile>) {
-
-        val moviesToDelete = getMoviesNotInFiles(fileNames = existingFiles.map { it.name })
-        val episodesToDelete = getEpisodesNotInFiles(fileNames = existingFiles.map { it.name })
-
-        deleteMovies(moviesToDelete)
-        deleteEpisodes(episodesToDelete)
-
-    }
-
 //endregion
 
 //region Count

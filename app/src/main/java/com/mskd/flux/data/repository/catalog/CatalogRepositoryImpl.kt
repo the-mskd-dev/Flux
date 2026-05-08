@@ -2,6 +2,7 @@ package com.mskd.flux.data.repository.catalog
 
 import android.util.Log
 import com.mskd.flux.data.ddb.DatabaseDao
+import com.mskd.flux.data.repository.ddb.DatabaseRepository
 import com.mskd.flux.data.source.file.FilesSource
 import com.mskd.flux.data.source.media.MediaSource
 import com.mskd.flux.data.source.media.MediaSourceTMDBImpl.Companion.TAG
@@ -22,7 +23,7 @@ class CatalogRepositoryImpl @Inject constructor(
     private val fileSource: FilesSource,
     private val mediaSourceLocal: MediaSource,
     private val mediaSourceTmdb: MediaSource,
-    private val db: DatabaseDao,
+    private val database: DatabaseRepository,
     private val scope: CoroutineScope
 ) : CatalogRepository {
 
@@ -66,21 +67,21 @@ class CatalogRepositoryImpl @Inject constructor(
 
                 // Fetch all files, local and online (if possible)
                 val allFiles = getFiles()
-                val dbFileNames = db.getAllFileNames()
+                val dbFileNames = database.getAllFileNames()
 
                 // Delete medias with missing files
-                db.deleteMediasWithNoFiles(allFiles)
+                database.deleteMediasNotInFiles(allFiles)
 
                 // Get new medias from TMBD
                 val newFiles = allFiles.filter { !dbFileNames.contains(it.name) }
                 val (newArtworks, newMovies, newEpisodes) = mediaSourceTmdb.getMedias(files = newFiles)
 
                 // Save new medias
-                db.insertArtworks(newArtworks)
-                db.insertMovies(newMovies)
-                db.insertEpisodes(newEpisodes)
+                database.insertArtworks(newArtworks)
+                database.insertMovies(newMovies)
+                database.insertEpisodes(newEpisodes)
 
-                val allArtworks = db.getArtworks()
+                val allArtworks = database.getArtworks()
 
                 // Update content
                 _catalogFlow.update { content ->
@@ -122,7 +123,7 @@ class CatalogRepositoryImpl @Inject constructor(
     private suspend fun deleteMissingMedias() {
 
         val allFiles = getFiles()
-        db.deleteMediasWithNoFiles(allFiles)
+        database.deleteMediasNotInFiles(allFiles)
 
     }
 
@@ -130,7 +131,7 @@ class CatalogRepositoryImpl @Inject constructor(
 
         try {
 
-            val unknownMedias = db.getUnknownMedias()
+            val unknownMedias = database.getUnknownMedias()
             val files = unknownMedias.map { it.file }
 
             val (newArtworks, newMovies, newEpisodes) = mediaSourceTmdb.getMedias(files = files)
@@ -171,10 +172,10 @@ class CatalogRepositoryImpl @Inject constructor(
 
             }
 
-            db.insertArtworks(newArtworks.filter { !it.isUnknown })
-            db.insertMovies(moviesToSave)
-            db.insertEpisodes(episodesToSave)
-            db.deleteEpisodes(mediasToDelete)
+            database.insertArtworks(newArtworks.filter { !it.isUnknown })
+            database.insertMovies(moviesToSave)
+            database.insertEpisodes(episodesToSave)
+            database.deleteEpisodes(mediasToDelete)
 
         } catch (e: Exception) {
             Log.e(TAG, "Fail to retrieve unknown medias", e)

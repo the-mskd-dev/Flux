@@ -23,9 +23,9 @@ object RepositoriesModule {
     @Provides
     @Singleton
     fun provideArtworkRepository(
-        db: DatabaseDao
+        database: DatabaseRepository
     ) : ArtworkRepository = ArtworkRepositoryImpl(
-        db = db
+        database = database
     )
 
     @Provides
@@ -34,13 +34,13 @@ object RepositoriesModule {
         @FilesModule.LocalFilesDataSource localFilesSource: FilesSource,
         @MediaModule.MediaDataSourceLocal mediaSourceLocal: MediaSource,
         @MediaModule.MediaDataSourceTMDB mediaSourceTMDB: MediaSource,
-        db: DatabaseDao,
+        database: DatabaseRepository,
         @CoroutineModule.ApplicationScope scope: CoroutineScope
     ) : CatalogRepository = CatalogRepositoryImpl(
         fileSource = localFilesSource,
         mediaSourceLocal = mediaSourceLocal,
         mediaSourceTmdb = mediaSourceTMDB,
-        db = db,
+        database = database,
         scope = scope
     )
 

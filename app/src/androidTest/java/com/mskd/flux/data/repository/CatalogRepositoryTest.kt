@@ -53,7 +53,7 @@ class CatalogRepositoryTest {
             fileSource = fileSource,
             mediaSourceLocal = localSource,
             mediaSourceTmdb = tmdbSource,
-            db = db,
+            database = db,
             scope = testScope
         )
 

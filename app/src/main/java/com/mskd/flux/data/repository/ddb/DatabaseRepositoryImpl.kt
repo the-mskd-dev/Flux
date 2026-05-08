@@ -22,15 +22,15 @@ class DatabaseRepositoryImpl @Inject constructor(private val dao: DatabaseDao) :
         return dao.flowEpisodes(artworkId = artworkId)
     }
 
-    override suspend fun insertArtworks(artworks: List<Artwork>) {
+    override suspend fun saveArtworks(artworks: List<Artwork>) {
         dao.insertArtworks(artworks = artworks)
     }
 
-    override suspend fun insertMovies(movies: List<Movie>) {
+    override suspend fun saveMovies(movies: List<Movie>) {
         dao.insertMovies(movies = movies)
     }
 
-    override suspend fun insertEpisodes(episodes: List<Episode>) {
+    override suspend fun saveEpisodes(episodes: List<Episode>) {
         dao.insertEpisodes(episodes = episodes)
     }
 

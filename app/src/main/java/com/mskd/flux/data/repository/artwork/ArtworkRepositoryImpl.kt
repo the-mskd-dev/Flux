@@ -50,15 +50,15 @@ class ArtworkRepositoryImpl @Inject constructor(
     }
 
     override suspend fun saveMovie(movie: Movie) {
-        database.insertMovies(listOf(movie))
+        database.saveMovies(listOf(movie))
     }
 
     override suspend fun saveEpisode(episode: Episode) {
-        database.insertEpisodes(listOf(episode))
+        database.saveEpisodes(listOf(episode))
     }
 
     override suspend fun saveEpisodes(episodes: List<Episode>) {
-        database.insertEpisodes(episodes)
+        database.saveEpisodes(episodes)
     }
 
     override suspend fun getArtwork(artworkId: Long): ArtworkRepository.Content {

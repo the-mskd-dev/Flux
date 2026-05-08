@@ -18,6 +18,8 @@ import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
 
 interface CatalogUC {
+
+
     suspend fun syncCatalog() : Catalog
 
 }
@@ -45,6 +47,12 @@ class CatalogUCImpl @Inject constructor(
         val artworksFolders = getArtworksFolders(folders = folders)
         val movies = getMovies(artworkFolders = artworksFolders)
         val episodes = getEpisodes(artworkFolders = artworksFolders)
+
+        // Save data
+        databaseRepository.saveArtworks(artworks = artworksFolders.map { it.artwork })
+        databaseRepository.saveMovies(movies = movies.filterIsInstance<Movie>())
+        databaseRepository.saveEpisodes(episodes = movies.filterIsInstance<Episode>())
+        databaseRepository.saveEpisodes(episodes = episodes)
 
         return Catalog()
 

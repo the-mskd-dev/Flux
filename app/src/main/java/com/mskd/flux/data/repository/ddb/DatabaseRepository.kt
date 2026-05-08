@@ -13,10 +13,10 @@ interface DatabaseRepository {
     fun flowMovie(artworkId: Long) : Flow<Movie?>
     fun flowEpisodes(artworkId: Long) : Flow<List<Episode>>
 
-    // Insert
-    suspend fun insertArtworks(artworks: List<Artwork>)
-    suspend fun insertMovies(movies: List<Movie>)
-    suspend fun insertEpisodes(episodes: List<Episode>)
+    // Save
+    suspend fun saveArtworks(artworks: List<Artwork>)
+    suspend fun saveMovies(movies: List<Movie>)
+    suspend fun saveEpisodes(episodes: List<Episode>)
 
     // Artworks
     suspend fun getArtwork(artworkId: Long) : Artwork?

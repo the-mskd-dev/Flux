@@ -1,7 +1,6 @@
 package com.mskd.flux.data.repository.catalog
 
 import android.util.Log
-import com.mskd.flux.data.ddb.DatabaseDao
 import com.mskd.flux.data.repository.ddb.DatabaseRepository
 import com.mskd.flux.data.source.file.FilesSource
 import com.mskd.flux.data.source.media.MediaSource
@@ -77,9 +76,9 @@ class CatalogRepositoryImpl @Inject constructor(
                 val (newArtworks, newMovies, newEpisodes) = mediaSourceTmdb.getMedias(files = newFiles)
 
                 // Save new medias
-                database.insertArtworks(newArtworks)
-                database.insertMovies(newMovies)
-                database.insertEpisodes(newEpisodes)
+                database.saveArtworks(newArtworks)
+                database.saveMovies(newMovies)
+                database.saveEpisodes(newEpisodes)
 
                 val allArtworks = database.getArtworks()
 
@@ -172,9 +171,9 @@ class CatalogRepositoryImpl @Inject constructor(
 
             }
 
-            database.insertArtworks(newArtworks.filter { !it.isUnknown })
-            database.insertMovies(moviesToSave)
-            database.insertEpisodes(episodesToSave)
+            database.saveArtworks(newArtworks.filter { !it.isUnknown })
+            database.saveMovies(moviesToSave)
+            database.saveEpisodes(episodesToSave)
             database.deleteEpisodes(mediasToDelete)
 
         } catch (e: Exception) {

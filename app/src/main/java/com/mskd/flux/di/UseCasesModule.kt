@@ -1,9 +1,14 @@
 package com.mskd.flux.di
 
 import com.mskd.flux.data.repository.artwork.ArtworkRepository
+import com.mskd.flux.data.repository.ddb.DatabaseRepository
+import com.mskd.flux.data.repository.files.FilesRepository
+import com.mskd.flux.data.repository.tmdb.TmdbRepository
 import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.useCases.artworkProgress.ArtworkProgressUC
 import com.mskd.flux.useCases.artworkProgress.ArtworkProgressUCImpl
+import com.mskd.flux.useCases.catalogUC.CatalogUC
+import com.mskd.flux.useCases.catalogUC.CatalogUCImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,5 +30,19 @@ object UseCasesModule {
             userRepository = userRepository
         )
     }
-    
+
+    @Provides
+    @Singleton
+    fun provideCatalogUC(
+        tmdbRepository: TmdbRepository,
+        databaseRepository: DatabaseRepository,
+        filesRepository: FilesRepository
+    ) : CatalogUC {
+        return CatalogUCImpl(
+            tmdbRepository = tmdbRepository,
+            databaseRepository = databaseRepository,
+            filesRepository = filesRepository
+        )
+    }
+
 }

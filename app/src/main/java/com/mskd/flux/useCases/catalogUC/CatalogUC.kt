@@ -26,7 +26,7 @@ interface CatalogUC {
 
 }
 
-class CatalogUCImpl @Inject constructor(
+class CatalogUCImpl(
     private val tmdbRepository: TmdbRepository,
     private val databaseRepository: DatabaseRepository,
     private val filesRepository: FilesRepository

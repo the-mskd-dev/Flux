@@ -63,7 +63,7 @@ interface DatabaseDao {
     suspend fun getMovies() : List<Movie>
 
     @Query("SELECT * FROM movies WHERE name NOT IN (:fileNames)")
-    suspend fun getMoviesWithNoFiles(fileNames: List<String>) : List<Movie>
+    suspend fun getMoviesNotInFiles(fileNames: List<String>) : List<Movie>
 
     @Query("SELECT name FROM movies")
     suspend fun getMoviesFileNames(): List<String>
@@ -78,7 +78,7 @@ interface DatabaseDao {
     suspend fun getEpisodes() : List<Episode>
 
     @Query("SELECT * FROM episodes WHERE name NOT IN (:fileNames)")
-    suspend fun getEpisodesWithNoFiles(fileNames: List<String>) : List<Episode>
+    suspend fun getEpisodesNotInFiles(fileNames: List<String>) : List<Episode>
 
     @Query("SELECT name FROM episodes")
     suspend fun getEpisodesFileNames(): List<String>
@@ -140,8 +140,8 @@ interface DatabaseDao {
     @Transaction
     suspend fun deleteMediasWithNoFiles(existingFiles: List<UserFile>) {
 
-        val moviesToDelete = getMoviesWithNoFiles(fileNames = existingFiles.map { it.name })
-        val episodesToDelete = getEpisodesWithNoFiles(fileNames = existingFiles.map { it.name })
+        val moviesToDelete = getMoviesNotInFiles(fileNames = existingFiles.map { it.name })
+        val episodesToDelete = getEpisodesNotInFiles(fileNames = existingFiles.map { it.name })
 
         deleteMovies(moviesToDelete)
         deleteEpisodes(episodesToDelete)
@@ -152,8 +152,8 @@ interface DatabaseDao {
 
 //region Count
 
-    @Query("SELECT COUNT(*) FROM episodes WHERE artworkId = :mediaId")
-    suspend fun getEpisodeCountByArtworkId(mediaId: Long): Int
+    @Query("SELECT COUNT(*) FROM episodes WHERE artworkId = :artworkId")
+    suspend fun getEpisodeCountByArtworkId(artworkId: Long): Int
 
 //endregion
 

@@ -5,6 +5,7 @@ import com.mskd.flux.data.repository.files.FilesRepository
 import com.mskd.flux.data.repository.tmdb.TmdbRepository
 import com.mskd.flux.model.Catalog
 import com.mskd.flux.model.UserFile
+import com.mskd.flux.model.UserFolder
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.model.artwork.Episode
@@ -22,9 +23,6 @@ import javax.inject.Inject
 
 interface CatalogUC {
     suspend fun syncCatalog() : Catalog
-    suspend fun tmdbToFluxArtwork(tmdbArtwork: TMDBArtwork?) : Artwork
-    suspend fun tmdbToFluxMovie(tmdbMovie: TMDBMovie?, file: UserFile) : Media
-    suspend fun tmdbToFluxEpisode(tmdbEpisode: TMDBEpisode?, file: UserFile) : Episode
 
 }
 
@@ -43,22 +41,7 @@ class CatalogUCImpl @Inject constructor(
 
         val folders = newFiles.groupInFolders()
 
-        val artworksFolders = coroutineScope {
-
-            folders.map { folder ->
-
-                async {
-
-                    val tmdbArtwork = tmdbRepository.getTmdbArtwork(file = folder.files.first())
-                    val artwork = tmdbToFluxArtwork(tmdbArtwork = tmdbArtwork)
-
-                    artwork to folder.files
-
-                }
-
-            }.awaitAll()
-
-        }
+        val artworksFolders = getArtworksFolders(folders = folders)
 
         val movies = coroutineScope {
 
@@ -111,33 +94,57 @@ class CatalogUCImpl @Inject constructor(
 
     }
 
-    override suspend fun tmdbToFluxArtwork(tmdbArtwork: TMDBArtwork?): Artwork {
+    private suspend fun getArtworksFolders(folders: List<UserFolder>) : List<Pair<Artwork, List<UserFile>>> {
 
-        if (tmdbArtwork == null) {
-            return Artwork.UNKNOWN
+        return coroutineScope {
+
+            folders.map { folder ->
+
+                async {
+
+                    val tmdbArtwork = tmdbRepository.getTmdbArtwork(file = folder.files.first())
+
+                    val artwork = if (tmdbArtwork == null) {
+                        Artwork.UNKNOWN
+                    } else {
+                        Artwork(tmdbArtwork = tmdbArtwork)
+                    }
+
+                    artwork to folder.files
+
+                }
+
+            }.awaitAll()
+
         }
-
-        return Artwork(tmdbArtwork = tmdbArtwork)
 
     }
 
-    override suspend fun tmdbToFluxMovie(
-        tmdbMovie: TMDBMovie?,
-        file: UserFile
-    ): Media {
+    private suspend fun getMovies(artworksFolders: List<Pair<Artwork, List<UserFile>>>) : List<Media> {
 
-        if (tmdbMovie == null) {
-            return Episode(file = file)
+        return coroutineScope {
+
+            artworksFolders.filter { it.first.type == ContentType.MOVIE }.map { (artwork, files) ->
+
+                async {
+
+                    val tmdbMovie = tmdbRepository.getTmdbMovie(artworkId = artwork.id)
+
+                    if (tmdbMovie == null) {
+                        Episode(file = files.first())
+                    } else {
+                        Movie(tmdbMovie = tmdbMovie, file = files.first())
+                    }
+
+                }
+
+            }.awaitAll()
+
         }
-
-        return Movie(
-            tmdbMovie = tmdbMovie,
-            file = file
-        )
 
     }
 
-    override suspend fun tmdbToFluxEpisode(
+    private suspend fun tmdbToFluxEpisode(
         tmdbEpisode: TMDBEpisode?,
         file: UserFile
     ): Episode {

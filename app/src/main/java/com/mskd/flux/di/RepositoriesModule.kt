@@ -7,8 +7,11 @@ import com.mskd.flux.data.repository.catalog.CatalogRepository
 import com.mskd.flux.data.repository.catalog.CatalogRepositoryImpl
 import com.mskd.flux.data.repository.ddb.DatabaseRepository
 import com.mskd.flux.data.repository.ddb.DatabaseRepositoryImpl
+import com.mskd.flux.data.repository.tmdb.TmdbRepository
+import com.mskd.flux.data.repository.tmdb.TmdbRepositoryImpl
 import com.mskd.flux.data.source.file.FilesSource
 import com.mskd.flux.data.source.media.MediaSource
+import com.mskd.flux.data.tmdb.TMDBService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -46,8 +49,14 @@ object RepositoriesModule {
 
     @Provides
     @Singleton
-    fun provideDatabaseRepository(
-        dao: DatabaseDao
-    ) : DatabaseRepository = DatabaseRepositoryImpl(dao = dao)
+    fun provideDatabaseRepository(dao: DatabaseDao) : DatabaseRepository {
+        return DatabaseRepositoryImpl(dao = dao)
+    }
+
+    @Provides
+    @Singleton
+    fun provideTmdbRepository(tmdbService: TMDBService) : TmdbRepository {
+        return TmdbRepositoryImpl(tmdbService)
+    }
 
 }

@@ -2,6 +2,7 @@ package com.mskd.flux.di
 
 import android.content.Context
 import com.mskd.flux.data.source.file.FilesSource
+import com.mskd.flux.data.repository.files.FilesSourceLocalImpl
 import com.mskd.flux.data.source.file.FilesSourceLocalImpl
 import dagger.Module
 import dagger.Provides

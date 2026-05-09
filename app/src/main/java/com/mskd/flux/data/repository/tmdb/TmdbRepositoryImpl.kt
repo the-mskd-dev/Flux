@@ -15,34 +15,52 @@ class TmdbRepositoryImpl @Inject constructor(
     private val tmdbService: TMDBService,
 ) : TmdbRepository {
 
+    private companion object {
+        const val TAG = "TmdbRepositoryImpl"
+    }
+
 
     override suspend fun getTmdbArtwork(
         file: UserFile
-    ): TMDBArtwork?  = withRetry {
+    ): TMDBArtwork? {
 
-        val tmdbArtworks = if (file.isEpisode) {
-            tmdbService.getShow(
-                title = file.nameProperties.title,
-                year = file.nameProperties.year
-            )
-        } else {
-            tmdbService.getMovie(
-                title = file.nameProperties.title,
-                year = file.nameProperties.year
-            )
-        }
+        return try {
 
-        tmdbArtworks.results.first().also {
-            it.type = if (file.isEpisode) TMDBMediaType.SHOW else TMDBMediaType.MOVIE
+            val tmdbArtworks = if (file.isEpisode) {
+                tmdbService.getShow(
+                    title = file.nameProperties.title,
+                    year = file.nameProperties.year
+                )
+            } else {
+                tmdbService.getMovie(
+                    title = file.nameProperties.title,
+                    year = file.nameProperties.year
+                )
+            }
+
+            tmdbArtworks.results.first().also {
+                it.type = if (file.isEpisode) TMDBMediaType.SHOW else TMDBMediaType.MOVIE
+            }
+
+        } catch (e: Exception) {
+            Log.e(TAG, "getTmdbArtwork - Fail to get TMDBArtwork for file:${file.name}", e)
+            null
         }
 
     }
 
     override suspend fun getTmdbMovie(
         artworkId: Long
-    ): TMDBMovie? = withRetry {
+    ): TMDBMovie? {
 
-        tmdbService.getMovieDetails(id = artworkId)
+        return try {
+
+            tmdbService.getMovieDetails(id = artworkId)
+
+        } catch (e: Exception) {
+            Log.e(TAG, "getTmdbMovie - Fail to get TMDBMovie for artworkId:$artworkId", e)
+            null
+        }
 
     }
 
@@ -50,33 +68,22 @@ class TmdbRepositoryImpl @Inject constructor(
         artworkId: Long,
         season: Int,
         number: Int
-    ): TMDBEpisode? = withRetry {
+    ): TMDBEpisode? {
 
-        tmdbService.getEpisode(
-            id = artworkId,
-            season = season,
-            episode = number
-        ).also {
-            it.artworkId = artworkId
-        }
-
-    }
-
-    private suspend fun <T> withRetry(
-        retryCount: Int = 0,
-        block: suspend () -> T
-    ): T? {
         return try {
-            block()
-        } catch (e: HttpException) {
-            if (e.code() == 429 && retryCount < 3) {
-                delay(1000L * (retryCount + 1))
-                withRetry(retryCount + 1, block)
-            } else null
+
+            tmdbService.getEpisode(
+                id = artworkId,
+                season = season,
+                episode = number
+            ).also {
+                it.artworkId = artworkId
+            }
+
         } catch (e: Exception) {
-            Log.e("TmdbRepositoryImpl", "Request failed", e)
+            Log.e(TAG, "getTmdbEpisode - Fail to get TMDBEpisode for artworkId:$artworkId, season:$season, number:$number", e)
             null
         }
-    }
 
+    }
 }

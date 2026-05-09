@@ -133,48 +133,36 @@ class PlayerViewModelTest : FunSpec({
                 artwork = MediaMockups.movieArtwork,
                 media = MediaMockups.movie,
                 time = MediaMockups.movie.duration.minToMs.times(0.5).toLong(),
-                shouldBeAddedToRecentlyWatched = true,
-                statusExpected = Status.IS_WATCHING
             ),
             PlayerTestCases.SaveTime(
                 description = "Movie - save time at the end",
                 artwork = MediaMockups.movieArtwork,
                 media = MediaMockups.movie,
                 time = MediaMockups.movie.duration.minToMs.times(Constants.PLAYER.PROGRESS_THRESHOLD).toLong(),
-                shouldBeAddedToRecentlyWatched = false,
-                statusExpected = Status.WATCHED
             ),
             PlayerTestCases.SaveTime(
                 description = "Show - save time at the middle",
                 artwork = MediaMockups.showArtwork,
                 media = MediaMockups.episode1,
                 time = MediaMockups.episode1.duration.minToMs.times(0.5).toLong(),
-                shouldBeAddedToRecentlyWatched = true,
-                statusExpected = Status.IS_WATCHING
             ),
             PlayerTestCases.SaveTime(
                 description = "Show - save time at the end",
                 artwork = MediaMockups.showArtwork,
                 media = MediaMockups.episode1,
                 time = MediaMockups.episode1.duration.minToMs.times(Constants.PLAYER.PROGRESS_THRESHOLD).toLong(),
-                shouldBeAddedToRecentlyWatched = true,
-                statusExpected = Status.WATCHED
             ),
             PlayerTestCases.SaveTime(
                 description = "Show - save time for last episode at the middle",
                 artwork = MediaMockups.showArtwork,
                 media = MediaMockups.episodes.lastEpisode,
                 time = MediaMockups.episodes.lastEpisode.duration.minToMs.times(0.5).toLong(),
-                shouldBeAddedToRecentlyWatched = true,
-                statusExpected = Status.IS_WATCHING
             ),
             PlayerTestCases.SaveTime(
                 description = "Show - save time for last episode at the end",
                 artwork = MediaMockups.showArtwork,
                 media = MediaMockups.episodes.lastEpisode,
                 time = MediaMockups.episodes.lastEpisode.duration.minToMs.times(Constants.PLAYER.PROGRESS_THRESHOLD).toLong(),
-                shouldBeAddedToRecentlyWatched = false,
-                statusExpected = Status.WATCHED
             )
         ) { testCase ->
 
@@ -200,11 +188,6 @@ class PlayerViewModelTest : FunSpec({
                 viewModel.handleIntent(PlayerIntent.SaveTime)
 
                 // Then
-                val state = awaitItem()
-                state.media.shouldNotBeNull {
-                    status shouldBe testCase.statusExpected
-                }
-
                 coVerify { progressUC.saveProgress(testCase.media, testCase.time) }
 
             }

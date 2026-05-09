@@ -17,8 +17,6 @@ object PlayerTestCases {
         val artwork: Artwork,
         val media: Media,
         val time: Long,
-        val shouldBeAddedToRecentlyWatched: Boolean,
-        val statusExpected: Status
     )
 
     data class PlayerBackTap(

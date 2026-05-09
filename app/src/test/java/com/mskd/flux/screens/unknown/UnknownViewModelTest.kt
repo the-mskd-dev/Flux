@@ -2,6 +2,7 @@ package com.mskd.flux.screens.unknown
 
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
+import com.mskd.flux.data.repository.ddb.DatabaseRepository
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.mockups.FakeArtworkUC
@@ -24,16 +25,17 @@ class UnknownViewModelTest : FunSpec ({
     lateinit var settingsRepository: SettingsRepository
     lateinit var userRepository: UserRepository
     lateinit var progressUC: ProgressUC
+    lateinit var databaseRepository: DatabaseRepository
 
     val updateVm: () -> Unit = {
 
         progressUC = ProgressUCImpl(
-            artworkRepository = artworkRepository,
+            database = databaseRepository,
             user = userRepository,
         )
 
         viewModel = UnknownViewModel(
-            repository = artworkRepository,
+            artworkUC = artworkRepository,
             settingsRepository = settingsRepository,
             progressUC = progressUC
         )

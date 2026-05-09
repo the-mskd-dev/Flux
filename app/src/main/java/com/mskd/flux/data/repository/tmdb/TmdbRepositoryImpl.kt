@@ -7,15 +7,20 @@ import com.mskd.flux.model.tmdb.TMDBArtwork
 import com.mskd.flux.model.tmdb.TMDBEpisode
 import com.mskd.flux.model.tmdb.TMDBMediaType
 import com.mskd.flux.model.tmdb.TMDBMovie
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class TmdbRepositoryImpl @Inject constructor(
     private val tmdbService: TMDBService,
 ) : TmdbRepository {
 
-    override suspend fun getTmdbArtwork(file: UserFile): TMDBArtwork? {
+    private val dispatcher = Dispatchers.IO.limitedParallelism(10)
 
-        return try {
+
+    override suspend fun getTmdbArtwork(file: UserFile): TMDBArtwork? = withContext(dispatcher) {
+
+        try {
 
             val tmdbArtworks = if (file.isEpisode) {
                 tmdbService.getShow(
@@ -40,9 +45,9 @@ class TmdbRepositoryImpl @Inject constructor(
 
     }
 
-    override suspend fun getTmdbMovie(artworkId: Long): TMDBMovie? {
+    override suspend fun getTmdbMovie(artworkId: Long): TMDBMovie? = withContext(dispatcher) {
 
-        return try {
+        try {
 
             tmdbService.getMovieDetails(id = artworkId)
 
@@ -57,9 +62,9 @@ class TmdbRepositoryImpl @Inject constructor(
         artworkId: Long,
         season: Int,
         number: Int
-    ): TMDBEpisode? {
+    ): TMDBEpisode? = withContext(dispatcher) {
 
-        return try {
+        try {
 
             tmdbService.getEpisode(
                 id = artworkId,

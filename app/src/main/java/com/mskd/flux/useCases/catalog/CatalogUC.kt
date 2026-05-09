@@ -27,6 +27,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 interface CatalogUC {
 
@@ -81,6 +82,10 @@ class CatalogUCImpl(
 
         syncJob = scope.launch {
 
+            Log.d("TEST", "start sync")
+
+            val start = System.currentTimeMillis()
+
             _state.value = CatalogUC.State.Syncing(full = !onlyNew)
 
             // Get files
@@ -92,6 +97,7 @@ class CatalogUCImpl(
 
             if (newFiles.isEmpty()) {
                 user.setSyncTime(System.currentTimeMillis())
+                _state.value = CatalogUC.State.Idle
                 return@launch
             }
 
@@ -111,6 +117,10 @@ class CatalogUCImpl(
             user.setSyncTime(System.currentTimeMillis())
 
             _state.value = CatalogUC.State.Idle
+
+            val end = System.currentTimeMillis()
+            val time = end - start
+            Log.d("TEST", "end sync : ${time.milliseconds.inWholeSeconds}sec")
 
         }
 
@@ -135,8 +145,13 @@ class CatalogUCImpl(
 
         // Get data
         val artworksFolders = getArtworksFolders(folders = folders)
-        val movies = getMovies(artworkFolders = artworksFolders)
-        val episodes = getEpisodes(artworkFolders = artworksFolders)
+        var movies: List<Media> = emptyList()
+        var episodes: List<Episode> = emptyList()
+
+        coroutineScope {
+            launch {  movies = getMovies(artworkFolders = artworksFolders) }
+            launch { episodes = getEpisodes(artworkFolders = artworksFolders) }
+        }
 
         return Catalog(
             artworks = artworksFolders.map { it.artwork },

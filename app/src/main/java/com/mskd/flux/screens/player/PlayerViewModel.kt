@@ -10,7 +10,7 @@ import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.screens.player.PlayerTrack.Type
 import com.mskd.flux.screens.player.controllers.PlayerManager
-import com.mskd.flux.useCases.artworkProgress.ArtworkProgressUC
+import com.mskd.flux.useCases.progress.ProgressUC
 import com.mskd.flux.utils.extensions.getNextEpisodeFor
 import com.mskd.flux.utils.extensions.toPlayerTrack
 import dagger.assisted.Assisted
@@ -45,7 +45,7 @@ class PlayerViewModel @AssistedInject constructor(
     private val userRepository: UserRepository,
     private val settingsRepository: SettingsRepository,
     private val playerManager: PlayerManager,
-    private val artworkProgressUC: ArtworkProgressUC
+    private val progressUC: ProgressUC
 ) : ViewModel() {
 
     //region Factory
@@ -362,7 +362,7 @@ class PlayerViewModel @AssistedInject constructor(
         val media = (uiState.value.screen as? PlayerScreen.Content)?.media ?: return
         val progress = uiState.value.controls.progress
 
-        artworkProgressUC.saveProgress(media = media, progress = progress)
+        progressUC.saveProgress(media = media, progress = progress)
 
     }
 

@@ -8,7 +8,7 @@ import com.mskd.flux.model.ScreenState
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
-import com.mskd.flux.useCases.artworkProgress.ArtworkProgressUC
+import com.mskd.flux.useCases.progress.ProgressUC
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -23,7 +23,7 @@ import javax.inject.Inject
 class UnknownViewModel @Inject constructor(
     private val repository: ArtworkRepository,
     private val settingsRepository: SettingsRepository,
-    private val artworkProgressUC: ArtworkProgressUC
+    private val progressUC: ProgressUC
 ) : ViewModel() {
 
     //region Variables
@@ -94,7 +94,7 @@ class UnknownViewModel @Inject constructor(
 
     private suspend fun onExternalPlayerResult(progress: Long) {
         selectedMedia?.let { media ->
-            artworkProgressUC.saveProgress(media = media, progress = progress)
+            progressUC.saveProgress(media = media, progress = progress)
             selectedMedia = null
         }
     }

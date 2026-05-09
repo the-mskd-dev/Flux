@@ -1,4 +1,4 @@
-package com.mskd.flux.useCases.catalogUC
+package com.mskd.flux.useCases.catalog
 
 import android.util.Log
 import com.mskd.flux.data.repository.ddb.DatabaseRepository

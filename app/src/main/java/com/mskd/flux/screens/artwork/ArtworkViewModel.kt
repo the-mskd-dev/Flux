@@ -12,7 +12,7 @@ import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Status
 import com.mskd.flux.screens.artwork.ArtworkEvent.*
-import com.mskd.flux.useCases.artworkProgress.ArtworkProgressUC
+import com.mskd.flux.useCases.progress.ProgressUC
 import com.mskd.flux.utils.extensions.firstEpisode
 import com.mskd.flux.utils.extensions.getPreviousEpisodesFor
 import dagger.assisted.Assisted
@@ -34,7 +34,7 @@ class ArtworkViewModel @AssistedInject constructor(
     @Assisted val artworkId: Long,
     private val repository: ArtworkRepository,
     private val settingsRepository: SettingsRepository,
-    private val artworkProgressUC: ArtworkProgressUC
+    private val progressUC: ProgressUC
 ) : ViewModel() {
 
     //region Hilt
@@ -205,7 +205,7 @@ class ArtworkViewModel @AssistedInject constructor(
 
         val status = if (media.status != Status.WATCHED) Status.WATCHED else Status.TO_WATCH
 
-        artworkProgressUC.changeMediaStatus(
+        progressUC.changeMediaStatus(
             media = media,
             status = status
         )
@@ -226,7 +226,7 @@ class ArtworkViewModel @AssistedInject constructor(
 
             val episode = state.episodePendingConfirmation ?: return
 
-            artworkProgressUC.markPreviousEpisodesAsWatchedFor(episode = episode)
+            progressUC.markPreviousEpisodesAsWatchedFor(episode = episode)
 
             state.copy(episodePendingConfirmation = null)
 
@@ -236,7 +236,7 @@ class ArtworkViewModel @AssistedInject constructor(
 
     private suspend fun onExternalPlayerResult(progress: Long) {
         selectedMedia?.let { media ->
-            artworkProgressUC.saveProgress(media = media, progress = progress)
+            progressUC.saveProgress(media = media, progress = progress)
             selectedMedia = null
         }
     }
@@ -249,7 +249,7 @@ class ArtworkViewModel @AssistedInject constructor(
 
         val currentState = uiState.value
 
-        artworkProgressUC.resetProgress(artwork = currentState.artwork)
+        progressUC.resetProgress(artwork = currentState.artwork)
 
         _subState.update {
 

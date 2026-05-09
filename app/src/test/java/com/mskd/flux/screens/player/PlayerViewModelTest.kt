@@ -12,8 +12,8 @@ import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Status
 import com.mskd.flux.screens.player.controllers.PlayerManager
-import com.mskd.flux.useCases.artworkProgress.ArtworkProgressUC
-import com.mskd.flux.useCases.artworkProgress.ArtworkProgressUCImpl
+import com.mskd.flux.useCases.progress.ProgressUC
+import com.mskd.flux.useCases.progress.ProgressUCImpl
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.extensions.lastEpisode
 import com.mskd.flux.utils.extensions.minToMs
@@ -35,13 +35,13 @@ class PlayerViewModelTest : FunSpec({
     lateinit var artworkRepository: FakeArtworkRepository
     lateinit var userRepository: UserRepository
     lateinit var settingsRepository: SettingsRepository
-    lateinit var artworkProgressUC: ArtworkProgressUC
+    lateinit var progressUC: ProgressUC
     lateinit var playerManager: PlayerManager
     lateinit var mockkedPlayer: Player
 
     fun updateVm(mediaId: Long = MediaMockups.episode1.mediaId) {
 
-        artworkProgressUC = ArtworkProgressUCImpl(
+        progressUC = ProgressUCImpl(
             artworkRepository = artworkRepository,
             userRepository = userRepository,
         )
@@ -51,7 +51,7 @@ class PlayerViewModelTest : FunSpec({
             artworkRepository = artworkRepository,
             userRepository = userRepository,
             settingsRepository = settingsRepository,
-            artworkProgressUC = artworkProgressUC,
+            progressUC = progressUC,
             playerManager = playerManager
         )
 

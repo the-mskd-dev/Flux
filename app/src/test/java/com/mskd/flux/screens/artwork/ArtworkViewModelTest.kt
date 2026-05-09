@@ -10,8 +10,8 @@ import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.ScreenState
 import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.model.artwork.Status
-import com.mskd.flux.useCases.artworkProgress.ArtworkProgressUC
-import com.mskd.flux.useCases.artworkProgress.ArtworkProgressUCImpl
+import com.mskd.flux.useCases.progress.ProgressUC
+import com.mskd.flux.useCases.progress.ProgressUCImpl
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -31,11 +31,11 @@ class ArtworkViewModelTest : FunSpec({
     lateinit var artworkRepository: FakeArtworkRepository
     lateinit var userRepository: UserRepository
     lateinit var settingsRepository: SettingsRepository
-    lateinit var artworkProgressUC: ArtworkProgressUC
+    lateinit var progressUC: ProgressUC
 
     val updateVm: () -> Unit = {
 
-        artworkProgressUC = ArtworkProgressUCImpl(
+        progressUC = ProgressUCImpl(
             artworkRepository = artworkRepository,
             userRepository = userRepository,
         )
@@ -44,7 +44,7 @@ class ArtworkViewModelTest : FunSpec({
             artworkId = MediaMockups.showArtwork.id,
             repository = artworkRepository,
             settingsRepository = settingsRepository,
-            artworkProgressUC = artworkProgressUC
+            progressUC = progressUC
         )
 
     }
@@ -313,7 +313,7 @@ class ArtworkViewModelTest : FunSpec({
 
             viewModel.handleIntent(ArtworkIntent.ResetProgress)
 
-            coVerify { artworkProgressUC.resetProgress(state.artwork) }
+            coVerify { progressUC.resetProgress(state.artwork) }
 
         }
     }

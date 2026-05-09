@@ -1,4 +1,4 @@
-package com.mskd.flux.useCases.artworkProgress
+package com.mskd.flux.useCases.progress
 
 import android.util.Log
 import com.mskd.flux.data.repository.artwork.ArtworkRepository
@@ -15,7 +15,7 @@ import com.mskd.flux.utils.extensions.timeDescription
 import kotlinx.coroutines.flow.first
 import kotlin.time.Duration.Companion.minutes
 
-interface ArtworkProgressUC {
+interface ProgressUC {
 
     suspend fun saveProgress(media: Media, progress: Long)
     suspend fun changeMediaStatus(media: Media, status: Status)
@@ -23,10 +23,10 @@ interface ArtworkProgressUC {
     suspend fun resetProgress(artwork: Artwork)
 }
 
-class ArtworkProgressUCImpl(
+class ProgressUCImpl(
     private val artworkRepository: ArtworkRepository,
     private val userRepository: UserRepository
-) : ArtworkProgressUC {
+) : ProgressUC {
 
     //region Public Methods
 

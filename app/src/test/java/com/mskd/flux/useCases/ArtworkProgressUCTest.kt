@@ -7,8 +7,8 @@ import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Status
-import com.mskd.flux.useCases.artworkProgress.ArtworkProgressUC
-import com.mskd.flux.useCases.artworkProgress.ArtworkProgressUCImpl
+import com.mskd.flux.useCases.progress.ProgressUC
+import com.mskd.flux.useCases.progress.ProgressUCImpl
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.extensions.lastEpisode
 import com.mskd.flux.utils.extensions.minToMs
@@ -26,7 +26,7 @@ class ArtworkProgressUCTest : FunSpec({
 
     lateinit var artworkRepository: ArtworkRepository
     lateinit var userRepository: UserRepository
-    lateinit var artworkProgressUC: ArtworkProgressUC
+    lateinit var progressUC: ProgressUC
 
     beforeTest {
 
@@ -36,7 +36,7 @@ class ArtworkProgressUCTest : FunSpec({
             every { flow } returns MutableStateFlow(UserRepository.State())
         }
 
-        artworkProgressUC = ArtworkProgressUCImpl(
+        progressUC = ProgressUCImpl(
             artworkRepository = artworkRepository,
             userRepository = userRepository,
         )
@@ -112,12 +112,12 @@ class ArtworkProgressUCTest : FunSpec({
                 every { flow } returns MutableStateFlow(content)
             }
 
-            artworkProgressUC = ArtworkProgressUCImpl(
+            progressUC = ProgressUCImpl(
                 artworkRepository = artworkRepository,
                 userRepository = userRepository,
             )
 
-            artworkProgressUC.saveProgress(media = testCase.media, progress = testCase.progress)
+            progressUC.saveProgress(media = testCase.media, progress = testCase.progress)
 
             when (testCase.media) {
                 is Episode -> coVerify { artworkRepository.saveEpisode(any()) }
@@ -192,12 +192,12 @@ class ArtworkProgressUCTest : FunSpec({
                every { flow } returns MutableStateFlow(testCase.artworkContent)
            }
 
-           artworkProgressUC = ArtworkProgressUCImpl(
+           progressUC = ProgressUCImpl(
                artworkRepository = artworkRepository,
                userRepository = userRepository,
            )
 
-           artworkProgressUC.changeMediaStatus(
+           progressUC.changeMediaStatus(
                media = testCase.media,
                status = testCase.status
            )
@@ -231,12 +231,12 @@ class ArtworkProgressUCTest : FunSpec({
             )
         }
 
-        artworkProgressUC = ArtworkProgressUCImpl(
+        progressUC = ProgressUCImpl(
             artworkRepository = artworkRepository,
             userRepository = userRepository,
         )
 
-        artworkProgressUC.markPreviousEpisodesAsWatchedFor(episode = MediaMockups.episode3)
+        progressUC.markPreviousEpisodesAsWatchedFor(episode = MediaMockups.episode3)
 
         coVerify { artworkRepository.saveEpisodes(match { episodes -> episodes.size == 2 && episodes.all { it.status == Status.WATCHED } })  }
 
@@ -267,12 +267,12 @@ class ArtworkProgressUCTest : FunSpec({
                 coEvery { getArtwork(any()) } returns testCase.artworkContent
             }
 
-            artworkProgressUC = ArtworkProgressUCImpl(
+            progressUC = ProgressUCImpl(
                 artworkRepository = artworkRepository,
                 userRepository = userRepository,
             )
 
-            artworkProgressUC.resetProgress(artwork = testCase.artwork)
+            progressUC.resetProgress(artwork = testCase.artwork)
 
             when (testCase.artworkContent) {
                 is ArtworkRepository.Content.MOVIE -> {

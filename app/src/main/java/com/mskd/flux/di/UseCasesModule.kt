@@ -5,10 +5,10 @@ import com.mskd.flux.data.repository.ddb.DatabaseRepository
 import com.mskd.flux.data.repository.files.FilesRepository
 import com.mskd.flux.data.repository.tmdb.TmdbRepository
 import com.mskd.flux.data.repository.user.UserRepository
-import com.mskd.flux.useCases.artworkProgress.ArtworkProgressUC
-import com.mskd.flux.useCases.artworkProgress.ArtworkProgressUCImpl
-import com.mskd.flux.useCases.catalogUC.CatalogUC
-import com.mskd.flux.useCases.catalogUC.CatalogUCImpl
+import com.mskd.flux.useCases.progress.ProgressUC
+import com.mskd.flux.useCases.progress.ProgressUCImpl
+import com.mskd.flux.useCases.catalog.CatalogUC
+import com.mskd.flux.useCases.catalog.CatalogUCImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -24,8 +24,8 @@ object UseCasesModule {
     fun provideArtworkProgressUC(
         artworkRepository: ArtworkRepository,
         userRepository: UserRepository
-    ) : ArtworkProgressUC {
-        return ArtworkProgressUCImpl(
+    ) : ProgressUC {
+        return ProgressUCImpl(
             artworkRepository = artworkRepository,
             userRepository = userRepository
         )

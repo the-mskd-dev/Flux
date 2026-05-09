@@ -42,7 +42,6 @@ import kotlin.time.Duration.Companion.seconds
 class PlayerViewModel @AssistedInject constructor(
     @Assisted mediaId: Long,
     private val artworkUC: ArtworkUC,
-    private val userRepository: UserRepository,
     private val settingsRepository: SettingsRepository,
     private val playerManager: PlayerManager,
     private val progressUC: ProgressUC

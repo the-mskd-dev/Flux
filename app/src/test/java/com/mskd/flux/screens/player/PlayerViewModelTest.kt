@@ -13,7 +13,6 @@ import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Status
 import com.mskd.flux.screens.player.controllers.PlayerManager
 import com.mskd.flux.useCases.progress.ProgressUC
-import com.mskd.flux.useCases.progress.ProgressUCImpl
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.extensions.lastEpisode
 import com.mskd.flux.utils.extensions.minToMs
@@ -32,8 +31,7 @@ class PlayerViewModelTest : FunSpec({
     fluxExtensions()
 
     lateinit var viewModel: PlayerViewModel
-    lateinit var artworkRepository: FakeArtworkUC
-    lateinit var userRepository: UserRepository
+    lateinit var artworkUC: FakeArtworkUC
     lateinit var settingsRepository: SettingsRepository
     lateinit var progressUC: ProgressUC
     lateinit var playerManager: PlayerManager
@@ -41,15 +39,11 @@ class PlayerViewModelTest : FunSpec({
 
     fun updateVm(mediaId: Long = MediaMockups.episode1.mediaId) {
 
-        progressUC = ProgressUCImpl(
-            artworkRepository = artworkRepository,
-            user = userRepository,
-        )
+        progressUC = mockk(relaxed = true)
 
         viewModel = PlayerViewModel(
             mediaId = mediaId,
-            artworkRepository = artworkRepository,
-            userRepository = userRepository,
+            artworkUC = artworkUC,
             settingsRepository = settingsRepository,
             progressUC = progressUC,
             playerManager = playerManager
@@ -59,11 +53,7 @@ class PlayerViewModelTest : FunSpec({
 
     beforeTest {
 
-        artworkRepository = FakeArtworkUC(initialContentType = ContentType.SHOW)
-
-        userRepository = mockk(relaxed = true) {
-            every { flow } returns MutableStateFlow(UserRepository.State())
-        }
+        artworkUC = FakeArtworkUC(initialContentType = ContentType.SHOW)
 
         settingsRepository = mockk(relaxed = true) {
             every { flow } returns MutableStateFlow(SettingsRepository.State())
@@ -189,7 +179,7 @@ class PlayerViewModelTest : FunSpec({
         ) { testCase ->
 
             // Given
-            artworkRepository.setContentType(if (testCase.media is Movie) ContentType.MOVIE else ContentType.SHOW)
+            artworkUC.setContentType(if (testCase.media is Movie) ContentType.MOVIE else ContentType.SHOW)
 
             playerManager = mockk(relaxed = true) {
                 every { state } returns MutableStateFlow(PlayerManager.State.Ready(
@@ -214,11 +204,8 @@ class PlayerViewModelTest : FunSpec({
                 state.media.shouldNotBeNull {
                     status shouldBe testCase.statusExpected
                 }
-                if (testCase.shouldBeAddedToRecentlyWatched) {
-                    coVerify { userRepository.addToRecentlyWatched(testCase.artwork.id) }
-                } else {
-                    coVerify { userRepository.removeFromRecentlyWatched(testCase.artwork.id) }
-                }
+
+                coVerify { progressUC.saveProgress(testCase.media, testCase.time) }
 
             }
 

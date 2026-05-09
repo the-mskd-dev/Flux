@@ -36,12 +36,14 @@ object UseCasesModule {
     fun provideCatalogUC(
         tmdbRepository: TmdbRepository,
         databaseRepository: DatabaseRepository,
-        filesRepository: FilesRepository
+        filesRepository: FilesRepository,
+        userRepository: UserRepository
     ) : CatalogUC {
         return CatalogUCImpl(
             tmdbRepository = tmdbRepository,
             databaseRepository = databaseRepository,
-            filesRepository = filesRepository
+            filesRepository = filesRepository,
+            userRepository = userRepository
         )
     }
 

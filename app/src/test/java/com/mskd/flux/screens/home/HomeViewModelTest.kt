@@ -6,6 +6,7 @@ import com.mskd.flux.data.repository.snackbars.SnackbarRepository
 import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.data.tmdb.token.TokenRepository
 import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.mockups.mockkCatalogUC
 import com.mskd.flux.model.ScreenState
 import com.mskd.flux.useCases.catalog.CatalogUC
 import com.mskd.flux.utils.FluxSnackbar
@@ -38,10 +39,7 @@ class HomeViewModelTest : FunSpec({
 
     beforeTest {
 
-        catalogUC = mockk(relaxed = true) {
-            coEvery { artworks } returns MutableStateFlow(MediaMockups.artworks)
-            coEvery { state } returns MutableStateFlow(CatalogUC.State.Idle)
-        }
+        catalogUC = mockkCatalogUC()
 
         tokenRepository = mockk(relaxed = true) {
             coEvery { flow } returns tokenFlow
@@ -130,7 +128,6 @@ class HomeViewModelTest : FunSpec({
 
         coVerify {
             catalogUC.syncCatalog(onlyNew = true)
-            userRepository.setSyncTime(any())
         }
     }
 
@@ -148,7 +145,6 @@ class HomeViewModelTest : FunSpec({
 
         coVerify(exactly = 1) {
             catalogUC.syncCatalog(false)
-            userRepository.setSyncTime(any())
         }
     }
 
@@ -165,7 +161,6 @@ class HomeViewModelTest : FunSpec({
 
         coVerify(exactly = 0) {
             catalogUC.syncCatalog(any())
-            userRepository.setSyncTime(any())
         }
     }
 

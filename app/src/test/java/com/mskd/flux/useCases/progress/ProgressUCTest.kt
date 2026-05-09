@@ -4,6 +4,7 @@ import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.data.repository.ddb.DatabaseRepository
 import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.mockups.mockkDatabaseRepository
 import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Movie
@@ -30,12 +31,7 @@ class ProgressUCTest : FunSpec({
 
     beforeTest {
 
-        databaseRepository = mockk(relaxed = true) {
-            coEvery { getEpisodes(any()) } answers {
-                val artworkId = firstArg<Long>()
-                MediaMockups.episodes.filter { it.artworkId == artworkId }
-            }
-        }
+        databaseRepository = mockkDatabaseRepository()
 
         userRepository = mockk(relaxed = true) {
             every { flow } returns MutableStateFlow(UserRepository.State())

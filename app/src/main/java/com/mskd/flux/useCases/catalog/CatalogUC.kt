@@ -15,15 +15,20 @@ import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.utils.extensions.groupInFolders
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 
 interface CatalogUC {
 
     fun flowArtworks() : Flow<List<Artwork>>
-    suspend fun syncCatalog(onlyNew: Boolean)
+    fun syncCatalog(onlyNew: Boolean)
     suspend fun cleanCatalog()
 
 }
@@ -43,40 +48,53 @@ class CatalogUCImpl(
 
     //endregion
 
+    //region Coroutines
+
+    private var syncJob: Job? = null
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+
+    //endregion
+
     //region Public methods
 
     override fun flowArtworks(): Flow<List<Artwork>> {
         return database.flowArtworks()
     }
 
-    override suspend fun syncCatalog(onlyNew: Boolean) {
+    override fun syncCatalog(onlyNew: Boolean) {
 
-        // Get files
-        val allFiles = files.getFiles()
-        val newFiles = if (!onlyNew) { allFiles } else {
-            val dbFilesNames = database.getAllFileNames()
-            allFiles.filter { !dbFilesNames.contains(it.name) }
-        }
+        syncJob?.cancel()
 
-        if (newFiles.isEmpty()) {
+        syncJob = scope.launch {
+
+            // Get files
+            val allFiles = files.getFiles()
+            val newFiles = if (!onlyNew) { allFiles } else {
+                val dbFilesNames = database.getAllFileNames()
+                allFiles.filter { !dbFilesNames.contains(it.name) }
+            }
+
+            if (newFiles.isEmpty()) {
+                user.setSyncTime(System.currentTimeMillis())
+                return@launch
+            }
+
+            // Get data
+            var catalog = getCatalog(files = newFiles)
+
+            if (!onlyNew) {
+                catalog = applyCurrentProgress(catalog = catalog)
+            }
+
+            // Save data
+            database.saveArtworks(artworks = catalog.artworks)
+            database.saveMovies(movies = catalog.movies)
+            database.saveEpisodes(episodes = catalog.episodes)
+
+            // Save time
             user.setSyncTime(System.currentTimeMillis())
-            return
+
         }
-
-        // Get data
-        var catalog = getCatalog(files = newFiles)
-
-        if (!onlyNew) {
-            catalog = applyCurrentProgress(catalog = catalog)
-        }
-
-        // Save data
-        database.saveArtworks(artworks = catalog.artworks)
-        database.saveMovies(movies = catalog.movies)
-        database.saveEpisodes(episodes = catalog.episodes)
-
-        // Save time
-        user.setSyncTime(System.currentTimeMillis())
 
     }
 

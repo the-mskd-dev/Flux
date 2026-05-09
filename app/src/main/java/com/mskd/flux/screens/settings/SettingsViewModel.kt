@@ -130,6 +130,7 @@ class SettingsViewModel @Inject constructor(
 
     private suspend fun proceedFullSync() {
         catalogUC.syncCatalog(onlyNew = false)
+        showFullSyncDialog(show = false)
         _event.emit(SettingsEvent.BackToPreviousScreen)
     }
 

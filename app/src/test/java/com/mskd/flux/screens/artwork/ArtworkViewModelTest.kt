@@ -60,7 +60,7 @@ class ArtworkViewModelTest : FunSpec({
 
         artworkUC = FakeArtworkUC(initialContentType = ContentType.SHOW)
 
-        databaseRepository = mockkDatabaseRepository
+        databaseRepository = mockkDatabaseRepository()
 
         userRepository = mockk(relaxed = true) {
             every { flow } returns MutableStateFlow(UserRepository.State())

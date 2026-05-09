@@ -5,7 +5,9 @@ import com.mskd.flux.model.UserFile
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Movie
+import com.mskd.flux.useCases.artwork.ArtworkUC
 import com.mskd.flux.useCases.catalog.CatalogUC
+import com.mskd.flux.useCases.catalog.CatalogUC.State
 import com.mskd.flux.useCases.progress.ProgressUC
 import io.mockk.coEvery
 import io.mockk.every
@@ -13,9 +15,14 @@ import io.mockk.mockk
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 
-val mockkProgressUC : ProgressUC = mockk(relaxed = true)
+fun mockkProgressUC() : ProgressUC = mockk(relaxed = true)
 
-val mockkDatabaseRepository : DatabaseRepository = mockk(relaxed = true) {
+fun mockkCatalogUC() : CatalogUC = mockk(relaxed = true) {
+    every { state } returns MutableStateFlow(State.Idle)
+    every { artworks } returns MutableStateFlow(MediaMockups.artworks)
+}
+
+fun mockkDatabaseRepository() : DatabaseRepository = mockk(relaxed = true) {
 
     // Flow
     every { flowArtworks() } returns MutableStateFlow(MediaMockups.artworks)

@@ -49,9 +49,11 @@ class CatalogUCImpl(
 
     //endregion
 
-    //region Coroutines
+    //region Variables
 
     private var syncJob: Job? = null
+
+    private var fullSyncing: Boolean = false
 
     //endregion
 
@@ -63,9 +65,14 @@ class CatalogUCImpl(
 
     override fun syncCatalog(onlyNew: Boolean) {
 
+        if (fullSyncing && onlyNew)
+            return
+
         syncJob?.cancel()
 
         syncJob = scope.launch {
+
+            fullSyncing = !onlyNew
 
             // Get files
             val allFiles = files.getFiles()
@@ -93,6 +100,8 @@ class CatalogUCImpl(
 
             // Save time
             user.setSyncTime(System.currentTimeMillis())
+
+            fullSyncing = false
 
         }
 

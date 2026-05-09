@@ -1,7 +1,6 @@
 package com.mskd.flux.useCases.progress
 
 import android.util.Log
-import com.mskd.flux.data.repository.artwork.ArtworkRepository
 import com.mskd.flux.data.repository.ddb.DatabaseRepository
 import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.model.artwork.Artwork
@@ -14,7 +13,6 @@ import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.extensions.getPreviousEpisodesFor
 import com.mskd.flux.utils.extensions.lastEpisode
 import com.mskd.flux.utils.extensions.timeDescription
-import kotlinx.coroutines.flow.first
 import kotlin.time.Duration.Companion.minutes
 
 interface ProgressUC {

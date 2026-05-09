@@ -4,7 +4,6 @@ import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.data.repository.catalog.CatalogRepository
 import com.mskd.flux.data.repository.settings.SettingsRepository
-import com.mskd.flux.mockups.FakeCatalogRepository
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.ContentType
 import io.kotest.core.spec.style.FunSpec
@@ -16,13 +15,13 @@ class SearchViewModelTest : FunSpec({
     fluxExtensions()
 
     lateinit var viewModel: SearchViewModel
-    lateinit var catalogRepository: FakeCatalogRepository
+    lateinit var catalogRepository: FakeCatalogUC
     lateinit var settingsRepository: SettingsRepository
 
 
     beforeTest {
 
-        catalogRepository = FakeCatalogRepository(
+        catalogRepository = FakeCatalogUC(
             initialState = CatalogRepository.State(
                 isLoading = false,
                 artworks = MediaMockups.artworks

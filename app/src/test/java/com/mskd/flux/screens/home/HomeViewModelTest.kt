@@ -5,7 +5,6 @@ import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.data.repository.snackbars.SnackbarRepository
 import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.data.tmdb.token.TokenRepository
-import com.mskd.flux.mockups.FakeCatalogRepository
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.ScreenState
 import com.mskd.flux.utils.FluxSnackbar
@@ -27,7 +26,7 @@ class HomeViewModelTest : FunSpec({
     fluxExtensions()
 
     lateinit var viewModel: HomeViewModel
-    lateinit var catalogRepository: FakeCatalogRepository
+    lateinit var catalogRepository: FakeCatalogUC
     lateinit var userRepository: UserRepository
     lateinit var tokenRepository: TokenRepository
     lateinit var snackbarRepository: SnackbarRepository
@@ -38,7 +37,7 @@ class HomeViewModelTest : FunSpec({
 
     beforeTest {
 
-        catalogRepository = FakeCatalogRepository()
+        catalogRepository = FakeCatalogUC()
         tokenRepository = mockk(relaxed = true) {
             coEvery { flow } returns tokenFlow
         }

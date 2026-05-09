@@ -2,7 +2,6 @@ package com.mskd.flux.screens.unknown
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mskd.flux.data.repository.artwork.ArtworkRepository
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.model.ScreenState
 import com.mskd.flux.model.artwork.Artwork

@@ -9,14 +9,12 @@ import android.provider.MediaStore
 import android.util.Log
 import androidx.core.net.toUri
 import com.mskd.flux.data.repository.user.UserRepository
-import com.mskd.flux.data.source.file.FilesSource
 import com.mskd.flux.data.source.file.FilesSourceLocalImpl
 import com.mskd.flux.model.FileSource
 import com.mskd.flux.model.UserFile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
-import java.io.File
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
 

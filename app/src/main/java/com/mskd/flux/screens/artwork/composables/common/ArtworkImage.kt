@@ -10,8 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -33,7 +31,6 @@ import coil3.request.crossfade
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.screens.artwork.ArtworkIntent
-import com.mskd.flux.ui.component.BackButton
 import com.mskd.flux.ui.component.Image
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui

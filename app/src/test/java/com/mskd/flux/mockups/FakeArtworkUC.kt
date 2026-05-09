@@ -1,7 +1,6 @@
 package com.mskd.flux.mockups
 
 import com.mskd.flux.model.artwork.ContentType
-import com.mskd.flux.model.artwork.ContentType.*
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.useCases.artwork.ArtworkUC

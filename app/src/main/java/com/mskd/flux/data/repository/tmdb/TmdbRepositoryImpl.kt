@@ -1,10 +1,8 @@
 package com.mskd.flux.data.repository.tmdb
 
 import android.util.Log
-import com.mskd.flux.data.ddb.DatabaseDao
 import com.mskd.flux.data.tmdb.TMDBService
 import com.mskd.flux.model.UserFile
-import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.tmdb.TMDBArtwork
 import com.mskd.flux.model.tmdb.TMDBEpisode
 import com.mskd.flux.model.tmdb.TMDBMediaType

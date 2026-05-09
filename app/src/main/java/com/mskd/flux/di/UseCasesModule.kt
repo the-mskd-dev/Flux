@@ -5,6 +5,8 @@ import com.mskd.flux.data.repository.ddb.DatabaseRepository
 import com.mskd.flux.data.repository.files.FilesRepository
 import com.mskd.flux.data.repository.tmdb.TmdbRepository
 import com.mskd.flux.data.repository.user.UserRepository
+import com.mskd.flux.useCases.artwork.ArtworkUC
+import com.mskd.flux.useCases.artwork.ArtworkUCImpl
 import com.mskd.flux.useCases.progress.ProgressUC
 import com.mskd.flux.useCases.progress.ProgressUCImpl
 import com.mskd.flux.useCases.catalog.CatalogUC
@@ -21,18 +23,6 @@ object UseCasesModule {
 
     @Provides
     @Singleton
-    fun provideArtworkProgressUC(
-        artworkRepository: ArtworkRepository,
-        userRepository: UserRepository
-    ) : ProgressUC {
-        return ProgressUCImpl(
-            artworkRepository = artworkRepository,
-            userRepository = userRepository
-        )
-    }
-
-    @Provides
-    @Singleton
     fun provideCatalogUC(
         tmdbRepository: TmdbRepository,
         databaseRepository: DatabaseRepository,
@@ -40,9 +30,31 @@ object UseCasesModule {
         userRepository: UserRepository
     ) : CatalogUC {
         return CatalogUCImpl(
-            tmdbRepository = tmdbRepository,
-            databaseRepository = databaseRepository,
-            filesRepository = filesRepository,
+            tmdb = tmdbRepository,
+            database = databaseRepository,
+            files = filesRepository,
+            user = userRepository
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideArtworkUC(
+        databaseRepository: DatabaseRepository,
+    ) : ArtworkUC {
+        return ArtworkUCImpl(
+            database = databaseRepository,
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideProgressUC(
+        artworkRepository: ArtworkRepository,
+        userRepository: UserRepository
+    ) : ProgressUC {
+        return ProgressUCImpl(
+            artworkRepository = artworkRepository,
             userRepository = userRepository
         )
     }

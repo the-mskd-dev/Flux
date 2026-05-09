@@ -29,10 +29,10 @@ interface CatalogUC {
 }
 
 class CatalogUCImpl(
-    private val tmdbRepository: TmdbRepository,
-    private val databaseRepository: DatabaseRepository,
-    private val filesRepository: FilesRepository,
-    private val userRepository: UserRepository
+    private val tmdb: TmdbRepository,
+    private val database: DatabaseRepository,
+    private val files: FilesRepository,
+    private val user: UserRepository
 ) : CatalogUC {
 
     //region Data class
@@ -46,20 +46,20 @@ class CatalogUCImpl(
     //region Public methods
 
     override fun flowArtworks(): Flow<List<Artwork>> {
-        return databaseRepository.flowArtworks()
+        return database.flowArtworks()
     }
 
     override suspend fun syncCatalog(onlyNew: Boolean) {
 
         // Get files
-        val allFiles = filesRepository.getFiles()
+        val allFiles = files.getFiles()
         val newFiles = if (!onlyNew) { allFiles } else {
-            val dbFilesNames = databaseRepository.getAllFileNames()
+            val dbFilesNames = database.getAllFileNames()
             allFiles.filter { !dbFilesNames.contains(it.name) }
         }
 
         if (newFiles.isEmpty()) {
-            userRepository.setSyncTime(System.currentTimeMillis())
+            user.setSyncTime(System.currentTimeMillis())
             return
         }
 
@@ -71,19 +71,19 @@ class CatalogUCImpl(
         }
 
         // Save data
-        databaseRepository.saveArtworks(artworks = catalog.artworks)
-        databaseRepository.saveMovies(movies = catalog.movies)
-        databaseRepository.saveEpisodes(episodes = catalog.episodes)
+        database.saveArtworks(artworks = catalog.artworks)
+        database.saveMovies(movies = catalog.movies)
+        database.saveEpisodes(episodes = catalog.episodes)
 
         // Save time
-        userRepository.setSyncTime(System.currentTimeMillis())
+        user.setSyncTime(System.currentTimeMillis())
 
     }
 
     override suspend fun cleanCatalog() {
 
-        val allFiles = filesRepository.getFiles()
-        databaseRepository.deleteMediasNotInFiles(allFiles)
+        val allFiles = files.getFiles()
+        database.deleteMediasNotInFiles(allFiles)
 
         tryToRetrieveUnknownMedias()
 
@@ -112,8 +112,8 @@ class CatalogUCImpl(
 
     private suspend fun applyCurrentProgress(catalog: Catalog) : Catalog {
 
-        val dbMovies = databaseRepository.getMovies()
-        val dbEpisodes = databaseRepository.getEpisodes()
+        val dbMovies = database.getMovies()
+        val dbEpisodes = database.getEpisodes()
 
         val movies = catalog.movies.map { newMovie ->
 
@@ -157,7 +157,7 @@ class CatalogUCImpl(
 
                 async {
 
-                    val tmdbArtwork = tmdbRepository.getTmdbArtwork(file = folder.files.first())
+                    val tmdbArtwork = tmdb.getTmdbArtwork(file = folder.files.first())
 
                     val artwork = if (tmdbArtwork == null)
                         Artwork.UNKNOWN
@@ -185,7 +185,7 @@ class CatalogUCImpl(
 
                 async {
 
-                    val tmdbMovie = tmdbRepository.getTmdbMovie(artworkId = artwork.id)
+                    val tmdbMovie = tmdb.getTmdbMovie(artworkId = artwork.id)
 
                     if (tmdbMovie == null)
                         Episode(file = files.first())
@@ -215,7 +215,7 @@ class CatalogUCImpl(
 
                         if (season != null && number != null) {
 
-                            val tmdbEpisode = tmdbRepository.getTmdbEpisode(
+                            val tmdbEpisode = tmdb.getTmdbEpisode(
                                 artworkId = artwork.id,
                                 season = season,
                                 number = number
@@ -244,7 +244,7 @@ class CatalogUCImpl(
 
         try {
 
-            val unknownMedias = databaseRepository.getUnknownMedias()
+            val unknownMedias = database.getUnknownMedias()
             val files = unknownMedias.map { it.file }
 
             val (newArtworks, newMovies, newEpisodes) = getCatalog(files = files)
@@ -285,10 +285,10 @@ class CatalogUCImpl(
 
             }
 
-            databaseRepository.saveArtworks(newArtworks.filter { !it.isUnknown })
-            databaseRepository.saveMovies(moviesToSave)
-            databaseRepository.saveEpisodes(episodesToSave)
-            databaseRepository.deleteEpisodes(mediasToDelete)
+            database.saveArtworks(newArtworks.filter { !it.isUnknown })
+            database.saveMovies(moviesToSave)
+            database.saveEpisodes(episodesToSave)
+            database.deleteEpisodes(mediasToDelete)
 
         } catch (e: Exception) {
             Log.e(TAG, "Fail to retrieve unknown medias", e)

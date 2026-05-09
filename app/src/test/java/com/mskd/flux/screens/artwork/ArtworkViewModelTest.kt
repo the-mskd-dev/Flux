@@ -7,6 +7,7 @@ import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.mockups.FakeArtworkUC
 import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.mockups.mockkDatabaseRepository
 import com.mskd.flux.model.ScreenState
 import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.model.artwork.Status
@@ -17,12 +18,16 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.types.shouldBeInstanceOf
+import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 
+val ucMockk : ProgressUC = mockk(relaxed = true) {
+
+}
 @OptIn(ExperimentalCoroutinesApi::class)
 class ArtworkViewModelTest : FunSpec({
 
@@ -55,7 +60,7 @@ class ArtworkViewModelTest : FunSpec({
 
         artworkUC = FakeArtworkUC(initialContentType = ContentType.SHOW)
 
-        databaseRepository = mockk(relaxed = true)
+        databaseRepository = mockkDatabaseRepository
 
         userRepository = mockk(relaxed = true) {
             every { flow } returns MutableStateFlow(UserRepository.State())
@@ -161,6 +166,12 @@ class ArtworkViewModelTest : FunSpec({
 
             viewModel.handleIntent(ArtworkIntent.ChangeWatchStatus(media = media))
 
+            coVerify {
+                progressUC.changeMediaStatus(
+                    media = media,
+                    status = Status.WATCHED
+                )
+            }
             val updatedState = expectMostRecentItem()
 
             updatedState.media.status shouldBe Status.WATCHED

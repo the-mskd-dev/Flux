@@ -38,7 +38,7 @@ class ArtworkProgressUCTest : FunSpec({
 
         progressUC = ProgressUCImpl(
             artworkRepository = artworkRepository,
-            userRepository = userRepository,
+            user = userRepository,
         )
 
     }
@@ -114,7 +114,7 @@ class ArtworkProgressUCTest : FunSpec({
 
             progressUC = ProgressUCImpl(
                 artworkRepository = artworkRepository,
-                userRepository = userRepository,
+                user = userRepository,
             )
 
             progressUC.saveProgress(media = testCase.media, progress = testCase.progress)
@@ -194,7 +194,7 @@ class ArtworkProgressUCTest : FunSpec({
 
            progressUC = ProgressUCImpl(
                artworkRepository = artworkRepository,
-               userRepository = userRepository,
+               user = userRepository,
            )
 
            progressUC.changeMediaStatus(
@@ -233,7 +233,7 @@ class ArtworkProgressUCTest : FunSpec({
 
         progressUC = ProgressUCImpl(
             artworkRepository = artworkRepository,
-            userRepository = userRepository,
+            user = userRepository,
         )
 
         progressUC.markPreviousEpisodesAsWatchedFor(episode = MediaMockups.episode3)
@@ -269,7 +269,7 @@ class ArtworkProgressUCTest : FunSpec({
 
             progressUC = ProgressUCImpl(
                 artworkRepository = artworkRepository,
-                userRepository = userRepository,
+                user = userRepository,
             )
 
             progressUC.resetProgress(artwork = testCase.artwork)

@@ -29,7 +29,7 @@ class UnknownViewModelTest : FunSpec ({
 
         progressUC = ProgressUCImpl(
             artworkRepository = artworkRepository,
-            userRepository = userRepository,
+            user = userRepository,
         )
 
         viewModel = UnknownViewModel(

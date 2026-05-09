@@ -37,7 +37,7 @@ class ArtworkViewModelTest : FunSpec({
 
         progressUC = ProgressUCImpl(
             artworkRepository = artworkRepository,
-            userRepository = userRepository,
+            user = userRepository,
         )
 
         viewModel = ArtworkViewModel(

@@ -50,12 +50,12 @@ object UseCasesModule {
     @Provides
     @Singleton
     fun provideProgressUC(
-        artworkRepository: ArtworkRepository,
+        databaseRepository: DatabaseRepository,
         userRepository: UserRepository
     ) : ProgressUC {
         return ProgressUCImpl(
-            artworkRepository = artworkRepository,
-            userRepository = userRepository
+            database = databaseRepository,
+            user = userRepository
         )
     }
 

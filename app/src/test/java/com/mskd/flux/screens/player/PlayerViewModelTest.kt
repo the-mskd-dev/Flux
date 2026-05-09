@@ -43,7 +43,7 @@ class PlayerViewModelTest : FunSpec({
 
         progressUC = ProgressUCImpl(
             artworkRepository = artworkRepository,
-            userRepository = userRepository,
+            user = userRepository,
         )
 
         viewModel = PlayerViewModel(

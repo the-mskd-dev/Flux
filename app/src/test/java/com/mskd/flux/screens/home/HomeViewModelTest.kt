@@ -144,7 +144,7 @@ class HomeViewModelTest : FunSpec({
         )
 
         coVerify(exactly = 1) {
-            catalogUC.syncCatalog(false)
+            catalogUC.syncCatalog(onlyNew = true)
         }
     }
 

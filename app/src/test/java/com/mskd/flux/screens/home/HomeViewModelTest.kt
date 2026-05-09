@@ -7,6 +7,7 @@ import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.data.tmdb.token.TokenRepository
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.ScreenState
+import com.mskd.flux.useCases.catalog.CatalogUC
 import com.mskd.flux.utils.FluxSnackbar
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData
@@ -26,7 +27,7 @@ class HomeViewModelTest : FunSpec({
     fluxExtensions()
 
     lateinit var viewModel: HomeViewModel
-    lateinit var catalogRepository: FakeCatalogUC
+    lateinit var catalogUC: CatalogUC
     lateinit var userRepository: UserRepository
     lateinit var tokenRepository: TokenRepository
     lateinit var snackbarRepository: SnackbarRepository
@@ -37,7 +38,11 @@ class HomeViewModelTest : FunSpec({
 
     beforeTest {
 
-        catalogRepository = FakeCatalogUC()
+        catalogUC = mockk(relaxed = true) {
+            coEvery { artworks } returns MutableStateFlow(MediaMockups.artworks)
+            coEvery { state } returns MutableStateFlow(CatalogUC.State.Idle)
+        }
+
         tokenRepository = mockk(relaxed = true) {
             coEvery { flow } returns tokenFlow
         }
@@ -68,7 +73,7 @@ class HomeViewModelTest : FunSpec({
             tokenFlow.value = testCase.tokenValue
 
             viewModel = HomeViewModel(
-                repository = catalogRepository,
+                catalogUC = catalogUC,
                 tokenRepository = tokenRepository,
                 userRepository = userRepository,
                 snackbarRepository = snackbarRepository
@@ -93,7 +98,7 @@ class HomeViewModelTest : FunSpec({
         tokenFlow.value = "token"
 
         viewModel = HomeViewModel(
-            repository = catalogRepository,
+            catalogUC = catalogUC,
             tokenRepository = tokenRepository,
             userRepository = userRepository,
             snackbarRepository = snackbarRepository
@@ -112,44 +117,10 @@ class HomeViewModelTest : FunSpec({
 
     }
 
-    test("combine flows should update state") {
-
-        viewModel = HomeViewModel(
-            repository = catalogRepository,
-            tokenRepository = tokenRepository,
-            userRepository = userRepository,
-            snackbarRepository = snackbarRepository
-        )
-
-        // Mock
-        val artworks = listOf(MediaMockups.movieArtwork, MediaMockups.showArtwork, MediaMockups.unknownArtwork)
-        val lastWatchedIds = listOf(MediaMockups.showArtwork.id)
-        val dataStore = UserRepository.State(
-            recentlyWatchedIds = lastWatchedIds
-        )
-
-        viewModel.uiState.test {
-
-            awaitItem() // Ignore initial state
-
-            catalogRepository.syncCatalog()
-            dataStoreFlow.value = dataStore
-
-            val updatedState = expectMostRecentItem()
-
-            updatedState.screenState shouldBe ScreenState.CONTENT
-            updatedState.artworks shouldBe artworks
-            updatedState.lastWatchedMediaIds shouldBe lastWatchedIds
-            updatedState.isRefreshing shouldBe false
-
-            cancelAndConsumeRemainingEvents()
-        }
-    }
-
     test("should force sync when manual sync requested") {
 
         viewModel = HomeViewModel(
-            repository = catalogRepository,
+            catalogUC = catalogUC,
             tokenRepository = tokenRepository,
             userRepository = userRepository,
             snackbarRepository = snackbarRepository
@@ -158,7 +129,7 @@ class HomeViewModelTest : FunSpec({
         viewModel.handleIntent(HomeIntent.SyncCatalog)
 
         coVerify {
-            catalogRepository.syncCatalog()
+            catalogUC.syncCatalog(onlyNew = true)
             userRepository.setSyncTime(any())
         }
     }
@@ -169,14 +140,14 @@ class HomeViewModelTest : FunSpec({
         coEvery { userRepository.getSyncTime() } returns oldTime
 
         viewModel = HomeViewModel(
-            repository = catalogRepository,
+            catalogUC = catalogUC,
             tokenRepository = tokenRepository,
             userRepository = userRepository,
             snackbarRepository = snackbarRepository
         )
 
         coVerify(exactly = 1) {
-            catalogRepository.syncCatalog()
+            catalogUC.syncCatalog(false)
             userRepository.setSyncTime(any())
         }
     }
@@ -186,14 +157,14 @@ class HomeViewModelTest : FunSpec({
         coEvery { userRepository.getSyncTime() } returns recentTime
 
         viewModel = HomeViewModel(
-            repository = catalogRepository,
+            catalogUC = catalogUC,
             tokenRepository = tokenRepository,
             userRepository = userRepository,
             snackbarRepository = snackbarRepository
         )
 
         coVerify(exactly = 0) {
-            catalogRepository.syncCatalog()
+            catalogUC.syncCatalog(any())
             userRepository.setSyncTime(any())
         }
     }

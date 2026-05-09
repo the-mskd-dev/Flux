@@ -15,7 +15,7 @@ class RetryInterceptor @Inject constructor() : Interceptor {
         while (response.code == 429 && retryCount < maxRetries) {
             response.close()
             retryCount++
-            Thread.sleep(1000L * retryCount) // backoff progressif
+            Thread.sleep(1000L * retryCount)
             response = chain.proceed(chain.request())
         }
 

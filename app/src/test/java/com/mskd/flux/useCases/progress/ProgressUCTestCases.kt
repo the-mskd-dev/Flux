@@ -1,11 +1,11 @@
-package com.mskd.flux.useCases
+package com.mskd.flux.useCases.progress
 
-import com.mskd.flux.data.repository.artwork.ArtworkRepository
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.artwork.Status
+import com.mskd.flux.useCases.artwork.ArtworkUC
 
-object ArtworkProgressUCTestCases {
+object ProgressUCTestCases {
 
     data class SaveProgress(
         val description: String,
@@ -20,14 +20,12 @@ object ArtworkProgressUCTestCases {
         val description: String,
         val media: Media,
         val status: Status,
-        val artworkContent: ArtworkRepository.Content,
         val expectedRemoveFromRecentlyWatched: Boolean
     )
 
     data class ResetProgress(
         val description: String,
         val artwork: Artwork,
-        val artworkContent: ArtworkRepository.Content,
     )
 
 }

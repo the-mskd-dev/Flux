@@ -12,6 +12,7 @@ import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Status
 import com.mskd.flux.screens.artwork.ArtworkEvent.*
+import com.mskd.flux.useCases.artwork.ArtworkUC
 import com.mskd.flux.useCases.progress.ProgressUC
 import com.mskd.flux.utils.extensions.firstEpisode
 import com.mskd.flux.utils.extensions.getPreviousEpisodesFor
@@ -32,7 +33,7 @@ import kotlinx.coroutines.launch
 @HiltViewModel(assistedFactory = ArtworkViewModel.Factory::class)
 class ArtworkViewModel @AssistedInject constructor(
     @Assisted val artworkId: Long,
-    private val repository: ArtworkRepository,
+    private val artworkUC: ArtworkUC,
     private val settingsRepository: SettingsRepository,
     private val progressUC: ProgressUC
 ) : ViewModel() {
@@ -72,7 +73,7 @@ class ArtworkViewModel @AssistedInject constructor(
     private val _subState = MutableStateFlow(UserState())
 
     val uiState: StateFlow<ArtworkUiState> = combine(
-        repository.flow,
+        artworkUC.flow,
         settingsRepository.flow,
         _subState
     ) { artworkContent, settings, subState ->
@@ -93,7 +94,7 @@ class ArtworkViewModel @AssistedInject constructor(
     //regin Init
 
     init {
-        repository.searchArtwork(artworkId = artworkId)
+        artworkUC.searchArtwork(artworkId = artworkId)
     }
 
     //endregion
@@ -121,7 +122,7 @@ class ArtworkViewModel @AssistedInject constructor(
     //region Private Methods
 
     private fun buildUiState(
-        artworkContent: ArtworkRepository.Content,
+        artworkContent: ArtworkUC.Content,
         settings: SettingsRepository.State,
         subState: UserState
     ) : ArtworkUiState {
@@ -131,12 +132,12 @@ class ArtworkViewModel @AssistedInject constructor(
         var episodes: List<Episode> = emptyList()
 
         when (artworkContent) {
-            ArtworkRepository.Content.ERROR -> {}
-            is ArtworkRepository.Content.MOVIE -> {
+            ArtworkUC.Content.ERROR -> {}
+            is ArtworkUC.Content.MOVIE -> {
                 artwork = artworkContent.artwork
                 movie = artworkContent.movie
             }
-            is ArtworkRepository.Content.SHOW -> {
+            is ArtworkUC.Content.SHOW -> {
                 artwork = artworkContent.artwork
                 episodes = artworkContent.episodes
             }

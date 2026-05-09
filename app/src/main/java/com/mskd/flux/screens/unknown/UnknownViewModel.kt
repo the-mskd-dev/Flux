@@ -8,6 +8,7 @@ import com.mskd.flux.model.ScreenState
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
+import com.mskd.flux.useCases.artwork.ArtworkUC
 import com.mskd.flux.useCases.progress.ProgressUC
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -21,7 +22,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class UnknownViewModel @Inject constructor(
-    private val repository: ArtworkRepository,
+    private val artworkUC: ArtworkUC,
     private val settingsRepository: SettingsRepository,
     private val progressUC: ProgressUC
 ) : ViewModel() {
@@ -38,12 +39,12 @@ class UnknownViewModel @Inject constructor(
     val event = _event.asSharedFlow()
 
     val uiState: StateFlow<UnknownUiState> = combine(
-        repository.flow,
+        artworkUC.flow,
         settingsRepository.flow
     ) { artworkContent, settings ->
         UnknownUiState(
             screen = ScreenState.CONTENT,
-            medias = (artworkContent as? ArtworkRepository.Content.SHOW)?.episodes?.sortedWith(
+            medias = (artworkContent as? ArtworkUC.Content.SHOW)?.episodes?.sortedWith(
                 compareBy<Episode> { it.title }.thenBy { it.season }.thenBy { it.number }
             ) ?: emptyList(),
             useExternalPlayer = settings.externalPlayer
@@ -60,7 +61,7 @@ class UnknownViewModel @Inject constructor(
     //region Init
 
     init {
-        repository.searchArtwork(artworkId = Artwork.UNKNOWN_ID)
+        artworkUC.searchArtwork(artworkId = Artwork.UNKNOWN_ID)
     }
 
     //endregion

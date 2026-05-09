@@ -30,14 +30,6 @@ object RepositoriesModule {
 
     @Provides
     @Singleton
-    fun provideArtworkRepository(
-        database: DatabaseRepository
-    ) : ArtworkRepository = ArtworkRepositoryImpl(
-        database = database
-    )
-
-    @Provides
-    @Singleton
     fun provideCatalogRepository(
         @FilesModule.LocalFilesDataSource localFilesSource: FilesSource,
         @MediaModule.MediaDataSourceLocal mediaSourceLocal: MediaSource,

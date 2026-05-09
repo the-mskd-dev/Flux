@@ -5,7 +5,7 @@ import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.data.repository.user.UserRepository
-import com.mskd.flux.mockups.FakeArtworkRepository
+import com.mskd.flux.mockups.FakeArtworkUC
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.PlayerMockups
 import com.mskd.flux.model.artwork.ContentType
@@ -32,7 +32,7 @@ class PlayerViewModelTest : FunSpec({
     fluxExtensions()
 
     lateinit var viewModel: PlayerViewModel
-    lateinit var artworkRepository: FakeArtworkRepository
+    lateinit var artworkRepository: FakeArtworkUC
     lateinit var userRepository: UserRepository
     lateinit var settingsRepository: SettingsRepository
     lateinit var progressUC: ProgressUC
@@ -59,7 +59,7 @@ class PlayerViewModelTest : FunSpec({
 
     beforeTest {
 
-        artworkRepository = FakeArtworkRepository(initialContentType = ContentType.SHOW)
+        artworkRepository = FakeArtworkUC(initialContentType = ContentType.SHOW)
 
         userRepository = mockk(relaxed = true) {
             every { flow } returns MutableStateFlow(UserRepository.State())

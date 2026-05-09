@@ -4,7 +4,7 @@ import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.data.repository.user.UserRepository
-import com.mskd.flux.mockups.FakeArtworkRepository
+import com.mskd.flux.mockups.FakeArtworkUC
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.ScreenState
 import com.mskd.flux.useCases.progress.ProgressUC
@@ -20,7 +20,7 @@ class UnknownViewModelTest : FunSpec ({
     fluxExtensions()
 
     lateinit var viewModel: UnknownViewModel
-    lateinit var artworkRepository: FakeArtworkRepository
+    lateinit var artworkRepository: FakeArtworkUC
     lateinit var settingsRepository: SettingsRepository
     lateinit var userRepository: UserRepository
     lateinit var progressUC: ProgressUC
@@ -42,7 +42,7 @@ class UnknownViewModelTest : FunSpec ({
 
     beforeTest {
 
-        artworkRepository = FakeArtworkRepository()
+        artworkRepository = FakeArtworkUC()
 
         settingsRepository = mockk(relaxed = true) {
             every { flow } returns MutableStateFlow(SettingsRepository.State())

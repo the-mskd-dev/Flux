@@ -2,14 +2,15 @@ package com.mskd.flux.screens.artwork
 
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
-import com.mskd.flux.data.repository.artwork.ArtworkRepository
+import com.mskd.flux.data.repository.ddb.DatabaseRepository
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.data.repository.user.UserRepository
-import com.mskd.flux.mockups.FakeArtworkRepository
+import com.mskd.flux.mockups.FakeArtworkUC
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.ScreenState
 import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.model.artwork.Status
+import com.mskd.flux.useCases.artwork.ArtworkUC
 import com.mskd.flux.useCases.progress.ProgressUC
 import com.mskd.flux.useCases.progress.ProgressUCImpl
 import io.kotest.core.spec.style.FunSpec
@@ -28,21 +29,22 @@ class ArtworkViewModelTest : FunSpec({
     fluxExtensions()
 
     lateinit var viewModel: ArtworkViewModel
-    lateinit var artworkRepository: FakeArtworkRepository
     lateinit var userRepository: UserRepository
     lateinit var settingsRepository: SettingsRepository
+    lateinit var databaseRepository: DatabaseRepository
+    lateinit var artworkUC: FakeArtworkUC
     lateinit var progressUC: ProgressUC
 
     val updateVm: () -> Unit = {
 
         progressUC = ProgressUCImpl(
-            artworkRepository = artworkRepository,
+            database = databaseRepository,
             user = userRepository,
         )
 
         viewModel = ArtworkViewModel(
             artworkId = MediaMockups.showArtwork.id,
-            repository = artworkRepository,
+            artworkUC = artworkUC,
             settingsRepository = settingsRepository,
             progressUC = progressUC
         )
@@ -51,7 +53,9 @@ class ArtworkViewModelTest : FunSpec({
 
     beforeTest {
 
-        artworkRepository = FakeArtworkRepository(initialContentType = ContentType.SHOW)
+        artworkUC = FakeArtworkUC(initialContentType = ContentType.SHOW)
+
+        databaseRepository = mockk(relaxed = true)
 
         userRepository = mockk(relaxed = true) {
             every { flow } returns MutableStateFlow(UserRepository.State())
@@ -267,8 +271,8 @@ class ArtworkViewModelTest : FunSpec({
 
     test("mark movie as watched") {
 
-        artworkRepository.setContent(
-            ArtworkRepository.Content.MOVIE(
+        artworkUC.setContent(
+            ArtworkUC.Content.MOVIE(
                 artwork = MediaMockups.movieArtwork,
                 movie = MediaMockups.movie
             )

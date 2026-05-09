@@ -22,7 +22,7 @@ interface DatabaseDao {
 
 //region Insert
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertArtworks(artworks: List<Artwork>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

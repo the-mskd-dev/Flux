@@ -65,6 +65,8 @@ class CatalogUCImpl(
 
     private var _state = MutableStateFlow<CatalogUC.State>(CatalogUC.State.Idle)
 
+    private val dispatcher = Dispatchers.IO.limitedParallelism(10)
+
     //endregion
 
     //region Public methods
@@ -206,7 +208,7 @@ class CatalogUCImpl(
 
             folders.map { folder ->
 
-                async {
+                async(dispatcher) {
 
                     val tmdbArtwork = tmdb.getTmdbArtwork(file = folder.files.first())
 
@@ -234,7 +236,7 @@ class CatalogUCImpl(
 
             artworkFolders.filter { it.artwork.type == ContentType.MOVIE }.map { (artwork, files) ->
 
-                async {
+                async(dispatcher) {
 
                     val tmdbMovie = tmdb.getTmdbMovie(artworkId = artwork.id)
 
@@ -262,7 +264,7 @@ class CatalogUCImpl(
                     val season = file.nameProperties.season
                     val number = file.nameProperties.episode
 
-                    async {
+                    async(dispatcher) {
 
                         if (season != null && number != null) {
 

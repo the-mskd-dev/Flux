@@ -14,7 +14,7 @@ interface TmdbRepository {
     suspend fun getTmdbEpisode(
         artworkId: Long,
         season: Int,
-        number: Int
+        number: Int,
     ) : TMDBEpisode?
 
 }

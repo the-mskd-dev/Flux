@@ -42,7 +42,7 @@ class SearchViewModel @AssistedInject constructor(
         val autoKeyboard = runBlocking { settingsRepository.flow.first().autoKeyboard }
 
         viewModelScope.launch {
-            catalogUC.flowArtworks().collect { artworks ->
+            catalogUC.artworks.collect { artworks ->
                 _uiState.update {
                     it.copy(
                         artworks = artworks.filter { artworks -> !artworks.isUnknown },

@@ -37,19 +37,18 @@ class HomeViewModel @Inject constructor(
     private val _event = MutableSharedFlow<HomeEvent>()
     val event = _event.asSharedFlow()
 
-    private val _isLoading = MutableStateFlow(true)
     private val _dismissedSnackbar = MutableStateFlow<Set<FluxSnackbar>>(emptySet())
 
     val uiState: StateFlow<HomeUiState> = combine(
-        catalogUC.flowArtworks(),
+        catalogUC.artworks,
+        catalogUC.state,
         userRepository.flow,
         tokenRepository.flow,
         _dismissedSnackbar,
-        _isLoading
-    ) { artworks, preferences, token, dismissedSnackbar, isLoading ->
+    ) { artworks, catalogState, preferences, token, dismissedSnackbar ->
 
         val screen = when {
-            isLoading && artworks.isEmpty() -> ScreenState.LOADING
+            catalogState is CatalogUC.State.Syncing && artworks.isEmpty() -> ScreenState.LOADING
             else -> ScreenState.CONTENT
         }
 
@@ -63,7 +62,7 @@ class HomeViewModel @Inject constructor(
             screenState = screen,
             artworks = artworks,
             lastWatchedMediaIds = preferences.recentlyWatchedIds,
-            isRefreshing = isLoading,
+            isRefreshing = catalogState is CatalogUC.State.Syncing,
             snackbarState = snackbar
         )
 
@@ -95,8 +94,6 @@ class HomeViewModel @Inject constructor(
 
     private suspend fun syncCatalog(manualSync: Boolean = false) {
 
-        _isLoading.update { true }
-
         val lastSyncTime = userRepository.getSyncTime()
 
         val currentTime = System.currentTimeMillis()
@@ -113,8 +110,6 @@ class HomeViewModel @Inject constructor(
             Log.i("HomeViewModel", "syncCatalog, catalog sync not needed")
 
         }
-
-        _isLoading.update { false }
 
     }
 

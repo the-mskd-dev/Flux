@@ -3,6 +3,7 @@ package com.mskd.flux.useCases.catalog
 import android.util.Log
 import com.mskd.flux.data.repository.ddb.DatabaseRepository
 import com.mskd.flux.data.repository.files.FilesRepository
+import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.data.repository.tmdb.TmdbRepository
 import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.data.source.media.MediaSourceTMDBImpl.Companion.TAG
@@ -23,13 +24,21 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 interface CatalogUC {
 
-    fun flowArtworks() : Flow<List<Artwork>>
+    val state: Flow<State>
+    val artworks : Flow<List<Artwork>>
     fun syncCatalog(onlyNew: Boolean)
     suspend fun cleanCatalog()
+
+    sealed class State {
+        data object Idle: State()
+        data class Syncing(val full: Boolean) : State()
+    }
 
 }
 
@@ -53,26 +62,26 @@ class CatalogUCImpl(
 
     private var syncJob: Job? = null
 
-    private var fullSyncing: Boolean = false
+    private var _state = MutableStateFlow<CatalogUC.State>(CatalogUC.State.Idle)
 
     //endregion
 
     //region Public methods
 
-    override fun flowArtworks(): Flow<List<Artwork>> {
-        return database.flowArtworks()
-    }
+    override val state: Flow<CatalogUC.State> = _state.asStateFlow()
+
+    override val artworks: Flow<List<Artwork>> = database.flowArtworks()
 
     override fun syncCatalog(onlyNew: Boolean) {
 
-        if (fullSyncing && onlyNew)
+        if ((_state.value as? CatalogUC.State.Syncing)?.full == true && onlyNew)
             return
 
         syncJob?.cancel()
 
         syncJob = scope.launch {
 
-            fullSyncing = !onlyNew
+            _state.value = CatalogUC.State.Syncing(full = !onlyNew)
 
             // Get files
             val allFiles = files.getFiles()
@@ -101,7 +110,7 @@ class CatalogUCImpl(
             // Save time
             user.setSyncTime(System.currentTimeMillis())
 
-            fullSyncing = false
+            _state.value = CatalogUC.State.Idle
 
         }
 

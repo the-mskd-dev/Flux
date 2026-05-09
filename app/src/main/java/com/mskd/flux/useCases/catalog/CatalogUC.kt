@@ -37,7 +37,8 @@ class CatalogUCImpl(
     private val tmdb: TmdbRepository,
     private val database: DatabaseRepository,
     private val files: FilesRepository,
-    private val user: UserRepository
+    private val user: UserRepository,
+    private val scope: CoroutineScope
 ) : CatalogUC {
 
     //region Data class
@@ -51,7 +52,6 @@ class CatalogUCImpl(
     //region Coroutines
 
     private var syncJob: Job? = null
-    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
     //endregion
 

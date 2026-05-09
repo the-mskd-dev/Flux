@@ -14,6 +14,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineScope
 import javax.inject.Singleton
 
 @Module
@@ -26,13 +27,15 @@ object UseCasesModule {
         tmdbRepository: TmdbRepository,
         databaseRepository: DatabaseRepository,
         filesRepository: FilesRepository,
-        userRepository: UserRepository
+        userRepository: UserRepository,
+        @CoroutineModule.ApplicationScope scope: CoroutineScope
     ) : CatalogUC {
         return CatalogUCImpl(
             tmdb = tmdbRepository,
             database = databaseRepository,
             files = filesRepository,
-            user = userRepository
+            user = userRepository,
+            scope = scope
         )
     }
 

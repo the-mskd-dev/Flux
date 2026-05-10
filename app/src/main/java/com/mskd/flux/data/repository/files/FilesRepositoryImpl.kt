@@ -9,7 +9,6 @@ import android.provider.MediaStore
 import android.util.Log
 import androidx.core.net.toUri
 import com.mskd.flux.data.repository.user.UserRepository
-import com.mskd.flux.data.source.file.FilesSourceLocalImpl
 import com.mskd.flux.model.FileSource
 import com.mskd.flux.model.UserFile
 import kotlinx.coroutines.Dispatchers
@@ -100,7 +99,7 @@ class FilesRepositoryImpl(
 
                     } catch (e: Exception) {
 
-                        Log.e(FilesSourceLocalImpl.Companion.TAG, "Fail to get file", e)
+                        Log.e(TAG, "Fail to get file", e)
 
                     }
 
@@ -112,9 +111,9 @@ class FilesRepositoryImpl(
 
         retriever.release()
 
-        Log.i(FilesSourceLocalImpl.Companion.TAG, "Found ${files.size} files")
+        Log.i(TAG, "Found ${files.size} files")
         files.forEach {
-            Log.i(FilesSourceLocalImpl.Companion.TAG, it.name)
+            Log.i(TAG, it.name)
         }
 
         return files

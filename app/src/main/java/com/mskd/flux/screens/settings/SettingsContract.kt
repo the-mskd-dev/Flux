@@ -30,7 +30,6 @@ data class SettingsDialogState<T>(
             title = R.string.information_language,
             currentValue = currentValue,
             options = mapOf(
-                Locale.getDefault() to (null to R.string.system),
                 Locale.ENGLISH to (Locale.ENGLISH.displayLanguage to null),
                 Locale.FRENCH to (Locale.FRENCH.displayLanguage to null),
                 Locale.GERMAN to (Locale.GERMAN.displayLanguage to null),

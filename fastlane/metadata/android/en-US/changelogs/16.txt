@@ -1,5 +1,3 @@
-## Version 1.3.3
-
 - Feature: Data languages
 - Feature: Full sync option
 - Feature: Open keyboard on search

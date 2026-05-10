@@ -124,13 +124,17 @@ class CatalogUCImpl(
                 dbEpisodes = dbEpisodes
             )
 
+            // Clean catalog
+            if (onlyNew) {
+                database.deleteMediasNotInFiles(deviceFiles)
+            } else {
+                database.deleteAll()
+            }
+
             // Save data
             database.saveArtworks(artworks = catalog.artworks)
             database.saveMovies(movies = catalog.movies)
             database.saveEpisodes(episodes = catalog.episodes)
-
-            // Clean catalog
-            database.deleteMediasNotInFiles(deviceFiles)
 
             // Save time
             user.setSyncTime(System.currentTimeMillis())

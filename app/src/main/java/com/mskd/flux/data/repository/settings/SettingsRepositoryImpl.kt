@@ -10,6 +10,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import com.mskd.flux.ui.theme.Ui
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import java.io.IOException
 import java.util.Locale
@@ -25,8 +26,10 @@ class SettingsRepositoryImpl @Inject constructor(
         val UI_THEME = stringPreferencesKey("ui_theme")
         val SUBTITLES_LANGUAGE = stringPreferencesKey("subtitles_language")
         val AUDIO_LANGUAGE = stringPreferencesKey("audio_language")
-
         val EXTERNAL_PLAYER = booleanPreferencesKey("external_player")
+        val AUTO_KEYBOARD = booleanPreferencesKey("auto_keyboard_in_search")
+
+        val DATA_LANGUAGE = stringPreferencesKey("data_language")
     }
 
     override val flow: Flow<SettingsRepository.State> = settingsDataStore.data
@@ -39,6 +42,8 @@ class SettingsRepositoryImpl @Inject constructor(
             val subtitlesLanguage = preferences[Keys.SUBTITLES_LANGUAGE]?.let { Locale.forLanguageTag(it) } ?: Locale.getDefault()
             val audioLanguage = preferences[Keys.AUDIO_LANGUAGE]?.let { Locale.forLanguageTag(it) } ?: Locale.getDefault()
             val externalPlayer = preferences[Keys.EXTERNAL_PLAYER] ?: false
+            val autoKeyboard = preferences[Keys.AUTO_KEYBOARD] ?: true
+            val dataLanguage = preferences[Keys.DATA_LANGUAGE]?.let { Locale.forLanguageTag(it) }
 
             SettingsRepository.State(
                 playerRewindValue = playerRewindValue,
@@ -46,7 +51,9 @@ class SettingsRepositoryImpl @Inject constructor(
                 uiTheme = uiTheme,
                 subtitlesLanguage = subtitlesLanguage,
                 audioLanguage = audioLanguage,
-                externalPlayer = externalPlayer
+                externalPlayer = externalPlayer,
+                autoKeyboard = autoKeyboard,
+                dataLanguage = dataLanguage
             )
         }
 
@@ -69,6 +76,19 @@ class SettingsRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun setDataLanguage(locale: Locale?) {
+        settingsDataStore.edit { preferences ->
+            if (locale != null)
+                preferences[Keys.DATA_LANGUAGE] = locale.language
+            else
+                preferences.remove(Keys.DATA_LANGUAGE)
+        }
+    }
+
+    override suspend fun getDataLanguage(): Locale {
+        return flow.firstOrNull()?.dataLanguage ?: Locale.getDefault()
+    }
+
     override suspend fun setSubtitlesLanguage(locale: Locale) {
         settingsDataStore.edit { preferences ->
             preferences[Keys.SUBTITLES_LANGUAGE] = locale.language
@@ -84,6 +104,12 @@ class SettingsRepositoryImpl @Inject constructor(
     override suspend fun setExternalPlayer(useExternalPlayer: Boolean) {
         settingsDataStore.edit { preferences ->
             preferences[Keys.EXTERNAL_PLAYER] = useExternalPlayer
+        }
+    }
+
+    override suspend fun setAutoKeyboard(autoKeyboard: Boolean) {
+        settingsDataStore.edit { preferences ->
+            preferences[Keys.AUTO_KEYBOARD] = autoKeyboard
         }
     }
 

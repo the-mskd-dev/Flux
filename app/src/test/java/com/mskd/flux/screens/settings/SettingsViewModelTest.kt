@@ -4,6 +4,7 @@ import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.useCases.catalog.CatalogUC
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
@@ -13,6 +14,7 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableStateFlow
+import java.util.Locale
 
 class SettingsViewModelTest : FunSpec({
 
@@ -20,6 +22,7 @@ class SettingsViewModelTest : FunSpec({
 
     lateinit var viewModel: SettingsViewModel
     lateinit var settingsRepository: SettingsRepository
+    lateinit var catalogUC: CatalogUC
 
     val dataStoreFlow = MutableStateFlow(SettingsRepository.State())
 
@@ -29,7 +32,12 @@ class SettingsViewModelTest : FunSpec({
             every { flow } returns dataStoreFlow
         }
 
-        viewModel = SettingsViewModel(settingsRepository = settingsRepository)
+        catalogUC = mockk(relaxed = true)
+
+        viewModel = SettingsViewModel(
+            settingsRepository = settingsRepository,
+            catalogUC = catalogUC
+        )
 
     }
 
@@ -141,6 +149,88 @@ class SettingsViewModelTest : FunSpec({
 
         }
 
+    }
+
+    test("show data language dialog") {
+        viewModel.uiState.test {
+
+            awaitItem()
+            viewModel.handleIntent(SettingsIntent.ShowLanguageDialog)
+
+            val state = awaitItem()
+            state.dialogState shouldNotBe null
+            state.dialogState.shouldBeInstanceOf<SettingsDialogState<Locale?>>()
+        }
+    }
+
+    test("set data language value") {
+        viewModel.uiState.test {
+            awaitItem()
+
+            viewModel.handleIntent(SettingsIntent.SetLanguageValue(Locale.FRENCH))
+            dataStoreFlow.value = dataStoreFlow.value.copy(dataLanguage = Locale.FRENCH)
+
+            val state = awaitItem()
+
+            coVerify { settingsRepository.setDataLanguage(Locale.FRENCH) }
+            state.languageValue shouldBe Locale.FRENCH
+            state.dialogState shouldBe null
+
+            cancelAndConsumeRemainingEvents()
+
+        }
+    }
+
+    test("set system data language value") {
+        viewModel.uiState.test {
+            awaitItem()
+
+            viewModel.handleIntent(SettingsIntent.SetLanguageValue(null))
+            dataStoreFlow.value = dataStoreFlow.value.copy(dataLanguage = null)
+
+            val state = awaitItem()
+
+            coVerify { settingsRepository.setDataLanguage(null) }
+            state.languageValue shouldBe null
+            state.dialogState shouldBe null
+
+            cancelAndConsumeRemainingEvents()
+
+        }
+    }
+
+    test("set auto keyboard") {
+        viewModel.uiState.test {
+            awaitItem()
+
+            viewModel.handleIntent(SettingsIntent.OnAutoKeyboardCheck(false))
+            dataStoreFlow.value = dataStoreFlow.value.copy(autoKeyboard = false)
+
+            val state = awaitItem()
+
+            coVerify { settingsRepository.setAutoKeyboard(false) }
+            state.autoKeyboard shouldBe false
+
+            cancelAndConsumeRemainingEvents()
+
+        }
+    }
+
+    test("set external player") {
+        viewModel.uiState.test {
+            awaitItem()
+
+            viewModel.handleIntent(SettingsIntent.OnExternalPlayerCheck(true))
+            dataStoreFlow.value = dataStoreFlow.value.copy(externalPlayer = true)
+
+            val state = awaitItem()
+
+            coVerify { settingsRepository.setExternalPlayer(true) }
+            state.useExternalPlayer shouldBe true
+
+            cancelAndConsumeRemainingEvents()
+
+        }
     }
 
 })

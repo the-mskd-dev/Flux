@@ -8,11 +8,9 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.room.Transaction
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 import com.mskd.flux.model.FileSource
-import com.mskd.flux.model.UserFile
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.model.artwork.Episode
@@ -24,7 +22,7 @@ interface DatabaseDao {
 
 //region Insert
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertArtworks(artworks: List<Artwork>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -36,6 +34,9 @@ interface DatabaseDao {
 //endregion
 
 //region Flow
+
+    @Query("SELECT * FROM artworks")
+    fun flowArtworks() : Flow<List<Artwork>>
 
     @Query("SELECT * FROM artworks WHERE id = :artworkId")
     fun flowArtwork(artworkId: Long) : Flow<Artwork?>
@@ -63,10 +64,7 @@ interface DatabaseDao {
     suspend fun getMovies() : List<Movie>
 
     @Query("SELECT * FROM movies WHERE name NOT IN (:fileNames)")
-    suspend fun getMoviesWithNoFiles(fileNames: List<String>) : List<Movie>
-
-    @Query("SELECT name FROM movies")
-    suspend fun getMoviesFileNames(): List<String>
+    suspend fun getMoviesNotInFiles(fileNames: List<String>) : List<Movie>
 
     @Query("SELECT * FROM episodes WHERE id = :episodeId")
     suspend fun getEpisode(episodeId: Long) : Episode?
@@ -78,19 +76,10 @@ interface DatabaseDao {
     suspend fun getEpisodes() : List<Episode>
 
     @Query("SELECT * FROM episodes WHERE name NOT IN (:fileNames)")
-    suspend fun getEpisodesWithNoFiles(fileNames: List<String>) : List<Episode>
-
-    @Query("SELECT name FROM episodes")
-    suspend fun getEpisodesFileNames(): List<String>
+    suspend fun getEpisodesNotInFiles(fileNames: List<String>) : List<Episode>
 
     @Query("SELECT * FROM episodes WHERE artworkId = ${Artwork.UNKNOWN_ID}")
     suspend fun getUnknownMedias() : List<Episode>
-
-    suspend fun getAllFileNames() : List<String> {
-        val movieFileNames = getMoviesFileNames()
-        val episodeFileNames = getEpisodesFileNames()
-        return movieFileNames + episodeFileNames
-    }
 
 //endregion
 
@@ -105,55 +94,12 @@ interface DatabaseDao {
     @Query("DELETE FROM episodes WHERE id IN (:ids)")
     suspend fun deleteEpisodesByIds(ids: List<Long>)
 
-    @Transaction
-    suspend fun deleteMovies(movies: List<Movie>) {
-
-        // Delete artworks, it will also delete related movies
-        deleteArtworks(movies.map { it.artworkId })
-
-    }
-
-    @Transaction
-    suspend fun deleteEpisodes(episodes: List<Episode>) {
-
-        // Delete episodes
-        deleteEpisodesByIds(episodes.map { it.id })
-
-        // Delete artworks if needed
-        episodes
-            .map { it.artworkId }
-            .distinct()
-            .forEach { mediaId ->
-
-                // Check if it remains episode for show
-                val remainingEpisodes = getEpisodeCountByArtworkId(mediaId)
-
-                // If no, delete the show
-                if (remainingEpisodes == 0) {
-                    deleteArtworks(listOf(mediaId))
-                }
-
-            }
-
-    }
-
-    @Transaction
-    suspend fun deleteMediasWithNoFiles(existingFiles: List<UserFile>) {
-
-        val moviesToDelete = getMoviesWithNoFiles(fileNames = existingFiles.map { it.name })
-        val episodesToDelete = getEpisodesWithNoFiles(fileNames = existingFiles.map { it.name })
-
-        deleteMovies(moviesToDelete)
-        deleteEpisodes(episodesToDelete)
-
-    }
-
 //endregion
 
 //region Count
 
-    @Query("SELECT COUNT(*) FROM episodes WHERE artworkId = :mediaId")
-    suspend fun getEpisodeCountByArtworkId(mediaId: Long): Int
+    @Query("SELECT COUNT(*) FROM episodes WHERE artworkId = :artworkId")
+    suspend fun getEpisodeCountByArtworkId(artworkId: Long): Int
 
 //endregion
 

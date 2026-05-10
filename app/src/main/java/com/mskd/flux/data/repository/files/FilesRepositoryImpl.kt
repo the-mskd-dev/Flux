@@ -1,4 +1,4 @@
-package com.mskd.flux.data.source.file
+package com.mskd.flux.data.repository.files
 
 import android.content.ContentUris
 import android.content.Context
@@ -8,21 +8,27 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import androidx.core.net.toUri
+import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.model.FileSource
 import com.mskd.flux.model.UserFile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
-import java.io.File
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
 
-class FilesSourceLocalImpl(
-    private val context: Context
-) : FilesSource {
+class FilesRepositoryImpl(
+    private val context: Context,
+    private val userRepository: UserRepository
+) : FilesRepository {
 
     companion object {
-        const val TAG = "FilesSourceLocalImpl"
+        const val TAG = "FilesRepositoryImpl"
+        private val STANDARD_FOLDERS = listOf(
+            Environment.DIRECTORY_MOVIES,
+            Environment.DIRECTORY_DOWNLOADS,
+        )
+        val VIDEO_EXTENSIONS = setOf("mp4", "mkv", "avi", "mov", "webm", "ts", "m4v")
     }
 
     override suspend fun getFiles(): List<UserFile> {
@@ -114,27 +120,40 @@ class FilesSourceLocalImpl(
 
     }
 
-    override suspend fun checkIfFileExists(path: String): Boolean {
+    override suspend fun filterExistingFiles(files: List<UserFile>): List<UserFile> = withContext(Dispatchers.IO) {
 
-        val columns = arrayOf(MediaStore.Video.Media._ID)
-        var result = true
+        val paths = files.map { it.path }
+        val ids = paths.mapNotNull { it.toUri().lastPathSegment }
 
-        withContext(Dispatchers.Default) {
+        val placeholders = ids.joinToString(",") { "?" }
 
-            val cursor = context.contentResolver.query(
-                path.toUri(),
-                columns, // Empty projections are bad for performance
-                null,
-                null,
-                null)
+        val existingIds = mutableSetOf<String>()
 
-            result = cursor?.moveToFirst() ?: false
-
-            cursor?.close()
-
+        context.contentResolver.query(
+            MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+            arrayOf(MediaStore.Video.Media._ID),
+            "${MediaStore.Video.Media._ID} IN ($placeholders)",
+            ids.toTypedArray(),
+            null
+        )?.use { cursor ->
+            val idCol = cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID)
+            while (cursor.moveToNext()) {
+                existingIds.add(cursor.getString(idCol))
+            }
         }
 
-        return result
+        val existingFiles = files.filter { file ->
+            val id = file.path.toUri().lastPathSegment
+            id in existingIds
+        }
+
+        val missingFiles = files - existingFiles.toSet()
+        if (missingFiles.isNotEmpty()) {
+            Log.i(TAG, "$missingFiles file(s) not founded")
+            missingFiles.forEach { Log.i(TAG, it.name) }
+        }
+
+        existingFiles
 
     }
 
@@ -143,34 +162,43 @@ class FilesSourceLocalImpl(
      * immediately and may wait for a restart or file transfer.
      * This feature allows you to update the **Movies** and **Downloads** folders directly.
      */
-    private suspend fun updateMediaFolders() = suspendCancellableCoroutine { continuation ->
+    private suspend fun updateMediaFolders() {
 
-        val foldersToScan = arrayOf(
-            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES).absolutePath,
-            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath,
-        )
-            .filter { File(it).exists() }
-            .toTypedArray()
+        val lastSyncTime = userRepository.getSyncTime()
 
-        if (foldersToScan.isEmpty()) {
-            continuation.resume(Unit)
-            return@suspendCancellableCoroutine
-        }
+        return suspendCancellableCoroutine { continuation ->
 
-        var foldersScanned = 0
+            val filesToScan =
+                STANDARD_FOLDERS
+                    .map { Environment.getExternalStoragePublicDirectory(it) }
+                    .filter { it.exists() }
+                    .flatMap { folder ->
+                        folder.walkTopDown()
+                            .filter { it.isFile }
+                            .filter { lastSyncTime < it.lastModified() }
+                            .filter { it.extension.lowercase() in VIDEO_EXTENSIONS }
+                            .toList()
+                    }
+                    .map { it.absolutePath }
+                    .toTypedArray()
 
-        MediaScannerConnection.scanFile(
-            context,
-            foldersToScan,
-            null
-        ) { path, uri ->
-            Log.i(TAG, "Scan ended for $path -> Uri: $uri")
-            foldersScanned++
-
-            if (foldersScanned >= foldersToScan.size) {
+            if (filesToScan.isEmpty()) {
                 continuation.resume(Unit)
+                return@suspendCancellableCoroutine
+            }
+
+            var filesScanned = 0
+
+            MediaScannerConnection.scanFile(
+                context,
+                filesToScan,
+                null
+            ) { _, _ ->
+                filesScanned++
+                if (filesScanned >= filesToScan.size) {
+                    continuation.resume(Unit)
+                }
             }
         }
-
     }
 }

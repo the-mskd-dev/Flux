@@ -2,20 +2,21 @@ package com.mskd.flux.screens.artwork
 
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
-import com.mskd.flux.data.repository.artwork.ArtworkRepository
 import com.mskd.flux.data.repository.settings.SettingsRepository
-import com.mskd.flux.data.repository.user.UserRepository
-import com.mskd.flux.mockups.FakeArtworkRepository
+import com.mskd.flux.mockups.FakeArtworkUC
 import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.mockups.mockkProgressUC
 import com.mskd.flux.model.ScreenState
 import com.mskd.flux.model.artwork.ContentType
+import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Status
-import com.mskd.flux.useCases.mediaProgress.MediaProgressUC
-import com.mskd.flux.useCases.mediaProgress.MediaProgressUCImpl
+import com.mskd.flux.useCases.artwork.ArtworkUC
+import com.mskd.flux.useCases.progress.ProgressUC
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.types.shouldBeInstanceOf
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -27,34 +28,26 @@ class ArtworkViewModelTest : FunSpec({
     fluxExtensions()
 
     lateinit var viewModel: ArtworkViewModel
-    lateinit var artworkRepository: FakeArtworkRepository
-    lateinit var userRepository: UserRepository
     lateinit var settingsRepository: SettingsRepository
-    lateinit var mediaProgressUC: MediaProgressUC
+    lateinit var artworkUC: FakeArtworkUC
+    lateinit var progressUC: ProgressUC
 
     val updateVm: () -> Unit = {
 
-        mediaProgressUC = MediaProgressUCImpl(
-            artworkRepository = artworkRepository,
-            userRepository = userRepository,
-        )
+        progressUC = mockkProgressUC()
 
         viewModel = ArtworkViewModel(
             artworkId = MediaMockups.showArtwork.id,
-            repository = artworkRepository,
+            artworkUC = artworkUC,
             settingsRepository = settingsRepository,
-            mediaProgressUC = mediaProgressUC
+            progressUC = progressUC
         )
 
     }
 
     beforeTest {
 
-        artworkRepository = FakeArtworkRepository(initialContentType = ContentType.SHOW)
-
-        userRepository = mockk(relaxed = true) {
-            every { flow } returns MutableStateFlow(UserRepository.State())
-        }
+        artworkUC = FakeArtworkUC(initialContentType = ContentType.SHOW)
 
         settingsRepository = mockk(relaxed = true) {
             every { flow } returns MutableStateFlow(SettingsRepository.State())
@@ -152,13 +145,16 @@ class ArtworkViewModelTest : FunSpec({
         viewModel.uiState.test {
 
             val initialState = expectMostRecentItem()
-            val media = initialState.media
+            val media = initialState.media as Episode
 
             viewModel.handleIntent(ArtworkIntent.ChangeWatchStatus(media = media))
 
-            val updatedState = expectMostRecentItem()
-
-            updatedState.media.status shouldBe Status.WATCHED
+            coVerify {
+                progressUC.changeMediaStatus(
+                    media = match { it.mediaId == media.mediaId },
+                    status = match { it == Status.WATCHED }
+                )
+            }
 
             cancelAndConsumeRemainingEvents()
 
@@ -196,17 +192,23 @@ class ArtworkViewModelTest : FunSpec({
 
             // Change status of episode 1
             viewModel.handleIntent(ArtworkIntent.ChangeWatchStatus(media = MediaMockups.episode1))
-            awaitItem()
+
+            coVerify {
+                progressUC.changeMediaStatus(
+                    media = match { it.mediaId == MediaMockups.episode1.mediaId },
+                    status = match { it == Status.WATCHED }
+                )
+            }
 
             // Change status of episode 2
             viewModel.handleIntent(ArtworkIntent.ChangeWatchStatus(media = MediaMockups.episode2))
 
-            // Final state
-            val updatedState = expectMostRecentItem()
-
-            updatedState.episodePendingConfirmation shouldBe null
-            updatedState.episodes.find { it.id == MediaMockups.episode1.id }?.status shouldBe Status.WATCHED
-            updatedState.episodes.find { it.id == MediaMockups.episode2.id }?.status shouldBe Status.WATCHED
+            coVerify {
+                progressUC.changeMediaStatus(
+                    media = match { it.mediaId == MediaMockups.episode2.mediaId },
+                    status = match { it == Status.WATCHED }
+                )
+            }
 
             cancelAndConsumeRemainingEvents()
 
@@ -229,34 +231,8 @@ class ArtworkViewModelTest : FunSpec({
             // Validate change for previous episodes
             viewModel.handleIntent(ArtworkIntent.MarkPreviousEpisodesAsWatched)
 
-            // Final state
-            val updatedState = expectMostRecentItem()
 
-            updatedState.episodes.all { it.status == Status.WATCHED } shouldBe true
-
-            cancelAndConsumeRemainingEvents()
-
-        }
-
-    }
-
-    test("mark first episode as to watch") {
-
-        viewModel.uiState.test {
-
-            val initialState = expectMostRecentItem()
-
-            // Mark as watched
-            viewModel.handleIntent(ArtworkIntent.ChangeWatchStatus(media = initialState.media))
-            val state2 = awaitItem()
-
-            // Mark as not to watch
-            viewModel.handleIntent(ArtworkIntent.ChangeWatchStatus(media = state2.media))
-
-
-            val finalState = expectMostRecentItem()
-
-            finalState.media.status shouldBe Status.TO_WATCH
+            coVerify { progressUC.markPreviousEpisodesAsWatchedFor(episode = loadedState.episodes.last()) }
 
             cancelAndConsumeRemainingEvents()
 
@@ -266,8 +242,8 @@ class ArtworkViewModelTest : FunSpec({
 
     test("mark movie as watched") {
 
-        artworkRepository.setContent(
-            ArtworkRepository.State(
+        artworkUC.setContent(
+            ArtworkUC.Content.MOVIE(
                 artwork = MediaMockups.movieArtwork,
                 movie = MediaMockups.movie
             )
@@ -283,14 +259,41 @@ class ArtworkViewModelTest : FunSpec({
 
             viewModel.handleIntent(ArtworkIntent.ChangeWatchStatus(media = initialState.media))
 
-            val updatedState = expectMostRecentItem()
-
-            updatedState.media.status shouldBe Status.WATCHED
+            coVerify {
+                progressUC.changeMediaStatus(
+                    media = match { it.mediaId == initialState.media.mediaId },
+                    status = match { it == Status.WATCHED }
+                )
+            }
 
             cancelAndConsumeRemainingEvents()
 
         }
 
+    }
+
+    test("show reset progress dialog") {
+        viewModel.uiState.test {
+            awaitItem()
+
+            viewModel.handleIntent(ArtworkIntent.ShowResetProgressDialog(show = true))
+            awaitItem().showResetProgressDialog shouldBe true
+
+            viewModel.handleIntent(ArtworkIntent.ShowResetProgressDialog(show = false))
+            awaitItem().showResetProgressDialog shouldBe false
+
+        }
+    }
+
+    test("reset progress") {
+        viewModel.uiState.test {
+            val state = awaitItem()
+
+            viewModel.handleIntent(ArtworkIntent.ResetProgress)
+
+            coVerify { progressUC.resetProgress(state.artwork) }
+
+        }
     }
 
 })

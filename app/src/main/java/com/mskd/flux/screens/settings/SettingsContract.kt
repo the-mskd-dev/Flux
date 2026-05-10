@@ -3,14 +3,18 @@ package com.mskd.flux.screens.settings
 import androidx.compose.runtime.Immutable
 import com.mskd.flux.R
 import com.mskd.flux.ui.theme.Ui
+import java.util.Locale
 
 @Immutable
 data class SettingsUiState(
+    val languageValue: Locale? = null,
     val rewindValue: Int = 10,
     val forwardValue: Int = 10,
     val uiTheme: Ui.THEME = Ui.THEME.SYSTEM,
+    val autoKeyboard: Boolean = false,
     val useExternalPlayer: Boolean = false,
-    val dialogState: SettingsDialogState<*>? = null
+    val dialogState: SettingsDialogState<*>? = null,
+    val showSyncDialog: Boolean = false
 )
 
 data class SettingsDialogState<T>(
@@ -21,6 +25,22 @@ data class SettingsDialogState<T>(
 ) {
 
     companion object {
+
+        fun language(currentValue: Locale?) = SettingsDialogState(
+            title = R.string.information_language,
+            currentValue = currentValue,
+            options = mapOf(
+                null to (null to R.string.system),
+                Locale.ENGLISH to (Locale.ENGLISH.displayLanguage to null),
+                Locale.FRENCH to (Locale.FRENCH.displayLanguage to null),
+                Locale.GERMAN to (Locale.GERMAN.displayLanguage to null),
+                Locale.ITALIAN to (Locale.ITALIAN.displayLanguage to null),
+                Locale.JAPANESE to (Locale.JAPANESE.displayLanguage to null),
+                Locale.KOREAN to (Locale.KOREAN.displayLanguage to null),
+                Locale.forLanguageTag("es").let { it to (it.displayLanguage to null) },
+            ),
+            applyValue = { value -> SettingsIntent.SetLanguageValue(value) }
+        )
 
         fun rewind(currentValue: Int) = SettingsDialogState(
             title = R.string.button_rewind,
@@ -60,17 +80,25 @@ data class SettingsDialogState<T>(
 }
 
 sealed class SettingsIntent {
-    object ShowRewindDialog: SettingsIntent()
+
+    data object ShowLanguageDialog: SettingsIntent()
+    data class SetLanguageValue(val value: Locale?): SettingsIntent()
+
+    data object ShowRewindDialog: SettingsIntent()
     data class SetRewindValue(val value: Int): SettingsIntent()
-    object ShowForwardDialog: SettingsIntent()
+    data object ShowForwardDialog: SettingsIntent()
     data class SetForwardValue(val value: Int): SettingsIntent()
-    object ShowThemeDialog: SettingsIntent()
+    data object ShowThemeDialog: SettingsIntent()
     data class SetThemeValue(val theme: Ui.THEME): SettingsIntent()
-    object HideDialog : SettingsIntent()
-    object OnBackTap: SettingsIntent()
-    object OnTokenTap: SettingsIntent()
-    object OnHowToTap: SettingsIntent()
-    object OnAboutTap: SettingsIntent()
+    data object HideDialog : SettingsIntent()
+    data object OnBackTap: SettingsIntent()
+    data object OnTokenTap: SettingsIntent()
+    data object OnHowToTap: SettingsIntent()
+    data object OnAboutTap: SettingsIntent()
+
+    data class ShowFullSyncDialog(val show: Boolean): SettingsIntent()
+    data object ProceedFullSync: SettingsIntent()
+    data class OnAutoKeyboardCheck(val checked: Boolean): SettingsIntent()
     data class OnExternalPlayerCheck(val checked: Boolean): SettingsIntent()
 }
 

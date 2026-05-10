@@ -116,4 +116,13 @@
     <string name="acra_dialog_dismiss">No thanks</string>
     <string name="external_player_service_text">Using an external player</string>
     <string name="stop" translatable="false">Stop</string>
+    <string name="reset_progress">Reset progress</string>
+    <string name="reset_progress_confirmation">Are you really sure you want to delete all progress?</string>
+    <string name="reset">Reset</string>
+    <string name="auto_keyboard">Show keyboard in search</string>
+    <string name="auto_keyboard_desc">Automatically display the keyboard in the search screen</string>
+    <string name="sync_library">Sync library</string>
+    <string name="sync_library_desc">Synchronize all library data</string>
+    <string name="sync_library_dialog">Do you want to synchronize the entire library? Your progress will be saved, however this may take some time.</string>
+    <string name="information_language">Information language</string>
 </resources>

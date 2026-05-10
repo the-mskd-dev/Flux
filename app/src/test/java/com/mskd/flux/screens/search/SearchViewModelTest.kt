@@ -2,10 +2,12 @@ package com.mskd.flux.screens.search
 
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
-import com.mskd.flux.data.repository.catalog.CatalogRepository
-import com.mskd.flux.mockups.FakeCatalogRepository
+import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.mockups.mockkCatalogUC
+import com.mskd.flux.mockups.mockkSettingsRepository
 import com.mskd.flux.model.artwork.ContentType
+import com.mskd.flux.useCases.catalog.CatalogUC
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 
@@ -14,21 +16,20 @@ class SearchViewModelTest : FunSpec({
     fluxExtensions()
 
     lateinit var viewModel: SearchViewModel
-    lateinit var catalogRepository: FakeCatalogRepository
+    lateinit var catalogUC: CatalogUC
+    lateinit var settingsRepository: SettingsRepository
 
 
     beforeTest {
 
-        catalogRepository = FakeCatalogRepository(
-            initialState = CatalogRepository.State(
-                isLoading = false,
-                artworks = MediaMockups.artworks
-            )
-        )
+        catalogUC = mockkCatalogUC()
+
+        settingsRepository = mockkSettingsRepository()
 
         viewModel = SearchViewModel(
             contentType = null,
-            repository = catalogRepository
+            catalogUC = catalogUC,
+            settingsRepository = settingsRepository
         )
 
     }

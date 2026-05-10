@@ -10,3 +10,7 @@ fun Locale.toPlayerTrack(type: PlayerTrack.Type) = PlayerTrack(
     language = this.language,
     type = type
 )
+
+fun Locale.toTmdbFormat() : String {
+    return "${this.language}-${this.country}"
+}

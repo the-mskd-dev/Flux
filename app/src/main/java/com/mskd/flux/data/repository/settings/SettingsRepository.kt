@@ -25,11 +25,16 @@ interface SettingsRepository {
 
     suspend fun setUiTheme(theme: Ui.THEME)
 
+    suspend fun setDataLanguage(locale: Locale?)
+
     suspend fun setSubtitlesLanguage(locale: Locale)
 
     suspend fun setAudioLanguage(locale: Locale)
 
     suspend fun setExternalPlayer(useExternalPlayer: Boolean)
+    suspend fun setAutoKeyboard(autoKeyboard: Boolean)
+
+    suspend fun getDataLanguage() : Locale
 
     data class State(
         val playerRewindValue: Int = 10,
@@ -37,6 +42,8 @@ interface SettingsRepository {
         val uiTheme: Ui.THEME = Ui.THEME.SYSTEM,
         val subtitlesLanguage: Locale = Locale.getDefault(),
         val audioLanguage: Locale = Locale.getDefault(),
-        val externalPlayer: Boolean = false
+        val externalPlayer: Boolean = false,
+        val autoKeyboard: Boolean = true,
+        val dataLanguage: Locale? = null,
     )
 }

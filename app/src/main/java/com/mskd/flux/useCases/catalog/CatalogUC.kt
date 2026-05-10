@@ -5,7 +5,6 @@ import com.mskd.flux.data.repository.ddb.DatabaseRepository
 import com.mskd.flux.data.repository.files.FilesRepository
 import com.mskd.flux.data.repository.tmdb.TmdbRepository
 import com.mskd.flux.data.repository.user.UserRepository
-import com.mskd.flux.data.source.media.MediaSourceTMDBImpl.Companion.TAG
 import com.mskd.flux.model.Catalog
 import com.mskd.flux.model.UserFile
 import com.mskd.flux.model.UserFolder
@@ -48,6 +47,10 @@ class CatalogUCImpl(
     private val scope: CoroutineScope
 ) : CatalogUC {
 
+    private companion object {
+        const val TAG = "CatalogUCImpl"
+    }
+
     //region Data class
     private data class ArtworkFolder(
         val artwork: Artwork,
@@ -83,11 +86,20 @@ class CatalogUCImpl(
 
             _state.value = CatalogUC.State.Syncing(full = !onlyNew)
 
+            // Get current medias
+            val dbMovies = database.getMovies()
+            val dbEpisodes = database.getEpisodes()
+
             // Get files
-            val allFiles = files.getFiles()
-            val newFiles = if (!onlyNew) { allFiles } else {
-                val dbFilesNames = database.getAllFileNames()
-                allFiles.filter { !dbFilesNames.contains(it.name) }
+            val deviceFiles = files.getFiles()
+            val dbFiles = (dbMovies.map { it.file } + dbEpisodes.map { it.file }).filter { files.checkIfFileExists(it) }
+            val newFiles = if (!onlyNew) { deviceFiles } else {
+                deviceFiles.filter { file -> dbFiles.none { it.name == file.name } }
+            }
+
+            Log.d(TAG, "Found $newFiles new file(s)")
+            newFiles.forEach {
+                Log.d(TAG, it.name)
             }
 
             if (newFiles.isEmpty()) {
@@ -98,15 +110,19 @@ class CatalogUCImpl(
 
             // Get data
             var catalog = getCatalog(files = newFiles)
-
-            if (!onlyNew) {
-                catalog = applyCurrentProgress(catalog = catalog)
-            }
+            catalog = applyCurrentProgress(
+                catalog = catalog,
+                dbMovies = dbMovies,
+                dbEpisodes = dbEpisodes
+            )
 
             // Save data
             database.saveArtworks(artworks = catalog.artworks)
             database.saveMovies(movies = catalog.movies)
             database.saveEpisodes(episodes = catalog.episodes)
+
+            // Clean catalog
+            database.deleteMediasNotInFiles(deviceFiles)
 
             // Save time
             user.setSyncTime(System.currentTimeMillis())
@@ -121,8 +137,6 @@ class CatalogUCImpl(
 
         val allFiles = files.getFiles()
         database.deleteMediasNotInFiles(allFiles)
-
-        tryToRetrieveUnknownMedias()
 
     }
 
@@ -152,14 +166,15 @@ class CatalogUCImpl(
 
     }
 
-    private suspend fun applyCurrentProgress(catalog: Catalog) : Catalog {
+    private fun applyCurrentProgress(catalog: Catalog, dbMovies: List<Movie>, dbEpisodes: List<Episode>) : Catalog {
 
-        val dbMovies = database.getMovies()
-        val dbEpisodes = database.getEpisodes()
+        var count = 0
 
         val movies = catalog.movies.map { newMovie ->
 
             dbMovies.find { it.mediaId == newMovie.mediaId }?.let { oldMovie ->
+
+                count++
 
                 newMovie.copy(
                     currentTime = oldMovie.currentTime,
@@ -174,6 +189,8 @@ class CatalogUCImpl(
 
             dbEpisodes.find { it.mediaId == newEpisode.mediaId }?.let { oldEpisode ->
 
+                count++
+
                 newEpisode.copy(
                     currentTime = oldEpisode.currentTime,
                     status = oldEpisode.status
@@ -182,6 +199,8 @@ class CatalogUCImpl(
             } ?: newEpisode
 
         }
+
+        Log.i(TAG, "Apply progress on $count new media(s)")
 
         return Catalog(
             artworks = catalog.artworks,
@@ -193,7 +212,7 @@ class CatalogUCImpl(
 
     private suspend fun getArtworksFolders(folders: List<UserFolder>) : List<ArtworkFolder> {
 
-        return coroutineScope {
+        val artworkFolders = coroutineScope {
 
             folders.map { folder ->
 
@@ -217,11 +236,15 @@ class CatalogUCImpl(
 
         }
 
+        Log.i(TAG, "Found ${artworkFolders.size} artwork(s)")
+
+        return artworkFolders
+
     }
 
     private suspend fun getMovies(artworkFolders: List<ArtworkFolder>) : List<Media> {
 
-        return coroutineScope {
+        val movies = coroutineScope {
 
             artworkFolders.filter { it.artwork.type == ContentType.MOVIE }.map { (artwork, files) ->
 
@@ -240,11 +263,15 @@ class CatalogUCImpl(
 
         }
 
+        Log.i(TAG, "Found ${movies.size} movie(s)")
+
+        return movies
+
     }
 
     private suspend fun getEpisodes(artworkFolders: List<ArtworkFolder>) : List<Episode> {
 
-        return coroutineScope {
+        val episodes = coroutineScope {
 
             artworkFolders.filter { it.artwork.type == ContentType.SHOW }.flatMap { (artwork, files) ->
 
@@ -280,61 +307,9 @@ class CatalogUCImpl(
 
         }
 
-    }
+        Log.i(TAG, "Found ${episodes.size} episode(s)")
 
-    private suspend fun tryToRetrieveUnknownMedias() {
-
-        try {
-
-            val unknownMedias = database.getUnknownMedias()
-            val files = unknownMedias.map { it.file }
-
-            val (newArtworks, newMovies, newEpisodes) = getCatalog(files = files)
-
-            val moviesToSave = arrayListOf<Movie>()
-            val episodesToSave = arrayListOf<Episode>()
-            val mediasToDelete = arrayListOf<Episode>()
-
-            newMovies.forEach { movie ->
-
-                unknownMedias.find { it.file == movie.file }?.let { unknownMedia ->
-
-                    val newMovie = movie.copy(
-                        currentTime = unknownMedia.currentTime,
-                        status = unknownMedia.status
-                    )
-
-                    moviesToSave.add(newMovie)
-                    mediasToDelete.add(unknownMedia)
-
-                }
-
-            }
-
-            newEpisodes.filter { !it.isUnknown }.forEach { episode ->
-
-                unknownMedias.find { it.file == episode.file }?.let { unknownMedia ->
-
-                    val newEpisode = episode.copy(
-                        currentTime = unknownMedia.currentTime,
-                        status = unknownMedia.status
-                    )
-
-                    episodesToSave.add(newEpisode)
-                    mediasToDelete.add(unknownMedia)
-
-                }
-
-            }
-
-            database.saveArtworks(newArtworks.filter { !it.isUnknown })
-            database.saveMovies(moviesToSave)
-            database.saveEpisodes(episodesToSave)
-            database.deleteEpisodes(mediasToDelete)
-
-        } catch (e: Exception) {
-            Log.e(TAG, "Fail to retrieve unknown medias", e)
-        }
+        return episodes
 
     }
 

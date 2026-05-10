@@ -107,6 +107,7 @@ class HomeViewModel @Inject constructor(
 
         } else {
 
+            catalogUC.cleanCatalog()
             Log.i("HomeViewModel", "syncCatalog, catalog sync not needed")
 
         }

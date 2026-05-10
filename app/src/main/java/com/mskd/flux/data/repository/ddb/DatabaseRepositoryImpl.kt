@@ -82,10 +82,6 @@ class DatabaseRepositoryImpl @Inject constructor(private val dao: DatabaseDao) :
         return dao.getUnknownMedias()
     }
 
-    override suspend fun getAllFileNames(): List<String> {
-        return dao.getEpisodesFileNames() + dao.getMoviesFileNames()
-    }
-
     override suspend fun deleteArtworks(artworks: List<Artwork>) {
         dao.deleteArtworks(ids = artworks.map { it.id })
     }

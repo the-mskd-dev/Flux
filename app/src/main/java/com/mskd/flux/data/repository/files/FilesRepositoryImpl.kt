@@ -121,7 +121,7 @@ class FilesRepositoryImpl(
 
     }
 
-    override suspend fun checkIfFileExists(path: String): Boolean {
+    override suspend fun checkIfFileExists(file: UserFile): Boolean {
 
         val columns = arrayOf(MediaStore.Video.Media._ID)
         var result = true
@@ -129,7 +129,7 @@ class FilesRepositoryImpl(
         withContext(Dispatchers.Default) {
 
             val cursor = context.contentResolver.query(
-                path.toUri(),
+                file.path.toUri(),
                 columns, // Empty projections are bad for performance
                 null,
                 null,
@@ -140,6 +140,9 @@ class FilesRepositoryImpl(
             cursor?.close()
 
         }
+
+        if (!result)
+            Log.e(TAG, "file ${file.name} didn't found")
 
         return result
 

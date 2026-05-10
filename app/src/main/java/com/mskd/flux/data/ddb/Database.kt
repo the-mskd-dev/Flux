@@ -11,6 +11,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 import com.mskd.flux.model.FileSource
+import com.mskd.flux.model.UserFile
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.model.artwork.Episode
@@ -66,9 +67,6 @@ interface DatabaseDao {
     @Query("SELECT * FROM movies WHERE name NOT IN (:fileNames)")
     suspend fun getMoviesNotInFiles(fileNames: List<String>) : List<Movie>
 
-    @Query("SELECT name FROM movies")
-    suspend fun getMoviesFileNames(): List<String>
-
     @Query("SELECT * FROM episodes WHERE id = :episodeId")
     suspend fun getEpisode(episodeId: Long) : Episode?
 
@@ -81,17 +79,8 @@ interface DatabaseDao {
     @Query("SELECT * FROM episodes WHERE name NOT IN (:fileNames)")
     suspend fun getEpisodesNotInFiles(fileNames: List<String>) : List<Episode>
 
-    @Query("SELECT name FROM episodes")
-    suspend fun getEpisodesFileNames(): List<String>
-
     @Query("SELECT * FROM episodes WHERE artworkId = ${Artwork.UNKNOWN_ID}")
     suspend fun getUnknownMedias() : List<Episode>
-
-    suspend fun getAllFileNames() : List<String> {
-        val movieFileNames = getMoviesFileNames()
-        val episodeFileNames = getEpisodesFileNames()
-        return movieFileNames + episodeFileNames
-    }
 
 //endregion
 

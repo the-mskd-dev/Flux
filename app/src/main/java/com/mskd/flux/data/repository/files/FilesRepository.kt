@@ -6,6 +6,6 @@ interface FilesRepository {
 
     suspend fun getFiles() : List<UserFile>
 
-    suspend fun checkIfFileExists(path: String) : Boolean
+    suspend fun checkIfFileExists(file: UserFile) : Boolean
 
 }

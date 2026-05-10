@@ -7,6 +7,7 @@ import com.mskd.flux.model.tmdb.TMDBArtwork
 import com.mskd.flux.model.tmdb.TMDBEpisode
 import com.mskd.flux.model.tmdb.TMDBMediaType
 import com.mskd.flux.model.tmdb.TMDBMovie
+import com.mskd.flux.model.tmdb.TMDBTranslation
 import javax.inject.Inject
 
 class TmdbRepositoryImpl @Inject constructor(
@@ -84,4 +85,49 @@ class TmdbRepositoryImpl @Inject constructor(
         }
 
     }
+
+    override suspend fun getTmdbMovieTranslations(artworkId: Long): List<TMDBTranslation> {
+
+        return try {
+
+            tmdbService.getMovieTranslations(id = artworkId)
+
+        } catch (e: Exception) {
+            Log.e(TAG, "getTmdbMovieTranslations - Fail to get translations for movie (artworkId:$artworkId)", e)
+            emptyList()
+        }
+
+    }
+
+    override suspend fun getTmdbShowTranslations(artworkId: Long): List<TMDBTranslation> {
+
+        return try {
+
+            tmdbService.getShowTranslations(id = artworkId)
+
+        } catch (e: Exception) {
+            Log.e(TAG, "getTmdbShowTranslations - Fail to get translations for show (artworkId:$artworkId)", e)
+            emptyList()
+        }
+
+    }
+
+    override suspend fun getTmdbEpisodeTranslations(
+        artworkId: Long,
+        season: Int,
+        number: Int
+    ): List<TMDBTranslation> {
+
+        return try {
+
+            tmdbService.getShowTranslations(id = artworkId)
+
+        } catch (e: Exception) {
+            Log.e(TAG, "getTmdbEpisodeTranslations - Fail to get translations for episode (artworkId:$artworkId, season:$season, number:$number)", e)
+            emptyList()
+        }
+
+    }
+
+
 }

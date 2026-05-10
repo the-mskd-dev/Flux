@@ -90,7 +90,7 @@ class SettingsViewModel @Inject constructor(
         _dialogState.update { SettingsDialogState.language(currentValue) }
     }
 
-    private suspend fun setLanguageValue(value: Locale) {
+    private suspend fun setLanguageValue(value: Locale?) {
         settingsRepository.setDataLanguage(value)
         catalogUC.updateLanguage()
         hideDialog()

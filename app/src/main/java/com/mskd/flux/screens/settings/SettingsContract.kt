@@ -7,7 +7,7 @@ import java.util.Locale
 
 @Immutable
 data class SettingsUiState(
-    val languageValue: Locale = Locale.getDefault(),
+    val languageValue: Locale? = null,
     val rewindValue: Int = 10,
     val forwardValue: Int = 10,
     val uiTheme: Ui.THEME = Ui.THEME.SYSTEM,
@@ -26,10 +26,11 @@ data class SettingsDialogState<T>(
 
     companion object {
 
-        fun language(currentValue: Locale) = SettingsDialogState(
+        fun language(currentValue: Locale?) = SettingsDialogState(
             title = R.string.information_language,
             currentValue = currentValue,
             options = mapOf(
+                null to (null to R.string.system),
                 Locale.ENGLISH to (Locale.ENGLISH.displayLanguage to null),
                 Locale.FRENCH to (Locale.FRENCH.displayLanguage to null),
                 Locale.GERMAN to (Locale.GERMAN.displayLanguage to null),
@@ -81,7 +82,7 @@ data class SettingsDialogState<T>(
 sealed class SettingsIntent {
 
     data object ShowLanguageDialog: SettingsIntent()
-    data class SetLanguageValue(val value: Locale): SettingsIntent()
+    data class SetLanguageValue(val value: Locale?): SettingsIntent()
 
     data object ShowRewindDialog: SettingsIntent()
     data class SetRewindValue(val value: Int): SettingsIntent()

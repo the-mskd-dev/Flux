@@ -25,7 +25,7 @@ interface SettingsRepository {
 
     suspend fun setUiTheme(theme: Ui.THEME)
 
-    suspend fun setDataLanguage(locale: Locale)
+    suspend fun setDataLanguage(locale: Locale?)
 
     suspend fun setSubtitlesLanguage(locale: Locale)
 
@@ -44,6 +44,6 @@ interface SettingsRepository {
         val audioLanguage: Locale = Locale.getDefault(),
         val externalPlayer: Boolean = false,
         val autoKeyboard: Boolean = true,
-        val dataLanguage: Locale = Locale.getDefault(),
+        val dataLanguage: Locale? = null,
     )
 }

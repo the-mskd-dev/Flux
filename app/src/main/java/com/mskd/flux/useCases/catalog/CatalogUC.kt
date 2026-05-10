@@ -156,7 +156,7 @@ class CatalogUCImpl(
 
             _state.value = CatalogUC.State.Syncing(full = false)
 
-            val language = settings.flow.first().dataLanguage
+            val language = settings.getDataLanguage()
             val movies = database.getMovies()
             val episodes = database.getEpisodes()
 

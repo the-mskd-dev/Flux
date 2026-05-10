@@ -163,12 +163,8 @@ fun SettingsContent(
 
                 FluxDivider()
 
-                val displayedLanguage = state.languageValue.let {
-                    if (it == LocalLocale.current.platformLocale)
-                        stringResource(R.string.system)
-                    else
-                        it.displayLanguage
-                }
+
+                val displayedLanguage = state.languageValue?.displayLanguage ?: stringResource(R.string.system)
                 SettingsItem(
                     text = stringResource(R.string.information_language),
                     value = displayedLanguage,

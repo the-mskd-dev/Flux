@@ -1,7 +1,6 @@
 package com.mskd.flux.model.tmdb
 
 import com.google.gson.annotations.SerializedName
-import com.mskd.flux.ui.typography.titleLarge
 import java.util.Locale
 
 data class TMDBTranslations(

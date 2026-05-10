@@ -10,9 +10,6 @@ import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.useCases.catalog.CatalogUC
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
-import io.mockk.coEvery
-import io.mockk.mockk
-import kotlinx.coroutines.flow.MutableStateFlow
 
 class SearchViewModelTest : FunSpec({
 

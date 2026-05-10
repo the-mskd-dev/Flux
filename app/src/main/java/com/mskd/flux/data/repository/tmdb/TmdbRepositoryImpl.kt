@@ -11,9 +11,6 @@ import com.mskd.flux.model.tmdb.TMDBMovie
 import com.mskd.flux.model.tmdb.TMDBTranslations
 import com.mskd.flux.model.tmdb.findWithLocale
 import com.mskd.flux.utils.extensions.toTmdbFormat
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.firstOrNull
-import java.util.Locale
 import javax.inject.Inject
 
 class TmdbRepositoryImpl @Inject constructor(

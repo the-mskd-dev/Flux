@@ -31,7 +31,6 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.intl.Locale
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -52,7 +51,6 @@ import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.WebLink
 import com.mskd.flux.utils.extensions.uppercaseFirstLetter
 import com.mskd.flux.utils.notificationsPermissionState
-import androidx.compose.ui.platform.LocalLocale
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable

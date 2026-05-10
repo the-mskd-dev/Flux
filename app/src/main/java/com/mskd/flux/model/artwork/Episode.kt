@@ -64,12 +64,11 @@ data class Episode(
     override val mediaId: Long get() = id
 
     constructor(
-        mediaId: Long,
         tmdbEpisode: TMDBEpisode,
         file: UserFile
     ) : this (
         id = tmdbEpisode.id,
-        artworkId = mediaId,
+        artworkId = tmdbEpisode.artworkId,
         title = tmdbEpisode.title,
         number = tmdbEpisode.number,
         season = tmdbEpisode.season,

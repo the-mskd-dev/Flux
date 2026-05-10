@@ -5,6 +5,7 @@ import androidx.room.PrimaryKey
 import com.mskd.flux.R
 import com.mskd.flux.model.UserFile
 import com.mskd.flux.model.tmdb.TMDBArtwork
+import com.mskd.flux.model.tmdb.TMDBMediaType
 import com.mskd.flux.model.tmdb.TMDBMovie
 
 /**
@@ -47,7 +48,7 @@ data class Artwork(
         title = tmdbArtwork.title,
         imagePath = tmdbArtwork.imagePath,
         bannerPath = tmdbArtwork.bannerPath,
-        type = ContentType.SHOW
+        type = if (tmdbArtwork.type == TMDBMediaType.MOVIE) ContentType.MOVIE else ContentType.SHOW
     )
 
     val isUnknown: Boolean get() = id == UNKNOWN_ID
@@ -78,6 +79,10 @@ enum class ContentType {
     val stringResource: Int get() = when (this) {
         MOVIE -> R.string.movies
         SHOW -> R.string.shows
+    }
+
+    fun equalsTmdb(tmdbType: TMDBMediaType) : Boolean {
+        return (this == MOVIE && tmdbType == TMDBMediaType.MOVIE) || (this == SHOW && tmdbType == TMDBMediaType.SHOW)
     }
 
 }

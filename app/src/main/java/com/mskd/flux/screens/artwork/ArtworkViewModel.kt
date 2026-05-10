@@ -3,13 +3,17 @@ package com.mskd.flux.screens.artwork
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mskd.flux.data.repository.artwork.ArtworkRepository
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.model.ScreenState
+import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
+import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Status
-import com.mskd.flux.useCases.mediaProgress.MediaProgressUC
+import com.mskd.flux.screens.artwork.ArtworkEvent.OpenEpisodeInfo
+import com.mskd.flux.useCases.artwork.ArtworkUC
+import com.mskd.flux.useCases.progress.ProgressUC
+import com.mskd.flux.utils.extensions.firstEpisode
 import com.mskd.flux.utils.extensions.getPreviousEpisodesFor
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -28,9 +32,9 @@ import kotlinx.coroutines.launch
 @HiltViewModel(assistedFactory = ArtworkViewModel.Factory::class)
 class ArtworkViewModel @AssistedInject constructor(
     @Assisted val artworkId: Long,
-    private val repository: ArtworkRepository,
+    private val artworkUC: ArtworkUC,
     private val settingsRepository: SettingsRepository,
-    private val mediaProgressUC: MediaProgressUC
+    private val progressUC: ProgressUC
 ) : ViewModel() {
 
     //region Hilt
@@ -49,6 +53,7 @@ class ArtworkViewModel @AssistedInject constructor(
         val selectedMedia: Media? = null,
         val selectedSeason: Int? = null,
         val episodePendingConfirmation: Episode? = null,
+        val showResetProgressDialog: Boolean = false
     )
 
     //endregion
@@ -67,12 +72,12 @@ class ArtworkViewModel @AssistedInject constructor(
     private val _subState = MutableStateFlow(UserState())
 
     val uiState: StateFlow<ArtworkUiState> = combine(
-        repository.flow,
+        artworkUC.flow,
         settingsRepository.flow,
         _subState
-    ) { mediaContent, settings, subState ->
+    ) { artworkContent, settings, subState ->
         buildUiState(
-            mediaState = mediaContent,
+            artworkContent = artworkContent,
             settings = settings,
             subState = subState
         )
@@ -88,7 +93,7 @@ class ArtworkViewModel @AssistedInject constructor(
     //regin Init
 
     init {
-        repository.searchArtwork(artworkId = artworkId)
+        artworkUC.searchArtwork(artworkId = artworkId)
     }
 
     //endregion
@@ -103,9 +108,11 @@ class ArtworkViewModel @AssistedInject constructor(
             ArtworkIntent.CloseEpisodesStatusDialog -> closeStatusDialog()
             is ArtworkIntent.ChangeWatchStatus -> changeWatchStatus(media = intent.media)
             ArtworkIntent.MarkPreviousEpisodesAsWatched -> markPreviousEpisodesAsWatched()
-            is ArtworkIntent.OpenArtworkInfo -> _event.emit(ArtworkEvent.OpenArtworkInfo(artwork = intent.artwork))
-            is ArtworkIntent.OpenEpisodeInfo -> _event.emit(ArtworkEvent.OpenEpisodeInfo(episode = intent.episode))
+            ArtworkIntent.OpenArtworkInfo -> openArtworkInfo()
+            is ArtworkIntent.OpenEpisodeInfo -> _event.emit(OpenEpisodeInfo(episode = intent.episode))
             is ArtworkIntent.OnExternalPlayerResult -> onExternalPlayerResult(intent.progress)
+            is ArtworkIntent.ShowResetProgressDialog -> showResetProgressDialog(show = intent.show)
+            ArtworkIntent.ResetProgress -> resetProgress()
         }
     }
 
@@ -114,17 +121,29 @@ class ArtworkViewModel @AssistedInject constructor(
     //region Private Methods
 
     private fun buildUiState(
-        mediaState: ArtworkRepository.State,
+        artworkContent: ArtworkUC.Content,
         settings: SettingsRepository.State,
         subState: UserState
     ) : ArtworkUiState {
 
-        val artwork = mediaState.artwork
-        val movie = mediaState.movie
-        val episodes = mediaState.episodes
+        var artwork: Artwork? = null
+        var movie: Movie? = null
+        var episodes: List<Episode> = emptyList()
+
+        when (artworkContent) {
+            ArtworkUC.Content.ERROR -> {}
+            is ArtworkUC.Content.MOVIE -> {
+                artwork = artworkContent.artwork
+                movie = artworkContent.movie
+            }
+            is ArtworkUC.Content.SHOW -> {
+                artwork = artworkContent.artwork
+                episodes = artworkContent.episodes
+            }
+        }
+
 
         val episode = episodes.firstOrNull { it.id == (subState.selectedMedia as? Episode)?.id } // Selected media by user
-            ?: episodes.firstOrNull { it.id == (uiState.value.media as? Episode)?.id } // Current selected media
             ?: episodes.firstOrNull { it.status == Status.IS_WATCHING } // First episode watching
             ?: episodes.firstOrNull { it.status == Status.TO_WATCH } // First episode to watch
             ?: episodes.firstOrNull() // First episode
@@ -144,7 +163,8 @@ class ArtworkViewModel @AssistedInject constructor(
                     season = season,
                     media = media,
                     episodePendingConfirmation = subState.episodePendingConfirmation,
-                    useExternalPlayer = settings.externalPlayer
+                    useExternalPlayer = settings.externalPlayer,
+                    showResetProgressDialog = subState.showResetProgressDialog
                 )
 
             }
@@ -175,13 +195,19 @@ class ArtworkViewModel @AssistedInject constructor(
         _subState.update { it.copy(episodePendingConfirmation = null) }
     }
 
+    private suspend fun openArtworkInfo() {
+        uiState.value.artwork.let { artwork ->
+            _event.emit(ArtworkEvent.OpenArtworkInfo(artwork = artwork))
+        }
+    }
+
     private suspend fun changeWatchStatus(media: Media) {
 
         val status = if (media.status != Status.WATCHED) Status.WATCHED else Status.TO_WATCH
 
-        mediaProgressUC.changeMediaStatus(
+        progressUC.changeMediaStatus(
             media = media,
-            status =status
+            status = status
         )
 
         if (
@@ -200,7 +226,7 @@ class ArtworkViewModel @AssistedInject constructor(
 
             val episode = state.episodePendingConfirmation ?: return
 
-            mediaProgressUC.markPreviousEpisodesAsWatchedFor(episode = episode)
+            progressUC.markPreviousEpisodesAsWatchedFor(episode = episode)
 
             state.copy(episodePendingConfirmation = null)
 
@@ -210,9 +236,30 @@ class ArtworkViewModel @AssistedInject constructor(
 
     private suspend fun onExternalPlayerResult(progress: Long) {
         selectedMedia?.let { media ->
-            mediaProgressUC.saveProgress(media = media, progress = progress)
+            progressUC.saveProgress(media = media, progress = progress)
             selectedMedia = null
         }
+    }
+
+    private fun showResetProgressDialog(show: Boolean) {
+        _subState.update { it.copy(showResetProgressDialog = show) }
+    }
+
+    private suspend fun resetProgress() {
+
+        val currentState = uiState.value
+
+        progressUC.resetProgress(artwork = currentState.artwork)
+
+        _subState.update {
+
+            it.copy(
+                selectedMedia = currentState.media as? Movie ?: currentState.episodes.firstEpisode,
+                showResetProgressDialog = false
+            )
+
+        }
+
     }
 
     //endregion

@@ -1,4 +1,8 @@
-## Version 1.3.2
+## Version 1.3.3
 
-- Fix: Crash with files on SD card
-- Fix: Crash with malformed token API
+- Feature: Data languages
+- Feature: Full sync option
+- Feature: Open keyboard on search
+- Feature: Erase progression
+- Fix: Crash on back button
+- Fix: Metadata selection

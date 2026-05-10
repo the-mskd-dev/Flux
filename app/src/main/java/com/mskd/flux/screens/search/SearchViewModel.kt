@@ -2,8 +2,9 @@ package com.mskd.flux.screens.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mskd.flux.data.repository.catalog.CatalogRepository
+import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.model.artwork.ContentType
+import com.mskd.flux.useCases.catalog.CatalogUC
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -13,13 +14,16 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 @HiltViewModel(assistedFactory = SearchViewModel.Factory::class)
 class SearchViewModel @AssistedInject constructor(
     @Assisted contentType: ContentType? = null,
-    private val repository: CatalogRepository
+    private val catalogUC: CatalogUC,
+    private val settingsRepository: SettingsRepository
 ) : ViewModel() {
 
     @AssistedFactory
@@ -34,9 +38,17 @@ class SearchViewModel @AssistedInject constructor(
     val event = _event.asSharedFlow()
 
     init {
+
+        val autoKeyboard = runBlocking { settingsRepository.flow.first().autoKeyboard }
+
         viewModelScope.launch {
-            repository.flow.collect { library ->
-                _uiState.update { it.copy(artworks = library.artworks.filter { artworks -> !artworks.isUnknown }) }
+            catalogUC.artworks.collect { artworks ->
+                _uiState.update {
+                    it.copy(
+                        artworks = artworks.filter { artworks -> !artworks.isUnknown },
+                        autoKeyboard = autoKeyboard
+                    )
+                }
             }
         }
     }

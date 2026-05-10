@@ -228,7 +228,7 @@ object Text {
         /**
          * - **Usage**: The default screen title.
          * - **Size** : 28dp
-         * - **Examples**: The title in a `CenterAlignedTopAppBar` or `MediumTopAppBar`. "Settings", "Profile".
+         * - **Examples**: The title in a large `TopAppBar`.
          */
         @Composable
         fun Medium(
@@ -263,7 +263,7 @@ object Text {
         /**
          * - **Usage**: Section titles, dialog titles.
          * - **Size** : 24dp
-         * - **Examples**: In "Settings", this would be "Notifications" or "Account". Title of an `AlertDialog`.
+         * - **Examples**: The title in a medium `TopAppBar`. "Settings", "Profile".
          */
         @Composable
         fun Small(

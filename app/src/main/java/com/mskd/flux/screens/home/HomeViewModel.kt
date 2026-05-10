@@ -3,7 +3,6 @@ package com.mskd.flux.screens.home
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mskd.flux.data.repository.catalog.CatalogRepository
 import com.mskd.flux.data.repository.snackbars.SnackbarRepository
 import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.data.tmdb.token.TokenRepository
@@ -11,6 +10,7 @@ import com.mskd.flux.model.ScreenState
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.screens.home.HomeEvent.NavigateToArtwork
 import com.mskd.flux.screens.home.HomeEvent.NavigateToCategory
+import com.mskd.flux.useCases.catalog.CatalogUC
 import com.mskd.flux.utils.FluxSnackbar
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -28,7 +28,7 @@ import kotlin.time.Duration.Companion.days
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val repository: CatalogRepository,
+    private val catalogUC: CatalogUC,
     private val userRepository: UserRepository,
     private val tokenRepository: TokenRepository,
     private val snackbarRepository: SnackbarRepository
@@ -40,28 +40,29 @@ class HomeViewModel @Inject constructor(
     private val _dismissedSnackbar = MutableStateFlow<Set<FluxSnackbar>>(emptySet())
 
     val uiState: StateFlow<HomeUiState> = combine(
-        repository.flow,
+        catalogUC.artworks,
+        catalogUC.state,
         userRepository.flow,
         tokenRepository.flow,
-        _dismissedSnackbar
-    ) { catalog, preferences, token, dismissedSnackbar ->
+        _dismissedSnackbar,
+    ) { artworks, catalogState, preferences, token, dismissedSnackbar ->
 
         val screen = when {
-            catalog.isLoading && catalog.artworks.isEmpty() -> ScreenState.LOADING
+            catalogState is CatalogUC.State.Syncing && artworks.isEmpty() -> ScreenState.LOADING
             else -> ScreenState.CONTENT
         }
 
         val snackbar = getSnackbarIfNeeded(
             token = token,
             dismissedSnackbar = dismissedSnackbar,
-            artworks = catalog.artworks
+            artworks = artworks
         )
 
         HomeUiState(
             screenState = screen,
-            artworks = catalog.artworks,
+            artworks = artworks,
             lastWatchedMediaIds = preferences.recentlyWatchedIds,
-            isRefreshing = catalog.isLoading,
+            isRefreshing = catalogState is CatalogUC.State.Syncing,
             snackbarState = snackbar
         )
 
@@ -102,11 +103,11 @@ class HomeViewModel @Inject constructor(
 
             Log.i("HomeViewModel", "syncCatalog, catalog sync requested")
 
-            repository.syncCatalog()
-            userRepository.setSyncTime(currentTime)
+            catalogUC.syncCatalog(onlyNew = true)
 
         } else {
 
+            catalogUC.cleanCatalog()
             Log.i("HomeViewModel", "syncCatalog, catalog sync not needed")
 
         }

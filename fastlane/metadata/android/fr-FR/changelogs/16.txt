@@ -1,0 +1,6 @@
+- Feature: Sélection du language des informations
+- Feature: Option de synchro complète
+- Feature: Ouverture du clavier automatique dans l'écran de recherche
+- Feature: Suppression de la progression
+- Fix: Crash sur le bouton retour
+- Fix: Sélection des données

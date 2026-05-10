@@ -3,7 +3,6 @@ package com.mskd.flux.screens.player
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
-import com.mskd.flux.model.artwork.Status
 
 object PlayerTestCases {
 
@@ -17,8 +16,6 @@ object PlayerTestCases {
         val artwork: Artwork,
         val media: Media,
         val time: Long,
-        val shouldBeAddedToRecentlyWatched: Boolean,
-        val statusExpected: Status
     )
 
     data class PlayerBackTap(

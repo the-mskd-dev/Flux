@@ -10,8 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -33,7 +31,6 @@ import coil3.request.crossfade
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.screens.artwork.ArtworkIntent
-import com.mskd.flux.ui.component.BackButton
 import com.mskd.flux.ui.component.Image
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
@@ -85,37 +82,20 @@ fun ArtworkImage(
                 )
         )
 
-        Box(
-            modifier = Modifier.fillMaxSize(),
-        ) {
-
-            TopAppBar(
-                modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .fillMaxWidth(),
-                title = {  },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
-                navigationIcon = {
-                    BackButton(onTap = { sendIntent(ArtworkIntent.OnBackTap) })
-                },
-            )
-
-            AsyncImage(
-                modifier = Modifier
-                    .displayCutoutPadding()
-                    .align(Alignment.Center)
-                    .clip(Ui.Shape.Corner.Small)
-                    .width(160.dp)
-                    .aspectRatio(2f/3f)
-                    .clickable { sendIntent(ArtworkIntent.OpenArtworkInfo(artwork = artwork)) },
-                model = imageRequest,
-                contentScale = ContentScale.Crop,
-                placeholder = Image.placeholder,
-                error = Image.error,
-                contentDescription = artwork.title
-            )
-
-        }
+        AsyncImage(
+            modifier = Modifier
+                .displayCutoutPadding()
+                .align(Alignment.Center)
+                .clip(Ui.Shape.Corner.Small)
+                .width(160.dp)
+                .aspectRatio(2f/3f)
+                .clickable { sendIntent(ArtworkIntent.OpenArtworkInfo) },
+            model = imageRequest,
+            contentScale = ContentScale.Crop,
+            placeholder = Image.placeholder,
+            error = Image.error,
+            contentDescription = artwork.title
+        )
 
     }
 

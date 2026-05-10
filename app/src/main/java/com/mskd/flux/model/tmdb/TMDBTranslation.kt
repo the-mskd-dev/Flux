@@ -10,6 +10,8 @@ import com.google.gson.annotations.SerializedName
  * @property data Name and overview in the designed language
  */
 data class TMDBTranslation(
+    @SerializedName("iso_639_1")
+    val language: String,
     val name: String,
     @SerializedName("english_name")
     val englishName: String,

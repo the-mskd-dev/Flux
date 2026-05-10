@@ -8,6 +8,7 @@ import com.mskd.flux.model.tmdb.TMDBEpisode
 import com.mskd.flux.model.tmdb.TMDBMediaType
 import com.mskd.flux.model.tmdb.TMDBMovie
 import com.mskd.flux.model.tmdb.TMDBTranslation
+import java.util.Locale
 import javax.inject.Inject
 
 class TmdbRepositoryImpl @Inject constructor(
@@ -26,10 +27,12 @@ class TmdbRepositoryImpl @Inject constructor(
         return try {
 
             val tmdbArtworks = if (file.isEpisode) {
+
                 tmdbService.getShow(
                     title = file.nameProperties.title,
                     year = file.nameProperties.year
                 )
+
             } else {
                 tmdbService.getMovie(
                     title = file.nameProperties.title,
@@ -37,9 +40,24 @@ class TmdbRepositoryImpl @Inject constructor(
                 )
             }
 
-            tmdbArtworks.results.first().also {
+            var tmdbArtwork = tmdbArtworks.results.first().also {
                 it.type = if (file.isEpisode) TMDBMediaType.SHOW else TMDBMediaType.MOVIE
             }
+
+            // Get translation for show if needed
+            if (tmdbArtwork.type == TMDBMediaType.SHOW && (tmdbArtwork.description.isBlank() || tmdbArtwork.title.isBlank())) {
+
+                val translations = getTmdbShowTranslations(artworkId = tmdbArtwork.id)
+                translations.find { it.language == Locale.ENGLISH.language }?.let {
+                    tmdbArtwork = tmdbArtwork.copy(
+                        title = tmdbArtwork.title.ifBlank { it.data.name },
+                        description = tmdbArtwork.description.ifBlank { it.data.overview }
+                    )
+                }
+
+            }
+
+            tmdbArtwork
 
         } catch (e: Exception) {
             Log.e(TAG, "getTmdbArtwork - Fail to get TMDBArtwork for file:${file.name}", e)
@@ -54,7 +72,21 @@ class TmdbRepositoryImpl @Inject constructor(
 
         return try {
 
-            tmdbService.getMovieDetails(id = artworkId)
+            var tmdbMovie = tmdbService.getMovieDetails(id = artworkId)
+
+            if (tmdbMovie.description.isBlank() || tmdbMovie.title.isBlank()) {
+
+                val translations = getTmdbMovieTranslations(artworkId = artworkId)
+                translations.find { it.language == Locale.ENGLISH.language }?.let {
+                    tmdbMovie = tmdbMovie.copy(
+                        title = tmdbMovie.title.ifBlank { it.data.name },
+                        description = tmdbMovie.description.ifBlank { it.data.overview }
+                    )
+                }
+
+            }
+
+            tmdbMovie
 
         } catch (e: Exception) {
             Log.e(TAG, "getTmdbMovie - Fail to get TMDBMovie for artworkId:$artworkId", e)
@@ -71,13 +103,27 @@ class TmdbRepositoryImpl @Inject constructor(
 
         return try {
 
-            tmdbService.getEpisode(
+            var tmdbEpisode = tmdbService.getEpisode(
                 id = artworkId,
                 season = season,
                 episode = number
             ).also {
                 it.artworkId = artworkId
             }
+
+            if (tmdbEpisode.description.isBlank() || tmdbEpisode.title.isBlank()) {
+
+                val translations = getTmdbEpisodeTranslations(artworkId = artworkId, season = season, number = number)
+                translations.find { it.language == Locale.ENGLISH.language }?.let {
+                    tmdbEpisode = tmdbEpisode.copy(
+                        title = tmdbEpisode.title.ifBlank { it.data.name },
+                        description = tmdbEpisode.description.ifBlank { it.data.overview }
+                    )
+                }
+
+            }
+
+            tmdbEpisode
 
         } catch (e: Exception) {
             Log.e(TAG, "getTmdbEpisode - Fail to get TMDBEpisode for artworkId:$artworkId, season:$season, number:$number", e)

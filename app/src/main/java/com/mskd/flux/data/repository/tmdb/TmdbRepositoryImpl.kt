@@ -27,12 +27,10 @@ class TmdbRepositoryImpl @Inject constructor(
         return try {
 
             val tmdbArtworks = if (file.isEpisode) {
-
                 tmdbService.getShow(
                     title = file.nameProperties.title,
                     year = file.nameProperties.year
                 )
-
             } else {
                 tmdbService.getMovie(
                     title = file.nameProperties.title,
@@ -50,8 +48,8 @@ class TmdbRepositoryImpl @Inject constructor(
                 val translations = getTmdbShowTranslations(artworkId = tmdbArtwork.id)
                 translations.find { it.language == Locale.ENGLISH.language }?.let {
                     tmdbArtwork = tmdbArtwork.copy(
-                        title = tmdbArtwork.title.ifBlank { it.data.name },
-                        description = tmdbArtwork.description.ifBlank { it.data.overview }
+                        title = it.data.name,
+                        description = it.data.overview
                     )
                 }
 
@@ -79,8 +77,8 @@ class TmdbRepositoryImpl @Inject constructor(
                 val translations = getTmdbMovieTranslations(artworkId = artworkId)
                 translations.find { it.language == Locale.ENGLISH.language }?.let {
                     tmdbMovie = tmdbMovie.copy(
-                        title = tmdbMovie.title.ifBlank { it.data.name },
-                        description = tmdbMovie.description.ifBlank { it.data.overview }
+                        title = it.data.name,
+                        description = it.data.overview
                     )
                 }
 
@@ -116,8 +114,8 @@ class TmdbRepositoryImpl @Inject constructor(
                 val translations = getTmdbEpisodeTranslations(artworkId = artworkId, season = season, number = number)
                 translations.find { it.language == Locale.ENGLISH.language }?.let {
                     tmdbEpisode = tmdbEpisode.copy(
-                        title = tmdbEpisode.title.ifBlank { it.data.name },
-                        description = tmdbEpisode.description.ifBlank { it.data.overview }
+                        title = it.data.name,
+                        description = it.data.overview
                     )
                 }
 

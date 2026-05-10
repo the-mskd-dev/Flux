@@ -3,9 +3,9 @@ package com.mskd.flux.screens.token
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.BuildConfig
-import com.mskd.flux.data.repository.catalog.CatalogRepository
 import com.mskd.flux.data.tmdb.TMDBService
 import com.mskd.flux.data.tmdb.token.TokenRepository
+import com.mskd.flux.useCases.catalog.CatalogUC
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -23,7 +23,7 @@ class TokenViewModel @AssistedInject constructor(
     @Assisted val fromSettings: Boolean,
     private val tokenRepository: TokenRepository,
     private val tmdbService: TMDBService,
-    private val catalogRepository: CatalogRepository
+    private val catalogUC: CatalogUC
 ) : ViewModel() {
 
     @AssistedFactory
@@ -70,7 +70,7 @@ class TokenViewModel @AssistedInject constructor(
 
             if (authentication.success) {
 
-                catalogRepository.syncCatalog()
+                catalogUC.syncCatalog(onlyNew = false)
 
                 if (_uiState.value.showBackButton)
                     _uiState.update { it.copy(message = TokenMessage.Success) }

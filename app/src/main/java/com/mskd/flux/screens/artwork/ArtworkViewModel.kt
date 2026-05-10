@@ -3,17 +3,16 @@ package com.mskd.flux.screens.artwork
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mskd.flux.data.repository.artwork.ArtworkRepository
 import com.mskd.flux.data.repository.settings.SettingsRepository
-import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.model.ScreenState
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Status
-import com.mskd.flux.screens.artwork.ArtworkEvent.*
-import com.mskd.flux.useCases.mediaProgress.ArtworkProgressUC
+import com.mskd.flux.screens.artwork.ArtworkEvent.OpenEpisodeInfo
+import com.mskd.flux.useCases.artwork.ArtworkUC
+import com.mskd.flux.useCases.progress.ProgressUC
 import com.mskd.flux.utils.extensions.firstEpisode
 import com.mskd.flux.utils.extensions.getPreviousEpisodesFor
 import dagger.assisted.Assisted
@@ -33,9 +32,9 @@ import kotlinx.coroutines.launch
 @HiltViewModel(assistedFactory = ArtworkViewModel.Factory::class)
 class ArtworkViewModel @AssistedInject constructor(
     @Assisted val artworkId: Long,
-    private val repository: ArtworkRepository,
+    private val artworkUC: ArtworkUC,
     private val settingsRepository: SettingsRepository,
-    private val artworkProgressUC: ArtworkProgressUC
+    private val progressUC: ProgressUC
 ) : ViewModel() {
 
     //region Hilt
@@ -73,7 +72,7 @@ class ArtworkViewModel @AssistedInject constructor(
     private val _subState = MutableStateFlow(UserState())
 
     val uiState: StateFlow<ArtworkUiState> = combine(
-        repository.flow,
+        artworkUC.flow,
         settingsRepository.flow,
         _subState
     ) { artworkContent, settings, subState ->
@@ -94,7 +93,7 @@ class ArtworkViewModel @AssistedInject constructor(
     //regin Init
 
     init {
-        repository.searchArtwork(artworkId = artworkId)
+        artworkUC.searchArtwork(artworkId = artworkId)
     }
 
     //endregion
@@ -122,7 +121,7 @@ class ArtworkViewModel @AssistedInject constructor(
     //region Private Methods
 
     private fun buildUiState(
-        artworkContent: ArtworkRepository.Content,
+        artworkContent: ArtworkUC.Content,
         settings: SettingsRepository.State,
         subState: UserState
     ) : ArtworkUiState {
@@ -132,12 +131,12 @@ class ArtworkViewModel @AssistedInject constructor(
         var episodes: List<Episode> = emptyList()
 
         when (artworkContent) {
-            ArtworkRepository.Content.ERROR -> {}
-            is ArtworkRepository.Content.MOVIE -> {
+            ArtworkUC.Content.ERROR -> {}
+            is ArtworkUC.Content.MOVIE -> {
                 artwork = artworkContent.artwork
                 movie = artworkContent.movie
             }
-            is ArtworkRepository.Content.SHOW -> {
+            is ArtworkUC.Content.SHOW -> {
                 artwork = artworkContent.artwork
                 episodes = artworkContent.episodes
             }
@@ -206,7 +205,7 @@ class ArtworkViewModel @AssistedInject constructor(
 
         val status = if (media.status != Status.WATCHED) Status.WATCHED else Status.TO_WATCH
 
-        artworkProgressUC.changeMediaStatus(
+        progressUC.changeMediaStatus(
             media = media,
             status = status
         )
@@ -227,7 +226,7 @@ class ArtworkViewModel @AssistedInject constructor(
 
             val episode = state.episodePendingConfirmation ?: return
 
-            artworkProgressUC.markPreviousEpisodesAsWatchedFor(episode = episode)
+            progressUC.markPreviousEpisodesAsWatchedFor(episode = episode)
 
             state.copy(episodePendingConfirmation = null)
 
@@ -237,7 +236,7 @@ class ArtworkViewModel @AssistedInject constructor(
 
     private suspend fun onExternalPlayerResult(progress: Long) {
         selectedMedia?.let { media ->
-            artworkProgressUC.saveProgress(media = media, progress = progress)
+            progressUC.saveProgress(media = media, progress = progress)
             selectedMedia = null
         }
     }
@@ -250,7 +249,7 @@ class ArtworkViewModel @AssistedInject constructor(
 
         val currentState = uiState.value
 
-        artworkProgressUC.resetProgress(artwork = currentState.artwork)
+        progressUC.resetProgress(artwork = currentState.artwork)
 
         _subState.update {
 

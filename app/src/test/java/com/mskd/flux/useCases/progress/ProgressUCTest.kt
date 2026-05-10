@@ -1,46 +1,43 @@
-package com.mskd.flux.useCases
+package com.mskd.flux.useCases.progress
 
 import com.mskd.flux.configs.fluxExtensions
-import com.mskd.flux.data.repository.artwork.ArtworkRepository
+import com.mskd.flux.data.repository.ddb.DatabaseRepository
 import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.mockups.mockkDatabaseRepository
+import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.model.artwork.Episode
-import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Status
-import com.mskd.flux.useCases.mediaProgress.ArtworkProgressUC
-import com.mskd.flux.useCases.mediaProgress.ArtworkProgressUCImpl
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.extensions.lastEpisode
 import com.mskd.flux.utils.extensions.minToMs
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData
-import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlin.String
 
-class ArtworkProgressUCTest : FunSpec({
+class ProgressUCTest : FunSpec({
 
     fluxExtensions()
 
-    lateinit var artworkRepository: ArtworkRepository
+    lateinit var databaseRepository: DatabaseRepository
     lateinit var userRepository: UserRepository
-    lateinit var artworkProgressUC: ArtworkProgressUC
+    lateinit var progressUC: ProgressUC
 
     beforeTest {
 
-        artworkRepository = mockk(relaxed = true)
+        databaseRepository = mockkDatabaseRepository()
 
         userRepository = mockk(relaxed = true) {
             every { flow } returns MutableStateFlow(UserRepository.State())
         }
 
-        artworkProgressUC = ArtworkProgressUCImpl(
-            artworkRepository = artworkRepository,
-            userRepository = userRepository,
+        progressUC = ProgressUCImpl(
+            database = databaseRepository,
+            user = userRepository,
         )
 
     }
@@ -48,7 +45,7 @@ class ArtworkProgressUCTest : FunSpec({
     context("save progress") {
         withData(
             nameFn = { it.description },
-            ArtworkProgressUCTestCases.SaveProgress(
+            ProgressUCTestCases.SaveProgress(
                 description = "Movie - save time at the middle",
                 artwork = MediaMockups.movieArtwork,
                 media = MediaMockups.movie,
@@ -56,7 +53,7 @@ class ArtworkProgressUCTest : FunSpec({
                 shouldBeAddedToRecentlyWatched = true,
                 statusExpected = Status.IS_WATCHING
             ),
-            ArtworkProgressUCTestCases.SaveProgress(
+            ProgressUCTestCases.SaveProgress(
                 description = "Movie - save time at the end",
                 artwork = MediaMockups.movieArtwork,
                 media = MediaMockups.movie,
@@ -64,7 +61,7 @@ class ArtworkProgressUCTest : FunSpec({
                 shouldBeAddedToRecentlyWatched = false,
                 statusExpected = Status.WATCHED
             ),
-            ArtworkProgressUCTestCases.SaveProgress(
+            ProgressUCTestCases.SaveProgress(
                 description = "Show - save time at the middle",
                 artwork = MediaMockups.showArtwork,
                 media = MediaMockups.episode1,
@@ -72,7 +69,7 @@ class ArtworkProgressUCTest : FunSpec({
                 shouldBeAddedToRecentlyWatched = true,
                 statusExpected = Status.IS_WATCHING
             ),
-            ArtworkProgressUCTestCases.SaveProgress(
+            ProgressUCTestCases.SaveProgress(
                 description = "Show - save time at the end",
                 artwork = MediaMockups.showArtwork,
                 media = MediaMockups.episode1,
@@ -80,7 +77,7 @@ class ArtworkProgressUCTest : FunSpec({
                 shouldBeAddedToRecentlyWatched = true,
                 statusExpected = Status.WATCHED
             ),
-            ArtworkProgressUCTestCases.SaveProgress(
+            ProgressUCTestCases.SaveProgress(
                 description = "Show - save time for last episode at the middle",
                 artwork = MediaMockups.showArtwork,
                 media = MediaMockups.episodes.lastEpisode,
@@ -88,7 +85,7 @@ class ArtworkProgressUCTest : FunSpec({
                 shouldBeAddedToRecentlyWatched = true,
                 statusExpected = Status.IS_WATCHING
             ),
-            ArtworkProgressUCTestCases.SaveProgress(
+            ProgressUCTestCases.SaveProgress(
                 description = "Show - save time for last episode at the end",
                 artwork = MediaMockups.showArtwork,
                 media = MediaMockups.episodes.lastEpisode,
@@ -98,32 +95,11 @@ class ArtworkProgressUCTest : FunSpec({
             )
         ) { testCase ->
 
-            val content = when (testCase.media) {
-                is Episode -> ArtworkRepository.Content.SHOW(
-                    artwork = testCase.artwork,
-                    episodes = MediaMockups.episodes
-                )
-                is Movie -> ArtworkRepository.Content.MOVIE(
-                    artwork = testCase.artwork,
-                    movie = MediaMockups.movie
-                )
-            }
-
-            // Given
-            artworkRepository = mockk(relaxed = true) {
-                every { flow } returns MutableStateFlow(content)
-            }
-
-            artworkProgressUC = ArtworkProgressUCImpl(
-                artworkRepository = artworkRepository,
-                userRepository = userRepository,
-            )
-
-            artworkProgressUC.saveProgress(media = testCase.media, progress = testCase.progress)
+            progressUC.saveProgress(media = testCase.media, progress = testCase.progress)
 
             when (testCase.media) {
-                is Episode -> coVerify { artworkRepository.saveEpisode(any()) }
-                is Movie -> coVerify { artworkRepository.saveMovie(any()) }
+                is Episode -> coVerify { databaseRepository.saveEpisodes(any()) }
+                is Movie -> coVerify { databaseRepository.saveMovies(any()) }
             }
 
             if (testCase.shouldBeAddedToRecentlyWatched) {
@@ -138,78 +114,49 @@ class ArtworkProgressUCTest : FunSpec({
     context("change status") {
        withData(
            nameFn = { it.description },
-           ArtworkProgressUCTestCases.ChangeStatus(
+           ProgressUCTestCases.ChangeStatus(
                description = "Change movie as watched",
                media = MediaMockups.movie,
                status = Status.WATCHED,
-               artworkContent = ArtworkRepository.Content.MOVIE(
-                   artwork = MediaMockups.movieArtwork,
-                   movie = MediaMockups.movie
-               ),
                expectedRemoveFromRecentlyWatched = true
            ),
-           ArtworkProgressUCTestCases.ChangeStatus(
+           ProgressUCTestCases.ChangeStatus(
                description = "Change movie as not watched",
                media = MediaMockups.movie,
                status = Status.TO_WATCH,
-               artworkContent = ArtworkRepository.Content.MOVIE(
-                   artwork = MediaMockups.movieArtwork,
-                   movie = MediaMockups.movie
-               ),
                expectedRemoveFromRecentlyWatched = false
            ),
-           ArtworkProgressUCTestCases.ChangeStatus(
+           ProgressUCTestCases.ChangeStatus(
                description = "Change episode 2 as watched",
                media = MediaMockups.episode2,
                status = Status.WATCHED,
-               artworkContent = ArtworkRepository.Content.SHOW(
-                   artwork = MediaMockups.showArtwork,
-                   episodes = MediaMockups.episodes
-               ),
                expectedRemoveFromRecentlyWatched = false
            ),
-           ArtworkProgressUCTestCases.ChangeStatus(
+           ProgressUCTestCases.ChangeStatus(
                description = "Change last episode as watched",
                media = MediaMockups.episode3,
                status = Status.WATCHED,
-               artworkContent = ArtworkRepository.Content.SHOW(
-                   artwork = MediaMockups.showArtwork,
-                   episodes = MediaMockups.episodes
-               ),
                expectedRemoveFromRecentlyWatched = true
            ),
-           ArtworkProgressUCTestCases.ChangeStatus(
+           ProgressUCTestCases.ChangeStatus(
                description = "Change last episode as not watched",
                media = MediaMockups.episode3,
                status = Status.TO_WATCH,
-               artworkContent = ArtworkRepository.Content.SHOW(
-                   artwork = MediaMockups.showArtwork,
-                   episodes = MediaMockups.episodes
-               ),
                expectedRemoveFromRecentlyWatched = false
            )
        ) { testCase ->
 
-           artworkRepository = mockk(relaxed = true) {
-               every { flow } returns MutableStateFlow(testCase.artworkContent)
-           }
-
-           artworkProgressUC = ArtworkProgressUCImpl(
-               artworkRepository = artworkRepository,
-               userRepository = userRepository,
-           )
-
-           artworkProgressUC.changeMediaStatus(
+           progressUC.changeMediaStatus(
                media = testCase.media,
                status = testCase.status
            )
 
            when (testCase.media) {
                is Episode -> {
-                   coVerify { artworkRepository.saveEpisode(match { it.id == testCase.media.id }) }
+                   coVerify { databaseRepository.saveEpisodes(match { it.all { e -> e.id == testCase.media.id } } ) }
                }
                is Movie -> {
-                   coVerify { artworkRepository.saveMovie(match { it.artworkId == testCase.media.artworkId }) }
+                   coVerify { databaseRepository.saveMovies(match { it.all { e -> e.artworkId == testCase.media.artworkId } } ) }
                }
            }
 
@@ -224,66 +171,34 @@ class ArtworkProgressUCTest : FunSpec({
 
     test("mark previous episodes as watched") {
 
-        artworkRepository = mockk(relaxed = true) {
-            every { flow } returns MutableStateFlow(
-                ArtworkRepository.Content.SHOW(
-                    artwork = MediaMockups.showArtwork,
-                    episodes = MediaMockups.episodes
-                )
-            )
-        }
+        progressUC.markPreviousEpisodesAsWatchedFor(episode = MediaMockups.episode3)
 
-        artworkProgressUC = ArtworkProgressUCImpl(
-            artworkRepository = artworkRepository,
-            userRepository = userRepository,
-        )
-
-        artworkProgressUC.markPreviousEpisodesAsWatchedFor(episode = MediaMockups.episode3)
-
-        coVerify { artworkRepository.saveEpisodes(match { episodes -> episodes.size == 2 && episodes.all { it.status == Status.WATCHED } })  }
+        coVerify { databaseRepository.saveEpisodes(match { episodes -> episodes.size == 2 && episodes.all { it.status == Status.WATCHED } })  }
 
     }
 
     context("reset progress") {
         withData(
             nameFn = { it.description },
-            ArtworkProgressUCTestCases.ResetProgress(
+            ProgressUCTestCases.ResetProgress(
                 description = "reset movie",
                 artwork = MediaMockups.movieArtwork,
-                artworkContent = ArtworkRepository.Content.MOVIE(
-                    artwork = MediaMockups.movieArtwork,
-                    movie = MediaMockups.movie
-                )
             ),
-            ArtworkProgressUCTestCases.ResetProgress(
+            ProgressUCTestCases.ResetProgress(
                 description = "reset movie",
                 artwork = MediaMockups.showArtwork,
-                artworkContent = ArtworkRepository.Content.SHOW(
-                    artwork = MediaMockups.showArtwork,
-                    episodes = MediaMockups.episodesWithStatus
-                )
             )
         ) { testCase ->
 
-            artworkRepository = mockk(relaxed = true) {
-                coEvery { getArtwork(any()) } returns testCase.artworkContent
-            }
+            progressUC.resetProgress(artwork = testCase.artwork)
 
-            artworkProgressUC = ArtworkProgressUCImpl(
-                artworkRepository = artworkRepository,
-                userRepository = userRepository,
-            )
-
-            artworkProgressUC.resetProgress(artwork = testCase.artwork)
-
-            when (testCase.artworkContent) {
-                is ArtworkRepository.Content.MOVIE -> {
-                    coVerify { artworkRepository.saveMovie(match { it.status == Status.TO_WATCH && it.currentTime == 0L }) }
+            when (testCase.artwork.type) {
+                ContentType.MOVIE -> {
+                    coVerify { databaseRepository.saveMovies(match { movies -> movies.all { it.status == Status.TO_WATCH && it.currentTime == 0L } }) }
                 }
-                is ArtworkRepository.Content.SHOW -> {
-                    coVerify { artworkRepository.saveEpisodes(match { episodes ->  episodes.all { it.status == Status.TO_WATCH && it.currentTime == 0L } } ) }
+                ContentType.SHOW -> {
+                    coVerify { databaseRepository.saveEpisodes(match { episodes ->  episodes.all { it.status == Status.TO_WATCH && it.currentTime == 0L } } ) }
                 }
-                ArtworkRepository.Content.ERROR -> { assert(false) }
             }
 
             coVerify { userRepository.removeFromRecentlyWatched(artworkId = testCase.artwork.id) }

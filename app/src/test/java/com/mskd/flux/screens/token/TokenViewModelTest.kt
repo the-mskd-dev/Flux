@@ -2,10 +2,10 @@ package com.mskd.flux.screens.token
 
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
-import com.mskd.flux.data.repository.catalog.CatalogRepository
 import com.mskd.flux.data.tmdb.TMDBService
 import com.mskd.flux.data.tmdb.token.TokenRepository
 import com.mskd.flux.model.tmdb.TMDBAuthentication
+import com.mskd.flux.useCases.catalog.CatalogUC
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData
 import io.kotest.matchers.shouldBe
@@ -20,7 +20,7 @@ class TokenViewModelTest : FunSpec({
     lateinit var viewModel: TokenViewModel
     lateinit var tokenRepository: TokenRepository
     lateinit var tmdbService: TMDBService
-    lateinit var catalogRepository: CatalogRepository
+    lateinit var catalogUC: CatalogUC
 
     beforeTest {
 
@@ -32,13 +32,13 @@ class TokenViewModelTest : FunSpec({
             coEvery { authenticate() } returns TMDBAuthentication(success = true, status_code = 0, status_message = "")
         }
 
-        catalogRepository = mockk(relaxed = true)
+        catalogUC = mockk(relaxed = true)
 
         viewModel = TokenViewModel(
             fromSettings = true,
             tokenRepository = tokenRepository,
             tmdbService = tmdbService,
-            catalogRepository = catalogRepository
+            catalogUC = catalogUC
         )
 
     }
@@ -113,7 +113,7 @@ class TokenViewModelTest : FunSpec({
                 fromSettings = true,
                 tokenRepository = tokenRepository,
                 tmdbService = tmdbService,
-                catalogRepository = catalogRepository
+                catalogUC = catalogUC
             )
 
             viewModel.uiState.test {
@@ -125,7 +125,7 @@ class TokenViewModelTest : FunSpec({
                 val state = awaitItem()
 
                 if (testCase.expectedLoadCatalog) {
-                    coEvery { catalogRepository.syncCatalog() }
+                    coEvery { catalogUC.syncCatalog(onlyNew = false) }
                 }
                 state.message shouldBe testCase.expectedMessage
                 state.isLoading shouldBe false

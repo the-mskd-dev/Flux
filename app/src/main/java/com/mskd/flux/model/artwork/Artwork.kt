@@ -48,7 +48,7 @@ data class Artwork(
         title = tmdbArtwork.title,
         imagePath = tmdbArtwork.imagePath,
         bannerPath = tmdbArtwork.bannerPath,
-        type = ContentType.SHOW
+        type = if (tmdbArtwork.type == TMDBMediaType.MOVIE) ContentType.MOVIE else ContentType.SHOW
     )
 
     val isUnknown: Boolean get() = id == UNKNOWN_ID

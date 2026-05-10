@@ -2,12 +2,12 @@ package com.mskd.flux.di
 
 import com.google.gson.Gson
 import com.mskd.flux.data.tmdb.TMDBService
-import com.mskd.flux.data.tmdb.token.TokenRepository
+import com.mskd.flux.utils.interceptors.RetryInterceptor
+import com.mskd.flux.utils.interceptors.TokenInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -21,23 +21,13 @@ object RetrofitModule {
 
     @Provides
     @Singleton
-    fun provideHttpClient(tokenRepository: TokenRepository) : OkHttpClient {
+    fun provideHttpClient(
+        tokenInterceptor: TokenInterceptor,
+        retryInterceptor: RetryInterceptor
+    ) : OkHttpClient {
         return OkHttpClient.Builder()
-            .addInterceptor { chain ->
-                val request = chain.request()
-                val token = runBlocking { tokenRepository.getToken() }
-
-                val newRequest = request.newBuilder()
-                    .addHeader("accept", "application/json")
-                    .apply {
-                        if (token.isNotEmpty()) {
-                            addHeader("Authorization", "Bearer ${token.trim()}")
-                        }
-                    }
-                    .build()
-
-                chain.proceed(newRequest)
-            }
+            .addInterceptor(tokenInterceptor)
+            .addInterceptor(retryInterceptor)
             .build()
     }
 

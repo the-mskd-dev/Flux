@@ -2,9 +2,9 @@ package com.mskd.flux.screens.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mskd.flux.data.repository.catalog.CatalogRepository
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.model.artwork.ContentType
+import com.mskd.flux.useCases.catalog.CatalogUC
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -22,7 +22,7 @@ import kotlinx.coroutines.runBlocking
 @HiltViewModel(assistedFactory = SearchViewModel.Factory::class)
 class SearchViewModel @AssistedInject constructor(
     @Assisted contentType: ContentType? = null,
-    private val repository: CatalogRepository,
+    private val catalogUC: CatalogUC,
     private val settingsRepository: SettingsRepository
 ) : ViewModel() {
 
@@ -42,10 +42,10 @@ class SearchViewModel @AssistedInject constructor(
         val autoKeyboard = runBlocking { settingsRepository.flow.first().autoKeyboard }
 
         viewModelScope.launch {
-            repository.flow.collect { library ->
+            catalogUC.artworks.collect { artworks ->
                 _uiState.update {
                     it.copy(
-                        artworks = library.artworks.filter { artworks -> !artworks.isUnknown },
+                        artworks = artworks.filter { artworks -> !artworks.isUnknown },
                         autoKeyboard = autoKeyboard
                     )
                 }

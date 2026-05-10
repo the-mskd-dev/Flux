@@ -1,19 +1,26 @@
 package com.mskd.flux.data.repository.tmdb
 
 import android.util.Log
-import com.mskd.flux.data.ddb.DatabaseDao
 import com.mskd.flux.data.tmdb.TMDBService
 import com.mskd.flux.model.UserFile
-import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.tmdb.TMDBArtwork
+import com.mskd.flux.model.tmdb.TMDBEpisode
+import com.mskd.flux.model.tmdb.TMDBMediaType
+import com.mskd.flux.model.tmdb.TMDBMovie
 import javax.inject.Inject
 
 class TmdbRepositoryImpl @Inject constructor(
-    private val db: DatabaseDao,
     private val tmdbService: TMDBService,
 ) : TmdbRepository {
 
-    override suspend fun searchTmdbArtworks(file: UserFile): List<TMDBArtwork> {
+    private companion object {
+        const val TAG = "TmdbRepositoryImpl"
+    }
+
+
+    override suspend fun getTmdbArtwork(
+        file: UserFile
+    ): TMDBArtwork? {
 
         return try {
 
@@ -29,25 +36,52 @@ class TmdbRepositoryImpl @Inject constructor(
                 )
             }
 
-            tmdbArtworks.results
+            tmdbArtworks.results.first().also {
+                it.type = if (file.isEpisode) TMDBMediaType.SHOW else TMDBMediaType.MOVIE
+            }
 
         } catch (e: Exception) {
-            Log.e("TmdbRepositoryImpl", "Fail to get artworks from tmdb for ${file.nameProperties.title}", e)
-            emptyList()
+            Log.e(TAG, "getTmdbArtwork - Fail to get TMDBArtwork for file:${file.name}", e)
+            null
         }
 
     }
 
-    override suspend fun applyTmdbArtwork(
-        artwork: Artwork,
-        tmdbArtwork: TMDBArtwork
-    ) {
+    override suspend fun getTmdbMovie(
+        artworkId: Long
+    ): TMDBMovie? {
 
-        if (!artwork.type.equalsTmdb(tmdbType = tmdbArtwork.type))
-            return
+        return try {
 
-        TODO("Not yet implemented")
+            tmdbService.getMovieDetails(id = artworkId)
+
+        } catch (e: Exception) {
+            Log.e(TAG, "getTmdbMovie - Fail to get TMDBMovie for artworkId:$artworkId", e)
+            null
+        }
 
     }
 
+    override suspend fun getTmdbEpisode(
+        artworkId: Long,
+        season: Int,
+        number: Int
+    ): TMDBEpisode? {
+
+        return try {
+
+            tmdbService.getEpisode(
+                id = artworkId,
+                season = season,
+                episode = number
+            ).also {
+                it.artworkId = artworkId
+            }
+
+        } catch (e: Exception) {
+            Log.e(TAG, "getTmdbEpisode - Fail to get TMDBEpisode for artworkId:$artworkId, season:$season, number:$number", e)
+            null
+        }
+
+    }
 }

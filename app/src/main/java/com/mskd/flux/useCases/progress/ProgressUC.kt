@@ -1,7 +1,7 @@
-package com.mskd.flux.useCases.mediaProgress
+package com.mskd.flux.useCases.progress
 
 import android.util.Log
-import com.mskd.flux.data.repository.artwork.ArtworkRepository
+import com.mskd.flux.data.repository.ddb.DatabaseRepository
 import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.ContentType
@@ -13,10 +13,9 @@ import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.extensions.getPreviousEpisodesFor
 import com.mskd.flux.utils.extensions.lastEpisode
 import com.mskd.flux.utils.extensions.timeDescription
-import kotlinx.coroutines.flow.first
 import kotlin.time.Duration.Companion.minutes
 
-interface ArtworkProgressUC {
+interface ProgressUC {
 
     suspend fun saveProgress(media: Media, progress: Long)
     suspend fun changeMediaStatus(media: Media, status: Status)
@@ -24,10 +23,10 @@ interface ArtworkProgressUC {
     suspend fun resetProgress(artwork: Artwork)
 }
 
-class ArtworkProgressUCImpl(
-    private val artworkRepository: ArtworkRepository,
-    private val userRepository: UserRepository
-) : ArtworkProgressUC {
+class ProgressUCImpl(
+    private val database: DatabaseRepository,
+    private val user: UserRepository
+) : ProgressUC {
 
     //region Public Methods
 
@@ -48,26 +47,26 @@ class ArtworkProgressUCImpl(
             is Movie -> {
 
                 // Add/Remove from recently watched
-                if (newStatus == Status.WATCHED) userRepository.removeFromRecentlyWatched(media.artworkId)
-                else userRepository.addToRecentlyWatched(media.artworkId)
+                if (newStatus == Status.WATCHED) user.removeFromRecentlyWatched(media.artworkId)
+                else user.addToRecentlyWatched(media.artworkId)
 
                 // Save in DB
-                artworkRepository.saveMovie(updatedMedia)
+                database.saveMovies(listOf(updatedMedia))
             }
             is Episode -> {
 
                 // Add/Remove from recently watched
                 if (!updatedMedia.isUnknown) {
-                    val episodes = (artworkRepository.flow.first() as? ArtworkRepository.Content.SHOW)?.episodes.orEmpty()
+                    val episodes = database.getEpisodes(artworkId = media.artworkId)
                     val lastEpisode = episodes.lastEpisode
                     if (lastEpisode.id == updatedMedia.id && newStatus == Status.WATCHED)
-                        userRepository.removeFromRecentlyWatched(updatedMedia.artworkId)
+                        user.removeFromRecentlyWatched(updatedMedia.artworkId)
                     else
-                        userRepository.addToRecentlyWatched(updatedMedia.artworkId)
+                        user.addToRecentlyWatched(updatedMedia.artworkId)
                 }
 
                 // Save in DB
-                artworkRepository.saveEpisode(updatedMedia)
+                database.saveEpisodes(listOf(updatedMedia))
             }
         }
 
@@ -91,8 +90,8 @@ class ArtworkProgressUCImpl(
 
         var episodesToSave: List<Episode>
 
-        val previousEpisodes = (artworkRepository.flow.first() as? ArtworkRepository.Content.SHOW)
-            ?.episodes.orEmpty()
+        val previousEpisodes = database
+            .getEpisodes(artworkId = episode.artworkId)
             .getPreviousEpisodesFor(episode)
             .filter { it.status != Status.WATCHED }
 
@@ -106,34 +105,36 @@ class ArtworkProgressUCImpl(
             )
         }
 
-        artworkRepository.saveEpisodes(episodesToSave) // Save status in DB
+        database.saveEpisodes(episodesToSave) // Save status in DB
 
         Log.i(TAG, "${episodesToSave.size} episodes marked as watched")
 
     }
 
     override suspend fun resetProgress(artwork: Artwork) {
-        when (val artworkContent = artworkRepository.getArtwork(artworkId = artwork.id)) {
-            is ArtworkRepository.Content.SHOW -> {
+        when (artwork.type) {
+            ContentType.SHOW -> {
 
-                val updatedEpisodes = artworkContent.episodes.map {
-                    it.copy(currentTime = 0L, status = Status.TO_WATCH)
+                val episodes = database.getEpisodes(artworkId = artwork.id)
+                val updatedEpisodes = episodes
+                    .filter { it.status != Status.TO_WATCH || it.currentTime != 0L }
+                    .map { it.copy(currentTime = 0L, status = Status.TO_WATCH) }
+
+                database.saveEpisodes(episodes = updatedEpisodes)
+
+            }
+            ContentType.MOVIE -> {
+
+                database.getMovie(artworkId = artwork.id)?.let { movie ->
+                    val updatedMovie = movie.copy(currentTime = 0L, status = Status.TO_WATCH)
+
+                    database.saveMovies(listOf(updatedMovie))
                 }
 
-                artworkRepository.saveEpisodes(updatedEpisodes)
-
             }
-            is ArtworkRepository.Content.MOVIE -> {
-
-                val updatedMovie = artworkContent.movie.copy(currentTime = 0L, status = Status.TO_WATCH)
-
-                artworkRepository.saveMovie(updatedMovie)
-
-            }
-            else -> {}
         }
 
-        userRepository.removeFromRecentlyWatched(artworkId = artwork.id)
+        user.removeFromRecentlyWatched(artworkId = artwork.id)
 
     }
 
@@ -149,9 +150,9 @@ class ArtworkProgressUCImpl(
         )
 
         if (status == Status.WATCHED)
-            userRepository.removeFromRecentlyWatched(movie.artworkId)
+            user.removeFromRecentlyWatched(movie.artworkId)
 
-        artworkRepository.saveMovie(movieUpdated) // Save status in DB
+        database.saveMovies(listOf(movieUpdated)) // Save status in DB
 
         Log.i(TAG, "${movie.title} is now ${movie.status}")
 
@@ -165,14 +166,14 @@ class ArtworkProgressUCImpl(
         )
 
         // Remove from recently watched if last episode is watched
-        val episodes = (artworkRepository.flow.first() as? ArtworkRepository.Content.SHOW)?.episodes.orEmpty()
+        val episodes = database.getEpisodes(artworkId = episode.artworkId)
         if (episodes.isNotEmpty()) {
 
             val lastEpisode = episodes.lastEpisode
             if (lastEpisode.id == updatedEpisode.id && status == Status.WATCHED)
-                userRepository.removeFromRecentlyWatched(episode.artworkId)
+                user.removeFromRecentlyWatched(episode.artworkId)
 
-            artworkRepository.saveEpisode(updatedEpisode) // Save status in DB
+            database.saveEpisodes(listOf(updatedEpisode)) // Save status in DB
 
         }
 

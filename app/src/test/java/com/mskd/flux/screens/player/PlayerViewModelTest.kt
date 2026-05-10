@@ -4,16 +4,13 @@ import androidx.media3.common.Player
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.data.repository.settings.SettingsRepository
-import com.mskd.flux.data.repository.user.UserRepository
-import com.mskd.flux.mockups.FakeArtworkRepository
+import com.mskd.flux.mockups.FakeArtworkUC
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.PlayerMockups
 import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.model.artwork.Movie
-import com.mskd.flux.model.artwork.Status
 import com.mskd.flux.screens.player.controllers.PlayerManager
-import com.mskd.flux.useCases.mediaProgress.ArtworkProgressUC
-import com.mskd.flux.useCases.mediaProgress.ArtworkProgressUCImpl
+import com.mskd.flux.useCases.progress.ProgressUC
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.extensions.lastEpisode
 import com.mskd.flux.utils.extensions.minToMs
@@ -32,26 +29,21 @@ class PlayerViewModelTest : FunSpec({
     fluxExtensions()
 
     lateinit var viewModel: PlayerViewModel
-    lateinit var artworkRepository: FakeArtworkRepository
-    lateinit var userRepository: UserRepository
+    lateinit var artworkUC: FakeArtworkUC
     lateinit var settingsRepository: SettingsRepository
-    lateinit var artworkProgressUC: ArtworkProgressUC
+    lateinit var progressUC: ProgressUC
     lateinit var playerManager: PlayerManager
     lateinit var mockkedPlayer: Player
 
     fun updateVm(mediaId: Long = MediaMockups.episode1.mediaId) {
 
-        artworkProgressUC = ArtworkProgressUCImpl(
-            artworkRepository = artworkRepository,
-            userRepository = userRepository,
-        )
+        progressUC = mockk(relaxed = true)
 
         viewModel = PlayerViewModel(
             mediaId = mediaId,
-            artworkRepository = artworkRepository,
-            userRepository = userRepository,
+            artworkUC = artworkUC,
             settingsRepository = settingsRepository,
-            artworkProgressUC = artworkProgressUC,
+            progressUC = progressUC,
             playerManager = playerManager
         )
 
@@ -59,11 +51,7 @@ class PlayerViewModelTest : FunSpec({
 
     beforeTest {
 
-        artworkRepository = FakeArtworkRepository(initialContentType = ContentType.SHOW)
-
-        userRepository = mockk(relaxed = true) {
-            every { flow } returns MutableStateFlow(UserRepository.State())
-        }
+        artworkUC = FakeArtworkUC(initialContentType = ContentType.SHOW)
 
         settingsRepository = mockk(relaxed = true) {
             every { flow } returns MutableStateFlow(SettingsRepository.State())
@@ -143,53 +131,41 @@ class PlayerViewModelTest : FunSpec({
                 artwork = MediaMockups.movieArtwork,
                 media = MediaMockups.movie,
                 time = MediaMockups.movie.duration.minToMs.times(0.5).toLong(),
-                shouldBeAddedToRecentlyWatched = true,
-                statusExpected = Status.IS_WATCHING
             ),
             PlayerTestCases.SaveTime(
                 description = "Movie - save time at the end",
                 artwork = MediaMockups.movieArtwork,
                 media = MediaMockups.movie,
                 time = MediaMockups.movie.duration.minToMs.times(Constants.PLAYER.PROGRESS_THRESHOLD).toLong(),
-                shouldBeAddedToRecentlyWatched = false,
-                statusExpected = Status.WATCHED
             ),
             PlayerTestCases.SaveTime(
                 description = "Show - save time at the middle",
                 artwork = MediaMockups.showArtwork,
                 media = MediaMockups.episode1,
                 time = MediaMockups.episode1.duration.minToMs.times(0.5).toLong(),
-                shouldBeAddedToRecentlyWatched = true,
-                statusExpected = Status.IS_WATCHING
             ),
             PlayerTestCases.SaveTime(
                 description = "Show - save time at the end",
                 artwork = MediaMockups.showArtwork,
                 media = MediaMockups.episode1,
                 time = MediaMockups.episode1.duration.minToMs.times(Constants.PLAYER.PROGRESS_THRESHOLD).toLong(),
-                shouldBeAddedToRecentlyWatched = true,
-                statusExpected = Status.WATCHED
             ),
             PlayerTestCases.SaveTime(
                 description = "Show - save time for last episode at the middle",
                 artwork = MediaMockups.showArtwork,
                 media = MediaMockups.episodes.lastEpisode,
                 time = MediaMockups.episodes.lastEpisode.duration.minToMs.times(0.5).toLong(),
-                shouldBeAddedToRecentlyWatched = true,
-                statusExpected = Status.IS_WATCHING
             ),
             PlayerTestCases.SaveTime(
                 description = "Show - save time for last episode at the end",
                 artwork = MediaMockups.showArtwork,
                 media = MediaMockups.episodes.lastEpisode,
                 time = MediaMockups.episodes.lastEpisode.duration.minToMs.times(Constants.PLAYER.PROGRESS_THRESHOLD).toLong(),
-                shouldBeAddedToRecentlyWatched = false,
-                statusExpected = Status.WATCHED
             )
         ) { testCase ->
 
             // Given
-            artworkRepository.setContentType(if (testCase.media is Movie) ContentType.MOVIE else ContentType.SHOW)
+            artworkUC.setContentType(if (testCase.media is Movie) ContentType.MOVIE else ContentType.SHOW)
 
             playerManager = mockk(relaxed = true) {
                 every { state } returns MutableStateFlow(PlayerManager.State.Ready(
@@ -210,15 +186,7 @@ class PlayerViewModelTest : FunSpec({
                 viewModel.handleIntent(PlayerIntent.SaveTime)
 
                 // Then
-                val state = awaitItem()
-                state.media.shouldNotBeNull {
-                    status shouldBe testCase.statusExpected
-                }
-                if (testCase.shouldBeAddedToRecentlyWatched) {
-                    coVerify { userRepository.addToRecentlyWatched(testCase.artwork.id) }
-                } else {
-                    coVerify { userRepository.removeFromRecentlyWatched(testCase.artwork.id) }
-                }
+                coVerify { progressUC.saveProgress(testCase.media, testCase.time) }
 
             }
 

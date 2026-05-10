@@ -3,14 +3,13 @@ package com.mskd.flux.screens.player
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mskd.flux.data.repository.artwork.ArtworkRepository
 import com.mskd.flux.data.repository.settings.SettingsRepository
-import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.screens.player.PlayerTrack.Type
 import com.mskd.flux.screens.player.controllers.PlayerManager
-import com.mskd.flux.useCases.mediaProgress.ArtworkProgressUC
+import com.mskd.flux.useCases.artwork.ArtworkUC
+import com.mskd.flux.useCases.progress.ProgressUC
 import com.mskd.flux.utils.extensions.getNextEpisodeFor
 import com.mskd.flux.utils.extensions.toPlayerTrack
 import dagger.assisted.Assisted
@@ -41,11 +40,10 @@ import kotlin.time.Duration.Companion.seconds
 @HiltViewModel(assistedFactory = PlayerViewModel.Factory::class)
 class PlayerViewModel @AssistedInject constructor(
     @Assisted mediaId: Long,
-    private val artworkRepository: ArtworkRepository,
-    private val userRepository: UserRepository,
+    private val artworkUC: ArtworkUC,
     private val settingsRepository: SettingsRepository,
     private val playerManager: PlayerManager,
-    private val artworkProgressUC: ArtworkProgressUC
+    private val progressUC: ProgressUC
 ) : ViewModel() {
 
     //region Factory
@@ -84,7 +82,7 @@ class PlayerViewModel @AssistedInject constructor(
     private val intentChannel = Channel<PlayerIntent>(Channel.UNLIMITED)
 
     val uiState: StateFlow<PlayerUiState> = combine(
-        artworkRepository.flow,
+        artworkUC.flow,
         settingsRepository.flow,
         _controlsState,
         _tracksState,
@@ -94,7 +92,7 @@ class PlayerViewModel @AssistedInject constructor(
         playerManager.state,
     ) { flows ->
 
-        val artworkContent = flows[0] as ArtworkRepository.Content
+        val artworkContent = flows[0] as ArtworkUC.Content
         val settings = flows[1] as SettingsRepository.State
         val controls = flows[2] as PlayerUiState.Controls
         val tracks = (flows[3] as? List<*>)?.filterIsInstance<PlayerTrack>() ?: emptyList()
@@ -104,13 +102,13 @@ class PlayerViewModel @AssistedInject constructor(
         val playerState = flows[7] as PlayerManager.State
 
         val media = when (artworkContent) {
-            is ArtworkRepository.Content.MOVIE -> artworkContent.movie
-            is ArtworkRepository.Content.SHOW -> artworkContent.episodes.find { it.id == mediaId }
-            ArtworkRepository.Content.ERROR -> null
+            is ArtworkUC.Content.MOVIE -> artworkContent.movie
+            is ArtworkUC.Content.SHOW -> artworkContent.episodes.find { it.id == mediaId }
+            ArtworkUC.Content.ERROR -> null
         }
 
         val screen: PlayerScreen = when {
-            playerState is PlayerManager.State.Error || artworkContent is ArtworkRepository.Content.ERROR -> PlayerScreen.Error
+            playerState is PlayerManager.State.Error || artworkContent is ArtworkUC.Content.ERROR -> PlayerScreen.Error
             media != null && playerState is PlayerManager.State.Ready -> PlayerScreen.Content(player = playerState.player, media = media)
             else -> PlayerScreen.Loading
         }
@@ -310,7 +308,7 @@ class PlayerViewModel @AssistedInject constructor(
 
         if (show) {
 
-            val episodes = (artworkRepository.flow.first() as? ArtworkRepository.Content.SHOW)?.episodes
+            val episodes = (artworkUC.flow.first() as? ArtworkUC.Content.SHOW)?.episodes
 
             val nextEpisode = episodes?.getNextEpisodeFor(currentEpisode) ?: return
 
@@ -362,7 +360,7 @@ class PlayerViewModel @AssistedInject constructor(
         val media = (uiState.value.screen as? PlayerScreen.Content)?.media ?: return
         val progress = uiState.value.controls.progress
 
-        artworkProgressUC.saveProgress(media = media, progress = progress)
+        progressUC.saveProgress(media = media, progress = progress)
 
     }
 

@@ -2,13 +2,15 @@ package com.mskd.flux.screens.unknown
 
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
+import com.mskd.flux.data.repository.ddb.DatabaseRepository
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.data.repository.user.UserRepository
-import com.mskd.flux.mockups.FakeArtworkRepository
+import com.mskd.flux.mockups.FakeArtworkUC
 import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.mockups.mockkDatabaseRepository
 import com.mskd.flux.model.ScreenState
-import com.mskd.flux.useCases.mediaProgress.ArtworkProgressUC
-import com.mskd.flux.useCases.mediaProgress.ArtworkProgressUCImpl
+import com.mskd.flux.useCases.progress.ProgressUC
+import com.mskd.flux.useCases.progress.ProgressUCImpl
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.every
@@ -20,29 +22,30 @@ class UnknownViewModelTest : FunSpec ({
     fluxExtensions()
 
     lateinit var viewModel: UnknownViewModel
-    lateinit var artworkRepository: FakeArtworkRepository
+    lateinit var artworkRepository: FakeArtworkUC
     lateinit var settingsRepository: SettingsRepository
     lateinit var userRepository: UserRepository
-    lateinit var artworkProgressUC: ArtworkProgressUC
+    lateinit var progressUC: ProgressUC
+    lateinit var databaseRepository: DatabaseRepository
 
     val updateVm: () -> Unit = {
 
-        artworkProgressUC = ArtworkProgressUCImpl(
-            artworkRepository = artworkRepository,
-            userRepository = userRepository,
+        progressUC = ProgressUCImpl(
+            database = databaseRepository,
+            user = userRepository,
         )
 
         viewModel = UnknownViewModel(
-            repository = artworkRepository,
+            artworkUC = artworkRepository,
             settingsRepository = settingsRepository,
-            artworkProgressUC = artworkProgressUC
+            progressUC = progressUC
         )
 
     }
 
     beforeTest {
 
-        artworkRepository = FakeArtworkRepository()
+        artworkRepository = FakeArtworkUC()
 
         settingsRepository = mockk(relaxed = true) {
             every { flow } returns MutableStateFlow(SettingsRepository.State())
@@ -51,6 +54,8 @@ class UnknownViewModelTest : FunSpec ({
         userRepository = mockk(relaxed = true) {
             every { flow } returns MutableStateFlow(UserRepository.State())
         }
+
+        databaseRepository = mockkDatabaseRepository()
 
         updateVm()
 

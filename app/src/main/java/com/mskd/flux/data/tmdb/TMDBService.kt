@@ -4,7 +4,7 @@ import com.mskd.flux.model.tmdb.TMDBArtworksResult
 import com.mskd.flux.model.tmdb.TMDBAuthentication
 import com.mskd.flux.model.tmdb.TMDBEpisode
 import com.mskd.flux.model.tmdb.TMDBMovie
-import com.mskd.flux.model.tmdb.TMDBTranslation
+import com.mskd.flux.model.tmdb.TMDBTranslations
 import com.mskd.flux.utils.Constants
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -31,7 +31,7 @@ interface TMDBService {
     @GET("movie/{id}/translations")
     suspend fun getMovieTranslations(
         @Path("id") id: Long,
-    ) : List<TMDBTranslation>
+    ) : TMDBTranslations
 
     @GET("search/tv")
     suspend fun getShow(
@@ -43,7 +43,7 @@ interface TMDBService {
     @GET("tv/{id}/translations")
     suspend fun getShowTranslations(
         @Path("id") id: Long,
-    ) : List<TMDBTranslation>
+    ) : TMDBTranslations
 
     @GET("tv/{id}/season/{season}/episode/{episode}")
     suspend fun getEpisode(
@@ -58,6 +58,6 @@ interface TMDBService {
         @Path("id") id: Long,
         @Path("season") season: Int,
         @Path("episode") episode: Int,
-    ) : List<TMDBTranslation>
+    ) : TMDBTranslations
 
 }

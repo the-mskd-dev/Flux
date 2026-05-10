@@ -7,8 +7,8 @@ import com.mskd.flux.model.tmdb.TMDBArtwork
 import com.mskd.flux.model.tmdb.TMDBEpisode
 import com.mskd.flux.model.tmdb.TMDBMediaType
 import com.mskd.flux.model.tmdb.TMDBMovie
-import com.mskd.flux.model.tmdb.TMDBTranslation
-import java.util.Locale
+import com.mskd.flux.model.tmdb.TMDBTranslations
+import com.mskd.flux.model.tmdb.findEnglish
 import javax.inject.Inject
 
 class TmdbRepositoryImpl @Inject constructor(
@@ -45,8 +45,9 @@ class TmdbRepositoryImpl @Inject constructor(
             // Get translation for show if needed
             if (tmdbArtwork.type == TMDBMediaType.SHOW && (tmdbArtwork.description.isBlank() || tmdbArtwork.title.isBlank())) {
 
-                val translations = getTmdbShowTranslations(artworkId = tmdbArtwork.id)
-                translations.find { it.language == Locale.ENGLISH.language }?.let {
+                getTmdbShowTranslations(
+                    artworkId = tmdbArtwork.id
+                ).findEnglish()?.let {
                     tmdbArtwork = tmdbArtwork.copy(
                         title = it.data.name,
                         description = it.data.overview
@@ -74,8 +75,9 @@ class TmdbRepositoryImpl @Inject constructor(
 
             if (tmdbMovie.description.isBlank() || tmdbMovie.title.isBlank()) {
 
-                val translations = getTmdbMovieTranslations(artworkId = artworkId)
-                translations.find { it.language == Locale.ENGLISH.language }?.let {
+                getTmdbMovieTranslations(
+                    artworkId = artworkId
+                ).findEnglish()?.let {
                     tmdbMovie = tmdbMovie.copy(
                         title = it.data.name,
                         description = it.data.overview
@@ -111,8 +113,11 @@ class TmdbRepositoryImpl @Inject constructor(
 
             if (tmdbEpisode.description.isBlank() || tmdbEpisode.title.isBlank()) {
 
-                val translations = getTmdbEpisodeTranslations(artworkId = artworkId, season = season, number = number)
-                translations.find { it.language == Locale.ENGLISH.language }?.let {
+                getTmdbEpisodeTranslations(
+                    artworkId = artworkId,
+                    season = season,
+                    number = number
+                ).findEnglish()?.let {
                     tmdbEpisode = tmdbEpisode.copy(
                         title = it.data.name,
                         description = it.data.overview
@@ -130,11 +135,13 @@ class TmdbRepositoryImpl @Inject constructor(
 
     }
 
-    override suspend fun getTmdbMovieTranslations(artworkId: Long): List<TMDBTranslation> {
+    override suspend fun getTmdbMovieTranslations(artworkId: Long): List<TMDBTranslations.Translation> {
 
         return try {
 
-            tmdbService.getMovieTranslations(id = artworkId)
+            tmdbService
+                .getMovieTranslations(id = artworkId)
+                .translations
 
         } catch (e: Exception) {
             Log.e(TAG, "getTmdbMovieTranslations - Fail to get translations for movie (artworkId:$artworkId)", e)
@@ -143,11 +150,13 @@ class TmdbRepositoryImpl @Inject constructor(
 
     }
 
-    override suspend fun getTmdbShowTranslations(artworkId: Long): List<TMDBTranslation> {
+    override suspend fun getTmdbShowTranslations(artworkId: Long): List<TMDBTranslations.Translation> {
 
         return try {
 
-            tmdbService.getShowTranslations(id = artworkId)
+            tmdbService
+                .getShowTranslations(id = artworkId)
+                .translations
 
         } catch (e: Exception) {
             Log.e(TAG, "getTmdbShowTranslations - Fail to get translations for show (artworkId:$artworkId)", e)
@@ -160,11 +169,13 @@ class TmdbRepositoryImpl @Inject constructor(
         artworkId: Long,
         season: Int,
         number: Int
-    ): List<TMDBTranslation> {
+    ): List<TMDBTranslations.Translation> {
 
         return try {
 
-            tmdbService.getShowTranslations(id = artworkId)
+            tmdbService
+                .getShowTranslations(id = artworkId)
+                .translations
 
         } catch (e: Exception) {
             Log.e(TAG, "getTmdbEpisodeTranslations - Fail to get translations for episode (artworkId:$artworkId, season:$season, number:$number)", e)

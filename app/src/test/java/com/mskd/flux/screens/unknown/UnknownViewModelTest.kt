@@ -7,6 +7,7 @@ import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.mockups.FakeArtworkUC
 import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.mockups.mockkDatabaseRepository
 import com.mskd.flux.model.ScreenState
 import com.mskd.flux.useCases.progress.ProgressUC
 import com.mskd.flux.useCases.progress.ProgressUCImpl
@@ -53,6 +54,8 @@ class UnknownViewModelTest : FunSpec ({
         userRepository = mockk(relaxed = true) {
             every { flow } returns MutableStateFlow(UserRepository.State())
         }
+
+        databaseRepository = mockkDatabaseRepository()
 
         updateVm()
 

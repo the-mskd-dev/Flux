@@ -121,30 +121,40 @@ class FilesRepositoryImpl(
 
     }
 
-    override suspend fun checkIfFileExists(file: UserFile): Boolean {
+    override suspend fun filterExistingFiles(files: List<UserFile>): List<UserFile> = withContext(Dispatchers.IO) {
 
-        val columns = arrayOf(MediaStore.Video.Media._ID)
-        var result = true
+        val paths = files.map { it.path }
+        val ids = paths.mapNotNull { it.toUri().lastPathSegment }
 
-        withContext(Dispatchers.Default) {
+        val placeholders = ids.joinToString(",") { "?" }
 
-            val cursor = context.contentResolver.query(
-                file.path.toUri(),
-                columns, // Empty projections are bad for performance
-                null,
-                null,
-                null)
+        val existingIds = mutableSetOf<String>()
 
-            result = cursor?.moveToFirst() ?: false
-
-            cursor?.close()
-
+        context.contentResolver.query(
+            MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+            arrayOf(MediaStore.Video.Media._ID),
+            "${MediaStore.Video.Media._ID} IN ($placeholders)",
+            ids.toTypedArray(),
+            null
+        )?.use { cursor ->
+            val idCol = cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID)
+            while (cursor.moveToNext()) {
+                existingIds.add(cursor.getString(idCol))
+            }
         }
 
-        if (!result)
-            Log.e(TAG, "file ${file.name} didn't found")
+        val existingFiles = files.filter { file ->
+            val id = file.path.toUri().lastPathSegment
+            id in existingIds
+        }
 
-        return result
+        val missingFiles = files - existingFiles.toSet()
+        if (missingFiles.isNotEmpty()) {
+            Log.i(TAG, "$missingFiles file(s) not founded")
+            missingFiles.forEach { Log.i(TAG, it.name) }
+        }
+
+        existingFiles
 
     }
 

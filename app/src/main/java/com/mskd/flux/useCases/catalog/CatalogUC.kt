@@ -89,10 +89,10 @@ class CatalogUCImpl(
             // Get current medias
             val dbMovies = database.getMovies()
             val dbEpisodes = database.getEpisodes()
+            val dbFiles = files.filterExistingFiles(files = (dbMovies + dbEpisodes).map { it.file })
 
             // Get files
             val deviceFiles = files.getFiles()
-            val dbFiles = (dbMovies.map { it.file } + dbEpisodes.map { it.file }).filter { files.checkIfFileExists(it) }
             val newFiles = if (!onlyNew) { deviceFiles } else {
                 deviceFiles.filter { file -> dbFiles.none { it.name == file.name } }
             }
@@ -126,7 +126,6 @@ class CatalogUCImpl(
 
             // Save time
             user.setSyncTime(System.currentTimeMillis())
-
             _state.value = CatalogUC.State.Idle
 
         }

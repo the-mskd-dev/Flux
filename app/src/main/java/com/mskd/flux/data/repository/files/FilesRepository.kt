@@ -6,6 +6,6 @@ interface FilesRepository {
 
     suspend fun getFiles() : List<UserFile>
 
-    suspend fun checkIfFileExists(file: UserFile) : Boolean
+    suspend fun filterExistingFiles(files: List<UserFile>) : List<UserFile>
 
 }

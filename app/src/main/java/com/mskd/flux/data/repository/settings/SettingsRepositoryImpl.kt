@@ -27,6 +27,8 @@ class SettingsRepositoryImpl @Inject constructor(
         val AUDIO_LANGUAGE = stringPreferencesKey("audio_language")
         val EXTERNAL_PLAYER = booleanPreferencesKey("external_player")
         val AUTO_KEYBOARD = booleanPreferencesKey("auto_keyboard_in_search")
+
+        val DATA_LANGUAGE = stringPreferencesKey("audio_language")
     }
 
     override val flow: Flow<SettingsRepository.State> = settingsDataStore.data
@@ -40,6 +42,7 @@ class SettingsRepositoryImpl @Inject constructor(
             val audioLanguage = preferences[Keys.AUDIO_LANGUAGE]?.let { Locale.forLanguageTag(it) } ?: Locale.getDefault()
             val externalPlayer = preferences[Keys.EXTERNAL_PLAYER] ?: false
             val autoKeyboard = preferences[Keys.AUTO_KEYBOARD] ?: true
+            val dataLanguage = preferences[Keys.DATA_LANGUAGE]?.let { Locale.forLanguageTag(it) } ?: Locale.getDefault()
 
             SettingsRepository.State(
                 playerRewindValue = playerRewindValue,
@@ -48,7 +51,8 @@ class SettingsRepositoryImpl @Inject constructor(
                 subtitlesLanguage = subtitlesLanguage,
                 audioLanguage = audioLanguage,
                 externalPlayer = externalPlayer,
-                autoKeyboard = autoKeyboard
+                autoKeyboard = autoKeyboard,
+                dataLanguage = dataLanguage
             )
         }
 

@@ -41,7 +41,6 @@ fun Collection<TMDBTranslations.Translation>.findEnglish() : TMDBTranslations.Tr
 }
 
 fun Collection<TMDBTranslations.Translation>.findWithLocale(locale: Locale) : TMDBTranslations.Translation? {
-    return this.find { it.language == locale.language && it.country == locale.country && it.data.overview.isNotBlank() }
-        ?: this.find { it.language == locale.language && it.data.overview.isNotBlank() }
+    return this.find { it.language == locale.language && it.data.overview.isNotBlank() }
         ?: this.findEnglish()
 }

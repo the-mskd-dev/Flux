@@ -39,6 +39,7 @@ interface SettingsRepository {
         val subtitlesLanguage: Locale = Locale.getDefault(),
         val audioLanguage: Locale = Locale.getDefault(),
         val externalPlayer: Boolean = false,
-        val autoKeyboard: Boolean = true
+        val autoKeyboard: Boolean = true,
+        val dataLanguage: Locale = Locale.getDefault(),
     )
 }

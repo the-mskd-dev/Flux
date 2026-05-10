@@ -250,12 +250,19 @@ class CatalogUCImpl(
 
                 async(dispatcher) {
 
-                    val tmdbMovie = tmdb.getTmdbMovie(artworkId = artwork.id)
+                    when {
+                        artwork.id == Artwork.UNKNOWN_ID -> Episode(file = files.first())
+                        else -> {
 
-                    if (tmdbMovie == null)
-                        Episode(file = files.first())
-                    else
-                        Movie(tmdbMovie = tmdbMovie, file = files.first())
+                            val tmdbMovie = tmdb.getTmdbMovie(artworkId = artwork.id)
+
+                            if (tmdbMovie == null)
+                                Episode(file = files.first())
+                            else
+                                Movie(tmdbMovie = tmdbMovie, file = files.first())
+
+                        }
+                    }
 
                 }
 
@@ -282,21 +289,23 @@ class CatalogUCImpl(
 
                     async(dispatcher) {
 
-                        if (season != null && number != null) {
+                        when {
+                            artwork.id == Artwork.UNKNOWN_ID -> Episode(file = file)
+                            season != null && number != null -> {
 
-                            val tmdbEpisode = tmdb.getTmdbEpisode(
-                                artworkId = artwork.id,
-                                season = season,
-                                number = number
-                            )
+                                val tmdbEpisode = tmdb.getTmdbEpisode(
+                                    artworkId = artwork.id,
+                                    season = season,
+                                    number = number
+                                )
 
-                            if (tmdbEpisode == null)
-                                Episode(file = file)
-                            else
-                                Episode(tmdbEpisode = tmdbEpisode, file = file,)
+                                if (tmdbEpisode == null)
+                                    Episode(file = file)
+                                else
+                                    Episode(tmdbEpisode = tmdbEpisode, file = file,)
 
-                        } else {
-                            null
+                            }
+                            else -> null
                         }
 
                     }

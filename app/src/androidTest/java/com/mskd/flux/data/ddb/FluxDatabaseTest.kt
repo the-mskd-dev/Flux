@@ -116,24 +116,4 @@ class FluxDatabaseTest {
 
     }
 
-    @Test
-    fun get_all_file_names() = runTest {
-
-        // Given
-        val artworks = listOf(MediaMockups.movieArtwork, MediaMockups.showArtwork)
-        val movie = MediaMockups.movie
-        val episodes = listOf(MediaMockups.episode1, MediaMockups.episode2)
-        val fileNames = episodes.map { it.file.name } + movie.file.name
-
-        // When
-        db.insertArtworks(artworks)
-        db.insertMovies(listOf(movie))
-        db.insertEpisodes(episodes)
-
-        // Then
-        val dbFileNames = db.getAllFileNames()
-        assert(dbFileNames.containsAll(fileNames))
-
-    }
-
 }

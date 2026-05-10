@@ -7,8 +7,6 @@ import com.mskd.flux.model.tmdb.TMDBArtwork
 import com.mskd.flux.model.tmdb.TMDBEpisode
 import com.mskd.flux.model.tmdb.TMDBMediaType
 import com.mskd.flux.model.tmdb.TMDBMovie
-import kotlinx.coroutines.delay
-import retrofit2.HttpException
 import javax.inject.Inject
 
 class TmdbRepositoryImpl @Inject constructor(

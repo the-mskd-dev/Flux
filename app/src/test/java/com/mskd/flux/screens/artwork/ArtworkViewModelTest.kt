@@ -2,12 +2,9 @@ package com.mskd.flux.screens.artwork
 
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
-import com.mskd.flux.data.repository.ddb.DatabaseRepository
 import com.mskd.flux.data.repository.settings.SettingsRepository
-import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.mockups.FakeArtworkUC
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.mockups.mockkDatabaseRepository
 import com.mskd.flux.mockups.mockkProgressUC
 import com.mskd.flux.model.ScreenState
 import com.mskd.flux.model.artwork.ContentType
@@ -15,12 +12,10 @@ import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Status
 import com.mskd.flux.useCases.artwork.ArtworkUC
 import com.mskd.flux.useCases.progress.ProgressUC
-import com.mskd.flux.useCases.progress.ProgressUCImpl
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.types.shouldBeInstanceOf
-import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk

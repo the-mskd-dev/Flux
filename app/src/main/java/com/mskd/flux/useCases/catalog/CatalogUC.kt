@@ -3,7 +3,6 @@ package com.mskd.flux.useCases.catalog
 import android.util.Log
 import com.mskd.flux.data.repository.ddb.DatabaseRepository
 import com.mskd.flux.data.repository.files.FilesRepository
-import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.data.repository.tmdb.TmdbRepository
 import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.data.source.media.MediaSourceTMDBImpl.Companion.TAG
@@ -19,7 +18,6 @@ import com.mskd.flux.utils.extensions.groupInFolders
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
@@ -27,7 +25,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.milliseconds
 
 interface CatalogUC {
 
@@ -84,10 +81,6 @@ class CatalogUCImpl(
 
         syncJob = scope.launch {
 
-            Log.d("TEST", "start sync")
-
-            val start = System.currentTimeMillis()
-
             _state.value = CatalogUC.State.Syncing(full = !onlyNew)
 
             // Get files
@@ -119,10 +112,6 @@ class CatalogUCImpl(
             user.setSyncTime(System.currentTimeMillis())
 
             _state.value = CatalogUC.State.Idle
-
-            val end = System.currentTimeMillis()
-            val time = end - start
-            Log.d("TEST", "end sync : ${time.milliseconds.inWholeSeconds}sec")
 
         }
 

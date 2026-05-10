@@ -4,13 +4,11 @@ import androidx.media3.common.Player
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.data.repository.settings.SettingsRepository
-import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.mockups.FakeArtworkUC
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.PlayerMockups
 import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.model.artwork.Movie
-import com.mskd.flux.model.artwork.Status
 import com.mskd.flux.screens.player.controllers.PlayerManager
 import com.mskd.flux.useCases.progress.ProgressUC
 import com.mskd.flux.utils.Constants

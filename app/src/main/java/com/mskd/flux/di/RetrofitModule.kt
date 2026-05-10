@@ -2,14 +2,12 @@ package com.mskd.flux.di
 
 import com.google.gson.Gson
 import com.mskd.flux.data.tmdb.TMDBService
-import com.mskd.flux.data.tmdb.token.TokenRepository
 import com.mskd.flux.utils.interceptors.RetryInterceptor
 import com.mskd.flux.utils.interceptors.TokenInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

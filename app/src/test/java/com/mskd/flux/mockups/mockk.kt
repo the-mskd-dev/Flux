@@ -13,7 +13,7 @@ fun mockkProgressUC() : ProgressUC = mockk(relaxed = true)
 
 fun mockkCatalogUC() : CatalogUC = mockk(relaxed = true) {
     every { state } returns MutableStateFlow(State.Idle)
-    every { artworks } returns MutableStateFlow(MediaMockups.artworks)
+    every { artworks } returns MutableStateFlow(MediaMockups.artworks.filter { !it.isUnknown })
 }
 
 fun mockkDatabaseRepository() : DatabaseRepository = mockk(relaxed = true) {

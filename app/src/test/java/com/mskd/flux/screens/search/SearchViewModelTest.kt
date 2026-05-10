@@ -4,6 +4,7 @@ import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.mockups.mockkCatalogUC
 import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.useCases.catalog.CatalogUC
 import io.kotest.core.spec.style.FunSpec
@@ -23,10 +24,7 @@ class SearchViewModelTest : FunSpec({
 
     beforeTest {
 
-        catalogUC = mockk(relaxed = true) {
-            coEvery { state } returns MutableStateFlow(CatalogUC.State.Idle)
-            coEvery { artworks } returns MutableStateFlow(MediaMockups.artworks.filter { !it.isUnknown })
-        }
+        catalogUC = mockkCatalogUC()
 
         settingsRepository = mockk(relaxed = true)
 

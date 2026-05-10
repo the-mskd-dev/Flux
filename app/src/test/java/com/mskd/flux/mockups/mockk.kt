@@ -1,6 +1,8 @@
 package com.mskd.flux.mockups
 
 import com.mskd.flux.data.repository.ddb.DatabaseRepository
+import com.mskd.flux.data.repository.settings.SettingsRepository
+import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.useCases.catalog.CatalogUC
 import com.mskd.flux.useCases.catalog.CatalogUC.State
 import com.mskd.flux.useCases.progress.ProgressUC
@@ -8,6 +10,8 @@ import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableStateFlow
+import java.util.Locale
+import kotlin.Int
 
 fun mockkProgressUC() : ProgressUC = mockk(relaxed = true)
 
@@ -62,4 +66,8 @@ fun mockkDatabaseRepository() : DatabaseRepository = mockk(relaxed = true) {
         val artworkId = firstArg<Long>()
         MediaMockups.episodes.count { it.artworkId == artworkId }
     }
+}
+
+fun mockkSettingsRepository() : SettingsRepository = mockk(relaxed = true) {
+    every { flow } returns MutableStateFlow(SettingsRepository.State())
 }

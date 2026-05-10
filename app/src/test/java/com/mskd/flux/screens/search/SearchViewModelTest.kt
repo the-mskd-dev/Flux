@@ -5,6 +5,7 @@ import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.mockkCatalogUC
+import com.mskd.flux.mockups.mockkSettingsRepository
 import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.useCases.catalog.CatalogUC
 import io.kotest.core.spec.style.FunSpec
@@ -26,7 +27,7 @@ class SearchViewModelTest : FunSpec({
 
         catalogUC = mockkCatalogUC()
 
-        settingsRepository = mockk(relaxed = true)
+        settingsRepository = mockkSettingsRepository()
 
         viewModel = SearchViewModel(
             contentType = null,

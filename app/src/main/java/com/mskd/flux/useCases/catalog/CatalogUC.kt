@@ -69,6 +69,7 @@ class CatalogUCImpl(
     //region Variables
 
     private var syncJob: Job? = null
+    private var translationJob: Job? = null
 
     private var _state = MutableStateFlow<CatalogUC.State>(CatalogUC.State.Idle)
 
@@ -88,6 +89,7 @@ class CatalogUCImpl(
             return
 
         syncJob?.cancel()
+        translationJob?.cancel()
 
         syncJob = scope.launch {
 
@@ -148,7 +150,11 @@ class CatalogUCImpl(
 
     override fun updateLanguage() {
 
-        scope.launch {
+        translationJob?.cancel()
+
+        translationJob = scope.launch {
+
+            _state.value = CatalogUC.State.Syncing(full = false)
 
             val language = settings.flow.first().dataLanguage
             val movies = database.getMovies()
@@ -202,6 +208,8 @@ class CatalogUCImpl(
 
             database.saveMovies(translatedMovies)
             database.saveEpisodes(translatedEpisodes)
+
+            _state.value = CatalogUC.State.Idle
 
         }
 

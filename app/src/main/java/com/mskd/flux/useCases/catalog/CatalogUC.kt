@@ -3,6 +3,7 @@ package com.mskd.flux.useCases.catalog
 import android.util.Log
 import com.mskd.flux.data.repository.ddb.DatabaseRepository
 import com.mskd.flux.data.repository.files.FilesRepository
+import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.data.repository.tmdb.TmdbRepository
 import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.model.Catalog
@@ -14,6 +15,7 @@ import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Status
+import com.mskd.flux.model.tmdb.findWithLocale
 import com.mskd.flux.utils.extensions.groupInFolders
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -33,6 +35,8 @@ interface CatalogUC {
     fun syncCatalog(onlyNew: Boolean)
     suspend fun cleanCatalog()
 
+    fun updateLanguage()
+
     sealed class State {
         data object Idle: State()
         data class Syncing(val full: Boolean) : State()
@@ -45,6 +49,7 @@ class CatalogUCImpl(
     private val database: DatabaseRepository,
     private val files: FilesRepository,
     private val user: UserRepository,
+    private val settings: SettingsRepository,
     private val scope: CoroutineScope
 ) : CatalogUC {
 
@@ -63,6 +68,7 @@ class CatalogUCImpl(
     //region Variables
 
     private var syncJob: Job? = null
+    private var translationJob: Job? = null
 
     private var _state = MutableStateFlow<CatalogUC.State>(CatalogUC.State.Idle)
 
@@ -82,6 +88,7 @@ class CatalogUCImpl(
             return
 
         syncJob?.cancel()
+        translationJob?.cancel()
 
         syncJob = scope.launch {
 
@@ -137,6 +144,73 @@ class CatalogUCImpl(
 
         val allFiles = files.getFiles()
         database.deleteMediasNotInFiles(allFiles)
+
+    }
+
+    override fun updateLanguage() {
+
+        translationJob?.cancel()
+
+        translationJob = scope.launch {
+
+            _state.value = CatalogUC.State.Syncing(full = false)
+
+            val language = settings.getDataLanguage()
+            val movies = database.getMovies()
+            val episodes = database.getEpisodes()
+
+            var translatedMovies: List<Movie> = emptyList()
+            var translatedEpisodes: List<Episode> = emptyList()
+
+            coroutineScope {
+
+                translatedMovies = movies.map { movie ->
+
+                    async(dispatcher) {
+
+                        tmdb.getTmdbMovieTranslations(artworkId = movie.artworkId).findWithLocale(language)?.let { translation ->
+
+                            movie.copy(
+                                title = translation.data.name ?: movie.title,
+                                description = translation.data.overview ?: movie.description
+                            )
+
+                        }
+
+                    }
+
+                }.awaitAll().filterNotNull()
+
+                translatedEpisodes = episodes.map { episode ->
+
+                    async(dispatcher) {
+
+                        tmdb.getTmdbEpisodeTranslations(
+                            artworkId = episode.artworkId,
+                            season = episode.season,
+                            number = episode.number
+                        ).findWithLocale(language)?.let { translation ->
+
+                            episode.copy(
+                                title = translation.data.name ?: episode.title,
+                                description = translation.data.overview ?: episode.description
+                            )
+
+                        }
+
+                    }
+
+                }.awaitAll().filterNotNull()
+
+
+            }
+
+            database.saveMovies(translatedMovies)
+            database.saveEpisodes(translatedEpisodes)
+
+            _state.value = CatalogUC.State.Idle
+
+        }
 
     }
 

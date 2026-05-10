@@ -3,9 +3,11 @@ package com.mskd.flux.screens.settings
 import androidx.compose.runtime.Immutable
 import com.mskd.flux.R
 import com.mskd.flux.ui.theme.Ui
+import java.util.Locale
 
 @Immutable
 data class SettingsUiState(
+    val languageValue: Locale? = null,
     val rewindValue: Int = 10,
     val forwardValue: Int = 10,
     val uiTheme: Ui.THEME = Ui.THEME.SYSTEM,
@@ -23,6 +25,22 @@ data class SettingsDialogState<T>(
 ) {
 
     companion object {
+
+        fun language(currentValue: Locale?) = SettingsDialogState(
+            title = R.string.information_language,
+            currentValue = currentValue,
+            options = mapOf(
+                null to (null to R.string.system),
+                Locale.ENGLISH to (Locale.ENGLISH.displayLanguage to null),
+                Locale.FRENCH to (Locale.FRENCH.displayLanguage to null),
+                Locale.GERMAN to (Locale.GERMAN.displayLanguage to null),
+                Locale.ITALIAN to (Locale.ITALIAN.displayLanguage to null),
+                Locale.JAPANESE to (Locale.JAPANESE.displayLanguage to null),
+                Locale.KOREAN to (Locale.KOREAN.displayLanguage to null),
+                Locale.forLanguageTag("es").let { it to (it.displayLanguage to null) },
+            ),
+            applyValue = { value -> SettingsIntent.SetLanguageValue(value) }
+        )
 
         fun rewind(currentValue: Int) = SettingsDialogState(
             title = R.string.button_rewind,
@@ -62,6 +80,10 @@ data class SettingsDialogState<T>(
 }
 
 sealed class SettingsIntent {
+
+    data object ShowLanguageDialog: SettingsIntent()
+    data class SetLanguageValue(val value: Locale?): SettingsIntent()
+
     data object ShowRewindDialog: SettingsIntent()
     data class SetRewindValue(val value: Int): SettingsIntent()
     data object ShowForwardDialog: SettingsIntent()

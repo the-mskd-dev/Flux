@@ -6,6 +6,7 @@ import com.mskd.flux.data.repository.ddb.DatabaseRepository
 import com.mskd.flux.data.repository.ddb.DatabaseRepositoryImpl
 import com.mskd.flux.data.repository.files.FilesRepository
 import com.mskd.flux.data.repository.files.FilesRepositoryImpl
+import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.data.repository.tmdb.TmdbRepository
 import com.mskd.flux.data.repository.tmdb.TmdbRepositoryImpl
 import com.mskd.flux.data.repository.user.UserRepository
@@ -29,8 +30,14 @@ object RepositoriesModule {
 
     @Provides
     @Singleton
-    fun provideTmdbRepository(tmdbService: TMDBService) : TmdbRepository {
-        return TmdbRepositoryImpl(tmdbService)
+    fun provideTmdbRepository(
+        tmdbService: TMDBService,
+        settingsRepository: SettingsRepository
+    ) : TmdbRepository {
+        return TmdbRepositoryImpl(
+            tmdbService = tmdbService,
+            settings = settingsRepository
+        )
     }
 
     @Provides

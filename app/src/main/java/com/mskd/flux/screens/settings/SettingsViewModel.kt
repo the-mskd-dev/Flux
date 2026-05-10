@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -34,6 +35,7 @@ class SettingsViewModel @Inject constructor(
         _showFullSyncDialogState
     ) { settings, dialog, showSyncDialog ->
         SettingsUiState(
+            languageValue = settings.dataLanguage,
             rewindValue = settings.playerRewindValue,
             forwardValue = settings.playerForwardValue,
             useExternalPlayer = settings.externalPlayer,
@@ -57,6 +59,8 @@ class SettingsViewModel @Inject constructor(
 
     fun handleIntent(intent: SettingsIntent) = viewModelScope.launch {
         when (intent) {
+            SettingsIntent.ShowLanguageDialog -> showLanguageDialog()
+            is SettingsIntent.SetLanguageValue -> setLanguageValue(intent.value)
             SettingsIntent.ShowRewindDialog -> showRewindDialog()
             is SettingsIntent.SetRewindValue -> setRewindValue(intent.value)
             SettingsIntent.ShowForwardDialog -> showForwardDialog()
@@ -79,6 +83,17 @@ class SettingsViewModel @Inject constructor(
 
     private fun hideDialog() {
         _dialogState.update { null }
+    }
+
+    private fun showLanguageDialog() {
+        val currentValue = uiState.value.languageValue
+        _dialogState.update { SettingsDialogState.language(currentValue) }
+    }
+
+    private suspend fun setLanguageValue(value: Locale?) {
+        settingsRepository.setDataLanguage(value)
+        catalogUC.updateLanguage()
+        hideDialog()
     }
 
     private fun showRewindDialog() {

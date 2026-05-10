@@ -159,6 +159,19 @@ fun SettingsContent(
                     backgroundColor = bgColor,
                 )
 
+                FluxDivider()
+
+
+                val displayedLanguage = state.languageValue?.displayLanguage ?: stringResource(R.string.system)
+                SettingsItem(
+                    text = stringResource(R.string.information_language),
+                    value = displayedLanguage,
+                    painter = painterResource(R.drawable.ic_language),
+                    iconColor = iconColor,
+                    iconBackgroundColor = bgColor,
+                    onTap = { sendIntent(SettingsIntent.ShowLanguageDialog) }
+                )
+
             }
 
             SettingsSection(

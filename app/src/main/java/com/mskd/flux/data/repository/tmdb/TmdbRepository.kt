@@ -4,6 +4,7 @@ import com.mskd.flux.model.UserFile
 import com.mskd.flux.model.tmdb.TMDBArtwork
 import com.mskd.flux.model.tmdb.TMDBEpisode
 import com.mskd.flux.model.tmdb.TMDBMovie
+import com.mskd.flux.model.tmdb.TMDBTranslations
 
 interface TmdbRepository {
 
@@ -16,5 +17,13 @@ interface TmdbRepository {
         season: Int,
         number: Int,
     ) : TMDBEpisode?
+
+    suspend fun getTmdbMovieTranslations(artworkId: Long) : List<TMDBTranslations.Translation>
+    suspend fun getTmdbShowTranslations(artworkId: Long) : List<TMDBTranslations.Translation>
+    suspend fun getTmdbEpisodeTranslations(
+        artworkId: Long,
+        season: Int,
+        number: Int,
+    ) : List<TMDBTranslations.Translation>
 
 }

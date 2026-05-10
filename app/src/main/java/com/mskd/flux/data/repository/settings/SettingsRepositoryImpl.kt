@@ -10,6 +10,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import com.mskd.flux.ui.theme.Ui
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import java.io.IOException
 import java.util.Locale
@@ -27,6 +28,8 @@ class SettingsRepositoryImpl @Inject constructor(
         val AUDIO_LANGUAGE = stringPreferencesKey("audio_language")
         val EXTERNAL_PLAYER = booleanPreferencesKey("external_player")
         val AUTO_KEYBOARD = booleanPreferencesKey("auto_keyboard_in_search")
+
+        val DATA_LANGUAGE = stringPreferencesKey("data_language")
     }
 
     override val flow: Flow<SettingsRepository.State> = settingsDataStore.data
@@ -40,6 +43,7 @@ class SettingsRepositoryImpl @Inject constructor(
             val audioLanguage = preferences[Keys.AUDIO_LANGUAGE]?.let { Locale.forLanguageTag(it) } ?: Locale.getDefault()
             val externalPlayer = preferences[Keys.EXTERNAL_PLAYER] ?: false
             val autoKeyboard = preferences[Keys.AUTO_KEYBOARD] ?: true
+            val dataLanguage = preferences[Keys.DATA_LANGUAGE]?.let { Locale.forLanguageTag(it) }
 
             SettingsRepository.State(
                 playerRewindValue = playerRewindValue,
@@ -48,7 +52,8 @@ class SettingsRepositoryImpl @Inject constructor(
                 subtitlesLanguage = subtitlesLanguage,
                 audioLanguage = audioLanguage,
                 externalPlayer = externalPlayer,
-                autoKeyboard = autoKeyboard
+                autoKeyboard = autoKeyboard,
+                dataLanguage = dataLanguage
             )
         }
 
@@ -69,6 +74,19 @@ class SettingsRepositoryImpl @Inject constructor(
         settingsDataStore.edit { preferences ->
             preferences[Keys.UI_THEME] = theme.toString()
         }
+    }
+
+    override suspend fun setDataLanguage(locale: Locale?) {
+        settingsDataStore.edit { preferences ->
+            if (locale != null)
+                preferences[Keys.DATA_LANGUAGE] = locale.language
+            else
+                preferences.remove(Keys.DATA_LANGUAGE)
+        }
+    }
+
+    override suspend fun getDataLanguage(): Locale {
+        return flow.firstOrNull()?.dataLanguage ?: Locale.getDefault()
     }
 
     override suspend fun setSubtitlesLanguage(locale: Locale) {

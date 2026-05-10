@@ -2,6 +2,7 @@ package com.mskd.flux.di
 
 import com.mskd.flux.data.repository.ddb.DatabaseRepository
 import com.mskd.flux.data.repository.files.FilesRepository
+import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.data.repository.tmdb.TmdbRepository
 import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.useCases.artwork.ArtworkUC
@@ -28,6 +29,7 @@ object UseCasesModule {
         databaseRepository: DatabaseRepository,
         filesRepository: FilesRepository,
         userRepository: UserRepository,
+        settingsRepository: SettingsRepository,
         @CoroutineModule.ApplicationScope scope: CoroutineScope
     ) : CatalogUC {
         return CatalogUCImpl(
@@ -35,6 +37,7 @@ object UseCasesModule {
             database = databaseRepository,
             files = filesRepository,
             user = userRepository,
+            settings = settingsRepository,
             scope = scope
         )
     }

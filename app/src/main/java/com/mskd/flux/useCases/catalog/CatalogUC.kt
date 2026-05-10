@@ -13,6 +13,7 @@ import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.artwork.Movie
+import com.mskd.flux.model.artwork.Status
 import com.mskd.flux.utils.extensions.groupInFolders
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -171,7 +172,7 @@ class CatalogUCImpl(
 
         val movies = catalog.movies.map { newMovie ->
 
-            dbMovies.find { it.mediaId == newMovie.mediaId }?.let { oldMovie ->
+            dbMovies.find { it.mediaId == newMovie.mediaId && (it.currentTime != 0L || it.status != Status.TO_WATCH) }?.let { oldMovie ->
 
                 count++
 
@@ -186,7 +187,7 @@ class CatalogUCImpl(
 
         val episodes = catalog.episodes.map { newEpisode ->
 
-            dbEpisodes.find { it.mediaId == newEpisode.mediaId }?.let { oldEpisode ->
+            dbEpisodes.find { it.mediaId == newEpisode.mediaId && (it.currentTime != 0L || it.status != Status.TO_WATCH) }?.let { oldEpisode ->
 
                 count++
 

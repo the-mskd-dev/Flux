@@ -159,6 +159,17 @@ fun SettingsContent(
                     backgroundColor = bgColor,
                 )
 
+                FluxDivider()
+
+                SettingsItem(
+                    text = stringResource(R.string.information_language),
+                    value = "${state.languageValue.displayLanguage}",
+                    painter = painterResource(R.drawable.ic_language),
+                    iconColor = iconColor,
+                    iconBackgroundColor = bgColor,
+                    onTap = { sendIntent(SettingsIntent.ShowLanguageDialog) }
+                )
+
             }
 
             SettingsSection(

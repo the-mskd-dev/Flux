@@ -30,17 +30,13 @@ data class TMDBTranslations(
     )
 
     data class Data(
-        val name: String,
-        val overview: String
+        val name: String?,
+        val overview: String?
     )
 
 }
 
-fun Collection<TMDBTranslations.Translation>.findEnglish() : TMDBTranslations.Translation? {
-    return this.find { it.language == Locale.ENGLISH.language && it.data.overview.isNotBlank() }
-}
-
 fun Collection<TMDBTranslations.Translation>.findWithLocale(locale: Locale) : TMDBTranslations.Translation? {
-    return this.find { it.language == locale.language && it.data.overview.isNotBlank() }
-        ?: this.findEnglish()
+    return this.find { it.language == locale.language && !it.data.overview.isNullOrBlank() }
+        ?: this.find { it.language == Locale.ENGLISH.language && !it.data.overview.isNullOrBlank() }
 }

@@ -25,12 +25,16 @@ interface SettingsRepository {
 
     suspend fun setUiTheme(theme: Ui.THEME)
 
+    suspend fun setDataLanguage(locale: Locale)
+
     suspend fun setSubtitlesLanguage(locale: Locale)
 
     suspend fun setAudioLanguage(locale: Locale)
 
     suspend fun setExternalPlayer(useExternalPlayer: Boolean)
     suspend fun setAutoKeyboard(autoKeyboard: Boolean)
+
+    suspend fun getDataLanguage() : Locale
 
     data class State(
         val playerRewindValue: Int = 10,

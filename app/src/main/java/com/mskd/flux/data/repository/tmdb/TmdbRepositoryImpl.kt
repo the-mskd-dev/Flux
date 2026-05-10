@@ -1,6 +1,7 @@
 package com.mskd.flux.data.repository.tmdb
 
 import android.util.Log
+import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.data.tmdb.TMDBService
 import com.mskd.flux.model.UserFile
 import com.mskd.flux.model.tmdb.TMDBArtwork
@@ -8,11 +9,16 @@ import com.mskd.flux.model.tmdb.TMDBEpisode
 import com.mskd.flux.model.tmdb.TMDBMediaType
 import com.mskd.flux.model.tmdb.TMDBMovie
 import com.mskd.flux.model.tmdb.TMDBTranslations
-import com.mskd.flux.model.tmdb.findEnglish
+import com.mskd.flux.model.tmdb.findWithLocale
+import com.mskd.flux.utils.extensions.toTmdbFormat
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
+import java.util.Locale
 import javax.inject.Inject
 
 class TmdbRepositoryImpl @Inject constructor(
     private val tmdbService: TMDBService,
+    private val settings: SettingsRepository
 ) : TmdbRepository {
 
     private companion object {
@@ -26,15 +32,19 @@ class TmdbRepositoryImpl @Inject constructor(
 
         return try {
 
+            val language = settings.getDataLanguage()
+
             val tmdbArtworks = if (file.isEpisode) {
                 tmdbService.getShow(
                     title = file.nameProperties.title,
-                    year = file.nameProperties.year
+                    year = file.nameProperties.year,
+                    language = language.toTmdbFormat()
                 )
             } else {
                 tmdbService.getMovie(
                     title = file.nameProperties.title,
-                    year = file.nameProperties.year
+                    year = file.nameProperties.year,
+                    language = language.toTmdbFormat()
                 )
             }
 
@@ -47,10 +57,10 @@ class TmdbRepositoryImpl @Inject constructor(
 
                 getTmdbShowTranslations(
                     artworkId = tmdbArtwork.id
-                ).findEnglish()?.let {
+                ).findWithLocale(language)?.let {
                     tmdbArtwork = tmdbArtwork.copy(
-                        title = it.data.name,
-                        description = it.data.overview
+                        title = it.data.name ?: tmdbArtwork.title,
+                        description = it.data.overview ?: tmdbArtwork.description
                     )
                 }
 
@@ -71,16 +81,21 @@ class TmdbRepositoryImpl @Inject constructor(
 
         return try {
 
-            var tmdbMovie = tmdbService.getMovieDetails(id = artworkId)
+            val language = settings.getDataLanguage()
+
+            var tmdbMovie = tmdbService.getMovieDetails(
+                id = artworkId,
+                language = language.toTmdbFormat()
+            )
 
             if (tmdbMovie.description.isBlank() || tmdbMovie.title.isBlank()) {
 
                 getTmdbMovieTranslations(
                     artworkId = artworkId
-                ).findEnglish()?.let {
+                ).findWithLocale(language)?.let {
                     tmdbMovie = tmdbMovie.copy(
-                        title = it.data.name,
-                        description = it.data.overview
+                        title = it.data.name ?: tmdbMovie.title,
+                        description = it.data.overview ?: tmdbMovie.description
                     )
                 }
 
@@ -103,10 +118,13 @@ class TmdbRepositoryImpl @Inject constructor(
 
         return try {
 
+            val language = settings.getDataLanguage()
+
             var tmdbEpisode = tmdbService.getEpisode(
                 id = artworkId,
                 season = season,
-                episode = number
+                episode = number,
+                language = language.toTmdbFormat()
             ).also {
                 it.artworkId = artworkId
             }
@@ -117,10 +135,10 @@ class TmdbRepositoryImpl @Inject constructor(
                     artworkId = artworkId,
                     season = season,
                     number = number
-                ).findEnglish()?.let {
+                ).findWithLocale(language)?.let {
                     tmdbEpisode = tmdbEpisode.copy(
-                        title = it.data.name,
-                        description = it.data.overview
+                        title = it.data.name ?: tmdbEpisode.title,
+                        description = it.data.overview ?: tmdbEpisode.description
                     )
                 }
 

@@ -10,6 +10,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import com.mskd.flux.ui.theme.Ui
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import java.io.IOException
 import java.util.Locale
@@ -73,6 +74,16 @@ class SettingsRepositoryImpl @Inject constructor(
         settingsDataStore.edit { preferences ->
             preferences[Keys.UI_THEME] = theme.toString()
         }
+    }
+
+    override suspend fun setDataLanguage(locale: Locale) {
+        settingsDataStore.edit { preferences ->
+            preferences[Keys.DATA_LANGUAGE] = locale.language
+        }
+    }
+
+    override suspend fun getDataLanguage(): Locale {
+        return flow.firstOrNull()?.dataLanguage ?: Locale.getDefault()
     }
 
     override suspend fun setSubtitlesLanguage(locale: Locale) {

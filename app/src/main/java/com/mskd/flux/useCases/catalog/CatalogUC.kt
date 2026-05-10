@@ -172,8 +172,8 @@ class CatalogUCImpl(
                         tmdb.getTmdbMovieTranslations(artworkId = movie.artworkId).findWithLocale(language)?.let { translation ->
 
                             movie.copy(
-                                title = translation.data.name,
-                                description = translation.data.overview
+                                title = translation.data.name ?: movie.title,
+                                description = translation.data.overview ?: movie.description
                             )
 
                         }
@@ -193,8 +193,8 @@ class CatalogUCImpl(
                         ).findWithLocale(language)?.let { translation ->
 
                             episode.copy(
-                                title = translation.data.name,
-                                description = translation.data.overview
+                                title = translation.data.name ?: episode.title,
+                                description = translation.data.overview ?: episode.description
                             )
 
                         }

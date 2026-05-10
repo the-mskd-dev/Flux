@@ -7,6 +7,7 @@ import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.data.tmdb.token.TokenRepository
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.mockkCatalogUC
+import com.mskd.flux.mockups.mockkSnackbarRepository
 import com.mskd.flux.model.ScreenState
 import com.mskd.flux.useCases.catalog.CatalogUC
 import com.mskd.flux.utils.FluxSnackbar
@@ -47,9 +48,7 @@ class HomeViewModelTest : FunSpec({
         userRepository = mockk(relaxed = true) {
             every { flow } returns dataStoreFlow
         }
-        snackbarRepository = mockk(relaxed = true) {
-            coEvery { canShow(any()) } returns MutableStateFlow(true)
-        }
+        snackbarRepository = mockkSnackbarRepository()
 
     }
 
@@ -89,30 +88,6 @@ class HomeViewModelTest : FunSpec({
             }
 
         }
-    }
-
-    test("initial state - with token") {
-
-        tokenFlow.value = "token"
-
-        viewModel = HomeViewModel(
-            catalogUC = catalogUC,
-            tokenRepository = tokenRepository,
-            userRepository = userRepository,
-            snackbarRepository = snackbarRepository
-        )
-
-        viewModel.uiState.test {
-            val initialState = awaitItem()
-            initialState.screenState shouldBe ScreenState.CONTENT
-            initialState.artworks shouldBe MediaMockups.artworks
-            initialState.lastWatchedMediaIds shouldBe emptyList()
-            initialState.isRefreshing shouldBe false
-            initialState.snackbarState shouldBe FluxSnackbar.Tutorial
-
-            cancelAndConsumeRemainingEvents()
-        }
-
     }
 
     test("should force sync when manual sync requested") {

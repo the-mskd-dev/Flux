@@ -2,6 +2,7 @@ package com.mskd.flux.mockups
 
 import com.mskd.flux.data.repository.ddb.DatabaseRepository
 import com.mskd.flux.data.repository.settings.SettingsRepository
+import com.mskd.flux.data.repository.snackbars.SnackbarRepository
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.useCases.catalog.CatalogUC
 import com.mskd.flux.useCases.catalog.CatalogUC.State
@@ -17,7 +18,7 @@ fun mockkProgressUC() : ProgressUC = mockk(relaxed = true)
 
 fun mockkCatalogUC() : CatalogUC = mockk(relaxed = true) {
     every { state } returns MutableStateFlow(State.Idle)
-    every { artworks } returns MutableStateFlow(MediaMockups.artworks.filter { !it.isUnknown })
+    every { artworks } returns MutableStateFlow(MediaMockups.artworks)
 }
 
 fun mockkDatabaseRepository() : DatabaseRepository = mockk(relaxed = true) {
@@ -70,4 +71,9 @@ fun mockkDatabaseRepository() : DatabaseRepository = mockk(relaxed = true) {
 
 fun mockkSettingsRepository() : SettingsRepository = mockk(relaxed = true) {
     every { flow } returns MutableStateFlow(SettingsRepository.State())
+}
+
+fun mockkSnackbarRepository() : SnackbarRepository = mockk(relaxed = true) {
+    every { canShow(any()) } returns MutableStateFlow(true)
+    every { getCount(any()) } returns MutableStateFlow(0)
 }

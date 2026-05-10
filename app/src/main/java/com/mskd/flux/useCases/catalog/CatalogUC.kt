@@ -98,7 +98,7 @@ class CatalogUCImpl(
                 deviceFiles.filter { file -> dbFiles.none { it.name == file.name } }
             }
 
-            Log.d(TAG, "Found $newFiles new file(s)")
+            Log.d(TAG, "Found ${newFiles.size} new file(s)")
             newFiles.forEach {
                 Log.d(TAG, it.name)
             }

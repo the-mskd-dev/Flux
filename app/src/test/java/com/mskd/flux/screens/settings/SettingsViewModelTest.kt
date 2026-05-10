@@ -14,6 +14,7 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableStateFlow
+import java.util.Locale
 
 class SettingsViewModelTest : FunSpec({
 
@@ -148,6 +149,54 @@ class SettingsViewModelTest : FunSpec({
 
         }
 
+    }
+
+    test("show data language dialog") {
+        viewModel.uiState.test {
+
+            awaitItem()
+            viewModel.handleIntent(SettingsIntent.ShowLanguageDialog)
+
+            val state = awaitItem()
+            state.dialogState shouldNotBe null
+            state.dialogState.shouldBeInstanceOf<SettingsDialogState<Locale?>>()
+        }
+    }
+
+    test("set data language value") {
+        viewModel.uiState.test {
+            awaitItem()
+
+            viewModel.handleIntent(SettingsIntent.SetLanguageValue(Locale.FRENCH))
+            dataStoreFlow.value = dataStoreFlow.value.copy(dataLanguage = Locale.FRENCH)
+
+            val state = awaitItem()
+
+            coVerify { settingsRepository.setDataLanguage(Locale.FRENCH) }
+            state.languageValue shouldBe Locale.FRENCH
+            state.dialogState shouldBe null
+
+            cancelAndConsumeRemainingEvents()
+
+        }
+    }
+
+    test("set system data language value") {
+        viewModel.uiState.test {
+            awaitItem()
+
+            viewModel.handleIntent(SettingsIntent.SetLanguageValue(null))
+            dataStoreFlow.value = dataStoreFlow.value.copy(dataLanguage = null)
+
+            val state = awaitItem()
+
+            coVerify { settingsRepository.setDataLanguage(null) }
+            state.languageValue shouldBe null
+            state.dialogState shouldBe null
+
+            cancelAndConsumeRemainingEvents()
+
+        }
     }
 
     test("set auto keyboard") {

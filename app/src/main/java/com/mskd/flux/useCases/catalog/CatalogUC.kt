@@ -1,6 +1,9 @@
 package com.mskd.flux.useCases.catalog
 
+import android.content.Context
+import android.media.MediaMetadataRetriever
 import android.util.Log
+import androidx.core.net.toUri
 import com.mskd.flux.data.repository.ddb.DatabaseRepository
 import com.mskd.flux.data.repository.files.FilesRepository
 import com.mskd.flux.data.repository.settings.SettingsRepository
@@ -17,6 +20,7 @@ import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Status
 import com.mskd.flux.model.tmdb.findWithLocale
 import com.mskd.flux.utils.extensions.groupInFolders
+import com.mskd.flux.utils.extensions.msToMin
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -27,6 +31,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 interface CatalogUC {
 
@@ -50,7 +55,8 @@ class CatalogUCImpl(
     private val files: FilesRepository,
     private val user: UserRepository,
     private val settings: SettingsRepository,
-    private val scope: CoroutineScope
+    private val scope: CoroutineScope,
+    private val context: Context
 ) : CatalogUC {
 
     private companion object {
@@ -335,7 +341,7 @@ class CatalogUCImpl(
                             val tmdbMovie = tmdb.getTmdbMovie(artworkId = artwork.id)
 
                             if (tmdbMovie == null)
-                                Episode(file = files.first())
+                                createUnknownMedia(file = files.first())
                             else
                                 Movie(tmdbMovie = tmdbMovie, file = files.first())
 
@@ -368,7 +374,7 @@ class CatalogUCImpl(
                     async(dispatcher) {
 
                         when {
-                            artwork.id == Artwork.UNKNOWN_ID -> Episode(file = file)
+                            artwork.id == Artwork.UNKNOWN_ID -> createUnknownMedia(file = file)
                             season != null && number != null -> {
 
                                 val tmdbEpisode = tmdb.getTmdbEpisode(
@@ -378,7 +384,7 @@ class CatalogUCImpl(
                                 )
 
                                 if (tmdbEpisode == null)
-                                    Episode(file = file)
+                                    createUnknownMedia(file = file)
                                 else
                                     Episode(tmdbEpisode = tmdbEpisode, file = file,)
 
@@ -397,6 +403,35 @@ class CatalogUCImpl(
         Log.i(TAG, "Found ${episodes.size} episode(s)")
 
         return episodes
+
+    }
+
+    private suspend fun createUnknownMedia(file: UserFile) : Episode = withContext(dispatcher) {
+
+        Log.i(TAG, "Create unknown media for ${file.name}")
+
+        val retriever = MediaMetadataRetriever()
+
+        try {
+
+            val duration = context.contentResolver.openAssetFileDescriptor(file.path.toUri(), "r")?.use { afd ->
+                retriever.setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
+                val durationInMs = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)?.toLong() ?: 0L
+                durationInMs.msToMin.toInt()
+            } ?: 0
+
+            Episode(file = file, duration = duration)
+
+        } catch (e: Exception) {
+
+            Log.e(TAG, "[createUnknownMedia] Fail to get duration for ${file.path}", e)
+            Episode(file = file)
+
+        } finally {
+
+            retriever.release()
+
+        }
 
     }
 

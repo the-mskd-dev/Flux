@@ -3,6 +3,7 @@ package com.mskd.flux.screens.settings
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.data.repository.settings.SettingsRepository
+import com.mskd.flux.mockups.mockkCatalogUC
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.useCases.catalog.CatalogUC
 import io.kotest.core.spec.style.FunSpec
@@ -32,7 +33,7 @@ class SettingsViewModelTest : FunSpec({
             every { flow } returns dataStoreFlow
         }
 
-        catalogUC = mockk(relaxed = true)
+        catalogUC = mockkCatalogUC()
 
         viewModel = SettingsViewModel(
             settingsRepository = settingsRepository,

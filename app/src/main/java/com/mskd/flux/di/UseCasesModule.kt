@@ -1,5 +1,6 @@
 package com.mskd.flux.di
 
+import android.content.Context
 import com.mskd.flux.data.repository.ddb.DatabaseRepository
 import com.mskd.flux.data.repository.files.FilesRepository
 import com.mskd.flux.data.repository.settings.SettingsRepository
@@ -14,6 +15,7 @@ import com.mskd.flux.useCases.progress.ProgressUCImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
 import javax.inject.Singleton
@@ -30,7 +32,8 @@ object UseCasesModule {
         filesRepository: FilesRepository,
         userRepository: UserRepository,
         settingsRepository: SettingsRepository,
-        @CoroutineModule.ApplicationScope scope: CoroutineScope
+        @CoroutineModule.ApplicationScope scope: CoroutineScope,
+        @ApplicationContext context: Context
     ) : CatalogUC {
         return CatalogUCImpl(
             tmdb = tmdbRepository,
@@ -38,7 +41,8 @@ object UseCasesModule {
             files = filesRepository,
             user = userRepository,
             settings = settingsRepository,
-            scope = scope
+            scope = scope,
+            context = context
         )
     }
 

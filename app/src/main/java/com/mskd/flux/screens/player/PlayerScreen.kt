@@ -9,6 +9,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.gestures.rememberTransformableState
@@ -27,8 +28,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onKeyEvent
+import androidx.compose.ui.input.key.type
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalConfiguration
@@ -113,9 +121,13 @@ fun PlayerScreen(
                 )
             }
             is PlayerScreen.Content -> {
+
+                val focusRequester = remember { FocusRequester() }
+
                 PlayerContent(
                     media = screen.media,
                     player = screen.player,
+                    focusRequester = focusRequester,
                     rewindAndForward = { state.playerRewind to state.playerForward },
                     controlsState = { state.controls },
                     tracksState = { state.tracks },
@@ -124,6 +136,7 @@ fun PlayerScreen(
                     sendIntent = {
                         interfaceVisibilityCountdown = 3
                         viewModel.handleIntent(it)
+                        focusRequester.requestFocus()
                     }
                 )
             }
@@ -138,6 +151,7 @@ fun PlayerScreen(
 fun PlayerContent(
     media: Media,
     player: Player,
+    focusRequester: FocusRequester,
     rewindAndForward: () -> Pair<Int, Int>,
     controlsState: () -> PlayerUiState.Controls,
     tracksState: () -> PlayerUiState.Tracks,
@@ -151,6 +165,10 @@ fun PlayerContent(
     val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
 
     var currentVideoSize by remember { mutableStateOf(player.videoSize) }
+
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+    }
 
     DisposableEffect(player) {
         val listener = object : Player.Listener {
@@ -186,9 +204,23 @@ fun PlayerContent(
 
     ConstraintLayout(
         modifier = Modifier
+            .focusRequester(focusRequester)
+            .focusable()
             .fillMaxSize()
             .background(Color.Black)
             .transformable(state = stateTransform)
+            .onKeyEvent { keyEvent ->
+
+                if (keyEvent.type != KeyEventType.KeyDown) return@onKeyEvent false
+
+                when (keyEvent.key) {
+                    Key.Spacebar -> { sendIntent(PlayerIntent.TogglePlayButton); true }
+                    Key.DirectionLeft, Key.MediaRewind -> { sendIntent(PlayerIntent.OnFastRewind); true }
+                    Key.DirectionRight, Key.MediaFastForward -> { sendIntent(PlayerIntent.OnFastForward); true }
+                    else -> false
+                }
+
+            }
             .pointerInput(Unit) {
                 detectTapGestures(
                     onTap = { offset ->

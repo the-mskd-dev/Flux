@@ -17,7 +17,6 @@ import com.google.gson.annotations.SerializedName
  * @property voteCount Number of votes for the media.
  * @property title Title of the media.
  * @property originalTitle Original title of the media.
- * @property relatedContent List of related medias (used for persons).
  */
 data class TMDBArtwork(
     val id: Long,
@@ -43,10 +42,6 @@ data class TMDBArtwork(
     val title: String,
     @SerializedName(value = "original_title", alternate = ["original_name"])
     val originalTitle: String,
-
-    // For Persons
-    @SerializedName("known_for")
-    val relatedContent: List<TMDBArtwork>
 )
 
 /**

@@ -1,7 +1,6 @@
 package com.mskd.flux.screens.artwork.composables.common
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.displayCutoutPadding
@@ -88,8 +87,7 @@ fun ArtworkImage(
                 .align(Alignment.Center)
                 .clip(Ui.Shape.Corner.Small)
                 .width(160.dp)
-                .aspectRatio(2f/3f)
-                .clickable { sendIntent(ArtworkIntent.OpenArtworkInfo) },
+                .aspectRatio(2f/3f),
             model = imageRequest,
             contentScale = ContentScale.Crop,
             placeholder = Image.placeholder,

@@ -4,6 +4,7 @@ import android.content.ContentUris
 import android.content.Context
 import android.media.MediaMetadataRetriever
 import android.media.MediaScannerConnection
+import android.net.Uri
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
@@ -14,6 +15,8 @@ import com.mskd.flux.model.UserFile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
+import okhttp3.Dispatcher
+import java.io.File
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
 
@@ -154,6 +157,45 @@ class FilesRepositoryImpl(
         }
 
         existingFiles
+
+    }
+
+    override suspend fun getSubtitlesFor(file: UserFile): Uri? = withContext(Dispatchers.IO) {
+
+        try {
+
+            val mediaUri = file.path.toUri()
+            val mediaId = mediaUri.lastPathSegment?.toLongOrNull() ?: return@withContext null
+
+            // Get real path of file
+            val videoPath = context.contentResolver.query(
+                MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+                arrayOf(MediaStore.Video.Media.DATA),
+                "${MediaStore.Video.Media._ID} = ?",
+                arrayOf(mediaId.toString()),
+                null
+            )?.use { cursor ->
+                if (cursor.moveToFirst())
+                    cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA))
+                else null
+            } ?: return@withContext null
+
+            val videoFile = File(videoPath)
+            val baseName = videoFile.nameWithoutExtension
+            val parentDir = videoFile.parentFile ?: return@withContext null
+
+            // Get subtitles file, if exists, in the same directory, with the same name
+            val subtitleExtensions = listOf("srt", "vtt", "ass", "ssa")
+            val subtitleFile = subtitleExtensions
+                .map { ext -> File(parentDir, "$baseName.$ext") }
+                .firstOrNull { it.exists() }
+
+            subtitleFile?.toUri()
+
+        } catch (e: Exception) {
+            Log.e(TAG, "Fail to get subtitles for ${file.name}", e)
+            null
+        }
 
     }
 

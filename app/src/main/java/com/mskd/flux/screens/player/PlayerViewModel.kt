@@ -3,6 +3,7 @@ package com.mskd.flux.screens.player
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mskd.flux.data.repository.files.FilesRepository
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
@@ -42,6 +43,7 @@ class PlayerViewModel @AssistedInject constructor(
     @Assisted mediaId: Long,
     private val artworkUC: ArtworkUC,
     private val settingsRepository: SettingsRepository,
+    private val filesRepository: FilesRepository,
     private val playerManager: PlayerManager,
     private val progressUC: ProgressUC
 ) : ViewModel() {
@@ -156,7 +158,7 @@ class PlayerViewModel @AssistedInject constructor(
                     .filterIsInstance<PlayerScreen.Content>()
                     .map { it.media }
                     .distinctUntilChangedBy { it.mediaId }
-                    .collect { playerManager.playMedia(it) }
+                    .collect { playMedia(it) }
             }
 
             // Listen next episode
@@ -224,7 +226,8 @@ class PlayerViewModel @AssistedInject constructor(
         }
     }
 
-    private fun playMedia(media: Media) {
+    private suspend fun playMedia(media: Media) {
+        val subtitlesUri = filesRepository.getSubtitlesFor(file = media.file)
         playerManager.playMedia(media)
     }
 

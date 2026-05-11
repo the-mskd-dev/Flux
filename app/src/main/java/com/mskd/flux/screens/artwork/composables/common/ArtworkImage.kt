@@ -88,8 +88,7 @@ fun ArtworkImage(
                 .align(Alignment.Center)
                 .clip(Ui.Shape.Corner.Small)
                 .width(160.dp)
-                .aspectRatio(2f/3f)
-                .clickable { sendIntent(ArtworkIntent.OpenArtworkInfo) },
+                .aspectRatio(2f/3f),
             model = imageRequest,
             contentScale = ContentScale.Crop,
             placeholder = Image.placeholder,

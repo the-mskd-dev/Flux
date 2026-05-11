@@ -1,5 +1,3 @@
-## Version 1.3.4
-
 - Fix: Data selection
 - Fix: Remove old wrong medias
 - Fix: Open keyboard on search

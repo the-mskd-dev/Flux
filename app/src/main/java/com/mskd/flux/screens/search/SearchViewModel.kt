@@ -1,5 +1,6 @@
 package com.mskd.flux.screens.search
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.data.repository.settings.SettingsRepository
@@ -31,7 +32,12 @@ class SearchViewModel @AssistedInject constructor(
         fun create(contentType: ContentType?): SearchViewModel
     }
 
-    private val _uiState = MutableStateFlow(SearchUIState(contentType = contentType))
+    private val _uiState = MutableStateFlow(
+        SearchUIState(
+            contentType = contentType,
+            autoKeyboard = runBlocking { settingsRepository.flow.first().autoKeyboard } && contentType == null
+        )
+    )
     val uiState: StateFlow<SearchUIState> = _uiState.asStateFlow()
 
     private val _event = MutableSharedFlow<SearchEvent>()
@@ -39,15 +45,10 @@ class SearchViewModel @AssistedInject constructor(
 
     init {
 
-        val autoKeyboard = runBlocking { settingsRepository.flow.first().autoKeyboard }
-
         viewModelScope.launch {
             catalogUC.artworks.collect { artworks ->
                 _uiState.update {
-                    it.copy(
-                        artworks = artworks.filter { artworks -> !artworks.isUnknown },
-                        autoKeyboard = autoKeyboard
-                    )
+                    it.copy(artworks = artworks.filter { artworks -> !artworks.isUnknown },)
                 }
             }
         }

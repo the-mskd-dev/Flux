@@ -14,7 +14,8 @@ data class SettingsUiState(
     val autoKeyboard: Boolean = false,
     val useExternalPlayer: Boolean = false,
     val dialogState: SettingsDialogState<*>? = null,
-    val showSyncDialog: Boolean = false
+    val showSyncDialog: Boolean = false,
+    val fullSyncInProgress: Boolean = false
 )
 
 data class SettingsDialogState<T>(

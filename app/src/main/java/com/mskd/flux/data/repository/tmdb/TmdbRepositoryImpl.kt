@@ -189,7 +189,11 @@ class TmdbRepositoryImpl @Inject constructor(
         return try {
 
             tmdbService
-                .getShowTranslations(id = artworkId)
+                .getEpisodeTranslations(
+                    id = artworkId,
+                    season = season,
+                    episode = number
+                )
                 .translations
 
         } catch (e: Exception) {

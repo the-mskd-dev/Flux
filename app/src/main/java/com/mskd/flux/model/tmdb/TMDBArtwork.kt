@@ -1,6 +1,7 @@
 package com.mskd.flux.model.tmdb
 
 import com.google.gson.annotations.SerializedName
+import com.mskd.flux.utils.Levenshtein
 
 /**
  * Represents an media retrieved from TMDB (The Movie Database).
@@ -59,4 +60,16 @@ data class TMDBArtworksResult(
     val pageCount: Int,
     @SerializedName("total_results")
     val resultCount: Int
-)
+) {
+
+    fun artworkFor(fileName: String) : TMDBArtwork? {
+        return results.minByOrNull {
+            Levenshtein.minDistance(
+                query = fileName,
+                title = it.title,
+                originalTitle = it.originalTitle
+            )
+        }
+    }
+
+}

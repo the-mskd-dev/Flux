@@ -1,6 +1,5 @@
 package com.mskd.flux.screens.search
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.data.repository.settings.SettingsRepository

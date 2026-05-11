@@ -122,4 +122,10 @@ class DatabaseRepositoryImpl @Inject constructor(private val dao: DatabaseDao) :
         deleteEpisodes(episodesToDelete)
 
     }
+
+    override suspend fun deleteAll() {
+        dao.deleteAllArtworks()
+        dao.deleteAllMovies()
+        dao.deleteAllEpisodes()
+    }
 }

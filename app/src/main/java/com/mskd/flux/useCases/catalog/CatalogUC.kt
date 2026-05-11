@@ -124,13 +124,17 @@ class CatalogUCImpl(
                 dbEpisodes = dbEpisodes
             )
 
+            // Clean catalog
+            if (onlyNew) {
+                database.deleteMediasNotInFiles(deviceFiles)
+            } else {
+                database.deleteAll()
+            }
+
             // Save data
             database.saveArtworks(artworks = catalog.artworks)
             database.saveMovies(movies = catalog.movies)
             database.saveEpisodes(episodes = catalog.episodes)
-
-            // Clean catalog
-            database.deleteMediasNotInFiles(deviceFiles)
 
             // Save time
             user.setSyncTime(System.currentTimeMillis())
@@ -246,7 +250,7 @@ class CatalogUCImpl(
 
         val movies = catalog.movies.map { newMovie ->
 
-            dbMovies.find { it.mediaId == newMovie.mediaId && (it.currentTime != 0L || it.status != Status.TO_WATCH) }?.let { oldMovie ->
+            dbMovies.find { it.file.name == newMovie.file.name && (it.currentTime != 0L || it.status != Status.TO_WATCH) }?.let { oldMovie ->
 
                 count++
 
@@ -261,7 +265,7 @@ class CatalogUCImpl(
 
         val episodes = catalog.episodes.map { newEpisode ->
 
-            dbEpisodes.find { it.mediaId == newEpisode.mediaId && (it.currentTime != 0L || it.status != Status.TO_WATCH) }?.let { oldEpisode ->
+            dbEpisodes.find { it.file.name == newEpisode.file.name && (it.currentTime != 0L || it.status != Status.TO_WATCH) }?.let { oldEpisode ->
 
                 count++
 

@@ -94,6 +94,15 @@ interface DatabaseDao {
     @Query("DELETE FROM episodes WHERE id IN (:ids)")
     suspend fun deleteEpisodesByIds(ids: List<Long>)
 
+    @Query("DELETE FROM artworks")
+    suspend fun deleteAllArtworks()
+
+    @Query("DELETE FROM movies")
+    suspend fun deleteAllMovies()
+
+    @Query("DELETE FROM episodes")
+    suspend fun deleteAllEpisodes()
+
 //endregion
 
 //region Count

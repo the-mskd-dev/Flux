@@ -1,0 +1,3 @@
+- Fix: Sélection des données
+- Fix: Suppression des vieux médias erronés
+- Fix: Ouverture du clavier sur l'écran de recherche

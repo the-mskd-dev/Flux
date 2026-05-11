@@ -45,12 +45,12 @@ class TmdbRepositoryImpl @Inject constructor(
                 )
             }
 
-            var tmdbArtwork = tmdbArtworks.results.first().also {
+            var tmdbArtwork = tmdbArtworks.artworkFor(fileName = file.nameProperties.title)?.also {
                 it.type = if (file.isEpisode) TMDBMediaType.SHOW else TMDBMediaType.MOVIE
             }
 
             // Get translation for show if needed
-            if (tmdbArtwork.type == TMDBMediaType.SHOW && (tmdbArtwork.description.isBlank() || tmdbArtwork.title.isBlank())) {
+            if (tmdbArtwork?.type == TMDBMediaType.SHOW && (tmdbArtwork.description.isBlank() || tmdbArtwork.title.isBlank())) {
 
                 getTmdbShowTranslations(
                     artworkId = tmdbArtwork.id

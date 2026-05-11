@@ -143,10 +143,9 @@ class SettingsViewModel @Inject constructor(
         _showFullSyncDialogState.update { show }
     }
 
-    private suspend fun proceedFullSync() {
+    private fun proceedFullSync() {
         catalogUC.syncCatalog(onlyNew = false)
         showFullSyncDialog(show = false)
-        _event.emit(SettingsEvent.BackToPreviousScreen)
     }
 
 }

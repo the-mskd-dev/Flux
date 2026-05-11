@@ -43,5 +43,6 @@ interface DatabaseRepository {
     suspend fun deleteMovies(movies: List<Movie>)
     suspend fun deleteEpisodes(episodes: List<Episode>)
     suspend fun deleteMediasNotInFiles(files: List<UserFile>)
+    suspend fun deleteAll()
 
 }

@@ -48,7 +48,7 @@ class HomeViewModel @Inject constructor(
     ) { artworks, catalogState, preferences, token, dismissedSnackbar ->
 
         val screen = when {
-            catalogState is CatalogUC.State.Syncing && artworks.isEmpty() -> ScreenState.LOADING
+            catalogState is CatalogUC.State.Syncing -> if (catalogState.full) ScreenState.LOADING else ScreenState.CONTENT
             else -> ScreenState.CONTENT
         }
 

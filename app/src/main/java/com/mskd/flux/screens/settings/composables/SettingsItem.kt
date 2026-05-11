@@ -1,5 +1,6 @@
 package com.mskd.flux.screens.settings.composables
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -25,6 +26,7 @@ fun SettingsItem(
     painter: Painter,
     iconBackgroundColor: Color,
     iconColor: Color,
+    valueColor: Color = MaterialTheme.colorScheme.onBackground.copy(alpha = .8f),
     onTap: () -> Unit
 ) {
 
@@ -55,10 +57,14 @@ fun SettingsItem(
                 color = MaterialTheme.colorScheme.onBackground
             )
 
-            Text.Title.Small(
-                text = value.uppercaseFirstLetter(),
-                color = MaterialTheme.colorScheme.onBackground.copy(alpha = .8f),
-            )
+            AnimatedContent(
+                targetState = value.uppercaseFirstLetter()
+            ) { text ->
+                Text.Title.Small(
+                    text = text,
+                    color = valueColor,
+                )
+            }
 
         }
 

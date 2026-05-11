@@ -32,8 +32,9 @@ class SettingsViewModel @Inject constructor(
     val uiState: StateFlow<SettingsUiState> = combine(
         settingsRepository.flow,
         _dialogState,
-        _showFullSyncDialogState
-    ) { settings, dialog, showSyncDialog ->
+        _showFullSyncDialogState,
+        catalogUC.state
+    ) { settings, dialog, showSyncDialog, catalog ->
         SettingsUiState(
             languageValue = settings.dataLanguage,
             rewindValue = settings.playerRewindValue,
@@ -42,7 +43,8 @@ class SettingsViewModel @Inject constructor(
             autoKeyboard = settings.autoKeyboard,
             uiTheme = settings.uiTheme,
             dialogState = dialog,
-            showSyncDialog = showSyncDialog
+            showSyncDialog = showSyncDialog,
+            fullSyncInProgress = (catalog as? CatalogUC.State.Syncing)?.full == true
         )
     }.stateIn(
         scope = viewModelScope,

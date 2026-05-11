@@ -1,6 +1,8 @@
 package com.mskd.flux.screens.settings
 
 import android.content.Context
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateValueAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -176,7 +178,7 @@ fun SettingsContent(
 
             SettingsSection(
                 iconColor = MaterialTheme.colorScheme.onErrorContainer,
-                iconBackgroundColor = MaterialTheme.colorScheme.errorContainer.copy(alpha = 1f)
+                iconBackgroundColor = MaterialTheme.colorScheme.errorContainer.copy(alpha = .3f)
             ) { iconColor, bgColor ->
 
                 SettingsItem(
@@ -274,12 +276,14 @@ fun SettingsContent(
 
             SettingsSection(
                 iconColor = MaterialTheme.colorScheme.onErrorContainer,
-                iconBackgroundColor = MaterialTheme.colorScheme.errorContainer
+                iconBackgroundColor = MaterialTheme.colorScheme.errorContainer.copy(.7f)
             ) { iconColor, bgColor ->
 
+                val textColor by animateColorAsState(if (state.fullSyncInProgress) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onBackground.copy(alpha = .8f))
                 SettingsItem(
                     text = stringResource(R.string.sync_library),
-                    value = stringResource(R.string.sync_library_desc),
+                    value = stringResource(if (state.fullSyncInProgress) R.string.sync_in_progress else R.string.sync_library_desc),
+                    valueColor = textColor,
                     painter = painterResource(R.drawable.ic_sync),
                     iconColor = iconColor,
                     iconBackgroundColor = bgColor,

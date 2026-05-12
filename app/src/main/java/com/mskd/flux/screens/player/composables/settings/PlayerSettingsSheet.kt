@@ -71,7 +71,7 @@ fun PlayerSettingsSheet(
                     label = "Subtitles",
                     value = tracksState().selectedSubtitles?.label.orEmpty().ifBlank { stringResource(R.string.by_default) },
                     onTap = {
-                        val intent =PlayerUiState.SettingsSheet.Tracks(type = PlayerTrack.Type.SUBTITLES)
+                        val intent = PlayerUiState.SettingsSheet.Tracks(type = PlayerTrack.Type.SUBTITLES)
                         sendIntent(PlayerIntent.ShowSettings(sheet = intent)) }
                 )
 

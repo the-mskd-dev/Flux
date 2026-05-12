@@ -368,6 +368,7 @@ class PlayerManager(private val context: Context) : Player.Listener {
         if (track.language == null) { // If no subtitle
 
             setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
+            return track
 
         } else {
 

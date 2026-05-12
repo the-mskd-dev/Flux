@@ -108,4 +108,13 @@ data class PlayerTrack(
         AUDIO, SUBTITLES
     }
 
+    companion object {
+        val NO_SUBTITLES = PlayerTrack(
+            id = null,
+            label = "",
+            language = null,
+            type = Type.SUBTITLES
+        )
+    }
+
 }

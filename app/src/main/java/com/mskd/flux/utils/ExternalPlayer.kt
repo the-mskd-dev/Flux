@@ -54,7 +54,8 @@ object ExternalPlayer {
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             putExtra("return_result", true)
 
-            startingProgressFlags.forEach { putExtra(it, media.currentTime) }
+            val progress = media.currentTime.coerceAtLeast(10L)
+            startingProgressFlags.forEach { putExtra(it, progress) }
             titleFlags.forEach { putExtra(it, media.title) }
 
         }
@@ -83,6 +84,7 @@ object ExternalPlayer {
 
     private val startingProgressFlags = listOf(
         "position",
+        "extra_position",
         "extra_start_time",
         "start_from",
         "video_position",

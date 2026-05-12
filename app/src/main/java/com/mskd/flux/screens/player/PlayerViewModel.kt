@@ -276,7 +276,7 @@ class PlayerViewModel @AssistedInject constructor(
     }
 
     private suspend fun updateTracks(tracks: List<PlayerTrack>) {
-        _tracksState.update { tracks }
+        _tracksState.update { listOf(PlayerTrack.NO_SUBTITLES) + tracks }
 
         val currentSettings = settingsRepository.flow.first()
         val preferredLang = currentSettings.subtitlesLanguage.toPlayerTrack(type = Type.SUBTITLES)

@@ -228,7 +228,10 @@ class PlayerViewModel @AssistedInject constructor(
 
     private suspend fun playMedia(media: Media) {
         val subtitlesUri = filesRepository.getSubtitlesFor(file = media.file)
-        playerManager.playMedia(media)
+        playerManager.playMedia(
+            media = media,
+            subtitlesUri = subtitlesUri
+        )
     }
 
     private fun togglePlayButton() {

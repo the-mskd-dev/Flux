@@ -3,6 +3,7 @@ package com.mskd.flux.utils
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.util.Log
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -11,6 +12,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.services.ExternalPlayerService
+import androidx.core.net.toUri
+import kotlin.random.Random
 
 @Composable
 fun rememberExternalPlayerLauncher(context: Context, onProgressResult: (Long) -> Unit) : ManagedActivityResultLauncher<Intent, ActivityResult> {
@@ -50,12 +53,16 @@ object ExternalPlayer {
     private fun createIntent(media: Media) : Intent {
         return Intent(Intent.ACTION_VIEW).apply {
 
-            setDataAndType(media.file.uri, "video/*")
+            val uri = if (media.currentTime == 0L)
+                (media.file.uri.toString() + "#t=${System.currentTimeMillis()}").toUri()
+            else
+                media.file.uri
+
+            setDataAndType(uri, "video/*")
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             putExtra("return_result", true)
 
-            val progress = media.currentTime.coerceAtLeast(10L)
-            startingProgressFlags.forEach { putExtra(it, progress) }
+            startingProgressFlags.forEach { putExtra(it, media.currentTime) }
             titleFlags.forEach { putExtra(it, media.title) }
 
         }

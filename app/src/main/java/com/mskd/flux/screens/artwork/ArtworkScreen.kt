@@ -6,6 +6,8 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
@@ -50,6 +52,7 @@ import com.mskd.flux.ui.component.FluxDialog
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.component.Text
 import com.mskd.flux.ui.theme.AppTheme
+import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.ExternalPlayer
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.WebLink
@@ -170,11 +173,19 @@ fun ArtworkScreenContent(
             CenterAlignedTopAppBar(
                 modifier = Modifier.fillMaxWidth(),
                 title = {
-                    Text.Headline.Small(
-                        modifier = Modifier.graphicsLayer { alpha = animatedAlpha },
+
+                    Text.Adaptive(
+                        modifier = Modifier
+                            .padding(vertical = Ui.Space.EXTRA_SMALL)
+                            .graphicsLayer { alpha = animatedAlpha },
                         text = uiState.artwork.title,
                         overflow = TextOverflow.Ellipsis,
-                        maxLines = 1
+                        style = MaterialTheme.typography.headlineSmall,
+                        maxLines = 2,
+                        autoSize = TextAutoSize.StepBased(
+                            maxFontSize = MaterialTheme.typography.headlineSmall.fontSize,
+                            minFontSize = MaterialTheme.typography.titleSmall.fontSize
+                        )
                     )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(

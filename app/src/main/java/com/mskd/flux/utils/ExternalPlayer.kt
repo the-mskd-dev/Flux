@@ -3,17 +3,15 @@ package com.mskd.flux.utils
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.util.Log
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
+import androidx.core.net.toUri
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.services.ExternalPlayerService
-import androidx.core.net.toUri
-import kotlin.random.Random
 
 @Composable
 fun rememberExternalPlayerLauncher(context: Context, onProgressResult: (Long) -> Unit) : ManagedActivityResultLauncher<Intent, ActivityResult> {

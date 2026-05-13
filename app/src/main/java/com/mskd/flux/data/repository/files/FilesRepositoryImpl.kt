@@ -15,7 +15,6 @@ import com.mskd.flux.model.UserFile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
-import okhttp3.Dispatcher
 import java.io.File
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume

@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.util.Collections
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 
@@ -40,7 +41,9 @@ class ImagesUCImpl(
 
     private var _state = MutableStateFlow<ImagesUC.State>(ImagesUC.State.Idle)
 
-    private var fetchJob: Job? = null
+    private val activeUrls = Collections.synchronizedSet(mutableSetOf<String>())
+    private val totalToProcess = AtomicInteger(0)
+    private val completedCount = AtomicInteger(0)
 
     //endregion
 
@@ -50,29 +53,44 @@ class ImagesUCImpl(
 
     override fun prefetchImages() {
 
-        fetchJob?.cancel()
-
-        fetchJob = scope.launch {
+        scope.launch {
 
             val urls = database
                 .getAllImagesPaths()
+                .filter { activeUrls.add(it) }
                 .ifEmpty { return@launch }
 
-            val total = urls.size
-            val completed = AtomicInteger(0)
-            _state.value = ImagesUC.State.InProgress(0f)
+            if (urls.isEmpty()) return@launch
+
+            val currentTotal = totalToProcess.addAndGet(urls.size)
+            _state.value = ImagesUC.State.InProgress(completedCount.get().toFloat() / currentTotal)
 
             urls.forEach { url ->
-                val request = ImageRequest.Builder(context)
-                    .data(url)
-                    .memoryCachePolicy(CachePolicy.DISABLED)
-                    .diskCachePolicy(CachePolicy.ENABLED)
-                    .listener(
-                        onSuccess = { _, _ -> onCompleted(completed.incrementAndGet(), total) },
-                        onError = { _, _ -> onCompleted(completed.incrementAndGet(), total) }
-                    )
-                    .build()
-                imageLoader.enqueue(request)
+
+                launch(Dispatchers.IO) {
+
+                    try {
+
+                        val request = ImageRequest.Builder(context)
+                            .data(url)
+                            .memoryCachePolicy(CachePolicy.DISABLED)
+                            .diskCachePolicy(CachePolicy.ENABLED)
+                            .build()
+
+                        imageLoader.execute(request)
+
+                    } finally {
+
+                        activeUrls.remove(url)
+                        val completed = completedCount.incrementAndGet()
+                        val total = totalToProcess.get()
+
+                        updateState(completed, total)
+
+                    }
+
+                }
+
             }
 
         }
@@ -83,11 +101,13 @@ class ImagesUCImpl(
 
     //region Private methods
 
-    private fun onCompleted(current: Int, total: Int) {
-        _state.value = if (current >= total) {
-            ImagesUC.State.Idle
+    private fun updateState(completed: Int, total: Int) {
+        if (completed >= total) {
+            totalToProcess.set(0)
+            completedCount.set(0)
+            _state.value = ImagesUC.State.Idle
         } else {
-            ImagesUC.State.InProgress(current.toFloat() / total)
+            _state.value = ImagesUC.State.InProgress(completed.toFloat() / total)
         }
     }
 

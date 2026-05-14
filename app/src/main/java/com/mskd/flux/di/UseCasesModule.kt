@@ -1,6 +1,7 @@
 package com.mskd.flux.di
 
 import android.content.Context
+import coil3.ImageLoader
 import com.mskd.flux.data.repository.ddb.DatabaseRepository
 import com.mskd.flux.data.repository.files.FilesRepository
 import com.mskd.flux.data.repository.settings.SettingsRepository
@@ -10,6 +11,8 @@ import com.mskd.flux.useCases.artwork.ArtworkUC
 import com.mskd.flux.useCases.artwork.ArtworkUCImpl
 import com.mskd.flux.useCases.catalog.CatalogUC
 import com.mskd.flux.useCases.catalog.CatalogUCImpl
+import com.mskd.flux.useCases.images.ImagesUC
+import com.mskd.flux.useCases.images.ImagesUCImpl
 import com.mskd.flux.useCases.progress.ProgressUC
 import com.mskd.flux.useCases.progress.ProgressUCImpl
 import dagger.Module
@@ -65,6 +68,18 @@ object UseCasesModule {
         return ProgressUCImpl(
             database = databaseRepository,
             user = userRepository
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideImagesUC(
+        imageLoader: ImageLoader,
+        @ApplicationContext context: Context
+    ) : ImagesUC {
+        return ImagesUCImpl(
+            imageLoader = imageLoader,
+            context = context
         )
     }
 

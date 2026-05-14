@@ -351,7 +351,7 @@ class CatalogUCImpl(
                         }
 
                     } catch (e: Exception) {
-                        Log.d(TAG, "[getMovies] Fail to get movie from ${files.first().name}", e)
+                        Log.e(TAG, "[getMovies] Fail to get movie from ${files.first().name}", e)
                         null
                     }
 
@@ -402,7 +402,7 @@ class CatalogUCImpl(
                             }
 
                         } catch (e: Exception) {
-                            Log.d(TAG, "[getEpisodes] Fail to get episode from ${file.name}", e)
+                            Log.e(TAG, "[getEpisodes] Fail to get episode from ${file.name}", e)
                             null
                         }
 

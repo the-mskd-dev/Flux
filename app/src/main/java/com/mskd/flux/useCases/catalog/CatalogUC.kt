@@ -334,23 +334,30 @@ class CatalogUCImpl(
 
                 async(dispatcher) {
 
-                    when {
-                        artwork.id == Artwork.UNKNOWN_ID -> Episode(file = files.first())
-                        else -> {
+                    try {
 
-                            val tmdbMovie = tmdb.getTmdbMovie(artworkId = artwork.id)
+                        when {
+                            artwork.id == Artwork.UNKNOWN_ID -> Episode(file = files.first())
+                            else -> {
 
-                            if (tmdbMovie == null)
-                                createUnknownMedia(file = files.first())
-                            else
-                                Movie(tmdbMovie = tmdbMovie, file = files.first())
+                                val tmdbMovie = tmdb.getTmdbMovie(artworkId = artwork.id)
 
+                                if (tmdbMovie == null)
+                                    createUnknownMedia(file = files.first())
+                                else
+                                    Movie(tmdbMovie = tmdbMovie, file = files.first())
+
+                            }
                         }
+
+                    } catch (e: Exception) {
+                        Log.e(TAG, "[getMovies] Fail to get movie from ${files.first().name}", e)
+                        null
                     }
 
                 }
 
-            }.awaitAll()
+            }.awaitAll().filterNotNull()
 
         }
 
@@ -373,23 +380,30 @@ class CatalogUCImpl(
 
                     async(dispatcher) {
 
-                        when {
-                            artwork.id == Artwork.UNKNOWN_ID -> createUnknownMedia(file = file)
-                            season != null && number != null -> {
+                        try {
 
-                                val tmdbEpisode = tmdb.getTmdbEpisode(
-                                    artworkId = artwork.id,
-                                    season = season,
-                                    number = number
-                                )
+                            when {
+                                artwork.id == Artwork.UNKNOWN_ID -> createUnknownMedia(file = file)
+                                season != null && number != null -> {
 
-                                if (tmdbEpisode == null)
-                                    createUnknownMedia(file = file)
-                                else
-                                    Episode(tmdbEpisode = tmdbEpisode, file = file,)
+                                    val tmdbEpisode = tmdb.getTmdbEpisode(
+                                        artworkId = artwork.id,
+                                        season = season,
+                                        number = number
+                                    )
 
+                                    if (tmdbEpisode == null)
+                                        createUnknownMedia(file = file)
+                                    else
+                                        Episode(tmdbEpisode = tmdbEpisode, file = file,)
+
+                                }
+                                else -> null
                             }
-                            else -> null
+
+                        } catch (e: Exception) {
+                            Log.e(TAG, "[getEpisodes] Fail to get episode from ${file.name}", e)
+                            null
                         }
 
                     }

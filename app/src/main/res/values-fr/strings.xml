@@ -117,5 +117,4 @@
     <string name="sync_library_dialog">Souhaitez-vous synchroniser toute la librairie ? Votre progression sera conservée, cependant cela peut prendre un peu de temps.</string>
     <string name="information_language">Langage des informations</string>
     <string name="sync_in_progress">Synchronisation en cours…</string>
-    <string name="by_default">Par défaut</string>
 </resources>

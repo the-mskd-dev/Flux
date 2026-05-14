@@ -23,7 +23,7 @@ data class TMDBMovie(
     @SerializedName("runtime")
     val duration: Int,
     @SerializedName("poster_path")
-    val imagePath: String?,
+    val imagePath: String,
     @SerializedName("backdrop_path")
     val bannerPath: String,
     @SerializedName("vote_average")

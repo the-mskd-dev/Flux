@@ -3,7 +3,6 @@ package com.mskd.flux.screens.player
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mskd.flux.data.repository.files.FilesRepository
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
@@ -43,7 +42,6 @@ class PlayerViewModel @AssistedInject constructor(
     @Assisted mediaId: Long,
     private val artworkUC: ArtworkUC,
     private val settingsRepository: SettingsRepository,
-    private val filesRepository: FilesRepository,
     private val playerManager: PlayerManager,
     private val progressUC: ProgressUC
 ) : ViewModel() {
@@ -158,7 +156,7 @@ class PlayerViewModel @AssistedInject constructor(
                     .filterIsInstance<PlayerScreen.Content>()
                     .map { it.media }
                     .distinctUntilChangedBy { it.mediaId }
-                    .collect { playMedia(it) }
+                    .collect { playerManager.playMedia(it) }
             }
 
             // Listen next episode
@@ -226,12 +224,8 @@ class PlayerViewModel @AssistedInject constructor(
         }
     }
 
-    private suspend fun playMedia(media: Media) {
-        val subtitlesUri = filesRepository.getSubtitlesFor(file = media.file)
-        playerManager.playMedia(
-            media = media,
-            subtitlesUri = subtitlesUri
-        )
+    private fun playMedia(media: Media) {
+        playerManager.playMedia(media)
     }
 
     private fun togglePlayButton() {
@@ -276,7 +270,7 @@ class PlayerViewModel @AssistedInject constructor(
     }
 
     private suspend fun updateTracks(tracks: List<PlayerTrack>) {
-        _tracksState.update { listOf(PlayerTrack.NO_SUBTITLES) + tracks }
+        _tracksState.update { tracks }
 
         val currentSettings = settingsRepository.flow.first()
         val preferredLang = currentSettings.subtitlesLanguage.toPlayerTrack(type = Type.SUBTITLES)

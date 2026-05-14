@@ -1,19 +1,13 @@
 package com.mskd.flux.ui.component
 
-import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -32,33 +26,20 @@ object Text {
         overflow: TextOverflow = TextOverflow.Clip,
         maxLines: Int = Int.MAX_VALUE,
         minLines: Int = 1,
-        autoSize: TextAutoSize? = null,
     ) {
 
         if (text.isNullOrBlank())
             return
 
-        var titleFontSize by remember { mutableStateOf(style.fontSize) }
-
-        val onTextLayout : ((TextLayoutResult) -> Unit)? = if (autoSize != null) {
-            { result ->
-                val calculatedSize = result.layoutInput.style.fontSize
-                if (calculatedSize != titleFontSize)
-                    titleFontSize = calculatedSize
-            }
-        } else null
-
         Text(
             modifier = modifier,
             text = text,
             color = color,
-            style = style.copy(lineHeight = titleFontSize * 1.2f),
+            style = style,
             textAlign = textAlign,
             overflow = overflow,
             maxLines = maxLines,
-            minLines = minLines,
-            autoSize = autoSize,
-            onTextLayout = onTextLayout
+            minLines = minLines
         )
 
     }

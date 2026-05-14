@@ -9,7 +9,6 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
-import androidx.core.net.toUri
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.services.ExternalPlayerService
 
@@ -51,12 +50,7 @@ object ExternalPlayer {
     private fun createIntent(media: Media) : Intent {
         return Intent(Intent.ACTION_VIEW).apply {
 
-            val uri = if (media.currentTime == 0L)
-                (media.file.uri.toString() + "#t=${System.currentTimeMillis()}").toUri()
-            else
-                media.file.uri
-
-            setDataAndType(uri, "video/*")
+            setDataAndType(media.file.uri, "video/*")
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             putExtra("return_result", true)
 
@@ -89,7 +83,6 @@ object ExternalPlayer {
 
     private val startingProgressFlags = listOf(
         "position",
-        "extra_position",
         "extra_start_time",
         "start_from",
         "video_position",

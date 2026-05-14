@@ -2,14 +2,12 @@ package com.mskd.flux.screens.player.controllers
 
 import android.content.ComponentName
 import android.content.Context
-import android.net.Uri
 import android.util.Log
 import androidx.core.net.toUri
 import androidx.media3.common.C
 import androidx.media3.common.Format
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
-import androidx.media3.common.MimeTypes
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.TrackSelectionOverride
@@ -208,7 +206,7 @@ class PlayerManager(private val context: Context) : Player.Listener {
         return (newVolume * 100).roundToInt()
     }
 
-    fun playMedia(media: Media, subtitlesUri: Uri?) {
+    fun playMedia(media: Media) {
         val player = (_state.value as? State.Ready)?.player ?: return
 
         if (media.mediaId != currentMediaId) {
@@ -224,16 +222,10 @@ class PlayerManager(private val context: Context) : Player.Listener {
                 }
                 .build()
 
-            val mediaItemBuilder = MediaItem.Builder()
+            val mediaItem = MediaItem.Builder()
                 .setMediaMetadata(mediaMetadata)
                 .setUri(media.file.uri)
-
-            // Add local subtitles
-            createSubtitlesFrom(subtitlesUri = subtitlesUri)?.let { subtitle ->
-                mediaItemBuilder.setSubtitleConfigurations(listOf(subtitle))
-            }
-
-            val mediaItem = mediaItemBuilder.build()
+                .build()
 
             player.stop()
             player.clearMediaItems()
@@ -250,25 +242,6 @@ class PlayerManager(private val context: Context) : Player.Listener {
     //endregion
 
     //region Tracks
-
-    private fun createSubtitlesFrom(subtitlesUri: Uri?) : MediaItem.SubtitleConfiguration? {
-
-        subtitlesUri ?: return null
-
-        val mimeType = when (subtitlesUri.toString().substringAfterLast(".").lowercase()) {
-            "vtt" -> MimeTypes.TEXT_VTT
-            "ass", "ssa" -> MimeTypes.TEXT_SSA
-            else -> MimeTypes.APPLICATION_SUBRIP
-        }
-
-        val subtitle = MediaItem.SubtitleConfiguration.Builder(subtitlesUri)
-            .setMimeType(mimeType)
-            .setSelectionFlags(C.SELECTION_FLAG_DEFAULT)
-            .build()
-
-        return subtitle
-
-    }
 
     override fun onTracksChanged(tracks: Tracks) {
         val current = _state.value as? State.Ready ?: return
@@ -368,7 +341,6 @@ class PlayerManager(private val context: Context) : Player.Listener {
         if (track.language == null) { // If no subtitle
 
             setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
-            return track
 
         } else {
 

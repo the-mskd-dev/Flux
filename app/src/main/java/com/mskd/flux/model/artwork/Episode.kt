@@ -72,7 +72,7 @@ data class Episode(
         title = tmdbEpisode.title,
         number = tmdbEpisode.number,
         season = tmdbEpisode.season,
-        imagePath = tmdbEpisode.imagePath ?: "",
+        imagePath = tmdbEpisode.imagePath,
         releaseDateString = tmdbEpisode.releaseDateString,
         //crew = tmdbEpisode.crew,
         description = tmdbEpisode.description,

@@ -26,11 +26,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withContext
 
 interface CatalogUC {
@@ -172,7 +172,7 @@ class CatalogUCImpl(
             var translatedMovies: List<Movie> = emptyList()
             var translatedEpisodes: List<Episode> = emptyList()
 
-            coroutineScope {
+            supervisorScope {
 
                 translatedMovies = movies.map { movie ->
 
@@ -234,12 +234,19 @@ class CatalogUCImpl(
 
         // Get data
         val artworksFolders = getArtworksFolders(folders = folders)
-        var movies: List<Media> = emptyList()
-        var episodes: List<Episode> = emptyList()
 
-        coroutineScope {
-            launch {  movies = getMovies(artworkFolders = artworksFolders) }
-            launch { episodes = getEpisodes(artworkFolders = artworksFolders) }
+        val (movies, episodes) = supervisorScope {
+            val moviesDeferred = async {
+                runCatching { getMovies(artworkFolders = artworksFolders) }
+                    .onFailure { Log.e(TAG, "getMovies failed", it) }
+                    .getOrElse { emptyList() }
+            }
+            val episodesDeferred = async {
+                runCatching { getEpisodes(artworkFolders = artworksFolders) }
+                    .onFailure { Log.e(TAG, "getEpisodes failed", it) }
+                    .getOrElse { emptyList() }
+            }
+            moviesDeferred.await() to episodesDeferred.await()
         }
 
         return Catalog(
@@ -296,7 +303,7 @@ class CatalogUCImpl(
 
     private suspend fun getArtworksFolders(folders: List<UserFolder>) : List<ArtworkFolder> {
 
-        val artworkFolders = coroutineScope {
+        val artworkFolders = supervisorScope {
 
             folders.map { folder ->
 
@@ -328,7 +335,7 @@ class CatalogUCImpl(
 
     private suspend fun getMovies(artworkFolders: List<ArtworkFolder>) : List<Media> {
 
-        val movies = coroutineScope {
+        val movies = supervisorScope {
 
             artworkFolders.filter { it.artwork.type == ContentType.MOVIE }.map { (artwork, files) ->
 
@@ -369,7 +376,7 @@ class CatalogUCImpl(
 
     private suspend fun getEpisodes(artworkFolders: List<ArtworkFolder>) : List<Episode> {
 
-        val episodes = coroutineScope {
+        val episodes = supervisorScope {
 
             artworkFolders.filter { it.artwork.type == ContentType.SHOW }.flatMap { (artwork, files) ->
 

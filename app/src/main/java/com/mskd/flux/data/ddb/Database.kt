@@ -15,6 +15,7 @@ import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Movie
+import com.mskd.flux.model.dto.ArtworkImagesDTO
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -109,6 +110,16 @@ interface DatabaseDao {
 
     @Query("SELECT COUNT(*) FROM episodes WHERE artworkId = :artworkId")
     suspend fun getEpisodeCountByArtworkId(artworkId: Long): Int
+
+//endregion
+
+//region Images
+
+    @Query("SELECT imagePath, bannerPath FROM artworks")
+    suspend fun getArtworksImages() : List<ArtworkImagesDTO>
+
+    @Query("SELECT imagePath FROM episodes")
+    suspend fun getEpisodesImages() : List<String>
 
 //endregion
 

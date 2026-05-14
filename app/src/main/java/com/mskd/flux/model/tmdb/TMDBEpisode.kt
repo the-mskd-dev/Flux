@@ -30,7 +30,7 @@ data class TMDBEpisode(
     @SerializedName("season_number")
     val season: Int,
     @SerializedName("still_path")
-    val imagePath: String,
+    val imagePath: String?,
     @SerializedName("vote_average")
     val voteAverage: Float,
     @SerializedName("vote_count")

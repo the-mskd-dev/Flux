@@ -74,10 +74,12 @@ object UseCasesModule {
     @Provides
     @Singleton
     fun provideImagesUC(
+        databaseRepository: DatabaseRepository,
         imageLoader: ImageLoader,
         @ApplicationContext context: Context
     ) : ImagesUC {
         return ImagesUCImpl(
+            database = databaseRepository,
             imageLoader = imageLoader,
             context = context
         )

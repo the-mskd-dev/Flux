@@ -4,6 +4,7 @@ import android.content.Context
 import coil3.ImageLoader
 import coil3.request.CachePolicy
 import coil3.request.ImageRequest
+import com.mskd.flux.data.repository.ddb.DatabaseRepository
 import com.mskd.flux.useCases.catalog.CatalogUC
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -17,7 +18,7 @@ import javax.inject.Inject
 interface ImagesUC {
 
     val state: Flow<State>
-    fun prefetchImages(urls: List<String>)
+    fun prefetchImages()
 
     sealed class State {
         data object Idle : State()
@@ -27,6 +28,7 @@ interface ImagesUC {
 }
 
 class ImagesUCImpl(
+    private val database: DatabaseRepository,
     private val imageLoader: ImageLoader,
     private val context: Context,
 ) : ImagesUC {
@@ -41,7 +43,10 @@ class ImagesUCImpl(
 
     override val state: Flow<ImagesUC.State> = _state.asStateFlow()
 
-    override fun prefetchImages(urls: List<String>) {
+    override fun prefetchImages() {
+
+        val urls = database.getAllImagesPaths()
+
         if (urls.isEmpty()) return
 
         val total = urls.size

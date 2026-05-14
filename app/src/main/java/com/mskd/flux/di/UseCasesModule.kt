@@ -76,12 +76,14 @@ object UseCasesModule {
     fun provideImagesUC(
         databaseRepository: DatabaseRepository,
         imageLoader: ImageLoader,
-        @ApplicationContext context: Context
+        @ApplicationContext context: Context,
+        @CoroutineModule.ApplicationScope scope: CoroutineScope,
     ) : ImagesUC {
         return ImagesUCImpl(
             database = databaseRepository,
             imageLoader = imageLoader,
-            context = context
+            context = context,
+            scope = scope
         )
     }
 

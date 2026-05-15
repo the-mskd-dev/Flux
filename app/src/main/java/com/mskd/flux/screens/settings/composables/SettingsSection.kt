@@ -220,6 +220,17 @@ fun SettingsSyncSection(
             onTap = { sendIntent(SettingsIntent.ShowFullSyncDialog(true)) }
         )
 
+        //TODO
+        SettingsSwitch(
+            text = "Pré-charger les images",
+            subText = "Images pré-chargées",
+            checked = state.prefetchImages,
+            onCheckedChange = { sendIntent(SettingsIntent.OnPrefetchImagesCheck(it)) },
+            painter = painterResource(R.drawable.ic_keyboard),
+            iconColor = iconColor,
+            backgroundColor = bgColor,
+        )
+
     }
 
 }

@@ -8,6 +8,7 @@ import com.mskd.flux.data.tmdb.token.TokenRepository
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.mockkCatalogUC
 import com.mskd.flux.mockups.mockkSnackbarRepository
+import com.mskd.flux.model.AppInfo
 import com.mskd.flux.model.ScreenState
 import com.mskd.flux.useCases.catalog.CatalogUC
 import com.mskd.flux.utils.FluxSnackbar
@@ -33,6 +34,7 @@ class HomeViewModelTest : FunSpec({
     lateinit var userRepository: UserRepository
     lateinit var tokenRepository: TokenRepository
     lateinit var snackbarRepository: SnackbarRepository
+    lateinit var appInfo: AppInfo
 
     // Mocked flows
     val dataStoreFlow = MutableStateFlow(UserRepository.State())
@@ -48,7 +50,13 @@ class HomeViewModelTest : FunSpec({
         userRepository = mockk(relaxed = true) {
             every { flow } returns dataStoreFlow
         }
+
         snackbarRepository = mockkSnackbarRepository()
+
+        appInfo = AppInfo(
+            versionCode = 0,
+            versionName = "Version-Test"
+        )
 
     }
 
@@ -73,7 +81,8 @@ class HomeViewModelTest : FunSpec({
                 catalogUC = catalogUC,
                 tokenRepository = tokenRepository,
                 userRepository = userRepository,
-                snackbarRepository = snackbarRepository
+                snackbarRepository = snackbarRepository,
+                appInfo = appInfo
             )
 
             viewModel.uiState.test {
@@ -96,7 +105,8 @@ class HomeViewModelTest : FunSpec({
             catalogUC = catalogUC,
             tokenRepository = tokenRepository,
             userRepository = userRepository,
-            snackbarRepository = snackbarRepository
+            snackbarRepository = snackbarRepository,
+            appInfo = appInfo
         )
 
         viewModel.handleIntent(HomeIntent.SyncCatalog)
@@ -115,7 +125,8 @@ class HomeViewModelTest : FunSpec({
             catalogUC = catalogUC,
             tokenRepository = tokenRepository,
             userRepository = userRepository,
-            snackbarRepository = snackbarRepository
+            snackbarRepository = snackbarRepository,
+            appInfo = appInfo
         )
 
         coVerify(exactly = 1) {
@@ -131,11 +142,35 @@ class HomeViewModelTest : FunSpec({
             catalogUC = catalogUC,
             tokenRepository = tokenRepository,
             userRepository = userRepository,
-            snackbarRepository = snackbarRepository
+            snackbarRepository = snackbarRepository,
+            appInfo = appInfo
         )
 
         coVerify(exactly = 0) {
             catalogUC.syncCatalog(any())
+        }
+    }
+
+    test("should sync when new app version") {
+
+        val recentTime = System.currentTimeMillis() - 12.hours.inWholeMilliseconds
+        coEvery { userRepository.getSyncTime() } returns recentTime
+
+        appInfo = AppInfo(
+            versionCode = Int.MAX_VALUE,
+            versionName = "VersionTest"
+        )
+
+        viewModel = HomeViewModel(
+            catalogUC = catalogUC,
+            tokenRepository = tokenRepository,
+            userRepository = userRepository,
+            snackbarRepository = snackbarRepository,
+            appInfo = appInfo
+        )
+
+        coVerify(exactly = 1) {
+            catalogUC.syncCatalog(onlyNew = true)
         }
     }
 

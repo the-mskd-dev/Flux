@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.useCases.catalog.CatalogUC
+import com.mskd.flux.useCases.images.ImagesUC
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,7 +22,8 @@ import javax.inject.Inject
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val settingsRepository: SettingsRepository,
-    private val catalogUC: CatalogUC
+    private val catalogUC: CatalogUC,
+    private val imagesUC: ImagesUC
 ) : ViewModel() {
 
     //region Variables
@@ -33,8 +35,9 @@ class SettingsViewModel @Inject constructor(
         settingsRepository.flow,
         _dialogState,
         _showFullSyncDialogState,
-        catalogUC.state
-    ) { settings, dialog, showSyncDialog, catalog ->
+        catalogUC.state,
+        imagesUC.state
+    ) { settings, dialog, showSyncDialog, catalog, images ->
         SettingsUiState(
             languageValue = settings.dataLanguage,
             rewindValue = settings.playerRewindValue,
@@ -44,7 +47,9 @@ class SettingsViewModel @Inject constructor(
             uiTheme = settings.uiTheme,
             dialogState = dialog,
             showSyncDialog = showSyncDialog,
-            fullSyncInProgress = (catalog as? CatalogUC.State.Syncing)?.full == true
+            fullSyncInProgress = (catalog as? CatalogUC.State.Syncing)?.full == true,
+            prefetchImages = settings.prefetchImages,
+            prefetchImagesState = images
         )
     }.stateIn(
         scope = viewModelScope,
@@ -78,6 +83,7 @@ class SettingsViewModel @Inject constructor(
             is SettingsIntent.OnExternalPlayerCheck -> onExternalPlayerCheck(value = intent.checked)
             is SettingsIntent.ShowFullSyncDialog -> showFullSyncDialog(show = intent.show)
             SettingsIntent.ProceedFullSync -> proceedFullSync()
+            is SettingsIntent.OnPrefetchImagesCheck -> onPrefetchImagesCheck(value = intent.checked)
         }
     }
 
@@ -148,6 +154,14 @@ class SettingsViewModel @Inject constructor(
     private fun proceedFullSync() {
         catalogUC.syncCatalog(onlyNew = false)
         showFullSyncDialog(show = false)
+    }
+
+    private suspend fun onPrefetchImagesCheck(value: Boolean) {
+        settingsRepository.setPrefetchImages(value)
+
+        if (value)
+            imagesUC.prefetchImages()
+
     }
 
 }

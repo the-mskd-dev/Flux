@@ -1,10 +1,13 @@
 package com.mskd.flux.mockups
 
 import com.mskd.flux.data.repository.ddb.DatabaseRepository
+import com.mskd.flux.data.repository.files.FilesRepository
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.data.repository.snackbars.SnackbarRepository
+import com.mskd.flux.model.UserFile
 import com.mskd.flux.useCases.catalog.CatalogUC
 import com.mskd.flux.useCases.catalog.CatalogUC.State
+import com.mskd.flux.useCases.images.ImagesUC
 import com.mskd.flux.useCases.progress.ProgressUC
 import io.mockk.coEvery
 import io.mockk.every
@@ -16,6 +19,10 @@ fun mockkProgressUC() : ProgressUC = mockk(relaxed = true)
 fun mockkCatalogUC() : CatalogUC = mockk(relaxed = true) {
     every { state } returns MutableStateFlow(State.Idle)
     every { artworks } returns MutableStateFlow(MediaMockups.artworks)
+}
+
+fun mockkImagesUC() : ImagesUC = mockk(relaxed = true) {
+    every { state } returns MutableStateFlow(ImagesUC.State.Idle)
 }
 
 fun mockkDatabaseRepository() : DatabaseRepository = mockk(relaxed = true) {
@@ -73,4 +80,13 @@ fun mockkSettingsRepository() : SettingsRepository = mockk(relaxed = true) {
 fun mockkSnackbarRepository() : SnackbarRepository = mockk(relaxed = true) {
     every { canShow(any()) } returns MutableStateFlow(true)
     every { getCount(any()) } returns MutableStateFlow(0)
+}
+
+fun mockkFilesRepository() : FilesRepository = mockk(relaxed = true) {
+    coEvery { getFiles() } returns FilesMockups.localFiles
+    coEvery { filterExistingFiles(any()) } answers {
+        val files = firstArg<List<UserFile>>()
+        files.filter { f -> FilesMockups.localFiles.any { it.name == f.name } }
+    }
+    coEvery { getSubtitlesFor(any()) } returns null
 }

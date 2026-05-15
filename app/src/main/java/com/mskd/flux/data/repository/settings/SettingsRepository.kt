@@ -32,6 +32,9 @@ interface SettingsRepository {
     suspend fun setAudioLanguage(locale: Locale)
 
     suspend fun setExternalPlayer(useExternalPlayer: Boolean)
+
+    suspend fun setPrefetchImages(prefetch: Boolean)
+
     suspend fun setAutoKeyboard(autoKeyboard: Boolean)
 
     suspend fun getDataLanguage() : Locale
@@ -45,5 +48,6 @@ interface SettingsRepository {
         val externalPlayer: Boolean = false,
         val autoKeyboard: Boolean = true,
         val dataLanguage: Locale? = null,
+        val prefetchImages: Boolean = false
     )
 }

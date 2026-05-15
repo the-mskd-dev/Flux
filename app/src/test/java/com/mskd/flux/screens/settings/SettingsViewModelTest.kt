@@ -4,8 +4,10 @@ import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.mockups.mockkCatalogUC
+import com.mskd.flux.mockups.mockkImagesUC
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.useCases.catalog.CatalogUC
+import com.mskd.flux.useCases.images.ImagesUC
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
@@ -24,6 +26,7 @@ class SettingsViewModelTest : FunSpec({
     lateinit var viewModel: SettingsViewModel
     lateinit var settingsRepository: SettingsRepository
     lateinit var catalogUC: CatalogUC
+    lateinit var imagesUC: ImagesUC
 
     val dataStoreFlow = MutableStateFlow(SettingsRepository.State())
 
@@ -35,9 +38,12 @@ class SettingsViewModelTest : FunSpec({
 
         catalogUC = mockkCatalogUC()
 
+        imagesUC = mockkImagesUC()
+
         viewModel = SettingsViewModel(
             settingsRepository = settingsRepository,
-            catalogUC = catalogUC
+            catalogUC = catalogUC,
+            imagesUC = imagesUC
         )
 
     }
@@ -228,6 +234,23 @@ class SettingsViewModelTest : FunSpec({
 
             coVerify { settingsRepository.setExternalPlayer(true) }
             state.useExternalPlayer shouldBe true
+
+            cancelAndConsumeRemainingEvents()
+
+        }
+    }
+
+    test("set prefetch images") {
+        viewModel.uiState.test {
+            awaitItem()
+
+            viewModel.handleIntent(SettingsIntent.OnPrefetchImagesCheck(true))
+            dataStoreFlow.value = dataStoreFlow.value.copy(prefetchImages = true)
+
+            val state = awaitItem()
+
+            coVerify { settingsRepository.setPrefetchImages(true) }
+            state.prefetchImages shouldBe true
 
             cancelAndConsumeRemainingEvents()
 

@@ -1,7 +1,6 @@
 package com.mskd.flux.screens.settings
 
 import android.content.Context
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -30,7 +29,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -39,22 +37,17 @@ import com.mskd.flux.R
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Route.Token
 import com.mskd.flux.screens.settings.composables.SettingsAppInfoSection
-import com.mskd.flux.screens.settings.composables.SettingsTmdbSection
 import com.mskd.flux.screens.settings.composables.SettingsCustomisationSection
-import com.mskd.flux.screens.settings.composables.SettingsItem
 import com.mskd.flux.screens.settings.composables.SettingsOtherSection
 import com.mskd.flux.screens.settings.composables.SettingsPlayerSection
-import com.mskd.flux.screens.settings.composables.SettingsSection
 import com.mskd.flux.screens.settings.composables.SettingsSyncSection
+import com.mskd.flux.screens.settings.composables.SettingsTmdbSection
 import com.mskd.flux.ui.component.FluxDialog
-import com.mskd.flux.ui.component.FluxDivider
 import com.mskd.flux.ui.component.FluxScaffold
 import com.mskd.flux.ui.component.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
-import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.FluxPreview
-import com.mskd.flux.utils.WebLink
 import com.mskd.flux.utils.extensions.uppercaseFirstLetter
 import com.mskd.flux.utils.notificationsPermissionState
 

@@ -2,6 +2,7 @@ package com.mskd.flux.screens.settings.composables
 
 import android.content.Context
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -15,10 +16,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.mskd.flux.R
 import com.mskd.flux.screens.settings.SettingsIntent
 import com.mskd.flux.screens.settings.SettingsUiState
-import com.mskd.flux.ui.component.FluxDivider
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.WebLink
@@ -35,7 +36,8 @@ fun SettingsSection(
             .fillMaxWidth()
             .padding(horizontal = Ui.Space.LARGE)
             .clip(Ui.Shape.Corner.Medium),
-        horizontalAlignment = Alignment.Start
+        horizontalAlignment = Alignment.Start,
+        verticalArrangement = Arrangement.spacedBy(2.dp)
     ) { content(iconColor, iconBackgroundColor) }
 }
 
@@ -59,8 +61,6 @@ fun SettingsCustomisationSection(
             onTap = { sendIntent(SettingsIntent.ShowThemeDialog) }
         )
 
-        FluxDivider()
-
         SettingsSwitch(
             text = stringResource(R.string.auto_keyboard),
             subText = stringResource(R.string.auto_keyboard_desc),
@@ -70,8 +70,6 @@ fun SettingsCustomisationSection(
             iconColor = iconColor,
             backgroundColor = bgColor,
         )
-
-        FluxDivider()
 
         val displayedLanguage = state.languageValue?.displayLanguage ?: stringResource(R.string.system)
         SettingsItem(
@@ -107,8 +105,6 @@ fun SettingsPlayerSection(
             onTap = { sendIntent(SettingsIntent.ShowRewindDialog) }
         )
 
-        FluxDivider()
-
         SettingsItem(
             text = stringResource(R.string.button_forward),
             value = "${state.forwardValue}sec",
@@ -117,8 +113,6 @@ fun SettingsPlayerSection(
             iconBackgroundColor = bgColor,
             onTap = { sendIntent(SettingsIntent.ShowForwardDialog) }
         )
-
-        FluxDivider()
 
         SettingsSwitch(
             text = stringResource(R.string.external_player),
@@ -136,7 +130,6 @@ fun SettingsPlayerSection(
 
 @Composable
 fun SettingsTmdbSection(
-    state: SettingsUiState,
     sendIntent: (SettingsIntent) -> Unit
 ) {
 
@@ -153,8 +146,6 @@ fun SettingsTmdbSection(
             iconBackgroundColor = bgColor,
             onTap = { sendIntent(SettingsIntent.OnTokenTap) }
         )
-
-        FluxDivider()
 
         SettingsItem(
             text = stringResource(R.string.how_to_name_files),
@@ -188,8 +179,6 @@ fun SettingsOtherSection(
             iconBackgroundColor = bgColor,
             onTap = { sendIntent(SettingsIntent.OnAboutTap) }
         )
-
-        FluxDivider()
 
         SettingsItem(
             text = stringResource(R.string.make_a_donation),
@@ -260,8 +249,6 @@ fun SettingsAppInfoSection(
             }
         )
 
-        FluxDivider()
-
         SettingsItem(
             text = stringResource(R.string.sources),
             value = "",
@@ -277,8 +264,6 @@ fun SettingsAppInfoSection(
         )
 
         appVersion?.let {
-
-            FluxDivider()
 
             SettingsItem(
                 text = stringResource(R.string.app_version),

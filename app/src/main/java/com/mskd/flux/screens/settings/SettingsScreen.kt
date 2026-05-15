@@ -150,7 +150,6 @@ fun SettingsContent(
             )
 
             SettingsTmdbSection(
-                state = state,
                 sendIntent = sendIntent
             )
 

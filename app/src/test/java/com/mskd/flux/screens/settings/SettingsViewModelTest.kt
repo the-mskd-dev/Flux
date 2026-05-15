@@ -240,4 +240,21 @@ class SettingsViewModelTest : FunSpec({
         }
     }
 
+    test("set prefetch images") {
+        viewModel.uiState.test {
+            awaitItem()
+
+            viewModel.handleIntent(SettingsIntent.OnPrefetchImagesCheck(true))
+            dataStoreFlow.value = dataStoreFlow.value.copy(prefetchImages = true)
+
+            val state = awaitItem()
+
+            coVerify { settingsRepository.setPrefetchImages(true) }
+            state.prefetchImages shouldBe true
+
+            cancelAndConsumeRemainingEvents()
+
+        }
+    }
+
 })

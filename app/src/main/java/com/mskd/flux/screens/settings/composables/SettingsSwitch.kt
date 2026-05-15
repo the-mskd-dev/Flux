@@ -27,6 +27,7 @@ fun SettingsSwitch(
     painter: Painter,
     backgroundColor: Color,
     iconColor: Color,
+    valueColor: Color = MaterialTheme.colorScheme.onBackground.copy(alpha = .8f),
     onCheckedChange: (Boolean) -> Unit
 ) {
 
@@ -62,7 +63,7 @@ fun SettingsSwitch(
 
             Text.Title.Small(
                 text = subText,
-                color = MaterialTheme.colorScheme.onBackground.copy(alpha = .8f),
+                color = valueColor,
                 lineHeight = 18.sp
             )
 

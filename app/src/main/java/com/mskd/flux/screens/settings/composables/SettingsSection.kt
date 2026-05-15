@@ -2,6 +2,7 @@ package com.mskd.flux.screens.settings.composables
 
 import android.content.Context
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateValueAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,8 +22,10 @@ import com.mskd.flux.R
 import com.mskd.flux.screens.settings.SettingsIntent
 import com.mskd.flux.screens.settings.SettingsUiState
 import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.useCases.images.ImagesUC
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.WebLink
+import kotlin.math.roundToInt
 
 @Composable
 fun SettingsSection(
@@ -209,26 +212,32 @@ fun SettingsSyncSection(
         iconBackgroundColor = MaterialTheme.colorScheme.errorContainer.copy(.7f)
     ) { iconColor, bgColor ->
 
-        val textColor by animateColorAsState(if (state.fullSyncInProgress) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onBackground.copy(alpha = .8f))
+        val syncTextColor by animateColorAsState(if (state.fullSyncInProgress) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onBackground.copy(alpha = .8f))
         SettingsItem(
             text = stringResource(R.string.sync_library),
             value = stringResource(if (state.fullSyncInProgress) R.string.sync_in_progress else R.string.sync_library_desc),
-            valueColor = textColor,
+            valueColor = syncTextColor,
             painter = painterResource(R.drawable.ic_sync),
             iconColor = iconColor,
             iconBackgroundColor = bgColor,
             onTap = { sendIntent(SettingsIntent.ShowFullSyncDialog(true)) }
         )
 
-        //TODO
+        val imagesTextColor by animateColorAsState(if (state.prefetchImagesState is ImagesUC.State.InProgress) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onBackground.copy(alpha = .8f))
+        val imagesText = when {
+            state.prefetchImages && state.prefetchImagesState is ImagesUC.State.Idle -> stringResource(R.string.images_cached)
+            state.prefetchImages && state.prefetchImagesState is ImagesUC.State.InProgress -> stringResource(R.string.caching_images_in_progress, state.prefetchImagesState.progress.times(100).roundToInt())
+            else -> stringResource(R.string.cache_images_desc)
+        }
         SettingsSwitch(
-            text = "Pré-charger les images",
-            subText = "Images pré-chargées",
+            text = stringResource(R.string.cache_images),
+            subText = imagesText,
             checked = state.prefetchImages,
             onCheckedChange = { sendIntent(SettingsIntent.OnPrefetchImagesCheck(it)) },
             painter = painterResource(R.drawable.ic_keyboard),
             iconColor = iconColor,
             backgroundColor = bgColor,
+            valueColor = imagesTextColor
         )
 
     }

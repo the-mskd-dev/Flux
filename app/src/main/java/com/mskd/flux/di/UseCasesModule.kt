@@ -35,6 +35,7 @@ object UseCasesModule {
         filesRepository: FilesRepository,
         userRepository: UserRepository,
         settingsRepository: SettingsRepository,
+        imagesUC: ImagesUC,
         @CoroutineModule.ApplicationScope scope: CoroutineScope,
         @ApplicationContext context: Context
     ) : CatalogUC {
@@ -44,6 +45,7 @@ object UseCasesModule {
             files = filesRepository,
             user = userRepository,
             settings = settingsRepository,
+            imagesUC = imagesUC,
             scope = scope,
             context = context
         )

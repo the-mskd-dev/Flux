@@ -7,6 +7,7 @@ import com.mskd.flux.BuildConfig
 import com.mskd.flux.data.repository.snackbars.SnackbarRepository
 import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.data.tmdb.token.TokenRepository
+import com.mskd.flux.model.AppInfo
 import com.mskd.flux.model.ScreenState
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.screens.home.HomeEvent.NavigateToArtwork
@@ -32,7 +33,8 @@ class HomeViewModel @Inject constructor(
     private val catalogUC: CatalogUC,
     private val userRepository: UserRepository,
     private val tokenRepository: TokenRepository,
-    private val snackbarRepository: SnackbarRepository
+    private val snackbarRepository: SnackbarRepository,
+    private val appInfo: AppInfo
 ): ViewModel() {
 
     private val _event = MutableSharedFlow<HomeEvent>()
@@ -101,7 +103,7 @@ class HomeViewModel @Inject constructor(
         val currentTime = System.currentTimeMillis()
         val sync = currentTime - lastSyncTime > 1.days.inWholeMilliseconds
                 || manualSync
-                || lastSyncVersionCode < BuildConfig.VERSION_CODE
+                || lastSyncVersionCode < appInfo.versionCode
 
         if (sync) {
 

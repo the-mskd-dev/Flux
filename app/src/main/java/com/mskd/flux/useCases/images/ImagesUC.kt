@@ -5,18 +5,14 @@ import coil3.ImageLoader
 import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import com.mskd.flux.data.repository.ddb.DatabaseRepository
-import com.mskd.flux.useCases.catalog.CatalogUC
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.util.Collections
 import java.util.concurrent.atomic.AtomicInteger
-import javax.inject.Inject
 
 interface ImagesUC {
 
@@ -41,8 +37,8 @@ class ImagesUCImpl(
 
     private var _state = MutableStateFlow<ImagesUC.State>(ImagesUC.State.Idle)
 
-    private val activeUrls = Collections.synchronizedSet(mutableSetOf<String>())
-    private val totalToProcess = AtomicInteger(0)
+    private val pendingUrls = Collections.synchronizedSet(mutableSetOf<String>())
+    private val totalCount = AtomicInteger(0)
     private val completedCount = AtomicInteger(0)
 
     //endregion
@@ -57,39 +53,32 @@ class ImagesUCImpl(
 
             val urls = database
                 .getAllImagesPaths()
-                .filter { activeUrls.add(it) }
+                .filter { pendingUrls.add(it) }
                 .ifEmpty { return@launch }
 
-            if (urls.isEmpty()) return@launch
-
-            val currentTotal = totalToProcess.addAndGet(urls.size)
-            _state.value = ImagesUC.State.InProgress(completedCount.get().toFloat() / currentTotal)
+            totalCount.addAndGet(urls.size)
+            updateState()
 
             urls.forEach { url ->
 
-                launch(Dispatchers.IO) {
-
-                    try {
-
-                        val request = ImageRequest.Builder(context)
-                            .data(url)
-                            .memoryCachePolicy(CachePolicy.DISABLED)
-                            .diskCachePolicy(CachePolicy.ENABLED)
-                            .build()
-
-                        imageLoader.execute(request)
-
-                    } finally {
-
-                        activeUrls.remove(url)
-                        val completed = completedCount.incrementAndGet()
-                        val total = totalToProcess.get()
-
-                        updateState(completed, total)
-
-                    }
-
+                val onFetchEnd: () -> Unit = {
+                    pendingUrls.remove(url)
+                    completedCount.incrementAndGet()
+                    updateState()
                 }
+
+                val request = ImageRequest.Builder(context)
+                    .data(url)
+                    .memoryCachePolicy(CachePolicy.DISABLED)
+                    .diskCachePolicy(CachePolicy.ENABLED)
+                    .listener(
+                        onSuccess = { _, _ -> onFetchEnd() },
+                        onError = { _, _ -> onFetchEnd() },
+                        onCancel = { _ -> onFetchEnd() }
+                    )
+                    .build()
+
+                imageLoader.enqueue(request)
 
             }
 
@@ -101,9 +90,13 @@ class ImagesUCImpl(
 
     //region Private methods
 
-    private fun updateState(completed: Int, total: Int) {
+    private fun updateState() {
+
+        val total = totalCount.get()
+        val completed = completedCount.get()
+
         if (completed >= total) {
-            totalToProcess.set(0)
+            totalCount.set(0)
             completedCount.set(0)
             _state.value = ImagesUC.State.Idle
         } else {

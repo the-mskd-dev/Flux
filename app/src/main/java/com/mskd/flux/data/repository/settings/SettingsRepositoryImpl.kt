@@ -44,7 +44,7 @@ class SettingsRepositoryImpl @Inject constructor(
             val externalPlayer = preferences[Keys.EXTERNAL_PLAYER] ?: false
             val autoKeyboard = preferences[Keys.AUTO_KEYBOARD] ?: true
             val dataLanguage = preferences[Keys.DATA_LANGUAGE]?.let { Locale.forLanguageTag(it) }
-            val prefetchImages = preferences[Keys.PREFETCH_IMAGES] ?: false
+            val prefetchImages = preferences[Keys.PREFETCH_IMAGES] ?: true
 
             SettingsRepository.State(
                 playerRewindValue = playerRewindValue,

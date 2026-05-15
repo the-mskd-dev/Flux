@@ -25,7 +25,7 @@ data class TMDBMovie(
     @SerializedName("poster_path")
     val imagePath: String?,
     @SerializedName("backdrop_path")
-    val bannerPath: String,
+    val bannerPath: String?,
     @SerializedName("vote_average")
     val voteAverage: Float,
     @SerializedName("vote_count")

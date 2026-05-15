@@ -4,6 +4,7 @@ import android.content.Context
 import android.media.MediaMetadataRetriever
 import android.util.Log
 import androidx.core.net.toUri
+import com.mskd.flux.BuildConfig
 import com.mskd.flux.data.repository.ddb.DatabaseRepository
 import com.mskd.flux.data.repository.files.FilesRepository
 import com.mskd.flux.data.repository.settings.SettingsRepository
@@ -19,6 +20,7 @@ import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Status
 import com.mskd.flux.model.tmdb.findWithLocale
+import com.mskd.flux.useCases.images.ImagesUC
 import com.mskd.flux.utils.extensions.groupInFolders
 import com.mskd.flux.utils.extensions.msToMin
 import kotlinx.coroutines.CoroutineScope
@@ -29,6 +31,7 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withContext
@@ -55,6 +58,7 @@ class CatalogUCImpl(
     private val files: FilesRepository,
     private val user: UserRepository,
     private val settings: SettingsRepository,
+    private val imagesUC: ImagesUC,
     private val scope: CoroutineScope,
     private val context: Context
 ) : CatalogUC {
@@ -142,8 +146,13 @@ class CatalogUCImpl(
             database.saveMovies(movies = catalog.movies)
             database.saveEpisodes(episodes = catalog.episodes)
 
-            // Save time
+            // Pre-fetch images if needed
+            if (settings.flow.first().prefetchImages)
+                imagesUC.prefetchImages()
+
+            // Save time and version code
             user.setSyncTime(System.currentTimeMillis())
+            user.setVersionCode(BuildConfig.VERSION_CODE)
             _state.value = CatalogUC.State.Idle
 
         }

@@ -28,8 +28,8 @@ class SettingsRepositoryImpl @Inject constructor(
         val AUDIO_LANGUAGE = stringPreferencesKey("audio_language")
         val EXTERNAL_PLAYER = booleanPreferencesKey("external_player")
         val AUTO_KEYBOARD = booleanPreferencesKey("auto_keyboard_in_search")
-
         val DATA_LANGUAGE = stringPreferencesKey("data_language")
+        val PREFETCH_IMAGES = booleanPreferencesKey("prefetch_images")
     }
 
     override val flow: Flow<SettingsRepository.State> = settingsDataStore.data
@@ -44,6 +44,7 @@ class SettingsRepositoryImpl @Inject constructor(
             val externalPlayer = preferences[Keys.EXTERNAL_PLAYER] ?: false
             val autoKeyboard = preferences[Keys.AUTO_KEYBOARD] ?: true
             val dataLanguage = preferences[Keys.DATA_LANGUAGE]?.let { Locale.forLanguageTag(it) }
+            val prefetchImages = preferences[Keys.PREFETCH_IMAGES] ?: true
 
             SettingsRepository.State(
                 playerRewindValue = playerRewindValue,
@@ -53,7 +54,8 @@ class SettingsRepositoryImpl @Inject constructor(
                 audioLanguage = audioLanguage,
                 externalPlayer = externalPlayer,
                 autoKeyboard = autoKeyboard,
-                dataLanguage = dataLanguage
+                dataLanguage = dataLanguage,
+                prefetchImages = prefetchImages
             )
         }
 
@@ -110,6 +112,12 @@ class SettingsRepositoryImpl @Inject constructor(
     override suspend fun setAutoKeyboard(autoKeyboard: Boolean) {
         settingsDataStore.edit { preferences ->
             preferences[Keys.AUTO_KEYBOARD] = autoKeyboard
+        }
+    }
+
+    override suspend fun setPrefetchImages(prefetch: Boolean) {
+        settingsDataStore.edit { preferences ->
+            preferences[Keys.PREFETCH_IMAGES] = prefetch
         }
     }
 

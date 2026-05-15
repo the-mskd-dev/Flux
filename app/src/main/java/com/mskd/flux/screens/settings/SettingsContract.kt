@@ -3,6 +3,7 @@ package com.mskd.flux.screens.settings
 import androidx.compose.runtime.Immutable
 import com.mskd.flux.R
 import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.useCases.images.ImagesUC
 import java.util.Locale
 
 @Immutable
@@ -15,7 +16,9 @@ data class SettingsUiState(
     val useExternalPlayer: Boolean = false,
     val dialogState: SettingsDialogState<*>? = null,
     val showSyncDialog: Boolean = false,
-    val fullSyncInProgress: Boolean = false
+    val fullSyncInProgress: Boolean = false,
+    val prefetchImages: Boolean = false,
+    val prefetchImagesState: ImagesUC.State = ImagesUC.State.Idle
 )
 
 data class SettingsDialogState<T>(
@@ -101,6 +104,7 @@ sealed class SettingsIntent {
     data object ProceedFullSync: SettingsIntent()
     data class OnAutoKeyboardCheck(val checked: Boolean): SettingsIntent()
     data class OnExternalPlayerCheck(val checked: Boolean): SettingsIntent()
+    data class OnPrefetchImagesCheck(val checked: Boolean): SettingsIntent()
 }
 
 sealed class SettingsEvent {

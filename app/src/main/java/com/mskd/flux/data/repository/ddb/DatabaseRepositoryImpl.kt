@@ -5,6 +5,8 @@ import com.mskd.flux.model.UserFile
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Movie
+import com.mskd.flux.utils.extensions.tmdbImage
+import com.mskd.flux.utils.extensions.tmdbImageLarge
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -80,6 +82,17 @@ class DatabaseRepositoryImpl @Inject constructor(private val dao: DatabaseDao) :
 
     override suspend fun getUnknownMedias(): List<Episode> {
         return dao.getUnknownMedias()
+    }
+
+    override suspend fun getAllImagesPaths(): List<String> {
+        val artworks = dao.getArtworksImages()
+        val episodes = dao.getEpisodesImages()
+
+        return buildList {
+            addAll(artworks.filter { it.imagePath.isNotBlank() }.map { it.imagePath.tmdbImage })
+            addAll(artworks.filter { it.imagePath.isNotBlank() }.map { it.bannerPath.tmdbImageLarge })
+            addAll(episodes.filter { it.isNotBlank() }.map { it.tmdbImage })
+        }
     }
 
     override suspend fun deleteArtworks(artworks: List<Artwork>) {

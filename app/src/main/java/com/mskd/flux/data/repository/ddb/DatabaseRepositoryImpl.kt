@@ -89,9 +89,9 @@ class DatabaseRepositoryImpl @Inject constructor(private val dao: DatabaseDao) :
         val episodes = dao.getEpisodesImages()
 
         return buildList {
-            addAll(artworks.map { it.imagePath.tmdbImage })
-            addAll(artworks.map { it.bannerPath.tmdbImageLarge })
-            addAll(episodes.map { it.tmdbImage })
+            addAll(artworks.filter { it.imagePath.isNotBlank() }.map { it.imagePath.tmdbImage })
+            addAll(artworks.filter { it.imagePath.isNotBlank() }.map { it.bannerPath.tmdbImageLarge })
+            addAll(episodes.filter { it.isNotBlank() }.map { it.tmdbImage })
         }
     }
 

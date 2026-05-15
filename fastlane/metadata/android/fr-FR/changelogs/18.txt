@@ -1,0 +1,7 @@
+- Feature: Pré-chargement des images
+- Feature: Support des fichiers de sous-titres locaux
+- Feature: Support des claviers externes pour les contrôles du lecteur
+- Fix: Crash dans la récupération des données
+- Fix: Bypass de la progression des lecteurs externes lors d'un reset
+- Fix: Gestion des coroutines
+- UI: Taille du titre sur la page des medias

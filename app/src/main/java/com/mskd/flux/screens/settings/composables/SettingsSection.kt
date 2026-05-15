@@ -232,7 +232,7 @@ fun SettingsSyncSection(
             subText = imagesText,
             checked = state.prefetchImages,
             onCheckedChange = { sendIntent(SettingsIntent.OnPrefetchImagesCheck(it)) },
-            painter = painterResource(R.drawable.ic_keyboard),
+            painter = painterResource(R.drawable.ic_images),
             iconColor = iconColor,
             backgroundColor = bgColor,
             valueColor = imagesTextColor

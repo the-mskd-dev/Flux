@@ -3,6 +3,7 @@ package com.mskd.flux.screens.home
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mskd.flux.BuildConfig
 import com.mskd.flux.data.repository.snackbars.SnackbarRepository
 import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.data.tmdb.token.TokenRepository
@@ -95,9 +96,12 @@ class HomeViewModel @Inject constructor(
     private suspend fun syncCatalog(manualSync: Boolean = false) {
 
         val lastSyncTime = userRepository.getSyncTime()
+        val lastSyncVersionCode = userRepository.getVersionCode()
 
         val currentTime = System.currentTimeMillis()
-        val sync = currentTime - lastSyncTime > 1.days.inWholeMilliseconds || manualSync
+        val sync = currentTime - lastSyncTime > 1.days.inWholeMilliseconds
+                || manualSync
+                || lastSyncVersionCode < BuildConfig.VERSION_CODE
 
         if (sync) {
 

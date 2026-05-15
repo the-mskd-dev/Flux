@@ -4,6 +4,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.google.gson.Gson
@@ -21,6 +22,7 @@ class UserRepositoryImpl(
     object Keys {
         val RECENTLY_WATCHED_IDS = stringPreferencesKey("last_watched_ids")
         val LAST_SYNC_TIME = longPreferencesKey("last_sync_time")
+        val CURRENT_VERSION_CODE = intPreferencesKey("version_code")
 
         val WATCHED_MESSAGES_IDS = stringPreferencesKey("watched_messages_ids")
 
@@ -35,11 +37,13 @@ class UserRepositoryImpl(
             val syncTime = preferences[Keys.LAST_SYNC_TIME] ?: 0L
             val watchedMessagesIdsString = preferences[Keys.WATCHED_MESSAGES_IDS] ?: "[]"
             val watchedMessagesIds = gson.fromJson<List<Double>>(watchedMessagesIdsString, List::class.java).map { it.toInt() }
+            val versionCode = preferences[Keys.CURRENT_VERSION_CODE] ?: -1
 
             UserRepository.State(
                 recentlyWatchedIds = watchedIds,
                 syncTime = syncTime,
-                watchedMessagesIds = watchedMessagesIds
+                watchedMessagesIds = watchedMessagesIds,
+                versionCode = versionCode
             )
         }
 
@@ -73,6 +77,16 @@ class UserRepositoryImpl(
 
     override suspend fun getSyncTime() : Long {
         return flow.first().syncTime
+    }
+
+    override suspend fun setVersionCode(versionCode: Int) {
+        userDataStore.edit { preferences ->
+            preferences[Keys.CURRENT_VERSION_CODE] = versionCode
+        }
+    }
+
+    override suspend fun getVersionCode(): Int {
+        return flow.first().versionCode
     }
 
     override suspend fun setMessageAsWatched(messageId: Int) {

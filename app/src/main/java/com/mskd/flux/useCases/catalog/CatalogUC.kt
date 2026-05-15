@@ -4,6 +4,7 @@ import android.content.Context
 import android.media.MediaMetadataRetriever
 import android.util.Log
 import androidx.core.net.toUri
+import com.mskd.flux.BuildConfig
 import com.mskd.flux.data.repository.ddb.DatabaseRepository
 import com.mskd.flux.data.repository.files.FilesRepository
 import com.mskd.flux.data.repository.settings.SettingsRepository
@@ -149,8 +150,9 @@ class CatalogUCImpl(
             if (settings.flow.first().prefetchImages)
                 imagesUC.prefetchImages()
 
-            // Save time
+            // Save time and version code
             user.setSyncTime(System.currentTimeMillis())
+            user.setVersionCode(BuildConfig.VERSION_CODE)
             _state.value = CatalogUC.State.Idle
 
         }

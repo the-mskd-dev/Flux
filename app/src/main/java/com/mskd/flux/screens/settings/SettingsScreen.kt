@@ -1,7 +1,6 @@
 package com.mskd.flux.screens.settings
 
 import android.content.Context
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -30,7 +29,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -38,18 +36,18 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.mskd.flux.R
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Route.Token
-import com.mskd.flux.screens.settings.composables.SettingsItem
-import com.mskd.flux.screens.settings.composables.SettingsSection
-import com.mskd.flux.screens.settings.composables.SettingsSwitch
+import com.mskd.flux.screens.settings.composables.SettingsAppInfoSection
+import com.mskd.flux.screens.settings.composables.SettingsCustomisationSection
+import com.mskd.flux.screens.settings.composables.SettingsOtherSection
+import com.mskd.flux.screens.settings.composables.SettingsPlayerSection
+import com.mskd.flux.screens.settings.composables.SettingsSyncSection
+import com.mskd.flux.screens.settings.composables.SettingsTmdbSection
 import com.mskd.flux.ui.component.FluxDialog
-import com.mskd.flux.ui.component.FluxDivider
 import com.mskd.flux.ui.component.FluxScaffold
 import com.mskd.flux.ui.component.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
-import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.FluxPreview
-import com.mskd.flux.utils.WebLink
 import com.mskd.flux.utils.extensions.uppercaseFirstLetter
 import com.mskd.flux.utils.notificationsPermissionState
 
@@ -62,13 +60,13 @@ fun SettingsScreen(
 ) {
 
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val notificationsPermission = notificationsPermissionState()
     val context = LocalContext.current
     val appVersion = context
         .packageManager
         .getPackageInfo(context.packageName, 0)
         .versionName
 
-    val notificationsPermission = notificationsPermissionState()
 
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
@@ -134,219 +132,34 @@ fun SettingsContent(
 
             Spacer(modifier = Modifier.height(innerPadding.calculateTopPadding()))
 
-            SettingsSection(
-                iconColor = MaterialTheme.colorScheme.onTertiaryContainer,
-                iconBackgroundColor = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 1f)
-            ) { iconColor, bgColor ->
+            SettingsCustomisationSection(
+                state = state,
+                sendIntent = sendIntent
+            )
 
-                SettingsItem(
-                    text = stringResource(R.string.app_theme),
-                    value = stringResource(state.uiTheme.stringResourceId),
-                    painter = painterResource(R.drawable.ic_theme),
-                    iconColor = iconColor,
-                    iconBackgroundColor = bgColor,
-                    onTap = { sendIntent(SettingsIntent.ShowThemeDialog) }
-                )
+            SettingsPlayerSection(
+                state = state,
+                sendIntent = sendIntent
+            )
 
-                FluxDivider()
+            SettingsTmdbSection(
+                sendIntent = sendIntent
+            )
 
-                SettingsSwitch(
-                    text = stringResource(R.string.auto_keyboard),
-                    subText = stringResource(R.string.auto_keyboard_desc),
-                    checked = state.autoKeyboard,
-                    onCheckedChange = { sendIntent(SettingsIntent.OnAutoKeyboardCheck(it)) },
-                    painter = painterResource(R.drawable.ic_keyboard),
-                    iconColor = iconColor,
-                    backgroundColor = bgColor,
-                )
+            SettingsOtherSection(
+                context = context,
+                sendIntent = sendIntent
+            )
 
-                FluxDivider()
+            SettingsSyncSection(
+                state = state,
+                sendIntent = sendIntent
+            )
 
-
-                val displayedLanguage = state.languageValue?.displayLanguage ?: stringResource(R.string.system)
-                SettingsItem(
-                    text = stringResource(R.string.information_language),
-                    value = displayedLanguage,
-                    painter = painterResource(R.drawable.ic_language),
-                    iconColor = iconColor,
-                    iconBackgroundColor = bgColor,
-                    onTap = { sendIntent(SettingsIntent.ShowLanguageDialog) }
-                )
-
-            }
-
-            SettingsSection(
-                iconColor = MaterialTheme.colorScheme.onErrorContainer,
-                iconBackgroundColor = MaterialTheme.colorScheme.errorContainer.copy(alpha = .3f)
-            ) { iconColor, bgColor ->
-
-                SettingsItem(
-                    text = stringResource(R.string.button_rewind),
-                    value = "${state.rewindValue}sec",
-                    painter = painterResource(R.drawable.fast_rewind),
-                    iconColor = iconColor,
-                    iconBackgroundColor = bgColor,
-                    onTap = { sendIntent(SettingsIntent.ShowRewindDialog) }
-                )
-
-                FluxDivider()
-
-                SettingsItem(
-                    text = stringResource(R.string.button_forward),
-                    value = "${state.forwardValue}sec",
-                    painter = painterResource(R.drawable.fast_forward),
-                    iconColor = iconColor,
-                    iconBackgroundColor = bgColor,
-                    onTap = { sendIntent(SettingsIntent.ShowForwardDialog) }
-                )
-
-                FluxDivider()
-
-                SettingsSwitch(
-                    text = stringResource(R.string.external_player),
-                    subText = stringResource(R.string.watch_on_external_player),
-                    checked = state.useExternalPlayer,
-                    painter = painterResource(R.drawable.ic_player),
-                    iconColor = iconColor,
-                    backgroundColor = bgColor,
-                    onCheckedChange = { sendIntent(SettingsIntent.OnExternalPlayerCheck(it)) }
-                )
-
-            }
-
-            SettingsSection(
-                iconColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                iconBackgroundColor = MaterialTheme.colorScheme.primaryContainer
-            ) { iconColor, bgColor ->
-
-                SettingsItem(
-                    text = stringResource(R.string.tmdb_api_token),
-                    value = "",
-                    painter = painterResource(R.drawable.ic_api),
-                    iconColor = iconColor,
-                    iconBackgroundColor = bgColor,
-                    onTap = { sendIntent(SettingsIntent.OnTokenTap) }
-                )
-
-                FluxDivider()
-
-                SettingsItem(
-                    text = stringResource(R.string.how_to_name_files),
-                    value = "",
-                    painter = painterResource(R.drawable.ic_help),
-                    iconColor = iconColor,
-                    iconBackgroundColor = bgColor,
-                    onTap = { sendIntent(SettingsIntent.OnHowToTap) }
-                )
-
-            }
-
-            SettingsSection(
-                iconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                iconBackgroundColor = MaterialTheme.colorScheme.surfaceVariant
-            ) { iconColor, bgColor ->
-
-                SettingsItem(
-                    text = stringResource(R.string.about),
-                    value = stringResource(R.string.about_desc),
-                    painter = painterResource(R.drawable.ic_info),
-                    iconColor = iconColor,
-                    iconBackgroundColor = bgColor,
-                    onTap = { sendIntent(SettingsIntent.OnAboutTap) }
-                )
-
-                FluxDivider()
-
-                SettingsItem(
-                    text = stringResource(R.string.make_a_donation),
-                    value = stringResource(R.string.support_me_desc),
-                    painter = painterResource(R.drawable.ic_money),
-                    iconColor = iconColor,
-                    iconBackgroundColor = bgColor,
-                    onTap = {
-                        WebLink.openPage(
-                            context = context,
-                            url = Constants.CONTACT.BUY_COFFEE
-                        )
-                    }
-                )
-
-            }
-
-            SettingsSection(
-                iconColor = MaterialTheme.colorScheme.onErrorContainer,
-                iconBackgroundColor = MaterialTheme.colorScheme.errorContainer.copy(.7f)
-            ) { iconColor, bgColor ->
-
-                val textColor by animateColorAsState(if (state.fullSyncInProgress) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onBackground.copy(alpha = .8f))
-                SettingsItem(
-                    text = stringResource(R.string.sync_library),
-                    value = stringResource(if (state.fullSyncInProgress) R.string.sync_in_progress else R.string.sync_library_desc),
-                    valueColor = textColor,
-                    painter = painterResource(R.drawable.ic_sync),
-                    iconColor = iconColor,
-                    iconBackgroundColor = bgColor,
-                    onTap = { sendIntent(SettingsIntent.ShowFullSyncDialog(true)) }
-                )
-
-            }
-
-            SettingsSection(
-                iconColor = MaterialTheme.colorScheme.onTertiaryContainer,
-                iconBackgroundColor = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = .6f)
-            ) { iconColor, bgColor ->
-
-                SettingsItem(
-                    text = stringResource(R.string.x),
-                    value = stringResource(R.string.stay_informed),
-                    painter = painterResource(R.drawable.ic_social_media),
-                    iconColor = iconColor,
-                    iconBackgroundColor = bgColor,
-                    onTap = {
-                        WebLink.openPage(
-                            context = context,
-                            url = Constants.CONTACT.X
-                        )
-                    }
-                )
-
-                FluxDivider()
-
-                SettingsItem(
-                    text = stringResource(R.string.sources),
-                    value = "",
-                    painter = painterResource(R.drawable.ic_sources),
-                    iconColor = iconColor,
-                    iconBackgroundColor = bgColor,
-                    onTap = {
-                        WebLink.openPage(
-                            context = context,
-                            url = Constants.CONTACT.GITHUB
-                        )
-                    }
-                )
-
-                appVersion?.let {
-
-                    FluxDivider()
-
-                    SettingsItem(
-                        text = stringResource(R.string.app_version),
-                        value = it,
-                        painter = painterResource(R.drawable.ic_version),
-                        iconColor = iconColor,
-                        iconBackgroundColor = bgColor,
-                        onTap = {
-                            WebLink.openPage(
-                                context = context,
-                                url = Constants.CONTACT.RELEASES
-                            )
-                        }
-                    )
-
-                }
-
-            }
+            SettingsAppInfoSection(
+                context = context,
+                appVersion = appVersion
+            )
 
             Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding()))
 

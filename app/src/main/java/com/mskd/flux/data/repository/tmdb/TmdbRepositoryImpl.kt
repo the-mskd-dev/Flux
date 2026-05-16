@@ -27,9 +27,9 @@ class TmdbRepositoryImpl @Inject constructor(
         file: UserFile
     ): TMDBArtwork? {
 
-        return try {
+        val language = settings.getDataLanguage()
 
-            val language = settings.getDataLanguage()
+        return try {
 
             val tmdbArtworks = if (file.isEpisode) {
                 tmdbService.getShow(
@@ -66,7 +66,7 @@ class TmdbRepositoryImpl @Inject constructor(
             tmdbArtwork
 
         } catch (e: Exception) {
-            Log.e(TAG, "getTmdbArtwork - Fail to get TMDBArtwork for file:${file.name}", e)
+            Log.e(TAG, "getTmdbArtwork - Fail to get TMDBArtwork for file:${file.name} (${language.toTmdbFormat()})", e)
             null
         }
 
@@ -76,9 +76,9 @@ class TmdbRepositoryImpl @Inject constructor(
         artworkId: Long
     ): TMDBMovie? {
 
-        return try {
+        val language = settings.getDataLanguage()
 
-            val language = settings.getDataLanguage()
+        return try {
 
             var tmdbMovie = tmdbService.getMovieDetails(
                 id = artworkId,
@@ -101,7 +101,7 @@ class TmdbRepositoryImpl @Inject constructor(
             tmdbMovie
 
         } catch (e: Exception) {
-            Log.e(TAG, "getTmdbMovie - Fail to get TMDBMovie for artworkId:$artworkId", e)
+            Log.e(TAG, "getTmdbMovie - Fail to get TMDBMovie for artworkId:$artworkId (${language.toTmdbFormat()})", e)
             null
         }
 
@@ -113,9 +113,9 @@ class TmdbRepositoryImpl @Inject constructor(
         number: Int
     ): TMDBEpisode? {
 
-        return try {
+        val language = settings.getDataLanguage()
 
-            val language = settings.getDataLanguage()
+        return try {
 
             var tmdbEpisode = tmdbService.getEpisode(
                 id = artworkId,
@@ -144,7 +144,7 @@ class TmdbRepositoryImpl @Inject constructor(
             tmdbEpisode
 
         } catch (e: Exception) {
-            Log.e(TAG, "getTmdbEpisode - Fail to get TMDBEpisode for artworkId:$artworkId, season:$season, number:$number", e)
+            Log.e(TAG, "getTmdbEpisode - Fail to get TMDBEpisode for artworkId:$artworkId, season:$season, number:$number (${language.toTmdbFormat()})", e)
             null
         }
 

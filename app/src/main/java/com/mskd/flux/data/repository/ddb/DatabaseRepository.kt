@@ -38,6 +38,9 @@ interface DatabaseRepository {
     // Unknowns
     suspend fun getUnknownMedias() : List<Episode>
 
+    // Images
+    suspend fun getAllImagesPaths() : List<String>
+
     // Delete
     suspend fun deleteArtworks(artworks: List<Artwork>)
     suspend fun deleteMovies(movies: List<Movie>)

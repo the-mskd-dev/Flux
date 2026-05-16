@@ -4,6 +4,7 @@ import android.content.Context
 import android.media.MediaMetadataRetriever
 import android.util.Log
 import androidx.core.net.toUri
+import com.mskd.flux.BuildConfig
 import com.mskd.flux.data.repository.ddb.DatabaseRepository
 import com.mskd.flux.data.repository.files.FilesRepository
 import com.mskd.flux.data.repository.settings.SettingsRepository
@@ -19,6 +20,7 @@ import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Status
 import com.mskd.flux.model.tmdb.findWithLocale
+import com.mskd.flux.useCases.images.ImagesUC
 import com.mskd.flux.utils.extensions.groupInFolders
 import com.mskd.flux.utils.extensions.msToMin
 import kotlinx.coroutines.CoroutineScope
@@ -26,11 +28,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withContext
 
 interface CatalogUC {
@@ -55,6 +58,7 @@ class CatalogUCImpl(
     private val files: FilesRepository,
     private val user: UserRepository,
     private val settings: SettingsRepository,
+    private val imagesUC: ImagesUC,
     private val scope: CoroutineScope,
     private val context: Context
 ) : CatalogUC {
@@ -142,8 +146,13 @@ class CatalogUCImpl(
             database.saveMovies(movies = catalog.movies)
             database.saveEpisodes(episodes = catalog.episodes)
 
-            // Save time
+            // Pre-fetch images if needed
+            if (settings.flow.first().prefetchImages)
+                imagesUC.prefetchImages()
+
+            // Save time and version code
             user.setSyncTime(System.currentTimeMillis())
+            user.setVersionCode(BuildConfig.VERSION_CODE)
             _state.value = CatalogUC.State.Idle
 
         }
@@ -172,7 +181,7 @@ class CatalogUCImpl(
             var translatedMovies: List<Movie> = emptyList()
             var translatedEpisodes: List<Episode> = emptyList()
 
-            coroutineScope {
+            supervisorScope {
 
                 translatedMovies = movies.map { movie ->
 
@@ -234,12 +243,19 @@ class CatalogUCImpl(
 
         // Get data
         val artworksFolders = getArtworksFolders(folders = folders)
-        var movies: List<Media> = emptyList()
-        var episodes: List<Episode> = emptyList()
 
-        coroutineScope {
-            launch {  movies = getMovies(artworkFolders = artworksFolders) }
-            launch { episodes = getEpisodes(artworkFolders = artworksFolders) }
+        val (movies, episodes) = supervisorScope {
+            val moviesDeferred = async {
+                runCatching { getMovies(artworkFolders = artworksFolders) }
+                    .onFailure { Log.e(TAG, "getMovies failed", it) }
+                    .getOrElse { emptyList() }
+            }
+            val episodesDeferred = async {
+                runCatching { getEpisodes(artworkFolders = artworksFolders) }
+                    .onFailure { Log.e(TAG, "getEpisodes failed", it) }
+                    .getOrElse { emptyList() }
+            }
+            moviesDeferred.await() to episodesDeferred.await()
         }
 
         return Catalog(
@@ -296,7 +312,7 @@ class CatalogUCImpl(
 
     private suspend fun getArtworksFolders(folders: List<UserFolder>) : List<ArtworkFolder> {
 
-        val artworkFolders = coroutineScope {
+        val artworkFolders = supervisorScope {
 
             folders.map { folder ->
 
@@ -328,29 +344,36 @@ class CatalogUCImpl(
 
     private suspend fun getMovies(artworkFolders: List<ArtworkFolder>) : List<Media> {
 
-        val movies = coroutineScope {
+        val movies = supervisorScope {
 
             artworkFolders.filter { it.artwork.type == ContentType.MOVIE }.map { (artwork, files) ->
 
                 async(dispatcher) {
 
-                    when {
-                        artwork.id == Artwork.UNKNOWN_ID -> Episode(file = files.first())
-                        else -> {
+                    try {
 
-                            val tmdbMovie = tmdb.getTmdbMovie(artworkId = artwork.id)
+                        when {
+                            artwork.id == Artwork.UNKNOWN_ID -> Episode(file = files.first())
+                            else -> {
 
-                            if (tmdbMovie == null)
-                                createUnknownMedia(file = files.first())
-                            else
-                                Movie(tmdbMovie = tmdbMovie, file = files.first())
+                                val tmdbMovie = tmdb.getTmdbMovie(artworkId = artwork.id)
 
+                                if (tmdbMovie == null)
+                                    createUnknownMedia(file = files.first())
+                                else
+                                    Movie(tmdbMovie = tmdbMovie, file = files.first())
+
+                            }
                         }
+
+                    } catch (e: Exception) {
+                        Log.e(TAG, "[getMovies] Fail to get movie from ${files.first().name}", e)
+                        null
                     }
 
                 }
 
-            }.awaitAll()
+            }.awaitAll().filterNotNull()
 
         }
 
@@ -362,7 +385,7 @@ class CatalogUCImpl(
 
     private suspend fun getEpisodes(artworkFolders: List<ArtworkFolder>) : List<Episode> {
 
-        val episodes = coroutineScope {
+        val episodes = supervisorScope {
 
             artworkFolders.filter { it.artwork.type == ContentType.SHOW }.flatMap { (artwork, files) ->
 
@@ -373,23 +396,30 @@ class CatalogUCImpl(
 
                     async(dispatcher) {
 
-                        when {
-                            artwork.id == Artwork.UNKNOWN_ID -> createUnknownMedia(file = file)
-                            season != null && number != null -> {
+                        try {
 
-                                val tmdbEpisode = tmdb.getTmdbEpisode(
-                                    artworkId = artwork.id,
-                                    season = season,
-                                    number = number
-                                )
+                            when {
+                                artwork.id == Artwork.UNKNOWN_ID -> createUnknownMedia(file = file)
+                                season != null && number != null -> {
 
-                                if (tmdbEpisode == null)
-                                    createUnknownMedia(file = file)
-                                else
-                                    Episode(tmdbEpisode = tmdbEpisode, file = file,)
+                                    val tmdbEpisode = tmdb.getTmdbEpisode(
+                                        artworkId = artwork.id,
+                                        season = season,
+                                        number = number
+                                    )
 
+                                    if (tmdbEpisode == null)
+                                        createUnknownMedia(file = file)
+                                    else
+                                        Episode(tmdbEpisode = tmdbEpisode, file = file,)
+
+                                }
+                                else -> null
                             }
-                            else -> null
+
+                        } catch (e: Exception) {
+                            Log.e(TAG, "[getEpisodes] Fail to get episode from ${file.name}", e)
+                            null
                         }
 
                     }

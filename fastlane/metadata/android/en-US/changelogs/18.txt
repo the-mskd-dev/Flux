@@ -1,5 +1,3 @@
-## Version 1.3.5
-
 - Feature: Pre-fetch images
 - Feature: Support local subtitles files
 - Feature: Add player controls for external keyboards

@@ -35,8 +35,8 @@ data class Artwork(
     ) : this (
         id = tmdbMovie.id,
         title = tmdbMovie.title,
-        imagePath = tmdbMovie.imagePath,
-        bannerPath = tmdbMovie.bannerPath,
+        imagePath = tmdbMovie.imagePath.orEmpty(),
+        bannerPath = tmdbMovie.bannerPath.orEmpty(),
         type = ContentType.MOVIE
     )
 

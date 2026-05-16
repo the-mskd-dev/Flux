@@ -126,4 +126,9 @@
     <string name="sync_library_dialog">Do you want to synchronize the entire library? Your progress will be saved, however this may take some time.</string>
     <string name="information_language">Information language</string>
     <string name="sync_in_progress">Synchronization in progress…</string>
+    <string name="by_default">Default</string>
+    <string name="cache_images">Caches Images</string>
+    <string name="images_cached">Images Cached</string>
+    <string name="caching_images_in_progress">Caching images… %1$d%%</string>
+    <string name="cache_images_desc">Download images for offline use</string>
 </resources>

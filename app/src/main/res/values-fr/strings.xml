@@ -117,4 +117,9 @@
     <string name="sync_library_dialog">Souhaitez-vous synchroniser toute la librairie ? Votre progression sera conservée, cependant cela peut prendre un peu de temps.</string>
     <string name="information_language">Langage des informations</string>
     <string name="sync_in_progress">Synchronisation en cours…</string>
+    <string name="by_default">Par défaut</string>
+    <string name="cache_images">Pré-charger les images</string>
+    <string name="images_cached">Images téléchargées</string>
+    <string name="caching_images_in_progress">Téléchargement des images en cours (%1$d%%)</string>
+    <string name="cache_images_desc">Pré-télécharge les images pour une utilisation hors-ligne</string>
 </resources>

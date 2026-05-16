@@ -104,7 +104,7 @@ fun PlayerTracksSheet(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
 
-                        Text.Label.Large(text = track.label)
+                        Text.Label.Large(text = track.label.ifBlank { stringResource(R.string.by_default) })
 
                         if (track == selectedTrack) {
                             Icon(

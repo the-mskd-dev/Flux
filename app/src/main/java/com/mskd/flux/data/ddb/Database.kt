@@ -95,6 +95,9 @@ interface DatabaseDao {
     @Query("DELETE FROM episodes WHERE id IN (:ids)")
     suspend fun deleteEpisodesByIds(ids: List<Long>)
 
+    @Query("DELETE FROM episodes WHERE artworkId = (:artworkId)")
+    suspend fun deleteEpisodesByArtworkId(artworkId: Long)
+
     @Query("DELETE FROM artworks")
     suspend fun deleteAllArtworks()
 

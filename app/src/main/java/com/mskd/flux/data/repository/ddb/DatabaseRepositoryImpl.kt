@@ -3,6 +3,7 @@ package com.mskd.flux.data.repository.ddb
 import com.mskd.flux.data.ddb.DatabaseDao
 import com.mskd.flux.model.UserFile
 import com.mskd.flux.model.artwork.Artwork
+import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.utils.extensions.tmdbImage
@@ -97,9 +98,23 @@ class DatabaseRepositoryImpl @Inject constructor(private val dao: DatabaseDao) :
 
     override suspend fun deleteArtworks(artworks: List<Artwork>) {
         dao.deleteArtworks(ids = artworks.map { it.id })
+
+        artworks.distinctBy { it.id }.forEach { artwork ->
+
+            when (artwork.type) {
+                ContentType.MOVIE -> dao.deleteMoviesByIds(listOf(artwork.id))
+                ContentType.SHOW -> dao.deleteEpisodesByArtworkId(artworkId = artwork.id)
+            }
+
+        }
     }
 
     override suspend fun deleteMovies(movies: List<Movie>) {
+
+        // Delete movies
+        dao.deleteMoviesByIds(movies.map { it.artworkId })
+
+        // Delete related artworks
         dao.deleteArtworks(ids = movies.map { it.artworkId })
     }
 
@@ -108,7 +123,7 @@ class DatabaseRepositoryImpl @Inject constructor(private val dao: DatabaseDao) :
         // Delete episodes
         dao.deleteEpisodesByIds(episodes.map { it.id })
 
-        // Delete artworks if needed
+        // Delete related artworks if needed
         episodes
             .map { it.artworkId }
             .distinct()

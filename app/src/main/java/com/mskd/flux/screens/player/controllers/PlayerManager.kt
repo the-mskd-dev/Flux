@@ -365,7 +365,7 @@ class PlayerManager(private val context: Context) : Player.Listener {
         val current = _state.value as? State.Ready ?: return null
         clearOverridesOfType(C.TRACK_TYPE_TEXT)
 
-        if (track.language == null) { // If no subtitle
+        if (track == PlayerTrack.NO_SUBTITLES) { // If no subtitle
 
             setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
             return track

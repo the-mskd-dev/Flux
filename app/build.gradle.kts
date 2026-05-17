@@ -119,6 +119,11 @@ configure<ApplicationExtension> {
         includeInApk = false
         includeInBundle = false
     }
+
+}
+
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
 }
 
 kotlin { jvmToolchain(21) }

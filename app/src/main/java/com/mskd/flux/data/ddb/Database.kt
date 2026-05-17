@@ -16,6 +16,7 @@ import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Movie
+import com.mskd.flux.model.artwork.Season
 import com.mskd.flux.model.dto.ArtworkImagesDTO
 import kotlinx.coroutines.flow.Flow
 
@@ -153,10 +154,11 @@ class Converters {
 }
 
 @Database(
-    entities = [Artwork::class, Movie::class, Episode::class],
-    version = 2,
+    entities = [Artwork::class, Movie::class, Episode::class, Season::class],
+    version = 3,
     autoMigrations = [
-        AutoMigration(from = 1, to = 2)
+        AutoMigration(from = 1, to = 2),
+        AutoMigration(from = 2, to = 3),
     ]
 )
 @TypeConverters(Converters::class)

@@ -33,6 +33,13 @@ data class TMDBTranslations(
         val overview: String?
     )
 
+    sealed class Request {
+        data class Movie(val artworkId: Long) : Request()
+        data class Show(val artworkId: Long) : Request()
+        data class Episode(val artworkId: Long, val season: Int, val number: Int,) : Request()
+        data class Season(val artworkId: Long, val season: Int) : Request()
+    }
+
 }
 
 fun Collection<TMDBTranslations.Translation>.findWithLocale(locale: Locale) : TMDBTranslations.Translation? {

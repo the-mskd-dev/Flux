@@ -31,7 +31,7 @@ interface TMDBService {
 
     @GET("movie/{id}/translations")
     suspend fun getMovieTranslations(
-        @Path("id") id: Long,
+        @Path("id") artworkId: Long,
     ) : TMDBTranslations
 
     @GET("search/tv")
@@ -43,22 +43,22 @@ interface TMDBService {
 
     @GET("tv/{id}/translations")
     suspend fun getShowTranslations(
-        @Path("id") id: Long,
+        @Path("id") artworkId: Long,
     ) : TMDBTranslations
 
-    @GET("tv/{id}/season/{season}/episode/{episode}")
+    @GET("tv/{id}/season/{season}/episode/{number}")
     suspend fun getEpisode(
         @Path("id") id: Long,
         @Path("season") season: Int,
-        @Path("episode") episode: Int,
+        @Path("number") number: Int,
         @Query("language") language: String = Constants.Global.LANGUAGE
     ) : TMDBEpisode
 
-    @GET("tv/{id}/season/{season}/episode/{episode}/translations")
+    @GET("tv/{id}/season/{season}/episode/{number}/translations")
     suspend fun getEpisodeTranslations(
-        @Path("id") id: Long,
+        @Path("id") artworkId: Long,
         @Path("season") season: Int,
-        @Path("episode") episode: Int,
+        @Path("number") number: Int,
     ) : TMDBTranslations
 
     @GET("tv/{id}/season/{season}")
@@ -70,7 +70,7 @@ interface TMDBService {
 
     @GET("tv/{id}/season/{season}/translations")
     suspend fun getSeasonTranslations(
-        @Path("id") id: Long,
+        @Path("id") artworkId: Long,
         @Path("season") season: Int,
     ) : TMDBTranslations
 

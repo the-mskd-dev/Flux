@@ -19,6 +19,7 @@ import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Status
+import com.mskd.flux.model.tmdb.TMDBTranslations
 import com.mskd.flux.model.tmdb.findWithLocale
 import com.mskd.flux.useCases.images.ImagesUC
 import com.mskd.flux.utils.extensions.groupInFolders
@@ -219,7 +220,10 @@ class CatalogUCImpl(
 
                     async(dispatcher) {
 
-                        tmdb.getTmdbMovieTranslations(artworkId = movie.artworkId).findWithLocale(language)?.let { translation ->
+                        tmdb.getTmdbTranslations(
+                            request = TMDBTranslations.Request.Movie(artworkId = movie.artworkId),
+                            language = language
+                        )?.let { translation ->
 
                             movie.copy(
                                 title = translation.data.name ?: movie.title,
@@ -236,11 +240,14 @@ class CatalogUCImpl(
 
                     async(dispatcher) {
 
-                        tmdb.getTmdbEpisodeTranslations(
-                            artworkId = episode.artworkId,
-                            season = episode.season,
-                            number = episode.number
-                        ).findWithLocale(language)?.let { translation ->
+                        tmdb.getTmdbTranslations(
+                            request = TMDBTranslations.Request.Episode(
+                                artworkId = episode.artworkId,
+                                season = episode.season,
+                                number = episode.number
+                            ),
+                            language = language
+                        )?.let { translation ->
 
                             episode.copy(
                                 title = translation.data.name ?: episode.title,

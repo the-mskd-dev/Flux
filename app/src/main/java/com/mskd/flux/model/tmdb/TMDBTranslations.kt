@@ -33,11 +33,11 @@ data class TMDBTranslations(
         val overview: String?
     )
 
-    sealed class Request {
-        data class Movie(val artworkId: Long) : Request()
-        data class Show(val artworkId: Long) : Request()
-        data class Episode(val artworkId: Long, val season: Int, val number: Int,) : Request()
-        data class Season(val artworkId: Long, val season: Int) : Request()
+    sealed class Request(val language: Locale) {
+        class Movie(val artworkId: Long, language: Locale) : Request(language)
+        class Show(val artworkId: Long, language: Locale) : Request(language)
+        class Episode(val artworkId: Long, val season: Int, val number: Int, language: Locale) : Request(language)
+        class Season(val artworkId: Long, val season: Int, language: Locale) : Request(language)
     }
 
 }

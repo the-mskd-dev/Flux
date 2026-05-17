@@ -56,8 +56,8 @@ class TmdbRepositoryImpl @Inject constructor(
                 getTmdbTranslations(
                     request = TMDBTranslations.Request.Show(
                         artworkId = tmdbArtwork.id,
+                        language = language
                     ),
-                    language = language
                 )?.let {
                     tmdbArtwork = tmdbArtwork.copy(
                         title = it.data.name ?: tmdbArtwork.title,
@@ -93,9 +93,9 @@ class TmdbRepositoryImpl @Inject constructor(
 
                 getTmdbTranslations(
                     request = TMDBTranslations.Request.Movie(
-                        artworkId = artworkId
+                        artworkId = artworkId,
+                        language = language
                     ),
-                    language = language
                 )?.let {
                     tmdbMovie = tmdbMovie.copy(
                         title = it.data.name ?: tmdbMovie.title,
@@ -139,9 +139,9 @@ class TmdbRepositoryImpl @Inject constructor(
                     request = TMDBTranslations.Request.Episode(
                         artworkId = artworkId,
                         season = season,
-                        number = number
+                        number = number,
+                        language = language
                     ),
-                    language = language
                 )?.let {
                     tmdbEpisode = tmdbEpisode.copy(
                         title = it.data.name ?: tmdbEpisode.title,
@@ -177,9 +177,9 @@ class TmdbRepositoryImpl @Inject constructor(
                 getTmdbTranslations(
                     request = TMDBTranslations.Request.Season(
                         artworkId = artworkId,
-                        season = season
+                        season = season,
+                        language = language
                     ),
-                    language = language
                 )?.let {
                     tmdbSeason = tmdbSeason.copy(
                         title = it.data.name ?: tmdbSeason.title,
@@ -198,7 +198,7 @@ class TmdbRepositoryImpl @Inject constructor(
 
     }
 
-    override suspend fun getTmdbTranslations(request: TMDBTranslations.Request, language: Locale): TMDBTranslations.Translation? {
+    override suspend fun getTmdbTranslations(request: TMDBTranslations.Request): TMDBTranslations.Translation? {
 
         return try {
 
@@ -209,7 +209,7 @@ class TmdbRepositoryImpl @Inject constructor(
                 is TMDBTranslations.Request.Episode -> tmdbService.getEpisodeTranslations(artworkId = request.artworkId, season = request.season, number = request.number)
             }
 
-            result.translations.findWithLocale(language)
+            result.translations.findWithLocale(request.language)
 
         } catch (e: Exception) {
             Log.e(TAG, "getTmdbTranslations - Fail to get translations for $request", e)

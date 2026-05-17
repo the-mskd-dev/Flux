@@ -25,9 +25,6 @@ interface TmdbRepository {
         season: Int,
     ) : TMDBSeason?
 
-    suspend fun getTmdbTranslations(
-        request: TMDBTranslations.Request,
-        language: Locale
-    ) : TMDBTranslations.Translation?
+    suspend fun getTmdbTranslations(request: TMDBTranslations.Request) : TMDBTranslations.Translation?
 
 }

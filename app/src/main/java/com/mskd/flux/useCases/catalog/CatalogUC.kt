@@ -221,8 +221,10 @@ class CatalogUCImpl(
                     async(dispatcher) {
 
                         tmdb.getTmdbTranslations(
-                            request = TMDBTranslations.Request.Movie(artworkId = movie.artworkId),
-                            language = language
+                            request = TMDBTranslations.Request.Movie(
+                                artworkId = movie.artworkId,
+                                language = language
+                            ),
                         )?.let { translation ->
 
                             movie.copy(
@@ -244,9 +246,9 @@ class CatalogUCImpl(
                             request = TMDBTranslations.Request.Episode(
                                 artworkId = episode.artworkId,
                                 season = episode.season,
-                                number = episode.number
+                                number = episode.number,
+                                language = language
                             ),
-                            language = language
                         )?.let { translation ->
 
                             episode.copy(

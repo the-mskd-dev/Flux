@@ -6,7 +6,6 @@ import com.mskd.flux.model.tmdb.TMDBEpisode
 import com.mskd.flux.model.tmdb.TMDBMovie
 import com.mskd.flux.model.tmdb.TMDBSeason
 import com.mskd.flux.model.tmdb.TMDBTranslations
-import java.util.Locale
 
 interface TmdbRepository {
 
@@ -25,6 +24,6 @@ interface TmdbRepository {
         season: Int,
     ) : TMDBSeason?
 
-    suspend fun getTmdbTranslations(request: TMDBTranslations.Request) : TMDBTranslations.Translation?
+    suspend fun getTmdbTranslation(request: TMDBTranslations.Request) : TMDBTranslations.Translation?
 
 }

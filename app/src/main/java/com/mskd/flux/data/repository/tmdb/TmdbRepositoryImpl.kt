@@ -12,7 +12,6 @@ import com.mskd.flux.model.tmdb.TMDBSeason
 import com.mskd.flux.model.tmdb.TMDBTranslations
 import com.mskd.flux.model.tmdb.findWithLocale
 import com.mskd.flux.utils.extensions.toTmdbFormat
-import java.util.Locale
 import javax.inject.Inject
 
 class TmdbRepositoryImpl @Inject constructor(
@@ -53,7 +52,7 @@ class TmdbRepositoryImpl @Inject constructor(
             // Get translation for show if needed
             if (tmdbArtwork?.type == TMDBMediaType.SHOW && (tmdbArtwork.description.isBlank() || tmdbArtwork.title.isBlank())) {
 
-                getTmdbTranslations(
+                getTmdbTranslation(
                     request = TMDBTranslations.Request.Show(
                         artworkId = tmdbArtwork.id,
                         language = language
@@ -91,7 +90,7 @@ class TmdbRepositoryImpl @Inject constructor(
 
             if (tmdbMovie.description.isBlank() || tmdbMovie.title.isBlank()) {
 
-                getTmdbTranslations(
+                getTmdbTranslation(
                     request = TMDBTranslations.Request.Movie(
                         artworkId = artworkId,
                         language = language
@@ -135,7 +134,7 @@ class TmdbRepositoryImpl @Inject constructor(
 
             if (tmdbEpisode.description.isBlank() || tmdbEpisode.title.isBlank()) {
 
-                getTmdbTranslations(
+                getTmdbTranslation(
                     request = TMDBTranslations.Request.Episode(
                         artworkId = artworkId,
                         season = season,
@@ -174,7 +173,7 @@ class TmdbRepositoryImpl @Inject constructor(
 
             if (tmdbSeason.description.isBlank() || tmdbSeason.title.isBlank()) {
 
-                getTmdbTranslations(
+                getTmdbTranslation(
                     request = TMDBTranslations.Request.Season(
                         artworkId = artworkId,
                         season = season,
@@ -198,7 +197,7 @@ class TmdbRepositoryImpl @Inject constructor(
 
     }
 
-    override suspend fun getTmdbTranslations(request: TMDBTranslations.Request): TMDBTranslations.Translation? {
+    override suspend fun getTmdbTranslation(request: TMDBTranslations.Request): TMDBTranslations.Translation? {
 
         return try {
 

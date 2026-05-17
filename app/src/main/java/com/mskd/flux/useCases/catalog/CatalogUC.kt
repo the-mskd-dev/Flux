@@ -20,7 +20,6 @@ import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Status
 import com.mskd.flux.model.tmdb.TMDBTranslations
-import com.mskd.flux.model.tmdb.findWithLocale
 import com.mskd.flux.useCases.images.ImagesUC
 import com.mskd.flux.utils.extensions.groupInFolders
 import com.mskd.flux.utils.extensions.msToMin
@@ -220,7 +219,7 @@ class CatalogUCImpl(
 
                     async(dispatcher) {
 
-                        tmdb.getTmdbTranslations(
+                        tmdb.getTmdbTranslation(
                             request = TMDBTranslations.Request.Movie(
                                 artworkId = movie.artworkId,
                                 language = language
@@ -242,7 +241,7 @@ class CatalogUCImpl(
 
                     async(dispatcher) {
 
-                        tmdb.getTmdbTranslations(
+                        tmdb.getTmdbTranslation(
                             request = TMDBTranslations.Request.Episode(
                                 artworkId = episode.artworkId,
                                 season = episode.season,

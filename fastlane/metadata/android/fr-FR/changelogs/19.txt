@@ -1,0 +1,2 @@
+- Fix: Ajouter de nouveaux épisodes supprimait les anciens
+- Fix: Reprendre la vidéo à 0 sur VLC

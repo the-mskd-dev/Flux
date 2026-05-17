@@ -1,0 +1,2 @@
+- Fix: Adding new episodes deleted the old ones
+- Fix: Resume from start for VLC

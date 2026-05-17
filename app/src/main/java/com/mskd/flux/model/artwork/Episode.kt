@@ -35,7 +35,7 @@ import kotlin.random.Random
             entity = Artwork::class,
             parentColumns = ["id"],
             childColumns = ["artworkId"],
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.NO_ACTION
         )
     ],
     indices = [

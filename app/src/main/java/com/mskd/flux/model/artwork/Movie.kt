@@ -28,7 +28,7 @@ import com.mskd.flux.model.tmdb.TMDBMovie
             entity = Artwork::class,
             parentColumns = ["id"],
             childColumns = ["artworkId"],
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.NO_ACTION
         )
     ],
     indices = [

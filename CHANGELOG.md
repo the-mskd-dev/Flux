@@ -1,9 +1,4 @@
-## Version 1.3.5
+## Version 1.3.6
 
-- Feature: Pre-fetch images
-- Feature: Support local subtitles files
-- Feature: Add player controls for external keyboards
-- Fix: Crash in metadata fetching
-- Fix: Bypass external progress when restart media
-- Fix: Coroutines management
-- UI: Title size in Artwork page
+- Fix: Adding new episodes deleted the old ones
+- Fix: Resume from start for VLC

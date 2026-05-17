@@ -1,6 +1,7 @@
 package com.mskd.flux.data.ddb
 
 import android.content.Context
+import androidx.room.AutoMigration
 import androidx.room.Dao
 import androidx.room.Database
 import androidx.room.Insert
@@ -95,6 +96,9 @@ interface DatabaseDao {
     @Query("DELETE FROM episodes WHERE id IN (:ids)")
     suspend fun deleteEpisodesByIds(ids: List<Long>)
 
+    @Query("DELETE FROM episodes WHERE artworkId = (:artworkId)")
+    suspend fun deleteEpisodesByArtworkId(artworkId: Long)
+
     @Query("DELETE FROM artworks")
     suspend fun deleteAllArtworks()
 
@@ -148,11 +152,13 @@ class Converters {
     }
 }
 
-@Database(entities = [
-    Artwork::class,
-    Movie::class,
-    Episode::class
-], version = 1)
+@Database(
+    entities = [Artwork::class, Movie::class, Episode::class],
+    version = 2,
+    autoMigrations = [
+        AutoMigration(from = 1, to = 2)
+    ]
+)
 @TypeConverters(Converters::class)
 abstract class FluxDatabase : RoomDatabase() {
     abstract fun dao(): DatabaseDao

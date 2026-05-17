@@ -2,7 +2,6 @@ package com.mskd.flux.model.artwork
 
 import androidx.room.Embedded
 import androidx.room.Entity
-import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.mskd.flux.model.UserFile
@@ -30,14 +29,6 @@ import kotlin.random.Random
  */
 @Entity(
     tableName = "episodes",
-    foreignKeys = [
-        ForeignKey(
-            entity = Artwork::class,
-            parentColumns = ["id"],
-            childColumns = ["artworkId"],
-            onDelete = ForeignKey.CASCADE
-        )
-    ],
     indices = [
         Index(value = ["artworkId"])
     ]

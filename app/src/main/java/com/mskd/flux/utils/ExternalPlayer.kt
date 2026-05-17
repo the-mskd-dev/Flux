@@ -51,17 +51,19 @@ object ExternalPlayer {
     private fun createIntent(media: Media) : Intent {
         return Intent(Intent.ACTION_VIEW).apply {
 
-            val uri = if (media.currentTime == 0L)
-                (media.file.uri.toString() + "#t=${System.currentTimeMillis()}").toUri()
-            else
-                media.file.uri
 
-            setDataAndType(uri, "video/*")
+            setDataAndType(media.file.uri, "video/*")
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             putExtra("return_result", true)
 
-            startingProgressFlags.forEach { putExtra(it, media.currentTime) }
             titleFlags.forEach { putExtra(it, media.title) }
+
+            if (media.currentTime > 0L) {
+                startingProgressFlags.forEach { putExtra(it, media.currentTime) }
+            } else {
+                putExtra("from_start", true)
+                startingProgressFlags.forEach { putExtra(it, 1L) }
+            }
 
         }
     }
@@ -94,7 +96,6 @@ object ExternalPlayer {
         "start_from",
         "video_position",
         "resume_from",
-        "from_start",
         "start_position",
         "playback_start"
     )

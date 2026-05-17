@@ -8,6 +8,7 @@ import com.mskd.flux.model.tmdb.TMDBArtwork
 import com.mskd.flux.model.tmdb.TMDBEpisode
 import com.mskd.flux.model.tmdb.TMDBMediaType
 import com.mskd.flux.model.tmdb.TMDBMovie
+import com.mskd.flux.model.tmdb.TMDBSeason
 import com.mskd.flux.model.tmdb.TMDBTranslations
 import com.mskd.flux.model.tmdb.findWithLocale
 import com.mskd.flux.utils.extensions.toTmdbFormat
@@ -150,6 +151,41 @@ class TmdbRepositoryImpl @Inject constructor(
 
     }
 
+    override suspend fun getTmdbSeason(artworkId: Long, season: Int): TMDBSeason? {
+
+        val language = settings.getDataLanguage()
+
+        return try {
+
+            var tmdbSeason = tmdbService.getSeason(
+                id = artworkId,
+                season = season,
+                language = language.toTmdbFormat()
+            )
+
+            if (tmdbSeason.description.isBlank() || tmdbSeason.title.isBlank()) {
+
+                getTmdbSeasonTranslations(
+                    artworkId = artworkId,
+                    season = season,
+                ).findWithLocale(language)?.let {
+                    tmdbSeason = tmdbSeason.copy(
+                        title = it.data.name ?: tmdbSeason.title,
+                        description = it.data.overview ?: tmdbSeason.description
+                    )
+                }
+
+            }
+
+            tmdbSeason
+
+        } catch (e: Exception) {
+            Log.e(TAG, "getTmdbSeason - Fail to get TMDBSeason for artworkId:$artworkId, season:$season (${language.toTmdbFormat()})", e)
+            null
+        }
+
+    }
+
     override suspend fun getTmdbMovieTranslations(artworkId: Long): List<TMDBTranslations.Translation> {
 
         return try {
@@ -198,6 +234,27 @@ class TmdbRepositoryImpl @Inject constructor(
 
         } catch (e: Exception) {
             Log.e(TAG, "getTmdbEpisodeTranslations - Fail to get translations for episode (artworkId:$artworkId, season:$season, number:$number)", e)
+            emptyList()
+        }
+
+    }
+
+    override suspend fun getTmdbSeasonTranslations(
+        artworkId: Long,
+        season: Int
+    ): List<TMDBTranslations.Translation> {
+
+        return try {
+
+            tmdbService
+                .getSeasonTranslations(
+                    id = artworkId,
+                    season = season,
+                )
+                .translations
+
+        } catch (e: Exception) {
+            Log.e(TAG, "getTmdbSeasonTranslations - Fail to get translations for season (artworkId:$artworkId, season:$season,)", e)
             emptyList()
         }
 

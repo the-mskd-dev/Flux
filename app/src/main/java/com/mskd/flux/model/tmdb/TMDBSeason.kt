@@ -4,10 +4,12 @@ import com.google.gson.annotations.SerializedName
 
 data class TMDBSeason(
     val id: Long,
-    val name: String,
-    val overview: String,
+    @SerializedName("name")
+    val title: String,
+    @SerializedName("overview")
+    val description: String,
     @SerializedName("poster_path")
-    val imagePath: String,
+    val imagePath: String?,
     @SerializedName("season_number")
     val season: Int
 )

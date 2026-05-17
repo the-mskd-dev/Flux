@@ -23,14 +23,6 @@ import com.mskd.flux.model.tmdb.TMDBMovie
  */
 @Entity(
     tableName = "movies",
-    foreignKeys = [
-        ForeignKey(
-            entity = Artwork::class,
-            parentColumns = ["id"],
-            childColumns = ["artworkId"],
-            onDelete = ForeignKey.NO_ACTION
-        )
-    ],
     indices = [
         Index(value = ["artworkId"])
     ]

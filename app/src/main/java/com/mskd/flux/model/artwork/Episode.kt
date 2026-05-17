@@ -30,14 +30,6 @@ import kotlin.random.Random
  */
 @Entity(
     tableName = "episodes",
-    foreignKeys = [
-        ForeignKey(
-            entity = Artwork::class,
-            parentColumns = ["id"],
-            childColumns = ["artworkId"],
-            onDelete = ForeignKey.NO_ACTION
-        )
-    ],
     indices = [
         Index(value = ["artworkId"])
     ]

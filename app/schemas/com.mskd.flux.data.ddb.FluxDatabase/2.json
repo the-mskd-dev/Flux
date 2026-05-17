@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "5c4ff16d5ba5375102fc33b22b11fbfe",
+    "identityHash": "52c82a6b6886ded79a0956628dade79b",
     "entities": [
       {
         "tableName": "artworks",
@@ -48,7 +48,7 @@
       },
       {
         "tableName": "movies",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`artworkId` INTEGER NOT NULL, `title` TEXT NOT NULL, `releaseDateString` TEXT NOT NULL, `description` TEXT NOT NULL, `voteAverage` REAL NOT NULL, `voteCount` INTEGER NOT NULL, `duration` INTEGER NOT NULL, `currentTime` INTEGER NOT NULL, `status` TEXT NOT NULL, `name` TEXT NOT NULL, `addedDateTime` INTEGER NOT NULL, `path` TEXT NOT NULL, `source` TEXT NOT NULL, PRIMARY KEY(`artworkId`), FOREIGN KEY(`artworkId`) REFERENCES `artworks`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`artworkId` INTEGER NOT NULL, `title` TEXT NOT NULL, `releaseDateString` TEXT NOT NULL, `description` TEXT NOT NULL, `voteAverage` REAL NOT NULL, `voteCount` INTEGER NOT NULL, `duration` INTEGER NOT NULL, `currentTime` INTEGER NOT NULL, `status` TEXT NOT NULL, `name` TEXT NOT NULL, `addedDateTime` INTEGER NOT NULL, `path` TEXT NOT NULL, `source` TEXT NOT NULL, PRIMARY KEY(`artworkId`))",
         "fields": [
           {
             "fieldPath": "artworkId",
@@ -145,24 +145,11 @@
             "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_movies_artworkId` ON `${TABLE_NAME}` (`artworkId`)"
           }
-        ],
-        "foreignKeys": [
-          {
-            "table": "artworks",
-            "onDelete": "NO ACTION",
-            "onUpdate": "NO ACTION",
-            "columns": [
-              "artworkId"
-            ],
-            "referencedColumns": [
-              "id"
-            ]
-          }
         ]
       },
       {
         "tableName": "episodes",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `number` INTEGER NOT NULL, `season` INTEGER NOT NULL, `imagePath` TEXT NOT NULL, `artworkId` INTEGER NOT NULL, `title` TEXT NOT NULL, `releaseDateString` TEXT NOT NULL, `description` TEXT NOT NULL, `duration` INTEGER NOT NULL, `currentTime` INTEGER NOT NULL, `voteAverage` REAL NOT NULL, `voteCount` INTEGER NOT NULL, `status` TEXT NOT NULL, `name` TEXT NOT NULL, `addedDateTime` INTEGER NOT NULL, `path` TEXT NOT NULL, `source` TEXT NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`artworkId`) REFERENCES `artworks`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `number` INTEGER NOT NULL, `season` INTEGER NOT NULL, `imagePath` TEXT NOT NULL, `artworkId` INTEGER NOT NULL, `title` TEXT NOT NULL, `releaseDateString` TEXT NOT NULL, `description` TEXT NOT NULL, `duration` INTEGER NOT NULL, `currentTime` INTEGER NOT NULL, `voteAverage` REAL NOT NULL, `voteCount` INTEGER NOT NULL, `status` TEXT NOT NULL, `name` TEXT NOT NULL, `addedDateTime` INTEGER NOT NULL, `path` TEXT NOT NULL, `source` TEXT NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -283,25 +270,12 @@
             "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_episodes_artworkId` ON `${TABLE_NAME}` (`artworkId`)"
           }
-        ],
-        "foreignKeys": [
-          {
-            "table": "artworks",
-            "onDelete": "NO ACTION",
-            "onUpdate": "NO ACTION",
-            "columns": [
-              "artworkId"
-            ],
-            "referencedColumns": [
-              "id"
-            ]
-          }
         ]
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5c4ff16d5ba5375102fc33b22b11fbfe')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '52c82a6b6886ded79a0956628dade79b')"
     ]
   }
 }

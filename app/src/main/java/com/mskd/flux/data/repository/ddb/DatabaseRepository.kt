@@ -4,6 +4,7 @@ import com.mskd.flux.model.UserFile
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Movie
+import com.mskd.flux.model.artwork.Season
 import kotlinx.coroutines.flow.Flow
 
 interface DatabaseRepository {
@@ -13,6 +14,7 @@ interface DatabaseRepository {
     fun flowArtwork(artworkId: Long) : Flow<Artwork?>
     fun flowMovie(artworkId: Long) : Flow<Movie?>
     fun flowEpisodes(artworkId: Long) : Flow<List<Episode>>
+    fun flowSeasons(artworkId: Long) : Flow<List<Season>>
 
     // Save
     suspend fun saveArtworks(artworks: List<Artwork>)
@@ -29,11 +31,15 @@ interface DatabaseRepository {
     suspend fun getMoviesNotInFiles(files: List<UserFile>) : List<Movie>
 
     // Episodes
-    suspend fun getEpisode(episodeId: Long) : Episode?
     suspend fun getEpisodes(artworkId: Long) : List<Episode>
     suspend fun getEpisodes() : List<Episode>
     suspend fun getEpisodesNotInFiles(files: List<UserFile>) : List<Episode>
     suspend fun getEpisodeCount(artworkId: Long): Int
+    suspend fun getEpisodeCountBySeason(artworkId: Long, season: Int): Int
+
+    // Seasons
+    suspend fun getSeasons(artworkId: Long) : List<Season>
+    suspend fun getSeasons() : List<Season>
 
     // Unknowns
     suspend fun getUnknownMedias() : List<Episode>

@@ -34,6 +34,9 @@ interface DatabaseDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertEpisodes(episodes: List<Episode>)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertSeasons(seasons: List<Season>)
+
 //endregion
 
 //region Flow
@@ -49,6 +52,9 @@ interface DatabaseDao {
 
     @Query("SELECT * FROM episodes WHERE artworkId = :artworkId")
     fun flowEpisodes(artworkId: Long) : Flow<List<Episode>>
+
+    @Query("SELECT * FROM seasons WHERE artworkId = :artworkId")
+    fun flowSeasons(artworkId: Long) : Flow<List<Season>>
 
 //endregion
 
@@ -69,9 +75,6 @@ interface DatabaseDao {
     @Query("SELECT * FROM movies WHERE name NOT IN (:fileNames)")
     suspend fun getMoviesNotInFiles(fileNames: List<String>) : List<Movie>
 
-    @Query("SELECT * FROM episodes WHERE id = :episodeId")
-    suspend fun getEpisode(episodeId: Long) : Episode?
-
     @Query("SELECT * FROM episodes WHERE artworkId = :artworkId")
     suspend fun getEpisodes(artworkId: Long) : List<Episode>
 
@@ -83,6 +86,12 @@ interface DatabaseDao {
 
     @Query("SELECT * FROM episodes WHERE artworkId = ${Artwork.UNKNOWN_ID}")
     suspend fun getUnknownMedias() : List<Episode>
+
+    @Query("SELECT * FROM seasons WHERE artworkId = :artworkId")
+    suspend fun getSeasons(artworkId: Long) : List<Season>
+
+    @Query("SELECT * FROM seasons")
+    suspend fun getSeasons() : List<Season>
 
 //endregion
 
@@ -97,8 +106,14 @@ interface DatabaseDao {
     @Query("DELETE FROM episodes WHERE id IN (:ids)")
     suspend fun deleteEpisodesByIds(ids: List<Long>)
 
-    @Query("DELETE FROM episodes WHERE artworkId = (:artworkId)")
+    @Query("DELETE FROM episodes WHERE artworkId = :artworkId")
     suspend fun deleteEpisodesByArtworkId(artworkId: Long)
+
+    @Query("DELETE FROM seasons WHERE artworkId IN (:artworkIds)")
+    suspend fun deleteSeasonsByIds(artworkIds: List<Long>)
+
+    @Query("DELETE FROM seasons WHERE artworkId = :artworkId AND season = :season")
+    suspend fun deleteSeason(artworkId: Long, season: Int)
 
     @Query("DELETE FROM artworks")
     suspend fun deleteAllArtworks()
@@ -109,12 +124,18 @@ interface DatabaseDao {
     @Query("DELETE FROM episodes")
     suspend fun deleteAllEpisodes()
 
+    @Query("DELETE FROM seasons")
+    suspend fun deleteAllSeasons()
+
 //endregion
 
 //region Count
 
     @Query("SELECT COUNT(*) FROM episodes WHERE artworkId = :artworkId")
     suspend fun getEpisodeCountByArtworkId(artworkId: Long): Int
+
+    @Query("SELECT COUNT(*) FROM episodes WHERE artworkId = :artworkId AND season = :season")
+    suspend fun getEpisodeCountBySeason(artworkId: Long, season: Int): Int
 
 //endregion
 
@@ -125,6 +146,9 @@ interface DatabaseDao {
 
     @Query("SELECT imagePath FROM episodes")
     suspend fun getEpisodesImages() : List<String>
+
+    @Query("SELECT imagePath FROM seasons")
+    suspend fun getSeasonsImages() : List<String>
 
 //endregion
 

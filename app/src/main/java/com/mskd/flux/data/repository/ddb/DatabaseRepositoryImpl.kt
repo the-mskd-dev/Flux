@@ -6,6 +6,7 @@ import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Movie
+import com.mskd.flux.model.artwork.Season
 import com.mskd.flux.utils.extensions.tmdbImage
 import com.mskd.flux.utils.extensions.tmdbImageLarge
 import kotlinx.coroutines.flow.Flow
@@ -27,6 +28,10 @@ class DatabaseRepositoryImpl @Inject constructor(private val dao: DatabaseDao) :
 
     override fun flowEpisodes(artworkId: Long): Flow<List<Episode>> {
         return dao.flowEpisodes(artworkId = artworkId)
+    }
+
+    override fun flowSeasons(artworkId: Long): Flow<List<Season>> {
+        return dao.flowSeasons(artworkId = artworkId)
     }
 
     override suspend fun saveArtworks(artworks: List<Artwork>) {
@@ -61,10 +66,6 @@ class DatabaseRepositoryImpl @Inject constructor(private val dao: DatabaseDao) :
         return dao.getMoviesNotInFiles(fileNames =  files.map { it.name })
     }
 
-    override suspend fun getEpisode(episodeId: Long): Episode? {
-        return dao.getEpisode(episodeId = episodeId)
-    }
-
     override suspend fun getEpisodes(artworkId: Long): List<Episode> {
         return dao.getEpisodes(artworkId = artworkId)
     }
@@ -81,6 +82,18 @@ class DatabaseRepositoryImpl @Inject constructor(private val dao: DatabaseDao) :
         return dao.getEpisodeCountByArtworkId(artworkId = artworkId)
     }
 
+    override suspend fun getEpisodeCountBySeason(artworkId: Long, season: Int): Int {
+        return dao.getEpisodeCountBySeason(artworkId = artworkId, season = season)
+    }
+
+    override suspend fun getSeasons(artworkId: Long): List<Season> {
+        return dao.getSeasons(artworkId)
+    }
+
+    override suspend fun getSeasons(): List<Season> {
+        return dao.getSeasons()
+    }
+
     override suspend fun getUnknownMedias(): List<Episode> {
         return dao.getUnknownMedias()
     }
@@ -88,25 +101,24 @@ class DatabaseRepositoryImpl @Inject constructor(private val dao: DatabaseDao) :
     override suspend fun getAllImagesPaths(): List<String> {
         val artworks = dao.getArtworksImages()
         val episodes = dao.getEpisodesImages()
+        val seasons = dao.getSeasonsImages()
 
         return buildList {
             addAll(artworks.filter { it.imagePath.isNotBlank() }.map { it.imagePath.tmdbImage })
             addAll(artworks.filter { it.imagePath.isNotBlank() }.map { it.bannerPath.tmdbImageLarge })
             addAll(episodes.filter { it.isNotBlank() }.map { it.tmdbImage })
+            addAll(seasons.filter { it.isNotBlank() }.map { it.tmdbImage })
         }
     }
 
     override suspend fun deleteArtworks(artworks: List<Artwork>) {
-        dao.deleteArtworks(ids = artworks.map { it.id })
 
-        artworks.distinctBy { it.id }.forEach { artwork ->
+        val artworkIds = artworks.map { it.id }.distinct()
+        dao.deleteArtworks(ids = artworkIds)
+        dao.deleteMoviesByIds(ids = artworkIds)
+        artworkIds.forEach { dao.deleteEpisodesByArtworkId(artworkId = it) }
+        dao.deleteSeasonsByIds(artworkIds = artworkIds)
 
-            when (artwork.type) {
-                ContentType.MOVIE -> dao.deleteMoviesByIds(listOf(artwork.id))
-                ContentType.SHOW -> dao.deleteEpisodesByArtworkId(artworkId = artwork.id)
-            }
-
-        }
     }
 
     override suspend fun deleteMovies(movies: List<Movie>) {
@@ -155,5 +167,6 @@ class DatabaseRepositoryImpl @Inject constructor(private val dao: DatabaseDao) :
         dao.deleteAllArtworks()
         dao.deleteAllMovies()
         dao.deleteAllEpisodes()
+        dao.deleteAllSeasons()
     }
 }

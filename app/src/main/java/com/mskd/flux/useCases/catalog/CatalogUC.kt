@@ -321,17 +321,27 @@ class CatalogUCImpl(
 
                 async(dispatcher) {
 
-                    val tmdbArtwork = tmdb.getTmdbArtwork(file = folder.files.first())
+                    try {
 
-                    val artwork = if (tmdbArtwork == null)
-                        Artwork.UNKNOWN
-                    else
-                        Artwork(tmdbArtwork = tmdbArtwork)
+                        val tmdbArtwork = tmdb.getTmdbArtwork(file = folder.files.first())
 
-                    ArtworkFolder(
-                        artwork = artwork,
-                        files = folder.files
-                    )
+                        val artwork = if (tmdbArtwork == null)
+                            Artwork.UNKNOWN
+                        else
+                            Artwork(tmdbArtwork = tmdbArtwork)
+
+                        ArtworkFolder(
+                            artwork = artwork,
+                            files = folder.files
+                        )
+
+                    } catch (e: Exception) {
+                        Log.e(TAG, "getArtworksFolders - Fail to get ArtworkFolder for ${folder.files.first().name}", e)
+                        ArtworkFolder(
+                            artwork = Artwork.UNKNOWN,
+                            files = folder.files
+                        )
+                    }
 
                 }
 

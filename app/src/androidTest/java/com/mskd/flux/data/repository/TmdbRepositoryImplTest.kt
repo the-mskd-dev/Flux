@@ -11,11 +11,18 @@ import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import okhttp3.OkHttpClient
 import org.junit.Before
+import org.junit.FixMethodOrder
 import org.junit.Test
+import org.junit.internal.MethodSorter
+import org.junit.runner.OrderWith
+import org.junit.runner.manipulation.Alphanumeric
+import org.junit.runner.manipulation.Ordering
+import org.junit.runners.MethodSorters
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.Locale
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class TmdbRepositoryImplTest {
 
     private lateinit var tmdbService: TMDBService
@@ -67,31 +74,58 @@ class TmdbRepositoryImplTest {
     }
 
     @Test
-    fun test_get_tmdb_artwork_movie() = runTest {
+    fun test_1_get_tmdb_artwork_movie() = runTest {
         val result = repository.getTmdbArtwork(movieFile)
-        println("Result : $result")
+
+        println("id : ${result?.id}")
+        println("title : ${result?.title}")
+        println("description : ${result?.description}")
+        println("type : ${result?.type}")
+        println("imagePath : ${result?.imagePath}")
+        println("bannerPath : ${result?.bannerPath}")
+        println("originalTitle : ${result?.originalTitle}")
+        println("popularity : ${result?.popularity}")
+        println("releaseDateString : ${result?.releaseDateString}")
+        println("voteCount : ${result?.voteCount}")
+        println("voteAverage : ${result?.voteAverage}")
     }
 
     @Test
-    fun test_get_tmdb_artwork_episode() = runTest {
-        // We set isEpisode to true if needed, but UserFile might deduce it from nameProperties.
-        // Assuming episodeFile parses to an episode based on its name.
+    fun test_2_get_tmdb_artwork_episode() = runTest {
         val result = repository.getTmdbArtwork(episodeFile)
-        println("Result : $result")
+
+        println("id : ${result?.id}")
+        println("title : ${result?.title}")
+        println("description : ${result?.description}")
+        println("type : ${result?.type}")
+        println("imagePath : ${result?.imagePath}")
+        println("bannerPath : ${result?.bannerPath}")
+        println("originalTitle : ${result?.originalTitle}")
+        println("popularity : ${result?.popularity}")
+        println("releaseDateString : ${result?.releaseDateString}")
+        println("voteCount : ${result?.voteCount}")
+        println("voteAverage : ${result?.voteAverage}")
     }
 
     @Test
-    fun test_get_tmdb_movie() = runTest {
+    fun test_3_get_tmdb_movie() = runTest {
         val id = 1L // ID from TMDBServiceTest
 
         val result = repository.getTmdbMovie(artworkId = id)
 
-        println("Result : $result")
+        println("id : ${result?.id}")
+        println("title : ${result?.title}")
+        println("description : ${result?.description}")
+        println("imagePath : ${result?.imagePath}")
+        println("bannerPath : ${result?.bannerPath}")
+        println("releaseDateString : ${result?.releaseDateString}")
+        println("voteCount : ${result?.voteCount}")
+        println("voteAverage : ${result?.voteAverage}")
     }
 
     @Test
-    fun test_get_tmdb_episode() = runTest {
-        val id = 31910L // ID from TMDBServiceTest
+    fun test_4_get_tmdb_episode() = runTest {
+        val id = 31910L
         val season = 1
         val episode = 1
 
@@ -101,12 +135,21 @@ class TmdbRepositoryImplTest {
             number = episode
         )
 
-        println("Result : $result")
+        println("id : ${result?.id}")
+        println("artworkId : ${result?.artworkId}")
+        println("title : ${result?.title}")
+        println("description : ${result?.description}")
+        println("imagePath : ${result?.imagePath}")
+        println("releaseDateString : ${result?.releaseDateString}")
+        println("season : ${result?.season}")
+        println("number : ${result?.number}")
+        println("voteCount : ${result?.voteCount}")
+        println("voteAverage : ${result?.voteAverage}")
     }
 
     @Test
-    fun test_get_tmdb_movie_translations() = runTest {
-        val id = 372058L // ID from TMDBServiceTest
+    fun test_5_get_tmdb_movie_translations() = runTest {
+        val id = 372058L
 
         val result = repository.getTmdbMovieTranslations(artworkId = id)
 
@@ -114,8 +157,8 @@ class TmdbRepositoryImplTest {
     }
 
     @Test
-    fun test_get_tmdb_show_translations() = runTest {
-        val id = 31910L // ID from TMDBServiceTest
+    fun test_6_get_tmdb_show_translations() = runTest {
+        val id = 31910L
 
         val result = repository.getTmdbShowTranslations(artworkId = id)
 
@@ -123,8 +166,8 @@ class TmdbRepositoryImplTest {
     }
 
     @Test
-    fun test_get_tmdb_episode_translations() = runTest {
-        val id = 31910L // ID from TMDBServiceTest
+    fun test_7_get_tmdb_episode_translations() = runTest {
+        val id = 31910L
         val season = 1
         val episode = 1
 

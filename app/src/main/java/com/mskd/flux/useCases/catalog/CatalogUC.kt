@@ -41,6 +41,9 @@ interface CatalogUC {
     val state: Flow<State>
     val artworks : Flow<List<Artwork>>
     fun syncCatalog(onlyNew: Boolean)
+
+    suspend fun getCatalog(files: List<UserFile>) : Catalog
+
     suspend fun cleanCatalog()
 
     fun updateLanguage()
@@ -159,6 +162,35 @@ class CatalogUCImpl(
 
     }
 
+    override suspend fun getCatalog(files: List<UserFile>) : Catalog {
+
+        val folders = files.groupInFolders()
+
+        // Get data
+        val artworksFolders = getArtworksFolders(folders = folders)
+
+        val (movies, episodes) = supervisorScope {
+            val moviesDeferred = async {
+                runCatching { getMovies(artworkFolders = artworksFolders) }
+                    .onFailure { Log.e(TAG, "getMovies failed", it) }
+                    .getOrElse { emptyList() }
+            }
+            val episodesDeferred = async {
+                runCatching { getEpisodes(artworkFolders = artworksFolders) }
+                    .onFailure { Log.e(TAG, "getEpisodes failed", it) }
+                    .getOrElse { emptyList() }
+            }
+            moviesDeferred.await() to episodesDeferred.await()
+        }
+
+        return Catalog(
+            artworks = artworksFolders.map { it.artwork },
+            movies = movies.filterIsInstance<Movie>(),
+            episodes = movies.filterIsInstance<Episode>() + episodes
+        )
+
+    }
+
     override suspend fun cleanCatalog() {
 
         val allFiles = files.getFiles()
@@ -236,35 +268,6 @@ class CatalogUCImpl(
     //endregion
 
     //region Private methods
-
-    private suspend fun getCatalog(files: List<UserFile>) : Catalog {
-
-        val folders = files.groupInFolders()
-
-        // Get data
-        val artworksFolders = getArtworksFolders(folders = folders)
-
-        val (movies, episodes) = supervisorScope {
-            val moviesDeferred = async {
-                runCatching { getMovies(artworkFolders = artworksFolders) }
-                    .onFailure { Log.e(TAG, "getMovies failed", it) }
-                    .getOrElse { emptyList() }
-            }
-            val episodesDeferred = async {
-                runCatching { getEpisodes(artworkFolders = artworksFolders) }
-                    .onFailure { Log.e(TAG, "getEpisodes failed", it) }
-                    .getOrElse { emptyList() }
-            }
-            moviesDeferred.await() to episodesDeferred.await()
-        }
-
-        return Catalog(
-            artworks = artworksFolders.map { it.artwork },
-            movies = movies.filterIsInstance<Movie>(),
-            episodes = movies.filterIsInstance<Episode>() + episodes
-        )
-
-    }
 
     private fun applyCurrentProgress(catalog: Catalog, dbMovies: List<Movie>, dbEpisodes: List<Episode>) : Catalog {
 

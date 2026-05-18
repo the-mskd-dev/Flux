@@ -18,6 +18,7 @@ import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.artwork.Movie
+import com.mskd.flux.model.artwork.Season
 import com.mskd.flux.model.artwork.Status
 import com.mskd.flux.model.tmdb.TMDBTranslations
 import com.mskd.flux.useCases.images.ImagesUC
@@ -402,6 +403,44 @@ class CatalogUCImpl(
 
         return movies
 
+    }
+
+    private suspend fun getSeasons(artworkFolders: List<ArtworkFolder>) : Pair<List<Season>, List<Episode>> {
+
+        val tmdbSeasons = supervisorScope {
+
+            artworkFolders.filter { it.artwork.type == ContentType.SHOW && it.artwork.id != Artwork.UNKNOWN_ID }.flatMap { (artwork, files) ->
+
+                files
+                    .map { it.nameProperties.season }
+                    .distinct()
+                    .filterNotNull()
+                    .map { season ->
+
+                        async(dispatcher) {
+
+                            try {
+
+                                tmdb.getTmdbSeason(
+                                    artworkId = artwork.id,
+                                    season = season
+                                )
+
+                            } catch (e: Exception) {
+                                Log.e(TAG, "getSeasons - Fail to get season for artworkId ${artwork.id} - season $season",e)
+                                null
+                            }
+
+                        }
+
+                    }.awaitAll().filterNotNull()
+
+            }
+
+        }
+
+
+        return emptyList<Season>() to emptyList<Episode>()
     }
 
     private suspend fun getEpisodes(artworkFolders: List<ArtworkFolder>) : List<Episode> {

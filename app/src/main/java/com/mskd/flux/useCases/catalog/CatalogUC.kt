@@ -404,12 +404,12 @@ class CatalogUCImpl(
 
                 files.map { file ->
 
-                    val season = file.nameProperties.season
-                    val number = file.nameProperties.episode
-
                     async(dispatcher) {
 
                         try {
+
+                            val season = file.nameProperties.season
+                            val number = file.nameProperties.episode
 
                             when {
                                 artwork.id == Artwork.UNKNOWN_ID -> createUnknownMedia(file = file)

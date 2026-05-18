@@ -12,9 +12,7 @@ import org.junit.Test
 import org.junit.runners.MethodSorters
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.io.File
 import java.util.Locale
-import java.util.Properties
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class TMDBServiceTest {

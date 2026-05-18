@@ -4,6 +4,7 @@ import com.mskd.flux.BuildConfig
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.data.repository.tmdb.TmdbRepositoryImpl
 import com.mskd.flux.data.tmdb.TMDBService
+import com.mskd.flux.model.FileProperties
 import com.mskd.flux.model.FileSource
 import com.mskd.flux.model.UserFile
 import io.mockk.coEvery
@@ -39,7 +40,7 @@ class TmdbRepositoryImplTest {
     )
 
     private val episodeFile = UserFile(
-        name = "Naruto S01E01",
+        name = "Naruto s01e01.mp4",
         addedDateTime = 0L,
         path = "",
         source = FileSource.LOCAL

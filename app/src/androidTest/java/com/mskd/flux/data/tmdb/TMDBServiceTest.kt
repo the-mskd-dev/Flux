@@ -7,31 +7,40 @@ import com.mskd.flux.utils.extensions.toTmdbFormat
 import kotlinx.coroutines.test.runTest
 import okhttp3.OkHttpClient
 import org.junit.Before
+import org.junit.FixMethodOrder
 import org.junit.Test
+import org.junit.runners.MethodSorters
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
 import java.util.Locale
 import java.util.Properties
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class TMDBServiceTest {
 
     private lateinit var service: TMDBService
-    private val language = Locale.US.toTmdbFormat()
 
-    private val movieFile = UserFile(
-        name = "",
-        addedDateTime = 0L,
-        path = "",
-        source = FileSource.LOCAL
-    )
+    private companion object {
 
-    private val episodeFile = UserFile(
-        name = "",
-        addedDateTime = 0L,
-        path = "",
-        source = FileSource.LOCAL
-    )
+        val dataLanguage: String = Locale.US.toTmdbFormat()
+
+        val movieFile = UserFile(
+            name = "Spider-man Homecoming",
+            addedDateTime = 0L,
+            path = "",
+            source = FileSource.LOCAL
+        )
+
+        val episodeFile = UserFile(
+            name = "Naruto s01e01.mp4",
+            addedDateTime = 0L,
+            path = "",
+            source = FileSource.LOCAL
+        )
+        private var movieArtworkId: Long? = null
+        private var showArtworkId: Long? = null
+    }
 
     @Before
     fun setup() {
@@ -57,7 +66,7 @@ class TMDBServiceTest {
     }
 
     @Test
-    fun test_authenticate() = runTest {
+    fun test_1_authenticate() = runTest {
         val result = service.authenticate()
 
         println("Authentication success - ${result.success}")
@@ -66,7 +75,7 @@ class TMDBServiceTest {
     }
 
     @Test
-    fun test_get_movie() = runTest {
+    fun test_2_get_movie() = runTest {
 
         val title = movieFile.nameProperties.title
         val year = movieFile.nameProperties.year
@@ -74,9 +83,10 @@ class TMDBServiceTest {
         val result = service.getMovie(
             title = title,
             year = year,
-            language = language
+            language = dataLanguage
         )
 
+        movieArtworkId = result.artworkFor(fileName = movieFile.nameProperties.title)?.id
         println("Result count : ${result.resultCount}")
         result.results.forEach {
             println(it)
@@ -85,22 +95,22 @@ class TMDBServiceTest {
     }
 
     @Test
-    fun test_get_movie_details() = runTest {
+    fun test_3_get_movie_details() = runTest {
 
-        val id = 1L
+        val id = movieArtworkId!!
 
         val result = service.getMovieDetails(
             id = id,
-            language = language
+            language = dataLanguage
         )
 
         println(result)
     }
 
     @Test
-    fun test_get_movie_translations() = runTest {
+    fun test_4_get_movie_translations() = runTest {
 
-        val id = 372058L
+        val id = movieArtworkId!!
 
         val result = service.getMovieTranslations(id = id)
 
@@ -109,7 +119,7 @@ class TMDBServiceTest {
     }
 
     @Test
-    fun test_get_show() = runTest {
+    fun test_5_get_show() = runTest {
 
         val title = episodeFile.nameProperties.title
         val year = episodeFile.nameProperties.year
@@ -117,9 +127,10 @@ class TMDBServiceTest {
         val result = service.getShow(
             title = title,
             year = year,
-            language = language
+            language = dataLanguage
         )
 
+        showArtworkId = result.artworkFor(fileName = episodeFile.nameProperties.title)?.id
         println("Result count : ${result.resultCount}")
         result.results.forEach {
             println(it)
@@ -128,9 +139,9 @@ class TMDBServiceTest {
     }
 
     @Test
-    fun test_get_show_translations() = runTest {
+    fun test_6_get_show_translations() = runTest {
 
-        val id = 31910L
+        val id = showArtworkId!!
 
         val result = service.getShowTranslations(id = id)
 
@@ -139,17 +150,17 @@ class TMDBServiceTest {
     }
 
     @Test
-    fun test_get_episode() = runTest {
+    fun test_7_get_episode() = runTest {
 
-        val id = 31910L
-        val season = 1
-        val episode = 1
+        val id = showArtworkId!!
+        val season = episodeFile.nameProperties.season!!
+        val episode = episodeFile.nameProperties.episode!!
 
         val result = service.getEpisode(
             id = id,
             season = season,
             episode = episode,
-            language = language
+            language = dataLanguage
         )
 
         println(result)
@@ -157,11 +168,11 @@ class TMDBServiceTest {
     }
 
     @Test
-    fun test_get_episode_translations() = runTest {
+    fun test_8_get_episode_translations() = runTest {
 
-        val id = 31910L
-        val season = 1
-        val episode = 1
+        val id = showArtworkId!!
+        val season = episodeFile.nameProperties.season!!
+        val episode = episodeFile.nameProperties.episode!!
 
         val result = service.getEpisodeTranslations(
             id = id,

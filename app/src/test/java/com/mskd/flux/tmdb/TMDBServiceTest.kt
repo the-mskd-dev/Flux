@@ -13,6 +13,31 @@ class TMDBServiceTest : FunSpec({
     val apiConfig = ApiConfig()
     extension(apiConfig)
 
+    test("authenticate success") {
+
+        val mockResponse = MockResponse()
+            .setBody(TMDBResponseMockups.authentication)
+            .setResponseCode(200)
+        apiConfig.mockWebServer.enqueue(mockResponse)
+
+        val result = apiConfig.api.authenticate()
+
+        result.success shouldBe true
+
+    }
+
+    test("authenticate fail") {
+
+        val mockResponse = MockResponse()
+            .setResponseCode(401)
+        apiConfig.mockWebServer.enqueue(mockResponse)
+
+        shouldThrow<Exception> {
+            apiConfig.api.authenticate()
+        }
+
+    }
+
     test("get movies success") {
 
         val mockResponse = MockResponse()
@@ -36,6 +61,57 @@ class TMDBServiceTest : FunSpec({
 
         shouldThrow<Exception> {
             apiConfig.api.getMovie("your name")
+        }
+
+    }
+
+    test("get movie details success") {
+
+        val mockResponse = MockResponse()
+            .setBody(TMDBResponseMockups.movie)
+            .setResponseCode(200)
+        apiConfig.mockWebServer.enqueue(mockResponse)
+
+        val tmdbResult = apiConfig.api.getMovieDetails(0L)
+
+        tmdbResult.title.isNotEmpty() shouldBe true
+
+    }
+
+    test("get movie details fail") {
+
+        val mockResponse = MockResponse()
+            .setResponseCode(404)
+        apiConfig.mockWebServer.enqueue(mockResponse)
+
+        shouldThrow<Exception> {
+            apiConfig.api.getMovieDetails(0L)
+        }
+
+    }
+
+    test("get movie translations success") {
+
+        val mockResponse = MockResponse()
+            .setBody(TMDBResponseMockups.translations)
+            .setResponseCode(200)
+        apiConfig.mockWebServer.enqueue(mockResponse)
+
+        val result = apiConfig.api.getMovieTranslations(372058L)
+
+        result.translations.isNotEmpty() shouldBe true
+        result.translations.any { it.language == "en" } shouldBe true
+
+    }
+
+    test("get movie translations fail") {
+
+        val mockResponse = MockResponse()
+            .setResponseCode(404)
+        apiConfig.mockWebServer.enqueue(mockResponse)
+
+        shouldThrow<Exception> {
+            apiConfig.api.getMovieTranslations(0L)
         }
 
     }
@@ -67,20 +143,33 @@ class TMDBServiceTest : FunSpec({
 
     }
 
-    test("get movie details") {
+    test("get show translations success") {
 
         val mockResponse = MockResponse()
-            .setBody(TMDBResponseMockups.movie)
+            .setBody(TMDBResponseMockups.translations)
             .setResponseCode(200)
         apiConfig.mockWebServer.enqueue(mockResponse)
 
-        val tmdbResult = apiConfig.api.getMovieDetails(0L)
+        val result = apiConfig.api.getShowTranslations(31910L)
 
-        tmdbResult.title.isNotEmpty() shouldBe true
+        result.translations.isNotEmpty() shouldBe true
+        result.translations.any { it.language == "en" } shouldBe true
 
     }
 
-    test("get episode details") {
+    test("get show translations fail") {
+
+        val mockResponse = MockResponse()
+            .setResponseCode(404)
+        apiConfig.mockWebServer.enqueue(mockResponse)
+
+        shouldThrow<Exception> {
+            apiConfig.api.getShowTranslations(0L)
+        }
+
+    }
+
+    test("get episode details success") {
 
         val mockResponse = MockResponse()
             .setBody(TMDBResponseMockups.episode)
@@ -90,6 +179,44 @@ class TMDBServiceTest : FunSpec({
         val tmdbResult = apiConfig.api.getEpisode(0L, 1, 1)
 
         tmdbResult.title.isNotEmpty() shouldBe true
+
+    }
+
+    test("get episode details fail") {
+
+        val mockResponse = MockResponse()
+            .setResponseCode(404)
+        apiConfig.mockWebServer.enqueue(mockResponse)
+
+        shouldThrow<Exception> {
+            apiConfig.api.getEpisode(0L, 1, 1)
+        }
+
+    }
+
+    test("get episode translations success") {
+
+        val mockResponse = MockResponse()
+            .setBody(TMDBResponseMockups.translations)
+            .setResponseCode(200)
+        apiConfig.mockWebServer.enqueue(mockResponse)
+
+        val result = apiConfig.api.getEpisodeTranslations(31910L, 1, 1)
+
+        result.translations.isNotEmpty() shouldBe true
+        result.translations.any { it.language == "en" } shouldBe true
+
+    }
+
+    test("get episode translations fail") {
+
+        val mockResponse = MockResponse()
+            .setResponseCode(404)
+        apiConfig.mockWebServer.enqueue(mockResponse)
+
+        shouldThrow<Exception> {
+            apiConfig.api.getEpisodeTranslations(0L, 1, 1)
+        }
 
     }
 

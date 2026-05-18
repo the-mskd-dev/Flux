@@ -1,4 +1,3 @@
-## Version 1.3.6
+## Version 1.3.7
 
-- Fix: Adding new episodes deleted the old ones
-- Fix: Resume from start for VLC
+- Fix: Crash on unknown artworks

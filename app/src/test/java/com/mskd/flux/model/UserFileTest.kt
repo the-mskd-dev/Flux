@@ -47,6 +47,12 @@ class UserFileTest : FunSpec ({
         withData(
             nameFn = { it.fileName },
             UserFileTestCases.FileProperties(
+                fileName = "Naruto S01E01.mp4",
+                expectedTitle = "naruto",
+                expectedSeason = 1,
+                expectedEpisode = 1
+            ),
+            UserFileTestCases.FileProperties(
                 fileName = "Naruto_s02e09.mp4",
                 expectedTitle = "naruto",
                 expectedSeason = 2,

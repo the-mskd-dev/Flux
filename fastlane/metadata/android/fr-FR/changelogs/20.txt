@@ -1,0 +1,1 @@
+- Fix: Crash sur les médias inconnus

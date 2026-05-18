@@ -59,7 +59,10 @@ class TMDBServiceTest {
     @Test
     fun test_authenticate() = runTest {
         val result = service.authenticate()
-        println(result)
+
+        println("Authentication success - ${result.success}")
+        println("Message - ${result.status_message}")
+        println("Code - ${result.status_code}")
     }
 
     @Test
@@ -74,7 +77,10 @@ class TMDBServiceTest {
             language = language
         )
 
-        println(result)
+        println("Result count : ${result.resultCount}")
+        result.results.forEach {
+            println(it)
+        }
 
     }
 
@@ -89,7 +95,6 @@ class TMDBServiceTest {
         )
 
         println(result)
-
     }
 
     @Test
@@ -99,7 +104,7 @@ class TMDBServiceTest {
 
         val result = service.getMovieTranslations(id = id)
 
-        println(result)
+        println("Result count : ${result.translations.size}")
 
     }
 
@@ -115,7 +120,10 @@ class TMDBServiceTest {
             language = language
         )
 
-        println(result)
+        println("Result count : ${result.resultCount}")
+        result.results.forEach {
+            println(it)
+        }
 
     }
 
@@ -126,7 +134,7 @@ class TMDBServiceTest {
 
         val result = service.getShowTranslations(id = id)
 
-        println(result)
+        println("Result count : ${result.translations.size}")
 
     }
 
@@ -161,7 +169,7 @@ class TMDBServiceTest {
             episode = episode
         )
 
-        println(result)
+        println("Result count : ${result.translations.size}")
 
     }
 

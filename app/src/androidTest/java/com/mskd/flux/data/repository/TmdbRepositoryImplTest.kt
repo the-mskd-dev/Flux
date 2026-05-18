@@ -27,7 +27,7 @@ class TmdbRepositoryImplTest {
 
     private companion object {
 
-        val dataLanguage = Locale.US
+        val dataLanguage: Locale = Locale.US
 
         val movieFile = UserFile(
             name = "Spider-man Homecoming",

@@ -46,8 +46,8 @@ data class Artwork(
     constructor(tmdbArtwork: TMDBArtwork) : this(
         id = tmdbArtwork.id,
         title = tmdbArtwork.title,
-        imagePath = tmdbArtwork.imagePath,
-        bannerPath = tmdbArtwork.bannerPath,
+        imagePath = tmdbArtwork.imagePath.orEmpty(),
+        bannerPath = tmdbArtwork.bannerPath.orEmpty(),
         type = if (tmdbArtwork.type == TMDBMediaType.MOVIE) ContentType.MOVIE else ContentType.SHOW
     )
 

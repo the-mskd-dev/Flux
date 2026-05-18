@@ -1,6 +1,8 @@
 package com.mskd.flux.data.tmdb
 
 import com.mskd.flux.BuildConfig
+import com.mskd.flux.model.FileSource
+import com.mskd.flux.model.UserFile
 import com.mskd.flux.utils.extensions.toTmdbFormat
 import kotlinx.coroutines.test.runTest
 import okhttp3.OkHttpClient
@@ -16,6 +18,20 @@ class TMDBServiceTest {
 
     private lateinit var service: TMDBService
     private val language = Locale.US.toTmdbFormat()
+
+    private val movieFile = UserFile(
+        name = "",
+        addedDateTime = 0L,
+        path = "",
+        source = FileSource.LOCAL
+    )
+
+    private val episodeFile = UserFile(
+        name = "",
+        addedDateTime = 0L,
+        path = "",
+        source = FileSource.LOCAL
+    )
 
     @Before
     fun setup() {
@@ -49,8 +65,8 @@ class TMDBServiceTest {
     @Test
     fun test_get_movie() = runTest {
 
-        val title = ""
-        val year: Int? = null
+        val title = movieFile.nameProperties.title
+        val year = movieFile.nameProperties.year
 
         val result = service.getMovie(
             title = title,
@@ -90,8 +106,8 @@ class TMDBServiceTest {
     @Test
     fun test_get_show() = runTest {
 
-        val title = ""
-        val year: Int? = null
+        val title = episodeFile.nameProperties.title
+        val year = episodeFile.nameProperties.year
 
         val result = service.getShow(
             title = title,

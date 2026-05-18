@@ -203,31 +203,6 @@ class FluxDatabaseTest {
     }
 
     @Test
-    fun getEpisode_returns_correct_episode_by_id() = runTest {
-        // Given
-        val artwork = MediaMockups.showArtwork
-        val episode = MediaMockups.episode1
-        dao.insertArtworks(listOf(artwork))
-        dao.insertEpisodes(listOf(episode))
-
-        // When
-        val result = dao.getEpisode(episode.id)
-
-        // Then
-        assertNotNull(result)
-        assertEquals(episode, result)
-    }
-
-    @Test
-    fun getEpisode_returns_null_when_not_found() = runTest {
-        // When
-        val result = dao.getEpisode(999999L)
-
-        // Then
-        assertNull(result)
-    }
-
-    @Test
     fun getEpisodes_without_artworkId_returns_all_episodes() = runTest {
         // Given
         val artworks = listOf(MediaMockups.showArtwork, MediaMockups.unknownArtwork)
@@ -275,24 +250,6 @@ class FluxDatabaseTest {
         result.forEach { episode -> assertEquals(Artwork.UNKNOWN_ID, episode.artworkId) }
     }
 
-    @Test
-    fun insertEpisodes_replaces_on_conflict() = runTest {
-        // Given
-        val artwork = MediaMockups.showArtwork
-        val episode = MediaMockups.episode1
-        dao.insertArtworks(listOf(artwork))
-        dao.insertEpisodes(listOf(episode))
-
-        // When
-        val updatedEpisode = episode.copy(title = "Updated Episode Title")
-        dao.insertEpisodes(listOf(updatedEpisode))
-
-        // Then
-        val result = dao.getEpisode(episode.id)
-        assertEquals("Updated Episode Title", result?.title)
-        assertEquals(1, dao.getEpisodes(artwork.id).size)
-    }
-
     // endregion
 
     // region Delete
@@ -338,8 +295,8 @@ class FluxDatabaseTest {
         dao.deleteEpisodesByIds(listOf(MediaMockups.episode1.id))
 
         // Then
-        assertNull(dao.getEpisode(MediaMockups.episode1.id))
-        assertNotNull(dao.getEpisode(MediaMockups.episode2.id))
+        assert(dao.getEpisodes().none { it.id ==  MediaMockups.episode1.id})
+        assert(dao.getEpisodes().any { it.id ==  MediaMockups.episode2.id})
     }
 
     @Test

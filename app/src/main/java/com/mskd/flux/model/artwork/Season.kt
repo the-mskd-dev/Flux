@@ -2,6 +2,7 @@ package com.mskd.flux.model.artwork
 
 import androidx.room.Entity
 import androidx.room.Index
+import androidx.room.PrimaryKey
 
 /**
  * Represents an episode of a TV show.
@@ -19,6 +20,8 @@ import androidx.room.Index
     ]
 )
 data class Season(
+    @PrimaryKey
+    val id: Long,
     val artworkId: Long,
     val title: String,
     val description: String,

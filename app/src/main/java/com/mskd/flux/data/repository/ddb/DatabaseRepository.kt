@@ -19,6 +19,7 @@ interface DatabaseRepository {
     // Save
     suspend fun saveArtworks(artworks: List<Artwork>)
     suspend fun saveMovies(movies: List<Movie>)
+    suspend fun saveSeasons(seasons: List<Season>)
     suspend fun saveEpisodes(episodes: List<Episode>)
 
     // Artworks

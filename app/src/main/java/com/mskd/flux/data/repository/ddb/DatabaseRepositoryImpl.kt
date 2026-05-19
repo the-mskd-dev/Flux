@@ -42,6 +42,10 @@ class DatabaseRepositoryImpl @Inject constructor(private val dao: DatabaseDao) :
         dao.insertMovies(movies = movies)
     }
 
+    override suspend fun saveSeasons(seasons: List<Season>) {
+        dao.insertSeasons(seasons)
+    }
+
     override suspend fun saveEpisodes(episodes: List<Episode>) {
         dao.insertEpisodes(episodes = episodes)
     }

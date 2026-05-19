@@ -3,6 +3,7 @@ package com.mskd.flux.model.artwork
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.mskd.flux.model.tmdb.TMDBSeason
 
 /**
  * Represents an episode of a TV show.
@@ -27,4 +28,15 @@ data class Season(
     val description: String,
     val imagePath: String?,
     val season: Int
-)
+) {
+
+    constructor(tmdbSeason: TMDBSeason) : this(
+        id = tmdbSeason.id,
+        artworkId = tmdbSeason.episodes.first().artworkId ?: Artwork.UNKNOWN_ID,
+        title = tmdbSeason.title,
+        description = tmdbSeason.description,
+        imagePath = tmdbSeason.imagePath.orEmpty(),
+        season = tmdbSeason.season
+    )
+
+}

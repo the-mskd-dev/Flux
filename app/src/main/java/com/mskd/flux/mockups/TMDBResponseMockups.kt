@@ -1022,4 +1022,51 @@ object TMDBResponseMockups {
           "vote_count": 8
         }
     """.trimIndent()
+
+    val authentication = """
+        {
+          "success": true,
+          "status_code": 1,
+          "status_message": "Success."
+        }
+    """.trimIndent()
+
+    val translations = """
+        {
+          "id": "372058",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "name": "English",
+              "english_name": "English",
+              "data": {
+                "name": "Your Name.",
+                "overview": "High schoolers Mitsuha and Taki are complete strangers living separate lives."
+              }
+            },
+            {
+              "iso_639_1": "fr",
+              "iso_3166_1": "FR",
+              "name": "Français",
+              "english_name": "French",
+              "data": {
+                "name": "Your Name.",
+                "overview": "Mitsuha, une lycéenne, rêve de quitter sa vie à la campagne pour découvrir la vie trépidante de Tokyo."
+              }
+            },
+            {
+              "iso_639_1": "ja",
+              "iso_3166_1": "JP",
+              "name": "日本語",
+              "english_name": "Japanese",
+              "data": {
+                "name": "君の名は。",
+                "overview": "千年ぶりとなる彗星の来訪を一か月後に控えた日本。"
+              }
+            }
+          ]
+        }
+    """.trimIndent()
+
 }

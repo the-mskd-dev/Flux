@@ -41,6 +41,9 @@ interface CatalogUC {
     val state: Flow<State>
     val artworks : Flow<List<Artwork>>
     fun syncCatalog(onlyNew: Boolean)
+
+    suspend fun getCatalog(files: List<UserFile>) : Catalog
+
     suspend fun cleanCatalog()
 
     fun updateLanguage()
@@ -159,6 +162,35 @@ class CatalogUCImpl(
 
     }
 
+    override suspend fun getCatalog(files: List<UserFile>) : Catalog {
+
+        val folders = files.groupInFolders()
+
+        // Get data
+        val artworksFolders = getArtworksFolders(folders = folders)
+
+        val (movies, episodes) = supervisorScope {
+            val moviesDeferred = async {
+                runCatching { getMovies(artworkFolders = artworksFolders) }
+                    .onFailure { Log.e(TAG, "getMovies failed", it) }
+                    .getOrElse { emptyList() }
+            }
+            val episodesDeferred = async {
+                runCatching { getEpisodes(artworkFolders = artworksFolders) }
+                    .onFailure { Log.e(TAG, "getEpisodes failed", it) }
+                    .getOrElse { emptyList() }
+            }
+            moviesDeferred.await() to episodesDeferred.await()
+        }
+
+        return Catalog(
+            artworks = artworksFolders.map { it.artwork },
+            movies = movies.filterIsInstance<Movie>(),
+            episodes = movies.filterIsInstance<Episode>() + episodes
+        )
+
+    }
+
     override suspend fun cleanCatalog() {
 
         val allFiles = files.getFiles()
@@ -237,35 +269,6 @@ class CatalogUCImpl(
 
     //region Private methods
 
-    private suspend fun getCatalog(files: List<UserFile>) : Catalog {
-
-        val folders = files.groupInFolders()
-
-        // Get data
-        val artworksFolders = getArtworksFolders(folders = folders)
-
-        val (movies, episodes) = supervisorScope {
-            val moviesDeferred = async {
-                runCatching { getMovies(artworkFolders = artworksFolders) }
-                    .onFailure { Log.e(TAG, "getMovies failed", it) }
-                    .getOrElse { emptyList() }
-            }
-            val episodesDeferred = async {
-                runCatching { getEpisodes(artworkFolders = artworksFolders) }
-                    .onFailure { Log.e(TAG, "getEpisodes failed", it) }
-                    .getOrElse { emptyList() }
-            }
-            moviesDeferred.await() to episodesDeferred.await()
-        }
-
-        return Catalog(
-            artworks = artworksFolders.map { it.artwork },
-            movies = movies.filterIsInstance<Movie>(),
-            episodes = movies.filterIsInstance<Episode>() + episodes
-        )
-
-    }
-
     private fun applyCurrentProgress(catalog: Catalog, dbMovies: List<Movie>, dbEpisodes: List<Episode>) : Catalog {
 
         var count = 0
@@ -318,17 +321,27 @@ class CatalogUCImpl(
 
                 async(dispatcher) {
 
-                    val tmdbArtwork = tmdb.getTmdbArtwork(file = folder.files.first())
+                    try {
 
-                    val artwork = if (tmdbArtwork == null)
-                        Artwork.UNKNOWN
-                    else
-                        Artwork(tmdbArtwork = tmdbArtwork)
+                        val tmdbArtwork = tmdb.getTmdbArtwork(file = folder.files.first())
 
-                    ArtworkFolder(
-                        artwork = artwork,
-                        files = folder.files
-                    )
+                        val artwork = if (tmdbArtwork == null)
+                            Artwork.UNKNOWN
+                        else
+                            Artwork(tmdbArtwork = tmdbArtwork)
+
+                        ArtworkFolder(
+                            artwork = artwork,
+                            files = folder.files
+                        )
+
+                    } catch (e: Exception) {
+                        Log.e(TAG, "getArtworksFolders - Fail to get ArtworkFolder for ${folder.files.first().name}", e)
+                        ArtworkFolder(
+                            artwork = Artwork.UNKNOWN,
+                            files = folder.files
+                        )
+                    }
 
                 }
 
@@ -391,12 +404,12 @@ class CatalogUCImpl(
 
                 files.map { file ->
 
-                    val season = file.nameProperties.season
-                    val number = file.nameProperties.episode
-
                     async(dispatcher) {
 
                         try {
+
+                            val season = file.nameProperties.season
+                            val number = file.nameProperties.episode
 
                             when {
                                 artwork.id == Artwork.UNKNOWN_ID -> createUnknownMedia(file = file)

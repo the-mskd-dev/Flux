@@ -24,15 +24,15 @@ data class TMDBArtwork(
     @SerializedName("overview")
     val description: String,
     @SerializedName("poster_path")
-    val imagePath: String,
+    val imagePath: String?,
     @SerializedName("backdrop_path")
-    val bannerPath: String,
+    val bannerPath: String?,
     @SerializedName("media_type")
     var type: TMDBMediaType,
     @SerializedName("genre_ids")
     val genres: List<Int>,
     val popularity: Float,
-    @SerializedName("first_air_date")
+    @SerializedName("first_air_date", alternate = ["release_date"])
     val releaseDateString: String,
     @SerializedName("vote_average")
     val voteAverage: Float,

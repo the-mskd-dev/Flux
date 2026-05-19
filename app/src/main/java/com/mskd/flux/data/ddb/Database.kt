@@ -100,6 +100,14 @@ interface DatabaseDao {
     @Query("DELETE FROM artworks WHERE id IN (:ids)")
     suspend fun deleteArtworks(ids: List<Long>)
 
+    @Query("""
+        DELETE FROM artworks
+        WHERE id NOT IN (
+            SELECT DISTINCT artworkId FROM episodes
+        )
+    """)
+    suspend fun deleteEmptyArtworks()
+
     @Query("DELETE FROM movies WHERE artworkId IN (:ids)")
     suspend fun deleteMoviesByIds(ids: List<Long>)
 
@@ -111,6 +119,16 @@ interface DatabaseDao {
 
     @Query("DELETE FROM seasons WHERE artworkId IN (:artworkIds)")
     suspend fun deleteSeasonsByIds(artworkIds: List<Long>)
+
+    @Query("""
+    DELETE FROM seasons
+    WHERE NOT EXISTS (
+        SELECT 1 FROM episodes
+        WHERE episodes.artworkId = seasons.artworkId
+        AND episodes.season = seasons.season
+    )
+""")
+    suspend fun deleteEmptySeasons()
 
     @Query("DELETE FROM seasons WHERE artworkId = :artworkId AND season = :season")
     suspend fun deleteSeason(artworkId: Long, season: Int)

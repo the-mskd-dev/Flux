@@ -139,38 +139,9 @@ class DatabaseRepositoryImpl @Inject constructor(private val dao: DatabaseDao) :
         // Delete episodes
         dao.deleteEpisodesByIds(episodes.map { it.id })
 
-        // Delete related artworks if needed
-        episodes
-            .map { it.artworkId }
-            .distinct()
-            .forEach { artworkId ->
-
-                // Check if it remains episode for show
-                getEpisodeCount(artworkId = artworkId).let { remainingEpisodes ->
-
-                    // If no, delete the show and seasons
-                    if (remainingEpisodes == 0) {
-                        dao.deleteArtworks(ids = listOf(artworkId))
-                        dao.deleteSeasonsByIds(artworkIds = listOf(artworkId))
-                    }
-
-                }
-
-                // Check if it remains episode for seasons
-                getSeasons(artworkId = artworkId).forEach { season ->
-
-                    getEpisodeCountBySeason(artworkId = artworkId, season = season.season).let { remainingEpisodes ->
-
-                        // If no, delete the season
-                        if (remainingEpisodes == 0) {
-                            dao.deleteSeason(artworkId = artworkId, season = season.season)
-                        }
-
-                    }
-
-                }
-
-            }
+        // Delete empty seasons and artworks
+        dao.deleteEmptySeasons()
+        dao.deleteEmptyArtworks()
 
     }
 

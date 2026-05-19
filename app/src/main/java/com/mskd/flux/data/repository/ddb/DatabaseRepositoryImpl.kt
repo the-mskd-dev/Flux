@@ -146,11 +146,28 @@ class DatabaseRepositoryImpl @Inject constructor(private val dao: DatabaseDao) :
             .forEach { artworkId ->
 
                 // Check if it remains episode for show
-                val remainingEpisodes = getEpisodeCount(artworkId = artworkId)
+                getEpisodeCount(artworkId = artworkId).let { remainingEpisodes ->
 
-                // If no, delete the show
-                if (remainingEpisodes == 0) {
-                    dao.deleteArtworks(ids = listOf(artworkId))
+                    // If no, delete the show and seasons
+                    if (remainingEpisodes == 0) {
+                        dao.deleteArtworks(ids = listOf(artworkId))
+                        dao.deleteSeasonsByIds(artworkIds = listOf(artworkId))
+                    }
+
+                }
+
+                // Check if it remains episode for seasons
+                getSeasons(artworkId = artworkId).forEach { season ->
+
+                    getEpisodeCountBySeason(artworkId = artworkId, season = season.season).let { remainingEpisodes ->
+
+                        // If no, delete the season
+                        if (remainingEpisodes == 0) {
+                            dao.deleteSeason(artworkId = artworkId, season = season.season)
+                        }
+
+                    }
+
                 }
 
             }

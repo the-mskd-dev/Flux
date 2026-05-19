@@ -214,9 +214,11 @@ class CatalogUCImpl(
 
             val language = settings.getDataLanguage()
             val movies = database.getMovies()
+            val seasons = database.getSeasons()
             val episodes = database.getEpisodes()
 
             var translatedMovies: List<Movie> = emptyList()
+            var translatedSeasons: List<Season> = emptyList()
             var translatedEpisodes: List<Episode> = emptyList()
 
             supervisorScope {
@@ -235,6 +237,29 @@ class CatalogUCImpl(
                             movie.copy(
                                 title = translation.data.name ?: movie.title,
                                 description = translation.data.overview ?: movie.description
+                            )
+
+                        }
+
+                    }
+
+                }.awaitAll().filterNotNull()
+
+                translatedSeasons = seasons.map { season ->
+
+                    async(dispatcher) {
+
+                        tmdb.getTmdbTranslation(
+                            request = TMDBTranslations.Request.Season(
+                                artworkId = season.artworkId,
+                                season = season.season,
+                                language = language
+                            ),
+                        )?.let { translation ->
+
+                            season.copy(
+                                title = translation.data.name ?: season.title,
+                                description = translation.data.overview ?: season.description
                             )
 
                         }
@@ -271,6 +296,7 @@ class CatalogUCImpl(
             }
 
             database.saveMovies(translatedMovies)
+            database.saveSeasons(translatedSeasons)
             database.saveEpisodes(translatedEpisodes)
 
             _state.value = CatalogUC.State.Idle

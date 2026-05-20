@@ -584,6 +584,9 @@ class CatalogUCImpl(
             episodes = unknownEpisodes.toList()
         )
 
+        Log.i(TAG, "getShows - Found ${shows.size} show(s) and ${shows.flatMap { it.episodes }.size} episode(s)")
+        Log.i(TAG, "getShows - Found ${unknownShow.episodes.size} unknown episode(s)")
+
         return shows + unknownShow
 
     }

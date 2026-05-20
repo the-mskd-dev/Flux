@@ -40,18 +40,49 @@ import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withContext
 import java.util.Locale
 
+/**
+ * Use case interface for managing the media catalog.
+ */
 interface CatalogUC {
 
+    /**
+     * Flow representing the current state of catalog synchronization.
+     */
     val state: Flow<State>
+
+    /**
+     * Flow emitting the list of all artworks saved in the database.
+     */
     val artworks : Flow<List<Artwork>>
+
+    /**
+     * Synchronizes the local media catalog with files on the device.
+     *
+     * It scans the media files, queries TMDB for metadata, and updates the database.
+     * If [onlyNew] is true, it only processes newly added files.
+     */
     fun syncCatalog(onlyNew: Boolean)
 
+    /**
+     * Retrieves and constructs a [Catalog] object from a list of user files.
+     *
+     * It groups files into folders and parallelly fetches artwork metadata.
+     */
     suspend fun getCatalog(files: List<UserFile>) : Catalog
 
+    /**
+     * Cleans up the database catalog by removing entries of files that no longer exist.
+     */
     suspend fun cleanCatalog()
 
+    /**
+     * Re-fetches localized details (translations) for all items currently in the catalog.
+     */
     fun updateLanguage()
 
+    /**
+     * Represents the current state of the catalog synchronization.
+     */
     sealed class State {
         data object Idle: State()
         data class Syncing(val full: Boolean) : State()
@@ -99,6 +130,11 @@ class CatalogUCImpl(
 
     override val artworks: Flow<List<Artwork>> = database.flowArtworks()
 
+    /**
+     * Cancels active operations and launches a coroutine to sync files with the database.
+     *
+     * It scans the media folder, checks TMDB for metadata, preserves playback progress, and saves the new catalog.
+     */
     override fun syncCatalog(onlyNew: Boolean) {
 
         if ((_state.value as? CatalogUC.State.Syncing)?.full == true && onlyNew)
@@ -167,6 +203,9 @@ class CatalogUCImpl(
 
     }
 
+    /**
+     * Groups user files into directory folders and asynchronously retrieves movies and shows details.
+     */
     override suspend fun getCatalog(files: List<UserFile>) : Catalog {
 
         val folders = files.groupInFolders()
@@ -197,6 +236,9 @@ class CatalogUCImpl(
 
     }
 
+    /**
+     * Discovers all current files on disk and removes missing media from the database catalog.
+     */
     override suspend fun cleanCatalog() {
 
         val allFiles = files.getFiles()
@@ -204,6 +246,9 @@ class CatalogUCImpl(
 
     }
 
+    /**
+     * Asynchronously updates the language metadata of stored movies, seasons, and episodes via TMDB.
+     */
     override fun updateLanguage() {
 
         translationJob?.cancel()
@@ -309,6 +354,9 @@ class CatalogUCImpl(
 
     //region Private methods
 
+    /**
+     * Copies watch status and current time from existing database media to matched new items.
+     */
     private fun applyCurrentProgress(catalog: Catalog, dbMovies: List<Movie>, dbEpisodes: List<Episode>) : Catalog {
 
         var count = 0
@@ -354,6 +402,9 @@ class CatalogUCImpl(
 
     }
 
+    /**
+     * Queries TMDB to associate each user folder with an [Artwork] based on its files.
+     */
     private suspend fun getArtworksFolders(folders: List<UserFolder>) : List<ArtworkFolder> {
 
         val artworkFolders = supervisorScope {
@@ -396,6 +447,9 @@ class CatalogUCImpl(
 
     }
 
+    /**
+     * Filters movie folders and fetches movie metadata details from TMDB in parallel.
+     */
     private suspend fun getMovies(artworkFolders: List<ArtworkFolder>) : List<Media> {
 
         val movies = supervisorScope {
@@ -437,6 +491,9 @@ class CatalogUCImpl(
 
     }
 
+    /**
+     * Filters show folders, fetches seasons/episodes details, and creates mapped TV show models.
+     */
     private suspend fun getShows(artworkFolders: List<ArtworkFolder>) : List<Show> {
 
         val language = settings.getDataLanguage()
@@ -531,6 +588,9 @@ class CatalogUCImpl(
 
     }
 
+    /**
+     * Maps a TMDB episode to a local [Episode], fetching localized translations if details are missing.
+     */
     private suspend fun tmdbEpisodeToEpisode(
         artworkId: Long,
         tmdbEpisode: TMDBEpisode,
@@ -570,6 +630,9 @@ class CatalogUCImpl(
 
     }
 
+    /**
+     * Creates a fallback [Episode] with unknown metadata and extracts duration using MediaMetadataRetriever.
+     */
     private suspend fun createUnknownMedia(file: UserFile) : Episode = withContext(dispatcher) {
 
         Log.i(TAG, "Create unknown media for ${file.name}")

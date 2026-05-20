@@ -19,6 +19,7 @@ import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Season
+import com.mskd.flux.model.artwork.Show
 import com.mskd.flux.model.artwork.Status
 import com.mskd.flux.model.tmdb.TMDBEpisode
 import com.mskd.flux.model.tmdb.TMDBTranslations
@@ -34,11 +35,12 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.forEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withContext
+import java.util.Collections
 import java.util.Locale
+import kotlin.collections.map
 
 interface CatalogUC {
 
@@ -174,25 +176,25 @@ class CatalogUCImpl(
         // Get data
         val artworksFolders = getArtworksFolders(folders = folders)
 
-        val (movies, seasonsAndEpisodes) = supervisorScope {
+        val (movies, shows) = supervisorScope {
             val moviesDeferred = async {
                 runCatching { getMovies(artworkFolders = artworksFolders) }
                     .onFailure { Log.e(TAG, "getMovies failed", it) }
                     .getOrElse { emptyList() }
             }
-            val seasonsAndEpisodesDeferred = async {
-                runCatching { getSeasonsAndEpisodes(artworkFolders = artworksFolders) }
+            val showsDeferred = async {
+                runCatching { getShows(artworkFolders = artworksFolders) }
                     .onFailure { Log.e(TAG, "getEpisodes failed", it) }
-                    .getOrElse { emptyList<Season>() to emptyList() }
+                    .getOrElse { emptyList() }
             }
-            moviesDeferred.await() to seasonsAndEpisodesDeferred.await()
+            moviesDeferred.await() to showsDeferred.await()
         }
 
         return Catalog(
             artworks = artworksFolders.map { it.artwork },
             movies = movies.filterIsInstance<Movie>(),
-            seasons = seasonsAndEpisodes.first,
-            episodes = movies.filterIsInstance<Episode>() + seasonsAndEpisodes.second
+            seasons = shows.flatMap { it.seasons },
+            episodes = shows.flatMap { it.episodes } + movies.filterIsInstance<Episode>()
         )
 
     }
@@ -437,14 +439,16 @@ class CatalogUCImpl(
 
     }
 
-    private suspend fun getSeasonsAndEpisodes(artworkFolders: List<ArtworkFolder>) : Pair<List<Season>, List<Episode>> {
+    private suspend fun getShows(artworkFolders: List<ArtworkFolder>) : List<Show> {
 
         val language = settings.getDataLanguage()
         val folders = artworkFolders.filter { it.artwork.type == ContentType.SHOW && it.artwork.id != Artwork.UNKNOWN_ID }
+        val unknownEpisodes = Collections.synchronizedSet(mutableSetOf<Episode>())
 
-        val tmdbAllSeasons = supervisorScope {
+        val shows = folders.map { (artwork, files) ->
 
-            folders.flatMap { (artwork, files) ->
+            // Get TMDB Seasons
+            val tmdbSeasons = supervisorScope {
 
                 files
                     .map { it.nameProperties.season }
@@ -472,27 +476,18 @@ class CatalogUCImpl(
 
             }
 
-        }
+            // Get Episodes from TMDB Seasons and files
+            val episodes = supervisorScope {
 
-        val seasons = tmdbAllSeasons.map {
-            Season(tmdbSeason = it)
-        }
-
-        val episodes = supervisorScope {
-
-            folders.flatMap { folder ->
-
-                val tmdbSeasons = tmdbAllSeasons.filter { it.episodes.any { e -> e.artworkId == folder.artwork.id } }
-
-                folder.files.map { file ->
+                files.map { file ->
 
                     async(dispatcher) {
 
                         val tmdbSeason = tmdbSeasons.find { it.season == file.nameProperties.season }
-                        tmdbSeason?.episodes?.find { it.number == file.nameProperties.episode }?.let { tmdbEpisode ->
+                        val episode = tmdbSeason?.episodes?.find { it.number == file.nameProperties.episode }?.let { tmdbEpisode ->
 
                             tmdbEpisodeToEpisode(
-                                artworkId = folder.artwork.id,
+                                artworkId = tmdbEpisode.artworkId,
                                 tmdbEpisode = tmdbEpisode,
                                 file = file,
                                 language = language
@@ -500,18 +495,40 @@ class CatalogUCImpl(
 
                         } ?: createUnknownMedia(file = file)
 
+                        if (!episode.isUnknown) {
+                            episode
+                        } else {
+                            unknownEpisodes.add(episode)
+                            null
+                        }
+
                     }
 
-                }.awaitAll()
+                }.awaitAll().filterNotNull()
 
             }
 
+            // Convert TMDB Seasons to Flux Seasons
+            val seasons = tmdbSeasons.map { Season(tmdbSeason = it) }
+
+            // Create Show
+            Show(
+                artwork = artwork,
+                seasons = seasons,
+                episodes = episodes
+            )
+
         }
 
-        Log.i(TAG, "Found ${seasons.size} season(s)")
-        Log.i(TAG, "Found ${episodes.size} episode(s)")
+        // Create Show with unknown episodes
+        val unknownShow = Show(
+            artwork = Artwork.UNKNOWN,
+            seasons = emptyList(),
+            episodes = unknownEpisodes.toList()
+        )
 
-        return seasons to episodes
+        return shows + unknownShow
+
     }
 
     private suspend fun tmdbEpisodeToEpisode(

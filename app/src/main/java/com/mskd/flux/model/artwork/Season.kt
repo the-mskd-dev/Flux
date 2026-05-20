@@ -30,9 +30,12 @@ data class Season(
     val season: Int
 ) {
 
-    constructor(tmdbSeason: TMDBSeason) : this(
+    constructor(
+        tmdbSeason: TMDBSeason,
+        artworkId: Long
+    ) : this(
         id = tmdbSeason.id,
-        artworkId = tmdbSeason.episodes.first().artworkId ?: Artwork.UNKNOWN_ID,
+        artworkId = artworkId,
         title = tmdbSeason.title,
         description = tmdbSeason.description,
         imagePath = tmdbSeason.imagePath.orEmpty(),

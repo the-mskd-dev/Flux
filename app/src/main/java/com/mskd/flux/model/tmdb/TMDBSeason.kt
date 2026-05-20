@@ -11,6 +11,5 @@ data class TMDBSeason(
     @SerializedName("poster_path")
     val imagePath: String?,
     @SerializedName("season_number")
-    val season: Int,
-    val episodes: List<TMDBEpisode>
+    val season: Int
 )

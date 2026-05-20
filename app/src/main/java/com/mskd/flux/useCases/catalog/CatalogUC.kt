@@ -213,25 +213,35 @@ class CatalogUCImpl(
         // Get data
         val artworksFolders = getArtworksFolders(folders = folders)
 
-        val (movies, shows) = supervisorScope {
+        val (movies, seasons, episodes) = supervisorScope {
             val moviesDeferred = async {
                 runCatching { getMovies(artworkFolders = artworksFolders) }
                     .onFailure { Log.e(TAG, "getMovies failed", it) }
                     .getOrElse { emptyList() }
             }
-            val showsDeferred = async {
-                runCatching { getShows(artworkFolders = artworksFolders) }
+            val seasonsDeferred = async {
+                runCatching { getSeasons(artworkFolders = artworksFolders) }
+                    .onFailure { Log.e(TAG, "getSeasons failed", it) }
+                    .getOrElse { emptyList() }
+            }
+            val episodesDeferred = async {
+                runCatching { getEpisodes(artworkFolders = artworksFolders) }
                     .onFailure { Log.e(TAG, "getEpisodes failed", it) }
                     .getOrElse { emptyList() }
             }
-            moviesDeferred.await() to showsDeferred.await()
+
+            Triple(
+                moviesDeferred.await(),
+                seasonsDeferred.await(),
+                episodesDeferred.await()
+            )
         }
 
         return Catalog(
             artworks = artworksFolders.map { it.artwork },
             movies = movies.filterIsInstance<Movie>(),
-            seasons = shows.flatMap { it.seasons },
-            episodes = shows.flatMap { it.episodes } + movies.filterIsInstance<Episode>()
+            seasons = seasons,
+            episodes = episodes + movies.filterIsInstance<Episode>()
         )
 
     }
@@ -491,145 +501,104 @@ class CatalogUCImpl(
 
     }
 
-    /**
-     * Filters show folders, fetches seasons/episodes details, and creates mapped TV show models.
-     */
-    private suspend fun getShows(artworkFolders: List<ArtworkFolder>) : List<Show> {
+    private suspend fun getSeasons(artworkFolders: List<ArtworkFolder>) : List<Season> {
 
-        val language = settings.getDataLanguage()
         val folders = artworkFolders.filter { it.artwork.type == ContentType.SHOW && it.artwork.id != Artwork.UNKNOWN_ID }
 
-        val results = supervisorScope {
+        val seasons = supervisorScope {
 
-            folders.map { (artwork, files) ->
+            folders.flatMap { (artwork, files) ->
 
-                async(dispatcher) {
+                files
+                    .map { it.season }
+                    .distinct()
+                    .filterNotNull()
+                    .map { season ->
 
-                    // Get TMDB Seasons
-                    val tmdbSeasons = supervisorScope {
+                        async(dispatcher) {
 
-                        files
-                            .map { it.season }
-                            .distinct()
-                            .filterNotNull()
-                            .map { season ->
+                            try {
 
-                                async(dispatcher) {
-
-                                    try {
-
-                                        tmdb.getTmdbSeason(
-                                            artworkId = artwork.id,
-                                            season = season
-                                        )
-
-                                    } catch (e: Exception) {
-                                        Log.e(TAG, "getSeasons - Fail to get season for artworkId ${artwork.id} - season $season",e)
-                                        null
-                                    }
-
+                                tmdb.getTmdbSeason(artworkId = artwork.id, season = season)?.let {
+                                    Season(tmdbSeason = it, artworkId = artwork.id)
                                 }
 
-                            }.awaitAll().filterNotNull()
-
-                    }
-
-                    val episodeMap = tmdbSeasons
-                        .flatMap { it.episodes }
-                        .associateBy { it.season to it.number }
-
-                    // Get Episodes from TMDB Seasons and files
-                    val (knownEpisodes, unknownEpisodes) = supervisorScope {
-
-                        files.map { file ->
-
-                            async(dispatcher) {
-
-                                episodeMap[file.season to file.episode]?.let { tmdbEpisode ->
-
-                                    tmdbEpisodeToEpisode(tmdbEpisode.artworkId, tmdbEpisode, file, language)
-
-                                } ?: createUnknownMedia(file = file)
-
+                            } catch (e: Exception) {
+                                Log.e(
+                                    TAG,
+                                    "getSeasons - Fail to get season for artworkId ${artwork.id} - season $season",
+                                    e
+                                )
+                                null
                             }
 
-                        }.awaitAll()
+                        }
 
-                    }.partition { !it.isUnknown }
+                    }.awaitAll().filterNotNull()
 
-                    // Convert TMDB Seasons to Flux Seasons
-                    val seasons = tmdbSeasons.map { Season(tmdbSeason = it) }
-
-                    // Return Show and unknown episodes
-                    Pair(
-                        Show(artwork = artwork, seasons = seasons, episodes = knownEpisodes),
-                        unknownEpisodes
-                    )
-
-                }
-
-            }.awaitAll()
+            }
 
         }
 
-        // Get known Shows
-        val shows = results.map { it.first }
-
-        // Create Show with unknown episodes
-        val unknownFolders = artworkFolders.filter { it.artwork.type == ContentType.SHOW && it.artwork.id == Artwork.UNKNOWN_ID }
-        val unknownEpisodes = unknownFolders.flatMap { it.files }.map { createUnknownMedia(it) } + results.flatMap { it.second }
-        val unknownShow = Show(
-            artwork = Artwork.UNKNOWN,
-            seasons = emptyList(),
-            episodes = unknownEpisodes.toList()
-        )
-
-        Log.i(TAG, "Found ${shows.size} show(s), ${shows.flatMap { it.seasons }.size} season(s), ${shows.flatMap { it.episodes }.size} episode(s)")
-        Log.i(TAG, "Found ${unknownShow.episodes.size} unknown episode(s)")
-
-        return shows + unknownShow
+        return seasons
 
     }
 
-    /**
-     * Maps a TMDB episode to a local [Episode], fetching localized translations if details are missing.
-     */
-    private suspend fun tmdbEpisodeToEpisode(
-        artworkId: Long,
-        tmdbEpisode: TMDBEpisode,
-        file: UserFile,
-        language: Locale
-    ) : Episode {
+    private suspend fun getEpisodes(artworkFolders: List<ArtworkFolder>) : List<Episode> {
 
-        return try {
+        val episodes = supervisorScope {
 
-            val tmdb = if (tmdbEpisode.description.isBlank() || tmdbEpisode.title.isBlank()) {
+            artworkFolders.filter { it.artwork.type == ContentType.SHOW }.flatMap { (artwork, files) ->
 
-                tmdb.getTmdbTranslation(
-                    request = TMDBTranslations.Request.Episode(
-                        artworkId = artworkId,
-                        season = tmdbEpisode.season,
-                        number = tmdbEpisode.number,
-                        language = language
-                    ),
-                )?.let {
-                    tmdbEpisode.copy(
-                        title = it.data.name ?: tmdbEpisode.title,
-                        description = it.data.overview ?: tmdbEpisode.description
-                    )
-                } ?: tmdbEpisode
+                files.map { file ->
 
-            } else {
-                tmdbEpisode
+                    async(dispatcher) {
+
+                        try {
+
+                            val season = file.nameProperties.season
+                            val number = file.nameProperties.episode
+
+                            when {
+                                artwork.id == Artwork.UNKNOWN_ID -> createUnknownMedia(file = file)
+                                season != null && number != null -> {
+
+                                    val tmdbEpisode = tmdb.getTmdbEpisode(
+                                        artworkId = artwork.id,
+                                        season = season,
+                                        number = number
+                                    )
+
+                                    if (tmdbEpisode == null) {
+                                        createUnknownMedia(file = file)
+                                    } else {
+                                        Episode(
+                                            tmdbEpisode = tmdbEpisode,
+                                            artworkId = artwork.id,
+                                            file = file
+                                        )
+                                    }
+
+                                }
+                                else -> null
+                            }
+
+                        } catch (e: Exception) {
+                            Log.e(TAG, "[getEpisodes] Fail to get episode from ${file.name}", e)
+                            null
+                        }
+
+                    }
+
+                }.awaitAll().filterNotNull()
+
             }
 
-            Episode(tmdbEpisode = tmdb, file = file)
-
-        } catch (e: Exception) {
-            Log.e(TAG, "tmdbEpisodeToEpisode - Fail to convert TMDBEpisode to Episode (artworkId:$artworkId, season:${tmdbEpisode.season}, number:${tmdbEpisode.number}, file:${file.name})", e)
-            createUnknownMedia(file = file)
-
         }
+
+        Log.i(TAG, "Found ${episodes.size} episode(s)")
+
+        return episodes
 
     }
 

@@ -1,6 +1,7 @@
 package com.mskd.flux.model.tmdb
 
 import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.Transient
 
 /**
  * Represents an episode of a TV show retrieved from TMDB.
@@ -37,7 +38,5 @@ data class TMDBEpisode(
     val voteCount: Int,
     @SerializedName("air_date")
     val releaseDateString: String,
-    val crew: List<TMDBCrew>,
-    @SerializedName("show_id")
-    var artworkId: Long
+    val crew: List<TMDBCrew>
 )

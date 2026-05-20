@@ -128,9 +128,7 @@ class TmdbRepositoryImpl @Inject constructor(
                 season = season,
                 number = number,
                 language = language.toTmdbFormat()
-            ).also {
-                it.artworkId = artworkId
-            }
+            )
 
             if (tmdbEpisode.description.isBlank() || tmdbEpisode.title.isBlank()) {
 

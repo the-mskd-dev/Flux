@@ -104,6 +104,8 @@ interface DatabaseDao {
         DELETE FROM artworks
         WHERE id NOT IN (
             SELECT DISTINCT artworkId FROM episodes
+            UNION
+            SELECT DISTINCT artworkId FROM movies
         )
     """)
     suspend fun deleteEmptyArtworks()

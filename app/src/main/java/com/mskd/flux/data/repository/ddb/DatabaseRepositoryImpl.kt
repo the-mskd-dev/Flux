@@ -3,7 +3,6 @@ package com.mskd.flux.data.repository.ddb
 import com.mskd.flux.data.ddb.DatabaseDao
 import com.mskd.flux.model.UserFile
 import com.mskd.flux.model.artwork.Artwork
-import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Season

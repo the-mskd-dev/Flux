@@ -38,9 +38,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withContext
-import java.util.Collections
 import java.util.Locale
-import kotlin.collections.map
 
 interface CatalogUC {
 

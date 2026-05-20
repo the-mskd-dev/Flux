@@ -19,11 +19,13 @@ import kotlinx.serialization.Transient
  * @property crew List of crew members associated with the episode.
  */
 data class TMDBEpisode(
+    val id: Long,
+    @SerializedName("show_id")
+    val artworkId: Long?,
     @SerializedName("name")
     val title: String,
     @SerializedName("overview")
     val description: String,
-    val id: Long,
     @SerializedName("runtime")
     val duration: Int,
     @SerializedName("episode_number")

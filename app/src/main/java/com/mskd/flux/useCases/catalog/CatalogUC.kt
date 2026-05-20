@@ -213,29 +213,25 @@ class CatalogUCImpl(
         // Get data
         val artworksFolders = getArtworksFolders(folders = folders)
 
-        val (movies, seasons, episodes) = supervisorScope {
+        val (movies, seasonsAndTmdbEpisodes) = supervisorScope {
             val moviesDeferred = async {
                 runCatching { getMovies(artworkFolders = artworksFolders) }
                     .onFailure { Log.e(TAG, "getMovies failed", it) }
                     .getOrElse { emptyList() }
             }
-            val seasonsDeferred = async {
-                runCatching { getSeasons(artworkFolders = artworksFolders) }
+            val seasonsAndTmdbEpisodesDeferred = async {
+                runCatching { getSeasonsAndTmdbEpisodes(artworkFolders = artworksFolders) }
                     .onFailure { Log.e(TAG, "getSeasons failed", it) }
                     .getOrElse { emptyList() }
             }
-            val episodesDeferred = async {
-                runCatching { getEpisodes(artworkFolders = artworksFolders) }
-                    .onFailure { Log.e(TAG, "getEpisodes failed", it) }
-                    .getOrElse { emptyList() }
-            }
 
-            Triple(
-                moviesDeferred.await(),
-                seasonsDeferred.await(),
-                episodesDeferred.await()
-            )
+            moviesDeferred.await() to seasonsAndTmdbEpisodesDeferred.await()
         }
+
+        val seasons = seasonsAndTmdbEpisodes.map { it.first }
+        val tmdbEpisodes = seasonsAndTmdbEpisodes.flatMap { it.second }
+
+        val episodes = getEpisodes(artworkFolders = artworksFolders, tmdbEpisodes = tmdbEpisodes)
 
         return Catalog(
             artworks = artworksFolders.map { it.artwork },
@@ -501,7 +497,7 @@ class CatalogUCImpl(
 
     }
 
-    private suspend fun getSeasons(artworkFolders: List<ArtworkFolder>) : List<Season> {
+    private suspend fun getSeasonsAndTmdbEpisodes(artworkFolders: List<ArtworkFolder>) : List<Pair<Season, List<TMDBEpisode>>> {
 
         val folders = artworkFolders.filter { it.artwork.type == ContentType.SHOW && it.artwork.id != Artwork.UNKNOWN_ID }
 
@@ -520,7 +516,7 @@ class CatalogUCImpl(
                             try {
 
                                 tmdb.getTmdbSeason(artworkId = artwork.id, season = season)?.let {
-                                    Season(tmdbSeason = it, artworkId = artwork.id)
+                                    Season(tmdbSeason = it, artworkId = artwork.id) to it.episodes
                                 }
 
                             } catch (e: Exception) {
@@ -544,7 +540,11 @@ class CatalogUCImpl(
 
     }
 
-    private suspend fun getEpisodes(artworkFolders: List<ArtworkFolder>) : List<Episode> {
+    private suspend fun getEpisodes(artworkFolders: List<ArtworkFolder>, tmdbEpisodes: List<TMDBEpisode>) : List<Episode> {
+
+        val language = settings.getDataLanguage()
+
+        val tmdbEpisodesMap = tmdbEpisodes.associateBy { Triple(it.artworkId, it.season, it.number) }
 
         val episodes = supervisorScope {
 
@@ -563,15 +563,22 @@ class CatalogUCImpl(
                                 artwork.id == Artwork.UNKNOWN_ID -> createUnknownMedia(file = file)
                                 season != null && number != null -> {
 
-                                    val tmdbEpisode = tmdb.getTmdbEpisode(
-                                        artworkId = artwork.id,
-                                        season = season,
-                                        number = number
-                                    )
+                                    var tmdbEpisode = tmdbEpisodesMap[Triple(artwork.id, season, number)]
 
                                     if (tmdbEpisode == null) {
                                         createUnknownMedia(file = file)
                                     } else {
+
+                                        if (tmdbEpisode.title.isBlank() || tmdbEpisode.description.isBlank()) {
+
+                                            tmdbEpisode = tmdb.translateTmdbEpisode(
+                                                artworkId = artwork.id,
+                                                tmdbEpisode = tmdbEpisode,
+                                                language = language
+                                            )
+
+                                        }
+
                                         Episode(
                                             tmdbEpisode = tmdbEpisode,
                                             artworkId = artwork.id,

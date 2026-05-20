@@ -4,6 +4,7 @@ import android.util.Log
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.data.tmdb.TMDBService
 import com.mskd.flux.model.UserFile
+import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.tmdb.TMDBArtwork
 import com.mskd.flux.model.tmdb.TMDBEpisode
 import com.mskd.flux.model.tmdb.TMDBMediaType
@@ -12,6 +13,8 @@ import com.mskd.flux.model.tmdb.TMDBSeason
 import com.mskd.flux.model.tmdb.TMDBTranslations
 import com.mskd.flux.model.tmdb.findWithLocale
 import com.mskd.flux.utils.extensions.toTmdbFormat
+import org.intellij.lang.annotations.Language
+import java.util.Locale
 import javax.inject.Inject
 
 class TmdbRepositoryImpl @Inject constructor(
@@ -132,19 +135,11 @@ class TmdbRepositoryImpl @Inject constructor(
 
             if (tmdbEpisode.description.isBlank() || tmdbEpisode.title.isBlank()) {
 
-                getTmdbTranslation(
-                    request = TMDBTranslations.Request.Episode(
-                        artworkId = artworkId,
-                        season = season,
-                        number = number,
-                        language = language
-                    ),
-                )?.let {
-                    tmdbEpisode = tmdbEpisode.copy(
-                        title = it.data.name ?: tmdbEpisode.title,
-                        description = it.data.overview ?: tmdbEpisode.description
-                    )
-                }
+                tmdbEpisode = translateTmdbEpisode(
+                    artworkId = artworkId,
+                    tmdbEpisode = tmdbEpisode,
+                    language = language
+                )
 
             }
 
@@ -192,6 +187,24 @@ class TmdbRepositoryImpl @Inject constructor(
             Log.e(TAG, "getTmdbSeason - Fail to get TMDBSeason for artworkId:$artworkId, season:$season (${language.toTmdbFormat()})", e)
             null
         }
+
+    }
+
+    override suspend fun translateTmdbEpisode(artworkId: Long, tmdbEpisode: TMDBEpisode, language: Locale): TMDBEpisode {
+
+        return getTmdbTranslation(
+            request = TMDBTranslations.Request.Episode(
+                artworkId = artworkId,
+                season = tmdbEpisode.season,
+                number = tmdbEpisode.number,
+                language = language
+            ),
+        )?.let {
+            tmdbEpisode.copy(
+                title = it.data.name ?: tmdbEpisode.title,
+                description = it.data.overview ?: tmdbEpisode.description
+            )
+        } ?: tmdbEpisode
 
     }
 

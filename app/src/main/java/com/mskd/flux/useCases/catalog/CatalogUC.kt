@@ -26,6 +26,7 @@ import com.mskd.flux.model.tmdb.TMDBTranslations
 import com.mskd.flux.useCases.images.ImagesUC
 import com.mskd.flux.utils.extensions.groupInFolders
 import com.mskd.flux.utils.extensions.msToMin
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -98,7 +99,8 @@ class CatalogUCImpl(
     private val settings: SettingsRepository,
     private val imagesUC: ImagesUC,
     private val scope: CoroutineScope,
-    private val context: Context
+    private val context: Context,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(10)
 ) : CatalogUC {
 
     private companion object {
@@ -119,8 +121,6 @@ class CatalogUCImpl(
     private var translationJob: Job? = null
 
     private var _state = MutableStateFlow<CatalogUC.State>(CatalogUC.State.Idle)
-
-    private val dispatcher = Dispatchers.IO.limitedParallelism(10)
 
     //endregion
 

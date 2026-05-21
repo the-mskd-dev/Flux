@@ -65,9 +65,9 @@ class ArtworkViewModelTest : FunSpec({
 
             initialState.artwork shouldBe MediaMockups.showArtwork
             initialState.screen shouldBe ScreenState.CONTENT
-            initialState.media shouldBe MediaMockups.episode1
+            initialState.selectedMedia shouldBe MediaMockups.episode1
             initialState.episodes shouldBe MediaMockups.episodes
-            initialState.season shouldBe MediaMockups.episode1.season
+            initialState.selectedSeason shouldBe MediaMockups.episode1.season
             initialState.episodePendingConfirmation shouldBe null
 
         }
@@ -84,7 +84,7 @@ class ArtworkViewModelTest : FunSpec({
 
             val updatedState = expectMostRecentItem()
 
-            updatedState.season shouldBe 2
+            updatedState.selectedSeason shouldBe 2
 
         }
 
@@ -95,7 +95,7 @@ class ArtworkViewModelTest : FunSpec({
         viewModel.uiState.test {
 
             val initialState = expectMostRecentItem()
-            val media = initialState.media
+            val media = initialState.selectedMedia
 
             viewModel.event.test {
 
@@ -123,7 +123,7 @@ class ArtworkViewModelTest : FunSpec({
         viewModel.uiState.test {
 
             val initialState = expectMostRecentItem()
-            val media = initialState.media
+            val media = initialState.selectedMedia
 
             viewModel.event.test {
 
@@ -145,7 +145,7 @@ class ArtworkViewModelTest : FunSpec({
         viewModel.uiState.test {
 
             val initialState = expectMostRecentItem()
-            val media = initialState.media as Episode
+            val media = initialState.selectedMedia as Episode
 
             viewModel.handleIntent(ArtworkIntent.ChangeWatchStatus(media = media))
 
@@ -255,13 +255,13 @@ class ArtworkViewModelTest : FunSpec({
 
             val initialState = expectMostRecentItem()
 
-            initialState.media.status shouldBe Status.TO_WATCH
+            initialState.selectedMedia.status shouldBe Status.TO_WATCH
 
-            viewModel.handleIntent(ArtworkIntent.ChangeWatchStatus(media = initialState.media))
+            viewModel.handleIntent(ArtworkIntent.ChangeWatchStatus(media = initialState.selectedMedia))
 
             coVerify {
                 progressUC.changeMediaStatus(
-                    media = match { it.mediaId == initialState.media.mediaId },
+                    media = match { it.mediaId == initialState.selectedMedia.mediaId },
                     status = match { it == Status.WATCHED }
                 )
             }

@@ -232,19 +232,19 @@ fun ArtworkScreenContent(
         if (isLargeScreen) {
             ArtworkContentLarge(
                 artwork = uiState.artwork,
-                media = uiState.media,
+                media = uiState.selectedMedia,
                 episodes = uiState.episodes,
-                currentSeason = uiState.season,
+                currentSeason = uiState.selectedSeason,
                 scaffoldInnerPadding = innerPadding,
                 sendIntent = sendIntent,
             )
         } else {
             ArtworkContentRegular(
                 artwork = uiState.artwork,
-                media = uiState.media,
+                media = uiState.selectedMedia,
                 seasons = uiState.seasons,
                 episodes = uiState.episodes,
-                currentSeason = uiState.season,
+                currentSeason = uiState.selectedSeason,
                 scaffoldInnerPadding = innerPadding,
                 sendIntent = sendIntent,
             )
@@ -319,9 +319,9 @@ fun ArtworkScreenContent_Preview() {
             uiState = ArtworkUiState(
                 screen = ScreenState.CONTENT,
                 artwork = MediaMockups.showArtwork,
-                media = MediaMockups.episode1,
+                selectedMedia = MediaMockups.episode1,
                 episodes = MediaMockups.episodes,
-                season = MediaMockups.episode1.season
+                selectedSeason = MediaMockups.episode1.season
             ),
             sendIntent = {}
         )

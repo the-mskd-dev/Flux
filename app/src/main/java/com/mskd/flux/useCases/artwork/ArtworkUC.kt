@@ -121,7 +121,7 @@ class ArtworkUCImpl(
     }
 
     private fun buildFullArtworkMovie(artwork: Artwork, movie: Movie) : FullArtwork {
-        return FullArtwork.MOVIE(
+        return FullArtwork.FullMovie(
             artwork = artwork,
             movie = movie
         )
@@ -132,7 +132,7 @@ class ArtworkUCImpl(
         val availableSeasons = seasons.map { it.season }
         val neededSeasons = episodes.map { it.season }.distinct()
 
-        return FullArtwork.SHOW(
+        return FullArtwork.FullShow(
             artwork = artwork,
             seasons = seasons.filter { s -> neededSeasons.contains(s.season) },
             episodes = episodes.filter { e -> availableSeasons.contains(e.season) }

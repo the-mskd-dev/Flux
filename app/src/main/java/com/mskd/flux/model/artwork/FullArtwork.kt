@@ -1,16 +1,16 @@
 package com.mskd.flux.model.artwork
 
-sealed class FullArtwork {
+sealed class FullArtwork(val artwork: Artwork) {
 
-    data class MOVIE(
-        val artwork: Artwork,
+    class FullMovie(
+        artwork: Artwork,
         val movie: Movie
-    ) : FullArtwork()
+    ) : FullArtwork(artwork)
 
-    data class SHOW(
-        val artwork: Artwork,
+    class FullShow(
+        artwork: Artwork,
         val seasons: List<Season>,
         val episodes: List<Episode>
-    ) : FullArtwork()
+    ) : FullArtwork(artwork)
 
 }

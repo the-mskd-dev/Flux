@@ -2,20 +2,17 @@ package com.mskd.flux.screens.artwork
 
 import androidx.compose.runtime.Immutable
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.model.ScreenState
+import com.mskd.flux.model.State
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.Episode
+import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.model.artwork.Media
-import com.mskd.flux.model.artwork.Season
 
 @Immutable
 data class ArtworkUiState(
-    val screen: ScreenState = ScreenState.LOADING,
-    val artwork: Artwork = MediaMockups.showArtwork,
-    val media: Media = MediaMockups.episode1,
-    val seasons: List<Season> = emptyList(),
-    val episodes: List<Episode> = emptyList(),
-    val season: Int = -1,
+    val state: State<FullArtwork> = State.Loading,
+    val selectedMedia: Media? = null,
+    val selectedSeason: Int = -1,
     val episodePendingConfirmation: Episode? = null,
     val useExternalPlayer: Boolean = false,
     val showResetProgressDialog: Boolean = false

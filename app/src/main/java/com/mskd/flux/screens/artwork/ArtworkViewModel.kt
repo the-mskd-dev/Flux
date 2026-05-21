@@ -159,6 +159,7 @@ class ArtworkViewModel @AssistedInject constructor(
                 ArtworkUiState(
                     screen = ScreenState.CONTENT,
                     artwork = artwork,
+                    seasons = (artworkContent as? ArtworkUC.Content.SHOW)?.seasons ?: emptyList(),
                     episodes = episodes,
                     season = season,
                     media = media,

@@ -24,6 +24,7 @@ import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
+import com.mskd.flux.model.artwork.Season
 import com.mskd.flux.screens.artwork.ArtworkIntent
 import com.mskd.flux.screens.artwork.composables.common.ArtworkButtons
 import com.mskd.flux.screens.artwork.composables.common.ArtworkDescription
@@ -40,6 +41,7 @@ import com.mskd.flux.utils.FluxPreview
 fun ArtworkContentRegular(
     artwork: Artwork,
     media: Media,
+    seasons: List<Season>,
     episodes: List<Episode>,
     currentSeason: Int,
     scaffoldInnerPadding: PaddingValues,
@@ -101,6 +103,10 @@ fun ArtworkContentRegular(
                         onSeasonTap = { sendIntent(ArtworkIntent.SelectSeason(it)) }
                     )
 
+                    Text.Body.Large(
+                        text = seasons.find { it.season == currentSeason }?.description
+                    )
+
                 }
 
             }
@@ -142,6 +148,7 @@ fun ArtworkContentMovie_Preview() {
         ArtworkContentRegular(
             artwork = MediaMockups.movieArtwork,
             media = MediaMockups.movie,
+            seasons = emptyList(),
             episodes = emptyList(),
             currentSeason = -1,
             scaffoldInnerPadding = PaddingValues.Zero,
@@ -157,6 +164,7 @@ fun ArtworkContentShow_Preview() {
         ArtworkContentRegular(
             artwork = MediaMockups.showArtwork,
             media = MediaMockups.episode1,
+            seasons = MediaMockups.seasons,
             episodes = MediaMockups.episodesWithStatus,
             currentSeason = 1,
             scaffoldInnerPadding = PaddingValues.Zero,

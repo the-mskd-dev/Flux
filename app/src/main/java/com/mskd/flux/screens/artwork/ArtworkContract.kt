@@ -6,12 +6,14 @@ import com.mskd.flux.model.ScreenState
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
+import com.mskd.flux.model.artwork.Season
 
 @Immutable
 data class ArtworkUiState(
     val screen: ScreenState = ScreenState.LOADING,
     val artwork: Artwork = MediaMockups.showArtwork,
     val media: Media = MediaMockups.episode1,
+    val seasons: List<Season> = emptyList(),
     val episodes: List<Episode> = emptyList(),
     val season: Int = -1,
     val episodePendingConfirmation: Episode? = null,

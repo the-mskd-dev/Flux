@@ -242,6 +242,7 @@ fun ArtworkScreenContent(
             ArtworkContentRegular(
                 artwork = uiState.artwork,
                 media = uiState.media,
+                seasons = uiState.seasons,
                 episodes = uiState.episodes,
                 currentSeason = uiState.season,
                 scaffoldInnerPadding = innerPadding,

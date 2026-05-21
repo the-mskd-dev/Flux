@@ -43,7 +43,7 @@ class UnknownViewModel @Inject constructor(
     ) { artworkContent, settings ->
         UnknownUiState(
             screen = ScreenState.CONTENT,
-            medias = (artworkContent as? ArtworkUC.Content.SHOW)?.episodes?.sortedWith(
+            medias = (artworkContent as? ArtworkUC.State.SHOW)?.episodes?.sortedWith(
                 compareBy<Episode> { it.title }.thenBy { it.season }.thenBy { it.number }
             ) ?: emptyList(),
             useExternalPlayer = settings.externalPlayer

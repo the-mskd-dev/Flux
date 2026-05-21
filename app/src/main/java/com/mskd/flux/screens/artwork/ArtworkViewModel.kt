@@ -77,7 +77,7 @@ class ArtworkViewModel @AssistedInject constructor(
         _subState
     ) { artworkContent, settings, subState ->
         buildUiState(
-            artworkContent = artworkContent,
+            artworkState = artworkContent,
             settings = settings,
             subState = subState
         )
@@ -121,7 +121,7 @@ class ArtworkViewModel @AssistedInject constructor(
     //region Private Methods
 
     private fun buildUiState(
-        artworkContent: ArtworkUC.Content,
+        artworkState: ArtworkUC.State,
         settings: SettingsRepository.State,
         subState: UserState
     ) : ArtworkUiState {
@@ -130,15 +130,15 @@ class ArtworkViewModel @AssistedInject constructor(
         var movie: Movie? = null
         var episodes: List<Episode> = emptyList()
 
-        when (artworkContent) {
-            ArtworkUC.Content.ERROR -> {}
-            is ArtworkUC.Content.MOVIE -> {
-                artwork = artworkContent.artwork
-                movie = artworkContent.movie
+        when (artworkState) {
+            ArtworkUC.State.ERROR -> {}
+            is ArtworkUC.State.MOVIE -> {
+                artwork = artworkState.artwork
+                movie = artworkState.movie
             }
-            is ArtworkUC.Content.SHOW -> {
-                artwork = artworkContent.artwork
-                episodes = artworkContent.episodes
+            is ArtworkUC.State.SHOW -> {
+                artwork = artworkState.artwork
+                episodes = artworkState.episodes
             }
         }
 
@@ -159,7 +159,7 @@ class ArtworkViewModel @AssistedInject constructor(
                 ArtworkUiState(
                     screen = ScreenState.CONTENT,
                     artwork = artwork,
-                    seasons = (artworkContent as? ArtworkUC.Content.SHOW)?.seasons ?: emptyList(),
+                    seasons = (artworkState as? ArtworkUC.State.SHOW)?.seasons ?: emptyList(),
                     episodes = episodes,
                     season = season,
                     media = media,

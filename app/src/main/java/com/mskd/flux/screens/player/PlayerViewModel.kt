@@ -94,7 +94,7 @@ class PlayerViewModel @AssistedInject constructor(
         playerManager.state,
     ) { flows ->
 
-        val artworkContent = flows[0] as ArtworkUC.Content
+        val artworkState = flows[0] as ArtworkUC.State
         val settings = flows[1] as SettingsRepository.State
         val controls = flows[2] as PlayerUiState.Controls
         val tracks = (flows[3] as? List<*>)?.filterIsInstance<PlayerTrack>() ?: emptyList()
@@ -103,14 +103,14 @@ class PlayerViewModel @AssistedInject constructor(
         val mediaId = flows[6] as Long
         val playerState = flows[7] as PlayerManager.State
 
-        val media = when (artworkContent) {
-            is ArtworkUC.Content.MOVIE -> artworkContent.movie
-            is ArtworkUC.Content.SHOW -> artworkContent.episodes.find { it.id == mediaId }
-            ArtworkUC.Content.ERROR -> null
+        val media = when (artworkState) {
+            is ArtworkUC.State.MOVIE -> artworkState.movie
+            is ArtworkUC.State.SHOW -> artworkState.episodes.find { it.id == mediaId }
+            ArtworkUC.State.ERROR -> null
         }
 
         val screen: PlayerScreen = when {
-            playerState is PlayerManager.State.Error || artworkContent is ArtworkUC.Content.ERROR -> PlayerScreen.Error
+            playerState is PlayerManager.State.Error || artworkState is ArtworkUC.State.ERROR -> PlayerScreen.Error
             media != null && playerState is PlayerManager.State.Ready -> PlayerScreen.Content(player = playerState.player, media = media)
             else -> PlayerScreen.Loading
         }
@@ -314,7 +314,7 @@ class PlayerViewModel @AssistedInject constructor(
 
         if (show) {
 
-            val episodes = (artworkUC.flow.first() as? ArtworkUC.Content.SHOW)?.episodes
+            val episodes = (artworkUC.flow.first() as? ArtworkUC.State.SHOW)?.episodes
 
             val nextEpisode = episodes?.getNextEpisodeFor(currentEpisode) ?: return
 

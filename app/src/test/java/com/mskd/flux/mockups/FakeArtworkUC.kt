@@ -12,22 +12,22 @@ class FakeArtworkUC(initialContentType: ContentType = ContentType.MOVIE) : Artwo
 
     private val _flow = MutableStateFlow(
         when (initialContentType) {
-            ContentType.MOVIE -> ArtworkUC.Content.MOVIE(
+            ContentType.MOVIE -> ArtworkUC.State.MOVIE(
                 artwork = MediaMockups.movieArtwork,
                 movie = MediaMockups.movie
             )
-            ContentType.SHOW -> ArtworkUC.Content.SHOW(
+            ContentType.SHOW -> ArtworkUC.State.SHOW(
                 artwork = MediaMockups.showArtwork,
                 episodes = MediaMockups.episodes
             )
         }
     )
 
-    override val flow: StateFlow<ArtworkUC.Content> = _flow
+    override val flow: StateFlow<ArtworkUC.State> = _flow
 
     override suspend fun saveEpisodes(episodes: List<Episode>) {
         val currentContent = _flow.value
-        val currentEpisodes = (currentContent as? ArtworkUC.Content.SHOW)?.episodes.orEmpty().toMutableList()
+        val currentEpisodes = (currentContent as? ArtworkUC.State.SHOW)?.episodes.orEmpty().toMutableList()
 
         episodes.forEach { savedEpisode ->
             val index = currentEpisodes.indexOfFirst { it.id == savedEpisode.id }
@@ -36,14 +36,14 @@ class FakeArtworkUC(initialContentType: ContentType = ContentType.MOVIE) : Artwo
             }
         }
 
-        (currentContent as? ArtworkUC.Content.SHOW)?.let {
+        (currentContent as? ArtworkUC.State.SHOW)?.let {
             _flow.value = currentContent.copy(episodes = currentEpisodes)
         }
 
     }
 
     override suspend fun saveMovie(movie: Movie) {
-        (_flow.value as? ArtworkUC.Content.MOVIE)?.let {
+        (_flow.value as? ArtworkUC.State.MOVIE)?.let {
             _flow.value = it.copy(movie = movie)
         }
     }
@@ -56,37 +56,37 @@ class FakeArtworkUC(initialContentType: ContentType = ContentType.MOVIE) : Artwo
         _flow.value = runBlocking { getArtwork(artworkId = artworkId) }
     }
 
-    override suspend fun getArtwork(artworkId: Long): ArtworkUC.Content {
+    override suspend fun getArtwork(artworkId: Long): ArtworkUC.State {
         val artwork = MediaMockups.artworks.find { it.id == artworkId }
 
         return when (artwork?.type) {
             ContentType.MOVIE -> {
                 MediaMockups.allMedias.filterIsInstance<Movie>().find { it.artworkId == artworkId }
-                    ?.let { ArtworkUC.Content.MOVIE(artwork = artwork, movie = it) }
-                    ?: ArtworkUC.Content.ERROR
+                    ?.let { ArtworkUC.State.MOVIE(artwork = artwork, movie = it) }
+                    ?: ArtworkUC.State.ERROR
             }
             ContentType.SHOW -> {
                 val episodes = MediaMockups.allMedias.filterIsInstance<Episode>().filter { it.artworkId == artworkId }
-                ArtworkUC.Content.SHOW(
+                ArtworkUC.State.SHOW(
                     artwork = artwork,
                     episodes = episodes
                 )
             }
-            else -> ArtworkUC.Content.ERROR
+            else -> ArtworkUC.State.ERROR
         }
     }
 
-    fun setContent(state: ArtworkUC.Content) {
+    fun setContent(state: ArtworkUC.State) {
         _flow.value = state
     }
 
     fun setContentType(contentType: ContentType) {
         _flow.value = when (contentType) {
-            ContentType.MOVIE -> ArtworkUC.Content.MOVIE(
+            ContentType.MOVIE -> ArtworkUC.State.MOVIE(
                 artwork = MediaMockups.movieArtwork,
                 movie = MediaMockups.movie
             )
-            ContentType.SHOW -> ArtworkUC.Content.SHOW(
+            ContentType.SHOW -> ArtworkUC.State.SHOW(
                 artwork = MediaMockups.showArtwork,
                 episodes = MediaMockups.episodes
             )

@@ -109,10 +109,14 @@ class ArtworkUCImpl(
                         val episodesDeferred = async { database.getEpisodes(artworkId = artworkId) }
                         seasonsDeferred.await() to episodesDeferred.await()
                     }
+
+                    val availableSeasons = seasons.map { it.season }
+                    val neededSeasons = episodes.map { it.season }.distinct()
+
                     ArtworkUC.Content.SHOW(
                         artwork = artwork,
-                        seasons = seasons,
-                        episodes = episodes
+                        seasons = seasons.filter { s -> neededSeasons.contains(s.season) },
+                        episodes = episodes.filter { e -> availableSeasons.contains(e.season) }
                     )
                 }
             }

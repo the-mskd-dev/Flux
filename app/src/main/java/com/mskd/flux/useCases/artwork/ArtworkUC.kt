@@ -5,7 +5,10 @@ import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Movie
+import com.mskd.flux.model.artwork.Season
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -13,6 +16,7 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 
 interface ArtworkUC {
 
@@ -30,7 +34,7 @@ interface ArtworkUC {
 
     sealed class Content {
         data class MOVIE(val artwork: Artwork, val movie: Movie) : Content()
-        data class SHOW(val artwork: Artwork, val episodes: List<Episode>) : Content()
+        data class SHOW(val artwork: Artwork, val seasons: List<Season>, val episodes: List<Episode>) : Content()
         data object ERROR : Content()
     }
 
@@ -46,19 +50,26 @@ class ArtworkUCImpl(
     override val flow: Flow<ArtworkUC.Content> = _artworkId
         .filterNotNull()
         .distinctUntilChanged()
-        .flatMapLatest { mediaId ->
-            database.flowArtwork(artworkId = mediaId).flatMapLatest { artwork ->
+        .flatMapLatest { artworkId ->
+            database.flowArtwork(artworkId = artworkId).flatMapLatest { artwork ->
                 when (artwork?.type) {
                     ContentType.MOVIE -> {
-                        database.flowMovie(mediaId).map { movie ->
+                        database.flowMovie(artworkId).map { movie ->
                             movie
                                 ?.let { ArtworkUC.Content.MOVIE(artwork = artwork, movie = it) }
                                 ?: ArtworkUC.Content.ERROR
                         }
                     }
                     ContentType.SHOW -> {
-                        database.flowEpisodes(mediaId).map { episodes ->
-                            ArtworkUC.Content.SHOW(artwork = artwork, episodes = episodes)
+                        combine(
+                        database.flowSeasons(artworkId),
+                        database.flowEpisodes(artworkId)
+                        ) { seasons, episodes ->
+                            ArtworkUC.Content.SHOW(
+                                artwork = artwork,
+                                seasons = seasons,
+                                episodes = episodes
+                            )
                         }
                     }
                     else -> flowOf(ArtworkUC.Content.ERROR)
@@ -93,9 +104,14 @@ class ArtworkUCImpl(
                         ?: ArtworkUC.Content.ERROR
                 }
                 ContentType.SHOW -> {
-                    val episodes = database.getEpisodes(artworkId = artworkId)
+                    val (seasons, episodes) = coroutineScope {
+                        val seasonsDeferred = async { database.getSeasons(artworkId = artworkId) }
+                        val episodesDeferred = async { database.getEpisodes(artworkId = artworkId) }
+                        seasonsDeferred.await() to episodesDeferred.await()
+                    }
                     ArtworkUC.Content.SHOW(
                         artwork = artwork,
+                        seasons = seasons,
                         episodes = episodes
                     )
                 }

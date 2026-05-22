@@ -117,13 +117,10 @@ fun ArtworkContentRegular(
                     key = { _, e -> e.id }
                 ) { i, episode ->
 
-                    if (i != 0) {
-                        HorizontalDivider(modifier = Modifier.padding(horizontal = Ui.Space.MEDIUM))
-                    }
-
                     EpisodeItem(
                         modifier = Modifier.animateItem(),
                         episode = episode,
+                        isSelected = episode.id == currentMedia.mediaId,
                         sendIntent = sendIntent
                     )
 

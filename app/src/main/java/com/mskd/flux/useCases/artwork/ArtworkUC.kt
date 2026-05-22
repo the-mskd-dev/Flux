@@ -138,7 +138,7 @@ class ArtworkUCImpl(
         return FullArtwork.FullShow(
             artwork = artwork,
             seasons = seasons.filter { s -> neededSeasons.contains(s.season) },
-            episodes = episodes.filter { e -> availableSeasons.contains(e.season) }
+            episodes = if (artwork.isUnknown) episodes else episodes.filter { e -> availableSeasons.contains(e.season) }
         )
     }
 

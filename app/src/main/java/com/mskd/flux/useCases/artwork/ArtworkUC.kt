@@ -16,10 +16,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.onStart
 
 interface ArtworkUC {
 
@@ -125,7 +122,7 @@ class ArtworkUCImpl(
 
     private fun buildFullArtworkMovie(artwork: Artwork, movie: Movie) : FullArtwork {
         return FullArtwork.FullMovie(
-            artwork = artwork,
+            resume = artwork,
             movie = movie
         )
     }
@@ -136,7 +133,7 @@ class ArtworkUCImpl(
         val neededSeasons = episodes.map { it.season }.distinct()
 
         return FullArtwork.FullShow(
-            artwork = artwork,
+            resume = artwork,
             seasons = seasons.filter { s -> neededSeasons.contains(s.season) },
             episodes = if (artwork.isUnknown) episodes else episodes.filter { e -> availableSeasons.contains(e.season) }
         )

@@ -188,12 +188,12 @@ object MediaMockups {
     val allMedias = movies + episodes + unknowns
 
     val fullMovie = FullArtwork.FullMovie(
-        artwork = MediaMockups.movieArtwork,
+        resume = MediaMockups.movieArtwork,
         movie = MediaMockups.movie
     )
 
     val fullShow = FullArtwork.FullShow(
-        artwork = MediaMockups.showArtwork,
+        resume = MediaMockups.showArtwork,
         seasons = MediaMockups.seasons,
         episodes = MediaMockups.episodes
     )

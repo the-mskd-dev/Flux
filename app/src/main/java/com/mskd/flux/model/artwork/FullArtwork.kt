@@ -1,16 +1,21 @@
 package com.mskd.flux.model.artwork
 
-sealed class FullArtwork(val artwork: Artwork) {
+sealed class FullArtwork {
 
-    class FullMovie(
-        artwork: Artwork,
+    data class FullMovie(
+        val resume: Artwork,
         val movie: Movie
-    ) : FullArtwork(artwork)
+    ) : FullArtwork()
 
-    class FullShow(
-        artwork: Artwork,
+    data class FullShow(
+        val resume: Artwork,
         val seasons: List<Season>,
         val episodes: List<Episode>
-    ) : FullArtwork(artwork)
+    ) : FullArtwork()
+
+    val artwork: Artwork get() = when (this) {
+        is FullMovie -> this.resume
+        is FullShow -> this.resume
+    }
 
 }

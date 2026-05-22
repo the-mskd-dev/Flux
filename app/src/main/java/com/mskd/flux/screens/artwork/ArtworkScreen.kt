@@ -115,7 +115,6 @@ fun ArtworkScreen(
             is State.Content -> {
                 ArtworkScreenContent(
                     uiState = uiState,
-                    fullArtwork = state.content,
                     sendIntent = viewModel::handleIntent
                 )
             }
@@ -144,10 +143,10 @@ fun ArtworkScreen(
 @Composable
 fun ArtworkScreenContent(
     uiState: ArtworkUiState,
-    fullArtwork: FullArtwork,
     sendIntent: (ArtworkIntent) -> Unit
 ) {
 
+    val fullArtwork = (uiState.state as State.Content<FullArtwork>).content
     val windowSizeClass = currentWindowAdaptiveInfoV2().windowSizeClass
     val isLargeScreen = windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND)
 
@@ -322,7 +321,6 @@ fun ArtworkScreenContent_Preview() {
                 selectedMedia = MediaMockups.episode1,
                 selectedSeason = MediaMockups.episode1.season
             ),
-            fullArtwork = MediaMockups.fullShow,
             sendIntent = {}
         )
     }

@@ -64,6 +64,10 @@ class ArtworkViewModel @AssistedInject constructor(
 
     private var selectedMedia: Media? = null
 
+
+    private val fullArtwork : FullArtwork? get() = (uiState.value.state as? State.Content)?.content
+    private val episodes : List<Episode> get() = (fullArtwork as? FullArtwork.FullShow)?.episodes.orEmpty()
+
     //endregion
 
     //region Flow
@@ -194,7 +198,7 @@ class ArtworkViewModel @AssistedInject constructor(
         if (
             status == Status.WATCHED
             && media is Episode
-            && getEpisodes().getPreviousEpisodesFor(media).any { it.status != Status.WATCHED }
+            && episodes.getPreviousEpisodesFor(media).any { it.status != Status.WATCHED }
         ) {
             showStatusDialog(episode = media)
         }
@@ -228,23 +232,20 @@ class ArtworkViewModel @AssistedInject constructor(
 
     private suspend fun resetProgress() {
 
-        val fullArtwork = getFullArtwork() ?: return
+        val fullArtwork = fullArtwork ?: return
 
         progressUC.resetProgress(artwork = fullArtwork.artwork)
 
         _subState.update {
 
             it.copy(
-                selectedMedia = (fullArtwork as? FullArtwork.FullMovie)?.movie ?: getEpisodes().firstEpisode,
+                selectedMedia = (fullArtwork as? FullArtwork.FullMovie)?.movie ?: episodes.firstEpisode,
                 showResetProgressDialog = false
             )
 
         }
 
     }
-
-    private fun getFullArtwork() : FullArtwork? = (uiState.value.state as? State.Content)?.content
-    private fun getEpisodes() : List<Episode> = (getFullArtwork() as? FullArtwork.FullShow)?.episodes.orEmpty()
 
     //endregion
 

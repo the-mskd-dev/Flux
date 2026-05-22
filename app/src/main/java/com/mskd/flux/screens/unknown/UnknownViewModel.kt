@@ -4,8 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.model.ScreenState
+import com.mskd.flux.model.State
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.Episode
+import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.useCases.artwork.ArtworkUC
 import com.mskd.flux.useCases.progress.ProgressUC
@@ -41,9 +43,11 @@ class UnknownViewModel @Inject constructor(
         artworkUC.flow,
         settingsRepository.flow
     ) { artworkContent, settings ->
+
+        val fullShow = (artworkContent as? State.Content)?.content as? FullArtwork.FullShow
         UnknownUiState(
             screen = ScreenState.CONTENT,
-            medias = (artworkContent as? ArtworkUC.State.SHOW)?.episodes?.sortedWith(
+            medias = fullShow?.episodes?.sortedWith(
                 compareBy<Episode> { it.title }.thenBy { it.season }.thenBy { it.number }
             ) ?: emptyList(),
             useExternalPlayer = settings.externalPlayer

@@ -48,32 +48,35 @@ class ArtworkUCImpl(
         .filterNotNull()
         .distinctUntilChanged()
         .flatMapLatest { artworkId ->
-            database.flowArtwork(artworkId = artworkId).flatMapLatest { artwork ->
+            combine(
+                database.flowArtwork(artworkId),
+                database.flowMovie(artworkId),
+                database.flowSeasons(artworkId),
+                database.flowEpisodes(artworkId)
+            ) { artwork, movie, seasons, episodes ->
+
                 when (artwork?.type) {
                     ContentType.MOVIE -> {
-                        database.flowMovie(artworkId).map { movie ->
-                            movie
-                                ?.let { State.Content(content = buildFullArtworkMovie(artwork = artwork, movie = it)) }
-                                ?: State.Error
-                        }
+
+                        movie?.let {
+                            State.Content(content = buildFullArtworkMovie(artwork = artwork, movie = it))
+                        } ?: State.Error
+
                     }
                     ContentType.SHOW -> {
-                        combine(
-                        database.flowSeasons(artworkId),
-                        database.flowEpisodes(artworkId)
-                        ) { seasons, episodes ->
 
-                            State.Content(
-                                content = buildFullArtworkShow(
-                                    artwork = artwork,
-                                    seasons = seasons,
-                                    episodes = episodes
-                                )
+                        State.Content(
+                            content = buildFullArtworkShow(
+                                artwork = artwork,
+                                seasons = seasons,
+                                episodes = episodes
                             )
-                        }
+                        )
+
                     }
-                    else -> flowOf(State.Error)
+                    null -> State.Error
                 }
+
             }
         }
         .distinctUntilChanged()

@@ -132,7 +132,6 @@ class ArtworkViewModel @AssistedInject constructor(
         subState: UserState
     ) : ArtworkUiState {
 
-
         val fullArtwork = (artworkState as? State.Content<FullArtwork>)?.content
         val episodes: List<Episode> = (fullArtwork as? FullArtwork.FullShow)?.episodes ?: emptyList()
 
@@ -146,7 +145,6 @@ class ArtworkViewModel @AssistedInject constructor(
         val season = subState.selectedSeason ?: (media as? Episode)?.season ?: -1
 
         return when {
-            artworkState == State.Loading -> ArtworkUiState(state = State.Loading)
             media == null -> ArtworkUiState(state = State.Error)
             else -> {
                 ArtworkUiState(

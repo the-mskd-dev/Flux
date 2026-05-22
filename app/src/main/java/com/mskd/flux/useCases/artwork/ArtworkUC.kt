@@ -74,7 +74,7 @@ class ArtworkUCImpl(
                     }
                     else -> flowOf(State.Error)
                 }
-            }.onStart { emit(State.Loading) }
+            }
         }
         .distinctUntilChanged()
 

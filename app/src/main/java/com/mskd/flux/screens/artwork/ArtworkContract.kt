@@ -11,7 +11,7 @@ import com.mskd.flux.model.artwork.Media
 @Immutable
 data class ArtworkUiState(
     val state: State<FullArtwork> = State.Loading,
-    val selectedMedia: Media? = null,
+    val selectedMedia: Media = MediaMockups.episode1,
     val selectedSeason: Int = -1,
     val episodePendingConfirmation: Episode? = null,
     val useExternalPlayer: Boolean = false,

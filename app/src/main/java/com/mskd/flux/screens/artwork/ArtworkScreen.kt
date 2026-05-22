@@ -42,7 +42,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.window.core.layout.WindowSizeClass
 import com.mskd.flux.R
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.model.ScreenState
+import com.mskd.flux.model.State
+import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Route.Player
 import com.mskd.flux.screens.artwork.composables.ArtworkContentLarge
@@ -99,21 +100,22 @@ fun ArtworkScreen(
 
     Crossfade(
         modifier = Modifier.fillMaxSize(),
-        targetState = uiState.screen,
+        targetState = uiState.state,
         label = "MediaScreenAnimation"
-    ) { screen ->
+    ) { state ->
 
-        when (screen) {
-            ScreenState.LOADING -> LoadingScreen()
-            ScreenState.ERROR -> {
+        when (state) {
+            State.Loading -> LoadingScreen()
+            State.Error -> {
                 ErrorScreen(
                     message = stringResource(R.string.oups_an_error_occured),
                     onBackButtonTap = { viewModel.handleIntent(ArtworkIntent.OnBackTap) }
                 )
             }
-            else -> {
+            is State.Content -> {
                 ArtworkScreenContent(
                     uiState = uiState,
+                    fullArtwork = state.content,
                     sendIntent = viewModel::handleIntent
                 )
             }
@@ -142,6 +144,7 @@ fun ArtworkScreen(
 @Composable
 fun ArtworkScreenContent(
     uiState: ArtworkUiState,
+    fullArtwork: FullArtwork,
     sendIntent: (ArtworkIntent) -> Unit
 ) {
 
@@ -178,7 +181,7 @@ fun ArtworkScreenContent(
                         modifier = Modifier
                             .padding(vertical = Ui.Space.EXTRA_SMALL)
                             .graphicsLayer { alpha = animatedAlpha },
-                        text = uiState.artwork.title,
+                        text = fullArtwork.artwork.title,
                         overflow = TextOverflow.Ellipsis,
                         style = MaterialTheme.typography.headlineSmall,
                         maxLines = 2,
@@ -231,19 +234,16 @@ fun ArtworkScreenContent(
 
         if (isLargeScreen) {
             ArtworkContentLarge(
-                artwork = uiState.artwork,
-                media = uiState.selectedMedia,
-                episodes = uiState.episodes,
+                fullArtwork = fullArtwork,
+                currentMedia = uiState.selectedMedia,
                 currentSeason = uiState.selectedSeason,
                 scaffoldInnerPadding = innerPadding,
                 sendIntent = sendIntent,
             )
         } else {
             ArtworkContentRegular(
-                artwork = uiState.artwork,
-                media = uiState.selectedMedia,
-                seasons = uiState.seasons,
-                episodes = uiState.episodes,
+                fullArtwork = fullArtwork,
+                currentMedia = uiState.selectedMedia,
                 currentSeason = uiState.selectedSeason,
                 scaffoldInnerPadding = innerPadding,
                 sendIntent = sendIntent,
@@ -315,14 +315,14 @@ fun ArtworkDropDownMenuItem(
 @Composable
 fun ArtworkScreenContent_Preview() {
     AppTheme {
+
         ArtworkScreenContent(
             uiState = ArtworkUiState(
-                screen = ScreenState.CONTENT,
-                artwork = MediaMockups.showArtwork,
+                state = State.Content(content = MediaMockups.fullShow),
                 selectedMedia = MediaMockups.episode1,
-                episodes = MediaMockups.episodes,
                 selectedSeason = MediaMockups.episode1.season
             ),
+            fullArtwork = MediaMockups.fullShow,
             sendIntent = {}
         )
     }

@@ -5,6 +5,7 @@ import com.mskd.flux.model.UserFile
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.model.artwork.Episode
+import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Season
 import com.mskd.flux.model.artwork.Status
@@ -185,5 +186,16 @@ object MediaMockups {
     )
 
     val allMedias = movies + episodes + unknowns
+
+    val fullMovie = FullArtwork.FullMovie(
+        artwork = MediaMockups.movieArtwork,
+        movie = MediaMockups.movie
+    )
+
+    val fullShow = FullArtwork.FullShow(
+        artwork = MediaMockups.showArtwork,
+        seasons = MediaMockups.seasons,
+        episodes = MediaMockups.episodes
+    )
 
 }

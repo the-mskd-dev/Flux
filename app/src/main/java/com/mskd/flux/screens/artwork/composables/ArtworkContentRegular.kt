@@ -21,10 +21,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.mskd.flux.R
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.model.artwork.Artwork
-import com.mskd.flux.model.artwork.Episode
+import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.model.artwork.Media
-import com.mskd.flux.model.artwork.Season
 import com.mskd.flux.screens.artwork.ArtworkIntent
 import com.mskd.flux.screens.artwork.composables.common.ArtworkButtons
 import com.mskd.flux.screens.artwork.composables.common.ArtworkDescription
@@ -39,10 +37,8 @@ import com.mskd.flux.utils.FluxPreview
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ArtworkContentRegular(
-    artwork: Artwork,
-    media: Media,
-    seasons: List<Season>,
-    episodes: List<Episode>,
+    fullArtwork: FullArtwork,
+    currentMedia: Media,
     currentSeason: Int,
     scaffoldInnerPadding: PaddingValues,
     sendIntent: (ArtworkIntent) -> Unit,
@@ -65,69 +61,73 @@ fun ArtworkContentRegular(
 
                 ArtworkImage(
                     modifier = Modifier.aspectRatio(6f / 5f),
-                    artwork = artwork,
+                    artwork = fullArtwork.artwork,
                     sendIntent = sendIntent
                 )
 
                 ArtworkButtons(
-                    media = media,
+                    media = currentMedia,
                     sendIntent = sendIntent
                 )
 
-                ArtworkDescription(media = media)
+                ArtworkDescription(media = currentMedia)
 
             }
 
         }
 
-        if (episodes.isNotEmpty()) {
+        (fullArtwork as? FullArtwork.FullShow)?.let { show ->
 
-            item {
+            if (show.episodes.isNotEmpty()) {
 
-                Column(
-                    modifier = Modifier.padding(top = Ui.Space.LARGE),
-                    verticalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)
-                ) {
+                item {
 
-                    Text.Title.Large(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = Ui.Space.MEDIUM),
-                        text = stringResource(R.string.episode_list),
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
+                    Column(
+                        modifier = Modifier.padding(top = Ui.Space.LARGE),
+                        verticalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)
+                    ) {
 
-                    SeasonsTabs(
-                        selectedSeason = currentSeason,
-                        seasons = episodes.map { it.season }.distinct(),
-                        onSeasonTap = { sendIntent(ArtworkIntent.SelectSeason(it)) }
-                    )
+                        Text.Title.Large(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = Ui.Space.MEDIUM),
+                            text = stringResource(R.string.episode_list),
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
 
-                    Text.Body.Large(
-                        text = seasons.find { it.season == currentSeason }?.description
-                    )
+                        SeasonsTabs(
+                            selectedSeason = currentSeason,
+                            seasons = show.episodes.map { it.season }.distinct(),
+                            onSeasonTap = { sendIntent(ArtworkIntent.SelectSeason(it)) }
+                        )
+
+                        Text.Body.Large(
+                            text = show.seasons.find { it.season == currentSeason }?.description
+                        )
+
+                    }
 
                 }
 
-            }
 
+                itemsIndexed(
+                    items = show.episodes
+                        .filter { it.season == currentSeason }
+                        .sortedBy { it.number },
+                    key = { _, e -> e.id }
+                ) { i, episode ->
 
-            itemsIndexed(
-                items = episodes
-                    .filter { it.season == currentSeason }
-                    .sortedBy { it.number },
-                key = { _, e -> e.id }
-            ) { i, episode ->
+                    if (i != 0) {
+                        HorizontalDivider(modifier = Modifier.padding(horizontal = Ui.Space.MEDIUM))
+                    }
 
-                if (i != 0) {
-                    HorizontalDivider(modifier = Modifier.padding(horizontal = Ui.Space.MEDIUM))
+                    EpisodeItem(
+                        modifier = Modifier.animateItem(),
+                        episode = episode,
+                        sendIntent = sendIntent
+                    )
+
                 }
-
-                EpisodeItem(
-                    modifier = Modifier.animateItem(),
-                    episode = episode,
-                    sendIntent = sendIntent
-                )
 
             }
 
@@ -146,10 +146,8 @@ fun ArtworkContentRegular(
 fun ArtworkContentMovie_Preview() {
     AppTheme {
         ArtworkContentRegular(
-            artwork = MediaMockups.movieArtwork,
-            media = MediaMockups.movie,
-            seasons = emptyList(),
-            episodes = emptyList(),
+            fullArtwork = MediaMockups.fullMovie,
+            currentMedia = MediaMockups.movie,
             currentSeason = -1,
             scaffoldInnerPadding = PaddingValues.Zero,
             sendIntent = {}
@@ -162,10 +160,8 @@ fun ArtworkContentMovie_Preview() {
 fun ArtworkContentShow_Preview() {
     AppTheme {
         ArtworkContentRegular(
-            artwork = MediaMockups.showArtwork,
-            media = MediaMockups.episode1,
-            seasons = MediaMockups.seasons,
-            episodes = MediaMockups.episodesWithStatus,
+            fullArtwork = MediaMockups.fullShow,
+            currentMedia = MediaMockups.episode1,
             currentSeason = 1,
             scaffoldInnerPadding = PaddingValues.Zero,
             sendIntent = {}

@@ -20,8 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.mskd.flux.R
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.model.artwork.Artwork
-import com.mskd.flux.model.artwork.Episode
+import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.screens.artwork.ArtworkIntent
 import com.mskd.flux.screens.artwork.composables.common.ArtworkButtons
@@ -36,9 +35,8 @@ import com.mskd.flux.utils.LandscapePreview
 
 @Composable
 fun ArtworkContentLarge(
-    artwork: Artwork,
-    media: Media,
-    episodes: List<Episode>,
+    fullArtwork: FullArtwork,
+    currentMedia: Media,
     currentSeason: Int,
     scaffoldInnerPadding: PaddingValues,
     sendIntent: (ArtworkIntent) -> Unit,
@@ -52,7 +50,7 @@ fun ArtworkContentLarge(
 
             ArtworkImage(
                 modifier = Modifier.fillMaxSize(),
-                artwork = artwork,
+                artwork = fullArtwork.artwork,
                 sendIntent = sendIntent
             )
 
@@ -70,7 +68,7 @@ fun ArtworkContentLarge(
             item {
 
                 ArtworkButtons(
-                    media = media,
+                    media = currentMedia,
                     sendIntent = sendIntent
                 )
 
@@ -78,54 +76,58 @@ fun ArtworkContentLarge(
 
             item {
 
-                ArtworkDescription(media = media)
+                ArtworkDescription(media = currentMedia)
 
             }
 
-            if (episodes.isNotEmpty()) {
+            (fullArtwork as? FullArtwork.FullShow)?.let { show ->
 
-                item {
+                if (show.episodes.isNotEmpty()) {
 
-                    Column(
-                        modifier = Modifier.padding(top = Ui.Space.LARGE),
-                        verticalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)
-                    ) {
+                    item {
 
-                        Text.Title.Large(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = Ui.Space.MEDIUM),
-                            text = stringResource(R.string.episode_list),
-                            color = MaterialTheme.colorScheme.onBackground
-                        )
+                        Column(
+                            modifier = Modifier.padding(top = Ui.Space.LARGE),
+                            verticalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)
+                        ) {
 
-                        SeasonsTabs(
-                            selectedSeason = currentSeason,
-                            seasons = episodes.map { it.season }.distinct(),
-                            onSeasonTap = { sendIntent(ArtworkIntent.SelectSeason(it)) }
-                        )
+                            Text.Title.Large(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = Ui.Space.MEDIUM),
+                                text = stringResource(R.string.episode_list),
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
+
+                            SeasonsTabs(
+                                selectedSeason = currentSeason,
+                                seasons = show.episodes.map { it.season }.distinct(),
+                                onSeasonTap = { sendIntent(ArtworkIntent.SelectSeason(it)) }
+                            )
+
+                        }
 
                     }
 
-                }
 
+                    itemsIndexed(
+                        items = show.episodes
+                            .filter { it.season == currentSeason }
+                            .sortedBy { it.number },
+                        key = { _, e -> e.id }
+                    ) { i, episode ->
 
-                itemsIndexed(
-                    items = episodes
-                        .filter { it.season == currentSeason }
-                        .sortedBy { it.number },
-                    key = { _, e -> e.id }
-                ) { i, episode ->
+                        if (i != 0) {
+                            HorizontalDivider(modifier = Modifier.padding(horizontal = Ui.Space.MEDIUM))
+                        }
 
-                    if (i != 0) {
-                        HorizontalDivider(modifier = Modifier.padding(horizontal = Ui.Space.MEDIUM))
+                        EpisodeItem(
+                            modifier = Modifier.animateItem(),
+                            episode = episode,
+                            sendIntent = sendIntent
+                        )
+
                     }
-
-                    EpisodeItem(
-                        modifier = Modifier.animateItem(),
-                        episode = episode,
-                        sendIntent = sendIntent
-                    )
 
                 }
 
@@ -147,9 +149,8 @@ fun ArtworkContentLarge(
 fun ArtworkContentLargeMovie_Preview() {
     AppTheme {
         ArtworkContentLarge(
-            artwork = MediaMockups.movieArtwork,
-            media = MediaMockups.movie,
-            episodes = emptyList(),
+            fullArtwork = MediaMockups.fullMovie,
+            currentMedia = MediaMockups.movie,
             currentSeason = -1,
             scaffoldInnerPadding = PaddingValues.Zero,
             sendIntent = {}
@@ -162,9 +163,8 @@ fun ArtworkContentLargeMovie_Preview() {
 fun ArtworkContentLargeShow_Preview() {
     AppTheme {
         ArtworkContentLarge(
-            artwork = MediaMockups.showArtwork,
-            media = MediaMockups.episode1,
-            episodes = MediaMockups.episodesWithStatus,
+            fullArtwork = MediaMockups.fullShow,
+            currentMedia = MediaMockups.episode1,
             currentSeason = 1,
             scaffoldInnerPadding = PaddingValues.Zero,
             sendIntent = {}

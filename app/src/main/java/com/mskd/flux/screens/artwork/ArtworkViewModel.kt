@@ -136,7 +136,6 @@ class ArtworkViewModel @AssistedInject constructor(
         val fullArtwork = (artworkState as? State.Content<FullArtwork>)?.content
         val episodes: List<Episode> = (fullArtwork as? FullArtwork.FullShow)?.episodes ?: emptyList()
 
-
         val episode = episodes.firstOrNull { it.id == (subState.selectedMedia as? Episode)?.id } // Selected media by user
             ?: episodes.firstOrNull { it.status == Status.IS_WATCHING } // First episode watching
             ?: episodes.firstOrNull { it.status == Status.TO_WATCH } // First episode to watch
@@ -146,14 +145,20 @@ class ArtworkViewModel @AssistedInject constructor(
 
         val season = subState.selectedSeason ?: (media as? Episode)?.season ?: -1
 
-        return ArtworkUiState(
-            state = if (media == null) State.Error else artworkState,
-            selectedSeason = season,
-            selectedMedia = media,
-            episodePendingConfirmation = subState.episodePendingConfirmation,
-            useExternalPlayer = settings.externalPlayer,
-            showResetProgressDialog = subState.showResetProgressDialog
-        )
+        return when {
+            artworkState == State.Loading -> ArtworkUiState(state = State.Loading)
+            media == null -> ArtworkUiState(state = State.Error)
+            else -> {
+                ArtworkUiState(
+                    state = artworkState,
+                    selectedSeason = season,
+                    selectedMedia = media,
+                    episodePendingConfirmation = subState.episodePendingConfirmation,
+                    useExternalPlayer = settings.externalPlayer,
+                    showResetProgressDialog = subState.showResetProgressDialog
+                )
+            }
+        }
 
     }
 

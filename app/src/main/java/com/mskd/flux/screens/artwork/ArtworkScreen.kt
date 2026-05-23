@@ -4,6 +4,7 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,6 +14,7 @@ import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -43,6 +45,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.window.core.layout.WindowSizeClass
+import com.materialkolor.rememberDynamicColorScheme
 import com.mskd.flux.R
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.State
@@ -73,6 +76,13 @@ fun ArtworkScreen(
         creationCallback = { factory -> factory.create(artworkId) }
     )
 ) {
+
+    val colorScheme = rgb?.let {
+        rememberDynamicColorScheme(
+            seedColor = Color(it),
+            isDark = isSystemInDarkTheme()
+        )
+    }
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
@@ -118,10 +128,12 @@ fun ArtworkScreen(
                 )
             }
             is State.Content -> {
-                ArtworkScreenContent(
-                    uiState = uiState,
-                    sendIntent = viewModel::handleIntent
-                )
+                MaterialTheme(colorScheme = colorScheme ?: MaterialTheme.colorScheme) {
+                    ArtworkScreenContent(
+                        uiState = uiState,
+                        sendIntent = viewModel::handleIntent
+                    )
+                }
             }
 
         }

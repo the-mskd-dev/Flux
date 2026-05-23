@@ -19,12 +19,12 @@ data class SearchUIState(
 
 sealed class SearchIntent {
     object OnBackTap: SearchIntent()
-    data class OnArtworkTap(val artworkId: Long): SearchIntent()
+    data class OnArtworkTap(val artworkId: Long, val rgb: Int?): SearchIntent()
     data class DoSearch(val query: String) : SearchIntent()
     data class FilterOnType(val contentType: ContentType) : SearchIntent()
 }
 
 sealed class SearchEvent {
     object BackToPreviousScreen: SearchEvent()
-    data class NavigateToMedia(val mediaId: Long): SearchEvent()
+    data class NavigateToMedia(val artworkId: Long, val rgb: Int?): SearchEvent()
 }

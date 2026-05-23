@@ -1,5 +1,7 @@
 package com.mskd.flux.model.artwork
 
+import com.mskd.flux.utils.extensions.firstEpisodeToWatch
+
 sealed class FullArtwork {
 
     data class FullMovie(
@@ -16,6 +18,20 @@ sealed class FullArtwork {
     val artwork: Artwork get() = when (this) {
         is FullMovie -> this.resume
         is FullShow -> this.resume
+    }
+
+    val currentImagePath: String get() = when (this) {
+        is FullMovie -> this.artwork.imagePath
+        is FullShow -> {
+
+            when {
+                episodes.all { it.status == Status.TO_WATCH } || episodes.all { it.status == Status.WATCHED  } -> this.artwork.imagePath
+                else -> episodes.firstEpisodeToWatch?.let { episode ->
+                    seasons.find { it.season == episode.season }?.imagePath
+                } ?: this.artwork.imagePath
+            }
+
+        }
     }
 
 }

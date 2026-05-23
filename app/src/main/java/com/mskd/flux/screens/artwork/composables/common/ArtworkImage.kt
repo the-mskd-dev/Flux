@@ -29,6 +29,7 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.Artwork
+import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.screens.artwork.ArtworkIntent
 import com.mskd.flux.ui.component.Image
 import com.mskd.flux.ui.theme.AppTheme
@@ -40,12 +41,15 @@ import com.mskd.flux.utils.extensions.tmdbImage
 @Composable
 fun ArtworkImage(
     modifier: Modifier,
-    artwork: Artwork,
-    backgroundPath: String,
+    fullArtwork: FullArtwork,
     sendIntent: (ArtworkIntent) -> Unit
 ) {
 
     var imageHeight by remember { mutableIntStateOf(0) }
+    val imageRequest = ImageRequest.Builder(LocalContext.current)
+        .data(fullArtwork.currentImagePath.tmdbImage)
+        .crossfade(true)
+        .build()
 
     Box(modifier = modifier.onSizeChanged { imageHeight = it.height }) {
 
@@ -53,15 +57,12 @@ fun ArtworkImage(
             modifier = Modifier
                 .fillMaxWidth()
                 .blur(radius = 15.dp),
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(backgroundPath.tmdbImage)
-                .crossfade(true)
-                .build(),
+            model = imageRequest,
             contentScale = ContentScale.Crop,
             placeholder = Image.placeholder,
             error = Image.error,
             alpha = .9f,
-            contentDescription = "background ${artwork.title}"
+            contentDescription = "background ${fullArtwork.artwork.title}"
         )
 
         Box(
@@ -88,14 +89,11 @@ fun ArtworkImage(
                 .clip(Ui.Shape.Corner.Small)
                 .width(160.dp)
                 .aspectRatio(2f/3f),
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(artwork.imagePath.tmdbImage)
-                .crossfade(true)
-                .build(),
+            model = imageRequest,
             contentScale = ContentScale.Crop,
             placeholder = Image.placeholder,
             error = Image.error,
-            contentDescription = artwork.title
+            contentDescription = fullArtwork.artwork.title
         )
 
     }
@@ -108,8 +106,7 @@ fun ArtworkImage_Preview() {
     AppTheme {
         ArtworkImage(
             modifier = Modifier.aspectRatio(6f / 5f),
-            artwork = MediaMockups.showArtwork,
-            backgroundPath = "",
+            fullArtwork = MediaMockups.fullShow,
             sendIntent = {},
         )
     }

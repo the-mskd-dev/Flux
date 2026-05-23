@@ -50,8 +50,7 @@ fun ArtworkContentLarge(
 
             ArtworkImage(
                 modifier = Modifier.fillMaxSize(),
-                artwork = fullArtwork.artwork,
-                backgroundPath = (fullArtwork as? FullArtwork.FullShow)?.seasons?.getOrNull(currentSeason)?.imagePath ?: fullArtwork.artwork.imagePath,
+                fullArtwork = fullArtwork,
                 sendIntent = sendIntent
             )
 

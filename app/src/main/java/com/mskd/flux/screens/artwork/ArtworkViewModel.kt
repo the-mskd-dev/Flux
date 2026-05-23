@@ -17,6 +17,7 @@ import com.mskd.flux.screens.artwork.ArtworkEvent.OpenEpisodeInfo
 import com.mskd.flux.useCases.artwork.ArtworkUC
 import com.mskd.flux.useCases.progress.ProgressUC
 import com.mskd.flux.utils.extensions.firstEpisode
+import com.mskd.flux.utils.extensions.firstEpisodeToWatch
 import com.mskd.flux.utils.extensions.getPreviousEpisodesFor
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -139,9 +140,7 @@ class ArtworkViewModel @AssistedInject constructor(
         val episodes: List<Episode> = (fullArtwork as? FullArtwork.FullShow)?.episodes ?: emptyList()
 
         val episode = episodes.firstOrNull { it.id == (subState.selectedMedia as? Episode)?.id } // Selected media by user
-            ?: episodes.firstOrNull { it.status == Status.IS_WATCHING } // First episode watching
-            ?: episodes.firstOrNull { it.status == Status.TO_WATCH } // First episode to watch
-            ?: episodes.firstOrNull() // First episode
+            ?: episodes.firstEpisodeToWatch
 
         val media = (fullArtwork as? FullArtwork.FullMovie)?.movie ?: episode
 

@@ -52,7 +52,7 @@ fun ArtworkContentRegular(
         modifier = Modifier.fillMaxSize(),
         state = state,
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
+        verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE)
     ) {
 
         item {

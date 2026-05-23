@@ -58,7 +58,7 @@ fun EpisodeItem(
 
     Column(
         modifier = modifier
-            .padding(horizontal = Ui.Space.MEDIUM, vertical = Ui.Space.SMALL)
+            .padding(horizontal = Ui.Space.MEDIUM)
             .clip(Ui.Shape.Corner.Large)
             .background(if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainer)
             .combinedClickable(

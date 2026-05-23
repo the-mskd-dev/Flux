@@ -142,6 +142,7 @@ dependencies {
 
     // UI
     implementation(libs.androidx.palette)
+    implementation(libs.material.kolor)
 
     // Navigation 3
     implementation(libs.bundles.nav3)

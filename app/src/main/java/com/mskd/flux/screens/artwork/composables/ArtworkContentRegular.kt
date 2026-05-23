@@ -11,10 +11,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -29,11 +27,10 @@ import com.mskd.flux.screens.artwork.composables.common.ArtworkButtons
 import com.mskd.flux.screens.artwork.composables.common.ArtworkDescription
 import com.mskd.flux.screens.artwork.composables.common.ArtworkImage
 import com.mskd.flux.screens.artwork.composables.episodes.EpisodeItem
-import com.mskd.flux.screens.artwork.composables.episodes.SeasonsTabs
+import com.mskd.flux.screens.artwork.composables.episodes.SeasonsPager
 import com.mskd.flux.ui.component.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
-import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.PortraitPreview
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -96,17 +93,17 @@ fun ArtworkContentRegular(
                             color = MaterialTheme.colorScheme.onBackground
                         )
 
-                        SeasonsTabs(
-                            selectedSeason = currentSeason,
-                            seasons = show.episodes.map { it.season }.distinct(),
-                            onSeasonTap = { sendIntent(ArtworkIntent.SelectSeason(it)) }
-                        )
-
-                        Text.Body.Large(
-                            text = show.seasons.find { it.season == currentSeason }?.description
-                        )
-
                     }
+
+                }
+
+                item {
+
+                    SeasonsPager(
+                        seasons = show.seasons,
+                        currentSeason = currentSeason,
+                        sendIntent = sendIntent
+                    )
 
                 }
 

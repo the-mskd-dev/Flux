@@ -90,7 +90,7 @@ class DatabaseRepositoryImpl @Inject constructor(private val dao: DatabaseDao) :
     }
 
     override suspend fun getSeasons(artworkId: Long): List<Season> {
-        return dao.getSeasons(artworkId)
+        return dao.getSeasons(artworkId).sortedBy { it.season }
     }
 
     override suspend fun getSeasons(): List<Season> {

@@ -553,7 +553,7 @@ fun UnknownCategory(sendIntent: (HomeIntent) -> Unit) {
             modifier = Modifier
                 .padding(horizontal = Ui.Space.MEDIUM)
                 .clickable { sendIntent(HomeIntent.OnArtworkTap(artworkId = Artwork.UNKNOWN_ID)) }
-                .clip(Ui.Shape.Corner.Small)
+                .clip(MaterialTheme.shapes.small)
                 .width(width)
                 .aspectRatio(ratio)
                 .background(brush = backgroundGradient),

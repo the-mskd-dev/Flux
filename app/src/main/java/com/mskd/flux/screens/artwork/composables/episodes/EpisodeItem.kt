@@ -59,7 +59,7 @@ fun EpisodeItem(
     Column(
         modifier = modifier
             .padding(horizontal = Ui.Space.MEDIUM)
-            .clip(Ui.Shape.Corner.Large)
+            .clip(MaterialTheme.shapes.large)
             .background(bgColor)
             .combinedClickable(
                 onClick = { sendIntent(ArtworkIntent.PlayMedia(episode)) },
@@ -146,7 +146,7 @@ fun EpisodeDropDownMenu(
     }
 
     DropdownMenu(
-        modifier = Modifier.clip(Ui.Shape.Corner.Large),
+        shape = MaterialTheme.shapes.extraLarge,
         expanded = true,
         onDismissRequest = onDismissRequest,
         containerColor = MaterialTheme.colorScheme.tertiaryContainer,

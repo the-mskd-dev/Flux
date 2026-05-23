@@ -269,7 +269,7 @@ fun ArtworkDropDownMenu(
 ) {
 
     DropdownMenu(
-        modifier = Modifier.clip(Ui.Shape.Corner.Large),
+        shape = MaterialTheme.shapes.extraLarge,
         expanded = true,
         onDismissRequest = onDismissRequest,
         containerColor = MaterialTheme.colorScheme.tertiaryContainer,

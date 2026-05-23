@@ -77,8 +77,8 @@ fun ArtworkButtons(
             ),
             shapes = ToggleButtonDefaults.shapes(
                 shape = Ui.Shape.Corner.Full,
-                pressedShape = Ui.Shape.Corner.Medium,
-                checkedShape = Ui.Shape.Corner.Small,
+                pressedShape = MaterialTheme.shapes.medium,
+                checkedShape = MaterialTheme.shapes.small,
             ),
             content = {
 

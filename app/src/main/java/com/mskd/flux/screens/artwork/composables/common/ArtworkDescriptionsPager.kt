@@ -52,7 +52,7 @@ fun ArtworkDescriptionsPager(
     AnimatedContent(
         targetState = currentPage,
         modifier = Modifier
-            .clip(Ui.Shape.Corner.Large)
+            .clip(MaterialTheme.shapes.large)
             .padding(horizontal = Ui.Space.MEDIUM)
             .clickable {
                 when {
@@ -122,6 +122,7 @@ fun ArtworkDescription(
 
     Column(
         modifier = Modifier
+            .clip(MaterialTheme.shapes.large)
             .background(MaterialTheme.colorScheme.background)
             .fillMaxWidth()
             .padding(all = Ui.Space.MEDIUM),

@@ -39,7 +39,7 @@ private fun SubtitleItem(text: CharSequence?, smallText: Boolean) {
 
         Text.Adaptive(
             modifier = Modifier
-                .clip(shape = Ui.Shape.Corner.ExtraSmall)
+                .clip(shape = MaterialTheme.shapes.extraSmall)
                 .background(color = Color.Black.copy(.8f))
                 .padding(horizontal = Ui.Space.MEDIUM, vertical = Ui.Space.SMALL),
             text = content.toString(),

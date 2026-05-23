@@ -85,7 +85,7 @@ fun ArtworkImage(
             modifier = Modifier
                 .displayCutoutPadding()
                 .align(Alignment.Center)
-                .clip(Ui.Shape.Corner.Small)
+                .clip(MaterialTheme.shapes.small)
                 .width(160.dp)
                 .aspectRatio(2f/3f),
             model = imageRequest,

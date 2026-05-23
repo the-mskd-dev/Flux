@@ -37,7 +37,7 @@ fun MediaThumbnail(
 
     Box(
         modifier = modifier
-            .clip(Ui.Shape.Corner.Small)
+            .clip(MaterialTheme.shapes.small)
             .aspectRatio(16f / 9f),
         contentAlignment = Alignment.BottomCenter,
         content = {
@@ -68,7 +68,7 @@ fun MediaThumbnail(
             ) {
                 Box(
                     modifier = Modifier
-                        .clip(Ui.Shape.Corner.Small)
+                        .clip(MaterialTheme.shapes.small)
                         .background(MaterialTheme.colorScheme.tertiary)
                         .height(32.dp)
                         .widthIn(min = 40.dp)

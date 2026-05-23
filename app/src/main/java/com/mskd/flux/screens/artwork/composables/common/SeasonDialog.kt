@@ -13,6 +13,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -45,7 +46,7 @@ fun SeasonDialog(
                 .fillMaxWidth()
                 .heightIn(max = 700.dp)
                 .padding(horizontal = Ui.Space.MEDIUM, vertical = Ui.Space.LARGE),
-            shape = Ui.Shape.Corner.Large,
+            shape = MaterialTheme.shapes.large,
         ) {
 
             Column(

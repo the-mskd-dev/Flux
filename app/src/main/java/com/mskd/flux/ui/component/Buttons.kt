@@ -56,7 +56,7 @@ fun FluxButton(
     modifier: Modifier = Modifier,
     text: String,
     height: Dp = ButtonDefaults.MediumContainerHeight,
-    shape: Shape = Ui.Shape.Corner.Medium,
+    shape: Shape = MaterialTheme.shapes.medium,
     autoSize: Boolean = false,
     backgroundColor: Color = MaterialTheme.colorScheme.primary,
     textColor: Color = MaterialTheme.colorScheme.onPrimary,

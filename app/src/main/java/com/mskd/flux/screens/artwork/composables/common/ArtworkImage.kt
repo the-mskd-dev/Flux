@@ -71,9 +71,9 @@ fun ArtworkImage(
                     brush = Brush.verticalGradient(
                         colors = listOf(
                             Color.Transparent,
-                            MaterialTheme.colorScheme.background.copy(alpha = .6f),
-                            MaterialTheme.colorScheme.background.copy(alpha = .9f),
-                            MaterialTheme.colorScheme.background,
+                            MaterialTheme.colorScheme.surfaceContainer.copy(alpha = .6f),
+                            MaterialTheme.colorScheme.surfaceContainer.copy(alpha = .9f),
+                            MaterialTheme.colorScheme.surfaceContainer,
                         ),
                         startY = imageHeight * .7f,
                         endY = Float.POSITIVE_INFINITY

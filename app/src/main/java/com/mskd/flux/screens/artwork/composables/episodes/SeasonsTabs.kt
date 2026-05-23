@@ -85,7 +85,7 @@ fun SeasonItem(
             .width(130.dp)
             .aspectRatio(3f/4f)
             .clip(MaterialTheme.shapes.large)
-            .background(MaterialTheme.colorScheme.surfaceContainer)
+            .background(MaterialTheme.colorScheme.background)
             .combinedClickable(
                 onClick = { sendIntent(ArtworkIntent.SelectSeason(season.season)) },
                 onLongClick = { sendIntent(ArtworkIntent.ShowPreviewForSeason(season)) }
@@ -107,9 +107,9 @@ fun SeasonItem(
                     brush = Brush.verticalGradient(
                         colors = listOf(
                             Color.Transparent,
-                            MaterialTheme.colorScheme.surfaceContainer.copy(alpha = .6f),
-                            MaterialTheme.colorScheme.surfaceContainer.copy(alpha = .9f),
-                            MaterialTheme.colorScheme.surfaceContainer,
+                            MaterialTheme.colorScheme.background.copy(alpha = .6f),
+                            MaterialTheme.colorScheme.background.copy(alpha = .9f),
+                            MaterialTheme.colorScheme.background,
                         ),
                         startY = imageHeight * .7f,
                         endY = Float.POSITIVE_INFINITY
@@ -120,7 +120,7 @@ fun SeasonItem(
         Text.Title.Large(
             modifier = Modifier.padding(bottom = Ui.Space.MEDIUM),
             text = season.title.ifEmpty { stringResource(R.string.season, season.season) },
-            color = MaterialTheme.colorScheme.onSurface,
+            color = MaterialTheme.colorScheme.onBackground,
             emphasized = true
         )
 

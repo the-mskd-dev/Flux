@@ -104,7 +104,7 @@ fun ArtworkContentLarge(
                                     .padding(horizontal = Ui.Space.MEDIUM),
                                 text = stringResource(R.string.episodes),
                                 emphasized = true,
-                                color = MaterialTheme.colorScheme.onBackground
+                                color = MaterialTheme.colorScheme.onPrimaryContainer
                             )
 
                         }

@@ -30,6 +30,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -171,6 +172,7 @@ fun ArtworkScreenContent(
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        containerColor = MaterialTheme.colorScheme.surfaceContainer,
         topBar = {
 
             CenterAlignedTopAppBar(
@@ -267,9 +269,10 @@ fun ArtworkDropDownMenu(
 ) {
 
     DropdownMenu(
+        modifier = Modifier.clip(Ui.Shape.Corner.Large),
         expanded = true,
         onDismissRequest = onDismissRequest,
-        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+        containerColor = MaterialTheme.colorScheme.tertiaryContainer,
         content = {
 
             ArtworkDropDownMenuItem(

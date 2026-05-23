@@ -80,19 +80,13 @@ fun ArtworkDescriptionsPager(
 
                     ArtworkDescription(
                         title = stringResource(R.string.summary),
-                        description = fullArtwork.seasons.find { it.season == episode.season }?.description.orEmpty().ifEmpty { stringResource(R.string.no_summary) },
+                        description = fullArtwork.artwork.description.ifEmpty { stringResource(R.string.no_summary) },
                     )
 
                 }
 
             }
         }
-
-        /**
-         * 1. Show + isWatching
-         * 2. Show + !isWatching
-         * 3. Movie
-         */
 
     }
 
@@ -135,7 +129,7 @@ fun ArtworkDescription(
         Text.Body.Large(
             modifier = Modifier.fillMaxWidth(),
             text = description,
-            textAlign = TextAlign.Justify,
+            textAlign = TextAlign.Left,
             color = MaterialTheme.colorScheme.onSurface
         )
 

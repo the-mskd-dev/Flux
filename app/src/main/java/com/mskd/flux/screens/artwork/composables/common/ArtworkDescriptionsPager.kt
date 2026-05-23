@@ -38,14 +38,7 @@ fun ArtworkDescriptionsPager(
     currentMedia: Media
 ) {
 
-    ArtworkDescription(
-        title = if (currentMedia is Episode) currentMedia.title else stringResource(R.string.summary),
-        description = currentMedia.description,
-        topDetails = { if (currentMedia is Episode) EpisodesDetails(episode = currentMedia) },
-        bottomDetails = { MediaDescriptionDetails(currentMedia) }
-    )
-
-    /*val pagerState = rememberPagerState {
+    val pagerState = rememberPagerState {
         when (fullArtwork) {
             is FullArtwork.FullMovie -> 1
             is FullArtwork.FullShow -> if (fullArtwork.isWatching) 2 else 1
@@ -58,8 +51,41 @@ fun ArtworkDescriptionsPager(
         pageSpacing = Ui.Space.SMALL
     ) { i ->
 
-        when {
+        when (fullArtwork) {
 
+            is FullArtwork.FullMovie -> {
+
+                ArtworkDescription(
+                    title = stringResource(R.string.summary),
+                    description = currentMedia.description,
+                    bottomDetails = { MediaDescriptionDetails(currentMedia) }
+                )
+
+            }
+
+            is FullArtwork.FullShow -> {
+
+                val episode = currentMedia as Episode
+
+                if (i == 0) {
+
+                    ArtworkDescription(
+                        title = episode.title,
+                        description = currentMedia.description,
+                        topDetails = { EpisodesDetails(episode = episode) },
+                        bottomDetails = { MediaDescriptionDetails(media = episode) }
+                    )
+
+                } else {
+
+                    ArtworkDescription(
+                        title = stringResource(R.string.summary),
+                        description = fullArtwork.seasons.find { it.season == episode.season }?.description.orEmpty().ifEmpty { stringResource(R.string.no_summary) },
+                    )
+
+                }
+
+            }
         }
 
         /**
@@ -68,7 +94,7 @@ fun ArtworkDescriptionsPager(
          * 3. Movie
          */
 
-    }*/
+    }
 
 }
 
@@ -76,8 +102,8 @@ fun ArtworkDescriptionsPager(
 fun ArtworkDescription(
     title: String,
     description: String,
-    topDetails: @Composable () -> Unit,
-    bottomDetails: @Composable () -> Unit
+    topDetails: @Composable () -> Unit = {},
+    bottomDetails: @Composable () -> Unit = {}
 ) {
 
     Column(

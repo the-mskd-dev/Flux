@@ -22,6 +22,8 @@ import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfoV2
+import androidx.compose.material3.dynamicDarkColorScheme
+import androidx.compose.material3.expressiveLightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -64,6 +66,7 @@ import com.mskd.flux.utils.rememberExternalPlayerLauncher
 @Composable
 fun ArtworkScreen(
     artworkId: Long,
+    rgb: Int?,
     navigate: (Route) -> Unit,
     onBack: () -> Unit,
     viewModel: ArtworkViewModel = hiltViewModel<ArtworkViewModel, ArtworkViewModel.Factory>(

@@ -103,7 +103,7 @@ fun HomeScreen(
         viewModel.event.collect { event ->
             when (event) {
                 is HomeEvent.NavigateToCategory -> navigate(Route.Search(contentType = event.category))
-                is HomeEvent.NavigateToArtwork -> navigate(Route.Artwork(event.artworkId))
+                is HomeEvent.NavigateToArtwork -> navigate(Route.Artwork(artworkId = event.artworkId, rgb = event.rgb))
                 HomeEvent.NavigateToUnknown -> navigate(Route.UnknownArtworks)
                 HomeEvent.NavigateToHowTo -> navigate(Route.HowTo)
                 HomeEvent.NavigateToSearch -> navigate(Route.Search())
@@ -393,15 +393,15 @@ fun LastWatchedCarousel(
             val overview = artworks.first()
             val url = overview.bannerPath.tmdbImageLarge
 
-            Image(
+            MediaItem(
                 modifier = Modifier
-                    .clip(MaterialTheme.shapes.extraLarge)
-                    .clickable { sendIntent(HomeIntent.OnArtworkTap(artworkId = overview.id)) }
                     .widthIn(max = 350.dp)
                     .fillMaxSize()
                     .aspectRatio(ratio),
                 url = url,
-                contentDescription = overview.title
+                shape = MaterialTheme.shapes.extraLarge,
+                onTap = { rgb -> sendIntent(HomeIntent.OnArtworkTap(artworkId = overview.id, rgb = rgb)) },
+                description = overview.title
             )
 
         } else {
@@ -418,13 +418,14 @@ fun LastWatchedCarousel(
                 val overview = artworks[i]
                 val url = overview.bannerPath.tmdbImageLarge
 
-                Image(
+                MediaItem(
                     modifier = Modifier
-                        .maskClip(MaterialTheme.shapes.extraLarge)
-                        .clickable { sendIntent(HomeIntent.OnArtworkTap(artworkId = overview.id)) }
+                        .fillMaxWidth()
                         .aspectRatio(ratio),
                     url = url,
-                    contentDescription = overview.title
+                    shape = MaterialTheme.shapes.extraLarge,
+                    onTap = { rgb -> sendIntent(HomeIntent.OnArtworkTap(artworkId = overview.id, rgb = rgb)) },
+                    description = overview.title
                 )
 
             }
@@ -507,10 +508,11 @@ fun MediaCategory(
             items(artworks, key = { it.id }) {
 
                 MediaItem(
-                    width = width,
-                    ratio = ratio,
+                    modifier = Modifier
+                        .width(width)
+                        .aspectRatio(ratio),
                     url = it.imagePath.tmdbImage,
-                    onTap = { sendIntent(HomeIntent.OnArtworkTap(artworkId = it.id)) },
+                    onTap = { rgb -> sendIntent(HomeIntent.OnArtworkTap(artworkId = it.id, rgb = rgb)) },
                     description = it.title
                 )
 

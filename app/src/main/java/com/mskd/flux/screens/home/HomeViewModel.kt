@@ -1,6 +1,7 @@
 package com.mskd.flux.screens.home
 
 import android.util.Log
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.data.repository.snackbars.SnackbarRepository
@@ -84,7 +85,7 @@ class HomeViewModel @Inject constructor(
     fun handleIntent(intent: HomeIntent) = viewModelScope.launch {
         when (intent) {
             is HomeIntent.SyncCatalog -> syncCatalog(manualSync = true)
-            is HomeIntent.OnArtworkTap -> onArtworkTap(artworkId = intent.artworkId)
+            is HomeIntent.OnArtworkTap -> onArtworkTap(artworkId = intent.artworkId, rgb = intent.rgb)
             is HomeIntent.OnCategoryTap -> _event.emit(NavigateToCategory(category = intent.category))
             HomeIntent.OnSearchTap -> _event.emit(HomeEvent.NavigateToSearch)
             HomeIntent.OnSnackbarActionTap -> onSnackbarActionTap()
@@ -119,11 +120,11 @@ class HomeViewModel @Inject constructor(
 
     }
 
-    private suspend fun onArtworkTap(artworkId: Long) {
+    private suspend fun onArtworkTap(artworkId: Long, rgb: Int?) {
 
         val event = when (artworkId) {
             Artwork.UNKNOWN_ID -> HomeEvent.NavigateToUnknown
-            else -> NavigateToArtwork(artworkId = artworkId)
+            else -> NavigateToArtwork(artworkId = artworkId, rgb = rgb)
         }
 
         _event.emit(event)

@@ -17,6 +17,7 @@ import androidx.compose.ui.text.style.TextAlign
 import com.mskd.flux.R
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.Episode
+import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.ui.component.Text
 import com.mskd.flux.ui.theme.AppTheme
@@ -28,7 +29,10 @@ import com.mskd.flux.utils.extensions.timeDescription
 
 
 @Composable
-fun ArtworkDescription(media: Media) {
+fun ArtworkDescription(
+    fullArtwork: FullArtwork,
+    currentMedia: Media
+) {
 
     Column(
         modifier = Modifier
@@ -46,15 +50,15 @@ fun ArtworkDescription(media: Media) {
         ) {
 
 
-            if (media is Episode) {
+            if (currentMedia is Episode) {
                 Row(horizontalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)) {
                     Text.Label.Medium(
-                        text = stringResource(id = R.string.season, media.season).uppercase(),
+                        text = stringResource(id = R.string.season, currentMedia.season).uppercase(),
                         emphasized = true,
                         color = MaterialTheme.colorScheme.primary,
                     )
                     Text.Label.Medium(
-                        text = stringResource(id = R.string.episode, media.number).uppercase(),
+                        text = stringResource(id = R.string.episode, currentMedia.number).uppercase(),
                         emphasized = true,
                         color = MaterialTheme.colorScheme.secondary
                     )
@@ -63,7 +67,7 @@ fun ArtworkDescription(media: Media) {
 
             Text.Headline.Medium(
                 modifier = Modifier.fillMaxWidth(),
-                text = if (media is Episode) media.title else stringResource(R.string.summary),
+                text = if (currentMedia is Episode) currentMedia.title else stringResource(R.string.summary),
                 color = MaterialTheme.colorScheme.onSurface,
                 emphasized = true
             )
@@ -72,12 +76,12 @@ fun ArtworkDescription(media: Media) {
 
         Text.Body.Large(
             modifier = Modifier.fillMaxWidth(),
-            text = media.description,
+            text = currentMedia.description,
             textAlign = TextAlign.Justify,
             color = MaterialTheme.colorScheme.onSurface
         )
 
-        MediaDescriptionDetails(media)
+        MediaDescriptionDetails(currentMedia)
 
     }
 
@@ -116,7 +120,10 @@ fun MediaDescriptionDetails(media: Media) {
 @Composable
 fun ArtworkDescription_Movie_Preview() {
     AppTheme {
-        ArtworkDescription(media = MediaMockups.movie)
+        ArtworkDescription(
+            fullArtwork = MediaMockups.fullMovie,
+            currentMedia = MediaMockups.fullMovie.movie
+        )
     }
 }
 
@@ -124,6 +131,9 @@ fun ArtworkDescription_Movie_Preview() {
 @Composable
 fun ArtworkDescription_Show_Preview() {
     AppTheme {
-        ArtworkDescription(media = MediaMockups.episode1)
+        ArtworkDescription(
+            fullArtwork = MediaMockups.fullShow,
+            currentMedia = MediaMockups.episode1
+        )
     }
 }

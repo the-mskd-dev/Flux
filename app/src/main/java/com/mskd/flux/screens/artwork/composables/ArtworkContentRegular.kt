@@ -73,7 +73,10 @@ fun ArtworkContentRegular(
 
         item {
 
-            ArtworkDescription(media = currentMedia)
+            ArtworkDescription(
+                fullArtwork = fullArtwork,
+                currentMedia = currentMedia
+            )
 
         }
 

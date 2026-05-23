@@ -75,7 +75,10 @@ fun ArtworkContentLarge(
 
             item {
 
-                ArtworkDescription(media = currentMedia)
+                ArtworkDescription(
+                    fullArtwork = fullArtwork,
+                    currentMedia = currentMedia
+                )
 
             }
 

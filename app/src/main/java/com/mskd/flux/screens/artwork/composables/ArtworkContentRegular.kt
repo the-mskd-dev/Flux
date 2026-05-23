@@ -121,7 +121,6 @@ fun ArtworkContentRegular(
                         modifier = Modifier.animateItem(),
                         episode = episode,
                         isSelected = episode.id == currentMedia.mediaId,
-                        isLargeScreen = false,
                         sendIntent = sendIntent
                     )
 

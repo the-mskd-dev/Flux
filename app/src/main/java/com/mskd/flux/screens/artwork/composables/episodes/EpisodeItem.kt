@@ -54,7 +54,7 @@ fun EpisodeItem(
 ) {
 
     var showMenu by remember { mutableStateOf(false) }
-    val bgColor by animateColorAsState(if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainer)
+    val bgColor by animateColorAsState(if (isSelected) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.surfaceContainer)
 
     Column(
         modifier = modifier
@@ -93,7 +93,7 @@ fun EpisodeItem(
                     textAlign = TextAlign.Start,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
-                    color = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurface,
+                    color = if (isSelected) MaterialTheme.colorScheme.onSecondaryContainer else MaterialTheme.colorScheme.onSurface,
                     emphasized = true
                 )
 
@@ -117,7 +117,7 @@ fun EpisodeItem(
 
         Text.Body.Medium(
             text = episode.description,
-            color = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurface,
+            color = if (isSelected) MaterialTheme.colorScheme.onSecondaryContainer else MaterialTheme.colorScheme.onSurface,
         )
 
         if (showMenu) {

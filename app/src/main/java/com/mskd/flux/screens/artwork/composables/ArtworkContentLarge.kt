@@ -74,6 +74,10 @@ fun ArtworkContentLarge(
             }
 
             item {
+                Spacer(modifier = Modifier.height(Ui.Space.LARGE))
+            }
+
+            item {
 
                 ArtworkDescriptionsPager(
                     fullArtwork = fullArtwork,
@@ -82,32 +86,47 @@ fun ArtworkContentLarge(
 
             }
 
+            item {
+                Spacer(modifier = Modifier.height(Ui.Space.LARGE))
+            }
+
             (fullArtwork as? FullArtwork.FullShow)?.let { show ->
 
                 if (show.episodes.isNotEmpty()) {
 
                     item {
 
-                        Column(
-                            modifier = Modifier.padding(top = Ui.Space.LARGE),
-                            verticalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)
-                        ) {
+                        Column(verticalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)) {
 
                             Text.Title.Large(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(horizontal = Ui.Space.MEDIUM),
-                                text = stringResource(R.string.episode_list),
+                                text = stringResource(R.string.episodes),
+                                emphasized = true,
                                 color = MaterialTheme.colorScheme.onBackground
                             )
 
-                            SeasonsTabs(
-                                seasons = show.seasons,
-                                currentSeason = currentSeason,
-                                sendIntent = sendIntent
-                            )
                         }
 
+                    }
+
+                    item {
+                        Spacer(modifier = Modifier.height(Ui.Space.MEDIUM))
+                    }
+
+                    item {
+
+                        SeasonsTabs(
+                            seasons = show.seasons,
+                            currentSeason = currentSeason,
+                            sendIntent = sendIntent
+                        )
+
+                    }
+
+                    item {
+                        Spacer(modifier = Modifier.height(Ui.Space.MEDIUM))
                     }
 
                     items(
@@ -123,6 +142,8 @@ fun ArtworkContentLarge(
                             isSelected = episode.id == currentMedia.mediaId,
                             sendIntent = sendIntent
                         )
+
+                        Spacer(modifier = Modifier.height(Ui.Space.SMALL))
 
                     }
 

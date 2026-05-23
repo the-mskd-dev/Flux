@@ -1,22 +1,53 @@
 package com.mskd.flux.screens.artwork.composables.common
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.SizeTransform
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.EaseIn
+import androidx.compose.animation.core.EaseOut
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import com.mskd.flux.R
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.Artwork
@@ -30,6 +61,7 @@ import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.extensions.formattedText
 import com.mskd.flux.utils.extensions.minToMs
 import com.mskd.flux.utils.extensions.timeDescription
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -38,17 +70,30 @@ fun ArtworkDescriptionsPager(
     currentMedia: Media
 ) {
 
-    val pagerState = rememberPagerState {
-        when (fullArtwork) {
-            is FullArtwork.FullMovie -> 1
-            is FullArtwork.FullShow -> if (fullArtwork.isWatching) 2 else 1
-        }
+    val pageCount = when (fullArtwork) {
+        is FullArtwork.FullMovie -> 1
+        is FullArtwork.FullShow -> if (fullArtwork.isWatching) 2 else 1
     }
 
-    HorizontalPager(
-        state = pagerState,
-        contentPadding = PaddingValues(horizontal = Ui.Space.MEDIUM),
-        pageSpacing = Ui.Space.SMALL
+    var currentPage by remember { mutableIntStateOf(0) }
+
+    AnimatedContent(
+        targetState = currentPage,
+        modifier = Modifier
+            .padding(horizontal = Ui.Space.MEDIUM)
+            .clickable {
+                when {
+                    currentPage < pageCount - 1 -> currentPage++
+                    currentPage > 0 -> currentPage--
+                }
+            },
+        transitionSpec = {
+            if (targetState > initialState) {
+                fadeIn() togetherWith fadeOut()
+            } else {
+                fadeIn() togetherWith fadeOut()
+            }
+        }
     ) { i ->
 
         when (fullArtwork) {
@@ -67,7 +112,15 @@ fun ArtworkDescriptionsPager(
 
                 val episode = currentMedia as Episode
 
-                if (i == 0) {
+
+                if (i > 0 || pageCount == 1) {
+
+                    ArtworkDescription(
+                        title = stringResource(R.string.summary),
+                        description = fullArtwork.artwork.description.ifEmpty { stringResource(R.string.no_summary) },
+                    )
+
+                } else {
 
                     ArtworkDescription(
                         title = episode.title,
@@ -76,19 +129,13 @@ fun ArtworkDescriptionsPager(
                         bottomDetails = { MediaDescriptionDetails(media = episode) }
                     )
 
-                } else {
-
-                    ArtworkDescription(
-                        title = stringResource(R.string.summary),
-                        description = fullArtwork.artwork.description.ifEmpty { stringResource(R.string.no_summary) },
-                    )
-
                 }
 
             }
         }
 
     }
+
 
 }
 
@@ -102,7 +149,6 @@ fun ArtworkDescription(
 
     Column(
         modifier = Modifier
-            .padding(horizontal = Ui.Space.MEDIUM)
             .clip(Ui.Shape.Corner.Large)
             .background(MaterialTheme.colorScheme.surfaceContainer)
             .fillMaxWidth()

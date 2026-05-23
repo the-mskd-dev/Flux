@@ -101,11 +101,10 @@ fun ArtworkContentLarge(
                             )
 
                             SeasonsTabs(
-                                selectedSeason = currentSeason,
-                                seasons = show.episodes.map { it.season }.distinct(),
-                                onSeasonTap = { sendIntent(ArtworkIntent.SelectSeason(it)) }
+                                seasons = show.seasons,
+                                currentSeason = currentSeason,
+                                sendIntent = sendIntent
                             )
-
                         }
 
                     }

@@ -27,7 +27,7 @@ import com.mskd.flux.screens.artwork.composables.common.ArtworkButtons
 import com.mskd.flux.screens.artwork.composables.common.ArtworkDescription
 import com.mskd.flux.screens.artwork.composables.common.ArtworkImage
 import com.mskd.flux.screens.artwork.composables.episodes.EpisodeItem
-import com.mskd.flux.screens.artwork.composables.episodes.SeasonsPager
+import com.mskd.flux.screens.artwork.composables.episodes.SeasonsTabs
 import com.mskd.flux.ui.component.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
@@ -100,7 +100,7 @@ fun ArtworkContentRegular(
 
                 item {
 
-                    SeasonsPager(
+                    SeasonsTabs(
                         seasons = show.seasons,
                         currentSeason = currentSeason,
                         sendIntent = sendIntent

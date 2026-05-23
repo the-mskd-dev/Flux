@@ -1,5 +1,6 @@
 package com.mskd.flux.screens.artwork.composables.episodes
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
@@ -55,12 +56,13 @@ fun EpisodeItem(
 ) {
 
     var showMenu by remember { mutableStateOf(false) }
+    val bgColor by animateColorAsState(if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainer)
 
     Column(
         modifier = modifier
             .padding(horizontal = Ui.Space.MEDIUM)
             .clip(Ui.Shape.Corner.Large)
-            .background(if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainer)
+            .background(bgColor)
             .combinedClickable(
                 onClick = { sendIntent(ArtworkIntent.PlayMedia(episode)) },
                 onLongClick = { showMenu = true }

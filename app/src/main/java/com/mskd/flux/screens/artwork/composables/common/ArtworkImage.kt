@@ -46,7 +46,7 @@ fun ArtworkImage(
 
     var imageHeight by remember { mutableIntStateOf(0) }
     val imageRequest = ImageRequest.Builder(LocalContext.current)
-        .data(fullArtwork.currentImagePath.tmdbImage)
+        .data(fullArtwork.imagePath.tmdbImage)
         .crossfade(true)
         .build()
 

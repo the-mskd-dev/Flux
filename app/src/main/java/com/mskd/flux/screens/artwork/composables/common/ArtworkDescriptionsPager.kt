@@ -3,9 +3,12 @@ package com.mskd.flux.screens.artwork.composables.common
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -16,6 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.mskd.flux.R
 import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.model.artwork.Media
@@ -29,9 +33,51 @@ import com.mskd.flux.utils.extensions.timeDescription
 
 
 @Composable
-fun ArtworkDescription(
+fun ArtworkDescriptionsPager(
     fullArtwork: FullArtwork,
     currentMedia: Media
+) {
+
+    ArtworkDescription(
+        title = if (currentMedia is Episode) currentMedia.title else stringResource(R.string.summary),
+        description = currentMedia.description,
+        topDetails = { if (currentMedia is Episode) EpisodesDetails(episode = currentMedia) },
+        bottomDetails = { MediaDescriptionDetails(currentMedia) }
+    )
+
+    /*val pagerState = rememberPagerState {
+        when (fullArtwork) {
+            is FullArtwork.FullMovie -> 1
+            is FullArtwork.FullShow -> if (fullArtwork.isWatching) 2 else 1
+        }
+    }
+
+    HorizontalPager(
+        state = pagerState,
+        contentPadding = PaddingValues(horizontal = Ui.Space.MEDIUM),
+        pageSpacing = Ui.Space.SMALL
+    ) { i ->
+
+        when {
+
+        }
+
+        /**
+         * 1. Show + isWatching
+         * 2. Show + !isWatching
+         * 3. Movie
+         */
+
+    }*/
+
+}
+
+@Composable
+fun ArtworkDescription(
+    title: String,
+    description: String,
+    topDetails: @Composable () -> Unit,
+    bottomDetails: @Composable () -> Unit
 ) {
 
     Column(
@@ -49,25 +95,11 @@ fun ArtworkDescription(
             verticalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)
         ) {
 
-
-            if (currentMedia is Episode) {
-                Row(horizontalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)) {
-                    Text.Label.Medium(
-                        text = stringResource(id = R.string.season, currentMedia.season).uppercase(),
-                        emphasized = true,
-                        color = MaterialTheme.colorScheme.primary,
-                    )
-                    Text.Label.Medium(
-                        text = stringResource(id = R.string.episode, currentMedia.number).uppercase(),
-                        emphasized = true,
-                        color = MaterialTheme.colorScheme.secondary
-                    )
-                }
-            }
+            topDetails()
 
             Text.Headline.Medium(
                 modifier = Modifier.fillMaxWidth(),
-                text = if (currentMedia is Episode) currentMedia.title else stringResource(R.string.summary),
+                text = title,
                 color = MaterialTheme.colorScheme.onSurface,
                 emphasized = true
             )
@@ -76,13 +108,31 @@ fun ArtworkDescription(
 
         Text.Body.Large(
             modifier = Modifier.fillMaxWidth(),
-            text = currentMedia.description,
+            text = description,
             textAlign = TextAlign.Justify,
             color = MaterialTheme.colorScheme.onSurface
         )
 
-        MediaDescriptionDetails(currentMedia)
+        bottomDetails()
 
+    }
+
+}
+
+@Composable
+fun EpisodesDetails(episode: Episode) {
+
+    Row(horizontalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)) {
+        Text.Label.Medium(
+            text = stringResource(id = R.string.season, episode.season).uppercase(),
+            emphasized = true,
+            color = MaterialTheme.colorScheme.primary,
+        )
+        Text.Label.Medium(
+            text = stringResource(id = R.string.episode, episode.number).uppercase(),
+            emphasized = true,
+            color = MaterialTheme.colorScheme.secondary
+        )
     }
 
 }
@@ -114,13 +164,14 @@ fun MediaDescriptionDetails(media: Media) {
         }
 
     }
+
 }
 
 @FluxPreview
 @Composable
-fun ArtworkDescription_Movie_Preview() {
+fun ArtworkDescriptionsPager_Movie_Preview() {
     AppTheme {
-        ArtworkDescription(
+        ArtworkDescriptionsPager(
             fullArtwork = MediaMockups.fullMovie,
             currentMedia = MediaMockups.fullMovie.movie
         )
@@ -129,9 +180,9 @@ fun ArtworkDescription_Movie_Preview() {
 
 @FluxPreview
 @Composable
-fun ArtworkDescription_Show_Preview() {
+fun ArtworkDescriptionsPager_Show_Preview() {
     AppTheme {
-        ArtworkDescription(
+        ArtworkDescriptionsPager(
             fullArtwork = MediaMockups.fullShow,
             currentMedia = MediaMockups.episode1
         )

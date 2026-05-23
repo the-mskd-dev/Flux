@@ -23,7 +23,7 @@ import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.screens.artwork.ArtworkIntent
 import com.mskd.flux.screens.artwork.composables.common.ArtworkButtons
-import com.mskd.flux.screens.artwork.composables.common.ArtworkDescription
+import com.mskd.flux.screens.artwork.composables.common.ArtworkDescriptionsPager
 import com.mskd.flux.screens.artwork.composables.common.ArtworkImage
 import com.mskd.flux.screens.artwork.composables.episodes.EpisodeItem
 import com.mskd.flux.screens.artwork.composables.episodes.SeasonsTabs
@@ -75,7 +75,7 @@ fun ArtworkContentLarge(
 
             item {
 
-                ArtworkDescription(
+                ArtworkDescriptionsPager(
                     fullArtwork = fullArtwork,
                     currentMedia = currentMedia
                 )

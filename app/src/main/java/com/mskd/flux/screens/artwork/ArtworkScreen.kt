@@ -48,6 +48,7 @@ import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Route.Player
 import com.mskd.flux.screens.artwork.composables.ArtworkContentLarge
 import com.mskd.flux.screens.artwork.composables.ArtworkContentRegular
+import com.mskd.flux.screens.artwork.composables.common.SeasonDialog
 import com.mskd.flux.ui.component.ErrorScreen
 import com.mskd.flux.ui.component.FluxDialog
 import com.mskd.flux.ui.component.LoadingScreen
@@ -245,6 +246,13 @@ fun ArtworkScreenContent(
                 currentMedia = uiState.selectedMedia,
                 currentSeason = uiState.selectedSeason,
                 scaffoldInnerPadding = innerPadding,
+                sendIntent = sendIntent,
+            )
+        }
+
+        uiState.previewForSeason?.let {
+            SeasonDialog(
+                season = it,
                 sendIntent = sendIntent,
             )
         }

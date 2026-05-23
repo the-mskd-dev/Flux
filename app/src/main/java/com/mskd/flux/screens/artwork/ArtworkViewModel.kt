@@ -11,6 +11,7 @@ import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.artwork.Movie
+import com.mskd.flux.model.artwork.Season
 import com.mskd.flux.model.artwork.Status
 import com.mskd.flux.screens.artwork.ArtworkEvent.OpenEpisodeInfo
 import com.mskd.flux.useCases.artwork.ArtworkUC
@@ -55,7 +56,8 @@ class ArtworkViewModel @AssistedInject constructor(
         val selectedMedia: Media? = null,
         val selectedSeason: Int? = null,
         val episodePendingConfirmation: Episode? = null,
-        val showResetProgressDialog: Boolean = false
+        val showResetProgressDialog: Boolean = false,
+        val previewForSeason: Season? = null
     )
 
     //endregion
@@ -119,6 +121,7 @@ class ArtworkViewModel @AssistedInject constructor(
             is ArtworkIntent.OnExternalPlayerResult -> onExternalPlayerResult(intent.progress)
             is ArtworkIntent.ShowResetProgressDialog -> showResetProgressDialog(show = intent.show)
             ArtworkIntent.ResetProgress -> resetProgress()
+            is ArtworkIntent.ShowPreviewForSeason -> showPreviewForSeason(season = intent.season)
         }
     }
 
@@ -153,7 +156,8 @@ class ArtworkViewModel @AssistedInject constructor(
                     selectedMedia = media,
                     episodePendingConfirmation = subState.episodePendingConfirmation,
                     useExternalPlayer = settings.externalPlayer,
-                    showResetProgressDialog = subState.showResetProgressDialog
+                    showResetProgressDialog = subState.showResetProgressDialog,
+                    previewForSeason = subState.previewForSeason
                 )
             }
         }
@@ -248,6 +252,10 @@ class ArtworkViewModel @AssistedInject constructor(
 
         }
 
+    }
+
+    private fun showPreviewForSeason(season: Season?) {
+        _subState.update { it.copy(previewForSeason = season) }
     }
 
     //endregion

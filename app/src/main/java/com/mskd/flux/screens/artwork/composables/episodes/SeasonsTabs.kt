@@ -6,6 +6,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -93,7 +94,10 @@ fun SeasonItem(
             .width(130.dp)
             .aspectRatio(3f/4f)
             .clip(MaterialTheme.shapes.large)
-            .clickable { sendIntent(ArtworkIntent.SelectSeason(season.season)) }
+            .combinedClickable(
+                onClick = { sendIntent(ArtworkIntent.SelectSeason(season.season)) },
+                onLongClick = { sendIntent(ArtworkIntent.ShowPreviewForSeason(season)) }
+            )
             .onSizeChanged { imageHeight = it.height },
         contentAlignment = Alignment.BottomCenter
     ) {
@@ -123,7 +127,7 @@ fun SeasonItem(
 
         Text.Title.Large(
             modifier = Modifier.padding(bottom = Ui.Space.MEDIUM),
-            text = stringResource(R.string.season, season.season),
+            text = season.title.ifEmpty { stringResource(R.string.season, season.season) },
             emphasized = true
         )
 

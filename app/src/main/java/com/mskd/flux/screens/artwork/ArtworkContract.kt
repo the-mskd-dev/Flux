@@ -7,6 +7,7 @@ import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.model.artwork.Media
+import com.mskd.flux.model.artwork.Season
 
 @Immutable
 data class ArtworkUiState(
@@ -15,7 +16,8 @@ data class ArtworkUiState(
     val selectedSeason: Int = -1,
     val episodePendingConfirmation: Episode? = null,
     val useExternalPlayer: Boolean = false,
-    val showResetProgressDialog: Boolean = false
+    val showResetProgressDialog: Boolean = false,
+    val previewForSeason: Season? = null
 )
 
 sealed class ArtworkIntent {
@@ -30,6 +32,7 @@ sealed class ArtworkIntent {
     data class OnExternalPlayerResult(val progress: Long) : ArtworkIntent()
     data class ShowResetProgressDialog(val show: Boolean) : ArtworkIntent()
     data object ResetProgress: ArtworkIntent()
+    data class ShowPreviewForSeason(val season: Season?) : ArtworkIntent()
 }
 
 sealed class ArtworkEvent {

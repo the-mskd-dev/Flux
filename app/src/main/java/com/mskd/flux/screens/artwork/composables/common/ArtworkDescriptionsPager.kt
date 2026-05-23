@@ -123,7 +123,7 @@ fun ArtworkDescription(
     Column(
         modifier = Modifier
             .clip(MaterialTheme.shapes.large)
-            .background(MaterialTheme.colorScheme.background)
+            .background(MaterialTheme.colorScheme.surfaceContainer)
             .fillMaxWidth()
             .padding(all = Ui.Space.MEDIUM),
         verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
@@ -139,7 +139,7 @@ fun ArtworkDescription(
             Text.Headline.Medium(
                 modifier = Modifier.fillMaxWidth(),
                 text = title,
-                color = MaterialTheme.colorScheme.onBackground,
+                color = MaterialTheme.colorScheme.onSurface,
                 emphasized = true
             )
 
@@ -149,7 +149,7 @@ fun ArtworkDescription(
             modifier = Modifier.fillMaxWidth(),
             text = description,
             textAlign = TextAlign.Left,
-            color = MaterialTheme.colorScheme.onBackground
+            color = MaterialTheme.colorScheme.onSurface
         )
 
         bottomDetails()

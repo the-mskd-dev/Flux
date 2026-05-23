@@ -187,7 +187,7 @@ fun ArtworkScreenContent(
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
 
             CenterAlignedTopAppBar(
@@ -210,8 +210,8 @@ fun ArtworkScreenContent(
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.Transparent,
-                    scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
-                    titleContentColor = MaterialTheme.colorScheme.onSurface,
+                    scrolledContainerColor = MaterialTheme.colorScheme.background,
+                    titleContentColor = MaterialTheme.colorScheme.onBackground,
                 ),
                 actions = {
                     IconButton(
@@ -290,6 +290,7 @@ fun ArtworkDropDownMenu(
         containerColor = MaterialTheme.colorScheme.tertiaryContainer,
         content = {
 
+
             ArtworkDropDownMenuItem(
                 text = stringResource(R.string.more_info),
                 onClick = {
@@ -326,8 +327,8 @@ fun ArtworkDropDownMenuItem(
 
     DropdownMenuItem(
         colors = MenuDefaults.itemColors(
-            textColor = MaterialTheme.colorScheme.onSurface,
-            leadingIconColor = MaterialTheme.colorScheme.onSurface,
+            textColor = MaterialTheme.colorScheme.onTertiaryContainer,
+            leadingIconColor = MaterialTheme.colorScheme.onTertiaryContainer,
         ),
         onClick = onClick,
         text = { Text.Body.Medium(text = text) },

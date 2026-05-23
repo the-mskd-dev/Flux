@@ -125,7 +125,7 @@ fun SearchContent(
                     value = state.searchWord,
                     onValueChange = { sendIntent(SearchIntent.DoSearch(it)) },
                     singleLine = true,
-                    shape = Ui.Shape.Corner.Small,
+                    shape = MaterialTheme.shapes.small,
                     colors = TextFieldDefaults.colors(
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,

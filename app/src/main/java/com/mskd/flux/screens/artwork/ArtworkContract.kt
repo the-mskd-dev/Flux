@@ -2,21 +2,22 @@ package com.mskd.flux.screens.artwork
 
 import androidx.compose.runtime.Immutable
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.model.ScreenState
+import com.mskd.flux.model.State
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.Episode
+import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.model.artwork.Media
+import com.mskd.flux.model.artwork.Season
 
 @Immutable
 data class ArtworkUiState(
-    val screen: ScreenState = ScreenState.LOADING,
-    val artwork: Artwork = MediaMockups.showArtwork,
-    val media: Media = MediaMockups.episode1,
-    val episodes: List<Episode> = emptyList(),
-    val season: Int = -1,
+    val state: State<FullArtwork> = State.Loading,
+    val selectedMedia: Media = MediaMockups.episode1,
+    val selectedSeason: Int = -1,
     val episodePendingConfirmation: Episode? = null,
     val useExternalPlayer: Boolean = false,
-    val showResetProgressDialog: Boolean = false
+    val showResetProgressDialog: Boolean = false,
+    val previewForSeason: Season? = null
 )
 
 sealed class ArtworkIntent {
@@ -31,6 +32,7 @@ sealed class ArtworkIntent {
     data class OnExternalPlayerResult(val progress: Long) : ArtworkIntent()
     data class ShowResetProgressDialog(val show: Boolean) : ArtworkIntent()
     data object ResetProgress: ArtworkIntent()
+    data class ShowPreviewForSeason(val season: Season?) : ArtworkIntent()
 }
 
 sealed class ArtworkEvent {

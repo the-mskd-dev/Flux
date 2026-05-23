@@ -140,6 +140,9 @@ dependencies {
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.bundles.compose)
 
+    // UI
+    implementation(libs.androidx.palette)
+
     // Navigation 3
     implementation(libs.bundles.nav3)
 

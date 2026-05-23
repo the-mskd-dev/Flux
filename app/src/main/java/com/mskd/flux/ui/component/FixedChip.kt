@@ -25,7 +25,7 @@ fun FixedChip(
 ) {
     Box(
         modifier = Modifier
-            .clip(Ui.Shape.Corner.Small)
+            .clip(MaterialTheme.shapes.small)
             .height(32.dp)
             .background(backgroundColor)
             .padding(horizontal = Ui.Space.MEDIUM),

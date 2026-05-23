@@ -18,11 +18,14 @@ import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.artwork.Movie
+import com.mskd.flux.model.artwork.Season
 import com.mskd.flux.model.artwork.Status
-import com.mskd.flux.model.tmdb.findWithLocale
+import com.mskd.flux.model.tmdb.TMDBEpisode
+import com.mskd.flux.model.tmdb.TMDBTranslations
 import com.mskd.flux.useCases.images.ImagesUC
 import com.mskd.flux.utils.extensions.groupInFolders
 import com.mskd.flux.utils.extensions.msToMin
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -36,18 +39,49 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withContext
 
+/**
+ * Use case interface for managing the media catalog.
+ */
 interface CatalogUC {
 
+    /**
+     * Flow representing the current state of catalog synchronization.
+     */
     val state: Flow<State>
+
+    /**
+     * Flow emitting the list of all artworks saved in the database.
+     */
     val artworks : Flow<List<Artwork>>
+
+    /**
+     * Synchronizes the local media catalog with files on the device.
+     *
+     * It scans the media files, queries TMDB for metadata, and updates the database.
+     * If [onlyNew] is true, it only processes newly added files.
+     */
     fun syncCatalog(onlyNew: Boolean)
 
+    /**
+     * Retrieves and constructs a [Catalog] object from a list of user files.
+     *
+     * It groups files into folders and parallelly fetches artwork metadata.
+     */
     suspend fun getCatalog(files: List<UserFile>) : Catalog
 
+    /**
+     * Cleans up the database catalog by removing entries of files that no longer exist.
+     */
     suspend fun cleanCatalog()
 
+    /**
+     * Re-fetches localized details (translations) for all items currently in the catalog.
+     */
     fun updateLanguage()
 
+    /**
+     * Represents the current state of the catalog synchronization.
+     */
     sealed class State {
         data object Idle: State()
         data class Syncing(val full: Boolean) : State()
@@ -63,7 +97,8 @@ class CatalogUCImpl(
     private val settings: SettingsRepository,
     private val imagesUC: ImagesUC,
     private val scope: CoroutineScope,
-    private val context: Context
+    private val context: Context,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(10)
 ) : CatalogUC {
 
     private companion object {
@@ -85,8 +120,6 @@ class CatalogUCImpl(
 
     private var _state = MutableStateFlow<CatalogUC.State>(CatalogUC.State.Idle)
 
-    private val dispatcher = Dispatchers.IO.limitedParallelism(10)
-
     //endregion
 
     //region Public methods
@@ -95,6 +128,11 @@ class CatalogUCImpl(
 
     override val artworks: Flow<List<Artwork>> = database.flowArtworks()
 
+    /**
+     * Cancels active operations and launches a coroutine to sync files with the database.
+     *
+     * It scans the media folder, checks TMDB for metadata, preserves playback progress, and saves the new catalog.
+     */
     override fun syncCatalog(onlyNew: Boolean) {
 
         if ((_state.value as? CatalogUC.State.Syncing)?.full == true && onlyNew)
@@ -147,6 +185,7 @@ class CatalogUCImpl(
             // Save data
             database.saveArtworks(artworks = catalog.artworks)
             database.saveMovies(movies = catalog.movies)
+            database.saveSeasons(seasons = catalog.seasons)
             database.saveEpisodes(episodes = catalog.episodes)
 
             // Pre-fetch images if needed
@@ -162,6 +201,9 @@ class CatalogUCImpl(
 
     }
 
+    /**
+     * Groups user files into directory folders and asynchronously retrieves movies and shows details.
+     */
     override suspend fun getCatalog(files: List<UserFile>) : Catalog {
 
         val folders = files.groupInFolders()
@@ -169,28 +211,38 @@ class CatalogUCImpl(
         // Get data
         val artworksFolders = getArtworksFolders(folders = folders)
 
-        val (movies, episodes) = supervisorScope {
+        val (movies, seasonsAndTmdbEpisodes) = supervisorScope {
             val moviesDeferred = async {
                 runCatching { getMovies(artworkFolders = artworksFolders) }
                     .onFailure { Log.e(TAG, "getMovies failed", it) }
                     .getOrElse { emptyList() }
             }
-            val episodesDeferred = async {
-                runCatching { getEpisodes(artworkFolders = artworksFolders) }
-                    .onFailure { Log.e(TAG, "getEpisodes failed", it) }
+            val seasonsAndTmdbEpisodesDeferred = async {
+                runCatching { getSeasonsAndTmdbEpisodes(artworkFolders = artworksFolders) }
+                    .onFailure { Log.e(TAG, "getSeasons failed", it) }
                     .getOrElse { emptyList() }
             }
-            moviesDeferred.await() to episodesDeferred.await()
+
+            moviesDeferred.await() to seasonsAndTmdbEpisodesDeferred.await()
         }
+
+        val seasons = seasonsAndTmdbEpisodes.map { it.first }
+        val tmdbEpisodes = seasonsAndTmdbEpisodes.flatMap { it.second }
+
+        val episodes = getEpisodes(artworkFolders = artworksFolders, tmdbEpisodes = tmdbEpisodes)
 
         return Catalog(
             artworks = artworksFolders.map { it.artwork },
             movies = movies.filterIsInstance<Movie>(),
-            episodes = movies.filterIsInstance<Episode>() + episodes
+            seasons = seasons,
+            episodes = episodes + movies.filterIsInstance<Episode>()
         )
 
     }
 
+    /**
+     * Discovers all current files on disk and removes missing media from the database catalog.
+     */
     override suspend fun cleanCatalog() {
 
         val allFiles = files.getFiles()
@@ -198,6 +250,9 @@ class CatalogUCImpl(
 
     }
 
+    /**
+     * Asynchronously updates the language metadata of stored movies, seasons, and episodes via TMDB.
+     */
     override fun updateLanguage() {
 
         translationJob?.cancel()
@@ -208,9 +263,11 @@ class CatalogUCImpl(
 
             val language = settings.getDataLanguage()
             val movies = database.getMovies()
+            val seasons = database.getSeasons()
             val episodes = database.getEpisodes()
 
             var translatedMovies: List<Movie> = emptyList()
+            var translatedSeasons: List<Season> = emptyList()
             var translatedEpisodes: List<Episode> = emptyList()
 
             supervisorScope {
@@ -219,7 +276,12 @@ class CatalogUCImpl(
 
                     async(dispatcher) {
 
-                        tmdb.getTmdbMovieTranslations(artworkId = movie.artworkId).findWithLocale(language)?.let { translation ->
+                        tmdb.getTmdbTranslation(
+                            request = TMDBTranslations.Request.Movie(
+                                artworkId = movie.artworkId,
+                                language = language
+                            ),
+                        )?.let { translation ->
 
                             movie.copy(
                                 title = translation.data.name ?: movie.title,
@@ -232,15 +294,41 @@ class CatalogUCImpl(
 
                 }.awaitAll().filterNotNull()
 
+                translatedSeasons = seasons.map { season ->
+
+                    async(dispatcher) {
+
+                        tmdb.getTmdbTranslation(
+                            request = TMDBTranslations.Request.Season(
+                                artworkId = season.artworkId,
+                                season = season.season,
+                                language = language
+                            ),
+                        )?.let { translation ->
+
+                            season.copy(
+                                title = translation.data.name ?: season.title,
+                                description = translation.data.overview ?: season.description
+                            )
+
+                        }
+
+                    }
+
+                }.awaitAll().filterNotNull()
+
                 translatedEpisodes = episodes.map { episode ->
 
                     async(dispatcher) {
 
-                        tmdb.getTmdbEpisodeTranslations(
-                            artworkId = episode.artworkId,
-                            season = episode.season,
-                            number = episode.number
-                        ).findWithLocale(language)?.let { translation ->
+                        tmdb.getTmdbTranslation(
+                            request = TMDBTranslations.Request.Episode(
+                                artworkId = episode.artworkId,
+                                season = episode.season,
+                                number = episode.number,
+                                language = language
+                            ),
+                        )?.let { translation ->
 
                             episode.copy(
                                 title = translation.data.name ?: episode.title,
@@ -257,6 +345,7 @@ class CatalogUCImpl(
             }
 
             database.saveMovies(translatedMovies)
+            database.saveSeasons(translatedSeasons)
             database.saveEpisodes(translatedEpisodes)
 
             _state.value = CatalogUC.State.Idle
@@ -269,6 +358,9 @@ class CatalogUCImpl(
 
     //region Private methods
 
+    /**
+     * Copies watch status and current time from existing database media to matched new items.
+     */
     private fun applyCurrentProgress(catalog: Catalog, dbMovies: List<Movie>, dbEpisodes: List<Episode>) : Catalog {
 
         var count = 0
@@ -308,11 +400,15 @@ class CatalogUCImpl(
         return Catalog(
             artworks = catalog.artworks,
             movies = movies,
+            seasons = catalog.seasons,
             episodes = episodes
         )
 
     }
 
+    /**
+     * Queries TMDB to associate each user folder with an [Artwork] based on its files.
+     */
     private suspend fun getArtworksFolders(folders: List<UserFolder>) : List<ArtworkFolder> {
 
         val artworkFolders = supervisorScope {
@@ -355,6 +451,9 @@ class CatalogUCImpl(
 
     }
 
+    /**
+     * Filters movie folders and fetches movie metadata details from TMDB in parallel.
+     */
     private suspend fun getMovies(artworkFolders: List<ArtworkFolder>) : List<Media> {
 
         val movies = supervisorScope {
@@ -396,7 +495,54 @@ class CatalogUCImpl(
 
     }
 
-    private suspend fun getEpisodes(artworkFolders: List<ArtworkFolder>) : List<Episode> {
+    private suspend fun getSeasonsAndTmdbEpisodes(artworkFolders: List<ArtworkFolder>) : List<Pair<Season, List<TMDBEpisode>>> {
+
+        val folders = artworkFolders.filter { it.artwork.type == ContentType.SHOW && it.artwork.id != Artwork.UNKNOWN_ID }
+
+        val seasons = supervisorScope {
+
+            folders.flatMap { (artwork, files) ->
+
+                files
+                    .map { it.season }
+                    .distinct()
+                    .filterNotNull()
+                    .map { season ->
+
+                        async(dispatcher) {
+
+                            try {
+
+                                tmdb.getTmdbSeason(artworkId = artwork.id, season = season)?.let {
+                                    Season(tmdbSeason = it, artworkId = artwork.id) to it.episodes
+                                }
+
+                            } catch (e: Exception) {
+                                Log.e(
+                                    TAG,
+                                    "getSeasons - Fail to get season for artworkId ${artwork.id} - season $season",
+                                    e
+                                )
+                                null
+                            }
+
+                        }
+
+                    }.awaitAll().filterNotNull()
+
+            }
+
+        }
+
+        return seasons
+
+    }
+
+    private suspend fun getEpisodes(artworkFolders: List<ArtworkFolder>, tmdbEpisodes: List<TMDBEpisode>) : List<Episode> {
+
+        val language = settings.getDataLanguage()
+
+        val tmdbEpisodesMap = tmdbEpisodes.associateBy { Triple(it.artworkId, it.season, it.number) }
 
         val episodes = supervisorScope {
 
@@ -415,16 +561,28 @@ class CatalogUCImpl(
                                 artwork.id == Artwork.UNKNOWN_ID -> createUnknownMedia(file = file)
                                 season != null && number != null -> {
 
-                                    val tmdbEpisode = tmdb.getTmdbEpisode(
-                                        artworkId = artwork.id,
-                                        season = season,
-                                        number = number
-                                    )
+                                    var tmdbEpisode = tmdbEpisodesMap[Triple(artwork.id, season, number)]
 
-                                    if (tmdbEpisode == null)
+                                    if (tmdbEpisode == null) {
                                         createUnknownMedia(file = file)
-                                    else
-                                        Episode(tmdbEpisode = tmdbEpisode, file = file,)
+                                    } else {
+
+                                        if (tmdbEpisode.title.isBlank() || tmdbEpisode.description.isBlank()) {
+
+                                            tmdbEpisode = tmdb.translateTmdbEpisode(
+                                                artworkId = artwork.id,
+                                                tmdbEpisode = tmdbEpisode,
+                                                language = language
+                                            )
+
+                                        }
+
+                                        Episode(
+                                            tmdbEpisode = tmdbEpisode,
+                                            artworkId = artwork.id,
+                                            file = file
+                                        )
+                                    }
 
                                 }
                                 else -> null
@@ -449,6 +607,9 @@ class CatalogUCImpl(
 
     }
 
+    /**
+     * Creates a fallback [Episode] with unknown metadata and extracts duration using MediaMetadataRetriever.
+     */
     private suspend fun createUnknownMedia(file: UserFile) : Episode = withContext(dispatcher) {
 
         Log.i(TAG, "Create unknown media for ${file.name}")

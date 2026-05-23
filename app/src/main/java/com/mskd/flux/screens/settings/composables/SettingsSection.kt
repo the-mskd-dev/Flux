@@ -36,7 +36,7 @@ fun SettingsSection(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = Ui.Space.LARGE)
-            .clip(Ui.Shape.Corner.Medium),
+            .clip(MaterialTheme.shapes.medium),
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.spacedBy(2.dp)
     ) { content(iconColor, iconBackgroundColor) }

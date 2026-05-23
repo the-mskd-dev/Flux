@@ -8,9 +8,11 @@ import com.mskd.flux.model.tmdb.TMDBArtwork
 import com.mskd.flux.model.tmdb.TMDBEpisode
 import com.mskd.flux.model.tmdb.TMDBMediaType
 import com.mskd.flux.model.tmdb.TMDBMovie
+import com.mskd.flux.model.tmdb.TMDBSeason
 import com.mskd.flux.model.tmdb.TMDBTranslations
 import com.mskd.flux.model.tmdb.findWithLocale
 import com.mskd.flux.utils.extensions.toTmdbFormat
+import java.util.Locale
 import javax.inject.Inject
 
 class TmdbRepositoryImpl @Inject constructor(
@@ -21,7 +23,6 @@ class TmdbRepositoryImpl @Inject constructor(
     private companion object {
         const val TAG = "TmdbRepositoryImpl"
     }
-
 
     override suspend fun getTmdbArtwork(
         file: UserFile
@@ -52,9 +53,12 @@ class TmdbRepositoryImpl @Inject constructor(
             // Get translation for show if needed
             if (tmdbArtwork?.type == TMDBMediaType.SHOW && (tmdbArtwork.description.isBlank() || tmdbArtwork.title.isBlank())) {
 
-                getTmdbShowTranslations(
-                    artworkId = tmdbArtwork.id
-                ).findWithLocale(language)?.let {
+                getTmdbTranslation(
+                    request = TMDBTranslations.Request.Show(
+                        artworkId = tmdbArtwork.id,
+                        language = language
+                    ),
+                )?.let {
                     tmdbArtwork = tmdbArtwork.copy(
                         title = it.data.name ?: tmdbArtwork.title,
                         description = it.data.overview ?: tmdbArtwork.description
@@ -87,9 +91,12 @@ class TmdbRepositoryImpl @Inject constructor(
 
             if (tmdbMovie.description.isBlank() || tmdbMovie.title.isBlank()) {
 
-                getTmdbMovieTranslations(
-                    artworkId = artworkId
-                ).findWithLocale(language)?.let {
+                getTmdbTranslation(
+                    request = TMDBTranslations.Request.Movie(
+                        artworkId = artworkId,
+                        language = language
+                    ),
+                )?.let {
                     tmdbMovie = tmdbMovie.copy(
                         title = it.data.name ?: tmdbMovie.title,
                         description = it.data.overview ?: tmdbMovie.description
@@ -120,24 +127,17 @@ class TmdbRepositoryImpl @Inject constructor(
             var tmdbEpisode = tmdbService.getEpisode(
                 id = artworkId,
                 season = season,
-                episode = number,
+                number = number,
                 language = language.toTmdbFormat()
-            ).also {
-                it.artworkId = artworkId
-            }
+            )
 
             if (tmdbEpisode.description.isBlank() || tmdbEpisode.title.isBlank()) {
 
-                getTmdbEpisodeTranslations(
+                tmdbEpisode = translateTmdbEpisode(
                     artworkId = artworkId,
-                    season = season,
-                    number = number
-                ).findWithLocale(language)?.let {
-                    tmdbEpisode = tmdbEpisode.copy(
-                        title = it.data.name ?: tmdbEpisode.title,
-                        description = it.data.overview ?: tmdbEpisode.description
-                    )
-                }
+                    tmdbEpisode = tmdbEpisode,
+                    language = language
+                )
 
             }
 
@@ -150,58 +150,80 @@ class TmdbRepositoryImpl @Inject constructor(
 
     }
 
-    override suspend fun getTmdbMovieTranslations(artworkId: Long): List<TMDBTranslations.Translation> {
+    override suspend fun getTmdbSeason(artworkId: Long, season: Int): TMDBSeason? {
+
+        val language = settings.getDataLanguage()
 
         return try {
 
-            tmdbService
-                .getMovieTranslations(id = artworkId)
-                .translations
+            var tmdbSeason = tmdbService.getSeason(
+                id = artworkId,
+                season = season,
+                language = language.toTmdbFormat()
+            )
+
+            if (tmdbSeason.description.isBlank() || tmdbSeason.title.isBlank()) {
+
+                getTmdbTranslation(
+                    request = TMDBTranslations.Request.Season(
+                        artworkId = artworkId,
+                        season = season,
+                        language = language
+                    ),
+                )?.let {
+                    tmdbSeason = tmdbSeason.copy(
+                        title = it.data.name ?: tmdbSeason.title,
+                        description = it.data.overview ?: tmdbSeason.description
+                    )
+                }
+
+            }
+
+            tmdbSeason
 
         } catch (e: Exception) {
-            Log.e(TAG, "getTmdbMovieTranslations - Fail to get translations for movie (artworkId:$artworkId)", e)
-            emptyList()
+            Log.e(TAG, "getTmdbSeason - Fail to get TMDBSeason for artworkId:$artworkId, season:$season (${language.toTmdbFormat()})", e)
+            null
         }
 
     }
 
-    override suspend fun getTmdbShowTranslations(artworkId: Long): List<TMDBTranslations.Translation> {
+    override suspend fun translateTmdbEpisode(artworkId: Long, tmdbEpisode: TMDBEpisode, language: Locale): TMDBEpisode {
 
-        return try {
-
-            tmdbService
-                .getShowTranslations(id = artworkId)
-                .translations
-
-        } catch (e: Exception) {
-            Log.e(TAG, "getTmdbShowTranslations - Fail to get translations for show (artworkId:$artworkId)", e)
-            emptyList()
-        }
-
-    }
-
-    override suspend fun getTmdbEpisodeTranslations(
-        artworkId: Long,
-        season: Int,
-        number: Int
-    ): List<TMDBTranslations.Translation> {
-
-        return try {
-
-            tmdbService
-                .getEpisodeTranslations(
-                    id = artworkId,
-                    season = season,
-                    episode = number
-                )
-                .translations
-
-        } catch (e: Exception) {
-            Log.e(TAG, "getTmdbEpisodeTranslations - Fail to get translations for episode (artworkId:$artworkId, season:$season, number:$number)", e)
-            emptyList()
-        }
+        return getTmdbTranslation(
+            request = TMDBTranslations.Request.Episode(
+                artworkId = artworkId,
+                season = tmdbEpisode.season,
+                number = tmdbEpisode.number,
+                language = language
+            ),
+        )?.let {
+            tmdbEpisode.copy(
+                title = it.data.name ?: tmdbEpisode.title,
+                description = it.data.overview ?: tmdbEpisode.description
+            )
+        } ?: tmdbEpisode
 
     }
 
+    override suspend fun getTmdbTranslation(request: TMDBTranslations.Request): TMDBTranslations.Translation? {
+
+        return try {
+
+            val result = when (request) {
+                is TMDBTranslations.Request.Movie -> tmdbService.getMovieTranslations(artworkId = request.artworkId)
+                is TMDBTranslations.Request.Show -> tmdbService.getShowTranslations(artworkId = request.artworkId)
+                is TMDBTranslations.Request.Season -> tmdbService.getSeasonTranslations(artworkId = request.artworkId, season = request.season)
+                is TMDBTranslations.Request.Episode -> tmdbService.getEpisodeTranslations(artworkId = request.artworkId, season = request.season, number = request.number)
+            }
+
+            result.translations.findWithLocale(request.language)
+
+        } catch (e: Exception) {
+            Log.e(TAG, "getTmdbTranslations - Fail to get translations for $request", e)
+            null
+        }
+
+    }
 
 }

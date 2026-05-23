@@ -28,6 +28,22 @@ annotation class FluxPreview
 @Target(AnnotationTarget.ANNOTATION_CLASS, AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.BINARY)
 @Preview(
+    name = "1. Pixel 9 PRO XL",
+    group = "Devices",
+    device = Devices.PIXEL_9_PRO_XL,
+    showBackground = true
+)
+@Preview(
+    name = "2. Pixel 5",
+    group = "Devices",
+    device = Devices.PIXEL_5,
+    showBackground = true
+)
+annotation class PortraitPreview
+
+@Target(AnnotationTarget.ANNOTATION_CLASS, AnnotationTarget.FUNCTION)
+@Retention(AnnotationRetention.BINARY)
+@Preview(
     name = "1. Phone Landscape",
     showBackground = true,
     device = "spec:parent=pixel_9_pro_xl,orientation=landscape"

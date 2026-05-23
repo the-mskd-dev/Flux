@@ -7,6 +7,7 @@ import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import coil3.compose.AsyncImage
+import coil3.compose.AsyncImagePainter
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import coil3.video.videoFrameMillis
@@ -21,6 +22,7 @@ fun Image(
     modifier: Modifier,
     url: String,
     contentScale: ContentScale = ContentScale.Crop,
+    onSuccess:  ((AsyncImagePainter.State.Success) -> Unit)? = null,
     contentDescription: String
 ) {
     AsyncImage(
@@ -32,7 +34,8 @@ fun Image(
         contentScale = contentScale,
         placeholder = Image.placeholder,
         error = Image.error,
-        contentDescription = contentDescription
+        contentDescription = contentDescription,
+        onSuccess = onSuccess
     )
 }
 

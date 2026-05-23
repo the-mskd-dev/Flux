@@ -28,7 +28,7 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.model.artwork.Artwork
+import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.screens.artwork.ArtworkIntent
 import com.mskd.flux.ui.component.Image
 import com.mskd.flux.ui.theme.AppTheme
@@ -40,13 +40,13 @@ import com.mskd.flux.utils.extensions.tmdbImage
 @Composable
 fun ArtworkImage(
     modifier: Modifier,
-    artwork: Artwork,
+    fullArtwork: FullArtwork,
     sendIntent: (ArtworkIntent) -> Unit
 ) {
 
     var imageHeight by remember { mutableIntStateOf(0) }
     val imageRequest = ImageRequest.Builder(LocalContext.current)
-        .data(artwork.imagePath.tmdbImage)
+        .data(fullArtwork.imagePath.tmdbImage)
         .crossfade(true)
         .build()
 
@@ -61,7 +61,7 @@ fun ArtworkImage(
             placeholder = Image.placeholder,
             error = Image.error,
             alpha = .9f,
-            contentDescription = "background ${artwork.title}"
+            contentDescription = "background ${fullArtwork.artwork.title}"
         )
 
         Box(
@@ -71,9 +71,9 @@ fun ArtworkImage(
                     brush = Brush.verticalGradient(
                         colors = listOf(
                             Color.Transparent,
-                            MaterialTheme.colorScheme.background.copy(alpha = .6f),
-                            MaterialTheme.colorScheme.background.copy(alpha = .9f),
-                            MaterialTheme.colorScheme.background,
+                            MaterialTheme.colorScheme.surfaceContainer.copy(alpha = .6f),
+                            MaterialTheme.colorScheme.surfaceContainer.copy(alpha = .9f),
+                            MaterialTheme.colorScheme.surfaceContainer,
                         ),
                         startY = imageHeight * .7f,
                         endY = Float.POSITIVE_INFINITY
@@ -85,14 +85,14 @@ fun ArtworkImage(
             modifier = Modifier
                 .displayCutoutPadding()
                 .align(Alignment.Center)
-                .clip(Ui.Shape.Corner.Small)
+                .clip(MaterialTheme.shapes.small)
                 .width(160.dp)
                 .aspectRatio(2f/3f),
             model = imageRequest,
             contentScale = ContentScale.Crop,
             placeholder = Image.placeholder,
             error = Image.error,
-            contentDescription = artwork.title
+            contentDescription = fullArtwork.artwork.title
         )
 
     }
@@ -105,7 +105,7 @@ fun ArtworkImage_Preview() {
     AppTheme {
         ArtworkImage(
             modifier = Modifier.aspectRatio(6f / 5f),
-            artwork = MediaMockups.showArtwork,
+            fullArtwork = MediaMockups.fullShow,
             sendIntent = {},
         )
     }

@@ -22,6 +22,8 @@ import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfoV2
+import androidx.compose.material3.dynamicDarkColorScheme
+import androidx.compose.material3.expressiveLightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -30,6 +32,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -42,11 +45,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.window.core.layout.WindowSizeClass
 import com.mskd.flux.R
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.model.ScreenState
+import com.mskd.flux.model.State
+import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Route.Player
 import com.mskd.flux.screens.artwork.composables.ArtworkContentLarge
 import com.mskd.flux.screens.artwork.composables.ArtworkContentRegular
+import com.mskd.flux.screens.artwork.composables.common.SeasonDialog
 import com.mskd.flux.ui.component.ErrorScreen
 import com.mskd.flux.ui.component.FluxDialog
 import com.mskd.flux.ui.component.LoadingScreen
@@ -61,6 +66,7 @@ import com.mskd.flux.utils.rememberExternalPlayerLauncher
 @Composable
 fun ArtworkScreen(
     artworkId: Long,
+    rgb: Int?,
     navigate: (Route) -> Unit,
     onBack: () -> Unit,
     viewModel: ArtworkViewModel = hiltViewModel<ArtworkViewModel, ArtworkViewModel.Factory>(
@@ -99,19 +105,19 @@ fun ArtworkScreen(
 
     Crossfade(
         modifier = Modifier.fillMaxSize(),
-        targetState = uiState.screen,
+        targetState = uiState.state,
         label = "MediaScreenAnimation"
-    ) { screen ->
+    ) { state ->
 
-        when (screen) {
-            ScreenState.LOADING -> LoadingScreen()
-            ScreenState.ERROR -> {
+        when (state) {
+            State.Loading -> LoadingScreen()
+            State.Error -> {
                 ErrorScreen(
                     message = stringResource(R.string.oups_an_error_occured),
                     onBackButtonTap = { viewModel.handleIntent(ArtworkIntent.OnBackTap) }
                 )
             }
-            else -> {
+            is State.Content -> {
                 ArtworkScreenContent(
                     uiState = uiState,
                     sendIntent = viewModel::handleIntent
@@ -145,6 +151,7 @@ fun ArtworkScreenContent(
     sendIntent: (ArtworkIntent) -> Unit
 ) {
 
+    val fullArtwork = (uiState.state as State.Content<FullArtwork>).content
     val windowSizeClass = currentWindowAdaptiveInfoV2().windowSizeClass
     val isLargeScreen = windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND)
 
@@ -168,6 +175,7 @@ fun ArtworkScreenContent(
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        containerColor = MaterialTheme.colorScheme.surfaceContainer,
         topBar = {
 
             CenterAlignedTopAppBar(
@@ -178,7 +186,7 @@ fun ArtworkScreenContent(
                         modifier = Modifier
                             .padding(vertical = Ui.Space.EXTRA_SMALL)
                             .graphicsLayer { alpha = animatedAlpha },
-                        text = uiState.artwork.title,
+                        text = fullArtwork.artwork.title,
                         overflow = TextOverflow.Ellipsis,
                         style = MaterialTheme.typography.headlineSmall,
                         maxLines = 2,
@@ -231,20 +239,25 @@ fun ArtworkScreenContent(
 
         if (isLargeScreen) {
             ArtworkContentLarge(
-                artwork = uiState.artwork,
-                media = uiState.media,
-                episodes = uiState.episodes,
-                currentSeason = uiState.season,
+                fullArtwork = fullArtwork,
+                currentMedia = uiState.selectedMedia,
+                currentSeason = uiState.selectedSeason,
                 scaffoldInnerPadding = innerPadding,
                 sendIntent = sendIntent,
             )
         } else {
             ArtworkContentRegular(
-                artwork = uiState.artwork,
-                media = uiState.media,
-                episodes = uiState.episodes,
-                currentSeason = uiState.season,
+                fullArtwork = fullArtwork,
+                currentMedia = uiState.selectedMedia,
+                currentSeason = uiState.selectedSeason,
                 scaffoldInnerPadding = innerPadding,
+                sendIntent = sendIntent,
+            )
+        }
+
+        uiState.previewForSeason?.let {
+            SeasonDialog(
+                season = it,
                 sendIntent = sendIntent,
             )
         }
@@ -259,9 +272,10 @@ fun ArtworkDropDownMenu(
 ) {
 
     DropdownMenu(
+        shape = MaterialTheme.shapes.extraLarge,
         expanded = true,
         onDismissRequest = onDismissRequest,
-        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+        containerColor = MaterialTheme.colorScheme.tertiaryContainer,
         content = {
 
             ArtworkDropDownMenuItem(
@@ -314,13 +328,12 @@ fun ArtworkDropDownMenuItem(
 @Composable
 fun ArtworkScreenContent_Preview() {
     AppTheme {
+
         ArtworkScreenContent(
             uiState = ArtworkUiState(
-                screen = ScreenState.CONTENT,
-                artwork = MediaMockups.showArtwork,
-                media = MediaMockups.episode1,
-                episodes = MediaMockups.episodes,
-                season = MediaMockups.episode1.season
+                state = State.Content(content = MediaMockups.fullShow),
+                selectedMedia = MediaMockups.episode1,
+                selectedSeason = MediaMockups.episode1.season
             ),
             sendIntent = {}
         )

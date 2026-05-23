@@ -1,6 +1,8 @@
 package com.mskd.flux.screens.artwork.composables.episodes
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -46,13 +49,18 @@ import com.mskd.flux.utils.extensions.timeDescription
 fun EpisodeItem(
     modifier: Modifier = Modifier,
     episode: Episode,
+    isSelected: Boolean,
     sendIntent: (ArtworkIntent) -> Unit
 ) {
 
     var showMenu by remember { mutableStateOf(false) }
+    val bgColor by animateColorAsState(if (isSelected) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.background)
 
     Column(
         modifier = modifier
+            .padding(horizontal = Ui.Space.MEDIUM)
+            .clip(MaterialTheme.shapes.large)
+            .background(bgColor)
             .combinedClickable(
                 onClick = { sendIntent(ArtworkIntent.PlayMedia(episode)) },
                 onLongClick = { showMenu = true }
@@ -85,7 +93,7 @@ fun EpisodeItem(
                     textAlign = TextAlign.Start,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
-                    color = MaterialTheme.colorScheme.onBackground,
+                    color = if (isSelected) MaterialTheme.colorScheme.onSecondaryContainer else MaterialTheme.colorScheme.onBackground,
                     emphasized = true
                 )
 
@@ -103,14 +111,13 @@ fun EpisodeItem(
                     color = MaterialTheme.colorScheme.secondary
                 )
 
-
             }
 
         }
 
         Text.Body.Medium(
             text = episode.description,
-            color = MaterialTheme.colorScheme.onBackground,
+            color = if (isSelected) MaterialTheme.colorScheme.onSecondaryContainer else MaterialTheme.colorScheme.onBackground,
         )
 
         if (showMenu) {
@@ -139,6 +146,7 @@ fun EpisodeDropDownMenu(
     }
 
     DropdownMenu(
+        shape = MaterialTheme.shapes.extraLarge,
         expanded = true,
         onDismissRequest = onDismissRequest,
         containerColor = MaterialTheme.colorScheme.tertiaryContainer,
@@ -212,6 +220,7 @@ fun EpisodeItem_Preview() {
     AppTheme {
         EpisodeItem(
             episode = MediaMockups.episode1,
+            isSelected = false,
             sendIntent = {}
         )
     }
@@ -226,6 +235,7 @@ fun EpisodeItemWatching_Preview() {
                 status = Status.IS_WATCHING,
                 currentTime = (MediaMockups.episode1.duration.minToMs / 2f).toLong(),
             ),
+            isSelected = true,
             sendIntent = {}
         )
     }
@@ -234,12 +244,14 @@ fun EpisodeItemWatching_Preview() {
 @FluxPreview
 @Composable
 fun EpisodeItemWatched_Preview() {
+
     AppTheme {
         EpisodeItem(
             episode = MediaMockups.episode1.copy(
                 status = Status.WATCHED,
                 currentTime = MediaMockups.episode1.duration.minToMs,
             ),
+            isSelected = false,
             sendIntent = {}
         )
     }

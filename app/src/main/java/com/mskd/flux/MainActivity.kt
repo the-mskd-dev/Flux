@@ -97,7 +97,8 @@ class MainActivity : ComponentActivity() {
                             ArtworkScreen(
                                 navigate = { route -> backStack.add(route) },
                                 onBack = { backStack.popScreen() },
-                                artworkId = entry.artworkId
+                                artworkId = entry.artworkId,
+                                rgb = entry.rgb
                             )
                         }
                         entry<Route.UnknownArtworks> {

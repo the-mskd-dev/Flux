@@ -1,5 +1,6 @@
 package com.mskd.flux.screens.artwork.composables.common
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,6 +10,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.mskd.flux.R
@@ -23,6 +25,7 @@ import com.mskd.flux.utils.extensions.formattedText
 import com.mskd.flux.utils.extensions.minToMs
 import com.mskd.flux.utils.extensions.timeDescription
 import java.util.Locale
+import androidx.compose.ui.platform.LocalLocale
 
 
 @Composable
@@ -30,8 +33,11 @@ fun ArtworkDescription(media: Media) {
 
     Column(
         modifier = Modifier
+            .padding(horizontal = Ui.Space.MEDIUM)
+            .clip(Ui.Shape.Corner.Large)
+            .background(MaterialTheme.colorScheme.surfaceContainer)
             .fillMaxWidth()
-            .padding(horizontal = Ui.Space.MEDIUM),
+            .padding(all = Ui.Space.MEDIUM),
         verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
     ) {
 
@@ -59,7 +65,7 @@ fun ArtworkDescription(media: Media) {
             Text.Headline.Medium(
                 modifier = Modifier.fillMaxWidth(),
                 text = if (media is Episode) media.title else stringResource(R.string.summary),
-                color = MaterialTheme.colorScheme.onBackground,
+                color = MaterialTheme.colorScheme.onSurface,
                 emphasized = true
             )
 
@@ -69,7 +75,7 @@ fun ArtworkDescription(media: Media) {
             modifier = Modifier.fillMaxWidth(),
             text = media.description,
             textAlign = TextAlign.Justify,
-            color = MaterialTheme.colorScheme.onBackground
+            color = MaterialTheme.colorScheme.onSurface
         )
 
         MediaDescriptionDetails(media)
@@ -97,7 +103,7 @@ fun MediaDescriptionDetails(media: Media) {
         )
 
         if (media.voteAverage > 0f) {
-            val rate = String.format(Locale.getDefault(),"%.2f", media.voteAverage)
+            val rate = String.format(LocalLocale.current.platformLocale,"%.2f", media.voteAverage)
             Text.Body.Small(
                 text = stringResource(R.string.rate, rate),
                 color = MaterialTheme.colorScheme.secondary

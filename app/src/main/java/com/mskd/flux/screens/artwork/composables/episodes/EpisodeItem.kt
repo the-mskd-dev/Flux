@@ -18,6 +18,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuDefaults
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfoV2
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,6 +31,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.window.core.layout.WindowSizeClass
 import com.mskd.flux.R
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.Episode
@@ -49,6 +51,7 @@ fun EpisodeItem(
     modifier: Modifier = Modifier,
     episode: Episode,
     isSelected: Boolean,
+    isLargeScreen: Boolean,
     sendIntent: (ArtworkIntent) -> Unit
 ) {
 
@@ -109,15 +112,24 @@ fun EpisodeItem(
                     color = MaterialTheme.colorScheme.secondary
                 )
 
+                if (isLargeScreen) {
+                    Text.Body.Medium(
+                        modifier = Modifier.padding(top = Ui.Space.MEDIUM),
+                        text = episode.description,
+                        color = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurface,
+                    )
+                }
 
             }
 
         }
 
-        Text.Body.Medium(
-            text = episode.description,
-            color = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurface,
-        )
+        if (!isLargeScreen) {
+            Text.Body.Medium(
+                text = episode.description,
+                color = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurface,
+            )
+        }
 
         if (showMenu) {
             EpisodeDropDownMenu(
@@ -215,10 +227,15 @@ fun EpisodeDropDownMenuItem(
 @FluxPreview
 @Composable
 fun EpisodeItem_Preview() {
+
+    val windowSizeClass = currentWindowAdaptiveInfoV2().windowSizeClass
+    val isLargeScreen = windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND)
+
     AppTheme {
         EpisodeItem(
             episode = MediaMockups.episode1,
             isSelected = false,
+            isLargeScreen = isLargeScreen,
             sendIntent = {}
         )
     }
@@ -227,6 +244,10 @@ fun EpisodeItem_Preview() {
 @FluxPreview
 @Composable
 fun EpisodeItemWatching_Preview() {
+
+    val windowSizeClass = currentWindowAdaptiveInfoV2().windowSizeClass
+    val isLargeScreen = windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND)
+
     AppTheme {
         EpisodeItem(
             episode = MediaMockups.episode1.copy(
@@ -234,6 +255,7 @@ fun EpisodeItemWatching_Preview() {
                 currentTime = (MediaMockups.episode1.duration.minToMs / 2f).toLong(),
             ),
             isSelected = true,
+            isLargeScreen = isLargeScreen,
             sendIntent = {}
         )
     }
@@ -242,6 +264,10 @@ fun EpisodeItemWatching_Preview() {
 @FluxPreview
 @Composable
 fun EpisodeItemWatched_Preview() {
+
+    val windowSizeClass = currentWindowAdaptiveInfoV2().windowSizeClass
+    val isLargeScreen = windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND)
+
     AppTheme {
         EpisodeItem(
             episode = MediaMockups.episode1.copy(
@@ -249,6 +275,7 @@ fun EpisodeItemWatched_Preview() {
                 currentTime = MediaMockups.episode1.duration.minToMs,
             ),
             isSelected = false,
+            isLargeScreen = isLargeScreen,
             sendIntent = {}
         )
     }

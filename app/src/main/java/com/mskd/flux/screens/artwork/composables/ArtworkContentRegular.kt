@@ -57,6 +57,7 @@ fun ArtworkContentRegular(
             ArtworkImage(
                 modifier = Modifier.aspectRatio(6f / 5f),
                 artwork = fullArtwork.artwork,
+                backgroundPath = (fullArtwork as? FullArtwork.FullShow)?.seasons?.getOrNull(currentSeason)?.imagePath ?: fullArtwork.artwork.imagePath,
                 sendIntent = sendIntent
             )
 

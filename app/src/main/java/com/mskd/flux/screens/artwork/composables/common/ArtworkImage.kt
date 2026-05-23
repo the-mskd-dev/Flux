@@ -41,14 +41,11 @@ import com.mskd.flux.utils.extensions.tmdbImage
 fun ArtworkImage(
     modifier: Modifier,
     artwork: Artwork,
+    backgroundPath: String,
     sendIntent: (ArtworkIntent) -> Unit
 ) {
 
     var imageHeight by remember { mutableIntStateOf(0) }
-    val imageRequest = ImageRequest.Builder(LocalContext.current)
-        .data(artwork.imagePath.tmdbImage)
-        .crossfade(true)
-        .build()
 
     Box(modifier = modifier.onSizeChanged { imageHeight = it.height }) {
 
@@ -56,7 +53,10 @@ fun ArtworkImage(
             modifier = Modifier
                 .fillMaxWidth()
                 .blur(radius = 15.dp),
-            model = imageRequest,
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(backgroundPath.tmdbImage)
+                .crossfade(true)
+                .build(),
             contentScale = ContentScale.Crop,
             placeholder = Image.placeholder,
             error = Image.error,
@@ -88,7 +88,10 @@ fun ArtworkImage(
                 .clip(Ui.Shape.Corner.Small)
                 .width(160.dp)
                 .aspectRatio(2f/3f),
-            model = imageRequest,
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(artwork.imagePath.tmdbImage)
+                .crossfade(true)
+                .build(),
             contentScale = ContentScale.Crop,
             placeholder = Image.placeholder,
             error = Image.error,
@@ -106,6 +109,7 @@ fun ArtworkImage_Preview() {
         ArtworkImage(
             modifier = Modifier.aspectRatio(6f / 5f),
             artwork = MediaMockups.showArtwork,
+            backgroundPath = "",
             sendIntent = {},
         )
     }

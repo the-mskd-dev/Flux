@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -33,6 +34,7 @@ import com.mskd.flux.ui.component.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.FluxPreview
+import com.mskd.flux.utils.PortraitPreview
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,30 +51,32 @@ fun ArtworkContentRegular(
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         state = state,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
     ) {
 
         item {
 
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM),
-            ) {
+            ArtworkImage(
+                modifier = Modifier.aspectRatio(6f / 5f),
+                artwork = fullArtwork.artwork,
+                sendIntent = sendIntent
+            )
 
-                ArtworkImage(
-                    modifier = Modifier.aspectRatio(6f / 5f),
-                    artwork = fullArtwork.artwork,
-                    sendIntent = sendIntent
-                )
+        }
 
-                ArtworkButtons(
-                    media = currentMedia,
-                    sendIntent = sendIntent
-                )
+        item {
 
-                ArtworkDescription(media = currentMedia)
+            ArtworkButtons(
+                media = currentMedia,
+                sendIntent = sendIntent
+            )
 
-            }
+        }
+
+        item {
+
+            ArtworkDescription(media = currentMedia)
 
         }
 
@@ -82,10 +86,7 @@ fun ArtworkContentRegular(
 
                 item {
 
-                    Column(
-                        modifier = Modifier.padding(top = Ui.Space.LARGE),
-                        verticalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)
-                    ) {
+                    Column(verticalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)) {
 
                         Text.Title.Large(
                             modifier = Modifier
@@ -109,13 +110,12 @@ fun ArtworkContentRegular(
 
                 }
 
-
-                itemsIndexed(
+                items(
                     items = show.episodes
                         .filter { it.season == currentSeason }
                         .sortedBy { it.number },
-                    key = { _, e -> e.id }
-                ) { i, episode ->
+                    key = { e -> e.id }
+                ) { episode ->
 
                     EpisodeItem(
                         modifier = Modifier.animateItem(),
@@ -139,7 +139,7 @@ fun ArtworkContentRegular(
 
 }
 
-@FluxPreview
+@PortraitPreview
 @Composable
 fun ArtworkContentMovie_Preview() {
     AppTheme {
@@ -153,7 +153,7 @@ fun ArtworkContentMovie_Preview() {
     }
 }
 
-@FluxPreview
+@PortraitPreview
 @Composable
 fun ArtworkContentShow_Preview() {
     AppTheme {

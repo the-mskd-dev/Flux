@@ -4,7 +4,6 @@ import android.util.Log
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.data.tmdb.TMDBService
 import com.mskd.flux.model.UserFile
-import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.tmdb.TMDBArtwork
 import com.mskd.flux.model.tmdb.TMDBEpisode
 import com.mskd.flux.model.tmdb.TMDBMediaType
@@ -13,7 +12,6 @@ import com.mskd.flux.model.tmdb.TMDBSeason
 import com.mskd.flux.model.tmdb.TMDBTranslations
 import com.mskd.flux.model.tmdb.findWithLocale
 import com.mskd.flux.utils.extensions.toTmdbFormat
-import org.intellij.lang.annotations.Language
 import java.util.Locale
 import javax.inject.Inject
 

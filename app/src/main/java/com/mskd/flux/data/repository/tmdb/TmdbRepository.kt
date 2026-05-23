@@ -1,7 +1,6 @@
 package com.mskd.flux.data.repository.tmdb
 
 import com.mskd.flux.model.UserFile
-import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.tmdb.TMDBArtwork
 import com.mskd.flux.model.tmdb.TMDBEpisode
 import com.mskd.flux.model.tmdb.TMDBMovie

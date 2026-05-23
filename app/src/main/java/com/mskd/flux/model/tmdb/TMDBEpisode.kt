@@ -1,7 +1,6 @@
 package com.mskd.flux.model.tmdb
 
 import com.google.gson.annotations.SerializedName
-import kotlinx.serialization.Transient
 
 /**
  * Represents an episode of a TV show retrieved from TMDB.

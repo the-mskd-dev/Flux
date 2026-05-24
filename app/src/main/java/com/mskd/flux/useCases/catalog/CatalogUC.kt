@@ -35,9 +35,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withContext
+import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * Use case interface for managing the media catalog.
@@ -67,7 +69,10 @@ interface CatalogUC {
      *
      * It groups files into folders and parallelly fetches artwork metadata.
      */
-    suspend fun getCatalog(files: List<UserFile>) : Catalog
+    suspend fun getCatalog(
+        files: List<UserFile>,
+        updateProgress: () -> Unit
+    ) : Catalog
 
     /**
      * Cleans up the database catalog by removing entries of files that no longer exist.
@@ -84,7 +89,10 @@ interface CatalogUC {
      */
     sealed class State {
         data object Idle: State()
-        data class Syncing(val full: Boolean) : State()
+        data class Syncing(
+            val full: Boolean,
+            val progress: Float = 0f
+        ) : State()
     }
 
 }
@@ -119,6 +127,9 @@ class CatalogUCImpl(
     private var translationJob: Job? = null
 
     private var _state = MutableStateFlow<CatalogUC.State>(CatalogUC.State.Idle)
+
+    private val progressCompletedSteps = AtomicInteger(0)
+    private var progressTotalSteps = 1
 
     //endregion
 
@@ -167,9 +178,28 @@ class CatalogUCImpl(
                 return@launch
             }
 
+            val folders = newFiles.groupInFolders()
+
+            /*
+                Count all steps
+                1. Get Artworks
+                2. Get all media for files (newFiles.size)
+                3. Clean catalog
+                4. Save artworks
+                5. Save movies
+                6. Save seasons
+                7. Save episodes
+             */
+            progressTotalSteps = folders.size + newFiles.size + 5
+            progressCompletedSteps.set(0)
+
             // Get data
-            var catalog = getCatalog(files = newFiles)
-            catalog = applyCurrentProgress(
+            var catalog = getCatalog(
+                files = newFiles,
+                updateProgress = { updateSyncProgress() }
+            )
+
+            catalog = applyCurrentMediaProgress(
                 catalog = catalog,
                 dbMovies = dbMovies,
                 dbEpisodes = dbEpisodes
@@ -181,12 +211,19 @@ class CatalogUCImpl(
             } else {
                 database.deleteAll()
             }
+            updateSyncProgress()
 
             // Save data
             database.saveArtworks(artworks = catalog.artworks)
+            updateSyncProgress()
+
             database.saveMovies(movies = catalog.movies)
+            updateSyncProgress()
             database.saveSeasons(seasons = catalog.seasons)
+            updateSyncProgress()
+
             database.saveEpisodes(episodes = catalog.episodes)
+            updateSyncProgress()
 
             // Pre-fetch images if needed
             if (settings.flow.first().prefetchImages)
@@ -204,16 +241,22 @@ class CatalogUCImpl(
     /**
      * Groups user files into directory folders and asynchronously retrieves movies and shows details.
      */
-    override suspend fun getCatalog(files: List<UserFile>) : Catalog {
+    override suspend fun getCatalog(
+        files: List<UserFile>,
+        updateProgress: () -> Unit
+    ) : Catalog {
 
         val folders = files.groupInFolders()
 
         // Get data
-        val artworksFolders = getArtworksFolders(folders = folders)
+        val artworksFolders = getArtworksFolders(
+            folders = folders,
+            updateProgress = updateProgress
+        )
 
         val (movies, seasonsAndTmdbEpisodes) = supervisorScope {
             val moviesDeferred = async {
-                runCatching { getMovies(artworkFolders = artworksFolders) }
+                runCatching { getMovies(artworkFolders = artworksFolders, updateProgress = updateProgress) }
                     .onFailure { Log.e(TAG, "getMovies failed", it) }
                     .getOrElse { emptyList() }
             }
@@ -229,7 +272,11 @@ class CatalogUCImpl(
         val seasons = seasonsAndTmdbEpisodes.map { it.first }
         val tmdbEpisodes = seasonsAndTmdbEpisodes.flatMap { it.second }
 
-        val episodes = getEpisodes(artworkFolders = artworksFolders, tmdbEpisodes = tmdbEpisodes)
+        val episodes = getEpisodes(
+            artworkFolders = artworksFolders,
+            tmdbEpisodes = tmdbEpisodes,
+            updateProgress = updateProgress
+        )
 
         return Catalog(
             artworks = artworksFolders.map { it.artwork },
@@ -262,91 +309,97 @@ class CatalogUCImpl(
             _state.value = CatalogUC.State.Syncing(full = false)
 
             val language = settings.getDataLanguage()
+            val shows = database.getArtworks().filter { it.type == ContentType.SHOW }
             val movies = database.getMovies()
             val seasons = database.getSeasons()
             val episodes = database.getEpisodes()
 
-            var translatedMovies: List<Movie> = emptyList()
-            var translatedSeasons: List<Season> = emptyList()
-            var translatedEpisodes: List<Episode> = emptyList()
+            val batchSize = 25
 
             supervisorScope {
 
-                translatedMovies = movies.map { movie ->
+                // Movies
+                launch(dispatcher) {
+                    movies.chunked(batchSize).forEach { chunk ->
+                        val translated = chunk.map { movie ->
+                            async {
+                                tmdb.getTmdbTranslation(
+                                    request = TMDBTranslations.Request.Movie(artworkId = movie.artworkId, language = language)
+                                )?.let { translation ->
+                                    movie.copy(
+                                        title = translation.data.name ?: movie.title,
+                                        description = translation.data.overview ?: movie.description
+                                    )
+                                }
+                            }
+                        }.awaitAll().filterNotNull()
 
-                    async(dispatcher) {
-
-                        tmdb.getTmdbTranslation(
-                            request = TMDBTranslations.Request.Movie(
-                                artworkId = movie.artworkId,
-                                language = language
-                            ),
-                        )?.let { translation ->
-
-                            movie.copy(
-                                title = translation.data.name ?: movie.title,
-                                description = translation.data.overview ?: movie.description
-                            )
-
-                        }
-
+                        if (translated.isNotEmpty()) database.saveMovies(translated)
                     }
+                }
 
-                }.awaitAll().filterNotNull()
+                // Shows
+                launch(dispatcher) {
+                    shows.chunked(batchSize).forEach { chunk ->
+                        val translated = chunk.map { show ->
+                            async {
+                                tmdb.getTmdbTranslation(
+                                    request = TMDBTranslations.Request.Show(artworkId = show.id, language = language)
+                                )?.let { translation ->
+                                    show.copy(
+                                        title = translation.data.name ?: show.title,
+                                        description = translation.data.overview ?: show.description
+                                    )
+                                }
+                            }
+                        }.awaitAll().filterNotNull()
 
-                translatedSeasons = seasons.map { season ->
-
-                    async(dispatcher) {
-
-                        tmdb.getTmdbTranslation(
-                            request = TMDBTranslations.Request.Season(
-                                artworkId = season.artworkId,
-                                season = season.season,
-                                language = language
-                            ),
-                        )?.let { translation ->
-
-                            season.copy(
-                                title = translation.data.name ?: season.title,
-                                description = translation.data.overview ?: season.description
-                            )
-
-                        }
-
+                        if (translated.isNotEmpty()) database.saveArtworks(translated)
                     }
+                }
 
-                }.awaitAll().filterNotNull()
+                // Seasons
+                launch(dispatcher) {
+                    seasons.chunked(batchSize).forEach { chunk ->
+                        val translated = chunk.map { season ->
+                            async {
+                                tmdb.getTmdbTranslation(
+                                    request = TMDBTranslations.Request.Season(artworkId = season.artworkId, season = season.season, language = language)
+                                )?.let { translation ->
+                                    season.copy(
+                                        title = translation.data.name ?: season.title,
+                                        description = translation.data.overview ?: season.description
+                                    )
+                                }
+                            }
+                        }.awaitAll().filterNotNull()
 
-                translatedEpisodes = episodes.map { episode ->
-
-                    async(dispatcher) {
-
-                        tmdb.getTmdbTranslation(
-                            request = TMDBTranslations.Request.Episode(
-                                artworkId = episode.artworkId,
-                                season = episode.season,
-                                number = episode.number,
-                                language = language
-                            ),
-                        )?.let { translation ->
-
-                            episode.copy(
-                                title = translation.data.name ?: episode.title,
-                                description = translation.data.overview ?: episode.description
-                            )
-
-                        }
-
+                        if (translated.isNotEmpty()) database.saveSeasons(translated)
                     }
+                }
 
-                }.awaitAll().filterNotNull()
+                // Episodes
+                launch(dispatcher) {
+                    episodes.chunked(batchSize).forEach { chunk ->
+                        val translated = chunk.map { episode ->
+                            async {
+                                tmdb.getTmdbTranslation(
+                                    request = TMDBTranslations.Request.Episode(artworkId = episode.artworkId, season = episode.season, number = episode.number, language = language)
+                                )?.let { translation ->
+                                    episode.copy(
+                                        title = translation.data.name ?: episode.title,
+                                        description = translation.data.overview ?: episode.description
+                                    )
+                                }
+                            }
+                        }.awaitAll().filterNotNull()
+
+                        if (translated.isNotEmpty()) database.saveEpisodes(translated)
+                    }
+                }
 
 
             }
-
-            database.saveMovies(translatedMovies)
-            database.saveSeasons(translatedSeasons)
-            database.saveEpisodes(translatedEpisodes)
 
             _state.value = CatalogUC.State.Idle
 
@@ -358,10 +411,22 @@ class CatalogUCImpl(
 
     //region Private methods
 
+    private fun updateSyncProgress() {
+
+        val completed = progressCompletedSteps.incrementAndGet().toFloat()
+        val rawProgress = completed / progressTotalSteps.coerceAtLeast(1)
+        val progressPercent = rawProgress.coerceIn(0.0f, 1.0f)
+
+        _state.update { currentState ->
+            if (currentState is CatalogUC.State.Syncing) currentState.copy(progress = progressPercent)
+            else currentState
+        }
+    }
+
     /**
      * Copies watch status and current time from existing database media to matched new items.
      */
-    private fun applyCurrentProgress(catalog: Catalog, dbMovies: List<Movie>, dbEpisodes: List<Episode>) : Catalog {
+    private fun applyCurrentMediaProgress(catalog: Catalog, dbMovies: List<Movie>, dbEpisodes: List<Episode>) : Catalog {
 
         var count = 0
 
@@ -409,7 +474,10 @@ class CatalogUCImpl(
     /**
      * Queries TMDB to associate each user folder with an [Artwork] based on its files.
      */
-    private suspend fun getArtworksFolders(folders: List<UserFolder>) : List<ArtworkFolder> {
+    private suspend fun getArtworksFolders(
+        folders: List<UserFolder>,
+        updateProgress: () -> Unit
+    ) : List<ArtworkFolder> {
 
         val artworkFolders = supervisorScope {
 
@@ -437,6 +505,8 @@ class CatalogUCImpl(
                             artwork = Artwork.UNKNOWN,
                             files = folder.files
                         )
+                    } finally {
+                        updateProgress()
                     }
 
                 }
@@ -454,7 +524,10 @@ class CatalogUCImpl(
     /**
      * Filters movie folders and fetches movie metadata details from TMDB in parallel.
      */
-    private suspend fun getMovies(artworkFolders: List<ArtworkFolder>) : List<Media> {
+    private suspend fun getMovies(
+        artworkFolders: List<ArtworkFolder>,
+        updateProgress: () -> Unit
+    ) : List<Media> {
 
         val movies = supervisorScope {
 
@@ -481,6 +554,8 @@ class CatalogUCImpl(
                     } catch (e: Exception) {
                         Log.e(TAG, "[getMovies] Fail to get movie from ${files.first().name}", e)
                         null
+                    } finally {
+                        updateProgress()
                     }
 
                 }
@@ -538,7 +613,11 @@ class CatalogUCImpl(
 
     }
 
-    private suspend fun getEpisodes(artworkFolders: List<ArtworkFolder>, tmdbEpisodes: List<TMDBEpisode>) : List<Episode> {
+    private suspend fun getEpisodes(
+        artworkFolders: List<ArtworkFolder>,
+        tmdbEpisodes: List<TMDBEpisode>,
+        updateProgress: () -> Unit
+    ) : List<Episode> {
 
         val language = settings.getDataLanguage()
 
@@ -591,6 +670,8 @@ class CatalogUCImpl(
                         } catch (e: Exception) {
                             Log.e(TAG, "[getEpisodes] Fail to get episode from ${file.name}", e)
                             null
+                        } finally {
+                            updateProgress()
                         }
 
                     }

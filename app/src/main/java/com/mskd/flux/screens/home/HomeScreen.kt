@@ -89,6 +89,7 @@ import com.mskd.flux.utils.FluxSnackbar
 import com.mskd.flux.utils.extensions.tmdbImage
 import com.mskd.flux.utils.extensions.tmdbImageLarge
 import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -122,13 +123,19 @@ fun HomeScreen(
 
     Crossfade(
         modifier = Modifier.fillMaxSize(),
-        targetState = uiState.screenState,
+        targetState = uiState.screenState::class,
         label = "CatalogAnimation"
-    ) {
+    ) { it ->
 
         when (it) {
 
-            ScreenState.LOADING -> LoadingScreen()
+            HomeUiState.State.Loading::class -> {
+                val progress = (uiState.screenState as? HomeUiState.State.Loading)?.progress
+                LoadingScreen(
+                    text = stringResource(R.string.sync_in_progress),
+                    progress = { progress ?: 1f }
+                )
+            }
 
             else -> {
 

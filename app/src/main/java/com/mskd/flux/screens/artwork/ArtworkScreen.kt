@@ -110,19 +110,19 @@ fun ArtworkScreen(
 
     Crossfade(
         modifier = Modifier.fillMaxSize(),
-        targetState = uiState.state,
+        targetState = uiState.state::class,
         label = "MediaScreenAnimation"
-    ) { state ->
+    ) { stateClass ->
 
-        when (state) {
-            State.Loading -> LoadingScreen()
-            State.Error -> {
+        when (stateClass) {
+            State.Loading::class -> LoadingScreen()
+            State.Error::class -> {
                 ErrorScreen(
                     message = stringResource(R.string.oups_an_error_occured),
                     onBackButtonTap = { viewModel.handleIntent(ArtworkIntent.OnBackTap) }
                 )
             }
-            is State.Content -> {
+            State.Content::class -> {
                 MaterialTheme(colorScheme = colorScheme ?: MaterialTheme.colorScheme) {
                     ArtworkScreenContent(
                         uiState = uiState,

@@ -8,7 +8,6 @@ import androidx.test.filters.MediumTest
 import app.cash.turbine.test
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.data.repository.settings.SettingsRepositoryImpl
-import com.mskd.flux.ui.theme.Ui
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
@@ -61,16 +60,18 @@ class SettingsRepositoryTest {
     @Test
     fun initial_state() = runTest {
 
-        val defaultDataStore = SettingsRepository.State()
-
         settingsRepository.flow.test {
 
             val initialState = awaitItem()
 
-            assert(defaultDataStore.uiTheme == initialState.uiTheme)
-            assert(defaultDataStore.subtitlesLanguage == initialState.subtitlesLanguage)
-            assert(defaultDataStore.playerRewindValue == initialState.playerRewindValue)
-            assert(defaultDataStore.playerForwardValue == initialState.playerForwardValue)
+            assert(initialState.subtitlesLanguage == Locale.getDefault())
+            assert(initialState.audioLanguage == Locale.getDefault())
+            assert(initialState.playerRewindValue == 10)
+            assert(initialState.playerForwardValue == 10)
+            assert(!initialState.externalPlayer)
+            assert(initialState.autoKeyboard)
+            assert(initialState.dataLanguage == null)
+            assert(initialState.prefetchImages)
 
             cancelAndConsumeRemainingEvents()
         }
@@ -124,20 +125,6 @@ class SettingsRepositoryTest {
     }
 
     @Test
-    fun set_ui_theme() = runTest {
-
-        val newTheme = Ui.THEME.LIGHT
-
-        settingsRepository.setUiTheme(newTheme)
-
-        settingsRepository.flow.test {
-            val state = awaitItem()
-            assert(state.uiTheme == newTheme)
-            cancelAndConsumeRemainingEvents()
-        }
-    }
-
-    @Test
     fun get_and_set_subtitles_language() = runTest {
 
         val language = settingsRepository.flow.first().subtitlesLanguage
@@ -153,6 +140,95 @@ class SettingsRepositoryTest {
 
             cancelAndConsumeRemainingEvents()
 
+        }
+
+    }
+
+    @Test
+    fun get_and_set_audio_language() = runTest {
+
+        val language = settingsRepository.flow.first().audioLanguage
+        assert(language == Locale.getDefault())
+
+        settingsRepository.flow.test {
+            awaitItem()
+
+            val newLocale = Locale.FRENCH
+            settingsRepository.setAudioLanguage(newLocale)
+            val state = awaitItem()
+            assert(state.audioLanguage == newLocale)
+
+            cancelAndConsumeRemainingEvents()
+
+        }
+
+    }
+
+    @Test
+    fun get_and_set_external_player() = runTest {
+
+        settingsRepository.flow.test {
+            var state = awaitItem()
+            assert(!state.externalPlayer)
+
+            settingsRepository.setExternalPlayer(true)
+            state = awaitItem()
+            assert(state.externalPlayer)
+
+            cancelAndConsumeRemainingEvents()
+        }
+
+    }
+
+    @Test
+    fun get_and_set_auto_keyboard() = runTest {
+
+        settingsRepository.flow.test {
+            var state = awaitItem()
+            assert(state.autoKeyboard)
+
+            settingsRepository.setAutoKeyboard(false)
+            state = awaitItem()
+            assert(!state.autoKeyboard)
+
+            cancelAndConsumeRemainingEvents()
+        }
+
+    }
+
+    @Test
+    fun get_and_set_prefetch_images() = runTest {
+
+        settingsRepository.flow.test {
+            var state = awaitItem()
+            assert(state.prefetchImages)
+
+            settingsRepository.setPrefetchImages(false)
+            state = awaitItem()
+            assert(!state.prefetchImages)
+
+            cancelAndConsumeRemainingEvents()
+        }
+
+    }
+
+    @Test
+    fun get_and_set_data_language() = runTest {
+
+        settingsRepository.flow.test {
+            var state = awaitItem()
+            assert(state.dataLanguage == null)
+
+            val newLocale = Locale.GERMAN
+            settingsRepository.setDataLanguage(newLocale)
+            state = awaitItem()
+            assert(state.dataLanguage == newLocale)
+
+            settingsRepository.setDataLanguage(null)
+            state = awaitItem()
+            assert(state.dataLanguage == null)
+
+            cancelAndConsumeRemainingEvents()
         }
 
     }

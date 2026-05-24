@@ -5,7 +5,9 @@ import com.mskd.flux.model.UserFile
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.model.artwork.Episode
+import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.model.artwork.Movie
+import com.mskd.flux.model.artwork.Season
 import com.mskd.flux.model.artwork.Status
 import kotlin.time.Duration.Companion.minutes
 
@@ -160,6 +162,40 @@ object MediaMockups {
         unknownMovie
     )
 
+    val season1 = Season(
+        id = 1001L,
+        artworkId = 31910L,
+        title = "Season 1",
+        description = "The first season of Naruto Shippūden.",
+        imagePath = "/season1_image.jpg",
+        season = 1
+    )
+
+    val season2 = Season(
+        id = 1002L,
+        artworkId = 31910L,
+        title = "Season 2",
+        description = "The second season of Naruto Shippūden.",
+        imagePath = "/season2_image.jpg",
+        season = 2
+    )
+
+    val seasons = listOf(
+        season1,
+        season2
+    )
+
     val allMedias = movies + episodes + unknowns
+
+    val fullMovie = FullArtwork.FullMovie(
+        resume = MediaMockups.movieArtwork,
+        movie = MediaMockups.movie
+    )
+
+    val fullShow = FullArtwork.FullShow(
+        resume = MediaMockups.showArtwork,
+        seasons = MediaMockups.seasons,
+        episodes = MediaMockups.episodes
+    )
 
 }

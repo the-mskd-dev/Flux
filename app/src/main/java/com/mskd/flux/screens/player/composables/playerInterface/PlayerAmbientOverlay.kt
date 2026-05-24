@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -61,7 +62,7 @@ fun PlayerAmbientOverlay(
 
         Column(
             modifier = Modifier
-                .clip(shape = Ui.Shape.Corner.Medium)
+                .clip(shape = MaterialTheme.shapes.medium)
                 .background(color = Color.Black.copy(alpha = .5f))
                 .padding(vertical = Ui.Space.MEDIUM, horizontal = Ui.Space.LARGE),
             verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM),

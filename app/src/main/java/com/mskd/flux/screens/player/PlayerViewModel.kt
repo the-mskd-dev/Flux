@@ -3,9 +3,12 @@ package com.mskd.flux.screens.player
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mskd.flux.data.repository.customization.CustomizationRepository
 import com.mskd.flux.data.repository.files.FilesRepository
 import com.mskd.flux.data.repository.settings.SettingsRepository
+import com.mskd.flux.model.State
 import com.mskd.flux.model.artwork.Episode
+import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.screens.player.PlayerTrack.Type
 import com.mskd.flux.screens.player.controllers.PlayerManager
@@ -45,7 +48,8 @@ class PlayerViewModel @AssistedInject constructor(
     private val settingsRepository: SettingsRepository,
     private val filesRepository: FilesRepository,
     private val playerManager: PlayerManager,
-    private val progressUC: ProgressUC
+    private val progressUC: ProgressUC,
+    private val customizationRepository: CustomizationRepository
 ) : ViewModel() {
 
     //region Factory
@@ -94,7 +98,7 @@ class PlayerViewModel @AssistedInject constructor(
         playerManager.state,
     ) { flows ->
 
-        val artworkContent = flows[0] as ArtworkUC.Content
+        val artworkState: State<FullArtwork> = flows[0] as State<FullArtwork>
         val settings = flows[1] as SettingsRepository.State
         val controls = flows[2] as PlayerUiState.Controls
         val tracks = (flows[3] as? List<*>)?.filterIsInstance<PlayerTrack>() ?: emptyList()
@@ -103,14 +107,20 @@ class PlayerViewModel @AssistedInject constructor(
         val mediaId = flows[6] as Long
         val playerState = flows[7] as PlayerManager.State
 
-        val media = when (artworkContent) {
-            is ArtworkUC.Content.MOVIE -> artworkContent.movie
-            is ArtworkUC.Content.SHOW -> artworkContent.episodes.find { it.id == mediaId }
-            ArtworkUC.Content.ERROR -> null
+        val media = when (artworkState) {
+            is State.Content<FullArtwork> -> {
+
+                when (artworkState.content) {
+                    is FullArtwork.FullMovie -> artworkState.content.movie
+                    is FullArtwork.FullShow -> artworkState.content.episodes.find { it.id == mediaId }
+                }
+
+            }
+            else -> null
         }
 
         val screen: PlayerScreen = when {
-            playerState is PlayerManager.State.Error || artworkContent is ArtworkUC.Content.ERROR -> PlayerScreen.Error
+            playerState is PlayerManager.State.Error || artworkState is State.Error -> PlayerScreen.Error
             media != null && playerState is PlayerManager.State.Ready -> PlayerScreen.Content(player = playerState.player, media = media)
             else -> PlayerScreen.Loading
         }
@@ -133,7 +143,8 @@ class PlayerViewModel @AssistedInject constructor(
                 subtitles = ready?.subtitles ?: emptyList()
             ),
             seekOverlay = seekOverlay,
-            ambientOverlay = ambientOverlay
+            ambientOverlay = ambientOverlay,
+            waveProgress = customizationRepository.flow.first().waveProgress
         )
 
     }.stateIn(
@@ -314,7 +325,8 @@ class PlayerViewModel @AssistedInject constructor(
 
         if (show) {
 
-            val episodes = (artworkUC.flow.first() as? ArtworkUC.Content.SHOW)?.episodes
+            val show = (artworkUC.flow.first() as? State.Content)?.content as? FullArtwork.FullShow
+            val episodes = show?.episodes
 
             val nextEpisode = episodes?.getNextEpisodeFor(currentEpisode) ?: return
 

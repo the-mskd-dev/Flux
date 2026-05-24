@@ -7,6 +7,7 @@ import androidx.test.filters.MediumTest
 import app.cash.turbine.test
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.Artwork
+import com.mskd.flux.model.artwork.Season
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -19,7 +20,7 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 @MediumTest
-class FluxDatabaseTest {
+class DatabaseTest {
 
     private lateinit var database: FluxDatabase
     private lateinit var dao: DatabaseDao
@@ -203,31 +204,6 @@ class FluxDatabaseTest {
     }
 
     @Test
-    fun getEpisode_returns_correct_episode_by_id() = runTest {
-        // Given
-        val artwork = MediaMockups.showArtwork
-        val episode = MediaMockups.episode1
-        dao.insertArtworks(listOf(artwork))
-        dao.insertEpisodes(listOf(episode))
-
-        // When
-        val result = dao.getEpisode(episode.id)
-
-        // Then
-        assertNotNull(result)
-        assertEquals(episode, result)
-    }
-
-    @Test
-    fun getEpisode_returns_null_when_not_found() = runTest {
-        // When
-        val result = dao.getEpisode(999999L)
-
-        // Then
-        assertNull(result)
-    }
-
-    @Test
     fun getEpisodes_without_artworkId_returns_all_episodes() = runTest {
         // Given
         val artworks = listOf(MediaMockups.showArtwork, MediaMockups.unknownArtwork)
@@ -275,22 +251,56 @@ class FluxDatabaseTest {
         result.forEach { episode -> assertEquals(Artwork.UNKNOWN_ID, episode.artworkId) }
     }
 
+    // endregion
+
+    // region Insert & Get Seasons
+
     @Test
-    fun insertEpisodes_replaces_on_conflict() = runTest {
+    fun insertSeasons_and_getSeasons_by_artworkId() = runTest {
         // Given
         val artwork = MediaMockups.showArtwork
-        val episode = MediaMockups.episode1
+        val seasons = MediaMockups.seasons
         dao.insertArtworks(listOf(artwork))
-        dao.insertEpisodes(listOf(episode))
 
         // When
-        val updatedEpisode = episode.copy(title = "Updated Episode Title")
-        dao.insertEpisodes(listOf(updatedEpisode))
+        dao.insertSeasons(seasons)
 
         // Then
-        val result = dao.getEpisode(episode.id)
-        assertEquals("Updated Episode Title", result?.title)
-        assertEquals(1, dao.getEpisodes(artwork.id).size)
+        val result = dao.getSeasons(artwork.id)
+        assertEquals(2, result.size)
+        assertEquals(seasons, result)
+    }
+
+    @Test
+    fun getSeasons_without_artworkId_returns_all_seasons() = runTest {
+        // Given
+        val artwork = MediaMockups.showArtwork
+        dao.insertArtworks(listOf(artwork))
+        dao.insertSeasons(MediaMockups.seasons)
+
+        // When
+        val result = dao.getSeasons()
+
+        // Then
+        assertEquals(MediaMockups.seasons.size, result.size)
+    }
+
+    @Test
+    fun insertSeasons_replaces_on_conflict() = runTest {
+        // Given
+        val artwork = MediaMockups.showArtwork
+        val season = MediaMockups.season1
+        dao.insertArtworks(listOf(artwork))
+        dao.insertSeasons(listOf(season))
+
+        // When
+        val updatedSeason = season.copy(title = "Updated Season Title")
+        dao.insertSeasons(listOf(updatedSeason))
+
+        // Then
+        val result = dao.getSeasons(artwork.id)
+        assertEquals(1, result.size)
+        assertEquals("Updated Season Title", result.first().title)
     }
 
     // endregion
@@ -338,8 +348,8 @@ class FluxDatabaseTest {
         dao.deleteEpisodesByIds(listOf(MediaMockups.episode1.id))
 
         // Then
-        assertNull(dao.getEpisode(MediaMockups.episode1.id))
-        assertNotNull(dao.getEpisode(MediaMockups.episode2.id))
+        assert(dao.getEpisodes().none { it.id ==  MediaMockups.episode1.id})
+        assert(dao.getEpisodes().any { it.id ==  MediaMockups.episode2.id})
     }
 
     @Test
@@ -430,6 +440,85 @@ class FluxDatabaseTest {
         assertEquals(2, dao.getEpisodes(artwork.id).size)
     }
 
+    @Test
+    fun deleteSeasonsByIds_removes_seasons_by_artworkIds() = runTest {
+        // Given
+        val artwork = MediaMockups.showArtwork
+        dao.insertArtworks(listOf(artwork))
+        dao.insertSeasons(MediaMockups.seasons)
+
+        // When
+        dao.deleteSeasonsByIds(listOf(artwork.id))
+
+        // Then
+        assertTrue(dao.getSeasons(artwork.id).isEmpty())
+    }
+
+    @Test
+    fun deleteSeason_removes_specific_season() = runTest {
+        // Given
+        val artwork = MediaMockups.showArtwork
+        dao.insertArtworks(listOf(artwork))
+        dao.insertSeasons(MediaMockups.seasons)
+
+        // When
+        dao.deleteSeason(artworkId = artwork.id, season = 1)
+
+        // Then
+        val result = dao.getSeasons(artwork.id)
+        assertEquals(1, result.size)
+        assertEquals(MediaMockups.season2, result.first())
+    }
+
+    @Test
+    fun deleteEmptySeasons_removes_seasons_without_matching_episodes() = runTest {
+        // Given
+        val artwork = MediaMockups.showArtwork
+        dao.insertArtworks(listOf(artwork))
+        dao.insertSeasons(MediaMockups.seasons)
+        // Insert episodes only for season 1
+        dao.insertEpisodes(listOf(MediaMockups.episode1, MediaMockups.episode2))
+
+        // When
+        dao.deleteEmptySeasons()
+
+        // Then - season2 has no episodes, should be deleted
+        val result = dao.getSeasons(artwork.id)
+        assertEquals(1, result.size)
+        assertEquals(MediaMockups.season1, result.first())
+    }
+
+    @Test
+    fun deleteEmptySeasons_keeps_all_seasons_when_all_have_episodes() = runTest {
+        // Given
+        val artwork = MediaMockups.showArtwork
+        dao.insertArtworks(listOf(artwork))
+        dao.insertSeasons(MediaMockups.seasons)
+        // Insert episodes for both seasons
+        dao.insertEpisodes(MediaMockups.episodes)
+
+        // When
+        dao.deleteEmptySeasons()
+
+        // Then - all seasons have episodes, none deleted
+        val result = dao.getSeasons(artwork.id)
+        assertEquals(2, result.size)
+    }
+
+    @Test
+    fun deleteAllSeasons_clears_seasons_table() = runTest {
+        // Given
+        val artwork = MediaMockups.showArtwork
+        dao.insertArtworks(listOf(artwork))
+        dao.insertSeasons(MediaMockups.seasons)
+
+        // When
+        dao.deleteAllSeasons()
+
+        // Then
+        assertTrue(dao.getSeasons().isEmpty())
+    }
+
     // endregion
 
     // region Count
@@ -457,6 +546,37 @@ class FluxDatabaseTest {
 
         // When
         val count = dao.getEpisodeCountByArtworkId(artwork.id)
+
+        // Then
+        assertEquals(0, count)
+    }
+
+    @Test
+    fun getEpisodeCountBySeason_returns_correct_count() = runTest {
+        // Given
+        val artwork = MediaMockups.showArtwork
+        val episodes = listOf(MediaMockups.episode1, MediaMockups.episode2, MediaMockups.episode3)
+        dao.insertArtworks(listOf(artwork))
+        dao.insertEpisodes(episodes)
+
+        // When
+        val countSeason1 = dao.getEpisodeCountBySeason(artwork.id, season = 1)
+        val countSeason2 = dao.getEpisodeCountBySeason(artwork.id, season = 2)
+
+        // Then
+        assertEquals(2, countSeason1) // episode1, episode2
+        assertEquals(1, countSeason2) // episode3
+    }
+
+    @Test
+    fun getEpisodeCountBySeason_returns_zero_when_no_episodes_for_season() = runTest {
+        // Given
+        val artwork = MediaMockups.showArtwork
+        dao.insertArtworks(listOf(artwork))
+        dao.insertEpisodes(listOf(MediaMockups.episode1)) // Only season 1 episode
+
+        // When
+        val count = dao.getEpisodeCountBySeason(artwork.id, season = 99)
 
         // Then
         assertEquals(0, count)
@@ -495,6 +615,22 @@ class FluxDatabaseTest {
         // Then
         assertEquals(episodes.size, result.size)
         val expectedPaths = episodes.map { it.imagePath }
+        assertTrue(result.containsAll(expectedPaths))
+    }
+
+    @Test
+    fun getSeasonsImages_returns_all_season_image_paths() = runTest {
+        // Given
+        val artwork = MediaMockups.showArtwork
+        dao.insertArtworks(listOf(artwork))
+        dao.insertSeasons(MediaMockups.seasons)
+
+        // When
+        val result = dao.getSeasonsImages()
+
+        // Then
+        assertEquals(MediaMockups.seasons.size, result.size)
+        val expectedPaths = MediaMockups.seasons.map { it.imagePath }
         assertTrue(result.containsAll(expectedPaths))
     }
 
@@ -620,6 +756,38 @@ class FluxDatabaseTest {
         }
     }
 
+    @Test
+    fun flowSeasons_emits_updates_for_specific_artwork() = runTest {
+        val artwork = MediaMockups.showArtwork
+        val season1 = MediaMockups.season1
+        val season2 = MediaMockups.season2
+        dao.insertArtworks(listOf(artwork))
+
+        dao.flowSeasons(artwork.id).test {
+            // Initial emission - empty list
+            assertEquals(emptyList<Season>(), awaitItem())
+
+            // Insert season1
+            dao.insertSeasons(listOf(season1))
+            val afterFirst = awaitItem()
+            assertEquals(1, afterFirst.size)
+            assertEquals(season1, afterFirst.first())
+
+            // Insert season2
+            dao.insertSeasons(listOf(season2))
+            val afterSecond = awaitItem()
+            assertEquals(2, afterSecond.size)
+
+            // Delete season1
+            dao.deleteSeason(artworkId = artwork.id, season = 1)
+            val afterDelete = awaitItem()
+            assertEquals(1, afterDelete.size)
+            assertEquals(season2, afterDelete.first())
+
+            cancelAndConsumeRemainingEvents()
+        }
+    }
+
     // endregion
 
     // region Edge Cases
@@ -646,13 +814,15 @@ class FluxDatabaseTest {
     }
 
     @Test
-    fun deleteAllArtworks_and_deleteAllMovies_and_deleteAllEpisodes_clears_everything() = runTest {
+    fun deleteAllArtworks_and_deleteAllMovies_and_deleteAllEpisodes_and_deleteAllSeasons_clears_everything() = runTest {
         // Given
         dao.insertArtworks(MediaMockups.artworks)
         dao.insertMovies(MediaMockups.movies)
         dao.insertEpisodes(MediaMockups.episodes + MediaMockups.unknowns)
+        dao.insertSeasons(MediaMockups.seasons)
 
         // When
+        dao.deleteAllSeasons()
         dao.deleteAllEpisodes()
         dao.deleteAllMovies()
         dao.deleteAllArtworks()
@@ -661,6 +831,16 @@ class FluxDatabaseTest {
         assertTrue(dao.getArtworks().isEmpty())
         assertTrue(dao.getMovies().isEmpty())
         assertTrue(dao.getEpisodes().isEmpty())
+        assertTrue(dao.getSeasons().isEmpty())
+    }
+
+    @Test
+    fun getSeasons_for_nonexistent_artworkId_returns_empty_list() = runTest {
+        // When
+        val result = dao.getSeasons(999999L)
+
+        // Then
+        assertTrue(result.isEmpty())
     }
 
     // endregion

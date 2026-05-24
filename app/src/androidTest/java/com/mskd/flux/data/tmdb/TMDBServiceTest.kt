@@ -64,7 +64,7 @@ class TMDBServiceTest {
     }
 
     @Test
-    fun test_1_authenticate() = runTest {
+    fun test_01_authenticate() = runTest {
         val result = service.authenticate()
 
         println("Authentication success - ${result.success}")
@@ -73,7 +73,7 @@ class TMDBServiceTest {
     }
 
     @Test
-    fun test_2_get_movie() = runTest {
+    fun test_02_get_movie() = runTest {
 
         val title = movieFile.nameProperties.title
         val year = movieFile.nameProperties.year
@@ -93,7 +93,7 @@ class TMDBServiceTest {
     }
 
     @Test
-    fun test_3_get_movie_details() = runTest {
+    fun test_03_get_movie_details() = runTest {
 
         val id = movieArtworkId!!
 
@@ -102,22 +102,29 @@ class TMDBServiceTest {
             language = dataLanguage
         )
 
-        println(result)
+        println("id : ${result.id}")
+        println("title : ${result.title}")
+        println("description : ${result.description}")
+        println("imagePath : ${result.imagePath}")
+        println("bannerPath : ${result.bannerPath}")
+        println("releaseDateString : ${result.releaseDateString}")
+        println("voteCount : ${result.voteCount}")
+        println("voteAverage : ${result.voteAverage}")
     }
 
     @Test
-    fun test_4_get_movie_translations() = runTest {
+    fun test_04_get_movie_translations() = runTest {
 
         val id = movieArtworkId!!
 
-        val result = service.getMovieTranslations(id = id)
+        val result = service.getMovieTranslations(artworkId = id)
 
         println("Result count : ${result.translations.size}")
 
     }
 
     @Test
-    fun test_5_get_show() = runTest {
+    fun test_05_get_show() = runTest {
 
         val title = episodeFile.nameProperties.title
         val year = episodeFile.nameProperties.year
@@ -131,24 +138,24 @@ class TMDBServiceTest {
         showArtworkId = result.artworkFor(fileName = episodeFile.nameProperties.title)?.id
         println("Result count : ${result.resultCount}")
         result.results.forEach {
-            println(it)
+            println("title : ${it.title}")
         }
 
     }
 
     @Test
-    fun test_6_get_show_translations() = runTest {
+    fun test_06_get_show_translations() = runTest {
 
         val id = showArtworkId!!
 
-        val result = service.getShowTranslations(id = id)
+        val result = service.getShowTranslations(artworkId = id)
 
         println("Result count : ${result.translations.size}")
 
     }
 
     @Test
-    fun test_7_get_episode() = runTest {
+    fun test_07_get_episode() = runTest {
 
         val id = showArtworkId!!
         val season = episodeFile.nameProperties.season!!
@@ -157,25 +164,69 @@ class TMDBServiceTest {
         val result = service.getEpisode(
             id = id,
             season = season,
-            episode = episode,
+            number = episode,
             language = dataLanguage
         )
 
-        println(result)
+        println("id : ${result.id}")
+        println("artworkId : ${result.artworkId}")
+        println("title : ${result.title}")
+        println("description : ${result.description}")
+        println("imagePath : ${result.imagePath}")
+        println("releaseDateString : ${result.releaseDateString}")
+        println("season : ${result.season}")
+        println("number : ${result.number}")
+        println("voteCount : ${result.voteCount}")
+        println("voteAverage : ${result.voteAverage}")
 
     }
 
     @Test
-    fun test_8_get_episode_translations() = runTest {
+    fun test_08_get_episode_translations() = runTest {
 
         val id = showArtworkId!!
         val season = episodeFile.nameProperties.season!!
         val episode = episodeFile.nameProperties.episode!!
 
         val result = service.getEpisodeTranslations(
+            artworkId = id,
+            season = season,
+            number = episode
+        )
+
+        println("Result count : ${result.translations.size}")
+
+    }
+
+    @Test
+    fun test_09_get_season() = runTest {
+
+        val id = showArtworkId!!
+        val season = episodeFile.nameProperties.season!!
+
+        val result = service.getSeason(
             id = id,
             season = season,
-            episode = episode
+            language = dataLanguage
+        )
+
+        println("id : ${result.id}")
+        println("title : ${result.title}")
+        println("description : ${result.description}")
+        println("imagePath : ${result.imagePath}")
+        println("season : ${result.season}")
+        println("number of episodes : ${result.episodes.size}")
+    }
+
+    @Test
+    fun test_10_get_season_translations() = runTest {
+
+        val id = showArtworkId!!
+        val season = episodeFile.nameProperties.season!!
+
+        val result = service.getSeasonTranslations(
+            artworkId = id,
+            season = season,
         )
 
         println("Result count : ${result.translations.size}")

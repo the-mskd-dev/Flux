@@ -27,7 +27,6 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
-import androidx.media3.common.Player
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.screens.player.PlayerIntent
 import com.mskd.flux.screens.player.PlayerUiState
@@ -37,7 +36,7 @@ import com.mskd.flux.ui.theme.Ui
 fun PlayerInterface(
     modifier: Modifier = Modifier,
     media: Media,
-    player: Player,
+    waveProgress: Boolean,
     controlsState: () -> PlayerUiState.Controls,
     rewindAndForward: () -> Pair<Int, Int>,
     sendIntent: (PlayerIntent) -> Unit
@@ -109,7 +108,8 @@ fun PlayerInterface(
                             if (seekBarHeight != height) seekBarHeight = height
                         },
                     controls = controls,
-                    sendIntent = sendIntent
+                    waveProgress = waveProgress,
+                    sendIntent = sendIntent,
                 )
 
             }

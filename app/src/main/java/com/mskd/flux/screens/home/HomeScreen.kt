@@ -52,6 +52,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -72,13 +73,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.mskd.flux.R
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.model.ScreenState
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.screens.howTo.HowToNameFiles
 import com.mskd.flux.ui.component.FluxButton
-import com.mskd.flux.ui.component.Image
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.component.MediaItem
 import com.mskd.flux.ui.component.Text
@@ -88,6 +87,7 @@ import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxSnackbar
 import com.mskd.flux.utils.extensions.tmdbImage
 import com.mskd.flux.utils.extensions.tmdbImageLarge
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -103,7 +103,7 @@ fun HomeScreen(
         viewModel.event.collect { event ->
             when (event) {
                 is HomeEvent.NavigateToCategory -> navigate(Route.Search(contentType = event.category))
-                is HomeEvent.NavigateToArtwork -> navigate(Route.Artwork(event.artworkId))
+                is HomeEvent.NavigateToArtwork -> navigate(Route.Artwork(artworkId = event.artworkId, rgb = event.rgb))
                 HomeEvent.NavigateToUnknown -> navigate(Route.UnknownArtworks)
                 HomeEvent.NavigateToHowTo -> navigate(Route.HowTo)
                 HomeEvent.NavigateToSearch -> navigate(Route.Search())
@@ -121,13 +121,19 @@ fun HomeScreen(
 
     Crossfade(
         modifier = Modifier.fillMaxSize(),
-        targetState = uiState.screenState,
+        targetState = uiState.screenState::class,
         label = "CatalogAnimation"
-    ) {
+    ) { it ->
 
         when (it) {
 
-            ScreenState.LOADING -> LoadingScreen()
+            HomeUiState.State.Loading::class -> {
+                val progress = (uiState.screenState as? HomeUiState.State.Loading)?.progress
+                LoadingScreen(
+                    text = stringResource(R.string.sync_in_progress),
+                    progress = { progress ?: 1f }
+                )
+            }
 
             else -> {
 
@@ -393,20 +399,21 @@ fun LastWatchedCarousel(
             val overview = artworks.first()
             val url = overview.bannerPath.tmdbImageLarge
 
-            Image(
+            MediaItem(
                 modifier = Modifier
-                    .clip(MaterialTheme.shapes.extraLarge)
-                    .clickable { sendIntent(HomeIntent.OnArtworkTap(artworkId = overview.id)) }
                     .widthIn(max = 350.dp)
                     .fillMaxSize()
                     .aspectRatio(ratio),
                 url = url,
-                contentDescription = overview.title
+                shape = MaterialTheme.shapes.extraLarge,
+                onTap = { rgb -> sendIntent(HomeIntent.OnArtworkTap(artworkId = overview.id, rgb = rgb)) },
+                description = overview.title
             )
 
         } else {
 
             val carouselState = rememberCarouselState { artworks.size }
+            val scope = rememberCoroutineScope()
 
             HorizontalCenteredHeroCarousel(
                 modifier = Modifier.fillMaxWidth(),
@@ -418,14 +425,26 @@ fun LastWatchedCarousel(
                 val overview = artworks[i]
                 val url = overview.bannerPath.tmdbImageLarge
 
-                Image(
-                    modifier = Modifier
-                        .maskClip(MaterialTheme.shapes.extraLarge)
-                        .clickable { sendIntent(HomeIntent.OnArtworkTap(artworkId = overview.id)) }
-                        .aspectRatio(ratio),
-                    url = url,
-                    contentDescription = overview.title
-                )
+                Box(modifier = Modifier.maskClip(MaterialTheme.shapes.extraLarge)) {
+                    MediaItem(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .aspectRatio(ratio),
+                        url = url,
+                        shape = MaterialTheme.shapes.extraLarge,
+                        onTap = { rgb ->
+
+                            if (carouselState.currentItem != i) {
+                                scope.launch { carouselState.animateScrollToItem(i) }
+                            } else {
+                                sendIntent(HomeIntent.OnArtworkTap(artworkId = overview.id, rgb = rgb))
+                            }
+
+                        },
+                        description = overview.title
+                    )
+                }
+
 
             }
 
@@ -507,10 +526,11 @@ fun MediaCategory(
             items(artworks, key = { it.id }) {
 
                 MediaItem(
-                    width = width,
-                    ratio = ratio,
+                    modifier = Modifier
+                        .width(width)
+                        .aspectRatio(ratio),
                     url = it.imagePath.tmdbImage,
-                    onTap = { sendIntent(HomeIntent.OnArtworkTap(artworkId = it.id)) },
+                    onTap = { rgb -> sendIntent(HomeIntent.OnArtworkTap(artworkId = it.id, rgb = rgb)) },
                     description = it.title
                 )
 
@@ -553,7 +573,7 @@ fun UnknownCategory(sendIntent: (HomeIntent) -> Unit) {
             modifier = Modifier
                 .padding(horizontal = Ui.Space.MEDIUM)
                 .clickable { sendIntent(HomeIntent.OnArtworkTap(artworkId = Artwork.UNKNOWN_ID)) }
-                .clip(Ui.Shape.Corner.Small)
+                .clip(MaterialTheme.shapes.small)
                 .width(width)
                 .aspectRatio(ratio)
                 .background(brush = backgroundGradient),

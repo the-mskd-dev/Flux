@@ -6,6 +6,7 @@ import com.mskd.flux.data.repository.tmdb.TmdbRepositoryImpl
 import com.mskd.flux.data.tmdb.TMDBService
 import com.mskd.flux.model.FileSource
 import com.mskd.flux.model.UserFile
+import com.mskd.flux.model.tmdb.TMDBTranslations
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
@@ -75,8 +76,10 @@ class TmdbRepositoryImplTest {
     }
 
     @Test
-    fun test_1_get_tmdb_artwork_movie() = runTest {
+    fun test_01_get_tmdb_artwork_movie() = runTest {
         val result = repository.getTmdbArtwork(movieFile)
+
+        assert(result != null)
 
         movieArtworkId = result?.id
         println("id : ${result?.id}")
@@ -93,9 +96,11 @@ class TmdbRepositoryImplTest {
     }
 
     @Test
-    fun test_2_get_tmdb_movie() = runTest {
+    fun test_02_get_tmdb_movie() = runTest {
 
         val result = repository.getTmdbMovie(artworkId = movieArtworkId!!)
+
+        assert(result != null)
 
         println("id : ${result?.id}")
         println("title : ${result?.title}")
@@ -108,16 +113,28 @@ class TmdbRepositoryImplTest {
     }
 
     @Test
-    fun test_3_get_tmdb_movie_translations() = runTest {
+    fun test_03_get_tmdb_movie_translations() = runTest {
 
-        val result = repository.getTmdbMovieTranslations(artworkId = movieArtworkId!!)
+        val result = repository.getTmdbTranslation(
+            request = TMDBTranslations.Request.Movie(
+                artworkId = movieArtworkId!!,
+                language = dataLanguage
+            ),
+        )
 
-        println("Result count : ${result.size}")
+        assert(result != null)
+
+        println("name : ${result?.name}")
+        println("english name : ${result?.englishName}")
+        println("language : ${result?.language}")
+        println("country : ${result?.country}")
     }
 
     @Test
-    fun test_4_get_tmdb_artwork_show() = runTest {
+    fun test_04_get_tmdb_artwork_show() = runTest {
         val result = repository.getTmdbArtwork(episodeFile)
+
+        assert(result != null)
 
         showArtworkId = result?.id
         println("id : ${result?.id}")
@@ -134,21 +151,33 @@ class TmdbRepositoryImplTest {
     }
 
     @Test
-    fun test_5_get_tmdb_show_translations() = runTest {
+    fun test_05_get_tmdb_show_translations() = runTest {
 
-        val result = repository.getTmdbShowTranslations(artworkId = showArtworkId!!)
+        val result = repository.getTmdbTranslation(
+            request = TMDBTranslations.Request.Show(
+                artworkId = showArtworkId!!,
+                language = dataLanguage
+            ),
+        )
 
-        println("Result count : ${result.size}")
+        assert(result != null)
+
+        println("name : ${result?.name}")
+        println("english name : ${result?.englishName}")
+        println("language : ${result?.language}")
+        println("country : ${result?.country}")
     }
 
     @Test
-    fun test_6_get_tmdb_episode() = runTest {
+    fun test_06_get_tmdb_episode() = runTest {
 
         val result = repository.getTmdbEpisode(
             artworkId = showArtworkId!!,
             season = episodeFile.nameProperties.season!!,
             number = episodeFile.nameProperties.episode!!
         )
+
+        assert(result != null)
 
         println("id : ${result?.id}")
         println("artworkId : ${result?.artworkId}")
@@ -163,15 +192,62 @@ class TmdbRepositoryImplTest {
     }
 
     @Test
-    fun test_7_get_tmdb_episode_translations() = runTest {
+    fun test_07_get_tmdb_episode_translations() = runTest {
 
-        val result = repository.getTmdbEpisodeTranslations(
-            artworkId = showArtworkId!!,
-            season = episodeFile.nameProperties.season!!,
-            number = episodeFile.nameProperties.episode!!
+        val result = repository.getTmdbTranslation(
+            request = TMDBTranslations.Request.Episode(
+                artworkId = showArtworkId!!,
+                season = episodeFile.nameProperties.season!!,
+                number = episodeFile.nameProperties.episode!!,
+                language = dataLanguage
+            ),
         )
 
-        println("Result count : ${result.size}")
+        assert(result != null)
+
+        println("name : ${result?.name}")
+        println("english name : ${result?.englishName}")
+        println("language : ${result?.language}")
+        println("country : ${result?.country}")
+
+    }
+
+    @Test
+    fun test_08_get_tmdb_season() = runTest {
+
+        val result = repository.getTmdbSeason(
+            artworkId = showArtworkId!!,
+            season = episodeFile.nameProperties.season!!,
+        )
+
+        assert(result != null)
+
+        println("id : ${result?.id}")
+        println("title : ${result?.title}")
+        println("description : ${result?.description}")
+        println("imagePath : ${result?.imagePath}")
+        println("season : ${result?.season}")
+        println("number of episodes : ${result?.episodes?.size}")
+    }
+
+    @Test
+    fun test_09_get_tmdb_season_translations() = runTest {
+
+        val result = repository.getTmdbTranslation(
+            request = TMDBTranslations.Request.Season(
+                artworkId = showArtworkId!!,
+                season = episodeFile.nameProperties.season!!,
+                language = dataLanguage
+            ),
+        )
+
+        assert(result != null)
+
+        println("name : ${result?.name}")
+        println("english name : ${result?.englishName}")
+        println("language : ${result?.language}")
+        println("country : ${result?.country}")
+
     }
 
 }

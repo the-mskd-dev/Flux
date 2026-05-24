@@ -13,12 +13,10 @@ import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfoV2
@@ -42,13 +40,17 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.window.core.layout.WindowSizeClass
 import com.mskd.flux.R
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.model.ScreenState
+import com.mskd.flux.model.State
+import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Route.Player
 import com.mskd.flux.screens.artwork.composables.ArtworkContentLarge
 import com.mskd.flux.screens.artwork.composables.ArtworkContentRegular
+import com.mskd.flux.screens.artwork.composables.common.SeasonDialog
 import com.mskd.flux.ui.component.ErrorScreen
 import com.mskd.flux.ui.component.FluxDialog
+import com.mskd.flux.ui.component.FluxDropDownMenu
+import com.mskd.flux.ui.component.FluxDropDownMenuItem
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.component.Text
 import com.mskd.flux.ui.theme.AppTheme
@@ -61,6 +63,7 @@ import com.mskd.flux.utils.rememberExternalPlayerLauncher
 @Composable
 fun ArtworkScreen(
     artworkId: Long,
+    colorScheme: ColorScheme,
     navigate: (Route) -> Unit,
     onBack: () -> Unit,
     viewModel: ArtworkViewModel = hiltViewModel<ArtworkViewModel, ArtworkViewModel.Factory>(
@@ -99,23 +102,25 @@ fun ArtworkScreen(
 
     Crossfade(
         modifier = Modifier.fillMaxSize(),
-        targetState = uiState.screen,
+        targetState = uiState.state::class,
         label = "MediaScreenAnimation"
-    ) { screen ->
+    ) { stateClass ->
 
-        when (screen) {
-            ScreenState.LOADING -> LoadingScreen()
-            ScreenState.ERROR -> {
+        when (stateClass) {
+            State.Loading::class -> LoadingScreen()
+            State.Error::class -> {
                 ErrorScreen(
                     message = stringResource(R.string.oups_an_error_occured),
                     onBackButtonTap = { viewModel.handleIntent(ArtworkIntent.OnBackTap) }
                 )
             }
-            else -> {
-                ArtworkScreenContent(
-                    uiState = uiState,
-                    sendIntent = viewModel::handleIntent
-                )
+            State.Content::class -> {
+                MaterialTheme(colorScheme = colorScheme) {
+                    ArtworkScreenContent(
+                        uiState = uiState,
+                        sendIntent = viewModel::handleIntent
+                    )
+                }
             }
 
         }
@@ -145,6 +150,7 @@ fun ArtworkScreenContent(
     sendIntent: (ArtworkIntent) -> Unit
 ) {
 
+    val fullArtwork = (uiState.state as State.Content<FullArtwork>).content
     val windowSizeClass = currentWindowAdaptiveInfoV2().windowSizeClass
     val isLargeScreen = windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND)
 
@@ -168,6 +174,7 @@ fun ArtworkScreenContent(
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
 
             CenterAlignedTopAppBar(
@@ -178,7 +185,7 @@ fun ArtworkScreenContent(
                         modifier = Modifier
                             .padding(vertical = Ui.Space.EXTRA_SMALL)
                             .graphicsLayer { alpha = animatedAlpha },
-                        text = uiState.artwork.title,
+                        text = fullArtwork.artwork.title,
                         overflow = TextOverflow.Ellipsis,
                         style = MaterialTheme.typography.headlineSmall,
                         maxLines = 2,
@@ -190,8 +197,8 @@ fun ArtworkScreenContent(
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.Transparent,
-                    scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
-                    titleContentColor = MaterialTheme.colorScheme.onSurface,
+                    scrolledContainerColor = MaterialTheme.colorScheme.background,
+                    titleContentColor = MaterialTheme.colorScheme.onBackground,
                 ),
                 actions = {
                     IconButton(
@@ -231,20 +238,25 @@ fun ArtworkScreenContent(
 
         if (isLargeScreen) {
             ArtworkContentLarge(
-                artwork = uiState.artwork,
-                media = uiState.media,
-                episodes = uiState.episodes,
-                currentSeason = uiState.season,
+                fullArtwork = fullArtwork,
+                currentMedia = uiState.selectedMedia,
+                currentSeason = uiState.selectedSeason,
                 scaffoldInnerPadding = innerPadding,
                 sendIntent = sendIntent,
             )
         } else {
             ArtworkContentRegular(
-                artwork = uiState.artwork,
-                media = uiState.media,
-                episodes = uiState.episodes,
-                currentSeason = uiState.season,
+                fullArtwork = fullArtwork,
+                currentMedia = uiState.selectedMedia,
+                currentSeason = uiState.selectedSeason,
                 scaffoldInnerPadding = innerPadding,
+                sendIntent = sendIntent,
+            )
+        }
+
+        uiState.previewForSeason?.let {
+            SeasonDialog(
+                season = it,
                 sendIntent = sendIntent,
             )
         }
@@ -258,54 +270,26 @@ fun ArtworkDropDownMenu(
     sendIntent: (ArtworkIntent) -> Unit
 ) {
 
-    DropdownMenu(
-        expanded = true,
+    FluxDropDownMenu(
         onDismissRequest = onDismissRequest,
-        containerColor = MaterialTheme.colorScheme.surfaceContainer,
-        content = {
-
-            ArtworkDropDownMenuItem(
+        items = listOf(
+            FluxDropDownMenuItem(
                 text = stringResource(R.string.more_info),
                 onClick = {
                     sendIntent(ArtworkIntent.OpenArtworkInfo)
                     onDismissRequest()
                 },
-                leadingIcon = {
-                    Icon(imageVector = Icons.Outlined.Info, contentDescription = stringResource(R.string.more_info))
-                },
-            )
-
-            ArtworkDropDownMenuItem(
+                leadingIcon = { Icon(imageVector = Icons.Outlined.Info, contentDescription = stringResource(R.string.more_info)) },
+            ),
+            FluxDropDownMenuItem(
                 text = stringResource(R.string.reset_progress),
                 onClick = {
                     sendIntent(ArtworkIntent.ShowResetProgressDialog(show = true))
                     onDismissRequest()
                 },
-                leadingIcon = {
-                    Icon(painter = painterResource(R.drawable.ic_eraser), contentDescription = stringResource(R.string.reset_progress))
-                },
+                leadingIcon = { Icon(painter = painterResource(R.drawable.ic_eraser), contentDescription = stringResource(R.string.reset_progress)) },
             )
-
-        }
-    )
-
-}
-
-@Composable
-fun ArtworkDropDownMenuItem(
-    text: String,
-    onClick: () -> Unit,
-    leadingIcon:  @Composable (() -> Unit)?
-) {
-
-    DropdownMenuItem(
-        colors = MenuDefaults.itemColors(
-            textColor = MaterialTheme.colorScheme.onSurface,
-            leadingIconColor = MaterialTheme.colorScheme.onSurface,
-        ),
-        onClick = onClick,
-        text = { Text.Body.Medium(text = text) },
-        leadingIcon = leadingIcon,
+        )
     )
 
 }
@@ -314,13 +298,12 @@ fun ArtworkDropDownMenuItem(
 @Composable
 fun ArtworkScreenContent_Preview() {
     AppTheme {
+
         ArtworkScreenContent(
             uiState = ArtworkUiState(
-                screen = ScreenState.CONTENT,
-                artwork = MediaMockups.showArtwork,
-                media = MediaMockups.episode1,
-                episodes = MediaMockups.episodes,
-                season = MediaMockups.episode1.season
+                state = State.Content(content = MediaMockups.fullShow),
+                selectedMedia = MediaMockups.episode1,
+                selectedSeason = MediaMockups.episode1.season
             ),
             sendIntent = {}
         )

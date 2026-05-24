@@ -35,6 +35,7 @@ import com.mskd.flux.utils.extensions.formatMinSec
 fun PlayerSeekBar(
     modifier: Modifier,
     controls: PlayerUiState.Controls,
+    waveProgress: Boolean,
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
@@ -73,7 +74,8 @@ fun PlayerSeekBar(
             onValueChangeFinished = { sendIntent(PlayerIntent.UpdateProgress(sliderPosition.toLong())) },
             interactionSource = interactionSource,
             isPlaying = controls.isPlaying,
-            duration = duration
+            duration = duration,
+            waveProgress = waveProgress
         )
 
         PlayerSeekBarTime(
@@ -95,6 +97,7 @@ fun PlayerSlider(
     interactionSource : MutableInteractionSource,
     isPlaying: Boolean,
     duration: Long,
+    waveProgress: Boolean
 ) {
 
     Slider(
@@ -108,7 +111,7 @@ fun PlayerSlider(
 
             LinearWavyProgressIndicator(
                 modifier = Modifier.fillMaxWidth(),
-                amplitude = { if (isPlaying) 1f else 0f },
+                amplitude = { if (isPlaying && waveProgress) 1f else 0f },
                 progress = { if (duration > 0) sliderState.value / duration else 0f },
                 stopSize = 10.dp,
                 waveSpeed = 20.dp

@@ -24,6 +24,12 @@ data class UserFile(
     val isEpisode: Boolean
         get() = nameProperties.season != null && nameProperties.episode != null
 
+    val season: Int?
+        get() = nameProperties.season
+
+    val episode: Int?
+        get() = nameProperties.episode
+
     val addedDate: Date
         get() = Date(addedDateTime)
 

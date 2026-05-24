@@ -4,16 +4,17 @@ import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.data.repository.settings.SettingsRepository
-import com.mskd.flux.model.ScreenState
-import com.mskd.flux.model.artwork.Artwork
+import com.mskd.flux.model.State
 import com.mskd.flux.model.artwork.Episode
+import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.model.artwork.Media
-import com.mskd.flux.model.artwork.Movie
+import com.mskd.flux.model.artwork.Season
 import com.mskd.flux.model.artwork.Status
 import com.mskd.flux.screens.artwork.ArtworkEvent.OpenEpisodeInfo
 import com.mskd.flux.useCases.artwork.ArtworkUC
 import com.mskd.flux.useCases.progress.ProgressUC
 import com.mskd.flux.utils.extensions.firstEpisode
+import com.mskd.flux.utils.extensions.firstEpisodeToWatch
 import com.mskd.flux.utils.extensions.getPreviousEpisodesFor
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -53,7 +54,8 @@ class ArtworkViewModel @AssistedInject constructor(
         val selectedMedia: Media? = null,
         val selectedSeason: Int? = null,
         val episodePendingConfirmation: Episode? = null,
-        val showResetProgressDialog: Boolean = false
+        val showResetProgressDialog: Boolean = false,
+        val previewForSeason: Season? = null
     )
 
     //endregion
@@ -61,6 +63,10 @@ class ArtworkViewModel @AssistedInject constructor(
     //region Variables
 
     private var selectedMedia: Media? = null
+
+
+    private val fullArtwork : FullArtwork? get() = (uiState.value.state as? State.Content)?.content
+    private val episodes : List<Episode> get() = (fullArtwork as? FullArtwork.FullShow)?.episodes.orEmpty()
 
     //endregion
 
@@ -75,9 +81,9 @@ class ArtworkViewModel @AssistedInject constructor(
         artworkUC.flow,
         settingsRepository.flow,
         _subState
-    ) { artworkContent, settings, subState ->
+    ) { artworkState, settings, subState ->
         buildUiState(
-            artworkContent = artworkContent,
+            artworkState = artworkState,
             settings = settings,
             subState = subState
         )
@@ -113,6 +119,7 @@ class ArtworkViewModel @AssistedInject constructor(
             is ArtworkIntent.OnExternalPlayerResult -> onExternalPlayerResult(intent.progress)
             is ArtworkIntent.ShowResetProgressDialog -> showResetProgressDialog(show = intent.show)
             ArtworkIntent.ResetProgress -> resetProgress()
+            is ArtworkIntent.ShowPreviewForSeason -> showPreviewForSeason(season = intent.season)
         }
     }
 
@@ -121,52 +128,33 @@ class ArtworkViewModel @AssistedInject constructor(
     //region Private Methods
 
     private fun buildUiState(
-        artworkContent: ArtworkUC.Content,
+        artworkState: State<FullArtwork>,
         settings: SettingsRepository.State,
         subState: UserState
     ) : ArtworkUiState {
 
-        var artwork: Artwork? = null
-        var movie: Movie? = null
-        var episodes: List<Episode> = emptyList()
-
-        when (artworkContent) {
-            ArtworkUC.Content.ERROR -> {}
-            is ArtworkUC.Content.MOVIE -> {
-                artwork = artworkContent.artwork
-                movie = artworkContent.movie
-            }
-            is ArtworkUC.Content.SHOW -> {
-                artwork = artworkContent.artwork
-                episodes = artworkContent.episodes
-            }
-        }
-
+        val fullArtwork = (artworkState as? State.Content<FullArtwork>)?.content
+        val episodes: List<Episode> = (fullArtwork as? FullArtwork.FullShow)?.episodes ?: emptyList()
 
         val episode = episodes.firstOrNull { it.id == (subState.selectedMedia as? Episode)?.id } // Selected media by user
-            ?: episodes.firstOrNull { it.status == Status.IS_WATCHING } // First episode watching
-            ?: episodes.firstOrNull { it.status == Status.TO_WATCH } // First episode to watch
-            ?: episodes.firstOrNull() // First episode
+            ?: episodes.firstEpisodeToWatch
 
-        val media = movie ?: episode
+        val media = (fullArtwork as? FullArtwork.FullMovie)?.movie ?: episode
 
         val season = subState.selectedSeason ?: (media as? Episode)?.season ?: -1
 
         return when {
-            artwork == null || media == null -> ArtworkUiState(screen = ScreenState.ERROR)
+            media == null -> ArtworkUiState(state = State.Error)
             else -> {
-
                 ArtworkUiState(
-                    screen = ScreenState.CONTENT,
-                    artwork = artwork,
-                    episodes = episodes,
-                    season = season,
-                    media = media,
+                    state = artworkState,
+                    selectedSeason = season,
+                    selectedMedia = media,
                     episodePendingConfirmation = subState.episodePendingConfirmation,
                     useExternalPlayer = settings.externalPlayer,
-                    showResetProgressDialog = subState.showResetProgressDialog
+                    showResetProgressDialog = subState.showResetProgressDialog,
+                    previewForSeason = subState.previewForSeason
                 )
-
             }
         }
 
@@ -196,8 +184,8 @@ class ArtworkViewModel @AssistedInject constructor(
     }
 
     private suspend fun openArtworkInfo() {
-        uiState.value.artwork.let { artwork ->
-            _event.emit(ArtworkEvent.OpenArtworkInfo(artwork = artwork))
+        (uiState.value.state as? State.Content)?.content?.let {
+            _event.emit(ArtworkEvent.OpenArtworkInfo(artwork = it.artwork))
         }
     }
 
@@ -213,7 +201,7 @@ class ArtworkViewModel @AssistedInject constructor(
         if (
             status == Status.WATCHED
             && media is Episode
-            && uiState.value.episodes.getPreviousEpisodesFor(media).any { it.status != Status.WATCHED }
+            && episodes.getPreviousEpisodesFor(media).any { it.status != Status.WATCHED }
         ) {
             showStatusDialog(episode = media)
         }
@@ -247,19 +235,23 @@ class ArtworkViewModel @AssistedInject constructor(
 
     private suspend fun resetProgress() {
 
-        val currentState = uiState.value
+        val fullArtwork = fullArtwork ?: return
 
-        progressUC.resetProgress(artwork = currentState.artwork)
+        progressUC.resetProgress(artwork = fullArtwork.artwork)
 
         _subState.update {
 
             it.copy(
-                selectedMedia = currentState.media as? Movie ?: currentState.episodes.firstEpisode,
+                selectedMedia = (fullArtwork as? FullArtwork.FullMovie)?.movie ?: episodes.firstEpisode,
                 showResetProgressDialog = false
             )
 
         }
 
+    }
+
+    private fun showPreviewForSeason(season: Season?) {
+        _subState.update { it.copy(previewForSeason = season) }
     }
 
     //endregion

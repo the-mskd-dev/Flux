@@ -276,7 +276,7 @@ fun TokenInput(
             value = token,
             onValueChange = { sendIntent(TokenIntent.SetToken(it)) },
             singleLine = true,
-            shape = Ui.Shape.Corner.Small,
+            shape = MaterialTheme.shapes.small,
             colors = TextFieldDefaults.colors(
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,

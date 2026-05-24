@@ -22,6 +22,7 @@ import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Transition
 import com.mskd.flux.screens.about.AboutScreen
 import com.mskd.flux.screens.artwork.ArtworkScreen
+import com.mskd.flux.screens.customization.CustomizationScreen
 import com.mskd.flux.screens.home.HomeScreen
 import com.mskd.flux.screens.howTo.HowToScreen
 import com.mskd.flux.screens.player.PlayerScreen
@@ -31,6 +32,7 @@ import com.mskd.flux.screens.token.TokenScreen
 import com.mskd.flux.screens.unknown.UnknownScreen
 import com.mskd.flux.screens.welcome.WelcomeScreen
 import com.mskd.flux.ui.theme.AppTheme
+import com.mskd.flux.ui.theme.createColorScheme
 import com.mskd.flux.utils.extensions.popScreen
 import com.mskd.flux.utils.notificationsPermissionState
 import com.mskd.flux.utils.storagePermissionState
@@ -51,6 +53,7 @@ class MainActivity : ComponentActivity() {
         setContent {
 
             val settings by viewModel.settings.collectAsStateWithLifecycle()
+            val customization by viewModel.customization.collectAsStateWithLifecycle()
             val storagePermission = storagePermissionState()
             val notificationsPermission = notificationsPermissionState()
 
@@ -62,7 +65,10 @@ class MainActivity : ComponentActivity() {
 
             val startingScreen = viewModel.getStartingScreen(storagePermission.status.isGranted)
 
-            AppTheme(theme = settings.uiTheme) {
+            AppTheme(
+                theme = customization.uiTheme,
+                color = customization.color
+            ) {
 
                 val backStack = rememberNavBackStack(startingScreen)
 
@@ -97,7 +103,11 @@ class MainActivity : ComponentActivity() {
                             ArtworkScreen(
                                 navigate = { route -> backStack.add(route) },
                                 onBack = { backStack.popScreen() },
-                                artworkId = entry.artworkId
+                                artworkId = entry.artworkId,
+                                colorScheme = createColorScheme(
+                                    theme = customization.uiTheme,
+                                    color = customization.color ?: entry.rgb
+                                )
                             )
                         }
                         entry<Route.UnknownArtworks> {
@@ -122,6 +132,11 @@ class MainActivity : ComponentActivity() {
                         entry<Route.Settings> {
                             SettingsScreen(
                                 navigate = { route -> backStack.add(route) },
+                                onBack = { backStack.popScreen() },
+                            )
+                        }
+                        entry<Route.Customization> {
+                            CustomizationScreen(
                                 onBack = { backStack.popScreen() },
                             )
                         }

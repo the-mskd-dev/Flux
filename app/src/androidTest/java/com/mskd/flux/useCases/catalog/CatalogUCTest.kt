@@ -147,7 +147,7 @@ class CatalogUCTest {
             context = context
         )
 
-        val catalog = catalogUC.getCatalog(listOf(movieFile, episodeFile))
+        val catalog = catalogUC.getCatalog(listOf(movieFile, episodeFile)) {}
 
         assert(catalog.artworks.size == 2)
         assert(catalog.movies.size == 1)

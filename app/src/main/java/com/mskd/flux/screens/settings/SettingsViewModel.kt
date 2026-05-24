@@ -1,8 +1,11 @@
 package com.mskd.flux.screens.settings
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.mskd.flux.R
 import com.mskd.flux.data.repository.settings.SettingsRepository
+import com.mskd.flux.ui.component.FluxOptionsDialogItem
 import com.mskd.flux.ui.component.FluxOptionsDialogState
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.useCases.catalog.CatalogUC
@@ -22,12 +25,15 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
+    application: Application,
     private val settingsRepository: SettingsRepository,
     private val catalogUC: CatalogUC,
-    private val imagesUC: ImagesUC
-) : ViewModel() {
+    private val imagesUC: ImagesUC,
+) : AndroidViewModel(application) {
 
     //region Variables
+
+    private val context = getApplication<Application>()
 
     private val _dialogState = MutableStateFlow<FluxOptionsDialogState<*, SettingsIntent>?>(null)
     private val _showFullSyncDialogState = MutableStateFlow(false)
@@ -96,7 +102,25 @@ class SettingsViewModel @Inject constructor(
 
     private fun showLanguageDialog() {
         val currentValue = uiState.value.languageValue
-        _dialogState.update { SettingsOptionsDialogs.language(currentValue) }
+
+        val dialogState = FluxOptionsDialogState(
+            titleResId = R.string.information_language,
+            currentValue = currentValue,
+            options = listOf(
+                FluxOptionsDialogItem(value = null, label = context.getString(R.string.system)),
+                FluxOptionsDialogItem(value = Locale.ENGLISH, label = Locale.ENGLISH.displayLanguage),
+                FluxOptionsDialogItem(value = Locale.FRENCH, label = Locale.FRENCH.displayLanguage),
+                FluxOptionsDialogItem(value = Locale.GERMAN , label = Locale.GERMAN.displayLanguage),
+                FluxOptionsDialogItem(value = Locale.ITALIAN, label = Locale.ITALIAN.displayLanguage),
+                FluxOptionsDialogItem(value = Locale.JAPANESE, label = Locale.JAPANESE.displayLanguage),
+                FluxOptionsDialogItem(value = Locale.KOREAN, label = Locale.KOREAN.displayLanguage),
+                Locale.forLanguageTag("es").let { FluxOptionsDialogItem(value = it, label = it.displayLanguage) }
+            ),
+            applyValue = { value -> SettingsIntent.SetLanguageValue(value) }
+        )
+
+        _dialogState.update { dialogState }
+
     }
 
     private suspend fun setLanguageValue(value: Locale?) {
@@ -107,7 +131,18 @@ class SettingsViewModel @Inject constructor(
 
     private fun showRewindDialog() {
         val currentValue = uiState.value.rewindValue
-        _dialogState.update { SettingsOptionsDialogs.rewind(currentValue) }
+        val dialogState = FluxOptionsDialogState(
+            titleResId = R.string.button_rewind,
+            currentValue = currentValue,
+            options = listOf(
+                FluxOptionsDialogItem(value = 5, label = "5sec"),
+                FluxOptionsDialogItem(value = 10, label = "10sec"),
+                FluxOptionsDialogItem(value = 30, label = "30sec")
+            ),
+            applyValue = { value -> SettingsIntent.SetRewindValue(value) }
+        )
+
+        _dialogState.update { dialogState }
     }
 
     private suspend fun setRewindValue(value: Int) {
@@ -117,7 +152,18 @@ class SettingsViewModel @Inject constructor(
 
     private fun showForwardDialog() {
         val currentValue = uiState.value.forwardValue
-        _dialogState.update { SettingsOptionsDialogs.forward(currentValue) }
+        val dialogState = FluxOptionsDialogState(
+            titleResId = R.string.button_forward,
+            currentValue = currentValue,
+            options = listOf(
+                FluxOptionsDialogItem(value = 5, label = "5sec"),
+                FluxOptionsDialogItem(value = 10, label = "10sec"),
+                FluxOptionsDialogItem(value = 30, label = "30sec")
+            ),
+            applyValue = { value -> SettingsIntent.SetForwardValue(value) }
+        )
+
+        _dialogState.update { dialogState }
     }
 
     private suspend fun setForwardValue(value: Int) {
@@ -127,7 +173,18 @@ class SettingsViewModel @Inject constructor(
 
     private fun showThemeDialog() {
         val currentValue = uiState.value.uiTheme
-        _dialogState.update { SettingsOptionsDialogs.theme(currentValue) }
+        val dialogState = FluxOptionsDialogState(
+            titleResId = R.string.app_theme,
+            currentValue = currentValue,
+            options = listOf(
+                FluxOptionsDialogItem(value = Ui.THEME.LIGHT, label = context.getString(Ui.THEME.LIGHT.stringResourceId)),
+                FluxOptionsDialogItem(value = Ui.THEME.DARK, label = context.getString(Ui.THEME.DARK.stringResourceId)),
+                FluxOptionsDialogItem(value = Ui.THEME.SYSTEM, label = context.getString(Ui.THEME.SYSTEM.stringResourceId))
+            ),
+            applyValue = { value -> SettingsIntent.SetThemeValue(value) }
+        )
+
+        _dialogState.update { dialogState }
     }
 
     private suspend fun setTheme(theme: Ui.THEME) {

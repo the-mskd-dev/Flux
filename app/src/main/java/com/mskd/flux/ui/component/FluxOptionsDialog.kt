@@ -58,7 +58,7 @@ fun <T, R> FluxOptionsDialog(
                             onClick = { selectedValue = option.value }
                         )
 
-                        val value = option.labelResId?.let { stringResource(it) } ?: option.label
+                        val value = option.label
                         Text.Body.Large(
                             modifier = Modifier.weight(1f),
                             text = value.uppercaseFirstLetter(),
@@ -85,6 +85,5 @@ data class FluxOptionsDialogState<T, out R>(
 
 data class FluxOptionsDialogItem<T>(
     val value: T,
-    val label: String? = null,
-    val labelResId: Int? = null
+    val label: String,
 )

@@ -9,9 +9,8 @@ import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.mockkCatalogUC
 import com.mskd.flux.mockups.mockkSnackbarRepository
 import com.mskd.flux.model.AppInfo
-import com.mskd.flux.model.ScreenState
-import com.mskd.flux.useCases.catalog.CatalogUC
 import com.mskd.flux.model.artwork.Artwork
+import com.mskd.flux.useCases.catalog.CatalogUC
 import com.mskd.flux.utils.FluxSnackbar
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData

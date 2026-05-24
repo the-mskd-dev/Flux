@@ -80,6 +80,20 @@ class WelcomeVIewModelTest : FunSpec({
         }
     }
 
+    test("on previous tap when at first page") {
+        viewModel.uiState.test {
+            awaitItem()
+
+            viewModel.event.test {
+                viewModel.handleIntent(WelcomeIntent.OnPreviousTap)
+                val state = awaitItem()
+                state shouldBe WelcomeEvent.ScrollToPage(0)
+            }
+
+            cancelAndConsumeRemainingEvents()
+        }
+    }
+
     test("on next tap") {
         viewModel.event.test {
 
@@ -89,6 +103,21 @@ class WelcomeVIewModelTest : FunSpec({
 
             state shouldBe WelcomeEvent.ScrollToPage(1)
 
+        }
+    }
+
+    test("on next tap when at last page") {
+        viewModel.uiState.test {
+            viewModel.handleIntent(WelcomeIntent.OnPageChange(pageIndex = WelcomePage.lastIndex))
+            awaitItem()
+
+            viewModel.event.test {
+                viewModel.handleIntent(WelcomeIntent.OnNextTap)
+                val state = awaitItem()
+                state shouldBe WelcomeEvent.ScrollToPage(WelcomePage.lastIndex)
+            }
+
+            cancelAndConsumeRemainingEvents()
         }
     }
 

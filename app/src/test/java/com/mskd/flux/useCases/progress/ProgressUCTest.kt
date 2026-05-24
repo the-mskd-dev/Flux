@@ -14,6 +14,7 @@ import com.mskd.flux.utils.extensions.lastEpisode
 import com.mskd.flux.utils.extensions.minToMs
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData
+import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
@@ -204,6 +205,30 @@ class ProgressUCTest : FunSpec({
             coVerify { userRepository.removeFromRecentlyWatched(artworkId = testCase.artwork.id) }
 
         }
+    }
+
+    test("saveProgress with unknown episode does not affect recently watched") {
+        progressUC.saveProgress(media = MediaMockups.unknownEpisode, progress = 1000L)
+
+        // Verify it saves to database
+        coVerify { databaseRepository.saveEpisodes(match { it.any { e -> e.id == MediaMockups.unknownEpisode.id } }) }
+
+        // Verify it does NOT call addToRecentlyWatched or removeFromRecentlyWatched
+        coVerify(exactly = 0) { userRepository.addToRecentlyWatched(any()) }
+        coVerify(exactly = 0) { userRepository.removeFromRecentlyWatched(any()) }
+    }
+
+    test("markPreviousEpisodesAsWatchedFor returns early if no previous unwatched episodes") {
+        coEvery { databaseRepository.getEpisodes(any()) } returns listOf(
+            MediaMockups.episode1.copy(status = Status.WATCHED),
+            MediaMockups.episode2.copy(status = Status.WATCHED),
+            MediaMockups.episode3.copy(status = Status.WATCHED)
+        )
+
+        progressUC.markPreviousEpisodesAsWatchedFor(episode = MediaMockups.episode3)
+
+        // Verify saveEpisodes is never called
+        coVerify(exactly = 0) { databaseRepository.saveEpisodes(any()) }
     }
 
 })

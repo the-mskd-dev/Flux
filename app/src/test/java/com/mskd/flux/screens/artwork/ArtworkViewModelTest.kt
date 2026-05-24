@@ -6,11 +6,11 @@ import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.mockups.FakeArtworkUC
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.mockkProgressUC
-import com.mskd.flux.model.ScreenState
+import com.mskd.flux.model.State
 import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.model.artwork.Episode
+import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.model.artwork.Status
-import com.mskd.flux.useCases.artwork.ArtworkUC
 import com.mskd.flux.useCases.progress.ProgressUC
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
@@ -63,15 +63,23 @@ class ArtworkViewModelTest : FunSpec({
 
             val initialState = awaitItem()
 
-            initialState.artwork shouldBe MediaMockups.showArtwork
-            initialState.screen shouldBe ScreenState.CONTENT
+            initialState.state.shouldBeInstanceOf<State.Content<FullArtwork>>()
+            val content = (initialState.state as State.Content).content
+            content.artwork shouldBe MediaMockups.showArtwork
             initialState.selectedMedia shouldBe MediaMockups.episode1
-            initialState.episodes shouldBe MediaMockups.episodes
+            (content as FullArtwork.FullShow).episodes shouldBe MediaMockups.episodes
             initialState.selectedSeason shouldBe MediaMockups.episode1.season
             initialState.episodePendingConfirmation shouldBe null
 
         }
 
+    }
+
+    test("on back tap") {
+        viewModel.event.test {
+            viewModel.handleIntent(ArtworkIntent.OnBackTap)
+            awaitItem() shouldBe ArtworkEvent.BackToPreviousScreen
+        }
     }
 
     test("select season") {
@@ -183,6 +191,18 @@ class ArtworkViewModelTest : FunSpec({
 
     }
 
+    test("close episodes status dialog") {
+        viewModel.uiState.test {
+            expectMostRecentItem()
+
+            viewModel.handleIntent(ArtworkIntent.ChangeWatchStatus(media = MediaMockups.episode2))
+            expectMostRecentItem().episodePendingConfirmation shouldBe MediaMockups.episode2
+
+            viewModel.handleIntent(ArtworkIntent.CloseEpisodesStatusDialog)
+            expectMostRecentItem().episodePendingConfirmation shouldBe null
+        }
+    }
+
     test("request change watch status for second episode without previous") {
 
         viewModel.uiState.test {
@@ -221,9 +241,10 @@ class ArtworkViewModelTest : FunSpec({
         viewModel.uiState.test {
 
             val loadedState = awaitItem()
+            val episodes = ((loadedState.state as State.Content).content as FullArtwork.FullShow).episodes
 
             // Change status of the latest episode
-            viewModel.handleIntent(ArtworkIntent.ChangeWatchStatus(media = loadedState.episodes.last()))
+            viewModel.handleIntent(ArtworkIntent.ChangeWatchStatus(media = episodes.last()))
 
             val stateWithDialog = expectMostRecentItem()
             stateWithDialog.episodePendingConfirmation shouldNotBe null
@@ -232,7 +253,7 @@ class ArtworkViewModelTest : FunSpec({
             viewModel.handleIntent(ArtworkIntent.MarkPreviousEpisodesAsWatched)
 
 
-            coVerify { progressUC.markPreviousEpisodesAsWatchedFor(episode = loadedState.episodes.last()) }
+            coVerify { progressUC.markPreviousEpisodesAsWatchedFor(episode = episodes.last()) }
 
             cancelAndConsumeRemainingEvents()
 
@@ -243,9 +264,11 @@ class ArtworkViewModelTest : FunSpec({
     test("mark movie as watched") {
 
         artworkUC.setContent(
-            ArtworkUC.State.MOVIE(
-                artwork = MediaMockups.movieArtwork,
-                movie = MediaMockups.movie
+            State.Content(
+                FullArtwork.FullMovie(
+                    resume = MediaMockups.movieArtwork,
+                    movie = MediaMockups.movie
+                )
             )
         )
 
@@ -291,8 +314,74 @@ class ArtworkViewModelTest : FunSpec({
 
             viewModel.handleIntent(ArtworkIntent.ResetProgress)
 
-            coVerify { progressUC.resetProgress(state.artwork) }
+            val content = (state.state as State.Content).content
+            coVerify { progressUC.resetProgress(content.artwork) }
 
+        }
+    }
+
+    test("open artwork info") {
+        viewModel.uiState.test {
+            expectMostRecentItem()
+
+            viewModel.event.test {
+                viewModel.handleIntent(ArtworkIntent.OpenArtworkInfo)
+                val event = awaitItem()
+                event.shouldBeInstanceOf<ArtworkEvent.OpenArtworkInfo>()
+                event.artwork shouldBe MediaMockups.showArtwork
+            }
+        }
+    }
+
+    test("open episode info") {
+        viewModel.uiState.test {
+            expectMostRecentItem()
+
+            viewModel.event.test {
+                val episode = MediaMockups.episode1
+                viewModel.handleIntent(ArtworkIntent.OpenEpisodeInfo(episode))
+                val event = awaitItem()
+                event.shouldBeInstanceOf<ArtworkEvent.OpenEpisodeInfo>()
+                event.episode shouldBe episode
+            }
+        }
+    }
+
+    test("on external player result") {
+        viewModel.uiState.test {
+            expectMostRecentItem()
+
+            viewModel.handleIntent(ArtworkIntent.PlayMedia(MediaMockups.episode1))
+            viewModel.handleIntent(ArtworkIntent.OnExternalPlayerResult(progress = 5000L))
+            coVerify { progressUC.saveProgress(media = MediaMockups.episode1, progress = 5000L) }
+        }
+    }
+
+    test("show preview for season") {
+        viewModel.uiState.test {
+            awaitItem()
+            val season = MediaMockups.season1
+            viewModel.handleIntent(ArtworkIntent.ShowPreviewForSeason(season))
+            expectMostRecentItem().previewForSeason shouldBe season
+
+            viewModel.handleIntent(ArtworkIntent.ShowPreviewForSeason(null))
+            expectMostRecentItem().previewForSeason shouldBe null
+        }
+    }
+
+    test("error state") {
+        artworkUC = FakeArtworkUC(initialContentType = ContentType.SHOW)
+
+        viewModel = ArtworkViewModel(
+            artworkId = -999L,
+            artworkUC = artworkUC,
+            settingsRepository = settingsRepository,
+            progressUC = progressUC
+        )
+
+        viewModel.uiState.test {
+            val state = awaitItem()
+            state.state shouldBe State.Error
         }
     }
 

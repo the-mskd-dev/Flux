@@ -16,20 +16,7 @@ data class CustomizationUiState(
 )
 
 sealed class CustomizationIntent {
+    data object OnBackTap: CustomizationIntent()
+    data object ShowThemeDialog: CustomizationIntent()
     data class SetThemeValue(val color: Color) : CustomizationIntent()
-}
-
-object CustomizationOptionsDialogs {
-
-    fun theme(currentValue: Color) = FluxOptionsDialogState(
-        titleResId = R.string.app_theme,
-        currentValue = currentValue,
-        options = listOf(
-            FluxOptionsDialogItem(value = Color.Red, labelResId = Ui.THEME.LIGHT.stringResourceId),
-            FluxOptionsDialogItem(value = Color.Blue, labelResId = Ui.THEME.DARK.stringResourceId),
-            FluxOptionsDialogItem(value = Color.Green, labelResId = Ui.THEME.SYSTEM.stringResourceId)
-        ),
-        applyValue = { value -> CustomizationIntent.SetThemeValue(value) }
-    )
-
 }

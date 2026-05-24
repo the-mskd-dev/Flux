@@ -23,8 +23,6 @@ interface SettingsRepository {
 
     suspend fun setPlayerForwardValue(value: Int)
 
-    suspend fun setUiTheme(theme: Ui.THEME)
-
     suspend fun setDataLanguage(locale: Locale?)
 
     suspend fun setSubtitlesLanguage(locale: Locale)
@@ -42,7 +40,6 @@ interface SettingsRepository {
     data class State(
         val playerRewindValue: Int = 10,
         val playerForwardValue: Int = 10,
-        val uiTheme: Ui.THEME = Ui.THEME.SYSTEM,
         val subtitlesLanguage: Locale = Locale.getDefault(),
         val audioLanguage: Locale = Locale.getDefault(),
         val externalPlayer: Boolean = false,

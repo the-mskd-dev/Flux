@@ -118,7 +118,6 @@ class CustomizationViewModel @Inject constructor(
                 Ui.Colors.Green.let { FluxOptionsDialogItem(value = it.argb, label = context.getString(it.stringResId), left = { ColorItem(it.argb) } ) },
                 Ui.Colors.Yellow.let { FluxOptionsDialogItem(value = it.argb, label = context.getString(it.stringResId), left = { ColorItem(it.argb) } ) },
                 Ui.Colors.Magenta.let { FluxOptionsDialogItem(value = it.argb, label = context.getString(it.stringResId), left = { ColorItem(it.argb) } ) },
-                Ui.Colors.Cyan.let { FluxOptionsDialogItem(value = it.argb, label = context.getString(it.stringResId), left = { ColorItem(it.argb) } ) },
                 Ui.Colors.Gray.let { FluxOptionsDialogItem(value = it.argb, label = context.getString(it.stringResId), left = { ColorItem(it.argb) } ) },
             ),
             applyValue = { value -> CustomizationIntent.SetColorValue(value) }

@@ -126,4 +126,10 @@
     <string name="customization">Personnalisation</string>
     <string name="customization_desc">Personnalisation de l\'interface</string>
     <string name="accent_color">Couleur d\'accent</string>
+    <string name="color_red">Rouge</string>
+    <string name="color_blue">Bleu</string>
+    <string name="color_green">Vert</string>
+    <string name="color_yellow">Jaune</string>
+    <string name="color_magenta">Magenta</string>
+    <string name="color_gray">Gris</string>
 </resources>

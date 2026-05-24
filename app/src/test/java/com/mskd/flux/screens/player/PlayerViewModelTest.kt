@@ -22,6 +22,7 @@ import io.kotest.datatest.withData
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
+import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
@@ -396,6 +397,121 @@ class PlayerViewModelTest : FunSpec({
                 var state = awaitItem()
                 state.ambientOverlay shouldBe PlayerUiState.AmbientOverlay(type = testCase.type, value = testCase.value)
             }
+        }
+    }
+
+    test("go to background when playing") {
+        playerManager = mockk(relaxed = true) {
+            every { state } returns MutableStateFlow(
+                PlayerManager.State.Ready(
+                    player = mockkedPlayer,
+                    isPlaying = true,
+                    progress = 2000L,
+                    duration = 10000L
+                )
+            )
+        }
+        updateVm()
+
+        viewModel.uiState.test {
+            awaitItem()
+
+            viewModel.handleIntent(PlayerIntent.GoToBackground)
+
+            coVerify { playerManager.pause() }
+            coVerify { progressUC.saveProgress(any(), 2000L) }
+        }
+    }
+
+    test("go to background and return to foreground") {
+        playerManager = mockk(relaxed = true) {
+            every { state } returns MutableStateFlow(
+                PlayerManager.State.Ready(
+                    player = mockkedPlayer,
+                    isPlaying = true,
+                    progress = 3000L,
+                    duration = 10000L
+                )
+            )
+        }
+        updateVm()
+
+        viewModel.uiState.test {
+            awaitItem()
+
+            viewModel.handleIntent(PlayerIntent.GoToBackground)
+            coVerify { playerManager.pause() }
+            coVerify { progressUC.saveProgress(any(), 3000L) }
+
+            viewModel.handleIntent(PlayerIntent.GoToForeground)
+            coVerify { playerManager.play() }
+        }
+    }
+
+    test("onCleared lifecycle disconnects player manager") {
+        val method = viewModel.javaClass.getDeclaredMethod("onCleared")
+        method.isAccessible = true
+        method.invoke(viewModel)
+
+        coVerify { playerManager.disconnect(any()) }
+    }
+
+    test("error state when artworkState is State.Error") {
+        artworkUC.setContent(com.mskd.flux.model.State.Error)
+        updateVm()
+
+        viewModel.uiState.test {
+            awaitItem().screen shouldBe PlayerScreen.Error
+        }
+    }
+
+    test("error state when playerState is PlayerManager.State.Error") {
+        playerManager = mockk(relaxed = true) {
+            every { state } returns MutableStateFlow(PlayerManager.State.Error)
+        }
+        updateVm()
+
+        viewModel.uiState.test {
+            awaitItem().screen shouldBe PlayerScreen.Error
+        }
+    }
+
+    test("GoToBackground when paused saves time but does not pause") {
+        playerManager = mockk(relaxed = true) {
+            every { state } returns MutableStateFlow(
+                PlayerManager.State.Ready(
+                    player = mockkedPlayer,
+                    isPlaying = false,
+                    progress = 2000L,
+                    duration = 10000L
+                )
+            )
+        }
+        updateVm()
+
+        viewModel.uiState.test {
+            awaitItem()
+
+            viewModel.handleIntent(PlayerIntent.GoToBackground)
+
+            coVerify(exactly = 0) { playerManager.pause() }
+            coVerify { progressUC.saveProgress(any(), 2000L) }
+        }
+    }
+
+    test("select track exception safety") {
+        settingsRepository = mockk(relaxed = true) {
+            every { flow } returns MutableStateFlow(SettingsRepository.State())
+            coEvery { setAudioLanguage(any()) } throws RuntimeException("Mock database write failure")
+        }
+        updateVm()
+
+        viewModel.uiState.test {
+            awaitItem()
+            val track = PlayerTrack(id = "1", label = "English", language = "en", type = PlayerTrack.Type.AUDIO)
+
+            // Should catch and not crash
+            viewModel.handleIntent(PlayerIntent.SelectTrack(track))
         }
     }
 

@@ -62,6 +62,79 @@ class SettingsViewModelTest : FunSpec({
             initialState.rewindValue shouldBe 10
             initialState.forwardValue shouldBe 10
             initialState.dialogState shouldBe null
+            initialState.showSyncDialog shouldBe false
+            initialState.fullSyncInProgress shouldBe false
+            initialState.prefetchImages shouldBe false
+        }
+    }
+
+    test("on back tap") {
+        viewModel.event.test {
+            viewModel.handleIntent(SettingsIntent.OnBackTap)
+            awaitItem() shouldBe SettingsEvent.BackToPreviousScreen
+        }
+    }
+
+    test("on token tap") {
+        viewModel.event.test {
+            viewModel.handleIntent(SettingsIntent.OnTokenTap)
+            awaitItem() shouldBe SettingsEvent.NavigateToTokenScreen
+        }
+    }
+
+    test("on about tap") {
+        viewModel.event.test {
+            viewModel.handleIntent(SettingsIntent.OnAboutTap)
+            awaitItem() shouldBe SettingsEvent.NavigateToAboutScreen
+        }
+    }
+
+    test("on how to tap") {
+        viewModel.event.test {
+            viewModel.handleIntent(SettingsIntent.OnHowToTap)
+            awaitItem() shouldBe SettingsEvent.NavigateToHowToScreen
+        }
+    }
+
+    test("on customization tap") {
+        viewModel.event.test {
+            viewModel.handleIntent(SettingsIntent.OnCustomizationTap)
+            awaitItem() shouldBe SettingsEvent.NavigateToCustomizationScreen
+        }
+    }
+
+    test("show full sync dialog") {
+        viewModel.uiState.test {
+            awaitItem()
+            viewModel.handleIntent(SettingsIntent.ShowFullSyncDialog(true))
+            awaitItem().showSyncDialog shouldBe true
+
+            viewModel.handleIntent(SettingsIntent.ShowFullSyncDialog(false))
+            awaitItem().showSyncDialog shouldBe false
+        }
+    }
+
+    test("proceed full sync") {
+        viewModel.uiState.test {
+            awaitItem()
+            viewModel.handleIntent(SettingsIntent.ShowFullSyncDialog(true))
+            awaitItem().showSyncDialog shouldBe true
+
+            viewModel.handleIntent(SettingsIntent.ProceedFullSync)
+            awaitItem().showSyncDialog shouldBe false
+
+            coVerify { catalogUC.syncCatalog(onlyNew = false) }
+        }
+    }
+
+    test("hide dialog") {
+        viewModel.uiState.test {
+            awaitItem()
+            viewModel.handleIntent(SettingsIntent.ShowRewindDialog)
+            awaitItem().dialogState shouldNotBe null
+
+            viewModel.handleIntent(SettingsIntent.HideDialog)
+            awaitItem().dialogState shouldBe null
         }
     }
 
@@ -215,6 +288,20 @@ class SettingsViewModelTest : FunSpec({
         }
     }
 
+    test("set external player - request permission when checked is true") {
+        viewModel.event.test {
+            viewModel.handleIntent(SettingsIntent.OnExternalPlayerCheck(true))
+            awaitItem() shouldBe SettingsEvent.RequestExternalPlayerPermission
+        }
+    }
+
+    test("set external player - does not request permission when checked is false") {
+        viewModel.event.test {
+            viewModel.handleIntent(SettingsIntent.OnExternalPlayerCheck(false))
+            expectNoEvents()
+        }
+    }
+
     test("set prefetch images") {
         viewModel.uiState.test {
             awaitItem()
@@ -229,6 +316,24 @@ class SettingsViewModelTest : FunSpec({
 
             cancelAndConsumeRemainingEvents()
 
+        }
+    }
+
+    test("set prefetch images - triggers prefetch when checked is true") {
+        viewModel.uiState.test {
+            awaitItem()
+
+            viewModel.handleIntent(SettingsIntent.OnPrefetchImagesCheck(true))
+            coVerify { imagesUC.prefetchImages() }
+        }
+    }
+
+    test("set prefetch images - does not trigger prefetch when checked is false") {
+        viewModel.uiState.test {
+            awaitItem()
+
+            viewModel.handleIntent(SettingsIntent.OnPrefetchImagesCheck(false))
+            coVerify(exactly = 0) { imagesUC.prefetchImages() }
         }
     }
 

@@ -11,6 +11,7 @@ import com.mskd.flux.mockups.mockkSnackbarRepository
 import com.mskd.flux.model.AppInfo
 import com.mskd.flux.model.ScreenState
 import com.mskd.flux.useCases.catalog.CatalogUC
+import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.utils.FluxSnackbar
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData
@@ -171,6 +172,140 @@ class HomeViewModelTest : FunSpec({
 
         coVerify(exactly = 1) {
             catalogUC.syncCatalog(onlyNew = false)
+        }
+    }
+
+    test("on normal artwork tap") {
+        viewModel = HomeViewModel(
+            catalogUC = catalogUC,
+            tokenRepository = tokenRepository,
+            userRepository = userRepository,
+            snackbarRepository = snackbarRepository,
+            appInfo = appInfo
+        )
+
+        viewModel.event.test {
+            viewModel.handleIntent(HomeIntent.OnArtworkTap(artworkId = 123L, rgb = 0x112233))
+            awaitItem() shouldBe HomeEvent.NavigateToArtwork(artworkId = 123L, rgb = 0x112233)
+        }
+    }
+
+    test("on unknown artwork tap") {
+        viewModel = HomeViewModel(
+            catalogUC = catalogUC,
+            tokenRepository = tokenRepository,
+            userRepository = userRepository,
+            snackbarRepository = snackbarRepository,
+            appInfo = appInfo
+        )
+
+        viewModel.event.test {
+            viewModel.handleIntent(HomeIntent.OnArtworkTap(artworkId = Artwork.UNKNOWN_ID, rgb = null))
+            awaitItem() shouldBe HomeEvent.NavigateToUnknown
+        }
+    }
+
+    test("on category tap") {
+        viewModel = HomeViewModel(
+            catalogUC = catalogUC,
+            tokenRepository = tokenRepository,
+            userRepository = userRepository,
+            snackbarRepository = snackbarRepository,
+            appInfo = appInfo
+        )
+
+        viewModel.event.test {
+            viewModel.handleIntent(HomeIntent.OnCategoryTap(category = com.mskd.flux.model.artwork.ContentType.MOVIE))
+            awaitItem() shouldBe HomeEvent.NavigateToCategory(category = com.mskd.flux.model.artwork.ContentType.MOVIE)
+        }
+    }
+
+    test("on search tap") {
+        viewModel = HomeViewModel(
+            catalogUC = catalogUC,
+            tokenRepository = tokenRepository,
+            userRepository = userRepository,
+            snackbarRepository = snackbarRepository,
+            appInfo = appInfo
+        )
+
+        viewModel.event.test {
+            viewModel.handleIntent(HomeIntent.OnSearchTap)
+            awaitItem() shouldBe HomeEvent.NavigateToSearch
+        }
+    }
+
+    test("on settings tap") {
+        viewModel = HomeViewModel(
+            catalogUC = catalogUC,
+            tokenRepository = tokenRepository,
+            userRepository = userRepository,
+            snackbarRepository = snackbarRepository,
+            appInfo = appInfo
+        )
+
+        viewModel.event.test {
+            viewModel.handleIntent(HomeIntent.OnSettingsTap)
+            awaitItem() shouldBe HomeEvent.NavigateToSettings
+        }
+    }
+
+    test("on how to tap") {
+        viewModel = HomeViewModel(
+            catalogUC = catalogUC,
+            tokenRepository = tokenRepository,
+            userRepository = userRepository,
+            snackbarRepository = snackbarRepository,
+            appInfo = appInfo
+        )
+
+        viewModel.event.test {
+            viewModel.handleIntent(HomeIntent.OnHowToTap)
+            awaitItem() shouldBe HomeEvent.NavigateToHowTo
+        }
+    }
+
+    test("on dismiss snackbar and snackbar action tap") {
+        tokenFlow.value = ""
+
+        viewModel = HomeViewModel(
+            catalogUC = catalogUC,
+            tokenRepository = tokenRepository,
+            userRepository = userRepository,
+            snackbarRepository = snackbarRepository,
+            appInfo = appInfo
+        )
+
+        viewModel.uiState.test {
+            val stateWithSnackbar = awaitItem()
+            stateWithSnackbar.snackbarState shouldBe FluxSnackbar.Token
+
+            viewModel.handleIntent(HomeIntent.OnDismissSnackbar)
+            val stateWithoutSnackbar = awaitItem()
+            stateWithoutSnackbar.snackbarState shouldBe null
+
+            cancelAndConsumeRemainingEvents()
+        }
+
+        tokenFlow.value = "token"
+
+        val viewModelTutorial = HomeViewModel(
+            catalogUC = catalogUC,
+            tokenRepository = tokenRepository,
+            userRepository = userRepository,
+            snackbarRepository = snackbarRepository,
+            appInfo = appInfo
+        )
+
+        viewModelTutorial.uiState.test {
+            awaitItem().snackbarState shouldBe FluxSnackbar.Tutorial
+
+            viewModelTutorial.event.test {
+                viewModelTutorial.handleIntent(HomeIntent.OnSnackbarActionTap)
+                awaitItem() shouldBe HomeEvent.NavigateToHowTo
+            }
+
+            cancelAndConsumeRemainingEvents()
         }
     }
 

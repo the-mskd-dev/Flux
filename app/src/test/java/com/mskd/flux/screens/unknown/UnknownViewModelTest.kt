@@ -13,6 +13,7 @@ import com.mskd.flux.useCases.progress.ProgressUC
 import com.mskd.flux.useCases.progress.ProgressUCImpl
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -118,6 +119,46 @@ class UnknownViewModelTest : FunSpec ({
 
             event shouldBe UnknownEvent.BackToPreviousScreen
 
+        }
+    }
+
+    test("on info tap") {
+        viewModel.event.test {
+            viewModel.handleIntent(UnknownIntent.OnInfoTap)
+            val event = awaitItem()
+            event shouldBe UnknownEvent.NavigateToHowToScreen
+        }
+    }
+
+    test("play media - force internal player when external enabled") {
+        settingsRepository = mockk(relaxed = true) {
+            every { flow } returns MutableStateFlow(SettingsRepository.State(externalPlayer = true))
+        }
+
+        updateVm()
+
+        viewModel.uiState.test {
+            awaitItem()
+
+            viewModel.event.test {
+                viewModel.handleIntent(UnknownIntent.PlayMedia(media = MediaMockups.unknownEpisode, forceInternal = true))
+                val event = awaitItem()
+
+                event shouldBe UnknownEvent.PlayMedia(MediaMockups.unknownEpisode.id)
+            }
+        }
+    }
+
+    test("on external player result") {
+        viewModel.uiState.test {
+            awaitItem()
+
+            viewModel.handleIntent(UnknownIntent.PlayMedia(media = MediaMockups.unknownEpisode))
+            viewModel.handleIntent(UnknownIntent.OnExternalPlayerResult(progress = 5000L))
+
+            coVerify { databaseRepository.saveEpisodes(match { episodes ->
+                episodes.any { it.id == MediaMockups.unknownEpisode.id && it.currentTime == 5000L }
+            }) }
         }
     }
 

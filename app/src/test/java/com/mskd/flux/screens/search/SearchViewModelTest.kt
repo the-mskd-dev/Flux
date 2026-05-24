@@ -134,4 +134,45 @@ class SearchViewModelTest : FunSpec({
 
     }
 
+    test("on back tap") {
+        viewModel.event.test {
+            viewModel.handleIntent(SearchIntent.OnBackTap)
+            awaitItem() shouldBe SearchEvent.BackToPreviousScreen
+        }
+    }
+
+    test("on artwork tap") {
+        viewModel.event.test {
+            viewModel.handleIntent(SearchIntent.OnArtworkTap(artworkId = 123L, rgb = 0xFFFFFF))
+            awaitItem() shouldBe SearchEvent.NavigateToMedia(artworkId = 123L, rgb = 0xFFFFFF)
+        }
+    }
+
+    test("initial state with non-null contentType") {
+        val customViewModel = SearchViewModel(
+            contentType = ContentType.MOVIE,
+            catalogUC = catalogUC,
+            settingsRepository = settingsRepository
+        )
+        customViewModel.uiState.test {
+            val state = awaitItem()
+            state.contentType shouldBe ContentType.MOVIE
+            state.autoKeyboard shouldBe false
+        }
+    }
+
+    test("filterOnType toggles back to null when same type is selected") {
+        viewModel.uiState.test {
+            awaitItem()
+
+            // Filter on Movie first
+            viewModel.handleIntent(SearchIntent.FilterOnType(contentType = ContentType.MOVIE))
+            awaitItem().contentType shouldBe ContentType.MOVIE
+
+            // Filter on Movie again
+            viewModel.handleIntent(SearchIntent.FilterOnType(contentType = ContentType.MOVIE))
+            awaitItem().contentType shouldBe null
+        }
+    }
+
 })

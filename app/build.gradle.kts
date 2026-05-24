@@ -36,7 +36,7 @@ configure<ApplicationExtension> {
         applicationId = "com.mskd.flux"
         minSdk = 29
         targetSdk = 37
-        versionCode = 21
+        versionCode = 20
         versionName = "1.3.7"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

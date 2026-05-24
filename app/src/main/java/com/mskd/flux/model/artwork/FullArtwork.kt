@@ -36,7 +36,7 @@ sealed class FullArtwork {
 
     val isWatching: Boolean get() = when (this) {
         is FullMovie -> this.movie.status == Status.IS_WATCHING
-        is FullShow -> this.episodes.any { it.status == Status.IS_WATCHING }
+        is FullShow -> !(this.episodes.all { it.status == Status.TO_WATCH } || this.episodes.all { it.status == Status.WATCHED })
     }
 
 }

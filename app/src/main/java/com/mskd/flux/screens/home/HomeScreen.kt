@@ -52,6 +52,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -78,7 +79,6 @@ import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.screens.howTo.HowToNameFiles
 import com.mskd.flux.ui.component.FluxButton
-import com.mskd.flux.ui.component.Image
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.component.MediaItem
 import com.mskd.flux.ui.component.Text
@@ -88,6 +88,7 @@ import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxSnackbar
 import com.mskd.flux.utils.extensions.tmdbImage
 import com.mskd.flux.utils.extensions.tmdbImageLarge
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -407,6 +408,7 @@ fun LastWatchedCarousel(
         } else {
 
             val carouselState = rememberCarouselState { artworks.size }
+            val scope = rememberCoroutineScope()
 
             HorizontalCenteredHeroCarousel(
                 modifier = Modifier.fillMaxWidth(),
@@ -418,15 +420,26 @@ fun LastWatchedCarousel(
                 val overview = artworks[i]
                 val url = overview.bannerPath.tmdbImageLarge
 
-                MediaItem(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(ratio),
-                    url = url,
-                    shape = MaterialTheme.shapes.extraLarge,
-                    onTap = { rgb -> sendIntent(HomeIntent.OnArtworkTap(artworkId = overview.id, rgb = rgb)) },
-                    description = overview.title
-                )
+                Box(modifier = Modifier.maskClip(MaterialTheme.shapes.extraLarge)) {
+                    MediaItem(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .aspectRatio(ratio),
+                        url = url,
+                        shape = MaterialTheme.shapes.extraLarge,
+                        onTap = { rgb ->
+
+                            if (carouselState.currentItem != i) {
+                                scope.launch { carouselState.animateScrollToItem(i) }
+                            } else {
+                                sendIntent(HomeIntent.OnArtworkTap(artworkId = overview.id, rgb = rgb))
+                            }
+
+                        },
+                        description = overview.title
+                    )
+                }
+
 
             }
 

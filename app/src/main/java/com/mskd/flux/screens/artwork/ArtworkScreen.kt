@@ -13,17 +13,13 @@ import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfoV2
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.expressiveLightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -32,7 +28,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -54,6 +49,8 @@ import com.mskd.flux.screens.artwork.composables.ArtworkContentRegular
 import com.mskd.flux.screens.artwork.composables.common.SeasonDialog
 import com.mskd.flux.ui.component.ErrorScreen
 import com.mskd.flux.ui.component.FluxDialog
+import com.mskd.flux.ui.component.FluxDropDownMenu
+import com.mskd.flux.ui.component.FluxDropDownMenuItem
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.component.Text
 import com.mskd.flux.ui.theme.AppTheme
@@ -66,7 +63,7 @@ import com.mskd.flux.utils.rememberExternalPlayerLauncher
 @Composable
 fun ArtworkScreen(
     artworkId: Long,
-    rgb: Int?,
+    colorScheme: ColorScheme,
     navigate: (Route) -> Unit,
     onBack: () -> Unit,
     viewModel: ArtworkViewModel = hiltViewModel<ArtworkViewModel, ArtworkViewModel.Factory>(
@@ -105,23 +102,25 @@ fun ArtworkScreen(
 
     Crossfade(
         modifier = Modifier.fillMaxSize(),
-        targetState = uiState.state,
+        targetState = uiState.state::class,
         label = "MediaScreenAnimation"
-    ) { state ->
+    ) { stateClass ->
 
-        when (state) {
-            State.Loading -> LoadingScreen()
-            State.Error -> {
+        when (stateClass) {
+            State.Loading::class -> LoadingScreen()
+            State.Error::class -> {
                 ErrorScreen(
                     message = stringResource(R.string.oups_an_error_occured),
                     onBackButtonTap = { viewModel.handleIntent(ArtworkIntent.OnBackTap) }
                 )
             }
-            is State.Content -> {
-                ArtworkScreenContent(
-                    uiState = uiState,
-                    sendIntent = viewModel::handleIntent
-                )
+            State.Content::class -> {
+                MaterialTheme(colorScheme = colorScheme) {
+                    ArtworkScreenContent(
+                        uiState = uiState,
+                        sendIntent = viewModel::handleIntent
+                    )
+                }
             }
 
         }
@@ -175,7 +174,7 @@ fun ArtworkScreenContent(
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
 
             CenterAlignedTopAppBar(
@@ -198,8 +197,8 @@ fun ArtworkScreenContent(
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.Transparent,
-                    scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
-                    titleContentColor = MaterialTheme.colorScheme.onSurface,
+                    scrolledContainerColor = MaterialTheme.colorScheme.background,
+                    titleContentColor = MaterialTheme.colorScheme.onBackground,
                 ),
                 actions = {
                     IconButton(
@@ -271,55 +270,26 @@ fun ArtworkDropDownMenu(
     sendIntent: (ArtworkIntent) -> Unit
 ) {
 
-    DropdownMenu(
-        shape = MaterialTheme.shapes.extraLarge,
-        expanded = true,
+    FluxDropDownMenu(
         onDismissRequest = onDismissRequest,
-        containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-        content = {
-
-            ArtworkDropDownMenuItem(
+        items = listOf(
+            FluxDropDownMenuItem(
                 text = stringResource(R.string.more_info),
                 onClick = {
                     sendIntent(ArtworkIntent.OpenArtworkInfo)
                     onDismissRequest()
                 },
-                leadingIcon = {
-                    Icon(imageVector = Icons.Outlined.Info, contentDescription = stringResource(R.string.more_info))
-                },
-            )
-
-            ArtworkDropDownMenuItem(
+                leadingIcon = { Icon(imageVector = Icons.Outlined.Info, contentDescription = stringResource(R.string.more_info)) },
+            ),
+            FluxDropDownMenuItem(
                 text = stringResource(R.string.reset_progress),
                 onClick = {
                     sendIntent(ArtworkIntent.ShowResetProgressDialog(show = true))
                     onDismissRequest()
                 },
-                leadingIcon = {
-                    Icon(painter = painterResource(R.drawable.ic_eraser), contentDescription = stringResource(R.string.reset_progress))
-                },
+                leadingIcon = { Icon(painter = painterResource(R.drawable.ic_eraser), contentDescription = stringResource(R.string.reset_progress)) },
             )
-
-        }
-    )
-
-}
-
-@Composable
-fun ArtworkDropDownMenuItem(
-    text: String,
-    onClick: () -> Unit,
-    leadingIcon:  @Composable (() -> Unit)?
-) {
-
-    DropdownMenuItem(
-        colors = MenuDefaults.itemColors(
-            textColor = MaterialTheme.colorScheme.onSurface,
-            leadingIconColor = MaterialTheme.colorScheme.onSurface,
-        ),
-        onClick = onClick,
-        text = { Text.Body.Medium(text = text) },
-        leadingIcon = leadingIcon,
+        )
     )
 
 }

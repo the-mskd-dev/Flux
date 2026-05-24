@@ -2,6 +2,9 @@ package com.mskd.flux.di
 
 import android.content.Context
 import com.google.gson.Gson
+import com.mskd.flux.data.repository.customization.CustomizationRepository
+import com.mskd.flux.data.repository.customization.CustomizationRepositoryImpl
+import com.mskd.flux.data.repository.customization.customizationDatastore
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.data.repository.settings.SettingsRepositoryImpl
 import com.mskd.flux.data.repository.settings.settingsDatastore
@@ -44,6 +47,12 @@ object DataStoreModule {
     @Singleton
     fun provideSettingsRepository(@ApplicationContext context: Context) : SettingsRepository {
         return SettingsRepositoryImpl(settingsDataStore = context.settingsDatastore)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCustomizationRepository(@ApplicationContext context: Context) : CustomizationRepository {
+        return CustomizationRepositoryImpl(customizationDataStore = context.customizationDatastore)
     }
 
     @Provides

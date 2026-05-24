@@ -37,7 +37,7 @@ import com.mskd.flux.ui.theme.Ui
 fun PlayerInterface(
     modifier: Modifier = Modifier,
     media: Media,
-    player: Player,
+    waveProgress: Boolean,
     controlsState: () -> PlayerUiState.Controls,
     rewindAndForward: () -> Pair<Int, Int>,
     sendIntent: (PlayerIntent) -> Unit
@@ -109,7 +109,8 @@ fun PlayerInterface(
                             if (seekBarHeight != height) seekBarHeight = height
                         },
                     controls = controls,
-                    sendIntent = sendIntent
+                    waveProgress = waveProgress,
+                    sendIntent = sendIntent,
                 )
 
             }

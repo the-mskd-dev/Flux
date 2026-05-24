@@ -12,6 +12,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -47,16 +48,20 @@ fun SeasonDialog(
                 .heightIn(max = 700.dp)
                 .padding(horizontal = Ui.Space.MEDIUM, vertical = Ui.Space.LARGE),
             shape = MaterialTheme.shapes.large,
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                contentColor = MaterialTheme.colorScheme.onTertiaryContainer
+            )
         ) {
 
             Column(
                 modifier = Modifier
                     .verticalScroll(rememberScrollState())
-                    .padding(horizontal = Ui.Space.MEDIUM, vertical = Ui.Space.LARGE),
-                verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE)
+                    .padding(all = Ui.Space.MEDIUM),
+                verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
             ) {
 
-                Text.Title.Large(
+                Text.Headline.Medium(
                     text = season.title.ifEmpty { stringResource(R.string.season, season.season) },
                     emphasized = true,
                 )

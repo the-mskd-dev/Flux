@@ -14,11 +14,8 @@ import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MenuDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,6 +33,8 @@ import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Status
 import com.mskd.flux.screens.artwork.ArtworkIntent
+import com.mskd.flux.ui.component.FluxDropDownMenu
+import com.mskd.flux.ui.component.FluxDropDownMenuItem
 import com.mskd.flux.ui.component.MediaThumbnail
 import com.mskd.flux.ui.component.Text
 import com.mskd.flux.ui.theme.AppTheme
@@ -54,7 +53,7 @@ fun EpisodeItem(
 ) {
 
     var showMenu by remember { mutableStateOf(false) }
-    val bgColor by animateColorAsState(if (isSelected) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.background)
+    val bgColor by animateColorAsState(if (isSelected) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.surfaceContainer)
 
     Column(
         modifier = modifier
@@ -93,7 +92,7 @@ fun EpisodeItem(
                     textAlign = TextAlign.Start,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
-                    color = if (isSelected) MaterialTheme.colorScheme.onSecondaryContainer else MaterialTheme.colorScheme.onBackground,
+                    color = if (isSelected) MaterialTheme.colorScheme.onSecondaryContainer else MaterialTheme.colorScheme.onSurface,
                     emphasized = true
                 )
 
@@ -145,14 +144,10 @@ fun EpisodeDropDownMenu(
         else -> stringResource(R.string.play)
     }
 
-    DropdownMenu(
-        shape = MaterialTheme.shapes.extraLarge,
-        expanded = true,
+    FluxDropDownMenu(
         onDismissRequest = onDismissRequest,
-        containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-        content = {
-
-            EpisodeDropDownMenuItem(
+        items = listOf(
+            FluxDropDownMenuItem(
                 text = text,
                 onClick = {
                     sendIntent(ArtworkIntent.PlayMedia(media = episode))
@@ -161,9 +156,8 @@ fun EpisodeDropDownMenu(
                 leadingIcon = {
                     Icon(imageVector = if (episode.status == Status.WATCHED) Icons.Default.Refresh else Icons.Default.PlayArrow, contentDescription = null)
                 },
-            )
-
-            EpisodeDropDownMenuItem(
+            ),
+            FluxDropDownMenuItem(
                 text = if (episode.status == Status.WATCHED) stringResource(R.string.mark_as_not_watched) else stringResource(R.string.mark_as_watched),
                 onClick = {
                     sendIntent(ArtworkIntent.ChangeWatchStatus(media = episode))
@@ -175,9 +169,8 @@ fun EpisodeDropDownMenu(
                     else
                         Icon(imageVector = Icons.Default.Done, contentDescription = null)
                 },
-            )
-
-            EpisodeDropDownMenuItem(
+            ),
+            FluxDropDownMenuItem(
                 text = stringResource(R.string.more_info),
                 onClick = {
                     sendIntent(ArtworkIntent.OpenEpisodeInfo(episode = episode))
@@ -187,30 +180,9 @@ fun EpisodeDropDownMenu(
                     Icon(imageVector = Icons.Outlined.Info, contentDescription = null)
                 },
             )
-
-        }
+        )
     )
 
-}
-
-@Composable
-fun EpisodeDropDownMenuItem(
-    text: String,
-    onClick: () -> Unit,
-    leadingIcon:  @Composable (() -> Unit)?
-) {
-
-    DropdownMenuItem(
-        colors = MenuDefaults.itemColors(
-            textColor = MaterialTheme.colorScheme.onTertiaryContainer,
-            leadingIconColor = MaterialTheme.colorScheme.onTertiaryContainer,
-        ),
-        onClick = onClick,
-        text = {
-            Text.Body.Medium(text = text)
-        },
-        leadingIcon = leadingIcon,
-    )
 
 }
 

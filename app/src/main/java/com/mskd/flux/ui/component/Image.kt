@@ -9,6 +9,7 @@ import androidx.compose.ui.platform.LocalContext
 import coil3.compose.AsyncImage
 import coil3.compose.AsyncImagePainter
 import coil3.request.ImageRequest
+import coil3.request.allowHardware
 import coil3.request.crossfade
 import coil3.video.videoFrameMillis
 import coil3.video.videoFramePercent
@@ -30,6 +31,7 @@ fun Image(
         model = ImageRequest.Builder(LocalContext.current)
             .data(url)
             .crossfade(true)
+            .allowHardware(false)
             .build(),
         contentScale = contentScale,
         placeholder = Image.placeholder,

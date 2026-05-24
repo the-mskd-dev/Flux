@@ -123,4 +123,14 @@
     <string name="caching_images_in_progress">Téléchargement des images en cours (%1$d%%)</string>
     <string name="cache_images_desc">Pré-télécharge les images pour une utilisation hors-ligne</string>
     <string name="no_summary">Aucun résumé disponible</string>
+    <string name="customization">Personnalisation</string>
+    <string name="customization_desc">Personnalisation de l\'interface</string>
+    <string name="accent_color">Couleur d\'accent</string>
+    <string name="color_red">Rouge</string>
+    <string name="color_blue">Bleu</string>
+    <string name="color_green">Vert</string>
+    <string name="color_yellow">Jaune</string>
+    <string name="color_magenta">Magenta</string>
+    <string name="color_gray">Gris</string>
+    <string name="wave_progress">Barre de progression en vague</string>
 </resources>

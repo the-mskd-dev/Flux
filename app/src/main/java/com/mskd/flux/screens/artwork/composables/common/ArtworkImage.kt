@@ -32,7 +32,6 @@ import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.screens.artwork.ArtworkIntent
 import com.mskd.flux.ui.component.Image
 import com.mskd.flux.ui.theme.AppTheme
-import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.extensions.tmdbImage
 
@@ -71,9 +70,9 @@ fun ArtworkImage(
                     brush = Brush.verticalGradient(
                         colors = listOf(
                             Color.Transparent,
-                            MaterialTheme.colorScheme.surfaceContainer.copy(alpha = .6f),
-                            MaterialTheme.colorScheme.surfaceContainer.copy(alpha = .9f),
-                            MaterialTheme.colorScheme.surfaceContainer,
+                            MaterialTheme.colorScheme.background.copy(alpha = .6f),
+                            MaterialTheme.colorScheme.background.copy(alpha = .9f),
+                            MaterialTheme.colorScheme.background,
                         ),
                         startY = imageHeight * .7f,
                         endY = Float.POSITIVE_INFINITY

@@ -5,12 +5,12 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -51,15 +51,6 @@ fun ArtworkDescriptionsPager(
 
     AnimatedContent(
         targetState = currentPage,
-        modifier = Modifier
-            .clip(MaterialTheme.shapes.large)
-            .padding(horizontal = Ui.Space.MEDIUM)
-            .clickable {
-                when {
-                    currentPage < pageCount - 1 -> currentPage++
-                    currentPage > 0 -> currentPage--
-                }
-            },
         transitionSpec = {
             if (targetState > initialState) {
                 fadeIn() togetherWith fadeOut()
@@ -69,42 +60,55 @@ fun ArtworkDescriptionsPager(
         }
     ) { i ->
 
-        when (fullArtwork) {
-
-            is FullArtwork.FullMovie -> {
-
-                ArtworkDescription(
-                    title = stringResource(R.string.summary),
-                    description = currentMedia.description,
-                    bottomDetails = { MediaDescriptionDetails(currentMedia) }
-                )
-
+        Card(
+            modifier = Modifier.padding(horizontal = Ui.Space.MEDIUM),
+            shape = MaterialTheme.shapes.large,
+            onClick = {
+                when {
+                    currentPage < pageCount - 1 -> currentPage++
+                    currentPage > 0 -> currentPage--
+                }
             }
+        ) {
 
-            is FullArtwork.FullShow -> {
+            when (fullArtwork) {
 
-                val episode = currentMedia as Episode
-
-
-                if (i > 0 || pageCount == 1) {
+                is FullArtwork.FullMovie -> {
 
                     ArtworkDescription(
                         title = stringResource(R.string.summary),
-                        description = fullArtwork.artwork.description.ifEmpty { stringResource(R.string.no_summary) },
-                    )
-
-                } else {
-
-                    ArtworkDescription(
-                        title = episode.title,
                         description = currentMedia.description,
-                        topDetails = { EpisodesDetails(episode = episode) },
-                        bottomDetails = { MediaDescriptionDetails(media = episode) }
+                        bottomDetails = { MediaDescriptionDetails(currentMedia) }
                     )
 
                 }
 
+                is FullArtwork.FullShow -> {
+
+                    val episode = currentMedia as Episode
+
+
+                    if (i > 0 || pageCount == 1) {
+
+                        ArtworkDescription(
+                            title = stringResource(R.string.summary),
+                            description = fullArtwork.artwork.description.ifEmpty { stringResource(R.string.no_summary) },
+                        )
+
+                    } else {
+
+                        ArtworkDescription(
+                            title = episode.title,
+                            description = currentMedia.description,
+                            topDetails = { EpisodesDetails(episode = episode) },
+                            bottomDetails = { MediaDescriptionDetails(media = episode) }
+                        )
+
+                    }
+
+                }
             }
+
         }
 
     }
@@ -123,7 +127,7 @@ fun ArtworkDescription(
     Column(
         modifier = Modifier
             .clip(MaterialTheme.shapes.large)
-            .background(MaterialTheme.colorScheme.background)
+            .background(MaterialTheme.colorScheme.surfaceContainer)
             .fillMaxWidth()
             .padding(all = Ui.Space.MEDIUM),
         verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
@@ -139,7 +143,7 @@ fun ArtworkDescription(
             Text.Headline.Medium(
                 modifier = Modifier.fillMaxWidth(),
                 text = title,
-                color = MaterialTheme.colorScheme.onBackground,
+                color = MaterialTheme.colorScheme.onSurface,
                 emphasized = true
             )
 
@@ -149,7 +153,7 @@ fun ArtworkDescription(
             modifier = Modifier.fillMaxWidth(),
             text = description,
             textAlign = TextAlign.Left,
-            color = MaterialTheme.colorScheme.onBackground
+            color = MaterialTheme.colorScheme.onSurface
         )
 
         bottomDetails()

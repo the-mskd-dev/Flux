@@ -14,6 +14,7 @@ import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -64,20 +65,13 @@ import com.mskd.flux.utils.rememberExternalPlayerLauncher
 @Composable
 fun ArtworkScreen(
     artworkId: Long,
-    rgb: Int?,
+    colorScheme: ColorScheme,
     navigate: (Route) -> Unit,
     onBack: () -> Unit,
     viewModel: ArtworkViewModel = hiltViewModel<ArtworkViewModel, ArtworkViewModel.Factory>(
         creationCallback = { factory -> factory.create(artworkId) }
     )
 ) {
-
-    val colorScheme = rgb?.let {
-        rememberDynamicColorScheme(
-            seedColor = Color(it),
-            isDark = isSystemInDarkTheme()
-        )
-    }
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
@@ -123,7 +117,7 @@ fun ArtworkScreen(
                 )
             }
             State.Content::class -> {
-                MaterialTheme(colorScheme = colorScheme ?: MaterialTheme.colorScheme) {
+                MaterialTheme(colorScheme = colorScheme) {
                     ArtworkScreenContent(
                         uiState = uiState,
                         sendIntent = viewModel::handleIntent

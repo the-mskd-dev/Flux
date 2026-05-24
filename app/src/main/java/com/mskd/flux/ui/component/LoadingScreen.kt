@@ -15,6 +15,7 @@ import com.mskd.flux.ui.theme.Ui
 @Composable
 fun LoadingScreen(
     text: String? = null,
+    progress: (() -> Float)? = null
 ) {
 
     Box(
@@ -27,7 +28,11 @@ fun LoadingScreen(
             verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
         ) {
 
-            CircularWavyProgressIndicator()
+            if (progress != null)  {
+                CircularWavyProgressIndicator(progress = progress)
+            } else {
+                CircularWavyProgressIndicator()
+            }
 
             Text.Title.Medium(text)
 

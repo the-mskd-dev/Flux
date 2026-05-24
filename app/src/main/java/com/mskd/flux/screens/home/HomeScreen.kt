@@ -131,11 +131,10 @@ fun HomeScreen(
 
             HomeUiState.State.Loading::class -> {
                 val progress = (uiState.screenState as? HomeUiState.State.Loading)?.progress
-                val text = when (progress) {
-                    null -> null
-                    else -> stringResource(R.string.catalog_sync_in_progress, progress.times(100).roundToInt())
-                }
-                LoadingScreen(text = text)
+                LoadingScreen(
+                    text = stringResource(R.string.sync_in_progress),
+                    progress = { progress ?: 1f }
+                )
             }
 
             else -> {

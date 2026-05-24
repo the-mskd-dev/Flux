@@ -79,7 +79,6 @@ import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.screens.howTo.HowToNameFiles
 import com.mskd.flux.ui.component.FluxButton
-import com.mskd.flux.ui.component.Image
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.component.MediaItem
 import com.mskd.flux.ui.component.Text

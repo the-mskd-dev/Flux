@@ -1,7 +1,6 @@
 package com.mskd.flux.screens.home
 
 import androidx.compose.runtime.Immutable
-import androidx.compose.ui.graphics.Color
 import com.mskd.flux.model.ScreenState
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.ContentType

@@ -57,6 +57,8 @@ import com.mskd.flux.screens.artwork.composables.ArtworkContentRegular
 import com.mskd.flux.screens.artwork.composables.common.SeasonDialog
 import com.mskd.flux.ui.component.ErrorScreen
 import com.mskd.flux.ui.component.FluxDialog
+import com.mskd.flux.ui.component.FluxDropDownMenu
+import com.mskd.flux.ui.component.FluxDropDownMenuItem
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.component.Text
 import com.mskd.flux.ui.theme.AppTheme
@@ -283,56 +285,26 @@ fun ArtworkDropDownMenu(
     sendIntent: (ArtworkIntent) -> Unit
 ) {
 
-    DropdownMenu(
-        shape = MaterialTheme.shapes.extraLarge,
-        expanded = true,
+    FluxDropDownMenu(
         onDismissRequest = onDismissRequest,
-        containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-        content = {
-
-
-            ArtworkDropDownMenuItem(
+        items = listOf(
+            FluxDropDownMenuItem(
                 text = stringResource(R.string.more_info),
                 onClick = {
                     sendIntent(ArtworkIntent.OpenArtworkInfo)
                     onDismissRequest()
                 },
-                leadingIcon = {
-                    Icon(imageVector = Icons.Outlined.Info, contentDescription = stringResource(R.string.more_info))
-                },
-            )
-
-            ArtworkDropDownMenuItem(
+                leadingIcon = { Icon(imageVector = Icons.Outlined.Info, contentDescription = stringResource(R.string.more_info)) },
+            ),
+            FluxDropDownMenuItem(
                 text = stringResource(R.string.reset_progress),
                 onClick = {
                     sendIntent(ArtworkIntent.ShowResetProgressDialog(show = true))
                     onDismissRequest()
                 },
-                leadingIcon = {
-                    Icon(painter = painterResource(R.drawable.ic_eraser), contentDescription = stringResource(R.string.reset_progress))
-                },
+                leadingIcon = { Icon(painter = painterResource(R.drawable.ic_eraser), contentDescription = stringResource(R.string.reset_progress)) },
             )
-
-        }
-    )
-
-}
-
-@Composable
-fun ArtworkDropDownMenuItem(
-    text: String,
-    onClick: () -> Unit,
-    leadingIcon:  @Composable (() -> Unit)?
-) {
-
-    DropdownMenuItem(
-        colors = MenuDefaults.itemColors(
-            textColor = MaterialTheme.colorScheme.onTertiaryContainer,
-            leadingIconColor = MaterialTheme.colorScheme.onTertiaryContainer,
-        ),
-        onClick = onClick,
-        text = { Text.Body.Medium(text = text) },
-        leadingIcon = leadingIcon,
+        )
     )
 
 }

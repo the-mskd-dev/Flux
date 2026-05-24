@@ -12,6 +12,7 @@ import java.util.Locale
 @Immutable
 data class CustomizationUiState(
     val uiTheme: Ui.THEME = Ui.THEME.SYSTEM,
+    val color: Int? = null,
     val dialogState: FluxOptionsDialogState<*, CustomizationIntent>? = null,
 )
 
@@ -26,7 +27,7 @@ sealed class CustomizationIntent {
     data object ShowThemeDialog: CustomizationIntent()
 
     // Setter
-    data class SetColorValue(val color: Color) : CustomizationIntent()
+    data class SetColorValue(val color: Int?) : CustomizationIntent()
     data class SetThemeValue(val theme: Ui.THEME): CustomizationIntent()
 }
 

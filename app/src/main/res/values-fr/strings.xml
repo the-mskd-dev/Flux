@@ -125,4 +125,5 @@
     <string name="no_summary">Aucun résumé disponible</string>
     <string name="customization">Personnalisation</string>
     <string name="customization_desc">Personnalisation de l\'interface</string>
+    <string name="accent_color">Couleur d\'accent</string>
 </resources>

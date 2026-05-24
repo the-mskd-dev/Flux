@@ -4,6 +4,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.mskd.flux.ui.theme.Ui
 import kotlinx.coroutines.flow.Flow
@@ -18,6 +19,7 @@ class CustomizationRepositoryImpl @Inject constructor(
 
     object Keys {
         val UI_THEME = stringPreferencesKey("ui_theme")
+        val COLOR = intPreferencesKey("color")
     }
 
     override val flow: Flow<CustomizationRepository.State> = customizationDataStore.data
@@ -25,15 +27,26 @@ class CustomizationRepositoryImpl @Inject constructor(
         .map { preferences ->
 
             val uiTheme = preferences[Keys.UI_THEME]?.let { Ui.THEME.valueOf(it) } ?: Ui.THEME.SYSTEM
+            val color = preferences[Keys.COLOR]
 
             CustomizationRepository.State(
                 uiTheme = uiTheme,
+                color = color
             )
         }
 
     override suspend fun setUiTheme(theme: Ui.THEME) {
         customizationDataStore.edit { preferences ->
             preferences[Keys.UI_THEME] = theme.toString()
+        }
+    }
+
+    override suspend fun setColor(color: Int?) {
+        customizationDataStore.edit { preferences ->
+            if (color == null)
+                preferences.remove(Keys.COLOR)
+            else
+                preferences[Keys.COLOR] = color
         }
     }
 

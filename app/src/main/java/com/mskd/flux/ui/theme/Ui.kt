@@ -11,6 +11,8 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.R
 
@@ -89,6 +91,17 @@ object Ui {
             DARK -> R.string.dark
             SYSTEM -> R.string.system
         }
+    }
+
+    sealed class Colors(val argb: Int?, val stringResId: Int) {
+        data object System : Colors(argb = null, stringResId = R.string.system)
+        data object Red : Colors(argb = Color.Red.toArgb(), stringResId = R.string.color_red)
+        data object Blue : Colors(argb = Color.Blue.toArgb(), stringResId = R.string.color_blue)
+        data object Green : Colors(argb = Color.Green.toArgb(), stringResId = R.string.color_green)
+        data object Yellow : Colors(argb = Color.Yellow.toArgb(), stringResId = R.string.color_yellow)
+        data object Magenta : Colors(argb = Color.Magenta.toArgb(), stringResId = R.string.color_magenta)
+        data object Cyan : Colors(argb = Color.Cyan.toArgb(), stringResId = R.string.color_cyan)
+        data object Gray : Colors(argb = Color.Gray.toArgb(), stringResId = R.string.color_gray)
     }
 
 }

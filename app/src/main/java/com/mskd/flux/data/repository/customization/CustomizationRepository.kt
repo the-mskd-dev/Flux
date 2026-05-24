@@ -1,6 +1,7 @@
 package com.mskd.flux.data.repository.customization
 
 import android.content.Context
+import androidx.compose.ui.graphics.Color
 import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.preferencesDataStore
@@ -21,8 +22,11 @@ interface CustomizationRepository{
 
     suspend fun setUiTheme(theme: Ui.THEME)
 
+    suspend fun setColor(color: Int?)
+
     data class State(
         val uiTheme: Ui.THEME = Ui.THEME.SYSTEM,
+        val color: Int? = null
     )
 
 }

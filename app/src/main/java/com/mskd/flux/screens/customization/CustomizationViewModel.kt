@@ -1,10 +1,13 @@
 package com.mskd.flux.screens.customization
 
 import android.app.Application
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.R
 import com.mskd.flux.data.repository.customization.CustomizationRepository
+import com.mskd.flux.screens.customization.composables.ColorItem
 import com.mskd.flux.screens.settings.SettingsEvent
 import com.mskd.flux.ui.component.FluxOptionsDialogItem
 import com.mskd.flux.ui.component.FluxOptionsDialogState
@@ -39,6 +42,7 @@ class CustomizationViewModel @Inject constructor(
     ) { customization, dialog ->
         CustomizationUiState(
             uiTheme = customization.uiTheme,
+            color = customization.color,
             dialogState = dialog
         )
     }.stateIn(
@@ -62,12 +66,12 @@ class CustomizationViewModel @Inject constructor(
 
             // Dialogs
             CustomizationIntent.HideDialog -> hideDialog()
-            CustomizationIntent.ShowColorDialog -> TODO()
+            CustomizationIntent.ShowColorDialog -> showColorDialog()
             CustomizationIntent.ShowThemeDialog -> showThemeDialog()
 
 
             // Setters
-            is CustomizationIntent.SetColorValue -> TODO()
+            is CustomizationIntent.SetColorValue -> setColor(color = intent.color)
             is CustomizationIntent.SetThemeValue -> setTheme(theme = intent.theme)
 
         }
@@ -99,6 +103,32 @@ class CustomizationViewModel @Inject constructor(
 
     private suspend fun setTheme(theme: Ui.THEME) {
         customizationRepository.setUiTheme(theme)
+        hideDialog()
+    }
+
+    private fun showColorDialog() {
+        val currentValue = uiState.value.color
+        val dialogState = FluxOptionsDialogState(
+            titleResId = R.string.app_theme,
+            currentValue = currentValue,
+            options = listOf(
+                Ui.Colors.System.let { FluxOptionsDialogItem(value = it.argb, label = context.getString(it.stringResId), left = { ColorItem(it.argb) } ) },
+                Ui.Colors.Red.let { FluxOptionsDialogItem(value = it.argb, label = context.getString(it.stringResId), left = { ColorItem(it.argb) } ) },
+                Ui.Colors.Blue.let { FluxOptionsDialogItem(value = it.argb, label = context.getString(it.stringResId), left = { ColorItem(it.argb) } ) },
+                Ui.Colors.Green.let { FluxOptionsDialogItem(value = it.argb, label = context.getString(it.stringResId), left = { ColorItem(it.argb) } ) },
+                Ui.Colors.Yellow.let { FluxOptionsDialogItem(value = it.argb, label = context.getString(it.stringResId), left = { ColorItem(it.argb) } ) },
+                Ui.Colors.Magenta.let { FluxOptionsDialogItem(value = it.argb, label = context.getString(it.stringResId), left = { ColorItem(it.argb) } ) },
+                Ui.Colors.Cyan.let { FluxOptionsDialogItem(value = it.argb, label = context.getString(it.stringResId), left = { ColorItem(it.argb) } ) },
+                Ui.Colors.Gray.let { FluxOptionsDialogItem(value = it.argb, label = context.getString(it.stringResId), left = { ColorItem(it.argb) } ) },
+            ),
+            applyValue = { value -> CustomizationIntent.SetColorValue(value) }
+        )
+
+        _dialogState.update { dialogState }
+    }
+
+    private suspend fun setColor(color: Int?) {
+        customizationRepository.setColor(color)
         hideDialog()
     }
 

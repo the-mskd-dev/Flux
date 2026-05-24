@@ -134,4 +134,13 @@
     <string name="no_summary">No summary available</string>
     <string name="customization">Customization</string>
     <string name="customization_desc">Interface customization</string>
+    <string name="accent_color">Accent color</string>
+    <string name="color_red">Red</string>
+    <string name="color_blue">Blue</string>
+    <string name="color_green">Green</string>
+    <string name="color_yellow">Yellow</string>
+    <string name="color_magenta">Magenta</string>
+    <string name="color_cyan">Cyan</string>
+    <string name="color_gray">Gray</string>
+
 </resources>

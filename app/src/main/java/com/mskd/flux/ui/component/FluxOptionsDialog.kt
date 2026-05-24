@@ -58,12 +58,21 @@ fun <T, R> FluxOptionsDialog(
                             onClick = { selectedValue = option.value }
                         )
 
-                        val value = option.label
-                        Text.Body.Large(
-                            modifier = Modifier.weight(1f),
-                            text = value.uppercaseFirstLetter(),
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)
+                        ) {
+
+                            option.left?.invoke()
+
+                            val value = option.label
+                            Text.Body.Large(
+                                modifier = Modifier.weight(1f),
+                                text = value.uppercaseFirstLetter(),
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+
+                        }
 
                     }
 
@@ -86,4 +95,5 @@ data class FluxOptionsDialogState<T, out R>(
 data class FluxOptionsDialogItem<T>(
     val value: T,
     val label: String,
+    val left: @Composable (() -> Unit)? = null
 )

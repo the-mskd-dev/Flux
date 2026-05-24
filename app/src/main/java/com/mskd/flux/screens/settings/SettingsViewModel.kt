@@ -3,6 +3,7 @@ package com.mskd.flux.screens.settings
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.data.repository.settings.SettingsRepository
+import com.mskd.flux.ui.component.FluxOptionsDialogState
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.useCases.catalog.CatalogUC
 import com.mskd.flux.useCases.images.ImagesUC
@@ -28,7 +29,7 @@ class SettingsViewModel @Inject constructor(
 
     //region Variables
 
-    private val _dialogState = MutableStateFlow<SettingsDialogState<*>?>(null)
+    private val _dialogState = MutableStateFlow<FluxOptionsDialogState<*, SettingsIntent>?>(null)
     private val _showFullSyncDialogState = MutableStateFlow(false)
 
     val uiState: StateFlow<SettingsUiState> = combine(
@@ -95,7 +96,7 @@ class SettingsViewModel @Inject constructor(
 
     private fun showLanguageDialog() {
         val currentValue = uiState.value.languageValue
-        _dialogState.update { SettingsDialogState.language(currentValue) }
+        _dialogState.update { SettingsOptionsDialogs.language(currentValue) }
     }
 
     private suspend fun setLanguageValue(value: Locale?) {
@@ -106,7 +107,7 @@ class SettingsViewModel @Inject constructor(
 
     private fun showRewindDialog() {
         val currentValue = uiState.value.rewindValue
-        _dialogState.update { SettingsDialogState.rewind(currentValue) }
+        _dialogState.update { SettingsOptionsDialogs.rewind(currentValue) }
     }
 
     private suspend fun setRewindValue(value: Int) {
@@ -116,7 +117,7 @@ class SettingsViewModel @Inject constructor(
 
     private fun showForwardDialog() {
         val currentValue = uiState.value.forwardValue
-        _dialogState.update { SettingsDialogState.forward(currentValue) }
+        _dialogState.update { SettingsOptionsDialogs.forward(currentValue) }
     }
 
     private suspend fun setForwardValue(value: Int) {
@@ -126,7 +127,7 @@ class SettingsViewModel @Inject constructor(
 
     private fun showThemeDialog() {
         val currentValue = uiState.value.uiTheme
-        _dialogState.update { SettingsDialogState.theme(currentValue) }
+        _dialogState.update { SettingsOptionsDialogs.theme(currentValue) }
     }
 
     private suspend fun setTheme(theme: Ui.THEME) {

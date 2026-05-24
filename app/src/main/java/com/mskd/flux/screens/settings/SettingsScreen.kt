@@ -43,6 +43,7 @@ import com.mskd.flux.screens.settings.composables.SettingsPlayerSection
 import com.mskd.flux.screens.settings.composables.SettingsSyncSection
 import com.mskd.flux.screens.settings.composables.SettingsTmdbSection
 import com.mskd.flux.ui.component.FluxDialog
+import com.mskd.flux.ui.component.FluxOptionsDialog
 import com.mskd.flux.ui.component.FluxScaffold
 import com.mskd.flux.ui.component.Text
 import com.mskd.flux.ui.theme.AppTheme
@@ -87,10 +88,10 @@ fun SettingsScreen(
         sendIntent = viewModel::handleIntent
     )
 
-    state.dialogState?.let {
-        SettingsDialog(
-            state = it,
-            sendIntent = viewModel::handleIntent,
+    state.dialogState?.let { dialogState ->
+        FluxOptionsDialog(
+            state = dialogState,
+            onValidate = { viewModel.handleIntent(it) },
             onDismiss = { viewModel.handleIntent(SettingsIntent.HideDialog) }
         )
     }
@@ -190,61 +191,6 @@ fun SettingIcon(
 }
 
 @Composable
-fun <T> SettingsDialog(
-    state: SettingsDialogState<T>,
-    sendIntent: (SettingsIntent) -> Unit,
-    onDismiss: () -> Unit
-) {
-
-    var selectedValue by remember { mutableStateOf(state.currentValue) }
-
-    FluxDialog(
-        onDismiss = onDismiss,
-        onValidate = { sendIntent(state.applyValue(selectedValue)) },
-        title = stringResource(state.title),
-        content = {
-
-            Column(
-                modifier = Modifier
-                    .verticalScroll(rememberScrollState())
-                    .fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
-            ) {
-
-                state.options.forEach { option ->
-
-                    Row(
-                        modifier = Modifier
-                            .clickable { selectedValue = option.key  }
-                            .fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)
-                    ) {
-
-                        RadioButton(
-                            selected = selectedValue == option.key,
-                            onClick = { selectedValue = option.key }
-                        )
-
-                        val value = option.value.second?.let { stringResource(it) } ?: option.value.first
-                        Text.Body.Large(
-                            modifier = Modifier.weight(1f),
-                            text = value.uppercaseFirstLetter(),
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-
-                    }
-
-                }
-
-            }
-
-        }
-    )
-
-}
-
-@Composable
 fun SettingsFullSyncDialog(
     sendIntent: (SettingsIntent) -> Unit,
     onDismiss: () -> Unit
@@ -270,18 +216,6 @@ fun SettingsScreen_Preview() {
             context = LocalContext.current,
             appVersion = "1.0.0",
         ) { }
-    }
-}
-
-@FluxPreview
-@Composable
-fun SettingsDialog_Preview() {
-    AppTheme {
-        SettingsDialog(
-            state = SettingsDialogState.forward(5),
-            sendIntent = {},
-            onDismiss = {}
-        )
     }
 }
 

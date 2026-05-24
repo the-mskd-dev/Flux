@@ -38,6 +38,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withContext
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * Use case interface for managing the media catalog.
@@ -262,91 +263,97 @@ class CatalogUCImpl(
             _state.value = CatalogUC.State.Syncing(full = false)
 
             val language = settings.getDataLanguage()
+            val shows = database.getArtworks().filter { it.type == ContentType.SHOW }
             val movies = database.getMovies()
             val seasons = database.getSeasons()
             val episodes = database.getEpisodes()
 
-            var translatedMovies: List<Movie> = emptyList()
-            var translatedSeasons: List<Season> = emptyList()
-            var translatedEpisodes: List<Episode> = emptyList()
+            val batchSize = 25
 
             supervisorScope {
 
-                translatedMovies = movies.map { movie ->
+                // Movies
+                launch(dispatcher) {
+                    movies.chunked(batchSize).forEach { chunk ->
+                        val translated = chunk.map { movie ->
+                            async {
+                                tmdb.getTmdbTranslation(
+                                    request = TMDBTranslations.Request.Movie(artworkId = movie.artworkId, language = language)
+                                )?.let { translation ->
+                                    movie.copy(
+                                        title = translation.data.name ?: movie.title,
+                                        description = translation.data.overview ?: movie.description
+                                    )
+                                }
+                            }
+                        }.awaitAll().filterNotNull()
 
-                    async(dispatcher) {
-
-                        tmdb.getTmdbTranslation(
-                            request = TMDBTranslations.Request.Movie(
-                                artworkId = movie.artworkId,
-                                language = language
-                            ),
-                        )?.let { translation ->
-
-                            movie.copy(
-                                title = translation.data.name ?: movie.title,
-                                description = translation.data.overview ?: movie.description
-                            )
-
-                        }
-
+                        if (translated.isNotEmpty()) database.saveMovies(translated)
                     }
+                }
 
-                }.awaitAll().filterNotNull()
+                // Shows
+                launch(dispatcher) {
+                    shows.chunked(batchSize).forEach { chunk ->
+                        val translated = chunk.map { show ->
+                            async {
+                                tmdb.getTmdbTranslation(
+                                    request = TMDBTranslations.Request.Show(artworkId = show.id, language = language)
+                                )?.let { translation ->
+                                    show.copy(
+                                        title = translation.data.name ?: show.title,
+                                        description = translation.data.overview ?: show.description
+                                    )
+                                }
+                            }
+                        }.awaitAll().filterNotNull()
 
-                translatedSeasons = seasons.map { season ->
-
-                    async(dispatcher) {
-
-                        tmdb.getTmdbTranslation(
-                            request = TMDBTranslations.Request.Season(
-                                artworkId = season.artworkId,
-                                season = season.season,
-                                language = language
-                            ),
-                        )?.let { translation ->
-
-                            season.copy(
-                                title = translation.data.name ?: season.title,
-                                description = translation.data.overview ?: season.description
-                            )
-
-                        }
-
+                        if (translated.isNotEmpty()) database.saveArtworks(translated)
                     }
+                }
 
-                }.awaitAll().filterNotNull()
+                // Seasons
+                launch(dispatcher) {
+                    seasons.chunked(batchSize).forEach { chunk ->
+                        val translated = chunk.map { season ->
+                            async {
+                                tmdb.getTmdbTranslation(
+                                    request = TMDBTranslations.Request.Season(artworkId = season.artworkId, season = season.season, language = language)
+                                )?.let { translation ->
+                                    season.copy(
+                                        title = translation.data.name ?: season.title,
+                                        description = translation.data.overview ?: season.description
+                                    )
+                                }
+                            }
+                        }.awaitAll().filterNotNull()
 
-                translatedEpisodes = episodes.map { episode ->
-
-                    async(dispatcher) {
-
-                        tmdb.getTmdbTranslation(
-                            request = TMDBTranslations.Request.Episode(
-                                artworkId = episode.artworkId,
-                                season = episode.season,
-                                number = episode.number,
-                                language = language
-                            ),
-                        )?.let { translation ->
-
-                            episode.copy(
-                                title = translation.data.name ?: episode.title,
-                                description = translation.data.overview ?: episode.description
-                            )
-
-                        }
-
+                        if (translated.isNotEmpty()) database.saveSeasons(translated)
                     }
+                }
 
-                }.awaitAll().filterNotNull()
+                // Episodes
+                launch(dispatcher) {
+                    episodes.chunked(batchSize).forEach { chunk ->
+                        val translated = chunk.map { episode ->
+                            async {
+                                tmdb.getTmdbTranslation(
+                                    request = TMDBTranslations.Request.Episode(artworkId = episode.artworkId, season = episode.season, number = episode.number, language = language)
+                                )?.let { translation ->
+                                    episode.copy(
+                                        title = translation.data.name ?: episode.title,
+                                        description = translation.data.overview ?: episode.description
+                                    )
+                                }
+                            }
+                        }.awaitAll().filterNotNull()
+
+                        if (translated.isNotEmpty()) database.saveEpisodes(translated)
+                    }
+                }
 
 
             }
-
-            database.saveMovies(translatedMovies)
-            database.saveSeasons(translatedSeasons)
-            database.saveEpisodes(translatedEpisodes)
 
             _state.value = CatalogUC.State.Idle
 

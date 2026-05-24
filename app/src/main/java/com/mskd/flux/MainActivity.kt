@@ -22,6 +22,7 @@ import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Transition
 import com.mskd.flux.screens.about.AboutScreen
 import com.mskd.flux.screens.artwork.ArtworkScreen
+import com.mskd.flux.screens.customization.CustomizationScreen
 import com.mskd.flux.screens.home.HomeScreen
 import com.mskd.flux.screens.howTo.HowToScreen
 import com.mskd.flux.screens.player.PlayerScreen
@@ -124,6 +125,11 @@ class MainActivity : ComponentActivity() {
                         entry<Route.Settings> {
                             SettingsScreen(
                                 navigate = { route -> backStack.add(route) },
+                                onBack = { backStack.popScreen() },
+                            )
+                        }
+                        entry<Route.Customization> {
+                            CustomizationScreen(
                                 onBack = { backStack.popScreen() },
                             )
                         }

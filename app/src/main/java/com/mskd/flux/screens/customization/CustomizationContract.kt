@@ -21,10 +21,15 @@ sealed class CustomizationIntent {
     data object OnBackTap: CustomizationIntent()
 
     // Dialogs
+    data object HideDialog : CustomizationIntent()
     data object ShowColorDialog: CustomizationIntent()
     data object ShowThemeDialog: CustomizationIntent()
 
     // Setter
     data class SetColorValue(val color: Color) : CustomizationIntent()
     data class SetThemeValue(val theme: Ui.THEME): CustomizationIntent()
+}
+
+sealed class CustomizationEvent {
+    object BackToPreviousScreen: CustomizationEvent()
 }

@@ -11,7 +11,6 @@ data class SettingsUiState(
     val languageValue: Locale? = null,
     val rewindValue: Int = 10,
     val forwardValue: Int = 10,
-    val uiTheme: Ui.THEME = Ui.THEME.SYSTEM,
     val autoKeyboard: Boolean = false,
     val useExternalPlayer: Boolean = false,
     val dialogState: FluxOptionsDialogState<*, SettingsIntent>? = null,
@@ -23,20 +22,27 @@ data class SettingsUiState(
 
 sealed class SettingsIntent {
 
-    data object ShowLanguageDialog: SettingsIntent()
-    data class SetLanguageValue(val value: Locale?): SettingsIntent()
-
-    data object ShowRewindDialog: SettingsIntent()
-    data class SetRewindValue(val value: Int): SettingsIntent()
-    data object ShowForwardDialog: SettingsIntent()
-    data class SetForwardValue(val value: Int): SettingsIntent()
-    data object HideDialog : SettingsIntent()
+    // Navigation
     data object OnBackTap: SettingsIntent()
+    data object OnCustomizationTap: SettingsIntent()
     data object OnTokenTap: SettingsIntent()
     data object OnHowToTap: SettingsIntent()
     data object OnAboutTap: SettingsIntent()
 
+    // Dialogs
+    data object HideDialog : SettingsIntent()
+    data object ShowLanguageDialog: SettingsIntent()
+    data object ShowRewindDialog: SettingsIntent()
+    data object ShowForwardDialog: SettingsIntent()
     data class ShowFullSyncDialog(val show: Boolean): SettingsIntent()
+
+    // Setters
+    data class SetLanguageValue(val value: Locale?): SettingsIntent()
+
+    data class SetRewindValue(val value: Int): SettingsIntent()
+    data class SetForwardValue(val value: Int): SettingsIntent()
+
+    // Others
     data object ProceedFullSync: SettingsIntent()
     data class OnAutoKeyboardCheck(val checked: Boolean): SettingsIntent()
     data class OnExternalPlayerCheck(val checked: Boolean): SettingsIntent()
@@ -45,6 +51,7 @@ sealed class SettingsIntent {
 
 sealed class SettingsEvent {
     object BackToPreviousScreen: SettingsEvent()
+    object NavigateToCustomizationScreen: SettingsEvent()
     object NavigateToTokenScreen: SettingsEvent()
     object NavigateToHowToScreen: SettingsEvent()
     object NavigateToAboutScreen: SettingsEvent()

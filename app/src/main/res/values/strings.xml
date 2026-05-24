@@ -132,4 +132,6 @@
     <string name="caching_images_in_progress">Caching images… %1$d%%</string>
     <string name="cache_images_desc">Download images for offline use</string>
     <string name="no_summary">No summary available</string>
+    <string name="customization">Customization</string>
+    <string name="customization_desc">Interface customization</string>
 </resources>

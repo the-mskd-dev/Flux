@@ -5,13 +5,16 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.R
 import com.mskd.flux.data.repository.customization.CustomizationRepository
+import com.mskd.flux.screens.settings.SettingsEvent
 import com.mskd.flux.ui.component.FluxOptionsDialogItem
 import com.mskd.flux.ui.component.FluxOptionsDialogState
 import com.mskd.flux.ui.theme.Ui
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -30,7 +33,6 @@ class CustomizationViewModel @Inject constructor(
 
     private val _dialogState = MutableStateFlow<FluxOptionsDialogState<*, CustomizationIntent>?>(null)
 
-
     val uiState: StateFlow<CustomizationUiState> = combine(
         customizationRepository.flow,
         _dialogState
@@ -45,6 +47,9 @@ class CustomizationViewModel @Inject constructor(
         initialValue = CustomizationUiState()
     )
 
+    private val _event = MutableSharedFlow<CustomizationEvent>()
+    val event = _event.asSharedFlow()
+
     //endregion
 
     //region Intents
@@ -53,9 +58,10 @@ class CustomizationViewModel @Inject constructor(
         when (intent) {
 
             // Global
-            CustomizationIntent.OnBackTap -> TODO()
+            CustomizationIntent.OnBackTap -> _event.emit(CustomizationEvent.BackToPreviousScreen)
 
             // Dialogs
+            CustomizationIntent.HideDialog -> hideDialog()
             CustomizationIntent.ShowColorDialog -> TODO()
             CustomizationIntent.ShowThemeDialog -> showThemeDialog()
 

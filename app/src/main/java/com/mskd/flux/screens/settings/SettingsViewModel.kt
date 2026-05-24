@@ -72,21 +72,30 @@ class SettingsViewModel @Inject constructor(
 
     fun handleIntent(intent: SettingsIntent) = viewModelScope.launch {
         when (intent) {
-            SettingsIntent.ShowLanguageDialog -> showLanguageDialog()
-            is SettingsIntent.SetLanguageValue -> setLanguageValue(intent.value)
-            SettingsIntent.ShowRewindDialog -> showRewindDialog()
-            is SettingsIntent.SetRewindValue -> setRewindValue(intent.value)
-            SettingsIntent.ShowForwardDialog -> showForwardDialog()
-            is SettingsIntent.SetForwardValue -> setForwardValue(intent.value)
-            SettingsIntent.HideDialog -> hideDialog()
+
+            // Navigation
             SettingsIntent.OnBackTap -> _event.emit(SettingsEvent.BackToPreviousScreen)
             SettingsIntent.OnTokenTap -> _event.emit(SettingsEvent.NavigateToTokenScreen)
             SettingsIntent.OnAboutTap -> _event.emit(SettingsEvent.NavigateToAboutScreen)
             SettingsIntent.OnHowToTap -> _event.emit(SettingsEvent.NavigateToHowToScreen)
+            SettingsIntent.OnCustomizationTap -> _event.emit(SettingsEvent.NavigateToCustomizationScreen)
+
+            // Dialogs
+            SettingsIntent.HideDialog -> hideDialog()
+            SettingsIntent.ShowLanguageDialog -> showLanguageDialog()
+            SettingsIntent.ShowRewindDialog -> showRewindDialog()
+            SettingsIntent.ShowForwardDialog -> showForwardDialog()
+            is SettingsIntent.ShowFullSyncDialog -> showFullSyncDialog(show = intent.show)
+
+            // Setters
+            is SettingsIntent.SetLanguageValue -> setLanguageValue(intent.value)
+            is SettingsIntent.SetRewindValue -> setRewindValue(intent.value)
+            is SettingsIntent.SetForwardValue -> setForwardValue(intent.value)
+
+            // Others
+            SettingsIntent.ProceedFullSync -> proceedFullSync()
             is SettingsIntent.OnAutoKeyboardCheck -> onAutoKeyboardCheck(value = intent.checked)
             is SettingsIntent.OnExternalPlayerCheck -> onExternalPlayerCheck(value = intent.checked)
-            is SettingsIntent.ShowFullSyncDialog -> showFullSyncDialog(show = intent.show)
-            SettingsIntent.ProceedFullSync -> proceedFullSync()
             is SettingsIntent.OnPrefetchImagesCheck -> onPrefetchImagesCheck(value = intent.checked)
         }
     }

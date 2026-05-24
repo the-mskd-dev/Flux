@@ -15,11 +15,8 @@ import androidx.compose.ui.unit.dp
 import com.mskd.flux.R
 import com.mskd.flux.screens.customization.CustomizationIntent
 import com.mskd.flux.screens.customization.CustomizationUiState
-import com.mskd.flux.screens.settings.SettingsIntent
-import com.mskd.flux.screens.settings.SettingsUiState
 import com.mskd.flux.screens.settings.composables.SettingsItem
 import com.mskd.flux.screens.settings.composables.SettingsSection
-import com.mskd.flux.screens.settings.composables.SettingsSwitch
 
 @Composable
 fun CustomizationThemeSection(

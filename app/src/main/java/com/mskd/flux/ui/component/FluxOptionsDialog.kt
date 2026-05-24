@@ -17,7 +17,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import com.mskd.flux.screens.settings.SettingsIntent
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.extensions.uppercaseFirstLetter
 

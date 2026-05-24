@@ -5,7 +5,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.LaunchedEffect
@@ -33,7 +32,6 @@ import com.mskd.flux.screens.token.TokenScreen
 import com.mskd.flux.screens.unknown.UnknownScreen
 import com.mskd.flux.screens.welcome.WelcomeScreen
 import com.mskd.flux.ui.theme.AppTheme
-import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.ui.theme.createColorScheme
 import com.mskd.flux.utils.extensions.popScreen
 import com.mskd.flux.utils.notificationsPermissionState

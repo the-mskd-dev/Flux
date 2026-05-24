@@ -1,13 +1,11 @@
 package com.mskd.flux.data.repository.customization
 
 import android.content.Context
-import androidx.compose.ui.graphics.Color
 import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.preferencesDataStore
 import com.mskd.flux.ui.theme.Ui
 import kotlinx.coroutines.flow.Flow
-import java.util.Locale
 
 val Context.customizationDatastore by preferencesDataStore(
     name = "CustomizationDataStore",

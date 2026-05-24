@@ -1,14 +1,11 @@
 package com.mskd.flux.screens.customization
 
 import android.app.Application
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.R
 import com.mskd.flux.data.repository.customization.CustomizationRepository
 import com.mskd.flux.screens.customization.composables.ColorItem
-import com.mskd.flux.screens.settings.SettingsEvent
 import com.mskd.flux.ui.component.FluxOptionsDialogItem
 import com.mskd.flux.ui.component.FluxOptionsDialogState
 import com.mskd.flux.ui.theme.Ui

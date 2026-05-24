@@ -7,7 +7,6 @@ import com.mskd.flux.R
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.ui.component.FluxOptionsDialogItem
 import com.mskd.flux.ui.component.FluxOptionsDialogState
-import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.useCases.catalog.CatalogUC
 import com.mskd.flux.useCases.images.ImagesUC
 import dagger.hilt.android.lifecycle.HiltViewModel

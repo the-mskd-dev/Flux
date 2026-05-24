@@ -8,12 +8,19 @@ import com.mskd.flux.utils.FluxSnackbar
 
 @Immutable
 data class HomeUiState(
-    val screenState: ScreenState = ScreenState.LOADING,
+    val screenState: State = State.Loading(),
     val artworks: List<Artwork> = emptyList(),
     val lastWatchedMediaIds: List<Long> = emptyList(),
     val isRefreshing: Boolean = true,
     val snackbarState: FluxSnackbar? = null
-)
+) {
+
+    sealed class State {
+        data object Error: State()
+        data object Content: State()
+        data class Loading(val progress: Float = 0f): State()
+    }
+}
 
 sealed class HomeIntent {
     data class OnArtworkTap(val artworkId: Long, val rgb: Int? = null): HomeIntent()

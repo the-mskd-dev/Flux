@@ -50,8 +50,11 @@ class HomeViewModel @Inject constructor(
     ) { artworks, catalogState, preferences, token, dismissedSnackbar ->
 
         val screen = when {
-            catalogState is CatalogUC.State.Syncing -> if (catalogState.full) ScreenState.LOADING else ScreenState.CONTENT
-            else -> ScreenState.CONTENT
+            catalogState is CatalogUC.State.Syncing -> {
+                if (catalogState.full) HomeUiState.State.Loading(progress = catalogState.progress)
+                else HomeUiState.State.Content
+            }
+            else -> HomeUiState.State.Content
         }
 
         val snackbar = getSnackbarIfNeeded(

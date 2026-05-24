@@ -133,4 +133,5 @@
     <string name="color_magenta">Magenta</string>
     <string name="color_gray">Gris</string>
     <string name="wave_progress">Barre de progression en vague</string>
+    <string name="catalog_sync_in_progress">Synchronisation en cours… (%1$d%%)</string>
 </resources>

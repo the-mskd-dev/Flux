@@ -3,6 +3,7 @@ package com.mskd.flux.screens.player
 import androidx.media3.common.Player
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
+import com.mskd.flux.data.repository.customization.CustomizationRepository
 import com.mskd.flux.data.repository.files.FilesRepository
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.mockups.FakeArtworkUC
@@ -37,6 +38,7 @@ class PlayerViewModelTest : FunSpec({
     lateinit var progressUC: ProgressUC
     lateinit var playerManager: PlayerManager
     lateinit var mockkedPlayer: Player
+    lateinit var customizationRepository: CustomizationRepository
 
     fun updateVm(mediaId: Long = MediaMockups.episode1.mediaId) {
 
@@ -48,7 +50,8 @@ class PlayerViewModelTest : FunSpec({
             settingsRepository = settingsRepository,
             filesRepository = filesRepository,
             progressUC = progressUC,
-            playerManager = playerManager
+            playerManager = playerManager,
+            customizationRepository = customizationRepository
         )
 
     }
@@ -59,6 +62,10 @@ class PlayerViewModelTest : FunSpec({
 
         settingsRepository = mockk(relaxed = true) {
             every { flow } returns MutableStateFlow(SettingsRepository.State())
+        }
+
+        customizationRepository = mockk(relaxed = true) {
+            every { flow } returns MutableStateFlow(CustomizationRepository.State())
         }
 
         mockkedPlayer = mockk(relaxed = true) {

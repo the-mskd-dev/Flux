@@ -1,24 +1,26 @@
 package com.mskd.flux.screens.settings
 
+import android.app.Application
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.mockups.mockkCatalogUC
 import com.mskd.flux.mockups.mockkImagesUC
-import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.ui.component.FluxOptionsDialogState
 import com.mskd.flux.useCases.catalog.CatalogUC
 import com.mskd.flux.useCases.images.ImagesUC
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.util.Locale
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class SettingsViewModelTest : FunSpec({
 
     fluxExtensions()
@@ -27,6 +29,7 @@ class SettingsViewModelTest : FunSpec({
     lateinit var settingsRepository: SettingsRepository
     lateinit var catalogUC: CatalogUC
     lateinit var imagesUC: ImagesUC
+    lateinit var application: Application
 
     val dataStoreFlow = MutableStateFlow(SettingsRepository.State())
 
@@ -40,7 +43,12 @@ class SettingsViewModelTest : FunSpec({
 
         imagesUC = mockkImagesUC()
 
+        application = mockk(relaxed = true) {
+            every { getString(any()) } returns "System"
+        }
+
         viewModel = SettingsViewModel(
+            application = application,
             settingsRepository = settingsRepository,
             catalogUC = catalogUC,
             imagesUC = imagesUC
@@ -53,7 +61,6 @@ class SettingsViewModelTest : FunSpec({
             val initialState = awaitItem()
             initialState.rewindValue shouldBe 10
             initialState.forwardValue shouldBe 10
-            initialState.uiTheme shouldBe Ui.THEME.SYSTEM
             initialState.dialogState shouldBe null
         }
     }
@@ -66,9 +73,9 @@ class SettingsViewModelTest : FunSpec({
 
             val state = awaitItem()
             state.dialogState shouldNotBe null
-            state.dialogState.shouldBeInstanceOf<SettingsDialogState<Int>>().should {
-                it.currentValue.shouldBeInstanceOf<Int>()
-            }
+            val dialogState = state.dialogState
+            dialogState.shouldBeInstanceOf<FluxOptionsDialogState<Int, SettingsIntent>>()
+            dialogState.currentValue shouldBe 10
 
         }
     }
@@ -81,24 +88,10 @@ class SettingsViewModelTest : FunSpec({
 
             val state = awaitItem()
             state.dialogState shouldNotBe null
-            state.dialogState.shouldBeInstanceOf<SettingsDialogState<Int>>().should {
-                it.currentValue.shouldBeInstanceOf<Int>()
-            }
+            val dialogState = state.dialogState
+            dialogState.shouldBeInstanceOf<FluxOptionsDialogState<Int, SettingsIntent>>()
+            dialogState.currentValue shouldBe 10
 
-        }
-    }
-
-    test("show ui theme dialog") {
-        viewModel.uiState.test {
-
-            awaitItem()
-            viewModel.handleIntent(SettingsIntent.ShowThemeDialog)
-
-            val state = awaitItem()
-            state.dialogState shouldNotBe null
-            state.dialogState.shouldBeInstanceOf<SettingsDialogState<Ui.THEME>>().should {
-                it.currentValue.shouldBeInstanceOf<Ui.THEME>()
-            }
         }
     }
 
@@ -138,26 +131,6 @@ class SettingsViewModelTest : FunSpec({
         }
     }
 
-    test("set ui theme") {
-
-        viewModel.uiState.test {
-            awaitItem()
-
-            viewModel.handleIntent(SettingsIntent.SetThemeValue(Ui.THEME.DARK))
-            dataStoreFlow.value = dataStoreFlow.value.copy(uiTheme = Ui.THEME.DARK)
-
-            val state = awaitItem()
-
-            coVerify { settingsRepository.setUiTheme(Ui.THEME.DARK) }
-            state.uiTheme shouldBe Ui.THEME.DARK
-            state.dialogState shouldBe null
-
-            cancelAndConsumeRemainingEvents()
-
-        }
-
-    }
-
     test("show data language dialog") {
         viewModel.uiState.test {
 
@@ -166,7 +139,9 @@ class SettingsViewModelTest : FunSpec({
 
             val state = awaitItem()
             state.dialogState shouldNotBe null
-            state.dialogState.shouldBeInstanceOf<SettingsDialogState<Locale?>>()
+            val dialogState = state.dialogState
+            dialogState.shouldBeInstanceOf<FluxOptionsDialogState<Locale?, SettingsIntent>>()
+            dialogState.currentValue shouldBe null
         }
     }
 

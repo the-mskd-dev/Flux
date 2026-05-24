@@ -87,7 +87,7 @@ class HomeViewModelTest : FunSpec({
 
             viewModel.uiState.test {
                 val initialState = awaitItem()
-                initialState.screenState shouldBe ScreenState.CONTENT
+                initialState.screenState shouldBe HomeUiState.State.Content
                 initialState.artworks shouldBe MediaMockups.artworks
                 initialState.lastWatchedMediaIds shouldBe emptyList()
                 initialState.isRefreshing shouldBe false
@@ -170,7 +170,7 @@ class HomeViewModelTest : FunSpec({
         )
 
         coVerify(exactly = 1) {
-            catalogUC.syncCatalog(onlyNew = true)
+            catalogUC.syncCatalog(onlyNew = false)
         }
     }
 

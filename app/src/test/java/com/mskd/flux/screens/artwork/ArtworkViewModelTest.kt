@@ -6,9 +6,10 @@ import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.mockups.FakeArtworkUC
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.mockkProgressUC
-import com.mskd.flux.model.ScreenState
+import com.mskd.flux.model.State
 import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.model.artwork.Episode
+import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.model.artwork.Status
 import com.mskd.flux.useCases.artwork.ArtworkUC
 import com.mskd.flux.useCases.progress.ProgressUC
@@ -63,10 +64,11 @@ class ArtworkViewModelTest : FunSpec({
 
             val initialState = awaitItem()
 
-            initialState.artwork shouldBe MediaMockups.showArtwork
-            initialState.screen shouldBe ScreenState.CONTENT
+            initialState.state.shouldBeInstanceOf<State.Content<FullArtwork>>()
+            val content = (initialState.state as State.Content).content
+            content.artwork shouldBe MediaMockups.showArtwork
             initialState.selectedMedia shouldBe MediaMockups.episode1
-            initialState.episodes shouldBe MediaMockups.episodes
+            (content as FullArtwork.FullShow).episodes shouldBe MediaMockups.episodes
             initialState.selectedSeason shouldBe MediaMockups.episode1.season
             initialState.episodePendingConfirmation shouldBe null
 
@@ -221,9 +223,10 @@ class ArtworkViewModelTest : FunSpec({
         viewModel.uiState.test {
 
             val loadedState = awaitItem()
+            val episodes = ((loadedState.state as State.Content).content as FullArtwork.FullShow).episodes
 
             // Change status of the latest episode
-            viewModel.handleIntent(ArtworkIntent.ChangeWatchStatus(media = loadedState.episodes.last()))
+            viewModel.handleIntent(ArtworkIntent.ChangeWatchStatus(media = episodes.last()))
 
             val stateWithDialog = expectMostRecentItem()
             stateWithDialog.episodePendingConfirmation shouldNotBe null
@@ -232,7 +235,7 @@ class ArtworkViewModelTest : FunSpec({
             viewModel.handleIntent(ArtworkIntent.MarkPreviousEpisodesAsWatched)
 
 
-            coVerify { progressUC.markPreviousEpisodesAsWatchedFor(episode = loadedState.episodes.last()) }
+            coVerify { progressUC.markPreviousEpisodesAsWatchedFor(episode = episodes.last()) }
 
             cancelAndConsumeRemainingEvents()
 
@@ -243,9 +246,11 @@ class ArtworkViewModelTest : FunSpec({
     test("mark movie as watched") {
 
         artworkUC.setContent(
-            ArtworkUC.State.MOVIE(
-                artwork = MediaMockups.movieArtwork,
-                movie = MediaMockups.movie
+            State.Content(
+                FullArtwork.FullMovie(
+                    resume = MediaMockups.movieArtwork,
+                    movie = MediaMockups.movie
+                )
             )
         )
 
@@ -291,7 +296,8 @@ class ArtworkViewModelTest : FunSpec({
 
             viewModel.handleIntent(ArtworkIntent.ResetProgress)
 
-            coVerify { progressUC.resetProgress(state.artwork) }
+            val content = (state.state as State.Content).content
+            coVerify { progressUC.resetProgress(content.artwork) }
 
         }
     }

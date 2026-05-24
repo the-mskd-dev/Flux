@@ -15,8 +15,10 @@ import androidx.compose.ui.unit.dp
 import com.mskd.flux.R
 import com.mskd.flux.screens.customization.CustomizationIntent
 import com.mskd.flux.screens.customization.CustomizationUiState
+import com.mskd.flux.screens.settings.SettingsIntent
 import com.mskd.flux.screens.settings.composables.SettingsItem
 import com.mskd.flux.screens.settings.composables.SettingsSection
+import com.mskd.flux.screens.settings.composables.SettingsSwitch
 
 @Composable
 fun CustomizationThemeSection(
@@ -45,6 +47,31 @@ fun CustomizationThemeSection(
             iconColor = iconColor,
             iconBackgroundColor = bgColor,
             onTap = { sendIntent(CustomizationIntent.ShowThemeDialog) }
+        )
+
+    }
+
+}
+
+@Composable
+fun CustomizationPlayerSection(
+    state: CustomizationUiState,
+    sendIntent: (CustomizationIntent) -> Unit
+) {
+
+    SettingsSection(
+        iconColor = MaterialTheme.colorScheme.onErrorContainer,
+        iconBackgroundColor = MaterialTheme.colorScheme.errorContainer.copy(alpha = .3f)
+    ) { iconColor, bgColor ->
+
+        SettingsSwitch(
+            text = stringResource(R.string.wave_progress),
+            subText = "",
+            checked = state.waveProgress,
+            onCheckedChange = { sendIntent(CustomizationIntent.OnWaveProgressCheck(it)) },
+            painter = painterResource(R.drawable.ic_wave_progress),
+            iconColor = iconColor,
+            backgroundColor = bgColor,
         )
 
     }

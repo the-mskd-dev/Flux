@@ -22,9 +22,12 @@ interface CustomizationRepository{
 
     suspend fun setColor(color: Int?)
 
+    suspend fun setWaveProgress(waveProgress: Boolean)
+
     data class State(
         val uiTheme: Ui.THEME = Ui.THEME.SYSTEM,
-        val color: Int? = null
+        val color: Int? = null,
+        val waveProgress: Boolean = true
     )
 
 }

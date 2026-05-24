@@ -2,6 +2,7 @@ package com.mskd.flux.data.repository.customization
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.intPreferencesKey
@@ -20,6 +21,7 @@ class CustomizationRepositoryImpl @Inject constructor(
     object Keys {
         val UI_THEME = stringPreferencesKey("ui_theme")
         val COLOR = intPreferencesKey("color")
+        val WAVE_PROGRESS = booleanPreferencesKey("wave_progress")
     }
 
     override val flow: Flow<CustomizationRepository.State> = customizationDataStore.data
@@ -28,10 +30,12 @@ class CustomizationRepositoryImpl @Inject constructor(
 
             val uiTheme = preferences[Keys.UI_THEME]?.let { Ui.THEME.valueOf(it) } ?: Ui.THEME.SYSTEM
             val color = preferences[Keys.COLOR]
+            val waveProgress = preferences[Keys.WAVE_PROGRESS] ?: true
 
             CustomizationRepository.State(
                 uiTheme = uiTheme,
-                color = color
+                color = color,
+                waveProgress = waveProgress
             )
         }
 
@@ -47,6 +51,12 @@ class CustomizationRepositoryImpl @Inject constructor(
                 preferences.remove(Keys.COLOR)
             else
                 preferences[Keys.COLOR] = color
+        }
+    }
+
+    override suspend fun setWaveProgress(waveProgress: Boolean) {
+        customizationDataStore.edit { preferences ->
+            preferences[Keys.WAVE_PROGRESS] = waveProgress
         }
     }
 

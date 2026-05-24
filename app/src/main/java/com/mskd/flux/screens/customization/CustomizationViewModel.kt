@@ -40,6 +40,7 @@ class CustomizationViewModel @Inject constructor(
         CustomizationUiState(
             uiTheme = customization.uiTheme,
             color = customization.color,
+            waveProgress = customization.waveProgress,
             dialogState = dialog
         )
     }.stateIn(
@@ -70,6 +71,7 @@ class CustomizationViewModel @Inject constructor(
             // Setters
             is CustomizationIntent.SetColorValue -> setColor(color = intent.color)
             is CustomizationIntent.SetThemeValue -> setTheme(theme = intent.theme)
+            is CustomizationIntent.OnWaveProgressCheck -> setWaveProgress(waveProgress = intent.checked)
 
         }
     }
@@ -126,6 +128,10 @@ class CustomizationViewModel @Inject constructor(
     private suspend fun setColor(color: Int?) {
         customizationRepository.setColor(color)
         hideDialog()
+    }
+
+    private suspend fun setWaveProgress(waveProgress: Boolean) {
+        customizationRepository.setWaveProgress(waveProgress)
     }
 
     //endregion

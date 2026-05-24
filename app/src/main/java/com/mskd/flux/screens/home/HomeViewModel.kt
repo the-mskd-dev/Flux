@@ -13,6 +13,7 @@ import com.mskd.flux.screens.home.HomeEvent.NavigateToArtwork
 import com.mskd.flux.screens.home.HomeEvent.NavigateToCategory
 import com.mskd.flux.useCases.catalog.CatalogUC
 import com.mskd.flux.utils.FluxSnackbar
+import com.mskd.flux.utils.UpdateManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -111,7 +112,12 @@ class HomeViewModel @Inject constructor(
 
             Log.i("HomeViewModel", "syncCatalog, catalog sync requested")
 
-            catalogUC.syncCatalog(onlyNew = true)
+            val fullSyncNeeded = UpdateManager.fullSyncIsNeeded(
+                lastSyncVersionCode = lastSyncVersionCode,
+                currentVersionCode = appInfo.versionCode
+            )
+
+            catalogUC.syncCatalog(onlyNew = !fullSyncNeeded)
 
         } else {
 

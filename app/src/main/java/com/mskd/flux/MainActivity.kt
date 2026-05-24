@@ -51,6 +51,7 @@ class MainActivity : ComponentActivity() {
         setContent {
 
             val settings by viewModel.settings.collectAsStateWithLifecycle()
+            val customization by viewModel.customization.collectAsStateWithLifecycle()
             val storagePermission = storagePermissionState()
             val notificationsPermission = notificationsPermissionState()
 
@@ -62,7 +63,7 @@ class MainActivity : ComponentActivity() {
 
             val startingScreen = viewModel.getStartingScreen(storagePermission.status.isGranted)
 
-            AppTheme(theme = settings.uiTheme) {
+            AppTheme(theme = customization.uiTheme) {
 
                 val backStack = rememberNavBackStack(startingScreen)
 

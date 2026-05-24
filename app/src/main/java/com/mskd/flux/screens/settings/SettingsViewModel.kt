@@ -51,7 +51,6 @@ class SettingsViewModel @Inject constructor(
             forwardValue = settings.playerForwardValue,
             useExternalPlayer = settings.externalPlayer,
             autoKeyboard = settings.autoKeyboard,
-            uiTheme = settings.uiTheme,
             dialogState = dialog,
             showSyncDialog = showSyncDialog,
             fullSyncInProgress = (catalog as? CatalogUC.State.Syncing)?.full == true,
@@ -79,8 +78,6 @@ class SettingsViewModel @Inject constructor(
             is SettingsIntent.SetRewindValue -> setRewindValue(intent.value)
             SettingsIntent.ShowForwardDialog -> showForwardDialog()
             is SettingsIntent.SetForwardValue -> setForwardValue(intent.value)
-            SettingsIntent.ShowThemeDialog -> showThemeDialog()
-            is SettingsIntent.SetThemeValue -> setTheme(intent.theme)
             SettingsIntent.HideDialog -> hideDialog()
             SettingsIntent.OnBackTap -> _event.emit(SettingsEvent.BackToPreviousScreen)
             SettingsIntent.OnTokenTap -> _event.emit(SettingsEvent.NavigateToTokenScreen)
@@ -168,27 +165,6 @@ class SettingsViewModel @Inject constructor(
 
     private suspend fun setForwardValue(value: Int) {
         settingsRepository.setPlayerForwardValue(value)
-        hideDialog()
-    }
-
-    private fun showThemeDialog() {
-        val currentValue = uiState.value.uiTheme
-        val dialogState = FluxOptionsDialogState(
-            titleResId = R.string.app_theme,
-            currentValue = currentValue,
-            options = listOf(
-                FluxOptionsDialogItem(value = Ui.THEME.LIGHT, label = context.getString(Ui.THEME.LIGHT.stringResourceId)),
-                FluxOptionsDialogItem(value = Ui.THEME.DARK, label = context.getString(Ui.THEME.DARK.stringResourceId)),
-                FluxOptionsDialogItem(value = Ui.THEME.SYSTEM, label = context.getString(Ui.THEME.SYSTEM.stringResourceId))
-            ),
-            applyValue = { value -> SettingsIntent.SetThemeValue(value) }
-        )
-
-        _dialogState.update { dialogState }
-    }
-
-    private suspend fun setTheme(theme: Ui.THEME) {
-        settingsRepository.setUiTheme(theme)
         hideDialog()
     }
 

@@ -30,8 +30,6 @@ sealed class SettingsIntent {
     data class SetRewindValue(val value: Int): SettingsIntent()
     data object ShowForwardDialog: SettingsIntent()
     data class SetForwardValue(val value: Int): SettingsIntent()
-    data object ShowThemeDialog: SettingsIntent()
-    data class SetThemeValue(val theme: Ui.THEME): SettingsIntent()
     data object HideDialog : SettingsIntent()
     data object OnBackTap: SettingsIntent()
     data object OnTokenTap: SettingsIntent()

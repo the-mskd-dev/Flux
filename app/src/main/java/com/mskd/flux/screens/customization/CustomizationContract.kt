@@ -16,7 +16,15 @@ data class CustomizationUiState(
 )
 
 sealed class CustomizationIntent {
+
+    // Global
     data object OnBackTap: CustomizationIntent()
+
+    // Dialogs
+    data object ShowColorDialog: CustomizationIntent()
     data object ShowThemeDialog: CustomizationIntent()
-    data class SetThemeValue(val color: Color) : CustomizationIntent()
+
+    // Setter
+    data class SetColorValue(val color: Color) : CustomizationIntent()
+    data class SetThemeValue(val theme: Ui.THEME): CustomizationIntent()
 }

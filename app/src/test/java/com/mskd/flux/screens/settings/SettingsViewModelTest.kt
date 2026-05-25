@@ -1,24 +1,26 @@
 package com.mskd.flux.screens.settings
 
+import android.app.Application
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.mockups.mockkCatalogUC
 import com.mskd.flux.mockups.mockkImagesUC
-import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.ui.component.FluxOptionsDialogState
 import com.mskd.flux.useCases.catalog.CatalogUC
 import com.mskd.flux.useCases.images.ImagesUC
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.util.Locale
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class SettingsViewModelTest : FunSpec({
 
     fluxExtensions()
@@ -27,6 +29,7 @@ class SettingsViewModelTest : FunSpec({
     lateinit var settingsRepository: SettingsRepository
     lateinit var catalogUC: CatalogUC
     lateinit var imagesUC: ImagesUC
+    lateinit var application: Application
 
     val dataStoreFlow = MutableStateFlow(SettingsRepository.State())
 
@@ -40,7 +43,12 @@ class SettingsViewModelTest : FunSpec({
 
         imagesUC = mockkImagesUC()
 
+        application = mockk(relaxed = true) {
+            every { getString(any()) } returns "System"
+        }
+
         viewModel = SettingsViewModel(
+            application = application,
             settingsRepository = settingsRepository,
             catalogUC = catalogUC,
             imagesUC = imagesUC
@@ -53,8 +61,80 @@ class SettingsViewModelTest : FunSpec({
             val initialState = awaitItem()
             initialState.rewindValue shouldBe 10
             initialState.forwardValue shouldBe 10
-            initialState.uiTheme shouldBe Ui.THEME.SYSTEM
             initialState.dialogState shouldBe null
+            initialState.showSyncDialog shouldBe false
+            initialState.fullSyncInProgress shouldBe false
+            initialState.prefetchImages shouldBe false
+        }
+    }
+
+    test("on back tap") {
+        viewModel.event.test {
+            viewModel.handleIntent(SettingsIntent.OnBackTap)
+            awaitItem() shouldBe SettingsEvent.BackToPreviousScreen
+        }
+    }
+
+    test("on token tap") {
+        viewModel.event.test {
+            viewModel.handleIntent(SettingsIntent.OnTokenTap)
+            awaitItem() shouldBe SettingsEvent.NavigateToTokenScreen
+        }
+    }
+
+    test("on about tap") {
+        viewModel.event.test {
+            viewModel.handleIntent(SettingsIntent.OnAboutTap)
+            awaitItem() shouldBe SettingsEvent.NavigateToAboutScreen
+        }
+    }
+
+    test("on how to tap") {
+        viewModel.event.test {
+            viewModel.handleIntent(SettingsIntent.OnHowToTap)
+            awaitItem() shouldBe SettingsEvent.NavigateToHowToScreen
+        }
+    }
+
+    test("on customization tap") {
+        viewModel.event.test {
+            viewModel.handleIntent(SettingsIntent.OnCustomizationTap)
+            awaitItem() shouldBe SettingsEvent.NavigateToCustomizationScreen
+        }
+    }
+
+    test("show full sync dialog") {
+        viewModel.uiState.test {
+            awaitItem()
+            viewModel.handleIntent(SettingsIntent.ShowFullSyncDialog(true))
+            awaitItem().showSyncDialog shouldBe true
+
+            viewModel.handleIntent(SettingsIntent.ShowFullSyncDialog(false))
+            awaitItem().showSyncDialog shouldBe false
+        }
+    }
+
+    test("proceed full sync") {
+        viewModel.uiState.test {
+            awaitItem()
+            viewModel.handleIntent(SettingsIntent.ShowFullSyncDialog(true))
+            awaitItem().showSyncDialog shouldBe true
+
+            viewModel.handleIntent(SettingsIntent.ProceedFullSync)
+            awaitItem().showSyncDialog shouldBe false
+
+            coVerify { catalogUC.syncCatalog(onlyNew = false) }
+        }
+    }
+
+    test("hide dialog") {
+        viewModel.uiState.test {
+            awaitItem()
+            viewModel.handleIntent(SettingsIntent.ShowRewindDialog)
+            awaitItem().dialogState shouldNotBe null
+
+            viewModel.handleIntent(SettingsIntent.HideDialog)
+            awaitItem().dialogState shouldBe null
         }
     }
 
@@ -66,9 +146,9 @@ class SettingsViewModelTest : FunSpec({
 
             val state = awaitItem()
             state.dialogState shouldNotBe null
-            state.dialogState.shouldBeInstanceOf<SettingsDialogState<Int>>().should {
-                it.currentValue.shouldBeInstanceOf<Int>()
-            }
+            val dialogState = state.dialogState
+            dialogState.shouldBeInstanceOf<FluxOptionsDialogState<Int, SettingsIntent>>()
+            dialogState.currentValue shouldBe 10
 
         }
     }
@@ -81,24 +161,10 @@ class SettingsViewModelTest : FunSpec({
 
             val state = awaitItem()
             state.dialogState shouldNotBe null
-            state.dialogState.shouldBeInstanceOf<SettingsDialogState<Int>>().should {
-                it.currentValue.shouldBeInstanceOf<Int>()
-            }
+            val dialogState = state.dialogState
+            dialogState.shouldBeInstanceOf<FluxOptionsDialogState<Int, SettingsIntent>>()
+            dialogState.currentValue shouldBe 10
 
-        }
-    }
-
-    test("show ui theme dialog") {
-        viewModel.uiState.test {
-
-            awaitItem()
-            viewModel.handleIntent(SettingsIntent.ShowThemeDialog)
-
-            val state = awaitItem()
-            state.dialogState shouldNotBe null
-            state.dialogState.shouldBeInstanceOf<SettingsDialogState<Ui.THEME>>().should {
-                it.currentValue.shouldBeInstanceOf<Ui.THEME>()
-            }
         }
     }
 
@@ -138,26 +204,6 @@ class SettingsViewModelTest : FunSpec({
         }
     }
 
-    test("set ui theme") {
-
-        viewModel.uiState.test {
-            awaitItem()
-
-            viewModel.handleIntent(SettingsIntent.SetThemeValue(Ui.THEME.DARK))
-            dataStoreFlow.value = dataStoreFlow.value.copy(uiTheme = Ui.THEME.DARK)
-
-            val state = awaitItem()
-
-            coVerify { settingsRepository.setUiTheme(Ui.THEME.DARK) }
-            state.uiTheme shouldBe Ui.THEME.DARK
-            state.dialogState shouldBe null
-
-            cancelAndConsumeRemainingEvents()
-
-        }
-
-    }
-
     test("show data language dialog") {
         viewModel.uiState.test {
 
@@ -166,7 +212,9 @@ class SettingsViewModelTest : FunSpec({
 
             val state = awaitItem()
             state.dialogState shouldNotBe null
-            state.dialogState.shouldBeInstanceOf<SettingsDialogState<Locale?>>()
+            val dialogState = state.dialogState
+            dialogState.shouldBeInstanceOf<FluxOptionsDialogState<Locale?, SettingsIntent>>()
+            dialogState.currentValue shouldBe null
         }
     }
 
@@ -240,6 +288,20 @@ class SettingsViewModelTest : FunSpec({
         }
     }
 
+    test("set external player - request permission when checked is true") {
+        viewModel.event.test {
+            viewModel.handleIntent(SettingsIntent.OnExternalPlayerCheck(true))
+            awaitItem() shouldBe SettingsEvent.RequestExternalPlayerPermission
+        }
+    }
+
+    test("set external player - does not request permission when checked is false") {
+        viewModel.event.test {
+            viewModel.handleIntent(SettingsIntent.OnExternalPlayerCheck(false))
+            expectNoEvents()
+        }
+    }
+
     test("set prefetch images") {
         viewModel.uiState.test {
             awaitItem()
@@ -254,6 +316,24 @@ class SettingsViewModelTest : FunSpec({
 
             cancelAndConsumeRemainingEvents()
 
+        }
+    }
+
+    test("set prefetch images - triggers prefetch when checked is true") {
+        viewModel.uiState.test {
+            awaitItem()
+
+            viewModel.handleIntent(SettingsIntent.OnPrefetchImagesCheck(true))
+            coVerify { imagesUC.prefetchImages() }
+        }
+    }
+
+    test("set prefetch images - does not trigger prefetch when checked is false") {
+        viewModel.uiState.test {
+            awaitItem()
+
+            viewModel.handleIntent(SettingsIntent.OnPrefetchImagesCheck(false))
+            coVerify(exactly = 0) { imagesUC.prefetchImages() }
         }
     }
 

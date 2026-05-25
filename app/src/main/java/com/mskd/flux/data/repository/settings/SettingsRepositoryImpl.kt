@@ -7,7 +7,6 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.mskd.flux.ui.theme.Ui
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.firstOrNull
@@ -23,7 +22,6 @@ class SettingsRepositoryImpl @Inject constructor(
     object Keys {
         val PLAYER_REWIND = intPreferencesKey("player_rewind")
         val PLAYER_FORWARD = intPreferencesKey("player_forward")
-        val UI_THEME = stringPreferencesKey("ui_theme")
         val SUBTITLES_LANGUAGE = stringPreferencesKey("subtitles_language")
         val AUDIO_LANGUAGE = stringPreferencesKey("audio_language")
         val EXTERNAL_PLAYER = booleanPreferencesKey("external_player")
@@ -38,7 +36,6 @@ class SettingsRepositoryImpl @Inject constructor(
 
             val playerRewindValue = preferences[Keys.PLAYER_REWIND] ?: 10
             val playerForwardValue = preferences[Keys.PLAYER_FORWARD] ?: 10
-            val uiTheme = preferences[Keys.UI_THEME]?.let { Ui.THEME.valueOf(it) } ?: Ui.THEME.SYSTEM
             val subtitlesLanguage = preferences[Keys.SUBTITLES_LANGUAGE]?.let { Locale.forLanguageTag(it) } ?: Locale.getDefault()
             val audioLanguage = preferences[Keys.AUDIO_LANGUAGE]?.let { Locale.forLanguageTag(it) } ?: Locale.getDefault()
             val externalPlayer = preferences[Keys.EXTERNAL_PLAYER] ?: false
@@ -49,7 +46,6 @@ class SettingsRepositoryImpl @Inject constructor(
             SettingsRepository.State(
                 playerRewindValue = playerRewindValue,
                 playerForwardValue = playerForwardValue,
-                uiTheme = uiTheme,
                 subtitlesLanguage = subtitlesLanguage,
                 audioLanguage = audioLanguage,
                 externalPlayer = externalPlayer,
@@ -69,12 +65,6 @@ class SettingsRepositoryImpl @Inject constructor(
     override suspend fun setPlayerForwardValue(value: Int) {
         settingsDataStore.edit { preferences ->
             preferences[Keys.PLAYER_FORWARD] = value
-        }
-    }
-
-    override suspend fun setUiTheme(theme: Ui.THEME) {
-        settingsDataStore.edit { preferences ->
-            preferences[Keys.UI_THEME] = theme.toString()
         }
     }
 

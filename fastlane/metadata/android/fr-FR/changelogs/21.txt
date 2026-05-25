@@ -1,0 +1,7 @@
+- Feature: Ajout des Saisons
+- Feature: Ajout de la description des films/séries
+- Feature: Plus de personnalisation des couleurs
+- Feature: Synchro complète sur les nouvelles mises à jour si besoin
+- UI: Nouveau design pour les films/séries
+- UI: Indicateur de progression sur la synchro complète
+- Autre: Nouveaux screenshots

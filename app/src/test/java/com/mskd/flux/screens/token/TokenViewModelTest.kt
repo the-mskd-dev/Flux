@@ -79,6 +79,46 @@ class TokenViewModelTest : FunSpec({
         }
     }
 
+    test("on back tap") {
+        viewModel.event.test {
+            viewModel.handleIntent(TokenIntent.OnBackTap)
+            awaitItem() shouldBe TokenEvent.BackToPreviousScreen
+        }
+    }
+
+    test("on next tap") {
+        viewModel.event.test {
+            viewModel.handleIntent(TokenIntent.OnNextTap)
+            awaitItem() shouldBe TokenEvent.NavigateToHomeScreen
+        }
+    }
+
+    test("initial state when fromSettings is false") {
+        val vm = TokenViewModel(
+            fromSettings = false,
+            tokenRepository = tokenRepository,
+            tmdbService = tmdbService,
+            catalogUC = catalogUC
+        )
+        vm.uiState.test {
+            val initialState = awaitItem()
+            initialState.showBackButton shouldBe false
+        }
+    }
+
+    test("save token when fromSettings is false success") {
+        val vm = TokenViewModel(
+            fromSettings = false,
+            tokenRepository = tokenRepository,
+            tmdbService = tmdbService,
+            catalogUC = catalogUC
+        )
+        vm.event.test {
+            vm.handleIntent(TokenIntent.SaveToken)
+            awaitItem() shouldBe TokenEvent.NavigateToHomeScreen
+        }
+    }
+
     context("save token") {
         withData(
             nameFn = { it.description },
@@ -125,7 +165,7 @@ class TokenViewModelTest : FunSpec({
                 val state = awaitItem()
 
                 if (testCase.expectedLoadCatalog) {
-                    coEvery { catalogUC.syncCatalog(onlyNew = false) }
+                    coVerify { catalogUC.syncCatalog(onlyNew = false) }
                 }
                 state.message shouldBe testCase.expectedMessage
                 state.isLoading shouldBe false

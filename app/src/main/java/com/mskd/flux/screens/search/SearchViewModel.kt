@@ -56,7 +56,7 @@ class SearchViewModel @AssistedInject constructor(
     fun handleIntent(intent: SearchIntent) = viewModelScope.launch {
         when (intent) {
             SearchIntent.OnBackTap -> _event.emit(SearchEvent.BackToPreviousScreen)
-            is SearchIntent.OnArtworkTap -> _event.emit(SearchEvent.NavigateToMedia(intent.artworkId))
+            is SearchIntent.OnArtworkTap -> _event.emit(SearchEvent.NavigateToMedia(artworkId = intent.artworkId, rgb = intent.rgb))
             is SearchIntent.FilterOnType -> filterOnType(type = intent.contentType)
             is SearchIntent.DoSearch -> doSearch(query = intent.query)
         }

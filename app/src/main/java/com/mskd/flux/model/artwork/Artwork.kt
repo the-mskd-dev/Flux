@@ -1,5 +1,6 @@
 package com.mskd.flux.model.artwork
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.mskd.flux.R
@@ -22,6 +23,8 @@ data class Artwork(
     @PrimaryKey
     val id: Long = 0,
     val title: String = "",
+    @ColumnInfo(defaultValue = "")
+    val description: String = "",
     val imagePath: String = "",
     val bannerPath: String = "",
     val type: ContentType = ContentType.SHOW
@@ -35,6 +38,7 @@ data class Artwork(
     ) : this (
         id = tmdbMovie.id,
         title = tmdbMovie.title,
+        description = tmdbMovie.description,
         imagePath = tmdbMovie.imagePath.orEmpty(),
         bannerPath = tmdbMovie.bannerPath.orEmpty(),
         type = ContentType.MOVIE
@@ -46,6 +50,7 @@ data class Artwork(
     constructor(tmdbArtwork: TMDBArtwork) : this(
         id = tmdbArtwork.id,
         title = tmdbArtwork.title,
+        description = tmdbArtwork.description,
         imagePath = tmdbArtwork.imagePath.orEmpty(),
         bannerPath = tmdbArtwork.bannerPath.orEmpty(),
         type = if (tmdbArtwork.type == TMDBMediaType.MOVIE) ContentType.MOVIE else ContentType.SHOW

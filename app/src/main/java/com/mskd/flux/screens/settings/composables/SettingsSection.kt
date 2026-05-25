@@ -36,14 +36,14 @@ fun SettingsSection(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = Ui.Space.LARGE)
-            .clip(Ui.Shape.Corner.Medium),
+            .clip(MaterialTheme.shapes.medium),
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.spacedBy(2.dp)
     ) { content(iconColor, iconBackgroundColor) }
 }
 
 @Composable
-fun SettingsCustomisationSection(
+fun SettingsCustomizationSection(
     state: SettingsUiState,
     sendIntent: (SettingsIntent) -> Unit
 ) {
@@ -54,12 +54,12 @@ fun SettingsCustomisationSection(
     ) { iconColor, bgColor ->
 
         SettingsItem(
-            text = stringResource(R.string.app_theme),
-            value = stringResource(state.uiTheme.stringResourceId),
-            painter = painterResource(R.drawable.ic_theme),
+            text = stringResource(R.string.customization),
+            value = stringResource(R.string.customization_desc),
+            painter = painterResource(R.drawable.ic_customization),
             iconColor = iconColor,
             iconBackgroundColor = bgColor,
-            onTap = { sendIntent(SettingsIntent.ShowThemeDialog) }
+            onTap = { sendIntent(SettingsIntent.OnCustomizationTap) }
         )
 
         SettingsSwitch(

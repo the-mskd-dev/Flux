@@ -18,11 +18,13 @@ import com.google.gson.annotations.SerializedName
  * @property crew List of crew members associated with the episode.
  */
 data class TMDBEpisode(
+    val id: Long,
+    @SerializedName("show_id")
+    val artworkId: Long?,
     @SerializedName("name")
     val title: String,
     @SerializedName("overview")
     val description: String,
-    val id: Long,
     @SerializedName("runtime")
     val duration: Int,
     @SerializedName("episode_number")
@@ -37,8 +39,5 @@ data class TMDBEpisode(
     val voteCount: Int,
     @SerializedName("air_date")
     val releaseDateString: String,
-    val crew: List<TMDBCrew>,
-
-    @Transient
-    var artworkId: Long = 0L
+    val crew: List<TMDBCrew>
 )

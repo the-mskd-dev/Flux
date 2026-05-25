@@ -1,22 +1,26 @@
 package com.mskd.flux.useCases.artwork
 
 import com.mskd.flux.data.repository.ddb.DatabaseRepository
+import com.mskd.flux.model.State
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.model.artwork.Episode
+import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.model.artwork.Movie
+import com.mskd.flux.model.artwork.Season
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
 
 interface ArtworkUC {
 
-    val flow: Flow<Content>
+    val flow: Flow<State<FullArtwork>>
 
     fun searchArtwork(artworkId: Long)
 
@@ -26,13 +30,7 @@ interface ArtworkUC {
 
     suspend fun saveEpisodes(episodes: List<Episode>)
 
-    suspend fun getArtwork(artworkId: Long) : Content
-
-    sealed class Content {
-        data class MOVIE(val artwork: Artwork, val movie: Movie) : Content()
-        data class SHOW(val artwork: Artwork, val episodes: List<Episode>) : Content()
-        data object ERROR : Content()
-    }
+    suspend fun getArtwork(artworkId: Long) : FullArtwork?
 
 }
 
@@ -43,26 +41,39 @@ class ArtworkUCImpl(
     private val _artworkId = MutableStateFlow<Long?>(null)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    override val flow: Flow<ArtworkUC.Content> = _artworkId
+    override val flow: Flow<State<FullArtwork>> = _artworkId
         .filterNotNull()
         .distinctUntilChanged()
-        .flatMapLatest { mediaId ->
-            database.flowArtwork(artworkId = mediaId).flatMapLatest { artwork ->
+        .flatMapLatest { artworkId ->
+            combine(
+                database.flowArtwork(artworkId),
+                database.flowMovie(artworkId),
+                database.flowSeasons(artworkId),
+                database.flowEpisodes(artworkId)
+            ) { artwork, movie, seasons, episodes ->
+
                 when (artwork?.type) {
                     ContentType.MOVIE -> {
-                        database.flowMovie(mediaId).map { movie ->
-                            movie
-                                ?.let { ArtworkUC.Content.MOVIE(artwork = artwork, movie = it) }
-                                ?: ArtworkUC.Content.ERROR
-                        }
+
+                        movie?.let {
+                            State.Content(content = buildFullArtworkMovie(artwork = artwork, movie = it))
+                        } ?: State.Error
+
                     }
                     ContentType.SHOW -> {
-                        database.flowEpisodes(mediaId).map { episodes ->
-                            ArtworkUC.Content.SHOW(artwork = artwork, episodes = episodes)
-                        }
+
+                        State.Content(
+                            content = buildFullArtworkShow(
+                                artwork = artwork,
+                                seasons = seasons,
+                                episodes = episodes
+                            )
+                        )
+
                     }
-                    else -> flowOf(ArtworkUC.Content.ERROR)
+                    null -> State.Error
                 }
+
             }
         }
         .distinctUntilChanged()
@@ -83,25 +94,49 @@ class ArtworkUCImpl(
         database.saveEpisodes(episodes)
     }
 
-    override suspend fun getArtwork(artworkId: Long): ArtworkUC.Content {
+    override suspend fun getArtwork(artworkId: Long): FullArtwork? {
 
         return database.getArtwork(artworkId = artworkId)?.let { artwork ->
             when (artwork.type) {
                 ContentType.MOVIE -> {
                     database.getMovie(artworkId = artworkId)
-                        ?.let { ArtworkUC.Content.MOVIE(artwork = artwork, movie = it) }
-                        ?: ArtworkUC.Content.ERROR
+                        ?.let { buildFullArtworkMovie(artwork = artwork, movie = it) }
                 }
                 ContentType.SHOW -> {
-                    val episodes = database.getEpisodes(artworkId = artworkId)
-                    ArtworkUC.Content.SHOW(
+                    val (seasons, episodes) = coroutineScope {
+                        val seasonsDeferred = async { database.getSeasons(artworkId = artworkId) }
+                        val episodesDeferred = async { database.getEpisodes(artworkId = artworkId) }
+                        seasonsDeferred.await() to episodesDeferred.await()
+                    }
+
+                    buildFullArtworkShow(
                         artwork = artwork,
+                        seasons = seasons,
                         episodes = episodes
                     )
                 }
             }
-        } ?: ArtworkUC.Content.ERROR
+        }
 
+    }
+
+    private fun buildFullArtworkMovie(artwork: Artwork, movie: Movie) : FullArtwork {
+        return FullArtwork.FullMovie(
+            resume = artwork,
+            movie = movie
+        )
+    }
+
+    private fun buildFullArtworkShow(artwork: Artwork, seasons: List<Season>, episodes: List<Episode>) : FullArtwork {
+
+        val availableSeasons = seasons.map { it.season }
+        val neededSeasons = episodes.map { it.season }.distinct()
+
+        return FullArtwork.FullShow(
+            resume = artwork,
+            seasons = seasons.filter { s -> neededSeasons.contains(s.season) },
+            episodes = if (artwork.isUnknown) episodes else episodes.filter { e -> availableSeasons.contains(e.season) }
+        )
     }
 
 }

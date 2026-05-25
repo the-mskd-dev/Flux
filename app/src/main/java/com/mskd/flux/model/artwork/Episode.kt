@@ -56,10 +56,11 @@ data class Episode(
 
     constructor(
         tmdbEpisode: TMDBEpisode,
+        artworkId: Long,
         file: UserFile
     ) : this (
         id = tmdbEpisode.id,
-        artworkId = tmdbEpisode.artworkId,
+        artworkId = artworkId,
         title = tmdbEpisode.title,
         number = tmdbEpisode.number,
         season = tmdbEpisode.season,

@@ -14,7 +14,8 @@ data class PlayerUiState(
     val controls: Controls = Controls(),
     val tracks: Tracks = Tracks(),
     val seekOverlay: SeekOverlay? = null,
-    val ambientOverlay: AmbientOverlay? = null
+    val ambientOverlay: AmbientOverlay? = null,
+    val waveProgress: Boolean = true
 ) {
 
     val media: Media? get() = (screen as? PlayerScreen.Content)?.media

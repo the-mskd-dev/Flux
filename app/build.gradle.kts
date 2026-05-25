@@ -36,8 +36,8 @@ configure<ApplicationExtension> {
         applicationId = "com.mskd.flux"
         minSdk = 29
         targetSdk = 37
-        versionCode = 20
-        versionName = "1.3.7"
+        versionCode = 21
+        versionName = "1.4.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables { useSupportLibrary = true }
@@ -139,6 +139,10 @@ dependencies {
     // Compose (Bundle + BOM)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.bundles.compose)
+
+    // UI
+    implementation(libs.androidx.palette)
+    implementation(libs.material.kolor)
 
     // Navigation 3
     implementation(libs.bundles.nav3)

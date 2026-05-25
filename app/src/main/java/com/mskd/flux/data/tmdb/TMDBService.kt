@@ -4,6 +4,7 @@ import com.mskd.flux.model.tmdb.TMDBArtworksResult
 import com.mskd.flux.model.tmdb.TMDBAuthentication
 import com.mskd.flux.model.tmdb.TMDBEpisode
 import com.mskd.flux.model.tmdb.TMDBMovie
+import com.mskd.flux.model.tmdb.TMDBSeason
 import com.mskd.flux.model.tmdb.TMDBTranslations
 import com.mskd.flux.utils.Constants
 import retrofit2.http.GET
@@ -30,7 +31,7 @@ interface TMDBService {
 
     @GET("movie/{id}/translations")
     suspend fun getMovieTranslations(
-        @Path("id") id: Long,
+        @Path("id") artworkId: Long,
     ) : TMDBTranslations
 
     @GET("search/tv")
@@ -42,22 +43,35 @@ interface TMDBService {
 
     @GET("tv/{id}/translations")
     suspend fun getShowTranslations(
-        @Path("id") id: Long,
+        @Path("id") artworkId: Long,
     ) : TMDBTranslations
 
-    @GET("tv/{id}/season/{season}/episode/{episode}")
+    @GET("tv/{id}/season/{season}/episode/{number}")
     suspend fun getEpisode(
         @Path("id") id: Long,
         @Path("season") season: Int,
-        @Path("episode") episode: Int,
+        @Path("number") number: Int,
         @Query("language") language: String = Constants.Global.LANGUAGE
     ) : TMDBEpisode
 
-    @GET("tv/{id}/season/{season}/episode/{episode}/translations")
+    @GET("tv/{id}/season/{season}/episode/{number}/translations")
     suspend fun getEpisodeTranslations(
+        @Path("id") artworkId: Long,
+        @Path("season") season: Int,
+        @Path("number") number: Int,
+    ) : TMDBTranslations
+
+    @GET("tv/{id}/season/{season}")
+    suspend fun getSeason(
         @Path("id") id: Long,
         @Path("season") season: Int,
-        @Path("episode") episode: Int,
+        @Query("language") language: String = Constants.Global.LANGUAGE
+    ) : TMDBSeason
+
+    @GET("tv/{id}/season/{season}/translations")
+    suspend fun getSeasonTranslations(
+        @Path("id") artworkId: Long,
+        @Path("season") season: Int,
     ) : TMDBTranslations
 
 }

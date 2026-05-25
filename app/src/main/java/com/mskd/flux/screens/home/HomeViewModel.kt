@@ -7,12 +7,12 @@ import com.mskd.flux.data.repository.snackbars.SnackbarRepository
 import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.data.tmdb.token.TokenRepository
 import com.mskd.flux.model.AppInfo
-import com.mskd.flux.model.ScreenState
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.screens.home.HomeEvent.NavigateToArtwork
 import com.mskd.flux.screens.home.HomeEvent.NavigateToCategory
 import com.mskd.flux.useCases.catalog.CatalogUC
 import com.mskd.flux.utils.FluxSnackbar
+import com.mskd.flux.utils.UpdateManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -50,8 +50,11 @@ class HomeViewModel @Inject constructor(
     ) { artworks, catalogState, preferences, token, dismissedSnackbar ->
 
         val screen = when {
-            catalogState is CatalogUC.State.Syncing -> if (catalogState.full) ScreenState.LOADING else ScreenState.CONTENT
-            else -> ScreenState.CONTENT
+            catalogState is CatalogUC.State.Syncing -> {
+                if (catalogState.full) HomeUiState.State.Loading(progress = catalogState.progress)
+                else HomeUiState.State.Content
+            }
+            else -> HomeUiState.State.Content
         }
 
         val snackbar = getSnackbarIfNeeded(
@@ -84,7 +87,7 @@ class HomeViewModel @Inject constructor(
     fun handleIntent(intent: HomeIntent) = viewModelScope.launch {
         when (intent) {
             is HomeIntent.SyncCatalog -> syncCatalog(manualSync = true)
-            is HomeIntent.OnArtworkTap -> onArtworkTap(artworkId = intent.artworkId)
+            is HomeIntent.OnArtworkTap -> onArtworkTap(artworkId = intent.artworkId, rgb = intent.rgb)
             is HomeIntent.OnCategoryTap -> _event.emit(NavigateToCategory(category = intent.category))
             HomeIntent.OnSearchTap -> _event.emit(HomeEvent.NavigateToSearch)
             HomeIntent.OnSnackbarActionTap -> onSnackbarActionTap()
@@ -108,7 +111,12 @@ class HomeViewModel @Inject constructor(
 
             Log.i("HomeViewModel", "syncCatalog, catalog sync requested")
 
-            catalogUC.syncCatalog(onlyNew = true)
+            val fullSyncNeeded = UpdateManager.fullSyncIsNeeded(
+                lastSyncVersionCode = lastSyncVersionCode,
+                currentVersionCode = appInfo.versionCode
+            )
+
+            catalogUC.syncCatalog(onlyNew = !fullSyncNeeded)
 
         } else {
 
@@ -119,11 +127,11 @@ class HomeViewModel @Inject constructor(
 
     }
 
-    private suspend fun onArtworkTap(artworkId: Long) {
+    private suspend fun onArtworkTap(artworkId: Long, rgb: Int?) {
 
         val event = when (artworkId) {
             Artwork.UNKNOWN_ID -> HomeEvent.NavigateToUnknown
-            else -> NavigateToArtwork(artworkId = artworkId)
+            else -> NavigateToArtwork(artworkId = artworkId, rgb = rgb)
         }
 
         _event.emit(event)

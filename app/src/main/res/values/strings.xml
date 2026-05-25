@@ -71,7 +71,7 @@
     <string name="what_is_next">What\'s next?</string>
     <string name="what_is_next_desc">The goal is to keep improving the app, whether it\'s the UI, UX, or performance. I plan to retrieve more datas (genre, casting, etc) and I also plan to add new data sources, not just files on the device</string>
     <string name="make_a_donation">Support me</string>
-    <string name="episode_list">Episode list</string>
+    <string name="episodes">Episodes</string>
     <string name="watched">Watched</string>
     <string name="track">Track</string>
     <string name="subtitles">Subtitles</string>
@@ -131,4 +131,15 @@
     <string name="images_cached">Images Cached</string>
     <string name="caching_images_in_progress">Caching images… %1$d%%</string>
     <string name="cache_images_desc">Download images for offline use</string>
+    <string name="no_summary">No summary available</string>
+    <string name="customization">Customization</string>
+    <string name="customization_desc">Interface customization</string>
+    <string name="accent_color">Accent color</string>
+    <string name="color_red">Red</string>
+    <string name="color_blue">Blue</string>
+    <string name="color_green">Green</string>
+    <string name="color_yellow">Yellow</string>
+    <string name="color_magenta">Magenta</string>
+    <string name="color_gray">Gray</string>
+    <string name="wave_progress">Wave progress bar</string>
 </resources>

@@ -58,10 +58,6 @@ fun mockkDatabaseRepository() : DatabaseRepository = mockk(relaxed = true) {
     coEvery { getMovies() } returns MediaMockups.movies
 
     // Episodes
-    coEvery { getEpisode(any()) } answers  {
-        val episodeId = firstArg<Long>()
-        MediaMockups.episodes.find { it.id == episodeId }
-    }
     coEvery { getEpisodes(any()) } answers  {
         val artworkId = firstArg<Long>()
         MediaMockups.episodes.filter { it.artworkId == artworkId }

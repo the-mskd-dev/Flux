@@ -537,16 +537,23 @@ class CatalogUCImpl(
 
                     try {
 
+                        val file = files.first()
+
                         when {
-                            artwork.id == Artwork.UNKNOWN_ID -> Episode(file = files.first())
+                            artwork.id == Artwork.UNKNOWN_ID -> Episode(file = file)
                             else -> {
 
                                 val tmdbMovie = tmdb.getTmdbMovie(artworkId = artwork.id)
 
-                                if (tmdbMovie == null)
-                                    createUnknownMedia(file = files.first())
-                                else
-                                    Movie(tmdbMovie = tmdbMovie, file = files.first())
+                                if (tmdbMovie == null) {
+                                    createUnknownMedia(file = file)
+                                } else {
+                                    Movie(
+                                        tmdbMovie = tmdbMovie,
+                                        file = file,
+                                        duration = tmdbMovie.duration ?: getFileDuration(file = file)
+                                    )
+                                }
 
                             }
                         }

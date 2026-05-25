@@ -57,7 +57,8 @@ data class Episode(
     constructor(
         tmdbEpisode: TMDBEpisode,
         artworkId: Long,
-        file: UserFile
+        file: UserFile,
+        duration: Int
     ) : this (
         id = tmdbEpisode.id,
         artworkId = artworkId,
@@ -68,7 +69,7 @@ data class Episode(
         releaseDateString = tmdbEpisode.releaseDateString,
         //crew = tmdbEpisode.crew,
         description = tmdbEpisode.description,
-        duration = tmdbEpisode.duration,
+        duration = duration,
         currentTime = 0L,
         voteAverage = tmdbEpisode.voteAverage,
         voteCount = tmdbEpisode.voteCount,

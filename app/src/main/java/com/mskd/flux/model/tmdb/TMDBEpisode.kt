@@ -26,7 +26,7 @@ data class TMDBEpisode(
     @SerializedName("overview")
     val description: String,
     @SerializedName("runtime")
-    val duration: Int,
+    val duration: Int?,
     @SerializedName("episode_number")
     val number: Int,
     @SerializedName("season_number")

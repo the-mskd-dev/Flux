@@ -3,6 +3,7 @@ package com.mskd.flux.screens.artwork
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mskd.flux.data.repository.customization.CustomizationRepository
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.model.State
 import com.mskd.flux.model.artwork.Episode
@@ -35,6 +36,7 @@ class ArtworkViewModel @AssistedInject constructor(
     @Assisted val artworkId: Long,
     private val artworkUC: ArtworkUC,
     private val settingsRepository: SettingsRepository,
+    private val customizationRepository: CustomizationRepository,
     private val progressUC: ProgressUC
 ) : ViewModel() {
 
@@ -80,12 +82,14 @@ class ArtworkViewModel @AssistedInject constructor(
     val uiState: StateFlow<ArtworkUiState> = combine(
         artworkUC.flow,
         settingsRepository.flow,
-        _subState
-    ) { artworkState, settings, subState ->
+        _subState,
+        customizationRepository.flow
+    ) { artworkState, settings, subState, customization ->
         buildUiState(
             artworkState = artworkState,
             settings = settings,
-            subState = subState
+            subState = subState,
+            customization = customization
         )
     }.stateIn(
         scope = viewModelScope,
@@ -130,7 +134,8 @@ class ArtworkViewModel @AssistedInject constructor(
     private fun buildUiState(
         artworkState: State<FullArtwork>,
         settings: SettingsRepository.State,
-        subState: UserState
+        subState: UserState,
+        customization: CustomizationRepository.State
     ) : ArtworkUiState {
 
         val fullArtwork = (artworkState as? State.Content<FullArtwork>)?.content
@@ -153,7 +158,8 @@ class ArtworkViewModel @AssistedInject constructor(
                     episodePendingConfirmation = subState.episodePendingConfirmation,
                     useExternalPlayer = settings.externalPlayer,
                     showResetProgressDialog = subState.showResetProgressDialog,
-                    previewForSeason = subState.previewForSeason
+                    previewForSeason = subState.previewForSeason,
+                    largeArtworkPoster = customization.largeArtworkPoster
                 )
             }
         }

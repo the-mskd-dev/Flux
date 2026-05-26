@@ -8,6 +8,7 @@ import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.artwork.Season
+import com.mskd.flux.screens.customization.CustomizationIntent
 
 @Immutable
 data class ArtworkUiState(
@@ -17,7 +18,8 @@ data class ArtworkUiState(
     val episodePendingConfirmation: Episode? = null,
     val useExternalPlayer: Boolean = false,
     val showResetProgressDialog: Boolean = false,
-    val previewForSeason: Season? = null
+    val previewForSeason: Season? = null,
+    val largeArtworkPoster: Boolean = false
 )
 
 sealed class ArtworkIntent {

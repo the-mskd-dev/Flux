@@ -32,6 +32,7 @@ import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.screens.artwork.ArtworkIntent
 import com.mskd.flux.ui.component.Image
 import com.mskd.flux.ui.theme.AppTheme
+import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.extensions.tmdbImage
 
@@ -40,8 +41,11 @@ import com.mskd.flux.utils.extensions.tmdbImage
 fun ArtworkImage(
     modifier: Modifier,
     fullArtwork: FullArtwork,
+    largeArtworkPoster: Boolean = false,
     sendIntent: (ArtworkIntent) -> Unit
 ) {
+
+
 
     var imageHeight by remember { mutableIntStateOf(0) }
     val imageRequest = ImageRequest.Builder(LocalContext.current)
@@ -54,7 +58,7 @@ fun ArtworkImage(
         AsyncImage(
             modifier = Modifier
                 .fillMaxWidth()
-                .blur(radius = 15.dp),
+                .blur(radius = if (largeArtworkPoster) 0.dp else 15.dp),
             model = imageRequest,
             contentScale = ContentScale.Crop,
             placeholder = Image.placeholder,
@@ -80,19 +84,21 @@ fun ArtworkImage(
                 )
         )
 
-        AsyncImage(
-            modifier = Modifier
-                .displayCutoutPadding()
-                .align(Alignment.Center)
-                .clip(MaterialTheme.shapes.small)
-                .width(160.dp)
-                .aspectRatio(2f/3f),
-            model = imageRequest,
-            contentScale = ContentScale.Crop,
-            placeholder = Image.placeholder,
-            error = Image.error,
-            contentDescription = fullArtwork.artwork.title
-        )
+        if (!largeArtworkPoster) {
+            AsyncImage(
+                modifier = Modifier
+                    .displayCutoutPadding()
+                    .align(Alignment.Center)
+                    .clip(MaterialTheme.shapes.small)
+                    .width(160.dp)
+                    .aspectRatio(Ui.Images.RATIO_2_3),
+                model = imageRequest,
+                contentScale = ContentScale.Crop,
+                placeholder = Image.placeholder,
+                error = Image.error,
+                contentDescription = fullArtwork.artwork.title
+            )
+        }
 
     }
 

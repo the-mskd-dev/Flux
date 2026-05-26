@@ -44,6 +44,13 @@ object Ui {
 
     }
 
+    object Images {
+
+        const val RATIO_2_3 = 2f/3f
+        const val RATIO_6_5 = 6f/5f
+
+    }
+
     /**
      * - **Level 0** : base level.
      * - **Level 1** : filled cards and low emphasis items.

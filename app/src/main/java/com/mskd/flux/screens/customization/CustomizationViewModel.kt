@@ -42,6 +42,7 @@ class CustomizationViewModel @Inject constructor(
             uiTheme = customization.uiTheme,
             color = customization.color,
             waveProgress = customization.waveProgress,
+            largeArtworkPoster = customization.largeArtworkPoster,
             dialogState = dialog
         )
     }.stateIn(

@@ -127,7 +127,7 @@ fun ArtworkScreen(
 
     }
 
-    if (uiState.episodePendingConfirmation != null) {
+    if (uiState.dialog is ArtworkDialog.EpisodeStatusConfirmation) {
         FluxDialog(
             content = {
                 Text.Body.Large(text = stringResource(R.string.mark_previous_episodes_as_watched))
@@ -137,7 +137,7 @@ fun ArtworkScreen(
         )
     }
 
-    if (uiState.showResetProgressDialog) {
+    if (uiState.dialog is ArtworkDialog.ResetProgressConfirmation) {
         ArtworkResetProgressDialog(sendIntent = viewModel::handleIntent)
     }
 
@@ -255,9 +255,9 @@ fun ArtworkScreenContent(
             )
         }
 
-        uiState.previewForSeason?.let {
+        (uiState.dialog as? ArtworkDialog.SeasonPreview)?.let {
             SeasonDialog(
-                season = it,
+                season = it.season,
                 sendIntent = sendIntent,
             )
         }

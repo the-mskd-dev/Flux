@@ -15,12 +15,16 @@ data class ArtworkUiState(
     val state: State<FullArtwork> = State.Loading,
     val selectedMedia: Media = MediaMockups.episode1,
     val selectedSeason: Int = -1,
-    val episodePendingConfirmation: Episode? = null,
     val useExternalPlayer: Boolean = false,
-    val showResetProgressDialog: Boolean = false,
-    val previewForSeason: Season? = null,
-    val largeArtworkPoster: Boolean = false
+    val largeArtworkPoster: Boolean = false,
+    val dialog: ArtworkDialog? = null
 )
+
+sealed class ArtworkDialog {
+    data class EpisodeStatusConfirmation(val episode: Episode) : ArtworkDialog()
+    object ResetProgressConfirmation : ArtworkDialog()
+    data class SeasonPreview(val season: Season) : ArtworkDialog()
+}
 
 sealed class ArtworkIntent {
     object OnBackTap: ArtworkIntent()

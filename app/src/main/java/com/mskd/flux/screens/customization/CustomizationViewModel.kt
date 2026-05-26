@@ -73,6 +73,7 @@ class CustomizationViewModel @Inject constructor(
             is CustomizationIntent.SetColorValue -> setColor(color = intent.color)
             is CustomizationIntent.SetThemeValue -> setTheme(theme = intent.theme)
             is CustomizationIntent.OnWaveProgressCheck -> setWaveProgress(waveProgress = intent.checked)
+            is CustomizationIntent.OnLargeArtworkPosterCheck -> setLargeArtworkPoster(largeArtworkPoster = intent.checked)
 
         }
     }
@@ -133,6 +134,10 @@ class CustomizationViewModel @Inject constructor(
 
     private suspend fun setWaveProgress(waveProgress: Boolean) {
         customizationRepository.setWaveProgress(waveProgress)
+    }
+
+    private suspend fun setLargeArtworkPoster(largeArtworkPoster: Boolean) {
+        customizationRepository.setLargeArtworkPoster(largeArtworkPoster)
     }
 
     //endregion

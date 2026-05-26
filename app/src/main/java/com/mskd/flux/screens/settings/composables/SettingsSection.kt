@@ -27,8 +27,8 @@ import kotlin.math.roundToInt
 
 @Composable
 fun SettingsSection(
-    iconColor: Color,
-    iconBackgroundColor: Color,
+    iconColor: Color = MaterialTheme.colorScheme.onTertiaryContainer,
+    iconBackgroundColor: Color = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 1f),
     content: @Composable (Color, Color) -> Unit
 ) {
 

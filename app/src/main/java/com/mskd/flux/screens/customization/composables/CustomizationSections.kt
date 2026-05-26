@@ -26,10 +26,7 @@ fun CustomizationThemeSection(
     sendIntent: (CustomizationIntent) -> Unit
 ) {
 
-    SettingsSection(
-        iconColor = MaterialTheme.colorScheme.onTertiaryContainer,
-        iconBackgroundColor = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 1f)
-    ) { _, _ ->
+    SettingsSection { _, _ ->
 
         SettingsItem(
             text = stringResource(R.string.accent_color),
@@ -48,19 +45,33 @@ fun CustomizationThemeSection(
 }
 
 @Composable
+fun CustomizationArtworkSection(
+    state: CustomizationUiState,
+    sendIntent: (CustomizationIntent) -> Unit
+) {
+
+    SettingsSection { _, _ ->
+
+        SettingsSwitch(
+            text = stringResource(R.string.large_artwork_poster),
+            checked = state.largeArtworkPoster,
+            onCheckedChange = { sendIntent(CustomizationIntent.OnLargeArtworkPosterCheck(it)) },
+        )
+
+    }
+
+}
+
+@Composable
 fun CustomizationPlayerSection(
     state: CustomizationUiState,
     sendIntent: (CustomizationIntent) -> Unit
 ) {
 
-    SettingsSection(
-        iconColor = MaterialTheme.colorScheme.onErrorContainer,
-        iconBackgroundColor = MaterialTheme.colorScheme.errorContainer.copy(alpha = .3f)
-    ) { _, _ ->
+    SettingsSection { _, _ ->
 
         SettingsSwitch(
             text = stringResource(R.string.wave_progress),
-            subText = "",
             checked = state.waveProgress,
             onCheckedChange = { sendIntent(CustomizationIntent.OnWaveProgressCheck(it)) },
         )

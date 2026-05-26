@@ -46,7 +46,8 @@ data class Movie(
      */
     constructor(
         tmdbMovie: TMDBMovie,
-        file: UserFile
+        file: UserFile,
+        duration: Int
     ) : this(
         artworkId = tmdbMovie.id,
         title = tmdbMovie.title,
@@ -54,7 +55,7 @@ data class Movie(
         description = tmdbMovie.description,
         voteAverage = tmdbMovie.voteAverage,
         voteCount = tmdbMovie.voteCount,
-        duration = tmdbMovie.duration,
+        duration = duration,
         currentTime = 0L,
         file = file,
         //genres = emptyList(),

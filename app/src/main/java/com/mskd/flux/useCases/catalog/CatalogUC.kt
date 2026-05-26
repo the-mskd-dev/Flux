@@ -537,16 +537,23 @@ class CatalogUCImpl(
 
                     try {
 
+                        val file = files.first()
+
                         when {
-                            artwork.id == Artwork.UNKNOWN_ID -> Episode(file = files.first())
+                            artwork.id == Artwork.UNKNOWN_ID -> Episode(file = file)
                             else -> {
 
                                 val tmdbMovie = tmdb.getTmdbMovie(artworkId = artwork.id)
 
-                                if (tmdbMovie == null)
-                                    createUnknownMedia(file = files.first())
-                                else
-                                    Movie(tmdbMovie = tmdbMovie, file = files.first())
+                                if (tmdbMovie == null) {
+                                    createUnknownMedia(file = file)
+                                } else {
+                                    Movie(
+                                        tmdbMovie = tmdbMovie,
+                                        file = file,
+                                        duration = tmdbMovie.duration ?: getFileDuration(file = file)
+                                    )
+                                }
 
                             }
                         }
@@ -659,7 +666,8 @@ class CatalogUCImpl(
                                         Episode(
                                             tmdbEpisode = tmdbEpisode,
                                             artworkId = artwork.id,
-                                            file = file
+                                            file = file,
+                                            duration = tmdbEpisode.duration ?: getFileDuration(file = file)
                                         )
                                     }
 
@@ -695,6 +703,15 @@ class CatalogUCImpl(
 
         Log.i(TAG, "Create unknown media for ${file.name}")
 
+        val duration = getFileDuration(file = file)
+        Episode(file = file, duration = duration)
+
+    }
+
+    private suspend fun getFileDuration(file: UserFile) : Int = withContext(dispatcher) {
+
+        Log.i(TAG, "Get duration for ${file.name}")
+
         val retriever = MediaMetadataRetriever()
 
         try {
@@ -705,12 +722,12 @@ class CatalogUCImpl(
                 durationInMs.msToMin.toInt()
             } ?: 0
 
-            Episode(file = file, duration = duration)
+            duration
 
         } catch (e: Exception) {
 
-            Log.e(TAG, "[createUnknownMedia] Fail to get duration for ${file.path}", e)
-            Episode(file = file)
+            Log.e(TAG, "[getFileDuration] Fail to get duration for ${file.path}", e)
+            0
 
         } finally {
 

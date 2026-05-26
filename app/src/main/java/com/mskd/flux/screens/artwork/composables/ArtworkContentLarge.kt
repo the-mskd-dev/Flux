@@ -50,6 +50,7 @@ fun ArtworkContentLarge(
             ArtworkImage(
                 modifier = Modifier.fillMaxSize(),
                 fullArtwork = fullArtwork,
+                currentMedia = currentMedia,
                 sendIntent = sendIntent
             )
 

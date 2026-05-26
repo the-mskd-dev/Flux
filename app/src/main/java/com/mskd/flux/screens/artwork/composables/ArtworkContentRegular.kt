@@ -55,9 +55,10 @@ fun ArtworkContentRegular(
         item {
 
             ArtworkImage(
-                modifier = Modifier.aspectRatio(if (largeArtworkPoster) 4f/3f else Ui.Images.RATIO_6_5),
+                modifier = Modifier.aspectRatio(Ui.Images.RATIO_6_5),
                 fullArtwork = fullArtwork,
                 largeArtworkPoster = largeArtworkPoster,
+                currentMedia = currentMedia,
                 sendIntent = sendIntent
             )
 

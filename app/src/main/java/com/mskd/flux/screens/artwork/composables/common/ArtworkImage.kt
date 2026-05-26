@@ -28,7 +28,10 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.FullArtwork
+import com.mskd.flux.model.artwork.Media
+import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.screens.artwork.ArtworkIntent
 import com.mskd.flux.ui.component.Image
 import com.mskd.flux.ui.theme.AppTheme
@@ -42,11 +45,14 @@ import com.mskd.flux.utils.extensions.tmdbImageLarge
 fun ArtworkImage(
     modifier: Modifier,
     fullArtwork: FullArtwork,
+    currentMedia: Media,
     largeArtworkPoster: Boolean = false,
     sendIntent: (ArtworkIntent) -> Unit
 ) {
 
-    val imageUrl = if (largeArtworkPoster) fullArtwork.artwork.bannerPath.tmdbImageLarge else fullArtwork.imagePath.tmdbImage
+    val episode = currentMedia as? Episode
+    val imageUrl = if (largeArtworkPoster) episode?.imagePath?.tmdbImageLarge ?: fullArtwork.artwork.bannerPath.tmdbImageLarge else fullArtwork.imagePath.tmdbImage
+    val placeHolderUrl = if (largeArtworkPoster) episode?.imagePath?.tmdbImage ?: fullArtwork.artwork.bannerPath.tmdbImage else fullArtwork.imagePath.tmdbImage
     val blurIntensity = if (largeArtworkPoster) 0.dp else 15.dp
 
 
@@ -54,6 +60,7 @@ fun ArtworkImage(
     val imageRequest = ImageRequest.Builder(LocalContext.current)
         .data(imageUrl)
         .crossfade(true)
+        .placeholderMemoryCacheKey(placeHolderUrl)
         .build()
 
     Box(modifier = modifier.onSizeChanged { imageHeight = it.height }) {
@@ -114,6 +121,7 @@ fun ArtworkImage_Preview() {
         ArtworkImage(
             modifier = Modifier.aspectRatio(6f / 5f),
             fullArtwork = MediaMockups.fullShow,
+            currentMedia = MediaMockups.fullShow.episodes.first(),
             sendIntent = {},
         )
     }

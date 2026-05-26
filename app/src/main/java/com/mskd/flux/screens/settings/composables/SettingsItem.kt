@@ -22,8 +22,8 @@ import com.mskd.flux.utils.extensions.uppercaseFirstLetter
 @Composable
 fun SettingsItem(
     text: String,
-    value: String,
-    painter: Painter,
+    value: String? = null,
+    painter: Painter? = null,
     iconBackgroundColor: Color,
     iconColor: Color,
     valueColor: Color = MaterialTheme.colorScheme.onBackground.copy(alpha = .8f),
@@ -40,12 +40,14 @@ fun SettingsItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
 
-        SettingIcon(
-            painter = painter,
-            backgroundColor = iconBackgroundColor,
-            iconColor = iconColor,
-            contentDescription = text
-        )
+        painter?.let {
+            SettingIcon(
+                painter = painter,
+                backgroundColor = iconBackgroundColor,
+                iconColor = iconColor,
+                contentDescription = text
+            )
+        }
 
         Column(
             modifier = Modifier.weight(1f),

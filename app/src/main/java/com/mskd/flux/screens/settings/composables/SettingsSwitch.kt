@@ -22,12 +22,12 @@ import com.mskd.flux.ui.theme.Ui
 @Composable
 fun SettingsSwitch(
     text: String,
-    subText: String,
+    subText: String? = null,
     checked: Boolean,
-    painter: Painter,
-    backgroundColor: Color,
-    iconColor: Color,
-    valueColor: Color = MaterialTheme.colorScheme.onBackground.copy(alpha = .8f),
+    painter: Painter? = null,
+    iconColor: Color = MaterialTheme.colorScheme.onTertiaryContainer,
+    iconBackgroundColor: Color = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 1f),
+    subTextColor: Color = MaterialTheme.colorScheme.onBackground.copy(alpha = .8f),
     onCheckedChange: (Boolean) -> Unit
 ) {
 
@@ -41,12 +41,14 @@ fun SettingsSwitch(
         horizontalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM),
     ) {
 
-        SettingIcon(
-            painter = painter,
-            backgroundColor = backgroundColor,
-            iconColor = iconColor,
-            contentDescription = text
-        )
+        painter?.let {
+            SettingIcon(
+                painter = it,
+                backgroundColor = iconBackgroundColor,
+                iconColor = iconColor,
+                contentDescription = text
+            )
+        }
 
         Column(
             modifier = Modifier
@@ -63,7 +65,7 @@ fun SettingsSwitch(
 
             Text.Title.Small(
                 text = subText,
-                color = valueColor,
+                color = subTextColor,
                 lineHeight = 18.sp
             )
 

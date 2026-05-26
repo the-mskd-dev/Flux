@@ -22,10 +22,10 @@ import com.mskd.flux.utils.extensions.uppercaseFirstLetter
 @Composable
 fun SettingsItem(
     text: String,
-    value: String? = null,
+    subText: String? = null,
     painter: Painter? = null,
-    iconBackgroundColor: Color,
-    iconColor: Color,
+    iconColor: Color = MaterialTheme.colorScheme.onTertiaryContainer,
+    iconBackgroundColor: Color = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 1f),
     valueColor: Color = MaterialTheme.colorScheme.onBackground.copy(alpha = .8f),
     onTap: () -> Unit
 ) {
@@ -42,7 +42,7 @@ fun SettingsItem(
 
         painter?.let {
             SettingIcon(
-                painter = painter,
+                painter = it,
                 backgroundColor = iconBackgroundColor,
                 iconColor = iconColor,
                 contentDescription = text
@@ -60,7 +60,7 @@ fun SettingsItem(
             )
 
             AnimatedContent(
-                targetState = value.uppercaseFirstLetter()
+                targetState = subText.uppercaseFirstLetter()
             ) { text ->
                 Text.Title.Small(
                     text = text,

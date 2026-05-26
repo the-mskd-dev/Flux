@@ -29,23 +29,17 @@ fun CustomizationThemeSection(
     SettingsSection(
         iconColor = MaterialTheme.colorScheme.onTertiaryContainer,
         iconBackgroundColor = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 1f)
-    ) { iconColor, bgColor ->
+    ) { _, _ ->
 
         SettingsItem(
             text = stringResource(R.string.accent_color),
-            value = stringResource(Ui.AccentColors.findColor(state.color)?.stringResId ?: R.string.accent_color_desc),
-            painter = painterResource(R.drawable.ic_palette),
-            iconColor = iconColor,
-            iconBackgroundColor = bgColor,
+            subText = stringResource(Ui.AccentColors.findColor(state.color)?.stringResId ?: R.string.accent_color_desc),
             onTap = { sendIntent(CustomizationIntent.ShowColorDialog) }
         )
 
         SettingsItem(
             text = stringResource(R.string.app_theme),
-            value = stringResource(state.uiTheme.stringResourceId),
-            painter = painterResource(R.drawable.ic_theme),
-            iconColor = iconColor,
-            iconBackgroundColor = bgColor,
+            subText = stringResource(state.uiTheme.stringResourceId),
             onTap = { sendIntent(CustomizationIntent.ShowThemeDialog) }
         )
 
@@ -62,16 +56,13 @@ fun CustomizationPlayerSection(
     SettingsSection(
         iconColor = MaterialTheme.colorScheme.onErrorContainer,
         iconBackgroundColor = MaterialTheme.colorScheme.errorContainer.copy(alpha = .3f)
-    ) { iconColor, bgColor ->
+    ) { _, _ ->
 
         SettingsSwitch(
             text = stringResource(R.string.wave_progress),
             subText = "",
             checked = state.waveProgress,
             onCheckedChange = { sendIntent(CustomizationIntent.OnWaveProgressCheck(it)) },
-            painter = painterResource(R.drawable.ic_wave_progress),
-            iconColor = iconColor,
-            backgroundColor = bgColor,
         )
 
     }

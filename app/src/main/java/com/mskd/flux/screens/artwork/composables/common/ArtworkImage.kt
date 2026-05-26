@@ -35,6 +35,7 @@ import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.extensions.tmdbImage
+import com.mskd.flux.utils.extensions.tmdbImageLarge
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -45,11 +46,13 @@ fun ArtworkImage(
     sendIntent: (ArtworkIntent) -> Unit
 ) {
 
+    val imageUrl = if (largeArtworkPoster) fullArtwork.artwork.bannerPath.tmdbImageLarge else fullArtwork.imagePath.tmdbImage
+    val blurIntensity = if (largeArtworkPoster) 0.dp else 15.dp
 
 
     var imageHeight by remember { mutableIntStateOf(0) }
     val imageRequest = ImageRequest.Builder(LocalContext.current)
-        .data(fullArtwork.imagePath.tmdbImage)
+        .data(imageUrl)
         .crossfade(true)
         .build()
 
@@ -58,7 +61,7 @@ fun ArtworkImage(
         AsyncImage(
             modifier = Modifier
                 .fillMaxWidth()
-                .blur(radius = if (largeArtworkPoster) 0.dp else 15.dp),
+                .blur(radius = blurIntensity),
             model = imageRequest,
             contentScale = ContentScale.Crop,
             placeholder = Image.placeholder,

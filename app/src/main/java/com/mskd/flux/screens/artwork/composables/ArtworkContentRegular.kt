@@ -55,7 +55,7 @@ fun ArtworkContentRegular(
         item {
 
             ArtworkImage(
-                modifier = Modifier.aspectRatio(if (largeArtworkPoster) Ui.Images.RATIO_2_3 else Ui.Images.RATIO_6_5),
+                modifier = Modifier.aspectRatio(if (largeArtworkPoster) 4f/3f else Ui.Images.RATIO_6_5),
                 fullArtwork = fullArtwork,
                 largeArtworkPoster = largeArtworkPoster,
                 sendIntent = sendIntent
@@ -186,7 +186,7 @@ fun ArtworkContentShow_Preview() {
             currentMedia = MediaMockups.episode1,
             currentSeason = 1,
             scaffoldInnerPadding = PaddingValues.Zero,
-            largeArtworkPoster = false,
+            largeArtworkPoster = true,
             sendIntent = {}
         )
     }

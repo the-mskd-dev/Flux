@@ -1,6 +1,7 @@
 package com.mskd.flux.screens.customization
 
 import android.app.Application
+import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.R
@@ -111,13 +112,13 @@ class CustomizationViewModel @Inject constructor(
             titleResId = R.string.app_theme,
             currentValue = currentValue,
             options = listOf(
-                Ui.Colors.System.let { FluxOptionsDialogItem(value = it.argb, label = context.getString(it.stringResId), left = { ColorItem(it.argb) } ) },
-                Ui.Colors.Red.let { FluxOptionsDialogItem(value = it.argb, label = context.getString(it.stringResId), left = { ColorItem(it.argb) } ) },
-                Ui.Colors.Blue.let { FluxOptionsDialogItem(value = it.argb, label = context.getString(it.stringResId), left = { ColorItem(it.argb) } ) },
-                Ui.Colors.Green.let { FluxOptionsDialogItem(value = it.argb, label = context.getString(it.stringResId), left = { ColorItem(it.argb) } ) },
-                Ui.Colors.Yellow.let { FluxOptionsDialogItem(value = it.argb, label = context.getString(it.stringResId), left = { ColorItem(it.argb) } ) },
-                Ui.Colors.Magenta.let { FluxOptionsDialogItem(value = it.argb, label = context.getString(it.stringResId), left = { ColorItem(it.argb) } ) },
-                Ui.Colors.Gray.let { FluxOptionsDialogItem(value = it.argb, label = context.getString(it.stringResId), left = { ColorItem(it.argb) } ) },
+                Ui.AccentColors.System.let { FluxOptionsDialogItem(value = it.color?.toArgb(), label = context.getString(it.stringResId), left = { ColorItem(it.color) } ) },
+                Ui.AccentColors.Red.let { FluxOptionsDialogItem(value = it.color?.toArgb(), label = context.getString(it.stringResId), left = { ColorItem(it.color) } ) },
+                Ui.AccentColors.Blue.let { FluxOptionsDialogItem(value = it.color?.toArgb(), label = context.getString(it.stringResId), left = { ColorItem(it.color) } ) },
+                Ui.AccentColors.Green.let { FluxOptionsDialogItem(value = it.color?.toArgb(), label = context.getString(it.stringResId), left = { ColorItem(it.color) } ) },
+                Ui.AccentColors.Yellow.let { FluxOptionsDialogItem(value = it.color?.toArgb(), label = context.getString(it.stringResId), left = { ColorItem(it.color) } ) },
+                Ui.AccentColors.Magenta.let { FluxOptionsDialogItem(value = it.color?.toArgb(), label = context.getString(it.stringResId), left = { ColorItem(it.color) } ) },
+                Ui.AccentColors.Gray.let { FluxOptionsDialogItem(value = it.color?.toArgb(), label = context.getString(it.stringResId), left = { ColorItem(it.color) } ) },
             ),
             applyValue = { value -> CustomizationIntent.SetColorValue(value) }
         )

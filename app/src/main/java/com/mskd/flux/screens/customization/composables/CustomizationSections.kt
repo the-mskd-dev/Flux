@@ -18,6 +18,7 @@ import com.mskd.flux.screens.customization.CustomizationUiState
 import com.mskd.flux.screens.settings.composables.SettingsItem
 import com.mskd.flux.screens.settings.composables.SettingsSection
 import com.mskd.flux.screens.settings.composables.SettingsSwitch
+import com.mskd.flux.ui.theme.Ui
 
 @Composable
 fun CustomizationThemeSection(
@@ -32,7 +33,7 @@ fun CustomizationThemeSection(
 
         SettingsItem(
             text = stringResource(R.string.accent_color),
-            value = "",
+            value = stringResource(Ui.AccentColors.findColor(state.color)?.stringResId ?: R.string.accent_color_desc),
             painter = painterResource(R.drawable.ic_palette),
             iconColor = iconColor,
             iconBackgroundColor = bgColor,
@@ -78,15 +79,15 @@ fun CustomizationPlayerSection(
 }
 
 @Composable
-fun ColorItem(argb: Int?) {
+fun ColorItem(color: Color?) {
 
-    argb ?: return
+    color ?: return
 
     Box(
         modifier = Modifier
             .clip(CircleShape)
             .size(24.dp)
-            .background(Color(argb))
+            .background(color)
     )
 
 }

@@ -11,6 +11,8 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.R
 
@@ -91,21 +93,29 @@ object Ui {
         }
     }
 
-    sealed class Colors(val argb: Int?, val stringResId: Int) {
-        data object System : Colors(argb = null, stringResId = R.string.system)
-        data object Red : Colors(argb = rgbToInt(239, 71, 111), stringResId = R.string.color_red)
-        data object Blue : Colors(argb = rgbToInt(17, 138, 178), stringResId = R.string.color_blue)
-        data object Green : Colors(argb = rgbToInt(6, 214, 160), stringResId = R.string.color_green)
-        data object Yellow : Colors(argb = rgbToInt(255, 209, 102), stringResId = R.string.color_yellow)
-        data object Magenta : Colors(argb = rgbToInt(181, 23, 158), stringResId = R.string.color_magenta)
-        data object Gray : Colors(argb = rgbToInt(94, 100, 114), stringResId = R.string.color_gray)
+    sealed class AccentColors(val color: Color?, val stringResId: Int) {
+        data object System : AccentColors(color = null, stringResId = R.string.system)
+        data object Red : AccentColors(color = Color(239, 71, 111), stringResId = R.string.color_red)
+        data object Blue : AccentColors(color = Color(17, 138, 178), stringResId = R.string.color_blue)
+        data object Green : AccentColors(color = Color(6, 214, 160), stringResId = R.string.color_green)
+        data object Yellow : AccentColors(color = Color(255, 209, 102), stringResId = R.string.color_yellow)
+        data object Magenta : AccentColors(color = Color(181, 23, 158), stringResId = R.string.color_magenta)
+        data object Gray : AccentColors(color = Color(94, 100, 114), stringResId = R.string.color_gray)
 
         companion object {
 
-            fun rgbToInt(r: Int, g: Int, b: Int, a: Int = 255): Int {
-                return (a shl 24) or (r shl 16) or (g shl 8) or b
+            fun findColor(rgb: Int?) : AccentColors? {
+                return when (rgb) {
+                    null -> System
+                    Red.color?.toArgb() -> Red
+                    Blue.color?.toArgb() -> Blue
+                    Green.color?.toArgb() -> Green
+                    Yellow.color?.toArgb() -> Yellow
+                    Magenta.color?.toArgb() -> Magenta
+                    Gray.color?.toArgb() -> Gray
+                    else -> null
+                }
             }
-
         }
     }
 

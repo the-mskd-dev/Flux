@@ -77,7 +77,7 @@ class ArtworkViewModel @AssistedInject constructor(
     private val _subState = MutableStateFlow(UserState())
 
     val uiState: StateFlow<ArtworkUiState> = combine(
-        artworkUC.flow,
+        artworkUC.flow(artworkId = artworkId),
         settingsRepository.flow,
         _subState,
     ) { artworkState, settings, subState ->
@@ -92,14 +92,6 @@ class ArtworkViewModel @AssistedInject constructor(
         initialValue = ArtworkUiState()
     )
 
-
-    //endregion
-
-    //regin Init
-
-    init {
-        artworkUC.searchArtwork(artworkId = artworkId)
-    }
 
     //endregion
 

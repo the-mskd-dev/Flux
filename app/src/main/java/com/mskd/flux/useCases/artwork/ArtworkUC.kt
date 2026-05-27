@@ -20,9 +20,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 
 interface ArtworkUC {
 
-    val flow: Flow<State<FullArtwork>>
-
-    fun searchArtwork(artworkId: Long)
+    fun flow(artworkId: Long) : Flow<State<FullArtwork>>
 
     suspend fun saveMovie(movie: Movie)
 
@@ -40,46 +38,37 @@ class ArtworkUCImpl(
 
     private val _artworkId = MutableStateFlow<Long?>(null)
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    override val flow: Flow<State<FullArtwork>> = _artworkId
-        .filterNotNull()
-        .distinctUntilChanged()
-        .flatMapLatest { artworkId ->
-            combine(
-                database.flowArtwork(artworkId),
-                database.flowMovie(artworkId),
-                database.flowSeasons(artworkId),
-                database.flowEpisodes(artworkId)
-            ) { artwork, movie, seasons, episodes ->
+    override fun flow(artworkId: Long): Flow<State<FullArtwork>> {
+        return combine(
+            database.flowArtwork(artworkId),
+            database.flowMovie(artworkId),
+            database.flowSeasons(artworkId),
+            database.flowEpisodes(artworkId)
+        ) { artwork, movie, seasons, episodes ->
 
-                when (artwork?.type) {
-                    ContentType.MOVIE -> {
+            when (artwork?.type) {
+                ContentType.MOVIE -> {
 
-                        movie?.let {
-                            State.Content(content = buildFullArtworkMovie(artwork = artwork, movie = it))
-                        } ?: State.Error
+                    movie?.let {
+                        State.Content(content = buildFullArtworkMovie(artwork = artwork, movie = it))
+                    } ?: State.Error
 
-                    }
-                    ContentType.SHOW -> {
-
-                        State.Content(
-                            content = buildFullArtworkShow(
-                                artwork = artwork,
-                                seasons = seasons,
-                                episodes = episodes
-                            )
-                        )
-
-                    }
-                    null -> State.Error
                 }
+                ContentType.SHOW -> {
 
+                    State.Content(
+                        content = buildFullArtworkShow(
+                            artwork = artwork,
+                            seasons = seasons,
+                            episodes = episodes
+                        )
+                    )
+
+                }
+                null -> State.Error
             }
-        }
-        .distinctUntilChanged()
 
-    override fun searchArtwork(artworkId: Long) {
-        _artworkId.value = artworkId
+        }
     }
 
     override suspend fun saveMovie(movie: Movie) {

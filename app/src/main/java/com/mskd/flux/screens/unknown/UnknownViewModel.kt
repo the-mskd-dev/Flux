@@ -40,7 +40,7 @@ class UnknownViewModel @Inject constructor(
     val event = _event.asSharedFlow()
 
     val uiState: StateFlow<UnknownUiState> = combine(
-        artworkUC.flow(artworkId = Artwork.UNKNOWN_ID),
+        artworkUC.flow,
         settingsRepository.flow
     ) { artworkContent, settings ->
 
@@ -58,6 +58,14 @@ class UnknownViewModel @Inject constructor(
         started = SharingStarted.WhileSubscribed(5_000),
         initialValue = UnknownUiState()
     )
+
+    //endregion
+
+    //region Init
+
+    init {
+        artworkUC.searchArtwork(artworkId = Artwork.UNKNOWN_ID)
+    }
 
     //endregion
 

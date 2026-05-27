@@ -54,6 +54,7 @@ import com.mskd.flux.ui.component.ErrorScreen
 import com.mskd.flux.ui.component.FluxDialog
 import com.mskd.flux.ui.component.FluxDropDownMenu
 import com.mskd.flux.ui.component.FluxDropDownMenuItem
+import com.mskd.flux.ui.component.FluxTopAppBar
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.component.Text
 import com.mskd.flux.ui.theme.AppTheme
@@ -180,24 +181,9 @@ fun ArtworkScreenContent(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
 
-            CenterAlignedTopAppBar(
-                modifier = Modifier.fillMaxWidth(),
-                title = {
-
-                    Text.Adaptive(
-                        modifier = Modifier
-                            .padding(vertical = Ui.Space.EXTRA_SMALL)
-                            .graphicsLayer { alpha = animatedAlpha },
-                        text = if (!isLargeScreen) fullArtwork.artwork.title else null,
-                        overflow = TextOverflow.Ellipsis,
-                        style = MaterialTheme.typography.headlineSmall,
-                        maxLines = 2,
-                        autoSize = TextAutoSize.StepBased(
-                            maxFontSize = MaterialTheme.typography.headlineSmall.fontSize,
-                            minFontSize = MaterialTheme.typography.titleSmall.fontSize
-                        )
-                    )
-                },
+            FluxTopAppBar(
+                modifier = Modifier.graphicsLayer { alpha = animatedAlpha },
+                title = if (!isLargeScreen) fullArtwork.artwork.title else null,
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.Transparent,
                     scrolledContainerColor = if (fullArtwork.contentType == ContentType.SHOW) MaterialTheme.colorScheme.background else Color.Transparent,
@@ -222,17 +208,7 @@ fun ArtworkScreenContent(
                     }
 
                 },
-                navigationIcon = {
-                    IconButton(
-                        onClick = { sendIntent(ArtworkIntent.OnBackTap) },
-                        content = {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-                                contentDescription = "back button"
-                            )
-                        }
-                    )
-                },
+                onBackTap = { sendIntent(ArtworkIntent.OnBackTap) },
                 scrollBehavior = scrollBehavior
             )
 

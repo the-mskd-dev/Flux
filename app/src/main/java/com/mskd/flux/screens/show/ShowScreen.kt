@@ -1,12 +1,20 @@
 package com.mskd.flux.screens.show
 
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -23,6 +31,7 @@ import com.mskd.flux.screens.artwork.ArtworkIntent
 import com.mskd.flux.screens.artwork.ArtworkScreenContent
 import com.mskd.flux.screens.artwork.ArtworkViewModel
 import com.mskd.flux.ui.component.ErrorScreen
+import com.mskd.flux.ui.component.FluxScaffold
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.utils.AppThemePreview
 import com.mskd.flux.utils.ExternalPlayer
@@ -84,6 +93,23 @@ fun ShowScreenContent(
     uiState: ShowUiState,
     sendIntent: (ShowIntent) -> Unit
 ) {
+
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+
+    val titleAlpha by remember {
+        derivedStateOf {
+            if (scrollBehavior.state.contentOffset < -10f) 1f else 0f
+        }
+    }
+
+    val animatedAlpha by animateFloatAsState(
+        targetValue = titleAlpha,
+        animationSpec = spring(
+            stiffness = Spring.StiffnessLow,
+            dampingRatio = Spring.DampingRatioNoBouncy
+        ),
+        label = "TitleAlphaAnimation"
+    )
 
 }
 

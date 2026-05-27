@@ -73,7 +73,7 @@ fun ArtworkImage(
             contentScale = ContentScale.Crop,
             placeholder = Image.placeholder,
             error = Image.error,
-            alpha = .75f,
+            alpha = 1f,
             contentDescription = "background ${fullArtwork.artwork.title}"
         )
 
@@ -93,23 +93,7 @@ fun ArtworkImage(
                     )
                 )
         )
-
-        if (!largeArtworkPoster) {
-            AsyncImage(
-                modifier = Modifier
-                    .displayCutoutPadding()
-                    .align(Alignment.Center)
-                    .clip(MaterialTheme.shapes.small)
-                    .width(160.dp)
-                    .aspectRatio(Ui.Images.RATIO_2_3),
-                model = imageRequest,
-                contentScale = ContentScale.Crop,
-                placeholder = Image.placeholder,
-                error = Image.error,
-                contentDescription = fullArtwork.artwork.title
-            )
-        }
-
+        
     }
 
 }

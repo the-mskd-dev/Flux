@@ -40,6 +40,7 @@ import com.mskd.flux.utils.extensions.timeDescription
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun ArtworkButtons(
+    modifier: Modifier = Modifier,
     media: Media,
     sendIntent: (ArtworkIntent) -> Unit
 ) {
@@ -53,7 +54,7 @@ fun ArtworkButtons(
     }
 
     Column(
-        modifier = Modifier.width(250.dp),
+        modifier = modifier.width(250.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
 

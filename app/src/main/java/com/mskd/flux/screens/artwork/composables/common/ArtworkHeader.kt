@@ -82,7 +82,7 @@ fun ArtworkHeader(
         ArtworkButtons(
             modifier = Modifier.constrainAs(buttons) {
                 if (isMovie) top.linkTo(text.bottom, Ui.Space.LARGE)
-                else top.linkTo(image.bottom)
+                else top.linkTo(image.bottom, Ui.Space.LARGE)
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
             },

@@ -5,7 +5,11 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -16,16 +20,20 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.R
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.State
+import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Route.Player
+import com.mskd.flux.screens.artwork.ArtworkDropDownMenu
 import com.mskd.flux.screens.artwork.ArtworkEvent
 import com.mskd.flux.screens.artwork.ArtworkIntent
 import com.mskd.flux.screens.artwork.ArtworkScreenContent
@@ -110,6 +118,15 @@ fun ShowScreenContent(
         ),
         label = "TitleAlphaAnimation"
     )
+
+    FluxScaffold(
+        modifier = Modifier.graphicsLayer { alpha = animatedAlpha },
+        title = "TODO",
+        onBackTap = { sendIntent(ShowIntent.OnBackTap) },
+        scrollBehavior = scrollBehavior
+    ) { innerPadding ->
+
+    }
 
 }
 

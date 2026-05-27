@@ -188,7 +188,7 @@ fun ArtworkScreenContent(
                         modifier = Modifier
                             .padding(vertical = Ui.Space.EXTRA_SMALL)
                             .graphicsLayer { alpha = animatedAlpha },
-                        text = fullArtwork.artwork.title,
+                        text = if (!isLargeScreen) fullArtwork.artwork.title else null,
                         overflow = TextOverflow.Ellipsis,
                         style = MaterialTheme.typography.headlineSmall,
                         maxLines = 2,

@@ -58,7 +58,6 @@ fun ArtworkHeader(
                 }
                 .aspectRatio(Ui.Images.RATIO_6_5),
             fullArtwork = fullArtwork,
-            largeArtworkPoster = true,
             currentMedia = currentMedia,
             sendIntent = sendIntent
         )

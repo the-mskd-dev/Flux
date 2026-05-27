@@ -58,9 +58,9 @@ fun ArtworkContentRegular(
                 modifier = Modifier.fillMaxWidth(),
                 fullArtwork = fullArtwork,
                 currentMedia = currentMedia,
+                title = fullArtwork.artwork.title,
                 sendIntent = sendIntent
             )
-
 
         }
 

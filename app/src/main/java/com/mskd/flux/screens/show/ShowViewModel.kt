@@ -3,6 +3,8 @@ package com.mskd.flux.screens.show
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.data.repository.settings.SettingsRepository
+import com.mskd.flux.model.State
+import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.screens.artwork.ArtworkEvent
 import com.mskd.flux.screens.artwork.ArtworkEvent.OpenEpisodeInfo
 import com.mskd.flux.screens.artwork.ArtworkIntent
@@ -62,7 +64,17 @@ class ShowViewModel @AssistedInject constructor(
 
         viewModelScope.launch {
             artworkUC.flow.collect { artworkState ->
-                _uiState.update { it.copy(state = artworkState) }
+                _uiState.update {
+
+                    val state = when (artworkState) {
+                        is State.Content<FullArtwork> -> (it.state as? State.Content<FullArtwork>)?.copy(content = artworkState.content) ?: artworkState
+                        State.Error -> State.Error
+                        State.Loading -> State.Loading
+                    }
+
+                    it.copy(state = state)
+
+                }
             }
         }
 

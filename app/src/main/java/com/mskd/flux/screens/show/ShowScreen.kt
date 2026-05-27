@@ -5,6 +5,7 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.ColorScheme
@@ -69,22 +70,22 @@ fun ShowScreen(
 
     Crossfade(
         modifier = Modifier.fillMaxSize(),
-        targetState = uiState.state::class,
+        targetState = uiState.state,
         label = "MediaScreenAnimation"
-    ) { stateClass ->
+    ) { state ->
 
-        when (stateClass) {
-            State.Loading::class -> LoadingScreen()
-            State.Error::class -> {
+        when (state) {
+            State.Loading -> LoadingScreen()
+            State.Error -> {
                 ErrorScreen(
                     message = stringResource(R.string.oups_an_error_occured),
                     onBackButtonTap = { viewModel.handleIntent(ShowIntent.OnBackTap) }
                 )
             }
-            State.Content::class -> {
+            is State.Content -> {
                 MaterialTheme(colorScheme = colorScheme) {
                     ShowScreenContent(
-                        uiState = uiState,
+                        fullArtwork = state.content,
                         sendIntent = viewModel::handleIntent
                     )
                 }
@@ -98,7 +99,7 @@ fun ShowScreen(
 
 @Composable
 fun ShowScreenContent(
-    uiState: ShowUiState,
+    fullArtwork: FullArtwork,
     sendIntent: (ShowIntent) -> Unit
 ) {
 
@@ -121,10 +122,14 @@ fun ShowScreenContent(
 
     FluxScaffold(
         modifier = Modifier.graphicsLayer { alpha = animatedAlpha },
-        title = "TODO",
+        title = fullArtwork.artwork.title,
         onBackTap = { sendIntent(ShowIntent.OnBackTap) },
         scrollBehavior = scrollBehavior
     ) { innerPadding ->
+
+        val state = rememberLazyListState()
+
+
 
     }
 
@@ -134,11 +139,7 @@ fun ShowScreenContent(
 fun ShowScreenContent_Preview() {
     AppThemePreview {
         ShowScreenContent(
-            uiState = ShowUiState(
-                state = State.Content(
-                    content = MediaMockups.fullShow
-                )
-            ),
+            fullArtwork = MediaMockups.fullShow,
             sendIntent = {}
         )
     }

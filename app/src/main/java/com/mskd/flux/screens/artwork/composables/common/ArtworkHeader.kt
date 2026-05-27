@@ -36,6 +36,7 @@ import com.mskd.flux.utils.FluxPreview
 fun ArtworkHeader(
     modifier: Modifier,
     fullArtwork: FullArtwork,
+    title: String,
     currentMedia: Media,
     sendIntent: (ArtworkIntent) -> Unit
 ) {
@@ -46,7 +47,7 @@ fun ArtworkHeader(
         modifier = modifier
     ) {
 
-        val (image, title, buttons) = createRefs()
+        val (image, text, buttons) = createRefs()
 
 
         ArtworkImage(
@@ -65,14 +66,14 @@ fun ArtworkHeader(
 
         if (isMovie) {
             Text.Display.Small(
-                modifier = Modifier.constrainAs(title) {
+                modifier = Modifier.constrainAs(text) {
                     top.linkTo(image.bottom)
                     start.linkTo(parent.start, Ui.Space.MEDIUM)
                     end.linkTo(parent.end, Ui.Space.MEDIUM)
                     bottom.linkTo(image.bottom)
                     width = Dimension.preferredWrapContent
                 },
-                text = fullArtwork.artwork.title,
+                text = title,
                 color = MaterialTheme.colorScheme.onBackground,
                 emphasized = true
             )
@@ -80,7 +81,7 @@ fun ArtworkHeader(
 
         ArtworkButtons(
             modifier = Modifier.constrainAs(buttons) {
-                if (isMovie) top.linkTo(title.bottom, Ui.Space.LARGE)
+                if (isMovie) top.linkTo(text.bottom, Ui.Space.LARGE)
                 else top.linkTo(image.bottom)
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
@@ -107,6 +108,7 @@ fun ArtworkHeader_Preview() {
                 modifier = Modifier.fillMaxWidth(),
                 fullArtwork = MediaMockups.fullShow,
                 currentMedia = MediaMockups.episode1,
+                title = MediaMockups.fullShow.artwork.title,
                 sendIntent = {}
             )
 

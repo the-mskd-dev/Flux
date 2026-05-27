@@ -18,6 +18,7 @@ import com.mskd.flux.screens.customization.CustomizationUiState
 import com.mskd.flux.screens.settings.composables.SettingsItem
 import com.mskd.flux.screens.settings.composables.SettingsSection
 import com.mskd.flux.screens.settings.composables.SettingsSwitch
+import com.mskd.flux.ui.theme.Ui
 
 @Composable
 fun CustomizationThemeSection(
@@ -25,26 +26,17 @@ fun CustomizationThemeSection(
     sendIntent: (CustomizationIntent) -> Unit
 ) {
 
-    SettingsSection(
-        iconColor = MaterialTheme.colorScheme.onTertiaryContainer,
-        iconBackgroundColor = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 1f)
-    ) { iconColor, bgColor ->
+    SettingsSection { _, _ ->
 
         SettingsItem(
             text = stringResource(R.string.accent_color),
-            value = "",
-            painter = painterResource(R.drawable.ic_palette),
-            iconColor = iconColor,
-            iconBackgroundColor = bgColor,
+            subText = stringResource(Ui.AccentColors.findColor(state.color)?.stringResId ?: R.string.accent_color_desc),
             onTap = { sendIntent(CustomizationIntent.ShowColorDialog) }
         )
 
         SettingsItem(
             text = stringResource(R.string.app_theme),
-            value = stringResource(state.uiTheme.stringResourceId),
-            painter = painterResource(R.drawable.ic_theme),
-            iconColor = iconColor,
-            iconBackgroundColor = bgColor,
+            subText = stringResource(state.uiTheme.stringResourceId),
             onTap = { sendIntent(CustomizationIntent.ShowThemeDialog) }
         )
 
@@ -58,19 +50,12 @@ fun CustomizationPlayerSection(
     sendIntent: (CustomizationIntent) -> Unit
 ) {
 
-    SettingsSection(
-        iconColor = MaterialTheme.colorScheme.onErrorContainer,
-        iconBackgroundColor = MaterialTheme.colorScheme.errorContainer.copy(alpha = .3f)
-    ) { iconColor, bgColor ->
+    SettingsSection { _, _ ->
 
         SettingsSwitch(
             text = stringResource(R.string.wave_progress),
-            subText = "",
             checked = state.waveProgress,
             onCheckedChange = { sendIntent(CustomizationIntent.OnWaveProgressCheck(it)) },
-            painter = painterResource(R.drawable.ic_wave_progress),
-            iconColor = iconColor,
-            backgroundColor = bgColor,
         )
 
     }
@@ -78,15 +63,15 @@ fun CustomizationPlayerSection(
 }
 
 @Composable
-fun ColorItem(argb: Int?) {
+fun ColorItem(color: Color?) {
 
-    argb ?: return
+    color ?: return
 
     Box(
         modifier = Modifier
             .clip(CircleShape)
             .size(24.dp)
-            .background(Color(argb))
+            .background(color)
     )
 
 }

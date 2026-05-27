@@ -35,7 +35,7 @@ class CustomizationRepositoryImpl @Inject constructor(
             CustomizationRepository.State(
                 uiTheme = uiTheme,
                 color = color,
-                waveProgress = waveProgress
+                waveProgress = waveProgress,
             )
         }
 

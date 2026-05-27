@@ -3,6 +3,7 @@ package com.mskd.flux.screens.artwork
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mskd.flux.data.repository.customization.CustomizationRepository
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.model.State
 import com.mskd.flux.model.artwork.Episode
@@ -53,9 +54,7 @@ class ArtworkViewModel @AssistedInject constructor(
     private data class UserState(
         val selectedMedia: Media? = null,
         val selectedSeason: Int? = null,
-        val episodePendingConfirmation: Episode? = null,
-        val showResetProgressDialog: Boolean = false,
-        val previewForSeason: Season? = null
+        val dialog: ArtworkDialog? = null
     )
 
     //endregion
@@ -80,7 +79,7 @@ class ArtworkViewModel @AssistedInject constructor(
     val uiState: StateFlow<ArtworkUiState> = combine(
         artworkUC.flow,
         settingsRepository.flow,
-        _subState
+        _subState,
     ) { artworkState, settings, subState ->
         buildUiState(
             artworkState = artworkState,
@@ -130,7 +129,7 @@ class ArtworkViewModel @AssistedInject constructor(
     private fun buildUiState(
         artworkState: State<FullArtwork>,
         settings: SettingsRepository.State,
-        subState: UserState
+        subState: UserState,
     ) : ArtworkUiState {
 
         val fullArtwork = (artworkState as? State.Content<FullArtwork>)?.content
@@ -150,10 +149,8 @@ class ArtworkViewModel @AssistedInject constructor(
                     state = artworkState,
                     selectedSeason = season,
                     selectedMedia = media,
-                    episodePendingConfirmation = subState.episodePendingConfirmation,
                     useExternalPlayer = settings.externalPlayer,
-                    showResetProgressDialog = subState.showResetProgressDialog,
-                    previewForSeason = subState.previewForSeason
+                    dialog = subState.dialog
                 )
             }
         }
@@ -176,11 +173,11 @@ class ArtworkViewModel @AssistedInject constructor(
     }
 
     private fun showStatusDialog(episode: Episode) {
-        _subState.update { it.copy(episodePendingConfirmation = episode) }
+        _subState.update { it.copy(dialog = ArtworkDialog.EpisodeStatusConfirmation(episode = episode)) }
     }
 
     private fun closeStatusDialog() {
-        _subState.update { it.copy(episodePendingConfirmation = null) }
+        _subState.update { it.copy(dialog = null) }
     }
 
     private suspend fun openArtworkInfo() {
@@ -212,11 +209,11 @@ class ArtworkViewModel @AssistedInject constructor(
 
         _subState.update { state ->
 
-            val episode = state.episodePendingConfirmation ?: return
+            val episode = (state.dialog as? ArtworkDialog.EpisodeStatusConfirmation)?.episode ?: return
 
             progressUC.markPreviousEpisodesAsWatchedFor(episode = episode)
 
-            state.copy(episodePendingConfirmation = null)
+            state.copy(dialog = null)
 
         }
 
@@ -230,7 +227,7 @@ class ArtworkViewModel @AssistedInject constructor(
     }
 
     private fun showResetProgressDialog(show: Boolean) {
-        _subState.update { it.copy(showResetProgressDialog = show) }
+        _subState.update { it.copy(dialog = if (show) ArtworkDialog.ResetProgressConfirmation else null) }
     }
 
     private suspend fun resetProgress() {
@@ -243,7 +240,7 @@ class ArtworkViewModel @AssistedInject constructor(
 
             it.copy(
                 selectedMedia = (fullArtwork as? FullArtwork.FullMovie)?.movie ?: episodes.firstEpisode,
-                showResetProgressDialog = false
+                dialog = null
             )
 
         }
@@ -251,7 +248,7 @@ class ArtworkViewModel @AssistedInject constructor(
     }
 
     private fun showPreviewForSeason(season: Season?) {
-        _subState.update { it.copy(previewForSeason = season) }
+        _subState.update { it.copy(dialog = season?.let { ArtworkDialog.SeasonPreview(season) }) }
     }
 
     //endregion

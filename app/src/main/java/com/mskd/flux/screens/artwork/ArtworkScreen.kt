@@ -16,6 +16,8 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.LargeFlexibleTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
@@ -41,6 +43,7 @@ import androidx.window.core.layout.WindowSizeClass
 import com.mskd.flux.R
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.State
+import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Route.Player
@@ -127,7 +130,7 @@ fun ArtworkScreen(
 
     }
 
-    if (uiState.episodePendingConfirmation != null) {
+    if (uiState.dialog is ArtworkDialog.EpisodeStatusConfirmation) {
         FluxDialog(
             content = {
                 Text.Body.Large(text = stringResource(R.string.mark_previous_episodes_as_watched))
@@ -137,7 +140,7 @@ fun ArtworkScreen(
         )
     }
 
-    if (uiState.showResetProgressDialog) {
+    if (uiState.dialog is ArtworkDialog.ResetProgressConfirmation) {
         ArtworkResetProgressDialog(sendIntent = viewModel::handleIntent)
     }
 
@@ -185,7 +188,7 @@ fun ArtworkScreenContent(
                         modifier = Modifier
                             .padding(vertical = Ui.Space.EXTRA_SMALL)
                             .graphicsLayer { alpha = animatedAlpha },
-                        text = fullArtwork.artwork.title,
+                        text = if (!isLargeScreen) fullArtwork.artwork.title else null,
                         overflow = TextOverflow.Ellipsis,
                         style = MaterialTheme.typography.headlineSmall,
                         maxLines = 2,
@@ -197,7 +200,7 @@ fun ArtworkScreenContent(
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.Transparent,
-                    scrolledContainerColor = MaterialTheme.colorScheme.background,
+                    scrolledContainerColor = if (fullArtwork.contentType == ContentType.SHOW) MaterialTheme.colorScheme.background else Color.Transparent,
                     titleContentColor = MaterialTheme.colorScheme.onBackground,
                 ),
                 actions = {
@@ -250,13 +253,14 @@ fun ArtworkScreenContent(
                 currentMedia = uiState.selectedMedia,
                 currentSeason = uiState.selectedSeason,
                 scaffoldInnerPadding = innerPadding,
+                largeArtworkPoster = uiState.largeArtworkPoster,
                 sendIntent = sendIntent,
             )
         }
 
-        uiState.previewForSeason?.let {
+        (uiState.dialog as? ArtworkDialog.SeasonPreview)?.let {
             SeasonDialog(
-                season = it,
+                season = it.season,
                 sendIntent = sendIntent,
             )
         }

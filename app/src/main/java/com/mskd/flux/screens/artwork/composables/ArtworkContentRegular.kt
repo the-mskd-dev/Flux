@@ -25,6 +25,7 @@ import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.screens.artwork.ArtworkIntent
 import com.mskd.flux.screens.artwork.composables.common.ArtworkButtons
 import com.mskd.flux.screens.artwork.composables.common.ArtworkDescriptionsPager
+import com.mskd.flux.screens.artwork.composables.common.ArtworkHeader
 import com.mskd.flux.screens.artwork.composables.common.ArtworkImage
 import com.mskd.flux.screens.artwork.composables.episodes.EpisodeItem
 import com.mskd.flux.screens.artwork.composables.episodes.SeasonsTabs
@@ -39,6 +40,7 @@ fun ArtworkContentRegular(
     fullArtwork: FullArtwork,
     currentMedia: Media,
     currentSeason: Int,
+    largeArtworkPoster: Boolean,
     scaffoldInnerPadding: PaddingValues,
     sendIntent: (ArtworkIntent) -> Unit,
 ) {
@@ -53,24 +55,13 @@ fun ArtworkContentRegular(
 
         item {
 
-            ArtworkImage(
-                modifier = Modifier.aspectRatio(6f / 5f),
+            ArtworkHeader(
+                modifier = Modifier.fillMaxWidth(),
                 fullArtwork = fullArtwork,
+                currentMedia = currentMedia,
                 sendIntent = sendIntent
             )
 
-        }
-
-        item {
-            Spacer(modifier = Modifier.height(Ui.Space.LARGE))
-        }
-
-        item {
-
-            ArtworkButtons(
-                media = currentMedia,
-                sendIntent = sendIntent
-            )
 
         }
 
@@ -169,6 +160,7 @@ fun ArtworkContentMovie_Preview() {
             currentMedia = MediaMockups.movie,
             currentSeason = -1,
             scaffoldInnerPadding = PaddingValues.Zero,
+            largeArtworkPoster = false,
             sendIntent = {}
         )
     }
@@ -183,6 +175,7 @@ fun ArtworkContentShow_Preview() {
             currentMedia = MediaMockups.episode1,
             currentSeason = 1,
             scaffoldInnerPadding = PaddingValues.Zero,
+            largeArtworkPoster = true,
             sendIntent = {}
         )
     }

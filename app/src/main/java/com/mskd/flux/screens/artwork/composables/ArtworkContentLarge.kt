@@ -1,5 +1,6 @@
 package com.mskd.flux.screens.artwork.composables
 
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
@@ -17,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.constraintlayout.compose.Dimension
 import com.mskd.flux.R
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.FullArtwork
@@ -50,6 +53,8 @@ fun ArtworkContentLarge(
             ArtworkImage(
                 modifier = Modifier.fillMaxSize(),
                 fullArtwork = fullArtwork,
+                currentMedia = currentMedia,
+                orientation = Orientation.Horizontal,
                 sendIntent = sendIntent
             )
 
@@ -62,6 +67,24 @@ fun ArtworkContentLarge(
 
             item {
                 Spacer(modifier = Modifier.height(scaffoldInnerPadding.calculateTopPadding()))
+            }
+
+            item {
+
+                Text.Display.Small(
+                    modifier = Modifier
+                        .padding(Ui.Space.MEDIUM)
+                        .wrapContentWidth(),
+                    text = fullArtwork.artwork.title,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    emphasized = true
+                )
+
+
+            }
+
+            item {
+                Spacer(modifier = Modifier.height(Ui.Space.LARGE))
             }
 
             item {

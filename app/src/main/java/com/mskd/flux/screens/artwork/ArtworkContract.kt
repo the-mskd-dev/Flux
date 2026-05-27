@@ -8,17 +8,22 @@ import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.artwork.Season
+import com.mskd.flux.screens.customization.CustomizationIntent
 
 @Immutable
 data class ArtworkUiState(
     val state: State<FullArtwork> = State.Loading,
     val selectedMedia: Media = MediaMockups.episode1,
     val selectedSeason: Int = -1,
-    val episodePendingConfirmation: Episode? = null,
     val useExternalPlayer: Boolean = false,
-    val showResetProgressDialog: Boolean = false,
-    val previewForSeason: Season? = null
+    val dialog: ArtworkDialog? = null
 )
+
+sealed class ArtworkDialog {
+    data class EpisodeStatusConfirmation(val episode: Episode) : ArtworkDialog()
+    object ResetProgressConfirmation : ArtworkDialog()
+    data class SeasonPreview(val season: Season) : ArtworkDialog()
+}
 
 sealed class ArtworkIntent {
     object OnBackTap: ArtworkIntent()

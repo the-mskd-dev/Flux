@@ -25,7 +25,6 @@ sealed class CustomizationIntent {
     // Setter
     data class SetColorValue(val color: Int?) : CustomizationIntent()
     data class SetThemeValue(val theme: Ui.THEME): CustomizationIntent()
-
     data class OnWaveProgressCheck(val checked: Boolean): CustomizationIntent()
 }
 

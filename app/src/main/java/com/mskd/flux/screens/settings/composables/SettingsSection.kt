@@ -27,8 +27,8 @@ import kotlin.math.roundToInt
 
 @Composable
 fun SettingsSection(
-    iconColor: Color,
-    iconBackgroundColor: Color,
+    iconColor: Color = MaterialTheme.colorScheme.onTertiaryContainer,
+    iconBackgroundColor: Color = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 1f),
     content: @Composable (Color, Color) -> Unit
 ) {
 
@@ -55,7 +55,7 @@ fun SettingsCustomizationSection(
 
         SettingsItem(
             text = stringResource(R.string.customization),
-            value = stringResource(R.string.customization_desc),
+            subText = stringResource(R.string.customization_desc),
             painter = painterResource(R.drawable.ic_customization),
             iconColor = iconColor,
             iconBackgroundColor = bgColor,
@@ -69,13 +69,13 @@ fun SettingsCustomizationSection(
             onCheckedChange = { sendIntent(SettingsIntent.OnAutoKeyboardCheck(it)) },
             painter = painterResource(R.drawable.ic_keyboard),
             iconColor = iconColor,
-            backgroundColor = bgColor,
+            iconBackgroundColor = bgColor,
         )
 
         val displayedLanguage = state.languageValue?.displayLanguage ?: stringResource(R.string.system)
         SettingsItem(
             text = stringResource(R.string.information_language),
-            value = displayedLanguage,
+            subText = displayedLanguage,
             painter = painterResource(R.drawable.ic_language),
             iconColor = iconColor,
             iconBackgroundColor = bgColor,
@@ -99,7 +99,7 @@ fun SettingsPlayerSection(
 
         SettingsItem(
             text = stringResource(R.string.button_rewind),
-            value = "${state.rewindValue}sec",
+            subText = "${state.rewindValue}sec",
             painter = painterResource(R.drawable.fast_rewind),
             iconColor = iconColor,
             iconBackgroundColor = bgColor,
@@ -108,7 +108,7 @@ fun SettingsPlayerSection(
 
         SettingsItem(
             text = stringResource(R.string.button_forward),
-            value = "${state.forwardValue}sec",
+            subText = "${state.forwardValue}sec",
             painter = painterResource(R.drawable.fast_forward),
             iconColor = iconColor,
             iconBackgroundColor = bgColor,
@@ -121,7 +121,7 @@ fun SettingsPlayerSection(
             checked = state.useExternalPlayer,
             painter = painterResource(R.drawable.ic_player),
             iconColor = iconColor,
-            backgroundColor = bgColor,
+            iconBackgroundColor = bgColor,
             onCheckedChange = { sendIntent(SettingsIntent.OnExternalPlayerCheck(it)) }
         )
 
@@ -141,7 +141,7 @@ fun SettingsTmdbSection(
 
         SettingsItem(
             text = stringResource(R.string.tmdb_api_token),
-            value = "",
+            subText = "",
             painter = painterResource(R.drawable.ic_api),
             iconColor = iconColor,
             iconBackgroundColor = bgColor,
@@ -150,7 +150,7 @@ fun SettingsTmdbSection(
 
         SettingsItem(
             text = stringResource(R.string.how_to_name_files),
-            value = "",
+            subText = "",
             painter = painterResource(R.drawable.ic_help),
             iconColor = iconColor,
             iconBackgroundColor = bgColor,
@@ -174,7 +174,7 @@ fun SettingsOtherSection(
 
         SettingsItem(
             text = stringResource(R.string.about),
-            value = stringResource(R.string.about_desc),
+            subText = stringResource(R.string.about_desc),
             painter = painterResource(R.drawable.ic_info),
             iconColor = iconColor,
             iconBackgroundColor = bgColor,
@@ -183,7 +183,7 @@ fun SettingsOtherSection(
 
         SettingsItem(
             text = stringResource(R.string.make_a_donation),
-            value = stringResource(R.string.support_me_desc),
+            subText = stringResource(R.string.support_me_desc),
             painter = painterResource(R.drawable.ic_money),
             iconColor = iconColor,
             iconBackgroundColor = bgColor,
@@ -213,7 +213,7 @@ fun SettingsSyncSection(
         val syncTextColor by animateColorAsState(if (state.fullSyncInProgress) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onBackground.copy(alpha = .8f))
         SettingsItem(
             text = stringResource(R.string.sync_library),
-            value = stringResource(if (state.fullSyncInProgress) R.string.sync_in_progress else R.string.sync_library_desc),
+            subText = stringResource(if (state.fullSyncInProgress) R.string.sync_in_progress else R.string.sync_library_desc),
             valueColor = syncTextColor,
             painter = painterResource(R.drawable.ic_sync),
             iconColor = iconColor,
@@ -234,8 +234,8 @@ fun SettingsSyncSection(
             onCheckedChange = { sendIntent(SettingsIntent.OnPrefetchImagesCheck(it)) },
             painter = painterResource(R.drawable.ic_images),
             iconColor = iconColor,
-            backgroundColor = bgColor,
-            valueColor = imagesTextColor
+            iconBackgroundColor = bgColor,
+            subTextColor = imagesTextColor
         )
 
     }
@@ -255,7 +255,7 @@ fun SettingsAppInfoSection(
 
         SettingsItem(
             text = stringResource(R.string.x),
-            value = stringResource(R.string.stay_informed),
+            subText = stringResource(R.string.stay_informed),
             painter = painterResource(R.drawable.ic_social_media),
             iconColor = iconColor,
             iconBackgroundColor = bgColor,
@@ -269,7 +269,7 @@ fun SettingsAppInfoSection(
 
         SettingsItem(
             text = stringResource(R.string.sources),
-            value = "",
+            subText = "",
             painter = painterResource(R.drawable.ic_sources),
             iconColor = iconColor,
             iconBackgroundColor = bgColor,
@@ -285,7 +285,7 @@ fun SettingsAppInfoSection(
 
             SettingsItem(
                 text = stringResource(R.string.app_version),
-                value = it,
+                subText = it,
                 painter = painterResource(R.drawable.ic_version),
                 iconColor = iconColor,
                 iconBackgroundColor = bgColor,

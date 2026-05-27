@@ -39,4 +39,9 @@ sealed class FullArtwork {
         is FullShow -> !(this.episodes.all { it.status == Status.TO_WATCH } || this.episodes.all { it.status == Status.WATCHED })
     }
 
+    val contentType: ContentType get() = when (this) {
+        is FullMovie -> ContentType.MOVIE
+        is FullShow -> ContentType.SHOW
+    }
+
 }

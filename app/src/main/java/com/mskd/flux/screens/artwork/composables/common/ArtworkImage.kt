@@ -73,7 +73,7 @@ fun ArtworkImage(
             contentScale = ContentScale.Crop,
             placeholder = Image.placeholder,
             error = Image.error,
-            alpha = 1f,
+            alpha = .8f,
             contentDescription = "background ${fullArtwork.artwork.title}"
         )
 
@@ -84,16 +84,17 @@ fun ArtworkImage(
                     brush = Brush.verticalGradient(
                         colors = listOf(
                             Color.Transparent,
+                            MaterialTheme.colorScheme.background.copy(alpha = .3f),
                             MaterialTheme.colorScheme.background.copy(alpha = .6f),
                             MaterialTheme.colorScheme.background.copy(alpha = .9f),
                             MaterialTheme.colorScheme.background,
                         ),
-                        startY = imageHeight * .7f,
+                        startY = imageHeight * .6f,
                         endY = Float.POSITIVE_INFINITY
                     )
                 )
         )
-        
+
     }
 
 }

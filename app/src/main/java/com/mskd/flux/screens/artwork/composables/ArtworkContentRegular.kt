@@ -40,7 +40,6 @@ fun ArtworkContentRegular(
     fullArtwork: FullArtwork,
     currentMedia: Media,
     currentSeason: Int,
-    largeArtworkPoster: Boolean,
     scaffoldInnerPadding: PaddingValues,
     sendIntent: (ArtworkIntent) -> Unit,
 ) {
@@ -160,7 +159,6 @@ fun ArtworkContentMovie_Preview() {
             currentMedia = MediaMockups.movie,
             currentSeason = -1,
             scaffoldInnerPadding = PaddingValues.Zero,
-            largeArtworkPoster = false,
             sendIntent = {}
         )
     }
@@ -175,7 +173,6 @@ fun ArtworkContentShow_Preview() {
             currentMedia = MediaMockups.episode1,
             currentSeason = 1,
             scaffoldInnerPadding = PaddingValues.Zero,
-            largeArtworkPoster = true,
             sendIntent = {}
         )
     }

@@ -253,7 +253,6 @@ fun ArtworkScreenContent(
                 currentMedia = uiState.selectedMedia,
                 currentSeason = uiState.selectedSeason,
                 scaffoldInnerPadding = innerPadding,
-                largeArtworkPoster = uiState.largeArtworkPoster,
                 sendIntent = sendIntent,
             )
         }

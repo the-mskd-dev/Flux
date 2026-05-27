@@ -3,9 +3,12 @@ package com.mskd.flux.screens.show
 import androidx.compose.runtime.Immutable
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.State
+import com.mskd.flux.model.artwork.Artwork
+import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.screens.artwork.ArtworkDialog
+import com.mskd.flux.screens.artwork.ArtworkIntent
 
 @Immutable
 data class ShowUiState(
@@ -13,5 +16,11 @@ data class ShowUiState(
 )
 
 sealed class ShowIntent {
+    object OnBackTap: ShowIntent()
     data class OnSeasonTap(val season: Int) : ShowIntent()
+}
+
+sealed class ShowEvent {
+    object BackToPreviousScreen : ShowEvent()
+    data class NavigateToSeason(val artworkId: Long, val season: Int) : ShowEvent()
 }

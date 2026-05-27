@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.screens.artwork.ArtworkEvent
+import com.mskd.flux.screens.artwork.ArtworkEvent.OpenEpisodeInfo
+import com.mskd.flux.screens.artwork.ArtworkIntent
 import com.mskd.flux.screens.artwork.ArtworkUiState
 import com.mskd.flux.screens.artwork.ArtworkViewModel
 import com.mskd.flux.screens.artwork.ArtworkViewModel.UserState
@@ -46,6 +48,9 @@ class ShowViewModel @AssistedInject constructor(
     private val _uiState: MutableStateFlow<ShowUiState> = MutableStateFlow(ShowUiState())
     val uiState: StateFlow<ShowUiState> = _uiState.asStateFlow()
 
+    private val _event = MutableSharedFlow<ShowEvent>()
+    val event = _event.asSharedFlow()
+
 
     //endregion
 
@@ -65,4 +70,22 @@ class ShowViewModel @AssistedInject constructor(
 
     //endregion
 
+    //region Public Methods
+
+    fun handleIntent(intent: ShowIntent) = viewModelScope.launch {
+        when (intent) {
+            ShowIntent.OnBackTap -> _event.emit(ShowEvent.BackToPreviousScreen)
+            is ShowIntent.OnSeasonTap -> navigateToSeason(season = intent.season)
+        }
+    }
+
+    //endregion
+
+    //region Private Methods
+
+    private fun navigateToSeason(season: Int) {
+
+    }
+
+    //endregion
 }

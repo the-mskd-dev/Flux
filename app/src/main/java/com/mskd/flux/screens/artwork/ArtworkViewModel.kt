@@ -36,7 +36,6 @@ class ArtworkViewModel @AssistedInject constructor(
     @Assisted val artworkId: Long,
     private val artworkUC: ArtworkUC,
     private val settingsRepository: SettingsRepository,
-    private val customizationRepository: CustomizationRepository,
     private val progressUC: ProgressUC
 ) : ViewModel() {
 
@@ -81,13 +80,11 @@ class ArtworkViewModel @AssistedInject constructor(
         artworkUC.flow,
         settingsRepository.flow,
         _subState,
-        customizationRepository.flow
-    ) { artworkState, settings, subState, customization ->
+    ) { artworkState, settings, subState ->
         buildUiState(
             artworkState = artworkState,
             settings = settings,
-            subState = subState,
-            customization = customization
+            subState = subState
         )
     }.stateIn(
         scope = viewModelScope,
@@ -133,7 +130,6 @@ class ArtworkViewModel @AssistedInject constructor(
         artworkState: State<FullArtwork>,
         settings: SettingsRepository.State,
         subState: UserState,
-        customization: CustomizationRepository.State
     ) : ArtworkUiState {
 
         val fullArtwork = (artworkState as? State.Content<FullArtwork>)?.content
@@ -154,7 +150,6 @@ class ArtworkViewModel @AssistedInject constructor(
                     selectedSeason = season,
                     selectedMedia = media,
                     useExternalPlayer = settings.externalPlayer,
-                    largeArtworkPoster = customization.largeArtworkPoster,
                     dialog = subState.dialog
                 )
             }

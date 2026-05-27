@@ -22,7 +22,6 @@ class CustomizationRepositoryImpl @Inject constructor(
         val UI_THEME = stringPreferencesKey("ui_theme")
         val COLOR = intPreferencesKey("color")
         val WAVE_PROGRESS = booleanPreferencesKey("wave_progress")
-        val LARGE_ARTWORK_POSTER = booleanPreferencesKey("large_artwork_poster")
     }
 
     override val flow: Flow<CustomizationRepository.State> = customizationDataStore.data
@@ -32,13 +31,11 @@ class CustomizationRepositoryImpl @Inject constructor(
             val uiTheme = preferences[Keys.UI_THEME]?.let { Ui.THEME.valueOf(it) } ?: Ui.THEME.SYSTEM
             val color = preferences[Keys.COLOR]
             val waveProgress = preferences[Keys.WAVE_PROGRESS] ?: true
-            val largeArtworkPoster = preferences[Keys.LARGE_ARTWORK_POSTER] ?: false
 
             CustomizationRepository.State(
                 uiTheme = uiTheme,
                 color = color,
                 waveProgress = waveProgress,
-                largeArtworkPoster = largeArtworkPoster
             )
         }
 
@@ -60,12 +57,6 @@ class CustomizationRepositoryImpl @Inject constructor(
     override suspend fun setWaveProgress(waveProgress: Boolean) {
         customizationDataStore.edit { preferences ->
             preferences[Keys.WAVE_PROGRESS] = waveProgress
-        }
-    }
-
-    override suspend fun setLargeArtworkPoster(largeArtworkPoster: Boolean) {
-        customizationDataStore.edit { preferences ->
-            preferences[Keys.LARGE_ARTWORK_POSTER] = largeArtworkPoster
         }
     }
 

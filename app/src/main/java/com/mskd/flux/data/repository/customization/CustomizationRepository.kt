@@ -24,13 +24,10 @@ interface CustomizationRepository {
 
     suspend fun setWaveProgress(waveProgress: Boolean)
 
-    suspend fun setLargeArtworkPoster(largeArtworkPoster: Boolean)
-
     data class State(
         val uiTheme: Ui.THEME = Ui.THEME.SYSTEM,
         val color: Int? = null,
         val waveProgress: Boolean = true,
-        val largeArtworkPoster: Boolean = false
     )
 
 }

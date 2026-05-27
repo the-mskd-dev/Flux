@@ -8,7 +8,6 @@ import com.mskd.flux.ui.theme.Ui
 data class CustomizationUiState(
     val uiTheme: Ui.THEME = Ui.THEME.SYSTEM,
     val color: Int? = null,
-    val largeArtworkPoster: Boolean = false,
     val waveProgress: Boolean = true,
     val dialogState: FluxOptionsDialogState<*, CustomizationIntent>? = null,
 )
@@ -27,7 +26,6 @@ sealed class CustomizationIntent {
     data class SetColorValue(val color: Int?) : CustomizationIntent()
     data class SetThemeValue(val theme: Ui.THEME): CustomizationIntent()
     data class OnWaveProgressCheck(val checked: Boolean): CustomizationIntent()
-    data class OnLargeArtworkPosterCheck(val checked: Boolean): CustomizationIntent()
 }
 
 sealed class CustomizationEvent {

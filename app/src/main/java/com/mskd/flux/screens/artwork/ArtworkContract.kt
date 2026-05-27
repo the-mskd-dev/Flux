@@ -16,7 +16,6 @@ data class ArtworkUiState(
     val selectedMedia: Media = MediaMockups.episode1,
     val selectedSeason: Int = -1,
     val useExternalPlayer: Boolean = false,
-    val largeArtworkPoster: Boolean = false,
     val dialog: ArtworkDialog? = null
 )
 

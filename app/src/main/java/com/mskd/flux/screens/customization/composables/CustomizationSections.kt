@@ -45,24 +45,6 @@ fun CustomizationThemeSection(
 }
 
 @Composable
-fun CustomizationArtworkSection(
-    state: CustomizationUiState,
-    sendIntent: (CustomizationIntent) -> Unit
-) {
-
-    SettingsSection { _, _ ->
-
-        SettingsSwitch(
-            text = stringResource(R.string.large_artwork_poster),
-            checked = state.largeArtworkPoster,
-            onCheckedChange = { sendIntent(CustomizationIntent.OnLargeArtworkPosterCheck(it)) },
-        )
-
-    }
-
-}
-
-@Composable
 fun CustomizationPlayerSection(
     state: CustomizationUiState,
     sendIntent: (CustomizationIntent) -> Unit

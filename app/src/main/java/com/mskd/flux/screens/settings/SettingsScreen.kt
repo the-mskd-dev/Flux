@@ -107,7 +107,7 @@ fun SettingsContent(
 
     FluxScaffold(
         title = stringResource(R.string.settings),
-        colors = TopAppBarDefaults.topAppBarColors(
+        topAppBarColors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainer,
             scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
             titleContentColor = MaterialTheme.colorScheme.onSurface,

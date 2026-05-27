@@ -20,6 +20,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextOverflow
 import com.mskd.flux.ui.theme.Ui
@@ -28,13 +29,14 @@ import com.mskd.flux.ui.theme.Ui
 @Composable
 fun FluxScaffold(
     modifier: Modifier = Modifier,
-    title: String,
+    title: String?,
     onBackTap: (() -> Unit)?,
     actions: @Composable (RowScope.() -> Unit) = {},
     snackbarHost: @Composable (() -> Unit) = {},
     floatingActionButton: @Composable (() -> Unit) = {},
     floatingActionButtonPosition: FabPosition = FabPosition.End,
-    colors: TopAppBarColors = TopAppBarDefaults.topAppBarColors(
+    containerColor: Color = MaterialTheme.colorScheme.background,
+    topAppBarColors: TopAppBarColors = TopAppBarDefaults.topAppBarColors(
         containerColor = MaterialTheme.colorScheme.background,
         scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
         titleContentColor = MaterialTheme.colorScheme.onSurface,
@@ -46,6 +48,7 @@ fun FluxScaffold(
     Scaffold(
         modifier = Modifier.then(scrollBehavior?.let { Modifier.nestedScroll(it.nestedScrollConnection) } ?: Modifier),
         snackbarHost = snackbarHost,
+        containerColor = containerColor,
         floatingActionButton = floatingActionButton,
         floatingActionButtonPosition = floatingActionButtonPosition,
         topBar = {
@@ -53,7 +56,7 @@ fun FluxScaffold(
             FluxTopAppBar(
                 modifier = modifier,
                 title = title,
-                colors = colors,
+                colors = topAppBarColors,
                 actions = actions,
                 onBackTap = onBackTap,
                 scrollBehavior = scrollBehavior

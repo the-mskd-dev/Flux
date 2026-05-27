@@ -54,6 +54,7 @@ import com.mskd.flux.ui.component.ErrorScreen
 import com.mskd.flux.ui.component.FluxDialog
 import com.mskd.flux.ui.component.FluxDropDownMenu
 import com.mskd.flux.ui.component.FluxDropDownMenuItem
+import com.mskd.flux.ui.component.FluxScaffold
 import com.mskd.flux.ui.component.FluxTopAppBar
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.component.Text
@@ -176,43 +177,35 @@ fun ArtworkScreenContent(
         label = "TitleAlphaAnimation"
     )
 
-    Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-        containerColor = MaterialTheme.colorScheme.background,
-        topBar = {
-
-            FluxTopAppBar(
-                modifier = Modifier.graphicsLayer { alpha = animatedAlpha },
-                title = if (!isLargeScreen) fullArtwork.artwork.title else null,
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent,
-                    scrolledContainerColor = if (fullArtwork.contentType == ContentType.SHOW) MaterialTheme.colorScheme.background else Color.Transparent,
-                    titleContentColor = MaterialTheme.colorScheme.onBackground,
-                ),
-                actions = {
-                    IconButton(
-                        onClick = { showMenu = true },
-                        content = {
-                            Icon(
-                                imageVector = Icons.Default.MoreVert,
-                                contentDescription = "menu button"
-                            )
-                        }
+    FluxScaffold(
+        modifier = Modifier.graphicsLayer { alpha = animatedAlpha },
+        title = if (!isLargeScreen) fullArtwork.artwork.title else null,
+        topAppBarColors = TopAppBarDefaults.topAppBarColors(
+            containerColor = Color.Transparent,
+            scrolledContainerColor = if (fullArtwork.contentType == ContentType.SHOW) MaterialTheme.colorScheme.background else Color.Transparent,
+            titleContentColor = MaterialTheme.colorScheme.onBackground,
+        ),
+        actions = {
+            IconButton(
+                onClick = { showMenu = true },
+                content = {
+                    Icon(
+                        imageVector = Icons.Default.MoreVert,
+                        contentDescription = "menu button"
                     )
-
-                    if (showMenu) {
-                        ArtworkDropDownMenu(
-                            onDismissRequest = { showMenu = false },
-                            sendIntent = sendIntent
-                        )
-                    }
-
-                },
-                onBackTap = { sendIntent(ArtworkIntent.OnBackTap) },
-                scrollBehavior = scrollBehavior
+                }
             )
 
-        }
+            if (showMenu) {
+                ArtworkDropDownMenu(
+                    onDismissRequest = { showMenu = false },
+                    sendIntent = sendIntent
+                )
+            }
+
+        },
+        onBackTap = { sendIntent(ArtworkIntent.OnBackTap) },
+        scrollBehavior = scrollBehavior
     ) { innerPadding ->
 
         if (isLargeScreen) {

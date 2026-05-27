@@ -12,8 +12,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.R
+import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.State
 import com.mskd.flux.model.artwork.FullArtwork
+import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Route.Player
 import com.mskd.flux.screens.artwork.ArtworkEvent
@@ -22,6 +24,7 @@ import com.mskd.flux.screens.artwork.ArtworkScreenContent
 import com.mskd.flux.screens.artwork.ArtworkViewModel
 import com.mskd.flux.ui.component.ErrorScreen
 import com.mskd.flux.ui.component.LoadingScreen
+import com.mskd.flux.utils.AppThemePreview
 import com.mskd.flux.utils.ExternalPlayer
 import com.mskd.flux.utils.WebLink
 
@@ -82,4 +85,18 @@ fun ShowScreenContent(
     sendIntent: (ShowIntent) -> Unit
 ) {
 
+}
+
+@Composable
+fun ShowScreenContent_Preview() {
+    AppThemePreview {
+        ShowScreenContent(
+            uiState = ShowUiState(
+                state = State.Content(
+                    content = MediaMockups.fullShow
+                )
+            ),
+            sendIntent = {}
+        )
+    }
 }

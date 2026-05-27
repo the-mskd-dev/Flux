@@ -29,6 +29,7 @@ import com.mskd.flux.screens.artwork.ArtworkIntent
 import com.mskd.flux.ui.component.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.utils.AppThemePreview
 import com.mskd.flux.utils.FluxPreview
 
 @Composable
@@ -96,31 +97,19 @@ fun ArtworkHeader(
 @FluxPreview
 @Composable
 fun ArtworkHeader_Preview() {
+    AppThemePreview {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.TopCenter
+        ) {
 
-    val previewHandler = AsyncImagePreviewHandler { request ->
-        request.context.imageLoader.execute(
-            ImageRequest.Builder(request.context)
-                .data(R.drawable.preview_poster)
-                .build()
-        ).image!!
-    }
+            ArtworkHeader(
+                modifier = Modifier.fillMaxWidth(),
+                fullArtwork = MediaMockups.fullShow,
+                currentMedia = MediaMockups.episode1,
+                sendIntent = {}
+            )
 
-    CompositionLocalProvider(LocalAsyncImagePreviewHandler provides previewHandler) {
-        AppTheme {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.TopCenter
-            ) {
-
-                ArtworkHeader(
-                    modifier = Modifier.fillMaxWidth(),
-                    fullArtwork = MediaMockups.fullShow,
-                    currentMedia = MediaMockups.episode1,
-                    sendIntent = {}
-                )
-
-            }
         }
     }
-
 }

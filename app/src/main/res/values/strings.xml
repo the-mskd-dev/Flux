@@ -144,4 +144,5 @@
     <string name="wave_progress">Wave progress bar</string>
     <string name="accent_color_desc">Global interface\'s color</string>
     <string name="large_artwork_poster">Large artwork poster</string>
+    <string name="seasons">Seasons</string>
 </resources>

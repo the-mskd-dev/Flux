@@ -55,7 +55,6 @@ fun ArtworkContentLarge(
                 fullArtwork = fullArtwork,
                 currentMedia = currentMedia,
                 orientation = Orientation.Horizontal,
-                sendIntent = sendIntent
             )
 
         }

@@ -38,9 +38,8 @@ import com.mskd.flux.utils.extensions.tmdbImageLarge
 fun ArtworkImage(
     modifier: Modifier,
     fullArtwork: FullArtwork,
-    currentMedia: Media,
-    orientation: Orientation = Orientation.Vertical,
-    sendIntent: (ArtworkIntent) -> Unit
+    currentMedia: Media? = null,
+    orientation: Orientation = Orientation.Vertical
 ) {
 
     val episode = currentMedia as? Episode
@@ -106,7 +105,6 @@ fun ArtworkImage_Preview() {
             modifier = Modifier.aspectRatio(6f / 5f),
             fullArtwork = MediaMockups.fullShow,
             currentMedia = MediaMockups.fullShow.episodes.first(),
-            sendIntent = {},
         )
     }
 }

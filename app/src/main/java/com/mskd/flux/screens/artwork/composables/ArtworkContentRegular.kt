@@ -44,11 +44,8 @@ fun ArtworkContentRegular(
     sendIntent: (ArtworkIntent) -> Unit,
 ) {
 
-    val state = rememberLazyListState()
-
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        state = state,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
 

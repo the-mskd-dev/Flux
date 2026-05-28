@@ -118,6 +118,7 @@ fun ArtworkDescriptionsPager(
 
 @Composable
 fun ArtworkDescription(
+    modifier: Modifier = Modifier,
     title: String,
     description: String,
     topDetails: @Composable () -> Unit = {},
@@ -125,7 +126,7 @@ fun ArtworkDescription(
 ) {
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .clip(MaterialTheme.shapes.large)
             .background(MaterialTheme.colorScheme.surfaceContainer)
             .fillMaxWidth()

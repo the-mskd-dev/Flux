@@ -28,6 +28,7 @@ import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.model.artwork.Media
+import com.mskd.flux.model.artwork.Status
 import com.mskd.flux.ui.component.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
@@ -86,7 +87,6 @@ fun ArtworkDescriptionsPager(
                 is FullArtwork.FullShow -> {
 
                     val episode = currentMedia as Episode
-
 
                     if (i > 0 || pageCount == 1) {
 
@@ -149,6 +149,7 @@ fun ArtworkDescription(
             )
 
         }
+
 
         Text.Body.Large(
             modifier = Modifier.fillMaxWidth(),
@@ -227,8 +228,8 @@ fun ArtworkDescriptionsPager_Movie_Preview() {
 fun ArtworkDescriptionsPager_Show_Preview() {
     AppTheme {
         ArtworkDescriptionsPager(
-            fullArtwork = MediaMockups.fullShow,
-            currentMedia = MediaMockups.episode1
+            fullArtwork = MediaMockups.fullShow.copy(episodes = MediaMockups.episodesWithStatus),
+            currentMedia = MediaMockups.episode1.copy(status = Status.IS_WATCHING)
         )
     }
 }

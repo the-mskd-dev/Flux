@@ -14,6 +14,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.mskd.flux.R
 import com.mskd.flux.mockups.MediaMockups
@@ -64,7 +65,9 @@ fun OverviewItem(
             modifier = Modifier.fillMaxWidth(),
             text = description,
             textAlign = TextAlign.Left,
-            color = MaterialTheme.colorScheme.onSurface
+            color = MaterialTheme.colorScheme.onSurface,
+            maxLines = 3,
+            overflow = TextOverflow.Ellipsis
         )
 
         bottomDetails()

@@ -2,21 +2,28 @@ package com.mskd.flux.screens.show.composables
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.palette.graphics.Palette
 import coil3.toBitmap
@@ -34,6 +41,7 @@ import kotlin.text.ifEmpty
 fun SeasonItem(
     modifier: Modifier = Modifier,
     season: Season,
+    episodesCount: Int,
     onTap: (Int?) -> Unit,
     onLongPress: () -> Unit
 ) {
@@ -42,21 +50,18 @@ fun SeasonItem(
     var seedRgb by remember { mutableStateOf<Int?>(null) }
 
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .clip(MaterialTheme.shapes.large)
-            .background(MaterialTheme.colorScheme.surfaceContainer)
-            .combinedClickable(
-                onClick = { onTap(seedRgb) },
-                onLongClick = { onLongPress() }
-            ),
+        modifier = modifier.fillMaxWidth()
     ) {
 
         Image(
             modifier = Modifier
                 .clip(MaterialTheme.shapes.large)
                 .fillMaxWidth()
-                .aspectRatio(3f/4f),
+                .aspectRatio(5f/6f)
+                .combinedClickable(
+                    onClick = { onTap(seedRgb) },
+                    onLongClick = { onLongPress() }
+                ),
             url = url,
             contentDescription = season.title,
             onSuccess = { state ->
@@ -67,16 +72,33 @@ fun SeasonItem(
             }
         )
 
-        Text.Title.Large(
-            modifier = Modifier
-                .padding(top = Ui.Space.LARGE)
-                .padding(horizontal = Ui.Space.MEDIUM),
-            text = season.title.ifEmpty { stringResource(R.string.season, season.season) },
-            color = MaterialTheme.colorScheme.onSurface,
-            emphasized = true
-        )
+        Column(
+            modifier = Modifier.padding(horizontal = Ui.Space.SMALL, vertical = Ui.Space.SMALL),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
 
-        Spacer(modifier = Modifier.height(Ui.Space.LARGE))
+            Text.Adaptive(
+                modifier = Modifier.fillMaxWidth(),
+                text = season.title.ifEmpty { stringResource(R.string.season, season.season) },
+                color = MaterialTheme.colorScheme.onSurface,
+                maxLines = 2,
+                textAlign = TextAlign.Center,
+                overflow = TextOverflow.Ellipsis,
+                autoSize = TextAutoSize.StepBased(
+                    maxFontSize = MaterialTheme.typography.titleSmall.fontSize,
+                    minFontSize = MaterialTheme.typography.labelSmall.fontSize
+                ),
+            )
+
+            Text.Label.Small(
+                modifier = Modifier.fillMaxWidth(),
+                text = pluralStringResource(R.plurals.episodes, episodesCount, episodesCount),
+                color = MaterialTheme.colorScheme.onSurface,
+                emphasized = true,
+                textAlign = TextAlign.Center
+            )
+
+        }
 
     }
 
@@ -86,10 +108,21 @@ fun SeasonItem(
 @Composable
 fun SeasonItem_Preview() {
     AppThemePreview {
-        SeasonItem(
-            season = MediaMockups.season1,
-            onTap = {},
-            onLongPress = {}
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
+        ) {
+
+            (1..3).forEach { _ ->
+                SeasonItem(
+                    modifier = Modifier.weight(1f),
+                    season = MediaMockups.season1,
+                    episodesCount = 2,
+                    onTap = {},
+                    onLongPress = {}
+                )
+            }
+
+        }
     }
 }

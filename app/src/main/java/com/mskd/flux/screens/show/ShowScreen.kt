@@ -199,6 +199,7 @@ fun ShowScreenContent(
                         SeasonItem(
                             modifier = Modifier.weight(1f),
                             season = season,
+                            episodesCount = fullShow.episodes.count { it.season == season.season },
                             onTap = { sendIntent(ShowIntent.OnSeasonTap(season = season.season, rgb = it))},
                             onLongPress = {}
                         )

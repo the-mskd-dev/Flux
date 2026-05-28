@@ -174,7 +174,7 @@ class HomeViewModelTest : FunSpec({
         }
     }
 
-    test("on normal artwork tap") {
+    test("on artwork show tap") {
         viewModel = HomeViewModel(
             catalogUC = catalogUC,
             tokenRepository = tokenRepository,
@@ -184,8 +184,23 @@ class HomeViewModelTest : FunSpec({
         )
 
         viewModel.event.test {
-            viewModel.handleIntent(HomeIntent.OnArtworkTap(artworkId = 123L, rgb = 0x112233))
-            awaitItem() shouldBe HomeEvent.NavigateToArtwork(artworkId = 123L, rgb = 0x112233)
+            viewModel.handleIntent(HomeIntent.OnArtworkTap(artwork = MediaMockups.showArtwork, rgb = 0x112233))
+            awaitItem() shouldBe HomeEvent.NavigateToShow(artworkId = MediaMockups.showArtwork.id, rgb = 0x112233)
+        }
+    }
+
+    test("on artwork movie tap") {
+        viewModel = HomeViewModel(
+            catalogUC = catalogUC,
+            tokenRepository = tokenRepository,
+            userRepository = userRepository,
+            snackbarRepository = snackbarRepository,
+            appInfo = appInfo
+        )
+
+        viewModel.event.test {
+            viewModel.handleIntent(HomeIntent.OnArtworkTap(artwork = MediaMockups.movieArtwork, rgb = 0x112233))
+            awaitItem() shouldBe HomeEvent.NavigateToMovie(artworkId = MediaMockups.movieArtwork.id, rgb = 0x112233)
         }
     }
 
@@ -199,7 +214,7 @@ class HomeViewModelTest : FunSpec({
         )
 
         viewModel.event.test {
-            viewModel.handleIntent(HomeIntent.OnArtworkTap(artworkId = Artwork.UNKNOWN_ID, rgb = null))
+            viewModel.handleIntent(HomeIntent.OnArtworkTap(artwork = Artwork.UNKNOWN, rgb = null))
             awaitItem() shouldBe HomeEvent.NavigateToUnknown
         }
     }

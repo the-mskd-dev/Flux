@@ -103,7 +103,8 @@ fun HomeScreen(
         viewModel.event.collect { event ->
             when (event) {
                 is HomeEvent.NavigateToCategory -> navigate(Route.Search(contentType = event.category))
-                is HomeEvent.NavigateToArtwork -> navigate(Route.Artwork(artworkId = event.artworkId, rgb = event.rgb))
+                is HomeEvent.NavigateToMovie -> navigate(Route.Artwork(artworkId = event.artworkId, season = null, rgb = event.rgb))
+                is HomeEvent.NavigateToShow -> navigate(Route.Show(artworkId = event.artworkId, rgb = event.rgb))
                 HomeEvent.NavigateToUnknown -> navigate(Route.UnknownArtworks)
                 HomeEvent.NavigateToHowTo -> navigate(Route.HowTo)
                 HomeEvent.NavigateToSearch -> navigate(Route.Search())
@@ -406,7 +407,7 @@ fun LastWatchedCarousel(
                     .aspectRatio(ratio),
                 url = url,
                 shape = MaterialTheme.shapes.extraLarge,
-                onTap = { rgb -> sendIntent(HomeIntent.OnArtworkTap(artworkId = overview.id, rgb = rgb)) },
+                onTap = { rgb -> sendIntent(HomeIntent.OnArtworkTap(artwork = overview, rgb = rgb)) },
                 description = overview.title
             )
 
@@ -437,7 +438,7 @@ fun LastWatchedCarousel(
                             if (carouselState.currentItem != i) {
                                 scope.launch { carouselState.animateScrollToItem(i) }
                             } else {
-                                sendIntent(HomeIntent.OnArtworkTap(artworkId = overview.id, rgb = rgb))
+                                sendIntent(HomeIntent.OnArtworkTap(artwork = overview, rgb = rgb))
                             }
 
                         },
@@ -530,7 +531,7 @@ fun MediaCategory(
                         .width(width)
                         .aspectRatio(ratio),
                     url = it.imagePath.tmdbImage,
-                    onTap = { rgb -> sendIntent(HomeIntent.OnArtworkTap(artworkId = it.id, rgb = rgb)) },
+                    onTap = { rgb -> sendIntent(HomeIntent.OnArtworkTap(artwork = it, rgb = rgb)) },
                     description = it.title
                 )
 
@@ -572,7 +573,7 @@ fun UnknownCategory(sendIntent: (HomeIntent) -> Unit) {
         Box(
             modifier = Modifier
                 .padding(horizontal = Ui.Space.MEDIUM)
-                .clickable { sendIntent(HomeIntent.OnArtworkTap(artworkId = Artwork.UNKNOWN_ID)) }
+                .clickable { sendIntent(HomeIntent.OnArtworkTap(artwork = Artwork.UNKNOWN)) }
                 .clip(MaterialTheme.shapes.small)
                 .width(width)
                 .aspectRatio(ratio)

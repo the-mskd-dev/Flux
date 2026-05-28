@@ -26,7 +26,10 @@ sealed class Route : NavKey {
     data object Library: Route()
 
     @Serializable
-    data class Artwork(val artworkId: Long, val rgb: Int?): Route()
+    data class Show(val artworkId: Long, val rgb: Int?): Route()
+
+    @Serializable
+    data class Artwork(val artworkId: Long, val season: Int?, val rgb: Int?): Route()
 
     @Serializable
     data object UnknownArtworks: Route()

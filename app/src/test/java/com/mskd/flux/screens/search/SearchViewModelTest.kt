@@ -141,10 +141,17 @@ class SearchViewModelTest : FunSpec({
         }
     }
 
-    test("on artwork tap") {
+    test("on artwork show tap") {
         viewModel.event.test {
-            viewModel.handleIntent(SearchIntent.OnArtworkTap(artworkId = 123L, rgb = 0xFFFFFF))
-            awaitItem() shouldBe SearchEvent.NavigateToMedia(artworkId = 123L, rgb = 0xFFFFFF)
+            viewModel.handleIntent(SearchIntent.OnArtworkTap(artwork = MediaMockups.showArtwork, rgb = 0xFFFFFF))
+            awaitItem() shouldBe SearchEvent.NavigateToShow(artworkId = MediaMockups.showArtwork.id, rgb = 0xFFFFFF)
+        }
+    }
+
+    test("on artwork movie tap") {
+        viewModel.event.test {
+            viewModel.handleIntent(SearchIntent.OnArtworkTap(artwork = MediaMockups.movieArtwork, rgb = 0xFFFFFF))
+            awaitItem() shouldBe SearchEvent.NavigateToMovie(artworkId = MediaMockups.movieArtwork.id, rgb = 0xFFFFFF)
         }
     }
 

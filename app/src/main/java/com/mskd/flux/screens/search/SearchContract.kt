@@ -3,6 +3,7 @@ package com.mskd.flux.screens.search
 import androidx.compose.runtime.Immutable
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.ContentType
+import com.mskd.flux.screens.home.HomeEvent
 
 @Immutable
 data class SearchUIState(
@@ -19,12 +20,13 @@ data class SearchUIState(
 
 sealed class SearchIntent {
     object OnBackTap: SearchIntent()
-    data class OnArtworkTap(val artworkId: Long, val rgb: Int?): SearchIntent()
+    data class OnArtworkTap(val artwork: Artwork, val rgb: Int?): SearchIntent()
     data class DoSearch(val query: String) : SearchIntent()
     data class FilterOnType(val contentType: ContentType) : SearchIntent()
 }
 
 sealed class SearchEvent {
     object BackToPreviousScreen: SearchEvent()
-    data class NavigateToMedia(val artworkId: Long, val rgb: Int?): SearchEvent()
+    data class NavigateToMovie(val artworkId: Long, val rgb: Int?): SearchEvent()
+    data class NavigateToShow(val artworkId: Long, val rgb: Int?): SearchEvent()
 }

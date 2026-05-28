@@ -27,6 +27,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -35,6 +36,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.R
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.State
+import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.screens.artwork.composables.common.ArtworkDescription
@@ -128,7 +130,12 @@ fun ShowScreenContent(
         modifier = Modifier.graphicsLayer { alpha = animatedAlpha },
         title = fullShow.artwork.title,
         onBackTap = { sendIntent(ShowIntent.OnBackTap) },
-        scrollBehavior = scrollBehavior
+        scrollBehavior = scrollBehavior,
+        topAppBarColors = TopAppBarDefaults.topAppBarColors(
+            containerColor = Color.Transparent,
+            scrolledContainerColor = MaterialTheme.colorScheme.background,
+            titleContentColor = MaterialTheme.colorScheme.onBackground,
+        ),
     ) { innerPadding ->
 
         LazyColumn(

@@ -17,10 +17,10 @@ data class ShowUiState(
 
 sealed class ShowIntent {
     object OnBackTap: ShowIntent()
-    data class OnSeasonTap(val season: Int) : ShowIntent()
+    data class OnSeasonTap(val season: Int, val rgb: Int?) : ShowIntent()
 }
 
 sealed class ShowEvent {
     object BackToPreviousScreen : ShowEvent()
-    data class NavigateToSeason(val artworkId: Long, val season: Int) : ShowEvent()
+    data class NavigateToSeason(val artworkId: Long, val season: Int, val rgb: Int?) : ShowEvent()
 }

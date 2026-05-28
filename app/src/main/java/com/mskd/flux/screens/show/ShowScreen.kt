@@ -65,7 +65,7 @@ fun ShowScreen(
         viewModel.event.collect { event ->
             when (event) {
                 ShowEvent.BackToPreviousScreen -> onBack()
-                is ShowEvent.NavigateToSeason -> { TODO() }
+                is ShowEvent.NavigateToSeason -> navigate(Route.Artwork(artworkId = event.artworkId, season = event.season, rgb = event.rgb))
             }
         }
     }
@@ -192,7 +192,7 @@ fun ShowScreenContent(
                         SeasonItem(
                             modifier = Modifier.weight(1f),
                             season = season,
-                            onTap = {},
+                            onTap = { sendIntent(ShowIntent.OnSeasonTap(season = season.season, rgb = it))},
                             onLongPress = {}
                         )
 

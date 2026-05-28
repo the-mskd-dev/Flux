@@ -87,7 +87,7 @@ class ShowViewModel @AssistedInject constructor(
     fun handleIntent(intent: ShowIntent) = viewModelScope.launch {
         when (intent) {
             ShowIntent.OnBackTap -> _event.emit(ShowEvent.BackToPreviousScreen)
-            is ShowIntent.OnSeasonTap -> navigateToSeason(season = intent.season)
+            is ShowIntent.OnSeasonTap -> navigateToSeason(season = intent.season, rgb = intent.rgb)
         }
     }
 
@@ -95,8 +95,8 @@ class ShowViewModel @AssistedInject constructor(
 
     //region Private Methods
 
-    private fun navigateToSeason(season: Int) {
-
+    private suspend fun navigateToSeason(season: Int, rgb: Int?) {
+        _event.emit(ShowEvent.NavigateToSeason(artworkId = artworkId, season = season, rgb = rgb))
     }
 
     //endregion

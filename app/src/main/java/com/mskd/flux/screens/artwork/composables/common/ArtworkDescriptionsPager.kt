@@ -29,6 +29,9 @@ import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.artwork.Status
+import com.mskd.flux.ui.component.EpisodesDetails
+import com.mskd.flux.ui.component.MediaDescriptionDetails
+import com.mskd.flux.ui.component.OverviewItem
 import com.mskd.flux.ui.component.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
@@ -76,7 +79,7 @@ fun ArtworkDescriptionsPager(
 
                 is FullArtwork.FullMovie -> {
 
-                    ArtworkDescription(
+                    OverviewItem(
                         title = stringResource(R.string.summary),
                         description = currentMedia.description,
                         bottomDetails = { MediaDescriptionDetails(currentMedia) }
@@ -90,14 +93,14 @@ fun ArtworkDescriptionsPager(
 
                     if (i > 0 || pageCount == 1) {
 
-                        ArtworkDescription(
+                        OverviewItem(
                             title = stringResource(R.string.summary),
                             description = fullArtwork.artwork.description.ifEmpty { stringResource(R.string.no_summary) },
                         )
 
                     } else {
 
-                        ArtworkDescription(
+                        OverviewItem(
                             title = episode.title,
                             description = currentMedia.description,
                             topDetails = { EpisodesDetails(episode = episode) },
@@ -116,101 +119,7 @@ fun ArtworkDescriptionsPager(
 
 }
 
-@Composable
-fun ArtworkDescription(
-    modifier: Modifier = Modifier,
-    title: String,
-    description: String,
-    topDetails: @Composable () -> Unit = {},
-    bottomDetails: @Composable () -> Unit = {}
-) {
 
-    Column(
-        modifier = modifier
-            .clip(MaterialTheme.shapes.large)
-            .background(MaterialTheme.colorScheme.surfaceContainer)
-            .fillMaxWidth()
-            .padding(all = Ui.Space.MEDIUM),
-        verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
-    ) {
-
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)
-        ) {
-
-            topDetails()
-
-            Text.Headline.Medium(
-                modifier = Modifier.fillMaxWidth(),
-                text = title,
-                color = MaterialTheme.colorScheme.onSurface,
-                emphasized = true
-            )
-
-        }
-
-
-        Text.Body.Large(
-            modifier = Modifier.fillMaxWidth(),
-            text = description,
-            textAlign = TextAlign.Left,
-            color = MaterialTheme.colorScheme.onSurface
-        )
-
-        bottomDetails()
-
-    }
-
-}
-
-@Composable
-fun EpisodesDetails(episode: Episode) {
-
-    Row(horizontalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)) {
-        Text.Label.Medium(
-            text = stringResource(id = R.string.season, episode.season).uppercase(),
-            emphasized = true,
-            color = MaterialTheme.colorScheme.primary,
-        )
-        Text.Label.Medium(
-            text = stringResource(id = R.string.episode, episode.number).uppercase(),
-            emphasized = true,
-            color = MaterialTheme.colorScheme.secondary
-        )
-    }
-
-}
-
-@Composable
-fun MediaDescriptionDetails(media: Media) {
-
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.Start
-    ) {
-
-        Text.Body.Small(
-            text = media.releaseDate?.let { stringResource(R.string.release_date, it.formattedText) },
-            color = MaterialTheme.colorScheme.secondary
-        )
-
-        Text.Body.Small(
-            text = stringResource(R.string.duration, media.duration.minToMs.timeDescription()) ,
-            color = MaterialTheme.colorScheme.secondary
-        )
-
-        if (media.voteAverage > 0f) {
-            val rate = String.format(LocalLocale.current.platformLocale,"%.2f", media.voteAverage)
-            Text.Body.Small(
-                text = stringResource(R.string.rate, rate),
-                color = MaterialTheme.colorScheme.secondary
-            )
-        }
-
-    }
-
-}
 
 @FluxPreview
 @Composable

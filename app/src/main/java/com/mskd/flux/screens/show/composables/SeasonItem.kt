@@ -93,8 +93,7 @@ fun SeasonItem(
             Text.Label.Small(
                 modifier = Modifier.fillMaxWidth(),
                 text = pluralStringResource(R.plurals.episodes, episodesCount, episodesCount),
-                color = MaterialTheme.colorScheme.onSurface,
-                emphasized = true,
+                color = MaterialTheme.colorScheme.secondary,
                 textAlign = TextAlign.Center
             )
 

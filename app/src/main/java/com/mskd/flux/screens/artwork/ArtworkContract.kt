@@ -14,7 +14,6 @@ import com.mskd.flux.screens.customization.CustomizationIntent
 data class ArtworkUiState(
     val state: State<FullArtwork> = State.Loading,
     val selectedMedia: Media = MediaMockups.episode1,
-    val selectedSeason: Int = -1,
     val useExternalPlayer: Boolean = false,
     val dialog: ArtworkDialog? = null
 )
@@ -30,7 +29,6 @@ sealed class ArtworkIntent {
     data class ChangeWatchStatus(val media: Media): ArtworkIntent()
     object MarkPreviousEpisodesAsWatched: ArtworkIntent()
     object CloseEpisodesStatusDialog: ArtworkIntent()
-    data class SelectSeason(val season: Int): ArtworkIntent()
     data class PlayMedia(val media: Media, val forceInternal: Boolean = false): ArtworkIntent()
     data object OpenArtworkInfo: ArtworkIntent()
     data class OpenEpisodeInfo(val episode: Episode): ArtworkIntent()

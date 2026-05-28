@@ -28,7 +28,6 @@ import com.mskd.flux.screens.artwork.composables.common.ArtworkDescriptionsPager
 import com.mskd.flux.screens.artwork.composables.common.ArtworkHeader
 import com.mskd.flux.screens.artwork.composables.common.ArtworkImage
 import com.mskd.flux.screens.artwork.composables.episodes.EpisodeItem
-import com.mskd.flux.screens.artwork.composables.episodes.SeasonsTabs
 import com.mskd.flux.ui.component.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
@@ -39,7 +38,6 @@ import com.mskd.flux.utils.PortraitPreview
 fun ArtworkContentRegular(
     fullArtwork: FullArtwork,
     currentMedia: Media,
-    currentSeason: Int,
     scaffoldInnerPadding: PaddingValues,
     sendIntent: (ArtworkIntent) -> Unit,
 ) {
@@ -103,23 +101,8 @@ fun ArtworkContentRegular(
                     Spacer(modifier = Modifier.height(Ui.Space.MEDIUM))
                 }
 
-                item {
-
-                    SeasonsTabs(
-                        seasons = show.seasons,
-                        currentSeason = currentSeason,
-                        sendIntent = sendIntent
-                    )
-
-                }
-
-                item {
-                    Spacer(modifier = Modifier.height(Ui.Space.MEDIUM))
-                }
-
                 items(
                     items = show.episodes
-                        .filter { it.season == currentSeason }
                         .sortedBy { it.number },
                     key = { e -> e.id }
                 ) { episode ->
@@ -154,7 +137,6 @@ fun ArtworkContentMovie_Preview() {
         ArtworkContentRegular(
             fullArtwork = MediaMockups.fullMovie,
             currentMedia = MediaMockups.movie,
-            currentSeason = -1,
             scaffoldInnerPadding = PaddingValues.Zero,
             sendIntent = {}
         )
@@ -168,7 +150,6 @@ fun ArtworkContentShow_Preview() {
         ArtworkContentRegular(
             fullArtwork = MediaMockups.fullShow,
             currentMedia = MediaMockups.episode1,
-            currentSeason = 1,
             scaffoldInnerPadding = PaddingValues.Zero,
             sendIntent = {}
         )

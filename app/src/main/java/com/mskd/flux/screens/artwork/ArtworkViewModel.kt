@@ -34,6 +34,7 @@ import kotlinx.coroutines.launch
 @HiltViewModel(assistedFactory = ArtworkViewModel.Factory::class)
 class ArtworkViewModel @AssistedInject constructor(
     @Assisted val artworkId: Long,
+    @Assisted val season: Int?,
     private val artworkUC: ArtworkUC,
     private val settingsRepository: SettingsRepository,
     private val progressUC: ProgressUC
@@ -43,7 +44,7 @@ class ArtworkViewModel @AssistedInject constructor(
 
     @AssistedFactory
     interface Factory {
-        fun create(artworkId: Long): ArtworkViewModel
+        fun create(artworkId: Long, season: Int?): ArtworkViewModel
     }
 
     //endregion
@@ -53,7 +54,6 @@ class ArtworkViewModel @AssistedInject constructor(
     @Immutable
     private data class UserState(
         val selectedMedia: Media? = null,
-        val selectedSeason: Int? = null,
         val dialog: ArtworkDialog? = null
     )
 
@@ -62,7 +62,6 @@ class ArtworkViewModel @AssistedInject constructor(
     //region Variables
 
     private var selectedMedia: Media? = null
-
 
     private val fullArtwork : FullArtwork? get() = (uiState.value.state as? State.Content)?.content
     private val episodes : List<Episode> get() = (fullArtwork as? FullArtwork.FullShow)?.episodes.orEmpty()
@@ -108,7 +107,6 @@ class ArtworkViewModel @AssistedInject constructor(
     fun handleIntent(intent: ArtworkIntent) = viewModelScope.launch {
         when (intent) {
             ArtworkIntent.OnBackTap -> _event.emit(ArtworkEvent.BackToPreviousScreen)
-            is ArtworkIntent.SelectSeason -> selectSeason(season = intent.season)
             is ArtworkIntent.PlayMedia -> playMedia(media = intent.media, forceInternal = intent.forceInternal)
             ArtworkIntent.CloseEpisodesStatusDialog -> closeStatusDialog()
             is ArtworkIntent.ChangeWatchStatus -> changeWatchStatus(media = intent.media)
@@ -133,21 +131,19 @@ class ArtworkViewModel @AssistedInject constructor(
     ) : ArtworkUiState {
 
         val fullArtwork = (artworkState as? State.Content<FullArtwork>)?.content
-        val episodes: List<Episode> = (fullArtwork as? FullArtwork.FullShow)?.episodes ?: emptyList()
+
+        val episodes: List<Episode> = (fullArtwork as? FullArtwork.FullShow)?.episodes?.filter { it.season == (season ?: -1) } ?: emptyList()
 
         val episode = episodes.firstOrNull { it.id == (subState.selectedMedia as? Episode)?.id } // Selected media by user
             ?: episodes.firstEpisodeToWatch
 
         val media = (fullArtwork as? FullArtwork.FullMovie)?.movie ?: episode
 
-        val season = subState.selectedSeason ?: (media as? Episode)?.season ?: -1
-
         return when {
             media == null -> ArtworkUiState(state = State.Error)
             else -> {
                 ArtworkUiState(
                     state = artworkState,
-                    selectedSeason = season,
                     selectedMedia = media,
                     useExternalPlayer = settings.externalPlayer,
                     dialog = subState.dialog
@@ -155,10 +151,6 @@ class ArtworkViewModel @AssistedInject constructor(
             }
         }
 
-    }
-
-    private fun selectSeason(season: Int) {
-        _subState.update { it.copy(selectedSeason = season) }
     }
 
     private suspend fun playMedia(media: Media, forceInternal: Boolean) {

@@ -29,7 +29,6 @@ import com.mskd.flux.screens.artwork.composables.common.ArtworkButtons
 import com.mskd.flux.screens.artwork.composables.common.ArtworkDescriptionsPager
 import com.mskd.flux.screens.artwork.composables.common.ArtworkImage
 import com.mskd.flux.screens.artwork.composables.episodes.EpisodeItem
-import com.mskd.flux.screens.artwork.composables.episodes.SeasonsTabs
 import com.mskd.flux.ui.component.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
@@ -39,7 +38,6 @@ import com.mskd.flux.utils.LandscapePreview
 fun ArtworkContentLarge(
     fullArtwork: FullArtwork,
     currentMedia: Media,
-    currentSeason: Int,
     scaffoldInnerPadding: PaddingValues,
     sendIntent: (ArtworkIntent) -> Unit,
 ) {
@@ -137,24 +135,8 @@ fun ArtworkContentLarge(
                         Spacer(modifier = Modifier.height(Ui.Space.MEDIUM))
                     }
 
-                    item {
-
-                        SeasonsTabs(
-                            seasons = show.seasons,
-                            currentSeason = currentSeason,
-                            sendIntent = sendIntent
-                        )
-
-                    }
-
-                    item {
-                        Spacer(modifier = Modifier.height(Ui.Space.MEDIUM))
-                    }
-
                     items(
-                        items = show.episodes
-                            .filter { it.season == currentSeason }
-                            .sortedBy { it.number },
+                        items = show.episodes.sortedBy { it.number },
                         key = { e -> e.id }
                     ) { episode ->
 
@@ -191,7 +173,6 @@ fun ArtworkContentLargeMovie_Preview() {
         ArtworkContentLarge(
             fullArtwork = MediaMockups.fullMovie,
             currentMedia = MediaMockups.movie,
-            currentSeason = -1,
             scaffoldInnerPadding = PaddingValues.Zero,
             sendIntent = {}
         )
@@ -205,7 +186,6 @@ fun ArtworkContentLargeShow_Preview() {
         ArtworkContentLarge(
             fullArtwork = MediaMockups.fullShow,
             currentMedia = MediaMockups.episode1,
-            currentSeason = 1,
             scaffoldInnerPadding = PaddingValues.Zero,
             sendIntent = {}
         )

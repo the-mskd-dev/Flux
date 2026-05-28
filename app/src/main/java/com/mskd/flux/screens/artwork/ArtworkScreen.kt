@@ -68,11 +68,12 @@ import com.mskd.flux.utils.rememberExternalPlayerLauncher
 @Composable
 fun ArtworkScreen(
     artworkId: Long,
+    season: Int?,
     colorScheme: ColorScheme,
     navigate: (Route) -> Unit,
     onBack: () -> Unit,
     viewModel: ArtworkViewModel = hiltViewModel<ArtworkViewModel, ArtworkViewModel.Factory>(
-        creationCallback = { factory -> factory.create(artworkId) }
+        creationCallback = { factory -> factory.create(artworkId = artworkId, season = season) }
     )
 ) {
 
@@ -212,7 +213,6 @@ fun ArtworkScreenContent(
             ArtworkContentLarge(
                 fullArtwork = fullArtwork,
                 currentMedia = uiState.selectedMedia,
-                currentSeason = uiState.selectedSeason,
                 scaffoldInnerPadding = innerPadding,
                 sendIntent = sendIntent,
             )
@@ -220,7 +220,6 @@ fun ArtworkScreenContent(
             ArtworkContentRegular(
                 fullArtwork = fullArtwork,
                 currentMedia = uiState.selectedMedia,
-                currentSeason = uiState.selectedSeason,
                 scaffoldInnerPadding = innerPadding,
                 sendIntent = sendIntent,
             )
@@ -275,7 +274,6 @@ fun ArtworkScreenContent_Preview() {
             uiState = ArtworkUiState(
                 state = State.Content(content = MediaMockups.fullShow),
                 selectedMedia = MediaMockups.episode1,
-                selectedSeason = MediaMockups.episode1.season
             ),
             sendIntent = {}
         )

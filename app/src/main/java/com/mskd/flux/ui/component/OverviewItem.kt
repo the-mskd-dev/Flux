@@ -1,8 +1,10 @@
 package com.mskd.flux.ui.component
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -30,6 +32,7 @@ import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.extensions.formattedText
 import com.mskd.flux.utils.extensions.minToMs
 import com.mskd.flux.utils.extensions.timeDescription
+import com.mskd.flux.utils.extensions.toRating
 
 @Composable
 fun OverviewItem(
@@ -37,7 +40,7 @@ fun OverviewItem(
     title: String,
     description: String,
     topDetails: @Composable () -> Unit = {},
-    bottomDetails: @Composable () -> Unit = {}
+    subtitle: @Composable () -> Unit = {}
 ) {
 
     var expanded by remember { mutableStateOf(false) }
@@ -66,6 +69,8 @@ fun OverviewItem(
                 emphasized = true
             )
 
+            subtitle()
+
         }
 
 
@@ -83,14 +88,18 @@ fun OverviewItem(
                 }
             )
 
-            if (isOverflowing || expanded) {
-                Text.Label.Large(if (expanded) "Read less" else "Read more")
-            }
-
         }
 
-
-        bottomDetails()
+        if (isOverflowing || expanded) {
+            TextButton(
+                onClick = { expanded = !expanded },
+                contentPadding = PaddingValues()
+            ) {
+                Text.Label.Large(
+                    text = if (expanded) "Read less" else "Read more"
+                )
+            }
+        }
 
     }
 
@@ -117,25 +126,40 @@ fun EpisodesDetails(episode: Episode) {
 @Composable
 fun MediaDescriptionDetails(media: Media) {
 
-    Column(
+    Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.Start
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)
     ) {
 
-        Text.Body.Small(
-            text = media.releaseDate?.let { stringResource(R.string.release_date, it.formattedText) },
-            color = MaterialTheme.colorScheme.secondary
-        )
+        media.releaseDate?.let {
+
+            Text.Body.Small(
+                text = it.formattedText,
+                color = MaterialTheme.colorScheme.secondary
+            )
+
+            Text.Body.Small(
+                text = "•",
+                color = MaterialTheme.colorScheme.secondary
+            )
+
+        }
 
         Text.Body.Small(
-            text = stringResource(R.string.duration, media.duration.minToMs.timeDescription()) ,
+            text = media.duration.minToMs.timeDescription(),
             color = MaterialTheme.colorScheme.secondary
         )
 
         if (media.voteAverage > 0f) {
-            val rate = String.format(LocalLocale.current.platformLocale,"%.2f", media.voteAverage)
+
             Text.Body.Small(
-                text = stringResource(R.string.rate, rate),
+                text = "•",
+                color = MaterialTheme.colorScheme.secondary
+            )
+
+            Text.Body.Small(
+                text = "${media.voteAverage.toRating}/10",
                 color = MaterialTheme.colorScheme.secondary
             )
         }
@@ -151,7 +175,7 @@ fun OverviewItem_Preview_Movie() {
         OverviewItem(
             title = stringResource(R.string.summary),
             description = MediaMockups.movie.description,
-            bottomDetails = { MediaDescriptionDetails(MediaMockups.movie) }
+            subtitle = { MediaDescriptionDetails(MediaMockups.movie) }
         )
     }
 }
@@ -175,7 +199,7 @@ fun OverviewItem_Preview_Episode() {
             title = MediaMockups.episode1.title,
             description = MediaMockups.episode1.description,
             topDetails = { EpisodesDetails(episode = MediaMockups.episode1) },
-            bottomDetails = { MediaDescriptionDetails(media = MediaMockups.episode1) }
+            subtitle = { MediaDescriptionDetails(media = MediaMockups.episode1) }
         )
     }
 }

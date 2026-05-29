@@ -4,11 +4,6 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
@@ -17,12 +12,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import com.mskd.flux.R
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.Episode
@@ -32,13 +23,9 @@ import com.mskd.flux.model.artwork.Status
 import com.mskd.flux.ui.component.EpisodesDetails
 import com.mskd.flux.ui.component.MediaDescriptionDetails
 import com.mskd.flux.ui.component.OverviewItem
-import com.mskd.flux.ui.component.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.FluxPreview
-import com.mskd.flux.utils.extensions.formattedText
-import com.mskd.flux.utils.extensions.minToMs
-import com.mskd.flux.utils.extensions.timeDescription
 
 @Composable
 fun ArtworkDescriptionsPager(
@@ -82,7 +69,7 @@ fun ArtworkDescriptionsPager(
                     OverviewItem(
                         title = stringResource(R.string.summary),
                         description = currentMedia.description,
-                        bottomDetails = { MediaDescriptionDetails(currentMedia) }
+                        subtitle = { MediaDescriptionDetails(currentMedia) }
                     )
 
                 }
@@ -104,7 +91,7 @@ fun ArtworkDescriptionsPager(
                             title = episode.title,
                             description = currentMedia.description,
                             topDetails = { EpisodesDetails(episode = episode) },
-                            bottomDetails = { MediaDescriptionDetails(media = episode) }
+                            subtitle = { MediaDescriptionDetails(media = episode) }
                         )
 
                     }

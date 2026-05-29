@@ -7,7 +7,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,6 +40,9 @@ fun OverviewItem(
     bottomDetails: @Composable () -> Unit = {}
 ) {
 
+    var expanded by remember { mutableStateOf(false) }
+    var isOverflowing by remember { mutableStateOf(false) }
+
     Column(
         modifier = modifier
             .clip(MaterialTheme.shapes.large)
@@ -61,14 +69,26 @@ fun OverviewItem(
         }
 
 
-        Text.Body.Large(
-            modifier = Modifier.fillMaxWidth(),
-            text = description,
-            textAlign = TextAlign.Left,
-            color = MaterialTheme.colorScheme.onSurface,
-            maxLines = 3,
-            overflow = TextOverflow.Ellipsis
-        )
+        Column {
+
+            Text.Body.Large(
+                modifier = Modifier.fillMaxWidth(),
+                text = description,
+                textAlign = TextAlign.Left,
+                color = MaterialTheme.colorScheme.onSurface,
+                maxLines = if (expanded) Int.MAX_VALUE else 4,
+                overflow = if (expanded) TextOverflow.Clip else TextOverflow.Ellipsis,
+                onTextLayout = { result ->
+                    if (!expanded) isOverflowing = result.hasVisualOverflow
+                }
+            )
+
+            if (isOverflowing || expanded) {
+                Text.Label.Large(if (expanded) "Read less" else "Read more")
+            }
+
+        }
+
 
         bottomDetails()
 

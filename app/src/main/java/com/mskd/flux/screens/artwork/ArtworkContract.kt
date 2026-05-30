@@ -7,8 +7,6 @@ import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.model.artwork.Media
-import com.mskd.flux.model.artwork.Season
-import com.mskd.flux.screens.customization.CustomizationIntent
 
 @Immutable
 data class ArtworkUiState(

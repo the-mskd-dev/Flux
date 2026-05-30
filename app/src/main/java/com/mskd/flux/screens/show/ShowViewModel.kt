@@ -1,18 +1,11 @@
 package com.mskd.flux.screens.show
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.model.State
 import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.model.artwork.Season
-import com.mskd.flux.screens.artwork.ArtworkEvent
-import com.mskd.flux.screens.artwork.ArtworkEvent.OpenEpisodeInfo
-import com.mskd.flux.screens.artwork.ArtworkIntent
-import com.mskd.flux.screens.artwork.ArtworkUiState
-import com.mskd.flux.screens.artwork.ArtworkViewModel
-import com.mskd.flux.screens.artwork.ArtworkViewModel.UserState
 import com.mskd.flux.useCases.artwork.ArtworkUC
 import com.mskd.flux.useCases.progress.ProgressUC
 import dagger.assisted.Assisted
@@ -21,12 +14,9 @@ import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 

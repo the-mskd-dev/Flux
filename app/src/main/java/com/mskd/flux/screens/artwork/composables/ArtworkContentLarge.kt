@@ -19,7 +19,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.constraintlayout.compose.Dimension
 import com.mskd.flux.R
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.FullArtwork

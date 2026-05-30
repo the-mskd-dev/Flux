@@ -1,12 +1,7 @@
 package com.mskd.flux.utils
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import coil3.annotation.ExperimentalCoilApi
@@ -15,8 +10,6 @@ import coil3.compose.LocalAsyncImagePreviewHandler
 import coil3.imageLoader
 import coil3.request.ImageRequest
 import com.mskd.flux.R
-import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.screens.artwork.composables.common.ArtworkHeader
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
 

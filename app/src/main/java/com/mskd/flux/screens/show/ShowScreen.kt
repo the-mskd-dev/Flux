@@ -1,6 +1,5 @@
 package com.mskd.flux.screens.show
 
-import android.util.Log
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState

@@ -1,14 +1,11 @@
 package com.mskd.flux.screens.show.composables
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.MaterialTheme
@@ -35,7 +32,6 @@ import com.mskd.flux.ui.component.Text
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.AppThemePreview
 import com.mskd.flux.utils.extensions.tmdbImage
-import kotlin.text.ifEmpty
 
 @Composable
 fun SeasonItem(

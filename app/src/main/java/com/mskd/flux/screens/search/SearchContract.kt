@@ -3,7 +3,6 @@ package com.mskd.flux.screens.search
 import androidx.compose.runtime.Immutable
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.ContentType
-import com.mskd.flux.screens.home.HomeEvent
 
 @Immutable
 data class SearchUIState(

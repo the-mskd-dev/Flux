@@ -110,12 +110,15 @@ fun OverviewItem(
 
         if (isOverflowing || expanded) {
             TextButton(
-                onClick = { expanded = !expanded },
-                contentPadding = PaddingValues()
+                modifier = Modifier.align(Alignment.End),
+                onClick = { expanded = !expanded }
             ) {
-                Text.Label.Large(
-                    text = if (expanded) "Read less" else "Read more"
-                )
+                AnimatedContent(targetState = expanded) { isExpanded ->
+                    Text.Label.Large(
+                        text = stringResource(if (isExpanded) R.string.read_less else R.string.read_more)
+                    )
+                }
+
             }
         }
 

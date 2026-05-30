@@ -150,4 +150,6 @@
         <item quantity="many">%d episodes</item>
         <item quantity="other">%d episodes</item>
     </plurals>
+    <string name="read_more">Read more</string>
+    <string name="read_less">Read less</string>
 </resources>

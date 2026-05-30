@@ -37,6 +37,7 @@ import com.mskd.flux.utils.LandscapePreview
 fun ArtworkContentLarge(
     fullArtwork: FullArtwork,
     currentMedia: Media,
+    currentSeason: Int?,
     scaffoldInnerPadding: PaddingValues,
     sendIntent: (ArtworkIntent) -> Unit,
 ) {
@@ -111,7 +112,9 @@ fun ArtworkContentLarge(
 
             (fullArtwork as? FullArtwork.FullShow)?.let { show ->
 
-                if (show.episodes.isNotEmpty()) {
+                val episodes = show.episodes.filter { it.season == currentSeason }
+
+                if (episodes.isNotEmpty()) {
 
                     item {
 
@@ -135,7 +138,7 @@ fun ArtworkContentLarge(
                     }
 
                     items(
-                        items = show.episodes.sortedBy { it.number },
+                        items = episodes.sortedBy { it.number },
                         key = { e -> e.id }
                     ) { episode ->
 
@@ -172,6 +175,7 @@ fun ArtworkContentLargeMovie_Preview() {
         ArtworkContentLarge(
             fullArtwork = MediaMockups.fullMovie,
             currentMedia = MediaMockups.movie,
+            currentSeason = null,
             scaffoldInnerPadding = PaddingValues.Zero,
             sendIntent = {}
         )
@@ -185,6 +189,7 @@ fun ArtworkContentLargeShow_Preview() {
         ArtworkContentLarge(
             fullArtwork = MediaMockups.fullShow,
             currentMedia = MediaMockups.episode1,
+            currentSeason = 1,
             scaffoldInnerPadding = PaddingValues.Zero,
             sendIntent = {}
         )

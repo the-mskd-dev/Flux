@@ -202,6 +202,7 @@ fun ArtworkScreenContent(
             ArtworkContentLarge(
                 fullArtwork = fullArtwork,
                 currentMedia = uiState.selectedMedia,
+                currentSeason = uiState.selectedSeason,
                 scaffoldInnerPadding = innerPadding,
                 sendIntent = sendIntent,
             )
@@ -209,6 +210,7 @@ fun ArtworkScreenContent(
             ArtworkContentRegular(
                 fullArtwork = fullArtwork,
                 currentMedia = uiState.selectedMedia,
+                currentSeason = uiState.selectedSeason,
                 scaffoldInnerPadding = innerPadding,
                 sendIntent = sendIntent,
             )

@@ -34,6 +34,7 @@ import com.mskd.flux.utils.PortraitPreview
 fun ArtworkContentRegular(
     fullArtwork: FullArtwork,
     currentMedia: Media,
+    currentSeason: Int?,
     scaffoldInnerPadding: PaddingValues,
     sendIntent: (ArtworkIntent) -> Unit,
 ) {
@@ -74,7 +75,9 @@ fun ArtworkContentRegular(
 
         (fullArtwork as? FullArtwork.FullShow)?.let { show ->
 
-            if (show.episodes.isNotEmpty()) {
+            val episodes = show.episodes.filter { it.season == currentSeason }
+
+            if (episodes.isNotEmpty()) {
 
                 item {
 
@@ -98,8 +101,7 @@ fun ArtworkContentRegular(
                 }
 
                 items(
-                    items = show.episodes
-                        .sortedBy { it.number },
+                    items = episodes.sortedBy { it.number },
                     key = { e -> e.id }
                 ) { episode ->
 
@@ -133,6 +135,7 @@ fun ArtworkContentMovie_Preview() {
         ArtworkContentRegular(
             fullArtwork = MediaMockups.fullMovie,
             currentMedia = MediaMockups.movie,
+            currentSeason = null,
             scaffoldInnerPadding = PaddingValues.Zero,
             sendIntent = {}
         )
@@ -146,6 +149,7 @@ fun ArtworkContentShow_Preview() {
         ArtworkContentRegular(
             fullArtwork = MediaMockups.fullShow,
             currentMedia = MediaMockups.episode1,
+            currentSeason = 1,
             scaffoldInnerPadding = PaddingValues.Zero,
             sendIntent = {}
         )

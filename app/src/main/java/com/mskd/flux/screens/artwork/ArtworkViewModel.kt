@@ -9,7 +9,6 @@ import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.artwork.Status
-import com.mskd.flux.screens.artwork.ArtworkEvent.OpenEpisodeInfo
 import com.mskd.flux.useCases.artwork.ArtworkUC
 import com.mskd.flux.useCases.progress.ProgressUC
 import com.mskd.flux.utils.extensions.firstEpisode
@@ -110,7 +109,7 @@ class ArtworkViewModel @AssistedInject constructor(
             is ArtworkIntent.ChangeWatchStatus -> changeWatchStatus(media = intent.media)
             ArtworkIntent.MarkPreviousEpisodesAsWatched -> markPreviousEpisodesAsWatched()
             ArtworkIntent.OpenArtworkInfo -> openArtworkInfo()
-            is ArtworkIntent.OpenEpisodeInfo -> _event.emit(OpenEpisodeInfo(episode = intent.episode))
+            is ArtworkIntent.OpenEpisodeInfo -> _event.emit(ArtworkEvent.OpenUrlInfo(url = intent.episode.infoUrl))
             is ArtworkIntent.OnExternalPlayerResult -> onExternalPlayerResult(intent.progress)
             is ArtworkIntent.ShowResetProgressDialog -> showResetProgressDialog(show = intent.show)
             ArtworkIntent.ResetProgress -> resetProgress()
@@ -175,8 +174,14 @@ class ArtworkViewModel @AssistedInject constructor(
     }
 
     private suspend fun openArtworkInfo() {
-        (uiState.value.state as? State.Content)?.content?.let {
-            _event.emit(ArtworkEvent.OpenArtworkInfo(artwork = it.artwork))
+        (uiState.value.state as? State.Content)?.content?.let { fullArtwork ->
+
+            val url = when (fullArtwork) {
+                is FullArtwork.FullMovie -> fullArtwork.artwork.infoUrl
+                is FullArtwork.FullShow -> fullArtwork.seasons.find { it.season == season }?.infoUrl ?: return@let
+            }
+
+            _event.emit(ArtworkEvent.OpenUrlInfo(url = url))
         }
     }
 

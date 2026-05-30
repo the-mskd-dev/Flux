@@ -38,6 +38,5 @@ sealed class ArtworkEvent {
     object BackToPreviousScreen : ArtworkEvent()
     data class PlayMedia(val mediaId: Long) : ArtworkEvent()
     data class LaunchExternalPlayer(val media: Media) : ArtworkEvent()
-    data class OpenArtworkInfo(val artwork: Artwork) : ArtworkEvent()
-    data class OpenEpisodeInfo(val episode: Episode): ArtworkEvent()
+    data class OpenUrlInfo(val url: String) : ArtworkEvent()
 }

@@ -1,5 +1,6 @@
 package com.mskd.flux.screens.show
 
+import android.util.Log
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
@@ -36,6 +37,7 @@ import com.mskd.flux.model.State
 import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.screens.artwork.composables.common.ArtworkImage
+import com.mskd.flux.screens.show.composables.SeasonDialog
 import com.mskd.flux.screens.show.composables.SeasonItem
 import com.mskd.flux.ui.component.ErrorScreen
 import com.mskd.flux.ui.component.FluxScaffold
@@ -86,6 +88,7 @@ fun ShowScreen(
                 MaterialTheme(colorScheme = colorScheme) {
                     ShowScreenContent(
                         fullShow = state.content as FullArtwork.FullShow,
+                        dialog = uiState.dialog,
                         sendIntent = viewModel::handleIntent
                     )
                 }
@@ -100,6 +103,7 @@ fun ShowScreen(
 @Composable
 fun ShowScreenContent(
     fullShow: FullArtwork.FullShow,
+    dialog: ShowDialog?,
     sendIntent: (ShowIntent) -> Unit
 ) {
 
@@ -197,7 +201,7 @@ fun ShowScreenContent(
                             season = season,
                             episodesCount = fullShow.episodes.count { it.season == season.season },
                             onTap = { sendIntent(ShowIntent.OnSeasonTap(season = season.season, rgb = it))},
-                            onLongPress = {}
+                            onLongPress = { sendIntent(ShowIntent.ShowSeasonPreview(season = season)) }
                         )
 
                     }
@@ -220,6 +224,13 @@ fun ShowScreenContent(
 
         }
 
+        (dialog as? ShowDialog.SeasonPreview)?.let {
+            SeasonDialog(
+                season = it.season,
+                sendIntent = sendIntent,
+            )
+        }
+
     }
 
 }
@@ -230,6 +241,7 @@ fun ShowScreenContent_Preview() {
     AppThemePreview {
         ShowScreenContent(
             fullShow = MediaMockups.fullShow,
+            dialog = null,
             sendIntent = {}
         )
     }

@@ -21,7 +21,6 @@ data class ArtworkUiState(
 sealed class ArtworkDialog {
     data class EpisodeStatusConfirmation(val episode: Episode) : ArtworkDialog()
     object ResetProgressConfirmation : ArtworkDialog()
-    data class SeasonPreview(val season: Season) : ArtworkDialog()
 }
 
 sealed class ArtworkIntent {
@@ -35,7 +34,6 @@ sealed class ArtworkIntent {
     data class OnExternalPlayerResult(val progress: Long) : ArtworkIntent()
     data class ShowResetProgressDialog(val show: Boolean) : ArtworkIntent()
     data object ResetProgress: ArtworkIntent()
-    data class ShowPreviewForSeason(val season: Season?) : ArtworkIntent()
 }
 
 sealed class ArtworkEvent {

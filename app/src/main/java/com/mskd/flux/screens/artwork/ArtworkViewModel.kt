@@ -116,7 +116,6 @@ class ArtworkViewModel @AssistedInject constructor(
             is ArtworkIntent.OnExternalPlayerResult -> onExternalPlayerResult(intent.progress)
             is ArtworkIntent.ShowResetProgressDialog -> showResetProgressDialog(show = intent.show)
             ArtworkIntent.ResetProgress -> resetProgress()
-            is ArtworkIntent.ShowPreviewForSeason -> showPreviewForSeason(season = intent.season)
         }
     }
 
@@ -237,10 +236,6 @@ class ArtworkViewModel @AssistedInject constructor(
 
         }
 
-    }
-
-    private fun showPreviewForSeason(season: Season?) {
-        _subState.update { it.copy(dialog = season?.let { ArtworkDialog.SeasonPreview(season) }) }
     }
 
     //endregion

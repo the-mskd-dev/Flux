@@ -357,18 +357,6 @@ class ArtworkViewModelTest : FunSpec({
         }
     }
 
-    test("show preview for season") {
-        viewModel.uiState.test {
-            awaitItem()
-            val season = MediaMockups.season1
-            viewModel.handleIntent(ArtworkIntent.ShowPreviewForSeason(season))
-            expectMostRecentItem().previewForSeason shouldBe season
-
-            viewModel.handleIntent(ArtworkIntent.ShowPreviewForSeason(null))
-            expectMostRecentItem().previewForSeason shouldBe null
-        }
-    }
-
     test("error state") {
         artworkUC = FakeArtworkUC(initialContentType = ContentType.SHOW)
 

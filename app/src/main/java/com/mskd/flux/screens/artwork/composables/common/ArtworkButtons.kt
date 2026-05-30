@@ -29,7 +29,7 @@ import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.artwork.Status
 import com.mskd.flux.screens.artwork.ArtworkIntent
 import com.mskd.flux.ui.component.FluxTextButton
-import com.mskd.flux.ui.component.ProgressBar
+import com.mskd.flux.ui.component.ProgressStatusBar
 import com.mskd.flux.ui.component.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
@@ -130,9 +130,10 @@ fun MediaStatusProgression(
             verticalAlignment = Alignment.CenterVertically
         ){
 
-            ProgressBar(
+            ProgressStatusBar(
                 modifier = Modifier.weight(1f),
-                media = media
+                isVisible = true,
+                progress = { media.progressPercent }
             )
 
             val remainingTime = (media.duration.minToMs - media.currentTime).timeDescription(withoutSeconds = true)

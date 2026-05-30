@@ -44,17 +44,11 @@ fun MediaThumbnail(
                 contentDescription = contentDescription
             )
 
-            AnimatedVisibility(
+            ProgressStatusBar(
                 modifier = Modifier.align(Alignment.BottomCenter),
-                visible = media.status == Status.IS_WATCHING
-            ) {
-                ProgressBar(
-                    modifier = Modifier
-                        .height(8.dp)
-                        .fillMaxWidth(),
-                    media = media
-                )
-            }
+                isVisible = media.status == Status.IS_WATCHING,
+                progress = { media.progressPercent } ,
+            )
 
             ProgressStatusChip(
                 modifier = Modifier.align(Alignment.Center),

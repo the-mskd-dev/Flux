@@ -45,6 +45,7 @@ import com.mskd.flux.ui.component.FluxDropDownMenu
 import com.mskd.flux.ui.component.FluxDropDownMenuItem
 import com.mskd.flux.ui.component.FluxScaffold
 import com.mskd.flux.ui.component.LoadingScreen
+import com.mskd.flux.ui.component.ResetProgressDialog
 import com.mskd.flux.ui.component.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.utils.ExternalPlayer
@@ -131,9 +132,11 @@ fun ArtworkScreen(
     }
 
     if (uiState.dialog is ArtworkDialog.ResetProgressConfirmation) {
-        ArtworkResetProgressDialog(sendIntent = viewModel::handleIntent)
+        ResetProgressDialog(
+            onValidate = { viewModel.handleIntent(ArtworkIntent.ResetProgress) },
+            onDismiss = { viewModel.handleIntent(ArtworkIntent.ShowResetProgressDialog(show = false)) }
+        )
     }
-
 
 }
 
@@ -258,23 +261,4 @@ fun ArtworkScreenContent_Preview() {
             sendIntent = {}
         )
     }
-}
-
-@Composable
-fun ArtworkResetProgressDialog(
-    sendIntent: (ArtworkIntent) -> Unit
-) {
-
-    FluxDialog(
-        title = stringResource(R.string.reset_progress),
-        onDismiss = { sendIntent(ArtworkIntent.ShowResetProgressDialog(show = false)) },
-        onValidateLabel = stringResource(R.string.reset),
-        onValidate = { sendIntent(ArtworkIntent.ResetProgress) },
-        content = {
-            Text.Body.Large(
-                text = stringResource(R.string.reset_progress_confirmation)
-            )
-        }
-    )
-
 }

@@ -3,6 +3,7 @@ package com.mskd.flux.ui.component
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
@@ -17,23 +18,35 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.R
 import com.mskd.flux.model.artwork.Media
+import com.mskd.flux.screens.artwork.ArtworkIntent
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.extensions.minToMs
 
 @Composable
-fun ProgressBar(
+fun ProgressStatusBar(
     modifier: Modifier = Modifier,
     color: Color = MaterialTheme.colorScheme.tertiary,
-    media: Media
+    isVisible: Boolean,
+    progress: () -> Float
 ) {
-    LinearProgressIndicator(
+    AnimatedVisibility(
         modifier = modifier,
-        color = color,
-        progress = { (media.currentTime.toFloat() / media.duration.minToMs) },
-        gapSize = 0.dp,
-        drawStopIndicator = {}
-    )
+        visible = isVisible
+    ) {
+
+        LinearProgressIndicator(
+            modifier = Modifier
+                .height(8.dp)
+                .fillMaxWidth(),
+            color = color,
+            progress = progress,
+            gapSize = 0.dp,
+            drawStopIndicator = {}
+        )
+
+    }
 }
+
 
 @Composable
 fun ProgressStatusChip(
@@ -60,5 +73,25 @@ fun ProgressStatusChip(
             )
         }
     }
+
+}
+
+@Composable
+fun ResetProgressDialog(
+    onValidate: () -> Unit,
+    onDismiss: () -> Unit
+) {
+
+    FluxDialog(
+        title = stringResource(R.string.reset_progress),
+        onDismiss = onDismiss,
+        onValidateLabel = stringResource(R.string.reset),
+        onValidate = onValidate,
+        content = {
+            Text.Body.Large(
+                text = stringResource(R.string.reset_progress_confirmation)
+            )
+        }
+    )
 
 }

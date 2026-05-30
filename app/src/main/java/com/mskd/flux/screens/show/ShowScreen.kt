@@ -45,6 +45,7 @@ import com.mskd.flux.model.State
 import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Route.*
+import com.mskd.flux.screens.artwork.ArtworkDialog
 import com.mskd.flux.screens.artwork.ArtworkDropDownMenu
 import com.mskd.flux.screens.artwork.ArtworkIntent
 import com.mskd.flux.screens.artwork.composables.common.ArtworkImage
@@ -56,6 +57,7 @@ import com.mskd.flux.ui.component.FluxDropDownMenuItem
 import com.mskd.flux.ui.component.FluxScaffold
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.component.OverviewItem
+import com.mskd.flux.ui.component.ResetProgressDialog
 import com.mskd.flux.ui.component.Text
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.AppThemePreview
@@ -266,6 +268,13 @@ fun ShowScreenContent(
             SeasonDialog(
                 season = it.season,
                 sendIntent = sendIntent,
+            )
+        }
+
+        if (dialog is ShowDialog.ResetProgress) {
+            ResetProgressDialog(
+                onValidate = { sendIntent(ShowIntent.ResetProgress) },
+                onDismiss = { sendIntent(ShowIntent.CloseDialog) }
             )
         }
 

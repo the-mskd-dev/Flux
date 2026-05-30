@@ -1,6 +1,7 @@
 package com.mskd.flux.model.artwork
 
 import com.mskd.flux.model.UserFile
+import com.mskd.flux.utils.extensions.minToMs
 import com.mskd.flux.utils.extensions.parseTMDBDate
 import java.util.Date
 
@@ -34,5 +35,7 @@ sealed class Media {
     val releaseDate: Date? get() = releaseDateString.parseTMDBDate()
 
     open val mediaId: Long get() = artworkId
+
+    val progressPercent: Float get() = this.currentTime.toFloat() / this.duration.minToMs
 
 }

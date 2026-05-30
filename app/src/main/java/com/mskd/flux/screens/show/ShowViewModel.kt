@@ -8,6 +8,7 @@ import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.model.artwork.Season
 import com.mskd.flux.useCases.artwork.ArtworkUC
 import com.mskd.flux.useCases.progress.ProgressUC
+import com.mskd.flux.utils.extensions.firstEpisode
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -85,6 +86,11 @@ class ShowViewModel @AssistedInject constructor(
             // Dialogs
             ShowIntent.CloseDialog -> closeDialog()
             is ShowIntent.ShowSeasonPreview -> showSeasonPreview(season = intent.season)
+            is ShowIntent.ShowResetProgressDialog -> showResetDialog()
+
+            // Other
+            ShowIntent.OpenShowInfo -> openShowInfo()
+            ShowIntent.ResetProgress -> resetProgress()
         }
     }
 
@@ -96,12 +102,31 @@ class ShowViewModel @AssistedInject constructor(
         _event.emit(ShowEvent.NavigateToSeason(artworkId = artworkId, season = season, rgb = rgb))
     }
 
+    private fun closeDialog() {
+        _uiState.update { it.copy(dialog = null) }
+    }
+
     private fun showSeasonPreview(season: Season) {
         _uiState.update { it.copy(dialog = ShowDialog.SeasonPreview(season = season)) }
     }
 
-    private fun closeDialog() {
+    private fun showResetDialog() {
+        _uiState.update { it.copy(dialog = ShowDialog.ResetProgress) }
+    }
+
+    private suspend fun openShowInfo() {
+        val fullArtwork = (_uiState.value.state as? State.Content)?.content ?: return
+        _event.emit(ShowEvent.OpenShowInfo(url = fullArtwork.artwork.infoUrl))
+    }
+
+    private suspend fun resetProgress() {
+
+        val fullArtwork = (_uiState.value.state as? State.Content)?.content ?: return
+
+        progressUC.resetProgress(artwork = fullArtwork.artwork)
+
         _uiState.update { it.copy(dialog = null) }
+
     }
 
     //endregion

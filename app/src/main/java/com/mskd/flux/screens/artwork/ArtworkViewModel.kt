@@ -128,19 +128,24 @@ class ArtworkViewModel @AssistedInject constructor(
     ) : ArtworkUiState {
 
         val fullArtwork = (artworkState as? State.Content<FullArtwork>)?.content
+        val fullMovie = fullArtwork as? FullArtwork.FullMovie
+        val fullShow = (fullArtwork as? FullArtwork.FullShow)?.let {
+            it.copy(
+                episodes = it.episodes.filter { e -> e.season == (season ?: -1) }
+            )
+        }
 
-        val episodes: List<Episode> = (fullArtwork as? FullArtwork.FullShow)?.episodes?.filter { it.season == (season ?: -1) } ?: emptyList()
-
+        val episodes: List<Episode> = fullShow?.episodes ?: emptyList()
         val episode = episodes.firstOrNull { it.id == (subState.selectedMedia as? Episode)?.id } // Selected media by user
             ?: episodes.firstEpisodeToWatch
 
-        val media = (fullArtwork as? FullArtwork.FullMovie)?.movie ?: episode
+        val media = fullMovie?.movie ?: episode
 
         return when {
             media == null -> ArtworkUiState(state = State.Error)
             else -> {
                 ArtworkUiState(
-                    state = artworkState,
+                    state = (fullShow ?: fullMovie)?.let { State.Content(it) } ?: State.Error,
                     selectedMedia = media,
                     useExternalPlayer = settings.externalPlayer,
                     dialog = subState.dialog

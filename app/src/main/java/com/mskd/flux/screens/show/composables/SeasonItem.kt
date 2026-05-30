@@ -94,7 +94,7 @@ fun SeasonItem(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .fillMaxWidth(),
-                isVisible = episodes.any { it.status == Status.IS_WATCHING } && episodes.size > 1,
+                isVisible = episodes.any { it.status == Status.WATCHED } && !episodes.all { it.status == Status.WATCHED } && episodes.size > 1,
                 progress = { episodes.count { it.status == Status.WATCHED } / episodes.size.toFloat() }
             )
 

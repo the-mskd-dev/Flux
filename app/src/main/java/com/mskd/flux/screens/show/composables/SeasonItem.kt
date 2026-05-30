@@ -2,9 +2,11 @@ package com.mskd.flux.screens.show.composables
 
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.TextAutoSize
@@ -26,8 +28,11 @@ import androidx.palette.graphics.Palette
 import coil3.toBitmap
 import com.mskd.flux.R
 import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Season
+import com.mskd.flux.model.artwork.Status
 import com.mskd.flux.ui.component.Image
+import com.mskd.flux.ui.component.ProgressStatusChip
 import com.mskd.flux.ui.component.Text
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.AppThemePreview
@@ -37,7 +42,7 @@ import com.mskd.flux.utils.extensions.tmdbImage
 fun SeasonItem(
     modifier: Modifier = Modifier,
     season: Season,
-    episodesCount: Int,
+    episodes: List<Episode>,
     onTap: (Int?) -> Unit,
     onLongPress: () -> Unit
 ) {
@@ -49,6 +54,35 @@ fun SeasonItem(
         modifier = modifier.fillMaxWidth()
     ) {
 
+        Box(
+            modifier = Modifier
+                .clip(MaterialTheme.shapes.large)
+                .fillMaxWidth()
+                .aspectRatio(5f/6f)
+                .combinedClickable(
+                    onClick = { onTap(seedRgb) },
+                    onLongClick = { onLongPress() }
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+
+            Image(
+                modifier = Modifier.fillMaxSize(),
+                url = url,
+                contentDescription = season.title,
+                onSuccess = { state ->
+                    val bitmap = state.result.image.toBitmap()
+                    Palette.from(bitmap).generate { palette ->
+                        seedRgb = palette?.dominantSwatch?.rgb
+                    }
+                }
+            )
+
+            ProgressStatusChip(
+                isWatched = episodes.all { it.status == Status.WATCHED }
+            )
+
+        }
         Image(
             modifier = Modifier
                 .clip(MaterialTheme.shapes.large)
@@ -88,7 +122,7 @@ fun SeasonItem(
 
             Text.Label.Small(
                 modifier = Modifier.fillMaxWidth(),
-                text = pluralStringResource(R.plurals.episodes, episodesCount, episodesCount),
+                text = pluralStringResource(R.plurals.episodes, episodes.size, episodes.size),
                 color = MaterialTheme.colorScheme.secondary,
                 textAlign = TextAlign.Center
             )
@@ -112,7 +146,7 @@ fun SeasonItem_Preview() {
                 SeasonItem(
                     modifier = Modifier.weight(1f),
                     season = MediaMockups.season1,
-                    episodesCount = 2,
+                    episodes = MediaMockups.episodes.filter { it.season == MediaMockups.season1.season },
                     onTap = {},
                     onLongPress = {}
                 )

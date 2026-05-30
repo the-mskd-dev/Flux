@@ -1,6 +1,15 @@
 package com.mskd.flux.ui.component
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -45,13 +54,22 @@ fun OverviewItem(
 
     var expanded by remember { mutableStateOf(false) }
     var isOverflowing by remember { mutableStateOf(false) }
+    var hasLaidOut by remember { mutableStateOf(false) }
 
     Column(
         modifier = modifier
             .clip(MaterialTheme.shapes.large)
             .background(MaterialTheme.colorScheme.surfaceContainer)
             .fillMaxWidth()
-            .padding(all = Ui.Space.MEDIUM),
+            .padding(all = Ui.Space.MEDIUM)
+            .then(
+                if (hasLaidOut) Modifier.animateContentSize(
+                    animationSpec = spring(
+                        dampingRatio = Spring.DampingRatioMediumBouncy,
+                        stiffness = Spring.StiffnessHigh
+                    )
+                ) else Modifier
+            ),
         verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
     ) {
 
@@ -73,22 +91,22 @@ fun OverviewItem(
 
         }
 
-
-        Column {
-
-            Text.Body.Large(
-                modifier = Modifier.fillMaxWidth(),
-                text = description,
-                textAlign = TextAlign.Left,
-                color = MaterialTheme.colorScheme.onSurface,
-                maxLines = if (expanded) Int.MAX_VALUE else 4,
-                overflow = if (expanded) TextOverflow.Clip else TextOverflow.Ellipsis,
-                onTextLayout = { result ->
-                    if (!expanded) isOverflowing = result.hasVisualOverflow
+        Text.Body.Large(
+            modifier = Modifier
+                .fillMaxWidth()
+                .animateContentSize(),
+            text = description,
+            textAlign = TextAlign.Left,
+            color = MaterialTheme.colorScheme.onSurface,
+            maxLines = if (expanded) Int.MAX_VALUE else 4,
+            overflow = if (expanded) TextOverflow.Clip else TextOverflow.Ellipsis,
+            onTextLayout = { result ->
+                if (!expanded) {
+                    isOverflowing = result.hasVisualOverflow
+                    hasLaidOut = true
                 }
-            )
-
-        }
+            }
+        )
 
         if (isOverflowing || expanded) {
             TextButton(

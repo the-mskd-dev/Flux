@@ -26,7 +26,6 @@ import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.model.artwork.Media
-import com.mskd.flux.screens.artwork.ArtworkIntent
 import com.mskd.flux.ui.component.Image
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.utils.FluxPreview
@@ -38,14 +37,15 @@ import com.mskd.flux.utils.extensions.tmdbImageLarge
 fun ArtworkImage(
     modifier: Modifier,
     fullArtwork: FullArtwork,
-    currentMedia: Media,
-    orientation: Orientation = Orientation.Vertical,
-    sendIntent: (ArtworkIntent) -> Unit
+    currentMedia: Media? = null,
+    orientation: Orientation = Orientation.Vertical
 ) {
 
     val episode = currentMedia as? Episode
-    val imageUrl = episode?.imagePath?.tmdbImageLarge ?: fullArtwork.artwork.bannerPath.tmdbImageLarge
-    val placeHolderUrl = episode?.imagePath?.tmdbImage ?: fullArtwork.artwork.bannerPath.tmdbImage
+    val imagePath = episode?.imagePath ?: fullArtwork.artwork.bannerPath
+
+    val imageUrl = imagePath.tmdbImageLarge
+    val placeHolderUrl = imageUrl.tmdbImage
 
     var imageSize by remember { mutableIntStateOf(0) }
     val imageRequest = ImageRequest.Builder(LocalContext.current)
@@ -106,7 +106,6 @@ fun ArtworkImage_Preview() {
             modifier = Modifier.aspectRatio(6f / 5f),
             fullArtwork = MediaMockups.fullShow,
             currentMedia = MediaMockups.fullShow.episodes.first(),
-            sendIntent = {},
         )
     }
 }

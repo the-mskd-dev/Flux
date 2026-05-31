@@ -22,7 +22,7 @@ data class HomeUiState(
 }
 
 sealed class HomeIntent {
-    data class OnArtworkTap(val artworkId: Long, val rgb: Int? = null): HomeIntent()
+    data class OnArtworkTap(val artwork: Artwork, val rgb: Int? = null): HomeIntent()
     data class OnCategoryTap(val category: ContentType): HomeIntent()
     data object SyncCatalog: HomeIntent()
     object OnSearchTap: HomeIntent()
@@ -33,7 +33,8 @@ sealed class HomeIntent {
 }
 
 sealed class HomeEvent {
-    data class NavigateToArtwork(val artworkId: Long, val rgb: Int?): HomeEvent()
+    data class NavigateToMovie(val artworkId: Long, val rgb: Int?): HomeEvent()
+    data class NavigateToShow(val artworkId: Long, val rgb: Int?): HomeEvent()
     data class NavigateToCategory(val category: ContentType): HomeEvent()
     object NavigateToUnknown: HomeEvent()
     object NavigateToSearch: HomeEvent()

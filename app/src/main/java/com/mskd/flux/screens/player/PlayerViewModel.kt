@@ -326,7 +326,7 @@ class PlayerViewModel @AssistedInject constructor(
         if (show) {
 
             val show = (artworkUC.flow.first() as? State.Content)?.content as? FullArtwork.FullShow
-            val episodes = show?.episodes
+            val episodes = show?.episodes?.filter { it.season == currentEpisode.season }
 
             val nextEpisode = episodes?.getNextEpisodeFor(currentEpisode) ?: return
 

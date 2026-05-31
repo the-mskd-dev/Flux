@@ -191,7 +191,7 @@ class ProgressUCTest : FunSpec({
             )
         ) { testCase ->
 
-            progressUC.resetProgress(artwork = testCase.artwork)
+            progressUC.resetProgress(artwork = testCase.artwork, season = testCase.season)
 
             when (testCase.artwork.type) {
                 ContentType.MOVIE -> {
@@ -204,6 +204,23 @@ class ProgressUCTest : FunSpec({
 
             coVerify { userRepository.removeFromRecentlyWatched(artworkId = testCase.artwork.id) }
 
+        }
+    }
+
+    test("reset progress for specific season") {
+        val episodes = listOf(
+            MediaMockups.episode1.copy(status = Status.WATCHED),
+            MediaMockups.episode2.copy(status = Status.IS_WATCHING, currentTime = 1000L),
+            MediaMockups.episode3.copy(status = Status.WATCHED)
+        )
+        coEvery { databaseRepository.getEpisodes(MediaMockups.showArtwork.id) } returns episodes
+
+        progressUC.resetProgress(artwork = MediaMockups.showArtwork, season = 1)
+
+        coVerify {
+            databaseRepository.saveEpisodes(match { saved ->
+                saved.size == 2 && saved.all { it.season == 1 && it.status == Status.TO_WATCH && it.currentTime == 0L }
+            })
         }
     }
 

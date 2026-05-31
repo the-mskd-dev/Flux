@@ -8,8 +8,9 @@ import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.data.tmdb.token.TokenRepository
 import com.mskd.flux.model.AppInfo
 import com.mskd.flux.model.artwork.Artwork
-import com.mskd.flux.screens.home.HomeEvent.NavigateToArtwork
+import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.screens.home.HomeEvent.NavigateToCategory
+import com.mskd.flux.screens.home.HomeEvent.NavigateToMovie
 import com.mskd.flux.useCases.catalog.CatalogUC
 import com.mskd.flux.utils.FluxSnackbar
 import com.mskd.flux.utils.UpdateManager
@@ -87,7 +88,7 @@ class HomeViewModel @Inject constructor(
     fun handleIntent(intent: HomeIntent) = viewModelScope.launch {
         when (intent) {
             is HomeIntent.SyncCatalog -> syncCatalog(manualSync = true)
-            is HomeIntent.OnArtworkTap -> onArtworkTap(artworkId = intent.artworkId, rgb = intent.rgb)
+            is HomeIntent.OnArtworkTap -> onArtworkTap(artwork = intent.artwork, rgb = intent.rgb)
             is HomeIntent.OnCategoryTap -> _event.emit(NavigateToCategory(category = intent.category))
             HomeIntent.OnSearchTap -> _event.emit(HomeEvent.NavigateToSearch)
             HomeIntent.OnSnackbarActionTap -> onSnackbarActionTap()
@@ -127,11 +128,12 @@ class HomeViewModel @Inject constructor(
 
     }
 
-    private suspend fun onArtworkTap(artworkId: Long, rgb: Int?) {
+    private suspend fun onArtworkTap(artwork: Artwork, rgb: Int?) {
 
-        val event = when (artworkId) {
-            Artwork.UNKNOWN_ID -> HomeEvent.NavigateToUnknown
-            else -> NavigateToArtwork(artworkId = artworkId, rgb = rgb)
+        val event = when {
+            artwork.id == Artwork.UNKNOWN_ID -> HomeEvent.NavigateToUnknown
+            artwork.type == ContentType.SHOW -> HomeEvent.NavigateToShow(artworkId = artwork.id, rgb = rgb)
+            else -> NavigateToMovie(artworkId = artwork.id, rgb = rgb)
         }
 
         _event.emit(event)

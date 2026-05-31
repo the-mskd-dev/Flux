@@ -1,4 +1,4 @@
-package com.mskd.flux.screens.artwork.composables.common
+package com.mskd.flux.screens.show.composables
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,7 +23,7 @@ import androidx.compose.ui.window.DialogProperties
 import com.mskd.flux.R
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.Season
-import com.mskd.flux.screens.artwork.ArtworkIntent
+import com.mskd.flux.screens.show.ShowIntent
 import com.mskd.flux.ui.component.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
@@ -33,11 +33,11 @@ import com.mskd.flux.utils.FluxPreview
 @Composable
 fun SeasonDialog(
     season: Season,
-    sendIntent: (ArtworkIntent) -> Unit
+    sendIntent: (ShowIntent) -> Unit
 ) {
 
     BasicAlertDialog(
-        onDismissRequest = { sendIntent(ArtworkIntent.ShowPreviewForSeason(null)) },
+        onDismissRequest = { sendIntent(ShowIntent.CloseDialog) },
         properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
 

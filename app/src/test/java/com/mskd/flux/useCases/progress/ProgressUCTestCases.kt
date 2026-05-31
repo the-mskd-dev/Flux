@@ -25,6 +25,7 @@ object ProgressUCTestCases {
     data class ResetProgress(
         val description: String,
         val artwork: Artwork,
+        val season: Int? = null,
     )
 
 }

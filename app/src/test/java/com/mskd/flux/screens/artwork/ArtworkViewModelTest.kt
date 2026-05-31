@@ -31,6 +31,7 @@ class ArtworkViewModelTest : FunSpec({
     lateinit var settingsRepository: SettingsRepository
     lateinit var artworkUC: FakeArtworkUC
     lateinit var progressUC: ProgressUC
+    var currentSeason: Int? = 1
 
     val updateVm: () -> Unit = {
 
@@ -38,6 +39,7 @@ class ArtworkViewModelTest : FunSpec({
 
         viewModel = ArtworkViewModel(
             artworkId = MediaMockups.showArtwork.id,
+            season = currentSeason,
             artworkUC = artworkUC,
             settingsRepository = settingsRepository,
             progressUC = progressUC
@@ -46,6 +48,8 @@ class ArtworkViewModelTest : FunSpec({
     }
 
     beforeTest {
+
+        currentSeason = 1
 
         artworkUC = FakeArtworkUC(initialContentType = ContentType.SHOW)
 
@@ -63,13 +67,13 @@ class ArtworkViewModelTest : FunSpec({
 
             val initialState = awaitItem()
 
-            initialState.state.shouldBeInstanceOf<State.Content<FullArtwork>>()
+            initialState.state.shouldBeInstanceOf<State.Content<ArtworkContent>>()
             val content = (initialState.state as State.Content).content
-            content.artwork shouldBe MediaMockups.showArtwork
-            initialState.selectedMedia shouldBe MediaMockups.episode1
-            (content as FullArtwork.FullShow).episodes shouldBe MediaMockups.episodes
-            initialState.selectedSeason shouldBe MediaMockups.episode1.season
-            initialState.episodePendingConfirmation shouldBe null
+            content.fullArtwork.artwork shouldBe MediaMockups.showArtwork
+            content.selectedMedia shouldBe MediaMockups.episode1
+            (content.fullArtwork as FullArtwork.FullShow).episodes shouldBe MediaMockups.episodes
+            content.selectedSeason shouldBe MediaMockups.episode1.season
+            content.dialog shouldBe null
 
         }
 
@@ -82,17 +86,16 @@ class ArtworkViewModelTest : FunSpec({
         }
     }
 
-    test("select season") {
+    test("instantiate with specific season") {
+
+        currentSeason = 2
+        updateVm()
 
         viewModel.uiState.test {
 
-            awaitItem()
-
-            viewModel.handleIntent(ArtworkIntent.SelectSeason(2))
-
-            val updatedState = expectMostRecentItem()
-
-            updatedState.selectedSeason shouldBe 2
+            val state = awaitItem()
+            val content = (state.state as State.Content).content
+            content.selectedSeason shouldBe 2
 
         }
 
@@ -103,7 +106,8 @@ class ArtworkViewModelTest : FunSpec({
         viewModel.uiState.test {
 
             val initialState = expectMostRecentItem()
-            val media = initialState.selectedMedia
+            val content = (initialState.state as State.Content).content
+            val media = content.selectedMedia
 
             viewModel.event.test {
 
@@ -131,7 +135,8 @@ class ArtworkViewModelTest : FunSpec({
         viewModel.uiState.test {
 
             val initialState = expectMostRecentItem()
-            val media = initialState.selectedMedia
+            val content = (initialState.state as State.Content).content
+            val media = content.selectedMedia
 
             viewModel.event.test {
 
@@ -153,7 +158,8 @@ class ArtworkViewModelTest : FunSpec({
         viewModel.uiState.test {
 
             val initialState = expectMostRecentItem()
-            val media = initialState.selectedMedia as Episode
+            val content = (initialState.state as State.Content).content
+            val media = content.selectedMedia as Episode
 
             viewModel.handleIntent(ArtworkIntent.ChangeWatchStatus(media = media))
 
@@ -182,8 +188,9 @@ class ArtworkViewModelTest : FunSpec({
 
             // Final state
             val updatedState = expectMostRecentItem()
+            val content = (updatedState.state as State.Content).content
 
-            updatedState.episodePendingConfirmation shouldBe MediaMockups.episode2
+            content.dialog shouldBe ArtworkDialog.EpisodeStatusConfirmation(episode = MediaMockups.episode2)
 
             cancelAndConsumeRemainingEvents()
 
@@ -196,10 +203,12 @@ class ArtworkViewModelTest : FunSpec({
             expectMostRecentItem()
 
             viewModel.handleIntent(ArtworkIntent.ChangeWatchStatus(media = MediaMockups.episode2))
-            expectMostRecentItem().episodePendingConfirmation shouldBe MediaMockups.episode2
+            var content = (expectMostRecentItem().state as State.Content).content
+            content.dialog shouldBe ArtworkDialog.EpisodeStatusConfirmation(episode = MediaMockups.episode2)
 
-            viewModel.handleIntent(ArtworkIntent.CloseEpisodesStatusDialog)
-            expectMostRecentItem().episodePendingConfirmation shouldBe null
+            viewModel.handleIntent(ArtworkIntent.CloseDialog)
+            content = (expectMostRecentItem().state as State.Content).content
+            content.dialog shouldBe null
         }
     }
 
@@ -241,13 +250,15 @@ class ArtworkViewModelTest : FunSpec({
         viewModel.uiState.test {
 
             val loadedState = awaitItem()
-            val episodes = ((loadedState.state as State.Content).content as FullArtwork.FullShow).episodes
+            val content = (loadedState.state as State.Content).content
+            val episodes = (content.fullArtwork as FullArtwork.FullShow).episodes
 
             // Change status of the latest episode
             viewModel.handleIntent(ArtworkIntent.ChangeWatchStatus(media = episodes.last()))
 
             val stateWithDialog = expectMostRecentItem()
-            stateWithDialog.episodePendingConfirmation shouldNotBe null
+            val contentWithDialog = (stateWithDialog.state as State.Content).content
+            contentWithDialog.dialog shouldNotBe null
 
             // Validate change for previous episodes
             viewModel.handleIntent(ArtworkIntent.MarkPreviousEpisodesAsWatched)
@@ -277,14 +288,16 @@ class ArtworkViewModelTest : FunSpec({
         viewModel.uiState.test {
 
             val initialState = expectMostRecentItem()
+            val content = (initialState.state as State.Content).content
+            val media = content.selectedMedia
 
-            initialState.selectedMedia.status shouldBe Status.TO_WATCH
+            media.status shouldBe Status.TO_WATCH
 
-            viewModel.handleIntent(ArtworkIntent.ChangeWatchStatus(media = initialState.selectedMedia))
+            viewModel.handleIntent(ArtworkIntent.ChangeWatchStatus(media = media))
 
             coVerify {
                 progressUC.changeMediaStatus(
-                    media = match { it.mediaId == initialState.selectedMedia.mediaId },
+                    media = match { it.mediaId == media.mediaId },
                     status = match { it == Status.WATCHED }
                 )
             }
@@ -299,11 +312,13 @@ class ArtworkViewModelTest : FunSpec({
         viewModel.uiState.test {
             awaitItem()
 
-            viewModel.handleIntent(ArtworkIntent.ShowResetProgressDialog(show = true))
-            awaitItem().showResetProgressDialog shouldBe true
+            viewModel.handleIntent(ArtworkIntent.ShowResetProgressDialog)
+            var content = (awaitItem().state as State.Content).content
+            content.dialog shouldBe ArtworkDialog.ResetProgressConfirmation
 
-            viewModel.handleIntent(ArtworkIntent.ShowResetProgressDialog(show = false))
-            awaitItem().showResetProgressDialog shouldBe false
+            viewModel.handleIntent(ArtworkIntent.CloseDialog)
+            content = (awaitItem().state as State.Content).content
+            content.dialog shouldBe null
 
         }
     }
@@ -311,11 +326,11 @@ class ArtworkViewModelTest : FunSpec({
     test("reset progress") {
         viewModel.uiState.test {
             val state = awaitItem()
+            val content = (state.state as State.Content).content
 
             viewModel.handleIntent(ArtworkIntent.ResetProgress)
 
-            val content = (state.state as State.Content).content
-            coVerify { progressUC.resetProgress(content.artwork) }
+            coVerify { progressUC.resetProgress(content.fullArtwork.artwork, 1) }
 
         }
     }
@@ -327,8 +342,8 @@ class ArtworkViewModelTest : FunSpec({
             viewModel.event.test {
                 viewModel.handleIntent(ArtworkIntent.OpenArtworkInfo)
                 val event = awaitItem()
-                event.shouldBeInstanceOf<ArtworkEvent.OpenArtworkInfo>()
-                event.artwork shouldBe MediaMockups.showArtwork
+                event.shouldBeInstanceOf<ArtworkEvent.OpenUrlInfo>()
+                event.url shouldBe MediaMockups.season1.infoUrl
             }
         }
     }
@@ -341,8 +356,8 @@ class ArtworkViewModelTest : FunSpec({
                 val episode = MediaMockups.episode1
                 viewModel.handleIntent(ArtworkIntent.OpenEpisodeInfo(episode))
                 val event = awaitItem()
-                event.shouldBeInstanceOf<ArtworkEvent.OpenEpisodeInfo>()
-                event.episode shouldBe episode
+                event.shouldBeInstanceOf<ArtworkEvent.OpenUrlInfo>()
+                event.url shouldBe episode.infoUrl
             }
         }
     }
@@ -357,23 +372,12 @@ class ArtworkViewModelTest : FunSpec({
         }
     }
 
-    test("show preview for season") {
-        viewModel.uiState.test {
-            awaitItem()
-            val season = MediaMockups.season1
-            viewModel.handleIntent(ArtworkIntent.ShowPreviewForSeason(season))
-            expectMostRecentItem().previewForSeason shouldBe season
-
-            viewModel.handleIntent(ArtworkIntent.ShowPreviewForSeason(null))
-            expectMostRecentItem().previewForSeason shouldBe null
-        }
-    }
-
     test("error state") {
         artworkUC = FakeArtworkUC(initialContentType = ContentType.SHOW)
 
         viewModel = ArtworkViewModel(
             artworkId = -999L,
+            season = null,
             artworkUC = artworkUC,
             settingsRepository = settingsRepository,
             progressUC = progressUC

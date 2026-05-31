@@ -3,6 +3,7 @@ package com.mskd.flux.screens.search
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.data.repository.settings.SettingsRepository
+import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.useCases.catalog.CatalogUC
 import dagger.assisted.Assisted
@@ -56,10 +57,21 @@ class SearchViewModel @AssistedInject constructor(
     fun handleIntent(intent: SearchIntent) = viewModelScope.launch {
         when (intent) {
             SearchIntent.OnBackTap -> _event.emit(SearchEvent.BackToPreviousScreen)
-            is SearchIntent.OnArtworkTap -> _event.emit(SearchEvent.NavigateToMedia(artworkId = intent.artworkId, rgb = intent.rgb))
+            is SearchIntent.OnArtworkTap -> onArtworkTap(artwork = intent.artwork, rgb = intent.rgb)
             is SearchIntent.FilterOnType -> filterOnType(type = intent.contentType)
             is SearchIntent.DoSearch -> doSearch(query = intent.query)
         }
+    }
+
+    private suspend fun onArtworkTap(artwork: Artwork, rgb: Int?) {
+
+        val event = when(artwork.type) {
+            ContentType.SHOW -> SearchEvent.NavigateToShow(artworkId = artwork.id, rgb = rgb)
+            ContentType.MOVIE -> SearchEvent.NavigateToMovie(artworkId = artwork.id, rgb = rgb)
+        }
+
+        _event.emit(event)
+
     }
 
     private fun doSearch(query: String) {

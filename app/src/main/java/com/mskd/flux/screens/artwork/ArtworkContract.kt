@@ -1,49 +1,65 @@
 package com.mskd.flux.screens.artwork
 
 import androidx.compose.runtime.Immutable
-import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.State
-import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.model.artwork.Media
-import com.mskd.flux.model.artwork.Season
-import com.mskd.flux.screens.customization.CustomizationIntent
+
+@Immutable
+data class ArtworkDataState(
+    val fullArtwork: FullArtwork,
+    val useExternalPlayer: Boolean
+)
+
+@Immutable
+data class ArtworkUserState(
+    val selectedMedia: Media? = null,
+    val dialog: ArtworkDialog? = null,
+)
+
+@Immutable
+data class ArtworkContent(
+    val fullArtwork: FullArtwork,
+    val selectedMedia: Media,
+    val selectedSeason: Int?,
+    val useExternalPlayer: Boolean,
+    val dialog: ArtworkDialog?,
+)
 
 @Immutable
 data class ArtworkUiState(
-    val state: State<FullArtwork> = State.Loading,
-    val selectedMedia: Media = MediaMockups.episode1,
-    val selectedSeason: Int = -1,
-    val useExternalPlayer: Boolean = false,
-    val dialog: ArtworkDialog? = null
+    val state: State<ArtworkContent> = State.Loading
 )
 
 sealed class ArtworkDialog {
     data class EpisodeStatusConfirmation(val episode: Episode) : ArtworkDialog()
     object ResetProgressConfirmation : ArtworkDialog()
-    data class SeasonPreview(val season: Season) : ArtworkDialog()
 }
 
 sealed class ArtworkIntent {
+    //Navigation
     object OnBackTap: ArtworkIntent()
-    data class ChangeWatchStatus(val media: Media): ArtworkIntent()
-    object MarkPreviousEpisodesAsWatched: ArtworkIntent()
-    object CloseEpisodesStatusDialog: ArtworkIntent()
-    data class SelectSeason(val season: Int): ArtworkIntent()
     data class PlayMedia(val media: Media, val forceInternal: Boolean = false): ArtworkIntent()
     data object OpenArtworkInfo: ArtworkIntent()
     data class OpenEpisodeInfo(val episode: Episode): ArtworkIntent()
-    data class OnExternalPlayerResult(val progress: Long) : ArtworkIntent()
-    data class ShowResetProgressDialog(val show: Boolean) : ArtworkIntent()
+
+    // Dialogs
+    data object CloseDialog: ArtworkIntent()
+    data object ShowResetProgressDialog : ArtworkIntent()
+
+    // Status
     data object ResetProgress: ArtworkIntent()
-    data class ShowPreviewForSeason(val season: Season?) : ArtworkIntent()
+    data class ChangeWatchStatus(val media: Media): ArtworkIntent()
+    object MarkPreviousEpisodesAsWatched: ArtworkIntent()
+
+    // Other
+    data class OnExternalPlayerResult(val progress: Long) : ArtworkIntent()
 }
 
 sealed class ArtworkEvent {
     object BackToPreviousScreen : ArtworkEvent()
     data class PlayMedia(val mediaId: Long) : ArtworkEvent()
     data class LaunchExternalPlayer(val media: Media) : ArtworkEvent()
-    data class OpenArtworkInfo(val artwork: Artwork) : ArtworkEvent()
-    data class OpenEpisodeInfo(val episode: Episode): ArtworkEvent()
+    data class OpenUrlInfo(val url: String) : ArtworkEvent()
 }

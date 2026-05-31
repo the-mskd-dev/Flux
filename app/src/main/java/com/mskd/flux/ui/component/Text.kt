@@ -112,7 +112,8 @@ object Text {
             lineHeight: TextUnit = TextUnit.Unspecified,
             overflow: TextOverflow = TextOverflow.Clip,
             maxLines: Int = Int.MAX_VALUE,
-            minLines: Int = 1
+            minLines: Int = 1,
+            onTextLayout : ((TextLayoutResult) -> Unit)? = null
         ) {
 
             if (text.isNullOrBlank())
@@ -127,7 +128,8 @@ object Text {
                 lineHeight = lineHeight,
                 overflow = overflow,
                 maxLines = maxLines,
-                minLines = minLines
+                minLines = minLines,
+                onTextLayout = onTextLayout
             )
 
         }
@@ -147,7 +149,8 @@ object Text {
             lineHeight: TextUnit = TextUnit.Unspecified,
             overflow: TextOverflow = TextOverflow.Clip,
             maxLines: Int = Int.MAX_VALUE,
-            minLines: Int = 1
+            minLines: Int = 1,
+            onTextLayout : ((TextLayoutResult) -> Unit)? = null
         ) {
 
             if (text.isNullOrBlank())
@@ -162,7 +165,8 @@ object Text {
                 lineHeight = lineHeight,
                 overflow = overflow,
                 maxLines = maxLines,
-                minLines = minLines
+                minLines = minLines,
+                onTextLayout = onTextLayout
             )
 
         }
@@ -182,7 +186,8 @@ object Text {
             lineHeight: TextUnit = TextUnit.Unspecified,
             overflow: TextOverflow = TextOverflow.Clip,
             maxLines: Int = Int.MAX_VALUE,
-            minLines: Int = 1
+            minLines: Int = 1,
+            onTextLayout : ((TextLayoutResult) -> Unit)? = null
         ) {
 
             if (text.isNullOrBlank())
@@ -197,7 +202,8 @@ object Text {
                 lineHeight = lineHeight,
                 overflow = overflow,
                 maxLines = maxLines,
-                minLines = minLines
+                minLines = minLines,
+                onTextLayout = onTextLayout
             )
 
         }
@@ -224,7 +230,8 @@ object Text {
             lineHeight: TextUnit = TextUnit.Unspecified,
             overflow: TextOverflow = TextOverflow.Clip,
             maxLines: Int = Int.MAX_VALUE,
-            minLines: Int = 1
+            minLines: Int = 1,
+            onTextLayout : ((TextLayoutResult) -> Unit)? = null
         ) {
 
             if (text.isNullOrBlank())
@@ -239,7 +246,8 @@ object Text {
                 lineHeight = lineHeight,
                 overflow = overflow,
                 maxLines = maxLines,
-                minLines = minLines
+                minLines = minLines,
+                onTextLayout = onTextLayout
             )
 
         }
@@ -259,7 +267,8 @@ object Text {
             lineHeight: TextUnit = TextUnit.Unspecified,
             overflow: TextOverflow = TextOverflow.Clip,
             maxLines: Int = Int.MAX_VALUE,
-            minLines: Int = 1
+            minLines: Int = 1,
+            onTextLayout : ((TextLayoutResult) -> Unit)? = null
         ) {
 
             if (text.isNullOrBlank())
@@ -274,7 +283,8 @@ object Text {
                 lineHeight = lineHeight,
                 overflow = overflow,
                 maxLines = maxLines,
-                minLines = minLines
+                minLines = minLines,
+                onTextLayout = onTextLayout
             )
 
         }
@@ -294,7 +304,8 @@ object Text {
             lineHeight: TextUnit = TextUnit.Unspecified,
             overflow: TextOverflow = TextOverflow.Clip,
             maxLines: Int = Int.MAX_VALUE,
-            minLines: Int = 1
+            minLines: Int = 1,
+            onTextLayout : ((TextLayoutResult) -> Unit)? = null
         ) {
 
             if (text.isNullOrBlank())
@@ -309,7 +320,8 @@ object Text {
                 lineHeight = lineHeight,
                 overflow = overflow,
                 maxLines = maxLines,
-                minLines = minLines
+                minLines = minLines,
+                onTextLayout = onTextLayout
             )
 
         }
@@ -336,7 +348,8 @@ object Text {
             lineHeight: TextUnit = TextUnit.Unspecified,
             overflow: TextOverflow = TextOverflow.Clip,
             maxLines: Int = Int.MAX_VALUE,
-            minLines: Int = 1
+            minLines: Int = 1,
+            onTextLayout : ((TextLayoutResult) -> Unit)? = null
         ) {
 
             if (text.isNullOrBlank())
@@ -351,7 +364,8 @@ object Text {
                 lineHeight = lineHeight,
                 overflow = overflow,
                 maxLines = maxLines,
-                minLines = minLines
+                minLines = minLines,
+                onTextLayout = onTextLayout
             )
 
         }
@@ -371,7 +385,8 @@ object Text {
             lineHeight: TextUnit = TextUnit.Unspecified,
             overflow: TextOverflow = TextOverflow.Clip,
             maxLines: Int = Int.MAX_VALUE,
-            minLines: Int = 1
+            minLines: Int = 1,
+            onTextLayout : ((TextLayoutResult) -> Unit)? = null
         ) {
 
             if (text.isNullOrBlank())
@@ -386,7 +401,8 @@ object Text {
                 lineHeight = lineHeight,
                 overflow = overflow,
                 maxLines = maxLines,
-                minLines = minLines
+                minLines = minLines,
+                onTextLayout = onTextLayout
             )
 
         }
@@ -407,7 +423,8 @@ object Text {
             lineHeight: TextUnit = TextUnit.Unspecified,
             overflow: TextOverflow = TextOverflow.Clip,
             maxLines: Int = Int.MAX_VALUE,
-            minLines: Int = 1
+            minLines: Int = 1,
+            onTextLayout : ((TextLayoutResult) -> Unit)? = null
         ) {
 
             if (text.isNullOrBlank())
@@ -422,7 +439,8 @@ object Text {
                 lineHeight = lineHeight,
                 overflow = overflow,
                 maxLines = maxLines,
-                minLines = minLines
+                minLines = minLines,
+                onTextLayout = onTextLayout
             )
 
         }
@@ -449,7 +467,8 @@ object Text {
             lineHeight: TextUnit = TextUnit.Unspecified,
             overflow: TextOverflow = TextOverflow.Clip,
             maxLines: Int = Int.MAX_VALUE,
-            minLines: Int = 1
+            minLines: Int = 1,
+            onTextLayout : ((TextLayoutResult) -> Unit)? = null
         ) {
 
             if (text.isNullOrBlank())
@@ -464,7 +483,8 @@ object Text {
                 lineHeight = lineHeight,
                 overflow = overflow,
                 maxLines = maxLines,
-                minLines = minLines
+                minLines = minLines,
+                onTextLayout = onTextLayout
             )
 
         }
@@ -484,7 +504,8 @@ object Text {
             lineHeight: TextUnit = TextUnit.Unspecified,
             overflow: TextOverflow = TextOverflow.Clip,
             maxLines: Int = Int.MAX_VALUE,
-            minLines: Int = 1
+            minLines: Int = 1,
+            onTextLayout : ((TextLayoutResult) -> Unit)? = null
         ) {
 
             if (text.isNullOrBlank())
@@ -499,7 +520,8 @@ object Text {
                 lineHeight = lineHeight,
                 overflow = overflow,
                 maxLines = maxLines,
-                minLines = minLines
+                minLines = minLines,
+                onTextLayout = onTextLayout
             )
 
         }
@@ -519,7 +541,8 @@ object Text {
             lineHeight: TextUnit = TextUnit.Unspecified,
             overflow: TextOverflow = TextOverflow.Clip,
             maxLines: Int = Int.MAX_VALUE,
-            minLines: Int = 1
+            minLines: Int = 1,
+            onTextLayout : ((TextLayoutResult) -> Unit)? = null
         ) {
 
             if (text.isNullOrBlank())
@@ -534,7 +557,8 @@ object Text {
                 lineHeight = lineHeight,
                 overflow = overflow,
                 maxLines = maxLines,
-                minLines = minLines
+                minLines = minLines,
+                onTextLayout = onTextLayout
             )
 
         }
@@ -561,7 +585,8 @@ object Text {
             lineHeight: TextUnit = TextUnit.Unspecified,
             overflow: TextOverflow = TextOverflow.Clip,
             maxLines: Int = Int.MAX_VALUE,
-            minLines: Int = 1
+            minLines: Int = 1,
+            onTextLayout : ((TextLayoutResult) -> Unit)? = null
         ) {
 
             if (text.isNullOrBlank())
@@ -576,7 +601,8 @@ object Text {
                 lineHeight = lineHeight,
                 overflow = overflow,
                 maxLines = maxLines,
-                minLines = minLines
+                minLines = minLines,
+                onTextLayout = onTextLayout
             )
 
         }
@@ -596,7 +622,8 @@ object Text {
             lineHeight: TextUnit = TextUnit.Unspecified,
             overflow: TextOverflow = TextOverflow.Clip,
             maxLines: Int = Int.MAX_VALUE,
-            minLines: Int = 1
+            minLines: Int = 1,
+            onTextLayout : ((TextLayoutResult) -> Unit)? = null
         ) {
 
             if (text.isNullOrBlank())
@@ -611,7 +638,8 @@ object Text {
                 lineHeight = lineHeight,
                 overflow = overflow,
                 maxLines = maxLines,
-                minLines = minLines
+                minLines = minLines,
+                onTextLayout = onTextLayout
             )
 
         }
@@ -631,7 +659,8 @@ object Text {
             lineHeight: TextUnit = TextUnit.Unspecified,
             overflow: TextOverflow = TextOverflow.Clip,
             maxLines: Int = Int.MAX_VALUE,
-            minLines: Int = 1
+            minLines: Int = 1,
+            onTextLayout : ((TextLayoutResult) -> Unit)? = null
         ) {
 
             if (text.isNullOrBlank())
@@ -646,7 +675,8 @@ object Text {
                 lineHeight = lineHeight,
                 overflow = overflow,
                 maxLines = maxLines,
-                minLines = minLines
+                minLines = minLines,
+                onTextLayout = onTextLayout
             )
 
         }

@@ -135,4 +135,12 @@
     <string name="wave_progress">Barre de progression en vague</string>
     <string name="accent_color_desc">Couleur globale de l\'interfac</string>
     <string name="large_artwork_poster">Grande image sur la page des films/séries</string>
+    <string name="seasons">Saisons</string>
+    <plurals name="episodes">
+        <item quantity="one">%d épisode</item>
+        <item quantity="many">%d épisodes</item>
+        <item quantity="other">%d épisodes</item>
+    </plurals>
+    <string name="read_more">Lire plus</string>
+    <string name="read_less">Lire moins</string>
 </resources>

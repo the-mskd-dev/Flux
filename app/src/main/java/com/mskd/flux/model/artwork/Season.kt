@@ -42,4 +42,6 @@ data class Season(
         season = tmdbSeason.season
     )
 
+    val infoUrl: String get() = "https://www.themoviedb.org/tv/$artworkId/season/$season"
+
 }

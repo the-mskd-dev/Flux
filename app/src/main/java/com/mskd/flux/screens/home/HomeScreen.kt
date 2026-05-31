@@ -58,7 +58,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -103,7 +102,8 @@ fun HomeScreen(
         viewModel.event.collect { event ->
             when (event) {
                 is HomeEvent.NavigateToCategory -> navigate(Route.Search(contentType = event.category))
-                is HomeEvent.NavigateToArtwork -> navigate(Route.Artwork(artworkId = event.artworkId, rgb = event.rgb))
+                is HomeEvent.NavigateToMovie -> navigate(Route.Artwork(artworkId = event.artworkId, season = null, rgb = event.rgb))
+                is HomeEvent.NavigateToShow -> navigate(Route.Show(artworkId = event.artworkId, rgb = event.rgb))
                 HomeEvent.NavigateToUnknown -> navigate(Route.UnknownArtworks)
                 HomeEvent.NavigateToHowTo -> navigate(Route.HowTo)
                 HomeEvent.NavigateToSearch -> navigate(Route.Search())
@@ -406,7 +406,7 @@ fun LastWatchedCarousel(
                     .aspectRatio(ratio),
                 url = url,
                 shape = MaterialTheme.shapes.extraLarge,
-                onTap = { rgb -> sendIntent(HomeIntent.OnArtworkTap(artworkId = overview.id, rgb = rgb)) },
+                onTap = { rgb -> sendIntent(HomeIntent.OnArtworkTap(artwork = overview, rgb = rgb)) },
                 description = overview.title
             )
 
@@ -437,7 +437,7 @@ fun LastWatchedCarousel(
                             if (carouselState.currentItem != i) {
                                 scope.launch { carouselState.animateScrollToItem(i) }
                             } else {
-                                sendIntent(HomeIntent.OnArtworkTap(artworkId = overview.id, rgb = rgb))
+                                sendIntent(HomeIntent.OnArtworkTap(artwork = overview, rgb = rgb))
                             }
 
                         },
@@ -530,7 +530,7 @@ fun MediaCategory(
                         .width(width)
                         .aspectRatio(ratio),
                     url = it.imagePath.tmdbImage,
-                    onTap = { rgb -> sendIntent(HomeIntent.OnArtworkTap(artworkId = it.id, rgb = rgb)) },
+                    onTap = { rgb -> sendIntent(HomeIntent.OnArtworkTap(artwork = it, rgb = rgb)) },
                     description = it.title
                 )
 
@@ -548,12 +548,6 @@ fun UnknownCategory(sendIntent: (HomeIntent) -> Unit) {
     val width = 120.dp
     val ratio = 2f/3f
     val foregroundPainter = rememberVectorPainter(ImageVector.vectorResource(R.drawable.ic_launcher_foreground))
-    val backgroundGradient = Brush.linearGradient(
-        colors = listOf(
-            MaterialTheme.colorScheme.primaryContainer,
-            MaterialTheme.colorScheme.tertiaryContainer
-        )
-    )
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -572,18 +566,18 @@ fun UnknownCategory(sendIntent: (HomeIntent) -> Unit) {
         Box(
             modifier = Modifier
                 .padding(horizontal = Ui.Space.MEDIUM)
-                .clickable { sendIntent(HomeIntent.OnArtworkTap(artworkId = Artwork.UNKNOWN_ID)) }
+                .clickable { sendIntent(HomeIntent.OnArtworkTap(artwork = Artwork.UNKNOWN)) }
                 .clip(MaterialTheme.shapes.small)
                 .width(width)
                 .aspectRatio(ratio)
-                .background(brush = backgroundGradient),
+                .background(color = MaterialTheme.colorScheme.secondaryContainer),
             contentAlignment = Alignment.Center
         ) {
 
             Image(
                 modifier = Modifier.fillMaxSize(),
                 painter = foregroundPainter,
-                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimaryContainer),
+                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSecondaryContainer),
                 contentDescription = stringResource(R.string.other_files)
             )
 

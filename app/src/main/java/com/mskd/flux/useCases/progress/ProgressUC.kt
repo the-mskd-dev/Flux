@@ -20,7 +20,7 @@ interface ProgressUC {
     suspend fun saveProgress(media: Media, progress: Long)
     suspend fun changeMediaStatus(media: Media, status: Status)
     suspend fun markPreviousEpisodesAsWatchedFor(episode: Episode)
-    suspend fun resetProgress(artwork: Artwork)
+    suspend fun resetProgress(artwork: Artwork, season: Int?)
 }
 
 class ProgressUCImpl(
@@ -111,12 +111,13 @@ class ProgressUCImpl(
 
     }
 
-    override suspend fun resetProgress(artwork: Artwork) {
+    override suspend fun resetProgress(artwork: Artwork, season: Int?) {
         when (artwork.type) {
             ContentType.SHOW -> {
 
                 val episodes = database.getEpisodes(artworkId = artwork.id)
                 val updatedEpisodes = episodes
+                    .filter { if (season != null) it.season == season else true }
                     .filter { it.status != Status.TO_WATCH || it.currentTime != 0L }
                     .map { it.copy(currentTime = 0L, status = Status.TO_WATCH) }
 

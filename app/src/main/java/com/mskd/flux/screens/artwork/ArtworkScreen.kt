@@ -169,7 +169,12 @@ fun ArtworkScreenContent(
 
     FluxScaffold(
         modifier = Modifier.graphicsLayer { alpha = animatedAlpha },
-        title = if (!isLargeScreen) fullArtwork.artwork.title else null,
+        title = when {
+            isLargeScreen -> null
+            fullArtwork is FullArtwork.FullMovie -> fullArtwork.artwork.title
+            fullArtwork is FullArtwork.FullShow -> fullArtwork.seasons.find { it.season == uiState.selectedSeason }?.title ?: fullArtwork.artwork.title
+            else -> null
+        },
         topAppBarColors = TopAppBarDefaults.topAppBarColors(
             containerColor = Color.Transparent,
             scrolledContainerColor = if (fullArtwork.contentType == ContentType.SHOW) MaterialTheme.colorScheme.background else Color.Transparent,

@@ -123,7 +123,7 @@ class ShowViewModel @AssistedInject constructor(
 
         val fullArtwork = (_uiState.value.state as? State.Content)?.content ?: return
 
-        progressUC.resetProgress(artwork = fullArtwork.artwork)
+        progressUC.resetProgress(artwork = fullArtwork.artwork, season = null)
 
         _uiState.update { it.copy(dialog = null) }
 

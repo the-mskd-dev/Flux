@@ -230,7 +230,7 @@ class ArtworkViewModel @AssistedInject constructor(
 
         val fullArtwork = fullArtwork ?: return
 
-        progressUC.resetProgress(artwork = fullArtwork.artwork)
+        progressUC.resetProgress(artwork = fullArtwork.artwork, season = uiState.value.selectedSeason)
 
         _subState.update {
 

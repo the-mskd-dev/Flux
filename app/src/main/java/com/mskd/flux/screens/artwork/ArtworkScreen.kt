@@ -125,7 +125,7 @@ fun ArtworkScreen(
             content = {
                 Text.Body.Large(text = stringResource(R.string.mark_previous_episodes_as_watched))
             },
-            onDismiss = { viewModel.handleIntent(ArtworkIntent.CloseEpisodesStatusDialog) },
+            onDismiss = { viewModel.handleIntent(ArtworkIntent.CloseDialog) },
             onValidate = { viewModel.handleIntent(ArtworkIntent.MarkPreviousEpisodesAsWatched) }
         )
     }
@@ -133,7 +133,7 @@ fun ArtworkScreen(
     if (uiState.dialog is ArtworkDialog.ResetProgressConfirmation) {
         ResetProgressDialog(
             onValidate = { viewModel.handleIntent(ArtworkIntent.ResetProgress) },
-            onDismiss = { viewModel.handleIntent(ArtworkIntent.ShowResetProgressDialog(show = false)) }
+            onDismiss = { viewModel.handleIntent(ArtworkIntent.CloseDialog) }
         )
     }
 
@@ -244,7 +244,7 @@ fun ArtworkDropDownMenu(
             FluxDropDownMenuItem(
                 text = stringResource(R.string.reset_progress),
                 onClick = {
-                    sendIntent(ArtworkIntent.ShowResetProgressDialog(show = true))
+                    sendIntent(ArtworkIntent.ShowResetProgressDialog)
                     onDismissRequest()
                 },
                 leadingIcon = { Icon(painter = painterResource(R.drawable.ic_eraser), contentDescription = stringResource(R.string.reset_progress)) },

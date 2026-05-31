@@ -23,16 +23,23 @@ sealed class ArtworkDialog {
 }
 
 sealed class ArtworkIntent {
+    //Navigation
     object OnBackTap: ArtworkIntent()
-    data class ChangeWatchStatus(val media: Media): ArtworkIntent()
-    object MarkPreviousEpisodesAsWatched: ArtworkIntent()
-    object CloseEpisodesStatusDialog: ArtworkIntent()
     data class PlayMedia(val media: Media, val forceInternal: Boolean = false): ArtworkIntent()
     data object OpenArtworkInfo: ArtworkIntent()
     data class OpenEpisodeInfo(val episode: Episode): ArtworkIntent()
-    data class OnExternalPlayerResult(val progress: Long) : ArtworkIntent()
-    data class ShowResetProgressDialog(val show: Boolean) : ArtworkIntent()
+
+    // Dialogs
+    data object CloseDialog: ArtworkIntent()
+    data object ShowResetProgressDialog : ArtworkIntent()
+
+    // Status
     data object ResetProgress: ArtworkIntent()
+    data class ChangeWatchStatus(val media: Media): ArtworkIntent()
+    object MarkPreviousEpisodesAsWatched: ArtworkIntent()
+
+    // Other
+    data class OnExternalPlayerResult(val progress: Long) : ArtworkIntent()
 }
 
 sealed class ArtworkEvent {

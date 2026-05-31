@@ -9,6 +9,7 @@ import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.artwork.Status
+import com.mskd.flux.screens.artwork.ArtworkEvent.*
 import com.mskd.flux.useCases.artwork.ArtworkUC
 import com.mskd.flux.useCases.progress.ProgressUC
 import com.mskd.flux.utils.extensions.firstEpisode
@@ -105,14 +106,14 @@ class ArtworkViewModel @AssistedInject constructor(
         when (intent) {
             ArtworkIntent.OnBackTap -> _event.emit(ArtworkEvent.BackToPreviousScreen)
             is ArtworkIntent.PlayMedia -> playMedia(media = intent.media, forceInternal = intent.forceInternal)
-            ArtworkIntent.CloseEpisodesStatusDialog -> closeStatusDialog()
             is ArtworkIntent.ChangeWatchStatus -> changeWatchStatus(media = intent.media)
             ArtworkIntent.MarkPreviousEpisodesAsWatched -> markPreviousEpisodesAsWatched()
             ArtworkIntent.OpenArtworkInfo -> openArtworkInfo()
-            is ArtworkIntent.OpenEpisodeInfo -> _event.emit(ArtworkEvent.OpenUrlInfo(url = intent.episode.infoUrl))
+            is ArtworkIntent.OpenEpisodeInfo -> _event.emit(OpenUrlInfo(url = intent.episode.infoUrl))
             is ArtworkIntent.OnExternalPlayerResult -> onExternalPlayerResult(intent.progress)
-            is ArtworkIntent.ShowResetProgressDialog -> showResetProgressDialog(show = intent.show)
+            ArtworkIntent.ShowResetProgressDialog -> showResetProgressDialog()
             ArtworkIntent.ResetProgress -> resetProgress()
+            ArtworkIntent.CloseDialog -> closeDialog()
         }
     }
 
@@ -164,10 +165,6 @@ class ArtworkViewModel @AssistedInject constructor(
 
     private fun showStatusDialog(episode: Episode) {
         _subState.update { it.copy(dialog = ArtworkDialog.EpisodeStatusConfirmation(episode = episode)) }
-    }
-
-    private fun closeStatusDialog() {
-        _subState.update { it.copy(dialog = null) }
     }
 
     private suspend fun openArtworkInfo() {
@@ -222,8 +219,8 @@ class ArtworkViewModel @AssistedInject constructor(
         }
     }
 
-    private fun showResetProgressDialog(show: Boolean) {
-        _subState.update { it.copy(dialog = if (show) ArtworkDialog.ResetProgressConfirmation else null) }
+    private fun showResetProgressDialog() {
+        _subState.update { it.copy(dialog = ArtworkDialog.ResetProgressConfirmation) }
     }
 
     private suspend fun resetProgress() {
@@ -242,6 +239,10 @@ class ArtworkViewModel @AssistedInject constructor(
 
         }
 
+    }
+
+    private suspend fun closeDialog() {
+        _subState.update { it.copy(dialog = null) }
     }
 
     //endregion

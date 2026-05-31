@@ -18,12 +18,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.mskd.flux.R
+import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.FullArtwork
+import com.mskd.flux.screens.artwork.composables.ArtworkContentRegular
 import com.mskd.flux.screens.artwork.composables.common.ArtworkImage
 import com.mskd.flux.screens.show.ShowIntent
 import com.mskd.flux.ui.component.OverviewItem
 import com.mskd.flux.ui.component.Text
+import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.utils.PortraitPreview
 import kotlin.collections.chunked
 import kotlin.text.ifEmpty
 
@@ -122,4 +126,16 @@ fun ShowContentRegular(
 
     }
 
+}
+
+@PortraitPreview
+@Composable
+fun ShowContentRegular_Preview() {
+    AppTheme {
+        ShowContentRegular(
+            fullShow = MediaMockups.fullShow,
+            scaffoldInnerPadding = PaddingValues.Zero,
+            sendIntent = {}
+        )
+    }
 }

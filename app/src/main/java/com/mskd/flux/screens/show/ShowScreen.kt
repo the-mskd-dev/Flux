@@ -247,15 +247,3 @@ fun ShowDropDownMenu(
     )
 
 }
-
-@FluxPreview
-@Composable
-fun ShowScreenContent_Preview() {
-    AppThemePreview {
-        ShowScreenContent(
-            fullShow = MediaMockups.fullShow,
-            dialog = null,
-            sendIntent = {}
-        )
-    }
-}

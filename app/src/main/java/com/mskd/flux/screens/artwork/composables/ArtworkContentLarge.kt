@@ -139,7 +139,7 @@ fun ArtworkContentLarge(
 
                     items(
                         items = episodes.sortedBy { it.number },
-                        key = { e -> e.id }
+                        key = { e -> e.id to e.currentTime}
                     ) { episode ->
 
                         EpisodeItem(

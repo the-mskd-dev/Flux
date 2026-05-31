@@ -18,7 +18,6 @@ data class ArtworkUserState(
     val dialog: ArtworkDialog? = null,
 )
 
-
 @Immutable
 data class ArtworkContent(
     val fullArtwork: FullArtwork,

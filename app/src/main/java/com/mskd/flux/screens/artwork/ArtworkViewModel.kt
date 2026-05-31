@@ -46,7 +46,7 @@ class ArtworkViewModel @AssistedInject constructor(
 
     //endregion
 
-    //region Variables
+    //region Computed properties
 
     private val artworkContent: ArtworkContent? get() = (uiState.value.state as? State.Content)?.content
     private val fullArtwork: FullArtwork? get() = artworkContent?.fullArtwork

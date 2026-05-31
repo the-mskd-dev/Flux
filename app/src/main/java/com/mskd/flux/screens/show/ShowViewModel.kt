@@ -14,9 +14,12 @@ import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -39,37 +42,46 @@ class ShowViewModel @AssistedInject constructor(
 
     //region Flow
 
-    private val _uiState: MutableStateFlow<ShowUiState> = MutableStateFlow(ShowUiState())
-    val uiState: StateFlow<ShowUiState> = _uiState.asStateFlow()
-
     private val _event = MutableSharedFlow<ShowEvent>()
     val event = _event.asSharedFlow()
 
+    private val _userState = MutableStateFlow<ShowDialog?>(null)
+
+    val uiState: StateFlow<ShowUiState> = combine(
+        artworkUC.flow,
+        _userState,
+    ) { artworkState, dialog ->
+        when (artworkState) {
+            is State.Loading -> ShowUiState(state = State.Loading)
+            is State.Error -> ShowUiState(state = State.Error)
+            is State.Content -> {
+                val fullShow = artworkState.content as? FullArtwork.FullShow
+                    ?: return@combine ShowUiState(state = State.Error)
+                ShowUiState(
+                    state = State.Content(
+                        ShowContent(fullShow = fullShow, dialog = dialog)
+                    )
+                )
+            }
+        }
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = ShowUiState()
+    )
+
+    //endregion
+
+    //region Computed properties
+
+    private val showContent get() = (uiState.value.state as? State.Content)?.content
 
     //endregion
 
     //region Init
 
     init {
-
         artworkUC.searchArtwork(artworkId = artworkId)
-
-        viewModelScope.launch {
-            artworkUC.flow.collect { artworkState ->
-                _uiState.update {
-
-                    val state = when (artworkState) {
-                        is State.Content<FullArtwork> -> (it.state as? State.Content<FullArtwork>)?.copy(content = artworkState.content) ?: artworkState
-                        State.Error -> State.Error
-                        State.Loading -> State.Loading
-                    }
-
-                    it.copy(state = state)
-
-                }
-            }
-        }
-
     }
 
     //endregion
@@ -102,30 +114,28 @@ class ShowViewModel @AssistedInject constructor(
     }
 
     private fun closeDialog() {
-        _uiState.update { it.copy(dialog = null) }
+        _userState.update { null }
     }
 
     private fun showSeasonPreview(season: Season) {
-        _uiState.update { it.copy(dialog = ShowDialog.SeasonPreview(season = season)) }
+        _userState.update { ShowDialog.SeasonPreview(season = season) }
     }
 
     private fun showResetDialog() {
-        _uiState.update { it.copy(dialog = ShowDialog.ResetProgress) }
+        _userState.update { ShowDialog.ResetProgress }
     }
 
     private suspend fun openShowInfo() {
-        val fullArtwork = (_uiState.value.state as? State.Content)?.content ?: return
-        _event.emit(ShowEvent.OpenShowInfo(url = fullArtwork.artwork.infoUrl))
+        val fullShow = showContent?.fullShow ?: return
+
+        _event.emit(ShowEvent.OpenShowInfo(url = fullShow.artwork.infoUrl))
     }
 
     private suspend fun resetProgress() {
+        val fullShow = showContent?.fullShow ?: return
 
-        val fullArtwork = (_uiState.value.state as? State.Content)?.content ?: return
-
-        progressUC.resetProgress(artwork = fullArtwork.artwork, season = null)
-
-        _uiState.update { it.copy(dialog = null) }
-
+        progressUC.resetProgress(artwork = fullShow.artwork, season = null)
+        _userState.update { null }
     }
 
     //endregion

@@ -7,8 +7,13 @@ import com.mskd.flux.model.artwork.Season
 
 @Immutable
 data class ShowUiState(
-    val state: State<FullArtwork> = State.Loading,
-    val dialog: ShowDialog? = null
+    val state: State<ShowContent> = State.Loading
+)
+
+@Immutable
+data class ShowContent(
+    val fullShow: FullArtwork.FullShow,
+    val dialog: ShowDialog? = null,
 )
 
 sealed class ShowDialog {

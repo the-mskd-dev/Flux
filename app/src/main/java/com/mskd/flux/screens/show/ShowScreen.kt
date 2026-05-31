@@ -45,6 +45,7 @@ import com.mskd.flux.model.State
 import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Route.Artwork
+import com.mskd.flux.screens.artwork.ArtworkContent
 import com.mskd.flux.screens.artwork.composables.common.ArtworkImage
 import com.mskd.flux.screens.show.composables.SeasonDialog
 import com.mskd.flux.screens.show.composables.SeasonItem
@@ -87,23 +88,24 @@ fun ShowScreen(
 
     Crossfade(
         modifier = Modifier.fillMaxSize(),
-        targetState = uiState.state,
+        targetState = uiState.state::class,
         label = "MediaScreenAnimation"
     ) { state ->
 
         when (state) {
-            State.Loading -> LoadingScreen()
-            State.Error -> {
+            State.Loading::class -> LoadingScreen()
+            State.Error::class -> {
                 ErrorScreen(
                     message = stringResource(R.string.oups_an_error_occured),
                     onBackButtonTap = { viewModel.handleIntent(ShowIntent.OnBackTap) }
                 )
             }
-            is State.Content -> {
+            State.Content::class -> {
+                val content = (uiState.state as State.Content<ShowContent>).content
                 MaterialTheme(colorScheme = colorScheme) {
                     ShowScreenContent(
-                        fullShow = state.content as FullArtwork.FullShow,
-                        dialog = uiState.dialog,
+                        fullShow = content.fullShow,
+                        dialog = content.dialog,
                         sendIntent = viewModel::handleIntent
                     )
                 }

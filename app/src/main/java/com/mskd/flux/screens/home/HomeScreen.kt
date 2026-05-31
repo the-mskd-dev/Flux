@@ -58,7 +58,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -549,12 +548,6 @@ fun UnknownCategory(sendIntent: (HomeIntent) -> Unit) {
     val width = 120.dp
     val ratio = 2f/3f
     val foregroundPainter = rememberVectorPainter(ImageVector.vectorResource(R.drawable.ic_launcher_foreground))
-    val backgroundGradient = Brush.linearGradient(
-        colors = listOf(
-            MaterialTheme.colorScheme.primaryContainer,
-            MaterialTheme.colorScheme.tertiaryContainer
-        )
-    )
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -577,14 +570,14 @@ fun UnknownCategory(sendIntent: (HomeIntent) -> Unit) {
                 .clip(MaterialTheme.shapes.small)
                 .width(width)
                 .aspectRatio(ratio)
-                .background(brush = backgroundGradient),
+                .background(color = MaterialTheme.colorScheme.secondaryContainer),
             contentAlignment = Alignment.Center
         ) {
 
             Image(
                 modifier = Modifier.fillMaxSize(),
                 painter = foregroundPainter,
-                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimaryContainer),
+                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSecondaryContainer),
                 contentDescription = stringResource(R.string.other_files)
             )
 

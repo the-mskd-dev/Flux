@@ -6,6 +6,7 @@ import coil3.disk.DiskCache
 import coil3.disk.directory
 import coil3.memory.MemoryCache
 import coil3.video.VideoFrameDecoder
+import com.mskd.flux.utils.interceptors.NetworkImageInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,7 +21,8 @@ object ImageModule {
     @Provides
     @Singleton
     fun provideImageLoader(
-        @ApplicationContext context: Context
+        @ApplicationContext context: Context,
+        networkImageInterceptor: NetworkImageInterceptor
     ) : ImageLoader {
         return ImageLoader.Builder(context)
             .memoryCache {
@@ -36,6 +38,7 @@ object ImageModule {
             }
             .components {
                 add(VideoFrameDecoder.Factory())
+                add(networkImageInterceptor)
             }
             .build()
     }

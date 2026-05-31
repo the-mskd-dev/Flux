@@ -229,13 +229,14 @@ class ArtworkViewModel @AssistedInject constructor(
     private suspend fun resetProgress() {
 
         val fullArtwork = fullArtwork ?: return
+        val selectedSeason = uiState.value.selectedSeason
 
-        progressUC.resetProgress(artwork = fullArtwork.artwork, season = uiState.value.selectedSeason)
+        progressUC.resetProgress(artwork = fullArtwork.artwork, season = selectedSeason)
 
-        _subState.update {
+        _subState.update { state ->
 
-            it.copy(
-                selectedMedia = (fullArtwork as? FullArtwork.FullMovie)?.movie ?: episodes.firstEpisode,
+            state.copy(
+                selectedMedia = (fullArtwork as? FullArtwork.FullMovie)?.movie ?: episodes.filter { it.season == selectedSeason }.firstEpisode,
                 dialog = null
             )
 

@@ -44,10 +44,7 @@ import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.State
 import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.navigation.Route
-import com.mskd.flux.navigation.Route.*
-import com.mskd.flux.screens.artwork.ArtworkDialog
-import com.mskd.flux.screens.artwork.ArtworkDropDownMenu
-import com.mskd.flux.screens.artwork.ArtworkIntent
+import com.mskd.flux.navigation.Route.Artwork
 import com.mskd.flux.screens.artwork.composables.common.ArtworkImage
 import com.mskd.flux.screens.show.composables.SeasonDialog
 import com.mskd.flux.screens.show.composables.SeasonItem

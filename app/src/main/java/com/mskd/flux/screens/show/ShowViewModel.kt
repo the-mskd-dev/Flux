@@ -8,7 +8,6 @@ import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.model.artwork.Season
 import com.mskd.flux.useCases.artwork.ArtworkUC
 import com.mskd.flux.useCases.progress.ProgressUC
-import com.mskd.flux.utils.extensions.firstEpisode
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject

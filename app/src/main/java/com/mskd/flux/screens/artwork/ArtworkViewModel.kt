@@ -1,6 +1,5 @@
 package com.mskd.flux.screens.artwork
 
-import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.data.repository.settings.SettingsRepository
@@ -9,7 +8,7 @@ import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.artwork.Status
-import com.mskd.flux.screens.artwork.ArtworkEvent.*
+import com.mskd.flux.screens.artwork.ArtworkEvent.OpenUrlInfo
 import com.mskd.flux.useCases.artwork.ArtworkUC
 import com.mskd.flux.useCases.progress.ProgressUC
 import com.mskd.flux.utils.extensions.firstEpisode
@@ -51,9 +50,9 @@ class ArtworkViewModel @AssistedInject constructor(
 
     private var selectedMedia: Media? = null
 
-    private val artworkContent get() = (uiState.value.state as? State.Content)?.content
-    private val fullArtwork : FullArtwork? get() = artworkContent?.fullArtwork
-    private val episodes : List<Episode> get() = (fullArtwork as? FullArtwork.FullShow)?.episodes.orEmpty()
+    private val artworkContent: ArtworkContent? get() = (uiState.value.state as? State.Content)?.content
+    private val fullArtwork: FullArtwork? get() = artworkContent?.fullArtwork
+    private val episodes: List<Episode> get() = (fullArtwork as? FullArtwork.FullShow)?.episodes.orEmpty()
 
     //endregion
 
@@ -79,6 +78,7 @@ class ArtworkViewModel @AssistedInject constructor(
                     fullArtwork = artworkState.content,
                     useExternalPlayer = settings.externalPlayer,
                 )
+
                 ArtworkUiState(state = mergeStates(dataState, userState))
 
             }
@@ -127,8 +127,7 @@ class ArtworkViewModel @AssistedInject constructor(
         userState: ArtworkUserState,
     ): State<ArtworkContent> {
 
-        val selectedMedia = resolveSelectedMedia(dataState.fullArtwork, userState)
-            ?: return State.Error
+        val selectedMedia = resolveSelectedMedia(dataState.fullArtwork, userState) ?: return State.Error
 
         return State.Content(
             ArtworkContent(
@@ -144,12 +143,15 @@ class ArtworkViewModel @AssistedInject constructor(
     private fun resolveSelectedMedia(
         fullArtwork: FullArtwork,
         subState: ArtworkUserState,
-    ): Media? = when (fullArtwork) {
-        is FullArtwork.FullMovie -> fullArtwork.movie
-        is FullArtwork.FullShow -> {
-            val episodes = fullArtwork.episodes.filter { it.season == season }
-            episodes.firstOrNull { it.id == (subState.selectedMedia as? Episode)?.id }
-                ?: episodes.firstEpisodeToWatch
+    ): Media? {
+        return when (fullArtwork) {
+            is FullArtwork.FullMovie -> fullArtwork.movie
+            is FullArtwork.FullShow -> {
+                val episodes = fullArtwork.episodes.filter { it.season == season }
+                episodes
+                    .firstOrNull { it.id == subState.selectedMedia?.mediaId }
+                    ?: episodes.firstEpisodeToWatch
+            }
         }
     }
 

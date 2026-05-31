@@ -1,9 +1,7 @@
 package com.mskd.flux.screens.artwork
 
 import androidx.compose.runtime.Immutable
-import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.State
-import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.model.artwork.Media

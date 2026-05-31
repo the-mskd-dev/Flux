@@ -33,8 +33,8 @@ import com.mskd.flux.utils.PortraitPreview
 @Composable
 fun ArtworkContentRegular(
     fullArtwork: FullArtwork,
-    currentMedia: Media,
-    currentSeason: Int?,
+    selectedMedia: Media,
+    selectedSeason: Int?,
     scaffoldInnerPadding: PaddingValues,
     sendIntent: (ArtworkIntent) -> Unit,
 ) {
@@ -49,7 +49,7 @@ fun ArtworkContentRegular(
             ArtworkHeader(
                 modifier = Modifier.fillMaxWidth(),
                 fullArtwork = fullArtwork,
-                currentMedia = currentMedia,
+                currentMedia = selectedMedia,
                 title = fullArtwork.artwork.title,
                 sendIntent = sendIntent
             )
@@ -64,7 +64,7 @@ fun ArtworkContentRegular(
 
             ArtworkDescriptionsPager(
                 fullArtwork = fullArtwork,
-                currentMedia = currentMedia
+                currentMedia = selectedMedia
             )
 
         }
@@ -75,7 +75,7 @@ fun ArtworkContentRegular(
 
         (fullArtwork as? FullArtwork.FullShow)?.let { show ->
 
-            val episodes = show.episodes.filter { it.season == currentSeason }
+            val episodes = show.episodes.filter { it.season == selectedSeason }
 
             if (episodes.isNotEmpty()) {
 
@@ -108,7 +108,7 @@ fun ArtworkContentRegular(
                     EpisodeItem(
                         modifier = Modifier.animateItem(),
                         episode = episode,
-                        isSelected = episode.id == currentMedia.mediaId,
+                        isSelected = episode.id == selectedMedia.mediaId,
                         sendIntent = sendIntent
                     )
 
@@ -134,8 +134,8 @@ fun ArtworkContentMovie_Preview() {
     AppTheme {
         ArtworkContentRegular(
             fullArtwork = MediaMockups.fullMovie,
-            currentMedia = MediaMockups.movie,
-            currentSeason = null,
+            selectedMedia = MediaMockups.movie,
+            selectedSeason = null,
             scaffoldInnerPadding = PaddingValues.Zero,
             sendIntent = {}
         )
@@ -148,8 +148,8 @@ fun ArtworkContentShow_Preview() {
     AppTheme {
         ArtworkContentRegular(
             fullArtwork = MediaMockups.fullShow,
-            currentMedia = MediaMockups.episode1,
-            currentSeason = 1,
+            selectedMedia = MediaMockups.episode1,
+            selectedSeason = 1,
             scaffoldInnerPadding = PaddingValues.Zero,
             sendIntent = {}
         )

@@ -167,7 +167,7 @@ fun ArtworkScreenContent(
         },
         topAppBarColors = TopAppBarDefaults.topAppBarColors(
             containerColor = Color.Transparent,
-            scrolledContainerColor = if (fullArtwork.contentType == ContentType.SHOW) MaterialTheme.colorScheme.background else Color.Transparent,
+            scrolledContainerColor = if (fullArtwork.contentType == ContentType.SHOW && !isLargeScreen) MaterialTheme.colorScheme.background else Color.Transparent,
             titleContentColor = MaterialTheme.colorScheme.onBackground,
         ),
         actions = {
@@ -196,16 +196,16 @@ fun ArtworkScreenContent(
         if (isLargeScreen) {
             ArtworkContentLarge(
                 fullArtwork = fullArtwork,
-                currentMedia = selectedMedia,
-                currentSeason = selectedSeason,
+                selectedMedia = selectedMedia,
+                selectedSeason = selectedSeason,
                 scaffoldInnerPadding = innerPadding,
                 sendIntent = sendIntent,
             )
         } else {
             ArtworkContentRegular(
                 fullArtwork = fullArtwork,
-                currentMedia = selectedMedia,
-                currentSeason = selectedSeason,
+                selectedMedia = selectedMedia,
+                selectedSeason = selectedSeason,
                 scaffoldInnerPadding = innerPadding,
                 sendIntent = sendIntent,
             )

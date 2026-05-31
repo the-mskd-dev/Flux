@@ -23,6 +23,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfoV2
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -39,6 +40,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.window.core.layout.WindowSizeClass
 import com.mskd.flux.R
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.State
@@ -46,9 +48,13 @@ import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Route.Artwork
 import com.mskd.flux.screens.artwork.ArtworkContent
+import com.mskd.flux.screens.artwork.composables.ArtworkContentLarge
+import com.mskd.flux.screens.artwork.composables.ArtworkContentRegular
 import com.mskd.flux.screens.artwork.composables.common.ArtworkImage
 import com.mskd.flux.screens.show.composables.SeasonDialog
 import com.mskd.flux.screens.show.composables.SeasonItem
+import com.mskd.flux.screens.show.composables.ShowContentLarge
+import com.mskd.flux.screens.show.composables.ShowContentRegular
 import com.mskd.flux.ui.component.ErrorScreen
 import com.mskd.flux.ui.component.FluxDropDownMenu
 import com.mskd.flux.ui.component.FluxDropDownMenuItem
@@ -124,6 +130,9 @@ fun ShowScreenContent(
     sendIntent: (ShowIntent) -> Unit
 ) {
 
+    val windowSizeClass = currentWindowAdaptiveInfoV2().windowSizeClass
+    val isLargeScreen = windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND)
+
     var showMenu by remember { mutableStateOf(false) }
 
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
@@ -143,7 +152,7 @@ fun ShowScreenContent(
         label = "TitleAlphaAnimation"
     )
 
-    val columns = 3
+
 
     FluxScaffold(
         modifier = Modifier.graphicsLayer { alpha = animatedAlpha },
@@ -177,90 +186,18 @@ fun ShowScreenContent(
         }
     ) { innerPadding ->
 
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-
-            item {
-
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE)
-                ) {
-
-                    ArtworkImage(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .aspectRatio(Ui.Images.RATIO_6_5),
-                        fullArtwork = fullShow,
-                    )
-
-                    OverviewItem(
-                        modifier = Modifier.padding(horizontal = Ui.Space.MEDIUM),
-                        title = stringResource(R.string.summary),
-                        description = fullShow.artwork.description.ifEmpty { stringResource(R.string.no_summary) },
-                    )
-
-                    Text.Title.Large(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = Ui.Space.MEDIUM),
-                        text = stringResource(R.string.seasons),
-                        emphasized = true,
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
-
-                }
-
-            }
-
-            item {
-                Spacer(modifier = Modifier.height(Ui.Space.MEDIUM))
-            }
-
-            val seasonsChunks = fullShow.seasons.chunked(columns)
-
-            items(
-                items = seasonsChunks,
-                key = { seasons -> seasons.fold("") { acc, s -> acc + s.id } }
-            ) { seasons ->
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = Ui.Space.MEDIUM)
-                        .padding(bottom = Ui.Space.MEDIUM),
-                    horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)
-                ) {
-
-                    seasons.forEach { season ->
-
-                        SeasonItem(
-                            modifier = Modifier.weight(1f),
-                            season = season,
-                            episodes = fullShow.episodes.filter { it.season == season.season },
-                            onTap = { sendIntent(ShowIntent.OnSeasonTap(season = season.season, rgb = it))},
-                            onLongPress = { sendIntent(ShowIntent.ShowSeasonPreview(season = season)) }
-                        )
-
-                    }
-
-                    val emptySlots = columns - seasons.size
-                    if (emptySlots > 0) {
-                        repeat(emptySlots) {
-                            Spacer(modifier = Modifier.weight(1f))
-                        }
-                    }
-
-                }
-
-
-            }
-
-            item {
-                Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding()))
-            }
-
+        if (isLargeScreen) {
+            ShowContentLarge(
+                fullShow = fullShow,
+                scaffoldInnerPadding = innerPadding,
+                sendIntent = sendIntent,
+            )
+        } else {
+            ShowContentRegular(
+                fullShow = fullShow,
+                scaffoldInnerPadding = innerPadding,
+                sendIntent = sendIntent,
+            )
         }
 
         (dialog as? ShowDialog.SeasonPreview)?.let {

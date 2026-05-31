@@ -9,12 +9,30 @@ import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.model.artwork.Media
 
 @Immutable
+data class ArtworkDataState(
+    val fullArtwork: FullArtwork,
+    val useExternalPlayer: Boolean
+)
+
+@Immutable
+data class ArtworkUserState(
+    val selectedMedia: Media? = null,
+    val dialog: ArtworkDialog? = null,
+)
+
+
+@Immutable
+data class ArtworkContent(
+    val fullArtwork: FullArtwork,
+    val selectedMedia: Media,
+    val selectedSeason: Int?,
+    val useExternalPlayer: Boolean,
+    val dialog: ArtworkDialog?,
+)
+
+@Immutable
 data class ArtworkUiState(
-    val state: State<FullArtwork> = State.Loading,
-    val selectedMedia: Media = MediaMockups.episode1,
-    val selectedSeason: Int? = null,
-    val useExternalPlayer: Boolean = false,
-    val dialog: ArtworkDialog? = null
+    val state: State<ArtworkContent> = State.Loading
 )
 
 sealed class ArtworkDialog {

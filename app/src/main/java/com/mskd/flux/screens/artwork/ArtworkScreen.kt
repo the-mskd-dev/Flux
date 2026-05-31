@@ -35,6 +35,7 @@ import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.State
 import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.model.artwork.FullArtwork
+import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Route.Player
 import com.mskd.flux.screens.artwork.composables.ArtworkContentLarge
@@ -108,9 +109,13 @@ fun ArtworkScreen(
                 )
             }
             State.Content::class -> {
+                val content = (uiState.state as State.Content<ArtworkContent>).content
                 MaterialTheme(colorScheme = colorScheme) {
                     ArtworkScreenContent(
-                        uiState = uiState,
+                        fullArtwork = content.fullArtwork,
+                        selectedMedia = content.selectedMedia,
+                        selectedSeason = content.selectedSeason,
+                        dialog = content.dialog,
                         sendIntent = viewModel::handleIntent
                     )
                 }
@@ -120,32 +125,17 @@ fun ArtworkScreen(
 
     }
 
-    if (uiState.dialog is ArtworkDialog.EpisodeStatusConfirmation) {
-        FluxDialog(
-            content = {
-                Text.Body.Large(text = stringResource(R.string.mark_previous_episodes_as_watched))
-            },
-            onDismiss = { viewModel.handleIntent(ArtworkIntent.CloseDialog) },
-            onValidate = { viewModel.handleIntent(ArtworkIntent.MarkPreviousEpisodesAsWatched) }
-        )
-    }
-
-    if (uiState.dialog is ArtworkDialog.ResetProgressConfirmation) {
-        ResetProgressDialog(
-            onValidate = { viewModel.handleIntent(ArtworkIntent.ResetProgress) },
-            onDismiss = { viewModel.handleIntent(ArtworkIntent.CloseDialog) }
-        )
-    }
-
 }
 
 @Composable
 fun ArtworkScreenContent(
-    uiState: ArtworkUiState,
+    fullArtwork: FullArtwork,
+    selectedMedia: Media,
+    selectedSeason: Int?,
+    dialog: ArtworkDialog?,
     sendIntent: (ArtworkIntent) -> Unit
 ) {
 
-    val fullArtwork = (uiState.state as State.Content<FullArtwork>).content
     val windowSizeClass = currentWindowAdaptiveInfoV2().windowSizeClass
     val isLargeScreen = windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND)
 
@@ -172,7 +162,7 @@ fun ArtworkScreenContent(
         title = when {
             isLargeScreen -> null
             fullArtwork is FullArtwork.FullMovie -> fullArtwork.artwork.title
-            fullArtwork is FullArtwork.FullShow -> fullArtwork.seasons.find { it.season == uiState.selectedSeason }?.title ?: fullArtwork.artwork.title
+            fullArtwork is FullArtwork.FullShow -> fullArtwork.seasons.find { it.season == selectedSeason }?.title ?: fullArtwork.artwork.title
             else -> null
         },
         topAppBarColors = TopAppBarDefaults.topAppBarColors(
@@ -206,21 +196,38 @@ fun ArtworkScreenContent(
         if (isLargeScreen) {
             ArtworkContentLarge(
                 fullArtwork = fullArtwork,
-                currentMedia = uiState.selectedMedia,
-                currentSeason = uiState.selectedSeason,
+                currentMedia = selectedMedia,
+                currentSeason = selectedSeason,
                 scaffoldInnerPadding = innerPadding,
                 sendIntent = sendIntent,
             )
         } else {
             ArtworkContentRegular(
                 fullArtwork = fullArtwork,
-                currentMedia = uiState.selectedMedia,
-                currentSeason = uiState.selectedSeason,
+                currentMedia = selectedMedia,
+                currentSeason = selectedSeason,
                 scaffoldInnerPadding = innerPadding,
                 sendIntent = sendIntent,
             )
         }
 
+    }
+
+    if (dialog is ArtworkDialog.EpisodeStatusConfirmation) {
+        FluxDialog(
+            content = {
+                Text.Body.Large(text = stringResource(R.string.mark_previous_episodes_as_watched))
+            },
+            onDismiss = { sendIntent(ArtworkIntent.CloseDialog) },
+            onValidate = { sendIntent(ArtworkIntent.MarkPreviousEpisodesAsWatched) }
+        )
+    }
+
+    if (dialog is ArtworkDialog.ResetProgressConfirmation) {
+        ResetProgressDialog(
+            onValidate = { sendIntent(ArtworkIntent.ResetProgress) },
+            onDismiss = { sendIntent(ArtworkIntent.CloseDialog) }
+        )
     }
 
 }
@@ -258,12 +265,11 @@ fun ArtworkDropDownMenu(
 @Composable
 fun ArtworkScreenContent_Preview() {
     AppTheme {
-
         ArtworkScreenContent(
-            uiState = ArtworkUiState(
-                state = State.Content(content = MediaMockups.fullShow),
-                selectedMedia = MediaMockups.episode1,
-            ),
+            fullArtwork = MediaMockups.fullShow,
+            selectedMedia = MediaMockups.episode1,
+            selectedSeason = MediaMockups.episode1.season,
+            dialog = null,
             sendIntent = {}
         )
     }

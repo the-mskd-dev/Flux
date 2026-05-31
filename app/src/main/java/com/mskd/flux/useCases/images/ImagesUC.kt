@@ -1,15 +1,19 @@
 package com.mskd.flux.useCases.images
 
 import android.content.Context
+import android.util.Log
 import coil3.ImageLoader
 import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import com.mskd.flux.data.repository.ddb.DatabaseRepository
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withPermit
 import java.util.Collections
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -40,6 +44,8 @@ class ImagesUCImpl(
     private val totalCount = AtomicInteger(0)
     private val completedCount = AtomicInteger(0)
 
+    private val semaphore = Semaphore(2)
+
     //endregion
 
     //region Public methods
@@ -58,27 +64,32 @@ class ImagesUCImpl(
             totalCount.addAndGet(urls.size)
             updateState()
 
+            val onFetchEnd: (String) -> Unit = { url ->
+                pendingUrls.remove(url)
+                completedCount.incrementAndGet()
+                updateState()
+                semaphore.release()
+            }
+
             urls.forEach { url ->
+                launch {
 
-                val onFetchEnd: () -> Unit = {
-                    pendingUrls.remove(url)
-                    completedCount.incrementAndGet()
-                    updateState()
+                    semaphore.acquire()
+
+                    val request = ImageRequest.Builder(context)
+                        .data(url)
+                        .memoryCachePolicy(CachePolicy.DISABLED)
+                        .diskCachePolicy(CachePolicy.ENABLED)
+                        .listener(
+                            onSuccess = { _, _ -> onFetchEnd(url) },
+                            onError   = { _, _ -> onFetchEnd(url) },
+                            onCancel  = { _    -> onFetchEnd(url) },
+                        )
+                        .build()
+
+                    imageLoader.enqueue(request)
+
                 }
-
-                val request = ImageRequest.Builder(context)
-                    .data(url)
-                    .memoryCachePolicy(CachePolicy.DISABLED)
-                    .diskCachePolicy(CachePolicy.ENABLED)
-                    .listener(
-                        onSuccess = { _, _ -> onFetchEnd() },
-                        onError = { _, _ -> onFetchEnd() },
-                        onCancel = { _ -> onFetchEnd() }
-                    )
-                    .build()
-
-                imageLoader.enqueue(request)
-
             }
 
         }

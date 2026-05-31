@@ -42,8 +42,10 @@ fun ArtworkImage(
 ) {
 
     val episode = currentMedia as? Episode
-    val imageUrl = episode?.imagePath?.tmdbImageLarge ?: fullArtwork.artwork.bannerPath.tmdbImageLarge
-    val placeHolderUrl = episode?.imagePath?.tmdbImage ?: fullArtwork.artwork.bannerPath.tmdbImage
+    val imagePath = episode?.imagePath ?: fullArtwork.artwork.bannerPath
+
+    val imageUrl = imagePath.tmdbImageLarge
+    val placeHolderUrl = imageUrl.tmdbImage
 
     var imageSize by remember { mutableIntStateOf(0) }
     val imageRequest = ImageRequest.Builder(LocalContext.current)

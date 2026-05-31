@@ -156,12 +156,12 @@ fun ShowScreenContent(
 
     FluxScaffold(
         modifier = Modifier.graphicsLayer { alpha = animatedAlpha },
-        title = fullShow.artwork.title,
+        title = null,
         onBackTap = { sendIntent(ShowIntent.OnBackTap) },
         scrollBehavior = scrollBehavior,
         topAppBarColors = TopAppBarDefaults.topAppBarColors(
             containerColor = Color.Transparent,
-            scrolledContainerColor = MaterialTheme.colorScheme.background,
+            scrolledContainerColor = Color.Transparent,
             titleContentColor = MaterialTheme.colorScheme.onBackground,
         ),
         actions = {

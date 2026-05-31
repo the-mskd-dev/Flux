@@ -1,6 +1,8 @@
 package com.mskd.flux.screens.show.composables
 
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -10,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
@@ -26,6 +29,7 @@ import com.mskd.flux.ui.component.OverviewItem
 import com.mskd.flux.ui.component.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.utils.LandscapePreview
 import com.mskd.flux.utils.PortraitPreview
 import kotlin.collections.chunked
 import kotlin.text.ifEmpty
@@ -39,29 +43,61 @@ fun ShowContentLarge(
 
     val columns = 3
 
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
+    Row(
+        modifier = Modifier.fillMaxSize()
     ) {
 
-        item {
+        Box(modifier = Modifier.weight(.5f),) {
 
-            Column(
-                verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE)
-            ) {
+            ArtworkImage(
+                modifier = Modifier.fillMaxSize(),
+                fullArtwork = fullShow,
+                orientation = Orientation.Horizontal,
+            )
 
-                ArtworkImage(
+        }
+
+        LazyColumn(
+            modifier = Modifier.weight(.5f),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+
+            item {
+                Spacer(modifier = Modifier.height(scaffoldInnerPadding.calculateTopPadding()))
+            }
+
+            item {
+
+                Text.Display.Small(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(Ui.Images.RATIO_6_5),
-                    fullArtwork = fullShow,
+                        .padding(Ui.Space.MEDIUM)
+                        .wrapContentWidth(),
+                    text = fullShow.artwork.title,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    emphasized = true
                 )
+
+            }
+
+            item {
+                Spacer(modifier = Modifier.height(Ui.Space.LARGE))
+            }
+
+            item {
 
                 OverviewItem(
                     modifier = Modifier.padding(horizontal = Ui.Space.MEDIUM),
                     title = stringResource(R.string.summary),
                     description = fullShow.artwork.description.ifEmpty { stringResource(R.string.no_summary) },
                 )
+
+            }
+
+            item {
+                Spacer(modifier = Modifier.height(Ui.Space.LARGE))
+            }
+
+            item {
 
                 Text.Title.Large(
                     modifier = Modifier
@@ -74,60 +110,60 @@ fun ShowContentLarge(
 
             }
 
-        }
+            item {
+                Spacer(modifier = Modifier.height(Ui.Space.MEDIUM))
+            }
 
-        item {
-            Spacer(modifier = Modifier.height(Ui.Space.MEDIUM))
-        }
+            val seasonsChunks = fullShow.seasons.chunked(columns)
 
-        val seasonsChunks = fullShow.seasons.chunked(columns)
+            items(
+                items = seasonsChunks,
+                key = { seasons -> seasons.fold("") { acc, s -> acc + s.id } }
+            ) { seasons ->
 
-        items(
-            items = seasonsChunks,
-            key = { seasons -> seasons.fold("") { acc, s -> acc + s.id } }
-        ) { seasons ->
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = Ui.Space.MEDIUM)
+                        .padding(bottom = Ui.Space.MEDIUM),
+                    horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)
+                ) {
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = Ui.Space.MEDIUM)
-                    .padding(bottom = Ui.Space.MEDIUM),
-                horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)
-            ) {
+                    seasons.forEach { season ->
 
-                seasons.forEach { season ->
+                        SeasonItem(
+                            modifier = Modifier.weight(1f),
+                            season = season,
+                            episodes = fullShow.episodes.filter { it.season == season.season },
+                            onTap = { sendIntent(ShowIntent.OnSeasonTap(season = season.season, rgb = it))},
+                            onLongPress = { sendIntent(ShowIntent.ShowSeasonPreview(season = season)) }
+                        )
 
-                    SeasonItem(
-                        modifier = Modifier.weight(1f),
-                        season = season,
-                        episodes = fullShow.episodes.filter { it.season == season.season },
-                        onTap = { sendIntent(ShowIntent.OnSeasonTap(season = season.season, rgb = it))},
-                        onLongPress = { sendIntent(ShowIntent.ShowSeasonPreview(season = season)) }
-                    )
-
-                }
-
-                val emptySlots = columns - seasons.size
-                if (emptySlots > 0) {
-                    repeat(emptySlots) {
-                        Spacer(modifier = Modifier.weight(1f))
                     }
+
+                    val emptySlots = columns - seasons.size
+                    if (emptySlots > 0) {
+                        repeat(emptySlots) {
+                            Spacer(modifier = Modifier.weight(1f))
+                        }
+                    }
+
                 }
+
 
             }
 
+            item {
+                Spacer(modifier = Modifier.height(scaffoldInnerPadding.calculateBottomPadding()))
+            }
 
-        }
-
-        item {
-            Spacer(modifier = Modifier.height(scaffoldInnerPadding.calculateBottomPadding()))
         }
 
     }
 
 }
 
-@PortraitPreview
+@LandscapePreview
 @Composable
 fun ShowContentLarge_Preview() {
     AppTheme {

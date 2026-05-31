@@ -152,8 +152,6 @@ fun ShowScreenContent(
         label = "TitleAlphaAnimation"
     )
 
-
-
     FluxScaffold(
         modifier = Modifier.graphicsLayer { alpha = animatedAlpha },
         title = null,

@@ -18,6 +18,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import com.mskd.flux.R
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.FullArtwork
@@ -48,12 +50,18 @@ fun ShowContentRegular(
 
         item {
 
-            Column(
-                verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE)
-            ) {
+            ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
+
+                val (image, title) = createRefs()
 
                 ArtworkImage(
                     modifier = Modifier
+                        .constrainAs(image) {
+                            start.linkTo(parent.start)
+                            top.linkTo(parent.top)
+                            end.linkTo(parent.end)
+                            width = Dimension.fillToConstraints
+                        }
                         .fillMaxWidth()
                         .aspectRatio(Ui.Images.RATIO_6_5),
                     fullArtwork = fullShow,
@@ -61,36 +69,51 @@ fun ShowContentRegular(
 
                 Text.Display.Small(
                     modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .padding(Ui.Space.MEDIUM)
-                        .wrapContentWidth(),
+                        .constrainAs(title) {
+                            start.linkTo(parent.start,Ui.Space.MEDIUM)
+                            end.linkTo(parent.end, Ui.Space.MEDIUM)
+                            top.linkTo(image.bottom)
+                            bottom.linkTo(image.bottom)
+                            width = Dimension.preferredWrapContent
+                        },
                     text = fullShow.artwork.title,
                     color = MaterialTheme.colorScheme.onBackground,
                     emphasized = true
                 )
 
-                OverviewItem(
-                    modifier = Modifier.padding(horizontal = Ui.Space.MEDIUM),
-                    title = stringResource(R.string.summary),
-                    description = fullShow.artwork.description.ifEmpty { stringResource(R.string.no_summary) },
-                )
-
-                Text.Title.Large(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = Ui.Space.MEDIUM),
-                    text = stringResource(R.string.seasons),
-                    emphasized = true,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-
             }
 
+
         }
 
+        item { Spacer(modifier = Modifier.height(Ui.Space.LARGE)) }
+
         item {
-            Spacer(modifier = Modifier.height(Ui.Space.MEDIUM))
+
+            OverviewItem(
+                modifier = Modifier.padding(horizontal = Ui.Space.MEDIUM),
+                title = stringResource(R.string.summary),
+                description = fullShow.artwork.description.ifEmpty { stringResource(R.string.no_summary) },
+            )
+
         }
+
+        item { Spacer(modifier = Modifier.height(Ui.Space.MEDIUM)) }
+
+        item {
+
+            Text.Title.Large(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = Ui.Space.MEDIUM),
+                text = stringResource(R.string.seasons),
+                emphasized = true,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+
+        }
+
+        item { Spacer(modifier = Modifier.height(Ui.Space.MEDIUM)) }
 
         val seasonsChunks = fullShow.seasons.chunked(columns)
 

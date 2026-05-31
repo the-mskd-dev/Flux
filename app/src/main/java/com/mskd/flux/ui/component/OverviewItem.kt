@@ -72,7 +72,7 @@ fun OverviewItem(
 
             topDetails()
 
-            Text.Headline.Medium(
+            Text.Title.Large(
                 modifier = Modifier.fillMaxWidth(),
                 text = title,
                 color = MaterialTheme.colorScheme.onSurface,

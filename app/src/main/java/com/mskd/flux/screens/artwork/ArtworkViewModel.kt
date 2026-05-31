@@ -48,8 +48,6 @@ class ArtworkViewModel @AssistedInject constructor(
 
     //region Variables
 
-    private var selectedMedia: Media? = null
-
     private val artworkContent: ArtworkContent? get() = (uiState.value.state as? State.Content)?.content
     private val fullArtwork: FullArtwork? get() = artworkContent?.fullArtwork
     private val episodes: List<Episode> get() = (fullArtwork as? FullArtwork.FullShow)?.episodes.orEmpty()
@@ -127,7 +125,10 @@ class ArtworkViewModel @AssistedInject constructor(
         userState: ArtworkUserState,
     ): State<ArtworkContent> {
 
-        val selectedMedia = resolveSelectedMedia(dataState.fullArtwork, userState) ?: return State.Error
+        val selectedMedia = resolveSelectedMedia(
+            fullArtwork = dataState.fullArtwork,
+            userState = userState
+        ) ?: return State.Error
 
         return State.Content(
             ArtworkContent(
@@ -142,14 +143,14 @@ class ArtworkViewModel @AssistedInject constructor(
 
     private fun resolveSelectedMedia(
         fullArtwork: FullArtwork,
-        subState: ArtworkUserState,
+        userState: ArtworkUserState,
     ): Media? {
         return when (fullArtwork) {
             is FullArtwork.FullMovie -> fullArtwork.movie
             is FullArtwork.FullShow -> {
                 val episodes = fullArtwork.episodes.filter { it.season == season }
                 episodes
-                    .firstOrNull { it.id == subState.selectedMedia?.mediaId }
+                    .firstOrNull { it.id == userState.selectedMedia?.mediaId }
                     ?: episodes.firstEpisodeToWatch
             }
         }
@@ -157,7 +158,6 @@ class ArtworkViewModel @AssistedInject constructor(
 
     private suspend fun playMedia(media: Media, forceInternal: Boolean) {
         _userState.update { it.copy(selectedMedia = media) }
-        selectedMedia = media
 
         if (artworkContent?.useExternalPlayer == true && !forceInternal)
             _event.emit(ArtworkEvent.LaunchExternalPlayer(media = media))
@@ -216,9 +216,8 @@ class ArtworkViewModel @AssistedInject constructor(
     }
 
     private suspend fun onExternalPlayerResult(progress: Long) {
-        selectedMedia?.let { media ->
+        artworkContent?.selectedMedia?.let { media ->
             progressUC.saveProgress(media = media, progress = progress)
-            selectedMedia = null
         }
     }
 

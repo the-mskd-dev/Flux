@@ -108,7 +108,7 @@ class DatabaseRepositoryImpl @Inject constructor(private val dao: DatabaseDao) :
 
         return buildList {
             addAll(artworks.filter { it.imagePath.isNotBlank() }.map { it.imagePath.tmdbImage })
-            addAll(artworks.filter { it.imagePath.isNotBlank() }.map { it.bannerPath.tmdbImageLarge })
+            addAll(artworks.filter { it.bannerPath.isNotBlank() }.map { it.bannerPath.tmdbImageLarge })
             addAll(episodes.filter { it.isNotBlank() }.map { it.tmdbImage })
             addAll(seasons.filter { it.isNotBlank() }.map { it.tmdbImage })
         }

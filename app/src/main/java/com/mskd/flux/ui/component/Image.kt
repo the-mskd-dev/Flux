@@ -13,10 +13,12 @@ import coil3.request.allowHardware
 import coil3.request.crossfade
 import coil3.video.videoFrameMillis
 import coil3.video.videoFramePercent
+import com.mskd.flux.data.repository.connectivity.LocalConnectivity
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.artwork.Status
 import com.mskd.flux.utils.extensions.tmdbImage
+import com.mskd.flux.utils.extensions.tmdbImageLarge
 
 @Composable
 fun Image(
@@ -72,6 +74,37 @@ fun Image(
         error = Image.error,
         contentDescription = contentDescription
     )
+}
+
+@Composable
+fun Image(
+    modifier: Modifier,
+    path: String,
+    hd: Boolean,
+    contentScale: ContentScale = ContentScale.Crop,
+    onSuccess:  ((AsyncImagePainter.State.Success) -> Unit)? = null,
+    contentDescription: String
+) {
+
+
+    val urlHigh = path.tmdbImageLarge
+    val urlLow = path.tmdbImage
+    val isOnline = LocalConnectivity.current
+
+    AsyncImage(
+        modifier = modifier,
+        model = ImageRequest.Builder(LocalContext.current)
+            .data(if (hd && isOnline) urlHigh else urlLow)
+            .crossfade(true)
+            .apply { if (hd) placeholderMemoryCacheKey(urlLow) }
+            .build(),
+        contentScale = contentScale,
+        placeholder = Image.placeholder,
+        error = Image.error,
+        contentDescription = contentDescription,
+        onSuccess = onSuccess
+    )
+
 }
 
 object Image {

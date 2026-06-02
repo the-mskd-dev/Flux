@@ -1,13 +1,23 @@
 package com.mskd.flux.ui.component
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import coil3.compose.AsyncImage
 import coil3.compose.AsyncImagePainter
+import coil3.compose.rememberAsyncImagePainter
+import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import coil3.request.allowHardware
 import coil3.request.crossfade
@@ -77,7 +87,7 @@ fun Image(
 }
 
 @Composable
-fun Image(
+fun FluxImage(
     modifier: Modifier,
     path: String,
     hd: Boolean,
@@ -86,25 +96,156 @@ fun Image(
     contentDescription: String
 ) {
 
-
+    val context = LocalContext.current
     val urlHigh = path.tmdbImageLarge
     val urlLow = path.tmdbImage
-    val isOnline = LocalConnectivity.current
 
-    AsyncImage(
-        modifier = modifier,
-        model = ImageRequest.Builder(LocalContext.current)
-            .data(if (hd && isOnline) urlHigh else urlLow)
+    if (hd) {
+
+        val hdPainter = rememberAsyncImagePainter(urlHigh)
+        val state by hdPainter.state.collectAsState()
+
+        val successState = state as? AsyncImagePainter.State.Success
+        LaunchedEffect(successState) {
+            successState?.let { onSuccess?.invoke(it) }
+        }
+
+        when (state) {
+            is AsyncImagePainter.State.Success -> {
+
+                Image(
+                    modifier = modifier,
+                    painter = hdPainter,
+                    contentDescription = contentDescription
+                )
+
+            }
+            else -> {
+
+                AsyncImage(
+                    modifier = modifier,
+                    model = ImageRequest.Builder(context)
+                        .data(urlLow)
+                        .crossfade(true)
+                        .allowHardware(false)
+                        .build(),
+                    contentScale = contentScale,
+                    placeholder = Image.placeholder,
+                    error = Image.error,
+                    contentDescription = contentDescription,
+                    onSuccess = onSuccess
+                )
+
+            }
+        }
+
+    } else {
+
+        AsyncImage(
+            modifier = modifier,
+            model = ImageRequest.Builder(context)
+                .data(urlLow)
+                .crossfade(true)
+                .allowHardware(false)
+                .build(),
+            contentScale = contentScale,
+            placeholder = Image.placeholder,
+            error = Image.error,
+            contentDescription = contentDescription,
+            onSuccess = onSuccess
+        )
+
+    }
+
+}
+
+@Composable
+fun FluxImage1(
+    modifier: Modifier = Modifier,
+    path: String,
+    hd: Boolean,
+    contentDescription: String,
+    contentScale: ContentScale = ContentScale.Crop,
+    onSuccess: ((AsyncImagePainter.State.Success) -> Unit)? = null
+) {
+    val context = LocalContext.current
+    val urlLow = path.tmdbImage
+    val urlHigh = path.tmdbImageLarge
+
+    if (!hd) {
+        AsyncImage(
+            modifier = modifier,
+            model = urlLow,
+            placeholder = Image.placeholder,
+            error = Image.error,
+            contentDescription = contentDescription,
+            contentScale = contentScale,
+            onSuccess = onSuccess
+        )
+        return
+    }
+
+    // Painters instanciés uniquement dans le cas HD
+    val sdPainter = rememberAsyncImagePainter(
+        model = ImageRequest.Builder(context)
+            .data(urlLow)
             .crossfade(true)
-            .apply { if (hd) placeholderMemoryCacheKey(urlLow) }
+            .allowHardware(false)
             .build(),
-        contentScale = contentScale,
-        placeholder = Image.placeholder,
-        error = Image.error,
-        contentDescription = contentDescription,
-        onSuccess = onSuccess
+        contentScale = contentScale
+    )
+    val hdPainter = rememberAsyncImagePainter(
+        model = ImageRequest.Builder(context)
+            .data(urlHigh)
+            .crossfade(true)
+            .allowHardware(false)
+            .build(),
+        contentScale = contentScale
     )
 
+    val hdState by hdPainter.state.collectAsState()
+    val sdState by sdPainter.state.collectAsState()
+
+
+    LaunchedEffect(hdState) {
+        (hdState as? AsyncImagePainter.State.Success)?.let { onSuccess?.invoke(it) }
+    }
+
+    Box(modifier = modifier) {
+
+        when {
+            // SD en fond tant que HD pas prêt (Loading, Empty, Error)
+            sdState !is AsyncImagePainter.State.Error -> {
+                Image(
+                    modifier = Modifier.matchParentSize(),
+                    painter = sdPainter,
+                    contentDescription = null,
+                    contentScale = contentScale
+                )
+            }
+            else -> {
+                Image(
+                    modifier = Modifier.matchParentSize(),
+                    painter = Image.error,
+                    contentDescription = null,
+                    contentScale = contentScale
+                )
+            }
+        }
+
+        // HD par-dessus avec fondu quand prêt
+        AnimatedVisibility(
+            visible = hdState is AsyncImagePainter.State.Success,
+            enter = fadeIn()
+        ) {
+            Image(
+                modifier = Modifier.matchParentSize(),
+                painter = hdPainter,
+                contentDescription = contentDescription,
+                contentScale = contentScale
+            )
+        }
+    }
 }
 
 object Image {

@@ -1,5 +1,6 @@
 package com.mskd.flux.ui.component
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.Image
@@ -62,20 +63,16 @@ fun FluxImage(
             onSuccess = onSuccess
         )
 
-        if (hd) {
-
-            AnimatedVisibility(
-                visible = hdState is AsyncImagePainter.State.Success,
-                enter = fadeIn()
-            ) {
-                Image(
-                    modifier = Modifier.matchParentSize(),
-                    painter = hdPainter,
-                    contentDescription = contentDescription,
-                    contentScale = contentScale
-                )
-            }
-
+        AnimatedVisibility(
+            visible = hdState is AsyncImagePainter.State.Success,
+            enter = fadeIn()
+        ) {
+            Image(
+                modifier = Modifier.matchParentSize(),
+                painter = hdPainter,
+                contentDescription = contentDescription,
+                contentScale = contentScale
+            )
         }
 
     }

@@ -120,10 +120,7 @@ fun FluxImage(
             error = Image.error,
             contentDescription = contentDescription,
             contentScale = contentScale,
-            onSuccess = {
-                Log.d("TEST", "SD loaded")
-                onSuccess?.invoke(it)
-            }
+            onSuccess = onSuccess
         )
 
         if (hd) {
@@ -132,7 +129,6 @@ fun FluxImage(
                 visible = hdState is AsyncImagePainter.State.Success,
                 enter = fadeIn()
             ) {
-                Log.d("TEST", "HD loaded")
                 Image(
                     modifier = Modifier.matchParentSize(),
                     painter = hdPainter,

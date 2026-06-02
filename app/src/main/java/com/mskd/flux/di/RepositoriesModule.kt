@@ -2,6 +2,8 @@ package com.mskd.flux.di
 
 import android.content.Context
 import com.mskd.flux.data.ddb.DatabaseDao
+import com.mskd.flux.data.repository.connectivity.ConnectivityRepository
+import com.mskd.flux.data.repository.connectivity.ConnectivityRepositoryImpl
 import com.mskd.flux.data.repository.ddb.DatabaseRepository
 import com.mskd.flux.data.repository.ddb.DatabaseRepositoryImpl
 import com.mskd.flux.data.repository.files.FilesRepository
@@ -50,6 +52,12 @@ object RepositoriesModule {
             context = context,
             userRepository = userRepository
         )
+    }
+
+    @Provides
+    @Singleton
+    fun provideConnectivityRepository(@ApplicationContext context: Context) : ConnectivityRepository {
+        return ConnectivityRepositoryImpl(context = context)
     }
 
 }

@@ -32,7 +32,7 @@ fun MediaThumbnail(
         contentAlignment = Alignment.BottomCenter,
         content = {
 
-            Image(
+            FluxImage(
                 modifier = Modifier
                     .fillMaxSize()
                     .let { if (media.status == Status.WATCHED) it.grayScale() else it },

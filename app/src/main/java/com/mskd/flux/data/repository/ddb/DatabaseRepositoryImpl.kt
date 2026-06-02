@@ -7,7 +7,6 @@ import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Season
 import com.mskd.flux.utils.extensions.tmdbImage
-import com.mskd.flux.utils.extensions.tmdbImageLarge
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -108,7 +107,7 @@ class DatabaseRepositoryImpl @Inject constructor(private val dao: DatabaseDao) :
 
         return buildList {
             addAll(artworks.filter { it.imagePath.isNotBlank() }.map { it.imagePath.tmdbImage })
-            addAll(artworks.filter { it.imagePath.isNotBlank() }.map { it.bannerPath.tmdbImageLarge })
+            addAll(artworks.filter { it.bannerPath.isNotBlank() }.map { it.bannerPath.tmdbImage })
             addAll(episodes.filter { it.isNotBlank() }.map { it.tmdbImage })
             addAll(seasons.filter { it.isNotBlank() }.map { it.tmdbImage })
         }

@@ -16,7 +16,8 @@ import coil3.toBitmap
 @Composable
 fun MediaItem(
     modifier: Modifier,
-    url: String,
+    path: String,
+    hd: Boolean,
     shape: Shape = MaterialTheme.shapes.small,
     onTap: (Int?) -> Unit,
     description: String
@@ -24,12 +25,13 @@ fun MediaItem(
 
     var seedRgb by remember { mutableStateOf<Int?>(null) }
 
-    Image(
+    FluxImage(
         modifier = Modifier
             .clip(shape)
             .then(modifier)
             .clickable { onTap(seedRgb) },
-        url = url,
+        path = path,
+        hd = hd,
         contentDescription = description,
         onSuccess = { state ->
             val bitmap = state.result.image.toBitmap()

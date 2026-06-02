@@ -31,14 +31,13 @@ import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Season
 import com.mskd.flux.model.artwork.Status
-import com.mskd.flux.ui.component.Image
+import com.mskd.flux.ui.component.FluxImage
 import com.mskd.flux.ui.component.ProgressStatusBar
 import com.mskd.flux.ui.component.ProgressStatusChip
 import com.mskd.flux.ui.component.Text
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.AppThemePreview
 import com.mskd.flux.utils.extensions.grayScale
-import com.mskd.flux.utils.extensions.tmdbImage
 
 @Composable
 fun SeasonItem(
@@ -49,7 +48,6 @@ fun SeasonItem(
     onLongPress: () -> Unit
 ) {
 
-    val url = season.imagePath.orEmpty().tmdbImage
     var seedRgb by remember { mutableStateOf<Int?>(null) }
 
     Column(
@@ -68,11 +66,11 @@ fun SeasonItem(
             contentAlignment = Alignment.Center
         ) {
 
-            Image(
+            FluxImage(
                 modifier = Modifier
                     .fillMaxSize()
                     .let { if (episodes.all { e -> e.status == Status.WATCHED }) it.grayScale() else it },
-                url = url,
+                path = season.imagePath.orEmpty(),
                 contentDescription = season.title,
                 onSuccess = { state ->
                     val bitmap = state.result.image.toBitmap()

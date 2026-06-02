@@ -55,7 +55,6 @@ import com.mskd.flux.ui.component.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.FluxPreview
-import com.mskd.flux.utils.extensions.tmdbImage
 
 @Composable
 fun SearchScreen(
@@ -175,7 +174,8 @@ fun SearchContent(
                         modifier = Modifier
                             .width(maxWidth)
                             .aspectRatio(2f/3f),
-                        url = artwork.imagePath.tmdbImage,
+                        path = artwork.imagePath,
+                        hd = false,
                         description = artwork.title,
                         onTap = { sendIntent(SearchIntent.OnArtworkTap(artwork = artwork, rgb = it)) }
                     )

@@ -84,8 +84,6 @@ import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxSnackbar
-import com.mskd.flux.utils.extensions.tmdbImage
-import com.mskd.flux.utils.extensions.tmdbImageLarge
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -397,14 +395,15 @@ fun LastWatchedCarousel(
         if (artworks.size == 1) {
 
             val overview = artworks.first()
-            val url = overview.bannerPath.tmdbImageLarge
+            val path = overview.bannerPath
 
             MediaItem(
                 modifier = Modifier
                     .widthIn(max = 350.dp)
                     .fillMaxSize()
                     .aspectRatio(ratio),
-                url = url,
+                path = path,
+                hd = true,
                 shape = MaterialTheme.shapes.extraLarge,
                 onTap = { rgb -> sendIntent(HomeIntent.OnArtworkTap(artwork = overview, rgb = rgb)) },
                 description = overview.title
@@ -423,14 +422,15 @@ fun LastWatchedCarousel(
             ) { i ->
 
                 val overview = artworks[i]
-                val url = overview.bannerPath.tmdbImageLarge
+                val path = overview.bannerPath
 
                 Box(modifier = Modifier.maskClip(MaterialTheme.shapes.extraLarge)) {
                     MediaItem(
                         modifier = Modifier
                             .fillMaxWidth()
                             .aspectRatio(ratio),
-                        url = url,
+                        path = path,
+                        hd = true,
                         shape = MaterialTheme.shapes.extraLarge,
                         onTap = { rgb ->
 
@@ -529,7 +529,8 @@ fun MediaCategory(
                     modifier = Modifier
                         .width(width)
                         .aspectRatio(ratio),
-                    url = it.imagePath.tmdbImage,
+                    path = it.imagePath,
+                    hd = false,
                     onTap = { rgb -> sendIntent(HomeIntent.OnArtworkTap(artwork = it, rgb = rgb)) },
                     description = it.title
                 )

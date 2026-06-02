@@ -7,7 +7,6 @@ import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Season
 import com.mskd.flux.utils.extensions.tmdbImage
-import com.mskd.flux.utils.extensions.tmdbImageLarge
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

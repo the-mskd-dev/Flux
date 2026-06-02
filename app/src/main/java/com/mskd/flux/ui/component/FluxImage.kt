@@ -79,42 +79,44 @@ fun FluxImage(
 }
 
 @Composable
-fun Image(
+fun FluxImage(
     modifier: Modifier,
     media: Media,
     contentScale: ContentScale = ContentScale.Crop,
     contentDescription: String
 ) {
 
-    AsyncImage(
-        modifier = modifier,
-        model = ImageRequest.Builder(LocalContext.current)
-            .apply {
-
-                if (media is Episode && media.imagePath.isNotBlank()) {
-                    data(media.imagePath.tmdbImage)
-                } else {
-                    data(media.file.path)
+    if (media is Episode && media.imagePath.isNotBlank()) {
+        FluxImage(
+            modifier = modifier,
+            path = media.imagePath,
+            contentDescription = contentDescription
+        )
+    } else {
+        AsyncImage(
+            modifier = modifier,
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(media.file.path)
+                .apply {
                     if (media.status == Status.IS_WATCHING)
                         videoFrameMillis(media.currentTime)
                     else
                         videoFramePercent(.05)
                 }
-
-            }
-            .crossfade(true)
-            .build(),
-        contentScale = contentScale,
-        placeholder = Image.placeholder,
-        error = Image.error,
-        contentDescription = contentDescription
-    )
+                .crossfade(true)
+                .build(),
+            contentScale = contentScale,
+            placeholder = Image.placeholder,
+            error = Image.error,
+            contentDescription = contentDescription
+        )
+    }
 }
 
 object Image {
 
     val placeholder: ColorPainter @Composable get() = ColorPainter(MaterialTheme.colorScheme.secondaryContainer.copy(alpha = .4f))
 
-    val error: ColorPainter @Composable get() = ColorPainter(MaterialTheme.colorScheme.secondaryContainer.copy(alpha = .4f))
+    val error: ColorPainter @Composable get() = ColorPainter(MaterialTheme.colorScheme.error.copy(alpha = .4f))
 
 }

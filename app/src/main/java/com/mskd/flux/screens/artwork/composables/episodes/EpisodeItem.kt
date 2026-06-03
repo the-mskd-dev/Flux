@@ -104,9 +104,7 @@ fun EpisodeItemLarge(
     ) {
 
         MediaThumbnail(
-            modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(16f / 9f),
+            modifier = Modifier.fillMaxWidth(),
             media = episode,
             hd = true
         )

@@ -12,6 +12,7 @@ import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Status
+import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.extensions.grayScale
 
 @Composable
@@ -27,7 +28,7 @@ fun MediaThumbnail(
     }
 
     Box(
-        modifier = modifier,
+        modifier = modifier.aspectRatio(Ui.Images.RATIO_16_9),
         contentAlignment = Alignment.BottomCenter,
         content = {
 

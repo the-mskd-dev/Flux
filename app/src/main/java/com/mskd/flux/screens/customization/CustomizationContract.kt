@@ -9,6 +9,7 @@ data class CustomizationUiState(
     val uiTheme: Ui.THEME = Ui.THEME.SYSTEM,
     val color: Int? = null,
     val waveProgress: Boolean = true,
+    val largeEpisodeImage: Boolean = false,
     val dialogState: FluxOptionsDialogState<*, CustomizationIntent>? = null,
 )
 
@@ -26,6 +27,7 @@ sealed class CustomizationIntent {
     data class SetColorValue(val color: Int?) : CustomizationIntent()
     data class SetThemeValue(val theme: Ui.THEME): CustomizationIntent()
     data class OnWaveProgressCheck(val checked: Boolean): CustomizationIntent()
+    data class OnLargeEpisodeImageCheck(val checked: Boolean): CustomizationIntent()
 }
 
 sealed class CustomizationEvent {

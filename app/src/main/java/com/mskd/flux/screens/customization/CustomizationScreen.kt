@@ -18,6 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.R
+import com.mskd.flux.screens.customization.composables.CustomizationArtworkSection
 import com.mskd.flux.screens.customization.composables.CustomizationPlayerSection
 import com.mskd.flux.screens.customization.composables.CustomizationThemeSection
 import com.mskd.flux.ui.component.FluxOptionsDialog
@@ -82,6 +83,11 @@ fun CustomizationContent(
             Spacer(modifier = Modifier.height(innerPadding.calculateTopPadding()))
 
             CustomizationThemeSection(
+                state = state,
+                sendIntent = sendIntent
+            )
+
+            CustomizationArtworkSection(
                 state = state,
                 sendIntent = sendIntent
             )

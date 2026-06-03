@@ -42,6 +42,7 @@ class CustomizationViewModel @Inject constructor(
             uiTheme = customization.uiTheme,
             color = customization.color,
             waveProgress = customization.waveProgress,
+            largeEpisodeImage = customization.largeEpisodeImage,
             dialogState = dialog
         )
     }.stateIn(
@@ -73,6 +74,7 @@ class CustomizationViewModel @Inject constructor(
             is CustomizationIntent.SetColorValue -> setColor(color = intent.color)
             is CustomizationIntent.SetThemeValue -> setTheme(theme = intent.theme)
             is CustomizationIntent.OnWaveProgressCheck -> setWaveProgress(waveProgress = intent.checked)
+            is CustomizationIntent.OnLargeEpisodeImageCheck -> setLargeEpisodeImage(large = intent.checked)
 
         }
     }
@@ -133,6 +135,10 @@ class CustomizationViewModel @Inject constructor(
 
     private suspend fun setWaveProgress(waveProgress: Boolean) {
         customizationRepository.setWaveProgress(waveProgress)
+    }
+
+    private suspend fun setLargeEpisodeImage(large: Boolean) {
+        customizationRepository.setLargeEpisodeImage(large)
     }
 
     //endregion

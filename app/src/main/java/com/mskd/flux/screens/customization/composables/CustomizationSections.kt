@@ -43,6 +43,24 @@ fun CustomizationThemeSection(
 }
 
 @Composable
+fun CustomizationArtworkSection(
+    state: CustomizationUiState,
+    sendIntent: (CustomizationIntent) -> Unit
+) {
+
+    SettingsSection { _, _ ->
+
+        SettingsSwitch(
+            text = stringResource(R.string.large_episode_image),
+            checked = state.largeEpisodeImage,
+            onCheckedChange = { sendIntent(CustomizationIntent.OnLargeEpisodeImageCheck(it)) },
+        )
+
+    }
+
+}
+
+@Composable
 fun CustomizationPlayerSection(
     state: CustomizationUiState,
     sendIntent: (CustomizationIntent) -> Unit

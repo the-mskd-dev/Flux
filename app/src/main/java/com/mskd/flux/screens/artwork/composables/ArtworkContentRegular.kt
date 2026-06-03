@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.mskd.flux.R
+import com.mskd.flux.data.repository.customization.LocalCustomization
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.model.artwork.Media
@@ -105,6 +106,7 @@ fun ArtworkContentRegular(
                     items = episodes.sortedBy { it.number },
                     key = { e -> e.id to e.currentTime }
                 ) { episode ->
+
 
                     EpisodeItem(
                         modifier = Modifier.animateItem(),

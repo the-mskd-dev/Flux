@@ -30,6 +30,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import com.mskd.flux.R
+import com.mskd.flux.data.repository.customization.LocalCustomization
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Status
@@ -48,6 +49,36 @@ import com.mskd.flux.utils.extensions.timeDescription
 
 @Composable
 fun EpisodeItem(
+    modifier: Modifier = Modifier,
+    episode: Episode,
+    isSelected: Boolean,
+    onTap: (Episode) -> Unit,
+    dropDownMenu: @Composable ((onDismissRequest: () -> Unit) -> Unit)? = null
+) {
+
+    val customization = LocalCustomization.current
+
+    if (customization.largeEpisodeImage) {
+        EpisodeItemLarge(
+            modifier = modifier,
+            episode = episode,
+            isSelected = isSelected,
+            onTap = onTap,
+            dropDownMenu = dropDownMenu
+        )
+    } else {
+        EpisodeItemSmall(
+            modifier = modifier,
+            episode = episode,
+            isSelected = isSelected,
+            onTap = onTap,
+            dropDownMenu = dropDownMenu
+        )
+    }
+
+}
+@Composable
+fun EpisodeItemLarge(
     modifier: Modifier = Modifier,
     episode: Episode,
     isSelected: Boolean,

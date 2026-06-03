@@ -23,6 +23,7 @@ import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.screens.artwork.ArtworkIntent
 import com.mskd.flux.screens.artwork.composables.common.ArtworkDescriptionsPager
 import com.mskd.flux.screens.artwork.composables.common.ArtworkHeader
+import com.mskd.flux.screens.artwork.composables.episodes.EpisodeDropDownMenu
 import com.mskd.flux.screens.artwork.composables.episodes.EpisodeItem
 import com.mskd.flux.ui.component.Text
 import com.mskd.flux.ui.theme.AppTheme
@@ -109,7 +110,14 @@ fun ArtworkContentRegular(
                         modifier = Modifier.animateItem(),
                         episode = episode,
                         isSelected = episode.id == selectedMedia.mediaId,
-                        sendIntent = sendIntent
+                        onTap = { sendIntent(ArtworkIntent.PlayMedia(media = episode)) },
+                        dropDownMenu = { onDismissRequest ->
+                            EpisodeDropDownMenu(
+                                episode = episode,
+                                onDismissRequest = onDismissRequest,
+                                sendIntent = sendIntent
+                            )
+                        }
                     )
 
                     Spacer(modifier = Modifier.height(Ui.Space.SMALL))

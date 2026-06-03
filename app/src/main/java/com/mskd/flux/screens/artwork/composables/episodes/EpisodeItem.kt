@@ -7,6 +7,7 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -39,6 +40,7 @@ import com.mskd.flux.ui.component.MediaThumbnail
 import com.mskd.flux.ui.component.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.utils.AppThemePreview
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.extensions.formattedText
 import com.mskd.flux.utils.extensions.minToMs
@@ -49,7 +51,8 @@ fun EpisodeItem(
     modifier: Modifier = Modifier,
     episode: Episode,
     isSelected: Boolean,
-    sendIntent: (ArtworkIntent) -> Unit
+    onTap: (Episode) -> Unit,
+    dropDownMenu: @Composable ((onDismissRequest: () -> Unit) -> Unit)? = null
 ) {
 
     var showMenu by remember { mutableStateOf(false) }
@@ -61,8 +64,92 @@ fun EpisodeItem(
             .clip(MaterialTheme.shapes.large)
             .background(bgColor)
             .combinedClickable(
-                onClick = { sendIntent(ArtworkIntent.PlayMedia(episode)) },
-                onLongClick = { showMenu = true }
+                onClick = { onTap(episode) },
+                onLongClick = { showMenu = dropDownMenu != null }
+            )
+            .animateContentSize()
+            .fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(Ui.Space.SMALL),
+    ) {
+
+        MediaThumbnail(
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(16f / 9f),
+            media = episode,
+            hd = true
+        )
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(Ui.Space.MEDIUM),
+            verticalArrangement = Arrangement.spacedBy(Ui.Space.SMALL),
+            horizontalAlignment = Alignment.Start
+        ) {
+
+            Text.Title.Medium(
+                modifier = Modifier.fillMaxWidth(),
+                text =  "${episode.number}. ${episode.title}",
+                textAlign = TextAlign.Start,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                color = if (isSelected) MaterialTheme.colorScheme.onSecondaryContainer else MaterialTheme.colorScheme.onSurface,
+                emphasized = true
+            )
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)
+            ) {
+
+                Text.Label.Small(
+                    text = episode.releaseDate?.formattedText,
+                    textAlign = TextAlign.Start,
+                    color = MaterialTheme.colorScheme.secondary
+                )
+
+                Text.Label.Small(
+                    text = episode.duration.minToMs.timeDescription(),
+                    textAlign = TextAlign.Start,
+                    color = MaterialTheme.colorScheme.secondary
+                )
+
+            }
+
+            Text.Body.Medium(
+                text = episode.description,
+                color = if (isSelected) MaterialTheme.colorScheme.onSecondaryContainer else MaterialTheme.colorScheme.onBackground,
+            )
+
+        }
+
+        if (showMenu)
+            dropDownMenu?.invoke { showMenu = false }
+    }
+
+}
+
+@Composable
+fun EpisodeItemSmall(
+    modifier: Modifier = Modifier,
+    episode: Episode,
+    isSelected: Boolean,
+    onTap: (Episode) -> Unit,
+    dropDownMenu: @Composable ((onDismissRequest: () -> Unit) -> Unit)? = null
+) {
+
+    var showMenu by remember { mutableStateOf(false) }
+    val bgColor by animateColorAsState(if (isSelected) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.surfaceContainer)
+
+    Column(
+        modifier = modifier
+            .padding(horizontal = Ui.Space.MEDIUM)
+            .clip(MaterialTheme.shapes.large)
+            .background(bgColor)
+            .combinedClickable(
+                onClick = { onTap(episode) },
+                onLongClick = { showMenu = dropDownMenu != null }
             )
             .animateContentSize()
             .fillMaxWidth()
@@ -120,11 +207,7 @@ fun EpisodeItem(
         )
 
         if (showMenu) {
-            EpisodeDropDownMenu(
-                episode = episode,
-                onDismissRequest = { showMenu = false },
-                sendIntent = sendIntent
-            )
+            dropDownMenu?.invoke { showMenu = false }
         }
 
     }
@@ -183,17 +266,16 @@ fun EpisodeDropDownMenu(
         )
     )
 
-
 }
 
 @FluxPreview
 @Composable
 fun EpisodeItem_Preview() {
-    AppTheme {
+    AppThemePreview {
         EpisodeItem(
             episode = MediaMockups.episode1,
             isSelected = false,
-            sendIntent = {}
+            onTap = {}
         )
     }
 }
@@ -201,14 +283,14 @@ fun EpisodeItem_Preview() {
 @FluxPreview
 @Composable
 fun EpisodeItemWatching_Preview() {
-    AppTheme {
+    AppThemePreview {
         EpisodeItem(
             episode = MediaMockups.episode1.copy(
                 status = Status.IS_WATCHING,
                 currentTime = (MediaMockups.episode1.duration.minToMs / 2f).toLong(),
             ),
             isSelected = true,
-            sendIntent = {}
+            onTap = {}
         )
     }
 }
@@ -216,15 +298,14 @@ fun EpisodeItemWatching_Preview() {
 @FluxPreview
 @Composable
 fun EpisodeItemWatched_Preview() {
-
-    AppTheme {
+    AppThemePreview {
         EpisodeItem(
             episode = MediaMockups.episode1.copy(
                 status = Status.WATCHED,
                 currentTime = MediaMockups.episode1.duration.minToMs,
             ),
             isSelected = false,
-            sendIntent = {}
+            onTap = {}
         )
     }
 }

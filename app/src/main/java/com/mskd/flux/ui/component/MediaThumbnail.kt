@@ -17,7 +17,8 @@ import com.mskd.flux.utils.extensions.grayScale
 @Composable
 fun MediaThumbnail(
     modifier: Modifier,
-    media: Media
+    media: Media,
+    hd: Boolean = false
 ) {
 
     val contentDescription = when (media) {
@@ -26,9 +27,7 @@ fun MediaThumbnail(
     }
 
     Box(
-        modifier = modifier
-            .clip(MaterialTheme.shapes.small)
-            .aspectRatio(16f / 9f),
+        modifier = modifier,
         contentAlignment = Alignment.BottomCenter,
         content = {
 
@@ -37,6 +36,7 @@ fun MediaThumbnail(
                     .fillMaxSize()
                     .let { if (media.status == Status.WATCHED) it.grayScale() else it },
                 media = media,
+                hd = hd,
                 contentDescription = contentDescription
             )
 

@@ -82,6 +82,7 @@ fun FluxImage(
 fun FluxImage(
     modifier: Modifier,
     media: Media,
+    hd: Boolean = false,
     contentScale: ContentScale = ContentScale.Crop,
     contentDescription: String
 ) {
@@ -90,6 +91,7 @@ fun FluxImage(
         FluxImage(
             modifier = modifier,
             path = media.imagePath,
+            hd = hd,
             contentDescription = contentDescription
         )
     } else {

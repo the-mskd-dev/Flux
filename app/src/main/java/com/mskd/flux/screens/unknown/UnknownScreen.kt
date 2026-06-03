@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -41,6 +42,9 @@ import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Status
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Route.Player
+import com.mskd.flux.screens.artwork.ArtworkIntent
+import com.mskd.flux.screens.artwork.composables.episodes.EpisodeDropDownMenu
+import com.mskd.flux.screens.artwork.composables.episodes.EpisodeItem
 import com.mskd.flux.ui.component.ErrorScreen
 import com.mskd.flux.ui.component.FluxScaffold
 import com.mskd.flux.ui.component.LoadingScreen
@@ -137,22 +141,21 @@ fun UnknownScreenContent(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(MaterialTheme.colorScheme.background),
-                contentPadding = PaddingValues(horizontal = Ui.Space.MEDIUM)
+                contentPadding = PaddingValues(horizontal = Ui.Space.MEDIUM),
+                verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
             ) {
 
                 item {
                     Spacer(modifier = Modifier.height(innerPadding.calculateTopPadding()))
                 }
 
-                itemsIndexed(items = medias, key = { _, m -> m.id }) { i, media ->
+                items(items = medias, key = { m -> m.id }) { media ->
 
-                    if (i != 0) {
-                        HorizontalDivider(modifier = Modifier.padding(horizontal = Ui.Space.MEDIUM))
-                    }
-
-                    UnknownItem(
-                        media = media,
-                        sendIntent = sendIntent
+                    EpisodeItem(
+                        modifier = Modifier.animateItem(),
+                        episode = media,
+                        isSelected = false,
+                        onTap = { sendIntent(UnknownIntent.PlayMedia(media = media)) },
                     )
 
                 }
@@ -180,75 +183,6 @@ fun UnknownScreenContent(
                     text = stringResource(R.string.no_item),
                     textAlign = TextAlign.Center
                 )
-
-            }
-
-        }
-
-    }
-
-}
-
-@Composable
-fun UnknownItem(
-    media: Episode,
-    sendIntent: (UnknownIntent) -> Unit
-) {
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { sendIntent(UnknownIntent.PlayMedia(media)) }
-            .padding(vertical = Ui.Space.MEDIUM),
-        horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL),
-    ) {
-
-        MediaThumbnail(
-            modifier = Modifier.width(160.dp),
-            media = media,
-        )
-
-        Column(
-            modifier = Modifier.weight(.6f),
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL),
-            horizontalAlignment = Alignment.Start
-        ) {
-
-            Text.Title.Medium(
-                text = media.title,
-                emphasized = true
-            )
-
-            if (media.season > 0 && media.number > 0) {
-                Row(horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)) {
-                    Text.Label.Small(
-                        text = stringResource(id = R.string.season, media.season).uppercase(),
-                        emphasized = true,
-                        color = MaterialTheme.colorScheme.primary,
-                    )
-                    Text.Label.Small(
-                        text = stringResource(id = R.string.episode, media.number).uppercase(),
-                        emphasized = true,
-                        color = MaterialTheme.colorScheme.secondary
-                    )
-                }
-            }
-
-            Row(horizontalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)) {
-
-                Text.Label.Small(
-                    text = media.duration.minToMs.timeDescription(),
-                    textAlign = TextAlign.Start,
-                    color = MaterialTheme.colorScheme.secondary
-                )
-
-                if (media.status == Status.IS_WATCHING) {
-                    val remainingTime = (media.duration.minToMs - media.currentTime).timeDescription(withoutSeconds = true)
-                    Text.Label.Small(
-                        text = "(" + stringResource(R.string.remaining_time, remainingTime) + ")",
-                        color = MaterialTheme.colorScheme.secondary
-                    )
-                }
 
             }
 

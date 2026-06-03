@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -43,6 +44,7 @@ import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.AppThemePreview
 import com.mskd.flux.utils.FluxPreview
+import com.mskd.flux.utils.PortraitPreview
 import com.mskd.flux.utils.extensions.formattedText
 import com.mskd.flux.utils.extensions.minToMs
 import com.mskd.flux.utils.extensions.timeDescription
@@ -192,7 +194,9 @@ fun EpisodeItemSmall(
         ) {
 
             MediaThumbnail(
-                modifier = Modifier.weight(.4f),
+                modifier = Modifier
+                    .clip(MaterialTheme.shapes.small)
+                    .weight(.4f),
                 media = episode,
             )
 
@@ -297,44 +301,80 @@ fun EpisodeDropDownMenu(
 
 }
 
-@FluxPreview
+@PortraitPreview
 @Composable
 fun EpisodeItem_Preview() {
     AppThemePreview {
-        EpisodeItem(
-            episode = MediaMockups.episode1,
-            isSelected = false,
-            onTap = {}
-        )
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
+        ) {
+            EpisodeItemLarge(
+                episode = MediaMockups.episode1,
+                isSelected = false,
+                onTap = {}
+            )
+            EpisodeItemSmall(
+                episode = MediaMockups.episode1,
+                isSelected = false,
+                onTap = {}
+            )
+        }
     }
 }
 
-@FluxPreview
+@PortraitPreview
 @Composable
 fun EpisodeItemWatching_Preview() {
     AppThemePreview {
-        EpisodeItem(
-            episode = MediaMockups.episode1.copy(
-                status = Status.IS_WATCHING,
-                currentTime = (MediaMockups.episode1.duration.minToMs / 2f).toLong(),
-            ),
-            isSelected = true,
-            onTap = {}
-        )
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
+        ) {
+            EpisodeItemLarge(
+                episode = MediaMockups.episode1.copy(
+                    status = Status.IS_WATCHING,
+                    currentTime = (MediaMockups.episode1.duration.minToMs / 2f).toLong(),
+                ),
+                isSelected = true,
+                onTap = {}
+            )
+            EpisodeItemSmall(
+                episode = MediaMockups.episode1.copy(
+                    status = Status.IS_WATCHING,
+                    currentTime = (MediaMockups.episode1.duration.minToMs / 2f).toLong(),
+                ),
+                isSelected = true,
+                onTap = {}
+            )
+        }
     }
 }
 
-@FluxPreview
+@PortraitPreview
 @Composable
 fun EpisodeItemWatched_Preview() {
     AppThemePreview {
-        EpisodeItem(
-            episode = MediaMockups.episode1.copy(
-                status = Status.WATCHED,
-                currentTime = MediaMockups.episode1.duration.minToMs,
-            ),
-            isSelected = false,
-            onTap = {}
-        )
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
+        ) {
+            EpisodeItemLarge(
+                episode = MediaMockups.episode1.copy(
+                    status = Status.WATCHED,
+                    currentTime = MediaMockups.episode1.duration.minToMs,
+                ),
+                isSelected = false,
+                onTap = {}
+            )
+            EpisodeItemSmall(
+                episode = MediaMockups.episode1.copy(
+                    status = Status.WATCHED,
+                    currentTime = MediaMockups.episode1.duration.minToMs,
+                ),
+                isSelected = false,
+                onTap = {}
+            )
+        }
     }
 }

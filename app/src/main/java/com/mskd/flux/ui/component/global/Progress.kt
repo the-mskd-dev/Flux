@@ -17,7 +17,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.R
-import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.Ui
 
 @Composable

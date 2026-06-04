@@ -21,7 +21,6 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.mskd.flux.data.repository.connectivity.ConnectivityRepository
 import com.mskd.flux.data.repository.connectivity.LocalConnectivity
-import com.mskd.flux.data.repository.customization.CustomizationRepository
 import com.mskd.flux.data.repository.customization.LocalCustomization
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Transition

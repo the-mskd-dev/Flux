@@ -21,8 +21,8 @@ import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.artwork.Status
 import com.mskd.flux.ui.component.media.EpisodesDetails
-import com.mskd.flux.ui.component.media.OverviewItem
 import com.mskd.flux.ui.component.media.MediaDetailsHorizontal
+import com.mskd.flux.ui.component.media.OverviewItem
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.FluxPreview

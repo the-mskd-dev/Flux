@@ -2,6 +2,8 @@ package com.mskd.flux.ui.component.media
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
@@ -37,6 +39,7 @@ import com.mskd.flux.model.artwork.Status
 import com.mskd.flux.screens.artwork.ArtworkIntent
 import com.mskd.flux.ui.component.global.FluxDropDownMenu
 import com.mskd.flux.ui.component.global.FluxDropDownMenuItem
+import com.mskd.flux.ui.component.global.ReadMoreButton
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.AppThemePreview
@@ -82,6 +85,10 @@ fun EpisodeItemLarge(
     dropDownMenu: @Composable ((onDismissRequest: () -> Unit) -> Unit)? = null
 ) {
 
+    var expanded by remember { mutableStateOf(false) }
+    var isOverflowing by remember { mutableStateOf(false) }
+    var hasLaidOut by remember { mutableStateOf(false) }
+
     var showMenu by remember { mutableStateOf(false) }
     val bgColor by animateColorAsState(if (isSelected) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.surfaceContainer)
 
@@ -94,7 +101,14 @@ fun EpisodeItemLarge(
                 onClick = { onTap(episode) },
                 onLongClick = { showMenu = dropDownMenu != null }
             )
-            .animateContentSize()
+            .then(
+                if (hasLaidOut) Modifier.animateContentSize(
+                    animationSpec = spring(
+                        dampingRatio = Spring.DampingRatioMediumBouncy,
+                        stiffness = Spring.StiffnessHigh
+                    )
+                ) else Modifier
+            )
             .fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(Ui.Space.SMALL),
     ) {
@@ -128,7 +142,23 @@ fun EpisodeItemLarge(
             Text.Body.Medium(
                 text = episode.description,
                 color = if (isSelected) MaterialTheme.colorScheme.onSecondaryContainer else MaterialTheme.colorScheme.onBackground,
+                maxLines = if (expanded) Int.MAX_VALUE else 3,
+                overflow = if (expanded) TextOverflow.Clip else TextOverflow.Ellipsis,
+                onTextLayout = { result ->
+                    if (!expanded) {
+                        isOverflowing = result.hasVisualOverflow
+                        hasLaidOut = true
+                    }
+                }
             )
+
+            if (isOverflowing || expanded) {
+                ReadMoreButton(
+                    modifier = Modifier.align(Alignment.End),
+                    onTap = { expanded = !expanded },
+                    isExpanded = expanded
+                )
+            }
 
         }
 
@@ -147,6 +177,10 @@ fun EpisodeItemSmall(
     dropDownMenu: @Composable ((onDismissRequest: () -> Unit) -> Unit)? = null
 ) {
 
+    var expanded by remember { mutableStateOf(false) }
+    var isOverflowing by remember { mutableStateOf(false) }
+    var hasLaidOut by remember { mutableStateOf(false) }
+
     var showMenu by remember { mutableStateOf(false) }
     val bgColor by animateColorAsState(if (isSelected) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.surfaceContainer)
 
@@ -159,7 +193,14 @@ fun EpisodeItemSmall(
                 onClick = { onTap(episode) },
                 onLongClick = { showMenu = dropDownMenu != null }
             )
-            .animateContentSize()
+            .then(
+                if (hasLaidOut) Modifier.animateContentSize(
+                    animationSpec = spring(
+                        dampingRatio = Spring.DampingRatioMediumBouncy,
+                        stiffness = Spring.StiffnessHigh
+                    )
+                ) else Modifier
+            )
             .fillMaxWidth()
             .padding(Ui.Space.MEDIUM),
         verticalArrangement = Arrangement.spacedBy(Ui.Space.SMALL),
@@ -202,7 +243,23 @@ fun EpisodeItemSmall(
         Text.Body.Medium(
             text = episode.description,
             color = if (isSelected) MaterialTheme.colorScheme.onSecondaryContainer else MaterialTheme.colorScheme.onBackground,
+            maxLines = if (expanded) Int.MAX_VALUE else 2,
+            overflow = if (expanded) TextOverflow.Clip else TextOverflow.Ellipsis,
+            onTextLayout = { result ->
+                if (!expanded) {
+                    isOverflowing = result.hasVisualOverflow
+                    hasLaidOut = true
+                }
+            }
         )
+
+        if (isOverflowing || expanded) {
+            ReadMoreButton(
+                modifier = Modifier.align(Alignment.End),
+                onTap = { expanded = !expanded },
+                isExpanded = expanded
+            )
+        }
 
         if (showMenu) {
             dropDownMenu?.invoke { showMenu = false }

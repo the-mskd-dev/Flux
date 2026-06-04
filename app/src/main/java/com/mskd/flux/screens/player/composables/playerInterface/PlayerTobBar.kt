@@ -27,7 +27,6 @@ import androidx.compose.ui.unit.dp
 import com.mskd.flux.R
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
-import com.mskd.flux.ui.component.global.BackButton
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.Ui
 

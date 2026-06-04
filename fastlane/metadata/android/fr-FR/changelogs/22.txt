@@ -1,0 +1,6 @@
+- Feature: Nouvelle écran pour les saisons
+- Feature: Meilleure gestion des images
+- UI: Header dans l'écran des épisodes/films
+- UI: Nouveau format pour les épisodes
+- Fix: Correction sur les durées nulles
+- Autre: Ajout de GitHub Sponsor

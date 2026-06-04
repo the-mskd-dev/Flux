@@ -339,7 +339,7 @@ class DatabaseRepositoryImplTest {
             .map { it.imagePath.tmdbImage }
         val expectedArtworkBanners = MediaMockups.artworks
             .filter { it.imagePath.isNotBlank() }
-            .map { it.bannerPath.tmdbImageLarge }
+            .map { it.bannerPath.tmdbImage }
         val expectedEpisodeImages = MediaMockups.episodes
             .filter { it.imagePath.isNotBlank() }
             .map { it.imagePath.tmdbImage }

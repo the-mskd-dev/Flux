@@ -68,7 +68,7 @@ class ArtworkViewModelTest : FunSpec({
             val initialState = awaitItem()
 
             initialState.state.shouldBeInstanceOf<State.Content<ArtworkContent>>()
-            val content = (initialState.state as State.Content).content
+            val content = initialState.state.content
             content.fullArtwork.artwork shouldBe MediaMockups.showArtwork
             content.selectedMedia shouldBe MediaMockups.episode1
             (content.fullArtwork as FullArtwork.FullShow).episodes shouldBe MediaMockups.episodes
@@ -369,6 +369,31 @@ class ArtworkViewModelTest : FunSpec({
             viewModel.handleIntent(ArtworkIntent.PlayMedia(MediaMockups.episode1))
             viewModel.handleIntent(ArtworkIntent.OnExternalPlayerResult(progress = 5000L))
             coVerify { progressUC.saveProgress(media = MediaMockups.episode1, progress = 5000L) }
+        }
+    }
+
+    test("expand episode description") {
+        viewModel.uiState.test {
+            expectMostRecentItem()
+
+            viewModel.handleIntent(ArtworkIntent.ExpandEpisodeDescription(episode = MediaMockups.episode1))
+            val state = expectMostRecentItem()
+            val content = (state.state as State.Content).content
+            content.expandedEpisodeId shouldBe MediaMockups.episode1.id
+        }
+    }
+
+    test("collapse episode description") {
+        viewModel.uiState.test {
+            expectMostRecentItem()
+
+            viewModel.handleIntent(ArtworkIntent.ExpandEpisodeDescription(episode = MediaMockups.episode1))
+            expectMostRecentItem()
+
+            viewModel.handleIntent(ArtworkIntent.CollapseEpisodeDescription)
+            val state = expectMostRecentItem()
+            val content = (state.state as State.Content).content
+            content.expandedEpisodeId shouldBe null
         }
     }
 

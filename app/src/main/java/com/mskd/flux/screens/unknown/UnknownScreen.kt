@@ -2,22 +2,17 @@ package com.mskd.flux.screens.unknown
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -30,7 +25,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -38,20 +32,17 @@ import com.mskd.flux.R
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.ScreenState
 import com.mskd.flux.model.artwork.Episode
-import com.mskd.flux.model.artwork.Status
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Route.Player
-import com.mskd.flux.ui.component.ErrorScreen
-import com.mskd.flux.ui.component.FluxScaffold
 import com.mskd.flux.ui.component.LoadingScreen
-import com.mskd.flux.ui.component.MediaThumbnail
-import com.mskd.flux.ui.component.Text
+import com.mskd.flux.ui.component.global.ErrorScreen
+import com.mskd.flux.ui.component.global.FluxScaffold
+import com.mskd.flux.ui.component.global.Text
+import com.mskd.flux.ui.component.media.EpisodeItem
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.ExternalPlayer
 import com.mskd.flux.utils.FluxPreview
-import com.mskd.flux.utils.extensions.minToMs
-import com.mskd.flux.utils.extensions.timeDescription
 import com.mskd.flux.utils.rememberExternalPlayerLauncher
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -137,22 +128,21 @@ fun UnknownScreenContent(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(MaterialTheme.colorScheme.background),
-                contentPadding = PaddingValues(horizontal = Ui.Space.MEDIUM)
+                contentPadding = PaddingValues(horizontal = Ui.Space.MEDIUM),
+                verticalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)
             ) {
 
                 item {
                     Spacer(modifier = Modifier.height(innerPadding.calculateTopPadding()))
                 }
 
-                itemsIndexed(items = medias, key = { _, m -> m.id }) { i, media ->
+                items(items = medias, key = { m -> m.id }) { media ->
 
-                    if (i != 0) {
-                        HorizontalDivider(modifier = Modifier.padding(horizontal = Ui.Space.MEDIUM))
-                    }
-
-                    UnknownItem(
-                        media = media,
-                        sendIntent = sendIntent
+                    EpisodeItem(
+                        modifier = Modifier.animateItem(),
+                        episode = media,
+                        isSelected = false,
+                        onTap = { sendIntent(UnknownIntent.PlayMedia(media = media)) },
                     )
 
                 }
@@ -180,75 +170,6 @@ fun UnknownScreenContent(
                     text = stringResource(R.string.no_item),
                     textAlign = TextAlign.Center
                 )
-
-            }
-
-        }
-
-    }
-
-}
-
-@Composable
-fun UnknownItem(
-    media: Episode,
-    sendIntent: (UnknownIntent) -> Unit
-) {
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { sendIntent(UnknownIntent.PlayMedia(media)) }
-            .padding(vertical = Ui.Space.MEDIUM),
-        horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL),
-    ) {
-
-        MediaThumbnail(
-            modifier = Modifier.width(160.dp),
-            media = media,
-        )
-
-        Column(
-            modifier = Modifier.weight(.6f),
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL),
-            horizontalAlignment = Alignment.Start
-        ) {
-
-            Text.Title.Medium(
-                text = media.title,
-                emphasized = true
-            )
-
-            if (media.season > 0 && media.number > 0) {
-                Row(horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)) {
-                    Text.Label.Small(
-                        text = stringResource(id = R.string.season, media.season).uppercase(),
-                        emphasized = true,
-                        color = MaterialTheme.colorScheme.primary,
-                    )
-                    Text.Label.Small(
-                        text = stringResource(id = R.string.episode, media.number).uppercase(),
-                        emphasized = true,
-                        color = MaterialTheme.colorScheme.secondary
-                    )
-                }
-            }
-
-            Row(horizontalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)) {
-
-                Text.Label.Small(
-                    text = media.duration.minToMs.timeDescription(),
-                    textAlign = TextAlign.Start,
-                    color = MaterialTheme.colorScheme.secondary
-                )
-
-                if (media.status == Status.IS_WATCHING) {
-                    val remainingTime = (media.duration.minToMs - media.currentTime).timeDescription(withoutSeconds = true)
-                    Text.Label.Small(
-                        text = "(" + stringResource(R.string.remaining_time, remainingTime) + ")",
-                        color = MaterialTheme.colorScheme.secondary
-                    )
-                }
 
             }
 

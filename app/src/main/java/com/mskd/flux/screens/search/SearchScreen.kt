@@ -49,9 +49,9 @@ import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Route.Artwork
 import com.mskd.flux.navigation.Route.Show
-import com.mskd.flux.ui.component.FluxScaffold
-import com.mskd.flux.ui.component.MediaItem
-import com.mskd.flux.ui.component.Text
+import com.mskd.flux.ui.component.global.FluxScaffold
+import com.mskd.flux.ui.component.global.Text
+import com.mskd.flux.ui.component.media.MediaItem
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.FluxPreview

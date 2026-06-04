@@ -15,6 +15,7 @@ data class ArtworkDataState(
 @Immutable
 data class ArtworkUserState(
     val selectedMedia: Media? = null,
+    val expandedEpisodeId: Long? = null,
     val dialog: ArtworkDialog? = null,
 )
 
@@ -23,6 +24,7 @@ data class ArtworkContent(
     val fullArtwork: FullArtwork,
     val selectedMedia: Media,
     val selectedSeason: Int?,
+    val expandedEpisodeId: Long? = null,
     val useExternalPlayer: Boolean,
     val dialog: ArtworkDialog?,
 )
@@ -55,6 +57,8 @@ sealed class ArtworkIntent {
 
     // Other
     data class OnExternalPlayerResult(val progress: Long) : ArtworkIntent()
+    data class ExpandEpisodeDescription(val episode: Episode) : ArtworkIntent()
+    data object CollapseEpisodeDescription : ArtworkIntent()
 }
 
 sealed class ArtworkEvent {

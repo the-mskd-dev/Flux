@@ -1,6 +1,5 @@
-package com.mskd.flux.ui.component
+package com.mskd.flux.ui.component.media
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
@@ -11,7 +10,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,13 +25,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.mskd.flux.R
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.Episode
-import com.mskd.flux.model.artwork.Media
+import com.mskd.flux.ui.component.global.ReadMoreButton
+import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
-import com.mskd.flux.utils.extensions.formattedText
-import com.mskd.flux.utils.extensions.minToMs
-import com.mskd.flux.utils.extensions.timeDescription
-import com.mskd.flux.utils.extensions.toRating
 
 @Composable
 fun OverviewItem(
@@ -101,17 +96,11 @@ fun OverviewItem(
         )
 
         if (isOverflowing || expanded) {
-            TextButton(
+            ReadMoreButton(
                 modifier = Modifier.align(Alignment.End),
-                onClick = { expanded = !expanded }
-            ) {
-                AnimatedContent(targetState = expanded) { isExpanded ->
-                    Text.Label.Large(
-                        text = stringResource(if (isExpanded) R.string.read_less else R.string.read_more)
-                    )
-                }
-
-            }
+                onTap = { expanded = !expanded },
+                isExpanded = expanded
+            )
         }
 
     }
@@ -136,51 +125,6 @@ fun EpisodesDetails(episode: Episode) {
 
 }
 
-@Composable
-fun MediaDescriptionDetails(media: Media) {
-
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)
-    ) {
-
-        media.releaseDate?.let {
-
-            Text.Body.Small(
-                text = it.formattedText,
-                color = MaterialTheme.colorScheme.secondary
-            )
-
-            Text.Body.Small(
-                text = "•",
-                color = MaterialTheme.colorScheme.secondary
-            )
-
-        }
-
-        Text.Body.Small(
-            text = media.duration.minToMs.timeDescription(),
-            color = MaterialTheme.colorScheme.secondary
-        )
-
-        if (media.voteAverage > 0f) {
-
-            Text.Body.Small(
-                text = "•",
-                color = MaterialTheme.colorScheme.secondary
-            )
-
-            Text.Body.Small(
-                text = "${media.voteAverage.toRating}/10",
-                color = MaterialTheme.colorScheme.secondary
-            )
-        }
-
-    }
-
-}
-
 @Preview
 @Composable
 fun OverviewItem_Preview_Movie() {
@@ -188,7 +132,7 @@ fun OverviewItem_Preview_Movie() {
         OverviewItem(
             title = stringResource(R.string.summary),
             description = MediaMockups.movie.description,
-            subtitle = { MediaDescriptionDetails(MediaMockups.movie) }
+            subtitle = { MediaDetailsHorizontal(media = MediaMockups.movie, showRating = true) }
         )
     }
 }
@@ -212,7 +156,7 @@ fun OverviewItem_Preview_Episode() {
             title = MediaMockups.episode1.title,
             description = MediaMockups.episode1.description,
             topDetails = { EpisodesDetails(episode = MediaMockups.episode1) },
-            subtitle = { MediaDescriptionDetails(media = MediaMockups.episode1) }
+            subtitle = { MediaDetailsHorizontal(media = MediaMockups.episode1, showRating = true) }
         )
     }
 }

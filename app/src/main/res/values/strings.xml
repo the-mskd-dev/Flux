@@ -152,4 +152,5 @@
     </plurals>
     <string name="read_more">Read more</string>
     <string name="read_less">Read less</string>
+    <string name="large_episode_image">Large image for the episodes</string>
 </resources>

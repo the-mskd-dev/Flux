@@ -50,6 +50,7 @@ object Ui {
         const val RATIO_2_3 = 2f/3f
         const val RATIO_6_5 = 6f/5f
         const val RATIO_5_6 = 5f/6f
+        const val RATIO_16_9 = 16f/9f
 
     }
 

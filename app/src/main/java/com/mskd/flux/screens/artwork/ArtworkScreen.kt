@@ -40,14 +40,14 @@ import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Route.Player
 import com.mskd.flux.screens.artwork.composables.ArtworkContentLarge
 import com.mskd.flux.screens.artwork.composables.ArtworkContentRegular
-import com.mskd.flux.ui.component.ErrorScreen
-import com.mskd.flux.ui.component.FluxDialog
-import com.mskd.flux.ui.component.FluxDropDownMenu
-import com.mskd.flux.ui.component.FluxDropDownMenuItem
-import com.mskd.flux.ui.component.FluxScaffold
 import com.mskd.flux.ui.component.LoadingScreen
-import com.mskd.flux.ui.component.ResetProgressDialog
-import com.mskd.flux.ui.component.Text
+import com.mskd.flux.ui.component.global.ErrorScreen
+import com.mskd.flux.ui.component.global.FluxDialog
+import com.mskd.flux.ui.component.global.FluxDropDownMenu
+import com.mskd.flux.ui.component.global.FluxDropDownMenuItem
+import com.mskd.flux.ui.component.global.FluxScaffold
+import com.mskd.flux.ui.component.global.ResetProgressDialog
+import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.utils.ExternalPlayer
 import com.mskd.flux.utils.FluxPreview
@@ -115,6 +115,7 @@ fun ArtworkScreen(
                         fullArtwork = content.fullArtwork,
                         selectedMedia = content.selectedMedia,
                         selectedSeason = content.selectedSeason,
+                        expandedEpisodeId = content.expandedEpisodeId,
                         dialog = content.dialog,
                         sendIntent = viewModel::handleIntent
                     )
@@ -132,6 +133,7 @@ fun ArtworkScreenContent(
     fullArtwork: FullArtwork,
     selectedMedia: Media,
     selectedSeason: Int?,
+    expandedEpisodeId: Long?,
     dialog: ArtworkDialog?,
     sendIntent: (ArtworkIntent) -> Unit
 ) {
@@ -198,6 +200,7 @@ fun ArtworkScreenContent(
                 fullArtwork = fullArtwork,
                 selectedMedia = selectedMedia,
                 selectedSeason = selectedSeason,
+                expandedEpisodeId = expandedEpisodeId,
                 scaffoldInnerPadding = innerPadding,
                 sendIntent = sendIntent,
             )
@@ -206,6 +209,7 @@ fun ArtworkScreenContent(
                 fullArtwork = fullArtwork,
                 selectedMedia = selectedMedia,
                 selectedSeason = selectedSeason,
+                expandedEpisodeId = expandedEpisodeId,
                 scaffoldInnerPadding = innerPadding,
                 sendIntent = sendIntent,
             )
@@ -269,6 +273,7 @@ fun ArtworkScreenContent_Preview() {
             fullArtwork = MediaMockups.fullShow,
             selectedMedia = MediaMockups.episode1,
             selectedSeason = MediaMockups.episode1.season,
+            expandedEpisodeId = null,
             dialog = null,
             sendIntent = {}
         )

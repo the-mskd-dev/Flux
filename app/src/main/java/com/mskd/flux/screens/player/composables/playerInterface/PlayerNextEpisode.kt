@@ -32,7 +32,7 @@ import com.mskd.flux.R
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.screens.player.PlayerIntent
 import com.mskd.flux.screens.player.PlayerUiState
-import com.mskd.flux.ui.component.CountDownButton
+import com.mskd.flux.ui.component.global.CountDownButton
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.FluxPreview

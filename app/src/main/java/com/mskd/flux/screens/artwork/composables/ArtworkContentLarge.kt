@@ -27,8 +27,9 @@ import com.mskd.flux.screens.artwork.ArtworkIntent
 import com.mskd.flux.screens.artwork.composables.common.ArtworkButtons
 import com.mskd.flux.screens.artwork.composables.common.ArtworkDescriptionsPager
 import com.mskd.flux.screens.artwork.composables.common.ArtworkImage
-import com.mskd.flux.screens.artwork.composables.episodes.EpisodeItem
-import com.mskd.flux.ui.component.Text
+import com.mskd.flux.ui.component.global.Text
+import com.mskd.flux.ui.component.media.EpisodeDropDownMenu
+import com.mskd.flux.ui.component.media.EpisodeItem
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.LandscapePreview
@@ -38,6 +39,7 @@ fun ArtworkContentLarge(
     fullArtwork: FullArtwork,
     selectedMedia: Media,
     selectedSeason: Int?,
+    expandedEpisodeId: Long?,
     scaffoldInnerPadding: PaddingValues,
     sendIntent: (ArtworkIntent) -> Unit,
 ) {
@@ -148,7 +150,22 @@ fun ArtworkContentLarge(
                             modifier = Modifier.animateItem(),
                             episode = episode,
                             isSelected = episode.id == selectedMedia.mediaId,
-                            sendIntent = sendIntent
+                            isExpanded = episode.id == expandedEpisodeId,
+                            onTap = { sendIntent(ArtworkIntent.PlayMedia(media = episode)) },
+                            onReadMoreTap = {
+                                if (it) {
+                                    sendIntent(ArtworkIntent.ExpandEpisodeDescription(episode = episode))
+                                } else {
+                                    sendIntent(ArtworkIntent.CollapseEpisodeDescription)
+                                }
+                            },
+                            dropDownMenu = { onDismissRequest ->
+                                EpisodeDropDownMenu(
+                                    episode = episode,
+                                    onDismissRequest = onDismissRequest,
+                                    sendIntent = sendIntent
+                                )
+                            }
                         )
 
                         Spacer(modifier = Modifier.height(Ui.Space.SMALL))
@@ -178,6 +195,7 @@ fun ArtworkContentLargeMovie_Preview() {
             fullArtwork = MediaMockups.fullMovie,
             selectedMedia = MediaMockups.movie,
             selectedSeason = null,
+            expandedEpisodeId = null,
             scaffoldInnerPadding = PaddingValues.Zero,
             sendIntent = {}
         )
@@ -192,6 +210,7 @@ fun ArtworkContentLargeShow_Preview() {
             fullArtwork = MediaMockups.fullShow,
             selectedMedia = MediaMockups.episode1,
             selectedSeason = 1,
+            expandedEpisodeId = null,
             scaffoldInnerPadding = PaddingValues.Zero,
             sendIntent = {}
         )

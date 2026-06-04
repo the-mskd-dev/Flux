@@ -103,16 +103,25 @@ class ArtworkViewModel @AssistedInject constructor(
 
     fun handleIntent(intent: ArtworkIntent) = viewModelScope.launch {
         when (intent) {
+            //Navigation
             ArtworkIntent.OnBackTap -> _event.emit(ArtworkEvent.BackToPreviousScreen)
             is ArtworkIntent.PlayMedia -> playMedia(media = intent.media, forceInternal = intent.forceInternal)
-            is ArtworkIntent.ChangeWatchStatus -> changeWatchStatus(media = intent.media)
-            ArtworkIntent.MarkPreviousEpisodesAsWatched -> markPreviousEpisodesAsWatched()
             ArtworkIntent.OpenArtworkInfo -> openArtworkInfo()
             is ArtworkIntent.OpenEpisodeInfo -> _event.emit(OpenUrlInfo(url = intent.episode.infoUrl))
-            is ArtworkIntent.OnExternalPlayerResult -> onExternalPlayerResult(intent.progress)
-            ArtworkIntent.ShowResetProgressDialog -> showResetProgressDialog()
-            ArtworkIntent.ResetProgress -> resetProgress()
+
+            // Dialogs
             ArtworkIntent.CloseDialog -> closeDialog()
+            ArtworkIntent.ShowResetProgressDialog -> showResetProgressDialog()
+
+            // Status
+            is ArtworkIntent.ChangeWatchStatus -> changeWatchStatus(media = intent.media)
+            ArtworkIntent.MarkPreviousEpisodesAsWatched -> markPreviousEpisodesAsWatched()
+            ArtworkIntent.ResetProgress -> resetProgress()
+
+            // Other
+            is ArtworkIntent.OnExternalPlayerResult -> onExternalPlayerResult(intent.progress)
+            is ArtworkIntent.ExpandEpisodeDescription -> expandEpisodeDescription(episode = intent.episode)
+            ArtworkIntent.CollapseEpisodeDescription -> collapseEpisodeDescription()
         }
     }
 
@@ -135,6 +144,7 @@ class ArtworkViewModel @AssistedInject constructor(
                 fullArtwork = dataState.fullArtwork,
                 selectedMedia = selectedMedia,
                 selectedSeason = season,
+                expandedEpisodeId = userState.expandedEpisodeId,
                 useExternalPlayer = dataState.useExternalPlayer,
                 dialog = userState.dialog,
             )
@@ -243,8 +253,16 @@ class ArtworkViewModel @AssistedInject constructor(
 
     }
 
-    private suspend fun closeDialog() {
+    private fun closeDialog() {
         _userState.update { it.copy(dialog = null) }
+    }
+
+    private fun expandEpisodeDescription(episode: Episode) {
+        _userState.update { it.copy(expandedEpisodeId = episode.id) }
+    }
+
+    private fun collapseEpisodeDescription() {
+        _userState.update { it.copy(expandedEpisodeId = null) }
     }
 
     //endregion

@@ -38,12 +38,12 @@ import com.mskd.flux.navigation.Route.Artwork
 import com.mskd.flux.screens.show.composables.SeasonDialog
 import com.mskd.flux.screens.show.composables.ShowContentLarge
 import com.mskd.flux.screens.show.composables.ShowContentRegular
-import com.mskd.flux.ui.component.ErrorScreen
-import com.mskd.flux.ui.component.FluxDropDownMenu
-import com.mskd.flux.ui.component.FluxDropDownMenuItem
-import com.mskd.flux.ui.component.FluxScaffold
 import com.mskd.flux.ui.component.LoadingScreen
-import com.mskd.flux.ui.component.ResetProgressDialog
+import com.mskd.flux.ui.component.global.ErrorScreen
+import com.mskd.flux.ui.component.global.FluxDropDownMenu
+import com.mskd.flux.ui.component.global.FluxDropDownMenuItem
+import com.mskd.flux.ui.component.global.FluxScaffold
+import com.mskd.flux.ui.component.global.ResetProgressDialog
 import com.mskd.flux.utils.WebLink
 
 @Composable

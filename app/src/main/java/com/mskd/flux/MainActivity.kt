@@ -21,6 +21,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.mskd.flux.data.repository.connectivity.ConnectivityRepository
 import com.mskd.flux.data.repository.connectivity.LocalConnectivity
+import com.mskd.flux.data.repository.customization.LocalCustomization
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Transition
 import com.mskd.flux.screens.about.AboutScreen
@@ -79,7 +80,10 @@ class MainActivity : ComponentActivity() {
 
                 val backStack = rememberNavBackStack(startingScreen)
 
-                CompositionLocalProvider(LocalConnectivity provides isOnline) {
+                CompositionLocalProvider(
+                    LocalConnectivity provides isOnline,
+                        LocalCustomization provides customization
+                ) {
                     NavDisplay(
                         modifier = Modifier
                             .fillMaxSize()

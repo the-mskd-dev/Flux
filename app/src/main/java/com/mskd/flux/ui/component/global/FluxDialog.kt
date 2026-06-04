@@ -1,4 +1,4 @@
-package com.mskd.flux.ui.component
+package com.mskd.flux.ui.component.global
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api

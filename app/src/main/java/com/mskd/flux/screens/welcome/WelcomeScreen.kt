@@ -45,9 +45,9 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.mskd.flux.R
 import com.mskd.flux.navigation.Route
-import com.mskd.flux.ui.component.FluxButton
-import com.mskd.flux.ui.component.FluxIconButton
-import com.mskd.flux.ui.component.Text
+import com.mskd.flux.ui.component.global.FluxButton
+import com.mskd.flux.ui.component.global.FluxIconButton
+import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.FluxPreview

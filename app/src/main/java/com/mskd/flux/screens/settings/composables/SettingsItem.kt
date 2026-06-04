@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import com.mskd.flux.screens.settings.SettingIcon
-import com.mskd.flux.ui.component.Text
+import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.extensions.uppercaseFirstLetter
 

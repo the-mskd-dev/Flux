@@ -51,7 +51,9 @@ fun EpisodeItem(
     modifier: Modifier = Modifier,
     episode: Episode,
     isSelected: Boolean,
+    isExpanded: Boolean = false,
     onTap: (Episode) -> Unit,
+    onReadMoreTap: (Boolean) -> Unit = {},
     dropDownMenu: @Composable ((onDismissRequest: () -> Unit) -> Unit)? = null
 ) {
 
@@ -62,7 +64,9 @@ fun EpisodeItem(
             modifier = modifier,
             episode = episode,
             isSelected = isSelected,
+            isExpanded = isExpanded,
             onTap = onTap,
+            onReadMoreTap = onReadMoreTap,
             dropDownMenu = dropDownMenu
         )
     } else {
@@ -70,7 +74,9 @@ fun EpisodeItem(
             modifier = modifier,
             episode = episode,
             isSelected = isSelected,
+            isExpanded = isExpanded,
             onTap = onTap,
+            onReadMoreTap = onReadMoreTap,
             dropDownMenu = dropDownMenu
         )
     }
@@ -81,11 +87,12 @@ fun EpisodeItemLarge(
     modifier: Modifier = Modifier,
     episode: Episode,
     isSelected: Boolean,
+    isExpanded: Boolean,
     onTap: (Episode) -> Unit,
+    onReadMoreTap: (Boolean) -> Unit,
     dropDownMenu: @Composable ((onDismissRequest: () -> Unit) -> Unit)? = null
 ) {
 
-    var expanded by remember { mutableStateOf(false) }
     var isOverflowing by remember { mutableStateOf(false) }
     var hasLaidOut by remember { mutableStateOf(false) }
 
@@ -142,21 +149,21 @@ fun EpisodeItemLarge(
             Text.Body.Medium(
                 text = episode.description,
                 color = if (isSelected) MaterialTheme.colorScheme.onSecondaryContainer else MaterialTheme.colorScheme.onBackground,
-                maxLines = if (expanded) Int.MAX_VALUE else 3,
-                overflow = if (expanded) TextOverflow.Clip else TextOverflow.Ellipsis,
+                maxLines = if (isExpanded) Int.MAX_VALUE else 3,
+                overflow = if (isExpanded) TextOverflow.Clip else TextOverflow.Ellipsis,
                 onTextLayout = { result ->
-                    if (!expanded) {
+                    if (!isExpanded) {
                         isOverflowing = result.hasVisualOverflow
                         hasLaidOut = true
                     }
                 }
             )
 
-            if (isOverflowing || expanded) {
+            if (isOverflowing || isExpanded) {
                 ReadMoreButton(
                     modifier = Modifier.align(Alignment.End),
-                    onTap = { expanded = !expanded },
-                    isExpanded = expanded
+                    onTap = { onReadMoreTap(!isExpanded) },
+                    isExpanded = isExpanded
                 )
             }
 
@@ -173,11 +180,12 @@ fun EpisodeItemSmall(
     modifier: Modifier = Modifier,
     episode: Episode,
     isSelected: Boolean,
+    isExpanded: Boolean,
     onTap: (Episode) -> Unit,
+    onReadMoreTap: (Boolean) -> Unit,
     dropDownMenu: @Composable ((onDismissRequest: () -> Unit) -> Unit)? = null
 ) {
 
-    var expanded by remember { mutableStateOf(false) }
     var isOverflowing by remember { mutableStateOf(false) }
     var hasLaidOut by remember { mutableStateOf(false) }
 
@@ -243,21 +251,21 @@ fun EpisodeItemSmall(
         Text.Body.Medium(
             text = episode.description,
             color = if (isSelected) MaterialTheme.colorScheme.onSecondaryContainer else MaterialTheme.colorScheme.onBackground,
-            maxLines = if (expanded) Int.MAX_VALUE else 2,
-            overflow = if (expanded) TextOverflow.Clip else TextOverflow.Ellipsis,
+            maxLines = if (isExpanded) Int.MAX_VALUE else 2,
+            overflow = if (isExpanded) TextOverflow.Clip else TextOverflow.Ellipsis,
             onTextLayout = { result ->
-                if (!expanded) {
+                if (!isExpanded) {
                     isOverflowing = result.hasVisualOverflow
                     hasLaidOut = true
                 }
             }
         )
 
-        if (isOverflowing || expanded) {
+        if (isOverflowing || isExpanded) {
             ReadMoreButton(
                 modifier = Modifier.align(Alignment.End),
-                onTap = { expanded = !expanded },
-                isExpanded = expanded
+                onTap = { onReadMoreTap(!isExpanded) },
+                isExpanded = isExpanded
             )
         }
 
@@ -334,11 +342,15 @@ fun EpisodeItem_Preview() {
             EpisodeItemLarge(
                 episode = MediaMockups.episode1,
                 isSelected = false,
+                isExpanded = false,
+                onReadMoreTap = {},
                 onTap = {}
             )
             EpisodeItemSmall(
                 episode = MediaMockups.episode1,
                 isSelected = false,
+                isExpanded = false,
+                onReadMoreTap = {},
                 onTap = {}
             )
         }
@@ -359,6 +371,8 @@ fun EpisodeItemWatching_Preview() {
                     currentTime = (MediaMockups.episode1.duration.minToMs / 2f).toLong(),
                 ),
                 isSelected = true,
+                isExpanded = false,
+                onReadMoreTap = {},
                 onTap = {}
             )
             EpisodeItemSmall(
@@ -367,6 +381,8 @@ fun EpisodeItemWatching_Preview() {
                     currentTime = (MediaMockups.episode1.duration.minToMs / 2f).toLong(),
                 ),
                 isSelected = true,
+                isExpanded = false,
+                onReadMoreTap = {},
                 onTap = {}
             )
         }
@@ -387,6 +403,8 @@ fun EpisodeItemWatched_Preview() {
                     currentTime = MediaMockups.episode1.duration.minToMs,
                 ),
                 isSelected = false,
+                isExpanded = false,
+                onReadMoreTap = {},
                 onTap = {}
             )
             EpisodeItemSmall(
@@ -395,6 +413,8 @@ fun EpisodeItemWatched_Preview() {
                     currentTime = MediaMockups.episode1.duration.minToMs,
                 ),
                 isSelected = false,
+                isExpanded = false,
+                onReadMoreTap = {},
                 onTap = {}
             )
         }

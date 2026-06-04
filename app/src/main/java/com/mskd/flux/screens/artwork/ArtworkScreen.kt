@@ -115,6 +115,7 @@ fun ArtworkScreen(
                         fullArtwork = content.fullArtwork,
                         selectedMedia = content.selectedMedia,
                         selectedSeason = content.selectedSeason,
+                        expandedEpisodeId = content.expandedEpisodeId,
                         dialog = content.dialog,
                         sendIntent = viewModel::handleIntent
                     )
@@ -132,6 +133,7 @@ fun ArtworkScreenContent(
     fullArtwork: FullArtwork,
     selectedMedia: Media,
     selectedSeason: Int?,
+    expandedEpisodeId: Long?,
     dialog: ArtworkDialog?,
     sendIntent: (ArtworkIntent) -> Unit
 ) {
@@ -198,6 +200,7 @@ fun ArtworkScreenContent(
                 fullArtwork = fullArtwork,
                 selectedMedia = selectedMedia,
                 selectedSeason = selectedSeason,
+                expandedEpisodeId = expandedEpisodeId,
                 scaffoldInnerPadding = innerPadding,
                 sendIntent = sendIntent,
             )
@@ -206,6 +209,7 @@ fun ArtworkScreenContent(
                 fullArtwork = fullArtwork,
                 selectedMedia = selectedMedia,
                 selectedSeason = selectedSeason,
+                expandedEpisodeId = expandedEpisodeId,
                 scaffoldInnerPadding = innerPadding,
                 sendIntent = sendIntent,
             )
@@ -269,6 +273,7 @@ fun ArtworkScreenContent_Preview() {
             fullArtwork = MediaMockups.fullShow,
             selectedMedia = MediaMockups.episode1,
             selectedSeason = MediaMockups.episode1.season,
+            expandedEpisodeId = null,
             dialog = null,
             sendIntent = {}
         )

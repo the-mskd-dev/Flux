@@ -36,6 +36,7 @@ fun ArtworkContentRegular(
     fullArtwork: FullArtwork,
     selectedMedia: Media,
     selectedSeason: Int?,
+    expandedEpisodeId: Long?,
     scaffoldInnerPadding: PaddingValues,
     sendIntent: (ArtworkIntent) -> Unit,
 ) {
@@ -112,6 +113,14 @@ fun ArtworkContentRegular(
                         episode = episode,
                         isSelected = episode.id == selectedMedia.mediaId,
                         onTap = { sendIntent(ArtworkIntent.PlayMedia(media = episode)) },
+                        isExpanded = episode.id == expandedEpisodeId,
+                        onReadMoreTap = {
+                            if (it) {
+                                sendIntent(ArtworkIntent.ExpandEpisodeDescription(episode = episode))
+                            } else {
+                                sendIntent(ArtworkIntent.CollapseEpisodeDescription)
+                            }
+                        },
                         dropDownMenu = { onDismissRequest ->
                             EpisodeDropDownMenu(
                                 episode = episode,
@@ -145,6 +154,7 @@ fun ArtworkContentMovie_Preview() {
             fullArtwork = MediaMockups.fullMovie,
             selectedMedia = MediaMockups.movie,
             selectedSeason = null,
+            expandedEpisodeId = null,
             scaffoldInnerPadding = PaddingValues.Zero,
             sendIntent = {}
         )
@@ -159,6 +169,7 @@ fun ArtworkContentShow_Preview() {
             fullArtwork = MediaMockups.fullShow,
             selectedMedia = MediaMockups.episode1,
             selectedSeason = 1,
+            expandedEpisodeId = null,
             scaffoldInnerPadding = PaddingValues.Zero,
             sendIntent = {}
         )

@@ -23,24 +23,27 @@ fun ErrorScreen(
     onBackButtonTap: () -> Unit
 ) {
 
-    Box(
-        modifier = modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .systemBarsPadding(),
-        contentAlignment = Alignment.TopStart
+    FluxScaffold(
+        onBackTap = onBackButtonTap,
+        title = null
     ) {
 
-        BackButton(onTap = onBackButtonTap)
+        Box(
+            modifier = modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .systemBarsPadding(),
+            contentAlignment = Alignment.Center
+        ) {
 
-        Text.Body.Large(
-            modifier = Modifier
-                .align(Alignment.Center)
-                .fillMaxWidth(),
-            text = message,
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.onBackground
-        )
+            Text.Body.Large(
+                modifier = Modifier.fillMaxWidth(),
+                text = message,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+
+        }
 
     }
 

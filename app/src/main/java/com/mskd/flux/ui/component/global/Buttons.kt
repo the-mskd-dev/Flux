@@ -135,33 +135,6 @@ fun FluxButton(
 
 }
 
-@Composable
-fun BackButton(
-    modifier: Modifier = Modifier,
-    tint: Color = MaterialTheme.colorScheme.onBackground,
-    onTap: () -> Unit
-) {
-
-    Box(
-        modifier = modifier
-            .statusBarsPadding()
-            .clickable { onTap() }
-            .size(50.dp)
-            .clip(shape = CircleShape)
-            .padding(Ui.Space.EXTRA_SMALL),
-        contentAlignment = Alignment.Center
-    ) {
-
-        Icon(
-            imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-            tint = tint,
-            contentDescription = "back button"
-        )
-
-    }
-
-}
-
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun FluxTextButton(
@@ -269,6 +242,26 @@ fun CountDownButton(
 
         }
     )
+
+}
+
+@Composable
+fun ReadMoreButton(
+    modifier: Modifier = Modifier,
+    isExpanded: Boolean,
+    onTap: () -> Unit
+) {
+
+    TextButton(
+        modifier = modifier,
+        onClick = onTap
+    ) {
+        AnimatedContent(targetState = isExpanded) { expanded ->
+            Text.Label.Large(
+                text = stringResource(if (expanded) R.string.read_less else R.string.read_more)
+            )
+        }
+    }
 
 }
 

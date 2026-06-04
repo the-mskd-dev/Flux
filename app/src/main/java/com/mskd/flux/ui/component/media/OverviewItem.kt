@@ -27,6 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.mskd.flux.R
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.Episode
+import com.mskd.flux.ui.component.global.ReadMoreButton
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
@@ -97,17 +98,11 @@ fun OverviewItem(
         )
 
         if (isOverflowing || expanded) {
-            TextButton(
+            ReadMoreButton(
                 modifier = Modifier.align(Alignment.End),
-                onClick = { expanded = !expanded }
-            ) {
-                AnimatedContent(targetState = expanded) { isExpanded ->
-                    Text.Label.Large(
-                        text = stringResource(if (isExpanded) R.string.read_less else R.string.read_more)
-                    )
-                }
-
-            }
+                onTap = { expanded = !expanded },
+                isExpanded = expanded
+            )
         }
 
     }

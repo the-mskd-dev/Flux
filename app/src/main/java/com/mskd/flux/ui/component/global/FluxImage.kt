@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -41,7 +42,6 @@ fun FluxImage(
 
     val hdPainter = rememberAsyncImagePainter(
         model = if (hd) urlHigh else null,
-        contentScale = contentScale
     )
 
     val hdState by hdPainter.state.collectAsState()
@@ -63,11 +63,12 @@ fun FluxImage(
         )
 
         AnimatedVisibility(
+            modifier = Modifier.matchParentSize(),
             visible = hdState is AsyncImagePainter.State.Success,
             enter = fadeIn()
         ) {
             Image(
-                modifier = Modifier.matchParentSize(),
+                modifier = Modifier.fillMaxSize(),
                 painter = hdPainter,
                 contentDescription = contentDescription,
                 contentScale = contentScale
@@ -92,6 +93,7 @@ fun FluxImage(
             modifier = modifier,
             path = media.imagePath,
             hd = hd,
+            contentScale = contentScale,
             contentDescription = contentDescription
         )
     } else {

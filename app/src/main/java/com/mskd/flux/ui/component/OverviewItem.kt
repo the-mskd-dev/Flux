@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -20,10 +22,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.mskd.flux.R
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.Episode
@@ -137,7 +142,7 @@ fun EpisodesDetails(episode: Episode) {
 }
 
 @Composable
-fun MediaDescriptionDetails(media: Media) {
+fun MediaDetailsHorizontal(media: Media) {
 
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -147,35 +152,93 @@ fun MediaDescriptionDetails(media: Media) {
 
         media.releaseDate?.let {
 
-            Text.Body.Small(
+            MediaDetailItem(
+                painter = painterResource(R.drawable.ic_date),
                 text = it.formattedText,
-                color = MaterialTheme.colorScheme.secondary
-            )
-
-            Text.Body.Small(
-                text = "•",
-                color = MaterialTheme.colorScheme.secondary
+                contentDescription = "release date icon"
             )
 
         }
 
-        Text.Body.Small(
+        MediaDetailItem(
+            painter = painterResource(R.drawable.ic_time),
             text = media.duration.minToMs.timeDescription(),
-            color = MaterialTheme.colorScheme.secondary
+            contentDescription = "duration icon"
         )
 
         if (media.voteAverage > 0f) {
 
-            Text.Body.Small(
-                text = "•",
-                color = MaterialTheme.colorScheme.secondary
+            MediaDetailItem(
+                painter = painterResource(R.drawable.ic_rating),
+                text = "${media.voteAverage.toRating}/10",
+                contentDescription = "rating icon"
             )
 
-            Text.Body.Small(
-                text = "${media.voteAverage.toRating}/10",
-                color = MaterialTheme.colorScheme.secondary
-            )
         }
+
+    }
+
+}
+
+@Composable
+fun MediaDetailsVertical(media: Media) {
+
+    Column {
+
+        media.releaseDate?.let {
+
+            MediaDetailItem(
+                painter = painterResource(R.drawable.ic_date),
+                text = it.formattedText,
+                contentDescription = "release date icon"
+            )
+
+        }
+
+        MediaDetailItem(
+            painter = painterResource(R.drawable.ic_time),
+            text = media.duration.minToMs.timeDescription(),
+            contentDescription = "duration icon"
+        )
+
+        if (media.voteAverage > 0f) {
+
+            MediaDetailItem(
+                painter = painterResource(R.drawable.ic_rating),
+                text = "${media.voteAverage.toRating}/10",
+                contentDescription = "rating icon"
+            )
+
+        }
+
+    }
+
+}
+
+@Composable
+fun MediaDetailItem(
+    painter: Painter,
+    text: String,
+    contentDescription: String
+) {
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)
+    ) {
+
+
+        Icon(
+            modifier = Modifier.size(12.dp),
+            painter = painter,
+            tint = MaterialTheme.colorScheme.secondary,
+            contentDescription = contentDescription
+        )
+
+        Text.Body.Small(
+            text = text,
+            color = MaterialTheme.colorScheme.secondary
+        )
 
     }
 
@@ -188,7 +251,7 @@ fun OverviewItem_Preview_Movie() {
         OverviewItem(
             title = stringResource(R.string.summary),
             description = MediaMockups.movie.description,
-            subtitle = { MediaDescriptionDetails(MediaMockups.movie) }
+            subtitle = { MediaDetailsHorizontal(MediaMockups.movie) }
         )
     }
 }
@@ -212,7 +275,7 @@ fun OverviewItem_Preview_Episode() {
             title = MediaMockups.episode1.title,
             description = MediaMockups.episode1.description,
             topDetails = { EpisodesDetails(episode = MediaMockups.episode1) },
-            subtitle = { MediaDescriptionDetails(media = MediaMockups.episode1) }
+            subtitle = { MediaDetailsHorizontal(media = MediaMockups.episode1) }
         )
     }
 }

@@ -7,7 +7,6 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -38,12 +37,12 @@ import com.mskd.flux.model.artwork.Status
 import com.mskd.flux.screens.artwork.ArtworkIntent
 import com.mskd.flux.ui.component.FluxDropDownMenu
 import com.mskd.flux.ui.component.FluxDropDownMenuItem
+import com.mskd.flux.ui.component.MediaDetailsHorizontal
+import com.mskd.flux.ui.component.MediaDetailsVertical
 import com.mskd.flux.ui.component.MediaThumbnail
 import com.mskd.flux.ui.component.Text
-import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.AppThemePreview
-import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.PortraitPreview
 import com.mskd.flux.utils.extensions.formattedText
 import com.mskd.flux.utils.extensions.minToMs
@@ -129,24 +128,7 @@ fun EpisodeItemLarge(
                 emphasized = true
             )
 
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)
-            ) {
-
-                Text.Label.Small(
-                    text = episode.releaseDate?.formattedText,
-                    textAlign = TextAlign.Start,
-                    color = MaterialTheme.colorScheme.secondary
-                )
-
-                Text.Label.Small(
-                    text = episode.duration.minToMs.timeDescription(),
-                    textAlign = TextAlign.Start,
-                    color = MaterialTheme.colorScheme.secondary
-                )
-
-            }
+            MediaDetailsHorizontal(media = episode)
 
             Text.Body.Medium(
                 text = episode.description,
@@ -216,19 +198,7 @@ fun EpisodeItemSmall(
                     emphasized = true
                 )
 
-                Text.Label.Small(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = episode.releaseDate?.formattedText,
-                    textAlign = TextAlign.Start,
-                    color = MaterialTheme.colorScheme.secondary
-                )
-
-                Text.Label.Small(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = episode.duration.minToMs.timeDescription(),
-                    textAlign = TextAlign.Start,
-                    color = MaterialTheme.colorScheme.secondary
-                )
+                MediaDetailsVertical(media = episode)
 
             }
 

@@ -21,7 +21,7 @@ import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.artwork.Status
 import com.mskd.flux.ui.component.EpisodesDetails
-import com.mskd.flux.ui.component.MediaDescriptionDetails
+import com.mskd.flux.ui.component.MediaDetailsHorizontal
 import com.mskd.flux.ui.component.OverviewItem
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
@@ -69,7 +69,7 @@ fun ArtworkDescriptionsPager(
                     OverviewItem(
                         title = stringResource(R.string.summary),
                         description = currentMedia.description,
-                        subtitle = { MediaDescriptionDetails(currentMedia) }
+                        subtitle = { MediaDetailsHorizontal(currentMedia) }
                     )
 
                 }
@@ -91,7 +91,7 @@ fun ArtworkDescriptionsPager(
                             title = episode.title,
                             description = currentMedia.description,
                             topDetails = { EpisodesDetails(episode = episode) },
-                            subtitle = { MediaDescriptionDetails(media = episode) }
+                            subtitle = { MediaDetailsHorizontal(media = episode) }
                         )
 
                     }

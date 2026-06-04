@@ -147,6 +147,9 @@ fun EpisodeItemLarge(
             MediaDetailsHorizontal(media = episode, showRating = false)
 
             Text.Body.Medium(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .animateContentSize(),
                 text = episode.description,
                 color = if (isSelected) MaterialTheme.colorScheme.onSecondaryContainer else MaterialTheme.colorScheme.onBackground,
                 maxLines = if (isExpanded) Int.MAX_VALUE else 3,
@@ -249,6 +252,9 @@ fun EpisodeItemSmall(
         }
 
         Text.Body.Medium(
+            modifier = Modifier
+                .fillMaxWidth()
+                .animateContentSize(),
             text = episode.description,
             color = if (isSelected) MaterialTheme.colorScheme.onSecondaryContainer else MaterialTheme.colorScheme.onBackground,
             maxLines = if (isExpanded) Int.MAX_VALUE else 2,

@@ -1,4 +1,4 @@
-package com.mskd.flux.screens.artwork.composables.episodes
+package com.mskd.flux.ui.component.media
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
@@ -39,14 +39,10 @@ import com.mskd.flux.ui.component.FluxDropDownMenu
 import com.mskd.flux.ui.component.FluxDropDownMenuItem
 import com.mskd.flux.ui.component.MediaThumbnail
 import com.mskd.flux.ui.component.Text
-import com.mskd.flux.ui.component.media.MediaDetailsHorizontal
-import com.mskd.flux.ui.component.media.MediaDetailsVertical
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.AppThemePreview
 import com.mskd.flux.utils.PortraitPreview
-import com.mskd.flux.utils.extensions.formattedText
 import com.mskd.flux.utils.extensions.minToMs
-import com.mskd.flux.utils.extensions.timeDescription
 
 @Composable
 fun EpisodeItem(

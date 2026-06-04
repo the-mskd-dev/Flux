@@ -37,10 +37,10 @@ import com.mskd.flux.model.artwork.Status
 import com.mskd.flux.screens.artwork.ArtworkIntent
 import com.mskd.flux.ui.component.FluxDropDownMenu
 import com.mskd.flux.ui.component.FluxDropDownMenuItem
-import com.mskd.flux.ui.component.MediaDetailsHorizontal
-import com.mskd.flux.ui.component.MediaDetailsVertical
 import com.mskd.flux.ui.component.MediaThumbnail
 import com.mskd.flux.ui.component.Text
+import com.mskd.flux.ui.component.media.MediaDetailsHorizontal
+import com.mskd.flux.ui.component.media.MediaDetailsVertical
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.AppThemePreview
 import com.mskd.flux.utils.PortraitPreview

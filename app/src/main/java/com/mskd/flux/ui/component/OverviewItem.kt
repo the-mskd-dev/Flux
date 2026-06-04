@@ -33,6 +33,7 @@ import com.mskd.flux.R
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
+import com.mskd.flux.ui.component.media.MediaDetailsHorizontal
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.extensions.formattedText
@@ -137,109 +138,6 @@ fun EpisodesDetails(episode: Episode) {
             emphasized = true,
             color = MaterialTheme.colorScheme.secondary
         )
-    }
-
-}
-
-@Composable
-fun MediaDetailsHorizontal(media: Media) {
-
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)
-    ) {
-
-        media.releaseDate?.let {
-
-            MediaDetailItem(
-                painter = painterResource(R.drawable.ic_date),
-                text = it.formattedText,
-                contentDescription = "release date icon"
-            )
-
-        }
-
-        MediaDetailItem(
-            painter = painterResource(R.drawable.ic_time),
-            text = media.duration.minToMs.timeDescription(),
-            contentDescription = "duration icon"
-        )
-
-        if (media.voteAverage > 0f) {
-
-            MediaDetailItem(
-                painter = painterResource(R.drawable.ic_rating),
-                text = "${media.voteAverage.toRating}/10",
-                contentDescription = "rating icon"
-            )
-
-        }
-
-    }
-
-}
-
-@Composable
-fun MediaDetailsVertical(media: Media) {
-
-    Column {
-
-        media.releaseDate?.let {
-
-            MediaDetailItem(
-                painter = painterResource(R.drawable.ic_date),
-                text = it.formattedText,
-                contentDescription = "release date icon"
-            )
-
-        }
-
-        MediaDetailItem(
-            painter = painterResource(R.drawable.ic_time),
-            text = media.duration.minToMs.timeDescription(),
-            contentDescription = "duration icon"
-        )
-
-        if (media.voteAverage > 0f) {
-
-            MediaDetailItem(
-                painter = painterResource(R.drawable.ic_rating),
-                text = "${media.voteAverage.toRating}/10",
-                contentDescription = "rating icon"
-            )
-
-        }
-
-    }
-
-}
-
-@Composable
-fun MediaDetailItem(
-    painter: Painter,
-    text: String,
-    contentDescription: String
-) {
-
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)
-    ) {
-
-
-        Icon(
-            modifier = Modifier.size(12.dp),
-            painter = painter,
-            tint = MaterialTheme.colorScheme.secondary,
-            contentDescription = contentDescription
-        )
-
-        Text.Body.Small(
-            text = text,
-            color = MaterialTheme.colorScheme.secondary
-        )
-
     }
 
 }

@@ -139,7 +139,7 @@ fun OverviewItem_Preview_Movie() {
         OverviewItem(
             title = stringResource(R.string.summary),
             description = MediaMockups.movie.description,
-            subtitle = { MediaDetailsHorizontal(MediaMockups.movie) }
+            subtitle = { MediaDetailsHorizontal(media = MediaMockups.movie, showRating = true) }
         )
     }
 }
@@ -163,7 +163,7 @@ fun OverviewItem_Preview_Episode() {
             title = MediaMockups.episode1.title,
             description = MediaMockups.episode1.description,
             topDetails = { EpisodesDetails(episode = MediaMockups.episode1) },
-            subtitle = { MediaDetailsHorizontal(media = MediaMockups.episode1) }
+            subtitle = { MediaDetailsHorizontal(media = MediaMockups.episode1, showRating = true) }
         )
     }
 }

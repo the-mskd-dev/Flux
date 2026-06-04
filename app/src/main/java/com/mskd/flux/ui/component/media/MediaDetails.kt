@@ -26,7 +26,10 @@ import com.mskd.flux.utils.extensions.timeDescription
 import com.mskd.flux.utils.extensions.toRating
 
 @Composable
-fun MediaDetailsHorizontal(media: Media) {
+fun MediaDetailsHorizontal(
+    media: Media,
+    showRating: Boolean = true
+) {
 
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -50,7 +53,7 @@ fun MediaDetailsHorizontal(media: Media) {
             contentDescription = "duration icon"
         )
 
-        if (media.voteAverage > 0f) {
+        if (media.voteAverage > 0f && showRating) {
 
             MediaDetailItem(
                 painter = painterResource(R.drawable.ic_rating),
@@ -65,7 +68,10 @@ fun MediaDetailsHorizontal(media: Media) {
 }
 
 @Composable
-fun MediaDetailsVertical(media: Media) {
+fun MediaDetailsVertical(
+    media: Media,
+    showRating: Boolean = false
+) {
 
     Column {
 
@@ -85,7 +91,7 @@ fun MediaDetailsVertical(media: Media) {
             contentDescription = "duration icon"
         )
 
-        if (media.voteAverage > 0f) {
+        if (media.voteAverage > 0f && showRating) {
 
             MediaDetailItem(
                 painter = painterResource(R.drawable.ic_rating),

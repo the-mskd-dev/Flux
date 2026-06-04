@@ -35,10 +35,9 @@ import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Status
 import com.mskd.flux.screens.artwork.ArtworkIntent
-import com.mskd.flux.ui.component.FluxDropDownMenu
-import com.mskd.flux.ui.component.FluxDropDownMenuItem
-import com.mskd.flux.ui.component.MediaThumbnail
-import com.mskd.flux.ui.component.Text
+import com.mskd.flux.ui.component.global.FluxDropDownMenu
+import com.mskd.flux.ui.component.global.FluxDropDownMenuItem
+import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.AppThemePreview
 import com.mskd.flux.utils.PortraitPreview

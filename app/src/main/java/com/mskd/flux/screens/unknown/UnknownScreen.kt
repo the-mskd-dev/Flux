@@ -35,10 +35,10 @@ import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Route.Player
 import com.mskd.flux.ui.component.media.EpisodeItem
-import com.mskd.flux.ui.component.ErrorScreen
-import com.mskd.flux.ui.component.FluxScaffold
+import com.mskd.flux.ui.component.global.ErrorScreen
+import com.mskd.flux.ui.component.global.FluxScaffold
 import com.mskd.flux.ui.component.LoadingScreen
-import com.mskd.flux.ui.component.Text
+import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.ExternalPlayer

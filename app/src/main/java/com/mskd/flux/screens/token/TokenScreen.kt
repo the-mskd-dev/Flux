@@ -48,10 +48,10 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.R
 import com.mskd.flux.navigation.Route
-import com.mskd.flux.ui.component.FluxIconButton
-import com.mskd.flux.ui.component.FluxScaffold
-import com.mskd.flux.ui.component.FluxTextButton
-import com.mskd.flux.ui.component.Text
+import com.mskd.flux.ui.component.global.FluxIconButton
+import com.mskd.flux.ui.component.global.FluxScaffold
+import com.mskd.flux.ui.component.global.FluxTextButton
+import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.Constants

@@ -4,7 +4,7 @@ import android.app.Application
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.data.repository.customization.CustomizationRepository
-import com.mskd.flux.ui.component.FluxOptionsDialogState
+import com.mskd.flux.ui.component.global.FluxOptionsDialogState
 import com.mskd.flux.ui.theme.Ui
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe

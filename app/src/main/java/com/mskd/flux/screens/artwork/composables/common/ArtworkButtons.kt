@@ -28,9 +28,9 @@ import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.artwork.Status
 import com.mskd.flux.screens.artwork.ArtworkIntent
-import com.mskd.flux.ui.component.FluxTextButton
-import com.mskd.flux.ui.component.ProgressStatusBar
-import com.mskd.flux.ui.component.Text
+import com.mskd.flux.ui.component.global.FluxTextButton
+import com.mskd.flux.ui.component.global.ProgressStatusBar
+import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.FluxPreview

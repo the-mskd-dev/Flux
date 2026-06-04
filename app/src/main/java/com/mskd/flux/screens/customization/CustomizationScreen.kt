@@ -21,8 +21,8 @@ import com.mskd.flux.R
 import com.mskd.flux.screens.customization.composables.CustomizationArtworkSection
 import com.mskd.flux.screens.customization.composables.CustomizationPlayerSection
 import com.mskd.flux.screens.customization.composables.CustomizationThemeSection
-import com.mskd.flux.ui.component.FluxOptionsDialog
-import com.mskd.flux.ui.component.FluxScaffold
+import com.mskd.flux.ui.component.global.FluxOptionsDialog
+import com.mskd.flux.ui.component.global.FluxScaffold
 import com.mskd.flux.ui.theme.Ui
 
 @Composable

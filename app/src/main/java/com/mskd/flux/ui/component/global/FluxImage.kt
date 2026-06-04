@@ -1,4 +1,4 @@
-package com.mskd.flux.ui.component
+package com.mskd.flux.ui.component.global
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn

@@ -20,7 +20,7 @@ import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.model.artwork.Media
-import com.mskd.flux.ui.component.FluxImage
+import com.mskd.flux.ui.component.global.FluxImage
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.utils.FluxPreview
 

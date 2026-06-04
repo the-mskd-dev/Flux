@@ -17,8 +17,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import com.mskd.flux.R
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
-import com.mskd.flux.ui.component.BackButton
-import com.mskd.flux.ui.component.Text
+import com.mskd.flux.ui.component.global.BackButton
+import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.Ui
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)

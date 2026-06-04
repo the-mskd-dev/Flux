@@ -1,4 +1,4 @@
-package com.mskd.flux.ui.component
+package com.mskd.flux.ui.component.global
 
 import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -6,10 +6,8 @@ import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
@@ -25,11 +23,11 @@ object Text {
     @Composable
     fun Adaptive(
         text: String?,
-        modifier: Modifier = Modifier,
-        textAlign: TextAlign = TextAlign.Start,
-        color: Color = Color.Unspecified,
+        modifier: Modifier = Modifier.Companion,
+        textAlign: TextAlign = TextAlign.Companion.Start,
+        color: Color = Color.Companion.Unspecified,
         style: TextStyle = LocalTextStyle.current,
-        overflow: TextOverflow = TextOverflow.Clip,
+        overflow: TextOverflow = TextOverflow.Companion.Clip,
         maxLines: Int = Int.MAX_VALUE,
         minLines: Int = 1,
         autoSize: TextAutoSize? = null,
@@ -66,11 +64,11 @@ object Text {
     @Composable
     fun Annotated(
         text: AnnotatedString,
-        modifier: Modifier = Modifier,
-        textAlign: TextAlign = TextAlign.Start,
-        color: Color = Color.Unspecified,
+        modifier: Modifier = Modifier.Companion,
+        textAlign: TextAlign = TextAlign.Companion.Start,
+        color: Color = Color.Companion.Unspecified,
         style: TextStyle = MaterialTheme.typography.bodyLarge,
-        overflow: TextOverflow = TextOverflow.Clip,
+        overflow: TextOverflow = TextOverflow.Companion.Clip,
         maxLines: Int = Int.MAX_VALUE,
         minLines: Int = 1,
     ) {
@@ -105,12 +103,12 @@ object Text {
         @Composable
         fun Large(
             text: String?,
-            modifier: Modifier = Modifier,
-            textAlign: TextAlign = TextAlign.Start,
-            color: Color = Color.Unspecified,
+            modifier: Modifier = Modifier.Companion,
+            textAlign: TextAlign = TextAlign.Companion.Start,
+            color: Color = Color.Companion.Unspecified,
             emphasized: Boolean = false,
-            lineHeight: TextUnit = TextUnit.Unspecified,
-            overflow: TextOverflow = TextOverflow.Clip,
+            lineHeight: TextUnit = TextUnit.Companion.Unspecified,
+            overflow: TextOverflow = TextOverflow.Companion.Clip,
             maxLines: Int = Int.MAX_VALUE,
             minLines: Int = 1,
             onTextLayout : ((TextLayoutResult) -> Unit)? = null
@@ -142,12 +140,12 @@ object Text {
         @Composable
         fun Medium(
             text: String?,
-            modifier: Modifier = Modifier,
-            textAlign: TextAlign = TextAlign.Start,
-            color: Color = Color.Unspecified,
+            modifier: Modifier = Modifier.Companion,
+            textAlign: TextAlign = TextAlign.Companion.Start,
+            color: Color = Color.Companion.Unspecified,
             emphasized: Boolean = false,
-            lineHeight: TextUnit = TextUnit.Unspecified,
-            overflow: TextOverflow = TextOverflow.Clip,
+            lineHeight: TextUnit = TextUnit.Companion.Unspecified,
+            overflow: TextOverflow = TextOverflow.Companion.Clip,
             maxLines: Int = Int.MAX_VALUE,
             minLines: Int = 1,
             onTextLayout : ((TextLayoutResult) -> Unit)? = null
@@ -179,12 +177,12 @@ object Text {
         @Composable
         fun Small(
             text: String?,
-            modifier: Modifier = Modifier,
-            textAlign: TextAlign = TextAlign.Start,
-            color: Color = Color.Unspecified,
+            modifier: Modifier = Modifier.Companion,
+            textAlign: TextAlign = TextAlign.Companion.Start,
+            color: Color = Color.Companion.Unspecified,
             emphasized: Boolean = false,
-            lineHeight: TextUnit = TextUnit.Unspecified,
-            overflow: TextOverflow = TextOverflow.Clip,
+            lineHeight: TextUnit = TextUnit.Companion.Unspecified,
+            overflow: TextOverflow = TextOverflow.Companion.Clip,
             maxLines: Int = Int.MAX_VALUE,
             minLines: Int = 1,
             onTextLayout : ((TextLayoutResult) -> Unit)? = null
@@ -223,12 +221,12 @@ object Text {
         @Composable
         fun Large(
             text: String?,
-            modifier: Modifier = Modifier,
-            textAlign: TextAlign = TextAlign.Start,
-            color: Color = Color.Unspecified,
+            modifier: Modifier = Modifier.Companion,
+            textAlign: TextAlign = TextAlign.Companion.Start,
+            color: Color = Color.Companion.Unspecified,
             emphasized: Boolean = false,
-            lineHeight: TextUnit = TextUnit.Unspecified,
-            overflow: TextOverflow = TextOverflow.Clip,
+            lineHeight: TextUnit = TextUnit.Companion.Unspecified,
+            overflow: TextOverflow = TextOverflow.Companion.Clip,
             maxLines: Int = Int.MAX_VALUE,
             minLines: Int = 1,
             onTextLayout : ((TextLayoutResult) -> Unit)? = null
@@ -260,12 +258,12 @@ object Text {
         @Composable
         fun Medium(
             text: String?,
-            modifier: Modifier = Modifier,
-            textAlign: TextAlign = TextAlign.Start,
-            color: Color = Color.Unspecified,
+            modifier: Modifier = Modifier.Companion,
+            textAlign: TextAlign = TextAlign.Companion.Start,
+            color: Color = Color.Companion.Unspecified,
             emphasized: Boolean = false,
-            lineHeight: TextUnit = TextUnit.Unspecified,
-            overflow: TextOverflow = TextOverflow.Clip,
+            lineHeight: TextUnit = TextUnit.Companion.Unspecified,
+            overflow: TextOverflow = TextOverflow.Companion.Clip,
             maxLines: Int = Int.MAX_VALUE,
             minLines: Int = 1,
             onTextLayout : ((TextLayoutResult) -> Unit)? = null
@@ -297,12 +295,12 @@ object Text {
         @Composable
         fun Small(
             text: String?,
-            modifier: Modifier = Modifier,
-            textAlign: TextAlign = TextAlign.Start,
-            color: Color = Color.Unspecified,
+            modifier: Modifier = Modifier.Companion,
+            textAlign: TextAlign = TextAlign.Companion.Start,
+            color: Color = Color.Companion.Unspecified,
             emphasized: Boolean = false,
-            lineHeight: TextUnit = TextUnit.Unspecified,
-            overflow: TextOverflow = TextOverflow.Clip,
+            lineHeight: TextUnit = TextUnit.Companion.Unspecified,
+            overflow: TextOverflow = TextOverflow.Companion.Clip,
             maxLines: Int = Int.MAX_VALUE,
             minLines: Int = 1,
             onTextLayout : ((TextLayoutResult) -> Unit)? = null
@@ -341,12 +339,12 @@ object Text {
         @Composable
         fun Large(
             text: String?,
-            modifier: Modifier = Modifier,
-            textAlign: TextAlign = TextAlign.Start,
-            color: Color = Color.Unspecified,
+            modifier: Modifier = Modifier.Companion,
+            textAlign: TextAlign = TextAlign.Companion.Start,
+            color: Color = Color.Companion.Unspecified,
             emphasized: Boolean = false,
-            lineHeight: TextUnit = TextUnit.Unspecified,
-            overflow: TextOverflow = TextOverflow.Clip,
+            lineHeight: TextUnit = TextUnit.Companion.Unspecified,
+            overflow: TextOverflow = TextOverflow.Companion.Clip,
             maxLines: Int = Int.MAX_VALUE,
             minLines: Int = 1,
             onTextLayout : ((TextLayoutResult) -> Unit)? = null
@@ -378,12 +376,12 @@ object Text {
         @Composable
         fun Medium(
             text: String?,
-            modifier: Modifier = Modifier,
-            textAlign: TextAlign = TextAlign.Start,
-            color: Color = Color.Unspecified,
+            modifier: Modifier = Modifier.Companion,
+            textAlign: TextAlign = TextAlign.Companion.Start,
+            color: Color = Color.Companion.Unspecified,
             emphasized: Boolean = false,
-            lineHeight: TextUnit = TextUnit.Unspecified,
-            overflow: TextOverflow = TextOverflow.Clip,
+            lineHeight: TextUnit = TextUnit.Companion.Unspecified,
+            overflow: TextOverflow = TextOverflow.Companion.Clip,
             maxLines: Int = Int.MAX_VALUE,
             minLines: Int = 1,
             onTextLayout : ((TextLayoutResult) -> Unit)? = null
@@ -416,12 +414,12 @@ object Text {
         @Composable
         fun Small(
             text: String?,
-            modifier: Modifier = Modifier,
-            textAlign: TextAlign = TextAlign.Start,
-            color: Color = Color.Unspecified,
+            modifier: Modifier = Modifier.Companion,
+            textAlign: TextAlign = TextAlign.Companion.Start,
+            color: Color = Color.Companion.Unspecified,
             emphasized: Boolean = false,
-            lineHeight: TextUnit = TextUnit.Unspecified,
-            overflow: TextOverflow = TextOverflow.Clip,
+            lineHeight: TextUnit = TextUnit.Companion.Unspecified,
+            overflow: TextOverflow = TextOverflow.Companion.Clip,
             maxLines: Int = Int.MAX_VALUE,
             minLines: Int = 1,
             onTextLayout : ((TextLayoutResult) -> Unit)? = null
@@ -460,12 +458,12 @@ object Text {
         @Composable
         fun Large(
             text: String?,
-            modifier: Modifier = Modifier,
-            textAlign: TextAlign = TextAlign.Start,
-            color: Color = Color.Unspecified,
+            modifier: Modifier = Modifier.Companion,
+            textAlign: TextAlign = TextAlign.Companion.Start,
+            color: Color = Color.Companion.Unspecified,
             emphasized: Boolean = false,
-            lineHeight: TextUnit = TextUnit.Unspecified,
-            overflow: TextOverflow = TextOverflow.Clip,
+            lineHeight: TextUnit = TextUnit.Companion.Unspecified,
+            overflow: TextOverflow = TextOverflow.Companion.Clip,
             maxLines: Int = Int.MAX_VALUE,
             minLines: Int = 1,
             onTextLayout : ((TextLayoutResult) -> Unit)? = null
@@ -497,12 +495,12 @@ object Text {
         @Composable
         fun Medium(
             text: String?,
-            modifier: Modifier = Modifier,
-            textAlign: TextAlign = TextAlign.Start,
-            color: Color = Color.Unspecified,
+            modifier: Modifier = Modifier.Companion,
+            textAlign: TextAlign = TextAlign.Companion.Start,
+            color: Color = Color.Companion.Unspecified,
             emphasized: Boolean = false,
-            lineHeight: TextUnit = TextUnit.Unspecified,
-            overflow: TextOverflow = TextOverflow.Clip,
+            lineHeight: TextUnit = TextUnit.Companion.Unspecified,
+            overflow: TextOverflow = TextOverflow.Companion.Clip,
             maxLines: Int = Int.MAX_VALUE,
             minLines: Int = 1,
             onTextLayout : ((TextLayoutResult) -> Unit)? = null
@@ -534,12 +532,12 @@ object Text {
         @Composable
         fun Small(
             text: String?,
-            modifier: Modifier = Modifier,
-            textAlign: TextAlign = TextAlign.Start,
-            color: Color = Color.Unspecified,
+            modifier: Modifier = Modifier.Companion,
+            textAlign: TextAlign = TextAlign.Companion.Start,
+            color: Color = Color.Companion.Unspecified,
             emphasized: Boolean = false,
-            lineHeight: TextUnit = TextUnit.Unspecified,
-            overflow: TextOverflow = TextOverflow.Clip,
+            lineHeight: TextUnit = TextUnit.Companion.Unspecified,
+            overflow: TextOverflow = TextOverflow.Companion.Clip,
             maxLines: Int = Int.MAX_VALUE,
             minLines: Int = 1,
             onTextLayout : ((TextLayoutResult) -> Unit)? = null
@@ -578,12 +576,12 @@ object Text {
         @Composable
         fun Large(
             text: String?,
-            modifier: Modifier = Modifier,
-            textAlign: TextAlign = TextAlign.Start,
-            color: Color = Color.Unspecified,
+            modifier: Modifier = Modifier.Companion,
+            textAlign: TextAlign = TextAlign.Companion.Start,
+            color: Color = Color.Companion.Unspecified,
             emphasized: Boolean = false,
-            lineHeight: TextUnit = TextUnit.Unspecified,
-            overflow: TextOverflow = TextOverflow.Clip,
+            lineHeight: TextUnit = TextUnit.Companion.Unspecified,
+            overflow: TextOverflow = TextOverflow.Companion.Clip,
             maxLines: Int = Int.MAX_VALUE,
             minLines: Int = 1,
             onTextLayout : ((TextLayoutResult) -> Unit)? = null
@@ -615,12 +613,12 @@ object Text {
         @Composable
         fun Medium(
             text: String?,
-            modifier: Modifier = Modifier,
-            textAlign: TextAlign = TextAlign.Start,
-            color: Color = Color.Unspecified,
+            modifier: Modifier = Modifier.Companion,
+            textAlign: TextAlign = TextAlign.Companion.Start,
+            color: Color = Color.Companion.Unspecified,
             emphasized: Boolean = false,
-            lineHeight: TextUnit = TextUnit.Unspecified,
-            overflow: TextOverflow = TextOverflow.Clip,
+            lineHeight: TextUnit = TextUnit.Companion.Unspecified,
+            overflow: TextOverflow = TextOverflow.Companion.Clip,
             maxLines: Int = Int.MAX_VALUE,
             minLines: Int = 1,
             onTextLayout : ((TextLayoutResult) -> Unit)? = null
@@ -652,12 +650,12 @@ object Text {
         @Composable
         fun Small(
             text: String?,
-            modifier: Modifier = Modifier,
-            textAlign: TextAlign = TextAlign.Start,
-            color: Color = Color.Unspecified,
+            modifier: Modifier = Modifier.Companion,
+            textAlign: TextAlign = TextAlign.Companion.Start,
+            color: Color = Color.Companion.Unspecified,
             emphasized: Boolean = false,
-            lineHeight: TextUnit = TextUnit.Unspecified,
-            overflow: TextOverflow = TextOverflow.Clip,
+            lineHeight: TextUnit = TextUnit.Companion.Unspecified,
+            overflow: TextOverflow = TextOverflow.Companion.Clip,
             maxLines: Int = Int.MAX_VALUE,
             minLines: Int = 1,
             onTextLayout : ((TextLayoutResult) -> Unit)? = null

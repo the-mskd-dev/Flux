@@ -1,4 +1,4 @@
-package com.mskd.flux.ui.component
+package com.mskd.flux.ui.component.global
 
 import androidx.compose.foundation.background
 import androidx.compose.material3.DropdownMenu
@@ -7,6 +7,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.mskd.flux.ui.component.global.Text
 
 @Composable
 fun FluxDropDownMenu(

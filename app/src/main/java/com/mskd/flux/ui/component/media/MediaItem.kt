@@ -1,4 +1,4 @@
-package com.mskd.flux.ui.component
+package com.mskd.flux.ui.component.media
 
 import androidx.compose.foundation.clickable
 import androidx.compose.material3.MaterialTheme
@@ -12,6 +12,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
 import androidx.palette.graphics.Palette
 import coil3.toBitmap
+import com.mskd.flux.ui.component.global.FluxImage
 
 @Composable
 fun MediaItem(

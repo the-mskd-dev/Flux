@@ -28,7 +28,7 @@ import com.mskd.flux.mockups.PlayerMockups
 import com.mskd.flux.screens.player.PlayerIntent
 import com.mskd.flux.screens.player.PlayerTrack
 import com.mskd.flux.screens.player.PlayerUiState
-import com.mskd.flux.ui.component.Text
+import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.FluxPreview

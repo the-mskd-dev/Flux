@@ -7,8 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.mskd.flux.R
 import com.mskd.flux.data.repository.customization.CustomizationRepository
 import com.mskd.flux.screens.customization.composables.ColorItem
-import com.mskd.flux.ui.component.FluxOptionsDialogItem
-import com.mskd.flux.ui.component.FluxOptionsDialogState
+import com.mskd.flux.ui.component.global.FluxOptionsDialogItem
+import com.mskd.flux.ui.component.global.FluxOptionsDialogState
 import com.mskd.flux.ui.theme.Ui
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow

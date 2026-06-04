@@ -11,7 +11,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.media3.common.text.Cue
-import com.mskd.flux.ui.component.Text
+import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.Ui
 
 @Composable

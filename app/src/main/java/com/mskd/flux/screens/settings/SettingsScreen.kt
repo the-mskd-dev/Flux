@@ -34,10 +34,10 @@ import com.mskd.flux.screens.settings.composables.SettingsOtherSection
 import com.mskd.flux.screens.settings.composables.SettingsPlayerSection
 import com.mskd.flux.screens.settings.composables.SettingsSyncSection
 import com.mskd.flux.screens.settings.composables.SettingsTmdbSection
-import com.mskd.flux.ui.component.FluxDialog
-import com.mskd.flux.ui.component.FluxOptionsDialog
-import com.mskd.flux.ui.component.FluxScaffold
-import com.mskd.flux.ui.component.Text
+import com.mskd.flux.ui.component.global.FluxDialog
+import com.mskd.flux.ui.component.global.FluxOptionsDialog
+import com.mskd.flux.ui.component.global.FluxScaffold
+import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.FluxPreview

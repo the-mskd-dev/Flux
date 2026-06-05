@@ -133,7 +133,6 @@ fun PlayerScreen(
                     tracksState = { state.tracks },
                     seekOverlay = { state.seekOverlay },
                     ambientOverlay = { state.ambientOverlay },
-                    waveProgress = state.waveProgress,
                     sendIntent = {
                         interfaceVisibilityCountdown = 3
                         viewModel.handleIntent(it)
@@ -158,7 +157,6 @@ fun PlayerContent(
     tracksState: () -> PlayerUiState.Tracks,
     seekOverlay: () -> PlayerUiState.SeekOverlay?,
     ambientOverlay: () -> PlayerUiState.AmbientOverlay?,
-    waveProgress : Boolean,
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
@@ -285,7 +283,6 @@ fun PlayerContent(
             media = media,
             controlsState = controlsState,
             rewindAndForward = rewindAndForward,
-            waveProgress = waveProgress,
             sendIntent = sendIntent,
         )
 

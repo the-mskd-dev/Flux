@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
+import com.mskd.flux.data.repository.customization.LocalCustomization
 import com.mskd.flux.screens.player.PlayerIntent
 import com.mskd.flux.screens.player.PlayerUiState
 import com.mskd.flux.ui.component.global.Text
@@ -35,7 +36,6 @@ import com.mskd.flux.utils.extensions.formatMinSec
 fun PlayerSeekBar(
     modifier: Modifier,
     controls: PlayerUiState.Controls,
-    waveProgress: Boolean,
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
@@ -75,7 +75,6 @@ fun PlayerSeekBar(
             interactionSource = interactionSource,
             isPlaying = controls.isPlaying,
             duration = duration,
-            waveProgress = waveProgress
         )
 
         PlayerSeekBarTime(
@@ -97,8 +96,9 @@ fun PlayerSlider(
     interactionSource : MutableInteractionSource,
     isPlaying: Boolean,
     duration: Long,
-    waveProgress: Boolean
 ) {
+
+    val waveProgress = LocalCustomization.current.waveProgress
 
     Slider(
         modifier = modifier,

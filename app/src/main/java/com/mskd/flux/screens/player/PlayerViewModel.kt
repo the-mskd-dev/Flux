@@ -3,7 +3,6 @@ package com.mskd.flux.screens.player
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mskd.flux.data.repository.customization.CustomizationRepository
 import com.mskd.flux.data.repository.files.FilesRepository
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.model.State
@@ -48,8 +47,7 @@ class PlayerViewModel @AssistedInject constructor(
     private val settingsRepository: SettingsRepository,
     private val filesRepository: FilesRepository,
     private val playerManager: PlayerManager,
-    private val progressUC: ProgressUC,
-    private val customizationRepository: CustomizationRepository
+    private val progressUC: ProgressUC
 ) : ViewModel() {
 
     //region Factory
@@ -144,7 +142,6 @@ class PlayerViewModel @AssistedInject constructor(
             ),
             seekOverlay = seekOverlay,
             ambientOverlay = ambientOverlay,
-            waveProgress = customizationRepository.flow.first().waveProgress
         )
 
     }.stateIn(

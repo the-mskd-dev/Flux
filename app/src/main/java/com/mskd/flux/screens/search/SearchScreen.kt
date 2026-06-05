@@ -2,7 +2,6 @@ package com.mskd.flux.screens.search
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -55,7 +54,6 @@ import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.component.media.MediaItem
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
-import com.mskd.flux.utils.AppThemePreview
 import com.mskd.flux.utils.FluxPreview
 
 @Composable
@@ -112,17 +110,17 @@ fun SearchContent(
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background),
-            columns = GridCells.Adaptive(Ui.Dimension.ITEM_WIDTH),
-            horizontalArrangement = Arrangement.SpaceBetween,
+            columns = GridCells.Fixed(3),
+            horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL),
             verticalArrangement = Arrangement.spacedBy(Ui.Space.SMALL),
             contentPadding = PaddingValues(horizontal = Ui.Space.MEDIUM)
         ) {
 
-            item(span = { GridItemSpan(maxLineSpan) }) {
+            item(span = { GridItemSpan(3) }) {
                 Spacer(modifier = Modifier.height(innerPadding.calculateTopPadding()))
             }
 
-            item(span = { GridItemSpan(maxLineSpan) }) {
+            item(span = { GridItemSpan(3) }) {
 
                 TextField(
                     modifier = Modifier
@@ -151,7 +149,7 @@ fun SearchContent(
 
             }
 
-            item(span = { GridItemSpan(maxLineSpan) }) {
+            item(span = { GridItemSpan(3) }) {
 
                 SearchTypeFilters(
                     selectedType = state.contentType,
@@ -165,14 +163,16 @@ fun SearchContent(
                 key = { it.id }
             ) { artwork ->
 
-                Box(
-                    modifier = Modifier.fillMaxWidth(),
+                BoxWithConstraints(
+                    modifier = Modifier
+                        .animateItem()
+                        .fillMaxWidth(),
                     contentAlignment = Alignment.Center
                 ) {
 
                     MediaItem(
                         modifier = Modifier
-                            .width(Ui.Dimension.ITEM_WIDTH)
+                            .width(maxWidth)
                             .aspectRatio(Ui.Dimension.ITEM_RATIO),
                         path = artwork.imagePath,
                         hd = false,
@@ -182,9 +182,10 @@ fun SearchContent(
 
                 }
 
+
             }
 
-            item(span = { GridItemSpan(maxLineSpan) }) {
+            item(span = { GridItemSpan(3) }) {
                 Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding()))
             }
 
@@ -249,7 +250,7 @@ fun SearchTypeFilters(
 @FluxPreview
 @Composable
 fun SearchContent_Preview() {
-    AppThemePreview {
+    AppTheme {
         SearchContent(
             state = SearchUIState(
                 searchWord = "preview",

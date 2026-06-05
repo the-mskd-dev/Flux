@@ -2,6 +2,7 @@ package com.mskd.flux.screens.search
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -111,17 +112,17 @@ fun SearchContent(
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background),
-            columns = GridCells.Fixed(3),
+            columns = GridCells.Adaptive(Ui.Dimension.ITEM_WIDTH),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalArrangement = Arrangement.spacedBy(Ui.Space.SMALL),
             contentPadding = PaddingValues(horizontal = Ui.Space.MEDIUM)
         ) {
 
-            item(span = { GridItemSpan(3) }) {
+            item(span = { GridItemSpan(maxLineSpan) }) {
                 Spacer(modifier = Modifier.height(innerPadding.calculateTopPadding()))
             }
 
-            item(span = { GridItemSpan(3) }) {
+            item(span = { GridItemSpan(maxLineSpan) }) {
 
                 TextField(
                     modifier = Modifier
@@ -150,7 +151,7 @@ fun SearchContent(
 
             }
 
-            item(span = { GridItemSpan(3) }) {
+            item(span = { GridItemSpan(maxLineSpan) }) {
 
                 SearchTypeFilters(
                     selectedType = state.contentType,
@@ -164,20 +165,26 @@ fun SearchContent(
                 key = { it.id }
             ) { artwork ->
 
-                MediaItem(
-                    modifier = Modifier
-                        .width(Ui.Dimension.ITEM_WIDTH)
-                        .aspectRatio(Ui.Dimension.ITEM_RATIO),
-                    path = artwork.imagePath,
-                    hd = false,
-                    description = artwork.title,
-                    onTap = { sendIntent(SearchIntent.OnArtworkTap(artwork = artwork, rgb = it)) }
-                )
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
 
+                    MediaItem(
+                        modifier = Modifier
+                            .width(Ui.Dimension.ITEM_WIDTH)
+                            .aspectRatio(Ui.Dimension.ITEM_RATIO),
+                        path = artwork.imagePath,
+                        hd = false,
+                        description = artwork.title,
+                        onTap = { sendIntent(SearchIntent.OnArtworkTap(artwork = artwork, rgb = it)) }
+                    )
+
+                }
 
             }
 
-            item(span = { GridItemSpan(3) }) {
+            item(span = { GridItemSpan(maxLineSpan) }) {
                 Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding()))
             }
 

@@ -499,9 +499,6 @@ fun MediaCategory(
     if (artworks.isEmpty())
         return
 
-    val width = 120.dp
-    val ratio = 2f/3f
-
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
@@ -527,8 +524,8 @@ fun MediaCategory(
 
                 MediaItem(
                     modifier = Modifier
-                        .width(width)
-                        .aspectRatio(ratio),
+                        .width(Ui.Dimension.ITEM_WIDTH)
+                        .aspectRatio(Ui.Dimension.ITEM_RATIO),
                     path = it.imagePath,
                     hd = false,
                     onTap = { rgb -> sendIntent(HomeIntent.OnArtworkTap(artwork = it, rgb = rgb)) },

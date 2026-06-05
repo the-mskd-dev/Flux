@@ -54,6 +54,7 @@ import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.component.media.MediaItem
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.utils.AppThemePreview
 import com.mskd.flux.utils.FluxPreview
 
 @Composable
@@ -111,7 +112,7 @@ fun SearchContent(
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background),
             columns = GridCells.Fixed(3),
-            horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL),
+            horizontalArrangement = Arrangement.SpaceBetween,
             verticalArrangement = Arrangement.spacedBy(Ui.Space.SMALL),
             contentPadding = PaddingValues(horizontal = Ui.Space.MEDIUM)
         ) {
@@ -163,24 +164,15 @@ fun SearchContent(
                 key = { it.id }
             ) { artwork ->
 
-                BoxWithConstraints(
+                MediaItem(
                     modifier = Modifier
-                        .animateItem()
-                        .fillMaxWidth(),
-                    contentAlignment = Alignment.Center
-                ) {
-
-                    MediaItem(
-                        modifier = Modifier
-                            .width(maxWidth)
-                            .aspectRatio(2f/3f),
-                        path = artwork.imagePath,
-                        hd = false,
-                        description = artwork.title,
-                        onTap = { sendIntent(SearchIntent.OnArtworkTap(artwork = artwork, rgb = it)) }
-                    )
-
-                }
+                        .width(Ui.Dimension.ITEM_WIDTH)
+                        .aspectRatio(Ui.Dimension.ITEM_RATIO),
+                    path = artwork.imagePath,
+                    hd = false,
+                    description = artwork.title,
+                    onTap = { sendIntent(SearchIntent.OnArtworkTap(artwork = artwork, rgb = it)) }
+                )
 
 
             }
@@ -250,7 +242,7 @@ fun SearchTypeFilters(
 @FluxPreview
 @Composable
 fun SearchContent_Preview() {
-    AppTheme {
+    AppThemePreview {
         SearchContent(
             state = SearchUIState(
                 searchWord = "preview",

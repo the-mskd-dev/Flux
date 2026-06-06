@@ -55,7 +55,7 @@ import com.mskd.flux.ui.component.media.MediaItem
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.FluxPreview
-import com.mskd.flux.utils.Screen
+import com.mskd.flux.utils.rememberScreenDimensions
 
 @Composable
 fun SearchScreen(
@@ -94,7 +94,7 @@ fun SearchContent(
 
     val focusRequester = remember { FocusRequester() }
     var focusRequested by rememberSaveable { mutableStateOf(false) }
-    val isLargeScreen = Screen.isLargeScreen()
+    val isLargeScreen = rememberScreenDimensions().isLarge
     val columns = if (isLargeScreen) 5 else 3
 
     LaunchedEffect(Unit) {

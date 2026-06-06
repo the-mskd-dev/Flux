@@ -50,9 +50,9 @@ import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.utils.ExternalPlayer
 import com.mskd.flux.utils.FluxPreview
-import com.mskd.flux.utils.Screen
 import com.mskd.flux.utils.WebLink
 import com.mskd.flux.utils.rememberExternalPlayerLauncher
+import com.mskd.flux.utils.rememberScreenDimensions
 
 @Composable
 fun ArtworkScreen(
@@ -138,7 +138,7 @@ fun ArtworkScreenContent(
     sendIntent: (ArtworkIntent) -> Unit
 ) {
 
-    val isLargeScreen = Screen.isLargeScreen()
+    val isLargeScreen = rememberScreenDimensions().isLarge
 
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     var showMenu by remember { mutableStateOf(false) }

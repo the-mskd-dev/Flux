@@ -50,7 +50,9 @@ class CustomizationViewModelTest : FunSpec({
             initialState.uiTheme shouldBe Ui.THEME.SYSTEM
             initialState.color shouldBe null
             initialState.waveProgress shouldBe true
-            initialState.dialogState shouldBe null
+            initialState.largeEpisodeImage shouldBe false
+            initialState.itemsPerRow shouldBe 3
+            initialState.dialog shouldBe null
         }
     }
 
@@ -67,10 +69,12 @@ class CustomizationViewModelTest : FunSpec({
             viewModel.handleIntent(CustomizationIntent.ShowThemeDialog)
 
             val state = awaitItem()
-            state.dialogState shouldNotBe null
-            val dialogState = state.dialogState
-            dialogState.shouldBeInstanceOf<FluxOptionsDialogState<Ui.THEME, CustomizationIntent>>()
-            dialogState.currentValue shouldBe Ui.THEME.SYSTEM
+            state.dialog shouldNotBe null
+            val dialog = state.dialog
+            dialog.shouldBeInstanceOf<CustomizationDialog.SelectDialog>()
+            val selectState = dialog.state
+            selectState.shouldBeInstanceOf<FluxOptionsDialogState<Ui.THEME, CustomizationIntent>>()
+            selectState.currentValue shouldBe Ui.THEME.SYSTEM
         }
     }
 
@@ -80,10 +84,22 @@ class CustomizationViewModelTest : FunSpec({
             viewModel.handleIntent(CustomizationIntent.ShowColorDialog)
 
             val state = awaitItem()
-            state.dialogState shouldNotBe null
-            val dialogState = state.dialogState
-            dialogState.shouldBeInstanceOf<FluxOptionsDialogState<Int?, CustomizationIntent>>()
-            dialogState.currentValue shouldBe null
+            state.dialog shouldNotBe null
+            val dialog = state.dialog
+            dialog.shouldBeInstanceOf<CustomizationDialog.SelectDialog>()
+            val selectState = dialog.state
+            selectState.shouldBeInstanceOf<FluxOptionsDialogState<Int?, CustomizationIntent>>()
+            selectState.currentValue shouldBe null
+        }
+    }
+
+    test("show items per row dialog") {
+        viewModel.uiState.test {
+            awaitItem()
+            viewModel.handleIntent(CustomizationIntent.ShowItemsPerRowDialog)
+
+            val state = awaitItem()
+            state.dialog shouldBe CustomizationDialog.ItemsPerRowDialog
         }
     }
 
@@ -98,7 +114,7 @@ class CustomizationViewModelTest : FunSpec({
 
             coVerify { customizationRepository.setUiTheme(Ui.THEME.DARK) }
             state.uiTheme shouldBe Ui.THEME.DARK
-            state.dialogState shouldBe null
+            state.dialog shouldBe null
 
             cancelAndConsumeRemainingEvents()
         }
@@ -116,7 +132,7 @@ class CustomizationViewModelTest : FunSpec({
 
             coVerify { customizationRepository.setColor(testColor) }
             state.color shouldBe testColor
-            state.dialogState shouldBe null
+            state.dialog shouldBe null
 
             cancelAndConsumeRemainingEvents()
         }
@@ -138,14 +154,47 @@ class CustomizationViewModelTest : FunSpec({
         }
     }
 
+    test("set large episode image check") {
+        viewModel.uiState.test {
+            awaitItem()
+
+            viewModel.handleIntent(CustomizationIntent.OnLargeEpisodeImageCheck(true))
+            dataStoreFlow.value = dataStoreFlow.value.copy(largeEpisodeImage = true)
+
+            val state = awaitItem()
+
+            coVerify { customizationRepository.setLargeEpisodeImage(true) }
+            state.largeEpisodeImage shouldBe true
+
+            cancelAndConsumeRemainingEvents()
+        }
+    }
+
+    test("set items per row value") {
+        viewModel.uiState.test {
+            awaitItem()
+
+            viewModel.handleIntent(CustomizationIntent.SetItemsPerRowValue(4))
+            dataStoreFlow.value = dataStoreFlow.value.copy(itemsPerRow = 4)
+
+            val state = awaitItem()
+
+            coVerify { customizationRepository.setItemsPerRow(4) }
+            state.itemsPerRow shouldBe 4
+            state.dialog shouldBe null
+
+            cancelAndConsumeRemainingEvents()
+        }
+    }
+
     test("hide dialog") {
         viewModel.uiState.test {
             awaitItem()
             viewModel.handleIntent(CustomizationIntent.ShowThemeDialog)
-            awaitItem().dialogState shouldNotBe null
+            awaitItem().dialog shouldNotBe null
 
             viewModel.handleIntent(CustomizationIntent.HideDialog)
-            awaitItem().dialogState shouldBe null
+            awaitItem().dialog shouldBe null
         }
     }
 

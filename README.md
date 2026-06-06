@@ -1,4 +1,4 @@
-![GitHub Sponsors](https://img.shields.io/github/sponsors/the-mskd-dev?style=for-the-badge)(https://github.com/sponsors/the-mskd-dev/)
+[![GitHub Sponsors](https://img.shields.io/github/sponsors/the-mskd-dev?style=for-the-badge)](https://github.com/sponsors/the-mskd-dev/)
 
 [![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-ffdd00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://www.buymeacoffee.com/the.masked.dev)
 

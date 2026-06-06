@@ -9,6 +9,7 @@ import androidx.compose.material3.Slider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -22,11 +23,11 @@ import com.mskd.flux.ui.theme.Ui
 
 @Composable
 fun ItemsPerRowDialog(
-    value: Float,
+    value: Int,
     sendIntent: (CustomizationIntent) -> Unit
 ) {
 
-    var currentValue by remember { mutableFloatStateOf(value) }
+    var currentValue by remember { mutableIntStateOf(value) }
 
     FluxDialog(
         onDismiss = { sendIntent(CustomizationIntent.HideDialog) },
@@ -49,14 +50,14 @@ fun ItemsPerRowDialog(
                     horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)
                 ) {
 
-                    Text.Body.Medium("1")
+                    Text.Body.Medium("2")
 
                     Slider(
                         modifier = Modifier.weight(1f),
-                        valueRange = 1f..5f,
-                        steps = 5,
-                        value = currentValue,
-                        onValueChange = { currentValue = it },
+                        valueRange = 2f..5f,
+                        steps = 2,
+                        value = currentValue.toFloat(),
+                        onValueChange = { currentValue = it.toInt() },
                     )
 
                     Text.Body.Medium("5")

@@ -21,6 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.mskd.flux.R
+import com.mskd.flux.data.repository.customization.LocalCustomization
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.screens.artwork.composables.common.ArtworkImage
@@ -39,7 +40,7 @@ fun ShowContentRegular(
     sendIntent: (ShowIntent) -> Unit
 ) {
 
-    val columns = 3
+    val columns = LocalCustomization.current.itemsPerRow
     val itemWidth = itemWidthFor(columns = columns)
 
     LazyColumn(

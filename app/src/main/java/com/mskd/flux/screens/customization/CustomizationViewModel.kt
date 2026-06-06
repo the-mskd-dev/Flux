@@ -148,7 +148,7 @@ class CustomizationViewModel @Inject constructor(
         customizationRepository.setLargeEpisodeImage(large)
     }
 
-    private suspend fun setItemsPerRowValue(count: Float) {
+    private suspend fun setItemsPerRowValue(count: Int) {
         customizationRepository.setItemsPerRow(count)
         hideDialog()
     }

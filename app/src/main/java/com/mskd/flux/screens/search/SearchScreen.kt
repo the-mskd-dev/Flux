@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.R
+import com.mskd.flux.data.repository.customization.LocalCustomization
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.navigation.Route
@@ -97,7 +98,7 @@ fun SearchContent(
     var focusRequested by rememberSaveable { mutableStateOf(false) }
     val screenDimensions = rememberScreenDimensions()
     val isLargeScreen = screenDimensions.isLarge
-    val columns = if (isLargeScreen) 5 else 3
+    val columns = if (isLargeScreen) 5 else LocalCustomization.current.itemsPerRow
     val itemWidth = itemWidthFor(columns = columns)
 
     LaunchedEffect(Unit) {

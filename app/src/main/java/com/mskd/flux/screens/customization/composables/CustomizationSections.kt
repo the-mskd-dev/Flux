@@ -53,7 +53,7 @@ fun CustomizationGlobalSection(
 
         SettingsItem(
             text = stringResource(R.string.items_per_row),
-            subText = stringResource(R.string.items, state.itemsPerRow.roundToInt()),
+            subText = stringResource(R.string.items, state.itemsPerRow),
             onTap = { sendIntent(CustomizationIntent.ShowItemsPerRowDialog) }
         )
 

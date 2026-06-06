@@ -1,6 +1,5 @@
 package com.mskd.flux.utils
 
-import android.util.Log
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfoV2
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember

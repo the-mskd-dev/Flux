@@ -80,7 +80,6 @@ import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.component.global.FluxButton
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.component.media.MediaItem
-import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.AppThemePreview
 import com.mskd.flux.utils.FluxPreview

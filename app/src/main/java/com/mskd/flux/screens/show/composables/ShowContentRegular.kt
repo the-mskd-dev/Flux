@@ -31,7 +31,6 @@ import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.PortraitPreview
 import com.mskd.flux.utils.itemWidthFor
-import com.mskd.flux.utils.rememberScreenDimensions
 
 @Composable
 fun ShowContentRegular(

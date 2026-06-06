@@ -85,6 +85,8 @@ import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.AppThemePreview
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxSnackbar
+import com.mskd.flux.utils.itemWidthFor
+import com.mskd.flux.utils.rememberScreenDimensions
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -500,6 +502,10 @@ fun MediaCategory(
     if (artworks.isEmpty())
         return
 
+    val screenDimensions = rememberScreenDimensions()
+    val columns = if (screenDimensions.isLarge) 5 else 3
+    val itemWidth = itemWidthFor(columns = columns)
+
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
@@ -525,7 +531,7 @@ fun MediaCategory(
 
                 MediaItem(
                     modifier = Modifier
-                        .width(Ui.Dimension.ITEM_WIDTH)
+                        .width(itemWidth)
                         .aspectRatio(Ui.Dimension.ITEM_RATIO),
                     path = it.imagePath,
                     hd = false,

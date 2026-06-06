@@ -57,6 +57,7 @@ import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.AppThemePreview
 import com.mskd.flux.utils.FluxPreview
+import com.mskd.flux.utils.itemWidthFor
 import com.mskd.flux.utils.rememberScreenDimensions
 
 @Composable
@@ -96,8 +97,10 @@ fun SearchContent(
 
     val focusRequester = remember { FocusRequester() }
     var focusRequested by rememberSaveable { mutableStateOf(false) }
-    val isLargeScreen = rememberScreenDimensions().isLarge
+    val screenDimensions = rememberScreenDimensions()
+    val isLargeScreen = screenDimensions.isLarge
     val columns = if (isLargeScreen) 5 else 3
+    val itemWidth = itemWidthFor(columns = columns)
 
     LaunchedEffect(Unit) {
         if (state.autoKeyboard && !focusRequested) {
@@ -177,7 +180,7 @@ fun SearchContent(
 
                     MediaItem(
                         modifier = Modifier
-                            .width(Ui.Dimension.ITEM_WIDTH)
+                            .width(itemWidth)
                             .aspectRatio(Ui.Dimension.ITEM_RATIO),
                         path = artwork.imagePath,
                         hd = false,

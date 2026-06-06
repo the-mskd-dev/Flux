@@ -1,6 +1,7 @@
 package com.mskd.flux.ui.component.media
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -13,6 +14,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.palette.graphics.Palette
 import coil3.toBitmap
 import com.mskd.flux.ui.component.global.FluxImage
+import com.mskd.flux.ui.theme.Ui
 
 @Composable
 fun MediaItem(
@@ -30,6 +32,7 @@ fun MediaItem(
         modifier = Modifier
             .clip(shape)
             .then(modifier)
+            .aspectRatio(Ui.Dimension.ITEM_RATIO)
             .clickable { onTap(seedRgb) },
         path = path,
         hd = hd,

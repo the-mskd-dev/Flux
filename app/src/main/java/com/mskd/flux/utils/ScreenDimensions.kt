@@ -1,5 +1,6 @@
 package com.mskd.flux.utils
 
+import android.util.Log
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfoV2
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -7,6 +8,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.Dp
 import androidx.window.core.layout.WindowSizeClass
+import com.mskd.flux.ui.theme.Ui
 
 
 data class ScreenDimensions(
@@ -28,4 +30,14 @@ fun rememberScreenDimensions(): ScreenDimensions {
             isLarge =  isLarge
         )
     }
+}
+
+@Composable
+fun itemWidthFor(
+    columns: Int,
+    horizontalPadding: Dp  = Ui.Space.MEDIUM,
+    spaceBy: Dp = Ui.Space.SMALL
+) : Dp {
+    val screenDimensions = rememberScreenDimensions()
+    return (screenDimensions.widthDp - horizontalPadding.times(2) - spaceBy.times(columns - 1)) / columns
 }

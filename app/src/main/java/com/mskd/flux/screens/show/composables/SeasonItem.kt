@@ -58,7 +58,7 @@ fun SeasonItem(
         Box(
             modifier = Modifier
                 .clip(MaterialTheme.shapes.large)
-                .width(Ui.Dimension.ITEM_WIDTH)
+                .fillMaxWidth()
                 .aspectRatio(Ui.Dimension.ITEM_RATIO)
                 .combinedClickable(
                     onClick = { onTap(seedRgb) },

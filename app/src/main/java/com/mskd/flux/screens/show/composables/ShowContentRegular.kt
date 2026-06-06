@@ -30,6 +30,8 @@ import com.mskd.flux.ui.component.media.OverviewItem
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.PortraitPreview
+import com.mskd.flux.utils.itemWidthFor
+import com.mskd.flux.utils.rememberScreenDimensions
 
 @Composable
 fun ShowContentRegular(
@@ -39,6 +41,7 @@ fun ShowContentRegular(
 ) {
 
     val columns = 3
+    val itemWidth = itemWidthFor(columns = columns)
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -136,7 +139,7 @@ fun ShowContentRegular(
 
                         SeasonItem(
                             modifier = Modifier
-                                .width(Ui.Dimension.ITEM_WIDTH)
+                                .width(itemWidth)
                                 .aspectRatio(Ui.Dimension.ITEM_RATIO),
                             season = season,
                             episodes = fullShow.episodes.filter { it.season == season.season },

@@ -2,6 +2,7 @@ package com.mskd.flux.screens.search
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -167,7 +168,7 @@ fun SearchContent(
                 key = { it.id }
             ) { artwork ->
 
-                BoxWithConstraints(
+                Box(
                     modifier = Modifier
                         .animateItem()
                         .fillMaxWidth(),
@@ -176,7 +177,7 @@ fun SearchContent(
 
                     MediaItem(
                         modifier = Modifier
-                            .width(maxWidth)
+                            .width(Ui.Dimension.ITEM_WIDTH)
                             .aspectRatio(Ui.Dimension.ITEM_RATIO),
                         path = artwork.imagePath,
                         hd = false,

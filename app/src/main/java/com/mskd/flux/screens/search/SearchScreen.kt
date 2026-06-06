@@ -54,6 +54,7 @@ import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.component.media.MediaItem
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.utils.AppThemePreview
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.rememberScreenDimensions
 
@@ -253,10 +254,10 @@ fun SearchTypeFilters(
 @FluxPreview
 @Composable
 fun SearchContent_Preview() {
-    AppTheme {
+    AppThemePreview {
         SearchContent(
             state = SearchUIState(
-                searchWord = "preview",
+                searchWord = "",
                 artworks = MediaMockups.artworks
             ),
             sendIntent = {}

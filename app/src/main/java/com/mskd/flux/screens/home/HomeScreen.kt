@@ -82,6 +82,7 @@ import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.component.media.MediaItem
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.utils.AppThemePreview
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxSnackbar
 import kotlinx.coroutines.launch
@@ -587,7 +588,7 @@ fun UnknownCategory(sendIntent: (HomeIntent) -> Unit) {
 @FluxPreview
 @Composable
 fun HomeScreen_Preview() {
-    AppTheme {
+    AppThemePreview {
         Surface {
             HomeContent(
                 artworks = MediaMockups.artworks,
@@ -603,7 +604,7 @@ fun HomeScreen_Preview() {
 @FluxPreview
 @Composable
 fun HomeEmpty_Preview() {
-    AppTheme {
+    AppThemePreview {
         HomeEmpty(
             sendIntent = {}
         )

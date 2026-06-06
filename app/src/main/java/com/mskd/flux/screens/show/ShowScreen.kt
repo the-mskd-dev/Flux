@@ -29,6 +29,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.R
+import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.State
 import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.navigation.Route
@@ -42,6 +43,8 @@ import com.mskd.flux.ui.component.global.FluxDropDownMenu
 import com.mskd.flux.ui.component.global.FluxDropDownMenuItem
 import com.mskd.flux.ui.component.global.FluxScaffold
 import com.mskd.flux.ui.component.global.ResetProgressDialog
+import com.mskd.flux.utils.AppThemePreview
+import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.WebLink
 import com.mskd.flux.utils.rememberScreenDimensions
 
@@ -220,4 +223,16 @@ fun ShowDropDownMenu(
         )
     )
 
+}
+
+@FluxPreview
+@Composable
+fun ShowScreen_Preview() {
+    AppThemePreview {
+        ShowScreenContent(
+            fullShow = MediaMockups.fullShow,
+            dialog = null,
+            sendIntent = {}
+        )
+    }
 }

@@ -180,9 +180,19 @@ object MediaMockups {
         season = 2
     )
 
+    val season3 = Season(
+        id = 1003L,
+        artworkId = 31910L,
+        title = "Season 3",
+        description = "The third season of Naruto Shippūden.",
+        imagePath = "/season3_image.jpg",
+        season = 3
+    )
+
     val seasons = listOf(
         season1,
-        season2
+        season2,
+        season3
     )
 
     val allMedias = movies + episodes + unknowns

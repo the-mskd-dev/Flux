@@ -30,12 +30,13 @@ import com.mskd.flux.utils.FluxPreview
 @Composable
 fun ArtworkDescriptionsPager(
     fullArtwork: FullArtwork,
+    season: Int? = null,
     currentMedia: Media
 ) {
 
     val pageCount = when (fullArtwork) {
         is FullArtwork.FullMovie -> 1
-        is FullArtwork.FullShow -> if (fullArtwork.isWatching) 2 else 1
+        is FullArtwork.FullShow -> if (fullArtwork.seasonIsWatching(season = season ?: -1)) 2 else 1
     }
 
     var currentPage by remember { mutableIntStateOf(0) }

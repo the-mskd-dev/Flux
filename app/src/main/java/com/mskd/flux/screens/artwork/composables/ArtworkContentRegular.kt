@@ -66,6 +66,7 @@ fun ArtworkContentRegular(
 
             ArtworkDescriptionsPager(
                 fullArtwork = fullArtwork,
+                season = selectedSeason,
                 currentMedia = selectedMedia
             )
 

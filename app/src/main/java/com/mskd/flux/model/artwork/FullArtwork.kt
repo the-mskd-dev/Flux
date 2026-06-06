@@ -44,4 +44,14 @@ sealed class FullArtwork {
         is FullShow -> ContentType.SHOW
     }
 
+    fun seasonIsWatching(season: Int) : Boolean {
+        return when (this) {
+            is FullMovie -> false
+            is FullShow -> {
+                val filterEpisodes = this.episodes.filter { it.season == season }
+                filterEpisodes.any { it.status == Status.IS_WATCHING }
+            }
+        }
+    }
+
 }

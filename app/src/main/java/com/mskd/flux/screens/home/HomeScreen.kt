@@ -550,8 +550,7 @@ fun MediaCategory(
 @Composable
 fun UnknownCategory(sendIntent: (HomeIntent) -> Unit) {
 
-    val width = 120.dp
-    val ratio = 2f/3f
+    val itemWidth = itemWidthFor(columns = LocalCustomization.current.itemsPerRow)
     val foregroundPainter = rememberVectorPainter(ImageVector.vectorResource(R.drawable.ic_launcher_foreground))
 
     Column(
@@ -573,8 +572,8 @@ fun UnknownCategory(sendIntent: (HomeIntent) -> Unit) {
                 .padding(horizontal = Ui.Space.MEDIUM)
                 .clickable { sendIntent(HomeIntent.OnArtworkTap(artwork = Artwork.UNKNOWN)) }
                 .clip(MaterialTheme.shapes.small)
-                .width(width)
-                .aspectRatio(ratio)
+                .width(itemWidth)
+                .aspectRatio(Ui.Dimension.ITEM_RATIO)
                 .background(color = MaterialTheme.colorScheme.secondaryContainer),
             contentAlignment = Alignment.Center
         ) {

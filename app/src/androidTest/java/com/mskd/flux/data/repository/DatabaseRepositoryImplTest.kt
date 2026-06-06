@@ -238,7 +238,7 @@ class DatabaseRepositoryImplTest {
 
         // Then
         val result = repository.getSeasons(artwork.id)
-        Assert.assertEquals(2, result.size)
+        Assert.assertEquals(MediaMockups.seasons.size, result.size)
         Assert.assertEquals(MediaMockups.seasons, result)
     }
 
@@ -413,8 +413,8 @@ class DatabaseRepositoryImplTest {
         Assert.assertNull(repository.getArtwork(MediaMockups.movieArtwork.id))
         Assert.assertNull(repository.getMovie(MediaMockups.movieArtwork.id))
         Assert.assertNotNull(repository.getArtwork(MediaMockups.showArtwork.id))
-        Assert.assertEquals(3, repository.getEpisodes(MediaMockups.showArtwork.id).size)
-        Assert.assertEquals(2, repository.getSeasons(MediaMockups.showArtwork.id).size)
+        Assert.assertEquals(MediaMockups.episodes.size, repository.getEpisodes(MediaMockups.showArtwork.id).size)
+        Assert.assertEquals(MediaMockups.seasons.size, repository.getSeasons(MediaMockups.showArtwork.id).size)
     }
 
     // endregion

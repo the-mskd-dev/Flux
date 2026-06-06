@@ -13,7 +13,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.adaptive.currentWindowAdaptiveInfoV2
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -29,8 +28,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.window.core.layout.WindowSizeClass
 import com.mskd.flux.R
+import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.State
 import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.navigation.Route
@@ -44,7 +43,10 @@ import com.mskd.flux.ui.component.global.FluxDropDownMenu
 import com.mskd.flux.ui.component.global.FluxDropDownMenuItem
 import com.mskd.flux.ui.component.global.FluxScaffold
 import com.mskd.flux.ui.component.global.ResetProgressDialog
+import com.mskd.flux.utils.AppThemePreview
+import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.WebLink
+import com.mskd.flux.utils.rememberScreenDimensions
 
 @Composable
 fun ShowScreen(
@@ -108,8 +110,7 @@ fun ShowScreenContent(
     sendIntent: (ShowIntent) -> Unit
 ) {
 
-    val windowSizeClass = currentWindowAdaptiveInfoV2().windowSizeClass
-    val isLargeScreen = windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND)
+    val isLargeScreen = rememberScreenDimensions().isLarge
 
     var showMenu by remember { mutableStateOf(false) }
 
@@ -222,4 +223,16 @@ fun ShowDropDownMenu(
         )
     )
 
+}
+
+@FluxPreview
+@Composable
+fun ShowScreen_Preview() {
+    AppThemePreview {
+        ShowScreenContent(
+            fullShow = MediaMockups.fullShow,
+            dialog = null,
+            sendIntent = {}
+        )
+    }
 }

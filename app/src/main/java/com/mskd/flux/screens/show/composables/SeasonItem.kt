@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.TextAutoSize
@@ -51,14 +50,15 @@ fun SeasonItem(
     var seedRgb by remember { mutableStateOf<Int?>(null) }
 
     Column(
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
         Box(
             modifier = Modifier
                 .clip(MaterialTheme.shapes.large)
                 .fillMaxWidth()
-                .aspectRatio(5f/6f)
+                .aspectRatio(Ui.Dimension.ITEM_RATIO)
                 .combinedClickable(
                     onClick = { onTap(seedRgb) },
                     onLongClick = { onLongPress() }
@@ -68,7 +68,7 @@ fun SeasonItem(
 
             FluxImage(
                 modifier = Modifier
-                    .fillMaxSize()
+                    .matchParentSize()
                     .let { if (episodes.all { e -> e.status == Status.WATCHED }) it.grayScale() else it },
                 path = season.imagePath.orEmpty(),
                 contentDescription = season.title,

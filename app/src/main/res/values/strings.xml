@@ -153,4 +153,7 @@
     <string name="read_more">Read more</string>
     <string name="read_less">Read less</string>
     <string name="large_episode_image">Large image for the episodes</string>
+    <string name="items_per_row">Items per row</string>
+    <string name="items_per_row_desc">Number of items per row (home, search, seasons…)</string>
+    <string name="items">%1$d items</string>
 </resources>

@@ -6,13 +6,17 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -36,8 +40,6 @@ fun ShowContentLarge(
     sendIntent: (ShowIntent) -> Unit
 ) {
 
-    val columns = 3
-
     Row(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -52,16 +54,19 @@ fun ShowContentLarge(
 
         }
 
-        LazyColumn(
+        LazyVerticalGrid(
             modifier = Modifier.weight(.5f),
-            horizontalAlignment = Alignment.CenterHorizontally,
+            columns = GridCells.Fixed(3),
+            horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL),
+            verticalArrangement = Arrangement.spacedBy(Ui.Space.SMALL),
+            contentPadding = PaddingValues(horizontal = Ui.Space.MEDIUM)
         ) {
 
-            item {
+            item(span = { GridItemSpan(maxLineSpan) }) {
                 Spacer(modifier = Modifier.height(scaffoldInnerPadding.calculateTopPadding()))
             }
 
-            item {
+            item(span = { GridItemSpan(maxLineSpan) }) {
 
                 Text.Display.Small(
                     modifier = Modifier
@@ -74,11 +79,11 @@ fun ShowContentLarge(
 
             }
 
-            item {
+            item(span = { GridItemSpan(maxLineSpan) }) {
                 Spacer(modifier = Modifier.height(Ui.Space.LARGE))
             }
 
-            item {
+            item(span = { GridItemSpan(maxLineSpan) }) {
 
                 OverviewItem(
                     modifier = Modifier.padding(horizontal = Ui.Space.MEDIUM),
@@ -88,11 +93,11 @@ fun ShowContentLarge(
 
             }
 
-            item {
+            item(span = { GridItemSpan(maxLineSpan) }) {
                 Spacer(modifier = Modifier.height(Ui.Space.LARGE))
             }
 
-            item {
+            item(span = { GridItemSpan(maxLineSpan) }) {
 
                 Text.Title.Large(
                     modifier = Modifier
@@ -105,50 +110,38 @@ fun ShowContentLarge(
 
             }
 
-            item {
+            item(span = { GridItemSpan(maxLineSpan) }) {
                 Spacer(modifier = Modifier.height(Ui.Space.MEDIUM))
             }
 
-            val seasonsChunks = fullShow.seasons.chunked(columns)
-
             items(
-                items = seasonsChunks,
-                key = { seasons -> seasons.fold("") { acc, s -> acc + s.id } }
-            ) { seasons ->
+                items = fullShow.seasons,
+                key = { it.id }
+            ) { season ->
 
-                Row(
+                Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = Ui.Space.MEDIUM)
-                        .padding(bottom = Ui.Space.MEDIUM),
-                    horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)
+                        .animateItem()
+                        .fillMaxWidth(),
+                    contentAlignment = Alignment.Center
                 ) {
 
-                    seasons.forEach { season ->
-
-                        SeasonItem(
-                            modifier = Modifier.weight(1f),
-                            season = season,
-                            episodes = fullShow.episodes.filter { it.season == season.season },
-                            onTap = { sendIntent(ShowIntent.OnSeasonTap(season = season.season, rgb = it))},
-                            onLongPress = { sendIntent(ShowIntent.ShowSeasonPreview(season = season)) }
-                        )
-
-                    }
-
-                    val emptySlots = columns - seasons.size
-                    if (emptySlots > 0) {
-                        repeat(emptySlots) {
-                            Spacer(modifier = Modifier.weight(1f))
-                        }
-                    }
+                    SeasonItem(
+                        modifier = Modifier
+                            .width(Ui.Dimension.ITEM_WIDTH)
+                            .aspectRatio(Ui.Dimension.ITEM_RATIO),
+                        season = season,
+                        episodes = fullShow.episodes.filter { it.season == season.season },
+                        onTap = { sendIntent(ShowIntent.OnSeasonTap(season = season.season, rgb = it))},
+                        onLongPress = { sendIntent(ShowIntent.ShowSeasonPreview(season = season)) }
+                    )
 
                 }
 
 
             }
 
-            item {
+            item(span = { GridItemSpan(maxLineSpan) }) {
                 Spacer(modifier = Modifier.height(scaffoldInnerPadding.calculateBottomPadding()))
             }
 

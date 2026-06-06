@@ -10,8 +10,14 @@ data class CustomizationUiState(
     val color: Int? = null,
     val waveProgress: Boolean = true,
     val largeEpisodeImage: Boolean = false,
-    val dialogState: FluxOptionsDialogState<*, CustomizationIntent>? = null,
+    val itemsPerRow: Int = 3,
+    val dialog: CustomizationDialog? = null
 )
+
+sealed class CustomizationDialog {
+    data class SelectDialog(val state: FluxOptionsDialogState<*, CustomizationIntent>) : CustomizationDialog()
+    data object ItemsPerRowDialog : CustomizationDialog()
+}
 
 sealed class CustomizationIntent {
 
@@ -22,10 +28,12 @@ sealed class CustomizationIntent {
     data object HideDialog : CustomizationIntent()
     data object ShowColorDialog: CustomizationIntent()
     data object ShowThemeDialog: CustomizationIntent()
+    data object ShowItemsPerRowDialog: CustomizationIntent()
 
     // Setter
     data class SetColorValue(val color: Int?) : CustomizationIntent()
     data class SetThemeValue(val theme: Ui.THEME): CustomizationIntent()
+    data class SetItemsPerRowValue(val count: Int): CustomizationIntent()
     data class OnWaveProgressCheck(val checked: Boolean): CustomizationIntent()
     data class OnLargeEpisodeImageCheck(val checked: Boolean): CustomizationIntent()
 }

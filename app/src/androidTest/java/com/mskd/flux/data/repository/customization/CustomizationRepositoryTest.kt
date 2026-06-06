@@ -66,6 +66,8 @@ class CustomizationRepositoryTest {
             assert(defaultState.uiTheme == initialState.uiTheme)
             assert(defaultState.color == initialState.color)
             assert(defaultState.waveProgress == initialState.waveProgress)
+            assert(defaultState.largeEpisodeImage == initialState.largeEpisodeImage)
+            assert(defaultState.itemsPerRow == initialState.itemsPerRow)
 
             cancelAndConsumeRemainingEvents()
         }
@@ -120,6 +122,38 @@ class CustomizationRepositoryTest {
             customizationRepository.setWaveProgress(false)
             state = awaitItem()
             assert(!state.waveProgress)
+
+            cancelAndConsumeRemainingEvents()
+        }
+
+    }
+
+    @Test
+    fun get_and_set_large_episode_image() = runTest {
+
+        customizationRepository.flow.test {
+            var state = awaitItem()
+            assert(!state.largeEpisodeImage)
+
+            customizationRepository.setLargeEpisodeImage(true)
+            state = awaitItem()
+            assert(state.largeEpisodeImage)
+
+            cancelAndConsumeRemainingEvents()
+        }
+
+    }
+
+    @Test
+    fun get_and_set_items_per_row() = runTest {
+
+        customizationRepository.flow.test {
+            var state = awaitItem()
+            assert(state.itemsPerRow == 3)
+
+            customizationRepository.setItemsPerRow(4)
+            state = awaitItem()
+            assert(state.itemsPerRow == 4)
 
             cancelAndConsumeRemainingEvents()
         }

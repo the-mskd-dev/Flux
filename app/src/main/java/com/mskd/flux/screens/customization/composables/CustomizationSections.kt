@@ -43,6 +43,24 @@ fun CustomizationThemeSection(
 }
 
 @Composable
+fun CustomizationGlobalSection(
+    state: CustomizationUiState,
+    sendIntent: (CustomizationIntent) -> Unit
+) {
+
+    SettingsSection { _, _ ->
+
+        SettingsItem(
+            text = stringResource(R.string.items_per_row),
+            subText = stringResource(R.string.items, state.itemsPerRow),
+            onTap = { sendIntent(CustomizationIntent.ShowItemsPerRowDialog) }
+        )
+
+    }
+
+}
+
+@Composable
 fun CustomizationArtworkSection(
     state: CustomizationUiState,
     sendIntent: (CustomizationIntent) -> Unit

@@ -32,7 +32,7 @@ class CustomizationViewModel @Inject constructor(
 
     private val context = getApplication<Application>()
 
-    private val _dialogState = MutableStateFlow<FluxOptionsDialogState<*, CustomizationIntent>?>(null)
+    private val _dialogState = MutableStateFlow<CustomizationDialog?>(null)
 
     val uiState: StateFlow<CustomizationUiState> = combine(
         customizationRepository.flow,
@@ -43,7 +43,8 @@ class CustomizationViewModel @Inject constructor(
             color = customization.color,
             waveProgress = customization.waveProgress,
             largeEpisodeImage = customization.largeEpisodeImage,
-            dialogState = dialog
+            itemsPerRow = customization.itemsPerRow,
+            dialog = dialog
         )
     }.stateIn(
         scope = viewModelScope,
@@ -68,11 +69,13 @@ class CustomizationViewModel @Inject constructor(
             CustomizationIntent.HideDialog -> hideDialog()
             CustomizationIntent.ShowColorDialog -> showColorDialog()
             CustomizationIntent.ShowThemeDialog -> showThemeDialog()
+            CustomizationIntent.ShowItemsPerRowDialog -> showItemsPerRowDialog()
 
 
             // Setters
             is CustomizationIntent.SetColorValue -> setColor(color = intent.color)
             is CustomizationIntent.SetThemeValue -> setTheme(theme = intent.theme)
+            is CustomizationIntent.SetItemsPerRowValue -> setItemsPerRowValue(count = intent.count)
             is CustomizationIntent.OnWaveProgressCheck -> setWaveProgress(waveProgress = intent.checked)
             is CustomizationIntent.OnLargeEpisodeImageCheck -> setLargeEpisodeImage(large = intent.checked)
 
@@ -100,7 +103,7 @@ class CustomizationViewModel @Inject constructor(
             applyValue = { value -> CustomizationIntent.SetThemeValue(value) }
         )
 
-        _dialogState.update { dialogState }
+        _dialogState.update { CustomizationDialog.SelectDialog(state = dialogState) }
     }
 
     private suspend fun setTheme(theme: Ui.THEME) {
@@ -125,7 +128,11 @@ class CustomizationViewModel @Inject constructor(
             applyValue = { value -> CustomizationIntent.SetColorValue(value) }
         )
 
-        _dialogState.update { dialogState }
+        _dialogState.update { CustomizationDialog.SelectDialog(state = dialogState) }
+    }
+
+    private fun showItemsPerRowDialog() {
+        _dialogState.update { CustomizationDialog.ItemsPerRowDialog }
     }
 
     private suspend fun setColor(color: Int?) {
@@ -139,6 +146,11 @@ class CustomizationViewModel @Inject constructor(
 
     private suspend fun setLargeEpisodeImage(large: Boolean) {
         customizationRepository.setLargeEpisodeImage(large)
+    }
+
+    private suspend fun setItemsPerRowValue(count: Int) {
+        customizationRepository.setItemsPerRow(count)
+        hideDialog()
     }
 
     //endregion

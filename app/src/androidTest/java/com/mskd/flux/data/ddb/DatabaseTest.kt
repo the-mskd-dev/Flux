@@ -267,7 +267,7 @@ class DatabaseTest {
 
         // Then
         val result = dao.getSeasons(artwork.id)
-        assertEquals(2, result.size)
+        assertEquals(MediaMockups.seasons.size, result.size)
         assertEquals(seasons, result)
     }
 
@@ -466,7 +466,7 @@ class DatabaseTest {
 
         // Then
         val result = dao.getSeasons(artwork.id)
-        assertEquals(1, result.size)
+        assertEquals(MediaMockups.seasons.size - 1, result.size)
         assertEquals(MediaMockups.season2, result.first())
     }
 

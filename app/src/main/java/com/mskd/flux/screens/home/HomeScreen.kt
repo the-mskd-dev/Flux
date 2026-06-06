@@ -71,6 +71,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.mskd.flux.R
+import com.mskd.flux.data.repository.customization.LocalCustomization
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.ContentType
@@ -80,10 +81,12 @@ import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.component.global.FluxButton
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.component.media.MediaItem
-import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.utils.AppThemePreview
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxSnackbar
+import com.mskd.flux.utils.itemWidthFor
+import com.mskd.flux.utils.rememberScreenDimensions
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -499,8 +502,9 @@ fun MediaCategory(
     if (artworks.isEmpty())
         return
 
-    val width = 120.dp
-    val ratio = 2f/3f
+    val screenDimensions = rememberScreenDimensions()
+    val columns = if (screenDimensions.isLarge) 5 else LocalCustomization.current.itemsPerRow
+    val itemWidth = itemWidthFor(columns = columns)
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -527,8 +531,8 @@ fun MediaCategory(
 
                 MediaItem(
                     modifier = Modifier
-                        .width(width)
-                        .aspectRatio(ratio),
+                        .width(itemWidth)
+                        .aspectRatio(Ui.Dimension.ITEM_RATIO),
                     path = it.imagePath,
                     hd = false,
                     onTap = { rgb -> sendIntent(HomeIntent.OnArtworkTap(artwork = it, rgb = rgb)) },
@@ -546,8 +550,7 @@ fun MediaCategory(
 @Composable
 fun UnknownCategory(sendIntent: (HomeIntent) -> Unit) {
 
-    val width = 120.dp
-    val ratio = 2f/3f
+    val itemWidth = itemWidthFor(columns = LocalCustomization.current.itemsPerRow)
     val foregroundPainter = rememberVectorPainter(ImageVector.vectorResource(R.drawable.ic_launcher_foreground))
 
     Column(
@@ -569,8 +572,8 @@ fun UnknownCategory(sendIntent: (HomeIntent) -> Unit) {
                 .padding(horizontal = Ui.Space.MEDIUM)
                 .clickable { sendIntent(HomeIntent.OnArtworkTap(artwork = Artwork.UNKNOWN)) }
                 .clip(MaterialTheme.shapes.small)
-                .width(width)
-                .aspectRatio(ratio)
+                .width(itemWidth)
+                .aspectRatio(Ui.Dimension.ITEM_RATIO)
                 .background(color = MaterialTheme.colorScheme.secondaryContainer),
             contentAlignment = Alignment.Center
         ) {
@@ -590,7 +593,7 @@ fun UnknownCategory(sendIntent: (HomeIntent) -> Unit) {
 @FluxPreview
 @Composable
 fun HomeScreen_Preview() {
-    AppTheme {
+    AppThemePreview {
         Surface {
             HomeContent(
                 artworks = MediaMockups.artworks,
@@ -606,7 +609,7 @@ fun HomeScreen_Preview() {
 @FluxPreview
 @Composable
 fun HomeEmpty_Preview() {
-    AppTheme {
+    AppThemePreview {
         HomeEmpty(
             sendIntent = {}
         )

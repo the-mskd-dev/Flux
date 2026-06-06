@@ -18,6 +18,11 @@ import com.mskd.flux.R
 
 object Ui {
 
+    object Dimension {
+        val ITEM_WIDTH = 140.dp
+        val ITEM_RATIO = 2f/3f
+    }
+
     object Space {
         val EXTRA_SMALL = 4.dp
         val SMALL = 8.dp

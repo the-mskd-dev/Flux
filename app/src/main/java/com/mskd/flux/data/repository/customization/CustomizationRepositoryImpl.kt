@@ -23,6 +23,7 @@ class CustomizationRepositoryImpl @Inject constructor(
         val COLOR = intPreferencesKey("color")
         val WAVE_PROGRESS = booleanPreferencesKey("wave_progress")
         val LARGE_EPISODE_IMAGE = booleanPreferencesKey("large_episode_image")
+        val ITEMS_PER_ROW = intPreferencesKey("items_per_row")
     }
 
     override val flow: Flow<CustomizationRepository.State> = customizationDataStore.data
@@ -33,12 +34,14 @@ class CustomizationRepositoryImpl @Inject constructor(
             val color = preferences[Keys.COLOR]
             val waveProgress = preferences[Keys.WAVE_PROGRESS] ?: true
             val largeEpisodeImage = preferences[Keys.LARGE_EPISODE_IMAGE] ?: false
+            val itemsPerRow = preferences[Keys.ITEMS_PER_ROW] ?: 3
 
             CustomizationRepository.State(
                 uiTheme = uiTheme,
                 color = color,
                 waveProgress = waveProgress,
-                largeEpisodeImage = largeEpisodeImage
+                largeEpisodeImage = largeEpisodeImage,
+                itemsPerRow = itemsPerRow
             )
         }
 
@@ -66,6 +69,12 @@ class CustomizationRepositoryImpl @Inject constructor(
     override suspend fun setLargeEpisodeImage(large: Boolean) {
         customizationDataStore.edit { preferences ->
             preferences[Keys.LARGE_EPISODE_IMAGE] = large
+        }
+    }
+
+    override suspend fun setItemsPerRow(count: Int) {
+        customizationDataStore.edit { preferences ->
+            preferences[Keys.ITEMS_PER_ROW] = count
         }
     }
 

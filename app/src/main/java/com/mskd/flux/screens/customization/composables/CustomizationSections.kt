@@ -17,6 +17,7 @@ import com.mskd.flux.screens.settings.composables.SettingsItem
 import com.mskd.flux.screens.settings.composables.SettingsSection
 import com.mskd.flux.screens.settings.composables.SettingsSwitch
 import com.mskd.flux.ui.theme.Ui
+import kotlin.math.roundToInt
 
 @Composable
 fun CustomizationThemeSection(
@@ -36,6 +37,24 @@ fun CustomizationThemeSection(
             text = stringResource(R.string.app_theme),
             subText = stringResource(state.uiTheme.stringResourceId),
             onTap = { sendIntent(CustomizationIntent.ShowThemeDialog) }
+        )
+
+    }
+
+}
+
+@Composable
+fun CustomizationGlobalSection(
+    state: CustomizationUiState,
+    sendIntent: (CustomizationIntent) -> Unit
+) {
+
+    SettingsSection { _, _ ->
+
+        SettingsItem(
+            text = stringResource(R.string.items_per_row),
+            subText = stringResource(R.string.items, state.itemsPerRow.roundToInt()),
+            onTap = { sendIntent(CustomizationIntent.ShowItemsPerRowDialog) }
         )
 
     }

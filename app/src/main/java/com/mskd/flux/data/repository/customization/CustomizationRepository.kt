@@ -27,11 +27,14 @@ interface CustomizationRepository {
 
     suspend fun setLargeEpisodeImage(large: Boolean)
 
+    suspend fun setItemsPerRow(count: Float)
+
     data class State(
         val uiTheme: Ui.THEME = Ui.THEME.SYSTEM,
         val color: Int? = null,
         val waveProgress: Boolean = true,
-        val largeEpisodeImage: Boolean = false
+        val largeEpisodeImage: Boolean = false,
+        val itemsPerRow: Float = 3f
     )
 
 }

@@ -190,7 +190,7 @@ fun SettingsOtherSection(
             onTap = {
                 WebLink.openPage(
                     context = context,
-                    url = Constants.CONTACT.BUY_COFFEE
+                    url = Constants.CONTACT.SPONSOR
                 )
             }
         )

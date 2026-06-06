@@ -33,6 +33,7 @@ object Constants {
         const val RELEASES = "https://github.com/the-mskd-dev/Flux/releases"
         const val ISSUES = "https://github.com/the-mskd-dev/Flux/issues"
         const val BUY_COFFEE = "https://buymeacoffee.com/the.masked.dev"
+        const val SPONSOR = "https://github.com/sponsors/the-mskd-dev/"
     }
 
     object PLAYER {

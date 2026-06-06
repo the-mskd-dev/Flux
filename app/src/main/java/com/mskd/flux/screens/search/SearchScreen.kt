@@ -55,6 +55,7 @@ import com.mskd.flux.ui.component.media.MediaItem
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.FluxPreview
+import com.mskd.flux.utils.Screen
 
 @Composable
 fun SearchScreen(
@@ -93,6 +94,8 @@ fun SearchContent(
 
     val focusRequester = remember { FocusRequester() }
     var focusRequested by rememberSaveable { mutableStateOf(false) }
+    val isLargeScreen = Screen.isLargeScreen()
+    val columns = if (isLargeScreen) 5 else 3
 
     LaunchedEffect(Unit) {
         if (state.autoKeyboard && !focusRequested) {
@@ -110,17 +113,17 @@ fun SearchContent(
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background),
-            columns = GridCells.Fixed(3),
+            columns = GridCells.Fixed(columns),
             horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL),
             verticalArrangement = Arrangement.spacedBy(Ui.Space.SMALL),
             contentPadding = PaddingValues(horizontal = Ui.Space.MEDIUM)
         ) {
 
-            item(span = { GridItemSpan(3) }) {
+            item(span = { GridItemSpan(maxLineSpan) }) {
                 Spacer(modifier = Modifier.height(innerPadding.calculateTopPadding()))
             }
 
-            item(span = { GridItemSpan(3) }) {
+            item(span = { GridItemSpan(maxLineSpan) }) {
 
                 TextField(
                     modifier = Modifier
@@ -149,7 +152,7 @@ fun SearchContent(
 
             }
 
-            item(span = { GridItemSpan(3) }) {
+            item(span = { GridItemSpan(maxLineSpan) }) {
 
                 SearchTypeFilters(
                     selectedType = state.contentType,
@@ -185,7 +188,7 @@ fun SearchContent(
 
             }
 
-            item(span = { GridItemSpan(3) }) {
+            item(span = { GridItemSpan(maxLineSpan) }) {
                 Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding()))
             }
 

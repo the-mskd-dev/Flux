@@ -44,6 +44,7 @@ import com.mskd.flux.ui.component.global.FluxDropDownMenu
 import com.mskd.flux.ui.component.global.FluxDropDownMenuItem
 import com.mskd.flux.ui.component.global.FluxScaffold
 import com.mskd.flux.ui.component.global.ResetProgressDialog
+import com.mskd.flux.utils.Screen
 import com.mskd.flux.utils.WebLink
 
 @Composable
@@ -108,8 +109,7 @@ fun ShowScreenContent(
     sendIntent: (ShowIntent) -> Unit
 ) {
 
-    val windowSizeClass = currentWindowAdaptiveInfoV2().windowSizeClass
-    val isLargeScreen = windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND)
+    val isLargeScreen = Screen.isLargeScreen()
 
     var showMenu by remember { mutableStateOf(false) }
 

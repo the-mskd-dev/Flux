@@ -144,7 +144,7 @@ fun EpisodeItemLarge(
                 emphasized = true
             )
 
-            MediaDetailsHorizontal(media = episode, showRating = false)
+            MediaDetailsHorizontal(media = episode)
 
             Text.Body.Medium(
                 modifier = Modifier
@@ -245,7 +245,7 @@ fun EpisodeItemSmall(
                     emphasized = true
                 )
 
-                MediaDetailsVertical(media = episode, showRating = false)
+                MediaDetailsVertical(media = episode)
 
             }
 

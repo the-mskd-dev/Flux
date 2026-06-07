@@ -36,7 +36,7 @@ fun ArtworkDescriptionsPager(
 
     val pageCount = when (fullArtwork) {
         is FullArtwork.FullMovie -> 1
-        is FullArtwork.FullShow -> if (fullArtwork.seasonIsWatching(season = season ?: -1)) 2 else 1
+        is FullArtwork.FullShow -> if (fullArtwork.isWatching(forSeason = season)) 2 else 1
     }
 
     var currentPage by remember { mutableIntStateOf(0) }

@@ -34,21 +34,16 @@ sealed class FullArtwork {
         }
     }
 
-    val isWatching: Boolean get() = when (this) {
-        is FullMovie -> this.movie.status == Status.IS_WATCHING
-        is FullShow -> !(this.episodes.all { it.status == Status.TO_WATCH } || this.episodes.all { it.status == Status.WATCHED })
-    }
-
     val contentType: ContentType get() = when (this) {
         is FullMovie -> ContentType.MOVIE
         is FullShow -> ContentType.SHOW
     }
 
-    fun seasonIsWatching(season: Int) : Boolean {
+    fun isWatching(forSeason: Int?) : Boolean {
         return when (this) {
-            is FullMovie -> false
+            is FullMovie -> this.movie.status == Status.IS_WATCHING
             is FullShow -> {
-                val filterEpisodes = this.episodes.filter { it.season == season }
+                val filterEpisodes = this.episodes.filter { it.season == forSeason || forSeason == null }
                 filterEpisodes.any { it.status == Status.IS_WATCHING }
             }
         }

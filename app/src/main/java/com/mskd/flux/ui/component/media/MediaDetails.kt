@@ -16,6 +16,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.R
 import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.model.artwork.Artwork
+import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.AppTheme
@@ -34,27 +36,7 @@ fun MediaDetailsHorizontal(media: Media) {
         horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)
     ) {
 
-        media.releaseDate?.let {
-
-            MediaDetailItem(
-                painter = painterResource(R.drawable.ic_date),
-                text = it.formattedText,
-                contentDescription = "release date icon"
-            )
-
-        }
-
-        MediaDetailItem(
-            painter = painterResource(R.drawable.ic_time),
-            text = media.duration.minToMs.timeDescription(),
-            contentDescription = "duration icon"
-        )
-
-        MediaDetailItem(
-            painter = painterResource(R.drawable.ic_rating),
-            text = "${media.voteAverage.toRating}/10",
-            contentDescription = "rating icon"
-        )
+        MediaDetailsItems(media = media)
 
     }
 
@@ -65,21 +47,34 @@ fun MediaDetailsVertical(media: Media) {
 
     Column {
 
-        media.releaseDate?.let {
+        MediaDetailsItems(media = media)
 
-            MediaDetailItem(
-                painter = painterResource(R.drawable.ic_date),
-                text = it.formattedText,
-                contentDescription = "release date icon"
-            )
+    }
 
-        }
+}
+
+@Composable
+
+fun MediaDetailsItems(media: Media) {
+
+    media.releaseDate?.let {
 
         MediaDetailItem(
-            painter = painterResource(R.drawable.ic_time),
-            text = media.duration.minToMs.timeDescription(),
-            contentDescription = "duration icon"
+            painter = painterResource(R.drawable.ic_date),
+            text = it.formattedText,
+            contentDescription = "release date icon"
         )
+
+    }
+
+    MediaDetailItem(
+        painter = painterResource(R.drawable.ic_time),
+        text = media.duration.minToMs.timeDescription(),
+        contentDescription = "duration icon"
+    )
+
+
+    if (media.artworkId != Artwork.UNKNOWN_ID) {
 
         MediaDetailItem(
             painter = painterResource(R.drawable.ic_rating),

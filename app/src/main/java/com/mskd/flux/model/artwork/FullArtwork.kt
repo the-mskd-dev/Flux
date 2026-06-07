@@ -43,8 +43,8 @@ sealed class FullArtwork {
         return when (this) {
             is FullMovie -> this.movie.status == Status.IS_WATCHING
             is FullShow -> {
-                val filterEpisodes = this.episodes.filter { it.season == forSeason || forSeason == null }
-                filterEpisodes.any { it.status == Status.IS_WATCHING }
+                val filteredEpisodes = this.episodes.filter { it.season == forSeason || forSeason == null }
+                !(filteredEpisodes.all { it.status == Status.TO_WATCH } || filteredEpisodes.all { it.status == Status.WATCHED })
             }
         }
     }

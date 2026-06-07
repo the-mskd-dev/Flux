@@ -1,0 +1,6 @@
+- Feature: Selection du nombre d'item par ligne
+- UI: Ajout des notes pour les épisodes
+- UI: Ratio identique pour tous les items
+- Fix: Flash sur le splashscreen pour les appareils en dessous d'Android 12
+- Fix: Correction de l'affichage progression par saison
+- Autre: Bouton GitHub Sponsor dans le README

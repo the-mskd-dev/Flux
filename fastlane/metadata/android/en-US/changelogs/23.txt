@@ -1,8 +1,6 @@
-## Version 1.4.2
-
 - Feature: Select number of items per row
 - UI: Add rating for episodes
 - UI: Consistent ratio for posters
 - Fix: Blank splashscreen for devices with < Android 12
-- Fix: Progress resume for seasons
+- Fix: Correct progress for seasons
 - Other: Button GitHub Sponsor in README

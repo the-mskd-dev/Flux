@@ -105,6 +105,7 @@ fun ArtworkContentLarge(
 
                 ArtworkDescriptionsPager(
                     fullArtwork = fullArtwork,
+                    season = selectedSeason,
                     currentMedia = selectedMedia
                 )
 

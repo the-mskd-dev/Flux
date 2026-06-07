@@ -1,9 +1,14 @@
 package com.mskd.flux.screens.artwork.composables.common
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
@@ -13,6 +18,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
 import com.mskd.flux.R
 import com.mskd.flux.mockups.MediaMockups
@@ -26,16 +32,18 @@ import com.mskd.flux.ui.component.media.OverviewItem
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.FluxPreview
+import com.mskd.flux.utils.extensions.clickableWithBounce
 
 @Composable
 fun ArtworkDescriptionsPager(
     fullArtwork: FullArtwork,
+    season: Int? = null,
     currentMedia: Media
 ) {
 
     val pageCount = when (fullArtwork) {
         is FullArtwork.FullMovie -> 1
-        is FullArtwork.FullShow -> if (fullArtwork.isWatching) 2 else 1
+        is FullArtwork.FullShow -> if (fullArtwork.isWatching(forSeason = season)) 2 else 1
     }
 
     var currentPage by remember { mutableIntStateOf(0) }
@@ -52,14 +60,15 @@ fun ArtworkDescriptionsPager(
     ) { i ->
 
         Card(
-            modifier = Modifier.padding(horizontal = Ui.Space.MEDIUM),
-            shape = MaterialTheme.shapes.large,
-            onClick = {
-                when {
-                    currentPage < pageCount - 1 -> currentPage++
-                    currentPage > 0 -> currentPage--
-                }
-            }
+            modifier = Modifier
+                .padding(horizontal = Ui.Space.MEDIUM)
+                .clickableWithBounce {
+                    when {
+                        currentPage < pageCount - 1 -> currentPage++
+                        currentPage > 0 -> currentPage--
+                    }
+                },
+            shape = MaterialTheme.shapes.large
         ) {
 
             when (fullArtwork) {

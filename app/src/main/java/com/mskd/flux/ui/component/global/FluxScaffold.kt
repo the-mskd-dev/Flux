@@ -25,7 +25,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextOverflow
 import com.mskd.flux.ui.theme.Ui
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FluxScaffold(
     modifier: Modifier = Modifier,
@@ -68,6 +68,7 @@ fun FluxScaffold(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FluxTopAppBar(
     modifier: Modifier = Modifier,

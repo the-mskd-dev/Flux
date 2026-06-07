@@ -1,8 +1,10 @@
 package com.mskd.flux.ui.component.global
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -16,6 +18,7 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -23,17 +26,21 @@ import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.R
@@ -244,20 +251,22 @@ fun ReadMoreButton(
     onTap: () -> Unit
 ) {
 
-    TextButton(
-        modifier = modifier,
+    val degrees by animateFloatAsState(if (isExpanded) 180f else 0f)
+
+    IconButton(
+        modifier = modifier.rotate(degrees),
         onClick = onTap
     ) {
-        AnimatedContent(targetState = isExpanded) { expanded ->
-            Text.Label.Large(
-                text = stringResource(if (expanded) R.string.read_less else R.string.read_more)
-            )
-        }
+        Icon(
+            painter = painterResource(R.drawable.ic_arrow_down),
+            tint = MaterialTheme.colorScheme.primary,
+            contentDescription = stringResource(if (isExpanded) R.string.read_less else R.string.read_more)
+        )
     }
 
 }
 
-@FluxPreview
+@Preview
 @Composable
 fun CountDownButton_Preview() {
     AppTheme {
@@ -269,6 +278,28 @@ fun CountDownButton_Preview() {
             CountDownButton(
                 onTap = {  },
                 text = { stringResource(R.string.next_episode, it) }
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+fun ReadMoreButton_Preview() {
+    AppTheme {
+        Column(
+            modifier = Modifier
+                .background(MaterialTheme.colorScheme.background)
+                .padding(Ui.Space.LARGE),
+            verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE)
+        ) {
+            ReadMoreButton(
+                onTap = {  },
+                isExpanded = true
+            )
+            ReadMoreButton(
+                onTap = {  },
+                isExpanded = false
             )
         }
     }

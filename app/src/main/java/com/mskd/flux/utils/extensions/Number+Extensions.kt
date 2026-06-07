@@ -38,4 +38,4 @@ fun Long.formatMinSec(): String {
 val Long.msToMin : Long get() = this.milliseconds.inWholeMinutes
 val Int.minToMs : Long get() = this.minutes.inWholeMilliseconds
 
-val Float.toRating : String get() = "%.2f".format(this).trimEnd('0').trimEnd('.')
+val Float.toRating : String get() = if (this <= 0f) "-" else "%.2f".format(this).trimEnd('0').trimEnd('.')

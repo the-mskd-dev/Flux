@@ -403,11 +403,11 @@ fun LastWatchedCarousel(
             MediaItem(
                 modifier = Modifier
                     .widthIn(max = 350.dp)
-                    .fillMaxSize()
-                    .aspectRatio(ratio),
+                    .fillMaxSize(),
                 path = path,
                 hd = true,
                 shape = MaterialTheme.shapes.extraLarge,
+                ratio = ratio,
                 onTap = { rgb -> sendIntent(HomeIntent.OnArtworkTap(artwork = overview, rgb = rgb)) },
                 description = overview.title
             )
@@ -434,6 +434,7 @@ fun LastWatchedCarousel(
                             .aspectRatio(ratio),
                         path = path,
                         hd = true,
+                        ratio = ratio,
                         shape = MaterialTheme.shapes.extraLarge,
                         onTap = { rgb ->
 

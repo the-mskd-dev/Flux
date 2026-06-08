@@ -27,6 +27,7 @@ fun ArtworkHeader(
     fullArtwork: FullArtwork,
     title: String,
     currentMedia: Media,
+    selectedSeason: Int?,
     sendIntent: (ArtworkIntent) -> Unit
 ) {
 
@@ -51,6 +52,19 @@ fun ArtworkHeader(
             fullArtwork = fullArtwork,
             currentMedia = currentMedia,
         )
+
+        /*ArtworkImageBlurred(
+            modifier = Modifier
+                .constrainAs(image) {
+                    top.linkTo(parent.top)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                    width = Dimension.fillToConstraints
+                }
+                .aspectRatio(Ui.Images.RATIO_6_5),
+            fullArtwork = fullArtwork,
+            selectedSeason = selectedSeason
+        )*/
 
         if (isMovie) {
             Text.Display.Small(
@@ -97,6 +111,7 @@ fun ArtworkHeader_Preview() {
                 fullArtwork = MediaMockups.fullShow,
                 currentMedia = MediaMockups.episode1,
                 title = MediaMockups.fullShow.artwork.title,
+                selectedSeason = 1,
                 sendIntent = {}
             )
 

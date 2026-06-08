@@ -52,6 +52,7 @@ fun ArtworkContentRegular(
                 modifier = Modifier.fillMaxWidth(),
                 fullArtwork = fullArtwork,
                 currentMedia = selectedMedia,
+                selectedSeason = selectedSeason,
                 title = fullArtwork.artwork.title,
                 sendIntent = sendIntent
             )

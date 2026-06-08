@@ -127,9 +127,7 @@ fun ShowContentLarge(
                 ) {
 
                     SeasonItem(
-                        modifier = Modifier
-                            .width(Ui.Dimension.ITEM_WIDTH)
-                            .aspectRatio(Ui.Dimension.ITEM_RATIO),
+                        modifier = Modifier.width(Ui.Dimension.ITEM_WIDTH),
                         season = season,
                         episodes = fullShow.episodes.filter { it.season == season.season },
                         onTap = { sendIntent(ShowIntent.OnSeasonTap(season = season.season, rgb = it))},

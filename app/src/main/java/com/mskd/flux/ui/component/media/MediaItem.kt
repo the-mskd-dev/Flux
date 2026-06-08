@@ -15,12 +15,14 @@ import androidx.palette.graphics.Palette
 import coil3.toBitmap
 import com.mskd.flux.ui.component.global.FluxImage
 import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.utils.extensions.clickableWithBounce
 
 @Composable
 fun MediaItem(
     modifier: Modifier,
     path: String,
     hd: Boolean,
+    ratio: Float = Ui.Dimension.ITEM_RATIO,
     shape: Shape = MaterialTheme.shapes.small,
     onTap: (Int?) -> Unit,
     description: String
@@ -32,8 +34,8 @@ fun MediaItem(
         modifier = Modifier
             .clip(shape)
             .then(modifier)
-            .aspectRatio(Ui.Dimension.ITEM_RATIO)
-            .clickable { onTap(seedRgb) },
+            .aspectRatio(ratio)
+            .clickableWithBounce { onTap(seedRgb) },
         path = path,
         hd = hd,
         contentDescription = description,

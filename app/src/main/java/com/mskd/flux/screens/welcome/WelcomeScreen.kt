@@ -151,7 +151,7 @@ fun WelcomePager(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = Ui.Space.MEDIUM)
+                .padding(horizontal = Ui.Space.medium)
                 .graphicsLayer {
                     val pageOffset = (
                             (pagerState.currentPage - index) + pagerState
@@ -170,7 +170,7 @@ fun WelcomePager(
 
             Column(
                 horizontalAlignment = Alignment.Start,
-                verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE)
+                verticalArrangement = Arrangement.spacedBy(Ui.Space.large)
             ) {
 
                 Text.Headline.Large(
@@ -345,9 +345,9 @@ val WelcomeScreenConstraintSet = ConstraintSet {
     }
 
     constrain(buttons) {
-        bottom.linkTo(parent.bottom, Ui.Space.MEDIUM)
-        start.linkTo(parent.start, Ui.Space.MEDIUM)
-        end.linkTo(parent.end, Ui.Space.MEDIUM)
+        bottom.linkTo(parent.bottom, Ui.Space.medium)
+        start.linkTo(parent.start, Ui.Space.medium)
+        end.linkTo(parent.end, Ui.Space.medium)
         width = Dimension.fillToConstraints
     }
 

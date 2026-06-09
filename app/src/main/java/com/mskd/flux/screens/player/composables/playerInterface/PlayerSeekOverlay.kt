@@ -58,8 +58,8 @@ fun PlayerSeekOverlay(
             label = "Visibility left seek overlay"
         ) {
             Row(
-                modifier = Modifier.padding(horizontal = Ui.Space.LARGE),
-                horizontalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM),
+                modifier = Modifier.padding(horizontal = Ui.Space.large),
+                horizontalArrangement = Arrangement.spacedBy(Ui.Space.medium),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 PlayerSeekOverlayIcon(
@@ -85,8 +85,8 @@ fun PlayerSeekOverlay(
             label = "Visibility right seek overlay"
         ) {
             Row(
-                modifier = Modifier.padding(horizontal = Ui.Space.LARGE),
-                horizontalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM),
+                modifier = Modifier.padding(horizontal = Ui.Space.large),
+                horizontalArrangement = Arrangement.spacedBy(Ui.Space.medium),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 PlayerSeekOverlayText(amount = overlay?.amount?.let { "+$it" })
@@ -149,7 +149,7 @@ fun PlayerSeekOverlayText(amount: String?) {
         targetState = amount,
         label = "SeekOverlayText change"
     ) { text ->
-        Box(modifier = Modifier.padding(all = Ui.Space.SMALL)) {
+        Box(modifier = Modifier.padding(all = Ui.Space.small)) {
             Text.Adaptive(
                 text = text,
                 style = MaterialTheme.typography.headlineSmall.copy(

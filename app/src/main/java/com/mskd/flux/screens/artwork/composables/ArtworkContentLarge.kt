@@ -72,7 +72,7 @@ fun ArtworkContentLarge(
 
                 Text.Display.Small(
                     modifier = Modifier
-                        .padding(Ui.Space.MEDIUM)
+                        .padding(Ui.Space.medium)
                         .wrapContentWidth(),
                     text = when (fullArtwork) {
                         is FullArtwork.FullMovie -> fullArtwork.artwork.title
@@ -85,7 +85,7 @@ fun ArtworkContentLarge(
             }
 
             item {
-                Spacer(modifier = Modifier.height(Ui.Space.LARGE))
+                Spacer(modifier = Modifier.height(Ui.Space.large))
             }
 
             item {
@@ -98,7 +98,7 @@ fun ArtworkContentLarge(
             }
 
             item {
-                Spacer(modifier = Modifier.height(Ui.Space.LARGE))
+                Spacer(modifier = Modifier.height(Ui.Space.large))
             }
 
             item {
@@ -112,7 +112,7 @@ fun ArtworkContentLarge(
             }
 
             item {
-                Spacer(modifier = Modifier.height(Ui.Space.LARGE))
+                Spacer(modifier = Modifier.height(Ui.Space.large))
             }
 
             (fullArtwork as? FullArtwork.FullShow)?.let { show ->
@@ -123,12 +123,12 @@ fun ArtworkContentLarge(
 
                     item {
 
-                        Column(verticalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)) {
+                        Column(verticalArrangement = Arrangement.spacedBy(Ui.Space.small)) {
 
                             Text.Title.Large(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(horizontal = Ui.Space.MEDIUM),
+                                    .padding(horizontal = Ui.Space.medium),
                                 text = stringResource(R.string.episodes),
                                 emphasized = true,
                                 color = MaterialTheme.colorScheme.onPrimaryContainer
@@ -139,7 +139,7 @@ fun ArtworkContentLarge(
                     }
 
                     item {
-                        Spacer(modifier = Modifier.height(Ui.Space.MEDIUM))
+                        Spacer(modifier = Modifier.height(Ui.Space.medium))
                     }
 
                     items(
@@ -169,7 +169,7 @@ fun ArtworkContentLarge(
                             }
                         )
 
-                        Spacer(modifier = Modifier.height(Ui.Space.SMALL))
+                        Spacer(modifier = Modifier.height(Ui.Space.small))
 
                     }
 

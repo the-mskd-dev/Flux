@@ -77,7 +77,7 @@ fun PlayerTracksSheet(
                         Text.Headline.Small(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(top = Ui.Space.LARGE, start = Ui.Space.MEDIUM, end = Ui.Space.MEDIUM, bottom = Ui.Space.MEDIUM),
+                                .padding(top = Ui.Space.large, start = Ui.Space.medium, end = Ui.Space.medium, bottom = Ui.Space.medium),
                             text = title,
                         )
 
@@ -90,7 +90,7 @@ fun PlayerTracksSheet(
                 itemsIndexed(tracks.filter { it.type == type }) { index, track ->
 
                     if (index != 0)
-                        HorizontalDivider(modifier = Modifier.fillMaxWidth().padding(horizontal = Ui.Space.MEDIUM))
+                        HorizontalDivider(modifier = Modifier.fillMaxWidth().padding(horizontal = Ui.Space.medium))
 
                     Row(
                         modifier = Modifier
@@ -99,7 +99,7 @@ fun PlayerTracksSheet(
                                 sendIntent(PlayerIntent.SelectTrack(track = track))
                                 sendIntent(PlayerIntent.ShowSettings(sheet = null))
                             }
-                            .padding(horizontal = Ui.Space.MEDIUM, vertical = Ui.Space.MEDIUM),
+                            .padding(horizontal = Ui.Space.medium, vertical = Ui.Space.medium),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {

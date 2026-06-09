@@ -55,7 +55,7 @@ fun ArtworkDescriptionsPager(
 
         Card(
             modifier = Modifier
-                .padding(horizontal = Ui.Space.MEDIUM)
+                .padding(horizontal = Ui.Space.medium)
                 .then(
             if (pageCount > 1) {
                         Modifier.clickableWithBounce {

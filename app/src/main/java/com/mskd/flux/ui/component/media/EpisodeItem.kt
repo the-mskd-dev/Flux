@@ -101,7 +101,7 @@ fun EpisodeItemLarge(
 
     Column(
         modifier = modifier
-            .padding(horizontal = Ui.Space.MEDIUM)
+            .padding(horizontal = Ui.Space.medium)
             .clip(MaterialTheme.shapes.large)
             .background(bgColor)
             .combinedClickable(
@@ -117,7 +117,7 @@ fun EpisodeItemLarge(
                 ) else Modifier
             )
             .fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(Ui.Space.SMALL),
+        verticalArrangement = Arrangement.spacedBy(Ui.Space.small),
     ) {
 
         MediaThumbnail(
@@ -129,8 +129,8 @@ fun EpisodeItemLarge(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(Ui.Space.MEDIUM),
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.SMALL),
+                .padding(Ui.Space.medium),
+            verticalArrangement = Arrangement.spacedBy(Ui.Space.small),
             horizontalAlignment = Alignment.Start
         ) {
 
@@ -197,7 +197,7 @@ fun EpisodeItemSmall(
 
     Column(
         modifier = modifier
-            .padding(horizontal = Ui.Space.MEDIUM)
+            .padding(horizontal = Ui.Space.medium)
             .clip(MaterialTheme.shapes.large)
             .background(bgColor)
             .combinedClickable(
@@ -213,13 +213,13 @@ fun EpisodeItemSmall(
                 ) else Modifier
             )
             .fillMaxWidth()
-            .padding(Ui.Space.MEDIUM),
-        verticalArrangement = Arrangement.spacedBy(Ui.Space.SMALL),
+            .padding(Ui.Space.medium),
+        verticalArrangement = Arrangement.spacedBy(Ui.Space.small),
     ) {
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)
+            horizontalArrangement = Arrangement.spacedBy(Ui.Space.small)
         ) {
 
             MediaThumbnail(
@@ -231,7 +231,7 @@ fun EpisodeItemSmall(
 
             Column(
                 modifier = Modifier.weight(.6f),
-                verticalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL),
+                verticalArrangement = Arrangement.spacedBy(Ui.Space.extraSmall),
                 horizontalAlignment = Alignment.Start
             ) {
 
@@ -343,7 +343,7 @@ fun EpisodeItem_Preview() {
     AppThemePreview {
         Column(
             modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
+            verticalArrangement = Arrangement.spacedBy(Ui.Space.medium)
         ) {
             EpisodeItemLarge(
                 episode = MediaMockups.episode1,
@@ -369,7 +369,7 @@ fun EpisodeItemWatching_Preview() {
     AppThemePreview {
         Column(
             modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
+            verticalArrangement = Arrangement.spacedBy(Ui.Space.medium)
         ) {
             EpisodeItemLarge(
                 episode = MediaMockups.episode1.copy(
@@ -401,7 +401,7 @@ fun EpisodeItemWatched_Preview() {
     AppThemePreview {
         Column(
             modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
+            verticalArrangement = Arrangement.spacedBy(Ui.Space.medium)
         ) {
             EpisodeItemLarge(
                 episode = MediaMockups.episode1.copy(

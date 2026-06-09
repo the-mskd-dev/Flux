@@ -38,7 +38,7 @@ fun HowToScreen(onBack: () -> Unit) {
                 .background(MaterialTheme.colorScheme.background)
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE),
+            verticalArrangement = Arrangement.spacedBy(Ui.Space.large),
             horizontalAlignment = Alignment.Start
         ) {
 
@@ -47,8 +47,8 @@ fun HowToScreen(onBack: () -> Unit) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = Ui.Space.MEDIUM),
-                verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE),
+                    .padding(horizontal = Ui.Space.medium),
+                verticalArrangement = Arrangement.spacedBy(Ui.Space.large),
                 horizontalAlignment = Alignment.Start
             ) {
 
@@ -71,18 +71,18 @@ fun HowToNameFiles() {
 
     Column(
         modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE),
+        verticalArrangement = Arrangement.spacedBy(Ui.Space.large),
         horizontalAlignment = Alignment.Start
     ) {
 
-        Column(verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)) {
+        Column(verticalArrangement = Arrangement.spacedBy(Ui.Space.medium)) {
 
             Text.Title.Large(text = stringResource(R.string.movies), emphasized = true)
             Text.Body.Large(text = stringResource(R.string.how_to_name_files_movies_desc))
 
             Column(
                 modifier = Modifier.alpha(.7f),
-                verticalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)
+                verticalArrangement = Arrangement.spacedBy(Ui.Space.extraSmall)
             ) {
                 Text.Body.Medium(text = "• " + stringResource(R.string.movie_file_example_1))
                 Text.Body.Medium(text = "• " + stringResource(R.string.movie_file_example_2))
@@ -92,14 +92,14 @@ fun HowToNameFiles() {
 
         }
 
-        Column(verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)) {
+        Column(verticalArrangement = Arrangement.spacedBy(Ui.Space.medium)) {
 
             Text.Title.Large(text = stringResource(R.string.shows), emphasized = true)
             Text.Body.Large(text = stringResource(R.string.how_to_name_files_show_desc))
 
             Column(
                 modifier = Modifier.alpha(.7f),
-                verticalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)
+                verticalArrangement = Arrangement.spacedBy(Ui.Space.extraSmall)
             ) {
                 Text.Body.Medium(text = "• " + stringResource(R.string.show_file_example_1))
                 Text.Body.Medium(text = "• " + stringResource(R.string.show_file_example_2))

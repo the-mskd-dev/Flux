@@ -29,7 +29,7 @@ fun MediaThumbnail(
     }
 
     Box(
-        modifier = modifier.aspectRatio(Ui.Images.RATIO_16_9),
+        modifier = modifier.aspectRatio(Ui.Images.ratio_16_9),
         contentAlignment = Alignment.BottomCenter,
         content = {
 

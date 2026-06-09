@@ -19,15 +19,15 @@ import com.mskd.flux.R
 object Ui {
 
     object Dimension {
-        val ItemWidth = 140.dp
-        val ItemRatio = 2f/3f
+        val itemWidth = 140.dp
+        val itemRatio = 2f/3f
     }
 
     object Space {
-        val EXTRA_SMALL = 4.dp
-        val SMALL = 8.dp
-        val MEDIUM = 16.dp
-        val LARGE = 24.dp
+        val extraSmall = 4.dp
+        val small = 8.dp
+        val medium = 16.dp
+        val large = 24.dp
     }
 
     object Shape {
@@ -35,29 +35,29 @@ object Ui {
         @OptIn(ExperimentalMaterial3ExpressiveApi::class)
         object Corner {
 
-            val ExtraSmall @Composable get() = MaterialTheme.shapes.extraSmall
-            val Small @Composable get() = MaterialTheme.shapes.small
-            val Medium @Composable get() = MaterialTheme.shapes.medium
-            val Large @Composable get() = MaterialTheme.shapes.large
-            val LargeIncreased @Composable get() = MaterialTheme.shapes.largeIncreased
-            val ExtraLarge @Composable get() = MaterialTheme.shapes.extraLarge
-            val ExtraLargeIncreased @Composable get() = MaterialTheme.shapes.extraLargeIncreased
-            val ExtraExtraLarge @Composable get() = MaterialTheme.shapes.extraExtraLarge
-            val Full @Composable get() = CircleShape
+            val extraSmall @Composable get() = MaterialTheme.shapes.extraSmall
+            val small @Composable get() = MaterialTheme.shapes.small
+            val medium @Composable get() = MaterialTheme.shapes.medium
+            val large @Composable get() = MaterialTheme.shapes.large
+            val largeIncreased @Composable get() = MaterialTheme.shapes.largeIncreased
+            val extraLarge @Composable get() = MaterialTheme.shapes.extraLarge
+            val extraLargeIncreased @Composable get() = MaterialTheme.shapes.extraLargeIncreased
+            val extraExtraLarge @Composable get() = MaterialTheme.shapes.extraExtraLarge
+            val full @Composable get() = CircleShape
 
         }
 
-        val ItemCard @Composable get() = MaterialTheme.shapes.large
+        val itemCard @Composable get() = MaterialTheme.shapes.large
 
     }
 
     object Images {
 
-        const val RATIO_1_1 = 1f
-        const val RATIO_2_3 = 2f/3f
-        const val RATIO_6_5 = 6f/5f
-        const val RATIO_5_6 = 5f/6f
-        const val RATIO_16_9 = 16f/9f
+        const val ratio_1_1 = 1f
+        const val ratio_2_3 = 2f/3f
+        const val ratio_6_5 = 6f/5f
+        const val ratio_5_6 = 5f/6f
+        const val ratio_16_9 = 16f/9f
 
     }
 
@@ -70,12 +70,12 @@ object Ui {
      * - **Level 5** : modals and navigation drawers.
      */
     object Elevation {
-        val Level0 = 0.0.dp
-        val Level1 = 1.0.dp
-        val Level2 = 3.0.dp
-        val Level3 = 6.0.dp
-        val Level4 = 8.0.dp
-        val Level5 = 12.0.dp
+        val level0 = 0.0.dp
+        val level1 = 1.0.dp
+        val level2 = 3.0.dp
+        val level3 = 6.0.dp
+        val level4 = 8.0.dp
+        val level5 = 12.0.dp
     }
 
     object Card {

@@ -273,7 +273,7 @@ fun PlayerContent(
         PlayerSubtitles(
             modifier = Modifier
                 .layoutId("subtitles")
-                .padding(bottom = Ui.Space.LARGE),
+                .padding(bottom = Ui.Space.large),
             subtitles = { tracksState().subtitles },
             smallText = isPortrait
         )

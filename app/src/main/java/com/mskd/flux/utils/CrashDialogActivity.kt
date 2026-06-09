@@ -92,7 +92,7 @@ fun CrashDialogContent(
 
             Column(
                 modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
+                verticalArrangement = Arrangement.spacedBy(Ui.Space.medium)
             ) {
 
                 Text.Body.Large(stringResource(R.string.acra_dialog_message))

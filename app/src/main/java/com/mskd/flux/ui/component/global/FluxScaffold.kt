@@ -84,7 +84,7 @@ fun FluxTopAppBar(
 
             Text.Adaptive(
                 modifier = Modifier
-                    .padding(vertical = Ui.Space.EXTRA_SMALL)
+                    .padding(vertical = Ui.Space.extraSmall)
                     .then(modifier),
                 text = title,
                 overflow = TextOverflow.Ellipsis,

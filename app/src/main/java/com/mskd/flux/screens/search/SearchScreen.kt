@@ -120,9 +120,9 @@ fun SearchContent(
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background),
             columns = GridCells.Fixed(columns),
-            horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL),
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.SMALL),
-            contentPadding = PaddingValues(horizontal = Ui.Space.MEDIUM)
+            horizontalArrangement = Arrangement.spacedBy(Ui.Space.small),
+            verticalArrangement = Arrangement.spacedBy(Ui.Space.small),
+            contentPadding = PaddingValues(horizontal = Ui.Space.medium)
         ) {
 
             item(span = { GridItemSpan(maxLineSpan) }) {
@@ -182,7 +182,7 @@ fun SearchContent(
                     MediaItem(
                         modifier = Modifier
                             .width(itemWidth)
-                            .aspectRatio(Ui.Dimension.ItemRatio),
+                            .aspectRatio(Ui.Dimension.itemRatio),
                         path = artwork.imagePath,
                         hd = false,
                         description = artwork.title,
@@ -212,7 +212,7 @@ fun SearchTypeFilters(
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)
+        horizontalArrangement = Arrangement.spacedBy(Ui.Space.small)
     ) {
 
         FilterChip(

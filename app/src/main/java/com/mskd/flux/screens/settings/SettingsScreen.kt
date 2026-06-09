@@ -122,7 +122,7 @@ fun SettingsContent(
                 .background(MaterialTheme.colorScheme.surfaceContainer)
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
+            verticalArrangement = Arrangement.spacedBy(Ui.Space.medium)
         ) {
 
             Spacer(modifier = Modifier.height(innerPadding.calculateTopPadding()))
@@ -174,9 +174,9 @@ fun SettingIcon(
 
     Icon(
         modifier = Modifier
-            .clip(Ui.Shape.Corner.Full)
+            .clip(Ui.Shape.Corner.full)
             .background(backgroundColor)
-            .padding(all = Ui.Space.SMALL),
+            .padding(all = Ui.Space.small),
         painter = painter,
         tint = iconColor,
         contentDescription = contentDescription

@@ -36,9 +36,9 @@ fun SettingsSwitch(
             .clickable { onCheckedChange(!checked) }
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.background)
-            .padding(all = Ui.Space.MEDIUM),
+            .padding(all = Ui.Space.medium),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM),
+        horizontalArrangement = Arrangement.spacedBy(Ui.Space.medium),
     ) {
 
         painter?.let {
@@ -53,9 +53,9 @@ fun SettingsSwitch(
         Column(
             modifier = Modifier
                 .weight(1f)
-                .padding(end = Ui.Space.MEDIUM),
+                .padding(end = Ui.Space.medium),
             horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)
+            verticalArrangement = Arrangement.spacedBy(Ui.Space.extraSmall)
         ) {
 
             Text.Title.Medium(

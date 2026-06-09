@@ -35,8 +35,8 @@ fun SettingsItem(
             .clickable { onTap() }
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.background)
-            .padding(all = Ui.Space.MEDIUM),
-        horizontalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM),
+            .padding(all = Ui.Space.medium),
+        horizontalArrangement = Arrangement.spacedBy(Ui.Space.medium),
         verticalAlignment = Alignment.CenterVertically
     ) {
 
@@ -51,7 +51,7 @@ fun SettingsItem(
 
         Column(
             modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)
+            verticalArrangement = Arrangement.spacedBy(Ui.Space.extraSmall)
         ) {
 
             Text.Title.Medium(

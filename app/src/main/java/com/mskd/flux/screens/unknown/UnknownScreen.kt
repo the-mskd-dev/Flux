@@ -130,8 +130,8 @@ fun UnknownScreenContent(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(MaterialTheme.colorScheme.background),
-                contentPadding = PaddingValues(horizontal = Ui.Space.MEDIUM),
-                verticalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)
+                contentPadding = PaddingValues(horizontal = Ui.Space.medium),
+                verticalArrangement = Arrangement.spacedBy(Ui.Space.small)
             ) {
 
                 item {

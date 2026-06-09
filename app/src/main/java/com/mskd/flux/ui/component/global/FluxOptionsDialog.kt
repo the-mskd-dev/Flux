@@ -39,7 +39,7 @@ fun <T, R> FluxOptionsDialog(
                 modifier = Modifier
                     .verticalScroll(rememberScrollState())
                     .fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
+                verticalArrangement = Arrangement.spacedBy(Ui.Space.medium)
             ) {
 
                 state.options.forEach { option ->
@@ -49,7 +49,7 @@ fun <T, R> FluxOptionsDialog(
                             .clickable { selectedValue = option.value  }
                             .fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)
+                        horizontalArrangement = Arrangement.spacedBy(Ui.Space.extraSmall)
                     ) {
 
                         RadioButton(
@@ -59,7 +59,7 @@ fun <T, R> FluxOptionsDialog(
 
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)
+                            horizontalArrangement = Arrangement.spacedBy(Ui.Space.small)
                         ) {
 
                             option.left?.invoke()

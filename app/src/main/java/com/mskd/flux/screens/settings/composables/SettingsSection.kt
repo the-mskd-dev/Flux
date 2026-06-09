@@ -35,7 +35,7 @@ fun SettingsSection(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = Ui.Space.LARGE)
+            .padding(horizontal = Ui.Space.large)
             .clip(MaterialTheme.shapes.medium),
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.spacedBy(2.dp)

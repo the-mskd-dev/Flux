@@ -42,7 +42,7 @@ fun PlayerTopBar(
         modifier = modifier
             .statusBarsPadding()
             .fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL),
+        horizontalArrangement = Arrangement.spacedBy(Ui.Space.small),
         verticalAlignment = Alignment.CenterVertically
     ) {
 
@@ -52,7 +52,7 @@ fun PlayerTopBar(
                 .clickable { onBackTap() }
                 .size(50.dp)
                 .clip(shape = CircleShape)
-                .padding(Ui.Space.EXTRA_SMALL),
+                .padding(Ui.Space.extraSmall),
             contentAlignment = Alignment.Center
         ) {
 
@@ -67,7 +67,7 @@ fun PlayerTopBar(
         Column(
             modifier = Modifier.weight(1f),
             horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)
+            verticalArrangement = Arrangement.spacedBy(Ui.Space.small)
         ) {
 
             Text.Body.Large(

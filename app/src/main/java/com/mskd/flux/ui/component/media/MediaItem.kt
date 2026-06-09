@@ -20,8 +20,8 @@ fun MediaItem(
     modifier: Modifier,
     path: String,
     hd: Boolean,
-    ratio: Float = Ui.Dimension.ItemRatio,
-    shape: Shape = Ui.Shape.ItemCard,
+    ratio: Float = Ui.Dimension.itemRatio,
+    shape: Shape = Ui.Shape.itemCard,
     onTap: (Int?) -> Unit,
     description: String
 ) {

@@ -43,8 +43,8 @@ fun AboutScreen(onBack: () -> Unit) {
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
                 .navigationBarsPadding()
-                .padding(bottom = Ui.Space.LARGE),
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
+                .padding(bottom = Ui.Space.large),
+            verticalArrangement = Arrangement.spacedBy(Ui.Space.medium)
         ) {
 
             Spacer(modifier = Modifier.height(innerPadding.calculateTopPadding()))
@@ -52,8 +52,8 @@ fun AboutScreen(onBack: () -> Unit) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = Ui.Space.MEDIUM),
-                verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE),
+                    .padding(horizontal = Ui.Space.medium),
+                verticalArrangement = Arrangement.spacedBy(Ui.Space.large),
                 horizontalAlignment = Alignment.Start
             ) {
 
@@ -105,7 +105,7 @@ fun AboutSection(
     title: String,
     content: String
 ) {
-    Column(verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)) {
+    Column(verticalArrangement = Arrangement.spacedBy(Ui.Space.medium)) {
         Text.Headline.Small(text = title)
         Text.Body.Large(text = content)
     }
@@ -116,7 +116,7 @@ fun AboutSectionWithLinks(
     title: String,
     content: AnnotatedString
 ) {
-    Column(verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)) {
+    Column(verticalArrangement = Arrangement.spacedBy(Ui.Space.medium)) {
         Text.Headline.Small(text = title)
         Text.Annotated(
             text = content,

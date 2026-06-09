@@ -176,9 +176,9 @@ fun HomeEmpty(sendIntent: (HomeIntent) -> Unit) {
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
                 .statusBarsPadding()
-                .padding(all = Ui.Space.MEDIUM)
+                .padding(all = Ui.Space.medium)
                 .navigationBarsPadding(),
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE),
+            verticalArrangement = Arrangement.spacedBy(Ui.Space.large),
             horizontalAlignment = Alignment.Start,
         ) {
 
@@ -255,7 +255,7 @@ fun HomeContent(
                     modifier = Modifier
                         .fillMaxSize()
                         .graphicsLayer { translationY = offsetY },
-                    verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
+                    verticalArrangement = Arrangement.spacedBy(Ui.Space.medium)
                 ) {
 
                     item {
@@ -293,7 +293,7 @@ fun HomeContent(
 
                         Spacer(
                             modifier = Modifier
-                                .height(paddingValues.calculateBottomPadding() + Ui.Space.LARGE)
+                                .height(paddingValues.calculateBottomPadding() + Ui.Space.large)
                         )
 
                     }
@@ -342,7 +342,7 @@ fun HomeTopButtons(sendIntent: (HomeIntent) -> Unit) {
 
     Row(
         modifier = Modifier
-            .padding(vertical = Ui.Space.SMALL, horizontal = Ui.Space.SMALL)
+            .padding(vertical = Ui.Space.small, horizontal = Ui.Space.small)
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
@@ -391,7 +391,7 @@ fun LastWatchedCarousel(
 
     Column(
         modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM),
+        verticalArrangement = Arrangement.spacedBy(Ui.Space.medium),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
@@ -421,7 +421,7 @@ fun LastWatchedCarousel(
                 modifier = Modifier.fillMaxWidth(),
                 maxItemWidth = 350.dp,
                 state = carouselState,
-                contentPadding = PaddingValues(horizontal = Ui.Space.MEDIUM)
+                contentPadding = PaddingValues(horizontal = Ui.Space.medium)
             ) { i ->
 
                 val overview = artworks[i]
@@ -509,14 +509,14 @@ fun MediaCategory(
 
     Column(
         modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
+        verticalArrangement = Arrangement.spacedBy(Ui.Space.medium)
     ) {
 
         Text.Title.Large(
             modifier = Modifier
                 .clickable { sendIntent(HomeIntent.OnCategoryTap(category)) }
                 .fillMaxWidth()
-                .padding(start = Ui.Space.MEDIUM, top = Ui.Space.LARGE),
+                .padding(start = Ui.Space.medium, top = Ui.Space.large),
             text = name,
             emphasized = true,
             color = MaterialTheme.colorScheme.onBackground
@@ -524,8 +524,8 @@ fun MediaCategory(
 
         LazyRow(
             modifier = Modifier.fillMaxWidth(),
-            contentPadding = PaddingValues(horizontal = Ui.Space.MEDIUM),
-            horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)
+            contentPadding = PaddingValues(horizontal = Ui.Space.medium),
+            horizontalArrangement = Arrangement.spacedBy(Ui.Space.small)
         ) {
 
             items(artworks, key = { it.id }) {
@@ -533,7 +533,7 @@ fun MediaCategory(
                 MediaItem(
                     modifier = Modifier
                         .width(itemWidth)
-                        .aspectRatio(Ui.Dimension.ItemRatio),
+                        .aspectRatio(Ui.Dimension.itemRatio),
                     path = it.imagePath,
                     hd = false,
                     onTap = { rgb -> sendIntent(HomeIntent.OnArtworkTap(artwork = it, rgb = rgb)) },
@@ -556,13 +556,13 @@ fun UnknownCategory(sendIntent: (HomeIntent) -> Unit) {
 
     Column(
         modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
+        verticalArrangement = Arrangement.spacedBy(Ui.Space.medium)
     ) {
 
         Text.Title.Large(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = Ui.Space.MEDIUM, top = Ui.Space.LARGE),
+                .padding(start = Ui.Space.medium, top = Ui.Space.large),
             text = stringResource(R.string.other_files),
             emphasized = true,
             color = MaterialTheme.colorScheme.onBackground
@@ -570,11 +570,11 @@ fun UnknownCategory(sendIntent: (HomeIntent) -> Unit) {
 
         Box(
             modifier = Modifier
-                .padding(horizontal = Ui.Space.MEDIUM)
+                .padding(horizontal = Ui.Space.medium)
                 .clickable { sendIntent(HomeIntent.OnArtworkTap(artwork = Artwork.UNKNOWN)) }
                 .clip(MaterialTheme.shapes.small)
                 .width(itemWidth)
-                .aspectRatio(Ui.Dimension.ItemRatio)
+                .aspectRatio(Ui.Dimension.itemRatio)
                 .background(color = MaterialTheme.colorScheme.secondaryContainer),
             contentAlignment = Alignment.Center
         ) {

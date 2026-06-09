@@ -43,7 +43,7 @@ fun PlayerSettingsSheet(
     BasicAlertDialog(
         modifier = Modifier
             .clip(AlertDialogDefaults.shape)
-            .padding(vertical = Ui.Space.LARGE),
+            .padding(vertical = Ui.Space.large),
         onDismissRequest = { sendIntent(PlayerIntent.ShowSettings(sheet = null)) },
     ) {
 
@@ -65,7 +65,7 @@ fun PlayerSettingsSheet(
                     }
                 )
 
-                HorizontalDivider(modifier = Modifier.padding(horizontal = Ui.Space.MEDIUM))
+                HorizontalDivider(modifier = Modifier.padding(horizontal = Ui.Space.medium))
 
                 PlayerSettingsItem(
                     label = "Subtitles",
@@ -94,8 +94,8 @@ fun PlayerSettingsItem(
         modifier = Modifier
             .clickable { onTap() }
             .fillMaxWidth()
-            .padding(all = Ui.Space.MEDIUM),
-        horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL),
+            .padding(all = Ui.Space.medium),
+        horizontalArrangement = Arrangement.spacedBy(Ui.Space.small),
         verticalAlignment = Alignment.CenterVertically
     ) {
 

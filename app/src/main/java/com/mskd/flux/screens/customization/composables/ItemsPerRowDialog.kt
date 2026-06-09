@@ -36,7 +36,7 @@ fun ItemsPerRowDialog(
 
             Column(
                 modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE)
+                verticalArrangement = Arrangement.spacedBy(Ui.Space.large)
             ) {
 
                 Text.Body.Medium(stringResource(R.string.items_per_row_desc))
@@ -44,9 +44,9 @@ fun ItemsPerRowDialog(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = Ui.Space.SMALL),
+                        .padding(horizontal = Ui.Space.small),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)
+                    horizontalArrangement = Arrangement.spacedBy(Ui.Space.small)
                 ) {
 
                     Text.Body.Medium("2")

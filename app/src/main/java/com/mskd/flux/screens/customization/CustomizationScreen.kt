@@ -90,7 +90,7 @@ fun CustomizationContent(
                 .background(MaterialTheme.colorScheme.surfaceContainer)
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
+            verticalArrangement = Arrangement.spacedBy(Ui.Space.medium)
         ) {
 
             Spacer(modifier = Modifier.height(innerPadding.calculateTopPadding()))

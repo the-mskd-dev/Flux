@@ -48,9 +48,9 @@ fun PlayerInterface(
 
     val nextButtonBottomMargin by animateDpAsState(
         targetValue = if (controls.showInterface) {
-            seekBarHeight + Ui.Space.MEDIUM
+            seekBarHeight + Ui.Space.medium
         } else {
-            Ui.Space.LARGE
+            Ui.Space.large
         },
         animationSpec = spring(stiffness = Spring.StiffnessLow),
         label = "NextEpisodeButtonPosition"
@@ -117,7 +117,7 @@ fun PlayerInterface(
         PlayerNextEpisode(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(end = Ui.Space.LARGE, bottom = nextButtonBottomMargin),
+                .padding(end = Ui.Space.large, bottom = nextButtonBottomMargin),
             nextButton = controls.nextButton,
             sendIntent = sendIntent
         )
@@ -137,9 +137,9 @@ val PlayerInterfaceConstraintSet = ConstraintSet {
     )
 
     constrain(topBar) {
-        top.linkTo(parent.top, Ui.Space.MEDIUM)
+        top.linkTo(parent.top, Ui.Space.medium)
         start.linkTo(parent.start)
-        end.linkTo(settings.start, Ui.Space.MEDIUM)
+        end.linkTo(settings.start, Ui.Space.medium)
         width = Dimension.fillToConstraints
     }
 
@@ -158,11 +158,11 @@ val PlayerInterfaceConstraintSet = ConstraintSet {
     constrain(seekBar) {
         start.linkTo(parent.start)
         end.linkTo(parent.end)
-        bottom.linkTo(parent.bottom, Ui.Space.MEDIUM)
+        bottom.linkTo(parent.bottom, Ui.Space.medium)
     }
 
     constrain(nextEpisode) {
-        end.linkTo(parent.end, Ui.Space.MEDIUM)
+        end.linkTo(parent.end, Ui.Space.medium)
         bottom.linkTo(seekBar.top)
     }
 

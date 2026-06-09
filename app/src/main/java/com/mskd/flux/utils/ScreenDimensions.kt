@@ -34,8 +34,8 @@ fun rememberScreenDimensions(): ScreenDimensions {
 @Composable
 fun itemWidthFor(
     columns: Int,
-    horizontalPadding: Dp  = Ui.Space.MEDIUM,
-    spaceBy: Dp = Ui.Space.SMALL
+    horizontalPadding: Dp  = Ui.Space.medium,
+    spaceBy: Dp = Ui.Space.small
 ) : Dp {
     val screenDimensions = rememberScreenDimensions()
     return (screenDimensions.widthDp - horizontalPadding.times(2) - spaceBy.times(columns - 1)) / columns

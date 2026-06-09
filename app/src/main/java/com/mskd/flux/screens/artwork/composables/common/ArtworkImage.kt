@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.displayCutoutPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
@@ -30,11 +29,9 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.model.artwork.Media
-import com.mskd.flux.screens.artwork.ArtworkIntent
 import com.mskd.flux.ui.component.global.FluxImage
 import com.mskd.flux.ui.component.global.Image
 import com.mskd.flux.ui.theme.AppTheme
@@ -149,7 +146,7 @@ fun ArtworkImageBlurred(
         AsyncImage(
             modifier = Modifier
                 .align(Alignment.Center)
-                .clip(Ui.Shape.Corner.Small)
+                .clip(Ui.Shape.Corner.small)
                 .width(160.dp)
                 .aspectRatio(2f/3f),
             model = imageRequest,

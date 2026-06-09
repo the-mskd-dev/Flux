@@ -30,7 +30,7 @@ fun LoadingScreen(
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
+            verticalArrangement = Arrangement.spacedBy(Ui.Space.medium)
         ) {
 
             if (progress != null)  {

@@ -32,7 +32,7 @@ fun MediaDetailsHorizontal(media: Media) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)
+        horizontalArrangement = Arrangement.spacedBy(Ui.Space.small)
     ) {
 
         MediaDetailsItems(media = media)
@@ -94,7 +94,7 @@ fun MediaDetailItem(
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)
+        horizontalArrangement = Arrangement.spacedBy(Ui.Space.extraSmall)
     ) {
 
 

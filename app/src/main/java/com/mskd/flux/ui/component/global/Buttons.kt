@@ -212,10 +212,10 @@ fun CountDownButton(
         shape = shape,
         contentPadding = ButtonDefaults.contentPaddingFor(size),
         elevation = ButtonDefaults.buttonElevation(
-            defaultElevation = Ui.Elevation.Level3,
-            pressedElevation = Ui.Elevation.Level3,
-            hoveredElevation = Ui.Elevation.Level4,
-            focusedElevation = Ui.Elevation.Level3
+            defaultElevation = Ui.Elevation.level3,
+            pressedElevation = Ui.Elevation.level3,
+            hoveredElevation = Ui.Elevation.level4,
+            focusedElevation = Ui.Elevation.level3
         ),
         content = {
 
@@ -271,7 +271,7 @@ fun CountDownButton_Preview() {
         Column(
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.background)
-                .padding(Ui.Space.LARGE)
+                .padding(Ui.Space.large)
         ) {
             CountDownButton(
                 onTap = {  },
@@ -288,8 +288,8 @@ fun ReadMoreButton_Preview() {
         Column(
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.background)
-                .padding(Ui.Space.LARGE),
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE)
+                .padding(Ui.Space.large),
+            verticalArrangement = Arrangement.spacedBy(Ui.Space.large)
         ) {
             ReadMoreButton(
                 onTap = {  },

@@ -54,9 +54,9 @@ fun PlayerSeekBar(
         modifier = modifier
             .fillMaxWidth()
             .navigationBarsPadding()
-            .padding(horizontal = Ui.Space.MEDIUM),
+            .padding(horizontal = Ui.Space.medium),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)
+        horizontalArrangement = Arrangement.spacedBy(Ui.Space.small)
     ) {
 
         PlayerSeekBarTime(

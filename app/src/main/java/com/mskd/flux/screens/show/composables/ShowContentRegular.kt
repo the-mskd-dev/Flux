@@ -63,15 +63,15 @@ fun ShowContentRegular(
                             width = Dimension.fillToConstraints
                         }
                         .fillMaxWidth()
-                        .aspectRatio(Ui.Images.RATIO_6_5),
+                        .aspectRatio(Ui.Images.ratio_6_5),
                     fullArtwork = fullShow,
                 )
 
                 Text.Display.Small(
                     modifier = Modifier
                         .constrainAs(title) {
-                            start.linkTo(parent.start,Ui.Space.MEDIUM)
-                            end.linkTo(parent.end, Ui.Space.MEDIUM)
+                            start.linkTo(parent.start,Ui.Space.medium)
+                            end.linkTo(parent.end, Ui.Space.medium)
                             top.linkTo(image.bottom)
                             bottom.linkTo(image.bottom)
                             width = Dimension.preferredWrapContent
@@ -86,26 +86,26 @@ fun ShowContentRegular(
 
         }
 
-        item { Spacer(modifier = Modifier.height(Ui.Space.LARGE)) }
+        item { Spacer(modifier = Modifier.height(Ui.Space.large)) }
 
         item {
 
             OverviewItem(
-                modifier = Modifier.padding(horizontal = Ui.Space.MEDIUM),
+                modifier = Modifier.padding(horizontal = Ui.Space.medium),
                 title = stringResource(R.string.summary),
                 description = fullShow.artwork.description.ifEmpty { stringResource(R.string.no_summary) },
             )
 
         }
 
-        item { Spacer(modifier = Modifier.height(Ui.Space.MEDIUM)) }
+        item { Spacer(modifier = Modifier.height(Ui.Space.medium)) }
 
         item {
 
             Text.Title.Large(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = Ui.Space.MEDIUM),
+                    .padding(horizontal = Ui.Space.medium),
                 text = stringResource(R.string.seasons),
                 emphasized = true,
                 color = MaterialTheme.colorScheme.onBackground
@@ -113,7 +113,7 @@ fun ShowContentRegular(
 
         }
 
-        item { Spacer(modifier = Modifier.height(Ui.Space.MEDIUM)) }
+        item { Spacer(modifier = Modifier.height(Ui.Space.medium)) }
 
         val seasonsChunks = fullShow.seasons.chunked(columns)
 
@@ -125,9 +125,9 @@ fun ShowContentRegular(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = Ui.Space.MEDIUM)
-                    .padding(bottom = Ui.Space.MEDIUM),
-                horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)
+                    .padding(horizontal = Ui.Space.medium)
+                    .padding(bottom = Ui.Space.medium),
+                horizontalArrangement = Arrangement.spacedBy(Ui.Space.small)
             ) {
 
                 seasons.forEach { season ->

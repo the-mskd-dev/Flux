@@ -60,7 +60,7 @@ fun ArtworkContentRegular(
         }
 
         item {
-            Spacer(modifier = Modifier.height(Ui.Space.LARGE))
+            Spacer(modifier = Modifier.height(Ui.Space.large))
         }
 
         item {
@@ -74,7 +74,7 @@ fun ArtworkContentRegular(
         }
 
         item {
-            Spacer(modifier = Modifier.height(Ui.Space.LARGE))
+            Spacer(modifier = Modifier.height(Ui.Space.large))
         }
 
         (fullArtwork as? FullArtwork.FullShow)?.let { show ->
@@ -85,12 +85,12 @@ fun ArtworkContentRegular(
 
                 item {
 
-                    Column(verticalArrangement = Arrangement.spacedBy(Ui.Space.SMALL)) {
+                    Column(verticalArrangement = Arrangement.spacedBy(Ui.Space.small)) {
 
                         Text.Title.Large(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = Ui.Space.MEDIUM),
+                                .padding(horizontal = Ui.Space.medium),
                             text = stringResource(R.string.episodes),
                             emphasized = true,
                             color = MaterialTheme.colorScheme.onBackground
@@ -101,7 +101,7 @@ fun ArtworkContentRegular(
                 }
 
                 item {
-                    Spacer(modifier = Modifier.height(Ui.Space.MEDIUM))
+                    Spacer(modifier = Modifier.height(Ui.Space.medium))
                 }
 
                 items(
@@ -132,7 +132,7 @@ fun ArtworkContentRegular(
                         }
                     )
 
-                    Spacer(modifier = Modifier.height(Ui.Space.SMALL))
+                    Spacer(modifier = Modifier.height(Ui.Space.small))
 
                 }
 

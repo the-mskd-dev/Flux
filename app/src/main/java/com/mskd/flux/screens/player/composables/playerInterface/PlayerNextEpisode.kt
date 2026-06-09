@@ -61,7 +61,7 @@ fun PlayerNextEpisode(
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
+            horizontalArrangement = Arrangement.spacedBy(Ui.Space.medium)
         ) {
 
             FloatingActionButton(

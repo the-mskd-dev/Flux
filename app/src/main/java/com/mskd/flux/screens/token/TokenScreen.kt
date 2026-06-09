@@ -126,9 +126,9 @@ fun TokenScreenContent(
                 .background(MaterialTheme.colorScheme.background)
                 .fillMaxSize()
                 .imePadding()
-                .padding(horizontal = Ui.Space.MEDIUM)
+                .padding(horizontal = Ui.Space.medium)
                 .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM),
+            verticalArrangement = Arrangement.spacedBy(Ui.Space.medium),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
@@ -147,7 +147,7 @@ fun TokenScreenContent(
                 )
 
                 AnimatedVisibility(
-                    modifier = Modifier.padding(start = Ui.Space.EXTRA_SMALL, top = Ui.Space.SMALL),
+                    modifier = Modifier.padding(start = Ui.Space.extraSmall, top = Ui.Space.small),
                     visible = state.message != TokenMessage.None,
                 ) {
 
@@ -179,7 +179,7 @@ fun TokenDescription() {
 
     Column(
         modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE),
+        verticalArrangement = Arrangement.spacedBy(Ui.Space.large),
         horizontalAlignment = Alignment.Start
     ) {
 
@@ -207,7 +207,7 @@ fun TokenTutorial() {
 
     Column(
         modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE),
+        verticalArrangement = Arrangement.spacedBy(Ui.Space.large),
         horizontalAlignment = Alignment.Start
     ) {
 
@@ -259,8 +259,8 @@ fun TokenInput(
     Row(
         modifier = Modifier
             .widthIn(max = 700.dp)
-            .padding(top = Ui.Space.LARGE),
-        horizontalArrangement = Arrangement.spacedBy(Ui.Space.SMALL),
+            .padding(top = Ui.Space.large),
+        horizontalArrangement = Arrangement.spacedBy(Ui.Space.small),
         verticalAlignment = Alignment.CenterVertically
     ) {
         TextField(

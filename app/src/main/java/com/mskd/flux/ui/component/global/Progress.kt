@@ -61,7 +61,7 @@ fun ProgressStatusChip(
                 .background(MaterialTheme.colorScheme.tertiary)
                 .height(32.dp)
                 .widthIn(min = 40.dp)
-                .padding(horizontal = Ui.Space.SMALL),
+                .padding(horizontal = Ui.Space.small),
             contentAlignment = Alignment.Center
         ) {
             Text.Label.Medium(

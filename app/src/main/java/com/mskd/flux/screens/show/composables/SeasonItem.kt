@@ -56,9 +56,9 @@ fun SeasonItem(
 
         Box(
             modifier = Modifier
-                .clip(Ui.Shape.ItemCard)
+                .clip(Ui.Shape.itemCard)
                 .fillMaxWidth()
-                .aspectRatio(Ui.Dimension.ItemRatio)
+                .aspectRatio(Ui.Dimension.itemRatio)
                 .combinedClickable(
                     onClick = { onTap(seedRgb) },
                     onLongClick = { onLongPress() }
@@ -96,7 +96,7 @@ fun SeasonItem(
         }
 
         Column(
-            modifier = Modifier.padding(horizontal = Ui.Space.SMALL, vertical = Ui.Space.SMALL),
+            modifier = Modifier.padding(horizontal = Ui.Space.small, vertical = Ui.Space.small),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
@@ -132,7 +132,7 @@ fun SeasonItem_Preview() {
     AppThemePreview {
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
+            horizontalArrangement = Arrangement.spacedBy(Ui.Space.medium)
         ) {
 
             (1..3).forEach { _ ->

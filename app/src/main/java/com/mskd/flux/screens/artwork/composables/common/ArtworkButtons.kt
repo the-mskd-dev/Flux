@@ -65,7 +65,7 @@ fun ArtworkButtons(
 
         ToggleButton(
             modifier = Modifier
-                .padding(top = Ui.Space.SMALL)
+                .padding(top = Ui.Space.small)
                 .height(buttonHeight)
                 .fillMaxWidth(),
             checked = media.status == Status.WATCHED,
@@ -77,7 +77,7 @@ fun ArtworkButtons(
                 checkedContentColor = MaterialTheme.colorScheme.onSurfaceVariant
             ),
             shapes = ToggleButtonDefaults.shapes(
-                shape = Ui.Shape.Corner.Full,
+                shape = Ui.Shape.Corner.full,
                 pressedShape = MaterialTheme.shapes.medium,
                 checkedShape = MaterialTheme.shapes.small,
             ),
@@ -126,7 +126,7 @@ fun MediaStatusProgression(
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM),
+            horizontalArrangement = Arrangement.spacedBy(Ui.Space.medium),
             verticalAlignment = Alignment.CenterVertically
         ){
 

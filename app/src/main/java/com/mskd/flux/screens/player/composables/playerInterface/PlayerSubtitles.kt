@@ -23,7 +23,7 @@ fun PlayerSubtitles(
 
     Box(
         contentAlignment = Alignment.BottomCenter,
-        modifier = modifier.padding(horizontal = Ui.Space.LARGE)
+        modifier = modifier.padding(horizontal = Ui.Space.large)
     ) {
         subtitles().forEach {
             SubtitleItem(text = it.text, smallText = smallText)
@@ -41,7 +41,7 @@ private fun SubtitleItem(text: CharSequence?, smallText: Boolean) {
             modifier = Modifier
                 .clip(shape = MaterialTheme.shapes.extraSmall)
                 .background(color = Color.Black.copy(.8f))
-                .padding(horizontal = Ui.Space.MEDIUM, vertical = Ui.Space.SMALL),
+                .padding(horizontal = Ui.Space.medium, vertical = Ui.Space.small),
             text = content.toString(),
             color = Color.White,
             textAlign = TextAlign.Center,

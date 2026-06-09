@@ -48,7 +48,7 @@ fun OverviewItem(
             .clip(MaterialTheme.shapes.large)
             .background(MaterialTheme.colorScheme.surfaceContainer)
             .fillMaxWidth()
-            .padding(all = Ui.Space.MEDIUM)
+            .padding(all = Ui.Space.medium)
             .then(
                 if (hasLaidOut) Modifier.animateContentSize(
                     animationSpec = spring(
@@ -57,12 +57,12 @@ fun OverviewItem(
                     )
                 ) else Modifier
             ),
-        verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
+        verticalArrangement = Arrangement.spacedBy(Ui.Space.medium)
     ) {
 
         Column(
             modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.EXTRA_SMALL)
+            verticalArrangement = Arrangement.spacedBy(Ui.Space.extraSmall)
         ) {
 
             topDetails()
@@ -110,7 +110,7 @@ fun OverviewItem(
 @Composable
 fun EpisodesDetails(episode: Episode) {
 
-    Row(horizontalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)) {
+    Row(horizontalArrangement = Arrangement.spacedBy(Ui.Space.medium)) {
         Text.Label.Medium(
             text = stringResource(id = R.string.season, episode.season).uppercase(),
             emphasized = true,

@@ -64,8 +64,8 @@ fun PlayerAmbientOverlay(
             modifier = Modifier
                 .clip(shape = MaterialTheme.shapes.medium)
                 .background(color = Color.Black.copy(alpha = .5f))
-                .padding(vertical = Ui.Space.MEDIUM, horizontal = Ui.Space.LARGE),
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM),
+                .padding(vertical = Ui.Space.medium, horizontal = Ui.Space.large),
+            verticalArrangement = Arrangement.spacedBy(Ui.Space.medium),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 

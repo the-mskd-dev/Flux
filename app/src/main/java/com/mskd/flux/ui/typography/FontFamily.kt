@@ -59,12 +59,12 @@ fun FontFamily_Preview() {
             modifier = Modifier
                 .background(Color.White)
                 .fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.LARGE)
+            verticalArrangement = Arrangement.spacedBy(Ui.Space.large)
         ) {
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
+                horizontalArrangement = Arrangement.spacedBy(Ui.Space.medium)
             ) {
 
                 Column(modifier = Modifier.weight(1f)) {
@@ -101,7 +101,7 @@ fun FontFamily_Preview() {
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
+                horizontalArrangement = Arrangement.spacedBy(Ui.Space.medium)
             ) {
 
                 Column(modifier = Modifier.weight(1f)) {
@@ -138,7 +138,7 @@ fun FontFamily_Preview() {
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
+                horizontalArrangement = Arrangement.spacedBy(Ui.Space.medium)
             ) {
 
                 Column(modifier = Modifier.weight(1f)) {
@@ -175,7 +175,7 @@ fun FontFamily_Preview() {
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
+                horizontalArrangement = Arrangement.spacedBy(Ui.Space.medium)
             ) {
 
                 Column(modifier = Modifier.weight(1f)) {
@@ -212,7 +212,7 @@ fun FontFamily_Preview() {
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
+                horizontalArrangement = Arrangement.spacedBy(Ui.Space.medium)
             ) {
 
                 Column(modifier = Modifier.weight(1f)) {

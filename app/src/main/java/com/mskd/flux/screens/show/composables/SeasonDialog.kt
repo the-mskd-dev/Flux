@@ -46,7 +46,7 @@ fun SeasonDialog(
                 .widthIn(max = 500.dp)
                 .fillMaxWidth()
                 .heightIn(max = 700.dp)
-                .padding(horizontal = Ui.Space.MEDIUM, vertical = Ui.Space.LARGE),
+                .padding(horizontal = Ui.Space.medium, vertical = Ui.Space.large),
             shape = MaterialTheme.shapes.large,
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.tertiaryContainer,
@@ -57,8 +57,8 @@ fun SeasonDialog(
             Column(
                 modifier = Modifier
                     .verticalScroll(rememberScrollState())
-                    .padding(all = Ui.Space.MEDIUM),
-                verticalArrangement = Arrangement.spacedBy(Ui.Space.MEDIUM)
+                    .padding(all = Ui.Space.medium),
+                verticalArrangement = Arrangement.spacedBy(Ui.Space.medium)
             ) {
 
                 Text.Headline.Medium(

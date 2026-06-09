@@ -28,7 +28,7 @@ fun FixedChip(
             .clip(MaterialTheme.shapes.small)
             .height(32.dp)
             .background(backgroundColor)
-            .padding(horizontal = Ui.Space.MEDIUM),
+            .padding(horizontal = Ui.Space.medium),
         contentAlignment = Alignment.Center
     ) {
         Text.Label.Medium(
@@ -42,7 +42,7 @@ fun FixedChip(
 @Composable
 fun FixedChip_Preview() {
     AppTheme {
-        Box(modifier = Modifier.padding(all = Ui.Space.LARGE)) {
+        Box(modifier = Modifier.padding(all = Ui.Space.large)) {
             FixedChip(text = stringResource(id = R.string.app_name))
         }
     }

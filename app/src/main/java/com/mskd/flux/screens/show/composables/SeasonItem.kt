@@ -56,9 +56,9 @@ fun SeasonItem(
 
         Box(
             modifier = Modifier
-                .clip(MaterialTheme.shapes.large)
+                .clip(Ui.Shape.ItemCard)
                 .fillMaxWidth()
-                .aspectRatio(Ui.Dimension.ITEM_RATIO)
+                .aspectRatio(Ui.Dimension.ItemRatio)
                 .combinedClickable(
                     onClick = { onTap(seedRgb) },
                     onLongClick = { onLongPress() }

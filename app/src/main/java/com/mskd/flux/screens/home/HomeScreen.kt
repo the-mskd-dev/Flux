@@ -533,7 +533,7 @@ fun MediaCategory(
                 MediaItem(
                     modifier = Modifier
                         .width(itemWidth)
-                        .aspectRatio(Ui.Dimension.ITEM_RATIO),
+                        .aspectRatio(Ui.Dimension.ItemRatio),
                     path = it.imagePath,
                     hd = false,
                     onTap = { rgb -> sendIntent(HomeIntent.OnArtworkTap(artwork = it, rgb = rgb)) },
@@ -574,7 +574,7 @@ fun UnknownCategory(sendIntent: (HomeIntent) -> Unit) {
                 .clickable { sendIntent(HomeIntent.OnArtworkTap(artwork = Artwork.UNKNOWN)) }
                 .clip(MaterialTheme.shapes.small)
                 .width(itemWidth)
-                .aspectRatio(Ui.Dimension.ITEM_RATIO)
+                .aspectRatio(Ui.Dimension.ItemRatio)
                 .background(color = MaterialTheme.colorScheme.secondaryContainer),
             contentAlignment = Alignment.Center
         ) {

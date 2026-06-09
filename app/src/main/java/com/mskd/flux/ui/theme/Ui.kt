@@ -19,8 +19,8 @@ import com.mskd.flux.R
 object Ui {
 
     object Dimension {
-        val ITEM_WIDTH = 140.dp
-        val ITEM_RATIO = 2f/3f
+        val ItemWidth = 140.dp
+        val ItemRatio = 2f/3f
     }
 
     object Space {
@@ -46,6 +46,8 @@ object Ui {
             val Full @Composable get() = CircleShape
 
         }
+
+        val ItemCard @Composable get() = MaterialTheme.shapes.large
 
     }
 

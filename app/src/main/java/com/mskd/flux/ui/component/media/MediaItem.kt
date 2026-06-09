@@ -1,8 +1,6 @@
 package com.mskd.flux.ui.component.media
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -22,8 +20,8 @@ fun MediaItem(
     modifier: Modifier,
     path: String,
     hd: Boolean,
-    ratio: Float = Ui.Dimension.ITEM_RATIO,
-    shape: Shape = MaterialTheme.shapes.small,
+    ratio: Float = Ui.Dimension.ItemRatio,
+    shape: Shape = Ui.Shape.ItemCard,
     onTap: (Int?) -> Unit,
     description: String
 ) {

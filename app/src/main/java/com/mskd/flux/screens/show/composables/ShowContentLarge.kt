@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -127,7 +126,7 @@ fun ShowContentLarge(
                 ) {
 
                     SeasonItem(
-                        modifier = Modifier.width(Ui.Dimension.ITEM_WIDTH),
+                        modifier = Modifier.width(Ui.Dimension.ItemWidth),
                         season = season,
                         episodes = fullShow.episodes.filter { it.season == season.season },
                         onTap = { sendIntent(ShowIntent.OnSeasonTap(season = season.season, rgb = it))},

@@ -182,7 +182,7 @@ fun SearchContent(
                     MediaItem(
                         modifier = Modifier
                             .width(itemWidth)
-                            .aspectRatio(Ui.Dimension.ITEM_RATIO),
+                            .aspectRatio(Ui.Dimension.ItemRatio),
                         path = artwork.imagePath,
                         hd = false,
                         description = artwork.title,

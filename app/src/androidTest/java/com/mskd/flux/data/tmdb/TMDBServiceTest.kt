@@ -68,8 +68,8 @@ class TMDBServiceTest {
         val result = service.authenticate()
 
         println("Authentication success - ${result.success}")
-        println("Message - ${result.status_message}")
-        println("Code - ${result.status_code}")
+        println("Message - ${result.message}")
+        println("Code - ${result.code}")
     }
 
     @Test

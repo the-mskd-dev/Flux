@@ -29,7 +29,7 @@ class TokenViewModelTest : FunSpec({
         }
 
         tmdbService = mockk(relaxed = true) {
-            coEvery { authenticate() } returns TMDBAuthentication(success = true, status_code = 0, status_message = "")
+            coEvery { authenticate() } returns TMDBAuthentication(success = true, code = 0, message = "")
         }
 
         catalogUC = mockk(relaxed = true)
@@ -124,13 +124,13 @@ class TokenViewModelTest : FunSpec({
             nameFn = { it.description },
             TokenTestCases.SaveToken(
                 description = "Success",
-                apiResult = TMDBAuthentication(success = true, status_code = 0, status_message = ""),
+                apiResult = TMDBAuthentication(success = true, code = 0, message = ""),
                 expectedMessage = TokenMessage.Success,
                 expectedLoadCatalog = true,
             ),
             TokenTestCases.SaveToken(
                 description = "Fail token",
-                apiResult = TMDBAuthentication(success = false, status_code = 401, status_message = "Fail"),
+                apiResult = TMDBAuthentication(success = false, code = 401, message = "Fail"),
                 expectedMessage = TokenMessage.Error,
                 expectedLoadCatalog = false,
             ),

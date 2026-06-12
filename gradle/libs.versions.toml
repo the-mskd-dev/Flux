@@ -107,7 +107,6 @@ jellyfin-ffmpeg = { group = "org.jellyfin.media3", name = "media3-ffmpeg-decoder
 # -- Network --
 ktor-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
-ktor-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
 ktor-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
 
@@ -183,7 +182,6 @@ media3 = [
 network = [
     "kotlinx-serialization-json",
     "ktor-core",
-    "ktor-darwin",
     "ktor-okhttp",
     "ktor-negotiation",
     "ktor-json"

@@ -2,6 +2,8 @@ package com.mskd.flux.model.tmdb
 
 import com.google.gson.annotations.SerializedName
 import com.mskd.flux.utils.Levenshtein
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 /**
  * Represents an media retrieved from TMDB (The Movie Database).
@@ -19,30 +21,38 @@ import com.mskd.flux.utils.Levenshtein
  * @property title Title of the media.
  * @property originalTitle Original title of the media.
  */
+@Serializable
 data class TMDBArtwork(
     val id: Long,
-    @SerializedName("overview")
+    @SerialName("overview")
     val description: String,
-    @SerializedName("poster_path")
+    @SerialName("poster_path")
     val imagePath: String?,
-    @SerializedName("backdrop_path")
+    @SerialName("backdrop_path")
     val bannerPath: String?,
-    @SerializedName("media_type")
+    @SerialName("media_type")
     var type: TMDBMediaType,
-    @SerializedName("genre_ids")
+    @SerialName("genre_ids")
     val genres: List<Int>,
     val popularity: Float,
-    @SerializedName("first_air_date", alternate = ["release_date"])
-    val releaseDateString: String,
-    @SerializedName("vote_average")
+    @SerialName("release_date")
+    val releaseDateString: String?,
+    @SerialName("first_air_date")
+    val firstAirDateString: String?,
+    @SerialName("vote_average")
     val voteAverage: Float,
-    @SerializedName("vote_count")
+    @SerialName("vote_count")
     val voteCount: Int,
 
-    @SerializedName(value = "title", alternate = ["name"])
-    val title: String,
-    @SerializedName(value = "original_title", alternate = ["original_name"])
-    val originalTitle: String,
+    @SerialName("title")
+    val title: String?,
+    @SerialName("name")
+    val name: String?,
+
+    @SerialName(value = "original_title")
+    val originalTitle: String?,
+    @SerialName("original_name")
+    val originalName: String?,
 )
 
 /**
@@ -53,12 +63,13 @@ data class TMDBArtwork(
  * @property pageCount Total number of pages available.
  * @property resultCount Total number of medias in the result set.
  */
+@Serializable
 data class TMDBArtworksResult(
     val page: Int,
     val results: List<TMDBArtwork>,
-    @SerializedName("total_pages")
+    @SerialName("total_pages")
     val pageCount: Int,
-    @SerializedName("total_results")
+    @SerialName("total_results")
     val resultCount: Int
 ) {
 
@@ -66,8 +77,8 @@ data class TMDBArtworksResult(
         return results.minByOrNull {
             Levenshtein.minDistance(
                 query = fileName,
-                title = it.title,
-                originalTitle = it.originalTitle
+                title = it.title ?: it.name ?: return null,
+                originalTitle = it.originalTitle ?: it.originalName ?: return null
             )
         }
     }

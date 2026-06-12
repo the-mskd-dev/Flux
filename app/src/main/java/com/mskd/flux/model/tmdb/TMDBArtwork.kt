@@ -44,9 +44,9 @@ data class TMDBArtwork(
     @SerialName("vote_count")
     val voteCount: Int,
     @JsonNames("title", "name")
-    val title: String?,
+    val title: String,
     @JsonNames("original_title", "original_name")
-    val originalTitle: String?,
+    val originalTitle: String,
 ) {
 
 

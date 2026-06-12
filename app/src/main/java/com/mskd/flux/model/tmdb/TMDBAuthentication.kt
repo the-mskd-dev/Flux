@@ -14,7 +14,7 @@ import kotlinx.serialization.Serializable
 data class TMDBAuthentication(
     val success: Boolean,
     @SerialName("status_code")
-    val code: Int,
+    val code: Int?,
     @SerialName("status_message")
-    val message: String
+    val message: String?
 )

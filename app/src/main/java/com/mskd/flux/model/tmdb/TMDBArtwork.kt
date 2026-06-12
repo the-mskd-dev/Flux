@@ -32,8 +32,6 @@ data class TMDBArtwork(
     val imagePath: String?,
     @SerialName("backdrop_path")
     val bannerPath: String?,
-    @SerialName("media_type")
-    var type: TMDBMediaType,
     @SerialName("genre_ids")
     val genres: List<Int>,
     val popularity: Float,
@@ -47,6 +45,9 @@ data class TMDBArtwork(
     val title: String,
     @JsonNames("original_title", "original_name")
     val originalTitle: String,
+
+    @SerialName("media_type")
+    var type: TMDBMediaType?,
 ) {
 
 

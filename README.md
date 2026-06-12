@@ -37,7 +37,7 @@ Don't hesitate to give me feedback!
 - Media3 : Media player
 - TMDB API : To get medias information
 - HILT : Dependencies injection
-- Retrofit : HTTP requests
+- Ktor : HTTP requests
 - Coil : Image management
 - Room : Database
 

@@ -15,7 +15,7 @@ import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.data.repository.user.UserRepositoryImpl
 import com.mskd.flux.data.repository.user.userDataStore
 import com.mskd.flux.data.tmdb.token.TokenRepository
-import com.mskd.flux.data.tmdb.token.TokenRepositoryImp
+import com.mskd.flux.data.tmdb.token.TokenRepositoryImpl
 import com.mskd.flux.data.tmdb.token.tokenDatastore
 import dagger.Module
 import dagger.Provides
@@ -58,7 +58,7 @@ object DataStoreModule {
     @Provides
     @Singleton
     fun provideTokenRepository(@ApplicationContext context: Context) : TokenRepository {
-        return TokenRepositoryImp(tokenDataStore = context.tokenDatastore)
+        return TokenRepositoryImpl(tokenDataStore = context.tokenDatastore)
     }
 
     @Provides

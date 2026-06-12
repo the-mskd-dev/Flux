@@ -51,7 +51,7 @@ data class Artwork(
     @OptIn(ExperimentalSerializationApi::class)
     constructor(tmdbArtwork: TMDBArtwork) : this(
         id = tmdbArtwork.id,
-        title = tmdbArtwork.title ?: throw IllegalArgumentException("No title for artwork ${tmdbArtwork.id}"),
+        title = tmdbArtwork.title,
         description = tmdbArtwork.description,
         imagePath = tmdbArtwork.imagePath.orEmpty(),
         bannerPath = tmdbArtwork.bannerPath.orEmpty(),

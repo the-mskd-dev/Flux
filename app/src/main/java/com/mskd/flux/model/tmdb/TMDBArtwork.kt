@@ -74,8 +74,8 @@ data class TMDBArtworksResult(
         return results.minByOrNull {
             Levenshtein.minDistance(
                 query = fileName,
-                title = it.title.orEmpty(),
-                originalTitle = it.originalTitle.orEmpty()
+                title = it.title,
+                originalTitle = it.originalTitle
             )
         }
     }

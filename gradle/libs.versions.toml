@@ -34,6 +34,7 @@ okhttp = "5.3.2"
 gson = "2.14.0"
 datastore = "1.2.1"
 room = "2.8.4"
+ktor = "3.5.0"
 
 # -- Media --
 media3 = "1.10.1"
@@ -61,6 +62,7 @@ androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = 
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinxSerializationCore" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationCore" }
 
 # -- Compose --
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
@@ -111,6 +113,9 @@ retrofit-scalars = { group = "com.squareup.retrofit2", name = "converter-scalars
 retrofit-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
 okhttp-core = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
+ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
+ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
 
 # -- Coil --
 coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
@@ -186,7 +191,11 @@ network = [
     "retrofit-scalars",
     "retrofit-gson",
     "okhttp-core",
-    "gson"
+    "gson",
+    "kotlinx-serialization-json",
+    "ktor-client-core",
+    "ktor-client-darwin",
+    "ktor-client-okhttp"
 ]
 image = [
     "coil-compose",

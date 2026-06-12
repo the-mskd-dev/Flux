@@ -159,6 +159,10 @@ dependencies {
     ksp(libs.hilt.compiler)
     ksp(libs.hilt.android.compiler)
 
+    // Koin
+    implementation(platform(libs.koin.bom))
+    implementation(libs.bundles.koin)
+
     // Network & Serialization (Ktor)
     implementation(libs.bundles.network)
 

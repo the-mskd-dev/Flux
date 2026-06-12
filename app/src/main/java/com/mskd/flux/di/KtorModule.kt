@@ -1,5 +1,7 @@
 package com.mskd.flux.di
 
+import com.mskd.flux.data.tmdb.TMDBService
+import com.mskd.flux.data.tmdb.TMDBServiceImpl
 import com.mskd.flux.data.tmdb.token.TokenRepository
 import dagger.Module
 import dagger.Provides
@@ -15,6 +17,7 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.internal.readJson
+import retrofit2.Retrofit
 import javax.inject.Singleton
 
 @Module
@@ -60,6 +63,12 @@ object KtorModule {
                 headers.append(HttpHeaders.Authorization, "Bearer ${token.trim()}")
             }
         }
+    }
+
+    @Provides
+    @Singleton
+    fun provideTMDBService(client: HttpClient) : TMDBService {
+        return TMDBServiceImpl(client = client)
     }
 
 }

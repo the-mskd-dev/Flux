@@ -7,9 +7,6 @@ import com.mskd.flux.model.tmdb.TMDBMovie
 import com.mskd.flux.model.tmdb.TMDBSeason
 import com.mskd.flux.model.tmdb.TMDBTranslations
 import com.mskd.flux.utils.Constants
-import retrofit2.http.GET
-import retrofit2.http.Path
-import retrofit2.http.Query
 
 interface TMDBService {
 

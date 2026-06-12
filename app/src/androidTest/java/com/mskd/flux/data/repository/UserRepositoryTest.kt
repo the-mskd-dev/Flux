@@ -6,7 +6,6 @@ import androidx.datastore.preferences.preferencesDataStoreFile
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.filters.MediumTest
 import app.cash.turbine.test
-import com.google.gson.Gson
 import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.data.repository.user.UserRepositoryImpl
 import kotlinx.coroutines.Dispatchers
@@ -16,6 +15,7 @@ import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
+import kotlinx.serialization.json.Json
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -32,6 +32,7 @@ class UserRepositoryTest {
     private val context: Context = ApplicationProvider.getApplicationContext()
     private val testDispatcher = StandardTestDispatcher()
     private lateinit var userRepository: UserRepository
+    private val json = Json
 
     @Before
     fun setUp() {
@@ -45,10 +46,7 @@ class UserRepositoryTest {
             }
         )
 
-        userRepository = UserRepositoryImpl(
-            userDataStore = testDataStore,
-            gson = Gson()
-        )
+        userRepository = UserRepositoryImpl(userDataStore = testDataStore, json = json)
 
         testDispatcher.scheduler.advanceUntilIdle()
     }

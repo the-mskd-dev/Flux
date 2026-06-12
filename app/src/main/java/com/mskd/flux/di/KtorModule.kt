@@ -16,8 +16,6 @@ import io.ktor.http.HttpHeaders
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.internal.readJson
-import retrofit2.Retrofit
 import javax.inject.Singleton
 
 @Module

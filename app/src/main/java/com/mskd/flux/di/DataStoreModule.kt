@@ -1,7 +1,6 @@
 package com.mskd.flux.di
 
 import android.content.Context
-import com.google.gson.Gson
 import com.mskd.flux.data.repository.customization.CustomizationRepository
 import com.mskd.flux.data.repository.customization.CustomizationRepositoryImpl
 import com.mskd.flux.data.repository.customization.customizationDatastore
@@ -22,6 +21,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.serialization.json.Json
 import javax.inject.Singleton
 
 // At the top level of your kotlin file:
@@ -35,11 +35,11 @@ object DataStoreModule {
     @Singleton
     fun provideUserRepository(
         @ApplicationContext context: Context,
-        gson: Gson
+        json: Json
     ) : UserRepository {
         return UserRepositoryImpl(
             userDataStore = context.userDataStore,
-            gson = gson
+            json = json
         )
     }
 

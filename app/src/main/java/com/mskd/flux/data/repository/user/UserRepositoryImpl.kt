@@ -7,16 +7,16 @@ import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.google.gson.Gson
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.serialization.json.Json
 import okio.IOException
 
 class UserRepositoryImpl(
     val userDataStore: DataStore<Preferences>,
-    private val gson: Gson
+    private val json: Json
 ) : UserRepository {
 
     object Keys {
@@ -33,10 +33,10 @@ class UserRepositoryImpl(
         .map { preferences ->
 
             val watchedIdsString = preferences[Keys.RECENTLY_WATCHED_IDS] ?: "[]"
-            val watchedIds = gson.fromJson<List<Double>>(watchedIdsString, List::class.java).map { it.toLong() }
+            val watchedIds = json.decodeFromString<List<Long>>(watchedIdsString)
             val syncTime = preferences[Keys.LAST_SYNC_TIME] ?: 0L
             val watchedMessagesIdsString = preferences[Keys.WATCHED_MESSAGES_IDS] ?: "[]"
-            val watchedMessagesIds = gson.fromJson<List<Double>>(watchedMessagesIdsString, List::class.java).map { it.toInt() }
+            val watchedMessagesIds = json.decodeFromString<List<Int>>(watchedMessagesIdsString)
             val versionCode = preferences[Keys.CURRENT_VERSION_CODE] ?: -1
 
             UserRepository.State(
@@ -55,7 +55,7 @@ class UserRepositoryImpl(
             lastWatchedIds.remove(artworkId)
             lastWatchedIds.add(0, artworkId)
 
-            preferences[Keys.RECENTLY_WATCHED_IDS] = gson.toJson(lastWatchedIds.take(4))
+            preferences[Keys.RECENTLY_WATCHED_IDS] = json.encodeToString(lastWatchedIds.take(4))
 
         }
     }
@@ -64,7 +64,7 @@ class UserRepositoryImpl(
         userDataStore.edit { preferences ->
             val lastWatchedIds = ArrayList(flow.first().recentlyWatchedIds)
             lastWatchedIds.remove(artworkId)
-            preferences[Keys.RECENTLY_WATCHED_IDS] = gson.toJson(lastWatchedIds)
+            preferences[Keys.RECENTLY_WATCHED_IDS] = json.encodeToString(lastWatchedIds)
 
         }
     }
@@ -92,7 +92,7 @@ class UserRepositoryImpl(
     override suspend fun setMessageAsWatched(messageId: Int) {
         userDataStore.edit { preferences ->
             val watchedMessagesIds = flow.first().watchedMessagesIds
-            preferences[Keys.WATCHED_MESSAGES_IDS] = gson.toJson(watchedMessagesIds + messageId)
+            preferences[Keys.WATCHED_MESSAGES_IDS] = json.encodeToString(watchedMessagesIds + messageId)
         }
     }
 

@@ -159,7 +159,7 @@ dependencies {
     ksp(libs.hilt.compiler)
     ksp(libs.hilt.android.compiler)
 
-    // Network & Serialization (Retrofit 3, OkHttp 5, Gson)
+    // Network & Serialization (Ktor)
     implementation(libs.bundles.network)
 
     // Images

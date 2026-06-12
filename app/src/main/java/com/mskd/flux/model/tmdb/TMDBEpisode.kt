@@ -1,6 +1,5 @@
 package com.mskd.flux.model.tmdb
 
-import com.google.gson.annotations.SerializedName
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

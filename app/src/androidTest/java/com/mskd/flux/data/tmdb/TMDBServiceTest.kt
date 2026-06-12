@@ -107,7 +107,7 @@ class TMDBServiceTest {
         println("description : ${result.description}")
         println("imagePath : ${result.imagePath}")
         println("bannerPath : ${result.bannerPath}")
-        println("releaseDateString : ${result.releaseDateString}")
+        println("releaseDateString : ${result.releaseDate}")
         println("voteCount : ${result.voteCount}")
         println("voteAverage : ${result.voteAverage}")
     }

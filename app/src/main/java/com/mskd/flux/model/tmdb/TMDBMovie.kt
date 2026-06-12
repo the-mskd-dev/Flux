@@ -1,6 +1,7 @@
 package com.mskd.flux.model.tmdb
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 /**
  * Represents a movie retrieved from TMDB.
@@ -13,23 +14,24 @@ import com.google.gson.annotations.SerializedName
  * @property bannerPath Path to the backdrop image of the movie.
  * @property voteAverage Average rating of the movie.
  * @property voteCount Number of votes for the movie.
- * @property releaseDateString Release date of the movie as a string.
+ * @property releaseDate Release date of the movie as a string.
  */
+@Serializable
 data class TMDBMovie(
     val title: String,
-    @SerializedName("overview")
+    @SerialName("overview")
     val description: String,
     val id: Long,
-    @SerializedName("runtime")
+    @SerialName("runtime")
     val duration: Int?,
-    @SerializedName("poster_path")
+    @SerialName("poster_path")
     val imagePath: String?,
-    @SerializedName("backdrop_path")
+    @SerialName("backdrop_path")
     val bannerPath: String?,
-    @SerializedName("vote_average")
+    @SerialName("vote_average")
     val voteAverage: Float,
-    @SerializedName("vote_count")
+    @SerialName("vote_count")
     val voteCount: Int,
-    @SerializedName("release_date")
-    val releaseDateString: String
+    @SerialName("release_date")
+    val releaseDate: String
 )

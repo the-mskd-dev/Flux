@@ -107,7 +107,7 @@ class TmdbRepositoryImplTest {
         println("description : ${result?.description}")
         println("imagePath : ${result?.imagePath}")
         println("bannerPath : ${result?.bannerPath}")
-        println("releaseDate : ${result?.releaseDateString}")
+        println("releaseDate : ${result?.releaseDate}")
         println("voteCount : ${result?.voteCount}")
         println("voteAverage : ${result?.voteAverage}")
     }

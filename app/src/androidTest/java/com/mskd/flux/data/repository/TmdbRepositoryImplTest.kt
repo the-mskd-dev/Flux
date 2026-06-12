@@ -90,7 +90,7 @@ class TmdbRepositoryImplTest {
         println("bannerPath : ${result?.bannerPath}")
         println("originalTitle : ${result?.originalTitle}")
         println("popularity : ${result?.popularity}")
-        println("releaseDateString : ${result?.releaseDateString}")
+        println("releaseDate : ${result?.releaseDate}")
         println("voteCount : ${result?.voteCount}")
         println("voteAverage : ${result?.voteAverage}")
     }
@@ -107,7 +107,7 @@ class TmdbRepositoryImplTest {
         println("description : ${result?.description}")
         println("imagePath : ${result?.imagePath}")
         println("bannerPath : ${result?.bannerPath}")
-        println("releaseDateString : ${result?.releaseDateString}")
+        println("releaseDate : ${result?.releaseDateString}")
         println("voteCount : ${result?.voteCount}")
         println("voteAverage : ${result?.voteAverage}")
     }
@@ -145,7 +145,7 @@ class TmdbRepositoryImplTest {
         println("bannerPath : ${result?.bannerPath}")
         println("originalTitle : ${result?.originalTitle}")
         println("popularity : ${result?.popularity}")
-        println("releaseDateString : ${result?.releaseDateString}")
+        println("releaseDate : ${result?.releaseDate}")
         println("voteCount : ${result?.voteCount}")
         println("voteAverage : ${result?.voteAverage}")
     }

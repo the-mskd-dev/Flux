@@ -9,8 +9,6 @@ import com.mskd.flux.model.tmdb.TMDBArtwork
 import com.mskd.flux.model.tmdb.TMDBMediaType
 import com.mskd.flux.model.tmdb.TMDBMovie
 import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.MissingFieldException
-import kotlinx.serialization.internal.throwMissingFieldException
 
 /**
  * Represents a media, such as a movie or a TV show.
@@ -53,7 +51,7 @@ data class Artwork(
     @OptIn(ExperimentalSerializationApi::class)
     constructor(tmdbArtwork: TMDBArtwork) : this(
         id = tmdbArtwork.id,
-        title = tmdbArtwork.title ?: tmdbArtwork.name ?: throw IllegalArgumentException("No title"),
+        title = tmdbArtwork.title ?: throw IllegalArgumentException("No title for artwork ${tmdbArtwork.id}"),
         description = tmdbArtwork.description,
         imagePath = tmdbArtwork.imagePath.orEmpty(),
         bannerPath = tmdbArtwork.bannerPath.orEmpty(),

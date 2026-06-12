@@ -51,7 +51,7 @@ class TmdbRepositoryImpl @Inject constructor(
             }
 
             // Get translation for show if needed
-            if (tmdbArtwork?.type == TMDBMediaType.SHOW && (tmdbArtwork.description.isBlank() || tmdbArtwork.title.isBlank())) {
+            if (tmdbArtwork?.type == TMDBMediaType.SHOW && (tmdbArtwork.description.isBlank() || tmdbArtwork.title.isNullOrBlank())) {
 
                 getTmdbTranslation(
                     request = TMDBTranslations.Request.Show(

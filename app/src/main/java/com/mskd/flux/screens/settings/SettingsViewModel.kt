@@ -22,8 +22,7 @@ import kotlinx.coroutines.launch
 import java.util.Locale
 import javax.inject.Inject
 
-@HiltViewModel
-class SettingsViewModel @Inject constructor(
+class SettingsViewModel(
     application: Application,
     private val settingsRepository: SettingsRepository,
     private val catalogUC: CatalogUC,

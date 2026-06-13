@@ -59,14 +59,16 @@ import com.mskd.flux.utils.AppThemePreview
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.itemWidthFor
 import com.mskd.flux.utils.rememberScreenDimensions
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
 fun SearchScreen(
     contentType: ContentType? = null,
     navigate: (Route) -> Unit,
     onBack: () -> Unit,
-    viewModel: SearchViewModel = hiltViewModel<SearchViewModel, SearchViewModel.Factory>(
-        creationCallback = { factory -> factory.create(contentType) }
+    viewModel: SearchViewModel = koinViewModel(
+        parameters = { parametersOf(contentType) }
     )
 ) {
 

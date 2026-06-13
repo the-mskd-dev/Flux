@@ -20,17 +20,11 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
-@HiltViewModel(assistedFactory = SearchViewModel.Factory::class)
-class SearchViewModel @AssistedInject constructor(
-    @Assisted contentType: ContentType? = null,
+class SearchViewModel(
+    contentType: ContentType? = null,
     private val catalogUC: CatalogUC,
     private val settingsRepository: SettingsRepository
 ) : ViewModel() {
-
-    @AssistedFactory
-    interface Factory {
-        fun create(contentType: ContentType?): SearchViewModel
-    }
 
     private val _uiState = MutableStateFlow(
         SearchUIState(

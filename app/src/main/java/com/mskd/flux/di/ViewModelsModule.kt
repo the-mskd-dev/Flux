@@ -8,6 +8,7 @@ import com.mskd.flux.screens.customization.CustomizationViewModel
 import com.mskd.flux.screens.home.HomeViewModel
 import com.mskd.flux.screens.player.PlayerViewModel
 import com.mskd.flux.screens.player.controllers.PlayerManager
+import com.mskd.flux.screens.search.SearchViewModel
 import com.mskd.flux.screens.settings.SettingsViewModel
 import com.mskd.flux.screens.show.ShowViewModel
 import com.mskd.flux.screens.unknown.UnknownViewModel
@@ -27,6 +28,14 @@ val viewModelsModule = module {
     viewModel<SettingsViewModel>()
     viewModel<WelcomeViewModel>()
     viewModel<CustomizationViewModel>()
+
+    viewModel { params ->
+        SearchViewModel(
+            contentType = params.getOrNull(),
+            catalogUC = get(),
+            settingsRepository = get()
+        )
+    }
 
     viewModel { params ->
         ShowViewModel(

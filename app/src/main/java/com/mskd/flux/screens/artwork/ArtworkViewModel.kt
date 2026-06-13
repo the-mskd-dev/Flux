@@ -28,23 +28,13 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-@HiltViewModel(assistedFactory = ArtworkViewModel.Factory::class)
-class ArtworkViewModel @AssistedInject constructor(
-    @Assisted val artworkId: Long,
-    @Assisted val season: Int?,
+class ArtworkViewModel(
+    private val artworkId: Long,
+    private val season: Int?,
     private val artworkUC: ArtworkUC,
     private val settingsRepository: SettingsRepository,
     private val progressUC: ProgressUC
 ) : ViewModel() {
-
-    //region Hilt
-
-    @AssistedFactory
-    interface Factory {
-        fun create(artworkId: Long, season: Int?): ArtworkViewModel
-    }
-
-    //endregion
 
     //region Computed properties
 

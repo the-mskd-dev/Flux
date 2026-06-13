@@ -52,6 +52,10 @@ import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.WebLink
 import com.mskd.flux.utils.rememberExternalPlayerLauncher
 import com.mskd.flux.utils.rememberScreenDimensions
+import io.ktor.http.parameters
+import io.ktor.http.parametersOf
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
 fun ArtworkScreen(
@@ -60,8 +64,8 @@ fun ArtworkScreen(
     colorScheme: ColorScheme,
     navigate: (Route) -> Unit,
     onBack: () -> Unit,
-    viewModel: ArtworkViewModel = hiltViewModel<ArtworkViewModel, ArtworkViewModel.Factory>(
-        creationCallback = { factory -> factory.create(artworkId = artworkId, season = season) }
+    viewModel: ArtworkViewModel = koinViewModel(
+        parameters = { parametersOf(artworkId, season) }
     )
 ) {
 

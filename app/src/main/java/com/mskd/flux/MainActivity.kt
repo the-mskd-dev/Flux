@@ -41,10 +41,8 @@ import com.mskd.flux.ui.theme.createColorScheme
 import com.mskd.flux.utils.extensions.popScreen
 import com.mskd.flux.utils.notificationsPermissionState
 import com.mskd.flux.utils.storagePermissionState
-import dagger.hilt.android.AndroidEntryPoint
 import org.koin.android.ext.android.inject
 
-@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     val viewModel: MainViewModel by inject()

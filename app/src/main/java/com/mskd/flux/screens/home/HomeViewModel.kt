@@ -28,8 +28,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.days
 
-@HiltViewModel
-class HomeViewModel @Inject constructor(
+class HomeViewModel(
     private val catalogUC: CatalogUC,
     private val userRepository: UserRepository,
     private val tokenRepository: TokenRepository,

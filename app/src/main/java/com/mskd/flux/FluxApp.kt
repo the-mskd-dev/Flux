@@ -13,6 +13,7 @@ import com.mskd.flux.di.ktorModule
 import com.mskd.flux.di.playerModule
 import com.mskd.flux.di.repositoriesModule
 import com.mskd.flux.di.useCasesModule
+import com.mskd.flux.di.viewModelsModule
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.CrashDialogActivity
 import dagger.hilt.android.HiltAndroidApp
@@ -45,7 +46,8 @@ class FluxApp : Application(), SingletonImageLoader.Factory {
                 ktorModule,
                 playerModule,
                 repositoriesModule,
-                useCasesModule
+                useCasesModule,
+                viewModelsModule
             )
 
         }

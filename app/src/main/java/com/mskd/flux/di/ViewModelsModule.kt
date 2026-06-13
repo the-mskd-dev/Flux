@@ -11,6 +11,7 @@ import com.mskd.flux.screens.player.controllers.PlayerManager
 import com.mskd.flux.screens.search.SearchViewModel
 import com.mskd.flux.screens.settings.SettingsViewModel
 import com.mskd.flux.screens.show.ShowViewModel
+import com.mskd.flux.screens.token.TokenViewModel
 import com.mskd.flux.screens.unknown.UnknownViewModel
 import com.mskd.flux.screens.welcome.WelcomeViewModel
 import com.mskd.flux.useCases.artwork.ArtworkUC
@@ -64,6 +65,15 @@ val viewModelsModule = module {
             filesRepository = get(),
             playerManager = get(),
             progressUC = get(),
+        )
+    }
+
+    viewModel { params ->
+        TokenViewModel(
+            fromSettings = params.get(),
+            tokenRepository = get(),
+            tmdbService = get(),
+            catalogUC = get(),
         )
     }
 

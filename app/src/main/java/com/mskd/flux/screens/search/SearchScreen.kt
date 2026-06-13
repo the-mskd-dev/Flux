@@ -67,9 +67,7 @@ fun SearchScreen(
     contentType: ContentType? = null,
     navigate: (Route) -> Unit,
     onBack: () -> Unit,
-    viewModel: SearchViewModel = koinViewModel(
-        parameters = { parametersOf(contentType) }
-    )
+    viewModel: SearchViewModel = koinViewModel(parameters = { parametersOf(contentType) })
 ) {
 
     val state by viewModel.uiState.collectAsStateWithLifecycle()

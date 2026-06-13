@@ -59,15 +59,15 @@ import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.buildLinkedString
 import kotlinx.coroutines.launch
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
 fun TokenScreen(
     onBack: () -> Unit,
     navigate: (Route) -> Unit,
     fromSettings: Boolean,
-    viewModel: TokenViewModel = hiltViewModel<TokenViewModel, TokenViewModel.Factory>(
-        creationCallback = { factory -> factory.create(fromSettings) }
-    )
+    viewModel: TokenViewModel = koinViewModel(parameters = { parametersOf(fromSettings) })
 ) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()

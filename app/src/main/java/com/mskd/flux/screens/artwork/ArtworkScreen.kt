@@ -64,9 +64,7 @@ fun ArtworkScreen(
     colorScheme: ColorScheme,
     navigate: (Route) -> Unit,
     onBack: () -> Unit,
-    viewModel: ArtworkViewModel = koinViewModel(
-        parameters = { parametersOf(artworkId, season) }
-    )
+    viewModel: ArtworkViewModel = koinViewModel(parameters = { parametersOf(artworkId, season) })
 ) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()

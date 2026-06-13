@@ -57,9 +57,7 @@ fun ShowScreen(
     colorScheme: ColorScheme,
     navigate: (Route) -> Unit,
     onBack: () -> Unit,
-    viewModel: ShowViewModel = koinViewModel(
-        parameters = { parametersOf(artworkId) }
-    )
+    viewModel: ShowViewModel = koinViewModel(parameters = { parametersOf(artworkId) })
 ) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()

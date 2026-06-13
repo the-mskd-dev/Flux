@@ -79,9 +79,7 @@ import kotlin.time.Duration.Companion.seconds
 fun PlayerScreen(
     mediaId: Long,
     onBack: () -> Unit,
-    viewModel: PlayerViewModel = koinViewModel(
-        parameters = { parametersOf(mediaId) }
-    )
+    viewModel: PlayerViewModel = koinViewModel(parameters = { parametersOf(mediaId) })
 ) {
 
     val state by viewModel.uiState.collectAsStateWithLifecycle()

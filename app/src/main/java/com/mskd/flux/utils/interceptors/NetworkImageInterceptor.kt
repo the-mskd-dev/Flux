@@ -4,9 +4,8 @@ import coil3.intercept.Interceptor
 import coil3.request.CachePolicy
 import coil3.request.ImageResult
 import com.mskd.flux.data.repository.connectivity.ConnectivityRepository
-import javax.inject.Inject
 
-class NetworkImageInterceptor @Inject constructor(
+class NetworkImageInterceptor(
     private val connectivityRepository: ConnectivityRepository
 ) : Interceptor {
 

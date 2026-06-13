@@ -1,12 +1,5 @@
 package com.mskd.flux.di
 
-import android.content.Context
-import coil3.ImageLoader
-import com.mskd.flux.data.repository.ddb.DatabaseRepository
-import com.mskd.flux.data.repository.files.FilesRepository
-import com.mskd.flux.data.repository.settings.SettingsRepository
-import com.mskd.flux.data.repository.tmdb.TmdbRepository
-import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.useCases.artwork.ArtworkUC
 import com.mskd.flux.useCases.artwork.ArtworkUCImpl
 import com.mskd.flux.useCases.catalog.CatalogUC
@@ -15,78 +8,42 @@ import com.mskd.flux.useCases.images.ImagesUC
 import com.mskd.flux.useCases.images.ImagesUCImpl
 import com.mskd.flux.useCases.progress.ProgressUC
 import com.mskd.flux.useCases.progress.ProgressUCImpl
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.components.SingletonComponent
-import kotlinx.coroutines.CoroutineScope
-import javax.inject.Singleton
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.qualifier.named
+import org.koin.dsl.module
 
-@Module
-@InstallIn(SingletonComponent::class)
-object UseCasesModule {
+val useCasesModule = module {
 
-    @Provides
-    @Singleton
-    fun provideCatalogUC(
-        tmdbRepository: TmdbRepository,
-        databaseRepository: DatabaseRepository,
-        filesRepository: FilesRepository,
-        userRepository: UserRepository,
-        settingsRepository: SettingsRepository,
-        imagesUC: ImagesUC,
-        @CoroutineModule.ApplicationScope scope: CoroutineScope,
-        @ApplicationContext context: Context
-    ) : CatalogUC {
-        return CatalogUCImpl(
-            tmdb = tmdbRepository,
-            database = databaseRepository,
-            files = filesRepository,
-            user = userRepository,
-            settings = settingsRepository,
-            imagesUC = imagesUC,
-            scope = scope,
-            context = context
+    single<CatalogUC> {
+        CatalogUCImpl(
+            tmdb = get(),
+            database = get(),
+            files = get(),
+            user = get(),
+            settings = get(),
+            imagesUC = get(),
+            scope = get(named("ApplicationScope")),
+            context = androidContext()
         )
     }
 
-    @Provides
-    @Singleton
-    fun provideArtworkUC(
-        databaseRepository: DatabaseRepository,
-    ) : ArtworkUC {
-        return ArtworkUCImpl(
-            database = databaseRepository,
+    single<ArtworkUC> {
+        ArtworkUCImpl(database = get(),)
+    }
+
+    single<ProgressUC> {
+        ProgressUCImpl(
+            database = get(),
+            user = get()
         )
     }
 
-    @Provides
-    @Singleton
-    fun provideProgressUC(
-        databaseRepository: DatabaseRepository,
-        userRepository: UserRepository
-    ) : ProgressUC {
-        return ProgressUCImpl(
-            database = databaseRepository,
-            user = userRepository
+    single<ImagesUC> {
+        ImagesUCImpl(
+            database = get(),
+            imageLoader = get(),
+            context = androidContext(),
+            scope = get(named("ApplicationScope"))
         )
     }
-
-    @Provides
-    @Singleton
-    fun provideImagesUC(
-        databaseRepository: DatabaseRepository,
-        imageLoader: ImageLoader,
-        @ApplicationContext context: Context,
-        @CoroutineModule.ApplicationScope scope: CoroutineScope,
-    ) : ImagesUC {
-        return ImagesUCImpl(
-            database = databaseRepository,
-            imageLoader = imageLoader,
-            context = context,
-            scope = scope
-        )
-    }
-
 }

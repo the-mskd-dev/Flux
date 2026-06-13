@@ -3,10 +3,6 @@ package com.mskd.flux.di
 import com.mskd.flux.data.tmdb.TMDBService
 import com.mskd.flux.data.tmdb.TMDBServiceImpl
 import com.mskd.flux.data.tmdb.token.TokenRepository
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.HttpRequestRetry
@@ -16,57 +12,52 @@ import io.ktor.http.HttpHeaders
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
-import javax.inject.Singleton
+import org.koin.dsl.module
 
-@Module
-@InstallIn(SingletonComponent::class)
-object KtorModule {
+val ktorModule = module {
 
-    private const val BASE_URL = "https://api.themoviedb.org/3/"
+    val baseUrl = "https://api.themoviedb.org/3/"
 
-    @Provides
-    @Singleton
-    fun provideJson(): Json = Json {
-        ignoreUnknownKeys = true
-        explicitNulls = false
-        coerceInputValues = true
-        isLenient = true
-        useAlternativeNames = true
+    single<Json> {
+        Json {
+            ignoreUnknownKeys = true
+            explicitNulls = false
+            coerceInputValues = true
+            isLenient = true
+            useAlternativeNames = true
+        }
     }
 
-    @Provides
-    @Singleton
-    fun provideHttpClient(
-        json: Json,
-        tokenRepository: TokenRepository
-    ): HttpClient = HttpClient(OkHttp) {
+    single<HttpClient> {
+        val json = get<Json>()
+        val tokenRepository = get<TokenRepository>()
 
-        // Sérialisation
-        install(ContentNegotiation) {
-            json(json)
-        }
+        HttpClient(OkHttp) {
 
-        install(HttpRequestRetry) {
-            maxRetries = 3
-            retryIf { _, response -> response.status.value == 429 }
-            exponentialDelay(base = 1.0, maxDelayMs = 3000)
-        }
+            install(ContentNegotiation) {
+                json(json)
+            }
 
-        // Base URL + headers (équivalent TokenInterceptor)
-        defaultRequest {
-            url(BASE_URL)
-            headers.append(HttpHeaders.Accept, "application/json")
-            val token = runBlocking { tokenRepository.getToken() }
-            if (token.isNotEmpty()) {
-                headers.append(HttpHeaders.Authorization, "Bearer ${token.trim()}")
+            install(HttpRequestRetry) {
+                maxRetries = 3
+                retryIf { _, response -> response.status.value == 429 }
+                exponentialDelay(base = 1.0, maxDelayMs = 3000)
+            }
+
+            defaultRequest {
+                url(baseUrl)
+                headers.append(HttpHeaders.Accept, "application/json")
+                val token = runBlocking { tokenRepository.getToken() }
+                if (token.isNotEmpty()) {
+                    headers.append(HttpHeaders.Authorization, "Bearer ${token.trim()}")
+                }
             }
         }
+
     }
 
-    @Provides
-    @Singleton
-    fun provideTMDBService(client: HttpClient) : TMDBService {
-        return TMDBServiceImpl(client = client)
+    single<TMDBService> {
+        TMDBServiceImpl(client = get())
     }
 
 }

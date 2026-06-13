@@ -7,7 +7,6 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.serialization)
     alias(libs.plugins.parcelize)
-    alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.koin.compiler)
 }
@@ -153,12 +152,6 @@ dependencies {
 
     // Media Player
     implementation(libs.bundles.media3)
-
-    // Hilt
-    implementation(libs.hilt.android)
-    implementation(libs.androidx.hilt.navigation.compose)
-    ksp(libs.hilt.compiler)
-    ksp(libs.hilt.android.compiler)
 
     // Koin
     implementation(platform(libs.koin.bom))

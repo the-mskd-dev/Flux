@@ -10,8 +10,6 @@ plugins {
     alias(libs.plugins.parcelize) apply false
     alias(libs.plugins.kotlin.compose) apply false
 
-    // Hilt
-    alias(libs.plugins.hilt) apply false
     alias(libs.plugins.ksp) apply false
 
 }

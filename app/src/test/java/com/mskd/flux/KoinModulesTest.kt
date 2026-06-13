@@ -13,17 +13,16 @@ import com.mskd.flux.di.repositoriesModule
 import com.mskd.flux.di.useCasesModule
 import com.mskd.flux.di.viewModelsModule
 import com.mskd.flux.model.artwork.ContentType
-import io.kotest.core.spec.style.Test
+import io.kotest.core.spec.style.FunSpec
 import org.koin.core.annotation.KoinExperimentalAPI
-import org.koin.test.KoinTest
-import org.koin.test.verify.verifyAll
+import org.koin.dsl.module
+import org.koin.test.verify.verify
 
 
-class KoinModulesTest : KoinTest {
+class KoinModulesTest : FunSpec({
 
     @OptIn(KoinExperimentalAPI::class)
-    @Test
-    fun verifyModules() {
+    test("verify modules") {
 
         val allModules = listOf(
             coroutineModule,
@@ -38,16 +37,21 @@ class KoinModulesTest : KoinTest {
             viewModelsModule
         )
 
-        allModules.verifyAll(
+        val combined = module {
+            includes(allModules)
+        }
+
+        combined.verify(
             extraTypes = listOf(
                 Context::class,
                 Application::class,
                 String::class,
                 Boolean::class,
                 Int::class,
-                ContentType::class
+                ContentType::class,
+                io.ktor.client.engine.HttpClientEngine::class
             )
         )
 
     }
-}
+})

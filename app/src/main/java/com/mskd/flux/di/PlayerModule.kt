@@ -11,14 +11,13 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.SeekParameters
 import com.mskd.flux.screens.player.controllers.PlayerManager
 import org.koin.android.ext.koin.androidContext
+import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val playerModule = module {
 
-    single<PlayerManager> {
-        PlayerManager(androidContext())
-    }
+    singleOf(::PlayerManager)
 
     scope(named("PlayerServiceScope")) {
 

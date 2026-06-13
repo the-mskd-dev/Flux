@@ -12,17 +12,17 @@ import com.mskd.flux.screens.token.TokenViewModel
 import com.mskd.flux.screens.unknown.UnknownViewModel
 import com.mskd.flux.screens.welcome.WelcomeViewModel
 import org.koin.core.module.dsl.viewModel
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
-import org.koin.plugin.module.dsl.viewModel
 
 val viewModelsModule = module {
 
-    viewModel<MainViewModel>()
-    viewModel<HomeViewModel>()
-    viewModel<UnknownViewModel>()
-    viewModel<SettingsViewModel>()
-    viewModel<WelcomeViewModel>()
-    viewModel<CustomizationViewModel>()
+    viewModelOf(::MainViewModel)
+    viewModelOf(::HomeViewModel)
+    viewModelOf(::UnknownViewModel)
+    viewModelOf(::SettingsViewModel)
+    viewModelOf(::WelcomeViewModel)
+    viewModelOf(::CustomizationViewModel)
 
     viewModel { params ->
         SearchViewModel(

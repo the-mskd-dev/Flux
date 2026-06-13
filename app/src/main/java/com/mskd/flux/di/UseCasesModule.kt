@@ -9,10 +9,10 @@ import com.mskd.flux.useCases.images.ImagesUCImpl
 import com.mskd.flux.useCases.progress.ProgressUC
 import com.mskd.flux.useCases.progress.ProgressUCImpl
 import org.koin.android.ext.koin.androidContext
+import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.bind
 import org.koin.dsl.module
-import org.koin.plugin.module.dsl.single
 
 val useCasesModule = module {
 
@@ -29,9 +29,9 @@ val useCasesModule = module {
         )
     }
 
-    single<ArtworkUCImpl>() bind ArtworkUC::class
+    singleOf(::ArtworkUCImpl) bind ArtworkUC::class
 
-    single<ProgressUCImpl>() bind ProgressUC::class
+    singleOf(::ProgressUCImpl) bind ProgressUC::class
 
     single<ImagesUC> {
         ImagesUCImpl(

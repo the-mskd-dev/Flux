@@ -27,11 +27,12 @@ import com.mskd.flux.screens.customization.composables.ItemsPerRowDialog
 import com.mskd.flux.ui.component.global.FluxOptionsDialog
 import com.mskd.flux.ui.component.global.FluxScaffold
 import com.mskd.flux.ui.theme.Ui
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun CustomizationScreen(
     onBack: () -> Unit,
-    viewModel: CustomizationViewModel = hiltViewModel()
+    viewModel: CustomizationViewModel = koinViewModel()
 ) {
 
     val state by viewModel.uiState.collectAsStateWithLifecycle()

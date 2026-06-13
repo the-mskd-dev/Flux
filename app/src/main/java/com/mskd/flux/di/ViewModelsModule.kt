@@ -1,6 +1,7 @@
 package com.mskd.flux.di
 
 import com.mskd.flux.MainViewModel
+import com.mskd.flux.screens.customization.CustomizationViewModel
 import com.mskd.flux.screens.home.HomeViewModel
 import com.mskd.flux.screens.settings.SettingsViewModel
 import com.mskd.flux.screens.unknown.UnknownViewModel
@@ -16,5 +17,6 @@ val viewModelsModule = module {
     viewModelOf(::UnknownViewModel)
     viewModelOf(::SettingsViewModel)
     viewModelOf(::WelcomeViewModel)
+    viewModelOf(::CustomizationViewModel)
 
 }

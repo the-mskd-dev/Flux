@@ -4,6 +4,8 @@ import com.mskd.flux.BuildConfig
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.data.repository.tmdb.TmdbRepositoryImpl
 import com.mskd.flux.data.tmdb.TMDBService
+import com.mskd.flux.di.dataStoreModule
+import com.mskd.flux.di.ktorModule
 import com.mskd.flux.model.FileSource
 import com.mskd.flux.model.UserFile
 import com.mskd.flux.model.tmdb.TMDBTranslations
@@ -15,14 +17,15 @@ import org.junit.Before
 import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runners.MethodSorters
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import org.koin.core.context.startKoin
+import org.koin.test.KoinTest
+import org.koin.test.inject
 import java.util.Locale
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-class TmdbRepositoryImplTest {
+class TmdbRepositoryImplTest : KoinTest {
 
-    private lateinit var tmdbService: TMDBService
+    private val tmdbService: TMDBService by inject()
     private lateinit var settingsRepository: SettingsRepository
     private lateinit var repository: TmdbRepositoryImpl
 
@@ -51,22 +54,13 @@ class TmdbRepositoryImplTest {
     fun setup() {
         val apiKey = BuildConfig.TMDB_TOKEN
 
-        val client = OkHttpClient.Builder()
-            .addInterceptor { chain ->
-                val request = chain.request().newBuilder()
-                    .addHeader("Authorization", "Bearer $apiKey")
-                    .build()
-                chain.proceed(request)
-            }
-            .build()
+        startKoin {
+            modules(
+                ktorModule,
+                dataStoreModule
+            )
+        }
 
-        val retrofit = Retrofit.Builder()
-            .baseUrl("https://api.themoviedb.org/3/")
-            .client(client)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        tmdbService = retrofit.create(TMDBService::class.java)
         settingsRepository = mockk(relaxed = true) {
             coEvery { getDataLanguage() } returns dataLanguage
         }

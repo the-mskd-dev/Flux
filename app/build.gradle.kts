@@ -181,6 +181,9 @@ dependencies {
     androidTestImplementation(libs.truth)
     androidTestImplementation(libs.androidx.core.testing)
     androidTestImplementation(libs.mockk.android)
+    androidTestImplementation(libs.turbine)
+    androidTestImplementation(platform(libs.koin.bom))
+    androidTestImplementation(libs.koin.test)
 
     // UI Testing
     androidTestImplementation(platform(libs.androidx.compose.bom))

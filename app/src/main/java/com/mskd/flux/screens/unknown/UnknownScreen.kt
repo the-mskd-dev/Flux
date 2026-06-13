@@ -45,13 +45,14 @@ import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.ExternalPlayer
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.rememberExternalPlayerLauncher
+import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun UnknownScreen(
     navigate: (Route) -> Unit,
     onBack: () -> Unit,
-    viewModel: UnknownViewModel = hiltViewModel()
+    viewModel: UnknownViewModel = koinViewModel()
 ) {
 
     val context = LocalContext.current

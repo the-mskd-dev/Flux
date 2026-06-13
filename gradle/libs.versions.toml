@@ -3,7 +3,6 @@
 agp = "9.2.1"
 kotlin = "2.3.21"
 ksp = "2.3.6"
-hiltPlugin = "2.59.2"
 
 # -- Android Core --
 coreKtx = "1.19.0"
@@ -24,16 +23,13 @@ lifecycleNav3 = "2.10.0"
 material3AdaptiveNav3 = "1.3.0-beta02"
 
 # -- Architecture & DI --
-hilt = "2.59.2"
-hiltNav = "1.3.0"
 accompanist = "0.37.3"
+koin = "4.2.1"
 
 # -- Data & Network --
-retrofit = "3.0.0"
-okhttp = "5.3.2"
-gson = "2.14.0"
 datastore = "1.2.1"
 room = "2.8.4"
+ktor = "3.5.0"
 
 # -- Media --
 media3 = "1.10.1"
@@ -46,7 +42,7 @@ acra = "5.13.1"
 # -- Testing --
 junit = "4.13.2"
 kotest = "6.1.11"
-mockwebserver = "5.3.2"
+mockwebserver = "5.4.0"
 mockk = "1.14.11"
 turbine = "1.2.1"
 coroutinesTest = "1.11.0"
@@ -61,6 +57,7 @@ androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = 
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinxSerializationCore" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationCore" }
 
 # -- Compose --
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
@@ -92,12 +89,6 @@ androidx-material3-adaptive-navigation3 = { group = "androidx.compose.material3.
 # -- Accompanist --
 accompanist-permissions = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanist" }
 
-# -- Hilt --
-hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
-hilt-compiler = { group = "com.google.dagger", name = "dagger-compiler", version.ref = "hilt" } # Dagger compiler for KSP
-hilt-android-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
-androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNav" }
-
 # -- Media3 --
 androidx-media3-exoplayer = { group = "androidx.media3", name = "media3-exoplayer", version.ref = "media3" }
 androidx-media3-ui = { group = "androidx.media3", name = "media3-ui", version.ref = "media3" }
@@ -106,11 +97,20 @@ androidx-media3-ui-compose = { group = "androidx.media3", name = "media3-ui-comp
 jellyfin-ffmpeg = { group = "org.jellyfin.media3", name = "media3-ffmpeg-decoder", version.ref = "jellyfinFfmpeg" }
 
 # -- Network --
-retrofit-core = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
-retrofit-scalars = { group = "com.squareup.retrofit2", name = "converter-scalars", version.ref = "retrofit" }
-retrofit-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
-okhttp-core = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
-gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
+ktor-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktor-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
+ktor-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
+ktor-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
+
+# -- Koin --
+koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin" }
+koin-core = { module = "io.insert-koin:koin-core" }
+koin-android = { module = "io.insert-koin:koin-android" }
+koin-compose = { module = "io.insert-koin:koin-compose" }
+koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel" }
+koin-ktor = { module = "io.insert-koin:koin-ktor" }
+koin-test = { module = "io.insert-koin:koin-test" }
+koin-test-junit4 = { module = "io.insert-koin:koin-test-junit4" }
 
 # -- Coil --
 coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
@@ -153,7 +153,6 @@ kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "ko
 jetbrains-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin"}
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hiltPlugin" }
 
 [bundles]
 compose = [
@@ -182,11 +181,11 @@ media3 = [
     "jellyfin-ffmpeg",
 ]
 network = [
-    "retrofit-core",
-    "retrofit-scalars",
-    "retrofit-gson",
-    "okhttp-core",
-    "gson"
+    "kotlinx-serialization-json",
+    "ktor-core",
+    "ktor-okhttp",
+    "ktor-negotiation",
+    "ktor-json"
 ]
 image = [
     "coil-compose",
@@ -206,4 +205,21 @@ acra = [
     "acra-core",
     "acra-mail",
     "acra-dialog"
+]
+koin = [
+    "koin-core",
+    "koin-android",
+    "koin-compose",
+    "koin-compose-viewmodel",
+    "koin-ktor",
+]
+test = [
+    "junit",
+    "kotest",
+    "mockwebserver",
+    "mockk",
+    "koin-test",
+    "koin-test-junit4",
+    "turbine",
+    "kotlinx-coroutines-test"
 ]

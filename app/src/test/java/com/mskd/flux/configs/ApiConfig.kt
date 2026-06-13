@@ -1,12 +1,16 @@
 package com.mskd.flux.configs
 
 import com.mskd.flux.data.tmdb.TMDBService
+import com.mskd.flux.data.tmdb.TMDBServiceImpl
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.Spec
-import okhttp3.OkHttpClient
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.okhttp.OkHttp
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.defaultRequest
+import io.ktor.serialization.kotlinx.json.json
+import kotlinx.serialization.json.Json
 import okhttp3.mockwebserver.MockWebServer
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 class ApiConfig : TestListener {
 
@@ -19,14 +23,38 @@ class ApiConfig : TestListener {
         mockWebServer = MockWebServer()
         mockWebServer.start()
 
-        // Create api
-        val retrofit = Retrofit.Builder()
-            .baseUrl(mockWebServer.url("/")) // URL of MockWebServer
-            .addConverterFactory(GsonConverterFactory.create())
-            .client(OkHttpClient())
-            .build()
+        val json = Json {
+            ignoreUnknownKeys = true
+            explicitNulls = false
+            coerceInputValues = true
+            isLenient = true
+            useAlternativeNames = true
+        }
 
-        api = retrofit.create(TMDBService::class.java)
+        // Create api
+        val client = HttpClient(OkHttp) {
+            engine {
+                addInterceptor(object : okhttp3.Interceptor {
+                    override fun intercept(chain: okhttp3.Interceptor.Chain): okhttp3.Response {
+                        val response = chain.proceed(chain.request())
+                        if (response.header("Content-Type") == null) {
+                            return response.newBuilder()
+                                .header("Content-Type", "application/json; charset=utf-8")
+                                .build()
+                        }
+                        return response
+                    }
+                })
+            }
+            install(ContentNegotiation) {
+                json(json)
+            }
+            defaultRequest {
+                url(mockWebServer.url("/").toString())
+            }
+        }
+
+        api = TMDBServiceImpl(client)
     }
 
     override suspend fun afterSpec(spec: Spec) {

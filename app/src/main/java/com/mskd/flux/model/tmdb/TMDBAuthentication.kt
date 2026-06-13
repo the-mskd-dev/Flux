@@ -1,14 +1,20 @@
 package com.mskd.flux.model.tmdb
 
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
 /**
  * Represents the result of an authentication request with TMDB.
  *
  * @property success Indicates whether the authentication was successful.
- * @property status_code Status code of the authentication response.
- * @property status_message Message associated with the authentication status.
+ * @property code Status code of the authentication response.
+ * @property message Message associated with the authentication status.
  */
+@Serializable
 data class TMDBAuthentication(
     val success: Boolean,
-    val status_code: Int,
-    val status_message: String
+    @SerialName("status_code")
+    val code: Int?,
+    @SerialName("status_message")
+    val message: String?
 )

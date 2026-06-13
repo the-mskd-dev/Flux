@@ -1,7 +1,5 @@
 package com.mskd.flux.di
 
-import android.content.Context
-import com.google.gson.Gson
 import com.mskd.flux.data.repository.customization.CustomizationRepository
 import com.mskd.flux.data.repository.customization.CustomizationRepositoryImpl
 import com.mskd.flux.data.repository.customization.customizationDatastore
@@ -15,56 +13,46 @@ import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.data.repository.user.UserRepositoryImpl
 import com.mskd.flux.data.repository.user.userDataStore
 import com.mskd.flux.data.tmdb.token.TokenRepository
-import com.mskd.flux.data.tmdb.token.TokenRepositoryImp
+import com.mskd.flux.data.tmdb.token.TokenRepositoryImpl
 import com.mskd.flux.data.tmdb.token.tokenDatastore
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
+import org.koin.android.ext.koin.androidContext
+import org.koin.dsl.module
 
 // At the top level of your kotlin file:
 private const val PREFERENCES = "preferences"
 
-@Module
-@InstallIn(SingletonComponent::class)
-object DataStoreModule {
+val dataStoreModule = module {
 
-    @Provides
-    @Singleton
-    fun provideUserRepository(
-        @ApplicationContext context: Context,
-        gson: Gson
-    ) : UserRepository {
-        return UserRepositoryImpl(
-            userDataStore = context.userDataStore,
-            gson = gson
+    single<UserRepository> {
+        UserRepositoryImpl(
+            userDataStore = androidContext().userDataStore,
+            json = get()
         )
     }
 
-    @Provides
-    @Singleton
-    fun provideSettingsRepository(@ApplicationContext context: Context) : SettingsRepository {
-        return SettingsRepositoryImpl(settingsDataStore = context.settingsDatastore)
+    single<SettingsRepository> {
+        SettingsRepositoryImpl(
+            settingsDataStore = androidContext().settingsDatastore
+        )
     }
 
-    @Provides
-    @Singleton
-    fun provideCustomizationRepository(@ApplicationContext context: Context) : CustomizationRepository {
-        return CustomizationRepositoryImpl(customizationDataStore = context.customizationDatastore)
+    single<CustomizationRepository> {
+        CustomizationRepositoryImpl(
+            customizationDataStore = androidContext().customizationDatastore
+        )
     }
 
-    @Provides
-    @Singleton
-    fun provideTokenRepository(@ApplicationContext context: Context) : TokenRepository {
-        return TokenRepositoryImp(tokenDataStore = context.tokenDatastore)
+    single<TokenRepository> {
+        TokenRepositoryImpl(
+            tokenDataStore = androidContext().tokenDatastore
+        )
     }
 
-    @Provides
-    @Singleton
-    fun provideSnackbarRepository(@ApplicationContext context: Context) : SnackbarRepository {
-        return SnackbarRepositoryImpl(snackbarDataStore = context.snackbarDataStore)
+    single<SnackbarRepository> {
+        SnackbarRepositoryImpl(
+            snackbarDataStore = androidContext().snackbarDataStore
+        )
     }
+
 
 }

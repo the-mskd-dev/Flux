@@ -16,7 +16,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.R
 import com.mskd.flux.screens.customization.composables.CustomizationArtworkSection
@@ -27,11 +26,12 @@ import com.mskd.flux.screens.customization.composables.ItemsPerRowDialog
 import com.mskd.flux.ui.component.global.FluxOptionsDialog
 import com.mskd.flux.ui.component.global.FluxScaffold
 import com.mskd.flux.ui.theme.Ui
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun CustomizationScreen(
     onBack: () -> Unit,
-    viewModel: CustomizationViewModel = hiltViewModel()
+    viewModel: CustomizationViewModel = koinViewModel()
 ) {
 
     val state by viewModel.uiState.collectAsStateWithLifecycle()

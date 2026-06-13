@@ -8,6 +8,7 @@ import com.mskd.flux.model.UserFile
 import com.mskd.flux.model.tmdb.TMDBArtwork
 import com.mskd.flux.model.tmdb.TMDBMediaType
 import com.mskd.flux.model.tmdb.TMDBMovie
+import kotlinx.serialization.ExperimentalSerializationApi
 
 /**
  * Represents a media, such as a movie or a TV show.
@@ -47,6 +48,7 @@ data class Artwork(
     /**
      * Constructs an [Artwork] instance using a [TMDBArtwork].
      */
+    @OptIn(ExperimentalSerializationApi::class)
     constructor(tmdbArtwork: TMDBArtwork) : this(
         id = tmdbArtwork.id,
         title = tmdbArtwork.title,

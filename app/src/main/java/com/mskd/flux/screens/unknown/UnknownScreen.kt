@@ -26,7 +26,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.mskd.flux.R
@@ -45,13 +44,14 @@ import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.ExternalPlayer
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.rememberExternalPlayerLauncher
+import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun UnknownScreen(
     navigate: (Route) -> Unit,
     onBack: () -> Unit,
-    viewModel: UnknownViewModel = hiltViewModel()
+    viewModel: UnknownViewModel = koinViewModel()
 ) {
 
     val context = LocalContext.current

@@ -13,11 +13,8 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import java.io.IOException
 import java.util.Locale
-import javax.inject.Inject
 
-class SettingsRepositoryImpl @Inject constructor(
-    val settingsDataStore: DataStore<Preferences>
-) : SettingsRepository {
+class SettingsRepositoryImpl(val settingsDataStore: DataStore<Preferences>) : SettingsRepository {
 
     object Keys {
         val PLAYER_REWIND = intPreferencesKey("player_rewind")

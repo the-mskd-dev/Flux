@@ -1,16 +1,18 @@
 package com.mskd.flux.model.tmdb
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class TMDBSeason(
     val id: Long,
-    @SerializedName("name")
+    @SerialName("name")
     val title: String,
-    @SerializedName("overview")
+    @SerialName("overview")
     val description: String,
-    @SerializedName("poster_path")
+    @SerialName("poster_path")
     val imagePath: String?,
-    @SerializedName("season_number")
+    @SerialName("season_number")
     val season: Int,
     val episodes: List<TMDBEpisode>
 )

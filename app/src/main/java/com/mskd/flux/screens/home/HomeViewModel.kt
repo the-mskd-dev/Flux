@@ -14,7 +14,6 @@ import com.mskd.flux.screens.home.HomeEvent.NavigateToMovie
 import com.mskd.flux.useCases.catalog.CatalogUC
 import com.mskd.flux.utils.FluxSnackbar
 import com.mskd.flux.utils.UpdateManager
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -25,11 +24,9 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 import kotlin.time.Duration.Companion.days
 
-@HiltViewModel
-class HomeViewModel @Inject constructor(
+class HomeViewModel(
     private val catalogUC: CatalogUC,
     private val userRepository: UserRepository,
     private val tokenRepository: TokenRepository,

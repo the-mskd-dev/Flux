@@ -39,7 +39,6 @@ import androidx.compose.ui.util.lerp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
@@ -52,6 +51,7 @@ import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.storagePermissionState
+import org.koin.compose.viewmodel.koinViewModel
 import kotlin.math.absoluteValue
 import kotlin.random.Random
 
@@ -59,7 +59,7 @@ import kotlin.random.Random
 @Composable
 fun WelcomeScreen(
     navigate: (Route) -> Unit,
-    viewModel: WelcomeViewModel = hiltViewModel()
+    viewModel: WelcomeViewModel = koinViewModel()
 ) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()

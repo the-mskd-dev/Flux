@@ -46,7 +46,6 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.Player
 import androidx.media3.common.VideoSize
@@ -70,6 +69,8 @@ import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.LandscapePreview
 import com.mskd.flux.utils.enums.Side
 import kotlinx.coroutines.delay
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 import kotlin.time.Duration.Companion.seconds
 
 @OptIn(UnstableApi::class)
@@ -77,9 +78,7 @@ import kotlin.time.Duration.Companion.seconds
 fun PlayerScreen(
     mediaId: Long,
     onBack: () -> Unit,
-    viewModel: PlayerViewModel = hiltViewModel<PlayerViewModel, PlayerViewModel.Factory>(
-        creationCallback = { factory -> factory.create(mediaId = mediaId) }
-    )
+    viewModel: PlayerViewModel = koinViewModel(parameters = { parametersOf(mediaId) })
 ) {
 
     val state by viewModel.uiState.collectAsStateWithLifecycle()

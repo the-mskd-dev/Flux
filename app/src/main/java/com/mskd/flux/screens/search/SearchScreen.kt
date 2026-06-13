@@ -42,7 +42,6 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.R
 import com.mskd.flux.data.repository.customization.LocalCustomization
@@ -59,15 +58,15 @@ import com.mskd.flux.utils.AppThemePreview
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.itemWidthFor
 import com.mskd.flux.utils.rememberScreenDimensions
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
 fun SearchScreen(
     contentType: ContentType? = null,
     navigate: (Route) -> Unit,
     onBack: () -> Unit,
-    viewModel: SearchViewModel = hiltViewModel<SearchViewModel, SearchViewModel.Factory>(
-        creationCallback = { factory -> factory.create(contentType) }
-    )
+    viewModel: SearchViewModel = koinViewModel(parameters = { parametersOf(contentType) })
 ) {
 
     val state by viewModel.uiState.collectAsStateWithLifecycle()

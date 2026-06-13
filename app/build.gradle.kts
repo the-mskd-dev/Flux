@@ -7,7 +7,6 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.serialization)
     alias(libs.plugins.parcelize)
-    alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.compose)
 }
 
@@ -153,13 +152,11 @@ dependencies {
     // Media Player
     implementation(libs.bundles.media3)
 
-    // Hilt
-    implementation(libs.hilt.android)
-    implementation(libs.androidx.hilt.navigation.compose)
-    ksp(libs.hilt.compiler)
-    ksp(libs.hilt.android.compiler)
+    // Koin
+    implementation(platform(libs.koin.bom))
+    implementation(libs.bundles.koin)
 
-    // Network & Serialization (Retrofit 3, OkHttp 5, Gson)
+    // Network & Serialization (Ktor)
     implementation(libs.bundles.network)
 
     // Images
@@ -176,12 +173,7 @@ dependencies {
     implementation(libs.bundles.acra)
 
     // Unit Testing
-    testImplementation(libs.junit)
-    testImplementation(libs.kotest)
-    testImplementation(libs.mockwebserver)
-    testImplementation(libs.mockk)
-    implementation(libs.turbine)
-    implementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.bundles.test)
 
     // Android Testing
     androidTestImplementation(libs.androidx.test.ext)
@@ -189,6 +181,9 @@ dependencies {
     androidTestImplementation(libs.truth)
     androidTestImplementation(libs.androidx.core.testing)
     androidTestImplementation(libs.mockk.android)
+    androidTestImplementation(libs.turbine)
+    androidTestImplementation(platform(libs.koin.bom))
+    androidTestImplementation(libs.koin.test)
 
     // UI Testing
     androidTestImplementation(platform(libs.androidx.compose.bom))

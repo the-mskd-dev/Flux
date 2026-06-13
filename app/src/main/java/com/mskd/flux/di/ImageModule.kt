@@ -1,30 +1,24 @@
 package com.mskd.flux.di
 
-import android.content.Context
 import coil3.ImageLoader
 import coil3.disk.DiskCache
 import coil3.disk.directory
 import coil3.memory.MemoryCache
 import coil3.video.VideoFrameDecoder
 import com.mskd.flux.utils.interceptors.NetworkImageInterceptor
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.module
 
-@Module
-@InstallIn(SingletonComponent::class)
-object ImageModule {
+val imageModule = module {
 
-    @Provides
-    @Singleton
-    fun provideImageLoader(
-        @ApplicationContext context: Context,
-        networkImageInterceptor: NetworkImageInterceptor
-    ) : ImageLoader {
-        return ImageLoader.Builder(context)
+    singleOf(::NetworkImageInterceptor)
+
+    single<ImageLoader> {
+        val context = androidContext()
+        val networkImageInterceptor = get<NetworkImageInterceptor>()
+
+        ImageLoader.Builder(context)
             .memoryCache {
                 MemoryCache.Builder()
                     .maxSizePercent(context, 0.25)
@@ -42,4 +36,5 @@ object ImageModule {
             }
             .build()
     }
+
 }

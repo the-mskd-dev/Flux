@@ -6,10 +6,6 @@ import com.mskd.flux.BuildConfig
 import com.mskd.flux.data.tmdb.TMDBService
 import com.mskd.flux.data.tmdb.token.TokenRepository
 import com.mskd.flux.useCases.catalog.CatalogUC
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,18 +14,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-@HiltViewModel(assistedFactory = TokenViewModel.Factory::class)
-class TokenViewModel @AssistedInject constructor(
-    @Assisted val fromSettings: Boolean,
+class TokenViewModel(
+    fromSettings: Boolean,
     private val tokenRepository: TokenRepository,
     private val tmdbService: TMDBService,
     private val catalogUC: CatalogUC
 ) : ViewModel() {
-
-    @AssistedFactory
-    interface Factory {
-        fun create(fromSettings: Boolean): TokenViewModel
-    }
 
     private val _event = MutableSharedFlow<TokenEvent>()
     val event = _event.asSharedFlow()

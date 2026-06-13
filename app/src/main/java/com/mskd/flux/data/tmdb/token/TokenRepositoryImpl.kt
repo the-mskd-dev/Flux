@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 import java.io.IOException
 
-class TokenRepositoryImp(
+class TokenRepositoryImpl(
     private val tokenDataStore: DataStore<Preferences>
 ) : TokenRepository {
 

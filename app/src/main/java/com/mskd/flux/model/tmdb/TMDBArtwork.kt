@@ -1,7 +1,10 @@
 package com.mskd.flux.model.tmdb
 
-import com.google.gson.annotations.SerializedName
 import com.mskd.flux.utils.Levenshtein
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonNames
 
 /**
  * Represents an media retrieved from TMDB (The Movie Database).
@@ -13,37 +16,42 @@ import com.mskd.flux.utils.Levenshtein
  * @property type Type of media (e.g., movie, TV show, or person).
  * @property genres List of genre IDs associated with the media.
  * @property popularity Popularity score of the media.
- * @property releaseDateString Release date of the media as a string.
+ * @property releaseDate Release date of the media as a string.
  * @property voteAverage Average rating of the media.
  * @property voteCount Number of votes for the media.
  * @property title Title of the media.
  * @property originalTitle Original title of the media.
  */
+@Serializable
+@OptIn(ExperimentalSerializationApi::class)
 data class TMDBArtwork(
     val id: Long,
-    @SerializedName("overview")
+    @SerialName("overview")
     val description: String,
-    @SerializedName("poster_path")
+    @SerialName("poster_path")
     val imagePath: String?,
-    @SerializedName("backdrop_path")
+    @SerialName("backdrop_path")
     val bannerPath: String?,
-    @SerializedName("media_type")
-    var type: TMDBMediaType,
-    @SerializedName("genre_ids")
+    @SerialName("genre_ids")
     val genres: List<Int>,
     val popularity: Float,
-    @SerializedName("first_air_date", alternate = ["release_date"])
-    val releaseDateString: String,
-    @SerializedName("vote_average")
+    @JsonNames("release_date", "first_air_date")
+    val releaseDate: String?,
+    @SerialName("vote_average")
     val voteAverage: Float,
-    @SerializedName("vote_count")
+    @SerialName("vote_count")
     val voteCount: Int,
-
-    @SerializedName(value = "title", alternate = ["name"])
+    @JsonNames("title", "name")
     val title: String,
-    @SerializedName(value = "original_title", alternate = ["original_name"])
+    @JsonNames("original_title", "original_name")
     val originalTitle: String,
-)
+
+    @SerialName("media_type")
+    var type: TMDBMediaType?,
+) {
+
+
+}
 
 /**
  * Represents a paginated list of TMDB medias.
@@ -53,12 +61,13 @@ data class TMDBArtwork(
  * @property pageCount Total number of pages available.
  * @property resultCount Total number of medias in the result set.
  */
+@Serializable
 data class TMDBArtworksResult(
     val page: Int,
     val results: List<TMDBArtwork>,
-    @SerializedName("total_pages")
+    @SerialName("total_pages")
     val pageCount: Int,
-    @SerializedName("total_results")
+    @SerialName("total_results")
     val resultCount: Int
 ) {
 

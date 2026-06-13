@@ -3,19 +3,14 @@ package com.mskd.flux.screens.welcome
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.data.tmdb.token.TokenRepository
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class WelcomeViewModel @Inject constructor(
-    private val tokenRepository: TokenRepository
-) : ViewModel() {
+class WelcomeViewModel(private val tokenRepository: TokenRepository) : ViewModel() {
 
     private val _event = MutableSharedFlow<WelcomeEvent>()
     val event = _event.asSharedFlow()

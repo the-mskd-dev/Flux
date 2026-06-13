@@ -10,7 +10,6 @@ import com.mskd.flux.screens.customization.composables.ColorItem
 import com.mskd.flux.ui.component.global.FluxOptionsDialogItem
 import com.mskd.flux.ui.component.global.FluxOptionsDialogState
 import com.mskd.flux.ui.theme.Ui
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -20,10 +19,8 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class CustomizationViewModel @Inject constructor(
+class CustomizationViewModel(
     application: Application,
     private val customizationRepository: CustomizationRepository
 ) : AndroidViewModel(application) {

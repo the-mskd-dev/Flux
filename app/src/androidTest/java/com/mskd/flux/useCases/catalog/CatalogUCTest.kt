@@ -10,6 +10,9 @@ import com.mskd.flux.data.repository.tmdb.TmdbRepository
 import com.mskd.flux.data.repository.tmdb.TmdbRepositoryImpl
 import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.data.tmdb.TMDBService
+import com.mskd.flux.data.tmdb.token.TokenRepository
+import com.mskd.flux.di.dataStoreModule
+import com.mskd.flux.di.ktorModule
 import com.mskd.flux.model.FileSource
 import com.mskd.flux.model.UserFile
 import com.mskd.flux.model.artwork.Artwork
@@ -20,20 +23,25 @@ import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
-import okhttp3.OkHttpClient
+import org.junit.After
 import org.junit.Before
 import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runners.MethodSorters
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
+import org.koin.test.KoinTest
+import org.koin.test.get
+import org.koin.test.inject
 import java.util.Locale
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-class CatalogUCTest {
+class CatalogUCTest : KoinTest {
 
-    private lateinit var tmdbService: TMDBService
+    private val tmdbService: TMDBService by inject()
     private lateinit var tmdbRepository: TmdbRepository
     private lateinit var settingsRepository: SettingsRepository
     private lateinit var databaseRepository: DatabaseRepository
@@ -63,25 +71,23 @@ class CatalogUCTest {
 
     @Before
     fun setup() {
+        stopKoin()
         context = ApplicationProvider.getApplicationContext()
+
+        startKoin {
+            androidContext(context)
+            modules(
+                ktorModule,
+                dataStoreModule
+            )
+        }
+
+        val tokenRepository: TokenRepository = get()
+        runBlocking {
+            tokenRepository.saveToken(BuildConfig.TMDB_TOKEN)
+        }
+
         val apiKey = BuildConfig.TMDB_TOKEN
-
-        val client = OkHttpClient.Builder()
-            .addInterceptor { chain ->
-                val request = chain.request().newBuilder()
-                    .addHeader("Authorization", "Bearer $apiKey")
-                    .build()
-                chain.proceed(request)
-            }
-            .build()
-
-        val retrofit = Retrofit.Builder()
-            .baseUrl("https://api.themoviedb.org/3/")
-            .client(client)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        tmdbService = retrofit.create(TMDBService::class.java)
 
         settingsRepository = mockk(relaxed = true) {
             coEvery { getDataLanguage() } returns dataLanguage
@@ -112,6 +118,11 @@ class CatalogUCTest {
         
         userRepository = mockk(relaxed = true)
         imagesUC = mockk(relaxed = true)
+    }
+
+    @After
+    fun tearDown() {
+        stopKoin()
     }
 
     @Test

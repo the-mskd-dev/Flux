@@ -36,8 +36,8 @@ Don't hesitate to give me feedback!
 - Jetpack Navigation 3 : New Navigation framework from Jetpack library
 - Media3 : Media player
 - TMDB API : To get medias information
-- HILT : Dependencies injection
-- Retrofit : HTTP requests
+- Koin : Dependencies injection
+- Ktor : HTTP requests
 - Coil : Image management
 - Room : Database
 

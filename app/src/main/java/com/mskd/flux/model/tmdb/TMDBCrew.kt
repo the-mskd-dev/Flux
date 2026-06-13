@@ -1,8 +1,9 @@
 package com.mskd.flux.model.tmdb
 
 import android.os.Parcelable
-import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 /**
  * Represents a crew member associated with a movie or TV show episode.
@@ -18,16 +19,17 @@ import kotlinx.parcelize.Parcelize
  * @property popularity Popularity score of the crew member.
  */
 @Parcelize
+@Serializable
 data class TMDBCrew(
     val job: String,
     val department: String,
-    @SerializedName("credit_id")
+    @SerialName("credit_id")
     val creditId: String,
     val adult: Boolean,
     val gender: Int,
     val id: Int,
     val name: String,
-    @SerializedName("original_name")
+    @SerialName("original_name")
     val originalName: String,
     val popularity: Float
 ) : Parcelable

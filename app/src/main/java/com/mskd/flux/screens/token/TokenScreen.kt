@@ -45,7 +45,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.R
 import com.mskd.flux.navigation.Route
@@ -59,15 +58,15 @@ import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.buildLinkedString
 import kotlinx.coroutines.launch
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
 fun TokenScreen(
     onBack: () -> Unit,
     navigate: (Route) -> Unit,
     fromSettings: Boolean,
-    viewModel: TokenViewModel = hiltViewModel<TokenViewModel, TokenViewModel.Factory>(
-        creationCallback = { factory -> factory.create(fromSettings) }
-    )
+    viewModel: TokenViewModel = koinViewModel(parameters = { parametersOf(fromSettings) })
 ) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()

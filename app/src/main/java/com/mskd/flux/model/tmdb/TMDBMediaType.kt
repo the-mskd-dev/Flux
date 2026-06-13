@@ -1,6 +1,7 @@
 package com.mskd.flux.model.tmdb
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 
 /**
@@ -10,11 +11,12 @@ import com.google.gson.annotations.SerializedName
  * @property MOVIE Represents a movie.
  * @property PERSON Represents a person.
  */
+@Serializable
 enum class TMDBMediaType {
-    @SerializedName("tv")
+    @SerialName("tv")
     SHOW,
-    @SerializedName("movie")
+    @SerialName("movie")
     MOVIE,
-    @SerializedName("person")
+    @SerialName("person")
     PERSON
 }

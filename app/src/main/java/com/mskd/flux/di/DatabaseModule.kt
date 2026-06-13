@@ -1,32 +1,25 @@
 package com.mskd.flux.di
 
-import android.content.Context
 import com.mskd.flux.data.ddb.DatabaseDao
 import com.mskd.flux.data.ddb.FluxDatabase
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
+import com.mskd.flux.data.repository.ddb.DatabaseRepository
+import com.mskd.flux.data.repository.ddb.DatabaseRepositoryImpl
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.bind
+import org.koin.dsl.module
 
-@Module
-@InstallIn(SingletonComponent::class)
-object DatabaseModule {
+val databaseModule = module {
 
-    @Provides
-    @Singleton
-    fun provideDatabase(
-        @ApplicationContext context: Context
-    ) : FluxDatabase {
-        return FluxDatabase.getInstance(context)
+    single<FluxDatabase> {
+        FluxDatabase.getInstance(androidContext())
     }
 
-    @Provides
-    @Singleton
-    fun provideDao(fluxDatabase: FluxDatabase) : DatabaseDao {
-        return fluxDatabase.dao()
+    single<DatabaseDao> {
+        val fluxDatabase = get<FluxDatabase>()
+        fluxDatabase.dao()
     }
 
+    singleOf(::DatabaseRepositoryImpl) bind DatabaseRepository::class
 
 }

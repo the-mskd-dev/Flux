@@ -27,7 +27,6 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.R
 import com.mskd.flux.mockups.MediaMockups
@@ -48,6 +47,8 @@ import com.mskd.flux.utils.AppThemePreview
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.WebLink
 import com.mskd.flux.utils.rememberScreenDimensions
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
 fun ShowScreen(
@@ -55,9 +56,7 @@ fun ShowScreen(
     colorScheme: ColorScheme,
     navigate: (Route) -> Unit,
     onBack: () -> Unit,
-    viewModel: ShowViewModel = hiltViewModel<ShowViewModel, ShowViewModel.Factory>(
-        creationCallback = { factory -> factory.create(artworkId) }
-    )
+    viewModel: ShowViewModel = koinViewModel(parameters = { parametersOf(artworkId) })
 ) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()

@@ -15,10 +15,6 @@ import com.mskd.flux.useCases.artwork.ArtworkUC
 import com.mskd.flux.useCases.progress.ProgressUC
 import com.mskd.flux.utils.extensions.getNextEpisodeFor
 import com.mskd.flux.utils.extensions.toPlayerTrack
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
@@ -40,24 +36,14 @@ import java.util.UUID
 import kotlin.time.Duration.Companion.seconds
 
 
-@HiltViewModel(assistedFactory = PlayerViewModel.Factory::class)
-class PlayerViewModel @AssistedInject constructor(
-    @Assisted mediaId: Long,
+class PlayerViewModel(
+    mediaId: Long,
     private val artworkUC: ArtworkUC,
     private val settingsRepository: SettingsRepository,
     private val filesRepository: FilesRepository,
     private val playerManager: PlayerManager,
     private val progressUC: ProgressUC
 ) : ViewModel() {
-
-    //region Factory
-
-    @AssistedFactory
-    interface Factory {
-        fun create(mediaId: Long): PlayerViewModel
-    }
-
-    //endregion
 
     //region Variables
 

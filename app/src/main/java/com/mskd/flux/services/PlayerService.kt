@@ -4,14 +4,21 @@ import android.app.PendingIntent
 import androidx.media3.common.Player
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
-import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
+import org.koin.android.scope.AndroidScopeComponent
+import org.koin.core.qualifier.named
+import org.koin.core.scope.Scope
+import org.koin.mp.KoinPlatformTools
 
-@AndroidEntryPoint
-class PlayerService : MediaSessionService() {
+class PlayerService : MediaSessionService(), AndroidScopeComponent {
 
-    @Inject
-    lateinit var player: Player
+    override val scope: Scope by lazy {
+        KoinPlatformTools.defaultContext().get().createScope(
+            scopeId = this.toString(),
+            qualifier = named("PlayerServiceScope")
+        )
+    }
+
+    val player: Player by scope.inject()
 
     private var mediaSession: MediaSession? = null
 
@@ -36,6 +43,7 @@ class PlayerService : MediaSessionService() {
             release()
             mediaSession = null
         }
+        scope.close()
         super.onDestroy()
     }
 }

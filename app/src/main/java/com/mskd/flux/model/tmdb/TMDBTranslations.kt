@@ -1,8 +1,10 @@
 package com.mskd.flux.model.tmdb
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import java.util.Locale
 
+@Serializable
 data class TMDBTranslations(
     val id: String,
     val translations: List<Translation>
@@ -17,17 +19,19 @@ data class TMDBTranslations(
      * @property englishName Name of the language in english
      * @property data Name and overview in the designed language
      */
+    @Serializable
     data class Translation(
-        @SerializedName("iso_639_1")
+        @SerialName("iso_639_1")
         val language: String,
-        @SerializedName("iso_3166_1")
+        @SerialName("iso_3166_1")
         val country: String,
         val name: String,
-        @SerializedName("english_name")
+        @SerialName("english_name")
         val englishName: String,
         val data: Data
     )
 
+    @Serializable
     data class Data(
         val name: String?,
         val overview: String?

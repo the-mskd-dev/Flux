@@ -13,9 +13,8 @@ import com.mskd.flux.model.tmdb.TMDBTranslations
 import com.mskd.flux.model.tmdb.findWithLocale
 import com.mskd.flux.utils.extensions.toTmdbFormat
 import java.util.Locale
-import javax.inject.Inject
 
-class TmdbRepositoryImpl @Inject constructor(
+class TmdbRepositoryImpl(
     private val tmdbService: TMDBService,
     private val settings: SettingsRepository
 ) : TmdbRepository {

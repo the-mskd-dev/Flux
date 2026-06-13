@@ -14,10 +14,6 @@ import com.mskd.flux.useCases.progress.ProgressUC
 import com.mskd.flux.utils.extensions.firstEpisode
 import com.mskd.flux.utils.extensions.firstEpisodeToWatch
 import com.mskd.flux.utils.extensions.getPreviousEpisodesFor
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -28,23 +24,13 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-@HiltViewModel(assistedFactory = ArtworkViewModel.Factory::class)
-class ArtworkViewModel @AssistedInject constructor(
-    @Assisted val artworkId: Long,
-    @Assisted val season: Int?,
+class ArtworkViewModel(
+    private val artworkId: Long,
+    private val season: Int?,
     private val artworkUC: ArtworkUC,
     private val settingsRepository: SettingsRepository,
     private val progressUC: ProgressUC
 ) : ViewModel() {
-
-    //region Hilt
-
-    @AssistedFactory
-    interface Factory {
-        fun create(artworkId: Long, season: Int?): ArtworkViewModel
-    }
-
-    //endregion
 
     //region Computed properties
 

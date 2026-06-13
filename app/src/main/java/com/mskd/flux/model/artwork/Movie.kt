@@ -51,7 +51,7 @@ data class Movie(
     ) : this(
         artworkId = tmdbMovie.id,
         title = tmdbMovie.title,
-        releaseDateString = tmdbMovie.releaseDateString,
+        releaseDateString = tmdbMovie.releaseDate,
         description = tmdbMovie.description,
         voteAverage = tmdbMovie.voteAverage,
         voteCount = tmdbMovie.voteCount,

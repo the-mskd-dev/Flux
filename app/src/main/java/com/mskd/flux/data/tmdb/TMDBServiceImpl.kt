@@ -12,9 +12,7 @@ import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import javax.inject.Inject
 
-class TMDBServiceImpl @Inject constructor(
-    private val client: HttpClient
-) : TMDBService {
+class TMDBServiceImpl(private val client: HttpClient) : TMDBService {
 
     override suspend fun authenticate(): TMDBAuthentication = client
         .get("authentication")

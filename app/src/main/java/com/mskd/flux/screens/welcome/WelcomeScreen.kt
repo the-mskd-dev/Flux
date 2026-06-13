@@ -52,6 +52,7 @@ import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.storagePermissionState
+import org.koin.compose.viewmodel.koinViewModel
 import kotlin.math.absoluteValue
 import kotlin.random.Random
 
@@ -59,7 +60,7 @@ import kotlin.random.Random
 @Composable
 fun WelcomeScreen(
     navigate: (Route) -> Unit,
-    viewModel: WelcomeViewModel = hiltViewModel()
+    viewModel: WelcomeViewModel = koinViewModel()
 ) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()

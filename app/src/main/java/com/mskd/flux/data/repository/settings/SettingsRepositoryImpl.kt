@@ -15,9 +15,7 @@ import java.io.IOException
 import java.util.Locale
 import javax.inject.Inject
 
-class SettingsRepositoryImpl(
-    val settingsDataStore: DataStore<Preferences>
-) : SettingsRepository {
+class SettingsRepositoryImpl(val settingsDataStore: DataStore<Preferences>) : SettingsRepository {
 
     object Keys {
         val PLAYER_REWIND = intPreferencesKey("player_rewind")

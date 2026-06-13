@@ -12,10 +12,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@HiltViewModel
-class WelcomeViewModel @Inject constructor(
-    private val tokenRepository: TokenRepository
-) : ViewModel() {
+class WelcomeViewModel(private val tokenRepository: TokenRepository) : ViewModel() {
 
     private val _event = MutableSharedFlow<WelcomeEvent>()
     val event = _event.asSharedFlow()

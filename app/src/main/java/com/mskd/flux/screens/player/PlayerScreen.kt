@@ -70,6 +70,8 @@ import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.LandscapePreview
 import com.mskd.flux.utils.enums.Side
 import kotlinx.coroutines.delay
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 import kotlin.time.Duration.Companion.seconds
 
 @OptIn(UnstableApi::class)
@@ -77,8 +79,8 @@ import kotlin.time.Duration.Companion.seconds
 fun PlayerScreen(
     mediaId: Long,
     onBack: () -> Unit,
-    viewModel: PlayerViewModel = hiltViewModel<PlayerViewModel, PlayerViewModel.Factory>(
-        creationCallback = { factory -> factory.create(mediaId = mediaId) }
+    viewModel: PlayerViewModel = koinViewModel(
+        parameters = { parametersOf(mediaId) }
     )
 ) {
 

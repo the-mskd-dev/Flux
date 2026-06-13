@@ -40,24 +40,14 @@ import java.util.UUID
 import kotlin.time.Duration.Companion.seconds
 
 
-@HiltViewModel(assistedFactory = PlayerViewModel.Factory::class)
-class PlayerViewModel @AssistedInject constructor(
-    @Assisted mediaId: Long,
+class PlayerViewModel(
+    mediaId: Long,
     private val artworkUC: ArtworkUC,
     private val settingsRepository: SettingsRepository,
     private val filesRepository: FilesRepository,
     private val playerManager: PlayerManager,
     private val progressUC: ProgressUC
 ) : ViewModel() {
-
-    //region Factory
-
-    @AssistedFactory
-    interface Factory {
-        fun create(mediaId: Long): PlayerViewModel
-    }
-
-    //endregion
 
     //region Variables
 

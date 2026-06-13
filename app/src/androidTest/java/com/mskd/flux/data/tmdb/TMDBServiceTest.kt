@@ -1,19 +1,26 @@
 package com.mskd.flux.data.tmdb
 
 import com.mskd.flux.BuildConfig
+import com.mskd.flux.data.tmdb.token.TokenRepository
 import com.mskd.flux.di.dataStoreModule
 import com.mskd.flux.di.ktorModule
 import com.mskd.flux.model.FileSource
 import com.mskd.flux.model.UserFile
 import com.mskd.flux.utils.extensions.toTmdbFormat
+import androidx.test.core.app.ApplicationProvider
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import okhttp3.OkHttpClient
+import org.junit.After
 import org.junit.Before
 import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runners.MethodSorters
+import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
 import org.koin.test.KoinTest
+import org.koin.test.get
 import org.koin.test.inject
 import java.util.Locale
 import kotlin.getValue
@@ -46,16 +53,28 @@ class TMDBServiceTest : KoinTest {
 
     @Before
     fun setup() {
+        stopKoin()
 
         startKoin {
+            androidContext(ApplicationProvider.getApplicationContext())
             modules(
                 ktorModule,
                 dataStoreModule
             )
         }
 
+        val tokenRepository: TokenRepository = get()
+        runBlocking {
+            tokenRepository.saveToken(BuildConfig.TMDB_TOKEN)
+        }
+
         val apiKey = BuildConfig.TMDB_TOKEN
 
+    }
+
+    @After
+    fun tearDown() {
+        stopKoin()
     }
 
     @Test

@@ -7,7 +7,6 @@ import coil3.memory.MemoryCache
 import coil3.video.VideoFrameDecoder
 import com.mskd.flux.utils.interceptors.NetworkImageInterceptor
 import org.koin.android.ext.koin.androidContext
-import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 import org.koin.plugin.module.dsl.single
 

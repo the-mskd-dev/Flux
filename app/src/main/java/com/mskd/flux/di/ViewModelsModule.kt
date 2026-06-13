@@ -1,22 +1,16 @@
 package com.mskd.flux.di
 
 import com.mskd.flux.MainViewModel
-import com.mskd.flux.data.repository.files.FilesRepository
-import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.screens.artwork.ArtworkViewModel
 import com.mskd.flux.screens.customization.CustomizationViewModel
 import com.mskd.flux.screens.home.HomeViewModel
 import com.mskd.flux.screens.player.PlayerViewModel
-import com.mskd.flux.screens.player.controllers.PlayerManager
 import com.mskd.flux.screens.search.SearchViewModel
 import com.mskd.flux.screens.settings.SettingsViewModel
 import com.mskd.flux.screens.show.ShowViewModel
 import com.mskd.flux.screens.token.TokenViewModel
 import com.mskd.flux.screens.unknown.UnknownViewModel
 import com.mskd.flux.screens.welcome.WelcomeViewModel
-import com.mskd.flux.useCases.artwork.ArtworkUC
-import com.mskd.flux.useCases.progress.ProgressUC
-import dagger.assisted.Assisted
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 import org.koin.plugin.module.dsl.viewModel

@@ -27,7 +27,6 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.R
 import com.mskd.flux.mockups.MediaMockups
@@ -52,8 +51,6 @@ import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.WebLink
 import com.mskd.flux.utils.rememberExternalPlayerLauncher
 import com.mskd.flux.utils.rememberScreenDimensions
-import io.ktor.http.parameters
-import io.ktor.http.parametersOf
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 

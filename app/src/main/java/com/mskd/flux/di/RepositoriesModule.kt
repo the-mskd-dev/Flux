@@ -8,8 +8,6 @@ import com.mskd.flux.data.repository.files.FilesRepository
 import com.mskd.flux.data.repository.files.FilesRepositoryImpl
 import com.mskd.flux.data.repository.tmdb.TmdbRepository
 import com.mskd.flux.data.repository.tmdb.TmdbRepositoryImpl
-import org.koin.android.ext.koin.androidContext
-import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import org.koin.plugin.module.dsl.single

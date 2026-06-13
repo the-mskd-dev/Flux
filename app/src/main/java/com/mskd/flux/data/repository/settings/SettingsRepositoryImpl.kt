@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import java.io.IOException
 import java.util.Locale
-import javax.inject.Inject
 
 class SettingsRepositoryImpl(val settingsDataStore: DataStore<Preferences>) : SettingsRepository {
 

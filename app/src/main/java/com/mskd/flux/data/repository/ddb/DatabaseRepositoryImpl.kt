@@ -10,7 +10,6 @@ import com.mskd.flux.utils.extensions.sort
 import com.mskd.flux.utils.extensions.tmdbImage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
 class DatabaseRepositoryImpl(private val dao: DatabaseDao) : DatabaseRepository {
 

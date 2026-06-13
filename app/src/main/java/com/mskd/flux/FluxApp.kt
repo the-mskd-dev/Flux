@@ -16,7 +16,6 @@ import com.mskd.flux.di.useCasesModule
 import com.mskd.flux.di.viewModelsModule
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.CrashDialogActivity
-import dagger.hilt.android.HiltAndroidApp
 import org.acra.config.dialog
 import org.acra.config.mailSender
 import org.acra.data.StringFormat
@@ -24,7 +23,6 @@ import org.acra.ktx.initAcra
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
-import javax.inject.Inject
 
 class FluxApp : Application(), SingletonImageLoader.Factory {
     val imageLoader: ImageLoader by inject()

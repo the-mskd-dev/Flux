@@ -43,7 +43,6 @@ import com.mskd.flux.utils.notificationsPermissionState
 import com.mskd.flux.utils.storagePermissionState
 import dagger.hilt.android.AndroidEntryPoint
 import org.koin.android.ext.android.inject
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {

@@ -29,8 +29,8 @@ class FluxApp : Application(), SingletonImageLoader.Factory {
 
     override fun newImageLoader(context: Context): ImageLoader = imageLoader
 
-    override fun attachBaseContext(base: Context?) {
-        super.attachBaseContext(base)
+    override fun onCreate() {
+        super.onCreate()
 
         startKoin {
             androidContext(this@FluxApp)

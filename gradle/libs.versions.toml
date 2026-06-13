@@ -110,6 +110,7 @@ koin-compose = { module = "io.insert-koin:koin-compose" }
 koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel" }
 koin-ktor = { module = "io.insert-koin:koin-ktor" }
 koin-test = { module = "io.insert-koin:koin-test" }
+koin-test-junit4 = { module = "io.insert-koin:koin-test-junit4" }
 
 # -- Coil --
 coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
@@ -211,5 +212,14 @@ koin = [
     "koin-compose",
     "koin-compose-viewmodel",
     "koin-ktor",
-    "koin-test"
+]
+test = [
+    "junit",
+    "kotest",
+    "mockwebserver",
+    "mockk",
+    "koin-test",
+    "koin-test-junit4",
+    "turbine",
+    "kotlinx-coroutines-test"
 ]

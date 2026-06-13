@@ -173,12 +173,7 @@ dependencies {
     implementation(libs.bundles.acra)
 
     // Unit Testing
-    testImplementation(libs.junit)
-    testImplementation(libs.kotest)
-    testImplementation(libs.mockwebserver)
-    testImplementation(libs.mockk)
-    implementation(libs.turbine)
-    implementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.bundles.test)
 
     // Android Testing
     androidTestImplementation(libs.androidx.test.ext)

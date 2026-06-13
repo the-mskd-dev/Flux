@@ -48,6 +48,8 @@ import com.mskd.flux.utils.AppThemePreview
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.WebLink
 import com.mskd.flux.utils.rememberScreenDimensions
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
 fun ShowScreen(
@@ -55,8 +57,8 @@ fun ShowScreen(
     colorScheme: ColorScheme,
     navigate: (Route) -> Unit,
     onBack: () -> Unit,
-    viewModel: ShowViewModel = hiltViewModel<ShowViewModel, ShowViewModel.Factory>(
-        creationCallback = { factory -> factory.create(artworkId) }
+    viewModel: ShowViewModel = koinViewModel(
+        parameters = { parametersOf(artworkId) }
     )
 ) {
 

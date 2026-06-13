@@ -9,10 +9,12 @@ import com.mskd.flux.screens.home.HomeViewModel
 import com.mskd.flux.screens.player.PlayerViewModel
 import com.mskd.flux.screens.player.controllers.PlayerManager
 import com.mskd.flux.screens.settings.SettingsViewModel
+import com.mskd.flux.screens.show.ShowViewModel
 import com.mskd.flux.screens.unknown.UnknownViewModel
 import com.mskd.flux.screens.welcome.WelcomeViewModel
 import com.mskd.flux.useCases.artwork.ArtworkUC
 import com.mskd.flux.useCases.progress.ProgressUC
+import dagger.assisted.Assisted
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 import org.koin.plugin.module.dsl.viewModel
@@ -25,6 +27,15 @@ val viewModelsModule = module {
     viewModel<SettingsViewModel>()
     viewModel<WelcomeViewModel>()
     viewModel<CustomizationViewModel>()
+
+    viewModel { params ->
+        ShowViewModel(
+            artworkId = params.get(),
+            artworkUC = get(),
+            settingsRepository = get(),
+            progressUC = get(),
+        )
+    }
 
     viewModel { params ->
         ArtworkViewModel(

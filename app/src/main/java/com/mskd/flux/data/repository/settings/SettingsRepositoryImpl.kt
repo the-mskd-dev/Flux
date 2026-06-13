@@ -15,7 +15,7 @@ import java.io.IOException
 import java.util.Locale
 import javax.inject.Inject
 
-class SettingsRepositoryImpl @Inject constructor(
+class SettingsRepositoryImpl(
     val settingsDataStore: DataStore<Preferences>
 ) : SettingsRepository {
 

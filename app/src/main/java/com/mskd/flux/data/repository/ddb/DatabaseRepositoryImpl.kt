@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class DatabaseRepositoryImpl @Inject constructor(private val dao: DatabaseDao) : DatabaseRepository {
+class DatabaseRepositoryImpl(private val dao: DatabaseDao) : DatabaseRepository {
 
     override fun flowArtworks(): Flow<List<Artwork>> {
         return dao.flowArtworks()

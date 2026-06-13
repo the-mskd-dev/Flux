@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.map
 import java.io.IOException
 import javax.inject.Inject
 
-class CustomizationRepositoryImpl @Inject constructor(
+class CustomizationRepositoryImpl(
     val customizationDataStore: DataStore<Preferences>
 ) : CustomizationRepository {
 

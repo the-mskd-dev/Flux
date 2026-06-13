@@ -10,6 +10,7 @@ import com.mskd.flux.data.repository.tmdb.TmdbRepository
 import com.mskd.flux.data.repository.tmdb.TmdbRepositoryImpl
 import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.data.tmdb.TMDBService
+import com.mskd.flux.data.tmdb.token.TokenRepository
 import com.mskd.flux.di.dataStoreModule
 import com.mskd.flux.di.ktorModule
 import com.mskd.flux.model.FileSource
@@ -18,14 +19,12 @@ import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.useCases.images.ImagesUC
-import com.mskd.flux.data.tmdb.token.TokenRepository
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
-import okhttp3.OkHttpClient
 import org.junit.After
 import org.junit.Before
 import org.junit.FixMethodOrder
@@ -38,7 +37,6 @@ import org.koin.test.KoinTest
 import org.koin.test.get
 import org.koin.test.inject
 import java.util.Locale
-import kotlin.getValue
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class CatalogUCTest : KoinTest {

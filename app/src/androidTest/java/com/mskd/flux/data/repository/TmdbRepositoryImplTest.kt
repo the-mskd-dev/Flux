@@ -1,21 +1,20 @@
 package com.mskd.flux.data.repository
 
+import androidx.test.core.app.ApplicationProvider
 import com.mskd.flux.BuildConfig
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.data.repository.tmdb.TmdbRepositoryImpl
 import com.mskd.flux.data.tmdb.TMDBService
+import com.mskd.flux.data.tmdb.token.TokenRepository
 import com.mskd.flux.di.dataStoreModule
 import com.mskd.flux.di.ktorModule
 import com.mskd.flux.model.FileSource
 import com.mskd.flux.model.UserFile
 import com.mskd.flux.model.tmdb.TMDBTranslations
-import androidx.test.core.app.ApplicationProvider
-import com.mskd.flux.data.tmdb.token.TokenRepository
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
-import okhttp3.OkHttpClient
 import org.junit.After
 import org.junit.Before
 import org.junit.FixMethodOrder

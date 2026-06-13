@@ -1,5 +1,6 @@
 package com.mskd.flux.data.tmdb
 
+import androidx.test.core.app.ApplicationProvider
 import com.mskd.flux.BuildConfig
 import com.mskd.flux.data.tmdb.token.TokenRepository
 import com.mskd.flux.di.dataStoreModule
@@ -7,10 +8,8 @@ import com.mskd.flux.di.ktorModule
 import com.mskd.flux.model.FileSource
 import com.mskd.flux.model.UserFile
 import com.mskd.flux.utils.extensions.toTmdbFormat
-import androidx.test.core.app.ApplicationProvider
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
-import okhttp3.OkHttpClient
 import org.junit.After
 import org.junit.Before
 import org.junit.FixMethodOrder
@@ -23,7 +22,6 @@ import org.koin.test.KoinTest
 import org.koin.test.get
 import org.koin.test.inject
 import java.util.Locale
-import kotlin.getValue
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class TMDBServiceTest : KoinTest {

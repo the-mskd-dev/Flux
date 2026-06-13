@@ -12,12 +12,13 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
+import org.koin.plugin.module.dsl.single
 
 val repositoriesModule = module {
 
-    singleOf(::DatabaseRepositoryImpl) bind DatabaseRepository::class
-    singleOf(::TmdbRepositoryImpl) bind TmdbRepository::class
-    singleOf(::FilesRepositoryImpl) bind FilesRepository::class
-    singleOf(::ConnectivityRepositoryImpl) bind ConnectivityRepository::class
+    single<DatabaseRepositoryImpl>() bind DatabaseRepository::class
+    single<TmdbRepositoryImpl>() bind TmdbRepository::class
+    single<FilesRepositoryImpl>() bind FilesRepository::class
+    single<ConnectivityRepositoryImpl>() bind ConnectivityRepository::class
 
 }

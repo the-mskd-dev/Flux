@@ -6,17 +6,16 @@ import com.mskd.flux.screens.home.HomeViewModel
 import com.mskd.flux.screens.settings.SettingsViewModel
 import com.mskd.flux.screens.unknown.UnknownViewModel
 import com.mskd.flux.screens.welcome.WelcomeViewModel
-import org.koin.core.module.dsl.singleOf
-import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
+import org.koin.plugin.module.dsl.viewModel
 
 val viewModelsModule = module {
 
-    viewModelOf(::MainViewModel)
-    viewModelOf(::HomeViewModel)
-    viewModelOf(::UnknownViewModel)
-    viewModelOf(::SettingsViewModel)
-    viewModelOf(::WelcomeViewModel)
-    viewModelOf(::CustomizationViewModel)
+    viewModel<MainViewModel>()
+    viewModel<HomeViewModel>()
+    viewModel<UnknownViewModel>()
+    viewModel<SettingsViewModel>()
+    viewModel<WelcomeViewModel>()
+    viewModel<CustomizationViewModel>()
 
 }

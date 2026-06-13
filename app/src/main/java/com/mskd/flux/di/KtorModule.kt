@@ -15,6 +15,7 @@ import kotlinx.serialization.json.Json
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
+import org.koin.plugin.module.dsl.single
 
 val ktorModule = module {
 
@@ -58,6 +59,6 @@ val ktorModule = module {
 
     }
 
-    singleOf(::TMDBServiceImpl) bind TMDBService::class
+    single<TMDBServiceImpl>() bind TMDBService::class
 
 }

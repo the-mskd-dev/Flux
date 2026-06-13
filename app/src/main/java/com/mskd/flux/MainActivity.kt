@@ -42,14 +42,14 @@ import com.mskd.flux.utils.extensions.popScreen
 import com.mskd.flux.utils.notificationsPermissionState
 import com.mskd.flux.utils.storagePermissionState
 import dagger.hilt.android.AndroidEntryPoint
+import org.koin.android.ext.android.inject
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    @Inject lateinit var viewModel: MainViewModel
-
-    @Inject lateinit var connectivityRepository: ConnectivityRepository
+    val viewModel: MainViewModel by inject()
+    val connectivityRepository: ConnectivityRepository by inject()
 
     @OptIn(ExperimentalPermissionsApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {

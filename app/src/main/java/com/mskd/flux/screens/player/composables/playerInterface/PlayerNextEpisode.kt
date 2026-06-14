@@ -45,26 +45,21 @@ import com.mskd.flux.utils.FluxPreview
 fun PlayerNextEpisode(
     modifier: Modifier,
     nextButton: PlayerUiContent.NextButton,
-    showInterface: Boolean,
-    seekBarHeight: Dp,
+    bottomMargin: () -> Dp,
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
     val episode = (nextButton as? PlayerUiContent.NextButton.Showed)?.episode
 
-    val bottomMargin by animateDpAsState(
-        targetValue = if (showInterface) {
-            seekBarHeight + Ui.Space.medium
-        } else {
-            Ui.Space.large
-        },
+    val animatedBottomMargin by animateDpAsState(
+        targetValue = bottomMargin(),
         animationSpec = spring(stiffness = Spring.StiffnessLow),
         label = "NextEpisodeButtonPosition"
     )
 
     AnimatedVisibility(
         modifier = modifier
-            .padding(bottom = bottomMargin)
+            .padding(bottom = animatedBottomMargin)
             .clickable { episode?.let { sendIntent(PlayerIntent.PlayNextEpisode(it)) } },
         visible = nextButton is PlayerUiContent.NextButton.Showed,
         enter = scaleIn(
@@ -124,8 +119,7 @@ fun PlayerNextEpisode_Preview() {
             PlayerNextEpisode(
                 modifier = Modifier,
                 nextButton = PlayerUiContent.NextButton.Showed(MediaMockups.episode1),
-                showInterface = false,
-                seekBarHeight = 0.dp,
+                bottomMargin = { 0.dp },
                 sendIntent = {}
             )
         }

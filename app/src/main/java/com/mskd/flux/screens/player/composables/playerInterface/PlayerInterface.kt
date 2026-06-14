@@ -31,6 +31,7 @@ import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.screens.player.PlayerIntent
 import com.mskd.flux.screens.player.PlayerUiContent
 import com.mskd.flux.ui.theme.Ui
+import kotlin.plus
 
 @Composable
 fun PlayerInterface(
@@ -109,8 +110,13 @@ fun PlayerInterface(
                 .align(Alignment.BottomEnd)
                 .padding(end = Ui.Space.large),
             nextButton = content.nextButton,
-            seekBarHeight = seekBarHeight,
-            showInterface = content.showInterface,
+            bottomMargin = {
+                if (content.showInterface) {
+                    seekBarHeight + Ui.Space.medium
+                } else {
+                    Ui.Space.large
+                }
+            },
             sendIntent = sendIntent
         )
 

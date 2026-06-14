@@ -48,6 +48,8 @@ class MainActivity : ComponentActivity() {
     val viewModel: MainViewModel by inject()
     val connectivityRepository: ConnectivityRepository by inject()
 
+    private var onUserLeaveHintCallback: (() -> Unit)? = null
+
     @OptIn(ExperimentalPermissionsApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -189,6 +191,15 @@ class MainActivity : ComponentActivity() {
 
         }
 
+    }
+
+    override fun onUserLeaveHint() {
+        super.onUserLeaveHint()
+        onUserLeaveHintCallback?.invoke()
+    }
+
+    fun setOnUserLeaveHintCallback(callback: (() -> Unit)?) {
+        onUserLeaveHintCallback = callback
     }
 
 }

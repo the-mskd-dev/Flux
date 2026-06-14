@@ -26,7 +26,8 @@ data class PlayerUiState(
         val settingsSheet: SettingsSheet? = null,
         val nextButton: NextButton = NextButton.Hidden,
         val progress: Long = 0L,
-        val duration: Long = 0L
+        val duration: Long = 0L,
+        val isInPip: Boolean = false
     )
 
     @Immutable
@@ -90,6 +91,7 @@ sealed class PlayerIntent {
     data class UpdateAmbientOverlay(val type: PlayerUiState.AmbientOverlay.Type, val value: Int) : PlayerIntent()
     data object GoToBackground : PlayerIntent()
     data object GoToForeground : PlayerIntent()
+    data class OnPipChange(val isInPip: Boolean) : PlayerIntent()
 }
 
 sealed class PlayerEvent {

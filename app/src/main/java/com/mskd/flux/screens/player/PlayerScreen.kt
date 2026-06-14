@@ -89,7 +89,8 @@ fun PlayerScreen(
         viewModel = viewModel,
         windowStateHolder = windowStateHolder,
         showInterface = state.controls.showInterface,
-        onBack = onBack
+        onBack = onBack,
+        isPlayingContent = { state.screen is PlayerScreen.Content && state.controls.isPlaying },
     )
 
     // Automatically hide interface after 5 seconds
@@ -269,32 +270,36 @@ fun PlayerContent(
             player = player
         )
 
-        PlayerSubtitles(
-            modifier = Modifier
-                .layoutId("subtitles")
-                .padding(bottom = Ui.Space.large),
-            subtitles = { tracksState().subtitles },
-            smallText = isPortrait
-        )
+        if (!controlsState().isInPip) {
 
-        PlayerInterface(
-            modifier = Modifier.layoutId("playerInterface"),
-            media = media,
-            controlsState = controlsState,
-            rewindAndForward = rewindAndForward,
-            sendIntent = sendIntent,
-        )
+            PlayerSubtitles(
+                modifier = Modifier
+                    .layoutId("subtitles")
+                    .padding(bottom = Ui.Space.large),
+                subtitles = { tracksState().subtitles },
+                smallText = isPortrait
+            )
 
-        PlayerSeekOverlay(
-            layoutIdLeft = "leftSeekOverlay",
-            layoutIdRight = "rightSeekOverlay",
-            seekOverlay = seekOverlay
-        )
+            PlayerInterface(
+                modifier = Modifier.layoutId("playerInterface"),
+                media = media,
+                controlsState = controlsState,
+                rewindAndForward = rewindAndForward,
+                sendIntent = sendIntent,
+            )
 
-        PlayerAmbientOverlay(
-            modifier = Modifier.layoutId("ambientOverlay"),
-            ambientOverlay = ambientOverlay
-        )
+            PlayerSeekOverlay(
+                layoutIdLeft = "leftSeekOverlay",
+                layoutIdRight = "rightSeekOverlay",
+                seekOverlay = seekOverlay
+            )
+
+            PlayerAmbientOverlay(
+                modifier = Modifier.layoutId("ambientOverlay"),
+                ambientOverlay = ambientOverlay
+            )
+
+        }
 
     }
 

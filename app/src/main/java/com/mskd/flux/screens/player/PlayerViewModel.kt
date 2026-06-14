@@ -118,7 +118,7 @@ class PlayerViewModel(
             controls = controls.copy(
                 isPlaying = ready?.isPlaying ?: false,
                 progress = ready?.progress ?: 0L,
-                duration = ready?.duration ?: 0L
+                duration = ready?.duration ?: 0L,
             ),
             tracks = PlayerUiState.Tracks(
                 tracks = tracks,
@@ -217,6 +217,7 @@ class PlayerViewModel(
             is PlayerIntent.UpdateAmbientOverlay -> updateAmbientOverlay(type = intent.type, value = intent.value)
             PlayerIntent.GoToBackground -> onBackground()
             PlayerIntent.GoToForeground -> onForeground()
+            is PlayerIntent.OnPipChange -> onPipChange(isInPip = intent.isInPip)
         }
     }
 
@@ -395,9 +396,10 @@ class PlayerViewModel(
     private suspend fun onBackground() {
 
         wasPlayingBeforeBackground = uiState.value.controls.isPlaying
-        if (wasPlayingBeforeBackground) {
+
+        /*if (wasPlayingBeforeBackground) {
             playerManager.pause()
-        }
+        }*/
 
         saveTime()
     }
@@ -408,6 +410,9 @@ class PlayerViewModel(
         }
     }
 
+    private suspend fun onPipChange(isInPip: Boolean) {
+        _controlsState.update { it.copy(isInPip = isInPip) }
+    }
 
     //endregion
 

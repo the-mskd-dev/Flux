@@ -49,10 +49,11 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.Player
 import androidx.media3.common.VideoSize
+import androidx.media3.common.text.Cue
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.ui.compose.ContentFrame
 import com.mskd.flux.R
-import com.mskd.flux.model.artwork.Media
+import com.mskd.flux.model.State
 import com.mskd.flux.screens.player.composables.playerInterface.PlayerAmbientOverlay
 import com.mskd.flux.screens.player.composables.playerInterface.PlayerInterface
 import com.mskd.flux.screens.player.composables.playerInterface.PlayerSeekOverlay
@@ -81,21 +82,25 @@ fun PlayerScreen(
     viewModel: PlayerViewModel = koinViewModel(parameters = { parametersOf(mediaId) })
 ) {
 
-    val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val subtitles by viewModel.subtitles.collectAsStateWithLifecycle()
+    val progress by viewModel.progress.collectAsStateWithLifecycle()
+    val content = (uiState.state as? State.Content)?.content
+
     val windowStateHolder = rememberWindowStateHolder()
     var interfaceVisibilityCountdown by remember { mutableIntStateOf(3) }
 
     PlayerSideEffects(
         viewModel = viewModel,
         windowStateHolder = windowStateHolder,
-        showInterface = state.controls.showInterface,
+        showInterface = content?.showInterface ?: false,
         onBack = onBack,
-        isPlayingContent = { state.screen is PlayerScreen.Content && state.controls.isPlaying },
+        isPlayingContent = { content?.isPlaying == true },
     )
 
     // Automatically hide interface after 5 seconds
-    LaunchedEffect(state.controls) {
-        if (state.controls.showInterface && state.controls.settingsSheet == null) {
+    LaunchedEffect(content?.showInterface, content?.settingsSheet) {
+        if (content?.showInterface == true && content.settingsSheet == null) {
             while (interfaceVisibilityCountdown > 0) {
                 delay(1.seconds)
                 interfaceVisibilityCountdown--
@@ -109,30 +114,26 @@ fun PlayerScreen(
     }
 
     Crossfade(
-        targetState = state.screen,
+        targetState = uiState.state::class,
         label = "PlayerScreenState"
-    ) { screen ->
-        when (screen) {
-            PlayerScreen.Loading -> LoadingScreen()
-            PlayerScreen.Error -> {
+    ) { stateClass ->
+        when (stateClass) {
+            State.Loading::class -> LoadingScreen()
+            State.Error::class -> {
                 ErrorScreen(
                     message = stringResource(R.string.oups_an_error_occured),
                     onBackButtonTap = { viewModel.handleIntent(PlayerIntent.OnBackTap) }
                 )
             }
-            is PlayerScreen.Content -> {
+            State.Content::class -> {
 
                 val focusRequester = remember { FocusRequester() }
 
                 PlayerContent(
-                    media = screen.media,
-                    player = screen.player,
+                    content = (uiState.state as State.Content<PlayerUiContent>).content,
+                    subtitles = { subtitles },
+                    progress = { progress },
                     focusRequester = focusRequester,
-                    rewindAndForward = { state.playerRewind to state.playerForward },
-                    controlsState = { state.controls },
-                    tracksState = { state.tracks },
-                    seekOverlay = { state.seekOverlay },
-                    ambientOverlay = { state.ambientOverlay },
                     sendIntent = {
                         interfaceVisibilityCountdown = 3
                         viewModel.handleIntent(it)
@@ -149,14 +150,10 @@ fun PlayerScreen(
 @OptIn(UnstableApi::class)
 @Composable
 fun PlayerContent(
-    media: Media,
-    player: Player,
+    content: PlayerUiContent,
+    subtitles: () -> List<Cue>,
+    progress: () -> Long,
     focusRequester: FocusRequester,
-    rewindAndForward: () -> Pair<Int, Int>,
-    controlsState: () -> PlayerUiState.Controls,
-    tracksState: () -> PlayerUiState.Tracks,
-    seekOverlay: () -> PlayerUiState.SeekOverlay?,
-    ambientOverlay: () -> PlayerUiState.AmbientOverlay?,
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
@@ -164,20 +161,20 @@ fun PlayerContent(
     val configuration = LocalConfiguration.current
     val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
 
-    var currentVideoSize by remember { mutableStateOf(player.videoSize) }
+    var currentVideoSize by remember { mutableStateOf(content.player.videoSize) }
 
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
     }
 
-    DisposableEffect(player) {
+    DisposableEffect(content.player) {
         val listener = object : Player.Listener {
             override fun onVideoSizeChanged(videoSize: VideoSize) {
                 currentVideoSize = videoSize
             }
         }
-        player.addListener(listener)
-        onDispose { player.removeListener(listener) }
+        content.player.addListener(listener)
+        onDispose { content.player.removeListener(listener) }
     }
 
     val scaleState = rememberPlayerScaleEffects(
@@ -214,9 +211,18 @@ fun PlayerContent(
                 if (keyEvent.type != KeyEventType.KeyDown) return@onKeyEvent false
 
                 when (keyEvent.key) {
-                    Key.Spacebar -> { sendIntent(PlayerIntent.TogglePlayButton); true }
-                    Key.DirectionLeft, Key.MediaRewind -> { sendIntent(PlayerIntent.OnFastRewind); true }
-                    Key.DirectionRight, Key.MediaFastForward -> { sendIntent(PlayerIntent.OnFastForward); true }
+                    Key.Spacebar -> {
+                        sendIntent(PlayerIntent.TogglePlayButton); true
+                    }
+
+                    Key.DirectionLeft, Key.MediaRewind -> {
+                        sendIntent(PlayerIntent.OnFastRewind); true
+                    }
+
+                    Key.DirectionRight, Key.MediaFastForward -> {
+                        sendIntent(PlayerIntent.OnFastForward); true
+                    }
+
                     else -> false
                 }
 
@@ -267,36 +273,36 @@ fun PlayerContent(
                     scaleY = animatedScale
                 )
             ,
-            player = player
+            player = content.player
         )
 
-        if (!controlsState().isInPip) {
+        if (!content.isInPip) {
 
             PlayerSubtitles(
                 modifier = Modifier
                     .layoutId("subtitles")
                     .padding(bottom = Ui.Space.large),
-                subtitles = { tracksState().subtitles },
+                subtitles = subtitles,
                 smallText = isPortrait
             )
 
             PlayerInterface(
                 modifier = Modifier.layoutId("playerInterface"),
-                media = media,
-                controlsState = controlsState,
-                rewindAndForward = rewindAndForward,
+                media = content.media,
+                content = content,
+                progress = progress,
                 sendIntent = sendIntent,
             )
 
             PlayerSeekOverlay(
                 layoutIdLeft = "leftSeekOverlay",
                 layoutIdRight = "rightSeekOverlay",
-                seekOverlay = seekOverlay
+                seekOverlay = { content.seekOverlay }
             )
 
             PlayerAmbientOverlay(
                 modifier = Modifier.layoutId("ambientOverlay"),
-                ambientOverlay = ambientOverlay
+                ambientOverlay = { content.ambientOverlay }
             )
 
         }
@@ -304,8 +310,7 @@ fun PlayerContent(
     }
 
     PlayerSettings(
-        controlsState = controlsState,
-        tracksState = tracksState,
+        content = content,
         sendIntent = sendIntent
     )
 

@@ -11,7 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.mskd.flux.screens.player.PlayerIntent
-import com.mskd.flux.screens.player.PlayerUiState
+import com.mskd.flux.screens.player.PlayerUiContent
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -25,7 +25,7 @@ fun PlayerSettingsButton(
         colors = IconButtonDefaults.iconButtonColors(
             contentColor = Color.White
         ),
-        onClick = { sendIntent(PlayerIntent.ShowSettings(sheet = PlayerUiState.SettingsSheet.Settings)) }
+        onClick = { sendIntent(PlayerIntent.ShowSettings(sheet = PlayerUiContent.SettingsSheet.Settings)) }
     ) {
 
         Icon(

@@ -1,9 +1,7 @@
 package com.mskd.flux.screens.player.controllers
 
 import android.app.PictureInPictureParams
-import android.os.Build
 import android.util.Rational
-import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -11,7 +9,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
-import androidx.core.app.OnUserLeaveHintProvider
 import androidx.core.app.PictureInPictureModeChangedInfo
 import androidx.core.util.Consumer
 import androidx.lifecycle.Lifecycle
@@ -21,7 +18,7 @@ import com.mskd.flux.MainActivity
 import com.mskd.flux.screens.player.PlayerEvent
 import com.mskd.flux.screens.player.PlayerIntent
 import com.mskd.flux.screens.player.PlayerIntent.UpdateAmbientOverlay
-import com.mskd.flux.screens.player.PlayerUiState
+import com.mskd.flux.screens.player.PlayerUiContent
 import com.mskd.flux.screens.player.PlayerViewModel
 import com.mskd.flux.ui.component.LifecycleComponent
 import com.mskd.flux.utils.extensions.findActivity
@@ -95,7 +92,7 @@ fun PlayerSideEffects(
                         PlayerEvent.BackToPreviousScreen -> onBack()
                         is PlayerEvent.ChangeBrightness -> {
                             windowStateHolder.changeBrightness(delta = event.delta)?.let { brightness ->
-                                viewModel.handleIntent(UpdateAmbientOverlay(type = PlayerUiState.AmbientOverlay.Type.BRIGHTNESS, value = brightness))
+                                viewModel.handleIntent(UpdateAmbientOverlay(type = PlayerUiContent.AmbientOverlay.Type.BRIGHTNESS, value = brightness))
                             }
                         }
                     }

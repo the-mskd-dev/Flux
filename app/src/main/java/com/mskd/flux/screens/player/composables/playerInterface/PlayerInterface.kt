@@ -29,25 +29,23 @@ import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.screens.player.PlayerIntent
-import com.mskd.flux.screens.player.PlayerUiState
+import com.mskd.flux.screens.player.PlayerUiContent
 import com.mskd.flux.ui.theme.Ui
 
 @Composable
 fun PlayerInterface(
     modifier: Modifier = Modifier,
     media: Media,
-    controlsState: () -> PlayerUiState.Controls,
-    rewindAndForward: () -> Pair<Int, Int>,
+    content: PlayerUiContent,
+    progress: () -> Long,
     sendIntent: (PlayerIntent) -> Unit
 ) {
-
-    val controls = controlsState()
 
     val density = LocalDensity.current
     var seekBarHeight by remember { mutableStateOf(0.dp) }
 
     val nextButtonBottomMargin by animateDpAsState(
-        targetValue = if (controls.showInterface) {
+        targetValue = if (content.showInterface) {
             seekBarHeight + Ui.Space.medium
         } else {
             Ui.Space.large
@@ -59,7 +57,7 @@ fun PlayerInterface(
     Box(modifier = modifier) {
 
         AnimatedVisibility(
-            visible = controls.showInterface,
+            visible = content.showInterface,
             enter = fadeIn(animationSpec = spring(stiffness = Spring.StiffnessLow)),
             exit = fadeOut(animationSpec = spring(stiffness = Spring.StiffnessLow)),
         ) {
@@ -94,8 +92,8 @@ fun PlayerInterface(
                             ),
                             exit = scaleOut()
                         ),
-                    isPlaying = controls.isPlaying,
-                    rewindAndForward = rewindAndForward,
+                    isPlaying = content.isPlaying,
+                    rewindAndForward = content.playerRewind to content.playerForward,
                     sendIntent = sendIntent
                 )
 
@@ -106,7 +104,9 @@ fun PlayerInterface(
                             val height = with(density) { coordinates.size.height.toDp() }
                             if (seekBarHeight != height) seekBarHeight = height
                         },
-                    controls = controls,
+                    isPlaying = content.isPlaying,
+                    progress = progress,
+                    duration = content.duration,
                     sendIntent = sendIntent,
                 )
 
@@ -118,7 +118,7 @@ fun PlayerInterface(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(end = Ui.Space.large, bottom = nextButtonBottomMargin),
-            nextButton = controls.nextButton,
+            nextButton = content.nextButton,
             sendIntent = sendIntent
         )
 

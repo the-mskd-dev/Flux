@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import com.mskd.flux.R
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.screens.player.PlayerIntent
-import com.mskd.flux.screens.player.PlayerUiState
+import com.mskd.flux.screens.player.PlayerUiContent
 import com.mskd.flux.ui.component.global.CountDownButton
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
@@ -41,15 +41,15 @@ import com.mskd.flux.utils.FluxPreview
 @Composable
 fun PlayerNextEpisode(
     modifier: Modifier,
-    nextButton: PlayerUiState.NextButton,
+    nextButton: PlayerUiContent.NextButton,
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
-    val episode = (nextButton as? PlayerUiState.NextButton.Showed)?.episode
+    val episode = (nextButton as? PlayerUiContent.NextButton.Showed)?.episode
 
     AnimatedVisibility(
         modifier = modifier.clickable { episode?.let { sendIntent(PlayerIntent.PlayNextEpisode(it)) } },
-        visible = nextButton is PlayerUiState.NextButton.Showed,
+        visible = nextButton is PlayerUiContent.NextButton.Showed,
         enter = scaleIn(
             animationSpec = spring(
                 dampingRatio = Spring.DampingRatioLowBouncy,
@@ -106,7 +106,7 @@ fun PlayerNextEpisode_Preview() {
         Box(modifier = Modifier.fillMaxWidth()) {
             PlayerNextEpisode(
                 modifier = Modifier,
-                nextButton = PlayerUiState.NextButton.Showed(MediaMockups.episode1),
+                nextButton = PlayerUiContent.NextButton.Showed(MediaMockups.episode1),
                 sendIntent = {}
             )
         }

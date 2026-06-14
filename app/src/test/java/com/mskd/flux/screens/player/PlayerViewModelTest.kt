@@ -101,15 +101,15 @@ class PlayerViewModelTest : FunSpec({
             nameFn = { it.description },
             PlayerTestCases.ShowSettings(
                 description = "Show settings sheet",
-                sheet = PlayerUiState.SettingsSheet.Settings,
+                sheet = PlayerUiContent.SettingsSheet.Settings,
             ),
             PlayerTestCases.ShowSettings(
                 description = "Show audio sheet",
-                sheet = PlayerUiState.SettingsSheet.Tracks(PlayerTrack.Type.AUDIO),
+                sheet = PlayerUiContent.SettingsSheet.Tracks(PlayerTrack.Type.AUDIO),
             ),
             PlayerTestCases.ShowSettings(
                 description = "Show subtitles sheet",
-                sheet = PlayerUiState.SettingsSheet.Settings,
+                sheet = PlayerUiContent.SettingsSheet.Settings,
             )
         ) { testCase ->
 
@@ -345,7 +345,7 @@ class PlayerViewModelTest : FunSpec({
             viewModel.handleIntent(PlayerIntent.OnVolumeChange(delta = .5f))
 
             val state = awaitItem()
-            state.ambientOverlay?.type shouldBe PlayerUiState.AmbientOverlay.Type.VOLUME
+            state.ambientOverlay?.type shouldBe PlayerUiContent.AmbientOverlay.Type.VOLUME
             coVerify { playerManager.changeVolume(.5f) }
 
         }
@@ -373,12 +373,12 @@ class PlayerViewModelTest : FunSpec({
             nameFn = { it.description },
             PlayerTestCases.UpdateAmbientOverlay(
                 description = "Brightness",
-                type = PlayerUiState.AmbientOverlay.Type.BRIGHTNESS,
+                type = PlayerUiContent.AmbientOverlay.Type.BRIGHTNESS,
                 value = 50
             ),
             PlayerTestCases.UpdateAmbientOverlay(
                 description = "Volume",
-                type = PlayerUiState.AmbientOverlay.Type.VOLUME,
+                type = PlayerUiContent.AmbientOverlay.Type.VOLUME,
                 value = 50
             )
         ) { testCase ->

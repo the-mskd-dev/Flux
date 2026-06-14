@@ -26,7 +26,6 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.data.repository.customization.LocalCustomization
 import com.mskd.flux.screens.player.PlayerIntent
-import com.mskd.flux.screens.player.PlayerUiState
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.extensions.formatMinSec
@@ -35,18 +34,21 @@ import com.mskd.flux.utils.extensions.formatMinSec
 @Composable
 fun PlayerSeekBar(
     modifier: Modifier,
-    controls: PlayerUiState.Controls,
+    isPlaying: Boolean,
+    progress: () -> Long,
+    duration: Long,
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
     val interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
     val isDragged by interactionSource.collectIsDraggedAsState()
-    val duration = controls.duration.coerceAtLeast(0L)
-    var sliderPosition by rememberSaveable { mutableFloatStateOf(controls.progress.toFloat()) }
+    val duration = duration.coerceAtLeast(0L)
+    val currentProgress = progress()
+    var sliderPosition by rememberSaveable { mutableFloatStateOf(currentProgress.toFloat()) }
 
-    LaunchedEffect(controls.progress) {
+    LaunchedEffect(currentProgress) {
         if (!isDragged) {
-            sliderPosition = controls.progress.toFloat()
+            sliderPosition = currentProgress.toFloat()
         }
     }
 
@@ -73,7 +75,7 @@ fun PlayerSeekBar(
             valueRange = 0f..duration.toFloat(),
             onValueChangeFinished = { sendIntent(PlayerIntent.UpdateProgress(sliderPosition.toLong())) },
             interactionSource = interactionSource,
-            isPlaying = controls.isPlaying,
+            isPlaying = isPlaying,
             duration = duration,
         )
 

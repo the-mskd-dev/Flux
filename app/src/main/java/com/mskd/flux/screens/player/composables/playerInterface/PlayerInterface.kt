@@ -44,16 +44,6 @@ fun PlayerInterface(
     val density = LocalDensity.current
     var seekBarHeight by remember { mutableStateOf(0.dp) }
 
-    val nextButtonBottomMargin by animateDpAsState(
-        targetValue = if (content.showInterface) {
-            seekBarHeight + Ui.Space.medium
-        } else {
-            Ui.Space.large
-        },
-        animationSpec = spring(stiffness = Spring.StiffnessLow),
-        label = "NextEpisodeButtonPosition"
-    )
-
     Box(modifier = modifier) {
 
         AnimatedVisibility(
@@ -117,8 +107,10 @@ fun PlayerInterface(
         PlayerNextEpisode(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(end = Ui.Space.large, bottom = nextButtonBottomMargin),
+                .padding(end = Ui.Space.large),
             nextButton = content.nextButton,
+            seekBarHeight = seekBarHeight,
+            showInterface = content.showInterface,
             sendIntent = sendIntent
         )
 

@@ -2,6 +2,7 @@ package com.mskd.flux.screens.player.composables.playerInterface
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -24,9 +25,11 @@ import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.R
 import com.mskd.flux.mockups.MediaMockups
@@ -42,13 +45,27 @@ import com.mskd.flux.utils.FluxPreview
 fun PlayerNextEpisode(
     modifier: Modifier,
     nextButton: PlayerUiContent.NextButton,
+    showInterface: Boolean,
+    seekBarHeight: Dp,
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
     val episode = (nextButton as? PlayerUiContent.NextButton.Showed)?.episode
 
+    val bottomMargin by animateDpAsState(
+        targetValue = if (showInterface) {
+            seekBarHeight + Ui.Space.medium
+        } else {
+            Ui.Space.large
+        },
+        animationSpec = spring(stiffness = Spring.StiffnessLow),
+        label = "NextEpisodeButtonPosition"
+    )
+
     AnimatedVisibility(
-        modifier = modifier.clickable { episode?.let { sendIntent(PlayerIntent.PlayNextEpisode(it)) } },
+        modifier = modifier
+            .padding(bottom = bottomMargin)
+            .clickable { episode?.let { sendIntent(PlayerIntent.PlayNextEpisode(it)) } },
         visible = nextButton is PlayerUiContent.NextButton.Showed,
         enter = scaleIn(
             animationSpec = spring(
@@ -107,6 +124,8 @@ fun PlayerNextEpisode_Preview() {
             PlayerNextEpisode(
                 modifier = Modifier,
                 nextButton = PlayerUiContent.NextButton.Showed(MediaMockups.episode1),
+                showInterface = false,
+                seekBarHeight = 0.dp,
                 sendIntent = {}
             )
         }

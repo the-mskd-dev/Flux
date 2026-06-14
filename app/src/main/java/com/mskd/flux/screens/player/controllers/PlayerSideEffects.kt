@@ -8,6 +8,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.PictureInPictureModeChangedInfo
 import androidx.core.util.Consumer
@@ -36,6 +37,7 @@ fun PlayerSideEffects(
     val lifecycleOwner = LocalLifecycleOwner.current
     val activity = LocalContext.current.findActivity() as? MainActivity
     val originalOrientation = remember { activity?.requestedOrientation }
+    val currentIsPlayingContent by rememberUpdatedState(isPlayingContent)
 
     // Observer PiP state
     val isInPip by produceState(initialValue = false, activity) {
@@ -51,7 +53,7 @@ fun PlayerSideEffects(
 
     DisposableEffect(activity) {
         activity?.setOnUserLeaveHintCallback {
-            if (isPlayingContent()) {
+            if (currentIsPlayingContent()) {
                 val params = PictureInPictureParams.Builder()
                     .setAspectRatio(Rational(16, 9))
                     .build()

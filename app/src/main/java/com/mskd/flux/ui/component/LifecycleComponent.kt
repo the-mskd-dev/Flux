@@ -11,7 +11,8 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 fun LifecycleComponent(
     onDispose: () -> Unit = {},
     onBackground: () -> Unit = {},
-    onForeground: () -> Unit = {}
+    onForeground: () -> Unit = {},
+    onStop: () -> Unit = {}
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
 
@@ -25,6 +26,10 @@ fun LifecycleComponent(
                 Lifecycle.Event.ON_PAUSE -> {
                     Log.i("Lifecycle", "App pushed to the background")
                     onBackground()
+                }
+                Lifecycle.Event.ON_STOP -> {
+                    Log.i("Lifecycle", "App stopped")
+                    onStop()
                 }
                 else -> {}
             }

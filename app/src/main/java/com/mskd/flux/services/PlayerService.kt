@@ -1,7 +1,9 @@
 package com.mskd.flux.services
 
 import android.app.PendingIntent
+import androidx.annotation.OptIn
 import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
 import org.koin.android.scope.AndroidScopeComponent
@@ -22,6 +24,31 @@ class PlayerService : MediaSessionService(), AndroidScopeComponent {
 
     private var mediaSession: MediaSession? = null
 
+    private val mediaSessionCallback = object : MediaSession.Callback {
+
+        @OptIn(UnstableApi::class)
+        override fun onConnect(
+            session: MediaSession,
+            controller: MediaSession.ControllerInfo
+        ): MediaSession.ConnectionResult {
+
+            val connectionResult = super.onConnect(session, controller)
+            val availableCommands = connectionResult.availableSessionCommands.buildUpon()
+
+            val playerCommands = connectionResult.availablePlayerCommands.buildUpon()
+                .remove(Player.COMMAND_SEEK_FORWARD)
+                .remove(Player.COMMAND_SEEK_BACK)
+                .remove(Player.COMMAND_SEEK_TO_NEXT)
+                .remove(Player.COMMAND_SEEK_TO_PREVIOUS)
+                .build()
+
+            return MediaSession.ConnectionResult.accept(
+                availableCommands.build(),
+                playerCommands
+            )
+        }
+    }
+
     override fun onCreate() {
         super.onCreate()
 
@@ -30,7 +57,9 @@ class PlayerService : MediaSessionService(), AndroidScopeComponent {
 
         mediaSession = MediaSession.Builder(this, player)
             .setSessionActivity(pendingIntent)
+            .setCallback(mediaSessionCallback)
             .build()
+
     }
 
     override fun onGetSession(p0: MediaSession.ControllerInfo): MediaSession? {

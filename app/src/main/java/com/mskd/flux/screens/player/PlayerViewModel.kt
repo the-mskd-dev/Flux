@@ -19,9 +19,7 @@ import com.mskd.flux.screens.player.controllers.PlayerManager
 import com.mskd.flux.useCases.artwork.ArtworkUC
 import com.mskd.flux.useCases.player.PipIsEnabledUC
 import com.mskd.flux.useCases.progress.ProgressUC
-import com.mskd.flux.utils.extensions.formatMinSec
 import com.mskd.flux.utils.extensions.getNextEpisodeFor
-import com.mskd.flux.utils.extensions.msToMin
 import com.mskd.flux.utils.extensions.toPlayerTrack
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel

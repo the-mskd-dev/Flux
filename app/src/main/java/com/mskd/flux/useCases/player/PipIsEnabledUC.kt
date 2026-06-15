@@ -4,7 +4,6 @@ import android.app.AppOpsManager
 import android.content.Context
 import android.content.pm.PackageManager
 import com.mskd.flux.data.repository.settings.SettingsRepository
-import com.mskd.flux.data.repository.user.UserRepository
 import kotlinx.coroutines.flow.first
 
 class PipIsEnabledUC(

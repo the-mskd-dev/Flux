@@ -1,7 +1,6 @@
 package com.mskd.flux.screens.player.controllers
 
 import android.app.PictureInPictureParams
-import android.util.Log
 import android.util.Rational
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -14,7 +13,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.PictureInPictureModeChangedInfo
 import androidx.core.util.Consumer
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
 import com.mskd.flux.MainActivity

@@ -2,7 +2,6 @@ package com.mskd.flux.screens.player.composables.playerInterface
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -31,7 +30,6 @@ import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.screens.player.PlayerIntent
 import com.mskd.flux.screens.player.PlayerUiContent
 import com.mskd.flux.ui.theme.Ui
-import kotlin.plus
 
 @Composable
 fun PlayerInterface(

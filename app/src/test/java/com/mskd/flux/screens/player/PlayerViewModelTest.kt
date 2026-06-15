@@ -11,7 +11,9 @@ import com.mskd.flux.mockups.PlayerMockups
 import com.mskd.flux.mockups.mockkFilesRepository
 import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.model.artwork.Movie
+import com.mskd.flux.model.State
 import com.mskd.flux.screens.player.controllers.PlayerManager
+import com.mskd.flux.useCases.player.PipIsEnabledUC
 import com.mskd.flux.useCases.progress.ProgressUC
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.extensions.lastEpisode
@@ -38,6 +40,7 @@ class PlayerViewModelTest : FunSpec({
     lateinit var progressUC: ProgressUC
     lateinit var playerManager: PlayerManager
     lateinit var mockkedPlayer: Player
+    lateinit var pipIsEnabledUC: PipIsEnabledUC
 
     fun updateVm(mediaId: Long = MediaMockups.episode1.mediaId) {
 
@@ -50,6 +53,7 @@ class PlayerViewModelTest : FunSpec({
             filesRepository = filesRepository,
             progressUC = progressUC,
             playerManager = playerManager,
+            pipIsEnabledUC = pipIsEnabledUC,
         )
 
     }
@@ -71,6 +75,7 @@ class PlayerViewModelTest : FunSpec({
         }
 
         filesRepository = mockkFilesRepository()
+        pipIsEnabledUC = mockk(relaxed = true)
 
         updateVm()
 
@@ -81,17 +86,17 @@ class PlayerViewModelTest : FunSpec({
 
             // Hidden by default
             val initialState = awaitItem()
-            initialState.controls.showInterface shouldBe false
+            initialState.content.showInterface shouldBe false
 
             // Test show
             viewModel.handleIntent(PlayerIntent.ChangeInterfaceVisibility)
             val showedState = awaitItem()
-            showedState.controls.showInterface shouldBe true
+            showedState.content.showInterface shouldBe true
 
             // Test hide
             viewModel.handleIntent(PlayerIntent.ChangeInterfaceVisibility)
             val hiddenState = awaitItem()
-            hiddenState.controls.showInterface shouldBe false
+            hiddenState.content.showInterface shouldBe false
 
         }
     }
@@ -123,7 +128,7 @@ class PlayerViewModelTest : FunSpec({
 
                 // Then
                 val settingsState = awaitItem()
-                settingsState.controls.settingsSheet shouldBe testCase.sheet
+                settingsState.content.settingsSheet shouldBe testCase.sheet
 
             }
 
@@ -219,7 +224,7 @@ class PlayerViewModelTest : FunSpec({
 
                 if (testCase.interfaceShowed) {
                     viewModel.handleIntent(PlayerIntent.ChangeInterfaceVisibility)
-                    awaitItem().controls.showInterface shouldBe true
+                    awaitItem().content.showInterface shouldBe true
                 }
 
                 viewModel.event.test {
@@ -252,7 +257,7 @@ class PlayerViewModelTest : FunSpec({
             viewModel.handleIntent(PlayerIntent.OnFastRewind)
 
             val finalState = awaitItem()
-            finalState.seekOverlay shouldBe PlayerUiState.SeekOverlay(amount = state.playerForward, type = PlayerUiState.SeekOverlay.Type.REWIND)
+            finalState.content.seekOverlay shouldBe PlayerUiContent.SeekOverlay(amount = state.content.playerRewind, type = PlayerUiContent.SeekOverlay.Type.REWIND)
             coVerify { playerManager.seekRewind(any()) }
         }
     }
@@ -264,7 +269,7 @@ class PlayerViewModelTest : FunSpec({
             viewModel.handleIntent(PlayerIntent.OnFastForward)
 
             val finalState = awaitItem()
-            finalState.seekOverlay shouldBe PlayerUiState.SeekOverlay(amount = state.playerForward, type = PlayerUiState.SeekOverlay.Type.FORWARD)
+            finalState.content.seekOverlay shouldBe PlayerUiContent.SeekOverlay(amount = state.content.playerForward, type = PlayerUiContent.SeekOverlay.Type.FORWARD)
             coVerify { playerManager.seekForward(any()) }
 
         }
@@ -319,7 +324,7 @@ class PlayerViewModelTest : FunSpec({
             viewModel.handleIntent(PlayerIntent.CancelNextEpisode)
 
             val state = awaitItem()
-            state.controls.nextButton.shouldBeInstanceOf<PlayerUiState.NextButton.Canceled>()
+            state.content.nextButton.shouldBeInstanceOf<PlayerUiContent.NextButton.Canceled>()
 
         }
 
@@ -332,7 +337,7 @@ class PlayerViewModelTest : FunSpec({
             viewModel.handleIntent(PlayerIntent.PlayNextEpisode(MediaMockups.episode2))
 
             val state = awaitItem()
-            state.media.shouldNotBeNull {
+            state.content.media.shouldNotBeNull {
                 mediaId shouldBe MediaMockups.episode2.mediaId
             }
         }
@@ -345,7 +350,7 @@ class PlayerViewModelTest : FunSpec({
             viewModel.handleIntent(PlayerIntent.OnVolumeChange(delta = .5f))
 
             val state = awaitItem()
-            state.ambientOverlay?.type shouldBe PlayerUiContent.AmbientOverlay.Type.VOLUME
+            state.content.ambientOverlay?.type shouldBe PlayerUiContent.AmbientOverlay.Type.VOLUME
             coVerify { playerManager.changeVolume(.5f) }
 
         }
@@ -387,8 +392,8 @@ class PlayerViewModelTest : FunSpec({
 
                 viewModel.handleIntent(PlayerIntent.UpdateAmbientOverlay(type = testCase.type, value = testCase.value))
 
-                var state = awaitItem()
-                state.ambientOverlay shouldBe PlayerUiState.AmbientOverlay(type = testCase.type, value = testCase.value)
+                val state = awaitItem()
+                state.content.ambientOverlay shouldBe PlayerUiContent.AmbientOverlay(type = testCase.type, value = testCase.value)
             }
         }
     }
@@ -454,7 +459,7 @@ class PlayerViewModelTest : FunSpec({
         updateVm()
 
         viewModel.uiState.test {
-            awaitItem().screen shouldBe PlayerScreen.Error
+            awaitItem().state shouldBe State.Error
         }
     }
 
@@ -465,7 +470,7 @@ class PlayerViewModelTest : FunSpec({
         updateVm()
 
         viewModel.uiState.test {
-            awaitItem().screen shouldBe PlayerScreen.Error
+            awaitItem().state shouldBe State.Error
         }
     }
 
@@ -509,3 +514,6 @@ class PlayerViewModelTest : FunSpec({
     }
 
 })
+
+private val PlayerUiState.content: PlayerUiContent
+    get() = (state as State.Content).content

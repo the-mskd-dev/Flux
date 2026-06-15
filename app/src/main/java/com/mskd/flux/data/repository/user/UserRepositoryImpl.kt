@@ -26,6 +26,7 @@ class UserRepositoryImpl(
         val CURRENT_VERSION_CODE = intPreferencesKey("version_code")
 
         val WATCHED_MESSAGES_IDS = stringPreferencesKey("watched_messages_ids")
+        val PIP_IS_ENABLED = booleanPreferencesKey("pip_is_enabled")
 
     }
 
@@ -39,12 +40,14 @@ class UserRepositoryImpl(
             val watchedMessagesIdsString = preferences[Keys.WATCHED_MESSAGES_IDS] ?: "[]"
             val watchedMessagesIds = json.decodeFromString<List<Int>>(watchedMessagesIdsString)
             val versionCode = preferences[Keys.CURRENT_VERSION_CODE] ?: -1
+            val pipIsEnabled = preferences[Keys.PIP_IS_ENABLED] ?: true
 
             UserRepository.State(
                 recentlyWatchedIds = watchedIds,
                 syncTime = syncTime,
                 watchedMessagesIds = watchedMessagesIds,
-                versionCode = versionCode
+                versionCode = versionCode,
+                pipIsEnabled = pipIsEnabled
             )
         }
 
@@ -94,6 +97,12 @@ class UserRepositoryImpl(
         userDataStore.edit { preferences ->
             val watchedMessagesIds = flow.first().watchedMessagesIds
             preferences[Keys.WATCHED_MESSAGES_IDS] = json.encodeToString(watchedMessagesIds + messageId)
+        }
+    }
+
+    override suspend fun enablePip(enable: Boolean) {
+        userDataStore.edit { preferences ->
+            preferences[Keys.PIP_IS_ENABLED] = enable
         }
     }
 

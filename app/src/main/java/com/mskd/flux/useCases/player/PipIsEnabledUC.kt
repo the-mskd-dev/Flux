@@ -3,17 +3,18 @@ package com.mskd.flux.useCases.player
 import android.app.AppOpsManager
 import android.content.Context
 import android.content.pm.PackageManager
+import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.data.repository.user.UserRepository
 import kotlinx.coroutines.flow.first
 
 class PipIsEnabledUC(
     private val context: Context,
-    private val userRepository: UserRepository
+    private val settingsRepository: SettingsRepository
 ) {
 
     suspend operator fun invoke() : Boolean {
 
-        val pipIsEnabled = userRepository.flow.first().pipIsEnabled
+        val pipIsEnabled = settingsRepository.flow.first().pipIsEnabled
         if (!pipIsEnabled) return  false
 
         val supportsPip = context.packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)

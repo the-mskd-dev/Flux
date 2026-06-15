@@ -30,6 +30,8 @@ interface SettingsRepository {
 
     suspend fun setExternalPlayer(useExternalPlayer: Boolean)
 
+    suspend fun setEnablePip(enable: Boolean)
+
     suspend fun setPrefetchImages(prefetch: Boolean)
 
     suspend fun setAutoKeyboard(autoKeyboard: Boolean)
@@ -42,6 +44,7 @@ interface SettingsRepository {
         val subtitlesLanguage: Locale = Locale.getDefault(),
         val audioLanguage: Locale = Locale.getDefault(),
         val externalPlayer: Boolean = false,
+        val pipIsEnabled: Boolean = true,
         val autoKeyboard: Boolean = true,
         val dataLanguage: Locale? = null,
         val prefetchImages: Boolean = false

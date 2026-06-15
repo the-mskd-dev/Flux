@@ -108,7 +108,7 @@ fun PlayerSideEffects(
     LifecycleComponent(
         onBackground = { viewModel.handleIntent(PlayerIntent.GoToBackground) },
         onForeground = { viewModel.handleIntent(PlayerIntent.GoToForeground) },
-        onStop = { viewModel.handleIntent(PlayerIntent.SaveTime) }
+        onStop = { if (isInPip) viewModel.handleIntent(PlayerIntent.OnClosePiP) }
     )
 
 }

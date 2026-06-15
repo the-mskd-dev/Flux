@@ -18,7 +18,9 @@ import com.mskd.flux.screens.player.PlayerUiContent.SettingsSheet
 import com.mskd.flux.screens.player.controllers.PlayerManager
 import com.mskd.flux.useCases.artwork.ArtworkUC
 import com.mskd.flux.useCases.progress.ProgressUC
+import com.mskd.flux.utils.extensions.formatMinSec
 import com.mskd.flux.utils.extensions.getNextEpisodeFor
+import com.mskd.flux.utils.extensions.msToMin
 import com.mskd.flux.utils.extensions.toPlayerTrack
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -253,6 +255,7 @@ class PlayerViewModel(
             PlayerIntent.GoToBackground -> onBackground()
             PlayerIntent.GoToForeground -> onForeground()
             is PlayerIntent.OnPipChange -> onPipChange(isInPip = intent.isInPip)
+            PlayerIntent.OnClosePiP -> onClosePip()
         }
     }
 
@@ -448,6 +451,13 @@ class PlayerViewModel(
 
     private fun onPipChange(isInPip: Boolean) {
         _userState.update { it.copy(isInPip = isInPip) }
+    }
+
+    private suspend fun onClosePip() {
+
+        playerManager.pause()
+        saveTime()
+
     }
 
     //endregion

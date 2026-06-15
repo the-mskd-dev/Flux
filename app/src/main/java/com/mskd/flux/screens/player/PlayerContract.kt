@@ -113,7 +113,9 @@ sealed class PlayerIntent {
     data class UpdateAmbientOverlay(val type: PlayerUiContent.AmbientOverlay.Type, val value: Int) : PlayerIntent()
     data object GoToBackground : PlayerIntent()
     data object GoToForeground : PlayerIntent()
+
     data class OnPipChange(val isInPip: Boolean) : PlayerIntent()
+    data object OnClosePiP : PlayerIntent()
 }
 
 sealed class PlayerEvent {

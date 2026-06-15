@@ -195,7 +195,10 @@ class MainActivity : ComponentActivity() {
 
     override fun onUserLeaveHint() {
         super.onUserLeaveHint()
-        onUserLeaveHintCallback?.invoke()
+
+        if (viewModel.settings.value.pipIsEnabled)
+            onUserLeaveHintCallback?.invoke()
+
     }
 
     fun setOnUserLeaveHintCallback(callback: (() -> Unit)?) {

@@ -6,6 +6,7 @@ import com.mskd.flux.useCases.catalog.CatalogUC
 import com.mskd.flux.useCases.catalog.CatalogUCImpl
 import com.mskd.flux.useCases.images.ImagesUC
 import com.mskd.flux.useCases.images.ImagesUCImpl
+import com.mskd.flux.useCases.player.PipIsEnabledUC
 import com.mskd.flux.useCases.progress.ProgressUC
 import com.mskd.flux.useCases.progress.ProgressUCImpl
 import org.koin.android.ext.koin.androidContext
@@ -41,4 +42,7 @@ val useCasesModule = module {
             scope = get(named("ApplicationScope"))
         )
     }
+
+    singleOf(::PipIsEnabledUC)
+
 }

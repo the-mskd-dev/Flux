@@ -17,6 +17,7 @@ import com.mskd.flux.screens.player.PlayerUiContent.SeekOverlay
 import com.mskd.flux.screens.player.PlayerUiContent.SettingsSheet
 import com.mskd.flux.screens.player.controllers.PlayerManager
 import com.mskd.flux.useCases.artwork.ArtworkUC
+import com.mskd.flux.useCases.player.PipIsEnabledUC
 import com.mskd.flux.useCases.progress.ProgressUC
 import com.mskd.flux.utils.extensions.formatMinSec
 import com.mskd.flux.utils.extensions.getNextEpisodeFor
@@ -50,7 +51,8 @@ class PlayerViewModel(
     private val settingsRepository: SettingsRepository,
     private val filesRepository: FilesRepository,
     private val playerManager: PlayerManager,
-    private val progressUC: ProgressUC
+    private val progressUC: ProgressUC,
+    private val pipIsEnabledUC: PipIsEnabledUC
 ) : ViewModel() {
 
     //region Variables
@@ -434,11 +436,12 @@ class PlayerViewModel(
 
     private suspend fun onBackground() {
 
+        if (pipIsEnabledUC()) return
+
         wasPlayingBeforeBackground = content?.isPlaying ?: return
 
-        /*if (wasPlayingBeforeBackground) {
+        if (wasPlayingBeforeBackground)
             playerManager.pause()
-        }*/
 
         saveTime()
     }
@@ -454,10 +457,8 @@ class PlayerViewModel(
     }
 
     private suspend fun onClosePip() {
-
         playerManager.pause()
         saveTime()
-
     }
 
     //endregion

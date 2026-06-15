@@ -382,13 +382,17 @@ class PlayerViewModel(
         val content = content
 
         when {
-            content == null -> _event.send(PlayerEvent.BackToPreviousScreen)
+            content == null -> {
+                _event.send(PlayerEvent.BackToPreviousScreen)
+            }
             content.showInterface -> {
                 playerManager.pause()
                 saveTime()
                 _event.send(PlayerEvent.BackToPreviousScreen)
             }
-            else -> changeInterfaceVisibility()
+            else -> {
+                changeInterfaceVisibility()
+            }
         }
 
     }

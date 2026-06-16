@@ -3,17 +3,25 @@ package com.mskd.flux.screens.unknown
 import com.mskd.flux.model.ScreenState
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
+import com.mskd.flux.screens.search.SearchIntent
 
 data class UnknownUiState(
     val screen: ScreenState = ScreenState.LOADING,
+    val searchWord: String = "",
     val useExternalPlayer: Boolean = false,
     val medias: List<Episode> = emptyList()
-)
+) {
+
+    val filteredMedias get() = medias
+        .filter { it.title.contains(searchWord, true) }
+
+}
 
 sealed class UnknownIntent {
     object OnBackTap: UnknownIntent()
     data class PlayMedia(val media: Media, val forceInternal: Boolean = false): UnknownIntent()
     object OnInfoTap: UnknownIntent()
+    data class DoSearch(val query: String) : UnknownIntent()
     data class OnExternalPlayerResult(val progress: Long) : UnknownIntent()
 }
 

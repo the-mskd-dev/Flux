@@ -69,6 +69,12 @@ fun CustomizationArtworkSection(
     SettingsSection { _, _ ->
 
         SettingsSwitch(
+            text = stringResource(R.string.old_blurred_header),
+            checked = state.oldBlurredHeader,
+            onCheckedChange = { sendIntent(CustomizationIntent.OnOldBlurredHeaderCheck(it)) },
+        )
+
+        SettingsSwitch(
             text = stringResource(R.string.large_episode_image),
             checked = state.largeEpisodeImage,
             onCheckedChange = { sendIntent(CustomizationIntent.OnLargeEpisodeImageCheck(it)) },

@@ -9,6 +9,7 @@ data class CustomizationUiState(
     val uiTheme: Ui.THEME = Ui.THEME.SYSTEM,
     val color: Int? = null,
     val waveProgress: Boolean = true,
+    val oldBlurredHeader: Boolean = false,
     val largeEpisodeImage: Boolean = false,
     val itemsPerRow: Int = 3,
     val dialog: CustomizationDialog? = null
@@ -35,6 +36,7 @@ sealed class CustomizationIntent {
     data class SetThemeValue(val theme: Ui.THEME): CustomizationIntent()
     data class SetItemsPerRowValue(val count: Int): CustomizationIntent()
     data class OnWaveProgressCheck(val checked: Boolean): CustomizationIntent()
+    data class OnOldBlurredHeaderCheck(val checked: Boolean): CustomizationIntent()
     data class OnLargeEpisodeImageCheck(val checked: Boolean): CustomizationIntent()
 }
 

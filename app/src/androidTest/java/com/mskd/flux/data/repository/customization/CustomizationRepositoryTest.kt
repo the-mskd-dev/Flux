@@ -129,6 +129,22 @@ class CustomizationRepositoryTest {
     }
 
     @Test
+    fun get_and_set_old_blurred_header() = runTest {
+
+        customizationRepository.flow.test {
+            var state = awaitItem()
+            assert(!state.oldBlurredHeader)
+
+            customizationRepository.setOldBlurredHeader(true)
+            state = awaitItem()
+            assert(state.oldBlurredHeader)
+
+            cancelAndConsumeRemainingEvents()
+        }
+
+    }
+
+    @Test
     fun get_and_set_large_episode_image() = runTest {
 
         customizationRepository.flow.test {

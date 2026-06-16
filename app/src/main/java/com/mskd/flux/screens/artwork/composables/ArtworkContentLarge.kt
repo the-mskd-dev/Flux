@@ -54,6 +54,7 @@ fun ArtworkContentLarge(
                 modifier = Modifier.fillMaxSize(),
                 fullArtwork = fullArtwork,
                 currentMedia = selectedMedia,
+                selectedSeason = selectedSeason,
                 orientation = Orientation.Horizontal,
             )
 

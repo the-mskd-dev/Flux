@@ -39,7 +39,6 @@ fun ArtworkHeader(
 
         val (image, text, buttons) = createRefs()
 
-
         ArtworkImage(
             modifier = Modifier
                 .constrainAs(image) {
@@ -51,20 +50,8 @@ fun ArtworkHeader(
                 .aspectRatio(Ui.Images.ratio_6_5),
             fullArtwork = fullArtwork,
             currentMedia = currentMedia,
-        )
-
-        /*ArtworkImageBlurred(
-            modifier = Modifier
-                .constrainAs(image) {
-                    top.linkTo(parent.top)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                    width = Dimension.fillToConstraints
-                }
-                .aspectRatio(Ui.Images.RATIO_6_5),
-            fullArtwork = fullArtwork,
             selectedSeason = selectedSeason
-        )*/
+        )
 
         if (isMovie) {
             Text.Display.Small(

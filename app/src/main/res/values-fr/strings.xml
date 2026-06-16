@@ -148,4 +148,5 @@
     <string name="items_per_row_desc">Nombre d\'items par ligne (accueil, écran de recherche, saisons…)</string>
     <string name="items">%1$d items</string>
     <string name="picture_in_picture">Activer le mode Picture-in-Picture</string>
+    <string name="old_blurred_header">Ancienne entête floutée</string>
 </resources>

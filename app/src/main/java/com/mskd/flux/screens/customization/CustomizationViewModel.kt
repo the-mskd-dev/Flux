@@ -39,6 +39,7 @@ class CustomizationViewModel(
             uiTheme = customization.uiTheme,
             color = customization.color,
             waveProgress = customization.waveProgress,
+            oldBlurredHeader = customization.oldBlurredHeader,
             largeEpisodeImage = customization.largeEpisodeImage,
             itemsPerRow = customization.itemsPerRow,
             dialog = dialog
@@ -74,6 +75,7 @@ class CustomizationViewModel(
             is CustomizationIntent.SetThemeValue -> setTheme(theme = intent.theme)
             is CustomizationIntent.SetItemsPerRowValue -> setItemsPerRowValue(count = intent.count)
             is CustomizationIntent.OnWaveProgressCheck -> setWaveProgress(waveProgress = intent.checked)
+            is CustomizationIntent.OnOldBlurredHeaderCheck -> setOldBlurredHeader(blurred = intent.checked)
             is CustomizationIntent.OnLargeEpisodeImageCheck -> setLargeEpisodeImage(large = intent.checked)
 
         }
@@ -139,6 +141,10 @@ class CustomizationViewModel(
 
     private suspend fun setWaveProgress(waveProgress: Boolean) {
         customizationRepository.setWaveProgress(waveProgress)
+    }
+
+    private suspend fun setOldBlurredHeader(blurred: Boolean) {
+        customizationRepository.setOldBlurredHeader(blurred)
     }
 
     private suspend fun setLargeEpisodeImage(large: Boolean) {

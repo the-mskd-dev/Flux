@@ -154,6 +154,22 @@ class CustomizationViewModelTest : FunSpec({
         }
     }
 
+    test("set old blurred header check") {
+        viewModel.uiState.test {
+            awaitItem()
+
+            viewModel.handleIntent(CustomizationIntent.OnOldBlurredHeaderCheck(true))
+            dataStoreFlow.value = dataStoreFlow.value.copy(oldBlurredHeader = true)
+
+            val state = awaitItem()
+
+            coVerify { customizationRepository.setOldBlurredHeader(true) }
+            state.oldBlurredHeader shouldBe true
+
+            cancelAndConsumeRemainingEvents()
+        }
+    }
+
     test("set large episode image check") {
         viewModel.uiState.test {
             awaitItem()

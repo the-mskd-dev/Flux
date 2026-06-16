@@ -24,7 +24,7 @@ interface CustomizationRepository {
     suspend fun setColor(color: Int?)
 
     suspend fun setWaveProgress(waveProgress: Boolean)
-
+    suspend fun setOldBlurredHeader(blurred: Boolean)
     suspend fun setLargeEpisodeImage(large: Boolean)
 
     suspend fun setItemsPerRow(count: Int)
@@ -33,6 +33,7 @@ interface CustomizationRepository {
         val uiTheme: Ui.THEME = Ui.THEME.SYSTEM,
         val color: Int? = null,
         val waveProgress: Boolean = true,
+        val oldBlurredHeader: Boolean = false,
         val largeEpisodeImage: Boolean = false,
         val itemsPerRow: Int = 3
     )

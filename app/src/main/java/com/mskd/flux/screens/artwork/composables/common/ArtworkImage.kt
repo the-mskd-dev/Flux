@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
+import com.mskd.flux.data.repository.customization.LocalCustomization
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.FullArtwork
@@ -42,6 +43,36 @@ import com.mskd.flux.utils.extensions.tmdbImage
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ArtworkImage(
+    modifier: Modifier,
+    fullArtwork: FullArtwork,
+    currentMedia: Media? = null,
+    selectedSeason: Int? = null,
+    orientation: Orientation = Orientation.Vertical
+) {
+
+    val customization = LocalCustomization.current
+
+    if (customization.oldBlurredHeader) {
+        ArtworkImageBlurred(
+            modifier = modifier,
+            fullArtwork = fullArtwork,
+            selectedSeason = selectedSeason
+        )
+    } else {
+        ArtworkImageFull(
+            modifier = modifier
+                .aspectRatio(Ui.Images.ratio_6_5),
+            fullArtwork = fullArtwork,
+            currentMedia = currentMedia,
+            orientation = orientation
+        )
+    }
+
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ArtworkImageFull(
     modifier: Modifier,
     fullArtwork: FullArtwork,
     currentMedia: Media? = null,
@@ -162,9 +193,9 @@ fun ArtworkImageBlurred(
 
 @FluxPreview
 @Composable
-fun ArtworkImage_Preview() {
+fun ArtworkImage_Full_Preview() {
     AppTheme {
-        ArtworkImage(
+        ArtworkImageFull(
             modifier = Modifier.aspectRatio(6f / 5f),
             fullArtwork = MediaMockups.fullShow,
             currentMedia = MediaMockups.fullShow.episodes.first(),

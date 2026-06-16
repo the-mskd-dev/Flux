@@ -7,7 +7,6 @@ import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Season
 import com.mskd.flux.utils.extensions.sort
-import com.mskd.flux.utils.extensions.tmdbImage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 

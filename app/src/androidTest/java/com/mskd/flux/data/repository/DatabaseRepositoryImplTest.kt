@@ -11,7 +11,6 @@ import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Season
-import com.mskd.flux.utils.extensions.tmdbImage
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert

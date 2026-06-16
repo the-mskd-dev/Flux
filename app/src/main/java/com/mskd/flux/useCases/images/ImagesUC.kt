@@ -1,7 +1,6 @@
 package com.mskd.flux.useCases.images
 
 import android.content.Context
-import android.util.Log
 import coil3.ImageLoader
 import coil3.request.CachePolicy
 import coil3.request.ImageRequest
@@ -18,7 +17,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Semaphore
 import java.util.Collections
 import java.util.concurrent.atomic.AtomicInteger
-import kotlin.math.roundToInt
 
 interface ImagesUC {
 

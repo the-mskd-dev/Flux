@@ -5,6 +5,7 @@ import coil3.ImageLoader
 import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import com.mskd.flux.data.repository.ddb.DatabaseRepository
+import com.mskd.flux.utils.extensions.tmdbImage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -55,7 +56,7 @@ class ImagesUCImpl(
 
             val urls = database
                 .getAllImagesPaths()
-                .filter { pendingUrls.add(it) }
+                .filter { pendingUrls.add(it.tmdbImage) }
                 .ifEmpty { return@launch }
 
             totalCount.addAndGet(urls.size)

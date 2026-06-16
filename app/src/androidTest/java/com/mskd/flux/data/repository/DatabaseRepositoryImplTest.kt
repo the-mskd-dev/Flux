@@ -335,16 +335,16 @@ class DatabaseRepositoryImplTest {
         // Artworks with non-blank imagePath: movieArtwork, showArtwork (unknownArtwork has blank paths)
         val expectedArtworkImages = MediaMockups.artworks
             .filter { it.imagePath.isNotBlank() }
-            .map { it.imagePath.tmdbImage }
+            .map { it.imagePath }
         val expectedArtworkBanners = MediaMockups.artworks
             .filter { it.imagePath.isNotBlank() }
-            .map { it.bannerPath.tmdbImage }
+            .map { it.bannerPath }
         val expectedEpisodeImages = MediaMockups.episodes
             .filter { it.imagePath.isNotBlank() }
-            .map { it.imagePath.tmdbImage }
+            .map { it.imagePath }
         val expectedSeasonImages = MediaMockups.seasons
             .filter { it.imagePath?.isNotBlank() == true }
-            .map { it.imagePath!!.tmdbImage }
+            .map { it.imagePath!! }
 
         Assert.assertTrue(result.containsAll(expectedArtworkImages))
         Assert.assertTrue(result.containsAll(expectedArtworkBanners))

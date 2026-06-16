@@ -25,7 +25,7 @@ class SettingsRepositoryImpl(val settingsDataStore: DataStore<Preferences>) : Se
         val PIP_IS_ENABLED = booleanPreferencesKey("pip_is_enabled")
         val AUTO_KEYBOARD = booleanPreferencesKey("auto_keyboard_in_search")
         val DATA_LANGUAGE = stringPreferencesKey("data_language")
-        val PREFETCH_IMAGES = booleanPreferencesKey("prefetch_images")
+        val PREFETCH_IMAGES = booleanPreferencesKey("prefetch_hd_images")
     }
 
     override val flow: Flow<SettingsRepository.State> = settingsDataStore.data

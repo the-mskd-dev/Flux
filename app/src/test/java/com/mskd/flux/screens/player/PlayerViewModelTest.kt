@@ -9,9 +9,9 @@ import com.mskd.flux.mockups.FakeArtworkUC
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.PlayerMockups
 import com.mskd.flux.mockups.mockkFilesRepository
+import com.mskd.flux.model.State
 import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.model.artwork.Movie
-import com.mskd.flux.model.State
 import com.mskd.flux.screens.player.controllers.PlayerManager
 import com.mskd.flux.useCases.player.PipIsEnabledUC
 import com.mskd.flux.useCases.progress.ProgressUC

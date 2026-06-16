@@ -66,7 +66,7 @@ class ImagesUCImpl(
 
             val sdUrls = allImagesPaths.map { it.tmdbImage }.filter { pendingUrls.add(it) }
             val hdUrls = if (prefetchHdImages) allImagesPaths.map { it.tmdbImageLarge }.filter { pendingUrls.add(it) } else emptyList()
-            val urls = (sdUrls + hdUrls)
+            val urls = (sdUrls + hdUrls).ifEmpty { return@launch }
 
             totalCount.addAndGet(urls.size)
             updateState()

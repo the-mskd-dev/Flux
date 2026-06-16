@@ -38,6 +38,7 @@ val useCasesModule = module {
         ImagesUCImpl(
             database = get(),
             imageLoader = get(),
+            settings = get(),
             context = androidContext(),
             scope = get(named("ApplicationScope"))
         )

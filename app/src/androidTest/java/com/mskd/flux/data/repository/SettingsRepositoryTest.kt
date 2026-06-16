@@ -71,7 +71,7 @@ class SettingsRepositoryTest {
             assert(!initialState.externalPlayer)
             assert(initialState.autoKeyboard)
             assert(initialState.dataLanguage == null)
-            assert(initialState.prefetchImages)
+            assert(!initialState.prefetchHdImages)
 
             cancelAndConsumeRemainingEvents()
         }
@@ -197,15 +197,15 @@ class SettingsRepositoryTest {
     }
 
     @Test
-    fun get_and_set_prefetch_images() = runTest {
+    fun get_and_set_prefetch_hd_images() = runTest {
 
         settingsRepository.flow.test {
             var state = awaitItem()
-            assert(state.prefetchImages)
+            assert(!state.prefetchHdImages)
 
-            settingsRepository.setPrefetchImages(false)
+            settingsRepository.setPrefetchHdImages(true)
             state = awaitItem()
-            assert(!state.prefetchImages)
+            assert(state.prefetchHdImages)
 
             cancelAndConsumeRemainingEvents()
         }

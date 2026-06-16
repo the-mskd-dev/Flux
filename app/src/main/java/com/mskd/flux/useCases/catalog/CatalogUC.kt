@@ -34,7 +34,6 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
@@ -226,8 +225,7 @@ class CatalogUCImpl(
             updateSyncProgress()
 
             // Pre-fetch images if needed
-            if (settings.flow.first().prefetchImages)
-                imagesUC.prefetchImages()
+            imagesUC.prefetchImages()
 
             // Save time and version code
             user.setSyncTime(System.currentTimeMillis())

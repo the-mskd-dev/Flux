@@ -7,7 +7,6 @@ import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Season
 import com.mskd.flux.utils.extensions.sort
-import com.mskd.flux.utils.extensions.tmdbImage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -107,10 +106,10 @@ class DatabaseRepositoryImpl(private val dao: DatabaseDao) : DatabaseRepository 
         val seasons = dao.getSeasonsImages()
 
         return buildList {
-            addAll(artworks.filter { it.imagePath.isNotBlank() }.map { it.imagePath.tmdbImage })
-            addAll(artworks.filter { it.bannerPath.isNotBlank() }.map { it.bannerPath.tmdbImage })
-            addAll(episodes.filter { it.isNotBlank() }.map { it.tmdbImage })
-            addAll(seasons.filter { it.isNotBlank() }.map { it.tmdbImage })
+            addAll(artworks.filter { it.imagePath.isNotBlank() }.map { it.imagePath })
+            addAll(artworks.filter { it.bannerPath.isNotBlank() }.map { it.bannerPath })
+            addAll(episodes.filter { it.isNotBlank() })
+            addAll(seasons.filter { it.isNotBlank() })
         }
     }
 

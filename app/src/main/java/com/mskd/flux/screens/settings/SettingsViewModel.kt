@@ -51,7 +51,7 @@ class SettingsViewModel(
             dialogState = dialog,
             showSyncDialog = showSyncDialog,
             fullSyncInProgress = (catalog as? CatalogUC.State.Syncing)?.full == true,
-            prefetchImages = settings.prefetchImages,
+            prefetchHdImages = settings.prefetchHdImages,
             prefetchImagesState = images
         )
     }.stateIn(
@@ -94,7 +94,7 @@ class SettingsViewModel(
             is SettingsIntent.OnAutoKeyboardCheck -> onAutoKeyboardCheck(value = intent.checked)
             is SettingsIntent.OnExternalPlayerCheck -> onExternalPlayerCheck(value = intent.checked)
             is SettingsIntent.OnEnablePipCheck -> onEnablePipCheck(value = intent.checked)
-            is SettingsIntent.OnPrefetchImagesCheck -> onPrefetchImagesCheck(value = intent.checked)
+            is SettingsIntent.OnPrefetchHdImagesCheck -> onPrefetchImagesCheck(value = intent.checked)
         }
     }
 
@@ -202,7 +202,7 @@ class SettingsViewModel(
     }
 
     private suspend fun onPrefetchImagesCheck(value: Boolean) {
-        settingsRepository.setPrefetchImages(value)
+        settingsRepository.setPrefetchHdImages(value)
 
         if (value)
             imagesUC.prefetchImages()

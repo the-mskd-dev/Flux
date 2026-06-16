@@ -12,11 +12,13 @@ import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.useCases.artwork.ArtworkUC
 import com.mskd.flux.useCases.progress.ProgressUC
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class UnknownViewModel(
@@ -36,14 +38,18 @@ class UnknownViewModel(
     private val _event = MutableSharedFlow<UnknownEvent>()
     val event = _event.asSharedFlow()
 
+    private val _searchQuery = MutableStateFlow("")
+
     val uiState: StateFlow<UnknownUiState> = combine(
         artworkUC.flow,
-        settingsRepository.flow
-    ) { artworkContent, settings ->
+        settingsRepository.flow,
+        _searchQuery
+    ) { artworkContent, settings, searchQuery ->
 
         val fullShow = (artworkContent as? State.Content)?.content as? FullArtwork.FullShow
         UnknownUiState(
             screen = ScreenState.CONTENT,
+            searchQuery = searchQuery,
             medias = fullShow?.episodes?.sortedWith(
                 compareBy<Episode> { it.title }.thenBy { it.season }.thenBy { it.number }
             ) ?: emptyList(),
@@ -74,6 +80,7 @@ class UnknownViewModel(
             UnknownIntent.OnBackTap -> _event.emit(UnknownEvent.BackToPreviousScreen)
             UnknownIntent.OnInfoTap -> _event.emit(UnknownEvent.NavigateToHowToScreen)
             is UnknownIntent.OnExternalPlayerResult -> onExternalPlayerResult(progress = intent.progress)
+            is UnknownIntent.DoSearch -> doSearch(query = intent.query)
         }
     }
 
@@ -98,6 +105,10 @@ class UnknownViewModel(
             progressUC.saveProgress(media = media, progress = progress)
             selectedMedia = null
         }
+    }
+
+    private fun doSearch(query: String) {
+        _searchQuery.update { query }
     }
 
     //endregion

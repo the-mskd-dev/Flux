@@ -5,7 +5,7 @@
     <string name="movies">Movies</string>
     <string name="shows">Shows</string>
     <string name="select_season">Select a season</string>
-    <string name="season_and_episode">Season %1$d - episode %2$d</string>
+    <string name="season_and_episode">Season %1$d - Episode %2$d</string>
     <string name="season">Season %1$d</string>
     <string name="episode">Episode %1$d</string>
     <string name="play">Play</string>
@@ -13,7 +13,7 @@
     <string name="mark_as_watched">Mark as watched</string>
     <string name="mark_as_not_watched">Mark as not watched</string>
     <string name="mark_previous_episodes_as_watched">Do you want to mark previous episodes as watched?</string>
-    <string name="oups_an_error_occured">Oops, an error occured…</string>
+    <string name="oups_an_error_occured">Oops, an error occurred…</string>
     <string name="release_date">Release date : %1$s</string>
     <string name="duration">Duration : %1$s</string>
     <string name="summary">Summary</string>

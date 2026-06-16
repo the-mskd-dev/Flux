@@ -16,18 +16,14 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
-import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -35,13 +31,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.R
 import com.mskd.flux.data.repository.customization.LocalCustomization
@@ -51,6 +47,7 @@ import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Route.Artwork
 import com.mskd.flux.navigation.Route.Show
 import com.mskd.flux.ui.component.global.FluxScaffold
+import com.mskd.flux.ui.component.global.FluxSearchField
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.component.media.MediaItem
 import com.mskd.flux.ui.theme.Ui
@@ -58,6 +55,7 @@ import com.mskd.flux.utils.AppThemePreview
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.itemWidthFor
 import com.mskd.flux.utils.rememberScreenDimensions
+import kotlinx.coroutines.flow.collectLatest
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -101,6 +99,17 @@ fun SearchContent(
     val isLargeScreen = screenDimensions.isLarge
     val columns = if (isLargeScreen) 5 else LocalCustomization.current.itemsPerRow
     val itemWidth = itemWidthFor(columns = columns)
+    val focusManager = LocalFocusManager.current
+    val lazyGridState = rememberLazyGridState()
+
+    LaunchedEffect(lazyGridState) {
+        snapshotFlow { lazyGridState.isScrollInProgress }
+            .collectLatest { isScrolling ->
+                if (isScrolling) {
+                    focusManager.clearFocus()
+                }
+            }
+    }
 
     LaunchedEffect(Unit) {
         if (state.autoKeyboard && !focusRequested) {
@@ -121,7 +130,8 @@ fun SearchContent(
             columns = GridCells.Fixed(columns),
             horizontalArrangement = Arrangement.spacedBy(Ui.Space.small),
             verticalArrangement = Arrangement.spacedBy(Ui.Space.small),
-            contentPadding = PaddingValues(horizontal = Ui.Space.medium)
+            contentPadding = PaddingValues(horizontal = Ui.Space.medium),
+            state = lazyGridState
         ) {
 
             item(span = { GridItemSpan(maxLineSpan) }) {
@@ -130,29 +140,12 @@ fun SearchContent(
 
             item(span = { GridItemSpan(maxLineSpan) }) {
 
-                TextField(
+                FluxSearchField(
                     modifier = Modifier
                         .fillMaxWidth()
                         .focusRequester(focusRequester),
                     value = state.searchWord,
                     onValueChange = { sendIntent(SearchIntent.DoSearch(it)) },
-                    singleLine = true,
-                    shape = MaterialTheme.shapes.small,
-                    colors = TextFieldDefaults.colors(
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent
-                    ),
-                    placeholder = { Text(stringResource(R.string.enter_search)) },
-                    trailingIcon = {
-                        if (state.searchWord.isNotEmpty()) {
-                            IconButton(
-                                modifier = Modifier.size(18.dp),
-                                onClick = { sendIntent(SearchIntent.DoSearch("")) },
-                                content = { Icon(imageVector = Icons.Rounded.Clear, contentDescription = "clear button") }
-                            )
-                        }
-                    }
                 )
 
             }

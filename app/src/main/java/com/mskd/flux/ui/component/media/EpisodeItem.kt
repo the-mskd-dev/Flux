@@ -134,9 +134,14 @@ fun EpisodeItemLarge(
             horizontalAlignment = Alignment.Start
         ) {
 
+            val title = buildString {
+                if (episode.number >= 0 && !episode.isUnknown)
+                    append("${episode.number}. ")
+                append(episode.title)
+            }
             Text.Title.Medium(
                 modifier = Modifier.fillMaxWidth(),
-                text =  "${episode.number}. ${episode.title}",
+                text =  title,
                 textAlign = TextAlign.Start,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
@@ -144,7 +149,11 @@ fun EpisodeItemLarge(
                 emphasized = true
             )
 
-            MediaDetailsHorizontal(media = episode)
+            if (episode.isUnknown) {
+                MediaDetailsVertical(media = episode)
+            } else {
+                MediaDetailsHorizontal(media = episode)
+            }
 
             Text.Body.Medium(
                 modifier = Modifier
@@ -235,9 +244,14 @@ fun EpisodeItemSmall(
                 horizontalAlignment = Alignment.Start
             ) {
 
+                val title = buildString {
+                    if (episode.number >= 0 && !episode.isUnknown)
+                        append("${episode.number}. ")
+                    append(episode.title)
+                }
                 Text.Title.Medium(
                     modifier = Modifier.fillMaxWidth(),
-                    text =  "${episode.number}. ${episode.title}",
+                    text =  title,
                     textAlign = TextAlign.Start,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,

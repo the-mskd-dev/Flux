@@ -12,11 +12,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.R
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.Artwork
+import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.AppTheme
@@ -45,6 +48,23 @@ fun MediaDetailsHorizontal(media: Media) {
 fun MediaDetailsVertical(media: Media) {
 
     Column {
+
+        if (media is Episode && media.isUnknown) {
+
+            val seasonAndEpisode = when {
+                (media.season >= 0 && media.number >= 0) -> stringResource(R.string.season_and_episode, media.season, media.number)
+                media.season >= 0 -> stringResource(R.string.season, media.season)
+                media.number >= 0 -> stringResource(R.string.episode, media.number)
+                else -> null
+            }
+
+            Text.Adaptive(
+                text = seasonAndEpisode?.lowercase(),
+                color = MaterialTheme.colorScheme.secondary,
+                style = MaterialTheme.typography.bodySmall.copy(fontStyle = FontStyle.Italic)
+            )
+
+        }
 
         MediaDetailsItems(media = media)
 
@@ -130,6 +150,26 @@ fun MediaDetailsVertical_Preview() {
     AppTheme {
         MediaDetailsVertical(
             media = MediaMockups.episode1
+        )
+    }
+}
+
+@Preview
+@Composable
+fun MediaDetailsHorizontal_Unknown_Preview() {
+    AppTheme {
+        MediaDetailsHorizontal(
+            media = MediaMockups.unknownEpisode
+        )
+    }
+}
+
+@Preview
+@Composable
+fun MediaDetailsVertical_Unknown_Preview() {
+    AppTheme {
+        MediaDetailsVertical(
+            media = MediaMockups.unknownEpisode
         )
     }
 }

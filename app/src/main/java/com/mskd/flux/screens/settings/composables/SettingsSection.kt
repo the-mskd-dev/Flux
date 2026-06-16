@@ -232,15 +232,15 @@ fun SettingsSyncSection(
 
         val imagesTextColor by animateColorAsState(if (state.prefetchImagesState is ImagesUC.State.InProgress) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onBackground.copy(alpha = .8f))
         val imagesText = when {
-            state.prefetchImages && state.prefetchImagesState is ImagesUC.State.Idle -> stringResource(R.string.images_cached)
-            state.prefetchImages && state.prefetchImagesState is ImagesUC.State.InProgress -> stringResource(R.string.caching_images_in_progress, state.prefetchImagesState.progress.times(100).roundToInt())
+            state.prefetchHdImages && state.prefetchImagesState is ImagesUC.State.Idle -> stringResource(R.string.images_cached)
+            state.prefetchHdImages && state.prefetchImagesState is ImagesUC.State.InProgress -> stringResource(R.string.caching_images_in_progress, state.prefetchImagesState.progress.times(100).roundToInt())
             else -> stringResource(R.string.cache_images_desc)
         }
         SettingsSwitch(
             text = stringResource(R.string.cache_images),
             subText = imagesText,
-            checked = state.prefetchImages,
-            onCheckedChange = { sendIntent(SettingsIntent.OnPrefetchImagesCheck(it)) },
+            checked = state.prefetchHdImages,
+            onCheckedChange = { sendIntent(SettingsIntent.OnPrefetchHdImagesCheck(it)) },
             painter = painterResource(R.drawable.ic_images),
             iconColor = iconColor,
             iconBackgroundColor = bgColor,

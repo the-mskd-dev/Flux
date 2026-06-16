@@ -40,7 +40,7 @@ class SettingsRepositoryImpl(val settingsDataStore: DataStore<Preferences>) : Se
             val pipIsEnabled = preferences[Keys.PIP_IS_ENABLED] ?: true
             val autoKeyboard = preferences[Keys.AUTO_KEYBOARD] ?: true
             val dataLanguage = preferences[Keys.DATA_LANGUAGE]?.let { Locale.forLanguageTag(it) }
-            val prefetchImages = preferences[Keys.PREFETCH_IMAGES] ?: true
+            val prefetchImages = preferences[Keys.PREFETCH_IMAGES] ?: false
 
             SettingsRepository.State(
                 playerRewindValue = playerRewindValue,
@@ -51,7 +51,7 @@ class SettingsRepositoryImpl(val settingsDataStore: DataStore<Preferences>) : Se
                 pipIsEnabled = pipIsEnabled,
                 autoKeyboard = autoKeyboard,
                 dataLanguage = dataLanguage,
-                prefetchImages = prefetchImages
+                prefetchHdImages = prefetchImages
             )
         }
 
@@ -111,7 +111,7 @@ class SettingsRepositoryImpl(val settingsDataStore: DataStore<Preferences>) : Se
         }
     }
 
-    override suspend fun setPrefetchImages(prefetch: Boolean) {
+    override suspend fun setPrefetchHdImages(prefetch: Boolean) {
         settingsDataStore.edit { preferences ->
             preferences[Keys.PREFETCH_IMAGES] = prefetch
         }

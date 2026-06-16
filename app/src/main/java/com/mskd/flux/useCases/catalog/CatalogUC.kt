@@ -226,8 +226,7 @@ class CatalogUCImpl(
             updateSyncProgress()
 
             // Pre-fetch images if needed
-            if (settings.flow.first().prefetchImages)
-                imagesUC.prefetchImages()
+            imagesUC.prefetchImages()
 
             // Save time and version code
             user.setSyncTime(System.currentTimeMillis())

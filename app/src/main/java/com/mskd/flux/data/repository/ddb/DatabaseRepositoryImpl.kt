@@ -109,8 +109,8 @@ class DatabaseRepositoryImpl(private val dao: DatabaseDao) : DatabaseRepository 
         return buildList {
             addAll(artworks.filter { it.imagePath.isNotBlank() }.map { it.imagePath })
             addAll(artworks.filter { it.bannerPath.isNotBlank() }.map { it.bannerPath })
-            addAll(episodes.filter { it.isNotBlank() }.map { it })
-            addAll(seasons.filter { it.isNotBlank() }.map { it })
+            addAll(episodes.filter { it.isNotBlank() })
+            addAll(seasons.filter { it.isNotBlank() })
         }
     }
 

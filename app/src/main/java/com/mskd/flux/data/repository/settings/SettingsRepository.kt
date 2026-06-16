@@ -32,7 +32,7 @@ interface SettingsRepository {
 
     suspend fun setEnablePip(enable: Boolean)
 
-    suspend fun setPrefetchImages(prefetch: Boolean)
+    suspend fun setPrefetchHdImages(prefetch: Boolean)
 
     suspend fun setAutoKeyboard(autoKeyboard: Boolean)
 
@@ -47,6 +47,6 @@ interface SettingsRepository {
         val pipIsEnabled: Boolean = true,
         val autoKeyboard: Boolean = true,
         val dataLanguage: Locale? = null,
-        val prefetchImages: Boolean = false
+        val prefetchHdImages: Boolean = false
     )
 }

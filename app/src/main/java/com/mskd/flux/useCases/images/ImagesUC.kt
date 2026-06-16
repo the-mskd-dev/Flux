@@ -1,19 +1,24 @@
 package com.mskd.flux.useCases.images
 
 import android.content.Context
+import android.util.Log
 import coil3.ImageLoader
 import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import com.mskd.flux.data.repository.ddb.DatabaseRepository
+import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.utils.extensions.tmdbImage
+import com.mskd.flux.utils.extensions.tmdbImageLarge
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Semaphore
 import java.util.Collections
 import java.util.concurrent.atomic.AtomicInteger
+import kotlin.math.roundToInt
 
 interface ImagesUC {
 
@@ -29,6 +34,7 @@ interface ImagesUC {
 
 class ImagesUCImpl(
     private val database: DatabaseRepository,
+    private val settings: SettingsRepository,
     private val imageLoader: ImageLoader,
     private val context: Context,
     private val scope: CoroutineScope,
@@ -54,10 +60,13 @@ class ImagesUCImpl(
 
         scope.launch {
 
-            val urls = database
-                .getAllImagesPaths()
-                .filter { pendingUrls.add(it.tmdbImage) }
-                .ifEmpty { return@launch }
+            val prefetchHdImages = settings.flow.first().prefetchHdImages
+
+            val allImagesPaths = database.getAllImagesPaths()
+
+            val sdUrls = allImagesPaths.map { it.tmdbImage }.filter { pendingUrls.add(it) }
+            val hdUrls = if (prefetchHdImages) allImagesPaths.map { it.tmdbImageLarge }.filter { pendingUrls.add(it) } else emptyList()
+            val urls = (sdUrls + hdUrls)
 
             totalCount.addAndGet(urls.size)
             updateState()

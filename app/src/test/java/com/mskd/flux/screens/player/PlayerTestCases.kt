@@ -8,7 +8,7 @@ object PlayerTestCases {
 
     data class ShowSettings(
         val description: String,
-        val sheet: PlayerUiState.SettingsSheet
+        val sheet: PlayerUiContent.SettingsSheet
     )
 
     data class SaveTime(
@@ -27,7 +27,7 @@ object PlayerTestCases {
         val description: String,
         val currentEpisode: Episode,
         val show: Boolean,
-        val expectedNexTButton: PlayerUiState.NextButton
+        val expectedNexTButton: PlayerUiContent.NextButton
     )
 
     data class SelectTrack(
@@ -37,7 +37,7 @@ object PlayerTestCases {
 
     data class UpdateAmbientOverlay(
         val description: String,
-        val type: PlayerUiState.AmbientOverlay.Type,
+        val type: PlayerUiContent.AmbientOverlay.Type,
         val value: Int
     )
 

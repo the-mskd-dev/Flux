@@ -2,40 +2,40 @@ package com.mskd.flux.screens.player
 
 import androidx.compose.runtime.Immutable
 import androidx.media3.common.Player
-import androidx.media3.common.text.Cue
+import com.mskd.flux.model.State
 import com.mskd.flux.model.artwork.Episode
+import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.model.artwork.Media
 
 @Immutable
 data class PlayerUiState(
-    val screen: PlayerScreen = PlayerScreen.Loading,
+    val state: State<PlayerUiContent> = State.Loading
+)
+
+@Immutable
+data class PlayerUiContent(
+
+    // DataState
+    val fullArtwork: FullArtwork,
+    val media: Media,
     val playerRewind: Int = 10,
     val playerForward: Int = 10,
-    val controls: Controls = Controls(),
-    val tracks: Tracks = Tracks(),
+    val player: Player,
+    val isPlaying: Boolean = false,
+    val duration: Long = 0L,
+    val tracks: List<PlayerTrack> = emptyList(),
+    val selectedAudio: PlayerTrack? = null,
+    val selectedSubtitles: PlayerTrack? = null,
+
+    // UserState
+    val showInterface: Boolean = false,
+    val isInPip: Boolean = false,
     val seekOverlay: SeekOverlay? = null,
     val ambientOverlay: AmbientOverlay? = null,
+    val settingsSheet: SettingsSheet? = null,
+    val nextButton: NextButton = NextButton.Hidden,
+
 ) {
-
-    val media: Media? get() = (screen as? PlayerScreen.Content)?.media
-
-    @Immutable
-    data class Controls(
-        val isPlaying: Boolean = false,
-        val showInterface: Boolean = false,
-        val settingsSheet: SettingsSheet? = null,
-        val nextButton: NextButton = NextButton.Hidden,
-        val progress: Long = 0L,
-        val duration: Long = 0L
-    )
-
-    @Immutable
-    data class Tracks(
-        val tracks: List<PlayerTrack> = emptyList(),
-        val selectedAudio: PlayerTrack? = null,
-        val selectedSubtitles: PlayerTrack? = null,
-        val subtitles: List<Cue> = emptyList()
-    )
 
     @Immutable
     data class SeekOverlay(
@@ -66,6 +66,29 @@ data class PlayerUiState(
 
 }
 
+data class PlayerDataState(
+    val fullArtwork: FullArtwork,
+    val media: Media,
+    val player: Player,
+    val playerRewind: Int,
+    val playerForward: Int,
+    val duration: Long,
+    val tracks: List<PlayerTrack>,
+    val isPlaying: Boolean,
+    val selectedAudio: PlayerTrack?,
+    val selectedSubtitles: PlayerTrack?,
+)
+
+data class PlayerUserState(
+    val mediaId: Long,
+    val showInterface: Boolean = false,
+    val isInPip: Boolean = false,
+    val seekOverlay: PlayerUiContent.SeekOverlay? = null,
+    val ambientOverlay: PlayerUiContent.AmbientOverlay? = null,
+    val settingsSheet: PlayerUiContent.SettingsSheet? = null,
+    val nextButton: PlayerUiContent.NextButton = PlayerUiContent.NextButton.Hidden,
+)
+
 sealed class PlayerScreen {
     data object Loading : PlayerScreen()
     data object Error : PlayerScreen()
@@ -81,15 +104,18 @@ sealed class PlayerIntent {
     data object OnFastRewind : PlayerIntent()
     data object OnFastForward : PlayerIntent()
     data class UpdateProgress(val progress: Long) : PlayerIntent()
-    data class ShowSettings(val sheet: PlayerUiState.SettingsSheet?) : PlayerIntent()
+    data class ShowSettings(val sheet: PlayerUiContent.SettingsSheet?) : PlayerIntent()
     data class SelectTrack(val track: PlayerTrack) : PlayerIntent()
     data class PlayNextEpisode(val episode: Episode) : PlayerIntent()
     data object CancelNextEpisode : PlayerIntent()
     data class OnVolumeChange(val delta: Float) : PlayerIntent()
     data class OnBrightnessChange(val delta: Float) : PlayerIntent()
-    data class UpdateAmbientOverlay(val type: PlayerUiState.AmbientOverlay.Type, val value: Int) : PlayerIntent()
+    data class UpdateAmbientOverlay(val type: PlayerUiContent.AmbientOverlay.Type, val value: Int) : PlayerIntent()
     data object GoToBackground : PlayerIntent()
     data object GoToForeground : PlayerIntent()
+
+    data class OnPipChange(val isInPip: Boolean) : PlayerIntent()
+    data object OnClosePiP : PlayerIntent()
 }
 
 sealed class PlayerEvent {

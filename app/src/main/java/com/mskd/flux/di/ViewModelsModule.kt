@@ -59,6 +59,7 @@ val viewModelsModule = module {
             filesRepository = get(),
             playerManager = get(),
             progressUC = get(),
+            pipIsEnabledUC = get()
         )
     }
 

@@ -30,7 +30,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.R
-import com.mskd.flux.screens.player.PlayerUiState
+import com.mskd.flux.screens.player.PlayerUiContent
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.LandscapePreview
@@ -38,7 +38,7 @@ import com.mskd.flux.utils.LandscapePreview
 @Composable
 fun PlayerAmbientOverlay(
     modifier: Modifier = Modifier,
-    ambientOverlay: () -> PlayerUiState.AmbientOverlay?) {
+    ambientOverlay: () -> PlayerUiContent.AmbientOverlay?) {
 
     val overlay = ambientOverlay()
 
@@ -74,7 +74,7 @@ fun PlayerAmbientOverlay(
                 label = "Crossfade ambient overlay"
             ) {
                 when (it) {
-                    PlayerUiState.AmbientOverlay.Type.BRIGHTNESS ->
+                    PlayerUiContent.AmbientOverlay.Type.BRIGHTNESS ->
                         Icon(
                             modifier = Modifier.size(size = 36.dp),
                             painter = painterResource(R.drawable.ic_brightness),
@@ -115,7 +115,7 @@ fun PlayerAmbientOverlay_Preview() {
         Surface(color = Color.Gray) {
             Box(modifier = Modifier.fillMaxSize()) {
                 PlayerAmbientOverlay(
-                    ambientOverlay = { PlayerUiState.AmbientOverlay(value = 10, type = PlayerUiState.AmbientOverlay.Type.VOLUME) }
+                    ambientOverlay = { PlayerUiContent.AmbientOverlay(value = 10, type = PlayerUiContent.AmbientOverlay.Type.VOLUME) }
                 )
             }
 

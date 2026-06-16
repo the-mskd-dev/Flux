@@ -22,6 +22,7 @@ class SettingsRepositoryImpl(val settingsDataStore: DataStore<Preferences>) : Se
         val SUBTITLES_LANGUAGE = stringPreferencesKey("subtitles_language")
         val AUDIO_LANGUAGE = stringPreferencesKey("audio_language")
         val EXTERNAL_PLAYER = booleanPreferencesKey("external_player")
+        val PIP_IS_ENABLED = booleanPreferencesKey("pip_is_enabled")
         val AUTO_KEYBOARD = booleanPreferencesKey("auto_keyboard_in_search")
         val DATA_LANGUAGE = stringPreferencesKey("data_language")
         val PREFETCH_IMAGES = booleanPreferencesKey("prefetch_images")
@@ -36,6 +37,7 @@ class SettingsRepositoryImpl(val settingsDataStore: DataStore<Preferences>) : Se
             val subtitlesLanguage = preferences[Keys.SUBTITLES_LANGUAGE]?.let { Locale.forLanguageTag(it) } ?: Locale.getDefault()
             val audioLanguage = preferences[Keys.AUDIO_LANGUAGE]?.let { Locale.forLanguageTag(it) } ?: Locale.getDefault()
             val externalPlayer = preferences[Keys.EXTERNAL_PLAYER] ?: false
+            val pipIsEnabled = preferences[Keys.PIP_IS_ENABLED] ?: true
             val autoKeyboard = preferences[Keys.AUTO_KEYBOARD] ?: true
             val dataLanguage = preferences[Keys.DATA_LANGUAGE]?.let { Locale.forLanguageTag(it) }
             val prefetchImages = preferences[Keys.PREFETCH_IMAGES] ?: true
@@ -46,6 +48,7 @@ class SettingsRepositoryImpl(val settingsDataStore: DataStore<Preferences>) : Se
                 subtitlesLanguage = subtitlesLanguage,
                 audioLanguage = audioLanguage,
                 externalPlayer = externalPlayer,
+                pipIsEnabled = pipIsEnabled,
                 autoKeyboard = autoKeyboard,
                 dataLanguage = dataLanguage,
                 prefetchImages = prefetchImages
@@ -93,6 +96,12 @@ class SettingsRepositoryImpl(val settingsDataStore: DataStore<Preferences>) : Se
     override suspend fun setExternalPlayer(useExternalPlayer: Boolean) {
         settingsDataStore.edit { preferences ->
             preferences[Keys.EXTERNAL_PLAYER] = useExternalPlayer
+        }
+    }
+
+    override suspend fun setEnablePip(enable: Boolean) {
+        settingsDataStore.edit { preferences ->
+            preferences[Keys.PIP_IS_ENABLED] = enable
         }
     }
 

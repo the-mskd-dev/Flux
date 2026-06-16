@@ -29,7 +29,6 @@ import com.mskd.flux.R
 import com.mskd.flux.mockups.PlayerMockups
 import com.mskd.flux.screens.player.PlayerIntent
 import com.mskd.flux.screens.player.PlayerTrack
-import com.mskd.flux.screens.player.PlayerUiState
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
@@ -39,11 +38,12 @@ import com.mskd.flux.utils.FluxPreview
 @Composable
 fun PlayerTracksSheet(
     type: PlayerTrack.Type,
-    tracksState: () -> PlayerUiState.Tracks,
+    tracks: List<PlayerTrack>,
+    selectedAudio: PlayerTrack?,
+    selectedSubtitles: PlayerTrack?,
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
-    val (tracks, selectedAudio, selectedSubtitles) = tracksState()
     val selectedTrack = if (type == PlayerTrack.Type.AUDIO) selectedAudio else selectedSubtitles
 
     val title = stringResource(if (type == PlayerTrack.Type.AUDIO) R.string.audio_tracks else R.string.subtitles)
@@ -129,13 +129,9 @@ fun PlayerTracksSheet(
 fun PlayerTracksSheet_Preview() {
     AppTheme {
         PlayerTracksSheet(
-            tracksState = {
-                PlayerUiState.Tracks(
-                    tracks = PlayerMockups.tracks,
-                    selectedAudio = PlayerMockups.Audio.japanese,
-                    selectedSubtitles = PlayerMockups.Subtitles.french,
-                )
-            },
+            tracks = PlayerMockups.tracks,
+            selectedAudio = PlayerMockups.Audio.japanese,
+            selectedSubtitles = PlayerMockups.Subtitles.french,
             type = PlayerTrack.Type.SUBTITLES,
             sendIntent = {}
         )

@@ -302,6 +302,23 @@ class SettingsViewModelTest : FunSpec({
         }
     }
 
+    test("set pip") {
+        viewModel.uiState.test {
+            awaitItem()
+
+            viewModel.handleIntent(SettingsIntent.OnEnablePipCheck(false))
+            dataStoreFlow.value = dataStoreFlow.value.copy(pipIsEnabled = false)
+
+            val state = awaitItem()
+
+            coVerify { settingsRepository.setEnablePip(false) }
+            state.useExternalPlayer shouldBe true
+
+            cancelAndConsumeRemainingEvents()
+
+        }
+    }
+
     test("set prefetch images") {
         viewModel.uiState.test {
             awaitItem()

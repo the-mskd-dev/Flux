@@ -125,6 +125,15 @@ fun SettingsPlayerSection(
             onCheckedChange = { sendIntent(SettingsIntent.OnExternalPlayerCheck(it)) }
         )
 
+        SettingsSwitch(
+            text = stringResource(R.string.picture_in_picture),
+            checked = state.pipIsEnabled,
+            painter = painterResource(R.drawable.ic_pip),
+            iconColor = iconColor,
+            iconBackgroundColor = bgColor,
+            onCheckedChange = { sendIntent(SettingsIntent.OnEnablePipCheck(it)) }
+        )
+
     }
 
 }

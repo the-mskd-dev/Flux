@@ -2,6 +2,7 @@ package com.mskd.flux.screens.player.composables.playerInterface
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -24,14 +25,16 @@ import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.R
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.screens.player.PlayerIntent
-import com.mskd.flux.screens.player.PlayerUiState
+import com.mskd.flux.screens.player.PlayerUiContent
 import com.mskd.flux.ui.component.global.CountDownButton
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
@@ -41,15 +44,24 @@ import com.mskd.flux.utils.FluxPreview
 @Composable
 fun PlayerNextEpisode(
     modifier: Modifier,
-    nextButton: PlayerUiState.NextButton,
+    nextButton: PlayerUiContent.NextButton,
+    bottomMargin: () -> Dp,
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
-    val episode = (nextButton as? PlayerUiState.NextButton.Showed)?.episode
+    val episode = (nextButton as? PlayerUiContent.NextButton.Showed)?.episode
+
+    val animatedBottomMargin by animateDpAsState(
+        targetValue = bottomMargin(),
+        animationSpec = spring(stiffness = Spring.StiffnessLow),
+        label = "NextEpisodeButtonPosition"
+    )
 
     AnimatedVisibility(
-        modifier = modifier.clickable { episode?.let { sendIntent(PlayerIntent.PlayNextEpisode(it)) } },
-        visible = nextButton is PlayerUiState.NextButton.Showed,
+        modifier = modifier
+            .padding(bottom = animatedBottomMargin)
+            .clickable { episode?.let { sendIntent(PlayerIntent.PlayNextEpisode(it)) } },
+        visible = nextButton is PlayerUiContent.NextButton.Showed,
         enter = scaleIn(
             animationSpec = spring(
                 dampingRatio = Spring.DampingRatioLowBouncy,
@@ -106,7 +118,8 @@ fun PlayerNextEpisode_Preview() {
         Box(modifier = Modifier.fillMaxWidth()) {
             PlayerNextEpisode(
                 modifier = Modifier,
-                nextButton = PlayerUiState.NextButton.Showed(MediaMockups.episode1),
+                nextButton = PlayerUiContent.NextButton.Showed(MediaMockups.episode1),
+                bottomMargin = { 0.dp },
                 sendIntent = {}
             )
         }

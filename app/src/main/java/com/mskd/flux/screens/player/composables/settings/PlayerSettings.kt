@@ -2,28 +2,28 @@ package com.mskd.flux.screens.player.composables.settings
 
 import androidx.compose.runtime.Composable
 import com.mskd.flux.screens.player.PlayerIntent
-import com.mskd.flux.screens.player.PlayerUiState
+import com.mskd.flux.screens.player.PlayerUiContent
 
 @Composable
 fun PlayerSettings(
-    controlsState: () -> PlayerUiState.Controls,
-    tracksState: () -> PlayerUiState.Tracks,
+    content: PlayerUiContent,
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
-    val controls = controlsState()
-
-    when (controls.settingsSheet) {
-        PlayerUiState.SettingsSheet.Settings -> {
+    when (content.settingsSheet) {
+        PlayerUiContent.SettingsSheet.Settings -> {
             PlayerSettingsSheet(
-                tracksState = tracksState,
+                selectedAudio = content.selectedAudio,
+                selectedSubtitles = content.selectedSubtitles,
                 sendIntent = sendIntent
             )
         }
-        is PlayerUiState.SettingsSheet.Tracks -> {
+        is PlayerUiContent.SettingsSheet.Tracks -> {
             PlayerTracksSheet(
-                tracksState = tracksState,
-                type = controls.settingsSheet.type,
+                tracks = content.tracks,
+                selectedAudio = content.selectedAudio,
+                selectedSubtitles = content.selectedSubtitles,
+                type = content.settingsSheet.type,
                 sendIntent = sendIntent
             )
         }

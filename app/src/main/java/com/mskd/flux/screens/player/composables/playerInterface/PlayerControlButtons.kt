@@ -29,11 +29,11 @@ import com.mskd.flux.utils.FluxPreview
 fun AnimatedVisibilityScope.PlayerControlButtons(
     modifier: Modifier,
     isPlaying: Boolean,
-    rewindAndForward: () -> Pair<Int, Int>,
+    rewindAndForward: Pair<Int, Int>,
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
-    val (rewind, forward) = rewindAndForward()
+    val (rewind, forward) = rewindAndForward
 
     Row(
         modifier = modifier,
@@ -105,7 +105,7 @@ fun PlayerControlButtons_Preview() {
             PlayerControlButtons(
                 modifier = Modifier,
                 isPlaying = it,
-                rewindAndForward = { 5 to 10 },
+                rewindAndForward = 5 to 10 ,
                 sendIntent = {}
             )
         }

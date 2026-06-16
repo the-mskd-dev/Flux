@@ -27,7 +27,7 @@ import com.mskd.flux.R
 import com.mskd.flux.mockups.PlayerMockups
 import com.mskd.flux.screens.player.PlayerIntent
 import com.mskd.flux.screens.player.PlayerTrack
-import com.mskd.flux.screens.player.PlayerUiState
+import com.mskd.flux.screens.player.PlayerUiContent
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
@@ -36,7 +36,8 @@ import com.mskd.flux.utils.FluxPreview
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlayerSettingsSheet(
-    tracksState: () -> PlayerUiState.Tracks,
+    selectedAudio: PlayerTrack?,
+    selectedSubtitles: PlayerTrack?,
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
@@ -58,9 +59,9 @@ fun PlayerSettingsSheet(
 
                 PlayerSettingsItem(
                     label = "Audio",
-                    value = tracksState().selectedAudio?.label.orEmpty().ifBlank { stringResource(R.string.by_default) },
+                    value = selectedAudio?.label.orEmpty().ifBlank { stringResource(R.string.by_default) },
                     onTap = {
-                        val intent =PlayerUiState.SettingsSheet.Tracks(type = PlayerTrack.Type.AUDIO)
+                        val intent = PlayerUiContent.SettingsSheet.Tracks(type = PlayerTrack.Type.AUDIO)
                         sendIntent(PlayerIntent.ShowSettings(sheet = intent))
                     }
                 )
@@ -69,9 +70,9 @@ fun PlayerSettingsSheet(
 
                 PlayerSettingsItem(
                     label = "Subtitles",
-                    value = tracksState().selectedSubtitles?.label.orEmpty().ifBlank { stringResource(R.string.by_default) },
+                    value = selectedSubtitles?.label.orEmpty().ifBlank { stringResource(R.string.by_default) },
                     onTap = {
-                        val intent = PlayerUiState.SettingsSheet.Tracks(type = PlayerTrack.Type.SUBTITLES)
+                        val intent = PlayerUiContent.SettingsSheet.Tracks(type = PlayerTrack.Type.SUBTITLES)
                         sendIntent(PlayerIntent.ShowSettings(sheet = intent)) }
                 )
 
@@ -125,13 +126,8 @@ fun PlayerSettingsItem(
 fun PlayerSettingsSheet_Preview() {
     AppTheme {
         PlayerSettingsSheet(
-            tracksState = {
-                PlayerUiState.Tracks(
-                    tracks = PlayerMockups.tracks,
-                    selectedAudio = PlayerMockups.Audio.japanese,
-                    selectedSubtitles = PlayerMockups.Subtitles.french,
-                )
-            },
+            selectedAudio = PlayerMockups.Audio.japanese,
+            selectedSubtitles = PlayerMockups.Subtitles.french,
             sendIntent = {}
         )
     }

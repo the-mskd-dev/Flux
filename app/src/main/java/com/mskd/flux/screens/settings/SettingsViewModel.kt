@@ -46,6 +46,7 @@ class SettingsViewModel(
             rewindValue = settings.playerRewindValue,
             forwardValue = settings.playerForwardValue,
             useExternalPlayer = settings.externalPlayer,
+            pipIsEnabled = settings.pipIsEnabled,
             autoKeyboard = settings.autoKeyboard,
             dialogState = dialog,
             showSyncDialog = showSyncDialog,
@@ -92,6 +93,7 @@ class SettingsViewModel(
             SettingsIntent.ProceedFullSync -> proceedFullSync()
             is SettingsIntent.OnAutoKeyboardCheck -> onAutoKeyboardCheck(value = intent.checked)
             is SettingsIntent.OnExternalPlayerCheck -> onExternalPlayerCheck(value = intent.checked)
+            is SettingsIntent.OnEnablePipCheck -> onEnablePipCheck(value = intent.checked)
             is SettingsIntent.OnPrefetchImagesCheck -> onPrefetchImagesCheck(value = intent.checked)
         }
     }
@@ -180,6 +182,10 @@ class SettingsViewModel(
         }
 
         settingsRepository.setExternalPlayer(value)
+    }
+
+    private suspend fun onEnablePipCheck(value: Boolean) {
+        settingsRepository.setEnablePip(value)
     }
 
     private suspend fun onAutoKeyboardCheck(value: Boolean) {

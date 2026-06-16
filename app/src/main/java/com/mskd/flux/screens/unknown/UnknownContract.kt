@@ -7,13 +7,13 @@ import com.mskd.flux.screens.search.SearchIntent
 
 data class UnknownUiState(
     val screen: ScreenState = ScreenState.LOADING,
-    val searchWord: String = "",
+    val searchQuery: String = "",
     val useExternalPlayer: Boolean = false,
     val medias: List<Episode> = emptyList()
 ) {
 
     val filteredMedias get() = medias
-        .filter { it.title.contains(searchWord, true) }
+        .filter { it.title.contains(searchQuery, true) }
 
 }
 

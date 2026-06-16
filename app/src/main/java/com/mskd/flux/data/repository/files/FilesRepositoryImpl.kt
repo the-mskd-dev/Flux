@@ -48,20 +48,13 @@ class FilesRepositoryImpl(
             MediaStore.Video.Media.DATE_ADDED
         )
 
-        // Show only videos that are at least 5 minutes in duration, or those whose system has not found a duration
-        val minDuration = TimeUnit.MINUTES.toMillis(5).toString()
-        val selection = "${MediaStore.Video.Media.DURATION} >= ? OR " +
-                "${MediaStore.Video.Media.DURATION} = 0 OR " +
-                "${MediaStore.Video.Media.DURATION} IS NULL"
-        val selectionArgs = arrayOf(minDuration)
-
         val sortOrder = "${MediaStore.Video.Media.DATE_ADDED} DESC"
 
         val query = context.contentResolver.query(
             collection,
             projection,
-            selection,
-            selectionArgs,
+            null,
+            null,
             sortOrder
         )
 

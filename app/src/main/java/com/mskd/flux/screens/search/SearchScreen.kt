@@ -51,6 +51,7 @@ import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Route.Artwork
 import com.mskd.flux.navigation.Route.Show
 import com.mskd.flux.ui.component.global.FluxScaffold
+import com.mskd.flux.ui.component.global.FluxSearchField
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.component.media.MediaItem
 import com.mskd.flux.ui.theme.Ui
@@ -130,29 +131,12 @@ fun SearchContent(
 
             item(span = { GridItemSpan(maxLineSpan) }) {
 
-                TextField(
+                FluxSearchField(
                     modifier = Modifier
                         .fillMaxWidth()
                         .focusRequester(focusRequester),
                     value = state.searchWord,
                     onValueChange = { sendIntent(SearchIntent.DoSearch(it)) },
-                    singleLine = true,
-                    shape = MaterialTheme.shapes.small,
-                    colors = TextFieldDefaults.colors(
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent
-                    ),
-                    placeholder = { Text(stringResource(R.string.enter_search)) },
-                    trailingIcon = {
-                        if (state.searchWord.isNotEmpty()) {
-                            IconButton(
-                                modifier = Modifier.size(18.dp),
-                                onClick = { sendIntent(SearchIntent.DoSearch("")) },
-                                content = { Icon(imageVector = Icons.Rounded.Clear, contentDescription = "clear button") }
-                            )
-                        }
-                    }
                 )
 
             }

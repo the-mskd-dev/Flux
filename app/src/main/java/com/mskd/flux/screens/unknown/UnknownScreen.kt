@@ -13,15 +13,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SearchBar
+import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -34,9 +38,11 @@ import com.mskd.flux.model.ScreenState
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Route.Player
+import com.mskd.flux.screens.search.SearchIntent
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.component.global.ErrorScreen
 import com.mskd.flux.ui.component.global.FluxScaffold
+import com.mskd.flux.ui.component.global.FluxSearchField
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.component.media.EpisodeItem
 import com.mskd.flux.ui.theme.AppTheme
@@ -94,7 +100,8 @@ fun UnknownScreen(
             }
             ScreenState.CONTENT -> {
                 UnknownScreenContent(
-                    medias = uiState.medias,
+                    medias = uiState.filteredMedias,
+                    searchQuery = uiState.searchQuery,
                     sendIntent = viewModel::handleIntent
                 )
             }
@@ -108,6 +115,7 @@ fun UnknownScreen(
 @Composable
 fun UnknownScreenContent(
     medias: List<Episode>,
+    searchQuery: String,
     sendIntent: (UnknownIntent) -> Unit
 ) {
 
@@ -130,12 +138,24 @@ fun UnknownScreenContent(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(MaterialTheme.colorScheme.background),
-                contentPadding = PaddingValues(horizontal = Ui.Space.medium),
                 verticalArrangement = Arrangement.spacedBy(Ui.Space.small)
             ) {
 
                 item {
                     Spacer(modifier = Modifier.height(innerPadding.calculateTopPadding()))
+                }
+
+                item {
+
+                    FluxSearchField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = Ui.Space.medium)
+                            .padding(bottom = Ui.Space.large),
+                        value = searchQuery,
+                        onValueChange = { sendIntent(UnknownIntent.DoSearch(it)) },
+                    )
+
                 }
 
                 items(items = medias, key = { m -> m.id }) { media ->
@@ -187,6 +207,7 @@ fun UnknownScreen_Preview() {
     AppTheme {
         UnknownScreenContent(
             medias = MediaMockups.episodesWithStatus,
+            searchQuery = "",
             sendIntent = {}
         )
     }

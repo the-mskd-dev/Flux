@@ -9,6 +9,7 @@ import com.mskd.flux.mockups.FakeArtworkUC
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.mockkDatabaseRepository
 import com.mskd.flux.model.ScreenState
+import com.mskd.flux.screens.search.SearchIntent
 import com.mskd.flux.useCases.progress.ProgressUC
 import com.mskd.flux.useCases.progress.ProgressUCImpl
 import io.kotest.core.spec.style.FunSpec
@@ -160,6 +161,39 @@ class UnknownViewModelTest : FunSpec ({
                 episodes.any { it.id == MediaMockups.unknownEpisode.id && it.currentTime == 5000L }
             }) }
         }
+    }
+
+    test("search word with result") {
+
+        viewModel.uiState.test {
+
+            awaitItem()
+
+            viewModel.handleIntent(UnknownIntent.DoSearch("unknown movie"))
+
+            val state = awaitItem()
+
+            state.searchQuery shouldBe "unknown movie"
+            state.filteredMedias.size shouldBe 1
+        }
+
+    }
+
+    test("search word with no result") {
+
+        viewModel.uiState.test {
+
+            awaitItem()
+
+            viewModel.handleIntent(UnknownIntent.DoSearch("AAA"))
+
+            val state = awaitItem()
+
+            state.searchQuery shouldBe "AAA"
+            state.filteredMedias.size shouldBe 0
+
+        }
+
     }
 
 })

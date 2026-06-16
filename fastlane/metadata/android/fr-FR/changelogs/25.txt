@@ -1,0 +1,5 @@
+- FEATURE: Picture-in-Picture
+- FEATURE: Pré-chargement des images dans le cache en HD
+- FEATURE: Suppression du filtre sur la durée dans la récupération des fichiers
+- UI: Ajout de l'ancienne entête floutée
+- CORE: Utilisation de libraries KMP (Koin, Ktor, Kotlin-serialization)

@@ -16,3 +16,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Flux"
 include(":app")
+include(":shared")

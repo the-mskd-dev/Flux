@@ -5,7 +5,7 @@ import java.util.Properties
 plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.android.application)
-    alias(libs.plugins.jetbrains.kotlin.serialization)
+    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.parcelize)
     alias(libs.plugins.kotlin.compose)
 }
@@ -128,6 +128,9 @@ ksp {
 kotlin { jvmToolchain(21) }
 
 dependencies {
+
+    // KMP
+    implementation(project(":shared"))
 
     // Core
     implementation(libs.androidx.core.ktx)

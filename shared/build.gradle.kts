@@ -65,7 +65,12 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(libs.kotlin.stdlib)
-                // Add KMP dependencies here
+
+                implementation(libs.bundles.shared.serialization)
+                implementation(libs.bundles.shared.network)
+                implementation(libs.bundles.shared.di)
+                implementation(libs.bundles.shared.ui)
+                implementation(libs.bundles.shared.image)
             }
         }
 
@@ -77,9 +82,7 @@ kotlin {
 
         androidMain {
             dependencies {
-                // Add Android-specific dependencies here. Note that this source set depends on
-                // commonMain by default and will correctly pull the Android artifacts of any KMP
-                // dependencies declared in commonMain.
+                implementation(libs.bundles.android.network)
             }
         }
 

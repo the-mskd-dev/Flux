@@ -78,18 +78,3 @@ data class Artwork(
     }
 
 }
-
-enum class ContentType {
-    MOVIE,
-    SHOW;
-
-    val stringResource: Int get() = when (this) {
-        MOVIE -> R.string.movies
-        SHOW -> R.string.shows
-    }
-
-    fun equalsTmdb(tmdbType: TMDBMediaType) : Boolean {
-        return (this == MOVIE && tmdbType == TMDBMediaType.MOVIE) || (this == SHOW && tmdbType == TMDBMediaType.SHOW)
-    }
-
-}

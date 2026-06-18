@@ -4,6 +4,7 @@
 .idea/
 .DS_Store
 /build
+**/build/
 /captures
 .externalNativeBuild
 .cxx
@@ -31,3 +32,4 @@ keystore.properties
 *.p12
 *.pem
 .env*
+*.klib

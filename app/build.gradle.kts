@@ -5,7 +5,7 @@ import java.util.Properties
 plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.android.application)
-    alias(libs.plugins.jetbrains.kotlin.serialization)
+    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.parcelize)
     alias(libs.plugins.kotlin.compose)
 }
@@ -129,69 +129,53 @@ kotlin { jvmToolchain(21) }
 
 dependencies {
 
+    // KMP
+    implementation(project(":shared"))
+
     // Core
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.compose)
-    implementation(libs.kotlinx.serialization.core)
+    implementation(libs.bundles.android.core)
 
     // Compose (Bundle + BOM)
     implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.bundles.compose)
+    implementation(libs.bundles.android.compose)
 
     // UI
-    implementation(libs.androidx.palette)
-    implementation(libs.material.kolor)
+    implementation(libs.bundles.android.ui)
 
     // Navigation 3
-    implementation(libs.bundles.nav3)
+    implementation(libs.bundles.android.navigation)
 
     // Accompanist
-    implementation(libs.accompanist.permissions)
+    implementation(libs.bundles.android.accompanist)
 
     // Media Player
-    implementation(libs.bundles.media3)
+    implementation(libs.bundles.android.player)
 
     // Koin
-    implementation(platform(libs.koin.bom))
-    implementation(libs.bundles.koin)
-
-    // Network & Serialization (Ktor)
-    implementation(libs.bundles.network)
-
-    // Images
-    implementation(libs.bundles.image)
+    implementation(libs.bundles.android.di)
 
     // DataStore
-    implementation(libs.bundles.datastore)
+    implementation(libs.bundles.android.datastore)
 
     // Room
-    implementation(libs.bundles.room)
+    implementation(libs.bundles.android.room)
     ksp(libs.androidx.room.compiler)
 
     // ACRA
-    implementation(libs.bundles.acra)
+    implementation(libs.bundles.android.acra)
 
     // Unit Testing
-    testImplementation(libs.bundles.test)
+    testImplementation(libs.bundles.android.unit.test)
 
     // Android Testing
-    androidTestImplementation(libs.androidx.test.ext)
-    androidTestImplementation(libs.androidx.test.espresso)
-    androidTestImplementation(libs.truth)
-    androidTestImplementation(libs.androidx.core.testing)
-    androidTestImplementation(libs.mockk.android)
-    androidTestImplementation(libs.turbine)
-    androidTestImplementation(platform(libs.koin.bom))
-    androidTestImplementation(libs.koin.test)
+    androidTestImplementation(libs.bundles.android.test)
 
     // UI Testing
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
 
     // Debug
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
+    debugImplementation(libs.bundles.android.compose.debug)
 }
 
 tasks.withType<Test>().configureEach {

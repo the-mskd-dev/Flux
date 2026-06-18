@@ -1,7 +1,5 @@
 package com.mskd.flux.model.tmdb
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -18,7 +16,6 @@ import kotlinx.serialization.Serializable
  * @property originalName Original name of the crew member.
  * @property popularity Popularity score of the crew member.
  */
-@Parcelize
 @Serializable
 data class TMDBCrew(
     val job: String,
@@ -32,4 +29,4 @@ data class TMDBCrew(
     @SerialName("original_name")
     val originalName: String,
     val popularity: Float
-) : Parcelable
+)

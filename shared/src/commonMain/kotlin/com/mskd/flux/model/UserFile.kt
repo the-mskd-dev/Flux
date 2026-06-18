@@ -1,22 +1,16 @@
 package com.mskd.flux.model
 
-import android.net.Uri
-import android.os.Parcelable
-import androidx.core.net.toUri
-import com.mskd.flux.model.artwork.ContentType
-import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Serializable
 import java.util.Date
 import java.util.regex.Pattern
 
-@Parcelize
 @Serializable
 data class UserFile(
     val name: String,
     val addedDateTime: Long,
     val path: String,
     val source: FileSource
-) : Parcelable {
+) {
 
     val nameProperties: FileProperties
         get() = FileProperties.extractFileProperties(name)
@@ -33,15 +27,11 @@ data class UserFile(
     val addedDate: Date
         get() = Date(addedDateTime)
 
-    val uri: Uri
-        get() = path.toUri()
-
 }
 
 enum class FileSource {
     LOCAL, GOOGLE
 }
-
 
 data class FileProperties(
     val title: String,
@@ -92,20 +82,5 @@ data class FileProperties(
         }
 
     }
-
-}
-
-data class UserFolder(
-    val title: String,
-    val year: Int? = null,
-    val files: List<UserFile>
-) {
-
-    val type: ContentType?
-        get() = when {
-            files.all { it.isEpisode } -> ContentType.SHOW
-            files.size == 1 && !files.first().isEpisode -> ContentType.MOVIE
-            else -> null
-        }
 
 }

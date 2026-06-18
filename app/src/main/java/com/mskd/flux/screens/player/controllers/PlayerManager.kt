@@ -226,7 +226,7 @@ class PlayerManager(private val context: Context) : Player.Listener {
 
             val mediaItemBuilder = MediaItem.Builder()
                 .setMediaMetadata(mediaMetadata)
-                .setUri(media.file.uri)
+                .setUri(media.file.path.toUri())
 
             // Add local subtitles
             createSubtitlesFrom(subtitlesUri = subtitlesUri)?.let { subtitle ->

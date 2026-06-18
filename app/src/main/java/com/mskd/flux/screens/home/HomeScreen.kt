@@ -267,7 +267,7 @@ fun HomeContent(
 
                     item {
                         MediaCategory(
-                            name = stringResource(id = ContentType.SHOW.stringResource),
+                            name = stringResource(id = R.string.movies),
                             category = ContentType.SHOW,
                             artworks = artworks.filter { it.type == ContentType.SHOW && !it.isUnknown },
                             sendIntent = sendIntent
@@ -276,7 +276,7 @@ fun HomeContent(
 
                     item {
                         MediaCategory(
-                            name = stringResource(id = ContentType.MOVIE.stringResource),
+                            name = stringResource(id = R.string.shows),
                             category = ContentType.MOVIE,
                             artworks = artworks.filter { it.type == ContentType.MOVIE && !it.isUnknown },
                             sendIntent = sendIntent

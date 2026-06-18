@@ -8,7 +8,7 @@ import com.mskd.flux.mockups.mockkDatabaseRepository
 import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Movie
-import com.mskd.flux.model.artwork.Status
+import com.mskd.flux.model.Status
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.extensions.lastEpisode
 import com.mskd.flux.utils.extensions.minToMs

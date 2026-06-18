@@ -19,7 +19,7 @@ import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Season
-import com.mskd.flux.model.artwork.Status
+import com.mskd.flux.model.Status
 import com.mskd.flux.model.tmdb.TMDBEpisode
 import com.mskd.flux.model.tmdb.TMDBTranslations
 import com.mskd.flux.useCases.images.ImagesUC

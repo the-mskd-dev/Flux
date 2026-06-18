@@ -10,7 +10,7 @@ import com.mskd.flux.model.State
 import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.FullArtwork
-import com.mskd.flux.model.artwork.Status
+import com.mskd.flux.model.Status
 import com.mskd.flux.useCases.progress.ProgressUC
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe

@@ -19,7 +19,7 @@ import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.model.artwork.Media
-import com.mskd.flux.model.artwork.Status
+import com.mskd.flux.model.Status
 import com.mskd.flux.ui.component.media.EpisodesDetails
 import com.mskd.flux.ui.component.media.MediaDetailsHorizontal
 import com.mskd.flux.ui.component.media.OverviewItem

@@ -1,7 +1,6 @@
 package com.mskd.flux.screens.home
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.fadeIn
@@ -76,7 +75,6 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.mskd.flux.R
 import com.mskd.flux.data.repository.customization.LocalCustomization
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.model.State
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.navigation.Route

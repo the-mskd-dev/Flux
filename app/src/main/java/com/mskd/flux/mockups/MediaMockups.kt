@@ -1,6 +1,7 @@
 package com.mskd.flux.mockups
 
 import com.mskd.flux.model.FileSource
+import com.mskd.flux.model.Status
 import com.mskd.flux.model.UserFile
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.ContentType
@@ -8,7 +9,6 @@ import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Season
-import com.mskd.flux.model.Status
 import kotlin.time.Duration.Companion.minutes
 
 object MediaMockups {

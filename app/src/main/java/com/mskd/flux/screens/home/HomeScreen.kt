@@ -517,7 +517,7 @@ fun MediaCategory(
 
     val screenDimensions = rememberScreenDimensions()
     val columns = if (screenDimensions.isLarge) 5 else LocalCustomization.current.itemsPerRow
-    val itemWidth = itemWidthFor(columns = columns)
+    val itemWidth = itemWidthFor(screenWidthDp = screenDimensions.widthDp, columns = columns)
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -563,7 +563,8 @@ fun MediaCategory(
 @Composable
 fun UnknownCategory(sendIntent: (HomeIntent) -> Unit) {
 
-    val itemWidth = itemWidthFor(columns = LocalCustomization.current.itemsPerRow)
+    val screenDimensions = rememberScreenDimensions()
+    val itemWidth = itemWidthFor(screenWidthDp = screenDimensions.widthDp, columns = LocalCustomization.current.itemsPerRow)
     val foregroundPainter = rememberVectorPainter(ImageVector.vectorResource(R.drawable.ic_launcher_foreground))
 
     Column(

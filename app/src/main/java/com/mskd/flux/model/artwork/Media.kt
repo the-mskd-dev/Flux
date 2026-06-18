@@ -1,5 +1,6 @@
 package com.mskd.flux.model.artwork
 
+import com.mskd.flux.model.Status
 import com.mskd.flux.model.UserFile
 import com.mskd.flux.utils.extensions.minToMs
 import com.mskd.flux.utils.extensions.parseTMDBDate

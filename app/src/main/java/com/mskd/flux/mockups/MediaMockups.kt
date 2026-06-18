@@ -8,7 +8,7 @@ import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Season
-import com.mskd.flux.model.artwork.Status
+import com.mskd.flux.model.Status
 import kotlin.time.Duration.Companion.minutes
 
 object MediaMockups {

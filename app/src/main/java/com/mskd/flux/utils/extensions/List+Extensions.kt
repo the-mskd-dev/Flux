@@ -1,7 +1,7 @@
 package com.mskd.flux.utils.extensions
 
 import com.mskd.flux.model.artwork.Episode
-import com.mskd.flux.model.artwork.Status
+import com.mskd.flux.model.Status
 
 fun List<Episode>.sort() : List<Episode> {
     return this.sortedWith(compareBy({ it.season }, { it.number }))

@@ -455,7 +455,7 @@ class PlayerViewModelTest : FunSpec({
     }
 
     test("error state when artworkState is State.Error") {
-        artworkUC.setContent(com.mskd.flux.model.State.Error)
+        artworkUC.setContent(State.Error)
         updateVm()
 
         viewModel.uiState.test {

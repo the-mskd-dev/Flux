@@ -25,6 +25,7 @@ import com.mskd.flux.data.repository.customization.LocalCustomization
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.screens.artwork.composables.common.ArtworkImage
+import com.mskd.flux.screens.artwork.composables.common.ArtworkImageFull
 import com.mskd.flux.screens.show.ShowIntent
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.component.media.OverviewItem
@@ -56,7 +57,7 @@ fun ShowContentRegular(
 
                 val (image, title) = createRefs()
 
-                ArtworkImage(
+                ArtworkImageFull(
                     modifier = Modifier
                         .constrainAs(image) {
                             start.linkTo(parent.start)

@@ -3,10 +3,14 @@ package com.mskd.flux.screens.player
 import android.content.res.Configuration
 import androidx.activity.compose.BackHandler
 import androidx.annotation.OptIn
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.focusable
@@ -113,24 +117,32 @@ fun PlayerScreen(
         viewModel.handleIntent(PlayerIntent.OnBackTap)
     }
 
-    Crossfade(
-        targetState = uiState.state::class,
+    AnimatedContent(
+        targetState = uiState.state,
         label = "PlayerScreenState",
-    ) { stateClass ->
-        when (stateClass) {
-            State.Loading::class -> LoadingScreen()
-            State.Error::class -> {
+        transitionSpec = { fadeIn() togetherWith fadeOut() },
+        contentKey = { state ->
+            when (state) {
+                is State.Loading -> "loading"
+                is State.Error -> "error"
+                is State.Content -> "content_${state.content.media.mediaId}"
+            }
+        }
+    ) { state ->
+        when (state) {
+            is State.Loading -> LoadingScreen()
+            is State.Error -> {
                 ErrorScreen(
                     message = stringResource(R.string.oups_an_error_occured),
                     onBackButtonTap = { viewModel.handleIntent(PlayerIntent.OnBackTap) }
                 )
             }
-            State.Content::class -> {
+            is State.Content -> {
 
                 val focusRequester = remember { FocusRequester() }
 
                 PlayerContent(
-                    content = (uiState.state as State.Content<PlayerUiContent>).content,
+                    content = state.content,
                     subtitles = { subtitles },
                     progress = { progress },
                     focusRequester = focusRequester,
@@ -142,7 +154,6 @@ fun PlayerScreen(
                 )
             }
         }
-
     }
 
 }

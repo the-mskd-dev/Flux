@@ -47,27 +47,31 @@ class HomeViewModel(
         _dismissedSnackbar,
     ) { artworks, catalogState, preferences, token, dismissedSnackbar ->
 
-        val screen = when {
-            catalogState is CatalogUC.State.Syncing -> {
-                if (catalogState.full) HomeUiState.State.Loading(progress = catalogState.progress)
-                else HomeUiState.State.Content
-            }
-            else -> HomeUiState.State.Content
-        }
-
         val snackbar = getSnackbarIfNeeded(
             token = token,
             dismissedSnackbar = dismissedSnackbar,
             artworks = artworks
         )
 
-        HomeUiState(
-            screenState = screen,
-            artworks = artworks,
-            lastWatchedMediaIds = preferences.recentlyWatchedIds,
-            isRefreshing = catalogState is CatalogUC.State.Syncing,
-            snackbarState = snackbar
-        )
+        if (catalogState is CatalogUC.State.Syncing && catalogState.full) {
+
+            HomeUiState(
+                state = HomeState.Loading(progress = catalogState.progress),
+                snackbarState = snackbar
+            )
+
+        } else {
+
+            HomeUiState(
+                state = HomeState.Content(
+                    artworks = artworks,
+                    lastWatchedMediaIds = preferences.recentlyWatchedIds,
+                    isRefreshing = catalogState is CatalogUC.State.Syncing,
+                ),
+                snackbarState = snackbar
+            )
+
+        }
 
     }.stateIn(
         scope = viewModelScope,
@@ -149,7 +153,8 @@ class HomeViewModel(
     }
 
     private fun onDismissSnackbar() {
-        _dismissedSnackbar.update { it + (uiState.value.snackbarState ?: return) }
+        val snackbar = uiState.value.snackbarState ?: return
+        _dismissedSnackbar.update { it + snackbar }
     }
 
     private suspend fun getSnackbarIfNeeded(

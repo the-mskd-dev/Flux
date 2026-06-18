@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -16,15 +17,18 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.constraintlayout.compose.Dimension
 import com.mskd.flux.R
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.screens.artwork.composables.common.ArtworkImage
+import com.mskd.flux.screens.artwork.composables.common.ArtworkImageFull
 import com.mskd.flux.screens.show.ShowIntent
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.component.media.OverviewItem
@@ -45,7 +49,7 @@ fun ShowContentLarge(
 
         Box(modifier = Modifier.weight(.5f),) {
 
-            ArtworkImage(
+            ArtworkImageFull(
                 modifier = Modifier.fillMaxSize(),
                 fullArtwork = fullShow,
                 orientation = Orientation.Horizontal,
@@ -67,13 +71,18 @@ fun ShowContentLarge(
 
             item(span = { GridItemSpan(maxLineSpan) }) {
 
-                Text.Display.Small(
+                Text.Adaptive(
                     modifier = Modifier
                         .padding(Ui.Space.medium)
                         .wrapContentWidth(),
                     text = fullShow.artwork.title,
                     color = MaterialTheme.colorScheme.onBackground,
-                    emphasized = true
+                    style = MaterialTheme.typography.displayMediumEmphasized,
+                    maxLines = 3,
+                    autoSize = TextAutoSize.StepBased(
+                        minFontSize = MaterialTheme.typography.titleSmallEmphasized.fontSize,
+                        maxFontSize = MaterialTheme.typography.displayMediumEmphasized.fontSize,
+                    )
                 )
 
             }

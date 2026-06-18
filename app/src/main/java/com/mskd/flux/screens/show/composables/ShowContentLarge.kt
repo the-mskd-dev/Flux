@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -70,13 +71,18 @@ fun ShowContentLarge(
 
             item(span = { GridItemSpan(maxLineSpan) }) {
 
-                Text.Display.Small(
+                Text.Adaptive(
                     modifier = Modifier
                         .padding(Ui.Space.medium)
                         .wrapContentWidth(),
                     text = fullShow.artwork.title,
                     color = MaterialTheme.colorScheme.onBackground,
-                    emphasized = true
+                    style = MaterialTheme.typography.displayMediumEmphasized,
+                    maxLines = 3,
+                    autoSize = TextAutoSize.StepBased(
+                        minFontSize = MaterialTheme.typography.titleSmallEmphasized.fontSize,
+                        maxFontSize = MaterialTheme.typography.displayMediumEmphasized.fontSize,
+                    )
                 )
 
             }

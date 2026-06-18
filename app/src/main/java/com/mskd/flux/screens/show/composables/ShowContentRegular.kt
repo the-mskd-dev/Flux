@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -70,7 +71,7 @@ fun ShowContentRegular(
                     fullArtwork = fullShow,
                 )
 
-                Text.Display.Small(
+                Text.Adaptive(
                     modifier = Modifier
                         .constrainAs(title) {
                             start.linkTo(parent.start,Ui.Space.medium)
@@ -81,7 +82,12 @@ fun ShowContentRegular(
                         },
                     text = fullShow.artwork.title,
                     color = MaterialTheme.colorScheme.onBackground,
-                    emphasized = true
+                    style = MaterialTheme.typography.displayMediumEmphasized,
+                    maxLines = 3,
+                    autoSize = TextAutoSize.StepBased(
+                        minFontSize = MaterialTheme.typography.titleSmallEmphasized.fontSize,
+                        maxFontSize = MaterialTheme.typography.displayMediumEmphasized.fontSize,
+                    )
                 )
 
             }

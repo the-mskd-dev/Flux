@@ -60,8 +60,7 @@ fun ArtworkImage(
         )
     } else {
         ArtworkImageFull(
-            modifier = modifier
-                .aspectRatio(Ui.Images.ratio_6_5),
+            modifier = modifier,
             fullArtwork = fullArtwork,
             currentMedia = currentMedia,
             orientation = orientation
@@ -130,6 +129,7 @@ fun ArtworkImageBlurred(
     modifier: Modifier,
     fullArtwork: FullArtwork,
     selectedSeason: Int?,
+    ratio: Float = 2f/3f
 ) {
 
     val imageUrl = when (fullArtwork) {
@@ -174,18 +174,27 @@ fun ArtworkImageBlurred(
                 )
         )
 
-        AsyncImage(
+        Box(
             modifier = Modifier
                 .align(Alignment.Center)
-                .clip(Ui.Shape.Corner.small)
-                .width(160.dp)
-                .aspectRatio(2f/3f),
-            model = imageRequest,
-            contentScale = ContentScale.Crop,
-            placeholder = Image.placeholder,
-            error = Image.error,
-            contentDescription = fullArtwork.artwork.title
-        )
+                .fillMaxSize(.7f),
+            contentAlignment = Alignment.Center
+        ) {
+
+            AsyncImage(
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .clip(Ui.Shape.Corner.small)
+                    .aspectRatio(ratio)
+                    .fillMaxSize(),
+                model = imageRequest,
+                contentScale = ContentScale.Crop,
+                placeholder = Image.placeholder,
+                error = Image.error,
+                contentDescription = fullArtwork.artwork.title
+            )
+
+        }
 
     }
 
@@ -199,6 +208,18 @@ fun ArtworkImage_Full_Preview() {
             modifier = Modifier.aspectRatio(6f / 5f),
             fullArtwork = MediaMockups.fullShow,
             currentMedia = MediaMockups.fullShow.episodes.first(),
+        )
+    }
+}
+
+@FluxPreview
+@Composable
+fun ArtworkImage_Blurred_Preview() {
+    AppTheme {
+        ArtworkImageBlurred(
+            modifier = Modifier.aspectRatio(6f / 5f),
+            fullArtwork = MediaMockups.fullShow,
+            selectedSeason = null
         )
     }
 }

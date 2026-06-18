@@ -1,6 +1,7 @@
 package com.mskd.flux.data.repository.customization
 
 import android.content.Context
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
 import androidx.datastore.preferences.core.emptyPreferences
@@ -40,4 +41,4 @@ interface CustomizationRepository {
 
 }
 
-val LocalCustomization = staticCompositionLocalOf { CustomizationRepository.State() }
+val LocalCustomization = compositionLocalOf { CustomizationRepository.State() }

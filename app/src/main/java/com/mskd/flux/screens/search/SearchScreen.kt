@@ -98,7 +98,7 @@ fun SearchContent(
     val screenDimensions = rememberScreenDimensions()
     val isLargeScreen = screenDimensions.isLarge
     val columns = if (isLargeScreen) 5 else LocalCustomization.current.itemsPerRow
-    val itemWidth = itemWidthFor(columns = columns)
+    val itemWidth = itemWidthFor(screenWidthDp = screenDimensions.widthDp, columns = columns)
     val focusManager = LocalFocusManager.current
     val lazyGridState = rememberLazyGridState()
 

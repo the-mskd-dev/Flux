@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -58,11 +59,11 @@ class MainActivity : ComponentActivity() {
 
         setContent {
 
-            val settings by viewModel.settings.collectAsStateWithLifecycle()
-            val customization by viewModel.customization.collectAsStateWithLifecycle()
+            val settings by viewModel.settings.collectAsState()
+            val customization by viewModel.customization.collectAsState()
             val storagePermission = storagePermissionState()
             val notificationsPermission = notificationsPermissionState()
-            val isOnline by connectivityRepository.isOnline.collectAsStateWithLifecycle(false)
+            val isOnline by connectivityRepository.isOnline.collectAsState(false)
 
             LaunchedEffect(Unit) {
                 if (notificationsPermission?.status?.isGranted == false && settings.externalPlayer) {

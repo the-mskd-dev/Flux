@@ -87,10 +87,11 @@ class HomeViewModelTest : FunSpec({
 
             viewModel.uiState.test {
                 val initialState = awaitItem()
-                initialState.screenState shouldBe HomeUiState.State.Content
-                initialState.artworks shouldBe MediaMockups.artworks
-                initialState.lastWatchedMediaIds shouldBe emptyList()
-                initialState.isRefreshing shouldBe false
+                initialState.state shouldBe HomeState.Content(
+                    artworks = MediaMockups.artworks,
+                    lastWatchedMediaIds = emptyList(),
+                    isRefreshing = false
+                )
                 initialState.snackbarState shouldBe testCase.expectedSnackbarState
 
                 cancelAndConsumeRemainingEvents()

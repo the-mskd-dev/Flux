@@ -35,7 +35,7 @@ class FakeArtworkUC(initialContentType: ContentType = ContentType.MOVIE) : Artwo
     override suspend fun saveEpisodes(episodes: List<Episode>) {
         val currentState = _flow.value
         if (currentState is State.Content && currentState.content is FullArtwork.FullShow) {
-            val currentShow = currentState.content
+            val currentShow = currentState.content as FullArtwork.FullShow
             val currentEpisodes = currentShow.episodes.toMutableList()
             episodes.forEach { savedEpisode ->
                 val index = currentEpisodes.indexOfFirst { it.id == savedEpisode.id }
@@ -52,7 +52,7 @@ class FakeArtworkUC(initialContentType: ContentType = ContentType.MOVIE) : Artwo
     override suspend fun saveMovie(movie: Movie) {
         val currentState = _flow.value
         if (currentState is State.Content && currentState.content is FullArtwork.FullMovie) {
-            val currentMovie = currentState.content
+            val currentMovie = currentState.content as FullArtwork.FullMovie
             _flow.value = State.Content(
                 currentMovie.copy(movie = movie)
             )

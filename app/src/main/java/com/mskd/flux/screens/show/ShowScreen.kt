@@ -1,10 +1,12 @@
 package com.mskd.flux.screens.show
 
-import androidx.compose.animation.Crossfade
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.outlined.Info
@@ -72,22 +74,29 @@ fun ShowScreen(
         }
     }
 
-    Crossfade(
-        modifier = Modifier.fillMaxSize(),
-        targetState = uiState.state::class,
-        label = "MediaScreenAnimation"
+    AnimatedContent(
+        targetState = uiState.state,
+        label = "ShowScreenState",
+        transitionSpec = { fadeIn() togetherWith fadeOut() },
+        contentKey = { state ->
+            when (state) {
+                is State.Loading -> "loading"
+                is State.Error -> "error"
+                is State.Content -> "content_${state.content.fullShow.artwork.id}"
+            }
+        }
     ) { state ->
 
         when (state) {
-            State.Loading::class -> LoadingScreen()
-            State.Error::class -> {
+            State.Loading -> LoadingScreen()
+            State.Error -> {
                 ErrorScreen(
                     message = stringResource(R.string.oups_an_error_occured),
                     onBackButtonTap = { viewModel.handleIntent(ShowIntent.OnBackTap) }
                 )
             }
-            State.Content::class -> {
-                val content = (uiState.state as State.Content<ShowContent>).content
+            is State.Content -> {
+                val content = state.content
                 MaterialTheme(colorScheme = colorScheme) {
                     ShowScreenContent(
                         fullShow = content.fullShow,

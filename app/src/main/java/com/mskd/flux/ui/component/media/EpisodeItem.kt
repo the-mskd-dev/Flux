@@ -34,8 +34,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import com.mskd.flux.R
 import com.mskd.flux.data.repository.customization.LocalCustomization
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.Status
+import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.screens.artwork.ArtworkIntent
 import com.mskd.flux.ui.component.global.FluxDropDownMenu
 import com.mskd.flux.ui.component.global.FluxDropDownMenuItem

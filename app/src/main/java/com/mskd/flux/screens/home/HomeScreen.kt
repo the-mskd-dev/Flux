@@ -1,8 +1,11 @@
 package com.mskd.flux.screens.home
 
-import androidx.compose.animation.Crossfade
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -120,41 +123,50 @@ fun HomeScreen(
         sendIntent = viewModel::handleIntent
     )
 
-    Crossfade(
+    AnimatedContent(
         modifier = Modifier.fillMaxSize(),
-        targetState = uiState.screenState::class,
-        label = "CatalogAnimation"
-    ) { it ->
+        targetState = uiState.state,
+        label = "PlayerScreenState",
+        transitionSpec = { fadeIn() togetherWith fadeOut() },
+        contentKey = { state ->
+            when (state) {
+                HomeState.Error -> "error"
+                is HomeState.Loading -> "loading"
+                is HomeState.Content -> "content"
+            }
+        }
+    ) { state ->
 
-        when (it) {
+        when (state) {
 
-            HomeUiState.State.Loading::class -> {
-                val progress = (uiState.screenState as? HomeUiState.State.Loading)?.progress
+            is HomeState.Loading -> {
                 LoadingScreen(
                     text = stringResource(R.string.sync_in_progress),
-                    progress = { progress ?: 1f }
+                    progress = { state.progress }
                 )
             }
 
-            else -> {
+            HomeState.Error -> {
+                HomeEmpty(sendIntent = viewModel::handleIntent)
+            }
 
-                if (uiState.artworks.isEmpty()) {
+            is HomeState.Content -> {
+
+                if (state.artworks.isEmpty()) {
 
                     HomeEmpty(sendIntent = viewModel::handleIntent)
 
                 } else {
 
                     HomeContent(
-                        artworks = uiState.artworks,
-                        lastWatchedIds = uiState.lastWatchedMediaIds,
-                        isRefreshing = uiState.isRefreshing,
+                        artworks = state.artworks,
+                        lastWatchedIds = state.lastWatchedMediaIds,
+                        isRefreshing = state.isRefreshing,
                         snackbarHostState = snackbarHostState,
                         sendIntent = viewModel::handleIntent
                     )
 
                 }
-
-
 
             }
 

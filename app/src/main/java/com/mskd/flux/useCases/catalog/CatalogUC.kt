@@ -11,6 +11,7 @@ import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.data.repository.tmdb.TmdbRepository
 import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.model.Catalog
+import com.mskd.flux.model.Status
 import com.mskd.flux.model.UserFile
 import com.mskd.flux.model.UserFolder
 import com.mskd.flux.model.artwork.Artwork
@@ -19,7 +20,6 @@ import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Season
-import com.mskd.flux.model.Status
 import com.mskd.flux.model.tmdb.TMDBEpisode
 import com.mskd.flux.model.tmdb.TMDBTranslations
 import com.mskd.flux.useCases.images.ImagesUC

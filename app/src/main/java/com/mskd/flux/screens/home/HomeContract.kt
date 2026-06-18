@@ -7,18 +7,24 @@ import com.mskd.flux.utils.FluxSnackbar
 
 @Immutable
 data class HomeUiState(
-    val screenState: State = State.Loading(),
-    val artworks: List<Artwork> = emptyList(),
-    val lastWatchedMediaIds: List<Long> = emptyList(),
-    val isRefreshing: Boolean = true,
+    val state: HomeState = HomeState.Loading(),
     val snackbarState: FluxSnackbar? = null
-) {
+)
 
-    sealed class State {
-        data object Error: State()
-        data object Content: State()
-        data class Loading(val progress: Float = 0f): State()
-    }
+sealed class HomeState {
+
+    data object Error: HomeState()
+
+    @Immutable
+    data class Loading(val progress: Float = 0f): HomeState()
+
+    @Immutable
+    data class Content(
+        val artworks: List<Artwork> = emptyList(),
+        val lastWatchedMediaIds: List<Long> = emptyList(),
+        val isRefreshing: Boolean = true,
+    ): HomeState()
+
 }
 
 sealed class HomeIntent {

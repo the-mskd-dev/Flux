@@ -36,7 +36,7 @@ kotlin {
     // A step-by-step guide on how to include this library in an XCode
     // project can be found here:
     // https://developer.android.com/kotlin/multiplatform/migrate
-    val xcfName = "sharedKit"
+    /*val xcfName = "sharedKit"
 
     iosX64 {
         binaries.framework {
@@ -54,7 +54,7 @@ kotlin {
         binaries.framework {
             baseName = xcfName
         }
-    }
+    }*/
 
     // Source set declarations.
     // Declaring a target automatically creates a source set with the same name. By default, the
@@ -66,11 +66,11 @@ kotlin {
             dependencies {
                 implementation(libs.kotlin.stdlib)
 
-                implementation(libs.bundles.shared.serialization)
-                implementation(libs.bundles.shared.network)
-                implementation(libs.bundles.shared.di)
-                implementation(libs.bundles.shared.ui)
-                implementation(libs.bundles.shared.image)
+                api(libs.bundles.shared.serialization)
+                api(libs.bundles.shared.network)
+                api(libs.bundles.shared.di)
+                api(libs.bundles.shared.ui)
+                api(libs.bundles.shared.image)
             }
         }
 
@@ -82,7 +82,7 @@ kotlin {
 
         androidMain {
             dependencies {
-                implementation(libs.bundles.android.network)
+                api(libs.bundles.android.network)
             }
         }
 
@@ -93,16 +93,7 @@ kotlin {
                 implementation(libs.androidx.test.ext)
             }
         }
-
-        iosMain {
-            dependencies {
-                // Add iOS-specific dependencies here. This a source set created by Kotlin Gradle
-                // Plugin (KGP) that each specific iOS target (e.g., iosX64) depends on as
-                // part of KMP’s default source set hierarchy. Note that this source set depends
-                // on common by default and will correctly pull the iOS artifacts of any
-                // KMP dependencies declared in commonMain.
-            }
-        }
+        
     }
 
 }

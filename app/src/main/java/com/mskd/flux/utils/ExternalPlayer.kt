@@ -9,6 +9,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
+import androidx.core.net.toUri
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.services.ExternalPlayerService
 
@@ -51,7 +52,7 @@ object ExternalPlayer {
         return Intent(Intent.ACTION_VIEW).apply {
 
 
-            setDataAndType(media.file.uri, "video/*")
+            setDataAndType(media.file.path.toUri(), "video/*")
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             putExtra("return_result", true)
 

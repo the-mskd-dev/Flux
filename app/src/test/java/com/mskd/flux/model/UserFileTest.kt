@@ -1,6 +1,7 @@
 package com.mskd.flux.model
 
 import android.net.Uri
+import androidx.core.net.toUri
 import com.mskd.flux.mockups.FilesMockups
 import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.utils.extensions.groupInFolders
@@ -197,7 +198,7 @@ class UserFileTest : FunSpec ({
         userFile.season shouldBe 1
         userFile.episode shouldBe 1
         userFile.addedDate shouldBe java.util.Date(1621814400000L)
-        userFile.uri shouldBe mockUri
+        userFile.path.toUri() shouldBe mockUri
 
         unmockkStatic(Uri::class)
     }

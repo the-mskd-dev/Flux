@@ -168,7 +168,6 @@ dependencies {
     testImplementation(libs.bundles.android.unit.test)
 
     // Android Testing
-    androidTestImplementation(platform(libs.koin.bom))
     androidTestImplementation(libs.bundles.android.test)
 
     // UI Testing

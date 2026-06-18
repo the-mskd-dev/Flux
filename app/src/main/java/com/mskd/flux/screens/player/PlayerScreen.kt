@@ -115,7 +115,7 @@ fun PlayerScreen(
 
     Crossfade(
         targetState = uiState.state::class,
-        label = "PlayerScreenState"
+        label = "PlayerScreenState",
     ) { stateClass ->
         when (stateClass) {
             State.Loading::class -> LoadingScreen()

@@ -76,11 +76,11 @@ fun MediaDetailsVertical(media: Media) {
 
 fun MediaDetailsItems(media: Media) {
 
-    media.releaseDate?.let {
+    media.releaseDate?.formattedText?.let {
 
         MediaDetailItem(
             painter = painterResource(R.drawable.ic_date),
-            text = it.formattedText,
+            text = it,
             contentDescription = "release date icon"
         )
 

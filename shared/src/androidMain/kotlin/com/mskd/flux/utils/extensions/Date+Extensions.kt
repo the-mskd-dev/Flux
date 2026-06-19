@@ -5,20 +5,20 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.format
 import kotlinx.datetime.format.MonthNames
 import kotlinx.datetime.format.char
+import kotlinx.datetime.toJavaLocalDate
 import java.text.DateFormat
+import java.time.format.DateTimeFormatter
 import java.util.Date
+import java.util.Locale
 
 val LocalDate.formattedText: String? get() {
-    return try {
-        format(LocalDate.Format {
-            monthName(MonthNames.ENGLISH_FULL)
-            char(' ')
-            day()
-            chars(", ")
-            year()
-        })
+    try {
+        val formatter = DateTimeFormatter
+            .ofLocalizedDate(java.time.format.FormatStyle.MEDIUM)
+            .withLocale(Locale.getDefault())
+        return this.toJavaLocalDate().format(formatter)
     } catch (e: Exception) {
-        Log.e("LocalDate", "fail to format date into text: $e")
-        null
+        Log.d("LocalDate", "Fail to format text for $this", e)
+        return null
     }
 }

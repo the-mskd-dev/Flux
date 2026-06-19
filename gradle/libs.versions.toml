@@ -34,6 +34,7 @@ koin = "4.2.2"
 # -- Data & Network --
 datastore = "1.2.1"
 room = "2.8.4"
+sqlite = "2.7.0-alpha06"
 ktor = "3.5.0"
 
 # -- Media --
@@ -131,6 +132,7 @@ coil-network-ktor = { group = "io.coil-kt.coil3", name = "coil-network-ktor3", v
 androidx-datastore-pref = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 
 # -- Room --
+androidx-sqlite-bundled = { group = "androidx.sqlite", name = "sqlite-bundled", version.ref = "sqlite" }
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
@@ -188,6 +190,7 @@ shared-image = [
     "coil-network-ktor",
 ]
 shared-room = [
+    "androidx-sqlite-bundled",
     "androidx-room-runtime",
     "androidx-room-ktx"
 ]

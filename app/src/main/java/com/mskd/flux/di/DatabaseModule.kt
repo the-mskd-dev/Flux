@@ -2,6 +2,7 @@ package com.mskd.flux.di
 
 import com.mskd.flux.data.ddb.DatabaseDao
 import com.mskd.flux.data.ddb.FluxDatabase
+import com.mskd.flux.data.ddb.getDatabaseBuilder
 import com.mskd.flux.data.repository.ddb.DatabaseRepository
 import com.mskd.flux.data.repository.ddb.DatabaseRepositoryImpl
 import org.koin.android.ext.koin.androidContext
@@ -12,7 +13,7 @@ import org.koin.dsl.module
 val databaseModule = module {
 
     single<FluxDatabase> {
-        FluxDatabase.getInstance(androidContext())
+        getDatabaseBuilder(androidContext()).build()
     }
 
     single<DatabaseDao> {

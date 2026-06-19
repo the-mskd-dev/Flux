@@ -1,19 +1,10 @@
 package com.mskd.flux.data.ddb
 
-import android.content.Context
-import androidx.room.AutoMigration
 import androidx.room.Dao
-import androidx.room.Database
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Room
-import androidx.room.RoomDatabase
-import androidx.room.TypeConverter
-import androidx.room.TypeConverters
-import com.mskd.flux.model.FileSource
 import com.mskd.flux.model.artwork.Artwork
-import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Season
@@ -172,63 +163,4 @@ interface DatabaseDao {
 
 //endregion
 
-}
-
-class Converters {
-
-    @TypeConverter
-    fun fromContentType(contentType: ContentType): String {
-        return contentType.name
-    }
-
-    @TypeConverter
-    fun toContentType(value: String): ContentType {
-        return ContentType.valueOf(value)
-    }
-
-    @TypeConverter
-    fun fromFileSource(fileSource: FileSource): String {
-        return fileSource.name
-    }
-
-    @TypeConverter
-    fun toFileSource(value: String): FileSource {
-        return FileSource.valueOf(value)
-    }
-}
-
-@Database(
-    entities = [Artwork::class, Movie::class, Episode::class, Season::class],
-    version = 4,
-    autoMigrations = [
-        AutoMigration(from = 1, to = 2),
-        AutoMigration(from = 2, to = 3),
-        AutoMigration(from = 3, to = 4),
-    ]
-)
-@TypeConverters(Converters::class)
-abstract class FluxDatabase : RoomDatabase() {
-    abstract fun dao(): DatabaseDao
-
-    companion object {
-
-        // For Singleton instantiation
-        @Volatile private var instance: FluxDatabase? = null
-
-        fun getInstance(context: Context): FluxDatabase {
-            return instance ?: synchronized(this) {
-                instance ?: buildDatabase(context).also { instance = it }
-            }
-        }
-
-        private fun buildDatabase(context: Context): FluxDatabase {
-            return Room
-                .databaseBuilder(
-                    context,
-                    FluxDatabase::class.java,
-                    "fluxDatabase"
-                )
-                .build()
-        }
-    }
 }

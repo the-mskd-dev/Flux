@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.android.kotlin.multiplatform.library)
     alias(libs.plugins.android.lint)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.ksp)
 }
 
 kotlin {
@@ -69,9 +70,18 @@ kotlin {
         androidMain {
             dependencies {
                 api(libs.bundles.android.network)
+                api(libs.bundles.android.room)
             }
         }
         
     }
 
+}
+
+dependencies {
+    add("kspAndroid", libs.androidx.room.compiler)
+}
+
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
 }

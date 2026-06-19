@@ -3,7 +3,6 @@ import java.io.FileInputStream
 import java.util.Properties
 
 plugins {
-    alias(libs.plugins.ksp)
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.parcelize)
@@ -121,10 +120,6 @@ configure<ApplicationExtension> {
 
 }
 
-ksp {
-    arg("room.schemaLocation", "$projectDir/schemas")
-}
-
 kotlin { jvmToolchain(21) }
 
 dependencies {
@@ -159,10 +154,6 @@ dependencies {
 
     // DataStore
     implementation(libs.bundles.android.datastore)
-
-    // Room
-    implementation(libs.bundles.android.room)
-    ksp(libs.androidx.room.compiler)
 
     // ACRA
     implementation(libs.bundles.android.acra)

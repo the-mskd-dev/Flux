@@ -10,7 +10,7 @@ import com.mskd.flux.model.State
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.model.artwork.Media
-import com.mskd.flux.screens.player.PlayerTrack.Type
+import com.mskd.flux.model.player.PlayerTrack.Type
 import com.mskd.flux.screens.player.PlayerUiContent.AmbientOverlay
 import com.mskd.flux.screens.player.PlayerUiContent.NextButton
 import com.mskd.flux.screens.player.PlayerUiContent.SeekOverlay

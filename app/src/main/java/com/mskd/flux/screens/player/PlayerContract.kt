@@ -6,6 +6,7 @@ import com.mskd.flux.model.State
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.model.artwork.Media
+import com.mskd.flux.model.player.PlayerTrack
 
 @Immutable
 data class PlayerUiState(
@@ -121,26 +122,4 @@ sealed class PlayerIntent {
 sealed class PlayerEvent {
     data object BackToPreviousScreen : PlayerEvent()
     data class ChangeBrightness(val delta: Float) : PlayerEvent()
-}
-
-data class PlayerTrack(
-    val id: String? = null,
-    val label: String,
-    val language: String? = null,
-    val type: Type
-) {
-
-    enum class Type {
-        AUDIO, SUBTITLES
-    }
-
-    companion object {
-        val NO_SUBTITLES = PlayerTrack(
-            id = null,
-            label = "",
-            language = null,
-            type = Type.SUBTITLES
-        )
-    }
-
 }

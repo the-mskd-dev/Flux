@@ -1,6 +1,6 @@
 package com.mskd.flux.mockups
 
-import com.mskd.flux.screens.player.PlayerTrack
+import com.mskd.flux.model.player.PlayerTrack
 
 object PlayerMockups {
 

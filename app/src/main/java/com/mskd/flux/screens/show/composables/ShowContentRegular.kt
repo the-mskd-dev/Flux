@@ -25,7 +25,6 @@ import com.mskd.flux.R
 import com.mskd.flux.data.repository.customization.LocalCustomization
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.FullArtwork
-import com.mskd.flux.screens.artwork.composables.common.ArtworkImage
 import com.mskd.flux.screens.artwork.composables.common.ArtworkImageFull
 import com.mskd.flux.screens.show.ShowIntent
 import com.mskd.flux.ui.component.global.Text

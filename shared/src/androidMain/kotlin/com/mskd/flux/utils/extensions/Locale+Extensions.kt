@@ -1,6 +1,6 @@
 package com.mskd.flux.utils.extensions
 
-import com.mskd.flux.screens.player.PlayerTrack
+import com.mskd.flux.model.player.PlayerTrack
 import java.util.Locale
 
 

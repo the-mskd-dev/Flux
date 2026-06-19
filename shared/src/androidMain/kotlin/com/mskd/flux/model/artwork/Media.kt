@@ -34,8 +34,6 @@ sealed class Media {
 
     abstract  val file: UserFile
 
-    val releaseDate: LocalDate? get() = releaseDateString.parseTMDBDate()
-
     open val mediaId: Long get() = artworkId
 
     val progressPercent: Float get() = this.currentTime.toFloat() / this.duration.minToMs

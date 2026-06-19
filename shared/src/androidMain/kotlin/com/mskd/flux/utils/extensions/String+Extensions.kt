@@ -1,6 +1,7 @@
 package com.mskd.flux.utils.extensions
 
 import android.util.Log
+import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.utils.Constants
 import kotlinx.datetime.LocalDate
 import java.text.ParseException
@@ -18,6 +19,8 @@ fun String.parseTMDBDate() : LocalDate? {
     }
 
 }
+
+val Media.releaseDate: LocalDate? get() = this.releaseDateString.parseTMDBDate()
 
 fun String?.uppercaseFirstLetter() : String? {
     return this?.replaceFirstChar { if (it.isLowerCase()) it. titlecase(Locale.getDefault()) else it.toString() }

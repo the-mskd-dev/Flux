@@ -26,6 +26,7 @@ import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.extensions.formattedText
 import com.mskd.flux.utils.extensions.minToMs
+import com.mskd.flux.utils.extensions.releaseDate
 import com.mskd.flux.utils.extensions.timeDescription
 import com.mskd.flux.utils.extensions.toRating
 

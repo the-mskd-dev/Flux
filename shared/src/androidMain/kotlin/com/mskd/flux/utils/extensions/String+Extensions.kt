@@ -12,7 +12,7 @@ fun String.parseTMDBDate() : LocalDate? {
 
     return try {
         LocalDate.parse(this)
-    } catch (e: ParseException) {
+    } catch (e: Exception) {
         Log.e("Date Parsing", "Fail to parse date : $this", e)
         null
     }

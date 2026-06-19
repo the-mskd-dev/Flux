@@ -3,7 +3,6 @@ package com.mskd.flux.data.ddb
 import androidx.room.AutoMigration
 import androidx.room.ConstructedBy
 import androidx.room.Database
-import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.RoomDatabaseConstructor
 import androidx.room.TypeConverters

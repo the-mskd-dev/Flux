@@ -342,19 +342,15 @@ class PlayerManager(private val context: Context) : Player.Listener {
         val current = _state.value as? State.Ready ?: return null
         clearOverridesOfType(C.TRACK_TYPE_AUDIO)
 
-        if (track.id != null) {
-
-            val result = applyTrackOverride(trackId = track.id, groups = currentTracks.groups)
+        track.id?.let { trackId ->
+            val result = applyTrackOverride(trackId = trackId, groups = currentTracks.groups)
             if (result) return track
+        }
 
-        } else {
-
-            val playerTrack = current.tracks.filter { it.type == PlayerTrack.Type.AUDIO }.firstOrNull { it.language == track.language }
-            playerTrack?.language?.let {
-                setPreferredAudioLanguage(it)
-                return playerTrack
-            }
-
+        val playerTrack = current.tracks.filter { it.type == PlayerTrack.Type.AUDIO }.firstOrNull { it.language == track.language }
+        playerTrack?.language?.let {
+            setPreferredAudioLanguage(it)
+            return playerTrack
         }
 
         return null
@@ -375,19 +371,15 @@ class PlayerManager(private val context: Context) : Player.Listener {
             setTrackTypeDisabled(C.TRACK_TYPE_TEXT, false)
 
             // Select track from player tracks or user preferences
-            if (track.id != null) {
-
-                val result = applyTrackOverride(trackId = track.id, groups = currentTracks.groups)
+            track.id?.let { trackId ->
+                val result = applyTrackOverride(trackId = trackId, groups = currentTracks.groups)
                 if (result) return track
+            }
 
-            } else {
-
-                val playerTrack = current.tracks.filter { it.type == PlayerTrack.Type.SUBTITLES }.firstOrNull { it.language == track.language }
-                playerTrack?.language?.let {
-                    setPreferredTextLanguage(it)
-                    return playerTrack
-                }
-
+            val playerTrack = current.tracks.filter { it.type == PlayerTrack.Type.SUBTITLES }.firstOrNull { it.language == track.language }
+            playerTrack?.language?.let {
+                setPreferredTextLanguage(it)
+                return playerTrack
             }
 
         }

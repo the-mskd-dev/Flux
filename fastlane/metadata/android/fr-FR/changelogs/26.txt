@@ -1,0 +1,4 @@
+- FIX: Crash sur le lecteur interne
+- FIX: Nombre d'items par ligne perdu après PiP
+- UI: Entête et titre de la page des saisons
+- CORE: Déplacement de quelques dépendances dans le nouveau module KMP

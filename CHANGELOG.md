@@ -1,7 +1,6 @@
-## Version 1.5.0
+## Version 1.5.1
 
-- FEATURE: Picture-in-Picture
-- FEATURE: Caching HD images option
-- FEATURE: Remove duration filter when retrieve files
-- UI: Add old blurred header option
-- CORE: Use of KMP libraries (Koin, Ktor, Kotlin-serialization) 
+- FIX: Crash on internal player
+- FIX: Lost items per row count after PiP
+- UI: Show screen header + title 
+- CORE: Move some libraries into the KMP shared module 

@@ -47,7 +47,7 @@ import com.mskd.flux.ui.component.global.FluxScaffold
 import com.mskd.flux.ui.component.global.ResetProgressDialog
 import com.mskd.flux.utils.AppThemePreview
 import com.mskd.flux.utils.FluxPreview
-import com.mskd.flux.utils.WebLink
+import com.mskd.flux.utils.extensions.WebLink
 import com.mskd.flux.utils.rememberScreenDimensions
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf

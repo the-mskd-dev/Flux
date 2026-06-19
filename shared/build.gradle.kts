@@ -69,6 +69,7 @@ kotlin {
 
         androidMain {
             dependencies {
+                api(libs.bundles.android.core)
                 api(libs.bundles.android.network)
                 api(libs.bundles.android.room)
             }

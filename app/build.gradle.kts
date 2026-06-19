@@ -127,9 +127,6 @@ dependencies {
     // KMP
     implementation(project(":shared"))
 
-    // Core
-    implementation(libs.bundles.android.core)
-
     // Compose (Bundle + BOM)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.bundles.android.compose)

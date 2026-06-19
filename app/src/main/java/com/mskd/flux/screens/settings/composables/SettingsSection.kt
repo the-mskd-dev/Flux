@@ -22,7 +22,7 @@ import com.mskd.flux.screens.settings.SettingsUiState
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.useCases.images.ImagesUC
 import com.mskd.flux.utils.Constants
-import com.mskd.flux.utils.WebLink
+import com.mskd.flux.utils.extensions.WebLink
 import kotlin.math.roundToInt
 
 @Composable

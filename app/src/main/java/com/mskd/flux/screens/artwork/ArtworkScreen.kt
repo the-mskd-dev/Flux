@@ -50,7 +50,7 @@ import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.utils.ExternalPlayer
 import com.mskd.flux.utils.FluxPreview
-import com.mskd.flux.utils.WebLink
+import com.mskd.flux.utils.extensions.WebLink
 import com.mskd.flux.utils.rememberExternalPlayerLauncher
 import com.mskd.flux.utils.rememberScreenDimensions
 import org.koin.compose.viewmodel.koinViewModel

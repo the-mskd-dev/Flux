@@ -58,6 +58,7 @@ kotlin {
                 api(libs.bundles.shared.network)
                 api(libs.bundles.shared.di)
                 api(libs.bundles.shared.image)
+                api(libs.bundles.shared.room)
             }
         }
 
@@ -71,7 +72,6 @@ kotlin {
             dependencies {
                 api(libs.bundles.android.core)
                 api(libs.bundles.android.network)
-                api(libs.bundles.android.room)
             }
         }
         

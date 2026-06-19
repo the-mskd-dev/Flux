@@ -187,6 +187,10 @@ shared-image = [
     "coil-compose",
     "coil-network-ktor",
 ]
+shared-room = [
+    "androidx-room-runtime",
+    "androidx-room-ktx"
+]
 
 # -- Android --
 
@@ -254,11 +258,6 @@ android-di = [
 
 android-datastore = [
     "androidx-datastore-pref",
-]
-
-android-room = [
-    "androidx-room-runtime",
-    "androidx-room-ktx"
 ]
 
 android-acra = [

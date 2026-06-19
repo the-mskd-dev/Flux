@@ -12,21 +12,8 @@ kotlin {
     // See: https://kotlinlang.org/docs/multiplatform-discover-project.html#targets
     android {
         namespace = "com.mskd.flux.shared"
-        compileSdk {
-            version = release(36) {
-                minorApiLevel = 1
-            }
-        }
-        minSdk = 24
-
-        withHostTestBuilder {
-        }
-
-        withDeviceTestBuilder {
-            sourceSetTreeName = "test"
-        }.configure {
-            instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        }
+        compileSdk = libs.versions.android.compileSdk.get().toInt()
+        minSdk = libs.versions.android.minSdk.get().toInt()
     }
 
     // For iOS targets, this is also where you should
@@ -69,7 +56,6 @@ kotlin {
                 api(libs.bundles.shared.serialization)
                 api(libs.bundles.shared.network)
                 api(libs.bundles.shared.di)
-                api(libs.bundles.shared.ui)
                 api(libs.bundles.shared.image)
             }
         }
@@ -83,14 +69,6 @@ kotlin {
         androidMain {
             dependencies {
                 api(libs.bundles.android.network)
-            }
-        }
-
-        getByName("androidDeviceTest") {
-            dependencies {
-                implementation(libs.androidx.core)
-                implementation(libs.androidx.runner)
-                implementation(libs.androidx.test.ext)
             }
         }
         

@@ -1,8 +1,13 @@
 [versions]
+# -- Gradle --
+android-compileSdk = "37"
+android-minSdk = "29"
+android-targetSdk = "37"
+
 # -- Build Config & Plugins --
 agp = "9.2.1"
-kotlin = "2.3.21"
-ksp = "2.3.6"
+kotlin = "2.4.0"
+ksp = "2.3.9"
 
 # -- Android Core --
 coreKtx = "1.19.0"
@@ -115,7 +120,6 @@ ktor-android = { group = "io.ktor", name = "ktor-client-android", version.ref = 
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }
 koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koin" }
-koin-ktor = { module = "io.insert-koin:koin-ktor", version.ref = "koin" }
 koin-test = { module = "io.insert-koin:koin-test", version.ref = "koin" }
 koin-test-junit4 = { module = "io.insert-koin:koin-test-junit4", version.ref = "koin" }
 
@@ -126,8 +130,6 @@ coil-network-ktor = { group = "io.coil-kt.coil3", name = "coil-network-ktor3", v
 
 # -- DataStore --
 androidx-datastore-pref = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
-androidx-datastore-pref-rx2 = { group = "androidx.datastore", name = "datastore-preferences-rxjava2", version.ref = "datastore" }
-androidx-datastore-pref-rx3 = { group = "androidx.datastore", name = "datastore-preferences-rxjava3", version.ref = "datastore" }
 
 # -- Room --
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
@@ -181,15 +183,10 @@ shared-network = [
     "ktor-json"
 ]
 shared-di = [
-    "koin-core",
-    "koin-ktor",
-]
-shared-ui = [
-    "material-kolor"
+    "koin-core"
 ]
 shared-image = [
     "coil-compose",
-    "coil-video",
     "coil-network-ktor",
 ]
 
@@ -212,7 +209,6 @@ android-compose = [
     "androidx-ui-tooling-preview",
     "androidx-ui-text",
     "androidx-material3",
-    "androidx-runtime-livedata",
     "androidx-lifecycle-viewmodel-compose",
     "androidx-constraintlayout-compose"
 ]
@@ -225,7 +221,12 @@ android-compose-debug = [
 android-ui = [
     "androidx-material-icons-core",
     "androidx-material3-adaptive",
-    "androidx-palette"
+    "androidx-palette",
+    "material-kolor"
+]
+
+android-image = [
+    "coil-video",
 ]
 
 android-navigation = [
@@ -254,8 +255,6 @@ android-di = [
 
 android-datastore = [
     "androidx-datastore-pref",
-    "androidx-datastore-pref-rx2",
-    "androidx-datastore-pref-rx3"
 ]
 
 android-room = [

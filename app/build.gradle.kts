@@ -28,13 +28,13 @@ if (keystorePropertiesFile.exists()) {
 
 configure<ApplicationExtension> {
     namespace = "com.mskd.flux"
-    compileSdk = 37
+    compileSdk = libs.versions.android.compileSdk.get().toInt()
     ndkVersion = "29.0.13113456"
 
     defaultConfig {
         applicationId = "com.mskd.flux"
-        minSdk = 29
-        targetSdk = 37
+        minSdk = libs.versions.android.minSdk.get().toInt()
+        targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 25
         versionName = "1.5.0"
 
@@ -150,6 +150,9 @@ dependencies {
 
     // Media Player
     implementation(libs.bundles.android.player)
+
+    // Image
+    implementation(libs.bundles.android.image)
 
     // Koin
     implementation(libs.bundles.android.di)

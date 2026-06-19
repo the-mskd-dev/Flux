@@ -1,6 +1,5 @@
 package com.mskd.flux.utils.extensions
 
-import java.util.Locale
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
 
@@ -18,22 +17,22 @@ fun Long.timeDescription(withoutSeconds: Boolean = false) : String {
 }
 
 fun Long.formatMinSec(): String {
-    return if (this <= 0L) "00:00"
-    else {
-        val totalSeconds = this / 1000
-        val minutes = totalSeconds / 60
-        val remainingSeconds = totalSeconds % 60
-        val hours = minutes / 60
-        val remainingMinutes = minutes % 60
+    if (this <= 0L) return "00:00"
 
-        if (hours > 0) {
-            String.format(Locale.getDefault(), "%02d:%02d:%02d", hours, remainingMinutes, remainingSeconds)
-        } else {
-            String.format(Locale.getDefault(),"%02d:%02d", minutes, remainingSeconds)
-        }
+    val totalSeconds = this / 1000
+    val minutes = totalSeconds / 60
+    val remainingSeconds = totalSeconds % 60
+    val hours = minutes / 60
+    val remainingMinutes = minutes % 60
 
+    return if (hours > 0) {
+        "${hours.pad()}:${remainingMinutes.pad()}:${remainingSeconds.pad()}"
+    } else {
+        "${minutes.pad()}:${remainingSeconds.pad()}"
     }
 }
+
+private fun Long.pad(): String = toString().padStart(2, '0')
 
 val Long.msToMin : Long get() = this.milliseconds.inWholeMinutes
 val Int.minToMs : Long get() = this.minutes.inWholeMilliseconds

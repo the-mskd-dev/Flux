@@ -4,9 +4,6 @@ import android.util.Log
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.utils.Constants
 import kotlinx.datetime.LocalDate
-import java.text.ParseException
-import java.text.SimpleDateFormat
-import java.util.Date
 import java.util.Locale
 
 fun String.parseTMDBDate() : LocalDate? {

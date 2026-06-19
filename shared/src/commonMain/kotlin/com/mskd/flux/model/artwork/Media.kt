@@ -3,9 +3,6 @@ package com.mskd.flux.model.artwork
 import com.mskd.flux.model.Status
 import com.mskd.flux.model.UserFile
 import com.mskd.flux.utils.extensions.minToMs
-import com.mskd.flux.utils.extensions.parseTMDBDate
-import kotlinx.datetime.LocalDate
-import java.util.Date
 
 /**
  * Represents detailed information about a media, such as a movie or an episode.
@@ -19,7 +16,6 @@ import java.util.Date
  * @property currentTime Current playback position in milliseconds.
  * @property file The associated local file.
  * @property status Viewing status of the media.
- * @property releaseDate Parsed release date as a [Date], derived from [releaseDateString].
  */
 sealed class Media {
     abstract val artworkId: Long

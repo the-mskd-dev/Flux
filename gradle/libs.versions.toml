@@ -38,7 +38,7 @@ ktor = "3.5.0"
 
 # -- Media --
 media3 = "1.10.1"
-coil = "3.4.0"
+coil = "3.5.0"
 jellyfinFfmpeg = "1.9.0+1"
 
 # -- ACRA --
@@ -131,8 +131,8 @@ androidx-datastore-pref = { group = "androidx.datastore", name = "datastore-pref
 
 # -- Room --
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
-androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 
 # -- ACRA --
 acra-core = { group = "ch.acra", name = "acra-core", version.ref = "acra" }

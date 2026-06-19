@@ -79,9 +79,10 @@ androidx-ui-text = { group = "androidx.compose.ui", name = "ui-text", version.re
 androidx-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
 androidx-constraintlayout-compose = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "constraintLayout" }
 
-# -- Serialization --
-kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinxSerializationCore" }
-kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationCore" }
+# -- Kotlin --
+kotlinx-serialization-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version.ref = "kotlinxSerializationCore" }
+kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationCore" }
+kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version = "0.8.0" }
 
 # -- UI --
 androidx-material-icons-core = { group = "androidx.compose.material", name = "material-icons-core" }
@@ -169,9 +170,10 @@ android-lint = { id = "com.android.lint", version.ref = "agp" }
 [bundles]
 
 # -- Shared --
-shared-serialization = [
+shared-kotlin = [
     "kotlinx-serialization-json",
-    "kotlinx-serialization-core"
+    "kotlinx-serialization-core",
+    "kotlinx-datetime"
 ]
 shared-network = [
     "ktor-core",

@@ -2,23 +2,19 @@ package com.mskd.flux.utils.extensions
 
 import android.util.Log
 import com.mskd.flux.utils.Constants
+import kotlinx.datetime.LocalDate
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-fun String.parseTMDBDate() : Date? {
+fun String.parseTMDBDate() : LocalDate? {
 
     return try {
-
-        val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.US)
-        formatter.parse(this)
-
+        LocalDate.parse(this)
     } catch (e: ParseException) {
-
         Log.e("Date Parsing", "Fail to parse date : $this", e)
         null
-
     }
 
 }

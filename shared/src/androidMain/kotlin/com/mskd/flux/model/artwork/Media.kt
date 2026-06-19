@@ -4,6 +4,7 @@ import com.mskd.flux.model.Status
 import com.mskd.flux.model.UserFile
 import com.mskd.flux.utils.extensions.minToMs
 import com.mskd.flux.utils.extensions.parseTMDBDate
+import kotlinx.datetime.LocalDate
 import java.util.Date
 
 /**
@@ -33,7 +34,7 @@ sealed class Media {
 
     abstract  val file: UserFile
 
-    val releaseDate: Date? get() = releaseDateString.parseTMDBDate()
+    val releaseDate: LocalDate? get() = releaseDateString.parseTMDBDate()
 
     open val mediaId: Long get() = artworkId
 

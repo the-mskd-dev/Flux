@@ -54,7 +54,7 @@ kotlin {
             dependencies {
                 implementation(libs.kotlin.stdlib)
 
-                api(libs.bundles.shared.serialization)
+                api(libs.bundles.shared.kotlin)
                 api(libs.bundles.shared.network)
                 api(libs.bundles.shared.di)
                 api(libs.bundles.shared.image)

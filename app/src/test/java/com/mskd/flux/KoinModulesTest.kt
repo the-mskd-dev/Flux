@@ -7,7 +7,6 @@ import com.mskd.flux.di.dataStoreModule
 import com.mskd.flux.di.globalModule
 import com.mskd.flux.di.imageModule
 import com.mskd.flux.di.ktorModule
-import com.mskd.flux.di.moduleDatabaseAndroid
 import com.mskd.flux.di.playerModule
 import com.mskd.flux.di.repositoriesModule
 import com.mskd.flux.di.useCasesModule

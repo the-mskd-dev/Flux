@@ -19,8 +19,8 @@ import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
-import com.mskd.flux.data.repository.connectivity.ConnectivityRepository
-import com.mskd.flux.data.repository.connectivity.LocalConnectivity
+import com.mskd.flux.shared.data.repository.connectivity.ConnectivityRepository
+import com.mskd.flux.shared.data.repository.connectivity.LocalConnectivity
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Transition
 import com.mskd.flux.screens.about.AboutScreen

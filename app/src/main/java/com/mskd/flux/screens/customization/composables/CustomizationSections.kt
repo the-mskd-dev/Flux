@@ -17,6 +17,7 @@ import com.mskd.flux.screens.settings.composables.SettingsItem
 import com.mskd.flux.screens.settings.composables.SettingsSection
 import com.mskd.flux.screens.settings.composables.SettingsSwitch
 import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.utils.extensions.stringResourceId
 
 @Composable
 fun CustomizationThemeSection(

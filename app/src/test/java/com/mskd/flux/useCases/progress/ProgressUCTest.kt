@@ -2,9 +2,9 @@ package com.mskd.flux.useCases.progress
 
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.data.repository.ddb.DatabaseRepository
-import com.mskd.flux.data.repository.user.UserRepository
-import com.mskd.flux.shared.mockups.MediaMockups
 import com.mskd.flux.mockups.mockkDatabaseRepository
+import com.mskd.flux.shared.data.repository.user.UserRepository
+import com.mskd.flux.shared.mockups.MediaMockups
 import com.mskd.flux.shared.model.Status
 import com.mskd.flux.shared.model.artwork.ContentType
 import com.mskd.flux.shared.model.artwork.Episode

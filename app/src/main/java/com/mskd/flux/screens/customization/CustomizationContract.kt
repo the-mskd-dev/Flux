@@ -1,12 +1,12 @@
 package com.mskd.flux.screens.customization
 
 import androidx.compose.runtime.Immutable
+import com.mskd.flux.shared.utils.UiCommon
 import com.mskd.flux.ui.component.global.FluxOptionsDialogState
-import com.mskd.flux.ui.theme.Ui
 
 @Immutable
 data class CustomizationUiState(
-    val uiTheme: Ui.THEME = Ui.THEME.SYSTEM,
+    val uiTheme: UiCommon.THEME = UiCommon.THEME.SYSTEM,
     val color: Int? = null,
     val waveProgress: Boolean = true,
     val oldBlurredHeader: Boolean = false,
@@ -33,7 +33,7 @@ sealed class CustomizationIntent {
 
     // Setter
     data class SetColorValue(val color: Int?) : CustomizationIntent()
-    data class SetThemeValue(val theme: Ui.THEME): CustomizationIntent()
+    data class SetThemeValue(val theme: UiCommon.THEME): CustomizationIntent()
     data class SetItemsPerRowValue(val count: Int): CustomizationIntent()
     data class OnWaveProgressCheck(val checked: Boolean): CustomizationIntent()
     data class OnOldBlurredHeaderCheck(val checked: Boolean): CustomizationIntent()

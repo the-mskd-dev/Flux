@@ -1,4 +1,4 @@
-package com.mskd.flux.data.repository.snackbars
+package com.mskd.flux.shared.data.repository.snackbars
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences

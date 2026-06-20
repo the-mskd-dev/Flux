@@ -1,18 +1,7 @@
-package com.mskd.flux.data.repository.settings
+package com.mskd.flux.shared.data.repository.settings
 
-import android.content.Context
-import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
-import androidx.datastore.preferences.core.emptyPreferences
-import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 import java.util.Locale
-
-val Context.settingsDatastore by preferencesDataStore(
-    name = "SettingsDataStore",
-    corruptionHandler = ReplaceFileCorruptionHandler(
-        produceNewData = { emptyPreferences() }
-    )
-)
 
 interface SettingsRepository {
 

@@ -7,9 +7,9 @@ import androidx.core.net.toUri
 import com.mskd.flux.BuildConfig
 import com.mskd.flux.data.repository.ddb.DatabaseRepository
 import com.mskd.flux.data.repository.files.FilesRepository
-import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.data.repository.tmdb.TmdbRepository
-import com.mskd.flux.data.repository.user.UserRepository
+import com.mskd.flux.shared.data.repository.settings.SettingsRepository
+import com.mskd.flux.shared.data.repository.user.UserRepository
 import com.mskd.flux.shared.model.Catalog
 import com.mskd.flux.shared.model.Status
 import com.mskd.flux.shared.model.UserFile
@@ -22,9 +22,9 @@ import com.mskd.flux.shared.model.artwork.Movie
 import com.mskd.flux.shared.model.artwork.Season
 import com.mskd.flux.shared.model.tmdb.TMDBEpisode
 import com.mskd.flux.shared.model.tmdb.TMDBTranslations
+import com.mskd.flux.shared.utils.extensions.msToMin
 import com.mskd.flux.useCases.images.ImagesUC
 import com.mskd.flux.utils.extensions.groupInFolders
-import com.mskd.flux.shared.utils.extensions.msToMin
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

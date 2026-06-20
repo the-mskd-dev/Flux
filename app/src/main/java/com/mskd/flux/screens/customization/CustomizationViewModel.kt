@@ -5,11 +5,13 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.R
-import com.mskd.flux.data.repository.customization.CustomizationRepository
 import com.mskd.flux.screens.customization.composables.ColorItem
+import com.mskd.flux.shared.data.repository.customization.CustomizationRepository
+import com.mskd.flux.shared.utils.UiCommon
 import com.mskd.flux.ui.component.global.FluxOptionsDialogItem
 import com.mskd.flux.ui.component.global.FluxOptionsDialogState
 import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.utils.extensions.stringResourceId
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -95,9 +97,9 @@ class CustomizationViewModel(
             titleResId = R.string.app_theme,
             currentValue = currentValue,
             options = listOf(
-                FluxOptionsDialogItem(value = Ui.THEME.LIGHT, label = context.getString(Ui.THEME.LIGHT.stringResourceId)),
-                FluxOptionsDialogItem(value = Ui.THEME.DARK, label = context.getString(Ui.THEME.DARK.stringResourceId)),
-                FluxOptionsDialogItem(value = Ui.THEME.SYSTEM, label = context.getString(Ui.THEME.SYSTEM.stringResourceId))
+                FluxOptionsDialogItem(value = UiCommon.THEME.LIGHT, label = context.getString(UiCommon.THEME.LIGHT.stringResourceId)),
+                FluxOptionsDialogItem(value = UiCommon.THEME.DARK, label = context.getString(UiCommon.THEME.DARK.stringResourceId)),
+                FluxOptionsDialogItem(value = UiCommon.THEME.SYSTEM, label = context.getString(UiCommon.THEME.SYSTEM.stringResourceId))
             ),
             applyValue = { value -> CustomizationIntent.SetThemeValue(value) }
         )
@@ -105,7 +107,7 @@ class CustomizationViewModel(
         _dialogState.update { CustomizationDialog.SelectDialog(state = dialogState) }
     }
 
-    private suspend fun setTheme(theme: Ui.THEME) {
+    private suspend fun setTheme(theme: UiCommon.THEME) {
         customizationRepository.setUiTheme(theme)
         hideDialog()
     }

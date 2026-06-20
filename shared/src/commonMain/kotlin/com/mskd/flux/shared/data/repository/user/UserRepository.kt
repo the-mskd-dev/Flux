@@ -1,17 +1,8 @@
-package com.mskd.flux.data.repository.user
+package com.mskd.flux.shared.data.repository.user
 
-import android.content.Context
-import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
-import androidx.datastore.preferences.core.emptyPreferences
-import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 
-val Context.userDataStore by preferencesDataStore(
-    name ="UserDataStore",
-    corruptionHandler = ReplaceFileCorruptionHandler(
-        produceNewData = { emptyPreferences() }
-    )
-)
+
 
 interface UserRepository {
 

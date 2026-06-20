@@ -73,12 +73,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.mskd.flux.R
-import com.mskd.flux.data.repository.customization.LocalCustomization
+import com.mskd.flux.navigation.Route
+import com.mskd.flux.screens.howTo.HowToNameFiles
+import com.mskd.flux.shared.data.repository.customization.LocalCustomization
 import com.mskd.flux.shared.mockups.MediaMockups
 import com.mskd.flux.shared.model.artwork.Artwork
 import com.mskd.flux.shared.model.artwork.ContentType
-import com.mskd.flux.navigation.Route
-import com.mskd.flux.screens.howTo.HowToNameFiles
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.component.global.FluxButton
 import com.mskd.flux.ui.component.global.Text

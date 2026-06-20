@@ -40,12 +40,12 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.R
-import com.mskd.flux.data.repository.customization.LocalCustomization
-import com.mskd.flux.shared.mockups.MediaMockups
-import com.mskd.flux.shared.model.artwork.ContentType
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Route.Artwork
 import com.mskd.flux.navigation.Route.Show
+import com.mskd.flux.shared.data.repository.customization.LocalCustomization
+import com.mskd.flux.shared.mockups.MediaMockups
+import com.mskd.flux.shared.model.artwork.ContentType
 import com.mskd.flux.ui.component.global.FluxScaffold
 import com.mskd.flux.ui.component.global.FluxSearchField
 import com.mskd.flux.ui.component.global.Text

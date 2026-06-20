@@ -1,7 +1,7 @@
 package com.mskd.flux.data.repository.tmdb
 
 import android.util.Log
-import com.mskd.flux.data.repository.settings.SettingsRepository
+import com.mskd.flux.shared.data.repository.settings.SettingsRepository
 import com.mskd.flux.shared.data.tmdb.TMDBService
 import com.mskd.flux.shared.model.UserFile
 import com.mskd.flux.shared.model.tmdb.TMDBArtwork

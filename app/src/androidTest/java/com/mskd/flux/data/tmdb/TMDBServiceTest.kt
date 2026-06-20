@@ -2,9 +2,9 @@ package com.mskd.flux.data.tmdb
 
 import androidx.test.core.app.ApplicationProvider
 import com.mskd.flux.BuildConfig
-import com.mskd.flux.shared.data.tmdb.token.TokenRepository
 import com.mskd.flux.di.dataStoreModule
 import com.mskd.flux.di.ktorModule
+import com.mskd.flux.shared.data.tmdb.token.TokenRepository
 import com.mskd.flux.shared.model.FileSource
 import com.mskd.flux.shared.model.UserFile
 import com.mskd.flux.shared.utils.extensions.toTmdbFormat

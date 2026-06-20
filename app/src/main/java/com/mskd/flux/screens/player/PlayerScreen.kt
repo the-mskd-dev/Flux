@@ -56,7 +56,6 @@ import androidx.media3.common.text.Cue
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.ui.compose.ContentFrame
 import com.mskd.flux.R
-import com.mskd.flux.shared.model.State
 import com.mskd.flux.screens.player.composables.playerInterface.PlayerAmbientOverlay
 import com.mskd.flux.screens.player.composables.playerInterface.PlayerInterface
 import com.mskd.flux.screens.player.composables.playerInterface.PlayerSeekOverlay
@@ -65,6 +64,7 @@ import com.mskd.flux.screens.player.composables.settings.PlayerSettings
 import com.mskd.flux.screens.player.controllers.PlayerSideEffects
 import com.mskd.flux.screens.player.controllers.rememberPlayerScaleEffects
 import com.mskd.flux.screens.player.controllers.rememberWindowStateHolder
+import com.mskd.flux.shared.model.State
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.component.global.ErrorScreen
 import com.mskd.flux.ui.component.global.Text

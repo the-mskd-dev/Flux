@@ -19,9 +19,9 @@ import androidx.compose.ui.unit.dp
 import com.mskd.flux.R
 import com.mskd.flux.screens.settings.SettingsIntent
 import com.mskd.flux.screens.settings.SettingsUiState
+import com.mskd.flux.shared.utils.Constants
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.useCases.images.ImagesUC
-import com.mskd.flux.shared.utils.Constants
 import com.mskd.flux.utils.extensions.WebLink
 import kotlin.math.roundToInt
 

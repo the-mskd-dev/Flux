@@ -3,9 +3,9 @@ package com.mskd.flux.screens.customization
 import android.app.Application
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
-import com.mskd.flux.data.repository.customization.CustomizationRepository
+import com.mskd.flux.shared.data.repository.customization.CustomizationRepository
+import com.mskd.flux.shared.utils.UiCommon
 import com.mskd.flux.ui.component.global.FluxOptionsDialogState
-import com.mskd.flux.ui.theme.Ui
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -47,7 +47,7 @@ class CustomizationViewModelTest : FunSpec({
     test("initial state") {
         viewModel.uiState.test {
             val initialState = awaitItem()
-            initialState.uiTheme shouldBe Ui.THEME.SYSTEM
+            initialState.uiTheme shouldBe UiCommon.THEME.SYSTEM
             initialState.color shouldBe null
             initialState.waveProgress shouldBe true
             initialState.largeEpisodeImage shouldBe false
@@ -73,8 +73,8 @@ class CustomizationViewModelTest : FunSpec({
             val dialog = state.dialog
             dialog.shouldBeInstanceOf<CustomizationDialog.SelectDialog>()
             val selectState = dialog.state
-            selectState.shouldBeInstanceOf<FluxOptionsDialogState<Ui.THEME, CustomizationIntent>>()
-            selectState.currentValue shouldBe Ui.THEME.SYSTEM
+            selectState.shouldBeInstanceOf<FluxOptionsDialogState<UiCommon.THEME, CustomizationIntent>>()
+            selectState.currentValue shouldBe UiCommon.THEME.SYSTEM
         }
     }
 
@@ -107,13 +107,13 @@ class CustomizationViewModelTest : FunSpec({
         viewModel.uiState.test {
             awaitItem()
 
-            viewModel.handleIntent(CustomizationIntent.SetThemeValue(Ui.THEME.DARK))
-            dataStoreFlow.value = dataStoreFlow.value.copy(uiTheme = Ui.THEME.DARK)
+            viewModel.handleIntent(CustomizationIntent.SetThemeValue(UiCommon.THEME.DARK))
+            dataStoreFlow.value = dataStoreFlow.value.copy(uiTheme = UiCommon.THEME.DARK)
 
             val state = awaitItem()
 
-            coVerify { customizationRepository.setUiTheme(Ui.THEME.DARK) }
-            state.uiTheme shouldBe Ui.THEME.DARK
+            coVerify { customizationRepository.setUiTheme(UiCommon.THEME.DARK) }
+            state.uiTheme shouldBe UiCommon.THEME.DARK
             state.dialog shouldBe null
 
             cancelAndConsumeRemainingEvents()

@@ -10,8 +10,8 @@ import coil3.compose.LocalAsyncImagePreviewHandler
 import coil3.imageLoader
 import coil3.request.ImageRequest
 import com.mskd.flux.R
+import com.mskd.flux.shared.utils.UiCommon
 import com.mskd.flux.ui.theme.AppTheme
-import com.mskd.flux.ui.theme.Ui
 
 @Target(AnnotationTarget.ANNOTATION_CLASS, AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.BINARY)
@@ -76,7 +76,7 @@ annotation class LandscapePreview
 @OptIn(ExperimentalCoilApi::class)
 @Composable
 fun AppThemePreview(
-    theme: Ui.THEME = Ui.THEME.SYSTEM,
+    theme: UiCommon.THEME = UiCommon.THEME.SYSTEM,
     color: Int? = null,
     content: @Composable () -> Unit
 ) {

@@ -5,14 +5,14 @@ import androidx.test.core.app.ApplicationProvider
 import com.mskd.flux.BuildConfig
 import com.mskd.flux.data.repository.ddb.DatabaseRepository
 import com.mskd.flux.data.repository.files.FilesRepository
-import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.data.repository.tmdb.TmdbRepository
 import com.mskd.flux.data.repository.tmdb.TmdbRepositoryImpl
-import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.data.tmdb.TMDBService
-import com.mskd.flux.shared.data.tmdb.token.TokenRepository
 import com.mskd.flux.di.dataStoreModule
 import com.mskd.flux.di.ktorModule
+import com.mskd.flux.shared.data.repository.settings.SettingsRepository
+import com.mskd.flux.shared.data.repository.user.UserRepository
+import com.mskd.flux.shared.data.tmdb.token.TokenRepository
 import com.mskd.flux.shared.model.FileSource
 import com.mskd.flux.shared.model.UserFile
 import com.mskd.flux.shared.model.artwork.Artwork

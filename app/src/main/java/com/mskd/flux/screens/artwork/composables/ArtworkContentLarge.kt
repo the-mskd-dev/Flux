@@ -20,13 +20,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.mskd.flux.R
-import com.mskd.flux.shared.mockups.MediaMockups
-import com.mskd.flux.shared.model.artwork.FullArtwork
-import com.mskd.flux.shared.model.artwork.Media
 import com.mskd.flux.screens.artwork.ArtworkIntent
 import com.mskd.flux.screens.artwork.composables.common.ArtworkButtons
 import com.mskd.flux.screens.artwork.composables.common.ArtworkDescriptionsPager
 import com.mskd.flux.screens.artwork.composables.common.ArtworkImage
+import com.mskd.flux.shared.mockups.MediaMockups
+import com.mskd.flux.shared.model.artwork.FullArtwork
+import com.mskd.flux.shared.model.artwork.Media
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.component.media.EpisodeDropDownMenu
 import com.mskd.flux.ui.component.media.EpisodeItem

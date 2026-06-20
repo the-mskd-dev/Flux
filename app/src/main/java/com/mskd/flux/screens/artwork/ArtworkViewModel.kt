@@ -2,18 +2,18 @@ package com.mskd.flux.screens.artwork
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mskd.flux.data.repository.settings.SettingsRepository
+import com.mskd.flux.screens.artwork.ArtworkEvent.OpenUrlInfo
+import com.mskd.flux.shared.data.repository.settings.SettingsRepository
 import com.mskd.flux.shared.model.State
 import com.mskd.flux.shared.model.Status
 import com.mskd.flux.shared.model.artwork.Episode
 import com.mskd.flux.shared.model.artwork.FullArtwork
 import com.mskd.flux.shared.model.artwork.Media
-import com.mskd.flux.screens.artwork.ArtworkEvent.OpenUrlInfo
-import com.mskd.flux.useCases.artwork.ArtworkUC
-import com.mskd.flux.useCases.progress.ProgressUC
 import com.mskd.flux.shared.utils.extensions.firstEpisode
 import com.mskd.flux.shared.utils.extensions.firstEpisodeToWatch
 import com.mskd.flux.shared.utils.extensions.getPreviousEpisodesFor
+import com.mskd.flux.useCases.artwork.ArtworkUC
+import com.mskd.flux.useCases.progress.ProgressUC
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted

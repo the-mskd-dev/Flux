@@ -31,11 +31,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.mskd.flux.R
+import com.mskd.flux.navigation.Route
+import com.mskd.flux.navigation.Route.Player
 import com.mskd.flux.shared.mockups.MediaMockups
 import com.mskd.flux.shared.model.ScreenState
 import com.mskd.flux.shared.model.artwork.Episode
-import com.mskd.flux.navigation.Route
-import com.mskd.flux.navigation.Route.Player
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.component.global.ErrorScreen
 import com.mskd.flux.ui.component.global.FluxScaffold

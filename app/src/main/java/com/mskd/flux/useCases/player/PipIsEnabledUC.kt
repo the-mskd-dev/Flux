@@ -3,7 +3,7 @@ package com.mskd.flux.useCases.player
 import android.app.AppOpsManager
 import android.content.Context
 import android.content.pm.PackageManager
-import com.mskd.flux.data.repository.settings.SettingsRepository
+import com.mskd.flux.shared.data.repository.settings.SettingsRepository
 import kotlinx.coroutines.flow.first
 
 class PipIsEnabledUC(

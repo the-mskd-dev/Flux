@@ -1,4 +1,4 @@
-package com.mskd.flux.data.repository.user
+package com.mskd.flux.shared.data.repository.user
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences

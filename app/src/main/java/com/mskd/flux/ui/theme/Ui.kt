@@ -100,16 +100,6 @@ object Ui {
 
     }
 
-    enum class THEME {
-        LIGHT, DARK, SYSTEM;
-
-        val stringResourceId: Int get() = when(this) {
-            LIGHT -> R.string.light
-            DARK -> R.string.dark
-            SYSTEM -> R.string.system
-        }
-    }
-
     sealed class AccentColors(val color: Color?, val stringResId: Int) {
         data object System : AccentColors(color = null, stringResId = R.string.system)
         data object Red : AccentColors(color = Color(239, 71, 111), stringResId = R.string.color_red)

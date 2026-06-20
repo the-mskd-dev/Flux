@@ -9,7 +9,7 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import androidx.core.net.toUri
-import com.mskd.flux.data.repository.user.UserRepository
+import com.mskd.flux.shared.data.repository.user.UserRepository
 import com.mskd.flux.shared.model.FileSource
 import com.mskd.flux.shared.model.UserFile
 import kotlinx.coroutines.Dispatchers

@@ -1,4 +1,4 @@
-package com.mskd.flux.data.repository.files
+package com.mskd.flux.shared.data.repository.files
 
 import android.net.Uri
 import com.mskd.flux.shared.model.UserFile

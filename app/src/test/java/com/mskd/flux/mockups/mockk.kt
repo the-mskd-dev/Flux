@@ -1,7 +1,7 @@
 package com.mskd.flux.mockups
 
 import com.mskd.flux.shared.data.repository.ddb.DatabaseRepository
-import com.mskd.flux.data.repository.files.FilesRepository
+import com.mskd.flux.shared.data.repository.files.FilesRepository
 import com.mskd.flux.shared.data.repository.settings.SettingsRepository
 import com.mskd.flux.shared.data.repository.snackbars.SnackbarRepository
 import com.mskd.flux.shared.mockups.FilesMockups

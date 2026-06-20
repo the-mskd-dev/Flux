@@ -9,6 +9,7 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import androidx.core.net.toUri
+import com.mskd.flux.shared.data.repository.files.FilesRepository
 import com.mskd.flux.shared.data.repository.user.UserRepository
 import com.mskd.flux.shared.model.FileSource
 import com.mskd.flux.shared.model.UserFile
@@ -16,6 +17,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import java.io.File
+import kotlin.collections.plusAssign
 import kotlin.coroutines.resume
 
 class FilesRepositoryImpl(
@@ -114,42 +116,43 @@ class FilesRepositoryImpl(
 
     }
 
-    override suspend fun filterExistingFiles(files: List<UserFile>): List<UserFile> = withContext(Dispatchers.IO) {
+    override suspend fun filterExistingFiles(files: List<UserFile>): List<UserFile> =
+        withContext(Dispatchers.IO) {
 
-        val paths = files.map { it.path }
-        val ids = paths.mapNotNull { it.toUri().lastPathSegment }
+            val paths = files.map { it.path }
+            val ids = paths.mapNotNull { it.toUri().lastPathSegment }
 
-        val placeholders = ids.joinToString(",") { "?" }
+            val placeholders = ids.joinToString(",") { "?" }
 
-        val existingIds = mutableSetOf<String>()
+            val existingIds = mutableSetOf<String>()
 
-        context.contentResolver.query(
-            MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
-            arrayOf(MediaStore.Video.Media._ID),
-            "${MediaStore.Video.Media._ID} IN ($placeholders)",
-            ids.toTypedArray(),
-            null
-        )?.use { cursor ->
-            val idCol = cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID)
-            while (cursor.moveToNext()) {
-                existingIds.add(cursor.getString(idCol))
+            context.contentResolver.query(
+                MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+                arrayOf(MediaStore.Video.Media._ID),
+                "${MediaStore.Video.Media._ID} IN ($placeholders)",
+                ids.toTypedArray(),
+                null
+            )?.use { cursor ->
+                val idCol = cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID)
+                while (cursor.moveToNext()) {
+                    existingIds.add(cursor.getString(idCol))
+                }
             }
+
+            val existingFiles = files.filter { file ->
+                val id = file.path.toUri().lastPathSegment
+                id in existingIds
+            }
+
+            val missingFiles = files - existingFiles.toSet()
+            if (missingFiles.isNotEmpty()) {
+                Log.i(TAG, "$missingFiles file(s) not founded")
+                missingFiles.forEach { Log.i(TAG, it.name) }
+            }
+
+            existingFiles
+
         }
-
-        val existingFiles = files.filter { file ->
-            val id = file.path.toUri().lastPathSegment
-            id in existingIds
-        }
-
-        val missingFiles = files - existingFiles.toSet()
-        if (missingFiles.isNotEmpty()) {
-            Log.i(TAG, "$missingFiles file(s) not founded")
-            missingFiles.forEach { Log.i(TAG, it.name) }
-        }
-
-        existingFiles
-
-    }
 
     override suspend fun getSubtitlesFor(file: UserFile): Uri? = withContext(Dispatchers.IO) {
 

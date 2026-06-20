@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.text.Cue
-import com.mskd.flux.data.repository.files.FilesRepository
+import com.mskd.flux.shared.data.repository.files.FilesRepository
 import com.mskd.flux.screens.player.PlayerUiContent.AmbientOverlay
 import com.mskd.flux.screens.player.PlayerUiContent.NextButton
 import com.mskd.flux.screens.player.PlayerUiContent.SeekOverlay

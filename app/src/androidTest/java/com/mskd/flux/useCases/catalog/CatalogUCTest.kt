@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.mskd.flux.BuildConfig
 import com.mskd.flux.shared.data.repository.ddb.DatabaseRepository
-import com.mskd.flux.data.repository.files.FilesRepository
+import com.mskd.flux.shared.data.repository.files.FilesRepository
 import com.mskd.flux.data.repository.tmdb.TmdbRepository
 import com.mskd.flux.data.repository.tmdb.TmdbRepositoryImpl
 import com.mskd.flux.di.moduleDatastoreAndroid

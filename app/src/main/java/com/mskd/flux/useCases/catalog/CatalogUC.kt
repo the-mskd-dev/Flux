@@ -6,7 +6,7 @@ import android.util.Log
 import androidx.core.net.toUri
 import com.mskd.flux.BuildConfig
 import com.mskd.flux.shared.data.repository.ddb.DatabaseRepository
-import com.mskd.flux.data.repository.files.FilesRepository
+import com.mskd.flux.shared.data.repository.files.FilesRepository
 import com.mskd.flux.data.repository.tmdb.TmdbRepository
 import com.mskd.flux.shared.data.repository.settings.SettingsRepository
 import com.mskd.flux.shared.data.repository.user.UserRepository

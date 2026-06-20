@@ -15,7 +15,7 @@ import com.mskd.flux.di.repositoriesModule
 import com.mskd.flux.di.useCasesModule
 import com.mskd.flux.di.viewModelsModule
 import com.mskd.flux.shared.di.moduleDatabase
-import com.mskd.flux.utils.Constants
+import com.mskd.flux.shared.utils.Constants
 import com.mskd.flux.utils.CrashDialogActivity
 import org.acra.config.dialog
 import org.acra.config.mailSender

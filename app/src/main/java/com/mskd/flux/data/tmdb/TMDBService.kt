@@ -6,7 +6,7 @@ import com.mskd.flux.shared.model.tmdb.TMDBEpisode
 import com.mskd.flux.shared.model.tmdb.TMDBMovie
 import com.mskd.flux.shared.model.tmdb.TMDBSeason
 import com.mskd.flux.shared.model.tmdb.TMDBTranslations
-import com.mskd.flux.utils.Constants
+import com.mskd.flux.shared.utils.Constants
 
 interface TMDBService {
 

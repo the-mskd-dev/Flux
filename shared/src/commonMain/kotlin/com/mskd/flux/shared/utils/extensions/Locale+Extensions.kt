@@ -1,4 +1,4 @@
-package com.mskd.flux.utils.extensions
+package com.mskd.flux.shared.utils.extensions
 
 import com.mskd.flux.shared.model.player.PlayerTrack
 import java.util.Locale

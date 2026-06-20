@@ -54,7 +54,7 @@ import com.mskd.flux.ui.component.global.FluxTextButton
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
-import com.mskd.flux.utils.Constants
+import com.mskd.flux.shared.utils.Constants
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.buildLinkedString
 import kotlinx.coroutines.launch

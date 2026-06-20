@@ -1,6 +1,6 @@
-package com.mskd.flux.utils
+package com.mskd.flux.shared.utils
 
-import com.mskd.flux.utils.extensions.toTmdbFormat
+import com.mskd.flux.shared.utils.extensions.toTmdbFormat
 import java.util.Locale
 
 object Constants {

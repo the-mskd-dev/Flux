@@ -7,7 +7,7 @@ import com.mskd.flux.di.dataStoreModule
 import com.mskd.flux.di.ktorModule
 import com.mskd.flux.shared.model.FileSource
 import com.mskd.flux.shared.model.UserFile
-import com.mskd.flux.utils.extensions.toTmdbFormat
+import com.mskd.flux.shared.utils.extensions.toTmdbFormat
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.After

@@ -15,7 +15,7 @@ import com.mskd.flux.shared.model.artwork.Movie
 import com.mskd.flux.screens.player.controllers.PlayerManager
 import com.mskd.flux.useCases.player.PipIsEnabledUC
 import com.mskd.flux.useCases.progress.ProgressUC
-import com.mskd.flux.utils.Constants
+import com.mskd.flux.shared.utils.Constants
 import com.mskd.flux.shared.utils.extensions.lastEpisode
 import com.mskd.flux.shared.utils.extensions.minToMs
 import io.kotest.core.spec.style.FunSpec

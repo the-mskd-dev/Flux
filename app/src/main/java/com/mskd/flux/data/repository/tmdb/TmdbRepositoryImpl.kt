@@ -11,7 +11,7 @@ import com.mskd.flux.shared.model.tmdb.TMDBMovie
 import com.mskd.flux.shared.model.tmdb.TMDBSeason
 import com.mskd.flux.shared.model.tmdb.TMDBTranslations
 import com.mskd.flux.shared.model.tmdb.findWithLocale
-import com.mskd.flux.utils.extensions.toTmdbFormat
+import com.mskd.flux.shared.utils.extensions.toTmdbFormat
 import java.util.Locale
 
 class TmdbRepositoryImpl(

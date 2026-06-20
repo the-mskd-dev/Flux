@@ -21,7 +21,7 @@ import com.mskd.flux.useCases.artwork.ArtworkUC
 import com.mskd.flux.useCases.player.PipIsEnabledUC
 import com.mskd.flux.useCases.progress.ProgressUC
 import com.mskd.flux.shared.utils.extensions.getNextEpisodeFor
-import com.mskd.flux.utils.extensions.toPlayerTrack
+import com.mskd.flux.shared.utils.extensions.toPlayerTrack
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay

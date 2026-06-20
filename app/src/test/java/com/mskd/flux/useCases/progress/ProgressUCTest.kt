@@ -9,7 +9,7 @@ import com.mskd.flux.shared.model.Status
 import com.mskd.flux.shared.model.artwork.ContentType
 import com.mskd.flux.shared.model.artwork.Episode
 import com.mskd.flux.shared.model.artwork.Movie
-import com.mskd.flux.utils.Constants
+import com.mskd.flux.shared.utils.Constants
 import com.mskd.flux.shared.utils.extensions.lastEpisode
 import com.mskd.flux.shared.utils.extensions.minToMs
 import io.kotest.core.spec.style.FunSpec

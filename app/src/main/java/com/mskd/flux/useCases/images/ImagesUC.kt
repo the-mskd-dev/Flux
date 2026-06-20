@@ -4,7 +4,7 @@ import android.content.Context
 import coil3.ImageLoader
 import coil3.request.CachePolicy
 import coil3.request.ImageRequest
-import com.mskd.flux.data.repository.ddb.DatabaseRepository
+import com.mskd.flux.shared.data.repository.ddb.DatabaseRepository
 import com.mskd.flux.shared.data.repository.settings.SettingsRepository
 import com.mskd.flux.utils.extensions.tmdbImage
 import com.mskd.flux.utils.extensions.tmdbImageLarge

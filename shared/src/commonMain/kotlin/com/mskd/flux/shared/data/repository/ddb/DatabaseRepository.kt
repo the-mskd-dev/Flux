@@ -1,4 +1,4 @@
-package com.mskd.flux.data.repository.ddb
+package com.mskd.flux.shared.data.repository.ddb
 
 import com.mskd.flux.shared.model.UserFile
 import com.mskd.flux.shared.model.artwork.Artwork

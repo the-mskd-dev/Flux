@@ -2,7 +2,7 @@ package com.mskd.flux.screens.unknown
 
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
-import com.mskd.flux.data.repository.ddb.DatabaseRepository
+import com.mskd.flux.shared.data.repository.ddb.DatabaseRepository
 import com.mskd.flux.mockups.FakeArtworkUC
 import com.mskd.flux.mockups.mockkDatabaseRepository
 import com.mskd.flux.shared.data.repository.settings.SettingsRepository

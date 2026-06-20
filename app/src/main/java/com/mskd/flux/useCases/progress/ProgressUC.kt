@@ -1,7 +1,7 @@
 package com.mskd.flux.useCases.progress
 
 import android.util.Log
-import com.mskd.flux.data.repository.ddb.DatabaseRepository
+import com.mskd.flux.shared.data.repository.ddb.DatabaseRepository
 import com.mskd.flux.shared.data.repository.user.UserRepository
 import com.mskd.flux.shared.model.Status
 import com.mskd.flux.shared.model.artwork.Artwork

@@ -1,6 +1,6 @@
 package com.mskd.flux.useCases.artwork
 
-import com.mskd.flux.data.repository.ddb.DatabaseRepository
+import com.mskd.flux.shared.data.repository.ddb.DatabaseRepository
 import com.mskd.flux.shared.model.State
 import com.mskd.flux.shared.model.artwork.Artwork
 import com.mskd.flux.shared.model.artwork.ContentType

@@ -3,14 +3,17 @@ package com.mskd.flux
 import android.app.Application
 import android.content.Context
 import com.mskd.flux.di.coroutineModule
-import com.mskd.flux.di.dataStoreModule
 import com.mskd.flux.di.globalModule
 import com.mskd.flux.di.imageModule
-import com.mskd.flux.di.ktorModule
+import com.mskd.flux.di.moduleDatabaseAndroid
+import com.mskd.flux.di.moduleDatastoreAndroid
+import com.mskd.flux.di.moduleRepositoryAndroid
 import com.mskd.flux.di.playerModule
 import com.mskd.flux.di.repositoriesModule
 import com.mskd.flux.di.useCasesModule
 import com.mskd.flux.di.viewModelsModule
+import com.mskd.flux.shared.di.moduleDatastore
+import com.mskd.flux.shared.di.moduleNetwork
 import com.mskd.flux.shared.model.artwork.ContentType
 import io.kotest.core.spec.style.FunSpec
 import org.koin.core.annotation.KoinExperimentalAPI
@@ -26,10 +29,12 @@ class KoinModulesTest : FunSpec({
         val allModules = listOf(
             coroutineModule,
             moduleDatabaseAndroid,
-            dataStoreModule,
+            moduleDatastore,
+            moduleDatastoreAndroid,
+            moduleNetwork,
+            moduleRepositoryAndroid,
             globalModule,
             imageModule,
-            ktorModule,
             playerModule,
             repositoriesModule,
             useCasesModule,

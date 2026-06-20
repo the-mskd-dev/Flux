@@ -11,12 +11,12 @@ import com.mskd.flux.di.moduleDatabaseAndroid
 import com.mskd.flux.di.moduleDatastoreAndroid
 import com.mskd.flux.di.moduleRepositoryAndroid
 import com.mskd.flux.di.playerModule
-import com.mskd.flux.di.repositoriesModule
 import com.mskd.flux.di.useCasesModule
 import com.mskd.flux.di.viewModelsModule
 import com.mskd.flux.shared.di.moduleDatabase
 import com.mskd.flux.shared.di.moduleDatastore
 import com.mskd.flux.shared.di.moduleNetwork
+import com.mskd.flux.shared.di.moduleRepository
 import com.mskd.flux.shared.utils.Constants
 import com.mskd.flux.utils.CrashDialogActivity
 import org.acra.config.dialog
@@ -49,12 +49,12 @@ class FluxApp : Application(), SingletonImageLoader.Factory {
 
                 moduleNetwork,
 
+                moduleRepository,
                 moduleRepositoryAndroid,
 
                 globalModule,
                 imageModule,
                 playerModule,
-                repositoriesModule,
                 useCasesModule,
                 viewModelsModule
             )

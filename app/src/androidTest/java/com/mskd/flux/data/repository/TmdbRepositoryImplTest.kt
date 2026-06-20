@@ -2,7 +2,7 @@ package com.mskd.flux.data.repository
 
 import androidx.test.core.app.ApplicationProvider
 import com.mskd.flux.BuildConfig
-import com.mskd.flux.data.repository.tmdb.TmdbRepositoryImpl
+import com.mskd.flux.shared.data.repository.tmdb.TmdbRepositoryImpl
 import com.mskd.flux.data.tmdb.TMDBService
 import com.mskd.flux.di.dataStoreModule
 import com.mskd.flux.di.ktorModule

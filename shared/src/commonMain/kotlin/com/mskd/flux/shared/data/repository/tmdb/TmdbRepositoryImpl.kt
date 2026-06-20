@@ -1,6 +1,5 @@
-package com.mskd.flux.data.repository.tmdb
+package com.mskd.flux.shared.data.repository.tmdb
 
-import android.util.Log
 import com.mskd.flux.shared.data.repository.settings.SettingsRepository
 import com.mskd.flux.shared.data.tmdb.TMDBService
 import com.mskd.flux.shared.model.UserFile
@@ -12,6 +11,7 @@ import com.mskd.flux.shared.model.tmdb.TMDBSeason
 import com.mskd.flux.shared.model.tmdb.TMDBTranslations
 import com.mskd.flux.shared.model.tmdb.findWithLocale
 import com.mskd.flux.shared.utils.extensions.toTmdbFormat
+import io.github.aakira.napier.Napier
 import java.util.Locale
 
 class TmdbRepositoryImpl(
@@ -69,7 +69,7 @@ class TmdbRepositoryImpl(
             tmdbArtwork
 
         } catch (e: Exception) {
-            Log.e(TAG, "getTmdbArtwork - Fail to get TMDBArtwork for file:${file.name} (${language.toTmdbFormat()})", e)
+            Napier.e(tag = TAG, message = "getTmdbArtwork - Fail to get TMDBArtwork for file:${file.name} (${language.toTmdbFormat()})", throwable = e)
             null
         }
 
@@ -107,7 +107,7 @@ class TmdbRepositoryImpl(
             tmdbMovie
 
         } catch (e: Exception) {
-            Log.e(TAG, "getTmdbMovie - Fail to get TMDBMovie for artworkId:$artworkId (${language.toTmdbFormat()})", e)
+            Napier.e(tag = TAG, message = "getTmdbMovie - Fail to get TMDBMovie for artworkId:$artworkId (${language.toTmdbFormat()})", throwable = e)
             null
         }
 
@@ -143,7 +143,7 @@ class TmdbRepositoryImpl(
             tmdbEpisode
 
         } catch (e: Exception) {
-            Log.e(TAG, "getTmdbEpisode - Fail to get TMDBEpisode for artworkId:$artworkId, season:$season, number:$number (${language.toTmdbFormat()})", e)
+            Napier.e(tag = TAG, message = "getTmdbEpisode - Fail to get TMDBEpisode for artworkId:$artworkId, season:$season, number:$number (${language.toTmdbFormat()})", throwable = e)
             null
         }
 
@@ -181,7 +181,7 @@ class TmdbRepositoryImpl(
             tmdbSeason
 
         } catch (e: Exception) {
-            Log.e(TAG, "getTmdbSeason - Fail to get TMDBSeason for artworkId:$artworkId, season:$season (${language.toTmdbFormat()})", e)
+            Napier.e(tag = TAG, message = "getTmdbSeason - Fail to get TMDBSeason for artworkId:$artworkId, season:$season (${language.toTmdbFormat()})", throwable = e)
             null
         }
 
@@ -219,7 +219,7 @@ class TmdbRepositoryImpl(
             result.translations.findWithLocale(request.language)
 
         } catch (e: Exception) {
-            Log.e(TAG, "getTmdbTranslations - Fail to get translations for $request", e)
+            Napier.e(tag = TAG, message = "getTmdbTranslations - Fail to get translations for $request", throwable = e)
             null
         }
 

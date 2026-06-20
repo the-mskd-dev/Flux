@@ -1,4 +1,4 @@
-package com.mskd.flux.data.repository.tmdb
+package com.mskd.flux.shared.data.repository.tmdb
 
 import com.mskd.flux.shared.model.UserFile
 import com.mskd.flux.shared.model.tmdb.TMDBArtwork

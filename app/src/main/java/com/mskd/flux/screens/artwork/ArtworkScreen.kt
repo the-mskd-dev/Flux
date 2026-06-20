@@ -32,9 +32,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.R
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.model.State
-import com.mskd.flux.model.artwork.FullArtwork
-import com.mskd.flux.model.artwork.Media
+import com.mskd.flux.shared.model.State
+import com.mskd.flux.shared.model.artwork.FullArtwork
+import com.mskd.flux.shared.model.artwork.Media
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Route.Player
 import com.mskd.flux.screens.artwork.composables.ArtworkContentLarge

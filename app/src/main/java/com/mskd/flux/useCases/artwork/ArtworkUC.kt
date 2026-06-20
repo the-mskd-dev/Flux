@@ -1,13 +1,13 @@
 package com.mskd.flux.useCases.artwork
 
 import com.mskd.flux.data.repository.ddb.DatabaseRepository
-import com.mskd.flux.model.State
-import com.mskd.flux.model.artwork.Artwork
-import com.mskd.flux.model.artwork.ContentType
-import com.mskd.flux.model.artwork.Episode
-import com.mskd.flux.model.artwork.FullArtwork
-import com.mskd.flux.model.artwork.Movie
-import com.mskd.flux.model.artwork.Season
+import com.mskd.flux.shared.model.State
+import com.mskd.flux.shared.model.artwork.Artwork
+import com.mskd.flux.shared.model.artwork.ContentType
+import com.mskd.flux.shared.model.artwork.Episode
+import com.mskd.flux.shared.model.artwork.FullArtwork
+import com.mskd.flux.shared.model.artwork.Movie
+import com.mskd.flux.shared.model.artwork.Season
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope

@@ -42,7 +42,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.R
 import com.mskd.flux.data.repository.customization.LocalCustomization
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.model.artwork.ContentType
+import com.mskd.flux.shared.model.artwork.ContentType
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Route.Artwork
 import com.mskd.flux.navigation.Route.Show

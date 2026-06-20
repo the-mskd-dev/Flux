@@ -1,12 +1,12 @@
 package com.mskd.flux.data.repository.ddb
 
-import com.mskd.flux.data.ddb.DatabaseDao
-import com.mskd.flux.model.UserFile
-import com.mskd.flux.model.artwork.Artwork
-import com.mskd.flux.model.artwork.Episode
-import com.mskd.flux.model.artwork.Movie
-import com.mskd.flux.model.artwork.Season
-import com.mskd.flux.utils.extensions.sort
+import com.mskd.flux.shared.data.ddb.DatabaseDao
+import com.mskd.flux.shared.model.UserFile
+import com.mskd.flux.shared.model.artwork.Artwork
+import com.mskd.flux.shared.model.artwork.Episode
+import com.mskd.flux.shared.model.artwork.Movie
+import com.mskd.flux.shared.model.artwork.Season
+import com.mskd.flux.shared.utils.extensions.sort
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 

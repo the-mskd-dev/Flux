@@ -1,8 +1,8 @@
 package com.mskd.flux.screens.player
 
-import com.mskd.flux.model.artwork.Artwork
-import com.mskd.flux.model.artwork.Episode
-import com.mskd.flux.model.artwork.Media
+import com.mskd.flux.shared.model.artwork.Artwork
+import com.mskd.flux.shared.model.artwork.Episode
+import com.mskd.flux.shared.model.artwork.Media
 
 object PlayerTestCases {
 

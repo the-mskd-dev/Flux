@@ -1,7 +1,7 @@
 package com.mskd.flux.utils.extensions
 
 import android.util.Log
-import com.mskd.flux.model.artwork.Media
+import com.mskd.flux.shared.model.artwork.Media
 import com.mskd.flux.utils.Constants
 import kotlinx.datetime.LocalDate
 import java.util.Locale

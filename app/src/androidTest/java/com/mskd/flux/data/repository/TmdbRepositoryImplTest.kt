@@ -8,9 +8,9 @@ import com.mskd.flux.data.tmdb.TMDBService
 import com.mskd.flux.data.tmdb.token.TokenRepository
 import com.mskd.flux.di.dataStoreModule
 import com.mskd.flux.di.ktorModule
-import com.mskd.flux.model.FileSource
-import com.mskd.flux.model.UserFile
-import com.mskd.flux.model.tmdb.TMDBTranslations
+import com.mskd.flux.shared.model.FileSource
+import com.mskd.flux.shared.model.UserFile
+import com.mskd.flux.shared.model.tmdb.TMDBTranslations
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking

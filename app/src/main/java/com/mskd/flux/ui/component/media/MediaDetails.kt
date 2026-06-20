@@ -18,17 +18,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.R
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.model.artwork.Artwork
-import com.mskd.flux.model.artwork.Episode
-import com.mskd.flux.model.artwork.Media
+import com.mskd.flux.shared.model.artwork.Artwork
+import com.mskd.flux.shared.model.artwork.Episode
+import com.mskd.flux.shared.model.artwork.Media
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.extensions.formattedText
-import com.mskd.flux.utils.extensions.minToMs
+import com.mskd.flux.shared.utils.extensions.minToMs
 import com.mskd.flux.utils.extensions.releaseDate
-import com.mskd.flux.utils.extensions.timeDescription
-import com.mskd.flux.utils.extensions.toRating
+import com.mskd.flux.shared.utils.extensions.timeDescription
+import com.mskd.flux.shared.utils.extensions.toRating
 
 @Composable
 fun MediaDetailsHorizontal(media: Media) {

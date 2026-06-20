@@ -22,8 +22,8 @@ import androidx.media3.session.SessionToken
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
 import com.mskd.flux.R
-import com.mskd.flux.model.artwork.Episode
-import com.mskd.flux.model.artwork.Media
+import com.mskd.flux.shared.model.artwork.Episode
+import com.mskd.flux.shared.model.artwork.Media
 import com.mskd.flux.model.player.PlayerTrack
 import com.mskd.flux.services.PlayerService
 import com.mskd.flux.utils.Constants

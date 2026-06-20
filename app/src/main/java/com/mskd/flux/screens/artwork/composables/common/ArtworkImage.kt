@@ -29,9 +29,9 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.mskd.flux.data.repository.customization.LocalCustomization
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.model.artwork.Episode
-import com.mskd.flux.model.artwork.FullArtwork
-import com.mskd.flux.model.artwork.Media
+import com.mskd.flux.shared.model.artwork.Episode
+import com.mskd.flux.shared.model.artwork.FullArtwork
+import com.mskd.flux.shared.model.artwork.Media
 import com.mskd.flux.ui.component.global.FluxImage
 import com.mskd.flux.ui.component.global.Image
 import com.mskd.flux.ui.theme.AppTheme

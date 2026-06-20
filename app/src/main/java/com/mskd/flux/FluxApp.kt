@@ -6,7 +6,7 @@ import coil3.ImageLoader
 import coil3.SingletonImageLoader
 import com.mskd.flux.di.coroutineModule
 import com.mskd.flux.di.dataStoreModule
-import com.mskd.flux.di.databaseModule
+import com.mskd.flux.di.moduleDatabaseAndroid
 import com.mskd.flux.di.globalModule
 import com.mskd.flux.di.imageModule
 import com.mskd.flux.di.ktorModule
@@ -14,6 +14,7 @@ import com.mskd.flux.di.playerModule
 import com.mskd.flux.di.repositoriesModule
 import com.mskd.flux.di.useCasesModule
 import com.mskd.flux.di.viewModelsModule
+import com.mskd.flux.shared.di.moduleDatabase
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.CrashDialogActivity
 import org.acra.config.dialog
@@ -37,7 +38,8 @@ class FluxApp : Application(), SingletonImageLoader.Factory {
 
             modules(
                 coroutineModule,
-                databaseModule,
+                moduleDatabase,
+                moduleDatabaseAndroid,
                 dataStoreModule,
                 globalModule,
                 imageModule,

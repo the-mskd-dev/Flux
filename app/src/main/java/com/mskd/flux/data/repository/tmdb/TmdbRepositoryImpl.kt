@@ -3,14 +3,14 @@ package com.mskd.flux.data.repository.tmdb
 import android.util.Log
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.data.tmdb.TMDBService
-import com.mskd.flux.model.UserFile
-import com.mskd.flux.model.tmdb.TMDBArtwork
-import com.mskd.flux.model.tmdb.TMDBEpisode
-import com.mskd.flux.model.tmdb.TMDBMediaType
-import com.mskd.flux.model.tmdb.TMDBMovie
-import com.mskd.flux.model.tmdb.TMDBSeason
-import com.mskd.flux.model.tmdb.TMDBTranslations
-import com.mskd.flux.model.tmdb.findWithLocale
+import com.mskd.flux.shared.model.UserFile
+import com.mskd.flux.shared.model.tmdb.TMDBArtwork
+import com.mskd.flux.shared.model.tmdb.TMDBEpisode
+import com.mskd.flux.shared.model.tmdb.TMDBMediaType
+import com.mskd.flux.shared.model.tmdb.TMDBMovie
+import com.mskd.flux.shared.model.tmdb.TMDBSeason
+import com.mskd.flux.shared.model.tmdb.TMDBTranslations
+import com.mskd.flux.shared.model.tmdb.findWithLocale
 import com.mskd.flux.utils.extensions.toTmdbFormat
 import java.util.Locale
 

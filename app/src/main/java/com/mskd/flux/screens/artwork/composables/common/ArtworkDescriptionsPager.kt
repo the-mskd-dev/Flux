@@ -16,10 +16,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.mskd.flux.R
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.model.Status
-import com.mskd.flux.model.artwork.Episode
-import com.mskd.flux.model.artwork.FullArtwork
-import com.mskd.flux.model.artwork.Media
+import com.mskd.flux.shared.model.Status
+import com.mskd.flux.shared.model.artwork.Episode
+import com.mskd.flux.shared.model.artwork.FullArtwork
+import com.mskd.flux.shared.model.artwork.Media
 import com.mskd.flux.ui.component.media.EpisodesDetails
 import com.mskd.flux.ui.component.media.MediaDetailsHorizontal
 import com.mskd.flux.ui.component.media.OverviewItem

@@ -5,8 +5,8 @@ import com.mskd.flux.BuildConfig
 import com.mskd.flux.data.tmdb.token.TokenRepository
 import com.mskd.flux.di.dataStoreModule
 import com.mskd.flux.di.ktorModule
-import com.mskd.flux.model.FileSource
-import com.mskd.flux.model.UserFile
+import com.mskd.flux.shared.model.FileSource
+import com.mskd.flux.shared.model.UserFile
 import com.mskd.flux.utils.extensions.toTmdbFormat
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest

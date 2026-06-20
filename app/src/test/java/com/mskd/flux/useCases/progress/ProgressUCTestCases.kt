@@ -1,8 +1,8 @@
 package com.mskd.flux.useCases.progress
 
-import com.mskd.flux.model.Status
-import com.mskd.flux.model.artwork.Artwork
-import com.mskd.flux.model.artwork.Media
+import com.mskd.flux.shared.model.Status
+import com.mskd.flux.shared.model.artwork.Artwork
+import com.mskd.flux.shared.model.artwork.Media
 
 object ProgressUCTestCases {
 

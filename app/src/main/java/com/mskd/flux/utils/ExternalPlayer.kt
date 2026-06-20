@@ -10,7 +10,7 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.core.net.toUri
-import com.mskd.flux.model.artwork.Media
+import com.mskd.flux.shared.model.artwork.Media
 import com.mskd.flux.services.ExternalPlayerService
 
 @Composable

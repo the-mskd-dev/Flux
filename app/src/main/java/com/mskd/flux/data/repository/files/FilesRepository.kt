@@ -1,7 +1,7 @@
 package com.mskd.flux.data.repository.files
 
 import android.net.Uri
-import com.mskd.flux.model.UserFile
+import com.mskd.flux.shared.model.UserFile
 
 interface FilesRepository {
 

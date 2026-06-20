@@ -6,10 +6,10 @@ import androidx.lifecycle.viewModelScope
 import androidx.media3.common.text.Cue
 import com.mskd.flux.data.repository.files.FilesRepository
 import com.mskd.flux.data.repository.settings.SettingsRepository
-import com.mskd.flux.model.State
-import com.mskd.flux.model.artwork.Episode
-import com.mskd.flux.model.artwork.FullArtwork
-import com.mskd.flux.model.artwork.Media
+import com.mskd.flux.shared.model.State
+import com.mskd.flux.shared.model.artwork.Episode
+import com.mskd.flux.shared.model.artwork.FullArtwork
+import com.mskd.flux.shared.model.artwork.Media
 import com.mskd.flux.model.player.PlayerTrack
 import com.mskd.flux.model.player.PlayerTrack.Type
 import com.mskd.flux.screens.player.PlayerUiContent.AmbientOverlay
@@ -20,7 +20,7 @@ import com.mskd.flux.screens.player.controllers.PlayerManager
 import com.mskd.flux.useCases.artwork.ArtworkUC
 import com.mskd.flux.useCases.player.PipIsEnabledUC
 import com.mskd.flux.useCases.progress.ProgressUC
-import com.mskd.flux.utils.extensions.getNextEpisodeFor
+import com.mskd.flux.shared.utils.extensions.getNextEpisodeFor
 import com.mskd.flux.utils.extensions.toPlayerTrack
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel

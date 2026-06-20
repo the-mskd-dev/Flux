@@ -6,8 +6,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import app.cash.turbine.test
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.model.artwork.Artwork
-import com.mskd.flux.model.artwork.Season
+import com.mskd.flux.shared.model.artwork.Artwork
+import com.mskd.flux.shared.model.artwork.Season
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -22,15 +22,15 @@ import org.junit.runner.RunWith
 @MediumTest
 class DatabaseTest {
 
-    private lateinit var database: FluxDatabase
-    private lateinit var dao: DatabaseDao
+    private lateinit var database: com.mskd.flux.shared.data.ddb.FluxDatabase
+    private lateinit var dao: com.mskd.flux.shared.data.ddb.DatabaseDao
 
     @Before
     fun setUpDatabase() {
         database =
                 Room.inMemoryDatabaseBuilder(
                                 ApplicationProvider.getApplicationContext(),
-                                FluxDatabase::class.java
+                                _root_ide_package_.com.mskd.flux.shared.data.ddb.FluxDatabase::class.java
                         )
                         .allowMainThreadQueries()
                         .build()
@@ -248,7 +248,7 @@ class DatabaseTest {
 
         // Then
         assertEquals(unknownEpisodes.size, result.size)
-        result.forEach { episode -> assertEquals(Artwork.UNKNOWN_ID, episode.artworkId) }
+        result.forEach { episode -> assertEquals(_root_ide_package_.com.mskd.flux.shared.model.artwork.Artwork.UNKNOWN_ID, episode.artworkId) }
     }
 
     // endregion
@@ -642,7 +642,7 @@ class DatabaseTest {
     fun flowArtworks_emits_updates_when_artworks_change() = runTest {
         dao.flowArtworks().test {
             // Initial emission - empty
-            assertEquals(emptyList<Artwork>(), awaitItem())
+            assertEquals(emptyList<com.mskd.flux.shared.model.artwork.Artwork>(), awaitItem())
 
             // Insert artworks
             dao.insertArtworks(listOf(MediaMockups.movieArtwork))
@@ -765,7 +765,7 @@ class DatabaseTest {
 
         dao.flowSeasons(artwork.id).test {
             // Initial emission - empty list
-            assertEquals(emptyList<Season>(), awaitItem())
+            assertEquals(emptyList<com.mskd.flux.shared.model.artwork.Season>(), awaitItem())
 
             // Insert season1
             dao.insertSeasons(listOf(season1))

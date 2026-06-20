@@ -10,8 +10,8 @@ import android.provider.MediaStore
 import android.util.Log
 import androidx.core.net.toUri
 import com.mskd.flux.data.repository.user.UserRepository
-import com.mskd.flux.model.FileSource
-import com.mskd.flux.model.UserFile
+import com.mskd.flux.shared.model.FileSource
+import com.mskd.flux.shared.model.UserFile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext

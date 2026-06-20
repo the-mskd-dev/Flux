@@ -154,7 +154,7 @@ class FilesRepositoryImpl(
 
         }
 
-    override suspend fun getSubtitlesFor(file: UserFile): Uri? = withContext(Dispatchers.IO) {
+    override suspend fun getSubtitlesFor(file: UserFile): File? = withContext(Dispatchers.IO) {
 
         try {
 
@@ -184,7 +184,7 @@ class FilesRepositoryImpl(
                 .map { ext -> File(parentDir, "$baseName.$ext") }
                 .firstOrNull { it.exists() }
 
-            subtitleFile?.toUri()
+            subtitleFile
 
         } catch (e: Exception) {
             Log.e(TAG, "Fail to get subtitles for ${file.name}", e)

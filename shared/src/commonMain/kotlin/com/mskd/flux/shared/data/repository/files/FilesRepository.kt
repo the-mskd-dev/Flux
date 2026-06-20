@@ -1,7 +1,7 @@
 package com.mskd.flux.shared.data.repository.files
 
-import android.net.Uri
 import com.mskd.flux.shared.model.UserFile
+import java.io.File
 
 interface FilesRepository {
 
@@ -9,6 +9,6 @@ interface FilesRepository {
 
     suspend fun filterExistingFiles(files: List<UserFile>) : List<UserFile>
 
-    suspend fun getSubtitlesFor(file: UserFile) : Uri?
+    suspend fun getSubtitlesFor(file: UserFile) : File?
 
 }

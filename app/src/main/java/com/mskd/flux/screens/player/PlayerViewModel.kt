@@ -1,6 +1,7 @@
 package com.mskd.flux.screens.player
 
 import android.util.Log
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.text.Cue
@@ -264,7 +265,7 @@ class PlayerViewModel(
         val subtitlesUri = filesRepository.getSubtitlesFor(file = media.file)
         playerManager.playMedia(
             media = media,
-            subtitlesUri = subtitlesUri
+            subtitlesUri = subtitlesUri?.toUri()
         )
     }
 

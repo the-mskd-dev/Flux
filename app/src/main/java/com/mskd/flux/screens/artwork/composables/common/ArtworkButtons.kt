@@ -24,7 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.R
-import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.shared.mockups.MediaMockups
 import com.mskd.flux.shared.model.Status
 import com.mskd.flux.shared.model.artwork.Media
 import com.mskd.flux.screens.artwork.ArtworkIntent

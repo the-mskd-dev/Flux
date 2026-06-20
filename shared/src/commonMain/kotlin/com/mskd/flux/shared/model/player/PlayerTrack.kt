@@ -1,4 +1,4 @@
-package com.mskd.flux.model.player
+package com.mskd.flux.shared.model.player
 
 data class PlayerTrack(
     val id: String? = null,

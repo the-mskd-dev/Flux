@@ -5,7 +5,7 @@ import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.data.repository.snackbars.SnackbarRepository
 import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.data.tmdb.token.TokenRepository
-import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.shared.mockups.MediaMockups
 import com.mskd.flux.mockups.mockkCatalogUC
 import com.mskd.flux.mockups.mockkSnackbarRepository
 import com.mskd.flux.shared.model.AppInfo

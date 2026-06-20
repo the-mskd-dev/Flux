@@ -28,7 +28,7 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.mskd.flux.data.repository.customization.LocalCustomization
-import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.shared.mockups.MediaMockups
 import com.mskd.flux.shared.model.artwork.Episode
 import com.mskd.flux.shared.model.artwork.FullArtwork
 import com.mskd.flux.shared.model.artwork.Media

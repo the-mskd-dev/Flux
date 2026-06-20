@@ -1,5 +1,6 @@
 package com.mskd.flux.mockups
 
+import com.mskd.flux.shared.mockups.MediaMockups
 import com.mskd.flux.shared.model.State
 import com.mskd.flux.shared.model.artwork.ContentType
 import com.mskd.flux.shared.model.artwork.Episode

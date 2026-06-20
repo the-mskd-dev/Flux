@@ -1,4 +1,4 @@
-package com.mskd.flux.mockups
+package com.mskd.flux.shared.mockups
 
 object TMDBResponseMockups {
 

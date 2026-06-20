@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import coil3.annotation.ExperimentalCoilApi
-import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.shared.mockups.MediaMockups
 import com.mskd.flux.shared.model.artwork.ContentType
 import com.mskd.flux.shared.model.artwork.FullArtwork
 import com.mskd.flux.shared.model.artwork.Media

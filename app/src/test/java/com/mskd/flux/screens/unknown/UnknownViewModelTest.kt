@@ -6,7 +6,7 @@ import com.mskd.flux.data.repository.ddb.DatabaseRepository
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.mockups.FakeArtworkUC
-import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.shared.mockups.MediaMockups
 import com.mskd.flux.mockups.mockkDatabaseRepository
 import com.mskd.flux.shared.model.ScreenState
 import com.mskd.flux.useCases.progress.ProgressUC

@@ -17,7 +17,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.R
-import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.shared.mockups.MediaMockups
 import com.mskd.flux.shared.model.artwork.Artwork
 import com.mskd.flux.shared.model.artwork.Episode
 import com.mskd.flux.shared.model.artwork.Media

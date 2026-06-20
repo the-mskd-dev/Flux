@@ -4,7 +4,7 @@ import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.mockups.FakeArtworkUC
-import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.shared.mockups.MediaMockups
 import com.mskd.flux.mockups.mockkProgressUC
 import com.mskd.flux.shared.model.State
 import com.mskd.flux.shared.model.artwork.ContentType

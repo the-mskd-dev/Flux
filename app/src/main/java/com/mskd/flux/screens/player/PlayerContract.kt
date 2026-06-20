@@ -6,7 +6,7 @@ import com.mskd.flux.shared.model.State
 import com.mskd.flux.shared.model.artwork.Episode
 import com.mskd.flux.shared.model.artwork.FullArtwork
 import com.mskd.flux.shared.model.artwork.Media
-import com.mskd.flux.model.player.PlayerTrack
+import com.mskd.flux.shared.model.player.PlayerTrack
 
 @Immutable
 data class PlayerUiState(

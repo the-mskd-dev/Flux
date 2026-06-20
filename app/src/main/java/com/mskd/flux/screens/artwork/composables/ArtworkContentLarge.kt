@@ -20,7 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.mskd.flux.R
-import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.shared.mockups.MediaMockups
 import com.mskd.flux.shared.model.artwork.FullArtwork
 import com.mskd.flux.shared.model.artwork.Media
 import com.mskd.flux.screens.artwork.ArtworkIntent

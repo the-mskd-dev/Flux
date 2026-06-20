@@ -33,7 +33,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import com.mskd.flux.R
 import com.mskd.flux.data.repository.customization.LocalCustomization
-import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.shared.mockups.MediaMockups
 import com.mskd.flux.shared.model.Status
 import com.mskd.flux.shared.model.artwork.Episode
 import com.mskd.flux.screens.artwork.ArtworkIntent

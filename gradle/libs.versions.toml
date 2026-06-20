@@ -129,6 +129,7 @@ coil-video = { group = "io.coil-kt.coil3", name = "coil-video", version.ref = "c
 coil-network-ktor = { group = "io.coil-kt.coil3", name = "coil-network-ktor3", version.ref = "coil" }
 
 # -- DataStore --
+androidx-datastore = { group = "androidx.datastore", name = "datastore", version.ref = "datastore" }
 androidx-datastore-pref = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 
 # -- Room --
@@ -194,6 +195,10 @@ shared-room = [
     "androidx-room-runtime",
     "androidx-room-ktx"
 ]
+shared-datastore = [
+    "androidx-datastore",
+    "androidx-datastore-pref",
+]
 
 # -- Android --
 
@@ -257,10 +262,6 @@ android-player = [
 android-di = [
     "koin-compose",
     "koin-compose-viewmodel",
-]
-
-android-datastore = [
-    "androidx-datastore-pref",
 ]
 
 android-acra = [

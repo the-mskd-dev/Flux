@@ -5,12 +5,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.data.repository.snackbars.SnackbarRepository
 import com.mskd.flux.data.repository.user.UserRepository
-import com.mskd.flux.data.tmdb.token.TokenRepository
 import com.mskd.flux.shared.model.AppInfo
 import com.mskd.flux.shared.model.artwork.Artwork
 import com.mskd.flux.shared.model.artwork.ContentType
 import com.mskd.flux.screens.home.HomeEvent.NavigateToCategory
 import com.mskd.flux.screens.home.HomeEvent.NavigateToMovie
+import com.mskd.flux.shared.data.repository.token.TokenRepository
 import com.mskd.flux.useCases.catalog.CatalogUC
 import com.mskd.flux.utils.FluxSnackbar
 import com.mskd.flux.utils.UpdateManager

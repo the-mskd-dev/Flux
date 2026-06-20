@@ -2,7 +2,7 @@ package com.mskd.flux.screens.welcome
 
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
-import com.mskd.flux.data.tmdb.token.TokenRepository
+import com.mskd.flux.shared.data.repository.token.TokenRepository
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData
 import io.kotest.matchers.shouldBe

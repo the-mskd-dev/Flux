@@ -1,4 +1,4 @@
-package com.mskd.flux.data.tmdb
+package com.mskd.flux.shared.data.tmdb
 
 import com.mskd.flux.shared.model.tmdb.TMDBArtworksResult
 import com.mskd.flux.shared.model.tmdb.TMDBAuthentication

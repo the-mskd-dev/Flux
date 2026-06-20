@@ -59,6 +59,7 @@ kotlin {
                 api(libs.bundles.shared.di)
                 api(libs.bundles.shared.image)
                 api(libs.bundles.shared.room)
+                api(libs.bundles.shared.datastore)
             }
         }
 

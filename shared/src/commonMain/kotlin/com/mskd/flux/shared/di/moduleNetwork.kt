@@ -1,8 +1,8 @@
-package com.mskd.flux.di
+package com.mskd.flux.shared.di
 
-import com.mskd.flux.data.tmdb.TMDBService
-import com.mskd.flux.data.tmdb.TMDBServiceImpl
-import com.mskd.flux.data.tmdb.token.TokenRepository
+import com.mskd.flux.shared.data.repository.token.TokenRepository
+import com.mskd.flux.shared.data.tmdb.TMDBService
+import com.mskd.flux.shared.data.tmdb.TMDBServiceImpl
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.HttpRequestRetry
@@ -16,7 +16,7 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-val ktorModule = module {
+val moduleNetwork = module {
 
     val baseUrl = "https://api.themoviedb.org/3/"
 

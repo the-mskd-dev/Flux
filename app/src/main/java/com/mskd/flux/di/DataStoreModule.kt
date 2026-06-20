@@ -12,14 +12,8 @@ import com.mskd.flux.data.repository.snackbars.snackbarDataStore
 import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.data.repository.user.UserRepositoryImpl
 import com.mskd.flux.data.repository.user.userDataStore
-import com.mskd.flux.data.tmdb.token.TokenRepository
-import com.mskd.flux.data.tmdb.token.TokenRepositoryImpl
-import com.mskd.flux.data.tmdb.token.tokenDatastore
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
-
-// At the top level of your kotlin file:
-private const val PREFERENCES = "preferences"
 
 val dataStoreModule = module {
 
@@ -39,12 +33,6 @@ val dataStoreModule = module {
     single<CustomizationRepository> {
         CustomizationRepositoryImpl(
             customizationDataStore = androidContext().customizationDatastore
-        )
-    }
-
-    single<TokenRepository> {
-        TokenRepositoryImpl(
-            tokenDataStore = androidContext().tokenDatastore
         )
     }
 

@@ -1,4 +1,4 @@
-package com.mskd.flux.data.tmdb.token
+package com.mskd.flux.shared.data.repository.token
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences

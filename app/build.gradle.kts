@@ -149,9 +149,6 @@ dependencies {
     // Koin
     implementation(libs.bundles.android.di)
 
-    // DataStore
-    implementation(libs.bundles.android.datastore)
-
     // ACRA
     implementation(libs.bundles.android.acra)
 

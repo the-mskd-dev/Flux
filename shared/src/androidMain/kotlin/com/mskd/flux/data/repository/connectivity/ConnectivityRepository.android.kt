@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 
-class `ConnectivityRepository.android`(context: Context) : ConnectivityRepository {
+class ConnectivityRepositoryImpl(context: Context) : ConnectivityRepository {
 
     private val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 

@@ -7,12 +7,13 @@ import coil3.memory.MemoryCache
 import coil3.video.VideoFrameDecoder
 import com.mskd.flux.utils.interceptors.NetworkImageInterceptor
 import org.koin.android.ext.koin.androidContext
-import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
-val imageModule = module {
+val moduleImagesAndroid = module {
 
-    singleOf(::NetworkImageInterceptor)
+    single<NetworkImageInterceptor> {
+        NetworkImageInterceptor(connectivityRepository = get())
+    }
 
     single<ImageLoader> {
         val context = androidContext()

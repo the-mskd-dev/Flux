@@ -5,7 +5,6 @@ import android.content.Context
 import coil3.ImageLoader
 import coil3.SingletonImageLoader
 import com.mskd.flux.di.Properties
-import com.mskd.flux.di.imageModule
 import com.mskd.flux.di.moduleDatabaseAndroid
 import com.mskd.flux.di.moduleDatastoreAndroid
 import com.mskd.flux.di.moduleRepositoryAndroid
@@ -14,6 +13,8 @@ import com.mskd.flux.di.viewModelsModule
 import com.mskd.flux.di.moduleCoroutine
 import com.mskd.flux.di.moduleDatabase
 import com.mskd.flux.di.moduleDatastore
+import com.mskd.flux.di.moduleImages
+import com.mskd.flux.di.moduleImagesAndroid
 import com.mskd.flux.di.moduleNetwork
 import com.mskd.flux.di.modulePlatform
 import com.mskd.flux.di.moduleRepository
@@ -75,7 +76,9 @@ class FluxApp : Application(), SingletonImageLoader.Factory {
                 moduleUseCase,
                 moduleUseCaseAndroid,
 
-                imageModule,
+                moduleImages,
+                moduleImagesAndroid,
+
                 playerModule,
                 viewModelsModule
             )

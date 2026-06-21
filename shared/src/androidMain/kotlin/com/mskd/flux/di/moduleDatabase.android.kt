@@ -16,6 +16,4 @@ val moduleDatabaseAndroid = module {
         getDatabaseBuilder(androidContext())
     }
 
-    singleOf(::DatabaseRepositoryImpl) bind DatabaseRepository::class
-
 }

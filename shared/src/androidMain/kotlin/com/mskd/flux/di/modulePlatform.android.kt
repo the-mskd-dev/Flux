@@ -1,6 +1,7 @@
 package com.mskd.flux.di
 
-import coil3.PlatformContext
+
+import com.mskd.flux.model.AppInfo
 import com.mskd.flux.platform.AndroidImageRequestFactory
 import com.mskd.flux.platform.AndroidMetadataProvider
 import com.mskd.flux.platform.ImageRequestFactory
@@ -17,6 +18,15 @@ actual val modulePlatform: Module = module {
 
     single<ImageRequestFactory> {
         AndroidImageRequestFactory(context = androidContext())
+    }
+
+    single<AppInfo> {
+        AppInfo(
+            versionCode = getProperty(Properties.VERSION_CODE),
+            versionName = getProperty(Properties.VERSION_NAME),
+            isDebug = getProperty(Properties.IS_DEBUG),
+            debugToken = getProperty(Properties.DEBUG_TOKEN),
+        )
     }
 
 }

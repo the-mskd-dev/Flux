@@ -69,6 +69,7 @@ val viewModelsModule = module {
             tokenRepository = get(),
             tmdbService = get(),
             catalogUC = get(),
+            appInfo = get()
         )
     }
 

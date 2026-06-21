@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.mskd.flux.BuildConfig
 import com.mskd.flux.data.repository.token.TokenRepository
 import com.mskd.flux.data.tmdb.TMDBService
+import com.mskd.flux.model.AppInfo
 import com.mskd.flux.useCases.catalog.CatalogUC
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,7 +19,8 @@ class TokenViewModel(
     fromSettings: Boolean,
     private val tokenRepository: TokenRepository,
     private val tmdbService: TMDBService,
-    private val catalogUC: CatalogUC
+    private val catalogUC: CatalogUC,
+    private val appInfo: AppInfo
 ) : ViewModel() {
 
     private val _event = MutableSharedFlow<TokenEvent>()
@@ -29,7 +31,7 @@ class TokenViewModel(
 
     init {
         viewModelScope.launch {
-            val token = tokenRepository.getToken().ifBlank { if (BuildConfig.DEBUG) BuildConfig.TMDB_TOKEN else "" }
+            val token = tokenRepository.getToken().ifBlank { if (appInfo.isDebug) appInfo.debugToken else "" }
             setToken(token)
         }
     }

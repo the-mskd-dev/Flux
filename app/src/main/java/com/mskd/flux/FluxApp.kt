@@ -4,7 +4,7 @@ import android.app.Application
 import android.content.Context
 import coil3.ImageLoader
 import coil3.SingletonImageLoader
-import com.mskd.flux.di.globalModule
+import com.mskd.flux.di.Properties
 import com.mskd.flux.di.imageModule
 import com.mskd.flux.di.moduleDatabaseAndroid
 import com.mskd.flux.di.moduleDatastoreAndroid
@@ -46,6 +46,15 @@ class FluxApp : Application(), SingletonImageLoader.Factory {
         startKoin {
             androidContext(this@FluxApp)
 
+            properties(
+                mapOf(
+                    Properties.IS_DEBUG to BuildConfig.DEBUG,
+                    Properties.VERSION_NAME to BuildConfig.VERSION_NAME,
+                    Properties.VERSION_CODE to BuildConfig.VERSION_CODE,
+                    Properties.DEBUG_TOKEN to BuildConfig.TMDB_TOKEN,
+                )
+            )
+
             modules(
 
                 modulePlatform,
@@ -66,7 +75,6 @@ class FluxApp : Application(), SingletonImageLoader.Factory {
                 moduleUseCase,
                 moduleUseCaseAndroid,
 
-                globalModule,
                 imageModule,
                 playerModule,
                 viewModelsModule

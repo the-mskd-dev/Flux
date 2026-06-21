@@ -16,7 +16,6 @@ import com.mskd.flux.screens.settings.composables.SettingsItem
 import com.mskd.flux.screens.settings.composables.SettingsSection
 import com.mskd.flux.screens.settings.composables.SettingsSwitch
 import com.mskd.flux.ui.theme.Ui
-import com.mskd.flux.utils.extensions.stringResourceId
 import flux.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 
@@ -36,7 +35,7 @@ fun CustomizationThemeSection(
 
         SettingsItem(
             text = stringResource(Res.string.app_theme),
-            subText = stringResource(state.uiTheme.stringResourceId),
+            subText = stringResource(state.uiTheme.stringResource),
             onTap = { sendIntent(CustomizationIntent.ShowThemeDialog) }
         )
 

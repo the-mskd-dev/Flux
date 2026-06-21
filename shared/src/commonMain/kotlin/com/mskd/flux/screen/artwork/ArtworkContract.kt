@@ -1,4 +1,4 @@
-package com.mskd.flux.screens.artwork
+package com.mskd.flux.screen.artwork
 
 import androidx.compose.runtime.Immutable
 import com.mskd.flux.model.State

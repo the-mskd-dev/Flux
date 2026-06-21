@@ -1,4 +1,4 @@
-package com.mskd.flux.screens.artwork
+package com.mskd.flux.screen.artwork
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,7 +8,7 @@ import com.mskd.flux.model.Status
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.model.artwork.Media
-import com.mskd.flux.screens.artwork.ArtworkEvent.OpenUrlInfo
+import com.mskd.flux.screen.artwork.ArtworkEvent.OpenUrlInfo
 import com.mskd.flux.useCases.artwork.ArtworkUC
 import com.mskd.flux.useCases.progress.ProgressUC
 import com.mskd.flux.utils.extensions.firstEpisode
@@ -174,7 +174,7 @@ class ArtworkViewModel(
                 is FullArtwork.FullShow -> fullArtwork.seasons.find { it.season == season }?.infoUrl ?: return@let
             }
 
-            _event.emit(ArtworkEvent.OpenUrlInfo(url = url))
+            _event.emit(OpenUrlInfo(url = url))
         }
     }
 

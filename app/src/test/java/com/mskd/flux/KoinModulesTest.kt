@@ -13,7 +13,7 @@ import com.mskd.flux.di.moduleNetwork
 import com.mskd.flux.di.modulePlayer
 import com.mskd.flux.di.moduleRepository
 import com.mskd.flux.di.moduleRepositoryAndroid
-import com.mskd.flux.di.moduleViewModels
+import com.mskd.flux.di.moduleViewModelAndroid
 import com.mskd.flux.model.artwork.ContentType
 import io.kotest.core.spec.style.FunSpec
 import org.koin.core.annotation.KoinExperimentalAPI
@@ -38,7 +38,7 @@ class KoinModulesTest : FunSpec({
             imageModule,
             modulePlayer,
             ModuleUseCases,
-            moduleViewModels
+            moduleViewModelAndroid
         )
 
         val combined = module {

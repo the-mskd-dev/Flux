@@ -11,6 +11,11 @@ import com.mskd.flux.model.Status
 import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.FullArtwork
+import com.mskd.flux.screen.artwork.ArtworkContent
+import com.mskd.flux.screen.artwork.ArtworkDialog
+import com.mskd.flux.screen.artwork.ArtworkEvent
+import com.mskd.flux.screen.artwork.ArtworkIntent
+import com.mskd.flux.screen.artwork.ArtworkViewModel
 import com.mskd.flux.useCases.progress.ProgressUC
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe

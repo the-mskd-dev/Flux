@@ -36,6 +36,10 @@ import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Route.Player
+import com.mskd.flux.screen.artwork.ArtworkDialog
+import com.mskd.flux.screen.artwork.ArtworkEvent
+import com.mskd.flux.screen.artwork.ArtworkIntent
+import com.mskd.flux.screen.artwork.ArtworkViewModel
 import com.mskd.flux.screens.artwork.composables.ArtworkContentLarge
 import com.mskd.flux.screens.artwork.composables.ArtworkContentRegular
 import com.mskd.flux.ui.component.LoadingScreen

@@ -1,7 +1,7 @@
 package com.mskd.flux.di
 
 import com.mskd.flux.MainViewModel
-import com.mskd.flux.screens.artwork.ArtworkViewModel
+import com.mskd.flux.screen.artwork.ArtworkViewModel
 import com.mskd.flux.screens.customization.CustomizationViewModel
 import com.mskd.flux.screens.home.HomeViewModel
 import com.mskd.flux.screens.player.PlayerViewModel
@@ -15,7 +15,7 @@ import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
-val moduleViewModels = module {
+val moduleViewModelAndroid = module {
 
     viewModelOf(::MainViewModel)
     viewModelOf(::HomeViewModel)
@@ -35,16 +35,6 @@ val moduleViewModels = module {
     viewModel { params ->
         ShowViewModel(
             artworkId = params.get(),
-            artworkUC = get(),
-            settingsRepository = get(),
-            progressUC = get(),
-        )
-    }
-
-    viewModel { params ->
-        ArtworkViewModel(
-            artworkId = params.get(),
-            season = params.getOrNull(),
             artworkUC = get(),
             settingsRepository = get(),
             progressUC = get(),

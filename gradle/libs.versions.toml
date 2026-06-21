@@ -9,6 +9,9 @@ agp = "9.2.1"
 kotlin = "2.4.0"
 ksp = "2.3.9"
 
+# -- KMP Core
+composeMultiplatform = "1.11.1"
+
 # -- Android Core --
 coreKtx = "1.19.0"
 lifecycle = "2.11.0"
@@ -64,7 +67,10 @@ kotlinTest = "2.3.21"
 
 [libraries]
 
-# -- Core --
+# -- KMP Core --
+components-resources = { group = "org.jetbrains.compose.components", name = "components-resources", version.ref = "composeMultiplatform" }
+
+# -- Android Core --
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle" }
 androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata" }
@@ -170,6 +176,7 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "composeMultiplatform" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin"}
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }

@@ -1,5 +1,11 @@
+@file:OptIn(ExperimentalKotlinGradlePluginApi::class)
+
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.compose.multiplatform)
+    alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.android.kotlin.multiplatform.library)
     alias(libs.plugins.android.lint)
     alias(libs.plugins.kotlin.serialization)
@@ -15,6 +21,7 @@ kotlin {
         namespace = "com.mskd.flux.shared"
         compileSdk = libs.versions.android.compileSdk.get().toInt()
         minSdk = libs.versions.android.minSdk.get().toInt()
+        androidResources.enable = true
     }
 
     // For iOS targets, this is also where you should
@@ -54,6 +61,7 @@ kotlin {
             dependencies {
                 implementation(libs.kotlin.stdlib)
 
+                api(libs.components.resources)
                 api(libs.bundles.shared.kotlin)
                 api(libs.bundles.shared.network)
                 api(libs.bundles.shared.di)
@@ -89,4 +97,9 @@ dependencies {
 
 ksp {
     arg("room.schemaLocation", "$projectDir/schemas")
+}
+
+compose.resources {
+    publicResClass = true
+    generateResClass = always
 }

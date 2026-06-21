@@ -89,7 +89,10 @@ import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxSnackbar
 import com.mskd.flux.utils.itemWidthFor
 import com.mskd.flux.utils.rememberScreenDimensions
+import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.test_kmp
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -140,6 +143,7 @@ fun HomeScreen(
         when (state) {
 
             is HomeState.Loading -> {
+
                 LoadingScreen(
                     text = stringResource(R.string.sync_in_progress),
                     progress = { state.progress }
@@ -279,7 +283,7 @@ fun HomeContent(
 
                     item {
                         MediaCategory(
-                            name = stringResource(id = R.string.movies),
+                            name = stringResource(id = R.string.shows),
                             category = ContentType.SHOW,
                             artworks = artworks.filter { it.type == ContentType.SHOW && !it.isUnknown },
                             sendIntent = sendIntent
@@ -288,7 +292,7 @@ fun HomeContent(
 
                     item {
                         MediaCategory(
-                            name = stringResource(id = R.string.shows),
+                            name = stringResource(id = R.string.movies),
                             category = ContentType.MOVIE,
                             artworks = artworks.filter { it.type == ContentType.MOVIE && !it.isUnknown },
                             sendIntent = sendIntent

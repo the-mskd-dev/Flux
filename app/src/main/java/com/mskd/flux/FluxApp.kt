@@ -19,6 +19,8 @@ import com.mskd.flux.shared.di.moduleNetwork
 import com.mskd.flux.shared.di.moduleRepository
 import com.mskd.flux.shared.utils.Constants
 import com.mskd.flux.utils.CrashDialogActivity
+import io.github.aakira.napier.DebugAntilog
+import io.github.aakira.napier.Napier
 import org.acra.config.dialog
 import org.acra.config.mailSender
 import org.acra.data.StringFormat
@@ -34,6 +36,10 @@ class FluxApp : Application(), SingletonImageLoader.Factory {
 
     override fun onCreate() {
         super.onCreate()
+
+        if (BuildConfig.DEBUG) {
+            Napier.base(DebugAntilog())
+        }
 
         startKoin {
             androidContext(this@FluxApp)

@@ -8,9 +8,9 @@ import com.mskd.flux.di.imageModule
 import com.mskd.flux.di.moduleDatabaseAndroid
 import com.mskd.flux.di.moduleDatastoreAndroid
 import com.mskd.flux.di.moduleRepositoryAndroid
-import com.mskd.flux.di.playerModule
+import com.mskd.flux.di.modulePlayer
 import com.mskd.flux.di.ModuleUseCases
-import com.mskd.flux.di.viewModelsModule
+import com.mskd.flux.di.moduleViewModels
 import com.mskd.flux.di.moduleDatastore
 import com.mskd.flux.di.moduleNetwork
 import com.mskd.flux.di.moduleRepository
@@ -36,9 +36,9 @@ class KoinModulesTest : FunSpec({
             moduleRepositoryAndroid,
             globalModule,
             imageModule,
-            playerModule,
+            modulePlayer,
             ModuleUseCases,
-            viewModelsModule
+            moduleViewModels
         )
 
         val combined = module {

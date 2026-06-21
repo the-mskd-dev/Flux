@@ -8,8 +8,8 @@ import com.mskd.flux.di.Properties
 import com.mskd.flux.di.moduleDatabaseAndroid
 import com.mskd.flux.di.moduleDatastoreAndroid
 import com.mskd.flux.di.moduleRepositoryAndroid
-import com.mskd.flux.di.playerModule
-import com.mskd.flux.di.viewModelsModule
+import com.mskd.flux.di.modulePlayer
+import com.mskd.flux.di.moduleViewModels
 import com.mskd.flux.di.moduleCoroutine
 import com.mskd.flux.di.moduleDatabase
 import com.mskd.flux.di.moduleDatastore
@@ -79,8 +79,8 @@ class FluxApp : Application(), SingletonImageLoader.Factory {
                 moduleImages,
                 moduleImagesAndroid,
 
-                playerModule,
-                viewModelsModule
+                modulePlayer,
+                moduleViewModels
             )
 
         }

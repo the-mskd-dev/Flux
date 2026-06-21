@@ -15,7 +15,7 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
-val playerModule = module {
+val modulePlayer = module {
 
     singleOf(::PlayerManager)
 

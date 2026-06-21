@@ -8,7 +8,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.screens.customization.CustomizationIntent
 import com.mskd.flux.screens.customization.CustomizationUiState
@@ -16,7 +15,15 @@ import com.mskd.flux.screens.settings.composables.SettingsItem
 import com.mskd.flux.screens.settings.composables.SettingsSection
 import com.mskd.flux.screens.settings.composables.SettingsSwitch
 import com.mskd.flux.ui.theme.Ui
-import flux.shared.generated.resources.*
+import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.accent_color
+import flux.shared.generated.resources.accent_color_desc
+import flux.shared.generated.resources.app_theme
+import flux.shared.generated.resources.items
+import flux.shared.generated.resources.items_per_row
+import flux.shared.generated.resources.large_episode_image
+import flux.shared.generated.resources.old_blurred_header
+import flux.shared.generated.resources.wave_progress
 import org.jetbrains.compose.resources.stringResource
 
 @Composable

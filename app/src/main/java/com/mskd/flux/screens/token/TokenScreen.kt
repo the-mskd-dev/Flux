@@ -48,7 +48,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.R
 import com.mskd.flux.navigation.Route
-import com.mskd.flux.shared.utils.Constants
+import com.mskd.flux.utils.Constants
 import com.mskd.flux.ui.component.global.FluxIconButton
 import com.mskd.flux.ui.component.global.FluxScaffold
 import com.mskd.flux.ui.component.global.FluxTextButton

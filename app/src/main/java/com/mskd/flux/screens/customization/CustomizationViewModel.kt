@@ -6,8 +6,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.R
 import com.mskd.flux.screens.customization.composables.ColorItem
-import com.mskd.flux.shared.data.repository.customization.CustomizationRepository
-import com.mskd.flux.shared.utils.UiCommon
+import com.mskd.flux.data.repository.customization.CustomizationRepository
+import com.mskd.flux.utils.UiCommon
 import com.mskd.flux.ui.component.global.FluxOptionsDialogItem
 import com.mskd.flux.ui.component.global.FluxOptionsDialogState
 import com.mskd.flux.ui.theme.Ui

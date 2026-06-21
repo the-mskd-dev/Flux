@@ -23,8 +23,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.mskd.flux.R
-import com.mskd.flux.shared.mockups.MediaMockups
-import com.mskd.flux.shared.model.artwork.Episode
+import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.ui.component.global.ReadMoreButton
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.AppTheme

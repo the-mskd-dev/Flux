@@ -26,10 +26,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.palette.graphics.Palette
 import coil3.toBitmap
 import com.mskd.flux.R
-import com.mskd.flux.shared.mockups.MediaMockups
-import com.mskd.flux.shared.model.Status
-import com.mskd.flux.shared.model.artwork.Episode
-import com.mskd.flux.shared.model.artwork.Season
+import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.model.Status
+import com.mskd.flux.model.artwork.Episode
+import com.mskd.flux.model.artwork.Season
 import com.mskd.flux.ui.component.global.FluxImage
 import com.mskd.flux.ui.component.global.ProgressStatusBar
 import com.mskd.flux.ui.component.global.ProgressStatusChip

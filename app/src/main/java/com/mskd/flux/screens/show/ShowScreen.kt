@@ -36,9 +36,9 @@ import com.mskd.flux.navigation.Route.Artwork
 import com.mskd.flux.screens.show.composables.SeasonDialog
 import com.mskd.flux.screens.show.composables.ShowContentLarge
 import com.mskd.flux.screens.show.composables.ShowContentRegular
-import com.mskd.flux.shared.mockups.MediaMockups
-import com.mskd.flux.shared.model.State
-import com.mskd.flux.shared.model.artwork.FullArtwork
+import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.model.State
+import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.component.global.ErrorScreen
 import com.mskd.flux.ui.component.global.FluxDropDownMenu

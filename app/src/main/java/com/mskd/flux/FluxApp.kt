@@ -4,20 +4,22 @@ import android.app.Application
 import android.content.Context
 import coil3.ImageLoader
 import coil3.SingletonImageLoader
-import com.mskd.flux.di.coroutineModule
 import com.mskd.flux.di.globalModule
 import com.mskd.flux.di.imageModule
 import com.mskd.flux.di.moduleDatabaseAndroid
 import com.mskd.flux.di.moduleDatastoreAndroid
 import com.mskd.flux.di.moduleRepositoryAndroid
 import com.mskd.flux.di.playerModule
-import com.mskd.flux.di.useCasesModule
 import com.mskd.flux.di.viewModelsModule
-import com.mskd.flux.shared.di.moduleDatabase
-import com.mskd.flux.shared.di.moduleDatastore
-import com.mskd.flux.shared.di.moduleNetwork
-import com.mskd.flux.shared.di.moduleRepository
-import com.mskd.flux.shared.utils.Constants
+import com.mskd.flux.di.moduleCoroutine
+import com.mskd.flux.di.moduleDatabase
+import com.mskd.flux.di.moduleDatastore
+import com.mskd.flux.di.moduleNetwork
+import com.mskd.flux.di.modulePlatform
+import com.mskd.flux.di.moduleRepository
+import com.mskd.flux.di.moduleUseCase
+import com.mskd.flux.di.moduleUseCaseAndroid
+import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.CrashDialogActivity
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
@@ -45,7 +47,10 @@ class FluxApp : Application(), SingletonImageLoader.Factory {
             androidContext(this@FluxApp)
 
             modules(
-                coroutineModule,
+
+                modulePlatform,
+
+                moduleCoroutine,
 
                 moduleDatabase,
                 moduleDatabaseAndroid,
@@ -58,10 +63,12 @@ class FluxApp : Application(), SingletonImageLoader.Factory {
                 moduleRepository,
                 moduleRepositoryAndroid,
 
+                moduleUseCase,
+                moduleUseCaseAndroid,
+
                 globalModule,
                 imageModule,
                 playerModule,
-                useCasesModule,
                 viewModelsModule
             )
 

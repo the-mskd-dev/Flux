@@ -24,9 +24,9 @@ import com.mskd.flux.screens.artwork.ArtworkIntent
 import com.mskd.flux.screens.artwork.composables.common.ArtworkButtons
 import com.mskd.flux.screens.artwork.composables.common.ArtworkDescriptionsPager
 import com.mskd.flux.screens.artwork.composables.common.ArtworkImage
-import com.mskd.flux.shared.mockups.MediaMockups
-import com.mskd.flux.shared.model.artwork.FullArtwork
-import com.mskd.flux.shared.model.artwork.Media
+import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.model.artwork.FullArtwork
+import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.component.media.EpisodeDropDownMenu
 import com.mskd.flux.ui.component.media.EpisodeItem

@@ -74,6 +74,8 @@ kotlin {
             dependencies {
                 api(libs.bundles.android.core)
                 api(libs.bundles.android.network)
+                api(libs.bundles.android.di)
+                api(libs.bundles.android.image)
             }
         }
         

@@ -5,7 +5,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import com.mskd.flux.shared.utils.Trace
+import com.mskd.flux.utils.Trace
 
 @Composable
 fun LifecycleComponent(

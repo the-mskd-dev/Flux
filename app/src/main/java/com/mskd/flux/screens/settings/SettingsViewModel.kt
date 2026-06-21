@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.R
-import com.mskd.flux.shared.data.repository.settings.SettingsRepository
+import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.ui.component.global.FluxOptionsDialogItem
 import com.mskd.flux.ui.component.global.FluxOptionsDialogState
 import com.mskd.flux.useCases.catalog.CatalogUC

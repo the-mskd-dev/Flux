@@ -1,7 +1,7 @@
 package com.mskd.flux.tmdb
 
 import com.mskd.flux.configs.ApiConfig
-import com.mskd.flux.shared.mockups.TMDBResponseMockups
+import com.mskd.flux.mockups.TMDBResponseMockups
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.comparables.shouldBeGreaterThan

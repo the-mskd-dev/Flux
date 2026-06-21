@@ -5,7 +5,7 @@ import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.mockups.mockkCatalogUC
 import com.mskd.flux.mockups.mockkImagesUC
-import com.mskd.flux.shared.data.repository.settings.SettingsRepository
+import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.ui.component.global.FluxOptionsDialogState
 import com.mskd.flux.useCases.catalog.CatalogUC
 import com.mskd.flux.useCases.images.ImagesUC

@@ -25,11 +25,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.R
 import com.mskd.flux.screens.artwork.ArtworkIntent
-import com.mskd.flux.shared.mockups.MediaMockups
-import com.mskd.flux.shared.model.Status
-import com.mskd.flux.shared.model.artwork.Media
-import com.mskd.flux.shared.utils.extensions.minToMs
-import com.mskd.flux.shared.utils.extensions.timeDescription
+import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.model.Status
+import com.mskd.flux.model.artwork.Media
+import com.mskd.flux.utils.extensions.minToMs
+import com.mskd.flux.utils.extensions.timeDescription
 import com.mskd.flux.ui.component.global.FluxTextButton
 import com.mskd.flux.ui.component.global.ProgressStatusBar
 import com.mskd.flux.ui.component.global.Text

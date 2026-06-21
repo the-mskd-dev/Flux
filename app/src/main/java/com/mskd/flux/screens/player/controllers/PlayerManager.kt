@@ -22,11 +22,11 @@ import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
 import com.mskd.flux.R
 import com.mskd.flux.services.PlayerService
-import com.mskd.flux.shared.model.artwork.Episode
-import com.mskd.flux.shared.model.artwork.Media
-import com.mskd.flux.shared.model.player.PlayerTrack
-import com.mskd.flux.shared.utils.Constants
-import com.mskd.flux.shared.utils.Trace
+import com.mskd.flux.model.artwork.Episode
+import com.mskd.flux.model.artwork.Media
+import com.mskd.flux.model.player.PlayerTrack
+import com.mskd.flux.utils.Constants
+import com.mskd.flux.utils.Trace
 import com.mskd.flux.utils.extensions.tmdbImage
 import com.mskd.flux.utils.extensions.uppercaseFirstLetter
 import kotlinx.coroutines.CoroutineScope

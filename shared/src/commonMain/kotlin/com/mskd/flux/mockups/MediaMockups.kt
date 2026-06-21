@@ -1,0 +1,211 @@
+package com.mskd.flux.mockups
+
+import com.mskd.flux.model.FileSource
+import com.mskd.flux.model.Status
+import com.mskd.flux.model.UserFile
+import com.mskd.flux.model.artwork.Artwork
+import com.mskd.flux.model.artwork.ContentType
+import com.mskd.flux.model.artwork.Episode
+import com.mskd.flux.model.artwork.FullArtwork
+import com.mskd.flux.model.artwork.Movie
+import com.mskd.flux.model.artwork.Season
+import kotlin.time.Duration.Companion.minutes
+
+object MediaMockups {
+
+    val movieArtwork = Artwork(
+        id = 372058L,
+        title = "Your name",
+        type = ContentType.MOVIE,
+        imagePath = "/vfJFJPepRKapMd5G2ro7klIRysq.jpg",
+        bannerPath = "/8x9iKH8kWA0zdkgNdpAew7OstYe.jpg"
+    )
+
+    val movie = Movie(
+        artworkId = 372058L,
+        title = "Your name",
+        releaseDateString = "2016-08-26",
+        description = "High schoolers Mitsuha and Taki are complete strangers living separate lives. But one night, they suddenly switch places. Mitsuha wakes up in Taki’s body, and he in hers. This bizarre occurrence continues to happen randomly, and the two must adjust their lives around each other.",
+        voteAverage = 8.5f,
+        voteCount = 11518,
+        duration = 106,
+        currentTime = 0L,
+        status = Status.TO_WATCH,
+        file = UserFile(
+            name = "your_name.mkv",
+            addedDateTime = 0L,
+            path = "path/your_name.mkv",
+            source = FileSource.LOCAL
+        )
+    )
+
+    val showArtwork = Artwork(
+        id = 31910L,
+        title = "Naruto Shippūden",
+        type = ContentType.SHOW,
+        imagePath = "/z0YhJvomqedHF85bplUJEotkN5l.jpg",
+        bannerPath = "/71mASgFgSiPl9QUexVH8BubU0lD.jpg"
+    )
+
+    val episode1 = Episode(
+        id = 761472L,
+        number = 1,
+        season = 1,
+        imagePath = "/lFg0YnHI7sJkPSv38a8ctE96sqr.jpg",
+        artworkId = 31910L,
+        title = "Homecoming",
+        releaseDateString = "2007-02-15",
+        description = "A figure passes through the gates. It's an older Naruto, who has returned from a long training journey with Jiraiya. Naruto Uzumaki is back!",
+        voteAverage = 7.8f,
+        voteCount = 8,
+        duration = 23,
+        currentTime = 0L,
+        status = Status.TO_WATCH,
+        file = UserFile(
+            name = "naruto_shippuuden_S01E01.mkv",
+            addedDateTime = 0L,
+            path = "path/naruto_shippuuden_S01E01.mkv",
+            source = FileSource.LOCAL
+        )
+    )
+
+    val episode2 = Episode(
+        id = 761473L,
+        number = 2,
+        season = 1,
+        imagePath = "/zbvJ4ts4JJmqP6koMNnLzBX6qiJ.jpg",
+        artworkId = 31910L,
+        title = "The Akatsuki Makes Its Move",
+        releaseDateString = "2007-02-15",
+        description = "Naruto and Sakura team up and challenge Kakashi to a survival challenge to show off their progress.",
+        voteAverage = 6.8f,
+        voteCount = 6,
+        duration = 23,
+        currentTime = 0L,
+        status = Status.TO_WATCH,
+        file = UserFile(
+            name = "naruto_shippuuden_S01E02.mkv",
+            addedDateTime = 0L,
+            path = "path/naruto_shippuuden_S01E02.mkv",
+            source = FileSource.LOCAL
+        )
+    )
+
+    val episode3 = Episode(
+        id = 761474L,
+        number = 33,
+        season = 2,
+        imagePath = "/97O9irZPuV08ZLPQIPea434UG6R.jpg",
+        artworkId = 31910L,
+        title = "The New Target",
+        releaseDateString = "2007-11-08",
+        description = "Teams Kakashi and Guy return home to Konoha. As Kakashi rests in the infirmary, Sakura tells Tsunade about the information Sasori gave her as a reward for defeating him. Sasori had a meeting scheduled with a spy from within Orochimaru's ranks in 10 days. 4 days have passed since Sakura received this information, and now Naruto and Sakura need to recruit a new team member to go and investigate. As Naruto searches Konoha for a willing recruit, he meets some of his old friends. Just as Choji agrees to help, Shikamaru, Choji, and Naruto are attacked by a Konoha shinobi unknown to them, Sai.",
+        voteAverage = 7.8f,
+        voteCount = 6,
+        duration = 23,
+        currentTime = 0L,
+        status = Status.TO_WATCH,
+        file = UserFile(
+            name = "naruto_shippuuden_S02E33.mkv",
+            addedDateTime = 0L,
+            path = "path/naruto_shippuuden_S02E33.mkv",
+            source = FileSource.LOCAL
+        )
+    )
+
+    val unknownArtwork = Artwork.UNKNOWN
+
+    val unknownEpisode = Episode(
+        file = UserFile(
+            name = "unknown episode S02E03.mkv",
+            addedDateTime = 0L,
+            path = "path/unknown_episode_S02E03.mkv",
+            source = FileSource.LOCAL
+        ),
+        duration = 23
+    )
+
+    val unknownMovie = Episode(
+        file = UserFile(
+            name = "unknown movie.mkv",
+            addedDateTime = 0L,
+            path = "path/unknown_movie.mkv",
+            source = FileSource.LOCAL
+        ),
+        duration = 95
+    )
+
+    val artworks = listOf(
+        movieArtwork,
+        showArtwork,
+        unknownArtwork
+    )
+
+    val movies = listOf(
+        movie
+    )
+
+    val episodes = listOf(
+        episode1,
+        episode2,
+        episode3
+    )
+
+    val episodesWithStatus = listOf(
+        episode1,
+        episode2.copy(status = Status.IS_WATCHING, currentTime = 10.minutes.inWholeMilliseconds),
+        episode3.copy(status = Status.WATCHED),
+    )
+
+    val unknowns = listOf(
+        unknownEpisode,
+        unknownMovie
+    )
+
+    val season1 = Season(
+        id = 1001L,
+        artworkId = 31910L,
+        title = "Season 1",
+        description = "The first season of Naruto Shippūden.",
+        imagePath = "/season1_image.jpg",
+        season = 1
+    )
+
+    val season2 = Season(
+        id = 1002L,
+        artworkId = 31910L,
+        title = "Season 2",
+        description = "The second season of Naruto Shippūden.",
+        imagePath = "/season2_image.jpg",
+        season = 2
+    )
+
+    val season3 = Season(
+        id = 1003L,
+        artworkId = 31910L,
+        title = "Season 3",
+        description = "The third season of Naruto Shippūden.",
+        imagePath = "/season3_image.jpg",
+        season = 3
+    )
+
+    val seasons = listOf(
+        season1,
+        season2,
+        season3
+    )
+
+    val allMedias = movies + episodes + unknowns
+
+    val fullMovie = FullArtwork.FullMovie(
+        resume = movieArtwork,
+        movie = movie
+    )
+
+    val fullShow = FullArtwork.FullShow(
+        resume = showArtwork,
+        seasons = seasons,
+        episodes = episodes
+    )
+
+}

@@ -25,8 +25,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.R
-import com.mskd.flux.shared.model.artwork.Episode
-import com.mskd.flux.shared.model.artwork.Media
+import com.mskd.flux.model.artwork.Episode
+import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.Ui
 

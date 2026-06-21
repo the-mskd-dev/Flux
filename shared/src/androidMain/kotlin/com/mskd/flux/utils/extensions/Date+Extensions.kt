@@ -1,6 +1,6 @@
 package com.mskd.flux.utils.extensions
 
-import com.mskd.flux.shared.utils.Trace
+import com.mskd.flux.utils.Trace
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.toJavaLocalDate
 import java.time.format.DateTimeFormatter

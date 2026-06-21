@@ -10,7 +10,6 @@ import coil3.compose.LocalAsyncImagePreviewHandler
 import coil3.imageLoader
 import coil3.request.ImageRequest
 import com.mskd.flux.R
-import com.mskd.flux.shared.utils.UiCommon
 import com.mskd.flux.ui.theme.AppTheme
 
 @Target(AnnotationTarget.ANNOTATION_CLASS, AnnotationTarget.FUNCTION)

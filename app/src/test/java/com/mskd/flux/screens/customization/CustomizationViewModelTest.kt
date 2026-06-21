@@ -3,8 +3,8 @@ package com.mskd.flux.screens.customization
 import android.app.Application
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
-import com.mskd.flux.shared.data.repository.customization.CustomizationRepository
-import com.mskd.flux.shared.utils.UiCommon
+import com.mskd.flux.data.repository.customization.CustomizationRepository
+import com.mskd.flux.utils.UiCommon
 import com.mskd.flux.ui.component.global.FluxOptionsDialogState
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe

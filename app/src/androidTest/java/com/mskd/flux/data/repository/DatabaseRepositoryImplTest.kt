@@ -5,11 +5,12 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import app.cash.turbine.test
-import com.mskd.flux.shared.data.repository.ddb.DatabaseRepositoryImpl
-import com.mskd.flux.shared.mockups.MediaMockups
-import com.mskd.flux.shared.model.artwork.Artwork
-import com.mskd.flux.shared.model.artwork.Episode
-import com.mskd.flux.shared.model.artwork.Season
+import com.mskd.flux.data.ddb.FluxDatabase
+import com.mskd.flux.data.repository.ddb.DatabaseRepositoryImpl
+import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.model.artwork.Artwork
+import com.mskd.flux.model.artwork.Episode
+import com.mskd.flux.model.artwork.Season
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert
@@ -21,7 +22,7 @@ import org.junit.runner.RunWith
 @MediumTest
 class DatabaseRepositoryImplTest {
 
-    private lateinit var database: com.mskd.flux.shared.data.ddb.FluxDatabase
+    private lateinit var database: FluxDatabase
     private lateinit var repository: DatabaseRepositoryImpl
 
     @Before
@@ -29,7 +30,7 @@ class DatabaseRepositoryImplTest {
         database =
                 Room.inMemoryDatabaseBuilder(
                                 ApplicationProvider.getApplicationContext(),
-                                _root_ide_package_.com.mskd.flux.shared.data.ddb.FluxDatabase::class.java
+                                FluxDatabase::class.java
                         )
                         .allowMainThreadQueries()
                         .build()

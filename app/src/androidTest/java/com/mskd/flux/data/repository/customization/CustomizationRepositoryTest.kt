@@ -6,9 +6,7 @@ import androidx.datastore.preferences.preferencesDataStoreFile
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.filters.MediumTest
 import app.cash.turbine.test
-import com.mskd.flux.shared.data.repository.customization.CustomizationRepository
-import com.mskd.flux.shared.data.repository.customization.CustomizationRepositoryImpl
-import com.mskd.flux.shared.utils.UiCommon
+import com.mskd.flux.utils.UiCommon
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher

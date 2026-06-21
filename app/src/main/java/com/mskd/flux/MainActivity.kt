@@ -33,9 +33,9 @@ import com.mskd.flux.screens.show.ShowScreen
 import com.mskd.flux.screens.token.TokenScreen
 import com.mskd.flux.screens.unknown.UnknownScreen
 import com.mskd.flux.screens.welcome.WelcomeScreen
-import com.mskd.flux.shared.data.repository.connectivity.ConnectivityRepository
-import com.mskd.flux.shared.data.repository.connectivity.LocalConnectivity
-import com.mskd.flux.shared.data.repository.customization.LocalCustomization
+import com.mskd.flux.data.repository.connectivity.ConnectivityRepository
+import com.mskd.flux.data.repository.connectivity.LocalConnectivity
+import com.mskd.flux.data.repository.customization.LocalCustomization
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.createColorScheme
 import com.mskd.flux.utils.extensions.popScreen

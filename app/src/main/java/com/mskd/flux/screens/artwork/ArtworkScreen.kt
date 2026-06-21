@@ -35,10 +35,10 @@ import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Route.Player
 import com.mskd.flux.screens.artwork.composables.ArtworkContentLarge
 import com.mskd.flux.screens.artwork.composables.ArtworkContentRegular
-import com.mskd.flux.shared.mockups.MediaMockups
-import com.mskd.flux.shared.model.State
-import com.mskd.flux.shared.model.artwork.FullArtwork
-import com.mskd.flux.shared.model.artwork.Media
+import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.model.State
+import com.mskd.flux.model.artwork.FullArtwork
+import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.component.global.ErrorScreen
 import com.mskd.flux.ui.component.global.FluxDialog

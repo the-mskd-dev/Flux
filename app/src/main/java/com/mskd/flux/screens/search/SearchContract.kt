@@ -1,8 +1,8 @@
 package com.mskd.flux.screens.search
 
 import androidx.compose.runtime.Immutable
-import com.mskd.flux.shared.model.artwork.Artwork
-import com.mskd.flux.shared.model.artwork.ContentType
+import com.mskd.flux.model.artwork.Artwork
+import com.mskd.flux.model.artwork.ContentType
 
 @Immutable
 data class SearchUIState(

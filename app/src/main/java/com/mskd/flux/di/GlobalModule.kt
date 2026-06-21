@@ -1,7 +1,7 @@
 package com.mskd.flux.di
 
 import com.mskd.flux.BuildConfig
-import com.mskd.flux.shared.model.AppInfo
+import com.mskd.flux.model.AppInfo
 import org.koin.dsl.module
 
 val globalModule = module {

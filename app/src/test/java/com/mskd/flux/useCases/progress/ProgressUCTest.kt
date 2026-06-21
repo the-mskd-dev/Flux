@@ -2,16 +2,16 @@ package com.mskd.flux.useCases.progress
 
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.mockups.mockkDatabaseRepository
-import com.mskd.flux.shared.data.repository.ddb.DatabaseRepository
-import com.mskd.flux.shared.data.repository.user.UserRepository
-import com.mskd.flux.shared.mockups.MediaMockups
-import com.mskd.flux.shared.model.Status
-import com.mskd.flux.shared.model.artwork.ContentType
-import com.mskd.flux.shared.model.artwork.Episode
-import com.mskd.flux.shared.model.artwork.Movie
-import com.mskd.flux.shared.utils.Constants
-import com.mskd.flux.shared.utils.extensions.lastEpisode
-import com.mskd.flux.shared.utils.extensions.minToMs
+import com.mskd.flux.data.repository.ddb.DatabaseRepository
+import com.mskd.flux.data.repository.user.UserRepository
+import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.model.Status
+import com.mskd.flux.model.artwork.ContentType
+import com.mskd.flux.model.artwork.Episode
+import com.mskd.flux.model.artwork.Movie
+import com.mskd.flux.utils.Constants
+import com.mskd.flux.utils.extensions.lastEpisode
+import com.mskd.flux.utils.extensions.minToMs
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData
 import io.mockk.coEvery

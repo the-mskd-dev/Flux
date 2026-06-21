@@ -9,12 +9,12 @@ import com.mskd.flux.di.moduleDatabaseAndroid
 import com.mskd.flux.di.moduleDatastoreAndroid
 import com.mskd.flux.di.moduleRepositoryAndroid
 import com.mskd.flux.di.playerModule
-import com.mskd.flux.di.useCasesModule
+import com.mskd.flux.di.ModuleUseCases
 import com.mskd.flux.di.viewModelsModule
-import com.mskd.flux.shared.di.moduleDatastore
-import com.mskd.flux.shared.di.moduleNetwork
-import com.mskd.flux.shared.di.moduleRepository
-import com.mskd.flux.shared.model.artwork.ContentType
+import com.mskd.flux.di.moduleDatastore
+import com.mskd.flux.di.moduleNetwork
+import com.mskd.flux.di.moduleRepository
+import com.mskd.flux.model.artwork.ContentType
 import io.kotest.core.spec.style.FunSpec
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.dsl.module
@@ -37,7 +37,7 @@ class KoinModulesTest : FunSpec({
             globalModule,
             imageModule,
             playerModule,
-            useCasesModule,
+            ModuleUseCases,
             viewModelsModule
         )
 

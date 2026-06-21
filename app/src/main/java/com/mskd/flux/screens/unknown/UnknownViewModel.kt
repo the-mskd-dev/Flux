@@ -2,13 +2,13 @@ package com.mskd.flux.screens.unknown
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mskd.flux.shared.data.repository.settings.SettingsRepository
-import com.mskd.flux.shared.model.ScreenState
-import com.mskd.flux.shared.model.State
-import com.mskd.flux.shared.model.artwork.Artwork
-import com.mskd.flux.shared.model.artwork.Episode
-import com.mskd.flux.shared.model.artwork.FullArtwork
-import com.mskd.flux.shared.model.artwork.Media
+import com.mskd.flux.data.repository.settings.SettingsRepository
+import com.mskd.flux.model.ScreenState
+import com.mskd.flux.model.State
+import com.mskd.flux.model.artwork.Artwork
+import com.mskd.flux.model.artwork.Episode
+import com.mskd.flux.model.artwork.FullArtwork
+import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.useCases.artwork.ArtworkUC
 import com.mskd.flux.useCases.progress.ProgressUC
 import kotlinx.coroutines.flow.MutableSharedFlow

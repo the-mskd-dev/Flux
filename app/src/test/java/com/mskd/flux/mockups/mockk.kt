@@ -1,12 +1,10 @@
 package com.mskd.flux.mockups
 
-import com.mskd.flux.shared.data.repository.ddb.DatabaseRepository
-import com.mskd.flux.shared.data.repository.files.FilesRepository
-import com.mskd.flux.shared.data.repository.settings.SettingsRepository
-import com.mskd.flux.shared.data.repository.snackbars.SnackbarRepository
-import com.mskd.flux.shared.mockups.FilesMockups
-import com.mskd.flux.shared.mockups.MediaMockups
-import com.mskd.flux.shared.model.UserFile
+import com.mskd.flux.data.repository.ddb.DatabaseRepository
+import com.mskd.flux.data.repository.files.FilesRepository
+import com.mskd.flux.data.repository.settings.SettingsRepository
+import com.mskd.flux.data.repository.snackbars.SnackbarRepository
+import com.mskd.flux.model.UserFile
 import com.mskd.flux.useCases.catalog.CatalogUC
 import com.mskd.flux.useCases.catalog.CatalogUC.State
 import com.mskd.flux.useCases.images.ImagesUC

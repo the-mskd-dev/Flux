@@ -143,12 +143,6 @@ dependencies {
     // Media Player
     implementation(libs.bundles.android.player)
 
-    // Image
-    implementation(libs.bundles.android.image)
-
-    // Koin
-    implementation(libs.bundles.android.di)
-
     // ACRA
     implementation(libs.bundles.android.acra)
 

@@ -2,8 +2,8 @@ package com.mskd.flux.model
 
 import android.net.Uri
 import androidx.core.net.toUri
-import com.mskd.flux.shared.mockups.FilesMockups
-import com.mskd.flux.shared.model.artwork.ContentType
+import com.mskd.flux.mockups.FilesMockups
+import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.utils.extensions.groupInFolders
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData

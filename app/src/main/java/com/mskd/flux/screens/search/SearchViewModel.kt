@@ -2,9 +2,9 @@ package com.mskd.flux.screens.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mskd.flux.shared.data.repository.settings.SettingsRepository
-import com.mskd.flux.shared.model.artwork.Artwork
-import com.mskd.flux.shared.model.artwork.ContentType
+import com.mskd.flux.data.repository.settings.SettingsRepository
+import com.mskd.flux.model.artwork.Artwork
+import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.useCases.catalog.CatalogUC
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow

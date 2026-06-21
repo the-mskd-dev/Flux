@@ -24,11 +24,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import com.mskd.flux.screens.player.PlayerIntent
 import com.mskd.flux.data.repository.customization.LocalCustomization
-import com.mskd.flux.utils.extensions.formatMinSec
+import com.mskd.flux.screens.player.PlayerIntent
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.utils.extensions.formatMinSec
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable

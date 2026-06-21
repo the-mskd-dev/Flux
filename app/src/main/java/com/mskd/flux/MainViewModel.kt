@@ -2,10 +2,10 @@ package com.mskd.flux
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mskd.flux.navigation.Route
 import com.mskd.flux.data.repository.customization.CustomizationRepository
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.data.repository.token.TokenRepository
+import com.mskd.flux.navigation.Route
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update

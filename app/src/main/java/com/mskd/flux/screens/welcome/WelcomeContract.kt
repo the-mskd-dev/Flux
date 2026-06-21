@@ -1,15 +1,21 @@
 package com.mskd.flux.screens.welcome
 
 import com.mskd.flux.R
+import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.presentation_1_description
+import flux.shared.generated.resources.presentation_1_title
+import flux.shared.generated.resources.presentation_2_description
+import flux.shared.generated.resources.presentation_2_title
+import org.jetbrains.compose.resources.StringResource
 
 data class WelcomeUiState(
     val pageIndex: Int = 0,
     val buttons: List<WelcomeButton> = listOf(WelcomeButton.NEXT),
 )
 
-enum class WelcomePage(val titleId: Int, val descriptionId: Int, val drawableId: Int) {
-    WELCOME(R.string.presentation_1_title, R.string.presentation_1_description, R.drawable.home_screen),
-    PERMISSIONS(R.string.presentation_2_title, R.string.presentation_2_description, R.drawable.artwork_screen);
+enum class WelcomePage(val titleId: StringResource, val descriptionId: StringResource, val drawableId: Int) {
+    WELCOME(Res.string.presentation_1_title, Res.string.presentation_1_description, R.drawable.home_screen),
+    PERMISSIONS(Res.string.presentation_2_title, Res.string.presentation_2_description, R.drawable.artwork_screen);
 
     companion object {
         val lastIndex = WelcomePage.entries.lastIndex

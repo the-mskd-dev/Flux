@@ -1,8 +1,8 @@
 package com.mskd.flux.screens.customization
 
 import androidx.compose.runtime.Immutable
-import com.mskd.flux.utils.UiCommon
 import com.mskd.flux.ui.component.global.FluxOptionsDialogState
+import com.mskd.flux.utils.UiCommon
 
 @Immutable
 data class CustomizationUiState(

@@ -14,10 +14,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.mskd.flux.R
 import com.mskd.flux.ui.theme.Ui
+import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.reset
+import flux.shared.generated.resources.reset_progress
+import flux.shared.generated.resources.reset_progress_confirmation
+import flux.shared.generated.resources.watched
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun ProgressStatusBar(
@@ -66,7 +70,7 @@ fun ProgressStatusChip(
         ) {
             Text.Label.Medium(
                 color = MaterialTheme.colorScheme.onTertiary,
-                text = stringResource(R.string.watched)
+                text = stringResource(Res.string.watched)
             )
         }
     }
@@ -80,13 +84,13 @@ fun ResetProgressDialog(
 ) {
 
     FluxDialog(
-        title = stringResource(R.string.reset_progress),
+        title = stringResource(Res.string.reset_progress),
         onDismiss = onDismiss,
-        onValidateLabel = stringResource(R.string.reset),
+        onValidateLabel = stringResource(Res.string.reset),
         onValidate = onValidate,
         content = {
             Text.Body.Large(
-                text = stringResource(R.string.reset_progress_confirmation)
+                text = stringResource(Res.string.reset_progress_confirmation)
             )
         }
     )

@@ -18,15 +18,20 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
-import com.mskd.flux.R
 import com.mskd.flux.ui.component.global.FluxDialog
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
+import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.acra_dialog_comment
+import flux.shared.generated.resources.acra_dialog_dismiss
+import flux.shared.generated.resources.acra_dialog_message
+import flux.shared.generated.resources.acra_dialog_send
+import flux.shared.generated.resources.acra_dialog_title
 import org.acra.dialog.CrashReportDialogHelper
+import org.jetbrains.compose.resources.stringResource
 
 class CrashDialogActivity : FragmentActivity() {
 
@@ -85,9 +90,9 @@ fun CrashDialogContent(
         FluxDialog(
             onDismiss = onDismiss,
             onValidate = { onSend(comment) },
-            title = stringResource(R.string.acra_dialog_title),
-            onDismissLabel = stringResource(R.string.acra_dialog_dismiss),
-            onValidateLabel = stringResource(R.string.acra_dialog_send)
+            title = stringResource(Res.string.acra_dialog_title),
+            onDismissLabel = stringResource(Res.string.acra_dialog_dismiss),
+            onValidateLabel = stringResource(Res.string.acra_dialog_send)
         ) {
 
             Column(
@@ -95,7 +100,7 @@ fun CrashDialogContent(
                 verticalArrangement = Arrangement.spacedBy(Ui.Space.medium)
             ) {
 
-                Text.Body.Large(stringResource(R.string.acra_dialog_message))
+                Text.Body.Large(stringResource(Res.string.acra_dialog_message))
 
                 OutlinedTextField(
                     modifier = Modifier
@@ -104,7 +109,7 @@ fun CrashDialogContent(
                     value = comment,
                     onValueChange = { comment = it },
                     placeholder = {
-                        Text.Body.Large(stringResource(R.string.acra_dialog_comment))
+                        Text.Body.Large(stringResource(Res.string.acra_dialog_comment))
                     },
                     textStyle = MaterialTheme.typography.bodyLarge
                 )

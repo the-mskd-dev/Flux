@@ -3,10 +3,10 @@ package com.mskd.flux.model.artwork
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.mskd.flux.model.UserFile
 import com.mskd.flux.model.tmdb.TMDBArtwork
 import com.mskd.flux.model.tmdb.TMDBMediaType
 import com.mskd.flux.model.tmdb.TMDBMovie
-import com.mskd.flux.model.UserFile
 import kotlinx.serialization.ExperimentalSerializationApi
 
 /**

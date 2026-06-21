@@ -43,21 +43,35 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.mskd.flux.R
 import com.mskd.flux.navigation.Route
-import com.mskd.flux.utils.Constants
 import com.mskd.flux.ui.component.global.FluxIconButton
 import com.mskd.flux.ui.component.global.FluxScaffold
 import com.mskd.flux.ui.component.global.FluxTextButton
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.buildLinkedString
+import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.api_token
+import flux.shared.generated.resources.log_in
+import flux.shared.generated.resources.sign_up
+import flux.shared.generated.resources.skip
+import flux.shared.generated.resources.tmdb
+import flux.shared.generated.resources.tmdb_api_token
+import flux.shared.generated.resources.token_desc_1
+import flux.shared.generated.resources.token_desc_2
+import flux.shared.generated.resources.token_desc_3
+import flux.shared.generated.resources.token_error
+import flux.shared.generated.resources.token_input
+import flux.shared.generated.resources.token_tutorial_step_1
+import flux.shared.generated.resources.token_tutorial_step_2
+import flux.shared.generated.resources.token_validated
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -99,7 +113,7 @@ fun TokenScreenContent(
 ) {
 
     FluxScaffold(
-        title = stringResource(R.string.tmdb_api_token),
+        title = stringResource(Res.string.tmdb_api_token),
         onBackTap = if (state.showBackButton) { { sendIntent(TokenIntent.OnBackTap) } } else null,
         floatingActionButton = {
 
@@ -110,7 +124,7 @@ fun TokenScreenContent(
             ) {
 
                 FluxTextButton(
-                    stringResource(R.string.skip),
+                    stringResource(Res.string.skip),
                     onTap = { sendIntent(TokenIntent.OnCancelTap) }
                 )
 
@@ -152,11 +166,11 @@ fun TokenScreenContent(
 
                     when (state.message) {
                         TokenMessage.Success -> Text.Label.Small(
-                            text = stringResource(R.string.token_validated),
+                            text = stringResource(Res.string.token_validated),
                             color = MaterialTheme.colorScheme.primary
                         )
                         TokenMessage.Error -> Text.Label.Small(
-                            text = stringResource(R.string.token_error),
+                            text = stringResource(Res.string.token_error),
                             color = MaterialTheme.colorScheme.error
                         )
                         TokenMessage.None -> {}
@@ -184,17 +198,17 @@ fun TokenDescription() {
 
         Text.Annotated(
             text = buildLinkedString(
-                template = stringResource(R.string.token_desc_1),
-                stringResource(R.string.tmdb) to Constants.TMDB.WEBSITE
+                template = stringResource(Res.string.token_desc_1),
+                stringResource(Res.string.tmdb) to Constants.TMDB.WEBSITE
             )
         )
 
         Text.Body.Large(
-            text = stringResource(R.string.token_desc_2)
+            text = stringResource(Res.string.token_desc_2)
         )
 
         Text.Body.Large(
-            text = stringResource(R.string.token_desc_3)
+            text = stringResource(Res.string.token_desc_3)
         )
 
     }
@@ -217,9 +231,9 @@ fun TokenTutorial() {
 
             Text.Annotated(
                 text = buildLinkedString(
-                    template = stringResource(R.string.token_tutorial_step_1),
-                    stringResource(R.string.log_in) to Constants.TMDB.LOG_IN,
-                    stringResource(R.string.sign_up) to Constants.TMDB.SIGN_UP,
+                    template = stringResource(Res.string.token_tutorial_step_1),
+                    stringResource(Res.string.log_in) to Constants.TMDB.LOG_IN,
+                    stringResource(Res.string.sign_up) to Constants.TMDB.SIGN_UP,
                 )
             )
 
@@ -231,8 +245,8 @@ fun TokenTutorial() {
 
             Text.Annotated(
                 text = buildLinkedString(
-                    template = stringResource(R.string.token_tutorial_step_2),
-                    stringResource(R.string.api_token) to Constants.TMDB.GET_API_TOKEN,
+                    template = stringResource(Res.string.token_tutorial_step_2),
+                    stringResource(Res.string.api_token) to Constants.TMDB.GET_API_TOKEN,
                 )
             )
 
@@ -282,7 +296,7 @@ fun TokenInput(
                 unfocusedIndicatorColor = Color.Transparent,
                 disabledIndicatorColor = Color.Transparent
             ),
-            placeholder = { Text(stringResource(R.string.token_input)) },
+            placeholder = { Text(stringResource(Res.string.token_input)) },
             trailingIcon = {
                 if (token.isNotEmpty()) {
                     IconButton(

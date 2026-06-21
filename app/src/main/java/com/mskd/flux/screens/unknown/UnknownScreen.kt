@@ -26,16 +26,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.mskd.flux.R
-import com.mskd.flux.navigation.Route
-import com.mskd.flux.navigation.Route.Player
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.ScreenState
 import com.mskd.flux.model.artwork.Episode
+import com.mskd.flux.navigation.Route
+import com.mskd.flux.navigation.Route.Player
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.component.global.ErrorScreen
 import com.mskd.flux.ui.component.global.FluxScaffold
@@ -47,7 +46,12 @@ import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.ExternalPlayer
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.rememberExternalPlayerLauncher
+import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.no_item
+import flux.shared.generated.resources.other_files
+import flux.shared.generated.resources.oups_an_error_occured
 import kotlinx.coroutines.flow.collectLatest
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -92,7 +96,7 @@ fun UnknownScreen(
             ScreenState.LOADING -> LoadingScreen()
             ScreenState.ERROR -> {
                 ErrorScreen(
-                    message = stringResource(R.string.oups_an_error_occured),
+                    message = stringResource(Res.string.oups_an_error_occured),
                     onBackButtonTap = { viewModel.handleIntent(UnknownIntent.OnBackTap) }
                 )
             }
@@ -130,7 +134,7 @@ fun UnknownScreenContent(
     }
 
     FluxScaffold(
-        title = stringResource(R.string.other_files),
+        title = stringResource(Res.string.other_files),
         onBackTap = { sendIntent(UnknownIntent.OnBackTap) },
         actions = {
             IconButton(onClick = { sendIntent(UnknownIntent.OnInfoTap) }) {
@@ -200,7 +204,7 @@ fun UnknownScreenContent(
                     modifier = Modifier
                         .align(Alignment.Center)
                         .fillMaxWidth(),
-                    text = stringResource(R.string.no_item),
+                    text = stringResource(Res.string.no_item),
                     textAlign = TextAlign.Center
                 )
 

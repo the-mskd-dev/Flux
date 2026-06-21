@@ -21,17 +21,20 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import com.mskd.flux.R
-import com.mskd.flux.screens.artwork.composables.common.ArtworkImageFull
-import com.mskd.flux.screens.show.ShowIntent
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.FullArtwork
+import com.mskd.flux.screens.artwork.composables.common.ArtworkImageFull
+import com.mskd.flux.screens.show.ShowIntent
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.component.media.OverviewItem
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.LandscapePreview
+import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.no_summary
+import flux.shared.generated.resources.seasons
+import flux.shared.generated.resources.summary
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun ShowContentLarge(
@@ -92,8 +95,8 @@ fun ShowContentLarge(
 
                 OverviewItem(
                     modifier = Modifier.padding(horizontal = Ui.Space.medium),
-                    title = stringResource(R.string.summary),
-                    description = fullShow.artwork.description.ifEmpty { stringResource(R.string.no_summary) },
+                    title = stringResource(Res.string.summary),
+                    description = fullShow.artwork.description.ifEmpty { stringResource(Res.string.no_summary) },
                 )
 
             }
@@ -108,7 +111,7 @@ fun ShowContentLarge(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = Ui.Space.medium),
-                    text = stringResource(R.string.seasons),
+                    text = stringResource(Res.string.seasons),
                     emphasized = true,
                     color = MaterialTheme.colorScheme.onBackground
                 )

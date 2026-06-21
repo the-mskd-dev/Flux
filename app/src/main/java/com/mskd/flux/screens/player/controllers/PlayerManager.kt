@@ -20,15 +20,17 @@ import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
-import com.mskd.flux.R
-import com.mskd.flux.services.PlayerService
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.player.PlayerTrack
+import com.mskd.flux.services.PlayerService
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.Trace
 import com.mskd.flux.utils.extensions.tmdbImage
 import com.mskd.flux.utils.extensions.uppercaseFirstLetter
+import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.season_and_episode
+import flux.shared.generated.resources.track
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -39,6 +41,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import org.jetbrains.compose.resources.getString
 import java.util.Locale
 import kotlin.math.roundToInt
 import kotlin.time.Duration.Companion.milliseconds
@@ -209,7 +213,7 @@ class PlayerManager(private val context: Context) : Player.Listener {
         return (newVolume * 100).roundToInt()
     }
 
-    fun playMedia(media: Media, subtitlesUri: Uri?) {
+    suspend fun playMedia(media: Media, subtitlesUri: Uri?) {
         val player = (_state.value as? State.Ready)?.player ?: return
 
         if (media.mediaId != currentMediaId) {
@@ -220,7 +224,7 @@ class PlayerManager(private val context: Context) : Player.Listener {
                 .apply {
                     (media as? Episode)?.let {
                         setArtworkUri(it.imagePath.tmdbImage.toUri())
-                        setSubtitle(context.getString(R.string.season_and_episode, it.season, it.number))
+                        setSubtitle(getString(Res.string.season_and_episode, it.season, it.number))
                     }
                 }
                 .build()
@@ -274,7 +278,7 @@ class PlayerManager(private val context: Context) : Player.Listener {
     override fun onTracksChanged(tracks: Tracks) {
         val current = _state.value as? State.Ready ?: return
 
-        val defaultLabel = context.getString(R.string.track)
+        val defaultLabel = runBlocking { getString(Res.string.track) }
 
         var selectedAudio: PlayerTrack? = current.selectedAudio
         var selectedSubtitles: PlayerTrack? = current.selectedSubtitles

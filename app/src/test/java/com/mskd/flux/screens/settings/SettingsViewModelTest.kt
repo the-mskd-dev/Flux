@@ -3,9 +3,9 @@ package com.mskd.flux.screens.settings
 import android.app.Application
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
+import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.mockups.mockkCatalogUC
 import com.mskd.flux.mockups.mockkImagesUC
-import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.ui.component.global.FluxOptionsDialogState
 import com.mskd.flux.useCases.catalog.CatalogUC
 import com.mskd.flux.useCases.images.ImagesUC
@@ -43,12 +43,7 @@ class SettingsViewModelTest : FunSpec({
 
         imagesUC = mockkImagesUC()
 
-        application = mockk(relaxed = true) {
-            every { getString(any()) } returns "System"
-        }
-
         viewModel = SettingsViewModel(
-            application = application,
             settingsRepository = settingsRepository,
             catalogUC = catalogUC,
             imagesUC = imagesUC

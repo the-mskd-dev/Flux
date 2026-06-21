@@ -16,9 +16,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.extensions.uppercaseFirstLetter
+import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun <T, R> FluxOptionsDialog(
@@ -85,7 +86,7 @@ fun <T, R> FluxOptionsDialog(
 }
 
 data class FluxOptionsDialogState<T, out R>(
-    val titleResId: Int,
+    val titleResId: StringResource,
     val currentValue: T,
     val options: List<FluxOptionsDialogItem<T>>,
     val applyValue: (T) -> R

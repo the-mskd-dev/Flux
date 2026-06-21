@@ -2,7 +2,6 @@ package com.mskd.flux.screens.token
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mskd.flux.BuildConfig
 import com.mskd.flux.data.repository.token.TokenRepository
 import com.mskd.flux.data.tmdb.TMDBService
 import com.mskd.flux.model.AppInfo

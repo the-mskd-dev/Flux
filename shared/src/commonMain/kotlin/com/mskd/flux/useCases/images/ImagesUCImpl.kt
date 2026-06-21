@@ -15,8 +15,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Semaphore
 import java.util.Collections
 import java.util.concurrent.atomic.AtomicInteger
-import kotlin.collections.forEach
-import kotlin.collections.ifEmpty
 
 class ImagesUCImpl(
     private val database: DatabaseRepository,

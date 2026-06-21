@@ -39,13 +39,12 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.mskd.flux.R
-import com.mskd.flux.navigation.Route
-import com.mskd.flux.navigation.Route.Artwork
-import com.mskd.flux.navigation.Route.Show
 import com.mskd.flux.data.repository.customization.LocalCustomization
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.ContentType
+import com.mskd.flux.navigation.Route
+import com.mskd.flux.navigation.Route.Artwork
+import com.mskd.flux.navigation.Route.Show
 import com.mskd.flux.ui.component.global.FluxScaffold
 import com.mskd.flux.ui.component.global.FluxSearchField
 import com.mskd.flux.ui.component.global.Text
@@ -55,7 +54,11 @@ import com.mskd.flux.utils.AppThemePreview
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.itemWidthFor
 import com.mskd.flux.utils.rememberScreenDimensions
+import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.movies
+import flux.shared.generated.resources.shows
 import kotlinx.coroutines.flow.collectLatest
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -211,7 +214,7 @@ fun SearchTypeFilters(
             onClick = { sendIntent(SearchIntent.FilterOnType(ContentType.MOVIE)) },
             label = {
                 Text.Label.Medium(
-                    text = stringResource(id = R.string.movies).uppercase(),
+                    text = stringResource(Res.string.movies).uppercase(),
                 )
             },
             selected = selectedType == ContentType.MOVIE,
@@ -230,7 +233,7 @@ fun SearchTypeFilters(
             onClick = { sendIntent(SearchIntent.FilterOnType(ContentType.SHOW)) },
             label = {
                 Text.Label.Medium(
-                    text = stringResource(id = R.string.shows).uppercase(),
+                    text = stringResource(Res.string.shows).uppercase(),
                 )
             },
             selected = selectedType == ContentType.SHOW,

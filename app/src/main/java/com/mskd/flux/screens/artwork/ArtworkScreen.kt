@@ -28,17 +28,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.R
-import com.mskd.flux.navigation.Route
-import com.mskd.flux.navigation.Route.Player
-import com.mskd.flux.screens.artwork.composables.ArtworkContentLarge
-import com.mskd.flux.screens.artwork.composables.ArtworkContentRegular
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.State
 import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.model.artwork.Media
+import com.mskd.flux.navigation.Route
+import com.mskd.flux.navigation.Route.Player
+import com.mskd.flux.screens.artwork.composables.ArtworkContentLarge
+import com.mskd.flux.screens.artwork.composables.ArtworkContentRegular
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.component.global.ErrorScreen
 import com.mskd.flux.ui.component.global.FluxDialog
@@ -53,6 +52,12 @@ import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.extensions.WebLink
 import com.mskd.flux.utils.rememberExternalPlayerLauncher
 import com.mskd.flux.utils.rememberScreenDimensions
+import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.mark_previous_episodes_as_watched
+import flux.shared.generated.resources.more_info
+import flux.shared.generated.resources.oups_an_error_occured
+import flux.shared.generated.resources.reset_progress
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -111,7 +116,7 @@ fun ArtworkScreen(
             State.Loading -> LoadingScreen()
             State.Error -> {
                 ErrorScreen(
-                    message = stringResource(R.string.oups_an_error_occured),
+                    message = stringResource(Res.string.oups_an_error_occured),
                     onBackButtonTap = { viewModel.handleIntent(ArtworkIntent.OnBackTap) }
                 )
             }
@@ -228,7 +233,7 @@ fun ArtworkScreenContent(
     if (dialog is ArtworkDialog.EpisodeStatusConfirmation) {
         FluxDialog(
             content = {
-                Text.Body.Large(text = stringResource(R.string.mark_previous_episodes_as_watched))
+                Text.Body.Large(text = stringResource(Res.string.mark_previous_episodes_as_watched))
             },
             onDismiss = { sendIntent(ArtworkIntent.CloseDialog) },
             onValidate = { sendIntent(ArtworkIntent.MarkPreviousEpisodesAsWatched) }
@@ -253,20 +258,20 @@ fun ArtworkDropDownMenu(
         onDismissRequest = onDismissRequest,
         items = listOf(
             FluxDropDownMenuItem(
-                text = stringResource(R.string.more_info),
+                text = stringResource(Res.string.more_info),
                 onClick = {
                     sendIntent(ArtworkIntent.OpenArtworkInfo)
                     onDismissRequest()
                 },
-                leadingIcon = { Icon(imageVector = Icons.Outlined.Info, contentDescription = stringResource(R.string.more_info)) },
+                leadingIcon = { Icon(imageVector = Icons.Outlined.Info, contentDescription = stringResource(Res.string.more_info)) },
             ),
             FluxDropDownMenuItem(
-                text = stringResource(R.string.reset_progress),
+                text = stringResource(Res.string.reset_progress),
                 onClick = {
                     sendIntent(ArtworkIntent.ShowResetProgressDialog)
                     onDismissRequest()
                 },
-                leadingIcon = { Icon(painter = painterResource(R.drawable.ic_eraser), contentDescription = stringResource(R.string.reset_progress)) },
+                leadingIcon = { Icon(painter = painterResource(R.drawable.ic_eraser), contentDescription = stringResource(Res.string.reset_progress)) },
             )
         )
     )

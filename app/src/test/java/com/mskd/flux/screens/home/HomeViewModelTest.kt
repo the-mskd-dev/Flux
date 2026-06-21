@@ -2,14 +2,14 @@ package com.mskd.flux.screens.home
 
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
-import com.mskd.flux.mockups.mockkCatalogUC
-import com.mskd.flux.mockups.mockkSnackbarRepository
 import com.mskd.flux.data.repository.snackbars.SnackbarRepository
 import com.mskd.flux.data.repository.user.UserRepository
-import com.mskd.flux.shared.data.tmdb.token.TokenRepository
 import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.mockups.mockkCatalogUC
+import com.mskd.flux.mockups.mockkSnackbarRepository
 import com.mskd.flux.model.AppInfo
 import com.mskd.flux.model.artwork.Artwork
+import com.mskd.flux.shared.data.tmdb.token.TokenRepository
 import com.mskd.flux.useCases.catalog.CatalogUC
 import com.mskd.flux.utils.FluxSnackbar
 import io.kotest.core.spec.style.FunSpec

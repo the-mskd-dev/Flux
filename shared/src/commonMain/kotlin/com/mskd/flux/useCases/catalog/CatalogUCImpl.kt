@@ -36,8 +36,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withContext
 import java.util.concurrent.atomic.AtomicInteger
-import kotlin.collections.chunked
-import kotlin.collections.map
 
 class CatalogUCImpl(
     private val tmdb: TmdbRepository,

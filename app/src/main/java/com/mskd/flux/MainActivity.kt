@@ -19,6 +19,9 @@ import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
+import com.mskd.flux.data.repository.connectivity.ConnectivityRepository
+import com.mskd.flux.data.repository.connectivity.LocalConnectivity
+import com.mskd.flux.data.repository.customization.LocalCustomization
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Transition
 import com.mskd.flux.screens.about.AboutScreen
@@ -33,9 +36,6 @@ import com.mskd.flux.screens.show.ShowScreen
 import com.mskd.flux.screens.token.TokenScreen
 import com.mskd.flux.screens.unknown.UnknownScreen
 import com.mskd.flux.screens.welcome.WelcomeScreen
-import com.mskd.flux.data.repository.connectivity.ConnectivityRepository
-import com.mskd.flux.data.repository.connectivity.LocalConnectivity
-import com.mskd.flux.data.repository.customization.LocalCustomization
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.createColorScheme
 import com.mskd.flux.utils.extensions.popScreen

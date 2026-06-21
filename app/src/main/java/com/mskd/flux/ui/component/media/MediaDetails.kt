@@ -12,7 +12,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -21,14 +20,19 @@ import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
-import com.mskd.flux.utils.extensions.minToMs
-import com.mskd.flux.utils.extensions.timeDescription
-import com.mskd.flux.utils.extensions.toRating
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.extensions.formattedText
+import com.mskd.flux.utils.extensions.minToMs
 import com.mskd.flux.utils.extensions.releaseDate
+import com.mskd.flux.utils.extensions.timeDescription
+import com.mskd.flux.utils.extensions.toRating
+import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.episode
+import flux.shared.generated.resources.season
+import flux.shared.generated.resources.season_and_episode
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun MediaDetailsHorizontal(media: Media) {
@@ -53,9 +57,9 @@ fun MediaDetailsVertical(media: Media) {
         if (media is Episode && media.isUnknown) {
 
             val seasonAndEpisode = when {
-                (media.season >= 0 && media.number >= 0) -> stringResource(R.string.season_and_episode, media.season, media.number)
-                media.season >= 0 -> stringResource(R.string.season, media.season)
-                media.number >= 0 -> stringResource(R.string.episode, media.number)
+                (media.season >= 0 && media.number >= 0) -> stringResource(Res.string.season_and_episode, media.season, media.number)
+                media.season >= 0 -> stringResource(Res.string.season, media.season)
+                media.number >= 0 -> stringResource(Res.string.episode, media.number)
                 else -> null
             }
 

@@ -5,8 +5,8 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import app.cash.turbine.test
-import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.Season
 import kotlinx.coroutines.test.runTest
 import org.junit.After

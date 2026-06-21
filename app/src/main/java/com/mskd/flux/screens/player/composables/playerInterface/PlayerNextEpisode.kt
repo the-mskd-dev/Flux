@@ -28,17 +28,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.mskd.flux.R
+import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.screens.player.PlayerIntent
 import com.mskd.flux.screens.player.PlayerUiContent
-import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.ui.component.global.CountDownButton
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.FluxPreview
+import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.next_episode
+import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -102,7 +103,7 @@ fun PlayerNextEpisode(
 
             CountDownButton(
                 onTap = { episode?.let { sendIntent(PlayerIntent.PlayNextEpisode(it)) } },
-                text = { stringResource(R.string.next_episode, it) }
+                text = { stringResource(Res.string.next_episode, it) }
             )
 
         }

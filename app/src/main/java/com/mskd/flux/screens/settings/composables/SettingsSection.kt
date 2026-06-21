@@ -14,15 +14,44 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.R
 import com.mskd.flux.screens.settings.SettingsIntent
 import com.mskd.flux.screens.settings.SettingsUiState
-import com.mskd.flux.utils.Constants
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.useCases.images.ImagesUC
+import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.extensions.WebLink
+import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.about
+import flux.shared.generated.resources.about_desc
+import flux.shared.generated.resources.app_version
+import flux.shared.generated.resources.auto_keyboard
+import flux.shared.generated.resources.auto_keyboard_desc
+import flux.shared.generated.resources.button_forward
+import flux.shared.generated.resources.button_rewind
+import flux.shared.generated.resources.cache_images
+import flux.shared.generated.resources.cache_images_desc
+import flux.shared.generated.resources.caching_images_in_progress
+import flux.shared.generated.resources.customization
+import flux.shared.generated.resources.customization_desc
+import flux.shared.generated.resources.external_player
+import flux.shared.generated.resources.how_to_name_files
+import flux.shared.generated.resources.images_cached
+import flux.shared.generated.resources.information_language
+import flux.shared.generated.resources.make_a_donation
+import flux.shared.generated.resources.picture_in_picture
+import flux.shared.generated.resources.sources
+import flux.shared.generated.resources.stay_informed
+import flux.shared.generated.resources.support_me_desc
+import flux.shared.generated.resources.sync_in_progress
+import flux.shared.generated.resources.sync_library
+import flux.shared.generated.resources.sync_library_desc
+import flux.shared.generated.resources.system
+import flux.shared.generated.resources.tmdb_api_token
+import flux.shared.generated.resources.watch_on_external_player
+import flux.shared.generated.resources.x
+import org.jetbrains.compose.resources.stringResource
 import kotlin.math.roundToInt
 
 @Composable
@@ -54,8 +83,8 @@ fun SettingsCustomizationSection(
     ) { iconColor, bgColor ->
 
         SettingsItem(
-            text = stringResource(R.string.customization),
-            subText = stringResource(R.string.customization_desc),
+            text = stringResource(Res.string.customization),
+            subText = stringResource(Res.string.customization_desc),
             painter = painterResource(R.drawable.ic_customization),
             iconColor = iconColor,
             iconBackgroundColor = bgColor,
@@ -63,8 +92,8 @@ fun SettingsCustomizationSection(
         )
 
         SettingsSwitch(
-            text = stringResource(R.string.auto_keyboard),
-            subText = stringResource(R.string.auto_keyboard_desc),
+            text = stringResource(Res.string.auto_keyboard),
+            subText = stringResource(Res.string.auto_keyboard_desc),
             checked = state.autoKeyboard,
             onCheckedChange = { sendIntent(SettingsIntent.OnAutoKeyboardCheck(it)) },
             painter = painterResource(R.drawable.ic_keyboard),
@@ -72,9 +101,9 @@ fun SettingsCustomizationSection(
             iconBackgroundColor = bgColor,
         )
 
-        val displayedLanguage = state.languageValue?.displayLanguage ?: stringResource(R.string.system)
+        val displayedLanguage = state.languageValue?.displayLanguage ?: stringResource(Res.string.system)
         SettingsItem(
-            text = stringResource(R.string.information_language),
+            text = stringResource(Res.string.information_language),
             subText = displayedLanguage,
             painter = painterResource(R.drawable.ic_language),
             iconColor = iconColor,
@@ -98,7 +127,7 @@ fun SettingsPlayerSection(
     ) { iconColor, bgColor ->
 
         SettingsItem(
-            text = stringResource(R.string.button_rewind),
+            text = stringResource(Res.string.button_rewind),
             subText = "${state.rewindValue}sec",
             painter = painterResource(R.drawable.fast_rewind),
             iconColor = iconColor,
@@ -107,7 +136,7 @@ fun SettingsPlayerSection(
         )
 
         SettingsItem(
-            text = stringResource(R.string.button_forward),
+            text = stringResource(Res.string.button_forward),
             subText = "${state.forwardValue}sec",
             painter = painterResource(R.drawable.fast_forward),
             iconColor = iconColor,
@@ -116,8 +145,8 @@ fun SettingsPlayerSection(
         )
 
         SettingsSwitch(
-            text = stringResource(R.string.external_player),
-            subText = stringResource(R.string.watch_on_external_player),
+            text = stringResource(Res.string.external_player),
+            subText = stringResource(Res.string.watch_on_external_player),
             checked = state.useExternalPlayer,
             painter = painterResource(R.drawable.ic_player),
             iconColor = iconColor,
@@ -126,7 +155,7 @@ fun SettingsPlayerSection(
         )
 
         SettingsSwitch(
-            text = stringResource(R.string.picture_in_picture),
+            text = stringResource(Res.string.picture_in_picture),
             checked = state.pipIsEnabled,
             painter = painterResource(R.drawable.ic_pip),
             iconColor = iconColor,
@@ -149,7 +178,7 @@ fun SettingsTmdbSection(
     ) { iconColor, bgColor ->
 
         SettingsItem(
-            text = stringResource(R.string.tmdb_api_token),
+            text = stringResource(Res.string.tmdb_api_token),
             subText = "",
             painter = painterResource(R.drawable.ic_api),
             iconColor = iconColor,
@@ -158,7 +187,7 @@ fun SettingsTmdbSection(
         )
 
         SettingsItem(
-            text = stringResource(R.string.how_to_name_files),
+            text = stringResource(Res.string.how_to_name_files),
             subText = "",
             painter = painterResource(R.drawable.ic_help),
             iconColor = iconColor,
@@ -182,8 +211,8 @@ fun SettingsOtherSection(
     ) { iconColor, bgColor ->
 
         SettingsItem(
-            text = stringResource(R.string.about),
-            subText = stringResource(R.string.about_desc),
+            text = stringResource(Res.string.about),
+            subText = stringResource(Res.string.about_desc),
             painter = painterResource(R.drawable.ic_info),
             iconColor = iconColor,
             iconBackgroundColor = bgColor,
@@ -191,8 +220,8 @@ fun SettingsOtherSection(
         )
 
         SettingsItem(
-            text = stringResource(R.string.make_a_donation),
-            subText = stringResource(R.string.support_me_desc),
+            text = stringResource(Res.string.make_a_donation),
+            subText = stringResource(Res.string.support_me_desc),
             painter = painterResource(R.drawable.ic_money),
             iconColor = iconColor,
             iconBackgroundColor = bgColor,
@@ -221,8 +250,8 @@ fun SettingsSyncSection(
 
         val syncTextColor by animateColorAsState(if (state.fullSyncInProgress) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onBackground.copy(alpha = .8f))
         SettingsItem(
-            text = stringResource(R.string.sync_library),
-            subText = stringResource(if (state.fullSyncInProgress) R.string.sync_in_progress else R.string.sync_library_desc),
+            text = stringResource(Res.string.sync_library),
+            subText = stringResource(if (state.fullSyncInProgress) Res.string.sync_in_progress else Res.string.sync_library_desc),
             valueColor = syncTextColor,
             painter = painterResource(R.drawable.ic_sync),
             iconColor = iconColor,
@@ -232,12 +261,12 @@ fun SettingsSyncSection(
 
         val imagesTextColor by animateColorAsState(if (state.prefetchImagesState is ImagesUC.State.InProgress) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onBackground.copy(alpha = .8f))
         val imagesText = when {
-            state.prefetchHdImages && state.prefetchImagesState is ImagesUC.State.Idle -> stringResource(R.string.images_cached)
-            state.prefetchHdImages && state.prefetchImagesState is ImagesUC.State.InProgress -> stringResource(R.string.caching_images_in_progress, state.prefetchImagesState.progress.times(100).roundToInt())
-            else -> stringResource(R.string.cache_images_desc)
+            state.prefetchHdImages && state.prefetchImagesState is ImagesUC.State.Idle -> stringResource(Res.string.images_cached)
+            state.prefetchHdImages && state.prefetchImagesState is ImagesUC.State.InProgress -> stringResource(Res.string.caching_images_in_progress, state.prefetchImagesState.progress.times(100).roundToInt())
+            else -> stringResource(Res.string.cache_images_desc)
         }
         SettingsSwitch(
-            text = stringResource(R.string.cache_images),
+            text = stringResource(Res.string.cache_images),
             subText = imagesText,
             checked = state.prefetchHdImages,
             onCheckedChange = { sendIntent(SettingsIntent.OnPrefetchHdImagesCheck(it)) },
@@ -263,8 +292,8 @@ fun SettingsAppInfoSection(
     ) { iconColor, bgColor ->
 
         SettingsItem(
-            text = stringResource(R.string.x),
-            subText = stringResource(R.string.stay_informed),
+            text = stringResource(Res.string.x),
+            subText = stringResource(Res.string.stay_informed),
             painter = painterResource(R.drawable.ic_social_media),
             iconColor = iconColor,
             iconBackgroundColor = bgColor,
@@ -277,7 +306,7 @@ fun SettingsAppInfoSection(
         )
 
         SettingsItem(
-            text = stringResource(R.string.sources),
+            text = stringResource(Res.string.sources),
             subText = "",
             painter = painterResource(R.drawable.ic_sources),
             iconColor = iconColor,
@@ -293,7 +322,7 @@ fun SettingsAppInfoSection(
         appVersion?.let {
 
             SettingsItem(
-                text = stringResource(R.string.app_version),
+                text = stringResource(Res.string.app_version),
                 subText = it,
                 painter = painterResource(R.drawable.ic_version),
                 iconColor = iconColor,

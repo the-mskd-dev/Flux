@@ -10,11 +10,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import com.mskd.flux.R
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.utils.FluxPreview
+import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.oups_an_error_occured
+import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,7 +56,7 @@ fun ErrorScreen(
 fun ErrorScreen_preview() {
     AppTheme {
         ErrorScreen(
-            message = stringResource(R.string.oups_an_error_occured),
+            message = stringResource(Res.string.oups_an_error_occured),
             onBackButtonTap = {}
         )
     }

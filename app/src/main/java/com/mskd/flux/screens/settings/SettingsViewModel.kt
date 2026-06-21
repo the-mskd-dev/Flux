@@ -1,14 +1,17 @@
 package com.mskd.flux.screens.settings
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mskd.flux.R
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.ui.component.global.FluxOptionsDialogItem
 import com.mskd.flux.ui.component.global.FluxOptionsDialogState
 import com.mskd.flux.useCases.catalog.CatalogUC
 import com.mskd.flux.useCases.images.ImagesUC
+import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.button_forward
+import flux.shared.generated.resources.button_rewind
+import flux.shared.generated.resources.information_language
+import flux.shared.generated.resources.system
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -18,18 +21,18 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.getString
 import java.util.Locale
 
 class SettingsViewModel(
-    application: Application,
     private val settingsRepository: SettingsRepository,
     private val catalogUC: CatalogUC,
     private val imagesUC: ImagesUC,
-) : AndroidViewModel(application) {
+) : ViewModel() {
 
     //region Variables
 
-    private val context = getApplication<Application>()
+
 
     private val _dialogState = MutableStateFlow<FluxOptionsDialogState<*, SettingsIntent>?>(null)
     private val _showFullSyncDialogState = MutableStateFlow(false)
@@ -104,14 +107,14 @@ class SettingsViewModel(
         _dialogState.update { null }
     }
 
-    private fun showLanguageDialog() {
+    private suspend fun showLanguageDialog() {
         val currentValue = uiState.value.languageValue
 
         val dialogState = FluxOptionsDialogState(
-            titleResId = R.string.information_language,
+            titleResId = Res.string.information_language,
             currentValue = currentValue,
             options = listOf(
-                FluxOptionsDialogItem(value = null, label = context.getString(R.string.system)),
+                FluxOptionsDialogItem(value = null, label = getString(Res.string.system)),
                 FluxOptionsDialogItem(value = Locale.ENGLISH, label = Locale.ENGLISH.displayLanguage),
                 FluxOptionsDialogItem(value = Locale.FRENCH, label = Locale.FRENCH.displayLanguage),
                 FluxOptionsDialogItem(value = Locale.GERMAN , label = Locale.GERMAN.displayLanguage),
@@ -136,7 +139,7 @@ class SettingsViewModel(
     private fun showRewindDialog() {
         val currentValue = uiState.value.rewindValue
         val dialogState = FluxOptionsDialogState(
-            titleResId = R.string.button_rewind,
+            titleResId = Res.string.button_rewind,
             currentValue = currentValue,
             options = listOf(
                 FluxOptionsDialogItem(value = 5, label = "5sec"),
@@ -157,7 +160,7 @@ class SettingsViewModel(
     private fun showForwardDialog() {
         val currentValue = uiState.value.forwardValue
         val dialogState = FluxOptionsDialogState(
-            titleResId = R.string.button_forward,
+            titleResId = Res.string.button_forward,
             currentValue = currentValue,
             options = listOf(
                 FluxOptionsDialogItem(value = 5, label = "5sec"),

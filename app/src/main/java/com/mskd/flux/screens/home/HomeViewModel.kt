@@ -2,17 +2,17 @@ package com.mskd.flux.screens.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mskd.flux.screens.home.HomeEvent.NavigateToCategory
-import com.mskd.flux.screens.home.HomeEvent.NavigateToMovie
 import com.mskd.flux.data.repository.snackbars.SnackbarRepository
 import com.mskd.flux.data.repository.token.TokenRepository
 import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.model.AppInfo
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.ContentType
-import com.mskd.flux.utils.Trace
+import com.mskd.flux.screens.home.HomeEvent.NavigateToCategory
+import com.mskd.flux.screens.home.HomeEvent.NavigateToMovie
 import com.mskd.flux.useCases.catalog.CatalogUC
 import com.mskd.flux.utils.FluxSnackbar
+import com.mskd.flux.utils.Trace
 import com.mskd.flux.utils.UpdateManager
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -6,7 +6,7 @@ import kotlinx.datetime.toJavaLocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-val LocalDate.formattedText: String? get() {
+actual val LocalDate.formattedText: String?get() {
     try {
         val formatter = DateTimeFormatter
             .ofLocalizedDate(java.time.format.FormatStyle.MEDIUM)

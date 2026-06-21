@@ -1,4 +1,4 @@
-package com.mskd.flux.utils.enums
+package com.mskd.flux.model.enums
 
 enum class Side {
     LEFT, RIGHT

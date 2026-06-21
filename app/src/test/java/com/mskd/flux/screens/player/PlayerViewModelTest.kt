@@ -3,10 +3,10 @@ package com.mskd.flux.screens.player
 import androidx.media3.common.Player
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
-import com.mskd.flux.shared.data.repository.files.FilesRepository
 import com.mskd.flux.mockups.FakeArtworkUC
 import com.mskd.flux.mockups.mockkFilesRepository
 import com.mskd.flux.screens.player.controllers.PlayerManager
+import com.mskd.flux.shared.data.repository.files.FilesRepository
 import com.mskd.flux.shared.data.repository.settings.SettingsRepository
 import com.mskd.flux.shared.mockups.MediaMockups
 import com.mskd.flux.shared.mockups.PlayerMockups

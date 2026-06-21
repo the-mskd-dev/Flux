@@ -2,9 +2,9 @@ package com.mskd.flux.di
 
 import androidx.room.RoomDatabase
 import com.mskd.flux.data.ddb.getDatabaseBuilder
+import com.mskd.flux.shared.data.ddb.FluxDatabase
 import com.mskd.flux.shared.data.repository.ddb.DatabaseRepository
 import com.mskd.flux.shared.data.repository.ddb.DatabaseRepositoryImpl
-import com.mskd.flux.shared.data.ddb.FluxDatabase
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind

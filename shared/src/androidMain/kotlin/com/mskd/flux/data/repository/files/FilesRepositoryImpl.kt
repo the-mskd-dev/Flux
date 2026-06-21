@@ -4,20 +4,18 @@ import android.content.ContentUris
 import android.content.Context
 import android.media.MediaMetadataRetriever
 import android.media.MediaScannerConnection
-import android.net.Uri
 import android.os.Environment
 import android.provider.MediaStore
-import android.util.Log
 import androidx.core.net.toUri
 import com.mskd.flux.shared.data.repository.files.FilesRepository
 import com.mskd.flux.shared.data.repository.user.UserRepository
 import com.mskd.flux.shared.model.FileSource
 import com.mskd.flux.shared.model.UserFile
+import com.mskd.flux.shared.utils.Trace
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import java.io.File
-import kotlin.collections.plusAssign
 import kotlin.coroutines.resume
 
 class FilesRepositoryImpl(
@@ -95,7 +93,7 @@ class FilesRepositoryImpl(
 
                     } catch (e: Exception) {
 
-                        Log.e(TAG, "Fail to get file", e)
+                        Trace.error(TAG, "Fail to get file", e)
 
                     }
 
@@ -107,9 +105,9 @@ class FilesRepositoryImpl(
 
         retriever.release()
 
-        Log.i(TAG, "Found ${files.size} files")
+        Trace.info(TAG, "Found ${files.size} files")
         files.forEach {
-            Log.i(TAG, it.name)
+            Trace.info(TAG, it.name)
         }
 
         return files
@@ -146,8 +144,8 @@ class FilesRepositoryImpl(
 
             val missingFiles = files - existingFiles.toSet()
             if (missingFiles.isNotEmpty()) {
-                Log.i(TAG, "$missingFiles file(s) not founded")
-                missingFiles.forEach { Log.i(TAG, it.name) }
+                Trace.info(TAG, "$missingFiles file(s) not founded")
+                missingFiles.forEach { Trace.info(TAG, it.name) }
             }
 
             existingFiles
@@ -187,7 +185,7 @@ class FilesRepositoryImpl(
             subtitleFile
 
         } catch (e: Exception) {
-            Log.e(TAG, "Fail to get subtitles for ${file.name}", e)
+            Trace.error(TAG, "Fail to get subtitles for ${file.name}", e)
             null
         }
 

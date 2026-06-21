@@ -1,6 +1,5 @@
 package com.mskd.flux.useCases.progress
 
-import android.util.Log
 import com.mskd.flux.shared.data.repository.ddb.DatabaseRepository
 import com.mskd.flux.shared.data.repository.user.UserRepository
 import com.mskd.flux.shared.model.Status
@@ -10,6 +9,7 @@ import com.mskd.flux.shared.model.artwork.Episode
 import com.mskd.flux.shared.model.artwork.Media
 import com.mskd.flux.shared.model.artwork.Movie
 import com.mskd.flux.shared.utils.Constants
+import com.mskd.flux.shared.utils.Trace
 import com.mskd.flux.shared.utils.extensions.getPreviousEpisodesFor
 import com.mskd.flux.shared.utils.extensions.lastEpisode
 import com.mskd.flux.shared.utils.extensions.timeDescription
@@ -70,7 +70,7 @@ class ProgressUCImpl(
             }
         }
 
-        Log.i(TAG, "${updatedMedia.title} saved at ${progress.timeDescription()}")
+        Trace.info(TAG, "${updatedMedia.title} saved at ${progress.timeDescription()}")
 
     }
 
@@ -107,7 +107,7 @@ class ProgressUCImpl(
 
         database.saveEpisodes(episodesToSave) // Save status in DB
 
-        Log.i(TAG, "${episodesToSave.size} episodes marked as watched")
+        Trace.info(TAG, "${episodesToSave.size} episodes marked as watched")
 
     }
 
@@ -155,7 +155,7 @@ class ProgressUCImpl(
 
         database.saveMovies(listOf(movieUpdated)) // Save status in DB
 
-        Log.i(TAG, "${movie.title} is now ${movie.status}")
+        Trace.info(TAG, "${movie.title} is now ${movie.status}")
 
     }
 
@@ -179,7 +179,7 @@ class ProgressUCImpl(
         }
 
 
-        Log.i(TAG, "${episode.title} season ${episode.season} episode ${episode.number} is now ${episode.status}")
+        Trace.info(TAG, "${episode.title} season ${episode.season} episode ${episode.number} is now ${episode.status}")
 
     }
 

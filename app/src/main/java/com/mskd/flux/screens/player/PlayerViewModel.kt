@@ -1,16 +1,15 @@
 package com.mskd.flux.screens.player
 
-import android.util.Log
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.text.Cue
-import com.mskd.flux.shared.data.repository.files.FilesRepository
 import com.mskd.flux.screens.player.PlayerUiContent.AmbientOverlay
 import com.mskd.flux.screens.player.PlayerUiContent.NextButton
 import com.mskd.flux.screens.player.PlayerUiContent.SeekOverlay
 import com.mskd.flux.screens.player.PlayerUiContent.SettingsSheet
 import com.mskd.flux.screens.player.controllers.PlayerManager
+import com.mskd.flux.shared.data.repository.files.FilesRepository
 import com.mskd.flux.shared.data.repository.settings.SettingsRepository
 import com.mskd.flux.shared.model.State
 import com.mskd.flux.shared.model.artwork.Episode
@@ -18,6 +17,7 @@ import com.mskd.flux.shared.model.artwork.FullArtwork
 import com.mskd.flux.shared.model.artwork.Media
 import com.mskd.flux.shared.model.player.PlayerTrack
 import com.mskd.flux.shared.model.player.PlayerTrack.Type
+import com.mskd.flux.shared.utils.Trace
 import com.mskd.flux.shared.utils.extensions.getNextEpisodeFor
 import com.mskd.flux.shared.utils.extensions.toPlayerTrack
 import com.mskd.flux.useCases.artwork.ArtworkUC
@@ -333,7 +333,7 @@ class PlayerViewModel(
 
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e("PlayerViewModel", "Locale not found for ${track.language}", e)
+            Trace.error("PlayerViewModel", "Locale not found for ${track.language}", e)
         }
     }
 

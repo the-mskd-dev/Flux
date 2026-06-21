@@ -3,7 +3,6 @@ package com.mskd.flux.utils
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
@@ -12,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.core.net.toUri
 import com.mskd.flux.services.ExternalPlayerService
 import com.mskd.flux.shared.model.artwork.Media
+import com.mskd.flux.shared.utils.Trace
 
 @Composable
 fun rememberExternalPlayerLauncher(context: Context, onProgressResult: (Long) -> Unit) : ManagedActivityResultLauncher<Intent, ActivityResult> {
@@ -39,9 +39,9 @@ object ExternalPlayer {
             launcher.launch(intent)
         } catch (e: Exception) {
             when (e) {
-                is ActivityNotFoundException -> Log.e("ExternalPlayer", "No player found", e)
-                is SecurityException -> Log.e("ExternalPlayer", "Permission denied", e)
-                else -> Log.e("ExternalPlayer", "Fail to launch external player", e)
+                is ActivityNotFoundException -> Trace.error("ExternalPlayer", "No player found", e)
+                is SecurityException -> Trace.error("ExternalPlayer", "Permission denied", e)
+                else -> Trace.error("ExternalPlayer", "Fail to launch external player", e)
             }
             ExternalPlayerService.stop(context)
             onError()

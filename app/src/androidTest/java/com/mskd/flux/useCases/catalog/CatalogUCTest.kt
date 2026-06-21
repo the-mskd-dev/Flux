@@ -3,12 +3,12 @@ package com.mskd.flux.useCases.catalog
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.mskd.flux.BuildConfig
+import com.mskd.flux.di.moduleDatastoreAndroid
 import com.mskd.flux.shared.data.repository.ddb.DatabaseRepository
 import com.mskd.flux.shared.data.repository.files.FilesRepository
+import com.mskd.flux.shared.data.repository.settings.SettingsRepository
 import com.mskd.flux.shared.data.repository.tmdb.TmdbRepository
 import com.mskd.flux.shared.data.repository.tmdb.TmdbRepositoryImpl
-import com.mskd.flux.di.moduleDatastoreAndroid
-import com.mskd.flux.shared.data.repository.settings.SettingsRepository
 import com.mskd.flux.shared.data.repository.token.TokenRepository
 import com.mskd.flux.shared.data.repository.user.UserRepository
 import com.mskd.flux.shared.data.tmdb.TMDBService

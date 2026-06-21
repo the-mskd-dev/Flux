@@ -1,6 +1,5 @@
 package com.mskd.flux.screens.home
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.screens.home.HomeEvent.NavigateToCategory
@@ -11,6 +10,7 @@ import com.mskd.flux.shared.data.repository.user.UserRepository
 import com.mskd.flux.shared.model.AppInfo
 import com.mskd.flux.shared.model.artwork.Artwork
 import com.mskd.flux.shared.model.artwork.ContentType
+import com.mskd.flux.shared.utils.Trace
 import com.mskd.flux.useCases.catalog.CatalogUC
 import com.mskd.flux.utils.FluxSnackbar
 import com.mskd.flux.utils.UpdateManager
@@ -111,7 +111,7 @@ class HomeViewModel(
 
         if (sync) {
 
-            Log.i("HomeViewModel", "syncCatalog, catalog sync requested")
+            Trace.info("HomeViewModel", "syncCatalog, catalog sync requested")
 
             val fullSyncNeeded = UpdateManager.fullSyncIsNeeded(
                 lastSyncVersionCode = lastSyncVersionCode,
@@ -123,7 +123,7 @@ class HomeViewModel(
         } else {
 
             catalogUC.cleanCatalog()
-            Log.i("HomeViewModel", "syncCatalog, catalog sync not needed")
+            Trace.info("HomeViewModel", "syncCatalog, catalog sync not needed")
 
         }
 

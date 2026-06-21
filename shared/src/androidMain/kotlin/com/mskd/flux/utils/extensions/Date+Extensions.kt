@@ -1,6 +1,6 @@
 package com.mskd.flux.utils.extensions
 
-import android.util.Log
+import com.mskd.flux.shared.utils.Trace
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.toJavaLocalDate
 import java.time.format.DateTimeFormatter
@@ -13,7 +13,7 @@ val LocalDate.formattedText: String? get() {
             .withLocale(Locale.getDefault())
         return this.toJavaLocalDate().format(formatter)
     } catch (e: Exception) {
-        Log.d("LocalDate", "Fail to format text for $this", e)
+        Trace.error("LocalDate", "Fail to format text for $this", e)
         return null
     }
 }

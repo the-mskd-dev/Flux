@@ -3,7 +3,6 @@ package com.mskd.flux.screens.player.controllers
 import android.content.ComponentName
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import androidx.core.net.toUri
 import androidx.media3.common.C
 import androidx.media3.common.Format
@@ -27,6 +26,7 @@ import com.mskd.flux.shared.model.artwork.Episode
 import com.mskd.flux.shared.model.artwork.Media
 import com.mskd.flux.shared.model.player.PlayerTrack
 import com.mskd.flux.shared.utils.Constants
+import com.mskd.flux.shared.utils.Trace
 import com.mskd.flux.utils.extensions.tmdbImage
 import com.mskd.flux.utils.extensions.uppercaseFirstLetter
 import kotlinx.coroutines.CoroutineScope
@@ -41,6 +41,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.util.Locale
 import kotlin.math.roundToInt
+import kotlin.time.Duration.Companion.milliseconds
 
 class PlayerManager(private val context: Context) : Player.Listener {
 
@@ -103,7 +104,7 @@ class PlayerManager(private val context: Context) : Player.Listener {
                 controller.addListener(this@PlayerManager)
                 _state.value = State.Ready(player = controller)
             } catch (e: Exception) {
-                Log.e("PlayerManager", "Failed to connect", e)
+                Trace.error(tag = "PlayerManager", message = "Failed to connect", throwable = e)
                 _state.value = State.Error
             }
         }, MoreExecutors.directExecutor())
@@ -407,7 +408,7 @@ class PlayerManager(private val context: Context) : Player.Listener {
             return false
 
         } catch (e: Exception) {
-            Log.e("PlayerStateHolder", "Fail to apply track", e)
+            Trace.error("PlayerStateHolder", "Fail to apply track", e)
             return false
         }
 
@@ -445,7 +446,7 @@ class PlayerManager(private val context: Context) : Player.Listener {
 
                 }
 
-                delay(1000)
+                delay(1000.milliseconds)
             }
         }
     }

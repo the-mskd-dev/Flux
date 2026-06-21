@@ -1,8 +1,8 @@
 package com.mskd.flux.utils.extensions
 
-import android.util.Log
 import com.mskd.flux.shared.model.artwork.Media
 import com.mskd.flux.shared.utils.Constants
+import com.mskd.flux.shared.utils.Trace
 import kotlinx.datetime.LocalDate
 import java.util.Locale
 
@@ -11,7 +11,7 @@ fun String.parseTMDBDate() : LocalDate? {
     return try {
         LocalDate.parse(this)
     } catch (e: Exception) {
-        Log.e("Date Parsing", "Fail to parse date : $this", e)
+        Trace.error("Date Parsing", "Fail to parse date : $this", e)
         null
     }
 

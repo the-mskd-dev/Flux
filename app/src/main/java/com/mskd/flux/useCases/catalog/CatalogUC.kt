@@ -2,13 +2,12 @@ package com.mskd.flux.useCases.catalog
 
 import android.content.Context
 import android.media.MediaMetadataRetriever
-import android.util.Log
 import androidx.core.net.toUri
 import com.mskd.flux.BuildConfig
 import com.mskd.flux.shared.data.repository.ddb.DatabaseRepository
 import com.mskd.flux.shared.data.repository.files.FilesRepository
-import com.mskd.flux.shared.data.repository.tmdb.TmdbRepository
 import com.mskd.flux.shared.data.repository.settings.SettingsRepository
+import com.mskd.flux.shared.data.repository.tmdb.TmdbRepository
 import com.mskd.flux.shared.data.repository.user.UserRepository
 import com.mskd.flux.shared.model.Catalog
 import com.mskd.flux.shared.model.Status
@@ -22,6 +21,7 @@ import com.mskd.flux.shared.model.artwork.Movie
 import com.mskd.flux.shared.model.artwork.Season
 import com.mskd.flux.shared.model.tmdb.TMDBEpisode
 import com.mskd.flux.shared.model.tmdb.TMDBTranslations
+import com.mskd.flux.shared.utils.Trace
 import com.mskd.flux.shared.utils.extensions.msToMin
 import com.mskd.flux.useCases.images.ImagesUC
 import com.mskd.flux.utils.extensions.groupInFolders
@@ -166,9 +166,9 @@ class CatalogUCImpl(
                 deviceFiles.filter { file -> dbFiles.none { it.name == file.name } }
             }
 
-            Log.d(TAG, "Found ${newFiles.size} new file(s)")
+            Trace.debug(TAG, "Found ${newFiles.size} new file(s)")
             newFiles.forEach {
-                Log.d(TAG, it.name)
+                Trace.debug(TAG, it.name)
             }
 
             if (newFiles.isEmpty()) {
@@ -255,12 +255,12 @@ class CatalogUCImpl(
         val (movies, seasonsAndTmdbEpisodes) = supervisorScope {
             val moviesDeferred = async {
                 runCatching { getMovies(artworkFolders = artworksFolders, updateProgress = updateProgress) }
-                    .onFailure { Log.e(TAG, "getMovies failed", it) }
+                    .onFailure { Trace.error(TAG, "getMovies failed", it) }
                     .getOrElse { emptyList() }
             }
             val seasonsAndTmdbEpisodesDeferred = async {
                 runCatching { getSeasonsAndTmdbEpisodes(artworkFolders = artworksFolders) }
-                    .onFailure { Log.e(TAG, "getSeasons failed", it) }
+                    .onFailure { Trace.error(TAG, "getSeasons failed", it) }
                     .getOrElse { emptyList() }
             }
 
@@ -458,7 +458,7 @@ class CatalogUCImpl(
 
         }
 
-        Log.i(TAG, "Apply progress on $count new media(s)")
+        Trace.info(TAG, "Apply progress on $count new media(s)")
 
         return Catalog(
             artworks = catalog.artworks,
@@ -498,7 +498,7 @@ class CatalogUCImpl(
                         )
 
                     } catch (e: Exception) {
-                        Log.e(TAG, "getArtworksFolders - Fail to get ArtworkFolder for ${folder.files.first().name}", e)
+                        Trace.error(TAG, "getArtworksFolders - Fail to get ArtworkFolder for ${folder.files.first().name}", e)
                         ArtworkFolder(
                             artwork = Artwork.UNKNOWN,
                             files = folder.files
@@ -513,7 +513,7 @@ class CatalogUCImpl(
 
         }
 
-        Log.i(TAG, "Found ${artworkFolders.size} artwork(s)")
+        Trace.info(TAG, "Found ${artworkFolders.size} artwork(s)")
 
         return artworkFolders
 
@@ -557,7 +557,7 @@ class CatalogUCImpl(
                         }
 
                     } catch (e: Exception) {
-                        Log.e(TAG, "[getMovies] Fail to get movie from ${files.first().name}", e)
+                        Trace.error(TAG, "[getMovies] Fail to get movie from ${files.first().name}", e)
                         null
                     } finally {
                         updateProgress()
@@ -569,7 +569,7 @@ class CatalogUCImpl(
 
         }
 
-        Log.i(TAG, "Found ${movies.size} movie(s)")
+        Trace.info(TAG, "Found ${movies.size} movie(s)")
 
         return movies
 
@@ -598,7 +598,7 @@ class CatalogUCImpl(
                                 }
 
                             } catch (e: Exception) {
-                                Log.e(
+                                Trace.error(
                                     TAG,
                                     "getSeasons - Fail to get season for artworkId ${artwork.id} - season $season",
                                     e
@@ -674,7 +674,7 @@ class CatalogUCImpl(
                             }
 
                         } catch (e: Exception) {
-                            Log.e(TAG, "[getEpisodes] Fail to get episode from ${file.name}", e)
+                            Trace.error(TAG, "[getEpisodes] Fail to get episode from ${file.name}", e)
                             null
                         } finally {
                             updateProgress()
@@ -688,7 +688,7 @@ class CatalogUCImpl(
 
         }
 
-        Log.i(TAG, "Found ${episodes.size} episode(s)")
+        Trace.info(TAG, "Found ${episodes.size} episode(s)")
 
         return episodes
 
@@ -699,7 +699,7 @@ class CatalogUCImpl(
      */
     private suspend fun createUnknownMedia(file: UserFile) : Episode = withContext(dispatcher) {
 
-        Log.i(TAG, "Create unknown media for ${file.name}")
+        Trace.info(TAG, "Create unknown media for ${file.name}")
 
         val duration = getFileDuration(file = file)
         Episode(file = file, duration = duration)
@@ -708,7 +708,7 @@ class CatalogUCImpl(
 
     private suspend fun getFileDuration(file: UserFile) : Int = withContext(dispatcher) {
 
-        Log.i(TAG, "Get duration for ${file.name}")
+        Trace.info(TAG, "Get duration for ${file.name}")
 
         val retriever = MediaMetadataRetriever()
 
@@ -724,7 +724,7 @@ class CatalogUCImpl(
 
         } catch (e: Exception) {
 
-            Log.e(TAG, "[getFileDuration] Fail to get duration for ${file.path}", e)
+            Trace.error(TAG, "[getFileDuration] Fail to get duration for ${file.path}", e)
             0
 
         } finally {

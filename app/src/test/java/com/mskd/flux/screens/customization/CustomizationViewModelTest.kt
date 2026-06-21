@@ -4,6 +4,10 @@ import android.app.Application
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.data.repository.customization.CustomizationRepository
+import com.mskd.flux.screen.customization.CustomizationDialog
+import com.mskd.flux.screen.customization.CustomizationEvent
+import com.mskd.flux.screen.customization.CustomizationIntent
+import com.mskd.flux.screen.customization.CustomizationViewModel
 import com.mskd.flux.ui.component.global.FluxOptionsDialogState
 import com.mskd.flux.utils.UiCommon
 import io.kotest.core.spec.style.FunSpec

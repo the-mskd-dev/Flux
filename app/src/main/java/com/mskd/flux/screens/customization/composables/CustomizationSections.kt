@@ -9,12 +9,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.mskd.flux.screens.customization.CustomizationIntent
-import com.mskd.flux.screens.customization.CustomizationUiState
+import com.mskd.flux.screen.customization.CustomizationIntent
+import com.mskd.flux.screen.customization.CustomizationUiState
 import com.mskd.flux.screens.settings.composables.SettingsItem
 import com.mskd.flux.screens.settings.composables.SettingsSection
 import com.mskd.flux.screens.settings.composables.SettingsSwitch
 import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.utils.UiCommon
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.accent_color
 import flux.shared.generated.resources.accent_color_desc
@@ -36,7 +37,7 @@ fun CustomizationThemeSection(
 
         SettingsItem(
             text = stringResource(Res.string.accent_color),
-            subText = stringResource(Ui.AccentColors.findColor(state.color)?.stringResId ?: Res.string.accent_color_desc),
+            subText = stringResource(UiCommon.AccentColors.findColor(state.color)?.stringResId ?: Res.string.accent_color_desc),
             onTap = { sendIntent(CustomizationIntent.ShowColorDialog) }
         )
 

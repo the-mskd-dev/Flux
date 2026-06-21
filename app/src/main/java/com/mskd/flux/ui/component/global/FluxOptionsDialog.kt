@@ -16,6 +16,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.mskd.flux.model.FluxOptionsDialogState
+import com.mskd.flux.screens.customization.composables.ColorItem
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.extensions.uppercaseFirstLetter
 import org.jetbrains.compose.resources.StringResource
@@ -63,7 +65,7 @@ fun <T, R> FluxOptionsDialog(
                             horizontalArrangement = Arrangement.spacedBy(Ui.Space.small)
                         ) {
 
-                            option.left?.invoke()
+                            ColorItem(option.color)
 
                             val value = option.label
                             Text.Body.Large(
@@ -84,16 +86,3 @@ fun <T, R> FluxOptionsDialog(
     )
 
 }
-
-data class FluxOptionsDialogState<T, out R>(
-    val titleResId: StringResource,
-    val currentValue: T,
-    val options: List<FluxOptionsDialogItem<T>>,
-    val applyValue: (T) -> R
-)
-
-data class FluxOptionsDialogItem<T>(
-    val value: T,
-    val label: String,
-    val left: @Composable (() -> Unit)? = null
-)

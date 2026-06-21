@@ -1,8 +1,7 @@
 package com.mskd.flux.di
 
 import com.mskd.flux.MainViewModel
-import com.mskd.flux.screen.artwork.ArtworkViewModel
-import com.mskd.flux.screens.customization.CustomizationViewModel
+import com.mskd.flux.screen.customization.CustomizationViewModel
 import com.mskd.flux.screens.home.HomeViewModel
 import com.mskd.flux.screens.player.PlayerViewModel
 import com.mskd.flux.screens.search.SearchViewModel
@@ -22,7 +21,6 @@ val moduleViewModelAndroid = module {
     viewModelOf(::UnknownViewModel)
     viewModelOf(::SettingsViewModel)
     viewModelOf(::WelcomeViewModel)
-    viewModelOf(::CustomizationViewModel)
 
     viewModel { params ->
         SearchViewModel(

@@ -16,6 +16,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.mskd.flux.screen.customization.CustomizationDialog
+import com.mskd.flux.screen.customization.CustomizationEvent
+import com.mskd.flux.screen.customization.CustomizationIntent
+import com.mskd.flux.screen.customization.CustomizationUiState
+import com.mskd.flux.screen.customization.CustomizationViewModel
 import com.mskd.flux.screens.customization.composables.CustomizationArtworkSection
 import com.mskd.flux.screens.customization.composables.CustomizationGlobalSection
 import com.mskd.flux.screens.customization.composables.CustomizationPlayerSection

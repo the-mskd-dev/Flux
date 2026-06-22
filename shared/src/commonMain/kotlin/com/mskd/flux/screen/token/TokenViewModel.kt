@@ -1,4 +1,4 @@
-package com.mskd.flux.screens.token
+package com.mskd.flux.screen.token
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

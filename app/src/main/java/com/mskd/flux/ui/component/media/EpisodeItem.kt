@@ -27,10 +27,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import com.mskd.flux.R
 import com.mskd.flux.data.repository.customization.LocalCustomization
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.Status
@@ -44,9 +42,16 @@ import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.AppThemePreview
 import com.mskd.flux.utils.PortraitPreview
 import com.mskd.flux.utils.extensions.minToMs
-import org.jetbrains.compose.resources.stringResource
-import flux.shared.generated.resources.*
+import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.ic_visibility
+import flux.shared.generated.resources.mark_as_not_watched
+import flux.shared.generated.resources.mark_as_watched
+import flux.shared.generated.resources.more_info
+import flux.shared.generated.resources.play
+import flux.shared.generated.resources.resume
+import flux.shared.generated.resources.rewatch
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun EpisodeItem(

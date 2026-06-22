@@ -2,13 +2,11 @@ package com.mskd.flux.utils
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -17,10 +15,8 @@ import coil3.compose.AsyncImagePreviewHandler
 import coil3.compose.LocalAsyncImagePreviewHandler
 import coil3.imageLoader
 import coil3.request.ImageRequest
-import com.mskd.flux.R
 import com.mskd.flux.ui.theme.AppTheme
 import flux.shared.generated.resources.Res
-import flux.shared.generated.resources.ic_customization
 import flux.shared.generated.resources.ic_help
 import flux.shared.generated.resources.preview_poster
 import org.jetbrains.compose.resources.painterResource

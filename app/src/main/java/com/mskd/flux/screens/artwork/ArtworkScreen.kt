@@ -27,9 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.mskd.flux.R
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.State
 import com.mskd.flux.model.artwork.FullArtwork
@@ -56,7 +54,12 @@ import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.extensions.WebLink
 import com.mskd.flux.utils.rememberExternalPlayerLauncher
 import com.mskd.flux.utils.rememberScreenDimensions
-import flux.shared.generated.resources.*
+import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.ic_eraser
+import flux.shared.generated.resources.mark_previous_episodes_as_watched
+import flux.shared.generated.resources.more_info
+import flux.shared.generated.resources.oups_an_error_occured
+import flux.shared.generated.resources.reset_progress
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel

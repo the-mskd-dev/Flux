@@ -13,9 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.mskd.flux.R
 import com.mskd.flux.screen.settings.SettingsIntent
 import com.mskd.flux.screen.settings.SettingsUiState
 import com.mskd.flux.ui.theme.Ui
@@ -36,8 +34,23 @@ import flux.shared.generated.resources.caching_images_in_progress
 import flux.shared.generated.resources.customization
 import flux.shared.generated.resources.customization_desc
 import flux.shared.generated.resources.external_player
+import flux.shared.generated.resources.fast_forward
+import flux.shared.generated.resources.fast_rewind
 import flux.shared.generated.resources.how_to_name_files
+import flux.shared.generated.resources.ic_api
 import flux.shared.generated.resources.ic_customization
+import flux.shared.generated.resources.ic_help
+import flux.shared.generated.resources.ic_images
+import flux.shared.generated.resources.ic_info
+import flux.shared.generated.resources.ic_keyboard
+import flux.shared.generated.resources.ic_language
+import flux.shared.generated.resources.ic_money
+import flux.shared.generated.resources.ic_pip
+import flux.shared.generated.resources.ic_player
+import flux.shared.generated.resources.ic_social_media
+import flux.shared.generated.resources.ic_sources
+import flux.shared.generated.resources.ic_sync
+import flux.shared.generated.resources.ic_version
 import flux.shared.generated.resources.images_cached
 import flux.shared.generated.resources.information_language
 import flux.shared.generated.resources.make_a_donation
@@ -55,8 +68,6 @@ import flux.shared.generated.resources.x
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import kotlin.math.roundToInt
-import flux.shared.generated.resources.*
-import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun SettingsSection(

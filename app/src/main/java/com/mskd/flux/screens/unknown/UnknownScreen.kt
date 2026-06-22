@@ -25,11 +25,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.mskd.flux.R
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.ScreenState
 import com.mskd.flux.model.artwork.Episode
@@ -50,14 +48,14 @@ import com.mskd.flux.utils.ExternalPlayer
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.rememberExternalPlayerLauncher
 import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.ic_help
 import flux.shared.generated.resources.no_item
 import flux.shared.generated.resources.other_files
 import flux.shared.generated.resources.oups_an_error_occured
 import kotlinx.coroutines.flow.collectLatest
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
-import flux.shared.generated.resources.*
-import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable

@@ -66,7 +66,6 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -92,9 +91,17 @@ import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxSnackbar
 import com.mskd.flux.utils.itemWidthFor
 import com.mskd.flux.utils.rememberScreenDimensions
-import flux.shared.generated.resources.*
-import org.jetbrains.compose.resources.painterResource
+import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.empty_catalog
+import flux.shared.generated.resources.empty_catalog_desc
+import flux.shared.generated.resources.ic_flux
+import flux.shared.generated.resources.movies
+import flux.shared.generated.resources.other_files
+import flux.shared.generated.resources.refresh
+import flux.shared.generated.resources.shows
+import flux.shared.generated.resources.sync_in_progress
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 

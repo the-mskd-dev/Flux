@@ -16,14 +16,20 @@ import androidx.compose.material3.MediumExtendedFloatingActionButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.mskd.flux.R
 import com.mskd.flux.screens.player.PlayerIntent
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.FluxPreview
-import flux.shared.generated.resources.*
+import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.ic_forward_10
+import flux.shared.generated.resources.ic_forward_30
+import flux.shared.generated.resources.ic_forward_5
+import flux.shared.generated.resources.ic_rewind_10
+import flux.shared.generated.resources.ic_rewind_30
+import flux.shared.generated.resources.ic_rewind_5
+import flux.shared.generated.resources.pause
+import flux.shared.generated.resources.play
 import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)

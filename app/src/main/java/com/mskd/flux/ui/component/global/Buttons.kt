@@ -36,23 +36,21 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.mskd.flux.R
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
 import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.ic_arrow_down
 import flux.shared.generated.resources.next_episode
 import flux.shared.generated.resources.read_less
 import flux.shared.generated.resources.read_more
 import kotlinx.coroutines.delay
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import kotlin.time.Duration.Companion.seconds
-import flux.shared.generated.resources.*
-import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable

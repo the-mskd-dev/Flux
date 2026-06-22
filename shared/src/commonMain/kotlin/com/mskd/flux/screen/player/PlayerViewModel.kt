@@ -1,9 +1,7 @@
 package com.mskd.flux.screen.player
 
-import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.media3.common.text.Cue
 import com.mskd.flux.data.repository.files.FilesRepository
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.model.State
@@ -63,7 +61,7 @@ class PlayerViewModel<out T, out R>(
 
     private var wasPlayingBeforeBackground = false
 
-    private val content get() = (uiState.value as? State.Content<T>)?.content
+    private val content get() = (uiState.value.state as? State.Content<PlayerUiContent<T>>)?.content
 
     //endregion
 
@@ -186,7 +184,6 @@ class PlayerViewModel<out T, out R>(
     }
 
     override fun onCleared() {
-        super.onCleared()
         playerManager.disconnect(sessionId = sessionId)
     }
 
@@ -209,7 +206,7 @@ class PlayerViewModel<out T, out R>(
         }
     }
 
-    private fun mergeStates(dataState: PlayerDataState, userState: PlayerUserState) : State<PlayerUiContent> {
+    private fun mergeStates(dataState: PlayerDataState<T>, userState: PlayerUserState) : State<PlayerUiContent<T>> {
         return State.Content(
             content = PlayerUiContent(
                 fullArtwork = dataState.fullArtwork,
@@ -260,7 +257,7 @@ class PlayerViewModel<out T, out R>(
         val subtitlesUri = filesRepository.getSubtitlesFor(file = media.file)
         playerManager.playMedia(
             media = media,
-            subtitlesUri = subtitlesUri?.toUri()
+            subtitlesPath = subtitlesUri?.absolutePath
         )
     }
 
@@ -413,7 +410,7 @@ class PlayerViewModel<out T, out R>(
         }
 
         seekResetJob = viewModelScope.launch {
-            delay(2000)
+            delay(1.seconds)
             _userState.update { it.copy(seekOverlay = null) }
         }
     }
@@ -426,7 +423,7 @@ class PlayerViewModel<out T, out R>(
         }
 
         ambientResetJob = viewModelScope.launch {
-            delay(1000)
+            delay(1.seconds)
             _userState.update {
                 it.copy(ambientOverlay = null)
             }

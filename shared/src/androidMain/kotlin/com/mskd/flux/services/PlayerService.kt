@@ -5,6 +5,7 @@ import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
+import com.mskd.flux.di.QualifiersAndroid
 import org.koin.android.scope.AndroidScopeComponent
 import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
@@ -15,7 +16,7 @@ class PlayerService : MediaSessionService(), AndroidScopeComponent {
     override val scope: Scope by lazy {
         KoinPlatformTools.defaultContext().get().createScope(
             scopeId = this.toString(),
-            qualifier = named("PlayerServiceScope")
+            qualifier = QualifiersAndroid.PLAYER_SERVICE_SCOPE
         )
     }
 

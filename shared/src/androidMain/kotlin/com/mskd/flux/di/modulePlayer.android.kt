@@ -5,11 +5,14 @@ import android.annotation.SuppressLint
 import androidx.annotation.OptIn
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.Player
+import androidx.media3.common.text.Cue
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.SeekParameters
 import com.mskd.flux.screen.player.AndroidPlayerManager
+import com.mskd.flux.screen.player.PlayerManager
+import com.mskd.flux.screen.player.PlayerViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModel
@@ -19,9 +22,7 @@ import org.koin.dsl.module
 
 val modulePlayer = module {
 
-    singleOf(::AndroidPlayerManager)
-
-    scope(named("PlayerServiceScope")) {
+    scope(QualifiersAndroid.PLAYER_SERVICE_SCOPE) {
 
         scoped<Player> {
             val context = androidContext()
@@ -43,8 +44,14 @@ val modulePlayer = module {
         }
     }
 
+    single<PlayerManager<Player, List<Cue>>> {
+        AndroidPlayerManager(
+            context = androidContext()
+        )
+    }
+
     viewModel { params ->
-        PlayerViewModel(
+        PlayerViewModel<Player, List<Cue>>(
             mediaId = params.get(),
             artworkUC = get(),
             settingsRepository = get(),

@@ -52,10 +52,8 @@ import com.mskd.flux.utils.AppThemePreview
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.extensions.WebLink
 import com.mskd.flux.utils.rememberScreenDimensions
-import flux.shared.generated.resources.Res
-import flux.shared.generated.resources.more_info
-import flux.shared.generated.resources.oups_an_error_occured
-import flux.shared.generated.resources.reset_progress
+import flux.shared.generated.resources.*
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -236,7 +234,7 @@ fun ShowDropDownMenu(
                     sendIntent(ShowIntent.ShowResetProgressDialog)
                     onDismissRequest()
                 },
-                leadingIcon = { Icon(painter = painterResource(R.drawable.ic_eraser), contentDescription = stringResource(Res.string.reset_progress)) },
+                leadingIcon = { Icon(painter = painterResource(Res.drawable.ic_eraser), contentDescription = stringResource(Res.string.reset_progress)) },
             )
         )
     )

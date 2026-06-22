@@ -36,6 +36,8 @@ import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.LandscapePreview
+import flux.shared.generated.resources.*
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun PlayerSeekOverlay(
@@ -63,7 +65,7 @@ fun PlayerSeekOverlay(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 PlayerSeekOverlayIcon(
-                    painter = painterResource(R.drawable.ic_rewind),
+                    painter = painterResource(Res.drawable.ic_rewind),
                     offsetX = { fullWidth -> fullWidth },
                     label = "Left arrow"
                 )
@@ -91,7 +93,7 @@ fun PlayerSeekOverlay(
             ) {
                 PlayerSeekOverlayText(amount = overlay?.amount?.let { "+$it" })
                 PlayerSeekOverlayIcon(
-                    painter = painterResource(R.drawable.ic_forward),
+                    painter = painterResource(Res.drawable.ic_forward),
                     offsetX = { fullWidth -> -fullWidth },
                     label = "Right arrow"
                 )

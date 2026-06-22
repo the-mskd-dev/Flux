@@ -92,14 +92,8 @@ import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxSnackbar
 import com.mskd.flux.utils.itemWidthFor
 import com.mskd.flux.utils.rememberScreenDimensions
-import flux.shared.generated.resources.Res
-import flux.shared.generated.resources.empty_catalog
-import flux.shared.generated.resources.empty_catalog_desc
-import flux.shared.generated.resources.movies
-import flux.shared.generated.resources.other_files
-import flux.shared.generated.resources.refresh
-import flux.shared.generated.resources.shows
-import flux.shared.generated.resources.sync_in_progress
+import flux.shared.generated.resources.*
+import org.jetbrains.compose.resources.painterResource
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -383,7 +377,7 @@ fun HomeTopButtons(sendIntent: (HomeIntent) -> Unit) {
 
         Icon(
             modifier = Modifier.size(32.dp),
-            painter = painterResource(R.drawable.ic_flux),
+            painter = painterResource(Res.drawable.ic_flux),
             tint = MaterialTheme.colorScheme.primary,
             contentDescription = "Flux icon"
         )

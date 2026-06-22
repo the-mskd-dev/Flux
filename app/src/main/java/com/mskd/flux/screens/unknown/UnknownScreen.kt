@@ -56,6 +56,8 @@ import flux.shared.generated.resources.oups_an_error_occured
 import kotlinx.coroutines.flow.collectLatest
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import flux.shared.generated.resources.*
+import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -142,7 +144,7 @@ fun UnknownScreenContent(
         actions = {
             IconButton(onClick = { sendIntent(UnknownIntent.OnInfoTap) }) {
                 Icon(
-                    painter = painterResource(R.drawable.ic_help),
+                    painter = painterResource(Res.drawable.ic_help),
                     contentDescription = "Help icon button"
                 )
             }

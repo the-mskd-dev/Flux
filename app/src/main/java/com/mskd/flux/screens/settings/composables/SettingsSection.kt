@@ -55,6 +55,8 @@ import flux.shared.generated.resources.x
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import kotlin.math.roundToInt
+import flux.shared.generated.resources.*
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun SettingsSection(
@@ -98,7 +100,7 @@ fun SettingsCustomizationSection(
             subText = stringResource(Res.string.auto_keyboard_desc),
             checked = state.autoKeyboard,
             onCheckedChange = { sendIntent(SettingsIntent.OnAutoKeyboardCheck(it)) },
-            painter = painterResource(R.drawable.ic_keyboard),
+            painter = painterResource(Res.drawable.ic_keyboard),
             iconColor = iconColor,
             iconBackgroundColor = bgColor,
         )
@@ -107,7 +109,7 @@ fun SettingsCustomizationSection(
         SettingsItem(
             text = stringResource(Res.string.information_language),
             subText = displayedLanguage,
-            painter = painterResource(R.drawable.ic_language),
+            painter = painterResource(Res.drawable.ic_language),
             iconColor = iconColor,
             iconBackgroundColor = bgColor,
             onTap = { sendIntent(SettingsIntent.ShowLanguageDialog) }
@@ -131,7 +133,7 @@ fun SettingsPlayerSection(
         SettingsItem(
             text = stringResource(Res.string.button_rewind),
             subText = "${state.rewindValue}sec",
-            painter = painterResource(R.drawable.fast_rewind),
+            painter = painterResource(Res.drawable.fast_rewind),
             iconColor = iconColor,
             iconBackgroundColor = bgColor,
             onTap = { sendIntent(SettingsIntent.ShowRewindDialog) }
@@ -140,7 +142,7 @@ fun SettingsPlayerSection(
         SettingsItem(
             text = stringResource(Res.string.button_forward),
             subText = "${state.forwardValue}sec",
-            painter = painterResource(R.drawable.fast_forward),
+            painter = painterResource(Res.drawable.fast_forward),
             iconColor = iconColor,
             iconBackgroundColor = bgColor,
             onTap = { sendIntent(SettingsIntent.ShowForwardDialog) }
@@ -150,7 +152,7 @@ fun SettingsPlayerSection(
             text = stringResource(Res.string.external_player),
             subText = stringResource(Res.string.watch_on_external_player),
             checked = state.useExternalPlayer,
-            painter = painterResource(R.drawable.ic_player),
+            painter = painterResource(Res.drawable.ic_player),
             iconColor = iconColor,
             iconBackgroundColor = bgColor,
             onCheckedChange = { sendIntent(SettingsIntent.OnExternalPlayerCheck(it)) }
@@ -159,7 +161,7 @@ fun SettingsPlayerSection(
         SettingsSwitch(
             text = stringResource(Res.string.picture_in_picture),
             checked = state.pipIsEnabled,
-            painter = painterResource(R.drawable.ic_pip),
+            painter = painterResource(Res.drawable.ic_pip),
             iconColor = iconColor,
             iconBackgroundColor = bgColor,
             onCheckedChange = { sendIntent(SettingsIntent.OnEnablePipCheck(it)) }
@@ -182,7 +184,7 @@ fun SettingsTmdbSection(
         SettingsItem(
             text = stringResource(Res.string.tmdb_api_token),
             subText = "",
-            painter = painterResource(R.drawable.ic_api),
+            painter = painterResource(Res.drawable.ic_api),
             iconColor = iconColor,
             iconBackgroundColor = bgColor,
             onTap = { sendIntent(SettingsIntent.OnTokenTap) }
@@ -191,7 +193,7 @@ fun SettingsTmdbSection(
         SettingsItem(
             text = stringResource(Res.string.how_to_name_files),
             subText = "",
-            painter = painterResource(R.drawable.ic_help),
+            painter = painterResource(Res.drawable.ic_help),
             iconColor = iconColor,
             iconBackgroundColor = bgColor,
             onTap = { sendIntent(SettingsIntent.OnHowToTap) }
@@ -215,7 +217,7 @@ fun SettingsOtherSection(
         SettingsItem(
             text = stringResource(Res.string.about),
             subText = stringResource(Res.string.about_desc),
-            painter = painterResource(R.drawable.ic_info),
+            painter = painterResource(Res.drawable.ic_info),
             iconColor = iconColor,
             iconBackgroundColor = bgColor,
             onTap = { sendIntent(SettingsIntent.OnAboutTap) }
@@ -224,7 +226,7 @@ fun SettingsOtherSection(
         SettingsItem(
             text = stringResource(Res.string.make_a_donation),
             subText = stringResource(Res.string.support_me_desc),
-            painter = painterResource(R.drawable.ic_money),
+            painter = painterResource(Res.drawable.ic_money),
             iconColor = iconColor,
             iconBackgroundColor = bgColor,
             onTap = {
@@ -255,7 +257,7 @@ fun SettingsSyncSection(
             text = stringResource(Res.string.sync_library),
             subText = stringResource(if (state.fullSyncInProgress) Res.string.sync_in_progress else Res.string.sync_library_desc),
             valueColor = syncTextColor,
-            painter = painterResource(R.drawable.ic_sync),
+            painter = painterResource(Res.drawable.ic_sync),
             iconColor = iconColor,
             iconBackgroundColor = bgColor,
             onTap = { sendIntent(SettingsIntent.ShowFullSyncDialog(true)) }
@@ -275,7 +277,7 @@ fun SettingsSyncSection(
             subText = imagesText,
             checked = state.prefetchHdImages,
             onCheckedChange = { sendIntent(SettingsIntent.OnPrefetchHdImagesCheck(it)) },
-            painter = painterResource(R.drawable.ic_images),
+            painter = painterResource(Res.drawable.ic_images),
             iconColor = iconColor,
             iconBackgroundColor = bgColor,
             subTextColor = imagesTextColor
@@ -299,7 +301,7 @@ fun SettingsAppInfoSection(
         SettingsItem(
             text = stringResource(Res.string.x),
             subText = stringResource(Res.string.stay_informed),
-            painter = painterResource(R.drawable.ic_social_media),
+            painter = painterResource(Res.drawable.ic_social_media),
             iconColor = iconColor,
             iconBackgroundColor = bgColor,
             onTap = {
@@ -313,7 +315,7 @@ fun SettingsAppInfoSection(
         SettingsItem(
             text = stringResource(Res.string.sources),
             subText = "",
-            painter = painterResource(R.drawable.ic_sources),
+            painter = painterResource(Res.drawable.ic_sources),
             iconColor = iconColor,
             iconBackgroundColor = bgColor,
             onTap = {
@@ -329,7 +331,7 @@ fun SettingsAppInfoSection(
             SettingsItem(
                 text = stringResource(Res.string.app_version),
                 subText = it,
-                painter = painterResource(R.drawable.ic_version),
+                painter = painterResource(Res.drawable.ic_version),
                 iconColor = iconColor,
                 iconBackgroundColor = bgColor,
                 onTap = {

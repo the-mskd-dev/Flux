@@ -44,14 +44,9 @@ import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.AppThemePreview
 import com.mskd.flux.utils.PortraitPreview
 import com.mskd.flux.utils.extensions.minToMs
-import flux.shared.generated.resources.Res
-import flux.shared.generated.resources.mark_as_not_watched
-import flux.shared.generated.resources.mark_as_watched
-import flux.shared.generated.resources.more_info
-import flux.shared.generated.resources.play
-import flux.shared.generated.resources.resume
-import flux.shared.generated.resources.rewatch
 import org.jetbrains.compose.resources.stringResource
+import flux.shared.generated.resources.*
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun EpisodeItem(
@@ -338,7 +333,7 @@ fun EpisodeDropDownMenu(
                 },
                 leadingIcon = {
                     if (episode.status == Status.WATCHED)
-                        Icon(painter = painterResource(R.drawable.ic_visibility), contentDescription = null)
+                        Icon(painter = painterResource(Res.drawable.ic_visibility), contentDescription = null)
                     else
                         Icon(imageVector = Icons.Default.Done, contentDescription = null)
                 },

@@ -28,10 +28,8 @@ import com.mskd.flux.utils.extensions.minToMs
 import com.mskd.flux.utils.extensions.releaseDate
 import com.mskd.flux.utils.extensions.timeDescription
 import com.mskd.flux.utils.extensions.toRating
-import flux.shared.generated.resources.Res
-import flux.shared.generated.resources.episode
-import flux.shared.generated.resources.season
-import flux.shared.generated.resources.season_and_episode
+import flux.shared.generated.resources.*
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -84,7 +82,7 @@ fun MediaDetailsItems(media: Media) {
     media.releaseDate?.formattedText?.let {
 
         MediaDetailItem(
-            painter = painterResource(R.drawable.ic_date),
+            painter = painterResource(Res.drawable.ic_date),
             text = it,
             contentDescription = "release date icon"
         )
@@ -92,7 +90,7 @@ fun MediaDetailsItems(media: Media) {
     }
 
     MediaDetailItem(
-        painter = painterResource(R.drawable.ic_time),
+        painter = painterResource(Res.drawable.ic_time),
         text = media.duration.minToMs.timeDescription(),
         contentDescription = "duration icon"
     )
@@ -101,7 +99,7 @@ fun MediaDetailsItems(media: Media) {
     if (media.artworkId != Artwork.UNKNOWN_ID) {
 
         MediaDetailItem(
-            painter = painterResource(R.drawable.ic_rating),
+            painter = painterResource(Res.drawable.ic_rating),
             text = "${media.voteAverage.toRating}/10",
             contentDescription = "rating icon"
         )

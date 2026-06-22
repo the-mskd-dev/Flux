@@ -51,6 +51,8 @@ import flux.shared.generated.resources.read_more
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.stringResource
 import kotlin.time.Duration.Companion.seconds
+import flux.shared.generated.resources.*
+import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -260,7 +262,7 @@ fun ReadMoreButton(
         onClick = onTap
     ) {
         Icon(
-            painter = painterResource(R.drawable.ic_arrow_down),
+            painter = painterResource(Res.drawable.ic_arrow_down),
             tint = MaterialTheme.colorScheme.primary,
             contentDescription = stringResource(if (isExpanded) Res.string.read_less else Res.string.read_more)
         )

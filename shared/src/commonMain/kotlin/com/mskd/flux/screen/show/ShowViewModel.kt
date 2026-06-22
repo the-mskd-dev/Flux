@@ -1,4 +1,4 @@
-package com.mskd.flux.screens.show
+package com.mskd.flux.screen.show
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -21,7 +21,6 @@ import kotlinx.coroutines.launch
 class ShowViewModel(
     private val artworkId: Long,
     private val artworkUC: ArtworkUC,
-    private val settingsRepository: SettingsRepository,
     private val progressUC: ProgressUC
 ) : ViewModel() {
 

@@ -8,6 +8,11 @@ import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.mockkProgressUC
 import com.mskd.flux.model.State
 import com.mskd.flux.model.artwork.ContentType
+import com.mskd.flux.screen.show.ShowContent
+import com.mskd.flux.screen.show.ShowDialog
+import com.mskd.flux.screen.show.ShowEvent
+import com.mskd.flux.screen.show.ShowIntent
+import com.mskd.flux.screen.show.ShowViewModel
 import com.mskd.flux.useCases.progress.ProgressUC
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe

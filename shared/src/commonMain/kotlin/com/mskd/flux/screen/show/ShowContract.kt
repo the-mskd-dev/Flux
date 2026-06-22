@@ -1,4 +1,4 @@
-package com.mskd.flux.screens.show
+package com.mskd.flux.screen.show
 
 import androidx.compose.runtime.Immutable
 import com.mskd.flux.model.State

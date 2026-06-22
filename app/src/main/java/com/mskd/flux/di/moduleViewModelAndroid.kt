@@ -2,8 +2,7 @@ package com.mskd.flux.di
 
 import com.mskd.flux.MainViewModel
 import com.mskd.flux.screens.player.PlayerViewModel
-import com.mskd.flux.screen.settings.SettingsViewModel
-import com.mskd.flux.screens.show.ShowViewModel
+import com.mskd.flux.screen.show.ShowViewModel
 import com.mskd.flux.screens.token.TokenViewModel
 import com.mskd.flux.screens.unknown.UnknownViewModel
 import com.mskd.flux.screens.welcome.WelcomeViewModel
@@ -16,15 +15,6 @@ val moduleViewModelAndroid = module {
     viewModelOf(::MainViewModel)
     viewModelOf(::UnknownViewModel)
     viewModelOf(::WelcomeViewModel)
-
-    viewModel { params ->
-        ShowViewModel(
-            artworkId = params.get(),
-            artworkUC = get(),
-            settingsRepository = get(),
-            progressUC = get(),
-        )
-    }
 
     viewModel { params ->
         PlayerViewModel(

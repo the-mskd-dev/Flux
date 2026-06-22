@@ -27,7 +27,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun PlayerSideEffects(
-    viewModel: PlayerViewModel,
+    viewModel: PlayerViewModel<Any, Any>,
     windowStateHolder: WindowStateHolder,
     showInterface: Boolean,
     onBack: () -> Unit,

@@ -6,7 +6,7 @@ import com.mskd.flux.screen.player.PlayerUiContent
 
 @Composable
 fun PlayerSettings(
-    content: PlayerUiContent,
+    content: PlayerUiContent<Any>,
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
@@ -23,7 +23,7 @@ fun PlayerSettings(
                 tracks = content.tracks,
                 selectedAudio = content.selectedAudio,
                 selectedSubtitles = content.selectedSubtitles,
-                type = content.settingsSheet.type,
+                type = (content.settingsSheet as PlayerUiContent.SettingsSheet.Tracks).type,
                 sendIntent = sendIntent
             )
         }

@@ -90,10 +90,10 @@ data class PlayerUserState(
     val nextButton: PlayerUiContent.NextButton = PlayerUiContent.NextButton.Hidden,
 )
 
-sealed class PlayerScreen {
-    data object Loading : PlayerScreen()
-    data object Error : PlayerScreen()
-    data class Content(val player: Player, val media: Media) : PlayerScreen()
+sealed class PlayerScreenState {
+    data object Loading : PlayerScreenState()
+    data object Error : PlayerScreenState()
+    data class Content(val player: Player, val media: Media) : PlayerScreenState()
 }
 
 sealed class PlayerIntent {

@@ -29,7 +29,8 @@ import com.mskd.flux.screens.artwork.ArtworkScreen
 import com.mskd.flux.screens.customization.CustomizationScreen
 import com.mskd.flux.screens.home.HomeScreen
 import com.mskd.flux.screens.howTo.HowToScreen
-import com.mskd.flux.screen.player.PlayerScreen
+import com.mskd.flux.screen.player.PlayerScreenState
+import com.mskd.flux.screens.player.PlayerScreen
 import com.mskd.flux.screens.search.SearchScreen
 import com.mskd.flux.screens.settings.SettingsScreen
 import com.mskd.flux.screens.show.ShowScreen

@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
+import androidx.media3.common.Player
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.screen.player.PlayerIntent
 import com.mskd.flux.screen.player.PlayerUiContent
@@ -35,7 +36,7 @@ import com.mskd.flux.ui.theme.Ui
 fun PlayerInterface(
     modifier: Modifier = Modifier,
     media: Media,
-    content: PlayerUiContent,
+    content: PlayerUiContent<Any>,
     progress: () -> Long,
     sendIntent: (PlayerIntent) -> Unit
 ) {

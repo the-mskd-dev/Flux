@@ -11,18 +11,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
-import flux.shared.generated.resources.Res
-import flux.shared.generated.resources.color_blue
-import flux.shared.generated.resources.color_gray
-import flux.shared.generated.resources.color_green
-import flux.shared.generated.resources.color_magenta
-import flux.shared.generated.resources.color_red
-import flux.shared.generated.resources.color_yellow
-import flux.shared.generated.resources.system
-import org.jetbrains.compose.resources.StringResource
 
 object Ui {
 

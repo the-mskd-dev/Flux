@@ -9,9 +9,11 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.SeekParameters
+import com.mskd.flux.screens.player.PlayerViewModel
 import com.mskd.flux.screens.player.controllers.PlayerManager
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.singleOf
+import org.koin.core.module.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
@@ -39,6 +41,18 @@ val modulePlayer = module {
                     setSeekParameters(SeekParameters.CLOSEST_SYNC)
                 }
         }
+    }
+
+    viewModel { params ->
+        PlayerViewModel(
+            mediaId = params.get(),
+            artworkUC = get(),
+            settingsRepository = get(),
+            filesRepository = get(),
+            playerManager = get(),
+            progressUC = get(),
+            pipIsEnabledUC = get()
+        )
     }
 
 

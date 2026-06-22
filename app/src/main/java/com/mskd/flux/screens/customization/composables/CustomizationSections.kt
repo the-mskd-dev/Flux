@@ -14,7 +14,6 @@ import com.mskd.flux.screen.customization.CustomizationUiState
 import com.mskd.flux.screens.settings.composables.SettingsItem
 import com.mskd.flux.screens.settings.composables.SettingsSection
 import com.mskd.flux.screens.settings.composables.SettingsSwitch
-import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.UiCommon
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.accent_color

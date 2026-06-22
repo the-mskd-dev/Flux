@@ -5,6 +5,7 @@ import android.content.Context
 import coil3.ImageLoader
 import coil3.SingletonImageLoader
 import com.mskd.flux.di.Properties
+import com.mskd.flux.di.moduleAndroidApp
 import com.mskd.flux.di.moduleCoroutine
 import com.mskd.flux.di.moduleDatabase
 import com.mskd.flux.di.moduleDatabaseAndroid
@@ -20,7 +21,6 @@ import com.mskd.flux.di.moduleRepositoryAndroid
 import com.mskd.flux.di.moduleUseCase
 import com.mskd.flux.di.moduleUseCaseAndroid
 import com.mskd.flux.di.moduleViewModel
-import com.mskd.flux.di.moduleViewModelAndroid
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.CrashDialogActivity
 import io.github.aakira.napier.DebugAntilog
@@ -81,7 +81,7 @@ class FluxApp : Application(), SingletonImageLoader.Factory {
                 moduleImagesAndroid,
 
                 moduleViewModel,
-                moduleViewModelAndroid,
+                moduleAndroidApp,
 
                 modulePlayer,
             )

@@ -20,7 +20,6 @@ import com.mskd.flux.model.FluxOptionsDialogState
 import com.mskd.flux.screens.customization.composables.ColorItem
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.extensions.uppercaseFirstLetter
-import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable

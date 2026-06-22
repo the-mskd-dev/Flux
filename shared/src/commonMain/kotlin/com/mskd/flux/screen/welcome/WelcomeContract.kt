@@ -1,4 +1,4 @@
-package com.mskd.flux.screens.welcome
+package com.mskd.flux.screen.welcome
 
 import com.mskd.flux.R
 import flux.shared.generated.resources.Res
@@ -18,7 +18,7 @@ enum class WelcomePage(val titleId: StringResource, val descriptionId: StringRes
     PERMISSIONS(Res.string.presentation_2_title, Res.string.presentation_2_description, R.drawable.artwork_screen);
 
     companion object {
-        val lastIndex = WelcomePage.entries.lastIndex
+        val lastIndex = entries.lastIndex
     }
 }
 

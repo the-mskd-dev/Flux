@@ -1,4 +1,4 @@
-package com.mskd.flux.screens.welcome
+package com.mskd.flux.screen.welcome
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

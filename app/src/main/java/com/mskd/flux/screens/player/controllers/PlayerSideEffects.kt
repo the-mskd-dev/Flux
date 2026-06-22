@@ -15,6 +15,7 @@ import androidx.core.util.Consumer
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.media3.common.Player
 import com.mskd.flux.MainActivity
 import com.mskd.flux.screen.player.PlayerEvent
 import com.mskd.flux.screen.player.PlayerIntent
@@ -27,7 +28,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun PlayerSideEffects(
-    viewModel: PlayerViewModel<Any, Any>,
+    viewModel: PlayerViewModel<Player>,
     windowStateHolder: WindowStateHolder,
     showInterface: Boolean,
     onBack: () -> Unit,

@@ -41,14 +41,14 @@ val modulePlayerAndroid = module {
         }
     }
 
-    single<PlayerManager<Player, List<Cue>>> {
+    factory<PlayerManager<Player>> {
         AndroidPlayerManager(
             context = androidContext()
         )
     }
 
     viewModel { params ->
-        PlayerViewModel<Player, List<Cue>>(
+        PlayerViewModel<Player>(
             mediaId = params.get(),
             artworkUC = get(),
             settingsRepository = get(),

@@ -11,6 +11,8 @@ import coil3.imageLoader
 import coil3.request.ImageRequest
 import com.mskd.flux.R
 import com.mskd.flux.ui.theme.AppTheme
+import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.preview_poster
 
 @Target(AnnotationTarget.ANNOTATION_CLASS, AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.BINARY)
@@ -83,7 +85,7 @@ fun AppThemePreview(
     val previewHandler = AsyncImagePreviewHandler { request ->
         request.context.imageLoader.execute(
             ImageRequest.Builder(request.context)
-                .data(R.drawable.preview_poster)
+                .data(Res.drawable.preview_poster)
                 .build()
         ).image!!
     }

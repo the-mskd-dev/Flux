@@ -33,7 +33,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.layoutId
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.util.lerp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
@@ -57,6 +56,8 @@ import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.storagePermissionState
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.give_permission
+import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.math.absoluteValue
@@ -122,7 +123,7 @@ fun WelcomeScreenContent(
 
         WelcomeBackground(
             modifier = Modifier.layoutId("background"),
-            drawableId = WelcomePage.entries[uiState.pageIndex].drawableId
+            drawable = WelcomePage.entries[uiState.pageIndex].drawableId
         )
 
         WelcomePager(
@@ -205,7 +206,7 @@ fun WelcomePager(
 @Composable
 fun WelcomeBackground(
     modifier: Modifier,
-    drawableId: Int
+    drawable: DrawableResource
 ) {
 
     Box(
@@ -215,7 +216,7 @@ fun WelcomeBackground(
 
         AnimatedContent(
             modifier = Modifier.fillMaxSize(),
-            targetState = drawableId,
+            targetState = drawable,
             transitionSpec = { (fadeIn()  + scaleIn(initialScale = 0.92f)) togetherWith fadeOut() },
             label = "background animation"
         ) { id ->

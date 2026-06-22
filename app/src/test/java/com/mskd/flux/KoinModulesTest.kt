@@ -11,7 +11,7 @@ import com.mskd.flux.di.moduleDatabaseAndroid
 import com.mskd.flux.di.moduleDatastore
 import com.mskd.flux.di.moduleDatastoreAndroid
 import com.mskd.flux.di.moduleNetwork
-import com.mskd.flux.di.modulePlayer
+import com.mskd.flux.di.modulePlayerAndroid
 import com.mskd.flux.di.moduleRepository
 import com.mskd.flux.di.moduleRepositoryAndroid
 import com.mskd.flux.model.artwork.ContentType
@@ -36,7 +36,7 @@ class KoinModulesTest : FunSpec({
             moduleRepositoryAndroid,
             globalModule,
             imageModule,
-            modulePlayer,
+            modulePlayerAndroid,
             ModuleUseCases,
             moduleAndroidApp
         )

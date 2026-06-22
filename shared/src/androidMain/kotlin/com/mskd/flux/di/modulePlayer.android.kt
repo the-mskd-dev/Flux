@@ -1,7 +1,6 @@
 @file:OptIn(UnstableApi::class)
 package com.mskd.flux.di
 
-import android.annotation.SuppressLint
 import androidx.annotation.OptIn
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.Player
@@ -14,13 +13,11 @@ import com.mskd.flux.screen.player.AndroidPlayerManager
 import com.mskd.flux.screen.player.PlayerManager
 import com.mskd.flux.screen.player.PlayerViewModel
 import org.koin.android.ext.koin.androidContext
-import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModel
-import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 
-val modulePlayer = module {
+val modulePlayerAndroid = module {
 
     scope(QualifiersAndroid.PLAYER_SERVICE_SCOPE) {
 

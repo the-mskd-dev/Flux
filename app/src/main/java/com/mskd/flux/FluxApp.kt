@@ -15,7 +15,7 @@ import com.mskd.flux.di.moduleImages
 import com.mskd.flux.di.moduleImagesAndroid
 import com.mskd.flux.di.moduleNetwork
 import com.mskd.flux.di.modulePlatform
-import com.mskd.flux.di.modulePlayer
+import com.mskd.flux.di.modulePlayerAndroid
 import com.mskd.flux.di.moduleRepository
 import com.mskd.flux.di.moduleRepositoryAndroid
 import com.mskd.flux.di.moduleUseCase
@@ -83,7 +83,7 @@ class FluxApp : Application(), SingletonImageLoader.Factory {
                 moduleViewModel,
                 moduleAndroidApp,
 
-                modulePlayer,
+                modulePlayerAndroid,
             )
 
         }

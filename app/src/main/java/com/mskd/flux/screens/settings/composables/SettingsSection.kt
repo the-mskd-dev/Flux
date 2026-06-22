@@ -37,6 +37,7 @@ import flux.shared.generated.resources.customization
 import flux.shared.generated.resources.customization_desc
 import flux.shared.generated.resources.external_player
 import flux.shared.generated.resources.how_to_name_files
+import flux.shared.generated.resources.ic_customization
 import flux.shared.generated.resources.images_cached
 import flux.shared.generated.resources.information_language
 import flux.shared.generated.resources.make_a_donation
@@ -51,6 +52,7 @@ import flux.shared.generated.resources.system
 import flux.shared.generated.resources.tmdb_api_token
 import flux.shared.generated.resources.watch_on_external_player
 import flux.shared.generated.resources.x
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import kotlin.math.roundToInt
 
@@ -85,7 +87,7 @@ fun SettingsCustomizationSection(
         SettingsItem(
             text = stringResource(Res.string.customization),
             subText = stringResource(Res.string.customization_desc),
-            painter = painterResource(R.drawable.ic_customization),
+            painter = painterResource(Res.drawable.ic_customization),
             iconColor = iconColor,
             iconBackgroundColor = bgColor,
             onTap = { sendIntent(SettingsIntent.OnCustomizationTap) }

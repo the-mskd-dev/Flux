@@ -1,4 +1,4 @@
-package com.mskd.flux.screens.player
+package com.mskd.flux.screen.player
 
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
@@ -12,11 +12,10 @@ import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.player.PlayerTrack
 import com.mskd.flux.model.player.PlayerTrack.Type
-import com.mskd.flux.screens.player.PlayerUiContent.AmbientOverlay
-import com.mskd.flux.screens.player.PlayerUiContent.NextButton
-import com.mskd.flux.screens.player.PlayerUiContent.SeekOverlay
-import com.mskd.flux.screens.player.PlayerUiContent.SettingsSheet
-import com.mskd.flux.screens.player.controllers.PlayerManager
+import com.mskd.flux.screen.player.PlayerUiContent.AmbientOverlay
+import com.mskd.flux.screen.player.PlayerUiContent.NextButton
+import com.mskd.flux.screen.player.PlayerUiContent.SeekOverlay
+import com.mskd.flux.screen.player.PlayerUiContent.SettingsSheet
 import com.mskd.flux.useCases.artwork.ArtworkUC
 import com.mskd.flux.useCases.player.PipIsEnabledUC
 import com.mskd.flux.useCases.progress.ProgressUC
@@ -45,12 +44,12 @@ import java.util.UUID
 import kotlin.time.Duration.Companion.seconds
 
 
-class PlayerViewModel(
+class PlayerViewModel<out T, out R>(
     mediaId: Long,
     private val artworkUC: ArtworkUC,
     private val settingsRepository: SettingsRepository,
     private val filesRepository: FilesRepository,
-    private val playerManager: PlayerManager,
+    private val playerManager: PlayerManager<T, R>,
     private val progressUC: ProgressUC,
     private val pipIsEnabledUC: PipIsEnabledUC
 ) : ViewModel() {
@@ -64,7 +63,7 @@ class PlayerViewModel(
 
     private var wasPlayingBeforeBackground = false
 
-    private val content get() = (uiState.value.state as? State.Content)?.content
+    private val content get() = (uiState.value as? State.Content<T>)?.content
 
     //endregion
 
@@ -77,16 +76,16 @@ class PlayerViewModel(
 
     private val _userState = MutableStateFlow(PlayerUserState(mediaId = mediaId))
 
-    private val _subtitles = MutableStateFlow<List<Cue>>(emptyList())
-    val subtitles: StateFlow<List<Cue>> = _subtitles.asStateFlow()
+    private val _subtitles = MutableStateFlow<R?>(null)
+    val subtitles: StateFlow<R?> = _subtitles.asStateFlow()
 
     private val _progress = MutableStateFlow(0L)
     val progress: StateFlow<Long> = _progress.asStateFlow()
 
-    val uiState: StateFlow<PlayerUiState> = combine(
+    val uiState: StateFlow<PlayerUiState<T>> = combine(
         artworkUC.flow,
         settingsRepository.flow,
-        playerManager.state,
+        playerManager.flow,
         _userState,
     ) { artworkState, settings, playerState, userState ->
 
@@ -115,7 +114,7 @@ class PlayerViewModel(
                     selectedSubtitles = playerState.selectedSubtitles,
                 )
 
-                PlayerUiState(state = mergeStates(dataState, userState))
+                PlayerUiState<T>(state = mergeStates(dataState, userState))
             }
         }
 
@@ -138,7 +137,7 @@ class PlayerViewModel(
             launch {
                 uiState
                     .map { it.state }
-                    .filterIsInstance<State.Content<PlayerUiContent>>()
+                    .filterIsInstance<State.Content<PlayerUiContent<T>>>()
                     .map { it.content.media }
                     .distinctUntilChangedBy { it.mediaId }
                     .collect { playMedia(it) }
@@ -146,8 +145,8 @@ class PlayerViewModel(
 
             // Auto-select preferred language when tracks change
             launch {
-                playerManager.state
-                    .filterIsInstance<PlayerManager.State.Ready>()
+                playerManager.flow
+                    .filterIsInstance<PlayerManager.State.Ready<T>>()
                     .map { it.tracks }
                     .distinctUntilChanged()
                     .collect { updateTracks() }
@@ -155,8 +154,7 @@ class PlayerViewModel(
 
             // Show/hide next episode button
             launch {
-                playerManager.state
-                    .filterIsInstance<PlayerManager.State.Ready>()
+                playerManager.progress
                     .map { it.showNextEpisode }
                     .distinctUntilChanged()
                     .collect { showNextEpisode(show = it) }
@@ -164,8 +162,7 @@ class PlayerViewModel(
 
             // Update progress
             launch {
-                playerManager.state
-                    .filterIsInstance<PlayerManager.State.Ready>()
+                playerManager.progress
                     .map { it.progress }
                     .distinctUntilChanged()
                     .collect { progress -> _progress.update { progress } }
@@ -173,9 +170,7 @@ class PlayerViewModel(
 
             // Update subtitles
             launch {
-                playerManager.state
-                    .filterIsInstance<PlayerManager.State.Ready>()
-                    .map { it.subtitles }
+                playerManager.subtitles
                     .distinctUntilChanged()
                     .collect { subtitles -> _subtitles.update { subtitles } }
             }

@@ -14,6 +14,7 @@ import androidx.media3.common.Player
 import androidx.media3.common.TrackSelectionOverride
 import androidx.media3.common.TrackSelectionParameters
 import androidx.media3.common.Tracks
+import androidx.media3.common.text.Cue
 import androidx.media3.common.text.CueGroup
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
@@ -22,6 +23,7 @@ import com.google.common.util.concurrent.MoreExecutors
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.player.PlayerTrack
+import com.mskd.flux.services.PlayerService
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.Trace
 import com.mskd.flux.utils.extensions.tmdbImage
@@ -46,12 +48,18 @@ import java.util.Locale
 import kotlin.math.roundToInt
 import kotlin.time.Duration.Companion.milliseconds
 
-class AndroidPlayerManager(private val context: Context) : Player.Listener, PlayerManager {
+class AndroidPlayerManager(private val context: Context) : Player.Listener, PlayerManager<Player, List<Cue>> {
 
     //region State
 
-    private val _state = MutableStateFlow< PlayerManager.State>(PlayerManager.State.Idle)
-    override val flow: Flow<PlayerManager.State> = _state.asStateFlow()
+    private val _state = MutableStateFlow<PlayerManager.State<Player>>(PlayerManager.State.Idle)
+    override val flow: Flow<PlayerManager.State<Player>> = _state.asStateFlow()
+
+    private val _subtitles = MutableStateFlow<List<Cue>>(emptyList())
+    override val subtitles: Flow<List<Cue>> = _subtitles.asStateFlow()
+
+    private val _progress = MutableStateFlow(PlayerManager.Progress())
+    override val progress: Flow<PlayerManager.Progress> = _progress.asStateFlow()
 
     //endregion
 
@@ -87,7 +95,7 @@ class AndroidPlayerManager(private val context: Context) : Player.Listener, Play
                     return@addListener
                 }
 
-                controller.addListener(this@PlayerManager)
+                controller.addListener(this@AndroidPlayerManager)
                 _state.value = PlayerManager.State.Ready(player = controller)
             } catch (e: Exception) {
                 Trace.error(tag = "PlayerManager", message = "Failed to connect", throwable = e)
@@ -177,7 +185,7 @@ class AndroidPlayerManager(private val context: Context) : Player.Listener, Play
                 .setUri(media.file.path.toUri())
 
             // Add local subtitles
-            createSubtitlesFrom(subtitlesUri = subtitlesUri)?.let { subtitle ->
+            createSubtitlesFrom(subtitlesUri = subtitlesPath?.toUri())?.let { subtitle ->
                 mediaItemBuilder.setSubtitleConfigurations(listOf(subtitle))
             }
 
@@ -247,8 +255,7 @@ class AndroidPlayerManager(private val context: Context) : Player.Listener, Play
     }
 
     override fun onCues(cueGroup: CueGroup) {
-        val current = _state.value as? PlayerManager.State.Ready ?: return
-        _state.update { current.copy(subtitles = cueGroup.cues) }
+        _subtitles.update { cueGroup.cues }
     }
 
     override fun onPlayerError(error: PlaybackException) {
@@ -409,20 +416,24 @@ class AndroidPlayerManager(private val context: Context) : Player.Listener, Play
         stopProgressMonitoring()
         progressJob = scope.launch {
             while (isActive) {
-                _state.update { current ->
-                    val ready = current as? PlayerManager.State.Ready ?: return@update current
+
+                (_state.value as? PlayerManager.State.Ready)?.let { ready ->
+
                     val player = ready.player
 
                     if (player.isPlaying && player.duration > 0) {
 
                         val progressPercentage = player.currentPosition.toFloat() / player.duration.toFloat()
+                        val showNextEpisode = progressPercentage >= Constants.PLAYER.PROGRESS_THRESHOLD
 
-                        ready.copy(
-                            progress = player.currentPosition,
-                            showNextEpisode = progressPercentage >= Constants.PLAYER.PROGRESS_THRESHOLD
-                        )
+                        _progress.update {
+                            it.copy(
+                                progress = player.currentPosition,
+                                showNextEpisode = showNextEpisode
+                            )
+                        }
 
-                    } else current
+                    }
 
                 }
 

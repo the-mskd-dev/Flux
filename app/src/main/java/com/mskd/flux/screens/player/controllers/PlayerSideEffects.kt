@@ -16,11 +16,11 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
 import com.mskd.flux.MainActivity
-import com.mskd.flux.screens.player.PlayerEvent
-import com.mskd.flux.screens.player.PlayerIntent
-import com.mskd.flux.screens.player.PlayerIntent.UpdateAmbientOverlay
-import com.mskd.flux.screens.player.PlayerUiContent
-import com.mskd.flux.screens.player.PlayerViewModel
+import com.mskd.flux.screen.player.PlayerEvent
+import com.mskd.flux.screen.player.PlayerIntent
+import com.mskd.flux.screen.player.PlayerIntent.UpdateAmbientOverlay
+import com.mskd.flux.screen.player.PlayerUiContent
+import com.mskd.flux.screen.player.PlayerViewModel
 import com.mskd.flux.ui.component.LifecycleComponent
 import com.mskd.flux.utils.extensions.findActivity
 import kotlinx.coroutines.launch

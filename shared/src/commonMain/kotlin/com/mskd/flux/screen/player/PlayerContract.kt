@@ -1,4 +1,4 @@
-package com.mskd.flux.screens.player
+package com.mskd.flux.screen.player
 
 import androidx.compose.runtime.Immutable
 import androidx.media3.common.Player
@@ -9,19 +9,19 @@ import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.player.PlayerTrack
 
 @Immutable
-data class PlayerUiState(
-    val state: State<PlayerUiContent> = State.Loading
+data class PlayerUiState<out T>(
+    val state: State<PlayerUiContent<T>> = State.Loading
 )
 
 @Immutable
-data class PlayerUiContent(
+data class PlayerUiContent<out T>(
 
     // DataState
     val fullArtwork: FullArtwork,
     val media: Media,
     val playerRewind: Int = 10,
     val playerForward: Int = 10,
-    val player: Player,
+    val player: T,
     val isPlaying: Boolean = false,
     val duration: Long = 0L,
     val tracks: List<PlayerTrack> = emptyList(),
@@ -67,10 +67,10 @@ data class PlayerUiContent(
 
 }
 
-data class PlayerDataState(
+data class PlayerDataState<out T>(
     val fullArtwork: FullArtwork,
     val media: Media,
-    val player: Player,
+    val player: T,
     val playerRewind: Int,
     val playerForward: Int,
     val duration: Long,

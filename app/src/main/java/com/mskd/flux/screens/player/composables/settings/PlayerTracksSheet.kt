@@ -26,7 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import com.mskd.flux.mockups.PlayerMockups
 import com.mskd.flux.model.player.PlayerTrack
-import com.mskd.flux.screens.player.PlayerIntent
+import com.mskd.flux.screen.player.PlayerIntent
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui

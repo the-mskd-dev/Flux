@@ -56,6 +56,9 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.ui.compose.ContentFrame
 import com.mskd.flux.model.State
 import com.mskd.flux.model.enums.Side
+import com.mskd.flux.screen.player.PlayerIntent
+import com.mskd.flux.screen.player.PlayerUiContent
+import com.mskd.flux.screen.player.PlayerViewModel
 import com.mskd.flux.screens.player.composables.playerInterface.PlayerAmbientOverlay
 import com.mskd.flux.screens.player.composables.playerInterface.PlayerInterface
 import com.mskd.flux.screens.player.composables.playerInterface.PlayerSeekOverlay

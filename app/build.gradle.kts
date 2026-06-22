@@ -140,9 +140,6 @@ dependencies {
     // Accompanist
     implementation(libs.bundles.android.accompanist)
 
-    // Media Player
-    implementation(libs.bundles.android.player)
-
     // ACRA
     implementation(libs.bundles.android.acra)
 

@@ -48,15 +48,15 @@ import java.util.Locale
 import kotlin.math.roundToInt
 import kotlin.time.Duration.Companion.milliseconds
 
-class AndroidPlayerManager(private val context: Context) : Player.Listener, PlayerManager<Player, List<Cue>> {
+class AndroidPlayerManager(private val context: Context) : Player.Listener, PlayerManager<Player> {
 
     //region State
 
     private val _state = MutableStateFlow<PlayerManager.State<Player>>(PlayerManager.State.Idle)
     override val flow: Flow<PlayerManager.State<Player>> = _state.asStateFlow()
 
-    private val _subtitles = MutableStateFlow<List<Cue>>(emptyList())
-    override val subtitles: Flow<List<Cue>> = _subtitles.asStateFlow()
+    private val _subtitles = MutableStateFlow<List<String?>>(emptyList())
+    override val subtitles: Flow<List<String?>> = _subtitles.asStateFlow()
 
     private val _progress = MutableStateFlow(PlayerManager.Progress())
     override val progress: Flow<PlayerManager.Progress> = _progress.asStateFlow()
@@ -255,7 +255,7 @@ class AndroidPlayerManager(private val context: Context) : Player.Listener, Play
     }
 
     override fun onCues(cueGroup: CueGroup) {
-        _subtitles.update { cueGroup.cues }
+        _subtitles.update { cueGroup.cues.map { it.text?.toString() } }
     }
 
     override fun onPlayerError(error: PlaybackException) {

@@ -16,7 +16,7 @@ import com.mskd.flux.ui.theme.Ui
 
 @Composable
 fun PlayerSubtitles(
-    subtitles: () -> List<Cue>,
+    subtitles: () -> List<String?>,
     smallText: Boolean,
     modifier: Modifier = Modifier
 ) {
@@ -26,7 +26,7 @@ fun PlayerSubtitles(
         modifier = modifier.padding(horizontal = Ui.Space.large)
     ) {
         subtitles().forEach {
-            SubtitleItem(text = it.text, smallText = smallText)
+            SubtitleItem(text = it, smallText = smallText)
         }
     }
 

@@ -4,7 +4,7 @@ import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.player.PlayerTrack
 import kotlinx.coroutines.flow.Flow
 
-interface PlayerManager<out T, out R> {
+interface PlayerManager<out T> {
 
     sealed class State<out T> {
         data object Idle : State<Nothing>()
@@ -27,7 +27,7 @@ interface PlayerManager<out T, out R> {
 
     val flow: Flow<State<T>>
 
-    val subtitles: Flow<R>
+    val subtitles: Flow<List<String?>>
 
     val progress: Flow<Progress>
 

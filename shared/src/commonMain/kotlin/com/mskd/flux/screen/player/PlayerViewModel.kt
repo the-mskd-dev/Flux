@@ -42,12 +42,12 @@ import java.util.UUID
 import kotlin.time.Duration.Companion.seconds
 
 
-class PlayerViewModel<out T, out R>(
+class PlayerViewModel<out T>(
     mediaId: Long,
     private val artworkUC: ArtworkUC,
     private val settingsRepository: SettingsRepository,
     private val filesRepository: FilesRepository,
-    private val playerManager: PlayerManager<T, R>,
+    private val playerManager: PlayerManager<T>,
     private val progressUC: ProgressUC,
     private val pipIsEnabledUC: PipIsEnabledUC
 ) : ViewModel() {
@@ -74,8 +74,8 @@ class PlayerViewModel<out T, out R>(
 
     private val _userState = MutableStateFlow(PlayerUserState(mediaId = mediaId))
 
-    private val _subtitles = MutableStateFlow<R?>(null)
-    val subtitles: StateFlow<R?> = _subtitles.asStateFlow()
+    private val _subtitles = MutableStateFlow<List<String?>>(emptyList())
+    val subtitles: StateFlow<List<String?>> = _subtitles.asStateFlow()
 
     private val _progress = MutableStateFlow(0L)
     val progress: StateFlow<Long> = _progress.asStateFlow()
@@ -170,7 +170,10 @@ class PlayerViewModel<out T, out R>(
             launch {
                 playerManager.subtitles
                     .distinctUntilChanged()
-                    .collect { subtitles -> _subtitles.update { subtitles } }
+                    .collect { subtitles ->
+                        Trace.debug(message = "new subtitles : $subtitles")
+                        _subtitles.update { subtitles }
+                    }
             }
 
             // Process intents

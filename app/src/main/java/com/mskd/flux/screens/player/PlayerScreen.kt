@@ -86,7 +86,7 @@ import kotlin.time.Duration.Companion.seconds
 fun PlayerScreen(
     mediaId: Long,
     onBack: () -> Unit,
-    viewModel: PlayerViewModel<Player, List<Cue>> = koinViewModel(parameters = { parametersOf(mediaId) })
+    viewModel: PlayerViewModel<Player> = koinViewModel(parameters = { parametersOf(mediaId) })
 ) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -146,7 +146,7 @@ fun PlayerScreen(
 
                 PlayerContent(
                     content = state.content,
-                    subtitles = { subtitles.orEmpty() },
+                    subtitles = { subtitles },
                     progress = { progress },
                     focusRequester = focusRequester,
                     sendIntent = {
@@ -165,7 +165,7 @@ fun PlayerScreen(
 @Composable
 fun PlayerContent(
     content: PlayerUiContent<Player>,
-    subtitles: () -> List<Cue>,
+    subtitles: () -> List<String?>,
     progress: () -> Long,
     focusRequester: FocusRequester,
     sendIntent: (PlayerIntent) -> Unit

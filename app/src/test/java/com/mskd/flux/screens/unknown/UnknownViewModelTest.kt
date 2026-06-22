@@ -9,6 +9,9 @@ import com.mskd.flux.mockups.FakeArtworkUC
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.mockkDatabaseRepository
 import com.mskd.flux.model.ScreenState
+import com.mskd.flux.screen.unknown.UnknownEvent
+import com.mskd.flux.screen.unknown.UnknownIntent
+import com.mskd.flux.screen.unknown.UnknownViewModel
 import com.mskd.flux.useCases.progress.ProgressUC
 import com.mskd.flux.useCases.progress.ProgressUCImpl
 import io.kotest.core.spec.style.FunSpec

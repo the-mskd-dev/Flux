@@ -7,6 +7,7 @@ import com.mskd.flux.screen.search.SearchViewModel
 import com.mskd.flux.screen.settings.SettingsViewModel
 import com.mskd.flux.screen.show.ShowViewModel
 import com.mskd.flux.screen.token.TokenViewModel
+import com.mskd.flux.screen.unknown.UnknownViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
@@ -54,5 +55,7 @@ val moduleViewModel = module {
             appInfo = get()
         )
     }
+
+    viewModelOf(::UnknownViewModel)
 
 }

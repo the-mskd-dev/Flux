@@ -1,4 +1,4 @@
-package com.mskd.flux.screens.unknown
+package com.mskd.flux.screen.unknown
 
 import com.mskd.flux.model.ScreenState
 import com.mskd.flux.model.artwork.Episode

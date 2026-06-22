@@ -1,4 +1,4 @@
-package com.mskd.flux.screens.unknown
+package com.mskd.flux.screen.unknown
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

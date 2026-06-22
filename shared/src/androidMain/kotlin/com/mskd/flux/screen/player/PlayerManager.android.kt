@@ -14,7 +14,6 @@ import androidx.media3.common.Player
 import androidx.media3.common.TrackSelectionOverride
 import androidx.media3.common.TrackSelectionParameters
 import androidx.media3.common.Tracks
-import androidx.media3.common.text.Cue
 import androidx.media3.common.text.CueGroup
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
@@ -49,6 +48,10 @@ import kotlin.math.roundToInt
 import kotlin.time.Duration.Companion.milliseconds
 
 class AndroidPlayerManager(private val context: Context) : Player.Listener, PlayerManager<Player> {
+
+    private companion object {
+        const val TAG = "AndroidPlayerManager"
+    }
 
     //region State
 
@@ -98,7 +101,7 @@ class AndroidPlayerManager(private val context: Context) : Player.Listener, Play
                 controller.addListener(this@AndroidPlayerManager)
                 _state.value = PlayerManager.State.Ready(player = controller)
             } catch (e: Exception) {
-                Trace.error(tag = "PlayerManager", message = "Failed to connect", throwable = e)
+                Trace.error(tag = TAG, message = "Failed to connect", throwable = e)
                 _state.value = PlayerManager.State.Error
             }
         }, MoreExecutors.directExecutor())
@@ -399,7 +402,7 @@ class AndroidPlayerManager(private val context: Context) : Player.Listener, Play
             return false
 
         } catch (e: Exception) {
-            Trace.error("PlayerStateHolder", "Fail to apply track", e)
+            Trace.error(TAG, "Fail to apply track", e)
             return false
         }
 

@@ -7,7 +7,6 @@ import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
 import com.mskd.flux.di.QualifiersAndroid
 import org.koin.android.scope.AndroidScopeComponent
-import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
 import org.koin.mp.KoinPlatformTools
 

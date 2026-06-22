@@ -1,10 +1,10 @@
-package com.mskd.flux.screens.settings
+package com.mskd.flux.screen.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.data.repository.settings.SettingsRepository
-import com.mskd.flux.ui.component.global.FluxOptionsDialogItem
-import com.mskd.flux.ui.component.global.FluxOptionsDialogState
+import com.mskd.flux.model.FluxOptionsDialogItem
+import com.mskd.flux.model.FluxOptionsDialogState
 import com.mskd.flux.useCases.catalog.CatalogUC
 import com.mskd.flux.useCases.images.ImagesUC
 import flux.shared.generated.resources.Res
@@ -31,8 +31,6 @@ class SettingsViewModel(
 ) : ViewModel() {
 
     //region Variables
-
-
 
     private val _dialogState = MutableStateFlow<FluxOptionsDialogState<*, SettingsIntent>?>(null)
     private val _showFullSyncDialogState = MutableStateFlow(false)

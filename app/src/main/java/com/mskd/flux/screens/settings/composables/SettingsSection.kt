@@ -16,8 +16,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.R
-import com.mskd.flux.screens.settings.SettingsIntent
-import com.mskd.flux.screens.settings.SettingsUiState
+import com.mskd.flux.screen.settings.SettingsIntent
+import com.mskd.flux.screen.settings.SettingsUiState
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.useCases.images.ImagesUC
 import com.mskd.flux.utils.Constants
@@ -262,7 +262,10 @@ fun SettingsSyncSection(
         val imagesTextColor by animateColorAsState(if (state.prefetchImagesState is ImagesUC.State.InProgress) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onBackground.copy(alpha = .8f))
         val imagesText = when {
             state.prefetchHdImages && state.prefetchImagesState is ImagesUC.State.Idle -> stringResource(Res.string.images_cached)
-            state.prefetchHdImages && state.prefetchImagesState is ImagesUC.State.InProgress -> stringResource(Res.string.caching_images_in_progress, state.prefetchImagesState.progress.times(100).roundToInt())
+            state.prefetchHdImages && state.prefetchImagesState is ImagesUC.State.InProgress -> {
+                val progressState = state.prefetchImagesState as ImagesUC.State.InProgress
+                stringResource(Res.string.caching_images_in_progress, progressState.progress.times(100).roundToInt())
+            }
             else -> stringResource(Res.string.cache_images_desc)
         }
         SettingsSwitch(

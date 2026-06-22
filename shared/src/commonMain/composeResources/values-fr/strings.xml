@@ -69,7 +69,7 @@
     <string name="track">Piste</string>
     <string name="subtitles">Sous-titres</string>
     <string name="audio_tracks">Pistes audio</string>
-    <string name="next_episode">Épisode suivant (%1$1dsec)</string>
+    <string name="next_episode">Épisode suivant (%1$dsec)</string>
     <string name="close">Fermer</string>
     <string name="do_not_show_again">Ne plus afficher</string>
     <string name="tmdb_api_token">Jeton d\'accès TMDB</string>

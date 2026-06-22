@@ -75,7 +75,7 @@
     <string name="track">Track</string>
     <string name="subtitles">Subtitles</string>
     <string name="audio_tracks">Audio tracks</string>
-    <string name="next_episode">Next episode (%1$1dsec)</string>
+    <string name="next_episode">Next episode (%1$dsec)</string>
     <string name="close">Close</string>
     <string name="do_not_show_again">Don\'t show again</string>
     <string name="tmdb_api_token">TMDB API Token</string>

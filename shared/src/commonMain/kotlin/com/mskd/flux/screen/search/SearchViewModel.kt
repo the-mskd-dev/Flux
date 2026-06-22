@@ -1,4 +1,4 @@
-package com.mskd.flux.screens.search
+package com.mskd.flux.screen.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

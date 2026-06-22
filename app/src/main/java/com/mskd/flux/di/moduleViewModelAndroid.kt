@@ -1,10 +1,8 @@
 package com.mskd.flux.di
 
 import com.mskd.flux.MainViewModel
-import com.mskd.flux.screen.customization.CustomizationViewModel
-import com.mskd.flux.screens.home.HomeViewModel
 import com.mskd.flux.screens.player.PlayerViewModel
-import com.mskd.flux.screens.search.SearchViewModel
+import com.mskd.flux.screen.search.SearchViewModel
 import com.mskd.flux.screens.settings.SettingsViewModel
 import com.mskd.flux.screens.show.ShowViewModel
 import com.mskd.flux.screens.token.TokenViewModel
@@ -17,18 +15,9 @@ import org.koin.dsl.module
 val moduleViewModelAndroid = module {
 
     viewModelOf(::MainViewModel)
-    viewModelOf(::HomeViewModel)
     viewModelOf(::UnknownViewModel)
     viewModelOf(::SettingsViewModel)
     viewModelOf(::WelcomeViewModel)
-
-    viewModel { params ->
-        SearchViewModel(
-            contentType = params.getOrNull(),
-            catalogUC = get(),
-            settingsRepository = get()
-        )
-    }
 
     viewModel { params ->
         ShowViewModel(

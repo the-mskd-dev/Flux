@@ -1,4 +1,4 @@
-package com.mskd.flux.screens.home
+package com.mskd.flux.screen.home
 
 import androidx.compose.runtime.Immutable
 import com.mskd.flux.model.artwork.Artwork

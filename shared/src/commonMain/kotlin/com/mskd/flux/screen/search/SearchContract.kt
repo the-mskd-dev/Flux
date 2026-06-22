@@ -1,4 +1,4 @@
-package com.mskd.flux.screens.search
+package com.mskd.flux.screen.search
 
 import androidx.compose.runtime.Immutable
 import com.mskd.flux.model.artwork.Artwork

@@ -4,10 +4,8 @@ package com.mskd.flux.di
 import com.mskd.flux.model.AppInfo
 import com.mskd.flux.platform.AndroidImageRequestFactory
 import com.mskd.flux.platform.AndroidMetadataProvider
-import com.mskd.flux.platform.AndroidStringProvider
 import com.mskd.flux.platform.ImageRequestFactory
 import com.mskd.flux.platform.MetadataProvider
-import com.mskd.flux.platform.StringProvider
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.Module
 import org.koin.dsl.module
@@ -33,10 +31,6 @@ actual val modulePlatform: Module = module {
 
     single<ImageRequestFactory> {
         AndroidImageRequestFactory(context = androidContext())
-    }
-
-    single<StringProvider> {
-        AndroidStringProvider()
     }
 
     single<AppInfo> {

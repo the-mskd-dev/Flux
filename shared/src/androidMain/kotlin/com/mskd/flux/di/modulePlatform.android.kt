@@ -12,6 +12,19 @@ import org.koin.dsl.module
 
 actual val modulePlatform: Module = module {
 
+    // Common
+    includes(moduleCommon)
+
+    // Android
+    includes(
+        moduleDatabaseAndroid,
+        moduleDatastoreAndroid,
+        moduleImagesAndroid,
+        modulePlayerAndroid,
+        moduleRepositoryAndroid,
+        moduleUseCaseAndroid
+    )
+
     single<MetadataProvider> {
         AndroidMetadataProvider(context = androidContext())
     }

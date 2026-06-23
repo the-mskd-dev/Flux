@@ -58,32 +58,8 @@ class FluxApp : Application(), SingletonImageLoader.Factory {
             )
 
             modules(
-
                 modulePlatform,
-
-                moduleCoroutine,
-
-                moduleDatabase,
-                moduleDatabaseAndroid,
-
-                moduleDatastore,
-                moduleDatastoreAndroid,
-
-                moduleNetwork,
-
-                moduleRepository,
-                moduleRepositoryAndroid,
-
-                moduleUseCase,
-                moduleUseCaseAndroid,
-
-                moduleImages,
-                moduleImagesAndroid,
-
-                moduleViewModel,
-                moduleAndroidApp,
-
-                modulePlayerAndroid,
+                moduleAndroidApp
             )
 
         }

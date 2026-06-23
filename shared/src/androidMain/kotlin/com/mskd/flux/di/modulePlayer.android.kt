@@ -8,8 +8,8 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.SeekParameters
-import com.mskd.flux.screen.player.AndroidPlayerManager
-import com.mskd.flux.screen.player.PlayerManager
+import com.mskd.flux.platform.AndroidPlayerManager
+import com.mskd.flux.platform.PlayerManager
 import com.mskd.flux.screen.player.PlayerViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModel

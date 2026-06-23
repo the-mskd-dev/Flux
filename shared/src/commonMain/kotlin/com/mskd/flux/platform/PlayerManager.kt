@@ -1,4 +1,4 @@
-package com.mskd.flux.screen.player
+package com.mskd.flux.platform
 
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.player.PlayerTrack

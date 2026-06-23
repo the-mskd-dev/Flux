@@ -22,6 +22,7 @@ import com.mskd.flux.screen.player.PlayerIntent
 import com.mskd.flux.screen.player.PlayerIntent.UpdateAmbientOverlay
 import com.mskd.flux.screen.player.PlayerUiContent
 import com.mskd.flux.screen.player.PlayerViewModel
+import com.mskd.flux.screen.player.WindowStateHolder
 import com.mskd.flux.ui.component.LifecycleComponent
 import com.mskd.flux.utils.extensions.findActivity
 import kotlinx.coroutines.launch

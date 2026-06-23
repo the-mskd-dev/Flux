@@ -17,7 +17,6 @@ import com.mskd.flux.screen.player.PlayerIntent
 import com.mskd.flux.screen.player.PlayerUiContent
 import com.mskd.flux.screen.player.PlayerUiState
 import com.mskd.flux.screen.player.PlayerViewModel
-import com.mskd.flux.screens.player.controllers.PlayerManager
 import com.mskd.flux.useCases.player.PipIsEnabledUC
 import com.mskd.flux.useCases.progress.ProgressUC
 import com.mskd.flux.utils.Constants

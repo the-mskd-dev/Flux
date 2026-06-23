@@ -65,7 +65,7 @@ import com.mskd.flux.screens.player.composables.playerInterface.PlayerSubtitles
 import com.mskd.flux.screens.player.composables.settings.PlayerSettings
 import com.mskd.flux.screen.player.rememberPlayerScaleEffects
 import com.mskd.flux.screen.player.rememberWindowStateHolder
-import com.mskd.flux.screens.player.controllers.PlayerSideEffects
+import com.mskd.flux.screens.player.composables.PlayerSideEffects
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.component.global.ErrorScreen
 import com.mskd.flux.ui.component.global.Text

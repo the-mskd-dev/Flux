@@ -1,4 +1,4 @@
-package com.mskd.flux.screens.player.controllers
+package com.mskd.flux.screens.player.composables
 
 import android.app.PictureInPictureParams
 import android.util.Rational

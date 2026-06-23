@@ -6,8 +6,6 @@ import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.mockups.mockkCatalogUC
 import com.mskd.flux.mockups.mockkImagesUC
 import com.mskd.flux.model.FluxOptionsDialogState
-import com.mskd.flux.platform.FakeStringProvider
-import com.mskd.flux.platform.StringProvider
 import com.mskd.flux.screen.settings.SettingsEvent
 import com.mskd.flux.screen.settings.SettingsIntent
 import com.mskd.flux.screen.settings.SettingsViewModel
@@ -33,7 +31,6 @@ class SettingsViewModelTest : FunSpec({
     lateinit var settingsRepository: SettingsRepository
     lateinit var catalogUC: CatalogUC
     lateinit var imagesUC: ImagesUC
-    lateinit var stringProvider: StringProvider
 
     val dataStoreFlow = MutableStateFlow(SettingsRepository.State())
 
@@ -47,13 +44,10 @@ class SettingsViewModelTest : FunSpec({
 
         imagesUC = mockkImagesUC()
 
-        stringProvider = FakeStringProvider()
-
         viewModel = SettingsViewModel(
             settingsRepository = settingsRepository,
             catalogUC = catalogUC,
             imagesUC = imagesUC,
-            stringProvider = stringProvider
         )
 
     }

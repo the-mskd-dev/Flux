@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.model.FluxOptionsDialogItem
 import com.mskd.flux.model.FluxOptionsDialogState
-import com.mskd.flux.platform.StringProvider
+import com.mskd.flux.model.StringProvider
 import com.mskd.flux.useCases.catalog.CatalogUC
 import com.mskd.flux.useCases.images.ImagesUC
 import flux.shared.generated.resources.Res
@@ -27,8 +27,7 @@ import java.util.Locale
 class SettingsViewModel(
     private val settingsRepository: SettingsRepository,
     private val catalogUC: CatalogUC,
-    private val imagesUC: ImagesUC,
-    private val stringProvider: StringProvider
+    private val imagesUC: ImagesUC
 ) : ViewModel() {
 
     //region Variables
@@ -113,14 +112,14 @@ class SettingsViewModel(
             titleResId = Res.string.information_language,
             currentValue = currentValue,
             options = listOf(
-                FluxOptionsDialogItem(value = null, label = stringProvider.string(Res.string.system)),
-                FluxOptionsDialogItem(value = Locale.ENGLISH, label = Locale.ENGLISH.displayLanguage),
-                FluxOptionsDialogItem(value = Locale.FRENCH, label = Locale.FRENCH.displayLanguage),
-                FluxOptionsDialogItem(value = Locale.GERMAN , label = Locale.GERMAN.displayLanguage),
-                FluxOptionsDialogItem(value = Locale.ITALIAN, label = Locale.ITALIAN.displayLanguage),
-                FluxOptionsDialogItem(value = Locale.JAPANESE, label = Locale.JAPANESE.displayLanguage),
-                FluxOptionsDialogItem(value = Locale.KOREAN, label = Locale.KOREAN.displayLanguage),
-                Locale.forLanguageTag("es").let { FluxOptionsDialogItem(value = it, label = it.displayLanguage) }
+                FluxOptionsDialogItem(value = null, label = StringProvider.Resource(Res.string.system)),
+                FluxOptionsDialogItem(value = Locale.ENGLISH, label = StringProvider.Static(Locale.ENGLISH.displayLanguage)),
+                FluxOptionsDialogItem(value = Locale.FRENCH, label = StringProvider.Static(Locale.FRENCH.displayLanguage)),
+                FluxOptionsDialogItem(value = Locale.GERMAN , StringProvider.Static(label = Locale.GERMAN.displayLanguage)),
+                FluxOptionsDialogItem(value = Locale.ITALIAN, StringProvider.Static(label = Locale.ITALIAN.displayLanguage)),
+                FluxOptionsDialogItem(value = Locale.JAPANESE, StringProvider.Static(label = Locale.JAPANESE.displayLanguage)),
+                FluxOptionsDialogItem(value = Locale.KOREAN, StringProvider.Static(label = Locale.KOREAN.displayLanguage)),
+                Locale.forLanguageTag("es").let { FluxOptionsDialogItem(value = it, StringProvider.Static(label = it.displayLanguage)) }
             ),
             applyValue = { value -> SettingsIntent.SetLanguageValue(value) }
         )
@@ -141,9 +140,9 @@ class SettingsViewModel(
             titleResId = Res.string.button_rewind,
             currentValue = currentValue,
             options = listOf(
-                FluxOptionsDialogItem(value = 5, label = "5sec"),
-                FluxOptionsDialogItem(value = 10, label = "10sec"),
-                FluxOptionsDialogItem(value = 30, label = "30sec")
+                FluxOptionsDialogItem(value = 5, label = StringProvider.Static("5sec")),
+                FluxOptionsDialogItem(value = 10, StringProvider.Static(label = "10sec")),
+                FluxOptionsDialogItem(value = 30, label = StringProvider.Static("30sec"))
             ),
             applyValue = { value -> SettingsIntent.SetRewindValue(value) }
         )
@@ -162,9 +161,9 @@ class SettingsViewModel(
             titleResId = Res.string.button_forward,
             currentValue = currentValue,
             options = listOf(
-                FluxOptionsDialogItem(value = 5, label = "5sec"),
-                FluxOptionsDialogItem(value = 10, label = "10sec"),
-                FluxOptionsDialogItem(value = 30, label = "30sec")
+                FluxOptionsDialogItem(value = 5, label = StringProvider.Static("5sec")),
+                FluxOptionsDialogItem(value = 10, label = StringProvider.Static("10sec")),
+                FluxOptionsDialogItem(value = 30, label = StringProvider.Static("30sec"))
             ),
             applyValue = { value -> SettingsIntent.SetForwardValue(value) }
         )

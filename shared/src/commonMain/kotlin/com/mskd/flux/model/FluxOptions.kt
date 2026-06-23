@@ -12,6 +12,6 @@ data class FluxOptionsDialogState<T, out R>(
 
 data class FluxOptionsDialogItem<T>(
     val value: T,
-    val label: String,
+    val label: StringProvider,
     val color: Color? = null
 )

@@ -4,8 +4,6 @@ import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.data.repository.customization.CustomizationRepository
 import com.mskd.flux.model.FluxOptionsDialogState
-import com.mskd.flux.platform.FakeStringProvider
-import com.mskd.flux.platform.StringProvider
 import com.mskd.flux.screen.customization.CustomizationDialog
 import com.mskd.flux.screen.customization.CustomizationEvent
 import com.mskd.flux.screen.customization.CustomizationIntent
@@ -28,7 +26,6 @@ class CustomizationViewModelTest : FunSpec({
 
     lateinit var viewModel: CustomizationViewModel
     lateinit var customizationRepository: CustomizationRepository
-    lateinit var stringProvider: StringProvider
 
     val dataStoreFlow = MutableStateFlow(CustomizationRepository.State())
 
@@ -38,11 +35,8 @@ class CustomizationViewModelTest : FunSpec({
             every { flow } returns dataStoreFlow
         }
 
-        stringProvider = FakeStringProvider()
-
         viewModel = CustomizationViewModel(
             customizationRepository = customizationRepository,
-            stringProvider = stringProvider
         )
 
     }

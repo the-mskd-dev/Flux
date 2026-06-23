@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import com.mskd.flux.model.FluxOptionsDialogState
 import com.mskd.flux.screens.customization.composables.ColorItem
 import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.utils.extensions.resolve
 import com.mskd.flux.utils.extensions.uppercaseFirstLetter
 import org.jetbrains.compose.resources.stringResource
 
@@ -66,7 +67,7 @@ fun <T, R> FluxOptionsDialog(
 
                             ColorItem(option.color)
 
-                            val value = option.label
+                            val value = option.label.resolve()
                             Text.Body.Large(
                                 modifier = Modifier.weight(1f),
                                 text = value.uppercaseFirstLetter(),

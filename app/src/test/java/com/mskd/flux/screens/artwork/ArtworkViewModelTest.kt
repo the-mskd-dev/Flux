@@ -73,7 +73,7 @@ class ArtworkViewModelTest : FunSpec({
             val initialState = awaitItem()
 
             initialState.state.shouldBeInstanceOf<State.Content<ArtworkContent>>()
-            val content = initialState.state.content
+            val content = (initialState.state as State.Content<ArtworkContent>).content
             content.fullArtwork.artwork shouldBe MediaMockups.showArtwork
             content.selectedMedia shouldBe MediaMockups.episode1
             (content.fullArtwork as FullArtwork.FullShow).episodes shouldBe MediaMockups.episodes

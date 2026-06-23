@@ -1,14 +1,15 @@
 package com.mskd.flux.screens.customization
 
-import android.app.Application
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.data.repository.customization.CustomizationRepository
+import com.mskd.flux.model.FluxOptionsDialogState
+import com.mskd.flux.platform.FakeStringProvider
+import com.mskd.flux.platform.StringProvider
 import com.mskd.flux.screen.customization.CustomizationDialog
 import com.mskd.flux.screen.customization.CustomizationEvent
 import com.mskd.flux.screen.customization.CustomizationIntent
 import com.mskd.flux.screen.customization.CustomizationViewModel
-import com.mskd.flux.ui.component.global.FluxOptionsDialogState
 import com.mskd.flux.utils.UiCommon
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
@@ -27,7 +28,7 @@ class CustomizationViewModelTest : FunSpec({
 
     lateinit var viewModel: CustomizationViewModel
     lateinit var customizationRepository: CustomizationRepository
-    lateinit var application: Application
+    lateinit var stringProvider: StringProvider
 
     val dataStoreFlow = MutableStateFlow(CustomizationRepository.State())
 
@@ -37,13 +38,11 @@ class CustomizationViewModelTest : FunSpec({
             every { flow } returns dataStoreFlow
         }
 
-        application = mockk(relaxed = true) {
-            every { getString(any()) } returns "Theme option"
-        }
+        stringProvider = FakeStringProvider()
 
         viewModel = CustomizationViewModel(
-            application = application,
-            customizationRepository = customizationRepository
+            customizationRepository = customizationRepository,
+            stringProvider = stringProvider
         )
 
     }

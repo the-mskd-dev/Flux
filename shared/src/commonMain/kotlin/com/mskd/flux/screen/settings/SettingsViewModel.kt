@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.model.FluxOptionsDialogItem
 import com.mskd.flux.model.FluxOptionsDialogState
+import com.mskd.flux.platform.StringProvider
 import com.mskd.flux.useCases.catalog.CatalogUC
 import com.mskd.flux.useCases.images.ImagesUC
 import flux.shared.generated.resources.Res
@@ -21,13 +22,13 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.getString
 import java.util.Locale
 
 class SettingsViewModel(
     private val settingsRepository: SettingsRepository,
     private val catalogUC: CatalogUC,
     private val imagesUC: ImagesUC,
+    private val stringProvider: StringProvider
 ) : ViewModel() {
 
     //region Variables
@@ -112,7 +113,7 @@ class SettingsViewModel(
             titleResId = Res.string.information_language,
             currentValue = currentValue,
             options = listOf(
-                FluxOptionsDialogItem(value = null, label = getString(Res.string.system)),
+                FluxOptionsDialogItem(value = null, label = stringProvider.string(Res.string.system)),
                 FluxOptionsDialogItem(value = Locale.ENGLISH, label = Locale.ENGLISH.displayLanguage),
                 FluxOptionsDialogItem(value = Locale.FRENCH, label = Locale.FRENCH.displayLanguage),
                 FluxOptionsDialogItem(value = Locale.GERMAN , label = Locale.GERMAN.displayLanguage),

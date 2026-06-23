@@ -12,6 +12,8 @@ import com.mskd.flux.mockups.mockkFilesRepository
 import com.mskd.flux.model.State
 import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.model.artwork.Movie
+import com.mskd.flux.model.player.PlayerTrack
+import com.mskd.flux.platform.PlayerManager
 import com.mskd.flux.screen.player.PlayerEvent
 import com.mskd.flux.screen.player.PlayerIntent
 import com.mskd.flux.screen.player.PlayerUiContent
@@ -37,12 +39,12 @@ class PlayerViewModelTest : FunSpec({
 
     fluxExtensions()
 
-    lateinit var viewModel: PlayerViewModel
+    lateinit var viewModel: PlayerViewModel<Player>
     lateinit var artworkUC: FakeArtworkUC
     lateinit var settingsRepository: SettingsRepository
     lateinit var filesRepository: FilesRepository
     lateinit var progressUC: ProgressUC
-    lateinit var playerManager: PlayerManager
+    lateinit var playerManager: PlayerManager<Player>
     lateinit var mockkedPlayer: Player
     lateinit var pipIsEnabledUC: PipIsEnabledUC
 
@@ -75,7 +77,7 @@ class PlayerViewModelTest : FunSpec({
         }
 
         playerManager = mockk(relaxed = true) {
-            every { state } returns MutableStateFlow(PlayerManager.State.Ready(player = mockkedPlayer))
+            every { flow } returns MutableStateFlow(PlayerManager.State.Ready(player = mockkedPlayer))
         }
 
         filesRepository = mockkFilesRepository()
@@ -184,10 +186,12 @@ class PlayerViewModelTest : FunSpec({
             artworkUC.setContentType(if (testCase.media is Movie) ContentType.MOVIE else ContentType.SHOW)
 
             playerManager = mockk(relaxed = true) {
-                every { state } returns MutableStateFlow(PlayerManager.State.Ready(
+                every { flow } returns MutableStateFlow(PlayerManager.State.Ready(
                     player = mockkedPlayer,
-                    progress = testCase.time,
                     duration = testCase.media.duration.minToMs
+                ))
+                every { progress } returns MutableStateFlow(PlayerManager.Progress(
+                    progress = testCase.time
                 ))
             }
 
@@ -404,14 +408,16 @@ class PlayerViewModelTest : FunSpec({
 
     test("go to background when playing") {
         playerManager = mockk(relaxed = true) {
-            every { state } returns MutableStateFlow(
+            every { flow } returns MutableStateFlow(
                 PlayerManager.State.Ready(
                     player = mockkedPlayer,
                     isPlaying = true,
-                    progress = 2000L,
                     duration = 10000L
                 )
             )
+            every { progress } returns MutableStateFlow(PlayerManager.Progress(
+                progress = 2000L
+            ))
         }
         updateVm()
 
@@ -427,14 +433,16 @@ class PlayerViewModelTest : FunSpec({
 
     test("go to background and return to foreground") {
         playerManager = mockk(relaxed = true) {
-            every { state } returns MutableStateFlow(
+            every { flow } returns MutableStateFlow(
                 PlayerManager.State.Ready(
                     player = mockkedPlayer,
                     isPlaying = true,
-                    progress = 3000L,
                     duration = 10000L
                 )
             )
+            every { progress } returns MutableStateFlow(PlayerManager.Progress(
+                progress = 3000L
+            ))
         }
         updateVm()
 
@@ -469,7 +477,7 @@ class PlayerViewModelTest : FunSpec({
 
     test("error state when playerState is PlayerManager.State.Error") {
         playerManager = mockk(relaxed = true) {
-            every { state } returns MutableStateFlow(PlayerManager.State.Error)
+            every { flow } returns MutableStateFlow(PlayerManager.State.Error)
         }
         updateVm()
 
@@ -480,14 +488,16 @@ class PlayerViewModelTest : FunSpec({
 
     test("GoToBackground when paused saves time but does not pause") {
         playerManager = mockk(relaxed = true) {
-            every { state } returns MutableStateFlow(
+            every { flow } returns MutableStateFlow(
                 PlayerManager.State.Ready(
                     player = mockkedPlayer,
                     isPlaying = false,
-                    progress = 2000L,
                     duration = 10000L
                 )
             )
+            every { progress } returns MutableStateFlow(PlayerManager.Progress(
+                progress = 2000L
+            ))
         }
         updateVm()
 
@@ -519,5 +529,5 @@ class PlayerViewModelTest : FunSpec({
 
 })
 
-private val PlayerUiState.content: PlayerUiContent
+private val PlayerUiState<Player>.content: PlayerUiContent<Player>
     get() = (state as State.Content).content

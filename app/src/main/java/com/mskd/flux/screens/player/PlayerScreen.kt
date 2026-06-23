@@ -58,14 +58,14 @@ import com.mskd.flux.model.enums.Side
 import com.mskd.flux.screen.player.PlayerIntent
 import com.mskd.flux.screen.player.PlayerUiContent
 import com.mskd.flux.screen.player.PlayerViewModel
+import com.mskd.flux.screen.player.rememberPlayerScaleEffects
+import com.mskd.flux.screen.player.rememberWindowStateHolder
+import com.mskd.flux.screens.player.composables.PlayerSideEffects
 import com.mskd.flux.screens.player.composables.playerInterface.PlayerAmbientOverlay
 import com.mskd.flux.screens.player.composables.playerInterface.PlayerInterface
 import com.mskd.flux.screens.player.composables.playerInterface.PlayerSeekOverlay
 import com.mskd.flux.screens.player.composables.playerInterface.PlayerSubtitles
 import com.mskd.flux.screens.player.composables.settings.PlayerSettings
-import com.mskd.flux.screen.player.rememberPlayerScaleEffects
-import com.mskd.flux.screen.player.rememberWindowStateHolder
-import com.mskd.flux.screens.player.composables.PlayerSideEffects
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.component.global.ErrorScreen
 import com.mskd.flux.ui.component.global.Text

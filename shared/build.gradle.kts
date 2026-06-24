@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.android.lint)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.koin.compiler)
 }
 
 kotlin {

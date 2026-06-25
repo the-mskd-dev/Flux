@@ -58,6 +58,6 @@ val moduleNetwork = module {
 
     }
 
-    singleOf(::TMDBServiceImpl) bind TMDBService::class
+    single<TMDBService> { TMDBServiceImpl(client = get()) }
 
 }

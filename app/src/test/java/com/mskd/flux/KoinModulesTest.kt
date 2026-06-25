@@ -9,6 +9,7 @@ import io.kotest.core.spec.style.FunSpec
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.dsl.module
 import org.koin.test.verify.verify
+import org.koin.test.verify.verifyAll
 
 
 class KoinModulesTest : FunSpec({
@@ -21,11 +22,8 @@ class KoinModulesTest : FunSpec({
             modulePlatform
         )
 
-        val combined = module {
-            includes(allModules)
-        }
 
-        combined.verify(
+        allModules.verifyAll(
             extraTypes = listOf(
                 Context::class,
                 Application::class,

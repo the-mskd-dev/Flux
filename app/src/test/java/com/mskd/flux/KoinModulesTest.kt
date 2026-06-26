@@ -9,7 +9,6 @@ import io.kotest.core.spec.style.FunSpec
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.dsl.module
 import org.koin.test.verify.verify
-import org.koin.test.verify.verifyAll
 
 
 class KoinModulesTest : FunSpec({

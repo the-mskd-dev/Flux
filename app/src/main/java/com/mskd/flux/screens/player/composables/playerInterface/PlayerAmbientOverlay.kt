@@ -27,13 +27,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.mskd.flux.R
-import com.mskd.flux.screens.player.PlayerUiContent
+import com.mskd.flux.screen.player.PlayerUiContent
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.LandscapePreview
+import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.ic_brightness
+import flux.shared.generated.resources.ic_volume
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun PlayerAmbientOverlay(
@@ -77,14 +79,14 @@ fun PlayerAmbientOverlay(
                     PlayerUiContent.AmbientOverlay.Type.BRIGHTNESS ->
                         Icon(
                             modifier = Modifier.size(size = 36.dp),
-                            painter = painterResource(R.drawable.ic_brightness),
+                            painter = painterResource(Res.drawable.ic_brightness),
                             tint = Color.White,
                             contentDescription = "icon brightness"
                         )
                     else ->
                         Icon(
                             modifier = Modifier.size(size = 36.dp),
-                            painter = painterResource(R.drawable.ic_volume),
+                            painter = painterResource(Res.drawable.ic_volume),
                             tint = Color.White,
                             contentDescription = "icon volume"
                         )

@@ -1,0 +1,156 @@
+package com.mskd.flux.screen.customization
+
+import androidx.compose.ui.graphics.toArgb
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.mskd.flux.data.repository.customization.CustomizationRepository
+import com.mskd.flux.model.FluxOptionsDialogItem
+import com.mskd.flux.model.FluxOptionsDialogState
+import com.mskd.flux.model.StringProvider
+import com.mskd.flux.utils.UiCommon
+import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.app_theme
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+
+class CustomizationViewModel(
+    private val customizationRepository: CustomizationRepository,
+) : ViewModel() {
+
+    private val _dialogState = MutableStateFlow<CustomizationDialog?>(null)
+
+    val uiState: StateFlow<CustomizationUiState> = combine(
+        customizationRepository.flow,
+        _dialogState
+    ) { customization, dialog ->
+        CustomizationUiState(
+            uiTheme = customization.uiTheme,
+            color = customization.color,
+            waveProgress = customization.waveProgress,
+            oldBlurredHeader = customization.oldBlurredHeader,
+            largeEpisodeImage = customization.largeEpisodeImage,
+            itemsPerRow = customization.itemsPerRow,
+            dialog = dialog
+        )
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = CustomizationUiState()
+    )
+
+    private val _event = MutableSharedFlow<CustomizationEvent>()
+    val event = _event.asSharedFlow()
+
+    //endregion
+
+    //region Intents
+
+    fun handleIntent(intent: CustomizationIntent) = viewModelScope.launch {
+        when (intent) {
+
+            // Global
+            CustomizationIntent.OnBackTap -> _event.emit(CustomizationEvent.BackToPreviousScreen)
+
+            // Dialogs
+            CustomizationIntent.HideDialog -> hideDialog()
+            CustomizationIntent.ShowColorDialog -> showColorDialog()
+            CustomizationIntent.ShowThemeDialog -> showThemeDialog()
+            CustomizationIntent.ShowItemsPerRowDialog -> showItemsPerRowDialog()
+
+
+            // Setters
+            is CustomizationIntent.SetColorValue -> setColor(color = intent.color)
+            is CustomizationIntent.SetThemeValue -> setTheme(theme = intent.theme)
+            is CustomizationIntent.SetItemsPerRowValue -> setItemsPerRowValue(count = intent.count)
+            is CustomizationIntent.OnWaveProgressCheck -> setWaveProgress(waveProgress = intent.checked)
+            is CustomizationIntent.OnOldBlurredHeaderCheck -> setOldBlurredHeader(blurred = intent.checked)
+            is CustomizationIntent.OnLargeEpisodeImageCheck -> setLargeEpisodeImage(large = intent.checked)
+
+        }
+    }
+
+    //endregion
+
+    //region Private Methods
+
+    private fun hideDialog() {
+        _dialogState.update { null }
+    }
+
+    private suspend fun showThemeDialog() {
+        val currentValue = uiState.value.uiTheme
+        val dialogState = FluxOptionsDialogState(
+            titleResId = Res.string.app_theme,
+            currentValue = currentValue,
+            options = listOf(
+                FluxOptionsDialogItem(value = UiCommon.THEME.LIGHT, label = StringProvider.Resource(UiCommon.THEME.LIGHT.stringResource)),
+                FluxOptionsDialogItem(value = UiCommon.THEME.DARK, label = StringProvider.Resource(UiCommon.THEME.DARK.stringResource)),
+                FluxOptionsDialogItem(value = UiCommon.THEME.SYSTEM, label = StringProvider.Resource(UiCommon.THEME.SYSTEM.stringResource))
+            ),
+            applyValue = { value -> CustomizationIntent.SetThemeValue(value) }
+        )
+
+        _dialogState.update { CustomizationDialog.SelectDialog(state = dialogState) }
+    }
+
+    private suspend fun setTheme(theme: UiCommon.THEME) {
+        customizationRepository.setUiTheme(theme)
+        hideDialog()
+    }
+
+    private suspend fun showColorDialog() {
+        val currentValue = uiState.value.color
+        val dialogState = FluxOptionsDialogState(
+            titleResId = Res.string.app_theme,
+            currentValue = currentValue,
+            options = listOf(
+                UiCommon.AccentColors.System.let { FluxOptionsDialogItem(value = it.color?.toArgb(), label = StringProvider.Resource(it.stringResId), color = it.color) },
+                UiCommon.AccentColors.Red.let { FluxOptionsDialogItem(value = it.color?.toArgb(), label = StringProvider.Resource(it.stringResId), color = it.color) },
+                UiCommon.AccentColors.Blue.let { FluxOptionsDialogItem(value = it.color?.toArgb(), label = StringProvider.Resource(it.stringResId), color = it.color) },
+                UiCommon.AccentColors.Green.let { FluxOptionsDialogItem(value = it.color?.toArgb(), label = StringProvider.Resource(it.stringResId), color = it.color) },
+                UiCommon.AccentColors.Yellow.let { FluxOptionsDialogItem(value = it.color?.toArgb(), label = StringProvider.Resource(it.stringResId), color = it.color) },
+                UiCommon.AccentColors.Magenta.let { FluxOptionsDialogItem(value = it.color?.toArgb(), label = StringProvider.Resource(it.stringResId), color = it.color) },
+                UiCommon.AccentColors.Gray.let { FluxOptionsDialogItem(value = it.color?.toArgb(), label = StringProvider.Resource(it.stringResId), color = it.color) },
+            ),
+            applyValue = { value -> CustomizationIntent.SetColorValue(value) }
+        )
+
+        _dialogState.update { CustomizationDialog.SelectDialog(state = dialogState) }
+    }
+
+    private fun showItemsPerRowDialog() {
+        _dialogState.update { CustomizationDialog.ItemsPerRowDialog }
+    }
+
+    private suspend fun setColor(color: Int?) {
+        customizationRepository.setColor(color)
+        hideDialog()
+    }
+
+    private suspend fun setWaveProgress(waveProgress: Boolean) {
+        customizationRepository.setWaveProgress(waveProgress)
+    }
+
+    private suspend fun setOldBlurredHeader(blurred: Boolean) {
+        customizationRepository.setOldBlurredHeader(blurred)
+    }
+
+    private suspend fun setLargeEpisodeImage(large: Boolean) {
+        customizationRepository.setLargeEpisodeImage(large)
+    }
+
+    private suspend fun setItemsPerRowValue(count: Int) {
+        customizationRepository.setItemsPerRow(count)
+        hideDialog()
+    }
+
+    //endregion
+
+}

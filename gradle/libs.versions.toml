@@ -9,44 +9,54 @@ agp = "9.2.1"
 kotlin = "2.4.0"
 ksp = "2.3.9"
 
+# -- KMP Core
+composeMultiplatform = "1.11.1"
+
 # -- Android Core --
 coreKtx = "1.19.0"
-lifecycle = "2.10.0"
+lifecycle = "2.11.0"
 activityCompose = "1.13.0"
 kotlinxSerializationCore = "1.11.0"
 
 # -- Compose & UI --
-composeBom = "2026.05.01"
-composeUiText = "1.11.2"
-material3 = "1.5.0-alpha21"
+composeBom = "2026.06.00"
+composeUiText = "1.11.3"
+material3 = "1.5.0-alpha22"
 adaptive = "1.2.0"
 constraintLayout = "1.1.1"
 
 # -- Navigation --
-nav3Core = "1.1.2"
-lifecycleNav3 = "2.10.0"
-material3AdaptiveNav3 = "1.3.0-beta02"
+nav3Core = "1.1.3"
+lifecycleNav3 = "2.11.0"
+material3AdaptiveNav3 = "1.3.0-rc01"
 
-# -- Architecture & DI --
+# -- Accompanist --
 accompanist = "0.37.3"
+
+# -- DI --
 koin = "4.2.2"
+koinPlugin = "1.0.1"
 
 # -- Data & Network --
 datastore = "1.2.1"
 room = "2.8.4"
+sqlite = "2.7.0-rc01"
 ktor = "3.5.0"
 
 # -- Media --
 media3 = "1.10.1"
-coil = "3.4.0"
+coil = "3.5.0"
 jellyfinFfmpeg = "1.9.0+1"
+
+# -- Log --
+napier = "2.7.1"
 
 # -- ACRA --
 acra = "5.13.1"
 
 # -- Testing --
 junit = "4.13.2"
-kotest = "6.1.11"
+kotest = "6.2.0"
 mockwebserver = "5.4.0"
 mockk = "1.14.11"
 turbine = "1.2.1"
@@ -55,19 +65,20 @@ androidxTestExt = "1.3.0"
 espresso = "3.7.0"
 truth = "1.4.5"
 coreTesting = "2.2.0"
-kotlinStdlib = "2.3.21"
+kotlinStdlib = "2.4.0"
 kotlinTest = "2.3.21"
-runner = "1.7.0"
-core = "1.7.0"
 
 [libraries]
 
-# -- Core --
+# -- KMP Core --
+components-resources = { group = "org.jetbrains.compose.components", name = "components-resources", version.ref = "composeMultiplatform" }
+
+# -- Android Core --
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle" }
 androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
-androidx-lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version = "2.10.0" }
+androidx-lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version = "2.11.0" }
 
 # -- Compose --
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
@@ -81,9 +92,10 @@ androidx-ui-text = { group = "androidx.compose.ui", name = "ui-text", version.re
 androidx-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
 androidx-constraintlayout-compose = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "constraintLayout" }
 
-# -- Serialization --
-kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinxSerializationCore" }
-kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationCore" }
+# -- Kotlin --
+kotlinx-serialization-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version.ref = "kotlinxSerializationCore" }
+kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationCore" }
+kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version = "0.8.0" }
 
 # -- UI --
 androidx-material-icons-core = { group = "androidx.compose.material", name = "material-icons-core" }
@@ -117,11 +129,13 @@ ktor-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = 
 ktor-android = { group = "io.ktor", name = "ktor-client-android", version.ref = "ktor" }
 
 # -- Koin --
-koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
-koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }
-koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koin" }
-koin-test = { module = "io.insert-koin:koin-test", version.ref = "koin" }
-koin-test-junit4 = { module = "io.insert-koin:koin-test-junit4", version.ref = "koin" }
+koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
+koin-annotations = { group = "io.insert-koin", name = "koin-annotations", version.ref = "koin" }
+koin-compose = { group = "io.insert-koin", name = "koin-compose", version.ref = "koin" }
+koin-compose-viewmodel = { group = "io.insert-koin", name = "koin-compose-viewmodel", version.ref = "koin" }
+koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
+koin-test = { group = "io.insert-koin", name = "koin-test", version.ref = "koin" }
+koin-test-junit4 = { group = "io.insert-koin", name = "koin-test-junit4", version.ref = "koin" }
 
 # -- Coil --
 coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
@@ -129,12 +143,17 @@ coil-video = { group = "io.coil-kt.coil3", name = "coil-video", version.ref = "c
 coil-network-ktor = { group = "io.coil-kt.coil3", name = "coil-network-ktor3", version.ref = "coil" }
 
 # -- DataStore --
+androidx-datastore = { group = "androidx.datastore", name = "datastore", version.ref = "datastore" }
 androidx-datastore-pref = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 
 # -- Room --
+androidx-sqlite-bundled = { group = "androidx.sqlite", name = "sqlite-bundled", version.ref = "sqlite" }
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
-androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+
+# -- Log
+napier = { group = "io.github.aakira", name = "napier", version.ref = "napier" }
 
 # -- ACRA --
 acra-core = { group = "ch.acra", name = "acra-core", version.ref = "acra" }
@@ -155,27 +174,28 @@ truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
 androidx-core-testing = { group = "androidx.arch.core", name = "core-testing", version.ref = "coreTesting" }
 kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlinStdlib" }
 kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlinTest" }
-androidx-runner = { group = "androidx.test", name = "runner", version.ref = "runner" }
-androidx-core = { group = "androidx.test", name = "core", version.ref = "core" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "composeMultiplatform" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin"}
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 android-kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
+koin-compiler = { id = "io.insert-koin.compiler.plugin", version.ref = "koinPlugin" }
 android-lint = { id = "com.android.lint", version.ref = "agp" }
 
 [bundles]
 
 # -- Shared --
-shared-serialization = [
+shared-kotlin = [
     "kotlinx-serialization-json",
-    "kotlinx-serialization-core"
+    "kotlinx-serialization-core",
+    "kotlinx-datetime"
 ]
 shared-network = [
     "ktor-core",
@@ -183,11 +203,23 @@ shared-network = [
     "ktor-json"
 ]
 shared-di = [
-    "koin-core"
+    "koin-core",
+    "koin-annotations"
 ]
 shared-image = [
-    "coil-compose",
     "coil-network-ktor",
+]
+shared-room = [
+    "androidx-sqlite-bundled",
+    "androidx-room-runtime",
+    "androidx-room-ktx"
+]
+shared-datastore = [
+    "androidx-datastore",
+    "androidx-datastore-pref",
+]
+shared-tools = [
+    "napier"
 ]
 
 # -- Android --
@@ -210,7 +242,8 @@ android-compose = [
     "androidx-ui-text",
     "androidx-material3",
     "androidx-lifecycle-viewmodel-compose",
-    "androidx-constraintlayout-compose"
+    "androidx-constraintlayout-compose",
+    "androidx-activity-compose"
 ]
 
 android-compose-debug = [
@@ -227,6 +260,7 @@ android-ui = [
 
 android-image = [
     "coil-video",
+    "coil-compose",
 ]
 
 android-navigation = [
@@ -249,17 +283,9 @@ android-player = [
 ]
 
 android-di = [
+    "koin-android",
     "koin-compose",
     "koin-compose-viewmodel",
-]
-
-android-datastore = [
-    "androidx-datastore-pref",
-]
-
-android-room = [
-    "androidx-room-runtime",
-    "androidx-room-ktx"
 ]
 
 android-acra = [

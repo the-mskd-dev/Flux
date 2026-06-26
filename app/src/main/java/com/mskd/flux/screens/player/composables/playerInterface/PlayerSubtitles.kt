@@ -10,13 +10,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
-import androidx.media3.common.text.Cue
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.Ui
 
 @Composable
 fun PlayerSubtitles(
-    subtitles: () -> List<Cue>,
+    subtitles: () -> List<String?>,
     smallText: Boolean,
     modifier: Modifier = Modifier
 ) {
@@ -26,7 +25,7 @@ fun PlayerSubtitles(
         modifier = modifier.padding(horizontal = Ui.Space.large)
     ) {
         subtitles().forEach {
-            SubtitleItem(text = it.text, smallText = smallText)
+            SubtitleItem(text = it, smallText = smallText)
         }
     }
 

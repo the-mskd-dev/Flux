@@ -22,12 +22,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.mskd.flux.R
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Route.Token
+import com.mskd.flux.screen.settings.SettingsEvent
+import com.mskd.flux.screen.settings.SettingsIntent
+import com.mskd.flux.screen.settings.SettingsUiState
+import com.mskd.flux.screen.settings.SettingsViewModel
 import com.mskd.flux.screens.settings.composables.SettingsAppInfoSection
 import com.mskd.flux.screens.settings.composables.SettingsCustomizationSection
 import com.mskd.flux.screens.settings.composables.SettingsOtherSection
@@ -42,6 +44,11 @@ import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.notificationsPermissionState
+import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.settings
+import flux.shared.generated.resources.sync_library
+import flux.shared.generated.resources.sync_library_dialog
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -108,7 +115,7 @@ fun SettingsContent(
 ) {
 
     FluxScaffold(
-        title = stringResource(R.string.settings),
+        title = stringResource(Res.string.settings),
         topAppBarColors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainer,
             scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
@@ -193,9 +200,9 @@ fun SettingsFullSyncDialog(
     FluxDialog(
         onDismiss = onDismiss,
         onValidate = { sendIntent(SettingsIntent.ProceedFullSync) },
-        title = stringResource(R.string.sync_library),
+        title = stringResource(Res.string.sync_library),
         content = {
-            Text.Body.Large(text = stringResource(R.string.sync_library_dialog))
+            Text.Body.Large(text = stringResource(Res.string.sync_library_dialog))
         }
     )
 

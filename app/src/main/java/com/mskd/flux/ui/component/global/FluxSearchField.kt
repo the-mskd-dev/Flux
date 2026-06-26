@@ -19,9 +19,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.mskd.flux.R
+import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.enter_search
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun FluxSearchField(
@@ -53,7 +54,7 @@ fun FluxSearchField(
             unfocusedIndicatorColor = Color.Transparent,
             disabledIndicatorColor = Color.Transparent
         ),
-        placeholder = { Text(stringResource(R.string.enter_search)) },
+        placeholder = { Text(stringResource(Res.string.enter_search)) },
         trailingIcon = {
             if (value.isNotEmpty()) {
                 IconButton(

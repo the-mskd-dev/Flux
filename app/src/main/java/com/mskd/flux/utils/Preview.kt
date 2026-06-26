@@ -1,17 +1,25 @@
 package com.mskd.flux.utils
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import coil3.annotation.ExperimentalCoilApi
 import coil3.compose.AsyncImagePreviewHandler
 import coil3.compose.LocalAsyncImagePreviewHandler
 import coil3.imageLoader
 import coil3.request.ImageRequest
-import com.mskd.flux.R
 import com.mskd.flux.ui.theme.AppTheme
-import com.mskd.flux.ui.theme.Ui
+import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.ic_help
+import flux.shared.generated.resources.preview_poster
+import org.jetbrains.compose.resources.painterResource
 
 @Target(AnnotationTarget.ANNOTATION_CLASS, AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.BINARY)
@@ -76,7 +84,7 @@ annotation class LandscapePreview
 @OptIn(ExperimentalCoilApi::class)
 @Composable
 fun AppThemePreview(
-    theme: Ui.THEME = Ui.THEME.SYSTEM,
+    theme: UiCommon.THEME = UiCommon.THEME.SYSTEM,
     color: Int? = null,
     content: @Composable () -> Unit
 ) {
@@ -84,7 +92,7 @@ fun AppThemePreview(
     val previewHandler = AsyncImagePreviewHandler { request ->
         request.context.imageLoader.execute(
             ImageRequest.Builder(request.context)
-                .data(R.drawable.preview_poster)
+                .data(Res.drawable.preview_poster)
                 .build()
         ).image!!
     }
@@ -95,4 +103,22 @@ fun AppThemePreview(
         }
     }
 
+}
+
+@Preview
+@Composable
+fun Drawable_Preview() {
+    AppTheme {
+        Box(
+            modifier = Modifier.padding(100.dp),
+            contentAlignment = Alignment.Center
+        ) {
+
+            Image(
+                painter = painterResource(Res.drawable.ic_help),
+                contentDescription = "preview"
+            )
+
+        }
+    }
 }

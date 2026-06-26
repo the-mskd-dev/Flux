@@ -4,18 +4,13 @@ import android.app.Application
 import android.content.Context
 import coil3.ImageLoader
 import coil3.SingletonImageLoader
-import com.mskd.flux.di.coroutineModule
-import com.mskd.flux.di.dataStoreModule
-import com.mskd.flux.di.databaseModule
-import com.mskd.flux.di.globalModule
-import com.mskd.flux.di.imageModule
-import com.mskd.flux.di.ktorModule
-import com.mskd.flux.di.playerModule
-import com.mskd.flux.di.repositoriesModule
-import com.mskd.flux.di.useCasesModule
-import com.mskd.flux.di.viewModelsModule
+import com.mskd.flux.di.Properties
+import com.mskd.flux.di.moduleAndroidApp
+import com.mskd.flux.di.modulePlatform
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.CrashDialogActivity
+import io.github.aakira.napier.DebugAntilog
+import io.github.aakira.napier.Napier
 import org.acra.config.dialog
 import org.acra.config.mailSender
 import org.acra.data.StringFormat
@@ -32,20 +27,25 @@ class FluxApp : Application(), SingletonImageLoader.Factory {
     override fun onCreate() {
         super.onCreate()
 
+        if (BuildConfig.DEBUG) {
+            Napier.base(DebugAntilog())
+        }
+
         startKoin {
             androidContext(this@FluxApp)
 
+            properties(
+                mapOf(
+                    Properties.IS_DEBUG to BuildConfig.DEBUG,
+                    Properties.VERSION_NAME to BuildConfig.VERSION_NAME,
+                    Properties.VERSION_CODE to BuildConfig.VERSION_CODE,
+                    Properties.DEBUG_TOKEN to BuildConfig.TMDB_TOKEN,
+                )
+            )
+
             modules(
-                coroutineModule,
-                databaseModule,
-                dataStoreModule,
-                globalModule,
-                imageModule,
-                ktorModule,
-                playerModule,
-                repositoriesModule,
-                useCasesModule,
-                viewModelsModule
+                modulePlatform,
+                moduleAndroidApp
             )
 
         }

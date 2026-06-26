@@ -13,8 +13,6 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import com.mskd.flux.R
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.Status
 import com.mskd.flux.model.artwork.Episode
@@ -27,6 +25,10 @@ import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.extensions.clickableWithBounce
+import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.no_summary
+import flux.shared.generated.resources.summary
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun ArtworkDescriptionsPager(
@@ -74,7 +76,7 @@ fun ArtworkDescriptionsPager(
                 is FullArtwork.FullMovie -> {
 
                     OverviewItem(
-                        title = stringResource(R.string.summary),
+                        title = stringResource(Res.string.summary),
                         description = currentMedia.description,
                         subtitle = { MediaDetailsHorizontal(currentMedia) }
                     )
@@ -88,8 +90,8 @@ fun ArtworkDescriptionsPager(
                     if (i > 0 || pageCount == 1) {
 
                         OverviewItem(
-                            title = stringResource(R.string.summary),
-                            description = fullArtwork.artwork.description.ifEmpty { stringResource(R.string.no_summary) },
+                            title = stringResource(Res.string.summary),
+                            description = fullArtwork.artwork.description.ifEmpty { stringResource(Res.string.no_summary) },
                         )
 
                     } else {

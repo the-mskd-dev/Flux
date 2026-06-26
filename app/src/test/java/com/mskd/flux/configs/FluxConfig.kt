@@ -10,5 +10,5 @@ fun Extendable.fluxExtensions(
     testDispatcher: TestDispatcher = UnconfinedTestDispatcher()
 ) {
     extension(DispatcherConfig(testDispatcher = testDispatcher))
-    extension(LogConfig())
+    //extension(LogConfig())
 }

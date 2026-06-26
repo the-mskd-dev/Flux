@@ -1,12 +1,12 @@
 package com.mskd.flux.screens.player.composables.settings
 
 import androidx.compose.runtime.Composable
-import com.mskd.flux.screens.player.PlayerIntent
-import com.mskd.flux.screens.player.PlayerUiContent
+import com.mskd.flux.screen.player.PlayerIntent
+import com.mskd.flux.screen.player.PlayerUiContent
 
 @Composable
 fun PlayerSettings(
-    content: PlayerUiContent,
+    content: PlayerUiContent<Any>,
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
@@ -23,7 +23,7 @@ fun PlayerSettings(
                 tracks = content.tracks,
                 selectedAudio = content.selectedAudio,
                 selectedSubtitles = content.selectedSubtitles,
-                type = content.settingsSheet.type,
+                type = (content.settingsSheet as PlayerUiContent.SettingsSheet.Tracks).type,
                 sendIntent = sendIntent
             )
         }

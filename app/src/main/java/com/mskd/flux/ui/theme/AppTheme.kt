@@ -12,12 +12,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import com.materialkolor.rememberDynamicColorScheme
 import com.mskd.flux.ui.typography.FluxTypography
-import com.mskd.flux.utils.extensions.logDescription
+import com.mskd.flux.utils.UiCommon
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun AppTheme(
-    theme: Ui.THEME = Ui.THEME.SYSTEM,
+    theme: UiCommon.THEME = UiCommon.THEME.SYSTEM,
     color: Int? = null,
     content: @Composable () -> Unit
 ) {
@@ -26,8 +26,6 @@ fun AppTheme(
         theme = theme,
         color = color
     )
-
-    colorScheme.logDescription()
 
     MaterialExpressiveTheme(
         colorScheme = colorScheme,
@@ -38,13 +36,13 @@ fun AppTheme(
 
 @Composable
 fun createColorScheme(
-    theme: Ui.THEME = Ui.THEME.SYSTEM,
+    theme: UiCommon.THEME = UiCommon.THEME.SYSTEM,
     color: Int? = null,
 ) : ColorScheme {
 
     val darkTheme: Boolean = when (theme) {
-        Ui.THEME.DARK -> true
-        Ui.THEME.LIGHT -> false
+        UiCommon.THEME.DARK -> true
+        UiCommon.THEME.LIGHT -> false
         else -> isSystemInDarkTheme()
     }
 

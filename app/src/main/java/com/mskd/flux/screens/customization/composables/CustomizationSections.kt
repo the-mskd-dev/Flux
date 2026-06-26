@@ -8,15 +8,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.mskd.flux.R
-import com.mskd.flux.screens.customization.CustomizationIntent
-import com.mskd.flux.screens.customization.CustomizationUiState
+import com.mskd.flux.screen.customization.CustomizationIntent
+import com.mskd.flux.screen.customization.CustomizationUiState
 import com.mskd.flux.screens.settings.composables.SettingsItem
 import com.mskd.flux.screens.settings.composables.SettingsSection
 import com.mskd.flux.screens.settings.composables.SettingsSwitch
-import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.utils.UiCommon
+import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.accent_color
+import flux.shared.generated.resources.accent_color_desc
+import flux.shared.generated.resources.app_theme
+import flux.shared.generated.resources.items
+import flux.shared.generated.resources.items_per_row
+import flux.shared.generated.resources.large_episode_image
+import flux.shared.generated.resources.old_blurred_header
+import flux.shared.generated.resources.wave_progress
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun CustomizationThemeSection(
@@ -27,14 +35,14 @@ fun CustomizationThemeSection(
     SettingsSection { _, _ ->
 
         SettingsItem(
-            text = stringResource(R.string.accent_color),
-            subText = stringResource(Ui.AccentColors.findColor(state.color)?.stringResId ?: R.string.accent_color_desc),
+            text = stringResource(Res.string.accent_color),
+            subText = stringResource(UiCommon.AccentColors.findColor(state.color)?.stringResId ?: Res.string.accent_color_desc),
             onTap = { sendIntent(CustomizationIntent.ShowColorDialog) }
         )
 
         SettingsItem(
-            text = stringResource(R.string.app_theme),
-            subText = stringResource(state.uiTheme.stringResourceId),
+            text = stringResource(Res.string.app_theme),
+            subText = stringResource(state.uiTheme.stringResource),
             onTap = { sendIntent(CustomizationIntent.ShowThemeDialog) }
         )
 
@@ -51,8 +59,8 @@ fun CustomizationGlobalSection(
     SettingsSection { _, _ ->
 
         SettingsItem(
-            text = stringResource(R.string.items_per_row),
-            subText = stringResource(R.string.items, state.itemsPerRow),
+            text = stringResource(Res.string.items_per_row),
+            subText = stringResource(Res.string.items, state.itemsPerRow),
             onTap = { sendIntent(CustomizationIntent.ShowItemsPerRowDialog) }
         )
 
@@ -69,13 +77,13 @@ fun CustomizationArtworkSection(
     SettingsSection { _, _ ->
 
         SettingsSwitch(
-            text = stringResource(R.string.old_blurred_header),
+            text = stringResource(Res.string.old_blurred_header),
             checked = state.oldBlurredHeader,
             onCheckedChange = { sendIntent(CustomizationIntent.OnOldBlurredHeaderCheck(it)) },
         )
 
         SettingsSwitch(
-            text = stringResource(R.string.large_episode_image),
+            text = stringResource(Res.string.large_episode_image),
             checked = state.largeEpisodeImage,
             onCheckedChange = { sendIntent(CustomizationIntent.OnLargeEpisodeImageCheck(it)) },
         )
@@ -93,7 +101,7 @@ fun CustomizationPlayerSection(
     SettingsSection { _, _ ->
 
         SettingsSwitch(
-            text = stringResource(R.string.wave_progress),
+            text = stringResource(Res.string.wave_progress),
             checked = state.waveProgress,
             onCheckedChange = { sendIntent(CustomizationIntent.OnWaveProgressCheck(it)) },
         )

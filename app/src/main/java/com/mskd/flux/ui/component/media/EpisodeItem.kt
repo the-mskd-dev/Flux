@@ -27,16 +27,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import com.mskd.flux.R
 import com.mskd.flux.data.repository.customization.LocalCustomization
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.Status
 import com.mskd.flux.model.artwork.Episode
-import com.mskd.flux.screens.artwork.ArtworkIntent
+import com.mskd.flux.screen.artwork.ArtworkIntent
 import com.mskd.flux.ui.component.global.FluxDropDownMenu
 import com.mskd.flux.ui.component.global.FluxDropDownMenuItem
 import com.mskd.flux.ui.component.global.ReadMoreButton
@@ -45,6 +42,16 @@ import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.AppThemePreview
 import com.mskd.flux.utils.PortraitPreview
 import com.mskd.flux.utils.extensions.minToMs
+import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.ic_visibility
+import flux.shared.generated.resources.mark_as_not_watched
+import flux.shared.generated.resources.mark_as_watched
+import flux.shared.generated.resources.more_info
+import flux.shared.generated.resources.play
+import flux.shared.generated.resources.resume
+import flux.shared.generated.resources.rewatch
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun EpisodeItem(
@@ -305,9 +312,9 @@ fun EpisodeDropDownMenu(
 ) {
 
     val text = when (episode.status) {
-        Status.WATCHED -> stringResource(R.string.rewatch)
-        Status.IS_WATCHING -> stringResource(R.string.resume)
-        else -> stringResource(R.string.play)
+        Status.WATCHED -> stringResource(Res.string.rewatch)
+        Status.IS_WATCHING -> stringResource(Res.string.resume)
+        else -> stringResource(Res.string.play)
     }
 
     FluxDropDownMenu(
@@ -324,20 +331,20 @@ fun EpisodeDropDownMenu(
                 },
             ),
             FluxDropDownMenuItem(
-                text = if (episode.status == Status.WATCHED) stringResource(R.string.mark_as_not_watched) else stringResource(R.string.mark_as_watched),
+                text = if (episode.status == Status.WATCHED) stringResource(Res.string.mark_as_not_watched) else stringResource(Res.string.mark_as_watched),
                 onClick = {
                     sendIntent(ArtworkIntent.ChangeWatchStatus(media = episode))
                     onDismissRequest()
                 },
                 leadingIcon = {
                     if (episode.status == Status.WATCHED)
-                        Icon(painter = painterResource(R.drawable.ic_visibility), contentDescription = null)
+                        Icon(painter = painterResource(Res.drawable.ic_visibility), contentDescription = null)
                     else
                         Icon(imageVector = Icons.Default.Done, contentDescription = null)
                 },
             ),
             FluxDropDownMenuItem(
-                text = stringResource(R.string.more_info),
+                text = stringResource(Res.string.more_info),
                 onClick = {
                     sendIntent(ArtworkIntent.OpenEpisodeInfo(episode = episode))
                     onDismissRequest()

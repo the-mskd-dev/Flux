@@ -17,17 +17,19 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
-import com.mskd.flux.R
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.Season
-import com.mskd.flux.screens.show.ShowIntent
+import com.mskd.flux.screen.show.ShowIntent
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.FluxPreview
+import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.no_summary
+import flux.shared.generated.resources.season
+import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -62,12 +64,12 @@ fun SeasonDialog(
             ) {
 
                 Text.Headline.Medium(
-                    text = season.title.ifEmpty { stringResource(R.string.season, season.season) },
+                    text = season.title.ifEmpty { stringResource(Res.string.season, season.season) },
                     emphasized = true,
                 )
 
                 Text.Body.Large(
-                    text = season.description.ifEmpty { stringResource(R.string.no_summary) },
+                    text = season.description.ifEmpty { stringResource(Res.string.no_summary) },
                 )
 
             }

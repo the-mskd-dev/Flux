@@ -18,17 +18,20 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import com.mskd.flux.R
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.ui.component.global.ReadMoreButton
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
+import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.episode
+import flux.shared.generated.resources.season
+import flux.shared.generated.resources.summary
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun OverviewItem(
@@ -112,12 +115,12 @@ fun EpisodesDetails(episode: Episode) {
 
     Row(horizontalArrangement = Arrangement.spacedBy(Ui.Space.medium)) {
         Text.Label.Medium(
-            text = stringResource(id = R.string.season, episode.season).uppercase(),
+            text = stringResource(Res.string.season, episode.season).uppercase(),
             emphasized = true,
             color = MaterialTheme.colorScheme.primary,
         )
         Text.Label.Medium(
-            text = stringResource(id = R.string.episode, episode.number).uppercase(),
+            text = stringResource(Res.string.episode, episode.number).uppercase(),
             emphasized = true,
             color = MaterialTheme.colorScheme.secondary
         )
@@ -130,7 +133,7 @@ fun EpisodesDetails(episode: Episode) {
 fun OverviewItem_Preview_Movie() {
     AppTheme {
         OverviewItem(
-            title = stringResource(R.string.summary),
+            title = stringResource(Res.string.summary),
             description = MediaMockups.movie.description,
             subtitle = { MediaDetailsHorizontal(media = MediaMockups.movie) }
         )
@@ -142,7 +145,7 @@ fun OverviewItem_Preview_Movie() {
 fun OverviewItem_Preview_Season() {
     AppTheme {
         OverviewItem(
-            title = stringResource(R.string.summary),
+            title = stringResource(Res.string.summary),
             description = MediaMockups.season1.description,
         )
     }

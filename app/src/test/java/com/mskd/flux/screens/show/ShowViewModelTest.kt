@@ -2,21 +2,22 @@ package com.mskd.flux.screens.show
 
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
-import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.mockups.FakeArtworkUC
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.mockkProgressUC
 import com.mskd.flux.model.State
 import com.mskd.flux.model.artwork.ContentType
+import com.mskd.flux.screen.show.ShowContent
+import com.mskd.flux.screen.show.ShowDialog
+import com.mskd.flux.screen.show.ShowEvent
+import com.mskd.flux.screen.show.ShowIntent
+import com.mskd.flux.screen.show.ShowViewModel
 import com.mskd.flux.useCases.progress.ProgressUC
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import io.mockk.coVerify
-import io.mockk.every
-import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.MutableStateFlow
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ShowViewModelTest : FunSpec({
@@ -24,7 +25,6 @@ class ShowViewModelTest : FunSpec({
     fluxExtensions()
 
     lateinit var viewModel: ShowViewModel
-    lateinit var settingsRepository: SettingsRepository
     lateinit var artworkUC: FakeArtworkUC
     lateinit var progressUC: ProgressUC
 
@@ -35,7 +35,6 @@ class ShowViewModelTest : FunSpec({
         viewModel = ShowViewModel(
             artworkId = MediaMockups.showArtwork.id,
             artworkUC = artworkUC,
-            settingsRepository = settingsRepository,
             progressUC = progressUC
         )
 
@@ -44,10 +43,6 @@ class ShowViewModelTest : FunSpec({
     beforeTest {
 
         artworkUC = FakeArtworkUC(initialContentType = ContentType.SHOW)
-
-        settingsRepository = mockk(relaxed = true) {
-            every { flow } returns MutableStateFlow(SettingsRepository.State())
-        }
 
         updateVm()
 
@@ -60,7 +55,7 @@ class ShowViewModelTest : FunSpec({
             val initialState = awaitItem()
 
             initialState.state.shouldBeInstanceOf<State.Content<ShowContent>>()
-            val content = initialState.state.content
+            val content = (initialState.state as State.Content<ShowContent>).content
             content.fullShow shouldBe MediaMockups.fullShow
             content.dialog shouldBe null
 
@@ -156,7 +151,6 @@ class ShowViewModelTest : FunSpec({
         viewModel = ShowViewModel(
             artworkId = -999L,
             artworkUC = artworkUC,
-            settingsRepository = settingsRepository,
             progressUC = progressUC
         )
 
@@ -172,7 +166,6 @@ class ShowViewModelTest : FunSpec({
         viewModel = ShowViewModel(
             artworkId = MediaMockups.movieArtwork.id,
             artworkUC = artworkUC,
-            settingsRepository = settingsRepository,
             progressUC = progressUC
         )
 

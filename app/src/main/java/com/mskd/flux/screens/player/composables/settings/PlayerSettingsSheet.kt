@@ -20,18 +20,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import com.mskd.flux.R
 import com.mskd.flux.mockups.PlayerMockups
-import com.mskd.flux.screens.player.PlayerIntent
-import com.mskd.flux.screens.player.PlayerTrack
-import com.mskd.flux.screens.player.PlayerUiContent
+import com.mskd.flux.model.player.PlayerTrack
+import com.mskd.flux.screen.player.PlayerIntent
+import com.mskd.flux.screen.player.PlayerUiContent
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.FluxPreview
+import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.by_default
+import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -59,7 +60,7 @@ fun PlayerSettingsSheet(
 
                 PlayerSettingsItem(
                     label = "Audio",
-                    value = selectedAudio?.label.orEmpty().ifBlank { stringResource(R.string.by_default) },
+                    value = selectedAudio?.label.orEmpty().ifBlank { stringResource(Res.string.by_default) },
                     onTap = {
                         val intent = PlayerUiContent.SettingsSheet.Tracks(type = PlayerTrack.Type.AUDIO)
                         sendIntent(PlayerIntent.ShowSettings(sheet = intent))
@@ -70,7 +71,7 @@ fun PlayerSettingsSheet(
 
                 PlayerSettingsItem(
                     label = "Subtitles",
-                    value = selectedSubtitles?.label.orEmpty().ifBlank { stringResource(R.string.by_default) },
+                    value = selectedSubtitles?.label.orEmpty().ifBlank { stringResource(Res.string.by_default) },
                     onTap = {
                         val intent = PlayerUiContent.SettingsSheet.Tracks(type = PlayerTrack.Type.SUBTITLES)
                         sendIntent(PlayerIntent.ShowSettings(sheet = intent)) }

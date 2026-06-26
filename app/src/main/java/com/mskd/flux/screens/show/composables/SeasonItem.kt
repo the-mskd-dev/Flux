@@ -18,14 +18,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.pluralStringResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.palette.graphics.Palette
 import coil3.toBitmap
-import com.mskd.flux.R
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.Status
 import com.mskd.flux.model.artwork.Episode
@@ -37,6 +34,11 @@ import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.AppThemePreview
 import com.mskd.flux.utils.extensions.grayScale
+import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.episodes
+import flux.shared.generated.resources.season
+import org.jetbrains.compose.resources.pluralStringResource
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun SeasonItem(
@@ -102,7 +104,7 @@ fun SeasonItem(
 
             Text.Adaptive(
                 modifier = Modifier.fillMaxWidth(),
-                text = season.title.ifEmpty { stringResource(R.string.season, season.season) },
+                text = season.title.ifEmpty { stringResource(Res.string.season, season.season) },
                 color = MaterialTheme.colorScheme.onSurface,
                 maxLines = 2,
                 textAlign = TextAlign.Center,
@@ -115,7 +117,7 @@ fun SeasonItem(
 
             Text.Label.Small(
                 modifier = Modifier.fillMaxWidth(),
-                text = pluralStringResource(R.plurals.episodes, episodes.size, episodes.size),
+                text = pluralStringResource(Res.plurals.episodes, episodes.size, episodes.size),
                 color = MaterialTheme.colorScheme.secondary,
                 textAlign = TextAlign.Center
             )

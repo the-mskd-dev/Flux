@@ -2,7 +2,12 @@ package com.mskd.flux.screens.welcome
 
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
-import com.mskd.flux.data.tmdb.token.TokenRepository
+import com.mskd.flux.data.repository.token.TokenRepository
+import com.mskd.flux.screen.welcome.WelcomeButton
+import com.mskd.flux.screen.welcome.WelcomeEvent
+import com.mskd.flux.screen.welcome.WelcomeIntent
+import com.mskd.flux.screen.welcome.WelcomePage
+import com.mskd.flux.screen.welcome.WelcomeViewModel
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData
 import io.kotest.matchers.shouldBe

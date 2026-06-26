@@ -1,12 +1,14 @@
 package com.mskd.flux.screens.settings
 
-import android.app.Application
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.mockups.mockkCatalogUC
 import com.mskd.flux.mockups.mockkImagesUC
-import com.mskd.flux.ui.component.global.FluxOptionsDialogState
+import com.mskd.flux.model.FluxOptionsDialogState
+import com.mskd.flux.screen.settings.SettingsEvent
+import com.mskd.flux.screen.settings.SettingsIntent
+import com.mskd.flux.screen.settings.SettingsViewModel
 import com.mskd.flux.useCases.catalog.CatalogUC
 import com.mskd.flux.useCases.images.ImagesUC
 import io.kotest.core.spec.style.FunSpec
@@ -29,7 +31,6 @@ class SettingsViewModelTest : FunSpec({
     lateinit var settingsRepository: SettingsRepository
     lateinit var catalogUC: CatalogUC
     lateinit var imagesUC: ImagesUC
-    lateinit var application: Application
 
     val dataStoreFlow = MutableStateFlow(SettingsRepository.State())
 
@@ -43,15 +44,10 @@ class SettingsViewModelTest : FunSpec({
 
         imagesUC = mockkImagesUC()
 
-        application = mockk(relaxed = true) {
-            every { getString(any()) } returns "System"
-        }
-
         viewModel = SettingsViewModel(
-            application = application,
             settingsRepository = settingsRepository,
             catalogUC = catalogUC,
-            imagesUC = imagesUC
+            imagesUC = imagesUC,
         )
 
     }

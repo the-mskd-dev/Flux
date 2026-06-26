@@ -33,8 +33,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.layoutId
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.util.lerp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
@@ -42,8 +40,13 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
-import com.mskd.flux.R
 import com.mskd.flux.navigation.Route
+import com.mskd.flux.screen.welcome.WelcomeButton
+import com.mskd.flux.screen.welcome.WelcomeEvent
+import com.mskd.flux.screen.welcome.WelcomeIntent
+import com.mskd.flux.screen.welcome.WelcomePage
+import com.mskd.flux.screen.welcome.WelcomeUiState
+import com.mskd.flux.screen.welcome.WelcomeViewModel
 import com.mskd.flux.ui.component.global.FluxButton
 import com.mskd.flux.ui.component.global.FluxIconButton
 import com.mskd.flux.ui.component.global.Text
@@ -51,6 +54,11 @@ import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.storagePermissionState
+import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.give_permission
+import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.math.absoluteValue
 import kotlin.random.Random
@@ -115,7 +123,7 @@ fun WelcomeScreenContent(
 
         WelcomeBackground(
             modifier = Modifier.layoutId("background"),
-            drawableId = WelcomePage.entries[uiState.pageIndex].drawableId
+            drawable = WelcomePage.entries[uiState.pageIndex].drawableId
         )
 
         WelcomePager(
@@ -198,7 +206,7 @@ fun WelcomePager(
 @Composable
 fun WelcomeBackground(
     modifier: Modifier,
-    drawableId: Int
+    drawable: DrawableResource
 ) {
 
     Box(
@@ -208,7 +216,7 @@ fun WelcomeBackground(
 
         AnimatedContent(
             modifier = Modifier.fillMaxSize(),
-            targetState = drawableId,
+            targetState = drawable,
             transitionSpec = { (fadeIn()  + scaleIn(initialScale = 0.92f)) togetherWith fadeOut() },
             label = "background animation"
         ) { id ->
@@ -291,7 +299,7 @@ fun WelcomeButtons(
 
             FluxButton(
                 onTap = { sendIntent(WelcomeIntent.OnPermissionTap) },
-                text = stringResource(id = R.string.give_permission),
+                text = stringResource(Res.string.give_permission),
                 backgroundColor = MaterialTheme.colorScheme.primary,
                 textColor = MaterialTheme.colorScheme.onPrimary,
             )

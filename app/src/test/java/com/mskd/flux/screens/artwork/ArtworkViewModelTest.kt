@@ -11,6 +11,11 @@ import com.mskd.flux.model.Status
 import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.FullArtwork
+import com.mskd.flux.screen.artwork.ArtworkContent
+import com.mskd.flux.screen.artwork.ArtworkDialog
+import com.mskd.flux.screen.artwork.ArtworkEvent
+import com.mskd.flux.screen.artwork.ArtworkIntent
+import com.mskd.flux.screen.artwork.ArtworkViewModel
 import com.mskd.flux.useCases.progress.ProgressUC
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
@@ -68,7 +73,7 @@ class ArtworkViewModelTest : FunSpec({
             val initialState = awaitItem()
 
             initialState.state.shouldBeInstanceOf<State.Content<ArtworkContent>>()
-            val content = initialState.state.content
+            val content = (initialState.state as State.Content<ArtworkContent>).content
             content.fullArtwork.artwork shouldBe MediaMockups.showArtwork
             content.selectedMedia shouldBe MediaMockups.episode1
             (content.fullArtwork as FullArtwork.FullShow).episodes shouldBe MediaMockups.episodes

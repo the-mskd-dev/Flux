@@ -3,7 +3,6 @@ import java.io.FileInputStream
 import java.util.Properties
 
 plugins {
-    alias(libs.plugins.ksp)
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.parcelize)
@@ -121,19 +120,12 @@ configure<ApplicationExtension> {
 
 }
 
-ksp {
-    arg("room.schemaLocation", "$projectDir/schemas")
-}
-
 kotlin { jvmToolchain(21) }
 
 dependencies {
 
     // KMP
     implementation(project(":shared"))
-
-    // Core
-    implementation(libs.bundles.android.core)
 
     // Compose (Bundle + BOM)
     implementation(platform(libs.androidx.compose.bom))
@@ -147,22 +139,6 @@ dependencies {
 
     // Accompanist
     implementation(libs.bundles.android.accompanist)
-
-    // Media Player
-    implementation(libs.bundles.android.player)
-
-    // Image
-    implementation(libs.bundles.android.image)
-
-    // Koin
-    implementation(libs.bundles.android.di)
-
-    // DataStore
-    implementation(libs.bundles.android.datastore)
-
-    // Room
-    implementation(libs.bundles.android.room)
-    ksp(libs.androidx.room.compiler)
 
     // ACRA
     implementation(libs.bundles.android.acra)

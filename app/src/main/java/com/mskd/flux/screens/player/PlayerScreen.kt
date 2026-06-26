@@ -44,7 +44,6 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalWindowInfo
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
@@ -52,27 +51,31 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.Player
 import androidx.media3.common.VideoSize
-import androidx.media3.common.text.Cue
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.ui.compose.ContentFrame
-import com.mskd.flux.R
 import com.mskd.flux.model.State
+import com.mskd.flux.model.enums.Side
+import com.mskd.flux.screen.player.PlayerIntent
+import com.mskd.flux.screen.player.PlayerUiContent
+import com.mskd.flux.screen.player.PlayerViewModel
+import com.mskd.flux.screen.player.rememberPlayerScaleEffects
+import com.mskd.flux.screen.player.rememberWindowStateHolder
+import com.mskd.flux.screens.player.composables.PlayerSideEffects
 import com.mskd.flux.screens.player.composables.playerInterface.PlayerAmbientOverlay
 import com.mskd.flux.screens.player.composables.playerInterface.PlayerInterface
 import com.mskd.flux.screens.player.composables.playerInterface.PlayerSeekOverlay
 import com.mskd.flux.screens.player.composables.playerInterface.PlayerSubtitles
 import com.mskd.flux.screens.player.composables.settings.PlayerSettings
-import com.mskd.flux.screens.player.controllers.PlayerSideEffects
-import com.mskd.flux.screens.player.controllers.rememberPlayerScaleEffects
-import com.mskd.flux.screens.player.controllers.rememberWindowStateHolder
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.component.global.ErrorScreen
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.LandscapePreview
-import com.mskd.flux.utils.enums.Side
+import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.oups_an_error_occured
 import kotlinx.coroutines.delay
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import kotlin.time.Duration.Companion.seconds
@@ -82,7 +85,7 @@ import kotlin.time.Duration.Companion.seconds
 fun PlayerScreen(
     mediaId: Long,
     onBack: () -> Unit,
-    viewModel: PlayerViewModel = koinViewModel(parameters = { parametersOf(mediaId) })
+    viewModel: PlayerViewModel<Player> = koinViewModel(parameters = { parametersOf(mediaId) })
 ) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -132,7 +135,7 @@ fun PlayerScreen(
             is State.Loading -> LoadingScreen()
             is State.Error -> {
                 ErrorScreen(
-                    message = stringResource(R.string.oups_an_error_occured),
+                    message = stringResource(Res.string.oups_an_error_occured),
                     onBackButtonTap = { viewModel.handleIntent(PlayerIntent.OnBackTap) }
                 )
             }
@@ -160,8 +163,8 @@ fun PlayerScreen(
 @OptIn(UnstableApi::class)
 @Composable
 fun PlayerContent(
-    content: PlayerUiContent,
-    subtitles: () -> List<Cue>,
+    content: PlayerUiContent<Player>,
+    subtitles: () -> List<String?>,
     progress: () -> Long,
     focusRequester: FocusRequester,
     sendIntent: (PlayerIntent) -> Unit

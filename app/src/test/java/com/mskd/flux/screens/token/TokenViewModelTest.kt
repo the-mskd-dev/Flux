@@ -2,9 +2,14 @@ package com.mskd.flux.screens.token
 
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
+import com.mskd.flux.data.repository.token.TokenRepository
 import com.mskd.flux.data.tmdb.TMDBService
-import com.mskd.flux.data.tmdb.token.TokenRepository
+import com.mskd.flux.model.AppInfo
 import com.mskd.flux.model.tmdb.TMDBAuthentication
+import com.mskd.flux.screen.token.TokenEvent
+import com.mskd.flux.screen.token.TokenIntent
+import com.mskd.flux.screen.token.TokenMessage
+import com.mskd.flux.screen.token.TokenViewModel
 import com.mskd.flux.useCases.catalog.CatalogUC
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData
@@ -21,6 +26,7 @@ class TokenViewModelTest : FunSpec({
     lateinit var tokenRepository: TokenRepository
     lateinit var tmdbService: TMDBService
     lateinit var catalogUC: CatalogUC
+    lateinit var appInfo: AppInfo
 
     beforeTest {
 
@@ -34,11 +40,14 @@ class TokenViewModelTest : FunSpec({
 
         catalogUC = mockk(relaxed = true)
 
+        appInfo = mockk(relaxed = true)
+
         viewModel = TokenViewModel(
             fromSettings = true,
             tokenRepository = tokenRepository,
             tmdbService = tmdbService,
-            catalogUC = catalogUC
+            catalogUC = catalogUC,
+            appInfo = appInfo
         )
 
     }
@@ -98,7 +107,8 @@ class TokenViewModelTest : FunSpec({
             fromSettings = false,
             tokenRepository = tokenRepository,
             tmdbService = tmdbService,
-            catalogUC = catalogUC
+            catalogUC = catalogUC,
+            appInfo = appInfo
         )
         vm.uiState.test {
             val initialState = awaitItem()
@@ -111,7 +121,8 @@ class TokenViewModelTest : FunSpec({
             fromSettings = false,
             tokenRepository = tokenRepository,
             tmdbService = tmdbService,
-            catalogUC = catalogUC
+            catalogUC = catalogUC,
+            appInfo = appInfo
         )
         vm.event.test {
             vm.handleIntent(TokenIntent.SaveToken)
@@ -153,7 +164,8 @@ class TokenViewModelTest : FunSpec({
                 fromSettings = true,
                 tokenRepository = tokenRepository,
                 tmdbService = tmdbService,
-                catalogUC = catalogUC
+                catalogUC = catalogUC,
+                appInfo = appInfo
             )
 
             viewModel.uiState.test {

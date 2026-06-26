@@ -3,7 +3,6 @@ package com.mskd.flux.utils
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
@@ -39,9 +38,9 @@ object ExternalPlayer {
             launcher.launch(intent)
         } catch (e: Exception) {
             when (e) {
-                is ActivityNotFoundException -> Log.e("ExternalPlayer", "No player found", e)
-                is SecurityException -> Log.e("ExternalPlayer", "Permission denied", e)
-                else -> Log.e("ExternalPlayer", "Fail to launch external player", e)
+                is ActivityNotFoundException -> Trace.error("ExternalPlayer", "No player found", e)
+                is SecurityException -> Trace.error("ExternalPlayer", "Permission denied", e)
+                else -> Trace.error("ExternalPlayer", "Fail to launch external player", e)
             }
             ExternalPlayerService.stop(context)
             onError()

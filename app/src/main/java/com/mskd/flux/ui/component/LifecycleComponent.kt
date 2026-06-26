@@ -1,11 +1,11 @@
 package com.mskd.flux.ui.component
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import com.mskd.flux.utils.Trace
 
 @Composable
 fun LifecycleComponent(
@@ -20,15 +20,15 @@ fun LifecycleComponent(
         val observer = LifecycleEventObserver { _, event ->
             when (event) {
                 Lifecycle.Event.ON_START -> {
-                    Log.i("Lifecycle", "App pushed to the foreground")
+                    Trace.info("Lifecycle", "App pushed to the foreground")
                     onForeground()
                 }
                 Lifecycle.Event.ON_PAUSE -> {
-                    Log.i("Lifecycle", "App pushed to the background")
+                    Trace.info("Lifecycle", "App pushed to the background")
                     onBackground()
                 }
                 Lifecycle.Event.ON_STOP -> {
-                    Log.i("Lifecycle", "App stopped")
+                    Trace.info("Lifecycle", "App stopped")
                     onStop()
                 }
                 else -> {}

@@ -1,5 +1,7 @@
 package com.mskd.flux.screens.token
 
+import com.mskd.flux.screen.token.TokenMessage
+
 object TokenTestCases {
 
     data class SaveToken(

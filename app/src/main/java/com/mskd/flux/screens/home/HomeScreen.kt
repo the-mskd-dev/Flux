@@ -66,8 +66,6 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -78,6 +76,10 @@ import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.navigation.Route
+import com.mskd.flux.screen.home.HomeEvent
+import com.mskd.flux.screen.home.HomeIntent
+import com.mskd.flux.screen.home.HomeState
+import com.mskd.flux.screen.home.HomeViewModel
 import com.mskd.flux.screens.howTo.HowToNameFiles
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.component.global.FluxButton
@@ -89,7 +91,18 @@ import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxSnackbar
 import com.mskd.flux.utils.itemWidthFor
 import com.mskd.flux.utils.rememberScreenDimensions
+import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.empty_catalog
+import flux.shared.generated.resources.empty_catalog_desc
+import flux.shared.generated.resources.ic_flux
+import flux.shared.generated.resources.movies
+import flux.shared.generated.resources.other_files
+import flux.shared.generated.resources.refresh
+import flux.shared.generated.resources.shows
+import flux.shared.generated.resources.sync_in_progress
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -140,8 +153,9 @@ fun HomeScreen(
         when (state) {
 
             is HomeState.Loading -> {
+
                 LoadingScreen(
-                    text = stringResource(R.string.sync_in_progress),
+                    text = stringResource(Res.string.sync_in_progress),
                     progress = { state.progress }
                 )
             }
@@ -194,9 +208,9 @@ fun HomeEmpty(sendIntent: (HomeIntent) -> Unit) {
             horizontalAlignment = Alignment.Start,
         ) {
 
-            Text.Headline.Medium(text = stringResource(R.string.empty_catalog))
+            Text.Headline.Medium(text = stringResource(Res.string.empty_catalog))
 
-            Text.Body.Large(text = stringResource(R.string.empty_catalog_desc))
+            Text.Body.Large(text = stringResource(Res.string.empty_catalog_desc))
 
             HowToNameFiles()
 
@@ -205,7 +219,7 @@ fun HomeEmpty(sendIntent: (HomeIntent) -> Unit) {
                 contentAlignment = Alignment.Center
             ) {
                 FluxButton(
-                    text = stringResource(R.string.refresh),
+                    text = stringResource(Res.string.refresh),
                     onTap = { sendIntent(HomeIntent.SyncCatalog) }
                 )
             }
@@ -279,7 +293,7 @@ fun HomeContent(
 
                     item {
                         MediaCategory(
-                            name = stringResource(id = R.string.movies),
+                            name = stringResource(Res.string.shows),
                             category = ContentType.SHOW,
                             artworks = artworks.filter { it.type == ContentType.SHOW && !it.isUnknown },
                             sendIntent = sendIntent
@@ -288,7 +302,7 @@ fun HomeContent(
 
                     item {
                         MediaCategory(
-                            name = stringResource(id = R.string.shows),
+                            name = stringResource(Res.string.movies),
                             category = ContentType.MOVIE,
                             artworks = artworks.filter { it.type == ContentType.MOVIE && !it.isUnknown },
                             sendIntent = sendIntent
@@ -370,7 +384,7 @@ fun HomeTopButtons(sendIntent: (HomeIntent) -> Unit) {
 
         Icon(
             modifier = Modifier.size(32.dp),
-            painter = painterResource(R.drawable.ic_flux),
+            painter = painterResource(Res.drawable.ic_flux),
             tint = MaterialTheme.colorScheme.primary,
             contentDescription = "Flux icon"
         )
@@ -576,7 +590,7 @@ fun UnknownCategory(sendIntent: (HomeIntent) -> Unit) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = Ui.Space.medium, top = Ui.Space.large),
-            text = stringResource(R.string.other_files),
+            text = stringResource(Res.string.other_files),
             emphasized = true,
             color = MaterialTheme.colorScheme.onBackground
         )
@@ -596,7 +610,7 @@ fun UnknownCategory(sendIntent: (HomeIntent) -> Unit) {
                 modifier = Modifier.fillMaxSize(),
                 painter = foregroundPainter,
                 colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSecondaryContainer),
-                contentDescription = stringResource(R.string.other_files)
+                contentDescription = stringResource(Res.string.other_files)
             )
 
         }

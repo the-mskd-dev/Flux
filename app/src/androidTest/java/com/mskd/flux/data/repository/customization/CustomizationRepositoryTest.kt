@@ -6,7 +6,7 @@ import androidx.datastore.preferences.preferencesDataStoreFile
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.filters.MediumTest
 import app.cash.turbine.test
-import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.utils.UiCommon
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -79,9 +79,9 @@ class CustomizationRepositoryTest {
 
         customizationRepository.flow.test {
             var state = awaitItem()
-            assert(state.uiTheme == Ui.THEME.SYSTEM)
+            assert(state.uiTheme == UiCommon.THEME.SYSTEM)
 
-            val newTheme = Ui.THEME.DARK
+            val newTheme = UiCommon.THEME.DARK
             customizationRepository.setUiTheme(newTheme)
             state = awaitItem()
             assert(state.uiTheme == newTheme)

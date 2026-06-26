@@ -21,13 +21,11 @@ import androidx.compose.material3.ToggleButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.mskd.flux.R
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.Status
 import com.mskd.flux.model.artwork.Media
-import com.mskd.flux.screens.artwork.ArtworkIntent
+import com.mskd.flux.screen.artwork.ArtworkIntent
 import com.mskd.flux.ui.component.global.FluxTextButton
 import com.mskd.flux.ui.component.global.ProgressStatusBar
 import com.mskd.flux.ui.component.global.Text
@@ -36,6 +34,14 @@ import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.extensions.minToMs
 import com.mskd.flux.utils.extensions.timeDescription
+import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.mark_as_not_watched
+import flux.shared.generated.resources.mark_as_watched
+import flux.shared.generated.resources.play
+import flux.shared.generated.resources.remaining_time
+import flux.shared.generated.resources.resume
+import flux.shared.generated.resources.rewatch
+import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -48,9 +54,9 @@ fun ArtworkButtons(
     val buttonHeight = ButtonDefaults.MediumContainerHeight
 
     val text = when (media.status) {
-        Status.WATCHED -> stringResource(R.string.rewatch)
-        Status.IS_WATCHING -> stringResource(R.string.resume)
-        else -> stringResource(R.string.play)
+        Status.WATCHED -> stringResource(Res.string.rewatch)
+        Status.IS_WATCHING -> stringResource(Res.string.resume)
+        else -> stringResource(Res.string.play)
     }
 
     Column(
@@ -103,7 +109,7 @@ fun ArtworkButtons(
 
 
         FluxTextButton(
-            text = stringResource(if (media.status == Status.WATCHED) R.string.mark_as_not_watched else R.string.mark_as_watched),
+            text = stringResource(if (media.status == Status.WATCHED) Res.string.mark_as_not_watched else Res.string.mark_as_watched),
             height = buttonHeight,
             onTap = { sendIntent(ArtworkIntent.ChangeWatchStatus(media = media)) }
         )
@@ -138,7 +144,7 @@ fun MediaStatusProgression(
 
             val remainingTime = (media.duration.minToMs - media.currentTime).timeDescription(withoutSeconds = true)
             Text.Label.Medium(
-                text = stringResource(R.string.remaining_time, remainingTime),
+                text = stringResource(Res.string.remaining_time, remainingTime),
                 color = MaterialTheme.colorScheme.onBackground
             )
 

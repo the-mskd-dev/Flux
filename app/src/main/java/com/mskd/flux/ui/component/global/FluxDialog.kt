@@ -4,8 +4,10 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.res.stringResource
-import com.mskd.flux.R
+import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.cancel
+import flux.shared.generated.resources.validate
+import org.jetbrains.compose.resources.stringResource
 
 /**
  * Simple AlertDialog with Cancel and Validate buttons
@@ -14,9 +16,9 @@ import com.mskd.flux.R
 @Composable
 fun FluxDialog(
     onDismiss: () -> Unit,
-    onDismissLabel: String = stringResource(R.string.cancel),
+    onDismissLabel: String = stringResource(Res.string.cancel),
     onValidate: (() -> Unit)? = null,
-    onValidateLabel: String = stringResource(R.string.validate),
+    onValidateLabel: String = stringResource(Res.string.validate),
     title: String? = null,
     content: @Composable () -> Unit
 ) {

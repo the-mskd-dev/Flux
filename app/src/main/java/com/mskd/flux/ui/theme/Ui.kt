@@ -11,10 +11,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
-import com.mskd.flux.R
 
 object Ui {
 
@@ -98,42 +95,6 @@ object Ui {
 
         val buttonExit = fadeOut() + scaleOut()
 
-    }
-
-    enum class THEME {
-        LIGHT, DARK, SYSTEM;
-
-        val stringResourceId: Int get() = when(this) {
-            LIGHT -> R.string.light
-            DARK -> R.string.dark
-            SYSTEM -> R.string.system
-        }
-    }
-
-    sealed class AccentColors(val color: Color?, val stringResId: Int) {
-        data object System : AccentColors(color = null, stringResId = R.string.system)
-        data object Red : AccentColors(color = Color(239, 71, 111), stringResId = R.string.color_red)
-        data object Blue : AccentColors(color = Color(17, 138, 178), stringResId = R.string.color_blue)
-        data object Green : AccentColors(color = Color(6, 214, 160), stringResId = R.string.color_green)
-        data object Yellow : AccentColors(color = Color(255, 209, 102), stringResId = R.string.color_yellow)
-        data object Magenta : AccentColors(color = Color(181, 23, 158), stringResId = R.string.color_magenta)
-        data object Gray : AccentColors(color = Color(94, 100, 114), stringResId = R.string.color_gray)
-
-        companion object {
-
-            fun findColor(rgb: Int?) : AccentColors? {
-                return when (rgb) {
-                    null -> System
-                    Red.color?.toArgb() -> Red
-                    Blue.color?.toArgb() -> Blue
-                    Green.color?.toArgb() -> Green
-                    Yellow.color?.toArgb() -> Yellow
-                    Magenta.color?.toArgb() -> Magenta
-                    Gray.color?.toArgb() -> Gray
-                    else -> null
-                }
-            }
-        }
     }
 
 }

@@ -8,11 +8,12 @@ import com.mskd.flux.data.repository.files.FilesRepository
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.data.repository.tmdb.TmdbRepository
 import com.mskd.flux.data.repository.tmdb.TmdbRepositoryImpl
+import com.mskd.flux.data.repository.token.TokenRepository
 import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.data.tmdb.TMDBService
-import com.mskd.flux.data.tmdb.token.TokenRepository
-import com.mskd.flux.di.dataStoreModule
-import com.mskd.flux.di.ktorModule
+import com.mskd.flux.di.moduleDatastore
+import com.mskd.flux.di.moduleDatastoreAndroid
+import com.mskd.flux.di.moduleNetwork
 import com.mskd.flux.model.FileSource
 import com.mskd.flux.model.UserFile
 import com.mskd.flux.model.artwork.Artwork
@@ -77,8 +78,9 @@ class CatalogUCTest : KoinTest {
         startKoin {
             androidContext(context)
             modules(
-                ktorModule,
-                dataStoreModule
+                moduleNetwork,
+                moduleDatastore,
+                moduleDatastoreAndroid
             )
         }
 

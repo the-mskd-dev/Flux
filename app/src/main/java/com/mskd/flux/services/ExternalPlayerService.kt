@@ -13,6 +13,11 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.mskd.flux.R
+import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.external_player_service_text
+import flux.shared.generated.resources.stop
+import kotlinx.coroutines.runBlocking
+import org.jetbrains.compose.resources.getString
 
 class ExternalPlayerService : Service() {
 
@@ -72,15 +77,22 @@ class ExternalPlayerService : Service() {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
+        val (contentText, action) = runBlocking {
+            Pair(
+                getString(Res.string.external_player_service_text),
+                getString(Res.string.stop)
+            )
+        }
+
         return NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .setCategory(NotificationCompat.CATEGORY_SERVICE)
             .setSmallIcon(R.mipmap.ic_launcher)
             .setContentTitle(getString(R.string.app_name))
-            .setContentText(getString(R.string.external_player_service_text))
+            .setContentText(contentText)
             .setWhen(0)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-            .addAction(0, getString(R.string.stop), stopIntent)
+            .addAction(0, action, stopIntent)
             .build()
     }
 

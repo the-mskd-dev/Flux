@@ -216,7 +216,7 @@ class DatabaseRepositoryImplTest {
         Assert.assertEquals(unknownEpisodes.size, result.size)
         result.forEach { episode ->
             Assert.assertEquals(
-                Artwork.Companion.UNKNOWN_ID,
+                Artwork.UNKNOWN_ID,
                 episode.artworkId
             )
         }

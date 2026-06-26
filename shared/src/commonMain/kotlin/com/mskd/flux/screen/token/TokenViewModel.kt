@@ -1,0 +1,103 @@
+package com.mskd.flux.screen.token
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.mskd.flux.data.repository.token.TokenRepository
+import com.mskd.flux.data.tmdb.TMDBService
+import com.mskd.flux.model.AppInfo
+import com.mskd.flux.useCases.catalog.CatalogUC
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+
+class TokenViewModel(
+    fromSettings: Boolean,
+    private val tokenRepository: TokenRepository,
+    private val tmdbService: TMDBService,
+    private val catalogUC: CatalogUC,
+    private val appInfo: AppInfo
+) : ViewModel() {
+
+    private val _event = MutableSharedFlow<TokenEvent>()
+    val event = _event.asSharedFlow()
+
+    private val _uiState = MutableStateFlow(TokenUiState(showBackButton = fromSettings))
+    val uiState: StateFlow<TokenUiState> = _uiState.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            val token = tokenRepository.getToken().ifBlank { if (appInfo.isDebug) appInfo.debugToken else "" }
+            setToken(token)
+        }
+    }
+
+    fun handleIntent(intent: TokenIntent) = viewModelScope.launch {
+        when (intent) {
+            is TokenIntent.SetToken -> setToken(intent.token)
+            TokenIntent.SaveToken -> saveToken()
+            TokenIntent.OnBackTap -> onBackTap()
+            TokenIntent.OnCancelTap -> onCancelTap()
+            TokenIntent.OnNextTap -> onNextTap()
+        }
+    }
+
+    private fun setToken(token: String) {
+        _uiState.update { it.copy(token = token, message = TokenMessage.None) }
+    }
+
+    private suspend fun saveToken() {
+
+        _uiState.update { it.copy(isLoading = true) }
+
+        try {
+
+            tokenRepository.saveToken(_uiState.value.token)
+
+            val authentication = tmdbService.authenticate()
+
+            if (authentication.success) {
+
+                catalogUC.syncCatalog(onlyNew = false)
+
+                if (_uiState.value.showBackButton)
+                    _uiState.update { it.copy(message = TokenMessage.Success) }
+                else
+                    onNextTap()
+
+            } else {
+
+                tokenRepository.clearToken()
+                _uiState.update { it.copy(message = TokenMessage.Error) }
+
+            }
+
+        } catch (e: Exception) {
+
+            e.printStackTrace()
+            tokenRepository.clearToken()
+            _uiState.update { it.copy(message = TokenMessage.Error) }
+
+        }
+
+        _uiState.update { it.copy(isLoading = false) }
+
+    }
+
+    private suspend fun onBackTap() {
+        _event.emit(TokenEvent.BackToPreviousScreen)
+    }
+
+    private suspend fun onCancelTap() {
+        tokenRepository.dontRequestToken()
+        _event.emit(TokenEvent.NavigateToHomeScreen)
+    }
+
+    private suspend fun onNextTap() {
+        _event.emit(TokenEvent.NavigateToHomeScreen)
+    }
+
+}

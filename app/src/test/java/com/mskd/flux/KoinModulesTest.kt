@@ -17,13 +17,11 @@ class KoinModulesTest : FunSpec({
     @OptIn(KoinExperimentalAPI::class)
     test("verify modules") {
 
-        val allModules = listOf(
-            moduleAndroidApp,
-            modulePlatform
-        )
+        val allModules = module {
+            includes(moduleAndroidApp, modulePlatform)
+        }
 
-
-        allModules.verifyAll(
+        allModules.verify(
             extraTypes = listOf(
                 Context::class,
                 Application::class,

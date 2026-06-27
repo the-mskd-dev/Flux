@@ -8,6 +8,9 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.SeekParameters
+import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
+import androidx.media3.extractor.DefaultExtractorsFactory
+import androidx.media3.extractor.mp4.Mp4Extractor
 import com.mskd.flux.platform.AndroidPlayerManager
 import com.mskd.flux.platform.PlayerManager
 import com.mskd.flux.screen.player.PlayerViewModel
@@ -23,14 +26,21 @@ val modulePlayerAndroid = module {
         scoped<Player> {
             val context = androidContext()
 
+            val extractorsFactory = DefaultExtractorsFactory()
+                .setMp4ExtractorFlags(Mp4Extractor.FLAG_WORKAROUND_IGNORE_EDIT_LISTS)
+
+            val mediaSourceFactory = DefaultMediaSourceFactory(context, extractorsFactory)
+
             ExoPlayer.Builder(context)
                 .setAudioAttributes(AudioAttributes.DEFAULT, true)
                 .setHandleAudioBecomingNoisy(true)
+                .setMediaSourceFactory(mediaSourceFactory)
                 .setRenderersFactory(
                     DefaultRenderersFactory(context)
                         .setExtensionRendererMode(
                             DefaultRenderersFactory.EXTENSION_RENDERER_MODE_PREFER
                         )
+                        .setEnableDecoderFallback(true)
                 )
                 .build()
                 .apply {

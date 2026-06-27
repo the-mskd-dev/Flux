@@ -17,7 +17,7 @@ interface PlayerManager<out T> {
             val selectedSubtitles: PlayerTrack? = null,
             val duration: Long = 0L,
         ) : State<T>()
-        data object Error : State<Nothing>()
+        data class Error(val code: Int? = null, val name: String? = null) : State<Nothing>()
     }
 
     data class Progress(

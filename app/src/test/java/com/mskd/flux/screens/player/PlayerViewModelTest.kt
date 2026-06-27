@@ -467,22 +467,22 @@ class PlayerViewModelTest : FunSpec({
     }
 
     test("error state when artworkState is State.Error") {
-        artworkUC.setContent(State.Error)
+        artworkUC.setContent(State.Error())
         updateVm()
 
         viewModel.uiState.test {
-            awaitItem().state shouldBe State.Error
+            awaitItem().state shouldBe State.Error()
         }
     }
 
     test("error state when playerState is PlayerManager.State.Error") {
         playerManager = mockk(relaxed = true) {
-            every { flow } returns MutableStateFlow(PlayerManager.State.Error)
+            every { flow } returns MutableStateFlow(PlayerManager.State.Error())
         }
         updateVm()
 
         viewModel.uiState.test {
-            awaitItem().state shouldBe State.Error
+            awaitItem().state shouldBe State.Error()
         }
     }
 

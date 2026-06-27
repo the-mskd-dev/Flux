@@ -89,8 +89,13 @@ class PlayerViewModel<out T>(
     ) { artworkState, settings, playerState, userState ->
 
         when {
-            artworkState is State.Error || playerState is PlayerManager.State.Error ->
-                PlayerUiState(state = State.Error)
+            artworkState is State.Error -> {
+                PlayerUiState(state = State.Error())
+            }
+            playerState is PlayerManager.State.Error -> {
+                val (code, message) = playerState
+                PlayerUiState(state = State.Error(code = code, message = message))
+            }
             artworkState !is State.Content || playerState !is PlayerManager.State.Ready ->
                 PlayerUiState(state = State.Loading)
             else -> {
@@ -98,7 +103,7 @@ class PlayerViewModel<out T>(
                 val media = resolveMedia(
                     fullArtwork = artworkState.content,
                     mediaId = userState.mediaId
-                ) ?: return@combine PlayerUiState(state = State.Error)
+                ) ?: return@combine PlayerUiState(state = State.Error())
 
                 val dataState = PlayerDataState(
                     fullArtwork = artworkState.content,

@@ -415,7 +415,7 @@ class ArtworkViewModelTest : FunSpec({
 
         viewModel.uiState.test {
             val state = awaitItem()
-            state.state shouldBe State.Error
+            state.state shouldBe State.Error()
         }
     }
 

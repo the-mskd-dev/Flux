@@ -13,27 +13,25 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.mskd.flux.screen.customization.CustomizationIntent
 import com.mskd.flux.ui.component.global.FluxDialog
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.Ui
-import flux.shared.generated.resources.Res
-import flux.shared.generated.resources.items_per_row
-import flux.shared.generated.resources.items_per_row_desc
-import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun ItemsPerRowDialog(
     value: Int,
-    sendIntent: (CustomizationIntent) -> Unit
+    title: String,
+    description: String,
+    onValidate: (Int) -> Unit,
+    onDismiss: () -> Unit,
 ) {
 
     var currentValue by remember { mutableIntStateOf(value) }
 
     FluxDialog(
-        onDismiss = { sendIntent(CustomizationIntent.HideDialog) },
-        onValidate = { sendIntent(CustomizationIntent.SetItemsPerRowValue(count = currentValue)) },
-        title = stringResource(Res.string.items_per_row),
+        onDismiss = onDismiss,
+        onValidate = { onValidate(currentValue) },
+        title = title,
         content = {
 
             Column(
@@ -41,7 +39,7 @@ fun ItemsPerRowDialog(
                 verticalArrangement = Arrangement.spacedBy(Ui.Space.large)
             ) {
 
-                Text.Body.Medium(stringResource(Res.string.items_per_row_desc))
+                Text.Body.Medium(description)
 
                 Row(
                     modifier = Modifier

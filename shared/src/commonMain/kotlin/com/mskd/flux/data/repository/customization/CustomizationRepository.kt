@@ -18,6 +18,7 @@ interface CustomizationRepository {
     suspend fun setLargeEpisodeImage(large: Boolean)
 
     suspend fun setItemsPerRow(count: Int)
+    suspend fun setSeasonsPerRow(count: Int)
 
     data class State(
         val uiTheme: UiCommon.THEME = UiCommon.THEME.SYSTEM,
@@ -25,7 +26,8 @@ interface CustomizationRepository {
         val waveProgress: Boolean = true,
         val oldBlurredHeader: Boolean = false,
         val largeEpisodeImage: Boolean = false,
-        val itemsPerRow: Int = 3
+        val itemsPerRow: Int = 3,
+        val seasonsPerRow: Int = itemsPerRow
     )
 
 }

@@ -24,6 +24,7 @@ class CustomizationRepositoryImpl(
         val OLD_BLURRED_HEADER = booleanPreferencesKey("old_blurred_header")
         val LARGE_EPISODE_IMAGE = booleanPreferencesKey("large_episode_image")
         val ITEMS_PER_ROW = intPreferencesKey("items_per_row")
+        val SEASONS_PER_ROW = intPreferencesKey("seasons_per_row")
     }
 
     override val flow: Flow<CustomizationRepository.State> = customizationDataStore.data
@@ -36,6 +37,7 @@ class CustomizationRepositoryImpl(
             val oldBlurredHeader = preferences[Keys.OLD_BLURRED_HEADER] ?: false
             val largeEpisodeImage = preferences[Keys.LARGE_EPISODE_IMAGE] ?: false
             val itemsPerRow = preferences[Keys.ITEMS_PER_ROW] ?: 3
+            val seasonsPerRow = preferences[Keys.SEASONS_PER_ROW] ?: itemsPerRow
 
             CustomizationRepository.State(
                 uiTheme = uiTheme,
@@ -43,7 +45,8 @@ class CustomizationRepositoryImpl(
                 waveProgress = waveProgress,
                 oldBlurredHeader = oldBlurredHeader,
                 largeEpisodeImage = largeEpisodeImage,
-                itemsPerRow = itemsPerRow
+                itemsPerRow = itemsPerRow,
+                seasonsPerRow = seasonsPerRow
             )
         }
 
@@ -83,6 +86,12 @@ class CustomizationRepositoryImpl(
     override suspend fun setItemsPerRow(count: Int) {
         customizationDataStore.edit { preferences ->
             preferences[Keys.ITEMS_PER_ROW] = count
+        }
+    }
+
+    override suspend fun setSeasonsPerRow(count: Int) {
+        customizationDataStore.edit { preferences ->
+            preferences[Keys.SEASONS_PER_ROW] = count
         }
     }
 

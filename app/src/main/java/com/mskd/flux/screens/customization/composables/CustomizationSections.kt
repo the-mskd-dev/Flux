@@ -23,6 +23,7 @@ import flux.shared.generated.resources.items
 import flux.shared.generated.resources.items_per_row
 import flux.shared.generated.resources.large_episode_image
 import flux.shared.generated.resources.old_blurred_header
+import flux.shared.generated.resources.seasons_per_row
 import flux.shared.generated.resources.wave_progress
 import org.jetbrains.compose.resources.stringResource
 
@@ -62,6 +63,12 @@ fun CustomizationGlobalSection(
             text = stringResource(Res.string.items_per_row),
             subText = stringResource(Res.string.items, state.itemsPerRow),
             onTap = { sendIntent(CustomizationIntent.ShowItemsPerRowDialog) }
+        )
+
+        SettingsItem(
+            text = stringResource(Res.string.seasons_per_row),
+            subText = stringResource(Res.string.items, state.seasonsPerRow),
+            onTap = { sendIntent(CustomizationIntent.ShowSeasonsPerRowDialog) }
         )
 
     }

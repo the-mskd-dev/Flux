@@ -13,7 +13,7 @@ data class CustomizationUiState(
     val oldBlurredHeader: Boolean = false,
     val largeEpisodeImage: Boolean = false,
     val itemsPerRow: Int = 3,
-    val seasonsPerRow: Int = itemsPerRow,
+    val seasonsPerRow: Int = 3,
     val dialog: CustomizationDialog? = null
 )
 

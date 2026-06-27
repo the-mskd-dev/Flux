@@ -37,7 +37,7 @@ class CustomizationRepositoryImpl(
             val oldBlurredHeader = preferences[Keys.OLD_BLURRED_HEADER] ?: false
             val largeEpisodeImage = preferences[Keys.LARGE_EPISODE_IMAGE] ?: false
             val itemsPerRow = preferences[Keys.ITEMS_PER_ROW] ?: 3
-            val seasonsPerRow = preferences[Keys.SEASONS_PER_ROW] ?: itemsPerRow
+            val seasonsPerRow = preferences[Keys.SEASONS_PER_ROW] ?: 3
 
             CustomizationRepository.State(
                 uiTheme = uiTheme,

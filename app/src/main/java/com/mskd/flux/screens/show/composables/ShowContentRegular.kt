@@ -46,7 +46,7 @@ fun ShowContentRegular(
 ) {
 
     val screenDimensions = rememberScreenDimensions()
-    val columns = LocalCustomization.current.itemsPerRow
+    val columns = LocalCustomization.current.seasonsPerRow
     val itemWidth = itemWidthFor(screenWidthDp = screenDimensions.widthDp, columns = columns)
 
     LazyColumn(

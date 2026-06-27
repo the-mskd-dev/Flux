@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.mskd.flux.data.repository.files.FilesRepository
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.model.State
+import com.mskd.flux.model.StringProvider
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.model.artwork.Media
@@ -94,7 +95,7 @@ class PlayerViewModel<out T>(
             }
             playerState is PlayerManager.State.Error -> {
                 val (code, message) = playerState
-                PlayerUiState(state = State.Error(code = code, message = message))
+                PlayerUiState(state = State.Error(code = code, message = message?.let { StringProvider.Static(it) }))
             }
             artworkState !is State.Content || playerState !is PlayerManager.State.Ready ->
                 PlayerUiState(state = State.Loading)

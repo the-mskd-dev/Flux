@@ -72,6 +72,7 @@ import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.AppTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.LandscapePreview
+import com.mskd.flux.utils.extensions.description
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.oups_an_error_occured
 import kotlinx.coroutines.delay
@@ -137,7 +138,7 @@ fun PlayerScreen(
 
                 ErrorScreen(
                     message = stringResource(Res.string.oups_an_error_occured),
-                    description = state.description,
+                    description = state.description(),
                     onBackButtonTap = { viewModel.handleIntent(PlayerIntent.OnBackTap) }
                 )
 

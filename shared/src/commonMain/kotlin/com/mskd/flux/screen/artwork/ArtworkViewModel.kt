@@ -55,7 +55,7 @@ class ArtworkViewModel(
 
         when (artworkState) {
             is State.Loading -> ArtworkUiState(state = State.Loading)
-            is State.Error -> ArtworkUiState(state = State.Error)
+            is State.Error -> ArtworkUiState(state = State.Error())
             is State.Content -> {
 
                 val dataState = ArtworkDataState(
@@ -123,7 +123,7 @@ class ArtworkViewModel(
         val selectedMedia = resolveSelectedMedia(
             fullArtwork = dataState.fullArtwork,
             userState = userState
-        ) ?: return State.Error
+        ) ?: return State.Error()
 
         return State.Content(
             ArtworkContent(

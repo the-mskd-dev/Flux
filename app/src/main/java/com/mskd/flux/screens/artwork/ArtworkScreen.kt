@@ -118,7 +118,7 @@ fun ArtworkScreen(
 
         when (state) {
             State.Loading -> LoadingScreen()
-            State.Error -> {
+            is State.Error -> {
                 ErrorScreen(
                     message = stringResource(Res.string.oups_an_error_occured),
                     onBackButtonTap = { viewModel.handleIntent(ArtworkIntent.OnBackTap) }

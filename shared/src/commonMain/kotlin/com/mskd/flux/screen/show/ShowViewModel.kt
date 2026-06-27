@@ -36,10 +36,10 @@ class ShowViewModel(
     ) { artworkState, dialog ->
         when (artworkState) {
             is State.Loading -> ShowUiState(state = State.Loading)
-            is State.Error -> ShowUiState(state = State.Error)
+            is State.Error -> ShowUiState(state = State.Error())
             is State.Content -> {
                 val fullShow = artworkState.content as? FullArtwork.FullShow
-                    ?: return@combine ShowUiState(state = State.Error)
+                    ?: return@combine ShowUiState(state = State.Error())
                 ShowUiState(
                     state = State.Content(
                         ShowContent(fullShow = fullShow, dialog = dialog)

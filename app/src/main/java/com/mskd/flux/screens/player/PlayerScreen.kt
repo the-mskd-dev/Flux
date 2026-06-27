@@ -134,10 +134,13 @@ fun PlayerScreen(
         when (state) {
             is State.Loading -> LoadingScreen()
             is State.Error -> {
+
                 ErrorScreen(
                     message = stringResource(Res.string.oups_an_error_occured),
+                    description = state.description,
                     onBackButtonTap = { viewModel.handleIntent(PlayerIntent.OnBackTap) }
                 )
+
             }
             is State.Content -> {
 

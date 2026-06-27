@@ -41,7 +41,7 @@ class ArtworkUCImpl(
 
                         movie?.let {
                             State.Content(content = buildFullArtworkMovie(artwork = artwork, movie = it))
-                        } ?: State.Error
+                        } ?: State.Error()
 
                     }
                     ContentType.SHOW -> {
@@ -55,7 +55,7 @@ class ArtworkUCImpl(
                         )
 
                     }
-                    null -> State.Error
+                    null -> State.Error()
                 }
 
             }

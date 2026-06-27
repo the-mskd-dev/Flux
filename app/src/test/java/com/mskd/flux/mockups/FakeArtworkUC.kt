@@ -65,7 +65,7 @@ class FakeArtworkUC(initialContentType: ContentType = ContentType.MOVIE) : Artwo
 
     override fun searchArtwork(artworkId: Long) {
         _flow.value = runBlocking {
-            getArtwork(artworkId = artworkId)?.let { State.Content(it) } ?: State.Error
+            getArtwork(artworkId = artworkId)?.let { State.Content(it) } ?: State.Error()
         }
     }
 

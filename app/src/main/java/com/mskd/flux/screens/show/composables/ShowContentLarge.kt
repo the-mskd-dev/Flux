@@ -77,11 +77,11 @@ fun ShowContentLarge(
                         .wrapContentWidth(),
                     text = fullShow.artwork.title,
                     color = MaterialTheme.colorScheme.onBackground,
-                    style = MaterialTheme.typography.displayMediumEmphasized,
+                    style = MaterialTheme.typography.displaySmallEmphasized,
                     maxLines = 3,
                     autoSize = TextAutoSize.StepBased(
                         minFontSize = MaterialTheme.typography.titleSmallEmphasized.fontSize,
-                        maxFontSize = MaterialTheme.typography.displayMediumEmphasized.fontSize,
+                        maxFontSize = MaterialTheme.typography.displaySmallEmphasized.fontSize,
                     )
                 )
 

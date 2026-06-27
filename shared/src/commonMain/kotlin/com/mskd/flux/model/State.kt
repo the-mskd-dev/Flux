@@ -6,8 +6,8 @@ sealed class State<out T> {
     data class Error(val code: Int? = null, val message: String? = null) : State<Nothing>() {
 
         val description: String? get() = when {
-            code != null && message != null -> "CODE ${code} (${message})"
-            code != null -> "CODE ${code}"
+            code != null && message != null -> "CODE $code ($message)"
+            code != null -> "CODE $code"
             message != null -> message
             else -> null
         }

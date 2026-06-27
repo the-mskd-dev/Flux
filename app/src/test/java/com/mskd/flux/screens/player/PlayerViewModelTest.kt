@@ -477,7 +477,7 @@ class PlayerViewModelTest : FunSpec({
 
     test("error state when playerState is PlayerManager.State.Error") {
         playerManager = mockk(relaxed = true) {
-            every { flow } returns MutableStateFlow(PlayerManager.State.Error(error = PlayerManager.Error.Connect))
+            every { flow } returns MutableStateFlow(PlayerManager.State.Error())
         }
         updateVm()
 

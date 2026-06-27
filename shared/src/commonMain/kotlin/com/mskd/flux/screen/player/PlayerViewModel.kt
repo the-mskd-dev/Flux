@@ -93,8 +93,8 @@ class PlayerViewModel<out T>(
                 PlayerUiState(state = State.Error())
             }
             playerState is PlayerManager.State.Error -> {
-                val error = playerState.error as? PlayerManager.Error.Player
-                PlayerUiState(state = State.Error(code = error?.code, message = error?.name))
+                val (code, message) = playerState
+                PlayerUiState(state = State.Error(code = code, message = message))
             }
             artworkState !is State.Content || playerState !is PlayerManager.State.Ready ->
                 PlayerUiState(state = State.Loading)

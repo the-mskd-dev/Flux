@@ -94,7 +94,7 @@ class AndroidPlayerManager(private val context: Context) : Player.Listener, Play
         controllerFuture?.addListener({
             try {
                 val controller = controllerFuture?.get() ?: run {
-                    _state.value = PlayerManager.State.Error(error = PlayerManager.Error.Connect)
+                    _state.value = PlayerManager.State.Error()
                     return@addListener
                 }
 
@@ -102,7 +102,7 @@ class AndroidPlayerManager(private val context: Context) : Player.Listener, Play
                 _state.value = PlayerManager.State.Ready(player = controller)
             } catch (e: Exception) {
                 Trace.error(tag = TAG, message = "Failed to connect", throwable = e)
-                _state.value = PlayerManager.State.Error(error = PlayerManager.Error.Connect)
+                _state.value = PlayerManager.State.Error()
             }
         }, MoreExecutors.directExecutor())
 
@@ -265,10 +265,8 @@ class AndroidPlayerManager(private val context: Context) : Player.Listener, Play
         super.onPlayerError(error)
         _state.update {
             PlayerManager.State.Error(
-                error = PlayerManager.Error.Player(
-                    code = error.errorCode,
-                    name = error.errorCodeName
-                )
+                code = error.errorCode,
+                name = error.errorCodeName
             )
         }
     }

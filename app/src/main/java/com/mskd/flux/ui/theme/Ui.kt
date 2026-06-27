@@ -44,7 +44,7 @@ object Ui {
 
         }
 
-        val itemCard @Composable get() = MaterialTheme.shapes.large
+        val itemCard @Composable get() = MaterialTheme.shapes.small
 
     }
 

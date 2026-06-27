@@ -109,7 +109,7 @@ fun EpisodeItemLarge(
     Column(
         modifier = modifier
             .padding(horizontal = Ui.Space.medium)
-            .clip(Ui.Shape.itemCard)
+            .clip(MaterialTheme.shapes.large)
             .background(bgColor)
             .combinedClickable(
                 onClick = { onTap(episode) },
@@ -214,7 +214,7 @@ fun EpisodeItemSmall(
     Column(
         modifier = modifier
             .padding(horizontal = Ui.Space.medium)
-            .clip(Ui.Shape.itemCard)
+            .clip(MaterialTheme.shapes.large)
             .background(bgColor)
             .combinedClickable(
                 onClick = { onTap(episode) },

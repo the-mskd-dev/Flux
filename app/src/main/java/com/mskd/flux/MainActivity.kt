@@ -34,7 +34,6 @@ import com.mskd.flux.screens.token.TokenScreen
 import com.mskd.flux.screens.unknown.UnknownScreen
 import com.mskd.flux.screens.welcome.WelcomeScreen
 import com.mskd.flux.ui.theme.AppTheme
-import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.ui.theme.createColorScheme
 import com.mskd.flux.utils.extensions.popScreen
 import com.mskd.flux.utils.notificationsPermissionState
@@ -71,22 +70,8 @@ class MainActivity : ComponentActivity() {
             val startingScreen = viewModel.getStartingScreen(storagePermission.status.isGranted)
 
             AppTheme(
-                theme = customization.uiTheme,
-                color = customization.color,
                 isOnline = isOnline,
-                uiGlobal = FluxUI.Global(
-                    oldBlurredHeader = customization.oldBlurredHeader
-                ),
-                uiItemsPerRow = FluxUI.ItemsPerRow(
-                    artworks = customization.itemsPerRow,
-                    seasons = customization.seasonsPerRow
-                ),
-                uiEpisodes = FluxUI.Episodes(
-                    large = customization.largeEpisodeImage
-                ),
-                uiPlayer = FluxUI.Player(
-                    waveProgress = customization.waveProgress
-                )
+                customization = customization
             ) {
 
                 val backStack = rememberNavBackStack(startingScreen)

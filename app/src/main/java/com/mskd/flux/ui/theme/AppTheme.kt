@@ -11,37 +11,44 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import com.materialkolor.rememberDynamicColorScheme
 import com.mskd.flux.data.repository.connectivity.LocalConnectivity
+import com.mskd.flux.data.repository.customization.CustomizationRepository
 import com.mskd.flux.ui.typography.FluxTypography
 import com.mskd.flux.utils.UiCommon
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun AppTheme(
-    theme: UiCommon.THEME = UiCommon.THEME.SYSTEM,
-    color: Int? = null,
     isOnline: Boolean = true,
-    uiShapes: FluxUI.Shapes = FluxUI.Shapes(),
-    uiGlobal: FluxUI.Global = FluxUI.Global(),
-    uiItemsPerRow: FluxUI.ItemsPerRow = FluxUI.ItemsPerRow(),
-    uiEpisodes: FluxUI.Episodes = FluxUI.Episodes(),
-    uiPlayer: FluxUI.Player = FluxUI.Player(),
+    customization: CustomizationRepository.State = CustomizationRepository.State(),
     content: @Composable () -> Unit
 ) {
 
     val colorScheme = createColorScheme(
-        theme = theme,
-        color = color
+        theme = customization.uiTheme,
+        color = customization.color
     )
 
     CompositionLocalProvider(
         LocalConnectivity provides isOnline,
-        LocalUiShapes provides uiShapes,
-        LocalUiGlobal provides uiGlobal,
-        LocalUiItemsPerRow provides uiItemsPerRow,
-        LocalUiEpisodes provides uiEpisodes,
-        LocalUiPlayer provides uiPlayer
+        LocalUiShapes provides FluxUI.Shapes(
+            cardCorner = 8.dp
+        ),
+        LocalUiGlobal provides FluxUI.Global(
+            oldBlurredHeader = customization.oldBlurredHeader
+        ),
+        LocalUiItemsPerRow provides FluxUI.ItemsPerRow(
+            artworks = customization.itemsPerRow,
+            seasons = customization.seasonsPerRow
+        ),
+        LocalUiEpisodes provides FluxUI.Episodes(
+            large = customization.largeEpisodeImage
+        ),
+        LocalUiPlayer provides FluxUI.Player(
+            waveProgress = customization.waveProgress
+        )
     ) {
 
         MaterialExpressiveTheme(

@@ -24,9 +24,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import com.mskd.flux.data.repository.customization.LocalCustomization
 import com.mskd.flux.screen.player.PlayerIntent
 import com.mskd.flux.ui.component.global.Text
+import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.extensions.formatMinSec
 
@@ -100,7 +100,7 @@ fun PlayerSlider(
     duration: Long,
 ) {
 
-    val waveProgress = LocalCustomization.current.waveProgress
+    val waveProgress = FluxUI.player.waveProgress
 
     Slider(
         modifier = modifier,

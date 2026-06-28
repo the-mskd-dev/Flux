@@ -7,12 +7,10 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
@@ -21,8 +19,6 @@ import androidx.navigation3.ui.NavDisplay
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.mskd.flux.data.repository.connectivity.ConnectivityRepository
-import com.mskd.flux.data.repository.connectivity.LocalConnectivity
-import com.mskd.flux.data.repository.customization.LocalCustomization
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Transition
 import com.mskd.flux.screens.about.AboutScreen
@@ -38,8 +34,7 @@ import com.mskd.flux.screens.token.TokenScreen
 import com.mskd.flux.screens.unknown.UnknownScreen
 import com.mskd.flux.screens.welcome.WelcomeScreen
 import com.mskd.flux.ui.theme.AppTheme
-import com.mskd.flux.ui.theme.FluxItemsPerRow
-import com.mskd.flux.ui.theme.FluxShapes
+import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.ui.theme.createColorScheme
 import com.mskd.flux.utils.extensions.popScreen
 import com.mskd.flux.utils.notificationsPermissionState
@@ -79,120 +74,125 @@ class MainActivity : ComponentActivity() {
                 theme = customization.uiTheme,
                 color = customization.color,
                 isOnline = isOnline,
-                itemsPerRow = FluxItemsPerRow(
+                uiGlobal = FluxUI.Global(
+                    oldBlurredHeader = customization.oldBlurredHeader
+                ),
+                uiItemsPerRow = FluxUI.ItemsPerRow(
                     artworks = customization.itemsPerRow,
                     seasons = customization.seasonsPerRow
+                ),
+                uiEpisodes = FluxUI.Episodes(
+                    large = customization.largeEpisodeImage
+                ),
+                uiPlayer = FluxUI.Player(
+                    waveProgress = customization.waveProgress
                 )
             ) {
 
                 val backStack = rememberNavBackStack(startingScreen)
 
-                CompositionLocalProvider(
-                        LocalCustomization provides customization
-                ) {
-                    NavDisplay(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(color = MaterialTheme.colorScheme.background),
-                        backStack = backStack,
-                        onBack = { backStack.removeLastOrNull() },
-                        entryDecorators = listOf(
-                            rememberSaveableStateHolderNavEntryDecorator(),
-                            rememberViewModelStoreNavEntryDecorator()
-                        ),
-                        transitionSpec = { Transition.Forward },
-                        popTransitionSpec = { Transition.Backward },
-                        predictivePopTransitionSpec = { Transition.Backward },
-                        entryProvider = entryProvider {
-                            entry<Route.Welcome> {
-                                WelcomeScreen(
-                                    navigate = { route ->
-                                        backStack.clear()
-                                        backStack.add(route)
-                                    },
-                                )
-                            }
-                            entry<Route.Library> {
-                                HomeScreen(
-                                    navigate = { route -> backStack.add(route) },
-                                )
-                            }
-                            entry<Route.Show> { entry ->
-                                ShowScreen(
-                                    navigate = { route -> backStack.add(route) },
-                                    onBack = { backStack.popScreen() },
-                                    artworkId = entry.artworkId,
-                                    colorScheme = createColorScheme(
-                                        theme = customization.uiTheme,
-                                        color = customization.color ?: entry.rgb
-                                    )
-                                )
-                            }
-                            entry<Route.Artwork> { entry ->
-                                ArtworkScreen(
-                                    navigate = { route -> backStack.add(route) },
-                                    onBack = { backStack.popScreen() },
-                                    artworkId = entry.artworkId,
-                                    season = entry.season,
-                                    colorScheme = createColorScheme(
-                                        theme = customization.uiTheme,
-                                        color = customization.color ?: entry.rgb
-                                    )
-                                )
-                            }
-                            entry<Route.UnknownArtworks> {
-                                UnknownScreen(
-                                    navigate = { route -> backStack.add(route) },
-                                    onBack = { backStack.popScreen() },
-                                )
-                            }
-                            entry<Route.Search> { entry ->
-                                SearchScreen(
-                                    navigate = { route -> backStack.add(route) },
-                                    onBack = { backStack.popScreen() },
-                                    contentType = entry.contentType
-                                )
-                            }
-                            entry<Route.Player> { entry ->
-                                PlayerScreen(
-                                    mediaId = entry.mediaId,
-                                    onBack = { backStack.popScreen() },
-                                )
-                            }
-                            entry<Route.Settings> {
-                                SettingsScreen(
-                                    navigate = { route -> backStack.add(route) },
-                                    onBack = { backStack.popScreen() },
-                                )
-                            }
-                            entry<Route.Customization> {
-                                CustomizationScreen(
-                                    onBack = { backStack.popScreen() },
-                                )
-                            }
-                            entry<Route.HowTo> {
-                                HowToScreen(
-                                    onBack = { backStack.popScreen() }
-                                )
-                            }
-                            entry<Route.About> {
-                                AboutScreen(
-                                    onBack = { backStack.popScreen() }
-                                )
-                            }
-                            entry<Route.Token> { entry ->
-                                TokenScreen(
-                                    onBack = { backStack.popScreen() },
-                                    navigate = { route ->
-                                        backStack.clear()
-                                        backStack.add(route)
-                                    },
-                                    fromSettings = entry.fromSettings
-                                )
-                            }
+                NavDisplay(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(color = MaterialTheme.colorScheme.background),
+                    backStack = backStack,
+                    onBack = { backStack.removeLastOrNull() },
+                    entryDecorators = listOf(
+                        rememberSaveableStateHolderNavEntryDecorator(),
+                        rememberViewModelStoreNavEntryDecorator()
+                    ),
+                    transitionSpec = { Transition.Forward },
+                    popTransitionSpec = { Transition.Backward },
+                    predictivePopTransitionSpec = { Transition.Backward },
+                    entryProvider = entryProvider {
+                        entry<Route.Welcome> {
+                            WelcomeScreen(
+                                navigate = { route ->
+                                    backStack.clear()
+                                    backStack.add(route)
+                                },
+                            )
                         }
-                    )
-                }
+                        entry<Route.Library> {
+                            HomeScreen(
+                                navigate = { route -> backStack.add(route) },
+                            )
+                        }
+                        entry<Route.Show> { entry ->
+                            ShowScreen(
+                                navigate = { route -> backStack.add(route) },
+                                onBack = { backStack.popScreen() },
+                                artworkId = entry.artworkId,
+                                colorScheme = createColorScheme(
+                                    theme = customization.uiTheme,
+                                    color = customization.color ?: entry.rgb
+                                )
+                            )
+                        }
+                        entry<Route.Artwork> { entry ->
+                            ArtworkScreen(
+                                navigate = { route -> backStack.add(route) },
+                                onBack = { backStack.popScreen() },
+                                artworkId = entry.artworkId,
+                                season = entry.season,
+                                colorScheme = createColorScheme(
+                                    theme = customization.uiTheme,
+                                    color = customization.color ?: entry.rgb
+                                )
+                            )
+                        }
+                        entry<Route.UnknownArtworks> {
+                            UnknownScreen(
+                                navigate = { route -> backStack.add(route) },
+                                onBack = { backStack.popScreen() },
+                            )
+                        }
+                        entry<Route.Search> { entry ->
+                            SearchScreen(
+                                navigate = { route -> backStack.add(route) },
+                                onBack = { backStack.popScreen() },
+                                contentType = entry.contentType
+                            )
+                        }
+                        entry<Route.Player> { entry ->
+                            PlayerScreen(
+                                mediaId = entry.mediaId,
+                                onBack = { backStack.popScreen() },
+                            )
+                        }
+                        entry<Route.Settings> {
+                            SettingsScreen(
+                                navigate = { route -> backStack.add(route) },
+                                onBack = { backStack.popScreen() },
+                            )
+                        }
+                        entry<Route.Customization> {
+                            CustomizationScreen(
+                                onBack = { backStack.popScreen() },
+                            )
+                        }
+                        entry<Route.HowTo> {
+                            HowToScreen(
+                                onBack = { backStack.popScreen() }
+                            )
+                        }
+                        entry<Route.About> {
+                            AboutScreen(
+                                onBack = { backStack.popScreen() }
+                            )
+                        }
+                        entry<Route.Token> { entry ->
+                            TokenScreen(
+                                onBack = { backStack.popScreen() },
+                                navigate = { route ->
+                                    backStack.clear()
+                                    backStack.add(route)
+                                },
+                                fromSettings = entry.fromSettings
+                            )
+                        }
+                    }
+                )
 
             }
 

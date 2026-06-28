@@ -22,8 +22,11 @@ fun AppTheme(
     theme: UiCommon.THEME = UiCommon.THEME.SYSTEM,
     color: Int? = null,
     isOnline: Boolean = true,
-    shapes: FluxShapes = FluxShapes(),
-    itemsPerRow: FluxItemsPerRow = FluxItemsPerRow(),
+    uiShapes: FluxUI.Shapes = FluxUI.Shapes(),
+    uiGlobal: FluxUI.Global = FluxUI.Global(),
+    uiItemsPerRow: FluxUI.ItemsPerRow = FluxUI.ItemsPerRow(),
+    uiEpisodes: FluxUI.Episodes = FluxUI.Episodes(),
+    uiPlayer: FluxUI.Player = FluxUI.Player(),
     content: @Composable () -> Unit
 ) {
 
@@ -34,8 +37,11 @@ fun AppTheme(
 
     CompositionLocalProvider(
         LocalConnectivity provides isOnline,
-        LocalFluxShapes provides shapes,
-        LocalItemsPerRow provides itemsPerRow
+        LocalUiShapes provides uiShapes,
+        LocalUiGlobal provides uiGlobal,
+        LocalUiItemsPerRow provides uiItemsPerRow,
+        LocalUiEpisodes provides uiEpisodes,
+        LocalUiPlayer provides uiPlayer
     ) {
 
         MaterialExpressiveTheme(

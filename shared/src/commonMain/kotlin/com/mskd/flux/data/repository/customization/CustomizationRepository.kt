@@ -1,6 +1,5 @@
 package com.mskd.flux.data.repository.customization
 
-import androidx.compose.runtime.compositionLocalOf
 import com.mskd.flux.utils.UiCommon
 import kotlinx.coroutines.flow.Flow
 
@@ -31,5 +30,3 @@ interface CustomizationRepository {
     )
 
 }
-
-val LocalCustomization = compositionLocalOf { CustomizationRepository.State() }

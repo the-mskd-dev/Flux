@@ -29,7 +29,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import com.mskd.flux.data.repository.customization.LocalCustomization
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.Status
 import com.mskd.flux.model.artwork.Episode
@@ -38,6 +37,7 @@ import com.mskd.flux.ui.component.global.FluxDropDownMenu
 import com.mskd.flux.ui.component.global.FluxDropDownMenuItem
 import com.mskd.flux.ui.component.global.ReadMoreButton
 import com.mskd.flux.ui.component.global.Text
+import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.AppThemePreview
 import com.mskd.flux.utils.PortraitPreview
@@ -64,9 +64,7 @@ fun EpisodeItem(
     dropDownMenu: @Composable ((onDismissRequest: () -> Unit) -> Unit)? = null
 ) {
 
-    val customization = LocalCustomization.current
-
-    if (customization.largeEpisodeImage) {
+    if (FluxUI.episodes.large) {
         EpisodeItemLarge(
             modifier = modifier,
             episode = episode,

@@ -28,6 +28,7 @@ import com.mskd.flux.screens.customization.composables.CustomizationThemeSection
 import com.mskd.flux.screens.customization.composables.ItemsPerRowDialog
 import com.mskd.flux.ui.component.global.FluxOptionsDialog
 import com.mskd.flux.ui.component.global.FluxScaffold
+import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.extensions.resolve
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.customization

@@ -29,6 +29,7 @@ import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.component.media.EpisodeDropDownMenu
 import com.mskd.flux.ui.component.media.EpisodeItem
 import com.mskd.flux.ui.theme.FluxTheme
+import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.LandscapePreview
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.episodes

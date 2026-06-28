@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.sp
 import com.mskd.flux.screens.settings.SettingIcon
 import com.mskd.flux.ui.component.global.Text
+import com.mskd.flux.ui.theme.FluxUI
 
 @Composable
 fun SettingsSwitch(

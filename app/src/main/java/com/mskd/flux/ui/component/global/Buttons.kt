@@ -217,9 +217,9 @@ fun CountDownButton(
         contentPadding = ButtonDefaults.contentPaddingFor(size),
         elevation = ButtonDefaults.buttonElevation(
             defaultElevation = FluxUI.Elevation.level3,
-            pressedElevation = FluxUi.Elevation.level3,
-            hoveredElevation = FluxUi.Elevation.level4,
-            focusedElevation = FluxUi.Elevation.level3
+            pressedElevation = FluxUI.Elevation.level3,
+            hoveredElevation = FluxUI.Elevation.level4,
+            focusedElevation = FluxUI.Elevation.level3
         ),
         content = {
 

@@ -8,6 +8,7 @@ import androidx.compose.material3.MaterialExpressiveTheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import com.materialkolor.rememberDynamicColorScheme
@@ -19,6 +20,7 @@ import com.mskd.flux.utils.UiCommon
 fun AppTheme(
     theme: UiCommon.THEME = UiCommon.THEME.SYSTEM,
     color: Int? = null,
+    shapes: FluxShapes = FluxShapes(),
     content: @Composable () -> Unit
 ) {
 
@@ -27,11 +29,18 @@ fun AppTheme(
         color = color
     )
 
-    MaterialExpressiveTheme(
-        colorScheme = colorScheme,
-        typography = FluxTypography,
-        content = content,
-    )
+    CompositionLocalProvider(
+        LocalFluxShapes provides shapes,
+    ) {
+
+        MaterialExpressiveTheme(
+            colorScheme = colorScheme,
+            typography = FluxTypography,
+            content = content,
+        )
+        
+    }
+
 }
 
 @Composable

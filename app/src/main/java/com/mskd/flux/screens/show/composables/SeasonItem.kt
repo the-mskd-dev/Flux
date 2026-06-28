@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -31,6 +32,7 @@ import com.mskd.flux.ui.component.global.FluxImage
 import com.mskd.flux.ui.component.global.ProgressStatusBar
 import com.mskd.flux.ui.component.global.ProgressStatusChip
 import com.mskd.flux.ui.component.global.Text
+import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.AppThemePreview
 import com.mskd.flux.utils.extensions.grayScale
@@ -58,7 +60,7 @@ fun SeasonItem(
 
         Box(
             modifier = Modifier
-                .clip(Ui.Shape.itemCard)
+                .clip(RoundedCornerShape(FluxUI.shapes.itemCorner))
                 .fillMaxWidth()
                 .aspectRatio(Ui.Dimension.itemRatio)
                 .combinedClickable(

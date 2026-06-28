@@ -28,6 +28,7 @@ import com.mskd.flux.screens.artwork.composables.common.ArtworkImageFull
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.component.media.OverviewItem
 import com.mskd.flux.ui.theme.AppTheme
+import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.PortraitPreview
 import com.mskd.flux.utils.itemWidthFor
@@ -46,7 +47,7 @@ fun ShowContentRegular(
 ) {
 
     val screenDimensions = rememberScreenDimensions()
-    val columns = LocalCustomization.current.seasonsPerRow
+    val columns = FluxUI.itemsPerRow.seasons
     val itemWidth = itemWidthFor(screenWidthDp = screenDimensions.widthDp, columns = columns)
 
     LazyColumn(

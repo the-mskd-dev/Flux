@@ -85,6 +85,7 @@ import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.component.global.FluxButton
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.component.media.MediaItem
+import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.AppThemePreview
 import com.mskd.flux.utils.FluxPreview
@@ -530,7 +531,7 @@ fun MediaCategory(
         return
 
     val screenDimensions = rememberScreenDimensions()
-    val columns = if (screenDimensions.isLarge) 5 else LocalCustomization.current.itemsPerRow
+    val columns = if (screenDimensions.isLarge) 5 else FluxUI.itemsPerRow.artworks
     val itemWidth = itemWidthFor(screenWidthDp = screenDimensions.widthDp, columns = columns)
 
     Column(
@@ -578,7 +579,7 @@ fun MediaCategory(
 fun UnknownCategory(sendIntent: (HomeIntent) -> Unit) {
 
     val screenDimensions = rememberScreenDimensions()
-    val itemWidth = itemWidthFor(screenWidthDp = screenDimensions.widthDp, columns = LocalCustomization.current.itemsPerRow)
+    val itemWidth = itemWidthFor(screenWidthDp = screenDimensions.widthDp, columns = FluxUI.itemsPerRow.artworks)
     val foregroundPainter = rememberVectorPainter(ImageVector.vectorResource(R.drawable.ic_launcher_foreground))
 
     Column(

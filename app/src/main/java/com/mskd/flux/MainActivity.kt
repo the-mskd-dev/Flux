@@ -38,6 +38,7 @@ import com.mskd.flux.screens.token.TokenScreen
 import com.mskd.flux.screens.unknown.UnknownScreen
 import com.mskd.flux.screens.welcome.WelcomeScreen
 import com.mskd.flux.ui.theme.AppTheme
+import com.mskd.flux.ui.theme.FluxItemsPerRow
 import com.mskd.flux.ui.theme.FluxShapes
 import com.mskd.flux.ui.theme.createColorScheme
 import com.mskd.flux.utils.extensions.popScreen
@@ -77,12 +78,16 @@ class MainActivity : ComponentActivity() {
             AppTheme(
                 theme = customization.uiTheme,
                 color = customization.color,
+                isOnline = isOnline,
+                itemsPerRow = FluxItemsPerRow(
+                    artworks = customization.itemsPerRow,
+                    seasons = customization.seasonsPerRow
+                )
             ) {
 
                 val backStack = rememberNavBackStack(startingScreen)
 
                 CompositionLocalProvider(
-                    LocalConnectivity provides isOnline,
                         LocalCustomization provides customization
                 ) {
                     NavDisplay(

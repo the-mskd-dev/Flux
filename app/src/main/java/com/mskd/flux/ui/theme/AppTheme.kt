@@ -12,6 +12,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import com.materialkolor.rememberDynamicColorScheme
+import com.mskd.flux.data.repository.connectivity.LocalConnectivity
 import com.mskd.flux.ui.typography.FluxTypography
 import com.mskd.flux.utils.UiCommon
 
@@ -20,7 +21,9 @@ import com.mskd.flux.utils.UiCommon
 fun AppTheme(
     theme: UiCommon.THEME = UiCommon.THEME.SYSTEM,
     color: Int? = null,
+    isOnline: Boolean = true,
     shapes: FluxShapes = FluxShapes(),
+    itemsPerRow: FluxItemsPerRow = FluxItemsPerRow(),
     content: @Composable () -> Unit
 ) {
 
@@ -30,7 +33,9 @@ fun AppTheme(
     )
 
     CompositionLocalProvider(
+        LocalConnectivity provides isOnline,
         LocalFluxShapes provides shapes,
+        LocalItemsPerRow provides itemsPerRow
     ) {
 
         MaterialExpressiveTheme(

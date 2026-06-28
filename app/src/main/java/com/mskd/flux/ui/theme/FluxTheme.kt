@@ -2,6 +2,7 @@ package com.mskd.flux.ui.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialExpressiveTheme
@@ -34,7 +35,8 @@ fun FluxTheme(
     CompositionLocalProvider(
         LocalConnectivity provides isOnline,
         LocalUiShapes provides FluxUI.Shapes(
-            cardCorner = 8.dp
+            card = RoundedCornerShape(12.dp),
+            item = RoundedCornerShape(8.dp),
         ),
         LocalUiGlobal provides FluxUI.Global(
             oldBlurredHeader = customization.oldBlurredHeader

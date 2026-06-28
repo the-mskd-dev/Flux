@@ -107,7 +107,7 @@ fun EpisodeItemLarge(
     Column(
         modifier = modifier
             .padding(horizontal = Ui.Space.medium)
-            .clip(MaterialTheme.shapes.large)
+            .clip(FluxUI.shapes.card)
             .background(bgColor)
             .combinedClickable(
                 onClick = { onTap(episode) },
@@ -212,7 +212,7 @@ fun EpisodeItemSmall(
     Column(
         modifier = modifier
             .padding(horizontal = Ui.Space.medium)
-            .clip(MaterialTheme.shapes.large)
+            .clip(FluxUI.shapes.card)
             .background(bgColor)
             .combinedClickable(
                 onClick = { onTap(episode) },

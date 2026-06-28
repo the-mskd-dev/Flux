@@ -22,6 +22,7 @@ import com.mskd.flux.ui.component.media.EpisodesDetails
 import com.mskd.flux.ui.component.media.MediaDetailsHorizontal
 import com.mskd.flux.ui.component.media.OverviewItem
 import com.mskd.flux.ui.theme.FluxTheme
+import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.extensions.clickableWithBounce
@@ -68,7 +69,7 @@ fun ArtworkDescriptionsPager(
                         }
                     } else Modifier
                 ),
-            shape = MaterialTheme.shapes.large
+            shape = FluxUI.shapes.card
         ) {
 
             when (fullArtwork) {

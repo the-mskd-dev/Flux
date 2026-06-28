@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
@@ -83,7 +84,7 @@ fun ArtworkButtons(
                 checkedContentColor = MaterialTheme.colorScheme.onSurfaceVariant
             ),
             shapes = ToggleButtonDefaults.shapes(
-                shape = Ui.Shape.Corner.full,
+                shape = CircleShape,
                 pressedShape = MaterialTheme.shapes.medium,
                 checkedShape = MaterialTheme.shapes.small,
             ),

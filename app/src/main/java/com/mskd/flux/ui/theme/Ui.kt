@@ -27,27 +27,6 @@ object Ui {
         val large = 24.dp
     }
 
-    object Shape {
-
-        @OptIn(ExperimentalMaterial3ExpressiveApi::class)
-        object Corner {
-
-            val extraSmall @Composable get() = MaterialTheme.shapes.extraSmall
-            val small @Composable get() = MaterialTheme.shapes.small
-            val medium @Composable get() = MaterialTheme.shapes.medium
-            val large @Composable get() = MaterialTheme.shapes.large
-            val largeIncreased @Composable get() = MaterialTheme.shapes.largeIncreased
-            val extraLarge @Composable get() = MaterialTheme.shapes.extraLarge
-            val extraLargeIncreased @Composable get() = MaterialTheme.shapes.extraLargeIncreased
-            val extraExtraLarge @Composable get() = MaterialTheme.shapes.extraExtraLarge
-            val full @Composable get() = CircleShape
-
-        }
-
-        val itemCard @Composable get() = MaterialTheme.shapes.small
-
-    }
-
     object Images {
 
         const val ratio_1_1 = 1f

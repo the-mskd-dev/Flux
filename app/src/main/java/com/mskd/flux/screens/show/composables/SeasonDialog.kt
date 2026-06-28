@@ -24,6 +24,7 @@ import com.mskd.flux.model.artwork.Season
 import com.mskd.flux.screen.show.ShowIntent
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxTheme
+import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.FluxPreview
 import flux.shared.generated.resources.Res
@@ -49,7 +50,7 @@ fun SeasonDialog(
                 .fillMaxWidth()
                 .heightIn(max = 700.dp)
                 .padding(horizontal = Ui.Space.medium, vertical = Ui.Space.large),
-            shape = MaterialTheme.shapes.large,
+            shape = FluxUI.shapes.card,
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.tertiaryContainer,
                 contentColor = MaterialTheme.colorScheme.onTertiaryContainer

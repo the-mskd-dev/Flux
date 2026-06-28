@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -181,7 +182,7 @@ fun SettingIcon(
 
     Icon(
         modifier = Modifier
-            .clip(Ui.Shape.Corner.full)
+            .clip(CircleShape)
             .background(backgroundColor)
             .padding(all = Ui.Space.small),
         painter = painter,

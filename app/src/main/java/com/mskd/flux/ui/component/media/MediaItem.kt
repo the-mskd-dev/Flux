@@ -12,6 +12,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.palette.graphics.Palette
 import coil3.toBitmap
 import com.mskd.flux.ui.component.global.FluxImage
+import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.extensions.clickableWithBounce
 
@@ -21,7 +22,7 @@ fun MediaItem(
     path: String,
     hd: Boolean,
     ratio: Float = Ui.Dimension.itemRatio,
-    shape: Shape = Ui.Shape.itemCard,
+    shape: Shape = FluxUI.shapes.item,
     onTap: (Int?) -> Unit,
     description: String
 ) {

@@ -181,7 +181,7 @@ fun ArtworkImageBlurred(
             AsyncImage(
                 modifier = Modifier
                     .align(Alignment.Center)
-                    .clip(Ui.Shape.Corner.small)
+                    .clip(FluxUI.shapes.item)
                     .aspectRatio(ratio)
                     .fillMaxSize(),
                 model = imageRequest,

@@ -26,6 +26,7 @@ import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.ui.component.global.ReadMoreButton
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxTheme
+import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.ui.theme.Ui
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.episode
@@ -48,7 +49,7 @@ fun OverviewItem(
 
     Column(
         modifier = modifier
-            .clip(MaterialTheme.shapes.large)
+            .clip(FluxUI.shapes.card)
             .background(MaterialTheme.colorScheme.surfaceContainer)
             .fillMaxWidth()
             .padding(all = Ui.Space.medium)

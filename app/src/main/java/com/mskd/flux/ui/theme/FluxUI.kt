@@ -1,8 +1,8 @@
 package com.mskd.flux.ui.theme
 
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.compositionLocalOf
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 object FluxUI {
@@ -14,8 +14,8 @@ object FluxUI {
     val player: Player @Composable get() = LocalUiPlayer.current
 
     data class Shapes(
-        val cardCorner: Dp = 12.dp,
-        val itemCorner: Dp = 8.dp,
+        val card: RoundedCornerShape = RoundedCornerShape(12.dp),
+        val item: RoundedCornerShape = RoundedCornerShape(8.dp)
     )
 
     data class ItemsPerRow(

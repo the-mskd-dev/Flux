@@ -33,7 +33,7 @@ import com.mskd.flux.screens.show.ShowScreen
 import com.mskd.flux.screens.token.TokenScreen
 import com.mskd.flux.screens.unknown.UnknownScreen
 import com.mskd.flux.screens.welcome.WelcomeScreen
-import com.mskd.flux.ui.theme.AppTheme
+import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.createColorScheme
 import com.mskd.flux.utils.extensions.popScreen
 import com.mskd.flux.utils.notificationsPermissionState
@@ -69,7 +69,7 @@ class MainActivity : ComponentActivity() {
 
             val startingScreen = viewModel.getStartingScreen(storagePermission.status.isGranted)
 
-            AppTheme(
+            FluxTheme(
                 isOnline = isOnline,
                 customization = customization
             ) {

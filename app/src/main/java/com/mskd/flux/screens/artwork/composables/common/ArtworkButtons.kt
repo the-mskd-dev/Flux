@@ -29,7 +29,7 @@ import com.mskd.flux.screen.artwork.ArtworkIntent
 import com.mskd.flux.ui.component.global.FluxTextButton
 import com.mskd.flux.ui.component.global.ProgressStatusBar
 import com.mskd.flux.ui.component.global.Text
-import com.mskd.flux.ui.theme.AppTheme
+import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.extensions.minToMs
@@ -157,7 +157,7 @@ fun MediaStatusProgression(
 @FluxPreview
 @Composable
 fun ArtworkButtons_Preview() {
-    AppTheme {
+    FluxTheme {
         ArtworkButtons(
             media = MediaMockups.episode1,
             sendIntent = {}
@@ -168,7 +168,7 @@ fun ArtworkButtons_Preview() {
 @FluxPreview
 @Composable
 fun ArtworkButtonsWatching_Preview() {
-    AppTheme {
+    FluxTheme {
         ArtworkButtons(
             media = MediaMockups.episode1.copy(
                 currentTime = (MediaMockups.episode1.duration.minToMs / 2f).toLong(),
@@ -182,7 +182,7 @@ fun ArtworkButtonsWatching_Preview() {
 @FluxPreview
 @Composable
 fun ArtworkButtonsWatched_Preview() {
-    AppTheme {
+    FluxTheme {
         ArtworkButtons(
             media = MediaMockups.episode1.copy(status = Status.WATCHED),
             sendIntent = {}

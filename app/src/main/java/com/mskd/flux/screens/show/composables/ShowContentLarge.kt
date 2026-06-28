@@ -27,7 +27,7 @@ import com.mskd.flux.screen.show.ShowIntent
 import com.mskd.flux.screens.artwork.composables.common.ArtworkImageFull
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.component.media.OverviewItem
-import com.mskd.flux.ui.theme.AppTheme
+import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.LandscapePreview
 import flux.shared.generated.resources.Res
@@ -160,7 +160,7 @@ fun ShowContentLarge(
 @LandscapePreview
 @Composable
 fun ShowContentLarge_Preview() {
-    AppTheme {
+    FluxTheme {
         ShowContentLarge(
             fullShow = MediaMockups.fullShow,
             scaffoldInnerPadding = PaddingValues.Zero,

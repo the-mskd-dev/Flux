@@ -26,7 +26,7 @@ import com.mskd.flux.screen.show.ShowIntent
 import com.mskd.flux.screens.artwork.composables.common.ArtworkImageFull
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.component.media.OverviewItem
-import com.mskd.flux.ui.theme.AppTheme
+import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.PortraitPreview
@@ -184,7 +184,7 @@ fun ShowContentRegular(
 @PortraitPreview
 @Composable
 fun ShowContentRegular_Preview() {
-    AppTheme {
+    FluxTheme {
         ShowContentRegular(
             fullShow = MediaMockups.fullShow,
             scaffoldInnerPadding = PaddingValues.Zero,

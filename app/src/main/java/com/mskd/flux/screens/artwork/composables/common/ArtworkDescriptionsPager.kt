@@ -21,7 +21,7 @@ import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.ui.component.media.EpisodesDetails
 import com.mskd.flux.ui.component.media.MediaDetailsHorizontal
 import com.mskd.flux.ui.component.media.OverviewItem
-import com.mskd.flux.ui.theme.AppTheme
+import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.extensions.clickableWithBounce
@@ -120,7 +120,7 @@ fun ArtworkDescriptionsPager(
 @FluxPreview
 @Composable
 fun ArtworkDescriptionsPager_Movie_Preview() {
-    AppTheme {
+    FluxTheme {
         ArtworkDescriptionsPager(
             fullArtwork = MediaMockups.fullMovie,
             currentMedia = MediaMockups.fullMovie.movie
@@ -131,7 +131,7 @@ fun ArtworkDescriptionsPager_Movie_Preview() {
 @FluxPreview
 @Composable
 fun ArtworkDescriptionsPager_Show_Preview() {
-    AppTheme {
+    FluxTheme {
         ArtworkDescriptionsPager(
             fullArtwork = MediaMockups.fullShow.copy(episodes = MediaMockups.episodesWithStatus),
             currentMedia = MediaMockups.episode1.copy(status = Status.IS_WATCHING)

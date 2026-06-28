@@ -27,7 +27,7 @@ import com.mskd.flux.model.player.PlayerTrack
 import com.mskd.flux.screen.player.PlayerIntent
 import com.mskd.flux.screen.player.PlayerUiContent
 import com.mskd.flux.ui.component.global.Text
-import com.mskd.flux.ui.theme.AppTheme
+import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.FluxPreview
 import flux.shared.generated.resources.Res
@@ -125,7 +125,7 @@ fun PlayerSettingsItem(
 @FluxPreview
 @Composable
 fun PlayerSettingsSheet_Preview() {
-    AppTheme {
+    FluxTheme {
         PlayerSettingsSheet(
             selectedAudio = PlayerMockups.Audio.japanese,
             selectedSubtitles = PlayerMockups.Subtitles.french,

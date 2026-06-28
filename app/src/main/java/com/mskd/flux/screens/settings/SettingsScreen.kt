@@ -40,7 +40,7 @@ import com.mskd.flux.ui.component.global.FluxDialog
 import com.mskd.flux.ui.component.global.FluxOptionsDialog
 import com.mskd.flux.ui.component.global.FluxScaffold
 import com.mskd.flux.ui.component.global.Text
-import com.mskd.flux.ui.theme.AppTheme
+import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.notificationsPermissionState
@@ -211,7 +211,7 @@ fun SettingsFullSyncDialog(
 @FluxPreview
 @Composable
 fun SettingsScreen_Preview() {
-    AppTheme {
+    FluxTheme {
         SettingsContent(
             state = SettingsUiState(),
             context = LocalContext.current,

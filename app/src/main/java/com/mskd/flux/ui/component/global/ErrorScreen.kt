@@ -13,7 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import com.mskd.flux.ui.theme.AppTheme
+import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.FluxPreview
 import flux.shared.generated.resources.Res
@@ -72,7 +72,7 @@ fun ErrorScreen(
 @FluxPreview
 @Composable
 fun ErrorScreen_preview() {
-    AppTheme {
+    FluxTheme {
         ErrorScreen(
             message = stringResource(Res.string.oups_an_error_occured),
             description = "Error description",

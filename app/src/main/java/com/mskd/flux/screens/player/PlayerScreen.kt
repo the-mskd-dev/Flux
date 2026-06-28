@@ -69,7 +69,7 @@ import com.mskd.flux.screens.player.composables.settings.PlayerSettings
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.component.global.ErrorScreen
 import com.mskd.flux.ui.component.global.Text
-import com.mskd.flux.ui.theme.AppTheme
+import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.LandscapePreview
 import com.mskd.flux.utils.extensions.description
@@ -410,7 +410,7 @@ fun playerConstraintSet(videoSize: VideoSize) = remember( videoSize) {
 //@FluxPreview
 @LandscapePreview
 fun PlayerContent_Preview() {
-    AppTheme {
+    FluxTheme {
         ConstraintLayout(
             modifier = Modifier.fillMaxSize(),
             constraintSet = playerConstraintSet(videoSize = VideoSize(16, 9))

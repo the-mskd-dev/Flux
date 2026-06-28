@@ -55,7 +55,7 @@ import com.mskd.flux.ui.component.global.FluxIconButton
 import com.mskd.flux.ui.component.global.FluxScaffold
 import com.mskd.flux.ui.component.global.FluxTextButton
 import com.mskd.flux.ui.component.global.Text
-import com.mskd.flux.ui.theme.AppTheme
+import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.FluxPreview
@@ -357,7 +357,7 @@ fun TokenInput(
 @FluxPreview
 @Composable
 fun TokenScreen_Preview() {
-    AppTheme {
+    FluxTheme {
         TokenScreenContent(
             state = TokenUiState(
                 token = "azERTyuiOQSdfghJKLmwxCvbn",

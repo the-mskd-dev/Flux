@@ -28,7 +28,7 @@ import com.mskd.flux.mockups.PlayerMockups
 import com.mskd.flux.model.player.PlayerTrack
 import com.mskd.flux.screen.player.PlayerIntent
 import com.mskd.flux.ui.component.global.Text
-import com.mskd.flux.ui.theme.AppTheme
+import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.FluxPreview
 import flux.shared.generated.resources.Res
@@ -130,7 +130,7 @@ fun PlayerTracksSheet(
 @FluxPreview
 @Composable
 fun PlayerTracksSheet_Preview() {
-    AppTheme {
+    FluxTheme {
         PlayerTracksSheet(
             tracks = PlayerMockups.tracks,
             selectedAudio = PlayerMockups.Audio.japanese,

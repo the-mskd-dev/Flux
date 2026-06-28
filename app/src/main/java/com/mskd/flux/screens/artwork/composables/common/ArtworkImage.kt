@@ -33,7 +33,7 @@ import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.ui.component.global.FluxImage
 import com.mskd.flux.ui.component.global.Image
-import com.mskd.flux.ui.theme.AppTheme
+import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.FluxPreview
@@ -200,7 +200,7 @@ fun ArtworkImageBlurred(
 @FluxPreview
 @Composable
 fun ArtworkImage_Full_Preview() {
-    AppTheme {
+    FluxTheme {
         ArtworkImageFull(
             modifier = Modifier.aspectRatio(6f / 5f),
             fullArtwork = MediaMockups.fullShow,
@@ -212,7 +212,7 @@ fun ArtworkImage_Full_Preview() {
 @FluxPreview
 @Composable
 fun ArtworkImage_Blurred_Preview() {
-    AppTheme {
+    FluxTheme {
         ArtworkImageBlurred(
             modifier = Modifier.aspectRatio(6f / 5f),
             fullArtwork = MediaMockups.fullShow,

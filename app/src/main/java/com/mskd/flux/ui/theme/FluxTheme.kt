@@ -20,7 +20,7 @@ import com.mskd.flux.utils.UiCommon
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun AppTheme(
+fun FluxTheme(
     isOnline: Boolean = true,
     customization: CustomizationRepository.State = CustomizationRepository.State(),
     content: @Composable () -> Unit

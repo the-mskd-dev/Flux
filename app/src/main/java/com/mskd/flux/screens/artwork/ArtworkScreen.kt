@@ -48,7 +48,7 @@ import com.mskd.flux.ui.component.global.FluxDropDownMenuItem
 import com.mskd.flux.ui.component.global.FluxScaffold
 import com.mskd.flux.ui.component.global.ResetProgressDialog
 import com.mskd.flux.ui.component.global.Text
-import com.mskd.flux.ui.theme.AppTheme
+import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.utils.ExternalPlayer
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.extensions.WebLink
@@ -285,7 +285,7 @@ fun ArtworkDropDownMenu(
 @FluxPreview
 @Composable
 fun ArtworkScreenContent_Preview() {
-    AppTheme {
+    FluxTheme {
         ArtworkScreenContent(
             fullArtwork = MediaMockups.fullShow,
             selectedMedia = MediaMockups.episode1,

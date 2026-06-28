@@ -29,7 +29,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.screen.player.PlayerUiContent
-import com.mskd.flux.ui.theme.AppTheme
+import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.LandscapePreview
 import flux.shared.generated.resources.Res
@@ -113,7 +113,7 @@ fun PlayerAmbientOverlay(
 @LandscapePreview
 @Composable
 fun PlayerAmbientOverlay_Preview() {
-    AppTheme {
+    FluxTheme {
         Surface(color = Color.Gray) {
             Box(modifier = Modifier.fillMaxSize()) {
                 PlayerAmbientOverlay(

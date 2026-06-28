@@ -50,7 +50,7 @@ import com.mskd.flux.screen.welcome.WelcomeViewModel
 import com.mskd.flux.ui.component.global.FluxButton
 import com.mskd.flux.ui.component.global.FluxIconButton
 import com.mskd.flux.ui.component.global.Text
-import com.mskd.flux.ui.theme.AppTheme
+import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.storagePermissionState
@@ -364,7 +364,7 @@ val WelcomeScreenConstraintSet = ConstraintSet {
 @FluxPreview
 @Composable
 fun WelcomeScreen_Preview() {
-    AppTheme {
+    FluxTheme {
         WelcomeScreenContent(
             uiState = WelcomeUiState(
                 buttons = WelcomeButton.entries

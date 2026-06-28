@@ -25,7 +25,7 @@ import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.ui.component.global.ReadMoreButton
 import com.mskd.flux.ui.component.global.Text
-import com.mskd.flux.ui.theme.AppTheme
+import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.Ui
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.episode
@@ -131,7 +131,7 @@ fun EpisodesDetails(episode: Episode) {
 @Preview
 @Composable
 fun OverviewItem_Preview_Movie() {
-    AppTheme {
+    FluxTheme {
         OverviewItem(
             title = stringResource(Res.string.summary),
             description = MediaMockups.movie.description,
@@ -143,7 +143,7 @@ fun OverviewItem_Preview_Movie() {
 @Preview
 @Composable
 fun OverviewItem_Preview_Season() {
-    AppTheme {
+    FluxTheme {
         OverviewItem(
             title = stringResource(Res.string.summary),
             description = MediaMockups.season1.description,
@@ -154,7 +154,7 @@ fun OverviewItem_Preview_Season() {
 @Preview
 @Composable
 fun OverviewItem_Preview_Episode() {
-    AppTheme {
+    FluxTheme {
         OverviewItem(
             title = MediaMockups.episode1.title,
             description = MediaMockups.episode1.description,

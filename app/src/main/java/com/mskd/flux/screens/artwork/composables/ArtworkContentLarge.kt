@@ -28,7 +28,7 @@ import com.mskd.flux.screens.artwork.composables.common.ArtworkImage
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.component.media.EpisodeDropDownMenu
 import com.mskd.flux.ui.component.media.EpisodeItem
-import com.mskd.flux.ui.theme.AppTheme
+import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.LandscapePreview
 import flux.shared.generated.resources.Res
@@ -193,7 +193,7 @@ fun ArtworkContentLarge(
 @LandscapePreview
 @Composable
 fun ArtworkContentLargeMovie_Preview() {
-    AppTheme {
+    FluxTheme {
         ArtworkContentLarge(
             fullArtwork = MediaMockups.fullMovie,
             selectedMedia = MediaMockups.movie,
@@ -208,7 +208,7 @@ fun ArtworkContentLargeMovie_Preview() {
 @LandscapePreview
 @Composable
 fun ArtworkContentLargeShow_Preview() {
-    AppTheme {
+    FluxTheme {
         ArtworkContentLarge(
             fullArtwork = MediaMockups.fullShow,
             selectedMedia = MediaMockups.episode1,

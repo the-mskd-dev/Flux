@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.mskd.flux.ui.theme.AppTheme
+import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.FluxPreview
 
@@ -39,7 +39,7 @@ fun FixedChip(
 @FluxPreview
 @Composable
 fun FixedChip_Preview() {
-    AppTheme {
+    FluxTheme {
         Box(modifier = Modifier.padding(all = Ui.Space.large)) {
             FixedChip(text = "FixedChip")
         }

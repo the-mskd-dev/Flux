@@ -23,7 +23,7 @@ import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.Season
 import com.mskd.flux.screen.show.ShowIntent
 import com.mskd.flux.ui.component.global.Text
-import com.mskd.flux.ui.theme.AppTheme
+import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.FluxPreview
 import flux.shared.generated.resources.Res
@@ -83,7 +83,7 @@ fun SeasonDialog(
 @FluxPreview
 @Composable
 fun SeasonDialog_Preview() {
-    AppTheme {
+    FluxTheme {
         Box(modifier = Modifier.fillMaxSize()) {
             SeasonDialog(
                 season = MediaMockups.season1,

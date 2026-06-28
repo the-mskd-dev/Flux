@@ -24,6 +24,7 @@ class CustomizationRepositoryImpl(
         val OLD_BLURRED_HEADER = booleanPreferencesKey("old_blurred_header")
         val LARGE_EPISODE_IMAGE = booleanPreferencesKey("large_episode_image")
         val ITEMS_PER_ROW = intPreferencesKey("items_per_row")
+        val ITEMS_CORNERS = intPreferencesKey("items_corners")
         val SEASONS_PER_ROW = intPreferencesKey("seasons_per_row")
     }
 
@@ -37,6 +38,7 @@ class CustomizationRepositoryImpl(
             val oldBlurredHeader = preferences[Keys.OLD_BLURRED_HEADER] ?: false
             val largeEpisodeImage = preferences[Keys.LARGE_EPISODE_IMAGE] ?: false
             val itemsPerRow = preferences[Keys.ITEMS_PER_ROW] ?: 3
+            val itemsCorners = preferences[Keys.ITEMS_CORNERS] ?: 12
             val seasonsPerRow = preferences[Keys.SEASONS_PER_ROW] ?: 3
 
             CustomizationRepository.State(
@@ -46,6 +48,7 @@ class CustomizationRepositoryImpl(
                 oldBlurredHeader = oldBlurredHeader,
                 largeEpisodeImage = largeEpisodeImage,
                 itemsPerRow = itemsPerRow,
+                itemsCorners = itemsCorners,
                 seasonsPerRow = seasonsPerRow
             )
         }
@@ -86,6 +89,12 @@ class CustomizationRepositoryImpl(
     override suspend fun setItemsPerRow(count: Int) {
         customizationDataStore.edit { preferences ->
             preferences[Keys.ITEMS_PER_ROW] = count
+        }
+    }
+
+    override suspend fun setItemsCorners(corners: Int) {
+        customizationDataStore.edit { preferences ->
+            preferences[Keys.ITEMS_CORNERS] = corners
         }
     }
 

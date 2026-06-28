@@ -41,6 +41,7 @@ class CustomizationViewModel(
             oldBlurredHeader = customization.oldBlurredHeader,
             largeEpisodeImage = customization.largeEpisodeImage,
             itemsPerRow = customization.itemsPerRow,
+            itemsCorners = customization.itemsCorners,
             seasonsPerRow = customization.seasonsPerRow,
             dialog = dialog
         )
@@ -68,6 +69,7 @@ class CustomizationViewModel(
             CustomizationIntent.ShowColorDialog -> showColorDialog()
             CustomizationIntent.ShowThemeDialog -> showThemeDialog()
             CustomizationIntent.ShowItemsPerRowDialog -> showItemsPerRowDialog()
+            CustomizationIntent.ShowItemsCornerDialog -> showItemsCornersDialog()
             CustomizationIntent.ShowSeasonsPerRowDialog -> showSeasonsPerRowDialog()
 
 
@@ -75,6 +77,7 @@ class CustomizationViewModel(
             is CustomizationIntent.SetColorValue -> setColor(color = intent.color)
             is CustomizationIntent.SetThemeValue -> setTheme(theme = intent.theme)
             is CustomizationIntent.SetItemsPerRowValue -> setItemsPerRowValue(count = intent.count)
+            is CustomizationIntent.SetItemsCornersValue -> setItemsCornersValue(corners = intent.corners)
             is CustomizationIntent.SetSeasonsPerRowValue -> setSeasonsPerRowValue(count = intent.count)
             is CustomizationIntent.OnWaveProgressCheck -> setWaveProgress(waveProgress = intent.checked)
             is CustomizationIntent.OnOldBlurredHeaderCheck -> setOldBlurredHeader(blurred = intent.checked)
@@ -141,6 +144,15 @@ class CustomizationViewModel(
         }
     }
 
+    private fun showItemsCornersDialog() {
+        _dialogState.update {
+            CustomizationDialog.ItemsCornersDialog(
+                title = StringProvider.Resource(Res.string.items_per_row),
+                desc = StringProvider.Resource(Res.string.items_per_row_desc),
+            )
+        }
+    }
+
     private fun showSeasonsPerRowDialog() {
         _dialogState.update {
             CustomizationDialog.SeasonsPerRowDialog(
@@ -169,6 +181,11 @@ class CustomizationViewModel(
 
     private suspend fun setItemsPerRowValue(count: Int) {
         customizationRepository.setItemsPerRow(count)
+        hideDialog()
+    }
+
+    private suspend fun setItemsCornersValue(corners: Int) {
+        customizationRepository.setItemsCorners(corners)
         hideDialog()
     }
 

@@ -21,7 +21,7 @@ fun MediaItem(
     path: String,
     hd: Boolean,
     ratio: Float = FluxUI.Dimension.itemRatio,
-    shape: Shape = FluxUI.shapes.item,
+    shape: Shape = FluxUI.shapes.corners,
     onTap: (Int?) -> Unit,
     description: String
 ) {

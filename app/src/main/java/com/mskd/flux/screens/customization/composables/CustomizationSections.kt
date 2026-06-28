@@ -19,6 +19,8 @@ import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.accent_color
 import flux.shared.generated.resources.accent_color_desc
 import flux.shared.generated.resources.app_theme
+import flux.shared.generated.resources.corners
+import flux.shared.generated.resources.corners_desc
 import flux.shared.generated.resources.items
 import flux.shared.generated.resources.items_per_row
 import flux.shared.generated.resources.large_episode_image
@@ -69,6 +71,12 @@ fun CustomizationGlobalSection(
             text = stringResource(Res.string.seasons_per_row),
             subText = stringResource(Res.string.items, state.seasonsPerRow),
             onTap = { sendIntent(CustomizationIntent.ShowSeasonsPerRowDialog) }
+        )
+
+        SettingsItem(
+            text = stringResource(Res.string.corners),
+            subText = stringResource(Res.string.corners_desc),
+            onTap = { sendIntent(CustomizationIntent.ShowItemsCornerDialog) }
         )
 
     }

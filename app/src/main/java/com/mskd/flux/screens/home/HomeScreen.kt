@@ -598,7 +598,7 @@ fun UnknownCategory(sendIntent: (HomeIntent) -> Unit) {
             modifier = Modifier
                 .padding(horizontal = FluxUI.Space.medium)
                 .clickable { sendIntent(HomeIntent.OnArtworkTap(artwork = Artwork.UNKNOWN)) }
-                .clip(MaterialTheme.shapes.small)
+                .clip(FluxUI.shapes.corners)
                 .width(itemWidth)
                 .aspectRatio(FluxUI.Dimension.itemRatio)
                 .background(color = MaterialTheme.colorScheme.secondaryContainer),

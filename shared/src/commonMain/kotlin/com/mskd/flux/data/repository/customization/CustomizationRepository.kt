@@ -17,6 +17,7 @@ interface CustomizationRepository {
     suspend fun setLargeEpisodeImage(large: Boolean)
 
     suspend fun setItemsPerRow(count: Int)
+    suspend fun setItemsCorners(corners: Int)
     suspend fun setSeasonsPerRow(count: Int)
 
     data class State(
@@ -26,7 +27,8 @@ interface CustomizationRepository {
         val oldBlurredHeader: Boolean = false,
         val largeEpisodeImage: Boolean = false,
         val itemsPerRow: Int = 3,
-        val seasonsPerRow: Int = 3
+        val itemsCorners: Int = 12,
+        val seasonsPerRow: Int = 3,
     )
 
 }

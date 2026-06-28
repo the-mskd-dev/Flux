@@ -159,4 +159,9 @@
     <string name="items">%1$d items</string>
     <string name="picture_in_picture">Enable Picture-in-Picture</string>
     <string name="old_blurred_header">Old blurred header</string>
+    <string name="corners">Corners</string>
+    <string name="corners_desc">Corner rounding size</string>
+    <string name="small">Small</string>
+    <string name="medium">Medium</string>
+    <string name="large">Large</string>
 </resources>

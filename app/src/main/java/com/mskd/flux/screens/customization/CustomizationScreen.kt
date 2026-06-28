@@ -21,6 +21,7 @@ import com.mskd.flux.screen.customization.CustomizationEvent
 import com.mskd.flux.screen.customization.CustomizationIntent
 import com.mskd.flux.screen.customization.CustomizationUiState
 import com.mskd.flux.screen.customization.CustomizationViewModel
+import com.mskd.flux.screens.customization.composables.CornersDialog
 import com.mskd.flux.screens.customization.composables.CustomizationArtworkSection
 import com.mskd.flux.screens.customization.composables.CustomizationGlobalSection
 import com.mskd.flux.screens.customization.composables.CustomizationPlayerSection
@@ -31,6 +32,8 @@ import com.mskd.flux.ui.component.global.FluxScaffold
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.extensions.resolve
 import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.corners
+import flux.shared.generated.resources.corners_desc
 import flux.shared.generated.resources.customization
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -80,6 +83,13 @@ fun CustomizationScreen(
                 title = dialog.title.resolve(),
                 description = dialog.desc.resolve(),
                 onValidate = { viewModel.handleIntent(CustomizationIntent.SetSeasonsPerRowValue(it))},
+                onDismiss = { viewModel.handleIntent(CustomizationIntent.HideDialog) }
+            )
+        }
+        is CustomizationDialog.ItemsCornersDialog -> {
+            CornersDialog(
+                value = state.itemsCorners,
+                onValidate = { viewModel.handleIntent(CustomizationIntent.SetItemsCornersValue(it))},
                 onDismiss = { viewModel.handleIntent(CustomizationIntent.HideDialog) }
             )
         }

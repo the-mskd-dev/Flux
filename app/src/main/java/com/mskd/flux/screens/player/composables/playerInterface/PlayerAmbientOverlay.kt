@@ -64,7 +64,7 @@ fun PlayerAmbientOverlay(
 
         Column(
             modifier = Modifier
-                .clip(shape = MaterialTheme.shapes.medium)
+                .clip(shape = FluxUI.shapes.corners)
                 .background(color = Color.Black.copy(alpha = .5f))
                 .padding(vertical = FluxUI.Space.medium, horizontal = FluxUI.Space.large),
             verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium),

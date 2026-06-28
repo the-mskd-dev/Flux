@@ -35,8 +35,7 @@ fun FluxTheme(
     CompositionLocalProvider(
         LocalConnectivity provides isOnline,
         LocalUiShapes provides FluxUI.Shapes(
-            card = RoundedCornerShape(12.dp),
-            item = RoundedCornerShape(8.dp),
+            corners = RoundedCornerShape(customization.itemsCorners.dp),
         ),
         LocalUiGlobal provides FluxUI.Global(
             oldBlurredHeader = customization.oldBlurredHeader

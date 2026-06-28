@@ -150,4 +150,9 @@
     <string name="items">%1$d items</string>
     <string name="picture_in_picture">Activer le mode Picture-in-Picture</string>
     <string name="old_blurred_header">Ancienne entête floutée</string>
+    <string name="corners">Coins</string>
+    <string name="corners_desc">Taille de l'arrondissement des coins</string>
+    <string name="small">Petit</string>
+    <string name="medium">Moyen</string>
+    <string name="large">Grand</string>
 </resources>

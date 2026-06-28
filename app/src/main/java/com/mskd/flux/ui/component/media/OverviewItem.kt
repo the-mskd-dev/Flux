@@ -48,7 +48,7 @@ fun OverviewItem(
 
     Column(
         modifier = modifier
-            .clip(FluxUI.shapes.card)
+            .clip(FluxUI.shapes.corners)
             .background(MaterialTheme.colorScheme.surfaceContainer)
             .fillMaxWidth()
             .padding(all = FluxUI.Space.medium)

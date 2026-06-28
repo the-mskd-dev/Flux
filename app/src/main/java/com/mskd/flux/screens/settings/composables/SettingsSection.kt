@@ -80,7 +80,7 @@ fun SettingsSection(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = FluxUI.Space.large)
-            .clip(MaterialTheme.shapes.medium),
+            .clip(FluxUI.shapes.corners),
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.spacedBy(2.dp)
     ) { content(iconColor, iconBackgroundColor) }

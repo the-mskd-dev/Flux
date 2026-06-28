@@ -58,7 +58,7 @@ fun SeasonItem(
 
         Box(
             modifier = Modifier
-                .clip(FluxUI.shapes.item)
+                .clip(FluxUI.shapes.corners)
                 .fillMaxWidth()
                 .aspectRatio(FluxUI.Dimension.itemRatio)
                 .combinedClickable(

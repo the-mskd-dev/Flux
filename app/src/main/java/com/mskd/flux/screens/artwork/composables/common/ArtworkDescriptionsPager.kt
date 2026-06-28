@@ -67,7 +67,7 @@ fun ArtworkDescriptionsPager(
                         }
                     } else Modifier
                 ),
-            shape = FluxUI.shapes.card
+            shape = FluxUI.shapes.corners
         ) {
 
             when (fullArtwork) {

@@ -49,7 +49,7 @@ fun SeasonDialog(
                 .fillMaxWidth()
                 .heightIn(max = 700.dp)
                 .padding(horizontal = FluxUI.Space.medium, vertical = FluxUI.Space.large),
-            shape = FluxUI.shapes.card,
+            shape = FluxUI.shapes.corners,
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.tertiaryContainer,
                 contentColor = MaterialTheme.colorScheme.onTertiaryContainer

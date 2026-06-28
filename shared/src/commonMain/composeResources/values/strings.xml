@@ -145,9 +145,9 @@
     <string name="large_artwork_poster">Large artwork poster</string>
     <string name="seasons">Seasons</string>
     <plurals name="episodes">
-        <item quantity="one">%d episode</item>
-        <item quantity="many">%d episodes</item>
-        <item quantity="other">%d episodes</item>
+        <item quantity="one">%1$d episode</item>
+        <item quantity="many">%1$d episodes</item>
+        <item quantity="other">%1$d episodes</item>
     </plurals>
     <string name="read_more">Read more</string>
     <string name="read_less">Read less</string>

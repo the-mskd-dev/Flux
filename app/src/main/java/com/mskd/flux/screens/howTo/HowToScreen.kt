@@ -18,8 +18,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import com.mskd.flux.ui.component.global.FluxScaffold
 import com.mskd.flux.ui.component.global.Text
-import com.mskd.flux.ui.theme.AppTheme
-import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.ui.theme.FluxTheme
+import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxPreview
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.how_to_advice
@@ -54,7 +54,7 @@ fun HowToScreen(onBack: () -> Unit) {
                 .background(MaterialTheme.colorScheme.background)
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.large),
+            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.large),
             horizontalAlignment = Alignment.Start
         ) {
 
@@ -63,8 +63,8 @@ fun HowToScreen(onBack: () -> Unit) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = Ui.Space.medium),
-                verticalArrangement = Arrangement.spacedBy(Ui.Space.large),
+                    .padding(horizontal = FluxUI.Space.medium),
+                verticalArrangement = Arrangement.spacedBy(FluxUI.Space.large),
                 horizontalAlignment = Alignment.Start
             ) {
 
@@ -87,18 +87,18 @@ fun HowToNameFiles() {
 
     Column(
         modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(Ui.Space.large),
+        verticalArrangement = Arrangement.spacedBy(FluxUI.Space.large),
         horizontalAlignment = Alignment.Start
     ) {
 
-        Column(verticalArrangement = Arrangement.spacedBy(Ui.Space.medium)) {
+        Column(verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)) {
 
             Text.Title.Large(text = stringResource(Res.string.movies), emphasized = true)
             Text.Body.Large(text = stringResource(Res.string.how_to_name_files_movies_desc))
 
             Column(
                 modifier = Modifier.alpha(.7f),
-                verticalArrangement = Arrangement.spacedBy(Ui.Space.extraSmall)
+                verticalArrangement = Arrangement.spacedBy(FluxUI.Space.extraSmall)
             ) {
                 Text.Body.Medium(text = "• " + stringResource(Res.string.movie_file_example_1))
                 Text.Body.Medium(text = "• " + stringResource(Res.string.movie_file_example_2))
@@ -108,14 +108,14 @@ fun HowToNameFiles() {
 
         }
 
-        Column(verticalArrangement = Arrangement.spacedBy(Ui.Space.medium)) {
+        Column(verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)) {
 
             Text.Title.Large(text = stringResource(Res.string.shows), emphasized = true)
             Text.Body.Large(text = stringResource(Res.string.how_to_name_files_show_desc))
 
             Column(
                 modifier = Modifier.alpha(.7f),
-                verticalArrangement = Arrangement.spacedBy(Ui.Space.extraSmall)
+                verticalArrangement = Arrangement.spacedBy(FluxUI.Space.extraSmall)
             ) {
                 Text.Body.Medium(text = "• " + stringResource(Res.string.show_file_example_1))
                 Text.Body.Medium(text = "• " + stringResource(Res.string.show_file_example_2))
@@ -138,7 +138,7 @@ fun HowToNameFiles() {
 @FluxPreview
 @Composable
 fun HowToScreen_Preview() {
-    AppTheme {
+    FluxTheme {
         HowToScreen(onBack = {})
     }
 }

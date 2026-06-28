@@ -40,8 +40,8 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.mskd.flux.ui.theme.AppTheme
-import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.ui.theme.FluxTheme
+import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_arrow_down
 import flux.shared.generated.resources.next_episode
@@ -216,10 +216,10 @@ fun CountDownButton(
         shape = shape,
         contentPadding = ButtonDefaults.contentPaddingFor(size),
         elevation = ButtonDefaults.buttonElevation(
-            defaultElevation = Ui.Elevation.level3,
-            pressedElevation = Ui.Elevation.level3,
-            hoveredElevation = Ui.Elevation.level4,
-            focusedElevation = Ui.Elevation.level3
+            defaultElevation = FluxUI.Elevation.level3,
+            pressedElevation = FluxUI.Elevation.level3,
+            hoveredElevation = FluxUI.Elevation.level4,
+            focusedElevation = FluxUI.Elevation.level3
         ),
         content = {
 
@@ -271,11 +271,11 @@ fun ReadMoreButton(
 @Preview
 @Composable
 fun CountDownButton_Preview() {
-    AppTheme {
+    FluxTheme {
         Column(
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.background)
-                .padding(Ui.Space.large)
+                .padding(FluxUI.Space.large)
         ) {
             CountDownButton(
                 onTap = {  },
@@ -288,12 +288,12 @@ fun CountDownButton_Preview() {
 @Preview
 @Composable
 fun ReadMoreButton_Preview() {
-    AppTheme {
+    FluxTheme {
         Column(
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.background)
-                .padding(Ui.Space.large),
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.large)
+                .padding(FluxUI.Space.large),
+            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.large)
         ) {
             ReadMoreButton(
                 onTap = {  },

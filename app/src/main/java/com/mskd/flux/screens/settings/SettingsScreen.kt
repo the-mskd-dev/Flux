@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -40,8 +41,8 @@ import com.mskd.flux.ui.component.global.FluxDialog
 import com.mskd.flux.ui.component.global.FluxOptionsDialog
 import com.mskd.flux.ui.component.global.FluxScaffold
 import com.mskd.flux.ui.component.global.Text
-import com.mskd.flux.ui.theme.AppTheme
-import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.ui.theme.FluxTheme
+import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.notificationsPermissionState
 import flux.shared.generated.resources.Res
@@ -129,7 +130,7 @@ fun SettingsContent(
                 .background(MaterialTheme.colorScheme.surfaceContainer)
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.medium)
+            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
         ) {
 
             Spacer(modifier = Modifier.height(innerPadding.calculateTopPadding()))
@@ -181,9 +182,9 @@ fun SettingIcon(
 
     Icon(
         modifier = Modifier
-            .clip(Ui.Shape.Corner.full)
+            .clip(CircleShape)
             .background(backgroundColor)
-            .padding(all = Ui.Space.small),
+            .padding(all = FluxUI.Space.small),
         painter = painter,
         tint = iconColor,
         contentDescription = contentDescription
@@ -211,7 +212,7 @@ fun SettingsFullSyncDialog(
 @FluxPreview
 @Composable
 fun SettingsScreen_Preview() {
-    AppTheme {
+    FluxTheme {
         SettingsContent(
             state = SettingsUiState(),
             context = LocalContext.current,

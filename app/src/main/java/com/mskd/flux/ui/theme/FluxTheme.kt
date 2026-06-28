@@ -2,36 +2,64 @@ package com.mskd.flux.ui.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialExpressiveTheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import com.materialkolor.rememberDynamicColorScheme
+import com.mskd.flux.data.repository.connectivity.LocalConnectivity
+import com.mskd.flux.data.repository.customization.CustomizationRepository
 import com.mskd.flux.ui.typography.FluxTypography
 import com.mskd.flux.utils.UiCommon
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun AppTheme(
-    theme: UiCommon.THEME = UiCommon.THEME.SYSTEM,
-    color: Int? = null,
+fun FluxTheme(
+    isOnline: Boolean = true,
+    customization: CustomizationRepository.State = CustomizationRepository.State(),
     content: @Composable () -> Unit
 ) {
 
     val colorScheme = createColorScheme(
-        theme = theme,
-        color = color
+        theme = customization.uiTheme,
+        color = customization.color
     )
 
-    MaterialExpressiveTheme(
-        colorScheme = colorScheme,
-        typography = FluxTypography,
-        content = content,
-    )
+    CompositionLocalProvider(
+        LocalConnectivity provides isOnline,
+        LocalUiShapes provides FluxUI.Shapes(
+            corners = RoundedCornerShape(customization.itemsCorners.dp),
+        ),
+        LocalUiGlobal provides FluxUI.Global(
+            oldBlurredHeader = customization.oldBlurredHeader
+        ),
+        LocalUiItemsPerRow provides FluxUI.ItemsPerRow(
+            artworks = customization.itemsPerRow,
+            seasons = customization.seasonsPerRow
+        ),
+        LocalUiEpisodes provides FluxUI.Episodes(
+            large = customization.largeEpisodeImage
+        ),
+        LocalUiPlayer provides FluxUI.Player(
+            waveProgress = customization.waveProgress
+        )
+    ) {
+
+        MaterialExpressiveTheme(
+            colorScheme = colorScheme,
+            typography = FluxTypography,
+            content = content,
+        )
+        
+    }
+
 }
 
 @Composable

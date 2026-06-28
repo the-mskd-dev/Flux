@@ -31,8 +31,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.constraintlayout.compose.layoutId
 import com.mskd.flux.screen.player.PlayerUiContent
 import com.mskd.flux.ui.component.global.Text
-import com.mskd.flux.ui.theme.AppTheme
-import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.ui.theme.FluxTheme
+import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.LandscapePreview
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_forward
@@ -60,8 +60,8 @@ fun PlayerSeekOverlay(
             label = "Visibility left seek overlay"
         ) {
             Row(
-                modifier = Modifier.padding(horizontal = Ui.Space.large),
-                horizontalArrangement = Arrangement.spacedBy(Ui.Space.medium),
+                modifier = Modifier.padding(horizontal = FluxUI.Space.large),
+                horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.medium),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 PlayerSeekOverlayIcon(
@@ -87,8 +87,8 @@ fun PlayerSeekOverlay(
             label = "Visibility right seek overlay"
         ) {
             Row(
-                modifier = Modifier.padding(horizontal = Ui.Space.large),
-                horizontalArrangement = Arrangement.spacedBy(Ui.Space.medium),
+                modifier = Modifier.padding(horizontal = FluxUI.Space.large),
+                horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.medium),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 PlayerSeekOverlayText(amount = overlay?.amount?.let { "+$it" })
@@ -151,7 +151,7 @@ fun PlayerSeekOverlayText(amount: String?) {
         targetState = amount,
         label = "SeekOverlayText change"
     ) { text ->
-        Box(modifier = Modifier.padding(all = Ui.Space.small)) {
+        Box(modifier = Modifier.padding(all = FluxUI.Space.small)) {
             Text.Adaptive(
                 text = text,
                 style = MaterialTheme.typography.headlineSmall.copy(
@@ -176,7 +176,7 @@ fun PlayerSeekOverlayText(amount: String?) {
 @LandscapePreview
 @Composable
 fun PlayerSeekOverlay_Preview() {
-    AppTheme {
+    FluxTheme {
         Surface(color = Color.Gray) {
             Box(modifier = Modifier.fillMaxSize()) {
                 PlayerSeekOverlay(

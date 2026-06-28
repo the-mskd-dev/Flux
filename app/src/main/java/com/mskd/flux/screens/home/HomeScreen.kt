@@ -71,7 +71,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.mskd.flux.R
-import com.mskd.flux.data.repository.customization.LocalCustomization
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.ContentType
@@ -85,7 +84,7 @@ import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.component.global.FluxButton
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.component.media.MediaItem
-import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.AppThemePreview
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxSnackbar
@@ -202,9 +201,9 @@ fun HomeEmpty(sendIntent: (HomeIntent) -> Unit) {
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
                 .statusBarsPadding()
-                .padding(all = Ui.Space.medium)
+                .padding(all = FluxUI.Space.medium)
                 .navigationBarsPadding(),
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.large),
+            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.large),
             horizontalAlignment = Alignment.Start,
         ) {
 
@@ -281,7 +280,7 @@ fun HomeContent(
                     modifier = Modifier
                         .fillMaxSize()
                         .graphicsLayer { translationY = offsetY },
-                    verticalArrangement = Arrangement.spacedBy(Ui.Space.medium)
+                    verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
                 ) {
 
                     item {
@@ -319,7 +318,7 @@ fun HomeContent(
 
                         Spacer(
                             modifier = Modifier
-                                .height(paddingValues.calculateBottomPadding() + Ui.Space.large)
+                                .height(paddingValues.calculateBottomPadding() + FluxUI.Space.large)
                         )
 
                     }
@@ -368,7 +367,7 @@ fun HomeTopButtons(sendIntent: (HomeIntent) -> Unit) {
 
     Row(
         modifier = Modifier
-            .padding(vertical = Ui.Space.small, horizontal = Ui.Space.small)
+            .padding(vertical = FluxUI.Space.small, horizontal = FluxUI.Space.small)
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
@@ -417,7 +416,7 @@ fun LastWatchedCarousel(
 
     Column(
         modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(Ui.Space.medium),
+        verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
@@ -447,7 +446,7 @@ fun LastWatchedCarousel(
                 modifier = Modifier.fillMaxWidth(),
                 maxItemWidth = 350.dp,
                 state = carouselState,
-                contentPadding = PaddingValues(horizontal = Ui.Space.medium)
+                contentPadding = PaddingValues(horizontal = FluxUI.Space.medium)
             ) { i ->
 
                 val overview = artworks[i]
@@ -530,19 +529,19 @@ fun MediaCategory(
         return
 
     val screenDimensions = rememberScreenDimensions()
-    val columns = if (screenDimensions.isLarge) 5 else LocalCustomization.current.itemsPerRow
+    val columns = if (screenDimensions.isLarge) 5 else FluxUI.itemsPerRow.artworks
     val itemWidth = itemWidthFor(screenWidthDp = screenDimensions.widthDp, columns = columns)
 
     Column(
         modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(Ui.Space.medium)
+        verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
     ) {
 
         Text.Title.Large(
             modifier = Modifier
                 .clickable { sendIntent(HomeIntent.OnCategoryTap(category)) }
                 .fillMaxWidth()
-                .padding(start = Ui.Space.medium, top = Ui.Space.large),
+                .padding(start = FluxUI.Space.medium, top = FluxUI.Space.large),
             text = name,
             emphasized = true,
             color = MaterialTheme.colorScheme.onBackground
@@ -550,8 +549,8 @@ fun MediaCategory(
 
         LazyRow(
             modifier = Modifier.fillMaxWidth(),
-            contentPadding = PaddingValues(horizontal = Ui.Space.medium),
-            horizontalArrangement = Arrangement.spacedBy(Ui.Space.small)
+            contentPadding = PaddingValues(horizontal = FluxUI.Space.medium),
+            horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
         ) {
 
             items(artworks, key = { it.id }) {
@@ -559,7 +558,7 @@ fun MediaCategory(
                 MediaItem(
                     modifier = Modifier
                         .width(itemWidth)
-                        .aspectRatio(Ui.Dimension.itemRatio),
+                        .aspectRatio(FluxUI.Dimension.itemRatio),
                     path = it.imagePath,
                     hd = false,
                     onTap = { rgb -> sendIntent(HomeIntent.OnArtworkTap(artwork = it, rgb = rgb)) },
@@ -578,18 +577,18 @@ fun MediaCategory(
 fun UnknownCategory(sendIntent: (HomeIntent) -> Unit) {
 
     val screenDimensions = rememberScreenDimensions()
-    val itemWidth = itemWidthFor(screenWidthDp = screenDimensions.widthDp, columns = LocalCustomization.current.itemsPerRow)
+    val itemWidth = itemWidthFor(screenWidthDp = screenDimensions.widthDp, columns = FluxUI.itemsPerRow.artworks)
     val foregroundPainter = rememberVectorPainter(ImageVector.vectorResource(R.drawable.ic_launcher_foreground))
 
     Column(
         modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(Ui.Space.medium)
+        verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
     ) {
 
         Text.Title.Large(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = Ui.Space.medium, top = Ui.Space.large),
+                .padding(start = FluxUI.Space.medium, top = FluxUI.Space.large),
             text = stringResource(Res.string.other_files),
             emphasized = true,
             color = MaterialTheme.colorScheme.onBackground
@@ -597,11 +596,11 @@ fun UnknownCategory(sendIntent: (HomeIntent) -> Unit) {
 
         Box(
             modifier = Modifier
-                .padding(horizontal = Ui.Space.medium)
+                .padding(horizontal = FluxUI.Space.medium)
                 .clickable { sendIntent(HomeIntent.OnArtworkTap(artwork = Artwork.UNKNOWN)) }
-                .clip(MaterialTheme.shapes.small)
+                .clip(FluxUI.shapes.corners)
                 .width(itemWidth)
-                .aspectRatio(Ui.Dimension.itemRatio)
+                .aspectRatio(FluxUI.Dimension.itemRatio)
                 .background(color = MaterialTheme.colorScheme.secondaryContainer),
             contentAlignment = Alignment.Center
         ) {

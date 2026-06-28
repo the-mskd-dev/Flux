@@ -10,6 +10,10 @@ import com.mskd.flux.model.StringProvider
 import com.mskd.flux.utils.UiCommon
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.app_theme
+import flux.shared.generated.resources.items_per_row
+import flux.shared.generated.resources.items_per_row_desc
+import flux.shared.generated.resources.seasons_per_row
+import flux.shared.generated.resources.seasons_per_row_desc
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -37,6 +41,8 @@ class CustomizationViewModel(
             oldBlurredHeader = customization.oldBlurredHeader,
             largeEpisodeImage = customization.largeEpisodeImage,
             itemsPerRow = customization.itemsPerRow,
+            itemsCorners = customization.itemsCorners,
+            seasonsPerRow = customization.seasonsPerRow,
             dialog = dialog
         )
     }.stateIn(
@@ -63,12 +69,16 @@ class CustomizationViewModel(
             CustomizationIntent.ShowColorDialog -> showColorDialog()
             CustomizationIntent.ShowThemeDialog -> showThemeDialog()
             CustomizationIntent.ShowItemsPerRowDialog -> showItemsPerRowDialog()
+            CustomizationIntent.ShowItemsCornerDialog -> showItemsCornersDialog()
+            CustomizationIntent.ShowSeasonsPerRowDialog -> showSeasonsPerRowDialog()
 
 
             // Setters
             is CustomizationIntent.SetColorValue -> setColor(color = intent.color)
             is CustomizationIntent.SetThemeValue -> setTheme(theme = intent.theme)
             is CustomizationIntent.SetItemsPerRowValue -> setItemsPerRowValue(count = intent.count)
+            is CustomizationIntent.SetItemsCornersValue -> setItemsCornersValue(corners = intent.corners)
+            is CustomizationIntent.SetSeasonsPerRowValue -> setSeasonsPerRowValue(count = intent.count)
             is CustomizationIntent.OnWaveProgressCheck -> setWaveProgress(waveProgress = intent.checked)
             is CustomizationIntent.OnOldBlurredHeaderCheck -> setOldBlurredHeader(blurred = intent.checked)
             is CustomizationIntent.OnLargeEpisodeImageCheck -> setLargeEpisodeImage(large = intent.checked)
@@ -84,7 +94,7 @@ class CustomizationViewModel(
         _dialogState.update { null }
     }
 
-    private suspend fun showThemeDialog() {
+    private fun showThemeDialog() {
         val currentValue = uiState.value.uiTheme
         val dialogState = FluxOptionsDialogState(
             titleResId = Res.string.app_theme,
@@ -126,7 +136,30 @@ class CustomizationViewModel(
     }
 
     private fun showItemsPerRowDialog() {
-        _dialogState.update { CustomizationDialog.ItemsPerRowDialog }
+        _dialogState.update {
+            CustomizationDialog.ItemsPerRowDialog(
+                title = StringProvider.Resource(Res.string.items_per_row),
+                desc = StringProvider.Resource(Res.string.items_per_row_desc),
+            )
+        }
+    }
+
+    private fun showItemsCornersDialog() {
+        _dialogState.update {
+            CustomizationDialog.ItemsCornersDialog(
+                title = StringProvider.Resource(Res.string.items_per_row),
+                desc = StringProvider.Resource(Res.string.items_per_row_desc),
+            )
+        }
+    }
+
+    private fun showSeasonsPerRowDialog() {
+        _dialogState.update {
+            CustomizationDialog.SeasonsPerRowDialog(
+                title = StringProvider.Resource(Res.string.seasons_per_row),
+                desc = StringProvider.Resource(Res.string.seasons_per_row_desc),
+            )
+        }
     }
 
     private suspend fun setColor(color: Int?) {
@@ -148,6 +181,16 @@ class CustomizationViewModel(
 
     private suspend fun setItemsPerRowValue(count: Int) {
         customizationRepository.setItemsPerRow(count)
+        hideDialog()
+    }
+
+    private suspend fun setItemsCornersValue(corners: Int) {
+        customizationRepository.setItemsCorners(corners)
+        hideDialog()
+    }
+
+    private suspend fun setSeasonsPerRowValue(count: Int) {
+        customizationRepository.setSeasonsPerRow(count)
         hideDialog()
     }
 

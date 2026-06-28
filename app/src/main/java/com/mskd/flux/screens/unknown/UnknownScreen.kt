@@ -42,8 +42,8 @@ import com.mskd.flux.ui.component.global.FluxScaffold
 import com.mskd.flux.ui.component.global.FluxSearchField
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.component.media.EpisodeItem
-import com.mskd.flux.ui.theme.AppTheme
-import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.ui.theme.FluxTheme
+import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.ExternalPlayer
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.rememberExternalPlayerLauncher
@@ -155,7 +155,7 @@ fun UnknownScreenContent(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(MaterialTheme.colorScheme.background),
-                verticalArrangement = Arrangement.spacedBy(Ui.Space.small),
+                verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
                 state = lazyColumnState
             ) {
 
@@ -168,8 +168,8 @@ fun UnknownScreenContent(
                     FluxSearchField(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = Ui.Space.medium)
-                            .padding(bottom = Ui.Space.large),
+                            .padding(horizontal = FluxUI.Space.medium)
+                            .padding(bottom = FluxUI.Space.large),
                         value = searchQuery,
                         onValueChange = { sendIntent(UnknownIntent.DoSearch(it)) },
                     )
@@ -222,7 +222,7 @@ fun UnknownScreenContent(
 @FluxPreview
 @Composable
 fun UnknownScreen_Preview() {
-    AppTheme {
+    FluxTheme {
         UnknownScreenContent(
             medias = MediaMockups.episodesWithStatus,
             searchQuery = "",

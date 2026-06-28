@@ -19,8 +19,8 @@ import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.ui.component.global.Text
-import com.mskd.flux.ui.theme.AppTheme
-import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.ui.theme.FluxTheme
+import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.extensions.formattedText
 import com.mskd.flux.utils.extensions.minToMs
 import com.mskd.flux.utils.extensions.releaseDate
@@ -42,7 +42,7 @@ fun MediaDetailsHorizontal(media: Media) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(Ui.Space.small)
+        horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
     ) {
 
         MediaDetailsItems(media = media)
@@ -121,7 +121,7 @@ fun MediaDetailItem(
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(Ui.Space.extraSmall)
+        horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.extraSmall)
     ) {
 
 
@@ -144,7 +144,7 @@ fun MediaDetailItem(
 @Preview
 @Composable
 fun MediaDetailsHorizontal_Preview() {
-    AppTheme {
+    FluxTheme {
         MediaDetailsHorizontal(
             media = MediaMockups.episode1
         )
@@ -154,7 +154,7 @@ fun MediaDetailsHorizontal_Preview() {
 @Preview
 @Composable
 fun MediaDetailsVertical_Preview() {
-    AppTheme {
+    FluxTheme {
         MediaDetailsVertical(
             media = MediaMockups.episode1
         )
@@ -164,7 +164,7 @@ fun MediaDetailsVertical_Preview() {
 @Preview
 @Composable
 fun MediaDetailsHorizontal_Unknown_Preview() {
-    AppTheme {
+    FluxTheme {
         MediaDetailsHorizontal(
             media = MediaMockups.unknownEpisode
         )
@@ -174,7 +174,7 @@ fun MediaDetailsHorizontal_Unknown_Preview() {
 @Preview
 @Composable
 fun MediaDetailsVertical_Unknown_Preview() {
-    AppTheme {
+    FluxTheme {
         MediaDetailsVertical(
             media = MediaMockups.unknownEpisode
         )

@@ -19,8 +19,8 @@ import androidx.compose.ui.text.font.FontVariation
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import com.mskd.flux.R
-import com.mskd.flux.ui.theme.AppTheme
-import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.ui.theme.FluxTheme
+import com.mskd.flux.ui.theme.FluxUI
 
 // Region Normal
 
@@ -54,17 +54,17 @@ val RobotoFlexEmphasized = FontFamily(
 @Preview(widthDp = 500)
 @Composable
 fun FontFamily_Preview() {
-    AppTheme {
+    FluxTheme {
         Column(
             modifier = Modifier
                 .background(Color.White)
                 .fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.large)
+            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.large)
         ) {
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(Ui.Space.medium)
+                horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
             ) {
 
                 Column(modifier = Modifier.weight(1f)) {
@@ -101,7 +101,7 @@ fun FontFamily_Preview() {
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(Ui.Space.medium)
+                horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
             ) {
 
                 Column(modifier = Modifier.weight(1f)) {
@@ -138,7 +138,7 @@ fun FontFamily_Preview() {
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(Ui.Space.medium)
+                horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
             ) {
 
                 Column(modifier = Modifier.weight(1f)) {
@@ -175,7 +175,7 @@ fun FontFamily_Preview() {
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(Ui.Space.medium)
+                horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
             ) {
 
                 Column(modifier = Modifier.weight(1f)) {
@@ -212,7 +212,7 @@ fun FontFamily_Preview() {
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(Ui.Space.medium)
+                horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
             ) {
 
                 Column(modifier = Modifier.weight(1f)) {

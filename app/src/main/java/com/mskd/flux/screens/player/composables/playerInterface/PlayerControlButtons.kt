@@ -18,8 +18,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.screen.player.PlayerIntent
-import com.mskd.flux.ui.theme.AppTheme
-import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.ui.theme.FluxTheme
+import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxPreview
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_forward_10
@@ -45,7 +45,7 @@ fun AnimatedVisibilityScope.PlayerControlButtons(
 
     Row(
         modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(Ui.Space.large),
+        horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.large),
         verticalAlignment = Alignment.CenterVertically
     ) {
 
@@ -108,7 +108,7 @@ fun AnimatedVisibilityScope.PlayerControlButtons(
 @Composable
 fun PlayerControlButtons_Preview() {
 
-    AppTheme {
+    FluxTheme {
         AnimatedContent(targetState = true) {
             PlayerControlButtons(
                 modifier = Modifier,

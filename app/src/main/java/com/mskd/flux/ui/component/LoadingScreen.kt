@@ -12,7 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.mskd.flux.ui.component.global.Text
-import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.ui.theme.FluxUI
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -30,7 +30,7 @@ fun LoadingScreen(
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.medium)
+            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
         ) {
 
             if (progress != null)  {

@@ -21,6 +21,7 @@ import com.mskd.flux.screen.customization.CustomizationEvent
 import com.mskd.flux.screen.customization.CustomizationIntent
 import com.mskd.flux.screen.customization.CustomizationUiState
 import com.mskd.flux.screen.customization.CustomizationViewModel
+import com.mskd.flux.screens.customization.composables.CornersDialog
 import com.mskd.flux.screens.customization.composables.CustomizationArtworkSection
 import com.mskd.flux.screens.customization.composables.CustomizationGlobalSection
 import com.mskd.flux.screens.customization.composables.CustomizationPlayerSection
@@ -28,7 +29,8 @@ import com.mskd.flux.screens.customization.composables.CustomizationThemeSection
 import com.mskd.flux.screens.customization.composables.ItemsPerRowDialog
 import com.mskd.flux.ui.component.global.FluxOptionsDialog
 import com.mskd.flux.ui.component.global.FluxScaffold
-import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.utils.extensions.resolve
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.customization
 import org.jetbrains.compose.resources.stringResource
@@ -63,10 +65,30 @@ fun CustomizationScreen(
                 onDismiss = { viewModel.handleIntent(CustomizationIntent.HideDialog) }
             )
         }
-        CustomizationDialog.ItemsPerRowDialog -> {
+        is CustomizationDialog.ItemsPerRowDialog -> {
+
             ItemsPerRowDialog(
                 value = state.itemsPerRow,
-                sendIntent = { viewModel.handleIntent(it) }
+                title = dialog.title.resolve(),
+                description = dialog.desc.resolve(),
+                onValidate = { viewModel.handleIntent(CustomizationIntent.SetItemsPerRowValue(it))},
+                onDismiss = { viewModel.handleIntent(CustomizationIntent.HideDialog) }
+            )
+        }
+        is CustomizationDialog.SeasonsPerRowDialog -> {
+            ItemsPerRowDialog(
+                value = state.seasonsPerRow,
+                title = dialog.title.resolve(),
+                description = dialog.desc.resolve(),
+                onValidate = { viewModel.handleIntent(CustomizationIntent.SetSeasonsPerRowValue(it))},
+                onDismiss = { viewModel.handleIntent(CustomizationIntent.HideDialog) }
+            )
+        }
+        is CustomizationDialog.ItemsCornersDialog -> {
+            CornersDialog(
+                value = state.itemsCorners,
+                onValidate = { viewModel.handleIntent(CustomizationIntent.SetItemsCornersValue(it))},
+                onDismiss = { viewModel.handleIntent(CustomizationIntent.HideDialog) }
             )
         }
         null -> {}
@@ -96,7 +118,7 @@ fun CustomizationContent(
                 .background(MaterialTheme.colorScheme.surfaceContainer)
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.medium)
+            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
         ) {
 
             Spacer(modifier = Modifier.height(innerPadding.calculateTopPadding()))

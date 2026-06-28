@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -29,8 +28,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.screen.player.PlayerUiContent
-import com.mskd.flux.ui.theme.AppTheme
-import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.ui.theme.FluxTheme
+import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.LandscapePreview
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_brightness
@@ -64,10 +63,10 @@ fun PlayerAmbientOverlay(
 
         Column(
             modifier = Modifier
-                .clip(shape = MaterialTheme.shapes.medium)
+                .clip(shape = FluxUI.shapes.corners)
                 .background(color = Color.Black.copy(alpha = .5f))
-                .padding(vertical = Ui.Space.medium, horizontal = Ui.Space.large),
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.medium),
+                .padding(vertical = FluxUI.Space.medium, horizontal = FluxUI.Space.large),
+            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
@@ -113,7 +112,7 @@ fun PlayerAmbientOverlay(
 @LandscapePreview
 @Composable
 fun PlayerAmbientOverlay_Preview() {
-    AppTheme {
+    FluxTheme {
         Surface(color = Color.Gray) {
             Box(modifier = Modifier.fillMaxSize()) {
                 PlayerAmbientOverlay(

@@ -29,7 +29,7 @@ import androidx.constraintlayout.compose.Dimension
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.screen.player.PlayerIntent
 import com.mskd.flux.screen.player.PlayerUiContent
-import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.ui.theme.FluxUI
 
 @Composable
 fun PlayerInterface(
@@ -106,13 +106,13 @@ fun PlayerInterface(
         PlayerNextEpisode(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(end = Ui.Space.large),
+                .padding(end = FluxUI.Space.large),
             nextButton = content.nextButton,
             bottomMargin = {
                 if (content.showInterface) {
-                    seekBarHeight + Ui.Space.medium
+                    seekBarHeight + FluxUI.Space.medium
                 } else {
-                    Ui.Space.large
+                    FluxUI.Space.large
                 }
             },
             sendIntent = sendIntent
@@ -133,9 +133,9 @@ val PlayerInterfaceConstraintSet = ConstraintSet {
     )
 
     constrain(topBar) {
-        top.linkTo(parent.top, Ui.Space.medium)
+        top.linkTo(parent.top, FluxUI.Space.medium)
         start.linkTo(parent.start)
-        end.linkTo(settings.start, Ui.Space.medium)
+        end.linkTo(settings.start, FluxUI.Space.medium)
         width = Dimension.fillToConstraints
     }
 
@@ -154,11 +154,11 @@ val PlayerInterfaceConstraintSet = ConstraintSet {
     constrain(seekBar) {
         start.linkTo(parent.start)
         end.linkTo(parent.end)
-        bottom.linkTo(parent.bottom, Ui.Space.medium)
+        bottom.linkTo(parent.bottom, FluxUI.Space.medium)
     }
 
     constrain(nextEpisode) {
-        end.linkTo(parent.end, Ui.Space.medium)
+        end.linkTo(parent.end, FluxUI.Space.medium)
         bottom.linkTo(seekBar.top)
     }
 

@@ -29,7 +29,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import com.mskd.flux.data.repository.customization.LocalCustomization
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.Status
 import com.mskd.flux.model.artwork.Episode
@@ -38,7 +37,7 @@ import com.mskd.flux.ui.component.global.FluxDropDownMenu
 import com.mskd.flux.ui.component.global.FluxDropDownMenuItem
 import com.mskd.flux.ui.component.global.ReadMoreButton
 import com.mskd.flux.ui.component.global.Text
-import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.AppThemePreview
 import com.mskd.flux.utils.PortraitPreview
 import com.mskd.flux.utils.extensions.minToMs
@@ -64,9 +63,7 @@ fun EpisodeItem(
     dropDownMenu: @Composable ((onDismissRequest: () -> Unit) -> Unit)? = null
 ) {
 
-    val customization = LocalCustomization.current
-
-    if (customization.largeEpisodeImage) {
+    if (FluxUI.episodes.large) {
         EpisodeItemLarge(
             modifier = modifier,
             episode = episode,
@@ -108,8 +105,8 @@ fun EpisodeItemLarge(
 
     Column(
         modifier = modifier
-            .padding(horizontal = Ui.Space.medium)
-            .clip(Ui.Shape.itemCard)
+            .padding(horizontal = FluxUI.Space.medium)
+            .clip(FluxUI.shapes.corners)
             .background(bgColor)
             .combinedClickable(
                 onClick = { onTap(episode) },
@@ -124,7 +121,7 @@ fun EpisodeItemLarge(
                 ) else Modifier
             )
             .fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(Ui.Space.small),
+        verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
     ) {
 
         MediaThumbnail(
@@ -136,8 +133,8 @@ fun EpisodeItemLarge(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(Ui.Space.medium),
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.small),
+                .padding(FluxUI.Space.medium),
+            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
             horizontalAlignment = Alignment.Start
         ) {
 
@@ -213,8 +210,8 @@ fun EpisodeItemSmall(
 
     Column(
         modifier = modifier
-            .padding(horizontal = Ui.Space.medium)
-            .clip(Ui.Shape.itemCard)
+            .padding(horizontal = FluxUI.Space.medium)
+            .clip(FluxUI.shapes.corners)
             .background(bgColor)
             .combinedClickable(
                 onClick = { onTap(episode) },
@@ -229,13 +226,13 @@ fun EpisodeItemSmall(
                 ) else Modifier
             )
             .fillMaxWidth()
-            .padding(Ui.Space.medium),
-        verticalArrangement = Arrangement.spacedBy(Ui.Space.small),
+            .padding(FluxUI.Space.medium),
+        verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
     ) {
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(Ui.Space.small)
+            horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
         ) {
 
             MediaThumbnail(
@@ -247,7 +244,7 @@ fun EpisodeItemSmall(
 
             Column(
                 modifier = Modifier.weight(.6f),
-                verticalArrangement = Arrangement.spacedBy(Ui.Space.extraSmall),
+                verticalArrangement = Arrangement.spacedBy(FluxUI.Space.extraSmall),
                 horizontalAlignment = Alignment.Start
             ) {
 
@@ -364,7 +361,7 @@ fun EpisodeItem_Preview() {
     AppThemePreview {
         Column(
             modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.medium)
+            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
         ) {
             EpisodeItemLarge(
                 episode = MediaMockups.episode1,
@@ -390,7 +387,7 @@ fun EpisodeItemWatching_Preview() {
     AppThemePreview {
         Column(
             modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.medium)
+            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
         ) {
             EpisodeItemLarge(
                 episode = MediaMockups.episode1.copy(
@@ -422,7 +419,7 @@ fun EpisodeItemWatched_Preview() {
     AppThemePreview {
         Column(
             modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.medium)
+            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
         ) {
             EpisodeItemLarge(
                 episode = MediaMockups.episode1.copy(

@@ -32,9 +32,9 @@
     <string name="app_version">Version</string>
     <string name="subtitles_language">Subtitles language</string>
     <string name="presentation_1_title">Welcome to Flux</string>
-    <string name="presentation_1_description">Easily find your favorite movies and series!\nFlux automatically organizes your videos to provide you with a simple and enjoyable library to use!</string>
+    <string name="presentation_1_description">Easily find your favorite movies and series!nFlux automatically organizes your videos to provide you with a simple and enjoyable library to use!</string>
     <string name="presentation_2_title">Access your videos</string>
-    <string name="presentation_2_description">To display and play your videos, Flux needs access to your device\'s files.\nDon\'t worry, we do not collect or share any personal data.</string>
+    <string name="presentation_2_description">To display and play your videos, Flux needs access to your device's files.nDon't worry, we do not collect or share any personal data.</string>
     <string name="empty_catalog">Your library is empty</string>
     <string name="empty_catalog_desc">To get started, make sure your video files are properly named. This allows the app to organize them automatically.</string>
     <string name="refresh">Refresh</string>
@@ -52,23 +52,23 @@
     <string name="show_file_example_5">show_name-season1.episode2.mkv</string>
     <string name="show_file_example_6">show name (1995)_s01e02.mkv</string>
     <string name="read">read</string>
-    <string name="remaining_time">%1$1s left</string>
+    <string name="remaining_time">%1$s left</string>
     <string name="rewatch">Rewatch</string>
     <string name="about">About</string>
     <string name="who_am_i">Who am I?</string>
-    <string name="who_am_i_desc">I\'ve been passionate about smartphones since my teenage years, and I decided to become an Android developer, a job I\'ve been doing for a few years now.\nBeyond that, I\'m just an average guy who loves manga, traveling, and Real Madrid.</string>
+    <string name="who_am_i_desc">I've been passionate about smartphones since my teenage years, and I decided to become an Android developer, a job I've been doing for a few years now.nBeyond that, I'm just an average guy who loves manga, traveling, and Real Madrid.</string>
     <string name="why_this_app">Why this app?</string>
-    <string name="why_this_app_desc">Sometimes, you end up with a lot of video files and wish for an app to organize them simply. An app like Infuse exists on iOS, but since there\'s no equivalent on Android, I decided to create it myself for my personal needs.\nPlus, as an Android developer, this app also helps me stay up-to-date with the latest developments and serves as a kind of \"sandbox\".</string>
+    <string name="why_this_app_desc">Sometimes, you end up with a lot of video files and wish for an app to organize them simply. An app like Infuse exists on iOS, but since there's no equivalent on Android, I decided to create it myself for my personal needs.nPlus, as an Android developer, this app also helps me stay up-to-date with the latest developments and serves as a kind of "sandbox".</string>
     <string name="how_it_works">How does this app work?</string>
     <string name="how_it_works_desc">This app will scan your video files longer than 5 minutes and extract information from the file name (title, season, episode, year). Then, the TMDB API is used to fetch additional information like the synopsis, rating, genre, etc.</string>
     <string name="which_technologies">What technologies are used?</string>
     <string name="which_technologies_desc">This app is entirely developed in Kotlin with Jetpack Compose. I use Room for the database, Ktor for network calls, and Koin for dependency injection. I use also GitHub. As for the UI/UX, I use Material 3, and I did my best. Not too shabby, right?</string>
     <string name="how_to_suggest">How to contact me or suggest improvements?</string>
-    <string name="how_to_suggest_desc">If it\'s positive feedback, you can contact me by %1$s! Otherwise, do the same thing or directly on %2$s, but with as much kindness as if it were positive.</string>
+    <string name="how_to_suggest_desc">If it's positive feedback, you can contact me by %1$s! Otherwise, do the same thing or directly on %2$s, but with as much kindness as if it were positive.</string>
     <string name="mail" translatable="false">mail</string>
     <string name="github" translatable="false">Github</string>
-    <string name="what_is_next">What\'s next?</string>
-    <string name="what_is_next_desc">The goal is to keep improving the app, whether it\'s the UI, UX, or performance. I plan to retrieve more datas (genre, casting, etc) and I also plan to add new data sources, not just files on the device</string>
+    <string name="what_is_next">What's next?</string>
+    <string name="what_is_next_desc">The goal is to keep improving the app, whether it's the UI, UX, or performance. I plan to retrieve more datas (genre, casting, etc) and I also plan to add new data sources, not just files on the device</string>
     <string name="make_a_donation">Support me</string>
     <string name="episodes">Episodes</string>
     <string name="watched">Watched</string>
@@ -77,12 +77,12 @@
     <string name="audio_tracks">Audio tracks</string>
     <string name="next_episode">Next episode (%1$dsec)</string>
     <string name="close">Close</string>
-    <string name="do_not_show_again">Don\'t show again</string>
+    <string name="do_not_show_again">Don't show again</string>
     <string name="tmdb_api_token">TMDB API Token</string>
     <string name="tmdb" translatable="false">The Movie Database</string>
     <string name="token_desc_1">To function, this application uses %1$s services. This site allows the retrieval of various information (images, titles, summaries, etc.) for your media. To use this service, an API token is required.</string>
     <string name="token_desc_2">However, in order to be a completely FOSS (Free and Open-Source Software) application and ensure better control over your data, the token for the TMDB service is not provided.</string>
-    <string name="token_desc_3">It is possible to continue without using the TMDB service; however, to take full advantage of the application\'s features, it is recommended to provide an API Token. To do so, please follow these steps:</string>
+    <string name="token_desc_3">It is possible to continue without using the TMDB service; however, to take full advantage of the application's features, it is recommended to provide an API Token. To do so, please follow these steps:</string>
     <string name="token_tutorial_step_1">%1$s or %2$s on TMDB.</string>
     <string name="token_tutorial_step_2">Retrieve your %1$s and copy it into the field below.</string>
     <string name="token_validated">API token saved</string>
@@ -102,10 +102,10 @@
     <string name="see">See</string>
     <string name="more_info">More information</string>
     <string name="external_player">External player</string>
-    <string name="watch_on_external_player">Progress tracking is not compatible with all players.\nNotifications are recommended</string>
+    <string name="watch_on_external_player">Progress tracking is not compatible with all players.nNotifications are recommended</string>
     <string name="how_to_advice">Note: It is recommended to place your files in the Movies or Downloads folders for optimal performance.</string>
     <string name="x" translatable="false">X</string>
-    <string name="stay_informed">Stay informed about the app\'s development!</string>
+    <string name="stay_informed">Stay informed about the app's development!</string>
     <string name="about_desc">About this app, about me, about whatever</string>
     <string name="support_me_desc">Thank you for your support!</string>
     <string name="acra_dialog_title">The app crashed…</string>
@@ -141,20 +141,27 @@
     <string name="color_magenta">Magenta</string>
     <string name="color_gray">Gray</string>
     <string name="wave_progress">Wave progress bar</string>
-    <string name="accent_color_desc">Global interface\'s color</string>
+    <string name="accent_color_desc">Global interface's color</string>
     <string name="large_artwork_poster">Large artwork poster</string>
     <string name="seasons">Seasons</string>
     <plurals name="episodes">
-        <item quantity="one">%d episode</item>
-        <item quantity="many">%d episodes</item>
-        <item quantity="other">%d episodes</item>
+        <item quantity="one">%1$d episode</item>
+        <item quantity="many">%1$d episodes</item>
+        <item quantity="other">%1$d episodes</item>
     </plurals>
     <string name="read_more">Read more</string>
     <string name="read_less">Read less</string>
     <string name="large_episode_image">Large image for episodes</string>
     <string name="items_per_row">Items per row</string>
-    <string name="items_per_row_desc">Number of items per row (home, search, seasons…)</string>
+    <string name="items_per_row_desc">Number of items per row (for home and search)</string>
+    <string name="seasons_per_row">Seasons per row</string>
+    <string name="seasons_per_row_desc">Number of seasons per row</string>
     <string name="items">%1$d items</string>
     <string name="picture_in_picture">Enable Picture-in-Picture</string>
     <string name="old_blurred_header">Old blurred header</string>
+    <string name="corners">Corners</string>
+    <string name="corners_desc">Corner rounding size</string>
+    <string name="small">Small</string>
+    <string name="medium">Medium</string>
+    <string name="large">Large</string>
 </resources>

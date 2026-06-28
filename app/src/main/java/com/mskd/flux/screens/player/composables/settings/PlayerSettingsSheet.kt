@@ -27,8 +27,8 @@ import com.mskd.flux.model.player.PlayerTrack
 import com.mskd.flux.screen.player.PlayerIntent
 import com.mskd.flux.screen.player.PlayerUiContent
 import com.mskd.flux.ui.component.global.Text
-import com.mskd.flux.ui.theme.AppTheme
-import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.ui.theme.FluxTheme
+import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxPreview
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.by_default
@@ -45,7 +45,7 @@ fun PlayerSettingsSheet(
     BasicAlertDialog(
         modifier = Modifier
             .clip(AlertDialogDefaults.shape)
-            .padding(vertical = Ui.Space.large),
+            .padding(vertical = FluxUI.Space.large),
         onDismissRequest = { sendIntent(PlayerIntent.ShowSettings(sheet = null)) },
     ) {
 
@@ -67,7 +67,7 @@ fun PlayerSettingsSheet(
                     }
                 )
 
-                HorizontalDivider(modifier = Modifier.padding(horizontal = Ui.Space.medium))
+                HorizontalDivider(modifier = Modifier.padding(horizontal = FluxUI.Space.medium))
 
                 PlayerSettingsItem(
                     label = "Subtitles",
@@ -96,8 +96,8 @@ fun PlayerSettingsItem(
         modifier = Modifier
             .clickable { onTap() }
             .fillMaxWidth()
-            .padding(all = Ui.Space.medium),
-        horizontalArrangement = Arrangement.spacedBy(Ui.Space.small),
+            .padding(all = FluxUI.Space.medium),
+        horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
         verticalAlignment = Alignment.CenterVertically
     ) {
 
@@ -125,7 +125,7 @@ fun PlayerSettingsItem(
 @FluxPreview
 @Composable
 fun PlayerSettingsSheet_Preview() {
-    AppTheme {
+    FluxTheme {
         PlayerSettingsSheet(
             selectedAudio = PlayerMockups.Audio.japanese,
             selectedSubtitles = PlayerMockups.Subtitles.french,

@@ -6,7 +6,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -21,8 +20,8 @@ import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.ui.component.media.EpisodesDetails
 import com.mskd.flux.ui.component.media.MediaDetailsHorizontal
 import com.mskd.flux.ui.component.media.OverviewItem
-import com.mskd.flux.ui.theme.AppTheme
-import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.ui.theme.FluxTheme
+import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.extensions.clickableWithBounce
 import flux.shared.generated.resources.Res
@@ -57,7 +56,7 @@ fun ArtworkDescriptionsPager(
 
         Card(
             modifier = Modifier
-                .padding(horizontal = Ui.Space.medium)
+                .padding(horizontal = FluxUI.Space.medium)
                 .then(
             if (pageCount > 1) {
                         Modifier.clickableWithBounce {
@@ -68,7 +67,7 @@ fun ArtworkDescriptionsPager(
                         }
                     } else Modifier
                 ),
-            shape = MaterialTheme.shapes.large
+            shape = FluxUI.shapes.corners
         ) {
 
             when (fullArtwork) {
@@ -120,7 +119,7 @@ fun ArtworkDescriptionsPager(
 @FluxPreview
 @Composable
 fun ArtworkDescriptionsPager_Movie_Preview() {
-    AppTheme {
+    FluxTheme {
         ArtworkDescriptionsPager(
             fullArtwork = MediaMockups.fullMovie,
             currentMedia = MediaMockups.fullMovie.movie
@@ -131,7 +130,7 @@ fun ArtworkDescriptionsPager_Movie_Preview() {
 @FluxPreview
 @Composable
 fun ArtworkDescriptionsPager_Show_Preview() {
-    AppTheme {
+    FluxTheme {
         ArtworkDescriptionsPager(
             fullArtwork = MediaMockups.fullShow.copy(episodes = MediaMockups.episodesWithStatus),
             currentMedia = MediaMockups.episode1.copy(status = Status.IS_WATCHING)

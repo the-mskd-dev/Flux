@@ -7,7 +7,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.Dp
 import androidx.window.core.layout.WindowSizeClass
-import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.ui.theme.FluxUI
 
 
 data class ScreenDimensions(
@@ -35,8 +35,8 @@ fun rememberScreenDimensions(): ScreenDimensions {
 fun itemWidthFor(
     screenWidthDp: Dp,
     columns: Int,
-    horizontalPadding: Dp  = Ui.Space.medium,
-    spaceBy: Dp = Ui.Space.small
+    horizontalPadding: Dp  = FluxUI.Space.medium,
+    spaceBy: Dp = FluxUI.Space.small
 ) : Dp {
     return (screenWidthDp - horizontalPadding.times(2) - spaceBy.times(columns - 1)) / columns
 }

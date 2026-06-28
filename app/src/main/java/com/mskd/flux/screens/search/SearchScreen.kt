@@ -39,7 +39,6 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.mskd.flux.data.repository.customization.LocalCustomization
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.navigation.Route
@@ -53,7 +52,7 @@ import com.mskd.flux.ui.component.global.FluxScaffold
 import com.mskd.flux.ui.component.global.FluxSearchField
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.component.media.MediaItem
-import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.AppThemePreview
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.itemWidthFor
@@ -104,7 +103,7 @@ fun SearchContent(
     var focusRequested by rememberSaveable { mutableStateOf(false) }
     val screenDimensions = rememberScreenDimensions()
     val isLargeScreen = screenDimensions.isLarge
-    val columns = if (isLargeScreen) 5 else LocalCustomization.current.itemsPerRow
+    val columns = if (isLargeScreen) 5 else FluxUI.itemsPerRow.artworks
     val itemWidth = itemWidthFor(screenWidthDp = screenDimensions.widthDp, columns = columns)
     val focusManager = LocalFocusManager.current
     val lazyGridState = rememberLazyGridState()
@@ -135,9 +134,9 @@ fun SearchContent(
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background),
             columns = GridCells.Fixed(columns),
-            horizontalArrangement = Arrangement.spacedBy(Ui.Space.small),
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.small),
-            contentPadding = PaddingValues(horizontal = Ui.Space.medium),
+            horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
+            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
+            contentPadding = PaddingValues(horizontal = FluxUI.Space.medium),
             state = lazyGridState
         ) {
 
@@ -181,7 +180,7 @@ fun SearchContent(
                     MediaItem(
                         modifier = Modifier
                             .width(itemWidth)
-                            .aspectRatio(Ui.Dimension.itemRatio),
+                            .aspectRatio(FluxUI.Dimension.itemRatio),
                         path = artwork.imagePath,
                         hd = false,
                         description = artwork.title,
@@ -211,7 +210,7 @@ fun SearchTypeFilters(
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(Ui.Space.small)
+        horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
     ) {
 
         FilterChip(

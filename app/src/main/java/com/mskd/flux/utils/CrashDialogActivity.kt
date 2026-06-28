@@ -22,8 +22,8 @@ import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
 import com.mskd.flux.ui.component.global.FluxDialog
 import com.mskd.flux.ui.component.global.Text
-import com.mskd.flux.ui.theme.AppTheme
-import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.ui.theme.FluxTheme
+import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.acra_dialog_comment
 import flux.shared.generated.resources.acra_dialog_dismiss
@@ -48,7 +48,7 @@ class CrashDialogActivity : FragmentActivity() {
         }
 
         setContent {
-            AppTheme {
+            FluxTheme {
                 CrashDialogContent(
                     onSend = { comment ->
                         helper.sendCrash(comment, null)
@@ -97,7 +97,7 @@ fun CrashDialogContent(
 
             Column(
                 modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(Ui.Space.medium)
+                verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
             ) {
 
                 Text.Body.Large(stringResource(Res.string.acra_dialog_message))
@@ -125,7 +125,7 @@ fun CrashDialogContent(
 @FluxPreview
 @Composable
 fun CrashDialogContent_Preview() {
-    AppTheme {
+    FluxTheme {
         CrashDialogContent(
             onSend = {},
             onDismiss = {}

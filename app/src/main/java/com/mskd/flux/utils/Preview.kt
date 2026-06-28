@@ -15,7 +15,8 @@ import coil3.compose.AsyncImagePreviewHandler
 import coil3.compose.LocalAsyncImagePreviewHandler
 import coil3.imageLoader
 import coil3.request.ImageRequest
-import com.mskd.flux.ui.theme.AppTheme
+import com.mskd.flux.data.repository.customization.CustomizationRepository
+import com.mskd.flux.ui.theme.FluxTheme
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_help
 import flux.shared.generated.resources.preview_poster
@@ -84,8 +85,7 @@ annotation class LandscapePreview
 @OptIn(ExperimentalCoilApi::class)
 @Composable
 fun AppThemePreview(
-    theme: UiCommon.THEME = UiCommon.THEME.SYSTEM,
-    color: Int? = null,
+    customization: CustomizationRepository.State = CustomizationRepository.State(),
     content: @Composable () -> Unit
 ) {
 
@@ -98,7 +98,7 @@ fun AppThemePreview(
     }
 
     CompositionLocalProvider(LocalAsyncImagePreviewHandler provides previewHandler) {
-        AppTheme(theme = theme, color = color) {
+        FluxTheme(customization = customization) {
             content()
         }
     }
@@ -108,7 +108,7 @@ fun AppThemePreview(
 @Preview
 @Composable
 fun Drawable_Preview() {
-    AppTheme {
+    FluxTheme {
         Box(
             modifier = Modifier.padding(100.dp),
             contentAlignment = Alignment.Center

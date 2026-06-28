@@ -55,8 +55,8 @@ import com.mskd.flux.ui.component.global.FluxIconButton
 import com.mskd.flux.ui.component.global.FluxScaffold
 import com.mskd.flux.ui.component.global.FluxTextButton
 import com.mskd.flux.ui.component.global.Text
-import com.mskd.flux.ui.theme.AppTheme
-import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.ui.theme.FluxTheme
+import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.buildLinkedString
@@ -124,8 +124,8 @@ fun TokenScreenContent(
 
             AnimatedVisibility(
                 visible = !state.showBackButton,
-                enter = Ui.Animation.buttonEnter,
-                exit = Ui.Animation.buttonExit
+                enter = FluxUI.Animation.buttonEnter,
+                exit = FluxUI.Animation.buttonExit
             ) {
 
                 FluxTextButton(
@@ -144,9 +144,9 @@ fun TokenScreenContent(
                 .background(MaterialTheme.colorScheme.background)
                 .fillMaxSize()
                 .imePadding()
-                .padding(horizontal = Ui.Space.medium)
+                .padding(horizontal = FluxUI.Space.medium)
                 .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.medium),
+            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
@@ -165,7 +165,7 @@ fun TokenScreenContent(
                 )
 
                 AnimatedVisibility(
-                    modifier = Modifier.padding(start = Ui.Space.extraSmall, top = Ui.Space.small),
+                    modifier = Modifier.padding(start = FluxUI.Space.extraSmall, top = FluxUI.Space.small),
                     visible = state.message != TokenMessage.None,
                 ) {
 
@@ -197,7 +197,7 @@ fun TokenDescription() {
 
     Column(
         modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(Ui.Space.large),
+        verticalArrangement = Arrangement.spacedBy(FluxUI.Space.large),
         horizontalAlignment = Alignment.Start
     ) {
 
@@ -225,7 +225,7 @@ fun TokenTutorial() {
 
     Column(
         modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(Ui.Space.large),
+        verticalArrangement = Arrangement.spacedBy(FluxUI.Space.large),
         horizontalAlignment = Alignment.Start
     ) {
 
@@ -277,8 +277,8 @@ fun TokenInput(
     Row(
         modifier = Modifier
             .widthIn(max = 700.dp)
-            .padding(top = Ui.Space.large),
-        horizontalArrangement = Arrangement.spacedBy(Ui.Space.small),
+            .padding(top = FluxUI.Space.large),
+        horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
         verticalAlignment = Alignment.CenterVertically
     ) {
         TextField(
@@ -357,7 +357,7 @@ fun TokenInput(
 @FluxPreview
 @Composable
 fun TokenScreen_Preview() {
-    AppTheme {
+    FluxTheme {
         TokenScreenContent(
             state = TokenUiState(
                 token = "azERTyuiOQSdfghJKLmwxCvbn",

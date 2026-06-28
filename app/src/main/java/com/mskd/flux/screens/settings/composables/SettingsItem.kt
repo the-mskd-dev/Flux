@@ -16,7 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import com.mskd.flux.screens.settings.SettingIcon
 import com.mskd.flux.ui.component.global.Text
-import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.extensions.uppercaseFirstLetter
 
 @Composable
@@ -35,8 +35,8 @@ fun SettingsItem(
             .clickable { onTap() }
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.background)
-            .padding(all = Ui.Space.medium),
-        horizontalArrangement = Arrangement.spacedBy(Ui.Space.medium),
+            .padding(all = FluxUI.Space.medium),
+        horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.medium),
         verticalAlignment = Alignment.CenterVertically
     ) {
 
@@ -51,7 +51,7 @@ fun SettingsItem(
 
         Column(
             modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.extraSmall)
+            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.extraSmall)
         ) {
 
             Text.Title.Medium(

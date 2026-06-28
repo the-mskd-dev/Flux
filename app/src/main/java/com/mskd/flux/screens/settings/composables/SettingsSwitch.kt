@@ -17,7 +17,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.sp
 import com.mskd.flux.screens.settings.SettingIcon
 import com.mskd.flux.ui.component.global.Text
-import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.ui.theme.FluxUI
 
 @Composable
 fun SettingsSwitch(
@@ -36,9 +36,9 @@ fun SettingsSwitch(
             .clickable { onCheckedChange(!checked) }
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.background)
-            .padding(all = Ui.Space.medium),
+            .padding(all = FluxUI.Space.medium),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(Ui.Space.medium),
+        horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.medium),
     ) {
 
         painter?.let {
@@ -53,9 +53,9 @@ fun SettingsSwitch(
         Column(
             modifier = Modifier
                 .weight(1f)
-                .padding(end = Ui.Space.medium),
+                .padding(end = FluxUI.Space.medium),
             horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.extraSmall)
+            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.extraSmall)
         ) {
 
             Text.Title.Medium(

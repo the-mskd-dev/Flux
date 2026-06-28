@@ -23,8 +23,8 @@ import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.Season
 import com.mskd.flux.screen.show.ShowIntent
 import com.mskd.flux.ui.component.global.Text
-import com.mskd.flux.ui.theme.AppTheme
-import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.ui.theme.FluxTheme
+import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxPreview
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.no_summary
@@ -48,8 +48,8 @@ fun SeasonDialog(
                 .widthIn(max = 500.dp)
                 .fillMaxWidth()
                 .heightIn(max = 700.dp)
-                .padding(horizontal = Ui.Space.medium, vertical = Ui.Space.large),
-            shape = MaterialTheme.shapes.large,
+                .padding(horizontal = FluxUI.Space.medium, vertical = FluxUI.Space.large),
+            shape = FluxUI.shapes.corners,
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.tertiaryContainer,
                 contentColor = MaterialTheme.colorScheme.onTertiaryContainer
@@ -59,8 +59,8 @@ fun SeasonDialog(
             Column(
                 modifier = Modifier
                     .verticalScroll(rememberScrollState())
-                    .padding(all = Ui.Space.medium),
-                verticalArrangement = Arrangement.spacedBy(Ui.Space.medium)
+                    .padding(all = FluxUI.Space.medium),
+                verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
             ) {
 
                 Text.Headline.Medium(
@@ -83,7 +83,7 @@ fun SeasonDialog(
 @FluxPreview
 @Composable
 fun SeasonDialog_Preview() {
-    AppTheme {
+    FluxTheme {
         Box(modifier = Modifier.fillMaxSize()) {
             SeasonDialog(
                 season = MediaMockups.season1,

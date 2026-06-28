@@ -22,7 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextOverflow
-import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.ui.theme.FluxUI
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -84,7 +84,7 @@ fun FluxTopAppBar(
 
             Text.Adaptive(
                 modifier = Modifier
-                    .padding(vertical = Ui.Space.extraSmall)
+                    .padding(vertical = FluxUI.Space.extraSmall)
                     .then(modifier),
                 text = title,
                 overflow = TextOverflow.Ellipsis,

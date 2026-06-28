@@ -50,8 +50,8 @@ import com.mskd.flux.screen.welcome.WelcomeViewModel
 import com.mskd.flux.ui.component.global.FluxButton
 import com.mskd.flux.ui.component.global.FluxIconButton
 import com.mskd.flux.ui.component.global.Text
-import com.mskd.flux.ui.theme.AppTheme
-import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.ui.theme.FluxTheme
+import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.storagePermissionState
 import flux.shared.generated.resources.Res
@@ -159,7 +159,7 @@ fun WelcomePager(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = Ui.Space.medium)
+                .padding(horizontal = FluxUI.Space.medium)
                 .graphicsLayer {
                     val pageOffset = (
                             (pagerState.currentPage - index) + pagerState
@@ -178,7 +178,7 @@ fun WelcomePager(
 
             Column(
                 horizontalAlignment = Alignment.Start,
-                verticalArrangement = Arrangement.spacedBy(Ui.Space.large)
+                verticalArrangement = Arrangement.spacedBy(FluxUI.Space.large)
             ) {
 
                 Text.Headline.Large(
@@ -278,8 +278,8 @@ fun WelcomeButtons(
         AnimatedVisibility(
             modifier = Modifier.align(Alignment.CenterStart),
             visible = buttons.contains(WelcomeButton.PREVIOUS),
-            enter = Ui.Animation.buttonEnter,
-            exit = Ui.Animation.buttonExit,
+            enter = FluxUI.Animation.buttonEnter,
+            exit = FluxUI.Animation.buttonExit,
         ) {
 
             FluxIconButton(
@@ -293,8 +293,8 @@ fun WelcomeButtons(
         AnimatedVisibility(
             modifier = Modifier.align(Alignment.Center),
             visible = buttons.contains(WelcomeButton.PERMISSIONS),
-            enter = Ui.Animation.buttonEnter,
-            exit = Ui.Animation.buttonExit,
+            enter = FluxUI.Animation.buttonEnter,
+            exit = FluxUI.Animation.buttonExit,
         ) {
 
             FluxButton(
@@ -309,8 +309,8 @@ fun WelcomeButtons(
         AnimatedVisibility(
             modifier = Modifier.align(Alignment.CenterEnd),
             visible = buttons.contains(WelcomeButton.NEXT),
-            enter = Ui.Animation.buttonEnter,
-            exit = Ui.Animation.buttonExit,
+            enter = FluxUI.Animation.buttonEnter,
+            exit = FluxUI.Animation.buttonExit,
         ) {
 
             FluxIconButton(
@@ -353,9 +353,9 @@ val WelcomeScreenConstraintSet = ConstraintSet {
     }
 
     constrain(buttons) {
-        bottom.linkTo(parent.bottom, Ui.Space.medium)
-        start.linkTo(parent.start, Ui.Space.medium)
-        end.linkTo(parent.end, Ui.Space.medium)
+        bottom.linkTo(parent.bottom, FluxUI.Space.medium)
+        start.linkTo(parent.start, FluxUI.Space.medium)
+        end.linkTo(parent.end, FluxUI.Space.medium)
         width = Dimension.fillToConstraints
     }
 
@@ -364,7 +364,7 @@ val WelcomeScreenConstraintSet = ConstraintSet {
 @FluxPreview
 @Composable
 fun WelcomeScreen_Preview() {
-    AppTheme {
+    FluxTheme {
         WelcomeScreenContent(
             uiState = WelcomeUiState(
                 buttons = WelcomeButton.entries

@@ -34,8 +34,8 @@ configure<ApplicationExtension> {
         applicationId = "com.mskd.flux"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 26
-        versionName = "1.5.1"
+        versionCode = 27
+        versionName = "1.5.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables { useSupportLibrary = true }

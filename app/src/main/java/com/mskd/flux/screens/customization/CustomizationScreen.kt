@@ -32,8 +32,6 @@ import com.mskd.flux.ui.component.global.FluxScaffold
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.extensions.resolve
 import flux.shared.generated.resources.Res
-import flux.shared.generated.resources.corners
-import flux.shared.generated.resources.corners_desc
 import flux.shared.generated.resources.customization
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel

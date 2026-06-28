@@ -20,7 +20,7 @@ import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.extensions.formattedText
 import com.mskd.flux.utils.extensions.minToMs
 import com.mskd.flux.utils.extensions.releaseDate
@@ -42,7 +42,7 @@ fun MediaDetailsHorizontal(media: Media) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(Ui.Space.small)
+        horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
     ) {
 
         MediaDetailsItems(media = media)
@@ -121,7 +121,7 @@ fun MediaDetailItem(
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(Ui.Space.extraSmall)
+        horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.extraSmall)
     ) {
 
 

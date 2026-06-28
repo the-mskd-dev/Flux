@@ -26,7 +26,6 @@ import androidx.compose.ui.unit.dp
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.ui.component.global.Text
-import com.mskd.flux.ui.theme.Ui
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.episode
 import flux.shared.generated.resources.season
@@ -44,7 +43,7 @@ fun PlayerTopBar(
         modifier = modifier
             .statusBarsPadding()
             .fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(Ui.Space.small),
+        horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
         verticalAlignment = Alignment.CenterVertically
     ) {
 
@@ -54,7 +53,7 @@ fun PlayerTopBar(
                 .clickable { onBackTap() }
                 .size(50.dp)
                 .clip(shape = CircleShape)
-                .padding(Ui.Space.extraSmall),
+                .padding(FluxUI.Space.extraSmall),
             contentAlignment = Alignment.Center
         ) {
 
@@ -69,7 +68,7 @@ fun PlayerTopBar(
         Column(
             modifier = Modifier.weight(1f),
             horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.small)
+            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
         ) {
 
             Text.Body.Large(

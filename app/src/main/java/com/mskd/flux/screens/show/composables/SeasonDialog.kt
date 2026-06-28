@@ -25,7 +25,6 @@ import com.mskd.flux.screen.show.ShowIntent
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.FluxUI
-import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.FluxPreview
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.no_summary
@@ -49,7 +48,7 @@ fun SeasonDialog(
                 .widthIn(max = 500.dp)
                 .fillMaxWidth()
                 .heightIn(max = 700.dp)
-                .padding(horizontal = Ui.Space.medium, vertical = Ui.Space.large),
+                .padding(horizontal = FluxUI.Space.medium, vertical = FluxUI.Space.large),
             shape = FluxUI.shapes.card,
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.tertiaryContainer,
@@ -60,8 +59,8 @@ fun SeasonDialog(
             Column(
                 modifier = Modifier
                     .verticalScroll(rememberScrollState())
-                    .padding(all = Ui.Space.medium),
-                verticalArrangement = Arrangement.spacedBy(Ui.Space.medium)
+                    .padding(all = FluxUI.Space.medium),
+                verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
             ) {
 
                 Text.Headline.Medium(

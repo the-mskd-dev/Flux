@@ -35,7 +35,7 @@ import com.mskd.flux.screen.player.PlayerIntent
 import com.mskd.flux.screen.player.PlayerUiContent
 import com.mskd.flux.ui.component.global.CountDownButton
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxPreview
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.next_episode
@@ -74,7 +74,7 @@ fun PlayerNextEpisode(
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(Ui.Space.medium)
+            horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
         ) {
 
             FloatingActionButton(

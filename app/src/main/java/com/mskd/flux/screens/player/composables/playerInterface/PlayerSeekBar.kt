@@ -27,7 +27,6 @@ import androidx.compose.ui.unit.dp
 import com.mskd.flux.screen.player.PlayerIntent
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxUI
-import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.extensions.formatMinSec
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
@@ -56,9 +55,9 @@ fun PlayerSeekBar(
         modifier = modifier
             .fillMaxWidth()
             .navigationBarsPadding()
-            .padding(horizontal = Ui.Space.medium),
+            .padding(horizontal = FluxUI.Space.medium),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(Ui.Space.small)
+        horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
     ) {
 
         PlayerSeekBarTime(

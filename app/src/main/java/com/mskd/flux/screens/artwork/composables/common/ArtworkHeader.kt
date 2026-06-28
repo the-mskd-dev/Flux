@@ -17,7 +17,7 @@ import com.mskd.flux.model.artwork.FullArtwork
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.screen.artwork.ArtworkIntent
 import com.mskd.flux.ui.component.global.Text
-import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.AppThemePreview
 import com.mskd.flux.utils.FluxPreview
 
@@ -47,7 +47,7 @@ fun ArtworkHeader(
                     end.linkTo(parent.end)
                     width = Dimension.fillToConstraints
                 }
-                .aspectRatio(Ui.Images.ratio_6_5),
+                .aspectRatio(FluxUI.Images.ratio_6_5),
             fullArtwork = fullArtwork,
             currentMedia = currentMedia,
             selectedSeason = selectedSeason
@@ -57,8 +57,8 @@ fun ArtworkHeader(
             Text.Display.Small(
                 modifier = Modifier.constrainAs(text) {
                     top.linkTo(image.bottom)
-                    start.linkTo(parent.start, Ui.Space.medium)
-                    end.linkTo(parent.end, Ui.Space.medium)
+                    start.linkTo(parent.start, FluxUI.Space.medium)
+                    end.linkTo(parent.end, FluxUI.Space.medium)
                     bottom.linkTo(image.bottom)
                     width = Dimension.preferredWrapContent
                 },
@@ -70,8 +70,8 @@ fun ArtworkHeader(
 
         ArtworkButtons(
             modifier = Modifier.constrainAs(buttons) {
-                if (isMovie) top.linkTo(text.bottom, Ui.Space.large)
-                else top.linkTo(image.bottom, Ui.Space.large)
+                if (isMovie) top.linkTo(text.bottom, FluxUI.Space.large)
+                else top.linkTo(image.bottom, FluxUI.Space.large)
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
             },

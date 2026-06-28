@@ -27,7 +27,6 @@ import com.mskd.flux.ui.component.global.ReadMoreButton
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.FluxUI
-import com.mskd.flux.ui.theme.Ui
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.episode
 import flux.shared.generated.resources.season
@@ -52,7 +51,7 @@ fun OverviewItem(
             .clip(FluxUI.shapes.card)
             .background(MaterialTheme.colorScheme.surfaceContainer)
             .fillMaxWidth()
-            .padding(all = Ui.Space.medium)
+            .padding(all = FluxUI.Space.medium)
             .then(
                 if (hasLaidOut) Modifier.animateContentSize(
                     animationSpec = spring(
@@ -61,12 +60,12 @@ fun OverviewItem(
                     )
                 ) else Modifier
             ),
-        verticalArrangement = Arrangement.spacedBy(Ui.Space.medium)
+        verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
     ) {
 
         Column(
             modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.extraSmall)
+            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.extraSmall)
         ) {
 
             topDetails()
@@ -114,7 +113,7 @@ fun OverviewItem(
 @Composable
 fun EpisodesDetails(episode: Episode) {
 
-    Row(horizontalArrangement = Arrangement.spacedBy(Ui.Space.medium)) {
+    Row(horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)) {
         Text.Label.Medium(
             text = stringResource(Res.string.season, episode.season).uppercase(),
             emphasized = true,

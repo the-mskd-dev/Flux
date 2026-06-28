@@ -20,7 +20,6 @@ import androidx.compose.ui.text.AnnotatedString
 import com.mskd.flux.ui.component.global.FluxScaffold
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.buildLinkedString
@@ -58,8 +57,8 @@ fun AboutScreen(onBack: () -> Unit) {
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
                 .navigationBarsPadding()
-                .padding(bottom = Ui.Space.large),
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.medium)
+                .padding(bottom = FluxUI.Space.large),
+            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
         ) {
 
             Spacer(modifier = Modifier.height(innerPadding.calculateTopPadding()))
@@ -67,8 +66,8 @@ fun AboutScreen(onBack: () -> Unit) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = Ui.Space.medium),
-                verticalArrangement = Arrangement.spacedBy(Ui.Space.large),
+                    .padding(horizontal = FluxUI.Space.medium),
+                verticalArrangement = Arrangement.spacedBy(FluxUI.Space.large),
                 horizontalAlignment = Alignment.Start
             ) {
 
@@ -120,7 +119,7 @@ fun AboutSection(
     title: String,
     content: String
 ) {
-    Column(verticalArrangement = Arrangement.spacedBy(Ui.Space.medium)) {
+    Column(verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)) {
         Text.Headline.Small(text = title)
         Text.Body.Large(text = content)
     }
@@ -131,7 +130,7 @@ fun AboutSectionWithLinks(
     title: String,
     content: AnnotatedString
 ) {
-    Column(verticalArrangement = Arrangement.spacedBy(Ui.Space.medium)) {
+    Column(verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)) {
         Text.Headline.Small(text = title)
         Text.Annotated(
             text = content,

@@ -28,7 +28,6 @@ import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.component.media.OverviewItem
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.FluxUI
-import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.PortraitPreview
 import com.mskd.flux.utils.itemWidthFor
 import com.mskd.flux.utils.rememberScreenDimensions
@@ -69,15 +68,15 @@ fun ShowContentRegular(
                             width = Dimension.fillToConstraints
                         }
                         .fillMaxWidth()
-                        .aspectRatio(Ui.Images.ratio_6_5),
+                        .aspectRatio(FluxUI.Images.ratio_6_5),
                     fullArtwork = fullShow,
                 )
 
                 Text.Adaptive(
                     modifier = Modifier
                         .constrainAs(title) {
-                            start.linkTo(parent.start,Ui.Space.medium)
-                            end.linkTo(parent.end, Ui.Space.medium)
+                            start.linkTo(parent.start,FluxUI.Space.medium)
+                            end.linkTo(parent.end, FluxUI.Space.medium)
                             top.linkTo(image.bottom)
                             bottom.linkTo(image.bottom)
                             width = Dimension.preferredWrapContent
@@ -97,26 +96,26 @@ fun ShowContentRegular(
 
         }
 
-        item { Spacer(modifier = Modifier.height(Ui.Space.large)) }
+        item { Spacer(modifier = Modifier.height(FluxUI.Space.large)) }
 
         item {
 
             OverviewItem(
-                modifier = Modifier.padding(horizontal = Ui.Space.medium),
+                modifier = Modifier.padding(horizontal = FluxUI.Space.medium),
                 title = stringResource(Res.string.summary),
                 description = fullShow.artwork.description.ifEmpty { stringResource(Res.string.no_summary) },
             )
 
         }
 
-        item { Spacer(modifier = Modifier.height(Ui.Space.medium)) }
+        item { Spacer(modifier = Modifier.height(FluxUI.Space.medium)) }
 
         item {
 
             Text.Title.Large(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = Ui.Space.medium),
+                    .padding(horizontal = FluxUI.Space.medium),
                 text = stringResource(Res.string.seasons),
                 emphasized = true,
                 color = MaterialTheme.colorScheme.onBackground
@@ -124,7 +123,7 @@ fun ShowContentRegular(
 
         }
 
-        item { Spacer(modifier = Modifier.height(Ui.Space.medium)) }
+        item { Spacer(modifier = Modifier.height(FluxUI.Space.medium)) }
 
         val seasonsChunks = fullShow.seasons.chunked(columns)
 
@@ -136,9 +135,9 @@ fun ShowContentRegular(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = Ui.Space.medium)
-                    .padding(bottom = Ui.Space.medium),
-                horizontalArrangement = Arrangement.spacedBy(Ui.Space.small)
+                    .padding(horizontal = FluxUI.Space.medium)
+                    .padding(bottom = FluxUI.Space.medium),
+                horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
             ) {
 
                 seasons.forEach { season ->

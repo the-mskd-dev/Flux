@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -33,7 +32,6 @@ import com.mskd.flux.ui.component.global.ProgressStatusBar
 import com.mskd.flux.ui.component.global.ProgressStatusChip
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxUI
-import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.AppThemePreview
 import com.mskd.flux.utils.extensions.grayScale
 import flux.shared.generated.resources.Res
@@ -62,7 +60,7 @@ fun SeasonItem(
             modifier = Modifier
                 .clip(FluxUI.shapes.item)
                 .fillMaxWidth()
-                .aspectRatio(Ui.Dimension.itemRatio)
+                .aspectRatio(FluxUI.Dimension.itemRatio)
                 .combinedClickable(
                     onClick = { onTap(seedRgb) },
                     onLongClick = { onLongPress() }
@@ -100,7 +98,7 @@ fun SeasonItem(
         }
 
         Column(
-            modifier = Modifier.padding(horizontal = Ui.Space.small, vertical = Ui.Space.small),
+            modifier = Modifier.padding(horizontal = FluxUI.Space.small, vertical = FluxUI.Space.small),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
@@ -136,7 +134,7 @@ fun SeasonItem_Preview() {
     AppThemePreview {
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(Ui.Space.medium)
+            horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
         ) {
 
             (1..3).forEach { _ ->

@@ -13,7 +13,7 @@ import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.ui.component.global.FluxImage
 import com.mskd.flux.ui.component.global.ProgressStatusBar
 import com.mskd.flux.ui.component.global.ProgressStatusChip
-import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.extensions.grayScale
 
 @Composable
@@ -29,7 +29,7 @@ fun MediaThumbnail(
     }
 
     Box(
-        modifier = modifier.aspectRatio(Ui.Images.ratio_16_9),
+        modifier = modifier.aspectRatio(FluxUI.Images.ratio_16_9),
         contentAlignment = Alignment.BottomCenter,
         content = {
 

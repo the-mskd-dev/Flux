@@ -70,7 +70,7 @@ import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.component.global.ErrorScreen
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.LandscapePreview
 import com.mskd.flux.utils.extensions.description
 import flux.shared.generated.resources.Res
@@ -298,7 +298,7 @@ fun PlayerContent(
             PlayerSubtitles(
                 modifier = Modifier
                     .layoutId("subtitles")
-                    .padding(bottom = Ui.Space.large),
+                    .padding(bottom = FluxUI.Space.large),
                 subtitles = subtitles,
                 smallText = isPortrait
             )

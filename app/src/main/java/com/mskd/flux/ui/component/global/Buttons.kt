@@ -41,7 +41,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_arrow_down
 import flux.shared.generated.resources.next_episode
@@ -216,10 +216,10 @@ fun CountDownButton(
         shape = shape,
         contentPadding = ButtonDefaults.contentPaddingFor(size),
         elevation = ButtonDefaults.buttonElevation(
-            defaultElevation = Ui.Elevation.level3,
-            pressedElevation = Ui.Elevation.level3,
-            hoveredElevation = Ui.Elevation.level4,
-            focusedElevation = Ui.Elevation.level3
+            defaultElevation = FluxUI.Elevation.level3,
+            pressedElevation = FluxUi.Elevation.level3,
+            hoveredElevation = FluxUi.Elevation.level4,
+            focusedElevation = FluxUi.Elevation.level3
         ),
         content = {
 
@@ -275,7 +275,7 @@ fun CountDownButton_Preview() {
         Column(
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.background)
-                .padding(Ui.Space.large)
+                .padding(FluxUI.Space.large)
         ) {
             CountDownButton(
                 onTap = {  },
@@ -292,8 +292,8 @@ fun ReadMoreButton_Preview() {
         Column(
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.background)
-                .padding(Ui.Space.large),
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.large)
+                .padding(FluxUI.Space.large),
+            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.large)
         ) {
             ReadMoreButton(
                 onTap = {  },

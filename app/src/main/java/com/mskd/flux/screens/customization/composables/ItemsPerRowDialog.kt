@@ -15,7 +15,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.mskd.flux.ui.component.global.FluxDialog
 import com.mskd.flux.ui.component.global.Text
-import com.mskd.flux.ui.theme.Ui
 
 @Composable
 fun ItemsPerRowDialog(
@@ -36,7 +35,7 @@ fun ItemsPerRowDialog(
 
             Column(
                 modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(Ui.Space.large)
+                verticalArrangement = Arrangement.spacedBy(FluxUI.Space.large)
             ) {
 
                 Text.Body.Medium(description)
@@ -44,9 +43,9 @@ fun ItemsPerRowDialog(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = Ui.Space.small),
+                        .padding(horizontal = FluxUI.Space.small),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(Ui.Space.small)
+                    horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
                 ) {
 
                     Text.Body.Medium("2")

@@ -42,7 +42,7 @@ import com.mskd.flux.ui.component.global.FluxOptionsDialog
 import com.mskd.flux.ui.component.global.FluxScaffold
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.notificationsPermissionState
 import flux.shared.generated.resources.Res
@@ -130,7 +130,7 @@ fun SettingsContent(
                 .background(MaterialTheme.colorScheme.surfaceContainer)
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.medium)
+            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
         ) {
 
             Spacer(modifier = Modifier.height(innerPadding.calculateTopPadding()))
@@ -184,7 +184,7 @@ fun SettingIcon(
         modifier = Modifier
             .clip(CircleShape)
             .background(backgroundColor)
-            .padding(all = Ui.Space.small),
+            .padding(all = FluxUI.Space.small),
         painter = painter,
         tint = iconColor,
         contentDescription = contentDescription

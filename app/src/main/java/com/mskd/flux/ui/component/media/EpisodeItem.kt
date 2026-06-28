@@ -38,7 +38,6 @@ import com.mskd.flux.ui.component.global.FluxDropDownMenuItem
 import com.mskd.flux.ui.component.global.ReadMoreButton
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxUI
-import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.AppThemePreview
 import com.mskd.flux.utils.PortraitPreview
 import com.mskd.flux.utils.extensions.minToMs
@@ -106,7 +105,7 @@ fun EpisodeItemLarge(
 
     Column(
         modifier = modifier
-            .padding(horizontal = Ui.Space.medium)
+            .padding(horizontal = FluxUI.Space.medium)
             .clip(FluxUI.shapes.card)
             .background(bgColor)
             .combinedClickable(
@@ -122,7 +121,7 @@ fun EpisodeItemLarge(
                 ) else Modifier
             )
             .fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(Ui.Space.small),
+        verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
     ) {
 
         MediaThumbnail(
@@ -134,8 +133,8 @@ fun EpisodeItemLarge(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(Ui.Space.medium),
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.small),
+                .padding(FluxUI.Space.medium),
+            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
             horizontalAlignment = Alignment.Start
         ) {
 
@@ -211,7 +210,7 @@ fun EpisodeItemSmall(
 
     Column(
         modifier = modifier
-            .padding(horizontal = Ui.Space.medium)
+            .padding(horizontal = FluxUI.Space.medium)
             .clip(FluxUI.shapes.card)
             .background(bgColor)
             .combinedClickable(
@@ -227,13 +226,13 @@ fun EpisodeItemSmall(
                 ) else Modifier
             )
             .fillMaxWidth()
-            .padding(Ui.Space.medium),
-        verticalArrangement = Arrangement.spacedBy(Ui.Space.small),
+            .padding(FluxUI.Space.medium),
+        verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
     ) {
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(Ui.Space.small)
+            horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
         ) {
 
             MediaThumbnail(
@@ -245,7 +244,7 @@ fun EpisodeItemSmall(
 
             Column(
                 modifier = Modifier.weight(.6f),
-                verticalArrangement = Arrangement.spacedBy(Ui.Space.extraSmall),
+                verticalArrangement = Arrangement.spacedBy(FluxUI.Space.extraSmall),
                 horizontalAlignment = Alignment.Start
             ) {
 
@@ -362,7 +361,7 @@ fun EpisodeItem_Preview() {
     AppThemePreview {
         Column(
             modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.medium)
+            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
         ) {
             EpisodeItemLarge(
                 episode = MediaMockups.episode1,
@@ -388,7 +387,7 @@ fun EpisodeItemWatching_Preview() {
     AppThemePreview {
         Column(
             modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.medium)
+            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
         ) {
             EpisodeItemLarge(
                 episode = MediaMockups.episode1.copy(
@@ -420,7 +419,7 @@ fun EpisodeItemWatched_Preview() {
     AppThemePreview {
         Column(
             modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.medium)
+            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
         ) {
             EpisodeItemLarge(
                 episode = MediaMockups.episode1.copy(

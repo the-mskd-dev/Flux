@@ -16,7 +16,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.screen.settings.SettingsIntent
 import com.mskd.flux.screen.settings.SettingsUiState
-import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.useCases.images.ImagesUC
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.extensions.WebLink
@@ -79,7 +78,7 @@ fun SettingsSection(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = Ui.Space.large)
+            .padding(horizontal = FluxUI.Space.large)
             .clip(MaterialTheme.shapes.medium),
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.spacedBy(2.dp)

@@ -30,7 +30,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.screen.player.PlayerUiContent
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.LandscapePreview
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_brightness
@@ -66,8 +66,8 @@ fun PlayerAmbientOverlay(
             modifier = Modifier
                 .clip(shape = MaterialTheme.shapes.medium)
                 .background(color = Color.Black.copy(alpha = .5f))
-                .padding(vertical = Ui.Space.medium, horizontal = Ui.Space.large),
-            verticalArrangement = Arrangement.spacedBy(Ui.Space.medium),
+                .padding(vertical = FluxUI.Space.medium, horizontal = FluxUI.Space.large),
+            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 

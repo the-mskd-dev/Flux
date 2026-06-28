@@ -11,7 +11,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import com.mskd.flux.ui.component.global.Text
-import com.mskd.flux.ui.theme.Ui
 
 @Composable
 fun PlayerSubtitles(
@@ -22,7 +21,7 @@ fun PlayerSubtitles(
 
     Box(
         contentAlignment = Alignment.BottomCenter,
-        modifier = modifier.padding(horizontal = Ui.Space.large)
+        modifier = modifier.padding(horizontal = FluxUI.Space.large)
     ) {
         subtitles().forEach {
             SubtitleItem(text = it, smallText = smallText)
@@ -40,7 +39,7 @@ private fun SubtitleItem(text: CharSequence?, smallText: Boolean) {
             modifier = Modifier
                 .clip(shape = MaterialTheme.shapes.extraSmall)
                 .background(color = Color.Black.copy(.8f))
-                .padding(horizontal = Ui.Space.medium, vertical = Ui.Space.small),
+                .padding(horizontal = FluxUI.Space.medium, vertical = FluxUI.Space.small),
             text = content.toString(),
             color = Color.White,
             textAlign = TextAlign.Center,

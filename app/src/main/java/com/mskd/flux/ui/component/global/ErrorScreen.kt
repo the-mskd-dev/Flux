@@ -14,7 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxPreview
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.oups_an_error_occured
@@ -43,7 +43,7 @@ fun ErrorScreen(
         ) {
 
             Column(
-                verticalArrangement = Arrangement.spacedBy(Ui.Space.medium),
+                verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 

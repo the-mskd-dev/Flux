@@ -18,7 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.mskd.flux.model.FluxOptionsDialogState
 import com.mskd.flux.screens.customization.composables.ColorItem
-import com.mskd.flux.ui.theme.Ui
+import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.extensions.resolve
 import com.mskd.flux.utils.extensions.uppercaseFirstLetter
 import org.jetbrains.compose.resources.stringResource
@@ -42,7 +42,7 @@ fun <T, R> FluxOptionsDialog(
                 modifier = Modifier
                     .verticalScroll(rememberScrollState())
                     .fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(Ui.Space.medium)
+                verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
             ) {
 
                 state.options.forEach { option ->
@@ -52,7 +52,7 @@ fun <T, R> FluxOptionsDialog(
                             .clickable { selectedValue = option.value  }
                             .fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(Ui.Space.extraSmall)
+                        horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.extraSmall)
                     ) {
 
                         RadioButton(
@@ -62,7 +62,7 @@ fun <T, R> FluxOptionsDialog(
 
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(Ui.Space.small)
+                            horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
                         ) {
 
                             ColorItem(option.color)

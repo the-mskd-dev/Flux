@@ -29,7 +29,6 @@ import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.component.media.EpisodeDropDownMenu
 import com.mskd.flux.ui.component.media.EpisodeItem
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.LandscapePreview
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.episodes
@@ -74,7 +73,7 @@ fun ArtworkContentLarge(
 
                 Text.Display.Small(
                     modifier = Modifier
-                        .padding(Ui.Space.medium)
+                        .padding(FluxUI.Space.medium)
                         .wrapContentWidth(),
                     text = when (fullArtwork) {
                         is FullArtwork.FullMovie -> fullArtwork.artwork.title
@@ -87,7 +86,7 @@ fun ArtworkContentLarge(
             }
 
             item {
-                Spacer(modifier = Modifier.height(Ui.Space.large))
+                Spacer(modifier = Modifier.height(FluxUI.Space.large))
             }
 
             item {
@@ -100,7 +99,7 @@ fun ArtworkContentLarge(
             }
 
             item {
-                Spacer(modifier = Modifier.height(Ui.Space.large))
+                Spacer(modifier = Modifier.height(FluxUI.Space.large))
             }
 
             item {
@@ -114,7 +113,7 @@ fun ArtworkContentLarge(
             }
 
             item {
-                Spacer(modifier = Modifier.height(Ui.Space.large))
+                Spacer(modifier = Modifier.height(FluxUI.Space.large))
             }
 
             (fullArtwork as? FullArtwork.FullShow)?.let { show ->
@@ -125,12 +124,12 @@ fun ArtworkContentLarge(
 
                     item {
 
-                        Column(verticalArrangement = Arrangement.spacedBy(Ui.Space.small)) {
+                        Column(verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small)) {
 
                             Text.Title.Large(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(horizontal = Ui.Space.medium),
+                                    .padding(horizontal = FluxUI.Space.medium),
                                 text = stringResource(Res.string.episodes),
                                 emphasized = true,
                                 color = MaterialTheme.colorScheme.onPrimaryContainer
@@ -141,7 +140,7 @@ fun ArtworkContentLarge(
                     }
 
                     item {
-                        Spacer(modifier = Modifier.height(Ui.Space.medium))
+                        Spacer(modifier = Modifier.height(FluxUI.Space.medium))
                     }
 
                     items(
@@ -171,7 +170,7 @@ fun ArtworkContentLarge(
                             }
                         )
 
-                        Spacer(modifier = Modifier.height(Ui.Space.small))
+                        Spacer(modifier = Modifier.height(FluxUI.Space.small))
 
                     }
 

@@ -31,7 +31,6 @@ import com.mskd.flux.ui.component.global.FluxTextButton
 import com.mskd.flux.ui.component.global.ProgressStatusBar
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.theme.Ui
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.extensions.minToMs
 import com.mskd.flux.utils.extensions.timeDescription
@@ -72,7 +71,7 @@ fun ArtworkButtons(
 
         ToggleButton(
             modifier = Modifier
-                .padding(top = Ui.Space.small)
+                .padding(top = FluxUI.Space.small)
                 .height(buttonHeight)
                 .fillMaxWidth(),
             checked = media.status == Status.WATCHED,
@@ -133,7 +132,7 @@ fun MediaStatusProgression(
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(Ui.Space.medium),
+            horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.medium),
             verticalAlignment = Alignment.CenterVertically
         ){
 

@@ -96,7 +96,7 @@ class CustomizationViewModelTest : FunSpec({
             viewModel.handleIntent(CustomizationIntent.ShowItemsPerRowDialog)
 
             val state = awaitItem()
-            state.dialog shouldBe CustomizationDialog.ItemsPerRowDialog
+            state.dialog.shouldBeInstanceOf<CustomizationDialog.ItemsPerRowDialog>()
         }
     }
 
@@ -194,6 +194,40 @@ class CustomizationViewModelTest : FunSpec({
 
             coVerify { customizationRepository.setItemsPerRow(4) }
             state.itemsPerRow shouldBe 4
+            state.dialog shouldBe null
+
+            cancelAndConsumeRemainingEvents()
+        }
+    }
+
+    test("set seasons per row value") {
+        viewModel.uiState.test {
+            awaitItem()
+
+            viewModel.handleIntent(CustomizationIntent.SetSeasonsPerRowValue(4))
+            dataStoreFlow.value = dataStoreFlow.value.copy(seasonsPerRow = 4)
+
+            val state = awaitItem()
+
+            coVerify { customizationRepository.setSeasonsPerRow(4) }
+            state.seasonsPerRow shouldBe 4
+            state.dialog shouldBe null
+
+            cancelAndConsumeRemainingEvents()
+        }
+    }
+
+    test("set corners value") {
+        viewModel.uiState.test {
+            awaitItem()
+
+            viewModel.handleIntent(CustomizationIntent.SetItemsCornersValue(4))
+            dataStoreFlow.value = dataStoreFlow.value.copy(itemsCorners = 4)
+
+            val state = awaitItem()
+
+            coVerify { customizationRepository.setItemsCorners(4) }
+            state.itemsCorners shouldBe 4
             state.dialog shouldBe null
 
             cancelAndConsumeRemainingEvents()

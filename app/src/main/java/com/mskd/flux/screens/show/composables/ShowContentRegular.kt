@@ -85,7 +85,7 @@ fun ShowContentRegular(
                     text = fullShow.artwork.title,
                     color = MaterialTheme.colorScheme.onBackground,
                     style = MaterialTheme.typography.displaySmallEmphasized,
-                    maxLines = 3,
+                    maxLines = 2,
                     autoSize = TextAutoSize.StepBased(
                         minFontSize = MaterialTheme.typography.titleSmallEmphasized.fontSize,
                         maxFontSize = MaterialTheme.typography.displaySmallEmphasized.fontSize,

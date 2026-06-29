@@ -54,6 +54,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -65,6 +66,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
@@ -530,10 +532,20 @@ fun MediaCategory(
 
     val screenDimensions = rememberScreenDimensions()
     val columns = if (screenDimensions.isLarge) 5 else FluxUI.itemsPerRow.artworks
-    val itemWidth = itemWidthFor(screenWidthDp = screenDimensions.widthDp, columns = columns)
+    var itemWidth by remember { mutableStateOf(0.dp) }
+    val density = LocalDensity.current
 
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .onSizeChanged { size ->
+                with(density) {
+                    itemWidth = itemWidthFor(
+                        screenWidthDp = size.width.toDp(),
+                        columns = columns
+                    )
+                }
+            },
         verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
     ) {
 
@@ -576,12 +588,22 @@ fun MediaCategory(
 @Composable
 fun UnknownCategory(sendIntent: (HomeIntent) -> Unit) {
 
-    val screenDimensions = rememberScreenDimensions()
-    val itemWidth = itemWidthFor(screenWidthDp = screenDimensions.widthDp, columns = FluxUI.itemsPerRow.artworks)
+    val density = LocalDensity.current
+    val columns = FluxUI.itemsPerRow.artworks
+    var itemWidth by remember { mutableStateOf(0.dp) }
     val foregroundPainter = rememberVectorPainter(ImageVector.vectorResource(R.drawable.ic_launcher_foreground))
 
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .onSizeChanged { size ->
+                with(density) {
+                    itemWidth = itemWidthFor(
+                        screenWidthDp = size.width.toDp(),
+                        columns = columns
+                    )
+                }
+            },
         verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
     ) {
 

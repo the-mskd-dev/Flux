@@ -16,8 +16,15 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.mskd.flux.mockups.MediaMockups
@@ -30,7 +37,6 @@ import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.PortraitPreview
 import com.mskd.flux.utils.itemWidthFor
-import com.mskd.flux.utils.rememberScreenDimensions
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.no_summary
 import flux.shared.generated.resources.seasons
@@ -44,12 +50,21 @@ fun ShowContentRegular(
     sendIntent: (ShowIntent) -> Unit
 ) {
 
-    val screenDimensions = rememberScreenDimensions()
     val columns = FluxUI.itemsPerRow.seasons
-    val itemWidth = itemWidthFor(screenWidthDp = screenDimensions.widthDp, columns = columns)
+    var itemWidth by remember { mutableStateOf(0.dp) }
+    val density = LocalDensity.current
 
     LazyColumn(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .onSizeChanged { size ->
+                with(density) {
+                    itemWidth = itemWidthFor(
+                        screenWidthDp = size.width.toDp(),
+                        columns = columns
+                    )
+                }
+            },
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
 

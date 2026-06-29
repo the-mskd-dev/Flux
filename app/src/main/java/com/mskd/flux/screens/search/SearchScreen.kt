@@ -36,8 +36,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.model.artwork.ContentType
@@ -104,7 +107,8 @@ fun SearchContent(
     val screenDimensions = rememberScreenDimensions()
     val isLargeScreen = screenDimensions.isLarge
     val columns = if (isLargeScreen) 5 else FluxUI.itemsPerRow.artworks
-    val itemWidth = itemWidthFor(screenWidthDp = screenDimensions.widthDp, columns = columns)
+    var itemWidth by remember { mutableStateOf(0.dp) }
+    val density = LocalDensity.current
     val focusManager = LocalFocusManager.current
     val lazyGridState = rememberLazyGridState()
 
@@ -125,6 +129,16 @@ fun SearchContent(
     }
 
     FluxScaffold(
+        modifier = Modifier
+            .fillMaxSize()
+            .onSizeChanged { size ->
+                with(density) {
+                    itemWidth = itemWidthFor(
+                        screenWidthDp = size.width.toDp(),
+                        columns = columns
+                    )
+                }
+            },
         title = stringResource(android.R.string.search_go),
         onBackTap = { sendIntent(SearchIntent.OnBackTap) }
     ) { innerPadding ->

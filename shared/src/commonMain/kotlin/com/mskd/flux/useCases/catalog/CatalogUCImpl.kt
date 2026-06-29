@@ -9,7 +9,7 @@ import com.mskd.flux.model.AppInfo
 import com.mskd.flux.model.Catalog
 import com.mskd.flux.model.Status
 import com.mskd.flux.model.UserFile
-import com.mskd.flux.model.UserFolder
+import com.mskd.flux.model.CatalogFolder
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.model.artwork.Episode
@@ -415,7 +415,7 @@ class CatalogUCImpl(
      * Queries TMDB to associate each user folder with an [Artwork] based on its files.
      */
     private suspend fun getArtworksFolders(
-        folders: List<UserFolder>,
+        folders: List<CatalogFolder>,
         updateProgress: () -> Unit
     ) : List<ArtworkFolder> {
 

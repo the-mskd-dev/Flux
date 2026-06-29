@@ -203,7 +203,7 @@ class UserFileTest : FunSpec ({
         unmockkStatic(Uri::class)
     }
 
-    test("UserFolder type resolver") {
+    test("CatalogFolder type resolver") {
         mockkStatic(Uri::class)
         every { Uri.parse(any()) } returns mockk(relaxed = true)
 
@@ -213,15 +213,15 @@ class UserFileTest : FunSpec ({
         val movieFile2 = UserFile("Spider-man.mp4", 0L, "path", FileSource.LOCAL)
 
         // Show folder
-        val showFolder = UserFolder(title = "naruto", files = listOf(episodeFile1, episodeFile2))
+        val showFolder = CatalogFolder(title = "naruto", files = listOf(episodeFile1, episodeFile2))
         showFolder.type shouldBe ContentType.SHOW
 
         // Movie folder
-        val movieFolder = UserFolder(title = "inception", files = listOf(movieFile1))
+        val movieFolder = CatalogFolder(title = "inception", files = listOf(movieFile1))
         movieFolder.type shouldBe ContentType.MOVIE
 
         // Mixed/multiple movies folder -> should be null type
-        val mixedFolder = UserFolder(title = "mixed", files = listOf(movieFile1, movieFile2))
+        val mixedFolder = CatalogFolder(title = "mixed", files = listOf(movieFile1, movieFile2))
         mixedFolder.type shouldBe null
 
         unmockkStatic(Uri::class)

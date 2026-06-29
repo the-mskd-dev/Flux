@@ -2,7 +2,7 @@ package com.mskd.flux.model
 
 import com.mskd.flux.model.artwork.ContentType
 
-data class UserFolder(
+data class CatalogFolder(
     val title: String,
     val year: Int? = null,
     val files: List<UserFile>

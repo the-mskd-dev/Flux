@@ -117,6 +117,7 @@ fun PlayerScreen(
     }
 
     BackHandler(enabled = true) {
+        interfaceVisibilityCountdown = 3
         viewModel.handleIntent(PlayerIntent.OnBackTap)
     }
 

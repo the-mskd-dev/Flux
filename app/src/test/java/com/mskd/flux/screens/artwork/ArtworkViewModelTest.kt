@@ -6,7 +6,7 @@ import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.mockups.FakeArtworkUC
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.mockkProgressUC
-import com.mskd.flux.model.presentation.State
+import com.mskd.flux.model.core.presentation.State
 import com.mskd.flux.model.domain.Status
 import com.mskd.flux.model.domain.artwork.ContentType
 import com.mskd.flux.model.domain.artwork.Episode

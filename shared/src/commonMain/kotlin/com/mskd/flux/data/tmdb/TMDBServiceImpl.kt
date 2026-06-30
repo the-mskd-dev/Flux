@@ -1,11 +1,11 @@
 package com.mskd.flux.data.tmdb
 
-import com.mskd.flux.model.data.remote.tmdb.TMDBArtworksResult
-import com.mskd.flux.model.data.remote.tmdb.TMDBAuthentication
-import com.mskd.flux.model.data.remote.tmdb.TMDBEpisode
-import com.mskd.flux.model.data.remote.tmdb.TMDBMovie
-import com.mskd.flux.model.data.remote.tmdb.TMDBSeason
-import com.mskd.flux.model.data.remote.tmdb.TMDBTranslations
+import com.mskd.flux.model.data.remote.tmdb.dto.ArtworksResultDto
+import com.mskd.flux.model.data.remote.tmdb.dto.AuthenticationDto
+import com.mskd.flux.model.data.remote.tmdb.dto.EpisodeDto
+import com.mskd.flux.model.data.remote.tmdb.dto.MovieDto
+import com.mskd.flux.model.data.remote.tmdb.dto.SeasonDto
+import com.mskd.flux.model.data.remote.tmdb.dto.TranslationsDto
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
@@ -13,7 +13,7 @@ import io.ktor.client.request.parameter
 
 class TMDBServiceImpl(private val client: HttpClient) : TMDBService {
 
-    override suspend fun authenticate(): TMDBAuthentication = client
+    override suspend fun authenticate(): AuthenticationDto = client
         .get("authentication")
         .body()
 
@@ -21,7 +21,7 @@ class TMDBServiceImpl(private val client: HttpClient) : TMDBService {
         title: String,
         year: Int?,
         language: String
-    ): TMDBArtworksResult = client
+    ): ArtworksResultDto = client
         .get("search/movie") {
             parameter("query", title)
             year?.let { parameter("year", it) }
@@ -32,12 +32,12 @@ class TMDBServiceImpl(private val client: HttpClient) : TMDBService {
     override suspend fun getMovieDetails(
         id: Long,
         language: String
-    ): TMDBMovie = client
+    ): MovieDto = client
         .get("movie/$id") {
             parameter("language", language)
         }.body()
 
-    override suspend fun getMovieTranslations(artworkId: Long): TMDBTranslations = client
+    override suspend fun getMovieTranslations(artworkId: Long): TranslationsDto = client
         .get("movie/$artworkId/translations")
         .body()
 
@@ -45,14 +45,14 @@ class TMDBServiceImpl(private val client: HttpClient) : TMDBService {
         title: String,
         year: Int?,
         language: String
-    ): TMDBArtworksResult = client
+    ): ArtworksResultDto = client
     .get("search/tv") {
         parameter("query", title)
         year?.let { parameter("year", it) }
         parameter("language", language)
     }.body()
 
-    override suspend fun getShowTranslations(artworkId: Long): TMDBTranslations = client
+    override suspend fun getShowTranslations(artworkId: Long): TranslationsDto = client
         .get("tv/$artworkId/translations")
         .body()
 
@@ -61,7 +61,7 @@ class TMDBServiceImpl(private val client: HttpClient) : TMDBService {
         season: Int,
         number: Int,
         language: String
-    ): TMDBEpisode = client
+    ): EpisodeDto = client
         .get("tv/$id/season/$season/episode/$number") {
             parameter("language", language)
         }.body()
@@ -70,7 +70,7 @@ class TMDBServiceImpl(private val client: HttpClient) : TMDBService {
         artworkId: Long,
         season: Int,
         number: Int
-    ): TMDBTranslations = client
+    ): TranslationsDto = client
         .get("tv/$artworkId/season/$season/episode/$number/translations")
         .body()
 
@@ -78,7 +78,7 @@ class TMDBServiceImpl(private val client: HttpClient) : TMDBService {
         id: Long,
         season: Int,
         language: String
-    ): TMDBSeason = client
+    ): SeasonDto = client
         .get("tv/$id/season/$season") {
             parameter("language", language)
         }.body()
@@ -86,7 +86,7 @@ class TMDBServiceImpl(private val client: HttpClient) : TMDBService {
     override suspend fun getSeasonTranslations(
         artworkId: Long,
         season: Int
-    ): TMDBTranslations = client
+    ): TranslationsDto = client
         .get("tv/$artworkId/season/$season/translations")
         .body()
 

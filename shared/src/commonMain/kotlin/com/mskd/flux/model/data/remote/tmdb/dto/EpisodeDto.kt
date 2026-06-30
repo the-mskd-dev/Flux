@@ -1,4 +1,4 @@
-package com.mskd.flux.model.data.remote.tmdb
+package com.mskd.flux.model.data.remote.tmdb.dto
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -19,7 +19,7 @@ import kotlinx.serialization.Serializable
  * @property crew List of crew members associated with the episode.
  */
 @Serializable
-data class TMDBEpisode(
+data class EpisodeDto(
     val id: Long,
     @SerialName("show_id")
     val artworkId: Long?,
@@ -41,5 +41,5 @@ data class TMDBEpisode(
     val voteCount: Int,
     @SerialName("air_date")
     val releaseDateString: String,
-    val crew: List<TMDBCrew>
+    val crew: List<CrewDto>
 )

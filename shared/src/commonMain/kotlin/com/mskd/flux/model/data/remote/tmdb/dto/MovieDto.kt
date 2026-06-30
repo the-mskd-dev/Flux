@@ -1,4 +1,4 @@
-package com.mskd.flux.model.data.remote.tmdb
+package com.mskd.flux.model.data.remote.tmdb.dto
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -17,7 +17,7 @@ import kotlinx.serialization.Serializable
  * @property releaseDate Release date of the movie as a string.
  */
 @Serializable
-data class TMDBMovie(
+data class MovieDto(
     val title: String,
     @SerialName("overview")
     val description: String,

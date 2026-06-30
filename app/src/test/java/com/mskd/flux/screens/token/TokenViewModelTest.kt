@@ -5,7 +5,7 @@ import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.data.repository.token.TokenRepository
 import com.mskd.flux.data.tmdb.TMDBService
 import com.mskd.flux.model.core.AppInfo
-import com.mskd.flux.model.data.remote.tmdb.TMDBAuthentication
+import com.mskd.flux.model.data.remote.tmdb.dto.AuthenticationDto
 import com.mskd.flux.screen.token.TokenEvent
 import com.mskd.flux.screen.token.TokenIntent
 import com.mskd.flux.screen.token.TokenMessage
@@ -35,7 +35,7 @@ class TokenViewModelTest : FunSpec({
         }
 
         tmdbService = mockk(relaxed = true) {
-            coEvery { authenticate() } returns TMDBAuthentication(success = true, code = 0, message = "")
+            coEvery { authenticate() } returns AuthenticationDto(success = true, code = 0, message = "")
         }
 
         catalogUC = mockk(relaxed = true)
@@ -135,13 +135,13 @@ class TokenViewModelTest : FunSpec({
             nameFn = { it.description },
             TokenTestCases.SaveToken(
                 description = "Success",
-                apiResult = TMDBAuthentication(success = true, code = 0, message = ""),
+                apiResult = AuthenticationDto(success = true, code = 0, message = ""),
                 expectedMessage = TokenMessage.Success,
                 expectedLoadCatalog = true,
             ),
             TokenTestCases.SaveToken(
                 description = "Fail token",
-                apiResult = TMDBAuthentication(success = false, code = 401, message = "Fail"),
+                apiResult = AuthenticationDto(success = false, code = 401, message = "Fail"),
                 expectedMessage = TokenMessage.Error,
                 expectedLoadCatalog = false,
             ),
@@ -154,7 +154,7 @@ class TokenViewModelTest : FunSpec({
         ) { testCase ->
 
             tmdbService = mockk(relaxed = true) {
-                if (testCase.apiResult is TMDBAuthentication)
+                if (testCase.apiResult is AuthenticationDto)
                     coEvery { authenticate() } returns testCase.apiResult
                 else
                     coEvery { authenticate() } throws testCase.apiResult as Exception

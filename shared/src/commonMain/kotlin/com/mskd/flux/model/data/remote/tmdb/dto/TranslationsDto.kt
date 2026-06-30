@@ -1,11 +1,11 @@
-package com.mskd.flux.model.data.remote.tmdb
+package com.mskd.flux.model.data.remote.tmdb.dto
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.util.Locale
 
 @Serializable
-data class TMDBTranslations(
+data class TranslationsDto(
     val id: String,
     val translations: List<Translation>
 ) {
@@ -46,7 +46,7 @@ data class TMDBTranslations(
 
 }
 
-fun Collection<TMDBTranslations.Translation>.findWithLocale(locale: Locale) : TMDBTranslations.Translation? {
+fun Collection<TranslationsDto.Translation>.findWithLocale(locale: Locale) : TranslationsDto.Translation? {
     return this.find { it.language == locale.language && !it.data.overview.isNullOrBlank() }
         ?: this.find { it.language == Locale.ENGLISH.language && !it.data.overview.isNullOrBlank() }
 }

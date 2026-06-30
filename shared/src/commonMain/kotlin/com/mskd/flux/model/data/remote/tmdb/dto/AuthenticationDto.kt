@@ -1,4 +1,4 @@
-package com.mskd.flux.model.data.remote.tmdb
+package com.mskd.flux.model.data.remote.tmdb.dto
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -11,7 +11,7 @@ import kotlinx.serialization.Serializable
  * @property message Message associated with the authentication status.
  */
 @Serializable
-data class TMDBAuthentication(
+data class AuthenticationDto(
     val success: Boolean,
     @SerialName("status_code")
     val code: Int?,

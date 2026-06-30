@@ -1,6 +1,6 @@
 package com.mskd.flux.useCases.artwork
 
-import com.mskd.flux.model.presentation.State
+import com.mskd.flux.model.core.presentation.State
 import com.mskd.flux.model.domain.artwork.Episode
 import com.mskd.flux.model.domain.artwork.FullArtwork
 import com.mskd.flux.model.domain.artwork.Movie

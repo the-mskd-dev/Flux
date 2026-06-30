@@ -1,4 +1,4 @@
-package com.mskd.flux.model.presentation
+package com.mskd.flux.model.core.presentation
 
 import com.mskd.flux.model.core.StringProvider
 

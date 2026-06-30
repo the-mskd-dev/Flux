@@ -1,8 +1,7 @@
-package com.mskd.flux.model.data.mappers
+package com.mskd.flux.model.data.local.mappers
 
-import com.mskd.flux.model.domain.artwork.Season
 import com.mskd.flux.model.data.local.entities.SeasonEntity
-import com.mskd.flux.model.data.remote.tmdb.TMDBSeason
+import com.mskd.flux.model.domain.artwork.Season
 
 fun SeasonEntity.toDomain() : Season {
     return Season(
@@ -19,17 +18,6 @@ fun Season.toEntity() : SeasonEntity {
     return SeasonEntity(
         id = this.id,
         artworkId = this.artworkId,
-        title = this.title,
-        description = this.description,
-        imagePath = this.imagePath,
-        season = this.season
-    )
-}
-
-fun TMDBSeason.toDomain(artworkId: Long) : Season {
-    return Season(
-        id = this.id,
-        artworkId = artworkId,
         title = this.title,
         description = this.description,
         imagePath = this.imagePath,

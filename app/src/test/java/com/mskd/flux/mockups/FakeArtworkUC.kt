@@ -1,6 +1,6 @@
 package com.mskd.flux.mockups
 
-import com.mskd.flux.model.presentation.State
+import com.mskd.flux.model.core.presentation.State
 import com.mskd.flux.model.domain.artwork.ContentType
 import com.mskd.flux.model.domain.artwork.Episode
 import com.mskd.flux.model.domain.artwork.FullArtwork

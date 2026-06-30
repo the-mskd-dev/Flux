@@ -8,9 +8,9 @@ import com.mskd.flux.data.repository.token.TokenRepository
 import com.mskd.flux.data.tmdb.TMDBService
 import com.mskd.flux.di.moduleAndroidApp
 import com.mskd.flux.di.modulePlatform
+import com.mskd.flux.model.data.remote.tmdb.dto.TranslationsDto
 import com.mskd.flux.model.domain.FileSource
 import com.mskd.flux.model.domain.UserFile
-import com.mskd.flux.model.data.remote.tmdb.TMDBTranslations
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
@@ -128,7 +128,7 @@ class TmdbRepositoryImplTest : KoinTest {
     fun test_03_get_tmdb_movie_translations() = runTest {
 
         val result = repository.getTmdbTranslation(
-            request = TMDBTranslations.Request.Movie(
+            request = TranslationsDto.Request.Movie(
                 artworkId = movieArtworkId!!,
                 language = dataLanguage
             ),
@@ -166,7 +166,7 @@ class TmdbRepositoryImplTest : KoinTest {
     fun test_05_get_tmdb_show_translations() = runTest {
 
         val result = repository.getTmdbTranslation(
-            request = TMDBTranslations.Request.Show(
+            request = TranslationsDto.Request.Show(
                 artworkId = showArtworkId!!,
                 language = dataLanguage
             ),
@@ -207,7 +207,7 @@ class TmdbRepositoryImplTest : KoinTest {
     fun test_07_get_tmdb_episode_translations() = runTest {
 
         val result = repository.getTmdbTranslation(
-            request = TMDBTranslations.Request.Episode(
+            request = TranslationsDto.Request.Episode(
                 artworkId = showArtworkId!!,
                 season = episodeFile.nameProperties.season!!,
                 number = episodeFile.nameProperties.episode!!,
@@ -246,7 +246,7 @@ class TmdbRepositoryImplTest : KoinTest {
     fun test_09_get_tmdb_season_translations() = runTest {
 
         val result = repository.getTmdbTranslation(
-            request = TMDBTranslations.Request.Season(
+            request = TranslationsDto.Request.Season(
                 artworkId = showArtworkId!!,
                 season = episodeFile.nameProperties.season!!,
                 language = dataLanguage

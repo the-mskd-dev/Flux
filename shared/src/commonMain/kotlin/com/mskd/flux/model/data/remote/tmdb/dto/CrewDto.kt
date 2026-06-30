@@ -1,4 +1,4 @@
-package com.mskd.flux.model.data.remote.tmdb
+package com.mskd.flux.model.data.remote.tmdb.dto
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -17,7 +17,7 @@ import kotlinx.serialization.Serializable
  * @property popularity Popularity score of the crew member.
  */
 @Serializable
-data class TMDBCrew(
+data class CrewDto(
     val job: String,
     val department: String,
     @SerialName("credit_id")

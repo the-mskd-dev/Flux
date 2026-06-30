@@ -2,14 +2,14 @@ package com.mskd.flux.data.repository.tmdb
 
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.data.tmdb.TMDBService
+import com.mskd.flux.model.data.remote.tmdb.dto.ArtworkDto
+import com.mskd.flux.model.data.remote.tmdb.dto.EpisodeDto
+import com.mskd.flux.model.data.remote.tmdb.dto.MediaTypeDto
+import com.mskd.flux.model.data.remote.tmdb.dto.MovieDto
+import com.mskd.flux.model.data.remote.tmdb.dto.SeasonDto
+import com.mskd.flux.model.data.remote.tmdb.dto.TranslationsDto
+import com.mskd.flux.model.data.remote.tmdb.dto.findWithLocale
 import com.mskd.flux.model.domain.UserFile
-import com.mskd.flux.model.data.remote.tmdb.TMDBArtwork
-import com.mskd.flux.model.data.remote.tmdb.TMDBEpisode
-import com.mskd.flux.model.data.remote.tmdb.TMDBMediaType
-import com.mskd.flux.model.data.remote.tmdb.TMDBMovie
-import com.mskd.flux.model.data.remote.tmdb.TMDBSeason
-import com.mskd.flux.model.data.remote.tmdb.TMDBTranslations
-import com.mskd.flux.model.data.remote.tmdb.findWithLocale
 import com.mskd.flux.utils.extensions.toTmdbFormat
 import io.github.aakira.napier.Napier
 import java.util.Locale
@@ -25,7 +25,7 @@ class TmdbRepositoryImpl(
 
     override suspend fun getTmdbArtwork(
         file: UserFile
-    ): TMDBArtwork? {
+    ): ArtworkDto? {
 
         val language = settings.getDataLanguage()
 
@@ -46,14 +46,14 @@ class TmdbRepositoryImpl(
             }
 
             var tmdbArtwork = tmdbArtworks.artworkFor(fileName = file.nameProperties.title)?.also {
-                it.type = if (file.isEpisode) TMDBMediaType.SHOW else TMDBMediaType.MOVIE
+                it.type = if (file.isEpisode) MediaTypeDto.SHOW else MediaTypeDto.MOVIE
             }
 
             // Get translation for show if needed
-            if (tmdbArtwork?.type == TMDBMediaType.SHOW && (tmdbArtwork.description.isBlank() || tmdbArtwork.title.isBlank())) {
+            if (tmdbArtwork?.type == MediaTypeDto.SHOW && (tmdbArtwork.description.isBlank() || tmdbArtwork.title.isBlank())) {
 
                 getTmdbTranslation(
-                    request = TMDBTranslations.Request.Show(
+                    request = TranslationsDto.Request.Show(
                         artworkId = tmdbArtwork.id,
                         language = language
                     ),
@@ -77,7 +77,7 @@ class TmdbRepositoryImpl(
 
     override suspend fun getTmdbMovie(
         artworkId: Long
-    ): TMDBMovie? {
+    ): MovieDto? {
 
         val language = settings.getDataLanguage()
 
@@ -91,7 +91,7 @@ class TmdbRepositoryImpl(
             if (tmdbMovie.description.isBlank() || tmdbMovie.title.isBlank()) {
 
                 getTmdbTranslation(
-                    request = TMDBTranslations.Request.Movie(
+                    request = TranslationsDto.Request.Movie(
                         artworkId = artworkId,
                         language = language
                     ),
@@ -117,7 +117,7 @@ class TmdbRepositoryImpl(
         artworkId: Long,
         season: Int,
         number: Int
-    ): TMDBEpisode? {
+    ): EpisodeDto? {
 
         val language = settings.getDataLanguage()
 
@@ -134,7 +134,7 @@ class TmdbRepositoryImpl(
 
                 tmdbEpisode = translateTmdbEpisode(
                     artworkId = artworkId,
-                    tmdbEpisode = tmdbEpisode,
+                    episodeDto = tmdbEpisode,
                     language = language
                 )
 
@@ -149,7 +149,7 @@ class TmdbRepositoryImpl(
 
     }
 
-    override suspend fun getTmdbSeason(artworkId: Long, season: Int): TMDBSeason? {
+    override suspend fun getTmdbSeason(artworkId: Long, season: Int): SeasonDto? {
 
         val language = settings.getDataLanguage()
 
@@ -164,7 +164,7 @@ class TmdbRepositoryImpl(
             if (tmdbSeason.description.isBlank() || tmdbSeason.title.isBlank()) {
 
                 getTmdbTranslation(
-                    request = TMDBTranslations.Request.Season(
+                    request = TranslationsDto.Request.Season(
                         artworkId = artworkId,
                         season = season,
                         language = language
@@ -187,33 +187,33 @@ class TmdbRepositoryImpl(
 
     }
 
-    override suspend fun translateTmdbEpisode(artworkId: Long, tmdbEpisode: TMDBEpisode, language: Locale): TMDBEpisode {
+    override suspend fun translateTmdbEpisode(artworkId: Long, episodeDto: EpisodeDto, language: Locale): EpisodeDto {
 
         return getTmdbTranslation(
-            request = TMDBTranslations.Request.Episode(
+            request = TranslationsDto.Request.Episode(
                 artworkId = artworkId,
-                season = tmdbEpisode.season,
-                number = tmdbEpisode.number,
+                season = episodeDto.season,
+                number = episodeDto.number,
                 language = language
             ),
         )?.let {
-            tmdbEpisode.copy(
-                title = it.data.name ?: tmdbEpisode.title,
-                description = it.data.overview ?: tmdbEpisode.description
+            episodeDto.copy(
+                title = it.data.name ?: episodeDto.title,
+                description = it.data.overview ?: episodeDto.description
             )
-        } ?: tmdbEpisode
+        } ?: episodeDto
 
     }
 
-    override suspend fun getTmdbTranslation(request: TMDBTranslations.Request): TMDBTranslations.Translation? {
+    override suspend fun getTmdbTranslation(request: TranslationsDto.Request): TranslationsDto.Translation? {
 
         return try {
 
             val result = when (request) {
-                is TMDBTranslations.Request.Movie -> tmdbService.getMovieTranslations(artworkId = request.artworkId)
-                is TMDBTranslations.Request.Show -> tmdbService.getShowTranslations(artworkId = request.artworkId)
-                is TMDBTranslations.Request.Season -> tmdbService.getSeasonTranslations(artworkId = request.artworkId, season = request.season)
-                is TMDBTranslations.Request.Episode -> tmdbService.getEpisodeTranslations(artworkId = request.artworkId, season = request.season, number = request.number)
+                is TranslationsDto.Request.Movie -> tmdbService.getMovieTranslations(artworkId = request.artworkId)
+                is TranslationsDto.Request.Show -> tmdbService.getShowTranslations(artworkId = request.artworkId)
+                is TranslationsDto.Request.Season -> tmdbService.getSeasonTranslations(artworkId = request.artworkId, season = request.season)
+                is TranslationsDto.Request.Episode -> tmdbService.getEpisodeTranslations(artworkId = request.artworkId, season = request.season, number = request.number)
             }
 
             result.translations.findWithLocale(request.language)

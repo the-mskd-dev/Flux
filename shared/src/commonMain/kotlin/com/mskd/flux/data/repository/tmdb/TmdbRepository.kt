@@ -1,32 +1,32 @@
 package com.mskd.flux.data.repository.tmdb
 
+import com.mskd.flux.model.data.remote.tmdb.dto.ArtworkDto
+import com.mskd.flux.model.data.remote.tmdb.dto.EpisodeDto
+import com.mskd.flux.model.data.remote.tmdb.dto.MovieDto
+import com.mskd.flux.model.data.remote.tmdb.dto.SeasonDto
+import com.mskd.flux.model.data.remote.tmdb.dto.TranslationsDto
 import com.mskd.flux.model.domain.UserFile
-import com.mskd.flux.model.data.remote.tmdb.TMDBArtwork
-import com.mskd.flux.model.data.remote.tmdb.TMDBEpisode
-import com.mskd.flux.model.data.remote.tmdb.TMDBMovie
-import com.mskd.flux.model.data.remote.tmdb.TMDBSeason
-import com.mskd.flux.model.data.remote.tmdb.TMDBTranslations
 import java.util.Locale
 
 interface TmdbRepository {
 
-    suspend fun getTmdbArtwork(file: UserFile) : TMDBArtwork?
+    suspend fun getTmdbArtwork(file: UserFile) : ArtworkDto?
 
-    suspend fun getTmdbMovie(artworkId: Long) : TMDBMovie?
+    suspend fun getTmdbMovie(artworkId: Long) : MovieDto?
 
     suspend fun getTmdbEpisode(
         artworkId: Long,
         season: Int,
         number: Int,
-    ) : TMDBEpisode?
+    ) : EpisodeDto?
 
     suspend fun getTmdbSeason(
         artworkId: Long,
         season: Int,
-    ) : TMDBSeason?
+    ) : SeasonDto?
 
-    suspend fun translateTmdbEpisode(artworkId: Long, tmdbEpisode: TMDBEpisode, language: Locale) : TMDBEpisode
+    suspend fun translateTmdbEpisode(artworkId: Long, episodeDto: EpisodeDto, language: Locale) : EpisodeDto
 
-    suspend fun getTmdbTranslation(request: TMDBTranslations.Request) : TMDBTranslations.Translation?
+    suspend fun getTmdbTranslation(request: TranslationsDto.Request) : TranslationsDto.Translation?
 
 }

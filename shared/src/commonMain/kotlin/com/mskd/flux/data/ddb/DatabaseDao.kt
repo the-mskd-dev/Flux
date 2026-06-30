@@ -4,12 +4,12 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.mskd.flux.model.domain.artwork.Artwork
-import com.mskd.flux.model.data.local.ArtworkImagesDTO
 import com.mskd.flux.model.data.local.entities.ArtworkEntity
 import com.mskd.flux.model.data.local.entities.EpisodeEntity
 import com.mskd.flux.model.data.local.entities.MovieEntity
 import com.mskd.flux.model.data.local.entities.SeasonEntity
+import com.mskd.flux.model.data.local.projections.ArtworkImagesProjection
+import com.mskd.flux.model.domain.artwork.Artwork
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -154,7 +154,7 @@ interface DatabaseDao {
 //region Images
 
     @Query("SELECT imagePath, bannerPath FROM artworks")
-    suspend fun getArtworksImages() : List<ArtworkImagesDTO>
+    suspend fun getArtworksImages() : List<ArtworkImagesProjection>
 
     @Query("SELECT imagePath FROM episodes")
     suspend fun getEpisodesImages() : List<String>

@@ -2,7 +2,7 @@ package com.mskd.flux.screen.player
 
 import androidx.compose.runtime.Immutable
 import androidx.media3.common.Player
-import com.mskd.flux.model.presentation.State
+import com.mskd.flux.model.core.presentation.State
 import com.mskd.flux.model.domain.artwork.Episode
 import com.mskd.flux.model.domain.artwork.FullArtwork
 import com.mskd.flux.model.domain.artwork.Media

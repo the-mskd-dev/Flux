@@ -29,7 +29,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.model.presentation.ScreenState
+import com.mskd.flux.model.core.presentation.ScreenState
 import com.mskd.flux.model.domain.artwork.Episode
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Route.Player

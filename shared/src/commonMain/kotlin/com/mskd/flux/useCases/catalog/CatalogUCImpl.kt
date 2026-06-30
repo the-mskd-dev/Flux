@@ -6,6 +6,9 @@ import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.data.repository.tmdb.TmdbRepository
 import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.model.core.AppInfo
+import com.mskd.flux.model.data.remote.tmdb.dto.EpisodeDto
+import com.mskd.flux.model.data.remote.tmdb.dto.TranslationsDto
+import com.mskd.flux.model.data.remote.tmdb.mappers.toDomain
 import com.mskd.flux.model.domain.Catalog
 import com.mskd.flux.model.domain.CatalogFolder
 import com.mskd.flux.model.domain.Status
@@ -16,10 +19,6 @@ import com.mskd.flux.model.domain.artwork.Episode
 import com.mskd.flux.model.domain.artwork.Media
 import com.mskd.flux.model.domain.artwork.Movie
 import com.mskd.flux.model.domain.artwork.Season
-import com.mskd.flux.model.data.mappers.toArtwork
-import com.mskd.flux.model.data.mappers.toDomain
-import com.mskd.flux.model.data.remote.tmdb.TMDBEpisode
-import com.mskd.flux.model.data.remote.tmdb.TMDBTranslations
 import com.mskd.flux.platform.MetadataProvider
 import com.mskd.flux.useCases.images.ImagesUC
 import com.mskd.flux.utils.Trace
@@ -216,7 +215,7 @@ class CatalogUCImpl(
 
         val episodes = getEpisodes(
             artworkFolders = artworksFolders,
-            tmdbEpisodes = tmdbEpisodes,
+            episodesDto = tmdbEpisodes,
             updateProgress = updateProgress
         )
 
@@ -266,7 +265,7 @@ class CatalogUCImpl(
                         val translated = chunk.map { movie ->
                             async {
                                 tmdb.getTmdbTranslation(
-                                    request = TMDBTranslations.Request.Movie(artworkId = movie.artworkId, language = language)
+                                    request = TranslationsDto.Request.Movie(artworkId = movie.artworkId, language = language)
                                 )?.let { translation ->
                                     movie.copy(
                                         title = translation.data.name ?: movie.title,
@@ -286,7 +285,7 @@ class CatalogUCImpl(
                         val translated = chunk.map { show ->
                             async {
                                 tmdb.getTmdbTranslation(
-                                    request = TMDBTranslations.Request.Show(artworkId = show.id, language = language)
+                                    request = TranslationsDto.Request.Show(artworkId = show.id, language = language)
                                 )?.let { translation ->
                                     show.copy(
                                         title = translation.data.name ?: show.title,
@@ -306,7 +305,7 @@ class CatalogUCImpl(
                         val translated = chunk.map { season ->
                             async {
                                 tmdb.getTmdbTranslation(
-                                    request = TMDBTranslations.Request.Season(artworkId = season.artworkId, season = season.season, language = language)
+                                    request = TranslationsDto.Request.Season(artworkId = season.artworkId, season = season.season, language = language)
                                 )?.let { translation ->
                                     season.copy(
                                         title = translation.data.name ?: season.title,
@@ -326,7 +325,7 @@ class CatalogUCImpl(
                         val translated = chunk.map { episode ->
                             async {
                                 tmdb.getTmdbTranslation(
-                                    request = TMDBTranslations.Request.Episode(artworkId = episode.artworkId, season = episode.season, number = episode.number, language = language)
+                                    request = TranslationsDto.Request.Episode(artworkId = episode.artworkId, season = episode.season, number = episode.number, language = language)
                                 )?.let { translation ->
                                     episode.copy(
                                         title = translation.data.name ?: episode.title,
@@ -431,7 +430,7 @@ class CatalogUCImpl(
 
                         val tmdbArtwork = tmdb.getTmdbArtwork(file = folder.files.first())
 
-                        val artwork = tmdbArtwork?.toArtwork() ?: Artwork.UNKNOWN
+                        val artwork = tmdbArtwork?.toDomain() ?: Artwork.UNKNOWN
 
                         ArtworkFolder(
                             artwork = artwork,
@@ -511,7 +510,7 @@ class CatalogUCImpl(
 
     }
 
-    private suspend fun getSeasonsAndTmdbEpisodes(artworkFolders: List<ArtworkFolder>) : List<Pair<Season, List<TMDBEpisode>>> {
+    private suspend fun getSeasonsAndTmdbEpisodes(artworkFolders: List<ArtworkFolder>) : List<Pair<Season, List<EpisodeDto>>> {
 
         val folders = artworkFolders.filter { it.artwork.type == ContentType.SHOW && it.artwork.id != Artwork.UNKNOWN_ID }
 
@@ -556,13 +555,13 @@ class CatalogUCImpl(
 
     private suspend fun getEpisodes(
         artworkFolders: List<ArtworkFolder>,
-        tmdbEpisodes: List<TMDBEpisode>,
+        episodesDto: List<EpisodeDto>,
         updateProgress: () -> Unit
     ) : List<Episode> {
 
         val language = settings.getDataLanguage()
 
-        val tmdbEpisodesMap = tmdbEpisodes.associateBy { Triple(it.artworkId, it.season, it.number) }
+        val tmdbEpisodesMap = episodesDto.associateBy { Triple(it.artworkId, it.season, it.number) }
 
         val episodes = supervisorScope {
 
@@ -591,7 +590,7 @@ class CatalogUCImpl(
 
                                             tmdbEpisode = tmdb.translateTmdbEpisode(
                                                 artworkId = artwork.id,
-                                                tmdbEpisode = tmdbEpisode,
+                                                episodeDto = tmdbEpisode,
                                                 language = language
                                             )
 

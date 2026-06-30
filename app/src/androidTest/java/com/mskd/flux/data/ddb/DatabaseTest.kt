@@ -6,10 +6,10 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import app.cash.turbine.test
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.model.domain.artwork.Artwork
 import com.mskd.flux.model.data.local.entities.ArtworkEntity
 import com.mskd.flux.model.data.local.entities.SeasonEntity
-import com.mskd.flux.model.data.mappers.toEntity
+import com.mskd.flux.model.data.local.mappers.toEntity
+import com.mskd.flux.model.domain.artwork.Artwork
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertEquals

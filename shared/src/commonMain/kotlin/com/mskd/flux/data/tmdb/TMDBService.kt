@@ -1,64 +1,64 @@
 package com.mskd.flux.data.tmdb
 
-import com.mskd.flux.model.data.remote.tmdb.TMDBArtworksResult
-import com.mskd.flux.model.data.remote.tmdb.TMDBAuthentication
-import com.mskd.flux.model.data.remote.tmdb.TMDBEpisode
-import com.mskd.flux.model.data.remote.tmdb.TMDBMovie
-import com.mskd.flux.model.data.remote.tmdb.TMDBSeason
-import com.mskd.flux.model.data.remote.tmdb.TMDBTranslations
+import com.mskd.flux.model.data.remote.tmdb.dto.ArtworksResultDto
+import com.mskd.flux.model.data.remote.tmdb.dto.AuthenticationDto
+import com.mskd.flux.model.data.remote.tmdb.dto.EpisodeDto
+import com.mskd.flux.model.data.remote.tmdb.dto.MovieDto
+import com.mskd.flux.model.data.remote.tmdb.dto.SeasonDto
+import com.mskd.flux.model.data.remote.tmdb.dto.TranslationsDto
 import com.mskd.flux.utils.Constants
 
 interface TMDBService {
 
-    suspend fun authenticate() : TMDBAuthentication
+    suspend fun authenticate() : AuthenticationDto
 
     suspend fun getMovie(
         title: String,
         year: Int? = null,
         language: String = Constants.Global.LANGUAGE
-    ) : TMDBArtworksResult
+    ) : ArtworksResultDto
 
     suspend fun getMovieDetails(
         id: Long,
         language: String = Constants.Global.LANGUAGE
-    ) : TMDBMovie
+    ) : MovieDto
 
     suspend fun getMovieTranslations(
         artworkId: Long,
-    ) : TMDBTranslations
+    ) : TranslationsDto
 
     suspend fun getShow(
         title: String,
         year: Int? = null,
         language: String = Constants.Global.LANGUAGE
-    ) : TMDBArtworksResult
+    ) : ArtworksResultDto
 
     suspend fun getShowTranslations(
         artworkId: Long,
-    ) : TMDBTranslations
+    ) : TranslationsDto
 
     suspend fun getEpisode(
         id: Long,
         season: Int,
         number: Int,
         language: String = Constants.Global.LANGUAGE
-    ) : TMDBEpisode
+    ) : EpisodeDto
 
     suspend fun getEpisodeTranslations(
         artworkId: Long,
         season: Int,
         number: Int,
-    ) : TMDBTranslations
+    ) : TranslationsDto
 
     suspend fun getSeason(
         id: Long,
         season: Int,
         language: String = Constants.Global.LANGUAGE
-    ) : TMDBSeason
+    ) : SeasonDto
 
     suspend fun getSeasonTranslations(
         artworkId: Long,
         season: Int,
-    ) : TMDBTranslations
+    ) : TranslationsDto
 
 }

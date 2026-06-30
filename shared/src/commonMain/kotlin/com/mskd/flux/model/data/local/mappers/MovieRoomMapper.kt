@@ -1,10 +1,8 @@
-package com.mskd.flux.model.data.mappers
+package com.mskd.flux.model.data.local.mappers
 
-import com.mskd.flux.model.domain.Status
+import com.mskd.flux.model.data.local.entities.MovieEntity
 import com.mskd.flux.model.domain.UserFile
 import com.mskd.flux.model.domain.artwork.Movie
-import com.mskd.flux.model.data.local.entities.MovieEntity
-import com.mskd.flux.model.data.remote.tmdb.TMDBMovie
 
 fun MovieEntity.toDomain() : Movie {
     val file = UserFile(
@@ -43,24 +41,5 @@ fun Movie.toEntity() : MovieEntity {
         addedDateTime = this.file.addedDateTime,
         path = this.file.path,
         source = this.file.source
-    )
-}
-
-fun TMDBMovie.toDomain(
-    file: UserFile,
-    duration: Int
-) : Movie {
-    return Movie(
-        artworkId = this.id,
-        title = this.title,
-        releaseDateString = this.releaseDate,
-        description = this.description,
-        voteAverage = this.voteAverage,
-        voteCount = this.voteCount,
-        duration = duration,
-        currentTime = 0L,
-        file = file,
-        //genres = emptyList(),
-        status = Status.TO_WATCH
     )
 }

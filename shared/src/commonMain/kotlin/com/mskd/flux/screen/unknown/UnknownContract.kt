@@ -1,6 +1,6 @@
 package com.mskd.flux.screen.unknown
 
-import com.mskd.flux.model.presentation.ScreenState
+import com.mskd.flux.model.core.presentation.ScreenState
 import com.mskd.flux.model.domain.artwork.Episode
 import com.mskd.flux.model.domain.artwork.Media
 

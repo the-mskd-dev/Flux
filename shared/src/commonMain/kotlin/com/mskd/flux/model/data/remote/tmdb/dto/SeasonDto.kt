@@ -1,10 +1,10 @@
-package com.mskd.flux.model.data.remote.tmdb
+package com.mskd.flux.model.data.remote.tmdb.dto
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class TMDBSeason(
+data class SeasonDto(
     val id: Long,
     @SerialName("name")
     val title: String,
@@ -14,5 +14,5 @@ data class TMDBSeason(
     val imagePath: String?,
     @SerialName("season_number")
     val season: Int,
-    val episodes: List<TMDBEpisode>
+    val episodes: List<EpisodeDto>
 )

@@ -1,4 +1,4 @@
-package com.mskd.flux.model.data.remote.tmdb
+package com.mskd.flux.model.data.remote.tmdb.dto
 
 import com.mskd.flux.utils.Levenshtein
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -24,7 +24,7 @@ import kotlinx.serialization.json.JsonNames
  */
 @Serializable
 @OptIn(ExperimentalSerializationApi::class)
-data class TMDBArtwork(
+data class ArtworkDto(
     val id: Long,
     @SerialName("overview")
     val description: String,
@@ -47,7 +47,7 @@ data class TMDBArtwork(
     val originalTitle: String,
 
     @SerialName("media_type")
-    var type: TMDBMediaType?,
+    var type: MediaTypeDto?,
 ) {
 
 
@@ -62,16 +62,16 @@ data class TMDBArtwork(
  * @property resultCount Total number of medias in the result set.
  */
 @Serializable
-data class TMDBArtworksResult(
+data class ArtworksResultDto(
     val page: Int,
-    val results: List<TMDBArtwork>,
+    val results: List<ArtworkDto>,
     @SerialName("total_pages")
     val pageCount: Int,
     @SerialName("total_results")
     val resultCount: Int
 ) {
 
-    fun artworkFor(fileName: String) : TMDBArtwork? {
+    fun artworkFor(fileName: String) : ArtworkDto? {
         return results.minByOrNull {
             Levenshtein.minDistance(
                 query = fileName,

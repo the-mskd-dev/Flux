@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.mskd.flux.mockups.FilesMockups
 import com.mskd.flux.model.domain.files.UserFolder
@@ -42,11 +43,15 @@ fun FolderItem(
 
         Text.Title.Medium(
             text = name,
+            overflow = TextOverflow.Ellipsis,
+            maxLines = 1,
             color = MaterialTheme.colorScheme.onBackground
         )
 
         Text.Title.Small(
             text = path,
+            overflow = TextOverflow.StartEllipsis,
+            maxLines = 1,
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = .7f)
         )
 

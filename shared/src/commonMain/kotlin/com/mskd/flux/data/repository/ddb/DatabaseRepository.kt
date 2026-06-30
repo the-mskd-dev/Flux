@@ -1,6 +1,6 @@
 package com.mskd.flux.data.repository.ddb
 
-import com.mskd.flux.model.domain.UserFile
+import com.mskd.flux.model.domain.files.UserFile
 import com.mskd.flux.model.domain.artwork.Artwork
 import com.mskd.flux.model.domain.artwork.Episode
 import com.mskd.flux.model.domain.artwork.Movie

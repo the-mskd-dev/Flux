@@ -1,7 +1,7 @@
 package com.mskd.flux.data.ddb
 
 import androidx.room.TypeConverter
-import com.mskd.flux.model.domain.FileSource
+import com.mskd.flux.model.domain.files.FileSource
 import com.mskd.flux.model.domain.artwork.ContentType
 
 class Converters {

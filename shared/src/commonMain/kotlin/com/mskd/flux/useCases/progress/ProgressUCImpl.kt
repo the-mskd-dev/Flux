@@ -2,7 +2,7 @@ package com.mskd.flux.useCases.progress
 
 import com.mskd.flux.data.repository.ddb.DatabaseRepository
 import com.mskd.flux.data.repository.user.UserRepository
-import com.mskd.flux.model.domain.Status
+import com.mskd.flux.model.domain.artwork.Status
 import com.mskd.flux.model.domain.artwork.Artwork
 import com.mskd.flux.model.domain.artwork.ContentType
 import com.mskd.flux.model.domain.artwork.Episode

@@ -1,7 +1,7 @@
 package com.mskd.flux.model.data.local.entities
 
 import androidx.room.Entity
-import com.mskd.flux.model.domain.FileSource
+import com.mskd.flux.model.domain.files.FileSource
 
 @Entity(
     tableName = "folders"

@@ -9,8 +9,8 @@ import com.mskd.flux.data.tmdb.TMDBService
 import com.mskd.flux.di.moduleAndroidApp
 import com.mskd.flux.di.modulePlatform
 import com.mskd.flux.model.data.remote.tmdb.dto.TranslationsDto
-import com.mskd.flux.model.domain.FileSource
-import com.mskd.flux.model.domain.UserFile
+import com.mskd.flux.model.domain.files.FileSource
+import com.mskd.flux.model.domain.files.UserFile
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking

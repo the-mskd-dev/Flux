@@ -1,4 +1,4 @@
-package com.mskd.flux.model.domain
+package com.mskd.flux.model.domain.artwork
 
 /**
  * Represents the viewing status of an media or episode.

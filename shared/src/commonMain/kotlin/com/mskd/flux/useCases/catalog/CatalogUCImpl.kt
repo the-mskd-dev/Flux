@@ -9,10 +9,10 @@ import com.mskd.flux.model.core.AppInfo
 import com.mskd.flux.model.data.remote.tmdb.dto.EpisodeDto
 import com.mskd.flux.model.data.remote.tmdb.dto.TranslationsDto
 import com.mskd.flux.model.data.remote.tmdb.mappers.toDomain
-import com.mskd.flux.model.domain.Catalog
-import com.mskd.flux.model.domain.CatalogFolder
-import com.mskd.flux.model.domain.Status
-import com.mskd.flux.model.domain.UserFile
+import com.mskd.flux.model.domain.catalog.Catalog
+import com.mskd.flux.model.domain.catalog.CatalogFolder
+import com.mskd.flux.model.domain.artwork.Status
+import com.mskd.flux.model.domain.files.UserFile
 import com.mskd.flux.model.domain.artwork.Artwork
 import com.mskd.flux.model.domain.artwork.ContentType
 import com.mskd.flux.model.domain.artwork.Episode

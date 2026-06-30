@@ -5,7 +5,7 @@ import com.mskd.flux.model.data.remote.tmdb.dto.EpisodeDto
 import com.mskd.flux.model.data.remote.tmdb.dto.MovieDto
 import com.mskd.flux.model.data.remote.tmdb.dto.SeasonDto
 import com.mskd.flux.model.data.remote.tmdb.dto.TranslationsDto
-import com.mskd.flux.model.domain.UserFile
+import com.mskd.flux.model.domain.files.UserFile
 import java.util.Locale
 
 interface TmdbRepository {

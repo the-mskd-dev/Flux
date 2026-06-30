@@ -1,5 +1,6 @@
-package com.mskd.flux.model.domain
+package com.mskd.flux.model.domain.catalog
 
+import com.mskd.flux.model.domain.files.UserFile
 import com.mskd.flux.model.domain.artwork.ContentType
 
 data class CatalogFolder(

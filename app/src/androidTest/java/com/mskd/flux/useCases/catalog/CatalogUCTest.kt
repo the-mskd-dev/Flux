@@ -16,8 +16,8 @@ import com.mskd.flux.di.Qualifiers
 import com.mskd.flux.di.moduleAndroidApp
 import com.mskd.flux.di.modulePlatform
 import com.mskd.flux.model.core.AppInfo
-import com.mskd.flux.model.domain.FileSource
-import com.mskd.flux.model.domain.UserFile
+import com.mskd.flux.model.domain.files.FileSource
+import com.mskd.flux.model.domain.files.UserFile
 import com.mskd.flux.model.domain.artwork.Artwork
 import com.mskd.flux.model.domain.artwork.Episode
 import com.mskd.flux.model.domain.artwork.Movie

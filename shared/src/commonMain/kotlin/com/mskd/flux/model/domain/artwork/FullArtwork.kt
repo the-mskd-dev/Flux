@@ -1,6 +1,5 @@
 package com.mskd.flux.model.domain.artwork
 
-import com.mskd.flux.model.domain.Status
 import com.mskd.flux.utils.extensions.firstEpisodeToWatch
 
 sealed class FullArtwork {

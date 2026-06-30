@@ -1,4 +1,4 @@
-package com.mskd.flux.model.domain
+package com.mskd.flux.model.domain.files
 
 import kotlinx.serialization.Serializable
 import java.util.Date

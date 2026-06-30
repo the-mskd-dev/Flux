@@ -1,4 +1,4 @@
-package com.mskd.flux.model.domain
+package com.mskd.flux.model.domain.files
 
 data class UserFolder(
     val path: String,

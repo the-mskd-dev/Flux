@@ -1,6 +1,6 @@
 package com.mskd.flux.utils.extensions
 
-import com.mskd.flux.model.domain.Status
+import com.mskd.flux.model.domain.artwork.Status
 import com.mskd.flux.model.domain.artwork.Episode
 
 fun List<Episode>.sort() : List<Episode> {

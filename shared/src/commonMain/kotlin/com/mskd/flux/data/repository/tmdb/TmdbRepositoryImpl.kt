@@ -9,7 +9,7 @@ import com.mskd.flux.model.data.remote.tmdb.dto.MovieDto
 import com.mskd.flux.model.data.remote.tmdb.dto.SeasonDto
 import com.mskd.flux.model.data.remote.tmdb.dto.TranslationsDto
 import com.mskd.flux.model.data.remote.tmdb.dto.findWithLocale
-import com.mskd.flux.model.domain.UserFile
+import com.mskd.flux.model.domain.files.UserFile
 import com.mskd.flux.utils.extensions.toTmdbFormat
 import io.github.aakira.napier.Napier
 import java.util.Locale

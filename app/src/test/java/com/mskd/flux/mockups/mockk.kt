@@ -4,7 +4,7 @@ import com.mskd.flux.data.repository.ddb.DatabaseRepository
 import com.mskd.flux.data.repository.files.FilesRepository
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.data.repository.snackbars.SnackbarRepository
-import com.mskd.flux.model.domain.UserFile
+import com.mskd.flux.model.domain.files.UserFile
 import com.mskd.flux.useCases.catalog.CatalogUC
 import com.mskd.flux.useCases.catalog.CatalogUC.State
 import com.mskd.flux.useCases.images.ImagesUC

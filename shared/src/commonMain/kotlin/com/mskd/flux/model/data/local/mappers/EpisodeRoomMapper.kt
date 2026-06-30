@@ -1,7 +1,7 @@
 package com.mskd.flux.model.data.local.mappers
 
 import com.mskd.flux.model.data.local.entities.EpisodeEntity
-import com.mskd.flux.model.domain.UserFile
+import com.mskd.flux.model.domain.files.UserFile
 import com.mskd.flux.model.domain.artwork.Episode
 
 fun EpisodeEntity.toDomain() : Episode {

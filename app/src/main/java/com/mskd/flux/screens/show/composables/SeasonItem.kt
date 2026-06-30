@@ -24,7 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.palette.graphics.Palette
 import coil3.toBitmap
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.model.domain.Status
+import com.mskd.flux.model.domain.artwork.Status
 import com.mskd.flux.model.domain.artwork.Episode
 import com.mskd.flux.model.domain.artwork.Season
 import com.mskd.flux.ui.component.global.FluxImage

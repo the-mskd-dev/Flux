@@ -1,7 +1,7 @@
 package com.mskd.flux.useCases.catalog
 
-import com.mskd.flux.model.domain.Catalog
-import com.mskd.flux.model.domain.UserFile
+import com.mskd.flux.model.domain.catalog.Catalog
+import com.mskd.flux.model.domain.files.UserFile
 import com.mskd.flux.model.domain.artwork.Artwork
 import kotlinx.coroutines.flow.Flow
 

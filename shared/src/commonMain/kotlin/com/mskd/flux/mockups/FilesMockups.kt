@@ -1,7 +1,7 @@
 package com.mskd.flux.mockups
 
-import com.mskd.flux.model.domain.FileSource
-import com.mskd.flux.model.domain.UserFile
+import com.mskd.flux.model.domain.files.FileSource
+import com.mskd.flux.model.domain.files.UserFile
 
 object FilesMockups {
 

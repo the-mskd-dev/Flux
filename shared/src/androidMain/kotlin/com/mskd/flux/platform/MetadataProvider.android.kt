@@ -3,7 +3,7 @@ package com.mskd.flux.platform
 import android.content.Context
 import android.media.MediaMetadataRetriever
 import androidx.core.net.toUri
-import com.mskd.flux.model.domain.UserFile
+import com.mskd.flux.model.domain.files.UserFile
 import com.mskd.flux.utils.Trace
 import com.mskd.flux.utils.extensions.msToMin
 import kotlinx.coroutines.Dispatchers

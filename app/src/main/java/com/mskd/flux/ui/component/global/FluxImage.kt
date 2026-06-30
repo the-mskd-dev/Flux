@@ -21,7 +21,7 @@ import coil3.request.allowHardware
 import coil3.request.crossfade
 import coil3.video.videoFrameMillis
 import coil3.video.videoFramePercent
-import com.mskd.flux.model.domain.Status
+import com.mskd.flux.model.domain.artwork.Status
 import com.mskd.flux.model.domain.artwork.Episode
 import com.mskd.flux.model.domain.artwork.Media
 import com.mskd.flux.utils.extensions.tmdbImage

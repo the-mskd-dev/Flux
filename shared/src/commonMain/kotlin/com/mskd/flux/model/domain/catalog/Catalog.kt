@@ -1,4 +1,4 @@
-package com.mskd.flux.model.domain
+package com.mskd.flux.model.domain.catalog
 
 import com.mskd.flux.model.domain.artwork.Artwork
 import com.mskd.flux.model.domain.artwork.Episode

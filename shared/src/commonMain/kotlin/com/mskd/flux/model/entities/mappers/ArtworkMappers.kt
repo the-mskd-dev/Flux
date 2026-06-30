@@ -6,7 +6,6 @@ import com.mskd.flux.model.entities.ArtworkEntity
 import com.mskd.flux.model.tmdb.TMDBArtwork
 import com.mskd.flux.model.tmdb.TMDBMediaType
 import com.mskd.flux.model.tmdb.TMDBMovie
-import kotlin.Long
 
 fun ArtworkEntity.toDomain() : Artwork {
     return Artwork(

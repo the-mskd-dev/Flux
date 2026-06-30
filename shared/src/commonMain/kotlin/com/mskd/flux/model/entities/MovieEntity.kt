@@ -1,13 +1,11 @@
 package com.mskd.flux.model.entities
 
 import androidx.room.ColumnInfo
-import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.mskd.flux.model.FileSource
 import com.mskd.flux.model.Status
-import com.mskd.flux.model.UserFile
 
 @Entity(
     tableName = "movies",

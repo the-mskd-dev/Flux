@@ -1,12 +1,10 @@
 package com.mskd.flux.model.entities.mappers
 
-import androidx.room.Embedded
 import com.mskd.flux.model.Status
 import com.mskd.flux.model.UserFile
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.entities.EpisodeEntity
 import com.mskd.flux.model.tmdb.TMDBEpisode
-import kotlin.Long
 
 fun EpisodeEntity.toDomain() : Episode {
     val file = UserFile(

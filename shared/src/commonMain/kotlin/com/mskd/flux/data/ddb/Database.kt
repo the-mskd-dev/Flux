@@ -7,10 +7,6 @@ import androidx.room.RoomDatabase
 import androidx.room.RoomDatabaseConstructor
 import androidx.room.TypeConverters
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
-import com.mskd.flux.model.artwork.Artwork
-import com.mskd.flux.model.artwork.Episode
-import com.mskd.flux.model.artwork.Movie
-import com.mskd.flux.model.artwork.Season
 import com.mskd.flux.model.entities.ArtworkEntity
 import com.mskd.flux.model.entities.EpisodeEntity
 import com.mskd.flux.model.entities.MovieEntity

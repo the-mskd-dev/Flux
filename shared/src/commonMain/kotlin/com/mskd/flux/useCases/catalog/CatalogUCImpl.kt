@@ -7,9 +7,9 @@ import com.mskd.flux.data.repository.tmdb.TmdbRepository
 import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.model.AppInfo
 import com.mskd.flux.model.Catalog
+import com.mskd.flux.model.CatalogFolder
 import com.mskd.flux.model.Status
 import com.mskd.flux.model.UserFile
-import com.mskd.flux.model.CatalogFolder
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.model.artwork.Episode

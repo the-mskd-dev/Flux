@@ -15,11 +15,11 @@ import kotlinx.coroutines.flow.map
 class DatabaseRepositoryImpl(private val dao: DatabaseDao) : DatabaseRepository {
 
     override fun flowArtworks(): Flow<List<Artwork>> {
-        return dao.flowArtworks()
+        return dao.flowArtworks().map { entities -> entities.map { it.toDomain() } }
     }
 
     override fun flowArtwork(artworkId: Long): Flow<Artwork?> {
-        return dao.flowArtwork(artworkId = artworkId)
+        return dao.flowArtwork(artworkId = artworkId).map { it?.toDomain() }
     }
 
     override fun flowMovie(artworkId: Long): Flow<Movie?> {
@@ -35,7 +35,7 @@ class DatabaseRepositoryImpl(private val dao: DatabaseDao) : DatabaseRepository 
     }
 
     override suspend fun saveArtworks(artworks: List<Artwork>) {
-        dao.insertArtworks(artworks = artworks)
+        dao.insertArtworks(artworks = artworks.map { it.toEntity() })
     }
 
     override suspend fun saveMovies(movies: List<Movie>) {
@@ -51,11 +51,11 @@ class DatabaseRepositoryImpl(private val dao: DatabaseDao) : DatabaseRepository 
     }
 
     override suspend fun getArtwork(artworkId: Long): Artwork? {
-        return dao.getArtwork(artworkId = artworkId)
+        return dao.getArtwork(artworkId = artworkId)?.toDomain()
     }
 
     override suspend fun getArtworks(): List<Artwork> {
-        return dao.getArtworks()
+        return dao.getArtworks().map { it.toDomain() }
     }
 
     override suspend fun getMovie(artworkId: Long): Movie? {

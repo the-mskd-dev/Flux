@@ -9,6 +9,7 @@ import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Season
 import com.mskd.flux.model.dto.ArtworkImagesDTO
+import com.mskd.flux.model.entities.ArtworkEntity
 import com.mskd.flux.model.entities.EpisodeEntity
 import com.mskd.flux.model.entities.MovieEntity
 import com.mskd.flux.model.entities.SeasonEntity
@@ -20,7 +21,7 @@ interface DatabaseDao {
 //region Insert
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertArtworks(artworks: List<Artwork>)
+    suspend fun insertArtworks(artworks: List<ArtworkEntity>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMovies(movies: List<MovieEntity>)
@@ -36,10 +37,10 @@ interface DatabaseDao {
 //region Flow
 
     @Query("SELECT * FROM artworks")
-    fun flowArtworks() : Flow<List<Artwork>>
+    fun flowArtworks() : Flow<List<ArtworkEntity>>
 
     @Query("SELECT * FROM artworks WHERE id = :artworkId")
-    fun flowArtwork(artworkId: Long) : Flow<Artwork?>
+    fun flowArtwork(artworkId: Long) : Flow<ArtworkEntity?>
 
     @Query("SELECT * FROM movies WHERE artworkId = :artworkId")
     fun flowMovie(artworkId: Long) : Flow<MovieEntity?>
@@ -55,10 +56,10 @@ interface DatabaseDao {
 //region Get
 
     @Query("SELECT * FROM artworks WHERE id = :artworkId")
-    suspend fun getArtwork(artworkId: Long) : Artwork?
+    suspend fun getArtwork(artworkId: Long) : ArtworkEntity?
 
     @Query("SELECT * FROM artworks")
-    suspend fun getArtworks() : List<Artwork>
+    suspend fun getArtworks() : List<ArtworkEntity>
 
     @Query("SELECT * FROM movies WHERE artworkId = :artworkId")
     suspend fun getMovie(artworkId: Long) : MovieEntity?

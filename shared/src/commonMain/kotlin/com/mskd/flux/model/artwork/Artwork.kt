@@ -18,44 +18,14 @@ import kotlinx.serialization.ExperimentalSerializationApi
  * @property bannerPath Path to the banner image of the media.
  * @property type Content of the media, which can be a movie or a show.
  */
-@Entity(tableName = "artworks")
 data class Artwork(
-    @PrimaryKey
     val id: Long = 0,
     val title: String = "",
-    @ColumnInfo(defaultValue = "")
     val description: String = "",
     val imagePath: String = "",
     val bannerPath: String = "",
     val type: ContentType = ContentType.SHOW
 ) {
-
-    /**
-     * Constructs an [Artwork] instance using a [TMDBMovie] and a [UserFile].
-     */
-    constructor(
-        tmdbMovie: TMDBMovie,
-    ) : this (
-        id = tmdbMovie.id,
-        title = tmdbMovie.title,
-        description = tmdbMovie.description,
-        imagePath = tmdbMovie.imagePath.orEmpty(),
-        bannerPath = tmdbMovie.bannerPath.orEmpty(),
-        type = ContentType.MOVIE
-    )
-
-    /**
-     * Constructs an [Artwork] instance using a [TMDBArtwork].
-     */
-    @OptIn(ExperimentalSerializationApi::class)
-    constructor(tmdbArtwork: TMDBArtwork) : this(
-        id = tmdbArtwork.id,
-        title = tmdbArtwork.title,
-        description = tmdbArtwork.description,
-        imagePath = tmdbArtwork.imagePath.orEmpty(),
-        bannerPath = tmdbArtwork.bannerPath.orEmpty(),
-        type = if (tmdbArtwork.type == TMDBMediaType.MOVIE) ContentType.MOVIE else ContentType.SHOW
-    )
 
     val isUnknown: Boolean get() = id == UNKNOWN_ID
 

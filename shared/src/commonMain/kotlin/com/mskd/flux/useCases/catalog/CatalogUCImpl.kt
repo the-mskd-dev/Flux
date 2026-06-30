@@ -16,6 +16,7 @@ import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Season
+import com.mskd.flux.model.entities.mappers.toArtwork
 import com.mskd.flux.model.entities.mappers.toDomain
 import com.mskd.flux.model.tmdb.TMDBEpisode
 import com.mskd.flux.model.tmdb.TMDBTranslations
@@ -430,10 +431,7 @@ class CatalogUCImpl(
 
                         val tmdbArtwork = tmdb.getTmdbArtwork(file = folder.files.first())
 
-                        val artwork = if (tmdbArtwork == null)
-                            Artwork.UNKNOWN
-                        else
-                            Artwork(tmdbArtwork = tmdbArtwork)
+                        val artwork = tmdbArtwork?.toArtwork() ?: Artwork.UNKNOWN
 
                         ArtworkFolder(
                             artwork = artwork,

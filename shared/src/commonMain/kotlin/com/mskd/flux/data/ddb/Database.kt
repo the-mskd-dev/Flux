@@ -11,13 +11,19 @@ import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Season
+import com.mskd.flux.model.entities.ArtworkEntity
 import com.mskd.flux.model.entities.EpisodeEntity
 import com.mskd.flux.model.entities.MovieEntity
 import com.mskd.flux.model.entities.SeasonEntity
 import kotlinx.coroutines.Dispatchers
 
 @Database(
-    entities = [Artwork::class, MovieEntity::class, EpisodeEntity::class, SeasonEntity::class],
+    entities = [
+        ArtworkEntity::class,
+        MovieEntity::class,
+        EpisodeEntity::class,
+        SeasonEntity::class
+    ],
     version = 4,
     autoMigrations = [
         AutoMigration(from = 1, to = 2),
@@ -31,7 +37,6 @@ abstract class FluxDatabase : RoomDatabase() {
     abstract fun dao(): DatabaseDao
 }
 
-@Suppress("KotlinNoActualForExpect")
 expect object FluxDatabaseConstructor : RoomDatabaseConstructor<FluxDatabase> {
     override fun initialize(): FluxDatabase
 }

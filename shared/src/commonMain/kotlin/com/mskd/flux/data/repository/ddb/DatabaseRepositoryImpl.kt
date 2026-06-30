@@ -31,7 +31,7 @@ class DatabaseRepositoryImpl(private val dao: DatabaseDao) : DatabaseRepository 
     }
 
     override fun flowSeasons(artworkId: Long): Flow<List<Season>> {
-        return dao.flowSeasons(artworkId = artworkId).map { it.sortedBy { s -> s.season } }
+        return dao.flowSeasons(artworkId = artworkId).map { entities ->  entities.map { it.toDomain() }.sortedBy { s -> s.season } }
     }
 
     override suspend fun saveArtworks(artworks: List<Artwork>) {
@@ -43,7 +43,7 @@ class DatabaseRepositoryImpl(private val dao: DatabaseDao) : DatabaseRepository 
     }
 
     override suspend fun saveSeasons(seasons: List<Season>) {
-        dao.insertSeasons(seasons)
+        dao.insertSeasons(seasons.map { it.toEntity() })
     }
 
     override suspend fun saveEpisodes(episodes: List<Episode>) {
@@ -91,11 +91,11 @@ class DatabaseRepositoryImpl(private val dao: DatabaseDao) : DatabaseRepository 
     }
 
     override suspend fun getSeasons(artworkId: Long): List<Season> {
-        return dao.getSeasons(artworkId).sortedBy { it.season }
+        return dao.getSeasons(artworkId).map { it.toDomain() }.sortedBy { it.season }
     }
 
     override suspend fun getSeasons(): List<Season> {
-        return dao.getSeasons()
+        return dao.getSeasons().map { it.toDomain() }
     }
 
     override suspend fun getUnknownMedias(): List<Episode> {

@@ -11,6 +11,7 @@ import com.mskd.flux.model.artwork.Season
 import com.mskd.flux.model.dto.ArtworkImagesDTO
 import com.mskd.flux.model.entities.EpisodeEntity
 import com.mskd.flux.model.entities.MovieEntity
+import com.mskd.flux.model.entities.SeasonEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -28,7 +29,7 @@ interface DatabaseDao {
     suspend fun insertEpisodes(episodes: List<EpisodeEntity>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertSeasons(seasons: List<Season>)
+    suspend fun insertSeasons(seasons: List<SeasonEntity>)
 
 //endregion
 
@@ -47,7 +48,7 @@ interface DatabaseDao {
     fun flowEpisodes(artworkId: Long) : Flow<List<EpisodeEntity>>
 
     @Query("SELECT * FROM seasons WHERE artworkId = :artworkId")
-    fun flowSeasons(artworkId: Long) : Flow<List<Season>>
+    fun flowSeasons(artworkId: Long) : Flow<List<SeasonEntity>>
 
 //endregion
 
@@ -81,10 +82,10 @@ interface DatabaseDao {
     suspend fun getUnknownMedias() : List<EpisodeEntity>
 
     @Query("SELECT * FROM seasons WHERE artworkId = :artworkId")
-    suspend fun getSeasons(artworkId: Long) : List<Season>
+    suspend fun getSeasons(artworkId: Long) : List<SeasonEntity>
 
     @Query("SELECT * FROM seasons")
-    suspend fun getSeasons() : List<Season>
+    suspend fun getSeasons() : List<SeasonEntity>
 
 //endregion
 

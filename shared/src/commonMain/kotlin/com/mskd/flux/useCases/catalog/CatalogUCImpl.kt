@@ -532,7 +532,7 @@ class CatalogUCImpl(
                             try {
 
                                 tmdb.getTmdbSeason(artworkId = artwork.id, season = season)?.let {
-                                    Season(tmdbSeason = it, artworkId = artwork.id) to it.episodes
+                                    it.toDomain(artworkId = artwork.id) to it.episodes
                                 }
 
                             } catch (e: Exception) {

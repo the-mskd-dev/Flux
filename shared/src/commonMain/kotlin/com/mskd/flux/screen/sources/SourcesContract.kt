@@ -7,7 +7,12 @@ data class SourcesUiState(
 )
 
 sealed class SourcesIntent {
+    data object OnBackTap : SourcesIntent()
     data object AddFolders : SourcesIntent()
     data class DeleteFolder(val folder: UserFolder) : SourcesIntent()
 }
 
+sealed class SourcesEvent {
+    data object BackToPreviousScreen : SourcesEvent()
+    data object OpenFolderSelection: SourcesEvent()
+}

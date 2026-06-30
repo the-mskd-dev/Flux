@@ -6,6 +6,7 @@ import com.mskd.flux.screen.home.HomeViewModel
 import com.mskd.flux.screen.search.SearchViewModel
 import com.mskd.flux.screen.settings.SettingsViewModel
 import com.mskd.flux.screen.show.ShowViewModel
+import com.mskd.flux.screen.sources.SourcesViewModel
 import com.mskd.flux.screen.token.TokenViewModel
 import com.mskd.flux.screen.unknown.UnknownViewModel
 import com.mskd.flux.screen.welcome.WelcomeViewModel
@@ -46,6 +47,8 @@ val moduleViewModel = module {
             progressUC = get(),
         )
     }
+
+    viewModelOf(::SourcesViewModel)
 
     viewModel { params ->
         TokenViewModel(

@@ -10,6 +10,7 @@ import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Season
 import com.mskd.flux.model.dto.ArtworkImagesDTO
 import com.mskd.flux.model.entities.EpisodeEntity
+import com.mskd.flux.model.entities.MovieEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -21,7 +22,7 @@ interface DatabaseDao {
     suspend fun insertArtworks(artworks: List<Artwork>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertMovies(movies: List<Movie>)
+    suspend fun insertMovies(movies: List<MovieEntity>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertEpisodes(episodes: List<EpisodeEntity>)
@@ -40,7 +41,7 @@ interface DatabaseDao {
     fun flowArtwork(artworkId: Long) : Flow<Artwork?>
 
     @Query("SELECT * FROM movies WHERE artworkId = :artworkId")
-    fun flowMovie(artworkId: Long) : Flow<Movie?>
+    fun flowMovie(artworkId: Long) : Flow<MovieEntity?>
 
     @Query("SELECT * FROM episodes WHERE artworkId = :artworkId")
     fun flowEpisodes(artworkId: Long) : Flow<List<EpisodeEntity>>
@@ -59,13 +60,13 @@ interface DatabaseDao {
     suspend fun getArtworks() : List<Artwork>
 
     @Query("SELECT * FROM movies WHERE artworkId = :artworkId")
-    suspend fun getMovie(artworkId: Long) : Movie?
+    suspend fun getMovie(artworkId: Long) : MovieEntity?
 
     @Query("SELECT * FROM movies")
-    suspend fun getMovies() : List<Movie>
+    suspend fun getMovies() : List<MovieEntity>
 
     @Query("SELECT * FROM movies WHERE name NOT IN (:fileNames)")
-    suspend fun getMoviesNotInFiles(fileNames: List<String>) : List<Movie>
+    suspend fun getMoviesNotInFiles(fileNames: List<String>) : List<MovieEntity>
 
     @Query("SELECT * FROM episodes WHERE artworkId = :artworkId")
     suspend fun getEpisodes(artworkId: Long) : List<EpisodeEntity>

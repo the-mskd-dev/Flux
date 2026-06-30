@@ -16,7 +16,7 @@ import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Season
-import com.mskd.flux.model.mappers.toDomain
+import com.mskd.flux.model.entities.mappers.toDomain
 import com.mskd.flux.model.tmdb.TMDBEpisode
 import com.mskd.flux.model.tmdb.TMDBTranslations
 import com.mskd.flux.platform.MetadataProvider
@@ -486,16 +486,10 @@ class CatalogUCImpl(
 
                                 val tmdbMovie = tmdb.getTmdbMovie(artworkId = artwork.id)
 
-                                if (tmdbMovie == null) {
-                                    createUnknownMedia(file = file)
-                                } else {
-                                    Movie(
-                                        tmdbMovie = tmdbMovie,
-                                        file = file,
-                                        duration = tmdbMovie.duration
-                                            ?: metadataProvider.getDuration(file = file)
-                                    )
-                                }
+                                tmdbMovie?.toDomain(
+                                    file = file,
+                                    duration = tmdbMovie.duration ?: metadataProvider.getDuration(file = file)
+                                ) ?: createUnknownMedia(file = file)
 
                             }
                         }

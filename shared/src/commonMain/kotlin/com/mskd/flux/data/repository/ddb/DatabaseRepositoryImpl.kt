@@ -6,8 +6,8 @@ import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Season
-import com.mskd.flux.model.mappers.toDomain
-import com.mskd.flux.model.mappers.toEntity
+import com.mskd.flux.model.entities.mappers.toDomain
+import com.mskd.flux.model.entities.mappers.toEntity
 import com.mskd.flux.utils.extensions.sort
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -23,7 +23,7 @@ class DatabaseRepositoryImpl(private val dao: DatabaseDao) : DatabaseRepository 
     }
 
     override fun flowMovie(artworkId: Long): Flow<Movie?> {
-        return dao.flowMovie(artworkId = artworkId)
+        return dao.flowMovie(artworkId = artworkId).map { it?.toDomain() }
     }
 
     override fun flowEpisodes(artworkId: Long): Flow<List<Episode>> {
@@ -39,7 +39,7 @@ class DatabaseRepositoryImpl(private val dao: DatabaseDao) : DatabaseRepository 
     }
 
     override suspend fun saveMovies(movies: List<Movie>) {
-        dao.insertMovies(movies = movies)
+        dao.insertMovies(movies = movies.map { it.toEntity() })
     }
 
     override suspend fun saveSeasons(seasons: List<Season>) {
@@ -59,15 +59,15 @@ class DatabaseRepositoryImpl(private val dao: DatabaseDao) : DatabaseRepository 
     }
 
     override suspend fun getMovie(artworkId: Long): Movie? {
-        return dao.getMovie(artworkId = artworkId)
+        return dao.getMovie(artworkId = artworkId)?.toDomain()
     }
 
     override suspend fun getMovies(): List<Movie> {
-        return dao.getMovies()
+        return dao.getMovies().map { it.toDomain() }
     }
 
     override suspend fun getMoviesNotInFiles(files: List<UserFile>): List<Movie> {
-        return dao.getMoviesNotInFiles(fileNames =  files.map { it.name })
+        return dao.getMoviesNotInFiles(fileNames =  files.map { it.name }).map { it.toDomain() }
     }
 
     override suspend fun getEpisodes(artworkId: Long): List<Episode> {

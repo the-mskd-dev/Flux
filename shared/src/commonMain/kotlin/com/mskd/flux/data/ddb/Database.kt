@@ -12,10 +12,11 @@ import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Season
 import com.mskd.flux.model.entities.EpisodeEntity
+import com.mskd.flux.model.entities.MovieEntity
 import kotlinx.coroutines.Dispatchers
 
 @Database(
-    entities = [Artwork::class, Movie::class, EpisodeEntity::class, Season::class],
+    entities = [Artwork::class, MovieEntity::class, EpisodeEntity::class, Season::class],
     version = 4,
     autoMigrations = [
         AutoMigration(from = 1, to = 2),

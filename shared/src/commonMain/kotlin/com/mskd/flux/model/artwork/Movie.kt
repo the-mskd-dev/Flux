@@ -1,12 +1,7 @@
 package com.mskd.flux.model.artwork
 
-import androidx.room.Embedded
-import androidx.room.Entity
-import androidx.room.Index
-import androidx.room.PrimaryKey
 import com.mskd.flux.model.Status
 import com.mskd.flux.model.UserFile
-import com.mskd.flux.model.tmdb.TMDBMovie
 
 /**
  * Represents a movie with specific details.
@@ -19,16 +14,8 @@ import com.mskd.flux.model.tmdb.TMDBMovie
  * @property currentTime Current playback position in milliseconds.
  * @property file The associated local file.
  * @property status Viewing status of the media.
- * @property genres List of genres associated with the movie.
  */
-@Entity(
-    tableName = "movies",
-    indices = [
-        Index(value = ["artworkId"])
-    ]
-)
 data class Movie(
-    @PrimaryKey
     override val artworkId: Long,
     override val title: String,
     override val releaseDateString: String,
@@ -38,29 +25,5 @@ data class Movie(
     override val duration: Int,
     override val currentTime: Long = 0L,
     override val status: Status = Status.TO_WATCH,
-    @Embedded override val file: UserFile,
-    //val genres: List<String> = listOf()
-) : Media() {
-
-    /**
-     * Constructs a [Movie] instance using a [TMDBMovie] and a [UserFile].
-     */
-    constructor(
-        tmdbMovie: TMDBMovie,
-        file: UserFile,
-        duration: Int
-    ) : this(
-        artworkId = tmdbMovie.id,
-        title = tmdbMovie.title,
-        releaseDateString = tmdbMovie.releaseDate,
-        description = tmdbMovie.description,
-        voteAverage = tmdbMovie.voteAverage,
-        voteCount = tmdbMovie.voteCount,
-        duration = duration,
-        currentTime = 0L,
-        file = file,
-        //genres = emptyList(),
-        status = Status.TO_WATCH
-    )
-
-}
+    override val file: UserFile,
+) : Media()

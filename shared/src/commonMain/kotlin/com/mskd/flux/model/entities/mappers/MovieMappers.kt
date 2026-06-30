@@ -1,14 +1,15 @@
-package com.mskd.flux.model.mappers
+package com.mskd.flux.model.entities.mappers
 
-import androidx.room.Embedded
 import com.mskd.flux.model.Status
 import com.mskd.flux.model.UserFile
 import com.mskd.flux.model.artwork.Episode
+import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.entities.EpisodeEntity
+import com.mskd.flux.model.entities.MovieEntity
 import com.mskd.flux.model.tmdb.TMDBEpisode
-import kotlin.Long
+import com.mskd.flux.model.tmdb.TMDBMovie
 
-fun EpisodeEntity.toDomain() : Episode {
+fun MovieEntity.toDomain() : Movie {
     val file = UserFile(
         name = this.fileName,
         addedDateTime = this.addedDateTime,
@@ -16,11 +17,7 @@ fun EpisodeEntity.toDomain() : Episode {
         source = this.source
     )
 
-    return Episode(
-        id = this.id,
-        number = this.number,
-        season = this.season,
-        imagePath = this.imagePath,
+    return Movie(
         artworkId = this.artworkId,
         title = this.title,
         releaseDateString = this.releaseDateString,
@@ -34,12 +31,8 @@ fun EpisodeEntity.toDomain() : Episode {
     )
 }
 
-fun Episode.toEntity() : EpisodeEntity {
-    return EpisodeEntity(
-        id = this.id,
-        number = this.number,
-        season = this.season,
-        imagePath = this.imagePath,
+fun Movie.toEntity() : MovieEntity {
+    return MovieEntity(
         artworkId = this.artworkId,
         title = this.title,
         releaseDateString = this.releaseDateString,
@@ -56,25 +49,21 @@ fun Episode.toEntity() : EpisodeEntity {
     )
 }
 
-fun TMDBEpisode.toDomain(
-    artworkId: Long,
+fun TMDBMovie.toDomain(
     file: UserFile,
     duration: Int
-) : Episode {
-    return Episode(
-        id = this.id,
-        artworkId = artworkId,
+) : Movie {
+    return Movie(
+        artworkId = this.id,
         title = this.title,
-        number = this.number,
-        season = this.season,
-        imagePath = this.imagePath ?: "",
-        releaseDateString = this.releaseDateString,
+        releaseDateString = this.releaseDate,
         description = this.description,
-        duration = duration,
-        currentTime = 0L,
         voteAverage = this.voteAverage,
         voteCount = this.voteCount,
-        status = Status.TO_WATCH,
-        file = file
+        duration = duration,
+        currentTime = 0L,
+        file = file,
+        //genres = emptyList(),
+        status = Status.TO_WATCH
     )
 }

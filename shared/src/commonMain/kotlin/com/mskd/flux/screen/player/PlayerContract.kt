@@ -2,11 +2,11 @@ package com.mskd.flux.screen.player
 
 import androidx.compose.runtime.Immutable
 import androidx.media3.common.Player
-import com.mskd.flux.model.State
-import com.mskd.flux.model.artwork.Episode
-import com.mskd.flux.model.artwork.FullArtwork
-import com.mskd.flux.model.artwork.Media
-import com.mskd.flux.model.player.PlayerTrack
+import com.mskd.flux.model.presentation.State
+import com.mskd.flux.model.domain.artwork.Episode
+import com.mskd.flux.model.domain.artwork.FullArtwork
+import com.mskd.flux.model.domain.artwork.Media
+import com.mskd.flux.model.domain.player.PlayerTrack
 
 @Immutable
 data class PlayerUiState<out T>(

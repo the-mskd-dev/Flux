@@ -1,14 +1,14 @@
 package com.mskd.flux.mockups
 
-import com.mskd.flux.model.FileSource
-import com.mskd.flux.model.Status
-import com.mskd.flux.model.UserFile
-import com.mskd.flux.model.artwork.Artwork
-import com.mskd.flux.model.artwork.ContentType
-import com.mskd.flux.model.artwork.Episode
-import com.mskd.flux.model.artwork.FullArtwork
-import com.mskd.flux.model.artwork.Movie
-import com.mskd.flux.model.artwork.Season
+import com.mskd.flux.model.domain.FileSource
+import com.mskd.flux.model.domain.Status
+import com.mskd.flux.model.domain.UserFile
+import com.mskd.flux.model.domain.artwork.Artwork
+import com.mskd.flux.model.domain.artwork.ContentType
+import com.mskd.flux.model.domain.artwork.Episode
+import com.mskd.flux.model.domain.artwork.FullArtwork
+import com.mskd.flux.model.domain.artwork.Movie
+import com.mskd.flux.model.domain.artwork.Season
 import kotlin.time.Duration.Companion.minutes
 
 object MediaMockups {

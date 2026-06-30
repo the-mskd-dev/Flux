@@ -1,9 +1,9 @@
 package com.mskd.flux.screens.player
 
-import com.mskd.flux.model.artwork.Artwork
-import com.mskd.flux.model.artwork.Episode
-import com.mskd.flux.model.artwork.Media
-import com.mskd.flux.model.player.PlayerTrack
+import com.mskd.flux.model.domain.artwork.Artwork
+import com.mskd.flux.model.domain.artwork.Episode
+import com.mskd.flux.model.domain.artwork.Media
+import com.mskd.flux.model.domain.player.PlayerTrack
 import com.mskd.flux.screen.player.PlayerUiContent
 
 object PlayerTestCases {

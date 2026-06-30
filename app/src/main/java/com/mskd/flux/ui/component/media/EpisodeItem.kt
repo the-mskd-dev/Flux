@@ -30,8 +30,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.model.Status
-import com.mskd.flux.model.artwork.Episode
+import com.mskd.flux.model.domain.Status
+import com.mskd.flux.model.domain.artwork.Episode
 import com.mskd.flux.screen.artwork.ArtworkIntent
 import com.mskd.flux.ui.component.global.FluxDropDownMenu
 import com.mskd.flux.ui.component.global.FluxDropDownMenuItem

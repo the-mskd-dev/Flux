@@ -1,6 +1,6 @@
 package com.mskd.flux.utils.extensions
 
-import com.mskd.flux.model.artwork.Media
+import com.mskd.flux.model.domain.artwork.Media
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.Trace
 import kotlinx.datetime.LocalDate

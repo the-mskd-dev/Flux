@@ -1,0 +1,9 @@
+package com.mskd.flux.model.presentation
+
+import com.mskd.flux.model.core.StringProvider
+
+sealed class State<out T> {
+    data class Content<T>(val content: T) : State<T>()
+    data object Loading : State<Nothing>()
+    data class Error(val code: Int? = null, val message: StringProvider? = null) : State<Nothing>()
+}

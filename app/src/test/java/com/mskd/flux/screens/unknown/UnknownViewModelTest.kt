@@ -8,7 +8,7 @@ import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.mockups.FakeArtworkUC
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.mockkDatabaseRepository
-import com.mskd.flux.model.ScreenState
+import com.mskd.flux.model.presentation.ScreenState
 import com.mskd.flux.screen.unknown.UnknownEvent
 import com.mskd.flux.screen.unknown.UnknownIntent
 import com.mskd.flux.screen.unknown.UnknownViewModel

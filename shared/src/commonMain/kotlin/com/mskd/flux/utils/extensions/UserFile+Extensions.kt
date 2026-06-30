@@ -1,7 +1,7 @@
 package com.mskd.flux.utils.extensions
 
-import com.mskd.flux.model.CatalogFolder
-import com.mskd.flux.model.UserFile
+import com.mskd.flux.model.domain.CatalogFolder
+import com.mskd.flux.model.domain.UserFile
 
 fun List<UserFile>.groupInFolders() : List<CatalogFolder> {
     return this

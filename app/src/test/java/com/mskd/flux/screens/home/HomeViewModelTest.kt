@@ -8,8 +8,9 @@ import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.mockkCatalogUC
 import com.mskd.flux.mockups.mockkSnackbarRepository
-import com.mskd.flux.model.AppInfo
-import com.mskd.flux.model.artwork.Artwork
+import com.mskd.flux.model.core.AppInfo
+import com.mskd.flux.model.domain.artwork.Artwork
+import com.mskd.flux.model.domain.artwork.ContentType
 import com.mskd.flux.screen.home.HomeEvent
 import com.mskd.flux.screen.home.HomeIntent
 import com.mskd.flux.screen.home.HomeState
@@ -234,8 +235,8 @@ class HomeViewModelTest : FunSpec({
         )
 
         viewModel.event.test {
-            viewModel.handleIntent(HomeIntent.OnCategoryTap(category = com.mskd.flux.model.artwork.ContentType.MOVIE))
-            awaitItem() shouldBe HomeEvent.NavigateToCategory(category = com.mskd.flux.model.artwork.ContentType.MOVIE)
+            viewModel.handleIntent(HomeIntent.OnCategoryTap(category = ContentType.MOVIE))
+            awaitItem() shouldBe HomeEvent.NavigateToCategory(category = ContentType.MOVIE)
         }
     }
 

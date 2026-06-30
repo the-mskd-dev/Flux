@@ -29,8 +29,8 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.model.State
-import com.mskd.flux.model.artwork.FullArtwork
+import com.mskd.flux.model.presentation.State
+import com.mskd.flux.model.domain.artwork.FullArtwork
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Route.Artwork
 import com.mskd.flux.screen.show.ShowDialog

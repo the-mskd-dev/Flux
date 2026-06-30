@@ -4,12 +4,12 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.mskd.flux.model.artwork.Artwork
-import com.mskd.flux.model.dto.ArtworkImagesDTO
-import com.mskd.flux.model.entities.ArtworkEntity
-import com.mskd.flux.model.entities.EpisodeEntity
-import com.mskd.flux.model.entities.MovieEntity
-import com.mskd.flux.model.entities.SeasonEntity
+import com.mskd.flux.model.domain.artwork.Artwork
+import com.mskd.flux.model.data.local.ArtworkImagesDTO
+import com.mskd.flux.model.data.local.entities.ArtworkEntity
+import com.mskd.flux.model.data.local.entities.EpisodeEntity
+import com.mskd.flux.model.data.local.entities.MovieEntity
+import com.mskd.flux.model.data.local.entities.SeasonEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao

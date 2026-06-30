@@ -8,8 +8,8 @@ import android.os.Environment
 import android.provider.MediaStore
 import androidx.core.net.toUri
 import com.mskd.flux.data.repository.user.UserRepository
-import com.mskd.flux.model.FileSource
-import com.mskd.flux.model.UserFile
+import com.mskd.flux.model.domain.FileSource
+import com.mskd.flux.model.domain.UserFile
 import com.mskd.flux.utils.Trace
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine

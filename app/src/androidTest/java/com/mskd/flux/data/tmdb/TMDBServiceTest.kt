@@ -5,8 +5,8 @@ import com.mskd.flux.BuildConfig
 import com.mskd.flux.data.repository.token.TokenRepository
 import com.mskd.flux.di.moduleAndroidApp
 import com.mskd.flux.di.modulePlatform
-import com.mskd.flux.model.FileSource
-import com.mskd.flux.model.UserFile
+import com.mskd.flux.model.domain.FileSource
+import com.mskd.flux.model.domain.UserFile
 import com.mskd.flux.utils.extensions.toTmdbFormat
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest

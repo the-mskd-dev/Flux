@@ -53,8 +53,8 @@ import androidx.media3.common.Player
 import androidx.media3.common.VideoSize
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.ui.compose.ContentFrame
-import com.mskd.flux.model.State
-import com.mskd.flux.model.enums.Side
+import com.mskd.flux.model.presentation.State
+import com.mskd.flux.model.domain.enums.Side
 import com.mskd.flux.screen.player.PlayerIntent
 import com.mskd.flux.screen.player.PlayerUiContent
 import com.mskd.flux.screen.player.PlayerViewModel

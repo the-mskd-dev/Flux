@@ -2,9 +2,9 @@ package com.mskd.flux.screen.show
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mskd.flux.model.State
-import com.mskd.flux.model.artwork.FullArtwork
-import com.mskd.flux.model.artwork.Season
+import com.mskd.flux.model.presentation.State
+import com.mskd.flux.model.domain.artwork.FullArtwork
+import com.mskd.flux.model.domain.artwork.Season
 import com.mskd.flux.useCases.artwork.ArtworkUC
 import com.mskd.flux.useCases.progress.ProgressUC
 import kotlinx.coroutines.flow.MutableSharedFlow

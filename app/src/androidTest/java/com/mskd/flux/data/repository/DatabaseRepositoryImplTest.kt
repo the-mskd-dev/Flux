@@ -8,9 +8,9 @@ import app.cash.turbine.test
 import com.mskd.flux.data.ddb.FluxDatabase
 import com.mskd.flux.data.repository.ddb.DatabaseRepositoryImpl
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.model.artwork.Artwork
-import com.mskd.flux.model.artwork.Episode
-import com.mskd.flux.model.artwork.Season
+import com.mskd.flux.model.domain.artwork.Artwork
+import com.mskd.flux.model.domain.artwork.Episode
+import com.mskd.flux.model.domain.artwork.Season
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert

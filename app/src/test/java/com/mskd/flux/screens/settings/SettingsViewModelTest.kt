@@ -5,7 +5,7 @@ import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.mockups.mockkCatalogUC
 import com.mskd.flux.mockups.mockkImagesUC
-import com.mskd.flux.model.FluxOptionsDialogState
+import com.mskd.flux.model.core.FluxOptionsDialogState
 import com.mskd.flux.screen.settings.SettingsEvent
 import com.mskd.flux.screen.settings.SettingsIntent
 import com.mskd.flux.screen.settings.SettingsViewModel

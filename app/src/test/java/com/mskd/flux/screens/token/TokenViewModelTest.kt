@@ -4,8 +4,8 @@ import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.data.repository.token.TokenRepository
 import com.mskd.flux.data.tmdb.TMDBService
-import com.mskd.flux.model.AppInfo
-import com.mskd.flux.model.tmdb.TMDBAuthentication
+import com.mskd.flux.model.core.AppInfo
+import com.mskd.flux.model.data.remote.tmdb.TMDBAuthentication
 import com.mskd.flux.screen.token.TokenEvent
 import com.mskd.flux.screen.token.TokenIntent
 import com.mskd.flux.screen.token.TokenMessage

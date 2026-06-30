@@ -4,9 +4,9 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.data.repository.customization.CustomizationRepository
-import com.mskd.flux.model.FluxOptionsDialogItem
-import com.mskd.flux.model.FluxOptionsDialogState
-import com.mskd.flux.model.StringProvider
+import com.mskd.flux.model.core.FluxOptionsDialogItem
+import com.mskd.flux.model.core.FluxOptionsDialogState
+import com.mskd.flux.model.core.StringProvider
 import com.mskd.flux.utils.UiCommon
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.app_theme

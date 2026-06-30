@@ -1,7 +1,7 @@
 package com.mskd.flux.di
 
 
-import com.mskd.flux.model.AppInfo
+import com.mskd.flux.model.core.AppInfo
 import com.mskd.flux.platform.AndroidImageRequestFactory
 import com.mskd.flux.platform.AndroidMetadataProvider
 import com.mskd.flux.platform.ImageRequestFactory

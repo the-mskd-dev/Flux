@@ -1,11 +1,11 @@
 package com.mskd.flux.data.repository.tmdb
 
-import com.mskd.flux.model.UserFile
-import com.mskd.flux.model.tmdb.TMDBArtwork
-import com.mskd.flux.model.tmdb.TMDBEpisode
-import com.mskd.flux.model.tmdb.TMDBMovie
-import com.mskd.flux.model.tmdb.TMDBSeason
-import com.mskd.flux.model.tmdb.TMDBTranslations
+import com.mskd.flux.model.domain.UserFile
+import com.mskd.flux.model.data.remote.tmdb.TMDBArtwork
+import com.mskd.flux.model.data.remote.tmdb.TMDBEpisode
+import com.mskd.flux.model.data.remote.tmdb.TMDBMovie
+import com.mskd.flux.model.data.remote.tmdb.TMDBSeason
+import com.mskd.flux.model.data.remote.tmdb.TMDBTranslations
 import java.util.Locale
 
 interface TmdbRepository {

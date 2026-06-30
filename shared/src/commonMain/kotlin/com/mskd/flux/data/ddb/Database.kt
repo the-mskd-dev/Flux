@@ -7,10 +7,10 @@ import androidx.room.RoomDatabase
 import androidx.room.RoomDatabaseConstructor
 import androidx.room.TypeConverters
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
-import com.mskd.flux.model.entities.ArtworkEntity
-import com.mskd.flux.model.entities.EpisodeEntity
-import com.mskd.flux.model.entities.MovieEntity
-import com.mskd.flux.model.entities.SeasonEntity
+import com.mskd.flux.model.data.local.entities.ArtworkEntity
+import com.mskd.flux.model.data.local.entities.EpisodeEntity
+import com.mskd.flux.model.data.local.entities.MovieEntity
+import com.mskd.flux.model.data.local.entities.SeasonEntity
 import kotlinx.coroutines.Dispatchers
 
 @Database(

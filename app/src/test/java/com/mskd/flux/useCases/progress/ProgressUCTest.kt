@@ -5,10 +5,10 @@ import com.mskd.flux.data.repository.ddb.DatabaseRepository
 import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.mockkDatabaseRepository
-import com.mskd.flux.model.Status
-import com.mskd.flux.model.artwork.ContentType
-import com.mskd.flux.model.artwork.Episode
-import com.mskd.flux.model.artwork.Movie
+import com.mskd.flux.model.domain.Status
+import com.mskd.flux.model.domain.artwork.ContentType
+import com.mskd.flux.model.domain.artwork.Episode
+import com.mskd.flux.model.domain.artwork.Movie
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.extensions.lastEpisode
 import com.mskd.flux.utils.extensions.minToMs

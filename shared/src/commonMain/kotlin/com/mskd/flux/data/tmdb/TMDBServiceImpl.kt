@@ -1,11 +1,11 @@
 package com.mskd.flux.data.tmdb
 
-import com.mskd.flux.model.tmdb.TMDBArtworksResult
-import com.mskd.flux.model.tmdb.TMDBAuthentication
-import com.mskd.flux.model.tmdb.TMDBEpisode
-import com.mskd.flux.model.tmdb.TMDBMovie
-import com.mskd.flux.model.tmdb.TMDBSeason
-import com.mskd.flux.model.tmdb.TMDBTranslations
+import com.mskd.flux.model.data.remote.tmdb.TMDBArtworksResult
+import com.mskd.flux.model.data.remote.tmdb.TMDBAuthentication
+import com.mskd.flux.model.data.remote.tmdb.TMDBEpisode
+import com.mskd.flux.model.data.remote.tmdb.TMDBMovie
+import com.mskd.flux.model.data.remote.tmdb.TMDBSeason
+import com.mskd.flux.model.data.remote.tmdb.TMDBTranslations
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get

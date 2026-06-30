@@ -1,8 +1,8 @@
 package com.mskd.flux.screen.unknown
 
-import com.mskd.flux.model.ScreenState
-import com.mskd.flux.model.artwork.Episode
-import com.mskd.flux.model.artwork.Media
+import com.mskd.flux.model.presentation.ScreenState
+import com.mskd.flux.model.domain.artwork.Episode
+import com.mskd.flux.model.domain.artwork.Media
 
 data class UnknownUiState(
     val screen: ScreenState = ScreenState.LOADING,

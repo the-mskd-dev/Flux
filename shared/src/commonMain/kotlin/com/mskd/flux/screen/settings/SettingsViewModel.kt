@@ -3,9 +3,9 @@ package com.mskd.flux.screen.settings
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.data.repository.settings.SettingsRepository
-import com.mskd.flux.model.FluxOptionsDialogItem
-import com.mskd.flux.model.FluxOptionsDialogState
-import com.mskd.flux.model.StringProvider
+import com.mskd.flux.model.core.FluxOptionsDialogItem
+import com.mskd.flux.model.core.FluxOptionsDialogState
+import com.mskd.flux.model.core.StringProvider
 import com.mskd.flux.useCases.catalog.CatalogUC
 import com.mskd.flux.useCases.images.ImagesUC
 import flux.shared.generated.resources.Res

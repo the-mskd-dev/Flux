@@ -9,10 +9,10 @@ import com.mskd.flux.mockups.FakeArtworkUC
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.PlayerMockups
 import com.mskd.flux.mockups.mockkFilesRepository
-import com.mskd.flux.model.State
-import com.mskd.flux.model.artwork.ContentType
-import com.mskd.flux.model.artwork.Movie
-import com.mskd.flux.model.player.PlayerTrack
+import com.mskd.flux.model.presentation.State
+import com.mskd.flux.model.domain.artwork.ContentType
+import com.mskd.flux.model.domain.artwork.Movie
+import com.mskd.flux.model.domain.player.PlayerTrack
 import com.mskd.flux.platform.PlayerManager
 import com.mskd.flux.screen.player.PlayerEvent
 import com.mskd.flux.screen.player.PlayerIntent

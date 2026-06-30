@@ -22,7 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.model.artwork.FullArtwork
+import com.mskd.flux.model.domain.artwork.FullArtwork
 import com.mskd.flux.screen.show.ShowIntent
 import com.mskd.flux.screens.artwork.composables.common.ArtworkImageFull
 import com.mskd.flux.ui.component.global.Text

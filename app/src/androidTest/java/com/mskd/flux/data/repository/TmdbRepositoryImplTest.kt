@@ -4,13 +4,13 @@ import androidx.test.core.app.ApplicationProvider
 import com.mskd.flux.BuildConfig
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.data.repository.tmdb.TmdbRepositoryImpl
+import com.mskd.flux.data.repository.token.TokenRepository
 import com.mskd.flux.data.tmdb.TMDBService
-import com.mskd.flux.di.dataStoreModule
-import com.mskd.flux.di.ktorModule
+import com.mskd.flux.di.moduleAndroidApp
+import com.mskd.flux.di.modulePlatform
 import com.mskd.flux.model.FileSource
 import com.mskd.flux.model.UserFile
 import com.mskd.flux.model.tmdb.TMDBTranslations
-import com.mskd.flux.shared.data.tmdb.token.TokenRepository
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
@@ -64,8 +64,8 @@ class TmdbRepositoryImplTest : KoinTest {
         startKoin {
             androidContext(ApplicationProvider.getApplicationContext())
             modules(
-                ktorModule,
-                dataStoreModule
+                modulePlatform,
+                moduleAndroidApp
             )
         }
 

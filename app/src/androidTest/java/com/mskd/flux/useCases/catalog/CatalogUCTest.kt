@@ -11,20 +11,31 @@ import com.mskd.flux.data.repository.tmdb.TmdbRepositoryImpl
 import com.mskd.flux.data.repository.token.TokenRepository
 import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.data.tmdb.TMDBService
+import com.mskd.flux.di.Properties
+import com.mskd.flux.di.Qualifiers
+import com.mskd.flux.di.moduleAndroidApp
 import com.mskd.flux.di.moduleDatastore
 import com.mskd.flux.di.moduleDatastoreAndroid
 import com.mskd.flux.di.moduleNetwork
+import com.mskd.flux.di.modulePlatform
+import com.mskd.flux.model.AppInfo
 import com.mskd.flux.model.FileSource
 import com.mskd.flux.model.UserFile
 import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Movie
+import com.mskd.flux.platform.AndroidMetadataProvider
+import com.mskd.flux.platform.MetadataProvider
 import com.mskd.flux.useCases.images.ImagesUC
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
@@ -34,6 +45,7 @@ import org.junit.runners.MethodSorters
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
+import org.koin.dsl.module
 import org.koin.test.KoinTest
 import org.koin.test.get
 import org.koin.test.inject
@@ -68,6 +80,13 @@ class CatalogUCTest : KoinTest {
             path = "",
             source = FileSource.LOCAL
         )
+
+        val appInfo = AppInfo(
+            versionCode = 0,
+            versionName = "0",
+            isDebug = true,
+            debugToken = BuildConfig.TMDB_TOKEN
+        )
     }
 
     @Before
@@ -77,10 +96,17 @@ class CatalogUCTest : KoinTest {
 
         startKoin {
             androidContext(context)
+            properties(
+                mapOf(
+                    Properties.IS_DEBUG to appInfo.isDebug,
+                    Properties.VERSION_NAME to appInfo.versionName,
+                    Properties.VERSION_CODE to appInfo.versionCode,
+                    Properties.DEBUG_TOKEN to appInfo.debugToken,
+                )
+            )
             modules(
-                moduleNetwork,
-                moduleDatastore,
-                moduleDatastoreAndroid
+                modulePlatform,
+                moduleAndroidApp
             )
         }
 
@@ -89,11 +115,9 @@ class CatalogUCTest : KoinTest {
             tokenRepository.saveToken(BuildConfig.TMDB_TOKEN)
         }
 
-        val apiKey = BuildConfig.TMDB_TOKEN
-
         settingsRepository = mockk(relaxed = true) {
             coEvery { getDataLanguage() } returns dataLanguage
-            every { flow } returns kotlinx.coroutines.flow.flowOf(SettingsRepository.State())
+            every { flow } returns flowOf(SettingsRepository.State())
         }
 
         tmdbRepository = TmdbRepositoryImpl(tmdbService, settingsRepository)
@@ -137,7 +161,9 @@ class CatalogUCTest : KoinTest {
             settings = settingsRepository,
             imagesUC = imagesUC,
             scope = this,
-            context = context
+            appInfo = get(),
+            metadataProvider = get(),
+            dispatcher = get(Qualifiers.DEFAULT_DISPATCHER)
         )
 
         catalogUC.syncCatalog(onlyNew = false)
@@ -157,7 +183,9 @@ class CatalogUCTest : KoinTest {
             settings = settingsRepository,
             imagesUC = imagesUC,
             scope = this,
-            context = context
+            appInfo = get(),
+            metadataProvider = get(),
+            dispatcher = get(Qualifiers.DEFAULT_DISPATCHER)
         )
 
         val catalog = catalogUC.getCatalog(listOf(movieFile, episodeFile)) {}
@@ -206,7 +234,9 @@ class CatalogUCTest : KoinTest {
             settings = settingsRepository,
             imagesUC = imagesUC,
             scope = this,
-            context = context
+            appInfo = get(),
+            metadataProvider = get(),
+            dispatcher = get(Qualifiers.DEFAULT_DISPATCHER)
         )
 
         catalogUC.updateLanguage()
@@ -225,7 +255,9 @@ class CatalogUCTest : KoinTest {
             settings = settingsRepository,
             imagesUC = imagesUC,
             scope = this,
-            context = context
+            appInfo = get(),
+            metadataProvider = get(),
+            dispatcher = get(Qualifiers.DEFAULT_DISPATCHER)
         )
 
         catalogUC.cleanCatalog()

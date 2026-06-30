@@ -72,7 +72,7 @@ object FluxUI {
     }
 
     data class Shapes(
-        val corners: RoundedCornerShape = RoundedCornerShape(8.dp),
+        val corners: RoundedCornerShape = RoundedCornerShape(12.dp),
     )
 
     data class ItemsPerRow(

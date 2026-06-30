@@ -37,6 +37,8 @@ import com.mskd.flux.screen.sources.SourcesIntent
 import com.mskd.flux.screen.sources.SourcesViewModel
 import com.mskd.flux.screen.token.TokenIntent
 import com.mskd.flux.screens.sources.composables.FolderItem
+import com.mskd.flux.screens.sources.composables.PermanentFolderItem
+import com.mskd.flux.screens.sources.composables.UserFolderItem
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.component.global.ErrorScreen
 import com.mskd.flux.ui.component.global.FluxScaffold
@@ -48,6 +50,8 @@ import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.Trace
 import com.mskd.flux.utils.extensions.WebLink
 import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.downloads
+import flux.shared.generated.resources.movies
 import flux.shared.generated.resources.oups_an_error_occured
 import flux.shared.generated.resources.skip
 import flux.shared.generated.resources.tmdb_api_token
@@ -142,9 +146,12 @@ fun SourcesScreenContent(
                 )
             }
 
+            item { PermanentFolderItem(name = stringResource(Res.string.movies)) }
+            item { PermanentFolderItem(name = stringResource(Res.string.downloads)) }
+
             items(items = content.folders) { folder ->
 
-                FolderItem(folder = folder)
+                UserFolderItem(folder = folder)
 
             }
 

@@ -9,6 +9,7 @@ import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Season
 import com.mskd.flux.model.dto.ArtworkImagesDTO
+import com.mskd.flux.model.entities.EpisodeEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -23,7 +24,7 @@ interface DatabaseDao {
     suspend fun insertMovies(movies: List<Movie>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertEpisodes(episodes: List<Episode>)
+    suspend fun insertEpisodes(episodes: List<EpisodeEntity>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSeasons(seasons: List<Season>)
@@ -42,7 +43,7 @@ interface DatabaseDao {
     fun flowMovie(artworkId: Long) : Flow<Movie?>
 
     @Query("SELECT * FROM episodes WHERE artworkId = :artworkId")
-    fun flowEpisodes(artworkId: Long) : Flow<List<Episode>>
+    fun flowEpisodes(artworkId: Long) : Flow<List<EpisodeEntity>>
 
     @Query("SELECT * FROM seasons WHERE artworkId = :artworkId")
     fun flowSeasons(artworkId: Long) : Flow<List<Season>>
@@ -67,16 +68,16 @@ interface DatabaseDao {
     suspend fun getMoviesNotInFiles(fileNames: List<String>) : List<Movie>
 
     @Query("SELECT * FROM episodes WHERE artworkId = :artworkId")
-    suspend fun getEpisodes(artworkId: Long) : List<Episode>
+    suspend fun getEpisodes(artworkId: Long) : List<EpisodeEntity>
 
     @Query("SELECT * FROM episodes")
-    suspend fun getEpisodes() : List<Episode>
+    suspend fun getEpisodes() : List<EpisodeEntity>
 
     @Query("SELECT * FROM episodes WHERE name NOT IN (:fileNames)")
-    suspend fun getEpisodesNotInFiles(fileNames: List<String>) : List<Episode>
+    suspend fun getEpisodesNotInFiles(fileNames: List<String>) : List<EpisodeEntity>
 
     @Query("SELECT * FROM episodes WHERE artworkId = ${Artwork.UNKNOWN_ID}")
-    suspend fun getUnknownMedias() : List<Episode>
+    suspend fun getUnknownMedias() : List<EpisodeEntity>
 
     @Query("SELECT * FROM seasons WHERE artworkId = :artworkId")
     suspend fun getSeasons(artworkId: Long) : List<Season>

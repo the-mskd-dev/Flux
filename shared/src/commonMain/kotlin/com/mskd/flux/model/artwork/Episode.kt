@@ -28,19 +28,11 @@ import kotlin.random.Random
  * @property status Viewing status of the media.
  * @property releaseDateString Release date of the episode as a string.
  */
-@Entity(
-    tableName = "episodes",
-    indices = [
-        Index(value = ["artworkId"])
-    ]
-)
 data class Episode(
-    @PrimaryKey
     val id: Long,
     val number: Int,
     val season: Int,
     val imagePath: String,
-    //val crew: List<TMDBCrew>,
     override val artworkId: Long,
     override val title: String,
     override val releaseDateString: String,
@@ -49,34 +41,11 @@ data class Episode(
     override val currentTime: Long = 0L,
     override val voteAverage: Float,
     override val voteCount: Int,
-    @Embedded override val file: UserFile,
+    override val file: UserFile,
     override val status: Status = Status.TO_WATCH,
 ) : Media() {
 
     override val mediaId: Long get() = id
-
-    constructor(
-        tmdbEpisode: TMDBEpisode,
-        artworkId: Long,
-        file: UserFile,
-        duration: Int
-    ) : this (
-        id = tmdbEpisode.id,
-        artworkId = artworkId,
-        title = tmdbEpisode.title,
-        number = tmdbEpisode.number,
-        season = tmdbEpisode.season,
-        imagePath = tmdbEpisode.imagePath ?: "",
-        releaseDateString = tmdbEpisode.releaseDateString,
-        //crew = tmdbEpisode.crew,
-        description = tmdbEpisode.description,
-        duration = duration,
-        currentTime = 0L,
-        voteAverage = tmdbEpisode.voteAverage,
-        voteCount = tmdbEpisode.voteCount,
-        status = Status.TO_WATCH,
-        file = file
-    )
 
     constructor(file: UserFile, duration: Int = 0) : this (
         id = -Random.nextLong(),

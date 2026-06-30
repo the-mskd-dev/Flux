@@ -16,6 +16,7 @@ import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Media
 import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Season
+import com.mskd.flux.model.mappers.toDomain
 import com.mskd.flux.model.tmdb.TMDBEpisode
 import com.mskd.flux.model.tmdb.TMDBTranslations
 import com.mskd.flux.platform.MetadataProvider
@@ -604,8 +605,7 @@ class CatalogUCImpl(
 
                                         }
 
-                                        Episode(
-                                            tmdbEpisode = tmdbEpisode,
+                                        tmdbEpisode.toDomain(
                                             artworkId = artwork.id,
                                             file = file,
                                             duration = tmdbEpisode.duration

@@ -14,7 +14,7 @@ import com.mskd.flux.model.Status
         Index(value = ["artworkId"])
     ]
 )
-data class Episode(
+data class EpisodeEntity(
     @PrimaryKey
     val id: Long,
     val number: Int,

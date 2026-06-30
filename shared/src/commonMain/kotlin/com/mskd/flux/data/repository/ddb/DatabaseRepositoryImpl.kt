@@ -6,6 +6,8 @@ import com.mskd.flux.model.artwork.Artwork
 import com.mskd.flux.model.artwork.Episode
 import com.mskd.flux.model.artwork.Movie
 import com.mskd.flux.model.artwork.Season
+import com.mskd.flux.model.mappers.toDomain
+import com.mskd.flux.model.mappers.toEntity
 import com.mskd.flux.utils.extensions.sort
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -25,7 +27,7 @@ class DatabaseRepositoryImpl(private val dao: DatabaseDao) : DatabaseRepository 
     }
 
     override fun flowEpisodes(artworkId: Long): Flow<List<Episode>> {
-        return dao.flowEpisodes(artworkId = artworkId).map { it.sort() }
+        return dao.flowEpisodes(artworkId = artworkId).map { entities -> entities.map { it.toDomain() }.sort() }
     }
 
     override fun flowSeasons(artworkId: Long): Flow<List<Season>> {
@@ -45,7 +47,7 @@ class DatabaseRepositoryImpl(private val dao: DatabaseDao) : DatabaseRepository 
     }
 
     override suspend fun saveEpisodes(episodes: List<Episode>) {
-        dao.insertEpisodes(episodes = episodes)
+        dao.insertEpisodes(episodes = episodes.map { it.toEntity() })
     }
 
     override suspend fun getArtwork(artworkId: Long): Artwork? {
@@ -69,15 +71,15 @@ class DatabaseRepositoryImpl(private val dao: DatabaseDao) : DatabaseRepository 
     }
 
     override suspend fun getEpisodes(artworkId: Long): List<Episode> {
-        return dao.getEpisodes(artworkId = artworkId).sort()
+        return dao.getEpisodes(artworkId = artworkId).map { it.toDomain() }.sort()
     }
 
     override suspend fun getEpisodes(): List<Episode> {
-        return dao.getEpisodes().sort()
+        return dao.getEpisodes().map { it.toDomain() }.sort()
     }
 
     override suspend fun getEpisodesNotInFiles(files: List<UserFile>): List<Episode> {
-        return dao.getEpisodesNotInFiles(fileNames =  files.map { it.name })
+        return dao.getEpisodesNotInFiles(fileNames =  files.map { it.name }).map { it.toDomain() }
     }
 
     override suspend fun getEpisodeCount(artworkId: Long): Int {
@@ -97,7 +99,7 @@ class DatabaseRepositoryImpl(private val dao: DatabaseDao) : DatabaseRepository 
     }
 
     override suspend fun getUnknownMedias(): List<Episode> {
-        return dao.getUnknownMedias()
+        return dao.getUnknownMedias().map { it.toDomain() }
     }
 
     override suspend fun getAllImagesPaths(): List<String> {

@@ -237,25 +237,25 @@
             "notNull": true
           },
           {
-            "fieldPath": "file.name",
+            "fieldPath": "fileName",
             "columnName": "name",
             "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "file.addedDateTime",
+            "fieldPath": "addedDateTime",
             "columnName": "addedDateTime",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
-            "fieldPath": "file.path",
+            "fieldPath": "path",
             "columnName": "path",
             "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "file.source",
+            "fieldPath": "source",
             "columnName": "source",
             "affinity": "TEXT",
             "notNull": true

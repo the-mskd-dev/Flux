@@ -2,13 +2,17 @@ package com.mskd.flux.screen.sources
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mskd.flux.model.core.presentation.State
 import com.mskd.flux.model.domain.files.UserFolder
 import com.mskd.flux.utils.Trace
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.seconds
 
 class SourcesViewModel : ViewModel() {
 
@@ -32,6 +36,13 @@ class SourcesViewModel : ViewModel() {
             intentChannel.receiveAsFlow().collect { intent ->
                 processIntent(intent)
             }
+        }
+
+        viewModelScope.launch {
+
+            delay(3.seconds)
+            _uiState.update { it.copy(state = State.Content(SourcesContent())) }
+
         }
 
     }

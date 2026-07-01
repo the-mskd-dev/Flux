@@ -100,6 +100,7 @@ fun PermanentFolderItem(name: String) {
             icon = {
                 Icon(
                     painter = painterResource(Res.drawable.ic_lock),
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
                     contentDescription = name
                 )
             }
@@ -118,8 +119,8 @@ fun UserFolderItem(folder: UserFolder) {
             FolderItem(
                 name = folder.name,
                 path = folder.path,
-                backgroundColor = if (folder.status == UserFolder.Status.MISSING) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.secondaryContainer,
-                contentColor = if (folder.status == UserFolder.Status.MISSING) MaterialTheme.colorScheme.onError else MaterialTheme.colorScheme.onSecondaryContainer,
+                backgroundColor = if (folder.status == UserFolder.Status.MISSING) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primaryContainer,
+                contentColor = if (folder.status == UserFolder.Status.MISSING) MaterialTheme.colorScheme.onError else MaterialTheme.colorScheme.onPrimaryContainer,
                 icon = {
 
                     if (folder.status == UserFolder.Status.MISSING) {

@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -27,6 +28,9 @@ import com.mskd.flux.utils.extensions.name
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.downloads
 import flux.shared.generated.resources.ic_delete
+import flux.shared.generated.resources.ic_error
+import flux.shared.generated.resources.ic_help
+import flux.shared.generated.resources.ic_lock
 import flux.shared.generated.resources.movies
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -36,31 +40,43 @@ fun FolderItem(
     name: String,
     path: String? = null,
     backgroundColor: Color,
-    contentColor: Color = MaterialTheme.colorScheme.onSecondaryContainer
+    contentColor: Color = MaterialTheme.colorScheme.onSecondaryContainer,
+    icon: @Composable () -> Unit = {}
 ) {
 
-    Column(
+    Row(
         modifier = Modifier
             .clip(FluxUI.shapes.corners)
             .fillMaxWidth()
             .background(backgroundColor)
             .padding(all = FluxUI.Space.medium),
-        verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
     ) {
 
-        Text.Title.Medium(
-            text = name,
-            overflow = TextOverflow.Ellipsis,
-            maxLines = 1,
-            color = contentColor
-        )
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
+        ) {
 
-        Text.Title.Small(
-            text = path,
-            overflow = TextOverflow.StartEllipsis,
-            maxLines = 1,
-            color = contentColor.copy(alpha = .7f)
-        )
+            Text.Title.Medium(
+                text = name,
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 1,
+                color = contentColor
+            )
+
+            Text.Title.Small(
+                text = path,
+                overflow = TextOverflow.StartEllipsis,
+                maxLines = 1,
+                color = contentColor.copy(alpha = .7f)
+            )
+
+        }
+
+        icon()
+
 
     }
 
@@ -81,6 +97,12 @@ fun PermanentFolderItem(name: String) {
         FolderItem(
             name = name,
             backgroundColor = MaterialTheme.colorScheme.primaryContainer,
+            icon = {
+                Icon(
+                    painter = painterResource(Res.drawable.ic_lock),
+                    contentDescription = name
+                )
+            }
         )
 
     }
@@ -98,6 +120,16 @@ fun UserFolderItem(folder: UserFolder) {
                 path = folder.path,
                 backgroundColor = if (folder.status == UserFolder.Status.MISSING) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.secondaryContainer,
                 contentColor = if (folder.status == UserFolder.Status.MISSING) MaterialTheme.colorScheme.onError else MaterialTheme.colorScheme.onSecondaryContainer,
+                icon = {
+
+                    if (folder.status == UserFolder.Status.MISSING) {
+                        Icon(
+                            tint = MaterialTheme.colorScheme.errorContainer,
+                            painter = painterResource(Res.drawable.ic_help),
+                            contentDescription = folder.name
+                        )
+                    }
+                }
             )
 
         },
@@ -106,7 +138,7 @@ fun UserFolderItem(folder: UserFolder) {
             Icon(
                 modifier = Modifier.padding(horizontal = FluxUI.Space.large),
                 tint = MaterialTheme.colorScheme.onErrorContainer,
-                painter = painterResource(Res.drawable.ic_delete),
+                painter = painterResource(Res.drawable.ic_error),
                 contentDescription = "Delete"
             )
 

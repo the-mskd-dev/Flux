@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -71,6 +72,7 @@ fun FolderItem(
             modifier = Modifier
                 .matchParentSize()
                 .padding(horizontal = FluxUI.Space.medium)
+                .padding(2.dp)
                 .clip(FluxUI.shapes.corners)
                 .background(color = MaterialTheme.colorScheme.error),
             contentAlignment = Alignment.CenterEnd
@@ -147,6 +149,8 @@ fun FolderItem_Preview() {
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .statusBarsPadding()
+                .background(MaterialTheme.colorScheme.surfaceContainer)
                 .padding(vertical = FluxUI.Space.large),
             verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
         ) {

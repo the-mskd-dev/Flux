@@ -125,7 +125,7 @@ fun UserFolderItem(folder: UserFolder) {
                     if (folder.status == UserFolder.Status.MISSING) {
                         Icon(
                             tint = MaterialTheme.colorScheme.errorContainer,
-                            painter = painterResource(Res.drawable.ic_help),
+                            painter = painterResource(Res.drawable.ic_error),
                             contentDescription = folder.name
                         )
                     }
@@ -138,7 +138,7 @@ fun UserFolderItem(folder: UserFolder) {
             Icon(
                 modifier = Modifier.padding(horizontal = FluxUI.Space.large),
                 tint = MaterialTheme.colorScheme.onErrorContainer,
-                painter = painterResource(Res.drawable.ic_error),
+                painter = painterResource(Res.drawable.ic_delete),
                 contentDescription = "Delete"
             )
 

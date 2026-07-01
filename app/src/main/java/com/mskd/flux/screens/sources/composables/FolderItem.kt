@@ -30,7 +30,6 @@ import flux.shared.generated.resources.delete
 import flux.shared.generated.resources.downloads
 import flux.shared.generated.resources.ic_delete
 import flux.shared.generated.resources.ic_error
-import flux.shared.generated.resources.ic_help
 import flux.shared.generated.resources.ic_lock
 import flux.shared.generated.resources.movies
 import org.jetbrains.compose.resources.painterResource
@@ -137,10 +136,10 @@ fun UserFolderItem(folder: UserFolder) {
         },
         actionContent = {
 
-            Text.Body.Medium(
-                modifier = Modifier.padding(horizontal = FluxUI.Space.large),
-                text = stringResource(Res.string.delete).uppercase(),
-                color = MaterialTheme.colorScheme.onErrorContainer,
+            Icon(
+                tint = MaterialTheme.colorScheme.onErrorContainer,
+                painter = painterResource(Res.drawable.ic_delete),
+                contentDescription = stringResource(Res.string.delete)
             )
 
         },

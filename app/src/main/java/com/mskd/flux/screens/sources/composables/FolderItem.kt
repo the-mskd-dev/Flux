@@ -26,6 +26,7 @@ import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.extensions.name
 import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.delete
 import flux.shared.generated.resources.downloads
 import flux.shared.generated.resources.ic_delete
 import flux.shared.generated.resources.ic_error
@@ -136,11 +137,10 @@ fun UserFolderItem(folder: UserFolder) {
         },
         actionContent = {
 
-            Icon(
+            Text.Body.Medium(
                 modifier = Modifier.padding(horizontal = FluxUI.Space.large),
-                tint = MaterialTheme.colorScheme.onErrorContainer,
-                painter = painterResource(Res.drawable.ic_delete),
-                contentDescription = "Delete"
+                text = stringResource(Res.string.delete).uppercase(),
+                color = MaterialTheme.colorScheme.onErrorContainer,
             )
 
         },

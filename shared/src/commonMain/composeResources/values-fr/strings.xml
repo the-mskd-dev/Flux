@@ -156,4 +156,5 @@
     <string name="small">Petit</string>
     <string name="medium">Moyen</string>
     <string name="large">Grand</string>
+    <string name="delete">Supprimer</string>
 </resources>

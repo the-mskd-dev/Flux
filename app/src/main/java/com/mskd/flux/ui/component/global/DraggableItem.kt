@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -45,6 +46,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -116,7 +118,7 @@ fun DraggableItem(
                 .constrainAs(action) {
                     top.linkTo(content.top)
                     bottom.linkTo(content.bottom)
-                    end.linkTo(parent.end, FluxUI.Space.medium)
+                    end.linkTo(parent.end, paddingValues.calculateStartPadding(LayoutDirection.Ltr))
                     width = Dimension.value(animatedWidth)
                     height = Dimension.percent(1f)
                 }

@@ -15,8 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -50,7 +48,7 @@ fun FolderItem(
 ) {
 
     val density = LocalDensity.current
-    val actionWidth = 24.dp + FluxUI.Space.medium.times(2)
+    val actionWidth = 24.dp + FluxUI.Space.large.times(2)
     val actionWidthPx = with(density) { actionWidth.toPx() }
     val anchors = DraggableAnchors {
         SwipeAnchor.OPEN at -actionWidthPx
@@ -79,7 +77,7 @@ fun FolderItem(
         ) {
 
             Icon(
-                modifier = Modifier.padding(horizontal = FluxUI.Space.medium),
+                modifier = Modifier.padding(horizontal = FluxUI.Space.large),
                 painter = painterResource(Res.drawable.ic_delete),
                 contentDescription = "Delete"
             )
@@ -105,14 +103,14 @@ fun FolderItem(
                 text = name,
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1,
-                color = MaterialTheme.colorScheme.onBackground
+                color = MaterialTheme.colorScheme.onSecondaryContainer
             )
 
             Text.Title.Small(
                 text = path,
                 overflow = TextOverflow.StartEllipsis,
                 maxLines = 1,
-                color = MaterialTheme.colorScheme.onBackground.copy(alpha = .7f)
+                color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = .7f)
             )
 
         }
@@ -137,7 +135,7 @@ fun UserFolderItem(folder: UserFolder) {
     FolderItem(
         name = folder.name,
         path = folder.path,
-        background = if (folder.status == UserFolder.Status.MISSING) MaterialTheme.colorScheme.errorContainer else MaterialTheme.colorScheme.background
+        background = if (folder.status == UserFolder.Status.MISSING) MaterialTheme.colorScheme.errorContainer else MaterialTheme.colorScheme.secondaryContainer
     )
 
 }

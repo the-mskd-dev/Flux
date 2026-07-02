@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.mskd.flux.BuildConfig
 import com.mskd.flux.data.repository.ddb.DatabaseRepository
-import com.mskd.flux.data.repository.files.FilesRepository
+import com.mskd.flux.useCases.files.FilesUC
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.data.repository.tmdb.TmdbRepository
 import com.mskd.flux.data.repository.tmdb.TmdbRepositoryImpl
@@ -49,7 +49,7 @@ class CatalogUCTest : KoinTest {
     private lateinit var tmdbRepository: TmdbRepository
     private lateinit var settingsRepository: SettingsRepository
     private lateinit var databaseRepository: DatabaseRepository
-    private lateinit var filesRepository: FilesRepository
+    private lateinit var filesUC: FilesUC
     private lateinit var userRepository: UserRepository
     private lateinit var imagesUC: ImagesUC
     private lateinit var context: Context
@@ -128,7 +128,7 @@ class CatalogUCTest : KoinTest {
             }
         }
         
-        filesRepository = mockk(relaxed = true) {
+        filesUC = mockk(relaxed = true) {
             coEvery { getFiles() } returns listOf(movieFile, episodeFile)
             coEvery { filterExistingFiles(any()) } returns emptyList()
         }
@@ -147,7 +147,7 @@ class CatalogUCTest : KoinTest {
         val catalogUC = CatalogUCImpl(
             tmdb = tmdbRepository,
             database = databaseRepository,
-            files = filesRepository,
+            files = filesUC,
             user = userRepository,
             settings = settingsRepository,
             imagesUC = imagesUC,
@@ -169,7 +169,7 @@ class CatalogUCTest : KoinTest {
         val catalogUC = CatalogUCImpl(
             tmdb = tmdbRepository,
             database = databaseRepository,
-            files = filesRepository,
+            files = filesUC,
             user = userRepository,
             settings = settingsRepository,
             imagesUC = imagesUC,
@@ -220,7 +220,7 @@ class CatalogUCTest : KoinTest {
         val catalogUC = CatalogUCImpl(
             tmdb = tmdbRepository,
             database = databaseRepository,
-            files = filesRepository,
+            files = filesUC,
             user = userRepository,
             settings = settingsRepository,
             imagesUC = imagesUC,
@@ -241,7 +241,7 @@ class CatalogUCTest : KoinTest {
         val catalogUC = CatalogUCImpl(
             tmdb = tmdbRepository,
             database = databaseRepository,
-            files = filesRepository,
+            files = filesUC,
             user = userRepository,
             settings = settingsRepository,
             imagesUC = imagesUC,

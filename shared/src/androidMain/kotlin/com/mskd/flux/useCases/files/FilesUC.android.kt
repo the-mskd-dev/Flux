@@ -1,4 +1,4 @@
-package com.mskd.flux.data.repository.files
+package com.mskd.flux.useCases.files
 
 import android.content.ContentUris
 import android.content.Context
@@ -17,10 +17,10 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import kotlin.coroutines.resume
 
-class FilesRepositoryImpl(
+class FilesUCImpl(
     private val context: Context,
     private val userRepository: UserRepository
-) : FilesRepository {
+) : FilesUC {
 
     companion object {
         const val TAG = "FilesRepositoryImpl"

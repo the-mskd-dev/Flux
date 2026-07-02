@@ -1,7 +1,7 @@
 package com.mskd.flux.mockups
 
 import com.mskd.flux.data.repository.ddb.DatabaseRepository
-import com.mskd.flux.data.repository.files.FilesRepository
+import com.mskd.flux.useCases.files.FilesUC
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.data.repository.snackbars.SnackbarRepository
 import com.mskd.flux.model.domain.files.UserFile
@@ -78,7 +78,7 @@ fun mockkSnackbarRepository() : SnackbarRepository = mockk(relaxed = true) {
     every { getCount(any()) } returns MutableStateFlow(0)
 }
 
-fun mockkFilesRepository() : FilesRepository = mockk(relaxed = true) {
+fun mockkFilesRepository() : FilesUC = mockk(relaxed = true) {
     coEvery { getFiles() } returns FilesMockups.localFiles
     coEvery { filterExistingFiles(any()) } answers {
         val files = firstArg<List<UserFile>>()

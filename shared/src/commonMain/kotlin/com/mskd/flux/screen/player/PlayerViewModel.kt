@@ -2,7 +2,7 @@ package com.mskd.flux.screen.player
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mskd.flux.data.repository.files.FilesRepository
+import com.mskd.flux.useCases.files.FilesUC
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.model.core.StringProvider
 import com.mskd.flux.model.core.presentation.State
@@ -48,7 +48,7 @@ class PlayerViewModel<out T>(
     mediaId: Long,
     private val artworkUC: ArtworkUC,
     private val settingsRepository: SettingsRepository,
-    private val filesRepository: FilesRepository,
+    private val filesUC: FilesUC,
     private val playerManager: PlayerManager<T>,
     private val progressUC: ProgressUC,
     private val pipIsEnabledUC: PipIsEnabledUC
@@ -264,7 +264,7 @@ class PlayerViewModel<out T>(
     }
 
     private suspend fun playMedia(media: Media) {
-        val subtitlesUri = filesRepository.getSubtitlesFor(file = media.file)
+        val subtitlesUri = filesUC.getSubtitlesFor(file = media.file)
         playerManager.playMedia(
             media = media,
             subtitlesPath = subtitlesUri?.absolutePath

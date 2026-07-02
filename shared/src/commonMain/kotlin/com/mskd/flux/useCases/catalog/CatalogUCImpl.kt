@@ -1,7 +1,7 @@
 package com.mskd.flux.useCases.catalog
 
 import com.mskd.flux.data.repository.ddb.DatabaseRepository
-import com.mskd.flux.data.repository.files.FilesRepository
+import com.mskd.flux.useCases.files.FilesUC
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.data.repository.tmdb.TmdbRepository
 import com.mskd.flux.data.repository.user.UserRepository
@@ -41,7 +41,7 @@ import java.util.concurrent.atomic.AtomicInteger
 class CatalogUCImpl(
     private val tmdb: TmdbRepository,
     private val database: DatabaseRepository,
-    private val files: FilesRepository,
+    private val files: FilesUC,
     private val user: UserRepository,
     private val settings: SettingsRepository,
     private val imagesUC: ImagesUC,

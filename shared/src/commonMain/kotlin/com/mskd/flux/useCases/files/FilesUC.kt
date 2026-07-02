@@ -1,9 +1,9 @@
-package com.mskd.flux.data.repository.files
+package com.mskd.flux.useCases.files
 
 import com.mskd.flux.model.domain.files.UserFile
 import java.io.File
 
-interface FilesRepository {
+interface FilesUC {
 
     suspend fun getFiles() : List<UserFile>
 

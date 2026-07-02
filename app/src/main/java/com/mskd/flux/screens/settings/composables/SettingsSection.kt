@@ -55,6 +55,7 @@ import flux.shared.generated.resources.images_cached
 import flux.shared.generated.resources.information_language
 import flux.shared.generated.resources.make_a_donation
 import flux.shared.generated.resources.picture_in_picture
+import flux.shared.generated.resources.source_code
 import flux.shared.generated.resources.sources
 import flux.shared.generated.resources.stay_informed
 import flux.shared.generated.resources.support_me_desc
@@ -324,7 +325,7 @@ fun SettingsAppInfoSection(
         )
 
         SettingsItem(
-            text = stringResource(Res.string.sources),
+            text = stringResource(Res.string.source_code),
             subText = "",
             painter = painterResource(Res.drawable.ic_sources),
             iconColor = iconColor,

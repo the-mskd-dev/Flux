@@ -57,6 +57,9 @@ import flux.shared.generated.resources.ic_add
 import flux.shared.generated.resources.movies
 import flux.shared.generated.resources.oups_an_error_occured
 import flux.shared.generated.resources.skip
+import flux.shared.generated.resources.sources
+import flux.shared.generated.resources.sources_desc
+import flux.shared.generated.resources.sources_full_desc
 import flux.shared.generated.resources.tmdb_api_token
 import flux.shared.generated.resources.token_desc_2
 import org.jetbrains.compose.resources.painterResource
@@ -125,7 +128,7 @@ fun SourcesScreenContent(
 ) {
 
     FluxScaffold(
-        title = "Sources",
+        title = stringResource(Res.string.sources),
         topAppBarColors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainer,
             scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
@@ -157,7 +160,7 @@ fun SourcesScreenContent(
             item {
                 Text.Body.Large(
                     modifier = Modifier.padding(horizontal = FluxUI.Space.medium),
-                    text = "Description"
+                    text = stringResource(Res.string.sources_full_desc)
                 )
             }
 

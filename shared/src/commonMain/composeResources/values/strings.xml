@@ -93,7 +93,7 @@
     <string name="sign_up">sign up</string>
     <string name="api_token">API Read Access Token</string>
     <string name="start">Start</string>
-    <string name="sources">Sources</string>
+    <string name="source_code">Source code</string>
     <string name="other_files">Other files</string>
     <string name="no_item">There are no items to display</string>
     <string name="skip">Skip</string>
@@ -166,4 +166,7 @@
     <string name="medium">Medium</string>
     <string name="large">Large</string>
     <string name="delete">Delete</string>
+    <string name="sources">Sources</string>
+    <string name="sources_desc">Add your source folders</string>
+    <string name="sources_full_desc">For optimal use, it is recommended to place your files in the "Movies" and/or "Downloads" folders, which are the application's default folders.\nHowever, you can add other source folders if needed, in addition to these two.</string>
 </resources>

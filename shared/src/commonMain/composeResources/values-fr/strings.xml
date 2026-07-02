@@ -86,7 +86,7 @@
     <string name="sign_up">inscrivez-vous</string>
     <string name="api_token">Jeton d'accès en lecture à l'API</string>
     <string name="start">Commencer</string>
-    <string name="sources">Sources</string>
+    <string name="source_code">Code source</string>
     <string name="other_files">Autres fichiers</string>
     <string name="no_item">Il n'y a aucun élément à afficher</string>
     <string name="skip">Continuer sans</string>
@@ -157,4 +157,7 @@
     <string name="medium">Moyen</string>
     <string name="large">Grand</string>
     <string name="delete">Supprimer</string>
+    <string name="sources">Sources</string>
+    <string name="sources_desc">Ajoutez vos dossiers sources</string>
+    <string name="sources_full_desc">Pour une utilisation optimale, il est recommandé de placer vos fichiers dans les dossiers "Movies" et/ou "Downloads", qui sont les dossiers par défaut de l'application.\nCependant vous pouvez ajouter d'autres dossiers sources si besoin en plus de ces deux là.</string>
 </resources>

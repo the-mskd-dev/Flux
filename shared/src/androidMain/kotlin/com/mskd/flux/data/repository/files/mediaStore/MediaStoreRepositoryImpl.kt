@@ -48,11 +48,18 @@ class MediaStoreRepositoryImpl(
 
         val sortOrder = "${MediaStore.Video.Media.DATE_ADDED} DESC"
 
+        val selection = "${MediaStore.Video.Media.RELATIVE_PATH} LIKE ? OR " +
+                "${MediaStore.Video.Media.RELATIVE_PATH} LIKE ?"
+
+        val selectionArgs = arrayOf(
+            "${Environment.DIRECTORY_MOVIES}/%",
+            "${Environment.DIRECTORY_DOWNLOADS}/%"
+        )
         val query = context.contentResolver.query(
             collection,
             projection,
-            null,
-            null,
+            selection,
+            selectionArgs,
             sortOrder
         )
 

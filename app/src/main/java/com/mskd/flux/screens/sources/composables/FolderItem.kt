@@ -21,7 +21,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.mskd.flux.mockups.FilesMockups
 import com.mskd.flux.model.domain.files.UserFolder
-import com.mskd.flux.ui.component.global.DraggableItem
+import com.mskd.flux.ui.component.global.DraggableItem2
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.FluxUI
@@ -118,7 +118,7 @@ fun UserFolderItem(
     onDelete: () -> Unit
 ) {
 
-    DraggableItem(
+    DraggableItem2(
         content = {
 
             FolderItem(

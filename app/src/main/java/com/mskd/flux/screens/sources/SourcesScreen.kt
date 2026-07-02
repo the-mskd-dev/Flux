@@ -15,6 +15,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.FabPosition
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -51,11 +53,13 @@ import com.mskd.flux.utils.Trace
 import com.mskd.flux.utils.extensions.WebLink
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.downloads
+import flux.shared.generated.resources.ic_add
 import flux.shared.generated.resources.movies
 import flux.shared.generated.resources.oups_an_error_occured
 import flux.shared.generated.resources.skip
 import flux.shared.generated.resources.tmdb_api_token
 import flux.shared.generated.resources.token_desc_2
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -128,13 +132,23 @@ fun SourcesScreenContent(
             titleContentColor = MaterialTheme.colorScheme.onSurface,
         ),
         onBackTap = { sendIntent(SourcesIntent.OnBackTap) },
+        floatingActionButton = {
+
+            FloatingActionButton(
+                onClick = { sendIntent(SourcesIntent.AddFolders) }
+            ) {
+                Icon(
+                    painter = painterResource(Res.drawable.ic_add),
+                    contentDescription = "add button"
+                )
+            }
+        }
     ) { innerPadding ->
 
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.surfaceContainer)
-                .padding(horizontal = FluxUI.Space.medium),
+                .background(MaterialTheme.colorScheme.surfaceContainer),
             verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium),
         ) {
 
@@ -142,6 +156,7 @@ fun SourcesScreenContent(
 
             item {
                 Text.Body.Large(
+                    modifier = Modifier.padding(horizontal = FluxUI.Space.medium),
                     text = "Description"
                 )
             }

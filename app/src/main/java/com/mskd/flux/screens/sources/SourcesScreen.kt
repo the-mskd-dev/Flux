@@ -6,6 +6,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -152,9 +153,10 @@ fun SourcesScreenContent(
             item { PermanentFolderItem(name = stringResource(Res.string.movies)) }
             item { PermanentFolderItem(name = stringResource(Res.string.downloads)) }
 
-            items(items = content.folders) { folder ->
+            items(items = content.folders, key = { it.path }) { folder ->
 
                 UserFolderItem(
+                    modifier = Modifier.animateItem(),
                     folder = folder,
                     onDelete = { sendIntent(SourcesIntent.DeleteFolder(folder)) }
                 )

@@ -87,10 +87,13 @@ fun FolderItem(
 }
 
 @Composable
-fun PermanentFolderItem(name: String) {
+fun PermanentFolderItem(
+    modifier: Modifier = Modifier,
+    name: String
+) {
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = FluxUI.Space.medium),
         contentAlignment = Alignment.Center
@@ -114,11 +117,13 @@ fun PermanentFolderItem(name: String) {
 
 @Composable
 fun UserFolderItem(
+    modifier: Modifier = Modifier,
     folder: UserFolder,
     onDelete: () -> Unit
 ) {
 
     DraggableItem(
+        modifier = modifier,
         content = {
 
             FolderItem(

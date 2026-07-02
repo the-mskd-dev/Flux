@@ -159,5 +159,5 @@
     <string name="delete">Supprimer</string>
     <string name="sources">Sources</string>
     <string name="sources_desc">Ajoutez vos dossiers sources</string>
-    <string name="sources_full_desc">Pour une utilisation optimale, il est recommandé de placer vos fichiers dans les dossiers "Movies" et/ou "Downloads", qui sont les dossiers par défaut de l'application.\nCependant vous pouvez ajouter d'autres dossiers sources si besoin en plus de ces deux là.</string>
+    <string name="sources_full_desc">Pour une utilisation optimale, il est recommandé de placer vos fichiers dans les dossiers "Movies" et/ou "Downloads", qui sont les dossiers par défaut de l'application.\n\nCependant vous pouvez ajouter d'autres dossiers sources si besoin en plus de ces deux là.</string>
 </resources>

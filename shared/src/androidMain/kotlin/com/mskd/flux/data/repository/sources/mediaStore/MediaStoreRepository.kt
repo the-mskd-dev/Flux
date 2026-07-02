@@ -18,7 +18,7 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import kotlin.coroutines.resume
 
-class MediaStoreRepositoryImpl(
+class MediaStoreRepository(
     private val context: Context,
    private val userRepository: UserRepository
 ) : SourcesRepository {

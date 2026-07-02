@@ -16,7 +16,8 @@ data class SourcesContent(
 
 sealed class SourcesIntent {
     data object OnBackTap : SourcesIntent()
-    data object AddFolders : SourcesIntent()
+    data object OpenFolderSelection : SourcesIntent()
+    data class SaveFolder(val path: String) : SourcesIntent()
     data class DeleteFolder(val folder: UserFolder) : SourcesIntent()
 }
 

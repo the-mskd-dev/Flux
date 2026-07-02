@@ -16,6 +16,7 @@ interface DatabaseRepository {
     fun flowMovie(artworkId: Long) : Flow<Movie?>
     fun flowEpisodes(artworkId: Long) : Flow<List<Episode>>
     fun flowSeasons(artworkId: Long) : Flow<List<Season>>
+    fun flowUserFolders() : Flow<List<UserFolder>>
 
     // Save
     suspend fun saveArtworks(artworks: List<Artwork>)

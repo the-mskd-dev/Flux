@@ -53,6 +53,9 @@ interface DatabaseDao {
     @Query("SELECT * FROM seasons WHERE artworkId = :artworkId")
     fun flowSeasons(artworkId: Long) : Flow<List<SeasonEntity>>
 
+    @Query("SELECT * FROM folders")
+    fun flowUserFolders() : Flow<List<UserFolderEntity>>
+
 //endregion
 
 //region Get

@@ -24,6 +24,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.mockups.FilesMockups
 import com.mskd.flux.model.core.presentation.State
 import com.mskd.flux.navigation.Route
+import com.mskd.flux.presentations.components.rememberSafFolderPicker
 import com.mskd.flux.screen.sources.SourcesContent
 import com.mskd.flux.screen.sources.SourcesEvent
 import com.mskd.flux.screen.sources.SourcesIntent
@@ -58,13 +59,15 @@ fun SourcesScreen(
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    val pickFolder = rememberSafFolderPicker { uri ->
+        viewModel.handleIntent(SourcesIntent.SaveFolder(uri.toString()))
+    }
+
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
             when (event) {
                 SourcesEvent.BackToPreviousScreen -> onBack()
-                SourcesEvent.OpenFolderSelection -> {
-                    Trace.debug(message = "Open Folder selection")
-                }
+                SourcesEvent.OpenFolderSelection -> pickFolder()
             }
         }
     }
@@ -120,7 +123,7 @@ fun SourcesScreenContent(
         floatingActionButton = {
 
             FloatingActionButton(
-                onClick = { sendIntent(SourcesIntent.AddFolders) }
+                onClick = { sendIntent(SourcesIntent.OpenFolderSelection) }
             ) {
                 Icon(
                     painter = painterResource(Res.drawable.ic_add),

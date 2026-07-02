@@ -35,6 +35,10 @@ class DatabaseRepositoryImpl(private val dao: DatabaseDao) : DatabaseRepository 
         return dao.flowSeasons(artworkId = artworkId).map { entities ->  entities.map { it.toDomain() }.sortedBy { s -> s.season } }
     }
 
+    override fun flowUserFolders(): Flow<List<UserFolder>> {
+        return dao.flowUserFolders().map { entities -> entities.map { it.toDomain() } }
+    }
+
     override suspend fun saveArtworks(artworks: List<Artwork>) {
         dao.insertArtworks(artworks = artworks.map { it.toEntity() })
     }

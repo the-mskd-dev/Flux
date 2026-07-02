@@ -1,8 +1,8 @@
 package com.mskd.flux.model.data.local.mappers
 
 import com.mskd.flux.model.data.local.entities.MovieEntity
-import com.mskd.flux.model.domain.files.UserFile
 import com.mskd.flux.model.domain.artwork.Movie
+import com.mskd.flux.model.domain.files.UserFile
 
 fun MovieEntity.toDomain() : Movie {
     val file = UserFile(

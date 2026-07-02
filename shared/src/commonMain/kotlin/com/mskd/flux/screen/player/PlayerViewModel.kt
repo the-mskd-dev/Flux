@@ -2,8 +2,11 @@ package com.mskd.flux.screen.player
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mskd.flux.data.useCases.files.FilesUC
 import com.mskd.flux.data.repository.settings.SettingsRepository
+import com.mskd.flux.data.useCases.artwork.ArtworkUC
+import com.mskd.flux.data.useCases.files.FilesUC
+import com.mskd.flux.data.useCases.player.PipIsEnabledUC
+import com.mskd.flux.data.useCases.progress.ProgressUC
 import com.mskd.flux.model.core.StringProvider
 import com.mskd.flux.model.core.presentation.State
 import com.mskd.flux.model.domain.artwork.Episode
@@ -16,9 +19,6 @@ import com.mskd.flux.screen.player.PlayerUiContent.AmbientOverlay
 import com.mskd.flux.screen.player.PlayerUiContent.NextButton
 import com.mskd.flux.screen.player.PlayerUiContent.SeekOverlay
 import com.mskd.flux.screen.player.PlayerUiContent.SettingsSheet
-import com.mskd.flux.data.useCases.artwork.ArtworkUC
-import com.mskd.flux.data.useCases.player.PipIsEnabledUC
-import com.mskd.flux.data.useCases.progress.ProgressUC
 import com.mskd.flux.utils.Trace
 import com.mskd.flux.utils.extensions.getNextEpisodeFor
 import com.mskd.flux.utils.extensions.toPlayerTrack

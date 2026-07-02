@@ -2,12 +2,12 @@ package com.mskd.flux.data.useCases.progress
 
 import com.mskd.flux.data.repository.ddb.DatabaseRepository
 import com.mskd.flux.data.repository.user.UserRepository
-import com.mskd.flux.model.domain.artwork.Status
 import com.mskd.flux.model.domain.artwork.Artwork
 import com.mskd.flux.model.domain.artwork.ContentType
 import com.mskd.flux.model.domain.artwork.Episode
 import com.mskd.flux.model.domain.artwork.Media
 import com.mskd.flux.model.domain.artwork.Movie
+import com.mskd.flux.model.domain.artwork.Status
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.Trace
 import com.mskd.flux.utils.extensions.getPreviousEpisodesFor

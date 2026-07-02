@@ -7,10 +7,10 @@ import com.mskd.flux.data.useCases.progress.ProgressUC
 import com.mskd.flux.data.useCases.progress.ProgressUCImpl
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.mockkDatabaseRepository
-import com.mskd.flux.model.domain.artwork.Status
 import com.mskd.flux.model.domain.artwork.ContentType
 import com.mskd.flux.model.domain.artwork.Episode
 import com.mskd.flux.model.domain.artwork.Movie
+import com.mskd.flux.model.domain.artwork.Status
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.extensions.lastEpisode
 import com.mskd.flux.utils.extensions.minToMs

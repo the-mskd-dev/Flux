@@ -1,7 +1,7 @@
 package com.mskd.flux.model.domain.catalog
 
-import com.mskd.flux.model.domain.files.UserFile
 import com.mskd.flux.model.domain.artwork.ContentType
+import com.mskd.flux.model.domain.files.UserFile
 
 data class CatalogFolder(
     val title: String,

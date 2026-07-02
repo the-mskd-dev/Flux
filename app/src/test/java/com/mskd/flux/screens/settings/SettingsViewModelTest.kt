@@ -3,14 +3,14 @@ package com.mskd.flux.screens.settings
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.data.repository.settings.SettingsRepository
+import com.mskd.flux.data.useCases.catalog.CatalogUC
+import com.mskd.flux.data.useCases.images.ImagesUC
 import com.mskd.flux.mockups.mockkCatalogUC
 import com.mskd.flux.mockups.mockkImagesUC
 import com.mskd.flux.model.core.FluxOptionsDialogState
 import com.mskd.flux.screen.settings.SettingsEvent
 import com.mskd.flux.screen.settings.SettingsIntent
 import com.mskd.flux.screen.settings.SettingsViewModel
-import com.mskd.flux.data.useCases.catalog.CatalogUC
-import com.mskd.flux.data.useCases.images.ImagesUC
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe

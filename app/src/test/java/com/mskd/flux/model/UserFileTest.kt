@@ -3,11 +3,11 @@ package com.mskd.flux.model
 import android.net.Uri
 import androidx.core.net.toUri
 import com.mskd.flux.mockups.FilesMockups
+import com.mskd.flux.model.domain.artwork.ContentType
 import com.mskd.flux.model.domain.catalog.CatalogFolder
 import com.mskd.flux.model.domain.files.FileProperties
 import com.mskd.flux.model.domain.files.FileSource
 import com.mskd.flux.model.domain.files.UserFile
-import com.mskd.flux.model.domain.artwork.ContentType
 import com.mskd.flux.utils.extensions.groupInFolders
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData

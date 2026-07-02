@@ -5,6 +5,8 @@ import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.data.repository.ddb.DatabaseRepository
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.data.repository.user.UserRepository
+import com.mskd.flux.data.useCases.progress.ProgressUC
+import com.mskd.flux.data.useCases.progress.ProgressUCImpl
 import com.mskd.flux.mockups.FakeArtworkUC
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.mockkDatabaseRepository
@@ -12,8 +14,6 @@ import com.mskd.flux.model.core.presentation.ScreenState
 import com.mskd.flux.screen.unknown.UnknownEvent
 import com.mskd.flux.screen.unknown.UnknownIntent
 import com.mskd.flux.screen.unknown.UnknownViewModel
-import com.mskd.flux.data.useCases.progress.ProgressUC
-import com.mskd.flux.data.useCases.progress.ProgressUCImpl
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.coVerify

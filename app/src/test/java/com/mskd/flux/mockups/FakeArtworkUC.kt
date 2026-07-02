@@ -1,11 +1,11 @@
 package com.mskd.flux.mockups
 
+import com.mskd.flux.data.useCases.artwork.ArtworkUC
 import com.mskd.flux.model.core.presentation.State
 import com.mskd.flux.model.domain.artwork.ContentType
 import com.mskd.flux.model.domain.artwork.Episode
 import com.mskd.flux.model.domain.artwork.FullArtwork
 import com.mskd.flux.model.domain.artwork.Movie
-import com.mskd.flux.data.useCases.artwork.ArtworkUC
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.runBlocking

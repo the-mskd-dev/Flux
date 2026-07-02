@@ -1,11 +1,11 @@
 package com.mskd.flux.model.data.remote.tmdb.mappers
 
 import com.mskd.flux.model.data.remote.tmdb.dto.MovieDto
-import com.mskd.flux.model.domain.artwork.Status
-import com.mskd.flux.model.domain.files.UserFile
 import com.mskd.flux.model.domain.artwork.Artwork
 import com.mskd.flux.model.domain.artwork.ContentType
 import com.mskd.flux.model.domain.artwork.Movie
+import com.mskd.flux.model.domain.artwork.Status
+import com.mskd.flux.model.domain.files.UserFile
 
 fun MovieDto.toDomain(
     file: UserFile,

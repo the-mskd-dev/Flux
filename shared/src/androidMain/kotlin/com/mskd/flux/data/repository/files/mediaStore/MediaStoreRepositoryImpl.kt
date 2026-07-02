@@ -15,7 +15,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import java.io.File
-import kotlin.collections.contains
 import kotlin.coroutines.resume
 
 class MediaStoreRepositoryImpl(

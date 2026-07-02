@@ -2,15 +2,15 @@ package com.mskd.flux.screens.token
 
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
-import com.mskd.flux.data.repository.token.TokenRepository
 import com.mskd.flux.data.remote.tmdb.TMDBService
+import com.mskd.flux.data.repository.token.TokenRepository
+import com.mskd.flux.data.useCases.catalog.CatalogUC
 import com.mskd.flux.model.core.AppInfo
 import com.mskd.flux.model.data.remote.tmdb.dto.AuthenticationDto
 import com.mskd.flux.screen.token.TokenEvent
 import com.mskd.flux.screen.token.TokenIntent
 import com.mskd.flux.screen.token.TokenMessage
 import com.mskd.flux.screen.token.TokenViewModel
-import com.mskd.flux.data.useCases.catalog.CatalogUC
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData
 import io.kotest.matchers.shouldBe

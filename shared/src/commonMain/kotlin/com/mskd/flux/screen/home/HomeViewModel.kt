@@ -5,10 +5,10 @@ import androidx.lifecycle.viewModelScope
 import com.mskd.flux.data.repository.snackbars.SnackbarRepository
 import com.mskd.flux.data.repository.token.TokenRepository
 import com.mskd.flux.data.repository.user.UserRepository
+import com.mskd.flux.data.useCases.catalog.CatalogUC
 import com.mskd.flux.model.core.AppInfo
 import com.mskd.flux.model.domain.artwork.Artwork
 import com.mskd.flux.model.domain.artwork.ContentType
-import com.mskd.flux.data.useCases.catalog.CatalogUC
 import com.mskd.flux.utils.FluxSnackbar
 import com.mskd.flux.utils.Trace
 import com.mskd.flux.utils.UpdateManager

@@ -1,7 +1,7 @@
 package com.mskd.flux.data.repository.tmdb
 
-import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.data.remote.tmdb.TMDBService
+import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.model.data.remote.tmdb.dto.ArtworkDto
 import com.mskd.flux.model.data.remote.tmdb.dto.EpisodeDto
 import com.mskd.flux.model.data.remote.tmdb.dto.MediaTypeDto

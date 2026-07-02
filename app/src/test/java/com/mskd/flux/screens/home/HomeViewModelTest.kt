@@ -5,6 +5,7 @@ import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.data.repository.snackbars.SnackbarRepository
 import com.mskd.flux.data.repository.token.TokenRepository
 import com.mskd.flux.data.repository.user.UserRepository
+import com.mskd.flux.data.useCases.catalog.CatalogUC
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.mockkCatalogUC
 import com.mskd.flux.mockups.mockkSnackbarRepository
@@ -15,7 +16,6 @@ import com.mskd.flux.screen.home.HomeEvent
 import com.mskd.flux.screen.home.HomeIntent
 import com.mskd.flux.screen.home.HomeState
 import com.mskd.flux.screen.home.HomeViewModel
-import com.mskd.flux.data.useCases.catalog.CatalogUC
 import com.mskd.flux.utils.FluxSnackbar
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData

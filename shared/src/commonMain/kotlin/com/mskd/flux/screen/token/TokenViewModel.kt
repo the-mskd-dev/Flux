@@ -3,9 +3,9 @@ package com.mskd.flux.screen.token
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.data.repository.token.TokenRepository
-import com.mskd.flux.data.tmdb.TMDBService
+import com.mskd.flux.data.remote.tmdb.TMDBService
 import com.mskd.flux.model.core.AppInfo
-import com.mskd.flux.useCases.catalog.CatalogUC
+import com.mskd.flux.data.useCases.catalog.CatalogUC
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

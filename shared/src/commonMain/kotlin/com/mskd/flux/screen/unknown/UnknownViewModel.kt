@@ -9,8 +9,8 @@ import com.mskd.flux.model.domain.artwork.Artwork
 import com.mskd.flux.model.domain.artwork.Episode
 import com.mskd.flux.model.domain.artwork.FullArtwork
 import com.mskd.flux.model.domain.artwork.Media
-import com.mskd.flux.useCases.artwork.ArtworkUC
-import com.mskd.flux.useCases.progress.ProgressUC
+import com.mskd.flux.data.useCases.artwork.ArtworkUC
+import com.mskd.flux.data.useCases.progress.ProgressUC
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted

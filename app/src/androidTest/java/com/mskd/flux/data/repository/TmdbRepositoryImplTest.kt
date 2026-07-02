@@ -5,7 +5,7 @@ import com.mskd.flux.BuildConfig
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.data.repository.tmdb.TmdbRepositoryImpl
 import com.mskd.flux.data.repository.token.TokenRepository
-import com.mskd.flux.data.tmdb.TMDBService
+import com.mskd.flux.data.remote.tmdb.TMDBService
 import com.mskd.flux.di.moduleAndroidApp
 import com.mskd.flux.di.modulePlatform
 import com.mskd.flux.model.data.remote.tmdb.dto.TranslationsDto

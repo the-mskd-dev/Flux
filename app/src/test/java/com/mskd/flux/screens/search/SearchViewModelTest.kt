@@ -10,7 +10,7 @@ import com.mskd.flux.model.domain.artwork.ContentType
 import com.mskd.flux.screen.search.SearchEvent
 import com.mskd.flux.screen.search.SearchIntent
 import com.mskd.flux.screen.search.SearchViewModel
-import com.mskd.flux.useCases.catalog.CatalogUC
+import com.mskd.flux.data.useCases.catalog.CatalogUC
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 

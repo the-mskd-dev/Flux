@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import com.mskd.flux.screen.settings.SettingsIntent
 import com.mskd.flux.screen.settings.SettingsUiState
 import com.mskd.flux.ui.theme.FluxUI
-import com.mskd.flux.useCases.images.ImagesUC
+import com.mskd.flux.data.useCases.images.ImagesUC
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.extensions.WebLink
 import flux.shared.generated.resources.Res

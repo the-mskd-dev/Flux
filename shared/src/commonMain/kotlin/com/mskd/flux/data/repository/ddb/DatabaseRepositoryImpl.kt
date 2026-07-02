@@ -1,6 +1,6 @@
 package com.mskd.flux.data.repository.ddb
 
-import com.mskd.flux.data.ddb.DatabaseDao
+import com.mskd.flux.data.local.ddb.DatabaseDao
 import com.mskd.flux.model.data.local.mappers.toDomain
 import com.mskd.flux.model.data.local.mappers.toEntity
 import com.mskd.flux.model.domain.files.UserFile

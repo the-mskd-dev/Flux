@@ -1,9 +1,9 @@
 package com.mskd.flux.di
 
-import com.mskd.flux.useCases.files.FilesUC
-import com.mskd.flux.useCases.files.FilesUCImpl
-import com.mskd.flux.useCases.player.PipIsEnabledUC
-import com.mskd.flux.useCases.player.PipIsEnabledUCImpl
+import com.mskd.flux.data.useCases.files.FilesUC
+import com.mskd.flux.data.useCases.files.FilesUCImpl
+import com.mskd.flux.data.useCases.player.PipIsEnabledUC
+import com.mskd.flux.data.useCases.player.PipIsEnabledUCImpl
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 

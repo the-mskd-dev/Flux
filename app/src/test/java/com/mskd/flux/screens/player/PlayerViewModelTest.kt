@@ -3,7 +3,7 @@ package com.mskd.flux.screens.player
 import androidx.media3.common.Player
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
-import com.mskd.flux.useCases.files.FilesUC
+import com.mskd.flux.data.useCases.files.FilesUC
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.mockups.FakeArtworkUC
 import com.mskd.flux.mockups.MediaMockups
@@ -19,8 +19,8 @@ import com.mskd.flux.screen.player.PlayerIntent
 import com.mskd.flux.screen.player.PlayerUiContent
 import com.mskd.flux.screen.player.PlayerUiState
 import com.mskd.flux.screen.player.PlayerViewModel
-import com.mskd.flux.useCases.player.PipIsEnabledUC
-import com.mskd.flux.useCases.progress.ProgressUC
+import com.mskd.flux.data.useCases.player.PipIsEnabledUC
+import com.mskd.flux.data.useCases.progress.ProgressUC
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.extensions.lastEpisode
 import com.mskd.flux.utils.extensions.minToMs

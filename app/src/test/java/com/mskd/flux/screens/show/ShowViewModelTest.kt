@@ -12,7 +12,7 @@ import com.mskd.flux.screen.show.ShowDialog
 import com.mskd.flux.screen.show.ShowEvent
 import com.mskd.flux.screen.show.ShowIntent
 import com.mskd.flux.screen.show.ShowViewModel
-import com.mskd.flux.useCases.progress.ProgressUC
+import com.mskd.flux.data.useCases.progress.ProgressUC
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf

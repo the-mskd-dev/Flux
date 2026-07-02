@@ -2,7 +2,7 @@ package com.mskd.flux.screen.settings
 
 import androidx.compose.runtime.Immutable
 import com.mskd.flux.model.core.FluxOptionsDialogState
-import com.mskd.flux.useCases.images.ImagesUC
+import com.mskd.flux.data.useCases.images.ImagesUC
 import java.util.Locale
 
 @Immutable

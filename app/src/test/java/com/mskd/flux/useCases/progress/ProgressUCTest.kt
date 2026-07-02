@@ -3,6 +3,8 @@ package com.mskd.flux.useCases.progress
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.data.repository.ddb.DatabaseRepository
 import com.mskd.flux.data.repository.user.UserRepository
+import com.mskd.flux.data.useCases.progress.ProgressUC
+import com.mskd.flux.data.useCases.progress.ProgressUCImpl
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.mockkDatabaseRepository
 import com.mskd.flux.model.domain.artwork.Status

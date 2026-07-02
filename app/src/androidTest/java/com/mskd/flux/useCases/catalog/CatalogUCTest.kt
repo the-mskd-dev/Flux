@@ -4,13 +4,15 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.mskd.flux.BuildConfig
 import com.mskd.flux.data.repository.ddb.DatabaseRepository
-import com.mskd.flux.useCases.files.FilesUC
+import com.mskd.flux.data.useCases.files.FilesUC
 import com.mskd.flux.data.repository.settings.SettingsRepository
 import com.mskd.flux.data.repository.tmdb.TmdbRepository
 import com.mskd.flux.data.repository.tmdb.TmdbRepositoryImpl
 import com.mskd.flux.data.repository.token.TokenRepository
 import com.mskd.flux.data.repository.user.UserRepository
-import com.mskd.flux.data.tmdb.TMDBService
+import com.mskd.flux.data.remote.tmdb.TMDBService
+import com.mskd.flux.data.useCases.catalog.CatalogUC
+import com.mskd.flux.data.useCases.catalog.CatalogUCImpl
 import com.mskd.flux.di.Properties
 import com.mskd.flux.di.Qualifiers
 import com.mskd.flux.di.moduleAndroidApp
@@ -21,7 +23,7 @@ import com.mskd.flux.model.domain.files.UserFile
 import com.mskd.flux.model.domain.artwork.Artwork
 import com.mskd.flux.model.domain.artwork.Episode
 import com.mskd.flux.model.domain.artwork.Movie
-import com.mskd.flux.useCases.images.ImagesUC
+import com.mskd.flux.data.useCases.images.ImagesUC
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk

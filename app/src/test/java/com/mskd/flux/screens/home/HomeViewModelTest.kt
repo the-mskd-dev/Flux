@@ -15,7 +15,7 @@ import com.mskd.flux.screen.home.HomeEvent
 import com.mskd.flux.screen.home.HomeIntent
 import com.mskd.flux.screen.home.HomeState
 import com.mskd.flux.screen.home.HomeViewModel
-import com.mskd.flux.useCases.catalog.CatalogUC
+import com.mskd.flux.data.useCases.catalog.CatalogUC
 import com.mskd.flux.utils.FluxSnackbar
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData

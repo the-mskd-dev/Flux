@@ -1,13 +1,13 @@
 package com.mskd.flux.di
 
-import com.mskd.flux.useCases.artwork.ArtworkUC
-import com.mskd.flux.useCases.artwork.ArtworkUCImpl
-import com.mskd.flux.useCases.catalog.CatalogUC
-import com.mskd.flux.useCases.catalog.CatalogUCImpl
-import com.mskd.flux.useCases.images.ImagesUC
-import com.mskd.flux.useCases.images.ImagesUCImpl
-import com.mskd.flux.useCases.progress.ProgressUC
-import com.mskd.flux.useCases.progress.ProgressUCImpl
+import com.mskd.flux.data.useCases.artwork.ArtworkUC
+import com.mskd.flux.data.useCases.artwork.ArtworkUCImpl
+import com.mskd.flux.data.useCases.catalog.CatalogUC
+import com.mskd.flux.data.useCases.catalog.CatalogUCImpl
+import com.mskd.flux.data.useCases.images.ImagesUC
+import com.mskd.flux.data.useCases.images.ImagesUCImpl
+import com.mskd.flux.data.useCases.progress.ProgressUC
+import com.mskd.flux.data.useCases.progress.ProgressUCImpl
 import org.koin.dsl.module
 
 val moduleUseCase = module {

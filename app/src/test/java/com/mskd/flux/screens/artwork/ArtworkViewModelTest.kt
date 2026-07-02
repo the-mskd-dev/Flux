@@ -16,7 +16,7 @@ import com.mskd.flux.screen.artwork.ArtworkDialog
 import com.mskd.flux.screen.artwork.ArtworkEvent
 import com.mskd.flux.screen.artwork.ArtworkIntent
 import com.mskd.flux.screen.artwork.ArtworkViewModel
-import com.mskd.flux.useCases.progress.ProgressUC
+import com.mskd.flux.data.useCases.progress.ProgressUC
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe

@@ -12,8 +12,8 @@ import com.mskd.flux.model.core.presentation.ScreenState
 import com.mskd.flux.screen.unknown.UnknownEvent
 import com.mskd.flux.screen.unknown.UnknownIntent
 import com.mskd.flux.screen.unknown.UnknownViewModel
-import com.mskd.flux.useCases.progress.ProgressUC
-import com.mskd.flux.useCases.progress.ProgressUCImpl
+import com.mskd.flux.data.useCases.progress.ProgressUC
+import com.mskd.flux.data.useCases.progress.ProgressUCImpl
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.coVerify

@@ -1,8 +1,8 @@
 package com.mskd.flux.di
 
-import com.mskd.flux.data.ddb.DatabaseDao
-import com.mskd.flux.data.ddb.FluxDatabase
-import com.mskd.flux.data.ddb.getRoomDatabase
+import com.mskd.flux.data.local.ddb.DatabaseDao
+import com.mskd.flux.data.local.ddb.FluxDatabase
+import com.mskd.flux.data.local.ddb.getRoomDatabase
 import com.mskd.flux.data.repository.ddb.DatabaseRepository
 import com.mskd.flux.data.repository.ddb.DatabaseRepositoryImpl
 import org.koin.dsl.module

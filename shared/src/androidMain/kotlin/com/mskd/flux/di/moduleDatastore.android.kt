@@ -3,11 +3,11 @@ package com.mskd.flux.di
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import com.mskd.flux.data.datastore.customizationDatastore
-import com.mskd.flux.data.datastore.settingsDatastore
-import com.mskd.flux.data.datastore.snackbarDataStore
-import com.mskd.flux.data.datastore.tokenDatastore
-import com.mskd.flux.data.datastore.userDataStore
+import com.mskd.flux.data.local.datastore.customizationDatastore
+import com.mskd.flux.data.local.datastore.settingsDatastore
+import com.mskd.flux.data.local.datastore.snackbarDataStore
+import com.mskd.flux.data.local.datastore.tokenDatastore
+import com.mskd.flux.data.local.datastore.userDataStore
 import org.koin.dsl.module
 
 val moduleDatastoreAndroid = module {

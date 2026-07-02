@@ -1,8 +1,8 @@
 package com.mskd.flux.di
 
 import com.mskd.flux.data.repository.token.TokenRepository
-import com.mskd.flux.data.tmdb.TMDBService
-import com.mskd.flux.data.tmdb.TMDBServiceImpl
+import com.mskd.flux.data.remote.tmdb.TMDBService
+import com.mskd.flux.data.remote.tmdb.TMDBServiceImpl
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.HttpRequestRetry

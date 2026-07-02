@@ -154,7 +154,10 @@ fun SourcesScreenContent(
 
             items(items = content.folders) { folder ->
 
-                UserFolderItem(folder = folder)
+                UserFolderItem(
+                    folder = folder,
+                    onDelete = { sendIntent(SourcesIntent.DeleteFolder(folder)) }
+                )
 
             }
 

@@ -113,7 +113,10 @@ fun PermanentFolderItem(name: String) {
 }
 
 @Composable
-fun UserFolderItem(folder: UserFolder) {
+fun UserFolderItem(
+    folder: UserFolder,
+    onDelete: () -> Unit
+) {
 
     DraggableItem(
         content = {
@@ -145,7 +148,7 @@ fun UserFolderItem(folder: UserFolder) {
             )
 
         },
-        onActionTap = {},
+        onActionTap = { onDelete() },
     )
 
 }
@@ -164,7 +167,7 @@ fun FolderItem_Preview() {
         ) {
             PermanentFolderItem(name = stringResource(Res.string.movies))
             PermanentFolderItem(name = stringResource(Res.string.downloads))
-            FilesMockups.userFolders.forEach { UserFolderItem(folder = it) }
+            FilesMockups.userFolders.forEach { UserFolderItem(folder = it, onDelete = {}) }
         }
     }
 }

@@ -8,8 +8,10 @@ import com.mskd.flux.model.data.local.entities.ArtworkEntity
 import com.mskd.flux.model.data.local.entities.EpisodeEntity
 import com.mskd.flux.model.data.local.entities.MovieEntity
 import com.mskd.flux.model.data.local.entities.SeasonEntity
+import com.mskd.flux.model.data.local.entities.UserFolderEntity
 import com.mskd.flux.model.data.local.projections.ArtworkImagesProjection
 import com.mskd.flux.model.domain.artwork.Artwork
+import com.mskd.flux.model.domain.files.UserFolder
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -161,6 +163,16 @@ interface DatabaseDao {
 
     @Query("SELECT imagePath FROM seasons")
     suspend fun getSeasonsImages() : List<String>
+
+//endregion
+
+//region Files
+
+    @Query("SELECT * FROM folders")
+    suspend fun getUserFolders() : List<UserFolderEntity>
+
+    @Query("DELETE FROM folders WHERE path = :path")
+    suspend fun deleteUserFolder(path: String)
 
 //endregion
 

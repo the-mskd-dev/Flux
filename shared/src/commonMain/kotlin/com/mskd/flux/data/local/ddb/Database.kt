@@ -11,6 +11,7 @@ import com.mskd.flux.model.data.local.entities.ArtworkEntity
 import com.mskd.flux.model.data.local.entities.EpisodeEntity
 import com.mskd.flux.model.data.local.entities.MovieEntity
 import com.mskd.flux.model.data.local.entities.SeasonEntity
+import com.mskd.flux.model.data.local.entities.UserFolderEntity
 import kotlinx.coroutines.Dispatchers
 
 @Database(
@@ -18,13 +19,15 @@ import kotlinx.coroutines.Dispatchers
         ArtworkEntity::class,
         MovieEntity::class,
         EpisodeEntity::class,
-        SeasonEntity::class
+        SeasonEntity::class,
+        UserFolderEntity::class
     ],
-    version = 4,
+    version = 5,
     autoMigrations = [
         AutoMigration(from = 1, to = 2),
         AutoMigration(from = 2, to = 3),
         AutoMigration(from = 3, to = 4),
+        AutoMigration(from = 4, to = 5),
     ]
 )
 @TypeConverters(Converters::class)

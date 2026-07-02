@@ -5,6 +5,7 @@ import com.mskd.flux.model.domain.artwork.Episode
 import com.mskd.flux.model.domain.artwork.Movie
 import com.mskd.flux.model.domain.artwork.Season
 import com.mskd.flux.model.domain.files.UserFile
+import com.mskd.flux.model.domain.files.UserFolder
 import kotlinx.coroutines.flow.Flow
 
 interface DatabaseRepository {
@@ -47,6 +48,10 @@ interface DatabaseRepository {
 
     // Images
     suspend fun getAllImagesPaths() : List<String>
+
+    // Files
+    suspend fun getUserFolders() : List<UserFolder>
+    suspend fun deleteUserFolder(userFolder: UserFolder)
 
     // Delete
     suspend fun deleteArtworks(artworks: List<Artwork>)

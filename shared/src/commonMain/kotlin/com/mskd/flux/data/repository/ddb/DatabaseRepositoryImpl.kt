@@ -8,6 +8,7 @@ import com.mskd.flux.model.domain.artwork.Episode
 import com.mskd.flux.model.domain.artwork.Movie
 import com.mskd.flux.model.domain.artwork.Season
 import com.mskd.flux.model.domain.files.UserFile
+import com.mskd.flux.model.domain.files.UserFolder
 import com.mskd.flux.utils.extensions.sort
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -113,6 +114,14 @@ class DatabaseRepositoryImpl(private val dao: DatabaseDao) : DatabaseRepository 
             addAll(episodes.filter { it.isNotBlank() })
             addAll(seasons.filter { it.isNotBlank() })
         }
+    }
+
+    override suspend fun getUserFolders(): List<UserFolder> {
+        return dao.getUserFolders().map { it.toDomain() }
+    }
+
+    override suspend fun deleteUserFolder(userFolder: UserFolder) {
+        dao.deleteUserFolder(path = userFolder.path)
     }
 
     override suspend fun deleteArtworks(artworks: List<Artwork>) {

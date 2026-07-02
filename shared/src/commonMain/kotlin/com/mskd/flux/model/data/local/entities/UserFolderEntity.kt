@@ -1,12 +1,13 @@
 package com.mskd.flux.model.data.local.entities
 
 import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.mskd.flux.model.domain.files.FileSource
 
 @Entity(
     tableName = "folders"
 )
 data class UserFolderEntity(
-    val path: String,
+    @PrimaryKey val path: String,
     val source: FileSource
 )

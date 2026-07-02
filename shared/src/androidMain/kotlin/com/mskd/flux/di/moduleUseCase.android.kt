@@ -18,8 +18,7 @@ val moduleUseCaseAndroid = module {
 
     single<FilesUC> {
         FilesUCImpl(
-            context = get(),
-            userRepository = get()
+            mediaStoreRepository = get()
         )
     }
 

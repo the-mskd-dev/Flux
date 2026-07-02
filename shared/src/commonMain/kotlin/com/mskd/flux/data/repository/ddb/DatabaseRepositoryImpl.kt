@@ -51,6 +51,10 @@ class DatabaseRepositoryImpl(private val dao: DatabaseDao) : DatabaseRepository 
         dao.insertEpisodes(episodes = episodes.map { it.toEntity() })
     }
 
+    override suspend fun saveUserFolders(folders: List<UserFolder>) {
+        dao.insertUserFolders(folders = folders.map { it.toEntity() })
+    }
+
     override suspend fun getArtwork(artworkId: Long): Artwork? {
         return dao.getArtwork(artworkId = artworkId)?.toDomain()
     }

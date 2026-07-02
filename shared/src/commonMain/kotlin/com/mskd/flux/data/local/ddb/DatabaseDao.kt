@@ -31,6 +31,9 @@ interface DatabaseDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSeasons(seasons: List<SeasonEntity>)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertUserFolders(folders: List<UserFolderEntity>)
+
 //endregion
 
 //region Flow

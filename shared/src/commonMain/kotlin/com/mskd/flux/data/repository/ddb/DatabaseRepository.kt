@@ -22,6 +22,7 @@ interface DatabaseRepository {
     suspend fun saveMovies(movies: List<Movie>)
     suspend fun saveSeasons(seasons: List<Season>)
     suspend fun saveEpisodes(episodes: List<Episode>)
+    suspend fun saveUserFolders(folders: List<UserFolder>)
 
     // Artworks
     suspend fun getArtwork(artworkId: Long) : Artwork?
@@ -51,13 +52,13 @@ interface DatabaseRepository {
 
     // Files
     suspend fun getUserFolders() : List<UserFolder>
-    suspend fun deleteUserFolder(userFolder: UserFolder)
 
     // Delete
     suspend fun deleteArtworks(artworks: List<Artwork>)
     suspend fun deleteMovies(movies: List<Movie>)
     suspend fun deleteEpisodes(episodes: List<Episode>)
     suspend fun deleteMediasNotInFiles(files: List<UserFile>)
+    suspend fun deleteUserFolder(userFolder: UserFolder)
     suspend fun deleteAll()
 
 }

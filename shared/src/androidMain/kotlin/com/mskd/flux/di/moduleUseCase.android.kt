@@ -18,7 +18,7 @@ val moduleUseCaseAndroid = module {
 
     single<FilesUC> {
         FilesUCImpl(
-            mediaStoreRepository = get()
+            mediaStoreRepository = get(QualifiersAndroid.MEDIASTORE_SOURCES)
         )
     }
 

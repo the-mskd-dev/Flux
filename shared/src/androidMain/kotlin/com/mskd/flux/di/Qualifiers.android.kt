@@ -6,4 +6,6 @@ object QualifiersAndroid {
 
     val PLAYER_SERVICE_SCOPE = named("PLAYER_SERVICE_SCOPE")
 
+    val MEDIASTORE_SOURCES = named("MEDIASTORE_SOURCES")
+
 }

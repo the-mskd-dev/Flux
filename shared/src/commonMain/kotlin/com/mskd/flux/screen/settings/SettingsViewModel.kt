@@ -77,6 +77,7 @@ class SettingsViewModel(
             SettingsIntent.OnAboutTap -> _event.emit(SettingsEvent.NavigateToAboutScreen)
             SettingsIntent.OnHowToTap -> _event.emit(SettingsEvent.NavigateToHowToScreen)
             SettingsIntent.OnCustomizationTap -> _event.emit(SettingsEvent.NavigateToCustomizationScreen)
+            SettingsIntent.OnSourcesTap -> _event.emit(SettingsEvent.NavigateToSourcesScreen)
 
             // Dialogs
             SettingsIntent.HideDialog -> hideDialog()

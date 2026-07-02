@@ -52,6 +52,8 @@ sealed class Route : NavKey {
     @Serializable
     data object Customization: Route()
 
+    @Serializable
+    data object Sources: Route()
 }
 
 object Transition {

@@ -28,6 +28,7 @@ sealed class SettingsIntent {
     data object OnTokenTap: SettingsIntent()
     data object OnHowToTap: SettingsIntent()
     data object OnAboutTap: SettingsIntent()
+    data object OnSourcesTap: SettingsIntent()
 
     // Dialogs
     data object HideDialog : SettingsIntent()
@@ -51,10 +52,11 @@ sealed class SettingsIntent {
 }
 
 sealed class SettingsEvent {
-    object BackToPreviousScreen: SettingsEvent()
-    object NavigateToCustomizationScreen: SettingsEvent()
-    object NavigateToTokenScreen: SettingsEvent()
-    object NavigateToHowToScreen: SettingsEvent()
-    object NavigateToAboutScreen: SettingsEvent()
-    object RequestExternalPlayerPermission: SettingsEvent()
+    data object BackToPreviousScreen: SettingsEvent()
+    data object NavigateToCustomizationScreen: SettingsEvent()
+    data object NavigateToTokenScreen: SettingsEvent()
+    data object NavigateToHowToScreen: SettingsEvent()
+    data object NavigateToAboutScreen: SettingsEvent()
+    data object NavigateToSourcesScreen: SettingsEvent()
+    data object RequestExternalPlayerPermission: SettingsEvent()
 }

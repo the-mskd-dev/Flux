@@ -21,51 +21,7 @@ import com.mskd.flux.useCases.images.ImagesUC
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.extensions.WebLink
 import flux.shared.generated.resources.Res
-import flux.shared.generated.resources.about
-import flux.shared.generated.resources.about_desc
-import flux.shared.generated.resources.app_version
-import flux.shared.generated.resources.auto_keyboard
-import flux.shared.generated.resources.auto_keyboard_desc
-import flux.shared.generated.resources.button_forward
-import flux.shared.generated.resources.button_rewind
-import flux.shared.generated.resources.cache_images
-import flux.shared.generated.resources.cache_images_desc
-import flux.shared.generated.resources.caching_images_in_progress
-import flux.shared.generated.resources.customization
-import flux.shared.generated.resources.customization_desc
-import flux.shared.generated.resources.external_player
-import flux.shared.generated.resources.fast_forward
-import flux.shared.generated.resources.fast_rewind
-import flux.shared.generated.resources.how_to_name_files
-import flux.shared.generated.resources.ic_api
-import flux.shared.generated.resources.ic_customization
-import flux.shared.generated.resources.ic_help
-import flux.shared.generated.resources.ic_images
-import flux.shared.generated.resources.ic_info
-import flux.shared.generated.resources.ic_keyboard
-import flux.shared.generated.resources.ic_language
-import flux.shared.generated.resources.ic_money
-import flux.shared.generated.resources.ic_pip
-import flux.shared.generated.resources.ic_player
-import flux.shared.generated.resources.ic_social_media
-import flux.shared.generated.resources.ic_sources
-import flux.shared.generated.resources.ic_sync
-import flux.shared.generated.resources.ic_version
-import flux.shared.generated.resources.images_cached
-import flux.shared.generated.resources.information_language
-import flux.shared.generated.resources.make_a_donation
-import flux.shared.generated.resources.picture_in_picture
-import flux.shared.generated.resources.source_code
-import flux.shared.generated.resources.sources
-import flux.shared.generated.resources.stay_informed
-import flux.shared.generated.resources.support_me_desc
-import flux.shared.generated.resources.sync_in_progress
-import flux.shared.generated.resources.sync_library
-import flux.shared.generated.resources.sync_library_desc
-import flux.shared.generated.resources.system
-import flux.shared.generated.resources.tmdb_api_token
-import flux.shared.generated.resources.watch_on_external_player
-import flux.shared.generated.resources.x
+import flux.shared.generated.resources.*
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import kotlin.math.roundToInt
@@ -293,6 +249,15 @@ fun SettingsSyncSection(
             iconColor = iconColor,
             iconBackgroundColor = bgColor,
             subTextColor = imagesTextColor
+        )
+
+        SettingsItem(
+            text = stringResource(Res.string.sources),
+            subText = stringResource(Res.string.sources_desc),
+            painter = painterResource(Res.drawable.ic_folder),
+            iconColor = iconColor,
+            iconBackgroundColor = bgColor,
+            onTap = { sendIntent(SettingsIntent.OnSourcesTap) }
         )
 
     }

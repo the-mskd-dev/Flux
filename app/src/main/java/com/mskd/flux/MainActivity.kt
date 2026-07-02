@@ -30,6 +30,7 @@ import com.mskd.flux.screens.player.PlayerScreen
 import com.mskd.flux.screens.search.SearchScreen
 import com.mskd.flux.screens.settings.SettingsScreen
 import com.mskd.flux.screens.show.ShowScreen
+import com.mskd.flux.screens.sources.SourcesScreen
 import com.mskd.flux.screens.token.TokenScreen
 import com.mskd.flux.screens.unknown.UnknownScreen
 import com.mskd.flux.screens.welcome.WelcomeScreen
@@ -174,6 +175,12 @@ class MainActivity : ComponentActivity() {
                                     backStack.add(route)
                                 },
                                 fromSettings = entry.fromSettings
+                            )
+                        }
+                        entry<Route.Sources> {
+                            SourcesScreen(
+                                navigate = { route -> backStack.add(route) },
+                                onBack = { backStack.popScreen() },
                             )
                         }
                     }

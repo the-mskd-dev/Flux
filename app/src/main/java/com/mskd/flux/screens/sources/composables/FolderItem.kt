@@ -39,8 +39,8 @@ import org.jetbrains.compose.resources.stringResource
 fun FolderItem(
     name: String,
     path: String? = null,
-    backgroundColor: Color,
-    contentColor: Color = MaterialTheme.colorScheme.onSecondaryContainer,
+    backgroundColor: Color = MaterialTheme.colorScheme.primaryContainer,
+    contentColor: Color = MaterialTheme.colorScheme.onPrimaryContainer,
     icon: @Composable () -> Unit = {}
 ) {
 

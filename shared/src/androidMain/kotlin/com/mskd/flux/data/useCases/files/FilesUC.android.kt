@@ -1,13 +1,13 @@
 package com.mskd.flux.data.useCases.files
 
-import com.mskd.flux.data.repository.sources.SourcesRepository
+import com.mskd.flux.data.repository.sources.SourcesFilesRepository
 import com.mskd.flux.model.domain.files.UserFile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 
 class FilesUCImpl(
-    private val mediaStoreRepository: SourcesRepository
+    private val mediaStoreRepository: SourcesFilesRepository
 ) : FilesUC {
 
     companion object {

@@ -7,7 +7,7 @@ import android.media.MediaScannerConnection
 import android.os.Environment
 import android.provider.MediaStore
 import androidx.core.net.toUri
-import com.mskd.flux.data.repository.sources.SourcesRepository
+import com.mskd.flux.data.repository.sources.SourcesFilesRepository
 import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.model.domain.files.FileSource
 import com.mskd.flux.model.domain.files.UserFile
@@ -18,10 +18,10 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import kotlin.coroutines.resume
 
-class MediaStoreRepository(
+class MediaStoreFilesFilesRepository(
     private val context: Context,
    private val userRepository: UserRepository
-) : SourcesRepository {
+) : SourcesFilesRepository {
 
     companion object {
         const val TAG = "MediaStoreRepositoryImpl"

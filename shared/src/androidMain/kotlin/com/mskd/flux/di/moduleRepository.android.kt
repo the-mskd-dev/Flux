@@ -2,8 +2,8 @@ package com.mskd.flux.di
 
 import com.mskd.flux.data.repository.connectivity.ConnectivityRepository
 import com.mskd.flux.data.repository.connectivity.ConnectivityRepositoryImpl
-import com.mskd.flux.data.repository.sources.SourcesRepository
-import com.mskd.flux.data.repository.sources.mediaStore.MediaStoreRepository
+import com.mskd.flux.data.repository.sources.SourcesFilesRepository
+import com.mskd.flux.data.repository.sources.mediaStore.MediaStoreFilesFilesRepository
 import org.koin.dsl.module
 
 val moduleRepositoryAndroid = module {
@@ -12,8 +12,8 @@ val moduleRepositoryAndroid = module {
         ConnectivityRepositoryImpl(context = get())
     }
 
-    single<SourcesRepository>(QualifiersAndroid.MEDIASTORE_SOURCES) {
-        MediaStoreRepository(
+    single<SourcesFilesRepository>(QualifiersAndroid.MEDIASTORE_SOURCES) {
+        MediaStoreFilesFilesRepository(
             context = get(),
             userRepository = get()
         )

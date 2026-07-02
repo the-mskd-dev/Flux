@@ -1,10 +1,10 @@
 package com.mskd.flux.data.repository.sources.saf
 
-import com.mskd.flux.data.repository.sources.SourcesRepository
+import com.mskd.flux.data.repository.sources.SourcesFilesRepository
 import com.mskd.flux.model.domain.files.UserFile
 import java.io.File
 
-class SafRepository : SourcesRepository {
+class SafFilesRepository : SourcesFilesRepository {
 
     override suspend fun getFiles(): List<UserFile> {
         TODO("Not yet implemented")

@@ -45,6 +45,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.Velocity
@@ -57,6 +58,7 @@ import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.delete
 import flux.shared.generated.resources.ic_delete
 import kotlinx.coroutines.launch
+import kotlinx.datetime.format.Padding
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import kotlin.math.absoluteValue
@@ -68,7 +70,7 @@ fun DraggableItem(
     onActionTap: () -> Unit,
     actionBackgroundColor: Color = MaterialTheme.colorScheme.errorContainer,
     shape: Shape = FluxUI.shapes.corners,
-    paddingValues: PaddingValues = PaddingValues(horizontal = FluxUI.Space.medium),
+    horizontalPadding: Dp = FluxUI.Space.medium
 ) {
 
     val density = LocalDensity.current
@@ -118,7 +120,7 @@ fun DraggableItem(
                 .constrainAs(action) {
                     top.linkTo(content.top)
                     bottom.linkTo(content.bottom)
-                    end.linkTo(parent.end, paddingValues.calculateStartPadding(LayoutDirection.Ltr))
+                    end.linkTo(parent.end, horizontalPadding)
                     width = Dimension.value(animatedWidth)
                     height = Dimension.percent(1f)
                 }
@@ -150,7 +152,7 @@ fun DraggableItem(
                     flingBehavior = flingBehavior
                 )
                 .offset { IntOffset(x = state.requireOffset().toInt(), y = 0) }
-                .padding(paddingValues)
+                .padding(horizontal = horizontalPadding)
                 .clip(shape),
         ) {
 

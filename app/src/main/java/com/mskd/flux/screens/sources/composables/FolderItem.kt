@@ -64,14 +64,14 @@ fun FolderItem(
                 text = name,
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1,
-                color = contentColor
+                color = contentColor,
             )
 
             Text.Adaptive(
                 text = path,
                 overflow = TextOverflow.StartEllipsis,
                 maxLines = 1,
-                color = contentColor.copy(alpha = .7f),
+                color = contentColor.copy(alpha = .6f),
                 style = MaterialTheme.typography.titleSmall.copy(fontStyle = FontStyle.Italic)
             )
 

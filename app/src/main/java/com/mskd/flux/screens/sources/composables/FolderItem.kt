@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.mskd.flux.mockups.FilesMockups
@@ -66,11 +67,12 @@ fun FolderItem(
                 color = contentColor
             )
 
-            Text.Title.Small(
+            Text.Adaptive(
                 text = path,
                 overflow = TextOverflow.StartEllipsis,
                 maxLines = 1,
-                color = contentColor.copy(alpha = .7f)
+                color = contentColor.copy(alpha = .7f),
+                style = MaterialTheme.typography.titleSmall.copy(fontStyle = FontStyle.Italic)
             )
 
         }

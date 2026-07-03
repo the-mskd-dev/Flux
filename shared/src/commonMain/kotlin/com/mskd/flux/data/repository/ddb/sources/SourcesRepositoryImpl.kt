@@ -9,20 +9,24 @@ import kotlinx.coroutines.flow.map
 
 class SourcesRepositoryImpl(private val dao: SourcesDao) : SourcesRepository {
 
-    override fun flowUserFolders(): Flow<List<UserFolder>> {
-        return dao.flowUserFolders().map { entities -> entities.map { it.toDomain() } }
+    override fun flowFolders(): Flow<List<UserFolder>> {
+        return dao.flowFolders().map { entities -> entities.map { it.toDomain() } }
     }
 
-    override suspend fun saveUserFolders(folders: List<UserFolder>) {
-        dao.insertUserFolders(folders = folders.map { it.toEntity() })
+    override suspend fun saveFolder(folder: UserFolder) {
+        dao.insertFolder(folder = folder.toEntity())
     }
 
-    override suspend fun getUserFolders(): List<UserFolder> {
-        return dao.getUserFolders().map { it.toDomain() }
+    override suspend fun getFolders(): List<UserFolder> {
+        return dao.getFolders().map { it.toDomain() }
     }
 
-    override suspend fun deleteUserFolder(userFolder: UserFolder) {
-        dao.deleteUserFolder(path = userFolder.path)
+    override suspend fun deleteFolder(folder: UserFolder) {
+        dao.deleteFolder(path = folder.path)
+    }
+
+    override suspend fun deleteFolders(folders: List<UserFolder>) {
+        dao.deleteFolders(paths = folders.map { it.path })
     }
 
 }

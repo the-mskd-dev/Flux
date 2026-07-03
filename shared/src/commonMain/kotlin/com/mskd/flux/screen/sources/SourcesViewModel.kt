@@ -2,10 +2,12 @@ package com.mskd.flux.screen.sources
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mskd.flux.data.repository.ddb.DatabaseRepository
-import com.mskd.flux.data.repository.ddb.sources.SourcesRepository
+import com.mskd.flux.data.useCases.sources.AddSourceUseCase
+import com.mskd.flux.data.useCases.sources.DeleteSourceUseCase
+import com.mskd.flux.data.useCases.sources.FlowSourcesUseCase
 import com.mskd.flux.model.core.presentation.State
 import com.mskd.flux.model.domain.files.UserFolder
+import com.mskd.flux.utils.Trace
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -16,7 +18,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class SourcesViewModel(
-    val database: SourcesRepository
+    flowSourcesUseCase: FlowSourcesUseCase,
+    val addSourceUC: AddSourceUseCase,
+    val deleteSourceUseCase: DeleteSourceUseCase
 ) : ViewModel() {
 
     //region State
@@ -27,7 +31,7 @@ class SourcesViewModel(
     private val _dialogState = MutableStateFlow<SourcesDialog?>(null)
 
     val uiState = combine(
-        database.flowUserFolders(),
+        flowSourcesUseCase(),
         _dialogState
     ) { folders, dialog ->
 
@@ -94,7 +98,13 @@ class SourcesViewModel(
             status = UserFolder.Status.AVAILABLE
         )
 
-        database.saveUserFolders(listOf(folder))
+        val result = addSourceUC(folder = folder)
+
+        if (result) {
+            Trace.debug(message = "Folder saved")
+        } else {
+            Trace.debug(message = "Folder not saved")
+        }
     }
 
     private fun showDeleteDialog(folder: UserFolder) {
@@ -106,7 +116,7 @@ class SourcesViewModel(
     }
 
     private suspend fun deleteFolder(folder: UserFolder) {
-        database.deleteUserFolder(userFolder = folder)
+        deleteSourceUseCase(folder = folder)
         closeDeleteDialog()
     }
 

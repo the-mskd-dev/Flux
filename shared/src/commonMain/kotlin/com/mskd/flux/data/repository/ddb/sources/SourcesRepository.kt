@@ -5,12 +5,12 @@ import kotlinx.coroutines.flow.Flow
 
 interface SourcesRepository {
 
-    fun flowUserFolders() : Flow<List<UserFolder>>
+    fun flowFolders() : Flow<List<UserFolder>>
+    suspend fun saveFolder(folder: UserFolder)
+    suspend fun getFolders() : List<UserFolder>
+    suspend fun deleteFolder(folder: UserFolder)
+    suspend fun deleteFolders(folders: List<UserFolder>)
 
-    suspend fun saveUserFolders(folders: List<UserFolder>)
 
-    suspend fun getUserFolders() : List<UserFolder>
-
-    suspend fun deleteUserFolder(userFolder: UserFolder)
 
 }

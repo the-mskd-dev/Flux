@@ -11,15 +11,18 @@ import kotlinx.coroutines.flow.Flow
 interface SourcesDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertUserFolders(folders: List<UserFolderEntity>)
+    suspend fun insertFolder(folder: UserFolderEntity)
 
     @Query("SELECT * FROM folders")
-    fun flowUserFolders() : Flow<List<UserFolderEntity>>
+    fun flowFolders() : Flow<List<UserFolderEntity>>
 
     @Query("SELECT * FROM folders")
-    suspend fun getUserFolders() : List<UserFolderEntity>
+    suspend fun getFolders() : List<UserFolderEntity>
 
     @Query("DELETE FROM folders WHERE path = :path")
-    suspend fun deleteUserFolder(path: String)
+    suspend fun deleteFolder(path: String)
+
+    @Query("DELETE FROM folders WHERE path IN (:paths)")
+    suspend fun deleteFolders(paths: List<String>)
 
 }

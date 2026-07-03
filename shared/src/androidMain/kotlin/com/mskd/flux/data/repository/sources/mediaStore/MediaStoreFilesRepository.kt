@@ -18,7 +18,7 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import kotlin.coroutines.resume
 
-class MediaStoreFilesFilesRepository(
+class MediaStoreFilesRepository(
     private val context: Context,
    private val userRepository: UserRepository
 ) : SourcesFilesRepository {
@@ -29,7 +29,8 @@ class MediaStoreFilesFilesRepository(
             Environment.DIRECTORY_MOVIES,
             Environment.DIRECTORY_DOWNLOADS,
         )
-        val VIDEO_EXTENSIONS = setOf("mp4", "mkv", "avi", "mov", "webm", "ts", "m4v")
+        private val VIDEO_EXTENSIONS = setOf("mp4", "mkv", "avi", "mov", "webm", "ts", "m4v")
+        private val SUBTITLE_EXTENSIONS = setOf("srt", "vtt", "ass", "ssa")
     }
 
     override suspend fun getFiles(): List<UserFile> {
@@ -184,7 +185,7 @@ class MediaStoreFilesFilesRepository(
             val parentDir = videoFile.parentFile ?: return@withContext null
 
             // Get subtitles file, if exists, in the same directory, with the same name
-            val subtitleExtensions = listOf("srt", "vtt", "ass", "ssa")
+            val subtitleExtensions = SUBTITLE_EXTENSIONS
             val subtitleFile = subtitleExtensions
                 .map { ext -> File(parentDir, "$baseName.$ext") }
                 .firstOrNull { it.exists() }

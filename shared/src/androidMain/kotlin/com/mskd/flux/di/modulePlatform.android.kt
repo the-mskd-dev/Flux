@@ -18,6 +18,7 @@ actual val modulePlatform: Module = module {
     // Android
     includes(
         moduleDatabaseAndroid,
+        moduleDataSourceAndroid,
         moduleDatastoreAndroid,
         moduleImagesAndroid,
         modulePlayerAndroid,

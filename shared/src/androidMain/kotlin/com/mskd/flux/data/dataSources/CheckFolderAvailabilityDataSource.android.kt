@@ -1,4 +1,4 @@
-package com.mskd.flux.data.useCases.sources
+package com.mskd.flux.data.dataSources
 
 import android.content.Context
 import androidx.core.net.toUri
@@ -6,11 +6,11 @@ import androidx.documentfile.provider.DocumentFile
 import com.mskd.flux.model.domain.files.UserFolder
 import com.mskd.flux.utils.Trace
 
-class AndroidCheckFolderAvailabilityUseCase(
+class AndroidCheckFolderAvailabilityDataSource(
     private val context: Context
-) : CheckFolderAvailabilityUseCase {
+) : CheckFolderAvailabilityDataSource {
 
-    override suspend fun invoke(path: String): UserFolder.Status {
+    override suspend fun isFolderAvailable(path: String): UserFolder.Status {
         return try {
             val uri = path.toUri()
             val documentFile = DocumentFile.fromTreeUri(context, uri)

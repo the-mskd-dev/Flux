@@ -28,8 +28,4 @@ val moduleDatabase = module {
         DatabaseRepositoryImpl(dao = get())
     }
 
-    single<SourcesRepository> {
-        SourcesRepositoryImpl(dao = get())
-    }
-
 }

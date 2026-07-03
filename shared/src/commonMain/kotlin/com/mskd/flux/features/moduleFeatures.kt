@@ -1,13 +1,14 @@
 package com.mskd.flux.features
 
 import com.mskd.flux.features.sources.moduleSources
+import com.mskd.flux.features.tmdb.data.moduleTmdb
 import org.koin.dsl.module
-import org.koin.plugin.module.dsl.includes
 
 val moduleFeatures = module {
 
     includes(
-        moduleSources
+        moduleSources,
+        moduleTmdb
     )
 
 }

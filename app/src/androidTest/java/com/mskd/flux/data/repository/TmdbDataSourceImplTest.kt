@@ -2,13 +2,13 @@ package com.mskd.flux.data.repository
 
 import androidx.test.core.app.ApplicationProvider
 import com.mskd.flux.BuildConfig
-import com.mskd.flux.data.remote.tmdb.TMDBService
+import com.mskd.flux.features.tmdb.data.service.TMDBService
 import com.mskd.flux.data.repository.settings.SettingsRepository
-import com.mskd.flux.data.repository.tmdb.TmdbRepositoryImpl
+import com.mskd.flux.features.tmdb.data.dataSource.TmdbDataSourceImpl
 import com.mskd.flux.data.repository.token.TokenRepository
 import com.mskd.flux.di.moduleAndroidApp
 import com.mskd.flux.di.modulePlatform
-import com.mskd.flux.model.data.remote.tmdb.dto.TranslationsDto
+import com.mskd.flux.features.tmdb.data.model.dto.TranslationsDto
 import com.mskd.flux.model.domain.files.FileSource
 import com.mskd.flux.model.domain.files.UserFile
 import io.mockk.coEvery
@@ -29,11 +29,11 @@ import org.koin.test.inject
 import java.util.Locale
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-class TmdbRepositoryImplTest : KoinTest {
+class TmdbDataSourceImplTest : KoinTest {
 
     private val tmdbService: TMDBService by inject()
     private lateinit var settingsRepository: SettingsRepository
-    private lateinit var repository: TmdbRepositoryImpl
+    private lateinit var repository: TmdbDataSourceImpl
 
     private companion object {
 
@@ -78,7 +78,7 @@ class TmdbRepositoryImplTest : KoinTest {
             coEvery { getDataLanguage() } returns dataLanguage
         }
 
-        repository = TmdbRepositoryImpl(tmdbService, settingsRepository)
+        repository = TmdbDataSourceImpl(tmdbService, settingsRepository)
 
     }
 

@@ -1,6 +1,5 @@
-package com.mskd.flux.utils.extensions
+package com.mskd.flux.features.sources.domain.model
 
 import androidx.core.net.toUri
-import com.mskd.flux.features.sources.domain.model.UserFolder
 
 val UserFolder.name: String get() = this.path.toUri().lastPathSegment ?: this.path

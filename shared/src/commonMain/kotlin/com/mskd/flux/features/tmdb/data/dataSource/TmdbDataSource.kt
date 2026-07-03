@@ -1,14 +1,14 @@
-package com.mskd.flux.data.repository.tmdb
+package com.mskd.flux.features.tmdb.data.dataSource
 
-import com.mskd.flux.model.data.remote.tmdb.dto.ArtworkDto
-import com.mskd.flux.model.data.remote.tmdb.dto.EpisodeDto
-import com.mskd.flux.model.data.remote.tmdb.dto.MovieDto
-import com.mskd.flux.model.data.remote.tmdb.dto.SeasonDto
-import com.mskd.flux.model.data.remote.tmdb.dto.TranslationsDto
+import com.mskd.flux.features.tmdb.data.model.dto.ArtworkDto
+import com.mskd.flux.features.tmdb.data.model.dto.EpisodeDto
+import com.mskd.flux.features.tmdb.data.model.dto.MovieDto
+import com.mskd.flux.features.tmdb.data.model.dto.SeasonDto
+import com.mskd.flux.features.tmdb.data.model.dto.TranslationsDto
 import com.mskd.flux.model.domain.files.UserFile
 import java.util.Locale
 
-interface TmdbRepository {
+interface TmdbDataSource {
 
     suspend fun getTmdbArtwork(file: UserFile) : ArtworkDto?
 

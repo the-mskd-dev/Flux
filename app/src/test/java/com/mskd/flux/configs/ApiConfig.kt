@@ -1,7 +1,7 @@
 package com.mskd.flux.configs
 
-import com.mskd.flux.data.remote.tmdb.TMDBService
-import com.mskd.flux.data.remote.tmdb.TMDBServiceImpl
+import com.mskd.flux.features.tmdb.data.service.TMDBService
+import com.mskd.flux.features.tmdb.data.service.TMDBServiceImpl
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.Spec
 import io.ktor.client.HttpClient

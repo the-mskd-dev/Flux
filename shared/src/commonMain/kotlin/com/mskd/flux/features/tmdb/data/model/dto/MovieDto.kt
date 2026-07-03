@@ -1,4 +1,4 @@
-package com.mskd.flux.model.data.remote.tmdb.dto
+package com.mskd.flux.features.tmdb.data.model.dto
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

@@ -1,8 +1,10 @@
-package com.mskd.flux.di
+package com.mskd.flux.features.tmdb.data
 
-import com.mskd.flux.data.remote.tmdb.TMDBService
-import com.mskd.flux.data.remote.tmdb.TMDBServiceImpl
 import com.mskd.flux.data.repository.token.TokenRepository
+import com.mskd.flux.features.tmdb.data.dataSource.TmdbDataSource
+import com.mskd.flux.features.tmdb.data.dataSource.TmdbDataSourceImpl
+import com.mskd.flux.features.tmdb.data.service.TMDBService
+import com.mskd.flux.features.tmdb.data.service.TMDBServiceImpl
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.HttpRequestRetry
@@ -14,7 +16,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import org.koin.dsl.module
 
-val moduleNetwork = module {
+val moduleTmdb = module {
 
     val baseUrl = "https://api.themoviedb.org/3/"
 
@@ -57,5 +59,12 @@ val moduleNetwork = module {
     }
 
     single<TMDBService> { TMDBServiceImpl(client = get()) }
+
+    single<TmdbDataSource> {
+        TmdbDataSourceImpl(
+            tmdbService = get(),
+            settings = get()
+        )
+    }
 
 }

@@ -10,7 +10,6 @@ val moduleCommon = module {
         moduleDatabase,
         moduleDatastore,
         moduleImages,
-        moduleNetwork,
         moduleRepository,
         moduleUseCase,
         moduleViewModel,

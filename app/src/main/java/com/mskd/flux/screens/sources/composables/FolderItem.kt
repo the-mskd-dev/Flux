@@ -25,7 +25,7 @@ import com.mskd.flux.ui.component.global.DraggableItem
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.FluxUI
-import com.mskd.flux.utils.extensions.name
+import com.mskd.flux.features.sources.domain.model.name
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.delete
 import flux.shared.generated.resources.downloads

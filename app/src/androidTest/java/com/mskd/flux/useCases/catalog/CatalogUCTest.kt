@@ -3,11 +3,11 @@ package com.mskd.flux.useCases.catalog
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.mskd.flux.BuildConfig
-import com.mskd.flux.data.remote.tmdb.TMDBService
+import com.mskd.flux.features.tmdb.data.service.TMDBService
 import com.mskd.flux.data.repository.ddb.DatabaseRepository
 import com.mskd.flux.data.repository.settings.SettingsRepository
-import com.mskd.flux.data.repository.tmdb.TmdbRepository
-import com.mskd.flux.data.repository.tmdb.TmdbRepositoryImpl
+import com.mskd.flux.features.tmdb.data.dataSource.TmdbDataSource
+import com.mskd.flux.features.tmdb.data.dataSource.TmdbDataSourceImpl
 import com.mskd.flux.data.repository.token.TokenRepository
 import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.data.useCases.catalog.CatalogUC
@@ -48,7 +48,7 @@ import java.util.Locale
 class CatalogUCTest : KoinTest {
 
     private val tmdbService: TMDBService by inject()
-    private lateinit var tmdbRepository: TmdbRepository
+    private lateinit var tmdbDataSource: TmdbDataSource
     private lateinit var settingsRepository: SettingsRepository
     private lateinit var databaseRepository: DatabaseRepository
     private lateinit var filesUC: FilesUC
@@ -113,7 +113,7 @@ class CatalogUCTest : KoinTest {
             every { flow } returns flowOf(SettingsRepository.State())
         }
 
-        tmdbRepository = TmdbRepositoryImpl(tmdbService, settingsRepository)
+        tmdbDataSource = TmdbDataSourceImpl(tmdbService, settingsRepository)
 
         databaseRepository = mockk(relaxed = true) {
             coEvery { saveMovies(any()) } answers {
@@ -147,7 +147,7 @@ class CatalogUCTest : KoinTest {
     @Test
     fun test_1_sync_catalog() = runTest {
         val catalogUC = CatalogUCImpl(
-            tmdb = tmdbRepository,
+            tmdb = tmdbDataSource,
             database = databaseRepository,
             files = filesUC,
             user = userRepository,
@@ -169,7 +169,7 @@ class CatalogUCTest : KoinTest {
     fun test_2_get_catalog() = runTest {
 
         val catalogUC = CatalogUCImpl(
-            tmdb = tmdbRepository,
+            tmdb = tmdbDataSource,
             database = databaseRepository,
             files = filesUC,
             user = userRepository,
@@ -220,7 +220,7 @@ class CatalogUCTest : KoinTest {
         )
 
         val catalogUC = CatalogUCImpl(
-            tmdb = tmdbRepository,
+            tmdb = tmdbDataSource,
             database = databaseRepository,
             files = filesUC,
             user = userRepository,
@@ -241,7 +241,7 @@ class CatalogUCTest : KoinTest {
     @Test
     fun test_4_clean_catalog() = runTest {
         val catalogUC = CatalogUCImpl(
-            tmdb = tmdbRepository,
+            tmdb = tmdbDataSource,
             database = databaseRepository,
             files = filesUC,
             user = userRepository,

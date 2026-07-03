@@ -1,23 +1,23 @@
-package com.mskd.flux.data.repository.tmdb
+package com.mskd.flux.features.tmdb.data.dataSource
 
-import com.mskd.flux.data.remote.tmdb.TMDBService
+import com.mskd.flux.features.tmdb.data.service.TMDBService
 import com.mskd.flux.data.repository.settings.SettingsRepository
-import com.mskd.flux.model.data.remote.tmdb.dto.ArtworkDto
-import com.mskd.flux.model.data.remote.tmdb.dto.EpisodeDto
-import com.mskd.flux.model.data.remote.tmdb.dto.MediaTypeDto
-import com.mskd.flux.model.data.remote.tmdb.dto.MovieDto
-import com.mskd.flux.model.data.remote.tmdb.dto.SeasonDto
-import com.mskd.flux.model.data.remote.tmdb.dto.TranslationsDto
-import com.mskd.flux.model.data.remote.tmdb.dto.findWithLocale
+import com.mskd.flux.features.tmdb.data.model.dto.ArtworkDto
+import com.mskd.flux.features.tmdb.data.model.dto.EpisodeDto
+import com.mskd.flux.features.tmdb.data.model.dto.MediaTypeDto
+import com.mskd.flux.features.tmdb.data.model.dto.MovieDto
+import com.mskd.flux.features.tmdb.data.model.dto.SeasonDto
+import com.mskd.flux.features.tmdb.data.model.dto.TranslationsDto
+import com.mskd.flux.features.tmdb.data.model.dto.findWithLocale
 import com.mskd.flux.model.domain.files.UserFile
 import com.mskd.flux.utils.extensions.toTmdbFormat
 import io.github.aakira.napier.Napier
 import java.util.Locale
 
-class TmdbRepositoryImpl(
+class TmdbDataSourceImpl(
     private val tmdbService: TMDBService,
     private val settings: SettingsRepository
-) : TmdbRepository {
+) : TmdbDataSource {
 
     private companion object {
         const val TAG = "TmdbRepositoryImpl"

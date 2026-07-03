@@ -1,7 +1,7 @@
-package com.mskd.flux.model.data.remote.tmdb.mappers
+package com.mskd.flux.features.tmdb.data.model.mapper
 
-import com.mskd.flux.model.data.remote.tmdb.dto.ArtworkDto
-import com.mskd.flux.model.data.remote.tmdb.dto.MediaTypeDto
+import com.mskd.flux.features.tmdb.data.model.dto.ArtworkDto
+import com.mskd.flux.features.tmdb.data.model.dto.MediaTypeDto
 import com.mskd.flux.model.domain.artwork.Artwork
 import com.mskd.flux.model.domain.artwork.ContentType
 

@@ -1,6 +1,6 @@
-package com.mskd.flux.model.data.remote.tmdb.mappers
+package com.mskd.flux.features.tmdb.data.model.mapper
 
-import com.mskd.flux.model.data.remote.tmdb.dto.EpisodeDto
+import com.mskd.flux.features.tmdb.data.model.dto.EpisodeDto
 import com.mskd.flux.model.domain.artwork.Episode
 import com.mskd.flux.model.domain.artwork.Status
 import com.mskd.flux.model.domain.files.UserFile

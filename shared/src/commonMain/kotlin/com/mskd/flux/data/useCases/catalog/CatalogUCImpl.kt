@@ -2,14 +2,14 @@ package com.mskd.flux.data.useCases.catalog
 
 import com.mskd.flux.data.repository.ddb.DatabaseRepository
 import com.mskd.flux.data.repository.settings.SettingsRepository
-import com.mskd.flux.data.repository.tmdb.TmdbRepository
+import com.mskd.flux.features.tmdb.data.dataSource.TmdbDataSource
 import com.mskd.flux.data.repository.user.UserRepository
 import com.mskd.flux.data.useCases.files.FilesUC
 import com.mskd.flux.data.useCases.images.ImagesUC
 import com.mskd.flux.model.core.AppInfo
-import com.mskd.flux.model.data.remote.tmdb.dto.EpisodeDto
-import com.mskd.flux.model.data.remote.tmdb.dto.TranslationsDto
-import com.mskd.flux.model.data.remote.tmdb.mappers.toDomain
+import com.mskd.flux.features.tmdb.data.model.dto.EpisodeDto
+import com.mskd.flux.features.tmdb.data.model.dto.TranslationsDto
+import com.mskd.flux.features.tmdb.data.model.mapper.toDomain
 import com.mskd.flux.model.domain.artwork.Artwork
 import com.mskd.flux.model.domain.artwork.ContentType
 import com.mskd.flux.model.domain.artwork.Episode
@@ -39,7 +39,7 @@ import kotlinx.coroutines.withContext
 import java.util.concurrent.atomic.AtomicInteger
 
 class CatalogUCImpl(
-    private val tmdb: TmdbRepository,
+    private val tmdb: TmdbDataSource,
     private val database: DatabaseRepository,
     private val files: FilesUC,
     private val user: UserRepository,

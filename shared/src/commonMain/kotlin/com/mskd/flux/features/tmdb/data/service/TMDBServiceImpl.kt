@@ -1,11 +1,11 @@
-package com.mskd.flux.data.remote.tmdb
+package com.mskd.flux.features.tmdb.data.service
 
-import com.mskd.flux.model.data.remote.tmdb.dto.ArtworksResultDto
-import com.mskd.flux.model.data.remote.tmdb.dto.AuthenticationDto
-import com.mskd.flux.model.data.remote.tmdb.dto.EpisodeDto
-import com.mskd.flux.model.data.remote.tmdb.dto.MovieDto
-import com.mskd.flux.model.data.remote.tmdb.dto.SeasonDto
-import com.mskd.flux.model.data.remote.tmdb.dto.TranslationsDto
+import com.mskd.flux.features.tmdb.data.model.dto.ArtworksResultDto
+import com.mskd.flux.features.tmdb.data.model.dto.AuthenticationDto
+import com.mskd.flux.features.tmdb.data.model.dto.EpisodeDto
+import com.mskd.flux.features.tmdb.data.model.dto.MovieDto
+import com.mskd.flux.features.tmdb.data.model.dto.SeasonDto
+import com.mskd.flux.features.tmdb.data.model.dto.TranslationsDto
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get

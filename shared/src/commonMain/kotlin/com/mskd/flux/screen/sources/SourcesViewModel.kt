@@ -3,6 +3,7 @@ package com.mskd.flux.screen.sources
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.data.repository.ddb.DatabaseRepository
+import com.mskd.flux.data.repository.ddb.sources.SourcesRepository
 import com.mskd.flux.model.core.presentation.State
 import com.mskd.flux.model.domain.files.UserFolder
 import kotlinx.coroutines.channels.Channel
@@ -15,7 +16,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class SourcesViewModel(
-    val database: DatabaseRepository
+    val database: SourcesRepository
 ) : ViewModel() {
 
     //region State

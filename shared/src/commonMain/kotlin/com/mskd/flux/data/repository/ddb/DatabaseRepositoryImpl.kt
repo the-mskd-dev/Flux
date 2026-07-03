@@ -35,10 +35,6 @@ class DatabaseRepositoryImpl(private val dao: DatabaseDao) : DatabaseRepository 
         return dao.flowSeasons(artworkId = artworkId).map { entities ->  entities.map { it.toDomain() }.sortedBy { s -> s.season } }
     }
 
-    override fun flowUserFolders(): Flow<List<UserFolder>> {
-        return dao.flowUserFolders().map { entities -> entities.map { it.toDomain() } }
-    }
-
     override suspend fun saveArtworks(artworks: List<Artwork>) {
         dao.insertArtworks(artworks = artworks.map { it.toEntity() })
     }
@@ -53,10 +49,6 @@ class DatabaseRepositoryImpl(private val dao: DatabaseDao) : DatabaseRepository 
 
     override suspend fun saveEpisodes(episodes: List<Episode>) {
         dao.insertEpisodes(episodes = episodes.map { it.toEntity() })
-    }
-
-    override suspend fun saveUserFolders(folders: List<UserFolder>) {
-        dao.insertUserFolders(folders = folders.map { it.toEntity() })
     }
 
     override suspend fun getArtwork(artworkId: Long): Artwork? {
@@ -122,14 +114,6 @@ class DatabaseRepositoryImpl(private val dao: DatabaseDao) : DatabaseRepository 
             addAll(episodes.filter { it.isNotBlank() })
             addAll(seasons.filter { it.isNotBlank() })
         }
-    }
-
-    override suspend fun getUserFolders(): List<UserFolder> {
-        return dao.getUserFolders().map { it.toDomain() }
-    }
-
-    override suspend fun deleteUserFolder(userFolder: UserFolder) {
-        dao.deleteUserFolder(path = userFolder.path)
     }
 
     override suspend fun deleteArtworks(artworks: List<Artwork>) {

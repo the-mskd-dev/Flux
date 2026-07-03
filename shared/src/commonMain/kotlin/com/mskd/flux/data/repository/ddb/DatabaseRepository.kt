@@ -5,7 +5,6 @@ import com.mskd.flux.model.domain.artwork.Episode
 import com.mskd.flux.model.domain.artwork.Movie
 import com.mskd.flux.model.domain.artwork.Season
 import com.mskd.flux.model.domain.files.UserFile
-import com.mskd.flux.model.domain.files.UserFolder
 import kotlinx.coroutines.flow.Flow
 
 interface DatabaseRepository {

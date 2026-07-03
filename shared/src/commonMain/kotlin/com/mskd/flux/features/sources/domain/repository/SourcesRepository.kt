@@ -1,6 +1,6 @@
-package com.mskd.flux.data.repository.ddb.sources
+package com.mskd.flux.features.sources.domain.repository
 
-import com.mskd.flux.model.domain.files.UserFolder
+import com.mskd.flux.features.sources.domain.model.UserFolder
 import kotlinx.coroutines.flow.Flow
 
 interface SourcesRepository {

@@ -1,6 +1,7 @@
 package com.mskd.flux.di
 
 
+import com.mskd.flux.features.moduleFeaturesAndroid
 import com.mskd.flux.model.core.AppInfo
 import com.mskd.flux.platform.AndroidImageRequestFactory
 import com.mskd.flux.platform.AndroidMetadataProvider
@@ -18,7 +19,7 @@ actual val modulePlatform: Module = module {
     // Android
     includes(
         moduleDatabaseAndroid,
-        moduleDataSourceAndroid,
+        moduleFeaturesAndroid,
         moduleDatastoreAndroid,
         moduleImagesAndroid,
         modulePlayerAndroid,

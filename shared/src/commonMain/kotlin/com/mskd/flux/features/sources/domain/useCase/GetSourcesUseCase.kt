@@ -1,13 +1,13 @@
-package com.mskd.flux.data.useCases.sources
+package com.mskd.flux.features.sources.domain.useCase
 
-import com.mskd.flux.data.repository.sources.CheckFolderAvailabilityDataSource
-import com.mskd.flux.data.repository.ddb.sources.SourcesRepository
+import com.mskd.flux.features.sources.domain.validator.UserFolderValidator
+import com.mskd.flux.features.sources.domain.repository.SourcesRepository
 import com.mskd.flux.model.domain.files.FileSource
-import com.mskd.flux.model.domain.files.UserFolder
+import com.mskd.flux.features.sources.domain.model.UserFolder
 
 class GetSourcesUseCase(
     val repository: SourcesRepository,
-    val checkFolderDataSource: CheckFolderAvailabilityDataSource
+    val checkFolderDataSource: UserFolderValidator
 ) {
 
     suspend operator fun invoke() : List<UserFolder> {

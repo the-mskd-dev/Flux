@@ -2,7 +2,7 @@ package com.mskd.flux.screen.sources
 
 import androidx.compose.runtime.Immutable
 import com.mskd.flux.model.core.presentation.State
-import com.mskd.flux.model.domain.files.UserFolder
+import com.mskd.flux.features.sources.domain.model.UserFolder
 
 @Immutable
 data class SourcesUiState(

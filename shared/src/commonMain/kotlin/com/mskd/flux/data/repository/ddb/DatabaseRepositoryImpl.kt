@@ -1,14 +1,13 @@
 package com.mskd.flux.data.repository.ddb
 
 import com.mskd.flux.data.local.ddb.DatabaseDao
-import com.mskd.flux.model.data.local.mappers.toDomain
-import com.mskd.flux.model.data.local.mappers.toEntity
+import com.mskd.flux.features.sources.data.model.toDomain
+import com.mskd.flux.features.sources.data.model.toEntity
 import com.mskd.flux.model.domain.artwork.Artwork
 import com.mskd.flux.model.domain.artwork.Episode
 import com.mskd.flux.model.domain.artwork.Movie
 import com.mskd.flux.model.domain.artwork.Season
 import com.mskd.flux.model.domain.files.UserFile
-import com.mskd.flux.model.domain.files.UserFolder
 import com.mskd.flux.utils.extensions.sort
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map

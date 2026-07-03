@@ -1,14 +1,10 @@
 package com.mskd.flux.data.repository.sources.saf
 
-import android.content.Context
-import android.net.Uri
-import android.provider.DocumentsContract
 import androidx.core.net.toUri
-import com.mskd.flux.data.repository.ddb.sources.SourcesRepository
+import com.mskd.flux.features.sources.domain.repository.SourcesRepository
 import com.mskd.flux.data.repository.sources.SourcesFilesRepository
-import com.mskd.flux.model.domain.files.FileSource
 import com.mskd.flux.model.domain.files.UserFile
-import com.mskd.flux.model.domain.files.UserFolder
+import com.mskd.flux.features.sources.domain.model.UserFolder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File

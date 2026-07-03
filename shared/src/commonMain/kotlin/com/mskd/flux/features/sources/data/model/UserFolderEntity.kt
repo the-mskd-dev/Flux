@@ -1,4 +1,4 @@
-package com.mskd.flux.model.data.local.entities
+package com.mskd.flux.features.sources.data.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

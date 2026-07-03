@@ -1,4 +1,6 @@
-package com.mskd.flux.model.domain.files
+package com.mskd.flux.features.sources.domain.model
+
+import com.mskd.flux.model.domain.files.FileSource
 
 data class UserFolder(
     val path: String,

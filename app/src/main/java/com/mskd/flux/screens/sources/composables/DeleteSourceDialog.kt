@@ -1,7 +1,7 @@
 package com.mskd.flux.screens.sources.composables
 
 import androidx.compose.runtime.Composable
-import com.mskd.flux.model.domain.files.UserFolder
+import com.mskd.flux.features.sources.domain.model.UserFolder
 import com.mskd.flux.screen.sources.SourcesIntent
 import com.mskd.flux.ui.component.global.FluxDialog
 import com.mskd.flux.ui.component.global.Text

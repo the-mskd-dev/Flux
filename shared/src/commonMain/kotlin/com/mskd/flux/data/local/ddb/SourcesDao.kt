@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.mskd.flux.model.data.local.entities.UserFolderEntity
+import com.mskd.flux.features.sources.data.model.UserFolderEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao

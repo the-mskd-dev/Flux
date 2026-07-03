@@ -1,7 +1,6 @@
-package com.mskd.flux.model.data.local.mappers
+package com.mskd.flux.features.sources.data.model
 
-import com.mskd.flux.model.data.local.entities.UserFolderEntity
-import com.mskd.flux.model.domain.files.UserFolder
+import com.mskd.flux.features.sources.domain.model.UserFolder
 
 fun UserFolderEntity.toDomain() : UserFolder {
     return UserFolder(

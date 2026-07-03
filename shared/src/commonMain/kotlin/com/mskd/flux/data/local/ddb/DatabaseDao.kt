@@ -8,10 +8,9 @@ import com.mskd.flux.model.data.local.entities.ArtworkEntity
 import com.mskd.flux.model.data.local.entities.EpisodeEntity
 import com.mskd.flux.model.data.local.entities.MovieEntity
 import com.mskd.flux.model.data.local.entities.SeasonEntity
-import com.mskd.flux.model.data.local.entities.UserFolderEntity
+import com.mskd.flux.features.sources.data.model.UserFolderEntity
 import com.mskd.flux.model.data.local.projections.ArtworkImagesProjection
 import com.mskd.flux.model.domain.artwork.Artwork
-import com.mskd.flux.model.domain.files.UserFolder
 import kotlinx.coroutines.flow.Flow
 
 @Dao

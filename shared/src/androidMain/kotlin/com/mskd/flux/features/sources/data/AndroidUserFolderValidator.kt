@@ -1,14 +1,15 @@
-package com.mskd.flux.data.repository.sources
+package com.mskd.flux.features.sources.data
 
 import android.content.Context
 import androidx.core.net.toUri
 import androidx.documentfile.provider.DocumentFile
-import com.mskd.flux.model.domain.files.UserFolder
+import com.mskd.flux.features.sources.domain.model.UserFolder
+import com.mskd.flux.features.sources.domain.validator.UserFolderValidator
 import com.mskd.flux.utils.Trace
 
-class AndroidCheckFolderAvailabilityDataSource(
+class AndroidUserFolderValidator(
     private val context: Context
-) : CheckFolderAvailabilityDataSource {
+) : UserFolderValidator {
 
     override suspend fun isFolderAvailable(path: String): UserFolder.Status {
         return try {

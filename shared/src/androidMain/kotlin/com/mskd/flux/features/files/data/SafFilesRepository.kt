@@ -1,18 +1,29 @@
-package com.mskd.flux.data.repository.sources.saf
+package com.mskd.flux.features.files.data
 
 import android.content.Context
 import android.net.Uri
 import android.provider.DocumentsContract
-import com.mskd.flux.model.domain.files.UserFile
+import androidx.core.net.toUri
+import com.mskd.flux.features.files.domain.repository.FilesRepository
+import com.mskd.flux.features.sources.data.AndroidUserFolderValidator
+import com.mskd.flux.features.sources.data.dataSource.SourcesDataSource
+import com.mskd.flux.features.sources.data.model.toDomain
+import com.mskd.flux.features.sources.domain.model.UserFolder
 import com.mskd.flux.model.domain.files.FileSource
+import com.mskd.flux.model.domain.files.UserFile
 import com.mskd.flux.utils.Trace
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import java.io.File
 
-class SafVideoFilesDataSource(
-    private val context: Context
-) {
+class SafFilesRepository(
+    private val context: Context,
+    private val dataSource: SourcesDataSource,
+    private val folderValidator: AndroidUserFolderValidator
+) : FilesRepository {
 
     companion object {
-        private const val TAG = "SafVideoFilesDataSource"
+        private const val TAG = "SafFilesRepository"
         private val VIDEO_EXTENSIONS = setOf("mp4", "mkv", "avi", "mov", "webm", "ts", "m4v")
 
         private val PROJECTION = arrayOf(
@@ -23,7 +34,27 @@ class SafVideoFilesDataSource(
         )
     }
 
-    fun getVideoFiles(treeUri: Uri): List<UserFile> {
+    override suspend fun getFiles(): List<UserFile> = withContext(Dispatchers.IO) {
+        val availableFolders = dataSource.getFolders().map {
+            val status = folderValidator.isFolderAvailable(path = it.path)
+            it.toDomain(status = status)
+        }
+
+        availableFolders.flatMap { folder ->
+            getFilesFromFolder(folder = folder)
+        }
+    }
+
+    override suspend fun filterExistingFiles(files: List<UserFile>): List<UserFile> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getSubtitlesFor(file: UserFile): File? {
+        TODO("Not yet implemented")
+    }
+
+    private fun getFilesFromFolder(folder: UserFolder): List<UserFile> {
+        val treeUri = folder.path.toUri()
         val files = mutableListOf<UserFile>()
         try {
             val rootDocId = DocumentsContract.getTreeDocumentId(treeUri)
@@ -75,4 +106,5 @@ class SafVideoFilesDataSource(
             }
         }
     }
+
 }

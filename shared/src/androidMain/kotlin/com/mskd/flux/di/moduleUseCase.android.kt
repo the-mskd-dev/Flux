@@ -4,6 +4,8 @@ import com.mskd.flux.data.useCases.files.FilesUC
 import com.mskd.flux.data.useCases.files.FilesUCImpl
 import com.mskd.flux.data.useCases.player.PipIsEnabledUC
 import com.mskd.flux.data.useCases.player.PipIsEnabledUCImpl
+import com.mskd.flux.data.useCases.sources.AndroidCheckFolderAvailabilityUseCase
+import com.mskd.flux.data.useCases.sources.CheckFolderAvailabilityUseCase
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
@@ -19,6 +21,12 @@ val moduleUseCaseAndroid = module {
     single<FilesUC> {
         FilesUCImpl(
             mediaStoreRepository = get(QualifiersAndroid.MEDIASTORE_SOURCES)
+        )
+    }
+
+    single<CheckFolderAvailabilityUseCase> {
+        AndroidCheckFolderAvailabilityUseCase(
+            context = get()
         )
     }
 

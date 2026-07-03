@@ -67,6 +67,7 @@ truth = "1.4.5"
 coreTesting = "2.2.0"
 kotlinStdlib = "2.4.0"
 kotlinTest = "2.3.21"
+documentfile = "1.1.0"
 
 [libraries]
 
@@ -79,6 +80,7 @@ androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecyc
 androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version = "2.11.0" }
+androidx-documentfile = { group = "androidx.documentfile", name = "documentfile", version.ref = "documentfile" }
 
 # -- Compose --
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
@@ -228,6 +230,7 @@ android-core = [
     "androidx-core-ktx",
     "androidx-lifecycle-runtime-ktx",
     "androidx-runtime-livedata",
+    "androidx-documentfile"
 ]
 
 android-network = [

@@ -11,6 +11,7 @@ import com.mskd.flux.data.useCases.progress.ProgressUCImpl
 import com.mskd.flux.data.useCases.sources.AddSourceUseCase
 import com.mskd.flux.data.useCases.sources.DeleteSourceUseCase
 import com.mskd.flux.data.useCases.sources.FlowSourcesUseCase
+import com.mskd.flux.data.useCases.sources.GetSourcesUseCase
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
@@ -54,6 +55,7 @@ val moduleUseCase = module {
     }
 
     // Sources
+    singleOf(::GetSourcesUseCase)
     singleOf(::FlowSourcesUseCase)
     singleOf(::AddSourceUseCase)
     singleOf(::DeleteSourceUseCase)

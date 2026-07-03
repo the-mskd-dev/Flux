@@ -5,16 +5,14 @@ import androidx.lifecycle.viewModelScope
 import com.mskd.flux.data.repository.ddb.DatabaseRepository
 import com.mskd.flux.model.core.presentation.State
 import com.mskd.flux.model.domain.files.UserFolder
-import com.mskd.flux.utils.Trace
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.seconds
 
 class SourcesViewModel(
     val database: DatabaseRepository
@@ -22,13 +20,30 @@ class SourcesViewModel(
 
     //region State
 
-    private val _uiState = MutableStateFlow(SourcesUiState())
-    val uiState = _uiState.asStateFlow()
-
-    private val intentChannel = Channel<SourcesIntent>(Channel.UNLIMITED)
-
     private val _event = Channel<SourcesEvent>(Channel.BUFFERED)
     val event = _event.receiveAsFlow()
+
+    private val _dialogState = MutableStateFlow<SourcesDialog?>(null)
+
+    val uiState = combine(
+        database.flowUserFolders(),
+        _dialogState
+    ) { folders, dialog ->
+
+        SourcesUiState(
+            state = State.Content(
+                content = SourcesContent(folders = folders)
+            ),
+            dialog = dialog
+        )
+
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = SourcesUiState()
+    )
+
+    private val intentChannel = Channel<SourcesIntent>(Channel.UNLIMITED)
 
     //endregion
 
@@ -40,24 +55,6 @@ class SourcesViewModel(
             intentChannel.receiveAsFlow().collect { intent ->
                 processIntent(intent)
             }
-        }
-
-        viewModelScope.launch {
-
-            database.flowUserFolders()
-                .distinctUntilChanged()
-                .collect { folders ->
-                    _uiState.update {
-                        it.copy(
-                            state = State.Content(
-                                SourcesContent(
-                                    folders = folders
-                                )
-                            )
-                        )
-                    }
-                }
-            
         }
 
     }
@@ -77,8 +74,14 @@ class SourcesViewModel(
     private fun processIntent(intent: SourcesIntent) = viewModelScope.launch {
         when (intent) {
             SourcesIntent.OnBackTap -> _event.send(SourcesEvent.BackToPreviousScreen)
+
+            // Save
             SourcesIntent.OpenFolderSelection -> _event.send(SourcesEvent.OpenFolderSelection)
             is SourcesIntent.SaveFolder -> saveFolder(path = intent.path)
+
+            // Delete
+            is SourcesIntent.ShowDeleteDialog -> showDeleteDialog(folder = intent.folder)
+            SourcesIntent.CloseDeleteDialog -> closeDeleteDialog()
             is SourcesIntent.DeleteFolder -> deleteFolder(folder = intent.folder)
         }
     }
@@ -93,8 +96,17 @@ class SourcesViewModel(
         database.saveUserFolders(listOf(folder))
     }
 
+    private fun showDeleteDialog(folder: UserFolder) {
+        _dialogState.update { SourcesDialog.ConfirmDelete(folder = folder) }
+    }
+
+    private fun closeDeleteDialog() {
+        _dialogState.update { null }
+    }
+
     private suspend fun deleteFolder(folder: UserFolder) {
         database.deleteUserFolder(userFolder = folder)
+        closeDeleteDialog()
     }
 
     //endregion

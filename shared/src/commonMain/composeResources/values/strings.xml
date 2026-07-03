@@ -169,4 +169,6 @@
     <string name="sources">Sources</string>
     <string name="sources_desc">Add your source folders</string>
     <string name="sources_full_desc">For optimal use, it is recommended to place your files in the "Movies" and/or "Downloads" folders, which are the application's default folders.\n\nHowever, you can add other source folders if needed, in addition to these two.</string>
+    <string name="warning">Warning</string>
+    <string name="confirm_source_deletion">Deleting this folder will result in the loss of progress for the files it contains.\nAre you sure you want to delete it?</string>
 </resources>

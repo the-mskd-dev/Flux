@@ -27,9 +27,11 @@ import com.mskd.flux.model.core.presentation.State
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.presentations.components.rememberSafFolderPicker
 import com.mskd.flux.screen.sources.SourcesContent
+import com.mskd.flux.screen.sources.SourcesDialog
 import com.mskd.flux.screen.sources.SourcesEvent
 import com.mskd.flux.screen.sources.SourcesIntent
 import com.mskd.flux.screen.sources.SourcesViewModel
+import com.mskd.flux.screens.sources.composables.DeleteSourceDialog
 import com.mskd.flux.screens.sources.composables.PermanentFolderItem
 import com.mskd.flux.screens.sources.composables.UserFolderItem
 import com.mskd.flux.ui.component.LoadingScreen
@@ -98,6 +100,7 @@ fun SourcesScreen(
 
                 SourcesScreenContent(
                     content = state.content,
+                    dialog = uiState.dialog,
                     sendIntent = { viewModel.handleIntent(intent = it) }
                 )
             }
@@ -110,6 +113,7 @@ fun SourcesScreen(
 @Composable
 fun SourcesScreenContent(
     content: SourcesContent,
+    dialog: SourcesDialog? = null,
     sendIntent: (SourcesIntent) -> Unit
 ) {
 
@@ -158,7 +162,7 @@ fun SourcesScreenContent(
                 UserFolderItem(
                     modifier = Modifier.animateItem(),
                     folder = folder,
-                    onDelete = { sendIntent(SourcesIntent.DeleteFolder(folder)) }
+                    onDelete = { sendIntent(SourcesIntent.ShowDeleteDialog(folder)) }
                 )
 
             }
@@ -167,6 +171,13 @@ fun SourcesScreenContent(
 
         }
 
+    }
+
+    (dialog as? SourcesDialog.ConfirmDelete)?.let {
+        DeleteSourceDialog(
+            folder = it.folder,
+            sendIntent = sendIntent
+        )
     }
 
 }

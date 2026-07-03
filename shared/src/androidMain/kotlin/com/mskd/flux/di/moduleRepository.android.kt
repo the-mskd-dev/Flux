@@ -4,6 +4,9 @@ import com.mskd.flux.data.repository.connectivity.ConnectivityRepository
 import com.mskd.flux.data.repository.connectivity.ConnectivityRepositoryImpl
 import com.mskd.flux.data.repository.sources.SourcesFilesRepository
 import com.mskd.flux.data.repository.sources.mediaStore.MediaStoreFilesRepository
+import com.mskd.flux.data.repository.sources.saf.SafFilesRepository
+import com.mskd.flux.data.repository.sources.saf.SafVideoFilesDataSource
+import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 val moduleRepositoryAndroid = module {
@@ -16,6 +19,15 @@ val moduleRepositoryAndroid = module {
         MediaStoreFilesRepository(
             context = get(),
             userRepository = get()
+        )
+    }
+
+    singleOf(::SafVideoFilesDataSource)
+
+    single<SourcesFilesRepository>(QualifiersAndroid.SAF_SOURCES) {
+        SafFilesRepository(
+            sourcesRepository = get(),
+            safVideoFilesDataSource = get()
         )
     }
 

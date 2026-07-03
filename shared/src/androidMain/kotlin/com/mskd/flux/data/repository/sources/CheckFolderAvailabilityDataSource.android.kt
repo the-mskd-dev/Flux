@@ -1,4 +1,4 @@
-package com.mskd.flux.data.dataSources
+package com.mskd.flux.data.repository.sources
 
 import android.content.Context
 import androidx.core.net.toUri

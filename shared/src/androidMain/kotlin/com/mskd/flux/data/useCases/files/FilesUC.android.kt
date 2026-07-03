@@ -7,7 +7,8 @@ import kotlinx.coroutines.withContext
 import java.io.File
 
 class FilesUCImpl(
-    private val mediaStoreRepository: SourcesFilesRepository
+    private val mediaStoreRepository: SourcesFilesRepository,
+    private val safRepository: SourcesFilesRepository
 ) : FilesUC {
 
     companion object {
@@ -17,8 +18,9 @@ class FilesUCImpl(
     override suspend fun getFiles(): List<UserFile> {
 
         val files = mediaStoreRepository.getFiles()
+        val safFiles = safRepository.getFiles()
 
-        return files
+        return files + safFiles
 
     }
 

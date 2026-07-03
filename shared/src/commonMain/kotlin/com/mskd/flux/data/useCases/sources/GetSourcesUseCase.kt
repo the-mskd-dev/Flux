@@ -1,6 +1,6 @@
 package com.mskd.flux.data.useCases.sources
 
-import com.mskd.flux.data.dataSources.CheckFolderAvailabilityDataSource
+import com.mskd.flux.data.repository.sources.CheckFolderAvailabilityDataSource
 import com.mskd.flux.data.repository.ddb.sources.SourcesRepository
 import com.mskd.flux.model.domain.files.FileSource
 import com.mskd.flux.model.domain.files.UserFolder

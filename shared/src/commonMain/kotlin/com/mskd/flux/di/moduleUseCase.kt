@@ -18,7 +18,8 @@ val moduleUseCase = module {
         CatalogUCImpl(
             tmdb = get(),
             database = get(),
-            files = get(),
+            getFilesUseCase = get(),
+            filterExistingFilesUseCase = get(),
             user = get(),
             settings = get(),
             imagesPrefetchManager = get(),

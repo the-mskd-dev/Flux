@@ -3,9 +3,13 @@ package com.mskd.flux.features.files
 import com.mskd.flux.features.files.data.AndroidMetadataProvider
 import com.mskd.flux.features.files.data.MediaStoreFilesRepository
 import com.mskd.flux.features.files.data.SafFilesRepository
+import com.mskd.flux.features.files.data.usecase.AndroidFilterExistingFilesUseCase
 import com.mskd.flux.features.files.domain.repository.FilesRepository
 import com.mskd.flux.features.files.data.usecase.AndroidGetFilesUseCase
+import com.mskd.flux.features.files.data.usecase.AndroidGetSubtitlesUseCase
+import com.mskd.flux.features.files.domain.usecase.FilterExistingFilesUseCase
 import com.mskd.flux.features.files.domain.usecase.GetFilesUseCase
+import com.mskd.flux.features.files.domain.usecase.GetSubtitlesUseCase
 import com.mskd.flux.platform.MetadataProvider
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named
@@ -37,6 +41,20 @@ val moduleFilesAndroid = module {
 
     single<GetFilesUseCase> {
         AndroidGetFilesUseCase(
+            mediaStore = get(MEDIASTORE_SOURCES),
+            saf = get(SAF_SOURCES)
+        )
+    }
+
+    single<FilterExistingFilesUseCase> {
+        AndroidFilterExistingFilesUseCase(
+            mediaStore = get(MEDIASTORE_SOURCES),
+            saf = get(SAF_SOURCES)
+        )
+    }
+
+    single<GetSubtitlesUseCase> {
+        AndroidGetSubtitlesUseCase(
             mediaStore = get(MEDIASTORE_SOURCES),
             saf = get(SAF_SOURCES)
         )

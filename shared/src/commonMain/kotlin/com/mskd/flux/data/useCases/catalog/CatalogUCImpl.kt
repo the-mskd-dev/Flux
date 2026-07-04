@@ -20,6 +20,8 @@ import com.mskd.flux.core.domain.model.artwork.Status
 import com.mskd.flux.core.domain.model.catalog.Catalog
 import com.mskd.flux.core.domain.model.catalog.CatalogFolder
 import com.mskd.flux.core.domain.model.files.UserFile
+import com.mskd.flux.features.files.domain.usecase.FilterExistingFilesUseCase
+import com.mskd.flux.features.files.domain.usecase.GetFilesUseCase
 import com.mskd.flux.platform.MetadataProvider
 import com.mskd.flux.utils.Trace
 import com.mskd.flux.utils.extensions.groupInFolders
@@ -41,7 +43,8 @@ import java.util.concurrent.atomic.AtomicInteger
 class CatalogUCImpl(
     private val tmdb: TmdbDataSource,
     private val database: DatabaseRepository,
-    private val files: FilesUC,
+    private val getFilesUseCase: GetFilesUseCase,
+    private val filterExistingFilesUseCase: FilterExistingFilesUseCase,
     private val user: UserDataStore,
     private val settings: SettingsDataStore,
     private val imagesPrefetchManager: ImagesPrefetchManager,
@@ -101,10 +104,10 @@ class CatalogUCImpl(
             // Get current medias
             val dbMovies = database.getMovies()
             val dbEpisodes = database.getEpisodes()
-            val dbFiles = files.filterExistingFiles(files = (dbMovies + dbEpisodes).map { it.file })
+            val dbFiles = filterExistingFilesUseCase(files = (dbMovies + dbEpisodes).map { it.file })
 
             // Get files
-            val deviceFiles = files.getFiles()
+            val deviceFiles = getFilesUseCase()
             val newFiles = if (!onlyNew) { deviceFiles } else {
                 deviceFiles.filter { file -> dbFiles.none { it.name == file.name } }
             }
@@ -233,7 +236,7 @@ class CatalogUCImpl(
      */
     override suspend fun cleanCatalog() {
 
-        val allFiles = files.getFiles()
+        val allFiles = getFilesUseCase()
         database.deleteMediasNotInFiles(allFiles)
 
     }

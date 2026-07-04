@@ -5,7 +5,6 @@ import com.mskd.flux.core.data.datastore.SettingsDataStore
 import com.mskd.flux.core.data.datastore.SnackbarDataStore
 import com.mskd.flux.data.useCases.catalog.CatalogUC
 import com.mskd.flux.data.useCases.catalog.CatalogUC.State
-import com.mskd.flux.data.useCases.files.FilesUC
 import com.mskd.flux.features.images.domain.ImagesPrefetchManager
 import com.mskd.flux.core.domain.model.files.UserFile
 import io.mockk.coEvery
@@ -73,13 +72,4 @@ fun mockkSettingsRepository() : SettingsDataStore = mockk(relaxed = true) {
 fun mockkSnackbarRepository() : SnackbarDataStore = mockk(relaxed = true) {
     every { canShow(any()) } returns MutableStateFlow(true)
     every { getCount(any()) } returns MutableStateFlow(0)
-}
-
-fun mockkFilesRepository() : FilesUC = mockk(relaxed = true) {
-    coEvery { getFiles() } returns FilesMockups.localFiles
-    coEvery { filterExistingFiles(any()) } answers {
-        val files = firstArg<List<UserFile>>()
-        files.filter { f -> FilesMockups.localFiles.any { it.name == f.name } }
-    }
-    coEvery { getSubtitlesFor(any()) } returns null
 }

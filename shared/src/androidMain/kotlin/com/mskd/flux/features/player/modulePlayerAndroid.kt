@@ -60,10 +60,10 @@ val modulePlayerAndroid = module {
             mediaId = params.get(),
             artworkUC = get(),
             settingsDataStore = get(),
-            filesUC = get(),
             playerManager = get(),
-            pipIsEnabledUseCase = get(),
-            saveProgress = get()
+            pipIsEnabledUC = get(),
+            saveProgressUC = get(),
+            getSubtitlesUC = get()
         )
     }
 

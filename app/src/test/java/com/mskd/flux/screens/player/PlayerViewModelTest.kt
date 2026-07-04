@@ -4,17 +4,16 @@ import androidx.media3.common.Player
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.core.data.datastore.SettingsDataStore
-import com.mskd.flux.data.useCases.files.FilesUC
 import com.mskd.flux.features.player.data.PipIsEnabledUseCase
 import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.mockups.FakeArtworkUC
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.PlayerMockups
-import com.mskd.flux.mockups.mockkFilesRepository
 import com.mskd.flux.core.domain.model.core.State
 import com.mskd.flux.core.domain.model.artwork.ContentType
 import com.mskd.flux.core.domain.model.artwork.Movie
 import com.mskd.flux.core.domain.model.player.PlayerTrack
+import com.mskd.flux.features.files.domain.usecase.GetSubtitlesUseCase
 import com.mskd.flux.platform.PlayerManager
 import com.mskd.flux.screen.player.PlayerEvent
 import com.mskd.flux.screen.player.PlayerIntent
@@ -42,11 +41,11 @@ class PlayerViewModelTest : FunSpec({
     lateinit var viewModel: PlayerViewModel<Player>
     lateinit var artworkUC: FakeArtworkUC
     lateinit var settingsDataStore: SettingsDataStore
-    lateinit var filesUC: FilesUC
     lateinit var saveProgress: SaveProgressUseCase
     lateinit var playerManager: PlayerManager<Player>
-    lateinit var mockkedPlayer: Player
+    lateinit var player: Player
     lateinit var pipIsEnabledUseCase: PipIsEnabledUseCase
+    lateinit var getSubtitlesUseCase: GetSubtitlesUseCase
 
     fun updateVm(mediaId: Long = MediaMockups.episode1.mediaId) {
 
@@ -56,10 +55,10 @@ class PlayerViewModelTest : FunSpec({
             mediaId = mediaId,
             artworkUC = artworkUC,
             settingsDataStore = settingsDataStore,
-            filesUC = filesUC,
             playerManager = playerManager,
-            pipIsEnabledUseCase = pipIsEnabledUseCase,
-            saveProgress = saveProgress
+            pipIsEnabledUC = pipIsEnabledUseCase,
+            saveProgressUC = saveProgress,
+            getSubtitlesUC = getSubtitlesUseCase
         )
 
     }
@@ -72,16 +71,16 @@ class PlayerViewModelTest : FunSpec({
             every { flow } returns MutableStateFlow(SettingsDataStore.State())
         }
 
-        mockkedPlayer = mockk(relaxed = true) {
+        player = mockk(relaxed = true) {
             every { duration } returns 10000L
         }
 
         playerManager = mockk(relaxed = true) {
-            every { flow } returns MutableStateFlow(PlayerManager.State.Ready(player = mockkedPlayer))
+            every { flow } returns MutableStateFlow(PlayerManager.State.Ready(player = player))
         }
 
-        filesUC = mockkFilesRepository()
         pipIsEnabledUseCase = mockk(relaxed = true)
+        getSubtitlesUseCase = mockk(relaxed = true)
 
         updateVm()
 
@@ -187,7 +186,7 @@ class PlayerViewModelTest : FunSpec({
 
             playerManager = mockk(relaxed = true) {
                 every { flow } returns MutableStateFlow(PlayerManager.State.Ready(
-                    player = mockkedPlayer,
+                    player = player,
                     duration = testCase.media.duration.minToMs
                 ))
                 every { progress } returns MutableStateFlow(PlayerManager.Progress(
@@ -410,7 +409,7 @@ class PlayerViewModelTest : FunSpec({
         playerManager = mockk(relaxed = true) {
             every { flow } returns MutableStateFlow(
                 PlayerManager.State.Ready(
-                    player = mockkedPlayer,
+                    player = player,
                     isPlaying = true,
                     duration = 10000L
                 )
@@ -435,7 +434,7 @@ class PlayerViewModelTest : FunSpec({
         playerManager = mockk(relaxed = true) {
             every { flow } returns MutableStateFlow(
                 PlayerManager.State.Ready(
-                    player = mockkedPlayer,
+                    player = player,
                     isPlaying = true,
                     duration = 10000L
                 )
@@ -490,7 +489,7 @@ class PlayerViewModelTest : FunSpec({
         playerManager = mockk(relaxed = true) {
             every { flow } returns MutableStateFlow(
                 PlayerManager.State.Ready(
-                    player = mockkedPlayer,
+                    player = player,
                     isPlaying = false,
                     duration = 10000L
                 )

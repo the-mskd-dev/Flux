@@ -6,7 +6,6 @@ import com.mskd.flux.di.moduleAndroidApp
 import com.mskd.flux.di.modulePlatform
 import com.mskd.flux.core.domain.model.artwork.ContentType
 import com.mskd.flux.core.domain.model.core.AppInfo
-import com.mskd.flux.data.useCases.files.FilesUC
 import io.kotest.core.spec.style.FunSpec
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.dsl.module
@@ -31,7 +30,6 @@ class KoinModulesTest : FunSpec({
                 Int::class,
                 ContentType::class,
                 AppInfo::class,
-                FilesUC::class,
                 io.ktor.client.engine.HttpClientEngine::class
             )
         )

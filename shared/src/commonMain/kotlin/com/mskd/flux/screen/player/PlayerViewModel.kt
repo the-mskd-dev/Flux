@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.core.data.datastore.SettingsDataStore
 import com.mskd.flux.data.useCases.artwork.ArtworkUC
-import com.mskd.flux.data.useCases.files.FilesUC
 import com.mskd.flux.features.player.data.PipIsEnabledUseCase
 import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.core.domain.model.core.StringProvider
@@ -14,6 +13,7 @@ import com.mskd.flux.core.domain.model.artwork.FullArtwork
 import com.mskd.flux.core.domain.model.artwork.Media
 import com.mskd.flux.core.domain.model.player.PlayerTrack
 import com.mskd.flux.core.domain.model.player.PlayerTrack.Type
+import com.mskd.flux.features.files.domain.usecase.GetSubtitlesUseCase
 import com.mskd.flux.platform.PlayerManager
 import com.mskd.flux.screen.player.PlayerUiContent.AmbientOverlay
 import com.mskd.flux.screen.player.PlayerUiContent.NextButton
@@ -48,10 +48,10 @@ class PlayerViewModel<out T>(
     mediaId: Long,
     private val artworkUC: ArtworkUC,
     private val settingsDataStore: SettingsDataStore,
-    private val filesUC: FilesUC,
     private val playerManager: PlayerManager<T>,
-    private val pipIsEnabledUseCase: PipIsEnabledUseCase,
-    private val saveProgress: SaveProgressUseCase
+    private val pipIsEnabledUC: PipIsEnabledUseCase,
+    private val saveProgressUC: SaveProgressUseCase,
+    private val getSubtitlesUC: GetSubtitlesUseCase
 ) : ViewModel() {
 
     //region Variables
@@ -264,7 +264,7 @@ class PlayerViewModel<out T>(
     }
 
     private suspend fun playMedia(media: Media) {
-        val subtitlesUri = filesUC.getSubtitlesFor(file = media.file)
+        val subtitlesUri = getSubtitlesUC(file = media.file)
         playerManager.playMedia(
             media = media,
             subtitlesPath = subtitlesUri?.absolutePath
@@ -403,7 +403,7 @@ class PlayerViewModel<out T>(
         val media = content?.media ?: return
         val progress = _progress.value
 
-        saveProgress(
+        saveProgressUC(
             media = media,
             progress = progress
         )
@@ -442,7 +442,7 @@ class PlayerViewModel<out T>(
 
     private suspend fun onBackground() {
 
-        if (pipIsEnabledUseCase()) return
+        if (pipIsEnabledUC()) return
 
         wasPlayingBeforeBackground = content?.isPlaying ?: return
 

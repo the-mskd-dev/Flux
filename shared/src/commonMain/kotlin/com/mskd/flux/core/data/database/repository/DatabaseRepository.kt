@@ -1,4 +1,4 @@
-package com.mskd.flux.data.repository.ddb
+package com.mskd.flux.core.data.database.repository
 
 import com.mskd.flux.core.domain.model.artwork.Artwork
 import com.mskd.flux.core.domain.model.artwork.Episode

@@ -1,6 +1,6 @@
 package com.mskd.flux.mockups
 
-import com.mskd.flux.data.repository.ddb.DatabaseRepository
+import com.mskd.flux.core.data.database.repository.DatabaseRepository
 import com.mskd.flux.core.data.datastore.SettingsDataStore
 import com.mskd.flux.core.data.datastore.SnackbarDataStore
 import com.mskd.flux.data.useCases.catalog.CatalogUC

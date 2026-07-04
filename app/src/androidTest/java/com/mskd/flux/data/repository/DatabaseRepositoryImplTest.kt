@@ -6,7 +6,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import app.cash.turbine.test
 import com.mskd.flux.core.data.database.FluxDatabase
-import com.mskd.flux.data.repository.ddb.DatabaseRepositoryImpl
+import com.mskd.flux.core.data.database.repository.DatabaseRepositoryImpl
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.core.domain.model.artwork.Artwork
 import com.mskd.flux.core.domain.model.artwork.Episode

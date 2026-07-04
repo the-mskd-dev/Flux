@@ -1,11 +1,10 @@
 package com.mskd.flux.data.useCases.catalog
 
-import com.mskd.flux.data.repository.ddb.DatabaseRepository
+import com.mskd.flux.core.data.database.repository.DatabaseRepository
 import com.mskd.flux.core.data.datastore.SettingsDataStore
 import com.mskd.flux.features.tmdb.data.datasource.TmdbDataSource
 import com.mskd.flux.core.data.datastore.UserDataStore
 import com.mskd.flux.core.domain.model.core.AppInfo
-import com.mskd.flux.data.useCases.files.FilesUC
 import com.mskd.flux.features.images.domain.ImagesPrefetchManager
 import com.mskd.flux.features.tmdb.data.dto.EpisodeDto
 import com.mskd.flux.features.tmdb.data.dto.TranslationsDto

@@ -1,6 +1,6 @@
 package com.mskd.flux.features.progress.domain.usecase
 
-import com.mskd.flux.data.repository.ddb.DatabaseRepository
+import com.mskd.flux.core.data.database.repository.DatabaseRepository
 import com.mskd.flux.core.domain.model.artwork.Episode
 import com.mskd.flux.core.domain.model.artwork.Status
 import com.mskd.flux.utils.Trace

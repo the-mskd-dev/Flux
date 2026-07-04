@@ -1,8 +1,7 @@
 package com.mskd.flux.core.data.database
 
-import com.mskd.flux.data.repository.ddb.DatabaseRepository
-import com.mskd.flux.data.repository.ddb.DatabaseRepositoryImpl
-import com.mskd.flux.features.sources.data.local.SourcesDao
+import com.mskd.flux.core.data.database.repository.DatabaseRepository
+import com.mskd.flux.core.data.database.repository.DatabaseRepositoryImpl
 import org.koin.dsl.module
 
 val moduleDatabase = module {

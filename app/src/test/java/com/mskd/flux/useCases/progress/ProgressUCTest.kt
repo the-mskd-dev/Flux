@@ -1,7 +1,7 @@
 package com.mskd.flux.useCases.progress
 
 import com.mskd.flux.configs.fluxExtensions
-import com.mskd.flux.data.repository.ddb.DatabaseRepository
+import com.mskd.flux.core.data.database.repository.DatabaseRepository
 import com.mskd.flux.core.data.datastore.UserDataStore
 import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.features.progress.domain.usecase.ChangeMediaStatusUseCase

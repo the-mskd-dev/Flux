@@ -5,15 +5,15 @@ import androidx.test.core.app.ApplicationProvider
 import com.mskd.flux.BuildConfig
 import com.mskd.flux.features.tmdb.data.service.TMDBService
 import com.mskd.flux.data.repository.ddb.DatabaseRepository
-import com.mskd.flux.data.repository.settings.SettingsRepository
-import com.mskd.flux.features.tmdb.data.dataSource.TmdbDataSource
-import com.mskd.flux.features.tmdb.data.dataSource.TmdbDataSourceImpl
-import com.mskd.flux.data.repository.token.TokenRepository
-import com.mskd.flux.data.repository.user.UserRepository
+import com.mskd.flux.core.datastore.settings.SettingsDataStore
+import com.mskd.flux.features.tmdb.data.datasource.TmdbDataSource
+import com.mskd.flux.features.tmdb.data.datasource.TmdbDataSourceImpl
+import com.mskd.flux.core.datastore.token.TokenDataStore
+import com.mskd.flux.core.datastore.user.UserDataStore
 import com.mskd.flux.data.useCases.catalog.CatalogUC
 import com.mskd.flux.data.useCases.catalog.CatalogUCImpl
 import com.mskd.flux.data.useCases.files.FilesUC
-import com.mskd.flux.data.useCases.images.ImagesUC
+import com.mskd.flux.core.util.images.ImagesPrefetchManager
 import com.mskd.flux.di.Properties
 import com.mskd.flux.di.Qualifiers
 import com.mskd.flux.di.moduleAndroidApp
@@ -49,11 +49,11 @@ class CatalogUCTest : KoinTest {
 
     private val tmdbService: TMDBService by inject()
     private lateinit var tmdbDataSource: TmdbDataSource
-    private lateinit var settingsRepository: SettingsRepository
+    private lateinit var settingsDataStore: SettingsDataStore
     private lateinit var databaseRepository: DatabaseRepository
     private lateinit var filesUC: FilesUC
-    private lateinit var userRepository: UserRepository
-    private lateinit var imagesUC: ImagesUC
+    private lateinit var userDataStore: UserDataStore
+    private lateinit var imagesPrefetchManager: ImagesPrefetchManager
     private lateinit var context: Context
 
     private companion object {
@@ -103,17 +103,17 @@ class CatalogUCTest : KoinTest {
             )
         }
 
-        val tokenRepository: TokenRepository = get()
+        val tokenDataStore: TokenDataStore = get()
         runBlocking {
-            tokenRepository.saveToken(BuildConfig.TMDB_TOKEN)
+            tokenDataStore.saveToken(BuildConfig.TMDB_TOKEN)
         }
 
-        settingsRepository = mockk(relaxed = true) {
+        settingsDataStore = mockk(relaxed = true) {
             coEvery { getDataLanguage() } returns dataLanguage
-            every { flow } returns flowOf(SettingsRepository.State())
+            every { flow } returns flowOf(SettingsDataStore.State())
         }
 
-        tmdbDataSource = TmdbDataSourceImpl(tmdbService, settingsRepository)
+        tmdbDataSource = TmdbDataSourceImpl(tmdbService, settingsDataStore)
 
         databaseRepository = mockk(relaxed = true) {
             coEvery { saveMovies(any()) } answers {
@@ -135,8 +135,8 @@ class CatalogUCTest : KoinTest {
             coEvery { filterExistingFiles(any()) } returns emptyList()
         }
         
-        userRepository = mockk(relaxed = true)
-        imagesUC = mockk(relaxed = true)
+        userDataStore = mockk(relaxed = true)
+        imagesPrefetchManager = mockk(relaxed = true)
     }
 
     @After
@@ -150,9 +150,9 @@ class CatalogUCTest : KoinTest {
             tmdb = tmdbDataSource,
             database = databaseRepository,
             files = filesUC,
-            user = userRepository,
-            settings = settingsRepository,
-            imagesUC = imagesUC,
+            user = userDataStore,
+            settings = settingsDataStore,
+            imagesPrefetchManager = imagesPrefetchManager,
             scope = this,
             appInfo = get(),
             metadataProvider = get(),
@@ -172,9 +172,9 @@ class CatalogUCTest : KoinTest {
             tmdb = tmdbDataSource,
             database = databaseRepository,
             files = filesUC,
-            user = userRepository,
-            settings = settingsRepository,
-            imagesUC = imagesUC,
+            user = userDataStore,
+            settings = settingsDataStore,
+            imagesPrefetchManager = imagesPrefetchManager,
             scope = this,
             appInfo = get(),
             metadataProvider = get(),
@@ -223,9 +223,9 @@ class CatalogUCTest : KoinTest {
             tmdb = tmdbDataSource,
             database = databaseRepository,
             files = filesUC,
-            user = userRepository,
-            settings = settingsRepository,
-            imagesUC = imagesUC,
+            user = userDataStore,
+            settings = settingsDataStore,
+            imagesPrefetchManager = imagesPrefetchManager,
             scope = this,
             appInfo = get(),
             metadataProvider = get(),
@@ -244,9 +244,9 @@ class CatalogUCTest : KoinTest {
             tmdb = tmdbDataSource,
             database = databaseRepository,
             files = filesUC,
-            user = userRepository,
-            settings = settingsRepository,
-            imagesUC = imagesUC,
+            user = userDataStore,
+            settings = settingsDataStore,
+            imagesPrefetchManager = imagesPrefetchManager,
             scope = this,
             appInfo = get(),
             metadataProvider = get(),

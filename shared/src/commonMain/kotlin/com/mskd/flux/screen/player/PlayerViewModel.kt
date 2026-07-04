@@ -2,11 +2,11 @@ package com.mskd.flux.screen.player
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mskd.flux.data.repository.settings.SettingsRepository
+import com.mskd.flux.core.datastore.settings.SettingsDataStore
 import com.mskd.flux.data.useCases.artwork.ArtworkUC
 import com.mskd.flux.data.useCases.files.FilesUC
 import com.mskd.flux.data.useCases.player.PipIsEnabledUC
-import com.mskd.flux.data.useCases.progress.ProgressUC
+import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.model.core.StringProvider
 import com.mskd.flux.model.core.presentation.State
 import com.mskd.flux.model.domain.artwork.Episode
@@ -47,11 +47,11 @@ import kotlin.time.Duration.Companion.seconds
 class PlayerViewModel<out T>(
     mediaId: Long,
     private val artworkUC: ArtworkUC,
-    private val settingsRepository: SettingsRepository,
+    private val settingsDataStore: SettingsDataStore,
     private val filesUC: FilesUC,
     private val playerManager: PlayerManager<T>,
-    private val progressUC: ProgressUC,
-    private val pipIsEnabledUC: PipIsEnabledUC
+    private val pipIsEnabledUC: PipIsEnabledUC,
+    private val saveProgress: SaveProgressUseCase
 ) : ViewModel() {
 
     //region Variables
@@ -84,7 +84,7 @@ class PlayerViewModel<out T>(
 
     val uiState: StateFlow<PlayerUiState<T>> = combine(
         artworkUC.flow,
-        settingsRepository.flow,
+        settingsDataStore.flow,
         playerManager.flow,
         _userState,
     ) { artworkState, settings, playerState, userState ->
@@ -313,7 +313,7 @@ class PlayerViewModel<out T>(
     }
 
     private suspend fun updateTracks() {
-        val currentSettings = settingsRepository.flow.first()
+        val currentSettings = settingsDataStore.flow.first()
         val preferredLang = currentSettings.subtitlesLanguage.toPlayerTrack(type = Type.SUBTITLES)
 
         playerManager.selectTrack(track = preferredLang)
@@ -328,9 +328,9 @@ class PlayerViewModel<out T>(
             if (track.language != null) {
                 val locale = Locale.forLanguageTag(track.language)
                 if (track.type == Type.SUBTITLES)
-                    settingsRepository.setSubtitlesLanguage(locale)
+                    settingsDataStore.setSubtitlesLanguage(locale)
                 else
-                    settingsRepository.setAudioLanguage(locale)
+                    settingsDataStore.setAudioLanguage(locale)
             }
 
         } catch (e: Exception) {
@@ -403,7 +403,7 @@ class PlayerViewModel<out T>(
         val media = content?.media ?: return
         val progress = _progress.value
 
-        progressUC.saveProgress(
+        saveProgress(
             media = media,
             progress = progress
         )

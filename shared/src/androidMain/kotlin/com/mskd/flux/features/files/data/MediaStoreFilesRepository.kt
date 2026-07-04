@@ -7,7 +7,7 @@ import android.media.MediaScannerConnection
 import android.os.Environment
 import android.provider.MediaStore
 import androidx.core.net.toUri
-import com.mskd.flux.data.repository.user.UserRepository
+import com.mskd.flux.core.datastore.user.UserDataStore
 import com.mskd.flux.features.files.domain.repository.FilesRepository
 import com.mskd.flux.model.domain.files.FileSource
 import com.mskd.flux.model.domain.files.UserFile
@@ -22,7 +22,7 @@ import kotlin.coroutines.resume
 
 class MediaStoreFilesRepository(
     private val context: Context,
-    private val userRepository: UserRepository
+    private val userDataStore: UserDataStore
 ) : FilesRepository {
 
     companion object {
@@ -208,7 +208,7 @@ class MediaStoreFilesRepository(
      */
     private suspend fun updateMediaFolders() {
 
-        val lastSyncTime = userRepository.getSyncTime()
+        val lastSyncTime = userDataStore.getSyncTime()
 
         return suspendCancellableCoroutine { continuation ->
 

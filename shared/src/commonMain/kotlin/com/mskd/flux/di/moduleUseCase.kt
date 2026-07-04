@@ -4,15 +4,10 @@ import com.mskd.flux.data.useCases.artwork.ArtworkUC
 import com.mskd.flux.data.useCases.artwork.ArtworkUCImpl
 import com.mskd.flux.data.useCases.catalog.CatalogUC
 import com.mskd.flux.data.useCases.catalog.CatalogUCImpl
-import com.mskd.flux.data.useCases.images.ImagesUC
-import com.mskd.flux.data.useCases.images.ImagesUCImpl
+import com.mskd.flux.core.util.images.ImagesPrefetchManager
+import com.mskd.flux.core.util.images.ImagesPrefetchManagerImpl
 import com.mskd.flux.data.useCases.progress.ProgressUC
 import com.mskd.flux.data.useCases.progress.ProgressUCImpl
-import com.mskd.flux.features.sources.domain.useCase.AddSourceUseCase
-import com.mskd.flux.features.sources.domain.useCase.DeleteSourceUseCase
-import com.mskd.flux.features.sources.domain.useCase.FlowSourcesUseCase
-import com.mskd.flux.features.sources.domain.useCase.GetSourcesUseCase
-import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 val moduleUseCase = module {
@@ -30,27 +25,10 @@ val moduleUseCase = module {
             files = get(),
             user = get(),
             settings = get(),
-            imagesUC = get(),
+            imagesPrefetchManager = get(),
             metadataProvider = get(),
             appInfo = get(),
             scope = get(Qualifiers.APPLICATION_SCOPE),
-        )
-    }
-
-    single<ImagesUC> {
-        ImagesUCImpl(
-            database = get(),
-            settings = get(),
-            imageLoader = get(),
-            imageRequestFactory = get(),
-            scope = get(Qualifiers.APPLICATION_SCOPE)
-        )
-    }
-
-    single<ProgressUC> {
-        ProgressUCImpl(
-            database = get(),
-            user = get()
         )
     }
 

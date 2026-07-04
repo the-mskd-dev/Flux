@@ -3,10 +3,10 @@ package com.mskd.flux.screens.token
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.features.tmdb.data.service.TMDBService
-import com.mskd.flux.data.repository.token.TokenRepository
+import com.mskd.flux.core.datastore.token.TokenDataStore
 import com.mskd.flux.data.useCases.catalog.CatalogUC
 import com.mskd.flux.model.core.AppInfo
-import com.mskd.flux.features.tmdb.data.model.dto.AuthenticationDto
+import com.mskd.flux.features.tmdb.data.dto.AuthenticationDto
 import com.mskd.flux.screen.token.TokenEvent
 import com.mskd.flux.screen.token.TokenIntent
 import com.mskd.flux.screen.token.TokenMessage
@@ -23,14 +23,14 @@ class TokenViewModelTest : FunSpec({
     fluxExtensions()
 
     lateinit var viewModel: TokenViewModel
-    lateinit var tokenRepository: TokenRepository
+    lateinit var tokenDataStore: TokenDataStore
     lateinit var tmdbService: TMDBService
     lateinit var catalogUC: CatalogUC
     lateinit var appInfo: AppInfo
 
     beforeTest {
 
-        tokenRepository = mockk(relaxed = true) {
+        tokenDataStore = mockk(relaxed = true) {
             coEvery { getToken() } returns "token"
         }
 
@@ -44,7 +44,7 @@ class TokenViewModelTest : FunSpec({
 
         viewModel = TokenViewModel(
             fromSettings = true,
-            tokenRepository = tokenRepository,
+            tokenDataStore = tokenDataStore,
             tmdbService = tmdbService,
             catalogUC = catalogUC,
             appInfo = appInfo
@@ -84,7 +84,7 @@ class TokenViewModelTest : FunSpec({
             viewModel.handleIntent(TokenIntent.OnCancelTap)
 
             awaitItem() shouldBe TokenEvent.NavigateToHomeScreen
-            coVerify { tokenRepository.dontRequestToken() }
+            coVerify { tokenDataStore.dontRequestToken() }
         }
     }
 
@@ -105,7 +105,7 @@ class TokenViewModelTest : FunSpec({
     test("initial state when fromSettings is false") {
         val vm = TokenViewModel(
             fromSettings = false,
-            tokenRepository = tokenRepository,
+            tokenDataStore = tokenDataStore,
             tmdbService = tmdbService,
             catalogUC = catalogUC,
             appInfo = appInfo
@@ -119,7 +119,7 @@ class TokenViewModelTest : FunSpec({
     test("save token when fromSettings is false success") {
         val vm = TokenViewModel(
             fromSettings = false,
-            tokenRepository = tokenRepository,
+            tokenDataStore = tokenDataStore,
             tmdbService = tmdbService,
             catalogUC = catalogUC,
             appInfo = appInfo
@@ -162,7 +162,7 @@ class TokenViewModelTest : FunSpec({
 
             viewModel = TokenViewModel(
                 fromSettings = true,
-                tokenRepository = tokenRepository,
+                tokenDataStore = tokenDataStore,
                 tmdbService = tmdbService,
                 catalogUC = catalogUC,
                 appInfo = appInfo

@@ -2,9 +2,9 @@ package com.mskd.flux.screen.sources
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mskd.flux.features.sources.domain.useCase.AddSourceUseCase
-import com.mskd.flux.features.sources.domain.useCase.DeleteSourceUseCase
-import com.mskd.flux.features.sources.domain.useCase.FlowSourcesUseCase
+import com.mskd.flux.features.sources.domain.usecase.AddSourceUseCase
+import com.mskd.flux.features.sources.domain.usecase.DeleteSourceUseCase
+import com.mskd.flux.features.sources.domain.usecase.FlowSourcesUseCase
 import com.mskd.flux.model.core.presentation.State
 import com.mskd.flux.features.sources.domain.model.UserFolder
 import com.mskd.flux.utils.Trace

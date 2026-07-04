@@ -2,9 +2,9 @@ package com.mskd.flux.screen.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mskd.flux.data.repository.settings.SettingsRepository
+import com.mskd.flux.core.datastore.settings.SettingsDataStore
 import com.mskd.flux.data.useCases.catalog.CatalogUC
-import com.mskd.flux.data.useCases.images.ImagesUC
+import com.mskd.flux.core.util.images.ImagesPrefetchManager
 import com.mskd.flux.model.core.FluxOptionsDialogItem
 import com.mskd.flux.model.core.FluxOptionsDialogState
 import com.mskd.flux.model.core.StringProvider
@@ -25,9 +25,9 @@ import kotlinx.coroutines.launch
 import java.util.Locale
 
 class SettingsViewModel(
-    private val settingsRepository: SettingsRepository,
+    private val settingsDataStore: SettingsDataStore,
     private val catalogUC: CatalogUC,
-    private val imagesUC: ImagesUC
+    private val imagesPrefetchManager: ImagesPrefetchManager
 ) : ViewModel() {
 
     //region Variables
@@ -36,11 +36,11 @@ class SettingsViewModel(
     private val _showFullSyncDialogState = MutableStateFlow(false)
 
     val uiState: StateFlow<SettingsUiState> = combine(
-        settingsRepository.flow,
+        settingsDataStore.flow,
         _dialogState,
         _showFullSyncDialogState,
         catalogUC.state,
-        imagesUC.state
+        imagesPrefetchManager.state
     ) { settings, dialog, showSyncDialog, catalog, images ->
         SettingsUiState(
             languageValue = settings.dataLanguage,
@@ -130,7 +130,7 @@ class SettingsViewModel(
     }
 
     private suspend fun setLanguageValue(value: Locale?) {
-        settingsRepository.setDataLanguage(value)
+        settingsDataStore.setDataLanguage(value)
         catalogUC.updateLanguage()
         hideDialog()
     }
@@ -152,7 +152,7 @@ class SettingsViewModel(
     }
 
     private suspend fun setRewindValue(value: Int) {
-        settingsRepository.setPlayerRewindValue(value)
+        settingsDataStore.setPlayerRewindValue(value)
         hideDialog()
     }
 
@@ -173,7 +173,7 @@ class SettingsViewModel(
     }
 
     private suspend fun setForwardValue(value: Int) {
-        settingsRepository.setPlayerForwardValue(value)
+        settingsDataStore.setPlayerForwardValue(value)
         hideDialog()
     }
 
@@ -183,15 +183,15 @@ class SettingsViewModel(
             _event.emit(SettingsEvent.RequestExternalPlayerPermission)
         }
 
-        settingsRepository.setExternalPlayer(value)
+        settingsDataStore.setExternalPlayer(value)
     }
 
     private suspend fun onEnablePipCheck(value: Boolean) {
-        settingsRepository.setEnablePip(value)
+        settingsDataStore.setEnablePip(value)
     }
 
     private suspend fun onAutoKeyboardCheck(value: Boolean) {
-        settingsRepository.setAutoKeyboard(value)
+        settingsDataStore.setAutoKeyboard(value)
     }
 
     private fun showFullSyncDialog(show: Boolean) {
@@ -204,10 +204,10 @@ class SettingsViewModel(
     }
 
     private suspend fun onPrefetchImagesCheck(value: Boolean) {
-        settingsRepository.setPrefetchHdImages(value)
+        settingsDataStore.setPrefetchHdImages(value)
 
         if (value)
-            imagesUC.prefetchImages()
+            imagesPrefetchManager.prefetchImages()
 
     }
 

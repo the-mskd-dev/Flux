@@ -1,15 +1,15 @@
 package com.mskd.flux.features.sources
 
-import com.mskd.flux.data.local.ddb.FluxDatabase
-import com.mskd.flux.data.local.ddb.SourcesDao
-import com.mskd.flux.features.sources.data.dataSource.SourcesDataSource
-import com.mskd.flux.features.sources.data.dataSource.SourcesDataSourceImpl
+import com.mskd.flux.core.database.FluxDatabase
+import com.mskd.flux.features.sources.data.local.SourcesDao
+import com.mskd.flux.features.sources.data.datasource.SourcesDataSource
+import com.mskd.flux.features.sources.data.datasource.SourcesDataSourceImpl
 import com.mskd.flux.features.sources.domain.repository.SourcesRepository
 import com.mskd.flux.features.sources.domain.repository.SourcesRepositoryImpl
-import com.mskd.flux.features.sources.domain.useCase.AddSourceUseCase
-import com.mskd.flux.features.sources.domain.useCase.DeleteSourceUseCase
-import com.mskd.flux.features.sources.domain.useCase.FlowSourcesUseCase
-import com.mskd.flux.features.sources.domain.useCase.GetSourcesUseCase
+import com.mskd.flux.features.sources.domain.usecase.AddSourceUseCase
+import com.mskd.flux.features.sources.domain.usecase.DeleteSourceUseCase
+import com.mskd.flux.features.sources.domain.usecase.FlowSourcesUseCase
+import com.mskd.flux.features.sources.domain.usecase.GetSourcesUseCase
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 

@@ -3,7 +3,7 @@ package com.mskd.flux.screens.player
 import androidx.media3.common.Player
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
-import com.mskd.flux.data.repository.settings.SettingsRepository
+import com.mskd.flux.core.datastore.settings.SettingsDataStore
 import com.mskd.flux.data.useCases.files.FilesUC
 import com.mskd.flux.data.useCases.player.PipIsEnabledUC
 import com.mskd.flux.data.useCases.progress.ProgressUC
@@ -41,7 +41,7 @@ class PlayerViewModelTest : FunSpec({
 
     lateinit var viewModel: PlayerViewModel<Player>
     lateinit var artworkUC: FakeArtworkUC
-    lateinit var settingsRepository: SettingsRepository
+    lateinit var settingsDataStore: SettingsDataStore
     lateinit var filesUC: FilesUC
     lateinit var progressUC: ProgressUC
     lateinit var playerManager: PlayerManager<Player>
@@ -55,7 +55,7 @@ class PlayerViewModelTest : FunSpec({
         viewModel = PlayerViewModel(
             mediaId = mediaId,
             artworkUC = artworkUC,
-            settingsRepository = settingsRepository,
+            settingsDataStore = settingsDataStore,
             filesUC = filesUC,
             progressUC = progressUC,
             playerManager = playerManager,
@@ -68,8 +68,8 @@ class PlayerViewModelTest : FunSpec({
 
         artworkUC = FakeArtworkUC(initialContentType = ContentType.SHOW)
 
-        settingsRepository = mockk(relaxed = true) {
-            every { flow } returns MutableStateFlow(SettingsRepository.State())
+        settingsDataStore = mockk(relaxed = true) {
+            every { flow } returns MutableStateFlow(SettingsDataStore.State())
         }
 
         mockkedPlayer = mockk(relaxed = true) {
@@ -313,9 +313,9 @@ class PlayerViewModelTest : FunSpec({
 
                 coVerify { playerManager.selectTrack(track = testCase.track) }
                 if (testCase.track.type == PlayerTrack.Type.SUBTITLES) {
-                    coVerify { settingsRepository.setSubtitlesLanguage(any()) }
+                    coVerify { settingsDataStore.setSubtitlesLanguage(any()) }
                 } else {
-                    coVerify { settingsRepository.setAudioLanguage(any()) }
+                    coVerify { settingsDataStore.setAudioLanguage(any()) }
                 }
 
             }
@@ -512,8 +512,8 @@ class PlayerViewModelTest : FunSpec({
     }
 
     test("select track exception safety") {
-        settingsRepository = mockk(relaxed = true) {
-            every { flow } returns MutableStateFlow(SettingsRepository.State())
+        settingsDataStore = mockk(relaxed = true) {
+            every { flow } returns MutableStateFlow(SettingsDataStore.State())
             coEvery { setAudioLanguage(any()) } throws RuntimeException("Mock database write failure")
         }
         updateVm()

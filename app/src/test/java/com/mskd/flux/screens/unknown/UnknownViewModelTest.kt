@@ -3,8 +3,8 @@ package com.mskd.flux.screens.unknown
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.data.repository.ddb.DatabaseRepository
-import com.mskd.flux.data.repository.settings.SettingsRepository
-import com.mskd.flux.data.repository.user.UserRepository
+import com.mskd.flux.core.datastore.settings.SettingsDataStore
+import com.mskd.flux.core.datastore.user.UserDataStore
 import com.mskd.flux.data.useCases.progress.ProgressUC
 import com.mskd.flux.data.useCases.progress.ProgressUCImpl
 import com.mskd.flux.mockups.FakeArtworkUC
@@ -27,8 +27,8 @@ class UnknownViewModelTest : FunSpec ({
 
     lateinit var viewModel: UnknownViewModel
     lateinit var artworkRepository: FakeArtworkUC
-    lateinit var settingsRepository: SettingsRepository
-    lateinit var userRepository: UserRepository
+    lateinit var settingsDataStore: SettingsDataStore
+    lateinit var userDataStore: UserDataStore
     lateinit var progressUC: ProgressUC
     lateinit var databaseRepository: DatabaseRepository
 
@@ -36,12 +36,12 @@ class UnknownViewModelTest : FunSpec ({
 
         progressUC = ProgressUCImpl(
             database = databaseRepository,
-            user = userRepository,
+            user = userDataStore,
         )
 
         viewModel = UnknownViewModel(
             artworkUC = artworkRepository,
-            settingsRepository = settingsRepository,
+            settingsDataStore = settingsDataStore,
             progressUC = progressUC
         )
 
@@ -51,12 +51,12 @@ class UnknownViewModelTest : FunSpec ({
 
         artworkRepository = FakeArtworkUC()
 
-        settingsRepository = mockk(relaxed = true) {
-            every { flow } returns MutableStateFlow(SettingsRepository.State())
+        settingsDataStore = mockk(relaxed = true) {
+            every { flow } returns MutableStateFlow(SettingsDataStore.State())
         }
 
-        userRepository = mockk(relaxed = true) {
-            every { flow } returns MutableStateFlow(UserRepository.State())
+        userDataStore = mockk(relaxed = true) {
+            every { flow } returns MutableStateFlow(UserDataStore.State())
         }
 
         databaseRepository = mockkDatabaseRepository()
@@ -92,8 +92,8 @@ class UnknownViewModelTest : FunSpec ({
 
     test("play media - external player") {
 
-        settingsRepository = mockk(relaxed = true) {
-            every { flow } returns MutableStateFlow(SettingsRepository.State(externalPlayer = true))
+        settingsDataStore = mockk(relaxed = true) {
+            every { flow } returns MutableStateFlow(SettingsDataStore.State(externalPlayer = true))
         }
 
         updateVm()
@@ -134,8 +134,8 @@ class UnknownViewModelTest : FunSpec ({
     }
 
     test("play media - force internal player when external enabled") {
-        settingsRepository = mockk(relaxed = true) {
-            every { flow } returns MutableStateFlow(SettingsRepository.State(externalPlayer = true))
+        settingsDataStore = mockk(relaxed = true) {
+            every { flow } returns MutableStateFlow(SettingsDataStore.State(externalPlayer = true))
         }
 
         updateVm()

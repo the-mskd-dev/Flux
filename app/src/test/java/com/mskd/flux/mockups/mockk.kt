@@ -1,12 +1,12 @@
 package com.mskd.flux.mockups
 
 import com.mskd.flux.data.repository.ddb.DatabaseRepository
-import com.mskd.flux.data.repository.settings.SettingsRepository
-import com.mskd.flux.data.repository.snackbars.SnackbarRepository
+import com.mskd.flux.core.datastore.settings.SettingsDataStore
+import com.mskd.flux.core.datastore.snackbars.SnackbarDataStore
 import com.mskd.flux.data.useCases.catalog.CatalogUC
 import com.mskd.flux.data.useCases.catalog.CatalogUC.State
 import com.mskd.flux.data.useCases.files.FilesUC
-import com.mskd.flux.data.useCases.images.ImagesUC
+import com.mskd.flux.core.util.images.ImagesPrefetchManager
 import com.mskd.flux.data.useCases.progress.ProgressUC
 import com.mskd.flux.model.domain.files.UserFile
 import io.mockk.coEvery
@@ -21,8 +21,8 @@ fun mockkCatalogUC() : CatalogUC = mockk(relaxed = true) {
     every { artworks } returns MutableStateFlow(MediaMockups.artworks)
 }
 
-fun mockkImagesUC() : ImagesUC = mockk(relaxed = true) {
-    every { state } returns MutableStateFlow(ImagesUC.State.Idle)
+fun mockkImagesUC() : ImagesPrefetchManager = mockk(relaxed = true) {
+    every { state } returns MutableStateFlow(ImagesPrefetchManager.State.Idle)
 }
 
 fun mockkDatabaseRepository() : DatabaseRepository = mockk(relaxed = true) {
@@ -69,11 +69,11 @@ fun mockkDatabaseRepository() : DatabaseRepository = mockk(relaxed = true) {
     }
 }
 
-fun mockkSettingsRepository() : SettingsRepository = mockk(relaxed = true) {
-    every { flow } returns MutableStateFlow(SettingsRepository.State())
+fun mockkSettingsRepository() : SettingsDataStore = mockk(relaxed = true) {
+    every { flow } returns MutableStateFlow(SettingsDataStore.State())
 }
 
-fun mockkSnackbarRepository() : SnackbarRepository = mockk(relaxed = true) {
+fun mockkSnackbarRepository() : SnackbarDataStore = mockk(relaxed = true) {
     every { canShow(any()) } returns MutableStateFlow(true)
     every { getCount(any()) } returns MutableStateFlow(0)
 }

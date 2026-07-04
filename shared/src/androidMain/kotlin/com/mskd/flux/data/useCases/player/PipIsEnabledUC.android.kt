@@ -4,17 +4,17 @@ import android.app.AppOpsManager
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Process
-import com.mskd.flux.data.repository.settings.SettingsRepository
+import com.mskd.flux.core.datastore.settings.SettingsDataStore
 import kotlinx.coroutines.flow.first
 
 class PipIsEnabledUCImpl(
     private val context: Context,
-    private val settingsRepository: SettingsRepository
+    private val settingsDataStore: SettingsDataStore
 ): PipIsEnabledUC {
 
     override suspend operator fun invoke() : Boolean {
 
-        val pipIsEnabled = settingsRepository.flow.first().pipIsEnabled
+        val pipIsEnabled = settingsDataStore.flow.first().pipIsEnabled
         if (!pipIsEnabled) return  false
 
         val supportsPip = context.packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)

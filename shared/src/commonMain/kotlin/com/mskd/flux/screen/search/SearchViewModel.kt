@@ -2,7 +2,7 @@ package com.mskd.flux.screen.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mskd.flux.data.repository.settings.SettingsRepository
+import com.mskd.flux.core.datastore.settings.SettingsDataStore
 import com.mskd.flux.data.useCases.catalog.CatalogUC
 import com.mskd.flux.model.domain.artwork.Artwork
 import com.mskd.flux.model.domain.artwork.ContentType
@@ -19,13 +19,13 @@ import kotlinx.coroutines.runBlocking
 class SearchViewModel(
     contentType: ContentType? = null,
     private val catalogUC: CatalogUC,
-    private val settingsRepository: SettingsRepository
+    private val settingsDataStore: SettingsDataStore
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(
         SearchUIState(
             contentType = contentType,
-            autoKeyboard = runBlocking { settingsRepository.flow.first().autoKeyboard } && contentType == null
+            autoKeyboard = runBlocking { settingsDataStore.flow.first().autoKeyboard } && contentType == null
         )
     )
     val uiState: StateFlow<SearchUIState> = _uiState.asStateFlow()

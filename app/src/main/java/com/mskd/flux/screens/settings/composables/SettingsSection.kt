@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.mskd.flux.data.useCases.images.ImagesUC
+import com.mskd.flux.core.util.images.ImagesPrefetchManager
 import com.mskd.flux.screen.settings.SettingsIntent
 import com.mskd.flux.screen.settings.SettingsUiState
 import com.mskd.flux.ui.theme.FluxUI
@@ -277,11 +277,11 @@ fun SettingsSyncSection(
             onTap = { sendIntent(SettingsIntent.ShowFullSyncDialog(true)) }
         )
 
-        val imagesTextColor by animateColorAsState(if (state.prefetchImagesState is ImagesUC.State.InProgress) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onBackground.copy(alpha = .8f))
+        val imagesTextColor by animateColorAsState(if (state.prefetchImagesState is ImagesPrefetchManager.State.InProgress) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onBackground.copy(alpha = .8f))
         val imagesText = when {
-            state.prefetchHdImages && state.prefetchImagesState is ImagesUC.State.Idle -> stringResource(Res.string.images_cached)
-            state.prefetchHdImages && state.prefetchImagesState is ImagesUC.State.InProgress -> {
-                val progressState = state.prefetchImagesState as ImagesUC.State.InProgress
+            state.prefetchHdImages && state.prefetchImagesState is ImagesPrefetchManager.State.Idle -> stringResource(Res.string.images_cached)
+            state.prefetchHdImages && state.prefetchImagesState is ImagesPrefetchManager.State.InProgress -> {
+                val progressState = state.prefetchImagesState as ImagesPrefetchManager.State.InProgress
                 stringResource(Res.string.caching_images_in_progress, progressState.progress.times(100).roundToInt())
             }
             else -> stringResource(Res.string.cache_images_desc)

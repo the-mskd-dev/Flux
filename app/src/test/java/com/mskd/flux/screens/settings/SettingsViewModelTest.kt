@@ -2,9 +2,9 @@ package com.mskd.flux.screens.settings
 
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
-import com.mskd.flux.data.repository.settings.SettingsRepository
+import com.mskd.flux.core.datastore.settings.SettingsDataStore
 import com.mskd.flux.data.useCases.catalog.CatalogUC
-import com.mskd.flux.data.useCases.images.ImagesUC
+import com.mskd.flux.core.util.images.ImagesPrefetchManager
 import com.mskd.flux.mockups.mockkCatalogUC
 import com.mskd.flux.mockups.mockkImagesUC
 import com.mskd.flux.model.core.FluxOptionsDialogState
@@ -28,26 +28,26 @@ class SettingsViewModelTest : FunSpec({
     fluxExtensions()
 
     lateinit var viewModel: SettingsViewModel
-    lateinit var settingsRepository: SettingsRepository
+    lateinit var settingsDataStore: SettingsDataStore
     lateinit var catalogUC: CatalogUC
-    lateinit var imagesUC: ImagesUC
+    lateinit var imagesPrefetchManager: ImagesPrefetchManager
 
-    val dataStoreFlow = MutableStateFlow(SettingsRepository.State())
+    val dataStoreFlow = MutableStateFlow(SettingsDataStore.State())
 
     beforeTest {
 
-        settingsRepository = mockk(relaxed = true) {
+        settingsDataStore = mockk(relaxed = true) {
             every { flow } returns dataStoreFlow
         }
 
         catalogUC = mockkCatalogUC()
 
-        imagesUC = mockkImagesUC()
+        imagesPrefetchManager = mockkImagesUC()
 
         viewModel = SettingsViewModel(
-            settingsRepository = settingsRepository,
+            settingsDataStore = settingsDataStore,
             catalogUC = catalogUC,
-            imagesUC = imagesUC,
+            imagesPrefetchManager = imagesPrefetchManager,
         )
 
     }
@@ -173,7 +173,7 @@ class SettingsViewModelTest : FunSpec({
 
             val state = awaitItem()
 
-            coVerify { settingsRepository.setPlayerRewindValue(20) }
+            coVerify { settingsDataStore.setPlayerRewindValue(20) }
             state.rewindValue shouldBe 20
             state.dialogState shouldBe null
 
@@ -191,7 +191,7 @@ class SettingsViewModelTest : FunSpec({
 
             val state = awaitItem()
 
-            coVerify { settingsRepository.setPlayerForwardValue(20) }
+            coVerify { settingsDataStore.setPlayerForwardValue(20) }
             state.forwardValue shouldBe 20
             state.dialogState shouldBe null
 
@@ -223,7 +223,7 @@ class SettingsViewModelTest : FunSpec({
 
             val state = awaitItem()
 
-            coVerify { settingsRepository.setDataLanguage(Locale.FRENCH) }
+            coVerify { settingsDataStore.setDataLanguage(Locale.FRENCH) }
             state.languageValue shouldBe Locale.FRENCH
             state.dialogState shouldBe null
 
@@ -241,7 +241,7 @@ class SettingsViewModelTest : FunSpec({
 
             val state = awaitItem()
 
-            coVerify { settingsRepository.setDataLanguage(null) }
+            coVerify { settingsDataStore.setDataLanguage(null) }
             state.languageValue shouldBe null
             state.dialogState shouldBe null
 
@@ -259,7 +259,7 @@ class SettingsViewModelTest : FunSpec({
 
             val state = awaitItem()
 
-            coVerify { settingsRepository.setAutoKeyboard(false) }
+            coVerify { settingsDataStore.setAutoKeyboard(false) }
             state.autoKeyboard shouldBe false
 
             cancelAndConsumeRemainingEvents()
@@ -276,7 +276,7 @@ class SettingsViewModelTest : FunSpec({
 
             val state = awaitItem()
 
-            coVerify { settingsRepository.setExternalPlayer(true) }
+            coVerify { settingsDataStore.setExternalPlayer(true) }
             state.useExternalPlayer shouldBe true
 
             cancelAndConsumeRemainingEvents()
@@ -307,7 +307,7 @@ class SettingsViewModelTest : FunSpec({
 
             val state = awaitItem()
 
-            coVerify { settingsRepository.setEnablePip(false) }
+            coVerify { settingsDataStore.setEnablePip(false) }
             state.useExternalPlayer shouldBe true
 
             cancelAndConsumeRemainingEvents()
@@ -324,7 +324,7 @@ class SettingsViewModelTest : FunSpec({
 
             val state = awaitItem()
 
-            coVerify { settingsRepository.setPrefetchHdImages(true) }
+            coVerify { settingsDataStore.setPrefetchHdImages(true) }
             state.prefetchHdImages shouldBe true
 
             cancelAndConsumeRemainingEvents()
@@ -337,7 +337,7 @@ class SettingsViewModelTest : FunSpec({
             awaitItem()
 
             viewModel.handleIntent(SettingsIntent.OnPrefetchHdImagesCheck(true))
-            coVerify { imagesUC.prefetchImages() }
+            coVerify { imagesPrefetchManager.prefetchImages() }
         }
     }
 
@@ -346,7 +346,7 @@ class SettingsViewModelTest : FunSpec({
             awaitItem()
 
             viewModel.handleIntent(SettingsIntent.OnPrefetchHdImagesCheck(false))
-            coVerify(exactly = 0) { imagesUC.prefetchImages() }
+            coVerify(exactly = 0) { imagesPrefetchManager.prefetchImages() }
         }
     }
 

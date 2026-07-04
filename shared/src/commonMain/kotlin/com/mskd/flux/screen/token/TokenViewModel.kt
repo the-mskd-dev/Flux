@@ -3,7 +3,7 @@ package com.mskd.flux.screen.token
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.features.tmdb.data.service.TMDBService
-import com.mskd.flux.data.repository.token.TokenRepository
+import com.mskd.flux.core.datastore.token.TokenDataStore
 import com.mskd.flux.data.useCases.catalog.CatalogUC
 import com.mskd.flux.model.core.AppInfo
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 
 class TokenViewModel(
     fromSettings: Boolean,
-    private val tokenRepository: TokenRepository,
+    private val tokenDataStore: TokenDataStore,
     private val tmdbService: TMDBService,
     private val catalogUC: CatalogUC,
     private val appInfo: AppInfo
@@ -30,7 +30,7 @@ class TokenViewModel(
 
     init {
         viewModelScope.launch {
-            val token = tokenRepository.getToken().ifBlank { if (appInfo.isDebug) appInfo.debugToken else "" }
+            val token = tokenDataStore.getToken().ifBlank { if (appInfo.isDebug) appInfo.debugToken else "" }
             setToken(token)
         }
     }
@@ -55,7 +55,7 @@ class TokenViewModel(
 
         try {
 
-            tokenRepository.saveToken(_uiState.value.token)
+            tokenDataStore.saveToken(_uiState.value.token)
 
             val authentication = tmdbService.authenticate()
 
@@ -70,7 +70,7 @@ class TokenViewModel(
 
             } else {
 
-                tokenRepository.clearToken()
+                tokenDataStore.clearToken()
                 _uiState.update { it.copy(message = TokenMessage.Error) }
 
             }
@@ -78,7 +78,7 @@ class TokenViewModel(
         } catch (e: Exception) {
 
             e.printStackTrace()
-            tokenRepository.clearToken()
+            tokenDataStore.clearToken()
             _uiState.update { it.copy(message = TokenMessage.Error) }
 
         }
@@ -92,7 +92,7 @@ class TokenViewModel(
     }
 
     private suspend fun onCancelTap() {
-        tokenRepository.dontRequestToken()
+        tokenDataStore.dontRequestToken()
         _event.emit(TokenEvent.NavigateToHomeScreen)
     }
 

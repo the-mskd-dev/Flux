@@ -12,7 +12,7 @@ val moduleUseCaseAndroid = module {
     single<PipIsEnabledUC> {
         PipIsEnabledUCImpl(
             context = androidContext(),
-            settingsRepository = get()
+            settingsDataStore = get()
         )
     }
 

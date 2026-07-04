@@ -3,7 +3,7 @@ package com.mskd.flux.screen.customization
 import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mskd.flux.data.repository.customization.CustomizationRepository
+import com.mskd.flux.core.datastore.customization.CustomizationDataStore
 import com.mskd.flux.model.core.FluxOptionsDialogItem
 import com.mskd.flux.model.core.FluxOptionsDialogState
 import com.mskd.flux.model.core.StringProvider
@@ -25,13 +25,13 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class CustomizationViewModel(
-    private val customizationRepository: CustomizationRepository,
+    private val customizationDataStore: CustomizationDataStore,
 ) : ViewModel() {
 
     private val _dialogState = MutableStateFlow<CustomizationDialog?>(null)
 
     val uiState: StateFlow<CustomizationUiState> = combine(
-        customizationRepository.flow,
+        customizationDataStore.flow,
         _dialogState
     ) { customization, dialog ->
         CustomizationUiState(
@@ -111,7 +111,7 @@ class CustomizationViewModel(
     }
 
     private suspend fun setTheme(theme: UiCommon.THEME) {
-        customizationRepository.setUiTheme(theme)
+        customizationDataStore.setUiTheme(theme)
         hideDialog()
     }
 
@@ -163,34 +163,34 @@ class CustomizationViewModel(
     }
 
     private suspend fun setColor(color: Int?) {
-        customizationRepository.setColor(color)
+        customizationDataStore.setColor(color)
         hideDialog()
     }
 
     private suspend fun setWaveProgress(waveProgress: Boolean) {
-        customizationRepository.setWaveProgress(waveProgress)
+        customizationDataStore.setWaveProgress(waveProgress)
     }
 
     private suspend fun setOldBlurredHeader(blurred: Boolean) {
-        customizationRepository.setOldBlurredHeader(blurred)
+        customizationDataStore.setOldBlurredHeader(blurred)
     }
 
     private suspend fun setLargeEpisodeImage(large: Boolean) {
-        customizationRepository.setLargeEpisodeImage(large)
+        customizationDataStore.setLargeEpisodeImage(large)
     }
 
     private suspend fun setItemsPerRowValue(count: Int) {
-        customizationRepository.setItemsPerRow(count)
+        customizationDataStore.setItemsPerRow(count)
         hideDialog()
     }
 
     private suspend fun setItemsCornersValue(corners: Int) {
-        customizationRepository.setItemsCorners(corners)
+        customizationDataStore.setItemsCorners(corners)
         hideDialog()
     }
 
     private suspend fun setSeasonsPerRowValue(count: Int) {
-        customizationRepository.setSeasonsPerRow(count)
+        customizationDataStore.setSeasonsPerRow(count)
         hideDialog()
     }
 

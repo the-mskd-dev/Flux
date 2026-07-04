@@ -2,9 +2,9 @@ package com.mskd.flux.screens.home
 
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
-import com.mskd.flux.data.repository.snackbars.SnackbarRepository
-import com.mskd.flux.data.repository.token.TokenRepository
-import com.mskd.flux.data.repository.user.UserRepository
+import com.mskd.flux.core.datastore.snackbars.SnackbarDataStore
+import com.mskd.flux.core.datastore.token.TokenDataStore
+import com.mskd.flux.core.datastore.user.UserDataStore
 import com.mskd.flux.data.useCases.catalog.CatalogUC
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.mockkCatalogUC
@@ -36,27 +36,27 @@ class HomeViewModelTest : FunSpec({
 
     lateinit var viewModel: HomeViewModel
     lateinit var catalogUC: CatalogUC
-    lateinit var userRepository: UserRepository
-    lateinit var tokenRepository: TokenRepository
-    lateinit var snackbarRepository: SnackbarRepository
+    lateinit var userDataStore: UserDataStore
+    lateinit var tokenDataStore: TokenDataStore
+    lateinit var snackbarDataStore: SnackbarDataStore
     lateinit var appInfo: AppInfo
 
     // Mocked flows
-    val dataStoreFlow = MutableStateFlow(UserRepository.State())
+    val dataStoreFlow = MutableStateFlow(UserDataStore.State())
     val tokenFlow = MutableStateFlow("token")
 
     beforeTest {
 
         catalogUC = mockkCatalogUC()
 
-        tokenRepository = mockk(relaxed = true) {
+        tokenDataStore = mockk(relaxed = true) {
             coEvery { flow } returns tokenFlow
         }
-        userRepository = mockk(relaxed = true) {
+        userDataStore = mockk(relaxed = true) {
             every { flow } returns dataStoreFlow
         }
 
-        snackbarRepository = mockkSnackbarRepository()
+        snackbarDataStore = mockkSnackbarRepository()
 
         appInfo = AppInfo(
             versionCode = 0,
@@ -84,9 +84,9 @@ class HomeViewModelTest : FunSpec({
 
             viewModel = HomeViewModel(
                 catalogUC = catalogUC,
-                tokenRepository = tokenRepository,
-                userRepository = userRepository,
-                snackbarRepository = snackbarRepository,
+                tokenDataStore = tokenDataStore,
+                userDataStore = userDataStore,
+                snackbarDataStore = snackbarDataStore,
                 appInfo = appInfo
             )
 
@@ -109,9 +109,9 @@ class HomeViewModelTest : FunSpec({
 
         viewModel = HomeViewModel(
             catalogUC = catalogUC,
-            tokenRepository = tokenRepository,
-            userRepository = userRepository,
-            snackbarRepository = snackbarRepository,
+            tokenDataStore = tokenDataStore,
+            userDataStore = userDataStore,
+            snackbarDataStore = snackbarDataStore,
             appInfo = appInfo
         )
 
@@ -125,13 +125,13 @@ class HomeViewModelTest : FunSpec({
 
     test("should sync when last sync was more than 1 day ago") {
         val oldTime = System.currentTimeMillis() - 2.days.inWholeMilliseconds
-        coEvery { userRepository.getSyncTime() } returns oldTime
+        coEvery { userDataStore.getSyncTime() } returns oldTime
 
         viewModel = HomeViewModel(
             catalogUC = catalogUC,
-            tokenRepository = tokenRepository,
-            userRepository = userRepository,
-            snackbarRepository = snackbarRepository,
+            tokenDataStore = tokenDataStore,
+            userDataStore = userDataStore,
+            snackbarDataStore = snackbarDataStore,
             appInfo = appInfo
         )
 
@@ -142,13 +142,13 @@ class HomeViewModelTest : FunSpec({
 
     test("should not sync when last sync was less than 1 day ago") {
         val recentTime = System.currentTimeMillis() - 12.hours.inWholeMilliseconds
-        coEvery { userRepository.getSyncTime() } returns recentTime
+        coEvery { userDataStore.getSyncTime() } returns recentTime
 
         viewModel = HomeViewModel(
             catalogUC = catalogUC,
-            tokenRepository = tokenRepository,
-            userRepository = userRepository,
-            snackbarRepository = snackbarRepository,
+            tokenDataStore = tokenDataStore,
+            userDataStore = userDataStore,
+            snackbarDataStore = snackbarDataStore,
             appInfo = appInfo
         )
 
@@ -160,7 +160,7 @@ class HomeViewModelTest : FunSpec({
     test("should sync when new app version") {
 
         val recentTime = System.currentTimeMillis() - 12.hours.inWholeMilliseconds
-        coEvery { userRepository.getSyncTime() } returns recentTime
+        coEvery { userDataStore.getSyncTime() } returns recentTime
 
         appInfo = AppInfo(
             versionCode = Int.MAX_VALUE,
@@ -169,9 +169,9 @@ class HomeViewModelTest : FunSpec({
 
         viewModel = HomeViewModel(
             catalogUC = catalogUC,
-            tokenRepository = tokenRepository,
-            userRepository = userRepository,
-            snackbarRepository = snackbarRepository,
+            tokenDataStore = tokenDataStore,
+            userDataStore = userDataStore,
+            snackbarDataStore = snackbarDataStore,
             appInfo = appInfo
         )
 
@@ -183,9 +183,9 @@ class HomeViewModelTest : FunSpec({
     test("on artwork show tap") {
         viewModel = HomeViewModel(
             catalogUC = catalogUC,
-            tokenRepository = tokenRepository,
-            userRepository = userRepository,
-            snackbarRepository = snackbarRepository,
+            tokenDataStore = tokenDataStore,
+            userDataStore = userDataStore,
+            snackbarDataStore = snackbarDataStore,
             appInfo = appInfo
         )
 
@@ -198,9 +198,9 @@ class HomeViewModelTest : FunSpec({
     test("on artwork movie tap") {
         viewModel = HomeViewModel(
             catalogUC = catalogUC,
-            tokenRepository = tokenRepository,
-            userRepository = userRepository,
-            snackbarRepository = snackbarRepository,
+            tokenDataStore = tokenDataStore,
+            userDataStore = userDataStore,
+            snackbarDataStore = snackbarDataStore,
             appInfo = appInfo
         )
 
@@ -213,9 +213,9 @@ class HomeViewModelTest : FunSpec({
     test("on unknown artwork tap") {
         viewModel = HomeViewModel(
             catalogUC = catalogUC,
-            tokenRepository = tokenRepository,
-            userRepository = userRepository,
-            snackbarRepository = snackbarRepository,
+            tokenDataStore = tokenDataStore,
+            userDataStore = userDataStore,
+            snackbarDataStore = snackbarDataStore,
             appInfo = appInfo
         )
 
@@ -228,9 +228,9 @@ class HomeViewModelTest : FunSpec({
     test("on category tap") {
         viewModel = HomeViewModel(
             catalogUC = catalogUC,
-            tokenRepository = tokenRepository,
-            userRepository = userRepository,
-            snackbarRepository = snackbarRepository,
+            tokenDataStore = tokenDataStore,
+            userDataStore = userDataStore,
+            snackbarDataStore = snackbarDataStore,
             appInfo = appInfo
         )
 
@@ -243,9 +243,9 @@ class HomeViewModelTest : FunSpec({
     test("on search tap") {
         viewModel = HomeViewModel(
             catalogUC = catalogUC,
-            tokenRepository = tokenRepository,
-            userRepository = userRepository,
-            snackbarRepository = snackbarRepository,
+            tokenDataStore = tokenDataStore,
+            userDataStore = userDataStore,
+            snackbarDataStore = snackbarDataStore,
             appInfo = appInfo
         )
 
@@ -258,9 +258,9 @@ class HomeViewModelTest : FunSpec({
     test("on settings tap") {
         viewModel = HomeViewModel(
             catalogUC = catalogUC,
-            tokenRepository = tokenRepository,
-            userRepository = userRepository,
-            snackbarRepository = snackbarRepository,
+            tokenDataStore = tokenDataStore,
+            userDataStore = userDataStore,
+            snackbarDataStore = snackbarDataStore,
             appInfo = appInfo
         )
 
@@ -273,9 +273,9 @@ class HomeViewModelTest : FunSpec({
     test("on how to tap") {
         viewModel = HomeViewModel(
             catalogUC = catalogUC,
-            tokenRepository = tokenRepository,
-            userRepository = userRepository,
-            snackbarRepository = snackbarRepository,
+            tokenDataStore = tokenDataStore,
+            userDataStore = userDataStore,
+            snackbarDataStore = snackbarDataStore,
             appInfo = appInfo
         )
 
@@ -290,9 +290,9 @@ class HomeViewModelTest : FunSpec({
 
         viewModel = HomeViewModel(
             catalogUC = catalogUC,
-            tokenRepository = tokenRepository,
-            userRepository = userRepository,
-            snackbarRepository = snackbarRepository,
+            tokenDataStore = tokenDataStore,
+            userDataStore = userDataStore,
+            snackbarDataStore = snackbarDataStore,
             appInfo = appInfo
         )
 
@@ -311,9 +311,9 @@ class HomeViewModelTest : FunSpec({
 
         val viewModelTutorial = HomeViewModel(
             catalogUC = catalogUC,
-            tokenRepository = tokenRepository,
-            userRepository = userRepository,
-            snackbarRepository = snackbarRepository,
+            tokenDataStore = tokenDataStore,
+            userDataStore = userDataStore,
+            snackbarDataStore = snackbarDataStore,
             appInfo = appInfo
         )
 

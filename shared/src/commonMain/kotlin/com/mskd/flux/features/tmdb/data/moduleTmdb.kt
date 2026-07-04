@@ -1,8 +1,8 @@
 package com.mskd.flux.features.tmdb.data
 
-import com.mskd.flux.data.repository.token.TokenRepository
-import com.mskd.flux.features.tmdb.data.dataSource.TmdbDataSource
-import com.mskd.flux.features.tmdb.data.dataSource.TmdbDataSourceImpl
+import com.mskd.flux.core.datastore.token.TokenDataStore
+import com.mskd.flux.features.tmdb.data.datasource.TmdbDataSource
+import com.mskd.flux.features.tmdb.data.datasource.TmdbDataSourceImpl
 import com.mskd.flux.features.tmdb.data.service.TMDBService
 import com.mskd.flux.features.tmdb.data.service.TMDBServiceImpl
 import io.ktor.client.HttpClient
@@ -32,7 +32,7 @@ val moduleTmdb = module {
 
     single<HttpClient> {
         val json = get<Json>()
-        val tokenRepository = get<TokenRepository>()
+        val tokenDataStore = get<TokenDataStore>()
 
         HttpClient(OkHttp) {
 
@@ -49,7 +49,7 @@ val moduleTmdb = module {
             defaultRequest {
                 url(baseUrl)
                 headers.append(HttpHeaders.Accept, "application/json")
-                val token = runBlocking { tokenRepository.getToken() }
+                val token = runBlocking { tokenDataStore.getToken() }
                 if (token.isNotEmpty()) {
                     headers.append(HttpHeaders.Authorization, "Bearer ${token.trim()}")
                 }

@@ -6,8 +6,8 @@ import android.provider.DocumentsContract
 import androidx.core.net.toUri
 import com.mskd.flux.features.files.domain.repository.FilesRepository
 import com.mskd.flux.features.sources.data.AndroidUserFolderValidator
-import com.mskd.flux.features.sources.data.dataSource.SourcesDataSource
-import com.mskd.flux.features.sources.data.model.toDomain
+import com.mskd.flux.features.sources.data.datasource.SourcesDataSource
+import com.mskd.flux.features.sources.data.mapper.toDomain
 import com.mskd.flux.features.sources.domain.model.UserFolder
 import com.mskd.flux.model.domain.files.FileSource
 import com.mskd.flux.model.domain.files.UserFile

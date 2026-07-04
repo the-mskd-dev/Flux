@@ -2,9 +2,9 @@ package com.mskd.flux.screen.unknown
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mskd.flux.data.repository.settings.SettingsRepository
+import com.mskd.flux.core.datastore.settings.SettingsDataStore
 import com.mskd.flux.data.useCases.artwork.ArtworkUC
-import com.mskd.flux.data.useCases.progress.ProgressUC
+import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.model.core.presentation.ScreenState
 import com.mskd.flux.model.core.presentation.State
 import com.mskd.flux.model.domain.artwork.Artwork
@@ -23,8 +23,8 @@ import kotlinx.coroutines.launch
 
 class UnknownViewModel(
     private val artworkUC: ArtworkUC,
-    private val settingsRepository: SettingsRepository,
-    private val progressUC: ProgressUC
+    private val settingsDataStore: SettingsDataStore,
+    private val saveProgress: SaveProgressUseCase
 ) : ViewModel() {
 
     //region Variables
@@ -42,7 +42,7 @@ class UnknownViewModel(
 
     val uiState: StateFlow<UnknownUiState> = combine(
         artworkUC.flow,
-        settingsRepository.flow,
+        settingsDataStore.flow,
         _searchQuery
     ) { artworkContent, settings, searchQuery ->
 
@@ -102,7 +102,7 @@ class UnknownViewModel(
 
     private suspend fun onExternalPlayerResult(progress: Long) {
         selectedMedia?.let { media ->
-            progressUC.saveProgress(media = media, progress = progress)
+            saveProgress(media = media, progress = progress)
             selectedMedia = null
         }
     }

@@ -2,9 +2,9 @@ package com.mskd.flux.screen.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mskd.flux.data.repository.snackbars.SnackbarRepository
-import com.mskd.flux.data.repository.token.TokenRepository
-import com.mskd.flux.data.repository.user.UserRepository
+import com.mskd.flux.core.datastore.snackbars.SnackbarDataStore
+import com.mskd.flux.core.datastore.token.TokenDataStore
+import com.mskd.flux.core.datastore.user.UserDataStore
 import com.mskd.flux.data.useCases.catalog.CatalogUC
 import com.mskd.flux.model.core.AppInfo
 import com.mskd.flux.model.domain.artwork.Artwork
@@ -26,9 +26,9 @@ import kotlin.time.Duration.Companion.days
 
 class HomeViewModel(
     private val catalogUC: CatalogUC,
-    private val userRepository: UserRepository,
-    private val tokenRepository: TokenRepository,
-    private val snackbarRepository: SnackbarRepository,
+    private val userDataStore: UserDataStore,
+    private val tokenDataStore: TokenDataStore,
+    private val snackbarDataStore: SnackbarDataStore,
     private val appInfo: AppInfo
 ): ViewModel() {
 
@@ -40,8 +40,8 @@ class HomeViewModel(
     val uiState: StateFlow<HomeUiState> = combine(
         catalogUC.artworks,
         catalogUC.state,
-        userRepository.flow,
-        tokenRepository.flow,
+        userDataStore.flow,
+        tokenDataStore.flow,
         _dismissedSnackbar,
     ) { artworks, catalogState, preferences, token, dismissedSnackbar ->
 
@@ -99,8 +99,8 @@ class HomeViewModel(
 
     private suspend fun syncCatalog(manualSync: Boolean = false) {
 
-        val lastSyncTime = userRepository.getSyncTime()
-        val lastSyncVersionCode = userRepository.getVersionCode()
+        val lastSyncTime = userDataStore.getSyncTime()
+        val lastSyncVersionCode = userDataStore.getVersionCode()
 
         val currentTime = System.currentTimeMillis()
         val sync = currentTime - lastSyncTime > 1.days.inWholeMilliseconds
@@ -164,18 +164,18 @@ class HomeViewModel(
         return when {
             token.isBlank()
                     && dismissedSnackbar.contains(FluxSnackbar.Token).not()
-                    && snackbarRepository.canShow(FluxSnackbar.Token.id).first() -> {
+                    && snackbarDataStore.canShow(FluxSnackbar.Token.id).first() -> {
 
-                snackbarRepository.incrementCount(FluxSnackbar.Token.id)
+                snackbarDataStore.incrementCount(FluxSnackbar.Token.id)
                 FluxSnackbar.Token
 
             }
             token.isNotBlank()
                     && artworks.any { it.id == Artwork.UNKNOWN_ID }
                     && dismissedSnackbar.contains(FluxSnackbar.Tutorial).not()
-                    && snackbarRepository.canShow(FluxSnackbar.Tutorial.id).first() -> {
+                    && snackbarDataStore.canShow(FluxSnackbar.Tutorial.id).first() -> {
 
-                snackbarRepository.incrementCount(FluxSnackbar.Tutorial.id)
+                snackbarDataStore.incrementCount(FluxSnackbar.Tutorial.id)
                 FluxSnackbar.Tutorial
 
             }

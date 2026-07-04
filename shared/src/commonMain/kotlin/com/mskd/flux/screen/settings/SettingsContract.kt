@@ -1,7 +1,7 @@
 package com.mskd.flux.screen.settings
 
 import androidx.compose.runtime.Immutable
-import com.mskd.flux.data.useCases.images.ImagesUC
+import com.mskd.flux.core.util.images.ImagesPrefetchManager
 import com.mskd.flux.model.core.FluxOptionsDialogState
 import java.util.Locale
 
@@ -17,7 +17,7 @@ data class SettingsUiState(
     val showSyncDialog: Boolean = false,
     val fullSyncInProgress: Boolean = false,
     val prefetchHdImages: Boolean = false,
-    val prefetchImagesState: ImagesUC.State = ImagesUC.State.Idle
+    val prefetchImagesState: ImagesPrefetchManager.State = ImagesPrefetchManager.State.Idle
 )
 
 sealed class SettingsIntent {

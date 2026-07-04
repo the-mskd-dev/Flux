@@ -2,7 +2,7 @@ package com.mskd.flux.screens.artwork
 
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
-import com.mskd.flux.data.repository.settings.SettingsRepository
+import com.mskd.flux.core.datastore.settings.SettingsDataStore
 import com.mskd.flux.data.useCases.progress.ProgressUC
 import com.mskd.flux.mockups.FakeArtworkUC
 import com.mskd.flux.mockups.MediaMockups
@@ -33,7 +33,7 @@ class ArtworkViewModelTest : FunSpec({
     fluxExtensions()
 
     lateinit var viewModel: ArtworkViewModel
-    lateinit var settingsRepository: SettingsRepository
+    lateinit var settingsDataStore: SettingsDataStore
     lateinit var artworkUC: FakeArtworkUC
     lateinit var progressUC: ProgressUC
     var currentSeason: Int? = 1
@@ -46,7 +46,7 @@ class ArtworkViewModelTest : FunSpec({
             artworkId = MediaMockups.showArtwork.id,
             season = currentSeason,
             artworkUC = artworkUC,
-            settingsRepository = settingsRepository,
+            settingsDataStore = settingsDataStore,
             progressUC = progressUC
         )
 
@@ -58,8 +58,8 @@ class ArtworkViewModelTest : FunSpec({
 
         artworkUC = FakeArtworkUC(initialContentType = ContentType.SHOW)
 
-        settingsRepository = mockk(relaxed = true) {
-            every { flow } returns MutableStateFlow(SettingsRepository.State())
+        settingsDataStore = mockk(relaxed = true) {
+            every { flow } returns MutableStateFlow(SettingsDataStore.State())
         }
 
         updateVm()
@@ -131,8 +131,8 @@ class ArtworkViewModelTest : FunSpec({
 
     test("show external player") {
 
-        settingsRepository = mockk(relaxed = true) {
-            every { flow } returns MutableStateFlow(SettingsRepository.State(externalPlayer = true))
+        settingsDataStore = mockk(relaxed = true) {
+            every { flow } returns MutableStateFlow(SettingsDataStore.State(externalPlayer = true))
         }
 
         updateVm()
@@ -409,7 +409,7 @@ class ArtworkViewModelTest : FunSpec({
             artworkId = -999L,
             season = null,
             artworkUC = artworkUC,
-            settingsRepository = settingsRepository,
+            settingsDataStore = settingsDataStore,
             progressUC = progressUC
         )
 

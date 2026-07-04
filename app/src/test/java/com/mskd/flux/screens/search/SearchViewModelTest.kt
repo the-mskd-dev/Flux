@@ -2,7 +2,7 @@ package com.mskd.flux.screens.search
 
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
-import com.mskd.flux.data.repository.settings.SettingsRepository
+import com.mskd.flux.core.datastore.settings.SettingsDataStore
 import com.mskd.flux.data.useCases.catalog.CatalogUC
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.mockkCatalogUC
@@ -20,19 +20,19 @@ class SearchViewModelTest : FunSpec({
 
     lateinit var viewModel: SearchViewModel
     lateinit var catalogUC: CatalogUC
-    lateinit var settingsRepository: SettingsRepository
+    lateinit var settingsDataStore: SettingsDataStore
 
 
     beforeTest {
 
         catalogUC = mockkCatalogUC()
 
-        settingsRepository = mockkSettingsRepository()
+        settingsDataStore = mockkSettingsRepository()
 
         viewModel = SearchViewModel(
             contentType = null,
             catalogUC = catalogUC,
-            settingsRepository = settingsRepository
+            settingsDataStore = settingsDataStore
         )
 
     }
@@ -162,7 +162,7 @@ class SearchViewModelTest : FunSpec({
         val customViewModel = SearchViewModel(
             contentType = ContentType.MOVIE,
             catalogUC = catalogUC,
-            settingsRepository = settingsRepository
+            settingsDataStore = settingsDataStore
         )
         customViewModel.uiState.test {
             val state = awaitItem()

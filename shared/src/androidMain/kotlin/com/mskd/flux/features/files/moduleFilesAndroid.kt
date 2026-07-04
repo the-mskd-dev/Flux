@@ -1,10 +1,13 @@
 package com.mskd.flux.features.files
 
+import com.mskd.flux.features.files.data.AndroidMetadataProvider
 import com.mskd.flux.features.files.data.MediaStoreFilesRepository
 import com.mskd.flux.features.files.data.SafFilesRepository
 import com.mskd.flux.features.files.domain.repository.FilesRepository
-import com.mskd.flux.features.files.domain.useCase.AndroidGetFilesUseCase
-import com.mskd.flux.features.files.domain.useCase.GetFilesUseCase
+import com.mskd.flux.features.files.domain.usecase.AndroidGetFilesUseCase
+import com.mskd.flux.features.files.domain.usecase.GetFilesUseCase
+import com.mskd.flux.platform.MetadataProvider
+import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
@@ -16,7 +19,7 @@ val moduleFilesAndroid = module {
     single<FilesRepository>(MEDIASTORE_SOURCES) {
         MediaStoreFilesRepository(
             context = get(),
-            userRepository = get()
+            userDataStore = get()
         )
     }
 
@@ -26,6 +29,10 @@ val moduleFilesAndroid = module {
             dataSource = get(),
             folderValidator = get()
         )
+    }
+
+    single<MetadataProvider> {
+        AndroidMetadataProvider(context = androidContext())
     }
 
     single<GetFilesUseCase> {

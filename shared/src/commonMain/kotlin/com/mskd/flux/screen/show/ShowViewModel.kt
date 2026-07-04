@@ -3,7 +3,7 @@ package com.mskd.flux.screen.show
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.data.useCases.artwork.ArtworkUC
-import com.mskd.flux.data.useCases.progress.ProgressUC
+import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
 import com.mskd.flux.model.core.presentation.State
 import com.mskd.flux.model.domain.artwork.FullArtwork
 import com.mskd.flux.model.domain.artwork.Season
@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 class ShowViewModel(
     private val artworkId: Long,
     private val artworkUC: ArtworkUC,
-    private val progressUC: ProgressUC
+    private val resetProgress: ResetProgressUseCase,
 ) : ViewModel() {
 
     //region Flow
@@ -117,7 +117,7 @@ class ShowViewModel(
     private suspend fun resetProgress() {
         val fullShow = showContent?.fullShow ?: return
 
-        progressUC.resetProgress(artwork = fullShow.artwork, season = null)
+        resetProgress(artwork = fullShow.artwork, season = null)
         _userState.update { null }
     }
 

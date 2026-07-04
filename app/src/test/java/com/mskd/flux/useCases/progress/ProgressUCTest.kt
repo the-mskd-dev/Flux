@@ -2,7 +2,7 @@ package com.mskd.flux.useCases.progress
 
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.data.repository.ddb.DatabaseRepository
-import com.mskd.flux.data.repository.user.UserRepository
+import com.mskd.flux.core.datastore.user.UserDataStore
 import com.mskd.flux.data.useCases.progress.ProgressUC
 import com.mskd.flux.data.useCases.progress.ProgressUCImpl
 import com.mskd.flux.mockups.MediaMockups
@@ -27,20 +27,20 @@ class ProgressUCTest : FunSpec({
     fluxExtensions()
 
     lateinit var databaseRepository: DatabaseRepository
-    lateinit var userRepository: UserRepository
+    lateinit var userDataStore: UserDataStore
     lateinit var progressUC: ProgressUC
 
     beforeTest {
 
         databaseRepository = mockkDatabaseRepository()
 
-        userRepository = mockk(relaxed = true) {
-            every { flow } returns MutableStateFlow(UserRepository.State())
+        userDataStore = mockk(relaxed = true) {
+            every { flow } returns MutableStateFlow(UserDataStore.State())
         }
 
         progressUC = ProgressUCImpl(
             database = databaseRepository,
-            user = userRepository,
+            user = userDataStore,
         )
 
     }
@@ -106,9 +106,9 @@ class ProgressUCTest : FunSpec({
             }
 
             if (testCase.shouldBeAddedToRecentlyWatched) {
-                coVerify { userRepository.addToRecentlyWatched(testCase.artwork.id) }
+                coVerify { userDataStore.addToRecentlyWatched(testCase.artwork.id) }
             } else {
-                coVerify { userRepository.removeFromRecentlyWatched(testCase.artwork.id) }
+                coVerify { userDataStore.removeFromRecentlyWatched(testCase.artwork.id) }
             }
 
         }
@@ -164,7 +164,7 @@ class ProgressUCTest : FunSpec({
            }
 
            if (testCase.expectedRemoveFromRecentlyWatched) {
-            coVerify { userRepository.removeFromRecentlyWatched(testCase.media.artworkId) }
+            coVerify { userDataStore.removeFromRecentlyWatched(testCase.media.artworkId) }
            }
 
        }
@@ -204,7 +204,7 @@ class ProgressUCTest : FunSpec({
                 }
             }
 
-            coVerify { userRepository.removeFromRecentlyWatched(artworkId = testCase.artwork.id) }
+            coVerify { userDataStore.removeFromRecentlyWatched(artworkId = testCase.artwork.id) }
 
         }
     }
@@ -233,8 +233,8 @@ class ProgressUCTest : FunSpec({
         coVerify { databaseRepository.saveEpisodes(match { it.any { e -> e.id == MediaMockups.unknownEpisode.id } }) }
 
         // Verify it does NOT call addToRecentlyWatched or removeFromRecentlyWatched
-        coVerify(exactly = 0) { userRepository.addToRecentlyWatched(any()) }
-        coVerify(exactly = 0) { userRepository.removeFromRecentlyWatched(any()) }
+        coVerify(exactly = 0) { userDataStore.addToRecentlyWatched(any()) }
+        coVerify(exactly = 0) { userDataStore.removeFromRecentlyWatched(any()) }
     }
 
     test("markPreviousEpisodesAsWatchedFor returns early if no previous unwatched episodes") {

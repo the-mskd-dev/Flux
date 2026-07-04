@@ -2,7 +2,7 @@ package com.mskd.flux.screens.customization
 
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
-import com.mskd.flux.data.repository.customization.CustomizationRepository
+import com.mskd.flux.core.datastore.customization.CustomizationDataStore
 import com.mskd.flux.model.core.FluxOptionsDialogState
 import com.mskd.flux.screen.customization.CustomizationDialog
 import com.mskd.flux.screen.customization.CustomizationEvent
@@ -25,18 +25,18 @@ class CustomizationViewModelTest : FunSpec({
     fluxExtensions()
 
     lateinit var viewModel: CustomizationViewModel
-    lateinit var customizationRepository: CustomizationRepository
+    lateinit var customizationDataStore: CustomizationDataStore
 
-    val dataStoreFlow = MutableStateFlow(CustomizationRepository.State())
+    val dataStoreFlow = MutableStateFlow(CustomizationDataStore.State())
 
     beforeTest {
 
-        customizationRepository = mockk(relaxed = true) {
+        customizationDataStore = mockk(relaxed = true) {
             every { flow } returns dataStoreFlow
         }
 
         viewModel = CustomizationViewModel(
-            customizationRepository = customizationRepository,
+            customizationDataStore = customizationDataStore,
         )
 
     }
@@ -109,7 +109,7 @@ class CustomizationViewModelTest : FunSpec({
 
             val state = awaitItem()
 
-            coVerify { customizationRepository.setUiTheme(UiCommon.THEME.DARK) }
+            coVerify { customizationDataStore.setUiTheme(UiCommon.THEME.DARK) }
             state.uiTheme shouldBe UiCommon.THEME.DARK
             state.dialog shouldBe null
 
@@ -127,7 +127,7 @@ class CustomizationViewModelTest : FunSpec({
 
             val state = awaitItem()
 
-            coVerify { customizationRepository.setColor(testColor) }
+            coVerify { customizationDataStore.setColor(testColor) }
             state.color shouldBe testColor
             state.dialog shouldBe null
 
@@ -144,7 +144,7 @@ class CustomizationViewModelTest : FunSpec({
 
             val state = awaitItem()
 
-            coVerify { customizationRepository.setWaveProgress(false) }
+            coVerify { customizationDataStore.setWaveProgress(false) }
             state.waveProgress shouldBe false
 
             cancelAndConsumeRemainingEvents()
@@ -160,7 +160,7 @@ class CustomizationViewModelTest : FunSpec({
 
             val state = awaitItem()
 
-            coVerify { customizationRepository.setOldBlurredHeader(true) }
+            coVerify { customizationDataStore.setOldBlurredHeader(true) }
             state.oldBlurredHeader shouldBe true
 
             cancelAndConsumeRemainingEvents()
@@ -176,7 +176,7 @@ class CustomizationViewModelTest : FunSpec({
 
             val state = awaitItem()
 
-            coVerify { customizationRepository.setLargeEpisodeImage(true) }
+            coVerify { customizationDataStore.setLargeEpisodeImage(true) }
             state.largeEpisodeImage shouldBe true
 
             cancelAndConsumeRemainingEvents()
@@ -192,7 +192,7 @@ class CustomizationViewModelTest : FunSpec({
 
             val state = awaitItem()
 
-            coVerify { customizationRepository.setItemsPerRow(4) }
+            coVerify { customizationDataStore.setItemsPerRow(4) }
             state.itemsPerRow shouldBe 4
             state.dialog shouldBe null
 
@@ -209,7 +209,7 @@ class CustomizationViewModelTest : FunSpec({
 
             val state = awaitItem()
 
-            coVerify { customizationRepository.setSeasonsPerRow(4) }
+            coVerify { customizationDataStore.setSeasonsPerRow(4) }
             state.seasonsPerRow shouldBe 4
             state.dialog shouldBe null
 
@@ -226,7 +226,7 @@ class CustomizationViewModelTest : FunSpec({
 
             val state = awaitItem()
 
-            coVerify { customizationRepository.setItemsCorners(4) }
+            coVerify { customizationDataStore.setItemsCorners(4) }
             state.itemsCorners shouldBe 4
             state.dialog shouldBe null
 

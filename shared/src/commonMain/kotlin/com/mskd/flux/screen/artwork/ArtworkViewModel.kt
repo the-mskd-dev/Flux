@@ -2,9 +2,12 @@ package com.mskd.flux.screen.artwork
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mskd.flux.data.repository.settings.SettingsRepository
+import com.mskd.flux.core.datastore.settings.SettingsDataStore
 import com.mskd.flux.data.useCases.artwork.ArtworkUC
-import com.mskd.flux.data.useCases.progress.ProgressUC
+import com.mskd.flux.features.progress.domain.usecase.ChangeMediaStatusUseCase
+import com.mskd.flux.features.progress.domain.usecase.MarkPreviousAsWatchedUseCase
+import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
+import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.model.core.presentation.State
 import com.mskd.flux.model.domain.artwork.Episode
 import com.mskd.flux.model.domain.artwork.FullArtwork
@@ -28,8 +31,11 @@ class ArtworkViewModel(
     private val artworkId: Long,
     private val season: Int?,
     private val artworkUC: ArtworkUC,
-    private val settingsRepository: SettingsRepository,
-    private val progressUC: ProgressUC
+    private val settingsDataStore: SettingsDataStore,
+    private val changeMediaStatus: ChangeMediaStatusUseCase,
+    private val markPreviousAsWatched: MarkPreviousAsWatchedUseCase,
+    private val resetProgress: ResetProgressUseCase,
+    private val saveProgress: SaveProgressUseCase
 ) : ViewModel() {
 
     //region Computed properties
@@ -49,7 +55,7 @@ class ArtworkViewModel(
 
     val uiState: StateFlow<ArtworkUiState> = combine(
         artworkUC.flow,
-        settingsRepository.flow,
+        settingsDataStore.flow,
         _userState,
     ) { artworkState, settings, userState ->
 
@@ -182,7 +188,7 @@ class ArtworkViewModel(
 
         val status = if (media.status != Status.WATCHED) Status.WATCHED else Status.TO_WATCH
 
-        progressUC.changeMediaStatus(
+        changeMediaStatus(
             media = media,
             status = status
         )
@@ -203,7 +209,7 @@ class ArtworkViewModel(
 
             val episode = (state.dialog as? ArtworkDialog.EpisodeStatusConfirmation)?.episode ?: return
 
-            progressUC.markPreviousEpisodesAsWatchedFor(episode = episode)
+            markPreviousAsWatched(episode = episode)
 
             state.copy(dialog = null)
 
@@ -213,7 +219,7 @@ class ArtworkViewModel(
 
     private suspend fun onExternalPlayerResult(progress: Long) {
         artworkContent?.selectedMedia?.let { media ->
-            progressUC.saveProgress(media = media, progress = progress)
+            saveProgress(media = media, progress = progress)
         }
     }
 
@@ -226,7 +232,7 @@ class ArtworkViewModel(
         val fullArtwork = fullArtwork ?: return
         val selectedSeason = artworkContent?.selectedSeason
 
-        progressUC.resetProgress(artwork = fullArtwork.artwork, season = selectedSeason)
+        resetProgress(artwork = fullArtwork.artwork, season = selectedSeason)
 
         _userState.update { state ->
 

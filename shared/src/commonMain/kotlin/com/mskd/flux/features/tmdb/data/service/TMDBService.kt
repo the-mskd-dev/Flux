@@ -1,11 +1,11 @@
 package com.mskd.flux.features.tmdb.data.service
 
-import com.mskd.flux.features.tmdb.data.model.dto.ArtworksResultDto
-import com.mskd.flux.features.tmdb.data.model.dto.AuthenticationDto
-import com.mskd.flux.features.tmdb.data.model.dto.EpisodeDto
-import com.mskd.flux.features.tmdb.data.model.dto.MovieDto
-import com.mskd.flux.features.tmdb.data.model.dto.SeasonDto
-import com.mskd.flux.features.tmdb.data.model.dto.TranslationsDto
+import com.mskd.flux.features.tmdb.data.dto.ArtworksResultDto
+import com.mskd.flux.features.tmdb.data.dto.AuthenticationDto
+import com.mskd.flux.features.tmdb.data.dto.EpisodeDto
+import com.mskd.flux.features.tmdb.data.dto.MovieDto
+import com.mskd.flux.features.tmdb.data.dto.SeasonDto
+import com.mskd.flux.features.tmdb.data.dto.TranslationsDto
 import com.mskd.flux.utils.Constants
 
 interface TMDBService {

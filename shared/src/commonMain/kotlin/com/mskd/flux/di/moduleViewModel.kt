@@ -1,5 +1,9 @@
 package com.mskd.flux.di
 
+import com.mskd.flux.features.progress.domain.usecase.ChangeMediaStatusUseCase
+import com.mskd.flux.features.progress.domain.usecase.MarkPreviousAsWatchedUseCase
+import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
+import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.screen.artwork.ArtworkViewModel
 import com.mskd.flux.screen.customization.CustomizationViewModel
 import com.mskd.flux.screen.home.HomeViewModel
@@ -21,8 +25,11 @@ val moduleViewModel = module {
             artworkId = params.get(),
             season = params.getOrNull(),
             artworkUC = get(),
-            settingsRepository = get(),
-            progressUC = get(),
+            settingsDataStore = get(),
+            changeMediaStatus = get(),
+            markPreviousAsWatched = get(),
+            resetProgress = get(),
+            saveProgress = get(),
         )
     }
 
@@ -34,7 +41,7 @@ val moduleViewModel = module {
         SearchViewModel(
             contentType = params.getOrNull(),
             catalogUC = get(),
-            settingsRepository = get()
+            settingsDataStore = get()
         )
     }
 
@@ -44,7 +51,7 @@ val moduleViewModel = module {
         ShowViewModel(
             artworkId = params.get(),
             artworkUC = get(),
-            progressUC = get(),
+            resetProgress = get(),
         )
     }
 
@@ -53,7 +60,7 @@ val moduleViewModel = module {
     viewModel { params ->
         TokenViewModel(
             fromSettings = params.get(),
-            tokenRepository = get(),
+            tokenDataStore = get(),
             tmdbService = get(),
             catalogUC = get(),
             appInfo = get()

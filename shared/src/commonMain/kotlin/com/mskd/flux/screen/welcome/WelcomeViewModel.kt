@@ -2,7 +2,7 @@ package com.mskd.flux.screen.welcome
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mskd.flux.data.repository.token.TokenRepository
+import com.mskd.flux.core.datastore.token.TokenDataStore
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class WelcomeViewModel(private val tokenRepository: TokenRepository) : ViewModel() {
+class WelcomeViewModel(private val tokenDataStore: TokenDataStore) : ViewModel() {
 
     private val _event = MutableSharedFlow<WelcomeEvent>()
     val event = _event.asSharedFlow()
@@ -64,7 +64,7 @@ class WelcomeViewModel(private val tokenRepository: TokenRepository) : ViewModel
 
     private suspend fun onPermissionGranted() {
 
-        if (tokenRepository.tokenRequested) {
+        if (tokenDataStore.tokenRequested) {
             _event.emit(WelcomeEvent.NavigateToToken)
         } else {
             _event.emit(WelcomeEvent.NavigateToLibrary)

@@ -2,7 +2,7 @@ package com.mskd.flux.screens.welcome
 
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
-import com.mskd.flux.data.repository.token.TokenRepository
+import com.mskd.flux.core.datastore.token.TokenDataStore
 import com.mskd.flux.screen.welcome.WelcomeButton
 import com.mskd.flux.screen.welcome.WelcomeEvent
 import com.mskd.flux.screen.welcome.WelcomeIntent
@@ -19,12 +19,12 @@ class WelcomeVIewModelTest : FunSpec({
     fluxExtensions()
 
     lateinit var viewModel: WelcomeViewModel
-    lateinit var tokenRepository: TokenRepository
+    lateinit var tokenDataStore: TokenDataStore
 
     beforeTest {
 
-        tokenRepository = mockk(relaxed = true)
-        viewModel = WelcomeViewModel(tokenRepository = tokenRepository)
+        tokenDataStore = mockk(relaxed = true)
+        viewModel = WelcomeViewModel(tokenDataStore = tokenDataStore)
 
     }
 
@@ -153,11 +153,11 @@ class WelcomeVIewModelTest : FunSpec({
             )
         ) { testCase ->
 
-            tokenRepository = mockk(relaxed = true) {
+            tokenDataStore = mockk(relaxed = true) {
                 every { tokenRequested } returns testCase.tokenRequested
             }
 
-            viewModel = WelcomeViewModel(tokenRepository = tokenRepository)
+            viewModel = WelcomeViewModel(tokenDataStore = tokenDataStore)
 
             viewModel.event.test {
 

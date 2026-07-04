@@ -3,12 +3,12 @@ package com.mskd.flux.data.repository
 import androidx.test.core.app.ApplicationProvider
 import com.mskd.flux.BuildConfig
 import com.mskd.flux.features.tmdb.data.service.TMDBService
-import com.mskd.flux.data.repository.settings.SettingsRepository
-import com.mskd.flux.features.tmdb.data.dataSource.TmdbDataSourceImpl
-import com.mskd.flux.data.repository.token.TokenRepository
+import com.mskd.flux.core.datastore.settings.SettingsDataStore
+import com.mskd.flux.features.tmdb.data.datasource.TmdbDataSourceImpl
+import com.mskd.flux.core.datastore.token.TokenDataStore
 import com.mskd.flux.di.moduleAndroidApp
 import com.mskd.flux.di.modulePlatform
-import com.mskd.flux.features.tmdb.data.model.dto.TranslationsDto
+import com.mskd.flux.features.tmdb.data.dto.TranslationsDto
 import com.mskd.flux.model.domain.files.FileSource
 import com.mskd.flux.model.domain.files.UserFile
 import io.mockk.coEvery
@@ -32,7 +32,7 @@ import java.util.Locale
 class TmdbDataSourceImplTest : KoinTest {
 
     private val tmdbService: TMDBService by inject()
-    private lateinit var settingsRepository: SettingsRepository
+    private lateinit var settingsDataStore: SettingsDataStore
     private lateinit var repository: TmdbDataSourceImpl
 
     private companion object {
@@ -69,16 +69,16 @@ class TmdbDataSourceImplTest : KoinTest {
             )
         }
 
-        val tokenRepository: TokenRepository = get()
+        val tokenDataStore: TokenDataStore = get()
         runBlocking {
-            tokenRepository.saveToken(BuildConfig.TMDB_TOKEN)
+            tokenDataStore.saveToken(BuildConfig.TMDB_TOKEN)
         }
 
-        settingsRepository = mockk(relaxed = true) {
+        settingsDataStore = mockk(relaxed = true) {
             coEvery { getDataLanguage() } returns dataLanguage
         }
 
-        repository = TmdbDataSourceImpl(tmdbService, settingsRepository)
+        repository = TmdbDataSourceImpl(tmdbService, settingsDataStore)
 
     }
 

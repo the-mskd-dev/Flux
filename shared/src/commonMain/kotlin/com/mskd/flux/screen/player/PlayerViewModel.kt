@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.mskd.flux.core.datastore.settings.SettingsDataStore
 import com.mskd.flux.data.useCases.artwork.ArtworkUC
 import com.mskd.flux.data.useCases.files.FilesUC
-import com.mskd.flux.data.useCases.player.PipIsEnabledUC
+import com.mskd.flux.features.player.data.PipIsEnabledUseCase
 import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.model.core.StringProvider
 import com.mskd.flux.model.core.presentation.State
@@ -50,7 +50,7 @@ class PlayerViewModel<out T>(
     private val settingsDataStore: SettingsDataStore,
     private val filesUC: FilesUC,
     private val playerManager: PlayerManager<T>,
-    private val pipIsEnabledUC: PipIsEnabledUC,
+    private val pipIsEnabledUseCase: PipIsEnabledUseCase,
     private val saveProgress: SaveProgressUseCase
 ) : ViewModel() {
 
@@ -442,7 +442,7 @@ class PlayerViewModel<out T>(
 
     private suspend fun onBackground() {
 
-        if (pipIsEnabledUC()) return
+        if (pipIsEnabledUseCase()) return
 
         wasPlayingBeforeBackground = content?.isPlaying ?: return
 

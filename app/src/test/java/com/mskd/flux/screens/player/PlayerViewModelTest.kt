@@ -5,7 +5,7 @@ import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.core.datastore.settings.SettingsDataStore
 import com.mskd.flux.data.useCases.files.FilesUC
-import com.mskd.flux.data.useCases.player.PipIsEnabledUC
+import com.mskd.flux.features.player.data.PipIsEnabledUseCase
 import com.mskd.flux.data.useCases.progress.ProgressUC
 import com.mskd.flux.mockups.FakeArtworkUC
 import com.mskd.flux.mockups.MediaMockups
@@ -46,7 +46,7 @@ class PlayerViewModelTest : FunSpec({
     lateinit var progressUC: ProgressUC
     lateinit var playerManager: PlayerManager<Player>
     lateinit var mockkedPlayer: Player
-    lateinit var pipIsEnabledUC: PipIsEnabledUC
+    lateinit var pipIsEnabledUseCase: PipIsEnabledUseCase
 
     fun updateVm(mediaId: Long = MediaMockups.episode1.mediaId) {
 
@@ -59,7 +59,7 @@ class PlayerViewModelTest : FunSpec({
             filesUC = filesUC,
             progressUC = progressUC,
             playerManager = playerManager,
-            pipIsEnabledUC = pipIsEnabledUC,
+            pipIsEnabledUseCase = pipIsEnabledUseCase,
         )
 
     }
@@ -81,7 +81,7 @@ class PlayerViewModelTest : FunSpec({
         }
 
         filesUC = mockkFilesRepository()
-        pipIsEnabledUC = mockk(relaxed = true)
+        pipIsEnabledUseCase = mockk(relaxed = true)
 
         updateVm()
 

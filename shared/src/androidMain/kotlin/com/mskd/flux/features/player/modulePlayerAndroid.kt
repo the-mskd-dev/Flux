@@ -1,23 +1,22 @@
-@file:OptIn(UnstableApi::class)
-package com.mskd.flux.di
+package com.mskd.flux.features.player
 
-import androidx.annotation.OptIn
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.Player
-import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.SeekParameters
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.extractor.DefaultExtractorsFactory
 import androidx.media3.extractor.mp4.Mp4Extractor
+import com.mskd.flux.di.QualifiersAndroid
+import com.mskd.flux.features.player.data.PipIsEnabledUseCase
+import com.mskd.flux.features.player.data.usecase.AndroidPipIsEnabledUseCase
 import com.mskd.flux.platform.AndroidPlayerManager
 import com.mskd.flux.platform.PlayerManager
 import com.mskd.flux.screen.player.PlayerViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
-
 
 val modulePlayerAndroid = module {
 
@@ -63,8 +62,16 @@ val modulePlayerAndroid = module {
             settingsDataStore = get(),
             filesUC = get(),
             playerManager = get(),
-            pipIsEnabledUC = get(),
+            pipIsEnabledUseCase = get(),
             saveProgress = get()
         )
     }
+
+    single<PipIsEnabledUseCase> {
+        AndroidPipIsEnabledUseCase(
+            context = androidContext(),
+            settingsDataStore = get()
+        )
+    }
+
 }

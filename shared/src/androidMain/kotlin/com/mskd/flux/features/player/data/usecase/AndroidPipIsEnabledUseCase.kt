@@ -1,16 +1,17 @@
-package com.mskd.flux.data.useCases.player
+package com.mskd.flux.features.player.data.usecase
 
 import android.app.AppOpsManager
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Process
 import com.mskd.flux.core.datastore.settings.SettingsDataStore
+import com.mskd.flux.features.player.data.PipIsEnabledUseCase
 import kotlinx.coroutines.flow.first
 
-class PipIsEnabledUCImpl(
+class AndroidPipIsEnabledUseCase(
     private val context: Context,
     private val settingsDataStore: SettingsDataStore
-): PipIsEnabledUC {
+): PipIsEnabledUseCase {
 
     override suspend operator fun invoke() : Boolean {
 

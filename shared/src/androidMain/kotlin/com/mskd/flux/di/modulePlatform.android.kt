@@ -16,10 +16,6 @@ actual val modulePlatform: Module = module {
     includes(
         moduleCoreAndroid,
         moduleFeaturesAndroid,
-
-        moduleImagesAndroid,
-        modulePlayerAndroid,
-        moduleUseCaseAndroid
     )
     single<AppInfo> {
         AppInfo(

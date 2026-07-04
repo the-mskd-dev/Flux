@@ -4,7 +4,7 @@ import com.mskd.flux.features.files.data.AndroidMetadataProvider
 import com.mskd.flux.features.files.data.MediaStoreFilesRepository
 import com.mskd.flux.features.files.data.SafFilesRepository
 import com.mskd.flux.features.files.domain.repository.FilesRepository
-import com.mskd.flux.features.files.domain.usecase.AndroidGetFilesUseCase
+import com.mskd.flux.features.files.data.usecase.AndroidGetFilesUseCase
 import com.mskd.flux.features.files.domain.usecase.GetFilesUseCase
 import com.mskd.flux.platform.MetadataProvider
 import org.koin.android.ext.koin.androidContext

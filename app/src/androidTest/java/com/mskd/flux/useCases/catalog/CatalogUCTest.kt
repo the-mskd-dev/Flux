@@ -12,7 +12,8 @@ import com.mskd.flux.core.data.datastore.TokenDataStore
 import com.mskd.flux.core.data.datastore.UserDataStore
 import com.mskd.flux.data.useCases.catalog.CatalogUC
 import com.mskd.flux.data.useCases.catalog.CatalogUCImpl
-import com.mskd.flux.data.useCases.files.FilesUC
+import com.mskd.flux.features.files.domain.usecase.GetFilesUseCase
+import com.mskd.flux.features.files.domain.usecase.FilterExistingFilesUseCase
 import com.mskd.flux.features.images.domain.ImagesPrefetchManager
 import com.mskd.flux.di.Qualifiers
 import com.mskd.flux.di.moduleAndroidApp
@@ -51,7 +52,8 @@ class CatalogUCTest : KoinTest {
     private lateinit var tmdbDataSource: TmdbDataSource
     private lateinit var settingsDataStore: SettingsDataStore
     private lateinit var databaseRepository: DatabaseRepository
-    private lateinit var filesUC: FilesUC
+    private lateinit var getFilesUseCase: GetFilesUseCase
+    private lateinit var filterExistingFilesUseCase: FilterExistingFilesUseCase
     private lateinit var userDataStore: UserDataStore
     private lateinit var imagesPrefetchManager: ImagesPrefetchManager
     private lateinit var context: Context
@@ -123,10 +125,11 @@ class CatalogUCTest : KoinTest {
             }
         }
         
-        filesUC = mockk(relaxed = true) {
-            coEvery { getFiles() } returns listOf(movieFile, episodeFile)
-            coEvery { filterExistingFiles(any()) } returns emptyList()
-        }
+        getFilesUseCase = mockk<GetFilesUseCase>(relaxed = true)
+        coEvery { getFilesUseCase.invoke() } returns listOf(movieFile, episodeFile)
+        
+        filterExistingFilesUseCase = mockk<FilterExistingFilesUseCase>(relaxed = true)
+        coEvery { filterExistingFilesUseCase.invoke(any()) } returns emptyList()
         
         userDataStore = mockk(relaxed = true)
         imagesPrefetchManager = mockk(relaxed = true)
@@ -142,7 +145,8 @@ class CatalogUCTest : KoinTest {
         val catalogUC = CatalogUCImpl(
             tmdb = tmdbDataSource,
             database = databaseRepository,
-            files = filesUC,
+            getFilesUseCase = getFilesUseCase,
+            filterExistingFilesUseCase = filterExistingFilesUseCase,
             user = userDataStore,
             settings = settingsDataStore,
             imagesPrefetchManager = imagesPrefetchManager,
@@ -164,7 +168,8 @@ class CatalogUCTest : KoinTest {
         val catalogUC = CatalogUCImpl(
             tmdb = tmdbDataSource,
             database = databaseRepository,
-            files = filesUC,
+            getFilesUseCase = getFilesUseCase,
+            filterExistingFilesUseCase = filterExistingFilesUseCase,
             user = userDataStore,
             settings = settingsDataStore,
             imagesPrefetchManager = imagesPrefetchManager,
@@ -215,7 +220,8 @@ class CatalogUCTest : KoinTest {
         val catalogUC = CatalogUCImpl(
             tmdb = tmdbDataSource,
             database = databaseRepository,
-            files = filesUC,
+            getFilesUseCase = getFilesUseCase,
+            filterExistingFilesUseCase = filterExistingFilesUseCase,
             user = userDataStore,
             settings = settingsDataStore,
             imagesPrefetchManager = imagesPrefetchManager,
@@ -236,7 +242,8 @@ class CatalogUCTest : KoinTest {
         val catalogUC = CatalogUCImpl(
             tmdb = tmdbDataSource,
             database = databaseRepository,
-            files = filesUC,
+            getFilesUseCase = getFilesUseCase,
+            filterExistingFilesUseCase = filterExistingFilesUseCase,
             user = userDataStore,
             settings = settingsDataStore,
             imagesPrefetchManager = imagesPrefetchManager,

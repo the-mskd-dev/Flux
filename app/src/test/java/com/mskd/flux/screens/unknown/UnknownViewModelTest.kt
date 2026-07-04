@@ -6,8 +6,7 @@ import com.mskd.flux.data.repository.ddb.DatabaseRepository
 import com.mskd.flux.core.data.datastore.SettingsDataStore
 import com.mskd.flux.core.data.datastore.UserDataStore
 import com.mskd.flux.core.domain.model.core.State
-import com.mskd.flux.data.useCases.progress.ProgressUC
-import com.mskd.flux.data.useCases.progress.ProgressUCImpl
+import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.mockups.FakeArtworkUC
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.mockkDatabaseRepository
@@ -30,20 +29,17 @@ class UnknownViewModelTest : FunSpec ({
     lateinit var artworkRepository: FakeArtworkUC
     lateinit var settingsDataStore: SettingsDataStore
     lateinit var userDataStore: UserDataStore
-    lateinit var progressUC: ProgressUC
+    lateinit var saveProgress: SaveProgressUseCase
     lateinit var databaseRepository: DatabaseRepository
 
     val updateVm: () -> Unit = {
 
-        progressUC = ProgressUCImpl(
-            database = databaseRepository,
-            user = userDataStore,
-        )
+        saveProgress = mockk(relaxed = true)
 
         viewModel = UnknownViewModel(
             artworkUC = artworkRepository,
             settingsDataStore = settingsDataStore,
-            progressUC = progressUC
+            saveProgress = saveProgress
         )
 
     }
@@ -160,9 +156,7 @@ class UnknownViewModelTest : FunSpec ({
             viewModel.handleIntent(UnknownIntent.PlayMedia(media = MediaMockups.unknownEpisode))
             viewModel.handleIntent(UnknownIntent.OnExternalPlayerResult(progress = 5000L))
 
-            coVerify { databaseRepository.saveEpisodes(match { episodes ->
-                episodes.any { it.id == MediaMockups.unknownEpisode.id && it.currentTime == 5000L }
-            }) }
+            coVerify { saveProgress(media = MediaMockups.unknownEpisode, progress = 5000L) }
         }
     }
 

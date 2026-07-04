@@ -3,8 +3,10 @@ package com.mskd.flux.useCases.progress
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.data.repository.ddb.DatabaseRepository
 import com.mskd.flux.core.data.datastore.UserDataStore
-import com.mskd.flux.data.useCases.progress.ProgressUC
-import com.mskd.flux.data.useCases.progress.ProgressUCImpl
+import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
+import com.mskd.flux.features.progress.domain.usecase.ChangeMediaStatusUseCase
+import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
+import com.mskd.flux.features.progress.domain.usecase.MarkPreviousAsWatchedUseCase
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.mockkDatabaseRepository
 import com.mskd.flux.core.domain.model.artwork.ContentType
@@ -28,7 +30,10 @@ class ProgressUCTest : FunSpec({
 
     lateinit var databaseRepository: DatabaseRepository
     lateinit var userDataStore: UserDataStore
-    lateinit var progressUC: ProgressUC
+    lateinit var saveProgress: SaveProgressUseCase
+    lateinit var changeMediaStatus: ChangeMediaStatusUseCase
+    lateinit var resetProgress: ResetProgressUseCase
+    lateinit var markPreviousAsWatched: MarkPreviousAsWatchedUseCase
 
     beforeTest {
 
@@ -38,9 +43,23 @@ class ProgressUCTest : FunSpec({
             every { flow } returns MutableStateFlow(UserDataStore.State())
         }
 
-        progressUC = ProgressUCImpl(
+        saveProgress = SaveProgressUseCase(
             database = databaseRepository,
             user = userDataStore,
+        )
+
+        changeMediaStatus = ChangeMediaStatusUseCase(
+            database = databaseRepository,
+            user = userDataStore,
+        )
+
+        resetProgress = ResetProgressUseCase(
+            database = databaseRepository,
+            user = userDataStore,
+        )
+
+        markPreviousAsWatched = MarkPreviousAsWatchedUseCase(
+            database = databaseRepository
         )
 
     }
@@ -98,7 +117,7 @@ class ProgressUCTest : FunSpec({
             )
         ) { testCase ->
 
-            progressUC.saveProgress(media = testCase.media, progress = testCase.progress)
+            saveProgress(media = testCase.media, progress = testCase.progress)
 
             when (testCase.media) {
                 is Episode -> coVerify { databaseRepository.saveEpisodes(any()) }
@@ -149,10 +168,10 @@ class ProgressUCTest : FunSpec({
            )
        ) { testCase ->
 
-           progressUC.changeMediaStatus(
-               media = testCase.media,
-               status = testCase.status
-           )
+            changeMediaStatus(
+                media = testCase.media,
+                status = testCase.status
+            )
 
            when (testCase.media) {
                is Episode -> {
@@ -174,7 +193,7 @@ class ProgressUCTest : FunSpec({
 
     test("mark previous episodes as watched") {
 
-        progressUC.markPreviousEpisodesAsWatchedFor(episode = MediaMockups.episode3)
+        markPreviousAsWatched(episode = MediaMockups.episode3)
 
         coVerify { databaseRepository.saveEpisodes(match { episodes -> episodes.size == 2 && episodes.all { it.status == Status.WATCHED } })  }
 
@@ -193,7 +212,7 @@ class ProgressUCTest : FunSpec({
             )
         ) { testCase ->
 
-            progressUC.resetProgress(artwork = testCase.artwork, season = testCase.season)
+            resetProgress(artwork = testCase.artwork, season = testCase.season)
 
             when (testCase.artwork.type) {
                 ContentType.MOVIE -> {
@@ -217,7 +236,7 @@ class ProgressUCTest : FunSpec({
         )
         coEvery { databaseRepository.getEpisodes(MediaMockups.showArtwork.id) } returns episodes
 
-        progressUC.resetProgress(artwork = MediaMockups.showArtwork, season = 1)
+        resetProgress(artwork = MediaMockups.showArtwork, season = 1)
 
         coVerify {
             databaseRepository.saveEpisodes(match { saved ->
@@ -227,7 +246,7 @@ class ProgressUCTest : FunSpec({
     }
 
     test("saveProgress with unknown episode does not affect recently watched") {
-        progressUC.saveProgress(media = MediaMockups.unknownEpisode, progress = 1000L)
+        saveProgress(media = MediaMockups.unknownEpisode, progress = 1000L)
 
         // Verify it saves to database
         coVerify { databaseRepository.saveEpisodes(match { it.any { e -> e.id == MediaMockups.unknownEpisode.id } }) }
@@ -244,7 +263,7 @@ class ProgressUCTest : FunSpec({
             MediaMockups.episode3.copy(status = Status.WATCHED)
         )
 
-        progressUC.markPreviousEpisodesAsWatchedFor(episode = MediaMockups.episode3)
+        markPreviousAsWatched(episode = MediaMockups.episode3)
 
         // Verify saveEpisodes is never called
         coVerify(exactly = 0) { databaseRepository.saveEpisodes(any()) }

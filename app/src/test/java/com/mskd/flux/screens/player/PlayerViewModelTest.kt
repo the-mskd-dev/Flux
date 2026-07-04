@@ -6,7 +6,7 @@ import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.core.data.datastore.SettingsDataStore
 import com.mskd.flux.data.useCases.files.FilesUC
 import com.mskd.flux.features.player.data.PipIsEnabledUseCase
-import com.mskd.flux.data.useCases.progress.ProgressUC
+import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.mockups.FakeArtworkUC
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.PlayerMockups
@@ -43,23 +43,23 @@ class PlayerViewModelTest : FunSpec({
     lateinit var artworkUC: FakeArtworkUC
     lateinit var settingsDataStore: SettingsDataStore
     lateinit var filesUC: FilesUC
-    lateinit var progressUC: ProgressUC
+    lateinit var saveProgress: SaveProgressUseCase
     lateinit var playerManager: PlayerManager<Player>
     lateinit var mockkedPlayer: Player
     lateinit var pipIsEnabledUseCase: PipIsEnabledUseCase
 
     fun updateVm(mediaId: Long = MediaMockups.episode1.mediaId) {
 
-        progressUC = mockk(relaxed = true)
+        saveProgress = mockk(relaxed = true)
 
         viewModel = PlayerViewModel(
             mediaId = mediaId,
             artworkUC = artworkUC,
             settingsDataStore = settingsDataStore,
             filesUC = filesUC,
-            progressUC = progressUC,
             playerManager = playerManager,
             pipIsEnabledUseCase = pipIsEnabledUseCase,
+            saveProgress = saveProgress
         )
 
     }
@@ -206,7 +206,7 @@ class PlayerViewModelTest : FunSpec({
                 viewModel.handleIntent(PlayerIntent.SaveTime)
 
                 // Then
-                coVerify { progressUC.saveProgress(testCase.media, testCase.time) }
+                coVerify { saveProgress(testCase.media, testCase.time) }
 
             }
 
@@ -427,7 +427,7 @@ class PlayerViewModelTest : FunSpec({
             viewModel.handleIntent(PlayerIntent.GoToBackground)
 
             coVerify { playerManager.pause() }
-            coVerify { progressUC.saveProgress(any(), 2000L) }
+            coVerify { saveProgress(any(), 2000L) }
         }
     }
 
@@ -451,7 +451,7 @@ class PlayerViewModelTest : FunSpec({
 
             viewModel.handleIntent(PlayerIntent.GoToBackground)
             coVerify { playerManager.pause() }
-            coVerify { progressUC.saveProgress(any(), 3000L) }
+            coVerify { saveProgress(any(), 3000L) }
 
             viewModel.handleIntent(PlayerIntent.GoToForeground)
             coVerify { playerManager.play() }
@@ -507,7 +507,7 @@ class PlayerViewModelTest : FunSpec({
             viewModel.handleIntent(PlayerIntent.GoToBackground)
 
             coVerify(exactly = 0) { playerManager.pause() }
-            coVerify { progressUC.saveProgress(any(), 2000L) }
+            coVerify { saveProgress(any(), 2000L) }
         }
     }
 

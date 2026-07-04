@@ -2,10 +2,10 @@ package com.mskd.flux.screens.show
 
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
-import com.mskd.flux.data.useCases.progress.ProgressUC
+import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
 import com.mskd.flux.mockups.FakeArtworkUC
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.mockups.mockkProgressUC
+import io.mockk.mockk
 import com.mskd.flux.core.domain.model.core.State
 import com.mskd.flux.core.domain.model.artwork.ContentType
 import com.mskd.flux.screen.show.ShowContent
@@ -26,16 +26,16 @@ class ShowViewModelTest : FunSpec({
 
     lateinit var viewModel: ShowViewModel
     lateinit var artworkUC: FakeArtworkUC
-    lateinit var progressUC: ProgressUC
+    lateinit var resetProgress: ResetProgressUseCase
 
     val updateVm: () -> Unit = {
 
-        progressUC = mockkProgressUC()
+        resetProgress = mockk(relaxed = true)
 
         viewModel = ShowViewModel(
             artworkId = MediaMockups.showArtwork.id,
             artworkUC = artworkUC,
-            progressUC = progressUC
+            resetProgress = resetProgress
         )
 
     }
@@ -141,7 +141,7 @@ class ShowViewModelTest : FunSpec({
             val content = (awaitItem().state as State.Content).content
             content.dialog shouldBe null
 
-            coVerify { progressUC.resetProgress(artwork = MediaMockups.showArtwork, season = null) }
+            coVerify { resetProgress(artwork = MediaMockups.showArtwork, season = null) }
         }
     }
 
@@ -151,7 +151,7 @@ class ShowViewModelTest : FunSpec({
         viewModel = ShowViewModel(
             artworkId = -999L,
             artworkUC = artworkUC,
-            progressUC = progressUC
+            resetProgress = resetProgress
         )
 
         viewModel.uiState.test {
@@ -166,7 +166,7 @@ class ShowViewModelTest : FunSpec({
         viewModel = ShowViewModel(
             artworkId = MediaMockups.movieArtwork.id,
             artworkUC = artworkUC,
-            progressUC = progressUC
+            resetProgress = resetProgress
         )
 
         viewModel.uiState.test {

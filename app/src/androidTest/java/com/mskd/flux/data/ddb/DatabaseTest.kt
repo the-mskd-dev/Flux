@@ -10,7 +10,7 @@ import com.mskd.flux.core.data.database.FluxDatabase
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.core.data.database.model.ArtworkEntity
 import com.mskd.flux.core.data.database.model.SeasonEntity
-import com.mskd.flux.features.sources.data.mapper.toEntity
+import com.mskd.flux.core.data.database.mappers.toEntity
 import com.mskd.flux.core.domain.model.artwork.Artwork
 import kotlinx.coroutines.test.runTest
 import org.junit.After

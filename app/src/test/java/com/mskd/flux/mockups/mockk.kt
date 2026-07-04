@@ -7,14 +7,11 @@ import com.mskd.flux.data.useCases.catalog.CatalogUC
 import com.mskd.flux.data.useCases.catalog.CatalogUC.State
 import com.mskd.flux.data.useCases.files.FilesUC
 import com.mskd.flux.features.images.domain.ImagesPrefetchManager
-import com.mskd.flux.data.useCases.progress.ProgressUC
 import com.mskd.flux.core.domain.model.files.UserFile
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableStateFlow
-
-fun mockkProgressUC() : ProgressUC = mockk(relaxed = true)
 
 fun mockkCatalogUC() : CatalogUC = mockk(relaxed = true) {
     every { state } returns MutableStateFlow(State.Idle)

@@ -3,10 +3,12 @@ package com.mskd.flux.screens.artwork
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.core.data.datastore.SettingsDataStore
-import com.mskd.flux.data.useCases.progress.ProgressUC
+import com.mskd.flux.features.progress.domain.usecase.ChangeMediaStatusUseCase
+import com.mskd.flux.features.progress.domain.usecase.MarkPreviousAsWatchedUseCase
+import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
+import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.mockups.FakeArtworkUC
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.mockups.mockkProgressUC
 import com.mskd.flux.core.domain.model.core.State
 import com.mskd.flux.core.domain.model.artwork.ContentType
 import com.mskd.flux.core.domain.model.artwork.Episode
@@ -35,19 +37,28 @@ class ArtworkViewModelTest : FunSpec({
     lateinit var viewModel: ArtworkViewModel
     lateinit var settingsDataStore: SettingsDataStore
     lateinit var artworkUC: FakeArtworkUC
-    lateinit var progressUC: ProgressUC
+    lateinit var changeMediaStatus: ChangeMediaStatusUseCase
+    lateinit var markPreviousAsWatched: MarkPreviousAsWatchedUseCase
+    lateinit var resetProgress: ResetProgressUseCase
+    lateinit var saveProgress: SaveProgressUseCase
     var currentSeason: Int? = 1
 
     val updateVm: () -> Unit = {
 
-        progressUC = mockkProgressUC()
+        changeMediaStatus = mockk(relaxed = true)
+        markPreviousAsWatched = mockk(relaxed = true)
+        resetProgress = mockk(relaxed = true)
+        saveProgress = mockk(relaxed = true)
 
         viewModel = ArtworkViewModel(
             artworkId = MediaMockups.showArtwork.id,
             season = currentSeason,
             artworkUC = artworkUC,
             settingsDataStore = settingsDataStore,
-            progressUC = progressUC
+            changeMediaStatus = changeMediaStatus,
+            markPreviousAsWatched = markPreviousAsWatched,
+            resetProgress = resetProgress,
+            saveProgress = saveProgress
         )
 
     }
@@ -169,7 +180,7 @@ class ArtworkViewModelTest : FunSpec({
             viewModel.handleIntent(ArtworkIntent.ChangeWatchStatus(media = media))
 
             coVerify {
-                progressUC.changeMediaStatus(
+                changeMediaStatus(
                     media = match { it.mediaId == media.mediaId },
                     status = match { it == Status.WATCHED }
                 )
@@ -228,7 +239,7 @@ class ArtworkViewModelTest : FunSpec({
             viewModel.handleIntent(ArtworkIntent.ChangeWatchStatus(media = MediaMockups.episode1))
 
             coVerify {
-                progressUC.changeMediaStatus(
+                changeMediaStatus(
                     media = match { it.mediaId == MediaMockups.episode1.mediaId },
                     status = match { it == Status.WATCHED }
                 )
@@ -238,7 +249,7 @@ class ArtworkViewModelTest : FunSpec({
             viewModel.handleIntent(ArtworkIntent.ChangeWatchStatus(media = MediaMockups.episode2))
 
             coVerify {
-                progressUC.changeMediaStatus(
+                changeMediaStatus(
                     media = match { it.mediaId == MediaMockups.episode2.mediaId },
                     status = match { it == Status.WATCHED }
                 )
@@ -269,7 +280,7 @@ class ArtworkViewModelTest : FunSpec({
             viewModel.handleIntent(ArtworkIntent.MarkPreviousEpisodesAsWatched)
 
 
-            coVerify { progressUC.markPreviousEpisodesAsWatchedFor(episode = episodes.last()) }
+            coVerify { markPreviousAsWatched(episode = episodes.last()) }
 
             cancelAndConsumeRemainingEvents()
 
@@ -301,7 +312,7 @@ class ArtworkViewModelTest : FunSpec({
             viewModel.handleIntent(ArtworkIntent.ChangeWatchStatus(media = media))
 
             coVerify {
-                progressUC.changeMediaStatus(
+                changeMediaStatus(
                     media = match { it.mediaId == media.mediaId },
                     status = match { it == Status.WATCHED }
                 )
@@ -335,7 +346,7 @@ class ArtworkViewModelTest : FunSpec({
 
             viewModel.handleIntent(ArtworkIntent.ResetProgress)
 
-            coVerify { progressUC.resetProgress(content.fullArtwork.artwork, 1) }
+            coVerify { resetProgress(content.fullArtwork.artwork, 1) }
 
         }
     }
@@ -373,7 +384,7 @@ class ArtworkViewModelTest : FunSpec({
 
             viewModel.handleIntent(ArtworkIntent.PlayMedia(MediaMockups.episode1))
             viewModel.handleIntent(ArtworkIntent.OnExternalPlayerResult(progress = 5000L))
-            coVerify { progressUC.saveProgress(media = MediaMockups.episode1, progress = 5000L) }
+            coVerify { saveProgress(media = MediaMockups.episode1, progress = 5000L) }
         }
     }
 
@@ -410,7 +421,10 @@ class ArtworkViewModelTest : FunSpec({
             season = null,
             artworkUC = artworkUC,
             settingsDataStore = settingsDataStore,
-            progressUC = progressUC
+            changeMediaStatus = changeMediaStatus,
+            markPreviousAsWatched = markPreviousAsWatched,
+            resetProgress = resetProgress,
+            saveProgress = saveProgress
         )
 
         viewModel.uiState.test {

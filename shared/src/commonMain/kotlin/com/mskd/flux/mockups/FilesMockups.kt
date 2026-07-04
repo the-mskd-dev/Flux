@@ -1,6 +1,6 @@
 package com.mskd.flux.mockups
 
-import com.mskd.flux.model.domain.files.FileSource
+import com.mskd.flux.core.domain.model.files.FileSource
 import com.mskd.flux.core.domain.model.files.UserFile
 import com.mskd.flux.features.sources.domain.model.UserFolder
 

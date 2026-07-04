@@ -9,7 +9,7 @@ import android.provider.MediaStore
 import androidx.core.net.toUri
 import com.mskd.flux.core.data.datastore.UserDataStore
 import com.mskd.flux.features.files.domain.repository.FilesRepository
-import com.mskd.flux.model.domain.files.FileSource
+import com.mskd.flux.core.domain.model.files.FileSource
 import com.mskd.flux.core.domain.model.files.UserFile
 import com.mskd.flux.utils.Trace
 import kotlinx.coroutines.Dispatchers

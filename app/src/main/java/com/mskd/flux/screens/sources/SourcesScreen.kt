@@ -23,7 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.mockups.FilesMockups
-import com.mskd.flux.model.core.presentation.State
+import com.mskd.flux.core.domain.model.core.State
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.presentations.components.rememberSafFolderPicker
 import com.mskd.flux.screen.sources.SourcesContent

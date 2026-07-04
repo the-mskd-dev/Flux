@@ -7,7 +7,7 @@ import com.mskd.flux.data.useCases.catalog.CatalogUC
 import com.mskd.flux.features.images.domain.ImagesPrefetchManager
 import com.mskd.flux.mockups.mockkCatalogUC
 import com.mskd.flux.mockups.mockkImagesUC
-import com.mskd.flux.model.core.FluxOptionsDialogState
+import com.mskd.flux.core.domain.model.core.FluxOptionsDialogState
 import com.mskd.flux.screen.settings.SettingsEvent
 import com.mskd.flux.screen.settings.SettingsIntent
 import com.mskd.flux.screen.settings.SettingsViewModel

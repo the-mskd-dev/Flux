@@ -1,6 +1,6 @@
-package com.mskd.flux.core.database.mappers
+package com.mskd.flux.core.data.database.mappers
 
-import com.mskd.flux.model.data.local.entities.ArtworkEntity
+import com.mskd.flux.core.data.database.model.ArtworkEntity
 import com.mskd.flux.core.domain.model.artwork.Artwork
 
 fun ArtworkEntity.toDomain() : Artwork {

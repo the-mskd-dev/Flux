@@ -1,6 +1,6 @@
-package com.mskd.flux.core.database.mappers
+package com.mskd.flux.core.data.database.mappers
 
-import com.mskd.flux.model.data.local.entities.SeasonEntity
+import com.mskd.flux.core.data.database.model.SeasonEntity
 import com.mskd.flux.core.domain.model.artwork.Season
 
 fun SeasonEntity.toDomain() : Season {

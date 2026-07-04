@@ -21,7 +21,7 @@ import com.mskd.flux.core.domain.model.core.AppInfo
 import com.mskd.flux.core.domain.model.artwork.Artwork
 import com.mskd.flux.core.domain.model.artwork.Episode
 import com.mskd.flux.core.domain.model.artwork.Movie
-import com.mskd.flux.model.domain.files.FileSource
+import com.mskd.flux.core.domain.model.files.FileSource
 import com.mskd.flux.core.domain.model.files.UserFile
 import io.mockk.coEvery
 import io.mockk.every

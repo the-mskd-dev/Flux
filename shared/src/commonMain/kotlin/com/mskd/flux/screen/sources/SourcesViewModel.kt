@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.mskd.flux.features.sources.domain.usecase.AddSourceUseCase
 import com.mskd.flux.features.sources.domain.usecase.DeleteSourceUseCase
 import com.mskd.flux.features.sources.domain.usecase.FlowSourcesUseCase
-import com.mskd.flux.model.core.presentation.State
+import com.mskd.flux.core.domain.model.core.State
 import com.mskd.flux.features.sources.domain.model.UserFolder
 import com.mskd.flux.utils.Trace
 import kotlinx.coroutines.channels.Channel

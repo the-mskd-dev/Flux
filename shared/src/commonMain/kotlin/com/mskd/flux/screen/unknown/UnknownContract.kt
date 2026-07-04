@@ -1,11 +1,11 @@
 package com.mskd.flux.screen.unknown
 
-import com.mskd.flux.model.core.presentation.ScreenState
 import com.mskd.flux.core.domain.model.artwork.Episode
 import com.mskd.flux.core.domain.model.artwork.Media
+import com.mskd.flux.core.domain.model.core.State
 
 data class UnknownUiState(
-    val screen: ScreenState = ScreenState.LOADING,
+    val screen: State<Unit> = State.Loading,
     val searchQuery: String = "",
     val useExternalPlayer: Boolean = false,
     val medias: List<Episode> = emptyList()

@@ -7,13 +7,13 @@ import com.mskd.flux.data.useCases.artwork.ArtworkUC
 import com.mskd.flux.data.useCases.files.FilesUC
 import com.mskd.flux.features.player.data.PipIsEnabledUseCase
 import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
-import com.mskd.flux.model.core.StringProvider
-import com.mskd.flux.model.core.presentation.State
+import com.mskd.flux.core.domain.model.core.StringProvider
+import com.mskd.flux.core.domain.model.core.State
 import com.mskd.flux.core.domain.model.artwork.Episode
 import com.mskd.flux.core.domain.model.artwork.FullArtwork
 import com.mskd.flux.core.domain.model.artwork.Media
-import com.mskd.flux.model.domain.player.PlayerTrack
-import com.mskd.flux.model.domain.player.PlayerTrack.Type
+import com.mskd.flux.core.domain.model.player.PlayerTrack
+import com.mskd.flux.core.domain.model.player.PlayerTrack.Type
 import com.mskd.flux.platform.PlayerManager
 import com.mskd.flux.screen.player.PlayerUiContent.AmbientOverlay
 import com.mskd.flux.screen.player.PlayerUiContent.NextButton

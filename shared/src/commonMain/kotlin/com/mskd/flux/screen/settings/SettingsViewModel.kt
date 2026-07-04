@@ -5,9 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.mskd.flux.core.data.datastore.SettingsDataStore
 import com.mskd.flux.data.useCases.catalog.CatalogUC
 import com.mskd.flux.features.images.domain.ImagesPrefetchManager
-import com.mskd.flux.model.core.FluxOptionsDialogItem
-import com.mskd.flux.model.core.FluxOptionsDialogState
-import com.mskd.flux.model.core.StringProvider
+import com.mskd.flux.core.domain.model.core.FluxOptionsDialogItem
+import com.mskd.flux.core.domain.model.core.FluxOptionsDialogState
+import com.mskd.flux.core.domain.model.core.StringProvider
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.button_forward
 import flux.shared.generated.resources.button_rewind

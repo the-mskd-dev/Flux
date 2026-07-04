@@ -6,7 +6,7 @@ import com.mskd.flux.mockups.FilesMockups
 import com.mskd.flux.core.domain.model.artwork.ContentType
 import com.mskd.flux.core.domain.model.catalog.CatalogFolder
 import com.mskd.flux.model.domain.files.FileProperties
-import com.mskd.flux.model.domain.files.FileSource
+import com.mskd.flux.core.domain.model.files.FileSource
 import com.mskd.flux.core.domain.model.files.UserFile
 import com.mskd.flux.utils.extensions.groupInFolders
 import io.kotest.core.spec.style.FunSpec

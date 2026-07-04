@@ -1,7 +1,7 @@
 package com.mskd.flux.data.useCases.artwork
 
 import com.mskd.flux.data.repository.ddb.DatabaseRepository
-import com.mskd.flux.model.core.presentation.State
+import com.mskd.flux.core.domain.model.core.State
 import com.mskd.flux.core.domain.model.artwork.Artwork
 import com.mskd.flux.core.domain.model.artwork.ContentType
 import com.mskd.flux.core.domain.model.artwork.Episode

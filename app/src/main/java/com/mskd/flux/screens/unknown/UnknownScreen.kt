@@ -29,8 +29,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.model.core.presentation.ScreenState
 import com.mskd.flux.core.domain.model.artwork.Episode
+import com.mskd.flux.core.domain.model.core.State
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Route.Player
 import com.mskd.flux.screen.unknown.UnknownEvent
@@ -96,14 +96,14 @@ fun UnknownScreen(
     Crossfade(targetState = uiState.screen) { screen ->
 
         when (screen) {
-            ScreenState.LOADING -> LoadingScreen()
-            ScreenState.ERROR -> {
+            State.Loading -> LoadingScreen()
+            is State.Error -> {
                 ErrorScreen(
                     message = stringResource(Res.string.oups_an_error_occured),
                     onBackButtonTap = { viewModel.handleIntent(UnknownIntent.OnBackTap) }
                 )
             }
-            ScreenState.CONTENT -> {
+            is State.Content -> {
                 UnknownScreenContent(
                     medias = uiState.filteredMedias,
                     searchQuery = uiState.searchQuery,

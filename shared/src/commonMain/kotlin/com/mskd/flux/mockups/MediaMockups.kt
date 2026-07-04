@@ -7,7 +7,7 @@ import com.mskd.flux.core.domain.model.artwork.FullArtwork
 import com.mskd.flux.core.domain.model.artwork.Movie
 import com.mskd.flux.core.domain.model.artwork.Season
 import com.mskd.flux.core.domain.model.artwork.Status
-import com.mskd.flux.model.domain.files.FileSource
+import com.mskd.flux.core.domain.model.files.FileSource
 import com.mskd.flux.core.domain.model.files.UserFile
 import kotlin.time.Duration.Companion.minutes
 

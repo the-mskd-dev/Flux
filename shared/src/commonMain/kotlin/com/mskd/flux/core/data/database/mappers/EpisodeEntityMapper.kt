@@ -1,10 +1,10 @@
 package com.mskd.flux.core.data.database.mappers
 
-import com.mskd.flux.model.data.local.entities.MovieEntity
-import com.mskd.flux.core.domain.model.artwork.Movie
+import com.mskd.flux.core.data.database.model.EpisodeEntity
+import com.mskd.flux.core.domain.model.artwork.Episode
 import com.mskd.flux.core.domain.model.files.UserFile
 
-fun MovieEntity.toDomain() : Movie {
+fun EpisodeEntity.toDomain() : Episode {
     val file = UserFile(
         name = this.fileName,
         addedDateTime = this.addedDateTime,
@@ -12,7 +12,11 @@ fun MovieEntity.toDomain() : Movie {
         source = this.source
     )
 
-    return Movie(
+    return Episode(
+        id = this.id,
+        number = this.number,
+        season = this.season,
+        imagePath = this.imagePath,
         artworkId = this.artworkId,
         title = this.title,
         releaseDateString = this.releaseDateString,
@@ -26,8 +30,12 @@ fun MovieEntity.toDomain() : Movie {
     )
 }
 
-fun Movie.toEntity() : MovieEntity {
-    return MovieEntity(
+fun Episode.toEntity() : EpisodeEntity {
+    return EpisodeEntity(
+        id = this.id,
+        number = this.number,
+        season = this.season,
+        imagePath = this.imagePath,
         artworkId = this.artworkId,
         title = this.title,
         releaseDateString = this.releaseDateString,

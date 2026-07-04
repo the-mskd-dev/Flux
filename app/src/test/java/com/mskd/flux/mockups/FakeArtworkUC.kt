@@ -1,7 +1,7 @@
 package com.mskd.flux.mockups
 
 import com.mskd.flux.data.useCases.artwork.ArtworkUC
-import com.mskd.flux.model.core.presentation.State
+import com.mskd.flux.core.domain.model.core.State
 import com.mskd.flux.core.domain.model.artwork.ContentType
 import com.mskd.flux.core.domain.model.artwork.Episode
 import com.mskd.flux.core.domain.model.artwork.FullArtwork

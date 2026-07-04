@@ -21,7 +21,7 @@ import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
 import com.mskd.flux.core.domain.model.artwork.Episode
 import com.mskd.flux.core.domain.model.artwork.Media
-import com.mskd.flux.model.domain.player.PlayerTrack
+import com.mskd.flux.core.domain.model.player.PlayerTrack
 import com.mskd.flux.services.PlayerService
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.Trace

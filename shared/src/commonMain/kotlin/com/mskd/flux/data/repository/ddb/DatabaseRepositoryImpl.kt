@@ -1,8 +1,8 @@
 package com.mskd.flux.data.repository.ddb
 
 import com.mskd.flux.core.data.database.DatabaseDao
-import com.mskd.flux.features.sources.data.mapper.toDomain
-import com.mskd.flux.features.sources.data.mapper.toEntity
+import com.mskd.flux.core.data.database.mappers.toDomain
+import com.mskd.flux.core.data.database.mappers.toEntity
 import com.mskd.flux.core.domain.model.artwork.Artwork
 import com.mskd.flux.core.domain.model.artwork.Episode
 import com.mskd.flux.core.domain.model.artwork.Movie

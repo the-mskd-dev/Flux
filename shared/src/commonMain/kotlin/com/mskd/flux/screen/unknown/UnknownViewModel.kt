@@ -5,8 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.mskd.flux.core.data.datastore.SettingsDataStore
 import com.mskd.flux.data.useCases.artwork.ArtworkUC
 import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
-import com.mskd.flux.model.core.presentation.ScreenState
-import com.mskd.flux.model.core.presentation.State
+import com.mskd.flux.core.domain.model.core.State
 import com.mskd.flux.core.domain.model.artwork.Artwork
 import com.mskd.flux.core.domain.model.artwork.Episode
 import com.mskd.flux.core.domain.model.artwork.FullArtwork
@@ -48,7 +47,7 @@ class UnknownViewModel(
 
         val fullShow = (artworkContent as? State.Content)?.content as? FullArtwork.FullShow
         UnknownUiState(
-            screen = ScreenState.CONTENT,
+            screen = State.Content(Unit),
             searchQuery = searchQuery,
             medias = fullShow?.episodes?.sortedWith(
                 compareBy<Episode> { it.title }.thenBy { it.season }.thenBy { it.number }

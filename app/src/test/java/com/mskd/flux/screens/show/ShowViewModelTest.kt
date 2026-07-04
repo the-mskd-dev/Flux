@@ -6,7 +6,7 @@ import com.mskd.flux.data.useCases.progress.ProgressUC
 import com.mskd.flux.mockups.FakeArtworkUC
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.mockkProgressUC
-import com.mskd.flux.model.core.presentation.State
+import com.mskd.flux.core.domain.model.core.State
 import com.mskd.flux.core.domain.model.artwork.ContentType
 import com.mskd.flux.screen.show.ShowContent
 import com.mskd.flux.screen.show.ShowDialog

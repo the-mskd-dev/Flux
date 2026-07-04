@@ -1,7 +1,7 @@
 package com.mskd.flux.platform
 
 import com.mskd.flux.core.domain.model.artwork.Media
-import com.mskd.flux.model.domain.player.PlayerTrack
+import com.mskd.flux.core.domain.model.player.PlayerTrack
 import kotlinx.coroutines.flow.Flow
 
 interface PlayerManager<out T> {

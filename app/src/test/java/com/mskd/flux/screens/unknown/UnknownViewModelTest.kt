@@ -5,17 +5,18 @@ import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.data.repository.ddb.DatabaseRepository
 import com.mskd.flux.core.data.datastore.SettingsDataStore
 import com.mskd.flux.core.data.datastore.UserDataStore
+import com.mskd.flux.core.domain.model.core.State
 import com.mskd.flux.data.useCases.progress.ProgressUC
 import com.mskd.flux.data.useCases.progress.ProgressUCImpl
 import com.mskd.flux.mockups.FakeArtworkUC
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.mockkDatabaseRepository
-import com.mskd.flux.model.core.presentation.ScreenState
 import com.mskd.flux.screen.unknown.UnknownEvent
 import com.mskd.flux.screen.unknown.UnknownIntent
 import com.mskd.flux.screen.unknown.UnknownViewModel
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.types.shouldBeInstanceOf
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
@@ -72,7 +73,7 @@ class UnknownViewModelTest : FunSpec ({
             val initialState = awaitItem()
 
             initialState.medias shouldBe MediaMockups.unknowns
-            initialState.screen shouldBe ScreenState.CONTENT
+            initialState.screen.shouldBeInstanceOf<State.Content<Unit>>()
 
         }
 

@@ -2,6 +2,7 @@ package com.mskd.flux.core.data.database
 
 import com.mskd.flux.data.repository.ddb.DatabaseRepository
 import com.mskd.flux.data.repository.ddb.DatabaseRepositoryImpl
+import com.mskd.flux.features.sources.data.local.SourcesDao
 import org.koin.dsl.module
 
 val moduleDatabase = module {
@@ -10,6 +11,11 @@ val moduleDatabase = module {
 
     single<DatabaseRepository> {
         DatabaseRepositoryImpl(dao = get())
+    }
+
+    single<DatabaseDao> {
+        val fluxDatabase = get<FluxDatabase>()
+        fluxDatabase.dao()
     }
 
 }

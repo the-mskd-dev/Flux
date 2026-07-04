@@ -1,11 +1,11 @@
-package com.mskd.flux.core.util
+package com.mskd.flux.features.images
 
-import com.mskd.flux.core.util.images.ImagesPrefetchManager
-import com.mskd.flux.core.util.images.ImagesPrefetchManagerImpl
 import com.mskd.flux.di.Qualifiers
+import com.mskd.flux.features.images.data.ImagesPrefetchManager
+import com.mskd.flux.features.images.data.ImagesPrefetchManagerImpl
 import org.koin.dsl.module
 
-val moduleUtil = module {
+val moduleImages = module {
 
     single<ImagesPrefetchManager> {
         ImagesPrefetchManagerImpl(

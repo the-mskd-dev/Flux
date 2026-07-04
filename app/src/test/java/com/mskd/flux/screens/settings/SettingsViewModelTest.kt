@@ -4,7 +4,7 @@ import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.core.datastore.settings.SettingsDataStore
 import com.mskd.flux.data.useCases.catalog.CatalogUC
-import com.mskd.flux.core.util.images.ImagesPrefetchManager
+import com.mskd.flux.features.images.data.ImagesPrefetchManager
 import com.mskd.flux.mockups.mockkCatalogUC
 import com.mskd.flux.mockups.mockkImagesUC
 import com.mskd.flux.model.core.FluxOptionsDialogState

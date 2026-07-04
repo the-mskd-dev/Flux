@@ -13,7 +13,7 @@ import com.mskd.flux.core.datastore.user.UserDataStore
 import com.mskd.flux.data.useCases.catalog.CatalogUC
 import com.mskd.flux.data.useCases.catalog.CatalogUCImpl
 import com.mskd.flux.data.useCases.files.FilesUC
-import com.mskd.flux.core.util.images.ImagesPrefetchManager
+import com.mskd.flux.features.images.data.ImagesPrefetchManager
 import com.mskd.flux.di.Properties
 import com.mskd.flux.di.Qualifiers
 import com.mskd.flux.di.moduleAndroidApp

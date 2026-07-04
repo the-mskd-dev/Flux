@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.core.datastore.settings.SettingsDataStore
 import com.mskd.flux.data.useCases.catalog.CatalogUC
-import com.mskd.flux.core.util.images.ImagesPrefetchManager
+import com.mskd.flux.features.images.data.ImagesPrefetchManager
 import com.mskd.flux.model.core.FluxOptionsDialogItem
 import com.mskd.flux.model.core.FluxOptionsDialogState
 import com.mskd.flux.model.core.StringProvider

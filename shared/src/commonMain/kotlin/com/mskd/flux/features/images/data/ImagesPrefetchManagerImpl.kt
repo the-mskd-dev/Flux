@@ -1,4 +1,4 @@
-package com.mskd.flux.core.util.images
+package com.mskd.flux.features.images.data
 
 import coil3.ImageLoader
 import com.mskd.flux.data.repository.ddb.DatabaseRepository

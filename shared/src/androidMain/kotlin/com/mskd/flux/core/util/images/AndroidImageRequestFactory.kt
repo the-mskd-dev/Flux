@@ -3,6 +3,7 @@ package com.mskd.flux.core.util.images
 import android.content.Context
 import coil3.request.CachePolicy
 import coil3.request.ImageRequest
+import com.mskd.flux.features.images.data.ImageRequestFactory
 
 class AndroidImageRequestFactory(private val context: Context) : ImageRequestFactory {
     override fun build(url: String, onEnd: (String) -> Unit): ImageRequest {

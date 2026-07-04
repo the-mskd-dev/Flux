@@ -1,7 +1,7 @@
 package com.mskd.flux.screen.settings
 
 import androidx.compose.runtime.Immutable
-import com.mskd.flux.core.util.images.ImagesPrefetchManager
+import com.mskd.flux.features.images.data.ImagesPrefetchManager
 import com.mskd.flux.model.core.FluxOptionsDialogState
 import java.util.Locale
 

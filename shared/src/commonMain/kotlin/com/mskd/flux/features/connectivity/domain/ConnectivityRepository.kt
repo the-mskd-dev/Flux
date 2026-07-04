@@ -1,4 +1,4 @@
-package com.mskd.flux.core.util.connectivity
+package com.mskd.flux.features.connectivity.domain
 
 import androidx.compose.runtime.compositionLocalOf
 import kotlinx.coroutines.flow.Flow

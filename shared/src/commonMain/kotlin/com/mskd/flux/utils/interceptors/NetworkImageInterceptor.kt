@@ -3,7 +3,7 @@ package com.mskd.flux.utils.interceptors
 import coil3.intercept.Interceptor
 import coil3.request.CachePolicy
 import coil3.request.ImageResult
-import com.mskd.flux.core.util.connectivity.ConnectivityRepository
+import com.mskd.flux.features.connectivity.domain.ConnectivityRepository
 
 class NetworkImageInterceptor(
     private val connectivityRepository: ConnectivityRepository

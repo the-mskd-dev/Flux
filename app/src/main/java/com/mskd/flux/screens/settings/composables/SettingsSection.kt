@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.mskd.flux.features.images.data.ImagesPrefetchManager
+import com.mskd.flux.features.images.domain.ImagesPrefetchManager
 import com.mskd.flux.screen.settings.SettingsIntent
 import com.mskd.flux.screen.settings.SettingsUiState
 import com.mskd.flux.ui.theme.FluxUI

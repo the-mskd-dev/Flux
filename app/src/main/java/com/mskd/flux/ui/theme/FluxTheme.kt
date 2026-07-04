@@ -14,7 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.materialkolor.rememberDynamicColorScheme
-import com.mskd.flux.core.util.connectivity.LocalConnectivity
+import com.mskd.flux.features.connectivity.domain.LocalConnectivity
 import com.mskd.flux.core.datastore.customization.CustomizationDataStore
 import com.mskd.flux.ui.typography.FluxTypography
 import com.mskd.flux.utils.UiCommon

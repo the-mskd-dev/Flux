@@ -1,4 +1,4 @@
-package com.mskd.flux.features.images.data
+package com.mskd.flux.features.images.domain
 
 import coil3.request.ImageRequest
 

@@ -5,7 +5,7 @@ import com.mskd.flux.core.datastore.settings.SettingsDataStore
 import com.mskd.flux.features.tmdb.data.datasource.TmdbDataSource
 import com.mskd.flux.core.datastore.user.UserDataStore
 import com.mskd.flux.data.useCases.files.FilesUC
-import com.mskd.flux.features.images.data.ImagesPrefetchManager
+import com.mskd.flux.features.images.domain.ImagesPrefetchManager
 import com.mskd.flux.model.core.AppInfo
 import com.mskd.flux.features.tmdb.data.dto.EpisodeDto
 import com.mskd.flux.features.tmdb.data.dto.TranslationsDto

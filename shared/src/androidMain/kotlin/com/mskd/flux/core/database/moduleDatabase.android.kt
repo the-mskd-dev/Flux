@@ -1,6 +1,7 @@
 package com.mskd.flux.core.database
 
 import androidx.room.RoomDatabase
+import com.mskd.flux.core.data.database.FluxDatabase
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 

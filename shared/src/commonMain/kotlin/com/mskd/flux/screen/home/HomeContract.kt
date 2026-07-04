@@ -1,8 +1,8 @@
 package com.mskd.flux.screen.home
 
 import androidx.compose.runtime.Immutable
-import com.mskd.flux.model.domain.artwork.Artwork
-import com.mskd.flux.model.domain.artwork.ContentType
+import com.mskd.flux.core.domain.model.artwork.Artwork
+import com.mskd.flux.core.domain.model.artwork.ContentType
 import com.mskd.flux.utils.FluxSnackbar
 
 @Immutable

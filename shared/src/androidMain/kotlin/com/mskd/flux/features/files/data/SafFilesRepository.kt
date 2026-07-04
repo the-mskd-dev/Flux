@@ -10,7 +10,7 @@ import com.mskd.flux.features.sources.data.datasource.SourcesDataSource
 import com.mskd.flux.features.sources.data.mapper.toDomain
 import com.mskd.flux.features.sources.domain.model.UserFolder
 import com.mskd.flux.model.domain.files.FileSource
-import com.mskd.flux.model.domain.files.UserFile
+import com.mskd.flux.core.domain.model.files.UserFile
 import com.mskd.flux.utils.Trace
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

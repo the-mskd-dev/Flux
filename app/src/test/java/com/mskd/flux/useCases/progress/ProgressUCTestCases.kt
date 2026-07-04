@@ -1,8 +1,8 @@
 package com.mskd.flux.useCases.progress
 
-import com.mskd.flux.model.domain.artwork.Artwork
-import com.mskd.flux.model.domain.artwork.Media
-import com.mskd.flux.model.domain.artwork.Status
+import com.mskd.flux.core.domain.model.artwork.Artwork
+import com.mskd.flux.core.domain.model.artwork.Media
+import com.mskd.flux.core.domain.model.artwork.Status
 
 object ProgressUCTestCases {
 

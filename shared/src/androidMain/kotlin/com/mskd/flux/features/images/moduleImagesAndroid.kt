@@ -13,10 +13,6 @@ import org.koin.dsl.module
 
 val moduleImagesAndroid = module {
 
-    single<NetworkImageInterceptor> {
-        NetworkImageInterceptor(connectivityRepository = get())
-    }
-
     single<ImageLoader> {
         val context = androidContext()
         val networkImageInterceptor = get<NetworkImageInterceptor>()

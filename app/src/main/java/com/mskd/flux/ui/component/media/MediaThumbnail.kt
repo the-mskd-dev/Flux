@@ -6,10 +6,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.mskd.flux.model.domain.artwork.Episode
-import com.mskd.flux.model.domain.artwork.Media
-import com.mskd.flux.model.domain.artwork.Movie
-import com.mskd.flux.model.domain.artwork.Status
+import com.mskd.flux.core.domain.model.artwork.Episode
+import com.mskd.flux.core.domain.model.artwork.Media
+import com.mskd.flux.core.domain.model.artwork.Movie
+import com.mskd.flux.core.domain.model.artwork.Status
 import com.mskd.flux.ui.component.global.FluxImage
 import com.mskd.flux.ui.component.global.ProgressStatusBar
 import com.mskd.flux.ui.component.global.ProgressStatusChip

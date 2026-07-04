@@ -1,10 +1,10 @@
 package com.mskd.flux.features.progress.domain.usecase
 
-import com.mskd.flux.core.datastore.user.UserDataStore
+import com.mskd.flux.core.data.datastore.UserDataStore
 import com.mskd.flux.data.repository.ddb.DatabaseRepository
-import com.mskd.flux.model.domain.artwork.Artwork
-import com.mskd.flux.model.domain.artwork.ContentType
-import com.mskd.flux.model.domain.artwork.Status
+import com.mskd.flux.core.domain.model.artwork.Artwork
+import com.mskd.flux.core.domain.model.artwork.ContentType
+import com.mskd.flux.core.domain.model.artwork.Status
 
 class ResetProgressUseCase(
     private val database: DatabaseRepository,

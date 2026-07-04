@@ -1,6 +1,5 @@
 package com.mskd.flux.di
 
-import com.mskd.flux.core.database.moduleDatabase
 import com.mskd.flux.core.moduleCore
 import com.mskd.flux.features.moduleFeatures
 import org.koin.dsl.module

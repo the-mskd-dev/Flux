@@ -3,9 +3,9 @@ package com.mskd.flux.screens.token
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.features.tmdb.data.service.TMDBService
-import com.mskd.flux.core.datastore.token.TokenDataStore
+import com.mskd.flux.core.data.datastore.TokenDataStore
 import com.mskd.flux.data.useCases.catalog.CatalogUC
-import com.mskd.flux.model.core.AppInfo
+import com.mskd.flux.core.domain.model.core.AppInfo
 import com.mskd.flux.features.tmdb.data.dto.AuthenticationDto
 import com.mskd.flux.screen.token.TokenEvent
 import com.mskd.flux.screen.token.TokenIntent

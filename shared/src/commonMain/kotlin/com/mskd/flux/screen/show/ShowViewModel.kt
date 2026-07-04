@@ -5,8 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.mskd.flux.data.useCases.artwork.ArtworkUC
 import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
 import com.mskd.flux.model.core.presentation.State
-import com.mskd.flux.model.domain.artwork.FullArtwork
-import com.mskd.flux.model.domain.artwork.Season
+import com.mskd.flux.core.domain.model.artwork.FullArtwork
+import com.mskd.flux.core.domain.model.artwork.Season
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted

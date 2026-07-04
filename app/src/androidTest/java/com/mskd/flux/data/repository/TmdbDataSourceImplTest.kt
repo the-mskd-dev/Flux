@@ -3,14 +3,14 @@ package com.mskd.flux.data.repository
 import androidx.test.core.app.ApplicationProvider
 import com.mskd.flux.BuildConfig
 import com.mskd.flux.features.tmdb.data.service.TMDBService
-import com.mskd.flux.core.datastore.settings.SettingsDataStore
+import com.mskd.flux.core.data.datastore.SettingsDataStore
 import com.mskd.flux.features.tmdb.data.datasource.TmdbDataSourceImpl
-import com.mskd.flux.core.datastore.token.TokenDataStore
+import com.mskd.flux.core.data.datastore.TokenDataStore
 import com.mskd.flux.di.moduleAndroidApp
 import com.mskd.flux.di.modulePlatform
 import com.mskd.flux.features.tmdb.data.dto.TranslationsDto
 import com.mskd.flux.model.domain.files.FileSource
-import com.mskd.flux.model.domain.files.UserFile
+import com.mskd.flux.core.domain.model.files.UserFile
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking

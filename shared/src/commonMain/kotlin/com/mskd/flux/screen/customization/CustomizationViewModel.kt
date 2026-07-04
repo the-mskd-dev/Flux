@@ -3,7 +3,7 @@ package com.mskd.flux.screen.customization
 import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mskd.flux.core.datastore.customization.CustomizationDataStore
+import com.mskd.flux.core.data.datastore.CustomizationDataStore
 import com.mskd.flux.model.core.FluxOptionsDialogItem
 import com.mskd.flux.model.core.FluxOptionsDialogState
 import com.mskd.flux.model.core.StringProvider

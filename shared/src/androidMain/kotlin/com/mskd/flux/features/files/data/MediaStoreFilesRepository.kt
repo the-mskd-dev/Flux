@@ -7,16 +7,15 @@ import android.media.MediaScannerConnection
 import android.os.Environment
 import android.provider.MediaStore
 import androidx.core.net.toUri
-import com.mskd.flux.core.datastore.user.UserDataStore
+import com.mskd.flux.core.data.datastore.UserDataStore
 import com.mskd.flux.features.files.domain.repository.FilesRepository
 import com.mskd.flux.model.domain.files.FileSource
-import com.mskd.flux.model.domain.files.UserFile
+import com.mskd.flux.core.domain.model.files.UserFile
 import com.mskd.flux.utils.Trace
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import java.io.File
-import kotlin.collections.contains
 import kotlin.collections.plusAssign
 import kotlin.coroutines.resume
 

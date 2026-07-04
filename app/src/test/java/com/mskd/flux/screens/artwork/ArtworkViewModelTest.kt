@@ -2,16 +2,16 @@ package com.mskd.flux.screens.artwork
 
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
-import com.mskd.flux.core.datastore.settings.SettingsDataStore
+import com.mskd.flux.core.data.datastore.SettingsDataStore
 import com.mskd.flux.data.useCases.progress.ProgressUC
 import com.mskd.flux.mockups.FakeArtworkUC
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.mockkProgressUC
 import com.mskd.flux.model.core.presentation.State
-import com.mskd.flux.model.domain.artwork.ContentType
-import com.mskd.flux.model.domain.artwork.Episode
-import com.mskd.flux.model.domain.artwork.FullArtwork
-import com.mskd.flux.model.domain.artwork.Status
+import com.mskd.flux.core.domain.model.artwork.ContentType
+import com.mskd.flux.core.domain.model.artwork.Episode
+import com.mskd.flux.core.domain.model.artwork.FullArtwork
+import com.mskd.flux.core.domain.model.artwork.Status
 import com.mskd.flux.screen.artwork.ArtworkContent
 import com.mskd.flux.screen.artwork.ArtworkDialog
 import com.mskd.flux.screen.artwork.ArtworkEvent

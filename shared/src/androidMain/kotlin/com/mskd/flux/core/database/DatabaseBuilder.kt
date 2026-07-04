@@ -3,6 +3,7 @@ package com.mskd.flux.core.database
 import android.content.Context
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.mskd.flux.core.data.database.FluxDatabase
 
 fun getDatabaseBuilder(context: Context): RoomDatabase.Builder<FluxDatabase> {
     val appContext = context.applicationContext

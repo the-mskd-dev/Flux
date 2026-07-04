@@ -3,8 +3,8 @@ package com.mskd.flux.screens.unknown
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.data.repository.ddb.DatabaseRepository
-import com.mskd.flux.core.datastore.settings.SettingsDataStore
-import com.mskd.flux.core.datastore.user.UserDataStore
+import com.mskd.flux.core.data.datastore.SettingsDataStore
+import com.mskd.flux.core.data.datastore.UserDataStore
 import com.mskd.flux.data.useCases.progress.ProgressUC
 import com.mskd.flux.data.useCases.progress.ProgressUCImpl
 import com.mskd.flux.mockups.FakeArtworkUC

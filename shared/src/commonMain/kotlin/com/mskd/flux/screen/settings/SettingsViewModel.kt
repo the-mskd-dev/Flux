@@ -2,7 +2,7 @@ package com.mskd.flux.screen.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mskd.flux.core.datastore.settings.SettingsDataStore
+import com.mskd.flux.core.data.datastore.SettingsDataStore
 import com.mskd.flux.data.useCases.catalog.CatalogUC
 import com.mskd.flux.features.images.domain.ImagesPrefetchManager
 import com.mskd.flux.model.core.FluxOptionsDialogItem

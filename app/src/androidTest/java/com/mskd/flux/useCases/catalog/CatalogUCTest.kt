@@ -5,25 +5,24 @@ import androidx.test.core.app.ApplicationProvider
 import com.mskd.flux.BuildConfig
 import com.mskd.flux.features.tmdb.data.service.TMDBService
 import com.mskd.flux.data.repository.ddb.DatabaseRepository
-import com.mskd.flux.core.datastore.settings.SettingsDataStore
+import com.mskd.flux.core.data.datastore.SettingsDataStore
 import com.mskd.flux.features.tmdb.data.datasource.TmdbDataSource
 import com.mskd.flux.features.tmdb.data.datasource.TmdbDataSourceImpl
-import com.mskd.flux.core.datastore.token.TokenDataStore
-import com.mskd.flux.core.datastore.user.UserDataStore
+import com.mskd.flux.core.data.datastore.TokenDataStore
+import com.mskd.flux.core.data.datastore.UserDataStore
 import com.mskd.flux.data.useCases.catalog.CatalogUC
 import com.mskd.flux.data.useCases.catalog.CatalogUCImpl
 import com.mskd.flux.data.useCases.files.FilesUC
 import com.mskd.flux.features.images.domain.ImagesPrefetchManager
-import com.mskd.flux.di.Properties
 import com.mskd.flux.di.Qualifiers
 import com.mskd.flux.di.moduleAndroidApp
 import com.mskd.flux.di.modulePlatform
-import com.mskd.flux.model.core.AppInfo
-import com.mskd.flux.model.domain.artwork.Artwork
-import com.mskd.flux.model.domain.artwork.Episode
-import com.mskd.flux.model.domain.artwork.Movie
+import com.mskd.flux.core.domain.model.core.AppInfo
+import com.mskd.flux.core.domain.model.artwork.Artwork
+import com.mskd.flux.core.domain.model.artwork.Episode
+import com.mskd.flux.core.domain.model.artwork.Movie
 import com.mskd.flux.model.domain.files.FileSource
-import com.mskd.flux.model.domain.files.UserFile
+import com.mskd.flux.core.domain.model.files.UserFile
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -39,6 +38,7 @@ import org.junit.runners.MethodSorters
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
+import org.koin.dsl.module
 import org.koin.test.KoinTest
 import org.koin.test.get
 import org.koin.test.inject
@@ -89,14 +89,7 @@ class CatalogUCTest : KoinTest {
 
         startKoin {
             androidContext(context)
-            properties(
-                mapOf(
-                    Properties.IS_DEBUG to appInfo.isDebug,
-                    Properties.VERSION_NAME to appInfo.versionName,
-                    Properties.VERSION_CODE to appInfo.versionCode,
-                    Properties.DEBUG_TOKEN to appInfo.debugToken,
-                )
-            )
+            module { single<AppInfo> { appInfo } }
             modules(
                 modulePlatform,
                 moduleAndroidApp

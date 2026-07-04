@@ -2,7 +2,7 @@ package com.mskd.flux.features.images.data
 
 import coil3.ImageLoader
 import com.mskd.flux.data.repository.ddb.DatabaseRepository
-import com.mskd.flux.core.datastore.settings.SettingsDataStore
+import com.mskd.flux.core.data.datastore.SettingsDataStore
 import com.mskd.flux.features.images.domain.ImageRequestFactory
 import com.mskd.flux.features.images.domain.ImagesPrefetchManager
 import com.mskd.flux.utils.extensions.tmdbImage

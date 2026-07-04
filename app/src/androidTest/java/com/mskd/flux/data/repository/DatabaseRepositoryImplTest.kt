@@ -5,12 +5,12 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import app.cash.turbine.test
-import com.mskd.flux.core.database.FluxDatabase
+import com.mskd.flux.core.data.database.FluxDatabase
 import com.mskd.flux.data.repository.ddb.DatabaseRepositoryImpl
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.model.domain.artwork.Artwork
-import com.mskd.flux.model.domain.artwork.Episode
-import com.mskd.flux.model.domain.artwork.Season
+import com.mskd.flux.core.domain.model.artwork.Artwork
+import com.mskd.flux.core.domain.model.artwork.Episode
+import com.mskd.flux.core.domain.model.artwork.Season
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert

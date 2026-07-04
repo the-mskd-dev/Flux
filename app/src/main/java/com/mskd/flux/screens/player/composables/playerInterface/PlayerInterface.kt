@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
-import com.mskd.flux.model.domain.artwork.Media
+import com.mskd.flux.core.domain.model.artwork.Media
 import com.mskd.flux.screen.player.PlayerIntent
 import com.mskd.flux.screen.player.PlayerUiContent
 import com.mskd.flux.ui.theme.FluxUI

@@ -1,6 +1,6 @@
 package com.mskd.flux.features.sources
 
-import com.mskd.flux.core.database.FluxDatabase
+import com.mskd.flux.core.data.database.FluxDatabase
 import com.mskd.flux.features.sources.data.local.SourcesDao
 import com.mskd.flux.features.sources.data.datasource.SourcesDataSource
 import com.mskd.flux.features.sources.data.datasource.SourcesDataSourceImpl

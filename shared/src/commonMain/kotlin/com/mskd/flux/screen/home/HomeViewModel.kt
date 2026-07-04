@@ -2,13 +2,13 @@ package com.mskd.flux.screen.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mskd.flux.core.datastore.snackbars.SnackbarDataStore
-import com.mskd.flux.core.datastore.token.TokenDataStore
-import com.mskd.flux.core.datastore.user.UserDataStore
+import com.mskd.flux.core.data.datastore.SnackbarDataStore
+import com.mskd.flux.core.data.datastore.TokenDataStore
+import com.mskd.flux.core.data.datastore.UserDataStore
 import com.mskd.flux.data.useCases.catalog.CatalogUC
-import com.mskd.flux.model.core.AppInfo
-import com.mskd.flux.model.domain.artwork.Artwork
-import com.mskd.flux.model.domain.artwork.ContentType
+import com.mskd.flux.core.domain.model.artwork.Artwork
+import com.mskd.flux.core.domain.model.artwork.ContentType
+import com.mskd.flux.core.domain.model.core.AppInfo
 import com.mskd.flux.utils.FluxSnackbar
 import com.mskd.flux.utils.Trace
 import com.mskd.flux.utils.UpdateManager

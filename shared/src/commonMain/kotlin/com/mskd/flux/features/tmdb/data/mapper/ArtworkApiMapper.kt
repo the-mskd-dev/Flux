@@ -2,8 +2,8 @@ package com.mskd.flux.features.tmdb.data.mapper
 
 import com.mskd.flux.features.tmdb.data.dto.ArtworkDto
 import com.mskd.flux.features.tmdb.data.dto.MediaTypeDto
-import com.mskd.flux.model.domain.artwork.Artwork
-import com.mskd.flux.model.domain.artwork.ContentType
+import com.mskd.flux.core.domain.model.artwork.Artwork
+import com.mskd.flux.core.domain.model.artwork.ContentType
 
 fun ArtworkDto.toDomain() : Artwork {
     return Artwork(

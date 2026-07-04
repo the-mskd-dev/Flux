@@ -4,7 +4,7 @@ import android.app.Application
 import android.content.Context
 import coil3.ImageLoader
 import coil3.SingletonImageLoader
-import com.mskd.flux.di.Properties
+import com.mskd.flux.core.domain.model.core.AppInfo
 import com.mskd.flux.di.moduleAndroidApp
 import com.mskd.flux.di.modulePlatform
 import com.mskd.flux.utils.Constants
@@ -18,6 +18,7 @@ import org.acra.ktx.initAcra
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
+import org.koin.dsl.module
 
 class FluxApp : Application(), SingletonImageLoader.Factory {
     val imageLoader: ImageLoader by inject()
@@ -34,14 +35,16 @@ class FluxApp : Application(), SingletonImageLoader.Factory {
         startKoin {
             androidContext(this@FluxApp)
 
-            properties(
-                mapOf(
-                    Properties.IS_DEBUG to BuildConfig.DEBUG,
-                    Properties.VERSION_NAME to BuildConfig.VERSION_NAME,
-                    Properties.VERSION_CODE to BuildConfig.VERSION_CODE,
-                    Properties.DEBUG_TOKEN to BuildConfig.TMDB_TOKEN,
-                )
-            )
+            module {
+                single<AppInfo> {
+                    AppInfo(
+                        isDebug =  BuildConfig.DEBUG,
+                        versionName = BuildConfig.VERSION_NAME,
+                        versionCode = BuildConfig.VERSION_CODE,
+                        debugToken = BuildConfig.TMDB_TOKEN,
+                    )
+                }
+            }
 
             modules(
                 modulePlatform,

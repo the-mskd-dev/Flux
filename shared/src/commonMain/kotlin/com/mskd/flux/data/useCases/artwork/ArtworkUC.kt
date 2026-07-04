@@ -1,9 +1,9 @@
 package com.mskd.flux.data.useCases.artwork
 
 import com.mskd.flux.model.core.presentation.State
-import com.mskd.flux.model.domain.artwork.Episode
-import com.mskd.flux.model.domain.artwork.FullArtwork
-import com.mskd.flux.model.domain.artwork.Movie
+import com.mskd.flux.core.domain.model.artwork.Episode
+import com.mskd.flux.core.domain.model.artwork.FullArtwork
+import com.mskd.flux.core.domain.model.artwork.Movie
 import kotlinx.coroutines.flow.Flow
 
 interface ArtworkUC {

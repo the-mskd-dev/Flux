@@ -1,8 +1,8 @@
 package com.mskd.flux.screens.player
 
-import com.mskd.flux.model.domain.artwork.Artwork
-import com.mskd.flux.model.domain.artwork.Episode
-import com.mskd.flux.model.domain.artwork.Media
+import com.mskd.flux.core.domain.model.artwork.Artwork
+import com.mskd.flux.core.domain.model.artwork.Episode
+import com.mskd.flux.core.domain.model.artwork.Media
 import com.mskd.flux.model.domain.player.PlayerTrack
 import com.mskd.flux.screen.player.PlayerUiContent
 

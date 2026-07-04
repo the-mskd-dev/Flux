@@ -2,15 +2,15 @@ package com.mskd.flux.useCases.progress
 
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.data.repository.ddb.DatabaseRepository
-import com.mskd.flux.core.datastore.user.UserDataStore
+import com.mskd.flux.core.data.datastore.UserDataStore
 import com.mskd.flux.data.useCases.progress.ProgressUC
 import com.mskd.flux.data.useCases.progress.ProgressUCImpl
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.mockkDatabaseRepository
-import com.mskd.flux.model.domain.artwork.ContentType
-import com.mskd.flux.model.domain.artwork.Episode
-import com.mskd.flux.model.domain.artwork.Movie
-import com.mskd.flux.model.domain.artwork.Status
+import com.mskd.flux.core.domain.model.artwork.ContentType
+import com.mskd.flux.core.domain.model.artwork.Episode
+import com.mskd.flux.core.domain.model.artwork.Movie
+import com.mskd.flux.core.domain.model.artwork.Status
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.extensions.lastEpisode
 import com.mskd.flux.utils.extensions.minToMs

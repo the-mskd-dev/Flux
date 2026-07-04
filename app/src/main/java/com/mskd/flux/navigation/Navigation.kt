@@ -11,7 +11,7 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.ui.unit.IntOffset
 import androidx.navigation3.runtime.NavKey
-import com.mskd.flux.model.domain.artwork.ContentType
+import com.mskd.flux.core.domain.model.artwork.ContentType
 import kotlinx.serialization.Serializable
 
 sealed class Route : NavKey {

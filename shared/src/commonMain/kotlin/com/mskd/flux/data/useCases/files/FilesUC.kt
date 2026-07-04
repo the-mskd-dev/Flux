@@ -1,6 +1,6 @@
 package com.mskd.flux.data.useCases.files
 
-import com.mskd.flux.model.domain.files.UserFile
+import com.mskd.flux.core.domain.model.files.UserFile
 import java.io.File
 
 interface FilesUC {

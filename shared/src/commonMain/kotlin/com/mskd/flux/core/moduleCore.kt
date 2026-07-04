@@ -1,8 +1,7 @@
 package com.mskd.flux.core
 
-import com.mskd.flux.core.datastore.moduleDatastore
-import com.mskd.flux.core.database.moduleDatabase
-import com.mskd.flux.features.images.moduleImages
+import com.mskd.flux.core.domain.datastore.moduleDatastore
+import com.mskd.flux.core.data.database.moduleDatabase
 import org.koin.dsl.module
 
 val moduleCore = module {

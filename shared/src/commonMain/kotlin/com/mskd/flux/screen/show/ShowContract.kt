@@ -2,8 +2,8 @@ package com.mskd.flux.screen.show
 
 import androidx.compose.runtime.Immutable
 import com.mskd.flux.model.core.presentation.State
-import com.mskd.flux.model.domain.artwork.FullArtwork
-import com.mskd.flux.model.domain.artwork.Season
+import com.mskd.flux.core.domain.model.artwork.FullArtwork
+import com.mskd.flux.core.domain.model.artwork.Season
 
 @Immutable
 data class ShowUiState(

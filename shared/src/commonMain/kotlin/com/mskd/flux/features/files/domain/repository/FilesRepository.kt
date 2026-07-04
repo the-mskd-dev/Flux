@@ -1,6 +1,6 @@
 package com.mskd.flux.features.files.domain.repository
 
-import com.mskd.flux.model.domain.files.UserFile
+import com.mskd.flux.core.domain.model.files.UserFile
 import java.io.File
 
 interface FilesRepository {

@@ -40,11 +40,11 @@ class SafFilesRepository(
     }
 
     override suspend fun filterExistingFiles(files: List<UserFile>): List<UserFile> {
-        TODO("Not yet implemented")
+        return files // TODO
     }
 
     override suspend fun getSubtitlesFor(file: UserFile): File? {
-        TODO("Not yet implemented")
+        return null // TODO
     }
 
     private fun getFilesFromFolder(folder: UserFolder): List<UserFile> {

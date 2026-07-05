@@ -39,8 +39,55 @@ class SafFilesRepository(
         }
     }
 
-    override suspend fun filterExistingFiles(files: List<UserFile>): List<UserFile> {
-        return files // TODO
+    override suspend fun filterExistingFiles(files: List<UserFile>): List<UserFile> = withContext(Dispatchers.IO) {
+
+        val safFiles = files.filter { it.source == FileSource.SAF }
+        if (safFiles.isEmpty()) return@withContext emptyList()
+
+        val existingFiles = mutableListOf<UserFile>()
+        val missingFiles = mutableListOf<UserFile>()
+
+        // Étape 2 : Le SAF est basé sur des structures d'arbres. Pour optimiser,
+        // on regroupe nos vérifications. La méthode la plus fiable en SAF Document Tree
+        // est de tenter d'ouvrir un curseur sur l'URI exacte du document.
+        for (file in safFiles) {
+            val fileUri = file.path.toUri()
+            var exists = false
+
+            try {
+                // On demande uniquement l'ID pour minimiser la data transférée par le curseur
+                context.contentResolver.query(
+                    fileUri,
+                    arrayOf(DocumentsContract.Document.COLUMN_DOCUMENT_ID),
+                    null,
+                    null,
+                    null
+                )?.use { cursor ->
+                    // Si le fichier existe et est accessible, le curseur contiendra au moins une ligne
+                    if (cursor.moveToFirst()) {
+                        exists = true
+                    }
+                }
+            } catch (e: Exception) {
+                // Si le fichier a été supprimé ou que les permissions ont expiré,
+                // le ContentProvider lèvera une SecurityException ou une FileNotFoundException.
+                Trace.error(TAG, "File no longer accessible or missing: ${file.name}", e)
+            }
+
+            if (exists) {
+                existingFiles.add(file)
+            } else {
+                missingFiles.add(file)
+            }
+        }
+
+        // Étape 3 : Logging de production identique à ton implémentation MediaStore
+        if (missingFiles.isNotEmpty()) {
+            Trace.info(TAG, "${missingFiles.size} SAF file(s) not found or revoked")
+            missingFiles.forEach { Trace.info(TAG, it.name) }
+        }
+
+        existingFiles
     }
 
     override suspend fun getSubtitlesFor(file: UserFile): File? {
@@ -93,7 +140,7 @@ class SafFilesRepository(
                             name = name,
                             addedDateTime = lastModified,
                             path = docUri.toString(),
-                            source = FileSource.LOCAL
+                            source = FileSource.SAF
                         )
                     }
                 }

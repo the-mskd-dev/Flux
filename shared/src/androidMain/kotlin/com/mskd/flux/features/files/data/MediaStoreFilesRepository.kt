@@ -125,7 +125,8 @@ class MediaStoreFilesRepository(
     override suspend fun filterExistingFiles(files: List<UserFile>): List<UserFile> =
         withContext(Dispatchers.IO) {
 
-            val paths = files.map { it.path }
+            val mediaStoreFiles = files.filter { it.source == FileSource.LOCAL }
+            val paths = mediaStoreFiles.map { it.path }
             val ids = paths.mapNotNull { it.toUri().lastPathSegment }
 
             val placeholders = ids.joinToString(",") { "?" }
@@ -145,12 +146,12 @@ class MediaStoreFilesRepository(
                 }
             }
 
-            val existingFiles = files.filter { file ->
+            val existingFiles = mediaStoreFiles.filter { file ->
                 val id = file.path.toUri().lastPathSegment
                 id in existingIds
             }
 
-            val missingFiles = files - existingFiles.toSet()
+            val missingFiles = mediaStoreFiles - existingFiles.toSet()
             if (missingFiles.isNotEmpty()) {
                 Trace.info(TAG, "$missingFiles file(s) not founded")
                 missingFiles.forEach { Trace.info(TAG, it.name) }

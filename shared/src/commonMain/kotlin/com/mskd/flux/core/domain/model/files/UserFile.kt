@@ -30,7 +30,7 @@ data class UserFile(
 }
 
 enum class FileSource {
-    LOCAL, GOOGLE
+    LOCAL, SAF,
 }
 
 data class FileProperties(

@@ -9,7 +9,7 @@ import com.mskd.flux.core.domain.model.core.State
 import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.mockups.FakeArtworkUC
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.mockups.mockkDatabaseRepository
+import com.mskd.flux.mockups.core.FakeDatabaseRepository
 import com.mskd.flux.screen.unknown.UnknownEvent
 import com.mskd.flux.screen.unknown.UnknownIntent
 import com.mskd.flux.screen.unknown.UnknownViewModel
@@ -56,7 +56,7 @@ class UnknownViewModelTest : FunSpec ({
             every { flow } returns MutableStateFlow(UserDataStore.State())
         }
 
-        databaseRepository = mockkDatabaseRepository()
+        databaseRepository = FakeDatabaseRepository()
 
         updateVm()
 

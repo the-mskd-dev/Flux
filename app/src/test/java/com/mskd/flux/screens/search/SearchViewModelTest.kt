@@ -5,9 +5,9 @@ import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.core.data.database.repository.DatabaseRepository
 import com.mskd.flux.core.data.datastore.SettingsDataStore
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.mockups.mockkSettingsRepository
 import com.mskd.flux.core.domain.model.artwork.ContentType
-import com.mskd.flux.mockups.mockkDatabaseRepository
+import com.mskd.flux.mockups.core.FakeDatabaseRepository
+import com.mskd.flux.mockups.core.datastore.FakeSettingsDataStore
 import com.mskd.flux.screen.search.SearchEvent
 import com.mskd.flux.screen.search.SearchIntent
 import com.mskd.flux.screen.search.SearchViewModel
@@ -25,9 +25,9 @@ class SearchViewModelTest : FunSpec({
 
     beforeTest {
 
-        settingsDataStore = mockkSettingsRepository()
+        settingsDataStore = FakeSettingsDataStore()
 
-        database = mockkDatabaseRepository()
+        database = FakeDatabaseRepository()
 
         viewModel = SearchViewModel(
             contentType = null,

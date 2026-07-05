@@ -8,11 +8,11 @@ import com.mskd.flux.features.progress.domain.usecase.ChangeMediaStatusUseCase
 import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
 import com.mskd.flux.features.progress.domain.usecase.MarkPreviousAsWatchedUseCase
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.mockups.mockkDatabaseRepository
 import com.mskd.flux.core.domain.model.artwork.ContentType
 import com.mskd.flux.core.domain.model.artwork.Episode
 import com.mskd.flux.core.domain.model.artwork.Movie
 import com.mskd.flux.core.domain.model.artwork.Status
+import com.mskd.flux.mockups.core.FakeDatabaseRepository
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.extensions.lastEpisode
 import com.mskd.flux.utils.extensions.minToMs
@@ -37,7 +37,7 @@ class ProgressUCTest : FunSpec({
 
     beforeTest {
 
-        databaseRepository = mockkDatabaseRepository()
+        databaseRepository = FakeDatabaseRepository()
 
         userDataStore = mockk(relaxed = true) {
             every { flow } returns MutableStateFlow(UserDataStore.State())

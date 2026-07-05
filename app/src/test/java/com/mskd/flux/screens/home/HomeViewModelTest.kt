@@ -1,6 +1,5 @@
 package com.mskd.flux.screens.home
 
-import androidx.room.Database
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.core.data.database.repository.DatabaseRepository
@@ -8,14 +7,14 @@ import com.mskd.flux.core.data.datastore.SnackbarDataStore
 import com.mskd.flux.core.data.datastore.TokenDataStore
 import com.mskd.flux.core.data.datastore.UserDataStore
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.mockups.mockkSnackbarRepository
 import com.mskd.flux.core.domain.model.core.AppInfo
 import com.mskd.flux.core.domain.model.artwork.Artwork
 import com.mskd.flux.core.domain.model.artwork.ContentType
 import com.mskd.flux.features.catalog.domain.usecase.cleanCatalog.CleanCatalogUseCase
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
+import com.mskd.flux.mockups.core.FakeDatabaseRepository
+import com.mskd.flux.mockups.core.datastore.FakeSnackbarDataStore
 import com.mskd.flux.mockups.features.catalog.FakeSyncCatalogUseCase
-import com.mskd.flux.mockups.mockkDatabaseRepository
 import com.mskd.flux.screen.home.HomeEvent
 import com.mskd.flux.screen.home.HomeIntent
 import com.mskd.flux.screen.home.HomeState
@@ -62,9 +61,9 @@ class HomeViewModelTest : FunSpec({
 
         syncCatalogUseCase = FakeSyncCatalogUseCase()
         cleanCatalogUseCase = mockk(relaxed = true)
-        database = mockkDatabaseRepository()
+        database = FakeDatabaseRepository()
 
-        snackbarDataStore = mockkSnackbarRepository()
+        snackbarDataStore = FakeSnackbarDataStore()
 
         appInfo = AppInfo(
             versionCode = 0,

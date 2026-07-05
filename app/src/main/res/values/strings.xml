@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name" translatable="false">Flux</string>
+
+    <string name="acra_dialog_title">The app crashed…</string>
+    <string name="acra_dialog_message">The app has stopped unexpectedly. To help me fix this bug, you can send a technical crash report via email.</string>
+    <string name="acra_dialog_comment">Describe what you were doing (optional)</string>
+    <string name="acra_dialog_send">Send</string>
+    <string name="acra_dialog_dismiss">No thanks</string>
 </resources>

@@ -35,17 +35,6 @@ class FluxApp : Application(), SingletonImageLoader.Factory {
         startKoin {
             androidContext(this@FluxApp)
 
-            module {
-                single<AppInfo> {
-                    AppInfo(
-                        isDebug =  BuildConfig.DEBUG,
-                        versionName = BuildConfig.VERSION_NAME,
-                        versionCode = BuildConfig.VERSION_CODE,
-                        debugToken = BuildConfig.TMDB_TOKEN,
-                    )
-                }
-            }
-
             modules(
                 modulePlatform,
                 moduleAndroidApp

@@ -17,17 +17,6 @@ class KoinModulesTest : FunSpec({
     @OptIn(KoinExperimentalAPI::class)
     test("verify modules") {
 
-        module {
-            single<AppInfo> {
-                AppInfo(
-                    isDebug =  BuildConfig.DEBUG,
-                    versionName = BuildConfig.VERSION_NAME,
-                    versionCode = BuildConfig.VERSION_CODE,
-                    debugToken = BuildConfig.TMDB_TOKEN,
-                )
-            }
-        }
-
         val allModules = module {
             includes(moduleAndroidApp, modulePlatform)
         }

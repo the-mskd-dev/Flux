@@ -40,7 +40,7 @@ val moduleViewModel = module {
     viewModel { params ->
         SearchViewModel(
             contentType = params.getOrNull(),
-            catalogUC = get(),
+            database = get(),
             settingsDataStore = get()
         )
     }
@@ -62,7 +62,7 @@ val moduleViewModel = module {
             fromSettings = params.get(),
             tokenDataStore = get(),
             tmdbService = get(),
-            catalogUC = get(),
+            syncCatalogUseCase = get(),
             appInfo = get()
         )
     }

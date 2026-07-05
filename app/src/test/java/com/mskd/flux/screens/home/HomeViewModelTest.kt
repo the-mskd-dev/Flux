@@ -1,17 +1,21 @@
 package com.mskd.flux.screens.home
 
+import androidx.room.Database
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
+import com.mskd.flux.core.data.database.repository.DatabaseRepository
 import com.mskd.flux.core.data.datastore.SnackbarDataStore
 import com.mskd.flux.core.data.datastore.TokenDataStore
 import com.mskd.flux.core.data.datastore.UserDataStore
-import com.mskd.flux.data.useCases.catalog.CatalogUC
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.mockups.mockkCatalogUC
 import com.mskd.flux.mockups.mockkSnackbarRepository
 import com.mskd.flux.core.domain.model.core.AppInfo
 import com.mskd.flux.core.domain.model.artwork.Artwork
 import com.mskd.flux.core.domain.model.artwork.ContentType
+import com.mskd.flux.features.catalog.domain.usecase.cleanCatalog.CleanCatalogUseCase
+import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
+import com.mskd.flux.mockups.features.catalog.FakeSyncCatalogUseCase
+import com.mskd.flux.mockups.mockkDatabaseRepository
 import com.mskd.flux.screen.home.HomeEvent
 import com.mskd.flux.screen.home.HomeIntent
 import com.mskd.flux.screen.home.HomeState
@@ -35,7 +39,9 @@ class HomeViewModelTest : FunSpec({
     fluxExtensions()
 
     lateinit var viewModel: HomeViewModel
-    lateinit var catalogUC: CatalogUC
+    lateinit var syncCatalogUseCase: SyncCatalogUseCase
+    lateinit var cleanCatalogUseCase: CleanCatalogUseCase
+    lateinit var database: DatabaseRepository
     lateinit var userDataStore: UserDataStore
     lateinit var tokenDataStore: TokenDataStore
     lateinit var snackbarDataStore: SnackbarDataStore
@@ -47,14 +53,16 @@ class HomeViewModelTest : FunSpec({
 
     beforeTest {
 
-        catalogUC = mockkCatalogUC()
-
         tokenDataStore = mockk(relaxed = true) {
             coEvery { flow } returns tokenFlow
         }
         userDataStore = mockk(relaxed = true) {
             every { flow } returns dataStoreFlow
         }
+
+        syncCatalogUseCase = FakeSyncCatalogUseCase()
+        cleanCatalogUseCase = mockk(relaxed = true)
+        database = mockkDatabaseRepository()
 
         snackbarDataStore = mockkSnackbarRepository()
 
@@ -83,7 +91,9 @@ class HomeViewModelTest : FunSpec({
             tokenFlow.value = testCase.tokenValue
 
             viewModel = HomeViewModel(
-                catalogUC = catalogUC,
+                syncCatalogUseCase = syncCatalogUseCase,
+                cleanCatalogUseCase = cleanCatalogUseCase,
+                database = database,
                 tokenDataStore = tokenDataStore,
                 userDataStore = userDataStore,
                 snackbarDataStore = snackbarDataStore,
@@ -108,7 +118,9 @@ class HomeViewModelTest : FunSpec({
     test("should force sync when manual sync requested") {
 
         viewModel = HomeViewModel(
-            catalogUC = catalogUC,
+            syncCatalogUseCase = syncCatalogUseCase,
+            cleanCatalogUseCase = cleanCatalogUseCase,
+            database = database,
             tokenDataStore = tokenDataStore,
             userDataStore = userDataStore,
             snackbarDataStore = snackbarDataStore,
@@ -118,7 +130,7 @@ class HomeViewModelTest : FunSpec({
         viewModel.handleIntent(HomeIntent.SyncCatalog)
 
         coVerify {
-            catalogUC.syncCatalog(onlyNew = true)
+            syncCatalogUseCase(onlyNew = true)
         }
     }
 
@@ -128,7 +140,9 @@ class HomeViewModelTest : FunSpec({
         coEvery { userDataStore.getSyncTime() } returns oldTime
 
         viewModel = HomeViewModel(
-            catalogUC = catalogUC,
+            syncCatalogUseCase = syncCatalogUseCase,
+            cleanCatalogUseCase = cleanCatalogUseCase,
+            database = database,
             tokenDataStore = tokenDataStore,
             userDataStore = userDataStore,
             snackbarDataStore = snackbarDataStore,
@@ -136,7 +150,7 @@ class HomeViewModelTest : FunSpec({
         )
 
         coVerify(exactly = 1) {
-            catalogUC.syncCatalog(onlyNew = true)
+            syncCatalogUseCase(onlyNew = true)
         }
     }
 
@@ -145,7 +159,9 @@ class HomeViewModelTest : FunSpec({
         coEvery { userDataStore.getSyncTime() } returns recentTime
 
         viewModel = HomeViewModel(
-            catalogUC = catalogUC,
+            syncCatalogUseCase = syncCatalogUseCase,
+            cleanCatalogUseCase = cleanCatalogUseCase,
+            database = database,
             tokenDataStore = tokenDataStore,
             userDataStore = userDataStore,
             snackbarDataStore = snackbarDataStore,
@@ -153,7 +169,7 @@ class HomeViewModelTest : FunSpec({
         )
 
         coVerify(exactly = 0) {
-            catalogUC.syncCatalog(any())
+            syncCatalogUseCase(any())
         }
     }
 
@@ -168,7 +184,9 @@ class HomeViewModelTest : FunSpec({
         )
 
         viewModel = HomeViewModel(
-            catalogUC = catalogUC,
+            syncCatalogUseCase = syncCatalogUseCase,
+            cleanCatalogUseCase = cleanCatalogUseCase,
+            database = database,
             tokenDataStore = tokenDataStore,
             userDataStore = userDataStore,
             snackbarDataStore = snackbarDataStore,
@@ -176,13 +194,15 @@ class HomeViewModelTest : FunSpec({
         )
 
         coVerify(exactly = 1) {
-            catalogUC.syncCatalog(onlyNew = false)
+            syncCatalogUseCase(onlyNew = false)
         }
     }
 
     test("on artwork show tap") {
         viewModel = HomeViewModel(
-            catalogUC = catalogUC,
+            syncCatalogUseCase = syncCatalogUseCase,
+            cleanCatalogUseCase = cleanCatalogUseCase,
+            database = database,
             tokenDataStore = tokenDataStore,
             userDataStore = userDataStore,
             snackbarDataStore = snackbarDataStore,
@@ -197,7 +217,9 @@ class HomeViewModelTest : FunSpec({
 
     test("on artwork movie tap") {
         viewModel = HomeViewModel(
-            catalogUC = catalogUC,
+            syncCatalogUseCase = syncCatalogUseCase,
+            cleanCatalogUseCase = cleanCatalogUseCase,
+            database = database,
             tokenDataStore = tokenDataStore,
             userDataStore = userDataStore,
             snackbarDataStore = snackbarDataStore,
@@ -212,7 +234,9 @@ class HomeViewModelTest : FunSpec({
 
     test("on unknown artwork tap") {
         viewModel = HomeViewModel(
-            catalogUC = catalogUC,
+            syncCatalogUseCase = syncCatalogUseCase,
+            cleanCatalogUseCase = cleanCatalogUseCase,
+            database = database,
             tokenDataStore = tokenDataStore,
             userDataStore = userDataStore,
             snackbarDataStore = snackbarDataStore,
@@ -227,7 +251,9 @@ class HomeViewModelTest : FunSpec({
 
     test("on category tap") {
         viewModel = HomeViewModel(
-            catalogUC = catalogUC,
+            syncCatalogUseCase = syncCatalogUseCase,
+            cleanCatalogUseCase = cleanCatalogUseCase,
+            database = database,
             tokenDataStore = tokenDataStore,
             userDataStore = userDataStore,
             snackbarDataStore = snackbarDataStore,
@@ -242,7 +268,9 @@ class HomeViewModelTest : FunSpec({
 
     test("on search tap") {
         viewModel = HomeViewModel(
-            catalogUC = catalogUC,
+            syncCatalogUseCase = syncCatalogUseCase,
+            cleanCatalogUseCase = cleanCatalogUseCase,
+            database = database,
             tokenDataStore = tokenDataStore,
             userDataStore = userDataStore,
             snackbarDataStore = snackbarDataStore,
@@ -257,7 +285,9 @@ class HomeViewModelTest : FunSpec({
 
     test("on settings tap") {
         viewModel = HomeViewModel(
-            catalogUC = catalogUC,
+            syncCatalogUseCase = syncCatalogUseCase,
+            cleanCatalogUseCase = cleanCatalogUseCase,
+            database = database,
             tokenDataStore = tokenDataStore,
             userDataStore = userDataStore,
             snackbarDataStore = snackbarDataStore,
@@ -272,7 +302,9 @@ class HomeViewModelTest : FunSpec({
 
     test("on how to tap") {
         viewModel = HomeViewModel(
-            catalogUC = catalogUC,
+            syncCatalogUseCase = syncCatalogUseCase,
+            cleanCatalogUseCase = cleanCatalogUseCase,
+            database = database,
             tokenDataStore = tokenDataStore,
             userDataStore = userDataStore,
             snackbarDataStore = snackbarDataStore,
@@ -289,7 +321,9 @@ class HomeViewModelTest : FunSpec({
         tokenFlow.value = ""
 
         viewModel = HomeViewModel(
-            catalogUC = catalogUC,
+            syncCatalogUseCase = syncCatalogUseCase,
+            cleanCatalogUseCase = cleanCatalogUseCase,
+            database = database,
             tokenDataStore = tokenDataStore,
             userDataStore = userDataStore,
             snackbarDataStore = snackbarDataStore,
@@ -310,7 +344,9 @@ class HomeViewModelTest : FunSpec({
         tokenFlow.value = "token"
 
         val viewModelTutorial = HomeViewModel(
-            catalogUC = catalogUC,
+            syncCatalogUseCase = syncCatalogUseCase,
+            cleanCatalogUseCase = cleanCatalogUseCase,
+            database = database,
             tokenDataStore = tokenDataStore,
             userDataStore = userDataStore,
             snackbarDataStore = snackbarDataStore,

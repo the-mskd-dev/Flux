@@ -3,11 +3,13 @@ package com.mskd.flux.screen.settings
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.core.data.datastore.SettingsDataStore
-import com.mskd.flux.data.useCases.catalog.CatalogUC
 import com.mskd.flux.features.images.domain.ImagesPrefetchManager
 import com.mskd.flux.core.domain.model.core.FluxOptionsDialogItem
 import com.mskd.flux.core.domain.model.core.FluxOptionsDialogState
 import com.mskd.flux.core.domain.model.core.StringProvider
+import com.mskd.flux.features.catalog.domain.model.SyncState
+import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
+import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCase
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.button_forward
 import flux.shared.generated.resources.button_rewind
@@ -26,8 +28,9 @@ import java.util.Locale
 
 class SettingsViewModel(
     private val settingsDataStore: SettingsDataStore,
-    private val catalogUC: CatalogUC,
-    private val imagesPrefetchManager: ImagesPrefetchManager
+    private val imagesPrefetchManager: ImagesPrefetchManager,
+    private val syncCatalogUseCase: SyncCatalogUseCase,
+    private val updateLanguageUseCase: UpdateLanguageUseCase
 ) : ViewModel() {
 
     //region Variables
@@ -39,7 +42,7 @@ class SettingsViewModel(
         settingsDataStore.flow,
         _dialogState,
         _showFullSyncDialogState,
-        catalogUC.state,
+        syncCatalogUseCase.state,
         imagesPrefetchManager.state
     ) { settings, dialog, showSyncDialog, catalog, images ->
         SettingsUiState(
@@ -51,7 +54,7 @@ class SettingsViewModel(
             autoKeyboard = settings.autoKeyboard,
             dialogState = dialog,
             showSyncDialog = showSyncDialog,
-            fullSyncInProgress = (catalog as? CatalogUC.State.Syncing)?.full == true,
+            fullSyncInProgress = (catalog as? SyncState.Syncing)?.full == true,
             prefetchHdImages = settings.prefetchHdImages,
             prefetchImagesState = images
         )
@@ -131,7 +134,7 @@ class SettingsViewModel(
 
     private suspend fun setLanguageValue(value: Locale?) {
         settingsDataStore.setDataLanguage(value)
-        catalogUC.updateLanguage()
+        updateLanguageUseCase()
         hideDialog()
     }
 
@@ -199,7 +202,7 @@ class SettingsViewModel(
     }
 
     private fun proceedFullSync() {
-        catalogUC.syncCatalog(onlyNew = false)
+        syncCatalogUseCase(onlyNew = false)
         showFullSyncDialog(show = false)
     }
 

@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.features.tmdb.data.service.TMDBService
 import com.mskd.flux.core.data.datastore.TokenDataStore
-import com.mskd.flux.data.useCases.catalog.CatalogUC
 import com.mskd.flux.core.domain.model.core.AppInfo
+import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,7 +18,7 @@ class TokenViewModel(
     fromSettings: Boolean,
     private val tokenDataStore: TokenDataStore,
     private val tmdbService: TMDBService,
-    private val catalogUC: CatalogUC,
+    private val syncCatalogUseCase: SyncCatalogUseCase,
     private val appInfo: AppInfo
 ) : ViewModel() {
 
@@ -61,7 +61,7 @@ class TokenViewModel(
 
             if (authentication.success) {
 
-                catalogUC.syncCatalog(onlyNew = false)
+                syncCatalogUseCase(onlyNew = false)
 
                 if (_uiState.value.showBackButton)
                     _uiState.update { it.copy(message = TokenMessage.Success) }

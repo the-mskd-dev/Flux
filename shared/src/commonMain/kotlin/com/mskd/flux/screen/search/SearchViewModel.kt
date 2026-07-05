@@ -2,8 +2,8 @@ package com.mskd.flux.screen.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mskd.flux.core.data.database.repository.DatabaseRepository
 import com.mskd.flux.core.data.datastore.SettingsDataStore
-import com.mskd.flux.data.useCases.catalog.CatalogUC
 import com.mskd.flux.core.domain.model.artwork.Artwork
 import com.mskd.flux.core.domain.model.artwork.ContentType
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -18,7 +18,7 @@ import kotlinx.coroutines.runBlocking
 
 class SearchViewModel(
     contentType: ContentType? = null,
-    private val catalogUC: CatalogUC,
+    private val database: DatabaseRepository,
     private val settingsDataStore: SettingsDataStore
 ) : ViewModel() {
 
@@ -36,7 +36,7 @@ class SearchViewModel(
     init {
 
         viewModelScope.launch {
-            catalogUC.artworks.collect { artworks ->
+            database.flowArtworks().collect { artworks ->
                 _uiState.update {
                     it.copy(artworks = artworks.filter { artworks -> !artworks.isUnknown },)
                 }

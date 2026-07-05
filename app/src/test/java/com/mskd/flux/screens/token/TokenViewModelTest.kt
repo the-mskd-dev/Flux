@@ -6,7 +6,9 @@ import com.mskd.flux.features.tmdb.data.service.TMDBService
 import com.mskd.flux.core.data.datastore.TokenDataStore
 import com.mskd.flux.data.useCases.catalog.CatalogUC
 import com.mskd.flux.core.domain.model.core.AppInfo
+import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.tmdb.data.dto.AuthenticationDto
+import com.mskd.flux.mockups.features.catalog.FakeSyncCatalogUseCase
 import com.mskd.flux.screen.token.TokenEvent
 import com.mskd.flux.screen.token.TokenIntent
 import com.mskd.flux.screen.token.TokenMessage
@@ -25,7 +27,7 @@ class TokenViewModelTest : FunSpec({
     lateinit var viewModel: TokenViewModel
     lateinit var tokenDataStore: TokenDataStore
     lateinit var tmdbService: TMDBService
-    lateinit var catalogUC: CatalogUC
+    lateinit var syncCatalogUseCase: SyncCatalogUseCase
     lateinit var appInfo: AppInfo
 
     beforeTest {
@@ -38,7 +40,7 @@ class TokenViewModelTest : FunSpec({
             coEvery { authenticate() } returns AuthenticationDto(success = true, code = 0, message = "")
         }
 
-        catalogUC = mockk(relaxed = true)
+        syncCatalogUseCase = FakeSyncCatalogUseCase()
 
         appInfo = mockk(relaxed = true)
 
@@ -46,7 +48,7 @@ class TokenViewModelTest : FunSpec({
             fromSettings = true,
             tokenDataStore = tokenDataStore,
             tmdbService = tmdbService,
-            catalogUC = catalogUC,
+            syncCatalogUseCase = syncCatalogUseCase,
             appInfo = appInfo
         )
 
@@ -107,7 +109,7 @@ class TokenViewModelTest : FunSpec({
             fromSettings = false,
             tokenDataStore = tokenDataStore,
             tmdbService = tmdbService,
-            catalogUC = catalogUC,
+            syncCatalogUseCase = syncCatalogUseCase,
             appInfo = appInfo
         )
         vm.uiState.test {
@@ -121,7 +123,7 @@ class TokenViewModelTest : FunSpec({
             fromSettings = false,
             tokenDataStore = tokenDataStore,
             tmdbService = tmdbService,
-            catalogUC = catalogUC,
+            syncCatalogUseCase = syncCatalogUseCase,
             appInfo = appInfo
         )
         vm.event.test {
@@ -164,7 +166,7 @@ class TokenViewModelTest : FunSpec({
                 fromSettings = true,
                 tokenDataStore = tokenDataStore,
                 tmdbService = tmdbService,
-                catalogUC = catalogUC,
+                syncCatalogUseCase = syncCatalogUseCase,
                 appInfo = appInfo
             )
 
@@ -177,7 +179,7 @@ class TokenViewModelTest : FunSpec({
                 val state = awaitItem()
 
                 if (testCase.expectedLoadCatalog) {
-                    coVerify { catalogUC.syncCatalog(onlyNew = false) }
+                    coVerify { syncCatalogUseCase(onlyNew = false) }
                 }
                 state.message shouldBe testCase.expectedMessage
                 state.isLoading shouldBe false

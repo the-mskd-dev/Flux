@@ -2,13 +2,16 @@ package com.mskd.flux.screen.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mskd.flux.core.data.database.repository.DatabaseRepository
 import com.mskd.flux.core.data.datastore.SnackbarDataStore
 import com.mskd.flux.core.data.datastore.TokenDataStore
 import com.mskd.flux.core.data.datastore.UserDataStore
-import com.mskd.flux.data.useCases.catalog.CatalogUC
 import com.mskd.flux.core.domain.model.artwork.Artwork
 import com.mskd.flux.core.domain.model.artwork.ContentType
 import com.mskd.flux.core.domain.model.core.AppInfo
+import com.mskd.flux.features.catalog.domain.model.SyncState
+import com.mskd.flux.features.catalog.domain.usecase.cleanCatalog.CleanCatalogUseCase
+import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.utils.FluxSnackbar
 import com.mskd.flux.utils.Trace
 import com.mskd.flux.utils.UpdateManager
@@ -25,7 +28,9 @@ import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.days
 
 class HomeViewModel(
-    private val catalogUC: CatalogUC,
+    private val syncCatalogUseCase: SyncCatalogUseCase,
+    private val cleanCatalogUseCase: CleanCatalogUseCase,
+    private val database: DatabaseRepository,
     private val userDataStore: UserDataStore,
     private val tokenDataStore: TokenDataStore,
     private val snackbarDataStore: SnackbarDataStore,
@@ -38,8 +43,8 @@ class HomeViewModel(
     private val _dismissedSnackbar = MutableStateFlow<Set<FluxSnackbar>>(emptySet())
 
     val uiState: StateFlow<HomeUiState> = combine(
-        catalogUC.artworks,
-        catalogUC.state,
+        database.flowArtworks(),
+        syncCatalogUseCase.state,
         userDataStore.flow,
         tokenDataStore.flow,
         _dismissedSnackbar,
@@ -51,7 +56,7 @@ class HomeViewModel(
             artworks = artworks
         )
 
-        if (catalogState is CatalogUC.State.Syncing && catalogState.full) {
+        if (catalogState is SyncState.Syncing && catalogState.full) {
 
             HomeUiState(
                 state = HomeState.Loading(progress = catalogState.progress),
@@ -64,7 +69,7 @@ class HomeViewModel(
                 state = HomeState.Content(
                     artworks = artworks,
                     lastWatchedMediaIds = preferences.recentlyWatchedIds,
-                    isRefreshing = catalogState is CatalogUC.State.Syncing,
+                    isRefreshing = catalogState is SyncState.Syncing,
                 ),
                 snackbarState = snackbar
             )
@@ -116,11 +121,11 @@ class HomeViewModel(
                 currentVersionCode = appInfo.versionCode
             )
 
-            catalogUC.syncCatalog(onlyNew = !fullSyncNeeded)
+            syncCatalogUseCase(onlyNew = !fullSyncNeeded)
 
         } else {
 
-            catalogUC.cleanCatalog()
+            cleanCatalogUseCase()
             Trace.info("HomeViewModel", "syncCatalog, catalog sync not needed")
 
         }

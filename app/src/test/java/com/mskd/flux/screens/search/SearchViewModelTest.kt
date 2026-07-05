@@ -2,12 +2,12 @@ package com.mskd.flux.screens.search
 
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
+import com.mskd.flux.core.data.database.repository.DatabaseRepository
 import com.mskd.flux.core.data.datastore.SettingsDataStore
-import com.mskd.flux.data.useCases.catalog.CatalogUC
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.mockups.mockkCatalogUC
 import com.mskd.flux.mockups.mockkSettingsRepository
 import com.mskd.flux.core.domain.model.artwork.ContentType
+import com.mskd.flux.mockups.mockkDatabaseRepository
 import com.mskd.flux.screen.search.SearchEvent
 import com.mskd.flux.screen.search.SearchIntent
 import com.mskd.flux.screen.search.SearchViewModel
@@ -19,19 +19,19 @@ class SearchViewModelTest : FunSpec({
     fluxExtensions()
 
     lateinit var viewModel: SearchViewModel
-    lateinit var catalogUC: CatalogUC
+    lateinit var database: DatabaseRepository
     lateinit var settingsDataStore: SettingsDataStore
 
 
     beforeTest {
 
-        catalogUC = mockkCatalogUC()
-
         settingsDataStore = mockkSettingsRepository()
+
+        database = mockkDatabaseRepository()
 
         viewModel = SearchViewModel(
             contentType = null,
-            catalogUC = catalogUC,
+            database = database,
             settingsDataStore = settingsDataStore
         )
 
@@ -161,7 +161,7 @@ class SearchViewModelTest : FunSpec({
     test("initial state with non-null contentType") {
         val customViewModel = SearchViewModel(
             contentType = ContentType.MOVIE,
-            catalogUC = catalogUC,
+            database = database,
             settingsDataStore = settingsDataStore
         )
         customViewModel.uiState.test {

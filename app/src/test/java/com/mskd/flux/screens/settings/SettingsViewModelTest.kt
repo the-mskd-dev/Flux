@@ -3,11 +3,12 @@ package com.mskd.flux.screens.settings
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.core.data.datastore.SettingsDataStore
-import com.mskd.flux.data.useCases.catalog.CatalogUC
 import com.mskd.flux.features.images.domain.ImagesPrefetchManager
-import com.mskd.flux.mockups.mockkCatalogUC
-import com.mskd.flux.mockups.mockkImagesUC
 import com.mskd.flux.core.domain.model.core.FluxOptionsDialogState
+import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
+import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCase
+import com.mskd.flux.mockups.features.catalog.FakeSyncCatalogUseCase
+import com.mskd.flux.mockups.features.images.FakeImagesPrefetchManager
 import com.mskd.flux.screen.settings.SettingsEvent
 import com.mskd.flux.screen.settings.SettingsIntent
 import com.mskd.flux.screen.settings.SettingsViewModel
@@ -29,8 +30,9 @@ class SettingsViewModelTest : FunSpec({
 
     lateinit var viewModel: SettingsViewModel
     lateinit var settingsDataStore: SettingsDataStore
-    lateinit var catalogUC: CatalogUC
     lateinit var imagesPrefetchManager: ImagesPrefetchManager
+    lateinit var syncCatalogUseCase: SyncCatalogUseCase
+    lateinit var updateLanguageUseCase: UpdateLanguageUseCase
 
     val dataStoreFlow = MutableStateFlow(SettingsDataStore.State())
 
@@ -40,14 +42,16 @@ class SettingsViewModelTest : FunSpec({
             every { flow } returns dataStoreFlow
         }
 
-        catalogUC = mockkCatalogUC()
+        imagesPrefetchManager = FakeImagesPrefetchManager()
 
-        imagesPrefetchManager = mockkImagesUC()
+        syncCatalogUseCase = FakeSyncCatalogUseCase()
+        updateLanguageUseCase = mockk(relaxed = true)
 
         viewModel = SettingsViewModel(
             settingsDataStore = settingsDataStore,
-            catalogUC = catalogUC,
             imagesPrefetchManager = imagesPrefetchManager,
+            syncCatalogUseCase = syncCatalogUseCase,
+            updateLanguageUseCase = updateLanguageUseCase
         )
 
     }
@@ -119,7 +123,7 @@ class SettingsViewModelTest : FunSpec({
             viewModel.handleIntent(SettingsIntent.ProceedFullSync)
             awaitItem().showSyncDialog shouldBe false
 
-            coVerify { catalogUC.syncCatalog(onlyNew = false) }
+            coVerify { syncCatalogUseCase(onlyNew = false) }
         }
     }
 

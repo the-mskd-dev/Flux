@@ -12,7 +12,7 @@ import com.mskd.flux.utils.extensions.sort
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class DatabaseRepositoryImpl(private val dao: DatabaseDao) : DatabaseRepository {
+internal class DatabaseRepositoryImpl(private val dao: DatabaseDao) : DatabaseRepository {
 
     override fun flowArtworks(): Flow<List<Artwork>> {
         return dao.flowArtworks().map { entities -> entities.map { it.toDomain() } }

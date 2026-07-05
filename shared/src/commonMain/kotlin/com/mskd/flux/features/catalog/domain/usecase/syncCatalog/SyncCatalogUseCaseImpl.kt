@@ -75,6 +75,17 @@ internal class SyncCatalogUseCaseImpl(
             }
 
             val folders = newFiles.groupInFolders()
+
+            /*
+                Count all steps
+                1. Get Artworks
+                2. Get all media for files (newFiles.size)
+                3. Clean catalog
+                4. Save artworks
+                5. Save movies
+                6. Save seasons
+                7. Save episodes
+             */
             coordinator.setTotalSteps(folders.size + newFiles.size + 5)
 
             var catalog = getCatalog(files = newFiles) { coordinator.incrementProgress() }

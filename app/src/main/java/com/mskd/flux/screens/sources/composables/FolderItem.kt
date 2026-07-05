@@ -19,13 +19,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import com.mskd.flux.mockups.FilesMockups
 import com.mskd.flux.features.sources.domain.model.UserFolder
+import com.mskd.flux.features.sources.domain.model.name
+import com.mskd.flux.mockups.FilesMockups
 import com.mskd.flux.ui.component.global.DraggableItem
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.FluxUI
-import com.mskd.flux.features.sources.domain.model.name
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.delete
 import flux.shared.generated.resources.downloads

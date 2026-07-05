@@ -1,10 +1,10 @@
 package com.mskd.flux.screen.artwork
 
 import androidx.compose.runtime.Immutable
-import com.mskd.flux.core.domain.model.core.State
 import com.mskd.flux.core.domain.model.artwork.Episode
 import com.mskd.flux.core.domain.model.artwork.FullArtwork
 import com.mskd.flux.core.domain.model.artwork.Media
+import com.mskd.flux.core.domain.model.core.State
 
 @Immutable
 data class ArtworkDataState(

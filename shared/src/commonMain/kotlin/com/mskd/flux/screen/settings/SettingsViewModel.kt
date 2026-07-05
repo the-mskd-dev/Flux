@@ -3,13 +3,13 @@ package com.mskd.flux.screen.settings
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.core.data.datastore.SettingsDataStore
-import com.mskd.flux.features.images.domain.ImagesPrefetchManager
 import com.mskd.flux.core.domain.model.core.FluxOptionsDialogItem
 import com.mskd.flux.core.domain.model.core.FluxOptionsDialogState
 import com.mskd.flux.core.domain.model.core.StringProvider
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCase
+import com.mskd.flux.features.images.domain.ImagesPrefetchManager
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.button_forward
 import flux.shared.generated.resources.button_rewind

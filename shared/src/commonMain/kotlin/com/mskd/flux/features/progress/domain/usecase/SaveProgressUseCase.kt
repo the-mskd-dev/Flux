@@ -1,7 +1,7 @@
 package com.mskd.flux.features.progress.domain.usecase
 
-import com.mskd.flux.core.data.datastore.UserDataStore
 import com.mskd.flux.core.data.database.repository.DatabaseRepository
+import com.mskd.flux.core.data.datastore.UserDataStore
 import com.mskd.flux.core.domain.model.artwork.Episode
 import com.mskd.flux.core.domain.model.artwork.Media
 import com.mskd.flux.core.domain.model.artwork.Movie

@@ -12,11 +12,11 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.core.domain.model.artwork.Episode
 import com.mskd.flux.core.domain.model.artwork.FullArtwork
 import com.mskd.flux.core.domain.model.artwork.Media
 import com.mskd.flux.core.domain.model.artwork.Status
+import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.ui.component.media.EpisodesDetails
 import com.mskd.flux.ui.component.media.MediaDetailsHorizontal
 import com.mskd.flux.ui.component.media.OverviewItem

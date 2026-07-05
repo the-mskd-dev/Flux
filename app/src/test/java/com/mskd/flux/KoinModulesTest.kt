@@ -2,10 +2,10 @@ package com.mskd.flux
 
 import android.app.Application
 import android.content.Context
-import com.mskd.flux.di.moduleAndroidApp
-import com.mskd.flux.di.modulePlatform
 import com.mskd.flux.core.domain.model.artwork.ContentType
 import com.mskd.flux.core.domain.model.core.AppInfo
+import com.mskd.flux.di.moduleAndroidApp
+import com.mskd.flux.di.modulePlatform
 import io.kotest.core.spec.style.FunSpec
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.dsl.module
@@ -16,6 +16,17 @@ class KoinModulesTest : FunSpec({
 
     @OptIn(KoinExperimentalAPI::class)
     test("verify modules") {
+
+        module {
+            single<AppInfo> {
+                AppInfo(
+                    isDebug =  BuildConfig.DEBUG,
+                    versionName = BuildConfig.VERSION_NAME,
+                    versionCode = BuildConfig.VERSION_CODE,
+                    debugToken = BuildConfig.TMDB_TOKEN,
+                )
+            }
+        }
 
         val allModules = module {
             includes(moduleAndroidApp, modulePlatform)

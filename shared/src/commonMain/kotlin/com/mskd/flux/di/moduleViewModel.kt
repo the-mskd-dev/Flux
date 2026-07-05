@@ -1,9 +1,5 @@
 package com.mskd.flux.di
 
-import com.mskd.flux.features.progress.domain.usecase.ChangeMediaStatusUseCase
-import com.mskd.flux.features.progress.domain.usecase.MarkPreviousAsWatchedUseCase
-import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
-import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.screen.artwork.ArtworkViewModel
 import com.mskd.flux.screen.customization.CustomizationViewModel
 import com.mskd.flux.screen.home.HomeViewModel

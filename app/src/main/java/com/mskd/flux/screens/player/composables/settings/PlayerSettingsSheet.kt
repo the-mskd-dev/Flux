@@ -22,8 +22,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import com.mskd.flux.mockups.PlayerMockups
 import com.mskd.flux.core.domain.model.player.PlayerTrack
+import com.mskd.flux.mockups.PlayerMockups
 import com.mskd.flux.screen.player.PlayerIntent
 import com.mskd.flux.screen.player.PlayerUiContent
 import com.mskd.flux.ui.component.global.Text

@@ -2,12 +2,11 @@ package com.mskd.flux.screens.show
 
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
+import com.mskd.flux.core.domain.model.artwork.ContentType
+import com.mskd.flux.core.domain.model.core.State
 import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
 import com.mskd.flux.mockups.FakeArtworkUC
 import com.mskd.flux.mockups.MediaMockups
-import io.mockk.mockk
-import com.mskd.flux.core.domain.model.core.State
-import com.mskd.flux.core.domain.model.artwork.ContentType
 import com.mskd.flux.screen.show.ShowContent
 import com.mskd.flux.screen.show.ShowDialog
 import com.mskd.flux.screen.show.ShowEvent
@@ -17,6 +16,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import io.mockk.coVerify
+import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @OptIn(ExperimentalCoroutinesApi::class)

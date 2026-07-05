@@ -1,7 +1,7 @@
 package com.mskd.flux.features.tmdb.data.datasource
 
-import com.mskd.flux.features.tmdb.data.service.TMDBService
 import com.mskd.flux.core.data.datastore.SettingsDataStore
+import com.mskd.flux.core.domain.model.files.UserFile
 import com.mskd.flux.features.tmdb.data.dto.ArtworkDto
 import com.mskd.flux.features.tmdb.data.dto.EpisodeDto
 import com.mskd.flux.features.tmdb.data.dto.MediaTypeDto
@@ -9,7 +9,7 @@ import com.mskd.flux.features.tmdb.data.dto.MovieDto
 import com.mskd.flux.features.tmdb.data.dto.SeasonDto
 import com.mskd.flux.features.tmdb.data.dto.TranslationsDto
 import com.mskd.flux.features.tmdb.data.dto.findWithLocale
-import com.mskd.flux.core.domain.model.files.UserFile
+import com.mskd.flux.features.tmdb.data.service.TMDBService
 import com.mskd.flux.utils.extensions.toTmdbFormat
 import io.github.aakira.napier.Napier
 import java.util.Locale

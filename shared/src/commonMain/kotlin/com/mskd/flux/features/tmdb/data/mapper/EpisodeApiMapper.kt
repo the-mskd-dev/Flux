@@ -1,9 +1,9 @@
 package com.mskd.flux.features.tmdb.data.mapper
 
-import com.mskd.flux.features.tmdb.data.dto.EpisodeDto
 import com.mskd.flux.core.domain.model.artwork.Episode
 import com.mskd.flux.core.domain.model.artwork.Status
 import com.mskd.flux.core.domain.model.files.UserFile
+import com.mskd.flux.features.tmdb.data.dto.EpisodeDto
 
 fun EpisodeDto.toDomain(
     artworkId: Long,

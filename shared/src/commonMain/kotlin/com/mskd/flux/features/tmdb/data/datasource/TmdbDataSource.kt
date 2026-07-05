@@ -1,11 +1,11 @@
 package com.mskd.flux.features.tmdb.data.datasource
 
+import com.mskd.flux.core.domain.model.files.UserFile
 import com.mskd.flux.features.tmdb.data.dto.ArtworkDto
 import com.mskd.flux.features.tmdb.data.dto.EpisodeDto
 import com.mskd.flux.features.tmdb.data.dto.MovieDto
 import com.mskd.flux.features.tmdb.data.dto.SeasonDto
 import com.mskd.flux.features.tmdb.data.dto.TranslationsDto
-import com.mskd.flux.core.domain.model.files.UserFile
 import java.util.Locale
 
 interface TmdbDataSource {

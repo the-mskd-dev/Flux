@@ -26,8 +26,8 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.core.domain.model.artwork.FullArtwork
+import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.screen.show.ShowIntent
 import com.mskd.flux.screens.artwork.composables.common.ArtworkImageFull
 import com.mskd.flux.ui.component.global.Text

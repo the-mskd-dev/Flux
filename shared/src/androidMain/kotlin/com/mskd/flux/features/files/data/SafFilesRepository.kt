@@ -4,13 +4,13 @@ import android.content.Context
 import android.net.Uri
 import android.provider.DocumentsContract
 import androidx.core.net.toUri
+import com.mskd.flux.core.domain.model.files.FileSource
+import com.mskd.flux.core.domain.model.files.UserFile
 import com.mskd.flux.features.files.domain.repository.FilesRepository
 import com.mskd.flux.features.sources.data.AndroidUserFolderValidator
 import com.mskd.flux.features.sources.data.datasource.SourcesDataSource
 import com.mskd.flux.features.sources.data.mapper.toDomain
 import com.mskd.flux.features.sources.domain.model.UserFolder
-import com.mskd.flux.core.domain.model.files.FileSource
-import com.mskd.flux.core.domain.model.files.UserFile
 import com.mskd.flux.utils.Trace
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

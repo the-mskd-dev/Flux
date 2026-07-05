@@ -1,8 +1,8 @@
 package com.mskd.flux.features.files.data.usecase
 
+import com.mskd.flux.core.domain.model.files.UserFile
 import com.mskd.flux.features.files.domain.repository.FilesRepository
 import com.mskd.flux.features.files.domain.usecase.GetFilesUseCase
-import com.mskd.flux.core.domain.model.files.UserFile
 
 class AndroidGetFilesUseCase(
     private val mediaStore: FilesRepository,

@@ -6,12 +6,12 @@ import com.mskd.flux.core.data.database.repository.DatabaseRepository
 import com.mskd.flux.core.data.datastore.SnackbarDataStore
 import com.mskd.flux.core.data.datastore.TokenDataStore
 import com.mskd.flux.core.data.datastore.UserDataStore
-import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.core.domain.model.core.AppInfo
 import com.mskd.flux.core.domain.model.artwork.Artwork
 import com.mskd.flux.core.domain.model.artwork.ContentType
+import com.mskd.flux.core.domain.model.core.AppInfo
 import com.mskd.flux.features.catalog.domain.usecase.cleanCatalog.CleanCatalogUseCase
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
+import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.core.FakeDatabaseRepository
 import com.mskd.flux.mockups.core.datastore.FakeSnackbarDataStore
 import com.mskd.flux.mockups.features.catalog.FakeSyncCatalogUseCase

@@ -9,8 +9,8 @@ import com.mskd.flux.core.data.database.model.EpisodeEntity
 import com.mskd.flux.core.data.database.model.MovieEntity
 import com.mskd.flux.core.data.database.model.SeasonEntity
 import com.mskd.flux.core.database.model.projections.ArtworkImagesProjection
-import com.mskd.flux.features.sources.data.local.UserFolderEntity
 import com.mskd.flux.core.domain.model.artwork.Artwork
+import com.mskd.flux.features.sources.data.local.UserFolderEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao

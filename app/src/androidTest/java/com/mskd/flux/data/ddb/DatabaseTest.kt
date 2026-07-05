@@ -7,11 +7,11 @@ import androidx.test.filters.MediumTest
 import app.cash.turbine.test
 import com.mskd.flux.core.data.database.DatabaseDao
 import com.mskd.flux.core.data.database.FluxDatabase
-import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.core.data.database.mappers.toEntity
 import com.mskd.flux.core.data.database.model.ArtworkEntity
 import com.mskd.flux.core.data.database.model.SeasonEntity
-import com.mskd.flux.core.data.database.mappers.toEntity
 import com.mskd.flux.core.domain.model.artwork.Artwork
+import com.mskd.flux.mockups.MediaMockups
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertEquals

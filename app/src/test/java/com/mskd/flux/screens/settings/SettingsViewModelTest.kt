@@ -3,10 +3,10 @@ package com.mskd.flux.screens.settings
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.core.data.datastore.SettingsDataStore
-import com.mskd.flux.features.images.domain.ImagesPrefetchManager
 import com.mskd.flux.core.domain.model.core.FluxOptionsDialogState
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCase
+import com.mskd.flux.features.images.domain.ImagesPrefetchManager
 import com.mskd.flux.mockups.features.catalog.FakeSyncCatalogUseCase
 import com.mskd.flux.mockups.features.images.FakeImagesPrefetchManager
 import com.mskd.flux.screen.settings.SettingsEvent

@@ -4,8 +4,8 @@ import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.core.data.database.repository.DatabaseRepository
 import com.mskd.flux.core.data.datastore.SettingsDataStore
-import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.core.domain.model.artwork.ContentType
+import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.core.FakeDatabaseRepository
 import com.mskd.flux.mockups.core.datastore.FakeSettingsDataStore
 import com.mskd.flux.screen.search.SearchEvent

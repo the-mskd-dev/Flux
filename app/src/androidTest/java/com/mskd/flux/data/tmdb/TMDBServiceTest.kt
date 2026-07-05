@@ -2,12 +2,12 @@ package com.mskd.flux.data.tmdb
 
 import androidx.test.core.app.ApplicationProvider
 import com.mskd.flux.BuildConfig
-import com.mskd.flux.features.tmdb.data.service.TMDBService
 import com.mskd.flux.core.data.datastore.TokenDataStore
-import com.mskd.flux.di.moduleAndroidApp
-import com.mskd.flux.di.modulePlatform
 import com.mskd.flux.core.domain.model.files.FileSource
 import com.mskd.flux.core.domain.model.files.UserFile
+import com.mskd.flux.di.moduleAndroidApp
+import com.mskd.flux.di.modulePlatform
+import com.mskd.flux.features.tmdb.data.service.TMDBService
 import com.mskd.flux.utils.extensions.toTmdbFormat
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest

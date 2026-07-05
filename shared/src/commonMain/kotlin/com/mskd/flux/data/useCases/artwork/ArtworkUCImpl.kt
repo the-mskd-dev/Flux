@@ -1,13 +1,13 @@
 package com.mskd.flux.data.useCases.artwork
 
 import com.mskd.flux.core.data.database.repository.DatabaseRepository
-import com.mskd.flux.core.domain.model.core.State
 import com.mskd.flux.core.domain.model.artwork.Artwork
 import com.mskd.flux.core.domain.model.artwork.ContentType
 import com.mskd.flux.core.domain.model.artwork.Episode
 import com.mskd.flux.core.domain.model.artwork.FullArtwork
 import com.mskd.flux.core.domain.model.artwork.Movie
 import com.mskd.flux.core.domain.model.artwork.Season
+import com.mskd.flux.core.domain.model.core.State
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope

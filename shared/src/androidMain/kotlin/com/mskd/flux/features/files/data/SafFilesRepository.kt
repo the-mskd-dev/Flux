@@ -82,8 +82,61 @@ class SafFilesRepository(
         existingFiles
     }
 
-    override suspend fun getSubtitlesFor(file: UserFile): File? {
-        return null // TODO
+    override suspend fun getSubtitlesFor(file: UserFile): String? = withContext(Dispatchers.IO) {
+        if (file.source != FileSource.SAF) return@withContext null
+
+        val videoUri = file.path.toUri()
+
+        // Cleanly extract the video name without its extension
+        val videoNameWithoutExtension = file.name.substringAfterLast('/').substringBeforeLast('.')
+
+        try {
+
+            // 1. Extracting IDs to navigate the SAF tree structure
+            val documentId = DocumentsContract.getDocumentId(videoUri)
+
+            // Reconstruct the parent folder ID by removing the last encoded segment
+            val parentDocumentId = documentId.substringBeforeLast('%', "").substringBeforeLast('/', "")
+            if (parentDocumentId.isEmpty()) return@withContext null
+
+            val childrenUri = DocumentsContract.buildChildDocumentsUriUsingTree(videoUri, parentDocumentId)
+
+            val subtitleExtensions = setOf("srt", "vtt", "ass", "ssa")
+            var targetSubtitleUri: Uri? = null
+
+            // 2. Targeted query on the parent folder
+            context.contentResolver.query(
+                childrenUri,
+                arrayOf(
+                    DocumentsContract.Document.COLUMN_DOCUMENT_ID,
+                    DocumentsContract.Document.COLUMN_DISPLAY_NAME
+                ),
+                null, null, null
+            )?.use { cursor ->
+                val idCol = cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_DOCUMENT_ID)
+                val nameCol = cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_DISPLAY_NAME)
+
+                while (cursor.moveToNext()) {
+                    val currentName = cursor.getString(nameCol)
+                    val currentExt = currentName.substringAfterLast('.', "").lowercase()
+                    val currentBaseName = currentName.substringBeforeLast('.')
+
+                    // Exact name match (case-insensitive) + valid extension
+                    if (currentBaseName.equals(videoNameWithoutExtension, ignoreCase = true) && currentExt in subtitleExtensions) {
+                        val currentId = cursor.getString(idCol)
+                        targetSubtitleUri = DocumentsContract.buildDocumentUriUsingTree(videoUri, currentId)
+                        break // Found, stop the cursor immediately.
+                    }
+                }
+            }
+
+            // 3. Return the SAF URI directly as a String
+            return@withContext targetSubtitleUri?.toString()
+
+        } catch (e: Exception) {
+            Trace.error(TAG, "Failed to resolve SAF subtitles for ${file.name}", e)
+            null
+        }
     }
 
     private fun getFilesFromFolder(folder: UserFolder): List<UserFile> {

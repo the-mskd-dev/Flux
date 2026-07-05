@@ -9,7 +9,7 @@ class AndroidGetSubtitlesUseCase(
     private val mediaStore: FilesRepository,
     private val saf: FilesRepository
 ) : GetSubtitlesUseCase {
-    override suspend fun invoke(file: UserFile): File? {
+    override suspend fun invoke(file: UserFile): String? {
         return mediaStore.getSubtitlesFor(file = file) ?: saf.getSubtitlesFor(file = file)
     }
 }

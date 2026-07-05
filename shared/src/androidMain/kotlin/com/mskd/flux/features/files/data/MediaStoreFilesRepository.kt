@@ -161,7 +161,7 @@ class MediaStoreFilesRepository(
 
         }
 
-    override suspend fun getSubtitlesFor(file: UserFile): File? = withContext(Dispatchers.IO) {
+    override suspend fun getSubtitlesFor(file: UserFile): String? = withContext(Dispatchers.IO) {
 
         try {
 
@@ -190,6 +190,7 @@ class MediaStoreFilesRepository(
             val subtitleFile = subtitleExtensions
                 .map { ext -> File(parentDir, "$baseName.$ext") }
                 .firstOrNull { it.exists() }
+                ?.toUri()?.toString()
 
             subtitleFile
 

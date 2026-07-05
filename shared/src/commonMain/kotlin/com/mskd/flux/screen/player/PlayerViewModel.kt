@@ -264,10 +264,10 @@ class PlayerViewModel<out T>(
     }
 
     private suspend fun playMedia(media: Media) {
-        val subtitlesUri = getSubtitlesUseCase(file = media.file)
+        val subtitlesPath = getSubtitlesUseCase(file = media.file)
         playerManager.playMedia(
             media = media,
-            subtitlesPath = subtitlesUri?.absolutePath
+            subtitlesPath = subtitlesPath
         )
     }
 

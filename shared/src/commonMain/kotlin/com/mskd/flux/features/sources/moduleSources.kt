@@ -2,10 +2,8 @@ package com.mskd.flux.features.sources
 
 import com.mskd.flux.core.data.database.FluxDatabase
 import com.mskd.flux.features.sources.data.local.SourcesDao
-import com.mskd.flux.features.sources.data.datasource.SourcesDataSource
-import com.mskd.flux.features.sources.data.datasource.SourcesDataSourceImpl
 import com.mskd.flux.features.sources.domain.repository.SourcesRepository
-import com.mskd.flux.features.sources.domain.repository.SourcesRepositoryImpl
+import com.mskd.flux.features.sources.data.repository.SourcesRepositoryImpl
 import com.mskd.flux.features.sources.domain.usecase.AddSourceUseCase
 import com.mskd.flux.features.sources.domain.usecase.DeleteSourceUseCase
 import com.mskd.flux.features.sources.domain.usecase.FlowSourcesUseCase
@@ -20,13 +18,9 @@ val moduleSources = module {
         fluxDatabase.sourcesDao()
     }
 
-    single<SourcesDataSource> {
-        SourcesDataSourceImpl(dao = get())
-    }
-
     single<SourcesRepository> {
         SourcesRepositoryImpl(
-            dataSource = get(),
+            dao = get(),
             userFolderValidator = get()
         )
     }

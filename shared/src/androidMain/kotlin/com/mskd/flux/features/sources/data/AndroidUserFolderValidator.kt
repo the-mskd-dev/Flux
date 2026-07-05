@@ -23,8 +23,8 @@ class AndroidUserFolderValidator(
             }
         } catch (e: Exception) {
             Trace.error(
-                tag = "CheckFolderAvailabilityUseCase",
-                message = "Folder (${path.toUri().lastPathSegment} isn't available",
+                tag = "AndroidUserFolderValidator",
+                message = "Folder at path `$path` isn't available",
                 throwable = e
             )
             UserFolder.Status.MISSING

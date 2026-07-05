@@ -7,10 +7,8 @@ import androidx.core.net.toUri
 import com.mskd.flux.core.domain.model.files.FileSource
 import com.mskd.flux.core.domain.model.files.UserFile
 import com.mskd.flux.features.files.domain.repository.FilesRepository
-import com.mskd.flux.features.sources.data.AndroidUserFolderValidator
-import com.mskd.flux.features.sources.data.datasource.SourcesDataSource
-import com.mskd.flux.features.sources.data.mapper.toDomain
 import com.mskd.flux.features.sources.domain.model.UserFolder
+import com.mskd.flux.features.sources.domain.repository.SourcesRepository
 import com.mskd.flux.utils.Trace
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -18,8 +16,7 @@ import java.io.File
 
 class SafFilesRepository(
     private val context: Context,
-    private val dataSource: SourcesDataSource,
-    private val folderValidator: AndroidUserFolderValidator
+    private val sources: SourcesRepository
 ) : FilesRepository {
 
     companion object {
@@ -35,12 +32,9 @@ class SafFilesRepository(
     }
 
     override suspend fun getFiles(): List<UserFile> = withContext(Dispatchers.IO) {
-        val availableFolders = dataSource.getFolders().map {
-            val status = folderValidator.isFolderAvailable(path = it.path)
-            it.toDomain(status = status)
-        }
+        val folders = sources.getFolders()
 
-        availableFolders.flatMap { folder ->
+        folders.flatMap { folder ->
             getFilesFromFolder(folder = folder)
         }
     }

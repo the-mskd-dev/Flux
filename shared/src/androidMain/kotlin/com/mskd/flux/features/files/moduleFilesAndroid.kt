@@ -30,8 +30,7 @@ val moduleFilesAndroid = module {
     single<FilesRepository>(SAF_SOURCES) {
         SafFilesRepository(
             context = get(),
-            dataSource = get(),
-            folderValidator = get()
+            sources = get()
         )
     }
 

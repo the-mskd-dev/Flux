@@ -28,20 +28,6 @@ class FluxApp : Application(), SingletonImageLoader.Factory {
     override fun onCreate() {
         super.onCreate()
 
-        if (BuildConfig.DEBUG) {
-            Napier.base(DebugAntilog())
-        }
-
-        startKoin {
-            androidContext(this@FluxApp)
-
-            modules(
-                modulePlatform,
-                moduleAndroidApp
-            )
-
-        }
-
         initAcra {
             buildConfigClass = BuildConfig::class.java
             reportFormat = StringFormat.KEY_VALUE_LIST
@@ -54,6 +40,20 @@ class FluxApp : Application(), SingletonImageLoader.Factory {
             dialog {
                 reportDialogClass = CrashDialogActivity::class.java
             }
+
+        }
+
+        if (BuildConfig.DEBUG) {
+            Napier.base(DebugAntilog())
+        }
+
+        startKoin {
+            androidContext(this@FluxApp)
+
+            modules(
+                modulePlatform,
+                moduleAndroidApp
+            )
 
         }
 

@@ -8,7 +8,7 @@ import com.mskd.flux.core.domain.model.artwork.FullArtwork
 import com.mskd.flux.core.domain.model.artwork.Media
 import com.mskd.flux.core.domain.model.artwork.Status
 import com.mskd.flux.core.domain.model.core.State
-import com.mskd.flux.data.useCases.artwork.ArtworkUC
+import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
 import com.mskd.flux.features.progress.domain.usecase.ChangeMediaStatusUseCase
 import com.mskd.flux.features.progress.domain.usecase.MarkPreviousAsWatchedUseCase
 import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
@@ -30,12 +30,12 @@ import kotlinx.coroutines.launch
 class ArtworkViewModel(
     private val artworkId: Long,
     private val season: Int?,
-    private val artworkUC: ArtworkUC,
-    private val settingsDataStore: SettingsDataStore,
+    settingsDataStore: SettingsDataStore,
+    observeArtworkUseCase: ObserveArtworkUseCase,
     private val changeMediaStatus: ChangeMediaStatusUseCase,
     private val markPreviousAsWatched: MarkPreviousAsWatchedUseCase,
     private val resetProgress: ResetProgressUseCase,
-    private val saveProgress: SaveProgressUseCase
+    private val saveProgress: SaveProgressUseCase,
 ) : ViewModel() {
 
     //region Computed properties
@@ -54,7 +54,7 @@ class ArtworkViewModel(
     private val _userState = MutableStateFlow(ArtworkUserState())
 
     val uiState: StateFlow<ArtworkUiState> = combine(
-        artworkUC.flow,
+        observeArtworkUseCase.flow,
         settingsDataStore.flow,
         _userState,
     ) { artworkState, settings, userState ->
@@ -83,10 +83,10 @@ class ArtworkViewModel(
 
     //endregion
 
-    //regin Init
+    //region Init
 
     init {
-        artworkUC.searchArtwork(artworkId = artworkId)
+        observeArtworkUseCase(artworkId = artworkId)
     }
 
     //endregion

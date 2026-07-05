@@ -56,9 +56,9 @@ class PlayerViewModelTest : FunSpec({
             artworkUC = artworkUC,
             settingsDataStore = settingsDataStore,
             playerManager = playerManager,
-            pipIsEnabledUC = pipIsEnabledUseCase,
-            saveProgressUC = saveProgress,
-            getSubtitlesUC = getSubtitlesUseCase
+            pipIsEnabledUseCase = pipIsEnabledUseCase,
+            saveProgressUseCase = saveProgress,
+            getSubtitlesUseCase = getSubtitlesUseCase
         )
 
     }

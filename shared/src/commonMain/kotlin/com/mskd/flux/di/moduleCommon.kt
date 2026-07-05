@@ -11,8 +11,6 @@ val moduleCommon = module {
         moduleFeatures,
 
         moduleCoroutine,
-        moduleImages,
-        moduleUseCase,
         moduleViewModel,
     )
 

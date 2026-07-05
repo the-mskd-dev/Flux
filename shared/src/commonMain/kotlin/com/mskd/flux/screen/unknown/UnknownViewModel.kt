@@ -8,7 +8,7 @@ import com.mskd.flux.core.domain.model.artwork.Episode
 import com.mskd.flux.core.domain.model.artwork.FullArtwork
 import com.mskd.flux.core.domain.model.artwork.Media
 import com.mskd.flux.core.domain.model.core.State
-import com.mskd.flux.data.useCases.artwork.ArtworkUC
+import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
 import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,8 +21,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class UnknownViewModel(
-    private val artworkUC: ArtworkUC,
-    private val settingsDataStore: SettingsDataStore,
+    observeArtworkUseCase: ObserveArtworkUseCase,
+    settingsDataStore: SettingsDataStore,
     private val saveProgress: SaveProgressUseCase
 ) : ViewModel() {
 
@@ -40,7 +40,7 @@ class UnknownViewModel(
     private val _searchQuery = MutableStateFlow("")
 
     val uiState: StateFlow<UnknownUiState> = combine(
-        artworkUC.flow,
+        observeArtworkUseCase.flow,
         settingsDataStore.flow,
         _searchQuery
     ) { artworkContent, settings, searchQuery ->
@@ -65,9 +65,7 @@ class UnknownViewModel(
 
     //region Init
 
-    init {
-        artworkUC.searchArtwork(artworkId = Artwork.UNKNOWN_ID)
-    }
+    init { observeArtworkUseCase(artworkId = Artwork.UNKNOWN_ID) }
 
     //endregion
 

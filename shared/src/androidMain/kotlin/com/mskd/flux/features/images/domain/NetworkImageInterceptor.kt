@@ -1,4 +1,4 @@
-package com.mskd.flux.utils.interceptors
+package com.mskd.flux.features.images.domain
 
 import coil3.intercept.Interceptor
 import coil3.request.CachePolicy

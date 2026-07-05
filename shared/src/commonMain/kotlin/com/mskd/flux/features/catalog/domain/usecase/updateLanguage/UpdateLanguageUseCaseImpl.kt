@@ -13,7 +13,7 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
 
-class UpdateLanguageUseCaseImpl(
+internal class UpdateLanguageUseCaseImpl(
     private val tmdb: TmdbDataSource,
     private val database: DatabaseRepository,
     private val settings: SettingsDataStore,

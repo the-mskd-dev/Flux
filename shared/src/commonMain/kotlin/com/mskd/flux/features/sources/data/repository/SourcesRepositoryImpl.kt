@@ -11,7 +11,7 @@ import com.mskd.flux.features.sources.domain.validator.UserFolderValidator
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class SourcesRepositoryImpl(
+internal class SourcesRepositoryImpl(
     private val dao: SourcesDao,
     private val userFolderValidator: UserFolderValidator
 ) : SourcesRepository {

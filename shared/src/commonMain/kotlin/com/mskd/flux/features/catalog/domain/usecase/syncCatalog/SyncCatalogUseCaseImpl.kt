@@ -33,7 +33,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withContext
 
-class SyncCatalogUseCaseImpl(
+internal class SyncCatalogUseCaseImpl(
     private val tmdb: TmdbDataSource,
     private val database: DatabaseRepository,
     private val getFilesUseCase: GetFilesUseCase,

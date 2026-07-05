@@ -1,7 +1,7 @@
 package com.mskd.flux.features.images
 
 import com.mskd.flux.di.Qualifiers
-import com.mskd.flux.features.images.data.ImagesPrefetchManagerImpl
+import com.mskd.flux.features.images.domain.ImagesPrefetchManagerImpl
 import com.mskd.flux.features.images.domain.ImagesPrefetchManager
 import org.koin.dsl.module
 

@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.mskd.flux.core.domain.model.artwork.FullArtwork
 import com.mskd.flux.core.domain.model.artwork.Season
 import com.mskd.flux.core.domain.model.core.State
-import com.mskd.flux.data.useCases.artwork.ArtworkUC
+import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
 import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 
 class ShowViewModel(
     private val artworkId: Long,
-    private val artworkUC: ArtworkUC,
+    observeArtworkUseCase: ObserveArtworkUseCase,
     private val resetProgress: ResetProgressUseCase,
 ) : ViewModel() {
 
@@ -31,7 +31,7 @@ class ShowViewModel(
     private val _userState = MutableStateFlow<ShowDialog?>(null)
 
     val uiState: StateFlow<ShowUiState> = combine(
-        artworkUC.flow,
+        observeArtworkUseCase.flow,
         _userState,
     ) { artworkState, dialog ->
         when (artworkState) {
@@ -64,7 +64,7 @@ class ShowViewModel(
     //region Init
 
     init {
-        artworkUC.searchArtwork(artworkId = artworkId)
+        observeArtworkUseCase(artworkId = artworkId)
     }
 
     //endregion

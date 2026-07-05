@@ -10,7 +10,7 @@ import com.mskd.flux.core.domain.model.core.State
 import com.mskd.flux.core.domain.model.core.StringProvider
 import com.mskd.flux.core.domain.model.player.PlayerTrack
 import com.mskd.flux.core.domain.model.player.PlayerTrack.Type
-import com.mskd.flux.data.useCases.artwork.ArtworkUC
+import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
 import com.mskd.flux.features.files.domain.usecase.GetSubtitlesUseCase
 import com.mskd.flux.features.player.data.PipIsEnabledUseCase
 import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
@@ -46,12 +46,12 @@ import kotlin.time.Duration.Companion.seconds
 
 class PlayerViewModel<out T>(
     mediaId: Long,
-    private val artworkUC: ArtworkUC,
     private val settingsDataStore: SettingsDataStore,
     private val playerManager: PlayerManager<T>,
-    private val pipIsEnabledUC: PipIsEnabledUseCase,
-    private val saveProgressUC: SaveProgressUseCase,
-    private val getSubtitlesUC: GetSubtitlesUseCase
+    private val observeArtworkUseCase: ObserveArtworkUseCase,
+    private val pipIsEnabledUseCase: PipIsEnabledUseCase,
+    private val saveProgressUseCase: SaveProgressUseCase,
+    private val getSubtitlesUseCase: GetSubtitlesUseCase
 ) : ViewModel() {
 
     //region Variables
@@ -83,7 +83,7 @@ class PlayerViewModel<out T>(
     val progress: StateFlow<Long> = _progress.asStateFlow()
 
     val uiState: StateFlow<PlayerUiState<T>> = combine(
-        artworkUC.flow,
+        observeArtworkUseCase.flow,
         settingsDataStore.flow,
         playerManager.flow,
         _userState,
@@ -264,7 +264,7 @@ class PlayerViewModel<out T>(
     }
 
     private suspend fun playMedia(media: Media) {
-        val subtitlesUri = getSubtitlesUC(file = media.file)
+        val subtitlesUri = getSubtitlesUseCase(file = media.file)
         playerManager.playMedia(
             media = media,
             subtitlesPath = subtitlesUri?.absolutePath
@@ -349,7 +349,7 @@ class PlayerViewModel<out T>(
 
         if (show) {
 
-            val show = (artworkUC.flow.first() as? State.Content)?.content as? FullArtwork.FullShow
+            val show = (observeArtworkUseCase.flow.first() as? State.Content)?.content as? FullArtwork.FullShow
             val episodes = show?.episodes?.filter { it.season == currentEpisode.season }
 
             val nextEpisode = episodes?.getNextEpisodeFor(currentEpisode) ?: return
@@ -403,7 +403,7 @@ class PlayerViewModel<out T>(
         val media = content?.media ?: return
         val progress = _progress.value
 
-        saveProgressUC(
+        saveProgressUseCase(
             media = media,
             progress = progress
         )
@@ -442,7 +442,7 @@ class PlayerViewModel<out T>(
 
     private suspend fun onBackground() {
 
-        if (pipIsEnabledUC()) return
+        if (pipIsEnabledUseCase()) return
 
         wasPlayingBeforeBackground = content?.isPlaying ?: return
 

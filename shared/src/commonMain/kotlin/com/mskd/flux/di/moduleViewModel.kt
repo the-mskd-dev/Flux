@@ -20,12 +20,12 @@ val moduleViewModel = module {
         ArtworkViewModel(
             artworkId = params.get(),
             season = params.getOrNull(),
-            artworkUC = get(),
             settingsDataStore = get(),
             changeMediaStatus = get(),
             markPreviousAsWatched = get(),
             resetProgress = get(),
             saveProgress = get(),
+            observeArtworkUseCase = get()
         )
     }
 
@@ -46,7 +46,7 @@ val moduleViewModel = module {
     viewModel { params ->
         ShowViewModel(
             artworkId = params.get(),
-            artworkUC = get(),
+            observeArtworkUseCase = get(),
             resetProgress = get(),
         )
     }

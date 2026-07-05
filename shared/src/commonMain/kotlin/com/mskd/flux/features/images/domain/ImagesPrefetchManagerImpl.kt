@@ -1,10 +1,8 @@
-package com.mskd.flux.features.images.data
+package com.mskd.flux.features.images.domain
 
 import coil3.ImageLoader
 import com.mskd.flux.core.data.database.repository.DatabaseRepository
 import com.mskd.flux.core.data.datastore.SettingsDataStore
-import com.mskd.flux.features.images.domain.ImageRequestFactory
-import com.mskd.flux.features.images.domain.ImagesPrefetchManager
 import com.mskd.flux.utils.extensions.tmdbImage
 import com.mskd.flux.utils.extensions.tmdbImageLarge
 import kotlinx.coroutines.CoroutineScope
@@ -17,7 +15,7 @@ import kotlinx.coroutines.sync.Semaphore
 import java.util.Collections
 import java.util.concurrent.atomic.AtomicInteger
 
-class ImagesPrefetchManagerImpl(
+internal class ImagesPrefetchManagerImpl(
     private val database: DatabaseRepository,
     private val settings: SettingsDataStore,
     private val imageLoader: ImageLoader,
@@ -27,7 +25,8 @@ class ImagesPrefetchManagerImpl(
 
     //region Variables
 
-    private var _state = MutableStateFlow<ImagesPrefetchManager.State>(ImagesPrefetchManager.State.Idle)
+    private var _state =
+        MutableStateFlow<ImagesPrefetchManager.State>(ImagesPrefetchManager.State.Idle)
 
     private val pendingUrls = Collections.synchronizedSet(mutableSetOf<String>())
     private val totalCount = AtomicInteger(0)

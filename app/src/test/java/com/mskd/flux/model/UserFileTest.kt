@@ -17,6 +17,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
 import io.mockk.unmockkStatic
+import kotlin.time.Instant
 
 class UserFileTest : FunSpec ({
 
@@ -201,7 +202,7 @@ class UserFileTest : FunSpec ({
         userFile.isEpisode shouldBe true
         userFile.season shouldBe 1
         userFile.episode shouldBe 1
-        userFile.addedDate shouldBe java.util.Date(1621814400000L)
+        userFile.addedDate shouldBe Instant.fromEpochMilliseconds(1621814400000L)
         userFile.path.toUri() shouldBe mockUri
 
         unmockkStatic(Uri::class)

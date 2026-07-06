@@ -1,8 +1,7 @@
 package com.mskd.flux.core.domain.model.files
 
 import kotlinx.serialization.Serializable
-import java.util.Date
-import java.util.regex.Pattern
+import kotlin.time.Instant
 
 @Serializable
 data class UserFile(
@@ -24,8 +23,8 @@ data class UserFile(
     val episode: Int?
         get() = nameProperties.episode
 
-    val addedDate: Date
-        get() = Date(addedDateTime)
+    val addedDate: Instant
+        get() = Instant.fromEpochMilliseconds(addedDateTime)
 
 }
 
@@ -66,7 +65,7 @@ data class FileProperties(
                     ?: groups[6].toIntOrNull()
                     ?: groups[8].toIntOrNull()
                     ?: groups[10].toIntOrNull()
-                return FileProperties(title ?: "", year, season, episode)
+                return FileProperties(title, year, season, episode)
             }
 
             // Try movie pattern

@@ -1,7 +1,9 @@
 package com.mskd.flux.features.catalog.domain.coordinator
 
 import com.mskd.flux.features.catalog.domain.model.SyncState
+import com.mskd.flux.utils.Trace
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,22 +25,18 @@ class CatalogSyncCoordinator(
 
     val isBusy: Boolean get() = _state.value is SyncState.Syncing
 
-    /**
-     * Lance un traitement en excluant tout autre traitement en cours
-     * (sync et traduction ne peuvent jamais tourner simultanément).
-     */
-    fun launch(full: Boolean, block: suspend CoroutineScope.() -> Unit): Job {
+    @OptIn(InternalCoroutinesApi::class)
+    fun launch(full: Boolean, block: suspend CoroutineScope.() -> Unit) {
         activeJob?.cancel()
         completedSteps.set(0)
         totalSteps = 1
         _state.value = SyncState.Syncing(full = full)
 
-        return scope.launch {
+        activeJob = scope.launch {
             block()
-        }.also { job ->
-            job.invokeOnCompletion { _state.value = SyncState.Idle }
-            activeJob = job
+            _state.value = SyncState.Idle
         }
+
     }
 
     fun setTotalSteps(steps: Int) {

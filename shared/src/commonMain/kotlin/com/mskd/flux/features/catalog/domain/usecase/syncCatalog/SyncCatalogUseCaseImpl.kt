@@ -102,6 +102,7 @@ internal class SyncCatalogUseCaseImpl(
             imagesPrefetchManager.prefetchImages()
             user.setSyncTime(System.currentTimeMillis())
             user.setVersionCode(appInfo.versionCode)
+
         }
 
     }

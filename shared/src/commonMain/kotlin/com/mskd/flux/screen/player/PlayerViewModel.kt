@@ -178,7 +178,6 @@ class PlayerViewModel<out T>(
                 playerManager.subtitles
                     .distinctUntilChanged()
                     .collect { subtitles ->
-                        Trace.debug(message = "new subtitles : $subtitles")
                         _subtitles.update { subtitles }
                     }
             }

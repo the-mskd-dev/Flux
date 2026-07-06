@@ -8,12 +8,13 @@ import com.mskd.flux.core.domain.model.artwork.Episode
 import com.mskd.flux.core.domain.model.artwork.FullArtwork
 import com.mskd.flux.core.domain.model.artwork.Status
 import com.mskd.flux.core.domain.model.core.State
+import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
 import com.mskd.flux.features.progress.domain.usecase.ChangeMediaStatusUseCase
 import com.mskd.flux.features.progress.domain.usecase.MarkPreviousAsWatchedUseCase
 import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
 import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
-import com.mskd.flux.mockups.FakeArtworkUC
 import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.mockups.features.artwork.FakeObserveArtworkUseCase
 import com.mskd.flux.screen.artwork.ArtworkContent
 import com.mskd.flux.screen.artwork.ArtworkDialog
 import com.mskd.flux.screen.artwork.ArtworkEvent
@@ -36,14 +37,14 @@ class ArtworkViewModelTest : FunSpec({
 
     lateinit var viewModel: ArtworkViewModel
     lateinit var settingsDataStore: SettingsDataStore
-    lateinit var artworkUC: FakeArtworkUC
+    lateinit var observeArtworkUseCase: ObserveArtworkUseCase
     lateinit var changeMediaStatus: ChangeMediaStatusUseCase
     lateinit var markPreviousAsWatched: MarkPreviousAsWatchedUseCase
     lateinit var resetProgress: ResetProgressUseCase
     lateinit var saveProgress: SaveProgressUseCase
     var currentSeason: Int? = 1
 
-    val updateVm: () -> Unit = {
+    val updateVm: (id: Long) -> Unit = { id ->
 
         changeMediaStatus = mockk(relaxed = true)
         markPreviousAsWatched = mockk(relaxed = true)
@@ -51,9 +52,9 @@ class ArtworkViewModelTest : FunSpec({
         saveProgress = mockk(relaxed = true)
 
         viewModel = ArtworkViewModel(
-            artworkId = MediaMockups.showArtwork.id,
+            artworkId = id,
             season = currentSeason,
-            artworkUC = artworkUC,
+            observeArtworkUseCase = observeArtworkUseCase,
             settingsDataStore = settingsDataStore,
             changeMediaStatus = changeMediaStatus,
             markPreviousAsWatched = markPreviousAsWatched,
@@ -67,13 +68,13 @@ class ArtworkViewModelTest : FunSpec({
 
         currentSeason = 1
 
-        artworkUC = FakeArtworkUC(initialContentType = ContentType.SHOW)
+        observeArtworkUseCase = FakeObserveArtworkUseCase()
 
         settingsDataStore = mockk(relaxed = true) {
             every { flow } returns MutableStateFlow(SettingsDataStore.State())
         }
 
-        updateVm()
+        updateVm(MediaMockups.showArtwork.id)
 
     }
 
@@ -105,7 +106,7 @@ class ArtworkViewModelTest : FunSpec({
     test("instantiate with specific season") {
 
         currentSeason = 2
-        updateVm()
+        updateVm(MediaMockups.showArtwork.id)
 
         viewModel.uiState.test {
 
@@ -146,7 +147,7 @@ class ArtworkViewModelTest : FunSpec({
             every { flow } returns MutableStateFlow(SettingsDataStore.State(externalPlayer = true))
         }
 
-        updateVm()
+        updateVm(MediaMockups.showArtwork.id)
 
         viewModel.uiState.test {
 
@@ -290,16 +291,7 @@ class ArtworkViewModelTest : FunSpec({
 
     test("mark movie as watched") {
 
-        artworkUC.setContent(
-            State.Content(
-                FullArtwork.FullMovie(
-                    resume = MediaMockups.movieArtwork,
-                    movie = MediaMockups.movie
-                )
-            )
-        )
-
-        updateVm()
+        updateVm(MediaMockups.movieArtwork.id)
 
         viewModel.uiState.test {
 
@@ -414,18 +406,8 @@ class ArtworkViewModelTest : FunSpec({
     }
 
     test("error state") {
-        artworkUC = FakeArtworkUC(initialContentType = ContentType.SHOW)
 
-        viewModel = ArtworkViewModel(
-            artworkId = -999L,
-            season = null,
-            artworkUC = artworkUC,
-            settingsDataStore = settingsDataStore,
-            changeMediaStatus = changeMediaStatus,
-            markPreviousAsWatched = markPreviousAsWatched,
-            resetProgress = resetProgress,
-            saveProgress = saveProgress
-        )
+        updateVm(-999L)
 
         viewModel.uiState.test {
             val state = awaitItem()

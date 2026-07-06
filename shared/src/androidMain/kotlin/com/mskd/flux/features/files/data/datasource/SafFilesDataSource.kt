@@ -83,6 +83,8 @@ class SafFilesDataSource(
     override suspend fun getSubtitlesFor(file: UserFile): String? = withContext(Dispatchers.IO) {
         if (file.source != FileSource.SAF) return@withContext null
 
+        val folders = sources.getFolders()
+
         val videoUri = file.path.toUri()
 
         // Cleanly extract the video name without its extension
@@ -127,7 +129,7 @@ class SafFilesDataSource(
                     }
                 }
             }
-            
+
             // 3. Return the SAF URI directly as a String
             return@withContext targetSubtitleUri?.toString()
 

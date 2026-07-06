@@ -4,9 +4,10 @@ import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.core.domain.model.artwork.ContentType
 import com.mskd.flux.core.domain.model.core.State
+import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
 import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
-import com.mskd.flux.mockups.FakeArtworkUC
 import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.mockups.features.artwork.FakeObserveArtworkUseCase
 import com.mskd.flux.screen.show.ShowContent
 import com.mskd.flux.screen.show.ShowDialog
 import com.mskd.flux.screen.show.ShowEvent
@@ -25,7 +26,7 @@ class ShowViewModelTest : FunSpec({
     fluxExtensions()
 
     lateinit var viewModel: ShowViewModel
-    lateinit var artworkUC: FakeArtworkUC
+    lateinit var observeArtworkUseCase: ObserveArtworkUseCase
     lateinit var resetProgress: ResetProgressUseCase
 
     val updateVm: () -> Unit = {
@@ -34,7 +35,7 @@ class ShowViewModelTest : FunSpec({
 
         viewModel = ShowViewModel(
             artworkId = MediaMockups.showArtwork.id,
-            artworkUC = artworkUC,
+            observeArtworkUseCase = observeArtworkUseCase,
             resetProgress = resetProgress
         )
 
@@ -42,7 +43,7 @@ class ShowViewModelTest : FunSpec({
 
     beforeTest {
 
-        artworkUC = FakeArtworkUC(initialContentType = ContentType.SHOW)
+        observeArtworkUseCase = FakeObserveArtworkUseCase()
 
         updateVm()
 
@@ -146,11 +147,10 @@ class ShowViewModelTest : FunSpec({
     }
 
     test("error state") {
-        artworkUC = FakeArtworkUC(initialContentType = ContentType.SHOW)
 
         viewModel = ShowViewModel(
             artworkId = -999L,
-            artworkUC = artworkUC,
+            observeArtworkUseCase = observeArtworkUseCase,
             resetProgress = resetProgress
         )
 
@@ -161,11 +161,10 @@ class ShowViewModelTest : FunSpec({
     }
 
     test("error state when content is movie instead of show") {
-        artworkUC = FakeArtworkUC(initialContentType = ContentType.MOVIE)
 
         viewModel = ShowViewModel(
             artworkId = MediaMockups.movieArtwork.id,
-            artworkUC = artworkUC,
+            observeArtworkUseCase = observeArtworkUseCase,
             resetProgress = resetProgress
         )
 

@@ -27,15 +27,20 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.spyk
+import io.mockk.verify
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.setMain
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class HomeViewModelTest : FunSpec({
-
-    fluxExtensions()
 
     lateinit var viewModel: HomeViewModel
     lateinit var syncCatalogUseCase: SyncCatalogUseCase
@@ -116,6 +121,8 @@ class HomeViewModelTest : FunSpec({
 
     test("should force sync when manual sync requested") {
 
+        val syncCatalogUseCaseSpy = spyk(syncCatalogUseCase)
+
         viewModel = HomeViewModel(
             syncCatalogUseCase = syncCatalogUseCase,
             cleanCatalogUseCase = cleanCatalogUseCase,
@@ -128,13 +135,16 @@ class HomeViewModelTest : FunSpec({
 
         viewModel.handleIntent(HomeIntent.SyncCatalog)
 
-        coVerify {
-            syncCatalogUseCase(onlyNew = true)
+        verify {
+            syncCatalogUseCaseSpy(onlyNew = true)
         }
     }
 
 
     test("should sync when last sync was more than 1 day ago") {
+
+        val syncCatalogUseCaseSpy = spyk(syncCatalogUseCase)
+
         val oldTime = System.currentTimeMillis() - 2.days.inWholeMilliseconds
         coEvery { userDataStore.getSyncTime() } returns oldTime
 
@@ -148,12 +158,15 @@ class HomeViewModelTest : FunSpec({
             appInfo = appInfo
         )
 
-        coVerify(exactly = 1) {
-            syncCatalogUseCase(onlyNew = true)
+        verify(exactly = 1) {
+            syncCatalogUseCaseSpy(onlyNew = true)
         }
     }
 
     test("should not sync when last sync was less than 1 day ago") {
+
+        val syncCatalogUseCaseSpy = spyk(syncCatalogUseCase)
+
         val recentTime = System.currentTimeMillis() - 12.hours.inWholeMilliseconds
         coEvery { userDataStore.getSyncTime() } returns recentTime
 
@@ -167,12 +180,14 @@ class HomeViewModelTest : FunSpec({
             appInfo = appInfo
         )
 
-        coVerify(exactly = 0) {
-            syncCatalogUseCase(any())
+        verify(exactly = 0) {
+            syncCatalogUseCaseSpy(any())
         }
     }
 
     test("should sync when new app version") {
+
+        val syncCatalogUseCaseSpy = spyk(syncCatalogUseCase)
 
         val recentTime = System.currentTimeMillis() - 12.hours.inWholeMilliseconds
         coEvery { userDataStore.getSyncTime() } returns recentTime
@@ -192,8 +207,8 @@ class HomeViewModelTest : FunSpec({
             appInfo = appInfo
         )
 
-        coVerify(exactly = 1) {
-            syncCatalogUseCase(onlyNew = false)
+        verify(exactly = 1) {
+            syncCatalogUseCaseSpy(onlyNew = false)
         }
     }
 

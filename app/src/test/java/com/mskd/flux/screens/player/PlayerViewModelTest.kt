@@ -8,10 +8,10 @@ import com.mskd.flux.core.domain.model.artwork.ContentType
 import com.mskd.flux.core.domain.model.artwork.Movie
 import com.mskd.flux.core.domain.model.core.State
 import com.mskd.flux.core.domain.model.player.PlayerTrack
+import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
 import com.mskd.flux.features.files.domain.usecase.GetSubtitlesUseCase
 import com.mskd.flux.features.player.data.PipIsEnabledUseCase
 import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
-import com.mskd.flux.mockups.FakeArtworkUC
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.PlayerMockups
 import com.mskd.flux.platform.PlayerManager
@@ -39,7 +39,7 @@ class PlayerViewModelTest : FunSpec({
     fluxExtensions()
 
     lateinit var viewModel: PlayerViewModel<Player>
-    lateinit var artworkUC: FakeArtworkUC
+    lateinit var observeArtworkUseCase: ObserveArtworkUseCase
     lateinit var settingsDataStore: SettingsDataStore
     lateinit var saveProgress: SaveProgressUseCase
     lateinit var playerManager: PlayerManager<Player>
@@ -53,7 +53,7 @@ class PlayerViewModelTest : FunSpec({
 
         viewModel = PlayerViewModel(
             mediaId = mediaId,
-            artworkUC = artworkUC,
+            observeArtworkUseCase = observeArtworkUseCase,
             settingsDataStore = settingsDataStore,
             playerManager = playerManager,
             pipIsEnabledUseCase = pipIsEnabledUseCase,
@@ -64,8 +64,6 @@ class PlayerViewModelTest : FunSpec({
     }
 
     beforeTest {
-
-        artworkUC = FakeArtworkUC(initialContentType = ContentType.SHOW)
 
         settingsDataStore = mockk(relaxed = true) {
             every { flow } returns MutableStateFlow(SettingsDataStore.State())
@@ -182,7 +180,8 @@ class PlayerViewModelTest : FunSpec({
         ) { testCase ->
 
             // Given
-            artworkUC.setContentType(if (testCase.media is Movie) ContentType.MOVIE else ContentType.SHOW)
+            observeArtworkUseCase(testCase.media.artworkId)
+            updateVm(mediaId = testCase.media.mediaId)
 
             playerManager = mockk(relaxed = true) {
                 every { flow } returns MutableStateFlow(PlayerManager.State.Ready(
@@ -466,7 +465,7 @@ class PlayerViewModelTest : FunSpec({
     }
 
     test("error state when artworkState is State.Error") {
-        artworkUC.setContent(State.Error())
+        observeArtworkUseCase(-999L)
         updateVm()
 
         viewModel.uiState.test {

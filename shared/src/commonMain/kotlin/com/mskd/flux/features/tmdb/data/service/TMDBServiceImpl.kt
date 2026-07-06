@@ -11,7 +11,7 @@ import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 
-internal class TMDBServiceImpl(private val client: HttpClient) : TMDBService {
+class TMDBServiceImpl(private val client: HttpClient) : TMDBService {
 
     override suspend fun authenticate(): AuthenticationDto = client
         .get("authentication")

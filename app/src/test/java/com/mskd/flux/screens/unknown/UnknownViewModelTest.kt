@@ -6,10 +6,11 @@ import com.mskd.flux.core.data.database.repository.DatabaseRepository
 import com.mskd.flux.core.data.datastore.SettingsDataStore
 import com.mskd.flux.core.data.datastore.UserDataStore
 import com.mskd.flux.core.domain.model.core.State
+import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
 import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
-import com.mskd.flux.mockups.FakeArtworkUC
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.core.FakeDatabaseRepository
+import com.mskd.flux.mockups.features.artwork.FakeObserveArtworkUseCase
 import com.mskd.flux.screen.unknown.UnknownEvent
 import com.mskd.flux.screen.unknown.UnknownIntent
 import com.mskd.flux.screen.unknown.UnknownViewModel
@@ -26,18 +27,16 @@ class UnknownViewModelTest : FunSpec ({
     fluxExtensions()
 
     lateinit var viewModel: UnknownViewModel
-    lateinit var artworkRepository: FakeArtworkUC
+    lateinit var observeArtworkUseCase: ObserveArtworkUseCase
     lateinit var settingsDataStore: SettingsDataStore
-    lateinit var userDataStore: UserDataStore
     lateinit var saveProgress: SaveProgressUseCase
-    lateinit var databaseRepository: DatabaseRepository
 
     val updateVm: () -> Unit = {
 
         saveProgress = mockk(relaxed = true)
 
         viewModel = UnknownViewModel(
-            artworkUC = artworkRepository,
+            observeArtworkUseCase = observeArtworkUseCase,
             settingsDataStore = settingsDataStore,
             saveProgress = saveProgress
         )
@@ -46,17 +45,11 @@ class UnknownViewModelTest : FunSpec ({
 
     beforeTest {
 
-        artworkRepository = FakeArtworkUC()
+        observeArtworkUseCase = FakeObserveArtworkUseCase()
 
         settingsDataStore = mockk(relaxed = true) {
             every { flow } returns MutableStateFlow(SettingsDataStore.State())
         }
-
-        userDataStore = mockk(relaxed = true) {
-            every { flow } returns MutableStateFlow(UserDataStore.State())
-        }
-
-        databaseRepository = FakeDatabaseRepository()
 
         updateVm()
 

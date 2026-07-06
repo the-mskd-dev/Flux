@@ -41,19 +41,18 @@ data class FileProperties(
 
     companion object {
 
+        val MOVIE_PATTERN = Regex("^(.*?)[ .]*(?:\\((\\d{4})\\))?\\.[^.]+$")
+        val EPISODE_PATTERN = Regex(
+            "^(.*?)[ ._-]*(?:\\((\\d{4})\\))?[ ._-]*(?:[sS](\\d{1,2})[ .]*[eE](\\d{1,4})|" +
+                    "(\\d{1,2})[xX](\\d{1,4})|" +
+                    "season[ .]*(\\d{1,2})[ .]*episode[ .]*(\\d{1,4})|" +
+                    "se(\\d{1,2})[ .]*ep(\\d{1,4})).*\\.[^.]+$",
+        )
+
         fun extractFileProperties(filename: String): FileProperties {
 
-            // Patterns
-            val moviePattern = Regex("^(.*?)[ .]*(?:\\((\\d{4})\\))?\\.[^.]+$")
-            val episodePattern = Regex(
-                "^(.*?)[ ._-]*(?:\\((\\d{4})\\))?[ ._-]*(?:[sS](\\d{1,2})[ .]*[eE](\\d{1,4})|" +
-                        "(\\d{1,2})[xX](\\d{1,4})|" +
-                        "season[ .]*(\\d{1,2})[ .]*episode[ .]*(\\d{1,4})|" +
-                        "se(\\d{1,2})[ .]*ep(\\d{1,4})).*\\.[^.]+$",
-            )
-
             // Try episode pattern
-            val episodeMatch = episodePattern.matchEntire(filename)
+            val episodeMatch = EPISODE_PATTERN.matchEntire(filename)
             episodeMatch?.groupValues?.let { groups ->
                 val title = groups[1].replace("-", " ").trim().lowercase()
                 val year = groups[2].toIntOrNull()
@@ -69,7 +68,7 @@ data class FileProperties(
             }
 
             // Try movie pattern
-            val movieMatch = moviePattern.matchEntire(filename)
+            val movieMatch = MOVIE_PATTERN.matchEntire(filename)
             movieMatch?.groupValues?.let { groups ->
                 val title = groups[1].replace("-", " ").trim().lowercase()
                 val year = groups[2].toIntOrNull()

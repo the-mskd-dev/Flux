@@ -8,7 +8,7 @@ object Trace {
         Napier.i(tag = tag, message = message)
     }
 
-    fun debug(tag: String = "TEST", message: String) {
+    fun debug(message: String, tag: String = "TEST") {
         Napier.d(tag = tag, message = message)
     }
 

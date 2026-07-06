@@ -6,6 +6,7 @@ import android.provider.DocumentsContract
 import androidx.core.net.toUri
 import com.mskd.flux.core.domain.model.files.FileSource
 import com.mskd.flux.core.domain.model.files.UserFile
+import com.mskd.flux.features.files.data.FileExtensions
 import com.mskd.flux.features.files.domain.datasource.FilesDataSource
 import com.mskd.flux.features.sources.domain.model.UserFolder
 import com.mskd.flux.features.sources.domain.repository.SourcesRepository
@@ -19,9 +20,7 @@ class SafFilesDataSource(
 ) : FilesDataSource {
 
     companion object {
-        private const val TAG = "SafFilesRepository"
-        private val VIDEO_EXTENSIONS = setOf("mp4", "mkv", "avi", "mov", "webm", "ts", "m4v")
-
+        private const val TAG = "SafFilesDataSource"
         private val PROJECTION = arrayOf(
             DocumentsContract.Document.COLUMN_DOCUMENT_ID,
             DocumentsContract.Document.COLUMN_DISPLAY_NAME,
@@ -100,7 +99,7 @@ class SafFilesDataSource(
 
             val childrenUri = DocumentsContract.buildChildDocumentsUriUsingTree(videoUri, parentDocumentId)
 
-            val subtitleExtensions = setOf("srt", "vtt", "ass", "ssa")
+            val subtitleExtensions = FileExtensions.SUBTITLES
             var targetSubtitleUri: Uri? = null
 
             // 2. Targeted query on the parent folder
@@ -128,7 +127,7 @@ class SafFilesDataSource(
                     }
                 }
             }
-
+            
             // 3. Return the SAF URI directly as a String
             return@withContext targetSubtitleUri?.toString()
 
@@ -136,6 +135,7 @@ class SafFilesDataSource(
             Trace.error(TAG, "Failed to resolve SAF subtitles for ${file.name}", e)
             null
         }
+
     }
 
     private fun getFilesFromFolder(folder: UserFolder): List<UserFile> {
@@ -178,7 +178,7 @@ class SafFilesDataSource(
                     traverse(treeUri, docId, acc)
                 } else {
                     val extension = name.substringAfterLast('.', "").lowercase()
-                    if (extension in VIDEO_EXTENSIONS) {
+                    if (extension in FileExtensions.VIDEOS) {
                         val docUri = DocumentsContract.buildDocumentUriUsingTree(treeUri, docId)
                         acc += UserFile(
                             name = name,

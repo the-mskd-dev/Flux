@@ -10,6 +10,7 @@ import androidx.core.net.toUri
 import com.mskd.flux.core.data.datastore.UserDataStore
 import com.mskd.flux.core.domain.model.files.FileSource
 import com.mskd.flux.core.domain.model.files.UserFile
+import com.mskd.flux.features.files.data.FileExtensions
 import com.mskd.flux.features.files.domain.datasource.FilesDataSource
 import com.mskd.flux.utils.Trace
 import kotlinx.coroutines.Dispatchers
@@ -24,13 +25,11 @@ class MediaStoreFilesDataSource(
 ) : FilesDataSource {
 
     companion object {
-        const val TAG = "MediaStoreRepositoryImpl"
+        const val TAG = "MediaStoreFilesDataSource"
         private val STANDARD_FOLDERS = listOf(
             Environment.DIRECTORY_MOVIES,
             Environment.DIRECTORY_DOWNLOADS,
         )
-        private val VIDEO_EXTENSIONS = setOf("mp4", "mkv", "avi", "mov", "webm", "ts", "m4v")
-        private val SUBTITLE_EXTENSIONS = setOf("srt", "vtt", "ass", "ssa")
     }
 
     override suspend fun getFiles(): List<UserFile> {
@@ -186,13 +185,12 @@ class MediaStoreFilesDataSource(
             val parentDir = videoFile.parentFile ?: return@withContext null
 
             // Get subtitles file, if exists, in the same directory, with the same name
-            val subtitleExtensions = SUBTITLE_EXTENSIONS
-            val subtitleFile = subtitleExtensions
+            val subtitlesPath = FileExtensions.SUBTITLES
                 .map { ext -> File(parentDir, "$baseName.$ext") }
                 .firstOrNull { it.exists() }
                 ?.toUri()?.toString()
 
-            subtitleFile
+            subtitlesPath
 
         } catch (e: Exception) {
             Trace.error(TAG, "Fail to get subtitles for ${file.name}", e)
@@ -220,7 +218,7 @@ class MediaStoreFilesDataSource(
                         folder.walkTopDown()
                             .filter { it.isFile }
                             .filter { lastSyncTime < it.lastModified() }
-                            .filter { it.extension.lowercase() in VIDEO_EXTENSIONS }
+                            .filter { it.extension.lowercase() in FileExtensions.VIDEOS }
                             .toList()
                     }
                     .map { it.absolutePath }

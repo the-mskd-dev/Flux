@@ -7,7 +7,7 @@ fun UserFolderEntity.toDomain(status: UserFolder.Status = UserFolder.Status.AVAI
     return UserFolder(
         path = this.path,
         source = this.source,
-        status = UserFolder.Status.AVAILABLE
+        status = status
     )
 }
 

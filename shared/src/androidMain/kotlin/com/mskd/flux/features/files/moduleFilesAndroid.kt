@@ -1,12 +1,12 @@
 package com.mskd.flux.features.files
 
 import com.mskd.flux.features.files.data.AndroidMetadataProvider
-import com.mskd.flux.features.files.data.MediaStoreFilesRepository
-import com.mskd.flux.features.files.data.SafFilesRepository
+import com.mskd.flux.features.files.data.datasource.MediaStoreFilesDataSource
+import com.mskd.flux.features.files.data.datasource.SafFilesDataSource
 import com.mskd.flux.features.files.data.usecase.AndroidFilterExistingFilesUseCase
 import com.mskd.flux.features.files.data.usecase.AndroidGetFilesUseCase
 import com.mskd.flux.features.files.data.usecase.AndroidGetSubtitlesUseCase
-import com.mskd.flux.features.files.domain.repository.FilesRepository
+import com.mskd.flux.features.files.domain.datasource.FilesDataSource
 import com.mskd.flux.features.files.domain.usecase.FilterExistingFilesUseCase
 import com.mskd.flux.features.files.domain.usecase.GetFilesUseCase
 import com.mskd.flux.features.files.domain.usecase.GetSubtitlesUseCase
@@ -20,15 +20,15 @@ val SAF_SOURCES = named("SAF_SOURCES")
 
 val moduleFilesAndroid = module {
 
-    single<FilesRepository>(MEDIASTORE_SOURCES) {
-        MediaStoreFilesRepository(
+    single<FilesDataSource>(MEDIASTORE_SOURCES) {
+        MediaStoreFilesDataSource(
             context = get(),
             userDataStore = get()
         )
     }
 
-    single<FilesRepository>(SAF_SOURCES) {
-        SafFilesRepository(
+    single<FilesDataSource>(SAF_SOURCES) {
+        SafFilesDataSource(
             context = get(),
             sources = get()
         )

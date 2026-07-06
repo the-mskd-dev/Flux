@@ -1,4 +1,4 @@
-package com.mskd.flux.features.files.data
+package com.mskd.flux.features.files.data.datasource
 
 import android.content.Context
 import android.net.Uri
@@ -6,18 +6,17 @@ import android.provider.DocumentsContract
 import androidx.core.net.toUri
 import com.mskd.flux.core.domain.model.files.FileSource
 import com.mskd.flux.core.domain.model.files.UserFile
-import com.mskd.flux.features.files.domain.repository.FilesRepository
+import com.mskd.flux.features.files.domain.datasource.FilesDataSource
 import com.mskd.flux.features.sources.domain.model.UserFolder
 import com.mskd.flux.features.sources.domain.repository.SourcesRepository
 import com.mskd.flux.utils.Trace
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.io.File
 
-class SafFilesRepository(
+class SafFilesDataSource(
     private val context: Context,
     private val sources: SourcesRepository
-) : FilesRepository {
+) : FilesDataSource {
 
     companion object {
         private const val TAG = "SafFilesRepository"

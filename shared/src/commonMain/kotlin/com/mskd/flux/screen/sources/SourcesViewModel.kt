@@ -3,6 +3,7 @@ package com.mskd.flux.screen.sources
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.core.domain.model.core.State
+import com.mskd.flux.features.catalog.domain.usecase.cleanCatalog.CleanCatalogUseCase
 import com.mskd.flux.features.sources.domain.model.UserFolder
 import com.mskd.flux.features.sources.domain.usecase.AddSourceUseCase
 import com.mskd.flux.features.sources.domain.usecase.DeleteSourceUseCase
@@ -20,7 +21,7 @@ import kotlinx.coroutines.launch
 class SourcesViewModel(
     flowSourcesUseCase: FlowSourcesUseCase,
     val addSourceUC: AddSourceUseCase,
-    val deleteSourceUseCase: DeleteSourceUseCase
+    val deleteSourceUseCase: DeleteSourceUseCase,
 ) : ViewModel() {
 
     //region State

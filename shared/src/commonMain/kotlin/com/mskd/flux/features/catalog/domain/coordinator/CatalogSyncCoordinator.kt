@@ -1,7 +1,6 @@
 package com.mskd.flux.features.catalog.domain.coordinator
 
 import com.mskd.flux.features.catalog.domain.model.SyncState
-import com.mskd.flux.utils.Trace
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.Job

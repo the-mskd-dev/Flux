@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.Context
 import coil3.ImageLoader
 import coil3.SingletonImageLoader
-import com.mskd.flux.core.domain.model.core.AppInfo
 import com.mskd.flux.di.moduleAndroidApp
 import com.mskd.flux.di.modulePlatform
 import com.mskd.flux.utils.Constants
@@ -18,7 +17,6 @@ import org.acra.ktx.initAcra
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
-import org.koin.dsl.module
 
 class FluxApp : Application(), SingletonImageLoader.Factory {
     val imageLoader: ImageLoader by inject()

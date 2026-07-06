@@ -3,12 +3,10 @@ package com.mskd.flux.screen.sources
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.core.domain.model.core.State
-import com.mskd.flux.features.catalog.domain.usecase.cleanCatalog.CleanCatalogUseCase
 import com.mskd.flux.features.sources.domain.model.UserFolder
 import com.mskd.flux.features.sources.domain.usecase.AddSourceUseCase
 import com.mskd.flux.features.sources.domain.usecase.DeleteSourceUseCase
 import com.mskd.flux.features.sources.domain.usecase.FlowSourcesUseCase
-import com.mskd.flux.utils.Trace
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted

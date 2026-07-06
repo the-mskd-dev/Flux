@@ -1,7 +1,6 @@
 package com.mskd.flux.screens.home
 
 import app.cash.turbine.test
-import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.core.data.database.repository.DatabaseRepository
 import com.mskd.flux.core.data.datastore.SnackbarDataStore
 import com.mskd.flux.core.data.datastore.TokenDataStore
@@ -24,18 +23,12 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData
 import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
-import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.spyk
 import io.mockk.verify
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.advanceUntilIdle
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.setMain
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
 

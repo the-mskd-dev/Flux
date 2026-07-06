@@ -98,13 +98,8 @@ class SourcesViewModel(
             status = UserFolder.Status.AVAILABLE
         )
 
-        val result = addSourceUC(folder = folder)
+        addSourceUC(folder = folder)
 
-        if (result) {
-            Trace.debug(message = "Folder saved")
-        } else {
-            Trace.debug(message = "Folder not saved")
-        }
     }
 
     private fun showDeleteDialog(folder: UserFolder) {

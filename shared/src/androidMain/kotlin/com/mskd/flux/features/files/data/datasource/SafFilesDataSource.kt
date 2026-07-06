@@ -83,7 +83,7 @@ class SafFilesDataSource(
     override suspend fun getSubtitlesFor(file: UserFile): String? = withContext(Dispatchers.IO) {
         if (file.source != FileSource.SAF) return@withContext null
 
-        val folders = sources.getFolders()
+        Trace.debug("1")
 
         val videoUri = file.path.toUri()
 
@@ -92,19 +92,20 @@ class SafFilesDataSource(
 
         try {
 
-            // 1. Extracting IDs to navigate the SAF tree structure
-            val documentId = DocumentsContract.getDocumentId(videoUri)
+            Trace.debug("2")
 
             // Reconstruct the parent folder ID by removing the last encoded segment
-            val parentDocumentId = documentId.substringBeforeLast('%', "").substringBeforeLast('/', "")
-            if (parentDocumentId.isEmpty()) return@withContext null
+            val parentDocumentId = file.parentDocId
+            if (parentDocumentId.isNullOrEmpty()) return@withContext null
+
+            Trace.debug("3")
 
             val childrenUri = DocumentsContract.buildChildDocumentsUriUsingTree(videoUri, parentDocumentId)
 
             val subtitleExtensions = FileExtensions.SUBTITLES
             var targetSubtitleUri: Uri? = null
 
-            // 2. Targeted query on the parent folder
+            // Targeted query on the parent folder
             context.contentResolver.query(
                 childrenUri,
                 arrayOf(
@@ -130,7 +131,13 @@ class SafFilesDataSource(
                 }
             }
 
-            // 3. Return the SAF URI directly as a String
+            if (targetSubtitleUri != null) {
+                Trace.debug("Subtitles found for ${file.name}")
+            } else {
+                Trace.debug("Subtitles not found for ${file.name}")
+            }
+
+            // Return the SAF URI directly as a String
             return@withContext targetSubtitleUri?.toString()
 
         } catch (e: Exception) {
@@ -186,7 +193,8 @@ class SafFilesDataSource(
                             name = name,
                             addedDateTime = lastModified,
                             path = docUri.toString(),
-                            source = FileSource.SAF
+                            source = FileSource.SAF,
+                            parentDocId = parentDocId
                         )
                     }
                 }

@@ -8,7 +8,8 @@ data class UserFile(
     val name: String,
     val addedDateTime: Long,
     val path: String,
-    val source: FileSource
+    val source: FileSource,
+    val parentDocId: String? = null
 ) {
 
     val nameProperties: FileProperties

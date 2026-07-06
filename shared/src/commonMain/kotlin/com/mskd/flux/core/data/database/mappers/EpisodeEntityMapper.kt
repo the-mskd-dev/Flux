@@ -9,7 +9,8 @@ fun EpisodeEntity.toDomain() : Episode {
         name = this.fileName,
         addedDateTime = this.addedDateTime,
         path = this.path,
-        source = this.source
+        source = this.source,
+        parentDocId = this.parentDocId
     )
 
     return Episode(
@@ -48,6 +49,7 @@ fun Episode.toEntity() : EpisodeEntity {
         fileName = this.file.name,
         addedDateTime = this.file.addedDateTime,
         path = this.file.path,
-        source = this.file.source
+        source = this.file.source,
+        parentDocId = this.file.parentDocId
     )
 }

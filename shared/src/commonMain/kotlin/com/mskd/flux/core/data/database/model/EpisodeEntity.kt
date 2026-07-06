@@ -34,5 +34,6 @@ data class EpisodeEntity(
     val fileName: String,
     val addedDateTime: Long,
     val path: String,
-    val source: FileSource
+    val source: FileSource,
+    val parentDocId: String? = null
 )

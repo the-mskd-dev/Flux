@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 5,
-    "identityHash": "4588bb43b55a5ef8c593f5f51b66398d",
+    "identityHash": "f7b0b8c7945e7103a4d9781d6480a1be",
     "entities": [
       {
         "tableName": "artworks",
@@ -55,7 +55,7 @@
       },
       {
         "tableName": "movies",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`artworkId` INTEGER NOT NULL, `title` TEXT NOT NULL, `releaseDateString` TEXT NOT NULL, `description` TEXT NOT NULL, `voteAverage` REAL NOT NULL, `voteCount` INTEGER NOT NULL, `duration` INTEGER NOT NULL, `currentTime` INTEGER NOT NULL, `status` TEXT NOT NULL, `name` TEXT NOT NULL, `addedDateTime` INTEGER NOT NULL, `path` TEXT NOT NULL, `source` TEXT NOT NULL, PRIMARY KEY(`artworkId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`artworkId` INTEGER NOT NULL, `title` TEXT NOT NULL, `releaseDateString` TEXT NOT NULL, `description` TEXT NOT NULL, `voteAverage` REAL NOT NULL, `voteCount` INTEGER NOT NULL, `duration` INTEGER NOT NULL, `currentTime` INTEGER NOT NULL, `status` TEXT NOT NULL, `name` TEXT NOT NULL, `addedDateTime` INTEGER NOT NULL, `path` TEXT NOT NULL, `source` TEXT NOT NULL, `parentDocId` TEXT, PRIMARY KEY(`artworkId`))",
         "fields": [
           {
             "fieldPath": "artworkId",
@@ -134,6 +134,11 @@
             "columnName": "source",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "parentDocId",
+            "columnName": "parentDocId",
+            "affinity": "TEXT"
           }
         ],
         "primaryKey": {
@@ -156,7 +161,7 @@
       },
       {
         "tableName": "episodes",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `number` INTEGER NOT NULL, `season` INTEGER NOT NULL, `imagePath` TEXT NOT NULL, `artworkId` INTEGER NOT NULL, `title` TEXT NOT NULL, `releaseDateString` TEXT NOT NULL, `description` TEXT NOT NULL, `duration` INTEGER NOT NULL, `currentTime` INTEGER NOT NULL, `voteAverage` REAL NOT NULL, `voteCount` INTEGER NOT NULL, `status` TEXT NOT NULL, `name` TEXT NOT NULL, `addedDateTime` INTEGER NOT NULL, `path` TEXT NOT NULL, `source` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `number` INTEGER NOT NULL, `season` INTEGER NOT NULL, `imagePath` TEXT NOT NULL, `artworkId` INTEGER NOT NULL, `title` TEXT NOT NULL, `releaseDateString` TEXT NOT NULL, `description` TEXT NOT NULL, `duration` INTEGER NOT NULL, `currentTime` INTEGER NOT NULL, `voteAverage` REAL NOT NULL, `voteCount` INTEGER NOT NULL, `status` TEXT NOT NULL, `name` TEXT NOT NULL, `addedDateTime` INTEGER NOT NULL, `path` TEXT NOT NULL, `source` TEXT NOT NULL, `parentDocId` TEXT, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -259,6 +264,11 @@
             "columnName": "source",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "parentDocId",
+            "columnName": "parentDocId",
+            "affinity": "TEXT"
           }
         ],
         "primaryKey": {
@@ -364,7 +374,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4588bb43b55a5ef8c593f5f51b66398d')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f7b0b8c7945e7103a4d9781d6480a1be')"
     ]
   }
 }

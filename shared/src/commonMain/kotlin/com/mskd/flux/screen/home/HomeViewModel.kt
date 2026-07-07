@@ -29,7 +29,6 @@ import kotlin.time.Duration.Companion.days
 
 class HomeViewModel(
     private val syncCatalogUseCase: SyncCatalogUseCase,
-    private val cleanCatalogUseCase: CleanCatalogUseCase,
     private val database: DatabaseRepository,
     private val userDataStore: UserDataStore,
     private val tokenDataStore: TokenDataStore,
@@ -41,6 +40,8 @@ class HomeViewModel(
     val event = _event.asSharedFlow()
 
     private val _dismissedSnackbar = MutableStateFlow<Set<FluxSnackbar>>(emptySet())
+
+    private var hasLoadedContent = false
 
     val uiState: StateFlow<HomeUiState> = combine(
         database.flowArtworks(),
@@ -56,7 +57,7 @@ class HomeViewModel(
             artworks = artworks
         )
 
-        if (catalogState is SyncState.Syncing && catalogState.full) {
+        if (catalogState is SyncState.Syncing && (catalogState.full || !hasLoadedContent)) {
 
             HomeUiState(
                 state = HomeState.Loading(progress = catalogState.progress),
@@ -64,6 +65,8 @@ class HomeViewModel(
             )
 
         } else {
+
+            hasLoadedContent = true
 
             HomeUiState(
                 state = HomeState.Content(
@@ -85,13 +88,13 @@ class HomeViewModel(
 
     init {
         viewModelScope.launch {
-            syncCatalog(manualSync = false)
+            syncCatalog()
         }
     }
 
     fun handleIntent(intent: HomeIntent) = viewModelScope.launch {
         when (intent) {
-            is HomeIntent.SyncCatalog -> syncCatalog(manualSync = true)
+            is HomeIntent.SyncCatalog -> syncCatalog()
             is HomeIntent.OnArtworkTap -> onArtworkTap(artwork = intent.artwork, rgb = intent.rgb)
             is HomeIntent.OnCategoryTap -> _event.emit(HomeEvent.NavigateToCategory(category = intent.category))
             HomeIntent.OnSearchTap -> _event.emit(HomeEvent.NavigateToSearch)
@@ -102,33 +105,18 @@ class HomeViewModel(
         }
     }
 
-    private suspend fun syncCatalog(manualSync: Boolean = false) {
+    private suspend fun syncCatalog() {
 
-        val lastSyncTime = userDataStore.getSyncTime()
-        val lastSyncVersionCode = userDataStore.getVersionCode()
+        val fullSyncNeeded = UpdateManager.fullSyncIsNeeded(
+            lastSyncVersionCode = userDataStore.getVersionCode(),
+            currentVersionCode = appInfo.versionCode
+        )
 
-        val currentTime = System.currentTimeMillis()
-        val sync = currentTime - lastSyncTime > 1.days.inWholeMilliseconds
-                || manualSync
-                || lastSyncVersionCode < appInfo.versionCode
-
-        if (sync) {
-
-            Trace.info("HomeViewModel", "syncCatalog, catalog sync requested")
-
-            val fullSyncNeeded = UpdateManager.fullSyncIsNeeded(
-                lastSyncVersionCode = lastSyncVersionCode,
-                currentVersionCode = appInfo.versionCode
-            )
-
-            syncCatalogUseCase(onlyNew = !fullSyncNeeded)
-
-        } else {
-
-            cleanCatalogUseCase()
-            Trace.info("HomeViewModel", "syncCatalog, catalog sync not needed")
-
+        if (fullSyncNeeded) {
+            Trace.info("HomeViewModel", "Full sync requested")
         }
+
+        syncCatalogUseCase(onlyNew = !fullSyncNeeded)
 
     }
 

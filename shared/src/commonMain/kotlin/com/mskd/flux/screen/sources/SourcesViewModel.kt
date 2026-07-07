@@ -3,6 +3,7 @@ package com.mskd.flux.screen.sources
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.core.domain.model.core.State
+import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.sources.domain.model.UserFolder
 import com.mskd.flux.features.sources.domain.usecase.AddSourceUseCase
 import com.mskd.flux.features.sources.domain.usecase.DeleteSourceUseCase
@@ -20,6 +21,7 @@ class SourcesViewModel(
     flowSourcesUseCase: FlowSourcesUseCase,
     val addSourceUC: AddSourceUseCase,
     val deleteSourceUseCase: DeleteSourceUseCase,
+    val syncCatalogUseCase: SyncCatalogUseCase
 ) : ViewModel() {
 
     //region State
@@ -77,7 +79,7 @@ class SourcesViewModel(
 
     private fun processIntent(intent: SourcesIntent) = viewModelScope.launch {
         when (intent) {
-            SourcesIntent.OnBackTap -> _event.send(SourcesEvent.BackToPreviousScreen)
+            SourcesIntent.OnBackTap -> onBackTap()
 
             // Save
             SourcesIntent.OpenFolderSelection -> _event.send(SourcesEvent.OpenFolderSelection)
@@ -88,6 +90,11 @@ class SourcesViewModel(
             SourcesIntent.CloseDeleteDialog -> closeDeleteDialog()
             is SourcesIntent.DeleteFolder -> deleteFolder(folder = intent.folder)
         }
+    }
+
+    private suspend fun onBackTap() {
+        syncCatalogUseCase(onlyNew = true)
+        _event.send(SourcesEvent.BackToPreviousScreen)
     }
 
     private suspend fun saveFolder(path: String) {

@@ -2,14 +2,14 @@ package com.mskd.flux.features.files.data.usecase
 
 import com.mskd.flux.core.domain.model.files.UserFile
 import com.mskd.flux.features.files.domain.datasource.FilesDataSource
-import com.mskd.flux.features.files.domain.usecase.GetFilesUseCase
+import com.mskd.flux.features.files.domain.usecase.GetDeviceFilesUseCase
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 
-class AndroidGetFilesUseCase(
+class AndroidGetDeviceFilesUseCase(
     private val mediaStore: FilesDataSource,
     private val saf: FilesDataSource
-) : GetFilesUseCase {
+) : GetDeviceFilesUseCase {
     override suspend fun invoke(): List<UserFile> {
         return coroutineScope {
 

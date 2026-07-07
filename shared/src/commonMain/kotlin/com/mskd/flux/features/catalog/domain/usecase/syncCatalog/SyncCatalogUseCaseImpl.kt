@@ -17,7 +17,7 @@ import com.mskd.flux.core.domain.model.files.UserFile
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.files.domain.usecase.FilterExistingFilesUseCase
-import com.mskd.flux.features.files.domain.usecase.GetFilesUseCase
+import com.mskd.flux.features.files.domain.usecase.GetDeviceFilesUseCase
 import com.mskd.flux.features.images.domain.ImagesPrefetchManager
 import com.mskd.flux.features.tmdb.data.datasource.TmdbDataSource
 import com.mskd.flux.features.tmdb.data.dto.EpisodeDto
@@ -36,7 +36,7 @@ import kotlinx.coroutines.withContext
 internal class SyncCatalogUseCaseImpl(
     private val tmdb: TmdbDataSource,
     private val database: DatabaseRepository,
-    private val getFilesUseCase: GetFilesUseCase,
+    private val getDeviceFilesUseCase: GetDeviceFilesUseCase,
     private val filterExistingFilesUseCase: FilterExistingFilesUseCase,
     private val user: UserDataStore,
     private val settings: SettingsDataStore,
@@ -64,7 +64,7 @@ internal class SyncCatalogUseCaseImpl(
             val dbEpisodes = database.getEpisodes()
             val dbFiles = filterExistingFilesUseCase(files = (dbMovies + dbEpisodes).map { it.file })
 
-            val deviceFiles = getFilesUseCase()
+            val deviceFiles = getDeviceFilesUseCase()
             val newFiles = if (!onlyNew) deviceFiles else {
                 deviceFiles.filter { file -> dbFiles.none { it.name == file.name } }
             }

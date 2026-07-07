@@ -4,11 +4,11 @@ import com.mskd.flux.features.files.data.AndroidMetadataProvider
 import com.mskd.flux.features.files.data.datasource.MediaStoreFilesDataSource
 import com.mskd.flux.features.files.data.datasource.SafFilesDataSource
 import com.mskd.flux.features.files.data.usecase.AndroidFilterExistingFilesUseCase
-import com.mskd.flux.features.files.data.usecase.AndroidGetFilesUseCase
+import com.mskd.flux.features.files.data.usecase.AndroidGetDeviceFilesUseCase
 import com.mskd.flux.features.files.data.usecase.AndroidGetSubtitlesUseCase
 import com.mskd.flux.features.files.domain.datasource.FilesDataSource
 import com.mskd.flux.features.files.domain.usecase.FilterExistingFilesUseCase
-import com.mskd.flux.features.files.domain.usecase.GetFilesUseCase
+import com.mskd.flux.features.files.domain.usecase.GetDeviceFilesUseCase
 import com.mskd.flux.features.files.domain.usecase.GetSubtitlesUseCase
 import com.mskd.flux.platform.MetadataProvider
 import org.koin.android.ext.koin.androidContext
@@ -38,8 +38,8 @@ val moduleFilesAndroid = module {
         AndroidMetadataProvider(context = androidContext())
     }
 
-    single<GetFilesUseCase> {
-        AndroidGetFilesUseCase(
+    single<GetDeviceFilesUseCase> {
+        AndroidGetDeviceFilesUseCase(
             mediaStore = get(MEDIASTORE_SOURCES),
             saf = get(SAF_SOURCES)
         )

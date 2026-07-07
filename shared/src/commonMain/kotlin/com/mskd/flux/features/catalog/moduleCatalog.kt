@@ -18,7 +18,7 @@ val moduleCatalog = module {
 
     single<CleanCatalogUseCase> {
         CleanCatalogUseCaseImpl(
-            getFilesUseCase = get(),
+            getDeviceFilesUseCase = get(),
             database = get()
         )
     }
@@ -27,7 +27,7 @@ val moduleCatalog = module {
         SyncCatalogUseCaseImpl(
             tmdb = get(),
             database = get(),
-            getFilesUseCase = get(),
+            getDeviceFilesUseCase = get(),
             filterExistingFilesUseCase = get(),
             user = get(),
             settings = get(),

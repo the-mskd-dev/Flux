@@ -1,25 +1,20 @@
-package com.mskd.flux.features.files.data
+package com.mskd.flux.features.files.data.usecase
 
 import android.content.Context
 import android.media.MediaMetadataRetriever
 import androidx.core.net.toUri
 import com.mskd.flux.core.domain.model.files.UserFile
-import com.mskd.flux.platform.MetadataProvider
+import com.mskd.flux.features.files.domain.usecase.GetFileDurationUseCase
 import com.mskd.flux.utils.Trace
 import com.mskd.flux.utils.extensions.msToMin
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class AndroidMetadataProvider(private val context: Context) : MetadataProvider {
+class AndroidGetFileDurationUseCase(private val context: Context) : GetFileDurationUseCase {
 
-    private companion object {
-        const val TAG = "AndroidMetadataProvider"
-    }
+    override suspend fun invoke(file: UserFile): Int = withContext(Dispatchers.IO) {
 
-
-    override suspend fun getDuration(file: UserFile): Int = withContext(Dispatchers.IO) {
-
-        Trace.info(TAG, "Get duration for ${file.name}")
+        Trace.info(GetFileDurationUseCase.TAG, "Get duration for ${file.name}")
 
         val retriever = MediaMetadataRetriever()
 
@@ -35,7 +30,7 @@ class AndroidMetadataProvider(private val context: Context) : MetadataProvider {
 
         } catch (e: Exception) {
 
-            Trace.error(TAG, "Fail to get duration for ${file.path}", e)
+            Trace.error(GetFileDurationUseCase.TAG, "Fail to get duration for ${file.path}", e)
             0
 
         } finally {

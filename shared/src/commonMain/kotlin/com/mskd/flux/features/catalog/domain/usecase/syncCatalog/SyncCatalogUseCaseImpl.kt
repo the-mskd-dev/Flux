@@ -13,17 +13,16 @@ import com.mskd.flux.core.domain.model.artwork.Status
 import com.mskd.flux.core.domain.model.catalog.Catalog
 import com.mskd.flux.core.domain.model.catalog.CatalogFolder
 import com.mskd.flux.core.domain.model.core.AppInfo
-import com.mskd.flux.core.domain.model.files.FileSource
 import com.mskd.flux.core.domain.model.files.UserFile
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.files.domain.usecase.FilterExistingFilesUseCase
 import com.mskd.flux.features.files.domain.usecase.GetDeviceFilesUseCase
+import com.mskd.flux.features.files.domain.usecase.GetFileDurationUseCase
 import com.mskd.flux.features.images.domain.ImagesPrefetchManager
 import com.mskd.flux.features.tmdb.data.datasource.TmdbDataSource
 import com.mskd.flux.features.tmdb.data.dto.EpisodeDto
 import com.mskd.flux.features.tmdb.data.mapper.toDomain
-import com.mskd.flux.platform.MetadataProvider
 import com.mskd.flux.utils.Trace
 import com.mskd.flux.utils.extensions.groupInFolders
 import kotlinx.coroutines.CoroutineDispatcher
@@ -37,14 +36,14 @@ import kotlinx.coroutines.withContext
 internal class SyncCatalogUseCaseImpl(
     private val tmdb: TmdbDataSource,
     private val database: DatabaseRepository,
-    private val getDeviceFilesUseCase: GetDeviceFilesUseCase,
-    private val filterExistingFilesUseCase: FilterExistingFilesUseCase,
     private val user: UserDataStore,
     private val settings: SettingsDataStore,
     private val imagesPrefetchManager: ImagesPrefetchManager,
     private val appInfo: AppInfo,
-    private val metadataProvider: MetadataProvider,
     private val coordinator: CatalogSyncCoordinator,
+    private val getFileDurationUseCase: GetFileDurationUseCase,
+    private val getDeviceFilesUseCase: GetDeviceFilesUseCase,
+    private val filterExistingFilesUseCase: FilterExistingFilesUseCase,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(10)
 ) : SyncCatalogUseCase {
 
@@ -276,7 +275,7 @@ internal class SyncCatalogUseCaseImpl(
 
                                 tmdbMovie?.toDomain(
                                     file = file,
-                                    duration = tmdbMovie.duration ?: metadataProvider.getDuration(file = file)
+                                    duration = tmdbMovie.duration ?: getFileDurationUseCase(file = file)
                                 ) ?: createUnknownMedia(file = file)
 
                             }
@@ -391,7 +390,7 @@ internal class SyncCatalogUseCaseImpl(
                                             artworkId = artwork.id,
                                             file = file,
                                             duration = tmdbEpisode.duration
-                                                ?: metadataProvider.getDuration(file = file)
+                                                ?: getFileDurationUseCase(file = file)
                                         )
                                     }
 
@@ -427,7 +426,7 @@ internal class SyncCatalogUseCaseImpl(
 
         Trace.info(TAG, "Create unknown media for ${file.name}")
 
-        val duration = metadataProvider.getDuration(file = file)
+        val duration = getFileDurationUseCase(file = file)
         Episode(file = file, duration = duration)
 
     }

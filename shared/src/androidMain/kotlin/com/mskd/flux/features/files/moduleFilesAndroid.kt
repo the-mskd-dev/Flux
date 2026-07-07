@@ -1,16 +1,16 @@
 package com.mskd.flux.features.files
 
-import com.mskd.flux.features.files.data.AndroidMetadataProvider
 import com.mskd.flux.features.files.data.datasource.MediaStoreFilesDataSource
 import com.mskd.flux.features.files.data.datasource.SafFilesDataSource
 import com.mskd.flux.features.files.data.usecase.AndroidFilterExistingFilesUseCase
 import com.mskd.flux.features.files.data.usecase.AndroidGetDeviceFilesUseCase
+import com.mskd.flux.features.files.data.usecase.AndroidGetFileDurationUseCase
 import com.mskd.flux.features.files.data.usecase.AndroidGetSubtitlesUseCase
 import com.mskd.flux.features.files.domain.datasource.FilesDataSource
 import com.mskd.flux.features.files.domain.usecase.FilterExistingFilesUseCase
 import com.mskd.flux.features.files.domain.usecase.GetDeviceFilesUseCase
+import com.mskd.flux.features.files.domain.usecase.GetFileDurationUseCase
 import com.mskd.flux.features.files.domain.usecase.GetSubtitlesUseCase
-import com.mskd.flux.platform.MetadataProvider
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -34,8 +34,8 @@ val moduleFilesAndroid = module {
         )
     }
 
-    single<MetadataProvider> {
-        AndroidMetadataProvider(context = androidContext())
+    single<GetFileDurationUseCase> {
+        AndroidGetFileDurationUseCase(context = androidContext())
     }
 
     single<GetDeviceFilesUseCase> {

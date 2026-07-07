@@ -18,6 +18,7 @@ val moduleCatalog = module {
 
     single<CleanCatalogUseCase> {
         CleanCatalogUseCaseImpl(
+            sourcesRepository = get(),
             getDeviceFilesUseCase = get(),
             database = get()
         )

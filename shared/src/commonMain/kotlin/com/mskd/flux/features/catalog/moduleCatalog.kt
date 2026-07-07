@@ -27,13 +27,13 @@ val moduleCatalog = module {
         SyncCatalogUseCaseImpl(
             tmdb = get(),
             database = get(),
-            getDeviceFilesUseCase = get(),
-            filterExistingFilesUseCase = get(),
             user = get(),
             settings = get(),
             imagesPrefetchManager = get(),
             appInfo = get(),
-            metadataProvider = get(),
+            filterExistingFilesUseCase = get(),
+            getDeviceFilesUseCase = get(),
+            getFileDurationUseCase = get(),
             coordinator = get(),
         )
     }

@@ -23,7 +23,7 @@ internal class CleanCatalogUseCaseImpl(
             .filter { file -> file.source == FileSource.SAF && accessibleFolders.none { file.path.startsWith(it.path) } }
             .toSet()
 
-
         database.deleteMediasNotInFiles(deviceFiles - inaccessibleFiles)
+
     }
 }

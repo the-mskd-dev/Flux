@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 
 class SourcesViewModel(
     flowSourcesUseCase: FlowSourcesUseCase,
-    val addSourceUC: AddSourceUseCase,
+    val addSourceUseCase: AddSourceUseCase,
     val deleteSourceUseCase: DeleteSourceUseCase,
     val syncCatalogUseCase: SyncCatalogUseCase
 ) : ViewModel() {
@@ -104,7 +104,7 @@ class SourcesViewModel(
             status = UserFolder.Status.AVAILABLE
         )
 
-        addSourceUC(folder = folder)
+        addSourceUseCase(folder = folder)
 
     }
 

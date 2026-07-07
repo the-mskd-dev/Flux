@@ -1,5 +1,6 @@
 package com.mskd.flux.screens.sources
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -62,6 +63,10 @@ fun SourcesScreen(
 
     val pickFolder = rememberSafFolderPicker { uri ->
         viewModel.handleIntent(SourcesIntent.SaveFolder(uri.toString()))
+    }
+
+    BackHandler(true) {
+        viewModel.handleIntent(SourcesIntent.OnBackTap)
     }
 
     LaunchedEffect(Unit) {

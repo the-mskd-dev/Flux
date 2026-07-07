@@ -13,8 +13,6 @@ import com.mskd.flux.core.domain.model.artwork.Movie
 import com.mskd.flux.core.domain.model.core.AppInfo
 import com.mskd.flux.core.domain.model.files.FileSource
 import com.mskd.flux.core.domain.model.files.UserFile
-import com.mskd.flux.data.useCases.catalog.CatalogUC
-import com.mskd.flux.data.useCases.catalog.CatalogUCImpl
 import com.mskd.flux.di.Qualifiers
 import com.mskd.flux.di.moduleAndroidApp
 import com.mskd.flux.di.modulePlatform

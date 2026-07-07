@@ -10,7 +10,6 @@ import com.mskd.flux.core.domain.model.artwork.Artwork
 import com.mskd.flux.core.domain.model.artwork.ContentType
 import com.mskd.flux.core.domain.model.core.AppInfo
 import com.mskd.flux.features.catalog.domain.model.SyncState
-import com.mskd.flux.features.catalog.domain.usecase.cleanCatalog.CleanCatalogUseCase
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.utils.FluxSnackbar
 import com.mskd.flux.utils.Trace
@@ -25,7 +24,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.days
 
 class HomeViewModel(
     private val syncCatalogUseCase: SyncCatalogUseCase,

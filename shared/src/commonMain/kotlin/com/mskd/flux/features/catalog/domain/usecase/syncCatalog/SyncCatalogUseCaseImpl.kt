@@ -13,6 +13,7 @@ import com.mskd.flux.core.domain.model.artwork.Status
 import com.mskd.flux.core.domain.model.catalog.Catalog
 import com.mskd.flux.core.domain.model.catalog.CatalogFolder
 import com.mskd.flux.core.domain.model.core.AppInfo
+import com.mskd.flux.core.domain.model.files.FileSource
 import com.mskd.flux.core.domain.model.files.UserFile
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
 import com.mskd.flux.features.catalog.domain.model.SyncState
@@ -63,13 +64,14 @@ internal class SyncCatalogUseCaseImpl(
             val dbMovies = database.getMovies()
             val dbEpisodes = database.getEpisodes()
             val dbFiles = filterExistingFilesUseCase(files = (dbMovies + dbEpisodes).map { it.file })
-
             val deviceFiles = getDeviceFilesUseCase()
+
             val newFiles = if (!onlyNew) deviceFiles else {
                 deviceFiles.filter { file -> dbFiles.none { it.name == file.name } }
             }
 
             if (newFiles.isEmpty()) {
+                database.deleteMediasNotInFiles(deviceFiles)
                 user.setSyncTime(System.currentTimeMillis())
                 return@launch
             }

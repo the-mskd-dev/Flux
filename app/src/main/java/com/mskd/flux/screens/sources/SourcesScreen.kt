@@ -26,11 +26,11 @@ import com.mskd.flux.core.domain.model.core.State
 import com.mskd.flux.mockups.FilesMockups
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.presentations.components.rememberSafFolderPicker
-import com.mskd.flux.screen.sources.SourcesContent
-import com.mskd.flux.screen.sources.SourcesDialog
-import com.mskd.flux.screen.sources.SourcesEvent
-import com.mskd.flux.screen.sources.SourcesIntent
-import com.mskd.flux.screen.sources.SourcesViewModel
+import com.mskd.flux.features.sources.presentation.SourcesContent
+import com.mskd.flux.features.sources.presentation.SourcesDialog
+import com.mskd.flux.features.sources.presentation.SourcesEvent
+import com.mskd.flux.features.sources.presentation.SourcesIntent
+import com.mskd.flux.features.sources.presentation.SourcesViewModel
 import com.mskd.flux.screens.sources.composables.DeleteSourceDialog
 import com.mskd.flux.screens.sources.composables.PermanentFolderItem
 import com.mskd.flux.screens.sources.composables.UserFolderItem

@@ -8,7 +8,9 @@ import com.mskd.flux.features.sources.domain.usecase.AddSourceUseCase
 import com.mskd.flux.features.sources.domain.usecase.DeleteSourceUseCase
 import com.mskd.flux.features.sources.domain.usecase.FlowSourcesUseCase
 import com.mskd.flux.features.sources.domain.usecase.GetSourcesUseCase
+import com.mskd.flux.features.sources.presentation.SourcesViewModel
 import org.koin.core.module.dsl.singleOf
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 val moduleSources = module {
@@ -29,5 +31,7 @@ val moduleSources = module {
     singleOf(::FlowSourcesUseCase)
     singleOf(::AddSourceUseCase)
     singleOf(::DeleteSourceUseCase)
+
+    viewModelOf(::SourcesViewModel)
 
 }

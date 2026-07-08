@@ -1,4 +1,4 @@
-package com.mskd.flux.screen.sources
+package com.mskd.flux.features.sources.presentation
 
 import androidx.compose.runtime.Immutable
 import com.mskd.flux.core.domain.model.core.State

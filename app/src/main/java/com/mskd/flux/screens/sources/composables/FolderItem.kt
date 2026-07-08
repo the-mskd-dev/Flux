@@ -20,6 +20,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.mskd.flux.features.sources.domain.model.UserFolder
+import com.mskd.flux.features.sources.domain.model.cleanPath
 import com.mskd.flux.features.sources.domain.model.name
 import com.mskd.flux.mockups.FilesMockups
 import com.mskd.flux.ui.component.global.DraggableItem
@@ -128,7 +129,7 @@ fun UserFolderItem(
 
             FolderItem(
                 name = folder.name,
-                path = folder.path,
+                path = folder.cleanPath,
                 backgroundColor = if (folder.status == UserFolder.Status.MISSING) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primaryContainer,
                 contentColor = if (folder.status == UserFolder.Status.MISSING) MaterialTheme.colorScheme.onError else MaterialTheme.colorScheme.onPrimaryContainer,
                 icon = {

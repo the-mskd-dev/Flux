@@ -1,4 +1,4 @@
-package com.mskd.flux.screen.sources
+package com.mskd.flux.features.sources.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

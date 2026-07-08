@@ -11,6 +11,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.koin.compiler)
+    alias(libs.plugins.klint)
 }
 
 kotlin {
@@ -104,4 +105,8 @@ ksp {
 compose.resources {
     publicResClass = true
     generateResClass = always
+}
+
+allprojects {
+
 }

@@ -11,6 +11,7 @@ ksp = "2.3.9"
 
 # -- KMP Core
 composeMultiplatform = "1.11.1"
+klint = "14.2.0"
 
 # -- Android Core --
 coreKtx = "1.19.0"
@@ -190,6 +191,7 @@ kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref 
 android-kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
 koin-compiler = { id = "io.insert-koin.compiler.plugin", version.ref = "koinPlugin" }
 android-lint = { id = "com.android.lint", version.ref = "agp" }
+klint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "klint" }
 
 [bundles]
 

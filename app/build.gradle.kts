@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.parcelize)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.klint)
 }
 
 // Local properties

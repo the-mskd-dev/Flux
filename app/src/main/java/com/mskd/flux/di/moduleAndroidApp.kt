@@ -13,7 +13,7 @@ val moduleAndroidApp = module {
             isDebug = BuildConfig.DEBUG,
             versionName = BuildConfig.VERSION_NAME,
             versionCode = BuildConfig.VERSION_CODE,
-            debugToken = BuildConfig.TMDB_TOKEN
+            debugToken = if (BuildConfig.DEBUG) BuildConfig.TMDB_TOKEN else ""
         )
     }
 

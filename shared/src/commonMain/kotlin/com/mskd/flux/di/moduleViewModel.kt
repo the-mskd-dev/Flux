@@ -1,12 +1,11 @@
 package com.mskd.flux.di
 
-import com.mskd.flux.features.artwork.presentation.ArtworkViewModel
 import com.mskd.flux.screen.customization.CustomizationViewModel
 import com.mskd.flux.screen.home.HomeViewModel
 import com.mskd.flux.screen.search.SearchViewModel
 import com.mskd.flux.screen.settings.SettingsViewModel
 import com.mskd.flux.screen.show.ShowViewModel
-import com.mskd.flux.screen.token.TokenViewModel
+import com.mskd.flux.features.token.presentation.TokenViewModel
 import com.mskd.flux.screen.unknown.UnknownViewModel
 import com.mskd.flux.screen.welcome.WelcomeViewModel
 import org.koin.core.module.dsl.viewModel
@@ -41,8 +40,7 @@ val moduleViewModel = module {
         TokenViewModel(
             fromSettings = params.get(),
             tokenDataStore = get(),
-            tmdbService = get(),
-            syncCatalogUseCase = get(),
+            saveTokenAndSyncUseCase = get(),
             appInfo = get()
         )
     }

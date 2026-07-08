@@ -1,6 +1,7 @@
-package com.mskd.flux.screen.token
+package com.mskd.flux.features.token.presentation
 
 import androidx.compose.runtime.Immutable
+import com.mskd.flux.features.token.domain.model.TokenMessage
 
 
 @Immutable
@@ -10,12 +11,6 @@ data class TokenUiState(
     val isLoading: Boolean = false,
     val message: TokenMessage = TokenMessage.None
 )
-
-sealed class TokenMessage {
-    data object Success : TokenMessage()
-    data object Error : TokenMessage()
-    data object None : TokenMessage()
-}
 
 sealed class TokenIntent {
     data class SetToken(val token: String) : TokenIntent()

@@ -1,6 +1,6 @@
 package com.mskd.flux.screens.token
 
-import com.mskd.flux.screen.token.TokenMessage
+import com.mskd.flux.features.token.domain.model.TokenMessage
 
 object TokenTestCases {
 

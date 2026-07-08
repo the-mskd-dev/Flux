@@ -1,11 +1,12 @@
-package com.mskd.flux.screen.token
+package com.mskd.flux.features.token.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.core.domain.datastore.TokenDataStore
 import com.mskd.flux.core.domain.model.core.AppInfo
-import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
-import com.mskd.flux.features.tmdb.data.service.TMDBService
+import com.mskd.flux.features.token.domain.model.AuthenticateResult
+import com.mskd.flux.features.token.domain.model.TokenMessage
+import com.mskd.flux.features.token.domain.usecase.SaveTokenAndSyncUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,8 +18,7 @@ import kotlinx.coroutines.launch
 class TokenViewModel(
     fromSettings: Boolean,
     private val tokenDataStore: TokenDataStore,
-    private val tmdbService: TMDBService,
-    private val syncCatalogUseCase: SyncCatalogUseCase,
+    private val saveTokenAndSyncUseCase: SaveTokenAndSyncUseCase,
     private val appInfo: AppInfo
 ) : ViewModel() {
 
@@ -30,7 +30,7 @@ class TokenViewModel(
 
     init {
         viewModelScope.launch {
-            val token = tokenDataStore.getToken().ifBlank { if (appInfo.isDebug) appInfo.debugToken else "" }
+            val token = tokenDataStore.getToken().ifBlank { appInfo.debugToken }
             setToken(token)
         }
     }
@@ -53,37 +53,28 @@ class TokenViewModel(
 
         _uiState.update { it.copy(isLoading = true) }
 
-        try {
+        val authenticateResult = saveTokenAndSyncUseCase(token = _uiState.value.token)
 
-            tokenDataStore.saveToken(_uiState.value.token)
-
-            val authentication = tmdbService.authenticate()
-
-            if (authentication.success) {
-
-                syncCatalogUseCase(onlyNew = false)
-
-                if (_uiState.value.showBackButton)
-                    _uiState.update { it.copy(message = TokenMessage.Success) }
-                else
-                    onNextTap()
-
-            } else {
-
-                tokenDataStore.clearToken()
-                _uiState.update { it.copy(message = TokenMessage.Error) }
-
+        when (authenticateResult) {
+            AuthenticateResult.SUCCESS -> {
+                if (_uiState.value.showBackButton) {
+                    _uiState.update {
+                        it.copy(
+                            message = TokenMessage.Success,
+                            isLoading = false
+                        )
+                    }
+                } else onNextTap()
             }
-
-        } catch (e: Exception) {
-
-            e.printStackTrace()
-            tokenDataStore.clearToken()
-            _uiState.update { it.copy(message = TokenMessage.Error) }
-
+            AuthenticateResult.FAILURE -> {
+                _uiState.update {
+                    it.copy(
+                        message = TokenMessage.Error,
+                        isLoading = false
+                    )
+                }
+            }
         }
-
-        _uiState.update { it.copy(isLoading = false) }
 
     }
 

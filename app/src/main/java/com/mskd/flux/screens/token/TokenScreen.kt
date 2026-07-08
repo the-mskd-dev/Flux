@@ -46,11 +46,11 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.navigation.Route
-import com.mskd.flux.screen.token.TokenEvent
-import com.mskd.flux.screen.token.TokenIntent
-import com.mskd.flux.screen.token.TokenMessage
-import com.mskd.flux.screen.token.TokenUiState
-import com.mskd.flux.screen.token.TokenViewModel
+import com.mskd.flux.features.token.presentation.TokenEvent
+import com.mskd.flux.features.token.presentation.TokenIntent
+import com.mskd.flux.features.token.domain.model.TokenMessage
+import com.mskd.flux.features.token.presentation.TokenUiState
+import com.mskd.flux.features.token.presentation.TokenViewModel
 import com.mskd.flux.ui.component.global.FluxIconButton
 import com.mskd.flux.ui.component.global.FluxScaffold
 import com.mskd.flux.ui.component.global.FluxTextButton

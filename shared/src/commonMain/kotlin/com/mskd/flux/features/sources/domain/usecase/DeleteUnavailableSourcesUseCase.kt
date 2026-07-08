@@ -5,15 +5,18 @@ import com.mskd.flux.features.sources.domain.model.UserFolder
 import com.mskd.flux.features.sources.domain.repository.SourcesRepository
 import com.mskd.flux.features.sources.domain.validator.UserFolderValidator
 
-class FindUnavailableSourceUseCase(
+class DeleteUnavailableSourcesUseCase(
     val repository: SourcesRepository,
     val checkFolderDataSource: UserFolderValidator
 ) {
 
-    suspend operator fun invoke() : Boolean {
-        return repository.getFolders().any {
+    suspend operator fun invoke() {
+        val unavailableSources = repository.getFolders().filter {
             it.source == FileSource.LOCAL && checkFolderDataSource.isFolderAvailable(it.path) == UserFolder.Status.MISSING
         }
+
+        repository.deleteFolders(folders = unavailableSources)
+
     }
 
 }

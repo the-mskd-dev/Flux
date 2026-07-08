@@ -7,7 +7,7 @@ import com.mskd.flux.features.sources.domain.repository.SourcesRepository
 import com.mskd.flux.features.sources.domain.usecase.AddSourceUseCase
 import com.mskd.flux.features.sources.domain.usecase.DeleteSourceUseCase
 import com.mskd.flux.features.sources.domain.usecase.FlowSourcesUseCase
-import com.mskd.flux.features.sources.domain.usecase.FindUnavailableSourceUseCase
+import com.mskd.flux.features.sources.domain.usecase.DeleteUnavailableSourcesUseCase
 import com.mskd.flux.features.sources.presentation.SourcesViewModel
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModel
@@ -27,7 +27,7 @@ val moduleSources = module {
         )
     }
 
-    singleOf(::FindUnavailableSourceUseCase)
+    singleOf(::DeleteUnavailableSourcesUseCase)
     singleOf(::FlowSourcesUseCase)
     singleOf(::AddSourceUseCase)
     singleOf(::DeleteSourceUseCase)

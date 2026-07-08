@@ -20,6 +20,7 @@ import com.mskd.flux.features.files.domain.usecase.FilterExistingFilesUseCase
 import com.mskd.flux.features.files.domain.usecase.GetDeviceFilesUseCase
 import com.mskd.flux.features.files.domain.usecase.GetFileDurationUseCase
 import com.mskd.flux.features.images.domain.ImagesPrefetchManager
+import com.mskd.flux.features.sources.domain.usecase.DeleteUnavailableSourcesUseCase
 import com.mskd.flux.features.tmdb.data.datasource.TmdbDataSource
 import com.mskd.flux.features.tmdb.data.dto.EpisodeDto
 import com.mskd.flux.features.tmdb.data.mapper.toDomain
@@ -41,6 +42,7 @@ internal class SyncCatalogUseCaseImpl(
     private val imagesPrefetchManager: ImagesPrefetchManager,
     private val appInfo: AppInfo,
     private val coordinator: CatalogSyncCoordinator,
+    private val deleteUnavailableSourcesUseCase: DeleteUnavailableSourcesUseCase,
     private val getFileDurationUseCase: GetFileDurationUseCase,
     private val getDeviceFilesUseCase: GetDeviceFilesUseCase,
     private val filterExistingFilesUseCase: FilterExistingFilesUseCase,
@@ -59,6 +61,9 @@ internal class SyncCatalogUseCaseImpl(
             return
 
         coordinator.launch(full = !onlyNew) {
+
+            // Clean unavailable sources
+            deleteUnavailableSourcesUseCase()
 
             val dbMovies = database.getMovies()
             val dbEpisodes = database.getEpisodes()

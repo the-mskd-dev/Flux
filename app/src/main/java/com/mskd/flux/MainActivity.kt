@@ -10,6 +10,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.entryProvider
@@ -39,6 +40,7 @@ import com.mskd.flux.ui.theme.createColorScheme
 import com.mskd.flux.utils.extensions.popScreen
 import com.mskd.flux.utils.notificationsPermissionState
 import com.mskd.flux.utils.storagePermissionState
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
 class MainActivity : ComponentActivity() {

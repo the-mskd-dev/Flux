@@ -6,6 +6,7 @@ import com.mskd.flux.core.domain.datastore.CustomizationDataStore
 import com.mskd.flux.core.domain.datastore.SettingsDataStore
 import com.mskd.flux.core.domain.datastore.TokenDataStore
 import com.mskd.flux.core.domain.datastore.UserDataStore
+import com.mskd.flux.features.sources.domain.usecase.FindUnavailableSourceUseCase
 import com.mskd.flux.navigation.Route
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,7 +17,8 @@ class MainViewModel(
     private val settingsDataStore: SettingsDataStore,
     private val customizationDataStore: CustomizationDataStore,
     private val tokenDataStore: TokenDataStore,
-    private val userDataStore: UserDataStore
+    private val userDataStore: UserDataStore,
+    private val findUnavailableSourceUseCase: FindUnavailableSourceUseCase,
 ) : ViewModel() {
 
     private val _settings = MutableStateFlow(SettingsDataStore.State())
@@ -42,6 +44,9 @@ class MainViewModel(
     }
 
     fun getStartingScreen(permissionsGranted: Boolean) : Route {
+
+        //val anyUnavailableSource = findUnavailableSourceUseCase()
+
         return when {
             !permissionsGranted -> Route.Welcome
             userDataStore.sourcesRequested -> Route.Sources(fromSetup = true)

@@ -6,13 +6,15 @@ import androidx.documentfile.provider.DocumentFile
 import com.mskd.flux.features.sources.domain.model.UserFolder
 import com.mskd.flux.features.sources.domain.validator.UserFolderValidator
 import com.mskd.flux.utils.Trace
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class AndroidUserFolderValidator(
     private val context: Context
 ) : UserFolderValidator {
 
-    override suspend fun isFolderAvailable(path: String): UserFolder.Status {
-        return try {
+    override suspend fun isFolderAvailable(path: String): UserFolder.Status = withContext(Dispatchers.IO) {
+        return@withContext try {
             val uri = path.toUri()
             val documentFile = DocumentFile.fromTreeUri(context, uri)
 

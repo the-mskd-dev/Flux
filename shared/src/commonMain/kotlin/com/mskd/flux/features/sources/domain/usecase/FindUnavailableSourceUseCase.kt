@@ -5,19 +5,14 @@ import com.mskd.flux.features.sources.domain.model.UserFolder
 import com.mskd.flux.features.sources.domain.repository.SourcesRepository
 import com.mskd.flux.features.sources.domain.validator.UserFolderValidator
 
-class GetSourcesUseCase(
+class FindUnavailableSourceUseCase(
     val repository: SourcesRepository,
     val checkFolderDataSource: UserFolderValidator
 ) {
 
-    suspend operator fun invoke() : List<UserFolder> {
-        return repository.getFolders().map { folder ->
-            if (folder.source == FileSource.LOCAL) {
-                val currentStatus = checkFolderDataSource.isFolderAvailable(folder.path)
-                folder.copy(status = currentStatus)
-            } else {
-                folder
-            }
+    suspend operator fun invoke() : Boolean {
+        return repository.getFolders().any {
+            it.source == FileSource.LOCAL && checkFolderDataSource.isFolderAvailable(it.path) == UserFolder.Status.MISSING
         }
     }
 

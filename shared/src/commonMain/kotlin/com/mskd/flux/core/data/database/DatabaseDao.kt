@@ -159,8 +159,6 @@ interface DatabaseDao {
         deleteEpisodesInFolder(folderPath = folderPath)
     }
 
-
-
 //endregion
 
 //region Count

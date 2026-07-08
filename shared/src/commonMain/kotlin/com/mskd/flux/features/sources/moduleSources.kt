@@ -23,6 +23,7 @@ val moduleSources = module {
     single<SourcesRepository> {
         SourcesRepositoryImpl(
             dao = get(),
+            databaseRepository = get(),
             userFolderValidator = get()
         )
     }

@@ -31,6 +31,7 @@ val moduleCatalog = module {
             settings = get(),
             imagesPrefetchManager = get(),
             appInfo = get(),
+            deleteUnavailableSourcesUseCase = get(),
             filterExistingFilesUseCase = get(),
             getDeviceFilesUseCase = get(),
             getFileDurationUseCase = get(),

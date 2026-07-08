@@ -9,6 +9,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -36,12 +37,14 @@ import com.mskd.flux.screens.sources.composables.PermanentFolderItem
 import com.mskd.flux.screens.sources.composables.UserFolderItem
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.component.global.ErrorScreen
+import com.mskd.flux.ui.component.global.FluxButton
 import com.mskd.flux.ui.component.global.FluxScaffold
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxPreview
 import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.add_source
 import flux.shared.generated.resources.downloads
 import flux.shared.generated.resources.ic_add
 import flux.shared.generated.resources.movies
@@ -159,6 +162,16 @@ fun SourcesScreenContent(
 
             item { PermanentFolderItem(name = stringResource(Res.string.movies)) }
             item { PermanentFolderItem(name = stringResource(Res.string.downloads)) }
+            
+            item {
+                FluxButton(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = FluxUI.Space.medium),
+                    shape = MaterialTheme.shapes.extraLarge,
+                    text = stringResource(Res.string.add_source)
+                ) { sendIntent(SourcesIntent.OpenFolderSelection) }
+            }
 
             items(items = content.folders, key = { it.path }) { folder ->
 

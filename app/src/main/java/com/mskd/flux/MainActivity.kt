@@ -99,7 +99,7 @@ class MainActivity : ComponentActivity() {
                                 },
                             )
                         }
-                        entry<Route.Library> {
+                        entry<Route.Home> {
                             HomeScreen(
                                 navigate = { route -> backStack.add(route) },
                             )
@@ -179,7 +179,10 @@ class MainActivity : ComponentActivity() {
                         }
                         entry<Route.Sources> { entry ->
                             SourcesScreen(
-                                navigate = { route -> backStack.add(route) },
+                                navigate = { route ->
+                                    backStack.clear()
+                                    backStack.add(route)
+                                },
                                 fromSetup = entry.fromSetup,
                                 onBack = { backStack.popScreen() },
                             )

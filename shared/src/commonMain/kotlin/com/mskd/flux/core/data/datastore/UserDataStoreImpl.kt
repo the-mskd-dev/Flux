@@ -8,11 +8,13 @@ import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.mskd.flux.core.data.datastore.TokenDataStoreImpl.Companion.REQUEST_TOKEN
 import com.mskd.flux.core.domain.datastore.UserDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import okio.IOException
 
@@ -115,5 +117,10 @@ class UserDataStoreImpl(
             preferences[Keys.ADD_SOURCES_NEEDED] = false
         }
     }
+
+    override val sourcesRequested: Boolean
+        get() = runBlocking {
+            userDataStore.data.map { it[Keys.ADD_SOURCES_NEEDED] }.first() ?: true
+        }
 
 }

@@ -2,6 +2,8 @@ package com.mskd.flux.features.sources.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mskd.flux.core.domain.datastore.TokenDataStore
+import com.mskd.flux.core.domain.datastore.UserDataStore
 import com.mskd.flux.core.domain.model.core.State
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.sources.domain.model.UserFolder
@@ -18,11 +20,13 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class SourcesViewModel(
-    fromSetup: Boolean,
+    private val fromSetup: Boolean,
+    private val tokenDataStore: TokenDataStore,
+    private val userDataStore: UserDataStore,
     flowSourcesUseCase: FlowSourcesUseCase,
-    val addSourceUseCase: AddSourceUseCase,
-    val deleteSourceUseCase: DeleteSourceUseCase,
-    val syncCatalogUseCase: SyncCatalogUseCase
+    private val addSourceUseCase: AddSourceUseCase,
+    private val deleteSourceUseCase: DeleteSourceUseCase,
+    private val syncCatalogUseCase: SyncCatalogUseCase
 ) : ViewModel() {
 
     //region State
@@ -84,6 +88,7 @@ class SourcesViewModel(
     private fun processIntent(intent: SourcesIntent) = viewModelScope.launch {
         when (intent) {
             SourcesIntent.OnBackTap -> onBackTap()
+            SourcesIntent.OnNextTap -> onNextTap()
 
             // Save
             SourcesIntent.OpenFolderSelection -> _event.send(SourcesEvent.OpenFolderSelection)
@@ -99,6 +104,18 @@ class SourcesViewModel(
     private suspend fun onBackTap() {
         syncCatalogUseCase(onlyNew = true)
         _event.send(SourcesEvent.BackToPreviousScreen)
+    }
+
+    private suspend fun onNextTap() {
+
+        userDataStore.sourcesAdded()
+
+        if (tokenDataStore.tokenRequested) {
+            _event.send(SourcesEvent.NavigateToToken)
+        } else {
+            _event.send(SourcesEvent.NavigateToHome)
+        }
+
     }
 
     private suspend fun saveFolder(path: String) {

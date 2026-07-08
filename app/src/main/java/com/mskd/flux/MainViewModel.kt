@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.mskd.flux.core.domain.datastore.CustomizationDataStore
 import com.mskd.flux.core.domain.datastore.SettingsDataStore
 import com.mskd.flux.core.domain.datastore.TokenDataStore
+import com.mskd.flux.core.domain.datastore.UserDataStore
 import com.mskd.flux.navigation.Route
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,7 +15,8 @@ import kotlinx.coroutines.launch
 class MainViewModel(
     private val settingsDataStore: SettingsDataStore,
     private val customizationDataStore: CustomizationDataStore,
-    private val tokenDataStore: TokenDataStore
+    private val tokenDataStore: TokenDataStore,
+    private val userDataStore: UserDataStore
 ) : ViewModel() {
 
     private val _settings = MutableStateFlow(SettingsDataStore.State())
@@ -41,12 +43,10 @@ class MainViewModel(
 
     fun getStartingScreen(permissionsGranted: Boolean) : Route {
         return when {
-            !permissionsGranted ->
-                Route.Welcome
-            tokenDataStore.tokenRequested ->
-                Route.Token(fromSettings = false)
-            else ->
-                Route.Library
+            !permissionsGranted -> Route.Welcome
+            userDataStore.sourcesRequested -> Route.Sources(fromSetup = true)
+            tokenDataStore.tokenRequested -> Route.Token(fromSettings = false)
+            else -> Route.Home
         }
     }
 

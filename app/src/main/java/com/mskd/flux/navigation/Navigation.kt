@@ -23,7 +23,7 @@ sealed class Route : NavKey {
     data class Token(val fromSettings: Boolean = false): Route()
 
     @Serializable
-    data object Library: Route()
+    data object Home: Route()
 
     @Serializable
     data class Show(val artworkId: Long, val rgb: Int?): Route()

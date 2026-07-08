@@ -21,15 +21,28 @@ sealed class SourcesDialog {
 }
 
 sealed class SourcesIntent {
-    data object OnBackTap : SourcesIntent()
+
+    // Navigation
+    data object OnBackTap: SourcesIntent()
+    data object OnNextTap: SourcesIntent()
+
+    // Add
     data object OpenFolderSelection : SourcesIntent()
     data class SaveFolder(val path: String) : SourcesIntent()
+
+    // Delete
     data class ShowDeleteDialog(val folder: UserFolder) : SourcesIntent()
     data object CloseDeleteDialog : SourcesIntent()
     data class DeleteFolder(val folder: UserFolder) : SourcesIntent()
 }
 
 sealed class SourcesEvent {
+
+    // Navigation
     data object BackToPreviousScreen : SourcesEvent()
+    data object NavigateToToken: SourcesEvent()
+    data object NavigateToHome: SourcesEvent()
+
+    // Add
     data object OpenFolderSelection: SourcesEvent()
 }

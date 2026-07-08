@@ -15,9 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.automirrored.rounded.ArrowForward
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -50,12 +48,10 @@ import com.mskd.flux.utils.FluxPreview
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.add_source
 import flux.shared.generated.resources.downloads
-import flux.shared.generated.resources.ic_add
 import flux.shared.generated.resources.movies
 import flux.shared.generated.resources.oups_an_error_occured
 import flux.shared.generated.resources.sources
 import flux.shared.generated.resources.sources_full_desc
-import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -83,6 +79,8 @@ fun SourcesScreen(
             when (event) {
                 SourcesEvent.BackToPreviousScreen -> onBack()
                 SourcesEvent.OpenFolderSelection -> pickFolder()
+                SourcesEvent.NavigateToHome -> navigate(Route.Home)
+                SourcesEvent.NavigateToToken -> navigate(Route.Token(fromSettings = false))
             }
         }
     }
@@ -140,7 +138,7 @@ fun SourcesScreenContent(
 
             if (content.fromSetup) {
                 IconButton(
-                    onClick = {  },
+                    onClick = { sendIntent(SourcesIntent.OnNextTap) },
                     content = {
                         Icon(
                             imageVector = Icons.AutoMirrored.Rounded.ArrowForward,

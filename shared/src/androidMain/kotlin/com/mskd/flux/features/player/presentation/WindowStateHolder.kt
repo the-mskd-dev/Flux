@@ -1,4 +1,4 @@
-package com.mskd.flux.screen.player
+package com.mskd.flux.features.player.presentation
 
 import android.content.Context
 import androidx.compose.runtime.Composable

@@ -13,11 +13,11 @@ import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.PlayerMockups
 import com.mskd.flux.platform.PlayerManager
-import com.mskd.flux.screen.player.PlayerEvent
-import com.mskd.flux.screen.player.PlayerIntent
-import com.mskd.flux.screen.player.PlayerUiContent
-import com.mskd.flux.screen.player.PlayerUiState
-import com.mskd.flux.screen.player.PlayerViewModel
+import com.mskd.flux.features.player.presentation.PlayerEvent
+import com.mskd.flux.features.player.presentation.PlayerIntent
+import com.mskd.flux.features.player.presentation.PlayerUiContent
+import com.mskd.flux.features.player.presentation.PlayerUiState
+import com.mskd.flux.features.player.presentation.PlayerViewModel
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.extensions.lastEpisode
 import com.mskd.flux.utils.extensions.minToMs

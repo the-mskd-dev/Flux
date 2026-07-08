@@ -14,11 +14,11 @@ import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
 import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.features.artwork.FakeObserveArtworkUseCase
-import com.mskd.flux.screen.artwork.ArtworkContent
-import com.mskd.flux.screen.artwork.ArtworkDialog
-import com.mskd.flux.screen.artwork.ArtworkEvent
-import com.mskd.flux.screen.artwork.ArtworkIntent
-import com.mskd.flux.screen.artwork.ArtworkViewModel
+import com.mskd.flux.features.artwork.presentation.ArtworkContent
+import com.mskd.flux.features.artwork.presentation.ArtworkDialog
+import com.mskd.flux.features.artwork.presentation.ArtworkEvent
+import com.mskd.flux.features.artwork.presentation.ArtworkIntent
+import com.mskd.flux.features.artwork.presentation.ArtworkViewModel
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe

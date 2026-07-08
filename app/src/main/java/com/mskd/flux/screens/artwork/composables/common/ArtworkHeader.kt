@@ -15,7 +15,7 @@ import com.mskd.flux.core.domain.model.artwork.ContentType
 import com.mskd.flux.core.domain.model.artwork.FullArtwork
 import com.mskd.flux.core.domain.model.artwork.Media
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.screen.artwork.ArtworkIntent
+import com.mskd.flux.features.artwork.presentation.ArtworkIntent
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.AppThemePreview

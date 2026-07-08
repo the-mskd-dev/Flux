@@ -1,4 +1,4 @@
-package com.mskd.flux.screen.player
+package com.mskd.flux.features.player.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -15,10 +15,10 @@ import com.mskd.flux.features.files.domain.usecase.GetSubtitlesUseCase
 import com.mskd.flux.features.player.data.PipIsEnabledUseCase
 import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.platform.PlayerManager
-import com.mskd.flux.screen.player.PlayerUiContent.AmbientOverlay
-import com.mskd.flux.screen.player.PlayerUiContent.NextButton
-import com.mskd.flux.screen.player.PlayerUiContent.SeekOverlay
-import com.mskd.flux.screen.player.PlayerUiContent.SettingsSheet
+import com.mskd.flux.features.player.presentation.PlayerUiContent.AmbientOverlay
+import com.mskd.flux.features.player.presentation.PlayerUiContent.NextButton
+import com.mskd.flux.features.player.presentation.PlayerUiContent.SeekOverlay
+import com.mskd.flux.features.player.presentation.PlayerUiContent.SettingsSheet
 import com.mskd.flux.utils.Trace
 import com.mskd.flux.utils.extensions.getNextEpisodeFor
 import com.mskd.flux.utils.extensions.toPlayerTrack

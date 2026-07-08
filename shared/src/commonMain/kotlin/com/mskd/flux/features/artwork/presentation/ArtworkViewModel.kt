@@ -1,4 +1,4 @@
-package com.mskd.flux.screen.artwork
+package com.mskd.flux.features.artwork.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -13,7 +13,7 @@ import com.mskd.flux.features.progress.domain.usecase.ChangeMediaStatusUseCase
 import com.mskd.flux.features.progress.domain.usecase.MarkPreviousAsWatchedUseCase
 import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
 import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
-import com.mskd.flux.screen.artwork.ArtworkEvent.OpenUrlInfo
+import com.mskd.flux.features.artwork.presentation.ArtworkEvent.OpenUrlInfo
 import com.mskd.flux.utils.extensions.firstEpisode
 import com.mskd.flux.utils.extensions.firstEpisodeToWatch
 import com.mskd.flux.utils.extensions.getPreviousEpisodesFor

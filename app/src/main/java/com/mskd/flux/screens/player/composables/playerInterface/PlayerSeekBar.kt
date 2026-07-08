@@ -24,7 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import com.mskd.flux.screen.player.PlayerIntent
+import com.mskd.flux.features.player.presentation.PlayerIntent
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.extensions.formatMinSec

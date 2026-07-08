@@ -1,12 +1,11 @@
 package com.mskd.flux.di
 
-import com.mskd.flux.screen.artwork.ArtworkViewModel
+import com.mskd.flux.features.artwork.presentation.ArtworkViewModel
 import com.mskd.flux.screen.customization.CustomizationViewModel
 import com.mskd.flux.screen.home.HomeViewModel
 import com.mskd.flux.screen.search.SearchViewModel
 import com.mskd.flux.screen.settings.SettingsViewModel
 import com.mskd.flux.screen.show.ShowViewModel
-import com.mskd.flux.features.sources.presentation.SourcesViewModel
 import com.mskd.flux.screen.token.TokenViewModel
 import com.mskd.flux.screen.unknown.UnknownViewModel
 import com.mskd.flux.screen.welcome.WelcomeViewModel
@@ -15,19 +14,6 @@ import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 val moduleViewModel = module {
-
-    viewModel<ArtworkViewModel> { params ->
-        ArtworkViewModel(
-            artworkId = params.get(),
-            season = params.getOrNull(),
-            settingsDataStore = get(),
-            changeMediaStatus = get(),
-            markPreviousAsWatched = get(),
-            resetProgress = get(),
-            saveProgress = get(),
-            observeArtworkUseCase = get()
-        )
-    }
 
     viewModelOf(::CustomizationViewModel)
 

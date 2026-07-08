@@ -1,4 +1,4 @@
-package com.mskd.flux.screen.artwork
+package com.mskd.flux.features.artwork.presentation
 
 import androidx.compose.runtime.Immutable
 import com.mskd.flux.core.domain.model.artwork.Episode

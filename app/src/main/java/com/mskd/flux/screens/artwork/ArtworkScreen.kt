@@ -34,10 +34,10 @@ import com.mskd.flux.core.domain.model.core.State
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Route.Player
-import com.mskd.flux.screen.artwork.ArtworkDialog
-import com.mskd.flux.screen.artwork.ArtworkEvent
-import com.mskd.flux.screen.artwork.ArtworkIntent
-import com.mskd.flux.screen.artwork.ArtworkViewModel
+import com.mskd.flux.features.artwork.presentation.ArtworkDialog
+import com.mskd.flux.features.artwork.presentation.ArtworkEvent
+import com.mskd.flux.features.artwork.presentation.ArtworkIntent
+import com.mskd.flux.features.artwork.presentation.ArtworkViewModel
 import com.mskd.flux.screens.artwork.composables.ArtworkContentLarge
 import com.mskd.flux.screens.artwork.composables.ArtworkContentRegular
 import com.mskd.flux.ui.component.LoadingScreen

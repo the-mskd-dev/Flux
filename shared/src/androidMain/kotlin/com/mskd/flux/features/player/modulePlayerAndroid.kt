@@ -1,5 +1,7 @@
+@file:OptIn(androidx.media3.common.util.UnstableApi::class)
 package com.mskd.flux.features.player
 
+import androidx.annotation.OptIn
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.DefaultRenderersFactory
@@ -13,7 +15,7 @@ import com.mskd.flux.features.player.data.PipIsEnabledUseCase
 import com.mskd.flux.features.player.data.usecase.AndroidPipIsEnabledUseCase
 import com.mskd.flux.platform.AndroidPlayerManager
 import com.mskd.flux.platform.PlayerManager
-import com.mskd.flux.screen.player.PlayerViewModel
+import com.mskd.flux.features.player.presentation.PlayerViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module

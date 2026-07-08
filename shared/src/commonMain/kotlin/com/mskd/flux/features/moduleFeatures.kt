@@ -1,6 +1,6 @@
 package com.mskd.flux.features
 
-import com.mskd.flux.features.artwork.domain.moduleArtwork
+import com.mskd.flux.features.artwork.moduleArtwork
 import com.mskd.flux.features.catalog.moduleCatalog
 import com.mskd.flux.features.images.moduleImages
 import com.mskd.flux.features.progress.moduleProgress

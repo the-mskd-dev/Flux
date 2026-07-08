@@ -21,7 +21,7 @@ import androidx.compose.ui.Modifier
 import com.mskd.flux.core.domain.model.artwork.FullArtwork
 import com.mskd.flux.core.domain.model.artwork.Media
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.screen.artwork.ArtworkIntent
+import com.mskd.flux.features.artwork.presentation.ArtworkIntent
 import com.mskd.flux.screens.artwork.composables.common.ArtworkButtons
 import com.mskd.flux.screens.artwork.composables.common.ArtworkDescriptionsPager
 import com.mskd.flux.screens.artwork.composables.common.ArtworkImage

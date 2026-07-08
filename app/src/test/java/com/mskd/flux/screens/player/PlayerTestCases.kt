@@ -4,7 +4,7 @@ import com.mskd.flux.core.domain.model.artwork.Artwork
 import com.mskd.flux.core.domain.model.artwork.Episode
 import com.mskd.flux.core.domain.model.artwork.Media
 import com.mskd.flux.core.domain.model.player.PlayerTrack
-import com.mskd.flux.screen.player.PlayerUiContent
+import com.mskd.flux.features.player.presentation.PlayerUiContent
 
 object PlayerTestCases {
 

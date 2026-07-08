@@ -1,4 +1,4 @@
-package com.mskd.flux.screen.player
+package com.mskd.flux.features.player.presentation
 
 import androidx.compose.runtime.Immutable
 import androidx.media3.common.Player

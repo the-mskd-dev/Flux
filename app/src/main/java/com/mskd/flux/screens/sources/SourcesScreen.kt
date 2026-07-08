@@ -14,8 +14,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.automirrored.rounded.ArrowForward
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -54,12 +58,14 @@ import flux.shared.generated.resources.sources_full_desc
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
 fun SourcesScreen(
     navigate: (Route) -> Unit,
     onBack: () -> Unit,
-    viewModel: SourcesViewModel = koinViewModel()
+    fromSetup: Boolean,
+    viewModel: SourcesViewModel = koinViewModel(parameters = { parametersOf(fromSetup) })
 ) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -130,18 +136,24 @@ fun SourcesScreenContent(
             scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
             titleContentColor = MaterialTheme.colorScheme.onSurface,
         ),
-        onBackTap = { sendIntent(SourcesIntent.OnBackTap) },
-        floatingActionButton = {
+        actions = {
 
-            FloatingActionButton(
-                onClick = { sendIntent(SourcesIntent.OpenFolderSelection) }
-            ) {
-                Icon(
-                    painter = painterResource(Res.drawable.ic_add),
-                    contentDescription = "add button"
+            if (content.fromSetup) {
+                IconButton(
+                    onClick = {  },
+                    content = {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Rounded.ArrowForward,
+                            contentDescription = "next button"
+                        )
+                    }
                 )
             }
-        }
+
+        },
+        onBackTap = if (content.fromSetup) null else {
+            { sendIntent(SourcesIntent.OnBackTap) }
+        },
     ) { innerPadding ->
 
         LazyColumn(

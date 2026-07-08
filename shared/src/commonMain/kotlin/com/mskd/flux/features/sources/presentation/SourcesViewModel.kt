@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class SourcesViewModel(
+    fromSetup: Boolean,
     flowSourcesUseCase: FlowSourcesUseCase,
     val addSourceUseCase: AddSourceUseCase,
     val deleteSourceUseCase: DeleteSourceUseCase,
@@ -38,7 +39,10 @@ class SourcesViewModel(
 
         SourcesUiState(
             state = State.Content(
-                content = SourcesContent(folders = folders)
+                content = SourcesContent(
+                    fromSetup = fromSetup,
+                    folders = folders
+                )
             ),
             dialog = dialog
         )

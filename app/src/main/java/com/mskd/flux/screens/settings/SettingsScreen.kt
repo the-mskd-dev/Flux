@@ -77,7 +77,7 @@ fun SettingsScreen(
                 SettingsEvent.NavigateToAboutScreen -> navigate(Route.About)
                 SettingsEvent.NavigateToHowToScreen -> navigate(Route.HowTo)
                 SettingsEvent.NavigateToCustomizationScreen -> navigate(Route.Customization)
-                SettingsEvent.NavigateToSourcesScreen -> navigate(Route.Sources)
+                SettingsEvent.NavigateToSourcesScreen -> navigate(Route.Sources())
                 SettingsEvent.RequestExternalPlayerPermission -> notificationsPermission?.launchPermissionRequest()
             }
         }

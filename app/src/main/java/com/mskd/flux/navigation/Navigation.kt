@@ -53,7 +53,7 @@ sealed class Route : NavKey {
     data object Customization: Route()
 
     @Serializable
-    data object Sources: Route()
+    data class Sources(val fromSetup: Boolean = false): Route()
 }
 
 object Transition {

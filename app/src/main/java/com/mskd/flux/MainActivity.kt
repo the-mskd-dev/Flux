@@ -177,9 +177,10 @@ class MainActivity : ComponentActivity() {
                                 fromSettings = entry.fromSettings
                             )
                         }
-                        entry<Route.Sources> {
+                        entry<Route.Sources> { entry ->
                             SourcesScreen(
                                 navigate = { route -> backStack.add(route) },
+                                fromSetup = entry.fromSetup,
                                 onBack = { backStack.popScreen() },
                             )
                         }

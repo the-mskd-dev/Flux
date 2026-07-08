@@ -10,6 +10,7 @@ import com.mskd.flux.features.sources.domain.usecase.FlowSourcesUseCase
 import com.mskd.flux.features.sources.domain.usecase.GetSourcesUseCase
 import com.mskd.flux.features.sources.presentation.SourcesViewModel
 import org.koin.core.module.dsl.singleOf
+import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
@@ -32,6 +33,14 @@ val moduleSources = module {
     singleOf(::AddSourceUseCase)
     singleOf(::DeleteSourceUseCase)
 
-    viewModelOf(::SourcesViewModel)
+    viewModel { params ->
+        SourcesViewModel(
+            fromSetup = params.get(),
+            flowSourcesUseCase = get(),
+            addSourceUseCase = get(),
+            deleteSourceUseCase = get(),
+            syncCatalogUseCase = get(),
+        )
+    }
 
 }

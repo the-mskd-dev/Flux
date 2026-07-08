@@ -12,6 +12,7 @@ data class SourcesUiState(
 
 @Immutable
 data class SourcesContent(
+    val fromSetup: Boolean = false,
     val folders: List<UserFolder> = emptyList()
 )
 

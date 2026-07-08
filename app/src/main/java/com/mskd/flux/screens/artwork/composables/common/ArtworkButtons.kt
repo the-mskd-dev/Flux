@@ -25,8 +25,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.core.domain.model.artwork.Media
 import com.mskd.flux.core.domain.model.artwork.Status
-import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.features.artwork.presentation.ArtworkIntent
+import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.ui.component.global.FluxTextButton
 import com.mskd.flux.ui.component.global.ProgressStatusBar
 import com.mskd.flux.ui.component.global.Text

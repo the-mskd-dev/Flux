@@ -31,13 +31,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.core.domain.model.artwork.FullArtwork
 import com.mskd.flux.core.domain.model.artwork.Media
 import com.mskd.flux.core.domain.model.core.State
-import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.navigation.Route
-import com.mskd.flux.navigation.Route.Player
 import com.mskd.flux.features.artwork.presentation.ArtworkDialog
 import com.mskd.flux.features.artwork.presentation.ArtworkEvent
 import com.mskd.flux.features.artwork.presentation.ArtworkIntent
 import com.mskd.flux.features.artwork.presentation.ArtworkViewModel
+import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.navigation.Route
+import com.mskd.flux.navigation.Route.Player
 import com.mskd.flux.screens.artwork.composables.ArtworkContentLarge
 import com.mskd.flux.screens.artwork.composables.ArtworkContentRegular
 import com.mskd.flux.ui.component.LoadingScreen

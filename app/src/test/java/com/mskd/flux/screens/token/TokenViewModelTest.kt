@@ -7,11 +7,11 @@ import com.mskd.flux.core.domain.model.core.AppInfo
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.tmdb.data.dto.AuthenticationDto
 import com.mskd.flux.features.tmdb.data.service.TMDBService
-import com.mskd.flux.mockups.features.catalog.FakeSyncCatalogUseCase
+import com.mskd.flux.features.token.domain.model.TokenMessage
 import com.mskd.flux.features.token.presentation.TokenEvent
 import com.mskd.flux.features.token.presentation.TokenIntent
-import com.mskd.flux.features.token.domain.model.TokenMessage
 import com.mskd.flux.features.token.presentation.TokenViewModel
+import com.mskd.flux.mockups.features.catalog.FakeSyncCatalogUseCase
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData
 import io.kotest.matchers.shouldBe

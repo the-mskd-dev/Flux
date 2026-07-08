@@ -2,7 +2,7 @@ package com.mskd.flux.screens.customization
 
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
-import com.mskd.flux.core.data.datastore.CustomizationDataStore
+import com.mskd.flux.core.domain.datastore.CustomizationDataStore
 import com.mskd.flux.core.domain.model.core.FluxOptionsDialogState
 import com.mskd.flux.screen.customization.CustomizationDialog
 import com.mskd.flux.screen.customization.CustomizationEvent

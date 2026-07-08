@@ -2,7 +2,7 @@ package com.mskd.flux.screens.unknown
 
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
-import com.mskd.flux.core.data.datastore.SettingsDataStore
+import com.mskd.flux.core.domain.datastore.SettingsDataStore
 import com.mskd.flux.core.domain.model.core.State
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
 import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase

@@ -2,7 +2,7 @@ package com.mskd.flux.screen.unknown
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mskd.flux.core.data.datastore.SettingsDataStore
+import com.mskd.flux.core.domain.datastore.SettingsDataStore
 import com.mskd.flux.core.domain.model.artwork.Artwork
 import com.mskd.flux.core.domain.model.artwork.Episode
 import com.mskd.flux.core.domain.model.artwork.FullArtwork

@@ -2,7 +2,7 @@ package com.mskd.flux.screen.welcome
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mskd.flux.core.data.datastore.TokenDataStore
+import com.mskd.flux.core.domain.datastore.TokenDataStore
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow

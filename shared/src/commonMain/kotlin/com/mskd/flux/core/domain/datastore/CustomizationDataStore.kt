@@ -1,4 +1,4 @@
-package com.mskd.flux.core.data.datastore
+package com.mskd.flux.core.domain.datastore
 
 import com.mskd.flux.utils.UiCommon
 import kotlinx.coroutines.flow.Flow

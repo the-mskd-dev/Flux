@@ -1,6 +1,6 @@
 package com.mskd.flux.features.tmdb.data
 
-import com.mskd.flux.core.data.datastore.TokenDataStore
+import com.mskd.flux.core.domain.datastore.TokenDataStore
 import com.mskd.flux.features.tmdb.data.datasource.TmdbDataSource
 import com.mskd.flux.features.tmdb.data.datasource.TmdbDataSourceImpl
 import com.mskd.flux.features.tmdb.data.service.TMDBService

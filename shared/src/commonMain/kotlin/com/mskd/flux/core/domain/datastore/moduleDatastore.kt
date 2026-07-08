@@ -1,10 +1,10 @@
 package com.mskd.flux.core.domain.datastore
 
-import com.mskd.flux.core.data.datastore.CustomizationDataStore
-import com.mskd.flux.core.data.datastore.SettingsDataStore
-import com.mskd.flux.core.data.datastore.SnackbarDataStore
-import com.mskd.flux.core.data.datastore.TokenDataStore
-import com.mskd.flux.core.data.datastore.UserDataStore
+import com.mskd.flux.core.data.datastore.CustomizationDataStoreImpl
+import com.mskd.flux.core.data.datastore.SettingsDataStoreImpl
+import com.mskd.flux.core.data.datastore.SnackbarDataStoreImpl
+import com.mskd.flux.core.data.datastore.TokenDataStoreImpl
+import com.mskd.flux.core.data.datastore.UserDataStoreImpl
 import com.mskd.flux.di.Qualifiers
 import org.koin.dsl.module
 

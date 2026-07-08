@@ -1,8 +1,8 @@
 package com.mskd.flux.features.catalog.domain.usecase.syncCatalog
 
 import com.mskd.flux.core.data.database.repository.DatabaseRepository
-import com.mskd.flux.core.data.datastore.SettingsDataStore
-import com.mskd.flux.core.data.datastore.UserDataStore
+import com.mskd.flux.core.domain.datastore.SettingsDataStore
+import com.mskd.flux.core.domain.datastore.UserDataStore
 import com.mskd.flux.core.domain.model.artwork.Artwork
 import com.mskd.flux.core.domain.model.artwork.ContentType
 import com.mskd.flux.core.domain.model.artwork.Episode

@@ -2,9 +2,9 @@ package com.mskd.flux
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mskd.flux.core.data.datastore.CustomizationDataStore
-import com.mskd.flux.core.data.datastore.SettingsDataStore
-import com.mskd.flux.core.data.datastore.TokenDataStore
+import com.mskd.flux.core.domain.datastore.CustomizationDataStore
+import com.mskd.flux.core.domain.datastore.SettingsDataStore
+import com.mskd.flux.core.domain.datastore.TokenDataStore
 import com.mskd.flux.navigation.Route
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

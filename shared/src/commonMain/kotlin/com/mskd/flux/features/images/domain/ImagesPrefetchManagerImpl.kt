@@ -2,7 +2,7 @@ package com.mskd.flux.features.images.domain
 
 import coil3.ImageLoader
 import com.mskd.flux.core.data.database.repository.DatabaseRepository
-import com.mskd.flux.core.data.datastore.SettingsDataStore
+import com.mskd.flux.core.domain.datastore.SettingsDataStore
 import com.mskd.flux.utils.extensions.tmdbImage
 import com.mskd.flux.utils.extensions.tmdbImageLarge
 import kotlinx.coroutines.CoroutineScope

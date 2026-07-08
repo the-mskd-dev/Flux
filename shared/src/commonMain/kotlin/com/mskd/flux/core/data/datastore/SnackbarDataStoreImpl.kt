@@ -1,10 +1,10 @@
-package com.mskd.flux.core.domain.datastore
+package com.mskd.flux.core.data.datastore
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
-import com.mskd.flux.core.data.datastore.SnackbarDataStore
+import com.mskd.flux.core.domain.datastore.SnackbarDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 

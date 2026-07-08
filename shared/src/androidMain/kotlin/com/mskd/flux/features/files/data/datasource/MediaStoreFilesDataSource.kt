@@ -7,7 +7,7 @@ import android.media.MediaScannerConnection
 import android.os.Environment
 import android.provider.MediaStore
 import androidx.core.net.toUri
-import com.mskd.flux.core.data.datastore.UserDataStore
+import com.mskd.flux.core.domain.datastore.UserDataStore
 import com.mskd.flux.core.domain.model.files.FileSource
 import com.mskd.flux.core.domain.model.files.UserFile
 import com.mskd.flux.features.files.data.FileExtensions

@@ -8,6 +8,7 @@ import com.mskd.flux.core.domain.model.artwork.Episode
 import com.mskd.flux.core.domain.model.artwork.Movie
 import com.mskd.flux.core.domain.model.artwork.Season
 import com.mskd.flux.core.domain.model.files.UserFile
+import com.mskd.flux.features.sources.domain.model.UserFolder
 import com.mskd.flux.utils.extensions.sort
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -152,6 +153,15 @@ internal class DatabaseRepositoryImpl(private val dao: DatabaseDao) : DatabaseRe
 
         deleteMovies(moviesToDelete)
         deleteEpisodes(episodesToDelete)
+
+    }
+
+    override suspend fun deleteMediasInFolder(folder: UserFolder) {
+
+        dao.deleteMediasInFolder(folderPath = folder.path)
+
+        dao.deleteEmptySeasons()
+        dao.deleteEmptyArtworks()
 
     }
 

@@ -5,6 +5,7 @@ import com.mskd.flux.core.domain.model.artwork.Episode
 import com.mskd.flux.core.domain.model.artwork.Movie
 import com.mskd.flux.core.domain.model.artwork.Season
 import com.mskd.flux.core.domain.model.files.UserFile
+import com.mskd.flux.features.sources.domain.model.UserFolder
 import kotlinx.coroutines.flow.Flow
 
 interface DatabaseRepository {
@@ -53,6 +54,7 @@ interface DatabaseRepository {
     suspend fun deleteMovies(movies: List<Movie>)
     suspend fun deleteEpisodes(episodes: List<Episode>)
     suspend fun deleteMediasNotInFiles(files: List<UserFile>)
+    suspend fun deleteMediasInFolder(folder: UserFolder)
     suspend fun deleteAll()
 
 }

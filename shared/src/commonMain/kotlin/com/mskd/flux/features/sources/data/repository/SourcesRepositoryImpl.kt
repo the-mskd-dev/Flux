@@ -1,5 +1,6 @@
 package com.mskd.flux.features.sources.data.repository
 
+import com.mskd.flux.core.data.database.repository.DatabaseRepository
 import com.mskd.flux.core.domain.model.files.FileSource
 import com.mskd.flux.features.sources.data.local.SourcesDao
 import com.mskd.flux.features.sources.data.local.UserFolderEntity
@@ -13,6 +14,7 @@ import kotlinx.coroutines.flow.map
 
 internal class SourcesRepositoryImpl(
     private val dao: SourcesDao,
+    private val databaseRepository: DatabaseRepository,
     private val userFolderValidator: UserFolderValidator
 ) : SourcesRepository {
 
@@ -30,10 +32,14 @@ internal class SourcesRepositoryImpl(
 
     override suspend fun deleteFolder(folder: UserFolder) {
         dao.deleteFolder(path = folder.path)
+        databaseRepository.deleteMediasInFolder(folder = folder)
     }
 
     override suspend fun deleteFolders(folders: List<UserFolder>) {
         dao.deleteFolders(paths = folders.map { it.path })
+        folders.forEach { folder ->
+            databaseRepository.deleteMediasInFolder(folder = folder)
+        }
     }
 
     private suspend fun UserFolderEntity.toDomainWithStatus(): UserFolder {

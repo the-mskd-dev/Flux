@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import com.mskd.flux.core.data.database.model.ArtworkEntity
 import com.mskd.flux.core.data.database.model.EpisodeEntity
 import com.mskd.flux.core.data.database.model.MovieEntity
@@ -146,6 +147,20 @@ interface DatabaseDao {
     @Query("DELETE FROM seasons")
     suspend fun deleteAllSeasons()
 
+    @Query("DELETE FROM movies WHERE path LIKE :folderPath || '%' ESCAPE '\\'")
+    suspend fun deleteMoviesInFolder(folderPath: String)
+
+    @Query("DELETE FROM episodes WHERE path LIKE :folderPath || '%' ESCAPE '\\'")
+    suspend fun deleteEpisodesInFolder(folderPath: String)
+
+    @Transaction
+    suspend fun deleteMediasInFolder(folderPath: String) {
+        deleteMoviesInFolder(folderPath = folderPath)
+        deleteEpisodesInFolder(folderPath = folderPath)
+    }
+
+
+
 //endregion
 
 //region Count
@@ -168,16 +183,6 @@ interface DatabaseDao {
 
     @Query("SELECT imagePath FROM seasons")
     suspend fun getSeasonsImages() : List<String>
-
-//endregion
-
-//region Files
-
-    @Query("SELECT * FROM folders")
-    suspend fun getUserFolders() : List<UserFolderEntity>
-
-    @Query("DELETE FROM folders WHERE path = :path")
-    suspend fun deleteUserFolder(path: String)
 
 //endregion
 

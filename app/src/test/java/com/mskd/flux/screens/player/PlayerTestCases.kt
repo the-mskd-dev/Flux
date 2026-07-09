@@ -3,7 +3,7 @@ package com.mskd.flux.screens.player
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Media
-import com.mskd.flux.core.model..player.PlayerTrack
+import com.mskd.flux.core.model.player.PlayerTrack
 import com.mskd.flux.features.player.presentation.PlayerUiContent
 
 object PlayerTestCases {

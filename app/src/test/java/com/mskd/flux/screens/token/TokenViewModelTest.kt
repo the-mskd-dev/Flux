@@ -3,15 +3,13 @@ package com.mskd.flux.screens.token
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.core.model.core.AppInfo
-import com.mskd.flux.core.network.tmdb.data.remote.dto.AuthenticationDto
-import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
-import com.mskd.flux.features.tmdb.data.service.TMDBService
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
+import com.mskd.flux.features.token.domain.model.AuthenticateResult
 import com.mskd.flux.features.token.domain.model.TokenMessage
+import com.mskd.flux.features.token.domain.usecase.SaveTokenAndSyncUseCase
 import com.mskd.flux.features.token.presentation.TokenEvent
 import com.mskd.flux.features.token.presentation.TokenIntent
 import com.mskd.flux.features.token.presentation.TokenViewModel
-import com.mskd.flux.mockups.features.catalog.FakeSyncCatalogUseCase
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData
 import io.kotest.matchers.shouldBe
@@ -25,29 +23,24 @@ class TokenViewModelTest : FunSpec({
 
     lateinit var viewModel: TokenViewModel
     lateinit var tokenDataStore: TokenDataStore
-    lateinit var tmdbService: TMDBService
-    lateinit var syncCatalogUseCase: SyncCatalogUseCase
+    lateinit var saveTokenAndSyncUseCase: SaveTokenAndSyncUseCase
     lateinit var appInfo: AppInfo
 
     beforeTest {
 
-        tokenDataStore = mockk(relaxed = true) {
+        tokenDataStore = mockk<TokenDataStore>(relaxed = true) {
             coEvery { getToken() } returns "token"
         }
 
-        tmdbService = mockk(relaxed = true) {
-            coEvery { authenticate() } returns AuthenticationDto(success = true, code = 0, message = "")
-        }
-
-        syncCatalogUseCase = FakeSyncCatalogUseCase()
+        saveTokenAndSyncUseCase = mockk<SaveTokenAndSyncUseCase>(relaxed = true)
+        coEvery { saveTokenAndSyncUseCase(any<String>()) } returns AuthenticateResult.SUCCESS
 
         appInfo = mockk(relaxed = true)
 
         viewModel = TokenViewModel(
             fromSettings = true,
             tokenDataStore = tokenDataStore,
-            tmdbService = tmdbService,
-            syncCatalogUseCase = syncCatalogUseCase,
+            saveTokenAndSyncUseCase = saveTokenAndSyncUseCase,
             appInfo = appInfo
         )
 
@@ -107,8 +100,7 @@ class TokenViewModelTest : FunSpec({
         val vm = TokenViewModel(
             fromSettings = false,
             tokenDataStore = tokenDataStore,
-            tmdbService = tmdbService,
-            syncCatalogUseCase = syncCatalogUseCase,
+            saveTokenAndSyncUseCase = saveTokenAndSyncUseCase,
             appInfo = appInfo
         )
         vm.uiState.test {
@@ -121,8 +113,7 @@ class TokenViewModelTest : FunSpec({
         val vm = TokenViewModel(
             fromSettings = false,
             tokenDataStore = tokenDataStore,
-            tmdbService = tmdbService,
-            syncCatalogUseCase = syncCatalogUseCase,
+            saveTokenAndSyncUseCase = saveTokenAndSyncUseCase,
             appInfo = appInfo
         )
         vm.event.test {
@@ -136,36 +127,31 @@ class TokenViewModelTest : FunSpec({
             nameFn = { it.description },
             TokenTestCases.SaveToken(
                 description = "Success",
-                apiResult = AuthenticationDto(success = true, code = 0, message = ""),
+                apiResult = AuthenticateResult.SUCCESS,
                 expectedMessage = TokenMessage.Success,
                 expectedLoadCatalog = true,
             ),
             TokenTestCases.SaveToken(
                 description = "Fail token",
-                apiResult = AuthenticationDto(success = false, code = 401, message = "Fail"),
+                apiResult = AuthenticateResult.FAILURE,
                 expectedMessage = TokenMessage.Error,
                 expectedLoadCatalog = false,
             ),
             TokenTestCases.SaveToken(
                 description = "Fail token with exception",
-                apiResult = Exception("Fail"),
+                apiResult = AuthenticateResult.FAILURE,
                 expectedMessage = TokenMessage.Error,
                 expectedLoadCatalog = false,
             )
         ) { testCase ->
 
-            tmdbService = mockk(relaxed = true) {
-                if (testCase.apiResult is AuthenticationDto)
-                    coEvery { authenticate() } returns testCase.apiResult
-                else
-                    coEvery { authenticate() } throws testCase.apiResult as Exception
-            }
+            saveTokenAndSyncUseCase = mockk<SaveTokenAndSyncUseCase>(relaxed = true)
+            coEvery { saveTokenAndSyncUseCase(any<String>()) } returns (testCase.apiResult as AuthenticateResult)
 
             viewModel = TokenViewModel(
                 fromSettings = true,
                 tokenDataStore = tokenDataStore,
-                tmdbService = tmdbService,
-                syncCatalogUseCase = syncCatalogUseCase,
+                saveTokenAndSyncUseCase = saveTokenAndSyncUseCase,
                 appInfo = appInfo
             )
 
@@ -178,7 +164,7 @@ class TokenViewModelTest : FunSpec({
                 val state = awaitItem()
 
                 if (testCase.expectedLoadCatalog) {
-                    coVerify { syncCatalogUseCase(onlyNew = false) }
+                    coVerify { saveTokenAndSyncUseCase(any()) }
                 }
                 state.message shouldBe testCase.expectedMessage
                 state.isLoading shouldBe false

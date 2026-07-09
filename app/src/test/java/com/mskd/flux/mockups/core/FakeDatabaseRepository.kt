@@ -1,6 +1,7 @@
 package com.mskd.flux.mockups.core
 
 import com.mskd.flux.core.database.domain.repository.DatabaseRepository
+import com.mskd.flux.features.sources.domain.model.UserFolder
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Movie
@@ -11,6 +12,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 
 class FakeDatabaseRepository : DatabaseRepository {
+
+    override suspend fun deleteMediasInFolder(folder: UserFolder) {}
 
     override fun flowArtworks(): Flow<List<Artwork>> {
         return MutableStateFlow(MediaMockups.artworks)

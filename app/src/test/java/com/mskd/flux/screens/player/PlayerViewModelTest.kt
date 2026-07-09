@@ -6,6 +6,7 @@ import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.core.model.player.PlayerTrack
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
+import com.mskd.flux.mockups.features.artwork.FakeObserveArtworkUseCase
 import com.mskd.flux.features.files.domain.usecase.GetSubtitlesUseCase
 import com.mskd.flux.features.player.data.PipIsEnabledUseCase
 import com.mskd.flux.features.player.presentation.PlayerEvent
@@ -49,6 +50,9 @@ class PlayerViewModelTest : FunSpec({
 
         saveProgress = mockk(relaxed = true)
 
+        val media = MediaMockups.allMedias.find { it.mediaId == mediaId }
+        media?.let { observeArtworkUseCase(it.artworkId) }
+
         viewModel = PlayerViewModel(
             mediaId = mediaId,
             observeArtworkUseCase = observeArtworkUseCase,
@@ -77,6 +81,7 @@ class PlayerViewModelTest : FunSpec({
 
         pipIsEnabledUseCase = mockk(relaxed = true)
         getSubtitlesUseCase = mockk(relaxed = true)
+        observeArtworkUseCase = FakeObserveArtworkUseCase()
 
         updateVm()
 
@@ -464,7 +469,7 @@ class PlayerViewModelTest : FunSpec({
 
     test("error state when artworkState is State.Error") {
         observeArtworkUseCase(-999L)
-        updateVm()
+        updateVm(mediaId = -999L)
 
         viewModel.uiState.test {
             awaitItem().state shouldBe State.Error()

@@ -3,6 +3,7 @@ package com.mskd.flux.screens.settings
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.core.model.core.FluxOptionsDialogState
+import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCase
 import com.mskd.flux.features.images.domain.ImagesPrefetchManager
@@ -10,8 +11,6 @@ import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.features.settings.presentation.SettingsEvent
 import com.mskd.flux.features.settings.presentation.SettingsIntent
 import com.mskd.flux.features.settings.presentation.SettingsViewModel
-import com.mskd.flux.mockups.features.catalog.FakeSyncCatalogUseCase
-import com.mskd.flux.mockups.features.images.FakeImagesPrefetchManager
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -42,9 +41,13 @@ class SettingsViewModelTest : FunSpec({
             every { flow } returns dataStoreFlow
         }
 
-        imagesPrefetchManager = FakeImagesPrefetchManager()
+        imagesPrefetchManager = mockk(relaxed = true) {
+            every { state } returns MutableStateFlow(ImagesPrefetchManager.State.Idle)
+        }
 
-        syncCatalogUseCase = FakeSyncCatalogUseCase()
+        syncCatalogUseCase = mockk(relaxed = true) {
+            every { state } returns MutableStateFlow(SyncState.Idle)
+        }
         updateLanguageUseCase = mockk(relaxed = true)
 
         viewModel = SettingsViewModel(

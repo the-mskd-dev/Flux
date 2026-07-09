@@ -22,6 +22,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.spyk
 import kotlinx.coroutines.flow.MutableStateFlow
 
 class ProgressUCTest : FunSpec({
@@ -37,7 +38,7 @@ class ProgressUCTest : FunSpec({
 
     beforeTest {
 
-        databaseRepository = FakeDatabaseRepository()
+        databaseRepository = spyk(FakeDatabaseRepository())
 
         userDataStore = mockk(relaxed = true) {
             every { flow } returns MutableStateFlow(UserDataStore.State())

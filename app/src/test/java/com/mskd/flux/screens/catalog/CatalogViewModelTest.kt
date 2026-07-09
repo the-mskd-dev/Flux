@@ -7,7 +7,6 @@ import com.mskd.flux.core.datastore.domain.UserDataStore
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.core.AppInfo
-import com.mskd.flux.features.catalog.domain.usecase.cleanCatalog.CleanCatalogUseCase
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.catalog.presentation.catalog.CatalogEvent
 import com.mskd.flux.features.catalog.presentation.catalog.CatalogIntent
@@ -37,7 +36,6 @@ class CatalogViewModelTest : FunSpec({
 
     lateinit var viewModel: CatalogViewModel
     lateinit var syncCatalogUseCase: SyncCatalogUseCase
-    lateinit var cleanCatalogUseCase: CleanCatalogUseCase
     lateinit var database: DatabaseRepository
     lateinit var userDataStore: UserDataStore
     lateinit var tokenDataStore: TokenDataStore
@@ -58,7 +56,6 @@ class CatalogViewModelTest : FunSpec({
         }
 
         syncCatalogUseCase = FakeSyncCatalogUseCase()
-        cleanCatalogUseCase = mockk(relaxed = true)
         database = FakeDatabaseRepository()
 
         snackbarDataStore = FakeSnackbarDataStore()
@@ -68,6 +65,17 @@ class CatalogViewModelTest : FunSpec({
             versionName = "Version-Test"
         )
 
+    }
+
+    fun createViewModel(syncUseCase: SyncCatalogUseCase = syncCatalogUseCase): CatalogViewModel {
+        return CatalogViewModel(
+            syncCatalogUseCase = syncUseCase,
+            database = database,
+            userDataStore = userDataStore,
+            tokenDataStore = tokenDataStore,
+            snackbarDataStore = snackbarDataStore,
+            appInfo = appInfo
+        )
     }
 
     context("initial state") {
@@ -87,17 +95,10 @@ class CatalogViewModelTest : FunSpec({
 
             tokenFlow.value = testCase.tokenValue
 
-            viewModel = CatalogViewModel(
-                syncCatalogUseCase = syncCatalogUseCase,
-                cleanCatalogUseCase = cleanCatalogUseCase,
-                database = database,
-                tokenDataStore = tokenDataStore,
-                userDataStore = userDataStore,
-                snackbarDataStore = snackbarDataStore,
-                appInfo = appInfo
-            )
+            viewModel = createViewModel()
 
             viewModel.uiState.test {
+                awaitItem().state shouldBe CatalogState.Loading()
                 val initialState = awaitItem()
                 initialState.state shouldBe CatalogState.Content(
                     artworks = MediaMockups.artworks,
@@ -116,15 +117,7 @@ class CatalogViewModelTest : FunSpec({
 
         val syncCatalogUseCaseSpy = spyk(syncCatalogUseCase)
 
-        viewModel = CatalogViewModel(
-            syncCatalogUseCase = syncCatalogUseCase,
-            cleanCatalogUseCase = cleanCatalogUseCase,
-            database = database,
-            tokenDataStore = tokenDataStore,
-            userDataStore = userDataStore,
-            snackbarDataStore = snackbarDataStore,
-            appInfo = appInfo
-        )
+        viewModel = createViewModel(syncUseCase = syncCatalogUseCaseSpy)
 
         viewModel.handleIntent(CatalogIntent.SyncCatalog)
 
@@ -141,40 +134,24 @@ class CatalogViewModelTest : FunSpec({
         val oldTime = System.currentTimeMillis() - 2.days.inWholeMilliseconds
         coEvery { userDataStore.getSyncTime() } returns oldTime
 
-        viewModel = CatalogViewModel(
-            syncCatalogUseCase = syncCatalogUseCase,
-            cleanCatalogUseCase = cleanCatalogUseCase,
-            database = database,
-            tokenDataStore = tokenDataStore,
-            userDataStore = userDataStore,
-            snackbarDataStore = snackbarDataStore,
-            appInfo = appInfo
-        )
+        viewModel = createViewModel(syncUseCase = syncCatalogUseCaseSpy)
 
         verify(exactly = 1) {
             syncCatalogUseCaseSpy(onlyNew = true)
         }
     }
 
-    test("should not sync when last sync was less than 1 day ago") {
+    test("should sync when last sync was less than 1 day ago (delegated to usecase)") {
 
         val syncCatalogUseCaseSpy = spyk(syncCatalogUseCase)
 
         val recentTime = System.currentTimeMillis() - 12.hours.inWholeMilliseconds
         coEvery { userDataStore.getSyncTime() } returns recentTime
 
-        viewModel = CatalogViewModel(
-            syncCatalogUseCase = syncCatalogUseCase,
-            cleanCatalogUseCase = cleanCatalogUseCase,
-            database = database,
-            tokenDataStore = tokenDataStore,
-            userDataStore = userDataStore,
-            snackbarDataStore = snackbarDataStore,
-            appInfo = appInfo
-        )
+        viewModel = createViewModel(syncUseCase = syncCatalogUseCaseSpy)
 
-        verify(exactly = 0) {
-            syncCatalogUseCaseSpy(any())
+        verify(exactly = 1) {
+            syncCatalogUseCaseSpy(onlyNew = true)
         }
     }
 
@@ -190,15 +167,7 @@ class CatalogViewModelTest : FunSpec({
             versionName = "VersionTest"
         )
 
-        viewModel = CatalogViewModel(
-            syncCatalogUseCase = syncCatalogUseCase,
-            cleanCatalogUseCase = cleanCatalogUseCase,
-            database = database,
-            tokenDataStore = tokenDataStore,
-            userDataStore = userDataStore,
-            snackbarDataStore = snackbarDataStore,
-            appInfo = appInfo
-        )
+        viewModel = createViewModel(syncUseCase = syncCatalogUseCaseSpy)
 
         verify(exactly = 1) {
             syncCatalogUseCaseSpy(onlyNew = false)
@@ -206,15 +175,7 @@ class CatalogViewModelTest : FunSpec({
     }
 
     test("on artwork show tap") {
-        viewModel = CatalogViewModel(
-            syncCatalogUseCase = syncCatalogUseCase,
-            cleanCatalogUseCase = cleanCatalogUseCase,
-            database = database,
-            tokenDataStore = tokenDataStore,
-            userDataStore = userDataStore,
-            snackbarDataStore = snackbarDataStore,
-            appInfo = appInfo
-        )
+        viewModel = createViewModel()
 
         viewModel.event.test {
             viewModel.handleIntent(CatalogIntent.OnArtworkTap(artwork = MediaMockups.showArtwork, rgb = 0x112233))
@@ -223,15 +184,7 @@ class CatalogViewModelTest : FunSpec({
     }
 
     test("on artwork movie tap") {
-        viewModel = CatalogViewModel(
-            syncCatalogUseCase = syncCatalogUseCase,
-            cleanCatalogUseCase = cleanCatalogUseCase,
-            database = database,
-            tokenDataStore = tokenDataStore,
-            userDataStore = userDataStore,
-            snackbarDataStore = snackbarDataStore,
-            appInfo = appInfo
-        )
+        viewModel = createViewModel()
 
         viewModel.event.test {
             viewModel.handleIntent(CatalogIntent.OnArtworkTap(artwork = MediaMockups.movieArtwork, rgb = 0x112233))
@@ -240,15 +193,7 @@ class CatalogViewModelTest : FunSpec({
     }
 
     test("on unknown artwork tap") {
-        viewModel = CatalogViewModel(
-            syncCatalogUseCase = syncCatalogUseCase,
-            cleanCatalogUseCase = cleanCatalogUseCase,
-            database = database,
-            tokenDataStore = tokenDataStore,
-            userDataStore = userDataStore,
-            snackbarDataStore = snackbarDataStore,
-            appInfo = appInfo
-        )
+        viewModel = createViewModel()
 
         viewModel.event.test {
             viewModel.handleIntent(CatalogIntent.OnArtworkTap(artwork = Artwork.UNKNOWN, rgb = null))
@@ -257,15 +202,7 @@ class CatalogViewModelTest : FunSpec({
     }
 
     test("on category tap") {
-        viewModel = CatalogViewModel(
-            syncCatalogUseCase = syncCatalogUseCase,
-            cleanCatalogUseCase = cleanCatalogUseCase,
-            database = database,
-            tokenDataStore = tokenDataStore,
-            userDataStore = userDataStore,
-            snackbarDataStore = snackbarDataStore,
-            appInfo = appInfo
-        )
+        viewModel = createViewModel()
 
         viewModel.event.test {
             viewModel.handleIntent(CatalogIntent.OnCategoryTap(category = ContentType.MOVIE))
@@ -274,15 +211,7 @@ class CatalogViewModelTest : FunSpec({
     }
 
     test("on search tap") {
-        viewModel = CatalogViewModel(
-            syncCatalogUseCase = syncCatalogUseCase,
-            cleanCatalogUseCase = cleanCatalogUseCase,
-            database = database,
-            tokenDataStore = tokenDataStore,
-            userDataStore = userDataStore,
-            snackbarDataStore = snackbarDataStore,
-            appInfo = appInfo
-        )
+        viewModel = createViewModel()
 
         viewModel.event.test {
             viewModel.handleIntent(CatalogIntent.OnSearchTap)
@@ -291,15 +220,7 @@ class CatalogViewModelTest : FunSpec({
     }
 
     test("on settings tap") {
-        viewModel = CatalogViewModel(
-            syncCatalogUseCase = syncCatalogUseCase,
-            cleanCatalogUseCase = cleanCatalogUseCase,
-            database = database,
-            tokenDataStore = tokenDataStore,
-            userDataStore = userDataStore,
-            snackbarDataStore = snackbarDataStore,
-            appInfo = appInfo
-        )
+        viewModel = createViewModel()
 
         viewModel.event.test {
             viewModel.handleIntent(CatalogIntent.OnSettingsTap)
@@ -308,15 +229,7 @@ class CatalogViewModelTest : FunSpec({
     }
 
     test("on how to tap") {
-        viewModel = CatalogViewModel(
-            syncCatalogUseCase = syncCatalogUseCase,
-            cleanCatalogUseCase = cleanCatalogUseCase,
-            database = database,
-            tokenDataStore = tokenDataStore,
-            userDataStore = userDataStore,
-            snackbarDataStore = snackbarDataStore,
-            appInfo = appInfo
-        )
+        viewModel = createViewModel()
 
         viewModel.event.test {
             viewModel.handleIntent(CatalogIntent.OnHowToTap)
@@ -327,17 +240,10 @@ class CatalogViewModelTest : FunSpec({
     test("on dismiss snackbar and snackbar action tap") {
         tokenFlow.value = ""
 
-        viewModel = CatalogViewModel(
-            syncCatalogUseCase = syncCatalogUseCase,
-            cleanCatalogUseCase = cleanCatalogUseCase,
-            database = database,
-            tokenDataStore = tokenDataStore,
-            userDataStore = userDataStore,
-            snackbarDataStore = snackbarDataStore,
-            appInfo = appInfo
-        )
+        viewModel = createViewModel()
 
         viewModel.uiState.test {
+            awaitItem().snackbarState shouldBe null
             val stateWithSnackbar = awaitItem()
             stateWithSnackbar.snackbarState shouldBe FluxSnackbar.Token
 
@@ -350,17 +256,10 @@ class CatalogViewModelTest : FunSpec({
 
         tokenFlow.value = "token"
 
-        val viewModelTutorial = CatalogViewModel(
-            syncCatalogUseCase = syncCatalogUseCase,
-            cleanCatalogUseCase = cleanCatalogUseCase,
-            database = database,
-            tokenDataStore = tokenDataStore,
-            userDataStore = userDataStore,
-            snackbarDataStore = snackbarDataStore,
-            appInfo = appInfo
-        )
+        val viewModelTutorial = createViewModel()
 
         viewModelTutorial.uiState.test {
+            awaitItem().snackbarState shouldBe null
             awaitItem().snackbarState shouldBe FluxSnackbar.Tutorial
 
             viewModelTutorial.event.test {

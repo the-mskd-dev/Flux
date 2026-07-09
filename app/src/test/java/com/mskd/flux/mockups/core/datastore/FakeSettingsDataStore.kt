@@ -1,6 +1,6 @@
 package com.mskd.flux.mockups.core.datastore
 
-import com.mskd.flux.core.domain.datastore.SettingsDataStore
+import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.util.Locale

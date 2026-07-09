@@ -7,11 +7,11 @@ import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtwo
 import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.features.artwork.FakeObserveArtworkUseCase
-import com.mskd.flux.screen.show.ShowContent
-import com.mskd.flux.screen.show.ShowDialog
-import com.mskd.flux.screen.show.ShowEvent
-import com.mskd.flux.screen.show.ShowIntent
-import com.mskd.flux.screen.show.ShowViewModel
+import com.mskd.flux.features.show.presentation.ShowContent
+import com.mskd.flux.features.show.presentation.ShowDialog
+import com.mskd.flux.features.show.presentation.ShowEvent
+import com.mskd.flux.features.show.presentation.ShowIntent
+import com.mskd.flux.features.show.presentation.ShowViewModel
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf

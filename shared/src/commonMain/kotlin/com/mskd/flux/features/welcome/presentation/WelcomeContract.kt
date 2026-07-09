@@ -1,4 +1,4 @@
-package com.mskd.flux.screen.welcome
+package com.mskd.flux.features.welcome.presentation
 
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.artwork_screen

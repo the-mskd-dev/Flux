@@ -33,10 +33,10 @@ import com.mskd.flux.core.domain.model.core.State
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Route.Artwork
-import com.mskd.flux.screen.show.ShowDialog
-import com.mskd.flux.screen.show.ShowEvent
-import com.mskd.flux.screen.show.ShowIntent
-import com.mskd.flux.screen.show.ShowViewModel
+import com.mskd.flux.features.show.presentation.ShowDialog
+import com.mskd.flux.features.show.presentation.ShowEvent
+import com.mskd.flux.features.show.presentation.ShowIntent
+import com.mskd.flux.features.show.presentation.ShowViewModel
 import com.mskd.flux.screens.show.composables.SeasonDialog
 import com.mskd.flux.screens.show.composables.ShowContentLarge
 import com.mskd.flux.screens.show.composables.ShowContentRegular

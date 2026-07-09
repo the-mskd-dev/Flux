@@ -1,4 +1,4 @@
-package com.mskd.flux.core.domain.datastore
+package com.mskd.flux.features.settings.domain.datastore
 
 import kotlinx.coroutines.flow.Flow
 import java.util.Locale

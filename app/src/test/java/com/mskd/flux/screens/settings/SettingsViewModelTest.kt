@@ -2,16 +2,16 @@ package com.mskd.flux.screens.settings
 
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
-import com.mskd.flux.core.domain.datastore.SettingsDataStore
+import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.core.domain.model.core.FluxOptionsDialogState
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCase
 import com.mskd.flux.features.images.domain.ImagesPrefetchManager
 import com.mskd.flux.mockups.features.catalog.FakeSyncCatalogUseCase
 import com.mskd.flux.mockups.features.images.FakeImagesPrefetchManager
-import com.mskd.flux.screen.settings.SettingsEvent
-import com.mskd.flux.screen.settings.SettingsIntent
-import com.mskd.flux.screen.settings.SettingsViewModel
+import com.mskd.flux.features.settings.presentation.SettingsEvent
+import com.mskd.flux.features.settings.presentation.SettingsIntent
+import com.mskd.flux.features.settings.presentation.SettingsViewModel
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe

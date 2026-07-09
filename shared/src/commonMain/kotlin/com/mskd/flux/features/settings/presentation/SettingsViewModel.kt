@@ -1,8 +1,8 @@
-package com.mskd.flux.screen.settings
+package com.mskd.flux.features.settings.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mskd.flux.core.domain.datastore.SettingsDataStore
+import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.core.domain.model.core.FluxOptionsDialogItem
 import com.mskd.flux.core.domain.model.core.FluxOptionsDialogState
 import com.mskd.flux.core.domain.model.core.StringProvider

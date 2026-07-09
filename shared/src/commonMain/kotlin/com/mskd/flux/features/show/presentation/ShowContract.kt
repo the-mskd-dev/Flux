@@ -1,4 +1,4 @@
-package com.mskd.flux.screen.show
+package com.mskd.flux.features.show.presentation
 
 import androidx.compose.runtime.Immutable
 import com.mskd.flux.core.domain.model.artwork.FullArtwork

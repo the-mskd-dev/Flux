@@ -3,7 +3,7 @@ package com.mskd.flux
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.features.customization.domain.datastore.CustomizationDataStore
-import com.mskd.flux.core.domain.datastore.SettingsDataStore
+import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.core.domain.datastore.TokenDataStore
 import com.mskd.flux.core.domain.datastore.UserDataStore
 import com.mskd.flux.navigation.Route

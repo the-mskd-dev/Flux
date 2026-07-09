@@ -9,9 +9,7 @@ val moduleCommon = module {
     includes(
         moduleCore,
         moduleFeatures,
-
         moduleCoroutine,
-        moduleViewModel,
     )
 
 }

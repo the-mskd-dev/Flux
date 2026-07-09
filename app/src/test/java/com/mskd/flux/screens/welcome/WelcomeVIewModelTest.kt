@@ -3,11 +3,11 @@ package com.mskd.flux.screens.welcome
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.core.domain.datastore.TokenDataStore
-import com.mskd.flux.screen.welcome.WelcomeButton
-import com.mskd.flux.screen.welcome.WelcomeEvent
-import com.mskd.flux.screen.welcome.WelcomeIntent
-import com.mskd.flux.screen.welcome.WelcomePage
-import com.mskd.flux.screen.welcome.WelcomeViewModel
+import com.mskd.flux.features.welcome.presentation.WelcomeButton
+import com.mskd.flux.features.welcome.presentation.WelcomeEvent
+import com.mskd.flux.features.welcome.presentation.WelcomeIntent
+import com.mskd.flux.features.welcome.presentation.WelcomePage
+import com.mskd.flux.features.welcome.presentation.WelcomeViewModel
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData
 import io.kotest.matchers.shouldBe

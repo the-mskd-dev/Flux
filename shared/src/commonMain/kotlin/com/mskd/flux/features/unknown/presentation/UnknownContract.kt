@@ -1,4 +1,4 @@
-package com.mskd.flux.screen.unknown
+package com.mskd.flux.features.unknown.presentation
 
 import com.mskd.flux.core.domain.model.artwork.Episode
 import com.mskd.flux.core.domain.model.artwork.Media

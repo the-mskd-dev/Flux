@@ -15,8 +15,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.features.images.domain.ImagesPrefetchManager
-import com.mskd.flux.screen.settings.SettingsIntent
-import com.mskd.flux.screen.settings.SettingsUiState
+import com.mskd.flux.features.settings.presentation.SettingsIntent
+import com.mskd.flux.features.settings.presentation.SettingsUiState
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.extensions.WebLink

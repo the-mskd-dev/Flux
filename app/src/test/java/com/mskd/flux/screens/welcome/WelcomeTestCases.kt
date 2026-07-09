@@ -1,6 +1,6 @@
 package com.mskd.flux.screens.welcome
 
-import com.mskd.flux.screen.welcome.WelcomeEvent
+import com.mskd.flux.features.welcome.presentation.WelcomeEvent
 
 object WelcomeTestCases {
 

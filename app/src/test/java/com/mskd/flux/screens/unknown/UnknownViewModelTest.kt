@@ -2,15 +2,15 @@ package com.mskd.flux.screens.unknown
 
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
-import com.mskd.flux.core.domain.datastore.SettingsDataStore
+import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.core.domain.model.core.State
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
 import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.features.artwork.FakeObserveArtworkUseCase
-import com.mskd.flux.screen.unknown.UnknownEvent
-import com.mskd.flux.screen.unknown.UnknownIntent
-import com.mskd.flux.screen.unknown.UnknownViewModel
+import com.mskd.flux.features.unknown.presentation.UnknownEvent
+import com.mskd.flux.features.unknown.presentation.UnknownIntent
+import com.mskd.flux.features.unknown.presentation.UnknownViewModel
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf

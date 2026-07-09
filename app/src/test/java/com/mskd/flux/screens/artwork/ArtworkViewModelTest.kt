@@ -5,7 +5,7 @@ import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Status
-import com.mskd.flux.core.model..core.State
+import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
 import com.mskd.flux.features.artwork.presentation.ArtworkContent
 import com.mskd.flux.features.artwork.presentation.ArtworkDialog

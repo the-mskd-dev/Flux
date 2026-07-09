@@ -30,7 +30,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Media
-import com.mskd.flux.core.model..core.State
+import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.artwork.presentation.ArtworkDialog
 import com.mskd.flux.features.artwork.presentation.ArtworkEvent
 import com.mskd.flux.features.artwork.presentation.ArtworkIntent

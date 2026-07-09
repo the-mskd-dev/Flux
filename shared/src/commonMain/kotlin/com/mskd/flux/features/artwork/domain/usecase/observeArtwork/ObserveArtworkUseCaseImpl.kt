@@ -3,7 +3,7 @@ package com.mskd.flux.features.artwork.domain.usecase.observeArtwork
 import com.mskd.flux.core.database.domain.repository.DatabaseRepository
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.FullArtwork
-import com.mskd.flux.core.model..core.State
+import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.artwork.domain.mapper.buildFullArtworkMovie
 import com.mskd.flux.features.artwork.domain.mapper.buildFullArtworkShow
 import kotlinx.coroutines.ExperimentalCoroutinesApi

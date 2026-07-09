@@ -7,7 +7,7 @@ import com.mskd.flux.core.datastore.domain.SnackbarDataStore
 import com.mskd.flux.core.datastore.domain.UserDataStore
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.ContentType
-import com.mskd.flux.core.model..core.AppInfo
+import com.mskd.flux.core.model.core.AppInfo
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore

@@ -6,7 +6,7 @@ import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.Status
-import com.mskd.flux.core.model..core.State
+import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
 import com.mskd.flux.features.artwork.presentation.ArtworkEvent.OpenUrlInfo
 import com.mskd.flux.features.progress.domain.usecase.ChangeMediaStatusUseCase

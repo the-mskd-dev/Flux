@@ -3,7 +3,7 @@ package com.mskd.flux.screens.player
 import androidx.media3.common.Player
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
-import com.mskd.flux.core.model..core.State
+import com.mskd.flux.core.model.core.State
 import com.mskd.flux.core.model..player.PlayerTrack
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
 import com.mskd.flux.features.files.domain.usecase.GetSubtitlesUseCase

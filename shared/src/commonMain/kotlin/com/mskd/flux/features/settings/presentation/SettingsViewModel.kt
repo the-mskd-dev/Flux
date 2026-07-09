@@ -2,9 +2,9 @@ package com.mskd.flux.features.settings.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mskd.flux.core.model..core.FluxOptionsDialogItem
-import com.mskd.flux.core.model..core.FluxOptionsDialogState
-import com.mskd.flux.core.model..core.StringProvider
+import com.mskd.flux.core.model.core.FluxOptionsDialogItem
+import com.mskd.flux.core.model.core.FluxOptionsDialogState
+import com.mskd.flux.core.model.core.StringProvider
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCase

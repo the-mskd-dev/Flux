@@ -18,6 +18,7 @@ data class SourcesContent(
 
 sealed class SourcesDialog {
     data class ConfirmDelete(val folder: UserFolder) : SourcesDialog()
+    data object NewFeatureInformation: SourcesDialog()
 }
 
 sealed class SourcesIntent {
@@ -31,9 +32,11 @@ sealed class SourcesIntent {
     data class SaveFolder(val path: String) : SourcesIntent()
 
     // Delete
-    data class ShowDeleteDialog(val folder: UserFolder) : SourcesIntent()
-    data object CloseDeleteDialog : SourcesIntent()
     data class DeleteFolder(val folder: UserFolder) : SourcesIntent()
+
+    // Dialog
+    data class ShowDeleteDialog(val folder: UserFolder) : SourcesIntent()
+    data object CloseDialog : SourcesIntent()
 }
 
 sealed class SourcesEvent {

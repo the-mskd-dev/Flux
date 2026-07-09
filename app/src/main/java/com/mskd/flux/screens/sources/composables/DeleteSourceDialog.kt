@@ -24,7 +24,7 @@ fun DeleteSourceDialog(
                 text = stringResource(Res.string.confirm_source_deletion)
             )
         },
-        onDismiss = { sendIntent(SourcesIntent.CloseDeleteDialog) },
+        onDismiss = { sendIntent(SourcesIntent.CloseDialog) },
         onValidate = { sendIntent(SourcesIntent.DeleteFolder(folder = folder)) },
         onValidateLabel = stringResource(Res.string.delete),
     )

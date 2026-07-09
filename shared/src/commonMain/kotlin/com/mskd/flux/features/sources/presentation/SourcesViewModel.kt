@@ -26,7 +26,7 @@ class SourcesViewModel(
     flowSourcesUseCase: FlowSourcesUseCase,
     private val addSourceUseCase: AddSourceUseCase,
     private val deleteSourceUseCase: DeleteSourceUseCase,
-    private val syncCatalogUseCase: SyncCatalogUseCase
+    private val syncCatalogUseCase: SyncCatalogUseCase,
 ) : ViewModel() {
 
     //region State
@@ -77,6 +77,15 @@ class SourcesViewModel(
             }
         }
 
+        // Show
+        viewModelScope.launch {
+
+            if (userDataStore.getVersionCode() in 1..28 && userDataStore.sourcesRequested) {
+                _dialogState.update { SourcesDialog.NewFeatureInformation }
+            }
+
+        }
+
     }
 
     //endregion
@@ -101,9 +110,11 @@ class SourcesViewModel(
             is SourcesIntent.SaveFolder -> saveFolder(path = intent.path)
 
             // Delete
-            is SourcesIntent.ShowDeleteDialog -> showDeleteDialog(folder = intent.folder)
-            SourcesIntent.CloseDeleteDialog -> closeDeleteDialog()
             is SourcesIntent.DeleteFolder -> deleteFolder(folder = intent.folder)
+
+            // Dialog
+            is SourcesIntent.ShowDeleteDialog -> showDeleteDialog(folder = intent.folder)
+            SourcesIntent.CloseDialog -> closeDialog()
         }
     }
 
@@ -141,13 +152,13 @@ class SourcesViewModel(
         _dialogState.update { SourcesDialog.ConfirmDelete(folder = folder) }
     }
 
-    private fun closeDeleteDialog() {
+    private fun closeDialog() {
         _dialogState.update { null }
     }
 
     private suspend fun deleteFolder(folder: UserFolder) {
         deleteSourceUseCase(folder = folder)
-        closeDeleteDialog()
+        closeDialog()
     }
 
     //endregion

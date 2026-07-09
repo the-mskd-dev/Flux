@@ -1,9 +1,9 @@
 package com.mskd.flux.features.catalog.domain.usecase.updateLanguage
 
 import com.mskd.flux.core.data.database.repository.DatabaseRepository
-import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.core.domain.model.artwork.ContentType
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
+import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.features.tmdb.data.datasource.TmdbDataSource
 import com.mskd.flux.features.tmdb.data.dto.TranslationsDto
 import kotlinx.coroutines.CoroutineDispatcher

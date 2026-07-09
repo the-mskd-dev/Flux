@@ -1,10 +1,8 @@
 package com.mskd.flux.core.domain.datastore
 
 import com.mskd.flux.core.data.datastore.SnackbarDataStoreImpl
-import com.mskd.flux.features.token.data.datastore.TokenDataStoreImpl
 import com.mskd.flux.core.data.datastore.UserDataStoreImpl
 import com.mskd.flux.di.Qualifiers
-import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import org.koin.dsl.module
 
 val moduleDatastore = module {

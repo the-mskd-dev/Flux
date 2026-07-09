@@ -6,8 +6,8 @@ import com.mskd.flux.features.sources.data.repository.SourcesRepositoryImpl
 import com.mskd.flux.features.sources.domain.repository.SourcesRepository
 import com.mskd.flux.features.sources.domain.usecase.AddSourceUseCase
 import com.mskd.flux.features.sources.domain.usecase.DeleteSourceUseCase
-import com.mskd.flux.features.sources.domain.usecase.FlowSourcesUseCase
 import com.mskd.flux.features.sources.domain.usecase.DeleteUnavailableSourcesUseCase
+import com.mskd.flux.features.sources.domain.usecase.FlowSourcesUseCase
 import com.mskd.flux.features.sources.presentation.SourcesViewModel
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModel

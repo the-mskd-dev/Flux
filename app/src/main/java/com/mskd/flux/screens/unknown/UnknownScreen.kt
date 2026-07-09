@@ -30,12 +30,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.mskd.flux.core.domain.model.artwork.Episode
 import com.mskd.flux.core.domain.model.core.State
-import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.navigation.Route
-import com.mskd.flux.navigation.Route.Player
 import com.mskd.flux.features.unknown.presentation.UnknownEvent
 import com.mskd.flux.features.unknown.presentation.UnknownIntent
 import com.mskd.flux.features.unknown.presentation.UnknownViewModel
+import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.navigation.Route
+import com.mskd.flux.navigation.Route.Player
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.component.global.ErrorScreen
 import com.mskd.flux.ui.component.global.FluxScaffold

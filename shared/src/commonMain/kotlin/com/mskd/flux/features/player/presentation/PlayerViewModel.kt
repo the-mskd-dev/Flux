@@ -2,7 +2,6 @@ package com.mskd.flux.features.player.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.core.domain.model.artwork.Episode
 import com.mskd.flux.core.domain.model.artwork.FullArtwork
 import com.mskd.flux.core.domain.model.artwork.Media
@@ -18,6 +17,7 @@ import com.mskd.flux.features.player.presentation.PlayerUiContent.NextButton
 import com.mskd.flux.features.player.presentation.PlayerUiContent.SeekOverlay
 import com.mskd.flux.features.player.presentation.PlayerUiContent.SettingsSheet
 import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
+import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.platform.PlayerManager
 import com.mskd.flux.utils.Trace
 import com.mskd.flux.utils.extensions.getNextEpisodeFor

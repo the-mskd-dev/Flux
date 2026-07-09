@@ -1,7 +1,7 @@
 package com.mskd.flux.features.tmdb.data.datasource
 
-import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.core.domain.model.files.UserFile
+import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.features.tmdb.data.dto.ArtworkDto
 import com.mskd.flux.features.tmdb.data.dto.EpisodeDto
 import com.mskd.flux.features.tmdb.data.dto.MediaTypeDto

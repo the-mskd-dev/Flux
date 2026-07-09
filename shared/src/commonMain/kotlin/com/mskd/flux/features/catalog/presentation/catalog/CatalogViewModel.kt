@@ -4,13 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.core.data.database.repository.DatabaseRepository
 import com.mskd.flux.core.domain.datastore.SnackbarDataStore
-import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.core.domain.datastore.UserDataStore
 import com.mskd.flux.core.domain.model.artwork.Artwork
 import com.mskd.flux.core.domain.model.artwork.ContentType
 import com.mskd.flux.core.domain.model.core.AppInfo
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
+import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.utils.FluxSnackbar
 import com.mskd.flux.utils.Trace
 import com.mskd.flux.utils.UpdateManager

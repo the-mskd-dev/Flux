@@ -2,7 +2,6 @@ package com.mskd.flux.screens.artwork
 
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
-import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.core.domain.model.artwork.Episode
 import com.mskd.flux.core.domain.model.artwork.FullArtwork
 import com.mskd.flux.core.domain.model.artwork.Status
@@ -17,6 +16,7 @@ import com.mskd.flux.features.progress.domain.usecase.ChangeMediaStatusUseCase
 import com.mskd.flux.features.progress.domain.usecase.MarkPreviousAsWatchedUseCase
 import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
 import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
+import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.features.artwork.FakeObserveArtworkUseCase
 import io.kotest.core.spec.style.FunSpec

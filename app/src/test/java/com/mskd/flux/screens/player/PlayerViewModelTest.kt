@@ -3,7 +3,6 @@ package com.mskd.flux.screens.player
 import androidx.media3.common.Player
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
-import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.core.domain.model.core.State
 import com.mskd.flux.core.domain.model.player.PlayerTrack
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
@@ -15,6 +14,7 @@ import com.mskd.flux.features.player.presentation.PlayerUiContent
 import com.mskd.flux.features.player.presentation.PlayerUiState
 import com.mskd.flux.features.player.presentation.PlayerViewModel
 import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
+import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.PlayerMockups
 import com.mskd.flux.platform.PlayerManager

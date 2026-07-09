@@ -30,13 +30,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.core.domain.model.artwork.FullArtwork
 import com.mskd.flux.core.domain.model.core.State
-import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.navigation.Route
-import com.mskd.flux.navigation.Route.Artwork
 import com.mskd.flux.features.show.presentation.ShowDialog
 import com.mskd.flux.features.show.presentation.ShowEvent
 import com.mskd.flux.features.show.presentation.ShowIntent
 import com.mskd.flux.features.show.presentation.ShowViewModel
+import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.navigation.Route
+import com.mskd.flux.navigation.Route.Artwork
 import com.mskd.flux.screens.show.composables.SeasonDialog
 import com.mskd.flux.screens.show.composables.ShowContentLarge
 import com.mskd.flux.screens.show.composables.ShowContentRegular

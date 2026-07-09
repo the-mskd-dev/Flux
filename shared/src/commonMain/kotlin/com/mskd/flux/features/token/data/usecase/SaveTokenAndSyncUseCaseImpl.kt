@@ -1,8 +1,8 @@
 package com.mskd.flux.features.token.data.usecase
 
-import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.tmdb.data.service.TMDBService
+import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.features.token.domain.model.AuthenticateResult
 import com.mskd.flux.features.token.domain.usecase.SaveTokenAndSyncUseCase
 

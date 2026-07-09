@@ -2,11 +2,11 @@ package com.mskd.flux.screens.token
 
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
-import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.core.domain.model.core.AppInfo
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.tmdb.data.dto.AuthenticationDto
 import com.mskd.flux.features.tmdb.data.service.TMDBService
+import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.features.token.domain.model.TokenMessage
 import com.mskd.flux.features.token.presentation.TokenEvent
 import com.mskd.flux.features.token.presentation.TokenIntent

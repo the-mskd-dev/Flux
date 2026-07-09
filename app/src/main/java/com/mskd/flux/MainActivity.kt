@@ -23,8 +23,8 @@ import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Transition
 import com.mskd.flux.screens.about.AboutScreen
 import com.mskd.flux.screens.artwork.ArtworkScreen
-import com.mskd.flux.screens.customization.CustomizationScreen
 import com.mskd.flux.screens.catalog.CatalogScreen
+import com.mskd.flux.screens.customization.CustomizationScreen
 import com.mskd.flux.screens.howTo.HowToScreen
 import com.mskd.flux.screens.player.PlayerScreen
 import com.mskd.flux.screens.search.SearchScreen

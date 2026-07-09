@@ -1,7 +1,6 @@
 package com.mskd.flux.features.catalog.domain.usecase.syncCatalog
 
 import com.mskd.flux.core.data.database.repository.DatabaseRepository
-import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.core.domain.datastore.UserDataStore
 import com.mskd.flux.core.domain.model.artwork.Artwork
 import com.mskd.flux.core.domain.model.artwork.ContentType
@@ -20,6 +19,7 @@ import com.mskd.flux.features.files.domain.usecase.FilterExistingFilesUseCase
 import com.mskd.flux.features.files.domain.usecase.GetDeviceFilesUseCase
 import com.mskd.flux.features.files.domain.usecase.GetFileDurationUseCase
 import com.mskd.flux.features.images.domain.ImagesPrefetchManager
+import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.features.sources.domain.usecase.DeleteUnavailableSourcesUseCase
 import com.mskd.flux.features.tmdb.data.datasource.TmdbDataSource
 import com.mskd.flux.features.tmdb.data.dto.EpisodeDto

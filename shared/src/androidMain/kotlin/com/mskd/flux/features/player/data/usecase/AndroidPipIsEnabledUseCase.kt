@@ -4,8 +4,8 @@ import android.app.AppOpsManager
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Process
-import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.features.player.data.PipIsEnabledUseCase
+import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import kotlinx.coroutines.flow.first
 
 class AndroidPipIsEnabledUseCase(

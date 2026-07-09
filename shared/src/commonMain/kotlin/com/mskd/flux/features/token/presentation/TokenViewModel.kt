@@ -2,8 +2,8 @@ package com.mskd.flux.features.token.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.core.domain.model.core.AppInfo
+import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.features.token.domain.model.AuthenticateResult
 import com.mskd.flux.features.token.domain.model.TokenMessage
 import com.mskd.flux.features.token.domain.usecase.SaveTokenAndSyncUseCase

@@ -1,4 +1,4 @@
-package com.mskd.flux.screen.customization
+package com.mskd.flux.features.customization.presentation
 
 import androidx.compose.runtime.Immutable
 import com.mskd.flux.core.domain.model.core.FluxOptionsDialogState

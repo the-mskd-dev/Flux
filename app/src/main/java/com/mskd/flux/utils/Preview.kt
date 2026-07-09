@@ -15,7 +15,7 @@ import coil3.compose.AsyncImagePreviewHandler
 import coil3.compose.LocalAsyncImagePreviewHandler
 import coil3.imageLoader
 import coil3.request.ImageRequest
-import com.mskd.flux.core.domain.datastore.CustomizationDataStore
+import com.mskd.flux.features.customization.domain.datastore.CustomizationDataStore
 import com.mskd.flux.ui.theme.FluxTheme
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_help

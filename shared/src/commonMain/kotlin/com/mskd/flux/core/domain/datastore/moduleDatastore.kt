@@ -1,20 +1,15 @@
 package com.mskd.flux.core.domain.datastore
 
-import com.mskd.flux.core.data.datastore.CustomizationDataStoreImpl
+import com.mskd.flux.features.customization.data.datastore.CustomizationDataStoreImpl
 import com.mskd.flux.core.data.datastore.SettingsDataStoreImpl
 import com.mskd.flux.core.data.datastore.SnackbarDataStoreImpl
 import com.mskd.flux.core.data.datastore.TokenDataStoreImpl
 import com.mskd.flux.core.data.datastore.UserDataStoreImpl
 import com.mskd.flux.di.Qualifiers
+import com.mskd.flux.features.customization.domain.datastore.CustomizationDataStore
 import org.koin.dsl.module
 
 val moduleDatastore = module {
-
-    single<CustomizationDataStore> {
-        CustomizationDataStoreImpl(
-            customizationDataStore = get(Qualifiers.CUSTOMIZATION_DATASTORE)
-        )
-    }
 
     single<SettingsDataStore> {
         SettingsDataStoreImpl(

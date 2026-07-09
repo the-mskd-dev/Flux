@@ -2,12 +2,12 @@ package com.mskd.flux.screens.customization
 
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
-import com.mskd.flux.core.domain.datastore.CustomizationDataStore
+import com.mskd.flux.features.customization.domain.datastore.CustomizationDataStore
 import com.mskd.flux.core.domain.model.core.FluxOptionsDialogState
-import com.mskd.flux.screen.customization.CustomizationDialog
-import com.mskd.flux.screen.customization.CustomizationEvent
-import com.mskd.flux.screen.customization.CustomizationIntent
-import com.mskd.flux.screen.customization.CustomizationViewModel
+import com.mskd.flux.features.customization.presentation.CustomizationDialog
+import com.mskd.flux.features.customization.presentation.CustomizationEvent
+import com.mskd.flux.features.customization.presentation.CustomizationIntent
+import com.mskd.flux.features.customization.presentation.CustomizationViewModel
 import com.mskd.flux.utils.UiCommon
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe

@@ -3,6 +3,7 @@ package com.mskd.flux.features.sources.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.core.datastore.domain.UserDataStore
+import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.sources.domain.model.UserFolder
 import com.mskd.flux.features.sources.domain.usecase.AddSourceUseCase

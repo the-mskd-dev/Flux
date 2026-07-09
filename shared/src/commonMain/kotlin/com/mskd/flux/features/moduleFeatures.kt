@@ -8,7 +8,6 @@ import com.mskd.flux.features.progress.moduleProgress
 import com.mskd.flux.features.settings.moduleSettings
 import com.mskd.flux.features.show.moduleShow
 import com.mskd.flux.features.sources.moduleSources
-import com.mskd.flux.features.tmdb.data.moduleTmdb
 import com.mskd.flux.features.token.moduleToken
 import com.mskd.flux.features.unknown.moduleUnknown
 import com.mskd.flux.features.welcome.moduleWelcome
@@ -25,7 +24,6 @@ val moduleFeatures = module {
         moduleSettings,
         moduleShow,
         moduleSources,
-        moduleTmdb,
         moduleToken,
         moduleUnknown,
         moduleWelcome

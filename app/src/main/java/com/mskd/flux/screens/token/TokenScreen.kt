@@ -94,7 +94,7 @@ fun TokenScreen(
         viewModel.event.collect { event ->
             when (event) {
                 TokenEvent.BackToPreviousScreen -> onBack()
-                TokenEvent.NavigateToHomeScreen -> navigate(Route.Home)
+                TokenEvent.NavigateToCatalogScreen -> navigate(Route.Catalog)
             }
         }
     }

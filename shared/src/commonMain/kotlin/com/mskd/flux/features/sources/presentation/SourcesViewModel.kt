@@ -113,7 +113,7 @@ class SourcesViewModel(
         if (tokenDataStore.tokenRequested) {
             _event.send(SourcesEvent.NavigateToToken)
         } else {
-            _event.send(SourcesEvent.NavigateToHome)
+            _event.send(SourcesEvent.NavigateToCatalog)
         }
 
     }

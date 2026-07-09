@@ -1,8 +1,6 @@
 package com.mskd.flux.di
 
 import com.mskd.flux.features.token.presentation.TokenViewModel
-import com.mskd.flux.features.customization.presentation.CustomizationViewModel
-import com.mskd.flux.screen.home.HomeViewModel
 import com.mskd.flux.screen.search.SearchViewModel
 import com.mskd.flux.screen.settings.SettingsViewModel
 import com.mskd.flux.screen.show.ShowViewModel
@@ -13,8 +11,6 @@ import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 val moduleViewModel = module {
-
-    viewModelOf(::HomeViewModel)
 
     viewModel { params ->
         SearchViewModel(

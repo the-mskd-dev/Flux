@@ -1,4 +1,4 @@
-package com.mskd.flux.screen.home
+package com.mskd.flux.features.catalog.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -25,7 +25,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class HomeViewModel(
+class CatalogViewModel(
     private val syncCatalogUseCase: SyncCatalogUseCase,
     private val database: DatabaseRepository,
     private val userDataStore: UserDataStore,
@@ -34,14 +34,14 @@ class HomeViewModel(
     private val appInfo: AppInfo
 ): ViewModel() {
 
-    private val _event = MutableSharedFlow<HomeEvent>()
+    private val _event = MutableSharedFlow<CatalogEvent>()
     val event = _event.asSharedFlow()
 
     private val _dismissedSnackbar = MutableStateFlow<Set<FluxSnackbar>>(emptySet())
 
     private var hasLoadedContent = false
 
-    val uiState: StateFlow<HomeUiState> = combine(
+    val uiState: StateFlow<CatalogUiState> = combine(
         database.flowArtworks(),
         syncCatalogUseCase.state,
         userDataStore.flow,
@@ -57,8 +57,8 @@ class HomeViewModel(
 
         if (catalogState is SyncState.Syncing && (catalogState.full || !hasLoadedContent)) {
 
-            HomeUiState(
-                state = HomeState.Loading(progress = catalogState.progress),
+            CatalogUiState(
+                state = CatalogState.Loading(progress = catalogState.progress),
                 snackbarState = snackbar
             )
 
@@ -66,8 +66,8 @@ class HomeViewModel(
 
             hasLoadedContent = true
 
-            HomeUiState(
-                state = HomeState.Content(
+            CatalogUiState(
+                state = CatalogState.Content(
                     artworks = artworks,
                     lastWatchedMediaIds = preferences.recentlyWatchedIds,
                     isRefreshing = catalogState is SyncState.Syncing,
@@ -80,7 +80,7 @@ class HomeViewModel(
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000),
-        initialValue = HomeUiState()
+        initialValue = CatalogUiState()
     )
 
 
@@ -90,16 +90,16 @@ class HomeViewModel(
         }
     }
 
-    fun handleIntent(intent: HomeIntent) = viewModelScope.launch {
+    fun handleIntent(intent: CatalogIntent) = viewModelScope.launch {
         when (intent) {
-            is HomeIntent.SyncCatalog -> syncCatalog()
-            is HomeIntent.OnArtworkTap -> onArtworkTap(artwork = intent.artwork, rgb = intent.rgb)
-            is HomeIntent.OnCategoryTap -> _event.emit(HomeEvent.NavigateToCategory(category = intent.category))
-            HomeIntent.OnSearchTap -> _event.emit(HomeEvent.NavigateToSearch)
-            HomeIntent.OnSnackbarActionTap -> onSnackbarActionTap()
-            HomeIntent.OnSettingsTap -> _event.emit(HomeEvent.NavigateToSettings)
-            HomeIntent.OnHowToTap -> _event.emit(HomeEvent.NavigateToHowTo)
-            HomeIntent.OnDismissSnackbar -> onDismissSnackbar()
+            is CatalogIntent.SyncCatalog -> syncCatalog()
+            is CatalogIntent.OnArtworkTap -> onArtworkTap(artwork = intent.artwork, rgb = intent.rgb)
+            is CatalogIntent.OnCategoryTap -> _event.emit(CatalogEvent.NavigateToCategory(category = intent.category))
+            CatalogIntent.OnSearchTap -> _event.emit(CatalogEvent.NavigateToSearch)
+            CatalogIntent.OnSnackbarActionTap -> onSnackbarActionTap()
+            CatalogIntent.OnSettingsTap -> _event.emit(CatalogEvent.NavigateToSettings)
+            CatalogIntent.OnHowToTap -> _event.emit(CatalogEvent.NavigateToHowTo)
+            CatalogIntent.OnDismissSnackbar -> onDismissSnackbar()
         }
     }
 
@@ -111,7 +111,7 @@ class HomeViewModel(
         )
 
         if (fullSyncNeeded) {
-            Trace.info("HomeViewModel", "Full sync requested")
+            Trace.info("CatalogViewModel", "Full sync requested")
         }
 
         syncCatalogUseCase(onlyNew = !fullSyncNeeded)
@@ -121,9 +121,9 @@ class HomeViewModel(
     private suspend fun onArtworkTap(artwork: Artwork, rgb: Int?) {
 
         val event = when {
-            artwork.id == Artwork.UNKNOWN_ID -> HomeEvent.NavigateToUnknown
-            artwork.type == ContentType.SHOW -> HomeEvent.NavigateToShow(artworkId = artwork.id, rgb = rgb)
-            else -> HomeEvent.NavigateToMovie(artworkId = artwork.id, rgb = rgb)
+            artwork.id == Artwork.UNKNOWN_ID -> CatalogEvent.NavigateToUnknown
+            artwork.type == ContentType.SHOW -> CatalogEvent.NavigateToShow(artworkId = artwork.id, rgb = rgb)
+            else -> CatalogEvent.NavigateToMovie(artworkId = artwork.id, rgb = rgb)
         }
 
         _event.emit(event)
@@ -135,8 +135,8 @@ class HomeViewModel(
         _dismissedSnackbar.update { it + snackbar }
 
         when (snackbar) {
-            FluxSnackbar.Token -> _event.emit(HomeEvent.NavigateToToken)
-            FluxSnackbar.Tutorial -> _event.emit(HomeEvent.NavigateToHowTo)
+            FluxSnackbar.Token -> _event.emit(CatalogEvent.NavigateToToken)
+            FluxSnackbar.Tutorial -> _event.emit(CatalogEvent.NavigateToHowTo)
         }
 
     }

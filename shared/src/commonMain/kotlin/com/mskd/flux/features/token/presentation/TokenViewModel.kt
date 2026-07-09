@@ -84,11 +84,11 @@ class TokenViewModel(
 
     private suspend fun onCancelTap() {
         tokenDataStore.dontRequestToken()
-        _event.emit(TokenEvent.NavigateToHomeScreen)
+        _event.emit(TokenEvent.NavigateToCatalogScreen)
     }
 
     private suspend fun onNextTap() {
-        _event.emit(TokenEvent.NavigateToHomeScreen)
+        _event.emit(TokenEvent.NavigateToCatalogScreen)
     }
 
 }

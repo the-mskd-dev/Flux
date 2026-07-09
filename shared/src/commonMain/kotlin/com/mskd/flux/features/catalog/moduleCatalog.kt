@@ -8,6 +8,8 @@ import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseC
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCaseImpl
 import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCase
 import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCaseImpl
+import com.mskd.flux.features.catalog.presentation.CatalogViewModel
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 val moduleCatalog = module {
@@ -47,5 +49,7 @@ val moduleCatalog = module {
             coordinator = get()
         )
     }
+
+    viewModelOf(::CatalogViewModel)
 
 }

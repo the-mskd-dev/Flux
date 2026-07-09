@@ -1,4 +1,4 @@
-package com.mskd.flux.screens.home
+package com.mskd.flux.screens.catalog
 
 import com.mskd.flux.utils.FluxSnackbar
 

@@ -22,5 +22,5 @@ sealed class TokenIntent {
 
 sealed class TokenEvent {
     object BackToPreviousScreen: TokenEvent()
-    object NavigateToHomeScreen: TokenEvent()
+    object NavigateToCatalogScreen: TokenEvent()
 }

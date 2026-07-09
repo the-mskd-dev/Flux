@@ -1,4 +1,4 @@
-package com.mskd.flux.screens.home
+package com.mskd.flux.screens.catalog
 
 import app.cash.turbine.test
 import com.mskd.flux.core.data.database.repository.DatabaseRepository
@@ -14,10 +14,10 @@ import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.core.FakeDatabaseRepository
 import com.mskd.flux.mockups.core.datastore.FakeSnackbarDataStore
 import com.mskd.flux.mockups.features.catalog.FakeSyncCatalogUseCase
-import com.mskd.flux.screen.home.HomeEvent
-import com.mskd.flux.screen.home.HomeIntent
-import com.mskd.flux.screen.home.HomeState
-import com.mskd.flux.screen.home.HomeViewModel
+import com.mskd.flux.features.catalog.presentation.CatalogEvent
+import com.mskd.flux.features.catalog.presentation.CatalogIntent
+import com.mskd.flux.features.catalog.presentation.CatalogState
+import com.mskd.flux.features.catalog.presentation.CatalogViewModel
 import com.mskd.flux.utils.FluxSnackbar
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData
@@ -33,9 +33,9 @@ import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class HomeViewModelTest : FunSpec({
+class CatalogViewModelTest : FunSpec({
 
-    lateinit var viewModel: HomeViewModel
+    lateinit var viewModel: CatalogViewModel
     lateinit var syncCatalogUseCase: SyncCatalogUseCase
     lateinit var cleanCatalogUseCase: CleanCatalogUseCase
     lateinit var database: DatabaseRepository
@@ -87,7 +87,7 @@ class HomeViewModelTest : FunSpec({
 
             tokenFlow.value = testCase.tokenValue
 
-            viewModel = HomeViewModel(
+            viewModel = CatalogViewModel(
                 syncCatalogUseCase = syncCatalogUseCase,
                 cleanCatalogUseCase = cleanCatalogUseCase,
                 database = database,
@@ -99,7 +99,7 @@ class HomeViewModelTest : FunSpec({
 
             viewModel.uiState.test {
                 val initialState = awaitItem()
-                initialState.state shouldBe HomeState.Content(
+                initialState.state shouldBe CatalogState.Content(
                     artworks = MediaMockups.artworks,
                     lastWatchedMediaIds = emptyList(),
                     isRefreshing = false
@@ -116,7 +116,7 @@ class HomeViewModelTest : FunSpec({
 
         val syncCatalogUseCaseSpy = spyk(syncCatalogUseCase)
 
-        viewModel = HomeViewModel(
+        viewModel = CatalogViewModel(
             syncCatalogUseCase = syncCatalogUseCase,
             cleanCatalogUseCase = cleanCatalogUseCase,
             database = database,
@@ -126,7 +126,7 @@ class HomeViewModelTest : FunSpec({
             appInfo = appInfo
         )
 
-        viewModel.handleIntent(HomeIntent.SyncCatalog)
+        viewModel.handleIntent(CatalogIntent.SyncCatalog)
 
         verify {
             syncCatalogUseCaseSpy(onlyNew = true)
@@ -141,7 +141,7 @@ class HomeViewModelTest : FunSpec({
         val oldTime = System.currentTimeMillis() - 2.days.inWholeMilliseconds
         coEvery { userDataStore.getSyncTime() } returns oldTime
 
-        viewModel = HomeViewModel(
+        viewModel = CatalogViewModel(
             syncCatalogUseCase = syncCatalogUseCase,
             cleanCatalogUseCase = cleanCatalogUseCase,
             database = database,
@@ -163,7 +163,7 @@ class HomeViewModelTest : FunSpec({
         val recentTime = System.currentTimeMillis() - 12.hours.inWholeMilliseconds
         coEvery { userDataStore.getSyncTime() } returns recentTime
 
-        viewModel = HomeViewModel(
+        viewModel = CatalogViewModel(
             syncCatalogUseCase = syncCatalogUseCase,
             cleanCatalogUseCase = cleanCatalogUseCase,
             database = database,
@@ -190,7 +190,7 @@ class HomeViewModelTest : FunSpec({
             versionName = "VersionTest"
         )
 
-        viewModel = HomeViewModel(
+        viewModel = CatalogViewModel(
             syncCatalogUseCase = syncCatalogUseCase,
             cleanCatalogUseCase = cleanCatalogUseCase,
             database = database,
@@ -206,7 +206,7 @@ class HomeViewModelTest : FunSpec({
     }
 
     test("on artwork show tap") {
-        viewModel = HomeViewModel(
+        viewModel = CatalogViewModel(
             syncCatalogUseCase = syncCatalogUseCase,
             cleanCatalogUseCase = cleanCatalogUseCase,
             database = database,
@@ -217,13 +217,13 @@ class HomeViewModelTest : FunSpec({
         )
 
         viewModel.event.test {
-            viewModel.handleIntent(HomeIntent.OnArtworkTap(artwork = MediaMockups.showArtwork, rgb = 0x112233))
-            awaitItem() shouldBe HomeEvent.NavigateToShow(artworkId = MediaMockups.showArtwork.id, rgb = 0x112233)
+            viewModel.handleIntent(CatalogIntent.OnArtworkTap(artwork = MediaMockups.showArtwork, rgb = 0x112233))
+            awaitItem() shouldBe CatalogEvent.NavigateToShow(artworkId = MediaMockups.showArtwork.id, rgb = 0x112233)
         }
     }
 
     test("on artwork movie tap") {
-        viewModel = HomeViewModel(
+        viewModel = CatalogViewModel(
             syncCatalogUseCase = syncCatalogUseCase,
             cleanCatalogUseCase = cleanCatalogUseCase,
             database = database,
@@ -234,13 +234,13 @@ class HomeViewModelTest : FunSpec({
         )
 
         viewModel.event.test {
-            viewModel.handleIntent(HomeIntent.OnArtworkTap(artwork = MediaMockups.movieArtwork, rgb = 0x112233))
-            awaitItem() shouldBe HomeEvent.NavigateToMovie(artworkId = MediaMockups.movieArtwork.id, rgb = 0x112233)
+            viewModel.handleIntent(CatalogIntent.OnArtworkTap(artwork = MediaMockups.movieArtwork, rgb = 0x112233))
+            awaitItem() shouldBe CatalogEvent.NavigateToMovie(artworkId = MediaMockups.movieArtwork.id, rgb = 0x112233)
         }
     }
 
     test("on unknown artwork tap") {
-        viewModel = HomeViewModel(
+        viewModel = CatalogViewModel(
             syncCatalogUseCase = syncCatalogUseCase,
             cleanCatalogUseCase = cleanCatalogUseCase,
             database = database,
@@ -251,13 +251,13 @@ class HomeViewModelTest : FunSpec({
         )
 
         viewModel.event.test {
-            viewModel.handleIntent(HomeIntent.OnArtworkTap(artwork = Artwork.UNKNOWN, rgb = null))
-            awaitItem() shouldBe HomeEvent.NavigateToUnknown
+            viewModel.handleIntent(CatalogIntent.OnArtworkTap(artwork = Artwork.UNKNOWN, rgb = null))
+            awaitItem() shouldBe CatalogEvent.NavigateToUnknown
         }
     }
 
     test("on category tap") {
-        viewModel = HomeViewModel(
+        viewModel = CatalogViewModel(
             syncCatalogUseCase = syncCatalogUseCase,
             cleanCatalogUseCase = cleanCatalogUseCase,
             database = database,
@@ -268,13 +268,13 @@ class HomeViewModelTest : FunSpec({
         )
 
         viewModel.event.test {
-            viewModel.handleIntent(HomeIntent.OnCategoryTap(category = ContentType.MOVIE))
-            awaitItem() shouldBe HomeEvent.NavigateToCategory(category = ContentType.MOVIE)
+            viewModel.handleIntent(CatalogIntent.OnCategoryTap(category = ContentType.MOVIE))
+            awaitItem() shouldBe CatalogEvent.NavigateToCategory(category = ContentType.MOVIE)
         }
     }
 
     test("on search tap") {
-        viewModel = HomeViewModel(
+        viewModel = CatalogViewModel(
             syncCatalogUseCase = syncCatalogUseCase,
             cleanCatalogUseCase = cleanCatalogUseCase,
             database = database,
@@ -285,13 +285,13 @@ class HomeViewModelTest : FunSpec({
         )
 
         viewModel.event.test {
-            viewModel.handleIntent(HomeIntent.OnSearchTap)
-            awaitItem() shouldBe HomeEvent.NavigateToSearch
+            viewModel.handleIntent(CatalogIntent.OnSearchTap)
+            awaitItem() shouldBe CatalogEvent.NavigateToSearch
         }
     }
 
     test("on settings tap") {
-        viewModel = HomeViewModel(
+        viewModel = CatalogViewModel(
             syncCatalogUseCase = syncCatalogUseCase,
             cleanCatalogUseCase = cleanCatalogUseCase,
             database = database,
@@ -302,13 +302,13 @@ class HomeViewModelTest : FunSpec({
         )
 
         viewModel.event.test {
-            viewModel.handleIntent(HomeIntent.OnSettingsTap)
-            awaitItem() shouldBe HomeEvent.NavigateToSettings
+            viewModel.handleIntent(CatalogIntent.OnSettingsTap)
+            awaitItem() shouldBe CatalogEvent.NavigateToSettings
         }
     }
 
     test("on how to tap") {
-        viewModel = HomeViewModel(
+        viewModel = CatalogViewModel(
             syncCatalogUseCase = syncCatalogUseCase,
             cleanCatalogUseCase = cleanCatalogUseCase,
             database = database,
@@ -319,15 +319,15 @@ class HomeViewModelTest : FunSpec({
         )
 
         viewModel.event.test {
-            viewModel.handleIntent(HomeIntent.OnHowToTap)
-            awaitItem() shouldBe HomeEvent.NavigateToHowTo
+            viewModel.handleIntent(CatalogIntent.OnHowToTap)
+            awaitItem() shouldBe CatalogEvent.NavigateToHowTo
         }
     }
 
     test("on dismiss snackbar and snackbar action tap") {
         tokenFlow.value = ""
 
-        viewModel = HomeViewModel(
+        viewModel = CatalogViewModel(
             syncCatalogUseCase = syncCatalogUseCase,
             cleanCatalogUseCase = cleanCatalogUseCase,
             database = database,
@@ -341,7 +341,7 @@ class HomeViewModelTest : FunSpec({
             val stateWithSnackbar = awaitItem()
             stateWithSnackbar.snackbarState shouldBe FluxSnackbar.Token
 
-            viewModel.handleIntent(HomeIntent.OnDismissSnackbar)
+            viewModel.handleIntent(CatalogIntent.OnDismissSnackbar)
             val stateWithoutSnackbar = awaitItem()
             stateWithoutSnackbar.snackbarState shouldBe null
 
@@ -350,7 +350,7 @@ class HomeViewModelTest : FunSpec({
 
         tokenFlow.value = "token"
 
-        val viewModelTutorial = HomeViewModel(
+        val viewModelTutorial = CatalogViewModel(
             syncCatalogUseCase = syncCatalogUseCase,
             cleanCatalogUseCase = cleanCatalogUseCase,
             database = database,
@@ -364,8 +364,8 @@ class HomeViewModelTest : FunSpec({
             awaitItem().snackbarState shouldBe FluxSnackbar.Tutorial
 
             viewModelTutorial.event.test {
-                viewModelTutorial.handleIntent(HomeIntent.OnSnackbarActionTap)
-                awaitItem() shouldBe HomeEvent.NavigateToHowTo
+                viewModelTutorial.handleIntent(CatalogIntent.OnSnackbarActionTap)
+                awaitItem() shouldBe CatalogEvent.NavigateToHowTo
             }
 
             cancelAndConsumeRemainingEvents()

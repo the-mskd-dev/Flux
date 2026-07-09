@@ -46,7 +46,7 @@ class MainViewModel(
             !permissionsGranted -> Route.Welcome
             userDataStore.sourcesRequested -> Route.Sources(fromSetup = true)
             tokenDataStore.tokenRequested -> Route.Token(fromSettings = false)
-            else -> Route.Home
+            else -> Route.Catalog
         }
     }
 

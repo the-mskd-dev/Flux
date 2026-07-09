@@ -41,7 +41,7 @@ sealed class SourcesEvent {
     // Navigation
     data object BackToPreviousScreen : SourcesEvent()
     data object NavigateToToken: SourcesEvent()
-    data object NavigateToHome: SourcesEvent()
+    data object NavigateToCatalog: SourcesEvent()
 
     // Add
     data object OpenFolderSelection: SourcesEvent()

@@ -1,4 +1,4 @@
-package com.mskd.flux.screens.home
+package com.mskd.flux.screens.catalog
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateColorAsState
@@ -77,10 +77,10 @@ import com.mskd.flux.core.domain.model.artwork.Artwork
 import com.mskd.flux.core.domain.model.artwork.ContentType
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.navigation.Route
-import com.mskd.flux.screen.home.HomeEvent
-import com.mskd.flux.screen.home.HomeIntent
-import com.mskd.flux.screen.home.HomeState
-import com.mskd.flux.screen.home.HomeViewModel
+import com.mskd.flux.features.catalog.presentation.CatalogEvent
+import com.mskd.flux.features.catalog.presentation.CatalogIntent
+import com.mskd.flux.features.catalog.presentation.CatalogState
+import com.mskd.flux.features.catalog.presentation.CatalogViewModel
 import com.mskd.flux.screens.howTo.HowToNameFiles
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.component.global.FluxButton
@@ -108,9 +108,9 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun HomeScreen(
+fun CatalogScreen(
     navigate: (Route) -> Unit,
-    viewModel: HomeViewModel = koinViewModel()
+    viewModel: CatalogViewModel = koinViewModel()
 ) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -119,19 +119,19 @@ fun HomeScreen(
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
             when (event) {
-                is HomeEvent.NavigateToCategory -> navigate(Route.Search(contentType = event.category))
-                is HomeEvent.NavigateToMovie -> navigate(Route.Artwork(artworkId = event.artworkId, season = null, rgb = event.rgb))
-                is HomeEvent.NavigateToShow -> navigate(Route.Show(artworkId = event.artworkId, rgb = event.rgb))
-                HomeEvent.NavigateToUnknown -> navigate(Route.UnknownArtworks)
-                HomeEvent.NavigateToHowTo -> navigate(Route.HowTo)
-                HomeEvent.NavigateToSearch -> navigate(Route.Search())
-                HomeEvent.NavigateToSettings -> navigate(Route.Settings)
-                HomeEvent.NavigateToToken -> navigate(Route.Token(fromSettings = true))
+                is CatalogEvent.NavigateToCategory -> navigate(Route.Search(contentType = event.category))
+                is CatalogEvent.NavigateToMovie -> navigate(Route.Artwork(artworkId = event.artworkId, season = null, rgb = event.rgb))
+                is CatalogEvent.NavigateToShow -> navigate(Route.Show(artworkId = event.artworkId, rgb = event.rgb))
+                CatalogEvent.NavigateToUnknown -> navigate(Route.UnknownArtworks)
+                CatalogEvent.NavigateToHowTo -> navigate(Route.HowTo)
+                CatalogEvent.NavigateToSearch -> navigate(Route.Search())
+                CatalogEvent.NavigateToSettings -> navigate(Route.Settings)
+                CatalogEvent.NavigateToToken -> navigate(Route.Token(fromSettings = true))
             }
         }
     }
 
-    HomeSnackbar(
+    CatalogSnackbar(
         snackbarState = uiState.snackbarState,
         snackbarHostState = snackbarHostState,
         sendIntent = viewModel::handleIntent
@@ -144,16 +144,16 @@ fun HomeScreen(
         transitionSpec = { fadeIn() togetherWith fadeOut() },
         contentKey = { state ->
             when (state) {
-                HomeState.Error -> "error"
-                is HomeState.Loading -> "loading"
-                is HomeState.Content -> "content"
+                CatalogState.Error -> "error"
+                is CatalogState.Loading -> "loading"
+                is CatalogState.Content -> "content"
             }
         }
     ) { state ->
 
         when (state) {
 
-            is HomeState.Loading -> {
+            is CatalogState.Loading -> {
 
                 LoadingScreen(
                     text = stringResource(Res.string.sync_in_progress),
@@ -161,19 +161,19 @@ fun HomeScreen(
                 )
             }
 
-            HomeState.Error -> {
-                HomeEmpty(sendIntent = viewModel::handleIntent)
+            CatalogState.Error -> {
+                CatalogEmpty(sendIntent = viewModel::handleIntent)
             }
 
-            is HomeState.Content -> {
+            is CatalogState.Content -> {
 
                 if (state.artworks.isEmpty()) {
 
-                    HomeEmpty(sendIntent = viewModel::handleIntent)
+                    CatalogEmpty(sendIntent = viewModel::handleIntent)
 
                 } else {
 
-                    HomeContent(
+                    CatalogContent(
                         artworks = state.artworks,
                         lastWatchedIds = state.lastWatchedMediaIds,
                         isRefreshing = state.isRefreshing,
@@ -192,7 +192,7 @@ fun HomeScreen(
 }
 
 @Composable
-fun HomeEmpty(sendIntent: (HomeIntent) -> Unit) {
+fun CatalogEmpty(sendIntent: (CatalogIntent) -> Unit) {
 
     Surface(
         color = MaterialTheme.colorScheme.background
@@ -221,7 +221,7 @@ fun HomeEmpty(sendIntent: (HomeIntent) -> Unit) {
             ) {
                 FluxButton(
                     text = stringResource(Res.string.refresh),
-                    onTap = { sendIntent(HomeIntent.SyncCatalog) }
+                    onTap = { sendIntent(CatalogIntent.SyncCatalog) }
                 )
             }
 
@@ -234,12 +234,12 @@ fun HomeEmpty(sendIntent: (HomeIntent) -> Unit) {
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun HomeContent(
+fun CatalogContent(
     artworks: List<Artwork>,
     lastWatchedIds: List<Long>,
     isRefreshing: Boolean,
     snackbarHostState: SnackbarHostState,
-    sendIntent: (HomeIntent) -> Unit
+    sendIntent: (CatalogIntent) -> Unit
 ) {
 
     val pullToRefreshState = rememberPullToRefreshState()
@@ -260,12 +260,12 @@ fun HomeContent(
 
             Spacer(modifier = Modifier.height(paddingValues.calculateTopPadding()))
 
-            HomeTopButtons(sendIntent = sendIntent)
+            CatalogTopButtons(sendIntent = sendIntent)
 
             PullToRefreshBox(
                 modifier = Modifier.weight(1f),
                 isRefreshing = isRefreshing,
-                onRefresh = { sendIntent(HomeIntent.SyncCatalog) },
+                onRefresh = { sendIntent(CatalogIntent.SyncCatalog) },
                 state = pullToRefreshState,
                 indicator = {
                     PullToRefreshDefaults.LoadingIndicator(
@@ -337,10 +337,10 @@ fun HomeContent(
 }
 
 @Composable
-fun HomeSnackbar(
+fun CatalogSnackbar(
     snackbarState: FluxSnackbar?,
     snackbarHostState: SnackbarHostState,
-    sendIntent: (HomeIntent) -> Unit
+    sendIntent: (CatalogIntent) -> Unit
 ) {
 
     val message = snackbarState?.message?.let { stringResource(it) }.orEmpty()
@@ -356,8 +356,8 @@ fun HomeSnackbar(
             )
 
             when (result) {
-                SnackbarResult.ActionPerformed -> sendIntent(HomeIntent.OnSnackbarActionTap)
-                SnackbarResult.Dismissed -> sendIntent(HomeIntent.OnDismissSnackbar)
+                SnackbarResult.ActionPerformed -> sendIntent(CatalogIntent.OnSnackbarActionTap)
+                SnackbarResult.Dismissed -> sendIntent(CatalogIntent.OnDismissSnackbar)
             }
         }
     }
@@ -365,7 +365,7 @@ fun HomeSnackbar(
 }
 
 @Composable
-fun HomeTopButtons(sendIntent: (HomeIntent) -> Unit) {
+fun CatalogTopButtons(sendIntent: (CatalogIntent) -> Unit) {
 
     Row(
         modifier = Modifier
@@ -375,7 +375,7 @@ fun HomeTopButtons(sendIntent: (HomeIntent) -> Unit) {
         verticalAlignment = Alignment.CenterVertically
     ) {
 
-        IconButton(onClick = { sendIntent(HomeIntent.OnSearchTap) }) {
+        IconButton(onClick = { sendIntent(CatalogIntent.OnSearchTap) }) {
             Icon(
                 imageVector = Icons.Rounded.Search,
                 tint = MaterialTheme.colorScheme.onBackground,
@@ -391,7 +391,7 @@ fun HomeTopButtons(sendIntent: (HomeIntent) -> Unit) {
         )
 
 
-        IconButton(onClick = { sendIntent(HomeIntent.OnSettingsTap) }) {
+        IconButton(onClick = { sendIntent(CatalogIntent.OnSettingsTap) }) {
             Icon(
                 imageVector = Icons.Rounded.Settings,
                 tint = MaterialTheme.colorScheme.onBackground,
@@ -407,7 +407,7 @@ fun HomeTopButtons(sendIntent: (HomeIntent) -> Unit) {
 @Composable
 fun LastWatchedCarousel(
     artworks: List<Artwork>,
-    sendIntent: (HomeIntent) -> Unit
+    sendIntent: (CatalogIntent) -> Unit
 ) {
 
     if (artworks.isEmpty())
@@ -435,7 +435,7 @@ fun LastWatchedCarousel(
                 hd = true,
                 shape = MaterialTheme.shapes.extraLarge,
                 ratio = ratio,
-                onTap = { rgb -> sendIntent(HomeIntent.OnArtworkTap(artwork = overview, rgb = rgb)) },
+                onTap = { rgb -> sendIntent(CatalogIntent.OnArtworkTap(artwork = overview, rgb = rgb)) },
                 description = overview.title
             )
 
@@ -468,7 +468,7 @@ fun LastWatchedCarousel(
                             if (carouselState.currentItem != i) {
                                 scope.launch { carouselState.animateScrollToItem(i) }
                             } else {
-                                sendIntent(HomeIntent.OnArtworkTap(artwork = overview, rgb = rgb))
+                                sendIntent(CatalogIntent.OnArtworkTap(artwork = overview, rgb = rgb))
                             }
 
                         },
@@ -524,7 +524,7 @@ fun MediaCategory(
     name: String? = null,
     category: ContentType,
     artworks: List<Artwork>,
-    sendIntent: (HomeIntent) -> Unit
+    sendIntent: (CatalogIntent) -> Unit
 ) {
 
     if (artworks.isEmpty())
@@ -551,7 +551,7 @@ fun MediaCategory(
 
         Text.Title.Large(
             modifier = Modifier
-                .clickable { sendIntent(HomeIntent.OnCategoryTap(category)) }
+                .clickable { sendIntent(CatalogIntent.OnCategoryTap(category)) }
                 .fillMaxWidth()
                 .padding(start = FluxUI.Space.medium, top = FluxUI.Space.large),
             text = name,
@@ -573,7 +573,7 @@ fun MediaCategory(
                         .aspectRatio(FluxUI.Dimension.itemRatio),
                     path = it.imagePath,
                     hd = false,
-                    onTap = { rgb -> sendIntent(HomeIntent.OnArtworkTap(artwork = it, rgb = rgb)) },
+                    onTap = { rgb -> sendIntent(CatalogIntent.OnArtworkTap(artwork = it, rgb = rgb)) },
                     description = it.title
                 )
 
@@ -586,7 +586,7 @@ fun MediaCategory(
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun UnknownCategory(sendIntent: (HomeIntent) -> Unit) {
+fun UnknownCategory(sendIntent: (CatalogIntent) -> Unit) {
 
     val density = LocalDensity.current
     val columns = FluxUI.itemsPerRow.artworks
@@ -619,7 +619,7 @@ fun UnknownCategory(sendIntent: (HomeIntent) -> Unit) {
         Box(
             modifier = Modifier
                 .padding(horizontal = FluxUI.Space.medium)
-                .clickable { sendIntent(HomeIntent.OnArtworkTap(artwork = Artwork.UNKNOWN)) }
+                .clickable { sendIntent(CatalogIntent.OnArtworkTap(artwork = Artwork.UNKNOWN)) }
                 .clip(FluxUI.shapes.corners)
                 .width(itemWidth)
                 .aspectRatio(FluxUI.Dimension.itemRatio)
@@ -641,10 +641,10 @@ fun UnknownCategory(sendIntent: (HomeIntent) -> Unit) {
 
 @FluxPreview
 @Composable
-fun HomeScreen_Preview() {
+fun CatalogScreen_Preview() {
     AppThemePreview {
         Surface {
-            HomeContent(
+            CatalogContent(
                 artworks = MediaMockups.artworks,
                 lastWatchedIds = MediaMockups.artworks.map { it.id },
                 isRefreshing = false,
@@ -657,9 +657,9 @@ fun HomeScreen_Preview() {
 
 @FluxPreview
 @Composable
-fun HomeEmpty_Preview() {
+fun CatalogEmpty_Preview() {
     AppThemePreview {
-        HomeEmpty(
+        CatalogEmpty(
             sendIntent = {}
         )
     }

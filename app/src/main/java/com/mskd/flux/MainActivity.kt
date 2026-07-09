@@ -10,7 +10,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.entryProvider
@@ -25,7 +24,7 @@ import com.mskd.flux.navigation.Transition
 import com.mskd.flux.screens.about.AboutScreen
 import com.mskd.flux.screens.artwork.ArtworkScreen
 import com.mskd.flux.screens.customization.CustomizationScreen
-import com.mskd.flux.screens.home.HomeScreen
+import com.mskd.flux.screens.catalog.CatalogScreen
 import com.mskd.flux.screens.howTo.HowToScreen
 import com.mskd.flux.screens.player.PlayerScreen
 import com.mskd.flux.screens.search.SearchScreen
@@ -40,7 +39,6 @@ import com.mskd.flux.ui.theme.createColorScheme
 import com.mskd.flux.utils.extensions.popScreen
 import com.mskd.flux.utils.notificationsPermissionState
 import com.mskd.flux.utils.storagePermissionState
-import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
 class MainActivity : ComponentActivity() {
@@ -101,8 +99,8 @@ class MainActivity : ComponentActivity() {
                                 },
                             )
                         }
-                        entry<Route.Home> {
-                            HomeScreen(
+                        entry<Route.Catalog> {
+                            CatalogScreen(
                                 navigate = { route -> backStack.add(route) },
                             )
                         }

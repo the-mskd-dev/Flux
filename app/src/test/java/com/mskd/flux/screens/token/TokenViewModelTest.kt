@@ -84,7 +84,7 @@ class TokenViewModelTest : FunSpec({
 
             viewModel.handleIntent(TokenIntent.OnCancelTap)
 
-            awaitItem() shouldBe TokenEvent.NavigateToHomeScreen
+            awaitItem() shouldBe TokenEvent.NavigateToCatalogScreen
             coVerify { tokenDataStore.dontRequestToken() }
         }
     }
@@ -99,7 +99,7 @@ class TokenViewModelTest : FunSpec({
     test("on next tap") {
         viewModel.event.test {
             viewModel.handleIntent(TokenIntent.OnNextTap)
-            awaitItem() shouldBe TokenEvent.NavigateToHomeScreen
+            awaitItem() shouldBe TokenEvent.NavigateToCatalogScreen
         }
     }
 
@@ -127,7 +127,7 @@ class TokenViewModelTest : FunSpec({
         )
         vm.event.test {
             vm.handleIntent(TokenIntent.SaveToken)
-            awaitItem() shouldBe TokenEvent.NavigateToHomeScreen
+            awaitItem() shouldBe TokenEvent.NavigateToCatalogScreen
         }
     }
 

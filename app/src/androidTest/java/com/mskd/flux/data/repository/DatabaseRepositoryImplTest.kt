@@ -5,11 +5,8 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import app.cash.turbine.test
-import com.mskd.flux.core.data.database.FluxDatabase
-import com.mskd.flux.core.data.database.repository.DatabaseRepositoryImpl
-import com.mskd.flux.core.domain.model.artwork.Artwork
-import com.mskd.flux.core.domain.model.artwork.Episode
-import com.mskd.flux.core.domain.model.artwork.Season
+import com.mskd.flux.core.database.data.FluxDatabase
+import com.mskd.flux.core.database.data.repository.DatabaseRepositoryImpl
 import com.mskd.flux.mockups.MediaMockups
 import kotlinx.coroutines.test.runTest
 import org.junit.After
@@ -35,7 +32,10 @@ class DatabaseRepositoryImplTest {
                         .allowMainThreadQueries()
                         .build()
 
-        repository = DatabaseRepositoryImpl(database.dao())
+        repository =
+            DatabaseRepositoryImpl(
+                database.dao()
+            )
     }
 
     @After
@@ -216,7 +216,7 @@ class DatabaseRepositoryImplTest {
         Assert.assertEquals(unknownEpisodes.size, result.size)
         result.forEach { episode ->
             Assert.assertEquals(
-                Artwork.UNKNOWN_ID,
+                _root_ide_package_.com.mskd.flux.core.model.artwork.Artwork.UNKNOWN_ID,
                 episode.artworkId
             )
         }
@@ -575,7 +575,7 @@ class DatabaseRepositoryImplTest {
     fun flowArtworks_emits_updates_when_artworks_change() = runTest {
         repository.flowArtworks().test {
             // Initial emission - empty
-            Assert.assertEquals(emptyList<Artwork>(), awaitItem())
+            Assert.assertEquals(emptyList<com.mskd.flux.core.model.artwork.Artwork>(), awaitItem())
 
             // Insert artworks
             repository.saveArtworks(listOf(MediaMockups.movieArtwork))
@@ -645,7 +645,7 @@ class DatabaseRepositoryImplTest {
 
         repository.flowEpisodes(artwork.id).test {
             // Initial emission - empty list
-            Assert.assertEquals(emptyList<Episode>(), awaitItem())
+            Assert.assertEquals(emptyList<com.mskd.flux.core.model.artwork.Episode>(), awaitItem())
 
             // Insert episodes
             repository.saveEpisodes(listOf(episode1))
@@ -669,7 +669,7 @@ class DatabaseRepositoryImplTest {
 
         repository.flowSeasons(artwork.id).test {
             // Initial emission - empty list
-            Assert.assertEquals(emptyList<Season>(), awaitItem())
+            Assert.assertEquals(emptyList<com.mskd.flux.core.model.artwork.Season>(), awaitItem())
 
             // Insert season1
             repository.saveSeasons(listOf(season1))

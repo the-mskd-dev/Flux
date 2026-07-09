@@ -2,14 +2,12 @@ package com.mskd.flux.data.repository
 
 import androidx.test.core.app.ApplicationProvider
 import com.mskd.flux.BuildConfig
-import com.mskd.flux.core.domain.model.files.FileSource
-import com.mskd.flux.core.domain.model.files.UserFile
+import com.mskd.flux.core.network.tmdb.data.datasource.TmdbDataSourceImpl
+import com.mskd.flux.core.network.tmdb.data.remote.dto.TranslationsDto
+import com.mskd.flux.core.network.tmdb.data.remote.service.TMDBService
 import com.mskd.flux.di.moduleAndroidApp
 import com.mskd.flux.di.modulePlatform
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
-import com.mskd.flux.features.tmdb.data.datasource.TmdbDataSourceImpl
-import com.mskd.flux.features.tmdb.data.dto.TranslationsDto
-import com.mskd.flux.features.tmdb.data.service.TMDBService
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -33,24 +31,24 @@ class TmdbDataSourceImplTest : KoinTest {
 
     private val tmdbService: TMDBService by inject()
     private lateinit var settingsDataStore: SettingsDataStore
-    private lateinit var repository: TmdbDataSourceImpl
+    private lateinit var repository: com.mskd.flux.core.network.tmdb.data.datasource.TmdbDataSourceImpl
 
     private companion object {
 
         val dataLanguage: Locale = Locale.US
 
-        val movieFile = UserFile(
+        val movieFile = _root_ide_package_.com.mskd.flux.core.model.files.UserFile(
             name = "Spider-man Homecoming",
             addedDateTime = 0L,
             path = "",
-            source = FileSource.LOCAL
+            source = _root_ide_package_.com.mskd.flux.core.model.files.FileSource.LOCAL
         )
 
-        val episodeFile = UserFile(
+        val episodeFile = _root_ide_package_.com.mskd.flux.core.model.files.UserFile(
             name = "Naruto s01e01.mp4",
             addedDateTime = 0L,
             path = "",
-            source = FileSource.LOCAL
+            source = _root_ide_package_.com.mskd.flux.core.model.files.FileSource.LOCAL
         )
         private var movieArtworkId: Long? = null
         private var showArtworkId: Long? = null

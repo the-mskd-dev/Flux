@@ -1,6 +1,6 @@
 package com.mskd.flux.mockups.core
 
-import com.mskd.flux.core.data.database.repository.DatabaseRepository
+import com.mskd.flux.core.database.domain.repository.DatabaseRepository
 import com.mskd.flux.core.domain.model.artwork.Artwork
 import com.mskd.flux.core.domain.model.artwork.Episode
 import com.mskd.flux.core.domain.model.artwork.Movie

@@ -1,7 +1,7 @@
 package com.mskd.flux.features.catalog.domain.usecase.syncCatalog
 
 import com.mskd.flux.core.data.database.repository.DatabaseRepository
-import com.mskd.flux.core.domain.datastore.UserDataStore
+import com.mskd.flux.core.datastore.domain.UserDataStore
 import com.mskd.flux.core.domain.model.artwork.Artwork
 import com.mskd.flux.core.domain.model.artwork.ContentType
 import com.mskd.flux.core.domain.model.artwork.Episode
@@ -13,6 +13,7 @@ import com.mskd.flux.core.domain.model.catalog.Catalog
 import com.mskd.flux.core.domain.model.catalog.CatalogFolder
 import com.mskd.flux.core.domain.model.core.AppInfo
 import com.mskd.flux.core.domain.model.files.UserFile
+import com.mskd.flux.core.network.tmdb.data.remote.dto.EpisodeDto
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.files.domain.usecase.FilterExistingFilesUseCase
@@ -22,7 +23,6 @@ import com.mskd.flux.features.images.domain.ImagesPrefetchManager
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.features.sources.domain.usecase.DeleteUnavailableSourcesUseCase
 import com.mskd.flux.features.tmdb.data.datasource.TmdbDataSource
-import com.mskd.flux.features.tmdb.data.dto.EpisodeDto
 import com.mskd.flux.features.tmdb.data.mapper.toDomain
 import com.mskd.flux.utils.Trace
 import com.mskd.flux.utils.extensions.groupInFolders

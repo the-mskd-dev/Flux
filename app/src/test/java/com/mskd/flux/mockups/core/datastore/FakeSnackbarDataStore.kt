@@ -1,6 +1,6 @@
 package com.mskd.flux.mockups.core.datastore
 
-import com.mskd.flux.core.domain.datastore.SnackbarDataStore
+import com.mskd.flux.core.datastore.domain.SnackbarDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 

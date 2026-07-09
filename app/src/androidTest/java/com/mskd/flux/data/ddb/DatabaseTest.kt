@@ -5,12 +5,11 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import app.cash.turbine.test
-import com.mskd.flux.core.data.database.DatabaseDao
-import com.mskd.flux.core.data.database.FluxDatabase
-import com.mskd.flux.core.data.database.mappers.toEntity
-import com.mskd.flux.core.data.database.model.ArtworkEntity
-import com.mskd.flux.core.data.database.model.SeasonEntity
-import com.mskd.flux.core.domain.model.artwork.Artwork
+import com.mskd.flux.core.database.data.DatabaseDao
+import com.mskd.flux.core.database.data.FluxDatabase
+import com.mskd.flux.core.database.data.mappers.toEntity
+import com.mskd.flux.core.database.data.model.ArtworkEntity
+import com.mskd.flux.core.database.data.model.SeasonEntity
 import com.mskd.flux.mockups.MediaMockups
 import kotlinx.coroutines.test.runTest
 import org.junit.After
@@ -252,7 +251,7 @@ class DatabaseTest {
 
         // Then
         assertEquals(unknownEpisodes.size, result.size)
-        result.forEach { episode -> assertEquals(Artwork.UNKNOWN_ID, episode.artworkId) }
+        result.forEach { episode -> assertEquals(_root_ide_package_.com.mskd.flux.core.model.artwork.Artwork.UNKNOWN_ID, episode.artworkId) }
     }
 
     // endregion

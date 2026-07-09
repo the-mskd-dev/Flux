@@ -2,7 +2,7 @@ package com.mskd.flux.useCases.progress
 
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.core.data.database.repository.DatabaseRepository
-import com.mskd.flux.core.domain.datastore.UserDataStore
+import com.mskd.flux.core.datastore.domain.UserDataStore
 import com.mskd.flux.core.domain.model.artwork.ContentType
 import com.mskd.flux.core.domain.model.artwork.Episode
 import com.mskd.flux.core.domain.model.artwork.Movie

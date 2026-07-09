@@ -3,14 +3,12 @@ package com.mskd.flux.useCases.catalog
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.mskd.flux.BuildConfig
-import com.mskd.flux.core.data.database.repository.DatabaseRepository
-import com.mskd.flux.core.domain.datastore.UserDataStore
-import com.mskd.flux.core.domain.model.artwork.Artwork
-import com.mskd.flux.core.domain.model.artwork.Episode
-import com.mskd.flux.core.domain.model.artwork.Movie
-import com.mskd.flux.core.domain.model.core.AppInfo
-import com.mskd.flux.core.domain.model.files.FileSource
-import com.mskd.flux.core.domain.model.files.UserFile
+import com.mskd.flux.core.database.domain.repository.DatabaseRepository
+import com.mskd.flux.core.datastore.domain.UserDataStore
+import com.mskd.flux.core.model.artwork.Artwork
+import com.mskd.flux.core.model.artwork.Episode
+import com.mskd.flux.core.model.artwork.Movie
+import com.mskd.flux.core.model.core.AppInfo
 import com.mskd.flux.di.Qualifiers
 import com.mskd.flux.di.moduleAndroidApp
 import com.mskd.flux.di.modulePlatform
@@ -60,18 +58,18 @@ class CatalogUCTest : KoinTest {
 
         val dataLanguage: Locale = Locale.US
 
-        val movieFile = UserFile(
+        val movieFile = _root_ide_package_.com.mskd.flux.core.model.files.UserFile(
             name = "Spider-man Homecoming",
             addedDateTime = 0L,
             path = "",
-            source = FileSource.LOCAL
+            source = _root_ide_package_.com.mskd.flux.core.model.files.FileSource.LOCAL
         )
 
-        val episodeFile = UserFile(
+        val episodeFile = _root_ide_package_.com.mskd.flux.core.model.files.UserFile(
             name = "Naruto s01e01.mp4",
             addedDateTime = 0L,
             path = "",
-            source = FileSource.LOCAL
+            source = _root_ide_package_.com.mskd.flux.core.model.files.FileSource.LOCAL
         )
 
         val appInfo = AppInfo(

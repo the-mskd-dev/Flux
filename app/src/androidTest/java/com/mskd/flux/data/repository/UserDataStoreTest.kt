@@ -6,8 +6,8 @@ import androidx.datastore.preferences.preferencesDataStoreFile
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.filters.MediumTest
 import app.cash.turbine.test
-import com.mskd.flux.core.data.datastore.UserDataStoreImpl
-import com.mskd.flux.core.domain.datastore.UserDataStore
+import com.mskd.flux.core.datastore.data.UserDataStoreImpl
+import com.mskd.flux.core.datastore.domain.UserDataStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
@@ -46,7 +46,10 @@ class UserDataStoreTest {
             }
         )
 
-        userDataStore = UserDataStoreImpl(userDataStore = testDataStore, json = json)
+        userDataStore = UserDataStoreImpl(
+            userDataStore = testDataStore,
+            json = json
+        )
 
         testDispatcher.scheduler.advanceUntilIdle()
     }

@@ -3,7 +3,7 @@ package com.mskd.flux.data.repository
 import androidx.test.core.app.ApplicationProvider
 import com.mskd.flux.BuildConfig
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
-import com.mskd.flux.core.domain.datastore.TokenDataStore
+import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.core.domain.model.files.FileSource
 import com.mskd.flux.core.domain.model.files.UserFile
 import com.mskd.flux.di.moduleAndroidApp

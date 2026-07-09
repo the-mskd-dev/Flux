@@ -3,7 +3,7 @@ package com.mskd.flux.screens.catalog
 import app.cash.turbine.test
 import com.mskd.flux.core.data.database.repository.DatabaseRepository
 import com.mskd.flux.core.domain.datastore.SnackbarDataStore
-import com.mskd.flux.core.domain.datastore.TokenDataStore
+import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.core.domain.datastore.UserDataStore
 import com.mskd.flux.core.domain.model.artwork.Artwork
 import com.mskd.flux.core.domain.model.artwork.ContentType

@@ -1,18 +1,18 @@
-package com.mskd.flux.core.data.datastore
+package com.mskd.flux.features.token.data.datastore
 
+import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import androidx.datastore.core.DataStore
+import androidx.datastore.core.IOException
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.mskd.flux.core.domain.datastore.TokenDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
-import java.io.IOException
 
 class TokenDataStoreImpl(
     private val tokenDataStore: DataStore<Preferences>

@@ -2,7 +2,7 @@ package com.mskd.flux.screens.welcome
 
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
-import com.mskd.flux.core.domain.datastore.TokenDataStore
+import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.features.welcome.presentation.WelcomeButton
 import com.mskd.flux.features.welcome.presentation.WelcomeEvent
 import com.mskd.flux.features.welcome.presentation.WelcomeIntent

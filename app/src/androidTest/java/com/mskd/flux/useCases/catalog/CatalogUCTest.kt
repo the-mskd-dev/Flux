@@ -5,7 +5,7 @@ import androidx.test.core.app.ApplicationProvider
 import com.mskd.flux.BuildConfig
 import com.mskd.flux.core.data.database.repository.DatabaseRepository
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
-import com.mskd.flux.core.domain.datastore.TokenDataStore
+import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.core.domain.datastore.UserDataStore
 import com.mskd.flux.core.domain.model.artwork.Artwork
 import com.mskd.flux.core.domain.model.artwork.Episode

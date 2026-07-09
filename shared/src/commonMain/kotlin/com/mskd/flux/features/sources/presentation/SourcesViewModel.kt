@@ -61,6 +61,12 @@ class SourcesViewModel(
 
     //endregion
 
+    //region Variables
+
+    private var sourceAdded = false
+
+    //endregion
+
     //region Init
 
     init {
@@ -102,7 +108,7 @@ class SourcesViewModel(
     }
 
     private suspend fun onBackTap() {
-        syncCatalogUseCase(onlyNew = true)
+        if (sourceAdded) syncCatalogUseCase(onlyNew = true)
         _event.send(SourcesEvent.BackToPreviousScreen)
     }
 
@@ -126,6 +132,8 @@ class SourcesViewModel(
         )
 
         addSourceUseCase(folder = folder)
+
+        sourceAdded = true
 
     }
 

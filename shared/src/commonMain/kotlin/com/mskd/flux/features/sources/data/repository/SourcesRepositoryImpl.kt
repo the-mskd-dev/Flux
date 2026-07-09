@@ -1,7 +1,7 @@
 package com.mskd.flux.features.sources.data.repository
 
-import com.mskd.flux.core.data.database.repository.DatabaseRepository
-import com.mskd.flux.core.domain.model.files.FileSource
+import com.mskd.flux.core.database.domain.repository.DatabaseRepository
+import com.mskd.flux.core.model.files.FileSource
 import com.mskd.flux.features.sources.data.local.SourcesDao
 import com.mskd.flux.features.sources.data.local.UserFolderEntity
 import com.mskd.flux.features.sources.data.mapper.toDomain

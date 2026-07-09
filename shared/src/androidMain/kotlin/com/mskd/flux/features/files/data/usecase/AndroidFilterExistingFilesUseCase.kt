@@ -1,6 +1,6 @@
 package com.mskd.flux.features.files.data.usecase
 
-import com.mskd.flux.core.domain.model.files.UserFile
+import com.mskd.flux.core.model.files.UserFile
 import com.mskd.flux.features.files.domain.datasource.FilesDataSource
 import com.mskd.flux.features.files.domain.usecase.FilterExistingFilesUseCase
 import kotlinx.coroutines.async

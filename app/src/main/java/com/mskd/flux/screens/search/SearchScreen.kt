@@ -41,7 +41,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.mskd.flux.core.domain.model.artwork.ContentType
+import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.features.catalog.presentation.search.SearchEvent
 import com.mskd.flux.features.catalog.presentation.search.SearchIntent
 import com.mskd.flux.features.catalog.presentation.search.SearchUIState

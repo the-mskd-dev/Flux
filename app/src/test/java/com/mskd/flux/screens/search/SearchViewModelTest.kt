@@ -2,8 +2,8 @@ package com.mskd.flux.screens.search
 
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
-import com.mskd.flux.core.data.database.repository.DatabaseRepository
-import com.mskd.flux.core.domain.model.artwork.ContentType
+import com.mskd.flux.core.database.domain.repository.DatabaseRepository
+import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.features.catalog.presentation.search.SearchEvent
 import com.mskd.flux.features.catalog.presentation.search.SearchIntent
 import com.mskd.flux.features.catalog.presentation.search.SearchViewModel

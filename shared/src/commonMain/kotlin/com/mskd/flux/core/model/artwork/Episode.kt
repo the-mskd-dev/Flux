@@ -1,6 +1,6 @@
 package com.mskd.flux.core.model.artwork
 
-import com.mskd.flux.core.domain.model.files.UserFile
+import com.mskd.flux.core.model.files.UserFile
 import kotlin.random.Random
 
 /**

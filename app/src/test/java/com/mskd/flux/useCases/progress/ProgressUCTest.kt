@@ -1,12 +1,12 @@
 package com.mskd.flux.useCases.progress
 
 import com.mskd.flux.configs.fluxExtensions
-import com.mskd.flux.core.data.database.repository.DatabaseRepository
+import com.mskd.flux.core.database.domain.repository.DatabaseRepository
 import com.mskd.flux.core.datastore.domain.UserDataStore
-import com.mskd.flux.core.domain.model.artwork.ContentType
-import com.mskd.flux.core.domain.model.artwork.Episode
-import com.mskd.flux.core.domain.model.artwork.Movie
-import com.mskd.flux.core.domain.model.artwork.Status
+import com.mskd.flux.core.model.artwork.ContentType
+import com.mskd.flux.core.model.artwork.Episode
+import com.mskd.flux.core.model.artwork.Movie
+import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.features.progress.domain.usecase.ChangeMediaStatusUseCase
 import com.mskd.flux.features.progress.domain.usecase.MarkPreviousAsWatchedUseCase
 import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase

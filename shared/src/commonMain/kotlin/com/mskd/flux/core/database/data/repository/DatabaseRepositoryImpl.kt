@@ -4,11 +4,11 @@ import com.mskd.flux.core.database.data.DatabaseDao
 import com.mskd.flux.core.database.data.mappers.toDomain
 import com.mskd.flux.core.database.data.mappers.toEntity
 import com.mskd.flux.core.database.domain.repository.DatabaseRepository
-import com.mskd.flux.core.domain.model.artwork.Artwork
-import com.mskd.flux.core.domain.model.artwork.Episode
-import com.mskd.flux.core.domain.model.artwork.Movie
-import com.mskd.flux.core.domain.model.artwork.Season
-import com.mskd.flux.core.domain.model.files.UserFile
+import com.mskd.flux.core.model.artwork.Artwork
+import com.mskd.flux.core.model.artwork.Episode
+import com.mskd.flux.core.model.artwork.Movie
+import com.mskd.flux.core.model.artwork.Season
+import com.mskd.flux.core.model.files.UserFile
 import com.mskd.flux.features.sources.domain.model.UserFolder
 import com.mskd.flux.utils.extensions.sort
 import kotlinx.coroutines.flow.Flow

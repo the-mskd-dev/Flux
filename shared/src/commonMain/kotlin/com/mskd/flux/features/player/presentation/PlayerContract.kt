@@ -2,11 +2,11 @@ package com.mskd.flux.features.player.presentation
 
 import androidx.compose.runtime.Immutable
 import androidx.media3.common.Player
-import com.mskd.flux.core.domain.model.artwork.Episode
-import com.mskd.flux.core.domain.model.artwork.FullArtwork
-import com.mskd.flux.core.domain.model.artwork.Media
-import com.mskd.flux.core.domain.model.core.State
-import com.mskd.flux.core.domain.model.player.PlayerTrack
+import com.mskd.flux.core.model.artwork.Episode
+import com.mskd.flux.core.model.artwork.FullArtwork
+import com.mskd.flux.core.model.artwork.Media
+import com.mskd.flux.core.model..core.State
+import com.mskd.flux.core.model..player.PlayerTrack
 
 @Immutable
 data class PlayerUiState<out T>(

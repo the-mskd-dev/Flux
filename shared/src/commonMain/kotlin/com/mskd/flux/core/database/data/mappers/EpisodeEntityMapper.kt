@@ -1,8 +1,8 @@
 package com.mskd.flux.core.database.data.mappers
 
 import com.mskd.flux.core.database.data.model.EpisodeEntity
-import com.mskd.flux.core.domain.model.artwork.Episode
-import com.mskd.flux.core.domain.model.files.UserFile
+import com.mskd.flux.core.model.artwork.Episode
+import com.mskd.flux.core.model.files.UserFile
 
 fun EpisodeEntity.toDomain() : Episode {
     val file = UserFile(

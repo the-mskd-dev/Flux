@@ -14,9 +14,9 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.mskd.flux.core.domain.model.artwork.Artwork
-import com.mskd.flux.core.domain.model.artwork.Episode
-import com.mskd.flux.core.domain.model.artwork.Media
+import com.mskd.flux.core.model.artwork.Artwork
+import com.mskd.flux.core.model.artwork.Episode
+import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxTheme

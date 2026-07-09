@@ -1,11 +1,11 @@
 package com.mskd.flux.features.progress.domain.usecase
 
-import com.mskd.flux.core.data.database.repository.DatabaseRepository
+import com.mskd.flux.core.database.domain.repository.DatabaseRepository
 import com.mskd.flux.core.datastore.domain.UserDataStore
-import com.mskd.flux.core.domain.model.artwork.Episode
-import com.mskd.flux.core.domain.model.artwork.Media
-import com.mskd.flux.core.domain.model.artwork.Movie
-import com.mskd.flux.core.domain.model.artwork.Status
+import com.mskd.flux.core.model.artwork.Episode
+import com.mskd.flux.core.model.artwork.Media
+import com.mskd.flux.core.model.artwork.Movie
+import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.Trace
 import com.mskd.flux.utils.extensions.lastEpisode

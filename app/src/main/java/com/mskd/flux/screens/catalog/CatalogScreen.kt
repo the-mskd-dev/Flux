@@ -72,8 +72,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.mskd.flux.R
-import com.mskd.flux.core.domain.model.artwork.Artwork
-import com.mskd.flux.core.domain.model.artwork.ContentType
+import com.mskd.flux.core.model.artwork.Artwork
+import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.features.catalog.presentation.catalog.CatalogEvent
 import com.mskd.flux.features.catalog.presentation.catalog.CatalogIntent
 import com.mskd.flux.features.catalog.presentation.catalog.CatalogState

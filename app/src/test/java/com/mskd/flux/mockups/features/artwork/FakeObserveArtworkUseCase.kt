@@ -1,10 +1,10 @@
 package com.mskd.flux.mockups.features.artwork
 
-import com.mskd.flux.core.domain.model.artwork.ContentType
-import com.mskd.flux.core.domain.model.artwork.Episode
-import com.mskd.flux.core.domain.model.artwork.FullArtwork
-import com.mskd.flux.core.domain.model.artwork.Movie
-import com.mskd.flux.core.domain.model.core.State
+import com.mskd.flux.core.model.artwork.ContentType
+import com.mskd.flux.core.model.artwork.Episode
+import com.mskd.flux.core.model.artwork.FullArtwork
+import com.mskd.flux.core.model.artwork.Movie
+import com.mskd.flux.core.model..core.State
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
 import com.mskd.flux.mockups.MediaMockups
 import kotlinx.coroutines.ExperimentalCoroutinesApi

@@ -1,7 +1,7 @@
 package com.mskd.flux.core.network.tmdb.data.remote.mapper
 
-import com.mskd.flux.core.domain.model.artwork.Artwork
-import com.mskd.flux.core.domain.model.artwork.ContentType
+import com.mskd.flux.core.model.artwork.Artwork
+import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.network.tmdb.data.remote.dto.ArtworkDto
 import com.mskd.flux.core.network.tmdb.data.remote.dto.MediaTypeDto
 

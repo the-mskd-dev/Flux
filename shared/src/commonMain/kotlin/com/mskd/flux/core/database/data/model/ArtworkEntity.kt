@@ -3,7 +3,7 @@ package com.mskd.flux.core.database.data.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.mskd.flux.core.domain.model.artwork.ContentType
+import com.mskd.flux.core.model.artwork.ContentType
 
 @Entity(tableName = "artworks")
 data class ArtworkEntity(

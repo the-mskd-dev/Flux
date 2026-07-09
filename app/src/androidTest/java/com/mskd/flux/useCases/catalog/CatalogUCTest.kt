@@ -9,6 +9,8 @@ import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Movie
 import com.mskd.flux.core.model.core.AppInfo
+import com.mskd.flux.core.network.tmdb.data.datasource.TmdbDataSource
+import com.mskd.flux.core.network.tmdb.data.remote.service.TMDBService
 import com.mskd.flux.di.Qualifiers
 import com.mskd.flux.di.moduleAndroidApp
 import com.mskd.flux.di.modulePlatform

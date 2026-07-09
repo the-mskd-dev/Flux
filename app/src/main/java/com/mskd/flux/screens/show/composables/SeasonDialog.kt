@@ -19,7 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
-import com.mskd.flux.core.domain.model.artwork.Season
+import com.mskd.flux.core.model.artwork.Season
 import com.mskd.flux.features.show.presentation.ShowIntent
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.ui.component.global.Text

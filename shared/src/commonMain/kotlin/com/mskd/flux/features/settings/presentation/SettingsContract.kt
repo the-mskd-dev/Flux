@@ -1,7 +1,7 @@
 package com.mskd.flux.features.settings.presentation
 
 import androidx.compose.runtime.Immutable
-import com.mskd.flux.core.domain.model.core.FluxOptionsDialogState
+import com.mskd.flux.core.model..core.FluxOptionsDialogState
 import com.mskd.flux.features.images.domain.ImagesPrefetchManager
 import java.util.Locale
 

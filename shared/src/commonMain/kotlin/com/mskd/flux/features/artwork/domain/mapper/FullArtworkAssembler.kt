@@ -1,10 +1,10 @@
 package com.mskd.flux.features.artwork.domain.mapper
 
-import com.mskd.flux.core.domain.model.artwork.Artwork
-import com.mskd.flux.core.domain.model.artwork.Episode
-import com.mskd.flux.core.domain.model.artwork.FullArtwork
-import com.mskd.flux.core.domain.model.artwork.Movie
-import com.mskd.flux.core.domain.model.artwork.Season
+import com.mskd.flux.core.model.artwork.Artwork
+import com.mskd.flux.core.model.artwork.Episode
+import com.mskd.flux.core.model.artwork.FullArtwork
+import com.mskd.flux.core.model.artwork.Movie
+import com.mskd.flux.core.model.artwork.Season
 
 internal fun buildFullArtworkMovie(artwork: Artwork, movie: Movie) : FullArtwork {
     return FullArtwork.FullMovie(

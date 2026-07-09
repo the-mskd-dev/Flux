@@ -4,8 +4,8 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import com.mskd.flux.core.domain.model.artwork.Status
-import com.mskd.flux.core.domain.model.files.FileSource
+import com.mskd.flux.core.model.artwork.Status
+import com.mskd.flux.core.model.files.FileSource
 
 @Entity(
     tableName = "episodes",

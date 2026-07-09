@@ -2,12 +2,12 @@ package com.mskd.flux.features.catalog.presentation.catalog
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mskd.flux.core.data.database.repository.DatabaseRepository
+import com.mskd.flux.core.database.domain.repository.DatabaseRepository
 import com.mskd.flux.core.datastore.domain.SnackbarDataStore
 import com.mskd.flux.core.datastore.domain.UserDataStore
-import com.mskd.flux.core.domain.model.artwork.Artwork
-import com.mskd.flux.core.domain.model.artwork.ContentType
-import com.mskd.flux.core.domain.model.core.AppInfo
+import com.mskd.flux.core.model.artwork.Artwork
+import com.mskd.flux.core.model.artwork.ContentType
+import com.mskd.flux.core.model..core.AppInfo
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore

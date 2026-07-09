@@ -1,8 +1,8 @@
 package com.mskd.flux.core.network.tmdb.data.remote.mapper
 
-import com.mskd.flux.core.domain.model.artwork.Episode
-import com.mskd.flux.core.domain.model.artwork.Status
-import com.mskd.flux.core.domain.model.files.UserFile
+import com.mskd.flux.core.model.artwork.Episode
+import com.mskd.flux.core.model.artwork.Status
+import com.mskd.flux.core.model.files.UserFile
 import com.mskd.flux.core.network.tmdb.data.remote.dto.EpisodeDto
 
 fun EpisodeDto.toDomain(

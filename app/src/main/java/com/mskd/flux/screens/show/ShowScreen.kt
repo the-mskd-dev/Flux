@@ -28,8 +28,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.mskd.flux.core.domain.model.artwork.FullArtwork
-import com.mskd.flux.core.domain.model.core.State
+import com.mskd.flux.core.model.artwork.FullArtwork
+import com.mskd.flux.core.model..core.State
 import com.mskd.flux.features.show.presentation.ShowDialog
 import com.mskd.flux.features.show.presentation.ShowEvent
 import com.mskd.flux.features.show.presentation.ShowIntent

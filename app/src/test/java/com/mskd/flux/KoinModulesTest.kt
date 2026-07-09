@@ -2,8 +2,8 @@ package com.mskd.flux
 
 import android.app.Application
 import android.content.Context
-import com.mskd.flux.core.domain.model.artwork.ContentType
-import com.mskd.flux.core.domain.model.core.AppInfo
+import com.mskd.flux.core.model.artwork.ContentType
+import com.mskd.flux.core.model..core.AppInfo
 import com.mskd.flux.di.moduleAndroidApp
 import com.mskd.flux.di.modulePlatform
 import io.kotest.core.spec.style.FunSpec

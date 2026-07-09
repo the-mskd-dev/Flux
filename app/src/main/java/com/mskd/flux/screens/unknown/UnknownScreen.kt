@@ -28,8 +28,8 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.mskd.flux.core.domain.model.artwork.Episode
-import com.mskd.flux.core.domain.model.core.State
+import com.mskd.flux.core.model.artwork.Episode
+import com.mskd.flux.core.model..core.State
 import com.mskd.flux.features.unknown.presentation.UnknownEvent
 import com.mskd.flux.features.unknown.presentation.UnknownIntent
 import com.mskd.flux.features.unknown.presentation.UnknownViewModel

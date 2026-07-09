@@ -1,4 +1,4 @@
-package com.mskd.flux.features.catalog.presentation
+package com.mskd.flux.features.catalog.presentation.catalog
 
 import androidx.compose.runtime.Immutable
 import com.mskd.flux.core.domain.model.artwork.Artwork

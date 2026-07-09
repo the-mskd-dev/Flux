@@ -14,10 +14,10 @@ import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.core.FakeDatabaseRepository
 import com.mskd.flux.mockups.core.datastore.FakeSnackbarDataStore
 import com.mskd.flux.mockups.features.catalog.FakeSyncCatalogUseCase
-import com.mskd.flux.features.catalog.presentation.CatalogEvent
-import com.mskd.flux.features.catalog.presentation.CatalogIntent
-import com.mskd.flux.features.catalog.presentation.CatalogState
-import com.mskd.flux.features.catalog.presentation.CatalogViewModel
+import com.mskd.flux.features.catalog.presentation.catalog.CatalogEvent
+import com.mskd.flux.features.catalog.presentation.catalog.CatalogIntent
+import com.mskd.flux.features.catalog.presentation.catalog.CatalogState
+import com.mskd.flux.features.catalog.presentation.catalog.CatalogViewModel
 import com.mskd.flux.utils.FluxSnackbar
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData

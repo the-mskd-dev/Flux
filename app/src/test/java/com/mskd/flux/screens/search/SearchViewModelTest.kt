@@ -8,9 +8,9 @@ import com.mskd.flux.core.domain.model.artwork.ContentType
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.core.FakeDatabaseRepository
 import com.mskd.flux.mockups.core.datastore.FakeSettingsDataStore
-import com.mskd.flux.screen.search.SearchEvent
-import com.mskd.flux.screen.search.SearchIntent
-import com.mskd.flux.screen.search.SearchViewModel
+import com.mskd.flux.features.catalog.presentation.search.SearchEvent
+import com.mskd.flux.features.catalog.presentation.search.SearchIntent
+import com.mskd.flux.features.catalog.presentation.search.SearchViewModel
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 

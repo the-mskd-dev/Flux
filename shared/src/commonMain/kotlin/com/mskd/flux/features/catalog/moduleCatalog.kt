@@ -8,7 +8,9 @@ import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseC
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCaseImpl
 import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCase
 import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCaseImpl
-import com.mskd.flux.features.catalog.presentation.CatalogViewModel
+import com.mskd.flux.features.catalog.presentation.catalog.CatalogViewModel
+import com.mskd.flux.features.catalog.presentation.search.SearchViewModel
+import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
@@ -51,5 +53,13 @@ val moduleCatalog = module {
     }
 
     viewModelOf(::CatalogViewModel)
+
+    viewModel { params ->
+        SearchViewModel(
+            contentType = params.getOrNull(),
+            database = get(),
+            settingsDataStore = get()
+        )
+    }
 
 }

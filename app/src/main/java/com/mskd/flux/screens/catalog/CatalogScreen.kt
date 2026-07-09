@@ -77,10 +77,10 @@ import com.mskd.flux.core.domain.model.artwork.Artwork
 import com.mskd.flux.core.domain.model.artwork.ContentType
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.navigation.Route
-import com.mskd.flux.features.catalog.presentation.CatalogEvent
-import com.mskd.flux.features.catalog.presentation.CatalogIntent
-import com.mskd.flux.features.catalog.presentation.CatalogState
-import com.mskd.flux.features.catalog.presentation.CatalogViewModel
+import com.mskd.flux.features.catalog.presentation.catalog.CatalogEvent
+import com.mskd.flux.features.catalog.presentation.catalog.CatalogIntent
+import com.mskd.flux.features.catalog.presentation.catalog.CatalogState
+import com.mskd.flux.features.catalog.presentation.catalog.CatalogViewModel
 import com.mskd.flux.screens.howTo.HowToNameFiles
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.component.global.FluxButton

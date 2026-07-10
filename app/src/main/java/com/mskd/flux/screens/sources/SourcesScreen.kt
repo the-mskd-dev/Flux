@@ -36,7 +36,7 @@ import com.mskd.flux.navigation.Route
 import com.mskd.flux.presentations.components.rememberSafFolderPicker
 import com.mskd.flux.screens.sources.composables.DeleteSourceDialog
 import com.mskd.flux.screens.sources.composables.PermanentFolderItem
-import com.mskd.flux.screens.sources.composables.SourcesFeatureInformationDialog
+import com.mskd.flux.screens.sources.composables.SourcesInformationDialog
 import com.mskd.flux.screens.sources.composables.UserFolderItem
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.component.global.ErrorScreen
@@ -121,7 +121,7 @@ fun SourcesScreen(
 
     // TODO: Delete in October 2026
     if (uiState.dialog is SourcesDialog.NewFeatureInformation) {
-        SourcesFeatureInformationDialog(
+        SourcesInformationDialog(
             sendIntent = { viewModel.handleIntent(intent = it) }
         )
     }

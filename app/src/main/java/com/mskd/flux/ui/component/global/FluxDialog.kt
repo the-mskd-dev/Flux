@@ -27,12 +27,14 @@ fun FluxDialog(
     AlertDialog(
         onDismissRequest = onDismiss,
         confirmButton = {
-            TextButton(
-                onClick = { onValidate?.invoke() },
-                content = {
-                    Text.Label.Large(text = onValidateLabel)
-                }
-            )
+            onValidate?.let {
+                TextButton(
+                    onClick = { it() },
+                    content = {
+                        Text.Label.Large(text = onValidateLabel)
+                    }
+                )
+            }
         },
         dismissButton = {
             TextButton(

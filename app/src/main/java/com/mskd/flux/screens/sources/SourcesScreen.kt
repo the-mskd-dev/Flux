@@ -38,6 +38,7 @@ import com.mskd.flux.screens.sources.composables.DeleteSourceDialog
 import com.mskd.flux.screens.sources.composables.PermanentFolderItem
 import com.mskd.flux.screens.sources.composables.SourcesInformationDialog
 import com.mskd.flux.screens.sources.composables.UserFolderItem
+import com.mskd.flux.screens.sources.composables.sourcesAnnotatedString
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.component.global.ErrorScreen
 import com.mskd.flux.ui.component.global.FluxButton
@@ -53,6 +54,7 @@ import flux.shared.generated.resources.movies
 import flux.shared.generated.resources.oups_an_error_occured
 import flux.shared.generated.resources.sources
 import flux.shared.generated.resources.sources_full_desc
+import flux.shared.generated.resources.sources_title
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -172,9 +174,18 @@ fun SourcesScreenContent(
             item { Spacer(modifier = Modifier.height(innerPadding.calculateTopPadding())) }
 
             item {
-                Text.Body.Large(
+
+                Text.Title.Large(
                     modifier = Modifier.padding(horizontal = FluxUI.Space.medium),
-                    text = stringResource(Res.string.sources_full_desc)
+                    text = stringResource(Res.string.sources_title)
+                )
+            }
+
+            item {
+                Text.Annotated(
+                    modifier = Modifier.padding(horizontal = FluxUI.Space.medium),
+                    text = sourcesAnnotatedString(Res.string.sources_full_desc),
+                    style = MaterialTheme.typography.bodyLarge
                 )
             }
 

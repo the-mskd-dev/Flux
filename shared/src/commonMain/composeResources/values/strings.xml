@@ -162,8 +162,9 @@
     <string name="large">Large</string>
     <string name="delete">Delete</string>
     <string name="sources">Sources</string>
-    <string name="sources_desc">Add your source folders</string>
-    <string name="sources_full_desc">For optimal use, it is recommended to place your files in the "Movies" and/or "Downloads" folders, which are the application's default folders.\n\nHowever, you can add other source folders if needed, in addition to these two.</string>
+    <string name="sources_short_desc">Add your source folders</string>
+    <string name="sources_title">Stay in control of your library</string>
+    <string name="sources_full_desc">For an optimal setup and better control over your files, the app automatically targets the %1$s and %2$s folders.\n\nYou stay in control: use the button below to add other folders on top of these default locations.</string>
     <string name="warning">Warning</string>
     <string name="confirm_source_deletion">Deleting this folder will result in the loss of progress for the files it contains.\nAre you sure you want to delete it?</string>
     <string name="add_source">Add source</string>

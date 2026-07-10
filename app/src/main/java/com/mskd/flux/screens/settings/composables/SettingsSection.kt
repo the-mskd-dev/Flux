@@ -58,7 +58,7 @@ import flux.shared.generated.resources.make_a_donation
 import flux.shared.generated.resources.picture_in_picture
 import flux.shared.generated.resources.source_code
 import flux.shared.generated.resources.sources
-import flux.shared.generated.resources.sources_desc
+import flux.shared.generated.resources.sources_short_desc
 import flux.shared.generated.resources.stay_informed
 import flux.shared.generated.resources.support_me_desc
 import flux.shared.generated.resources.sync_in_progress
@@ -299,7 +299,7 @@ fun SettingsSyncSection(
 
         SettingsItem(
             text = stringResource(Res.string.sources),
-            subText = stringResource(Res.string.sources_desc),
+            subText = stringResource(Res.string.sources_short_desc),
             painter = painterResource(Res.drawable.ic_folder),
             iconColor = iconColor,
             iconBackgroundColor = bgColor,

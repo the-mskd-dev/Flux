@@ -8,7 +8,6 @@ import com.mskd.flux.features.sources.domain.validator.UserFolderValidator
 
 class DeleteUnavailableSourcesUseCase(
     val sources: SourcesRepository,
-    val database: DatabaseRepository,
     val checkFolderDataSource: UserFolderValidator
 ) {
 

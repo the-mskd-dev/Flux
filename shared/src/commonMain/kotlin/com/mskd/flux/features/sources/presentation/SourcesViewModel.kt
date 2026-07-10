@@ -81,9 +81,9 @@ class SourcesViewModel(
         // Show new feature dialog
         viewModelScope.launch {
 
-            if (userDataStore.getVersionCode() in 1..27 && userDataStore.sourcesRequested) {
+            //if (userDataStore.getVersionCode() in 1..27 && userDataStore.sourcesRequested) {
                 _dialogState.update { SourcesDialog.NewFeatureInformation }
-            }
+            //}
 
         }
 

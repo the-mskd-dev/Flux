@@ -158,4 +158,7 @@
     <string name="warning">Attention</string>
     <string name="confirm_source_deletion">La suppression de ce dossier entraînera la perte de la progression pour les fichiers qu'il contient.\nÊtes-vous vraiment sûr(e) de vouloir le supprimer ?</string>
     <string name="add_source">Ajouter une source</string>
+    <string name="got_it">J'ai compris</string>
+    <string name="dialog_sources_title">Vos dossiers, vos règles !</string>
+    <string name="dialog_sources_description">TPour vous offrir plus de contrôle, l'application se concentre désormais sur vos dossiers %1$s et %2$s.\n\nUne vidéo manque à l'appel ? Pas de panique ! Vous pouvez ajouter vos propres dossiers en un clin d'œil depuis les paramètres.</string>
 </resources>

@@ -33,11 +33,11 @@ class FakeSourcesRepository(initFolders: List<UserFolder> = emptyList()) : Sourc
 
     override suspend fun deleteFolders(folders: List<UserFolder>) {
         _flow.update { state ->
-            val folders = state.toMutableList()
+            val tmp = state.toMutableList()
             folders.forEach { folder ->
-                folders.removeIf { it.path == folder.path }
+                tmp.removeIf { it.path == folder.path }
             }
-            folders
+            tmp
         }
     }
 

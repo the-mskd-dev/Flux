@@ -29,22 +29,6 @@ fun SourcesInformationDialog(
     sendIntent: (SourcesIntent) -> Unit
 ) {
 
-    val desc = stringResource(Res.string.dialog_sources_description, Environment.DIRECTORY_MOVIES, Environment.DIRECTORY_DOWNLOADS)
-    val annotatedDesc = buildAnnotatedString {
-
-        append(desc.substringBefore(Environment.DIRECTORY_MOVIES))
-        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-            append(Environment.DIRECTORY_MOVIES)
-        }
-
-        append(desc.substringAfter(Environment.DIRECTORY_MOVIES).substringBefore(Environment.DIRECTORY_DOWNLOADS))
-        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-            append(Environment.DIRECTORY_DOWNLOADS)
-        }
-        append(desc.substringAfter(Environment.DIRECTORY_DOWNLOADS))
-
-    }
-
     FluxDialog(
         title = stringResource(Res.string.dialog_sources_title),
         onDismiss = { sendIntent(SourcesIntent.CloseDialog) },
@@ -54,7 +38,7 @@ fun SourcesInformationDialog(
         Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
 
             Text.Annotated(
-                text = annotatedDesc,
+                text = sourcesAnnotatedString(Res.string.dialog_sources_description),
                 style = MaterialTheme.typography.bodyLarge
             )
 

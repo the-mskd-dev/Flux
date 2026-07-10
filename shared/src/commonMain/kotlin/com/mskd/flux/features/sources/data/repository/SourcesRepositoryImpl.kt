@@ -30,9 +30,9 @@ internal class SourcesRepositoryImpl(
         dao.insertFolder(folder = folder.toEntity())
     }
 
-    override suspend fun deleteFolder(folder: UserFolder) {
+    override suspend fun deleteFolder(folder: UserFolder, withMedias: Boolean) {
         dao.deleteFolder(path = folder.path)
-        databaseRepository.deleteMediasInFolder(folder = folder)
+        if (withMedias) databaseRepository.deleteMediasInFolder(folder = folder)
     }
 
     override suspend fun deleteFolders(folders: List<UserFolder>) {

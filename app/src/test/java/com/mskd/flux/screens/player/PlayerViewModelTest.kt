@@ -6,7 +6,6 @@ import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.core.model.player.PlayerTrack
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
-import com.mskd.flux.mockups.features.artwork.FakeObserveArtworkUseCase
 import com.mskd.flux.features.files.domain.usecase.GetSubtitlesUseCase
 import com.mskd.flux.features.player.data.PipIsEnabledUseCase
 import com.mskd.flux.features.player.presentation.PlayerEvent
@@ -18,6 +17,7 @@ import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.PlayerMockups
+import com.mskd.flux.mockups.features.artwork.FakeObserveArtworkUseCase
 import com.mskd.flux.platform.PlayerManager
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.extensions.lastEpisode

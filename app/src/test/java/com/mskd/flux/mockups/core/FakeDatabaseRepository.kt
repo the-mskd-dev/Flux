@@ -1,12 +1,12 @@
 package com.mskd.flux.mockups.core
 
 import com.mskd.flux.core.database.domain.repository.DatabaseRepository
-import com.mskd.flux.features.sources.domain.model.UserFolder
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Movie
 import com.mskd.flux.core.model.artwork.Season
 import com.mskd.flux.core.model.files.UserFile
+import com.mskd.flux.features.sources.domain.model.UserFolder
 import com.mskd.flux.mockups.MediaMockups
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow

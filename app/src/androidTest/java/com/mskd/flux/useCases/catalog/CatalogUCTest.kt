@@ -10,6 +10,7 @@ import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Movie
 import com.mskd.flux.core.model.core.AppInfo
 import com.mskd.flux.core.network.tmdb.data.datasource.TmdbDataSource
+import com.mskd.flux.core.network.tmdb.data.datasource.TmdbDataSourceImpl
 import com.mskd.flux.core.network.tmdb.data.remote.service.TMDBService
 import com.mskd.flux.di.Qualifiers
 import com.mskd.flux.di.moduleAndroidApp
@@ -18,7 +19,6 @@ import com.mskd.flux.features.files.domain.usecase.FilterExistingFilesUseCase
 import com.mskd.flux.features.files.domain.usecase.GetDeviceFilesUseCase
 import com.mskd.flux.features.images.domain.ImagesPrefetchManager
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
-import com.mskd.flux.core.network.tmdb.data.datasource.TmdbDataSourceImpl
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import io.mockk.coEvery
 import io.mockk.every

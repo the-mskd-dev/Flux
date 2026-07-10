@@ -10,10 +10,10 @@ class AddSourceUseCase(
     suspend operator fun invoke(folder: UserFolder) : Boolean {
         val folders = repository.getFolders()
 
-        val newFolderAlreadyExists = folders.any { folder.path.startsWith(it.path) }
+        val newFolderAlreadyExists = folders.any { folder.path == it.path || folder.path.startsWith("${it.path}/") }
         if (newFolderAlreadyExists) return false
 
-        val alreadyIncludedFolders = folders.filter { it.path.startsWith(folder.path) }
+        val alreadyIncludedFolders = folders.filter { it.path.startsWith("${folder.path}/") }
         if (alreadyIncludedFolders.isNotEmpty()) {
             repository.deleteFolders(folders = alreadyIncludedFolders)
         }

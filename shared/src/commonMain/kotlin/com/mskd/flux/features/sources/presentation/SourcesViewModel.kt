@@ -77,10 +77,11 @@ class SourcesViewModel(
             }
         }
 
-        // Show
+        // TODO: Delete in October 2026
+        // Show new feature dialog
         viewModelScope.launch {
 
-            if (userDataStore.getVersionCode() in 1..28 && userDataStore.sourcesRequested) {
+            if (userDataStore.getVersionCode() in 1..27 && userDataStore.sourcesRequested) {
                 _dialogState.update { SourcesDialog.NewFeatureInformation }
             }
 

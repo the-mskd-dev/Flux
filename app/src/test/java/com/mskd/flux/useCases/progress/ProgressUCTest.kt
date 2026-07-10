@@ -1,6 +1,7 @@
 package com.mskd.flux.useCases.progress
 
 import com.mskd.flux.configs.fluxExtensions
+import com.mskd.flux.core.FakeDatabaseRepository
 import com.mskd.flux.core.database.domain.repository.DatabaseRepository
 import com.mskd.flux.core.datastore.domain.UserDataStore
 import com.mskd.flux.core.model.artwork.ContentType
@@ -12,7 +13,6 @@ import com.mskd.flux.features.progress.domain.usecase.MarkPreviousAsWatchedUseCa
 import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
 import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.core.FakeDatabaseRepository
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.extensions.lastEpisode
 import com.mskd.flux.utils.extensions.minToMs

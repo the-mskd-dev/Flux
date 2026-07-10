@@ -1,6 +1,6 @@
-package com.mskd.flux.features.files
+package com.mskd.flux.features.files.datastore
 
-import com.mskd.flux.features.files.data.usecase.AndroidGetDeviceFilesUseCase
+import com.mskd.flux.features.files.domain.usecase.GetDeviceFilesUseCaseImpl
 import com.mskd.flux.features.files.fake.FakeFilesDataSource
 import com.mskd.flux.mockups.FilesMockups
 import io.kotest.core.spec.style.FunSpec
@@ -9,7 +9,7 @@ import io.kotest.property.Arb
 import io.kotest.property.arbitrary.subsequence
 import io.kotest.property.checkAll
 
-class AndroidGetDeviceFilesUseCaseTest: FunSpec ({
+class GetDeviceFilesUseCaseTest: FunSpec ({
 
     test("get files from multiple sources") {
 
@@ -21,9 +21,11 @@ class AndroidGetDeviceFilesUseCaseTest: FunSpec ({
             val mediaStoreDataSource = FakeFilesDataSource(availableFiles = mediaStoreFiles)
             val safDataSource = FakeFilesDataSource(availableFiles = safFiles)
 
-            val useCase = AndroidGetDeviceFilesUseCase(
-                mediaStore = mediaStoreDataSource,
-                saf = safDataSource
+            val useCase = GetDeviceFilesUseCaseImpl(
+                listOf(
+                    mediaStoreDataSource,
+                    safDataSource
+                )
             )
 
             val result = useCase()

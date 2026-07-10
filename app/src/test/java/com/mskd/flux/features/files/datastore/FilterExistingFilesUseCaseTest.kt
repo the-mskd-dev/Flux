@@ -1,6 +1,6 @@
-package com.mskd.flux.features.files
+package com.mskd.flux.features.files.datastore
 
-import com.mskd.flux.features.files.data.usecase.AndroidFilterExistingFilesUseCase
+import com.mskd.flux.features.files.domain.usecase.FilterExistingFilesUseCaseImpl
 import com.mskd.flux.features.files.fake.FakeFilesDataSource
 import com.mskd.flux.mockups.FilesMockups
 import io.kotest.core.spec.style.FunSpec
@@ -10,7 +10,7 @@ import io.kotest.property.Arb
 import io.kotest.property.arbitrary.subsequence
 import io.kotest.property.checkAll
 
-class AndroidFilterExistingFilesUseCaseTest: FunSpec ({
+class FilterExistingFilesUseCaseTest: FunSpec ({
 
     test("result should be the union between mediastore and saf") {
 
@@ -22,9 +22,11 @@ class AndroidFilterExistingFilesUseCaseTest: FunSpec ({
             val mediaStoreDataSource = FakeFilesDataSource(availableFiles = mediaStoreFiles)
             val safDataSource = FakeFilesDataSource(availableFiles = safFiles)
 
-            val useCase = AndroidFilterExistingFilesUseCase(
-                mediaStore = mediaStoreDataSource,
-                saf = safDataSource
+            val useCase = FilterExistingFilesUseCaseImpl(
+                listOf(
+                    mediaStoreDataSource,
+                    safDataSource
+                )
             )
 
             val inputFiles = FilesMockups.mediaStoreFiles + FilesMockups.safFiles
@@ -41,9 +43,11 @@ class AndroidFilterExistingFilesUseCaseTest: FunSpec ({
         val mediaStoreDataSource = FakeFilesDataSource(availableFiles = emptyList())
         val safDataSource = FakeFilesDataSource(availableFiles = emptyList())
 
-        val useCase = AndroidFilterExistingFilesUseCase(
-            mediaStore = mediaStoreDataSource,
-            saf = safDataSource
+        val useCase = FilterExistingFilesUseCaseImpl(
+            listOf(
+                mediaStoreDataSource,
+                safDataSource
+            )
         )
 
         val result = useCase(files = emptyList())

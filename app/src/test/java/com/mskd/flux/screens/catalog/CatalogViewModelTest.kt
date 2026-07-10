@@ -1,12 +1,15 @@
 package com.mskd.flux.screens.catalog
 
 import app.cash.turbine.test
+import com.mskd.flux.core.FakeDatabaseRepository
 import com.mskd.flux.core.database.domain.repository.DatabaseRepository
+import com.mskd.flux.core.datastore.FakeSnackbarDataStore
 import com.mskd.flux.core.datastore.domain.SnackbarDataStore
 import com.mskd.flux.core.datastore.domain.UserDataStore
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.core.AppInfo
+import com.mskd.flux.features.catalog.FakeSyncCatalogUseCase
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.catalog.presentation.catalog.CatalogEvent
 import com.mskd.flux.features.catalog.presentation.catalog.CatalogIntent
@@ -14,9 +17,6 @@ import com.mskd.flux.features.catalog.presentation.catalog.CatalogState
 import com.mskd.flux.features.catalog.presentation.catalog.CatalogViewModel
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.core.FakeDatabaseRepository
-import com.mskd.flux.core.datastore.FakeSnackbarDataStore
-import com.mskd.flux.features.catalog.FakeSyncCatalogUseCase
 import com.mskd.flux.utils.FluxSnackbar
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData

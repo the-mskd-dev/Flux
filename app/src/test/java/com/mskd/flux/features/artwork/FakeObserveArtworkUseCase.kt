@@ -1,4 +1,4 @@
-package com.mskd.flux.mockups.features.artwork
+package com.mskd.flux.features.artwork
 
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.Episode

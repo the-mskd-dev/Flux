@@ -17,7 +17,7 @@ import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.PlayerMockups
-import com.mskd.flux.mockups.features.artwork.FakeObserveArtworkUseCase
+import com.mskd.flux.features.artwork.FakeObserveArtworkUseCase
 import com.mskd.flux.platform.PlayerManager
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.extensions.lastEpisode

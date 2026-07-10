@@ -12,7 +12,7 @@ import com.mskd.flux.features.progress.domain.usecase.MarkPreviousAsWatchedUseCa
 import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
 import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.mockups.core.FakeDatabaseRepository
+import com.mskd.flux.core.FakeDatabaseRepository
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.extensions.lastEpisode
 import com.mskd.flux.utils.extensions.minToMs

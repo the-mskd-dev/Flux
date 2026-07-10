@@ -1,4 +1,4 @@
-package com.mskd.flux.mockups.features.catalog
+package com.mskd.flux.features.catalog
 
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase

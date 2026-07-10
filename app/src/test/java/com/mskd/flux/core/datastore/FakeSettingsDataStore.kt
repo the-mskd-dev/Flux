@@ -1,4 +1,4 @@
-package com.mskd.flux.mockups.core.datastore
+package com.mskd.flux.core.datastore
 
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import kotlinx.coroutines.flow.Flow

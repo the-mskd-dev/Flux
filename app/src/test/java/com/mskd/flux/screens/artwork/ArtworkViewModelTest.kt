@@ -18,7 +18,7 @@ import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
 import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.mockups.features.artwork.FakeObserveArtworkUseCase
+import com.mskd.flux.features.artwork.FakeObserveArtworkUseCase
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe

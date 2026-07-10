@@ -166,6 +166,7 @@ acra-dialog = { group = "ch.acra", name = "acra-dialog", version.ref = "acra" }
 # -- Test --
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 kotest = { group = "io.kotest", name = "kotest-runner-junit5", version.ref = "kotest"}
+kotest-property = { group = "io.kotest", name = "kotest-property", version.ref = "kotest" }
 mockwebserver = { group = "com.squareup.okhttp3", name = "mockwebserver", version.ref = "mockwebserver" }
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 mockk-android = { group = "io.mockk", name = "mockk-android", version.ref = "mockk" }
@@ -302,6 +303,7 @@ android-acra = [
 android-unit-test = [
     "junit",
     "kotest",
+    "kotest-property",
     "mockwebserver",
     "mockk",
     "koin-test",

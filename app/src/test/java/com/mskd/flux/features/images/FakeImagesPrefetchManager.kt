@@ -1,4 +1,4 @@
-package com.mskd.flux.mockups.features.images
+package com.mskd.flux.features.images
 
 import com.mskd.flux.features.images.domain.ImagesPrefetchManager
 import kotlinx.coroutines.flow.Flow

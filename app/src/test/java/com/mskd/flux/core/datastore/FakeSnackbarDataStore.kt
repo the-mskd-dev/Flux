@@ -1,4 +1,4 @@
-package com.mskd.flux.mockups.core.datastore
+package com.mskd.flux.core.datastore
 
 import com.mskd.flux.core.datastore.domain.SnackbarDataStore
 import kotlinx.coroutines.flow.Flow

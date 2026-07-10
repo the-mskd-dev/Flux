@@ -1,4 +1,4 @@
-package com.mskd.flux.mockups.core
+package com.mskd.flux.core
 
 import com.mskd.flux.core.database.domain.repository.DatabaseRepository
 import com.mskd.flux.core.model.artwork.Artwork

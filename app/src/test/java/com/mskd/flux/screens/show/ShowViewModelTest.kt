@@ -11,7 +11,7 @@ import com.mskd.flux.features.show.presentation.ShowEvent
 import com.mskd.flux.features.show.presentation.ShowIntent
 import com.mskd.flux.features.show.presentation.ShowViewModel
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.mockups.features.artwork.FakeObserveArtworkUseCase
+import com.mskd.flux.features.artwork.FakeObserveArtworkUseCase
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf

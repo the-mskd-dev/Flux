@@ -1,7 +1,7 @@
 package com.mskd.flux.features.files
 
-import com.mskd.flux.features.files.data.usecase.AndroidFilterExistingFilesUseCase
 import com.mskd.flux.features.files.data.usecase.AndroidGetDeviceFilesUseCase
+import com.mskd.flux.features.files.fake.FakeFilesDataSource
 import com.mskd.flux.mockups.FilesMockups
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
@@ -14,7 +14,7 @@ class AndroidGetDeviceFilesUseCaseTest: FunSpec ({
     test("get files from multiple sources") {
 
         checkAll(
-            Arb.subsequence(FilesMockups.localFiles),
+            Arb.subsequence(FilesMockups.mediaStoreFiles),
             Arb.subsequence(FilesMockups.safFiles)
         ) { mediaStoreFiles, safFiles ->
 
@@ -35,4 +35,5 @@ class AndroidGetDeviceFilesUseCaseTest: FunSpec ({
         }
 
     }
+
 })

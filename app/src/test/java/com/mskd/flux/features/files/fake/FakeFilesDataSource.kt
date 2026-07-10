@@ -1,4 +1,4 @@
-package com.mskd.flux.features.files
+package com.mskd.flux.features.files.fake
 
 import com.mskd.flux.core.model.files.UserFile
 import com.mskd.flux.features.files.domain.datasource.FilesDataSource
@@ -17,7 +17,7 @@ internal class FakeFilesDataSource(
     }
 
     override suspend fun getSubtitlesFor(file: UserFile): String? {
-        return null
+        return FilesMockups.subtitles.find { it.equals(file.name, ignoreCase = true) }
     }
 
 }

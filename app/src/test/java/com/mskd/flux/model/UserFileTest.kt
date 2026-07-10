@@ -174,7 +174,7 @@ class UserFileTest : FunSpec ({
 
     test("group files in folders") {
 
-        val files = FilesMockups.localFiles
+        val files = FilesMockups.mediaStoreFiles
 
         val folders = files.groupInFolders()
         val narutoFolder = folders.find { it.title == "naruto" }

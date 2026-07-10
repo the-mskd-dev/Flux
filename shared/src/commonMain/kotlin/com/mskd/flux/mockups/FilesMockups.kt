@@ -6,7 +6,7 @@ import com.mskd.flux.features.sources.domain.model.UserFolder
 
 object FilesMockups {
 
-    val localFiles = listOf(
+    val mediaStoreFiles = listOf(
         UserFile(
             name = "naruto_S01E01.mkv",
             addedDateTime = 0L,
@@ -37,57 +37,9 @@ object FilesMockups {
             path = "mediaStore/your name.mp4",
             source = FileSource.LOCAL
         ),
-        UserFile(
-            name = "spider-man(2002).mkv",
-            addedDateTime = 0L,
-            path = "mediaStore/spider-man(2002).mkv",
-            source = FileSource.LOCAL
-        ),
-        UserFile(
-            name = "Hunter x Hunter (2011) season1.episode2.mkv",
-            addedDateTime = 0L,
-            path = "mediaStore/Hunter x Hunter (2011) season1.episode2.mkv",
-            source = FileSource.LOCAL
-        ),
-        UserFile(
-            name = "Hunter x Hunter (1999) season1.episode2.mkv",
-            addedDateTime = 0L,
-            path = "mediaStore/Hunter x Hunter (1999) season1.episode2.mkv",
-            source = FileSource.LOCAL
-        )
     )
 
     val safFiles = listOf(
-        UserFile(
-            name = "naruto_S01E01.mkv",
-            addedDateTime = 0L,
-            path = "saf/naruto_S01E01.mkv",
-            source = FileSource.SAF
-        ),
-        UserFile(
-            name = "naruto _S02E01.mkv",
-            addedDateTime = 0L,
-            path = "saf/naruto _S02E01.mkv",
-            source = FileSource.SAF
-        ),
-        UserFile(
-            name = " naruto_S02E02.mkv",
-            addedDateTime = 0L,
-            path = "saf/ naruto_S02E02.mkv",
-            source = FileSource.SAF
-        ),
-        UserFile(
-            name = "Naruto_S04E10.mkv",
-            addedDateTime = 0L,
-            path = "saf/Naruto_S04E10.mkv",
-            source = FileSource.SAF
-        ),
-        UserFile(
-            name = "your name.mp4",
-            addedDateTime = 0L,
-            path = "saf/your name.mp4",
-            source = FileSource.SAF
-        ),
         UserFile(
             name = "spider-man(2002).mkv",
             addedDateTime = 0L,

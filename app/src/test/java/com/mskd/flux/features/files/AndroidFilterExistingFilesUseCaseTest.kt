@@ -1,6 +1,7 @@
 package com.mskd.flux.features.files
 
 import com.mskd.flux.features.files.data.usecase.AndroidFilterExistingFilesUseCase
+import com.mskd.flux.features.files.fake.FakeFilesDataSource
 import com.mskd.flux.mockups.FilesMockups
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
@@ -14,7 +15,7 @@ class AndroidFilterExistingFilesUseCaseTest: FunSpec ({
     test("result should be the union between mediastore and saf") {
 
         checkAll(
-            Arb.subsequence(FilesMockups.localFiles),
+            Arb.subsequence(FilesMockups.mediaStoreFiles),
             Arb.subsequence(FilesMockups.safFiles)
         ) { mediaStoreFiles, safFiles ->
 
@@ -26,7 +27,7 @@ class AndroidFilterExistingFilesUseCaseTest: FunSpec ({
                 saf = safDataSource
             )
 
-            val inputFiles = FilesMockups.localFiles + FilesMockups.safFiles
+            val inputFiles = FilesMockups.mediaStoreFiles + FilesMockups.safFiles
             val result = useCase(files = inputFiles)
 
             val expected = mediaStoreFiles + safFiles

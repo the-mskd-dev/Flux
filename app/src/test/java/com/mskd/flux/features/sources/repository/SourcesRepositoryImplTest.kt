@@ -1,4 +1,4 @@
-package com.mskd.flux.features.sources
+package com.mskd.flux.features.sources.repository
 
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
@@ -63,7 +63,11 @@ class SourcesRepositoryImplTest : FunSpec({
     test("saveFolder should convert domain to entity and call dao") {
 
         // Given
-        val domainFolder = UserFolder(path = "new/path", source = FileSource.LOCAL, status = UserFolder.Status.AVAILABLE)
+        val domainFolder = UserFolder(
+            path = "new/path",
+            source = FileSource.LOCAL,
+            status = UserFolder.Status.AVAILABLE
+        )
 
         // When
         repository.saveFolder(domainFolder)

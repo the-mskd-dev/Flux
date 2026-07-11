@@ -16,36 +16,36 @@ data class SourcesContent(
     val folders: List<UserFolder> = emptyList()
 )
 
-sealed class SourcesDialog {
-    data class ConfirmDelete(val folder: UserFolder) : SourcesDialog()
-    data object NewFeatureInformation: SourcesDialog()
+sealed interface SourcesDialog {
+    data class ConfirmDelete(val folder: UserFolder) : SourcesDialog
+    data object NewFeatureInformation: SourcesDialog
 }
 
-sealed class SourcesIntent {
+sealed interface SourcesIntent {
 
     // Navigation
-    data object OnBackTap: SourcesIntent()
-    data object OnNextTap: SourcesIntent()
+    data object OnBackTap: SourcesIntent
+    data object OnNextTap: SourcesIntent
 
     // Add
-    data object OpenFolderSelection : SourcesIntent()
-    data class SaveFolder(val path: String) : SourcesIntent()
+    data object OpenFolderSelection : SourcesIntent
+    data class SaveFolder(val path: String) : SourcesIntent
 
     // Delete
-    data class DeleteFolder(val folder: UserFolder) : SourcesIntent()
+    data class DeleteFolder(val folder: UserFolder) : SourcesIntent
 
     // Dialog
-    data class ShowDeleteDialog(val folder: UserFolder) : SourcesIntent()
-    data object CloseDialog : SourcesIntent()
+    data class ShowDeleteDialog(val folder: UserFolder) : SourcesIntent
+    data object CloseDialog : SourcesIntent
 }
 
-sealed class SourcesEvent {
+sealed interface SourcesEvent {
 
     // Navigation
-    data object BackToPreviousScreen : SourcesEvent()
-    data object NavigateToToken: SourcesEvent()
-    data object NavigateToCatalog: SourcesEvent()
+    data object BackToPreviousScreen : SourcesEvent
+    data object NavigateToToken: SourcesEvent
+    data object NavigateToCatalog: SourcesEvent
 
     // Add
-    data object OpenFolderSelection: SourcesEvent()
+    data object OpenFolderSelection: SourcesEvent
 }

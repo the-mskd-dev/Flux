@@ -1,4 +1,4 @@
-package com.mskd.flux.features.catalog.domain.resolver
+package com.mskd.flux.features.catalog.domain.fetcher
 
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.catalog.CatalogFolder
@@ -12,18 +12,18 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.supervisorScope
 
-interface ArtworkFolderResolver {
-    suspend fun resolve(folders: List<CatalogFolder>, onProgress: () -> Unit): List<ArtworkFiles>
+interface ArtworkMetadataFetcher {
+    suspend fun fetch(folders: List<CatalogFolder>, onProgress: () -> Unit): List<ArtworkFiles>
 }
 
-internal class ArtworkFolderResolverImpl(
+internal class ArtworkMetadataFetcherImpl(
     private val tmdb: TmdbDataSource,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(10)
-) : ArtworkFolderResolver {
+) : ArtworkMetadataFetcher {
 
     private companion object { const val TAG = "ArtworkFolderResolver" }
 
-    override suspend fun resolve(
+    override suspend fun fetch(
         folders: List<CatalogFolder>,
         onProgress: () -> Unit
     ): List<ArtworkFiles> {

@@ -6,7 +6,7 @@ import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.features.token.domain.model.AuthenticateResult
 import com.mskd.flux.features.token.domain.usecase.SaveTokenAndSyncUseCase
 
-internal class SaveTokenAndSyncUseCaseImpl(
+class SaveTokenAndSyncUseCaseImpl(
     private val tokenDataStore: TokenDataStore,
     private val tmdbService: TMDBService,
     private val syncCatalogUseCase: SyncCatalogUseCase,

@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 
-internal class ObserveArtworkUseCaseImpl(
+class ObserveArtworkUseCaseImpl(
     private val database: DatabaseRepository
 ) : ObserveArtworkUseCase {
 

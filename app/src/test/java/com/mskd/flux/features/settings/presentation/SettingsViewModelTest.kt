@@ -312,7 +312,7 @@ class SettingsViewModelTest : FunSpec({
             val state = awaitItem()
 
             coVerify { settingsDataStore.setEnablePip(false) }
-            state.useExternalPlayer shouldBe true
+            state.pipIsEnabled shouldBe false
 
             cancelAndConsumeRemainingEvents()
 

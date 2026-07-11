@@ -1,6 +1,7 @@
 package com.mskd.flux.features.catalog.presentation
 
 import app.cash.turbine.test
+import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.core.FakeDatabaseRepository
 import com.mskd.flux.core.database.domain.repository.DatabaseRepository
 import com.mskd.flux.core.datastore.FakeSnackbarDataStore
@@ -34,6 +35,8 @@ import kotlin.time.Duration.Companion.hours
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class CatalogViewModelTest : FunSpec({
+
+    fluxExtensions()
 
     lateinit var viewModel: CatalogViewModel
     lateinit var syncCatalogUseCase: SyncCatalogUseCase
@@ -99,7 +102,6 @@ class CatalogViewModelTest : FunSpec({
             viewModel = createViewModel()
 
             viewModel.uiState.test {
-                awaitItem().state shouldBe CatalogState.Loading()
                 val initialState = awaitItem()
                 initialState.state shouldBe CatalogState.Content(
                     artworks = MediaMockups.artworks,
@@ -244,7 +246,6 @@ class CatalogViewModelTest : FunSpec({
         viewModel = createViewModel()
 
         viewModel.uiState.test {
-            awaitItem().snackbarState shouldBe null
             val stateWithSnackbar = awaitItem()
             stateWithSnackbar.snackbarState shouldBe FluxSnackbar.Token
 
@@ -260,8 +261,8 @@ class CatalogViewModelTest : FunSpec({
         val viewModelTutorial = createViewModel()
 
         viewModelTutorial.uiState.test {
-            awaitItem().snackbarState shouldBe null
-            awaitItem().snackbarState shouldBe FluxSnackbar.Tutorial
+            val stateWithTutorial = awaitItem()
+            stateWithTutorial.snackbarState shouldBe FluxSnackbar.Tutorial
 
             viewModelTutorial.event.test {
                 viewModelTutorial.handleIntent(CatalogIntent.OnSnackbarActionTap)

@@ -15,7 +15,7 @@ import kotlinx.coroutines.sync.Semaphore
 import java.util.Collections
 import java.util.concurrent.atomic.AtomicInteger
 
-internal class ImagesPrefetchManagerImpl(
+class ImagesPrefetchManagerImpl(
     private val database: DatabaseRepository,
     private val settings: SettingsDataStore,
     private val imageLoader: ImageLoader,

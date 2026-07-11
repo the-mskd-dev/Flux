@@ -23,7 +23,7 @@ interface EpisodeMetadataResolver {
     ): List<Episode>
 }
 
-internal class EpisodeMetadataResolverImpl(
+class EpisodeMetadataResolverImpl(
     private val tmdb: TmdbDataSource,
     private val settings: SettingsDataStore,
     private val getFileDurationUseCase: GetFileDurationUseCase,

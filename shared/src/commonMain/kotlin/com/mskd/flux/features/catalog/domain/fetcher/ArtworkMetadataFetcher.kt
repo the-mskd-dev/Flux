@@ -16,7 +16,7 @@ interface ArtworkMetadataFetcher {
     suspend fun fetch(folders: List<CatalogFolder>, onProgress: () -> Unit): List<ArtworkFiles>
 }
 
-internal class ArtworkMetadataFetcherImpl(
+class ArtworkMetadataFetcherImpl(
     private val tmdb: TmdbDataSource,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(10)
 ) : ArtworkMetadataFetcher {

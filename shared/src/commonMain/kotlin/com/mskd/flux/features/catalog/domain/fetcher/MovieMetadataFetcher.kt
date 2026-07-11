@@ -18,7 +18,7 @@ interface MovieMetadataFetcher {
     suspend fun fetch(artworkFiles: List<ArtworkFiles>, onProgress: () -> Unit): List<Media>
 }
 
-internal class MovieMetadataFetcherImpl(
+class MovieMetadataFetcherImpl(
     private val tmdb: TmdbDataSource,
     private val getFileDurationUseCase: GetFileDurationUseCase,
     private val dispatcher: CoroutineDispatcher

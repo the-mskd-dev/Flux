@@ -17,7 +17,7 @@ interface SeasonMetadataFetcher {
     suspend fun fetch(artworkFiles: List<ArtworkFiles>): List<Pair<Season, List<EpisodeDto>>>
 }
 
-internal class SeasonMetadataFetcherImpl(
+class SeasonMetadataFetcherImpl(
     private val tmdb: TmdbDataSource,
     private val dispatcher: CoroutineDispatcher
 ) : SeasonMetadataFetcher {

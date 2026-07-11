@@ -40,10 +40,10 @@ class ObserveArtworkUseCaseTest : FunSpec({
 
             val state = awaitItem()
             state.shouldBeInstanceOf<State.Content<FullArtwork>>()
-            val content = (state as State.Content).content
+            val content = state.content
             content.shouldBeInstanceOf<FullArtwork.FullMovie>()
             content.artwork shouldBe movieArtwork
-            (content as FullArtwork.FullMovie).movie shouldBe movie
+            content.movie shouldBe movie
         }
     }
 
@@ -62,10 +62,10 @@ class ObserveArtworkUseCaseTest : FunSpec({
 
             val state = awaitItem()
             state.shouldBeInstanceOf<State.Content<FullArtwork>>()
-            val content = (state as State.Content).content
+            val content = state.content
             content.shouldBeInstanceOf<FullArtwork.FullShow>()
             content.artwork shouldBe showArtwork
-            (content as FullArtwork.FullShow).seasons shouldBe seasons.filter { it.season in 1..2 }
+            content.seasons shouldBe seasons.filter { it.season in 1..2 }
             content.episodes shouldBe episodes
         }
     }

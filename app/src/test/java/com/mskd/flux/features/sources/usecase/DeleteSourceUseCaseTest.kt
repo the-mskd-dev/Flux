@@ -9,7 +9,7 @@ import io.mockk.mockk
 
 class DeleteSourceUseCaseTest : FunSpec ({
 
-    test("delete source through use case should call repository") {
+    test("delete source through use case should call repository with deleteMedias true") {
 
         val sourcesRepository: SourcesRepository = mockk(relaxed = true)
 
@@ -17,9 +17,23 @@ class DeleteSourceUseCaseTest : FunSpec ({
             repository = sourcesRepository
         )
 
-        useCase(folder = FakeUserFolders.folder1)
+        useCase(folder = FakeUserFolders.folder1, deleteMedias = true)
 
-        coVerify { sourcesRepository.deleteFolder(FakeUserFolders.folder1) }
+        coVerify { sourcesRepository.deleteFolder(FakeUserFolders.folder1, deleteMedias = true) }
+
+    }
+
+    test("delete source through use case should call repository with deleteMedias false") {
+
+        val sourcesRepository: SourcesRepository = mockk(relaxed = true)
+
+        val useCase = DeleteSourceUseCase(
+            repository = sourcesRepository
+        )
+
+        useCase(folder = FakeUserFolders.folder1, deleteMedias = false)
+
+        coVerify { sourcesRepository.deleteFolder(FakeUserFolders.folder1, deleteMedias = false) }
 
     }
 

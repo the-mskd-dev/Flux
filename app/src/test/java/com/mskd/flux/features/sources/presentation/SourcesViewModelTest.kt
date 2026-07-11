@@ -229,7 +229,7 @@ class SourcesViewModelTest : FunSpec({
         viewModel.handleIntent(SourcesIntent.DeleteFolder(folder = folder))
         testDispatcher.scheduler.advanceUntilIdle()
 
-        coVerify { deleteSourceUseCase(folder = folder) }
+        coVerify { deleteSourceUseCase(folder = folder, deleteMedias = false) }
         viewModel.uiState.value.dialog shouldBe null
     }
 

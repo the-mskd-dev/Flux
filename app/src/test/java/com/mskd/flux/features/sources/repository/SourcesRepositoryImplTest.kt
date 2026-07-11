@@ -2,6 +2,7 @@ package com.mskd.flux.features.sources.repository
 
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
+import com.mskd.flux.core.database.domain.repository.DatabaseRepository
 import com.mskd.flux.core.model.files.FileSource
 import com.mskd.flux.features.sources.data.local.SourcesDao
 import com.mskd.flux.features.sources.data.local.UserFolderEntity
@@ -22,13 +23,21 @@ class SourcesRepositoryImplTest : FunSpec({
     fluxExtensions()
 
     // 1. Déclaration des mocks
-    val dao = mockk<SourcesDao>(relaxed = true)
-    val validator = mockk<UserFolderValidator>()
+    lateinit var dao: SourcesDao
+    lateinit var databaseRepository: DatabaseRepository
+    lateinit var validator: UserFolderValidator
+    lateinit var repository: SourcesRepositoryImpl
 
-    val repository = SourcesRepositoryImpl(
-        dao = dao,
-        userFolderValidator = validator
-    )
+    beforeTest {
+        dao = mockk(relaxed = true)
+        databaseRepository = mockk(relaxed = true)
+        validator = mockk()
+        repository = SourcesRepositoryImpl(
+            dao = dao,
+            databaseRepository = databaseRepository,
+            userFolderValidator = validator
+        )
+    }
 
     test("flowFolders should map entities to domain and fetch status only for LOCAL sources") {
         val localEntity = UserFolderEntity(path = "path/local", source = FileSource.LOCAL)
@@ -79,6 +88,45 @@ class SourcesRepositoryImplTest : FunSpec({
                 it.source shouldBe FileSource.LOCAL
             })
         }
+    }
+
+    test("deleteFolder with deleteMedias true should delete folder from dao and delete medias from database") {
+        val folder = UserFolder(path = "path/to/delete", source = FileSource.LOCAL, status = UserFolder.Status.AVAILABLE)
+
+        repository.deleteFolder(folder, deleteMedias = true)
+
+        coVerify(exactly = 1) { dao.deleteFolder(path = folder.path) }
+        coVerify(exactly = 1) { databaseRepository.deleteMediasInFolder(folder = folder) }
+    }
+
+    test("deleteFolder with deleteMedias false should delete folder from dao but NOT delete medias from database") {
+        val folder = UserFolder(path = "path/to/delete", source = FileSource.LOCAL, status = UserFolder.Status.AVAILABLE)
+
+        repository.deleteFolder(folder, deleteMedias = false)
+
+        coVerify(exactly = 1) { dao.deleteFolder(path = folder.path) }
+        coVerify(exactly = 0) { databaseRepository.deleteMediasInFolder(any()) }
+    }
+
+    test("deleteFolders with deleteMedias true should delete folders from dao and delete medias from database for all folders") {
+        val folder1 = UserFolder(path = "path/1", source = FileSource.LOCAL, status = UserFolder.Status.AVAILABLE)
+        val folder2 = UserFolder(path = "path/2", source = FileSource.LOCAL, status = UserFolder.Status.AVAILABLE)
+
+        repository.deleteFolders(listOf(folder1, folder2), deleteMedias = true)
+
+        coVerify(exactly = 1) { dao.deleteFolders(paths = listOf("path/1", "path/2")) }
+        coVerify(exactly = 1) { databaseRepository.deleteMediasInFolder(folder = folder1) }
+        coVerify(exactly = 1) { databaseRepository.deleteMediasInFolder(folder = folder2) }
+    }
+
+    test("deleteFolders with deleteMedias false should delete folders from dao but NOT delete medias from database") {
+        val folder1 = UserFolder(path = "path/1", source = FileSource.LOCAL, status = UserFolder.Status.AVAILABLE)
+        val folder2 = UserFolder(path = "path/2", source = FileSource.LOCAL, status = UserFolder.Status.AVAILABLE)
+
+        repository.deleteFolders(listOf(folder1, folder2), deleteMedias = false)
+
+        coVerify(exactly = 1) { dao.deleteFolders(paths = listOf("path/1", "path/2")) }
+        coVerify(exactly = 0) { databaseRepository.deleteMediasInFolder(any()) }
     }
 
 })

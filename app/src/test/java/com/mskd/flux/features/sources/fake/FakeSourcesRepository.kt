@@ -23,7 +23,7 @@ class FakeSourcesRepository(initFolders: List<UserFolder> = emptyList()) : Sourc
         return _flow.value
     }
 
-    override suspend fun deleteFolder(folder: UserFolder) {
+    override suspend fun deleteFolder(folder: UserFolder, deleteMedias: Boolean) {
         _flow.update { state ->
             val folders = state.toMutableList()
             folders.removeIf { it.path == folder.path }
@@ -31,7 +31,7 @@ class FakeSourcesRepository(initFolders: List<UserFolder> = emptyList()) : Sourc
         }
     }
 
-    override suspend fun deleteFolders(folders: List<UserFolder>) {
+    override suspend fun deleteFolders(folders: List<UserFolder>, deleteMedias: Boolean) {
         _flow.update { state ->
             val tmp = state.toMutableList()
             folders.forEach { folder ->

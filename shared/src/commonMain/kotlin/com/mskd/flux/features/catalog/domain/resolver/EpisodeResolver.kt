@@ -15,24 +15,24 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.supervisorScope
 
-interface EpisodeMetadataResolver {
-    suspend fun fetch(
+interface EpisodeResolver {
+    suspend fun resolve(
         artworkFiles: List<ArtworkFiles>,
         episodesDto: List<EpisodeDto>,
         onProgress: () -> Unit
     ): List<Episode>
 }
 
-class EpisodeMetadataResolverImpl(
+class EpisodeResolverImpl(
     private val tmdb: TmdbDataSource,
     private val settings: SettingsDataStore,
     private val getFileDurationUseCase: GetFileDurationUseCase,
     private val dispatcher: CoroutineDispatcher
-) : EpisodeMetadataResolver {
+) : EpisodeResolver {
 
     private companion object { const val TAG = "EpisodeResolver" }
 
-    override suspend fun fetch(
+    override suspend fun resolve(
         artworkFiles: List<ArtworkFiles>,
         episodesDto: List<EpisodeDto>,
         onProgress: () -> Unit

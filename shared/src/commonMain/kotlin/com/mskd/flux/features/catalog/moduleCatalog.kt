@@ -1,7 +1,7 @@
 package com.mskd.flux.features.catalog
 
-import com.mskd.flux.features.catalog.domain.resolver.EpisodeMetadataResolver
-import com.mskd.flux.features.catalog.domain.resolver.EpisodeMetadataResolverImpl
+import com.mskd.flux.features.catalog.domain.resolver.EpisodeResolver
+import com.mskd.flux.features.catalog.domain.resolver.EpisodeResolverImpl
 import com.mskd.flux.di.Qualifiers
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinatorImpl
@@ -19,17 +19,23 @@ import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLangua
 import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCaseImpl
 import com.mskd.flux.features.catalog.presentation.catalog.CatalogViewModel
 import com.mskd.flux.features.catalog.presentation.search.SearchViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val moduleCatalog = module {
 
+    single<CoroutineDispatcher>(named("catalogSyncDispatcher")) {
+        Dispatchers.IO.limitedParallelism(10)
+    }
+
     single<ArtworkMetadataFetcher> {
         ArtworkMetadataFetcherImpl(
             tmdb = get(),
-            dispatcher = Dispatchers.IO.limitedParallelism(10)
+            dispatcher = get(named("catalogSyncDispatcher"))
         )
     }
 
@@ -37,23 +43,23 @@ val moduleCatalog = module {
         MovieMetadataFetcherImpl(
             tmdb = get(),
             getFileDurationUseCase = get(),
-            dispatcher = Dispatchers.IO.limitedParallelism(10)
+            dispatcher = get(named("catalogSyncDispatcher"))
         )
     }
 
     single<SeasonMetadataFetcher>{
         SeasonMetadataFetcherImpl(
             tmdb = get(),
-            dispatcher = Dispatchers.IO.limitedParallelism(10)
+            dispatcher = get(named("catalogSyncDispatcher"))
         )
     }
 
-    single<EpisodeMetadataResolver> {
-        EpisodeMetadataResolverImpl(
+    single<EpisodeResolver> {
+        EpisodeResolverImpl(
             tmdb = get(),
             settings = get(),
             getFileDurationUseCase = get(),
-            dispatcher = Dispatchers.IO.limitedParallelism(10)
+            dispatcher = get(named("catalogSyncDispatcher"))
         )
     }
 
@@ -70,17 +76,18 @@ val moduleCatalog = module {
 
     single<SyncCatalogUseCase> {
         SyncCatalogUseCaseImpl(
-            tmdb = get(),
             database = get(),
             user = get(),
-            settings = get(),
             imagesPrefetchManager = get(),
             appInfo = get(),
-            deleteUnavailableSourcesUseCase = get(),
-            filterExistingFilesUseCase = get(),
-            getDeviceFilesUseCase = get(),
-            getFileDurationUseCase = get(),
             coordinator = get(),
+            deleteUnavailableSourcesUseCase = get(),
+            getDeviceFilesUseCase = get(),
+            filterExistingFilesUseCase = get(),
+            artworkMetadataFetcher = get(),
+            movieMetadataFetcher = get(),
+            seasonMetadataFetcher = get(),
+            episodeResolver = get()
         )
     }
 

@@ -1,9 +1,9 @@
-package com.mskd.flux.core.network.tmdb.data.remote.mapper
+package com.mskd.flux.core.network.tmdb.data.mapper
 
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.ContentType
-import com.mskd.flux.core.network.tmdb.data.remote.dto.ArtworkDto
-import com.mskd.flux.core.network.tmdb.data.remote.dto.MediaTypeDto
+import com.mskd.flux.core.network.tmdb.data.dto.ArtworkDto
+import com.mskd.flux.core.network.tmdb.data.dto.MediaTypeDto
 
 fun ArtworkDto.toDomain() : Artwork {
     return Artwork(

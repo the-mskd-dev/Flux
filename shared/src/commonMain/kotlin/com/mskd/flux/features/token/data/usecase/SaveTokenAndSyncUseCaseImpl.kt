@@ -1,6 +1,6 @@
 package com.mskd.flux.features.token.data.usecase
 
-import com.mskd.flux.core.network.tmdb.data.remote.service.TMDBService
+import com.mskd.flux.core.network.tmdb.data.service.TMDBService
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.features.token.domain.model.AuthenticateResult

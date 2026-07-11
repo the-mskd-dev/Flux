@@ -4,8 +4,8 @@ import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.network.tmdb.data.datasource.TmdbDataSource
-import com.mskd.flux.core.network.tmdb.data.remote.dto.EpisodeDto
-import com.mskd.flux.core.network.tmdb.data.remote.mapper.toDomain
+import com.mskd.flux.core.network.tmdb.data.dto.EpisodeDto
+import com.mskd.flux.core.network.tmdb.data.mapper.toDomain
 import com.mskd.flux.features.catalog.domain.model.ArtworkFiles
 import com.mskd.flux.features.files.domain.usecase.GetFileDurationUseCase
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore

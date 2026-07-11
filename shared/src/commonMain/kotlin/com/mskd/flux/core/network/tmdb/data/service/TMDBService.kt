@@ -1,11 +1,11 @@
-package com.mskd.flux.core.network.tmdb.data.remote.service
+package com.mskd.flux.core.network.tmdb.data.service
 
-import com.mskd.flux.core.network.tmdb.data.remote.dto.ArtworksResultDto
-import com.mskd.flux.core.network.tmdb.data.remote.dto.AuthenticationDto
-import com.mskd.flux.core.network.tmdb.data.remote.dto.EpisodeDto
-import com.mskd.flux.core.network.tmdb.data.remote.dto.MovieDto
-import com.mskd.flux.core.network.tmdb.data.remote.dto.SeasonDto
-import com.mskd.flux.core.network.tmdb.data.remote.dto.TranslationsDto
+import com.mskd.flux.core.network.tmdb.data.dto.ArtworksResultDto
+import com.mskd.flux.core.network.tmdb.data.dto.AuthenticationDto
+import com.mskd.flux.core.network.tmdb.data.dto.EpisodeDto
+import com.mskd.flux.core.network.tmdb.data.dto.MovieDto
+import com.mskd.flux.core.network.tmdb.data.dto.SeasonDto
+import com.mskd.flux.core.network.tmdb.data.dto.TranslationsDto
 import com.mskd.flux.utils.Constants
 
 interface TMDBService {

@@ -2,7 +2,7 @@ package com.mskd.flux.data.tmdb
 
 import androidx.test.core.app.ApplicationProvider
 import com.mskd.flux.BuildConfig
-import com.mskd.flux.core.network.tmdb.data.remote.service.TMDBService
+import com.mskd.flux.core.network.tmdb.data.service.TMDBService
 import com.mskd.flux.di.moduleAndroidApp
 import com.mskd.flux.di.modulePlatform
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore

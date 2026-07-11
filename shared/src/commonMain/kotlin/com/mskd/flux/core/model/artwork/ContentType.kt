@@ -1,6 +1,6 @@
 package com.mskd.flux.core.model.artwork
 
-import com.mskd.flux.core.network.tmdb.data.remote.dto.MediaTypeDto
+import com.mskd.flux.core.network.tmdb.data.dto.MediaTypeDto
 
 enum class ContentType {
     MOVIE,

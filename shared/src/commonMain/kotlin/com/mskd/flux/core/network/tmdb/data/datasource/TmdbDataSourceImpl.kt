@@ -1,14 +1,14 @@
 package com.mskd.flux.core.network.tmdb.data.datasource
 
 import com.mskd.flux.core.model.files.UserFile
-import com.mskd.flux.core.network.tmdb.data.remote.dto.ArtworkDto
-import com.mskd.flux.core.network.tmdb.data.remote.dto.EpisodeDto
-import com.mskd.flux.core.network.tmdb.data.remote.dto.MediaTypeDto
-import com.mskd.flux.core.network.tmdb.data.remote.dto.MovieDto
-import com.mskd.flux.core.network.tmdb.data.remote.dto.SeasonDto
-import com.mskd.flux.core.network.tmdb.data.remote.dto.TranslationsDto
-import com.mskd.flux.core.network.tmdb.data.remote.dto.findWithLocale
-import com.mskd.flux.core.network.tmdb.data.remote.service.TMDBService
+import com.mskd.flux.core.network.tmdb.data.dto.ArtworkDto
+import com.mskd.flux.core.network.tmdb.data.dto.EpisodeDto
+import com.mskd.flux.core.network.tmdb.data.dto.MediaTypeDto
+import com.mskd.flux.core.network.tmdb.data.dto.MovieDto
+import com.mskd.flux.core.network.tmdb.data.dto.SeasonDto
+import com.mskd.flux.core.network.tmdb.data.dto.TranslationsDto
+import com.mskd.flux.core.network.tmdb.data.dto.findWithLocale
+import com.mskd.flux.core.network.tmdb.data.service.TMDBService
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.utils.extensions.toTmdbFormat
 import io.github.aakira.napier.Napier

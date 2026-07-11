@@ -3,8 +3,8 @@ package com.mskd.flux.data.repository
 import androidx.test.core.app.ApplicationProvider
 import com.mskd.flux.BuildConfig
 import com.mskd.flux.core.network.tmdb.data.datasource.TmdbDataSourceImpl
-import com.mskd.flux.core.network.tmdb.data.remote.dto.TranslationsDto
-import com.mskd.flux.core.network.tmdb.data.remote.service.TMDBService
+import com.mskd.flux.core.network.tmdb.data.dto.TranslationsDto
+import com.mskd.flux.core.network.tmdb.data.service.TMDBService
 import com.mskd.flux.di.moduleAndroidApp
 import com.mskd.flux.di.modulePlatform
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore

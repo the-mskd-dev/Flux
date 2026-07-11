@@ -1,4 +1,4 @@
-package com.mskd.flux.core.network.tmdb.data.remote.dto
+package com.mskd.flux.core.network.tmdb.data.dto
 
 import com.mskd.flux.utils.Levenshtein
 import kotlinx.serialization.ExperimentalSerializationApi

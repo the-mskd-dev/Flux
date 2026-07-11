@@ -1,7 +1,7 @@
-package com.mskd.flux.core.network.tmdb.data.remote.mapper
+package com.mskd.flux.core.network.tmdb.data.mapper
 
 import com.mskd.flux.core.model.artwork.Season
-import com.mskd.flux.core.network.tmdb.data.remote.dto.SeasonDto
+import com.mskd.flux.core.network.tmdb.data.dto.SeasonDto
 
 fun SeasonDto.toDomain(artworkId: Long) : Season {
     return Season(

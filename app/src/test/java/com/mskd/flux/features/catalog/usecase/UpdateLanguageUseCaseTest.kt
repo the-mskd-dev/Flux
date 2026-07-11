@@ -8,7 +8,7 @@ import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Movie
 import com.mskd.flux.core.model.artwork.Season
 import com.mskd.flux.core.network.tmdb.data.datasource.TmdbDataSource
-import com.mskd.flux.core.network.tmdb.data.remote.dto.TranslationsDto
+import com.mskd.flux.core.network.tmdb.data.dto.TranslationsDto
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
 import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCaseImpl
 import com.mskd.flux.features.catalog.fake.FakeCatalogSyncCoordinator

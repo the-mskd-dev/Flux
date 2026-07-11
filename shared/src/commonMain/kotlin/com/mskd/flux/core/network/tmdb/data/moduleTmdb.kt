@@ -2,8 +2,8 @@ package com.mskd.flux.core.network.tmdb.data
 
 import com.mskd.flux.core.network.tmdb.data.datasource.TmdbDataSource
 import com.mskd.flux.core.network.tmdb.data.datasource.TmdbDataSourceImpl
-import com.mskd.flux.core.network.tmdb.data.remote.service.TMDBService
-import com.mskd.flux.core.network.tmdb.data.remote.service.TMDBServiceImpl
+import com.mskd.flux.core.network.tmdb.data.service.TMDBService
+import com.mskd.flux.core.network.tmdb.data.service.TMDBServiceImpl
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp

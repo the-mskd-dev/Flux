@@ -3,6 +3,8 @@ package com.mskd.flux.features.catalog
 import com.mskd.flux.di.Qualifiers
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinatorImpl
+import com.mskd.flux.features.catalog.domain.resolver.ArtworkFolderResolver
+import com.mskd.flux.features.catalog.domain.resolver.ArtworkFolderResolverImpl
 import com.mskd.flux.features.catalog.domain.usecase.cleanCatalog.CleanCatalogUseCase
 import com.mskd.flux.features.catalog.domain.usecase.cleanCatalog.CleanCatalogUseCaseImpl
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
@@ -11,11 +13,19 @@ import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLangua
 import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCaseImpl
 import com.mskd.flux.features.catalog.presentation.catalog.CatalogViewModel
 import com.mskd.flux.features.catalog.presentation.search.SearchViewModel
+import kotlinx.coroutines.Dispatchers
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 val moduleCatalog = module {
+
+    single<ArtworkFolderResolver> {
+        ArtworkFolderResolverImpl(
+            tmdb = get(),
+            dispatcher = Dispatchers.IO.limitedParallelism(10)
+        )
+    }
 
     single<CatalogSyncCoordinator> {
         CatalogSyncCoordinatorImpl(scope = get(Qualifiers.APPLICATION_SCOPE))

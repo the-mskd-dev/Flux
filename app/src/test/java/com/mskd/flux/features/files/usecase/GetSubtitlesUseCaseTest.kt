@@ -1,5 +1,6 @@
 package com.mskd.flux.features.files.usecase
 
+import com.mskd.flux.core.model.files.FileSource
 import com.mskd.flux.features.files.domain.usecase.GetSubtitlesUseCaseImpl
 import com.mskd.flux.features.files.fake.FakeFilesDataSource
 import com.mskd.flux.mockups.FilesMockups
@@ -8,7 +9,6 @@ import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.element
 import io.kotest.property.checkAll
-import com.mskd.flux.core.model.files.FileSource
 
 class GetSubtitlesUseCaseTest: FunSpec ({
 

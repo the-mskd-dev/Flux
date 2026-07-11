@@ -14,10 +14,8 @@ import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLangua
 import com.mskd.flux.features.catalog.fake.FakeCatalogSyncCoordinator
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher

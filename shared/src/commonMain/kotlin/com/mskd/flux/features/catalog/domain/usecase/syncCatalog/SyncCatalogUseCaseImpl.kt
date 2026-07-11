@@ -2,19 +2,12 @@ package com.mskd.flux.features.catalog.domain.usecase.syncCatalog
 
 import com.mskd.flux.core.database.domain.repository.DatabaseRepository
 import com.mskd.flux.core.datastore.domain.UserDataStore
-import com.mskd.flux.core.model.artwork.Artwork
-import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.Episode
-import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.Movie
-import com.mskd.flux.core.model.artwork.Season
 import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.core.model.catalog.Catalog
-import com.mskd.flux.core.model.catalog.CatalogFolder
 import com.mskd.flux.core.model.core.AppInfo
 import com.mskd.flux.core.model.files.UserFile
-import com.mskd.flux.core.network.tmdb.data.remote.dto.EpisodeDto
-import com.mskd.flux.core.network.tmdb.data.remote.mapper.toDomain
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
 import com.mskd.flux.features.catalog.domain.fetcher.ArtworkMetadataFetcher
 import com.mskd.flux.features.catalog.domain.fetcher.MovieMetadataFetcher
@@ -27,13 +20,9 @@ import com.mskd.flux.features.images.domain.ImagesPrefetchManager
 import com.mskd.flux.features.sources.domain.usecase.DeleteUnavailableSourcesUseCase
 import com.mskd.flux.utils.Trace
 import com.mskd.flux.utils.extensions.groupInFolders
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.supervisorScope
-import kotlinx.coroutines.withContext
 
 class SyncCatalogUseCaseImpl(
     private val database: DatabaseRepository,

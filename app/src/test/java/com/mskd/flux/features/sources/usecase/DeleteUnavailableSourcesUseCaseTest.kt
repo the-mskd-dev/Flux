@@ -5,7 +5,6 @@ import com.mskd.flux.features.sources.domain.model.UserFolder
 import com.mskd.flux.features.sources.domain.usecase.DeleteUnavailableSourcesUseCase
 import com.mskd.flux.features.sources.domain.validator.UserFolderValidator
 import com.mskd.flux.features.sources.fake.FakeSourcesRepository
-import com.mskd.flux.features.sources.fake.FakeUserFolders
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.mockk.coEvery

@@ -1,16 +1,16 @@
 package com.mskd.flux.features.catalog
 
-import com.mskd.flux.features.catalog.domain.resolver.EpisodeResolver
-import com.mskd.flux.features.catalog.domain.resolver.EpisodeResolverImpl
 import com.mskd.flux.di.Qualifiers
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinatorImpl
+import com.mskd.flux.features.catalog.domain.fetcher.ArtworkMetadataFetcher
+import com.mskd.flux.features.catalog.domain.fetcher.ArtworkMetadataFetcherImpl
 import com.mskd.flux.features.catalog.domain.fetcher.MovieMetadataFetcher
 import com.mskd.flux.features.catalog.domain.fetcher.MovieMetadataFetcherImpl
 import com.mskd.flux.features.catalog.domain.fetcher.SeasonMetadataFetcher
 import com.mskd.flux.features.catalog.domain.fetcher.SeasonMetadataFetcherImpl
-import com.mskd.flux.features.catalog.domain.fetcher.ArtworkMetadataFetcher
-import com.mskd.flux.features.catalog.domain.fetcher.ArtworkMetadataFetcherImpl
+import com.mskd.flux.features.catalog.domain.resolver.EpisodeResolver
+import com.mskd.flux.features.catalog.domain.resolver.EpisodeResolverImpl
 import com.mskd.flux.features.catalog.domain.usecase.cleanCatalog.CleanCatalogUseCase
 import com.mskd.flux.features.catalog.domain.usecase.cleanCatalog.CleanCatalogUseCaseImpl
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase

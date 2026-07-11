@@ -6,7 +6,6 @@ import com.mskd.flux.core.datastore.domain.UserDataStore
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
-import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.features.progress.fake.ProgressUCTestCases
 import com.mskd.flux.mockups.MediaMockups
 import io.kotest.core.spec.style.FunSpec

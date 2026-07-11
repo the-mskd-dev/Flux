@@ -1,12 +1,12 @@
 package com.mskd.flux.features.catalog.domain.fetcher
 
-import com.mskd.flux.core.model.artwork.Season
-import com.mskd.flux.core.network.tmdb.data.remote.dto.EpisodeDto
-import com.mskd.flux.features.catalog.domain.model.ArtworkFiles
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.ContentType
+import com.mskd.flux.core.model.artwork.Season
 import com.mskd.flux.core.network.tmdb.data.datasource.TmdbDataSource
+import com.mskd.flux.core.network.tmdb.data.remote.dto.EpisodeDto
 import com.mskd.flux.core.network.tmdb.data.remote.mapper.toDomain
+import com.mskd.flux.features.catalog.domain.model.ArtworkFiles
 import com.mskd.flux.utils.Trace
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.async

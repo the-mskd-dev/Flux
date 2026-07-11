@@ -1,7 +1,6 @@
 package com.mskd.flux.features.catalog.usecase
 
 import com.mskd.flux.configs.fluxExtensions
-import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinatorImpl
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import io.kotest.core.spec.style.FunSpec

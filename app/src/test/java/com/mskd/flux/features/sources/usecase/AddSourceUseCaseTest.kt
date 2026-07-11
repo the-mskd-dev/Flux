@@ -10,8 +10,6 @@ import io.kotest.matchers.shouldBe
 
 class AddSourceUseCaseTest : FunSpec({
 
-    fluxExtensions()
-
     test("add different folders") {
 
         val folders = listOf(

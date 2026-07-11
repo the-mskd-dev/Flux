@@ -2,6 +2,7 @@ package com.mskd.flux.features.catalog
 
 import com.mskd.flux.di.Qualifiers
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
+import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinatorImpl
 import com.mskd.flux.features.catalog.domain.usecase.cleanCatalog.CleanCatalogUseCase
 import com.mskd.flux.features.catalog.domain.usecase.cleanCatalog.CleanCatalogUseCaseImpl
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
@@ -17,7 +18,7 @@ import org.koin.dsl.module
 val moduleCatalog = module {
 
     single<CatalogSyncCoordinator> {
-        CatalogSyncCoordinator(scope = get(Qualifiers.APPLICATION_SCOPE))
+        CatalogSyncCoordinatorImpl(scope = get(Qualifiers.APPLICATION_SCOPE))
     }
 
     single<CleanCatalogUseCase> {

@@ -3,6 +3,8 @@ package com.mskd.flux.features.catalog
 import com.mskd.flux.di.Qualifiers
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinatorImpl
+import com.mskd.flux.features.catalog.domain.fetcher.MovieMetadataFetcher
+import com.mskd.flux.features.catalog.domain.fetcher.MovieMetadataFetcherImpl
 import com.mskd.flux.features.catalog.domain.resolver.ArtworkFolderResolver
 import com.mskd.flux.features.catalog.domain.resolver.ArtworkFolderResolverImpl
 import com.mskd.flux.features.catalog.domain.usecase.cleanCatalog.CleanCatalogUseCase
@@ -23,6 +25,14 @@ val moduleCatalog = module {
     single<ArtworkFolderResolver> {
         ArtworkFolderResolverImpl(
             tmdb = get(),
+            dispatcher = Dispatchers.IO.limitedParallelism(10)
+        )
+    }
+
+    single<MovieMetadataFetcher> {
+        MovieMetadataFetcherImpl(
+            tmdb = get(),
+            getFileDurationUseCase = get(),
             dispatcher = Dispatchers.IO.limitedParallelism(10)
         )
     }

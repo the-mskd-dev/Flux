@@ -1,4 +1,4 @@
-package com.mskd.flux.features.catalog.domain.usecase.syncCatalog
+package com.mskd.flux.features.catalog.usecase
 
 import app.cash.turbine.test
 import com.mskd.flux.core.database.domain.repository.DatabaseRepository
@@ -9,6 +9,7 @@ import com.mskd.flux.core.model.files.FileSource
 import com.mskd.flux.core.model.files.UserFile
 import com.mskd.flux.core.network.tmdb.data.datasource.TmdbDataSource
 import com.mskd.flux.features.catalog.domain.model.SyncState
+import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCaseImpl
 import com.mskd.flux.features.catalog.fake.FakeCatalogSyncCoordinator
 import com.mskd.flux.features.files.domain.usecase.FilterExistingFilesUseCase
 import com.mskd.flux.features.files.domain.usecase.GetDeviceFilesUseCase

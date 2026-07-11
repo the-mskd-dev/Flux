@@ -5,6 +5,8 @@ import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinatorImpl
 import com.mskd.flux.features.catalog.domain.fetcher.MovieMetadataFetcher
 import com.mskd.flux.features.catalog.domain.fetcher.MovieMetadataFetcherImpl
+import com.mskd.flux.features.catalog.domain.fetcher.SeasonMetadataFetcher
+import com.mskd.flux.features.catalog.domain.fetcher.SeasonMetadataFetcherImpl
 import com.mskd.flux.features.catalog.domain.resolver.ArtworkFolderResolver
 import com.mskd.flux.features.catalog.domain.resolver.ArtworkFolderResolverImpl
 import com.mskd.flux.features.catalog.domain.usecase.cleanCatalog.CleanCatalogUseCase
@@ -33,6 +35,13 @@ val moduleCatalog = module {
         MovieMetadataFetcherImpl(
             tmdb = get(),
             getFileDurationUseCase = get(),
+            dispatcher = Dispatchers.IO.limitedParallelism(10)
+        )
+    }
+
+    single<SeasonMetadataFetcher>{
+        SeasonMetadataFetcherImpl(
+            tmdb = get(),
             dispatcher = Dispatchers.IO.limitedParallelism(10)
         )
     }

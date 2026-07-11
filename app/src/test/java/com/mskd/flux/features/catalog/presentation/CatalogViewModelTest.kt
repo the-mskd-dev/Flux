@@ -13,10 +13,6 @@ import com.mskd.flux.core.model.core.AppInfo
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.catalog.fake.CatalogTestCases
 import com.mskd.flux.features.catalog.fake.FakeSyncCatalogUseCase
-import com.mskd.flux.features.catalog.presentation.catalog.CatalogEvent
-import com.mskd.flux.features.catalog.presentation.catalog.CatalogIntent
-import com.mskd.flux.features.catalog.presentation.catalog.CatalogState
-import com.mskd.flux.features.catalog.presentation.catalog.CatalogViewModel
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.utils.FluxSnackbar

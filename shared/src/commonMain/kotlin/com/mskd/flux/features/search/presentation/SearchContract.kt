@@ -1,4 +1,4 @@
-package com.mskd.flux.features.catalog.presentation.search
+package com.mskd.flux.features.search.presentation
 
 import androidx.compose.runtime.Immutable
 import com.mskd.flux.core.model.artwork.Artwork

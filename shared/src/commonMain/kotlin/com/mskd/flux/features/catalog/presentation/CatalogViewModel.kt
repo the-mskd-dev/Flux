@@ -1,4 +1,4 @@
-package com.mskd.flux.features.catalog.presentation.catalog
+package com.mskd.flux.features.catalog.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

@@ -42,10 +42,10 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.core.model.artwork.ContentType
-import com.mskd.flux.features.catalog.presentation.search.SearchEvent
-import com.mskd.flux.features.catalog.presentation.search.SearchIntent
-import com.mskd.flux.features.catalog.presentation.search.SearchUIState
-import com.mskd.flux.features.catalog.presentation.search.SearchViewModel
+import com.mskd.flux.features.search.presentation.SearchEvent
+import com.mskd.flux.features.search.presentation.SearchIntent
+import com.mskd.flux.features.search.presentation.SearchUIState
+import com.mskd.flux.features.search.presentation.SearchViewModel
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Route.Artwork

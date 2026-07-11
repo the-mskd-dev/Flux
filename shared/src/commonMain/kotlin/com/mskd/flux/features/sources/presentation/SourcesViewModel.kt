@@ -63,7 +63,7 @@ class SourcesViewModel(
 
     //region Variables
 
-    private var sourceAdded = false
+    private var needSync = false
 
     //endregion
 
@@ -120,7 +120,7 @@ class SourcesViewModel(
     }
 
     private suspend fun onBackTap() {
-        if (sourceAdded) syncCatalogUseCase(onlyNew = true)
+        if (needSync) syncCatalogUseCase(onlyNew = true)
         _event.send(SourcesEvent.BackToPreviousScreen)
     }
 
@@ -145,7 +145,7 @@ class SourcesViewModel(
 
         addSourceUseCase(folder = folder)
 
-        sourceAdded = true
+        needSync = true
 
     }
 
@@ -158,8 +158,10 @@ class SourcesViewModel(
     }
 
     private suspend fun deleteFolder(folder: UserFolder) {
-        deleteSourceUseCase(folder = folder)
+        deleteSourceUseCase(folder = folder, deleteMedias = false)
         closeDialog()
+
+        needSync = true
     }
 
     //endregion

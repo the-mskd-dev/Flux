@@ -15,7 +15,7 @@ class DeleteUnavailableSourcesUseCase(
         val unavailableSources = sources.getFolders().filter {
             it.source != FileSource.LOCAL && checkFolderDataSource.isFolderAvailable(it.path) == UserFolder.Status.MISSING
         }
-        sources.deleteFolders(folders = unavailableSources)
+        sources.deleteFolders(folders = unavailableSources, deleteMedias = true)
     }
 
 }

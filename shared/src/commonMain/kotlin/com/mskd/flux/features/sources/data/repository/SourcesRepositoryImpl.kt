@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.map
 
 class SourcesRepositoryImpl(
     private val dao: SourcesDao,
+    private val databaseRepository: DatabaseRepository,
     private val userFolderValidator: UserFolderValidator
 ) : SourcesRepository {
 
@@ -29,12 +30,20 @@ class SourcesRepositoryImpl(
         dao.insertFolder(folder = folder.toEntity())
     }
 
-    override suspend fun deleteFolder(folder: UserFolder) {
+    override suspend fun deleteFolder(folder: UserFolder, deleteMedias: Boolean) {
         dao.deleteFolder(path = folder.path)
+
+        if (deleteMedias) {
+            databaseRepository.deleteMediasInFolder(folder = folder)
+        }
+
     }
 
-    override suspend fun deleteFolders(folders: List<UserFolder>) {
+    override suspend fun deleteFolders(folders: List<UserFolder>, deleteMedias: Boolean) {
         dao.deleteFolders(paths = folders.map { it.path })
+        if (deleteMedias) {
+            folders.forEach { folder -> databaseRepository.deleteMediasInFolder(folder = folder) }
+        }
     }
 
     private suspend fun UserFolderEntity.toDomainWithStatus(): UserFolder {

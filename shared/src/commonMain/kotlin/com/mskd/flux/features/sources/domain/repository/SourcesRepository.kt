@@ -8,8 +8,8 @@ interface SourcesRepository {
     fun flowFolders() : Flow<List<UserFolder>>
     suspend fun saveFolder(folder: UserFolder)
     suspend fun getFolders() : List<UserFolder>
-    suspend fun deleteFolder(folder: UserFolder)
-    suspend fun deleteFolders(folders: List<UserFolder>)
+    suspend fun deleteFolder(folder: UserFolder, deleteMedias: Boolean)
+    suspend fun deleteFolders(folders: List<UserFolder>, deleteMedias: Boolean)
 
 
 

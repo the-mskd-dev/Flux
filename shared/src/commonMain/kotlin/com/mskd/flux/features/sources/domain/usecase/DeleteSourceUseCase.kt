@@ -7,8 +7,8 @@ class DeleteSourceUseCase(
     val repository: SourcesRepository
 ) {
 
-    suspend operator fun invoke(folder: UserFolder) {
-        repository.deleteFolder(folder = folder)
+    suspend operator fun invoke(folder: UserFolder, deleteMedias: Boolean) {
+        repository.deleteFolder(folder = folder, deleteMedias = deleteMedias)
     }
 
 }

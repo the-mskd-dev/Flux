@@ -15,7 +15,7 @@ class AddSourceUseCase(
 
         val alreadyIncludedFolders = folders.filter { it.path.startsWith("${folder.path}/") }
         if (alreadyIncludedFolders.isNotEmpty()) {
-            repository.deleteFolders(folders = alreadyIncludedFolders)
+            repository.deleteFolders(folders = alreadyIncludedFolders, deleteMedias = false)
         }
 
         repository.saveFolder(folder = folder)

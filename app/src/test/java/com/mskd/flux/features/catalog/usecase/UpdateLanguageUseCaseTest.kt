@@ -11,6 +11,7 @@ import com.mskd.flux.core.network.tmdb.data.datasource.TmdbDataSource
 import com.mskd.flux.core.network.tmdb.data.remote.dto.TranslationsDto
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
 import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCaseImpl
+import com.mskd.flux.features.catalog.fake.FakeCatalogSyncCoordinator
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
@@ -41,7 +42,7 @@ class UpdateLanguageUseCaseTest : FunSpec({
         tmdb = mockk(relaxed = true)
         database = mockk(relaxed = true)
         settings = mockk(relaxed = true)
-        coordinator = CatalogSyncCoordinator(scope = testScope)
+        coordinator = FakeCatalogSyncCoordinator(scope = testScope)
 
         useCase = UpdateLanguageUseCaseImpl(
             tmdb = tmdb,

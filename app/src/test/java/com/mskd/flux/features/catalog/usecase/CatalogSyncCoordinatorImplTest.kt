@@ -2,6 +2,7 @@ package com.mskd.flux.features.catalog.usecase
 
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
+import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinatorImpl
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
@@ -10,9 +11,10 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestScope
+import kotlin.time.Duration.Companion.milliseconds
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class CatalogSyncCoordinatorTest : FunSpec({
+class CatalogSyncCoordinatorImplTest : FunSpec({
 
     fluxExtensions()
 
@@ -20,16 +22,16 @@ class CatalogSyncCoordinatorTest : FunSpec({
     val testScope = TestScope(testDispatcher)
 
     test("initial state is Idle") {
-        val coordinator = CatalogSyncCoordinator(scope = testScope)
+        val coordinator = CatalogSyncCoordinatorImpl(scope = testScope)
         coordinator.state.value shouldBe SyncState.Idle
         coordinator.isBusy shouldBe false
     }
 
     test("launch changes state to Syncing and back to Idle when done") {
-        val coordinator = CatalogSyncCoordinator(scope = testScope)
+        val coordinator = CatalogSyncCoordinatorImpl(scope = testScope)
 
         coordinator.launch(full = true) {
-            delay(100)
+            delay(100.milliseconds)
         }
 
         // Job starts, transitions to Syncing
@@ -47,10 +49,10 @@ class CatalogSyncCoordinatorTest : FunSpec({
     }
 
     test("incrementProgress calculates progress correctly") {
-        val coordinator = CatalogSyncCoordinator(scope = testScope)
+        val coordinator = CatalogSyncCoordinatorImpl(scope = testScope)
         
         coordinator.launch(full = false) {
-            delay(1000)
+            delay(1000.milliseconds)
         }
         testDispatcher.scheduler.runCurrent()
 

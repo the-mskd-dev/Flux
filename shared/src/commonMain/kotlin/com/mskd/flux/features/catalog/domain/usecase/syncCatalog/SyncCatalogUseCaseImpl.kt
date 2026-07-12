@@ -9,7 +9,7 @@ import com.mskd.flux.core.model.catalog.Catalog
 import com.mskd.flux.core.model.core.AppInfo
 import com.mskd.flux.core.model.files.UserFile
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
-import com.mskd.flux.features.catalog.domain.fetcher.ArtworkMetadataFetcher
+import com.mskd.flux.features.catalog.domain.fetcher.ArtworkFolderFetcher
 import com.mskd.flux.features.catalog.domain.fetcher.MovieMetadataFetcher
 import com.mskd.flux.features.catalog.domain.fetcher.SeasonMetadataFetcher
 import com.mskd.flux.features.catalog.domain.model.SyncState
@@ -33,7 +33,7 @@ class SyncCatalogUseCaseImpl(
     private val deleteUnavailableSourcesUseCase: DeleteUnavailableSourcesUseCase,
     private val getDeviceFilesUseCase: GetDeviceFilesUseCase,
     private val filterExistingFilesUseCase: FilterExistingFilesUseCase,
-    private val artworkMetadataFetcher: ArtworkMetadataFetcher,
+    private val artworkFolderFetcher: ArtworkFolderFetcher,
     private val movieMetadataFetcher: MovieMetadataFetcher,
     private val seasonMetadataFetcher: SeasonMetadataFetcher,
     private val episodeResolver: EpisodeResolver,
@@ -106,7 +106,7 @@ class SyncCatalogUseCaseImpl(
         val folders = files.groupInFolders()
 
         // Get artworks
-        val artworkFiles = artworkMetadataFetcher.fetch(
+        val artworkFiles = artworkFolderFetcher.fetch(
             folders = folders,
             onProgress = { coordinator.incrementProgress() }
         )

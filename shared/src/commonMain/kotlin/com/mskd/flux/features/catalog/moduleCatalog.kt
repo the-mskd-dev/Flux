@@ -3,8 +3,8 @@ package com.mskd.flux.features.catalog
 import com.mskd.flux.di.Qualifiers
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinatorImpl
-import com.mskd.flux.features.catalog.domain.fetcher.ArtworkMetadataFetcher
-import com.mskd.flux.features.catalog.domain.fetcher.ArtworkMetadataFetcherImpl
+import com.mskd.flux.features.catalog.domain.fetcher.ArtworkFolderFetcher
+import com.mskd.flux.features.catalog.domain.fetcher.ArtworkFolderFetcherImpl
 import com.mskd.flux.features.catalog.domain.fetcher.MovieMetadataFetcher
 import com.mskd.flux.features.catalog.domain.fetcher.MovieMetadataFetcherImpl
 import com.mskd.flux.features.catalog.domain.fetcher.SeasonMetadataFetcher
@@ -18,10 +18,8 @@ import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseC
 import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCase
 import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCaseImpl
 import com.mskd.flux.features.catalog.presentation.CatalogViewModel
-import com.mskd.flux.features.search.presentation.SearchViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -32,9 +30,9 @@ val moduleCatalog = module {
         Dispatchers.IO.limitedParallelism(10)
     }
 
-    single<ArtworkMetadataFetcher> {
-        ArtworkMetadataFetcherImpl(
-            tmdb = get(),
+    single<ArtworkFolderFetcher> {
+        ArtworkFolderFetcherImpl(
+            artworkRepository = get(),
             dispatcher = get(named("catalogSyncDispatcher"))
         )
     }
@@ -84,7 +82,7 @@ val moduleCatalog = module {
             deleteUnavailableSourcesUseCase = get(),
             getDeviceFilesUseCase = get(),
             filterExistingFilesUseCase = get(),
-            artworkMetadataFetcher = get(),
+            artworkFolderFetcher = get(),
             movieMetadataFetcher = get(),
             seasonMetadataFetcher = get(),
             episodeResolver = get()

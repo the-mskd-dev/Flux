@@ -2,8 +2,7 @@ package com.mskd.flux.features.catalog.domain.fetcher
 
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.catalog.CatalogFolder
-import com.mskd.flux.core.network.tmdb.data.datasource.TmdbDataSource
-import com.mskd.flux.core.network.tmdb.data.mapper.toDomain
+import com.mskd.flux.core.network.tmdb.domain.repository.ArtworkRemoteRepository
 import com.mskd.flux.features.catalog.domain.model.ArtworkFiles
 import com.mskd.flux.utils.Trace
 import kotlinx.coroutines.CoroutineDispatcher
@@ -12,14 +11,14 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.supervisorScope
 
-interface ArtworkMetadataFetcher {
+interface ArtworkFolderFetcher {
     suspend fun fetch(folders: List<CatalogFolder>, onProgress: () -> Unit): List<ArtworkFiles>
 }
 
-class ArtworkMetadataFetcherImpl(
-    private val tmdb: TmdbDataSource,
+class ArtworkFolderFetcherImpl(
+    private val artworkRepository: ArtworkRemoteRepository,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(10)
-) : ArtworkMetadataFetcher {
+) : ArtworkFolderFetcher {
 
     private companion object { const val TAG = "ArtworkFolderResolver" }
 
@@ -36,8 +35,7 @@ class ArtworkMetadataFetcherImpl(
 
                     try {
 
-                        val tmdbArtwork = tmdb.getTmdbArtwork(file = folder.files.first())
-                        val artwork = tmdbArtwork?.toDomain() ?: Artwork.UNKNOWN
+                        val artwork = artworkRepository.getArtwork(file = folder.files.first()) ?: Artwork.UNKNOWN
 
                         ArtworkFiles(artwork = artwork, files = folder.files)
 

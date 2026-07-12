@@ -3,19 +3,22 @@ package com.mskd.flux.features.catalog.usecase
 import app.cash.turbine.test
 import com.mskd.flux.core.database.domain.repository.DatabaseRepository
 import com.mskd.flux.core.datastore.domain.UserDataStore
+import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.Movie
 import com.mskd.flux.core.model.core.AppInfo
 import com.mskd.flux.core.model.files.FileSource
 import com.mskd.flux.core.model.files.UserFile
-import com.mskd.flux.core.network.tmdb.data.datasource.TmdbDataSource
+import com.mskd.flux.features.catalog.domain.fetcher.ArtworkFolderFetcher
+import com.mskd.flux.features.catalog.domain.fetcher.MovieMetadataFetcher
+import com.mskd.flux.features.catalog.domain.fetcher.SeasonMetadataFetcher
+import com.mskd.flux.features.catalog.domain.model.ArtworkFiles
 import com.mskd.flux.features.catalog.domain.model.SyncState
+import com.mskd.flux.features.catalog.domain.resolver.EpisodeResolver
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCaseImpl
 import com.mskd.flux.features.catalog.fake.FakeCatalogSyncCoordinator
 import com.mskd.flux.features.files.domain.usecase.FilterExistingFilesUseCase
 import com.mskd.flux.features.files.domain.usecase.GetDeviceFilesUseCase
-import com.mskd.flux.features.files.domain.usecase.GetFileDurationUseCase
 import com.mskd.flux.features.images.domain.ImagesPrefetchManager
-import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.features.sources.domain.usecase.DeleteUnavailableSourcesUseCase
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
@@ -43,30 +46,33 @@ class SyncCatalogUseCaseImplTest : FunSpec({
     afterTest { Dispatchers.resetMain() }
 
     fun createUseCase(
-        tmdb: TmdbDataSource = mockk(relaxed = true),
         database: DatabaseRepository = mockk(relaxed = true),
         user: UserDataStore = mockk(relaxed = true),
-        settings: SettingsDataStore = mockk(relaxed = true),
         imagesPrefetchManager: ImagesPrefetchManager = mockk(relaxed = true),
         appInfo: AppInfo = mockk(relaxed = true),
         coordinator: FakeCatalogSyncCoordinator = FakeCatalogSyncCoordinator(scope = testScope),
         deleteUnavailableSourcesUseCase: DeleteUnavailableSourcesUseCase = mockk(relaxed = true),
-        getFileDurationUseCase: GetFileDurationUseCase = mockk(relaxed = true),
-        getDeviceFilesUseCase: GetDeviceFilesUseCase = mockk(relaxed = true),
-        filterExistingFilesUseCase: FilterExistingFilesUseCase = mockk(relaxed = true)
+        getDeviceFilesUseCase: GetDeviceFilesUseCase = mockk<GetDeviceFilesUseCase>().also {
+            coEvery { it() } returns emptyList() // valeur par défaut sûre, écrasable via coEvery dans chaque test
+        },
+        filterExistingFilesUseCase: FilterExistingFilesUseCase = mockk(relaxed = true),
+        artworkFolderFetcher: ArtworkFolderFetcher = mockk(relaxed = true),
+        movieMetadataFetcher: MovieMetadataFetcher = mockk(relaxed = true),
+        seasonMetadataFetcher: SeasonMetadataFetcher = mockk(relaxed = true),
+        episodeResolver: EpisodeResolver = mockk(relaxed = true),
     ) = SyncCatalogUseCaseImpl(
-        tmdb = tmdb,
         database = database,
         user = user,
-        settings = settings,
         imagesPrefetchManager = imagesPrefetchManager,
         appInfo = appInfo,
         coordinator = coordinator,
         deleteUnavailableSourcesUseCase = deleteUnavailableSourcesUseCase,
-        getFileDurationUseCase = getFileDurationUseCase,
         getDeviceFilesUseCase = getDeviceFilesUseCase,
         filterExistingFilesUseCase = filterExistingFilesUseCase,
-        dispatcher = testDispatcher
+        artworkFolderFetcher = artworkFolderFetcher,
+        movieMetadataFetcher = movieMetadataFetcher,
+        seasonMetadataFetcher = seasonMetadataFetcher,
+        episodeResolver = episodeResolver,
     )
 
     // region Early return
@@ -95,10 +101,8 @@ class SyncCatalogUseCaseImplTest : FunSpec({
             scope = testScope,
             initialState = SyncState.Syncing(full = true)
         )
-        val getDeviceFilesUseCase = mockk<GetDeviceFilesUseCase>()
-        coEvery { getDeviceFilesUseCase() } returns emptyList()
 
-        val useCase = createUseCase(coordinator = coordinator, getDeviceFilesUseCase = getDeviceFilesUseCase)
+        val useCase = createUseCase(coordinator = coordinator)
 
         useCase.invoke(onlyNew = false)
         testDispatcher.scheduler.advanceUntilIdle()
@@ -112,13 +116,8 @@ class SyncCatalogUseCaseImplTest : FunSpec({
 
     test("deleteUnavailableSourcesUseCase est appelé en tout premier") {
         val deleteUnavailableSourcesUseCase = mockk<DeleteUnavailableSourcesUseCase>(relaxed = true)
-        val getDeviceFilesUseCase = mockk<GetDeviceFilesUseCase>()
-        coEvery { getDeviceFilesUseCase() } returns emptyList()
 
-        val useCase = createUseCase(
-            deleteUnavailableSourcesUseCase = deleteUnavailableSourcesUseCase,
-            getDeviceFilesUseCase = getDeviceFilesUseCase
-        )
+        val useCase = createUseCase(deleteUnavailableSourcesUseCase = deleteUnavailableSourcesUseCase)
 
         useCase.invoke(onlyNew = false)
         testDispatcher.scheduler.advanceUntilIdle()
@@ -134,14 +133,12 @@ class SyncCatalogUseCaseImplTest : FunSpec({
         val database = mockk<DatabaseRepository>(relaxed = true)
         val user = mockk<UserDataStore>(relaxed = true)
         val getDeviceFilesUseCase = mockk<GetDeviceFilesUseCase>()
-        val tmdb = mockk<TmdbDataSource>(relaxed = true)
-        coEvery { getDeviceFilesUseCase() } returns emptyList()
+        coEvery { getDeviceFilesUseCase() } returns emptyList() // ← fix : stub explicite ajouté
 
         val useCase = createUseCase(
             database = database,
             user = user,
             getDeviceFilesUseCase = getDeviceFilesUseCase,
-            tmdb = tmdb
         )
 
         useCase.invoke(onlyNew = false)
@@ -149,10 +146,7 @@ class SyncCatalogUseCaseImplTest : FunSpec({
 
         coVerify { database.deleteMediasNotInFiles(emptyList()) }
         coVerify { user.setSyncTime(any()) }
-
-        // Aucune étape de catalogage n'a dû être déclenchée
         coVerify(exactly = 0) { database.saveArtworks(any()) }
-        coVerify(exactly = 0) { tmdb.getTmdbArtwork(any()) }
     }
 
     // endregion
@@ -161,7 +155,6 @@ class SyncCatalogUseCaseImplTest : FunSpec({
 
     test("onlyNew=true exclut de newFiles les fichiers déjà présents en base (comparaison par name)") {
         val existingFile = UserFile(name = "existing.mkv", path = "path/existing", addedDateTime = 0L, source = FileSource.LOCAL)
-        val newFile = UserFile(name = "new.mkv", path = "path/new", addedDateTime = 0L, source = FileSource.LOCAL)
         val existingMovie = mockk<Movie>(relaxed = true) { every { file } returns existingFile }
 
         val database = mockk<DatabaseRepository>(relaxed = true)
@@ -172,8 +165,6 @@ class SyncCatalogUseCaseImplTest : FunSpec({
         coEvery { filterExistingFilesUseCase(files = any()) } returns listOf(existingFile)
 
         val getDeviceFilesUseCase = mockk<GetDeviceFilesUseCase>()
-        // deviceFiles vide → newFiles vide quoi qu'il arrive, on isole ici uniquement
-        // l'appel à deleteMediasNotInFiles pour vérifier le comportement onlyNew=true vs false.
         coEvery { getDeviceFilesUseCase() } returns emptyList()
 
         val useCase = createUseCase(
@@ -191,14 +182,60 @@ class SyncCatalogUseCaseImplTest : FunSpec({
 
     // endregion
 
+    // region Pipeline complet (nouveau)
+
+    test("des nouveaux fichiers déclenchent le pipeline complet et sauvegardent le catalogue") {
+        val newFile = UserFile(name = "movie1.mkv", path = "path/movie1", addedDateTime = 0L, source = FileSource.LOCAL)
+        val artworkFiles = ArtworkFiles(artwork = Artwork(id = 42L), files = listOf(newFile))
+
+        val database = mockk<DatabaseRepository>(relaxed = true)
+        coEvery { database.getMovies() } returns emptyList()
+        coEvery { database.getEpisodes() } returns emptyList()
+
+        val getDeviceFilesUseCase = mockk<GetDeviceFilesUseCase>()
+        coEvery { getDeviceFilesUseCase() } returns listOf(newFile)
+
+        val filterExistingFilesUseCase = mockk<FilterExistingFilesUseCase>()
+        coEvery { filterExistingFilesUseCase(files = any()) } returns emptyList()
+
+        val artworkFolderFetcher = mockk<ArtworkFolderFetcher>()
+        coEvery { artworkFolderFetcher.fetch(folders = any(), onProgress = any()) } returns listOf(artworkFiles)
+
+        val movieMetadataFetcher = mockk<MovieMetadataFetcher>()
+        coEvery { movieMetadataFetcher.fetch(artworkFiles = any(), onProgress = any()) } returns emptyList()
+
+        val seasonMetadataFetcher = mockk<SeasonMetadataFetcher>()
+        coEvery { seasonMetadataFetcher.fetch(artworkFiles = any()) } returns emptyList()
+
+        val episodeResolver = mockk<EpisodeResolver>()
+        coEvery { episodeResolver.resolve(artworkFiles = any(), episodesDto = any(), onProgress = any()) } returns emptyList()
+
+        val useCase = createUseCase(
+            database = database,
+            getDeviceFilesUseCase = getDeviceFilesUseCase,
+            filterExistingFilesUseCase = filterExistingFilesUseCase,
+            artworkFolderFetcher = artworkFolderFetcher,
+            movieMetadataFetcher = movieMetadataFetcher,
+            seasonMetadataFetcher = seasonMetadataFetcher,
+            episodeResolver = episodeResolver
+        )
+
+        useCase.invoke(onlyNew = false)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        coVerify { artworkFolderFetcher.fetch(folders = any(), onProgress = any()) }
+        coVerify { database.saveArtworks(listOf(artworkFiles.artwork)) }
+        coVerify { database.deleteAll() }
+    }
+
+    // endregion
+
     // region State (Turbine)
 
     test("state passe de Idle à Syncing puis revient à Idle pendant l'exécution") {
         val coordinator = FakeCatalogSyncCoordinator(scope = testScope)
-        val getDeviceFilesUseCase = mockk<GetDeviceFilesUseCase>()
-        coEvery { getDeviceFilesUseCase() } returns emptyList()
 
-        val useCase = createUseCase(coordinator = coordinator, getDeviceFilesUseCase = getDeviceFilesUseCase)
+        val useCase = createUseCase(coordinator = coordinator)
 
         useCase.state.test {
             awaitItem() shouldBe SyncState.Idle

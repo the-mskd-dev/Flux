@@ -91,7 +91,7 @@ val moduleCatalog = module {
 
     single<UpdateLanguageUseCase> {
         UpdateLanguageUseCaseImpl(
-            tmdb = get(),
+            remoteRepository = get(),
             database = get(),
             settings = get(),
             coordinator = get()

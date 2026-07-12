@@ -4,6 +4,8 @@ import com.mskd.flux.core.database.domain.repository.DatabaseRepository
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.network.tmdb.data.datasource.TmdbDataSource
 import com.mskd.flux.core.network.tmdb.data.dto.TranslationsDto
+import com.mskd.flux.core.network.tmdb.domain.model.TranslationRequest
+import com.mskd.flux.core.network.tmdb.domain.repository.ArtworkRemoteRepository
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import kotlinx.coroutines.CoroutineDispatcher
@@ -14,7 +16,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
 
 class UpdateLanguageUseCaseImpl(
-    private val tmdb: TmdbDataSource,
+    private val remoteRepository: ArtworkRemoteRepository,
     private val database: DatabaseRepository,
     private val settings: SettingsDataStore,
     private val coordinator: CatalogSyncCoordinator,
@@ -39,12 +41,12 @@ class UpdateLanguageUseCaseImpl(
                     movies.chunked(batchSize).forEach { chunk ->
                         val translated = chunk.map { movie ->
                             async {
-                                tmdb.getTmdbTranslation(
-                                    request = TranslationsDto.Request.Movie(artworkId = movie.artworkId, language = language)
+                                remoteRepository.translate(
+                                    request = TranslationRequest.Movie(artworkId = movie.artworkId, language = language)
                                 )?.let { translation ->
                                     movie.copy(
-                                        title = translation.data.name ?: movie.title,
-                                        description = translation.data.overview ?: movie.description
+                                        title = translation.title ?: movie.title,
+                                        description = translation.description ?: movie.description
                                     )
                                 }
                             }
@@ -59,12 +61,12 @@ class UpdateLanguageUseCaseImpl(
                     shows.chunked(batchSize).forEach { chunk ->
                         val translated = chunk.map { show ->
                             async {
-                                tmdb.getTmdbTranslation(
-                                    request = TranslationsDto.Request.Show(artworkId = show.id, language = language)
+                                remoteRepository.translate(
+                                    request = TranslationRequest.Show(artworkId = show.id, language = language)
                                 )?.let { translation ->
                                     show.copy(
-                                        title = translation.data.name ?: show.title,
-                                        description = translation.data.overview ?: show.description
+                                        title = translation.title ?: show.title,
+                                        description = translation.description ?: show.description
                                     )
                                 }
                             }
@@ -79,12 +81,12 @@ class UpdateLanguageUseCaseImpl(
                     seasons.chunked(batchSize).forEach { chunk ->
                         val translated = chunk.map { season ->
                             async {
-                                tmdb.getTmdbTranslation(
-                                    request = TranslationsDto.Request.Season(artworkId = season.artworkId, season = season.season, language = language)
+                                remoteRepository.translate(
+                                    request = TranslationRequest.Season(artworkId = season.artworkId, season = season.season, language = language)
                                 )?.let { translation ->
                                     season.copy(
-                                        title = translation.data.name ?: season.title,
-                                        description = translation.data.overview ?: season.description
+                                        title = translation.title ?: season.title,
+                                        description = translation.description ?: season.description
                                     )
                                 }
                             }
@@ -99,12 +101,12 @@ class UpdateLanguageUseCaseImpl(
                     episodes.chunked(batchSize).forEach { chunk ->
                         val translated = chunk.map { episode ->
                             async {
-                                tmdb.getTmdbTranslation(
-                                    request = TranslationsDto.Request.Episode(artworkId = episode.artworkId, season = episode.season, number = episode.number, language = language)
+                                remoteRepository.translate(
+                                    request = TranslationRequest.Episode(artworkId = episode.artworkId, season = episode.season, number = episode.number, language = language)
                                 )?.let { translation ->
                                     episode.copy(
-                                        title = translation.data.name ?: episode.title,
-                                        description = translation.data.overview ?: episode.description
+                                        title = translation.title ?: episode.title,
+                                        description = translation.description ?: episode.description
                                     )
                                 }
                             }

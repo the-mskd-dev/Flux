@@ -37,13 +37,6 @@ data class TranslationsDto(
         val overview: String?
     )
 
-    sealed class Request(val language: Locale) {
-        class Movie(val artworkId: Long, language: Locale) : Request(language)
-        class Show(val artworkId: Long, language: Locale) : Request(language)
-        class Episode(val artworkId: Long, val season: Int, val number: Int, language: Locale) : Request(language)
-        class Season(val artworkId: Long, val season: Int, language: Locale) : Request(language)
-    }
-
 }
 
 fun Collection<TranslationsDto.Translation>.findWithLocale(locale: Locale) : TranslationsDto.Translation? {

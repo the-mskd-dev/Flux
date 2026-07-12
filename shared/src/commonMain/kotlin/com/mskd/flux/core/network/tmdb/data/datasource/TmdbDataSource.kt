@@ -6,6 +6,7 @@ import com.mskd.flux.core.network.tmdb.data.dto.EpisodeDto
 import com.mskd.flux.core.network.tmdb.data.dto.MovieDto
 import com.mskd.flux.core.network.tmdb.data.dto.SeasonDto
 import com.mskd.flux.core.network.tmdb.data.dto.TranslationsDto
+import com.mskd.flux.core.network.tmdb.domain.model.TranslationRequest
 import java.util.Locale
 
 interface TmdbDataSource {
@@ -27,6 +28,6 @@ interface TmdbDataSource {
 
     suspend fun translateTmdbEpisode(artworkId: Long, episodeDto: EpisodeDto, language: Locale) : EpisodeDto
 
-    suspend fun getTmdbTranslation(request: TranslationsDto.Request) : TranslationsDto.Translation?
+    suspend fun getTmdbTranslation(request: TranslationRequest) : TranslationsDto.Translation?
 
 }

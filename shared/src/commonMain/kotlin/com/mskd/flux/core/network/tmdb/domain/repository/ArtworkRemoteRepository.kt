@@ -6,6 +6,8 @@ import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.Season
 import com.mskd.flux.core.model.files.UserFile
 import com.mskd.flux.core.network.tmdb.data.dto.EpisodeDto
+import com.mskd.flux.core.network.tmdb.domain.model.Translation
+import com.mskd.flux.core.network.tmdb.domain.model.TranslationRequest
 import java.util.Locale
 
 interface ArtworkRemoteRepository {
@@ -23,5 +25,7 @@ interface ArtworkRemoteRepository {
         language: Locale,
         fallbackDuration: suspend () -> Int
     ): Episode
+
+    suspend fun translate(request: TranslationRequest): Translation?
 
 }

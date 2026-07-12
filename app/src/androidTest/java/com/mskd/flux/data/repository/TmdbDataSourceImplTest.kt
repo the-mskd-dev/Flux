@@ -5,6 +5,7 @@ import com.mskd.flux.BuildConfig
 import com.mskd.flux.core.network.tmdb.data.datasource.TmdbDataSourceImpl
 import com.mskd.flux.core.network.tmdb.data.dto.TranslationsDto
 import com.mskd.flux.core.network.tmdb.data.service.TMDBService
+import com.mskd.flux.core.network.tmdb.domain.model.TranslationRequest
 import com.mskd.flux.di.moduleAndroidApp
 import com.mskd.flux.di.modulePlatform
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
@@ -25,13 +26,14 @@ import org.koin.test.KoinTest
 import org.koin.test.get
 import org.koin.test.inject
 import java.util.Locale
+import com.mskd.flux.core.model.files.FileSource
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class TmdbDataSourceImplTest : KoinTest {
 
     private val tmdbService: TMDBService by inject()
     private lateinit var settingsDataStore: SettingsDataStore
-    private lateinit var repository: com.mskd.flux.core.network.tmdb.data.datasource.TmdbDataSourceImpl
+    private lateinit var repository: TmdbDataSourceImpl
 
     private companion object {
 
@@ -41,14 +43,14 @@ class TmdbDataSourceImplTest : KoinTest {
             name = "Spider-man Homecoming",
             addedDateTime = 0L,
             path = "",
-            source = _root_ide_package_.com.mskd.flux.core.model.files.FileSource.LOCAL
+            source = FileSource.LOCAL
         )
 
         val episodeFile = _root_ide_package_.com.mskd.flux.core.model.files.UserFile(
             name = "Naruto s01e01.mp4",
             addedDateTime = 0L,
             path = "",
-            source = _root_ide_package_.com.mskd.flux.core.model.files.FileSource.LOCAL
+            source = FileSource.LOCAL
         )
         private var movieArtworkId: Long? = null
         private var showArtworkId: Long? = null
@@ -57,7 +59,6 @@ class TmdbDataSourceImplTest : KoinTest {
     @Before
     fun setup() {
         stopKoin()
-        val apiKey = BuildConfig.TMDB_TOKEN
 
         startKoin {
             androidContext(ApplicationProvider.getApplicationContext())
@@ -126,7 +127,7 @@ class TmdbDataSourceImplTest : KoinTest {
     fun test_03_get_tmdb_movie_translations() = runTest {
 
         val result = repository.getTmdbTranslation(
-            request = TranslationsDto.Request.Movie(
+            request = TranslationRequest.Movie(
                 artworkId = movieArtworkId!!,
                 language = dataLanguage
             ),
@@ -164,7 +165,7 @@ class TmdbDataSourceImplTest : KoinTest {
     fun test_05_get_tmdb_show_translations() = runTest {
 
         val result = repository.getTmdbTranslation(
-            request = TranslationsDto.Request.Show(
+            request = TranslationRequest.Show(
                 artworkId = showArtworkId!!,
                 language = dataLanguage
             ),
@@ -205,7 +206,7 @@ class TmdbDataSourceImplTest : KoinTest {
     fun test_07_get_tmdb_episode_translations() = runTest {
 
         val result = repository.getTmdbTranslation(
-            request = TranslationsDto.Request.Episode(
+            request = TranslationRequest.Episode(
                 artworkId = showArtworkId!!,
                 season = episodeFile.nameProperties.season!!,
                 number = episodeFile.nameProperties.episode!!,
@@ -244,7 +245,7 @@ class TmdbDataSourceImplTest : KoinTest {
     fun test_09_get_tmdb_season_translations() = runTest {
 
         val result = repository.getTmdbTranslation(
-            request = TranslationsDto.Request.Season(
+            request = TranslationRequest.Season(
                 artworkId = showArtworkId!!,
                 season = episodeFile.nameProperties.season!!,
                 language = dataLanguage

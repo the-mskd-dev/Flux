@@ -21,6 +21,8 @@ import org.koin.test.KoinTest
 import org.koin.test.get
 import org.koin.test.inject
 import java.util.Locale
+import com.mskd.flux.core.model.files.FileSource
+import com.mskd.flux.core.model.files.UserFile
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class TMDBServiceTest : KoinTest {
@@ -31,18 +33,18 @@ class TMDBServiceTest : KoinTest {
 
         val dataLanguage: String = Locale.US.toTmdbFormat()
 
-        val movieFile = _root_ide_package_.com.mskd.flux.core.model.files.UserFile(
+        val movieFile = UserFile(
             name = "Spider-man Homecoming",
             addedDateTime = 0L,
             path = "",
-            source = _root_ide_package_.com.mskd.flux.core.model.files.FileSource.LOCAL
+            source = FileSource.LOCAL
         )
 
-        val episodeFile = _root_ide_package_.com.mskd.flux.core.model.files.UserFile(
+        val episodeFile = UserFile(
             name = "Naruto s01e01.mp4",
             addedDateTime = 0L,
             path = "",
-            source = _root_ide_package_.com.mskd.flux.core.model.files.FileSource.LOCAL
+            source = FileSource.LOCAL
         )
         private var movieArtworkId: Long? = null
         private var showArtworkId: Long? = null
@@ -64,8 +66,6 @@ class TMDBServiceTest : KoinTest {
         runBlocking {
             tokenDataStore.saveToken(BuildConfig.TMDB_TOKEN)
         }
-
-        val apiKey = BuildConfig.TMDB_TOKEN
 
     }
 

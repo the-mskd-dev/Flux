@@ -2,6 +2,8 @@ package com.mskd.flux.data.tmdb
 
 import androidx.test.core.app.ApplicationProvider
 import com.mskd.flux.BuildConfig
+import com.mskd.flux.core.model.files.FileSource
+import com.mskd.flux.core.model.files.UserFile
 import com.mskd.flux.core.network.tmdb.data.service.TMDBService
 import com.mskd.flux.di.moduleAndroidApp
 import com.mskd.flux.di.modulePlatform
@@ -21,8 +23,6 @@ import org.koin.test.KoinTest
 import org.koin.test.get
 import org.koin.test.inject
 import java.util.Locale
-import com.mskd.flux.core.model.files.FileSource
-import com.mskd.flux.core.model.files.UserFile
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class TMDBServiceTest : KoinTest {

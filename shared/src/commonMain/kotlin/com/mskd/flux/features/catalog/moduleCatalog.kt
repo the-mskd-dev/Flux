@@ -32,14 +32,14 @@ val moduleCatalog = module {
 
     single<ArtworkFolderFetcher> {
         ArtworkFolderFetcherImpl(
-            artworkRepository = get(),
+            remoteRepository = get(),
             dispatcher = get(named("catalogSyncDispatcher"))
         )
     }
 
     single<MovieMetadataFetcher> {
         MovieMetadataFetcherImpl(
-            tmdb = get(),
+            remoteRepository = get(),
             getFileDurationUseCase = get(),
             dispatcher = get(named("catalogSyncDispatcher"))
         )
@@ -47,14 +47,14 @@ val moduleCatalog = module {
 
     single<SeasonMetadataFetcher>{
         SeasonMetadataFetcherImpl(
-            tmdb = get(),
+            remoteRepository = get(),
             dispatcher = get(named("catalogSyncDispatcher"))
         )
     }
 
     single<EpisodeResolver> {
         EpisodeResolverImpl(
-            tmdb = get(),
+            remoteRepository = get(),
             settings = get(),
             getFileDurationUseCase = get(),
             dispatcher = get(named("catalogSyncDispatcher"))

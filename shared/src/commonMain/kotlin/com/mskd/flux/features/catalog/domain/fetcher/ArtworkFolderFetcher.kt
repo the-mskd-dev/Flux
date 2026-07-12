@@ -16,7 +16,7 @@ interface ArtworkFolderFetcher {
 }
 
 class ArtworkFolderFetcherImpl(
-    private val artworkRepository: ArtworkRemoteRepository,
+    private val remoteRepository: ArtworkRemoteRepository,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(10)
 ) : ArtworkFolderFetcher {
 
@@ -35,7 +35,7 @@ class ArtworkFolderFetcherImpl(
 
                     try {
 
-                        val artwork = artworkRepository.getArtwork(file = folder.files.first()) ?: Artwork.UNKNOWN
+                        val artwork = remoteRepository.getArtwork(file = folder.files.first()) ?: Artwork.UNKNOWN
 
                         ArtworkFiles(artwork = artwork, files = folder.files)
 

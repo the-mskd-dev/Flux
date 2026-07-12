@@ -6,6 +6,7 @@ import com.mskd.flux.core.model.artwork.Season
 import com.mskd.flux.core.network.tmdb.data.datasource.TmdbDataSource
 import com.mskd.flux.core.network.tmdb.data.dto.EpisodeDto
 import com.mskd.flux.core.network.tmdb.data.mapper.toDomain
+import com.mskd.flux.core.network.tmdb.domain.repository.ArtworkRemoteRepository
 import com.mskd.flux.features.catalog.domain.model.ArtworkFiles
 import com.mskd.flux.utils.Trace
 import kotlinx.coroutines.CoroutineDispatcher
@@ -18,7 +19,7 @@ interface SeasonMetadataFetcher {
 }
 
 class SeasonMetadataFetcherImpl(
-    private val tmdb: TmdbDataSource,
+    private val remoteRepository: ArtworkRemoteRepository,
     private val dispatcher: CoroutineDispatcher
 ) : SeasonMetadataFetcher {
 
@@ -42,9 +43,7 @@ class SeasonMetadataFetcherImpl(
 
                             try {
 
-                                tmdb.getTmdbSeason(artworkId = artwork.id, season = season)?.let {
-                                    it.toDomain(artworkId = artwork.id) to it.episodes
-                                }
+                                remoteRepository.getSeason(artworkId = artwork.id, season = season)
 
                             } catch (e: Exception) {
                                 Trace.error(TAG, "Fail to get season for artworkId ${artwork.id} - season $season", e)

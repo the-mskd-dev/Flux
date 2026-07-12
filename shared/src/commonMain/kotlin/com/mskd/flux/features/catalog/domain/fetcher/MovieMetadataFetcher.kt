@@ -6,6 +6,7 @@ import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.network.tmdb.data.datasource.TmdbDataSource
 import com.mskd.flux.core.network.tmdb.data.mapper.toDomain
+import com.mskd.flux.core.network.tmdb.domain.repository.ArtworkRemoteRepository
 import com.mskd.flux.features.catalog.domain.model.ArtworkFiles
 import com.mskd.flux.features.files.domain.usecase.GetFileDurationUseCase
 import com.mskd.flux.utils.Trace
@@ -19,7 +20,7 @@ interface MovieMetadataFetcher {
 }
 
 class MovieMetadataFetcherImpl(
-    private val tmdb: TmdbDataSource,
+    private val remoteRepository: ArtworkRemoteRepository,
     private val getFileDurationUseCase: GetFileDurationUseCase,
     private val dispatcher: CoroutineDispatcher
 ) : MovieMetadataFetcher {
@@ -45,11 +46,10 @@ class MovieMetadataFetcherImpl(
                             artwork.id == Artwork.UNKNOWN_ID -> Episode(file = file)
                             else -> {
 
-                                val tmdbMovie = tmdb.getTmdbMovie(artworkId = artwork.id)
-
-                                tmdbMovie?.toDomain(
+                                remoteRepository.getMovie(
+                                    artworkId = artwork.id,
                                     file = file,
-                                    duration = tmdbMovie.duration ?: getFileDurationUseCase(file = file)
+                                    fallbackDuration = { getFileDurationUseCase(file = file) }
                                 ) ?: Episode(file = file, duration = getFileDurationUseCase(file = file))
 
                             }

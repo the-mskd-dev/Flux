@@ -2,8 +2,6 @@ package com.mskd.flux.features.catalog.domain.usecase.updateLanguage
 
 import com.mskd.flux.core.database.domain.repository.DatabaseRepository
 import com.mskd.flux.core.model.artwork.ContentType
-import com.mskd.flux.core.network.tmdb.data.datasource.TmdbDataSource
-import com.mskd.flux.core.network.tmdb.data.dto.TranslationsDto
 import com.mskd.flux.core.network.tmdb.domain.model.TranslationRequest
 import com.mskd.flux.core.network.tmdb.domain.repository.ArtworkRemoteRepository
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator

@@ -99,50 +99,50 @@ class UpdateLanguageUseCaseTest : FunSpec({
         )
     }
 
-    test("récupère les traductions pour movie/show/season/episode et les sauvegarde") {
+    test("retrieves translations for movie/show/season/episode and saves them") {
 
         coEvery {
             remoteRepository.translate(match { it is TranslationRequest.Movie && it.artworkId == 1L })
-        } returns Translation(title = "Titre Traduit", description = "Description Traduite")
+        } returns Translation(title = "new title for movie", description = "new description for movie")
 
         coEvery {
             remoteRepository.translate(match { it is TranslationRequest.Show && it.artworkId == 2L })
-        } returns Translation(title = "Serie Traduite", description = "Resume Traduit")
+        } returns Translation(title = "new title for show", description = "new description for show")
 
         coEvery {
             remoteRepository.translate(match { it is TranslationRequest.Season && it.artworkId == 2L && it.season == 1 })
-        } returns Translation(title = "Saison Traduite", description = "Resume Saison Traduit")
+        } returns Translation(title = "new title for season", description = "new description for season")
 
         coEvery {
             remoteRepository.translate(match { it is TranslationRequest.Episode && it.artworkId == 2L && it.season == 1 && it.number == 1 })
-        } returns Translation(title = "Episode Traduit", description = "Resume Episode Traduit")
+        } returns Translation(title = "new title for episode", description = "new description for episode")
 
         useCase()
         testDispatcher.scheduler.advanceUntilIdle()
 
         coVerify(exactly = 1) {
             database.saveMovies(match { list ->
-                list.size == 1 && list[0].title == "Titre Traduit" && list[0].description == "Description Traduite"
+                list.size == 1 && list[0].title == "new title for movie" && list[0].description == "new description for movie"
             })
         }
         coVerify(exactly = 1) {
             database.saveArtworks(match { list ->
-                list.size == 1 && list[0].title == "Serie Traduite" && list[0].description == "Resume Traduit"
+                list.size == 1 && list[0].title == "new title for show" && list[0].description == "new description for show"
             })
         }
         coVerify(exactly = 1) {
             database.saveSeasons(match { list ->
-                list.size == 1 && list[0].title == "Saison Traduite" && list[0].description == "Resume Saison Traduit"
+                list.size == 1 && list[0].title == "new title for season" && list[0].description == "new description for season"
             })
         }
         coVerify(exactly = 1) {
             database.saveEpisodes(match { list ->
-                list.size == 1 && list[0].title == "Episode Traduit" && list[0].description == "Resume Episode Traduit"
+                list.size == 1 && list[0].title == "new title for episode" && list[0].description == "new description for episode"
             })
         }
     }
 
-    test("aucune traduction disponible conserve les titres/descriptions existants et ne sauvegarde rien") {
+    test("if no translation available, no save") {
 
         coEvery { remoteRepository.translate(any()) } returns null
 
@@ -155,18 +155,34 @@ class UpdateLanguageUseCaseTest : FunSpec({
         coVerify(exactly = 0) { database.saveEpisodes(any()) }
     }
 
-    test("une traduction partielle (titre seul) conserve la description existante") {
+    test("if only the title is translated, keep the current description") {
 
         coEvery {
             remoteRepository.translate(match { it is TranslationRequest.Movie && it.artworkId == 1L })
-        } returns Translation(title = "Titre Traduit", description = null)
+        } returns Translation(title = "new title", description = null)
 
         useCase()
         testDispatcher.scheduler.advanceUntilIdle()
 
         coVerify(exactly = 1) {
             database.saveMovies(match { list ->
-                list.size == 1 && list[0].title == "Titre Traduit" && list[0].description == "Old Movie Desc"
+                list.size == 1 && list[0].title == "new title" && list[0].description == "Old Movie Desc"
+            })
+        }
+    }
+
+    test("if only the description is translated, keep the current title") {
+
+        coEvery {
+            remoteRepository.translate(match { it is TranslationRequest.Movie && it.artworkId == 1L })
+        } returns Translation(title = null, description = "new description")
+
+        useCase()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        coVerify(exactly = 1) {
+            database.saveMovies(match { list ->
+                list.size == 1 && list[0].title == "Old Movie Title" && list[0].description == "new description"
             })
         }
     }

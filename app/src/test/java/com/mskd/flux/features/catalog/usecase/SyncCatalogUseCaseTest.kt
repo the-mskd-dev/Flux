@@ -53,7 +53,7 @@ class SyncCatalogUseCaseImplTest : FunSpec({
         coordinator: FakeCatalogSyncCoordinator = FakeCatalogSyncCoordinator(scope = testScope),
         deleteUnavailableSourcesUseCase: DeleteUnavailableSourcesUseCase = mockk(relaxed = true),
         getDeviceFilesUseCase: GetDeviceFilesUseCase = mockk<GetDeviceFilesUseCase>().also {
-            coEvery { it() } returns emptyList() // valeur par défaut sûre, écrasable via coEvery dans chaque test
+            coEvery { it() } returns emptyList()
         },
         filterExistingFilesUseCase: FilterExistingFilesUseCase = mockk(relaxed = true),
         artworkFolderFetcher: ArtworkFolderFetcher = mockk(relaxed = true),
@@ -75,9 +75,7 @@ class SyncCatalogUseCaseImplTest : FunSpec({
         episodeResolver = episodeResolver,
     )
 
-    // region Early return
-
-    test("invoke ne déclenche rien si une synchro full est déjà en cours et onlyNew=true") {
+    test("if full sync is running, nothing to do when a light sync is requested") {
         val coordinator = FakeCatalogSyncCoordinator(
             scope = testScope,
             initialState = SyncState.Syncing(full = true)
@@ -96,7 +94,7 @@ class SyncCatalogUseCaseImplTest : FunSpec({
         coVerify(exactly = 0) { deleteUnavailableSourcesUseCase() }
     }
 
-    test("invoke se déclenche si une synchro full est en cours mais onlyNew=false") {
+    test("if full sync is running, re launch full sync if requested") {
         val coordinator = FakeCatalogSyncCoordinator(
             scope = testScope,
             initialState = SyncState.Syncing(full = true)
@@ -110,11 +108,35 @@ class SyncCatalogUseCaseImplTest : FunSpec({
         coordinator.launchCallCount shouldBe 1
     }
 
-    // endregion
+    test("if light sync is running, launch full sync if requested") {
+        val coordinator = FakeCatalogSyncCoordinator(
+            scope = testScope,
+            initialState = SyncState.Syncing(full = false)
+        )
 
-    // region Nettoyage préalable
+        val useCase = createUseCase(coordinator = coordinator)
 
-    test("deleteUnavailableSourcesUseCase est appelé en tout premier") {
+        useCase.invoke(onlyNew = false)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        coordinator.launchCallCount shouldBe 1
+    }
+
+    test("if light sync is running, re launch light sync if requested") {
+        val coordinator = FakeCatalogSyncCoordinator(
+            scope = testScope,
+            initialState = SyncState.Syncing(full = false)
+        )
+
+        val useCase = createUseCase(coordinator = coordinator)
+
+        useCase.invoke(onlyNew = true)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        coordinator.launchCallCount shouldBe 1
+    }
+
+    test("launch deleteUnavailableSourcesUseCase at the beginning") {
         val deleteUnavailableSourcesUseCase = mockk<DeleteUnavailableSourcesUseCase>(relaxed = true)
 
         val useCase = createUseCase(deleteUnavailableSourcesUseCase = deleteUnavailableSourcesUseCase)
@@ -125,15 +147,11 @@ class SyncCatalogUseCaseImplTest : FunSpec({
         coVerify { deleteUnavailableSourcesUseCase() }
     }
 
-    // endregion
-
-    // region Aucun nouveau fichier
-
-    test("si getDeviceFilesUseCase ne retourne aucun fichier, la synchro s'arrête après le nettoyage") {
+    test("if no new file, no sync, just a clean") {
         val database = mockk<DatabaseRepository>(relaxed = true)
         val user = mockk<UserDataStore>(relaxed = true)
         val getDeviceFilesUseCase = mockk<GetDeviceFilesUseCase>()
-        coEvery { getDeviceFilesUseCase() } returns emptyList() // ← fix : stub explicite ajouté
+        coEvery { getDeviceFilesUseCase() } returns emptyList()
 
         val useCase = createUseCase(
             database = database,
@@ -149,11 +167,7 @@ class SyncCatalogUseCaseImplTest : FunSpec({
         coVerify(exactly = 0) { database.saveArtworks(any()) }
     }
 
-    // endregion
-
-    // region onlyNew=true : filtrage des fichiers déjà en base
-
-    test("onlyNew=true exclut de newFiles les fichiers déjà présents en base (comparaison par name)") {
+    test("if light sync, exclude files already in database") {
         val existingFile = UserFile(name = "existing.mkv", path = "path/existing", addedDateTime = 0L, source = FileSource.LOCAL)
         val existingMovie = mockk<Movie>(relaxed = true) { every { file } returns existingFile }
 
@@ -180,11 +194,7 @@ class SyncCatalogUseCaseImplTest : FunSpec({
         coVerify(exactly = 0) { database.deleteAll() }
     }
 
-    // endregion
-
-    // region Pipeline complet (nouveau)
-
-    test("des nouveaux fichiers déclenchent le pipeline complet et sauvegardent le catalogue") {
+    test("if full sync, delete all database and save data from all files") {
         val newFile = UserFile(name = "movie1.mkv", path = "path/movie1", addedDateTime = 0L, source = FileSource.LOCAL)
         val artworkFiles = ArtworkFiles(artwork = Artwork(id = 42L), files = listOf(newFile))
 
@@ -228,11 +238,7 @@ class SyncCatalogUseCaseImplTest : FunSpec({
         coVerify { database.deleteAll() }
     }
 
-    // endregion
-
-    // region State (Turbine)
-
-    test("state passe de Idle à Syncing puis revient à Idle pendant l'exécution") {
+    test("the state changes from Idle to Syncing and then returns to Idle during execution") {
         val coordinator = FakeCatalogSyncCoordinator(scope = testScope)
 
         val useCase = createUseCase(coordinator = coordinator)

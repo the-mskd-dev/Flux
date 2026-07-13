@@ -51,7 +51,7 @@ class SyncCatalogUseCaseImpl(
         coordinator.launch(full = !onlyNew) {
 
             // Clean unavailable sources
-            deleteUnavailableSourcesUseCase()
+            //deleteUnavailableSourcesUseCase()
 
             val dbMovies = database.getMovies()
             val dbEpisodes = database.getEpisodes()
@@ -63,7 +63,7 @@ class SyncCatalogUseCaseImpl(
             }
 
             if (newFiles.isEmpty()) {
-                database.deleteMediasNotInFiles(deviceFiles)
+                database.deleteMediasNotInFiles(dbFiles)
                 user.setSyncTime(System.currentTimeMillis())
                 return@launch
             }
@@ -85,7 +85,7 @@ class SyncCatalogUseCaseImpl(
             var catalog = getCatalog(files = newFiles)
             catalog = applyCurrentMediaProgress(catalog, dbMovies, dbEpisodes)
 
-            if (onlyNew) database.deleteMediasNotInFiles(deviceFiles) else database.deleteAll()
+            if (onlyNew) database.deleteMediasNotInFiles((deviceFiles + dbFiles).distinct()) else database.deleteAll()
             coordinator.incrementProgress()
 
             database.saveArtworks(catalog.artworks); coordinator.incrementProgress()

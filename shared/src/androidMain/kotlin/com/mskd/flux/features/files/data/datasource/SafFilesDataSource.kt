@@ -16,7 +16,7 @@ import kotlinx.coroutines.withContext
 
 class SafFilesDataSource(
     private val context: Context,
-    private val sources: SourcesRepository
+    private val sources: SourcesRepository,
 ) : FilesDataSource {
 
     companion object {
@@ -45,7 +45,18 @@ class SafFilesDataSource(
         val existingFiles = mutableListOf<UserFile>()
         val missingFiles = mutableListOf<UserFile>()
 
-        for (file in safFiles) {
+        val availableFolders = sources.getFolders().filter { it.status == UserFolder.Status.AVAILABLE }
+
+        val (fromAvailableFolders, fromUnavailableFolders) = safFiles.partition { file ->
+
+            availableFolders.any { file.path.startsWith(it.path) }
+
+        }
+
+        existingFiles.addAll(fromUnavailableFolders)
+
+
+        for (file in fromAvailableFolders) {
             val fileUri = file.path.toUri()
             var exists = false
 

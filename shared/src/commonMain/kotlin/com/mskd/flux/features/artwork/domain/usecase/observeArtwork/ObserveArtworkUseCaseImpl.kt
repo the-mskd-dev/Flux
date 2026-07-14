@@ -39,7 +39,13 @@ class ObserveArtworkUseCaseImpl(
                     ContentType.MOVIE -> {
 
                         movie?.let {
-                            State.Content(content = buildFullArtworkMovie(artwork = artwork, movie = it))
+                            State.Content(
+                                content = buildFullArtworkMovie(
+                                    artwork = artwork,
+                                    movie = it,
+                                    sources = sources
+                                )
+                            )
                         } ?: State.Error()
 
                     }
@@ -49,7 +55,8 @@ class ObserveArtworkUseCaseImpl(
                             content = buildFullArtworkShow(
                                 artwork = artwork,
                                 seasons = seasons,
-                                episodes = episodes
+                                episodes = episodes,
+                                sources = sources
                             )
                         )
 

@@ -1,6 +1,7 @@
 package com.mskd.flux.features.sources.domain.model
 
 import androidx.core.net.toUri
+import com.mskd.flux.core.model.files.UserFile
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 

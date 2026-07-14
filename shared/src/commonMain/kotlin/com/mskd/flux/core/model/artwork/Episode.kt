@@ -1,5 +1,6 @@
 package com.mskd.flux.core.model.artwork
 
+import androidx.compose.runtime.Stable
 import com.mskd.flux.core.model.files.UserFile
 import kotlin.random.Random
 
@@ -22,6 +23,7 @@ import kotlin.random.Random
  * @property status Viewing status of the media.
  * @property releaseDateString Release date of the episode as a string.
  */
+@Stable
 data class Episode(
     val id: Long,
     val number: Int,
@@ -37,6 +39,7 @@ data class Episode(
     override val voteCount: Int,
     override val file: UserFile,
     override val status: Status = Status.TO_WATCH,
+    override val isAvailable: Boolean
 ) : Media() {
 
     override val mediaId: Long get() = id
@@ -55,7 +58,8 @@ data class Episode(
         voteAverage = 0f,
         voteCount = 0,
         status = Status.TO_WATCH,
-        file = file
+        file = file,
+        isAvailable = true
     )
 
     val isUnknown: Boolean get() = artworkId == Artwork.UNKNOWN_ID

@@ -1,5 +1,6 @@
 package com.mskd.flux.core.model.artwork
 
+import androidx.compose.runtime.Stable
 import com.mskd.flux.core.model.files.UserFile
 
 /**
@@ -14,6 +15,7 @@ import com.mskd.flux.core.model.files.UserFile
  * @property file The associated local file.
  * @property status Viewing status of the media.
  */
+@Stable
 data class Movie(
     override val artworkId: Long,
     override val title: String,
@@ -25,4 +27,5 @@ data class Movie(
     override val currentTime: Long = 0L,
     override val status: Status = Status.TO_WATCH,
     override val file: UserFile,
+    override val isAvailable: Boolean
 ) : Media()

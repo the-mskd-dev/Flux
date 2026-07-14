@@ -29,6 +29,8 @@ sealed class Media {
 
     abstract  val file: UserFile
 
+    abstract val isAvailable: Boolean
+
     open val mediaId: Long get() = artworkId
 
     val progressPercent: Float get() = this.currentTime.toFloat() / this.duration.minToMs

@@ -6,7 +6,10 @@ import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Movie
 import com.mskd.flux.core.model.artwork.Season
 
-internal fun buildFullArtworkMovie(artwork: Artwork, movie: Movie) : FullArtwork {
+internal fun buildFullArtworkMovie(
+    artwork: Artwork,
+    movie: Movie,
+) : FullArtwork {
     return FullArtwork.FullMovie(
         resume = artwork,
         movie = movie

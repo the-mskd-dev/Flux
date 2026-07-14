@@ -6,6 +6,7 @@ import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.artwork.domain.mapper.buildFullArtworkMovie
 import com.mskd.flux.features.artwork.domain.mapper.buildFullArtworkShow
+import com.mskd.flux.features.sources.domain.usecase.FlowSourcesUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +16,8 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 
 class ObserveArtworkUseCaseImpl(
-    private val database: DatabaseRepository
+    private val database: DatabaseRepository,
+    private val sourcesUseCase: FlowSourcesUseCase
 ) : ObserveArtworkUseCase {
 
     private val _artworkId = MutableStateFlow<Long?>(null)
@@ -29,8 +31,9 @@ class ObserveArtworkUseCaseImpl(
                 database.flowArtwork(artworkId),
                 database.flowMovie(artworkId),
                 database.flowSeasons(artworkId),
-                database.flowEpisodes(artworkId)
-            ) { artwork, movie, seasons, episodes ->
+                database.flowEpisodes(artworkId),
+                sourcesUseCase()
+            ) { artwork, movie, seasons, episodes, sources ->
 
                 when (artwork?.type) {
                     ContentType.MOVIE -> {

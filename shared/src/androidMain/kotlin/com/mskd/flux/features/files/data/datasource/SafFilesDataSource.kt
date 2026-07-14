@@ -48,13 +48,10 @@ class SafFilesDataSource(
         val availableFolders = sources.getFolders().filter { it.status == UserFolder.Status.AVAILABLE }
 
         val (fromAvailableFolders, fromUnavailableFolders) = safFiles.partition { file ->
-
             availableFolders.any { file.path.startsWith(it.path) }
-
         }
 
         existingFiles.addAll(fromUnavailableFolders)
-
 
         for (file in fromAvailableFolders) {
             val fileUri = file.path.toUri()

@@ -30,7 +30,6 @@ class SyncCatalogUseCaseImpl(
     private val imagesPrefetchManager: ImagesPrefetchManager,
     private val appInfo: AppInfo,
     private val coordinator: CatalogSyncCoordinator,
-    private val deleteUnavailableSourcesUseCase: DeleteUnavailableSourcesUseCase,
     private val getDeviceFilesUseCase: GetDeviceFilesUseCase,
     private val filterExistingFilesUseCase: FilterExistingFilesUseCase,
     private val artworkFolderFetcher: ArtworkFolderFetcher,
@@ -50,20 +49,17 @@ class SyncCatalogUseCaseImpl(
 
         coordinator.launch(full = !onlyNew) {
 
-            // Clean unavailable sources
-            //deleteUnavailableSourcesUseCase()
-
             val dbMovies = database.getMovies()
             val dbEpisodes = database.getEpisodes()
-            val dbFiles = filterExistingFilesUseCase(files = (dbMovies + dbEpisodes).map { it.file })
+            val existingFiles = filterExistingFilesUseCase(files = (dbMovies + dbEpisodes).map { it.file })
             val deviceFiles = getDeviceFilesUseCase()
 
             val newFiles = if (!onlyNew) deviceFiles else {
-                deviceFiles.filter { file -> dbFiles.none { it.name == file.name } }
+                deviceFiles.filter { file -> existingFiles.none { it.name == file.name } }
             }
 
             if (newFiles.isEmpty()) {
-                database.deleteMediasNotInFiles(dbFiles)
+                database.deleteMediasNotInFiles(existingFiles)
                 user.setSyncTime(System.currentTimeMillis())
                 return@launch
             }
@@ -85,7 +81,7 @@ class SyncCatalogUseCaseImpl(
             var catalog = getCatalog(files = newFiles)
             catalog = applyCurrentMediaProgress(catalog, dbMovies, dbEpisodes)
 
-            if (onlyNew) database.deleteMediasNotInFiles((deviceFiles + dbFiles).distinct()) else database.deleteAll()
+            if (onlyNew) database.deleteMediasNotInFiles((deviceFiles + existingFiles).distinct()) else database.deleteAll()
             coordinator.incrementProgress()
 
             database.saveArtworks(catalog.artworks); coordinator.incrementProgress()

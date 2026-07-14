@@ -79,7 +79,6 @@ val moduleCatalog = module {
             imagesPrefetchManager = get(),
             appInfo = get(),
             coordinator = get(),
-            deleteUnavailableSourcesUseCase = get(),
             getDeviceFilesUseCase = get(),
             filterExistingFilesUseCase = get(),
             artworkFolderFetcher = get(),

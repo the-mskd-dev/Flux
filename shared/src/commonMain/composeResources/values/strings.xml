@@ -171,4 +171,5 @@
     <string name="got_it">Got it</string>
     <string name="dialog_sources_title">Your folders, your rules!</string>
     <string name="dialog_sources_description">To give you more control, the app now focuses on your %1$s and %2$s folders.\n\nMissing a video? Don't panic! You can add your own folders in a flash from the settings.</string>
+    <string name="content_unavailable">Content unavailable</string>
 </resources>

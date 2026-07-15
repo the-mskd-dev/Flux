@@ -46,6 +46,7 @@ import com.mskd.flux.utils.PortraitPreview
 import com.mskd.flux.utils.extensions.grayScale
 import com.mskd.flux.utils.extensions.minToMs
 import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.content_unavailable
 import flux.shared.generated.resources.ic_visibility
 import flux.shared.generated.resources.mark_as_not_watched
 import flux.shared.generated.resources.mark_as_watched
@@ -95,7 +96,7 @@ fun EpisodeItem(
         }
 
         FixedChip(
-            text = "Contenu indisponible",
+            text = stringResource(Res.string.content_unavailable),
             backgroundColor = MaterialTheme.colorScheme.errorContainer,
             textColor = MaterialTheme.colorScheme.onErrorContainer,
         )

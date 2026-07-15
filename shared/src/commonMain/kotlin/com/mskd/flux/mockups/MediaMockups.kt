@@ -35,8 +35,10 @@ object MediaMockups {
             name = "your_name.mkv",
             addedDateTime = 0L,
             path = "path/your_name.mkv",
-            source = FileSource.LOCAL
-        )
+            source = FileSource.LOCAL,
+
+        ),
+        isAvailable = true
     )
 
     val showArtwork = Artwork(
@@ -66,7 +68,8 @@ object MediaMockups {
             addedDateTime = 0L,
             path = "path/naruto_shippuuden_S01E01.mkv",
             source = FileSource.LOCAL
-        )
+        ),
+        isAvailable = true
     )
 
     val episode2 = Episode(
@@ -88,7 +91,8 @@ object MediaMockups {
             addedDateTime = 0L,
             path = "path/naruto_shippuuden_S01E02.mkv",
             source = FileSource.LOCAL
-        )
+        ),
+        isAvailable = true
     )
 
     val episode3 = Episode(
@@ -110,7 +114,8 @@ object MediaMockups {
             addedDateTime = 0L,
             path = "path/naruto_shippuuden_S02E33.mkv",
             source = FileSource.LOCAL
-        )
+        ),
+        isAvailable = true
     )
 
     val unknownArtwork = Artwork.UNKNOWN

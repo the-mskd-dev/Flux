@@ -30,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.features.artwork.presentation.ArtworkIntent
@@ -376,7 +377,9 @@ fun EpisodeDropDownMenu(
 fun EpisodeItem_Preview() {
     AppThemePreview {
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(vertical = 20.dp),
             verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
         ) {
             EpisodeItemLarge(
@@ -402,7 +405,9 @@ fun EpisodeItem_Preview() {
 fun EpisodeItemWatching_Preview() {
     AppThemePreview {
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(vertical = 20.dp),
             verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
         ) {
             EpisodeItemLarge(
@@ -434,7 +439,9 @@ fun EpisodeItemWatching_Preview() {
 fun EpisodeItemWatched_Preview() {
     AppThemePreview {
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(vertical = 20.dp),
             verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
         ) {
             EpisodeItemLarge(

@@ -95,11 +95,13 @@ fun EpisodeItem(
             )
         }
 
-        FixedChip(
-            text = stringResource(Res.string.content_unavailable),
-            backgroundColor = MaterialTheme.colorScheme.errorContainer,
-            textColor = MaterialTheme.colorScheme.onErrorContainer,
-        )
+        if (!episode.isAvailable) {
+            FixedChip(
+                text = stringResource(Res.string.content_unavailable),
+                backgroundColor = MaterialTheme.colorScheme.errorContainer,
+                textColor = MaterialTheme.colorScheme.onErrorContainer,
+            )
+        }
 
     }
 

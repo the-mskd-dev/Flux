@@ -158,10 +158,8 @@ class SourcesViewModel(
     }
 
     private suspend fun deleteFolder(folder: UserFolder) {
-        deleteSourceUseCase(folder = folder, deleteMedias = false)
+        deleteSourceUseCase(folder = folder, deleteMedias = true)
         closeDialog()
-
-        needSync = true
     }
 
     //endregion

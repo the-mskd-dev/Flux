@@ -159,6 +159,9 @@ class ArtworkViewModel(
     }
 
     private suspend fun playMedia(media: Media, forceInternal: Boolean) {
+
+        if (!media.isAvailable) return
+
         _userState.update { it.copy(selectedMedia = media) }
 
         if (artworkContent?.useExternalPlayer == true && !forceInternal)

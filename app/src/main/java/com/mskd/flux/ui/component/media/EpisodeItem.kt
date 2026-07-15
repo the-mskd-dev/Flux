@@ -69,7 +69,6 @@ fun EpisodeItem(
 ) {
 
     Box(
-        modifier = Modifier.let { if (episode.isAvailable) it else it.grayScale() },
         contentAlignment = Alignment.Center
     ) {
 
@@ -127,6 +126,7 @@ fun EpisodeItemLarge(
         modifier = modifier
             .padding(horizontal = FluxUI.Space.medium)
             .clip(FluxUI.shapes.corners)
+            .let { if (episode.isAvailable) it else it.grayScale() }
             .background(bgColor)
             .combinedClickable(
                 onClick = { onTap(episode) },
@@ -232,6 +232,7 @@ fun EpisodeItemSmall(
         modifier = modifier
             .padding(horizontal = FluxUI.Space.medium)
             .clip(FluxUI.shapes.corners)
+            .let { if (episode.isAvailable) it else it.grayScale() }
             .background(bgColor)
             .combinedClickable(
                 onClick = { onTap(episode) },

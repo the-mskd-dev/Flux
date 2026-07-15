@@ -3,7 +3,6 @@ package com.mskd.flux.features.sources.data
 import android.content.Context
 import androidx.core.net.toUri
 import androidx.documentfile.provider.DocumentFile
-import com.mskd.flux.features.sources.domain.model.UserFolder
 import com.mskd.flux.features.sources.domain.validator.UserFolderValidator
 import com.mskd.flux.utils.Trace
 import kotlinx.coroutines.Dispatchers

@@ -325,25 +325,34 @@ fun EpisodeDropDownMenu(
     sendIntent: (ArtworkIntent) -> Unit
 ) {
 
-    val text = when (episode.status) {
-        Status.WATCHED -> stringResource(Res.string.rewatch)
-        Status.IS_WATCHING -> stringResource(Res.string.resume)
-        else -> stringResource(Res.string.play)
-    }
+    val items = buildList {
 
-    FluxDropDownMenu(
-        onDismissRequest = onDismissRequest,
-        items = listOf(
-            FluxDropDownMenuItem(
-                text = text,
-                onClick = {
-                    sendIntent(ArtworkIntent.PlayMedia(media = episode))
-                    onDismissRequest()
-                },
-                leadingIcon = {
-                    Icon(imageVector = if (episode.status == Status.WATCHED) Icons.Default.Refresh else Icons.Default.PlayArrow, contentDescription = null)
-                },
-            ),
+        if (episode.isAvailable) {
+
+            val text = when (episode.status) {
+                Status.WATCHED -> stringResource(Res.string.rewatch)
+                Status.IS_WATCHING -> stringResource(Res.string.resume)
+                else -> stringResource(Res.string.play)
+            }
+
+            // Play
+            add(
+                FluxDropDownMenuItem(
+                    text = text,
+                    onClick = {
+                        sendIntent(ArtworkIntent.PlayMedia(media = episode))
+                        onDismissRequest()
+                    },
+                    leadingIcon = {
+                        Icon(imageVector = if (episode.status == Status.WATCHED) Icons.Default.Refresh else Icons.Default.PlayArrow, contentDescription = null)
+                    },
+                )
+            )
+
+        }
+
+        // Status
+        add(
             FluxDropDownMenuItem(
                 text = if (episode.status == Status.WATCHED) stringResource(Res.string.mark_as_not_watched) else stringResource(Res.string.mark_as_watched),
                 onClick = {
@@ -356,7 +365,11 @@ fun EpisodeDropDownMenu(
                     else
                         Icon(imageVector = Icons.Default.Done, contentDescription = null)
                 },
-            ),
+            )
+        )
+
+        // More info
+        add(
             FluxDropDownMenuItem(
                 text = stringResource(Res.string.more_info),
                 onClick = {
@@ -368,6 +381,12 @@ fun EpisodeDropDownMenu(
                 },
             )
         )
+
+    }
+
+    FluxDropDownMenu(
+        onDismissRequest = onDismissRequest,
+        items = items
     )
 
 }

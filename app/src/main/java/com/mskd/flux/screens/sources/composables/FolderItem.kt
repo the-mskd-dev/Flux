@@ -130,11 +130,11 @@ fun UserFolderItem(
             FolderItem(
                 name = folder.name,
                 path = folder.cleanPath,
-                backgroundColor = if (folder.status == UserFolder.Status.MISSING) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primaryContainer.copy(alpha = .5f),
-                contentColor = if (folder.status == UserFolder.Status.MISSING) MaterialTheme.colorScheme.onError else MaterialTheme.colorScheme.onPrimaryContainer,
+                backgroundColor = if (!folder.isAvailable) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primaryContainer.copy(alpha = .5f),
+                contentColor = if (!folder.isAvailable) MaterialTheme.colorScheme.onError else MaterialTheme.colorScheme.onPrimaryContainer,
                 icon = {
 
-                    if (folder.status == UserFolder.Status.MISSING) {
+                    if (!folder.isAvailable) {
                         Icon(
                             tint = MaterialTheme.colorScheme.errorContainer,
                             painter = painterResource(Res.drawable.ic_error),

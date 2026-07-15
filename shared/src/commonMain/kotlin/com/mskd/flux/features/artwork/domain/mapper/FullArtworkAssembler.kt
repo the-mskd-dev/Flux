@@ -17,7 +17,7 @@ internal fun buildFullArtworkMovie(
 
     val isAvailable = when (movie.file.source) {
         FileSource.LOCAL -> true
-        FileSource.SAF -> sources.findForFile(file = movie.file)?.status == UserFolder.Status.AVAILABLE
+        FileSource.SAF -> sources.findForFile(file = movie.file)?.isAvailable ?: false
     }
 
     return FullArtwork.FullMovie(
@@ -42,7 +42,7 @@ internal fun buildFullArtworkShow(
             FileSource.SAF -> {
 
                 episode.copy(
-                    isAvailable = sources.findForFile(file = episode.file)?.status == UserFolder.Status.AVAILABLE
+                    isAvailable = sources.findForFile(file = episode.file)?.isAvailable ?: false
                 )
 
             }

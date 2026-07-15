@@ -3,11 +3,11 @@ package com.mskd.flux.features.sources.data.mapper
 import com.mskd.flux.features.sources.data.local.UserFolderEntity
 import com.mskd.flux.features.sources.domain.model.UserFolder
 
-fun UserFolderEntity.toDomain(status: UserFolder.Status = UserFolder.Status.AVAILABLE) : UserFolder {
+fun UserFolderEntity.toDomain(isAvailable: Boolean = true) : UserFolder {
     return UserFolder(
         path = this.path,
         source = this.source,
-        status = status
+        isAvailable = isAvailable
     )
 }
 

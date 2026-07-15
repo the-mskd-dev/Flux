@@ -63,8 +63,8 @@ class SourcesViewModelTest : FunSpec({
 
     test("uiState returns folders from flowSourcesUseCase") {
         val folders = listOf(
-            UserFolder(path = "path/1", status = UserFolder.Status.AVAILABLE),
-            UserFolder(path = "path/2", status = UserFolder.Status.AVAILABLE)
+            UserFolder(path = "path/1", isAvailable = true),
+            UserFolder(path = "path/2", isAvailable = true)
         )
         val viewModel = createViewModel(folders = folders)
 
@@ -110,7 +110,7 @@ class SourcesViewModelTest : FunSpec({
 
         coVerify {
             addSourceUseCase(
-                folder = UserFolder(path = "content://some/path", status = UserFolder.Status.AVAILABLE)
+                folder = UserFolder(path = "content://some/path", isAvailable = true)
             )
         }
     }
@@ -187,7 +187,7 @@ class SourcesViewModelTest : FunSpec({
     // region Dialog
 
     test("ShowDeleteDialog updates dialog with ConfirmDelete for the given folder") {
-        val folder = UserFolder(path = "path/x", status = UserFolder.Status.AVAILABLE)
+        val folder = UserFolder(path = "path/x", isAvailable = true)
         val viewModel = createViewModel()
 
         viewModel.uiState.test {
@@ -202,7 +202,7 @@ class SourcesViewModelTest : FunSpec({
     }
 
     test("CloseDialog resets dialog to null") {
-        val folder = UserFolder(path = "path/x", status = UserFolder.Status.AVAILABLE)
+        val folder = UserFolder(path = "path/x", isAvailable = true)
         val viewModel = createViewModel()
 
         viewModel.handleIntent(SourcesIntent.ShowDeleteDialog(folder = folder))
@@ -219,7 +219,7 @@ class SourcesViewModelTest : FunSpec({
     // region DeleteFolder
 
     test("DeleteFolder calls deleteSourceUseCase with the right folder then closes the dialog") {
-        val folder = UserFolder(path = "path/x", status = UserFolder.Status.AVAILABLE)
+        val folder = UserFolder(path = "path/x", isAvailable = true)
         val deleteSourceUseCase = mockk<DeleteSourceUseCase>(relaxed = true)
         val viewModel = createViewModel(deleteSourceUseCase = deleteSourceUseCase)
 

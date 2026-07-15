@@ -69,17 +69,17 @@ object FilesMockups {
         UserFolder(
             path = "path/to/folder",
             source = FileSource.LOCAL,
-            status = UserFolder.Status.AVAILABLE
+            isAvailable = true
         ),
         UserFolder(
             path = "path/to/folder2",
             source = FileSource.LOCAL,
-            status = UserFolder.Status.AVAILABLE
+            isAvailable = true
         ),
         UserFolder(
             path = "path/to/missingFolder",
             source = FileSource.LOCAL,
-            status = UserFolder.Status.MISSING
+            isAvailable = false
         )
     )
 

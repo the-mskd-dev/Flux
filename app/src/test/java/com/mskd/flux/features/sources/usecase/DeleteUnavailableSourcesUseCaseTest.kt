@@ -24,8 +24,8 @@ class DeleteUnavailableSourcesUseCaseTest : FunSpec({
             initFolders = listOf(local, safAvailable, safMissing)
         )
 
-        coEvery { validator.isFolderAvailable(safAvailable.path) } returns UserFolder.Status.AVAILABLE
-        coEvery { validator.isFolderAvailable(safMissing.path) } returns UserFolder.Status.MISSING
+        coEvery { validator.isFolderAvailable(safAvailable.path) } returns true
+        coEvery { validator.isFolderAvailable(safMissing.path) } returns false
 
         val useCase = DeleteUnavailableSourcesUseCase(
             sources = repository,

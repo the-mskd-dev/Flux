@@ -46,8 +46,8 @@ class SourcesRepositoryImplTest : FunSpec({
 
         every { dao.flowFolders() } returns flowOf(listOf(localEntity, safEntity, safMissingEntity))
 
-        coEvery { validator.isFolderAvailable(safEntity.path) } returns UserFolder.Status.AVAILABLE
-        coEvery { validator.isFolderAvailable(safMissingEntity.path) } returns UserFolder.Status.MISSING
+        coEvery { validator.isFolderAvailable(safEntity.path) } returns true
+        coEvery { validator.isFolderAvailable(safMissingEntity.path) } returns false
 
         repository.flowFolders().test {
             val result = awaitItem()
@@ -55,13 +55,13 @@ class SourcesRepositoryImplTest : FunSpec({
             result shouldHaveSize 3
 
             val localResult = result.first { it.path == localEntity.path }
-            localResult.status shouldBe UserFolder.Status.AVAILABLE
+            localResult.isAvailable shouldBe true
 
             val safResult = result.first { it.path == safEntity.path }
-            safResult.status shouldBe UserFolder.Status.AVAILABLE
+            safResult.isAvailable shouldBe true
 
             val safMissingResult = result.first { it.path == safMissingEntity.path }
-            safMissingResult.status shouldBe UserFolder.Status.MISSING
+            safMissingResult.isAvailable shouldBe false
 
             awaitComplete()
         }
@@ -75,7 +75,7 @@ class SourcesRepositoryImplTest : FunSpec({
         val domainFolder = UserFolder(
             path = "new/path",
             source = FileSource.LOCAL,
-            status = UserFolder.Status.AVAILABLE
+            isAvailable = true
         )
 
         // When
@@ -91,7 +91,7 @@ class SourcesRepositoryImplTest : FunSpec({
     }
 
     test("deleteFolder with deleteMedias true should delete folder from dao and delete medias from database") {
-        val folder = UserFolder(path = "path/to/delete", source = FileSource.LOCAL, status = UserFolder.Status.AVAILABLE)
+        val folder = UserFolder(path = "path/to/delete", source = FileSource.LOCAL, isAvailable = true)
 
         repository.deleteFolder(folder, deleteMedias = true)
 
@@ -100,7 +100,7 @@ class SourcesRepositoryImplTest : FunSpec({
     }
 
     test("deleteFolder with deleteMedias false should delete folder from dao but NOT delete medias from database") {
-        val folder = UserFolder(path = "path/to/delete", source = FileSource.LOCAL, status = UserFolder.Status.AVAILABLE)
+        val folder = UserFolder(path = "path/to/delete", source = FileSource.LOCAL, isAvailable = true)
 
         repository.deleteFolder(folder, deleteMedias = false)
 
@@ -109,8 +109,8 @@ class SourcesRepositoryImplTest : FunSpec({
     }
 
     test("deleteFolders with deleteMedias true should delete folders from dao and delete medias from database for all folders") {
-        val folder1 = UserFolder(path = "path/1", source = FileSource.LOCAL, status = UserFolder.Status.AVAILABLE)
-        val folder2 = UserFolder(path = "path/2", source = FileSource.LOCAL, status = UserFolder.Status.AVAILABLE)
+        val folder1 = UserFolder(path = "path/1", source = FileSource.LOCAL, isAvailable = true)
+        val folder2 = UserFolder(path = "path/2", source = FileSource.LOCAL, isAvailable = true)
 
         repository.deleteFolders(listOf(folder1, folder2), deleteMedias = true)
 
@@ -120,8 +120,8 @@ class SourcesRepositoryImplTest : FunSpec({
     }
 
     test("deleteFolders with deleteMedias false should delete folders from dao but NOT delete medias from database") {
-        val folder1 = UserFolder(path = "path/1", source = FileSource.LOCAL, status = UserFolder.Status.AVAILABLE)
-        val folder2 = UserFolder(path = "path/2", source = FileSource.LOCAL, status = UserFolder.Status.AVAILABLE)
+        val folder1 = UserFolder(path = "path/1", source = FileSource.LOCAL, isAvailable = true)
+        val folder2 = UserFolder(path = "path/2", source = FileSource.LOCAL, isAvailable = true)
 
         repository.deleteFolders(listOf(folder1, folder2), deleteMedias = false)
 

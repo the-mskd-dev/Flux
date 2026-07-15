@@ -12,7 +12,7 @@ class DeleteUnavailableSourcesUseCase(
 
     suspend operator fun invoke() {
         val unavailableSources = sources.getFolders().filter {
-            it.source != FileSource.LOCAL && checkFolderDataSource.isFolderAvailable(it.path) == UserFolder.Status.MISSING
+            it.source != FileSource.LOCAL && !checkFolderDataSource.isFolderAvailable(it.path)
         }
         sources.deleteFolders(folders = unavailableSources, deleteMedias = true)
     }

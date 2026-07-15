@@ -45,7 +45,7 @@ class SafFilesDataSource(
         val existingFiles = mutableListOf<UserFile>()
         val missingFiles = mutableListOf<UserFile>()
 
-        val availableFolders = sources.getFolders().filter { it.status == UserFolder.Status.AVAILABLE }
+        val availableFolders = sources.getFolders().filter { it.isAvailable }
 
         val (fromAvailableFolders, fromUnavailableFolders) = safFiles.partition { file ->
             availableFolders.any { file.path.startsWith(it.path) }

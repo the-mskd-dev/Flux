@@ -140,7 +140,7 @@ class SourcesViewModel(
 
         val folder = UserFolder(
             path = path,
-            status = UserFolder.Status.AVAILABLE
+            isAvailable = true
         )
 
         addSourceUseCase(folder = folder)

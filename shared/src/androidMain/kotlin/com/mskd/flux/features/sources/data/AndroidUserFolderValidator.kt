@@ -13,23 +13,20 @@ class AndroidUserFolderValidator(
     private val context: Context
 ) : UserFolderValidator {
 
-    override suspend fun isFolderAvailable(path: String): UserFolder.Status = withContext(Dispatchers.IO) {
+    override suspend fun isFolderAvailable(path: String): Boolean = withContext(Dispatchers.IO) {
         return@withContext try {
             val uri = path.toUri()
             val documentFile = DocumentFile.fromTreeUri(context, uri)
 
-            if (documentFile?.exists() == true && documentFile.canRead()) {
-                UserFolder.Status.AVAILABLE
-            } else {
-                UserFolder.Status.MISSING
-            }
+            documentFile?.exists() == true && documentFile.canRead()
+
         } catch (e: Exception) {
             Trace.error(
                 tag = "AndroidUserFolderValidator",
                 message = "Folder at path `$path` isn't available",
                 throwable = e
             )
-            UserFolder.Status.MISSING
+            false
         }
     }
 

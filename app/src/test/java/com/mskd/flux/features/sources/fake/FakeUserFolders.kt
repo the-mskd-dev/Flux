@@ -8,31 +8,31 @@ object FakeUserFolders {
     val folder1 = UserFolder(
         path = "path/to/folder",
         source = FileSource.SAF,
-        status = UserFolder.Status.AVAILABLE
+        isAvailable = true
     )
 
     val folder1sub1 = UserFolder(
         path = "path/to/folder/sub",
         source = FileSource.SAF,
-        status = UserFolder.Status.AVAILABLE
+        isAvailable = true
     )
 
     val folder1sub2 = UserFolder(
         path = "path/to/folder/sub",
         source = FileSource.SAF,
-        status = UserFolder.Status.AVAILABLE
+        isAvailable = true
     )
 
     val folder2 = UserFolder(
         path = "path/to/folder2",
         source = FileSource.SAF,
-        status = UserFolder.Status.AVAILABLE
+        isAvailable = true
     )
 
     val folderMissing = UserFolder(
         path = "path/to/missingFolder",
         source = FileSource.SAF,
-        status = UserFolder.Status.MISSING
+        isAvailable = false
     )
 
 }

@@ -50,9 +50,9 @@ class SourcesRepositoryImpl(
         val status = if (source != FileSource.LOCAL)
             userFolderValidator.isFolderAvailable(path)
         else
-            UserFolder.Status.AVAILABLE
+            true
 
-        return this.toDomain(status = status)
+        return this.toDomain(isAvailable = status)
     }
 
 }

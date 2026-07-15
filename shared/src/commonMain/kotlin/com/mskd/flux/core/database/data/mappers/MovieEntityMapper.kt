@@ -23,7 +23,8 @@ fun MovieEntity.toDomain() : Movie {
         voteAverage = this.voteAverage,
         voteCount = this.voteCount,
         file = file,
-        status = this.status
+        status = this.status,
+        isAvailable = true
     )
 }
 

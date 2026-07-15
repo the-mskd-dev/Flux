@@ -22,7 +22,8 @@ fun MovieDto.toDomain(
         currentTime = 0L,
         file = file,
         //genres = emptyList(),
-        status = Status.TO_WATCH
+        status = Status.TO_WATCH,
+        isAvailable = true
     )
 }
 

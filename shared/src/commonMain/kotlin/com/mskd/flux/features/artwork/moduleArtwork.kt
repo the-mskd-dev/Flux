@@ -10,7 +10,8 @@ val moduleArtwork = module {
 
     single<ObserveArtworkUseCase> {
         ObserveArtworkUseCaseImpl(
-            database = get()
+            database = get(),
+            sourcesUseCase = get()
         )
     }
 

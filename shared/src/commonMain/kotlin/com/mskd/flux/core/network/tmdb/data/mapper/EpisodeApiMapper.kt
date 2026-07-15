@@ -24,6 +24,7 @@ fun EpisodeDto.toDomain(
         voteAverage = this.voteAverage,
         voteCount = this.voteCount,
         status = Status.TO_WATCH,
-        file = file
+        file = file,
+        isAvailable = true
     )
 }

@@ -7,6 +7,7 @@ import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -33,6 +34,7 @@ import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.features.artwork.presentation.ArtworkIntent
 import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.ui.component.global.FixedChip
 import com.mskd.flux.ui.component.global.FluxDropDownMenu
 import com.mskd.flux.ui.component.global.FluxDropDownMenuItem
 import com.mskd.flux.ui.component.global.ReadMoreButton
@@ -40,6 +42,7 @@ import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.AppThemePreview
 import com.mskd.flux.utils.PortraitPreview
+import com.mskd.flux.utils.extensions.grayScale
 import com.mskd.flux.utils.extensions.minToMs
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_visibility
@@ -63,26 +66,39 @@ fun EpisodeItem(
     dropDownMenu: @Composable ((onDismissRequest: () -> Unit) -> Unit)? = null
 ) {
 
-    if (FluxUI.episodes.large) {
-        EpisodeItemLarge(
-            modifier = modifier,
-            episode = episode,
-            isSelected = isSelected,
-            isExpanded = isExpanded,
-            onTap = onTap,
-            onReadMoreTap = onReadMoreTap,
-            dropDownMenu = dropDownMenu
+    Box(
+        modifier = Modifier.let { if (episode.isAvailable) it else it.grayScale() },
+        contentAlignment = Alignment.Center
+    ) {
+
+        if (FluxUI.episodes.large) {
+            EpisodeItemLarge(
+                modifier = modifier,
+                episode = episode,
+                isSelected = isSelected,
+                isExpanded = isExpanded,
+                onTap = onTap,
+                onReadMoreTap = onReadMoreTap,
+                dropDownMenu = dropDownMenu
+            )
+        } else {
+            EpisodeItemSmall(
+                modifier = modifier,
+                episode = episode,
+                isSelected = isSelected,
+                isExpanded = isExpanded,
+                onTap = onTap,
+                onReadMoreTap = onReadMoreTap,
+                dropDownMenu = dropDownMenu
+            )
+        }
+
+        FixedChip(
+            text = "Contenu indisponible",
+            backgroundColor = MaterialTheme.colorScheme.errorContainer,
+            textColor = MaterialTheme.colorScheme.onErrorContainer,
         )
-    } else {
-        EpisodeItemSmall(
-            modifier = modifier,
-            episode = episode,
-            isSelected = isSelected,
-            isExpanded = isExpanded,
-            onTap = onTap,
-            onReadMoreTap = onReadMoreTap,
-            dropDownMenu = dropDownMenu
-        )
+
     }
 
 }

@@ -113,7 +113,7 @@ fun CatalogGenericItems(
                 CatalogGenericItem(
                     modifier = Modifier.size(48.dp),
                     itemWidth = itemWidth,
-                    onTap = {  },
+                    onTap = { sendIntent(CatalogIntent.OnSourcesTap) },
                     painter = painterResource(Res.drawable.ic_add_folder),
                     iconColor = MaterialTheme.colorScheme.onTertiaryContainer,
                     backgroundColor = MaterialTheme.colorScheme.tertiaryContainer,

@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -32,17 +33,23 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import com.mskd.flux.FluxApp
 import com.mskd.flux.R
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.ui.component.global.Text
+import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.itemWidthFor
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_add
+import flux.shared.generated.resources.ic_add_folder
 import flux.shared.generated.resources.ic_rewind
 import flux.shared.generated.resources.other_files
+import flux.shared.generated.resources.sources
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -89,6 +96,7 @@ fun CatalogGenericItems(
                 item {
 
                     CatalogGenericItem(
+                        modifier = Modifier.fillMaxSize(),
                         itemWidth = itemWidth,
                         onTap = { sendIntent(CatalogIntent.OnArtworkTap(artwork = Artwork.UNKNOWN)) },
                         painter = rememberVectorPainter(ImageVector.vectorResource(R.drawable.ic_launcher_foreground)),
@@ -103,12 +111,13 @@ fun CatalogGenericItems(
             item {
 
                 CatalogGenericItem(
+                    modifier = Modifier.size(48.dp),
                     itemWidth = itemWidth,
                     onTap = {  },
-                    painter = painterResource(Res.drawable.ic_add),
-                    iconColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                    backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
-                    contentDescription = stringResource(Res.string.other_files)
+                    painter = painterResource(Res.drawable.ic_add_folder),
+                    iconColor = MaterialTheme.colorScheme.onTertiaryContainer,
+                    backgroundColor = MaterialTheme.colorScheme.tertiaryContainer,
+                    contentDescription = stringResource(Res.string.sources)
                 )
 
             }
@@ -121,6 +130,7 @@ fun CatalogGenericItems(
 
 @Composable
 fun CatalogGenericItem(
+    modifier: Modifier,
     itemWidth: Dp,
     painter: Painter,
     iconColor: Color,
@@ -140,7 +150,7 @@ fun CatalogGenericItem(
     ) {
 
         Image(
-            modifier = Modifier.fillMaxSize(),
+            modifier = modifier,
             painter = painter,
             colorFilter = ColorFilter.tint(iconColor),
             contentDescription = contentDescription
@@ -148,4 +158,17 @@ fun CatalogGenericItem(
 
     }
 
+}
+
+@Preview
+@Composable
+fun CatalogGenericItems_Preview() {
+    FluxTheme {
+        Box(modifier = Modifier.fillMaxSize()) {
+            CatalogGenericItems(
+                showUnknown = true,
+                sendIntent = {}
+            )
+        }
+    }
 }

@@ -27,24 +27,26 @@ sealed class CatalogState {
 
 }
 
-sealed class CatalogIntent {
-    data class OnArtworkTap(val artwork: Artwork, val rgb: Int? = null): CatalogIntent()
-    data class OnCategoryTap(val category: ContentType): CatalogIntent()
-    data object SyncCatalog: CatalogIntent()
-    object OnSearchTap: CatalogIntent()
-    object OnSettingsTap: CatalogIntent()
-    object OnHowToTap: CatalogIntent()
-    object OnSnackbarActionTap: CatalogIntent()
-    object OnDismissSnackbar: CatalogIntent()
+sealed interface CatalogIntent {
+    data class OnArtworkTap(val artwork: Artwork, val rgb: Int? = null): CatalogIntent
+    data class OnCategoryTap(val category: ContentType): CatalogIntent
+    data object SyncCatalog: CatalogIntent
+    object OnSearchTap: CatalogIntent
+    object OnSettingsTap: CatalogIntent
+    object OnHowToTap: CatalogIntent
+    object OnSourcesTap: CatalogIntent
+    object OnSnackbarActionTap: CatalogIntent
+    object OnDismissSnackbar: CatalogIntent
 }
 
-sealed class CatalogEvent {
-    data class NavigateToMovie(val artworkId: Long, val rgb: Int?): CatalogEvent()
-    data class NavigateToShow(val artworkId: Long, val rgb: Int?): CatalogEvent()
-    data class NavigateToCategory(val category: ContentType): CatalogEvent()
-    object NavigateToUnknown: CatalogEvent()
-    object NavigateToSearch: CatalogEvent()
-    object NavigateToSettings: CatalogEvent()
-    object NavigateToToken: CatalogEvent()
-    object NavigateToHowTo: CatalogEvent()
+sealed interface CatalogEvent {
+    data class NavigateToMovie(val artworkId: Long, val rgb: Int?): CatalogEvent
+    data class NavigateToShow(val artworkId: Long, val rgb: Int?): CatalogEvent
+    data class NavigateToCategory(val category: ContentType): CatalogEvent
+    object NavigateToUnknown: CatalogEvent
+    object NavigateToSearch: CatalogEvent
+    object NavigateToSettings: CatalogEvent
+    object NavigateToToken: CatalogEvent
+    object NavigateToHowTo: CatalogEvent
+    object NavigateToSources: CatalogEvent
 }

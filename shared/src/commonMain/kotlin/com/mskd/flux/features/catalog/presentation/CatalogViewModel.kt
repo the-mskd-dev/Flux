@@ -99,6 +99,7 @@ class CatalogViewModel(
             CatalogIntent.OnSnackbarActionTap -> onSnackbarActionTap()
             CatalogIntent.OnSettingsTap -> _event.emit(CatalogEvent.NavigateToSettings)
             CatalogIntent.OnHowToTap -> _event.emit(CatalogEvent.NavigateToHowTo)
+            CatalogIntent.OnSourcesTap -> _event.emit(CatalogEvent.NavigateToSources)
             CatalogIntent.OnDismissSnackbar -> onDismissSnackbar()
         }
     }

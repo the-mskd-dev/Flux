@@ -82,7 +82,7 @@ class SourcesViewModel(
         // Show new feature dialog
         viewModelScope.launch {
 
-            if (userDataStore.getVersionCode() in 1..27 && userDataStore.sourcesRequested) {
+            if (userDataStore.getVersionCode() in 1..27) {
                 _dialogState.update { SourcesDialog.NewFeatureInformation }
             }
 
@@ -126,8 +126,6 @@ class SourcesViewModel(
     }
 
     private suspend fun onNextTap() {
-
-        userDataStore.sourcesAdded()
 
         if (tokenDataStore.tokenRequested) {
             _event.send(SourcesEvent.NavigateToToken)

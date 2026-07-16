@@ -9,8 +9,10 @@ import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.navigation.Route
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class MainViewModel(
     private val settingsDataStore: SettingsDataStore,
@@ -42,9 +44,16 @@ class MainViewModel(
     }
 
     fun getStartingScreen(permissionsGranted: Boolean) : Route {
+
+        // TODO: Delete in October 2026
+        val addSourcesNeeded = runBlocking {
+            val userState = userDataStore.flow.first()
+            userState.versionCode in 1..27
+        }
+
         return when {
             !permissionsGranted -> Route.Welcome
-            userDataStore.sourcesRequested -> Route.Sources(fromSetup = true)
+            addSourcesNeeded -> Route.Sources(fromSetup = true)
             tokenDataStore.tokenRequested -> Route.Token(fromSettings = false)
             else -> Route.Catalog
         }

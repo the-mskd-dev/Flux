@@ -14,9 +14,6 @@ interface UserDataStore {
     suspend fun setVersionCode(versionCode: Int)
     suspend fun setMessageAsWatched(messageId: Int)
     suspend fun enablePip(enable: Boolean)
-    suspend fun sourcesAdded()
-
-    val sourcesRequested: Boolean
 
     data class State(
         val recentlyWatchedIds: List<Long> = listOf(),
@@ -24,7 +21,6 @@ interface UserDataStore {
         val syncTime: Long = 0L,
         val versionCode: Int = 0,
         val pipIsEnabled: Boolean = true,
-        val addSourcesNeeded: Boolean = true
     )
 
 }

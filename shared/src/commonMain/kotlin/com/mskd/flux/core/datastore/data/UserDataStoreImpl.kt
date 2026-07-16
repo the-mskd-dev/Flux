@@ -29,7 +29,6 @@ class UserDataStoreImpl(
 
         val WATCHED_MESSAGES_IDS = stringPreferencesKey("watched_messages_ids")
         val PIP_IS_ENABLED = booleanPreferencesKey("pip_is_enabled")
-        val ADD_SOURCES_NEEDED = booleanPreferencesKey("add_sources_needed")
 
     }
 
@@ -44,7 +43,6 @@ class UserDataStoreImpl(
             val watchedMessagesIds = json.decodeFromString<List<Int>>(watchedMessagesIdsString)
             val versionCode = preferences[Keys.CURRENT_VERSION_CODE] ?: -1
             val pipIsEnabled = preferences[Keys.PIP_IS_ENABLED] ?: true
-            val addSourcesNeeded = preferences[Keys.ADD_SOURCES_NEEDED] ?: true
 
             UserDataStore.State(
                 recentlyWatchedIds = watchedIds,
@@ -52,7 +50,6 @@ class UserDataStoreImpl(
                 watchedMessagesIds = watchedMessagesIds,
                 versionCode = versionCode,
                 pipIsEnabled = pipIsEnabled,
-                addSourcesNeeded = addSourcesNeeded
             )
         }
 
@@ -110,16 +107,5 @@ class UserDataStoreImpl(
             preferences[Keys.PIP_IS_ENABLED] = enable
         }
     }
-
-    override suspend fun sourcesAdded() {
-        userDataStore.edit { preferences ->
-            preferences[Keys.ADD_SOURCES_NEEDED] = false
-        }
-    }
-
-    override val sourcesRequested: Boolean
-        get() = runBlocking {
-            userDataStore.data.map { it[Keys.ADD_SOURCES_NEEDED] }.first() ?: true
-        }
 
 }

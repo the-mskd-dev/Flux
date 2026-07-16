@@ -1,52 +1,30 @@
 package com.mskd.flux.screens.catalog
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Search
-import androidx.compose.material.icons.rounded.Settings
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Surface
-import androidx.compose.material3.carousel.HorizontalCenteredHeroCarousel
-import androidx.compose.material3.carousel.rememberCarouselState
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
@@ -56,23 +34,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.mskd.flux.R
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.features.catalog.presentation.CatalogEvent
@@ -81,29 +52,21 @@ import com.mskd.flux.features.catalog.presentation.CatalogState
 import com.mskd.flux.features.catalog.presentation.CatalogViewModel
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.navigation.Route
-import com.mskd.flux.screens.catalog.composable.CatalogGenericItems
-import com.mskd.flux.screens.howTo.HowToNameFiles
+import com.mskd.flux.screens.catalog.composable.*
 import com.mskd.flux.ui.component.LoadingScreen
-import com.mskd.flux.ui.component.global.FluxButton
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.component.media.MediaItem
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.AppThemePreview
 import com.mskd.flux.utils.FluxPreview
-import com.mskd.flux.utils.FluxSnackbar
 import com.mskd.flux.utils.itemWidthFor
 import com.mskd.flux.utils.rememberScreenDimensions
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.empty_catalog
 import flux.shared.generated.resources.empty_catalog_desc
-import flux.shared.generated.resources.ic_flux
 import flux.shared.generated.resources.movies
-import flux.shared.generated.resources.other_files
-import flux.shared.generated.resources.refresh
 import flux.shared.generated.resources.shows
 import flux.shared.generated.resources.sync_in_progress
-import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -264,7 +227,7 @@ fun CatalogContent(
                     }
 
                     item {
-                        MediaCategory(
+                        CatalogCategory(
                             name = stringResource(Res.string.shows),
                             category = ContentType.SHOW,
                             artworks = artworks.filter { it.type == ContentType.SHOW && !it.isUnknown },
@@ -273,7 +236,7 @@ fun CatalogContent(
                     }
 
                     item {
-                        MediaCategory(
+                        CatalogCategory(
                             name = stringResource(Res.string.movies),
                             category = ContentType.MOVIE,
                             artworks = artworks.filter { it.type == ContentType.MOVIE && !it.isUnknown },
@@ -306,254 +269,6 @@ fun CatalogContent(
     }
 
 
-}
-
-@Composable
-fun CatalogSnackbar(
-    snackbarState: FluxSnackbar?,
-    snackbarHostState: SnackbarHostState,
-    sendIntent: (CatalogIntent) -> Unit
-) {
-
-    val message = snackbarState?.message?.let { stringResource(it) }.orEmpty()
-    val actionLabel = snackbarState?.action?.let { stringResource(it) }.orEmpty()
-
-    LaunchedEffect(snackbarState) {
-        if (snackbarState != null) {
-            val result = snackbarHostState.showSnackbar(
-                message = message,
-                actionLabel = actionLabel,
-                withDismissAction = true,
-                duration = SnackbarDuration.Indefinite
-            )
-
-            when (result) {
-                SnackbarResult.ActionPerformed -> sendIntent(CatalogIntent.OnSnackbarActionTap)
-                SnackbarResult.Dismissed -> sendIntent(CatalogIntent.OnDismissSnackbar)
-            }
-        }
-    }
-
-}
-
-@Composable
-fun CatalogTopButtons(sendIntent: (CatalogIntent) -> Unit) {
-
-    Row(
-        modifier = Modifier
-            .padding(vertical = FluxUI.Space.small, horizontal = FluxUI.Space.small)
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-
-        IconButton(onClick = { sendIntent(CatalogIntent.OnSearchTap) }) {
-            Icon(
-                imageVector = Icons.Rounded.Search,
-                tint = MaterialTheme.colorScheme.onBackground,
-                contentDescription = "Search button"
-            )
-        }
-
-        Icon(
-            modifier = Modifier.size(32.dp),
-            painter = painterResource(Res.drawable.ic_flux),
-            tint = MaterialTheme.colorScheme.primary,
-            contentDescription = "Flux icon"
-        )
-
-
-        IconButton(onClick = { sendIntent(CatalogIntent.OnSettingsTap) }) {
-            Icon(
-                imageVector = Icons.Rounded.Settings,
-                tint = MaterialTheme.colorScheme.onBackground,
-                contentDescription = "Settings button"
-            )
-        }
-
-    }
-
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun LastWatchedCarousel(
-    artworks: List<Artwork>,
-    sendIntent: (CatalogIntent) -> Unit
-) {
-
-    if (artworks.isEmpty())
-        return
-
-    val ratio = 1920f/1080f
-
-
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-
-        if (artworks.size == 1) {
-
-            val overview = artworks.first()
-            val path = overview.bannerPath
-
-            MediaItem(
-                modifier = Modifier
-                    .widthIn(max = 350.dp)
-                    .fillMaxSize(),
-                path = path,
-                hd = true,
-                shape = MaterialTheme.shapes.extraLarge,
-                ratio = ratio,
-                onTap = { rgb -> sendIntent(CatalogIntent.OnArtworkTap(artwork = overview, rgb = rgb)) },
-                description = overview.title
-            )
-
-        } else {
-
-            val carouselState = rememberCarouselState { artworks.size }
-            val scope = rememberCoroutineScope()
-
-            HorizontalCenteredHeroCarousel(
-                modifier = Modifier.fillMaxWidth(),
-                maxItemWidth = 350.dp,
-                state = carouselState,
-                contentPadding = PaddingValues(horizontal = FluxUI.Space.medium)
-            ) { i ->
-
-                val overview = artworks[i]
-                val path = overview.bannerPath
-
-                Box(modifier = Modifier.maskClip(MaterialTheme.shapes.extraLarge)) {
-                    MediaItem(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .aspectRatio(ratio),
-                        path = path,
-                        hd = true,
-                        ratio = ratio,
-                        shape = MaterialTheme.shapes.extraLarge,
-                        onTap = { rgb ->
-
-                            if (carouselState.currentItem != i) {
-                                scope.launch { carouselState.animateScrollToItem(i) }
-                            } else {
-                                sendIntent(CatalogIntent.OnArtworkTap(artwork = overview, rgb = rgb))
-                            }
-
-                        },
-                        description = overview.title
-                    )
-                }
-
-
-            }
-
-            CarouselIndicator(
-                itemCount = artworks.size,
-                currentPage = carouselState.currentItem
-            )
-
-        }
-
-    }
-
-}
-
-@Composable
-fun CarouselIndicator(
-    itemCount: Int,
-    currentPage: Int,
-) {
-
-    val selectedColor = MaterialTheme.colorScheme.primary
-    val unselectedColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = .5f)
-
-    Row(
-        horizontalArrangement = Arrangement.Center,
-    ) {
-        repeat(itemCount) { index ->
-
-            val color by animateColorAsState(if (currentPage == index) selectedColor else unselectedColor)
-
-            Box(
-                modifier = Modifier
-                    .padding(4.dp)
-                    .size(8.dp)
-                    .clip(CircleShape)
-                    .background(color)
-            )
-        }
-    }
-
-}
-
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
-@Composable
-fun MediaCategory(
-    name: String? = null,
-    category: ContentType,
-    artworks: List<Artwork>,
-    sendIntent: (CatalogIntent) -> Unit
-) {
-
-    if (artworks.isEmpty())
-        return
-
-    val screenDimensions = rememberScreenDimensions()
-    val columns = if (screenDimensions.isLarge) 5 else FluxUI.itemsPerRow.artworks
-    var itemWidth by remember { mutableStateOf(FluxUI.Dimension.itemWidth) }
-    val density = LocalDensity.current
-
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .onSizeChanged { size ->
-                with(density) {
-                    itemWidth = itemWidthFor(
-                        screenWidthDp = size.width.toDp(),
-                        columns = columns
-                    )
-                }
-            },
-        verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
-    ) {
-
-        Text.Title.Large(
-            modifier = Modifier
-                .clickable { sendIntent(CatalogIntent.OnCategoryTap(category)) }
-                .fillMaxWidth()
-                .padding(start = FluxUI.Space.medium, top = FluxUI.Space.large),
-            text = name,
-            emphasized = true,
-            color = MaterialTheme.colorScheme.onBackground
-        )
-
-        LazyRow(
-            modifier = Modifier.fillMaxWidth(),
-            contentPadding = PaddingValues(horizontal = FluxUI.Space.medium),
-            horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
-        ) {
-
-            items(artworks, key = { it.id }) {
-
-                MediaItem(
-                    modifier = Modifier
-                        .width(itemWidth)
-                        .aspectRatio(FluxUI.Dimension.itemRatio),
-                    path = it.imagePath,
-                    hd = false,
-                    onTap = { rgb -> sendIntent(CatalogIntent.OnArtworkTap(artwork = it, rgb = rgb)) },
-                    description = it.title
-                )
-
-            }
-
-        }
-
-    }
 }
 
 @FluxPreview

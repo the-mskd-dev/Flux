@@ -43,6 +43,7 @@ import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.itemWidthFor
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_add_folder
+import flux.shared.generated.resources.ic_flux
 import flux.shared.generated.resources.other_files
 import flux.shared.generated.resources.sources
 import org.jetbrains.compose.resources.painterResource
@@ -91,10 +92,10 @@ fun CatalogGenericItems(
                 item {
 
                     CatalogGenericItem(
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier.size(48.dp),
                         itemWidth = itemWidth,
                         onTap = { sendIntent(CatalogIntent.OnArtworkTap(artwork = Artwork.UNKNOWN)) },
-                        painter = rememberVectorPainter(ImageVector.vectorResource(R.drawable.ic_launcher_foreground)),
+                        painter = painterResource(Res.drawable.ic_flux),
                         iconColor = MaterialTheme.colorScheme.onSecondaryContainer,
                         backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
                         contentDescription = stringResource(Res.string.other_files)

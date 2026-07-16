@@ -27,7 +27,7 @@ val moduleToken = module {
 
     viewModel { params ->
         TokenViewModel(
-            fromSettings = params.get(),
+            fromSetup = params.get(),
             tokenDataStore = get(),
             saveTokenAndSyncUseCase = get(),
             appInfo = get()

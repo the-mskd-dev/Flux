@@ -174,7 +174,7 @@ class MainActivity : ComponentActivity() {
                                     backStack.clear()
                                     backStack.add(route)
                                 },
-                                fromSettings = entry.fromSettings
+                                fromSetup = entry.fromSetup
                             )
                         }
                         entry<Route.Sources> { entry ->

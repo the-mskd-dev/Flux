@@ -77,7 +77,7 @@ fun WelcomeScreen(
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
             when (event) {
-                WelcomeEvent.NavigateToSources -> navigate(Route.Sources(fromSetup = true))
+                WelcomeEvent.NavigateToToken -> navigate(Route.Token(fromSetup = true))
                 WelcomeEvent.OpenPermissionDialog -> permissions.launchPermissionRequest()
                 is WelcomeEvent.ScrollToPage -> {
                     pagerState.animateScrollToPage(event.pageIndex)

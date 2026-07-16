@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class TokenViewModel(
-    fromSettings: Boolean,
+    fromSetup: Boolean,
     private val tokenDataStore: TokenDataStore,
     private val saveTokenAndSyncUseCase: SaveTokenAndSyncUseCase,
     private val appInfo: AppInfo
@@ -25,7 +25,7 @@ class TokenViewModel(
     private val _event = MutableSharedFlow<TokenEvent>()
     val event = _event.asSharedFlow()
 
-    private val _uiState = MutableStateFlow(TokenUiState(showBackButton = fromSettings))
+    private val _uiState = MutableStateFlow(TokenUiState(showBackButton = !fromSetup))
     val uiState: StateFlow<TokenUiState> = _uiState.asStateFlow()
 
     init {

@@ -20,7 +20,7 @@ sealed class Route : NavKey {
     data object Welcome: Route()
 
     @Serializable
-    data class Token(val fromSettings: Boolean = false): Route()
+    data class Token(val fromSetup: Boolean): Route()
 
     @Serializable
     data object Catalog: Route()

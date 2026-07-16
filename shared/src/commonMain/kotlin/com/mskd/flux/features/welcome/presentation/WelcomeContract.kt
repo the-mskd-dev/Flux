@@ -38,6 +38,6 @@ sealed class WelcomeIntent {
 
 sealed class WelcomeEvent {
     data class ScrollToPage(val pageIndex: Int): WelcomeEvent()
-    data object NavigateToSources: WelcomeEvent()
+    data object NavigateToToken: WelcomeEvent()
     data object OpenPermissionDialog: WelcomeEvent()
 }

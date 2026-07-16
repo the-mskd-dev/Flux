@@ -84,8 +84,8 @@ import org.koin.core.parameter.parametersOf
 fun TokenScreen(
     onBack: () -> Unit,
     navigate: (Route) -> Unit,
-    fromSettings: Boolean,
-    viewModel: TokenViewModel = koinViewModel(parameters = { parametersOf(fromSettings) })
+    fromSetup: Boolean,
+    viewModel: TokenViewModel = koinViewModel(parameters = { parametersOf(fromSetup) })
 ) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -100,7 +100,7 @@ fun TokenScreen(
     }
 
     BackHandler(true) {
-        if (fromSettings) onBack()
+        if (!fromSetup) onBack()
     }
 
     TokenScreenContent(

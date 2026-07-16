@@ -43,7 +43,6 @@ sealed interface SourcesEvent {
 
     // Navigation
     data object BackToPreviousScreen : SourcesEvent
-    data object NavigateToToken: SourcesEvent
     data object NavigateToCatalog: SourcesEvent
 
     // Add

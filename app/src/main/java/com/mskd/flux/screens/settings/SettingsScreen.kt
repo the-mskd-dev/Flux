@@ -73,7 +73,7 @@ fun SettingsScreen(
         viewModel.event.collect { event ->
             when (event) {
                 SettingsEvent.BackToPreviousScreen -> onBack()
-                SettingsEvent.NavigateToTokenScreen -> navigate(Token(fromSettings = true))
+                SettingsEvent.NavigateToTokenScreen -> navigate(Token(fromSetup = false))
                 SettingsEvent.NavigateToAboutScreen -> navigate(Route.About)
                 SettingsEvent.NavigateToHowToScreen -> navigate(Route.HowTo)
                 SettingsEvent.NavigateToCustomizationScreen -> navigate(Route.Customization)

@@ -36,7 +36,6 @@ val moduleSources = module {
     viewModel { params ->
         SourcesViewModel(
             fromSetup = params.get(),
-            tokenDataStore = get(),
             userDataStore = get(),
             flowSourcesUseCase = get(),
             addSourceUseCase = get(),

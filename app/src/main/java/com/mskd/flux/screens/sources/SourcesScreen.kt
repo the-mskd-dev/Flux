@@ -83,7 +83,6 @@ fun SourcesScreen(
                 SourcesEvent.BackToPreviousScreen -> onBack()
                 SourcesEvent.OpenFolderSelection -> pickFolder()
                 SourcesEvent.NavigateToCatalog -> navigate(Route.Catalog)
-                SourcesEvent.NavigateToToken -> navigate(Route.Token(fromSettings = false))
             }
         }
     }

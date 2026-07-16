@@ -84,7 +84,7 @@ fun CatalogScreen(
                 CatalogEvent.NavigateToHowTo -> navigate(Route.HowTo)
                 CatalogEvent.NavigateToSearch -> navigate(Route.Search())
                 CatalogEvent.NavigateToSettings -> navigate(Route.Settings)
-                CatalogEvent.NavigateToToken -> navigate(Route.Token(fromSettings = true))
+                CatalogEvent.NavigateToToken -> navigate(Route.Token(fromSetup = false))
                 CatalogEvent.NavigateToSources -> navigate(Route.Sources(fromSetup = false))
             }
         }

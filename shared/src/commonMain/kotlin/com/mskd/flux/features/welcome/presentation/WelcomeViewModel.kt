@@ -62,7 +62,7 @@ class WelcomeViewModel : ViewModel() {
     }
 
     private suspend fun onPermissionGranted() {
-        _event.emit(WelcomeEvent.NavigateToSources)
+        _event.emit(WelcomeEvent.NavigateToToken)
     }
 
 }

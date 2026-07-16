@@ -54,7 +54,7 @@ class MainViewModel(
         return when {
             !permissionsGranted -> Route.Welcome
             addSourcesNeeded -> Route.Sources(fromSetup = true)
-            tokenDataStore.tokenRequested -> Route.Token(fromSettings = false)
+            tokenDataStore.tokenRequested -> Route.Token(fromSetup = true)
             else -> Route.Catalog
         }
     }

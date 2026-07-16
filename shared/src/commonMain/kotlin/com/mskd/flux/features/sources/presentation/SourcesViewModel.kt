@@ -22,7 +22,6 @@ import kotlinx.coroutines.launch
 
 class SourcesViewModel(
     private val fromSetup: Boolean,
-    private val tokenDataStore: TokenDataStore,
     private val userDataStore: UserDataStore,
     flowSourcesUseCase: FlowSourcesUseCase,
     private val addSourceUseCase: AddSourceUseCase,
@@ -126,13 +125,7 @@ class SourcesViewModel(
     }
 
     private suspend fun onNextTap() {
-
-        if (tokenDataStore.tokenRequested) {
-            _event.send(SourcesEvent.NavigateToToken)
-        } else {
-            _event.send(SourcesEvent.NavigateToCatalog)
-        }
-
+        _event.send(SourcesEvent.NavigateToCatalog)
     }
 
     private suspend fun saveFolder(path: String) {

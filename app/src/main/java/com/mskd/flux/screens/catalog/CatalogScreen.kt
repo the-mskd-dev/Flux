@@ -81,6 +81,7 @@ import com.mskd.flux.features.catalog.presentation.CatalogState
 import com.mskd.flux.features.catalog.presentation.CatalogViewModel
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.navigation.Route
+import com.mskd.flux.screens.catalog.composable.CatalogGenericItems
 import com.mskd.flux.screens.howTo.HowToNameFiles
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.component.global.FluxButton
@@ -310,10 +311,11 @@ fun CatalogContent(
                         )
                     }
 
-                    if (artworks.any { it.isUnknown }) {
-                        item {
-                            UnknownCategory(sendIntent = sendIntent)
-                        }
+                    item {
+                        CatalogGenericItems(
+                            showUnknown = artworks.any { it.isUnknown },
+                            sendIntent = sendIntent
+                        )
                     }
 
                     item {
@@ -578,61 +580,6 @@ fun MediaCategory(
                 )
 
             }
-
-        }
-
-    }
-}
-
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
-@Composable
-fun UnknownCategory(sendIntent: (CatalogIntent) -> Unit) {
-
-    val density = LocalDensity.current
-    val columns = FluxUI.itemsPerRow.artworks
-    var itemWidth by remember { mutableStateOf(FluxUI.Dimension.itemWidth) }
-    val foregroundPainter = rememberVectorPainter(ImageVector.vectorResource(R.drawable.ic_launcher_foreground))
-
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .onSizeChanged { size ->
-                with(density) {
-                    itemWidth = itemWidthFor(
-                        screenWidthDp = size.width.toDp(),
-                        columns = columns
-                    )
-                }
-            },
-        verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
-    ) {
-
-        Text.Title.Large(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = FluxUI.Space.medium, top = FluxUI.Space.large),
-            text = stringResource(Res.string.other_files),
-            emphasized = true,
-            color = MaterialTheme.colorScheme.onBackground
-        )
-
-        Box(
-            modifier = Modifier
-                .padding(horizontal = FluxUI.Space.medium)
-                .clickable { sendIntent(CatalogIntent.OnArtworkTap(artwork = Artwork.UNKNOWN)) }
-                .clip(FluxUI.shapes.corners)
-                .width(itemWidth)
-                .aspectRatio(FluxUI.Dimension.itemRatio)
-                .background(color = MaterialTheme.colorScheme.secondaryContainer),
-            contentAlignment = Alignment.Center
-        ) {
-
-            Image(
-                modifier = Modifier.fillMaxSize(),
-                painter = foregroundPainter,
-                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSecondaryContainer),
-                contentDescription = stringResource(Res.string.other_files)
-            )
 
         }
 

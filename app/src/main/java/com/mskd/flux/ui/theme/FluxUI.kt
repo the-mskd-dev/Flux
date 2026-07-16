@@ -20,7 +20,7 @@ object FluxUI {
     val player: Player @Composable get() = LocalUiPlayer.current
 
     object Dimension {
-        val itemWidth = 140.dp
+        val itemWidth = 200.dp
         val itemRatio = 2f/3f
     }
 

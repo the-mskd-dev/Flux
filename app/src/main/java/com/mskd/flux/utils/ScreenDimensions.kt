@@ -7,6 +7,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.min
 import androidx.window.core.layout.WindowSizeClass
 import com.mskd.flux.ui.theme.FluxUI
 
@@ -20,7 +21,6 @@ data class ScreenDimensions(
 fun rememberScreenDimensions(): ScreenDimensions {
 
     val widthPx = LocalWindowInfo.current.containerSize.width
-    val widthDp2 = LocalConfiguration.current.screenWidthDp.dp
     val widthDp = with(LocalDensity.current) { widthPx.toDp() }
     val isLarge = currentWindowAdaptiveInfoV2().windowSizeClass
         .isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND)
@@ -37,5 +37,6 @@ fun itemWidthFor(
     horizontalPadding: Dp  = FluxUI.Space.medium,
     spaceBy: Dp = FluxUI.Space.small
 ) : Dp {
-    return (screenWidthDp - horizontalPadding.times(2) - spaceBy.times(columns - 1)) / columns
+    val itemWidth = (screenWidthDp - horizontalPadding.times(2) - spaceBy.times(columns - 1)) / columns
+    return min(itemWidth, FluxUI.Dimension.itemWidth)
 }

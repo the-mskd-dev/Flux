@@ -153,9 +153,9 @@ fun CatalogScreen(
         }
     ) { state ->
 
-        when (state) {
+        when {
 
-            is CatalogState.Loading -> {
+            state is CatalogState.Loading -> {
 
                 LoadingScreen(
                     text = stringResource(Res.string.sync_in_progress),
@@ -163,70 +163,17 @@ fun CatalogScreen(
                 )
             }
 
-            CatalogState.Error -> {
-                CatalogEmpty(sendIntent = viewModel::handleIntent)
-            }
+            state is CatalogState.Content -> {
 
-            is CatalogState.Content -> {
-
-                if (state.artworks.isEmpty()) {
-
-                    CatalogEmpty(sendIntent = viewModel::handleIntent)
-
-                } else {
-
-                    CatalogContent(
-                        artworks = state.artworks,
-                        lastWatchedIds = state.lastWatchedMediaIds,
-                        isRefreshing = state.isRefreshing,
-                        snackbarHostState = snackbarHostState,
-                        sendIntent = viewModel::handleIntent
-                    )
-
-                }
-
-            }
-
-        }
-
-    }
-
-}
-
-@Composable
-fun CatalogEmpty(sendIntent: (CatalogIntent) -> Unit) {
-
-    Surface(
-        color = MaterialTheme.colorScheme.background
-    ) {
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .statusBarsPadding()
-                .padding(all = FluxUI.Space.medium)
-                .navigationBarsPadding(),
-            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.large),
-            horizontalAlignment = Alignment.Start,
-        ) {
-
-            Text.Headline.Medium(text = stringResource(Res.string.empty_catalog))
-
-            Text.Body.Large(text = stringResource(Res.string.empty_catalog_desc))
-
-            HowToNameFiles()
-
-            Box(
-                modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.Center
-            ) {
-                FluxButton(
-                    text = stringResource(Res.string.refresh),
-                    onTap = { sendIntent(CatalogIntent.SyncCatalog) }
+                CatalogContent(
+                    artworks = state.artworks,
+                    lastWatchedIds = state.lastWatchedMediaIds,
+                    isRefreshing = state.isRefreshing,
+                    snackbarHostState = snackbarHostState,
+                    sendIntent = viewModel::handleIntent
                 )
-            }
 
+            }
 
         }
 
@@ -286,6 +233,28 @@ fun CatalogContent(
                         .graphicsLayer { translationY = offsetY },
                     verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
                 ) {
+
+                    if (artworks.none { !it.isUnknown }) {
+
+                        item {
+
+                            Text.Headline.Medium(
+                                modifier = Modifier.padding(horizontal = FluxUI.Space.medium),
+                                text = stringResource(Res.string.empty_catalog)
+                            )
+
+                        }
+
+                        item {
+
+                            Text.Body.Large(
+                                modifier = Modifier.padding(horizontal = FluxUI.Space.medium),
+                                text = stringResource(Res.string.empty_catalog_desc)
+                            )
+
+                        }
+
+                    }
 
                     item {
                         LastWatchedCarousel(
@@ -605,10 +574,16 @@ fun CatalogScreen_Preview() {
 
 @FluxPreview
 @Composable
-fun CatalogEmpty_Preview() {
+fun CatalogScreen_Empty_Preview() {
     AppThemePreview {
-        CatalogEmpty(
-            sendIntent = {}
-        )
+        Surface {
+            CatalogContent(
+                artworks = listOf(MediaMockups.unknownArtwork),
+                lastWatchedIds = emptyList(),
+                isRefreshing = false,
+                snackbarHostState = SnackbarHostState(),
+                sendIntent = {}
+            )
+        }
     }
 }

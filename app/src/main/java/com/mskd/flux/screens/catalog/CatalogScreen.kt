@@ -122,7 +122,7 @@ fun CatalogScreen(
             is CatalogState.Content -> {
 
                 CatalogContent(
-                    artworks = emptyList(),//state.artworks,
+                    artworks = state.artworks,
                     lastWatchedIds = state.lastWatchedMediaIds,
                     isRefreshing = state.isRefreshing,
                     snackbarHostState = snackbarHostState,

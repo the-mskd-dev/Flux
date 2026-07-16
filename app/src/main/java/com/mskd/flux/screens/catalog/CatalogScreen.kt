@@ -25,6 +25,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
@@ -64,6 +65,7 @@ import com.mskd.flux.utils.rememberScreenDimensions
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.empty_catalog
 import flux.shared.generated.resources.empty_catalog_desc
+import flux.shared.generated.resources.how_to_name_files
 import flux.shared.generated.resources.movies
 import flux.shared.generated.resources.shows
 import flux.shared.generated.resources.sync_in_progress
@@ -116,9 +118,8 @@ fun CatalogScreen(
         }
     ) { state ->
 
-        when {
-
-            state is CatalogState.Loading -> {
+        when (state) {
+            is CatalogState.Loading -> {
 
                 LoadingScreen(
                     text = stringResource(Res.string.sync_in_progress),
@@ -126,7 +127,7 @@ fun CatalogScreen(
                 )
             }
 
-            state is CatalogState.Content -> {
+            is CatalogState.Content -> {
 
                 CatalogContent(
                     artworks = state.artworks,
@@ -138,6 +139,7 @@ fun CatalogScreen(
 
             }
 
+            else -> {}
         }
 
     }
@@ -202,7 +204,9 @@ fun CatalogContent(
                         item {
 
                             Text.Headline.Medium(
-                                modifier = Modifier.padding(horizontal = FluxUI.Space.medium),
+                                modifier = Modifier
+                                    .padding(top = FluxUI.Space.medium)
+                                    .padding(horizontal = FluxUI.Space.medium),
                                 text = stringResource(Res.string.empty_catalog)
                             )
 
@@ -217,13 +221,29 @@ fun CatalogContent(
 
                         }
 
+                        item {
+
+                            Text.Label.Large(
+                                modifier = Modifier
+                                    .clickable {}
+                                    .padding(horizontal = FluxUI.Space.medium),
+                                text = stringResource(Res.string.how_to_name_files),
+                                color = MaterialTheme.colorScheme.primary
+                            )
+
+                        }
+
                     }
 
-                    item {
-                        LastWatchedCarousel(
-                            artworks = lastWatchedIds.mapNotNull { artworks.find { o -> o.id == it } },
-                            sendIntent = sendIntent
-                        )
+                    if (lastWatchedIds.isNotEmpty()) {
+
+                        item {
+                            LastWatchedCarousel(
+                                artworks = lastWatchedIds.mapNotNull { artworks.find { o -> o.id == it } },
+                                sendIntent = sendIntent
+                            )
+                        }
+
                     }
 
                     item {

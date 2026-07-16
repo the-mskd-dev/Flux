@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class WelcomeViewModel(private val tokenDataStore: TokenDataStore) : ViewModel() {
+class WelcomeViewModel : ViewModel() {
 
     private val _event = MutableSharedFlow<WelcomeEvent>()
     val event = _event.asSharedFlow()
@@ -63,13 +63,7 @@ class WelcomeViewModel(private val tokenDataStore: TokenDataStore) : ViewModel()
     }
 
     private suspend fun onPermissionGranted() {
-
-        if (tokenDataStore.tokenRequested) {
-            _event.emit(WelcomeEvent.NavigateToToken)
-        } else {
-            _event.emit(WelcomeEvent.NavigateToLibrary)
-        }
-
+        _event.emit(WelcomeEvent.NavigateToSources)
     }
 
 }

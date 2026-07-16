@@ -2,25 +2,18 @@ package com.mskd.flux.features.welcome.presentation
 
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
-import com.mskd.flux.features.token.domain.datastore.TokenDataStore
-import com.mskd.flux.features.welcome.fake.WelcomeTestCases
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.datatest.withData
 import io.kotest.matchers.shouldBe
-import io.mockk.every
-import io.mockk.mockk
 
 class WelcomeViewModelTest : FunSpec({
 
     fluxExtensions()
 
     lateinit var viewModel: WelcomeViewModel
-    lateinit var tokenDataStore: TokenDataStore
 
     beforeTest {
 
-        tokenDataStore = mockk(relaxed = true)
-        viewModel = WelcomeViewModel(tokenDataStore = tokenDataStore)
+        viewModel = WelcomeViewModel()
 
     }
 
@@ -122,7 +115,7 @@ class WelcomeViewModelTest : FunSpec({
         }
     }
 
-    test("on permission tap") {
+    test("on permission tap, should navigate open permission dialog") {
         viewModel.event.test {
 
             viewModel.handleIntent(WelcomeIntent.OnPermissionTap)
@@ -134,36 +127,15 @@ class WelcomeViewModelTest : FunSpec({
         }
     }
 
-    context("on permission granted") {
-        withData(
-            nameFn = { it.description },
-            WelcomeTestCases.OnPermissionGranted(
-                description = "has token",
-                tokenRequested = false,
-                expectedEvent = WelcomeEvent.NavigateToLibrary
-            ),
-            WelcomeTestCases.OnPermissionGranted(
-                description = "no token",
-                tokenRequested = true,
-                expectedEvent = WelcomeEvent.NavigateToToken
-            )
-        ) { testCase ->
+    test("on permission granted, should navigate to sources") {
 
-            tokenDataStore = mockk(relaxed = true) {
-                every { tokenRequested } returns testCase.tokenRequested
-            }
+        viewModel.event.test {
 
-            viewModel = WelcomeViewModel(tokenDataStore = tokenDataStore)
+            viewModel.handleIntent(WelcomeIntent.OnPermissionGranted)
 
-            viewModel.event.test {
+            val state = awaitItem()
 
-                viewModel.handleIntent(WelcomeIntent.OnPermissionGranted)
-
-                val state = awaitItem()
-
-                state shouldBe testCase.expectedEvent
-
-            }
+            state shouldBe WelcomeEvent.NavigateToSources
 
         }
     }

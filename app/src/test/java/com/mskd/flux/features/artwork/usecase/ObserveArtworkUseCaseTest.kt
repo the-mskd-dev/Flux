@@ -1,88 +1,298 @@
-package com.mskd.flux.features.artwork.usecase
+package com.mskd.flux.features.artwork.domain.usecase.observeArtwork
 
 import app.cash.turbine.test
-import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.core.database.domain.repository.DatabaseRepository
+import com.mskd.flux.core.model.artwork.Artwork
+import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.FullArtwork
+import com.mskd.flux.core.model.artwork.Movie
+import com.mskd.flux.core.model.artwork.Season
 import com.mskd.flux.core.model.core.State
-import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCaseImpl
+import com.mskd.flux.core.model.files.FileSource
+import com.mskd.flux.features.sources.domain.model.UserFolder
+import com.mskd.flux.features.sources.domain.usecase.FlowSourcesUseCase
 import com.mskd.flux.mockups.MediaMockups
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.test.runTest
 
 class ObserveArtworkUseCaseTest : FunSpec({
 
-    fluxExtensions()
-
     lateinit var database: DatabaseRepository
+    lateinit var sourcesUseCase: FlowSourcesUseCase
     lateinit var useCase: ObserveArtworkUseCaseImpl
 
+    lateinit var artworkFlow: MutableStateFlow<Artwork?>
+    lateinit var movieFlow: MutableStateFlow<Movie?>
+    lateinit var seasonsFlow: MutableStateFlow<List<Season>>
+    lateinit var episodesFlow: MutableStateFlow<List<Episode>>
+    lateinit var sourcesFlow: MutableStateFlow<List<UserFolder>>
+
     beforeTest {
+        artworkFlow = MutableStateFlow(null)
+        movieFlow = MutableStateFlow(null)
+        seasonsFlow = MutableStateFlow(emptyList())
+        episodesFlow = MutableStateFlow(emptyList())
+        sourcesFlow = MutableStateFlow(emptyList())
+
         database = mockk()
-        useCase = ObserveArtworkUseCaseImpl(database = database)
+        every { database.flowArtwork(any()) } returns artworkFlow
+        every { database.flowMovie(any()) } returns movieFlow
+        every { database.flowSeasons(any()) } returns seasonsFlow
+        every { database.flowEpisodes(any()) } returns episodesFlow
+
+        sourcesUseCase = mockk()
+        every { sourcesUseCase() } returns sourcesFlow
+
+        useCase = ObserveArtworkUseCaseImpl(database, sourcesUseCase)
     }
 
-    test("observe valid movie returns FullMovie content state") {
-        val movieArtwork = MediaMockups.movieArtwork
-        val movie = MediaMockups.movie
-
-        every { database.flowArtwork(movieArtwork.id) } returns flowOf(movieArtwork)
-        every { database.flowMovie(movieArtwork.id) } returns flowOf(movie)
-        every { database.flowSeasons(movieArtwork.id) } returns flowOf(emptyList())
-        every { database.flowEpisodes(movieArtwork.id) } returns flowOf(emptyList())
-
-        useCase.flow.test {
-            useCase(movieArtwork.id)
-
-            val state = awaitItem()
-            state.shouldBeInstanceOf<State.Content<FullArtwork>>()
-            val content = state.content
-            content.shouldBeInstanceOf<FullArtwork.FullMovie>()
-            content.artwork shouldBe movieArtwork
-            content.movie shouldBe movie
+    test("if no artwork, no flow") {
+        runTest {
+            useCase.flow.test {
+                expectNoEvents()
+            }
         }
     }
 
-    test("observe valid show returns FullShow content state") {
-        val showArtwork = MediaMockups.showArtwork
-        val seasons = MediaMockups.seasons
-        val episodes = MediaMockups.episodes
+    test("if artwork is missing -> State.Error") {
+        runTest {
+            useCase.invoke(MediaMockups.movie.artworkId)
 
-        every { database.flowArtwork(showArtwork.id) } returns flowOf(showArtwork)
-        every { database.flowMovie(showArtwork.id) } returns flowOf(null)
-        every { database.flowSeasons(showArtwork.id) } returns flowOf(seasons)
-        every { database.flowEpisodes(showArtwork.id) } returns flowOf(episodes)
-
-        useCase.flow.test {
-            useCase(showArtwork.id)
-
-            val state = awaitItem()
-            state.shouldBeInstanceOf<State.Content<FullArtwork>>()
-            val content = state.content
-            content.shouldBeInstanceOf<FullArtwork.FullShow>()
-            content.artwork shouldBe showArtwork
-            content.seasons shouldBe seasons.filter { it.season in 1..2 }
-            content.episodes shouldBe episodes
+            useCase.flow.test {
+                awaitItem().shouldBeInstanceOf<State.Error>()
+            }
         }
     }
 
-    test("observe invalid artwork returns Error state") {
-        val invalidId = -999L
+    test("if type MOVIE but movie is missing -> State.Error") {
+        runTest {
+            artworkFlow.value = MediaMockups.movieArtwork
+            useCase.invoke(MediaMockups.movieArtwork.id)
 
-        every { database.flowArtwork(invalidId) } returns flowOf(null)
-        every { database.flowMovie(invalidId) } returns flowOf(null)
-        every { database.flowSeasons(invalidId) } returns flowOf(emptyList())
-        every { database.flowEpisodes(invalidId) } returns flowOf(emptyList())
+            useCase.flow.test {
+                awaitItem().shouldBeInstanceOf<State.Error>()
+            }
+        }
+    }
 
-        useCase.flow.test {
-            useCase(invalidId)
+    test("if type MOVIE with movie available -> State.Content(FullMovie)") {
+        runTest {
+            artworkFlow.value = MediaMockups.movieArtwork
+            movieFlow.value = MediaMockups.movie
+            useCase.invoke(MediaMockups.movieArtwork.id)
 
-            val state = awaitItem()
-            state.shouldBeInstanceOf<State.Error>()
+            useCase.flow.test {
+                val content = awaitItem()
+                    .shouldBeInstanceOf<State.Content<FullArtwork>>()
+                    .content
+                val fullMovie = content.shouldBeInstanceOf<FullArtwork.FullMovie>()
+
+                fullMovie.resume shouldBe MediaMockups.movieArtwork
+                fullMovie.movie shouldBe MediaMockups.movie.copy(isAvailable = true)
+            }
+        }
+    }
+
+    test("if type SHOW -> State.Content(FullShow) with filtered seasons") {
+        runTest {
+            artworkFlow.value = MediaMockups.showArtwork
+            seasonsFlow.value = MediaMockups.seasons
+            episodesFlow.value = MediaMockups.episodes
+            useCase.invoke(MediaMockups.showArtwork.id)
+
+            useCase.flow.test {
+                val content = awaitItem()
+                    .shouldBeInstanceOf<State.Content<FullArtwork>>()
+                    .content
+                val fullShow = content.shouldBeInstanceOf<FullArtwork.FullShow>()
+
+                fullShow.resume shouldBe MediaMockups.showArtwork
+                // episodes = [S1E1, S1E2, S2E33] -> saisons attendues = season1, season2 (season3 exclue)
+                fullShow.seasons shouldBe listOf(MediaMockups.season1, MediaMockups.season2)
+                fullShow.episodes shouldBe MediaMockups.episodes
+            }
+        }
+    }
+
+    test("new artworkID -> cancel previous observation and then start a new one") {
+        runTest {
+            val movieArtworkFlow = MutableStateFlow<Artwork?>(MediaMockups.movieArtwork)
+            val movieMovieFlow = MutableStateFlow<Movie?>(MediaMockups.movie)
+            val showArtworkFlow = MutableStateFlow<Artwork?>(MediaMockups.showArtwork)
+
+            every { database.flowArtwork(MediaMockups.movieArtwork.id) } returns movieArtworkFlow
+            every { database.flowMovie(MediaMockups.movieArtwork.id) } returns movieMovieFlow
+            every { database.flowSeasons(MediaMockups.movieArtwork.id) } returns MutableStateFlow(emptyList())
+            every { database.flowEpisodes(MediaMockups.movieArtwork.id) } returns MutableStateFlow(emptyList())
+
+            every { database.flowArtwork(MediaMockups.showArtwork.id) } returns showArtworkFlow
+            every { database.flowMovie(MediaMockups.showArtwork.id) } returns MutableStateFlow(null)
+            every { database.flowSeasons(MediaMockups.showArtwork.id) } returns MutableStateFlow(MediaMockups.seasons)
+            every { database.flowEpisodes(MediaMockups.showArtwork.id) } returns MutableStateFlow(MediaMockups.episodes)
+
+            useCase.invoke(MediaMockups.movieArtwork.id)
+
+            useCase.flow.test {
+                val first = awaitItem().shouldBeInstanceOf<State.Content<FullArtwork>>()
+                first.content.shouldBeInstanceOf<FullArtwork.FullMovie>()
+
+                useCase.invoke(MediaMockups.showArtwork.id)
+
+                val second = awaitItem().shouldBeInstanceOf<State.Content<FullArtwork>>()
+                second.content.shouldBeInstanceOf<FullArtwork.FullShow>()
+            }
+        }
+    }
+
+    test("SAF file with folder available -> movie.isAvailable = true") {
+        runTest {
+            val safMovie = MediaMockups.movie.copy(
+                file = MediaMockups.movie.file.copy(
+                    path = "content://tree/primary/Movies/your_name.mkv",
+                    source = FileSource.SAF
+                )
+            )
+
+            artworkFlow.value = MediaMockups.movieArtwork
+            movieFlow.value = safMovie
+            sourcesFlow.value = listOf(
+                UserFolder(path = "content://tree/primary/Movies", isAvailable = true)
+            )
+            useCase.invoke(MediaMockups.movieArtwork.id)
+
+            useCase.flow.test {
+                val fullMovie = awaitItem()
+                    .shouldBeInstanceOf<State.Content<FullArtwork>>()
+                    .content
+                    .shouldBeInstanceOf<FullArtwork.FullMovie>()
+
+                fullMovie.movie.isAvailable shouldBe true
+            }
+        }
+    }
+
+    test("SAF file with folder unavailable -> movie.isAvailable = false") {
+        runTest {
+            val safMovie = MediaMockups.movie.copy(
+                file = MediaMockups.movie.file.copy(
+                    path = "content://tree/primary/Movies/your_name.mkv",
+                    source = FileSource.SAF
+                )
+            )
+
+            artworkFlow.value = MediaMockups.movieArtwork
+            movieFlow.value = safMovie
+            sourcesFlow.value = listOf(
+                UserFolder(path = "content://tree/primary/Movies", isAvailable = false)
+            )
+            useCase.invoke(MediaMockups.movieArtwork.id)
+
+            useCase.flow.test {
+                val fullMovie = awaitItem()
+                    .shouldBeInstanceOf<State.Content<FullArtwork>>()
+                    .content
+                    .shouldBeInstanceOf<FullArtwork.FullMovie>()
+
+                fullMovie.movie.isAvailable shouldBe false
+            }
+        }
+    }
+
+    test("SAF file without corresponding folder -> movie.isAvailable = false (default)") {
+        runTest {
+            val safMovie = MediaMockups.movie.copy(
+                file = MediaMockups.movie.file.copy(
+                    path = "content://tree/primary/Movies/your_name.mkv",
+                    source = FileSource.SAF
+                )
+            )
+
+            artworkFlow.value = MediaMockups.movieArtwork
+            movieFlow.value = safMovie
+            sourcesFlow.value = listOf(
+                UserFolder(path = "content://tree/primary/OtherFolder", isAvailable = true)
+            )
+            useCase.invoke(MediaMockups.movieArtwork.id)
+
+            useCase.flow.test {
+                val fullMovie = awaitItem()
+                    .shouldBeInstanceOf<State.Content<FullArtwork>>()
+                    .content
+                    .shouldBeInstanceOf<FullArtwork.FullMovie>()
+
+                fullMovie.movie.isAvailable shouldBe false
+            }
+        }
+    }
+
+    test("SAF files within a show with unavailable folder -> episodes.isAvailable = false") {
+        runTest {
+            val safEpisodes = MediaMockups.episodes.map { episode ->
+                episode.copy(
+                    file = episode.file.copy(
+                        path = "content://tree/primary/Naruto/${episode.file.name}",
+                        source = FileSource.SAF
+                    )
+                )
+            }
+
+            artworkFlow.value = MediaMockups.showArtwork
+            seasonsFlow.value = MediaMockups.seasons
+            episodesFlow.value = safEpisodes
+            sourcesFlow.value = listOf(
+                UserFolder(path = "content://tree/primary/Naruto", isAvailable = false)
+            )
+            useCase.invoke(MediaMockups.showArtwork.id)
+
+            useCase.flow.test {
+                val fullShow = awaitItem()
+                    .shouldBeInstanceOf<State.Content<FullArtwork>>()
+                    .content
+                    .shouldBeInstanceOf<FullArtwork.FullShow>()
+
+                fullShow.episodes.forEach { it.isAvailable shouldBe false }
+            }
+        }
+    }
+
+    test("SAF files: a change of isAvailable on the corresponding folder reemits (distinctUntilChanged true)") {
+        runTest {
+            val safMovie = MediaMockups.movie.copy(
+                file = MediaMockups.movie.file.copy(
+                    path = "content://tree/primary/Movies/your_name.mkv",
+                    source = FileSource.SAF
+                )
+            )
+
+            artworkFlow.value = MediaMockups.movieArtwork
+            movieFlow.value = safMovie
+            sourcesFlow.value = listOf(
+                UserFolder(path = "content://tree/primary/Movies", isAvailable = true)
+            )
+            useCase.invoke(MediaMockups.movieArtwork.id)
+
+            useCase.flow.test {
+                val first = awaitItem()
+                    .shouldBeInstanceOf<State.Content<FullArtwork>>()
+                    .content
+                    .shouldBeInstanceOf<FullArtwork.FullMovie>()
+                first.movie.isAvailable shouldBe true
+
+                sourcesFlow.value = listOf(
+                    UserFolder(path = "content://tree/primary/Movies", isAvailable = false)
+                )
+
+                val second = awaitItem()
+                    .shouldBeInstanceOf<State.Content<FullArtwork>>()
+                    .content
+                    .shouldBeInstanceOf<FullArtwork.FullMovie>()
+                second.movie.isAvailable shouldBe false
+            }
         }
     }
 

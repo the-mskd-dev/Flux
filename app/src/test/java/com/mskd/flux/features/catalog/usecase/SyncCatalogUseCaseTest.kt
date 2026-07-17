@@ -51,7 +51,6 @@ class SyncCatalogUseCaseImplTest : FunSpec({
         imagesPrefetchManager: ImagesPrefetchManager = mockk(relaxed = true),
         appInfo: AppInfo = mockk(relaxed = true),
         coordinator: FakeCatalogSyncCoordinator = FakeCatalogSyncCoordinator(scope = testScope),
-        deleteUnavailableSourcesUseCase: DeleteUnavailableSourcesUseCase = mockk(relaxed = true),
         getDeviceFilesUseCase: GetDeviceFilesUseCase = mockk<GetDeviceFilesUseCase>().also {
             coEvery { it() } returns emptyList()
         },
@@ -66,7 +65,6 @@ class SyncCatalogUseCaseImplTest : FunSpec({
         imagesPrefetchManager = imagesPrefetchManager,
         appInfo = appInfo,
         coordinator = coordinator,
-        deleteUnavailableSourcesUseCase = deleteUnavailableSourcesUseCase,
         getDeviceFilesUseCase = getDeviceFilesUseCase,
         filterExistingFilesUseCase = filterExistingFilesUseCase,
         artworkFolderFetcher = artworkFolderFetcher,
@@ -80,18 +78,14 @@ class SyncCatalogUseCaseImplTest : FunSpec({
             scope = testScope,
             initialState = SyncState.Syncing(full = true)
         )
-        val deleteUnavailableSourcesUseCase = mockk<DeleteUnavailableSourcesUseCase>(relaxed = true)
-
         val useCase = createUseCase(
             coordinator = coordinator,
-            deleteUnavailableSourcesUseCase = deleteUnavailableSourcesUseCase
         )
 
         useCase.invoke(onlyNew = true)
         testDispatcher.scheduler.advanceUntilIdle()
 
         coordinator.launchCallCount shouldBe 0
-        coVerify(exactly = 0) { deleteUnavailableSourcesUseCase() }
     }
 
     test("if full sync is running, re launch full sync if requested") {
@@ -134,17 +128,6 @@ class SyncCatalogUseCaseImplTest : FunSpec({
         testDispatcher.scheduler.advanceUntilIdle()
 
         coordinator.launchCallCount shouldBe 1
-    }
-
-    test("launch deleteUnavailableSourcesUseCase at the beginning") {
-        val deleteUnavailableSourcesUseCase = mockk<DeleteUnavailableSourcesUseCase>(relaxed = true)
-
-        val useCase = createUseCase(deleteUnavailableSourcesUseCase = deleteUnavailableSourcesUseCase)
-
-        useCase.invoke(onlyNew = false)
-        testDispatcher.scheduler.advanceUntilIdle()
-
-        coVerify { deleteUnavailableSourcesUseCase() }
     }
 
     test("if no new file, no sync, just a clean") {

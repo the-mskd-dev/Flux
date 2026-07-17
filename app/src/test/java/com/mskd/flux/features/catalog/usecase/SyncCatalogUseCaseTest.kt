@@ -173,7 +173,7 @@ class SyncCatalogUseCaseImplTest : FunSpec({
         useCase.invoke(onlyNew = true)
         testDispatcher.scheduler.advanceUntilIdle()
 
-        coVerify { database.deleteMediasNotInFiles(emptyList()) }
+        coVerify { database.deleteMediasNotInFiles(listOf(existingFile)) }
         coVerify(exactly = 0) { database.deleteAll() }
     }
 

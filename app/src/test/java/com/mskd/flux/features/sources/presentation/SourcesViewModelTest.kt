@@ -34,7 +34,6 @@ class SourcesViewModelTest : FunSpec({
 
     fun createViewModel(
         fromSetup: Boolean = false,
-        tokenRequested: Boolean = false,
         folders: List<UserFolder> = emptyList(),
         userDataStore: UserDataStore = mockk(relaxed = true),
         addSourceUseCase: AddSourceUseCase = mockk(relaxed = true),
@@ -42,15 +41,11 @@ class SourcesViewModelTest : FunSpec({
         syncCatalogUseCase: SyncCatalogUseCase = mockk(relaxed = true)
     ): SourcesViewModel {
 
-        val tokenDataStore = mockk<TokenDataStore>(relaxed = true)
-        every { tokenDataStore.tokenRequested } returns tokenRequested
-
         val flowSourcesUseCase = mockk<FlowSourcesUseCase>()
         every { flowSourcesUseCase() } returns flowOf(folders)
 
         return SourcesViewModel(
             fromSetup = fromSetup,
-            tokenDataStore = tokenDataStore,
             userDataStore = userDataStore,
             flowSourcesUseCase = flowSourcesUseCase,
             addSourceUseCase = addSourceUseCase,
@@ -152,28 +147,8 @@ class SourcesViewModelTest : FunSpec({
 
     // region OnNextTap
 
-    test("OnNextTap calls userDataStore.sourcesAdded()") {
-        val userDataStore = mockk<UserDataStore>(relaxed = true)
-        val viewModel = createViewModel(userDataStore = userDataStore)
-
-        viewModel.handleIntent(SourcesIntent.OnNextTap)
-        testDispatcher.scheduler.advanceUntilIdle()
-
-        coVerify { userDataStore.sourcesAdded() }
-    }
-
-    test("OnNextTap navigate to Token when tokenRequested is true") {
-        val viewModel = createViewModel(tokenRequested = true)
-
-        viewModel.event.test {
-            viewModel.handleIntent(SourcesIntent.OnNextTap)
-            testDispatcher.scheduler.advanceUntilIdle()
-            awaitItem() shouldBe SourcesEvent.NavigateToToken
-        }
-    }
-
-    test("OnNextTap navigue to Catalog when tokenRequested is false") {
-        val viewModel = createViewModel(tokenRequested = false)
+    test("OnNextTap navigate to Catalog") {
+        val viewModel = createViewModel()
 
         viewModel.event.test {
             viewModel.handleIntent(SourcesIntent.OnNextTap)

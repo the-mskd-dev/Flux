@@ -36,7 +36,7 @@ class TokenViewModelTest : FunSpec({
         appInfo = mockk(relaxed = true)
 
         viewModel = TokenViewModel(
-            fromSettings = true,
+            fromSetup = false,
             tokenDataStore = tokenDataStore,
             saveTokenAndSyncUseCase = saveTokenAndSyncUseCase,
             appInfo = appInfo
@@ -94,9 +94,9 @@ class TokenViewModelTest : FunSpec({
         }
     }
 
-    test("initial state when fromSettings is false") {
+    test("initial state when fromSetup is true") {
         val vm = TokenViewModel(
-            fromSettings = false,
+            fromSetup = true,
             tokenDataStore = tokenDataStore,
             saveTokenAndSyncUseCase = saveTokenAndSyncUseCase,
             appInfo = appInfo
@@ -107,9 +107,9 @@ class TokenViewModelTest : FunSpec({
         }
     }
 
-    test("save token when fromSettings is false success") {
+    test("save token when fromSetup is true success") {
         val vm = TokenViewModel(
-            fromSettings = false,
+            fromSetup = true,
             tokenDataStore = tokenDataStore,
             saveTokenAndSyncUseCase = saveTokenAndSyncUseCase,
             appInfo = appInfo
@@ -147,7 +147,7 @@ class TokenViewModelTest : FunSpec({
             coEvery { saveTokenAndSyncUseCase(any<String>()) } returns (testCase.apiResult as AuthenticateResult)
 
             viewModel = TokenViewModel(
-                fromSettings = true,
+                fromSetup = false,
                 tokenDataStore = tokenDataStore,
                 saveTokenAndSyncUseCase = saveTokenAndSyncUseCase,
                 appInfo = appInfo

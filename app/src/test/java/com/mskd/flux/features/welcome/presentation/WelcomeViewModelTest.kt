@@ -127,7 +127,7 @@ class WelcomeViewModelTest : FunSpec({
         }
     }
 
-    test("on permission granted, should navigate to sources") {
+    test("on permission granted, should navigate to token") {
 
         viewModel.event.test {
 
@@ -135,7 +135,7 @@ class WelcomeViewModelTest : FunSpec({
 
             val state = awaitItem()
 
-            state shouldBe WelcomeEvent.NavigateToSources
+            state shouldBe WelcomeEvent.NavigateToToken
 
         }
     }

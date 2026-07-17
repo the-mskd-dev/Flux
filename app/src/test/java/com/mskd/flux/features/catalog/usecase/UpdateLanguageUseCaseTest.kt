@@ -45,7 +45,8 @@ class UpdateLanguageUseCaseTest : FunSpec({
         voteAverage = 0f,
         voteCount = 0,
         duration = 120,
-        file = mockk()
+        file = mockk(),
+        isAvailable = true
     )
     val showArtwork = Artwork(
         id = 2L,
@@ -75,7 +76,8 @@ class UpdateLanguageUseCaseTest : FunSpec({
         duration = 20,
         voteAverage = 0f,
         voteCount = 0,
-        file = mockk()
+        file = mockk(),
+        isAvailable = true
     )
 
     beforeTest {

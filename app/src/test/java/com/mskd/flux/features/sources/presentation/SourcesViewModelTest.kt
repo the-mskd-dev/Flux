@@ -3,6 +3,7 @@ package com.mskd.flux.features.sources.presentation
 import app.cash.turbine.test
 import com.mskd.flux.core.datastore.domain.UserDataStore
 import com.mskd.flux.core.model.core.State
+import com.mskd.flux.core.model.files.FileSource
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.sources.domain.model.UserFolder
 import com.mskd.flux.features.sources.domain.usecase.AddSourceUseCase
@@ -105,7 +106,7 @@ class SourcesViewModelTest : FunSpec({
 
         coVerify {
             addSourceUseCase(
-                folder = UserFolder(path = "content://some/path", isAvailable = true)
+                folder = UserFolder(path = "content://some/path", isAvailable = true, source = FileSource.SAF)
             )
         }
     }
@@ -204,7 +205,7 @@ class SourcesViewModelTest : FunSpec({
         viewModel.handleIntent(SourcesIntent.DeleteFolder(folder = folder))
         testDispatcher.scheduler.advanceUntilIdle()
 
-        coVerify { deleteSourceUseCase(folder = folder, deleteMedias = false) }
+        coVerify { deleteSourceUseCase(folder = folder, deleteMedias = true) }
         viewModel.uiState.value.dialog shouldBe null
     }
 

@@ -3,6 +3,7 @@ package com.mskd.flux.data.repository
 import androidx.test.core.app.ApplicationProvider
 import com.mskd.flux.BuildConfig
 import com.mskd.flux.core.model.files.FileSource
+import com.mskd.flux.core.model.files.UserFile
 import com.mskd.flux.core.network.tmdb.data.datasource.TmdbDataSourceImpl
 import com.mskd.flux.core.network.tmdb.data.service.TMDBService
 import com.mskd.flux.core.network.tmdb.domain.model.TranslationRequest
@@ -38,14 +39,14 @@ class TmdbDataSourceImplTest : KoinTest {
 
         val dataLanguage: Locale = Locale.US
 
-        val movieFile = _root_ide_package_.com.mskd.flux.core.model.files.UserFile(
+        val movieFile = UserFile(
             name = "Spider-man Homecoming",
             addedDateTime = 0L,
             path = "",
             source = FileSource.LOCAL
         )
 
-        val episodeFile = _root_ide_package_.com.mskd.flux.core.model.files.UserFile(
+        val episodeFile = UserFile(
             name = "Naruto s01e01.mp4",
             addedDateTime = 0L,
             path = "",

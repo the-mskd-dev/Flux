@@ -60,6 +60,7 @@ class SyncCatalogUseCaseImpl(
             if (newFiles.isEmpty()) {
                 database.deleteMediasNotInFiles(existingFiles)
                 user.setSyncTime(System.currentTimeMillis())
+                user.setVersionCode(appInfo.versionCode)
                 return@launch
             }
 

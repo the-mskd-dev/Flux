@@ -1,19 +1,21 @@
-package com.mskd.flux.screens.catalog.composable
+package com.mskd.flux.ui.component.global
 
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.utils.FluxSnackbar
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun CatalogSnackbar(
+fun FluxSnackbar(
     snackbarState: FluxSnackbar?,
     snackbarHostState: SnackbarHostState,
-    sendIntent: (CatalogIntent) -> Unit
+    duration: SnackbarDuration = SnackbarDuration.Indefinite,
+    withDismissAction: Boolean = true,
+    onAction: () -> Unit = {},
+    onDismiss: () -> Unit = {},
 ) {
 
     val message = snackbarState?.message?.let { stringResource(it) }.orEmpty()
@@ -24,13 +26,13 @@ fun CatalogSnackbar(
             val result = snackbarHostState.showSnackbar(
                 message = message,
                 actionLabel = actionLabel,
-                withDismissAction = true,
-                duration = SnackbarDuration.Indefinite
+                withDismissAction = withDismissAction,
+                duration = duration
             )
 
             when (result) {
-                SnackbarResult.ActionPerformed -> sendIntent(CatalogIntent.OnSnackbarActionTap)
-                SnackbarResult.Dismissed -> sendIntent(CatalogIntent.OnDismissSnackbar)
+                SnackbarResult.ActionPerformed -> onAction()
+                SnackbarResult.Dismissed -> onDismiss()
             }
         }
     }

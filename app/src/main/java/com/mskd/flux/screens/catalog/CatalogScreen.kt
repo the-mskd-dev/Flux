@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
@@ -46,10 +47,10 @@ import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.screens.catalog.composable.CatalogCategory
 import com.mskd.flux.screens.catalog.composable.CatalogGenericItems
-import com.mskd.flux.screens.catalog.composable.CatalogSnackbar
 import com.mskd.flux.screens.catalog.composable.CatalogTopButtons
 import com.mskd.flux.screens.catalog.composable.LastWatchedCarousel
 import com.mskd.flux.ui.component.LoadingScreen
+import com.mskd.flux.ui.component.global.FluxSnackbar
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.AppThemePreview
@@ -90,10 +91,13 @@ fun CatalogScreen(
         }
     }
 
-    CatalogSnackbar(
+    FluxSnackbar(
         snackbarState = uiState.snackbarState,
         snackbarHostState = snackbarHostState,
-        sendIntent = viewModel::handleIntent
+        duration = SnackbarDuration.Indefinite,
+        withDismissAction = true,
+        onDismiss = { viewModel.handleIntent(CatalogIntent.OnDismissSnackbar) },
+        onAction = { viewModel.handleIntent(CatalogIntent.OnSnackbarActionTap) }
     )
 
     AnimatedContent(

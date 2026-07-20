@@ -10,8 +10,8 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.mskd.flux.screen.player.PlayerIntent
-import com.mskd.flux.screen.player.PlayerUiContent
+import com.mskd.flux.features.player.presentation.PlayerIntent
+import com.mskd.flux.features.player.presentation.PlayerUiContent
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable

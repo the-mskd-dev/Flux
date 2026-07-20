@@ -7,6 +7,7 @@ import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,10 +30,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import com.mskd.flux.core.model.artwork.Episode
+import com.mskd.flux.core.model.artwork.Status
+import com.mskd.flux.features.artwork.presentation.ArtworkIntent
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.model.Status
-import com.mskd.flux.model.artwork.Episode
-import com.mskd.flux.screen.artwork.ArtworkIntent
+import com.mskd.flux.ui.component.global.FixedChip
 import com.mskd.flux.ui.component.global.FluxDropDownMenu
 import com.mskd.flux.ui.component.global.FluxDropDownMenuItem
 import com.mskd.flux.ui.component.global.ReadMoreButton
@@ -40,8 +43,10 @@ import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.AppThemePreview
 import com.mskd.flux.utils.PortraitPreview
+import com.mskd.flux.utils.extensions.grayScale
 import com.mskd.flux.utils.extensions.minToMs
 import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.content_unavailable
 import flux.shared.generated.resources.ic_visibility
 import flux.shared.generated.resources.mark_as_not_watched
 import flux.shared.generated.resources.mark_as_watched
@@ -63,26 +68,40 @@ fun EpisodeItem(
     dropDownMenu: @Composable ((onDismissRequest: () -> Unit) -> Unit)? = null
 ) {
 
-    if (FluxUI.episodes.large) {
-        EpisodeItemLarge(
-            modifier = modifier,
-            episode = episode,
-            isSelected = isSelected,
-            isExpanded = isExpanded,
-            onTap = onTap,
-            onReadMoreTap = onReadMoreTap,
-            dropDownMenu = dropDownMenu
-        )
-    } else {
-        EpisodeItemSmall(
-            modifier = modifier,
-            episode = episode,
-            isSelected = isSelected,
-            isExpanded = isExpanded,
-            onTap = onTap,
-            onReadMoreTap = onReadMoreTap,
-            dropDownMenu = dropDownMenu
-        )
+    Box(
+        contentAlignment = Alignment.Center
+    ) {
+
+        if (FluxUI.episodes.large) {
+            EpisodeItemLarge(
+                modifier = modifier,
+                episode = episode,
+                isSelected = isSelected,
+                isExpanded = isExpanded,
+                onTap = onTap,
+                onReadMoreTap = onReadMoreTap,
+                dropDownMenu = dropDownMenu
+            )
+        } else {
+            EpisodeItemSmall(
+                modifier = modifier,
+                episode = episode,
+                isSelected = isSelected,
+                isExpanded = isExpanded,
+                onTap = onTap,
+                onReadMoreTap = onReadMoreTap,
+                dropDownMenu = dropDownMenu
+            )
+        }
+
+        if (!episode.isAvailable) {
+            FixedChip(
+                text = stringResource(Res.string.content_unavailable),
+                backgroundColor = MaterialTheme.colorScheme.errorContainer,
+                textColor = MaterialTheme.colorScheme.onErrorContainer,
+            )
+        }
+
     }
 
 }
@@ -107,6 +126,7 @@ fun EpisodeItemLarge(
         modifier = modifier
             .padding(horizontal = FluxUI.Space.medium)
             .clip(FluxUI.shapes.corners)
+            .let { if (episode.isAvailable) it else it.grayScale() }
             .background(bgColor)
             .combinedClickable(
                 onClick = { onTap(episode) },
@@ -212,6 +232,7 @@ fun EpisodeItemSmall(
         modifier = modifier
             .padding(horizontal = FluxUI.Space.medium)
             .clip(FluxUI.shapes.corners)
+            .let { if (episode.isAvailable) it else it.grayScale() }
             .background(bgColor)
             .combinedClickable(
                 onClick = { onTap(episode) },
@@ -308,25 +329,34 @@ fun EpisodeDropDownMenu(
     sendIntent: (ArtworkIntent) -> Unit
 ) {
 
-    val text = when (episode.status) {
-        Status.WATCHED -> stringResource(Res.string.rewatch)
-        Status.IS_WATCHING -> stringResource(Res.string.resume)
-        else -> stringResource(Res.string.play)
-    }
+    val items = buildList {
 
-    FluxDropDownMenu(
-        onDismissRequest = onDismissRequest,
-        items = listOf(
-            FluxDropDownMenuItem(
-                text = text,
-                onClick = {
-                    sendIntent(ArtworkIntent.PlayMedia(media = episode))
-                    onDismissRequest()
-                },
-                leadingIcon = {
-                    Icon(imageVector = if (episode.status == Status.WATCHED) Icons.Default.Refresh else Icons.Default.PlayArrow, contentDescription = null)
-                },
-            ),
+        if (episode.isAvailable) {
+
+            val text = when (episode.status) {
+                Status.WATCHED -> stringResource(Res.string.rewatch)
+                Status.IS_WATCHING -> stringResource(Res.string.resume)
+                else -> stringResource(Res.string.play)
+            }
+
+            // Play
+            add(
+                FluxDropDownMenuItem(
+                    text = text,
+                    onClick = {
+                        sendIntent(ArtworkIntent.PlayMedia(media = episode))
+                        onDismissRequest()
+                    },
+                    leadingIcon = {
+                        Icon(imageVector = if (episode.status == Status.WATCHED) Icons.Default.Refresh else Icons.Default.PlayArrow, contentDescription = null)
+                    },
+                )
+            )
+
+        }
+
+        // Status
+        add(
             FluxDropDownMenuItem(
                 text = if (episode.status == Status.WATCHED) stringResource(Res.string.mark_as_not_watched) else stringResource(Res.string.mark_as_watched),
                 onClick = {
@@ -339,7 +369,11 @@ fun EpisodeDropDownMenu(
                     else
                         Icon(imageVector = Icons.Default.Done, contentDescription = null)
                 },
-            ),
+            )
+        )
+
+        // More info
+        add(
             FluxDropDownMenuItem(
                 text = stringResource(Res.string.more_info),
                 onClick = {
@@ -351,6 +385,12 @@ fun EpisodeDropDownMenu(
                 },
             )
         )
+
+    }
+
+    FluxDropDownMenu(
+        onDismissRequest = onDismissRequest,
+        items = items
     )
 
 }
@@ -360,7 +400,9 @@ fun EpisodeDropDownMenu(
 fun EpisodeItem_Preview() {
     AppThemePreview {
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(vertical = 20.dp),
             verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
         ) {
             EpisodeItemLarge(
@@ -386,7 +428,9 @@ fun EpisodeItem_Preview() {
 fun EpisodeItemWatching_Preview() {
     AppThemePreview {
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(vertical = 20.dp),
             verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
         ) {
             EpisodeItemLarge(
@@ -418,7 +462,9 @@ fun EpisodeItemWatching_Preview() {
 fun EpisodeItemWatched_Preview() {
     AppThemePreview {
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(vertical = 20.dp),
             verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
         ) {
             EpisodeItemLarge(

@@ -25,12 +25,12 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.mskd.flux.features.settings.presentation.SettingsEvent
+import com.mskd.flux.features.settings.presentation.SettingsIntent
+import com.mskd.flux.features.settings.presentation.SettingsUiState
+import com.mskd.flux.features.settings.presentation.SettingsViewModel
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Route.Token
-import com.mskd.flux.screen.settings.SettingsEvent
-import com.mskd.flux.screen.settings.SettingsIntent
-import com.mskd.flux.screen.settings.SettingsUiState
-import com.mskd.flux.screen.settings.SettingsViewModel
 import com.mskd.flux.screens.settings.composables.SettingsAppInfoSection
 import com.mskd.flux.screens.settings.composables.SettingsCustomizationSection
 import com.mskd.flux.screens.settings.composables.SettingsOtherSection
@@ -73,10 +73,11 @@ fun SettingsScreen(
         viewModel.event.collect { event ->
             when (event) {
                 SettingsEvent.BackToPreviousScreen -> onBack()
-                SettingsEvent.NavigateToTokenScreen -> navigate(Token(fromSettings = true))
+                SettingsEvent.NavigateToTokenScreen -> navigate(Token(fromSetup = false))
                 SettingsEvent.NavigateToAboutScreen -> navigate(Route.About)
                 SettingsEvent.NavigateToHowToScreen -> navigate(Route.HowTo)
                 SettingsEvent.NavigateToCustomizationScreen -> navigate(Route.Customization)
+                SettingsEvent.NavigateToSourcesScreen -> navigate(Route.Sources())
                 SettingsEvent.RequestExternalPlayerPermission -> notificationsPermission?.launchPermissionRequest()
             }
         }

@@ -11,7 +11,7 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.ui.unit.IntOffset
 import androidx.navigation3.runtime.NavKey
-import com.mskd.flux.model.artwork.ContentType
+import com.mskd.flux.core.model.artwork.ContentType
 import kotlinx.serialization.Serializable
 
 sealed class Route : NavKey {
@@ -20,10 +20,10 @@ sealed class Route : NavKey {
     data object Welcome: Route()
 
     @Serializable
-    data class Token(val fromSettings: Boolean = false): Route()
+    data class Token(val fromSetup: Boolean): Route()
 
     @Serializable
-    data object Library: Route()
+    data object Catalog: Route()
 
     @Serializable
     data class Show(val artworkId: Long, val rgb: Int?): Route()
@@ -52,6 +52,8 @@ sealed class Route : NavKey {
     @Serializable
     data object Customization: Route()
 
+    @Serializable
+    data class Sources(val fromSetup: Boolean = false): Route()
 }
 
 object Transition {

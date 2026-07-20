@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.Context
 import coil3.ImageLoader
 import coil3.SingletonImageLoader
-import com.mskd.flux.di.Properties
 import com.mskd.flux.di.moduleAndroidApp
 import com.mskd.flux.di.modulePlatform
 import com.mskd.flux.utils.Constants
@@ -27,29 +26,6 @@ class FluxApp : Application(), SingletonImageLoader.Factory {
     override fun onCreate() {
         super.onCreate()
 
-        if (BuildConfig.DEBUG) {
-            Napier.base(DebugAntilog())
-        }
-
-        startKoin {
-            androidContext(this@FluxApp)
-
-            properties(
-                mapOf(
-                    Properties.IS_DEBUG to BuildConfig.DEBUG,
-                    Properties.VERSION_NAME to BuildConfig.VERSION_NAME,
-                    Properties.VERSION_CODE to BuildConfig.VERSION_CODE,
-                    Properties.DEBUG_TOKEN to BuildConfig.TMDB_TOKEN,
-                )
-            )
-
-            modules(
-                modulePlatform,
-                moduleAndroidApp
-            )
-
-        }
-
         initAcra {
             buildConfigClass = BuildConfig::class.java
             reportFormat = StringFormat.KEY_VALUE_LIST
@@ -62,6 +38,20 @@ class FluxApp : Application(), SingletonImageLoader.Factory {
             dialog {
                 reportDialogClass = CrashDialogActivity::class.java
             }
+
+        }
+
+        if (BuildConfig.DEBUG) {
+            Napier.base(DebugAntilog())
+        }
+
+        startKoin {
+            androidContext(this@FluxApp)
+
+            modules(
+                modulePlatform,
+                moduleAndroidApp
+            )
 
         }
 

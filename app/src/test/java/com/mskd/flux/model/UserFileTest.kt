@@ -2,8 +2,12 @@ package com.mskd.flux.model
 
 import android.net.Uri
 import androidx.core.net.toUri
+import com.mskd.flux.core.model.artwork.ContentType
+import com.mskd.flux.core.model.catalog.CatalogFolder
+import com.mskd.flux.core.model.files.FileProperties
+import com.mskd.flux.core.model.files.FileSource
+import com.mskd.flux.core.model.files.UserFile
 import com.mskd.flux.mockups.FilesMockups
-import com.mskd.flux.model.artwork.ContentType
 import com.mskd.flux.utils.extensions.groupInFolders
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData
@@ -13,6 +17,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
 import io.mockk.unmockkStatic
+import kotlin.time.Instant
 
 class UserFileTest : FunSpec ({
 
@@ -169,7 +174,7 @@ class UserFileTest : FunSpec ({
 
     test("group files in folders") {
 
-        val files = FilesMockups.localFiles
+        val files = FilesMockups.mediaStoreFiles + FilesMockups.safFiles
 
         val folders = files.groupInFolders()
         val narutoFolder = folders.find { it.title == "naruto" }
@@ -197,13 +202,13 @@ class UserFileTest : FunSpec ({
         userFile.isEpisode shouldBe true
         userFile.season shouldBe 1
         userFile.episode shouldBe 1
-        userFile.addedDate shouldBe java.util.Date(1621814400000L)
+        userFile.addedDate shouldBe Instant.fromEpochMilliseconds(1621814400000L)
         userFile.path.toUri() shouldBe mockUri
 
         unmockkStatic(Uri::class)
     }
 
-    test("UserFolder type resolver") {
+    test("CatalogFolder type resolver") {
         mockkStatic(Uri::class)
         every { Uri.parse(any()) } returns mockk(relaxed = true)
 
@@ -213,15 +218,15 @@ class UserFileTest : FunSpec ({
         val movieFile2 = UserFile("Spider-man.mp4", 0L, "path", FileSource.LOCAL)
 
         // Show folder
-        val showFolder = UserFolder(title = "naruto", files = listOf(episodeFile1, episodeFile2))
+        val showFolder = CatalogFolder(title = "naruto", files = listOf(episodeFile1, episodeFile2))
         showFolder.type shouldBe ContentType.SHOW
 
         // Movie folder
-        val movieFolder = UserFolder(title = "inception", files = listOf(movieFile1))
+        val movieFolder = CatalogFolder(title = "inception", files = listOf(movieFile1))
         movieFolder.type shouldBe ContentType.MOVIE
 
         // Mixed/multiple movies folder -> should be null type
-        val mixedFolder = UserFolder(title = "mixed", files = listOf(movieFile1, movieFile2))
+        val mixedFolder = CatalogFolder(title = "mixed", files = listOf(movieFile1, movieFile2))
         mixedFolder.type shouldBe null
 
         unmockkStatic(Uri::class)

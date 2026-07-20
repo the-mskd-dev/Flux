@@ -15,7 +15,7 @@ import coil3.compose.AsyncImagePreviewHandler
 import coil3.compose.LocalAsyncImagePreviewHandler
 import coil3.imageLoader
 import coil3.request.ImageRequest
-import com.mskd.flux.data.repository.customization.CustomizationRepository
+import com.mskd.flux.features.customization.domain.datastore.CustomizationDataStore
 import com.mskd.flux.ui.theme.FluxTheme
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_help
@@ -85,7 +85,7 @@ annotation class LandscapePreview
 @OptIn(ExperimentalCoilApi::class)
 @Composable
 fun AppThemePreview(
-    customization: CustomizationRepository.State = CustomizationRepository.State(),
+    customization: CustomizationDataStore.State = CustomizationDataStore.State(),
     content: @Composable () -> Unit
 ) {
 

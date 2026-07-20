@@ -1,8 +1,8 @@
 package com.mskd.flux.screens.player.composables.settings
 
 import androidx.compose.runtime.Composable
-import com.mskd.flux.screen.player.PlayerIntent
-import com.mskd.flux.screen.player.PlayerUiContent
+import com.mskd.flux.features.player.presentation.PlayerIntent
+import com.mskd.flux.features.player.presentation.PlayerUiContent
 
 @Composable
 fun PlayerSettings(

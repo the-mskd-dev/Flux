@@ -2,11 +2,12 @@ package com.mskd.flux.data.tmdb
 
 import androidx.test.core.app.ApplicationProvider
 import com.mskd.flux.BuildConfig
-import com.mskd.flux.di.dataStoreModule
-import com.mskd.flux.di.ktorModule
-import com.mskd.flux.model.FileSource
-import com.mskd.flux.model.UserFile
-import com.mskd.flux.shared.data.tmdb.token.TokenRepository
+import com.mskd.flux.core.model.files.FileSource
+import com.mskd.flux.core.model.files.UserFile
+import com.mskd.flux.core.network.tmdb.data.service.TMDBService
+import com.mskd.flux.di.moduleAndroidApp
+import com.mskd.flux.di.modulePlatform
+import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.utils.extensions.toTmdbFormat
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
@@ -56,17 +57,15 @@ class TMDBServiceTest : KoinTest {
         startKoin {
             androidContext(ApplicationProvider.getApplicationContext())
             modules(
-                ktorModule,
-                dataStoreModule
+                modulePlatform,
+                moduleAndroidApp
             )
         }
 
-        val tokenRepository: TokenRepository = get()
+        val tokenDataStore: TokenDataStore = get()
         runBlocking {
-            tokenRepository.saveToken(BuildConfig.TMDB_TOKEN)
+            tokenDataStore.saveToken(BuildConfig.TMDB_TOKEN)
         }
-
-        val apiKey = BuildConfig.TMDB_TOKEN
 
     }
 

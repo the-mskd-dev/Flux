@@ -14,10 +14,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.mskd.flux.screen.settings.SettingsIntent
-import com.mskd.flux.screen.settings.SettingsUiState
+import com.mskd.flux.features.images.domain.ImagesPrefetchManager
+import com.mskd.flux.features.settings.presentation.SettingsIntent
+import com.mskd.flux.features.settings.presentation.SettingsUiState
 import com.mskd.flux.ui.theme.FluxUI
-import com.mskd.flux.useCases.images.ImagesUC
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.extensions.WebLink
 import flux.shared.generated.resources.Res
@@ -39,6 +39,7 @@ import flux.shared.generated.resources.fast_rewind
 import flux.shared.generated.resources.how_to_name_files
 import flux.shared.generated.resources.ic_api
 import flux.shared.generated.resources.ic_customization
+import flux.shared.generated.resources.ic_folder
 import flux.shared.generated.resources.ic_help
 import flux.shared.generated.resources.ic_images
 import flux.shared.generated.resources.ic_info
@@ -55,7 +56,9 @@ import flux.shared.generated.resources.images_cached
 import flux.shared.generated.resources.information_language
 import flux.shared.generated.resources.make_a_donation
 import flux.shared.generated.resources.picture_in_picture
+import flux.shared.generated.resources.source_code
 import flux.shared.generated.resources.sources
+import flux.shared.generated.resources.sources_short_desc
 import flux.shared.generated.resources.stay_informed
 import flux.shared.generated.resources.support_me_desc
 import flux.shared.generated.resources.sync_in_progress
@@ -274,11 +277,11 @@ fun SettingsSyncSection(
             onTap = { sendIntent(SettingsIntent.ShowFullSyncDialog(true)) }
         )
 
-        val imagesTextColor by animateColorAsState(if (state.prefetchImagesState is ImagesUC.State.InProgress) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onBackground.copy(alpha = .8f))
+        val imagesTextColor by animateColorAsState(if (state.prefetchImagesState is ImagesPrefetchManager.State.InProgress) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onBackground.copy(alpha = .8f))
         val imagesText = when {
-            state.prefetchHdImages && state.prefetchImagesState is ImagesUC.State.Idle -> stringResource(Res.string.images_cached)
-            state.prefetchHdImages && state.prefetchImagesState is ImagesUC.State.InProgress -> {
-                val progressState = state.prefetchImagesState as ImagesUC.State.InProgress
+            state.prefetchHdImages && state.prefetchImagesState is ImagesPrefetchManager.State.Idle -> stringResource(Res.string.images_cached)
+            state.prefetchHdImages && state.prefetchImagesState is ImagesPrefetchManager.State.InProgress -> {
+                val progressState = state.prefetchImagesState as ImagesPrefetchManager.State.InProgress
                 stringResource(Res.string.caching_images_in_progress, progressState.progress.times(100).roundToInt())
             }
             else -> stringResource(Res.string.cache_images_desc)
@@ -292,6 +295,15 @@ fun SettingsSyncSection(
             iconColor = iconColor,
             iconBackgroundColor = bgColor,
             subTextColor = imagesTextColor
+        )
+
+        SettingsItem(
+            text = stringResource(Res.string.sources),
+            subText = stringResource(Res.string.sources_short_desc),
+            painter = painterResource(Res.drawable.ic_folder),
+            iconColor = iconColor,
+            iconBackgroundColor = bgColor,
+            onTap = { sendIntent(SettingsIntent.OnSourcesTap) }
         )
 
     }
@@ -324,7 +336,7 @@ fun SettingsAppInfoSection(
         )
 
         SettingsItem(
-            text = stringResource(Res.string.sources),
+            text = stringResource(Res.string.source_code),
             subText = "",
             painter = painterResource(Res.drawable.ic_sources),
             iconColor = iconColor,

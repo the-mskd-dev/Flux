@@ -16,7 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.mskd.flux.model.FluxOptionsDialogState
+import com.mskd.flux.core.model.core.FluxOptionsDialogState
 import com.mskd.flux.screens.customization.composables.ColorItem
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.extensions.resolve

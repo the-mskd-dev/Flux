@@ -40,13 +40,13 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
+import com.mskd.flux.features.welcome.presentation.WelcomeButton
+import com.mskd.flux.features.welcome.presentation.WelcomeEvent
+import com.mskd.flux.features.welcome.presentation.WelcomeIntent
+import com.mskd.flux.features.welcome.presentation.WelcomePage
+import com.mskd.flux.features.welcome.presentation.WelcomeUiState
+import com.mskd.flux.features.welcome.presentation.WelcomeViewModel
 import com.mskd.flux.navigation.Route
-import com.mskd.flux.screen.welcome.WelcomeButton
-import com.mskd.flux.screen.welcome.WelcomeEvent
-import com.mskd.flux.screen.welcome.WelcomeIntent
-import com.mskd.flux.screen.welcome.WelcomePage
-import com.mskd.flux.screen.welcome.WelcomeUiState
-import com.mskd.flux.screen.welcome.WelcomeViewModel
 import com.mskd.flux.ui.component.global.FluxButton
 import com.mskd.flux.ui.component.global.FluxIconButton
 import com.mskd.flux.ui.component.global.Text
@@ -77,8 +77,7 @@ fun WelcomeScreen(
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
             when (event) {
-                WelcomeEvent.NavigateToLibrary -> navigate(Route.Library)
-                WelcomeEvent.NavigateToToken -> navigate(Route.Token(fromSettings = false))
+                WelcomeEvent.NavigateToToken -> navigate(Route.Token(fromSetup = true))
                 WelcomeEvent.OpenPermissionDialog -> permissions.launchPermissionRequest()
                 is WelcomeEvent.ScrollToPage -> {
                     pagerState.animateScrollToPage(event.pageIndex)

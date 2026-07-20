@@ -1,5 +1,6 @@
 <resources>
     <string name="give_permission">Accorder les permissions</string>
+    <string name="downloads">Téléchargements</string>
     <string name="movies">Films</string>
     <string name="shows">Séries</string>
     <string name="select_season">Sélectionnez une saison</string>
@@ -85,7 +86,7 @@
     <string name="sign_up">inscrivez-vous</string>
     <string name="api_token">Jeton d'accès en lecture à l'API</string>
     <string name="start">Commencer</string>
-    <string name="sources">Sources</string>
+    <string name="source_code">Code source</string>
     <string name="other_files">Autres fichiers</string>
     <string name="no_item">Il n'y a aucun élément à afficher</string>
     <string name="skip">Continuer sans</string>
@@ -100,11 +101,6 @@
     <string name="stay_informed">Restez informés sur l'évolution de l'application!</string>
     <string name="about_desc">À propos de cette application, à propos de moi, à propos de n'importe quoi</string>
     <string name="support_me_desc">Merci pour votre soutien !</string>
-    <string name="acra_dialog_title">L'application a planté…</string>
-    <string name="acra_dialog_message">L'application s'est arrêtée de manière inattendue. Pour m'aider à corriger ce problème, vous pouvez envoyer un rapport technique par mail.</string>
-    <string name="acra_dialog_comment">Décrivez ce que vous faisiez au moment du crash (optionnel)</string>
-    <string name="acra_dialog_send">Envoyer</string>
-    <string name="acra_dialog_dismiss">Non merci</string>
     <string name="external_player_service_text">Utilisation d'un lecteur externe en cours</string>
     <string name="reset_progress">Réinitialiser la progression</string>
     <string name="reset_progress_confirmation">Êtes-vous vraiment sûr(e) de vouloir supprimer toute votre progression ?</string>
@@ -155,4 +151,16 @@
     <string name="small">Petit</string>
     <string name="medium">Moyen</string>
     <string name="large">Grand</string>
+    <string name="delete">Supprimer</string>
+    <string name="sources">Sources</string>
+    <string name="sources_short_desc">Ajoutez vos dossiers sources</string>
+    <string name="sources_title">Gardez le contrôle de votre bibliothèque</string>
+    <string name="sources_full_desc">Pour une configuration optimale et un meilleur contrôle de vos fichiers, l'application cible automatiquement les dossiers %1$s et %2$s.\n\nVous gardez la main : utilisez le bouton ci-dessous pour ajouter d'autres dossiers en plus de ces emplacements par défaut.</string>
+    <string name="warning">Attention</string>
+    <string name="confirm_source_deletion">La suppression de ce dossier entraînera la perte de la progression pour les fichiers qu'il contient.\nÊtes-vous vraiment sûr(e) de vouloir le supprimer ?</string>
+    <string name="add_source">Ajouter une source</string>
+    <string name="got_it">J'ai compris</string>
+    <string name="dialog_sources_title">Vos dossiers, vos règles !</string>
+    <string name="dialog_sources_description">Pour vous offrir plus de contrôle, l'application se concentre désormais sur vos dossiers %1$s et %2$s.\n\nUne vidéo manque à l'appel ? Pas de panique ! Vous pouvez ajouter vos propres dossiers en un clin d'œil depuis les paramètres.</string>
+    <string name="content_unavailable">Contenu non disponible</string>
 </resources>

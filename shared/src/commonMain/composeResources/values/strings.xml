@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="give_permission">Grant permissions</string>
+    <string name="downloads">Downloads</string>
     <string name="movies">Movies</string>
     <string name="shows">Shows</string>
     <string name="select_season">Select a season</string>
@@ -92,7 +93,7 @@
     <string name="sign_up">sign up</string>
     <string name="api_token">API Read Access Token</string>
     <string name="start">Start</string>
-    <string name="sources">Sources</string>
+    <string name="source_code">Source code</string>
     <string name="other_files">Other files</string>
     <string name="no_item">There are no items to display</string>
     <string name="skip">Skip</string>
@@ -108,11 +109,6 @@
     <string name="stay_informed">Stay informed about the app's development!</string>
     <string name="about_desc">About this app, about me, about whatever</string>
     <string name="support_me_desc">Thank you for your support!</string>
-    <string name="acra_dialog_title">The app crashed…</string>
-    <string name="acra_dialog_message">The app has stopped unexpectedly. To help me fix this bug, you can send a technical crash report via email.</string>
-    <string name="acra_dialog_comment">Describe what you were doing (optional)</string>
-    <string name="acra_dialog_send">Send</string>
-    <string name="acra_dialog_dismiss">No thanks</string>
     <string name="external_player_service_text">Using an external player</string>
     <string name="stop" translatable="false">Stop</string>
     <string name="reset_progress">Reset progress</string>
@@ -164,4 +160,16 @@
     <string name="small">Small</string>
     <string name="medium">Medium</string>
     <string name="large">Large</string>
+    <string name="delete">Delete</string>
+    <string name="sources">Sources</string>
+    <string name="sources_short_desc">Add your source folders</string>
+    <string name="sources_title">Stay in control of your library</string>
+    <string name="sources_full_desc">For an optimal setup and better control over your files, the app automatically targets the %1$s and %2$s folders.\n\nYou stay in control: use the button below to add other folders on top of these default locations.</string>
+    <string name="warning">Warning</string>
+    <string name="confirm_source_deletion">Deleting this folder will result in the loss of progress for the files it contains.\nAre you sure you want to delete it?</string>
+    <string name="add_source">Add source</string>
+    <string name="got_it">Got it</string>
+    <string name="dialog_sources_title">Your folders, your rules!</string>
+    <string name="dialog_sources_description">To give you more control, the app now focuses on your %1$s and %2$s folders.\n\nMissing a video? Don't panic! You can add your own folders in a flash from the settings.</string>
+    <string name="content_unavailable">Content unavailable</string>
 </resources>

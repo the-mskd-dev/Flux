@@ -20,7 +20,7 @@ object FluxUI {
     val player: Player @Composable get() = LocalUiPlayer.current
 
     object Dimension {
-        val itemWidth = 140.dp
+        val itemWidth = 200.dp
         val itemRatio = 2f/3f
     }
 
@@ -72,7 +72,7 @@ object FluxUI {
     }
 
     data class Shapes(
-        val corners: RoundedCornerShape = RoundedCornerShape(8.dp),
+        val corners: RoundedCornerShape = RoundedCornerShape(12.dp),
     )
 
     data class ItemsPerRow(

@@ -18,18 +18,19 @@ import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
-import com.mskd.flux.data.repository.connectivity.ConnectivityRepository
+import com.mskd.flux.features.connectivity.domain.ConnectivityRepository
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Transition
 import com.mskd.flux.screens.about.AboutScreen
 import com.mskd.flux.screens.artwork.ArtworkScreen
+import com.mskd.flux.screens.catalog.CatalogScreen
 import com.mskd.flux.screens.customization.CustomizationScreen
-import com.mskd.flux.screens.home.HomeScreen
 import com.mskd.flux.screens.howTo.HowToScreen
 import com.mskd.flux.screens.player.PlayerScreen
 import com.mskd.flux.screens.search.SearchScreen
 import com.mskd.flux.screens.settings.SettingsScreen
 import com.mskd.flux.screens.show.ShowScreen
+import com.mskd.flux.screens.sources.SourcesScreen
 import com.mskd.flux.screens.token.TokenScreen
 import com.mskd.flux.screens.unknown.UnknownScreen
 import com.mskd.flux.screens.welcome.WelcomeScreen
@@ -98,8 +99,8 @@ class MainActivity : ComponentActivity() {
                                 },
                             )
                         }
-                        entry<Route.Library> {
-                            HomeScreen(
+                        entry<Route.Catalog> {
+                            CatalogScreen(
                                 navigate = { route -> backStack.add(route) },
                             )
                         }
@@ -173,7 +174,17 @@ class MainActivity : ComponentActivity() {
                                     backStack.clear()
                                     backStack.add(route)
                                 },
-                                fromSettings = entry.fromSettings
+                                fromSetup = entry.fromSetup
+                            )
+                        }
+                        entry<Route.Sources> { entry ->
+                            SourcesScreen(
+                                navigate = { route ->
+                                    backStack.clear()
+                                    backStack.add(route)
+                                },
+                                fromSetup = entry.fromSetup,
+                                onBack = { backStack.popScreen() },
                             )
                         }
                     }

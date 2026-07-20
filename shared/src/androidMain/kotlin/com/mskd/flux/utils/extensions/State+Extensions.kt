@@ -1,7 +1,7 @@
 package com.mskd.flux.utils.extensions
 
 import androidx.compose.runtime.Composable
-import com.mskd.flux.model.State
+import com.mskd.flux.core.model.core.State
 
 @Composable
 fun State.Error.description(): String? {

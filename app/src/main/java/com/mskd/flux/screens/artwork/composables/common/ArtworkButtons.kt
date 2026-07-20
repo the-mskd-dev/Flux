@@ -23,10 +23,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.mskd.flux.core.model.artwork.Media
+import com.mskd.flux.core.model.artwork.Status
+import com.mskd.flux.features.artwork.presentation.ArtworkIntent
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.model.Status
-import com.mskd.flux.model.artwork.Media
-import com.mskd.flux.screen.artwork.ArtworkIntent
 import com.mskd.flux.ui.component.global.FluxTextButton
 import com.mskd.flux.ui.component.global.ProgressStatusBar
 import com.mskd.flux.ui.component.global.Text
@@ -36,6 +36,7 @@ import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.extensions.minToMs
 import com.mskd.flux.utils.extensions.timeDescription
 import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.content_unavailable
 import flux.shared.generated.resources.mark_as_not_watched
 import flux.shared.generated.resources.mark_as_watched
 import flux.shared.generated.resources.play
@@ -57,7 +58,7 @@ fun ArtworkButtons(
     val text = when (media.status) {
         Status.WATCHED -> stringResource(Res.string.rewatch)
         Status.IS_WATCHING -> stringResource(Res.string.resume)
-        else -> stringResource(Res.string.play)
+        else -> stringResource(if (media.isAvailable) Res.string.play else Res.string.content_unavailable)
     }
 
     Column(
@@ -76,6 +77,7 @@ fun ArtworkButtons(
                 .height(buttonHeight)
                 .fillMaxWidth(),
             checked = media.status == Status.WATCHED,
+            enabled = media.isAvailable,
             onCheckedChange = { sendIntent(ArtworkIntent.PlayMedia(media)) },
             colors = ToggleButtonDefaults.toggleButtonColors(
                 containerColor = MaterialTheme.colorScheme.primary,
@@ -94,11 +96,13 @@ fun ArtworkButtons(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(ButtonDefaults.iconSpacingFor(buttonHeight))
                 ) {
-                    Icon(
-                        modifier = Modifier.size(ButtonDefaults.iconSizeFor(buttonHeight)),
-                        imageVector = if (media.status == Status.WATCHED) Icons.Default.Refresh else Icons.Default.PlayArrow,
-                        contentDescription = "Play button"
-                    )
+                    if (media.isAvailable) {
+                        Icon(
+                            modifier = Modifier.size(ButtonDefaults.iconSizeFor(buttonHeight)),
+                            imageVector = if (media.status == Status.WATCHED) Icons.Default.Refresh else Icons.Default.PlayArrow,
+                            contentDescription = "Play button"
+                        )
+                    }
                     androidx.compose.material3.Text(
                         text = text,
                         style = ButtonDefaults.textStyleFor(buttonHeight)
@@ -186,6 +190,17 @@ fun ArtworkButtonsWatched_Preview() {
     FluxTheme {
         ArtworkButtons(
             media = MediaMockups.episode1.copy(status = Status.WATCHED),
+            sendIntent = {}
+        )
+    }
+}
+
+@FluxPreview
+@Composable
+fun ArtworkButtonsUnavailable_Preview() {
+    FluxTheme {
+        ArtworkButtons(
+            media = MediaMockups.episode1.copy(isAvailable = false),
             sendIntent = {}
         )
     }

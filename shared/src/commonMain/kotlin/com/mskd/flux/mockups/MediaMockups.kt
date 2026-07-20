@@ -1,14 +1,14 @@
 package com.mskd.flux.mockups
 
-import com.mskd.flux.model.FileSource
-import com.mskd.flux.model.Status
-import com.mskd.flux.model.UserFile
-import com.mskd.flux.model.artwork.Artwork
-import com.mskd.flux.model.artwork.ContentType
-import com.mskd.flux.model.artwork.Episode
-import com.mskd.flux.model.artwork.FullArtwork
-import com.mskd.flux.model.artwork.Movie
-import com.mskd.flux.model.artwork.Season
+import com.mskd.flux.core.model.artwork.Artwork
+import com.mskd.flux.core.model.artwork.ContentType
+import com.mskd.flux.core.model.artwork.Episode
+import com.mskd.flux.core.model.artwork.FullArtwork
+import com.mskd.flux.core.model.artwork.Movie
+import com.mskd.flux.core.model.artwork.Season
+import com.mskd.flux.core.model.artwork.Status
+import com.mskd.flux.core.model.files.FileSource
+import com.mskd.flux.core.model.files.UserFile
 import kotlin.time.Duration.Companion.minutes
 
 object MediaMockups {
@@ -35,8 +35,10 @@ object MediaMockups {
             name = "your_name.mkv",
             addedDateTime = 0L,
             path = "path/your_name.mkv",
-            source = FileSource.LOCAL
-        )
+            source = FileSource.LOCAL,
+
+        ),
+        isAvailable = true
     )
 
     val showArtwork = Artwork(
@@ -66,7 +68,8 @@ object MediaMockups {
             addedDateTime = 0L,
             path = "path/naruto_shippuuden_S01E01.mkv",
             source = FileSource.LOCAL
-        )
+        ),
+        isAvailable = true
     )
 
     val episode2 = Episode(
@@ -88,7 +91,8 @@ object MediaMockups {
             addedDateTime = 0L,
             path = "path/naruto_shippuuden_S01E02.mkv",
             source = FileSource.LOCAL
-        )
+        ),
+        isAvailable = true
     )
 
     val episode3 = Episode(
@@ -110,7 +114,8 @@ object MediaMockups {
             addedDateTime = 0L,
             path = "path/naruto_shippuuden_S02E33.mkv",
             source = FileSource.LOCAL
-        )
+        ),
+        isAvailable = true
     )
 
     val unknownArtwork = Artwork.UNKNOWN

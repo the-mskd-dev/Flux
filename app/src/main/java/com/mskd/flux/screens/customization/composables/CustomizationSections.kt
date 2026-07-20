@@ -9,8 +9,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.mskd.flux.screen.customization.CustomizationIntent
-import com.mskd.flux.screen.customization.CustomizationUiState
+import com.mskd.flux.features.customization.presentation.CustomizationIntent
+import com.mskd.flux.features.customization.presentation.CustomizationUiState
 import com.mskd.flux.screens.settings.composables.SettingsItem
 import com.mskd.flux.screens.settings.composables.SettingsSection
 import com.mskd.flux.screens.settings.composables.SettingsSwitch

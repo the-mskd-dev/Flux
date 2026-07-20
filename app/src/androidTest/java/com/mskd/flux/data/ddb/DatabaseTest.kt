@@ -5,9 +5,13 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import app.cash.turbine.test
+import com.mskd.flux.core.database.data.DatabaseDao
+import com.mskd.flux.core.database.data.FluxDatabase
+import com.mskd.flux.core.database.data.mappers.toEntity
+import com.mskd.flux.core.database.data.model.ArtworkEntity
+import com.mskd.flux.core.database.data.model.SeasonEntity
+import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.model.artwork.Artwork
-import com.mskd.flux.model.artwork.Season
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -48,7 +52,7 @@ class DatabaseTest {
     @Test
     fun insertArtworks_and_getArtworks_returns_all_inserted() = runTest {
         // Given
-        val artworks = MediaMockups.artworks
+        val artworks = MediaMockups.artworks.map { it.toEntity() }
 
         // When
         dao.insertArtworks(artworks)
@@ -62,7 +66,7 @@ class DatabaseTest {
     @Test
     fun getArtwork_returns_correct_artwork_by_id() = runTest {
         // Given
-        val artwork = MediaMockups.movieArtwork
+        val artwork = MediaMockups.movieArtwork.toEntity()
         dao.insertArtworks(listOf(artwork))
 
         // When
@@ -85,7 +89,7 @@ class DatabaseTest {
     @Test
     fun insertArtworks_replaces_on_conflict() = runTest {
         // Given
-        val artwork = MediaMockups.movieArtwork
+        val artwork = MediaMockups.movieArtwork.toEntity()
         val updatedArtwork = artwork.copy(title = "Updated Title")
         dao.insertArtworks(listOf(artwork))
 
@@ -105,8 +109,8 @@ class DatabaseTest {
     @Test
     fun insertMovies_and_getMovie_returns_correct_movie() = runTest {
         // Given
-        val artwork = MediaMockups.movieArtwork
-        val movie = MediaMockups.movie
+        val artwork = MediaMockups.movieArtwork.toEntity()
+        val movie = MediaMockups.movie.toEntity()
         dao.insertArtworks(listOf(artwork))
 
         // When
@@ -130,8 +134,8 @@ class DatabaseTest {
     @Test
     fun getMovies_returns_all_movies() = runTest {
         // Given
-        val artwork = MediaMockups.movieArtwork
-        val movie = MediaMockups.movie
+        val artwork = MediaMockups.movieArtwork.toEntity()
+        val movie = MediaMockups.movie.toEntity()
         dao.insertArtworks(listOf(artwork))
         dao.insertMovies(listOf(movie))
 
@@ -146,13 +150,13 @@ class DatabaseTest {
     @Test
     fun getMoviesNotInFiles_returns_movies_whose_filename_is_not_in_list() = runTest {
         // Given
-        val artwork = MediaMockups.movieArtwork
-        val movie = MediaMockups.movie
+        val artwork = MediaMockups.movieArtwork.toEntity()
+        val movie = MediaMockups.movie.toEntity()
         dao.insertArtworks(listOf(artwork))
         dao.insertMovies(listOf(movie))
 
         // When - file name matches, so no movie should be returned
-        val resultEmpty = dao.getMoviesNotInFiles(listOf(movie.file.name))
+        val resultEmpty = dao.getMoviesNotInFiles(listOf(movie.fileName))
 
         // Then
         assertTrue(resultEmpty.isEmpty())
@@ -168,8 +172,8 @@ class DatabaseTest {
     @Test
     fun insertMovies_replaces_on_conflict() = runTest {
         // Given
-        val artwork = MediaMockups.movieArtwork
-        val movie = MediaMockups.movie
+        val artwork = MediaMockups.movieArtwork.toEntity()
+        val movie = MediaMockups.movie.toEntity()
         dao.insertArtworks(listOf(artwork))
         dao.insertMovies(listOf(movie))
 
@@ -190,8 +194,8 @@ class DatabaseTest {
     @Test
     fun insertEpisodes_and_getEpisodes_by_artworkId() = runTest {
         // Given
-        val artwork = MediaMockups.showArtwork
-        val episodes = listOf(MediaMockups.episode1, MediaMockups.episode2)
+        val artwork = MediaMockups.showArtwork.toEntity()
+        val episodes = listOf(MediaMockups.episode1, MediaMockups.episode2).map { it.toEntity() }
         dao.insertArtworks(listOf(artwork))
 
         // When
@@ -206,8 +210,8 @@ class DatabaseTest {
     @Test
     fun getEpisodes_without_artworkId_returns_all_episodes() = runTest {
         // Given
-        val artworks = listOf(MediaMockups.showArtwork, MediaMockups.unknownArtwork)
-        val allEpisodes = MediaMockups.episodes + MediaMockups.unknowns
+        val artworks = listOf(MediaMockups.showArtwork, MediaMockups.unknownArtwork).map { it.toEntity() }
+        val allEpisodes = (MediaMockups.episodes + MediaMockups.unknowns).map { it.toEntity() }
         dao.insertArtworks(artworks)
         dao.insertEpisodes(allEpisodes)
 
@@ -221,8 +225,8 @@ class DatabaseTest {
     @Test
     fun getEpisodesNotInFiles_returns_episodes_whose_filename_is_not_in_list() = runTest {
         // Given
-        val artwork = MediaMockups.showArtwork
-        val episodes = listOf(MediaMockups.episode1, MediaMockups.episode2)
+        val artwork = MediaMockups.showArtwork.toEntity()
+        val episodes = listOf(MediaMockups.episode1, MediaMockups.episode2).map { it.toEntity() }
         dao.insertArtworks(listOf(artwork))
         dao.insertEpisodes(episodes)
 
@@ -231,15 +235,15 @@ class DatabaseTest {
 
         // Then - only episode2 should remain
         assertEquals(1, result.size)
-        assertEquals(MediaMockups.episode2, result.first())
+        assertEquals(MediaMockups.episode2.toEntity(), result.first())
     }
 
     @Test
     fun getUnknownMedias_returns_only_episodes_with_unknown_artworkId() = runTest {
         // Given
-        val artworks = listOf(MediaMockups.showArtwork, MediaMockups.unknownArtwork)
-        val knownEpisodes = listOf(MediaMockups.episode1, MediaMockups.episode2)
-        val unknownEpisodes = MediaMockups.unknowns
+        val artworks = listOf(MediaMockups.showArtwork, MediaMockups.unknownArtwork).map { it.toEntity() }
+        val knownEpisodes = listOf(MediaMockups.episode1, MediaMockups.episode2).map { it.toEntity() }
+        val unknownEpisodes = MediaMockups.unknowns.map { it.toEntity() }
         dao.insertArtworks(artworks)
         dao.insertEpisodes(knownEpisodes + unknownEpisodes)
 
@@ -258,8 +262,8 @@ class DatabaseTest {
     @Test
     fun insertSeasons_and_getSeasons_by_artworkId() = runTest {
         // Given
-        val artwork = MediaMockups.showArtwork
-        val seasons = MediaMockups.seasons
+        val artwork = MediaMockups.showArtwork.toEntity()
+        val seasons = MediaMockups.seasons.map { it.toEntity() }
         dao.insertArtworks(listOf(artwork))
 
         // When
@@ -274,9 +278,9 @@ class DatabaseTest {
     @Test
     fun getSeasons_without_artworkId_returns_all_seasons() = runTest {
         // Given
-        val artwork = MediaMockups.showArtwork
+        val artwork = MediaMockups.showArtwork.toEntity()
         dao.insertArtworks(listOf(artwork))
-        dao.insertSeasons(MediaMockups.seasons)
+        dao.insertSeasons(MediaMockups.seasons.map { it.toEntity() })
 
         // When
         val result = dao.getSeasons()
@@ -288,8 +292,8 @@ class DatabaseTest {
     @Test
     fun insertSeasons_replaces_on_conflict() = runTest {
         // Given
-        val artwork = MediaMockups.showArtwork
-        val season = MediaMockups.season1
+        val artwork = MediaMockups.showArtwork.toEntity()
+        val season = MediaMockups.season1.toEntity()
         dao.insertArtworks(listOf(artwork))
         dao.insertSeasons(listOf(season))
 
@@ -310,7 +314,7 @@ class DatabaseTest {
     @Test
     fun deleteArtworks_removes_artworks_by_ids() = runTest {
         // Given
-        val artworks = MediaMockups.artworks
+        val artworks = MediaMockups.artworks.map { it.toEntity() }
         dao.insertArtworks(artworks)
 
         // When
@@ -324,8 +328,8 @@ class DatabaseTest {
     @Test
     fun deleteMoviesByIds_removes_movies_by_artworkIds() = runTest {
         // Given
-        val artwork = MediaMockups.movieArtwork
-        val movie = MediaMockups.movie
+        val artwork = MediaMockups.movieArtwork.toEntity()
+        val movie = MediaMockups.movie.toEntity()
         dao.insertArtworks(listOf(artwork))
         dao.insertMovies(listOf(movie))
 
@@ -339,8 +343,8 @@ class DatabaseTest {
     @Test
     fun deleteEpisodesByIds_removes_episodes_by_ids() = runTest {
         // Given
-        val artwork = MediaMockups.showArtwork
-        val episodes = listOf(MediaMockups.episode1, MediaMockups.episode2)
+        val artwork = MediaMockups.showArtwork.toEntity()
+        val episodes = listOf(MediaMockups.episode1, MediaMockups.episode2).map { it.toEntity() }
         dao.insertArtworks(listOf(artwork))
         dao.insertEpisodes(episodes)
 
@@ -355,8 +359,8 @@ class DatabaseTest {
     @Test
     fun deleteEpisodesByArtworkId_removes_all_episodes_of_an_artwork() = runTest {
         // Given
-        val artwork = MediaMockups.showArtwork
-        val episodes = listOf(MediaMockups.episode1, MediaMockups.episode2, MediaMockups.episode3)
+        val artwork = MediaMockups.showArtwork.toEntity()
+        val episodes = listOf(MediaMockups.episode1, MediaMockups.episode2, MediaMockups.episode3).map { it.toEntity() }
         dao.insertArtworks(listOf(artwork))
         dao.insertEpisodes(episodes)
 
@@ -371,7 +375,7 @@ class DatabaseTest {
     @Test
     fun deleteAllArtworks_clears_artworks_table() = runTest {
         // Given
-        dao.insertArtworks(MediaMockups.artworks)
+        dao.insertArtworks(MediaMockups.artworks.map { it.toEntity() })
 
         // When
         dao.deleteAllArtworks()
@@ -383,9 +387,9 @@ class DatabaseTest {
     @Test
     fun deleteAllMovies_clears_movies_table() = runTest {
         // Given
-        val artwork = MediaMockups.movieArtwork
+        val artwork = MediaMockups.movieArtwork.toEntity()
         dao.insertArtworks(listOf(artwork))
-        dao.insertMovies(listOf(MediaMockups.movie))
+        dao.insertMovies(listOf(MediaMockups.movie.toEntity()))
 
         // When
         dao.deleteAllMovies()
@@ -397,9 +401,10 @@ class DatabaseTest {
     @Test
     fun deleteAllEpisodes_clears_episodes_table() = runTest {
         // Given
-        val artwork = MediaMockups.showArtwork
+        val artwork = MediaMockups.showArtwork.toEntity()
+        val episodes = listOf(MediaMockups.episode1, MediaMockups.episode2).map { it.toEntity() }
         dao.insertArtworks(listOf(artwork))
-        dao.insertEpisodes(listOf(MediaMockups.episode1, MediaMockups.episode2))
+        dao.insertEpisodes(episodes)
 
         // When
         dao.deleteAllEpisodes()
@@ -411,8 +416,8 @@ class DatabaseTest {
     @Test
     fun delete_artwork_does_not_affect_movies() = runTest {
         // Given - No ForeignKey constraint
-        val artwork = MediaMockups.movieArtwork
-        val movie = MediaMockups.movie
+        val artwork = MediaMockups.movieArtwork.toEntity()
+        val movie = MediaMockups.movie.toEntity()
         dao.insertArtworks(listOf(artwork))
         dao.insertMovies(listOf(movie))
 
@@ -427,8 +432,8 @@ class DatabaseTest {
     @Test
     fun delete_artwork_does_not_affect_episodes() = runTest {
         // Given - No ForeignKey constraint
-        val artwork = MediaMockups.showArtwork
-        val episodes = listOf(MediaMockups.episode1, MediaMockups.episode2)
+        val artwork = MediaMockups.showArtwork.toEntity()
+        val episodes = listOf(MediaMockups.episode1, MediaMockups.episode2).map { it.toEntity() }
         dao.insertArtworks(listOf(artwork))
         dao.insertEpisodes(episodes)
 
@@ -443,9 +448,10 @@ class DatabaseTest {
     @Test
     fun deleteSeasonsByIds_removes_seasons_by_artworkIds() = runTest {
         // Given
-        val artwork = MediaMockups.showArtwork
+        val artwork = MediaMockups.showArtwork.toEntity()
+        val seasons = MediaMockups.seasons.map { it.toEntity() }
         dao.insertArtworks(listOf(artwork))
-        dao.insertSeasons(MediaMockups.seasons)
+        dao.insertSeasons(seasons)
 
         // When
         dao.deleteSeasonsByIds(listOf(artwork.id))
@@ -457,9 +463,10 @@ class DatabaseTest {
     @Test
     fun deleteSeason_removes_specific_season() = runTest {
         // Given
-        val artwork = MediaMockups.showArtwork
+        val artwork = MediaMockups.showArtwork.toEntity()
+        val seasons = MediaMockups.seasons.map { it.toEntity() }
         dao.insertArtworks(listOf(artwork))
-        dao.insertSeasons(MediaMockups.seasons)
+        dao.insertSeasons(seasons)
 
         // When
         dao.deleteSeason(artworkId = artwork.id, season = 1)
@@ -467,17 +474,19 @@ class DatabaseTest {
         // Then
         val result = dao.getSeasons(artwork.id)
         assertEquals(MediaMockups.seasons.size - 1, result.size)
-        assertEquals(MediaMockups.season2, result.first())
+        assertEquals(MediaMockups.season2.toEntity(), result.first())
     }
 
     @Test
     fun deleteEmptySeasons_removes_seasons_without_matching_episodes() = runTest {
         // Given
-        val artwork = MediaMockups.showArtwork
+        val artwork = MediaMockups.showArtwork.toEntity()
+        val seasons = MediaMockups.seasons.map { it.toEntity() }
+        val episodes = listOf(MediaMockups.episode1, MediaMockups.episode2).map { it.toEntity() }
         dao.insertArtworks(listOf(artwork))
-        dao.insertSeasons(MediaMockups.seasons)
+        dao.insertSeasons(seasons)
         // Insert episodes only for season 1
-        dao.insertEpisodes(listOf(MediaMockups.episode1, MediaMockups.episode2))
+        dao.insertEpisodes(episodes)
 
         // When
         dao.deleteEmptySeasons()
@@ -485,17 +494,19 @@ class DatabaseTest {
         // Then - season2 has no episodes, should be deleted
         val result = dao.getSeasons(artwork.id)
         assertEquals(1, result.size)
-        assertEquals(MediaMockups.season1, result.first())
+        assertEquals(MediaMockups.season1.toEntity(), result.first())
     }
 
     @Test
     fun deleteEmptySeasons_keeps_all_seasons_when_all_have_episodes() = runTest {
         // Given
-        val artwork = MediaMockups.showArtwork
+        val artwork = MediaMockups.showArtwork.toEntity()
+        val seasons = MediaMockups.seasons.map { it.toEntity() }
+        val episodes = MediaMockups.episodes.map { it.toEntity() }
         dao.insertArtworks(listOf(artwork))
-        dao.insertSeasons(MediaMockups.seasons)
+        dao.insertSeasons(seasons)
         // Insert episodes for both seasons
-        dao.insertEpisodes(MediaMockups.episodes)
+        dao.insertEpisodes(episodes)
 
         // When
         dao.deleteEmptySeasons()
@@ -508,9 +519,10 @@ class DatabaseTest {
     @Test
     fun deleteAllSeasons_clears_seasons_table() = runTest {
         // Given
-        val artwork = MediaMockups.showArtwork
+        val artwork = MediaMockups.showArtwork.toEntity()
+        val seasons = MediaMockups.seasons.map { it.toEntity() }
         dao.insertArtworks(listOf(artwork))
-        dao.insertSeasons(MediaMockups.seasons)
+        dao.insertSeasons(seasons)
 
         // When
         dao.deleteAllSeasons()
@@ -526,8 +538,8 @@ class DatabaseTest {
     @Test
     fun getEpisodeCountByArtworkId_returns_correct_count() = runTest {
         // Given
-        val artwork = MediaMockups.showArtwork
-        val episodes = listOf(MediaMockups.episode1, MediaMockups.episode2, MediaMockups.episode3)
+        val artwork = MediaMockups.showArtwork.toEntity()
+        val episodes = listOf(MediaMockups.episode1, MediaMockups.episode2, MediaMockups.episode3).map { it.toEntity() }
         dao.insertArtworks(listOf(artwork))
         dao.insertEpisodes(episodes)
 
@@ -541,7 +553,7 @@ class DatabaseTest {
     @Test
     fun getEpisodeCountByArtworkId_returns_zero_when_no_episodes() = runTest {
         // Given
-        val artwork = MediaMockups.showArtwork
+        val artwork = MediaMockups.showArtwork.toEntity()
         dao.insertArtworks(listOf(artwork))
 
         // When
@@ -554,8 +566,8 @@ class DatabaseTest {
     @Test
     fun getEpisodeCountBySeason_returns_correct_count() = runTest {
         // Given
-        val artwork = MediaMockups.showArtwork
-        val episodes = listOf(MediaMockups.episode1, MediaMockups.episode2, MediaMockups.episode3)
+        val artwork = MediaMockups.showArtwork.toEntity()
+        val episodes = listOf(MediaMockups.episode1, MediaMockups.episode2, MediaMockups.episode3).map { it.toEntity() }
         dao.insertArtworks(listOf(artwork))
         dao.insertEpisodes(episodes)
 
@@ -571,9 +583,9 @@ class DatabaseTest {
     @Test
     fun getEpisodeCountBySeason_returns_zero_when_no_episodes_for_season() = runTest {
         // Given
-        val artwork = MediaMockups.showArtwork
+        val artwork = MediaMockups.showArtwork.toEntity()
         dao.insertArtworks(listOf(artwork))
-        dao.insertEpisodes(listOf(MediaMockups.episode1)) // Only season 1 episode
+        dao.insertEpisodes(listOf(MediaMockups.episode1.toEntity())) // Only season 1 episode
 
         // When
         val count = dao.getEpisodeCountBySeason(artwork.id, season = 99)
@@ -589,7 +601,7 @@ class DatabaseTest {
     @Test
     fun getArtworksImages_returns_image_and_banner_paths() = runTest {
         // Given
-        dao.insertArtworks(MediaMockups.artworks)
+        dao.insertArtworks(MediaMockups.artworks.map { it.toEntity() })
 
         // When
         val result = dao.getArtworksImages()
@@ -604,8 +616,8 @@ class DatabaseTest {
     @Test
     fun getEpisodesImages_returns_all_episode_image_paths() = runTest {
         // Given
-        val artworks = listOf(MediaMockups.showArtwork, MediaMockups.unknownArtwork)
-        val episodes = MediaMockups.episodes + MediaMockups.unknowns
+        val artworks = listOf(MediaMockups.showArtwork, MediaMockups.unknownArtwork).map { it.toEntity() }
+        val episodes = (MediaMockups.episodes + MediaMockups.unknowns).map { it.toEntity() }
         dao.insertArtworks(artworks)
         dao.insertEpisodes(episodes)
 
@@ -621,9 +633,9 @@ class DatabaseTest {
     @Test
     fun getSeasonsImages_returns_all_season_image_paths() = runTest {
         // Given
-        val artwork = MediaMockups.showArtwork
+        val artwork = MediaMockups.showArtwork.toEntity()
         dao.insertArtworks(listOf(artwork))
-        dao.insertSeasons(MediaMockups.seasons)
+        dao.insertSeasons(MediaMockups.seasons.map { it.toEntity() })
 
         // When
         val result = dao.getSeasonsImages()
@@ -642,16 +654,16 @@ class DatabaseTest {
     fun flowArtworks_emits_updates_when_artworks_change() = runTest {
         dao.flowArtworks().test {
             // Initial emission - empty
-            assertEquals(emptyList<Artwork>(), awaitItem())
+            assertEquals(emptyList<ArtworkEntity>(), awaitItem())
 
             // Insert artworks
-            dao.insertArtworks(listOf(MediaMockups.movieArtwork))
+            dao.insertArtworks(listOf(MediaMockups.movieArtwork.toEntity()))
             val afterInsert = awaitItem()
             assertEquals(1, afterInsert.size)
-            assertEquals(MediaMockups.movieArtwork, afterInsert.first())
+            assertEquals(MediaMockups.movieArtwork.toEntity(), afterInsert.first())
 
             // Insert another artwork
-            dao.insertArtworks(listOf(MediaMockups.showArtwork))
+            dao.insertArtworks(listOf(MediaMockups.showArtwork.toEntity()))
             val afterSecondInsert = awaitItem()
             assertEquals(2, afterSecondInsert.size)
 
@@ -659,7 +671,7 @@ class DatabaseTest {
             dao.deleteArtworks(listOf(MediaMockups.movieArtwork.id))
             val afterDelete = awaitItem()
             assertEquals(1, afterDelete.size)
-            assertEquals(MediaMockups.showArtwork, afterDelete.first())
+            assertEquals(MediaMockups.showArtwork.toEntity(), afterDelete.first())
 
             cancelAndConsumeRemainingEvents()
         }
@@ -676,7 +688,7 @@ class DatabaseTest {
 
     @Test
     fun flowArtwork_emits_updates_for_specific_artwork() = runTest {
-        val artwork = MediaMockups.movieArtwork
+        val artwork = MediaMockups.movieArtwork.toEntity()
 
         dao.flowArtwork(artwork.id).test {
             // Initial emission - null
@@ -704,8 +716,8 @@ class DatabaseTest {
 
     @Test
     fun flowMovie_emits_updates_for_specific_movie() = runTest {
-        val artwork = MediaMockups.movieArtwork
-        val movie = MediaMockups.movie
+        val artwork = MediaMockups.movieArtwork.toEntity()
+        val movie = MediaMockups.movie.toEntity()
         dao.insertArtworks(listOf(artwork))
 
         dao.flowMovie(artwork.id).test {
@@ -728,9 +740,9 @@ class DatabaseTest {
 
     @Test
     fun flowEpisodes_emits_updates_for_specific_artwork() = runTest {
-        val artwork = MediaMockups.showArtwork
-        val episode1 = MediaMockups.episode1
-        val episode2 = MediaMockups.episode2
+        val artwork = MediaMockups.showArtwork.toEntity()
+        val episode1 = MediaMockups.episode1.toEntity()
+        val episode2 = MediaMockups.episode2.toEntity()
         dao.insertArtworks(listOf(artwork))
 
         dao.flowEpisodes(artwork.id).test {
@@ -758,14 +770,14 @@ class DatabaseTest {
 
     @Test
     fun flowSeasons_emits_updates_for_specific_artwork() = runTest {
-        val artwork = MediaMockups.showArtwork
-        val season1 = MediaMockups.season1
-        val season2 = MediaMockups.season2
+        val artwork = MediaMockups.showArtwork.toEntity()
+        val season1 = MediaMockups.season1.toEntity()
+        val season2 = MediaMockups.season2.toEntity()
         dao.insertArtworks(listOf(artwork))
 
         dao.flowSeasons(artwork.id).test {
             // Initial emission - empty list
-            assertEquals(emptyList<Season>(), awaitItem())
+            assertEquals(emptyList<SeasonEntity>(), awaitItem())
 
             // Insert season1
             dao.insertSeasons(listOf(season1))
@@ -795,7 +807,7 @@ class DatabaseTest {
     @Test
     fun delete_with_empty_id_list_does_not_affect_data() = runTest {
         // Given
-        dao.insertArtworks(MediaMockups.artworks)
+        dao.insertArtworks(MediaMockups.artworks.map { it.toEntity() })
 
         // When
         dao.deleteArtworks(emptyList())
@@ -816,10 +828,10 @@ class DatabaseTest {
     @Test
     fun deleteAllArtworks_and_deleteAllMovies_and_deleteAllEpisodes_and_deleteAllSeasons_clears_everything() = runTest {
         // Given
-        dao.insertArtworks(MediaMockups.artworks)
-        dao.insertMovies(MediaMockups.movies)
-        dao.insertEpisodes(MediaMockups.episodes + MediaMockups.unknowns)
-        dao.insertSeasons(MediaMockups.seasons)
+        dao.insertArtworks(MediaMockups.artworks.map { it.toEntity() })
+        dao.insertMovies(MediaMockups.movies.map { it.toEntity() })
+        dao.insertEpisodes((MediaMockups.episodes + MediaMockups.unknowns).map { it.toEntity() })
+        dao.insertSeasons(MediaMockups.seasons.map { it.toEntity() })
 
         // When
         dao.deleteAllSeasons()

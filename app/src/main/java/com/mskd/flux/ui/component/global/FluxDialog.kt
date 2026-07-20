@@ -4,6 +4,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.cancel
 import flux.shared.generated.resources.validate
@@ -26,12 +27,14 @@ fun FluxDialog(
     AlertDialog(
         onDismissRequest = onDismiss,
         confirmButton = {
-            TextButton(
-                onClick = { onValidate?.invoke() },
-                content = {
-                    Text.Label.Large(text = onValidateLabel)
-                }
-            )
+            onValidate?.let {
+                TextButton(
+                    onClick = { it() },
+                    content = {
+                        Text.Label.Large(text = onValidateLabel)
+                    }
+                )
+            }
         },
         dismissButton = {
             TextButton(
@@ -42,6 +45,7 @@ fun FluxDialog(
             )
         },
         title = { Text.Headline.Small(text = title) },
+        shape = FluxUI.shapes.corners,
         text = content
     )
 

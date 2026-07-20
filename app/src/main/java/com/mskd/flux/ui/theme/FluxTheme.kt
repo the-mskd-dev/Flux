@@ -14,8 +14,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.materialkolor.rememberDynamicColorScheme
-import com.mskd.flux.data.repository.connectivity.LocalConnectivity
-import com.mskd.flux.data.repository.customization.CustomizationRepository
+import com.mskd.flux.features.connectivity.domain.LocalConnectivity
+import com.mskd.flux.features.customization.domain.datastore.CustomizationDataStore
 import com.mskd.flux.ui.typography.FluxTypography
 import com.mskd.flux.utils.UiCommon
 
@@ -23,7 +23,7 @@ import com.mskd.flux.utils.UiCommon
 @Composable
 fun FluxTheme(
     isOnline: Boolean = true,
-    customization: CustomizationRepository.State = CustomizationRepository.State(),
+    customization: CustomizationDataStore.State = CustomizationDataStore.State(),
     content: @Composable () -> Unit
 ) {
 

@@ -45,12 +45,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.mskd.flux.features.token.domain.model.TokenMessage
+import com.mskd.flux.features.token.presentation.TokenEvent
+import com.mskd.flux.features.token.presentation.TokenIntent
+import com.mskd.flux.features.token.presentation.TokenUiState
+import com.mskd.flux.features.token.presentation.TokenViewModel
 import com.mskd.flux.navigation.Route
-import com.mskd.flux.screen.token.TokenEvent
-import com.mskd.flux.screen.token.TokenIntent
-import com.mskd.flux.screen.token.TokenMessage
-import com.mskd.flux.screen.token.TokenUiState
-import com.mskd.flux.screen.token.TokenViewModel
 import com.mskd.flux.ui.component.global.FluxIconButton
 import com.mskd.flux.ui.component.global.FluxScaffold
 import com.mskd.flux.ui.component.global.FluxTextButton
@@ -84,8 +84,8 @@ import org.koin.core.parameter.parametersOf
 fun TokenScreen(
     onBack: () -> Unit,
     navigate: (Route) -> Unit,
-    fromSettings: Boolean,
-    viewModel: TokenViewModel = koinViewModel(parameters = { parametersOf(fromSettings) })
+    fromSetup: Boolean,
+    viewModel: TokenViewModel = koinViewModel(parameters = { parametersOf(fromSetup) })
 ) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -94,13 +94,13 @@ fun TokenScreen(
         viewModel.event.collect { event ->
             when (event) {
                 TokenEvent.BackToPreviousScreen -> onBack()
-                TokenEvent.NavigateToHomeScreen -> navigate(Route.Library)
+                TokenEvent.NavigateToCatalogScreen -> navigate(Route.Catalog)
             }
         }
     }
 
     BackHandler(true) {
-        if (fromSettings) onBack()
+        if (!fromSetup) onBack()
     }
 
     TokenScreenContent(

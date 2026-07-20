@@ -19,7 +19,6 @@ import com.mskd.flux.features.catalog.fake.FakeCatalogSyncCoordinator
 import com.mskd.flux.features.files.domain.usecase.FilterExistingFilesUseCase
 import com.mskd.flux.features.files.domain.usecase.GetDeviceFilesUseCase
 import com.mskd.flux.features.images.domain.ImagesPrefetchManager
-import com.mskd.flux.features.sources.domain.usecase.DeleteUnavailableSourcesUseCase
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.coEvery

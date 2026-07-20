@@ -49,13 +49,8 @@ class MediaStoreFilesDataSource(
 
         val sortOrder = "${MediaStore.Video.Media.DATE_ADDED} DESC"
 
-        val selection = "${MediaStore.Video.Media.RELATIVE_PATH} LIKE ? OR " +
-                "${MediaStore.Video.Media.RELATIVE_PATH} LIKE ?"
+        val (selection, selectionArgs) = buildRelativePathSelection()
 
-        val selectionArgs = arrayOf(
-            "${Environment.DIRECTORY_MOVIES}/%",
-            "${Environment.DIRECTORY_DOWNLOADS}/%"
-        )
         val query = context.contentResolver.query(
             collection,
             projection,
@@ -128,15 +123,19 @@ class MediaStoreFilesDataSource(
             val paths = mediaStoreFiles.map { it.path }
             val ids = paths.mapNotNull { it.toUri().lastPathSegment }
 
-            val placeholders = ids.joinToString(",") { "?" }
+            val idPlaceholders = ids.joinToString(",") { "?" }
+            val (pathCondition, pathArgs) = buildRelativePathSelection()
+
+            val selection = "${MediaStore.Video.Media._ID} IN ($idPlaceholders) AND ($pathCondition)"
+            val selectionArgs = ids.toTypedArray() + pathArgs
 
             val existingIds = mutableSetOf<String>()
 
             context.contentResolver.query(
                 MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
                 arrayOf(MediaStore.Video.Media._ID),
-                "${MediaStore.Video.Media._ID} IN ($placeholders)",
-                ids.toTypedArray(),
+                selection,
+                selectionArgs,
                 null
             )?.use { cursor ->
                 val idCol = cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID)
@@ -243,4 +242,13 @@ class MediaStoreFilesDataSource(
             }
         }
     }
+
+    private fun buildRelativePathSelection(): Pair<String, Array<String>> {
+        val condition = STANDARD_FOLDERS.joinToString(" OR ") {
+            "${MediaStore.Video.Media.RELATIVE_PATH} LIKE ?"
+        }
+        val args = STANDARD_FOLDERS.map { "$it/%" }.toTypedArray()
+        return condition to args
+    }
+
 }

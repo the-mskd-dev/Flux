@@ -1,0 +1,4 @@
+ATTENTION: Cette version est particulièrement sensible, si il y a le moindre problème n'hésitez pas à retourner sur la version 1.5.2, et faites le moi savoir
+
+- Feature: Il est désormais possible de sélectionner ses propres dossiers sources, au lieu d'utiliser tous les fichiers de l'appareil
+- Core: Gros pas en avant vers KMP

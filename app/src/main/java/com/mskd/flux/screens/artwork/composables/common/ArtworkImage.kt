@@ -85,7 +85,6 @@ fun ArtworkImageFull(
                 .matchParentSize()
                 .alpha(.8f),
             path = imagePath,
-            hd = true,
             contentDescription = "background ${fullArtwork.artwork.title}"
         )
 

@@ -147,7 +147,6 @@ fun EpisodeItemLarge(
         MediaThumbnail(
             modifier = Modifier.fillMaxWidth(),
             media = episode,
-            hd = true
         )
 
         Column(

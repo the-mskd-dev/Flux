@@ -20,7 +20,6 @@ import com.mskd.flux.utils.extensions.grayScale
 fun MediaThumbnail(
     modifier: Modifier,
     media: Media,
-    hd: Boolean = false
 ) {
 
     val contentDescription = when (media) {
@@ -38,7 +37,6 @@ fun MediaThumbnail(
                     .fillMaxSize()
                     .let { if (media.status == Status.WATCHED) it.grayScale() else it },
                 media = media,
-                hd = hd,
                 contentDescription = contentDescription
             )
 

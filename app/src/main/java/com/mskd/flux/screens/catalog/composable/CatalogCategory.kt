@@ -83,7 +83,6 @@ fun CatalogCategory(
                         .width(itemWidth)
                         .aspectRatio(FluxUI.Dimension.itemRatio),
                     path = it.imagePath,
-                    hd = false,
                     onTap = { rgb -> sendIntent(CatalogIntent.OnArtworkTap(artwork = it, rgb = rgb)) },
                     description = it.title
                 )

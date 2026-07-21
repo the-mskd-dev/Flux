@@ -19,7 +19,6 @@ import com.mskd.flux.utils.extensions.clickableWithBounce
 fun MediaItem(
     modifier: Modifier,
     path: String,
-    hd: Boolean,
     ratio: Float = FluxUI.Dimension.itemRatio,
     shape: Shape = FluxUI.shapes.corners,
     onTap: (Int?) -> Unit,
@@ -35,7 +34,6 @@ fun MediaItem(
             .aspectRatio(ratio)
             .clickableWithBounce { onTap(seedRgb) },
         path = path,
-        hd = hd,
         contentDescription = description,
         onSuccess = { state ->
             val bitmap = state.result.image.toBitmap()

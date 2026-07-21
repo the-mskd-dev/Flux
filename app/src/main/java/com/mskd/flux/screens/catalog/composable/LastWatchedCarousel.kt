@@ -60,7 +60,6 @@ fun LastWatchedCarousel(
                     .widthIn(max = 350.dp)
                     .fillMaxSize(),
                 path = path,
-                hd = true,
                 shape = MaterialTheme.shapes.extraLarge,
                 ratio = ratio,
                 onTap = { rgb -> sendIntent(CatalogIntent.OnArtworkTap(artwork = overview, rgb = rgb)) },
@@ -88,7 +87,6 @@ fun LastWatchedCarousel(
                             .fillMaxWidth()
                             .aspectRatio(ratio),
                         path = path,
-                        hd = true,
                         ratio = ratio,
                         shape = MaterialTheme.shapes.extraLarge,
                         onTap = { rgb ->

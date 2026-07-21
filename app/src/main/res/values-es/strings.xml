@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="acra_dialog_title">La aplicación se ha detenido…</string>
+    <string name="acra_dialog_message">La aplicación se ha cerrado de forma inesperada. Para ayudar a solucionar este problema, puedes enviar un informe técnico de fallo por correo electrónico.</string>
+    <string name="acra_dialog_comment">Describe qué estabas haciendo (opcional)</string>
+    <string name="acra_dialog_send">Enviar</string>
+    <string name="acra_dialog_dismiss">No, gracias</string>
+</resources>

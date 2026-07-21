@@ -31,7 +31,6 @@ import com.mskd.flux.utils.extensions.tmdbImageLarge
 fun FluxImage(
     modifier: Modifier = Modifier,
     path: String,
-    hd: Boolean = false,
     contentDescription: String,
     contentScale: ContentScale = ContentScale.Crop,
     onSuccess: ((AsyncImagePainter.State.Success) -> Unit)? = null
@@ -40,9 +39,7 @@ fun FluxImage(
     val urlLow = path.tmdbImage
     val urlHigh = path.tmdbImageLarge
 
-    val hdPainter = rememberAsyncImagePainter(
-        model = if (hd) urlHigh else null,
-    )
+    val hdPainter = rememberAsyncImagePainter(urlHigh)
 
     val hdState by hdPainter.state.collectAsState()
 
@@ -83,7 +80,6 @@ fun FluxImage(
 fun FluxImage(
     modifier: Modifier,
     media: Media,
-    hd: Boolean = false,
     contentScale: ContentScale = ContentScale.Crop,
     contentDescription: String
 ) {
@@ -92,7 +88,6 @@ fun FluxImage(
         FluxImage(
             modifier = modifier,
             path = media.imagePath,
-            hd = hd,
             contentScale = contentScale,
             contentDescription = contentDescription
         )

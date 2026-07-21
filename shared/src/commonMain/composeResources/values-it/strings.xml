@@ -82,7 +82,7 @@
     <string name="tmdb_api_token">Token API TMDB</string>
     <string name="tmdb" translatable="false">The Movie Database</string>
     <string name="token_desc_1">Per funzionare, questa applicazione utilizza i servizi di %1$s. Questo sito permette il recupero di varie informazioni (immagini, titoli, trame, ecc.) per i tuoi contenuti multimediali. Per utilizzare questo servizio è richiesto un token API.</string>
-    <string name="token_desc_2">Tuttavia, al fine di essere un\'applicazione completamente FOSS (Free and Open-Source Software) e garantire un miglior controllo sui tuoi dati, il token per il servizio TMDB non viene fornito fornito di serie.</string>
+    <string name="token_desc_2">Tuttavia, al fine di essere un\'applicazione completamente FOSS (Free and Open-Source Software) e garantire un miglior controllo sui tuoi dati, il token per il servizio TMDB non viene fornito di serie.</string>
     <string name="token_desc_3">È possibile continuare senza utilizzare il servizio TMDB; tuttavia, per sfruttare al meglio le funzionalità dell\'applicazione, si consiglia di fornire un token API. Per farlo, segui questi passaggi:</string>
     <string name="token_tutorial_step_1">%1$s o %2$s su TMDB.</string>
     <string name="token_tutorial_step_2">Recupera il tuo %1$s e copialo nel campo sottostante.</string>

@@ -82,7 +82,7 @@
     <string name="tmdb_api_token">TMDB API トークン</string>
     <string name="tmdb" translatable="false">The Movie Database</string>
     <string name="token_desc_1">本アプリは %1$s のサービスを利用して動作しています。このサイトからメディアの各種情報（画像、タイトル、あらすじなど）を取得します。サービスを利用するには API トークンが必要です。</string>
-    <string name="token_desc_2">ただし、完全な FOSS（自由かつオープンソースなソフトウェア）であり続けること、およびユーザーデータの透明性を確保するため、TMDB サービスのトークンはあらかじめ同梱されていません。</string>
+    <string name="token_desc_2">ただし、完全な FOSS（自由かつオープンソースなソフトウェア）であり続け、ユーザーが自身のデータをより適切に管理できるようにするため、TMDB サービスのトークンはあらかじめ同梱されていません。</string>
     <string name="token_desc_3">TMDB サービスを使用せずに続行することも可能ですが、アプリの機能を最大限に活用するには API トークンの設定を推奨します。設定するには以下の手順に従ってください：</string>
     <string name="token_tutorial_step_1">TMDB で %1$s または %2$s を行います。</string>
     <string name="token_tutorial_step_2">%1$s を取得し、下のフィールドに貼り付けます。</string>

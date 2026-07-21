@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="acra_dialog_title">L\'applicazione si è interrotta…</string>
+    <string name="acra_dialog_message">L\'applicazione si è chiusa in modo imprevisto. Per aiutarmi a risolvere questo problema, puoi inviare una segnalazione tecnica d\'errore via e-mail.</string>
+    <string name="acra_dialog_comment">Descrivi cosa stavi facendo (opzionale)</string>
+    <string name="acra_dialog_send">Invia</string>
+    <string name="acra_dialog_dismiss">No, grazie</string>
+</resources>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="acra_dialog_title">앱이 중단되었습니다…</string>
+    <string name="acra_dialog_message">앱이 예기치 않게 종료되었습니다. 오류 수정에 도움을 주시려면 이메일로 기술 오류 보고서를 전송하실 수 있습니다.</string>
+    <string name="acra_dialog_comment">어떤 작업을 하고 계셨는지 설명해 주세요 (선택 사항)</string>
+    <string name="acra_dialog_send">보내기</string>
+    <string name="acra_dialog_dismiss">취소</string>
+</resources>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="acra_dialog_title">Die App ist abgestürzt…</string>
+    <string name="acra_dialog_message">Die App wurde unerwartet beendet. Um mir bei der Behebung dieses Fehlers zu helfen, kannst du einen technischen Absturzbericht per E-Mail senden.</string>
+    <string name="acra_dialog_comment">Beschreibe, was du gerade getan hast (optional)</string>
+    <string name="acra_dialog_send">Senden</string>
+    <string name="acra_dialog_dismiss">Nein, danke</string>
+</resources>

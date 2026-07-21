@@ -124,7 +124,7 @@
     <string name="by_default">Por defecto</string>
     <string name="cache_images">Guardar imágenes HD en caché</string>
     <string name="images_cached">Imágenes en caché</string>
-    <string name="caching_images_in_progress">Guardando imágenes en caché… %1$d%%</string>
+    <string name="caching_images_in_progress">Guardando imágenes en caché… %1$d%</string>
     <string name="cache_images_desc">Descargar imágenes para uso sin conexión</string>
     <string name="no_summary">Sinopsis no disponible</string>
     <string name="customization">Personalización</string>

@@ -124,7 +124,7 @@
     <string name="by_default">기본값</string>
     <string name="cache_images">HD 이미지 캐싱</string>
     <string name="images_cached">캐시된 이미지</string>
-    <string name="caching_images_in_progress">이미지 캐싱 중… %1$d%%</string>
+    <string name="caching_images_in_progress">이미지 캐싱 중… %1$d%</string>
     <string name="cache_images_desc">오프라인 사용을 위해 이미지 다운로드</string>
     <string name="no_summary">줄거리 정보 없음</string>
     <string name="customization">사용자 지정</string>

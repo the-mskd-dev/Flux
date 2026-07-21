@@ -115,7 +115,7 @@
     <string name="by_default">Par défaut</string>
     <string name="cache_images">Pré-charger les images en HD</string>
     <string name="images_cached">Images téléchargées</string>
-    <string name="caching_images_in_progress">Téléchargement des images en cours (%1$d%%)</string>
+    <string name="caching_images_in_progress">Téléchargement des images en cours (%1$d%)</string>
     <string name="cache_images_desc">Pré-télécharge les images pour une utilisation hors-ligne</string>
     <string name="no_summary">Aucun résumé disponible</string>
     <string name="customization">Personnalisation</string>

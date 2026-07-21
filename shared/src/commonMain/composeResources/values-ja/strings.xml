@@ -124,7 +124,7 @@
     <string name="by_default">デフォルト</string>
     <string name="cache_images">HD画像をキャッシュ</string>
     <string name="images_cached">キャッシュ済み画像</string>
-    <string name="caching_images_in_progress">画像をキャッシュ中… %1$d%%</string>
+    <string name="caching_images_in_progress">画像をキャッシュ中… %1$d%</string>
     <string name="cache_images_desc">オフライン利用のために画像をダウンロードします</string>
     <string name="no_summary">あらすじはありません</string>
     <string name="customization">カスタマイズ</string>

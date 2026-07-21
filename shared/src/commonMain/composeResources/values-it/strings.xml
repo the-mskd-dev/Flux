@@ -124,7 +124,7 @@
     <string name="by_default">Predefinito</string>
     <string name="cache_images">Salva immagini HD in cache</string>
     <string name="images_cached">Immagini in cache</string>
-    <string name="caching_images_in_progress">Salvataggio immagini in cache… %1$d%%</string>
+    <string name="caching_images_in_progress">Salvataggio immagini in cache… %1$d%</string>
     <string name="cache_images_desc">Scarica le immagini per l\'uso offline</string>
     <string name="no_summary">Nessuna trama disponibile</string>
     <string name="customization">Personalizzazione</string>

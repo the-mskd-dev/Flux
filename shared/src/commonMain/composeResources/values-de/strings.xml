@@ -124,7 +124,7 @@
     <string name="by_default">Standard</string>
     <string name="cache_images">HD-Bilder zwischenspeichern</string>
     <string name="images_cached">Bilder im Cache</string>
-    <string name="caching_images_in_progress">Bilder werden zwischengespeichert… %1$d%%</string>
+    <string name="caching_images_in_progress">Bilder werden zwischengespeichert… %1$d%</string>
     <string name="cache_images_desc">Bilder für die Offline-Nutzung herunterladen</string>
     <string name="no_summary">Keine Zusammenfassung verfügbar</string>
     <string name="customization">Anpassung</string>

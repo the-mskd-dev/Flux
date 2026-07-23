@@ -100,7 +100,7 @@ fun CatalogGenericItems(
                 }
             }
 
-            item {
+            /*item {
 
                 CatalogGenericItem(
                     modifier = Modifier.size(48.dp),
@@ -112,7 +112,7 @@ fun CatalogGenericItems(
                     contentDescription = stringResource(Res.string.sources)
                 )
 
-            }
+            }*/
 
         }
 

@@ -45,11 +45,11 @@ class UserFileTest : FunSpec ({
             )
         ) { testCase ->
 
-            val mediaInfo = FileProperties.extractFileProperties(testCase.fileName)
-            mediaInfo.title.shouldBe(testCase.expectedTitle, "Title mismatch")
-            mediaInfo.year.shouldBe(testCase.expectedYear, "Year mismatch")
-            mediaInfo.season.shouldBe(testCase.expectedSeason, "Season mismatch")
-            mediaInfo.episode.shouldBe(testCase.expectedEpisode, "Episode mismatch")
+            val mediaInfo = FileProperties.extractFromName(testCase.fileName)
+            mediaInfo?.title.shouldBe(testCase.expectedTitle, "Title mismatch")
+            mediaInfo?.year.shouldBe(testCase.expectedYear, "Year mismatch")
+            mediaInfo?.season.shouldBe(testCase.expectedSeason, "Season mismatch")
+            mediaInfo?.episode.shouldBe(testCase.expectedEpisode, "Episode mismatch")
 
         }
     }
@@ -163,11 +163,11 @@ class UserFileTest : FunSpec ({
             ),
         ) { testCase ->
 
-            val mediaInfo = FileProperties.extractFileProperties(testCase.fileName)
-            mediaInfo.title.shouldBe(testCase.expectedTitle, "Title mismatch")
-            mediaInfo.year.shouldBe(testCase.expectedYear, "Year mismatch")
-            mediaInfo.season.shouldBe(testCase.expectedSeason, "Season mismatch")
-            mediaInfo.episode.shouldBe(testCase.expectedEpisode, "Episode mismatch")
+            val mediaInfo = FileProperties.extractFromName(testCase.fileName)
+            mediaInfo?.title.shouldBe(testCase.expectedTitle, "Title mismatch")
+            mediaInfo?.year.shouldBe(testCase.expectedYear, "Year mismatch")
+            mediaInfo?.season.shouldBe(testCase.expectedSeason, "Season mismatch")
+            mediaInfo?.episode.shouldBe(testCase.expectedEpisode, "Episode mismatch")
 
         }
     }

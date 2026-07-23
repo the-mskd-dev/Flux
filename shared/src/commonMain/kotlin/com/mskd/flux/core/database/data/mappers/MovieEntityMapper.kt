@@ -9,6 +9,7 @@ fun MovieEntity.toDomain() : Movie {
         name = this.fileName,
         addedDateTime = this.addedDateTime,
         path = this.path,
+        realPath = this.realPath,
         source = this.source,
         parentDocId = this.parentDocId
     )
@@ -42,6 +43,7 @@ fun Movie.toEntity() : MovieEntity {
         fileName = this.file.name,
         addedDateTime = this.file.addedDateTime,
         path = this.file.path,
+        realPath = this.file.realPath,
         source = this.file.source,
         parentDocId = this.file.parentDocId
     )

@@ -9,6 +9,7 @@ data class UserFile(
     val name: String,
     val addedDateTime: Long = 0L,
     val path: String,
+    val realPath: String = "",
     val source: FileSource = FileSource.LOCAL,
     val parentDocId: String? = null
 ) {

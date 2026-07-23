@@ -44,7 +44,8 @@ class MediaStoreFilesDataSource(
             MediaStore.Video.Media._ID,
             MediaStore.Video.Media.DISPLAY_NAME,
             MediaStore.Video.Media.DURATION,
-            MediaStore.Video.Media.DATE_ADDED
+            MediaStore.Video.Media.DATE_ADDED,
+            MediaStore.Video.Media.RELATIVE_PATH,
         )
 
         val sortOrder = "${MediaStore.Video.Media.DATE_ADDED} DESC"
@@ -69,6 +70,7 @@ class MediaStoreFilesDataSource(
                 val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID)
                 val nameColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME)
                 val dateColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_ADDED)
+                val realPathColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.RELATIVE_PATH)
 
                 while (cursor.moveToNext()) {
 
@@ -78,6 +80,7 @@ class MediaStoreFilesDataSource(
                         val id = cursor.getLong(idColumn)
                         val name = cursor.getString(nameColumn)
                         val date = cursor.getLong(dateColumn)
+                        val realPath = cursor.getString(realPathColumn)
 
                         val contentPath = ContentUris.withAppendedId(
                             MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
@@ -90,6 +93,7 @@ class MediaStoreFilesDataSource(
                             name = name,
                             addedDateTime = date,
                             path = contentPath,
+                            realPath = realPath + name,
                             source = FileSource.LOCAL
                         )
 

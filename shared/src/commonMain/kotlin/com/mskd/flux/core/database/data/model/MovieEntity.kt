@@ -30,6 +30,8 @@ data class MovieEntity(
     val fileName: String,
     val addedDateTime: Long,
     val path: String,
+    @ColumnInfo(defaultValue = "")
+    val realPath: String,
     val source: FileSource,
     val parentDocId: String? = null
 )

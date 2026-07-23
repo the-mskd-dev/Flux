@@ -57,6 +57,10 @@ class SyncCatalogUseCaseImpl(
                 deviceFiles.filter { file -> existingFiles.none { it.name == file.name } }
             }
 
+            deviceFiles.forEach {
+                Trace.debug(it.realPath)
+            }
+
             if (newFiles.isEmpty()) {
                 database.deleteMediasNotInFiles(existingFiles)
                 user.setSyncTime(System.currentTimeMillis())

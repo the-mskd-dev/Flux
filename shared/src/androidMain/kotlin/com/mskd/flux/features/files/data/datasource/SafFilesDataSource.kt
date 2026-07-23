@@ -13,6 +13,8 @@ import com.mskd.flux.features.sources.domain.repository.SourcesRepository
 import com.mskd.flux.utils.Trace
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
 
 class SafFilesDataSource(
     private val context: Context,
@@ -189,6 +191,7 @@ class SafFilesDataSource(
                             name = name,
                             addedDateTime = lastModified,
                             path = docUri.toString(),
+                            realPath = getRealPath(docUri.toString()),
                             source = FileSource.SAF,
                             parentDocId = parentDocId
                         )
@@ -196,6 +199,12 @@ class SafFilesDataSource(
                 }
             }
         }
+    }
+
+    private fun getRealPath(documentUri: String): String {
+        val docIdEncoded = documentUri.substringAfterLast("/document/")
+        val docIdDecoded = URLDecoder.decode(docIdEncoded, StandardCharsets.UTF_8.name())
+        return docIdDecoded.substringAfter(':', docIdDecoded)
     }
 
 }

@@ -11,30 +11,35 @@ object FilesMockups {
             name = "naruto_S01E01.mkv",
             addedDateTime = 0L,
             path = "mediaStore/naruto_S01E01.mkv",
+            realPath = "mediaStore/naruto_S01E01.mkv",
             source = FileSource.LOCAL
         ),
         UserFile(
             name = "naruto _S02E01.mkv",
             addedDateTime = 0L,
             path = "mediaStore/naruto _S02E01.mkv",
+            realPath = "mediaStore/naruto _S02E01.mkv",
             source = FileSource.LOCAL
         ),
         UserFile(
             name = " naruto_S02E02.mkv",
             addedDateTime = 0L,
             path = "mediaStore/ naruto_S02E02.mkv",
+            realPath = "mediaStore/ naruto_S02E02.mkv",
             source = FileSource.LOCAL
         ),
         UserFile(
             name = "Naruto_S04E10.mkv",
             addedDateTime = 0L,
             path = "mediaStore/Naruto_S04E10.mkv",
+            realPath = "mediaStore/Naruto_S04E10.mkv",
             source = FileSource.LOCAL
         ),
         UserFile(
             name = "your name.mp4",
             addedDateTime = 0L,
             path = "mediaStore/your name.mp4",
+            realPath = "mediaStore/your name.mp4",
             source = FileSource.LOCAL
         ),
     )
@@ -44,18 +49,21 @@ object FilesMockups {
             name = "spider-man(2002).mkv",
             addedDateTime = 0L,
             path = "saf/spider-man(2002).mkv",
+            realPath = "saf/spider-man(2002).mkv",
             source = FileSource.SAF
         ),
         UserFile(
             name = "Hunter x Hunter (2011) season1.episode2.mkv",
             addedDateTime = 0L,
             path = "saf/Hunter x Hunter (2011) season1.episode2.mkv",
+            realPath = "saf/Hunter x Hunter (2011) season1.episode2.mkv",
             source = FileSource.SAF
         ),
         UserFile(
             name = "Hunter x Hunter (1999) season1.episode2.mkv",
             addedDateTime = 0L,
             path = "saf/Hunter x Hunter (1999) season1.episode2.mkv",
+            realPath = "saf/Hunter x Hunter (1999) season1.episode2.mkv",
             source = FileSource.SAF
         )
     )

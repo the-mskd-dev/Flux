@@ -413,4 +413,24 @@ class UserFileTest : FunSpec ({
 
     }
 
+    test("quick test") {
+
+        val userFile = UserFile(
+            name = "",
+            path = "",
+            realPath = ""
+        )
+
+        val expectedTitle: String = ""
+        val expectedYear: Int? = null
+        val expectedSeason: Int? = null
+        val expectedEpisode: Int? = null
+
+        val nameProperties = userFile.nameProperties
+        nameProperties.title.shouldBe(expectedTitle, "Title mismatch")
+        nameProperties.year.shouldBe(expectedYear, "Year mismatch")
+        nameProperties.season.shouldBe(expectedSeason, "Season mismatch")
+        nameProperties.episode.shouldBe(expectedEpisode, "Episode mismatch")
+    }
+
 })

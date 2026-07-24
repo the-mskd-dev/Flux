@@ -21,7 +21,7 @@ import kotlin.time.Instant
 
 class UserFileTest : FunSpec ({
 
-    context("movies - name properties from file name") {
+    context("movies - name properties from name") {
         withData(
             nameFn = { it.file.name },
             UserFileTestCases.FileProperties(
@@ -33,19 +33,11 @@ class UserFileTest : FunSpec ({
             ),
             UserFileTestCases.FileProperties(
                 file = UserFile(
-                    name = "Spider-man(2001).mp4",
+                    name = "Spider-man(2002).mp4",
                     path = "",
                 ),
                 expectedTitle = "spider man",
-                expectedYear = 2001
-            ),
-            UserFileTestCases.FileProperties(
-                file = UserFile(
-                    name = "Spider-man(2001).mp4",
-                    path = "",
-                ),
-                expectedTitle = "spider man",
-                expectedYear = 2001
+                expectedYear = 2002
             ),
             UserFileTestCases.FileProperties(
                 file = UserFile(
@@ -66,7 +58,47 @@ class UserFileTest : FunSpec ({
         }
     }
 
-    context("shows - name properties from file name") {
+    context("movies - name properties from path") {
+        withData(
+            nameFn = { it.file.name },
+            UserFileTestCases.FileProperties(
+                file = UserFile(
+                    name = "INCEPTION.MULTI.VF2.1080P.WEB.X264-FW.MKV",
+                    path = "",
+                    realPath = "Flux/Inception/INCEPTION.MULTI.VF2.1080P.WEB.X264-FW.MKV"
+                ),
+                expectedTitle = "inception",
+            ),
+            UserFileTestCases.FileProperties(
+                file = UserFile(
+                    name = "SPIDER-MAN.2002.MULTI.VF2.1080P.WEB.X264-FW.MKV",
+                    path = "",
+                    realPath = "Flux/Spider-man (2002)/SPIDER-MAN.2002.MULTI.VF2.1080P.WEB.X264-FW.MKV"
+                ),
+                expectedTitle = "spider man",
+                expectedYear = 2002
+            ),
+            UserFileTestCases.FileProperties(
+                file = UserFile(
+                    name = "Captain.America.The.Winter.Soldier.2014.MULTI.VF2.1080P.WEB.X264-FW.MKV",
+                    path = "",
+                    realPath = "Flux/Captain America The Winter Soldier (2014)/Captain.America.The.Winter.Soldier.2014.MULTI.VF2.1080P.WEB.X264-FW.MKV"
+                ),
+                expectedTitle = "captain america the winter soldier",
+                expectedYear = 2014
+            ),
+        ) { testCase ->
+
+            val nameProperties = testCase.file.nameProperties
+            nameProperties.title.shouldBe(testCase.expectedTitle, "Title mismatch")
+            nameProperties.year.shouldBe(testCase.expectedYear, "Year mismatch")
+            nameProperties.season.shouldBe(testCase.expectedSeason, "Season mismatch")
+            nameProperties.episode.shouldBe(testCase.expectedEpisode, "Episode mismatch")
+
+        }
+    }
+
+    context("shows - name properties from name") {
         withData(
             nameFn = { it.file.name },
             UserFileTestCases.FileProperties(
@@ -223,6 +255,99 @@ class UserFileTest : FunSpec ({
                 expectedSeason = 1,
                 expectedEpisode = 2,
                 expectedYear = 1999
+            ),
+        ) { testCase ->
+
+            val nameProperties = testCase.file.nameProperties
+            nameProperties.title.shouldBe(testCase.expectedTitle, "Title mismatch")
+            nameProperties.year.shouldBe(testCase.expectedYear, "Year mismatch")
+            nameProperties.season.shouldBe(testCase.expectedSeason, "Season mismatch")
+            nameProperties.episode.shouldBe(testCase.expectedEpisode, "Episode mismatch")
+
+        }
+    }
+
+    context("shows - name properties from path") {
+        withData(
+            nameFn = { it.file.name },
+            UserFileTestCases.FileProperties(
+                file = UserFile(
+                    name = "01.mp4",
+                    path = "",
+                    realPath = "Flux/Naruto/1/01.mp4"
+                ),
+                expectedTitle = "naruto",
+                expectedSeason = 1,
+                expectedEpisode = 1
+            ),
+            UserFileTestCases.FileProperties(
+                file = UserFile(
+                    name = "S01E02.mp4",
+                    path = "",
+                    realPath = "Flux/Naruto/S01E02.mp4"
+                ),
+                expectedTitle = "naruto",
+                expectedSeason = 1,
+                expectedEpisode = 2
+            ),
+            UserFileTestCases.FileProperties(
+                file = UserFile(
+                    name = "1.mp4",
+                    path = "",
+                    realPath = "Flux/Naruto/2/1.mp4"
+                ),
+                expectedTitle = "naruto",
+                expectedSeason = 2,
+                expectedEpisode = 1
+            ),
+            UserFileTestCases.FileProperties(
+                file = UserFile(
+                    name = "1.mp4",
+                    path = "",
+                    realPath = "Flux/Naruto/season 1/3.mp4"
+                ),
+                expectedTitle = "naruto",
+                expectedSeason = 1,
+                expectedEpisode = 3
+            ),
+            UserFileTestCases.FileProperties(
+                file = UserFile(
+                    name = "1.mp4",
+                    path = "",
+                    realPath = "Flux/Naruto/Season3/1.mp4"
+                ),
+                expectedTitle = "naruto",
+                expectedSeason = 3,
+                expectedEpisode = 1
+            ),
+            UserFileTestCases.FileProperties(
+                file = UserFile(
+                    name = "04.mp4",
+                    path = "",
+                    realPath = "Flux/Naruto/Season 01/04.mp4"
+                ),
+                expectedTitle = "naruto",
+                expectedSeason = 1,
+                expectedEpisode = 4
+            ),
+            UserFileTestCases.FileProperties(
+                file = UserFile(
+                    name = "s05.e01.mp4",
+                    path = "",
+                    realPath = "Flux/Naruto/s05.e01.mp4"
+                ),
+                expectedTitle = "naruto",
+                expectedSeason = 5,
+                expectedEpisode = 1
+            ),UserFileTestCases.FileProperties(
+                file = UserFile(
+                    name = "NARUTO.S04E1045.MULTi.1080p.BluRay.x265-FERVEX.mkv",
+                    path = "",
+                    realPath = "Naruto/Season 4/NARUTO.S01E1045.MULTi.1080p.BluRay.x265-FERVEX.mkv"
+                ),
+                expectedTitle = "naruto",
+                expectedSeason = 1,
+                expectedEpisode = 1045
             ),
         ) { testCase ->
 

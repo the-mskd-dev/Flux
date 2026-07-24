@@ -1,9 +1,11 @@
 package com.mskd.flux.model
 
+import com.mskd.flux.core.model.files.UserFile
+
 object UserFileTestCases {
 
     data class FileProperties(
-        val fileName: String,
+        val file: UserFile,
         val expectedTitle: String,
         val expectedYear: Int? = null,
         val expectedSeason: Int? = null,

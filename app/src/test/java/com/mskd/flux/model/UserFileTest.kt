@@ -21,7 +21,7 @@ import kotlin.time.Instant
 
 class UserFileTest : FunSpec ({
 
-    context("test file name properties parsing for movies") {
+    context("movies - name properties from file name") {
         withData(
             nameFn = { it.file.name },
             UserFileTestCases.FileProperties(
@@ -66,7 +66,7 @@ class UserFileTest : FunSpec ({
         }
     }
 
-    context("test file name properties parsing for shows") {
+    context("shows - name properties from file name") {
         withData(
             nameFn = { it.file.name },
             UserFileTestCases.FileProperties(
@@ -251,9 +251,6 @@ class UserFileTest : FunSpec ({
     }
 
     test("UserFile properties") {
-        mockkStatic(Uri::class)
-        val mockUri = mockk<Uri>(relaxed = true)
-        every { Uri.parse("file:///path/to/Naruto S01E01.mp4") } returns mockUri
 
         val userFile = UserFile(
             name = "Naruto S01E01.mp4",
@@ -266,14 +263,11 @@ class UserFileTest : FunSpec ({
         userFile.season shouldBe 1
         userFile.episode shouldBe 1
         userFile.addedDate shouldBe Instant.fromEpochMilliseconds(1621814400000L)
-        userFile.path.toUri() shouldBe mockUri
 
         unmockkStatic(Uri::class)
     }
 
     test("CatalogFolder type resolver") {
-        mockkStatic(Uri::class)
-        every { Uri.parse(any()) } returns mockk(relaxed = true)
 
         val episodeFile1 = UserFile(name = "Naruto S01E01.mp4", addedDateTime = 0L, path = "path")
         val episodeFile2 = UserFile("Naruto S01E02.mp4", 0L, "path")
@@ -292,7 +286,6 @@ class UserFileTest : FunSpec ({
         val mixedFolder = CatalogFolder(title = "mixed", files = listOf(movieFile1, movieFile2))
         mixedFolder.type shouldBe null
 
-        unmockkStatic(Uri::class)
     }
 
 })

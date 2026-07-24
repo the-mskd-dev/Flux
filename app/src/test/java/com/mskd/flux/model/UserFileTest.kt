@@ -269,7 +269,7 @@ class UserFileTest : FunSpec ({
 
     context("shows - name properties from path") {
         withData(
-            nameFn = { it.file.name },
+            nameFn = { it.file.realPath },
             UserFileTestCases.FileProperties(
                 file = UserFile(
                     name = "01.mp4",
@@ -346,7 +346,7 @@ class UserFileTest : FunSpec ({
                     realPath = "Naruto/Season 4/NARUTO.S01E1045.MULTi.1080p.BluRay.x265-FERVEX.mkv"
                 ),
                 expectedTitle = "naruto",
-                expectedSeason = 1,
+                expectedSeason = 4,
                 expectedEpisode = 1045
             ),
         ) { testCase ->

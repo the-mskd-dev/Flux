@@ -16,7 +16,7 @@ data class UserFile(
 
     val nameProperties: FileProperties
         get() = FileProperties.extractFromName(name)
-            ?: FileProperties.extractFromPath(path)
+            ?: FileProperties.extractFromPath(realPath)
             ?: FileProperties(title = name.replace("-", " ").trim().lowercase())
 
     val isEpisode: Boolean
@@ -62,9 +62,12 @@ data class FileProperties(
         private val SEASON_ONLY_PATTERNS = listOf(
             Regex("^season[ .]*(\\d{1,2})$", RegexOption.IGNORE_CASE),
             Regex("^s[ ]?(\\d{1,2})$", RegexOption.IGNORE_CASE),
+            Regex("^(\\d{1,2})$"),
         )
 
         private val YEAR_PATTERN = Regex("\\((\\d{4})\\)")
+
+        private val NUMERIC_ONLY = Regex("^\\d+$")
 
         private fun findSeasonEpisode(text: String): Pair<Int, Int>? {
             for (pattern in SEASON_EPISODE_PATTERNS) {
@@ -119,29 +122,47 @@ data class FileProperties(
                 return FileProperties(title, year, seasonEpisode.first, seasonEpisode.second)
             }
 
+            // If only numeric, maybe a naming by folder
+            if (NUMERIC_ONLY.matches(nameWithoutExt)) return null
+
             // Try for movie
             val (title, year) = extractTitleAndYear(nameWithoutExt)
             return if (title.isNotBlank()) FileProperties(title, year, null, null) else null
         }
 
-        fun extractFromPath(path: String) : FileProperties? {
+        fun extractFromPath(path: String): FileProperties? {
             val segments = path.toPath().segments
             val lastSegment = segments.lastOrNull() ?: return null
             val filename = lastSegment.substringBeforeLast('.', lastSegment)
 
+            // 1. Season + episode in the filename
             findSeasonEpisode(filename)?.let { (season, episode) ->
                 val titleSegment = segments.getOrNull(segments.size - 2) ?: return null
                 val (title, year) = extractTitleAndYear(titleSegment)
                 return FileProperties(title, year, season, episode)
             }
 
+            // 2. Episode only seul -> need season in the parent folder
+            // if none, it's a movie
             for (pattern in EPISODE_ONLY_PATTERNS) {
                 val episodeMatch = pattern.matchEntire(filename) ?: continue
                 val episode = episodeMatch.groupValues[1].toIntOrNull() ?: continue
-                val season = segments.getOrNull(segments.size - 2)?.let { findSeason(it) }
+
+                val parentFolder = segments.getOrNull(segments.size - 2)
+                val season = parentFolder?.let { findSeason(it) }
+
+                if (season == null) break // pas de contexte saison -> abandonne cette piste
+
                 val titleSegment = segments.getOrNull(segments.size - 3) ?: return null
                 val (title, year) = extractTitleAndYear(titleSegment)
                 return FileProperties(title, year, season, episode)
+            }
+
+            // 3. No episode -> movie
+            // Specific case : filename only numeric without season folder
+            // -> the number is the title
+            if (NUMERIC_ONLY.matches(filename)) {
+                return FileProperties(title = filename, year = null, season = null, episode = null)
             }
 
             val parentFolder = segments.getOrNull(segments.size - 2) ?: return null

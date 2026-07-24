@@ -65,9 +65,15 @@ data class FileProperties(
             Regex("^(\\d{1,2})$"),
         )
 
-        private val YEAR_PATTERN = Regex("\\((\\d{4})\\)")
+        private val YEAR_PATTERN = Regex("\\((\\d{4})\\)|(?:^|[ ._-])(\\d{4})(?=[ ._-]|$)")
 
         private val NUMERIC_ONLY = Regex("^\\d+$")
+
+        private val RELEASE_TAG_BOUNDARY = Regex(
+            "(?i)[ ._-](?:multi|vostfr|truefrench|vff?\\d?|french|\\d{3,4}p|4k|" +
+                    "web-?dl|webrip|bluray|bdrip|dvdrip|hdtv|hdlight|" +
+                    "x264|x265|h26[45]|hevc|aac\\d?|dts|ac3)\\b"
+        )
 
         private fun findSeasonEpisode(text: String): Pair<Int, Int>? {
             for (pattern in SEASON_EPISODE_PATTERNS) {
@@ -99,13 +105,25 @@ data class FileProperties(
         }
 
         private fun extractTitleAndYear(raw: String): Pair<String, Int?> {
-            val year = YEAR_PATTERN.find(raw)?.groupValues?.get(1)?.toIntOrNull()
-            val title = raw
-                .replace(YEAR_PATTERN, "")
+
+            // 1. Remove tags
+            val boundaryMatch = RELEASE_TAG_BOUNDARY.find(raw)
+            val relevant = if (boundaryMatch != null) raw.substring(0, boundaryMatch.range.first) else raw
+
+            // 2. Try to find a year
+            val yearMatch = YEAR_PATTERN.find(relevant)
+            val year = yearMatch?.let { it.groupValues[1].toIntOrNull() ?: it.groupValues[2].toIntOrNull() }
+            val titleRaw = if (yearMatch != null) relevant.substring(0, yearMatch.range.first) else relevant
+
+            // 3. Clean title
+            val title = titleRaw
                 .replace("-", " ")
                 .replace("_", " ")
+                .replace(".", " ")
                 .trim(' ', '.', '_')
                 .lowercase()
+                .replace(Regex(" +"), " ")
+
             return title to year
         }
 

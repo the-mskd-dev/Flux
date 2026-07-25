@@ -111,7 +111,7 @@ data class FileProperties(
             val relevant = if (boundaryMatch != null) raw.substring(0, boundaryMatch.range.first) else raw
 
             // 2. Try to find a year
-            val yearMatch = YEAR_PATTERN.find(relevant)
+            val yearMatch = YEAR_PATTERN.find(relevant)?.takeIf { it.range.first > 0 }
             val year = yearMatch?.let { it.groupValues[1].toIntOrNull() ?: it.groupValues[2].toIntOrNull() }
             val titleRaw = if (yearMatch != null) relevant.substring(0, yearMatch.range.first) else relevant
 
@@ -160,7 +160,7 @@ data class FileProperties(
                 return FileProperties(title, year, season, episode)
             }
 
-            // 2. Episode only seul -> need season in the parent folder
+            // 2. Episode only -> need season in the parent folder
             // if none, it's a movie
             for (pattern in EPISODE_ONLY_PATTERNS) {
                 val episodeMatch = pattern.matchEntire(filename) ?: continue
@@ -169,7 +169,7 @@ data class FileProperties(
                 val parentFolder = segments.getOrNull(segments.size - 2)
                 val season = parentFolder?.let { findSeason(it) }
 
-                if (season == null) break // pas de contexte saison -> abandonne cette piste
+                if (season == null) break // no season -> no need to continue here
 
                 val titleSegment = segments.getOrNull(segments.size - 3) ?: return null
                 val (title, year) = extractTitleAndYear(titleSegment)
@@ -177,8 +177,7 @@ data class FileProperties(
             }
 
             // 3. No episode -> movie
-            // Specific case : filename only numeric without season folder
-            // -> the number is the title
+            // Specific case : filename only numeric without season folder -> the number is the title
             if (NUMERIC_ONLY.matches(filename)) {
                 return FileProperties(title = filename, year = null, season = null, episode = null)
             }

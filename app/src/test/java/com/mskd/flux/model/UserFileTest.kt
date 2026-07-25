@@ -417,9 +417,9 @@ class UserFileTest : FunSpec ({
     test("quick test") {
 
         val userFile = UserFile(
-            name = "",
+            name = "Avatar.La.legende.de.Korra.S01E01.MULTi.1080p.BluRay.x265-FERVEX.mkv",
             path = "",
-            realPath = ""
+            realPath = "La légende de Korra/Season 1/Avatar.La.legende.de.Korra.S01E01.MULTi.1080p.BluRay.x265-FERVEX.mkv"
         )
 
         val properties = userFile.nameProperties

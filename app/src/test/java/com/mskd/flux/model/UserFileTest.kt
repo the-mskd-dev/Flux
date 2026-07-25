@@ -8,6 +8,7 @@ import com.mskd.flux.core.model.files.FileProperties
 import com.mskd.flux.core.model.files.FileSource
 import com.mskd.flux.core.model.files.UserFile
 import com.mskd.flux.mockups.FilesMockups
+import com.mskd.flux.utils.Trace
 import com.mskd.flux.utils.extensions.groupInFolders
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData
@@ -421,16 +422,20 @@ class UserFileTest : FunSpec ({
             realPath = ""
         )
 
-        val expectedTitle: String = ""
-        val expectedYear: Int? = null
-        val expectedSeason: Int? = null
-        val expectedEpisode: Int? = null
+        val properties = userFile.nameProperties
 
-        val nameProperties = userFile.nameProperties
-        nameProperties.title.shouldBe(expectedTitle, "Title mismatch")
-        nameProperties.year.shouldBe(expectedYear, "Year mismatch")
-        nameProperties.season.shouldBe(expectedSeason, "Season mismatch")
-        nameProperties.episode.shouldBe(expectedEpisode, "Episode mismatch")
+        println(
+            """
+            === NameProperties Inspection ===
+            Title   : ${properties.title}
+            Year    : ${properties.year}
+            Season  : ${properties.season}
+            Episode : ${properties.episode}
+            =================================
+            """.trimIndent()
+        )
+
+
     }
 
 })

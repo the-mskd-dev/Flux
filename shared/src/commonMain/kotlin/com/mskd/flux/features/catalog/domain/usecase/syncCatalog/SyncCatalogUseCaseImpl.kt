@@ -53,12 +53,18 @@ class SyncCatalogUseCaseImpl(
             val existingFiles = filterExistingFilesUseCase(files = (dbMovies + dbEpisodes).map { it.file })
             val deviceFiles = getDeviceFilesUseCase()
 
-            val newFiles = if (!onlyNew) deviceFiles else {
-                deviceFiles.filter { file -> existingFiles.none { it.name == file.name && it.realPath == file.realPath } }
+            // TODO: Delete in October 2026
+            // Get old unknown files
+            val unknownFiles = dbEpisodes.filter { it.isUnknown }
+                .map { it.file }
+                .filter { file -> existingFiles.any { it.path == file.path } && file.realPath.isEmpty() }
+
+            unknownFiles.forEach {
+                Trace.debug(it.name)
             }
 
-            deviceFiles.forEach {
-                Trace.debug(it.realPath)
+            val newFiles = if (!onlyNew) deviceFiles else {
+                deviceFiles.filter { file -> existingFiles.none { it.path == file.path } } + unknownFiles
             }
 
             if (newFiles.isEmpty()) {

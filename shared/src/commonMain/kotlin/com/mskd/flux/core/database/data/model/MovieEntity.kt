@@ -10,7 +10,8 @@ import com.mskd.flux.core.model.files.FileSource
 @Entity(
     tableName = "movies",
     indices = [
-        Index(value = ["artworkId"])
+        Index(value = ["artworkId"]),
+        Index(value = ["path"], unique = true),
     ]
 )
 data class MovieEntity(

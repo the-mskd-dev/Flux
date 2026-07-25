@@ -54,7 +54,7 @@ class SyncCatalogUseCaseImpl(
             val deviceFiles = getDeviceFilesUseCase()
 
             val newFiles = if (!onlyNew) deviceFiles else {
-                deviceFiles.filter { file -> existingFiles.none { it.name == file.name } }
+                deviceFiles.filter { file -> existingFiles.none { it.name == file.name && it.realPath == file.realPath } }
             }
 
             deviceFiles.forEach {

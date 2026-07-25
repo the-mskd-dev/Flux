@@ -340,15 +340,26 @@ class UserFileTest : FunSpec ({
                 expectedTitle = "naruto",
                 expectedSeason = 5,
                 expectedEpisode = 1
-            ),UserFileTestCases.FileProperties(
+            ),
+            UserFileTestCases.FileProperties(
                 file = UserFile(
                     name = "NARUTO.S04E1045.MULTi.1080p.BluRay.x265-FERVEX.mkv",
                     path = "",
-                    realPath = "Naruto/Season 4/NARUTO.S01E1045.MULTi.1080p.BluRay.x265-FERVEX.mkv"
+                    realPath = "Naruto/Season 4/NARUTO.S04E1045.MULTi.1080p.BluRay.x265-FERVEX.mkv"
                 ),
                 expectedTitle = "naruto",
                 expectedSeason = 4,
                 expectedEpisode = 1045
+            ),
+            UserFileTestCases.FileProperties(
+                file = UserFile(
+                    name = "10.mkv",
+                    path = "",
+                    realPath = "Naruto/S5/10.mkv"
+                ),
+                expectedTitle = "naruto",
+                expectedSeason = 5,
+                expectedEpisode = 10
             ),
         ) { testCase ->
 

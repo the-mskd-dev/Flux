@@ -54,14 +54,14 @@ data class FileProperties(
         )
 
         private val EPISODE_ONLY_PATTERNS = listOf(
-            Regex("^ep(?:isode)?[ .]*(\\d{1,4})$", RegexOption.IGNORE_CASE), // episode 02 / episode2 / ep2
-            Regex("^e(\\d{1,4})$", RegexOption.IGNORE_CASE),                 // e02
-            Regex("^(\\d{1,4})$"),                                          // 02
+            Regex("^ep(?:isode)?[ .]*(\\d{1,4})$", RegexOption.IGNORE_CASE),    // episode 02 / episode2 / ep2
+            Regex("^e(\\d{1,4})$", RegexOption.IGNORE_CASE),                    // e02
+            Regex("^(\\d{1,4})$"),                                                      // 02
         )
 
         private val SEASON_ONLY_PATTERNS = listOf(
             Regex("^season[ .]*(\\d{1,2})$", RegexOption.IGNORE_CASE),
-            Regex("^s[ ]?(\\d{1,2})$", RegexOption.IGNORE_CASE),
+            Regex("^s ?(\\d{1,2})$", RegexOption.IGNORE_CASE),
             Regex("^(\\d{1,2})$"),
         )
 

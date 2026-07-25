@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 6,
-    "identityHash": "7569184896029fcd85f67f5be507ae59",
+    "identityHash": "20660b55e9277ee49bbcf063b91825dc",
     "entities": [
       {
         "tableName": "artworks",
@@ -163,6 +163,15 @@
             ],
             "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_movies_artworkId` ON `${TABLE_NAME}` (`artworkId`)"
+          },
+          {
+            "name": "index_movies_path",
+            "unique": true,
+            "columnNames": [
+              "path"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_movies_path` ON `${TABLE_NAME}` (`path`)"
           }
         ]
       },
@@ -300,6 +309,15 @@
             ],
             "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_episodes_artworkId` ON `${TABLE_NAME}` (`artworkId`)"
+          },
+          {
+            "name": "index_episodes_path",
+            "unique": true,
+            "columnNames": [
+              "path"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_episodes_path` ON `${TABLE_NAME}` (`path`)"
           }
         ]
       },
@@ -388,7 +406,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7569184896029fcd85f67f5be507ae59')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '20660b55e9277ee49bbcf063b91825dc')"
     ]
   }
 }

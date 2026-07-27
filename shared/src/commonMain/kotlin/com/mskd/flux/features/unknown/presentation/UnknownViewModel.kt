@@ -74,6 +74,7 @@ class UnknownViewModel(
     fun handleIntent(intent: UnknownIntent) = viewModelScope.launch {
         when (intent) {
             is UnknownIntent.PlayMedia -> playMedia(media = intent.media, forceInternal = intent.forceInternal)
+            is UnknownIntent.OpenFileExplorer -> _event.emit(UnknownEvent.OpenFileExplorer(media = intent.media))
             UnknownIntent.OnBackTap -> _event.emit(UnknownEvent.BackToPreviousScreen)
             UnknownIntent.OnInfoTap -> _event.emit(UnknownEvent.NavigateToHowToScreen)
             is UnknownIntent.OnExternalPlayerResult -> onExternalPlayerResult(progress = intent.progress)

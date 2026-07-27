@@ -16,17 +16,19 @@ data class UnknownUiState(
 
 }
 
-sealed class UnknownIntent {
-    object OnBackTap: UnknownIntent()
-    data class PlayMedia(val media: Media, val forceInternal: Boolean = false): UnknownIntent()
-    object OnInfoTap: UnknownIntent()
-    data class DoSearch(val query: String) : UnknownIntent()
-    data class OnExternalPlayerResult(val progress: Long) : UnknownIntent()
+sealed interface UnknownIntent {
+    object OnBackTap: UnknownIntent
+    data class PlayMedia(val media: Media, val forceInternal: Boolean = false): UnknownIntent
+    object OnInfoTap: UnknownIntent
+    data class OpenFileExplorer(val media: Media): UnknownIntent
+    data class DoSearch(val query: String) : UnknownIntent
+    data class OnExternalPlayerResult(val progress: Long) : UnknownIntent
 }
 
-sealed class UnknownEvent {
-    object BackToPreviousScreen : UnknownEvent()
-    object NavigateToHowToScreen : UnknownEvent()
-    data class PlayMedia(val mediaId: Long) : UnknownEvent()
-    data class LaunchExternalPlayer(val media: Media) : UnknownEvent()
+sealed interface UnknownEvent {
+    object BackToPreviousScreen : UnknownEvent
+    object NavigateToHowToScreen : UnknownEvent
+    data class PlayMedia(val mediaId: Long) : UnknownEvent
+    data class LaunchExternalPlayer(val media: Media) : UnknownEvent
+    data class OpenFileExplorer(val media: Media): UnknownEvent
 }

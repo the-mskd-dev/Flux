@@ -36,6 +36,7 @@ import com.mskd.flux.features.unknown.presentation.UnknownViewModel
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Route.Player
+import com.mskd.flux.screens.unknown.composables.UnknownDropDownMenu
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.component.global.ErrorScreen
 import com.mskd.flux.ui.component.global.FluxScaffold
@@ -45,6 +46,7 @@ import com.mskd.flux.ui.component.media.EpisodeItem
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.ExternalPlayer
+import com.mskd.flux.utils.FileUtils
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.rememberExternalPlayerLauncher
 import flux.shared.generated.resources.Res
@@ -89,6 +91,7 @@ fun UnknownScreen(
                         onError = { viewModel.handleIntent(UnknownIntent.PlayMedia(media = event.media, forceInternal = true)) }
                     )
                 }
+                is UnknownEvent.OpenFileExplorer -> FileUtils.openFileExplorer(context = context, file = event.media.file)
             }
         }
     }
@@ -183,6 +186,13 @@ fun UnknownScreenContent(
                         episode = media,
                         isSelected = false,
                         onTap = { sendIntent(UnknownIntent.PlayMedia(media = media)) },
+                        dropDownMenu = { onDismissRequest ->
+                            UnknownDropDownMenu(
+                                episode = media,
+                                onDismissRequest = onDismissRequest,
+                                sendIntent = sendIntent
+                            )
+                        }
                     )
 
                 }

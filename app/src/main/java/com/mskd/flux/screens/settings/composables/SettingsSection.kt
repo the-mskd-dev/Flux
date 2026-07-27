@@ -19,7 +19,7 @@ import com.mskd.flux.features.settings.presentation.SettingsIntent
 import com.mskd.flux.features.settings.presentation.SettingsUiState
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.Constants
-import com.mskd.flux.utils.extensions.WebLink
+import com.mskd.flux.utils.UriUtils
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.about
 import flux.shared.generated.resources.about_desc
@@ -244,7 +244,7 @@ fun SettingsOtherSection(
             iconColor = iconColor,
             iconBackgroundColor = bgColor,
             onTap = {
-                WebLink.openPage(
+                UriUtils.openWebPage(
                     context = context,
                     url = Constants.CONTACT.SPONSOR
                 )
@@ -328,7 +328,7 @@ fun SettingsAppInfoSection(
             iconColor = iconColor,
             iconBackgroundColor = bgColor,
             onTap = {
-                WebLink.openPage(
+                UriUtils.openWebPage(
                     context = context,
                     url = Constants.CONTACT.X
                 )
@@ -342,7 +342,7 @@ fun SettingsAppInfoSection(
             iconColor = iconColor,
             iconBackgroundColor = bgColor,
             onTap = {
-                WebLink.openPage(
+                UriUtils.openWebPage(
                     context = context,
                     url = Constants.CONTACT.GITHUB
                 )
@@ -358,7 +358,7 @@ fun SettingsAppInfoSection(
                 iconColor = iconColor,
                 iconBackgroundColor = bgColor,
                 onTap = {
-                    WebLink.openPage(
+                    UriUtils.openWebPage(
                         context = context,
                         url = Constants.CONTACT.RELEASES
                     )

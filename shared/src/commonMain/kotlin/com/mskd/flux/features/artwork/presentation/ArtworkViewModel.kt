@@ -100,6 +100,7 @@ class ArtworkViewModel(
             is ArtworkIntent.PlayMedia -> playMedia(media = intent.media, forceInternal = intent.forceInternal)
             ArtworkIntent.OpenArtworkInfo -> openArtworkInfo()
             is ArtworkIntent.OpenEpisodeInfo -> _event.emit(OpenUrlInfo(url = intent.episode.infoUrl))
+            is ArtworkIntent.OpenFileExplorer -> _event.emit(ArtworkEvent.OpenFileExplorer(media = intent.media))
 
             // Dialogs
             ArtworkIntent.CloseDialog -> closeDialog()

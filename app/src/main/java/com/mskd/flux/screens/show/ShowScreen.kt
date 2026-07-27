@@ -48,7 +48,7 @@ import com.mskd.flux.ui.component.global.FluxScaffold
 import com.mskd.flux.ui.component.global.ResetProgressDialog
 import com.mskd.flux.utils.AppThemePreview
 import com.mskd.flux.utils.FluxPreview
-import com.mskd.flux.utils.extensions.WebLink
+import com.mskd.flux.utils.UriUtils
 import com.mskd.flux.utils.rememberScreenDimensions
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_eraser
@@ -77,7 +77,7 @@ fun ShowScreen(
             when (event) {
                 ShowEvent.BackToPreviousScreen -> onBack()
                 is ShowEvent.NavigateToSeason -> navigate(Artwork(artworkId = event.artworkId, season = event.season, rgb = event.rgb))
-                is ShowEvent.OpenShowInfo -> WebLink.openPage(context = context, url = event.url)
+                is ShowEvent.OpenShowInfo -> UriUtils.openWebPage(context = context, url = event.url)
             }
         }
     }

@@ -171,4 +171,5 @@
     <string name="dialog_sources_title">Deine Ordner, deine Regeln!</string>
     <string name="dialog_sources_description">Um dir mehr Kontrolle zu geben, konzentriert sich die App nun auf deine Ordner %1$s und %2$s.\n\nFehlt ein Video? Keine Panik! Du kannst deine eigenen Ordner ganz einfach in den Einstellungen hinzufügen.</string>
     <string name="content_unavailable">Inhalt nicht verfügbar</string>
+    <string name="open_in_file_explorer">Im Dateimanager öffnen</string>
 </resources>

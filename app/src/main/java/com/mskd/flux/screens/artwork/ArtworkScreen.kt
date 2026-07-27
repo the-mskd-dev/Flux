@@ -9,7 +9,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -40,27 +39,23 @@ import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Route.Player
 import com.mskd.flux.screens.artwork.composables.ArtworkContentLarge
 import com.mskd.flux.screens.artwork.composables.ArtworkContentRegular
+import com.mskd.flux.screens.artwork.composables.common.ArtworkDropDownMenu
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.component.global.ErrorScreen
 import com.mskd.flux.ui.component.global.FluxDialog
-import com.mskd.flux.ui.component.global.FluxDropDownMenu
-import com.mskd.flux.ui.component.global.FluxDropDownMenuItem
 import com.mskd.flux.ui.component.global.FluxScaffold
 import com.mskd.flux.ui.component.global.ResetProgressDialog
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.utils.ExternalPlayer
+import com.mskd.flux.utils.FileUtils
 import com.mskd.flux.utils.FluxPreview
-import com.mskd.flux.utils.extensions.WebLink
+import com.mskd.flux.utils.UriUtils
 import com.mskd.flux.utils.rememberExternalPlayerLauncher
 import com.mskd.flux.utils.rememberScreenDimensions
 import flux.shared.generated.resources.Res
-import flux.shared.generated.resources.ic_eraser
 import flux.shared.generated.resources.mark_previous_episodes_as_watched
-import flux.shared.generated.resources.more_info
 import flux.shared.generated.resources.oups_an_error_occured
-import flux.shared.generated.resources.reset_progress
-import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -90,7 +85,7 @@ fun ArtworkScreen(
             when (event) {
                 ArtworkEvent.BackToPreviousScreen -> onBack()
                 is ArtworkEvent.PlayMedia -> navigate(Player(mediaId = event.mediaId))
-                is ArtworkEvent.OpenUrlInfo -> WebLink.openPage(context = context, url = event.url)
+                is ArtworkEvent.OpenUrlInfo -> UriUtils.openWebPage(context = context, url = event.url)
                 is ArtworkEvent.LaunchExternalPlayer -> {
                     ExternalPlayer.launchPlayer(
                         context = context,
@@ -99,6 +94,7 @@ fun ArtworkScreen(
                         onError = { viewModel.handleIntent(ArtworkIntent.PlayMedia(media = event.media, forceInternal = true)) }
                     )
                 }
+                is ArtworkEvent.OpenFileExplorer -> FileUtils.openFileExplorer(context = context, file = event.media.file)
             }
         }
     }
@@ -202,6 +198,7 @@ fun ArtworkScreenContent(
 
             if (showMenu) {
                 ArtworkDropDownMenu(
+                    fullArtwork = fullArtwork,
                     onDismissRequest = { showMenu = false },
                     sendIntent = sendIntent
                 )
@@ -250,35 +247,6 @@ fun ArtworkScreenContent(
             onDismiss = { sendIntent(ArtworkIntent.CloseDialog) }
         )
     }
-
-}
-@Composable
-fun ArtworkDropDownMenu(
-    onDismissRequest: () -> Unit,
-    sendIntent: (ArtworkIntent) -> Unit
-) {
-
-    FluxDropDownMenu(
-        onDismissRequest = onDismissRequest,
-        items = listOf(
-            FluxDropDownMenuItem(
-                text = stringResource(Res.string.more_info),
-                onClick = {
-                    sendIntent(ArtworkIntent.OpenArtworkInfo)
-                    onDismissRequest()
-                },
-                leadingIcon = { Icon(imageVector = Icons.Outlined.Info, contentDescription = stringResource(Res.string.more_info)) },
-            ),
-            FluxDropDownMenuItem(
-                text = stringResource(Res.string.reset_progress),
-                onClick = {
-                    sendIntent(ArtworkIntent.ShowResetProgressDialog)
-                    onDismissRequest()
-                },
-                leadingIcon = { Icon(painter = painterResource(Res.drawable.ic_eraser), contentDescription = stringResource(Res.string.reset_progress)) },
-            )
-        )
-    )
 
 }
 

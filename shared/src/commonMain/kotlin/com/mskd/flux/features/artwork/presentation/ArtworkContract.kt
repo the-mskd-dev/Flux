@@ -39,31 +39,33 @@ sealed class ArtworkDialog {
     object ResetProgressConfirmation : ArtworkDialog()
 }
 
-sealed class ArtworkIntent {
+sealed interface ArtworkIntent {
     //Navigation
-    object OnBackTap: ArtworkIntent()
-    data class PlayMedia(val media: Media, val forceInternal: Boolean = false): ArtworkIntent()
-    data object OpenArtworkInfo: ArtworkIntent()
-    data class OpenEpisodeInfo(val episode: Episode): ArtworkIntent()
+    object OnBackTap: ArtworkIntent
+    data class PlayMedia(val media: Media, val forceInternal: Boolean = false): ArtworkIntent
+    data object OpenArtworkInfo: ArtworkIntent
+    data class OpenFileExplorer(val media: Media): ArtworkIntent
+    data class OpenEpisodeInfo(val episode: Episode): ArtworkIntent
 
     // Dialogs
-    data object CloseDialog: ArtworkIntent()
-    data object ShowResetProgressDialog : ArtworkIntent()
+    data object CloseDialog: ArtworkIntent
+    data object ShowResetProgressDialog : ArtworkIntent
 
     // Status
-    data object ResetProgress: ArtworkIntent()
-    data class ChangeWatchStatus(val media: Media): ArtworkIntent()
-    object MarkPreviousEpisodesAsWatched: ArtworkIntent()
+    data object ResetProgress: ArtworkIntent
+    data class ChangeWatchStatus(val media: Media): ArtworkIntent
+    object MarkPreviousEpisodesAsWatched: ArtworkIntent
 
     // Other
-    data class OnExternalPlayerResult(val progress: Long) : ArtworkIntent()
-    data class ExpandEpisodeDescription(val episode: Episode) : ArtworkIntent()
-    data object CollapseEpisodeDescription : ArtworkIntent()
+    data class OnExternalPlayerResult(val progress: Long) : ArtworkIntent
+    data class ExpandEpisodeDescription(val episode: Episode) : ArtworkIntent
+    data object CollapseEpisodeDescription : ArtworkIntent
 }
 
-sealed class ArtworkEvent {
-    object BackToPreviousScreen : ArtworkEvent()
-    data class PlayMedia(val mediaId: Long) : ArtworkEvent()
-    data class LaunchExternalPlayer(val media: Media) : ArtworkEvent()
-    data class OpenUrlInfo(val url: String) : ArtworkEvent()
+sealed interface ArtworkEvent {
+    object BackToPreviousScreen : ArtworkEvent
+    data class PlayMedia(val mediaId: Long) : ArtworkEvent
+    data class LaunchExternalPlayer(val media: Media) : ArtworkEvent
+    data class OpenUrlInfo(val url: String) : ArtworkEvent
+    data class OpenFileExplorer(val media: Media): ArtworkEvent
 }

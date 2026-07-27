@@ -19,12 +19,14 @@ object FileUtils {
     const val TAG = "FileUtils"
 
     suspend fun openFileExplorer(context: Context, file: UserFile) {
-        val targetUri = withContext(Dispatchers.IO) {
-            resolveTargetUri(context, file)
-        }
-
         try {
+
+            val targetUri = withContext(Dispatchers.IO) {
+                resolveTargetUri(context, file)
+            }
+
             launchExplorer(context, targetUri)
+
         } catch (e: Exception) {
             Trace.error(tag = TAG, message = "File to open file explorer", throwable = e)
         }

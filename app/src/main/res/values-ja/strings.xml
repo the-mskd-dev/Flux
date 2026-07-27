@@ -1,2 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="acra_dialog_title">アプリがクラッシュしました…</string>
+    <string name="acra_dialog_message">アプリが予期せず停止しました。このバグの修正に協力するため、メールで技術的なクラッシュレポートを送信できます。</string>
+    <string name="acra_dialog_comment">実行していた操作を入力してください（任意）</string>
+    <string name="acra_dialog_send">送信</string>
+    <string name="acra_dialog_dismiss">キャンセル</string>
+</resources>

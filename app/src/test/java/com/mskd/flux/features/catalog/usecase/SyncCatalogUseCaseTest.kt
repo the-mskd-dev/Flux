@@ -154,8 +154,7 @@ class SyncCatalogUseCaseImplTest : FunSpec({
         val existingMovie = mockk<Movie>(relaxed = true) { every { file } returns existingFile }
 
         val database = mockk<DatabaseRepository>(relaxed = true)
-        coEvery { database.getMovies() } returns listOf(existingMovie)
-        coEvery { database.getEpisodes() } returns emptyList()
+        coEvery { database.getMedias() } returns listOf(existingMovie)
 
         val filterExistingFilesUseCase = mockk<FilterExistingFilesUseCase>()
         coEvery { filterExistingFilesUseCase(files = any()) } returns listOf(existingFile)
@@ -181,8 +180,7 @@ class SyncCatalogUseCaseImplTest : FunSpec({
         val artworkFiles = ArtworkFiles(artwork = Artwork(id = 42L), files = listOf(newFile))
 
         val database = mockk<DatabaseRepository>(relaxed = true)
-        coEvery { database.getMovies() } returns emptyList()
-        coEvery { database.getEpisodes() } returns emptyList()
+        coEvery { database.getMedias() } returns emptyList()
 
         val getDeviceFilesUseCase = mockk<GetDeviceFilesUseCase>()
         coEvery { getDeviceFilesUseCase() } returns listOf(newFile)

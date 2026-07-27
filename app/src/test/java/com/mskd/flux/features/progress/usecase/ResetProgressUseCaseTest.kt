@@ -4,6 +4,7 @@ import com.mskd.flux.core.FakeDatabaseRepository
 import com.mskd.flux.core.database.domain.repository.DatabaseRepository
 import com.mskd.flux.core.datastore.domain.UserDataStore
 import com.mskd.flux.core.model.artwork.ContentType
+import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
 import com.mskd.flux.features.progress.fake.ProgressUCTestCases
@@ -55,10 +56,10 @@ class ResetProgressUseCaseTest : FunSpec({
 
             when (testCase.artwork.type) {
                 ContentType.MOVIE -> {
-                    coVerify { databaseRepository.saveMovies(match { movies -> movies.all { it.status == Status.TO_WATCH && it.currentTime == 0L } }) }
+                    coVerify { databaseRepository.saveMedias(match { movies -> movies.all { it.status == Status.TO_WATCH && it.currentTime == 0L } }) }
                 }
                 ContentType.SHOW -> {
-                    coVerify { databaseRepository.saveEpisodes(match { episodes ->  episodes.all { it.status == Status.TO_WATCH && it.currentTime == 0L } } ) }
+                    coVerify { databaseRepository.saveMedias(match { episodes ->  episodes.all { it.status == Status.TO_WATCH && it.currentTime == 0L } } ) }
                 }
             }
 
@@ -78,8 +79,8 @@ class ResetProgressUseCaseTest : FunSpec({
         resetProgress(artwork = MediaMockups.showArtwork, season = 1)
 
         coVerify {
-            databaseRepository.saveEpisodes(match { saved ->
-                saved.size == 2 && saved.all { it.season == 1 && it.status == Status.TO_WATCH && it.currentTime == 0L }
+            databaseRepository.saveMedias(match { saved ->
+                saved.size == 2 && saved.all { (it as Episode).season == 1 && it.status == Status.TO_WATCH && it.currentTime == 0L }
             })
         }
     }

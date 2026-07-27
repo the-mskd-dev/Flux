@@ -148,14 +148,24 @@ class SafFilesDataSource(
         val files = mutableListOf<UserFile>()
         try {
             val rootDocId = DocumentsContract.getTreeDocumentId(treeUri)
-            traverse(treeUri, rootDocId, files)
+            traverse(
+                treeUri = treeUri,
+                parentDocId = rootDocId,
+                relativePath = "",
+                acc = files
+            )
         } catch (e: Exception) {
             Trace.error(TAG, "Fail to traverse tree $treeUri", e)
         }
         return files
     }
 
-    private fun traverse(treeUri: Uri, parentDocId: String, acc: MutableList<UserFile>) {
+    private fun traverse(
+        treeUri: Uri,
+        parentDocId: String,
+        relativePath: String,
+        acc: MutableList<UserFile>
+    ) {
 
         val childrenUri = DocumentsContract.buildChildDocumentsUriUsingTree(treeUri, parentDocId)
 
@@ -178,9 +188,14 @@ class SafFilesDataSource(
                 val name = it.getString(nameCol)
                 val mime = it.getString(mimeCol)
                 val lastModified = it.getLong(dateCol)
+                val childRelativePath = "$relativePath$name"
 
                 if (mime == DocumentsContract.Document.MIME_TYPE_DIR) {
-                    traverse(treeUri, docId, acc)
+                    traverse(
+                        treeUri = treeUri,
+                        parentDocId = docId,
+                        relativePath = "$childRelativePath/",
+                        acc = acc)
                 } else {
                     val extension = name.substringAfterLast('.', "").lowercase()
                     if (extension in FileExtensions.VIDEOS) {
@@ -189,6 +204,7 @@ class SafFilesDataSource(
                             name = name,
                             addedDateTime = lastModified,
                             path = docUri.toString(),
+                            realPath = childRelativePath,
                             source = FileSource.SAF,
                             parentDocId = parentDocId
                         )

@@ -42,7 +42,7 @@ class ChangeMediaStatusUseCase(
         if (status == Status.WATCHED)
             user.removeFromRecentlyWatched(movie.artworkId)
 
-        database.saveMovies(listOf(movieUpdated)) // Save status in DB
+        database.saveMedias(listOf(movieUpdated)) // Save status in DB
 
         Trace.info(TAG, "${movie.title} is now ${movie.status}")
 
@@ -63,7 +63,7 @@ class ChangeMediaStatusUseCase(
             if (lastEpisode.id == updatedEpisode.id && status == Status.WATCHED)
                 user.removeFromRecentlyWatched(episode.artworkId)
 
-            database.saveEpisodes(listOf(updatedEpisode)) // Save status in DB
+            database.saveMedias(listOf(updatedEpisode)) // Save status in DB
 
         }
 

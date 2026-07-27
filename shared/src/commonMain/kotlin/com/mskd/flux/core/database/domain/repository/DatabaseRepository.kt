@@ -2,6 +2,7 @@ package com.mskd.flux.core.database.domain.repository
 
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.Episode
+import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.Movie
 import com.mskd.flux.core.model.artwork.Season
 import com.mskd.flux.core.model.files.UserFile
@@ -13,29 +14,27 @@ interface DatabaseRepository {
     // Flows
     fun flowArtworks() : Flow<List<Artwork>>
     fun flowArtwork(artworkId: Long) : Flow<Artwork?>
-    fun flowMovie(artworkId: Long) : Flow<Movie?>
-    fun flowEpisodes(artworkId: Long) : Flow<List<Episode>>
+    fun flowMedias(artworkId: Long): Flow<List<Media>>
     fun flowSeasons(artworkId: Long) : Flow<List<Season>>
 
     // Save
     suspend fun saveArtworks(artworks: List<Artwork>)
-    suspend fun saveMovies(movies: List<Movie>)
+    suspend fun saveMedias(medias: List<Media>)
     suspend fun saveSeasons(seasons: List<Season>)
-    suspend fun saveEpisodes(episodes: List<Episode>)
 
     // Artworks
     suspend fun getArtwork(artworkId: Long) : Artwork?
     suspend fun getArtworks() : List<Artwork>
 
+    // Medias
+    suspend fun getMedias() : List<Media>
+    suspend fun getMediasNotInFiles(files: List<UserFile>) : List<Media>
+
     // Movies
     suspend fun getMovie(artworkId: Long) : Movie?
-    suspend fun getMovies() : List<Movie>
-    suspend fun getMoviesNotInFiles(files: List<UserFile>) : List<Movie>
 
     // Episodes
     suspend fun getEpisodes(artworkId: Long) : List<Episode>
-    suspend fun getEpisodes() : List<Episode>
-    suspend fun getEpisodesNotInFiles(files: List<UserFile>) : List<Episode>
     suspend fun getEpisodeCount(artworkId: Long): Int
     suspend fun getEpisodeCountBySeason(artworkId: Long, season: Int): Int
 
@@ -51,8 +50,6 @@ interface DatabaseRepository {
 
     // Delete
     suspend fun deleteArtworks(artworks: List<Artwork>)
-    suspend fun deleteMovies(movies: List<Movie>)
-    suspend fun deleteEpisodes(episodes: List<Episode>)
     suspend fun deleteMediasNotInFiles(files: List<UserFile>)
     suspend fun deleteMediasInFolder(folder: UserFolder)
     suspend fun deleteAll()

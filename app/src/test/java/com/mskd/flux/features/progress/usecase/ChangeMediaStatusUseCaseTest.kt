@@ -80,10 +80,10 @@ class ChangeMediaStatusUseCaseTest : FunSpec ({
 
             when (testCase.media) {
                 is Episode -> {
-                    coVerify { databaseRepository.saveEpisodes(match { it.all { e -> e.id == testCase.media.id } } ) }
+                    coVerify { databaseRepository.saveMedias(match { it.all { e -> (e as Episode).id == testCase.media.id } } ) }
                 }
                 is Movie -> {
-                    coVerify { databaseRepository.saveMovies(match { it.all { e -> e.artworkId == testCase.media.artworkId } } ) }
+                    coVerify { databaseRepository.saveMedias(match { it.all { e -> e.artworkId == testCase.media.artworkId } } ) }
                 }
             }
 

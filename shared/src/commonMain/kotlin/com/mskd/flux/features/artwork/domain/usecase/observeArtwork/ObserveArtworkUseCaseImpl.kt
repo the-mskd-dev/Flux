@@ -2,7 +2,9 @@ package com.mskd.flux.features.artwork.domain.usecase.observeArtwork
 
 import com.mskd.flux.core.database.domain.repository.DatabaseRepository
 import com.mskd.flux.core.model.artwork.ContentType
+import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.FullArtwork
+import com.mskd.flux.core.model.artwork.Movie
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.artwork.domain.mapper.buildFullArtworkMovie
 import com.mskd.flux.features.artwork.domain.mapper.buildFullArtworkShow
@@ -29,16 +31,15 @@ class ObserveArtworkUseCaseImpl(
         .flatMapLatest { artworkId ->
             combine(
                 database.flowArtwork(artworkId),
-                database.flowMovie(artworkId),
+                database.flowMedias(artworkId),
                 database.flowSeasons(artworkId),
-                database.flowEpisodes(artworkId),
                 sourcesUseCase()
-            ) { artwork, movie, seasons, episodes, sources ->
+            ) { artwork, medias, seasons, sources ->
 
                 when (artwork?.type) {
                     ContentType.MOVIE -> {
 
-                        movie?.let {
+                        medias.filterIsInstance<Movie>().firstOrNull()?.let {
                             State.Content(
                                 content = buildFullArtworkMovie(
                                     artwork = artwork,
@@ -55,7 +56,7 @@ class ObserveArtworkUseCaseImpl(
                             content = buildFullArtworkShow(
                                 artwork = artwork,
                                 seasons = seasons,
-                                episodes = episodes,
+                                episodes = medias.filterIsInstance<Episode>(),
                                 sources = sources
                             )
                         )

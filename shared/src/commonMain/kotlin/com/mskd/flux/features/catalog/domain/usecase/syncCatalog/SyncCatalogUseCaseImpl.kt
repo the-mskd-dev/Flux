@@ -3,6 +3,7 @@ package com.mskd.flux.features.catalog.domain.usecase.syncCatalog
 import com.mskd.flux.core.database.domain.repository.DatabaseRepository
 import com.mskd.flux.core.datastore.domain.UserDataStore
 import com.mskd.flux.core.model.artwork.Episode
+import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.Movie
 import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.core.model.catalog.Catalog
@@ -48,13 +49,22 @@ class SyncCatalogUseCaseImpl(
 
         coordinator.launch(full = !onlyNew) {
 
-            val dbMovies = database.getMovies()
-            val dbEpisodes = database.getEpisodes()
-            val existingFiles = filterExistingFilesUseCase(files = (dbMovies + dbEpisodes).map { it.file })
+            val dbMedias = database.getMedias()
+            val existingFiles = filterExistingFilesUseCase(files = (dbMedias).map { it.file })
             val deviceFiles = getDeviceFilesUseCase()
 
+            // TODO: Delete in October 2026
+            // Get old unknown files
+            val unknownFiles = dbMedias.filter { it is Episode && it.isUnknown }
+                .map { it.file }
+                .filter { file -> existingFiles.any { it.path == file.path } && file.realPath.isEmpty() }
+
+            unknownFiles.forEach {
+                Trace.debug(it.name)
+            }
+
             val newFiles = if (!onlyNew) deviceFiles else {
-                deviceFiles.filter { file -> existingFiles.none { it.name == file.name } }
+                deviceFiles.filter { file -> existingFiles.none { it.path == file.path } } + unknownFiles
             }
 
             if (newFiles.isEmpty()) {
@@ -72,22 +82,20 @@ class SyncCatalogUseCaseImpl(
                 2. Get all media for files (newFiles.size)
                 3. Clean catalog
                 4. Save artworks
-                5. Save movies
-                6. Save seasons
-                7. Save episodes
+                5. Save seasons
+                6. Save medias
              */
-            coordinator.setTotalSteps(folders.size + newFiles.size + 5)
+            coordinator.setTotalSteps(folders.size + newFiles.size + 4)
 
             var catalog = getCatalog(files = newFiles)
-            catalog = applyCurrentMediaProgress(catalog, dbMovies, dbEpisodes)
+            catalog = applyCurrentMediaProgress(catalog, dbMedias = dbMedias)
 
             if (onlyNew) database.deleteMediasNotInFiles((deviceFiles + existingFiles).distinct()) else database.deleteAll()
             coordinator.incrementProgress()
 
             database.saveArtworks(catalog.artworks); coordinator.incrementProgress()
-            database.saveMovies(catalog.movies); coordinator.incrementProgress()
             database.saveSeasons(catalog.seasons); coordinator.incrementProgress()
-            database.saveEpisodes(catalog.episodes); coordinator.incrementProgress()
+            database.saveMedias(catalog.movies + catalog.episodes); coordinator.incrementProgress()
 
             imagesPrefetchManager.prefetchImages()
             user.setSyncTime(System.currentTimeMillis())
@@ -143,13 +151,13 @@ class SyncCatalogUseCaseImpl(
     /**
      * Copies watch status and current time from existing database media to matched new items.
      */
-    private fun applyCurrentMediaProgress(catalog: Catalog, dbMovies: List<Movie>, dbEpisodes: List<Episode>) : Catalog {
+    private fun applyCurrentMediaProgress(catalog: Catalog, dbMedias: List<Media>) : Catalog {
 
         var count = 0
 
         val movies = catalog.movies.map { newMovie ->
 
-            dbMovies.find { it.file.name == newMovie.file.name && (it.currentTime != 0L || it.status != Status.TO_WATCH) }?.let { oldMovie ->
+            dbMedias.filterIsInstance<Movie>().find { it.file.name == newMovie.file.name && (it.currentTime != 0L || it.status != Status.TO_WATCH) }?.let { oldMovie ->
 
                 count++
 
@@ -164,7 +172,7 @@ class SyncCatalogUseCaseImpl(
 
         val episodes = catalog.episodes.map { newEpisode ->
 
-            dbEpisodes.find { it.file.name == newEpisode.file.name && (it.currentTime != 0L || it.status != Status.TO_WATCH) }?.let { oldEpisode ->
+            dbMedias.filterIsInstance<Episode>().find { it.file.name == newEpisode.file.name && (it.currentTime != 0L || it.status != Status.TO_WATCH) }?.let { oldEpisode ->
 
                 count++
 

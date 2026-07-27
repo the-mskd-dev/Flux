@@ -100,8 +100,8 @@ class SaveProgressUseCaseTest : FunSpec({
             saveProgress(media = testCase.media, progress = testCase.progress)
 
             when (testCase.media) {
-                is Episode -> coVerify { databaseRepository.saveEpisodes(any()) }
-                is Movie -> coVerify { databaseRepository.saveMovies(any()) }
+                is Episode -> coVerify { databaseRepository.saveMedias(any()) }
+                is Movie -> coVerify { databaseRepository.saveMedias(any()) }
             }
 
             if (testCase.shouldBeAddedToRecentlyWatched) {
@@ -117,7 +117,7 @@ class SaveProgressUseCaseTest : FunSpec({
         saveProgress(media = MediaMockups.unknownEpisode, progress = 1000L)
 
         // Verify it saves to database
-        coVerify { databaseRepository.saveEpisodes(match { it.any { e -> e.id == MediaMockups.unknownEpisode.id } }) }
+        coVerify { databaseRepository.saveMedias(match { it.any { e -> (e as Episode).id == MediaMockups.unknownEpisode.id } }) }
 
         // Verify it does NOT call addToRecentlyWatched or removeFromRecentlyWatched
         coVerify(exactly = 0) { userDataStore.addToRecentlyWatched(any()) }

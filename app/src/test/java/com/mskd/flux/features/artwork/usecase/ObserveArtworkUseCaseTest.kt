@@ -3,9 +3,8 @@ package com.mskd.flux.features.artwork.domain.usecase.observeArtwork
 import app.cash.turbine.test
 import com.mskd.flux.core.database.domain.repository.DatabaseRepository
 import com.mskd.flux.core.model.artwork.Artwork
-import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.FullArtwork
-import com.mskd.flux.core.model.artwork.Movie
+import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.Season
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.core.model.files.FileSource
@@ -27,23 +26,20 @@ class ObserveArtworkUseCaseTest : FunSpec({
     lateinit var useCase: ObserveArtworkUseCaseImpl
 
     lateinit var artworkFlow: MutableStateFlow<Artwork?>
-    lateinit var movieFlow: MutableStateFlow<Movie?>
     lateinit var seasonsFlow: MutableStateFlow<List<Season>>
-    lateinit var episodesFlow: MutableStateFlow<List<Episode>>
+    lateinit var mediasFlow: MutableStateFlow<List<Media>>
     lateinit var sourcesFlow: MutableStateFlow<List<UserFolder>>
 
     beforeTest {
         artworkFlow = MutableStateFlow(null)
-        movieFlow = MutableStateFlow(null)
         seasonsFlow = MutableStateFlow(emptyList())
-        episodesFlow = MutableStateFlow(emptyList())
+        mediasFlow = MutableStateFlow(emptyList())
         sourcesFlow = MutableStateFlow(emptyList())
 
         database = mockk()
         every { database.flowArtwork(any()) } returns artworkFlow
-        every { database.flowMovie(any()) } returns movieFlow
         every { database.flowSeasons(any()) } returns seasonsFlow
-        every { database.flowEpisodes(any()) } returns episodesFlow
+        every { database.flowMedias(any()) } returns mediasFlow
 
         sourcesUseCase = mockk()
         every { sourcesUseCase() } returns sourcesFlow
@@ -83,7 +79,7 @@ class ObserveArtworkUseCaseTest : FunSpec({
     test("if type MOVIE with movie available -> State.Content(FullMovie)") {
         runTest {
             artworkFlow.value = MediaMockups.movieArtwork
-            movieFlow.value = MediaMockups.movie
+            mediasFlow.value = listOf(MediaMockups.movie)
             useCase.invoke(MediaMockups.movieArtwork.id)
 
             useCase.flow.test {
@@ -102,7 +98,7 @@ class ObserveArtworkUseCaseTest : FunSpec({
         runTest {
             artworkFlow.value = MediaMockups.showArtwork
             seasonsFlow.value = MediaMockups.seasons
-            episodesFlow.value = MediaMockups.episodes
+            mediasFlow.value = MediaMockups.episodes
             useCase.invoke(MediaMockups.showArtwork.id)
 
             useCase.flow.test {
@@ -122,18 +118,15 @@ class ObserveArtworkUseCaseTest : FunSpec({
     test("new artworkID -> cancel previous observation and then start a new one") {
         runTest {
             val movieArtworkFlow = MutableStateFlow<Artwork?>(MediaMockups.movieArtwork)
-            val movieMovieFlow = MutableStateFlow<Movie?>(MediaMockups.movie)
             val showArtworkFlow = MutableStateFlow<Artwork?>(MediaMockups.showArtwork)
 
             every { database.flowArtwork(MediaMockups.movieArtwork.id) } returns movieArtworkFlow
-            every { database.flowMovie(MediaMockups.movieArtwork.id) } returns movieMovieFlow
             every { database.flowSeasons(MediaMockups.movieArtwork.id) } returns MutableStateFlow(emptyList())
-            every { database.flowEpisodes(MediaMockups.movieArtwork.id) } returns MutableStateFlow(emptyList())
+            every { database.flowMedias(MediaMockups.movieArtwork.id) } returns MutableStateFlow(listOf(MediaMockups.movie))
 
             every { database.flowArtwork(MediaMockups.showArtwork.id) } returns showArtworkFlow
-            every { database.flowMovie(MediaMockups.showArtwork.id) } returns MutableStateFlow(null)
             every { database.flowSeasons(MediaMockups.showArtwork.id) } returns MutableStateFlow(MediaMockups.seasons)
-            every { database.flowEpisodes(MediaMockups.showArtwork.id) } returns MutableStateFlow(MediaMockups.episodes)
+            every { database.flowMedias(MediaMockups.showArtwork.id) } returns MutableStateFlow(MediaMockups.episodes)
 
             useCase.invoke(MediaMockups.movieArtwork.id)
 
@@ -159,7 +152,7 @@ class ObserveArtworkUseCaseTest : FunSpec({
             )
 
             artworkFlow.value = MediaMockups.movieArtwork
-            movieFlow.value = safMovie
+            mediasFlow.value = listOf(safMovie)
             sourcesFlow.value = listOf(
                 UserFolder(path = "content://tree/primary/Movies", isAvailable = true)
             )
@@ -186,7 +179,7 @@ class ObserveArtworkUseCaseTest : FunSpec({
             )
 
             artworkFlow.value = MediaMockups.movieArtwork
-            movieFlow.value = safMovie
+            mediasFlow.value = listOf(safMovie)
             sourcesFlow.value = listOf(
                 UserFolder(path = "content://tree/primary/Movies", isAvailable = false)
             )
@@ -213,7 +206,7 @@ class ObserveArtworkUseCaseTest : FunSpec({
             )
 
             artworkFlow.value = MediaMockups.movieArtwork
-            movieFlow.value = safMovie
+            mediasFlow.value = listOf(safMovie)
             sourcesFlow.value = listOf(
                 UserFolder(path = "content://tree/primary/OtherFolder", isAvailable = true)
             )
@@ -243,7 +236,7 @@ class ObserveArtworkUseCaseTest : FunSpec({
 
             artworkFlow.value = MediaMockups.showArtwork
             seasonsFlow.value = MediaMockups.seasons
-            episodesFlow.value = safEpisodes
+            mediasFlow.value = safEpisodes
             sourcesFlow.value = listOf(
                 UserFolder(path = "content://tree/primary/Naruto", isAvailable = false)
             )
@@ -270,7 +263,7 @@ class ObserveArtworkUseCaseTest : FunSpec({
             )
 
             artworkFlow.value = MediaMockups.movieArtwork
-            movieFlow.value = safMovie
+            mediasFlow.value = listOf(safMovie)
             sourcesFlow.value = listOf(
                 UserFolder(path = "content://tree/primary/Movies", isAvailable = true)
             )

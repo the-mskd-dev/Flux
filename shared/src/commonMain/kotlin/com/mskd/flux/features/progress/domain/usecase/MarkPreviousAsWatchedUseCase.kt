@@ -31,7 +31,7 @@ class MarkPreviousAsWatchedUseCase(private val database: DatabaseRepository) {
             )
         }
 
-        database.saveEpisodes(episodesToSave) // Save status in DB
+        database.saveMedias(episodesToSave) // Save status in DB
 
         Trace.info(TAG, "${episodesToSave.size} episodes marked as watched")
 

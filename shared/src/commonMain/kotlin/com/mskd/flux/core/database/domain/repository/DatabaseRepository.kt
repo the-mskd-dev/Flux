@@ -2,12 +2,12 @@ package com.mskd.flux.core.database.domain.repository
 
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.Episode
+import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.Movie
 import com.mskd.flux.core.model.artwork.Season
 import com.mskd.flux.core.model.files.UserFile
 import com.mskd.flux.features.sources.domain.model.UserFolder
 import kotlinx.coroutines.flow.Flow
-import com.mskd.flux.core.model.artwork.Media
 
 interface DatabaseRepository {
 

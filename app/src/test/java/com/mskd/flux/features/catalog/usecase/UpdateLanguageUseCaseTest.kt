@@ -87,10 +87,9 @@ class UpdateLanguageUseCaseTest : FunSpec({
         coordinator = FakeCatalogSyncCoordinator(scope = testScope)
 
         coEvery { settings.getDataLanguage() } returns Locale.FRENCH
-        coEvery { database.getMovies() } returns listOf(movie)
+        coEvery { database.getMedias() } returns listOf(movie) + listOf(episode)
         coEvery { database.getArtworks() } returns listOf(showArtwork)
         coEvery { database.getSeasons() } returns listOf(season)
-        coEvery { database.getEpisodes() } returns listOf(episode)
 
         useCase = UpdateLanguageUseCaseImpl(
             remoteRepository = remoteRepository,
@@ -123,7 +122,7 @@ class UpdateLanguageUseCaseTest : FunSpec({
         testDispatcher.scheduler.advanceUntilIdle()
 
         coVerify(exactly = 1) {
-            database.saveMovies(match { list ->
+            database.saveMedias(match { list ->
                 list.size == 1 && list[0].title == "new title for movie" && list[0].description == "new description for movie"
             })
         }
@@ -138,7 +137,7 @@ class UpdateLanguageUseCaseTest : FunSpec({
             })
         }
         coVerify(exactly = 1) {
-            database.saveEpisodes(match { list ->
+            database.saveMedias(match { list ->
                 list.size == 1 && list[0].title == "new title for episode" && list[0].description == "new description for episode"
             })
         }
@@ -151,10 +150,9 @@ class UpdateLanguageUseCaseTest : FunSpec({
         useCase()
         testDispatcher.scheduler.advanceUntilIdle()
 
-        coVerify(exactly = 0) { database.saveMovies(any()) }
+        coVerify(exactly = 0) { database.saveMedias(any()) }
         coVerify(exactly = 0) { database.saveArtworks(any()) }
         coVerify(exactly = 0) { database.saveSeasons(any()) }
-        coVerify(exactly = 0) { database.saveEpisodes(any()) }
     }
 
     test("if only the title is translated, keep the current description") {
@@ -167,7 +165,7 @@ class UpdateLanguageUseCaseTest : FunSpec({
         testDispatcher.scheduler.advanceUntilIdle()
 
         coVerify(exactly = 1) {
-            database.saveMovies(match { list ->
+            database.saveMedias(match { list ->
                 list.size == 1 && list[0].title == "new title" && list[0].description == "Old Movie Desc"
             })
         }
@@ -183,7 +181,7 @@ class UpdateLanguageUseCaseTest : FunSpec({
         testDispatcher.scheduler.advanceUntilIdle()
 
         coVerify(exactly = 1) {
-            database.saveMovies(match { list ->
+            database.saveMedias(match { list ->
                 list.size == 1 && list[0].title == "Old Movie Title" && list[0].description == "new description"
             })
         }

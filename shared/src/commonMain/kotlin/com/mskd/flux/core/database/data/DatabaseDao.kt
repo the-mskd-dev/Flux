@@ -4,14 +4,12 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Transaction
 import com.mskd.flux.core.database.data.model.ArtworkEntity
-import com.mskd.flux.core.database.data.model.EpisodeEntity
-import com.mskd.flux.core.database.data.model.MovieEntity
+import com.mskd.flux.core.database.data.model.MediaEntity
 import com.mskd.flux.core.database.data.model.SeasonEntity
 import com.mskd.flux.core.database.data.model.projections.ArtworkImagesProjection
 import com.mskd.flux.core.model.artwork.Artwork
-import com.mskd.flux.features.sources.data.local.UserFolderEntity
+import com.mskd.flux.core.model.artwork.ContentType
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -23,16 +21,10 @@ interface DatabaseDao {
     suspend fun insertArtworks(artworks: List<ArtworkEntity>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertMovies(movies: List<MovieEntity>)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertEpisodes(episodes: List<EpisodeEntity>)
+    suspend fun insertMedias(medias: List<MediaEntity>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSeasons(seasons: List<SeasonEntity>)
-
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertUserFolders(folders: List<UserFolderEntity>)
 
 //endregion
 
@@ -44,17 +36,11 @@ interface DatabaseDao {
     @Query("SELECT * FROM artworks WHERE id = :artworkId")
     fun flowArtwork(artworkId: Long) : Flow<ArtworkEntity?>
 
-    @Query("SELECT * FROM movies WHERE artworkId = :artworkId")
-    fun flowMovie(artworkId: Long) : Flow<MovieEntity?>
-
-    @Query("SELECT * FROM episodes WHERE artworkId = :artworkId")
-    fun flowEpisodes(artworkId: Long) : Flow<List<EpisodeEntity>>
+    @Query("SELECT * FROM medias WHERE artworkId = :artworkId")
+    fun flowMedias(artworkId: Long) : Flow<List<MediaEntity>>
 
     @Query("SELECT * FROM seasons WHERE artworkId = :artworkId")
     fun flowSeasons(artworkId: Long) : Flow<List<SeasonEntity>>
-
-    @Query("SELECT * FROM folders")
-    fun flowUserFolders() : Flow<List<UserFolderEntity>>
 
 //endregion
 
@@ -66,26 +52,17 @@ interface DatabaseDao {
     @Query("SELECT * FROM artworks")
     suspend fun getArtworks() : List<ArtworkEntity>
 
-    @Query("SELECT * FROM movies WHERE artworkId = :artworkId")
-    suspend fun getMovie(artworkId: Long) : MovieEntity?
+    @Query("SELECT * FROM medias WHERE artworkId = :artworkId")
+    suspend fun getMedias(artworkId: Long) : List<MediaEntity>
 
-    @Query("SELECT * FROM movies")
-    suspend fun getMovies() : List<MovieEntity>
+    @Query("SELECT * FROM medias")
+    suspend fun getMedias() : List<MediaEntity>
 
-    @Query("SELECT * FROM movies WHERE name NOT IN (:fileNames)")
-    suspend fun getMoviesNotInFiles(fileNames: List<String>) : List<MovieEntity>
+    @Query("SELECT * FROM medias WHERE name NOT IN (:fileNames)")
+    suspend fun getMediasNotInFiles(fileNames: List<String>) : List<MediaEntity>
 
-    @Query("SELECT * FROM episodes WHERE artworkId = :artworkId")
-    suspend fun getEpisodes(artworkId: Long) : List<EpisodeEntity>
-
-    @Query("SELECT * FROM episodes")
-    suspend fun getEpisodes() : List<EpisodeEntity>
-
-    @Query("SELECT * FROM episodes WHERE name NOT IN (:fileNames)")
-    suspend fun getEpisodesNotInFiles(fileNames: List<String>) : List<EpisodeEntity>
-
-    @Query("SELECT * FROM episodes WHERE artworkId = ${Artwork.UNKNOWN_ID}")
-    suspend fun getUnknownMedias() : List<EpisodeEntity>
+    @Query("SELECT * FROM medias WHERE artworkId = ${Artwork.UNKNOWN_ID}")
+    suspend fun getUnknownMedias() : List<MediaEntity>
 
     @Query("SELECT * FROM seasons WHERE artworkId = :artworkId")
     suspend fun getSeasons(artworkId: Long) : List<SeasonEntity>
@@ -97,40 +74,36 @@ interface DatabaseDao {
 
 //region Delete
 
-    @Query("DELETE FROM artworks WHERE id IN (:ids)")
-    suspend fun deleteArtworks(ids: List<Long>)
+    @Query("DELETE FROM artworks WHERE id IN (:artworkIds)")
+    suspend fun deleteArtworks(artworkIds: List<Long>)
 
     @Query("""
         DELETE FROM artworks
         WHERE id NOT IN (
-            SELECT DISTINCT artworkId FROM episodes
-            UNION
-            SELECT DISTINCT artworkId FROM movies
+            SELECT DISTINCT artworkId FROM medias
         )
     """)
     suspend fun deleteEmptyArtworks()
 
-    @Query("DELETE FROM movies WHERE artworkId IN (:ids)")
-    suspend fun deleteMoviesByIds(ids: List<Long>)
+    @Query("DELETE FROM medias WHERE artworkId IN (:artworkIds)")
+    suspend fun deleteMediasByArtworkIds(artworkIds: List<Long>)
 
-    @Query("DELETE FROM episodes WHERE id IN (:ids)")
-    suspend fun deleteEpisodesByIds(ids: List<Long>)
-
-    @Query("DELETE FROM episodes WHERE artworkId = :artworkId")
-    suspend fun deleteEpisodesByArtworkId(artworkId: Long)
+    @Query("DELETE FROM medias WHERE id IN (:ids) AND type = :type")
+    suspend fun deleteEpisodesByIds(ids: List<Long>, type: ContentType = ContentType.SHOW)
 
     @Query("DELETE FROM seasons WHERE artworkId IN (:artworkIds)")
-    suspend fun deleteSeasonsByIds(artworkIds: List<Long>)
+    suspend fun deleteSeasonsByArtworkIds(artworkIds: List<Long>)
 
     @Query("""
     DELETE FROM seasons
     WHERE NOT EXISTS (
-        SELECT 1 FROM episodes
-        WHERE episodes.artworkId = seasons.artworkId
-        AND episodes.season = seasons.season
+        SELECT 1 FROM medias
+        WHERE medias.artworkId = seasons.artworkId
+        AND medias.season = seasons.season
+        AND medias.type = :type
     )
 """)
-    suspend fun deleteEmptySeasons()
+    suspend fun deleteEmptySeasons(type: ContentType = ContentType.SHOW)
 
     @Query("DELETE FROM seasons WHERE artworkId = :artworkId AND season = :season")
     suspend fun deleteSeason(artworkId: Long, season: Int)
@@ -138,36 +111,24 @@ interface DatabaseDao {
     @Query("DELETE FROM artworks")
     suspend fun deleteAllArtworks()
 
-    @Query("DELETE FROM movies")
-    suspend fun deleteAllMovies()
-
-    @Query("DELETE FROM episodes")
-    suspend fun deleteAllEpisodes()
+    @Query("DELETE FROM medias")
+    suspend fun deleteAllMedias()
 
     @Query("DELETE FROM seasons")
     suspend fun deleteAllSeasons()
 
-    @Query("DELETE FROM movies WHERE path LIKE :folderPath || '%' ESCAPE '\\'")
-    suspend fun deleteMoviesInFolder(folderPath: String)
-
-    @Query("DELETE FROM episodes WHERE path LIKE :folderPath || '%' ESCAPE '\\'")
-    suspend fun deleteEpisodesInFolder(folderPath: String)
-
-    @Transaction
-    suspend fun deleteMediasInFolder(folderPath: String) {
-        deleteMoviesInFolder(folderPath = folderPath)
-        deleteEpisodesInFolder(folderPath = folderPath)
-    }
+    @Query("DELETE FROM medias WHERE path LIKE :folderPath || '%' ESCAPE '\\'")
+    suspend fun deleteMediasInFolder(folderPath: String)
 
 //endregion
 
 //region Count
 
-    @Query("SELECT COUNT(*) FROM episodes WHERE artworkId = :artworkId")
-    suspend fun getEpisodeCountByArtworkId(artworkId: Long): Int
+    @Query("SELECT COUNT(*) FROM medias WHERE artworkId = :artworkId AND type = :type")
+    suspend fun getEpisodeCountByArtworkId(artworkId: Long, type: ContentType = ContentType.SHOW): Int
 
-    @Query("SELECT COUNT(*) FROM episodes WHERE artworkId = :artworkId AND season = :season")
-    suspend fun getEpisodeCountBySeason(artworkId: Long, season: Int): Int
+    @Query("SELECT COUNT(*) FROM medias WHERE artworkId = :artworkId AND season = :season AND type = :type")
+    suspend fun getEpisodeCountBySeason(artworkId: Long, season: Int, type: ContentType = ContentType.SHOW): Int
 
 //endregion
 
@@ -176,8 +137,8 @@ interface DatabaseDao {
     @Query("SELECT imagePath, bannerPath FROM artworks")
     suspend fun getArtworksImages() : List<ArtworkImagesProjection>
 
-    @Query("SELECT imagePath FROM episodes")
-    suspend fun getEpisodesImages() : List<String>
+    @Query("SELECT imagePath FROM medias WHERE imagePath IS NOT NULL")
+    suspend fun getMediasImages() : List<String>
 
     @Query("SELECT imagePath FROM seasons")
     suspend fun getSeasonsImages() : List<String>

@@ -2,6 +2,8 @@ package com.mskd.flux.features.catalog.domain.usecase.updateLanguage
 
 import com.mskd.flux.core.database.domain.repository.DatabaseRepository
 import com.mskd.flux.core.model.artwork.ContentType
+import com.mskd.flux.core.model.artwork.Episode
+import com.mskd.flux.core.model.artwork.Movie
 import com.mskd.flux.core.network.tmdb.domain.model.TranslationRequest
 import com.mskd.flux.core.network.tmdb.domain.repository.ArtworkRemoteRepository
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
@@ -26,9 +28,10 @@ class UpdateLanguageUseCaseImpl(
 
             val language = settings.getDataLanguage()
             val shows = database.getArtworks().filter { it.type == ContentType.SHOW }
-            val movies = database.getMovies()
+            val medias = database.getMedias()
+            val movies = medias.filterIsInstance<Movie>()
             val seasons = database.getSeasons()
-            val episodes = database.getEpisodes()
+            val episodes = medias.filterIsInstance<Episode>()
 
             val batchSize = 25
 
@@ -50,7 +53,7 @@ class UpdateLanguageUseCaseImpl(
                             }
                         }.awaitAll().filterNotNull()
 
-                        if (translated.isNotEmpty()) database.saveMovies(translated)
+                        if (translated.isNotEmpty()) database.saveMedias(translated)
                     }
                 }
 
@@ -110,7 +113,7 @@ class UpdateLanguageUseCaseImpl(
                             }
                         }.awaitAll().filterNotNull()
 
-                        if (translated.isNotEmpty()) database.saveEpisodes(translated)
+                        if (translated.isNotEmpty()) database.saveMedias(translated)
                     }
                 }
 

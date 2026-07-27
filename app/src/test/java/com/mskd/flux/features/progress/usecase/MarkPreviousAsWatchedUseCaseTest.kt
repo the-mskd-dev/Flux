@@ -29,7 +29,7 @@ class MarkPreviousAsWatchedUseCaseTest : FunSpec({
 
         markPreviousAsWatched(episode = MediaMockups.episode3)
 
-        coVerify { databaseRepository.saveEpisodes(match { episodes -> episodes.size == 2 && episodes.all { it.status == Status.WATCHED } })  }
+        coVerify { databaseRepository.saveMedias(match { episodes -> episodes.size == 2 && episodes.all { it.status == Status.WATCHED } })  }
 
     }
 
@@ -43,7 +43,7 @@ class MarkPreviousAsWatchedUseCaseTest : FunSpec({
         markPreviousAsWatched(episode = MediaMockups.episode3)
 
         // Verify saveEpisodes is never called
-        coVerify(exactly = 0) { databaseRepository.saveEpisodes(any()) }
+        coVerify(exactly = 0) { databaseRepository.saveMedias(any()) }
     }
 
 })

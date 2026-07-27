@@ -8,7 +8,7 @@ import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.core.model.files.FileSource
 
 @Entity(
-    tableName = "media",
+    tableName = "medias",
     primaryKeys = ["id", "artworkId"],
     indices = [
         Index(value = ["artworkId"]),

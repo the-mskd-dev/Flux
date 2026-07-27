@@ -42,7 +42,7 @@ class SaveProgressUseCase(
                 else user.addToRecentlyWatched(media.artworkId)
 
                 // Save in DB
-                database.saveMovies(listOf(updatedMedia))
+                database.saveMedias(listOf(updatedMedia))
             }
             is Episode -> {
 
@@ -57,7 +57,7 @@ class SaveProgressUseCase(
                 }
 
                 // Save in DB
-                database.saveEpisodes(listOf(updatedMedia))
+                database.saveMedias(listOf(updatedMedia))
             }
         }
 

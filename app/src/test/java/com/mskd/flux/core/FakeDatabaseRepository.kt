@@ -3,6 +3,7 @@ package com.mskd.flux.core
 import com.mskd.flux.core.database.domain.repository.DatabaseRepository
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.Episode
+import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.Movie
 import com.mskd.flux.core.model.artwork.Season
 import com.mskd.flux.core.model.files.UserFile
@@ -23,12 +24,9 @@ class FakeDatabaseRepository : DatabaseRepository {
         return MutableStateFlow(MediaMockups.artworks.find { it.id == artworkId })
     }
 
-    override fun flowMovie(artworkId: Long): Flow<Movie?> {
-        return MutableStateFlow(MediaMockups.movies.find { it.artworkId == artworkId })
-    }
+    override fun flowMedias(artworkId: Long): Flow<List<Media>> {
+        return MutableStateFlow(MediaMockups.allMedias.filter { it.artworkId == artworkId })
 
-    override fun flowEpisodes(artworkId: Long): Flow<List<Episode>> {
-        return MutableStateFlow(MediaMockups.episodes.filter { it.artworkId == artworkId })
     }
 
     override fun flowSeasons(artworkId: Long): Flow<List<Season>> {
@@ -43,28 +41,20 @@ class FakeDatabaseRepository : DatabaseRepository {
         return MediaMockups.artworks
     }
 
+    override suspend fun getMedias(): List<Media> {
+        return MediaMockups.allMedias
+    }
+
+    override suspend fun getMediasNotInFiles(files: List<UserFile>): List<Media> {
+        return MediaMockups.allMedias.filter { e -> !files.contains(e.file) }
+    }
+
     override suspend fun getMovie(artworkId: Long): Movie? {
         return MediaMockups.movies.find { it.artworkId == artworkId }
     }
 
-    override suspend fun getMovies(): List<Movie> {
-        return MediaMockups.movies
-    }
-
-    override suspend fun getMoviesNotInFiles(files: List<UserFile>): List<Movie> {
-        return MediaMockups.movies.filter { e -> !files.contains(e.file) }
-    }
-
     override suspend fun getEpisodes(artworkId: Long): List<Episode> {
         return MediaMockups.episodes.filter { it.artworkId == artworkId }
-    }
-
-    override suspend fun getEpisodes(): List<Episode> {
-        return MediaMockups.episodes
-    }
-
-    override suspend fun getEpisodesNotInFiles(files: List<UserFile>): List<Episode> {
-        return MediaMockups.episodes.filter { e -> !files.contains(e.file) }
     }
 
     override suspend fun getEpisodeCount(artworkId: Long): Int {
@@ -95,19 +85,12 @@ class FakeDatabaseRepository : DatabaseRepository {
     }
 
     override suspend fun saveArtworks(artworks: List<Artwork>) {}
-
-    override suspend fun saveMovies(movies: List<Movie>) {}
+    override suspend fun saveMedias(medias: List<Media>) {}
 
     override suspend fun saveSeasons(seasons: List<Season>) {}
 
-    override suspend fun saveEpisodes(episodes: List<Episode>) {}
-
     override suspend fun deleteArtworks(artworks: List<Artwork>) {}
-
-    override suspend fun deleteMovies(movies: List<Movie>) {}
-
-    override suspend fun deleteEpisodes(episodes: List<Episode>) {}
-
+    
     override suspend fun deleteMediasNotInFiles(files: List<UserFile>) {}
 
     override suspend fun deleteAll() {}

@@ -25,7 +25,7 @@ class ResetProgressUseCase(
                     .filter { it.status != Status.TO_WATCH || it.currentTime != 0L }
                     .map { it.copy(currentTime = 0L, status = Status.TO_WATCH) }
 
-                database.saveEpisodes(episodes = updatedEpisodes)
+                database.saveMedias(medias = updatedEpisodes)
 
             }
             ContentType.MOVIE -> {
@@ -33,7 +33,7 @@ class ResetProgressUseCase(
                 database.getMovie(artworkId = artwork.id)?.let { movie ->
                     val updatedMovie = movie.copy(currentTime = 0L, status = Status.TO_WATCH)
 
-                    database.saveMovies(listOf(updatedMovie))
+                    database.saveMedias(listOf(updatedMovie))
                 }
 
             }

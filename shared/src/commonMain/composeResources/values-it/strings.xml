@@ -43,9 +43,6 @@
     <string name="how_to_name_files_desc">Non preoccuparti, è semplicissimo! Per tenere i tuoi video ben organizzati, ecco come nominare i tuoi file:</string>
     <string name="how_to_name_files_movies_desc">Assegna ai tuoi film un nome chiaro, seguito dall\'anno se lo desideri. Per esempio:</string>
     <string name="how_to_name_files_show_desc">Per gli episodi delle serie TV, usa un formato che includa il numero della stagione e dell\'episodio. L\'anno è opzionale. Per esempio:</string>
-    <string name="movie_file_example_1" translatable="false">Spider-man (2002).mkv</string>
-    <string name="movie_file_example_2" translatable="false">Your name.avi</string>
-    <string name="movie_file_example_3" translatable="false">Spider-man-no-way-home-(2021).mp4</string>
     <string name="show_file_example_1">nome serie_s01e02.mkv</string>
     <string name="show_file_example_2">nome serie_s01.e02.mkv</string>
     <string name="show_file_example_3">nome_serie_1x02.mkv</string>

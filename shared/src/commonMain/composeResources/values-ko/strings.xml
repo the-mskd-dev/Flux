@@ -43,9 +43,6 @@
     <string name="how_to_name_files_desc">걱정하지 마세요, 정말 쉽습니다! 동영상을 깔끔하게 정리하려면 다음과 같이 파일 이름을 지정하세요:</string>
     <string name="how_to_name_files_movies_desc">영화에는 명확한 이름을 지정하고, 원하는 경우 개봉 연도를 뒤에 붙이세요. 예시:</string>
     <string name="how_to_name_files_show_desc">TV 시리즈 에피소드의 경우 시즌과 에피소드 번호가 포함된 형식을 사용하세요. 연도는 선택 사항입니다. 예시:</string>
-    <string name="movie_file_example_1" translatable="false">Spider-man (2002).mkv</string>
-    <string name="movie_file_example_2" translatable="false">Your name.avi</string>
-    <string name="movie_file_example_3" translatable="false">Spider-man-no-way-home-(2021).mp4</string>
     <string name="show_file_example_1">프로그램명_s01e02.mkv</string>
     <string name="show_file_example_2">프로그램명_s01.e02.mkv</string>
     <string name="show_file_example_3">프로그램명_1x02.mkv</string>

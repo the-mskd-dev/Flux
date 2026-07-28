@@ -43,9 +43,6 @@
     <string name="how_to_name_files_desc">とても簡単です！動画をキレイに整理するために、次のようにファイル名を付けてください：</string>
     <string name="how_to_name_files_movies_desc">映画には分かりやすい名前を付け、必要に応じて公開年を続けてください。例：</string>
     <string name="how_to_name_files_show_desc">TV番組やアニメの場合、シーズン番号とエピソード番号を含むフォーマットを使用してください（公開年は任意）。例：</string>
-    <string name="movie_file_example_1" translatable="false">Spider-man (2002).mkv</string>
-    <string name="movie_file_example_2" translatable="false">Your name.avi</string>
-    <string name="movie_file_example_3" translatable="false">Spider-man-no-way-home-(2021).mp4</string>
     <string name="show_file_example_1">番組名_s01e02.mkv</string>
     <string name="show_file_example_2">番組名_s01.e02.mkv</string>
     <string name="show_file_example_3">番組名_1x02.mkv</string>

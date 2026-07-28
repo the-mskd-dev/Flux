@@ -27,17 +27,11 @@ import flux.shared.generated.resources.how_to_name_files
 import flux.shared.generated.resources.how_to_name_files_desc
 import flux.shared.generated.resources.how_to_name_files_movies_desc
 import flux.shared.generated.resources.how_to_name_files_show_desc
-import flux.shared.generated.resources.movie_file_example_1
-import flux.shared.generated.resources.movie_file_example_2
-import flux.shared.generated.resources.movie_file_example_3
 import flux.shared.generated.resources.movies
-import flux.shared.generated.resources.show_file_example_1
-import flux.shared.generated.resources.show_file_example_2
-import flux.shared.generated.resources.show_file_example_3
-import flux.shared.generated.resources.show_file_example_4
-import flux.shared.generated.resources.show_file_example_5
-import flux.shared.generated.resources.show_file_example_6
+import flux.shared.generated.resources.movies_naming
 import flux.shared.generated.resources.shows
+import flux.shared.generated.resources.shows_naming
+import org.jetbrains.compose.resources.stringArrayResource
 import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -100,9 +94,12 @@ fun HowToNameFiles() {
                 modifier = Modifier.alpha(.7f),
                 verticalArrangement = Arrangement.spacedBy(FluxUI.Space.extraSmall)
             ) {
-                Text.Body.Medium(text = "• " + stringResource(Res.string.movie_file_example_1))
-                Text.Body.Medium(text = "• " + stringResource(Res.string.movie_file_example_2))
-                Text.Body.Medium(text = "• " + stringResource(Res.string.movie_file_example_3))
+
+                val movies = stringArrayResource(Res.array.movies_naming)
+
+                movies.forEach {
+                    Text.Body.Medium(text = "• $it")
+                }
 
             }
 
@@ -117,12 +114,12 @@ fun HowToNameFiles() {
                 modifier = Modifier.alpha(.7f),
                 verticalArrangement = Arrangement.spacedBy(FluxUI.Space.extraSmall)
             ) {
-                Text.Body.Medium(text = "• " + stringResource(Res.string.show_file_example_1))
-                Text.Body.Medium(text = "• " + stringResource(Res.string.show_file_example_2))
-                Text.Body.Medium(text = "• " + stringResource(Res.string.show_file_example_3))
-                Text.Body.Medium(text = "• " + stringResource(Res.string.show_file_example_4))
-                Text.Body.Medium(text = "• " + stringResource(Res.string.show_file_example_5))
-                Text.Body.Medium(text = "• " + stringResource(Res.string.show_file_example_6))
+
+                val shows = stringArrayResource(Res.array.shows_naming)
+                shows.forEach {
+                    Text.Body.Medium(text = "• $it")
+                }
+
             }
 
         }

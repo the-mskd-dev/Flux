@@ -75,6 +75,9 @@ data class FileProperties(
                     "x264|x265|h26[45]|hevc|aac\\d?|dts|ac3)\\b"
         )
 
+        private val NON_TITLE_FOLDERS = setOf("movies", "movie", "download", "downloads", "flux")
+
+
         private fun findSeasonEpisode(text: String): Pair<Int, Int>? {
             for (pattern in SEASON_EPISODE_PATTERNS) {
                 val match = pattern.find(text) ?: continue
@@ -155,7 +158,9 @@ data class FileProperties(
 
             // 1. Season + episode in the filename
             findSeasonEpisode(filename)?.let { (season, episode) ->
-                val titleSegment = segments.getOrNull(segments.size - 2) ?: return null
+                val titleSegment = segments.getOrNull(segments.size - 2)
+                    ?.takeUnless { it.lowercase() in NON_TITLE_FOLDERS }
+                    ?: return null // no title folder
                 val (title, year) = extractTitleAndYear(titleSegment)
                 return FileProperties(title, year, season, episode)
             }

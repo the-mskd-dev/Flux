@@ -43,12 +43,6 @@
     <string name="how_to_name_files_desc">Non preoccuparti, è semplicissimo! Per tenere i tuoi video ben organizzati, ecco come nominare i tuoi file:</string>
     <string name="how_to_name_files_movies_desc">Assegna ai tuoi film un nome chiaro, seguito dall\'anno se lo desideri. Per esempio:</string>
     <string name="how_to_name_files_show_desc">Per gli episodi delle serie TV, usa un formato che includa il numero della stagione e dell\'episodio. L\'anno è opzionale. Per esempio:</string>
-    <string name="show_file_example_1">nome serie_s01e02.mkv</string>
-    <string name="show_file_example_2">nome serie_s01.e02.mkv</string>
-    <string name="show_file_example_3">nome_serie_1x02.mkv</string>
-    <string name="show_file_example_4">nome_serie_se1.ep2.mkv</string>
-    <string name="show_file_example_5">nome_serie-stagione1.episodio2.mkv</string>
-    <string name="show_file_example_6">nome serie (1995)_s01e02.mkv</string>
     <string name="read">riprodotto</string>
     <string name="remaining_time">rimangono %1$s</string>
     <string name="rewatch">Riguarda</string>

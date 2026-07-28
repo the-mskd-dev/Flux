@@ -59,8 +59,8 @@ class SyncCatalogUseCaseImpl(
                 .map { it.file }
                 .filter { file -> existingFiles.any { it.path == file.path } && file.realPath.isEmpty() }
 
-            unknownFiles.forEach {
-                Trace.debug(it.name)
+            deviceFiles.forEach {
+                Trace.debug("${it.name} - ${it.path} - ${it.realPath}")
             }
 
             val newFiles = if (!onlyNew) deviceFiles else {

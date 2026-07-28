@@ -101,7 +101,6 @@
     <string name="more_info">Weitere Informationen</string>
     <string name="external_player">Externer Player</string>
     <string name="watch_on_external_player">Die Fortschrittsverfolgung ist nicht mit allen Playern kompatibel.\nBenachrichtigungen werden empfohlen.</string>
-    <string name="how_to_advice">Hinweis: Für eine optimale Leistung wird empfohlen, deine Dateien im Ordner "Filme" oder "Downloads" zu speichern.</string>
     <string name="x" translatable="false">X</string>
     <string name="stay_informed">Bleibe über die Entwicklung der App auf dem Laufenden!</string>
     <string name="about_desc">Über diese App, über mich, über alles Mögliche</string>

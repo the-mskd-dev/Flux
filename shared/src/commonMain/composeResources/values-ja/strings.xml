@@ -101,7 +101,6 @@
     <string name="more_info">詳細情報</string>
     <string name="external_player">外部プレーヤー</string>
     <string name="watch_on_external_player">進捗状況の追跡は一部のプレーヤーに対応していません。\n通知を有効にすることをお勧めします。</string>
-    <string name="how_to_advice">ヒント：最適なパフォーマンスを得るため、ファイルは「映画」または「ダウンロード」フォルダに配置することをお勧めします。</string>
     <string name="x" translatable="false">X</string>
     <string name="stay_informed">アプリの開発状況を常にチェックしよう！</string>
     <string name="about_desc">このアプリについて、開発者について、その他いろいろ</string>

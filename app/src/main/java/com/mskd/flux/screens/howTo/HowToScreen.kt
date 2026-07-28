@@ -22,7 +22,6 @@ import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxPreview
 import flux.shared.generated.resources.Res
-import flux.shared.generated.resources.how_to_advice
 import flux.shared.generated.resources.how_to_name_files
 import flux.shared.generated.resources.how_to_name_files_desc
 import flux.shared.generated.resources.how_to_name_files_movies_desc
@@ -124,7 +123,6 @@ fun HowToNameFiles() {
 
         }
 
-        Text.Body.Large(stringResource(Res.string.how_to_advice))
 
 
 

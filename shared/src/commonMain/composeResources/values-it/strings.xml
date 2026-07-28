@@ -101,7 +101,6 @@
     <string name="more_info">Maggiori informazioni</string>
     <string name="external_player">Player esterno</string>
     <string name="watch_on_external_player">Il tracciamento dei progressi non è compatibile con tutti i player.\nSi raccomanda l\'uso delle notifiche.</string>
-    <string name="how_to_advice">Nota: Si consiglia di posizionare i file nelle cartelle Film o Download per prestazioni ottimali.</string>
     <string name="x" translatable="false">X</string>
     <string name="stay_informed">Rimani informato sullo sviluppo dell\'app!</string>
     <string name="about_desc">Informazioni su questa app, su di me, su qualsiasi cosa</string>

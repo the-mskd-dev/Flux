@@ -101,7 +101,6 @@
     <string name="more_info">자세한 정보</string>
     <string name="external_player">외부 플레이어</string>
     <string name="watch_on_external_player">진행 상황 추적은 모든 플레이어와 호환되지 않을 수 있습니다.\n알림 설정을 권장합니다.</string>
-    <string name="how_to_advice">참고: 최적의 성능을 위해 파일을 '영화' 또는 '다운로드' 폴더에 보관하는 것이 좋습니다.</string>
     <string name="x" translatable="false">X</string>
     <string name="stay_informed">앱 개발 소식을 계속 확인하세요!</string>
     <string name="about_desc">앱 소개, 개발자 소개 등</string>

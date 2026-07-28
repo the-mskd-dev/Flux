@@ -101,7 +101,6 @@
     <string name="more_info">Más información</string>
     <string name="external_player">Reproductor externo</string>
     <string name="watch_on_external_player">El seguimiento del progreso no es compatible con todos los reproductores.\nSe recomiendan las notificaciones.</string>
-    <string name="how_to_advice">Nota: Se recomienda colocar tus archivos en las carpetas Películas o Descargas para un rendimiento óptimo.</string>
     <string name="x" translatable="false">X</string>
     <string name="stay_informed">¡Mantente informado sobre el desarrollo de la aplicación!</string>
     <string name="about_desc">Acerca de esta aplicación, sobre mí, sobre lo que sea</string>

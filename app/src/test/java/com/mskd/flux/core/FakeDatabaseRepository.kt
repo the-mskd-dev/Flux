@@ -84,6 +84,8 @@ class FakeDatabaseRepository : DatabaseRepository {
         return emptyList()
     }
 
+    override suspend fun updateRealPaths(files: List<UserFile>) {}
+
     override suspend fun saveArtworks(artworks: List<Artwork>) {}
     override suspend fun saveMedias(medias: List<Media>) {}
 

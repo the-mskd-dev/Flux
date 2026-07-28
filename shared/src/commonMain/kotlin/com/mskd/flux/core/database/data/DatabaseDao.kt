@@ -4,12 +4,14 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import com.mskd.flux.core.database.data.model.ArtworkEntity
 import com.mskd.flux.core.database.data.model.MediaEntity
 import com.mskd.flux.core.database.data.model.SeasonEntity
 import com.mskd.flux.core.database.data.model.projections.ArtworkImagesProjection
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.ContentType
+import com.mskd.flux.core.model.files.UserFile
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -69,6 +71,20 @@ interface DatabaseDao {
 
     @Query("SELECT * FROM seasons")
     suspend fun getSeasons() : List<SeasonEntity>
+
+//endregion
+
+//region Update
+
+    @Transaction
+    suspend fun updateRealPaths(files: List<UserFile>) {
+        files.forEach { file ->
+            updateRealPathIfEmpty(path = file.path, realPath = file.realPath)
+        }
+    }
+
+    @Query("UPDATE medias SET realPath = :realPath WHERE path = :path AND realPath = ''")
+    suspend fun updateRealPathIfEmpty(path: String, realPath: String)
 
 //endregion
 

@@ -59,13 +59,12 @@ class SyncCatalogUseCaseImpl(
                 .map { it.file }
                 .filter { file -> existingFiles.any { it.path == file.path } && file.realPath.isEmpty() }
 
-            deviceFiles.forEach {
-                Trace.debug("${it.name} - ${it.path} - ${it.realPath}")
-            }
-
             val newFiles = if (!onlyNew) deviceFiles else {
                 deviceFiles.filter { file -> existingFiles.none { it.path == file.path } } + unknownFiles
             }
+
+            // TODO: Delete in October 2026
+            database.updateRealPaths(files = deviceFiles)
 
             if (newFiles.isEmpty()) {
                 database.deleteMediasNotInFiles(existingFiles)

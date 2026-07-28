@@ -259,6 +259,27 @@ class DatabaseTest {
 
     //endregion
 
+    //region Update
+
+    @Test
+    fun updateRealPaths_update_realPath_with_matching_files() = runTest {
+        // Given
+        val medias = MediaMockups.allMedias.map { it.toEntity().copy(realPath = "") }
+        dao.insertMedias(medias)
+        val targetMedia = medias.first()
+        val updatedFile = MediaMockups.movie.file.copy(path = targetMedia.path, realPath = "/real/storage/path.mkv")
+
+        // When
+        dao.updateRealPaths(listOf(updatedFile))
+
+        // Then
+        val result = dao.getMedias()
+        val updatedMediaInDb = result.find { it.path == targetMedia.path }
+        assertEquals("/real/storage/path.mkv", updatedMediaInDb?.realPath)
+    }
+
+    //endregion
+
     //region Delete
 
     @Test

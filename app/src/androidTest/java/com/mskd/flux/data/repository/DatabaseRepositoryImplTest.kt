@@ -6,6 +6,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import app.cash.turbine.test
 import com.mskd.flux.core.database.data.FluxDatabase
+import com.mskd.flux.core.database.data.mappers.toEntity
 import com.mskd.flux.core.database.data.repository.DatabaseRepositoryImpl
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.features.sources.domain.model.UserFolder
@@ -383,6 +384,32 @@ class DatabaseRepositoryImplTest {
         // Then
         assertEquals(expectedUnknowns.size, result.size)
         assertTrue(result.containsAll(expectedUnknowns))
+    }
+
+    //endregion
+
+    //region Update
+
+    @Test
+    fun updateRealPaths_update_only_when_realPath_is_empty() = runTest {
+        // Given
+        val media1 = MediaMockups.movie.toEntity().copy(path = "path/1", realPath = "")
+        val media2 = MediaMockups.movie2.toEntity().copy(path = "path/2", realPath = "/already/set/path")
+        database.dao().insertMedias(listOf(media1, media2))
+
+        val file1 = MediaMockups.movie.file.copy(path = "path/1", realPath = "/new/real/path/1")
+        val file2 = MediaMockups.movie2.file.copy(path = "path/2", realPath = "/new/real/path/2")
+
+        // When
+        repository.updateRealPaths(listOf(file1, file2))
+
+        // Then
+        val mediasInDb = database.dao().getMedias()
+        val dbMedia1 = mediasInDb.find { it.path == "path/1" }
+        val dbMedia2 = mediasInDb.find { it.path == "path/2" }
+
+        assertEquals("/new/real/path/1", dbMedia1?.realPath)
+        assertEquals("/already/set/path", dbMedia2?.realPath)
     }
 
     //endregion

@@ -21,6 +21,14 @@ object MediaMockups {
         bannerPath = "/8x9iKH8kWA0zdkgNdpAew7OstYe.jpg"
     )
 
+    val movieArtwork2 = Artwork(
+        id = 969681L,
+        title = "Spider-Man: Brand new day",
+        type = ContentType.MOVIE,
+        imagePath = "/6Q21yptoOCUq4ErwVncesLPVplb.jpg",
+        bannerPath = "/kbvNLChuMl2nyAzPZvqkD8hZGZn.jpg"
+    )
+
     val movie = Movie(
         artworkId = 372058L,
         title = "Your name",
@@ -38,6 +46,26 @@ object MediaMockups {
             source = FileSource.LOCAL,
 
         ),
+        isAvailable = true
+    )
+
+    val movie2 = Movie(
+        artworkId = 969681L,
+        title = "Spider-Man: Brand New Day",
+        releaseDateString = "2026-07-28",
+        description = "Fighting crime full-time as Spider-Man in a world that doesn't remember him—and the pressure of seeing his old friends move on without him—sparks a change in Peter Parker he may not have the power to control. But that transformation might also be the only thing that can stop a shocking new threat to the city and those he loves - a powerful villain no one can even see.",
+        voteAverage = 9.1f,
+        voteCount = 616,
+        duration = 145,
+        currentTime = 0L,
+        status = Status.TO_WATCH,
+        file = UserFile(
+            name = "spider-man_brand_new_day.mkv",
+            addedDateTime = 0L,
+            path = "path/spider-man_brand_new_day.mkv",
+            source = FileSource.LOCAL,
+
+            ),
         isAvailable = true
     )
 
@@ -142,12 +170,14 @@ object MediaMockups {
 
     val artworks = listOf(
         movieArtwork,
+        movieArtwork2,
         showArtwork,
         unknownArtwork
     )
 
     val movies = listOf(
-        movie
+        movie,
+        movie2
     )
 
     val episodes = listOf(

@@ -103,6 +103,10 @@ class DatabaseRepositoryImpl(private val dao: DatabaseDao) : DatabaseRepository 
         }
     }
 
+    override suspend fun updateRealPaths(files: List<UserFile>) {
+        dao.updateRealPaths(files = files)
+    }
+
     override suspend fun deleteArtworks(artworks: List<Artwork>) {
         val artworkIds = artworks.map { it.id }.distinct()
 

@@ -48,6 +48,9 @@ interface DatabaseRepository {
     // Images
     suspend fun getAllImagesPaths() : List<String>
 
+    // Update
+    suspend fun updateRealPaths(files: List<UserFile>)
+
     // Delete
     suspend fun deleteArtworks(artworks: List<Artwork>)
     suspend fun deleteMediasNotInFiles(files: List<UserFile>)

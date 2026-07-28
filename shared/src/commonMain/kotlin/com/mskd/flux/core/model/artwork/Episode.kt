@@ -2,7 +2,6 @@ package com.mskd.flux.core.model.artwork
 
 import androidx.compose.runtime.Stable
 import com.mskd.flux.core.model.files.UserFile
-import kotlin.random.Random
 
 /**
  * Represents an episode of a TV show.
@@ -45,7 +44,7 @@ data class Episode(
     override val mediaId: Long get() = id
 
     constructor(file: UserFile, duration: Int = 0) : this (
-        id = -Random.nextLong(),
+        id = -file.path.hashCode().toLong(),
         artworkId = Artwork.UNKNOWN_ID,
         title = file.nameProperties.title,
         number = file.nameProperties.episode ?: -1,

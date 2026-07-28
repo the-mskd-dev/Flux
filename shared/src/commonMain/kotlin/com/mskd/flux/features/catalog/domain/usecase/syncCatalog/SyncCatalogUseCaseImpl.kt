@@ -63,11 +63,12 @@ class SyncCatalogUseCaseImpl(
                 deviceFiles.filter { file -> existingFiles.none { it.path == file.path } } + unknownFiles
             }
 
-            // TODO: Delete in October 2026
-            database.updateRealPaths(files = deviceFiles)
-
             if (newFiles.isEmpty()) {
                 database.deleteMediasNotInFiles(existingFiles)
+
+                // TODO: Delete in October 2026
+                database.updateRealPaths(files = deviceFiles)
+
                 user.setSyncTime(System.currentTimeMillis())
                 user.setVersionCode(appInfo.versionCode)
                 return@launch
@@ -95,6 +96,9 @@ class SyncCatalogUseCaseImpl(
             database.saveArtworks(catalog.artworks); coordinator.incrementProgress()
             database.saveSeasons(catalog.seasons); coordinator.incrementProgress()
             database.saveMedias(catalog.movies + catalog.episodes); coordinator.incrementProgress()
+
+            // TODO: Delete in October 2026
+            database.updateRealPaths(files = deviceFiles)
 
             imagesPrefetchManager.prefetchImages()
             user.setSyncTime(System.currentTimeMillis())

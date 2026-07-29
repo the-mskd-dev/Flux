@@ -39,8 +39,14 @@
         <item>Choose your player: you can use the built-in player or your favorite external player</item>
         <item>Built with Material 3 Expressive and Material You for a smooth, dynamic look that adapts to your device</item>
     </string-array>
+    <string name="setup_sources_title">Choose your sources</string>
+    <string name="setup_sources_desc">To display and play your videos, Flux needs access to files on your device. However, you choose your sources so you can maintain control over your data.\nFurthermore, we do not collect or share any personal data.</string>
+    <string name="setup_sources_default_title">Choose your sources</string>
+    <string name="setup_sources_default_desc">Choose your sources</string>
+    <string name="setup_sources_custom_title">Choose your sources</string>
+    <string name="setup_sources_custom_desc">Choose your sources</string>
     <string name="presentation_2_title">Access your videos</string>
-    <string name="presentation_2_description">To display and play your videos, Flux needs access to your device's files.\nDon't worry, we do not collect or share any personal data.</string>
+    <string name="presentation_2_description">To display and play your videos, Flux needs access to files on your device. However, you choose your sources so you can maintain control over your data.\nFurthermore, we do not collect or share any personal data.</string>
     <string name="empty_catalog">Your library is empty</string>
     <string name="empty_catalog_desc">To get started, make sure your video files are properly named. This allows the app to organize them automatically.</string>
     <string name="refresh">Refresh</string>

@@ -4,13 +4,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import com.mskd.flux.screens.setup.SetupScreenContent
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxPreview
@@ -23,13 +19,10 @@ import org.jetbrains.compose.resources.stringArrayResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun WelcomeContent() {
+fun SetupWelcomeContent() {
 
     Column(
-        modifier = Modifier
-            .padding(FluxUI.Space.medium)
-            .widthIn(max = 600.dp)
-            .fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(FluxUI.Space.large)
     ) {
 
@@ -74,8 +67,8 @@ fun WelcomeContent() {
 
 @Composable
 @FluxPreview
-fun WelcomeContent_Preview() {
+fun SetupWelcomeContent_Preview() {
     FluxThemePreview {
-        WelcomeContent()
+        SetupWelcomeContent()
     }
 }

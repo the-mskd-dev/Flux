@@ -1,12 +1,8 @@
 package com.mskd.flux.screens.setup
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.widthIn
@@ -17,22 +13,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.mskd.flux.screens.setup.composables.WelcomeContent
+import com.mskd.flux.screens.setup.composables.SetupWelcomeContent
 import com.mskd.flux.ui.component.global.FluxScaffold
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxUI
-import com.mskd.flux.utils.FluxPreview
-import com.mskd.flux.utils.FluxThemePreview
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_flux
-import flux.shared.generated.resources.welcome_description
-import flux.shared.generated.resources.welcome
-import flux.shared.generated.resources.welcome_features
 import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.resources.stringArrayResource
-import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun SetupScreen() {
@@ -69,7 +57,15 @@ fun SetupScreenContent() {
                 colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
             )
 
-            WelcomeContent()
+            Box(
+                modifier = Modifier
+                    .padding(FluxUI.Space.medium)
+                    .widthIn(max = 600.dp),
+            ) {
+
+                SetupWelcomeContent()
+
+            }
 
         }
 

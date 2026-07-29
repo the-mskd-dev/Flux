@@ -19,6 +19,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.mskd.flux.screens.setup.composables.WelcomeContent
 import com.mskd.flux.ui.component.global.FluxScaffold
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxUI
@@ -68,62 +69,11 @@ fun SetupScreenContent() {
                 colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
             )
 
-            Column(
-                modifier = Modifier
-                    .padding(FluxUI.Space.medium)
-                    .widthIn(max = 600.dp)
-                    .fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(FluxUI.Space.large)
-            ) {
-
-                Text.Headline.Large(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = stringResource(Res.string.welcome),
-                    textAlign = TextAlign.Center,
-                    emphasized = true
-                )
-
-                Text.Body.Large(
-                    text = stringResource(Res.string.welcome_description),
-                )
-
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
-                ) {
-
-                    val features = stringArrayResource(Res.array.welcome_features)
-                    val featuresIcons = listOf(
-                        "\uD83C\uDFAC",
-                        "\uD83C\uDF7F",
-                        "\uD83C\uDFA8"
-                    )
-
-                    features.forEachIndexed { index, feature ->
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
-                        ) {
-                            Text.Body.Large(text = featuresIcons.getOrNull(index))
-                            Text.Body.Large(text = feature)
-                        }
-                    }
-
-                }
-
-            }
+            WelcomeContent()
 
         }
 
 
     }
 
-}
-
-@Composable
-@FluxPreview
-fun SetupScreen_Preview() {
-    FluxThemePreview {
-        SetupScreenContent()
-    }
 }

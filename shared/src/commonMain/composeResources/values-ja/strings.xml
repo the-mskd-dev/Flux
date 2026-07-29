@@ -32,8 +32,13 @@
     <string name="button_forward">プレーヤーの早送りボタン</string>
     <string name="app_version">バージョン</string>
     <string name="subtitles_language">字幕の言語</string>
-    <string name="presentation_1_title">Flux へようこそ</string>
-    <string name="presentation_1_description">お気に入りの映画やドラマ・アニメを簡単に見つけよう！\nFlux は動画ファイルを自動的に整理し、シンプルで使いやすいライブラリを提供します！</string>
+    <string name="welcome">Fluxへようこそ</string>
+    <string name="welcome_description">通常のファイルマネージャーとはサヨナラ！映画、ドラマ、アニメをモダンでスムーズな視聴体験でお楽しみください。</string>
+    <string-array name="welcome_features">
+        <item>TMDBを使用して、カバー画像、あらすじ、詳細情報を自動取得します</item>
+        <item>プレーヤーの選択：内蔵プレーヤーとお好みの外部プレーヤーを選択できます</item>
+        <item>Material 3 ExpressiveとMaterial Youを採用し、お使いのデバイスに馴染むスムーズで動的なデザインを実現しています</item>
+    </string-array>
     <string name="presentation_2_title">動画ファイルへのアクセス</string>
     <string name="presentation_2_description">動画を表示・再生するには、Flux が端末内のファイルにアクセスする必要があります。\n個人データを収集したり共有したりすることはありませんのでご安心ください。</string>
     <string name="empty_catalog">ライブラリが空です</string>

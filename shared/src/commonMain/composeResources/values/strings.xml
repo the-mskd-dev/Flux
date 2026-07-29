@@ -32,8 +32,13 @@
     <string name="button_forward">Player forward button</string>
     <string name="app_version">Version</string>
     <string name="subtitles_language">Subtitles language</string>
-    <string name="presentation_1_title">Welcome to Flux</string>
-    <string name="presentation_1_description">Easily find your favorite movies and series!\nFlux automatically organizes your videos to provide you with a simple and enjoyable library to use!</string>
+    <string name="welcome">Welcome to Flux</string>
+    <string name="welcome_description">Say goodbye to plain file managers and enjoy a modern, seamless viewing experience for all your movies, TV shows, and anime!</string>
+    <string-array name="welcome_features">
+        <item>Automatically fetches artwork, summaries, and details using TMDB</item>
+        <item>Choose your player: you can use the built-in player or your favorite external player</item>
+        <item>Built with Material 3 Expressive and Material You for a smooth, dynamic look that adapts to your device</item>
+    </string-array>
     <string name="presentation_2_title">Access your videos</string>
     <string name="presentation_2_description">To display and play your videos, Flux needs access to your device's files.\nDon't worry, we do not collect or share any personal data.</string>
     <string name="empty_catalog">Your library is empty</string>

@@ -32,8 +32,13 @@
     <string name="button_forward">Vorspulen-Taste</string>
     <string name="app_version">Version</string>
     <string name="subtitles_language">Untertitelsprache</string>
-    <string name="presentation_1_title">Willkommen bei Flux</string>
-    <string name="presentation_1_description">Finde ganz einfach deine Lieblingsfilme und -serien!\nFlux organisiert deine Videos automatisch für eine übersichtliche und benutzerfreundliche Mediathek!</string>
+    <string name="welcome">Willkommen bei Flux</string>
+    <string name="welcome_description">Sagen Sie herkömmlichen Dateimanagern Lebewohl und genießen Sie ein modernes, nahtloses Wiedergabeerlebnis für alle Ihre Filme, Serien und Animes!</string>
+    <string-array name="welcome_features">
+        <item>Ruft automatisch Cover, Zusammenfassungen und Details über TMDB ab</item>
+        <item>Wählen Sie Ihren Player: Nutzen Sie den integrierten Player oder Ihren bevorzugten externen Player</item>
+        <item>Entwickelt mit Material 3 Expressive und Material You für einen flüssigen, dynamischen Look, der sich an Ihr Gerät anpasst</item>
+    </string-array>
     <string name="presentation_2_title">Greife auf deine Videos zu</string>
     <string name="presentation_2_description">Um deine Videos anzuzeigen und abzuspielen, benötigt Flux Zugriff auf die Dateien deines Geräts.\nKeine Sorge, wir erfassen oder teilen keine persönlichen Daten.</string>
     <string name="empty_catalog">Deine Mediathek ist leer</string>

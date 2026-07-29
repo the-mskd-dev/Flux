@@ -31,8 +31,13 @@
     <string name="button_forward">Réglage du saut avant</string>
     <string name="app_version">Numéro de version</string>
     <string name="subtitles_language">Langue des sous-titres</string>
-    <string name="presentation_1_title">Bienvenue dans Flux</string>
-    <string name="presentation_1_description">Retrouvez facilement vos films et séries préférés !nFlux organise automatiquement vos vidéos pour vous offrir une bibliothèque simple et agréable à utiliser !</string>
+    <string name="welcome">Bienvenue sur Flux</string>
+    <string name="welcome_description">Dites adieu aux gestionnaires de fichiers classiques et profitez d'une expérience de visionnage moderne et fluide pour tous vos films, séries et animes !</string>
+    <string-array name="welcome_features">
+        <item>Récupère automatiquement les affiches, résumés et détails grâce à TMDB</item>
+        <item>Choisissez votre lecteur : utilisez le lecteur intégré ou votre lecteur externe préféré</item>
+        <item>Conçu avec Material 3 Expressive et Material You pour un design fluide et dynamique qui s'adapte à votre appareil</item>
+    </string-array>
     <string name="presentation_2_title">Accédez à vos vidéos</string>
     <string name="presentation_2_description">Pour afficher et lire vos vidéos, Flux a besoin d’accéder aux fichiers de votre appareil.nNe vous inquiétez pas, nous ne collectons ni ne partageons aucune donnée personnelle.</string>
     <string name="empty_catalog">Votre librairie est vide</string>

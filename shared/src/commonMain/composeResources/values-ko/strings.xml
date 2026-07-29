@@ -32,8 +32,13 @@
     <string name="button_forward">플레이어 빨리감기 버튼</string>
     <string name="app_version">버전</string>
     <string name="subtitles_language">자막 언어</string>
-    <string name="presentation_1_title">Flux에 오신 것을 환영합니다</string>
-    <string name="presentation_1_description">좋아하는 영화와 시리즈를 쉽게 찾아보세요!\nFlux가 동영상을 자동으로 정리하여 사용하기 쉽고 즐거운 라이브러리를 제공합니다!</string>
+    <string name="welcome">Flux에 오신 것을 환영합니다</string>
+    <string name="welcome_description">단순한 파일 관리자는 이제 안녕! 모든 영화, TV 프로그램, 애니메이션을 현대적이고 매끄러운 감상 환경에서 즐겨보세요!</string>
+    <string-array name="welcome_features">
+        <item>TMDB를 사용하여 포스터, 줄거리, 상세 정보를 자동으로 가져옵니다</item>
+        <item>플레이어 선택: 내장 플레이어 또는 선호하는 외부 플레이어를 사용할 수 있습니다</item>
+        <item>Material 3 Expressive 및 Material You로 제작되어 기기에 맞게 적응하는 부드럽고 동적인 디자인을 제공합니다</item>
+    </string-array>
     <string name="presentation_2_title">동영상 접근 권한</string>
     <string name="presentation_2_description">동영상을 표시하고 재생하려면 Flux가 기기의 파일에 접근해야 합니다.\n개인정보는 수집하거나 공유되지 않으니 안심하세요.</string>
     <string name="empty_catalog">라이브러리가 비어 있습니다</string>

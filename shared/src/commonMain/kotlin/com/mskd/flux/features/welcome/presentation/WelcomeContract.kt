@@ -3,8 +3,8 @@ package com.mskd.flux.features.welcome.presentation
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.artwork_screen
 import flux.shared.generated.resources.home_screen
-import flux.shared.generated.resources.presentation_1_description
-import flux.shared.generated.resources.presentation_1_title
+import flux.shared.generated.resources.welcome_description
+import flux.shared.generated.resources.welcome
 import flux.shared.generated.resources.presentation_2_description
 import flux.shared.generated.resources.presentation_2_title
 import org.jetbrains.compose.resources.DrawableResource
@@ -16,7 +16,7 @@ data class WelcomeUiState(
 )
 
 enum class WelcomePage(val titleId: StringResource, val descriptionId: StringResource, val drawableId: DrawableResource) {
-    WELCOME(Res.string.presentation_1_title, Res.string.presentation_1_description, Res.drawable.home_screen),
+    WELCOME(Res.string.welcome, Res.string.welcome_description, Res.drawable.home_screen),
     PERMISSIONS(Res.string.presentation_2_title, Res.string.presentation_2_description, Res.drawable.artwork_screen);
 
     companion object {

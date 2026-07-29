@@ -53,7 +53,7 @@ import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.component.global.FluxSnackbar
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxUI
-import com.mskd.flux.utils.AppThemePreview
+import com.mskd.flux.utils.FluxThemePreview
 import com.mskd.flux.utils.FluxPreview
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.empty_catalog
@@ -290,7 +290,7 @@ fun CatalogContent(
 @FluxPreview
 @Composable
 fun CatalogScreen_Preview() {
-    AppThemePreview {
+    FluxThemePreview {
         Surface {
             CatalogContent(
                 artworks = MediaMockups.artworks,
@@ -306,7 +306,7 @@ fun CatalogScreen_Preview() {
 @FluxPreview
 @Composable
 fun CatalogScreen_Empty_Preview() {
-    AppThemePreview {
+    FluxThemePreview {
         Surface {
             CatalogContent(
                 artworks = listOf(MediaMockups.unknownArtwork),

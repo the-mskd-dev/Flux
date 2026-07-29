@@ -32,7 +32,7 @@ import com.mskd.flux.ui.component.global.FixedChip
 import com.mskd.flux.ui.component.global.ReadMoreButton
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxUI
-import com.mskd.flux.utils.AppThemePreview
+import com.mskd.flux.utils.FluxThemePreview
 import com.mskd.flux.utils.PortraitPreview
 import com.mskd.flux.utils.extensions.grayScale
 import com.mskd.flux.utils.extensions.minToMs
@@ -307,7 +307,7 @@ fun EpisodeItemSmall(
 @PortraitPreview
 @Composable
 fun EpisodeItem_Preview() {
-    AppThemePreview {
+    FluxThemePreview {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -335,7 +335,7 @@ fun EpisodeItem_Preview() {
 @PortraitPreview
 @Composable
 fun EpisodeItemWatching_Preview() {
-    AppThemePreview {
+    FluxThemePreview {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -369,7 +369,7 @@ fun EpisodeItemWatching_Preview() {
 @PortraitPreview
 @Composable
 fun EpisodeItemWatched_Preview() {
-    AppThemePreview {
+    FluxThemePreview {
         Column(
             modifier = Modifier
                 .fillMaxSize()

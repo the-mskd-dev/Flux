@@ -19,7 +19,7 @@ import com.mskd.flux.features.artwork.presentation.ArtworkIntent
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxUI
-import com.mskd.flux.utils.AppThemePreview
+import com.mskd.flux.utils.FluxThemePreview
 import com.mskd.flux.utils.FluxPreview
 
 @Composable
@@ -93,7 +93,7 @@ fun ArtworkHeader(
 @FluxPreview
 @Composable
 fun ArtworkHeader_Preview() {
-    AppThemePreview {
+    FluxThemePreview {
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.TopCenter

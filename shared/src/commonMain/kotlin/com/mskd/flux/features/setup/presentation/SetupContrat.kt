@@ -16,6 +16,7 @@ data class SetupUiState(
 sealed interface SetupIntent {
     data object OnNextButton: SetupIntent
     data class SelectSourcesOption(val option: SetupContrat.SourcesOption): SetupIntent
+    data object OnPermissionGranted: SetupIntent
 }
 
 sealed interface SetupEvent {

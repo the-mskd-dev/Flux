@@ -41,10 +41,10 @@
     </string-array>
     <string name="setup_sources_title">Choose your sources</string>
     <string name="setup_sources_desc">To display and play your videos, Flux needs access to files on your device. However, you choose your sources so you can maintain control over your data.\nFurthermore, we do not collect or share any personal data.</string>
-    <string name="setup_sources_default_title">Choose your sources</string>
-    <string name="setup_sources_default_desc">Choose your sources</string>
-    <string name="setup_sources_custom_title">Choose your sources</string>
-    <string name="setup_sources_custom_desc">Choose your sources</string>
+    <string name="setup_sources_default_title">Default</string>
+    <string name="setup_sources_default_desc">The %1$s and %2$s folders are used as the default file sources. You can add new folders later if you wish.</string>
+    <string name="setup_sources_custom_title">Custom</string>
+    <string name="setup_sources_custom_desc">Choose your source folders directly</string>
     <string name="presentation_2_title">Access your videos</string>
     <string name="presentation_2_description">To display and play your videos, Flux needs access to files on your device. However, you choose your sources so you can maintain control over your data.\nFurthermore, we do not collect or share any personal data.</string>
     <string name="empty_catalog">Your library is empty</string>

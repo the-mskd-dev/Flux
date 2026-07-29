@@ -1,20 +1,31 @@
 package com.mskd.flux.screens.setup.composables
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.mskd.flux.features.setup.presentation.SetupContrat
 import com.mskd.flux.features.setup.presentation.SetupIntent
+import com.mskd.flux.screens.sources.composables.sourcesAnnotatedString
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxThemePreview
 import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.setup_sources_custom_desc
+import flux.shared.generated.resources.setup_sources_custom_title
+import flux.shared.generated.resources.setup_sources_default_desc
+import flux.shared.generated.resources.setup_sources_default_title
 import flux.shared.generated.resources.setup_sources_desc
 import flux.shared.generated.resources.setup_sources_title
+import flux.shared.generated.resources.sources_full_desc
 import flux.shared.generated.resources.welcome
 import flux.shared.generated.resources.welcome_description
 import org.jetbrains.compose.resources.stringResource
@@ -47,8 +58,19 @@ fun SetupSourcesContent(
             verticalArrangement = Arrangement.spacedBy(FluxUI.Space.extraSmall)
         ) {
 
-            SetupSourcesItem()
-            SetupSourcesItem()
+            SetupSourcesItem(
+                title = stringResource(Res.string.setup_sources_default_title),
+                description = sourcesAnnotatedString(Res.string.setup_sources_default_desc),
+                isSelected = selectedOption == SetupContrat.SourcesOption.DEFAULT,
+                onTap = { sendIntent(SetupIntent.SelectSourcesOption(SetupContrat.SourcesOption.DEFAULT)) }
+            )
+
+            SetupSourcesItem(
+                title = stringResource(Res.string.setup_sources_custom_title),
+                description = AnnotatedString(stringResource(Res.string.setup_sources_custom_desc)),
+                isSelected = selectedOption == SetupContrat.SourcesOption.CUSTOM,
+                onTap = { sendIntent(SetupIntent.SelectSourcesOption(SetupContrat.SourcesOption.CUSTOM)) }
+            )
 
         }
 
@@ -60,9 +82,15 @@ fun SetupSourcesContent(
 @Preview
 fun SetupSourcesContent_Preview() {
     FluxThemePreview {
-        SetupSourcesContent(
-            selectedOption = SetupContrat.SourcesOption.DEFAULT,
-            sendIntent = {}
-        )
+        Box(
+            modifier = Modifier
+                .background(MaterialTheme.colorScheme.background)
+                .fillMaxSize()
+        ) {
+            SetupSourcesContent(
+                selectedOption = SetupContrat.SourcesOption.DEFAULT,
+                sendIntent = {}
+            )
+        }
     }
 }

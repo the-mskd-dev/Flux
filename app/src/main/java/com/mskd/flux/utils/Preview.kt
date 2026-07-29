@@ -85,7 +85,7 @@ annotation class LandscapePreview
 @OptIn(ExperimentalCoilApi::class)
 @Composable
 fun FluxThemePreview(
-    customization: CustomizationDataStore.State = CustomizationDataStore.State(),
+    customization: CustomizationDataStore.State = CustomizationDataStore.State(uiTheme = UiCommon.THEME.DARK),
     content: @Composable () -> Unit
 ) {
 

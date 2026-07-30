@@ -6,12 +6,16 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.mskd.flux.features.setup.presentation.SetupContrat
 import com.mskd.flux.features.setup.presentation.SetupIntent
 import com.mskd.flux.screens.sources.composables.sourcesAnnotatedString
@@ -45,16 +49,20 @@ fun SetupSourcesContent(
             modifier = Modifier.fillMaxWidth(),
             text = stringResource(Res.string.setup_sources_title),
             textAlign = TextAlign.Center,
-            emphasized = true
+            emphasized = true,
+            color = MaterialTheme.colorScheme.onBackground
         )
 
         Text.Body.Large(
             modifier = Modifier.fillMaxWidth(),
             text = stringResource(Res.string.setup_sources_desc),
+            color = MaterialTheme.colorScheme.onBackground
         )
 
         Column(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .clip(RoundedCornerShape(16.dp))
+                .fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(FluxUI.Space.extraSmall)
         ) {
 
@@ -84,8 +92,8 @@ fun SetupSourcesContent_Preview() {
     FluxThemePreview {
         Box(
             modifier = Modifier
-                .background(MaterialTheme.colorScheme.background)
                 .fillMaxSize()
+                .padding(horizontal = FluxUI.Space.medium)
         ) {
             SetupSourcesContent(
                 selectedOption = SetupContrat.SourcesOption.DEFAULT,

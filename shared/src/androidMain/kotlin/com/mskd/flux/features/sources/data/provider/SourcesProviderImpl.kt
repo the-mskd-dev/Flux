@@ -6,7 +6,7 @@ import com.mskd.flux.features.setup.domain.model.SourceSelectionMode
 import com.mskd.flux.features.sources.domain.provider.SourcesProvider
 import kotlinx.coroutines.flow.first
 
-class AndroidSourcesProvider(
+class SourcesProviderImpl(
     private val settingsDataStore: SettingsDataStore,
     private val mediaStoreSource: FilesDataSource,
     private val safSource: FilesDataSource,

@@ -167,4 +167,5 @@
     <string name="dialog_sources_description">Para darte más control, la aplicación ahora se centra en tus carpetas %1$s y %2$s.\n\n¿Falta un vídeo? ¡Que no cunda el pánico! Puedes añadir tus propias carpetas en un instante desde los ajustes.</string>
     <string name="content_unavailable">Contenido no disponible</string>
     <string name="open_in_file_explorer">Abrir en el explorador de archivos</string>
+    <string name="next">Siguiente</string>
 </resources>

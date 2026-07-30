@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -30,11 +31,13 @@ fun SetupWelcomeContent() {
             modifier = Modifier.fillMaxWidth(),
             text = stringResource(Res.string.welcome),
             textAlign = TextAlign.Center,
-            emphasized = true
+            emphasized = true,
+            color = MaterialTheme.colorScheme.onSurface
         )
 
         Text.Body.Large(
             text = stringResource(Res.string.welcome_description),
+            color = MaterialTheme.colorScheme.onSurface
         )
 
         Column(
@@ -54,8 +57,14 @@ fun SetupWelcomeContent() {
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
                 ) {
-                    Text.Body.Large(text = featuresIcons.getOrNull(index) ?: "✨")
-                    Text.Body.Large(text = feature)
+                    Text.Body.Large(
+                        text = featuresIcons.getOrNull(index) ?: "✨",
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Text.Body.Large(
+                        text = feature,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
                 }
             }
 

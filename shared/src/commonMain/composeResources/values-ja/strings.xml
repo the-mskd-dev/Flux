@@ -166,4 +166,5 @@
     <string name="dialog_sources_description">より自由な管理のため、アプリは %1$s および %2$s フォルダに焦点を当てます。\n\n動画が見つかりませんか？ ご安心ください！ 設定からいつでも自分のフォルダをすぐに追加できます。</string>
     <string name="content_unavailable">コンテンツを利用できません</string>
     <string name="open_in_file_explorer">ファイルエクスプローラーで開く</string>
+    <string name="next">次へ</string>
 </resources>

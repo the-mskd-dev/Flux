@@ -40,7 +40,9 @@ import com.mskd.flux.utils.FluxThemePreview
 import com.mskd.flux.utils.storagePermissionState
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_flux
+import flux.shared.generated.resources.next
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -128,7 +130,7 @@ fun SetupScreenContent(
             ,
             onClick = { sendIntent(SetupIntent.OnNextButton) }
         ) {
-            Text.Label.Large("Next")
+            Text.Label.Large(stringResource(Res.string.next))
         }
 
     }

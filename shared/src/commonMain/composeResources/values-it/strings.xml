@@ -167,4 +167,5 @@
     <string name="dialog_sources_description">Per darti maggiore controllo, l'app ora si concentra sulle tue cartelle %1$s e %2$s.\n\nManca un video? Niente panico! Puoi aggiungere le tue cartelle in un attimo dalle impostazioni.</string>
     <string name="content_unavailable">Contenuto non disponibile</string>
     <string name="open_in_file_explorer">Apri in Gestione file</string>
+    <string name="next">Avanti</string>
 </resources>

@@ -4,14 +4,14 @@ import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.features.files.domain.datasource.FilesDataSource
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.features.setup.domain.model.SourceSelectionMode
-import com.mskd.flux.features.sources.data.provider.SourcesProviderImpl
+import com.mskd.flux.features.sources.data.provider.AndroidSourcesProvider
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainExactly
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableStateFlow
 
-class SourcesProviderImplTest : FunSpec({
+class AndroidSourcesProviderImplTest : FunSpec({
 
     fluxExtensions()
 
@@ -20,7 +20,7 @@ class SourcesProviderImplTest : FunSpec({
     lateinit var safSource: FilesDataSource
     lateinit var settingsState: MutableStateFlow<SettingsDataStore.State>
 
-    lateinit var provider: SourcesProviderImpl
+    lateinit var provider: AndroidSourcesProvider
 
     beforeTest {
 
@@ -31,7 +31,7 @@ class SourcesProviderImplTest : FunSpec({
         settingsDataStore = mockk(relaxed = true)
         every { settingsDataStore.flow } returns settingsState
 
-        provider = SourcesProviderImpl(
+        provider = AndroidSourcesProvider(
             settingsDataStore = settingsDataStore,
             mediaStoreSource = mediaStoreSource,
             safSource = safSource

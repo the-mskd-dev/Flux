@@ -4,7 +4,6 @@ import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.core.FakeDatabaseRepository
 import com.mskd.flux.core.database.domain.repository.DatabaseRepository
-import com.mskd.flux.core.datastore.FakeSettingsDataStore
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.mockups.MediaMockups
@@ -12,6 +11,9 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.inspectors.shouldForAll
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContainIgnoringCase
+import io.mockk.every
+import io.mockk.mockk
+import kotlinx.coroutines.flow.MutableStateFlow
 
 class SearchViewModelTest : FunSpec({
 
@@ -24,7 +26,9 @@ class SearchViewModelTest : FunSpec({
 
     beforeTest {
 
-        settingsDataStore = FakeSettingsDataStore()
+        settingsDataStore = mockk(relaxed = true) {
+            every { flow } returns MutableStateFlow(SettingsDataStore.State())
+        }
 
         database = FakeDatabaseRepository()
 

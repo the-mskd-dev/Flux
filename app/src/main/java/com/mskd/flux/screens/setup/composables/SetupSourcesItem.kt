@@ -2,6 +2,7 @@ package com.mskd.flux.screens.setup.composables
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.ListItem
@@ -10,9 +11,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.sp
 import com.mskd.flux.screens.sources.composables.sourcesAnnotatedString
-import com.mskd.flux.ui.component.global.Text
+import androidx.compose.material3.Text
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxThemePreview
 import flux.shared.generated.resources.Res
@@ -32,13 +35,23 @@ fun SetupSourcesItem(
     ListItem(
         selected = isSelected,
         onClick = onTap,
+        content = {
+            Column {
+                Text(
+                    text = title,
+                    fontSize = 16.sp,
+                    lineHeight = 24.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        },
         supportingContent = {
-            Text.Annotated(
+            Text(
                 text = description,
-                style = MaterialTheme.typography.bodySmall,
+                fontSize = 14.sp,
+                lineHeight = 20.sp,
             )
         },
-        content = { Text.Title.Medium(text = title,) },
     )
 
 }
@@ -46,7 +59,7 @@ fun SetupSourcesItem(
 @Preview
 @Composable
 fun SetupSourcesItem_Selected_Preview() {
-    FluxThemePreview() {
+    FluxThemePreview {
         Box(
             modifier = Modifier
                 .background(color = MaterialTheme.colorScheme.background)

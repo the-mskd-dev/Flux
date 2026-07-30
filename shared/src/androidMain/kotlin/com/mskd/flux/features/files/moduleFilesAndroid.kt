@@ -56,7 +56,8 @@ val moduleFilesAndroid = module {
             sources = mapOf(
                 FileSource.LOCAL to get(MEDIASTORE_SOURCES),
                 FileSource.SAF to get(SAF_SOURCES),
-            )
+            ),
+            sourcesProvider = get()
         )
     }
 

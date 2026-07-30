@@ -2,6 +2,7 @@ package com.mskd.flux.features.setup.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.features.setup.domain.model.SetupScreen
 import com.mskd.flux.features.setup.domain.model.SourceSelectionMode
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -11,7 +12,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class SetupViewModel : ViewModel() {
+class SetupViewModel(
+    private val settingsDataStore: SettingsDataStore
+) : ViewModel() {
 
     // region States
     private val _uiState = MutableStateFlow(SetupUiState())
@@ -27,7 +30,7 @@ class SetupViewModel : ViewModel() {
     fun handleIntent(intent: SetupIntent) = viewModelScope.launch {
         when(intent) {
             SetupIntent.OnNextButton -> onNextButton()
-            is SetupIntent.SelectSourceSelectionMode -> selectSourceSelectionMode(option = intent.option)
+            is SetupIntent.SelectSourceSelectionMode -> selectSourceSelectionMode(mode = intent.option)
             SetupIntent.OnPermissionGranted -> onPermissionGranted()
         }
     }
@@ -54,10 +57,12 @@ class SetupViewModel : ViewModel() {
 
     }
 
-    private fun selectSourceSelectionMode(option: SourceSelectionMode) {
+    private suspend fun selectSourceSelectionMode(mode: SourceSelectionMode) {
         _uiState.update {
-            it.copy(sourceSelectionMode = option)
+            it.copy(sourceSelectionMode = mode)
         }
+
+        settingsDataStore.setSourceSelectionMode(mode = mode)
     }
 
     private suspend fun onPermissionGranted() {

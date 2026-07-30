@@ -2,7 +2,6 @@ package com.mskd.flux.screens.setup
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -26,9 +25,6 @@ import com.mskd.flux.features.setup.presentation.SetupEvent
 import com.mskd.flux.features.setup.presentation.SetupIntent
 import com.mskd.flux.features.setup.presentation.SetupUiState
 import com.mskd.flux.features.setup.presentation.SetupViewModel
-import com.mskd.flux.features.sources.presentation.SourcesViewModel
-import com.mskd.flux.features.welcome.presentation.WelcomeEvent
-import com.mskd.flux.features.welcome.presentation.WelcomeIntent
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Route.*
 import com.mskd.flux.screens.setup.composables.SetupSourcesContent

@@ -17,7 +17,7 @@ import kotlinx.serialization.Serializable
 sealed class Route : NavKey {
 
     @Serializable
-    data object Welcome: Route()
+    data object Setup: Route()
 
     @Serializable
     data class Token(val fromSetup: Boolean): Route()

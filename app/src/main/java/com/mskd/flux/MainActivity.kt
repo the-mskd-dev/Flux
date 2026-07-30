@@ -29,11 +29,11 @@ import com.mskd.flux.screens.howTo.HowToScreen
 import com.mskd.flux.screens.player.PlayerScreen
 import com.mskd.flux.screens.search.SearchScreen
 import com.mskd.flux.screens.settings.SettingsScreen
+import com.mskd.flux.screens.setup.SetupScreen
 import com.mskd.flux.screens.show.ShowScreen
 import com.mskd.flux.screens.sources.SourcesScreen
 import com.mskd.flux.screens.token.TokenScreen
 import com.mskd.flux.screens.unknown.UnknownScreen
-import com.mskd.flux.screens.welcome.WelcomeScreen
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.createColorScheme
 import com.mskd.flux.utils.extensions.popScreen
@@ -91,8 +91,8 @@ class MainActivity : ComponentActivity() {
                     popTransitionSpec = { Transition.Backward },
                     predictivePopTransitionSpec = { Transition.Backward },
                     entryProvider = entryProvider {
-                        entry<Route.Welcome> {
-                            WelcomeScreen(
+                        entry<Route.Setup> {
+                            SetupScreen(
                                 navigate = { route ->
                                     backStack.clear()
                                     backStack.add(route)

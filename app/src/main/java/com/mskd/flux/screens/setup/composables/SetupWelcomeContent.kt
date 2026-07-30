@@ -1,11 +1,14 @@
 package com.mskd.flux.screens.setup.composables
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import com.mskd.flux.ui.component.global.Text
@@ -22,50 +25,57 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun SetupWelcomeContent() {
 
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(FluxUI.Space.large)
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
     ) {
-
-        Text.Headline.Large(
-            modifier = Modifier.fillMaxWidth(),
-            text = stringResource(Res.string.welcome),
-            textAlign = TextAlign.Center,
-            emphasized = true,
-            color = MaterialTheme.colorScheme.onSurface
-        )
-
-        Text.Body.Large(
-            text = stringResource(Res.string.welcome_description),
-            color = MaterialTheme.colorScheme.onSurface
-        )
 
         Column(
             modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
+            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.large)
         ) {
 
-            val features = stringArrayResource(Res.array.welcome_features)
-            val featuresIcons = listOf(
-                "\uD83C\uDF7F",
-                "\uD83D\uDCFA",
-                "\uD83C\uDFA8",
+            Text.Headline.Large(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(Res.string.welcome),
+                textAlign = TextAlign.Center,
+                emphasized = true,
+                color = MaterialTheme.colorScheme.onSurface
             )
 
-            features.forEachIndexed { index, feature ->
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
-                ) {
-                    Text.Body.Large(
-                        text = featuresIcons.getOrNull(index) ?: "✨",
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                    Text.Body.Large(
-                        text = feature,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
+            Text.Body.Large(
+                text = stringResource(Res.string.welcome_description),
+                color = MaterialTheme.colorScheme.onSurface
+            )
+
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
+            ) {
+
+                val features = stringArrayResource(Res.array.welcome_features)
+                val featuresIcons = listOf(
+                    "\uD83C\uDF7F",
+                    "\uD83D\uDCFA",
+                    "\uD83C\uDFA8",
+                )
+
+                features.forEachIndexed { index, feature ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
+                    ) {
+                        Text.Body.Large(
+                            text = featuresIcons.getOrNull(index) ?: "✨",
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        Text.Body.Large(
+                            text = feature,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
                 }
+
             }
 
         }

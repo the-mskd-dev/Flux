@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.AnnotatedString
@@ -36,45 +37,52 @@ fun SetupSourcesContent(
     sendIntent: (SetupIntent) -> Unit
 ) {
 
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(FluxUI.Space.large)
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
     ) {
 
-        Text.Headline.Large(
-            modifier = Modifier.fillMaxWidth(),
-            text = stringResource(Res.string.setup_sources_title),
-            textAlign = TextAlign.Center,
-            emphasized = true,
-            color = MaterialTheme.colorScheme.onBackground
-        )
-
-        Text.Body.Large(
-            modifier = Modifier.fillMaxWidth(),
-            text = stringResource(Res.string.setup_sources_desc),
-            color = MaterialTheme.colorScheme.onBackground
-        )
-
         Column(
-            modifier = Modifier
-                .clip(RoundedCornerShape(16.dp))
-                .fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.extraSmall)
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.large)
         ) {
 
-            SetupSourcesItem(
-                title = stringResource(Res.string.setup_sources_default_title),
-                description = sourcesAnnotatedString(Res.string.setup_sources_default_desc),
-                isSelected = selectedOption == SetupContrat.SourcesOption.DEFAULT,
-                onTap = { sendIntent(SetupIntent.SelectSourcesOption(SetupContrat.SourcesOption.DEFAULT)) }
+            Text.Headline.Large(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(Res.string.setup_sources_title),
+                textAlign = TextAlign.Center,
+                emphasized = true,
+                color = MaterialTheme.colorScheme.onBackground
             )
 
-            SetupSourcesItem(
-                title = stringResource(Res.string.setup_sources_custom_title),
-                description = AnnotatedString(stringResource(Res.string.setup_sources_custom_desc)),
-                isSelected = selectedOption == SetupContrat.SourcesOption.CUSTOM,
-                onTap = { sendIntent(SetupIntent.SelectSourcesOption(SetupContrat.SourcesOption.CUSTOM)) }
+            Text.Body.Large(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(Res.string.setup_sources_desc),
+                color = MaterialTheme.colorScheme.onBackground
             )
+
+            Column(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(16.dp))
+                    .fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(FluxUI.Space.extraSmall)
+            ) {
+
+                SetupSourcesItem(
+                    title = stringResource(Res.string.setup_sources_default_title),
+                    description = sourcesAnnotatedString(Res.string.setup_sources_default_desc),
+                    isSelected = selectedOption == SetupContrat.SourcesOption.DEFAULT,
+                    onTap = { sendIntent(SetupIntent.SelectSourcesOption(SetupContrat.SourcesOption.DEFAULT)) }
+                )
+
+                SetupSourcesItem(
+                    title = stringResource(Res.string.setup_sources_custom_title),
+                    description = AnnotatedString(stringResource(Res.string.setup_sources_custom_desc)),
+                    isSelected = selectedOption == SetupContrat.SourcesOption.CUSTOM,
+                    onTap = { sendIntent(SetupIntent.SelectSourcesOption(SetupContrat.SourcesOption.CUSTOM)) }
+                )
+
+            }
 
         }
 

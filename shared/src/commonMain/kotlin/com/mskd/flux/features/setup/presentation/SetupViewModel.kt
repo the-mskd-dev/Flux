@@ -2,6 +2,8 @@ package com.mskd.flux.features.setup.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mskd.flux.features.setup.domain.model.SetupScreen
+import com.mskd.flux.features.setup.domain.model.SourceSelectionMode
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -25,7 +27,7 @@ class SetupViewModel : ViewModel() {
     fun handleIntent(intent: SetupIntent) = viewModelScope.launch {
         when(intent) {
             SetupIntent.OnNextButton -> onNextButton()
-            is SetupIntent.SelectSourcesOption -> selectSourcesOption(option = intent.option)
+            is SetupIntent.SelectSourceSelectionMode -> selectSourceSelectionMode(option = intent.option)
             SetupIntent.OnPermissionGranted -> onPermissionGranted()
         }
     }
@@ -39,10 +41,10 @@ class SetupViewModel : ViewModel() {
         val currentState = _uiState.value
 
         when {
-            currentState.screen == SetupContrat.Screen.WELCOME -> {
-                _uiState.update { it.copy(screen = SetupContrat.Screen.SOURCES) }
+            currentState.screen == SetupScreen.WELCOME -> {
+                _uiState.update { it.copy(screen = SetupScreen.SOURCES) }
             }
-            currentState.sourcesOption == SetupContrat.SourcesOption.DEFAULT -> {
+            currentState.sourceSelectionMode == SourceSelectionMode.DEFAULT -> {
                 _event.emit(SetupEvent.ShowPermissionDialog)
             }
             else -> {
@@ -52,9 +54,9 @@ class SetupViewModel : ViewModel() {
 
     }
 
-    private fun selectSourcesOption(option: SetupContrat.SourcesOption) {
+    private fun selectSourceSelectionMode(option: SourceSelectionMode) {
         _uiState.update {
-            it.copy(sourcesOption = option)
+            it.copy(sourceSelectionMode = option)
         }
     }
 

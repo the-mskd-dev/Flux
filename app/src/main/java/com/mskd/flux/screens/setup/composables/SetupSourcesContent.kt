@@ -16,7 +16,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.mskd.flux.features.setup.presentation.SetupContrat
+import com.mskd.flux.features.setup.domain.model.SourceSelectionMode
 import com.mskd.flux.features.setup.presentation.SetupIntent
 import com.mskd.flux.screens.sources.composables.sourcesAnnotatedString
 import com.mskd.flux.ui.component.global.Text
@@ -33,7 +33,7 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun SetupSourcesContent(
-    selectedOption: SetupContrat.SourcesOption,
+    sourceSelectionMode: SourceSelectionMode,
     sendIntent: (SetupIntent) -> Unit
 ) {
 
@@ -71,15 +71,15 @@ fun SetupSourcesContent(
                 SetupSourcesItem(
                     title = stringResource(Res.string.setup_sources_default_title),
                     description = sourcesAnnotatedString(Res.string.setup_sources_default_desc),
-                    isSelected = selectedOption == SetupContrat.SourcesOption.DEFAULT,
-                    onTap = { sendIntent(SetupIntent.SelectSourcesOption(SetupContrat.SourcesOption.DEFAULT)) }
+                    isSelected = sourceSelectionMode == SourceSelectionMode.DEFAULT,
+                    onTap = { sendIntent(SetupIntent.SelectSourceSelectionMode(SourceSelectionMode.DEFAULT)) }
                 )
 
                 SetupSourcesItem(
                     title = stringResource(Res.string.setup_sources_custom_title),
                     description = AnnotatedString(stringResource(Res.string.setup_sources_custom_desc)),
-                    isSelected = selectedOption == SetupContrat.SourcesOption.CUSTOM,
-                    onTap = { sendIntent(SetupIntent.SelectSourcesOption(SetupContrat.SourcesOption.CUSTOM)) }
+                    isSelected = sourceSelectionMode == SourceSelectionMode.CUSTOM,
+                    onTap = { sendIntent(SetupIntent.SelectSourceSelectionMode(SourceSelectionMode.CUSTOM)) }
                 )
 
             }
@@ -100,7 +100,7 @@ fun SetupSourcesContent_Preview() {
                 .padding(horizontal = FluxUI.Space.medium)
         ) {
             SetupSourcesContent(
-                selectedOption = SetupContrat.SourcesOption.DEFAULT,
+                sourceSelectionMode = SourceSelectionMode.DEFAULT,
                 sendIntent = {}
             )
         }

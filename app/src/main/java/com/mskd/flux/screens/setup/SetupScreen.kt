@@ -1,7 +1,6 @@
 package com.mskd.flux.screens.setup
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -23,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
-import com.mskd.flux.features.setup.presentation.SetupContrat
+import com.mskd.flux.features.setup.domain.model.SetupScreen
 import com.mskd.flux.features.setup.presentation.SetupEvent
 import com.mskd.flux.features.setup.presentation.SetupIntent
 import com.mskd.flux.features.setup.presentation.SetupUiState
@@ -32,7 +31,6 @@ import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Route.*
 import com.mskd.flux.screens.setup.composables.SetupSourcesContent
 import com.mskd.flux.screens.setup.composables.SetupWelcomeContent
-import com.mskd.flux.ui.component.global.FluxScaffold
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxPreview
@@ -44,7 +42,6 @@ import flux.shared.generated.resources.next
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
-import org.koin.core.parameter.parametersOf
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -111,9 +108,9 @@ fun SetupScreenContent(
             ) { screen ->
 
                 when (screen) {
-                    SetupContrat.Screen.WELCOME -> SetupWelcomeContent()
-                    SetupContrat.Screen.SOURCES -> SetupSourcesContent(
-                        selectedOption = state.sourcesOption,
+                    SetupScreen.WELCOME -> SetupWelcomeContent()
+                    SetupScreen.SOURCES -> SetupSourcesContent(
+                        sourceSelectionMode = state.sourceSelectionMode,
                         sendIntent = sendIntent
                     )
                 }
@@ -143,7 +140,7 @@ fun SetupScreenContent_Welcome_Preview() {
     FluxThemePreview {
         SetupScreenContent(
             state = SetupUiState(
-                screen = SetupContrat.Screen.WELCOME
+                screen = SetupScreen.WELCOME
             ),
             sendIntent = {}
         )
@@ -156,7 +153,7 @@ fun SetupScreenContent_Sources_Preview() {
     FluxThemePreview {
         SetupScreenContent(
             state = SetupUiState(
-                screen = SetupContrat.Screen.SOURCES
+                screen = SetupScreen.SOURCES
             ),
             sendIntent = {}
         )

@@ -1,21 +1,18 @@
 package com.mskd.flux.features.setup.presentation
 
 import androidx.compose.runtime.Immutable
-
-object SetupContrat {
-    enum class Screen { WELCOME, SOURCES }
-    enum class SourcesOption { DEFAULT, CUSTOM }
-}
+import com.mskd.flux.features.setup.domain.model.SetupScreen
+import com.mskd.flux.features.setup.domain.model.SourceSelectionMode
 
 @Immutable
 data class SetupUiState(
-    val screen: SetupContrat.Screen = SetupContrat.Screen.WELCOME,
-    val sourcesOption: SetupContrat.SourcesOption = SetupContrat.SourcesOption.DEFAULT
+    val screen: SetupScreen = SetupScreen.WELCOME,
+    val sourceSelectionMode: SourceSelectionMode = SourceSelectionMode.DEFAULT
 )
 
 sealed interface SetupIntent {
     data object OnNextButton: SetupIntent
-    data class SelectSourcesOption(val option: SetupContrat.SourcesOption): SetupIntent
+    data class SelectSourceSelectionMode(val option: SourceSelectionMode): SetupIntent
     data object OnPermissionGranted: SetupIntent
 }
 

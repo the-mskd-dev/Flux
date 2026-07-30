@@ -1,6 +1,5 @@
 package com.mskd.flux.screens.setup.composables
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,9 +28,6 @@ import flux.shared.generated.resources.setup_sources_default_desc
 import flux.shared.generated.resources.setup_sources_default_title
 import flux.shared.generated.resources.setup_sources_desc
 import flux.shared.generated.resources.setup_sources_title
-import flux.shared.generated.resources.sources_full_desc
-import flux.shared.generated.resources.welcome
-import flux.shared.generated.resources.welcome_description
 import org.jetbrains.compose.resources.stringResource
 
 @Composable

@@ -41,19 +41,13 @@ val moduleFilesAndroid = module {
 
     single<GetDeviceFilesUseCase> {
         GetDeviceFilesUseCaseImpl(
-            sources = listOf(
-                get(MEDIASTORE_SOURCES),
-                get(SAF_SOURCES)
-            )
+            sourcesProvider = get()
         )
     }
 
     single<FilterExistingFilesUseCase> {
         FilterExistingFilesUseCaseImpl(
-            sources = listOf(
-                get(MEDIASTORE_SOURCES),
-                get(SAF_SOURCES)
-            )
+            sourcesProvider = get()
         )
     }
 

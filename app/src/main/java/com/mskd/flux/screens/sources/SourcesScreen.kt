@@ -8,6 +8,7 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,17 +17,21 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
@@ -56,12 +61,14 @@ import com.mskd.flux.utils.extensions.groupedShape
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.add_source
 import flux.shared.generated.resources.downloads
+import flux.shared.generated.resources.ic_add
 import flux.shared.generated.resources.movies
 import flux.shared.generated.resources.next
 import flux.shared.generated.resources.oups_an_error_occured
 import flux.shared.generated.resources.sources
 import flux.shared.generated.resources.sources_full_desc
 import flux.shared.generated.resources.sources_title
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -204,26 +211,17 @@ fun SourcesScreenContent(
             }
 
             item {
-                Spacer(modifier = Modifier.height(FluxUI.Space.medium))
-            }
-
-
-            item {
                 Text.Annotated(
-                    modifier = Modifier.padding(horizontal = FluxUI.Space.medium),
+                    modifier = Modifier.padding(all = FluxUI.Space.medium),
                     text = sourcesAnnotatedString(Res.string.sources_full_desc),
                     style = MaterialTheme.typography.bodyLarge
                 )
             }
 
             item {
-                Spacer(modifier = Modifier.height(FluxUI.Space.medium))
-            }
-
-            item {
                 Column(
                     modifier = Modifier
-                        .padding(FluxUI.Space.medium)
+                        .padding(horizontal = FluxUI.Space.medium)
                         .clip(RoundedCornerShape(FluxUI.shapes.listItem)),
                     verticalArrangement = Arrangement.spacedBy(FluxUI.Space.listItem)
                 ) {
@@ -233,13 +231,23 @@ fun SourcesScreenContent(
             }
 
             item {
-                FluxButton(
+                TextButton(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(all = FluxUI.Space.medium),
-                    shape = MaterialTheme.shapes.extraLarge,
-                    text = stringResource(Res.string.add_source)
-                ) { sendIntent(SourcesIntent.OpenFolderSelection) }
+                        .padding(top = FluxUI.Space.medium)//, bottom = FluxUI.Space.extraSmall)
+                        .padding(horizontal = FluxUI.Space.medium),
+                    onClick = { sendIntent(SourcesIntent.OpenFolderSelection) }
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.extraSmall)
+                    ) {
+                        Icon(painter = painterResource(Res.drawable.ic_add), contentDescription = "")
+                        androidx.compose.material3.Text(
+                            text = stringResource(Res.string.add_source)
+                        )
+                    }
+
+                }
             }
 
             val folders = content.folders.filterNot { it.path == waitingDeleteFolder?.path }

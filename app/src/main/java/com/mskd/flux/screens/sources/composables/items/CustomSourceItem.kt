@@ -29,6 +29,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -106,6 +109,7 @@ fun LazyItemScope.CustomSourceItem(
                         fontSize = 14.sp,
                         lineHeight = 20.sp,
                         overflow = TextOverflow.StartEllipsis,
+                        fontStyle = FontStyle.Italic,
                         maxLines = 1,
                     )
                 },

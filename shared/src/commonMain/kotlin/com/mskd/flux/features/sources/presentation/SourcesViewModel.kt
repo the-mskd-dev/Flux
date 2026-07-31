@@ -125,16 +125,19 @@ class SourcesViewModel(
 
     private suspend fun onBackTap() {
         finalizeDelete()
+
         if (needSync) syncCatalogUseCase(onlyNew = true)
         _event.send(SourcesEvent.BackToPreviousScreen)
     }
 
     private suspend fun onNextTap() {
         finalizeDelete()
+
         _event.send(SourcesEvent.NavigateToCatalog)
     }
 
     private suspend fun saveFolder(path: String) {
+        finalizeDelete()
 
         val folder = UserFolder(
             path = path,
@@ -150,6 +153,7 @@ class SourcesViewModel(
 
     private suspend fun delete(folder: UserFolder) {
         finalizeDelete()
+
         _deleteState.update { folder }
     }
 
@@ -160,6 +164,7 @@ class SourcesViewModel(
     private suspend fun finalizeDelete() {
         val folder = _deleteState.value ?: return
         deleteSourceUseCase(folder = folder, deleteMedias = true)
+        _deleteState.update { null }
     }
 
     private fun closeDialog() {

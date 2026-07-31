@@ -32,7 +32,6 @@ import androidx.compose.ui.draw.clip
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.sources.domain.model.UserFolder
-import com.mskd.flux.features.sources.domain.model.name
 import com.mskd.flux.features.sources.presentation.SourcesContent
 import com.mskd.flux.features.sources.presentation.SourcesEvent
 import com.mskd.flux.features.sources.presentation.SourcesIntent
@@ -52,7 +51,6 @@ import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxThemePreview
-import com.mskd.flux.utils.Trace
 import com.mskd.flux.utils.extensions.groupedShape
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.add_source
@@ -225,7 +223,7 @@ fun SourcesScreenContent(
                 Column(
                     modifier = Modifier
                         .padding(FluxUI.Space.medium)
-                        .clip(RoundedCornerShape(FluxUI.shapes.list)),
+                        .clip(RoundedCornerShape(FluxUI.shapes.listItem)),
                     verticalArrangement = Arrangement.spacedBy(FluxUI.Space.listItem)
                 ) {
                     SystemSourceItem(name = stringResource(Res.string.movies))

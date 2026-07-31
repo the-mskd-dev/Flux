@@ -3,7 +3,6 @@ package com.mskd.flux.screens.sources.composables.items
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -64,7 +63,7 @@ fun LazyItemScope.CustomSourceItem(
     }
 
     val cornersAnimation by animateDpAsState(
-        if (isSwiping) FluxUI.shapes.list else 0.dp
+        if (isSwiping) FluxUI.shapes.listItem else 0.dp
     )
 
     LaunchedEffect(folder.path) {

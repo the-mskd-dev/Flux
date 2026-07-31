@@ -18,7 +18,6 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.graphics.Paint
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.Dp
@@ -68,7 +67,7 @@ fun Modifier.clickableWithBounce(
 fun Modifier.groupedShape(
     index: Int,
     lastIndex: Int,
-    cornerRadius: Dp = FluxUI.shapes.list
+    cornerRadius: Dp = FluxUI.shapes.listItem
 ): Modifier {
     val shape = when {
         lastIndex == 0 -> RoundedCornerShape(size = cornerRadius)

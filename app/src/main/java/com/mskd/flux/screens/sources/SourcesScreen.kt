@@ -243,24 +243,24 @@ fun SourcesScreenContent(
                 ) { sendIntent(SourcesIntent.OpenFolderSelection) }
             }
 
+            val folders = content.folders.filterNot { it.path == waitingDeleteFolder?.path }
             itemsIndexed(
-                items = content.folders.filterNot { it.path == waitingDeleteFolder?.path },
+                items = folders,
                 key = { _, folder -> folder.path },
             ) { index, folder ->
 
                 CustomSourceItem(
                     modifier = Modifier
-                        .animateItem()
                         .padding(horizontal = FluxUI.Space.medium)
                         .groupedShape(
                             index = index,
-                            lastIndex = content.folders.lastIndex
+                            lastIndex = folders.lastIndex
                         ),
                     folder = folder,
                     onDelete = { sendIntent(SourcesIntent.Delete(folder)) }
                 )
 
-                if (index != content.folders.lastIndex)
+                if (index != folders.lastIndex)
                     Spacer(Modifier.height(FluxUI.Space.listItem))
 
             }

@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
@@ -24,6 +26,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,17 +41,17 @@ import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxThemePreview
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_error
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
-fun CustomSourceItem(
+fun LazyItemScope.CustomSourceItem(
     modifier: Modifier = Modifier,
     folder: UserFolder,
     onDelete: () -> Unit
 ) {
-    ListItemDefaults.containerColor
-    val backgroundColor = if (!folder.isAvailable) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.secondaryContainer
-    val contentColor = if (!folder.isAvailable) MaterialTheme.colorScheme.onError else MaterialTheme.colorScheme.onSecondaryContainer
+
+    val scope = rememberCoroutineScope()
 
     val dismissState = rememberSwipeToDismissBoxState(
         initialValue = SwipeToDismissBoxValue.Settled,
@@ -68,11 +71,17 @@ fun CustomSourceItem(
         dismissState.snapTo(SwipeToDismissBoxValue.Settled)
     }
 
+    val backgroundColor = if (!folder.isAvailable) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.secondaryContainer
+    val contentColor = if (!folder.isAvailable) MaterialTheme.colorScheme.onError else MaterialTheme.colorScheme.onSecondaryContainer
+
     SwipeToDismissBox(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .animateItem()
+            .fillMaxWidth(),
         state = dismissState,
         enableDismissFromStartToEnd = false,
         onDismiss = {
+            scope.launch { dismissState.snapTo(SwipeToDismissBoxValue.Settled) }
             onDelete()
         },
         content = {
@@ -138,26 +147,34 @@ fun CustomSourceItem(
 @Composable
 fun CustomSourceItem_Preview() {
     FluxThemePreview {
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .padding(FluxUI.Space.medium)
                 .clip(FluxUI.shapes.corners),
             verticalArrangement = Arrangement.spacedBy(FluxUI.Space.extraSmall)
         ) {
-            CustomSourceItem(
-                folder = UserFolder(path = "path/to/folder",),
-                onDelete = {}
-            )
 
-            CustomSourceItem(
-                folder = UserFolder(path = "path/to/folder2",),
-                onDelete = {}
-            )
+            item {
+                CustomSourceItem(
+                    folder = UserFolder(path = "path/to/folder",),
+                    onDelete = {}
+                )
+            }
 
-            CustomSourceItem(
-                folder = UserFolder(path = "path/to/unavailableFolder", isAvailable = false),
-                onDelete = {},
-            )
+            item {
+                CustomSourceItem(
+                    folder = UserFolder(path = "path/to/folder2",),
+                    onDelete = {}
+                )
+            }
+
+            item {
+                CustomSourceItem(
+                    folder = UserFolder(path = "path/to/unavailableFolder", isAvailable = false),
+                    onDelete = {},
+                )
+            }
+
         }
     }
 }

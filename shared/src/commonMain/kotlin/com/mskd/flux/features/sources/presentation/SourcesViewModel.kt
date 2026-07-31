@@ -124,11 +124,13 @@ class SourcesViewModel(
     }
 
     private suspend fun onBackTap() {
+        finalizeDelete()
         if (needSync) syncCatalogUseCase(onlyNew = true)
         _event.send(SourcesEvent.BackToPreviousScreen)
     }
 
     private suspend fun onNextTap() {
+        finalizeDelete()
         _event.send(SourcesEvent.NavigateToCatalog)
     }
 

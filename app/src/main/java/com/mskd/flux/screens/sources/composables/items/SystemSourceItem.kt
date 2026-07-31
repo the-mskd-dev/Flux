@@ -1,4 +1,4 @@
-package com.mskd.flux.screens.sources.composables
+package com.mskd.flux.screens.sources.composables.items
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,7 +11,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
@@ -28,15 +27,14 @@ fun SystemSourceItem(name: String) {
     ListItem(
         modifier = Modifier.fillMaxWidth(),
         colors = ListItemDefaults.colors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = .3f),
-            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
         ),
         headlineContent = {
             Text(
                 text = name,
                 fontSize = 16.sp,
                 lineHeight = 24.sp,
-                fontWeight = FontWeight.Bold,
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1,
             )

@@ -1,4 +1,4 @@
-package com.mskd.flux.screens.sources.composables
+package com.mskd.flux.screens.sources.composables.items
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
@@ -16,32 +16,25 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SwipeToDismissBox
-import androidx.compose.material3.SwipeToDismissBoxDefaults
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.lerp
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.unit.sp
 import com.mskd.flux.features.sources.domain.model.UserFolder
 import com.mskd.flux.features.sources.domain.model.cleanPath
 import com.mskd.flux.features.sources.domain.model.name
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxThemePreview
-import com.mskd.flux.utils.Trace
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_error
 import org.jetbrains.compose.resources.painterResource
@@ -52,9 +45,9 @@ fun CustomSourceItem(
     folder: UserFolder,
     onDelete: () -> Unit
 ) {
-
-    val backgroundColor = if (!folder.isAvailable) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primaryContainer
-    val contentColor = if (!folder.isAvailable) MaterialTheme.colorScheme.onError else MaterialTheme.colorScheme.onPrimaryContainer
+    ListItemDefaults.containerColor
+    val backgroundColor = if (!folder.isAvailable) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.secondaryContainer
+    val contentColor = if (!folder.isAvailable) MaterialTheme.colorScheme.onError else MaterialTheme.colorScheme.onSecondaryContainer
 
     val dismissState = rememberSwipeToDismissBoxState(
         initialValue = SwipeToDismissBoxValue.Settled,
@@ -64,10 +57,6 @@ fun CustomSourceItem(
         derivedStateOf {
             runCatching { dismissState.requireOffset() != 0f }.getOrDefault(false)
         }
-    }
-
-    LaunchedEffect(isSwiping) {
-        if (isSwiping) Trace.debug("is swiping")
     }
 
     val cornersAnimation by animateDpAsState(
@@ -94,7 +83,6 @@ fun CustomSourceItem(
                         text = folder.name,
                         fontSize = 16.sp,
                         lineHeight = 24.sp,
-                        fontWeight = FontWeight.Bold,
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 1,
                     )

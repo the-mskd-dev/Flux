@@ -2,7 +2,6 @@ package com.mskd.flux.screens.sources
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
@@ -15,21 +14,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.sources.presentation.SourcesContent
@@ -40,11 +34,10 @@ import com.mskd.flux.features.sources.presentation.SourcesViewModel
 import com.mskd.flux.mockups.FilesMockups
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.presentations.components.rememberSafFolderPicker
-import com.mskd.flux.screens.sources.composables.CustomSourceItem
+import com.mskd.flux.screens.sources.composables.items.CustomSourceItem
 import com.mskd.flux.screens.sources.composables.DeleteSourceDialog
 import com.mskd.flux.screens.sources.composables.SourcesInformationDialog
-import com.mskd.flux.screens.sources.composables.SystemSourceItem
-import com.mskd.flux.screens.sources.composables.UserFolderItem
+import com.mskd.flux.screens.sources.composables.items.SystemSourceItem
 import com.mskd.flux.screens.sources.composables.sourcesAnnotatedString
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.component.global.ErrorScreen

@@ -1,0 +1,62 @@
+package com.mskd.flux.screens.sources.composables
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.sp
+import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.utils.FluxThemePreview
+import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.downloads
+import flux.shared.generated.resources.movies
+import org.jetbrains.compose.resources.stringResource
+
+@Composable
+fun SystemSourceItem(name: String) {
+
+    ListItem(
+        modifier = Modifier.fillMaxWidth(),
+        colors = ListItemDefaults.colors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = .3f),
+            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+        ),
+        headlineContent = {
+            Text(
+                text = name,
+                fontSize = 16.sp,
+                lineHeight = 24.sp,
+                fontWeight = FontWeight.Bold,
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 1,
+            )
+        },
+    )
+
+}
+
+@Preview
+@Composable
+fun SystemSourceItem_Preview() {
+    FluxThemePreview {
+        Column(
+            modifier = Modifier
+                .padding(FluxUI.Space.medium)
+                .clip(FluxUI.shapes.corners),
+            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.extraSmall)
+        ) {
+            SystemSourceItem(name = stringResource(Res.string.movies))
+            SystemSourceItem(name = stringResource(Res.string.downloads))
+        }
+    }
+}

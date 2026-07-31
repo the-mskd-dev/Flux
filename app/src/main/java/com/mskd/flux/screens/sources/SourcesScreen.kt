@@ -2,6 +2,7 @@ package com.mskd.flux.screens.sources
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
@@ -12,26 +13,25 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowForward
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.core.model.core.State
-import com.mskd.flux.features.setup.presentation.SetupIntent
 import com.mskd.flux.features.sources.presentation.SourcesContent
 import com.mskd.flux.features.sources.presentation.SourcesDialog
 import com.mskd.flux.features.sources.presentation.SourcesEvent
@@ -40,9 +40,10 @@ import com.mskd.flux.features.sources.presentation.SourcesViewModel
 import com.mskd.flux.mockups.FilesMockups
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.presentations.components.rememberSafFolderPicker
+import com.mskd.flux.screens.sources.composables.CustomSourceItem
 import com.mskd.flux.screens.sources.composables.DeleteSourceDialog
-import com.mskd.flux.screens.sources.composables.PermanentFolderItem
 import com.mskd.flux.screens.sources.composables.SourcesInformationDialog
+import com.mskd.flux.screens.sources.composables.SystemSourceItem
 import com.mskd.flux.screens.sources.composables.UserFolderItem
 import com.mskd.flux.screens.sources.composables.sourcesAnnotatedString
 import com.mskd.flux.ui.component.LoadingScreen
@@ -50,9 +51,10 @@ import com.mskd.flux.ui.component.global.ErrorScreen
 import com.mskd.flux.ui.component.global.FluxButton
 import com.mskd.flux.ui.component.global.FluxScaffold
 import com.mskd.flux.ui.component.global.Text
-import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxPreview
+import com.mskd.flux.utils.FluxThemePreview
+import com.mskd.flux.utils.extensions.groupedShape
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.add_source
 import flux.shared.generated.resources.downloads
@@ -170,18 +172,22 @@ fun SourcesScreenContent(
                 .background(MaterialTheme.colorScheme.surfaceContainer),
         ) {
 
-            item { Spacer(modifier = Modifier.height(innerPadding.calculateTopPadding())) }
+            item {
+                Spacer(modifier = Modifier.height(innerPadding.calculateTopPadding()))
+            }
+
 
             item {
-
                 Text.Title.Large(
                     modifier = Modifier.padding(horizontal = FluxUI.Space.medium),
                     text = stringResource(Res.string.sources_title)
                 )
-
             }
 
-            item { Spacer(modifier = Modifier.height(FluxUI.Space.medium)) }
+            item {
+                Spacer(modifier = Modifier.height(FluxUI.Space.medium))
+            }
+
 
             item {
                 Text.Annotated(
@@ -191,42 +197,57 @@ fun SourcesScreenContent(
                 )
             }
 
-            item { Spacer(modifier = Modifier.height(FluxUI.Space.medium)) }
-
             item {
-                Column(verticalArrangement = Arrangement.spacedBy(FluxUI.Space.extraSmall)) {
-                    PermanentFolderItem(name = stringResource(Res.string.movies))
-                    PermanentFolderItem(name = stringResource(Res.string.downloads))
-                }
+                Spacer(modifier = Modifier.height(FluxUI.Space.medium))
             }
 
-            item { Spacer(modifier = Modifier.height(FluxUI.Space.medium)) }
+            item {
+                Column(
+                    modifier = Modifier
+                        .padding(FluxUI.Space.medium)
+                        .clip(RoundedCornerShape(FluxUI.shapes.list)),
+                    verticalArrangement = Arrangement.spacedBy(FluxUI.Space.listItem)
+                ) {
+                    SystemSourceItem(name = stringResource(Res.string.movies))
+                    SystemSourceItem(name = stringResource(Res.string.downloads))
+                }
+            }
 
             item {
                 FluxButton(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = FluxUI.Space.medium),
+                        .padding(all = FluxUI.Space.medium),
                     shape = MaterialTheme.shapes.extraLarge,
                     text = stringResource(Res.string.add_source)
                 ) { sendIntent(SourcesIntent.OpenFolderSelection) }
             }
 
-            item { Spacer(modifier = Modifier.height(FluxUI.Space.medium)) }
+            itemsIndexed(
+                items = content.folders,
+                key = { _, folder -> folder.path },
+            ) { index, folder ->
 
-            items(items = content.folders, key = { it.path }) { folder ->
-
-                UserFolderItem(
-                    modifier = Modifier.animateItem(),
+                CustomSourceItem(
+                    modifier = Modifier
+                        .animateItem()
+                        .padding(horizontal = FluxUI.Space.medium)
+                        .groupedShape(
+                            index = index,
+                            lastIndex = content.folders.lastIndex
+                        ),
                     folder = folder,
                     onDelete = { sendIntent(SourcesIntent.ShowDeleteDialog(folder)) }
                 )
 
-                Spacer(modifier = Modifier.height(FluxUI.Space.extraSmall))
+                if (index != content.folders.lastIndex)
+                    Spacer(Modifier.height(FluxUI.Space.listItem))
 
             }
 
-            item { Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding() + FluxUI.Space.large)) }
+            item {
+                Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding() + FluxUI.Space.large))
+            }
 
         }
 
@@ -244,7 +265,7 @@ fun SourcesScreenContent(
 @Composable
 @FluxPreview
 fun SourcesScreenContent_Preview() {
-    FluxTheme {
+    FluxThemePreview {
         SourcesScreenContent(
             content = SourcesContent(
                 folders = FilesMockups.userFolders,

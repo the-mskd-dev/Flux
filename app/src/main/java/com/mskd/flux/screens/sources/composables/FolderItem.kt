@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -46,28 +48,23 @@ fun FolderItem(
     icon: @Composable () -> Unit = {}
 ) {
 
-    Row(
+    ListItem(
         modifier = Modifier
             .clip(FluxUI.shapes.corners)
-            .fillMaxWidth()
-            .background(backgroundColor)
-            .padding(all = FluxUI.Space.medium),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
-    ) {
-
-        Column(
-            modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
-        ) {
-
+            .fillMaxWidth(),
+        colors = ListItemDefaults.colors(
+            containerColor = backgroundColor,
+            contentColor = contentColor
+        ),
+        headlineContent = {
             Text.Title.Medium(
                 text = name,
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1,
                 color = contentColor,
             )
-
+        },
+        supportingContent = {
             Text.Adaptive(
                 text = path,
                 overflow = TextOverflow.StartEllipsis,
@@ -75,44 +72,9 @@ fun FolderItem(
                 color = contentColor.copy(alpha = .6f),
                 style = MaterialTheme.typography.titleSmall.copy(fontStyle = FontStyle.Italic)
             )
-
-        }
-
-        icon()
-
-
-    }
-
-
-
-}
-
-@Composable
-fun PermanentFolderItem(
-    modifier: Modifier = Modifier,
-    name: String
-) {
-
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = FluxUI.Space.medium),
-        contentAlignment = Alignment.Center
-    ) {
-
-        FolderItem(
-            name = name,
-            backgroundColor = MaterialTheme.colorScheme.primaryContainer,
-            icon = {
-                Icon(
-                    painter = painterResource(Res.drawable.ic_lock),
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                    contentDescription = name
-                )
-            }
-        )
-
-    }
+        },
+        trailingContent = { icon() }
+    )
 
 }
 
@@ -171,8 +133,6 @@ fun FolderItem_Preview() {
                 .padding(vertical = FluxUI.Space.large),
             verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
         ) {
-            PermanentFolderItem(name = stringResource(Res.string.movies))
-            PermanentFolderItem(name = stringResource(Res.string.downloads))
             FilesMockups.userFolders.forEach { UserFolderItem(folder = it, onDelete = {}) }
         }
     }

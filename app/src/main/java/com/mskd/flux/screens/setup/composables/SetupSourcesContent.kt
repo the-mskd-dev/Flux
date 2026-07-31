@@ -65,7 +65,7 @@ fun SetupSourcesContent(
                 modifier = Modifier
                     .clip(RoundedCornerShape(16.dp))
                     .fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(FluxUI.Space.extraSmall)
+                verticalArrangement = Arrangement.spacedBy(FluxUI.Space.listItem)
             ) {
 
                 SetupSourcesItem(

@@ -29,6 +29,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.sources.domain.model.UserFolder
@@ -264,7 +265,7 @@ fun SourcesScreenContent(
             }
 
             item {
-                Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding() + FluxUI.Space.large))
+                Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding() + 50.dp))
             }
 
         }

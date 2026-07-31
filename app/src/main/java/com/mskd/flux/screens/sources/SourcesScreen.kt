@@ -18,16 +18,22 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.core.model.core.State
+import com.mskd.flux.features.sources.domain.model.UserFolder
+import com.mskd.flux.features.sources.domain.model.name
 import com.mskd.flux.features.sources.presentation.SourcesContent
-import com.mskd.flux.features.sources.presentation.SourcesDialog
 import com.mskd.flux.features.sources.presentation.SourcesEvent
 import com.mskd.flux.features.sources.presentation.SourcesIntent
 import com.mskd.flux.features.sources.presentation.SourcesViewModel
@@ -35,7 +41,6 @@ import com.mskd.flux.mockups.FilesMockups
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.presentations.components.rememberSafFolderPicker
 import com.mskd.flux.screens.sources.composables.items.CustomSourceItem
-import com.mskd.flux.screens.sources.composables.DeleteSourceDialog
 import com.mskd.flux.screens.sources.composables.SourcesInformationDialog
 import com.mskd.flux.screens.sources.composables.items.SystemSourceItem
 import com.mskd.flux.screens.sources.composables.sourcesAnnotatedString
@@ -47,6 +52,7 @@ import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxThemePreview
+import com.mskd.flux.utils.Trace
 import com.mskd.flux.utils.extensions.groupedShape
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.add_source
@@ -70,6 +76,7 @@ fun SourcesScreen(
 ) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val snackbarHostState = remember { SnackbarHostState() }
 
     val pickFolder = rememberSafFolderPicker { uri ->
         viewModel.handleIntent(SourcesIntent.SaveFolder(uri.toString()))
@@ -86,6 +93,22 @@ fun SourcesScreen(
                 SourcesEvent.OpenFolderSelection -> pickFolder()
                 SourcesEvent.NavigateToCatalog -> navigate(Route.Catalog)
             }
+        }
+    }
+
+    LaunchedEffect(uiState.waitingDeleteFolder) {
+        if (uiState.waitingDeleteFolder != null) {
+            val result = snackbarHostState.showSnackbar(
+                message = "Dossier supprimé",
+                actionLabel = "Annuler",
+                duration = SnackbarDuration.Short
+            )
+
+            when (result) {
+                SnackbarResult.Dismissed -> viewModel.handleIntent(SourcesIntent.FinalizeDelete)
+                SnackbarResult.ActionPerformed -> viewModel.handleIntent(SourcesIntent.UndoDelete)
+            }
+
         }
     }
 
@@ -114,16 +137,18 @@ fun SourcesScreen(
 
                 SourcesScreenContent(
                     content = state.content,
-                    dialog = uiState.dialog,
+                    waitingDeleteFolder = uiState.waitingDeleteFolder,
+                    snackbarHostState = snackbarHostState,
                     sendIntent = { viewModel.handleIntent(intent = it) }
                 )
+
             }
         }
 
     }
 
     // TODO: Delete in October 2026
-    if (uiState.dialog is SourcesDialog.NewFeatureInformation) {
+    if (uiState.showFeatureDialog) {
         SourcesInformationDialog(
             sendIntent = { viewModel.handleIntent(intent = it) }
         )
@@ -134,7 +159,8 @@ fun SourcesScreen(
 @Composable
 fun SourcesScreenContent(
     content: SourcesContent,
-    dialog: SourcesDialog? = null,
+    waitingDeleteFolder: UserFolder? = null,
+    snackbarHostState: SnackbarHostState? = null,
     sendIntent: (SourcesIntent) -> Unit
 ) {
 
@@ -156,7 +182,8 @@ fun SourcesScreenContent(
                     Text.Label.Large(stringResource(Res.string.next))
                 }
             }
-        }
+        },
+        snackbarHost = { snackbarHostState?.let { SnackbarHost(hostState = it) } }
     ) { innerPadding ->
 
         LazyColumn(
@@ -217,7 +244,7 @@ fun SourcesScreenContent(
             }
 
             itemsIndexed(
-                items = content.folders,
+                items = content.folders.filterNot { it.path == waitingDeleteFolder?.path },
                 key = { _, folder -> folder.path },
             ) { index, folder ->
 
@@ -230,7 +257,7 @@ fun SourcesScreenContent(
                             lastIndex = content.folders.lastIndex
                         ),
                     folder = folder,
-                    onDelete = { sendIntent(SourcesIntent.ShowDeleteDialog(folder)) }
+                    onDelete = { sendIntent(SourcesIntent.Delete(folder)) }
                 )
 
                 if (index != content.folders.lastIndex)
@@ -244,13 +271,6 @@ fun SourcesScreenContent(
 
         }
 
-    }
-
-    (dialog as? SourcesDialog.ConfirmDelete)?.let {
-        DeleteSourceDialog(
-            folder = it.folder,
-            sendIntent = sendIntent
-        )
     }
 
 }

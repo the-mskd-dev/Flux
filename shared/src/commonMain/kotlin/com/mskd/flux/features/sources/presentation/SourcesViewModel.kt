@@ -10,6 +10,7 @@ import com.mskd.flux.features.sources.domain.model.UserFolder
 import com.mskd.flux.features.sources.domain.usecase.AddSourceUseCase
 import com.mskd.flux.features.sources.domain.usecase.DeleteSourceUseCase
 import com.mskd.flux.features.sources.domain.usecase.FlowSourcesUseCase
+import com.mskd.flux.utils.Trace
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -33,12 +34,14 @@ class SourcesViewModel(
     private val _event = Channel<SourcesEvent>(Channel.BUFFERED)
     val event = _event.receiveAsFlow()
 
-    private val _dialogState = MutableStateFlow<SourcesDialog?>(null)
+    private val _deleteState = MutableStateFlow<UserFolder?>(null)
+    private val _showDialogState = MutableStateFlow<Boolean>(false)
 
     val uiState = combine(
         flowSourcesUseCase(),
-        _dialogState
-    ) { folders, dialog ->
+        _deleteState,
+        _showDialogState
+    ) { folders, deleteState, showDialogState ->
 
         SourcesUiState(
             state = State.Content(
@@ -47,7 +50,8 @@ class SourcesViewModel(
                     folders = folders
                 )
             ),
-            dialog = dialog
+            waitingDeleteFolder = deleteState,
+            showFeatureDialog = showDialogState
         )
 
     }.stateIn(
@@ -81,7 +85,7 @@ class SourcesViewModel(
         viewModelScope.launch {
 
             if (userDataStore.getVersionCode() in 1..27) {
-                _dialogState.update { SourcesDialog.NewFeatureInformation }
+                _showDialogState.update { true }
             }
 
         }
@@ -110,10 +114,11 @@ class SourcesViewModel(
             is SourcesIntent.SaveFolder -> saveFolder(path = intent.path)
 
             // Delete
-            is SourcesIntent.DeleteFolder -> deleteFolder(folder = intent.folder)
+            is SourcesIntent.Delete -> delete(folder = intent.folder)
+            SourcesIntent.UndoDelete -> undoDelete()
+            SourcesIntent.FinalizeDelete -> finalizeDelete()
 
             // Dialog
-            is SourcesIntent.ShowDeleteDialog -> showDeleteDialog(folder = intent.folder)
             SourcesIntent.CloseDialog -> closeDialog()
         }
     }
@@ -141,17 +146,22 @@ class SourcesViewModel(
 
     }
 
-    private fun showDeleteDialog(folder: UserFolder) {
-        _dialogState.update { SourcesDialog.ConfirmDelete(folder = folder) }
+    private suspend fun delete(folder: UserFolder) {
+        finalizeDelete()
+        _deleteState.update { folder }
+    }
+
+    private fun undoDelete() {
+        _deleteState.update { null }
+    }
+
+    private suspend fun finalizeDelete() {
+        val folder = _deleteState.value ?: return
+        deleteSourceUseCase(folder = folder, deleteMedias = true)
     }
 
     private fun closeDialog() {
-        _dialogState.update { null }
-    }
-
-    private suspend fun deleteFolder(folder: UserFolder) {
-        deleteSourceUseCase(folder = folder, deleteMedias = true)
-        closeDialog()
+        _showDialogState.update { false }
     }
 
     //endregion

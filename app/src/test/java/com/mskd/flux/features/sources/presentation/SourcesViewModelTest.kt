@@ -169,7 +169,7 @@ class SourcesViewModelTest : FunSpec({
             testDispatcher.scheduler.advanceUntilIdle()
             expectMostRecentItem()
 
-            viewModel.handleIntent(SourcesIntent.ShowDeleteDialog(folder = folder))
+            viewModel.handleIntent(SourcesIntent.Delete(folder = folder))
             testDispatcher.scheduler.advanceUntilIdle()
 
             expectMostRecentItem().dialog shouldBe SourcesDialog.ConfirmDelete(folder = folder)
@@ -180,7 +180,7 @@ class SourcesViewModelTest : FunSpec({
         val folder = UserFolder(path = "path/x", isAvailable = true)
         val viewModel = createViewModel()
 
-        viewModel.handleIntent(SourcesIntent.ShowDeleteDialog(folder = folder))
+        viewModel.handleIntent(SourcesIntent.Delete(folder = folder))
         testDispatcher.scheduler.advanceUntilIdle()
 
         viewModel.handleIntent(SourcesIntent.CloseDialog)
@@ -198,10 +198,10 @@ class SourcesViewModelTest : FunSpec({
         val deleteSourceUseCase = mockk<DeleteSourceUseCase>(relaxed = true)
         val viewModel = createViewModel(deleteSourceUseCase = deleteSourceUseCase)
 
-        viewModel.handleIntent(SourcesIntent.ShowDeleteDialog(folder = folder))
+        viewModel.handleIntent(SourcesIntent.Delete(folder = folder))
         testDispatcher.scheduler.advanceUntilIdle()
 
-        viewModel.handleIntent(SourcesIntent.DeleteFolder(folder = folder))
+        viewModel.handleIntent(SourcesIntent.Delete(folder = folder))
         testDispatcher.scheduler.advanceUntilIdle()
 
         coVerify { deleteSourceUseCase(folder = folder, deleteMedias = true) }

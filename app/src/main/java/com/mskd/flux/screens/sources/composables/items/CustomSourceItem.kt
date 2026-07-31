@@ -20,6 +20,7 @@ import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -62,6 +63,10 @@ fun CustomSourceItem(
     val cornersAnimation by animateDpAsState(
         if (isSwiping) FluxUI.shapes.list else 0.dp
     )
+
+    LaunchedEffect(folder.path) {
+        dismissState.snapTo(SwipeToDismissBoxValue.Settled)
+    }
 
     SwipeToDismissBox(
         modifier = Modifier.fillMaxWidth(),

@@ -58,11 +58,12 @@ fun CustomSourceItem(
 
     val dismissState = rememberSwipeToDismissBoxState(
         initialValue = SwipeToDismissBoxValue.Settled,
-        positionalThreshold = { 0f }
     )
 
     val isSwiping by remember {
-        derivedStateOf { dismissState.progress < 1f }
+        derivedStateOf {
+            runCatching { dismissState.requireOffset() != 0f }.getOrDefault(false)
+        }
     }
 
     LaunchedEffect(isSwiping) {

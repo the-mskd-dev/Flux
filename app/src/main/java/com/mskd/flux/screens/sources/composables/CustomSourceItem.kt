@@ -1,5 +1,6 @@
 package com.mskd.flux.screens.sources.composables
 
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -7,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Icon
@@ -19,6 +21,10 @@ import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,6 +41,7 @@ import com.mskd.flux.features.sources.domain.model.cleanPath
 import com.mskd.flux.features.sources.domain.model.name
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxThemePreview
+import com.mskd.flux.utils.Trace
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_error
 import org.jetbrains.compose.resources.painterResource
@@ -51,7 +58,19 @@ fun CustomSourceItem(
 
     val dismissState = rememberSwipeToDismissBoxState(
         initialValue = SwipeToDismissBoxValue.Settled,
-        positionalThreshold = SwipeToDismissBoxDefaults.positionalThreshold
+        positionalThreshold = { 0f }
+    )
+
+    val isSwiping by remember {
+        derivedStateOf { dismissState.progress < 1f }
+    }
+
+    LaunchedEffect(isSwiping) {
+        if (isSwiping) Trace.debug("is swiping")
+    }
+
+    val cornersAnimation by animateDpAsState(
+        if (isSwiping) FluxUI.shapes.list else 0.dp
     )
 
     SwipeToDismissBox(
@@ -63,7 +82,8 @@ fun CustomSourceItem(
         },
         content = {
             ListItem(
-                modifier = modifier,
+                modifier = modifier
+                    .clip(RoundedCornerShape(cornersAnimation)),
                 colors = ListItemDefaults.colors(
                     containerColor = backgroundColor,
                     contentColor = contentColor
@@ -105,6 +125,7 @@ fun CustomSourceItem(
                         imageVector = Icons.Default.Delete,
                         contentDescription = "Remove item",
                         modifier = modifier
+                            .clip(RoundedCornerShape(cornersAnimation))
                             .fillMaxSize()
                             .background(MaterialTheme.colorScheme.errorContainer)
                             .wrapContentSize(Alignment.CenterEnd)

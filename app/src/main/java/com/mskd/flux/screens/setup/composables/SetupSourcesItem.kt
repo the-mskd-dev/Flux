@@ -2,7 +2,6 @@ package com.mskd.flux.screens.setup.composables
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.ListItem
@@ -37,7 +36,7 @@ fun SetupSourcesItem(
         selected = isSelected,
         onClick = onTap,
         content = {
-            Text.ListTitle(
+            Text.List.Title(
                 text = title,
                 fontWeight = FontWeight.Bold
             )

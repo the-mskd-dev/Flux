@@ -4,7 +4,6 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -18,7 +17,6 @@ import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
-import androidx.compose.material3.Text
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -29,20 +27,17 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.mskd.flux.features.sources.domain.model.UserFolder
 import com.mskd.flux.features.sources.domain.model.cleanPath
 import com.mskd.flux.features.sources.domain.model.name
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxThemePreview
+import com.mskd.flux.utils.extensions.groupedShape
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_error
 import kotlinx.coroutines.launch
@@ -52,6 +47,8 @@ import org.jetbrains.compose.resources.painterResource
 fun LazyItemScope.CustomSourceItem(
     modifier: Modifier = Modifier,
     folder: UserFolder,
+    index: Int,
+    lastIndex: Int,
     onDelete: () -> Unit
 ) {
 
@@ -79,9 +76,7 @@ fun LazyItemScope.CustomSourceItem(
     val contentColor = if (!folder.isAvailable) MaterialTheme.colorScheme.onError else MaterialTheme.colorScheme.onSecondaryContainer
 
     SwipeToDismissBox(
-        modifier = Modifier
-            .animateItem()
-            .fillMaxWidth(),
+        modifier = modifier,
         state = dismissState,
         enableDismissFromStartToEnd = false,
         onDismiss = {
@@ -90,21 +85,23 @@ fun LazyItemScope.CustomSourceItem(
         },
         content = {
             ListItem(
-                modifier = modifier
+                modifier = Modifier
+                    .padding(horizontal = FluxUI.Space.medium)
+                    .groupedShape(index = index, lastIndex = lastIndex)
                     .clip(RoundedCornerShape(cornersAnimation)),
                 colors = ListItemDefaults.colors(
                     containerColor = backgroundColor,
                     contentColor = contentColor
                 ),
                 headlineContent = {
-                    Text.ListTitle(
+                    Text.List.Title(
                         text = folder.name,
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 1,
                     )
                 },
                 supportingContent = {
-                    Text.ListContent(
+                    Text.List.Content(
                         text = folder.cleanPath,
                         overflow = TextOverflow.StartEllipsis,
                         fontStyle = FontStyle.Italic,
@@ -128,7 +125,9 @@ fun LazyItemScope.CustomSourceItem(
                     Icon(
                         imageVector = Icons.Default.Delete,
                         contentDescription = "Remove item",
-                        modifier = modifier
+                        modifier = Modifier
+                            .padding(horizontal = FluxUI.Space.medium)
+                            .groupedShape(index = index, lastIndex = lastIndex)
                             .clip(RoundedCornerShape(cornersAnimation))
                             .fillMaxSize()
                             .background(MaterialTheme.colorScheme.errorContainer)
@@ -158,6 +157,8 @@ fun CustomSourceItem_Preview() {
             item {
                 CustomSourceItem(
                     folder = UserFolder(path = "path/to/folder",),
+                    index = 0,
+                    lastIndex = 2,
                     onDelete = {}
                 )
             }
@@ -165,6 +166,8 @@ fun CustomSourceItem_Preview() {
             item {
                 CustomSourceItem(
                     folder = UserFolder(path = "path/to/folder2",),
+                    index = 1,
+                    lastIndex = 2,
                     onDelete = {}
                 )
             }
@@ -172,6 +175,8 @@ fun CustomSourceItem_Preview() {
             item {
                 CustomSourceItem(
                     folder = UserFolder(path = "path/to/unavailableFolder", isAvailable = false),
+                    index = 2,
+                    lastIndex = 2,
                     onDelete = {},
                 )
             }

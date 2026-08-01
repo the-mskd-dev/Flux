@@ -18,8 +18,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -162,6 +164,7 @@ fun SourcesScreen(
 
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SourcesScreenContent(
     content: SourcesContent,
@@ -233,7 +236,7 @@ fun SourcesScreenContent(
             item {
                 TextButton(
                     modifier = Modifier
-                        .padding(top = FluxUI.Space.medium)//, bottom = FluxUI.Space.extraSmall)
+                        .padding(top = FluxUI.Space.medium)
                         .padding(horizontal = FluxUI.Space.medium),
                     onClick = { sendIntent(SourcesIntent.OpenFolderSelection) }
                 ) {
@@ -242,9 +245,7 @@ fun SourcesScreenContent(
                         horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.extraSmall)
                     ) {
                         Icon(painter = painterResource(Res.drawable.ic_add), contentDescription = "")
-                        androidx.compose.material3.Text(
-                            text = stringResource(Res.string.add_source)
-                        )
+                        Text.List.Section(text = stringResource(Res.string.add_source))
                     }
 
                 }
@@ -258,12 +259,11 @@ fun SourcesScreenContent(
 
                 CustomSourceItem(
                     modifier = Modifier
-                        .padding(horizontal = FluxUI.Space.medium)
-                        .groupedShape(
-                            index = index,
-                            lastIndex = folders.lastIndex
-                        ),
+                        .animateItem()
+                        .fillMaxSize(),
                     folder = folder,
+                    index = index,
+                    lastIndex = folders.lastIndex,
                     onDelete = { sendIntent(SourcesIntent.Delete(folder)) }
                 )
 

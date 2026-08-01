@@ -7,13 +7,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.sp
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxThemePreview
@@ -32,7 +30,7 @@ fun SystemSourceItem(name: String) {
             contentColor = MaterialTheme.colorScheme.onSecondaryContainer
         ),
         headlineContent = {
-            Text.ListTitle(
+            Text.List.Title(
                 text = name,
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1,

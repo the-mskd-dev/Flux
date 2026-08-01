@@ -7,6 +7,7 @@ import com.mskd.flux.core.model.core.State
 import com.mskd.flux.core.model.files.FileSource
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
+import com.mskd.flux.features.setup.presentation.SetupIntent
 import com.mskd.flux.features.sources.domain.model.UserFolder
 import com.mskd.flux.features.sources.domain.usecase.AddSourceUseCase
 import com.mskd.flux.features.sources.domain.usecase.DeleteSourceUseCase
@@ -126,6 +127,9 @@ class SourcesViewModel(
 
             // Dialog
             SourcesIntent.CloseDialog -> closeDialog()
+
+            // Permissions
+            SourcesIntent.OnPermissionGranted -> onPermissionGranted()
         }
     }
 
@@ -179,8 +183,18 @@ class SourcesViewModel(
 
     private suspend fun onSystemFoldersSwitch() {
         val isEnabled = (uiState.value.state as? State.Content)?.content?.systemFoldersEnabled ?: return
-        settingsDataStore.setSystemFolders(enabled = !isEnabled)
 
+        if (!isEnabled) {
+            _event.send(SourcesEvent.ShowPermissionDialog)
+        } else {
+            settingsDataStore.setSystemFolders(enabled = false)
+            needSync = true
+        }
+
+    }
+
+    private suspend fun onPermissionGranted() {
+        settingsDataStore.setSystemFolders(enabled = true)
         needSync = true
     }
 

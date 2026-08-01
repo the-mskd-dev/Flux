@@ -47,7 +47,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
 import com.mskd.flux.core.model.core.State
+import com.mskd.flux.features.setup.presentation.SetupEvent
+import com.mskd.flux.features.setup.presentation.SetupIntent
 import com.mskd.flux.features.sources.domain.model.UserFolder
 import com.mskd.flux.features.sources.presentation.SourcesContent
 import com.mskd.flux.features.sources.presentation.SourcesEvent
@@ -69,6 +73,7 @@ import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxThemePreview
 import com.mskd.flux.utils.extensions.groupedShape
+import com.mskd.flux.utils.storagePermissionState
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.add_source
 import flux.shared.generated.resources.downloads
@@ -86,6 +91,7 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun SourcesScreen(
     navigate: (Route) -> Unit,
@@ -96,6 +102,10 @@ fun SourcesScreen(
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
+    val permissions = storagePermissionState { isGranted ->
+        viewModel.handleIntent(SourcesIntent.OnPermissionGranted)
+    }
+
 
     val pickFolder = rememberSafFolderPicker { uri ->
         viewModel.handleIntent(SourcesIntent.SaveFolder(uri.toString()))
@@ -111,6 +121,13 @@ fun SourcesScreen(
                 SourcesEvent.BackToPreviousScreen -> onBack()
                 SourcesEvent.OpenFolderSelection -> pickFolder()
                 SourcesEvent.NavigateToCatalog -> navigate(Route.Catalog)
+                SourcesEvent.ShowPermissionDialog -> {
+                    if (permissions.status.isGranted) {
+                        viewModel.handleIntent(SourcesIntent.OnPermissionGranted)
+                    } else {
+                        permissions.launchPermissionRequest()
+                    }
+                }
             }
         }
     }

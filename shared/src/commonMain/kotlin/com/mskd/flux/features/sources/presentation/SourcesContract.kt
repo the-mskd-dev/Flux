@@ -2,6 +2,8 @@ package com.mskd.flux.features.sources.presentation
 
 import androidx.compose.runtime.Immutable
 import com.mskd.flux.core.model.core.State
+import com.mskd.flux.features.setup.presentation.SetupEvent
+import com.mskd.flux.features.setup.presentation.SetupIntent
 import com.mskd.flux.features.sources.domain.model.UserFolder
 
 @Immutable
@@ -38,6 +40,9 @@ sealed interface SourcesIntent {
 
     // Dialog
     data object CloseDialog: SourcesIntent
+
+    // Permissions
+    data object OnPermissionGranted: SourcesIntent
 }
 
 sealed interface SourcesEvent {
@@ -48,4 +53,7 @@ sealed interface SourcesEvent {
 
     // Add
     data object OpenFolderSelection: SourcesEvent
+
+    // Permissions
+    data object ShowPermissionDialog: SourcesEvent
 }

@@ -178,6 +178,8 @@ class SourcesViewModel(
     private suspend fun onSystemFoldersSwitch() {
         val isEnabled = (uiState.value.state as? State.Content)?.content?.systemFoldersEnabled ?: return
         settingsDataStore.setSystemFolders(enabled = !isEnabled)
+
+        needSync = true
     }
 
     //endregion

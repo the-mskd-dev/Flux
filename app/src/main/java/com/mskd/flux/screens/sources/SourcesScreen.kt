@@ -176,8 +176,6 @@ fun SourcesScreenContent(
         }
     }
 
-    var systemFoldersEnabled by remember { mutableStateOf(true) }
-
     FluxScaffold(
         title = stringResource(Res.string.sources),
         topAppBarColors = TopAppBarDefaults.topAppBarColors(
@@ -236,7 +234,7 @@ fun SourcesScreenContent(
                         containerColor = MaterialTheme.colorScheme.primaryContainer,
                         contentColor = MaterialTheme.colorScheme.onPrimaryContainer
                     ),
-                    onClick = { systemFoldersEnabled = !systemFoldersEnabled},
+                    onClick = { sendIntent(SourcesIntent.OnSystemFoldersSwitch)},
                     verticalAlignment = Alignment.CenterVertically,
                     content = {
                         Text.List.Title(
@@ -246,8 +244,8 @@ fun SourcesScreenContent(
                     },
                     trailingContent = {
                         Switch(
-                            checked = systemFoldersEnabled,
-                            onCheckedChange = { systemFoldersEnabled = !systemFoldersEnabled},
+                            checked = content.systemFoldersEnabled,
+                            onCheckedChange = { sendIntent(SourcesIntent.OnSystemFoldersSwitch) },
                         )
                     }
                 )

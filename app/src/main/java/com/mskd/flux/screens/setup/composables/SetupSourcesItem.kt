@@ -16,6 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.mskd.flux.screens.sources.composables.sourcesAnnotatedString
 import androidx.compose.material3.Text
+import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxThemePreview
 import flux.shared.generated.resources.Res
@@ -36,14 +37,10 @@ fun SetupSourcesItem(
         selected = isSelected,
         onClick = onTap,
         content = {
-            Column {
-                Text(
-                    text = title,
-                    fontSize = 16.sp,
-                    lineHeight = 24.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
+            Text.ListTitle(
+                text = title,
+                fontWeight = FontWeight.Bold
+            )
         },
         supportingContent = {
             Text(

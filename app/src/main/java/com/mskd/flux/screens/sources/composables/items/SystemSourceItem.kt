@@ -14,6 +14,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxThemePreview
 import flux.shared.generated.resources.Res
@@ -31,10 +32,8 @@ fun SystemSourceItem(name: String) {
             contentColor = MaterialTheme.colorScheme.onSecondaryContainer
         ),
         headlineContent = {
-            Text(
+            Text.ListTitle(
                 text = name,
-                fontSize = 16.sp,
-                lineHeight = 24.sp,
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1,
             )

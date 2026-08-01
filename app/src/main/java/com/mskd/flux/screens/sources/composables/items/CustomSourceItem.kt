@@ -29,6 +29,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextDecoration
@@ -39,6 +40,7 @@ import androidx.compose.ui.unit.sp
 import com.mskd.flux.features.sources.domain.model.UserFolder
 import com.mskd.flux.features.sources.domain.model.cleanPath
 import com.mskd.flux.features.sources.domain.model.name
+import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxThemePreview
 import flux.shared.generated.resources.Res
@@ -95,19 +97,15 @@ fun LazyItemScope.CustomSourceItem(
                     contentColor = contentColor
                 ),
                 headlineContent = {
-                    Text(
+                    Text.ListTitle(
                         text = folder.name,
-                        fontSize = 16.sp,
-                        lineHeight = 24.sp,
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 1,
                     )
                 },
                 supportingContent = {
-                    Text(
+                    Text.ListContent(
                         text = folder.cleanPath,
-                        fontSize = 14.sp,
-                        lineHeight = 20.sp,
                         overflow = TextOverflow.StartEllipsis,
                         fontStyle = FontStyle.Italic,
                         maxLines = 1,

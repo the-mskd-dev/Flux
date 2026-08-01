@@ -13,13 +13,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorProducer
 import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 object Text {
@@ -93,6 +99,96 @@ object Text {
             overflow = overflow,
             maxLines = maxLines,
             minLines = minLines
+        )
+
+    }
+
+    @Composable
+    fun ListTitle(
+        text: String?,
+        modifier: Modifier = Modifier,
+        color: Color = Color.Unspecified,
+        autoSize: TextAutoSize? = null,
+        fontStyle: FontStyle? = null,
+        fontWeight: FontWeight = FontWeight(400),
+        fontFamily: FontFamily? = null,
+        letterSpacing: TextUnit = TextUnit.Unspecified,
+        textDecoration: TextDecoration? = null,
+        textAlign: TextAlign? = null,
+        overflow: TextOverflow = TextOverflow.Clip,
+        softWrap: Boolean = true,
+        maxLines: Int = Int.MAX_VALUE,
+        minLines: Int = 1,
+        onTextLayout: ((TextLayoutResult) -> Unit)? = null,
+        style: TextStyle = LocalTextStyle.current
+    ) {
+
+        if (text.isNullOrBlank())
+            return
+
+        Text(
+            text = text,
+            color = color,
+            modifier = modifier,
+            autoSize = autoSize,
+            fontSize = 16.sp,
+            fontStyle = fontStyle,
+            fontWeight = fontWeight,
+            fontFamily = fontFamily,
+            letterSpacing = letterSpacing,
+            textDecoration = textDecoration,
+            textAlign = textAlign,
+            lineHeight = 24.sp,
+            overflow = overflow,
+            softWrap = softWrap,
+            maxLines = maxLines,
+            minLines = minLines,
+            onTextLayout = onTextLayout,
+            style = style,
+        )
+
+    }
+
+    @Composable
+    fun ListContent(
+        text: String?,
+        modifier: Modifier = Modifier,
+        color: Color = Color.Unspecified,
+        autoSize: TextAutoSize? = null,
+        fontStyle: FontStyle? = null,
+        fontFamily: FontFamily? = null,
+        letterSpacing: TextUnit = TextUnit.Unspecified,
+        textDecoration: TextDecoration? = null,
+        textAlign: TextAlign? = null,
+        overflow: TextOverflow = TextOverflow.Clip,
+        softWrap: Boolean = true,
+        maxLines: Int = Int.MAX_VALUE,
+        minLines: Int = 1,
+        onTextLayout: ((TextLayoutResult) -> Unit)? = null,
+        style: TextStyle = LocalTextStyle.current
+    ) {
+
+        if (text.isNullOrBlank())
+            return
+
+        Text(
+            text = text,
+            color = color,
+            modifier = modifier,
+            autoSize = autoSize,
+            fontSize = 14.sp,
+            fontStyle = fontStyle,
+            fontFamily = fontFamily,
+            letterSpacing = letterSpacing,
+            textDecoration = textDecoration,
+            textAlign = textAlign,
+            lineHeight = 20.sp,
+            overflow = overflow,
+            softWrap = softWrap,
+            maxLines = maxLines,
+            minLines = minLines,
+            onTextLayout = onTextLayout,
+            style = style,
         )
 
     }

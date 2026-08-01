@@ -39,8 +39,8 @@
         <item>プレーヤーの選択：内蔵プレーヤーとお好みの外部プレーヤーを選択できます</item>
         <item>Material 3 ExpressiveとMaterial Youを採用し、お使いのデバイスに馴染むスムーズで動的なデザインを実現しています</item>
     </string-array>
-    <string name="presentation_2_title">動画ファイルへのアクセス</string>
-    <string name="presentation_2_description">動画を表示・再生するには、Flux が端末内のファイルにアクセスする必要があります。\n個人データを収集したり共有したりすることはありませんのでご安心ください。</string>
+    <string name="setup_sources_title">動画ファイルへのアクセス</string>
+    <string name="setup_sources_desc">動画を表示・再生するには、Flux が端末内のファイルにアクセスする必要があります。\n個人データを収集したり共有したりすることはありませんのでご安心ください。</string>
     <string name="empty_catalog">ライブラリが空です</string>
     <string name="empty_catalog_desc">始めるには、動画ファイルの名前が正しく付けられているか確認してください。これによりアプリが自動的に整理できるようになります。</string>
     <string name="refresh">更新</string>

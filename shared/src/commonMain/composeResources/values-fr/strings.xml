@@ -40,8 +40,8 @@
     </string-array>
     <string name="setup_sources_title">Choisissez vos sources</string>
     <string name="setup_sources_desc">Pour afficher et lire vos vidéos, Flux a besoin d’accéder aux fichiers de votre appareil. Cependant, c'est à vous de décider de choisir vos sources afin que vous puissiez garder le contrôle de vos données.\nPar ailleurs, nous ne collectons ni ne partageons aucune donnée personnelle.</string>
-    <string name="presentation_2_title">Accédez à vos vidéos</string>
-    <string name="presentation_2_description">Pour afficher et lire vos vidéos, Flux a besoin d’accéder aux fichiers de votre appareil.\nNe vous inquiétez pas, nous ne collectons ni ne partageons aucune donnée personnelle.</string>
+    <string name="setup_sources_title">Accédez à vos vidéos</string>
+    <string name="setup_sources_desc">Pour afficher et lire vos vidéos, Flux a besoin d’accéder aux fichiers de votre appareil.\nNe vous inquiétez pas, nous ne collectons ni ne partageons aucune donnée personnelle.</string>
     <string name="empty_catalog">Votre librairie est vide</string>
     <string name="empty_catalog_desc">Pour commencer, assurez-vous que vos fichiers vidéo sont bien nommés. Cela permet à l’application de les organiser automatiquement.</string>
     <string name="refresh">Actualiser</string>

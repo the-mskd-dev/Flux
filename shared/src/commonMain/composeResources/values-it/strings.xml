@@ -39,8 +39,8 @@
         <item>Scegli il tuo lettore: puoi usare il lettore integrato o il tuo lettore esterno preferito</item>
         <item>Progettato con Material 3 Expressive e Material You per un look fluido e dinamico che si adatta al tuo dispositivo</item>
     </string-array>
-    <string name="presentation_2_title">Accedi ai tuoi video</string>
-    <string name="presentation_2_description">Per mostrare e riprodurre i tuoi video, Flux ha bisogno dell'accesso ai file del tuo dispositivo.\nNon preoccuparti, non raccogliamo né condividiamo alcun dato personale.</string>
+    <string name="setup_sources_title">Accedi ai tuoi video</string>
+    <string name="setup_sources_desc">Per mostrare e riprodurre i tuoi video, Flux ha bisogno dell'accesso ai file del tuo dispositivo.\nNon preoccuparti, non raccogliamo né condividiamo alcun dato personale.</string>
     <string name="empty_catalog">La tua libreria è vuota</string>
     <string name="empty_catalog_desc">Per iniziare, assicurati che i tuoi file video siano nominati correttamente. Questo permette all'app di organizzarli automaticamente.</string>
     <string name="refresh">Aggiorna</string>

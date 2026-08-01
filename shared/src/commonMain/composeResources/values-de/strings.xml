@@ -39,8 +39,8 @@
         <item>Wählen Sie Ihren Player: Nutzen Sie den integrierten Player oder Ihren bevorzugten externen Player</item>
         <item>Entwickelt mit Material 3 Expressive und Material You für einen flüssigen, dynamischen Look, der sich an Ihr Gerät anpasst</item>
     </string-array>
-    <string name="presentation_2_title">Greife auf deine Videos zu</string>
-    <string name="presentation_2_description">Um deine Videos anzuzeigen und abzuspielen, benötigt Flux Zugriff auf die Dateien deines Geräts.\nKeine Sorge, wir erfassen oder teilen keine persönlichen Daten.</string>
+    <string name="setup_sources_title">Greife auf deine Videos zu</string>
+    <string name="setup_sources_desc">Um deine Videos anzuzeigen und abzuspielen, benötigt Flux Zugriff auf die Dateien deines Geräts.\nKeine Sorge, wir erfassen oder teilen keine persönlichen Daten.</string>
     <string name="empty_catalog">Deine Mediathek ist leer</string>
     <string name="empty_catalog_desc">Stelle zu Beginn sicher, dass deine Videodateien korrekt benannt sind. So kann die App sie automatisch sortieren.</string>
     <string name="refresh">Aktualisieren</string>

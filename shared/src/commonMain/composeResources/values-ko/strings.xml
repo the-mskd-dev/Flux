@@ -39,8 +39,8 @@
         <item>플레이어 선택: 내장 플레이어 또는 선호하는 외부 플레이어를 사용할 수 있습니다</item>
         <item>Material 3 Expressive 및 Material You로 제작되어 기기에 맞게 적응하는 부드럽고 동적인 디자인을 제공합니다</item>
     </string-array>
-    <string name="presentation_2_title">동영상 접근 권한</string>
-    <string name="presentation_2_description">동영상을 표시하고 재생하려면 Flux가 기기의 파일에 접근해야 합니다.\n개인정보는 수집하거나 공유되지 않으니 안심하세요.</string>
+    <string name="setup_sources_title">동영상 접근 권한</string>
+    <string name="setup_sources_desc">동영상을 표시하고 재생하려면 Flux가 기기의 파일에 접근해야 합니다.\n개인정보는 수집하거나 공유되지 않으니 안심하세요.</string>
     <string name="empty_catalog">라이브러리가 비어 있습니다</string>
     <string name="empty_catalog_desc">시작하려면 동영상 파일 이름이 올바르게 지정되었는지 확인하세요. 이를 통해 앱이 동영상을 자동으로 정리할 수 있습니다.</string>
     <string name="refresh">새로고침</string>

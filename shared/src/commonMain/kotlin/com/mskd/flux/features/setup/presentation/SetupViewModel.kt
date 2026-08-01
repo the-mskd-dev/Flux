@@ -50,7 +50,7 @@ class SetupViewModel(
                 _event.emit(SetupEvent.ShowPermissionDialog)
             }
             else -> {
-                _event.emit(SetupEvent.NavigateToToken)
+                _event.emit(SetupEvent.NavigateToSources)
             }
         }
 

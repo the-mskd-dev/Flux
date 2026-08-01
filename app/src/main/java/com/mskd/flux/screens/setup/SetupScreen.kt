@@ -51,20 +51,22 @@ fun SetupScreen(
 ) {
 
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-    val permissions = storagePermissionState()
+    val permissions = storagePermissionState { isGranted ->
+        if (isGranted)
+            viewModel.handleIntent(SetupIntent.OnPermissionGranted)
+    }
 
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
             when (event) {
                 SetupEvent.NavigateToSources -> navigate(Sources(fromSetup = true))
                 SetupEvent.NavigateToToken -> navigate(Token(fromSetup = true))
-                SetupEvent.ShowPermissionDialog -> permissions.launchPermissionRequest()
+                SetupEvent.ShowPermissionDialog -> {
+                    if (permissions.status.isGranted) viewModel.handleIntent(SetupIntent.OnPermissionGranted)
+                    else permissions.launchPermissionRequest()
+                }
             }
         }
-    }
-
-    if (permissions.status.isGranted) {
-        viewModel.handleIntent(SetupIntent.OnPermissionGranted)
     }
 
     SetupScreenContent(

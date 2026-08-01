@@ -61,11 +61,13 @@ import flux.shared.generated.resources.empty_catalog
 import flux.shared.generated.resources.empty_catalog_desc
 import flux.shared.generated.resources.how_to_name_files
 import flux.shared.generated.resources.ic_add_folder
+import flux.shared.generated.resources.ic_api
 import flux.shared.generated.resources.ic_flux
 import flux.shared.generated.resources.movies
 import flux.shared.generated.resources.other_files
 import flux.shared.generated.resources.shows
 import flux.shared.generated.resources.sync_in_progress
+import flux.shared.generated.resources.tmdb_api_token
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -124,6 +126,7 @@ fun CatalogScreen(
                     artworks = state.artworks,
                     lastWatchedIds = state.lastWatchedMediaIds,
                     isRefreshing = state.isRefreshing,
+                    tokenIsMissing = state.tokenIsMissing,
                     sendIntent = viewModel::handleIntent
                 )
 
@@ -142,6 +145,7 @@ fun CatalogContent(
     artworks: List<Artwork>,
     lastWatchedIds: List<Long>,
     isRefreshing: Boolean,
+    tokenIsMissing: Boolean,
     sendIntent: (CatalogIntent) -> Unit
 ) {
 
@@ -274,6 +278,18 @@ fun CatalogContent(
                         }
                     }
 
+                    if (tokenIsMissing) {
+                        item {
+                            CatalogGenericCategory(
+                                name = stringResource(Res.string.tmdb_api_token),
+                                painter = painterResource(Res.drawable.ic_api),
+                                iconColor = MaterialTheme.colorScheme.onSurface,
+                                backgroundColor = MaterialTheme.colorScheme.surfaceBright,
+                                onTap = { sendIntent(CatalogIntent.OnTokenTap) }
+                            )
+                        }
+                    }
+
                     item {
 
                         Spacer(
@@ -303,6 +319,23 @@ fun CatalogScreen_Preview() {
                 artworks = MediaMockups.artworks,
                 lastWatchedIds = MediaMockups.artworks.map { it.id },
                 isRefreshing = false,
+                tokenIsMissing = false,
+                sendIntent = {}
+            )
+        }
+    }
+}
+
+@FluxPreview
+@Composable
+fun CatalogScreen_Unknown_Preview() {
+    FluxThemePreview {
+        Surface {
+            CatalogContent(
+                artworks = listOf(MediaMockups.unknownArtwork),
+                lastWatchedIds = emptyList(),
+                isRefreshing = false,
+                tokenIsMissing = true,
                 sendIntent = {}
             )
         }
@@ -315,9 +348,10 @@ fun CatalogScreen_Empty_Preview() {
     FluxThemePreview {
         Surface {
             CatalogContent(
-                artworks = listOf(MediaMockups.unknownArtwork),
+                artworks = emptyList(),
                 lastWatchedIds = emptyList(),
                 isRefreshing = false,
+                tokenIsMissing = true,
                 sendIntent = {}
             )
         }

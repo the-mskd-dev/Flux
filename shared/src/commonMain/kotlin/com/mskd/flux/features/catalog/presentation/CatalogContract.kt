@@ -22,6 +22,7 @@ sealed class CatalogState {
         val artworks: List<Artwork> = emptyList(),
         val lastWatchedMediaIds: List<Long> = emptyList(),
         val isRefreshing: Boolean = true,
+        val tokenIsMissing: Boolean = false
     ): CatalogState()
 
 }
@@ -34,6 +35,7 @@ sealed interface CatalogIntent {
     object OnSettingsTap: CatalogIntent
     object OnHowToTap: CatalogIntent
     object OnSourcesTap: CatalogIntent
+    object OnTokenTap: CatalogIntent
 }
 
 sealed interface CatalogEvent {

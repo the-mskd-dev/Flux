@@ -60,6 +60,7 @@ class CatalogViewModel(
                     artworks = artworks,
                     lastWatchedMediaIds = preferences.recentlyWatchedIds,
                     isRefreshing = catalogState is SyncState.Syncing,
+                    tokenIsMissing = token.isBlank()
                 ),
             )
 
@@ -87,6 +88,7 @@ class CatalogViewModel(
             CatalogIntent.OnSettingsTap -> _event.emit(CatalogEvent.NavigateToSettings)
             CatalogIntent.OnHowToTap -> _event.emit(CatalogEvent.NavigateToHowTo)
             CatalogIntent.OnSourcesTap -> _event.emit(CatalogEvent.NavigateToSources)
+            CatalogIntent.OnTokenTap -> _event.emit(CatalogEvent.NavigateToToken)
         }
     }
 

@@ -30,14 +30,11 @@ class CatalogViewModel(
     private val database: DatabaseRepository,
     private val userDataStore: UserDataStore,
     private val tokenDataStore: TokenDataStore,
-    private val snackbarDataStore: SnackbarDataStore,
     private val appInfo: AppInfo
 ): ViewModel() {
 
     private val _event = MutableSharedFlow<CatalogEvent>()
     val event = _event.asSharedFlow()
-
-    private val _dismissedSnackbar = MutableStateFlow<Set<FluxSnackbar>>(emptySet())
 
     private var hasLoadedContent = false
 
@@ -46,20 +43,12 @@ class CatalogViewModel(
         syncCatalogUseCase.state,
         userDataStore.flow,
         tokenDataStore.flow,
-        _dismissedSnackbar,
-    ) { artworks, catalogState, preferences, token, dismissedSnackbar ->
-
-        val snackbar = getSnackbarIfNeeded(
-            token = token,
-            dismissedSnackbar = dismissedSnackbar,
-            artworks = artworks
-        )
+    ) { artworks, catalogState, preferences, token ->
 
         if (catalogState is SyncState.Syncing && (catalogState.full || !hasLoadedContent)) {
 
             CatalogUiState(
                 state = CatalogState.Loading(progress = catalogState.progress),
-                snackbarState = snackbar
             )
 
         } else {
@@ -72,7 +61,6 @@ class CatalogViewModel(
                     lastWatchedMediaIds = preferences.recentlyWatchedIds,
                     isRefreshing = catalogState is SyncState.Syncing,
                 ),
-                snackbarState = snackbar
             )
 
         }
@@ -96,11 +84,9 @@ class CatalogViewModel(
             is CatalogIntent.OnArtworkTap -> onArtworkTap(artwork = intent.artwork, rgb = intent.rgb)
             is CatalogIntent.OnCategoryTap -> _event.emit(CatalogEvent.NavigateToCategory(category = intent.category))
             CatalogIntent.OnSearchTap -> _event.emit(CatalogEvent.NavigateToSearch)
-            CatalogIntent.OnSnackbarActionTap -> onSnackbarActionTap()
             CatalogIntent.OnSettingsTap -> _event.emit(CatalogEvent.NavigateToSettings)
             CatalogIntent.OnHowToTap -> _event.emit(CatalogEvent.NavigateToHowTo)
             CatalogIntent.OnSourcesTap -> _event.emit(CatalogEvent.NavigateToSources)
-            CatalogIntent.OnDismissSnackbar -> onDismissSnackbar()
         }
     }
 
@@ -128,51 +114,6 @@ class CatalogViewModel(
         }
 
         _event.emit(event)
-
-    }
-
-    private suspend fun onSnackbarActionTap() {
-        val snackbar = uiState.value.snackbarState ?: return
-        _dismissedSnackbar.update { it + snackbar }
-
-        when (snackbar) {
-            FluxSnackbar.Token -> _event.emit(CatalogEvent.NavigateToToken)
-            FluxSnackbar.Tutorial -> _event.emit(CatalogEvent.NavigateToHowTo)
-        }
-
-    }
-
-    private fun onDismissSnackbar() {
-        val snackbar = uiState.value.snackbarState ?: return
-        _dismissedSnackbar.update { it + snackbar }
-    }
-
-    private suspend fun getSnackbarIfNeeded(
-        token: String,
-        dismissedSnackbar: Set<FluxSnackbar>,
-        artworks: List<Artwork>,
-    ) : FluxSnackbar? {
-
-        return when {
-            token.isBlank()
-                    && dismissedSnackbar.contains(FluxSnackbar.Token).not()
-                    && snackbarDataStore.canShow(FluxSnackbar.Token.id).first() -> {
-
-                snackbarDataStore.incrementCount(FluxSnackbar.Token.id)
-                FluxSnackbar.Token
-
-            }
-            token.isNotBlank()
-                    && artworks.any { it.id == Artwork.UNKNOWN_ID }
-                    && dismissedSnackbar.contains(FluxSnackbar.Tutorial).not()
-                    && snackbarDataStore.canShow(FluxSnackbar.Tutorial.id).first() -> {
-
-                snackbarDataStore.incrementCount(FluxSnackbar.Tutorial.id)
-                FluxSnackbar.Tutorial
-
-            }
-            else -> null
-        }
 
     }
 

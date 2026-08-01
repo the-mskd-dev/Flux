@@ -78,7 +78,6 @@ fun CatalogScreen(
 ) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
@@ -95,15 +94,6 @@ fun CatalogScreen(
             }
         }
     }
-
-    FluxSnackbar(
-        snackbarState = uiState.snackbarState,
-        snackbarHostState = snackbarHostState,
-        duration = SnackbarDuration.Indefinite,
-        withDismissAction = true,
-        onDismiss = { viewModel.handleIntent(CatalogIntent.OnDismissSnackbar) },
-        onAction = { viewModel.handleIntent(CatalogIntent.OnSnackbarActionTap) }
-    )
 
     AnimatedContent(
         modifier = Modifier.fillMaxSize(),
@@ -134,7 +124,6 @@ fun CatalogScreen(
                     artworks = state.artworks,
                     lastWatchedIds = state.lastWatchedMediaIds,
                     isRefreshing = state.isRefreshing,
-                    snackbarHostState = snackbarHostState,
                     sendIntent = viewModel::handleIntent
                 )
 
@@ -153,7 +142,6 @@ fun CatalogContent(
     artworks: List<Artwork>,
     lastWatchedIds: List<Long>,
     isRefreshing: Boolean,
-    snackbarHostState: SnackbarHostState,
     sendIntent: (CatalogIntent) -> Unit
 ) {
 
@@ -166,9 +154,6 @@ fun CatalogContent(
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
-        snackbarHost = {
-            SnackbarHost(hostState = snackbarHostState,)
-        }
     ) { paddingValues ->
 
         Column(modifier = Modifier.fillMaxSize()) {
@@ -318,7 +303,6 @@ fun CatalogScreen_Preview() {
                 artworks = MediaMockups.artworks,
                 lastWatchedIds = MediaMockups.artworks.map { it.id },
                 isRefreshing = false,
-                snackbarHostState = SnackbarHostState(),
                 sendIntent = {}
             )
         }
@@ -334,7 +318,6 @@ fun CatalogScreen_Empty_Preview() {
                 artworks = listOf(MediaMockups.unknownArtwork),
                 lastWatchedIds = emptyList(),
                 isRefreshing = false,
-                snackbarHostState = SnackbarHostState(),
                 sendIntent = {}
             )
         }

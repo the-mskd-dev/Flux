@@ -8,7 +8,6 @@ import com.mskd.flux.utils.FluxSnackbar
 @Immutable
 data class CatalogUiState(
     val state: CatalogState = CatalogState.Loading(),
-    val snackbarState: FluxSnackbar? = null
 )
 
 sealed class CatalogState {
@@ -35,8 +34,6 @@ sealed interface CatalogIntent {
     object OnSettingsTap: CatalogIntent
     object OnHowToTap: CatalogIntent
     object OnSourcesTap: CatalogIntent
-    object OnSnackbarActionTap: CatalogIntent
-    object OnDismissSnackbar: CatalogIntent
 }
 
 sealed interface CatalogEvent {

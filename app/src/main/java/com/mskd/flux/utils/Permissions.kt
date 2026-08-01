@@ -18,7 +18,7 @@ fun storagePermissionState(
     else
         Manifest.permission.READ_EXTERNAL_STORAGE
 
-    return rememberPermissionState(permission = permission)
+    return rememberPermissionState(permission = permission, onPermissionResult = onPermissionResult)
 
 }
 
@@ -27,7 +27,7 @@ fun storagePermissionState(
 fun notificationsPermissionState(onPermissionResult: (Boolean) -> Unit = {}): PermissionState? {
 
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-        rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS)
+        rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS, onPermissionResult = onPermissionResult)
     else
         null
 

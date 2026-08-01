@@ -104,7 +104,8 @@ fun SourcesScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val permissions = storagePermissionState { isGranted ->
-        viewModel.handleIntent(SourcesIntent.OnPermissionGranted)
+        if (isGranted)
+            viewModel.handleIntent(SourcesIntent.OnPermissionGranted)
     }
 
 

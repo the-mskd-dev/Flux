@@ -72,8 +72,8 @@ fun LazyItemScope.CustomSourceItem(
         dismissState.snapTo(SwipeToDismissBoxValue.Settled)
     }
 
-    val backgroundColor = if (!folder.isAvailable) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.secondaryContainer
-    val contentColor = if (!folder.isAvailable) MaterialTheme.colorScheme.onError else MaterialTheme.colorScheme.onSecondaryContainer
+    val backgroundColor = if (!folder.isAvailable) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.surfaceBright
+    val contentColor = if (!folder.isAvailable) MaterialTheme.colorScheme.onError else MaterialTheme.colorScheme.onSurface
 
     SwipeToDismissBox(
         modifier = modifier,

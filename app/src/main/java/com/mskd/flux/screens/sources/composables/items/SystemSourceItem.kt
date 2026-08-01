@@ -26,8 +26,8 @@ fun SystemSourceItem(name: String) {
     ListItem(
         modifier = Modifier.fillMaxWidth(),
         colors = ListItemDefaults.colors(
-            containerColor = MaterialTheme.colorScheme.secondaryContainer,
-            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+            containerColor = MaterialTheme.colorScheme.surfaceBright,
+            contentColor = MaterialTheme.colorScheme.onSurface
         ),
         headlineContent = {
             Text.List.Title(

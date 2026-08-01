@@ -1,5 +1,6 @@
 package com.mskd.flux.screens.sources
 
+import android.os.Environment
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
@@ -283,8 +284,9 @@ fun SourcesScreenContent(
                             .clip(RoundedCornerShape(FluxUI.shapes.listItem)),
                         verticalArrangement = Arrangement.spacedBy(FluxUI.Space.listItem)
                     ) {
-                        SystemSourceItem(name = stringResource(Res.string.movies))
-                        SystemSourceItem(name = stringResource(Res.string.downloads))
+
+                        SystemSourceItem(name = Environment.DIRECTORY_MOVIES)
+                        SystemSourceItem(name = Environment.DIRECTORY_DOWNLOADS)
                     }
                 }
             }

@@ -31,8 +31,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.mskd.flux.core.model.artwork.Artwork
-import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.FluxUI
@@ -44,10 +42,14 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun CatalogGenericItems(
-    showUnknown: Boolean,
-    sendIntent: (CatalogIntent) -> Unit
+fun CatalogGenericCategory(
+    name: String,
+    painter: Painter,
+    iconColor: Color,
+    backgroundColor: Color,
+    onTap: () -> Unit,
 ) {
+
 
     val density = LocalDensity.current
     val columns = FluxUI.itemsPerRow.artworks
@@ -71,7 +73,7 @@ fun CatalogGenericItems(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = FluxUI.Space.medium, top = FluxUI.Space.large),
-            text = stringResource(Res.string.other_files),
+            text = name,
             emphasized = true,
             color = MaterialTheme.colorScheme.onBackground
         )
@@ -82,41 +84,26 @@ fun CatalogGenericItems(
             horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
         ) {
 
-            if (showUnknown) {
-                item {
-
-                    CatalogGenericItem(
-                        modifier = Modifier.size(48.dp),
-                        itemWidth = itemWidth,
-                        onTap = { sendIntent(CatalogIntent.OnArtworkTap(artwork = Artwork.UNKNOWN)) },
-                        painter = painterResource(Res.drawable.ic_flux),
-                        iconColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                        backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
-                        contentDescription = stringResource(Res.string.other_files)
-                    )
-
-                }
-            }
-
-            /*item {
+            item {
 
                 CatalogGenericItem(
                     modifier = Modifier.size(48.dp),
                     itemWidth = itemWidth,
-                    onTap = { sendIntent(CatalogIntent.OnSourcesTap) },
-                    painter = painterResource(Res.drawable.ic_add_folder),
-                    iconColor = MaterialTheme.colorScheme.onTertiaryContainer,
-                    backgroundColor = MaterialTheme.colorScheme.tertiaryContainer,
-                    contentDescription = stringResource(Res.string.sources)
+                    onTap = onTap,
+                    painter = painter,
+                    iconColor = iconColor,
+                    backgroundColor = backgroundColor,
+                    contentDescription = name
                 )
 
-            }*/
+            }
 
         }
 
     }
 
 }
+
 
 @Composable
 fun CatalogGenericItem(
@@ -152,12 +139,15 @@ fun CatalogGenericItem(
 
 @Preview
 @Composable
-fun CatalogGenericItems_Preview() {
+fun CatalogGenericCategory_Preview() {
     FluxTheme {
         Box(modifier = Modifier.fillMaxSize()) {
-            CatalogGenericItems(
-                showUnknown = true,
-                sendIntent = {}
+            CatalogGenericCategory(
+                name = stringResource(Res.string.other_files),
+                painter = painterResource(Res.drawable.ic_flux),
+                iconColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
+                onTap = {}
             )
         }
     }

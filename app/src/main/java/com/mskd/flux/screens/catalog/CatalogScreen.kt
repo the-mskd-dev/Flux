@@ -46,7 +46,7 @@ import com.mskd.flux.features.catalog.presentation.CatalogViewModel
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.screens.catalog.composable.CatalogCategory
-import com.mskd.flux.screens.catalog.composable.CatalogGenericItems
+import com.mskd.flux.screens.catalog.composable.CatalogGenericCategory
 import com.mskd.flux.screens.catalog.composable.CatalogTopButtons
 import com.mskd.flux.screens.catalog.composable.LastWatchedCarousel
 import com.mskd.flux.ui.component.LoadingScreen
@@ -56,12 +56,17 @@ import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxThemePreview
 import com.mskd.flux.utils.FluxPreview
 import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.add_source
 import flux.shared.generated.resources.empty_catalog
 import flux.shared.generated.resources.empty_catalog_desc
 import flux.shared.generated.resources.how_to_name_files
+import flux.shared.generated.resources.ic_add_folder
+import flux.shared.generated.resources.ic_flux
 import flux.shared.generated.resources.movies
+import flux.shared.generated.resources.other_files
 import flux.shared.generated.resources.shows
 import flux.shared.generated.resources.sync_in_progress
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -260,11 +265,28 @@ fun CatalogContent(
 
                     }
 
-                    item {
-                        CatalogGenericItems(
-                            showUnknown = artworks.any { it.isUnknown },
-                            sendIntent = sendIntent
-                        )
+                    if (artworks.any { it.isUnknown }) {
+                        item {
+                            CatalogGenericCategory(
+                                name = stringResource(Res.string.other_files),
+                                painter = painterResource(Res.drawable.ic_flux),
+                                iconColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                                backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
+                                onTap = { sendIntent(CatalogIntent.OnArtworkTap(artwork = Artwork.UNKNOWN)) }
+                            )
+                        }
+                    }
+
+                    if (artworks.isEmpty()) {
+                        item {
+                            CatalogGenericCategory(
+                                name = stringResource(Res.string.add_source),
+                                painter = painterResource(Res.drawable.ic_add_folder),
+                                iconColor = MaterialTheme.colorScheme.onTertiaryContainer,
+                                backgroundColor = MaterialTheme.colorScheme.tertiaryContainer,
+                                onTap = { sendIntent(CatalogIntent.OnSourcesTap) }
+                            )
+                        }
                     }
 
                     item {

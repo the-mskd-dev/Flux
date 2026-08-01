@@ -157,8 +157,6 @@
     <string name="delete">Elimina</string>
     <string name="sources">Sorgenti</string>
     <string name="sources_short_desc">Aggiungi le tue cartelle sorgente</string>
-    <string name="sources_title">Mantieni il controllo della tua libreria</string>
-    <string name="sources_full_desc">Per una configurazione ottimale e un miglior controllo sui tuoi file, l'app punta automaticamente alle cartelle %1$s e %2$s.\n\nMantieni il controllo: usa il pulsante sottostante per aggiungere altre cartelle oltre a queste posizioni predefinite.</string>
     <string name="warning">Avviso</string>
     <string name="confirm_source_deletion">L'eliminazione di questa cartella comporterà la perdita dei progressi per i file in essa contenuti.\nSei sicuro di volerla eliminare?</string>
     <string name="add_source">Aggiungi sorgente</string>
@@ -171,4 +169,5 @@
     <string name="folder_deleted">Cartella eliminata</string>
     <string name="undo">Annulla</string>
     <string name="system_folders">Cartelle di sistema</string>
+    <string name="system_folders_toggle_desc">Consente all'app di cercare i video nelle posizioni standard %1$s e %2$s. (Consigliato)</string>
 </resources>

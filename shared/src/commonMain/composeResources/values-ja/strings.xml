@@ -156,8 +156,6 @@
     <string name="delete">削除</string>
     <string name="sources">ソース</string>
     <string name="sources_short_desc">ソースフォルダを追加</string>
-    <string name="sources_title">ライブラリを自由に管理</string>
-    <string name="sources_full_desc">最適な設定とファイル管理のため、アプリは自動的に %1$s および %2$s フォルダを対象にします。\n\nこれらのデフォルトの場所の上に、下のボタンを使って他のフォルダを追加することも可能です。</string>
     <string name="warning">警告</string>
     <string name="confirm_source_deletion">このフォルダを削除すると、含まれるファイルの進行状況が失われます。\n本当に削除しますか？</string>
     <string name="add_source">ソースを追加</string>
@@ -170,4 +168,5 @@
     <string name="folder_deleted">フォルダを削除しました</string>
     <string name="undo">元に戻す</string>
     <string name="system_folders">システムフォルダ</string>
+    <string name="system_folders_toggle_desc">アプリが標準の%1$sおよび%2$sの場所から動画を検索できるようにします。（推奨）</string>
 </resources>

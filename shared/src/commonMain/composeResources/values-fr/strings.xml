@@ -154,8 +154,6 @@
     <string name="delete">Supprimer</string>
     <string name="sources">Sources</string>
     <string name="sources_short_desc">Ajoutez vos dossiers sources</string>
-    <string name="sources_title">Gardez le contrôle de votre bibliothèque</string>
-    <string name="sources_full_desc">Pour une configuration optimale et un meilleur contrôle de vos fichiers, l'application cible automatiquement les dossiers %1$s et %2$s.\n\nVous gardez la main : utilisez le bouton ci-dessous pour ajouter d'autres dossiers en plus de ces emplacements par défaut.</string>
     <string name="warning">Attention</string>
     <string name="confirm_source_deletion">La suppression de ce dossier entraînera la perte de la progression pour les fichiers qu'il contient.\nÊtes-vous vraiment sûr(e) de vouloir le supprimer ?</string>
     <string name="add_source">Ajouter une source</string>
@@ -168,4 +166,5 @@
     <string name="folder_deleted">Dossier supprimé</string>
     <string name="undo">Annuler</string>
     <string name="system_folders">Dossiers système</string>
+    <string name="system_folders_toggle_desc">Permet à l'application de chercher les vidéos dans les emplacements standard %1$s et %2$s. (Recommandé)</string>
 </resources>

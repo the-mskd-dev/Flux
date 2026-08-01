@@ -41,8 +41,9 @@ class SourcesViewModel(
     val uiState = combine(
         flowSourcesUseCase(),
         _deleteState,
-        _showDialogState
-    ) { folders, deleteState, showDialogState ->
+        _showDialogState,
+        settingsDataStore.flow
+    ) { folders, deleteState, showDialogState, settings ->
 
         SourcesUiState(
             state = State.Content(
@@ -50,6 +51,7 @@ class SourcesViewModel(
                     fromSetup = fromSetup,
                     folders = folders,
                     waitingDeleteFolder = deleteState,
+                    systemFoldersEnabled = settings.systemFoldersEnabled
                 )
             ),
             showFeatureDialog = showDialogState

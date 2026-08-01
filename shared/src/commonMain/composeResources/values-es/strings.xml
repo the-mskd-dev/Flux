@@ -157,8 +157,6 @@
     <string name="delete">Eliminar</string>
     <string name="sources">Fuentes</string>
     <string name="sources_short_desc">Añade tus carpetas de origen</string>
-    <string name="sources_title">Mantén el control de tu biblioteca</string>
-    <string name="sources_full_desc">Para una configuración óptima y un mejor control sobre tus archivos, la aplicación se dirige automáticamente a las carpetas %1$s y %2$s.\n\nTú mantienes el control: usa el botón de abajo para añadir otras carpetas además de estas ubicaciones predeterminadas.</string>
     <string name="warning">Advertencia</string>
     <string name="confirm_source_deletion">Eliminar esta carpeta provocará la pérdida del progreso de los archivos que contiene.\n¿Estás seguro de que quieres eliminarla?</string>
     <string name="add_source">Añadir fuente</string>
@@ -171,4 +169,5 @@
     <string name="folder_deleted">Carpeta eliminada</string>
     <string name="undo">Deshacer</string>
     <string name="system_folders">Carpetas del sistema</string>
+    <string name="system_folders_toggle_desc">Permite que la aplicación busque vídeos en las ubicaciones estándar %1$s y %2$s. (Recomendado)</string>
 </resources>

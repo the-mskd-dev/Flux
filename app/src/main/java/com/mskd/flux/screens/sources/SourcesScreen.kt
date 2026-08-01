@@ -2,6 +2,7 @@ package com.mskd.flux.screens.sources
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
@@ -30,6 +31,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -43,6 +45,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.sources.domain.model.UserFolder
@@ -75,9 +78,8 @@ import flux.shared.generated.resources.movies
 import flux.shared.generated.resources.next
 import flux.shared.generated.resources.oups_an_error_occured
 import flux.shared.generated.resources.sources
-import flux.shared.generated.resources.sources_full_desc
-import flux.shared.generated.resources.sources_title
 import flux.shared.generated.resources.system_folders
+import flux.shared.generated.resources.system_folders_toggle_desc
 import flux.shared.generated.resources.undo
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -214,19 +216,14 @@ fun SourcesScreenContent(
                 Spacer(modifier = Modifier.height(innerPadding.calculateTopPadding()))
             }
 
-
-            item {
-                Text.Title.Large(
-                    modifier = Modifier.padding(horizontal = FluxUI.Space.medium),
-                    text = stringResource(Res.string.sources_title)
-                )
-            }
-
             item {
                 Text.Annotated(
-                    modifier = Modifier.padding(all = FluxUI.Space.medium),
-                    text = sourcesAnnotatedString(Res.string.sources_full_desc),
-                    style = MaterialTheme.typography.bodyLarge
+                    modifier = Modifier
+                        .padding(bottom = FluxUI.Space.small)
+                        .padding(horizontal = FluxUI.Space.medium.times(2))
+                    ,
+                    text = sourcesAnnotatedString(Res.string.system_folders_toggle_desc),
+                    style = MaterialTheme.typography.bodySmall
                 )
             }
 
@@ -253,23 +250,25 @@ fun SourcesScreenContent(
                             checked = content.systemFoldersEnabled,
                             onCheckedChange = { sendIntent(SourcesIntent.OnSystemFoldersSwitch) },
                         )
-                    }
+                    },
                 )
             }
 
             item {
-                Spacer(modifier = Modifier.height(FluxUI.Space.medium))
-            }
-
-            item {
-                Column(
-                    modifier = Modifier
-                        .padding(horizontal = FluxUI.Space.medium)
-                        .clip(RoundedCornerShape(FluxUI.shapes.listItem)),
-                    verticalArrangement = Arrangement.spacedBy(FluxUI.Space.listItem)
+                AnimatedVisibility(
+                    visible = content.systemFoldersEnabled,
+                    enter = fadeIn(),
+                    exit = fadeOut()
                 ) {
-                    SystemSourceItem(name = stringResource(Res.string.movies))
-                    SystemSourceItem(name = stringResource(Res.string.downloads))
+                    Column(
+                        modifier = Modifier
+                            .padding(all = FluxUI.Space.medium)
+                            .clip(RoundedCornerShape(FluxUI.shapes.listItem)),
+                        verticalArrangement = Arrangement.spacedBy(FluxUI.Space.listItem)
+                    ) {
+                        SystemSourceItem(name = stringResource(Res.string.movies))
+                        SystemSourceItem(name = stringResource(Res.string.downloads))
+                    }
                 }
             }
 

@@ -1,12 +1,18 @@
 package com.mskd.flux.screens.settings.composables
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.runtime.Composable
@@ -18,7 +24,9 @@ import androidx.compose.ui.unit.sp
 import com.mskd.flux.screens.settings.SettingIcon
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.utils.extensions.uppercaseFirstLetter
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SettingsSwitch(
     text: String,
@@ -31,51 +39,48 @@ fun SettingsSwitch(
     onCheckedChange: (Boolean) -> Unit
 ) {
 
-    Row(
-        modifier = Modifier
-            .clickable { onCheckedChange(!checked) }
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.background)
-            .padding(all = FluxUI.Space.medium),
+    ListItem(
+        onClick = { onCheckedChange(!checked) },
+        colors = ListItemDefaults.colors(
+            containerColor = MaterialTheme.colorScheme.surfaceBright,
+            contentColor = MaterialTheme.colorScheme.onSurface,
+        ),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.medium),
-    ) {
+        content = {
+            Text.List.Title(text = text)
+        },
+        supportingContent = {
+            AnimatedContent(
+                targetState = subText.uppercaseFirstLetter()
+            ) { text ->
+                Text.List.Content(
+                    text = text,
+                    color = subTextColor,
+                )
+            }
+        },
+        leadingContent = painter?.let {
+            {
+                Box(
+                    modifier = Modifier.fillMaxHeight(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    SettingIcon(
+                        painter = it,
+                        backgroundColor = iconBackgroundColor,
+                        iconColor = iconColor,
+                        contentDescription = text
+                    )
+                }
 
-        painter?.let {
-            SettingIcon(
-                painter = it,
-                backgroundColor = iconBackgroundColor,
-                iconColor = iconColor,
-                contentDescription = text
+            }
+        },
+        trailingContent = {
+            Switch(
+                checked = checked,
+                onCheckedChange = onCheckedChange,
             )
         }
-
-        Column(
-            modifier = Modifier
-                .weight(1f)
-                .padding(end = FluxUI.Space.medium),
-            horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.extraSmall)
-        ) {
-
-            Text.Title.Medium(
-                text = text,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-
-            Text.Title.Small(
-                text = subText,
-                color = subTextColor,
-                lineHeight = 18.sp
-            )
-
-        }
-
-        Switch(
-            checked = checked,
-            onCheckedChange = onCheckedChange,
-        )
-
-    }
+    )
 
 }

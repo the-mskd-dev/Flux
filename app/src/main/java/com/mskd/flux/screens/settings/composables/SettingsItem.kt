@@ -44,6 +44,7 @@ fun SettingsItem(
             containerColor = MaterialTheme.colorScheme.surfaceBright,
             contentColor = MaterialTheme.colorScheme.onSurface,
         ),
+        verticalAlignment = Alignment.CenterVertically,
         content = {
             Text.List.Title(text = text)
         },
@@ -75,5 +76,5 @@ fun SettingsItem(
         }
     )
 
-    
+
 }

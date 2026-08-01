@@ -16,7 +16,6 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.mskd.flux.features.setup.domain.model.SourceSelectionMode
 import com.mskd.flux.features.setup.presentation.SetupIntent
 import com.mskd.flux.screens.sources.composables.sourcesAnnotatedString
 import com.mskd.flux.ui.component.global.Text
@@ -33,7 +32,7 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun SetupSourcesContent(
-    sourceSelectionMode: SourceSelectionMode,
+    systemFoldersEnabled: Boolean,
     sendIntent: (SetupIntent) -> Unit
 ) {
 
@@ -71,15 +70,15 @@ fun SetupSourcesContent(
                 SetupSourcesItem(
                     title = stringResource(Res.string.setup_sources_default_title),
                     description = sourcesAnnotatedString(Res.string.setup_sources_default_desc),
-                    isSelected = sourceSelectionMode == SourceSelectionMode.DEFAULT,
-                    onTap = { sendIntent(SetupIntent.SelectSourceSelectionMode(SourceSelectionMode.DEFAULT)) }
+                    isSelected = systemFoldersEnabled,
+                    onTap = { sendIntent(SetupIntent.EnableSystemFolders(enabled = true)) }
                 )
 
                 SetupSourcesItem(
                     title = stringResource(Res.string.setup_sources_custom_title),
                     description = AnnotatedString(stringResource(Res.string.setup_sources_custom_desc)),
-                    isSelected = sourceSelectionMode == SourceSelectionMode.CUSTOM,
-                    onTap = { sendIntent(SetupIntent.SelectSourceSelectionMode(SourceSelectionMode.CUSTOM)) }
+                    isSelected = !systemFoldersEnabled,
+                    onTap = { sendIntent(SetupIntent.EnableSystemFolders(enabled = false)) }
                 )
 
             }
@@ -100,7 +99,7 @@ fun SetupSourcesContent_Preview() {
                 .padding(horizontal = FluxUI.Space.medium)
         ) {
             SetupSourcesContent(
-                sourceSelectionMode = SourceSelectionMode.DEFAULT,
+                systemFoldersEnabled = true,
                 sendIntent = {}
             )
         }

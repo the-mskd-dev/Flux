@@ -3,7 +3,6 @@ package com.mskd.flux.features.sources.provider
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.features.files.domain.datasource.FilesDataSource
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
-import com.mskd.flux.features.setup.domain.model.SourceSelectionMode
 import com.mskd.flux.features.sources.data.provider.AndroidSourcesProvider
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainExactly
@@ -27,7 +26,7 @@ class AndroidSourcesProviderImplTest : FunSpec({
         mediaStoreSource = mockk(relaxed = true)
         safSource = mockk(relaxed = true)
 
-        settingsState = MutableStateFlow(SettingsDataStore.State(sourceSelectionMode = SourceSelectionMode.DEFAULT))
+        settingsState = MutableStateFlow(SettingsDataStore.State(systemFoldersEnabled = true))
         settingsDataStore = mockk(relaxed = true)
         every { settingsDataStore.flow } returns settingsState
 
@@ -42,7 +41,7 @@ class AndroidSourcesProviderImplTest : FunSpec({
     test("getSources - mode DEFAULT - returns MediaStore and SAF sources") {
 
         // Given
-        settingsState.value = SettingsDataStore.State(sourceSelectionMode = SourceSelectionMode.DEFAULT)
+        settingsState.value = SettingsDataStore.State(systemFoldersEnabled = true)
 
         // When
         val sources = provider.getSources()
@@ -55,7 +54,7 @@ class AndroidSourcesProviderImplTest : FunSpec({
     test("getSources - mode CUSTOM - returns only SAF source") {
 
         // Given
-        settingsState.value = SettingsDataStore.State(sourceSelectionMode = SourceSelectionMode.CUSTOM)
+        settingsState.value = SettingsDataStore.State(systemFoldersEnabled = false)
 
         // When
         val sources = provider.getSources()
@@ -68,11 +67,11 @@ class AndroidSourcesProviderImplTest : FunSpec({
     test("getSources - mode changes between calls - reflects the new mode") {
 
         // Given
-        settingsState.value = SettingsDataStore.State(sourceSelectionMode = SourceSelectionMode.DEFAULT)
+        settingsState.value = SettingsDataStore.State(systemFoldersEnabled = true)
         val firstCall = provider.getSources()
 
         // When
-        settingsState.value = SettingsDataStore.State(sourceSelectionMode = SourceSelectionMode.CUSTOM)
+        settingsState.value = SettingsDataStore.State(systemFoldersEnabled = false)
         val secondCall = provider.getSources()
 
         // Then

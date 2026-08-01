@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.features.setup.domain.model.SetupScreen
-import com.mskd.flux.features.setup.domain.model.SourceSelectionMode
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -30,7 +29,7 @@ class SetupViewModel(
     fun handleIntent(intent: SetupIntent) = viewModelScope.launch {
         when(intent) {
             SetupIntent.OnNextButton -> onNextButton()
-            is SetupIntent.SelectSourceSelectionMode -> selectSourceSelectionMode(mode = intent.option)
+            is SetupIntent.EnableSystemFolders -> enableSystemFolders(enabled = intent.enabled)
             SetupIntent.OnPermissionGranted -> onPermissionGranted()
         }
     }
@@ -47,7 +46,7 @@ class SetupViewModel(
             currentState.screen == SetupScreen.WELCOME -> {
                 _uiState.update { it.copy(screen = SetupScreen.SOURCES) }
             }
-            currentState.sourceSelectionMode == SourceSelectionMode.DEFAULT -> {
+            currentState.systemFoldersEnabled -> {
                 _event.emit(SetupEvent.ShowPermissionDialog)
             }
             else -> {
@@ -57,12 +56,12 @@ class SetupViewModel(
 
     }
 
-    private suspend fun selectSourceSelectionMode(mode: SourceSelectionMode) {
+    private suspend fun enableSystemFolders(enabled: Boolean) {
         _uiState.update {
-            it.copy(sourceSelectionMode = mode)
+            it.copy(systemFoldersEnabled = enabled)
         }
 
-        settingsDataStore.setSourceSelectionMode(mode = mode)
+        settingsDataStore.setSystemFolders(enabled = enabled)
     }
 
     private suspend fun onPermissionGranted() {

@@ -6,11 +6,11 @@ import com.mskd.flux.core.datastore.domain.UserDataStore
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.core.model.files.FileSource
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
+import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.features.sources.domain.model.UserFolder
 import com.mskd.flux.features.sources.domain.usecase.AddSourceUseCase
 import com.mskd.flux.features.sources.domain.usecase.DeleteSourceUseCase
 import com.mskd.flux.features.sources.domain.usecase.FlowSourcesUseCase
-import com.mskd.flux.utils.Trace
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -23,6 +23,7 @@ import kotlinx.coroutines.launch
 class SourcesViewModel(
     private val fromSetup: Boolean,
     private val userDataStore: UserDataStore,
+    private val settingsDataStore: SettingsDataStore,
     flowSourcesUseCase: FlowSourcesUseCase,
     private val addSourceUseCase: AddSourceUseCase,
     private val deleteSourceUseCase: DeleteSourceUseCase,
@@ -35,7 +36,7 @@ class SourcesViewModel(
     val event = _event.receiveAsFlow()
 
     private val _deleteState = MutableStateFlow<UserFolder?>(null)
-    private val _showDialogState = MutableStateFlow<Boolean>(false)
+    private val _showDialogState = MutableStateFlow(false)
 
     val uiState = combine(
         flowSourcesUseCase(),
@@ -47,10 +48,10 @@ class SourcesViewModel(
             state = State.Content(
                 content = SourcesContent(
                     fromSetup = fromSetup,
-                    folders = folders
+                    folders = folders,
+                    waitingDeleteFolder = deleteState,
                 )
             ),
-            waitingDeleteFolder = deleteState,
             showFeatureDialog = showDialogState
         )
 
@@ -108,6 +109,9 @@ class SourcesViewModel(
         when (intent) {
             SourcesIntent.OnBackTap -> onBackTap()
             SourcesIntent.OnNextTap -> onNextTap()
+
+            // System
+            SourcesIntent.OnSystemFoldersSwitch -> onSystemFoldersSwitch()
 
             // Save
             SourcesIntent.OpenFolderSelection -> _event.send(SourcesEvent.OpenFolderSelection)
@@ -169,6 +173,11 @@ class SourcesViewModel(
 
     private fun closeDialog() {
         _showDialogState.update { false }
+    }
+
+    private suspend fun onSystemFoldersSwitch() {
+        val isEnabled = (uiState.value.state as? State.Content)?.content?.systemFoldersEnabled ?: return
+        settingsDataStore.setSystemFolders(enabled = !isEnabled)
     }
 
     //endregion

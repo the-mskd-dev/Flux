@@ -110,7 +110,7 @@ fun SetupScreenContent(
                 when (screen) {
                     SetupScreen.WELCOME -> SetupWelcomeContent()
                     SetupScreen.SOURCES -> SetupSourcesContent(
-                        sourceSelectionMode = state.sourceSelectionMode,
+                        systemFoldersEnabled = state.systemFoldersEnabled,
                         sendIntent = sendIntent
                     )
                 }

@@ -9,7 +9,6 @@ import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
-import com.mskd.flux.features.setup.domain.model.SourceSelectionMode
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.firstOrNull
@@ -28,7 +27,7 @@ class SettingsDataStoreImpl(val settingsDataStore: DataStore<Preferences>) : Set
         val AUTO_KEYBOARD = booleanPreferencesKey("auto_keyboard_in_search")
         val DATA_LANGUAGE = stringPreferencesKey("data_language")
         val PREFETCH_IMAGES = booleanPreferencesKey("prefetch_hd_images")
-        val SOURCE_SELECTION_MODE = stringPreferencesKey("source_selection_mode")
+        val SYSTEM_FOLDERS_ENABLED = booleanPreferencesKey("system_folders_enabled")
     }
 
     override val flow: Flow<SettingsDataStore.State> = settingsDataStore.data
@@ -44,7 +43,7 @@ class SettingsDataStoreImpl(val settingsDataStore: DataStore<Preferences>) : Set
             val autoKeyboard = preferences[Keys.AUTO_KEYBOARD] ?: true
             val dataLanguage = preferences[Keys.DATA_LANGUAGE]?.let { Locale.forLanguageTag(it) }
             val prefetchImages = preferences[Keys.PREFETCH_IMAGES] ?: false
-            val sourceSelectionMode = preferences[Keys.SOURCE_SELECTION_MODE]?.let { SourceSelectionMode.valueOf(it) } ?: SourceSelectionMode.DEFAULT
+            val systemFoldersEnabled = preferences[Keys.SYSTEM_FOLDERS_ENABLED] ?: true
 
             SettingsDataStore.State(
                 playerRewindValue = playerRewindValue,
@@ -56,7 +55,7 @@ class SettingsDataStoreImpl(val settingsDataStore: DataStore<Preferences>) : Set
                 autoKeyboard = autoKeyboard,
                 dataLanguage = dataLanguage,
                 prefetchHdImages = prefetchImages,
-                sourceSelectionMode = sourceSelectionMode
+                systemFoldersEnabled = systemFoldersEnabled
             )
         }
 
@@ -86,9 +85,9 @@ class SettingsDataStoreImpl(val settingsDataStore: DataStore<Preferences>) : Set
         return flow.firstOrNull()?.dataLanguage ?: Locale.getDefault()
     }
 
-    override suspend fun setSourceSelectionMode(mode: SourceSelectionMode) {
+    override suspend fun setSystemFolders(enabled: Boolean) {
         settingsDataStore.edit { preferences ->
-            preferences[Keys.SOURCE_SELECTION_MODE] = mode.toString()
+            preferences[Keys.SYSTEM_FOLDERS_ENABLED] = enabled
         }
     }
 

@@ -5,6 +5,7 @@ import com.mskd.flux.core.datastore.domain.UserDataStore
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.core.model.files.FileSource
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
+import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.features.sources.domain.model.UserFolder
 import com.mskd.flux.features.sources.domain.usecase.AddSourceUseCase
 import com.mskd.flux.features.sources.domain.usecase.DeleteSourceUseCase
@@ -38,7 +39,8 @@ class SourcesViewModelTest : FunSpec({
         userDataStore: UserDataStore = mockk(relaxed = true),
         addSourceUseCase: AddSourceUseCase = mockk(relaxed = true),
         deleteSourceUseCase: DeleteSourceUseCase = mockk(relaxed = true),
-        syncCatalogUseCase: SyncCatalogUseCase = mockk(relaxed = true)
+        syncCatalogUseCase: SyncCatalogUseCase = mockk(relaxed = true),
+        settingsDataStore: SettingsDataStore = mockk(relaxed = true)
     ): SourcesViewModel {
 
         val flowSourcesUseCase = mockk<FlowSourcesUseCase>()
@@ -47,6 +49,7 @@ class SourcesViewModelTest : FunSpec({
         return SourcesViewModel(
             fromSetup = fromSetup,
             userDataStore = userDataStore,
+            settingsDataStore = settingsDataStore,
             flowSourcesUseCase = flowSourcesUseCase,
             addSourceUseCase = addSourceUseCase,
             deleteSourceUseCase = deleteSourceUseCase,
@@ -172,7 +175,7 @@ class SourcesViewModelTest : FunSpec({
             viewModel.handleIntent(SourcesIntent.Delete(folder = folder))
             testDispatcher.scheduler.advanceUntilIdle()
 
-            expectMostRecentItem().dialog shouldBe SourcesDialog.ConfirmDelete(folder = folder)
+            expectMostRecentItem().showFeatureDialog shouldBe true
         }
     }
 
@@ -186,7 +189,7 @@ class SourcesViewModelTest : FunSpec({
         viewModel.handleIntent(SourcesIntent.CloseDialog)
         testDispatcher.scheduler.advanceUntilIdle()
 
-        viewModel.uiState.value.dialog shouldBe null
+        viewModel.uiState.value.showFeatureDialog shouldBe false
     }
 
     // endregion
@@ -205,7 +208,7 @@ class SourcesViewModelTest : FunSpec({
         testDispatcher.scheduler.advanceUntilIdle()
 
         coVerify { deleteSourceUseCase(folder = folder, deleteMedias = true) }
-        viewModel.uiState.value.dialog shouldBe null
+        viewModel.uiState.value.showFeatureDialog shouldBe false
     }
 
     // endregion

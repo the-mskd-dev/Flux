@@ -7,14 +7,15 @@ import com.mskd.flux.features.sources.domain.model.UserFolder
 @Immutable
 data class SourcesUiState(
     val state: State<SourcesContent> = State.Loading,
-    val waitingDeleteFolder: UserFolder? = null,
     val showFeatureDialog: Boolean = false
 )
 
 @Immutable
 data class SourcesContent(
     val fromSetup: Boolean = false,
-    val folders: List<UserFolder> = emptyList()
+    val folders: List<UserFolder> = emptyList(),
+    val waitingDeleteFolder: UserFolder? = null,
+    val systemFoldersEnabled: Boolean = true
 )
 
 sealed interface SourcesIntent {
@@ -22,6 +23,9 @@ sealed interface SourcesIntent {
     // Navigation
     data object OnBackTap: SourcesIntent
     data object OnNextTap: SourcesIntent
+
+    // System
+    data object OnSystemFoldersSwitch: SourcesIntent
 
     // Add
     data object OpenFolderSelection : SourcesIntent

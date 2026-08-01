@@ -41,6 +41,7 @@ val moduleSources = module {
             addSourceUseCase = get(),
             deleteSourceUseCase = get(),
             syncCatalogUseCase = get(),
+            settingsDataStore = get()
         )
     }
 

@@ -16,26 +16,32 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
+import androidx.compose.material3.Switch
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.core.model.core.State
@@ -104,22 +110,6 @@ fun SourcesScreen(
         }
     }
 
-    LaunchedEffect(uiState.waitingDeleteFolder) {
-        if (uiState.waitingDeleteFolder != null) {
-            val result = snackbarHostState.showSnackbar(
-                message = "Dossier supprimé",
-                actionLabel = "Annuler",
-                duration = SnackbarDuration.Short
-            )
-
-            when (result) {
-                SnackbarResult.Dismissed -> viewModel.handleIntent(SourcesIntent.FinalizeDelete)
-                SnackbarResult.ActionPerformed -> viewModel.handleIntent(SourcesIntent.UndoDelete)
-            }
-
-        }
-    }
-
     AnimatedContent(
         targetState = uiState.state,
         label = "SourcesScreenState",
@@ -145,7 +135,6 @@ fun SourcesScreen(
 
                 SourcesScreenContent(
                     content = state.content,
-                    waitingDeleteFolder = uiState.waitingDeleteFolder,
                     snackbarHostState = snackbarHostState,
                     sendIntent = { viewModel.handleIntent(intent = it) }
                 )
@@ -168,10 +157,26 @@ fun SourcesScreen(
 @Composable
 fun SourcesScreenContent(
     content: SourcesContent,
-    waitingDeleteFolder: UserFolder? = null,
     snackbarHostState: SnackbarHostState? = null,
     sendIntent: (SourcesIntent) -> Unit
 ) {
+
+    LaunchedEffect(content.waitingDeleteFolder) {
+        if (content.waitingDeleteFolder != null) {
+            snackbarHostState?.showSnackbar(
+                message = "Dossier supprimé",
+                actionLabel = "Annuler",
+                duration = SnackbarDuration.Short
+            )?.let { result ->
+                when (result) {
+                    SnackbarResult.Dismissed -> sendIntent(SourcesIntent.FinalizeDelete)
+                    SnackbarResult.ActionPerformed -> sendIntent(SourcesIntent.UndoDelete)
+                }
+            }
+        }
+    }
+
+    var systemFoldersEnabled by remember { mutableStateOf(true) }
 
     FluxScaffold(
         title = stringResource(Res.string.sources),
@@ -222,6 +227,37 @@ fun SourcesScreenContent(
             }
 
             item {
+                ListItem(
+                    modifier = Modifier
+                        .padding(horizontal = FluxUI.Space.medium)
+                        .clip(CircleShape)
+                        .fillMaxWidth(),
+                    colors = ListItemDefaults.colors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    ),
+                    onClick = { systemFoldersEnabled = !systemFoldersEnabled},
+                    verticalAlignment = Alignment.CenterVertically,
+                    content = {
+                        Text.List.Title(
+                            "Dossiers système",
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    },
+                    trailingContent = {
+                        Switch(
+                            checked = systemFoldersEnabled,
+                            onCheckedChange = { systemFoldersEnabled = !systemFoldersEnabled},
+                        )
+                    }
+                )
+            }
+
+            item {
+                Spacer(modifier = Modifier.height(FluxUI.Space.medium))
+            }
+
+            item {
                 Column(
                     modifier = Modifier
                         .padding(horizontal = FluxUI.Space.medium)
@@ -251,7 +287,7 @@ fun SourcesScreenContent(
                 }
             }
 
-            val folders = content.folders.filterNot { it.path == waitingDeleteFolder?.path }
+            val folders = content.folders.filterNot { it.path == content.waitingDeleteFolder?.path }
             itemsIndexed(
                 items = folders,
                 key = { _, folder -> folder.path },

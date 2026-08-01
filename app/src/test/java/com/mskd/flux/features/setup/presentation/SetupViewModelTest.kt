@@ -4,7 +4,6 @@ import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.features.setup.domain.model.SetupScreen
-import com.mskd.flux.features.setup.domain.model.SourceSelectionMode
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.coVerify
@@ -56,10 +55,10 @@ class SetupViewModelTest : FunSpec( {
         }
     }
 
-    test("onNextButton - SOURCES - if mode is CUSTOM, navigate to Token") {
+    test("onNextButton - SOURCES - if system folders are disabled, navigate to Token") {
         // Given : go to SOURCES screen, then change mode to CUSTOM
         viewModel.handleIntent(SetupIntent.OnNextButton)
-        viewModel.handleIntent(SetupIntent.SelectSourceSelectionMode(SourceSelectionMode.CUSTOM))
+        viewModel.handleIntent(SetupIntent.EnableSystemFolders(enabled = false))
 
         viewModel.event.test {
 
@@ -72,20 +71,20 @@ class SetupViewModelTest : FunSpec( {
         }
     }
 
-    test("selectSourceSelectionMode - change mode in SettingsDatastore") {
+    test("enableSystemFolders - change mode in SettingsDatastore") {
         viewModel.uiState.test {
 
             // Given
             awaitItem()
 
             // When
-            viewModel.handleIntent(SetupIntent.SelectSourceSelectionMode(SourceSelectionMode.CUSTOM))
+            viewModel.handleIntent(SetupIntent.EnableSystemFolders(enabled = false))
 
             // Then
-            awaitItem().sourceSelectionMode shouldBe SourceSelectionMode.CUSTOM
+            awaitItem().systemFoldersEnabled shouldBe false
 
             coVerify(exactly = 1) {
-                settingsDataStore.setSourceSelectionMode(mode = SourceSelectionMode.CUSTOM)
+                settingsDataStore.setSystemFolders(enabled = false)
             }
 
         }

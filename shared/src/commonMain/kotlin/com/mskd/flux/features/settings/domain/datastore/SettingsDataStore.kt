@@ -1,6 +1,5 @@
 package com.mskd.flux.features.settings.domain.datastore
 
-import com.mskd.flux.features.setup.domain.model.SourceSelectionMode
 import kotlinx.coroutines.flow.Flow
 import java.util.Locale
 
@@ -28,7 +27,7 @@ interface SettingsDataStore {
 
     suspend fun getDataLanguage() : Locale
 
-    suspend fun setSourceSelectionMode(mode: SourceSelectionMode)
+    suspend fun setSystemFolders(enabled: Boolean)
 
     data class State(
         val playerRewindValue: Int = 10,
@@ -40,6 +39,6 @@ interface SettingsDataStore {
         val autoKeyboard: Boolean = true,
         val dataLanguage: Locale? = null,
         val prefetchHdImages: Boolean = false,
-        val sourceSelectionMode: SourceSelectionMode = SourceSelectionMode.DEFAULT
+        val systemFoldersEnabled: Boolean = true,
     )
 }

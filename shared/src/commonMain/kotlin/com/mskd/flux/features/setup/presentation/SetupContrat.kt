@@ -2,17 +2,16 @@ package com.mskd.flux.features.setup.presentation
 
 import androidx.compose.runtime.Immutable
 import com.mskd.flux.features.setup.domain.model.SetupScreen
-import com.mskd.flux.features.setup.domain.model.SourceSelectionMode
 
 @Immutable
 data class SetupUiState(
     val screen: SetupScreen = SetupScreen.WELCOME,
-    val sourceSelectionMode: SourceSelectionMode = SourceSelectionMode.DEFAULT
+    val systemFoldersEnabled: Boolean = true
 )
 
 sealed interface SetupIntent {
     data object OnNextButton: SetupIntent
-    data class SelectSourceSelectionMode(val option: SourceSelectionMode): SetupIntent
+    data class EnableSystemFolders(val enabled: Boolean): SetupIntent
     data object OnPermissionGranted: SetupIntent
 }
 

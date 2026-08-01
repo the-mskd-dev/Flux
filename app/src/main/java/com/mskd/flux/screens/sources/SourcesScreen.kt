@@ -69,6 +69,7 @@ import com.mskd.flux.utils.extensions.groupedShape
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.add_source
 import flux.shared.generated.resources.downloads
+import flux.shared.generated.resources.folder_deleted
 import flux.shared.generated.resources.ic_add
 import flux.shared.generated.resources.movies
 import flux.shared.generated.resources.next
@@ -76,6 +77,8 @@ import flux.shared.generated.resources.oups_an_error_occured
 import flux.shared.generated.resources.sources
 import flux.shared.generated.resources.sources_full_desc
 import flux.shared.generated.resources.sources_title
+import flux.shared.generated.resources.system_folders
+import flux.shared.generated.resources.undo
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -161,11 +164,14 @@ fun SourcesScreenContent(
     sendIntent: (SourcesIntent) -> Unit
 ) {
 
+    val folderDeleted = stringResource(Res.string.folder_deleted)
+    val undo = stringResource(Res.string.undo)
+
     LaunchedEffect(content.waitingDeleteFolder) {
         if (content.waitingDeleteFolder != null) {
             snackbarHostState?.showSnackbar(
-                message = "Dossier supprimé",
-                actionLabel = "Annuler",
+                message = folderDeleted,
+                actionLabel = undo,
                 duration = SnackbarDuration.Short
             )?.let { result ->
                 when (result) {
@@ -238,7 +244,7 @@ fun SourcesScreenContent(
                     verticalAlignment = Alignment.CenterVertically,
                     content = {
                         Text.List.Title(
-                            "Dossiers système",
+                            text = stringResource(Res.string.system_folders),
                             fontWeight = FontWeight.SemiBold
                         )
                     },

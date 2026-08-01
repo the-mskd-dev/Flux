@@ -168,4 +168,7 @@
     <string name="content_unavailable">Contenuto non disponibile</string>
     <string name="open_in_file_explorer">Apri in Gestione file</string>
     <string name="next">Avanti</string>
+    <string name="folder_deleted">Cartella eliminata</string>
+    <string name="undo">Annulla</string>
+    <string name="system_folders">Cartelle di sistema</string>
 </resources>

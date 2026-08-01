@@ -168,4 +168,7 @@
     <string name="content_unavailable">Inhalt nicht verfügbar</string>
     <string name="open_in_file_explorer">Im Dateimanager öffnen</string>
     <string name="next">Weiter</string>
+    <string name="folder_deleted">Ordner gelöscht</string>
+    <string name="undo">Rückgängig</string>
+    <string name="system_folders">Systemordner</string>
 </resources>

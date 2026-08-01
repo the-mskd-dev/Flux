@@ -168,4 +168,7 @@
     <string name="content_unavailable">Contenido no disponible</string>
     <string name="open_in_file_explorer">Abrir en el explorador de archivos</string>
     <string name="next">Siguiente</string>
+    <string name="folder_deleted">Carpeta eliminada</string>
+    <string name="undo">Deshacer</string>
+    <string name="system_folders">Carpetas del sistema</string>
 </resources>

@@ -167,4 +167,7 @@
     <string name="content_unavailable">콘텐츠를 이용할 수 없음</string>
     <string name="open_in_file_explorer">파일 탐색기에서 열기</string>
     <string name="next">다음</string>
+    <string name="folder_deleted">폴더가 삭제되었습니다</string>
+    <string name="undo">실행 취소</string>
+    <string name="system_folders">시스템 폴더</string>
 </resources>

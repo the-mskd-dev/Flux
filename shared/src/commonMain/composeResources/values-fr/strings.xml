@@ -165,4 +165,7 @@
     <string name="content_unavailable">Contenu non disponible</string>
     <string name="open_in_file_explorer">Ouvrir dans l'explorateur de fichiers</string>
     <string name="next">Suivant</string>
+    <string name="folder_deleted">Dossier supprimé</string>
+    <string name="undo">Annuler</string>
+    <string name="system_folders">Dossiers système</string>
 </resources>

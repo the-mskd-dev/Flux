@@ -192,4 +192,7 @@
     <string name="content_unavailable">Content unavailable</string>
     <string name="open_in_file_explorer">Open in file explorer</string>
     <string name="next">Next</string>
+    <string name="folder_deleted">Folder deleted</string>
+    <string name="undo">Undo</string>
+    <string name="system_folders">System folders</string>
 </resources>

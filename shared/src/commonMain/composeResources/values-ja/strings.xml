@@ -167,4 +167,7 @@
     <string name="content_unavailable">コンテンツを利用できません</string>
     <string name="open_in_file_explorer">ファイルエクスプローラーで開く</string>
     <string name="next">次へ</string>
+    <string name="folder_deleted">フォルダを削除しました</string>
+    <string name="undo">元に戻す</string>
+    <string name="system_folders">システムフォルダ</string>
 </resources>

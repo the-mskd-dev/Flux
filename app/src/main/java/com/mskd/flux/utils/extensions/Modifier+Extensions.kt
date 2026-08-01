@@ -71,9 +71,9 @@ fun Modifier.groupedShape(
 ): Modifier {
     val shape = when {
         lastIndex == 0 -> RoundedCornerShape(size = cornerRadius)
-        index == 0 -> RoundedCornerShape(topStart = cornerRadius, topEnd = cornerRadius)
-        index == lastIndex -> RoundedCornerShape(bottomStart = cornerRadius, bottomEnd = cornerRadius)
-        else -> RoundedCornerShape(0.dp)
+        index == 0 -> RoundedCornerShape(topStart = cornerRadius, topEnd = cornerRadius, bottomStart = 4.dp, bottomEnd = 4.dp)
+        index == lastIndex -> RoundedCornerShape(topStart = 4.dp, topEnd = 4.dp, bottomStart = cornerRadius, bottomEnd = cornerRadius)
+        else -> RoundedCornerShape(4.dp)
     }
     return this.clip(shape)
 }

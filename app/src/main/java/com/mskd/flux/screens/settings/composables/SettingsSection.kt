@@ -82,7 +82,7 @@ fun SettingsSection(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = FluxUI.Space.large)
+            .padding(horizontal = FluxUI.Space.medium)
             .clip(FluxUI.shapes.corners),
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.spacedBy(2.dp)

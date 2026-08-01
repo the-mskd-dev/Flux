@@ -68,7 +68,10 @@ class MainActivity : ComponentActivity() {
                 }
             }
 
-            val startingScreen = viewModel.getStartingScreen(storagePermission.status.isGranted)
+            if (!storagePermission.status.isGranted)
+                viewModel.disableSystemFolders()
+
+            val startingScreen = viewModel.getStartingScreen()
 
             FluxTheme(
                 isOnline = isOnline,

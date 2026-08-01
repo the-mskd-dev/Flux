@@ -43,20 +43,20 @@ class MainViewModel(
 
     }
 
-    fun getStartingScreen(permissionsGranted: Boolean) : Route {
+    fun getStartingScreen() : Route {
 
-        // TODO: Delete in October 2026
-        val addSourcesNeeded = runBlocking {
-            val userState = userDataStore.flow.first()
-            userState.versionCode in 1..27
-        }
+        val versionCode = runBlocking { userDataStore.flow.first().versionCode }
 
         return when {
-            !permissionsGranted -> Route.Setup
-            addSourcesNeeded -> Route.Sources(fromSetup = true)
+            versionCode == 0 -> Route.Setup
+            versionCode in 1..27 -> Route.Sources(fromSetup = true) // TODO: Delete in October 2026
             tokenDataStore.tokenRequested -> Route.Token(fromSetup = true)
             else -> Route.Catalog
         }
+    }
+
+    fun disableSystemFolders() = viewModelScope.launch {
+        settingsDataStore.setSystemFolders(enabled = false)
     }
 
 }

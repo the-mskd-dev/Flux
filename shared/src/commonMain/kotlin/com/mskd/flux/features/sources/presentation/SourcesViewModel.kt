@@ -143,7 +143,7 @@ class SourcesViewModel(
     private suspend fun onNextTap() {
         finalizeDelete()
 
-        _event.send(SourcesEvent.NavigateToCatalog)
+        _event.send(SourcesEvent.NavigateToToken)
     }
 
     private suspend fun saveFolder(path: String) {

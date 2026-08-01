@@ -50,6 +50,7 @@ sealed interface SourcesEvent {
     // Navigation
     data object BackToPreviousScreen : SourcesEvent
     data object NavigateToCatalog: SourcesEvent
+    data object NavigateToToken: SourcesEvent
 
     // Add
     data object OpenFolderSelection: SourcesEvent

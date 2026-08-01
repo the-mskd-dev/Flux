@@ -123,6 +123,7 @@ fun SourcesScreen(
                 SourcesEvent.BackToPreviousScreen -> onBack()
                 SourcesEvent.OpenFolderSelection -> pickFolder()
                 SourcesEvent.NavigateToCatalog -> navigate(Route.Catalog)
+                SourcesEvent.NavigateToToken -> navigate(Route.Token(fromSetup = true))
                 SourcesEvent.ShowPermissionDialog -> {
                     if (permissions.status.isGranted) {
                         viewModel.handleIntent(SourcesIntent.OnPermissionGranted)

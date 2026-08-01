@@ -48,7 +48,7 @@ class MainViewModel(
         val versionCode = runBlocking { userDataStore.flow.first().versionCode }
 
         return when {
-            versionCode == 0 -> Route.Setup
+            versionCode < 0 -> Route.Setup
             versionCode in 1..27 -> Route.Sources(fromSetup = true) // TODO: Delete in October 2026
             tokenDataStore.tokenRequested -> Route.Token(fromSetup = true)
             else -> Route.Catalog

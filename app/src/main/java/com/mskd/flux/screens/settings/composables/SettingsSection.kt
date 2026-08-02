@@ -20,6 +20,7 @@ import com.mskd.flux.features.settings.presentation.SettingsUiState
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.UriUtils
+import com.mskd.flux.utils.extensions.fillMaxWidthWithLimit
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.about
 import flux.shared.generated.resources.about_desc
@@ -81,7 +82,7 @@ fun SettingsSection(
 
     Column(
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxWidthWithLimit()
             .padding(horizontal = FluxUI.Space.medium)
             .clip(FluxUI.shapes.corners),
         horizontalAlignment = Alignment.Start,

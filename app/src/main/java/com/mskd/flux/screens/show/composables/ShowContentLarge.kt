@@ -21,6 +21,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.constraintlayout.compose.Dimension
 import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.features.show.presentation.ShowIntent
 import com.mskd.flux.mockups.MediaMockups
@@ -71,18 +72,12 @@ fun ShowContentLarge(
 
             item(span = { GridItemSpan(maxLineSpan) }) {
 
-                Text.Adaptive(
+                Text.MainTitle(
                     modifier = Modifier
                         .padding(FluxUI.Space.medium)
                         .wrapContentWidth(),
                     text = fullShow.artwork.title,
                     color = MaterialTheme.colorScheme.onBackground,
-                    style = MaterialTheme.typography.displaySmallEmphasized,
-                    maxLines = 2,
-                    autoSize = TextAutoSize.StepBased(
-                        minFontSize = MaterialTheme.typography.titleSmallEmphasized.fontSize,
-                        maxFontSize = MaterialTheme.typography.displaySmallEmphasized.fontSize,
-                    )
                 )
 
             }

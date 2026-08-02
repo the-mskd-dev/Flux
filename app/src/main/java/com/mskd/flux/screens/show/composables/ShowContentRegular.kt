@@ -86,7 +86,7 @@ fun ShowContentRegular(
                     fullArtwork = fullShow,
                 )
 
-                Text.Adaptive(
+                Text.MainTitle(
                     modifier = Modifier
                         .constrainAs(title) {
                             start.linkTo(parent.start,FluxUI.Space.medium)
@@ -97,12 +97,6 @@ fun ShowContentRegular(
                         },
                     text = fullShow.artwork.title,
                     color = MaterialTheme.colorScheme.onBackground,
-                    style = MaterialTheme.typography.displaySmallEmphasized,
-                    maxLines = 2,
-                    autoSize = TextAutoSize.StepBased(
-                        minFontSize = MaterialTheme.typography.titleSmallEmphasized.fontSize,
-                        maxFontSize = MaterialTheme.typography.displaySmallEmphasized.fontSize,
-                    )
                 )
 
             }

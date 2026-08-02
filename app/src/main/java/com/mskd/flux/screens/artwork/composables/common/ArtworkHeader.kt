@@ -55,7 +55,7 @@ fun ArtworkHeader(
         )
 
         if (isMovie) {
-            Text.Adaptive(
+            Text.MainTitle(
                 modifier = Modifier.constrainAs(text) {
                     top.linkTo(image.bottom)
                     start.linkTo(parent.start, FluxUI.Space.medium)
@@ -65,12 +65,6 @@ fun ArtworkHeader(
                 },
                 text = title,
                 color = MaterialTheme.colorScheme.onBackground,
-                style = MaterialTheme.typography.displaySmallEmphasized,
-                maxLines = 2,
-                autoSize = TextAutoSize.StepBased(
-                    minFontSize = MaterialTheme.typography.titleSmallEmphasized.fontSize,
-                    maxFontSize = MaterialTheme.typography.displaySmallEmphasized.fontSize,
-                )
             )
         }
 

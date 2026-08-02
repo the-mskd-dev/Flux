@@ -14,6 +14,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
@@ -82,18 +83,11 @@ fun FluxTopAppBar(
         modifier = Modifier.fillMaxWidth(),
         title = {
 
-            Text.Adaptive(
+            Text.TopBar.Title(
                 modifier = Modifier
                     .padding(vertical = FluxUI.Space.extraSmall)
                     .then(modifier),
-                text = title,
-                overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.headlineSmall,
-                maxLines = 2,
-                autoSize = TextAutoSize.StepBased(
-                    maxFontSize = MaterialTheme.typography.headlineSmall.fontSize,
-                    minFontSize = MaterialTheme.typography.titleSmall.fontSize
-                )
+                text = title
             )
 
         },

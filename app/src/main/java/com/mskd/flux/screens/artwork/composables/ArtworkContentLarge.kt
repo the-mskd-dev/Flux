@@ -72,7 +72,7 @@ fun ArtworkContentLarge(
 
             item {
 
-                Text.Display.Small(
+                Text.MainTitle(
                     modifier = Modifier
                         .padding(FluxUI.Space.medium)
                         .wrapContentWidth(),
@@ -81,7 +81,6 @@ fun ArtworkContentLarge(
                         is FullArtwork.FullShow -> fullArtwork.seasons.find { it.season == selectedSeason }?.title ?: fullArtwork.artwork.title
                     },
                     color = MaterialTheme.colorScheme.onBackground,
-                    emphasized = true
                 )
 
             }

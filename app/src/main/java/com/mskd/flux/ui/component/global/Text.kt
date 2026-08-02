@@ -1,5 +1,6 @@
 package com.mskd.flux.ui.component.global
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.LocalContentColor
@@ -25,6 +26,8 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.Dimension
+import com.mskd.flux.ui.theme.FluxUI
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 object Text {
@@ -69,6 +72,63 @@ object Text {
             autoSize = autoSize,
             onTextLayout = onTextLayout
         )
+
+    }
+
+    object TopBar {
+
+        @Composable
+        fun Title(
+            text: String?,
+            modifier: Modifier = Modifier,
+            color: Color = Color.Unspecified,
+        ) {
+
+            Adaptive(
+                modifier = modifier,
+                text = text,
+                overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.headlineSmall,
+                color = color,
+                maxLines = 2,
+                autoSize = TextAutoSize.StepBased(
+                    maxFontSize = MaterialTheme.typography.headlineSmall.fontSize,
+                    minFontSize = MaterialTheme.typography.titleSmall.fontSize
+                )
+            )
+
+        }
+
+    }
+
+    @Composable
+    fun MainTitle(
+        text: String?,
+        modifier: Modifier = Modifier,
+        color: Color = Color.Unspecified,
+    ) {
+
+        if (text.isNullOrBlank())
+            return
+
+        val style = MaterialTheme.typography.displaySmallEmphasized
+        val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
+
+        Adaptive(
+            modifier = modifier,
+            text = text,
+            color = textColor,
+            style = MaterialTheme.typography.displaySmallEmphasized,
+            maxLines = 2,
+            autoSize = TextAutoSize.StepBased(
+                minFontSize = MaterialTheme.typography.titleSmallEmphasized.fontSize,
+                maxFontSize = MaterialTheme.typography.displaySmallEmphasized.fontSize,
+            )
+        )
+
+    }
+
+    object Content {
 
     }
 

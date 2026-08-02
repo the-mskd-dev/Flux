@@ -121,8 +121,8 @@ fun AboutSection(
     content: String
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)) {
-        Text.Headline.Small(text = title)
-        Text.Body.Large(text = content)
+        Text.Content.Title(text = title)
+        Text.Content.Body(text = content)
     }
 }
 
@@ -132,10 +132,10 @@ fun AboutSectionWithLinks(
     content: AnnotatedString
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)) {
-        Text.Headline.Small(text = title)
+        Text.Content.Title(text = title)
         Text.Annotated(
             text = content,
-            style = MaterialTheme.typography.bodyLarge
+            style = Text.Style.contentBody()
         )
     }
 }

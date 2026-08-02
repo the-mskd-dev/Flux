@@ -11,16 +11,13 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.gestures.rememberTransformableState
 import androidx.compose.foundation.gestures.transformable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -29,7 +26,6 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -68,10 +64,7 @@ import com.mskd.flux.screens.player.composables.playerInterface.PlayerSubtitles
 import com.mskd.flux.screens.player.composables.settings.PlayerSettings
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.component.global.ErrorScreen
-import com.mskd.flux.ui.component.global.Text
-import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.FluxUI
-import com.mskd.flux.utils.LandscapePreview
 import com.mskd.flux.utils.extensions.description
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.oups_an_error_occured
@@ -403,74 +396,5 @@ fun playerConstraintSet(videoSize: VideoSize) = remember( videoSize) {
             centerTo(parent)
         }
 
-    }
-}
-
-@OptIn(UnstableApi::class)
-@Composable
-//@FluxPreview
-@LandscapePreview
-fun PlayerContent_Preview() {
-    FluxTheme {
-        ConstraintLayout(
-            modifier = Modifier.fillMaxSize(),
-            constraintSet = playerConstraintSet(videoSize = VideoSize(16, 9))
-        ) {
-
-            Box(
-                modifier = Modifier
-                    .layoutId("player")
-                    .border(width = .5.dp, color = MaterialTheme.colorScheme.onBackground),
-                contentAlignment = Alignment.Center
-            ) {
-                Text.Label.Medium(text = "player")
-            }
-
-            Box(
-                modifier = Modifier
-                    .layoutId("subtitles")
-                    .border(width = .5.dp, color = MaterialTheme.colorScheme.onBackground),
-                contentAlignment = Alignment.Center
-            ) {
-                Text.Label.Medium(text = "subtitles")
-            }
-
-            Box(
-                modifier = Modifier
-                    .layoutId("playerInterface")
-                    .border(width = .5.dp, color = MaterialTheme.colorScheme.onBackground),
-                contentAlignment = Alignment.Center
-            ) {
-                Text.Label.Medium(text = "playerInterface")
-            }
-
-            Box(
-                modifier = Modifier
-                    .layoutId("leftSeekOverlay")
-                    .border(width = .5.dp, color = MaterialTheme.colorScheme.onBackground),
-                contentAlignment = Alignment.Center
-            ) {
-                Text.Label.Medium(text = "leftSeekOverlay")
-            }
-
-            Box(
-                modifier = Modifier
-                    .layoutId("rightSeekOverlay")
-                    .border(width = .5.dp, color = MaterialTheme.colorScheme.onBackground),
-                contentAlignment = Alignment.Center
-            ) {
-                Text.Label.Medium(text = "rightSeekOverlay")
-            }
-
-            Box(
-                modifier = Modifier
-                    .layoutId("ambientOverlay")
-                    .border(width = .5.dp, color = MaterialTheme.colorScheme.onBackground),
-                contentAlignment = Alignment.Center
-            ) {
-                Text.Label.Medium(text = "ambientOverlay")
-            }
-
-        }
     }
 }

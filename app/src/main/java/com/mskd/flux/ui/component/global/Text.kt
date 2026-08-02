@@ -1,6 +1,7 @@
 package com.mskd.flux.ui.component.global
 
 import androidx.compose.foundation.text.TextAutoSize
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
@@ -17,7 +18,6 @@ import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -28,6 +28,23 @@ import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 object Text {
+
+    object Style {
+
+        @Composable fun topbarTitle() = MaterialTheme.typography.headlineSmall
+        @Composable fun mainTitle() = MaterialTheme.typography.displaySmallEmphasized
+        @Composable fun contentTitle() = MaterialTheme.typography.titleLargeEmphasized
+        @Composable fun contentBody() = MaterialTheme.typography.bodyLarge
+        @Composable fun contentLabel() = MaterialTheme.typography.labelMedium
+        @Composable fun cardTitle() = MaterialTheme.typography.titleMediumEmphasized
+        @Composable fun cardBody() = MaterialTheme.typography.bodyMedium
+        @Composable fun cardLabel() = MaterialTheme.typography.bodySmall
+        @Composable fun listSection() = LocalTextStyle.current.copy(fontSize = 14.sp, lineHeight = 20.sp, fontWeight = FontWeight.Bold)
+        @Composable fun listTitle() = LocalTextStyle.current.copy(fontSize = 16.sp, lineHeight = 24.sp, fontWeight = FontWeight(400))
+        @Composable fun listBody() = LocalTextStyle.current.copy(fontSize = 14.sp, lineHeight = 20.sp)
+        @Composable fun button() = ButtonDefaults.textStyleFor(buttonHeight = ButtonDefaults.MediumContainerHeight).copy(fontFeatureSettings = "tnum")
+
+    }
 
     @Composable
     fun Adaptive(
@@ -102,6 +119,276 @@ object Text {
 
     }
 
+    object TopBar {
+
+        @Composable
+        fun Title(
+            text: String?,
+            modifier: Modifier = Modifier,
+            color: Color = Color.Unspecified,
+        ) {
+
+            Adaptive(
+                modifier = modifier,
+                text = text,
+                overflow = TextOverflow.Ellipsis,
+                style = Style.topbarTitle(),
+                color = color,
+                maxLines = 2,
+                autoSize = TextAutoSize.StepBased(
+                    maxFontSize = Style.topbarTitle().fontSize,
+                    minFontSize = 14.sp
+                )
+            )
+
+        }
+
+    }
+
+    @Composable
+    fun MainTitle(
+        text: String?,
+        modifier: Modifier = Modifier,
+        color: Color = Color.Unspecified,
+        textAlign: TextAlign = TextAlign.Start,
+    ) {
+
+        if (text.isNullOrBlank())
+            return
+
+        val style = Style.mainTitle()
+        val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
+
+        Adaptive(
+            modifier = modifier,
+            text = text,
+            color = textColor,
+            style = Style.mainTitle(),
+            maxLines = 2,
+            textAlign = textAlign,
+            autoSize = TextAutoSize.StepBased(
+                maxFontSize = Style.mainTitle().fontSize,
+                minFontSize = 14.sp,
+            )
+        )
+
+    }
+
+    object Content {
+
+        @Composable
+        fun Title(
+            text: String?,
+            modifier: Modifier = Modifier,
+            textAlign: TextAlign = TextAlign.Start,
+            color: Color = Color.Unspecified,
+            lineHeight: TextUnit = TextUnit.Unspecified,
+            overflow: TextOverflow = TextOverflow.Clip,
+            maxLines: Int = Int.MAX_VALUE,
+            minLines: Int = 1,
+            onTextLayout : ((TextLayoutResult) -> Unit)? = null
+        ) {
+
+            if (text.isNullOrBlank())
+                return
+
+            val style = Style.contentTitle()
+            val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
+
+            Text(
+                modifier = modifier,
+                text = text,
+                color = textColor,
+                style = style,
+                textAlign = textAlign,
+                lineHeight = lineHeight,
+                overflow = overflow,
+                maxLines = maxLines,
+                minLines = minLines,
+                onTextLayout = onTextLayout
+            )
+
+        }
+
+        @Composable
+        fun Body(
+            text: String?,
+            modifier: Modifier = Modifier,
+            textAlign: TextAlign = TextAlign.Start,
+            color: Color = Color.Unspecified,
+            lineHeight: TextUnit = TextUnit.Unspecified,
+            overflow: TextOverflow = TextOverflow.Clip,
+            maxLines: Int = Int.MAX_VALUE,
+            minLines: Int = 1,
+            onTextLayout : ((TextLayoutResult) -> Unit)? = null
+        ) {
+
+            if (text.isNullOrBlank())
+                return
+
+            val style = Style.contentBody()
+            val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
+
+            Text(
+                modifier = modifier,
+                text = text,
+                color = textColor,
+                style = style,
+                textAlign = textAlign,
+                lineHeight = lineHeight,
+                overflow = overflow,
+                maxLines = maxLines,
+                minLines = minLines,
+                onTextLayout = onTextLayout
+            )
+
+        }
+
+        @Composable
+        fun Label(
+            text: String?,
+            modifier: Modifier = Modifier,
+            textAlign: TextAlign = TextAlign.Start,
+            color: Color = Color.Unspecified,
+            lineHeight: TextUnit = TextUnit.Unspecified,
+            overflow: TextOverflow = TextOverflow.Clip,
+            maxLines: Int = Int.MAX_VALUE,
+            minLines: Int = 1,
+            onTextLayout : ((TextLayoutResult) -> Unit)? = null
+        ) {
+
+            if (text.isNullOrBlank())
+                return
+
+            val style = Style.contentLabel()
+            val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
+
+            Text(
+                modifier = modifier,
+                text = text,
+                color = textColor,
+                style = style,
+                textAlign = textAlign,
+                lineHeight = lineHeight,
+                overflow = overflow,
+                maxLines = maxLines,
+                minLines = minLines,
+                fontWeight = FontWeight.Bold,
+                onTextLayout = onTextLayout
+            )
+
+        }
+
+
+
+    }
+
+    object Card {
+
+        @Composable
+        fun Title(
+            text: String?,
+            modifier: Modifier = Modifier,
+            textAlign: TextAlign = TextAlign.Start,
+            color: Color = Color.Unspecified,
+            lineHeight: TextUnit = TextUnit.Unspecified,
+            overflow: TextOverflow = TextOverflow.Clip,
+            maxLines: Int = Int.MAX_VALUE,
+            minLines: Int = 1,
+            onTextLayout : ((TextLayoutResult) -> Unit)? = null
+        ) {
+
+            if (text.isNullOrBlank())
+                return
+
+            val style = Style.cardTitle()
+            val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
+
+            Text(
+                modifier = modifier,
+                text = text,
+                color = textColor,
+                style = style,
+                textAlign = textAlign,
+                lineHeight = lineHeight,
+                overflow = overflow,
+                maxLines = maxLines,
+                minLines = minLines,
+                onTextLayout = onTextLayout
+            )
+
+        }
+
+        @Composable
+        fun Body(
+            text: String?,
+            modifier: Modifier = Modifier,
+            textAlign: TextAlign = TextAlign.Start,
+            color: Color = Color.Unspecified,
+            lineHeight: TextUnit = TextUnit.Unspecified,
+            overflow: TextOverflow = TextOverflow.Clip,
+            maxLines: Int = Int.MAX_VALUE,
+            minLines: Int = 1,
+            onTextLayout : ((TextLayoutResult) -> Unit)? = null
+        ) {
+
+            if (text.isNullOrBlank())
+                return
+
+            val style = Style.cardBody()
+            val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
+
+            Text(
+                modifier = modifier,
+                text = text,
+                color = textColor,
+                style = style,
+                textAlign = textAlign,
+                lineHeight = lineHeight,
+                overflow = overflow,
+                maxLines = maxLines,
+                minLines = minLines,
+                onTextLayout = onTextLayout
+            )
+
+        }
+
+        @Composable
+        fun Label(
+            text: String?,
+            modifier: Modifier = Modifier,
+            textAlign: TextAlign = TextAlign.Start,
+            color: Color = Color.Unspecified,
+            lineHeight: TextUnit = TextUnit.Unspecified,
+            overflow: TextOverflow = TextOverflow.Clip,
+            maxLines: Int = Int.MAX_VALUE,
+            minLines: Int = 1,
+            onTextLayout : ((TextLayoutResult) -> Unit)? = null
+        ) {
+
+            if (text.isNullOrBlank())
+                return
+
+            val style = Style.cardLabel()
+            val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
+
+            Text(
+                modifier = modifier,
+                text = text,
+                color = textColor,
+                style = style,
+                textAlign = textAlign,
+                lineHeight = lineHeight,
+                overflow = overflow,
+                maxLines = maxLines,
+                minLines = minLines,
+                onTextLayout = onTextLayout
+            )
+
+        }
+
+    }
+
     object List {
 
         @Composable
@@ -109,19 +396,6 @@ object Text {
             text: String?,
             modifier: Modifier = Modifier,
             color: Color = Color.Unspecified,
-            autoSize: TextAutoSize? = null,
-            fontStyle: FontStyle? = null,
-            fontWeight: FontWeight = FontWeight.Bold,
-            fontFamily: FontFamily? = null,
-            letterSpacing: TextUnit = TextUnit.Unspecified,
-            textDecoration: TextDecoration? = null,
-            textAlign: TextAlign? = null,
-            overflow: TextOverflow = TextOverflow.Clip,
-            softWrap: Boolean = true,
-            maxLines: Int = Int.MAX_VALUE,
-            minLines: Int = 1,
-            onTextLayout: ((TextLayoutResult) -> Unit)? = null,
-            style: TextStyle = LocalTextStyle.current
         ) {
 
             if (text.isNullOrBlank())
@@ -131,21 +405,8 @@ object Text {
                 text = text,
                 color = color,
                 modifier = modifier,
-                autoSize = autoSize,
-                fontSize = 14.sp,
-                fontStyle = fontStyle,
-                fontWeight = FontWeight.Bold,
-                fontFamily = fontFamily,
-                letterSpacing = letterSpacing,
-                textDecoration = textDecoration,
-                textAlign = textAlign,
-                lineHeight = 20.sp,
-                overflow = overflow,
-                softWrap = softWrap,
-                maxLines = maxLines,
-                minLines = minLines,
-                onTextLayout = onTextLayout,
-                style = style,
+                maxLines = 1,
+                style = Style.listSection(),
             )
 
         }
@@ -155,19 +416,40 @@ object Text {
             text: String?,
             modifier: Modifier = Modifier,
             color: Color = Color.Unspecified,
+            textAlign: TextAlign? = null,
+            overflow: TextOverflow = TextOverflow.Clip,
+            maxLines: Int = Int.MAX_VALUE,
+            minLines: Int = 1,
+        ) {
+
+            if (text.isNullOrBlank())
+                return
+
+            Text(
+                text = text,
+                color = color,
+                modifier = modifier,
+                textAlign = textAlign,
+                overflow = overflow,
+                maxLines = maxLines,
+                minLines = minLines,
+                style = Style.listTitle(),
+            )
+
+        }
+
+        @Composable
+        fun Body(
+            text: String?,
+            modifier: Modifier = Modifier,
+            color: Color = Color.Unspecified,
             autoSize: TextAutoSize? = null,
             fontStyle: FontStyle? = null,
-            fontWeight: FontWeight = FontWeight(400),
-            fontFamily: FontFamily? = null,
-            letterSpacing: TextUnit = TextUnit.Unspecified,
             textDecoration: TextDecoration? = null,
             textAlign: TextAlign? = null,
             overflow: TextOverflow = TextOverflow.Clip,
-            softWrap: Boolean = true,
             maxLines: Int = Int.MAX_VALUE,
             minLines: Int = 1,
-            onTextLayout: ((TextLayoutResult) -> Unit)? = null,
-            style: TextStyle = LocalTextStyle.current
         ) {
 
             if (text.isNullOrBlank())
@@ -178,704 +460,32 @@ object Text {
                 color = color,
                 modifier = modifier,
                 autoSize = autoSize,
-                fontSize = 16.sp,
                 fontStyle = fontStyle,
-                fontWeight = fontWeight,
-                fontFamily = fontFamily,
-                letterSpacing = letterSpacing,
                 textDecoration = textDecoration,
                 textAlign = textAlign,
-                lineHeight = 24.sp,
                 overflow = overflow,
-                softWrap = softWrap,
                 maxLines = maxLines,
                 minLines = minLines,
-                onTextLayout = onTextLayout,
-                style = style,
-            )
-
-        }
-
-        @Composable
-        fun Content(
-            text: String?,
-            modifier: Modifier = Modifier,
-            color: Color = Color.Unspecified,
-            autoSize: TextAutoSize? = null,
-            fontStyle: FontStyle? = null,
-            fontFamily: FontFamily? = null,
-            letterSpacing: TextUnit = TextUnit.Unspecified,
-            textDecoration: TextDecoration? = null,
-            textAlign: TextAlign? = null,
-            overflow: TextOverflow = TextOverflow.Clip,
-            softWrap: Boolean = true,
-            maxLines: Int = Int.MAX_VALUE,
-            minLines: Int = 1,
-            onTextLayout: ((TextLayoutResult) -> Unit)? = null,
-            style: TextStyle = LocalTextStyle.current
-        ) {
-
-            if (text.isNullOrBlank())
-                return
-
-            Text(
-                text = text,
-                color = color,
-                modifier = modifier,
-                autoSize = autoSize,
-                fontSize = 14.sp,
-                fontStyle = fontStyle,
-                fontFamily = fontFamily,
-                letterSpacing = letterSpacing,
-                textDecoration = textDecoration,
-                textAlign = textAlign,
-                lineHeight = 20.sp,
-                overflow = overflow,
-                softWrap = softWrap,
-                maxLines = maxLines,
-                minLines = minLines,
-                onTextLayout = onTextLayout,
-                style = style,
+                style = Style.listBody(),
             )
 
         }
 
     }
 
-    /**
-     * Very short, high-impact "hero" text. Use for marketing or key moments.
-     */
-    object Display {
-
-        /**
-         * - **Usage**: Main hero text.
-         * - **Size** : 57dp
-         * - **Examples**: Success screens ("Done!"), main metric on a dashboard ("10,000 steps"),
-         * clock app home screen ("00:00").
-         */
-        @Composable
-        fun Large(
-            text: String?,
-            modifier: Modifier = Modifier,
-            textAlign: TextAlign = TextAlign.Start,
-            color: Color = Color.Unspecified,
-            emphasized: Boolean = false,
-            lineHeight: TextUnit = TextUnit.Unspecified,
-            overflow: TextOverflow = TextOverflow.Clip,
-            maxLines: Int = Int.MAX_VALUE,
-            minLines: Int = 1,
-            onTextLayout : ((TextLayoutResult) -> Unit)? = null
-        ) {
-
-            if (text.isNullOrBlank())
-                return
-
-            val style = if (emphasized) MaterialTheme.typography.displayLargeEmphasized else MaterialTheme.typography.displayLarge
-            val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
-
-            Text(
-                modifier = modifier,
-                text = text,
-                color = textColor,
-                style = style,
-                textAlign = textAlign,
-                lineHeight = lineHeight,
-                overflow = overflow,
-                maxLines = maxLines,
-                minLines = minLines,
-                onTextLayout = onTextLayout
-            )
-
-        }
-
-        /**
-         * - **Usage**: Secondary headline or catchphrase.
-         * - **Size** : 45dp
-         * - **Examples**: A hero subtitle, an important but secondary metric.
-         */
-        @Composable
-        fun Medium(
-            text: String?,
-            modifier: Modifier = Modifier,
-            textAlign: TextAlign = TextAlign.Start,
-            color: Color = Color.Unspecified,
-            emphasized: Boolean = false,
-            lineHeight: TextUnit = TextUnit.Unspecified,
-            overflow: TextOverflow = TextOverflow.Clip,
-            maxLines: Int = Int.MAX_VALUE,
-            minLines: Int = 1,
-            onTextLayout : ((TextLayoutResult) -> Unit)? = null
-        ) {
-
-            if (text.isNullOrBlank())
-                return
-
-            val style = if (emphasized) MaterialTheme.typography.displayMediumEmphasized else MaterialTheme.typography.displayMedium
-            val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
-
-            Text(
-                modifier = modifier,
-                text = text,
-                color = textColor,
-                style = style,
-                textAlign = textAlign,
-                lineHeight = lineHeight,
-                overflow = overflow,
-                maxLines = maxLines,
-                minLines = minLines,
-                onTextLayout = onTextLayout
-            )
-
-        }
-
-        /**
-         * - **Usage**: Very important page titles on large screens (tablet).
-         * - **Size** : 36dp
-         * - **Examples**: The "Welcome" on a login screen.
-         */
-        @Composable
-        fun Small(
-            text: String?,
-            modifier: Modifier = Modifier,
-            textAlign: TextAlign = TextAlign.Start,
-            color: Color = Color.Unspecified,
-            emphasized: Boolean = false,
-            lineHeight: TextUnit = TextUnit.Unspecified,
-            overflow: TextOverflow = TextOverflow.Clip,
-            maxLines: Int = Int.MAX_VALUE,
-            minLines: Int = 1,
-            onTextLayout : ((TextLayoutResult) -> Unit)? = null
-        ) {
-
-            if (text.isNullOrBlank())
-                return
-
-            val style = if (emphasized) MaterialTheme.typography.displaySmallEmphasized else MaterialTheme.typography.displaySmall
-            val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
-
-            Text(
-                modifier = modifier,
-                text = text,
-                color = textColor,
-                style = style,
-                textAlign = textAlign,
-                lineHeight = lineHeight,
-                overflow = overflow,
-                maxLines = maxLines,
-                minLines = minLines,
-                onTextLayout = onTextLayout
-            )
-
-        }
-
-    }
-
-    /**
-     * Structures the page. Used for screen titles and main sections.
-     */
-    object Headline {
-
-        /**
-         * - **Usage**: Main title for a screen on a tablet, or the title of a `LargeTopAppBar` (when expanded).
-         * - **Size** : 32dp
-         * - **Examples**: "My Files", "My Day".
-         */
-        @Composable
-        fun Large(
-            text: String?,
-            modifier: Modifier = Modifier,
-            textAlign: TextAlign = TextAlign.Start,
-            color: Color = Color.Unspecified,
-            emphasized: Boolean = false,
-            lineHeight: TextUnit = TextUnit.Unspecified,
-            overflow: TextOverflow = TextOverflow.Clip,
-            maxLines: Int = Int.MAX_VALUE,
-            minLines: Int = 1,
-            onTextLayout : ((TextLayoutResult) -> Unit)? = null
-        ) {
-
-            if (text.isNullOrBlank())
-                return
-
-            val style = if (emphasized) MaterialTheme.typography.headlineLargeEmphasized else MaterialTheme.typography.headlineLarge
-            val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
-
-            Text(
-                modifier = modifier,
-                text = text,
-                color = textColor,
-                style = style,
-                textAlign = textAlign,
-                lineHeight = lineHeight,
-                overflow = overflow,
-                maxLines = maxLines,
-                minLines = minLines,
-                onTextLayout = onTextLayout
-            )
-
-        }
-
-        /**
-         * - **Usage**: The default screen title.
-         * - **Size** : 28dp
-         * - **Examples**: The title in a large `TopAppBar`.
-         */
-        @Composable
-        fun Medium(
-            text: String?,
-            modifier: Modifier = Modifier,
-            textAlign: TextAlign = TextAlign.Start,
-            color: Color = Color.Unspecified,
-            emphasized: Boolean = false,
-            lineHeight: TextUnit = TextUnit.Unspecified,
-            overflow: TextOverflow = TextOverflow.Clip,
-            maxLines: Int = Int.MAX_VALUE,
-            minLines: Int = 1,
-            onTextLayout : ((TextLayoutResult) -> Unit)? = null
-        ) {
-
-            if (text.isNullOrBlank())
-                return
-
-            val style = if (emphasized) MaterialTheme.typography.headlineMediumEmphasized else MaterialTheme.typography.headlineMedium
-            val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
-
-            Text(
-                modifier = modifier,
-                text = text,
-                color = textColor,
-                style = style,
-                textAlign = textAlign,
-                lineHeight = lineHeight,
-                overflow = overflow,
-                maxLines = maxLines,
-                minLines = minLines,
-                onTextLayout = onTextLayout
-            )
-
-        }
-
-        /**
-         * - **Usage**: Section titles, dialog titles.
-         * - **Size** : 24dp
-         * - **Examples**: The title in a medium `TopAppBar`. "Settings", "Profile".
-         */
-        @Composable
-        fun Small(
-            text: String?,
-            modifier: Modifier = Modifier,
-            textAlign: TextAlign = TextAlign.Start,
-            color: Color = Color.Unspecified,
-            emphasized: Boolean = false,
-            lineHeight: TextUnit = TextUnit.Unspecified,
-            overflow: TextOverflow = TextOverflow.Clip,
-            maxLines: Int = Int.MAX_VALUE,
-            minLines: Int = 1,
-            onTextLayout : ((TextLayoutResult) -> Unit)? = null
-        ) {
-
-            if (text.isNullOrBlank())
-                return
-
-            val style = if (emphasized) MaterialTheme.typography.headlineSmallEmphasized else MaterialTheme.typography.headlineSmall
-            val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
-
-            Text(
-                modifier = modifier,
-                text = text,
-                color = textColor,
-                style = style,
-                textAlign = textAlign,
-                lineHeight = lineHeight,
-                overflow = overflow,
-                maxLines = maxLines,
-                minLines = minLines,
-                onTextLayout = onTextLayout
-            )
-
-        }
-
-    }
-
-    /**
-     * Titles for content elements within your UI (cards, lists...).
-     */
-    object Title {
-
-        /**
-         * - **Usage**: Title within a `Card`, subject of an email (in detail view).
-         * - **Size** : 22dp
-         * - **Examples**: "Recipe of the week", "Your order has arrived".
-         */
-        @Composable
-        fun Large(
-            text: String?,
-            modifier: Modifier = Modifier,
-            textAlign: TextAlign = TextAlign.Start,
-            color: Color = Color.Unspecified,
-            emphasized: Boolean = false,
-            lineHeight: TextUnit = TextUnit.Unspecified,
-            overflow: TextOverflow = TextOverflow.Clip,
-            maxLines: Int = Int.MAX_VALUE,
-            minLines: Int = 1,
-            onTextLayout : ((TextLayoutResult) -> Unit)? = null
-        ) {
-
-            if (text.isNullOrBlank())
-                return
-
-            val style = if (emphasized) MaterialTheme.typography.titleLargeEmphasized else MaterialTheme.typography.titleLarge
-            val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
-
-            Text(
-                modifier = modifier,
-                text = text,
-                color = textColor,
-                style = style,
-                textAlign = textAlign,
-                lineHeight = lineHeight,
-                overflow = overflow,
-                maxLines = maxLines,
-                minLines = minLines,
-                onTextLayout = onTextLayout
-            )
-
-        }
-
-        /**
-         * - **Usage**: The main line in a `ListItem`.
-         * - **Size** : 16dp
-         * - **Examples**: A contact's name in a list, a song title in a playlist.
-         */
-        @Composable
-        fun Medium(
-            text: String?,
-            modifier: Modifier = Modifier,
-            textAlign: TextAlign = TextAlign.Start,
-            color: Color = Color.Unspecified,
-            emphasized: Boolean = false,
-            lineHeight: TextUnit = TextUnit.Unspecified,
-            overflow: TextOverflow = TextOverflow.Clip,
-            maxLines: Int = Int.MAX_VALUE,
-            minLines: Int = 1,
-            onTextLayout : ((TextLayoutResult) -> Unit)? = null
-        ) {
-
-            if (text.isNullOrBlank())
-                return
-
-            val style = if (emphasized) MaterialTheme.typography.titleMediumEmphasized else MaterialTheme.typography.titleMedium
-            val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
-
-            Text(
-                modifier = modifier,
-                text = text,
-                color = textColor,
-                style = style,
-                textAlign = textAlign,
-                lineHeight = lineHeight,
-                overflow = overflow,
-                maxLines = maxLines,
-                minLines = minLines,
-                onTextLayout = onTextLayout
-            )
-
-        }
-
-
-        /**
-         * - **Usage**: Sub-section titles or less important elements.
-         * - **Size** : 14dp
-         * - **Examples**: Date headers ("Today"), subtitles within a card.
-         */
-        @Composable
-        fun Small(
-            text: String?,
-            modifier: Modifier = Modifier,
-            textAlign: TextAlign = TextAlign.Start,
-            color: Color = Color.Unspecified,
-            emphasized: Boolean = false,
-            lineHeight: TextUnit = TextUnit.Unspecified,
-            overflow: TextOverflow = TextOverflow.Clip,
-            maxLines: Int = Int.MAX_VALUE,
-            minLines: Int = 1,
-            onTextLayout : ((TextLayoutResult) -> Unit)? = null
-        ) {
-
-            if (text.isNullOrBlank())
-                return
-
-            val style = if (emphasized) MaterialTheme.typography.titleSmallEmphasized else MaterialTheme.typography.titleSmall
-            val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
-
-            Text(
-                modifier = modifier,
-                text = text,
-                color = textColor,
-                style = style,
-                textAlign = textAlign,
-                lineHeight = lineHeight,
-                overflow = overflow,
-                maxLines = maxLines,
-                minLines = minLines,
-                onTextLayout = onTextLayout
-            )
-
-        }
-
-    }
-
-    /**
-     * Readable text, often multi-line. This is the core of your content.
-     */
-    object Body {
-
-        /**
-         * - **Usage**: The main body text.
-         * - **Size** : 16dp
-         * - **Examples**: Blog post content, email body, long descriptions.
-         */
-        @Composable
-        fun Large(
-            text: String?,
-            modifier: Modifier = Modifier,
-            textAlign: TextAlign = TextAlign.Start,
-            color: Color = Color.Unspecified,
-            emphasized: Boolean = false,
-            lineHeight: TextUnit = TextUnit.Unspecified,
-            overflow: TextOverflow = TextOverflow.Clip,
-            maxLines: Int = Int.MAX_VALUE,
-            minLines: Int = 1,
-            onTextLayout : ((TextLayoutResult) -> Unit)? = null
-        ) {
-
-            if (text.isNullOrBlank())
-                return
-
-            val style = if (emphasized) MaterialTheme.typography.bodyLargeEmphasized else MaterialTheme.typography.bodyLarge
-            val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
-
-            Text(
-                modifier = modifier,
-                text = text,
-                color = textColor,
-                style = style,
-                textAlign = textAlign,
-                lineHeight = lineHeight,
-                overflow = overflow,
-                maxLines = maxLines,
-                minLines = minLines,
-                onTextLayout = onTextLayout
-            )
-
-        }
-
-        /**
-         * - **Usage**: Secondary text, short descriptions.
-         * - **Size** : 14dp
-         * - **Examples**: The 2nd line of a `ListItem` (email preview), text for a menu item in a `DropdownMenu`.
-         */
-        @Composable
-        fun Medium(
-            text: String?,
-            modifier: Modifier = Modifier,
-            textAlign: TextAlign = TextAlign.Start,
-            color: Color = Color.Unspecified,
-            emphasized: Boolean = false,
-            lineHeight: TextUnit = TextUnit.Unspecified,
-            overflow: TextOverflow = TextOverflow.Clip,
-            maxLines: Int = Int.MAX_VALUE,
-            minLines: Int = 1,
-            onTextLayout : ((TextLayoutResult) -> Unit)? = null
-        ) {
-
-            if (text.isNullOrBlank())
-                return
-
-            val style = if (emphasized) MaterialTheme.typography.bodyMediumEmphasized else MaterialTheme.typography.bodyMedium
-            val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
-
-            Text(
-                modifier = modifier,
-                text = text,
-                color = textColor,
-                style = style,
-                textAlign = textAlign,
-                lineHeight = lineHeight,
-                overflow = overflow,
-                maxLines = maxLines,
-                minLines = minLines,
-                onTextLayout = onTextLayout
-            )
-
-        }
-
-        /**
-         * - **Usage**: Support text, captions.
-         * - **Size** : 12dp
-         * - **Examples**: Helper text under a `TextField`, legal mentions, 'meta' info (e.g., "3 min ago").
-         */
-        @Composable
-        fun Small(
-            text: String?,
-            modifier: Modifier = Modifier,
-            textAlign: TextAlign = TextAlign.Start,
-            color: Color = Color.Unspecified,
-            emphasized: Boolean = false,
-            lineHeight: TextUnit = TextUnit.Unspecified,
-            overflow: TextOverflow = TextOverflow.Clip,
-            maxLines: Int = Int.MAX_VALUE,
-            minLines: Int = 1,
-            onTextLayout : ((TextLayoutResult) -> Unit)? = null
-        ) {
-
-            if (text.isNullOrBlank())
-                return
-
-            val style = if (emphasized) MaterialTheme.typography.bodySmallEmphasized else MaterialTheme.typography.bodySmall
-            val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
-
-            Text(
-                modifier = modifier,
-                text = text,
-                color = textColor,
-                style = style,
-                textAlign = textAlign,
-                lineHeight = lineHeight,
-                overflow = overflow,
-                maxLines = maxLines,
-                minLines = minLines,
-                onTextLayout = onTextLayout
-            )
-
-        }
-
-    }
-
-    /**
-     * Actionable, functional text.
-     */
-    object Label {
-
-        /**
-         * - **Usage**: The default text for buttons.
-         * - **Size** : 14dp
-         * - **Examples**: Text within a `Button`, `FilledButton`, `TextButton`, `FloatingActionButton`, within a Dialog
-         */
-        @Composable
-        fun Large(
-            text: String?,
-            modifier: Modifier = Modifier,
-            textAlign: TextAlign = TextAlign.Start,
-            color: Color = Color.Unspecified,
-            emphasized: Boolean = false,
-            lineHeight: TextUnit = TextUnit.Unspecified,
-            overflow: TextOverflow = TextOverflow.Clip,
-            maxLines: Int = Int.MAX_VALUE,
-            minLines: Int = 1,
-            onTextLayout : ((TextLayoutResult) -> Unit)? = null
-        ) {
-
-            if (text.isNullOrBlank())
-                return
-
-            val style = if (emphasized) MaterialTheme.typography.labelLargeEmphasized else MaterialTheme.typography.labelLarge
-            val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
-
-            Text(
-                modifier = modifier,
-                text = text,
-                color = textColor,
-                style = style,
-                textAlign = textAlign,
-                lineHeight = lineHeight,
-                overflow = overflow,
-                maxLines = maxLines,
-                minLines = minLines,
-                onTextLayout = onTextLayout
-            )
-
-        }
-
-        /**
-         * - **Usage**: Smaller functional text.
-         * - **Size** : 12dp
-         * - **Examples**: Text within a `Chip`, the label for a `NavigationBar` item.
-         */
-        @Composable
-        fun Medium(
-            text: String?,
-            modifier: Modifier = Modifier,
-            textAlign: TextAlign = TextAlign.Start,
-            color: Color = Color.Unspecified,
-            emphasized: Boolean = false,
-            lineHeight: TextUnit = TextUnit.Unspecified,
-            overflow: TextOverflow = TextOverflow.Clip,
-            maxLines: Int = Int.MAX_VALUE,
-            minLines: Int = 1,
-            onTextLayout : ((TextLayoutResult) -> Unit)? = null
-        ) {
-
-            if (text.isNullOrBlank())
-                return
-
-            val style = if (emphasized) MaterialTheme.typography.labelMediumEmphasized else MaterialTheme.typography.labelMedium
-            val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
-
-            Text(
-                modifier = modifier,
-                text = text,
-                color = textColor,
-                style = style,
-                textAlign = textAlign,
-                lineHeight = lineHeight,
-                overflow = overflow,
-                maxLines = maxLines,
-                minLines = minLines,
-                onTextLayout = onTextLayout
-            )
-
-        }
-
-        /**
-         * - **Usage**: The smallest functional text.
-         * - **Size** : 11dp
-         * - **Examples**: Overline text (a small label above a title, e.g., "CATEGORY").
-         */
-        @Composable
-        fun Small(
-            text: String?,
-            modifier: Modifier = Modifier,
-            textAlign: TextAlign = TextAlign.Start,
-            color: Color = Color.Unspecified,
-            emphasized: Boolean = false,
-            lineHeight: TextUnit = TextUnit.Unspecified,
-            overflow: TextOverflow = TextOverflow.Clip,
-            maxLines: Int = Int.MAX_VALUE,
-            minLines: Int = 1,
-            onTextLayout : ((TextLayoutResult) -> Unit)? = null
-        ) {
-
-            if (text.isNullOrBlank())
-                return
-
-            val style = if (emphasized) MaterialTheme.typography.labelSmallEmphasized else MaterialTheme.typography.labelSmall
-            val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
-
-            Text(
-                modifier = modifier,
-                text = text,
-                color = textColor,
-                style = style,
-                textAlign = textAlign,
-                lineHeight = lineHeight,
-                overflow = overflow,
-                maxLines = maxLines,
-                minLines = minLines,
-                onTextLayout = onTextLayout
-            )
-
-        }
+    @Composable
+    fun Button(
+        text: String,
+        modifier: Modifier = Modifier,
+        color: Color = Color.Unspecified,
+    ) {
+
+        Text(
+            modifier = modifier,
+            text = text,
+            color = color,
+            style = Style.button()
+        )
 
     }
 

@@ -148,7 +148,7 @@ fun MediaStatusProgression(
             )
 
             val remainingTime = (media.duration.minToMs - media.currentTime).timeDescription(withoutSeconds = true)
-            Text.Label.Medium(
+            Text.Card.Label(
                 text = stringResource(Res.string.remaining_time, remainingTime),
                 color = MaterialTheme.colorScheme.onBackground
             )

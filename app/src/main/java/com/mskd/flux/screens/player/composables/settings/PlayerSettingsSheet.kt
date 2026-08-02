@@ -101,11 +101,11 @@ fun PlayerSettingsItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
 
-        Text.Title.Medium(
+        Text.List.Title(
             text = label,
         )
 
-        Text.Label.Large(
+        Text.List.Body(
             modifier = Modifier.weight(1f),
             textAlign = TextAlign.End,
             maxLines = 1,

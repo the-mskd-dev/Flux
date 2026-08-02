@@ -206,7 +206,7 @@ fun SettingsFullSyncDialog(
         onValidate = { sendIntent(SettingsIntent.ProceedFullSync) },
         title = stringResource(Res.string.sync_library),
         content = {
-            Text.Body.Large(text = stringResource(Res.string.sync_library_dialog))
+            Text.Content.Body(text = stringResource(Res.string.sync_library_dialog))
         }
     )
 

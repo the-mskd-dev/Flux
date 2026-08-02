@@ -69,12 +69,11 @@ fun CatalogGenericCategory(
         verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
     ) {
 
-        Text.Title.Large(
+        Text.Content.Title(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = FluxUI.Space.medium, top = FluxUI.Space.large),
             text = name,
-            emphasized = true,
             color = MaterialTheme.colorScheme.onBackground
         )
 

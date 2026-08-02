@@ -95,7 +95,7 @@ fun CrashDialogContent(
                 verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
             ) {
 
-                Text.Body.Large(stringResource(R.string.acra_dialog_message))
+                Text.Content.Body(stringResource(R.string.acra_dialog_message))
 
                 OutlinedTextField(
                     modifier = Modifier
@@ -104,7 +104,7 @@ fun CrashDialogContent(
                     value = comment,
                     onValueChange = { comment = it },
                     placeholder = {
-                        Text.Body.Large(stringResource(R.string.acra_dialog_comment))
+                        Text.Content.Body(stringResource(R.string.acra_dialog_comment))
                     },
                     textStyle = MaterialTheme.typography.bodyLarge
                 )

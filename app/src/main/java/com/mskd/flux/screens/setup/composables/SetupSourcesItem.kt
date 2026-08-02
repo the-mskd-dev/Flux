@@ -11,7 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.mskd.flux.screens.sources.composables.sourcesAnnotatedString
@@ -36,10 +35,7 @@ fun SetupSourcesItem(
         selected = isSelected,
         onClick = onTap,
         content = {
-            Text.List.Title(
-                text = title,
-                fontWeight = FontWeight.Bold
-            )
+            Text.List.Title(text = title)
         },
         supportingContent = {
             Text(

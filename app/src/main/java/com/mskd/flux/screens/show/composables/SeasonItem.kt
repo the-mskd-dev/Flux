@@ -115,7 +115,7 @@ fun SeasonItem(
                 ),
             )
 
-            Text.Label.Small(
+            Text.Card.Label(
                 modifier = Modifier.fillMaxWidth(),
                 text = pluralStringResource(Res.plurals.episodes, episodes.size, episodes.size),
                 color = MaterialTheme.colorScheme.secondary,

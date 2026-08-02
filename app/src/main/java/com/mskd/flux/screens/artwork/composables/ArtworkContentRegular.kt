@@ -88,12 +88,11 @@ fun ArtworkContentRegular(
 
                     Column(verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small)) {
 
-                        Text.Title.Large(
+                        Text.Content.Title(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = FluxUI.Space.medium),
                             text = stringResource(Res.string.episodes),
-                            emphasized = true,
                             color = MaterialTheme.colorScheme.onBackground
                         )
 

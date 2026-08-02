@@ -145,14 +145,13 @@ fun EpisodeItemLarge(
                     append("${episode.number}. ")
                 append(episode.title)
             }
-            Text.Title.Medium(
+            Text.Card.Title(
                 modifier = Modifier.fillMaxWidth(),
                 text =  title,
                 textAlign = TextAlign.Start,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
                 color = if (isSelected) MaterialTheme.colorScheme.onSecondaryContainer else MaterialTheme.colorScheme.onSurface,
-                emphasized = true
             )
 
             if (episode.isUnknown) {
@@ -161,7 +160,7 @@ fun EpisodeItemLarge(
                 MediaDetailsHorizontal(media = episode)
             }
 
-            Text.Body.Medium(
+            Text.Card.Body(
                 modifier = Modifier
                     .fillMaxWidth()
                     .animateContentSize(),
@@ -256,14 +255,13 @@ fun EpisodeItemSmall(
                         append("${episode.number}. ")
                     append(episode.title)
                 }
-                Text.Title.Medium(
+                Text.Card.Title(
                     modifier = Modifier.fillMaxWidth(),
                     text =  title,
                     textAlign = TextAlign.Start,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                     color = if (isSelected) MaterialTheme.colorScheme.onSecondaryContainer else MaterialTheme.colorScheme.onSurface,
-                    emphasized = true
                 )
 
                 MediaDetailsVertical(media = episode)
@@ -272,7 +270,7 @@ fun EpisodeItemSmall(
 
         }
 
-        Text.Body.Medium(
+        Text.Card.Body(
             modifier = Modifier
                 .fillMaxWidth()
                 .animateContentSize(),

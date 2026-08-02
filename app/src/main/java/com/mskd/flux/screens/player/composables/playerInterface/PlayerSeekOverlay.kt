@@ -18,16 +18,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.StrokeJoin
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.text.font.FontWeight
 import androidx.constraintlayout.compose.layoutId
 import com.mskd.flux.features.player.presentation.PlayerUiContent
 import com.mskd.flux.ui.component.global.Text
@@ -152,19 +148,7 @@ fun PlayerSeekOverlayText(amount: String?) {
         label = "SeekOverlayText change"
     ) { text ->
         Box(modifier = Modifier.padding(all = FluxUI.Space.small)) {
-            Text.Adaptive(
-                text = text,
-                style = MaterialTheme.typography.headlineSmall.copy(
-                    fontWeight = FontWeight.Bold,
-                    drawStyle = Stroke(
-                        miter = 10f,
-                        width = 6f,
-                        join = StrokeJoin.Round
-                    ),
-                    color = Color.Black
-                )
-            )
-            Text.Headline.Small(
+            Text.Content.Body(
                 text = text,
                 color = Color.White,
             )

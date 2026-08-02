@@ -61,7 +61,7 @@ fun CornersDialog(
                 verticalArrangement = Arrangement.spacedBy(FluxUI.Space.large)
             ) {
 
-                Text.Body.Medium(
+                Text.Card.Title(
                     text = stringResource(Res.string.corners_desc)
                 )
 
@@ -80,7 +80,7 @@ fun CornersDialog(
                                 contentColor = MaterialTheme.colorScheme.onTertiaryContainer
                             )
                         ) {
-                            Text.Body.Small(text = stringResource(text) )
+                            Text.Card.Body(text = stringResource(text) )
                         }
                     }
                 }

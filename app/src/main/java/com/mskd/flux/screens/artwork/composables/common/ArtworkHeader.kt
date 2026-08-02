@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -55,7 +54,7 @@ fun ArtworkHeader(
         )
 
         if (isMovie) {
-            Text.Adaptive(
+            Text.MainTitle(
                 modifier = Modifier.constrainAs(text) {
                     top.linkTo(image.bottom)
                     start.linkTo(parent.start, FluxUI.Space.medium)
@@ -65,12 +64,6 @@ fun ArtworkHeader(
                 },
                 text = title,
                 color = MaterialTheme.colorScheme.onBackground,
-                style = MaterialTheme.typography.displaySmallEmphasized,
-                maxLines = 2,
-                autoSize = TextAutoSize.StepBased(
-                    minFontSize = MaterialTheme.typography.titleSmallEmphasized.fontSize,
-                    maxFontSize = MaterialTheme.typography.displaySmallEmphasized.fontSize,
-                )
             )
         }
 

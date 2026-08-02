@@ -63,12 +63,11 @@ fun SeasonDialog(
                 verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
             ) {
 
-                Text.Headline.Medium(
+                Text.Content.Title(
                     text = season.title.ifEmpty { stringResource(Res.string.season, season.season) },
-                    emphasized = true,
                 )
 
-                Text.Body.Large(
+                Text.Content.Body(
                     text = season.description.ifEmpty { stringResource(Res.string.no_summary) },
                 )
 

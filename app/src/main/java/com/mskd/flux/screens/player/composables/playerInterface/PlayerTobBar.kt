@@ -72,7 +72,7 @@ fun PlayerTopBar(
             verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
         ) {
 
-            Text.Body.Large(
+            Text.Content.Body(
                 text = media.title,
                 color = Color.White
             )
@@ -82,7 +82,7 @@ fun PlayerTopBar(
                 val season = stringResource(Res.string.season, episode.season)
                 val number = stringResource(Res.string.episode, episode.number)
 
-                Text.Body.Small(
+                Text.Card.Label(
                     modifier = Modifier.fillMaxWidth(),
                     text = "$season, $number",
                     color = Color.White,

@@ -68,7 +68,7 @@ fun ProgressStatusChip(
                 .padding(horizontal = FluxUI.Space.small),
             contentAlignment = Alignment.Center
         ) {
-            Text.Label.Medium(
+            Text.Card.Label(
                 color = MaterialTheme.colorScheme.onTertiary,
                 text = stringResource(Res.string.watched)
             )
@@ -89,7 +89,7 @@ fun ResetProgressDialog(
         onValidateLabel = stringResource(Res.string.reset),
         onValidate = onValidate,
         content = {
-            Text.Body.Large(
+            Text.Content.Body(
                 text = stringResource(Res.string.reset_progress_confirmation)
             )
         }

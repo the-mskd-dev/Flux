@@ -60,13 +60,12 @@ fun CatalogCategory(
         verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
     ) {
 
-        Text.Title.Large(
+        Text.Content.Title(
             modifier = Modifier
                 .clickable { sendIntent(CatalogIntent.OnCategoryTap(category)) }
                 .fillMaxWidth()
                 .padding(start = FluxUI.Space.medium, top = FluxUI.Space.large),
             text = name,
-            emphasized = true,
             color = MaterialTheme.colorScheme.onBackground
         )
 

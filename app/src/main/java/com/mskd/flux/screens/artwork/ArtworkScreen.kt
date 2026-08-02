@@ -234,7 +234,7 @@ fun ArtworkScreenContent(
     if (dialog is ArtworkDialog.EpisodeStatusConfirmation) {
         FluxDialog(
             content = {
-                Text.Body.Large(text = stringResource(Res.string.mark_previous_episodes_as_watched))
+                Text.Content.Body(text = stringResource(Res.string.mark_previous_episodes_as_watched))
             },
             onDismiss = { sendIntent(ArtworkIntent.CloseDialog) },
             onValidate = { sendIntent(ArtworkIntent.MarkPreviousEpisodesAsWatched) }

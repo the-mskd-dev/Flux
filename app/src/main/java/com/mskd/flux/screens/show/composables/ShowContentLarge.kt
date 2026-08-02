@@ -16,7 +16,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -71,18 +70,12 @@ fun ShowContentLarge(
 
             item(span = { GridItemSpan(maxLineSpan) }) {
 
-                Text.Adaptive(
+                Text.MainTitle(
                     modifier = Modifier
                         .padding(FluxUI.Space.medium)
                         .wrapContentWidth(),
                     text = fullShow.artwork.title,
                     color = MaterialTheme.colorScheme.onBackground,
-                    style = MaterialTheme.typography.displaySmallEmphasized,
-                    maxLines = 2,
-                    autoSize = TextAutoSize.StepBased(
-                        minFontSize = MaterialTheme.typography.titleSmallEmphasized.fontSize,
-                        maxFontSize = MaterialTheme.typography.displaySmallEmphasized.fontSize,
-                    )
                 )
 
             }
@@ -107,12 +100,11 @@ fun ShowContentLarge(
 
             item(span = { GridItemSpan(maxLineSpan) }) {
 
-                Text.Title.Large(
+                Text.Content.Title(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = FluxUI.Space.medium),
                     text = stringResource(Res.string.seasons),
-                    emphasized = true,
                     color = MaterialTheme.colorScheme.onBackground
                 )
 

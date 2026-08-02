@@ -30,7 +30,7 @@ fun FluxDropDownMenu(
                         leadingIconColor = MaterialTheme.colorScheme.onTertiaryContainer,
                     ),
                     onClick = item.onClick,
-                    text = { Text.Body.Medium(text = item.text) },
+                    text = { Text.Card.Body(text = item.text) },
                     leadingIcon = item.leadingIcon,
                 )
 

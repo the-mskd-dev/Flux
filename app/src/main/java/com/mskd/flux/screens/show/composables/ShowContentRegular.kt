@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -86,7 +85,7 @@ fun ShowContentRegular(
                     fullArtwork = fullShow,
                 )
 
-                Text.Adaptive(
+                Text.MainTitle(
                     modifier = Modifier
                         .constrainAs(title) {
                             start.linkTo(parent.start,FluxUI.Space.medium)
@@ -97,12 +96,6 @@ fun ShowContentRegular(
                         },
                     text = fullShow.artwork.title,
                     color = MaterialTheme.colorScheme.onBackground,
-                    style = MaterialTheme.typography.displaySmallEmphasized,
-                    maxLines = 2,
-                    autoSize = TextAutoSize.StepBased(
-                        minFontSize = MaterialTheme.typography.titleSmallEmphasized.fontSize,
-                        maxFontSize = MaterialTheme.typography.displaySmallEmphasized.fontSize,
-                    )
                 )
 
             }
@@ -126,12 +119,11 @@ fun ShowContentRegular(
 
         item {
 
-            Text.Title.Large(
+            Text.Content.Title(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = FluxUI.Space.medium),
                 text = stringResource(Res.string.seasons),
-                emphasized = true,
                 color = MaterialTheme.colorScheme.onBackground
             )
 

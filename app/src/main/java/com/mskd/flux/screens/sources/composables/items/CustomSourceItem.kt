@@ -101,7 +101,7 @@ fun LazyItemScope.CustomSourceItem(
                     )
                 },
                 supportingContent = {
-                    Text.List.Content(
+                    Text.List.Body(
                         text = folder.cleanPath,
                         overflow = TextOverflow.StartEllipsis,
                         fontStyle = FontStyle.Italic,

@@ -39,7 +39,7 @@ fun LoadingScreen(
                 CircularWavyProgressIndicator()
             }
 
-            Text.Title.Medium(
+            Text.Content.Body(
                 text = text,
                 color = MaterialTheme.colorScheme.onBackground
             )

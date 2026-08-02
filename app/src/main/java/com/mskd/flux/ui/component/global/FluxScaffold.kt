@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -21,7 +20,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.text.style.TextOverflow
 import com.mskd.flux.ui.theme.FluxUI
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -82,18 +80,11 @@ fun FluxTopAppBar(
         modifier = Modifier.fillMaxWidth(),
         title = {
 
-            Text.Adaptive(
+            Text.TopBar.Title(
                 modifier = Modifier
                     .padding(vertical = FluxUI.Space.extraSmall)
                     .then(modifier),
-                text = title,
-                overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.headlineSmall,
-                maxLines = 2,
-                autoSize = TextAutoSize.StepBased(
-                    maxFontSize = MaterialTheme.typography.headlineSmall.fontSize,
-                    minFontSize = MaterialTheme.typography.titleSmall.fontSize
-                )
+                text = title
             )
 
         },

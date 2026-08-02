@@ -11,7 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.core.model.artwork.Artwork
@@ -65,10 +64,9 @@ fun MediaDetailsVertical(media: Media) {
                 else -> null
             }
 
-            Text.Adaptive(
+            Text.Card.Label(
                 text = seasonAndEpisode?.lowercase(),
                 color = MaterialTheme.colorScheme.secondary,
-                style = MaterialTheme.typography.bodySmall.copy(fontStyle = FontStyle.Italic)
             )
 
         }
@@ -132,7 +130,7 @@ fun MediaDetailItem(
             contentDescription = contentDescription
         )
 
-        Text.Body.Small(
+        Text.Card.Label(
             text = text,
             color = MaterialTheme.colorScheme.secondary
         )

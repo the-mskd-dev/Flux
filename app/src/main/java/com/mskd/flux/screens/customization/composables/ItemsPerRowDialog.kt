@@ -39,7 +39,7 @@ fun ItemsPerRowDialog(
                 verticalArrangement = Arrangement.spacedBy(FluxUI.Space.large)
             ) {
 
-                Text.Body.Medium(description)
+                Text.Card.Body(description)
 
                 Row(
                     modifier = Modifier
@@ -49,7 +49,7 @@ fun ItemsPerRowDialog(
                     horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
                 ) {
 
-                    Text.Body.Medium("2")
+                    Text.Card.Body("2")
 
                     Slider(
                         modifier = Modifier.weight(1f),
@@ -59,7 +59,7 @@ fun ItemsPerRowDialog(
                         onValueChange = { currentValue = it.toInt() },
                     )
 
-                    Text.Body.Medium("5")
+                    Text.Card.Body("5")
 
                 }
 

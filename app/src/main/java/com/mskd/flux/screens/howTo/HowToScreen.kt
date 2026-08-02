@@ -97,7 +97,7 @@ fun HowToNameFiles() {
                 val movies = stringArrayResource(Res.array.movies_naming)
 
                 movies.forEach {
-                    Text.Body.Medium(text = "• $it")
+                    Text.Card.Body(text = "• $it")
                 }
 
             }
@@ -116,7 +116,7 @@ fun HowToNameFiles() {
 
                 val shows = stringArrayResource(Res.array.shows_naming)
                 shows.forEach {
-                    Text.Body.Medium(text = "• $it")
+                    Text.Card.Body(text = "• $it")
                 }
 
             }

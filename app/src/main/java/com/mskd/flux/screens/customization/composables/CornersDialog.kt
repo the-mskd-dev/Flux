@@ -61,7 +61,7 @@ fun CornersDialog(
                 verticalArrangement = Arrangement.spacedBy(FluxUI.Space.large)
             ) {
 
-                Text.Body.Medium(
+                Text.Card.Body(
                     text = stringResource(Res.string.corners_desc)
                 )
 

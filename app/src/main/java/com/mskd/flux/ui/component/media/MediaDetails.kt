@@ -65,10 +65,9 @@ fun MediaDetailsVertical(media: Media) {
                 else -> null
             }
 
-            Text.Adaptive(
+            Text.Card.Label(
                 text = seasonAndEpisode?.lowercase(),
                 color = MaterialTheme.colorScheme.secondary,
-                style = MaterialTheme.typography.bodySmall.copy(fontStyle = FontStyle.Italic)
             )
 
         }
@@ -132,7 +131,7 @@ fun MediaDetailItem(
             contentDescription = contentDescription
         )
 
-        Text.Body.Small(
+        Text.Card.Label(
             text = text,
             color = MaterialTheme.colorScheme.secondary
         )

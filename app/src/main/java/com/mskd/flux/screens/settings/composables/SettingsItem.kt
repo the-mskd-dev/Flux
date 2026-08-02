@@ -42,7 +42,7 @@ fun SettingsItem(
             AnimatedContent(
                 targetState = subText.uppercaseFirstLetter()
             ) { text ->
-                Text.List.Content(
+                Text.List.Body(
                     text = text,
                     color = valueColor,
                 )

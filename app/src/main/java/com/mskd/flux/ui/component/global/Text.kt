@@ -1,6 +1,5 @@
 package com.mskd.flux.ui.component.global
 
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.LocalContentColor
@@ -26,8 +25,6 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
-import androidx.constraintlayout.compose.Dimension
-import com.mskd.flux.ui.theme.FluxUI
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 object Text {
@@ -71,6 +68,36 @@ object Text {
             minLines = minLines,
             autoSize = autoSize,
             onTextLayout = onTextLayout
+        )
+
+    }
+
+    @Composable
+    fun Annotated(
+        text: AnnotatedString,
+        modifier: Modifier = Modifier,
+        textAlign: TextAlign = TextAlign.Start,
+        color: Color = Color.Unspecified,
+        style: TextStyle = MaterialTheme.typography.bodyLarge,
+        overflow: TextOverflow = TextOverflow.Clip,
+        maxLines: Int = Int.MAX_VALUE,
+        minLines: Int = 1,
+    ) {
+
+        if (text.isBlank())
+            return
+
+        val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
+
+        Text(
+            modifier = modifier,
+            text = text,
+            color = textColor,
+            style = style,
+            textAlign = textAlign,
+            overflow = overflow,
+            maxLines = maxLines,
+            minLines = minLines
         )
 
     }
@@ -237,36 +264,6 @@ object Text {
 
     }
 
-    @Composable
-    fun Annotated(
-        text: AnnotatedString,
-        modifier: Modifier = Modifier,
-        textAlign: TextAlign = TextAlign.Start,
-        color: Color = Color.Unspecified,
-        style: TextStyle = MaterialTheme.typography.bodyLarge,
-        overflow: TextOverflow = TextOverflow.Clip,
-        maxLines: Int = Int.MAX_VALUE,
-        minLines: Int = 1,
-    ) {
-
-        if (text.isBlank())
-            return
-
-        val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
-
-        Text(
-            modifier = modifier,
-            text = text,
-            color = textColor,
-            style = style,
-            textAlign = textAlign,
-            overflow = overflow,
-            maxLines = maxLines,
-            minLines = minLines
-        )
-
-    }
-
     object List {
 
         @Composable
@@ -276,7 +273,6 @@ object Text {
             color: Color = Color.Unspecified,
             autoSize: TextAutoSize? = null,
             fontStyle: FontStyle? = null,
-            fontWeight: FontWeight = FontWeight.Bold,
             fontFamily: FontFamily? = null,
             letterSpacing: TextUnit = TextUnit.Unspecified,
             textDecoration: TextDecoration? = null,
@@ -362,7 +358,7 @@ object Text {
         }
 
         @Composable
-        fun Content(
+        fun Body(
             text: String?,
             modifier: Modifier = Modifier,
             color: Color = Color.Unspecified,

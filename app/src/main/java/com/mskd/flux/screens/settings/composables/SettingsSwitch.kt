@@ -44,7 +44,7 @@ fun SettingsSwitch(
             AnimatedContent(
                 targetState = subText.uppercaseFirstLetter()
             ) { text ->
-                Text.List.Content(
+                Text.List.Body(
                     text = text,
                     color = subTextColor,
                 )

@@ -4,10 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.features.setup.domain.model.SetupScreen
+import com.mskd.flux.utils.Trace
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -32,6 +34,15 @@ class SetupViewModel(
             is SetupIntent.EnableSystemFolders -> enableSystemFolders(enabled = intent.enabled)
             SetupIntent.OnPermissionGranted -> onPermissionGranted()
         }
+    }
+
+    init {
+
+        viewModelScope.launch {
+            val systemFoldersEnabled = settingsDataStore.flow.first().systemFoldersEnabled
+            Trace.debug("systemFoldersEnabled : $systemFoldersEnabled")
+        }
+
     }
 
     //endregion
@@ -65,6 +76,7 @@ class SetupViewModel(
     }
 
     private suspend fun onPermissionGranted() {
+        settingsDataStore.setSystemFolders(enabled = true)
         _event.emit(SetupEvent.NavigateToToken)
     }
 

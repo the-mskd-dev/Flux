@@ -8,6 +8,7 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -17,6 +18,7 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
@@ -209,13 +211,12 @@ fun CatalogContent(
 
                         item {
 
-                            Text.Label.Large(
-                                modifier = Modifier
-                                    .padding(all = FluxUI.Space.medium)
-                                    .clickable { sendIntent(CatalogIntent.OnHowToTap) },
-                                text = stringResource(Res.string.how_to_name_files),
-                                color = MaterialTheme.colorScheme.primary
-                            )
+                            TextButton(
+                                onClick = { sendIntent(CatalogIntent.OnHowToTap) },
+                                contentPadding = PaddingValues(all = FluxUI.Space.medium)
+                            ) {
+                                Text.Button(text = stringResource(Res.string.how_to_name_files),)
+                            }
 
                         }
 

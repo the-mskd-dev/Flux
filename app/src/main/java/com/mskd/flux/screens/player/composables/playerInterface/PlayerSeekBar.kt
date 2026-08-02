@@ -135,7 +135,7 @@ fun PlayerSeekBarTime(
     time : () -> Long
 ) {
 
-    Text.Label.Medium(
+    Text.Card.Label(
         text = time().formatMinSec(),
         color = Color.White
     )

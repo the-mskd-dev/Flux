@@ -170,11 +170,11 @@ fun TokenScreenContent(
                 ) {
 
                     when (state.message) {
-                        TokenMessage.Success -> Text.Label.Small(
+                        TokenMessage.Success -> Text.Card.Label(
                             text = stringResource(Res.string.token_validated),
                             color = MaterialTheme.colorScheme.primary
                         )
-                        TokenMessage.Error -> Text.Label.Small(
+                        TokenMessage.Error -> Text.Card.Label(
                             text = stringResource(Res.string.token_error),
                             color = MaterialTheme.colorScheme.error
                         )

@@ -36,10 +36,7 @@ fun SetupSourcesItem(
         selected = isSelected,
         onClick = onTap,
         content = {
-            Text.List.Title(
-                text = title,
-                fontWeight = FontWeight.Bold
-            )
+            Text.List.Title(text = title)
         },
         supportingContent = {
             Text(

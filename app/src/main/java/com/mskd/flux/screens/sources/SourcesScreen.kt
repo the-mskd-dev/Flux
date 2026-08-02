@@ -207,7 +207,7 @@ fun SourcesScreenContent(
                 ExtendedFloatingActionButton(
                     onClick = { sendIntent(SourcesIntent.OnNextTap) }
                 ) {
-                    Text.Label.Large(stringResource(Res.string.next))
+                    Text.Button(stringResource(Res.string.next))
                 }
             }
         },
@@ -248,10 +248,7 @@ fun SourcesScreenContent(
                     onClick = { sendIntent(SourcesIntent.OnSystemFoldersSwitch)},
                     verticalAlignment = Alignment.CenterVertically,
                     content = {
-                        Text.List.Title(
-                            text = stringResource(Res.string.system_folders),
-                            fontWeight = FontWeight.SemiBold
-                        )
+                        Text.List.Title(text = stringResource(Res.string.system_folders))
                     },
                     trailingContent = {
                         Switch(

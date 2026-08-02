@@ -31,7 +31,7 @@ fun FluxDialog(
                 TextButton(
                     onClick = { it() },
                     content = {
-                        Text.Label.Large(text = onValidateLabel)
+                        Text.Button(text = onValidateLabel)
                     }
                 )
             }
@@ -40,7 +40,7 @@ fun FluxDialog(
             TextButton(
                 onClick = onDismiss,
                 content = {
-                    Text.Label.Large(text = onDismissLabel)
+                    Text.Button(text = onDismissLabel)
                 }
             )
         },

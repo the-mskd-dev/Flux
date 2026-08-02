@@ -54,90 +54,6 @@ import kotlin.time.Duration.Companion.seconds
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun FluxButton(
-    modifier: Modifier = Modifier,
-    text: String,
-    height: Dp = ButtonDefaults.MediumContainerHeight,
-    shape: Shape = MaterialTheme.shapes.medium,
-    autoSize: Boolean = false,
-    backgroundColor: Color = MaterialTheme.colorScheme.primary,
-    textColor: Color = MaterialTheme.colorScheme.onPrimary,
-    border: BorderStroke? = null,
-    icon: ImageVector? = null,
-    onTap: () -> Unit
-) {
-
-    val typography = ButtonDefaults.textStyleFor(height)
-    Button(
-        modifier = modifier.height(height),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = backgroundColor,
-            contentColor = textColor,
-        ),
-        elevation = ButtonDefaults.elevatedButtonElevation(),
-        shape = shape,
-        border = border,
-        contentPadding = ButtonDefaults.contentPaddingFor(height),
-        onClick = onTap
-    ) {
-
-        icon?.let {
-            AnimatedContent(
-                targetState = it,
-                label = "FluxButton icon animation"
-            ) { state ->
-                Icon(
-                    modifier = Modifier.size(ButtonDefaults.iconSizeFor(height)),
-                    imageVector = state,
-                    tint = textColor,
-                    contentDescription = null,
-                )
-            }
-
-            Spacer(Modifier.size(ButtonDefaults.iconSpacingFor(height)))
-
-        }
-
-        AnimatedContent(
-            targetState = text,
-            label = "FluxButton text animation"
-        ) { state ->
-            if (autoSize) {
-
-                var fontSize by remember { mutableStateOf(typography.fontSize) }
-                var readyToDraw by remember { mutableStateOf(false) }
-
-                Text(
-                    modifier = Modifier.drawWithContent {
-                        if (readyToDraw) drawContent()
-                    },
-                    text = state,
-                    fontSize = fontSize,
-                    maxLines = 1,
-                    fontWeight = typography.fontWeight,
-                    softWrap = false,
-                    onTextLayout = {
-                        if (it.didOverflowWidth)
-                            fontSize = fontSize.times(.95)
-                        else
-                            readyToDraw = true
-                    }
-                )
-            } else {
-                Text(
-                    text = state,
-                    color = textColor,
-                    style = typography
-                )
-            }
-        }
-
-    }
-
-}
-
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
-@Composable
 fun FluxTextButton(
     text: String,
     modifier: Modifier = Modifier,
@@ -150,10 +66,9 @@ fun FluxTextButton(
         modifier = modifier.height(height),
         onClick = onTap,
         content = {
-            Text(
+            Text.Button(
                 text = text,
                 color = color,
-                style = ButtonDefaults.textStyleFor(height)
             )
         }
     )

@@ -1,6 +1,7 @@
 package com.mskd.flux.ui.component.global
 
 import androidx.compose.foundation.text.TextAutoSize
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
@@ -506,6 +507,20 @@ object Text {
             )
 
         }
+
+    }
+
+    @Composable
+    fun Button(
+        text: String,
+        color: Color = Color.Unspecified,
+    ) {
+
+        Text(
+            text = text,
+            color = color,
+            style = ButtonDefaults.textStyleFor(buttonHeight = ButtonDefaults.MediumContainerHeight)
+        )
 
     }
 

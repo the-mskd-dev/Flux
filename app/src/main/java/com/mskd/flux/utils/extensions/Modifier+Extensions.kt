@@ -6,6 +6,8 @@ import androidx.compose.animation.core.spring
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -76,4 +78,11 @@ fun Modifier.groupedShape(
         else -> RoundedCornerShape(4.dp)
     }
     return this.clip(shape)
+}
+
+@Composable
+fun Modifier.fillMaxWidthWithLimit() : Modifier{
+    return this
+        .widthIn(max = 600.dp)
+        .fillMaxWidth()
 }

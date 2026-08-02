@@ -35,6 +35,7 @@ import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxThemePreview
+import com.mskd.flux.utils.extensions.fillMaxWidthWithLimit
 import com.mskd.flux.utils.storagePermissionState
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_flux
@@ -102,7 +103,7 @@ fun SetupScreenContent(
         Box(
             modifier = Modifier
                 .padding(FluxUI.Space.medium)
-                .widthIn(max = 600.dp),
+                .fillMaxWidthWithLimit(),
         ) {
 
             AnimatedContent(

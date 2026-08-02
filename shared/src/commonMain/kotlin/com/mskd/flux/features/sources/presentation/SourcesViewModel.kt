@@ -12,6 +12,7 @@ import com.mskd.flux.features.sources.domain.model.UserFolder
 import com.mskd.flux.features.sources.domain.usecase.AddSourceUseCase
 import com.mskd.flux.features.sources.domain.usecase.DeleteSourceUseCase
 import com.mskd.flux.features.sources.domain.usecase.FlowSourcesUseCase
+import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -25,6 +26,7 @@ class SourcesViewModel(
     private val fromSetup: Boolean,
     private val userDataStore: UserDataStore,
     private val settingsDataStore: SettingsDataStore,
+    private val tokenDataStore: TokenDataStore,
     flowSourcesUseCase: FlowSourcesUseCase,
     private val addSourceUseCase: AddSourceUseCase,
     private val deleteSourceUseCase: DeleteSourceUseCase,
@@ -143,7 +145,10 @@ class SourcesViewModel(
     private suspend fun onNextTap() {
         finalizeDelete()
 
-        _event.send(SourcesEvent.NavigateToToken)
+        if (tokenDataStore.tokenRequested)
+            _event.send(SourcesEvent.NavigateToToken)
+        else
+            _event.send(SourcesEvent.NavigateToCatalog)
     }
 
     private suspend fun saveFolder(path: String) {

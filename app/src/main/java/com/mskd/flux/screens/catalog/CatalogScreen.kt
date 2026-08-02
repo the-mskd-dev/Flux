@@ -200,7 +200,7 @@ fun CatalogContent(
 
                         item {
 
-                            Text.Body.Large(
+                            Text.Content.Body(
                                 modifier = Modifier.padding(horizontal = FluxUI.Space.medium),
                                 text = stringResource(Res.string.empty_catalog_desc)
                             )

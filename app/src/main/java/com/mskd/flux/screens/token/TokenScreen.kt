@@ -208,11 +208,11 @@ fun TokenDescription() {
             )
         )
 
-        Text.Body.Large(
+        Text.Content.Body(
             text = stringResource(Res.string.token_desc_2)
         )
 
-        Text.Body.Large(
+        Text.Content.Body(
             text = stringResource(Res.string.token_desc_3)
         )
 
@@ -232,7 +232,7 @@ fun TokenTutorial() {
 
         Row {
 
-            Text.Body.Large(text = "1. ")
+            Text.Content.Body(text = "1. ")
 
             Text.Annotated(
                 text = buildLinkedString(
@@ -246,7 +246,7 @@ fun TokenTutorial() {
 
         Row {
 
-            Text.Body.Large(text = "2. ")
+            Text.Content.Body(text = "2. ")
 
             Text.Annotated(
                 text = buildLinkedString(

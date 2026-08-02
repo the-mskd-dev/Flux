@@ -213,7 +213,7 @@ fun UnknownScreenContent(
                 contentAlignment = Alignment.TopStart
             ) {
 
-                Text.Body.Large(
+                Text.Content.Body(
                     modifier = Modifier
                         .align(Alignment.Center)
                         .fillMaxWidth(),

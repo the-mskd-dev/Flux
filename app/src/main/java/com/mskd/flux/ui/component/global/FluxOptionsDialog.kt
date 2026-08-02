@@ -68,7 +68,7 @@ fun <T, R> FluxOptionsDialog(
                             ColorItem(option.color)
 
                             val value = option.label.resolve()
-                            Text.Body.Large(
+                            Text.Content.Body(
                                 modifier = Modifier.weight(1f),
                                 text = value.uppercaseFirstLetter(),
                                 color = MaterialTheme.colorScheme.onSurface

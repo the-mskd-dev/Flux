@@ -68,7 +68,7 @@ fun SeasonDialog(
                     emphasized = true,
                 )
 
-                Text.Body.Large(
+                Text.Content.Body(
                     text = season.description.ifEmpty { stringResource(Res.string.no_summary) },
                 )
 

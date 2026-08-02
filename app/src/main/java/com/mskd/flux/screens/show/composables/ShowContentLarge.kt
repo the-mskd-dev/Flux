@@ -102,12 +102,11 @@ fun ShowContentLarge(
 
             item(span = { GridItemSpan(maxLineSpan) }) {
 
-                Text.Title.Large(
+                Text.Content.Title(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = FluxUI.Space.medium),
                     text = stringResource(Res.string.seasons),
-                    emphasized = true,
                     color = MaterialTheme.colorScheme.onBackground
                 )
 

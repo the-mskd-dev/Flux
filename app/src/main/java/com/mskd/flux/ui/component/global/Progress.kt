@@ -89,7 +89,7 @@ fun ResetProgressDialog(
         onValidateLabel = stringResource(Res.string.reset),
         onValidate = onValidate,
         content = {
-            Text.Body.Large(
+            Text.Content.Body(
                 text = stringResource(Res.string.reset_progress_confirmation)
             )
         }

@@ -130,6 +130,111 @@ object Text {
 
     object Content {
 
+        @Composable
+        fun Title(
+            text: String?,
+            modifier: Modifier = Modifier,
+            textAlign: TextAlign = TextAlign.Start,
+            color: Color = Color.Unspecified,
+            lineHeight: TextUnit = TextUnit.Unspecified,
+            overflow: TextOverflow = TextOverflow.Clip,
+            maxLines: Int = Int.MAX_VALUE,
+            minLines: Int = 1,
+            onTextLayout : ((TextLayoutResult) -> Unit)? = null
+        ) {
+
+            if (text.isNullOrBlank())
+                return
+
+            val style = MaterialTheme.typography.titleLargeEmphasized
+            val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
+
+            Text(
+                modifier = modifier,
+                text = text,
+                color = textColor,
+                style = style,
+                textAlign = textAlign,
+                lineHeight = lineHeight,
+                overflow = overflow,
+                maxLines = maxLines,
+                minLines = minLines,
+                onTextLayout = onTextLayout
+            )
+
+        }
+
+        @Composable
+        fun Body(
+            text: String?,
+            modifier: Modifier = Modifier,
+            textAlign: TextAlign = TextAlign.Start,
+            color: Color = Color.Unspecified,
+            lineHeight: TextUnit = TextUnit.Unspecified,
+            overflow: TextOverflow = TextOverflow.Clip,
+            maxLines: Int = Int.MAX_VALUE,
+            minLines: Int = 1,
+            onTextLayout : ((TextLayoutResult) -> Unit)? = null
+        ) {
+
+            if (text.isNullOrBlank())
+                return
+
+            val style = MaterialTheme.typography.bodyLarge
+            val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
+
+            Text(
+                modifier = modifier,
+                text = text,
+                color = textColor,
+                style = style,
+                textAlign = textAlign,
+                lineHeight = lineHeight,
+                overflow = overflow,
+                maxLines = maxLines,
+                minLines = minLines,
+                onTextLayout = onTextLayout
+            )
+
+        }
+
+        @Composable
+        fun Label(
+            text: String?,
+            modifier: Modifier = Modifier,
+            textAlign: TextAlign = TextAlign.Start,
+            color: Color = Color.Unspecified,
+            lineHeight: TextUnit = TextUnit.Unspecified,
+            overflow: TextOverflow = TextOverflow.Clip,
+            maxLines: Int = Int.MAX_VALUE,
+            minLines: Int = 1,
+            onTextLayout : ((TextLayoutResult) -> Unit)? = null
+        ) {
+
+            if (text.isNullOrBlank())
+                return
+
+            val style = MaterialTheme.typography.labelMedium
+            val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
+
+            Text(
+                modifier = modifier,
+                text = text,
+                color = textColor,
+                style = style,
+                textAlign = textAlign,
+                lineHeight = lineHeight,
+                overflow = overflow,
+                maxLines = maxLines,
+                minLines = minLines,
+                fontWeight = FontWeight.Bold,
+                onTextLayout = onTextLayout
+            )
+
+        }
+
+
+
     }
 
     @Composable

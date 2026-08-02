@@ -43,7 +43,7 @@ fun SetupWelcomeContent() {
                 color = MaterialTheme.colorScheme.onSurface
             )
 
-            Text.Body.Large(
+            Text.Content.Body(
                 text = stringResource(Res.string.welcome_description),
                 color = MaterialTheme.colorScheme.onSurface
             )
@@ -65,11 +65,11 @@ fun SetupWelcomeContent() {
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
                     ) {
-                        Text.Body.Large(
+                        Text.Content.Body(
                             text = featuresIcons.getOrNull(index) ?: "✨",
                             color = MaterialTheme.colorScheme.onSurface
                         )
-                        Text.Body.Large(
+                        Text.Content.Body(
                             text = feature,
                             color = MaterialTheme.colorScheme.onSurface
                         )

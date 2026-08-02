@@ -122,7 +122,7 @@ fun AboutSection(
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)) {
         Text.Headline.Small(text = title)
-        Text.Body.Large(text = content)
+        Text.Content.Body(text = content)
     }
 }
 

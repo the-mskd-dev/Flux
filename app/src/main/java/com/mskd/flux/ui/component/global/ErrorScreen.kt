@@ -47,14 +47,14 @@ fun ErrorScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                Text.Title.Large(
+                Text.Content.Title(
                     modifier = Modifier.fillMaxWidth(),
                     text = message,
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onBackground
                 )
 
-                Text.Body.Medium(
+                Text.Content.Body(
                     modifier = Modifier.fillMaxWidth(),
                     text = description,
                     textAlign = TextAlign.Center,

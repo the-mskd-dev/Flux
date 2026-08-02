@@ -54,7 +54,7 @@ fun SetupSourcesContent(
                 color = MaterialTheme.colorScheme.onBackground
             )
 
-            Text.Body.Large(
+            Text.Content.Body(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(Res.string.setup_sources_desc),
                 color = MaterialTheme.colorScheme.onBackground

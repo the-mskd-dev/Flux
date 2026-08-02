@@ -70,18 +70,17 @@ fun OverviewItem(
 
             topDetails()
 
-            Text.Title.Large(
+            Text.Content.Title(
                 modifier = Modifier.fillMaxWidth(),
                 text = title,
                 color = MaterialTheme.colorScheme.onSurface,
-                emphasized = true
             )
 
             subtitle()
 
         }
 
-        Text.Body.Large(
+        Text.Content.Body(
             modifier = Modifier
                 .fillMaxWidth()
                 .animateContentSize(),
@@ -114,14 +113,12 @@ fun OverviewItem(
 fun EpisodesDetails(episode: Episode) {
 
     Row(horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)) {
-        Text.Label.Medium(
+        Text.Content.Label(
             text = stringResource(Res.string.season, episode.season).uppercase(),
-            emphasized = true,
             color = MaterialTheme.colorScheme.primary,
         )
-        Text.Label.Medium(
+        Text.Content.Label(
             text = stringResource(Res.string.episode, episode.number).uppercase(),
-            emphasized = true,
             color = MaterialTheme.colorScheme.secondary
         )
     }

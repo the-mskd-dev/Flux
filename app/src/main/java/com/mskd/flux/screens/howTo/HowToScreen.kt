@@ -61,7 +61,7 @@ fun HowToScreen(onBack: () -> Unit) {
                 horizontalAlignment = Alignment.Start
             ) {
 
-                Text.Body.Large(text = stringResource(Res.string.how_to_name_files_desc))
+                Text.Content.Body(text = stringResource(Res.string.how_to_name_files_desc))
 
                 HowToNameFiles()
 
@@ -86,8 +86,8 @@ fun HowToNameFiles() {
 
         Column(verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)) {
 
-            Text.Title.Large(text = stringResource(Res.string.movies), emphasized = true)
-            Text.Body.Large(text = stringResource(Res.string.how_to_name_files_movies_desc))
+            Text.Content.Title(text = stringResource(Res.string.movies))
+            Text.Content.Body(text = stringResource(Res.string.how_to_name_files_movies_desc))
 
             Column(
                 modifier = Modifier.alpha(.7f),
@@ -106,8 +106,8 @@ fun HowToNameFiles() {
 
         Column(verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)) {
 
-            Text.Title.Large(text = stringResource(Res.string.shows), emphasized = true)
-            Text.Body.Large(text = stringResource(Res.string.how_to_name_files_show_desc))
+            Text.Content.Title(text = stringResource(Res.string.shows))
+            Text.Content.Body(text = stringResource(Res.string.how_to_name_files_show_desc))
 
             Column(
                 modifier = Modifier.alpha(.7f),

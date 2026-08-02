@@ -39,7 +39,7 @@ object Text {
         @Composable fun contentBody() = MaterialTheme.typography.bodyLarge
         @Composable fun contentLabel() = MaterialTheme.typography.labelMedium
         @Composable fun cardTitle() = MaterialTheme.typography.titleMediumEmphasized
-        @Composable fun cardBody() = MaterialTheme.typography.bodyMediumEmphasized
+        @Composable fun cardBody() = MaterialTheme.typography.bodyMedium
         @Composable fun cardLabel() = MaterialTheme.typography.bodySmall
         @Composable fun listSection() = LocalTextStyle.current.copy(fontSize = 14.sp, lineHeight = 20.sp, fontWeight = FontWeight.Bold)
         @Composable fun listTitle() = LocalTextStyle.current.copy(fontSize = 16.sp, lineHeight = 24.sp, fontWeight = FontWeight(400))

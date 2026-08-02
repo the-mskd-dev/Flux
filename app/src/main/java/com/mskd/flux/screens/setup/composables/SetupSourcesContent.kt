@@ -46,11 +46,10 @@ fun SetupSourcesContent(
             verticalArrangement = Arrangement.spacedBy(FluxUI.Space.large)
         ) {
 
-            Text.Headline.Large(
+            Text.MainTitle(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(Res.string.setup_sources_title),
                 textAlign = TextAlign.Center,
-                emphasized = true,
                 color = MaterialTheme.colorScheme.onBackground
             )
 

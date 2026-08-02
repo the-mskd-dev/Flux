@@ -35,11 +35,10 @@ fun SetupWelcomeContent() {
             verticalArrangement = Arrangement.spacedBy(FluxUI.Space.large)
         ) {
 
-            Text.Headline.Large(
+            Text.MainTitle(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(Res.string.welcome),
                 textAlign = TextAlign.Center,
-                emphasized = true,
                 color = MaterialTheme.colorScheme.onSurface
             )
 

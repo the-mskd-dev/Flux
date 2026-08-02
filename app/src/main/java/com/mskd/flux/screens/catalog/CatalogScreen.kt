@@ -189,7 +189,7 @@ fun CatalogContent(
 
                         item {
 
-                            Text.Headline.Medium(
+                            Text.Content.Title(
                                 modifier = Modifier
                                     .padding(top = FluxUI.Space.medium)
                                     .padding(horizontal = FluxUI.Space.medium),

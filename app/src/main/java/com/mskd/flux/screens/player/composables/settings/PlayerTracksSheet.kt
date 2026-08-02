@@ -50,7 +50,7 @@ fun PlayerTracksSheet(
     val selectedTrack = if (type == PlayerTrack.Type.AUDIO) selectedAudio else selectedSubtitles
 
     val title = stringResource(if (type == PlayerTrack.Type.AUDIO) Res.string.audio_tracks else Res.string.subtitles)
-    Text.Headline.Small(text = title)
+    Text.Content.Title(text = title)
 
     BasicAlertDialog(
         modifier = Modifier
@@ -77,7 +77,7 @@ fun PlayerTracksSheet(
                             .background(MaterialTheme.colorScheme.surfaceContainerHigh)
                     ) {
 
-                        Text.Headline.Small(
+                        Text.Content.Title(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(top = FluxUI.Space.large, start = FluxUI.Space.medium, end = FluxUI.Space.medium, bottom = FluxUI.Space.medium),
@@ -107,7 +107,7 @@ fun PlayerTracksSheet(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
 
-                        Text.Label.Large(text = track.label.ifBlank { stringResource(Res.string.by_default) })
+                        Text.List.Title(text = track.label.ifBlank { stringResource(Res.string.by_default) })
 
                         if (track == selectedTrack) {
                             Icon(

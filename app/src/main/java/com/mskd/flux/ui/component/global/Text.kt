@@ -152,6 +152,7 @@ object Text {
         text: String?,
         modifier: Modifier = Modifier,
         color: Color = Color.Unspecified,
+        textAlign: TextAlign = TextAlign.Start,
     ) {
 
         if (text.isNullOrBlank())
@@ -166,6 +167,7 @@ object Text {
             color = textColor,
             style = Style.mainTitle(),
             maxLines = 2,
+            textAlign = textAlign,
             autoSize = TextAutoSize.StepBased(
                 maxFontSize = Style.mainTitle().fontSize,
                 minFontSize = 14.sp,
@@ -489,132 +491,6 @@ object Text {
 
     }
 
-    /**
-     * Structures the page. Used for screen titles and main sections.
-     */
-    object Headline {
-
-        /**
-         * - **Usage**: Main title for a screen on a tablet, or the title of a `LargeTopAppBar` (when expanded).
-         * - **Size** : 32dp
-         * - **Examples**: "My Files", "My Day".
-         */
-        @Composable
-        fun Large(
-            text: String?,
-            modifier: Modifier = Modifier,
-            textAlign: TextAlign = TextAlign.Start,
-            color: Color = Color.Unspecified,
-            emphasized: Boolean = false,
-            lineHeight: TextUnit = TextUnit.Unspecified,
-            overflow: TextOverflow = TextOverflow.Clip,
-            maxLines: Int = Int.MAX_VALUE,
-            minLines: Int = 1,
-            onTextLayout : ((TextLayoutResult) -> Unit)? = null
-        ) {
-
-            if (text.isNullOrBlank())
-                return
-
-            val style = if (emphasized) MaterialTheme.typography.headlineLargeEmphasized else MaterialTheme.typography.headlineLarge
-            val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
-
-            Text(
-                modifier = modifier,
-                text = text,
-                color = textColor,
-                style = style,
-                textAlign = textAlign,
-                lineHeight = lineHeight,
-                overflow = overflow,
-                maxLines = maxLines,
-                minLines = minLines,
-                onTextLayout = onTextLayout
-            )
-
-        }
-
-        /**
-         * - **Usage**: The default screen title.
-         * - **Size** : 28dp
-         * - **Examples**: The title in a large `TopAppBar`.
-         */
-        @Composable
-        fun Medium(
-            text: String?,
-            modifier: Modifier = Modifier,
-            textAlign: TextAlign = TextAlign.Start,
-            color: Color = Color.Unspecified,
-            emphasized: Boolean = false,
-            lineHeight: TextUnit = TextUnit.Unspecified,
-            overflow: TextOverflow = TextOverflow.Clip,
-            maxLines: Int = Int.MAX_VALUE,
-            minLines: Int = 1,
-            onTextLayout : ((TextLayoutResult) -> Unit)? = null
-        ) {
-
-            if (text.isNullOrBlank())
-                return
-
-            val style = if (emphasized) MaterialTheme.typography.headlineMediumEmphasized else MaterialTheme.typography.headlineMedium
-            val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
-
-            Text(
-                modifier = modifier,
-                text = text,
-                color = textColor,
-                style = style,
-                textAlign = textAlign,
-                lineHeight = lineHeight,
-                overflow = overflow,
-                maxLines = maxLines,
-                minLines = minLines,
-                onTextLayout = onTextLayout
-            )
-
-        }
-
-        /**
-         * - **Usage**: Section titles, dialog titles.
-         * - **Size** : 24dp
-         * - **Examples**: The title in a medium `TopAppBar`. "Settings", "Profile".
-         */
-        @Composable
-        fun Small(
-            text: String?,
-            modifier: Modifier = Modifier,
-            textAlign: TextAlign = TextAlign.Start,
-            color: Color = Color.Unspecified,
-            emphasized: Boolean = false,
-            lineHeight: TextUnit = TextUnit.Unspecified,
-            overflow: TextOverflow = TextOverflow.Clip,
-            maxLines: Int = Int.MAX_VALUE,
-            minLines: Int = 1,
-            onTextLayout : ((TextLayoutResult) -> Unit)? = null
-        ) {
-
-            if (text.isNullOrBlank())
-                return
-
-            val style = if (emphasized) MaterialTheme.typography.headlineSmallEmphasized else MaterialTheme.typography.headlineSmall
-            val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
-
-            Text(
-                modifier = modifier,
-                text = text,
-                color = textColor,
-                style = style,
-                textAlign = textAlign,
-                lineHeight = lineHeight,
-                overflow = overflow,
-                maxLines = maxLines,
-                minLines = minLines,
-                onTextLayout = onTextLayout
-            )
-
-        }
-
-    }
 
     /**
      * Titles for content elements within your UI (cards, lists...).

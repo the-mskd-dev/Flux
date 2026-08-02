@@ -44,7 +44,7 @@ fun FluxDialog(
                 }
             )
         },
-        title = { Text.Headline.Small(text = title) },
+        title = { Text.Content.Title(text = title) },
         shape = FluxUI.shapes.corners,
         text = content
     )

@@ -154,7 +154,7 @@ fun PlayerSeekOverlayText(amount: String?) {
         Box(modifier = Modifier.padding(all = FluxUI.Space.small)) {
             Text.Adaptive(
                 text = text,
-                style = MaterialTheme.typography.headlineSmall.copy(
+                style = Text.Style.contentBody().copy(
                     fontWeight = FontWeight.Bold,
                     drawStyle = Stroke(
                         miter = 10f,
@@ -164,7 +164,7 @@ fun PlayerSeekOverlayText(amount: String?) {
                     color = Color.Black
                 )
             )
-            Text.Headline.Small(
+            Text.Content.Body(
                 text = text,
                 color = Color.White,
             )

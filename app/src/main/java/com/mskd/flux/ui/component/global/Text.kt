@@ -25,10 +25,28 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 object Text {
+
+    object Style {
+
+        @Composable fun topbarTitle() = MaterialTheme.typography.headlineSmall
+        @Composable fun mainTitle() = MaterialTheme.typography.displaySmallEmphasized
+        @Composable fun contentTitle() = MaterialTheme.typography.titleLargeEmphasized
+        @Composable fun contentBody() = MaterialTheme.typography.bodyLarge
+        @Composable fun contentLabel() = MaterialTheme.typography.labelMedium
+        @Composable fun cardTitle() = MaterialTheme.typography.titleMediumEmphasized
+        @Composable fun cardBody() = MaterialTheme.typography.bodyMediumEmphasized
+        @Composable fun cardLabel() = MaterialTheme.typography.bodySmall
+        @Composable fun listSection() = LocalTextStyle.current.copy(fontSize = 14.sp, lineHeight = 20.sp, fontWeight = FontWeight.Bold)
+        @Composable fun listTitle() = LocalTextStyle.current.copy(fontSize = 16.sp, lineHeight = 24.sp, fontWeight = FontWeight(400))
+        @Composable fun listBody() = LocalTextStyle.current.copy(fontSize = 14.sp, lineHeight = 20.sp)
+        @Composable fun button() = ButtonDefaults.textStyleFor(buttonHeight = ButtonDefaults.MediumContainerHeight).copy(fontFeatureSettings = "tnum")
+
+    }
 
     @Composable
     fun Adaptive(
@@ -116,12 +134,12 @@ object Text {
                 modifier = modifier,
                 text = text,
                 overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.headlineSmall,
+                style = Style.topbarTitle(),
                 color = color,
                 maxLines = 2,
                 autoSize = TextAutoSize.StepBased(
-                    maxFontSize = MaterialTheme.typography.headlineSmall.fontSize,
-                    minFontSize = MaterialTheme.typography.titleSmall.fontSize
+                    maxFontSize = Style.topbarTitle().fontSize,
+                    minFontSize = 14.sp
                 )
             )
 
@@ -139,18 +157,18 @@ object Text {
         if (text.isNullOrBlank())
             return
 
-        val style = MaterialTheme.typography.displaySmallEmphasized
+        val style = Style.mainTitle()
         val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
 
         Adaptive(
             modifier = modifier,
             text = text,
             color = textColor,
-            style = MaterialTheme.typography.displaySmallEmphasized,
+            style = Style.mainTitle(),
             maxLines = 2,
             autoSize = TextAutoSize.StepBased(
-                minFontSize = MaterialTheme.typography.titleSmallEmphasized.fontSize,
-                maxFontSize = MaterialTheme.typography.displaySmallEmphasized.fontSize,
+                maxFontSize = Style.mainTitle().fontSize,
+                minFontSize = 14.sp,
             )
         )
 
@@ -174,7 +192,7 @@ object Text {
             if (text.isNullOrBlank())
                 return
 
-            val style = MaterialTheme.typography.titleLargeEmphasized
+            val style = Style.contentTitle()
             val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
 
             Text(
@@ -208,7 +226,7 @@ object Text {
             if (text.isNullOrBlank())
                 return
 
-            val style = MaterialTheme.typography.bodyLarge
+            val style = Style.contentBody()
             val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
 
             Text(
@@ -242,7 +260,7 @@ object Text {
             if (text.isNullOrBlank())
                 return
 
-            val style = MaterialTheme.typography.labelMedium
+            val style = Style.contentLabel()
             val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
 
             Text(
@@ -283,7 +301,7 @@ object Text {
             if (text.isNullOrBlank())
                 return
 
-            val style = MaterialTheme.typography.titleMediumEmphasized
+            val style = Style.cardTitle()
             val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
 
             Text(
@@ -317,7 +335,7 @@ object Text {
             if (text.isNullOrBlank())
                 return
 
-            val style = MaterialTheme.typography.bodyMediumEmphasized
+            val style = Style.cardBody()
             val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
 
             Text(
@@ -351,7 +369,7 @@ object Text {
             if (text.isNullOrBlank())
                 return
 
-            val style = MaterialTheme.typography.bodySmall
+            val style = Style.cardLabel()
             val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
 
             Text(
@@ -378,18 +396,6 @@ object Text {
             text: String?,
             modifier: Modifier = Modifier,
             color: Color = Color.Unspecified,
-            autoSize: TextAutoSize? = null,
-            fontStyle: FontStyle? = null,
-            fontFamily: FontFamily? = null,
-            letterSpacing: TextUnit = TextUnit.Unspecified,
-            textDecoration: TextDecoration? = null,
-            textAlign: TextAlign? = null,
-            overflow: TextOverflow = TextOverflow.Clip,
-            softWrap: Boolean = true,
-            maxLines: Int = Int.MAX_VALUE,
-            minLines: Int = 1,
-            onTextLayout: ((TextLayoutResult) -> Unit)? = null,
-            style: TextStyle = LocalTextStyle.current
         ) {
 
             if (text.isNullOrBlank())
@@ -399,21 +405,8 @@ object Text {
                 text = text,
                 color = color,
                 modifier = modifier,
-                autoSize = autoSize,
-                fontSize = 14.sp,
-                fontStyle = fontStyle,
-                fontWeight = FontWeight.Bold,
-                fontFamily = fontFamily,
-                letterSpacing = letterSpacing,
-                textDecoration = textDecoration,
-                textAlign = textAlign,
-                lineHeight = 20.sp,
-                overflow = overflow,
-                softWrap = softWrap,
-                maxLines = maxLines,
-                minLines = minLines,
-                onTextLayout = onTextLayout,
-                style = style,
+                maxLines = 1,
+                style = Style.listSection(),
             )
 
         }
@@ -423,19 +416,10 @@ object Text {
             text: String?,
             modifier: Modifier = Modifier,
             color: Color = Color.Unspecified,
-            autoSize: TextAutoSize? = null,
-            fontStyle: FontStyle? = null,
-            fontWeight: FontWeight = FontWeight(400),
-            fontFamily: FontFamily? = null,
-            letterSpacing: TextUnit = TextUnit.Unspecified,
-            textDecoration: TextDecoration? = null,
             textAlign: TextAlign? = null,
             overflow: TextOverflow = TextOverflow.Clip,
-            softWrap: Boolean = true,
             maxLines: Int = Int.MAX_VALUE,
             minLines: Int = 1,
-            onTextLayout: ((TextLayoutResult) -> Unit)? = null,
-            style: TextStyle = LocalTextStyle.current
         ) {
 
             if (text.isNullOrBlank())
@@ -445,21 +429,11 @@ object Text {
                 text = text,
                 color = color,
                 modifier = modifier,
-                autoSize = autoSize,
-                fontSize = 16.sp,
-                fontStyle = fontStyle,
-                fontWeight = fontWeight,
-                fontFamily = fontFamily,
-                letterSpacing = letterSpacing,
-                textDecoration = textDecoration,
                 textAlign = textAlign,
-                lineHeight = 24.sp,
                 overflow = overflow,
-                softWrap = softWrap,
                 maxLines = maxLines,
                 minLines = minLines,
-                onTextLayout = onTextLayout,
-                style = style,
+                style = Style.listTitle(),
             )
 
         }
@@ -471,16 +445,11 @@ object Text {
             color: Color = Color.Unspecified,
             autoSize: TextAutoSize? = null,
             fontStyle: FontStyle? = null,
-            fontFamily: FontFamily? = null,
-            letterSpacing: TextUnit = TextUnit.Unspecified,
             textDecoration: TextDecoration? = null,
             textAlign: TextAlign? = null,
             overflow: TextOverflow = TextOverflow.Clip,
-            softWrap: Boolean = true,
             maxLines: Int = Int.MAX_VALUE,
             minLines: Int = 1,
-            onTextLayout: ((TextLayoutResult) -> Unit)? = null,
-            style: TextStyle = LocalTextStyle.current
         ) {
 
             if (text.isNullOrBlank())
@@ -491,19 +460,13 @@ object Text {
                 color = color,
                 modifier = modifier,
                 autoSize = autoSize,
-                fontSize = 14.sp,
                 fontStyle = fontStyle,
-                fontFamily = fontFamily,
-                letterSpacing = letterSpacing,
                 textDecoration = textDecoration,
                 textAlign = textAlign,
-                lineHeight = 20.sp,
                 overflow = overflow,
-                softWrap = softWrap,
                 maxLines = maxLines,
                 minLines = minLines,
-                onTextLayout = onTextLayout,
-                style = style,
+                style = Style.listBody(),
             )
 
         }
@@ -521,7 +484,7 @@ object Text {
             modifier = modifier,
             text = text,
             color = color,
-            style = ButtonDefaults.textStyleFor(buttonHeight = ButtonDefaults.MediumContainerHeight).copy(fontFeatureSettings = "tnum")
+            style = Style.button()
         )
 
     }

@@ -130,6 +130,7 @@ ktor-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 ktor-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
 ktor-android = { group = "io.ktor", name = "ktor-client-android", version.ref = "ktor" }
+ktor-http = { group = "io.ktor", name = "ktor-http", version.ref = "ktor" }
 
 # -- Koin --
 koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
@@ -205,7 +206,8 @@ shared-kotlin = [
 shared-network = [
     "ktor-core",
     "ktor-negotiation",
-    "ktor-json"
+    "ktor-json",
+    "ktor-http"
 ]
 shared-di = [
     "koin-core",

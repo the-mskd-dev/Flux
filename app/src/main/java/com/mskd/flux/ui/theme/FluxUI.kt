@@ -9,6 +9,7 @@ import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 object FluxUI {
@@ -35,6 +36,7 @@ object FluxUI {
     }
 
     object Space {
+        val listItem = 2.dp
         val extraSmall = 4.dp
         val small = 8.dp
         val medium = 16.dp
@@ -73,6 +75,7 @@ object FluxUI {
 
     data class Shapes(
         val corners: RoundedCornerShape = RoundedCornerShape(12.dp),
+        val listItem: Dp = 16.dp
     )
 
     data class ItemsPerRow(

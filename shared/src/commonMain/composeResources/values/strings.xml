@@ -32,10 +32,19 @@
     <string name="button_forward">Player forward button</string>
     <string name="app_version">Version</string>
     <string name="subtitles_language">Subtitles language</string>
-    <string name="presentation_1_title">Welcome to Flux</string>
-    <string name="presentation_1_description">Easily find your favorite movies and series!\nFlux automatically organizes your videos to provide you with a simple and enjoyable library to use!</string>
-    <string name="presentation_2_title">Access your videos</string>
-    <string name="presentation_2_description">To display and play your videos, Flux needs access to your device's files.\nDon't worry, we do not collect or share any personal data.</string>
+    <string name="welcome">Welcome to Flux</string>
+    <string name="welcome_description">Say goodbye to plain file managers and enjoy a modern, seamless viewing experience for all your movies, TV shows, and anime!</string>
+    <string-array name="welcome_features">
+        <item>Automatically fetches artwork, summaries, and details using TMDB</item>
+        <item>Choose your player: you can use the built-in player or your favorite external player</item>
+        <item>Built with Material 3 Expressive and Material You for a smooth, dynamic look that adapts to your device</item>
+    </string-array>
+    <string name="setup_sources_default_title">Default</string>
+    <string name="setup_sources_default_desc">The %1$s and %2$s folders are used as the default file sources. You can add new folders later if you wish.</string>
+    <string name="setup_sources_custom_title">Custom</string>
+    <string name="setup_sources_custom_desc">Choose your source folders directly</string>
+    <string name="setup_sources_title">Access your videos</string>
+    <string name="setup_sources_desc">To display and play your videos, Flux needs access to files on your device. However, you choose your sources so you can maintain control over your data.\nFurthermore, we do not collect or share any personal data.</string>
     <string name="empty_catalog">Your library is empty</string>
     <string name="empty_catalog_desc">To get started, make sure your video files are properly named. This allows the app to organize them automatically.</string>
     <string name="refresh">Refresh</string>
@@ -170,8 +179,6 @@
     <string name="delete">Delete</string>
     <string name="sources">Sources</string>
     <string name="sources_short_desc">Add your source folders</string>
-    <string name="sources_title">Stay in control of your library</string>
-    <string name="sources_full_desc">For an optimal setup and better control over your files, the app automatically targets the %1$s and %2$s folders.\n\nYou stay in control: use the button below to add other folders on top of these default locations.</string>
     <string name="warning">Warning</string>
     <string name="confirm_source_deletion">Deleting this folder will result in the loss of progress for the files it contains.\nAre you sure you want to delete it?</string>
     <string name="add_source">Add source</string>
@@ -180,4 +187,9 @@
     <string name="dialog_sources_description">To give you more control, the app now focuses on your %1$s and %2$s folders.\n\nMissing a video? Don't panic! You can add your own folders in a flash from the settings.</string>
     <string name="content_unavailable">Content unavailable</string>
     <string name="open_in_file_explorer">Open in file explorer</string>
+    <string name="next">Next</string>
+    <string name="folder_deleted">Folder deleted</string>
+    <string name="undo">Undo</string>
+    <string name="system_folders">System folders</string>
+    <string name="system_folders_toggle_desc">Allows the app to search for videos in the standard %1$s and %2$s locations. (Recommended)</string>
 </resources>

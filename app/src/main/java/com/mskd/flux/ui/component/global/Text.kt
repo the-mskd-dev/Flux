@@ -2,6 +2,7 @@ package com.mskd.flux.ui.component.global
 
 import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -12,12 +13,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 object Text {
@@ -38,6 +45,8 @@ object Text {
         if (text.isNullOrBlank())
             return
 
+        val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
+
         var titleFontSize by remember { mutableStateOf(style.fontSize) }
 
         val onTextLayout : ((TextLayoutResult) -> Unit)? = if (autoSize != null) {
@@ -51,7 +60,7 @@ object Text {
         Text(
             modifier = modifier,
             text = text,
-            color = color,
+            color = textColor,
             style = style.copy(lineHeight = titleFontSize * 1.2f),
             textAlign = textAlign,
             overflow = overflow,
@@ -78,16 +87,158 @@ object Text {
         if (text.isBlank())
             return
 
+        val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
+
         Text(
             modifier = modifier,
             text = text,
-            color = color,
+            color = textColor,
             style = style,
             textAlign = textAlign,
             overflow = overflow,
             maxLines = maxLines,
             minLines = minLines
         )
+
+    }
+
+    object List {
+
+        @Composable
+        fun Section(
+            text: String?,
+            modifier: Modifier = Modifier,
+            color: Color = Color.Unspecified,
+            autoSize: TextAutoSize? = null,
+            fontStyle: FontStyle? = null,
+            fontWeight: FontWeight = FontWeight.Bold,
+            fontFamily: FontFamily? = null,
+            letterSpacing: TextUnit = TextUnit.Unspecified,
+            textDecoration: TextDecoration? = null,
+            textAlign: TextAlign? = null,
+            overflow: TextOverflow = TextOverflow.Clip,
+            softWrap: Boolean = true,
+            maxLines: Int = Int.MAX_VALUE,
+            minLines: Int = 1,
+            onTextLayout: ((TextLayoutResult) -> Unit)? = null,
+            style: TextStyle = LocalTextStyle.current
+        ) {
+
+            if (text.isNullOrBlank())
+                return
+
+            Text(
+                text = text,
+                color = color,
+                modifier = modifier,
+                autoSize = autoSize,
+                fontSize = 14.sp,
+                fontStyle = fontStyle,
+                fontWeight = FontWeight.Bold,
+                fontFamily = fontFamily,
+                letterSpacing = letterSpacing,
+                textDecoration = textDecoration,
+                textAlign = textAlign,
+                lineHeight = 20.sp,
+                overflow = overflow,
+                softWrap = softWrap,
+                maxLines = maxLines,
+                minLines = minLines,
+                onTextLayout = onTextLayout,
+                style = style,
+            )
+
+        }
+
+        @Composable
+        fun Title(
+            text: String?,
+            modifier: Modifier = Modifier,
+            color: Color = Color.Unspecified,
+            autoSize: TextAutoSize? = null,
+            fontStyle: FontStyle? = null,
+            fontWeight: FontWeight = FontWeight(400),
+            fontFamily: FontFamily? = null,
+            letterSpacing: TextUnit = TextUnit.Unspecified,
+            textDecoration: TextDecoration? = null,
+            textAlign: TextAlign? = null,
+            overflow: TextOverflow = TextOverflow.Clip,
+            softWrap: Boolean = true,
+            maxLines: Int = Int.MAX_VALUE,
+            minLines: Int = 1,
+            onTextLayout: ((TextLayoutResult) -> Unit)? = null,
+            style: TextStyle = LocalTextStyle.current
+        ) {
+
+            if (text.isNullOrBlank())
+                return
+
+            Text(
+                text = text,
+                color = color,
+                modifier = modifier,
+                autoSize = autoSize,
+                fontSize = 16.sp,
+                fontStyle = fontStyle,
+                fontWeight = fontWeight,
+                fontFamily = fontFamily,
+                letterSpacing = letterSpacing,
+                textDecoration = textDecoration,
+                textAlign = textAlign,
+                lineHeight = 24.sp,
+                overflow = overflow,
+                softWrap = softWrap,
+                maxLines = maxLines,
+                minLines = minLines,
+                onTextLayout = onTextLayout,
+                style = style,
+            )
+
+        }
+
+        @Composable
+        fun Content(
+            text: String?,
+            modifier: Modifier = Modifier,
+            color: Color = Color.Unspecified,
+            autoSize: TextAutoSize? = null,
+            fontStyle: FontStyle? = null,
+            fontFamily: FontFamily? = null,
+            letterSpacing: TextUnit = TextUnit.Unspecified,
+            textDecoration: TextDecoration? = null,
+            textAlign: TextAlign? = null,
+            overflow: TextOverflow = TextOverflow.Clip,
+            softWrap: Boolean = true,
+            maxLines: Int = Int.MAX_VALUE,
+            minLines: Int = 1,
+            onTextLayout: ((TextLayoutResult) -> Unit)? = null,
+            style: TextStyle = LocalTextStyle.current
+        ) {
+
+            if (text.isNullOrBlank())
+                return
+
+            Text(
+                text = text,
+                color = color,
+                modifier = modifier,
+                autoSize = autoSize,
+                fontSize = 14.sp,
+                fontStyle = fontStyle,
+                fontFamily = fontFamily,
+                letterSpacing = letterSpacing,
+                textDecoration = textDecoration,
+                textAlign = textAlign,
+                lineHeight = 20.sp,
+                overflow = overflow,
+                softWrap = softWrap,
+                maxLines = maxLines,
+                minLines = minLines,
+                onTextLayout = onTextLayout,
+                style = style,
+            )
+
+        }
 
     }
 
@@ -119,11 +270,14 @@ object Text {
             if (text.isNullOrBlank())
                 return
 
+            val style = if (emphasized) MaterialTheme.typography.displayLargeEmphasized else MaterialTheme.typography.displayLarge
+            val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
+
             Text(
                 modifier = modifier,
                 text = text,
-                color = color,
-                style = if (emphasized) MaterialTheme.typography.displayLargeEmphasized else MaterialTheme.typography.displayLarge,
+                color = textColor,
+                style = style,
                 textAlign = textAlign,
                 lineHeight = lineHeight,
                 overflow = overflow,
@@ -156,11 +310,14 @@ object Text {
             if (text.isNullOrBlank())
                 return
 
+            val style = if (emphasized) MaterialTheme.typography.displayMediumEmphasized else MaterialTheme.typography.displayMedium
+            val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
+
             Text(
                 modifier = modifier,
                 text = text,
-                color = color,
-                style = if (emphasized) MaterialTheme.typography.displayMediumEmphasized else MaterialTheme.typography.displayMedium,
+                color = textColor,
+                style = style,
                 textAlign = textAlign,
                 lineHeight = lineHeight,
                 overflow = overflow,
@@ -193,11 +350,14 @@ object Text {
             if (text.isNullOrBlank())
                 return
 
+            val style = if (emphasized) MaterialTheme.typography.displaySmallEmphasized else MaterialTheme.typography.displaySmall
+            val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
+
             Text(
                 modifier = modifier,
                 text = text,
-                color = color,
-                style = if (emphasized) MaterialTheme.typography.displaySmallEmphasized else MaterialTheme.typography.displaySmall,
+                color = textColor,
+                style = style,
                 textAlign = textAlign,
                 lineHeight = lineHeight,
                 overflow = overflow,
@@ -237,11 +397,14 @@ object Text {
             if (text.isNullOrBlank())
                 return
 
+            val style = if (emphasized) MaterialTheme.typography.headlineLargeEmphasized else MaterialTheme.typography.headlineLarge
+            val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
+
             Text(
                 modifier = modifier,
                 text = text,
-                color = color,
-                style = if (emphasized) MaterialTheme.typography.headlineLargeEmphasized else MaterialTheme.typography.headlineLarge,
+                color = textColor,
+                style = style,
                 textAlign = textAlign,
                 lineHeight = lineHeight,
                 overflow = overflow,
@@ -274,11 +437,14 @@ object Text {
             if (text.isNullOrBlank())
                 return
 
+            val style = if (emphasized) MaterialTheme.typography.headlineMediumEmphasized else MaterialTheme.typography.headlineMedium
+            val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
+
             Text(
                 modifier = modifier,
                 text = text,
-                color = color,
-                style = if (emphasized) MaterialTheme.typography.headlineMediumEmphasized else MaterialTheme.typography.headlineMedium,
+                color = textColor,
+                style = style,
                 textAlign = textAlign,
                 lineHeight = lineHeight,
                 overflow = overflow,
@@ -311,11 +477,14 @@ object Text {
             if (text.isNullOrBlank())
                 return
 
+            val style = if (emphasized) MaterialTheme.typography.headlineSmallEmphasized else MaterialTheme.typography.headlineSmall
+            val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
+
             Text(
                 modifier = modifier,
                 text = text,
-                color = color,
-                style = if (emphasized) MaterialTheme.typography.headlineSmallEmphasized else MaterialTheme.typography.headlineSmall,
+                color = textColor,
+                style = style,
                 textAlign = textAlign,
                 lineHeight = lineHeight,
                 overflow = overflow,
@@ -355,11 +524,14 @@ object Text {
             if (text.isNullOrBlank())
                 return
 
+            val style = if (emphasized) MaterialTheme.typography.titleLargeEmphasized else MaterialTheme.typography.titleLarge
+            val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
+
             Text(
                 modifier = modifier,
                 text = text,
-                color = color,
-                style = if (emphasized) MaterialTheme.typography.titleLargeEmphasized else MaterialTheme.typography.titleLarge,
+                color = textColor,
+                style = style,
                 textAlign = textAlign,
                 lineHeight = lineHeight,
                 overflow = overflow,
@@ -392,11 +564,14 @@ object Text {
             if (text.isNullOrBlank())
                 return
 
+            val style = if (emphasized) MaterialTheme.typography.titleMediumEmphasized else MaterialTheme.typography.titleMedium
+            val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
+
             Text(
                 modifier = modifier,
                 text = text,
-                color = color,
-                style = if (emphasized) MaterialTheme.typography.titleMediumEmphasized else MaterialTheme.typography.titleMedium,
+                color = textColor,
+                style = style,
                 textAlign = textAlign,
                 lineHeight = lineHeight,
                 overflow = overflow,
@@ -430,11 +605,14 @@ object Text {
             if (text.isNullOrBlank())
                 return
 
+            val style = if (emphasized) MaterialTheme.typography.titleSmallEmphasized else MaterialTheme.typography.titleSmall
+            val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
+
             Text(
                 modifier = modifier,
                 text = text,
-                color = color,
-                style = if (emphasized) MaterialTheme.typography.titleSmallEmphasized else MaterialTheme.typography.titleSmall,
+                color = textColor,
+                style = style,
                 textAlign = textAlign,
                 lineHeight = lineHeight,
                 overflow = overflow,
@@ -474,11 +652,14 @@ object Text {
             if (text.isNullOrBlank())
                 return
 
+            val style = if (emphasized) MaterialTheme.typography.bodyLargeEmphasized else MaterialTheme.typography.bodyLarge
+            val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
+
             Text(
                 modifier = modifier,
                 text = text,
-                color = color,
-                style = if (emphasized) MaterialTheme.typography.bodyLargeEmphasized else MaterialTheme.typography.bodyLarge,
+                color = textColor,
+                style = style,
                 textAlign = textAlign,
                 lineHeight = lineHeight,
                 overflow = overflow,
@@ -511,11 +692,14 @@ object Text {
             if (text.isNullOrBlank())
                 return
 
+            val style = if (emphasized) MaterialTheme.typography.bodyMediumEmphasized else MaterialTheme.typography.bodyMedium
+            val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
+
             Text(
                 modifier = modifier,
                 text = text,
-                color = color,
-                style = if (emphasized) MaterialTheme.typography.bodyMediumEmphasized else MaterialTheme.typography.bodyMedium,
+                color = textColor,
+                style = style,
                 textAlign = textAlign,
                 lineHeight = lineHeight,
                 overflow = overflow,
@@ -548,11 +732,14 @@ object Text {
             if (text.isNullOrBlank())
                 return
 
+            val style = if (emphasized) MaterialTheme.typography.bodySmallEmphasized else MaterialTheme.typography.bodySmall
+            val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
+
             Text(
                 modifier = modifier,
                 text = text,
-                color = color,
-                style = if (emphasized) MaterialTheme.typography.bodySmallEmphasized else MaterialTheme.typography.bodySmall,
+                color = textColor,
+                style = style,
                 textAlign = textAlign,
                 lineHeight = lineHeight,
                 overflow = overflow,
@@ -592,11 +779,14 @@ object Text {
             if (text.isNullOrBlank())
                 return
 
+            val style = if (emphasized) MaterialTheme.typography.labelLargeEmphasized else MaterialTheme.typography.labelLarge
+            val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
+
             Text(
                 modifier = modifier,
                 text = text,
-                color = color,
-                style = if (emphasized) MaterialTheme.typography.labelLargeEmphasized else MaterialTheme.typography.labelLarge,
+                color = textColor,
+                style = style,
                 textAlign = textAlign,
                 lineHeight = lineHeight,
                 overflow = overflow,
@@ -629,11 +819,14 @@ object Text {
             if (text.isNullOrBlank())
                 return
 
+            val style = if (emphasized) MaterialTheme.typography.labelMediumEmphasized else MaterialTheme.typography.labelMedium
+            val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
+
             Text(
                 modifier = modifier,
                 text = text,
-                color = color,
-                style = if (emphasized) MaterialTheme.typography.labelMediumEmphasized else MaterialTheme.typography.labelMedium,
+                color = textColor,
+                style = style,
                 textAlign = textAlign,
                 lineHeight = lineHeight,
                 overflow = overflow,
@@ -666,11 +859,14 @@ object Text {
             if (text.isNullOrBlank())
                 return
 
+            val style = if (emphasized) MaterialTheme.typography.labelSmallEmphasized else MaterialTheme.typography.labelSmall
+            val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
+
             Text(
                 modifier = modifier,
                 text = text,
-                color = color,
-                style = if (emphasized) MaterialTheme.typography.labelSmallEmphasized else MaterialTheme.typography.labelSmall,
+                color = textColor,
+                style = style,
                 textAlign = textAlign,
                 lineHeight = lineHeight,
                 overflow = overflow,

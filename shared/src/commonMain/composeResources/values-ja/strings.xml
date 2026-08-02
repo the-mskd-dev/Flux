@@ -32,10 +32,15 @@
     <string name="button_forward">プレーヤーの早送りボタン</string>
     <string name="app_version">バージョン</string>
     <string name="subtitles_language">字幕の言語</string>
-    <string name="presentation_1_title">Flux へようこそ</string>
-    <string name="presentation_1_description">お気に入りの映画やドラマ・アニメを簡単に見つけよう！\nFlux は動画ファイルを自動的に整理し、シンプルで使いやすいライブラリを提供します！</string>
-    <string name="presentation_2_title">動画ファイルへのアクセス</string>
-    <string name="presentation_2_description">動画を表示・再生するには、Flux が端末内のファイルにアクセスする必要があります。\n個人データを収集したり共有したりすることはありませんのでご安心ください。</string>
+    <string name="welcome">Fluxへようこそ</string>
+    <string name="welcome_description">通常のファイルマネージャーとはサヨナラ！映画、ドラマ、アニメをモダンでスムーズな視聴体験でお楽しみください。</string>
+    <string-array name="welcome_features">
+        <item>TMDBを使用して、カバー画像、あらすじ、詳細情報を自動取得します</item>
+        <item>プレーヤーの選択：内蔵プレーヤーとお好みの外部プレーヤーを選択できます</item>
+        <item>Material 3 ExpressiveとMaterial Youを採用し、お使いのデバイスに馴染むスムーズで動的なデザインを実現しています</item>
+    </string-array>
+    <string name="setup_sources_title">動画ファイルへのアクセス</string>
+    <string name="setup_sources_desc">動画を表示・再生するには、Flux が端末内のファイルにアクセスする必要があります。\n個人データを収集したり共有したりすることはありませんのでご安心ください。</string>
     <string name="empty_catalog">ライブラリが空です</string>
     <string name="empty_catalog_desc">始めるには、動画ファイルの名前が正しく付けられているか確認してください。これによりアプリが自動的に整理できるようになります。</string>
     <string name="refresh">更新</string>
@@ -151,8 +156,6 @@
     <string name="delete">削除</string>
     <string name="sources">ソース</string>
     <string name="sources_short_desc">ソースフォルダを追加</string>
-    <string name="sources_title">ライブラリを自由に管理</string>
-    <string name="sources_full_desc">最適な設定とファイル管理のため、アプリは自動的に %1$s および %2$s フォルダを対象にします。\n\nこれらのデフォルトの場所の上に、下のボタンを使って他のフォルダを追加することも可能です。</string>
     <string name="warning">警告</string>
     <string name="confirm_source_deletion">このフォルダを削除すると、含まれるファイルの進行状況が失われます。\n本当に削除しますか？</string>
     <string name="add_source">ソースを追加</string>
@@ -161,4 +164,9 @@
     <string name="dialog_sources_description">より自由な管理のため、アプリは %1$s および %2$s フォルダに焦点を当てます。\n\n動画が見つかりませんか？ ご安心ください！ 設定からいつでも自分のフォルダをすぐに追加できます。</string>
     <string name="content_unavailable">コンテンツを利用できません</string>
     <string name="open_in_file_explorer">ファイルエクスプローラーで開く</string>
+    <string name="next">次へ</string>
+    <string name="folder_deleted">フォルダを削除しました</string>
+    <string name="undo">元に戻す</string>
+    <string name="system_folders">システムフォルダ</string>
+    <string name="system_folders_toggle_desc">アプリが標準の%1$sおよび%2$sの場所から動画を検索できるようにします。（推奨）</string>
 </resources>

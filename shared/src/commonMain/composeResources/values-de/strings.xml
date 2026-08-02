@@ -32,10 +32,15 @@
     <string name="button_forward">Vorspulen-Taste</string>
     <string name="app_version">Version</string>
     <string name="subtitles_language">Untertitelsprache</string>
-    <string name="presentation_1_title">Willkommen bei Flux</string>
-    <string name="presentation_1_description">Finde ganz einfach deine Lieblingsfilme und -serien!\nFlux organisiert deine Videos automatisch für eine übersichtliche und benutzerfreundliche Mediathek!</string>
-    <string name="presentation_2_title">Greife auf deine Videos zu</string>
-    <string name="presentation_2_description">Um deine Videos anzuzeigen und abzuspielen, benötigt Flux Zugriff auf die Dateien deines Geräts.\nKeine Sorge, wir erfassen oder teilen keine persönlichen Daten.</string>
+    <string name="welcome">Willkommen bei Flux</string>
+    <string name="welcome_description">Sagen Sie herkömmlichen Dateimanagern Lebewohl und genießen Sie ein modernes, nahtloses Wiedergabeerlebnis für alle Ihre Filme, Serien und Animes!</string>
+    <string-array name="welcome_features">
+        <item>Ruft automatisch Cover, Zusammenfassungen und Details über TMDB ab</item>
+        <item>Wählen Sie Ihren Player: Nutzen Sie den integrierten Player oder Ihren bevorzugten externen Player</item>
+        <item>Entwickelt mit Material 3 Expressive und Material You für einen flüssigen, dynamischen Look, der sich an Ihr Gerät anpasst</item>
+    </string-array>
+    <string name="setup_sources_title">Greife auf deine Videos zu</string>
+    <string name="setup_sources_desc">Um deine Videos anzuzeigen und abzuspielen, benötigt Flux Zugriff auf die Dateien deines Geräts.\nKeine Sorge, wir erfassen oder teilen keine persönlichen Daten.</string>
     <string name="empty_catalog">Deine Mediathek ist leer</string>
     <string name="empty_catalog_desc">Stelle zu Beginn sicher, dass deine Videodateien korrekt benannt sind. So kann die App sie automatisch sortieren.</string>
     <string name="refresh">Aktualisieren</string>
@@ -152,8 +157,6 @@
     <string name="delete">Löschen</string>
     <string name="sources">Quellen</string>
     <string name="sources_short_desc">Füge deine Quellordner hinzu</string>
-    <string name="sources_title">Behalte die Kontrolle über deine Mediathek</string>
-    <string name="sources_full_desc">Für eine optimale Einrichtung und bessere Kontrolle über deine Dateien greift die App automatisch auf die Ordner %1$s und %2$s zu.\n\nDu behältst die Kontrolle: Nutze die Schaltfläche unten, um weitere Ordner hinzuzufügen.</string>
     <string name="warning">Warnung</string>
     <string name="confirm_source_deletion">Das Löschen dieses Ordners führt zum Verlust des Fortschritts der darin enthaltenen Dateien.\nBist du sicher, dass du ihn löschen möchtest?</string>
     <string name="add_source">Quelle hinzufügen</string>
@@ -162,4 +165,8 @@
     <string name="dialog_sources_description">Um dir mehr Kontrolle zu geben, konzentriert sich die App nun auf deine Ordner %1$s und %2$s.\n\nFehlt ein Video? Keine Panik! Du kannst deine eigenen Ordner ganz einfach in den Einstellungen hinzufügen.</string>
     <string name="content_unavailable">Inhalt nicht verfügbar</string>
     <string name="open_in_file_explorer">Im Dateimanager öffnen</string>
+    <string name="next">Weiter</string>
+    <string name="folder_deleted">Ordner gelöscht</string>
+    <string name="undo">Rückgängig</string>
+    <string name="system_folders">Systemordner</string>
 </resources>

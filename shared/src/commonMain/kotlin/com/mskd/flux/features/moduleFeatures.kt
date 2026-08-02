@@ -7,11 +7,11 @@ import com.mskd.flux.features.images.moduleImages
 import com.mskd.flux.features.progress.moduleProgress
 import com.mskd.flux.features.search.moduleSearch
 import com.mskd.flux.features.settings.moduleSettings
+import com.mskd.flux.features.setup.moduleSetup
 import com.mskd.flux.features.show.moduleShow
 import com.mskd.flux.features.sources.moduleSources
 import com.mskd.flux.features.token.moduleToken
 import com.mskd.flux.features.unknown.moduleUnknown
-import com.mskd.flux.features.welcome.moduleWelcome
 import org.koin.dsl.module
 
 val moduleFeatures = module {
@@ -24,11 +24,11 @@ val moduleFeatures = module {
         moduleProgress,
         moduleSearch,
         moduleSettings,
+        moduleSetup,
         moduleShow,
         moduleSources,
         moduleToken,
-        moduleUnknown,
-        moduleWelcome
+        moduleUnknown
     )
 
 }

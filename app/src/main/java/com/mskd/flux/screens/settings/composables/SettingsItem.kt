@@ -1,13 +1,11 @@
 package com.mskd.flux.screens.settings.composables
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -16,9 +14,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import com.mskd.flux.screens.settings.SettingIcon
 import com.mskd.flux.ui.component.global.Text
-import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.extensions.uppercaseFirstLetter
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SettingsItem(
     text: String,
@@ -30,46 +28,43 @@ fun SettingsItem(
     onTap: () -> Unit
 ) {
 
-    Row(
-        modifier = Modifier
-            .clickable { onTap() }
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.background)
-            .padding(all = FluxUI.Space.medium),
-        horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.medium),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-
-        painter?.let {
-            SettingIcon(
-                painter = it,
-                backgroundColor = iconBackgroundColor,
-                iconColor = iconColor,
-                contentDescription = text
-            )
-        }
-
-        Column(
-            modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.extraSmall)
-        ) {
-
-            Text.Title.Medium(
-                text = text,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-
+    ListItem(
+        onClick = onTap,
+        colors = ListItemDefaults.colors(
+            containerColor = MaterialTheme.colorScheme.surfaceBright,
+            contentColor = MaterialTheme.colorScheme.onSurface,
+        ),
+        verticalAlignment = Alignment.CenterVertically,
+        content = {
+            Text.List.Title(text = text)
+        },
+        supportingContent = {
             AnimatedContent(
                 targetState = subText.uppercaseFirstLetter()
             ) { text ->
-                Text.Title.Small(
+                Text.List.Content(
                     text = text,
                     color = valueColor,
                 )
             }
+        },
+        leadingContent = painter?.let {
+            {
+                Box(
+                    modifier = Modifier.fillMaxHeight(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    SettingIcon(
+                        painter = it,
+                        backgroundColor = iconBackgroundColor,
+                        iconColor = iconColor,
+                        contentDescription = text
+                    )
+                }
 
+            }
         }
+    )
 
-    }
 
 }

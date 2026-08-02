@@ -32,10 +32,15 @@
     <string name="button_forward">Botón avanzar del reproductor</string>
     <string name="app_version">Versión</string>
     <string name="subtitles_language">Idioma de los subtítulos</string>
-    <string name="presentation_1_title">Te damos la bienvenida a Flux</string>
-    <string name="presentation_1_description">¡Encuentra fácilmente tus películas y series favoritas!\nFlux organiza tus vídeos automáticamente para ofrecerte una biblioteca sencilla y agradable de usar.</string>
-    <string name="presentation_2_title">Accede a tus vídeos</string>
-    <string name="presentation_2_description">Para mostrar y reproducir tus vídeos, Flux necesita acceso a los archivos de tu dispositivo.\nNo te preocupes, no recopilamos ni compartimos ningún dato personal.</string>
+    <string name="welcome">Te damos la bienvenida a Flux</string>
+    <string name="welcome_description">¡Di adiós a los administradores de archivos convencionales y disfruta de una experiencia de reproducción moderna y fluida para todas tus películas, series y animes!</string>
+    <string-array name="welcome_features">
+        <item>Obtiene automáticamente carátulas, sinopsis y detalles usando TMDB</item>
+        <item>Elige tu reproductor: puedes usar el reproductor integrado o tu reproductor externo favorito</item>
+        <item>Diseñado con Material 3 Expressive y Material You para un aspecto fluido y dinámico que se adapta a tu dispositivo</item>
+    </string-array>
+    <string name="setup_sources_title">Accede a tus vídeos</string>
+    <string name="setup_sources_desc">Para mostrar y reproducir tus vídeos, Flux necesita acceso a los archivos de tu dispositivo.\nNo te preocupes, no recopilamos ni compartimos ningún dato personal.</string>
     <string name="empty_catalog">Tu biblioteca está vacía</string>
     <string name="empty_catalog_desc">Para empezar, asegúrate de que tus archivos de vídeo estén nombrados correctamente. Esto permite que la aplicación los organice automáticamente.</string>
     <string name="refresh">Actualizar</string>
@@ -152,8 +157,6 @@
     <string name="delete">Eliminar</string>
     <string name="sources">Fuentes</string>
     <string name="sources_short_desc">Añade tus carpetas de origen</string>
-    <string name="sources_title">Mantén el control de tu biblioteca</string>
-    <string name="sources_full_desc">Para una configuración óptima y un mejor control sobre tus archivos, la aplicación se dirige automáticamente a las carpetas %1$s y %2$s.\n\nTú mantienes el control: usa el botón de abajo para añadir otras carpetas además de estas ubicaciones predeterminadas.</string>
     <string name="warning">Advertencia</string>
     <string name="confirm_source_deletion">Eliminar esta carpeta provocará la pérdida del progreso de los archivos que contiene.\n¿Estás seguro de que quieres eliminarla?</string>
     <string name="add_source">Añadir fuente</string>
@@ -162,4 +165,9 @@
     <string name="dialog_sources_description">Para darte más control, la aplicación ahora se centra en tus carpetas %1$s y %2$s.\n\n¿Falta un vídeo? ¡Que no cunda el pánico! Puedes añadir tus propias carpetas en un instante desde los ajustes.</string>
     <string name="content_unavailable">Contenido no disponible</string>
     <string name="open_in_file_explorer">Abrir en el explorador de archivos</string>
+    <string name="next">Siguiente</string>
+    <string name="folder_deleted">Carpeta eliminada</string>
+    <string name="undo">Deshacer</string>
+    <string name="system_folders">Carpetas del sistema</string>
+    <string name="system_folders_toggle_desc">Permite que la aplicación busque vídeos en las ubicaciones estándar %1$s y %2$s. (Recomendado)</string>
 </resources>

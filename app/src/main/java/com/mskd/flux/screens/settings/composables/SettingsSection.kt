@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -20,6 +19,7 @@ import com.mskd.flux.features.settings.presentation.SettingsUiState
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.UriUtils
+import com.mskd.flux.utils.extensions.fillMaxWidthWithLimit
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.about
 import flux.shared.generated.resources.about_desc
@@ -81,8 +81,8 @@ fun SettingsSection(
 
     Column(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = FluxUI.Space.large)
+            .fillMaxWidthWithLimit()
+            .padding(horizontal = FluxUI.Space.medium)
             .clip(FluxUI.shapes.corners),
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.spacedBy(2.dp)

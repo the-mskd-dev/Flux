@@ -32,10 +32,15 @@
     <string name="button_forward">플레이어 빨리감기 버튼</string>
     <string name="app_version">버전</string>
     <string name="subtitles_language">자막 언어</string>
-    <string name="presentation_1_title">Flux에 오신 것을 환영합니다</string>
-    <string name="presentation_1_description">좋아하는 영화와 시리즈를 쉽게 찾아보세요!\nFlux가 동영상을 자동으로 정리하여 사용하기 쉽고 즐거운 라이브러리를 제공합니다!</string>
-    <string name="presentation_2_title">동영상 접근 권한</string>
-    <string name="presentation_2_description">동영상을 표시하고 재생하려면 Flux가 기기의 파일에 접근해야 합니다.\n개인정보는 수집하거나 공유되지 않으니 안심하세요.</string>
+    <string name="welcome">Flux에 오신 것을 환영합니다</string>
+    <string name="welcome_description">단순한 파일 관리자는 이제 안녕! 모든 영화, TV 프로그램, 애니메이션을 현대적이고 매끄러운 감상 환경에서 즐겨보세요!</string>
+    <string-array name="welcome_features">
+        <item>TMDB를 사용하여 포스터, 줄거리, 상세 정보를 자동으로 가져옵니다</item>
+        <item>플레이어 선택: 내장 플레이어 또는 선호하는 외부 플레이어를 사용할 수 있습니다</item>
+        <item>Material 3 Expressive 및 Material You로 제작되어 기기에 맞게 적응하는 부드럽고 동적인 디자인을 제공합니다</item>
+    </string-array>
+    <string name="setup_sources_title">동영상 접근 권한</string>
+    <string name="setup_sources_desc">동영상을 표시하고 재생하려면 Flux가 기기의 파일에 접근해야 합니다.\n개인정보는 수집하거나 공유되지 않으니 안심하세요.</string>
     <string name="empty_catalog">라이브러리가 비어 있습니다</string>
     <string name="empty_catalog_desc">시작하려면 동영상 파일 이름이 올바르게 지정되었는지 확인하세요. 이를 통해 앱이 동영상을 자동으로 정리할 수 있습니다.</string>
     <string name="refresh">새로고침</string>
@@ -151,8 +156,6 @@
     <string name="delete">삭제</string>
     <string name="sources">소스</string>
     <string name="sources_short_desc">소스 폴더 추가</string>
-    <string name="sources_title">라이브러리를 자유롭게 관리하세요</string>
-    <string name="sources_full_desc">최적의 설정과 효율적인 파일 관리를 위해 앱이 %1$s 및 %2$s 폴더를 자동으로 타겟팅합니다.\n\n아래 버튼을 사용하여 기본 위치 외에 다른 폴더를 직접 추가할 수도 있습니다.</string>
     <string name="warning">경고</string>
     <string name="confirm_source_deletion">이 폴더를 삭제하면 포함된 파일의 시청 진행 상황이 손실됩니다.\n정말로 삭제하시겠습니까?</string>
     <string name="add_source">소스 추가</string>
@@ -161,4 +164,9 @@
     <string name="dialog_sources_description">더 많은 제어권을 제공하기 위해 앱이 이제 %1$s 및 %2$s 폴더에 집중합니다.\n\n동영상이 보이지 않나요? 걱정 마세요! 설정에서 언제든지 폴더를 빠르게 추가할 수 있습니다.</string>
     <string name="content_unavailable">콘텐츠를 이용할 수 없음</string>
     <string name="open_in_file_explorer">파일 탐색기에서 열기</string>
+    <string name="next">다음</string>
+    <string name="folder_deleted">폴더가 삭제되었습니다</string>
+    <string name="undo">실행 취소</string>
+    <string name="system_folders">시스템 폴더</string>
+    <string name="system_folders_toggle_desc">앱이 기본 %1$s 및 %2$s 위치에서 동영상을 검색하도록 허용합니다. (권장)</string>
 </resources>

@@ -46,8 +46,8 @@ import com.mskd.flux.ui.component.global.FluxDropDownMenu
 import com.mskd.flux.ui.component.global.FluxDropDownMenuItem
 import com.mskd.flux.ui.component.global.FluxScaffold
 import com.mskd.flux.ui.component.global.ResetProgressDialog
-import com.mskd.flux.utils.AppThemePreview
 import com.mskd.flux.utils.FluxPreview
+import com.mskd.flux.utils.FluxThemePreview
 import com.mskd.flux.utils.UriUtils
 import com.mskd.flux.utils.rememberScreenDimensions
 import flux.shared.generated.resources.Res
@@ -246,7 +246,7 @@ fun ShowDropDownMenu(
 @FluxPreview
 @Composable
 fun ShowScreen_Preview() {
-    AppThemePreview {
+    FluxThemePreview {
         ShowScreenContent(
             fullShow = MediaMockups.fullShow,
             dialog = null,

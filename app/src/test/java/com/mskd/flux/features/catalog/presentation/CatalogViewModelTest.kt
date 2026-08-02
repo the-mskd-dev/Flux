@@ -4,20 +4,15 @@ import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.core.FakeDatabaseRepository
 import com.mskd.flux.core.database.domain.repository.DatabaseRepository
-import com.mskd.flux.core.datastore.FakeSnackbarDataStore
-import com.mskd.flux.core.datastore.domain.SnackbarDataStore
 import com.mskd.flux.core.datastore.domain.UserDataStore
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.core.AppInfo
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
-import com.mskd.flux.features.catalog.fake.CatalogTestCases
 import com.mskd.flux.features.catalog.fake.FakeSyncCatalogUseCase
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.utils.FluxSnackbar
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.datatest.withData
 import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
 import io.mockk.every
@@ -39,7 +34,6 @@ class CatalogViewModelTest : FunSpec({
     lateinit var database: DatabaseRepository
     lateinit var userDataStore: UserDataStore
     lateinit var tokenDataStore: TokenDataStore
-    lateinit var snackbarDataStore: SnackbarDataStore
     lateinit var appInfo: AppInfo
 
     // Mocked flows
@@ -58,8 +52,6 @@ class CatalogViewModelTest : FunSpec({
         syncCatalogUseCase = FakeSyncCatalogUseCase()
         database = FakeDatabaseRepository()
 
-        snackbarDataStore = FakeSnackbarDataStore()
-
         appInfo = AppInfo(
             versionCode = 0,
             versionName = "Version-Test"
@@ -73,42 +65,26 @@ class CatalogViewModelTest : FunSpec({
             database = database,
             userDataStore = userDataStore,
             tokenDataStore = tokenDataStore,
-            snackbarDataStore = snackbarDataStore,
             appInfo = appInfo
         )
     }
 
-    context("initial state") {
-        withData(
-            nameFn = { it.description },
-            CatalogTestCases.InitialState(
-                description = "without token",
-                tokenValue = "",
-                expectedSnackbarState = FluxSnackbar.Token
-            ),
-            CatalogTestCases.InitialState(
-                description = "with token",
-                tokenValue = "token",
-                expectedSnackbarState = FluxSnackbar.Tutorial
+    test("initial state") {
+
+        // Given & When
+        viewModel = createViewModel()
+
+        viewModel.uiState.test {
+
+            // Then
+            val initialState = awaitItem()
+            initialState.state shouldBe CatalogState.Content(
+                artworks = MediaMockups.artworks,
+                lastWatchedMediaIds = emptyList(),
+                isRefreshing = false
             )
-        ) { testCase ->
 
-            tokenFlow.value = testCase.tokenValue
-
-            viewModel = createViewModel()
-
-            viewModel.uiState.test {
-                val initialState = awaitItem()
-                initialState.state shouldBe CatalogState.Content(
-                    artworks = MediaMockups.artworks,
-                    lastWatchedMediaIds = emptyList(),
-                    isRefreshing = false
-                )
-                initialState.snackbarState shouldBe testCase.expectedSnackbarState
-
-                cancelAndConsumeRemainingEvents()
-            }
-
+            cancelAndConsumeRemainingEvents()
         }
     }
 
@@ -233,39 +209,6 @@ class CatalogViewModelTest : FunSpec({
         viewModel.event.test {
             viewModel.handleIntent(CatalogIntent.OnHowToTap)
             awaitItem() shouldBe CatalogEvent.NavigateToHowTo
-        }
-    }
-
-    test("on dismiss snackbar and snackbar action tap") {
-        tokenFlow.value = ""
-
-        viewModel = createViewModel()
-
-        viewModel.uiState.test {
-            val stateWithSnackbar = awaitItem()
-            stateWithSnackbar.snackbarState shouldBe FluxSnackbar.Token
-
-            viewModel.handleIntent(CatalogIntent.OnDismissSnackbar)
-            val stateWithoutSnackbar = awaitItem()
-            stateWithoutSnackbar.snackbarState shouldBe null
-
-            cancelAndConsumeRemainingEvents()
-        }
-
-        tokenFlow.value = "token"
-
-        val viewModelTutorial = createViewModel()
-
-        viewModelTutorial.uiState.test {
-            val stateWithTutorial = awaitItem()
-            stateWithTutorial.snackbarState shouldBe FluxSnackbar.Tutorial
-
-            viewModelTutorial.event.test {
-                viewModelTutorial.handleIntent(CatalogIntent.OnSnackbarActionTap)
-                awaitItem() shouldBe CatalogEvent.NavigateToHowTo
-            }
-
-            cancelAndConsumeRemainingEvents()
         }
     }
 

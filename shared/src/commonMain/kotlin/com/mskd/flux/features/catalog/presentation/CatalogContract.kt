@@ -3,12 +3,10 @@ package com.mskd.flux.features.catalog.presentation
 import androidx.compose.runtime.Immutable
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.ContentType
-import com.mskd.flux.utils.FluxSnackbar
 
 @Immutable
 data class CatalogUiState(
     val state: CatalogState = CatalogState.Loading(),
-    val snackbarState: FluxSnackbar? = null
 )
 
 sealed class CatalogState {
@@ -23,6 +21,7 @@ sealed class CatalogState {
         val artworks: List<Artwork> = emptyList(),
         val lastWatchedMediaIds: List<Long> = emptyList(),
         val isRefreshing: Boolean = true,
+        val tokenIsMissing: Boolean = false
     ): CatalogState()
 
 }
@@ -35,8 +34,7 @@ sealed interface CatalogIntent {
     object OnSettingsTap: CatalogIntent
     object OnHowToTap: CatalogIntent
     object OnSourcesTap: CatalogIntent
-    object OnSnackbarActionTap: CatalogIntent
-    object OnDismissSnackbar: CatalogIntent
+    object OnTokenTap: CatalogIntent
 }
 
 sealed interface CatalogEvent {

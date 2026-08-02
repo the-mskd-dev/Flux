@@ -6,10 +6,12 @@ import com.mskd.flux.core.datastore.domain.UserDataStore
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.core.model.files.FileSource
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
+import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.features.sources.domain.model.UserFolder
 import com.mskd.flux.features.sources.domain.usecase.AddSourceUseCase
 import com.mskd.flux.features.sources.domain.usecase.DeleteSourceUseCase
 import com.mskd.flux.features.sources.domain.usecase.FlowSourcesUseCase
+import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -22,6 +24,8 @@ import kotlinx.coroutines.launch
 class SourcesViewModel(
     private val fromSetup: Boolean,
     private val userDataStore: UserDataStore,
+    private val settingsDataStore: SettingsDataStore,
+    private val tokenDataStore: TokenDataStore,
     flowSourcesUseCase: FlowSourcesUseCase,
     private val addSourceUseCase: AddSourceUseCase,
     private val deleteSourceUseCase: DeleteSourceUseCase,
@@ -33,21 +37,26 @@ class SourcesViewModel(
     private val _event = Channel<SourcesEvent>(Channel.BUFFERED)
     val event = _event.receiveAsFlow()
 
-    private val _dialogState = MutableStateFlow<SourcesDialog?>(null)
+    private val _deleteState = MutableStateFlow<UserFolder?>(null)
+    private val _showDialogState = MutableStateFlow(false)
 
     val uiState = combine(
         flowSourcesUseCase(),
-        _dialogState
-    ) { folders, dialog ->
+        _deleteState,
+        _showDialogState,
+        settingsDataStore.flow
+    ) { folders, deleteState, showDialogState, settings ->
 
         SourcesUiState(
             state = State.Content(
                 content = SourcesContent(
                     fromSetup = fromSetup,
-                    folders = folders
+                    folders = folders,
+                    waitingDeleteFolder = deleteState,
+                    systemFoldersEnabled = settings.systemFoldersEnabled
                 )
             ),
-            dialog = dialog
+            showFeatureDialog = showDialogState
         )
 
     }.stateIn(
@@ -81,7 +90,7 @@ class SourcesViewModel(
         viewModelScope.launch {
 
             if (userDataStore.getVersionCode() in 1..27) {
-                _dialogState.update { SourcesDialog.NewFeatureInformation }
+                _showDialogState.update { true }
             }
 
         }
@@ -105,29 +114,44 @@ class SourcesViewModel(
             SourcesIntent.OnBackTap -> onBackTap()
             SourcesIntent.OnNextTap -> onNextTap()
 
+            // System
+            SourcesIntent.OnSystemFoldersSwitch -> onSystemFoldersSwitch()
+
             // Save
             SourcesIntent.OpenFolderSelection -> _event.send(SourcesEvent.OpenFolderSelection)
             is SourcesIntent.SaveFolder -> saveFolder(path = intent.path)
 
             // Delete
-            is SourcesIntent.DeleteFolder -> deleteFolder(folder = intent.folder)
+            is SourcesIntent.Delete -> delete(folder = intent.folder)
+            SourcesIntent.UndoDelete -> undoDelete()
+            SourcesIntent.FinalizeDelete -> finalizeDelete()
 
             // Dialog
-            is SourcesIntent.ShowDeleteDialog -> showDeleteDialog(folder = intent.folder)
             SourcesIntent.CloseDialog -> closeDialog()
+
+            // Permissions
+            SourcesIntent.OnPermissionGranted -> onPermissionGranted()
         }
     }
 
     private suspend fun onBackTap() {
+        finalizeDelete()
+
         if (needSync) syncCatalogUseCase(onlyNew = true)
         _event.send(SourcesEvent.BackToPreviousScreen)
     }
 
     private suspend fun onNextTap() {
-        _event.send(SourcesEvent.NavigateToCatalog)
+        finalizeDelete()
+
+        if (tokenDataStore.tokenRequested)
+            _event.send(SourcesEvent.NavigateToToken)
+        else
+            _event.send(SourcesEvent.NavigateToCatalog)
     }
 
     private suspend fun saveFolder(path: String) {
+        finalizeDelete()
 
         val folder = UserFolder(
             path = path,
@@ -141,17 +165,41 @@ class SourcesViewModel(
 
     }
 
-    private fun showDeleteDialog(folder: UserFolder) {
-        _dialogState.update { SourcesDialog.ConfirmDelete(folder = folder) }
+    private suspend fun delete(folder: UserFolder) {
+        finalizeDelete()
+
+        _deleteState.update { folder }
+    }
+
+    private fun undoDelete() {
+        _deleteState.update { null }
+    }
+
+    private suspend fun finalizeDelete() {
+        val folder = _deleteState.value ?: return
+        deleteSourceUseCase(folder = folder, deleteMedias = true)
+        _deleteState.update { null }
     }
 
     private fun closeDialog() {
-        _dialogState.update { null }
+        _showDialogState.update { false }
     }
 
-    private suspend fun deleteFolder(folder: UserFolder) {
-        deleteSourceUseCase(folder = folder, deleteMedias = true)
-        closeDialog()
+    private suspend fun onSystemFoldersSwitch() {
+        val isEnabled = (uiState.value.state as? State.Content)?.content?.systemFoldersEnabled ?: return
+
+        if (!isEnabled) {
+            _event.send(SourcesEvent.ShowPermissionDialog)
+        } else {
+            settingsDataStore.setSystemFolders(enabled = false)
+            needSync = true
+        }
+
+    }
+
+    private suspend fun onPermissionGranted() {
+        settingsDataStore.setSystemFolders(enabled = true)
+        needSync = true
     }
 
     //endregion

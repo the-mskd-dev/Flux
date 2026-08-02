@@ -32,35 +32,40 @@
     <string name="button_forward">Pulsante avanti del player</string>
     <string name="app_version">Versione</string>
     <string name="subtitles_language">Lingua dei sottotitoli</string>
-    <string name="presentation_1_title">Benvenuto su Flux</string>
-    <string name="presentation_1_description">Trova facilmente i tuoi film e le tue serie TV preferite!\nFlux organizza automaticamente i tuoi video per offrirti una libreria semplice e piacevole da usare!</string>
-    <string name="presentation_2_title">Accedi ai tuoi video</string>
-    <string name="presentation_2_description">Per mostrare e riprodurre i tuoi video, Flux ha bisogno dell\'accesso ai file del tuo dispositivo.\nNon preoccuparti, non raccogliamo né condividiamo alcun dato personale.</string>
+    <string name="welcome">Benvenuto su Flux</string>
+    <string name="welcome_description">Di' addio ai soliti file manager e goditi un'esperienza di visione moderna e fluida per tutti i tuoi film, serie TV e anime!</string>
+    <string-array name="welcome_features">
+        <item>Recupera automaticamente copertine, trame e dettagli tramite TMDB</item>
+        <item>Scegli il tuo lettore: puoi usare il lettore integrato o il tuo lettore esterno preferito</item>
+        <item>Progettato con Material 3 Expressive e Material You per un look fluido e dinamico che si adatta al tuo dispositivo</item>
+    </string-array>
+    <string name="setup_sources_title">Accedi ai tuoi video</string>
+    <string name="setup_sources_desc">Per mostrare e riprodurre i tuoi video, Flux ha bisogno dell'accesso ai file del tuo dispositivo.\nNon preoccuparti, non raccogliamo né condividiamo alcun dato personale.</string>
     <string name="empty_catalog">La tua libreria è vuota</string>
-    <string name="empty_catalog_desc">Per iniziare, assicurati che i tuoi file video siano nominati correttamente. Questo permette all\'app di organizzarli automaticamente.</string>
+    <string name="empty_catalog_desc">Per iniziare, assicurati che i tuoi file video siano nominati correttamente. Questo permette all'app di organizzarli automaticamente.</string>
     <string name="refresh">Aggiorna</string>
     <string name="how_to_name_files">Come nominare i miei file?</string>
     <string name="how_to_name_files_desc">Non preoccuparti, è semplicissimo! Per tenere i tuoi video ben organizzati, ecco come nominare i tuoi file:</string>
-    <string name="how_to_name_files_movies_desc">Assegna ai tuoi film un nome chiaro, seguito dall\'anno se lo desideri. Per esempio:</string>
-    <string name="how_to_name_files_show_desc">Per gli episodi delle serie TV, usa un formato che includa il numero della stagione e dell\'episodio. L\'anno è opzionale. Per esempio:</string>
+    <string name="how_to_name_files_movies_desc">Assegna ai tuoi film un nome chiaro, seguito dall'anno se lo desideri. Per esempio:</string>
+    <string name="how_to_name_files_show_desc">Per gli episodi delle serie TV, usa un formato che includa il numero della stagione e dell'episodio. L'anno è opzionale. Per esempio:</string>
     <string name="read">riprodotto</string>
     <string name="remaining_time">rimangono %1$s</string>
     <string name="rewatch">Riguarda</string>
     <string name="about">Informazioni</string>
     <string name="who_am_i">Chi sono?</string>
-    <string name="who_am_i_desc">Appassionato di smartphone fin dall\'adolescenza, ho deciso di diventare uno sviluppatore Android, un lavoro che svolgo ormai da diversi anni.\nOltre a questo, sono un ragazzo normale che ama i manga, viaggiare e il Real Madrid.</string>
+    <string name="who_am_i_desc">Appassionato di smartphone fin dall'adolescenza, ho deciso di diventare uno sviluppatore Android, un lavoro che svolgo ormai da diversi anni.\nOltre a questo, sono un ragazzo normale che ama i manga, viaggiare e il Real Madrid.</string>
     <string name="why_this_app">Perché questa app?</string>
-    <string name="why_this_app_desc">A volte ci si ritrova con molti file video e si desidera un\'app che li organizzi in modo semplice. Un\'app come Infuse esiste su iOS, ma non essendoci un equivalente su Android, ho deciso di crearla io stesso per le mie esigenze personali.\nInoltre, come sviluppatore Android, questa app mi aiuta a rimanere aggiornato sulle ultime novità e funge da "sandbox" personale.</string>
+    <string name="why_this_app_desc">A volte ci si ritrova con molti file video e si desidera un'app che li organizzi in modo semplice. Un'app come Infuse esiste su iOS, ma non essendoci un equivalente su Android, ho deciso di crearla io stesso per le mie esigenze personali.\nInoltre, come sviluppatore Android, questa app mi aiuta a rimanere aggiornato sulle ultime novità e funge da "sandbox" personale.</string>
     <string name="how_it_works">Come funziona questa app?</string>
-    <string name="how_it_works_desc">Questa app scansiona i tuoi file video più lunghi di 5 minuti ed estrae le informazioni dal nome del file (titolo, stagione, episodio, anno). Successivamente, utilizza l\'API di TMDB per recuperare informazioni aggiuntive come trama, valutazione, genere, ecc.</string>
+    <string name="how_it_works_desc">Questa app scansiona i tuoi file video più lunghi di 5 minuti ed estrae le informazioni dal nome del file (titolo, stagione, episodio, anno). Successivamente, utilizza l'API di TMDB per recuperare informazioni aggiuntive come trama, valutazione, genere, ecc.</string>
     <string name="which_technologies">Quali tecnologie vengono utilizzate?</string>
-    <string name="which_technologies_desc">Questa app è interamente sviluppata in Kotlin con Jetpack Compose. Utilizzo Room per il database, Ktor per le chiamate di rete e Koin per l\'injection delle dipendenze. Utilizzo anche GitHub. Per l\'UI/UX uso Material 3 e ho fatto del mio meglio. Niente male, vero?</string>
+    <string name="which_technologies_desc">Questa app è interamente sviluppata in Kotlin con Jetpack Compose. Utilizzo Room per il database, Ktor per le chiamate di rete e Koin per l'injection delle dipendenze. Utilizzo anche GitHub. Per l'UI/UX uso Material 3 e ho fatto del mio meglio. Niente male, vero?</string>
     <string name="how_to_suggest">Come contattarmi o suggerire miglioramenti?</string>
     <string name="how_to_suggest_desc">Se si tratta di un feedback positivo, puoi contattarmi via %1$s! In caso contrario, fai la stessa cosa o direttamente su %2$s, ma con la stessa gentilezza come se fosse positivo.</string>
     <string name="mail" translatable="false">mail</string>
     <string name="github" translatable="false">Github</string>
-    <string name="what_is_next">Cosa c\'è in programma?</string>
-    <string name="what_is_next_desc">L\'obiettivo è continuare a migliorare l\'app, che si tratti di UI, UX o prestazioni. Ho intenzione di recuperare più dati (genere, cast, ecc.) e pianifico anche di aggiungere nuove fonti dati, non solo i file presenti sul dispositivo.</string>
+    <string name="what_is_next">Cosa c'è in programma?</string>
+    <string name="what_is_next_desc">L'obiettivo è continuare a migliorare l'app, che si tratti di UI, UX o prestazioni. Ho intenzione di recuperare più dati (genere, cast, ecc.) e pianifico anche di aggiungere nuove fonti dati, non solo i file presenti sul dispositivo.</string>
     <string name="make_a_donation">Sostienimi</string>
     <string name="episodes">Episodi</string>
     <string name="watched">Visto</string>
@@ -73,8 +78,8 @@
     <string name="tmdb_api_token">Token API TMDB</string>
     <string name="tmdb" translatable="false">The Movie Database</string>
     <string name="token_desc_1">Per funzionare, questa applicazione utilizza i servizi di %1$s. Questo sito permette il recupero di varie informazioni (immagini, titoli, trame, ecc.) per i tuoi contenuti multimediali. Per utilizzare questo servizio è richiesto un token API.</string>
-    <string name="token_desc_2">Tuttavia, al fine di essere un\'applicazione completamente FOSS (Free and Open-Source Software) e garantire un miglior controllo sui tuoi dati, il token per il servizio TMDB non viene fornito di serie.</string>
-    <string name="token_desc_3">È possibile continuare senza utilizzare il servizio TMDB; tuttavia, per sfruttare al meglio le funzionalità dell\'applicazione, si consiglia di fornire un token API. Per farlo, segui questi passaggi:</string>
+    <string name="token_desc_2">Tuttavia, al fine di essere un'applicazione completamente FOSS (Free and Open-Source Software) e garantire un miglior controllo sui tuoi dati, il token per il servizio TMDB non viene fornito di serie.</string>
+    <string name="token_desc_3">È possibile continuare senza utilizzare il servizio TMDB; tuttavia, per sfruttare al meglio le funzionalità dell'applicazione, si consiglia di fornire un token API. Per farlo, segui questi passaggi:</string>
     <string name="token_tutorial_step_1">%1$s o %2$s su TMDB.</string>
     <string name="token_tutorial_step_2">Recupera il tuo %1$s e copialo nel campo sottostante.</string>
     <string name="token_validated">Token API salvato</string>
@@ -88,15 +93,15 @@
     <string name="other_files">Altri file</string>
     <string name="no_item">Non ci sono elementi da mostrare</string>
     <string name="skip">Salta</string>
-    <string name="snackbar_add_api_key">Aggiungi la tua chiave per un\'esperienza migliore</string>
+    <string name="snackbar_add_api_key">Aggiungi la tua chiave per un'esperienza migliore</string>
     <string name="add">Aggiungi</string>
     <string name="snackbar_see_tuto">Per organizzare la tua libreria, controlla la nomenclatura dei tuoi file</string>
     <string name="see">Vedi</string>
     <string name="more_info">Maggiori informazioni</string>
     <string name="external_player">Player esterno</string>
-    <string name="watch_on_external_player">Il tracciamento dei progressi non è compatibile con tutti i player.\nSi raccomanda l\'uso delle notifiche.</string>
+    <string name="watch_on_external_player">Il tracciamento dei progressi non è compatibile con tutti i player.\nSi raccomanda l'uso delle notifiche.</string>
     <string name="x" translatable="false">X</string>
-    <string name="stay_informed">Rimani informato sullo sviluppo dell\'app!</string>
+    <string name="stay_informed">Rimani informato sullo sviluppo dell'app!</string>
     <string name="about_desc">Informazioni su questa app, su di me, su qualsiasi cosa</string>
     <string name="support_me_desc">Grazie per il tuo supporto!</string>
     <string name="external_player_service_text">Uso di un player esterno</string>
@@ -108,18 +113,18 @@
     <string name="auto_keyboard_desc">Mostra automaticamente la tastiera nella schermata di ricerca</string>
     <string name="sync_library">Sincronizza libreria</string>
     <string name="sync_library_desc">Sincronizza tutti i dati della libreria</string>
-    <string name="sync_library_dialog">Vuoi sincronizzare l\'intera libreria? I tuoi progressi verranno salvati, tuttavia l\'operazione potrebbe richiedere del tempo.</string>
+    <string name="sync_library_dialog">Vuoi sincronizzare l'intera libreria? I tuoi progressi verranno salvati, tuttavia l'operazione potrebbe richiedere del tempo.</string>
     <string name="information_language">Lingua delle informazioni</string>
     <string name="sync_in_progress">Sincronizzazione in corso…</string>
     <string name="by_default">Predefinito</string>
     <string name="cache_images">Salva immagini HD in cache</string>
     <string name="images_cached">Immagini in cache</string>
     <string name="caching_images_in_progress">Salvataggio immagini in cache… %1$d%</string>
-    <string name="cache_images_desc">Scarica le immagini per l\'uso offline</string>
+    <string name="cache_images_desc">Scarica le immagini per l'uso offline</string>
     <string name="no_summary">Nessuna trama disponibile</string>
     <string name="customization">Personalizzazione</string>
-    <string name="customization_desc">Personalizzazione dell\'interfaccia</string>
-    <string name="accent_color">Colore d\'accento</string>
+    <string name="customization_desc">Personalizzazione dell'interfaccia</string>
+    <string name="accent_color">Colore d'accento</string>
     <string name="color_red">Rosso</string>
     <string name="color_blue">Blu</string>
     <string name="color_green">Verde</string>
@@ -127,7 +132,7 @@
     <string name="color_magenta">Magenta</string>
     <string name="color_gray">Grigio</string>
     <string name="wave_progress">Barra di avanzamento ad onda</string>
-    <string name="accent_color_desc">Colore globale dell\'interfaccia</string>
+    <string name="accent_color_desc">Colore globale dell'interfaccia</string>
     <string name="large_artwork_poster">Locandina grande</string>
     <string name="seasons">Stagioni</string>
     <plurals name="episodes">
@@ -145,21 +150,24 @@
     <string name="picture_in_picture">Abilita Picture-in-Picture</string>
     <string name="old_blurred_header">Vecchio header sfocato</string>
     <string name="corners">Angoli</string>
-    <string name="corners_desc">Dimensione dell\'arrotondamento degli angoli</string>
+    <string name="corners_desc">Dimensione dell'arrotondamento degli angoli</string>
     <string name="small">Piccolo</string>
     <string name="medium">Medio</string>
     <string name="large">Grande</string>
     <string name="delete">Elimina</string>
     <string name="sources">Sorgenti</string>
     <string name="sources_short_desc">Aggiungi le tue cartelle sorgente</string>
-    <string name="sources_title">Mantieni il controllo della tua libreria</string>
-    <string name="sources_full_desc">Per una configurazione ottimale e un miglior controllo sui tuoi file, l\'app punta automaticamente alle cartelle %1$s e %2$s.\n\nMantieni il controllo: usa il pulsante sottostante per aggiungere altre cartelle oltre a queste posizioni predefinite.</string>
     <string name="warning">Avviso</string>
-    <string name="confirm_source_deletion">L\'eliminazione di questa cartella comporterà la perdita dei progressi per i file in essa contenuti.\nSei sicuro di volerla eliminare?</string>
+    <string name="confirm_source_deletion">L'eliminazione di questa cartella comporterà la perdita dei progressi per i file in essa contenuti.\nSei sicuro di volerla eliminare?</string>
     <string name="add_source">Aggiungi sorgente</string>
     <string name="got_it">Capito</string>
     <string name="dialog_sources_title">Le tue cartelle, le tue regole!</string>
-    <string name="dialog_sources_description">Per darti maggiore controllo, l\'app ora si concentra sulle tue cartelle %1$s e %2$s.\n\nManca un video? Niente panico! Puoi aggiungere le tue cartelle in un attimo dalle impostazioni.</string>
+    <string name="dialog_sources_description">Per darti maggiore controllo, l'app ora si concentra sulle tue cartelle %1$s e %2$s.\n\nManca un video? Niente panico! Puoi aggiungere le tue cartelle in un attimo dalle impostazioni.</string>
     <string name="content_unavailable">Contenuto non disponibile</string>
     <string name="open_in_file_explorer">Apri in Gestione file</string>
+    <string name="next">Avanti</string>
+    <string name="folder_deleted">Cartella eliminata</string>
+    <string name="undo">Annulla</string>
+    <string name="system_folders">Cartelle di sistema</string>
+    <string name="system_folders_toggle_desc">Consente all'app di cercare i video nelle posizioni standard %1$s e %2$s. (Consigliato)</string>
 </resources>

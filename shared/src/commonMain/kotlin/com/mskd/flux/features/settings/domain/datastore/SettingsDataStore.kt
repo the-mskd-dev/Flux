@@ -27,6 +27,8 @@ interface SettingsDataStore {
 
     suspend fun getDataLanguage() : Locale
 
+    suspend fun setSystemFolders(enabled: Boolean)
+
     data class State(
         val playerRewindValue: Int = 10,
         val playerForwardValue: Int = 10,
@@ -36,6 +38,7 @@ interface SettingsDataStore {
         val pipIsEnabled: Boolean = true,
         val autoKeyboard: Boolean = true,
         val dataLanguage: Locale? = null,
-        val prefetchHdImages: Boolean = false
+        val prefetchHdImages: Boolean = false,
+        val systemFoldersEnabled: Boolean = true,
     )
 }

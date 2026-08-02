@@ -14,6 +14,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.features.customization.presentation.CustomizationDialog
@@ -30,6 +31,8 @@ import com.mskd.flux.screens.customization.composables.ItemsPerRowDialog
 import com.mskd.flux.ui.component.global.FluxOptionsDialog
 import com.mskd.flux.ui.component.global.FluxScaffold
 import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.utils.FluxPreview
+import com.mskd.flux.utils.FluxThemePreview
 import com.mskd.flux.utils.extensions.resolve
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.customization
@@ -118,7 +121,8 @@ fun CustomizationContent(
                 .background(MaterialTheme.colorScheme.surfaceContainer)
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
+            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
             Spacer(modifier = Modifier.height(innerPadding.calculateTopPadding()))
@@ -149,4 +153,15 @@ fun CustomizationContent(
 
     }
 
+}
+
+@FluxPreview
+@Composable
+fun CustomizationContent_Preview() {
+    FluxThemePreview {
+        CustomizationContent(
+            state = CustomizationUiState(),
+            sendIntent = {}
+        )
+    }
 }

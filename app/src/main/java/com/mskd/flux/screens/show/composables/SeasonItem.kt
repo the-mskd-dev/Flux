@@ -32,7 +32,7 @@ import com.mskd.flux.ui.component.global.ProgressStatusBar
 import com.mskd.flux.ui.component.global.ProgressStatusChip
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxUI
-import com.mskd.flux.utils.AppThemePreview
+import com.mskd.flux.utils.FluxThemePreview
 import com.mskd.flux.utils.extensions.grayScale
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.episodes
@@ -131,7 +131,7 @@ fun SeasonItem(
 @Preview
 @Composable
 fun SeasonItem_Preview() {
-    AppThemePreview {
+    FluxThemePreview {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)

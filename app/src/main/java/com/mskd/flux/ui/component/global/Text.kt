@@ -491,54 +491,6 @@ object Text {
 
     }
 
-
-    /**
-     * Titles for content elements within your UI (cards, lists...).
-     */
-    object Title {
-
-        /**
-         * - **Usage**: The main line in a `ListItem`.
-         * - **Size** : 16dp
-         * - **Examples**: A contact's name in a list, a song title in a playlist.
-         */
-        @Composable
-        fun Medium(
-            text: String?,
-            modifier: Modifier = Modifier,
-            textAlign: TextAlign = TextAlign.Start,
-            color: Color = Color.Unspecified,
-            emphasized: Boolean = false,
-            lineHeight: TextUnit = TextUnit.Unspecified,
-            overflow: TextOverflow = TextOverflow.Clip,
-            maxLines: Int = Int.MAX_VALUE,
-            minLines: Int = 1,
-            onTextLayout : ((TextLayoutResult) -> Unit)? = null
-        ) {
-
-            if (text.isNullOrBlank())
-                return
-
-            val style = if (emphasized) MaterialTheme.typography.titleMediumEmphasized else MaterialTheme.typography.titleMedium
-            val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
-
-            Text(
-                modifier = modifier,
-                text = text,
-                color = textColor,
-                style = style,
-                textAlign = textAlign,
-                lineHeight = lineHeight,
-                overflow = overflow,
-                maxLines = maxLines,
-                minLines = minLines,
-                onTextLayout = onTextLayout
-            )
-
-        }
-
-    }
-
     /**
      * Readable text, often multi-line. This is the core of your content.
      */

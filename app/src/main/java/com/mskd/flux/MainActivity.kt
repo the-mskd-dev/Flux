@@ -68,8 +68,7 @@ class MainActivity : ComponentActivity() {
                 }
             }
 
-            if (!storagePermission.status.isGranted)
-                viewModel.disableSystemFolders()
+            viewModel.disableSystemFoldersIfNeeded(permissionsGranted = storagePermission.status.isGranted)
 
             val startingScreen = viewModel.getStartingScreen()
 

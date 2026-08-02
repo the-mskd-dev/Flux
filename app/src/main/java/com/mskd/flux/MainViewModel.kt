@@ -2,6 +2,7 @@ package com.mskd.flux
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.accompanist.permissions.PermissionState
 import com.mskd.flux.core.datastore.domain.UserDataStore
 import com.mskd.flux.features.customization.domain.datastore.CustomizationDataStore
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
@@ -13,6 +14,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import java.security.Permissions
 
 class MainViewModel(
     private val settingsDataStore: SettingsDataStore,
@@ -55,8 +57,11 @@ class MainViewModel(
         }
     }
 
-    fun disableSystemFolders() = viewModelScope.launch {
-        settingsDataStore.setSystemFolders(enabled = false)
+    fun disableSystemFoldersIfNeeded(permissionsGranted: Boolean) = viewModelScope.launch {
+        val versionCode = userDataStore.flow.first().versionCode
+
+        if (versionCode > 0 && !permissionsGranted)
+            settingsDataStore.setSystemFolders(enabled = false)
     }
 
 }

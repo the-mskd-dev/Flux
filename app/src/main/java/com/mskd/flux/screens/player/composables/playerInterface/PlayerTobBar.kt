@@ -82,7 +82,7 @@ fun PlayerTopBar(
                 val season = stringResource(Res.string.season, episode.season)
                 val number = stringResource(Res.string.episode, episode.number)
 
-                Text.Body.Small(
+                Text.Content.Label(
                     modifier = Modifier.fillMaxWidth(),
                     text = "$season, $number",
                     color = Color.White,

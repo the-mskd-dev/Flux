@@ -141,17 +141,15 @@ fun CountDownButton(
             Box {
 
                 // Invisible text to avoid button size change
-                Text.Adaptive(
+                Text.Button(
                     modifier = Modifier.clearAndSetSemantics { }, // To ignore TalkBack
                     text = text(duration),
                     color = Color.Transparent,
-                    style = style
                 )
 
-                Text.Adaptive(
+                Text.Button(
                     text = text(count),
                     color = contentColorFor(backgroundColor),
-                    style = style
                 )
 
             }

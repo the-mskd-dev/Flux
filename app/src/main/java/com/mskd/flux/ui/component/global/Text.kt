@@ -513,13 +513,15 @@ object Text {
     @Composable
     fun Button(
         text: String,
+        modifier: Modifier = Modifier,
         color: Color = Color.Unspecified,
     ) {
 
         Text(
+            modifier = modifier,
             text = text,
             color = color,
-            style = ButtonDefaults.textStyleFor(buttonHeight = ButtonDefaults.MediumContainerHeight)
+            style = ButtonDefaults.textStyleFor(buttonHeight = ButtonDefaults.MediumContainerHeight).copy(fontFeatureSettings = "tnum")
         )
 
     }

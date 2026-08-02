@@ -147,7 +147,8 @@ val PlayerInterfaceConstraintSet = ConstraintSet {
     }
 
     constrain(settings) {
-        top.linkTo(parent.top)
+        top.linkTo(topBar.top)
+        bottom.linkTo(topBar.bottom)
         end.linkTo(parent.end)
     }
 

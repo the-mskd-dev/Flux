@@ -25,7 +25,9 @@ fun PlayerSettingsButton(
         colors = IconButtonDefaults.iconButtonColors(
             contentColor = Color.White
         ),
-        onClick = { sendIntent(PlayerIntent.ShowSettings(sheet = PlayerUiContent.SettingsSheet.Settings)) }
+        onClick = {
+            sendIntent(PlayerIntent.ShowSettings(sheet = PlayerUiContent.SettingsSheet.Settings))
+        }
     ) {
 
         Icon(

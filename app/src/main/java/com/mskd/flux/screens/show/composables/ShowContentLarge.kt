@@ -16,12 +16,10 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.constraintlayout.compose.Dimension
 import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.features.show.presentation.ShowIntent
 import com.mskd.flux.mockups.MediaMockups

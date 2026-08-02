@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -28,7 +27,8 @@ import com.mskd.flux.features.setup.presentation.SetupIntent
 import com.mskd.flux.features.setup.presentation.SetupUiState
 import com.mskd.flux.features.setup.presentation.SetupViewModel
 import com.mskd.flux.navigation.Route
-import com.mskd.flux.navigation.Route.*
+import com.mskd.flux.navigation.Route.Sources
+import com.mskd.flux.navigation.Route.Token
 import com.mskd.flux.screens.setup.composables.SetupSourcesContent
 import com.mskd.flux.screens.setup.composables.SetupWelcomeContent
 import com.mskd.flux.ui.component.global.Text

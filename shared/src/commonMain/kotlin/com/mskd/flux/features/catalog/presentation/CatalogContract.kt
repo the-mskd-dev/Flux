@@ -3,7 +3,6 @@ package com.mskd.flux.features.catalog.presentation
 import androidx.compose.runtime.Immutable
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.ContentType
-import com.mskd.flux.utils.FluxSnackbar
 
 @Immutable
 data class CatalogUiState(

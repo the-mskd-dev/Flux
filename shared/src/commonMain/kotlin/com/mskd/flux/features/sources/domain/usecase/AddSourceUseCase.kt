@@ -3,7 +3,6 @@ package com.mskd.flux.features.sources.domain.usecase
 import com.mskd.flux.features.sources.domain.model.UserFolder
 import com.mskd.flux.features.sources.domain.repository.SourcesRepository
 import io.ktor.http.decodeURLPart
-import io.ktor.http.parseUrl
 
 class AddSourceUseCase(
     val repository: SourcesRepository

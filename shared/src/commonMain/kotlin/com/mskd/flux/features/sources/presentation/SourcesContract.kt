@@ -2,8 +2,6 @@ package com.mskd.flux.features.sources.presentation
 
 import androidx.compose.runtime.Immutable
 import com.mskd.flux.core.model.core.State
-import com.mskd.flux.features.setup.presentation.SetupEvent
-import com.mskd.flux.features.setup.presentation.SetupIntent
 import com.mskd.flux.features.sources.domain.model.UserFolder
 
 @Immutable

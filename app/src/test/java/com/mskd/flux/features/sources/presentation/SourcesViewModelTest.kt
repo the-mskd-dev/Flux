@@ -40,7 +40,9 @@ class SourcesViewModelTest : FunSpec({
         fromSetup: Boolean = false,
         folders: List<UserFolder> = emptyList(),
         userDataStore: UserDataStore = mockk(relaxed = true),
-        settingsDataStore: SettingsDataStore = mockk(relaxed = true),
+        settingsDataStore: SettingsDataStore = mockk(relaxed = true) {
+            every { flow } returns MutableStateFlow(SettingsDataStore.State())
+        },
         tokenDataStore: TokenDataStore = mockk(relaxed = true),
         addSourceUseCase: AddSourceUseCase = mockk(relaxed = true),
         deleteSourceUseCase: DeleteSourceUseCase = mockk(relaxed = true),
@@ -125,7 +127,7 @@ class SourcesViewModelTest : FunSpec({
 
     test("OnNextTap - navigate to Token if needed") {
         val tokenDataStore = mockk<TokenDataStore>(relaxed = true) {
-            coEvery { tokenRequested } returns false
+            coEvery { tokenRequested } returns true
         }
         val viewModel = createViewModel(tokenDataStore = tokenDataStore)
 
@@ -138,7 +140,7 @@ class SourcesViewModelTest : FunSpec({
 
     test("OnNextTap - navigate to Catalog if no token is needed") {
         val tokenDataStore = mockk<TokenDataStore>(relaxed = true) {
-            coEvery { tokenRequested } returns true
+            coEvery { tokenRequested } returns false
         }
         val viewModel = createViewModel(tokenDataStore = tokenDataStore)
 
@@ -156,20 +158,23 @@ class SourcesViewModelTest : FunSpec({
     test("OnSystemFoldersSwitch - if value is set to true, show permissions") {
         // Given
         val settingsDataStore = mockk<SettingsDataStore>(relaxed = true) {
-            coEvery { flow } returns MutableStateFlow(SettingsDataStore.State(systemFoldersEnabled = true))
+            coEvery { flow } returns MutableStateFlow(SettingsDataStore.State(systemFoldersEnabled = false))
         }
         val viewModel = createViewModel(settingsDataStore = settingsDataStore)
 
-        viewModel.event.test {
+        viewModel.uiState.test {
+            testDispatcher.scheduler.advanceUntilIdle()
 
-            // When
-            viewModel.handleIntent(SourcesIntent.OnSystemFoldersSwitch)
+            viewModel.event.test {
+                // When
+                viewModel.handleIntent(SourcesIntent.OnSystemFoldersSwitch)
+                testDispatcher.scheduler.advanceUntilIdle()
 
-            // Then
-            awaitItem() shouldBe SourcesEvent.ShowPermissionDialog
-
+                // Then
+                awaitItem() shouldBe SourcesEvent.ShowPermissionDialog
+            }
+            cancelAndIgnoreRemainingEvents()
         }
-
     }
 
     test("OnSystemFoldersSwitch - if value is set to false, disable system folders") {
@@ -178,12 +183,17 @@ class SourcesViewModelTest : FunSpec({
         }
         val viewModel = createViewModel(settingsDataStore = settingsDataStore)
 
-        // When
-        viewModel.handleIntent(SourcesIntent.OnSystemFoldersSwitch)
+        viewModel.uiState.test {
+            testDispatcher.scheduler.advanceUntilIdle()
 
-        // Send
-        coEvery { settingsDataStore.setSystemFolders(false) }
+            // When
+            viewModel.handleIntent(SourcesIntent.OnSystemFoldersSwitch)
+            testDispatcher.scheduler.advanceUntilIdle()
 
+            // Then
+            coVerify { settingsDataStore.setSystemFolders(enabled = false) }
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
     //endregion
@@ -219,107 +229,102 @@ class SourcesViewModelTest : FunSpec({
     //region Delete
 
     test("Delete - put the folder in waitingDeleteFolder") {
-
         // Given
         val folder = UserFolder(path = "path/x", isAvailable = true)
         val viewModel = createViewModel()
 
+        // When
+        viewModel.handleIntent(SourcesIntent.Delete(folder = folder))
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Then
         viewModel.uiState.test {
-
-            // When
-            viewModel.handleIntent(SourcesIntent.Delete(folder = folder))
-
-            // Then
-            val content = (awaitItem().state as? State.Content)?.content
+            testDispatcher.scheduler.advanceUntilIdle()
+            val content = (expectMostRecentItem().state as? State.Content)?.content
             content?.waitingDeleteFolder shouldBe folder
         }
-
     }
 
     test("Delete - finalize previous deletion, then put the folder in waitingDeleteFolder") {
-
         // Given
         val folder = UserFolder(path = "path/x", isAvailable = true)
-        val folder2 = UserFolder(path = "path/x", isAvailable = true)
+        val folder2 = UserFolder(path = "path/y", isAvailable = true)
         val deleteSourceUseCase = mockk<DeleteSourceUseCase>(relaxed = true)
         val viewModel = createViewModel(deleteSourceUseCase = deleteSourceUseCase)
 
+        viewModel.handleIntent(SourcesIntent.Delete(folder = folder))
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // When
+        viewModel.handleIntent(SourcesIntent.Delete(folder = folder2))
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Then
+        coVerify { deleteSourceUseCase(folder = folder, deleteMedias = true) }
+
         viewModel.uiState.test {
-
-            viewModel.handleIntent(SourcesIntent.Delete(folder = folder))
-            awaitItem()
-
-            // When
-            viewModel.handleIntent(SourcesIntent.Delete(folder = folder2))
-
-            // Then
-            val content = (awaitItem().state as? State.Content)?.content
+            testDispatcher.scheduler.advanceUntilIdle()
+            val content = (expectMostRecentItem().state as? State.Content)?.content
             content?.waitingDeleteFolder shouldBe folder2
-            coVerify { deleteSourceUseCase(folder = folder, deleteMedias = true) }
         }
-
     }
 
     test("UndoDelete - remove folder from waitingDeleteFolder") {
-
         // Given
         val folder = UserFolder(path = "path/x", isAvailable = true)
         val viewModel = createViewModel()
         viewModel.handleIntent(SourcesIntent.Delete(folder = folder))
+        testDispatcher.scheduler.advanceUntilIdle()
 
+        // When
+        viewModel.handleIntent(SourcesIntent.UndoDelete)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Then
         viewModel.uiState.test {
-
-            awaitItem()
-
-            // When
-            viewModel.handleIntent(SourcesIntent.UndoDelete)
-
-            // Then
-            val content = (awaitItem().state as? State.Content)?.content
+            testDispatcher.scheduler.advanceUntilIdle()
+            val content = (expectMostRecentItem().state as? State.Content)?.content
             content?.waitingDeleteFolder shouldBe null
         }
-
     }
 
     test("FinalizeDelete - calls deleteSourceUseCase") {
-
         // Given
         val folder = UserFolder(path = "path/x", isAvailable = true)
         val deleteSourceUseCase = mockk<DeleteSourceUseCase>(relaxed = true)
         val viewModel = createViewModel(deleteSourceUseCase = deleteSourceUseCase)
         viewModel.handleIntent(SourcesIntent.Delete(folder = folder))
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // When
+        viewModel.handleIntent(SourcesIntent.FinalizeDelete)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Then
+        coVerify { deleteSourceUseCase(folder = folder, deleteMedias = true) }
 
         viewModel.uiState.test {
-
-            awaitItem()
-
-            // When
-            viewModel.handleIntent(SourcesIntent.FinalizeDelete)
-
-            // Then
-            coVerify { deleteSourceUseCase(folder = folder, deleteMedias = true) }
-            val content = (awaitItem().state as? State.Content)?.content
+            testDispatcher.scheduler.advanceUntilIdle()
+            val content = (expectMostRecentItem().state as? State.Content)?.content
             content?.waitingDeleteFolder shouldBe null
         }
-
     }
 
     //endregion
 
-    //endregion Permissions
+    //region Permissions
 
     test("OnPermissionGranted - set system folders to true") {
-
         // Given
         val settingsDataStore = mockk<SettingsDataStore>(relaxed = true)
         val viewModel = createViewModel(settingsDataStore = settingsDataStore)
 
         // When
         viewModel.handleIntent(SourcesIntent.OnPermissionGranted)
+        testDispatcher.scheduler.advanceUntilIdle()
 
         // Then
-        coVerify { settingsDataStore.setSystemFolders(true) }
-
+        coVerify { settingsDataStore.setSystemFolders(enabled = true) }
     }
 
     //endregion

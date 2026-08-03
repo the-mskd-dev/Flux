@@ -50,9 +50,15 @@ configure<ApplicationExtension> {
                 keyAlias = keystoreProperties["keyAlias"]?.toString() ?: ""
                 keyPassword = keystoreProperties["keyPassword"]?.toString() ?: ""
                 storeFile =
-                        keystoreProperties["storeFile"]?.toString()?.let { rootProject.file(it) }
+                    keystoreProperties["storeFile"]?.toString()?.let { rootProject.file(it) }
                 storePassword = keystoreProperties["storePassword"]?.toString() ?: ""
             }
+        }
+    }
+
+    sourceSets {
+        getByName("androidTest") {
+            resources.directories.add("$rootDir/shared/schemas")
         }
     }
 
@@ -66,8 +72,8 @@ configure<ApplicationExtension> {
             isShrinkResources = true
 
             proguardFiles(
-                    getDefaultProguardFile("proguard-android-optimize.txt"),
-                    "proguard-rules.pro"
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
             )
         }
 
@@ -90,8 +96,8 @@ configure<ApplicationExtension> {
             isShrinkResources = true
 
             proguardFiles(
-                    getDefaultProguardFile("proguard-android-optimize.txt"),
-                    "proguard-rules.pro"
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
             )
         }
     }

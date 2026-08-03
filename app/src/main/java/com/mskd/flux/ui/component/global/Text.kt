@@ -24,6 +24,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
@@ -39,10 +40,10 @@ object Text {
         @Composable fun cardTitle() = MaterialTheme.typography.titleMediumEmphasized
         @Composable fun cardBody() = MaterialTheme.typography.bodyMedium
         @Composable fun cardLabel() = MaterialTheme.typography.bodySmall
-        @Composable fun listSection() = LocalTextStyle.current.copy(fontSize = 14.sp, lineHeight = 20.sp, fontWeight = FontWeight.Bold)
-        @Composable fun listTitle() = LocalTextStyle.current.copy(fontSize = 16.sp, lineHeight = 24.sp, fontWeight = FontWeight(400))
-        @Composable fun listBody() = LocalTextStyle.current.copy(fontSize = 14.sp, lineHeight = 20.sp)
-        @Composable fun button() = ButtonDefaults.textStyleFor(buttonHeight = ButtonDefaults.MediumContainerHeight).copy(fontFeatureSettings = "tnum")
+        @Composable fun listSection() = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
+        @Composable fun listTitle() = MaterialTheme.typography.bodyLarge
+        @Composable fun listBody() = MaterialTheme.typography.bodyMedium
+        @Composable fun button() = MaterialTheme.typography.titleMedium.copy(fontFeatureSettings = "tnum")
 
     }
 

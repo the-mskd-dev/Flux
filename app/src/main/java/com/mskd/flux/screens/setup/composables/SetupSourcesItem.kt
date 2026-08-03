@@ -38,10 +38,9 @@ fun SetupSourcesItem(
             Text.List.Title(text = title)
         },
         supportingContent = {
-            Text(
+            Text.Annotated(
                 text = description,
-                fontSize = 14.sp,
-                lineHeight = 20.sp,
+                style = Text.Style.listBody()
             )
         },
     )

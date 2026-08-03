@@ -3,19 +3,24 @@ package com.mskd.flux.core.database.data.migrations
 import androidx.sqlite.SQLiteConnection
 import androidx.sqlite.execSQL
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
-import io.kotest.core.spec.style.FunSpec
-import io.kotest.matchers.shouldBe
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.filters.MediumTest
+import org.junit.Test
+import org.junit.runner.RunWith
+import kotlin.test.assertEquals
 
-class Migration5To6Test : FunSpec({
+@RunWith(AndroidJUnit4::class)
+@MediumTest
+class Migration5To6Test {
 
-    fun SQLiteConnection.createV5Schema() {
+    private fun SQLiteConnection.createV5Schema() {
         loadSchemaSetupSql(
             resourcePath = "com.mskd.flux.core.database.data.FluxDatabase/5.json",
             expectedVersion = 5
         ).forEach { execSQL(it) }
     }
 
-    fun SQLiteConnection.insertEpisode(
+    private fun SQLiteConnection.insertEpisode(
         id: Long, artworkId: Long, path: String,
         currentTime: Long = 0, status: String = "TO_WATCH"
     ) {
@@ -28,7 +33,7 @@ class Migration5To6Test : FunSpec({
         """.trimIndent())
     }
 
-    fun SQLiteConnection.insertMovie(
+    private fun SQLiteConnection.insertMovie(
         artworkId: Long, path: String,
         currentTime: Long = 0, status: String = "TO_WATCH"
     ) {
@@ -41,7 +46,8 @@ class Migration5To6Test : FunSpec({
         """.trimIndent())
     }
 
-    test("Deduplicate the conflicting math within episodes before creating the unique index") {
+    @Test
+    fun resolveConflictingPathBeforeCreatingTheUniqueIndex() {
         val connection = BundledSQLiteDriver().open(":memory:")
         connection.createV5Schema()
 
@@ -53,12 +59,13 @@ class Migration5To6Test : FunSpec({
         val count = connection.prepare("SELECT COUNT(*) FROM medias WHERE path = ?").use {
             it.bindText(1, "/dup.mkv"); it.step(); it.getLong(0)
         }
-        count shouldBe 1
+        assertEquals(1, count)
 
         connection.close()
     }
 
-    test("In case of a cross-table duplicate, the line with the viewing progress wins.") {
+    @Test
+    fun prioritizeProgressInCaseOfConflictingPath() {
         val connection = BundledSQLiteDriver().open(":memory:")
         connection.createV5Schema()
 
@@ -71,8 +78,9 @@ class Migration5To6Test : FunSpec({
             it.bindText(1, "/dup.mkv"); it.step()
             it.getText(0) to it.getLong(1)
         }
-        survivor shouldBe ("MOVIE" to 4200L)
+
+        assertEquals(("MOVIE" to 4200L), survivor)
 
         connection.close()
     }
-})
+}

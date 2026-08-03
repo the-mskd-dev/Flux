@@ -322,6 +322,4 @@ android-test = [
     "mockk-android",
     "turbine",
     "koin-test",
-    "kotest",
-    "kotest-property",
 ]

@@ -1,8 +1,8 @@
 package com.mskd.flux.core.database.data.migrations
 
 import androidx.sqlite.SQLiteConnection
-import androidx.sqlite.execSQL
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
+import androidx.sqlite.execSQL
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import org.junit.Test

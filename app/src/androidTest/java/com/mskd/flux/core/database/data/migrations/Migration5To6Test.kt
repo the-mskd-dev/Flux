@@ -26,9 +26,9 @@ class Migration5To6Test {
     ) {
         execSQL("""
             INSERT INTO episodes 
-            (id, artworkId, number, season, title, releaseDateString, description,
+            (id, artworkId, number, season, imagePath, title, releaseDateString, description,
              voteAverage, voteCount, duration, currentTime, status, name, addedDateTime, path, source)
-            VALUES ($id, $artworkId, 1, 1, 'Ep', '2024-01-01', 'desc',
+            VALUES ($id, $artworkId, 1, 1, 'imagePath', 'Ep', '2024-01-01', 'desc',
              0.0, 0, 1200, $currentTime, '$status', 'file.mkv', 1000, '$path', 'MEDIA_STORE')
         """.trimIndent())
     }

@@ -61,6 +61,26 @@ val MIGRATION_5_6 = object : Migration(5, 6) {
             """.trimIndent()
         )
 
+        // Clean duplicates
+        connection.execSQL(
+            """
+            DELETE FROM media_new
+            WHERE rowid NOT IN (
+                SELECT rowid FROM (
+                    SELECT rowid,
+                           ROW_NUMBER() OVER (
+                               PARTITION BY path
+                               ORDER BY
+                                   CASE WHEN currentTime != 0 OR status != 'TO_WATCH' THEN 0 ELSE 1 END,
+                                   addedDateTime DESC
+                           ) AS rn
+                    FROM media_new
+                )
+                WHERE rn = 1
+            )
+            """.trimIndent()
+        )
+
         connection.execSQL("DROP TABLE episodes")
         connection.execSQL("DROP TABLE movies")
         connection.execSQL("ALTER TABLE media_new RENAME TO medias")

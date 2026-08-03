@@ -321,5 +321,5 @@ android-test = [
     "androidx-core-testing",
     "mockk-android",
     "turbine",
-    "koin-test",
+    "koin-test"
 ]

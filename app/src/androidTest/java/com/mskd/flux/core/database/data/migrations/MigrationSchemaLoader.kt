@@ -42,8 +42,6 @@ internal fun loadSchemaSetupSql(resourcePath: String, expectedVersion: Int): Lis
                 "The file pointed to probably does not correspond to the correct migration."
     }
 
-    if (schema.setupQueries.isNotEmpty()) return schema.setupQueries
-
     // Fallback if the exported format does not contain setupQueries (older versions of Room)
     return schema.entities.flatMap { entity ->
         val create = entity.createSql.replace($$"${TABLE_NAME}", entity.tableName)

@@ -7,6 +7,7 @@ import androidx.sqlite.execSQL
 val MIGRATION_5_6 = object : Migration(5, 6) {
     override fun migrate(connection: SQLiteConnection) {
 
+        // 1. Create new temporary table
         connection.execSQL(
             """
             CREATE TABLE media_new (
@@ -35,6 +36,7 @@ val MIGRATION_5_6 = object : Migration(5, 6) {
             """.trimIndent()
         )
 
+        // 2. Import all episodes
         connection.execSQL(
             """
             INSERT INTO media_new
@@ -48,6 +50,7 @@ val MIGRATION_5_6 = object : Migration(5, 6) {
             """.trimIndent()
         )
 
+        // 3. Import all movies
         connection.execSQL(
             """
             INSERT INTO media_new
@@ -61,7 +64,7 @@ val MIGRATION_5_6 = object : Migration(5, 6) {
             """.trimIndent()
         )
 
-        // Clean duplicates
+        // 4. Delete duplicates
         connection.execSQL(
             """
             DELETE FROM media_new
@@ -81,10 +84,12 @@ val MIGRATION_5_6 = object : Migration(5, 6) {
             """.trimIndent()
         )
 
+        // Clean old tables
         connection.execSQL("DROP TABLE episodes")
         connection.execSQL("DROP TABLE movies")
         connection.execSQL("ALTER TABLE media_new RENAME TO medias")
 
+        // Create indexes
         connection.execSQL("CREATE INDEX index_media_artworkId ON medias(artworkId)")
         connection.execSQL("CREATE UNIQUE INDEX index_media_path ON medias(path)")
     }

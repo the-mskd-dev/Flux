@@ -1,0 +1,4 @@
+- Feature: Les dossiers système sont maintenant optionnels
+- UI: Nouvel écran de configuration
+- UI: Plus de consistence dans l'affichage des textes
+- Fix: Migration de la BDD depuis la version 1.6.1

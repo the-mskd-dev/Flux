@@ -125,11 +125,11 @@ class DatabaseRepositoryImpl(private val dao: DatabaseDao) : DatabaseRepository 
         // Delete episodes
         medias.filterIsInstance<Episode>().let { episodes ->
             dao.deleteEpisodesByIds(episodes.map { it.id })
-            dao.deleteEmptySeasons() // Delete empty seasons
+
         }
 
-        // Clean empty artworks
-        dao.deleteEmptyArtworks()
+        dao.deleteEmptySeasons() // Delete empty seasons
+        dao.deleteEmptyArtworks() // Clean empty artworks
     }
 
 

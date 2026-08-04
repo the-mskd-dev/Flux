@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.unit.dp
 import com.mskd.flux.navigation.domain.BottomBarTab
 import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.navigation.domain.isSameTabAs
@@ -51,7 +52,7 @@ fun FluxBottomBar(
         Row(
             modifier = Modifier
                 .navigationBarsPadding()
-                .padding(bottom = FluxUI.Space.small)
+                .padding(bottom = FluxUI.Space.medium)
                 .clip(CircleShape)
                 .background(NavigationBarDefaults.containerColor)
                 .padding(all = FluxUI.Space.small),
@@ -92,7 +93,7 @@ fun FluxNavigationBarItem(
             .clip(CircleShape)
             .clickable { onClick() }
             .background(animatedBackgroundColor)
-            .padding(all = FluxUI.Space.small),
+            .padding(vertical = FluxUI.Space.small, horizontal = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.extraSmall)
     ) {

@@ -1,5 +1,6 @@
 package com.mskd.flux
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -51,6 +52,7 @@ class MainActivity : ComponentActivity() {
     private var onUserLeaveHintCallback: (() -> Unit)? = null
 
     @OptIn(ExperimentalPermissionsApi::class)
+    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

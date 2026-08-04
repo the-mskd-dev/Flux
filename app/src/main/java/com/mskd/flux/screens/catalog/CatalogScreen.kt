@@ -42,7 +42,7 @@ import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.features.catalog.presentation.CatalogState
 import com.mskd.flux.features.catalog.presentation.CatalogViewModel
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.navigation.Route
+import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.screens.catalog.composable.CatalogCategory
 import com.mskd.flux.screens.catalog.composable.CatalogGenericCategory
 import com.mskd.flux.screens.catalog.composable.CatalogTopButtons

@@ -50,7 +50,7 @@ import com.mskd.flux.features.sources.presentation.SourcesEvent
 import com.mskd.flux.features.sources.presentation.SourcesIntent
 import com.mskd.flux.features.sources.presentation.SourcesViewModel
 import com.mskd.flux.mockups.FilesMockups
-import com.mskd.flux.navigation.Route
+import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.presentations.components.rememberSafFolderPicker
 import com.mskd.flux.screens.sources.composables.SourcesInformationDialog
 import com.mskd.flux.screens.sources.composables.items.CustomSourceItem

@@ -47,9 +47,9 @@ import com.mskd.flux.features.search.presentation.SearchIntent
 import com.mskd.flux.features.search.presentation.SearchUIState
 import com.mskd.flux.features.search.presentation.SearchViewModel
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.navigation.Route
-import com.mskd.flux.navigation.Route.Artwork
-import com.mskd.flux.navigation.Route.Show
+import com.mskd.flux.navigation.domain.Route
+import com.mskd.flux.navigation.domain.Route.Artwork
+import com.mskd.flux.navigation.domain.Route.Show
 import com.mskd.flux.ui.component.global.FluxScaffold
 import com.mskd.flux.ui.component.global.FluxSearchField
 import com.mskd.flux.ui.component.global.Text

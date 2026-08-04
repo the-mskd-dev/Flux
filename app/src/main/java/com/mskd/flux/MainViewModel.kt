@@ -6,7 +6,7 @@ import com.mskd.flux.core.datastore.domain.UserDataStore
 import com.mskd.flux.features.customization.domain.datastore.CustomizationDataStore
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
-import com.mskd.flux.navigation.Route
+import com.mskd.flux.navigation.domain.Route
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first

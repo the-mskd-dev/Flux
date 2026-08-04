@@ -6,11 +6,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -29,11 +26,10 @@ import androidx.navigation3.ui.NavDisplay
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.mskd.flux.features.connectivity.domain.ConnectivityRepository
-import com.mskd.flux.navigation.NavigationTransitionType
-import com.mskd.flux.navigation.Route
-import com.mskd.flux.navigation.Transition
+import com.mskd.flux.navigation.domain.Route
+import com.mskd.flux.navigation.domain.Transition
 import com.mskd.flux.navigation.component.FluxBottomBar
-import com.mskd.flux.navigation.component.navigateToTab
+import com.mskd.flux.navigation.domain.navigateToTab
 import com.mskd.flux.screens.about.AboutScreen
 import com.mskd.flux.screens.artwork.ArtworkScreen
 import com.mskd.flux.screens.catalog.CatalogScreen

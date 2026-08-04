@@ -30,8 +30,8 @@ import com.mskd.flux.features.settings.presentation.SettingsEvent
 import com.mskd.flux.features.settings.presentation.SettingsIntent
 import com.mskd.flux.features.settings.presentation.SettingsUiState
 import com.mskd.flux.features.settings.presentation.SettingsViewModel
-import com.mskd.flux.navigation.Route
-import com.mskd.flux.navigation.Route.Token
+import com.mskd.flux.navigation.domain.Route
+import com.mskd.flux.navigation.domain.Route.Token
 import com.mskd.flux.screens.settings.composables.SettingsAppInfoSection
 import com.mskd.flux.screens.settings.composables.SettingsCustomizationSection
 import com.mskd.flux.screens.settings.composables.SettingsOtherSection

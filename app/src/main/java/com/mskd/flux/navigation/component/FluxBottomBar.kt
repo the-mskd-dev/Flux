@@ -1,7 +1,6 @@
 package com.mskd.flux.navigation.component
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -27,49 +26,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.navigation3.runtime.NavBackStack
-import androidx.navigation3.runtime.NavKey
-import com.mskd.flux.core.model.core.StringProvider
-import com.mskd.flux.navigation.NavigationTransitionType
-import com.mskd.flux.navigation.Route
-import com.mskd.flux.navigation.Transition
+import com.mskd.flux.navigation.domain.BottomBarTab
+import com.mskd.flux.navigation.domain.Route
+import com.mskd.flux.navigation.domain.isSameTabAs
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxThemePreview
 import com.mskd.flux.utils.extensions.resolve
-import flux.shared.generated.resources.Res
-import flux.shared.generated.resources.home
-import flux.shared.generated.resources.search
-import flux.shared.generated.resources.settings
-
-private enum class BottomBarTab(val route: Route, val icon: ImageVector, val label: StringProvider) {
-    CATALOG(Route.Catalog, Icons.Outlined.Home, StringProvider.Resource(Res.string.home)),
-    SEARCH(Route.Search(), Icons.Outlined.Search, StringProvider.Resource(Res.string.search)),
-    SETTINGS(Route.Settings, Icons.Outlined.Settings, StringProvider.Resource(Res.string.settings)),
-}
-
-fun Route?.isSameTabAs(target: Route): Boolean = when (target) {
-    is Route.Catalog -> this is Route.Catalog
-    is Route.Search -> this is Route.Search
-    is Route.Settings -> this is Route.Settings
-    else -> false
-}
-
-fun navigateToTab(
-    backStack: MutableList<NavKey>,
-    target: Route,
-) {
-    val current = backStack.lastOrNull() as? Route
-    if (current.isSameTabAs(target)) return
-
-    val existingIndex = backStack.indexOfFirst { (it as? Route).isSameTabAs(target) }
-    if (existingIndex != -1) {
-        while (backStack.size > existingIndex + 1) backStack.removeAt(backStack.lastIndex)
-    } else {
-        backStack.add(target)
-    }
-}
 
 @Composable
 fun FluxBottomBar(

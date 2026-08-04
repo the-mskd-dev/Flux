@@ -165,4 +165,6 @@
     <string name="undo">Annuler</string>
     <string name="system_folders">Dossiers système</string>
     <string name="system_folders_toggle_desc">Permet à l'application de chercher les vidéos dans les emplacements standard %1$s et %2$s. (Recommandé)</string>
+    <string name="home">Accueil</string>
+    <string name="search">Rechercher</string>
 </resources>

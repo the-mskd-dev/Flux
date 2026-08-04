@@ -169,4 +169,6 @@
     <string name="undo">실행 취소</string>
     <string name="system_folders">시스템 폴더</string>
     <string name="system_folders_toggle_desc">앱이 기본 %1$s 및 %2$s 위치에서 동영상을 검색하도록 허용합니다. (권장)</string>
+    <string name="home">홈</string>
+    <string name="search">검색</string>
 </resources>

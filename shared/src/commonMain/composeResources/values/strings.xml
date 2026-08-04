@@ -192,4 +192,6 @@
     <string name="undo">Undo</string>
     <string name="system_folders">System folders</string>
     <string name="system_folders_toggle_desc">Allows the app to search for videos in the standard %1$s and %2$s locations. (Recommended)</string>
+    <string name="home">Home</string>
+    <string name="search">Search</string>
 </resources>

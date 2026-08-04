@@ -170,4 +170,6 @@
     <string name="undo">Annulla</string>
     <string name="system_folders">Cartelle di sistema</string>
     <string name="system_folders_toggle_desc">Consente all'app di cercare i video nelle posizioni standard %1$s e %2$s. (Consigliato)</string>
+    <string name="home">Home</string>
+    <string name="search">Cerca</string>
 </resources>

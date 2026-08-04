@@ -169,4 +169,6 @@
     <string name="folder_deleted">Ordner gelöscht</string>
     <string name="undo">Rückgängig</string>
     <string name="system_folders">Systemordner</string>
+    <string name="home">Startseite</string>
+    <string name="search">Suchen</string>
 </resources>

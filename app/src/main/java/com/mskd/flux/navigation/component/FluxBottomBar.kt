@@ -32,21 +32,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
+import com.mskd.flux.core.model.core.StringProvider
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxThemePreview
-import com.mskd.flux.utils.extensions.fillMaxWidthWithLimit
+import com.mskd.flux.utils.extensions.resolve
+import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.home
+import flux.shared.generated.resources.search
+import flux.shared.generated.resources.settings
 
-private enum class BottomBarTab(val route: Route, val icon: ImageVector, val label: String) {
-    CATALOG(Route.Catalog, Icons.Outlined.Home, "Home"),
-    SEARCH(Route.Search(), Icons.Outlined.Search, "Search"),
-    SETTINGS(Route.Settings, Icons.Outlined.Settings, "Settings"),
+private enum class BottomBarTab(val route: Route, val icon: ImageVector, val label: StringProvider) {
+    CATALOG(Route.Catalog, Icons.Outlined.Home, StringProvider.Resource(Res.string.home)),
+    SEARCH(Route.Search(), Icons.Outlined.Search, StringProvider.Resource(Res.string.search)),
+    SETTINGS(Route.Settings, Icons.Outlined.Settings, StringProvider.Resource(Res.string.settings)),
 }
 
 fun Route?.isSameTabAs(target: Route): Boolean = when (target) {
@@ -95,7 +101,7 @@ fun FluxBottomBar(
                     selected = currentTab.isSameTabAs(tab.route),
                     onClick = { onTabSelected(tab.route) },
                     icon = tab.icon,
-                    label = tab.label,
+                    label = tab.label.resolve(),
                 )
             }
         }

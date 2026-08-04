@@ -169,4 +169,6 @@
     <string name="undo">元に戻す</string>
     <string name="system_folders">システムフォルダ</string>
     <string name="system_folders_toggle_desc">アプリが標準の%1$sおよび%2$sの場所から動画を検索できるようにします。（推奨）</string>
+    <string name="home">ホーム</string>
+    <string name="search">検索</string>
 </resources>

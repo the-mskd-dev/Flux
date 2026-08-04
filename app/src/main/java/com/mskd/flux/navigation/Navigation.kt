@@ -83,4 +83,6 @@ object Transition {
     val Forward = enterFromRight() togetherWith exitToLeft()
     val Backward = enterFromLeft() togetherWith exitToRight()
 
+    val Fade = fadeIn() + scaleIn(initialScale = .9f) togetherWith fadeOut() + scaleOut(targetScale = .9f)
+
 }

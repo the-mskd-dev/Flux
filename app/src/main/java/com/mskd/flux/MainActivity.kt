@@ -5,12 +5,21 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ContentTransform
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.entryProvider
@@ -20,6 +29,7 @@ import androidx.navigation3.ui.NavDisplay
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.mskd.flux.features.connectivity.domain.ConnectivityRepository
+import com.mskd.flux.navigation.NavigationTransitionType
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Transition
 import com.mskd.flux.navigation.component.FluxBottomBar
@@ -82,6 +92,17 @@ class MainActivity : ComponentActivity() {
                 it is Route.Catalog || it is Route.Search || it is Route.Settings
             }
 
+            var transitions by remember { mutableStateOf(Transition.Forward to Transition.Backward) }
+
+            val navigate: (Route) -> Unit = { route ->
+                transitions = Transition.Forward to Transition.Backward
+                backStack.add(route)
+            }
+            val onBack: () -> Unit = {
+                transitions = Transition.Forward to Transition.Backward
+                backStack.popScreen()
+            }
+
             FluxTheme(
                 isOnline = isOnline,
                 customization = customization
@@ -90,10 +111,17 @@ class MainActivity : ComponentActivity() {
                 Scaffold(
                     containerColor = MaterialTheme.colorScheme.background,
                     bottomBar = {
-                        if (showBottomBar) {
+                        AnimatedVisibility(
+                            visible = showBottomBar,
+                            enter = fadeIn(),
+                            exit = fadeOut()
+                        ) {
                             FluxBottomBar(
                                 currentTab = currentRoute,
-                                onTabSelected = { target -> navigateToTab(backStack, target) },
+                                onTabSelected = { target ->
+                                    transitions = Transition.Fade to Transition.Fade
+                                    navigateToTab(backStack, target)
+                                },
                             )
                         }
                     }
@@ -108,27 +136,27 @@ class MainActivity : ComponentActivity() {
                             rememberSaveableStateHolderNavEntryDecorator(),
                             rememberViewModelStoreNavEntryDecorator()
                         ),
-                        transitionSpec = { Transition.Forward },
-                        popTransitionSpec = { Transition.Backward },
-                        predictivePopTransitionSpec = { Transition.Backward },
+                        transitionSpec = { transitions.first },
+                        popTransitionSpec = { transitions.second },
+                        predictivePopTransitionSpec = { transitions.second },
                         entryProvider = entryProvider {
                             entry<Route.Setup> {
                                 SetupScreen(
                                     navigate = { route ->
                                         backStack.clear()
-                                        backStack.add(route)
+                                        navigate(route)
                                     },
                                 )
                             }
                             entry<Route.Catalog> {
                                 CatalogScreen(
-                                    navigate = { route -> backStack.add(route) },
+                                    navigate = { route -> navigate(route) },
                                 )
                             }
                             entry<Route.Show> { entry ->
                                 ShowScreen(
-                                    navigate = { route -> backStack.add(route) },
-                                    onBack = { backStack.popScreen() },
+                                    navigate = { route -> navigate(route) },
+                                    onBack = { onBack() },
                                     artworkId = entry.artworkId,
                                     colorScheme = createColorScheme(
                                         theme = customization.uiTheme,
@@ -138,8 +166,8 @@ class MainActivity : ComponentActivity() {
                             }
                             entry<Route.Artwork> { entry ->
                                 ArtworkScreen(
-                                    navigate = { route -> backStack.add(route) },
-                                    onBack = { backStack.popScreen() },
+                                    navigate = { route -> navigate(route) },
+                                    onBack = { onBack() },
                                     artworkId = entry.artworkId,
                                     season = entry.season,
                                     colorScheme = createColorScheme(
@@ -150,50 +178,50 @@ class MainActivity : ComponentActivity() {
                             }
                             entry<Route.UnknownArtworks> {
                                 UnknownScreen(
-                                    navigate = { route -> backStack.add(route) },
-                                    onBack = { backStack.popScreen() },
+                                    navigate = { route -> navigate(route) },
+                                    onBack = { onBack() },
                                 )
                             }
                             entry<Route.Search> { entry ->
                                 SearchScreen(
-                                    navigate = { route -> backStack.add(route) },
-                                    onBack = { backStack.popScreen() },
+                                    navigate = { route -> navigate(route) },
+                                    onBack = { onBack() },
                                     contentType = entry.contentType
                                 )
                             }
                             entry<Route.Player> { entry ->
                                 PlayerScreen(
                                     mediaId = entry.mediaId,
-                                    onBack = { backStack.popScreen() },
+                                    onBack = { onBack() },
                                 )
                             }
                             entry<Route.Settings> {
                                 SettingsScreen(
-                                    navigate = { route -> backStack.add(route) },
-                                    onBack = { backStack.popScreen() },
+                                    navigate = { route -> navigate(route) },
+                                    onBack = { onBack() },
                                 )
                             }
                             entry<Route.Customization> {
                                 CustomizationScreen(
-                                    onBack = { backStack.popScreen() },
+                                    onBack = { onBack() },
                                 )
                             }
                             entry<Route.HowTo> {
                                 HowToScreen(
-                                    onBack = { backStack.popScreen() }
+                                    onBack = { onBack() }
                                 )
                             }
                             entry<Route.About> {
                                 AboutScreen(
-                                    onBack = { backStack.popScreen() }
+                                    onBack = { onBack() }
                                 )
                             }
                             entry<Route.Token> { entry ->
                                 TokenScreen(
-                                    onBack = { backStack.popScreen() },
+                                    onBack = { onBack() },
                                     navigate = { route ->
                                         backStack.clear()
-                                        backStack.add(route)
+                                        navigate(route)
                                     },
                                     fromSetup = entry.fromSetup
                                 )
@@ -202,10 +230,10 @@ class MainActivity : ComponentActivity() {
                                 SourcesScreen(
                                     navigate = { route ->
                                         backStack.clear()
-                                        backStack.add(route)
+                                        navigate(route)
                                     },
                                     fromSetup = entry.fromSetup,
-                                    onBack = { backStack.popScreen() },
+                                    onBack = { onBack() },
                                 )
                             }
                         }

@@ -1,6 +1,7 @@
 package com.mskd.flux.navigation.component
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -29,7 +30,9 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
 import com.mskd.flux.core.model.core.StringProvider
+import com.mskd.flux.navigation.NavigationTransitionType
 import com.mskd.flux.navigation.Route
+import com.mskd.flux.navigation.Transition
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxPreview
@@ -53,12 +56,16 @@ fun Route?.isSameTabAs(target: Route): Boolean = when (target) {
     else -> false
 }
 
-fun navigateToTab(backStack: NavBackStack<NavKey>, target: Route) {
+fun navigateToTab(
+    backStack: MutableList<NavKey>,
+    target: Route,
+) {
+    val current = backStack.lastOrNull() as? Route
+    if (current.isSameTabAs(target)) return
+
     val existingIndex = backStack.indexOfFirst { (it as? Route).isSameTabAs(target) }
     if (existingIndex != -1) {
-        while (backStack.size > existingIndex + 1) {
-            backStack.removeAt(backStack.lastIndex)
-        }
+        while (backStack.size > existingIndex + 1) backStack.removeAt(backStack.lastIndex)
     } else {
         backStack.add(target)
     }

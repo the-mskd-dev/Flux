@@ -108,7 +108,7 @@ fun FluxNavigationBarItem(
             )
         }
 
-        Text.NavigationBarItem(
+        Text.Button.NavigationBarItem(
             text = label,
             color = animatedTextColor
         )

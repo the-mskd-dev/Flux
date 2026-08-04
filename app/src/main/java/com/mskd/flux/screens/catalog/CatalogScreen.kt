@@ -214,7 +214,7 @@ fun CatalogContent(
                                 onClick = { sendIntent(CatalogIntent.OnHowToTap) },
                                 contentPadding = PaddingValues(all = FluxUI.Space.medium)
                             ) {
-                                Text.Button(text = stringResource(Res.string.how_to_name_files),)
+                                Text.Button.Default(text = stringResource(Res.string.how_to_name_files),)
                             }
 
                         }

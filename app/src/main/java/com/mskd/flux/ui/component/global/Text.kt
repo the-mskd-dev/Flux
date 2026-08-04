@@ -41,8 +41,8 @@ object Text {
         @Composable fun listSection() = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
         @Composable fun listTitle() = MaterialTheme.typography.bodyLarge
         @Composable fun listBody() = MaterialTheme.typography.bodyMedium
-        @Composable fun button() = MaterialTheme.typography.titleMedium.copy(fontFeatureSettings = "tnum")
-        @Composable fun navigationBarItem() = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.W500)
+        @Composable fun buttonDefault() = MaterialTheme.typography.titleMedium.copy(fontFeatureSettings = "tnum")
+        @Composable fun buttonNavigationBarItem() = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.W500)
 
     }
 
@@ -473,35 +473,39 @@ object Text {
 
     }
 
-    @Composable
-    fun Button(
-        text: String,
-        modifier: Modifier = Modifier,
-        color: Color = Color.Unspecified,
-    ) {
+    object Button {
 
-        Text(
-            modifier = modifier,
-            text = text,
-            color = color,
-            style = Style.button()
-        )
+        @Composable
+        fun Default(
+            text: String,
+            modifier: Modifier = Modifier,
+            color: Color = Color.Unspecified,
+        ) {
 
-    }
+            Text(
+                modifier = modifier,
+                text = text,
+                color = color,
+                style = Style.buttonDefault()
+            )
 
-    @Composable
-    fun NavigationBarItem(
-        text: String,
-        modifier: Modifier = Modifier,
-        color: Color = Color.Unspecified,
-    ) {
+        }
 
-        Text(
-            modifier = modifier,
-            text = text,
-            color = color,
-            style = Style.navigationBarItem()
-        )
+        @Composable
+        fun NavigationBarItem(
+            text: String,
+            modifier: Modifier = Modifier,
+            color: Color = Color.Unspecified,
+        ) {
+
+            Text(
+                modifier = modifier,
+                text = text,
+                color = color,
+                style = Style.buttonNavigationBarItem()
+            )
+
+        }
 
     }
 

@@ -58,7 +58,7 @@ fun FluxTextButton(
         modifier = modifier.height(height),
         onClick = onTap,
         content = {
-            Text.Button(
+            Text.Button.Default(
                 text = text,
                 color = color,
             )
@@ -133,13 +133,13 @@ fun CountDownButton(
             Box {
 
                 // Invisible text to avoid button size change
-                Text.Button(
+                Text.Button.Default(
                     modifier = Modifier.clearAndSetSemantics { }, // To ignore TalkBack
                     text = text(duration),
                     color = Color.Transparent,
                 )
 
-                Text.Button(
+                Text.Button.Default(
                     text = text(count),
                     color = contentColorFor(backgroundColor),
                 )

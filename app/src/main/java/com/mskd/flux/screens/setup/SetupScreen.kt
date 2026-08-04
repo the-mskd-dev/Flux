@@ -130,7 +130,7 @@ fun SetupScreenContent(
             ,
             onClick = { sendIntent(SetupIntent.OnNextButton) }
         ) {
-            Text.Button(stringResource(Res.string.next))
+            Text.Button.Default(stringResource(Res.string.next))
         }
 
     }

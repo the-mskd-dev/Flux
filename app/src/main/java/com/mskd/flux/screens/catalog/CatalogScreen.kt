@@ -290,7 +290,7 @@ fun CatalogContent(
 
                         Spacer(
                             modifier = Modifier
-                                .height(paddingValues.calculateBottomPadding() + FluxUI.Space.large)
+                                .height(paddingValues.calculateBottomPadding() + FluxUI.Space.bottomScreen)
                         )
 
                     }

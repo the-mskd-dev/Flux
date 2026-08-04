@@ -167,7 +167,7 @@ fun SettingsContent(
                 appVersion = appVersion
             )
 
-            Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding()))
+            Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding() + FluxUI.Space.bottomScreen))
 
         }
 

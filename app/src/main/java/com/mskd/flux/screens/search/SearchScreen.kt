@@ -203,7 +203,8 @@ fun SearchContent(
             }
 
             item(span = { GridItemSpan(maxLineSpan) }) {
-                Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding()))
+                Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding() + FluxUI.Space.bottomScreen))
+
             }
 
         }

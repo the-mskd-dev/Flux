@@ -42,6 +42,7 @@ object Text {
         @Composable fun listTitle() = MaterialTheme.typography.bodyLarge
         @Composable fun listBody() = MaterialTheme.typography.bodyMedium
         @Composable fun button() = MaterialTheme.typography.titleMedium.copy(fontFeatureSettings = "tnum")
+        @Composable fun navigationBarItem() = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold)
 
     }
 

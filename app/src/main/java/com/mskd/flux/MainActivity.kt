@@ -4,16 +4,13 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
@@ -25,7 +22,6 @@ import com.mskd.flux.features.connectivity.domain.ConnectivityRepository
 import com.mskd.flux.navigation.Route
 import com.mskd.flux.navigation.Transition
 import com.mskd.flux.navigation.component.FluxBottomBar
-import com.mskd.flux.navigation.component.isSameTabAs
 import com.mskd.flux.navigation.component.navigateToTab
 import com.mskd.flux.screens.about.AboutScreen
 import com.mskd.flux.screens.artwork.ArtworkScreen
@@ -40,7 +36,6 @@ import com.mskd.flux.screens.show.ShowScreen
 import com.mskd.flux.screens.sources.SourcesScreen
 import com.mskd.flux.screens.token.TokenScreen
 import com.mskd.flux.screens.unknown.UnknownScreen
-import com.mskd.flux.ui.component.global.FluxScaffold
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.createColorScheme
 import com.mskd.flux.utils.extensions.popScreen
@@ -95,7 +90,7 @@ class MainActivity : ComponentActivity() {
                     bottomBar = {
                         if (showBottomBar) {
                             FluxBottomBar(
-                                currentRoute = currentRoute,
+                                currentTab = currentRoute,
                                 onTabSelected = { target -> navigateToTab(backStack, target) },
                             )
                         }

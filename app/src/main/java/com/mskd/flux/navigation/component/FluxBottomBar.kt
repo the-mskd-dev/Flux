@@ -1,25 +1,47 @@
 package com.mskd.flux.navigation.component
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemColors
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
 import com.mskd.flux.navigation.Route
+import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxThemePreview
+import com.mskd.flux.utils.extensions.fillMaxWidthWithLimit
 
 private enum class BottomBarTab(val route: Route, val icon: ImageVector, val label: String) {
     CATALOG(Route.Catalog, Icons.Outlined.Home, "Home"),
@@ -47,30 +69,100 @@ fun navigateToTab(backStack: NavBackStack<NavKey>, target: Route) {
 
 @Composable
 fun FluxBottomBar(
-    currentRoute: Route?,
+    currentTab: Route?,
     onTabSelected: (Route) -> Unit,
 ) {
-    NavigationBar(
-        modifier = Modifier.clip(RoundedCornerShape(16.dp))
+
+    Box(
+        modifier = Modifier
+            .padding(horizontal = FluxUI.Space.medium)
+            .fillMaxWidth(),
+        contentAlignment = Alignment.Center
     ) {
-        BottomBarTab.entries.forEach { tab ->
-            NavigationBarItem(
-                selected = currentRoute.isSameTabAs(tab.route),
-                onClick = { onTabSelected(tab.route) },
-                icon = { Icon(tab.icon, contentDescription = tab.label) },
-                label = { Text(tab.label) },
-            )
+
+        Row(
+            modifier = Modifier
+                .navigationBarsPadding()
+                .padding(bottom = FluxUI.Space.small)
+                .clip(CircleShape)
+                .background(NavigationBarDefaults.containerColor)
+                .padding(all = FluxUI.Space.small),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
+        ) {
+            BottomBarTab.entries.forEach { tab ->
+                FluxNavigationBarItem(
+                    selected = currentTab.isSameTabAs(tab.route),
+                    onClick = { onTabSelected(tab.route) },
+                    icon = tab.icon,
+                    label = tab.label,
+                )
+            }
         }
+
     }
 }
 
-@Preview
+@Composable
+fun FluxNavigationBarItem(
+    selected: Boolean,
+    onClick: () -> Unit,
+    icon: ImageVector,
+    label: String,
+) {
+
+    val colors = NavigationBarItemDefaults.colors()
+    val animatedBackgroundColor by animateColorAsState(
+        targetValue = if (selected) colors.selectedIndicatorColor else Color.Transparent
+    )
+    val animatedTextColor by animateColorAsState(
+        targetValue = if (selected) colors.selectedTextColor else colors.unselectedTextColor
+    )
+
+    Row(
+        modifier = Modifier
+            .clip(CircleShape)
+            .clickable { onClick() }
+            .background(animatedBackgroundColor)
+            .padding(all = FluxUI.Space.small),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.extraSmall)
+    ) {
+
+        AnimatedVisibility(
+            visible = selected
+        ) {
+            Icon(
+                imageVector = icon,
+                tint = colors.selectedIconColor,
+                contentDescription = label
+            )
+        }
+
+        Text(
+            text = label,
+            color = animatedTextColor
+        )
+
+    }
+
+
+
+}
+
+@FluxPreview
 @Composable
 fun FluxBottomBar_Preview() {
     FluxThemePreview{
-        FluxBottomBar(
-            currentRoute = Route.Catalog,
-            onTabSelected = {}
-        )
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.BottomCenter
+        ) {
+            FluxBottomBar(
+                currentTab = Route.Catalog,
+                onTabSelected = {}
+            )
+        }
+
     }
 }

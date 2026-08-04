@@ -227,7 +227,7 @@ fun SearchTypeFilters(
         FilterChip(
             onClick = { sendIntent(SearchIntent.FilterOnType(ContentType.MOVIE)) },
             label = {
-                Text.Card.Label(
+                Text.Button.Chip(
                     text = stringResource(Res.string.movies).uppercase(),
                 )
             },
@@ -246,7 +246,7 @@ fun SearchTypeFilters(
         FilterChip(
             onClick = { sendIntent(SearchIntent.FilterOnType(ContentType.SHOW)) },
             label = {
-                Text.Card.Label(
+                Text.Button.Chip(
                     text = stringResource(Res.string.shows).uppercase(),
                 )
             },

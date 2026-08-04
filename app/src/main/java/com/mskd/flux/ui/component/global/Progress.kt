@@ -68,7 +68,7 @@ fun ProgressStatusChip(
                 .padding(horizontal = FluxUI.Space.small),
             contentAlignment = Alignment.Center
         ) {
-            Text.Card.Label(
+            Text.Button.Chip(
                 color = MaterialTheme.colorScheme.onTertiary,
                 text = stringResource(Res.string.watched)
             )

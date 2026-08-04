@@ -8,6 +8,7 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -37,41 +38,20 @@ private enum class IconRefreshState { Idle, Dragging, Refreshing }
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun CatalogTopButtons(
-    sendIntent: (CatalogIntent) -> Unit
-) {
+fun CatalogTopButtons() {
 
-    Row(
+    Box(
         modifier = Modifier
-            .padding(vertical = FluxUI.Space.small, horizontal = FluxUI.Space.small)
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+            .fillMaxWidth()
+            .padding(vertical = FluxUI.Space.small),
+        contentAlignment = Alignment.Center
     ) {
-
-        IconButton(onClick = { sendIntent(CatalogIntent.OnSearchTap) }) {
-            Icon(
-                imageVector = Icons.Rounded.Search,
-                tint = MaterialTheme.colorScheme.onBackground,
-                contentDescription = "Search button"
-            )
-        }
-
         Icon(
             modifier = Modifier.size(40.dp),
             painter = painterResource(Res.drawable.ic_flux),
             tint = MaterialTheme.colorScheme.primary,
             contentDescription = "Flux icon"
         )
-
-        IconButton(onClick = { sendIntent(CatalogIntent.OnSettingsTap) }) {
-            Icon(
-                imageVector = Icons.Rounded.Settings,
-                tint = MaterialTheme.colorScheme.onBackground,
-                contentDescription = "Settings button"
-            )
-        }
-
     }
 
 }

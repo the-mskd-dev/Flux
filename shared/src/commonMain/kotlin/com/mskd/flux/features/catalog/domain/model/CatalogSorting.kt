@@ -1,7 +1,9 @@
 package com.mskd.flux.features.catalog.domain.model
 
+import androidx.compose.runtime.Immutable
 import com.mskd.flux.core.model.core.StringProvider
 
+@Immutable
 data class CatalogSorting(
     val option: CatalogSortingOption = CatalogSortingOption.LAST_MODIFICATION,
     val showOptions: Boolean = false

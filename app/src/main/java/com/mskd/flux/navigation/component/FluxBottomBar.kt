@@ -25,7 +25,6 @@ import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemColors
 import androidx.compose.material3.NavigationBarItemDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -38,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
 import com.mskd.flux.navigation.Route
+import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxThemePreview
@@ -139,7 +139,7 @@ fun FluxNavigationBarItem(
             )
         }
 
-        Text(
+        Text.NavigationBarItem(
             text = label,
             color = animatedTextColor
         )

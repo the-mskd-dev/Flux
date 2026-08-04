@@ -42,7 +42,7 @@ object Text {
         @Composable fun listTitle() = MaterialTheme.typography.bodyLarge
         @Composable fun listBody() = MaterialTheme.typography.bodyMedium
         @Composable fun button() = MaterialTheme.typography.titleMedium.copy(fontFeatureSettings = "tnum")
-        @Composable fun navigationBarItem() = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold)
+        @Composable fun navigationBarItem() = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.W500)
 
     }
 
@@ -485,6 +485,22 @@ object Text {
             text = text,
             color = color,
             style = Style.button()
+        )
+
+    }
+
+    @Composable
+    fun NavigationBarItem(
+        text: String,
+        modifier: Modifier = Modifier,
+        color: Color = Color.Unspecified,
+    ) {
+
+        Text(
+            modifier = modifier,
+            text = text,
+            color = color,
+            style = Style.navigationBarItem()
         )
 
     }

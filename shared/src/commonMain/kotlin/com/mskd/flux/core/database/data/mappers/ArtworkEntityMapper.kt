@@ -2,6 +2,8 @@ package com.mskd.flux.core.database.data.mappers
 
 import com.mskd.flux.core.database.data.model.ArtworkEntity
 import com.mskd.flux.core.model.artwork.Artwork
+import kotlin.time.Clock
+import kotlin.time.Instant
 
 fun ArtworkEntity.toDomain() : Artwork {
     return Artwork(
@@ -10,7 +12,8 @@ fun ArtworkEntity.toDomain() : Artwork {
         description = this.description,
         imagePath = this.imagePath,
         bannerPath = this.bannerPath,
-        type = this.type
+        type = this.type,
+        lastModification = this.lastModification
     )
 }
 
@@ -21,6 +24,7 @@ fun Artwork.toEntity() : ArtworkEntity {
         description = this.description,
         imagePath = this.imagePath,
         bannerPath = this.bannerPath,
-        type = this.type
+        type = this.type,
+        lastModification = Clock.System.now().toEpochMilliseconds()
     )
 }

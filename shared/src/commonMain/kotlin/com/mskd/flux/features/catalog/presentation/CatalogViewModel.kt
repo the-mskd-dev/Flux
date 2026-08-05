@@ -61,8 +61,9 @@ class CatalogViewModel(
         database.flowArtworks(),
         syncCatalogUseCase.state,
         preferencesFlow,
-        _showSortingSheet
-    ) { artworks, syncState, preferences, showSortingSheet  ->
+        _showSortingSheet,
+        _showViewModeSheet
+    ) { artworks, syncState, preferences, showSortingSheet, showViewModeSheet  ->
 
         if (syncState is SyncState.Syncing && (syncState.full || !hasLoadedContent)) {
 
@@ -88,7 +89,8 @@ class CatalogViewModel(
                     tokenIsMissing = preferences.token.isBlank(),
                     sortingMode = preferences.sortingMode,
                     viewMode = preferences.viewMode,
-                    showSortingSheet = showSortingSheet
+                    showSortingSheet = showSortingSheet,
+                    showViewSheet = showViewModeSheet
                 ),
             )
 

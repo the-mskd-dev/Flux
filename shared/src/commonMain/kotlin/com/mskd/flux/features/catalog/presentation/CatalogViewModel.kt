@@ -103,7 +103,7 @@ class CatalogViewModel(
             CatalogIntent.OnTokenTap -> _event.emit(NavigateToToken)
 
             // Sort
-            is CatalogIntent.OnSort -> onSort(option = intent.option)
+            is CatalogIntent.SelectSortingOption -> selectSortingOption(option = intent.option)
             is CatalogIntent.ShowSortingOptions -> showSortingOptions(show = intent.show)
         }
     }
@@ -135,7 +135,7 @@ class CatalogViewModel(
 
     }
 
-    private fun onSort(option: CatalogSortingOption) {
+    private fun selectSortingOption(option: CatalogSortingOption) {
         _sorting.update {
             CatalogSorting(
                 option = option,

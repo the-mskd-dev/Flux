@@ -79,6 +79,7 @@ fun CatalogCategory(
 
                 MediaItem(
                     modifier = Modifier
+                        .animateItem()
                         .width(itemWidth)
                         .aspectRatio(FluxUI.Dimension.itemRatio),
                     path = it.imagePath,

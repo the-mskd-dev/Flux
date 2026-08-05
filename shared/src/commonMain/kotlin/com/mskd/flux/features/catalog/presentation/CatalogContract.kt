@@ -42,7 +42,7 @@ sealed interface CatalogIntent {
     data object OnTokenTap: CatalogIntent
 
     // Sort
-    data class OnSort(val option: CatalogSortingOption): CatalogIntent
+    data class SelectSortingOption(val option: CatalogSortingOption): CatalogIntent
     data class ShowSortingOptions(val show: Boolean): CatalogIntent
 }
 

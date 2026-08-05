@@ -8,12 +8,17 @@ import com.mskd.flux.core.datastore.domain.UserDataStore
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.core.AppInfo
+import com.mskd.flux.features.catalog.domain.datastore.CatalogDataStore
+import com.mskd.flux.features.catalog.domain.model.CatalogSortingOption
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.catalog.fake.FakeSyncCatalogUseCase
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.mockups.MediaMockups
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.enum
+import io.kotest.property.checkAll
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -59,12 +64,16 @@ class CatalogViewModelTest : FunSpec({
 
     }
 
-    fun createViewModel(syncUseCase: SyncCatalogUseCase = syncCatalogUseCase): CatalogViewModel {
+    fun createViewModel(
+        syncUseCase: SyncCatalogUseCase = syncCatalogUseCase,
+        catalogDataStore: CatalogDataStore = mockk(relaxed = true)
+    ): CatalogViewModel {
         return CatalogViewModel(
             syncCatalogUseCase = syncUseCase,
             database = database,
             userDataStore = userDataStore,
             tokenDataStore = tokenDataStore,
+            catalogDataStore = catalogDataStore,
             appInfo = appInfo
         )
     }
@@ -210,6 +219,30 @@ class CatalogViewModelTest : FunSpec({
             viewModel.handleIntent(CatalogIntent.OnHowToTap)
             awaitItem() shouldBe CatalogEvent.NavigateToHowTo
         }
+    }
+
+    test("SelectSortingOption - select and save the selected sorting option") {
+
+        checkAll(
+            Arb.enum<CatalogSortingOption>()
+        ) { option ->
+
+            // Given
+            val catalogDataStore = mockk<CatalogDataStore>(relaxed = true)
+            viewModel = createViewModel(catalogDataStore = catalogDataStore)
+
+            viewModel.uiState.test {
+                awaitItem()
+
+                // When
+                viewModel.handleIntent(CatalogIntent.SelectSortingOption(option))
+
+                // Then
+                coEvery { catalogDataStore.setSortingOption(option) }
+            }
+
+        }
+
     }
 
 })

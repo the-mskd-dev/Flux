@@ -4,6 +4,7 @@ import org.koin.core.qualifier.named
 
 object Qualifiers {
 
+    val CATALOG_DATASTORE = named("CATALOG_DATASTORE")
     val CUSTOMIZATION_DATASTORE = named("CUSTOMIZATION_DATASTORE")
     val SETTINGS_DATASTORE = named("SETTINGS_DATASTORE")
     val SNACKBAR_DATASTORE = named("SNACKBAR_DATASTORE")

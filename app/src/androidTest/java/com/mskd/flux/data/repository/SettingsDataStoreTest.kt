@@ -250,21 +250,4 @@ class SettingsDataStoreTest {
 
     }
 
-    @Test
-    fun get_and_set_sorting_option() = runTest {
-
-        settingsDataStore.flow.test {
-            var state = awaitItem()
-            assert(state.sortingOption == CatalogSortingOption.LAST_MODIFICATION)
-
-            val newSortingOption = CatalogSortingOption.A_TO_Z
-            settingsDataStore.setSortingOption(newSortingOption)
-            state = awaitItem()
-            assert(state.sortingOption == newSortingOption)
-
-            cancelAndConsumeRemainingEvents()
-        }
-
-    }
-
 }

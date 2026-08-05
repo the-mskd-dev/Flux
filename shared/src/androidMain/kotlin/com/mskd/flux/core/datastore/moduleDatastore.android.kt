@@ -8,6 +8,10 @@ import org.koin.dsl.module
 
 val moduleDatastoreAndroid = module {
 
+    single<DataStore<Preferences>>(Qualifiers.CATALOG_DATASTORE) {
+        get<Context>().catalogDataStore
+    }
+
     single<DataStore<Preferences>>(Qualifiers.CUSTOMIZATION_DATASTORE) {
         get<Context>().customizationDatastore
     }

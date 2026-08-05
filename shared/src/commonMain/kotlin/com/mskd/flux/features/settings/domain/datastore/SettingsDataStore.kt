@@ -30,7 +30,6 @@ interface SettingsDataStore {
 
     suspend fun setSystemFolders(enabled: Boolean)
 
-    suspend fun setSortingOption(option: CatalogSortingOption)
 
     data class State(
         val playerRewindValue: Int = 10,
@@ -43,6 +42,6 @@ interface SettingsDataStore {
         val dataLanguage: Locale? = null,
         val prefetchHdImages: Boolean = false,
         val systemFoldersEnabled: Boolean = true,
-        val sortingOption: CatalogSortingOption = CatalogSortingOption.LAST_MODIFICATION
     )
+
 }

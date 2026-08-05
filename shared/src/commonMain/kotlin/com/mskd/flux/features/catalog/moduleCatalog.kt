@@ -1,8 +1,10 @@
 package com.mskd.flux.features.catalog
 
 import com.mskd.flux.di.Qualifiers
+import com.mskd.flux.features.catalog.data.datastore.CatalogDataStoreImpl
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinatorImpl
+import com.mskd.flux.features.catalog.domain.datastore.CatalogDataStore
 import com.mskd.flux.features.catalog.domain.fetcher.ArtworkFolderFetcher
 import com.mskd.flux.features.catalog.domain.fetcher.ArtworkFolderFetcherImpl
 import com.mskd.flux.features.catalog.domain.fetcher.MovieMetadataFetcher
@@ -18,6 +20,8 @@ import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseC
 import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCase
 import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCaseImpl
 import com.mskd.flux.features.catalog.presentation.CatalogViewModel
+import com.mskd.flux.features.settings.data.datastore.SettingsDataStoreImpl
+import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import org.koin.core.module.dsl.viewModelOf
@@ -94,6 +98,12 @@ val moduleCatalog = module {
             database = get(),
             settings = get(),
             coordinator = get()
+        )
+    }
+
+    single<CatalogDataStore> {
+        CatalogDataStoreImpl(
+            catalogDataStore = get(Qualifiers.CATALOG_DATASTORE),
         )
     }
 

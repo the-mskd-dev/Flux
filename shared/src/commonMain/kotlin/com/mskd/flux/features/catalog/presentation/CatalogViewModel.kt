@@ -10,6 +10,7 @@ import com.mskd.flux.core.model.core.AppInfo
 import com.mskd.flux.features.catalog.domain.datastore.CatalogDataStore
 import com.mskd.flux.features.catalog.domain.model.CatalogPreferences
 import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
+import com.mskd.flux.features.catalog.domain.model.CatalogViewMode
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.catalog.presentation.CatalogEvent.*
@@ -39,6 +40,7 @@ class CatalogViewModel(
     val event = _event.asSharedFlow()
 
     private val _showSortingSheet = MutableStateFlow(false)
+    private val _showViewModeSheet = MutableStateFlow(false)
 
     private var hasLoadedContent = false
 
@@ -49,7 +51,8 @@ class CatalogViewModel(
     ) { user, catalog, token  ->
         CatalogPreferences(
             recentlyWatchedIds = user.recentlyWatchedIds,
-            sortingOption = catalog.sortingMode,
+            sortingMode = catalog.sortingMode,
+            viewMode = catalog.viewMode,
             token = token
         )
     }
@@ -71,7 +74,7 @@ class CatalogViewModel(
 
             hasLoadedContent = true
 
-            val sortedArtworks = when (preferences.sortingOption) {
+            val sortedArtworks = when (preferences.sortingMode) {
                 CatalogSortingMode.LAST_MODIFICATION -> artworks.sortedByDescending { it.lastModification }
                 CatalogSortingMode.A_TO_Z -> artworks.sortedBy { it.title }
                 CatalogSortingMode.Z_TO_A -> artworks.sortedByDescending { it.title }
@@ -83,7 +86,8 @@ class CatalogViewModel(
                     lastWatchedMediaIds = preferences.recentlyWatchedIds,
                     isRefreshing = syncState is SyncState.Syncing,
                     tokenIsMissing = preferences.token.isBlank(),
-                    sortingMode = preferences.sortingOption,
+                    sortingMode = preferences.sortingMode,
+                    viewMode = preferences.viewMode,
                     showSortingSheet = showSortingSheet
                 ),
             )
@@ -117,8 +121,12 @@ class CatalogViewModel(
             CatalogIntent.OnTokenTap -> _event.emit(NavigateToToken)
 
             // Sort
-            is CatalogIntent.SelectSortingMode -> selectSortingOption(option = intent.option)
+            is CatalogIntent.SelectSortingMode -> selectSortingOption(mode = intent.mode)
             is CatalogIntent.ShowSortingModes -> showSortingOptions(show = intent.show)
+
+            // View mode
+            is CatalogIntent.SelectViewMode -> selectViewMode(mode = intent.mode)
+            is CatalogIntent.ShowViewModes -> showViewModes(show = intent.show)
         }
     }
 
@@ -149,13 +157,22 @@ class CatalogViewModel(
 
     }
 
-    private suspend fun selectSortingOption(option: CatalogSortingMode) {
-        catalogDataStore.setSortingMode(mode = option)
+    private suspend fun selectSortingOption(mode: CatalogSortingMode) {
+        catalogDataStore.setSortingMode(mode = mode)
         _showSortingSheet.update { false }
     }
 
     private fun showSortingOptions(show: Boolean) {
         _showSortingSheet.update { show }
+    }
+
+    private suspend fun selectViewMode(mode: CatalogViewMode) {
+        catalogDataStore.setViewMode(mode = mode)
+        _showViewModeSheet.update { false }
+    }
+
+    private fun showViewModes(show: Boolean) {
+        _showViewModeSheet.update { show }
     }
 
 }

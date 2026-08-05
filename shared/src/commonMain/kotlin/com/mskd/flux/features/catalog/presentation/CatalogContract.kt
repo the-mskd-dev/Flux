@@ -4,6 +4,7 @@ import androidx.compose.runtime.Immutable
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
+import com.mskd.flux.features.catalog.domain.model.CatalogViewMode
 
 @Immutable
 data class CatalogUiState(
@@ -23,8 +24,14 @@ sealed class CatalogState {
         val lastWatchedMediaIds: List<Long> = emptyList(),
         val isRefreshing: Boolean = true,
         val tokenIsMissing: Boolean = false,
+
+        // Sort
         val sortingMode: CatalogSortingMode = CatalogSortingMode.LAST_MODIFICATION,
         val showSortingSheet: Boolean = false,
+
+        // View
+        val viewMode: CatalogViewMode = CatalogViewMode.BY_TYPE,
+        val showViewSheet: Boolean = false,
     ): CatalogState()
 
 }
@@ -42,8 +49,12 @@ sealed interface CatalogIntent {
     data object OnTokenTap: CatalogIntent
 
     // Sort
-    data class SelectSortingMode(val option: CatalogSortingMode): CatalogIntent
+    data class SelectSortingMode(val mode: CatalogSortingMode): CatalogIntent
     data class ShowSortingModes(val show: Boolean): CatalogIntent
+
+    // View mode
+    data class SelectViewMode(val mode: CatalogViewMode): CatalogIntent
+    data class ShowViewModes(val show: Boolean): CatalogIntent
 }
 
 sealed interface CatalogEvent {

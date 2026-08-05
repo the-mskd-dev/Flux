@@ -5,6 +5,7 @@ import androidx.compose.runtime.Immutable
 @Immutable
 data class CatalogPreferences(
     val recentlyWatchedIds: List<Long>,
-    val sortingOption: CatalogSortingMode,
+    val sortingMode: CatalogSortingMode,
+    val viewMode: CatalogViewMode,
     val token: String,
 )

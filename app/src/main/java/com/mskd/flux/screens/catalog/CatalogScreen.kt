@@ -262,6 +262,7 @@ fun CatalogContent(
                                 name = stringResource(Res.string.shows),
                                 category = ContentType.SHOW,
                                 artworks = artworks.filter { it.type == ContentType.SHOW && !it.isUnknown },
+                                sortingOption = sorting.option,
                                 sendIntent = sendIntent
                             )
                         }
@@ -271,6 +272,7 @@ fun CatalogContent(
                                 name = stringResource(Res.string.movies),
                                 category = ContentType.MOVIE,
                                 artworks = artworks.filter { it.type == ContentType.MOVIE && !it.isUnknown },
+                                sortingOption = sorting.option,
                                 sendIntent = sendIntent
                             )
                         }

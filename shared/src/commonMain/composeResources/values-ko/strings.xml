@@ -171,4 +171,12 @@
     <string name="system_folders_toggle_desc">앱이 기본 %1$s 및 %2$s 위치에서 동영상을 검색하도록 허용합니다. (권장)</string>
     <string name="home">홈</string>
     <string name="search">검색</string>
+    <string name="sort">정렬</string>
+    <string name="last_modification">최종 수정일</string>
+    <string name="a_to_z">가나다순 (A-Z)</string>
+    <string name="z_to_a">역순 (Z-A)</string>
+    <string name="view">보기</string>
+    <string name="grid">격자</string>
+    <string name="by_type">유형별</string>
+    <string name="by_genre">장르별</string>
 </resources>

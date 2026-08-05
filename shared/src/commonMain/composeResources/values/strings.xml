@@ -194,4 +194,12 @@
     <string name="system_folders_toggle_desc">Allows the app to search for videos in the standard %1$s and %2$s locations. (Recommended)</string>
     <string name="home">Home</string>
     <string name="search">Search</string>
+    <string name="sort">Sort</string>
+    <string name="last_modification">Last modification</string>
+    <string name="a_to_z">A to Z</string>
+    <string name="z_to_a">Z to A</string>
+    <string name="view">View</string>
+    <string name="grid">Grid</string>
+    <string name="by_type">By type</string>
+    <string name="by_genre">By genre</string>
 </resources>

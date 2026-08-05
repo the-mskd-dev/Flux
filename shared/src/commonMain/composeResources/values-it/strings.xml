@@ -172,4 +172,12 @@
     <string name="system_folders_toggle_desc">Consente all'app di cercare i video nelle posizioni standard %1$s e %2$s. (Consigliato)</string>
     <string name="home">Home</string>
     <string name="search">Cerca</string>
+    <string name="sort">Ordina</string>
+    <string name="last_modification">Ultima modifica</string>
+    <string name="a_to_z">Da A a Z</string>
+    <string name="z_to_a">Da Z ad A</string>
+    <string name="view">Vista</string>
+    <string name="grid">Griglia</string>
+    <string name="by_type">Per tipo</string>
+    <string name="by_genre">Per genere</string>
 </resources>

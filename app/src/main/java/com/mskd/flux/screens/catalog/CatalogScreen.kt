@@ -16,9 +16,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.AssistChip
+import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.RadioButton
@@ -76,6 +79,7 @@ import flux.shared.generated.resources.ic_flux
 import flux.shared.generated.resources.movies
 import flux.shared.generated.resources.other_files
 import flux.shared.generated.resources.shows
+import flux.shared.generated.resources.sort
 import flux.shared.generated.resources.sync_in_progress
 import flux.shared.generated.resources.tmdb_api_token
 import org.jetbrains.compose.resources.painterResource
@@ -251,10 +255,18 @@ fun CatalogContent(
                         }
 
                         item {
-                            AssistChip(
-                                onClick = { sendIntent(CatalogIntent.ShowSortingOptions(show = true)) },
-                                label = { Text.Button.Chip(sorting.option.description.resolve()) }
-                            )
+                            Row(
+                                modifier = Modifier.padding(horizontal = FluxUI.Space.medium),
+                                horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween)
+                            ) {
+
+                                AssistChip(
+                                    onClick = { sendIntent(CatalogIntent.ShowSortingOptions(show = true)) },
+                                    label = { Text.Button.Chip(stringResource(Res.string.sort)) },
+                                    shape = CircleShape
+                                )
+                            }
+
                         }
 
                         item {

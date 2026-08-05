@@ -171,4 +171,12 @@
     <string name="system_folders">Systemordner</string>
     <string name="home">Startseite</string>
     <string name="search">Suchen</string>
+    <string name="sort">Sortieren</string>
+    <string name="last_modification">Letzte Änderung</string>
+    <string name="a_to_z">A bis Z</string>
+    <string name="z_to_a">Z bis A</string>
+    <string name="view">Ansicht</string>
+    <string name="grid">Raster</string>
+    <string name="by_type">Nach Typ</string>
+    <string name="by_genre">Nach Genre</string>
 </resources>

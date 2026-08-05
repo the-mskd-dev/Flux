@@ -48,6 +48,7 @@ import com.mskd.flux.features.catalog.presentation.CatalogState
 import com.mskd.flux.features.catalog.presentation.CatalogViewModel
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.navigation.domain.Route
+import com.mskd.flux.screens.catalog.composable.CatalogChips
 import com.mskd.flux.screens.catalog.composable.CatalogEmptyContent
 import com.mskd.flux.screens.catalog.composable.CatalogGenericCategory
 import com.mskd.flux.screens.catalog.composable.sorting.CatalogSortingSheet
@@ -210,17 +211,10 @@ fun CatalogContent(
                         }
 
                         item {
-                            Row(
-                                modifier = Modifier.padding(horizontal = FluxUI.Space.medium),
-                                horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween)
-                            ) {
-
-                                AssistChip(
-                                    onClick = { sendIntent(CatalogIntent.ShowSortingOptions(show = true)) },
-                                    label = { Text.Button.Chip(stringResource(Res.string.sort)) },
-                                    shape = CircleShape
-                                )
-                            }
+                            CatalogChips(
+                                sortingOption = sorting.option,
+                                sendIntent = sendIntent
+                            )
                         }
 
                         item {

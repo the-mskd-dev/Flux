@@ -172,6 +172,7 @@
     <string name="home">Startseite</string>
     <string name="search">Suchen</string>
     <string name="sort">Sortieren</string>
+    <string name="sort_by">Sortieren nach</string>
     <string name="last_modification">Letzte Änderung</string>
     <string name="a_to_z">A bis Z</string>
     <string name="z_to_a">Z bis A</string>

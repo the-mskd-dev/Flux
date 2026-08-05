@@ -173,6 +173,7 @@
     <string name="home">Inicio</string>
     <string name="search">Buscar</string>
     <string name="sort">Ordenar</string>
+    <string name="sort_by">Ordenar por</string>
     <string name="last_modification">Última modificación</string>
     <string name="a_to_z">De la A a la Z</string>
     <string name="z_to_a">De la Z a la A</string>

@@ -172,6 +172,7 @@
     <string name="home">홈</string>
     <string name="search">검색</string>
     <string name="sort">정렬</string>
+    <string name="sort_by">정렬 기준</string>
     <string name="last_modification">최종 수정일</string>
     <string name="a_to_z">가나다순 (A-Z)</string>
     <string name="z_to_a">역순 (Z-A)</string>

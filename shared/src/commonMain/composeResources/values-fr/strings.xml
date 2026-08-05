@@ -168,6 +168,7 @@
     <string name="home">Accueil</string>
     <string name="search">Rechercher</string>
     <string name="sort">Trier</string>
+    <string name="sort_by">Trier par</string>
     <string name="last_modification">Dernière modification</string>
     <string name="a_to_z">De A à Z</string>
     <string name="z_to_a">De Z à A</string>

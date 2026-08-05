@@ -9,6 +9,7 @@ import app.cash.turbine.test
 import com.mskd.flux.features.catalog.data.datastore.CatalogDataStoreImpl
 import com.mskd.flux.features.catalog.domain.datastore.CatalogDataStore
 import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
+import com.mskd.flux.features.catalog.domain.model.CatalogViewMode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -68,6 +69,23 @@ class CatalogDataStoreImplTest {
             catalogDataStore.setSortingMode(newSortingMode)
             state = awaitItem()
             assert(state.sortingMode == newSortingMode)
+
+            cancelAndConsumeRemainingEvents()
+        }
+
+    }
+
+    @Test
+    fun get_and_set_view_mode() = runTest {
+
+        catalogDataStore.flow.test {
+            var state = awaitItem()
+            assert(state.viewMode == CatalogViewMode.BY_TYPE)
+
+            val newViewMode = CatalogViewMode.GRID
+            catalogDataStore.setViewMode(newViewMode)
+            state = awaitItem()
+            assert(state.viewMode == newViewMode)
 
             cancelAndConsumeRemainingEvents()
         }

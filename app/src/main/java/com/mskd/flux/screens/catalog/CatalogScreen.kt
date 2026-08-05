@@ -36,7 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.mskd.flux.core.model.artwork.Artwork
-import com.mskd.flux.features.catalog.domain.model.CatalogSortingOption
+import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
 import com.mskd.flux.features.catalog.presentation.CatalogEvent
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.features.catalog.presentation.CatalogState
@@ -121,8 +121,8 @@ fun CatalogScreen(
                     lastWatchedIds = state.lastWatchedMediaIds,
                     isRefreshing = state.isRefreshing,
                     tokenIsMissing = state.tokenIsMissing,
-                    sortingOption = state.sortingOption,
-                    showSortingOptions = state.showSortingSheet,
+                    sortingMode = state.sortingMode,
+                    showSortingModes = state.showSortingSheet,
                     sendIntent = viewModel::handleIntent
                 )
 
@@ -142,8 +142,8 @@ fun CatalogContent(
     lastWatchedIds: List<Long>,
     isRefreshing: Boolean,
     tokenIsMissing: Boolean,
-    sortingOption: CatalogSortingOption,
-    showSortingOptions: Boolean,
+    sortingMode: CatalogSortingMode,
+    showSortingModes: Boolean,
     sendIntent: (CatalogIntent) -> Unit
 ) {
 
@@ -207,7 +207,7 @@ fun CatalogContent(
 
                         item {
                             CatalogChips(
-                                sortingOption = sortingOption,
+                                sortingMode = sortingMode,
                                 sendIntent = sendIntent
                             )
                         }
@@ -215,7 +215,7 @@ fun CatalogContent(
                         item {
                             CatalogViewModeGenre(
                                 artworks = artworks,
-                                sortingOption = sortingOption,
+                                sortingMode = sortingMode,
                                 sendIntent = sendIntent
                             )
                         }
@@ -274,9 +274,9 @@ fun CatalogContent(
         }
 
 
-        if (showSortingOptions) {
+        if (showSortingModes) {
             CatalogSortingSheet(
-                selectedOption = sortingOption,
+                selectedMode = sortingMode,
                 sheetState = sheetState,
                 sendIntent = sendIntent
             )
@@ -297,8 +297,8 @@ fun CatalogScreen_Preview() {
                 lastWatchedIds = MediaMockups.artworks.map { it.id },
                 isRefreshing = false,
                 tokenIsMissing = false,
-                sortingOption = CatalogSortingOption.LAST_MODIFICATION,
-                showSortingOptions = false,
+                sortingMode = CatalogSortingMode.LAST_MODIFICATION,
+                showSortingModes = false,
                 sendIntent = {}
             )
         }
@@ -315,8 +315,8 @@ fun CatalogScreen_Unknown_Preview() {
                 lastWatchedIds = emptyList(),
                 isRefreshing = false,
                 tokenIsMissing = true,
-                sortingOption = CatalogSortingOption.LAST_MODIFICATION,
-                showSortingOptions = false,
+                sortingMode = CatalogSortingMode.LAST_MODIFICATION,
+                showSortingModes = false,
                 sendIntent = {}
             )
         }
@@ -333,8 +333,8 @@ fun CatalogScreen_Empty_Preview() {
                 lastWatchedIds = emptyList(),
                 isRefreshing = false,
                 tokenIsMissing = true,
-                sortingOption = CatalogSortingOption.LAST_MODIFICATION,
-                showSortingOptions = false,
+                sortingMode = CatalogSortingMode.LAST_MODIFICATION,
+                showSortingModes = false,
                 sendIntent = {}
             )
         }

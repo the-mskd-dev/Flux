@@ -10,7 +10,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.mskd.flux.features.catalog.domain.model.CatalogSortingOption
+import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxUI
@@ -24,7 +24,7 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun CatalogChips(
-    sortingOption: CatalogSortingOption,
+    sortingMode: CatalogSortingMode,
     sendIntent: (CatalogIntent) -> Unit
 ) {
 
@@ -34,7 +34,7 @@ fun CatalogChips(
     ) {
 
         AssistChip(
-            onClick = { sendIntent(CatalogIntent.ShowSortingOptions(show = true)) },
+            onClick = { sendIntent(CatalogIntent.ShowSortingModes(show = true)) },
             label = { Text.Button.Chip(stringResource(Res.string.sort_by)) },
             leadingIcon = {
                 Icon(
@@ -54,7 +54,7 @@ fun CatalogChips(
 fun CatalogChips_Preview() {
     FluxThemePreview {
         CatalogChips(
-            sortingOption = CatalogSortingOption.LAST_MODIFICATION
+            sortingMode = CatalogSortingMode.LAST_MODIFICATION
         ) { }
     }
 }

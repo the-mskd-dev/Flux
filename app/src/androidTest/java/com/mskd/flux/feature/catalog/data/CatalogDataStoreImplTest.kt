@@ -8,7 +8,7 @@ import androidx.test.filters.MediumTest
 import app.cash.turbine.test
 import com.mskd.flux.features.catalog.data.datastore.CatalogDataStoreImpl
 import com.mskd.flux.features.catalog.domain.datastore.CatalogDataStore
-import com.mskd.flux.features.catalog.domain.model.CatalogSortingOption
+import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -58,16 +58,16 @@ class CatalogDataStoreImplTest {
     }
 
     @Test
-    fun get_and_set_sorting_option() = runTest {
+    fun get_and_set_sorting_mode() = runTest {
 
         catalogDataStore.flow.test {
             var state = awaitItem()
-            assert(state.sortingOption == CatalogSortingOption.LAST_MODIFICATION)
+            assert(state.sortingMode == CatalogSortingMode.LAST_MODIFICATION)
 
-            val newSortingOption = CatalogSortingOption.A_TO_Z
-            catalogDataStore.setSortingOption(newSortingOption)
+            val newSortingMode = CatalogSortingMode.A_TO_Z
+            catalogDataStore.setSortingMode(newSortingMode)
             state = awaitItem()
-            assert(state.sortingOption == newSortingOption)
+            assert(state.sortingMode == newSortingMode)
 
             cancelAndConsumeRemainingEvents()
         }

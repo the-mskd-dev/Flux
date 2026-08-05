@@ -1,16 +1,16 @@
 package com.mskd.flux.features.catalog.domain.datastore
 
-import com.mskd.flux.features.catalog.domain.model.CatalogSortingOption
+import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
 import kotlinx.coroutines.flow.Flow
 
 interface CatalogDataStore {
 
     val flow: Flow<State>
 
-    suspend fun setSortingOption(option: CatalogSortingOption)
+    suspend fun setSortingMode(mode: CatalogSortingMode)
 
     data class State(
-        val sortingOption: CatalogSortingOption = CatalogSortingOption.LAST_MODIFICATION
+        val sortingMode: CatalogSortingMode = CatalogSortingMode.LAST_MODIFICATION
     )
 
 }

@@ -9,7 +9,7 @@ import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.core.AppInfo
 import com.mskd.flux.features.catalog.domain.datastore.CatalogDataStore
 import com.mskd.flux.features.catalog.domain.model.CatalogPreferences
-import com.mskd.flux.features.catalog.domain.model.CatalogSortingOption
+import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.catalog.presentation.CatalogEvent.*
@@ -49,7 +49,7 @@ class CatalogViewModel(
     ) { user, catalog, token  ->
         CatalogPreferences(
             recentlyWatchedIds = user.recentlyWatchedIds,
-            sortingOption = catalog.sortingOption,
+            sortingOption = catalog.sortingMode,
             token = token
         )
     }
@@ -72,9 +72,9 @@ class CatalogViewModel(
             hasLoadedContent = true
 
             val sortedArtworks = when (preferences.sortingOption) {
-                CatalogSortingOption.LAST_MODIFICATION -> artworks.sortedByDescending { it.lastModification }
-                CatalogSortingOption.A_TO_Z -> artworks.sortedBy { it.title }
-                CatalogSortingOption.Z_TO_A -> artworks.sortedByDescending { it.title }
+                CatalogSortingMode.LAST_MODIFICATION -> artworks.sortedByDescending { it.lastModification }
+                CatalogSortingMode.A_TO_Z -> artworks.sortedBy { it.title }
+                CatalogSortingMode.Z_TO_A -> artworks.sortedByDescending { it.title }
             }
 
             CatalogUiState(
@@ -83,7 +83,7 @@ class CatalogViewModel(
                     lastWatchedMediaIds = preferences.recentlyWatchedIds,
                     isRefreshing = syncState is SyncState.Syncing,
                     tokenIsMissing = preferences.token.isBlank(),
-                    sortingOption = preferences.sortingOption,
+                    sortingMode = preferences.sortingOption,
                     showSortingSheet = showSortingSheet
                 ),
             )
@@ -117,8 +117,8 @@ class CatalogViewModel(
             CatalogIntent.OnTokenTap -> _event.emit(NavigateToToken)
 
             // Sort
-            is CatalogIntent.SelectSortingOption -> selectSortingOption(option = intent.option)
-            is CatalogIntent.ShowSortingOptions -> showSortingOptions(show = intent.show)
+            is CatalogIntent.SelectSortingMode -> selectSortingOption(option = intent.option)
+            is CatalogIntent.ShowSortingModes -> showSortingOptions(show = intent.show)
         }
     }
 
@@ -149,8 +149,8 @@ class CatalogViewModel(
 
     }
 
-    private suspend fun selectSortingOption(option: CatalogSortingOption) {
-        catalogDataStore.setSortingOption(option = option)
+    private suspend fun selectSortingOption(option: CatalogSortingMode) {
+        catalogDataStore.setSortingMode(mode = option)
         _showSortingSheet.update { false }
     }
 

@@ -9,7 +9,7 @@ import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.core.AppInfo
 import com.mskd.flux.features.catalog.domain.datastore.CatalogDataStore
-import com.mskd.flux.features.catalog.domain.model.CatalogSortingOption
+import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.catalog.fake.FakeSyncCatalogUseCase
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
@@ -221,11 +221,11 @@ class CatalogViewModelTest : FunSpec({
         }
     }
 
-    test("SelectSortingOption - select and save the selected sorting option") {
+    test("SelectSortingMode - select and save the selected sorting option") {
 
         checkAll(
-            Arb.enum<CatalogSortingOption>()
-        ) { option ->
+            Arb.enum<CatalogSortingMode>()
+        ) { mode ->
 
             // Given
             val catalogDataStore = mockk<CatalogDataStore>(relaxed = true)
@@ -235,10 +235,10 @@ class CatalogViewModelTest : FunSpec({
                 awaitItem()
 
                 // When
-                viewModel.handleIntent(CatalogIntent.SelectSortingOption(option))
+                viewModel.handleIntent(CatalogIntent.SelectSortingMode(mode))
 
                 // Then
-                coEvery { catalogDataStore.setSortingOption(option) }
+                coEvery { catalogDataStore.setSortingMode(mode) }
             }
 
         }

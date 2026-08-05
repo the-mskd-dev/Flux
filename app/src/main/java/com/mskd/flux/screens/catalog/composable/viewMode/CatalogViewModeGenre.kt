@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.ContentType
-import com.mskd.flux.features.catalog.domain.model.CatalogSortingOption
+import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.screens.catalog.composable.CatalogCategory
@@ -20,7 +20,7 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun CatalogViewModeGenre(
     artworks: List<Artwork>,
-    sortingOption: CatalogSortingOption,
+    sortingMode: CatalogSortingMode,
     sendIntent: (CatalogIntent) -> Unit
 ) {
 
@@ -32,7 +32,7 @@ fun CatalogViewModeGenre(
             name = stringResource(Res.string.shows),
             category = ContentType.SHOW,
             artworks = artworks.filter { it.type == ContentType.SHOW && !it.isUnknown },
-            sortingOption = sortingOption,
+            sortingOption = sortingMode,
             sendIntent = sendIntent
         )
 
@@ -40,7 +40,7 @@ fun CatalogViewModeGenre(
             name = stringResource(Res.string.movies),
             category = ContentType.MOVIE,
             artworks = artworks.filter { it.type == ContentType.MOVIE && !it.isUnknown },
-            sortingOption = sortingOption,
+            sortingOption = sortingMode,
             sendIntent = sendIntent
         )
 
@@ -54,7 +54,7 @@ fun CatalogViewModeGenre_Preview() {
     FluxThemePreview {
         CatalogViewModeGenre(
             artworks = MediaMockups.artworks,
-            sortingOption = CatalogSortingOption.LAST_MODIFICATION
+            sortingMode = CatalogSortingMode.LAST_MODIFICATION
         ) { }
     }
 }

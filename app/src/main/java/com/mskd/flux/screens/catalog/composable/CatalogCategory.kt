@@ -24,7 +24,7 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.ContentType
-import com.mskd.flux.features.catalog.domain.model.CatalogSortingOption
+import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.component.media.MediaItem
@@ -38,7 +38,7 @@ fun CatalogCategory(
     name: String? = null,
     category: ContentType,
     artworks: List<Artwork>,
-    sortingOption: CatalogSortingOption,
+    sortingOption: CatalogSortingMode,
     sendIntent: (CatalogIntent) -> Unit
 ) {
 

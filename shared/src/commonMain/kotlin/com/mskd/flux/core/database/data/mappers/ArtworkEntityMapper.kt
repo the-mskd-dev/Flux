@@ -17,7 +17,7 @@ fun ArtworkEntity.toDomain() : Artwork {
     )
 }
 
-fun Artwork.toEntity() : ArtworkEntity {
+fun Artwork.toEntity(overrideLastModification: Boolean = true) : ArtworkEntity {
     return ArtworkEntity(
         id = this.id,
         title = this.title,
@@ -25,6 +25,6 @@ fun Artwork.toEntity() : ArtworkEntity {
         imagePath = this.imagePath,
         bannerPath = this.bannerPath,
         type = this.type,
-        lastModification = Clock.System.now().toEpochMilliseconds()
+        lastModification = if (overrideLastModification) Clock.System.now().toEpochMilliseconds() else this.lastModification
     )
 }

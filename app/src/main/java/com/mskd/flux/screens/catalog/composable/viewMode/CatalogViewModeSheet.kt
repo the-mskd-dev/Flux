@@ -35,7 +35,7 @@ fun CatalogViewModeSheet(
 ) {
 
     ModalBottomSheet(
-        onDismissRequest = { sendIntent(CatalogIntent.ShowSortingModes(show = false)) },
+        onDismissRequest = { sendIntent(CatalogIntent.ShowViewModes(show = false)) },
     ) {
         Column(
             modifier = Modifier.fillMaxWidth(),

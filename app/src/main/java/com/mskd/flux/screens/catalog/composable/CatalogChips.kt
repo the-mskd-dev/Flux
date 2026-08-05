@@ -34,7 +34,7 @@ fun CatalogChips(
 
     Row(
         modifier = Modifier.padding(horizontal = FluxUI.Space.medium),
-        horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween)
+        horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.extraSmall)
     ) {
 
         AssistChip(

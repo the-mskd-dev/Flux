@@ -8,9 +8,16 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
@@ -25,12 +32,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -53,9 +62,11 @@ import com.mskd.flux.screens.catalog.composable.LastWatchedCarousel
 import com.mskd.flux.screens.catalog.composable.viewMode.CatalogViewModeGenre
 import com.mskd.flux.screens.catalog.composable.viewMode.CatalogViewModeSheet
 import com.mskd.flux.ui.component.LoadingScreen
+import com.mskd.flux.ui.component.media.MediaItem
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxThemePreview
+import com.mskd.flux.utils.itemWidthFor
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.add_source
 import flux.shared.generated.resources.ic_add_folder
@@ -160,6 +171,10 @@ fun CatalogContent(
         offsetY = 100.dp.toPx() * pullToRefreshState.distanceFraction
     }
 
+    val columns = FluxUI.itemsPerRow.seasons
+    var itemWidth by remember { mutableStateOf(FluxUI.Dimension.itemWidth) }
+    val density = LocalDensity.current
+
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
     ) { paddingValues ->
@@ -186,46 +201,81 @@ fun CatalogContent(
                 }
             ) {
 
-                LazyColumn(
+                LazyVerticalGrid(
                     modifier = Modifier
                         .fillMaxSize()
+                        .onSizeChanged { size ->
+                            with(density) {
+                                itemWidth = itemWidthFor(
+                                    screenWidthDp = size.width.toDp(),
+                                    columns = columns
+                                )
+                            }
+                        }
                         .graphicsLayer { translationY = offsetY },
+                    columns = GridCells.Fixed(columns),
+                    horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
                     verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
                 ) {
 
                     if (artworks.none { !it.isUnknown }) {
-                        item { CatalogEmptyContent(sendIntent = sendIntent) }
+                        item(span = { GridItemSpan(maxLineSpan) }){
+                            CatalogEmptyContent(sendIntent = sendIntent)
+                        }
+
                     }
 
                     if (artworks.any { !it.isUnknown }) {
 
-                        item {
-                            LastWatchedCarousel(
-                                artworks = lastWatchedIds.mapNotNull { artworks.find { o -> o.id == it } },
-                                sendIntent = sendIntent
-                            )
+                        item(span = { GridItemSpan(maxLineSpan) }) {
+                            Column(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
+                            ) {
+
+                                LastWatchedCarousel(
+                                    artworks = lastWatchedIds.mapNotNull { artworks.find { o -> o.id == it } },
+                                    sendIntent = sendIntent
+                                )
+
+                                CatalogChips(
+                                    sortingMode = sortingMode,
+                                    viewMode = viewMode,
+                                    sendIntent = sendIntent
+                                )
+
+                            }
                         }
 
-                        item {
-                            CatalogChips(
-                                sortingMode = sortingMode,
-                                viewMode = viewMode,
-                                sendIntent = sendIntent
-                            )
-                        }
-
-                        item {
-                            CatalogViewModeGenre(
-                                artworks = artworks,
-                                sortingMode = sortingMode,
-                                sendIntent = sendIntent
-                            )
+                        when (viewMode) {
+                            CatalogViewMode.GRID -> {
+                                items(items = artworks.filter { !it.isUnknown }, key = { it.id }) {
+                                    MediaItem(
+                                        modifier = Modifier
+                                            .animateItem()
+                                            .width(itemWidth)
+                                            .aspectRatio(FluxUI.Dimension.itemRatio),
+                                        path = it.imagePath,
+                                        onTap = { rgb -> sendIntent(CatalogIntent.OnArtworkTap(artwork = it, rgb = rgb)) },
+                                        description = it.title
+                                    )
+                                }
+                            }
+                            CatalogViewMode.BY_TYPE, CatalogViewMode.BY_GENRE -> {
+                                item(span = { GridItemSpan(maxLineSpan) }) {
+                                    CatalogViewModeGenre(
+                                        artworks = artworks,
+                                        sortingMode = sortingMode,
+                                        sendIntent = sendIntent
+                                    )
+                                }
+                            }
                         }
 
                     }
 
                     if (artworks.any { it.isUnknown }) {
-                        item {
+                        item(span = { GridItemSpan(maxLineSpan) }) {
                             CatalogGenericCategory(
                                 name = stringResource(Res.string.other_files),
                                 painter = painterResource(Res.drawable.ic_flux),
@@ -237,7 +287,7 @@ fun CatalogContent(
                     }
 
                     if (artworks.isEmpty()) {
-                        item {
+                        item(span = { GridItemSpan(maxLineSpan) }) {
                             CatalogGenericCategory(
                                 name = stringResource(Res.string.add_source),
                                 painter = painterResource(Res.drawable.ic_add_folder),
@@ -249,7 +299,7 @@ fun CatalogContent(
                     }
 
                     if (tokenIsMissing) {
-                        item {
+                        item(span = { GridItemSpan(maxLineSpan) }) {
                             CatalogGenericCategory(
                                 name = stringResource(Res.string.tmdb_api_token),
                                 painter = painterResource(Res.drawable.ic_api),
@@ -260,7 +310,7 @@ fun CatalogContent(
                         }
                     }
 
-                    item {
+                    item(span = { GridItemSpan(maxLineSpan) }) {
 
                         Spacer(
                             modifier = Modifier

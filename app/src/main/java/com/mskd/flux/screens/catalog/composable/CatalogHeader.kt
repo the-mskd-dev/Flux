@@ -26,12 +26,9 @@ import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_flux
 import org.jetbrains.compose.resources.painterResource
 
-private enum class IconRefreshState { Idle, Dragging, Refreshing }
-
-
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun CatalogTopButtons() {
+fun CatalogHeader() {
 
     Box(
         modifier = Modifier
@@ -45,52 +42,6 @@ fun CatalogTopButtons() {
             tint = MaterialTheme.colorScheme.primary,
             contentDescription = "Flux icon"
         )
-    }
-
-}
-
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
-@Composable
-fun CatalogLoadingIndicator(
-    modifier: Modifier = Modifier,
-    pullToRefreshState: PullToRefreshState,
-    isRefreshing: Boolean,
-) {
-
-    val iconState = when {
-        isRefreshing -> IconRefreshState.Refreshing
-        pullToRefreshState.distanceFraction > 0f -> IconRefreshState.Dragging
-        else -> IconRefreshState.Idle
-    }
-
-    AnimatedContent(
-        targetState = iconState,
-        transitionSpec = {
-            fadeIn(tween(100)) + scaleIn(initialScale = 0.6f) togetherWith
-                    fadeOut(tween(100)) + scaleOut(targetScale = 0.6f)
-        }
-    ) { state ->
-
-        when (state) {
-            IconRefreshState.Idle -> {
-                Icon(
-                    modifier = modifier,
-                    painter = painterResource(Res.drawable.ic_flux),
-                    tint = MaterialTheme.colorScheme.primary,
-                    contentDescription = "Flux icon"
-                )
-            }
-            IconRefreshState.Dragging -> {
-                LoadingIndicator(
-                    modifier = modifier,
-                    progress = { pullToRefreshState.distanceFraction.coerceIn(0f, 1f) },
-                )
-            }
-            IconRefreshState.Refreshing -> {
-                ContainedLoadingIndicator(modifier = modifier)
-            }
-        }
-
     }
 
 }

@@ -1,17 +1,10 @@
 package com.mskd.flux.features.catalog.domain.model
 
-import androidx.compose.runtime.Immutable
 import com.mskd.flux.core.model.core.StringProvider
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.a_to_z
 import flux.shared.generated.resources.last_modification
 import flux.shared.generated.resources.z_to_a
-
-@Immutable
-data class CatalogSorting(
-    val option: CatalogSortingOption = CatalogSortingOption.LAST_MODIFICATION,
-    val showOptions: Boolean = false
-)
 
 enum class CatalogSortingOption(val description: StringProvider) {
     LAST_MODIFICATION(description = StringProvider.Resource(Res.string.last_modification)),

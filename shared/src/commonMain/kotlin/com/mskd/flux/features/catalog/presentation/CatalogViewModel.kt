@@ -7,7 +7,8 @@ import com.mskd.flux.core.datastore.domain.UserDataStore
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.core.AppInfo
-import com.mskd.flux.features.catalog.domain.model.CatalogSorting
+import com.mskd.flux.features.catalog.domain.datastore.CatalogDataStore
+import com.mskd.flux.features.catalog.domain.model.CatalogPreferences
 import com.mskd.flux.features.catalog.domain.model.CatalogSortingOption
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
@@ -30,35 +31,47 @@ class CatalogViewModel(
     private val database: DatabaseRepository,
     private val userDataStore: UserDataStore,
     private val tokenDataStore: TokenDataStore,
+    private val catalogDataStore: CatalogDataStore,
     private val appInfo: AppInfo
 ): ViewModel() {
 
     private val _event = MutableSharedFlow<CatalogEvent>()
     val event = _event.asSharedFlow()
 
-    private val _sorting = MutableStateFlow(CatalogSorting())
+    private val _showSortingSheet = MutableStateFlow(false)
 
     private var hasLoadedContent = false
+
+    private val preferencesFlow = combine(
+        userDataStore.flow,
+        catalogDataStore.flow,
+        tokenDataStore.flow,
+    ) { user, catalog, token  ->
+        CatalogPreferences(
+            recentlyWatchedIds = user.recentlyWatchedIds,
+            sortingOption = catalog.sortingOption,
+            token = token
+        )
+    }
 
     val uiState: StateFlow<CatalogUiState> = combine(
         database.flowArtworks(),
         syncCatalogUseCase.state,
-        userDataStore.flow,
-        tokenDataStore.flow,
-        _sorting
-    ) { artworks, catalogState, preferences, token, sorting ->
+        preferencesFlow,
+        _showSortingSheet
+    ) { artworks, syncState, preferences, showSortingSheet  ->
 
-        if (catalogState is SyncState.Syncing && (catalogState.full || !hasLoadedContent)) {
+        if (syncState is SyncState.Syncing && (syncState.full || !hasLoadedContent)) {
 
             CatalogUiState(
-                state = CatalogState.Loading(progress = catalogState.progress),
+                state = CatalogState.Loading(progress = syncState.progress),
             )
 
         } else {
 
             hasLoadedContent = true
 
-            val sortedArtworks = when (sorting.option) {
+            val sortedArtworks = when (preferences.sortingOption) {
                 CatalogSortingOption.LAST_MODIFICATION -> artworks.sortedByDescending { it.lastModification }
                 CatalogSortingOption.A_TO_Z -> artworks.sortedBy { it.title }
                 CatalogSortingOption.Z_TO_A -> artworks.sortedByDescending { it.title }
@@ -68,9 +81,10 @@ class CatalogViewModel(
                 state = CatalogState.Content(
                     artworks = sortedArtworks,
                     lastWatchedMediaIds = preferences.recentlyWatchedIds,
-                    isRefreshing = catalogState is SyncState.Syncing,
-                    tokenIsMissing = token.isBlank(),
-                    sorting = sorting
+                    isRefreshing = syncState is SyncState.Syncing,
+                    tokenIsMissing = preferences.token.isBlank(),
+                    sortingOption = preferences.sortingOption,
+                    showSortingSheet = showSortingSheet
                 ),
             )
 
@@ -135,17 +149,13 @@ class CatalogViewModel(
 
     }
 
-    private fun selectSortingOption(option: CatalogSortingOption) {
-        _sorting.update {
-            CatalogSorting(
-                option = option,
-                showOptions = false
-            )
-        }
+    private suspend fun selectSortingOption(option: CatalogSortingOption) {
+        catalogDataStore.setSortingOption(option = option)
+        _showSortingSheet.update { false }
     }
 
     private fun showSortingOptions(show: Boolean) {
-        _sorting.update { it.copy(showOptions = show) }
+        _showSortingSheet.update { show }
     }
 
 }

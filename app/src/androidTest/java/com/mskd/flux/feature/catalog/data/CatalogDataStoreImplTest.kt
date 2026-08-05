@@ -9,8 +9,6 @@ import app.cash.turbine.test
 import com.mskd.flux.features.catalog.data.datastore.CatalogDataStoreImpl
 import com.mskd.flux.features.catalog.domain.datastore.CatalogDataStore
 import com.mskd.flux.features.catalog.domain.model.CatalogSortingOption
-import com.mskd.flux.features.settings.data.datastore.SettingsDataStoreImpl
-import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher

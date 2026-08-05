@@ -6,7 +6,6 @@ import androidx.datastore.preferences.preferencesDataStoreFile
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.filters.MediumTest
 import app.cash.turbine.test
-import com.mskd.flux.features.catalog.domain.model.CatalogSortingOption
 import com.mskd.flux.features.settings.data.datastore.SettingsDataStoreImpl
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import kotlinx.coroutines.Dispatchers

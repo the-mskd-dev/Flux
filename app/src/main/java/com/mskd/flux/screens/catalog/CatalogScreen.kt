@@ -7,15 +7,10 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.AssistChip
-import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
@@ -41,7 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.mskd.flux.core.model.artwork.Artwork
-import com.mskd.flux.features.catalog.domain.model.CatalogSorting
+import com.mskd.flux.features.catalog.domain.model.CatalogSortingOption
 import com.mskd.flux.features.catalog.presentation.CatalogEvent
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.features.catalog.presentation.CatalogState
@@ -56,7 +51,6 @@ import com.mskd.flux.screens.catalog.composable.CatalogHeader
 import com.mskd.flux.screens.catalog.composable.LastWatchedCarousel
 import com.mskd.flux.screens.catalog.composable.viewMode.CatalogViewModeGenre
 import com.mskd.flux.ui.component.LoadingScreen
-import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxThemePreview
@@ -66,7 +60,6 @@ import flux.shared.generated.resources.ic_add_folder
 import flux.shared.generated.resources.ic_api
 import flux.shared.generated.resources.ic_flux
 import flux.shared.generated.resources.other_files
-import flux.shared.generated.resources.sort
 import flux.shared.generated.resources.sync_in_progress
 import flux.shared.generated.resources.tmdb_api_token
 import org.jetbrains.compose.resources.painterResource
@@ -128,7 +121,8 @@ fun CatalogScreen(
                     lastWatchedIds = state.lastWatchedMediaIds,
                     isRefreshing = state.isRefreshing,
                     tokenIsMissing = state.tokenIsMissing,
-                    sorting = state.sorting,
+                    sortingOption = state.sortingOption,
+                    showSortingOptions = state.showSortingSheet,
                     sendIntent = viewModel::handleIntent
                 )
 
@@ -148,7 +142,8 @@ fun CatalogContent(
     lastWatchedIds: List<Long>,
     isRefreshing: Boolean,
     tokenIsMissing: Boolean,
-    sorting: CatalogSorting,
+    sortingOption: CatalogSortingOption,
+    showSortingOptions: Boolean,
     sendIntent: (CatalogIntent) -> Unit
 ) {
 
@@ -212,7 +207,7 @@ fun CatalogContent(
 
                         item {
                             CatalogChips(
-                                sortingOption = sorting.option,
+                                sortingOption = sortingOption,
                                 sendIntent = sendIntent
                             )
                         }
@@ -220,7 +215,7 @@ fun CatalogContent(
                         item {
                             CatalogViewModeGenre(
                                 artworks = artworks,
-                                sortingOption = sorting.option,
+                                sortingOption = sortingOption,
                                 sendIntent = sendIntent
                             )
                         }
@@ -279,9 +274,9 @@ fun CatalogContent(
         }
 
 
-        if (sorting.showOptions) {
+        if (showSortingOptions) {
             CatalogSortingSheet(
-                selectedOption = sorting.option,
+                selectedOption = sortingOption,
                 sheetState = sheetState,
                 sendIntent = sendIntent
             )
@@ -302,7 +297,8 @@ fun CatalogScreen_Preview() {
                 lastWatchedIds = MediaMockups.artworks.map { it.id },
                 isRefreshing = false,
                 tokenIsMissing = false,
-                sorting = CatalogSorting(),
+                sortingOption = CatalogSortingOption.LAST_MODIFICATION,
+                showSortingOptions = false,
                 sendIntent = {}
             )
         }
@@ -319,7 +315,8 @@ fun CatalogScreen_Unknown_Preview() {
                 lastWatchedIds = emptyList(),
                 isRefreshing = false,
                 tokenIsMissing = true,
-                sorting = CatalogSorting(),
+                sortingOption = CatalogSortingOption.LAST_MODIFICATION,
+                showSortingOptions = false,
                 sendIntent = {}
             )
         }
@@ -336,7 +333,8 @@ fun CatalogScreen_Empty_Preview() {
                 lastWatchedIds = emptyList(),
                 isRefreshing = false,
                 tokenIsMissing = true,
-                sorting = CatalogSorting(),
+                sortingOption = CatalogSortingOption.LAST_MODIFICATION,
+                showSortingOptions = false,
                 sendIntent = {}
             )
         }

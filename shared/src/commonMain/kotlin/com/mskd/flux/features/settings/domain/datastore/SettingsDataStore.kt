@@ -1,6 +1,5 @@
 package com.mskd.flux.features.settings.domain.datastore
 
-import com.mskd.flux.features.catalog.domain.model.CatalogSortingOption
 import kotlinx.coroutines.flow.Flow
 import java.util.Locale
 

@@ -3,7 +3,6 @@ package com.mskd.flux.features.catalog.presentation
 import androidx.compose.runtime.Immutable
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.ContentType
-import com.mskd.flux.features.catalog.domain.model.CatalogSorting
 import com.mskd.flux.features.catalog.domain.model.CatalogSortingOption
 
 @Immutable
@@ -24,7 +23,8 @@ sealed class CatalogState {
         val lastWatchedMediaIds: List<Long> = emptyList(),
         val isRefreshing: Boolean = true,
         val tokenIsMissing: Boolean = false,
-        val sorting: CatalogSorting = CatalogSorting()
+        val sortingOption: CatalogSortingOption = CatalogSortingOption.LAST_MODIFICATION,
+        val showSortingSheet: Boolean = false,
     ): CatalogState()
 
 }

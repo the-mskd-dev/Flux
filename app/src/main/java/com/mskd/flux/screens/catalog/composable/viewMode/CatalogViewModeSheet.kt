@@ -1,4 +1,4 @@
-package com.mskd.flux.screens.catalog.composable.sorting
+package com.mskd.flux.screens.catalog.composable.viewMode
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,24 +15,28 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
+import com.mskd.flux.features.catalog.domain.model.CatalogViewMode
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
+import com.mskd.flux.screens.catalog.composable.sorting.CatalogSortingSheet
 import com.mskd.flux.ui.component.global.FluxBottomSheetItem
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxThemePreview
 import com.mskd.flux.utils.extensions.resolve
 import flux.shared.generated.resources.Res
-import flux.shared.generated.resources.sort_by
+import flux.shared.generated.resources.view
 import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CatalogSortingSheet(
-    selectedMode: CatalogSortingMode,
+fun CatalogViewModeSheet(
+    selectedMode: CatalogViewMode,
     sendIntent: (CatalogIntent) -> Unit
 ) {
 
-    ModalBottomSheet(onDismissRequest = { sendIntent(CatalogIntent.ShowSortingModes(show = false)) },) {
+    ModalBottomSheet(
+        onDismissRequest = { sendIntent(CatalogIntent.ShowSortingModes(show = false)) },
+    ) {
         Column(
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
@@ -40,14 +44,14 @@ fun CatalogSortingSheet(
 
             Text.List.Title(
                 modifier = Modifier.padding(horizontal = FluxUI.Space.medium),
-                text = stringResource(Res.string.sort_by)
+                text = stringResource(Res.string.view)
             )
 
-            CatalogSortingMode.entries.forEach { option ->
+            CatalogViewMode.entries.forEach { option ->
                 FluxBottomSheetItem(
                     isSelected = option == selectedMode,
                     text = option.description.resolve(),
-                    onTap = { sendIntent(CatalogIntent.SelectSortingMode(option)) }
+                    onTap = { sendIntent(CatalogIntent.SelectViewMode(option)) }
                 )
             }
         }
@@ -58,11 +62,11 @@ fun CatalogSortingSheet(
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
-fun CatalogSortingSheet_Preview() {
+fun CatalogViewModeSheet_Preview() {
     FluxThemePreview {
         Box(modifier = Modifier.fillMaxSize()) {
-            CatalogSortingSheet(
-                selectedMode = CatalogSortingMode.LAST_MODIFICATION,
+            CatalogViewModeSheet(
+                selectedMode = CatalogViewMode.BY_TYPE,
                 sendIntent = {}
             )
         }

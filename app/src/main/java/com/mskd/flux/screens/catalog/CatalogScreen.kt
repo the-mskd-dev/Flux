@@ -37,6 +37,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
+import com.mskd.flux.features.catalog.domain.model.CatalogViewMode
 import com.mskd.flux.features.catalog.presentation.CatalogEvent
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.features.catalog.presentation.CatalogState
@@ -50,6 +51,7 @@ import com.mskd.flux.screens.catalog.composable.sorting.CatalogSortingSheet
 import com.mskd.flux.screens.catalog.composable.CatalogHeader
 import com.mskd.flux.screens.catalog.composable.LastWatchedCarousel
 import com.mskd.flux.screens.catalog.composable.viewMode.CatalogViewModeGenre
+import com.mskd.flux.screens.catalog.composable.viewMode.CatalogViewModeSheet
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxPreview
@@ -123,6 +125,8 @@ fun CatalogScreen(
                     tokenIsMissing = state.tokenIsMissing,
                     sortingMode = state.sortingMode,
                     showSortingModes = state.showSortingSheet,
+                    viewMode = state.viewMode,
+                    showViewModes = state.showViewSheet,
                     sendIntent = viewModel::handleIntent
                 )
 
@@ -144,13 +148,10 @@ fun CatalogContent(
     tokenIsMissing: Boolean,
     sortingMode: CatalogSortingMode,
     showSortingModes: Boolean,
+    viewMode: CatalogViewMode,
+    showViewModes: Boolean,
     sendIntent: (CatalogIntent) -> Unit
 ) {
-
-    val sheetState = rememberBottomSheetState(
-        initialValue = SheetValue.Hidden,
-        enabledValues = setOf(SheetValue.Hidden, SheetValue.Expanded)
-    )
 
     val pullToRefreshState = rememberPullToRefreshState()
     var offsetY by remember { mutableFloatStateOf(0f) }
@@ -208,6 +209,7 @@ fun CatalogContent(
                         item {
                             CatalogChips(
                                 sortingMode = sortingMode,
+                                viewMode = viewMode,
                                 sendIntent = sendIntent
                             )
                         }
@@ -277,7 +279,13 @@ fun CatalogContent(
         if (showSortingModes) {
             CatalogSortingSheet(
                 selectedMode = sortingMode,
-                sheetState = sheetState,
+                sendIntent = sendIntent
+            )
+        }
+
+        if (showViewModes) {
+            CatalogViewModeSheet(
+                selectedMode = viewMode,
                 sendIntent = sendIntent
             )
         }
@@ -299,6 +307,8 @@ fun CatalogScreen_Preview() {
                 tokenIsMissing = false,
                 sortingMode = CatalogSortingMode.LAST_MODIFICATION,
                 showSortingModes = false,
+                viewMode = CatalogViewMode.BY_TYPE,
+                showViewModes = false,
                 sendIntent = {}
             )
         }
@@ -317,6 +327,8 @@ fun CatalogScreen_Unknown_Preview() {
                 tokenIsMissing = true,
                 sortingMode = CatalogSortingMode.LAST_MODIFICATION,
                 showSortingModes = false,
+                viewMode = CatalogViewMode.BY_TYPE,
+                showViewModes = false,
                 sendIntent = {}
             )
         }
@@ -335,6 +347,8 @@ fun CatalogScreen_Empty_Preview() {
                 tokenIsMissing = true,
                 sortingMode = CatalogSortingMode.LAST_MODIFICATION,
                 showSortingModes = false,
+                viewMode = CatalogViewMode.BY_TYPE,
+                showViewModes = false,
                 sendIntent = {}
             )
         }

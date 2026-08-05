@@ -1,5 +1,6 @@
 package com.mskd.flux.features.settings.domain.datastore
 
+import com.mskd.flux.features.catalog.domain.model.CatalogSortingOption
 import kotlinx.coroutines.flow.Flow
 import java.util.Locale
 
@@ -29,6 +30,8 @@ interface SettingsDataStore {
 
     suspend fun setSystemFolders(enabled: Boolean)
 
+    suspend fun setSortingOption(option: CatalogSortingOption)
+
     data class State(
         val playerRewindValue: Int = 10,
         val playerForwardValue: Int = 10,
@@ -40,5 +43,6 @@ interface SettingsDataStore {
         val dataLanguage: Locale? = null,
         val prefetchHdImages: Boolean = false,
         val systemFoldersEnabled: Boolean = true,
+        val sortingOption: CatalogSortingOption = CatalogSortingOption.LAST_MODIFICATION
     )
 }

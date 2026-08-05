@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.mskd.flux.features.catalog.domain.model.CatalogSortingOption
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -28,6 +29,7 @@ class SettingsDataStoreImpl(val settingsDataStore: DataStore<Preferences>) : Set
         val DATA_LANGUAGE = stringPreferencesKey("data_language")
         val PREFETCH_IMAGES = booleanPreferencesKey("prefetch_hd_images")
         val SYSTEM_FOLDERS_ENABLED = booleanPreferencesKey("system_folders_enabled")
+        val SORTING_OPTION = intPreferencesKey("sorting_option")
     }
 
     override val flow: Flow<SettingsDataStore.State> = settingsDataStore.data
@@ -44,6 +46,7 @@ class SettingsDataStoreImpl(val settingsDataStore: DataStore<Preferences>) : Set
             val dataLanguage = preferences[Keys.DATA_LANGUAGE]?.let { Locale.forLanguageTag(it) }
             val prefetchImages = preferences[Keys.PREFETCH_IMAGES] ?: false
             val systemFoldersEnabled = preferences[Keys.SYSTEM_FOLDERS_ENABLED] ?: true
+            val sortingOption = preferences[Keys.SORTING_OPTION]?.let { CatalogSortingOption.fromOrdinal(it) } ?: CatalogSortingOption.LAST_MODIFICATION
 
             SettingsDataStore.State(
                 playerRewindValue = playerRewindValue,
@@ -55,7 +58,8 @@ class SettingsDataStoreImpl(val settingsDataStore: DataStore<Preferences>) : Set
                 autoKeyboard = autoKeyboard,
                 dataLanguage = dataLanguage,
                 prefetchHdImages = prefetchImages,
-                systemFoldersEnabled = systemFoldersEnabled
+                systemFoldersEnabled = systemFoldersEnabled,
+                sortingOption = sortingOption
             )
         }
 
@@ -88,6 +92,12 @@ class SettingsDataStoreImpl(val settingsDataStore: DataStore<Preferences>) : Set
     override suspend fun setSystemFolders(enabled: Boolean) {
         settingsDataStore.edit { preferences ->
             preferences[Keys.SYSTEM_FOLDERS_ENABLED] = enabled
+        }
+    }
+
+    override suspend fun setSortingOption(option: CatalogSortingOption) {
+        settingsDataStore.edit { preferences ->
+            preferences[Keys.SORTING_OPTION] = option.ordinal
         }
     }
 

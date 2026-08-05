@@ -6,6 +6,7 @@ import androidx.datastore.preferences.preferencesDataStoreFile
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.filters.MediumTest
 import app.cash.turbine.test
+import com.mskd.flux.features.catalog.domain.model.CatalogSortingOption
 import com.mskd.flux.features.settings.data.datastore.SettingsDataStoreImpl
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import kotlinx.coroutines.Dispatchers
@@ -227,6 +228,39 @@ class SettingsDataStoreTest {
             settingsDataStore.setDataLanguage(null)
             state = awaitItem()
             assert(state.dataLanguage == null)
+
+            cancelAndConsumeRemainingEvents()
+        }
+
+    }
+
+    @Test
+    fun get_and_set_system_folders() = runTest {
+
+        settingsDataStore.flow.test {
+            var state = awaitItem()
+            assert(state.systemFoldersEnabled)
+
+            settingsDataStore.setSystemFolders(false)
+            state = awaitItem()
+            assert(!state.systemFoldersEnabled)
+
+            cancelAndConsumeRemainingEvents()
+        }
+
+    }
+
+    @Test
+    fun get_and_set_sorting_option() = runTest {
+
+        settingsDataStore.flow.test {
+            var state = awaitItem()
+            assert(state.sortingOption == CatalogSortingOption.LAST_MODIFICATION)
+
+            val newSortingOption = CatalogSortingOption.A_TO_Z
+            settingsDataStore.setSortingOption(newSortingOption)
+            state = awaitItem()
+            assert(state.sortingOption == newSortingOption)
 
             cancelAndConsumeRemainingEvents()
         }

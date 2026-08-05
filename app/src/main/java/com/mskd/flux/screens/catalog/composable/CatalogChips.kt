@@ -8,6 +8,7 @@ import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.ChipColors
+import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -20,6 +21,12 @@ import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxThemePreview
 import com.mskd.flux.utils.extensions.resolve
+import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.ic_sort
+import flux.shared.generated.resources.sort
+import flux.shared.generated.resources.sort_by
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun CatalogChips(
@@ -34,7 +41,13 @@ fun CatalogChips(
 
         AssistChip(
             onClick = { sendIntent(CatalogIntent.ShowSortingOptions(show = true)) },
-            label = { Text.Button.Chip(sortingOption.description.resolve()) },
+            label = { Text.Button.Chip(stringResource(Res.string.sort_by)) },
+            leadingIcon = {
+                Icon(
+                    painter = painterResource(Res.drawable.ic_sort),
+                    contentDescription = stringResource(Res.string.sort)
+                )
+            },
             shape = CircleShape,
         )
 

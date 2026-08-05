@@ -222,7 +222,6 @@ fun CatalogContent(
                         item(span = { GridItemSpan(maxLineSpan) }){
                             CatalogEmptyContent(sendIntent = sendIntent)
                         }
-
                     }
 
                     if (artworks.any { !it.isUnknown }) {

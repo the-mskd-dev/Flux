@@ -9,9 +9,9 @@ import flux.shared.generated.resources.ic_sort
 import org.jetbrains.compose.resources.DrawableResource
 
 enum class CatalogViewMode(val drawableRes: DrawableResource, val description: StringProvider) {
+    GRID(drawableRes = Res.drawable.ic_sort, description = StringProvider.Static("Grid")),
     BY_TYPE(drawableRes = Res.drawable.ic_sort, description = StringProvider.Static("By type")),
-    BY_GENRE(drawableRes = Res.drawable.ic_sort, description = StringProvider.Static("By genre")),
-    GRID(drawableRes = Res.drawable.ic_sort, description = StringProvider.Static("Grid"));
+    BY_GENRE(drawableRes = Res.drawable.ic_sort, description = StringProvider.Static("By genre"));
 
     companion object {
 

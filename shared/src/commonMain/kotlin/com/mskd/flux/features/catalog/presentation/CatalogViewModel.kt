@@ -58,9 +58,15 @@ class CatalogViewModel(
 
             hasLoadedContent = true
 
+            val sortedArtworks = when (sorting.option) {
+                CatalogSortingOption.LAST_MODIFICATION -> artworks.sortedByDescending { it.lastModification }
+                CatalogSortingOption.A_TO_Z -> artworks.sortedBy { it.title }
+                CatalogSortingOption.Z_TO_A -> artworks.sortedByDescending { it.title }
+            }
+
             CatalogUiState(
                 state = CatalogState.Content(
-                    artworks = artworks,
+                    artworks = sortedArtworks,
                     lastWatchedMediaIds = preferences.recentlyWatchedIds,
                     isRefreshing = catalogState is SyncState.Syncing,
                     tokenIsMissing = token.isBlank(),

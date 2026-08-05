@@ -58,10 +58,12 @@ import com.mskd.flux.features.catalog.presentation.CatalogViewModel
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.screens.catalog.composable.CatalogCategory
+import com.mskd.flux.screens.catalog.composable.CatalogEmptyContent
 import com.mskd.flux.screens.catalog.composable.CatalogGenericCategory
 import com.mskd.flux.screens.catalog.composable.CatalogSortingSheet
 import com.mskd.flux.screens.catalog.composable.CatalogTopButtons
 import com.mskd.flux.screens.catalog.composable.LastWatchedCarousel
+import com.mskd.flux.screens.catalog.composable.viewMode.CatalogViewModeGenre
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxUI
@@ -211,38 +213,7 @@ fun CatalogContent(
                 ) {
 
                     if (artworks.none { !it.isUnknown }) {
-
-                        item {
-
-                            Text.Content.Title(
-                                modifier = Modifier
-                                    .padding(top = FluxUI.Space.medium)
-                                    .padding(horizontal = FluxUI.Space.medium),
-                                text = stringResource(Res.string.empty_catalog)
-                            )
-
-                        }
-
-                        item {
-
-                            Text.Content.Body(
-                                modifier = Modifier.padding(horizontal = FluxUI.Space.medium),
-                                text = stringResource(Res.string.empty_catalog_desc)
-                            )
-
-                        }
-
-                        item {
-
-                            TextButton(
-                                onClick = { sendIntent(CatalogIntent.OnHowToTap) },
-                                contentPadding = PaddingValues(all = FluxUI.Space.medium)
-                            ) {
-                                Text.Button.Default(text = stringResource(Res.string.how_to_name_files),)
-                            }
-
-                        }
-
+                        item { CatalogEmptyContent(sendIntent = sendIntent) }
                     }
 
                     if (artworks.any { !it.isUnknown }) {
@@ -266,24 +237,11 @@ fun CatalogContent(
                                     shape = CircleShape
                                 )
                             }
-
                         }
 
                         item {
-                            CatalogCategory(
-                                name = stringResource(Res.string.shows),
-                                category = ContentType.SHOW,
-                                artworks = artworks.filter { it.type == ContentType.SHOW && !it.isUnknown },
-                                sortingOption = sorting.option,
-                                sendIntent = sendIntent
-                            )
-                        }
-
-                        item {
-                            CatalogCategory(
-                                name = stringResource(Res.string.movies),
-                                category = ContentType.MOVIE,
-                                artworks = artworks.filter { it.type == ContentType.MOVIE && !it.isUnknown },
+                            CatalogViewModeGenre(
+                                artworks = artworks,
                                 sortingOption = sorting.option,
                                 sendIntent = sendIntent
                             )

@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.mskd.flux.features.catalog.domain.model.CatalogSortingOption
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
+import com.mskd.flux.ui.component.global.FluxBottomSheetItem
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxThemePreview
@@ -59,22 +60,13 @@ fun CatalogSortingSheetItem(
     isSelected: Boolean,
     sendIntent: (CatalogIntent) -> Unit
 ) {
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { sendIntent(CatalogIntent.SelectSortingOption(option)) },
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
-    ) {
-        RadioButton(
-            selected = isSelected,
-            onClick = { sendIntent(CatalogIntent.SelectSortingOption(option)) }
-        )
-        Text.List.Body(text = option.description.resolve())
-    }
-
+    FluxBottomSheetItem(
+        isSelected = isSelected,
+        text = option.description.resolve(),
+        onTap = { sendIntent(CatalogIntent.SelectSortingOption(option)) }
+    )
 }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable

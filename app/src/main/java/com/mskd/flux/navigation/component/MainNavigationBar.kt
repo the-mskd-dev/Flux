@@ -12,10 +12,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.NavigationBarItemDefaults
@@ -26,8 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.navigation.domain.BottomBarTab
 import com.mskd.flux.navigation.domain.Route
@@ -40,7 +34,7 @@ import com.mskd.flux.utils.extensions.resolve
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
-fun FluxBottomBar(
+fun MainNavigationBar(
     currentTab: Route?,
     onTabSelected: (Route) -> Unit,
 ) {
@@ -63,7 +57,7 @@ fun FluxBottomBar(
             horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
         ) {
             BottomBarTab.entries.forEach { tab ->
-                FluxNavigationBarItem(
+                MainNavigationBarItem(
                     selected = currentTab.isSameTabAs(tab.route),
                     onClick = { onTabSelected(tab.route) },
                     icon = painterResource(tab.iconRes),
@@ -76,7 +70,7 @@ fun FluxBottomBar(
 }
 
 @Composable
-fun FluxNavigationBarItem(
+fun MainNavigationBarItem(
     selected: Boolean,
     onClick: () -> Unit,
     icon: Painter,
@@ -124,13 +118,13 @@ fun FluxNavigationBarItem(
 
 @FluxPreview
 @Composable
-fun FluxBottomBar_Preview() {
+fun MainNavigationBar_Preview() {
     FluxThemePreview{
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.BottomCenter
         ) {
-            FluxBottomBar(
+            MainNavigationBar(
                 currentTab = Route.Catalog,
                 onTabSelected = {}
             )

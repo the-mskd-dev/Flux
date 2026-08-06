@@ -28,8 +28,7 @@ import com.google.accompanist.permissions.isGranted
 import com.mskd.flux.features.connectivity.domain.ConnectivityRepository
 import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.navigation.domain.Transition
-import com.mskd.flux.navigation.component.FluxBottomBar
-import com.mskd.flux.navigation.domain.BottomBarTab
+import com.mskd.flux.navigation.component.MainNavigationBar
 import com.mskd.flux.navigation.domain.navigateToTab
 import com.mskd.flux.screens.about.AboutScreen
 import com.mskd.flux.screens.artwork.ArtworkScreen
@@ -113,7 +112,7 @@ class MainActivity : ComponentActivity() {
                             enter = fadeIn(),
                             exit = fadeOut()
                         ) {
-                            FluxBottomBar(
+                            MainNavigationBar(
                                 currentTab = currentRoute,
                                 onTabSelected = { target ->
                                     transitions = Transition.Fade to Transition.Fade

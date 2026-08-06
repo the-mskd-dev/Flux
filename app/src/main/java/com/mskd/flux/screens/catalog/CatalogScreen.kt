@@ -197,14 +197,6 @@ fun CatalogContent(
                         }
                     }
 
-                    item(span = { GridItemSpan(maxLineSpan) }) {
-                        CatalogMenu(
-                            artworks = artworks,
-                            tokenIsMissing = tokenIsMissing,
-                            sendIntent = sendIntent
-                        )
-                    }
-
                     if (artworks.any { !it.isUnknown }) {
 
                         item(span = { GridItemSpan(maxLineSpan) }) {
@@ -221,6 +213,12 @@ fun CatalogContent(
                                 CatalogChips(
                                     sortingMode = sortingMode,
                                     viewMode = viewMode,
+                                    sendIntent = sendIntent
+                                )
+
+                                CatalogMenu(
+                                    artworks = artworks,
+                                    tokenIsMissing = tokenIsMissing,
                                     sendIntent = sendIntent
                                 )
 

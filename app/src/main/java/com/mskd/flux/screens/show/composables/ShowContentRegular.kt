@@ -2,6 +2,7 @@ package com.mskd.flux.screens.show.composables
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,6 +13,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -25,11 +30,14 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.room.util.TableInfo
 import com.mskd.flux.core.model.artwork.FullArtwork
+import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.features.show.presentation.ShowIntent
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.screens.artwork.composables.common.ArtworkImageFull
 import com.mskd.flux.ui.component.global.Text
+import com.mskd.flux.ui.component.media.MediaItem
 import com.mskd.flux.ui.component.media.OverviewItem
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.FluxUI
@@ -49,24 +57,17 @@ fun ShowContentRegular(
 ) {
 
     val columns = FluxUI.itemsPerRow.seasons
-    var itemWidth by remember { mutableStateOf(FluxUI.Dimension.itemWidth) }
-    val density = LocalDensity.current
 
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .onSizeChanged { size ->
-                with(density) {
-                    itemWidth = itemWidthFor(
-                        screenWidthDp = size.width.toDp(),
-                        columns = columns
-                    )
-                }
-            },
-        horizontalAlignment = Alignment.CenterHorizontally,
+    val startPadding = PaddingValues(start = FluxUI.Space.medium)
+    val lastPadding = PaddingValues(end = FluxUI.Space.medium)
+    val middlePadding = PaddingValues(horizontal = FluxUI.Space.small)
+
+    LazyVerticalGrid(
+        modifier = Modifier.fillMaxSize(),
+        columns = GridCells.Fixed(columns)
     ) {
 
-        item {
+        item(span = { GridItemSpan(maxLineSpan) }) {
 
             ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
 
@@ -103,82 +104,59 @@ fun ShowContentRegular(
 
         }
 
-        item { Spacer(modifier = Modifier.height(FluxUI.Space.large)) }
+        item(span = { GridItemSpan(maxLineSpan) }) {
 
-        item {
-
-            OverviewItem(
-                modifier = Modifier.padding(horizontal = FluxUI.Space.medium),
-                title = stringResource(Res.string.summary),
-                description = fullShow.artwork.description.ifEmpty { stringResource(Res.string.no_summary) },
-            )
-
-        }
-
-        item { Spacer(modifier = Modifier.height(FluxUI.Space.medium)) }
-
-        item {
-
-            Text.Content.Title(
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = FluxUI.Space.medium),
-                text = stringResource(Res.string.seasons),
-                color = MaterialTheme.colorScheme.onBackground
-            )
-
-        }
-
-        item { Spacer(modifier = Modifier.height(FluxUI.Space.medium)) }
-
-        val seasonsChunks = fullShow.seasons.chunked(columns)
-
-        items(
-            items = seasonsChunks,
-            key = { seasons -> seasons.fold("") { acc, s -> acc + s.id } }
-        ) { seasons ->
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = FluxUI.Space.medium)
+                    .padding(top = FluxUI.Space.large)
                     .padding(bottom = FluxUI.Space.medium),
-                horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
+                verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                seasons.forEach { season ->
+                OverviewItem(
+                    modifier = Modifier.padding(horizontal = FluxUI.Space.medium),
+                    title = stringResource(Res.string.summary),
+                    description = fullShow.artwork.description.ifEmpty { stringResource(Res.string.no_summary) },
+                )
 
-                    Box(
-                        modifier = Modifier.weight(1f),
-                        contentAlignment = Alignment.TopCenter
-                    ) {
-
-                        SeasonItem(
-                            modifier = Modifier.width(itemWidth),
-                            season = season,
-                            episodes = fullShow.episodes.filter { it.season == season.season },
-                            onTap = { sendIntent(ShowIntent.OnSeasonTap(season = season.season, rgb = it))},
-                            onLongPress = { sendIntent(ShowIntent.ShowSeasonPreview(season = season)) }
-                        )
-
-                    }
-
-
-                }
-
-                val emptySlots = columns - seasons.size
-                if (emptySlots > 0) {
-                    repeat(emptySlots) {
-                        Spacer(modifier = Modifier.weight(1f))
-                    }
-                }
+                Text.Content.Title(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = FluxUI.Space.medium),
+                    text = stringResource(Res.string.seasons),
+                    color = MaterialTheme.colorScheme.onBackground
+                )
 
             }
 
+        }
+
+        itemsIndexed(items = fullShow.seasons, key = { _,s -> s.season }) { index, season ->
+
+            val columnIndex = index % columns
+            val isFirstColumn = columnIndex == 0
+            val isLastColumn = columnIndex == columns - 1
+
+            val paddingValues = when {
+                isFirstColumn -> startPadding
+                isLastColumn -> lastPadding
+                else -> middlePadding
+            }
+
+            SeasonItem(
+                modifier = Modifier
+                    .padding(paddingValues)
+                    .fillMaxWidth(),
+                season = season,
+                episodes = fullShow.episodes.filter { it.season == season.season },
+                onTap = { sendIntent(ShowIntent.OnSeasonTap(season = season.season, rgb = it))},
+                onLongPress = { sendIntent(ShowIntent.ShowSeasonPreview(season = season)) }
+            )
 
         }
 
-        item {
+        item(span = { GridItemSpan(maxLineSpan) }) {
             Spacer(modifier = Modifier.height(scaffoldInnerPadding.calculateBottomPadding()))
         }
 

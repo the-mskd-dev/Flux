@@ -93,7 +93,7 @@ fun FluxNavigationBarItem(
             .clip(CircleShape)
             .clickable { onClick() }
             .background(animatedBackgroundColor)
-            .padding(vertical = FluxUI.Space.small, horizontal = 10.dp),
+            .padding(all = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.extraSmall)
     ) {

@@ -12,16 +12,21 @@ import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.constraintlayout.compose.layoutId
@@ -29,6 +34,7 @@ import com.mskd.flux.features.player.presentation.PlayerUiContent
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.theme.backgroundDark
 import com.mskd.flux.utils.LandscapePreview
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_forward
@@ -43,6 +49,18 @@ fun PlayerSeekOverlay(
 ) {
 
     val overlay = seekOverlay()
+    val overlayLeftBackground = Brush.horizontalGradient(
+        colors = listOf(
+            Color.Black.copy(alpha = .7f),
+            Color.Black.copy(alpha = .0f),
+        )
+    )
+    val overlayRightBackground = Brush.horizontalGradient(
+        colors = listOf(
+            Color.Black.copy(alpha = .0f),
+            Color.Black.copy(alpha = .7f),
+        )
+    )
 
     Box(
         modifier = Modifier.layoutId(layoutIdLeft),
@@ -56,8 +74,11 @@ fun PlayerSeekOverlay(
             label = "Visibility left seek overlay"
         ) {
             Row(
-                modifier = Modifier.padding(horizontal = FluxUI.Space.large),
-                horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.medium),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(overlayLeftBackground)
+                    .padding(horizontal = FluxUI.Space.large),
+                horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.medium, Alignment.CenterHorizontally),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 PlayerSeekOverlayIcon(
@@ -83,8 +104,11 @@ fun PlayerSeekOverlay(
             label = "Visibility right seek overlay"
         ) {
             Row(
-                modifier = Modifier.padding(horizontal = FluxUI.Space.large),
-                horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.medium),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(overlayRightBackground)
+                    .padding(horizontal = FluxUI.Space.large),
+                horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.medium, Alignment.CenterHorizontally),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 PlayerSeekOverlayText(amount = overlay?.amount?.let { "+$it" })

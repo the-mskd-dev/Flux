@@ -17,6 +17,10 @@ fun LazyGridScope.catalogViewModeGrid(
     sendIntent: (CatalogIntent) -> Unit
 ) {
 
+    val startPadding = PaddingValues(start = FluxUI.Space.medium)
+    val lastPadding = PaddingValues(end = FluxUI.Space.medium)
+    val middlePadding = PaddingValues(horizontal = FluxUI.Space.small)
+
     itemsIndexed(items = artworks.filter { !it.isUnknown }, key = { _,a -> a.id }) { index, artwork ->
 
         val columnIndex = index % columns
@@ -24,9 +28,9 @@ fun LazyGridScope.catalogViewModeGrid(
         val isLastColumn = columnIndex == columns - 1
 
         val paddingValues = when {
-            isFirstColumn -> PaddingValues(start = FluxUI.Space.medium)
-            isLastColumn -> PaddingValues(end = FluxUI.Space.medium)
-            else -> PaddingValues(horizontal = FluxUI.Space.small)
+            isFirstColumn -> startPadding
+            isLastColumn -> lastPadding
+            else -> middlePadding
         }
 
         MediaItem(

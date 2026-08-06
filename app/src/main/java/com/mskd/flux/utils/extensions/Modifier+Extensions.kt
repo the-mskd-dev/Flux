@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
@@ -81,8 +82,23 @@ fun Modifier.groupedShape(
 }
 
 @Composable
-fun Modifier.fillMaxWidthWithLimit() : Modifier{
+fun Modifier.fillMaxWidthWithLimit() : Modifier {
     return this
         .widthIn(max = 600.dp)
         .fillMaxWidth()
+}
+
+fun Modifier.gridItemPadding(index: Int, columns: Int) : Modifier {
+
+    val columnIndex = index % columns
+    val isFirstColumn = columnIndex == 0
+    val isLastColumn = columnIndex == columns - 1
+
+    val paddingValues = when {
+        isFirstColumn -> FluxUI.Grid.startPadding
+        isLastColumn -> FluxUI.Grid.lastPadding
+        else -> FluxUI.Grid.middlePadding
+    }
+
+    return this.padding(paddingValues)
 }

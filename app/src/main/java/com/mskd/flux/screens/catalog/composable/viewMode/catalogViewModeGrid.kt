@@ -9,8 +9,7 @@ import androidx.compose.ui.Modifier
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.ui.component.media.MediaItem
-import com.mskd.flux.ui.getGridItemPadding
-import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.utils.extensions.gridItemPadding
 
 fun LazyGridScope.catalogViewModeGrid(
     artworks: List<Artwork>,
@@ -23,7 +22,7 @@ fun LazyGridScope.catalogViewModeGrid(
         MediaItem(
             modifier = Modifier
                 .animateItem()
-                .padding(getGridItemPadding(index = index, columns = columns))
+                .gridItemPadding(index = index, columns = columns)
                 .fillMaxWidth(),
             path = artwork.imagePath,
             onTap = { rgb -> sendIntent(CatalogIntent.OnArtworkTap(artwork = artwork, rgb = rgb)) },

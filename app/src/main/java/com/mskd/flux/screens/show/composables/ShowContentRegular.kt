@@ -39,10 +39,10 @@ import com.mskd.flux.screens.artwork.composables.common.ArtworkImageFull
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.component.media.MediaItem
 import com.mskd.flux.ui.component.media.OverviewItem
-import com.mskd.flux.ui.getGridItemPadding
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.PortraitPreview
+import com.mskd.flux.utils.extensions.gridItemPadding
 import com.mskd.flux.utils.itemWidthFor
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.no_summary
@@ -137,7 +137,7 @@ fun ShowContentRegular(
 
             SeasonItem(
                 modifier = Modifier
-                    .padding(getGridItemPadding(index = index, columns = columns))
+                    .gridItemPadding(index = index, columns = columns)
                     .fillMaxWidth(),
                 season = season,
                 episodes = fullShow.episodes.filter { it.season == season.season },

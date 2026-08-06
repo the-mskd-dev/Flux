@@ -29,7 +29,7 @@ fun LazyGridScope.catalogViewModeGenre(
 
     item(span = { GridItemSpan(maxLineSpan) }) {
         Column(
-            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
+            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.large)
         ) {
 
             CatalogCategory(

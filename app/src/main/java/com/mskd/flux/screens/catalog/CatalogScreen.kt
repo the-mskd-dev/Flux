@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -188,7 +190,7 @@ fun CatalogContent(
                         .fillMaxSize()
                         .graphicsLayer { translationY = offsetY },
                     columns = GridCells.Fixed(columns),
-                    verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
+                    verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
                 ) {
 
                     if (artworks.none { !it.isUnknown }) {
@@ -200,6 +202,7 @@ fun CatalogContent(
                     if (artworks.any { !it.isUnknown }) {
 
                         item(span = { GridItemSpan(maxLineSpan) }) {
+
                             Column(
                                 modifier = Modifier.fillMaxWidth(),
                                 verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
@@ -207,12 +210,6 @@ fun CatalogContent(
 
                                 LastWatchedCarousel(
                                     artworks = lastWatchedIds.mapNotNull { artworks.find { o -> o.id == it } },
-                                    sendIntent = sendIntent
-                                )
-
-                                CatalogMenu(
-                                    artworks = artworks,
-                                    tokenIsMissing = tokenIsMissing,
                                     sendIntent = sendIntent
                                 )
 
@@ -246,10 +243,20 @@ fun CatalogContent(
 
                     item(span = { GridItemSpan(maxLineSpan) }) {
 
-                        Spacer(
+                        Column(
                             modifier = Modifier
-                                .height(paddingValues.calculateBottomPadding() + FluxUI.Space.bottomScreen)
-                        )
+                                .fillMaxWidth()
+                                .padding(top = FluxUI.Space.medium)
+                                .padding(bottom = paddingValues.calculateBottomPadding() + FluxUI.Space.bottomScreen)
+                        ) {
+
+                            CatalogMenu(
+                                artworks = artworks,
+                                tokenIsMissing = tokenIsMissing,
+                                sendIntent = sendIntent
+                            )
+
+                        }
 
                     }
 

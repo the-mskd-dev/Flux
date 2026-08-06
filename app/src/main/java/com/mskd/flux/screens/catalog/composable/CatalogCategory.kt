@@ -73,7 +73,7 @@ fun CatalogCategory(
             modifier = Modifier
                 .clickable { sendIntent(CatalogIntent.OnCategoryTap(category)) }
                 .fillMaxWidth()
-                .padding(start = FluxUI.Space.medium, top = FluxUI.Space.large),
+                .padding(start = FluxUI.Space.medium),
             text = name,
             color = MaterialTheme.colorScheme.onBackground
         )

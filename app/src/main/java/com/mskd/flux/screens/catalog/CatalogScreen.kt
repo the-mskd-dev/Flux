@@ -45,7 +45,7 @@ import com.mskd.flux.features.catalog.presentation.CatalogState
 import com.mskd.flux.features.catalog.presentation.CatalogViewModel
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.navigation.domain.Route
-import com.mskd.flux.screens.catalog.composable.CatalogChips
+import com.mskd.flux.screens.catalog.composable.CatalogViewMenu
 import com.mskd.flux.screens.catalog.composable.CatalogEmptyContent
 import com.mskd.flux.screens.catalog.composable.sorting.CatalogSortingSheet
 import com.mskd.flux.screens.catalog.composable.CatalogHeader
@@ -216,7 +216,7 @@ fun CatalogContent(
                                     sendIntent = sendIntent
                                 )
 
-                                CatalogChips(
+                                CatalogViewMenu(
                                     sortingMode = sortingMode,
                                     viewMode = viewMode,
                                     sendIntent = sendIntent

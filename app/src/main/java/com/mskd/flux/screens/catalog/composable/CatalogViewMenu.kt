@@ -6,8 +6,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.AssistChip
-import androidx.compose.material3.ButtonGroupDefaults
+import androidx.compose.material3.FilledIconButton
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,7 +29,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun CatalogChips(
+fun CatalogViewMenu(
     sortingMode: CatalogSortingMode,
     viewMode: CatalogViewMode,
     sendIntent: (CatalogIntent) -> Unit
@@ -38,32 +40,26 @@ fun CatalogChips(
         horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.extraSmall)
     ) {
 
-        AssistChip(
+        FilledTonalButton(
             onClick = { sendIntent(CatalogIntent.ShowSortingModes(show = true)) },
-            label = { Text.Button.Chip(stringResource(Res.string.sort_by)) },
-            leadingIcon = {
-                Icon(
-                    painter = painterResource(Res.drawable.ic_sort),
-                    contentDescription = stringResource(Res.string.sort)
-                )
-            },
-            shape = CircleShape,
-        )
-
-        AnimatedContent(
-            targetState = viewMode
-        ) { mode ->
-            AssistChip(
-                onClick = { sendIntent(CatalogIntent.ShowViewModes(show = true)) },
-                label = { Text.Button.Chip(mode.description.resolve()) },
-                leadingIcon = {
-                    Icon(
-                        painter = painterResource(mode.drawableRes),
-                        contentDescription = stringResource(Res.string.view)
-                    )
-                },
-                shape = CircleShape,
+        ) {
+            Icon(
+                painter = painterResource(Res.drawable.ic_sort),
+                contentDescription = stringResource(Res.string.sort)
             )
+        }
+
+        FilledTonalButton(
+            onClick = { sendIntent(CatalogIntent.ShowViewModes(show = true)) },
+        ) {
+            AnimatedContent(
+                targetState = viewMode
+            ) { mode ->
+                Icon(
+                    painter = painterResource(mode.drawableRes),
+                    contentDescription = stringResource(Res.string.view)
+                )
+            }
         }
 
     }
@@ -72,9 +68,9 @@ fun CatalogChips(
 
 @Preview
 @Composable
-fun CatalogChips_Preview() {
+fun CatalogViewMenu_Preview() {
     FluxThemePreview {
-        CatalogChips(
+        CatalogViewMenu(
             sortingMode = CatalogSortingMode.LAST_MODIFICATION,
             viewMode = CatalogViewMode.BY_TYPE
         ) { }

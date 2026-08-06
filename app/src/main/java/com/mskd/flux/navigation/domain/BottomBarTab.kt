@@ -1,21 +1,20 @@
 package com.mskd.flux.navigation.domain
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation3.runtime.NavKey
 import com.mskd.flux.core.model.core.StringProvider
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.home
+import flux.shared.generated.resources.ic_home
+import flux.shared.generated.resources.ic_search
+import flux.shared.generated.resources.ic_settings
 import flux.shared.generated.resources.search
 import flux.shared.generated.resources.settings
+import org.jetbrains.compose.resources.DrawableResource
 
-enum class BottomBarTab(val route: Route, val icon: ImageVector, val label: StringProvider) {
-    CATALOG(Route.Catalog, Icons.Outlined.Home, StringProvider.Resource(Res.string.home)),
-    SEARCH(Route.Search(), Icons.Outlined.Search, StringProvider.Resource(Res.string.search)),
-    SETTINGS(Route.Settings, Icons.Outlined.Settings, StringProvider.Resource(Res.string.settings)),
+enum class BottomBarTab(val route: Route, val iconRes: DrawableResource, val label: StringProvider) {
+    CATALOG(Route.Catalog, Res.drawable.ic_home, StringProvider.Resource(Res.string.home)),
+    SEARCH(Route.Search(), Res.drawable.ic_search, StringProvider.Resource(Res.string.search)),
+    SETTINGS(Route.Settings, Res.drawable.ic_settings, StringProvider.Resource(Res.string.settings)),
 }
 
 fun Route?.isSameTabAs(target: Route): Boolean = when (target) {

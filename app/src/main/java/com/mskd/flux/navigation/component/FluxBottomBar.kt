@@ -25,7 +25,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.navigation.domain.BottomBarTab
 import com.mskd.flux.navigation.domain.Route
@@ -35,6 +37,7 @@ import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxThemePreview
 import com.mskd.flux.utils.extensions.resolve
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun FluxBottomBar(
@@ -63,7 +66,7 @@ fun FluxBottomBar(
                 FluxNavigationBarItem(
                     selected = currentTab.isSameTabAs(tab.route),
                     onClick = { onTabSelected(tab.route) },
-                    icon = tab.icon,
+                    icon = painterResource(tab.iconRes),
                     label = tab.label.resolve(),
                 )
             }
@@ -76,7 +79,7 @@ fun FluxBottomBar(
 fun FluxNavigationBarItem(
     selected: Boolean,
     onClick: () -> Unit,
-    icon: ImageVector,
+    icon: Painter,
     label: String,
 ) {
 
@@ -102,7 +105,7 @@ fun FluxNavigationBarItem(
             visible = selected
         ) {
             Icon(
-                imageVector = icon,
+                painter = icon,
                 tint = colors.selectedIconColor,
                 contentDescription = label
             )

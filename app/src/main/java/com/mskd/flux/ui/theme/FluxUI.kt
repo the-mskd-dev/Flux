@@ -6,6 +6,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.compositionLocalOf
@@ -57,21 +58,10 @@ object FluxUI {
 
     }
 
-    /**
-     * - **Level 0** : base level.
-     * - **Level 1** : filled cards and low emphasis items.
-     * - **Level 2** : elevated cards and navigation bars.
-     * - **Level 3** : cards and floating buttons.
-     * - **Level 4** : dialogs and menus.
-     * - **Level 5** : modals and navigation drawers.
-     */
-    object Elevation {
-        val level0 = 0.0.dp
-        val level1 = 1.0.dp
-        val level2 = 3.0.dp
-        val level3 = 6.0.dp
-        val level4 = 8.0.dp
-        val level5 = 12.0.dp
+    object Grid {
+        val startPadding = PaddingValues(start = Space.medium)
+        val lastPadding = PaddingValues(end = Space.medium)
+        val middlePadding = PaddingValues(horizontal = Space.small)
     }
 
     data class Shapes(

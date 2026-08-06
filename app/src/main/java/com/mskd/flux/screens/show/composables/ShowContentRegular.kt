@@ -39,6 +39,7 @@ import com.mskd.flux.screens.artwork.composables.common.ArtworkImageFull
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.component.media.MediaItem
 import com.mskd.flux.ui.component.media.OverviewItem
+import com.mskd.flux.ui.getGridItemPadding
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.PortraitPreview
@@ -134,19 +135,9 @@ fun ShowContentRegular(
 
         itemsIndexed(items = fullShow.seasons, key = { _,s -> s.season }) { index, season ->
 
-            val columnIndex = index % columns
-            val isFirstColumn = columnIndex == 0
-            val isLastColumn = columnIndex == columns - 1
-
-            val paddingValues = when {
-                isFirstColumn -> startPadding
-                isLastColumn -> lastPadding
-                else -> middlePadding
-            }
-
             SeasonItem(
                 modifier = Modifier
-                    .padding(paddingValues)
+                    .padding(getGridItemPadding(index = index, columns = columns))
                     .fillMaxWidth(),
                 season = season,
                 episodes = fullShow.episodes.filter { it.season == season.season },

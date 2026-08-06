@@ -101,9 +101,6 @@ fun CountDownButton(
     var count by remember { mutableIntStateOf(duration) }
     val size = ButtonDefaults.MediumContainerHeight
     val shape = ButtonDefaults.shape
-    val style = ButtonDefaults.textStyleFor(size).copy(
-        fontFeatureSettings = "tnum"
-    )
 
     LaunchedEffect(Unit) {
         while (count > 0) {
@@ -123,10 +120,10 @@ fun CountDownButton(
         shape = shape,
         contentPadding = ButtonDefaults.contentPaddingFor(size),
         elevation = ButtonDefaults.buttonElevation(
-            defaultElevation = FluxUI.Elevation.level3,
-            pressedElevation = FluxUI.Elevation.level3,
-            hoveredElevation = FluxUI.Elevation.level4,
-            focusedElevation = FluxUI.Elevation.level3
+            defaultElevation = 6.dp,
+            pressedElevation = 6.dp,
+            hoveredElevation = 4.dp,
+            focusedElevation = 6.dp
         ),
         content = {
 

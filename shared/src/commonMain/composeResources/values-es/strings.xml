@@ -181,4 +181,5 @@
     <string name="grid">Cuadrícula</string>
     <string name="by_type">Por tipo</string>
     <string name="by_genre">Por género</string>
+    <string name="add_token">Añadir token</string>
 </resources>

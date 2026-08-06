@@ -180,4 +180,5 @@
     <string name="grid">격자</string>
     <string name="by_type">유형별</string>
     <string name="by_genre">장르별</string>
+    <string name="add_token">토큰 추가</string>
 </resources>

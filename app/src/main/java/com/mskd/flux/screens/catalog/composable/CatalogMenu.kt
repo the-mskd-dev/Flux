@@ -40,6 +40,7 @@ import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxThemePreview
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.add_source
+import flux.shared.generated.resources.add_token
 import flux.shared.generated.resources.ic_add_folder
 import flux.shared.generated.resources.ic_api
 import flux.shared.generated.resources.ic_flux
@@ -63,32 +64,32 @@ fun CatalogMenu(
         verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
     ) {
 
-        if (artworks.any { it.isUnknown }) {
+        //if (artworks.any { it.isUnknown }) {
             CatalogMenuItem(
                 text = stringResource(Res.string.other_files),
                 painter = painterResource(Res.drawable.ic_add_folder),
                 iconColor = MaterialTheme.colorScheme.tertiary,
                 onClick = { sendIntent(CatalogIntent.OnArtworkTap(artwork = Artwork.UNKNOWN)) }
             )
-        }
+        //}
 
-        if (artworks.isEmpty()) {
+        //if (artworks.isEmpty()) {
             CatalogMenuItem(
                 text = stringResource(Res.string.add_source),
                 painter = painterResource(Res.drawable.ic_add_folder),
                 iconColor = MaterialTheme.colorScheme.secondary,
                 onClick = { sendIntent(CatalogIntent.OnSourcesTap) }
             )
-        }
+        //}
 
-        if (tokenIsMissing) {
+        //if (tokenIsMissing) {
             CatalogMenuItem(
-                text = stringResource(Res.string.tmdb_api_token),
+                text = stringResource(Res.string.add_token),
                 painter = painterResource(Res.drawable.ic_api),
                 iconColor = MaterialTheme.colorScheme.primary,
                 onClick = { sendIntent(CatalogIntent.OnTokenTap) }
             )
-        }
+        //}
 
     }
 

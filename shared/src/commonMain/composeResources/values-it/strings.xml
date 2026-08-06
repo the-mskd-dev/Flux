@@ -181,4 +181,5 @@
     <string name="grid">Griglia</string>
     <string name="by_type">Per tipo</string>
     <string name="by_genre">Per genere</string>
+    <string name="add_token">Aggiungi token</string>
 </resources>

@@ -7,17 +7,21 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
@@ -66,6 +70,7 @@ import com.mskd.flux.ui.component.media.MediaItem
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxThemePreview
+import com.mskd.flux.utils.Trace
 import com.mskd.flux.utils.itemWidthFor
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.add_source
@@ -171,9 +176,7 @@ fun CatalogContent(
         offsetY = 100.dp.toPx() * pullToRefreshState.distanceFraction
     }
 
-    val columns = FluxUI.itemsPerRow.seasons
-    var itemWidth by remember { mutableStateOf(FluxUI.Dimension.itemWidth) }
-    val density = LocalDensity.current
+    val columns = FluxUI.itemsPerRow.artworks
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -204,17 +207,8 @@ fun CatalogContent(
                 LazyVerticalGrid(
                     modifier = Modifier
                         .fillMaxSize()
-                        .onSizeChanged { size ->
-                            with(density) {
-                                itemWidth = itemWidthFor(
-                                    screenWidthDp = size.width.toDp(),
-                                    columns = columns
-                                )
-                            }
-                        }
                         .graphicsLayer { translationY = offsetY },
                     columns = GridCells.Fixed(columns),
-                    horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
                     verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
                 ) {
 
@@ -248,15 +242,26 @@ fun CatalogContent(
 
                         when (viewMode) {
                             CatalogViewMode.GRID -> {
-                                items(items = artworks.filter { !it.isUnknown }, key = { it.id }) {
+                                itemsIndexed(items = artworks.filter { !it.isUnknown }, key = { _,a -> a.id }) { index, artwork ->
+
+                                    val columnIndex = index % columns
+                                    val isFirstColumn = columnIndex == 0
+                                    val isLastColumn = columnIndex == columns - 1
+
+                                    val paddingValues = when {
+                                        isFirstColumn -> PaddingValues(start = FluxUI.Space.medium)
+                                        isLastColumn -> PaddingValues(end = FluxUI.Space.medium)
+                                        else -> PaddingValues(horizontal = FluxUI.Space.small)
+                                    }
+
                                     MediaItem(
                                         modifier = Modifier
                                             .animateItem()
-                                            .width(itemWidth)
-                                            .aspectRatio(FluxUI.Dimension.itemRatio),
-                                        path = it.imagePath,
-                                        onTap = { rgb -> sendIntent(CatalogIntent.OnArtworkTap(artwork = it, rgb = rgb)) },
-                                        description = it.title
+                                            .padding(paddingValues)
+                                            .fillMaxWidth(),
+                                        path = artwork.imagePath,
+                                        onTap = { rgb -> sendIntent(CatalogIntent.OnArtworkTap(artwork = artwork, rgb = rgb)) },
+                                        description = artwork.title
                                     )
                                 }
                             }

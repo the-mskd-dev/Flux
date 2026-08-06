@@ -28,9 +28,8 @@ fun MediaItem(
     var seedRgb by remember { mutableStateOf<Int?>(null) }
 
     FluxImage(
-        modifier = Modifier
+        modifier = modifier
             .clip(shape)
-            .then(modifier)
             .aspectRatio(ratio)
             .clickableWithBounce { onTap(seedRgb) },
         path = path,

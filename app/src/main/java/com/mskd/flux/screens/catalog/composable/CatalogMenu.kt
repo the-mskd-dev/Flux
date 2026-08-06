@@ -24,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
@@ -106,25 +107,23 @@ fun CatalogMenuItem(
         modifier = Modifier
             .clip(AssistChipDefaults.shape)
             .width(200.dp)
-            .background(MaterialTheme.colorScheme.secondaryContainer.copy(alpha = .9f))
+            .background(Brush.horizontalGradient(colors = listOf(MaterialTheme.colorScheme.primaryContainer, MaterialTheme.colorScheme.secondaryContainer)),)
             .clickable { onClick() }
-            .padding(all = FluxUI.Space.small),
+            .padding(all = FluxUI.Space.medium),
         horizontalArrangement = AssistChipDefaults.horizontalArrangement(),
         verticalAlignment = Alignment.CenterVertically,
     ) {
 
         Icon(
-            modifier = Modifier.size(AssistChipDefaults.IconSize),
+            modifier = Modifier.size(24.dp),
             painter = painter,
             tint = iconColor,
             contentDescription = text
         )
 
-        Text.Content.Body(
+        Text.Button.Default(
             text = text,
-            maxLines = 1,
             color = MaterialTheme.colorScheme.onSecondaryContainer,
-            overflow = TextOverflow.Ellipsis
         )
 
     }

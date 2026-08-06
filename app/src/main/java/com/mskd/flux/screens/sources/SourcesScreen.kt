@@ -140,7 +140,7 @@ fun SourcesScreen(
             is State.Error -> {
                 ErrorScreen(
                     message = stringResource(Res.string.oups_an_error_occured),
-                    onBackButtonTap = { viewModel.handleIntent(SourcesIntent.OnBackTap) }
+                    onBackButtonClick = { viewModel.handleIntent(SourcesIntent.OnBackTap) }
                 )
             }
             is State.Content<SourcesContent> -> {

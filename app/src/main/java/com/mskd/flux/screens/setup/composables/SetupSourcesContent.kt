@@ -70,14 +70,14 @@ fun SetupSourcesContent(
                     title = stringResource(Res.string.setup_sources_default_title),
                     description = sourcesAnnotatedString(Res.string.setup_sources_default_desc),
                     isSelected = systemFoldersEnabled,
-                    onTap = { sendIntent(SetupIntent.EnableSystemFolders(enabled = true)) }
+                    onClick = { sendIntent(SetupIntent.EnableSystemFolders(enabled = true)) }
                 )
 
                 SetupSourcesItem(
                     title = stringResource(Res.string.setup_sources_custom_title),
                     description = AnnotatedString(stringResource(Res.string.setup_sources_custom_desc)),
                     isSelected = !systemFoldersEnabled,
-                    onTap = { sendIntent(SetupIntent.EnableSystemFolders(enabled = false)) }
+                    onClick = { sendIntent(SetupIntent.EnableSystemFolders(enabled = false)) }
                 )
 
             }

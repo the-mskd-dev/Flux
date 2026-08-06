@@ -114,7 +114,7 @@ fun ArtworkContentRegular(
                         modifier = Modifier.animateItem(),
                         episode = episode,
                         isSelected = episode.id == selectedMedia.mediaId,
-                        onTap = { sendIntent(ArtworkIntent.PlayMedia(media = episode)) },
+                        onClick = { sendIntent(ArtworkIntent.PlayMedia(media = episode)) },
                         isExpanded = episode.id == expandedEpisodeId,
                         onReadMoreTap = {
                             if (it) {

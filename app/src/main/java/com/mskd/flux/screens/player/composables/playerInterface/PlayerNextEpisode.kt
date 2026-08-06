@@ -102,7 +102,7 @@ fun PlayerNextEpisode(
             }
 
             CountDownButton(
-                onTap = { episode?.let { sendIntent(PlayerIntent.PlayNextEpisode(it)) } },
+                onClick = { episode?.let { sendIntent(PlayerIntent.PlayNextEpisode(it)) } },
                 text = { stringResource(Res.string.next_episode, it) }
             )
 

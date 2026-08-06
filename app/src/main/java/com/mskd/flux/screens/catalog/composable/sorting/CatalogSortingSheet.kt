@@ -47,7 +47,7 @@ fun CatalogSortingSheet(
                 FluxBottomSheetItem(
                     isSelected = option == selectedMode,
                     text = option.description.resolve(),
-                    onTap = { sendIntent(CatalogIntent.SelectSortingMode(option)) }
+                    onClick = { sendIntent(CatalogIntent.SelectSortingMode(option)) }
                 )
             }
         }

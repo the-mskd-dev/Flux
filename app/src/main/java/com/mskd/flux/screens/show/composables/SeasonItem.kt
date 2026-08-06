@@ -45,7 +45,7 @@ fun SeasonItem(
     modifier: Modifier = Modifier,
     season: Season,
     episodes: List<Episode>,
-    onTap: (Int?) -> Unit,
+    onClick: (Int?) -> Unit,
     onLongPress: () -> Unit
 ) {
 
@@ -62,7 +62,7 @@ fun SeasonItem(
                 .fillMaxWidth()
                 .aspectRatio(FluxUI.Dimension.itemRatio)
                 .combinedClickable(
-                    onClick = { onTap(seedRgb) },
+                    onClick = { onClick(seedRgb) },
                     onLongClick = { onLongPress() }
                 ),
             contentAlignment = Alignment.Center
@@ -142,7 +142,7 @@ fun SeasonItem_Preview() {
                     modifier = Modifier.weight(1f),
                     season = MediaMockups.season1,
                     episodes = MediaMockups.episodesWithStatus.filter { it.season == MediaMockups.season1.season },
-                    onTap = {},
+                    onClick = {},
                     onLongPress = {}
                 )
             }

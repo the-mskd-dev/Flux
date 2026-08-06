@@ -21,7 +21,7 @@ fun MediaItem(
     path: String,
     ratio: Float = FluxUI.Dimension.itemRatio,
     shape: Shape = FluxUI.shapes.corners,
-    onTap: (Int?) -> Unit,
+    onClick: (Int?) -> Unit,
     description: String
 ) {
 
@@ -31,7 +31,7 @@ fun MediaItem(
         modifier = modifier
             .clip(shape)
             .aspectRatio(ratio)
-            .clickableWithBounce { onTap(seedRgb) },
+            .clickableWithBounce { onClick(seedRgb) },
         path = path,
         contentDescription = description,
         onSuccess = { state ->

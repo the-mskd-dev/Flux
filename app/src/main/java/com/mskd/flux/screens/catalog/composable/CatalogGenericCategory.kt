@@ -47,7 +47,7 @@ fun CatalogGenericCategory(
     painter: Painter,
     iconColor: Color,
     backgroundColor: Color,
-    onTap: () -> Unit,
+    onClick: () -> Unit,
 ) {
 
 
@@ -88,7 +88,7 @@ fun CatalogGenericCategory(
                 CatalogGenericItem(
                     modifier = Modifier.size(48.dp),
                     itemWidth = itemWidth,
-                    onTap = onTap,
+                    onClick = onClick,
                     painter = painter,
                     iconColor = iconColor,
                     backgroundColor = backgroundColor,
@@ -111,13 +111,13 @@ fun CatalogGenericItem(
     painter: Painter,
     iconColor: Color,
     backgroundColor: Color,
-    onTap: () -> Unit,
+    onClick: () -> Unit,
     contentDescription: String,
 ) {
 
     Box(
         modifier = Modifier
-            .clickable { onTap() }
+            .clickable { onClick() }
             .clip(FluxUI.shapes.corners)
             .width(itemWidth)
             .aspectRatio(FluxUI.Dimension.itemRatio)
@@ -146,7 +146,7 @@ fun CatalogGenericCategory_Preview() {
                 painter = painterResource(Res.drawable.ic_flux),
                 iconColor = MaterialTheme.colorScheme.onSecondaryContainer,
                 backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
-                onTap = {}
+                onClick = {}
             )
         }
     }

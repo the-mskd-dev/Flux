@@ -103,7 +103,7 @@ fun UnknownScreen(
             is State.Error -> {
                 ErrorScreen(
                     message = stringResource(Res.string.oups_an_error_occured),
-                    onBackButtonTap = { viewModel.handleIntent(UnknownIntent.OnBackTap) }
+                    onBackButtonClick = { viewModel.handleIntent(UnknownIntent.OnBackTap) }
                 )
             }
             is State.Content -> {
@@ -185,7 +185,7 @@ fun UnknownScreenContent(
                         modifier = Modifier.animateItem(),
                         episode = media,
                         isSelected = false,
-                        onTap = { sendIntent(UnknownIntent.PlayMedia(media = media)) },
+                        onClick = { sendIntent(UnknownIntent.PlayMedia(media = media)) },
                         dropDownMenu = { onDismissRequest ->
                             UnknownDropDownMenu(
                                 episode = media,

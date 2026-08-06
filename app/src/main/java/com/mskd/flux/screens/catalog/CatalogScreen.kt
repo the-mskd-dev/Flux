@@ -252,7 +252,7 @@ fun CatalogContent(
                                 painter = painterResource(Res.drawable.ic_flux),
                                 iconColor = MaterialTheme.colorScheme.onSecondaryContainer,
                                 backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
-                                onTap = { sendIntent(CatalogIntent.OnArtworkTap(artwork = Artwork.UNKNOWN)) }
+                                onClick = { sendIntent(CatalogIntent.OnArtworkTap(artwork = Artwork.UNKNOWN)) }
                             )
                         }
                     }
@@ -264,7 +264,7 @@ fun CatalogContent(
                                 painter = painterResource(Res.drawable.ic_add_folder),
                                 iconColor = MaterialTheme.colorScheme.onTertiaryContainer,
                                 backgroundColor = MaterialTheme.colorScheme.tertiaryContainer,
-                                onTap = { sendIntent(CatalogIntent.OnSourcesTap) }
+                                onClick = { sendIntent(CatalogIntent.OnSourcesTap) }
                             )
                         }
                     }
@@ -276,7 +276,7 @@ fun CatalogContent(
                                 painter = painterResource(Res.drawable.ic_api),
                                 iconColor = MaterialTheme.colorScheme.onSurface,
                                 backgroundColor = MaterialTheme.colorScheme.surfaceBright,
-                                onTap = { sendIntent(CatalogIntent.OnTokenTap) }
+                                onClick = { sendIntent(CatalogIntent.OnTokenTap) }
                             )
                         }
                     }

@@ -25,7 +25,7 @@ fun LazyGridScope.catalogViewModeGrid(
                 .gridItemPadding(index = index, columns = columns)
                 .fillMaxWidth(),
             path = artwork.imagePath,
-            onTap = { rgb -> sendIntent(CatalogIntent.OnArtworkTap(artwork = artwork, rgb = rgb)) },
+            onClick = { rgb -> sendIntent(CatalogIntent.OnArtworkTap(artwork = artwork, rgb = rgb)) },
             description = artwork.title
         )
     }

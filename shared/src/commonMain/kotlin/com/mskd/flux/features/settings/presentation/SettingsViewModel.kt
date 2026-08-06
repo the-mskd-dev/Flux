@@ -79,7 +79,7 @@ class SettingsViewModel(
             SettingsIntent.OnTokenTap -> _event.emit(SettingsEvent.NavigateToTokenScreen)
             SettingsIntent.OnAboutTap -> _event.emit(SettingsEvent.NavigateToAboutScreen)
             SettingsIntent.OnHowToTap -> _event.emit(SettingsEvent.NavigateToHowToScreen)
-            SettingsIntent.OnCustomizationTap -> _event.emit(SettingsEvent.NavigateToCustomizationScreen)
+            SettingsIntent.OnCustomizationClick -> _event.emit(SettingsEvent.NavigateToCustomizationScreen)
             SettingsIntent.OnSourcesTap -> _event.emit(SettingsEvent.NavigateToSourcesScreen)
 
             // Dialogs

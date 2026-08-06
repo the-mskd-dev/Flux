@@ -40,13 +40,13 @@ fun CustomizationThemeSection(
         SettingsItem(
             text = stringResource(Res.string.accent_color),
             subText = stringResource(UiCommon.AccentColors.findColor(state.color)?.stringResId ?: Res.string.accent_color_desc),
-            onTap = { sendIntent(CustomizationIntent.ShowColorDialog) }
+            onClick = { sendIntent(CustomizationIntent.ShowColorDialog) }
         )
 
         SettingsItem(
             text = stringResource(Res.string.app_theme),
             subText = stringResource(state.uiTheme.stringResource),
-            onTap = { sendIntent(CustomizationIntent.ShowThemeDialog) }
+            onClick = { sendIntent(CustomizationIntent.ShowThemeDialog) }
         )
 
     }
@@ -64,19 +64,19 @@ fun CustomizationGlobalSection(
         SettingsItem(
             text = stringResource(Res.string.items_per_row),
             subText = stringResource(Res.string.items, state.itemsPerRow),
-            onTap = { sendIntent(CustomizationIntent.ShowItemsPerRowDialog) }
+            onClick = { sendIntent(CustomizationIntent.ShowItemsPerRowDialog) }
         )
 
         SettingsItem(
             text = stringResource(Res.string.seasons_per_row),
             subText = stringResource(Res.string.items, state.seasonsPerRow),
-            onTap = { sendIntent(CustomizationIntent.ShowSeasonsPerRowDialog) }
+            onClick = { sendIntent(CustomizationIntent.ShowSeasonsPerRowDialog) }
         )
 
         SettingsItem(
             text = stringResource(Res.string.corners),
             subText = stringResource(Res.string.corners_desc),
-            onTap = { sendIntent(CustomizationIntent.ShowItemsCornerDialog) }
+            onClick = { sendIntent(CustomizationIntent.ShowItemsCornerDialog) }
         )
 
     }

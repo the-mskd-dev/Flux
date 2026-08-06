@@ -130,7 +130,7 @@ fun TokenScreenContent(
 
                 FluxTextButton(
                     stringResource(Res.string.skip),
-                    onTap = { sendIntent(TokenIntent.OnCancelTap) }
+                    onClick = { sendIntent(TokenIntent.OnCancelTap) }
                 )
 
             }
@@ -337,7 +337,7 @@ fun TokenInput(
 
                         FluxIconButton(
                             imageVector = Icons.Default.Check,
-                            onTap = {
+                            onClick = {
                                 keyboardController?.hide()
                                 sendIntent(TokenIntent.SaveToken)
                             },

@@ -62,7 +62,7 @@ fun LastWatchedCarousel(
                 path = path,
                 shape = MaterialTheme.shapes.extraLarge,
                 ratio = ratio,
-                onTap = { rgb -> sendIntent(CatalogIntent.OnArtworkTap(artwork = overview, rgb = rgb)) },
+                onClick = { rgb -> sendIntent(CatalogIntent.OnArtworkTap(artwork = overview, rgb = rgb)) },
                 description = overview.title
             )
 
@@ -89,7 +89,7 @@ fun LastWatchedCarousel(
                         path = path,
                         ratio = ratio,
                         shape = MaterialTheme.shapes.extraLarge,
-                        onTap = { rgb ->
+                        onClick = { rgb ->
 
                             if (carouselState.currentItem != i) {
                                 scope.launch { carouselState.animateScrollToItem(i) }

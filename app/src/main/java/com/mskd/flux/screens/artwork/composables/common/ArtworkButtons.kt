@@ -116,7 +116,7 @@ fun ArtworkButtons(
         FluxTextButton(
             text = stringResource(if (media.status == Status.WATCHED) Res.string.mark_as_not_watched else Res.string.mark_as_watched),
             height = buttonHeight,
-            onTap = { sendIntent(ArtworkIntent.ChangeWatchStatus(media = media)) }
+            onClick = { sendIntent(ArtworkIntent.ChangeWatchStatus(media = media)) }
         )
 
     }

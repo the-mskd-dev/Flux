@@ -51,12 +51,12 @@ fun FluxTextButton(
     modifier: Modifier = Modifier,
     height: Dp = ButtonDefaults.MediumContainerHeight,
     color: Color = MaterialTheme.colorScheme.primary,
-    onTap: () -> Unit
+    onClick: () -> Unit
 ) {
 
     TextButton(
         modifier = modifier.height(height),
-        onClick = onTap,
+        onClick = onClick,
         content = {
             Text.Button.Default(
                 text = text,
@@ -72,14 +72,14 @@ fun FluxTextButton(
 fun FluxIconButton(
     modifier: Modifier = Modifier,
     imageVector: ImageVector,
-    onTap: () -> Unit,
+    onClick: () -> Unit,
     contentDescription: String
 ) {
 
     FloatingActionButton(
         modifier = modifier,
         elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp, 0.dp, 0.dp),
-        onClick = onTap,
+        onClick = onClick,
     ) {
         Icon(
             imageVector = imageVector,
@@ -94,7 +94,7 @@ fun FluxIconButton(
 fun CountDownButton(
     text: @Composable (Int) -> String,
     duration: Int = 10,
-    onTap: () -> Unit,
+    onClick: () -> Unit,
     backgroundColor: Color = MaterialTheme.colorScheme.primaryContainer,
 ) {
 
@@ -107,12 +107,12 @@ fun CountDownButton(
             delay(1.seconds)
             count -= 1
         }
-        onTap()
+        onClick()
     }
 
     Button(
         modifier = Modifier.heightIn(size),
-        onClick = onTap,
+        onClick = onClick,
         colors = ButtonDefaults.buttonColors(
             containerColor = backgroundColor,
             contentColor = contentColorFor(backgroundColor)
@@ -152,14 +152,14 @@ fun CountDownButton(
 fun ReadMoreButton(
     modifier: Modifier = Modifier,
     isExpanded: Boolean,
-    onTap: () -> Unit
+    onClick: () -> Unit
 ) {
 
     val degrees by animateFloatAsState(if (isExpanded) 180f else 0f)
 
     IconButton(
         modifier = modifier.rotate(degrees),
-        onClick = onTap
+        onClick = onClick
     ) {
         Icon(
             painter = painterResource(Res.drawable.ic_arrow_down),
@@ -180,7 +180,7 @@ fun CountDownButton_Preview() {
                 .padding(FluxUI.Space.large)
         ) {
             CountDownButton(
-                onTap = {  },
+                onClick = {  },
                 text = { stringResource(Res.string.next_episode, it) }
             )
         }
@@ -198,11 +198,11 @@ fun ReadMoreButton_Preview() {
             verticalArrangement = Arrangement.spacedBy(FluxUI.Space.large)
         ) {
             ReadMoreButton(
-                onTap = {  },
+                onClick = {  },
                 isExpanded = true
             )
             ReadMoreButton(
-                onTap = {  },
+                onClick = {  },
                 isExpanded = false
             )
         }

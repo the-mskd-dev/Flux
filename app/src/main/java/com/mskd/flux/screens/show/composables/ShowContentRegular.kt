@@ -141,7 +141,7 @@ fun ShowContentRegular(
                     .fillMaxWidth(),
                 season = season,
                 episodes = fullShow.episodes.filter { it.season == season.season },
-                onTap = { sendIntent(ShowIntent.OnSeasonTap(season = season.season, rgb = it))},
+                onClick = { sendIntent(ShowIntent.OnSeasonClick(season = season.season, rgb = it))},
                 onLongPress = { sendIntent(ShowIntent.ShowSeasonPreview(season = season)) }
             )
 

@@ -16,18 +16,18 @@ import com.mskd.flux.utils.extensions.resolve
 fun FluxBottomSheetItem(
     isSelected: Boolean,
     text: String,
-    onTap: () -> Unit
+    onClick: () -> Unit
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onTap() },
+            .clickable { onClick() },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
     ) {
         RadioButton(
             selected = isSelected,
-            onClick = { onTap() }
+            onClick = { onClick() }
         )
         Text.List.Body(
             modifier = Modifier.weight(1f),

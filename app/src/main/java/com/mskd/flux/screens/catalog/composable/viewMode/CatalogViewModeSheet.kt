@@ -51,7 +51,7 @@ fun CatalogViewModeSheet(
                 FluxBottomSheetItem(
                     isSelected = option == selectedMode,
                     text = option.description.resolve(),
-                    onTap = { sendIntent(CatalogIntent.SelectViewMode(option)) }
+                    onClick = { sendIntent(CatalogIntent.SelectViewMode(option)) }
                 )
             }
         }

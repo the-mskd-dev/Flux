@@ -24,7 +24,7 @@ sealed class ShowDialog {
 sealed class ShowIntent {
     // Navigation
     object OnBackTap: ShowIntent()
-    data class OnSeasonTap(val season: Int, val rgb: Int?) : ShowIntent()
+    data class OnSeasonClick(val season: Int, val rgb: Int?) : ShowIntent()
 
     // Dialogs
     data object CloseDialog : ShowIntent()

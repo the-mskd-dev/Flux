@@ -117,7 +117,7 @@ fun ArtworkScreen(
             is State.Error -> {
                 ErrorScreen(
                     message = stringResource(Res.string.oups_an_error_occured),
-                    onBackButtonTap = { viewModel.handleIntent(ArtworkIntent.OnBackTap) }
+                    onBackButtonClick = { viewModel.handleIntent(ArtworkIntent.OnBackTap) }
                 )
             }
             is State.Content -> {

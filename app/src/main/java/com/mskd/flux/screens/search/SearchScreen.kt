@@ -194,7 +194,7 @@ fun SearchContent(
                             .aspectRatio(FluxUI.Dimension.itemRatio),
                         path = artwork.imagePath,
                         description = artwork.title,
-                        onTap = { sendIntent(SearchIntent.OnArtworkTap(artwork = artwork, rgb = it)) }
+                        onClick = { sendIntent(SearchIntent.OnArtworkTap(artwork = artwork, rgb = it)) }
                     )
 
                 }

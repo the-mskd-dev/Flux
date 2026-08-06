@@ -100,7 +100,7 @@ fun ShowScreen(
             is State.Error -> {
                 ErrorScreen(
                     message = stringResource(Res.string.oups_an_error_occured),
-                    onBackButtonTap = { viewModel.handleIntent(ShowIntent.OnBackTap) }
+                    onBackButtonClick = { viewModel.handleIntent(ShowIntent.OnBackTap) }
                 )
             }
             is State.Content -> {

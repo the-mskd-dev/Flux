@@ -5,13 +5,18 @@ import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode.A_TO_Z
 import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode.LAST_MODIFICATION
 import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode.Z_TO_A
 import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.by_genre
+import flux.shared.generated.resources.by_type
+import flux.shared.generated.resources.grid
+import flux.shared.generated.resources.ic_grid
+import flux.shared.generated.resources.ic_list
 import flux.shared.generated.resources.ic_sort
 import org.jetbrains.compose.resources.DrawableResource
 
 enum class CatalogViewMode(val drawableRes: DrawableResource, val description: StringProvider) {
-    GRID(drawableRes = Res.drawable.ic_sort, description = StringProvider.Static("Grid")),
-    BY_TYPE(drawableRes = Res.drawable.ic_sort, description = StringProvider.Static("By type")),
-    BY_GENRE(drawableRes = Res.drawable.ic_sort, description = StringProvider.Static("By genre"));
+    GRID(drawableRes = Res.drawable.ic_grid, description = StringProvider.Resource(Res.string.grid)),
+    BY_TYPE(drawableRes = Res.drawable.ic_list, description = StringProvider.Resource(Res.string.by_type)),
+    BY_GENRE(drawableRes = Res.drawable.ic_list, description = StringProvider.Resource(Res.string.by_genre));
 
     companion object {
 

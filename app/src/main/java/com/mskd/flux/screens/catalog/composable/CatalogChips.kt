@@ -1,5 +1,6 @@
 package com.mskd.flux.screens.catalog.composable
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -49,17 +50,21 @@ fun CatalogChips(
             shape = CircleShape,
         )
 
-        AssistChip(
-            onClick = { sendIntent(CatalogIntent.ShowViewModes(show = true)) },
-            label = { Text.Button.Chip(viewMode.description.resolve()) },
-            leadingIcon = {
-                Icon(
-                    painter = painterResource(Res.drawable.ic_sort),
-                    contentDescription = stringResource(Res.string.view)
-                )
-            },
-            shape = CircleShape,
-        )
+        AnimatedContent(
+            targetState = viewMode
+        ) { mode ->
+            AssistChip(
+                onClick = { sendIntent(CatalogIntent.ShowViewModes(show = true)) },
+                label = { Text.Button.Chip(mode.description.resolve()) },
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(mode.drawableRes),
+                        contentDescription = stringResource(Res.string.view)
+                    )
+                },
+                shape = CircleShape,
+            )
+        }
 
     }
 

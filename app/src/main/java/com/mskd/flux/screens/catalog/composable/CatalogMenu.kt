@@ -57,6 +57,14 @@ fun CatalogMenu(
     sendIntent: (CatalogIntent) -> Unit
 ) {
 
+    val brush = Brush.linearGradient(
+        colors = listOf(
+            MaterialTheme.colorScheme.primaryContainer.copy(alpha = .6f),
+            MaterialTheme.colorScheme.secondaryContainer.copy(alpha = .6f),
+        )
+    )
+
+
     FlowRow(
         modifier = Modifier
             .padding(horizontal = FluxUI.Space.medium)
@@ -65,32 +73,35 @@ fun CatalogMenu(
         verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
     ) {
 
-        //if (artworks.any { it.isUnknown }) {
+        if (artworks.any { it.isUnknown }) {
             CatalogMenuItem(
                 text = stringResource(Res.string.other_files),
                 painter = painterResource(Res.drawable.ic_flux),
                 iconColor = MaterialTheme.colorScheme.tertiary,
+                containerBrush = brush,
                 onClick = { sendIntent(CatalogIntent.OnArtworkTap(artwork = Artwork.UNKNOWN)) }
             )
-        //}
+        }
 
-        //if (artworks.isEmpty()) {
+        if (artworks.isEmpty()) {
             CatalogMenuItem(
                 text = stringResource(Res.string.add_source),
                 painter = painterResource(Res.drawable.ic_add_folder),
                 iconColor = MaterialTheme.colorScheme.secondary,
+                containerBrush = brush,
                 onClick = { sendIntent(CatalogIntent.OnSourcesTap) }
             )
-        //}
+        }
 
-        //if (tokenIsMissing) {
+        if (tokenIsMissing) {
             CatalogMenuItem(
                 text = stringResource(Res.string.add_token),
                 painter = painterResource(Res.drawable.ic_api),
                 iconColor = MaterialTheme.colorScheme.primary,
+                containerBrush = brush,
                 onClick = { sendIntent(CatalogIntent.OnTokenTap) }
             )
-        //}
+        }
 
     }
 
@@ -101,13 +112,15 @@ fun CatalogMenuItem(
     text: String,
     painter: Painter,
     iconColor: Color = MaterialTheme.colorScheme.onSecondaryContainer,
+    containerBrush: Brush,
     onClick: () -> Unit
 ) {
+
     Row(
         modifier = Modifier
             .clip(AssistChipDefaults.shape)
             .width(200.dp)
-            .background(Brush.horizontalGradient(colors = listOf(MaterialTheme.colorScheme.primaryContainer, MaterialTheme.colorScheme.secondaryContainer)),)
+            .background(containerBrush)
             .clickable { onClick() }
             .padding(horizontal = FluxUI.Space.medium, vertical = 12.dp),
         horizontalArrangement = AssistChipDefaults.horizontalArrangement(),

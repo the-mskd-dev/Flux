@@ -537,7 +537,9 @@ object Text {
                 modifier = modifier,
                 text = text,
                 color = textColor,
-                style = style
+                style = style,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
 
         }

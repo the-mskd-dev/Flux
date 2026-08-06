@@ -47,9 +47,9 @@ import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.screens.catalog.composable.CatalogChips
 import com.mskd.flux.screens.catalog.composable.CatalogEmptyContent
-import com.mskd.flux.screens.catalog.composable.CatalogGenericCategory
 import com.mskd.flux.screens.catalog.composable.sorting.CatalogSortingSheet
 import com.mskd.flux.screens.catalog.composable.CatalogHeader
+import com.mskd.flux.screens.catalog.composable.CatalogMenu
 import com.mskd.flux.screens.catalog.composable.LastWatchedCarousel
 import com.mskd.flux.screens.catalog.composable.viewMode.catalogViewModeGrid
 import com.mskd.flux.screens.catalog.composable.viewMode.CatalogViewModeSheet
@@ -59,14 +59,7 @@ import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxThemePreview
 import flux.shared.generated.resources.Res
-import flux.shared.generated.resources.add_source
-import flux.shared.generated.resources.ic_add_folder
-import flux.shared.generated.resources.ic_api
-import flux.shared.generated.resources.ic_flux
-import flux.shared.generated.resources.other_files
 import flux.shared.generated.resources.sync_in_progress
-import flux.shared.generated.resources.tmdb_api_token
-import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -204,6 +197,14 @@ fun CatalogContent(
                         }
                     }
 
+                    item(span = { GridItemSpan(maxLineSpan) }) {
+                        CatalogMenu(
+                            artworks = artworks,
+                            tokenIsMissing = tokenIsMissing,
+                            sendIntent = sendIntent
+                        )
+                    }
+
                     if (artworks.any { !it.isUnknown }) {
 
                         item(span = { GridItemSpan(maxLineSpan) }) {
@@ -243,42 +244,6 @@ fun CatalogContent(
                             }
                         }
 
-                    }
-
-                    if (artworks.any { it.isUnknown }) {
-                        item(span = { GridItemSpan(maxLineSpan) }) {
-                            CatalogGenericCategory(
-                                name = stringResource(Res.string.other_files),
-                                painter = painterResource(Res.drawable.ic_flux),
-                                iconColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                                backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
-                                onClick = { sendIntent(CatalogIntent.OnArtworkTap(artwork = Artwork.UNKNOWN)) }
-                            )
-                        }
-                    }
-
-                    if (artworks.isEmpty()) {
-                        item(span = { GridItemSpan(maxLineSpan) }) {
-                            CatalogGenericCategory(
-                                name = stringResource(Res.string.add_source),
-                                painter = painterResource(Res.drawable.ic_add_folder),
-                                iconColor = MaterialTheme.colorScheme.onTertiaryContainer,
-                                backgroundColor = MaterialTheme.colorScheme.tertiaryContainer,
-                                onClick = { sendIntent(CatalogIntent.OnSourcesTap) }
-                            )
-                        }
-                    }
-
-                    if (tokenIsMissing) {
-                        item(span = { GridItemSpan(maxLineSpan) }) {
-                            CatalogGenericCategory(
-                                name = stringResource(Res.string.tmdb_api_token),
-                                painter = painterResource(Res.drawable.ic_api),
-                                iconColor = MaterialTheme.colorScheme.onSurface,
-                                backgroundColor = MaterialTheme.colorScheme.surfaceBright,
-                                onClick = { sendIntent(CatalogIntent.OnTokenTap) }
-                            )
-                        }
                     }
 
                     item(span = { GridItemSpan(maxLineSpan) }) {

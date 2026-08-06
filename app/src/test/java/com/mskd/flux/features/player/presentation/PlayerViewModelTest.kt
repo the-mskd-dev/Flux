@@ -483,7 +483,7 @@ class PlayerViewModelTest : FunSpec({
         }
     }
 
-    test("GoToBackground when paused saves time but does not pause") {
+    test("GoToBackground when paused saves time but does not ic_pause") {
         playerManager = mockk(relaxed = true) {
             every { flow } returns MutableStateFlow(
                 PlayerManager.State.Ready(

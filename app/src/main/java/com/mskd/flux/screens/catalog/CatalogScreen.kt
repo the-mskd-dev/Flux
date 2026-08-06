@@ -210,15 +210,15 @@ fun CatalogContent(
                                     sendIntent = sendIntent
                                 )
 
-                                CatalogChips(
-                                    sortingMode = sortingMode,
-                                    viewMode = viewMode,
-                                    sendIntent = sendIntent
-                                )
-
                                 CatalogMenu(
                                     artworks = artworks,
                                     tokenIsMissing = tokenIsMissing,
+                                    sendIntent = sendIntent
+                                )
+
+                                CatalogChips(
+                                    sortingMode = sortingMode,
+                                    viewMode = viewMode,
                                     sendIntent = sendIntent
                                 )
 

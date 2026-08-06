@@ -109,7 +109,7 @@ fun CatalogMenuItem(
             .width(200.dp)
             .background(Brush.horizontalGradient(colors = listOf(MaterialTheme.colorScheme.primaryContainer, MaterialTheme.colorScheme.secondaryContainer)),)
             .clickable { onClick() }
-            .padding(all = FluxUI.Space.medium),
+            .padding(horizontal = FluxUI.Space.medium, vertical = 12.dp),
         horizontalArrangement = AssistChipDefaults.horizontalArrangement(),
         verticalAlignment = Alignment.CenterVertically,
     ) {

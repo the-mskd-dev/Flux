@@ -67,7 +67,7 @@ fun CatalogMenu(
         //if (artworks.any { it.isUnknown }) {
             CatalogMenuItem(
                 text = stringResource(Res.string.other_files),
-                painter = painterResource(Res.drawable.ic_add_folder),
+                painter = painterResource(Res.drawable.ic_flux),
                 iconColor = MaterialTheme.colorScheme.tertiary,
                 onClick = { sendIntent(CatalogIntent.OnArtworkTap(artwork = Artwork.UNKNOWN)) }
             )

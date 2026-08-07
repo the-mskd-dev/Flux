@@ -16,6 +16,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -47,24 +48,31 @@ fun MainNavigationBar(
         contentAlignment = Alignment.Center
     ) {
 
-        Row(
+        Surface(
             modifier = Modifier
                 .navigationBarsPadding()
-                .padding(bottom = FluxUI.Space.medium)
-                .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.background)
-                .padding(all = FluxUI.Space.small),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
+                .padding(bottom = FluxUI.Space.medium),
+            shadowElevation = 2.dp,
+            shape = CircleShape,
+            color = MaterialTheme.colorScheme.background
         ) {
-            BottomBarTab.entries.forEach { tab ->
-                MainNavigationBarItem(
-                    selected = currentTab.isSameTabAs(tab.route),
-                    onClick = { onTabSelected(tab.route) },
-                    icon = painterResource(tab.iconRes),
-                    label = tab.label.resolve(),
-                )
+
+            Row(
+                modifier = Modifier
+                    .padding(all = FluxUI.Space.small),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
+            ) {
+                BottomBarTab.entries.forEach { tab ->
+                    MainNavigationBarItem(
+                        selected = currentTab.isSameTabAs(tab.route),
+                        onClick = { onTabSelected(tab.route) },
+                        icon = painterResource(tab.iconRes),
+                        label = tab.label.resolve(),
+                    )
+                }
             }
+
         }
 
     }
@@ -122,7 +130,9 @@ fun MainNavigationBarItem(
 fun MainNavigationBar_Preview() {
     FluxThemePreview{
         Box(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.surfaceContainer),
             contentAlignment = Alignment.BottomCenter
         ) {
             MainNavigationBar(

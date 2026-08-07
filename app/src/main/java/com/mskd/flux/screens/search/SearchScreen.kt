@@ -143,7 +143,7 @@ fun SearchContent(
                         )
                     }
                 }
-                .background(MaterialTheme.colorScheme.background),
+                .background(MaterialTheme.colorScheme.surfaceContainer),
             columns = GridCells.Fixed(columns),
             horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
             verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small),

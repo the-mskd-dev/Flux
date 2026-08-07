@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.runtime.Composable
@@ -51,7 +52,7 @@ fun MainNavigationBar(
                 .navigationBarsPadding()
                 .padding(bottom = FluxUI.Space.medium)
                 .clip(CircleShape)
-                .background(NavigationBarDefaults.containerColor)
+                .background(MaterialTheme.colorScheme.background)
                 .padding(all = FluxUI.Space.small),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small)

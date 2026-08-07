@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
@@ -42,7 +43,7 @@ import com.mskd.flux.ui.component.media.OverviewItem
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.PortraitPreview
-import com.mskd.flux.utils.extensions.gridItemPadding
+import com.mskd.flux.utils.extensions.bleedHorizontal
 import com.mskd.flux.utils.itemWidthFor
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.no_summary
@@ -61,12 +62,18 @@ fun ShowContentRegular(
 
     LazyVerticalGrid(
         modifier = Modifier.fillMaxSize(),
-        columns = GridCells.Fixed(columns)
+        columns = GridCells.Fixed(columns),
+        verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
+        horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
+        contentPadding = PaddingValues(horizontal = FluxUI.Space.medium)
     ) {
 
         item(span = { GridItemSpan(maxLineSpan) }) {
 
-            ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
+            ConstraintLayout(modifier = Modifier
+                .bleedHorizontal()
+                .fillMaxWidth()
+            ) {
 
                 val (image, title) = createRefs()
 
@@ -112,15 +119,12 @@ fun ShowContentRegular(
             ) {
 
                 OverviewItem(
-                    modifier = Modifier.padding(horizontal = FluxUI.Space.medium),
                     title = stringResource(Res.string.summary),
                     description = fullShow.artwork.description.ifEmpty { stringResource(Res.string.no_summary) },
                 )
 
                 Text.Content.Title(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = FluxUI.Space.medium),
+                    modifier = Modifier.fillMaxWidth(),
                     text = stringResource(Res.string.seasons),
                     color = MaterialTheme.colorScheme.onBackground
                 )
@@ -129,12 +133,10 @@ fun ShowContentRegular(
 
         }
 
-        itemsIndexed(items = fullShow.seasons, key = { _,s -> s.season }) { index, season ->
+        items(items = fullShow.seasons, key = { it.season }) { season ->
 
             SeasonItem(
-                modifier = Modifier
-                    .gridItemPadding(index = index, columns = columns)
-                    .fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 season = season,
                 episodes = fullShow.episodes.filter { it.season == season.season },
                 onClick = { sendIntent(ShowIntent.OnSeasonClick(season = season.season, rgb = it))},

@@ -89,7 +89,7 @@ fun Modifier.fillMaxWidthWithLimit() : Modifier {
         .fillMaxWidth()
 }
 
-fun Modifier.bleedHorizontal(amount: Dp) = layout { measurable, constraints ->
+fun Modifier.bleedHorizontal(amount: Dp = FluxUI.Space.medium) = layout { measurable, constraints ->
     val expandPx = amount.roundToPx()
 
     val expandedConstraints = constraints.copy(
@@ -102,19 +102,4 @@ fun Modifier.bleedHorizontal(amount: Dp) = layout { measurable, constraints ->
     layout(placeable.width - expandPx * 2, placeable.height) {
         placeable.placeRelative(x = -expandPx, y = 0)
     }
-}
-
-fun Modifier.gridItemPadding(index: Int, columns: Int) : Modifier {
-
-    val columnIndex = index % columns
-    val isFirstColumn = columnIndex == 0
-    val isLastColumn = columnIndex == columns - 1
-
-    val paddingValues = when {
-        isFirstColumn -> FluxUI.Grid.startPadding
-        isLastColumn -> FluxUI.Grid.lastPadding
-        else -> FluxUI.Grid.middlePadding
-    }
-
-    return this.padding(paddingValues)
 }

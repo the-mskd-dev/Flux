@@ -33,7 +33,7 @@ fun LazyGridScope.catalogViewModeGenre(
 
     item(span = { GridItemSpan(maxLineSpan) }) {
         Column(
-            modifier = Modifier.bleedHorizontal(FluxUI.Space.medium),
+            modifier = Modifier.bleedHorizontal(),
             verticalArrangement = Arrangement.spacedBy(FluxUI.Space.large)
         ) {
 

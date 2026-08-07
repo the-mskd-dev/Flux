@@ -10,7 +10,6 @@ import androidx.compose.ui.Modifier
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.ui.component.media.MediaItem
-import com.mskd.flux.utils.extensions.gridItemPadding
 
 fun LazyGridScope.catalogViewModeGrid(
     artworks: List<Artwork>,

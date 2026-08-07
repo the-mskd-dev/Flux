@@ -6,7 +6,7 @@ import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.Season
 import com.mskd.flux.core.model.files.UserFile
 import com.mskd.flux.core.network.tmdb.data.datasource.TmdbDataSource
-import com.mskd.flux.core.network.tmdb.data.dto.EpisodeDto
+import com.mskd.flux.core.network.tmdb.data.dto.show.EpisodeDto
 import com.mskd.flux.core.network.tmdb.data.mapper.toDomain
 import com.mskd.flux.core.network.tmdb.domain.model.Translation
 import com.mskd.flux.core.network.tmdb.domain.model.TranslationRequest

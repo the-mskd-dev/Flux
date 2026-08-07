@@ -1,6 +1,6 @@
 package com.mskd.flux.core.network.tmdb.data.dto.movie
 
-import com.mskd.flux.core.network.tmdb.data.dto.GenreDto
+import com.mskd.flux.core.network.tmdb.data.dto.genre.GenreDto
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

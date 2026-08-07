@@ -6,6 +6,7 @@ import com.mskd.flux.core.network.tmdb.data.dto.show.EpisodeDto
 import com.mskd.flux.core.network.tmdb.data.dto.movie.MovieDto
 import com.mskd.flux.core.network.tmdb.data.dto.show.SeasonDto
 import com.mskd.flux.core.network.tmdb.data.dto.TranslationsDto
+import com.mskd.flux.core.network.tmdb.data.dto.genre.GenresResultDto
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
@@ -13,9 +14,15 @@ import io.ktor.client.request.parameter
 
 class TMDBServiceImpl(private val client: HttpClient) : TMDBService {
 
+    //region Auth
+
     override suspend fun authenticate(): AuthenticationDto = client
         .get("authentication")
         .body()
+
+    //endregion
+
+    //region Movie
 
     override suspend fun getMovie(
         title: String,
@@ -40,6 +47,10 @@ class TMDBServiceImpl(private val client: HttpClient) : TMDBService {
     override suspend fun getMovieTranslations(artworkId: Long): TranslationsDto = client
         .get("movie/$artworkId/translations")
         .body()
+
+    //endregion
+
+    //region Show
 
     override suspend fun getShow(
         title: String,
@@ -90,4 +101,19 @@ class TMDBServiceImpl(private val client: HttpClient) : TMDBService {
         .get("tv/$artworkId/season/$season/translations")
         .body()
 
+    //endregion
+
+    //region Genres
+
+    override suspend fun getMovieGenres(language: String): GenresResultDto = client
+        .get("genre/movie/list") {
+            parameter("language", language)
+        }.body()
+
+    override suspend fun getShowGenres(language: String): GenresResultDto = client
+        .get("genre/tv/list") {
+            parameter("language", language)
+        }.body()
+
+    //endregion
 }

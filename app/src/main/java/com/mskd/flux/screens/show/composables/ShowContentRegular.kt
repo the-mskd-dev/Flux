@@ -59,10 +59,6 @@ fun ShowContentRegular(
 
     val columns = FluxUI.itemsPerRow.seasons
 
-    val startPadding = PaddingValues(start = FluxUI.Space.medium)
-    val lastPadding = PaddingValues(end = FluxUI.Space.medium)
-    val middlePadding = PaddingValues(horizontal = FluxUI.Space.small)
-
     LazyVerticalGrid(
         modifier = Modifier.fillMaxSize(),
         columns = GridCells.Fixed(columns)

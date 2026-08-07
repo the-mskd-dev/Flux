@@ -37,6 +37,7 @@ import kotlinx.coroutines.Dispatchers
 abstract class FluxDatabase : RoomDatabase() {
     abstract fun dao(): DatabaseDao
     abstract fun sourcesDao(): SourcesDao
+    abstract fun detailsDao(): DetailsDao
 }
 
 expect object FluxDatabaseConstructor : RoomDatabaseConstructor<FluxDatabase> {

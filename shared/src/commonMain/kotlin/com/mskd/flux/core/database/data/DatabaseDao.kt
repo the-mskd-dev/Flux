@@ -6,6 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import com.mskd.flux.core.database.data.model.ArtworkEntity
+import com.mskd.flux.core.database.data.model.GenreEntity
 import com.mskd.flux.core.database.data.model.MediaEntity
 import com.mskd.flux.core.database.data.model.SeasonEntity
 import com.mskd.flux.core.database.data.model.projections.ArtworkImagesProjection

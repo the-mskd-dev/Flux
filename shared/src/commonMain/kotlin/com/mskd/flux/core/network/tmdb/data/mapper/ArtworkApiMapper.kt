@@ -12,6 +12,7 @@ fun ArtworkDto.toDomain() : Artwork {
         description = this.description,
         imagePath = this.imagePath.orEmpty(),
         bannerPath = this.bannerPath.orEmpty(),
-        type = if (this.type == MediaTypeDto.MOVIE) ContentType.MOVIE else ContentType.SHOW
+        type = if (this.type == MediaTypeDto.MOVIE) ContentType.MOVIE else ContentType.SHOW,
+        genreIds = this.genreIds
     )
 }

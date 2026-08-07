@@ -16,6 +16,7 @@ data class Artwork(
     val imagePath: String = "",
     val bannerPath: String = "",
     val type: ContentType = ContentType.SHOW,
+    val genreIds: List<Int> = emptyList(),
 
     val lastModification: Long? = null
 ) {

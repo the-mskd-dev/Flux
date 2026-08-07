@@ -33,7 +33,7 @@ data class ArtworkDto(
     @SerialName("backdrop_path")
     val bannerPath: String?,
     @SerialName("genre_ids")
-    val genres: List<Int>,
+    val genreIds: List<Int>,
     val popularity: Float,
     @JsonNames("release_date", "first_air_date")
     val releaseDate: String?,

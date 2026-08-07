@@ -25,4 +25,14 @@ class Converters {
     fun toFileSource(value: String): FileSource {
         return FileSource.valueOf(value)
     }
+
+    @TypeConverter
+    fun fromIntList(genreIds: List<Int>) : String {
+        return genreIds.joinToString(",")
+    }
+
+    @TypeConverter
+    fun toIntList(data: String): List<Int> {
+        return if (data.isBlank()) emptyList() else data.split(",").map { it.toInt() }
+    }
 }

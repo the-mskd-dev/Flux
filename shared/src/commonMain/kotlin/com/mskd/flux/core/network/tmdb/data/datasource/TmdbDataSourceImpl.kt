@@ -8,11 +8,14 @@ import com.mskd.flux.core.network.tmdb.data.dto.movie.MovieDto
 import com.mskd.flux.core.network.tmdb.data.dto.show.SeasonDto
 import com.mskd.flux.core.network.tmdb.data.dto.TranslationsDto
 import com.mskd.flux.core.network.tmdb.data.dto.findWithLocale
+import com.mskd.flux.core.network.tmdb.data.dto.genre.GenreDto
 import com.mskd.flux.core.network.tmdb.data.service.TMDBService
 import com.mskd.flux.core.network.tmdb.domain.model.TranslationRequest
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.utils.extensions.toTmdbFormat
 import io.github.aakira.napier.Napier
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import java.util.Locale
 
 class TmdbDataSourceImpl(
@@ -72,6 +75,20 @@ class TmdbDataSourceImpl(
         } catch (e: Exception) {
             Napier.e(tag = TAG, message = "getTmdbArtwork - Fail to get TMDBArtwork for file:${file.name} (${language.toTmdbFormat()})", throwable = e)
             null
+        }
+
+    }
+
+    override suspend fun getGenres(): List<GenreDto> {
+
+        val language = settings.getDataLanguage()
+
+        return coroutineScope {
+
+            val movieGenresDeferred = async { tmdbService.getMovieGenres(language = language.toTmdbFormat()).genres }
+            val showGenresDeferred = async { tmdbService.getMovieGenres(language = language.toTmdbFormat()).genres }
+
+            movieGenresDeferred.await() + showGenresDeferred.await()
         }
 
     }

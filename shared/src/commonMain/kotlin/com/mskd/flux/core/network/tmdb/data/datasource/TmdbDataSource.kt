@@ -6,12 +6,15 @@ import com.mskd.flux.core.network.tmdb.data.dto.show.EpisodeDto
 import com.mskd.flux.core.network.tmdb.data.dto.movie.MovieDto
 import com.mskd.flux.core.network.tmdb.data.dto.show.SeasonDto
 import com.mskd.flux.core.network.tmdb.data.dto.TranslationsDto
+import com.mskd.flux.core.network.tmdb.data.dto.genre.GenreDto
 import com.mskd.flux.core.network.tmdb.domain.model.TranslationRequest
 import java.util.Locale
 
 interface TmdbDataSource {
 
     suspend fun getTmdbArtwork(file: UserFile) : ArtworkDto?
+
+    suspend fun getGenres() : List<GenreDto>
 
     suspend fun getTmdbMovie(artworkId: Long) : MovieDto?
 

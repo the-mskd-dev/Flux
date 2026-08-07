@@ -2,6 +2,7 @@ package com.mskd.flux.core.network.tmdb.data.repository
 
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.Episode
+import com.mskd.flux.core.model.artwork.Genre
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.Season
 import com.mskd.flux.core.model.files.UserFile
@@ -11,14 +12,25 @@ import com.mskd.flux.core.network.tmdb.data.mapper.toDomain
 import com.mskd.flux.core.network.tmdb.domain.model.Translation
 import com.mskd.flux.core.network.tmdb.domain.model.TranslationRequest
 import com.mskd.flux.core.network.tmdb.domain.repository.ArtworkRemoteRepository
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import java.util.Locale
 
 internal class ArtworkRemoteRepositoryImpl(
     private val tmdb: TmdbDataSource
 ) : ArtworkRemoteRepository {
 
+    //region Artwork
+
     override suspend fun getArtwork(file: UserFile): Artwork? =
         tmdb.getTmdbArtwork(file = file)?.toDomain()
+
+    override suspend fun getGenres(): List<Genre> =
+        tmdb.getGenres().map { it.toDomain() }
+
+    //endregion
+
+    //region Movie
 
     override suspend fun getMovie(
         artworkId: Long,
@@ -31,6 +43,10 @@ internal class ArtworkRemoteRepositoryImpl(
             duration = tmdbMovie.duration ?: fallbackDuration()
         )
     }
+
+    //endregion
+
+    //region Show
 
     override suspend fun getSeason(artworkId: Long, season: Int): Pair<Season, List<EpisodeDto>>? =
         tmdb.getTmdbSeason(artworkId = artworkId, season = season)?.let {
@@ -59,6 +75,10 @@ internal class ArtworkRemoteRepositoryImpl(
 
     }
 
+    //endregion
+
+    //region Global
+
     override suspend fun translate(request: TranslationRequest): Translation? {
         return tmdb.getTmdbTranslation(request = request)
             ?.let {
@@ -68,5 +88,7 @@ internal class ArtworkRemoteRepositoryImpl(
                 )
             }
     }
+
+    //endregion
 
 }

@@ -26,20 +26,17 @@ fun CatalogEmptyContent(sendIntent: (CatalogIntent) -> Unit) {
     ) {
 
         Text.Content.Title(
-            modifier = Modifier
-                .padding(top = FluxUI.Space.medium)
-                .padding(horizontal = FluxUI.Space.medium),
+            modifier = Modifier.padding(top = FluxUI.Space.medium),
             text = stringResource(Res.string.empty_catalog)
         )
 
         Text.Content.Body(
-            modifier = Modifier.padding(horizontal = FluxUI.Space.medium),
             text = stringResource(Res.string.empty_catalog_desc)
         )
 
         TextButton(
             onClick = { sendIntent(CatalogIntent.OnHowToTap) },
-            contentPadding = PaddingValues(all = FluxUI.Space.medium)
+            contentPadding = PaddingValues(vertical = FluxUI.Space.medium)
         ) {
             Text.Button.Default(text = stringResource(Res.string.how_to_name_files),)
         }

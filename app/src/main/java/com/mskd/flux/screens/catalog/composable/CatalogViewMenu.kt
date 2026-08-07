@@ -38,9 +38,7 @@ fun CatalogViewMenu(
 ) {
 
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = FluxUI.Space.medium),
+        modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.extraSmall, Alignment.End),
     ) {
 

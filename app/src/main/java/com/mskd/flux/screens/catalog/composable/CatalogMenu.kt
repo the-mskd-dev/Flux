@@ -66,9 +66,7 @@ fun CatalogMenu(
 
 
     FlowRow(
-        modifier = Modifier
-            .padding(horizontal = FluxUI.Space.medium)
-            .fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
         verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
     ) {

@@ -7,6 +7,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -190,7 +191,9 @@ fun CatalogContent(
                         .fillMaxSize()
                         .graphicsLayer { translationY = offsetY },
                     columns = GridCells.Fixed(columns),
-                    verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
+                    verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
+                    horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
+                    contentPadding = PaddingValues(horizontal = FluxUI.Space.medium)
                 ) {
 
                     if (artworks.none { !it.isUnknown }) {
@@ -226,7 +229,6 @@ fun CatalogContent(
                             CatalogViewMode.GRID -> {
                                 catalogViewModeGrid(
                                     artworks = artworks,
-                                    columns = columns,
                                     sendIntent = sendIntent
                                 )
                             }

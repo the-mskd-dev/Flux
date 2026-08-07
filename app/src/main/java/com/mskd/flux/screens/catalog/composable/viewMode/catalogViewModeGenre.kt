@@ -7,7 +7,10 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
@@ -16,6 +19,7 @@ import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.screens.catalog.composable.CatalogCategory
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxThemePreview
+import com.mskd.flux.utils.extensions.bleedHorizontal
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.movies
 import flux.shared.generated.resources.shows
@@ -29,6 +33,7 @@ fun LazyGridScope.catalogViewModeGenre(
 
     item(span = { GridItemSpan(maxLineSpan) }) {
         Column(
+            modifier = Modifier.bleedHorizontal(FluxUI.Space.medium),
             verticalArrangement = Arrangement.spacedBy(FluxUI.Space.large)
         ) {
 

@@ -8,9 +8,7 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.ui.theme.FluxUI
-import com.mskd.flux.utils.extensions.resolve
 
 @Composable
 fun FluxBottomSheetItem(

@@ -13,7 +13,15 @@ import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
 import com.mskd.flux.features.catalog.domain.model.CatalogViewMode
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
-import com.mskd.flux.features.catalog.presentation.CatalogEvent.*
+import com.mskd.flux.features.catalog.presentation.CatalogEvent.NavigateToCategory
+import com.mskd.flux.features.catalog.presentation.CatalogEvent.NavigateToHowTo
+import com.mskd.flux.features.catalog.presentation.CatalogEvent.NavigateToMovie
+import com.mskd.flux.features.catalog.presentation.CatalogEvent.NavigateToSearch
+import com.mskd.flux.features.catalog.presentation.CatalogEvent.NavigateToSettings
+import com.mskd.flux.features.catalog.presentation.CatalogEvent.NavigateToShow
+import com.mskd.flux.features.catalog.presentation.CatalogEvent.NavigateToSources
+import com.mskd.flux.features.catalog.presentation.CatalogEvent.NavigateToToken
+import com.mskd.flux.features.catalog.presentation.CatalogEvent.NavigateToUnknown
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.utils.Trace
 import com.mskd.flux.utils.UpdateManager

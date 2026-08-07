@@ -20,8 +20,6 @@ import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseC
 import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCase
 import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCaseImpl
 import com.mskd.flux.features.catalog.presentation.CatalogViewModel
-import com.mskd.flux.features.settings.data.datastore.SettingsDataStoreImpl
-import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import org.koin.core.module.dsl.viewModelOf

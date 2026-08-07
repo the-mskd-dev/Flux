@@ -25,11 +25,11 @@ import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_forward_10
 import flux.shared.generated.resources.ic_forward_30
 import flux.shared.generated.resources.ic_forward_5
+import flux.shared.generated.resources.ic_pause
 import flux.shared.generated.resources.ic_play
 import flux.shared.generated.resources.ic_rewind_10
 import flux.shared.generated.resources.ic_rewind_30
 import flux.shared.generated.resources.ic_rewind_5
-import flux.shared.generated.resources.ic_pause
 import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)

@@ -1,16 +1,12 @@
 package com.mskd.flux.features.catalog.domain.model
 
 import com.mskd.flux.core.model.core.StringProvider
-import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode.A_TO_Z
-import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode.LAST_MODIFICATION
-import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode.Z_TO_A
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.by_genre
 import flux.shared.generated.resources.by_type
 import flux.shared.generated.resources.grid
 import flux.shared.generated.resources.ic_grid
 import flux.shared.generated.resources.ic_list
-import flux.shared.generated.resources.ic_sort
 import org.jetbrains.compose.resources.DrawableResource
 
 enum class CatalogViewMode(val drawableRes: DrawableResource, val description: StringProvider) {

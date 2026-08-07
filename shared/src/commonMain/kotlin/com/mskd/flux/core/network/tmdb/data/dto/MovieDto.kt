@@ -33,5 +33,6 @@ data class MovieDto(
     @SerialName("vote_count")
     val voteCount: Int,
     @SerialName("release_date")
-    val releaseDate: String
+    val releaseDate: String,
+    val genres: List<GenreDto>
 )

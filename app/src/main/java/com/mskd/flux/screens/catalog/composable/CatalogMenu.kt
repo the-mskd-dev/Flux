@@ -16,10 +16,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -57,14 +59,6 @@ fun CatalogMenu(
     sendIntent: (CatalogIntent) -> Unit
 ) {
 
-    val brush = Brush.linearGradient(
-        colors = listOf(
-            MaterialTheme.colorScheme.primaryContainer.copy(alpha = .6f),
-            MaterialTheme.colorScheme.secondaryContainer.copy(alpha = .6f),
-        )
-    )
-
-
     FlowRow(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
@@ -76,7 +70,6 @@ fun CatalogMenu(
                 text = stringResource(Res.string.other_files),
                 painter = painterResource(Res.drawable.ic_flux),
                 iconColor = MaterialTheme.colorScheme.tertiary,
-                containerBrush = brush,
                 onClick = { sendIntent(CatalogIntent.OnArtworkTap(artwork = Artwork.UNKNOWN)) }
             )
         }
@@ -86,7 +79,6 @@ fun CatalogMenu(
                 text = stringResource(Res.string.add_source),
                 painter = painterResource(Res.drawable.ic_add_folder),
                 iconColor = MaterialTheme.colorScheme.secondary,
-                containerBrush = brush,
                 onClick = { sendIntent(CatalogIntent.OnSourcesTap) }
             )
         }
@@ -96,7 +88,6 @@ fun CatalogMenu(
                 text = stringResource(Res.string.add_token),
                 painter = painterResource(Res.drawable.ic_api),
                 iconColor = MaterialTheme.colorScheme.primary,
-                containerBrush = brush,
                 onClick = { sendIntent(CatalogIntent.OnTokenTap) }
             )
         }
@@ -110,32 +101,39 @@ fun CatalogMenuItem(
     text: String,
     painter: Painter,
     iconColor: Color = MaterialTheme.colorScheme.onSecondaryContainer,
-    containerBrush: Brush,
     onClick: () -> Unit
 ) {
 
-    Row(
+    Surface(
         modifier = Modifier
-            .clip(AssistChipDefaults.shape)
             .width(200.dp)
-            .background(containerBrush)
-            .clickable { onClick() }
-            .padding(horizontal = FluxUI.Space.medium, vertical = 12.dp),
-        horizontalArrangement = AssistChipDefaults.horizontalArrangement(),
-        verticalAlignment = Alignment.CenterVertically,
+            .clickable { onClick() },
+        shape = CircleShape,
+        shadowElevation = FluxUI.Elevation.itemShadow,
+        color = MaterialTheme.colorScheme.secondaryContainer
     ) {
 
-        Icon(
-            modifier = Modifier.size(24.dp),
-            painter = painter,
-            tint = iconColor,
-            contentDescription = text
-        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = FluxUI.Space.medium, vertical = 12.dp),
+            horizontalArrangement = AssistChipDefaults.horizontalArrangement(),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
 
-        Text.Button.Default(
-            text = text,
-            color = MaterialTheme.colorScheme.onSecondaryContainer,
-        )
+            Icon(
+                modifier = Modifier.size(24.dp),
+                painter = painter,
+                tint = iconColor,
+                contentDescription = text
+            )
+
+            Text.Button.Default(
+                text = text,
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+            )
+
+        }
 
     }
 

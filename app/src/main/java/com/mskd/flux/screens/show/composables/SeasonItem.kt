@@ -6,10 +6,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -56,44 +58,51 @@ fun SeasonItem(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        Box(
+        Surface(
             modifier = Modifier
-                .clip(FluxUI.shapes.corners)
                 .fillMaxWidth()
                 .aspectRatio(FluxUI.Dimension.itemRatio)
                 .combinedClickable(
                     onClick = { onClick(seedRgb) },
                     onLongClick = { onLongPress() }
                 ),
-            contentAlignment = Alignment.Center
+            shape = FluxUI.shapes.corners,
+            shadowElevation = FluxUI.Elevation.itemShadow
         ) {
 
-            FluxImage(
-                modifier = Modifier
-                    .matchParentSize()
-                    .let { if (episodes.all { e -> e.status == Status.WATCHED }) it.grayScale() else it },
-                path = season.imagePath.orEmpty(),
-                contentDescription = season.title,
-                onSuccess = { state ->
-                    val bitmap = state.result.image.toBitmap()
-                    Palette.from(bitmap).generate { palette ->
-                        seedRgb = palette?.dominantSwatch?.rgb
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+
+                FluxImage(
+                    modifier = Modifier
+                        .matchParentSize()
+                        .let { if (episodes.all { e -> e.status == Status.WATCHED }) it.grayScale() else it },
+                    path = season.imagePath.orEmpty(),
+                    contentDescription = season.title,
+                    onSuccess = { state ->
+                        val bitmap = state.result.image.toBitmap()
+                        Palette.from(bitmap).generate { palette ->
+                            seedRgb = palette?.dominantSwatch?.rgb
+                        }
                     }
-                }
-            )
+                )
 
-            ProgressStatusChip(
-                isWatched = episodes.all { it.status == Status.WATCHED }
-            )
+                ProgressStatusChip(
+                    isWatched = episodes.all { it.status == Status.WATCHED }
+                )
 
 
-            ProgressStatusBar(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .fillMaxWidth(),
-                isVisible = episodes.any { it.status == Status.WATCHED } && !episodes.all { it.status == Status.WATCHED } && episodes.size > 1,
-                progress = { episodes.count { it.status == Status.WATCHED } / episodes.size.toFloat() }
-            )
+                ProgressStatusBar(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .fillMaxWidth(),
+                    isVisible = episodes.any { it.status == Status.WATCHED } && !episodes.all { it.status == Status.WATCHED } && episodes.size > 1,
+                    progress = { episodes.count { it.status == Status.WATCHED } / episodes.size.toFloat() }
+                )
+
+            }
 
         }
 

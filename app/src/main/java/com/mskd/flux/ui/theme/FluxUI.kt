@@ -64,6 +64,10 @@ object FluxUI {
         val middlePadding = PaddingValues(horizontal = Space.small)
     }
 
+    object Elevation {
+        val itemShadow = 1.dp
+    }
+
     data class Shapes(
         val corners: RoundedCornerShape = RoundedCornerShape(12.dp),
         val listItem: Dp = 16.dp

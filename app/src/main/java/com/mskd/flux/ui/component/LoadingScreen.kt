@@ -23,7 +23,7 @@ fun LoadingScreen(
 
     Box(
         modifier = Modifier
-            .background(MaterialTheme.colorScheme.background)
+            .background(MaterialTheme.colorScheme.surfaceContainer)
             .fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
@@ -41,7 +41,7 @@ fun LoadingScreen(
 
             Text.Content.Body(
                 text = text,
-                color = MaterialTheme.colorScheme.onBackground
+                color = MaterialTheme.colorScheme.onSurface
             )
 
         }

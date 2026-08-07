@@ -29,7 +29,7 @@ fun FixedChip(
             .padding(horizontal = FluxUI.Space.medium),
         contentAlignment = Alignment.Center
     ) {
-        Text.Card.Label(
+        Text.Button.Chip(
             text = text,
             color = textColor
         )

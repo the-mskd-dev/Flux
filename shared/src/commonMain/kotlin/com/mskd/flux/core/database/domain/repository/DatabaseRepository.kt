@@ -18,7 +18,7 @@ interface DatabaseRepository {
     fun flowSeasons(artworkId: Long) : Flow<List<Season>>
 
     // Save
-    suspend fun saveArtworks(artworks: List<Artwork>)
+    suspend fun saveArtworks(artworks: List<Artwork>, overrideLastModification: Boolean = true)
     suspend fun saveMedias(medias: List<Media>)
     suspend fun saveSeasons(seasons: List<Season>)
 

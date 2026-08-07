@@ -50,7 +50,7 @@ import com.mskd.flux.features.token.presentation.TokenEvent
 import com.mskd.flux.features.token.presentation.TokenIntent
 import com.mskd.flux.features.token.presentation.TokenUiState
 import com.mskd.flux.features.token.presentation.TokenViewModel
-import com.mskd.flux.navigation.Route
+import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.ui.component.global.FluxIconButton
 import com.mskd.flux.ui.component.global.FluxScaffold
 import com.mskd.flux.ui.component.global.FluxTextButton
@@ -130,7 +130,7 @@ fun TokenScreenContent(
 
                 FluxTextButton(
                     stringResource(Res.string.skip),
-                    onTap = { sendIntent(TokenIntent.OnCancelTap) }
+                    onClick = { sendIntent(TokenIntent.OnCancelTap) }
                 )
 
             }
@@ -337,7 +337,7 @@ fun TokenInput(
 
                         FluxIconButton(
                             imageVector = Icons.Default.Check,
-                            onTap = {
+                            onClick = {
                                 keyboardController?.hide()
                                 sendIntent(TokenIntent.SaveToken)
                             },

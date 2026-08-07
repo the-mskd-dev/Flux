@@ -5,6 +5,13 @@ import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.preferencesDataStore
 
+val Context.catalogDataStore by preferencesDataStore(
+    name = "CatalogDataStore",
+    corruptionHandler = ReplaceFileCorruptionHandler(
+        produceNewData = { emptyPreferences() }
+    )
+)
+
 val Context.customizationDatastore by preferencesDataStore(
     name = "CustomizationDataStore",
     corruptionHandler = ReplaceFileCorruptionHandler(

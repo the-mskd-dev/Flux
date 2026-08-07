@@ -165,4 +165,16 @@
     <string name="undo">Annuler</string>
     <string name="system_folders">Dossiers système</string>
     <string name="system_folders_toggle_desc">Permet à l'application de chercher les vidéos dans les emplacements standard %1$s et %2$s. (Recommandé)</string>
+    <string name="home">Accueil</string>
+    <string name="search">Rechercher</string>
+    <string name="sort">Trier</string>
+    <string name="sort_by">Trier par</string>
+    <string name="last_modification">Dernière modification</string>
+    <string name="a_to_z">De A à Z</string>
+    <string name="z_to_a">De Z à A</string>
+    <string name="view">Affichage</string>
+    <string name="grid">Grille</string>
+    <string name="by_type">Par type</string>
+    <string name="by_genre">Par genre</string>
+    <string name="add_token">Ajouter un jeton</string>
 </resources>

@@ -152,7 +152,7 @@ fun ArtworkContentLarge(
                             episode = episode,
                             isSelected = episode.id == selectedMedia.mediaId,
                             isExpanded = episode.id == expandedEpisodeId,
-                            onTap = { sendIntent(ArtworkIntent.PlayMedia(media = episode)) },
+                            onClick = { sendIntent(ArtworkIntent.PlayMedia(media = episode)) },
                             onReadMoreTap = {
                                 if (it) {
                                     sendIntent(ArtworkIntent.ExpandEpisodeDescription(episode = episode))

@@ -106,7 +106,7 @@ fun SettingsCustomizationSection(
             painter = painterResource(Res.drawable.ic_customization),
             iconColor = iconColor,
             iconBackgroundColor = bgColor,
-            onTap = { sendIntent(SettingsIntent.OnCustomizationTap) }
+            onClick = { sendIntent(SettingsIntent.OnCustomizationClick) }
         )
 
         SettingsSwitch(
@@ -126,7 +126,7 @@ fun SettingsCustomizationSection(
             painter = painterResource(Res.drawable.ic_language),
             iconColor = iconColor,
             iconBackgroundColor = bgColor,
-            onTap = { sendIntent(SettingsIntent.ShowLanguageDialog) }
+            onClick = { sendIntent(SettingsIntent.ShowLanguageDialog) }
         )
 
     }
@@ -150,7 +150,7 @@ fun SettingsPlayerSection(
             painter = painterResource(Res.drawable.fast_rewind),
             iconColor = iconColor,
             iconBackgroundColor = bgColor,
-            onTap = { sendIntent(SettingsIntent.ShowRewindDialog) }
+            onClick = { sendIntent(SettingsIntent.ShowRewindDialog) }
         )
 
         SettingsItem(
@@ -159,7 +159,7 @@ fun SettingsPlayerSection(
             painter = painterResource(Res.drawable.fast_forward),
             iconColor = iconColor,
             iconBackgroundColor = bgColor,
-            onTap = { sendIntent(SettingsIntent.ShowForwardDialog) }
+            onClick = { sendIntent(SettingsIntent.ShowForwardDialog) }
         )
 
         SettingsSwitch(
@@ -201,7 +201,7 @@ fun SettingsTmdbSection(
             painter = painterResource(Res.drawable.ic_api),
             iconColor = iconColor,
             iconBackgroundColor = bgColor,
-            onTap = { sendIntent(SettingsIntent.OnTokenTap) }
+            onClick = { sendIntent(SettingsIntent.OnTokenTap) }
         )
 
         SettingsItem(
@@ -210,7 +210,7 @@ fun SettingsTmdbSection(
             painter = painterResource(Res.drawable.ic_help),
             iconColor = iconColor,
             iconBackgroundColor = bgColor,
-            onTap = { sendIntent(SettingsIntent.OnHowToTap) }
+            onClick = { sendIntent(SettingsIntent.OnHowToTap) }
         )
 
     }
@@ -234,7 +234,7 @@ fun SettingsOtherSection(
             painter = painterResource(Res.drawable.ic_info),
             iconColor = iconColor,
             iconBackgroundColor = bgColor,
-            onTap = { sendIntent(SettingsIntent.OnAboutTap) }
+            onClick = { sendIntent(SettingsIntent.OnAboutTap) }
         )
 
         SettingsItem(
@@ -243,7 +243,7 @@ fun SettingsOtherSection(
             painter = painterResource(Res.drawable.ic_money),
             iconColor = iconColor,
             iconBackgroundColor = bgColor,
-            onTap = {
+            onClick = {
                 UriUtils.openWebPage(
                     context = context,
                     url = Constants.CONTACT.SPONSOR
@@ -274,7 +274,7 @@ fun SettingsSyncSection(
             painter = painterResource(Res.drawable.ic_sync),
             iconColor = iconColor,
             iconBackgroundColor = bgColor,
-            onTap = { sendIntent(SettingsIntent.ShowFullSyncDialog(true)) }
+            onClick = { sendIntent(SettingsIntent.ShowFullSyncDialog(true)) }
         )
 
         val imagesTextColor by animateColorAsState(if (state.prefetchImagesState is ImagesPrefetchManager.State.InProgress) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onBackground.copy(alpha = .8f))
@@ -303,7 +303,7 @@ fun SettingsSyncSection(
             painter = painterResource(Res.drawable.ic_folder),
             iconColor = iconColor,
             iconBackgroundColor = bgColor,
-            onTap = { sendIntent(SettingsIntent.OnSourcesTap) }
+            onClick = { sendIntent(SettingsIntent.OnSourcesTap) }
         )
 
     }
@@ -327,7 +327,7 @@ fun SettingsAppInfoSection(
             painter = painterResource(Res.drawable.ic_social_media),
             iconColor = iconColor,
             iconBackgroundColor = bgColor,
-            onTap = {
+            onClick = {
                 UriUtils.openWebPage(
                     context = context,
                     url = Constants.CONTACT.X
@@ -341,7 +341,7 @@ fun SettingsAppInfoSection(
             painter = painterResource(Res.drawable.ic_sources),
             iconColor = iconColor,
             iconBackgroundColor = bgColor,
-            onTap = {
+            onClick = {
                 UriUtils.openWebPage(
                     context = context,
                     url = Constants.CONTACT.GITHUB
@@ -357,7 +357,7 @@ fun SettingsAppInfoSection(
                 painter = painterResource(Res.drawable.ic_version),
                 iconColor = iconColor,
                 iconBackgroundColor = bgColor,
-                onTap = {
+                onClick = {
                     UriUtils.openWebPage(
                         context = context,
                         url = Constants.CONTACT.RELEASES

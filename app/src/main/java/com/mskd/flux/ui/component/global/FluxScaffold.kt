@@ -34,7 +34,7 @@ fun FluxScaffold(
     floatingActionButtonPosition: FabPosition = FabPosition.End,
     containerColor: Color = MaterialTheme.colorScheme.background,
     topAppBarColors: TopAppBarColors = TopAppBarDefaults.topAppBarColors(
-        containerColor = MaterialTheme.colorScheme.background,
+        containerColor = MaterialTheme.colorScheme.surfaceContainer,
         scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
         titleContentColor = MaterialTheme.colorScheme.onSurface,
     ),

@@ -169,4 +169,16 @@
     <string name="undo">元に戻す</string>
     <string name="system_folders">システムフォルダ</string>
     <string name="system_folders_toggle_desc">アプリが標準の%1$sおよび%2$sの場所から動画を検索できるようにします。（推奨）</string>
+    <string name="home">ホーム</string>
+    <string name="search">検索</string>
+    <string name="sort">並べ替え</string>
+    <string name="sort_by">並べ替え基準</string>
+    <string name="last_modification">最終更新日時</string>
+    <string name="a_to_z">昇順 (A-Z)</string>
+    <string name="z_to_a">降順 (Z-A)</string>
+    <string name="view">表示</string>
+    <string name="grid">グリッド</string>
+    <string name="by_type">種類順</string>
+    <string name="by_genre">ジャンル順</string>
+    <string name="add_token">トークンを追加</string>
 </resources>

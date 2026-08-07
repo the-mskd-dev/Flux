@@ -25,11 +25,11 @@ fun SettingsItem(
     iconColor: Color = MaterialTheme.colorScheme.onTertiaryContainer,
     iconBackgroundColor: Color = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 1f),
     valueColor: Color = MaterialTheme.colorScheme.onBackground.copy(alpha = .8f),
-    onTap: () -> Unit
+    onClick: () -> Unit
 ) {
 
     ListItem(
-        onClick = onTap,
+        onClick = onClick,
         colors = ListItemDefaults.colors(
             containerColor = MaterialTheme.colorScheme.surfaceBright,
             contentColor = MaterialTheme.colorScheme.onSurface,

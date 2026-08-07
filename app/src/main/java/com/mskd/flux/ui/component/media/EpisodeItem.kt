@@ -46,7 +46,7 @@ fun EpisodeItem(
     episode: Episode,
     isSelected: Boolean,
     isExpanded: Boolean = false,
-    onTap: (Episode) -> Unit,
+    onClick: (Episode) -> Unit,
     onReadMoreTap: (Boolean) -> Unit = {},
     dropDownMenu: @Composable ((onDismissRequest: () -> Unit) -> Unit)? = null
 ) {
@@ -61,7 +61,7 @@ fun EpisodeItem(
                 episode = episode,
                 isSelected = isSelected,
                 isExpanded = isExpanded,
-                onTap = onTap,
+                onClick = onClick,
                 onReadMoreTap = onReadMoreTap,
                 dropDownMenu = dropDownMenu
             )
@@ -71,7 +71,7 @@ fun EpisodeItem(
                 episode = episode,
                 isSelected = isSelected,
                 isExpanded = isExpanded,
-                onTap = onTap,
+                onClick = onClick,
                 onReadMoreTap = onReadMoreTap,
                 dropDownMenu = dropDownMenu
             )
@@ -94,7 +94,7 @@ fun EpisodeItemLarge(
     episode: Episode,
     isSelected: Boolean,
     isExpanded: Boolean,
-    onTap: (Episode) -> Unit,
+    onClick: (Episode) -> Unit,
     onReadMoreTap: (Boolean) -> Unit,
     dropDownMenu: @Composable ((onDismissRequest: () -> Unit) -> Unit)? = null
 ) {
@@ -112,7 +112,7 @@ fun EpisodeItemLarge(
             .let { if (episode.isAvailable) it else it.grayScale() }
             .background(bgColor)
             .combinedClickable(
-                onClick = { onTap(episode) },
+                onClick = { onClick(episode) },
                 onLongClick = { showMenu = dropDownMenu != null }
             )
             .then(
@@ -179,7 +179,7 @@ fun EpisodeItemLarge(
             if (isOverflowing || isExpanded) {
                 ReadMoreButton(
                     modifier = Modifier.align(Alignment.End),
-                    onTap = { onReadMoreTap(!isExpanded) },
+                    onClick = { onReadMoreTap(!isExpanded) },
                     isExpanded = isExpanded
                 )
             }
@@ -198,7 +198,7 @@ fun EpisodeItemSmall(
     episode: Episode,
     isSelected: Boolean,
     isExpanded: Boolean,
-    onTap: (Episode) -> Unit,
+    onClick: (Episode) -> Unit,
     onReadMoreTap: (Boolean) -> Unit,
     dropDownMenu: @Composable ((onDismissRequest: () -> Unit) -> Unit)? = null
 ) {
@@ -216,7 +216,7 @@ fun EpisodeItemSmall(
             .let { if (episode.isAvailable) it else it.grayScale() }
             .background(bgColor)
             .combinedClickable(
-                onClick = { onTap(episode) },
+                onClick = { onClick(episode) },
                 onLongClick = { showMenu = dropDownMenu != null }
             )
             .then(
@@ -289,7 +289,7 @@ fun EpisodeItemSmall(
         if (isOverflowing || isExpanded) {
             ReadMoreButton(
                 modifier = Modifier.align(Alignment.End),
-                onTap = { onReadMoreTap(!isExpanded) },
+                onClick = { onReadMoreTap(!isExpanded) },
                 isExpanded = isExpanded
             )
         }
@@ -317,14 +317,14 @@ fun EpisodeItem_Preview() {
                 isSelected = false,
                 isExpanded = false,
                 onReadMoreTap = {},
-                onTap = {}
+                onClick = {}
             )
             EpisodeItemSmall(
                 episode = MediaMockups.episode1,
                 isSelected = false,
                 isExpanded = false,
                 onReadMoreTap = {},
-                onTap = {}
+                onClick = {}
             )
         }
     }
@@ -348,7 +348,7 @@ fun EpisodeItemWatching_Preview() {
                 isSelected = true,
                 isExpanded = false,
                 onReadMoreTap = {},
-                onTap = {}
+                onClick = {}
             )
             EpisodeItemSmall(
                 episode = MediaMockups.episode1.copy(
@@ -358,7 +358,7 @@ fun EpisodeItemWatching_Preview() {
                 isSelected = true,
                 isExpanded = false,
                 onReadMoreTap = {},
-                onTap = {}
+                onClick = {}
             )
         }
     }
@@ -382,7 +382,7 @@ fun EpisodeItemWatched_Preview() {
                 isSelected = false,
                 isExpanded = false,
                 onReadMoreTap = {},
-                onTap = {}
+                onClick = {}
             )
             EpisodeItemSmall(
                 episode = MediaMockups.episode1.copy(
@@ -392,7 +392,7 @@ fun EpisodeItemWatched_Preview() {
                 isSelected = false,
                 isExpanded = false,
                 onReadMoreTap = {},
-                onTap = {}
+                onClick = {}
             )
         }
     }

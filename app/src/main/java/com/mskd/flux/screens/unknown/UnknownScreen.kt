@@ -34,8 +34,8 @@ import com.mskd.flux.features.unknown.presentation.UnknownEvent
 import com.mskd.flux.features.unknown.presentation.UnknownIntent
 import com.mskd.flux.features.unknown.presentation.UnknownViewModel
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.navigation.Route
-import com.mskd.flux.navigation.Route.Player
+import com.mskd.flux.navigation.domain.Route
+import com.mskd.flux.navigation.domain.Route.Player
 import com.mskd.flux.screens.unknown.composables.UnknownDropDownMenu
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.component.global.ErrorScreen
@@ -103,7 +103,7 @@ fun UnknownScreen(
             is State.Error -> {
                 ErrorScreen(
                     message = stringResource(Res.string.oups_an_error_occured),
-                    onBackButtonTap = { viewModel.handleIntent(UnknownIntent.OnBackTap) }
+                    onBackButtonClick = { viewModel.handleIntent(UnknownIntent.OnBackTap) }
                 )
             }
             is State.Content -> {
@@ -185,7 +185,7 @@ fun UnknownScreenContent(
                         modifier = Modifier.animateItem(),
                         episode = media,
                         isSelected = false,
-                        onTap = { sendIntent(UnknownIntent.PlayMedia(media = media)) },
+                        onClick = { sendIntent(UnknownIntent.PlayMedia(media = media)) },
                         dropDownMenu = { onDismissRequest ->
                             UnknownDropDownMenu(
                                 episode = media,

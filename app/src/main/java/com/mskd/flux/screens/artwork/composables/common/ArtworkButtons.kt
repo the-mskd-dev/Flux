@@ -10,9 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
@@ -37,12 +34,15 @@ import com.mskd.flux.utils.extensions.minToMs
 import com.mskd.flux.utils.extensions.timeDescription
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.content_unavailable
+import flux.shared.generated.resources.ic_play
+import flux.shared.generated.resources.ic_replay
 import flux.shared.generated.resources.mark_as_not_watched
 import flux.shared.generated.resources.mark_as_watched
 import flux.shared.generated.resources.play
 import flux.shared.generated.resources.remaining_time
 import flux.shared.generated.resources.resume
 import flux.shared.generated.resources.rewatch
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
@@ -99,7 +99,7 @@ fun ArtworkButtons(
                     if (media.isAvailable) {
                         Icon(
                             modifier = Modifier.size(ButtonDefaults.iconSizeFor(buttonHeight)),
-                            imageVector = if (media.status == Status.WATCHED) Icons.Default.Refresh else Icons.Default.PlayArrow,
+                            painter = painterResource(if (media.status == Status.WATCHED) Res.drawable.ic_replay else Res.drawable.ic_play),
                             contentDescription = "Play button"
                         )
                     }
@@ -116,7 +116,7 @@ fun ArtworkButtons(
         FluxTextButton(
             text = stringResource(if (media.status == Status.WATCHED) Res.string.mark_as_not_watched else Res.string.mark_as_watched),
             height = buttonHeight,
-            onTap = { sendIntent(ArtworkIntent.ChangeWatchStatus(media = media)) }
+            onClick = { sendIntent(ArtworkIntent.ChangeWatchStatus(media = media)) }
         )
 
     }

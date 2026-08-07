@@ -50,7 +50,7 @@ import com.mskd.flux.features.sources.presentation.SourcesEvent
 import com.mskd.flux.features.sources.presentation.SourcesIntent
 import com.mskd.flux.features.sources.presentation.SourcesViewModel
 import com.mskd.flux.mockups.FilesMockups
-import com.mskd.flux.navigation.Route
+import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.presentations.components.rememberSafFolderPicker
 import com.mskd.flux.screens.sources.composables.SourcesInformationDialog
 import com.mskd.flux.screens.sources.composables.items.CustomSourceItem
@@ -140,7 +140,7 @@ fun SourcesScreen(
             is State.Error -> {
                 ErrorScreen(
                     message = stringResource(Res.string.oups_an_error_occured),
-                    onBackButtonTap = { viewModel.handleIntent(SourcesIntent.OnBackTap) }
+                    onBackButtonClick = { viewModel.handleIntent(SourcesIntent.OnBackTap) }
                 )
             }
             is State.Content<SourcesContent> -> {
@@ -206,7 +206,7 @@ fun SourcesScreenContent(
                 ExtendedFloatingActionButton(
                     onClick = { sendIntent(SourcesIntent.OnNextTap) }
                 ) {
-                    Text.Button(stringResource(Res.string.next))
+                    Text.Button.Default(stringResource(Res.string.next))
                 }
             }
         },

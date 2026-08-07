@@ -29,6 +29,7 @@ interface SettingsDataStore {
 
     suspend fun setSystemFolders(enabled: Boolean)
 
+
     data class State(
         val playerRewindValue: Int = 10,
         val playerForwardValue: Int = 10,
@@ -41,4 +42,5 @@ interface SettingsDataStore {
         val prefetchHdImages: Boolean = false,
         val systemFoldersEnabled: Boolean = true,
     )
+
 }

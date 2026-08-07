@@ -133,7 +133,7 @@ fun PlayerScreen(
                 ErrorScreen(
                     message = stringResource(Res.string.oups_an_error_occured),
                     description = state.description(),
-                    onBackButtonTap = { viewModel.handleIntent(PlayerIntent.OnBackTap) }
+                    onBackButtonClick = { viewModel.handleIntent(PlayerIntent.OnBackTap) }
                 )
 
             }

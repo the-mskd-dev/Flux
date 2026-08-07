@@ -100,7 +100,7 @@ fun OverviewItem(
         if (isOverflowing || expanded) {
             ReadMoreButton(
                 modifier = Modifier.align(Alignment.End),
-                onTap = { expanded = !expanded },
+                onClick = { expanded = !expanded },
                 isExpanded = expanded
             )
         }

@@ -67,7 +67,7 @@ class ShowViewModelTest : FunSpec({
 
     test("on season tap") {
         viewModel.event.test {
-            viewModel.handleIntent(ShowIntent.OnSeasonTap(season = 2, rgb = 12345))
+            viewModel.handleIntent(ShowIntent.OnSeasonClick(season = 2, rgb = 12345))
             val event = awaitItem()
             event.shouldBeInstanceOf<ShowEvent.NavigateToSeason>()
             event.artworkId shouldBe MediaMockups.showArtwork.id

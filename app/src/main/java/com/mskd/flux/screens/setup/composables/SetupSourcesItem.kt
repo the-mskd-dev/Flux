@@ -26,12 +26,12 @@ fun SetupSourcesItem(
     title: String,
     description: AnnotatedString,
     isSelected: Boolean,
-    onTap: () -> Unit
+    onClick: () -> Unit
 ) {
 
     ListItem(
         selected = isSelected,
-        onClick = onTap,
+        onClick = onClick,
         content = {
             Text.List.Title(text = title)
         },
@@ -60,7 +60,7 @@ fun SetupSourcesItem_Selected_Preview() {
                 title = stringResource(Res.string.setup_sources_default_title),
                 description = sourcesAnnotatedString(Res.string.setup_sources_default_desc),
                 isSelected = true,
-                onTap = {  }
+                onClick = {  }
             )
         }
     }
@@ -81,7 +81,7 @@ fun SetupSourcesItem_Unselected_Preview() {
                 title = stringResource(Res.string.setup_sources_default_title),
                 description = sourcesAnnotatedString(Res.string.setup_sources_default_desc),
                 isSelected = false,
-                onTap = {  }
+                onClick = {  }
             )
         }
     }

@@ -73,7 +73,7 @@ class UpdateLanguageUseCaseImpl(
                             }
                         }.awaitAll().filterNotNull()
 
-                        if (translated.isNotEmpty()) database.saveArtworks(translated)
+                        if (translated.isNotEmpty()) database.saveArtworks(artworks = translated, overrideLastModification = false)
                     }
                 }
 

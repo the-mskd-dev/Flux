@@ -24,7 +24,7 @@ sealed class SettingsIntent {
 
     // Navigation
     data object OnBackTap: SettingsIntent()
-    data object OnCustomizationTap: SettingsIntent()
+    data object OnCustomizationClick: SettingsIntent()
     data object OnTokenTap: SettingsIntent()
     data object OnHowToTap: SettingsIntent()
     data object OnAboutTap: SettingsIntent()

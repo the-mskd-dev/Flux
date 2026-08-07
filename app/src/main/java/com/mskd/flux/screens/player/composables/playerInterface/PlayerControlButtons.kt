@@ -25,11 +25,11 @@ import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_forward_10
 import flux.shared.generated.resources.ic_forward_30
 import flux.shared.generated.resources.ic_forward_5
+import flux.shared.generated.resources.ic_pause
+import flux.shared.generated.resources.ic_play
 import flux.shared.generated.resources.ic_rewind_10
 import flux.shared.generated.resources.ic_rewind_30
 import flux.shared.generated.resources.ic_rewind_5
-import flux.shared.generated.resources.pause
-import flux.shared.generated.resources.play
 import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
@@ -75,7 +75,7 @@ fun AnimatedVisibilityScope.PlayerControlButtons(
         ) {
             Icon(
                 modifier = Modifier.size(28.dp),
-                painter = painterResource(if (isPlaying) Res.drawable.pause else Res.drawable.play),
+                painter = painterResource(if (isPlaying) Res.drawable.ic_pause else Res.drawable.ic_play),
                 contentDescription = "play button"
             )
         }

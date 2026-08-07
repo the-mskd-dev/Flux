@@ -55,7 +55,7 @@ class SettingsDataStoreImpl(val settingsDataStore: DataStore<Preferences>) : Set
                 autoKeyboard = autoKeyboard,
                 dataLanguage = dataLanguage,
                 prefetchHdImages = prefetchImages,
-                systemFoldersEnabled = systemFoldersEnabled
+                systemFoldersEnabled = systemFoldersEnabled,
             )
         }
 

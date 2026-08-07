@@ -41,7 +41,9 @@ object Text {
         @Composable fun listSection() = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
         @Composable fun listTitle() = MaterialTheme.typography.bodyLarge
         @Composable fun listBody() = MaterialTheme.typography.bodyMedium
-        @Composable fun button() = MaterialTheme.typography.titleMedium.copy(fontFeatureSettings = "tnum")
+        @Composable fun buttonDefault() = MaterialTheme.typography.titleMedium.copy(fontFeatureSettings = "tnum")
+        @Composable fun buttonNavigationBarItem() = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.W500)
+        @Composable fun buttonChip() = MaterialTheme.typography.bodyMedium
 
     }
 
@@ -400,12 +402,15 @@ object Text {
             if (text.isNullOrBlank())
                 return
 
+            val style = Style.listSection()
+            val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
+
             Text(
                 text = text,
-                color = color,
+                color = textColor,
                 modifier = modifier,
                 maxLines = 1,
-                style = Style.listSection(),
+                style = style,
             )
 
         }
@@ -424,15 +429,18 @@ object Text {
             if (text.isNullOrBlank())
                 return
 
+            val style = Style.listTitle()
+            val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
+
             Text(
                 text = text,
-                color = color,
+                color = textColor,
                 modifier = modifier,
                 textAlign = textAlign,
                 overflow = overflow,
                 maxLines = maxLines,
                 minLines = minLines,
-                style = Style.listTitle(),
+                style = style,
             )
 
         }
@@ -454,9 +462,12 @@ object Text {
             if (text.isNullOrBlank())
                 return
 
+            val style = Style.listBody()
+            val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
+
             Text(
                 text = text,
-                color = color,
+                color = textColor,
                 modifier = modifier,
                 autoSize = autoSize,
                 fontStyle = fontStyle,
@@ -465,26 +476,75 @@ object Text {
                 overflow = overflow,
                 maxLines = maxLines,
                 minLines = minLines,
-                style = Style.listBody(),
+                style = style,
             )
 
         }
 
     }
 
-    @Composable
-    fun Button(
-        text: String,
-        modifier: Modifier = Modifier,
-        color: Color = Color.Unspecified,
-    ) {
+    object Button {
 
-        Text(
-            modifier = modifier,
-            text = text,
-            color = color,
-            style = Style.button()
-        )
+        @Composable
+        fun Default(
+            text: String,
+            modifier: Modifier = Modifier,
+            color: Color = Color.Unspecified,
+        ) {
+
+            val style = Style.buttonDefault()
+            val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
+
+            Text(
+                modifier = modifier,
+                text = text,
+                color = textColor,
+                style = style,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+
+        }
+
+        @Composable
+        fun NavigationBarItem(
+            text: String,
+            modifier: Modifier = Modifier,
+            color: Color = Color.Unspecified,
+        ) {
+
+            val style = Style.buttonNavigationBarItem()
+            val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
+
+            Text(
+                modifier = modifier,
+                text = text,
+                color = textColor,
+                style = style
+            )
+
+        }
+
+        @Composable
+        fun Chip(
+            text: String,
+            modifier: Modifier = Modifier,
+            color: Color = Color.Unspecified,
+        ) {
+
+            val style = Style.buttonChip()
+            val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
+
+            Text(
+                modifier = modifier,
+                text = text,
+                color = textColor,
+                style = style,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+
+        }
 
     }
 

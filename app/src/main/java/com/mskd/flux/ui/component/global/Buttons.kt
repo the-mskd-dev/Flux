@@ -51,14 +51,14 @@ fun FluxTextButton(
     modifier: Modifier = Modifier,
     height: Dp = ButtonDefaults.MediumContainerHeight,
     color: Color = MaterialTheme.colorScheme.primary,
-    onTap: () -> Unit
+    onClick: () -> Unit
 ) {
 
     TextButton(
         modifier = modifier.height(height),
-        onClick = onTap,
+        onClick = onClick,
         content = {
-            Text.Button(
+            Text.Button.Default(
                 text = text,
                 color = color,
             )
@@ -72,14 +72,14 @@ fun FluxTextButton(
 fun FluxIconButton(
     modifier: Modifier = Modifier,
     imageVector: ImageVector,
-    onTap: () -> Unit,
+    onClick: () -> Unit,
     contentDescription: String
 ) {
 
     FloatingActionButton(
         modifier = modifier,
         elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp, 0.dp, 0.dp),
-        onClick = onTap,
+        onClick = onClick,
     ) {
         Icon(
             imageVector = imageVector,
@@ -94,28 +94,25 @@ fun FluxIconButton(
 fun CountDownButton(
     text: @Composable (Int) -> String,
     duration: Int = 10,
-    onTap: () -> Unit,
+    onClick: () -> Unit,
     backgroundColor: Color = MaterialTheme.colorScheme.primaryContainer,
 ) {
 
     var count by remember { mutableIntStateOf(duration) }
     val size = ButtonDefaults.MediumContainerHeight
     val shape = ButtonDefaults.shape
-    val style = ButtonDefaults.textStyleFor(size).copy(
-        fontFeatureSettings = "tnum"
-    )
 
     LaunchedEffect(Unit) {
         while (count > 0) {
             delay(1.seconds)
             count -= 1
         }
-        onTap()
+        onClick()
     }
 
     Button(
         modifier = Modifier.heightIn(size),
-        onClick = onTap,
+        onClick = onClick,
         colors = ButtonDefaults.buttonColors(
             containerColor = backgroundColor,
             contentColor = contentColorFor(backgroundColor)
@@ -123,23 +120,23 @@ fun CountDownButton(
         shape = shape,
         contentPadding = ButtonDefaults.contentPaddingFor(size),
         elevation = ButtonDefaults.buttonElevation(
-            defaultElevation = FluxUI.Elevation.level3,
-            pressedElevation = FluxUI.Elevation.level3,
-            hoveredElevation = FluxUI.Elevation.level4,
-            focusedElevation = FluxUI.Elevation.level3
+            defaultElevation = 6.dp,
+            pressedElevation = 6.dp,
+            hoveredElevation = 4.dp,
+            focusedElevation = 6.dp
         ),
         content = {
 
             Box {
 
                 // Invisible text to avoid button size change
-                Text.Button(
+                Text.Button.Default(
                     modifier = Modifier.clearAndSetSemantics { }, // To ignore TalkBack
                     text = text(duration),
                     color = Color.Transparent,
                 )
 
-                Text.Button(
+                Text.Button.Default(
                     text = text(count),
                     color = contentColorFor(backgroundColor),
                 )
@@ -155,14 +152,14 @@ fun CountDownButton(
 fun ReadMoreButton(
     modifier: Modifier = Modifier,
     isExpanded: Boolean,
-    onTap: () -> Unit
+    onClick: () -> Unit
 ) {
 
     val degrees by animateFloatAsState(if (isExpanded) 180f else 0f)
 
     IconButton(
         modifier = modifier.rotate(degrees),
-        onClick = onTap
+        onClick = onClick
     ) {
         Icon(
             painter = painterResource(Res.drawable.ic_arrow_down),
@@ -183,7 +180,7 @@ fun CountDownButton_Preview() {
                 .padding(FluxUI.Space.large)
         ) {
             CountDownButton(
-                onTap = {  },
+                onClick = {  },
                 text = { stringResource(Res.string.next_episode, it) }
             )
         }
@@ -201,11 +198,11 @@ fun ReadMoreButton_Preview() {
             verticalArrangement = Arrangement.spacedBy(FluxUI.Space.large)
         ) {
             ReadMoreButton(
-                onTap = {  },
+                onClick = {  },
                 isExpanded = true
             )
             ReadMoreButton(
-                onTap = {  },
+                onClick = {  },
                 isExpanded = false
             )
         }

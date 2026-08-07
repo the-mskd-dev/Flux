@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.ui.theme.FluxUI
@@ -81,8 +82,23 @@ fun Modifier.groupedShape(
 }
 
 @Composable
-fun Modifier.fillMaxWidthWithLimit() : Modifier{
+fun Modifier.fillMaxWidthWithLimit() : Modifier {
     return this
         .widthIn(max = 600.dp)
         .fillMaxWidth()
+}
+
+fun Modifier.bleedHorizontal(amount: Dp = FluxUI.Space.medium) = layout { measurable, constraints ->
+    val expandPx = amount.roundToPx()
+
+    val expandedConstraints = constraints.copy(
+        minWidth = (constraints.minWidth + expandPx * 2).coerceAtLeast(0),
+        maxWidth = constraints.maxWidth + expandPx * 2
+    )
+
+    val placeable = measurable.measure(expandedConstraints)
+
+    layout(placeable.width - expandPx * 2, placeable.height) {
+        placeable.placeRelative(x = -expandPx, y = 0)
+    }
 }

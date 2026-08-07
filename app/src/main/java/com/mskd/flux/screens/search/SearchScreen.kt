@@ -47,9 +47,9 @@ import com.mskd.flux.features.search.presentation.SearchIntent
 import com.mskd.flux.features.search.presentation.SearchUIState
 import com.mskd.flux.features.search.presentation.SearchViewModel
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.navigation.Route
-import com.mskd.flux.navigation.Route.Artwork
-import com.mskd.flux.navigation.Route.Show
+import com.mskd.flux.navigation.domain.Route
+import com.mskd.flux.navigation.domain.Route.Artwork
+import com.mskd.flux.navigation.domain.Route.Show
 import com.mskd.flux.ui.component.global.FluxScaffold
 import com.mskd.flux.ui.component.global.FluxSearchField
 import com.mskd.flux.ui.component.global.Text
@@ -143,7 +143,7 @@ fun SearchContent(
                         )
                     }
                 }
-                .background(MaterialTheme.colorScheme.background),
+                .background(MaterialTheme.colorScheme.surfaceContainer),
             columns = GridCells.Fixed(columns),
             horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
             verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
@@ -194,7 +194,7 @@ fun SearchContent(
                             .aspectRatio(FluxUI.Dimension.itemRatio),
                         path = artwork.imagePath,
                         description = artwork.title,
-                        onTap = { sendIntent(SearchIntent.OnArtworkTap(artwork = artwork, rgb = it)) }
+                        onClick = { sendIntent(SearchIntent.OnArtworkTap(artwork = artwork, rgb = it)) }
                     )
 
                 }
@@ -203,7 +203,8 @@ fun SearchContent(
             }
 
             item(span = { GridItemSpan(maxLineSpan) }) {
-                Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding()))
+                Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding() + FluxUI.Space.bottomScreen))
+
             }
 
         }
@@ -226,7 +227,7 @@ fun SearchTypeFilters(
         FilterChip(
             onClick = { sendIntent(SearchIntent.FilterOnType(ContentType.MOVIE)) },
             label = {
-                Text.Card.Label(
+                Text.Button.Chip(
                     text = stringResource(Res.string.movies).uppercase(),
                 )
             },
@@ -245,7 +246,7 @@ fun SearchTypeFilters(
         FilterChip(
             onClick = { sendIntent(SearchIntent.FilterOnType(ContentType.SHOW)) },
             label = {
-                Text.Card.Label(
+                Text.Button.Chip(
                     text = stringResource(Res.string.shows).uppercase(),
                 )
             },

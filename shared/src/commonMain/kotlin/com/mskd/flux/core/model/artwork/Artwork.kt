@@ -15,7 +15,9 @@ data class Artwork(
     val description: String = "",
     val imagePath: String = "",
     val bannerPath: String = "",
-    val type: ContentType = ContentType.SHOW
+    val type: ContentType = ContentType.SHOW,
+
+    val lastModification: Long? = null
 ) {
 
     val isUnknown: Boolean get() = id == UNKNOWN_ID

@@ -170,4 +170,16 @@
     <string name="undo">Deshacer</string>
     <string name="system_folders">Carpetas del sistema</string>
     <string name="system_folders_toggle_desc">Permite que la aplicación busque vídeos en las ubicaciones estándar %1$s y %2$s. (Recomendado)</string>
+    <string name="home">Inicio</string>
+    <string name="search">Buscar</string>
+    <string name="sort">Ordenar</string>
+    <string name="sort_by">Ordenar por</string>
+    <string name="last_modification">Última modificación</string>
+    <string name="a_to_z">De la A a la Z</string>
+    <string name="z_to_a">De la Z a la A</string>
+    <string name="view">Vista</string>
+    <string name="grid">Cuadrícula</string>
+    <string name="by_type">Por tipo</string>
+    <string name="by_genre">Por género</string>
+    <string name="add_token">Añadir token</string>
 </resources>

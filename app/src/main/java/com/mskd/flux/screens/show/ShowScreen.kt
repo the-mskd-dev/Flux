@@ -35,8 +35,8 @@ import com.mskd.flux.features.show.presentation.ShowEvent
 import com.mskd.flux.features.show.presentation.ShowIntent
 import com.mskd.flux.features.show.presentation.ShowViewModel
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.navigation.Route
-import com.mskd.flux.navigation.Route.Artwork
+import com.mskd.flux.navigation.domain.Route
+import com.mskd.flux.navigation.domain.Route.Artwork
 import com.mskd.flux.screens.show.composables.SeasonDialog
 import com.mskd.flux.screens.show.composables.ShowContentLarge
 import com.mskd.flux.screens.show.composables.ShowContentRegular
@@ -100,7 +100,7 @@ fun ShowScreen(
             is State.Error -> {
                 ErrorScreen(
                     message = stringResource(Res.string.oups_an_error_occured),
-                    onBackButtonTap = { viewModel.handleIntent(ShowIntent.OnBackTap) }
+                    onBackButtonClick = { viewModel.handleIntent(ShowIntent.OnBackTap) }
                 )
             }
             is State.Content -> {

@@ -26,11 +26,11 @@ fun ErrorScreen(
     modifier: Modifier = Modifier,
     message: String,
     description: String? = null,
-    onBackButtonTap: () -> Unit
+    onBackButtonClick: () -> Unit
 ) {
 
     FluxScaffold(
-        onBackTap = onBackButtonTap,
+        onBackTap = onBackButtonClick,
         title = null
     ) {
 
@@ -76,7 +76,7 @@ fun ErrorScreen_preview() {
         ErrorScreen(
             message = stringResource(Res.string.oups_an_error_occured),
             description = "Error description",
-            onBackButtonTap = {}
+            onBackButtonClick = {}
         )
     }
 }

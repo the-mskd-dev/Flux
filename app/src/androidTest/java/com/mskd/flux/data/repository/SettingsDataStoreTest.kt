@@ -233,4 +233,20 @@ class SettingsDataStoreTest {
 
     }
 
+    @Test
+    fun get_and_set_system_folders() = runTest {
+
+        settingsDataStore.flow.test {
+            var state = awaitItem()
+            assert(state.systemFoldersEnabled)
+
+            settingsDataStore.setSystemFolders(false)
+            state = awaitItem()
+            assert(!state.systemFoldersEnabled)
+
+            cancelAndConsumeRemainingEvents()
+        }
+
+    }
+
 }

@@ -98,7 +98,7 @@ class SettingsViewModelTest : FunSpec({
 
     test("on customization tap") {
         viewModel.event.test {
-            viewModel.handleIntent(SettingsIntent.OnCustomizationTap)
+            viewModel.handleIntent(SettingsIntent.OnCustomizationClick)
             awaitItem() shouldBe SettingsEvent.NavigateToCustomizationScreen
         }
     }

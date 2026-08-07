@@ -1,8 +1,10 @@
 package com.mskd.flux.features.catalog
 
 import com.mskd.flux.di.Qualifiers
+import com.mskd.flux.features.catalog.data.datastore.CatalogDataStoreImpl
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinatorImpl
+import com.mskd.flux.features.catalog.domain.datastore.CatalogDataStore
 import com.mskd.flux.features.catalog.domain.fetcher.ArtworkFolderFetcher
 import com.mskd.flux.features.catalog.domain.fetcher.ArtworkFolderFetcherImpl
 import com.mskd.flux.features.catalog.domain.fetcher.MovieMetadataFetcher
@@ -94,6 +96,12 @@ val moduleCatalog = module {
             database = get(),
             settings = get(),
             coordinator = get()
+        )
+    }
+
+    single<CatalogDataStore> {
+        CatalogDataStoreImpl(
+            catalogDataStore = get(Qualifiers.CATALOG_DATASTORE),
         )
     }
 

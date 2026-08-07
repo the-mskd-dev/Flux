@@ -86,7 +86,7 @@ class FakeDatabaseRepository : DatabaseRepository {
 
     override suspend fun updateRealPaths(files: List<UserFile>) {}
 
-    override suspend fun saveArtworks(artworks: List<Artwork>) {}
+    override suspend fun saveArtworks(artworks: List<Artwork>, overrideLastModification: Boolean) {}
     override suspend fun saveMedias(medias: List<Media>) {}
 
     override suspend fun saveSeasons(seasons: List<Season>) {}

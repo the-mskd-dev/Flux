@@ -61,7 +61,7 @@ fun PlayerSettingsSheet(
                 PlayerSettingsItem(
                     label = "Audio",
                     value = selectedAudio?.label.orEmpty().ifBlank { stringResource(Res.string.by_default) },
-                    onTap = {
+                    onClick = {
                         val intent = PlayerUiContent.SettingsSheet.Tracks(type = PlayerTrack.Type.AUDIO)
                         sendIntent(PlayerIntent.ShowSettings(sheet = intent))
                     }
@@ -72,7 +72,7 @@ fun PlayerSettingsSheet(
                 PlayerSettingsItem(
                     label = "Subtitles",
                     value = selectedSubtitles?.label.orEmpty().ifBlank { stringResource(Res.string.by_default) },
-                    onTap = {
+                    onClick = {
                         val intent = PlayerUiContent.SettingsSheet.Tracks(type = PlayerTrack.Type.SUBTITLES)
                         sendIntent(PlayerIntent.ShowSettings(sheet = intent)) }
                 )
@@ -89,12 +89,12 @@ fun PlayerSettingsSheet(
 fun PlayerSettingsItem(
     label: String,
     value: String,
-    onTap: () -> Unit
+    onClick: () -> Unit
 ) {
 
     Row(
         modifier = Modifier
-            .clickable { onTap() }
+            .clickable { onClick() }
             .fillMaxWidth()
             .padding(all = FluxUI.Space.medium),
         horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small),

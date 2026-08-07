@@ -10,14 +10,17 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
@@ -36,36 +39,29 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.mskd.flux.core.model.artwork.Artwork
-import com.mskd.flux.core.model.artwork.ContentType
+import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
+import com.mskd.flux.features.catalog.domain.model.CatalogViewMode
 import com.mskd.flux.features.catalog.presentation.CatalogEvent
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.features.catalog.presentation.CatalogState
 import com.mskd.flux.features.catalog.presentation.CatalogViewModel
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.navigation.Route
-import com.mskd.flux.screens.catalog.composable.CatalogCategory
-import com.mskd.flux.screens.catalog.composable.CatalogGenericCategory
-import com.mskd.flux.screens.catalog.composable.CatalogTopButtons
+import com.mskd.flux.navigation.domain.Route
+import com.mskd.flux.screens.catalog.composable.CatalogEmptyContent
+import com.mskd.flux.screens.catalog.composable.CatalogHeader
+import com.mskd.flux.screens.catalog.composable.CatalogMenu
+import com.mskd.flux.screens.catalog.composable.CatalogViewMenu
 import com.mskd.flux.screens.catalog.composable.LastWatchedCarousel
+import com.mskd.flux.screens.catalog.composable.sorting.CatalogSortingSheet
+import com.mskd.flux.screens.catalog.composable.viewMode.CatalogViewModeSheet
+import com.mskd.flux.screens.catalog.composable.viewMode.catalogViewModeGenre
+import com.mskd.flux.screens.catalog.composable.viewMode.catalogViewModeGrid
 import com.mskd.flux.ui.component.LoadingScreen
-import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxThemePreview
 import flux.shared.generated.resources.Res
-import flux.shared.generated.resources.add_source
-import flux.shared.generated.resources.empty_catalog
-import flux.shared.generated.resources.empty_catalog_desc
-import flux.shared.generated.resources.how_to_name_files
-import flux.shared.generated.resources.ic_add_folder
-import flux.shared.generated.resources.ic_api
-import flux.shared.generated.resources.ic_flux
-import flux.shared.generated.resources.movies
-import flux.shared.generated.resources.other_files
-import flux.shared.generated.resources.shows
 import flux.shared.generated.resources.sync_in_progress
-import flux.shared.generated.resources.tmdb_api_token
-import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -124,6 +120,10 @@ fun CatalogScreen(
                     lastWatchedIds = state.lastWatchedMediaIds,
                     isRefreshing = state.isRefreshing,
                     tokenIsMissing = state.tokenIsMissing,
+                    sortingMode = state.sortingMode,
+                    showSortingModes = state.showSortingSheet,
+                    viewMode = state.viewMode,
+                    showViewModes = state.showViewSheet,
                     sendIntent = viewModel::handleIntent
                 )
 
@@ -136,13 +136,17 @@ fun CatalogScreen(
 
 }
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun CatalogContent(
     artworks: List<Artwork>,
     lastWatchedIds: List<Long>,
     isRefreshing: Boolean,
     tokenIsMissing: Boolean,
+    sortingMode: CatalogSortingMode,
+    showSortingModes: Boolean,
+    viewMode: CatalogViewMode,
+    showViewModes: Boolean,
     sendIntent: (CatalogIntent) -> Unit
 ) {
 
@@ -153,15 +157,17 @@ fun CatalogContent(
         offsetY = 100.dp.toPx() * pullToRefreshState.distanceFraction
     }
 
+    val columns = FluxUI.itemsPerRow.artworks
+
     Scaffold(
-        containerColor = MaterialTheme.colorScheme.background,
+        containerColor = MaterialTheme.colorScheme.surfaceContainer,
     ) { paddingValues ->
 
         Column(modifier = Modifier.fillMaxSize()) {
 
             Spacer(modifier = Modifier.height(paddingValues.calculateTopPadding()))
 
-            CatalogTopButtons(sendIntent = sendIntent)
+            CatalogHeader()
 
             PullToRefreshBox(
                 modifier = Modifier.weight(1f),
@@ -179,119 +185,79 @@ fun CatalogContent(
                 }
             ) {
 
-                LazyColumn(
+                LazyVerticalGrid(
                     modifier = Modifier
                         .fillMaxSize()
                         .graphicsLayer { translationY = offsetY },
-                    verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
+                    columns = GridCells.Fixed(columns),
+                    verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
+                    horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
+                    contentPadding = PaddingValues(horizontal = FluxUI.Space.medium)
                 ) {
 
                     if (artworks.none { !it.isUnknown }) {
-
-                        item {
-
-                            Text.Content.Title(
-                                modifier = Modifier
-                                    .padding(top = FluxUI.Space.medium)
-                                    .padding(horizontal = FluxUI.Space.medium),
-                                text = stringResource(Res.string.empty_catalog)
-                            )
-
+                        item(span = { GridItemSpan(maxLineSpan) }) {
+                            CatalogEmptyContent(sendIntent = sendIntent)
                         }
-
-                        item {
-
-                            Text.Content.Body(
-                                modifier = Modifier.padding(horizontal = FluxUI.Space.medium),
-                                text = stringResource(Res.string.empty_catalog_desc)
-                            )
-
-                        }
-
-                        item {
-
-                            TextButton(
-                                onClick = { sendIntent(CatalogIntent.OnHowToTap) },
-                                contentPadding = PaddingValues(all = FluxUI.Space.medium)
-                            ) {
-                                Text.Button(text = stringResource(Res.string.how_to_name_files),)
-                            }
-
-                        }
-
                     }
 
                     if (artworks.any { !it.isUnknown }) {
 
-                        item {
-                            LastWatchedCarousel(
-                                artworks = lastWatchedIds.mapNotNull { artworks.find { o -> o.id == it } },
-                                sendIntent = sendIntent
-                            )
+                        item(span = { GridItemSpan(maxLineSpan) }) {
+
+                            Column(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
+                            ) {
+
+                                LastWatchedCarousel(
+                                    artworks = lastWatchedIds.mapNotNull { artworks.find { o -> o.id == it } },
+                                    sendIntent = sendIntent
+                                )
+
+                                CatalogViewMenu(
+                                    sortingMode = sortingMode,
+                                    viewMode = viewMode,
+                                    sendIntent = sendIntent
+                                )
+
+                            }
                         }
 
-                        item {
-                            CatalogCategory(
-                                name = stringResource(Res.string.shows),
-                                category = ContentType.SHOW,
-                                artworks = artworks.filter { it.type == ContentType.SHOW && !it.isUnknown },
-                                sendIntent = sendIntent
-                            )
-                        }
-
-                        item {
-                            CatalogCategory(
-                                name = stringResource(Res.string.movies),
-                                category = ContentType.MOVIE,
-                                artworks = artworks.filter { it.type == ContentType.MOVIE && !it.isUnknown },
-                                sendIntent = sendIntent
-                            )
+                        when (viewMode) {
+                            CatalogViewMode.GRID -> {
+                                catalogViewModeGrid(
+                                    artworks = artworks,
+                                    sendIntent = sendIntent
+                                )
+                            }
+                            CatalogViewMode.BY_TYPE, CatalogViewMode.BY_GENRE -> {
+                                catalogViewModeGenre(
+                                    artworks = artworks,
+                                    sortingMode = sortingMode,
+                                    sendIntent = sendIntent
+                                )
+                            }
                         }
 
                     }
 
-                    if (artworks.any { it.isUnknown }) {
-                        item {
-                            CatalogGenericCategory(
-                                name = stringResource(Res.string.other_files),
-                                painter = painterResource(Res.drawable.ic_flux),
-                                iconColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                                backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
-                                onTap = { sendIntent(CatalogIntent.OnArtworkTap(artwork = Artwork.UNKNOWN)) }
-                            )
-                        }
-                    }
+                    item(span = { GridItemSpan(maxLineSpan) }) {
 
-                    if (artworks.isEmpty()) {
-                        item {
-                            CatalogGenericCategory(
-                                name = stringResource(Res.string.add_source),
-                                painter = painterResource(Res.drawable.ic_add_folder),
-                                iconColor = MaterialTheme.colorScheme.onTertiaryContainer,
-                                backgroundColor = MaterialTheme.colorScheme.tertiaryContainer,
-                                onTap = { sendIntent(CatalogIntent.OnSourcesTap) }
-                            )
-                        }
-                    }
-
-                    if (tokenIsMissing) {
-                        item {
-                            CatalogGenericCategory(
-                                name = stringResource(Res.string.tmdb_api_token),
-                                painter = painterResource(Res.drawable.ic_api),
-                                iconColor = MaterialTheme.colorScheme.onSurface,
-                                backgroundColor = MaterialTheme.colorScheme.surfaceBright,
-                                onTap = { sendIntent(CatalogIntent.OnTokenTap) }
-                            )
-                        }
-                    }
-
-                    item {
-
-                        Spacer(
+                        Column(
                             modifier = Modifier
-                                .height(paddingValues.calculateBottomPadding() + FluxUI.Space.large)
-                        )
+                                .fillMaxWidth()
+                                .padding(top = FluxUI.Space.medium)
+                                .padding(bottom = paddingValues.calculateBottomPadding() + FluxUI.Space.bottomScreen)
+                        ) {
+
+                            CatalogMenu(
+                                artworks = artworks,
+                                tokenIsMissing = tokenIsMissing,
+                                sendIntent = sendIntent
+                            )
+
+                        }
 
                     }
 
@@ -299,6 +265,21 @@ fun CatalogContent(
 
             }
 
+        }
+
+
+        if (showSortingModes) {
+            CatalogSortingSheet(
+                selectedMode = sortingMode,
+                sendIntent = sendIntent
+            )
+        }
+
+        if (showViewModes) {
+            CatalogViewModeSheet(
+                selectedMode = viewMode,
+                sendIntent = sendIntent
+            )
         }
 
     }
@@ -316,6 +297,10 @@ fun CatalogScreen_Preview() {
                 lastWatchedIds = MediaMockups.artworks.map { it.id },
                 isRefreshing = false,
                 tokenIsMissing = false,
+                sortingMode = CatalogSortingMode.LAST_MODIFICATION,
+                showSortingModes = false,
+                viewMode = CatalogViewMode.BY_TYPE,
+                showViewModes = false,
                 sendIntent = {}
             )
         }
@@ -332,6 +317,10 @@ fun CatalogScreen_Unknown_Preview() {
                 lastWatchedIds = emptyList(),
                 isRefreshing = false,
                 tokenIsMissing = true,
+                sortingMode = CatalogSortingMode.LAST_MODIFICATION,
+                showSortingModes = false,
+                viewMode = CatalogViewMode.BY_TYPE,
+                showViewModes = false,
                 sendIntent = {}
             )
         }
@@ -348,6 +337,10 @@ fun CatalogScreen_Empty_Preview() {
                 lastWatchedIds = emptyList(),
                 isRefreshing = false,
                 tokenIsMissing = true,
+                sortingMode = CatalogSortingMode.LAST_MODIFICATION,
+                showSortingModes = false,
+                viewMode = CatalogViewMode.BY_TYPE,
+                showViewModes = false,
                 sendIntent = {}
             )
         }

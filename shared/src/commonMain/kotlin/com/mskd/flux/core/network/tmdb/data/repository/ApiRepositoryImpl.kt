@@ -43,11 +43,6 @@ internal class ApiRepositoryImpl(
 
     //region Show
 
-    override suspend fun getSeason(artworkId: Long, season: Int): Pair<Season, List<EpisodeDto>>? =
-        tmdb.getSeason(artworkId = artworkId, season = season)?.let {
-            it.toDomain(artworkId = artworkId) to it.episodes
-        }
-
     override suspend fun getSeasonAndEpisodes(
         artworkId: Long,
         season: Int,
@@ -68,33 +63,11 @@ internal class ApiRepositoryImpl(
         return season to episodes
     }
 
-    override suspend fun resolveEpisode(
-        artworkId: Long,
-        episodeDto: EpisodeDto,
-        file: UserFile,
-        language: Locale,
-        fallbackDuration: suspend () -> Int
-    ): Episode {
-
-        val resolvedDto = if (episodeDto.title.isBlank() || episodeDto.description.isBlank()) {
-            tmdb.translateEpisode(artworkId = artworkId, episodeDto = episodeDto, language = language)
-        } else {
-            episodeDto
-        }
-
-        return resolvedDto.toDomain(
-            artworkId = artworkId,
-            file = file,
-            duration = resolvedDto.duration ?: fallbackDuration()
-        )
-
-    }
-
     //endregion
 
     //region Global
 
-    override suspend fun translate(request: TranslationRequest): Translation? {
+    override suspend fun getTranslation(request: TranslationRequest): Translation? {
         return tmdb.getTranslation(request = request)
             ?.let {
                 Translation(

@@ -32,8 +32,6 @@ interface TmdbDataSource {
         season: Int,
     ) : SeasonDto?
 
-    suspend fun translateEpisode(artworkId: Long, episodeDto: EpisodeDto, language: Locale) : EpisodeDto
-
     suspend fun getTranslation(request: TranslationRequest) : TranslationsDto.Translation?
 
 }

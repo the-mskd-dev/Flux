@@ -107,19 +107,19 @@ class UpdateLanguageUseCaseTest : FunSpec({
     test("retrieves translations for movie/show/season/episode and saves them") {
 
         coEvery {
-            api.translate(match { it is TranslationRequest.Movie && it.artworkId == 1L })
+            api.getTranslation(match { it is TranslationRequest.Movie && it.artworkId == 1L })
         } returns Translation(title = "new title for movie", description = "new description for movie")
 
         coEvery {
-            api.translate(match { it is TranslationRequest.Show && it.artworkId == 2L })
+            api.getTranslation(match { it is TranslationRequest.Show && it.artworkId == 2L })
         } returns Translation(title = "new title for show", description = "new description for show")
 
         coEvery {
-            api.translate(match { it is TranslationRequest.Season && it.artworkId == 2L && it.season == 1 })
+            api.getTranslation(match { it is TranslationRequest.Season && it.artworkId == 2L && it.season == 1 })
         } returns Translation(title = "new title for season", description = "new description for season")
 
         coEvery {
-            api.translate(match { it is TranslationRequest.Episode && it.artworkId == 2L && it.season == 1 && it.number == 1 })
+            api.getTranslation(match { it is TranslationRequest.Episode && it.artworkId == 2L && it.season == 1 && it.number == 1 })
         } returns Translation(title = "new title for episode", description = "new description for episode")
 
         useCase()
@@ -149,7 +149,7 @@ class UpdateLanguageUseCaseTest : FunSpec({
 
     test("if no translation available, no save") {
 
-        coEvery { api.translate(any()) } returns null
+        coEvery { api.getTranslation(any()) } returns null
 
         useCase()
         testDispatcher.scheduler.advanceUntilIdle()
@@ -162,7 +162,7 @@ class UpdateLanguageUseCaseTest : FunSpec({
     test("if only the title is translated, keep the current description") {
 
         coEvery {
-            api.translate(match { it is TranslationRequest.Movie && it.artworkId == 1L })
+            api.getTranslation(match { it is TranslationRequest.Movie && it.artworkId == 1L })
         } returns Translation(title = "new title", description = null)
 
         useCase()
@@ -178,7 +178,7 @@ class UpdateLanguageUseCaseTest : FunSpec({
     test("if only the description is translated, keep the current title") {
 
         coEvery {
-            api.translate(match { it is TranslationRequest.Movie && it.artworkId == 1L })
+            api.getTranslation(match { it is TranslationRequest.Movie && it.artworkId == 1L })
         } returns Translation(title = null, description = "new description")
 
         useCase()

@@ -46,7 +46,7 @@ class UpdateLanguageUseCase(
                     movies.chunked(batchSize).forEach { chunk ->
                         val translated = chunk.map { movie ->
                             async {
-                                api.translate(
+                                api.getTranslation(
                                     request = TranslationRequest.Movie(artworkId = movie.artworkId, language = language)
                                 )?.let { translation ->
                                     movie.copy(
@@ -66,7 +66,7 @@ class UpdateLanguageUseCase(
                     shows.chunked(batchSize).forEach { chunk ->
                         val translated = chunk.map { show ->
                             async {
-                                api.translate(
+                                api.getTranslation(
                                     request = TranslationRequest.Show(artworkId = show.id, language = language)
                                 )?.let { translation ->
                                     show.copy(
@@ -86,7 +86,7 @@ class UpdateLanguageUseCase(
                     seasons.chunked(batchSize).forEach { chunk ->
                         val translated = chunk.map { season ->
                             async {
-                                api.translate(
+                                api.getTranslation(
                                     request = TranslationRequest.Season(artworkId = season.artworkId, season = season.season, language = language)
                                 )?.let { translation ->
                                     season.copy(
@@ -106,7 +106,7 @@ class UpdateLanguageUseCase(
                     episodes.chunked(batchSize).forEach { chunk ->
                         val translated = chunk.map { episode ->
                             async {
-                                api.translate(
+                                api.getTranslation(
                                     request = TranslationRequest.Episode(artworkId = episode.artworkId, season = episode.season, number = episode.number, language = language)
                                 )?.let { translation ->
                                     episode.copy(

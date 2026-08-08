@@ -41,7 +41,7 @@ class MediaResolverImpl(
                     val translation = when (media) {
                         is Episode -> {
                             if (!media.isUnknown && (media.title.isBlank() || media.description.isBlank())) {
-                                api.translate(
+                                api.getTranslation(
                                     request = TranslationRequest.Episode(
                                         artworkId = media.artworkId,
                                         season = media.season,
@@ -54,7 +54,7 @@ class MediaResolverImpl(
 
                         is Movie -> {
                             if (media.title.isBlank() || media.description.isBlank()) {
-                                api.translate(
+                                api.getTranslation(
                                     request = TranslationRequest.Movie(
                                         artworkId = media.artworkId,
                                         language = language

@@ -190,11 +190,19 @@ class TmdbDataSourceImpl(
 
             if (tmdbEpisode.description.isBlank() || tmdbEpisode.title.isBlank()) {
 
-                tmdbEpisode = translateEpisode(
-                    artworkId = artworkId,
-                    episodeDto = tmdbEpisode,
-                    language = language
-                )
+                getTranslation(
+                    request = TranslationRequest.Episode(
+                        artworkId = artworkId,
+                        season = season,
+                        number = number,
+                        language = language
+                    ),
+                )?.let {
+                    tmdbEpisode = tmdbEpisode.copy(
+                        title = it.data.name ?: tmdbEpisode.title,
+                        description = it.data.overview ?: tmdbEpisode.description
+                    )
+                }
 
             }
 
@@ -242,24 +250,6 @@ class TmdbDataSourceImpl(
             Napier.e(tag = TAG, message = "getTmdbSeason - Fail to get TMDBSeason for artworkId:$artworkId, season:$season (${language.toTmdbFormat()})", throwable = e)
             null
         }
-
-    }
-
-    override suspend fun translateEpisode(artworkId: Long, episodeDto: EpisodeDto, language: Locale): EpisodeDto {
-
-        return getTranslation(
-            request = TranslationRequest.Episode(
-                artworkId = artworkId,
-                season = episodeDto.season,
-                number = episodeDto.number,
-                language = language
-            ),
-        )?.let {
-            episodeDto.copy(
-                title = it.data.name ?: episodeDto.title,
-                description = it.data.overview ?: episodeDto.description
-            )
-        } ?: episodeDto
 
     }
 

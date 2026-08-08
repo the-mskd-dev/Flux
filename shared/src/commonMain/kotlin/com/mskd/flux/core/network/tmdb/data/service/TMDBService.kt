@@ -7,13 +7,20 @@ import com.mskd.flux.core.network.tmdb.data.dto.movie.MovieDto
 import com.mskd.flux.core.network.tmdb.data.dto.show.SeasonDto
 import com.mskd.flux.core.network.tmdb.data.dto.TranslationsDto
 import com.mskd.flux.core.network.tmdb.data.dto.genre.GenresResultDto
+import com.mskd.flux.core.network.tmdb.data.dto.show.ShowDto
 import com.mskd.flux.utils.Constants
 
 interface TMDBService {
 
+    //region Auth
+
     suspend fun authenticate() : AuthenticationDto
 
-    suspend fun getMovie(
+    //endregion
+
+    //region Movie
+
+    suspend fun getMovieArtworks(
         title: String,
         year: Int? = null,
         language: String = Constants.Global.LANGUAGE
@@ -28,15 +35,32 @@ interface TMDBService {
         artworkId: Long,
     ) : TranslationsDto
 
-    suspend fun getShow(
+    suspend fun getMovieGenres(language: String = Constants.Global.LANGUAGE) : GenresResultDto
+
+    //endregion
+
+    //region Show
+
+    suspend fun getShowArtworks(
         title: String,
         year: Int? = null,
         language: String = Constants.Global.LANGUAGE
     ) : ArtworksResultDto
 
+    suspend fun getShowDetails(
+        artworkId: Long,
+        language: String = Constants.Global.LANGUAGE
+    ) : ShowDto
+
     suspend fun getShowTranslations(
         artworkId: Long,
     ) : TranslationsDto
+
+    suspend fun getShowGenres(language: String = Constants.Global.LANGUAGE) : GenresResultDto
+
+    //endregion
+
+    //region Episode
 
     suspend fun getEpisode(
         id: Long,
@@ -51,6 +75,10 @@ interface TMDBService {
         number: Int,
     ) : TranslationsDto
 
+    //endregion
+
+    //region Season
+
     suspend fun getSeason(
         id: Long,
         season: Int,
@@ -62,8 +90,6 @@ interface TMDBService {
         season: Int,
     ) : TranslationsDto
 
-    // Genres
-    suspend fun getMovieGenres(language: String = Constants.Global.LANGUAGE) : GenresResultDto
-    suspend fun getShowGenres(language: String = Constants.Global.LANGUAGE) : GenresResultDto
+    //endregion
 
 }

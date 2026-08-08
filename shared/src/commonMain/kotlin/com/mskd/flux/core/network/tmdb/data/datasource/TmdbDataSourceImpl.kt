@@ -36,13 +36,13 @@ class TmdbDataSourceImpl(
         return try {
 
             val tmdbArtworks = if (file.isEpisode) {
-                tmdbService.getShow(
+                tmdbService.getShowArtworks(
                     title = file.nameProperties.title,
                     year = file.nameProperties.year,
                     language = language.toTmdbFormat()
                 )
             } else {
-                tmdbService.getMovie(
+                tmdbService.getMovieArtworks(
                     title = file.nameProperties.title,
                     year = file.nameProperties.year,
                     language = language.toTmdbFormat()

@@ -6,6 +6,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ShowDto(
+    @SerialName("name")
     val title: String,
     @SerialName("overview")
     val description: String,

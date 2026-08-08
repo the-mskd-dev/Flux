@@ -182,7 +182,7 @@ class TmdbDataSourceImplTest : KoinTest {
         val artworkId = showArtworkId!!
 
         // When
-        val result = repository.getShow(artworkId = showArtworkId!!)
+        val result = repository.getShow(artworkId = artworkId)
 
         // Then
         assert(result != null)
@@ -198,7 +198,7 @@ class TmdbDataSourceImplTest : KoinTest {
     }
 
     @Test
-    fun tes_get_show_translations() = runTest {
+    fun test_get_show_translations() = runTest {
 
         val result = repository.getTranslation(
             request = TranslationRequest.Show(

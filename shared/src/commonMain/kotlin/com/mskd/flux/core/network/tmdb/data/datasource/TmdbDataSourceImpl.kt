@@ -13,6 +13,7 @@ import com.mskd.flux.core.network.tmdb.data.dto.show.ShowDto
 import com.mskd.flux.core.network.tmdb.data.service.TMDBService
 import com.mskd.flux.core.network.tmdb.domain.model.TranslationRequest
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
+import com.mskd.flux.utils.Trace
 import com.mskd.flux.utils.extensions.toTmdbFormat
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.async
@@ -164,7 +165,7 @@ class TmdbDataSourceImpl(
             tmdbShow
 
         } catch (e: Exception) {
-            Napier.e(tag = TAG, message = "getTmdbMovie - Fail to get TMDBShow for artworkId:$artworkId (${language.toTmdbFormat()})", throwable = e)
+            Trace.error(tag = TAG, message = "getTmdbMovie - Fail to get TMDBShow for artworkId:$artworkId (${language.toTmdbFormat()})", throwable = e)
             null
         }
 

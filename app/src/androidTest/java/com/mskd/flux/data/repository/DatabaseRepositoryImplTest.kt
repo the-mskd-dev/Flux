@@ -55,7 +55,7 @@ class DatabaseRepositoryImplTest {
     fun flowArtworks_returns_flow_of_inserted_artworks() = runTest {
         // Given
         val artworks = MediaMockups.artworks
-        repository.saveArtworks(artworks)
+        repository.saveArtworks(artworks, overrideLastModification = false)
 
         // When/Then
         repository.flowArtworks().test {
@@ -69,7 +69,7 @@ class DatabaseRepositoryImplTest {
     fun flowArtwork_returns_flow_of_artwork_with_given_artwork_id() = runTest {
         // Given
         val artwork = MediaMockups.movieArtwork
-        repository.saveArtworks(listOf(artwork))
+        repository.saveArtworks(listOf(artwork), overrideLastModification = false)
 
         // When/Then
         repository.flowArtwork(artwork.id).test {
@@ -88,10 +88,10 @@ class DatabaseRepositoryImplTest {
         repository.flowArtwork(artwork.id).test {
             assertEquals(null, awaitItem())
 
-            repository.saveArtworks(listOf(artwork))
+            repository.saveArtworks(listOf(artwork), overrideLastModification = false)
             assertEquals(artwork, awaitItem())
 
-            repository.saveArtworks(listOf(updatedArtwork))
+            repository.saveArtworks(listOf(updatedArtwork), overrideLastModification = false)
             assertEquals(updatedArtwork, awaitItem())
         }
     }
@@ -213,7 +213,7 @@ class DatabaseRepositoryImplTest {
         val artworks = MediaMockups.artworks
 
         // When
-        repository.saveArtworks(artworks)
+        repository.saveArtworks(artworks, overrideLastModification = false)
 
         // Then
         val result = repository.getArtworks()
@@ -253,7 +253,7 @@ class DatabaseRepositoryImplTest {
     fun getArtwork_returns_artwork_with_given_artworkId() = runTest {
         // Given
         val artwork = MediaMockups.movieArtwork
-        repository.saveArtworks(listOf(artwork))
+        repository.saveArtworks(listOf(artwork), overrideLastModification = false)
 
         // When
         val result = repository.getArtwork(artwork.id)
@@ -513,7 +513,7 @@ class DatabaseRepositoryImplTest {
     @Test
     fun deleteMediasNotInFiles_deletes_media_that_are_not_part_of_the_given_files_then_delete_empty_seasons_and_artworks() = runTest {
         // Given
-        repository.saveArtworks(MediaMockups.artworks)
+        repository.saveArtworks(MediaMockups.artworks, overrideLastModification = false)
         repository.saveMedias(MediaMockups.allMedias)
         repository.saveSeasons(MediaMockups.seasons)
         val existingFiles = listOf(MediaMockups.movie.file)
@@ -534,7 +534,7 @@ class DatabaseRepositoryImplTest {
     @Test
     fun deleteMediasInFolder_deletes_all_medias_within_given_folder_then_delete_empty_seasons_and_artworks() = runTest {
         // Given
-        repository.saveArtworks(MediaMockups.artworks)
+        repository.saveArtworks(MediaMockups.artworks, overrideLastModification = false)
         repository.saveMedias(MediaMockups.allMedias)
         repository.saveSeasons(MediaMockups.seasons)
         val folder = UserFolder(path = "path/naruto")

@@ -59,7 +59,7 @@ class DetailsRepositoryImplTest {
         // When/Then
         repository.flowGenres().test {
             val result = awaitItem()
-            assertEquals(genres.size, result.size)
+            assertEquals(genres.distinctBy { it.id }.size, result.size)
             assertTrue(result.containsAll(genres))
         }
     }
@@ -74,7 +74,7 @@ class DetailsRepositoryImplTest {
 
         // Then
         val result = repository.getGenres()
-        assertEquals(genres.size, result.size)
+        assertEquals(genres.distinctBy { it.id }.size, result.size)
         assertTrue(result.containsAll(genres))
     }
 

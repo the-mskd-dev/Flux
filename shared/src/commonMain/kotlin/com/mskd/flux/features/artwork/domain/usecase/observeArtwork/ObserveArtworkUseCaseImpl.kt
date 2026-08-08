@@ -1,6 +1,7 @@
 package com.mskd.flux.features.artwork.domain.usecase.observeArtwork
 
 import com.mskd.flux.core.database.domain.repository.DatabaseRepository
+import com.mskd.flux.core.database.domain.repository.DetailsRepository
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.FullArtwork
@@ -19,6 +20,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 
 class ObserveArtworkUseCaseImpl(
     private val database: DatabaseRepository,
+    private val detailsRepository: DetailsRepository,
     private val sourcesUseCase: FlowSourcesUseCase
 ) : ObserveArtworkUseCase {
 
@@ -33,8 +35,9 @@ class ObserveArtworkUseCaseImpl(
                 database.flowArtwork(artworkId),
                 database.flowMedias(artworkId),
                 database.flowSeasons(artworkId),
+                detailsRepository.flowGenres(),
                 sourcesUseCase()
-            ) { artwork, medias, seasons, sources ->
+            ) { artwork, medias, seasons, genres, sources ->
 
                 when (artwork?.type) {
                     ContentType.MOVIE -> {
@@ -44,6 +47,7 @@ class ObserveArtworkUseCaseImpl(
                                 content = buildFullArtworkMovie(
                                     artwork = artwork,
                                     movie = it,
+                                    genres = genres,
                                     sources = sources
                                 )
                             )
@@ -57,6 +61,7 @@ class ObserveArtworkUseCaseImpl(
                                 artwork = artwork,
                                 seasons = seasons,
                                 episodes = medias.filterIsInstance<Episode>(),
+                                genres = genres,
                                 sources = sources
                             )
                         )

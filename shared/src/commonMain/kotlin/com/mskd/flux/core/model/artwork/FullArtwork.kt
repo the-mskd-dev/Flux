@@ -6,16 +6,19 @@ import kotlinx.collections.immutable.ImmutableList
 sealed interface FullArtwork {
 
     val artwork: Artwork
+    val genres: ImmutableList<Genre>
 
     data class FullMovie(
         override val artwork: Artwork,
-        val movie: Movie
+        val movie: Movie,
+        override val genres: ImmutableList<Genre>
     ) : FullArtwork
 
     data class FullShow(
         override val artwork: Artwork,
         val seasons: ImmutableList<Season>,
-        val episodes: ImmutableList<Episode>
+        val episodes: ImmutableList<Episode>,
+        override val genres: ImmutableList<Genre>
     ) : FullArtwork
 
     val imagePath: String get() = when (this) {

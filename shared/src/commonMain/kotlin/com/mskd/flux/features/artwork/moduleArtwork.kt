@@ -11,6 +11,7 @@ val moduleArtwork = module {
     single<ObserveArtworkUseCase> {
         ObserveArtworkUseCaseImpl(
             database = get(),
+            detailsRepository = get(),
             sourcesUseCase = get()
         )
     }

@@ -23,7 +23,7 @@ import flux.shared.generated.resources.movies
 import flux.shared.generated.resources.shows
 import org.jetbrains.compose.resources.stringResource
 
-fun LazyGridScope.catalogViewModeGenre(
+fun LazyGridScope.catalogViewModeType(
     artworks: List<Artwork>,
     sortingMode: CatalogSortingMode,
     sendIntent: (CatalogIntent) -> Unit
@@ -65,7 +65,7 @@ fun CatalogViewModeGenre_Preview() {
         LazyVerticalGrid(
             columns = GridCells.Fixed(3)
         ) {
-            catalogViewModeGenre(
+            catalogViewModeType(
                 artworks = MediaMockups.artworks,
                 sortingMode = CatalogSortingMode.LAST_MODIFICATION,
                 sendIntent = {}

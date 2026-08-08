@@ -54,7 +54,7 @@ import com.mskd.flux.screens.catalog.composable.CatalogViewMenu
 import com.mskd.flux.screens.catalog.composable.LastWatchedCarousel
 import com.mskd.flux.screens.catalog.composable.sorting.CatalogSortingSheet
 import com.mskd.flux.screens.catalog.composable.viewMode.CatalogViewModeSheet
-import com.mskd.flux.screens.catalog.composable.viewMode.catalogViewModeGenre
+import com.mskd.flux.screens.catalog.composable.viewMode.catalogViewModeType
 import com.mskd.flux.screens.catalog.composable.viewMode.catalogViewModeGrid
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.theme.FluxUI
@@ -232,7 +232,7 @@ fun CatalogContent(
                                 )
                             }
                             CatalogViewMode.BY_TYPE, CatalogViewMode.BY_GENRE -> {
-                                catalogViewModeGenre(
+                                catalogViewModeType(
                                     artworks = artworks,
                                     sortingMode = sortingMode,
                                     sendIntent = sendIntent

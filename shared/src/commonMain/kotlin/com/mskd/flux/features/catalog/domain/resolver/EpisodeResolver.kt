@@ -4,6 +4,7 @@ import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.network.tmdb.data.dto.show.EpisodeDto
+import com.mskd.flux.core.network.tmdb.domain.model.TranslationRequest
 import com.mskd.flux.core.network.tmdb.domain.repository.ApiRepository
 import com.mskd.flux.features.catalog.domain.model.ArtworkFiles
 import com.mskd.flux.features.files.domain.usecase.GetFileDurationUseCase
@@ -20,6 +21,8 @@ interface EpisodeResolver {
         episodesDto: List<EpisodeDto>,
         onProgress: () -> Unit
     ): List<Episode>
+
+    suspend fun resolve(episodes: List<Episode>) : List<Episode>
 }
 
 class EpisodeResolverImpl(
@@ -98,6 +101,54 @@ class EpisodeResolverImpl(
         Trace.info(TAG, "Found ${episodes.size} episode(s)")
 
         return episodes
+
+    }
+
+    override suspend fun resolve(episodes: List<Episode>): List<Episode> {
+
+        val language = settings.getDataLanguage()
+
+
+        val resolvedEpisodes = supervisorScope {
+
+            episodes.map { episode ->
+
+                async(dispatcher) {
+
+                    // Get translation if needed
+                    val translation = if (episode.title.isBlank() || episode.description.isBlank()) {
+                        api.translate(
+                            request = TranslationRequest.Episode(
+                                artworkId = episode.artworkId,
+                                season = episode.season,
+                                number = episode.number,
+                                language = language
+                            )
+                        )
+                    } else null
+
+                    // Get new values
+                    val newTitle = translation?.title ?: episode.title
+                    val newDescription = translation?.description ?: episode.description
+                    val newDuration = if (episode.duration > 0) episode.duration else getFileDurationUseCase(file = episode.file)
+
+                    // Create resolved episode
+                    if (newTitle == episode.title && newDescription == episode.description && newDuration == episode.duration) {
+                        episode
+                    } else {
+                        episode.copy(
+                            title = newTitle,
+                            description = newDescription,
+                            duration = newDuration
+                        )
+                    }
+                }
+
+            }.awaitAll()
+
+        }
+
+        return resolvedEpisodes
 
     }
 

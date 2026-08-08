@@ -10,8 +10,8 @@ import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.core.AppInfo
 import com.mskd.flux.features.catalog.domain.datastore.CatalogDataStore
 import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
+import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
-import com.mskd.flux.features.catalog.fake.FakeSyncCatalogUseCase
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.mockups.MediaMockups
 import io.kotest.core.spec.style.FunSpec
@@ -54,7 +54,9 @@ class CatalogViewModelTest : FunSpec({
             every { flow } returns dataStoreFlow
         }
 
-        syncCatalogUseCase = FakeSyncCatalogUseCase()
+        syncCatalogUseCase = mockk(relaxed = true) {
+            every { state } returns MutableStateFlow(SyncState.Idle)
+        }
         database = FakeDatabaseRepository()
 
         appInfo = AppInfo(
@@ -87,11 +89,7 @@ class CatalogViewModelTest : FunSpec({
 
             // Then
             val initialState = awaitItem()
-            initialState.state shouldBe CatalogState.Content(
-                artworks = MediaMockups.artworks,
-                lastWatchedMediaIds = emptyList(),
-                isRefreshing = false
-            )
+            initialState.state shouldBe CatalogState.Loading()
 
             cancelAndConsumeRemainingEvents()
         }

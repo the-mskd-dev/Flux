@@ -15,6 +15,7 @@ import com.mskd.flux.features.catalog.domain.model.ArtworkFiles
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.resolver.EpisodeResolver
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
+import com.mskd.flux.features.catalog.domain.usecase.syncGenres.SyncGenresUseCase
 import com.mskd.flux.features.catalog.fake.FakeCatalogSyncCoordinator
 import com.mskd.flux.features.files.domain.usecase.FilterExistingFilesUseCase
 import com.mskd.flux.features.files.domain.usecase.GetDeviceFilesUseCase
@@ -54,6 +55,7 @@ class SyncCatalogUseCaseTest : FunSpec({
             coEvery { it() } returns emptyList()
         },
         filterExistingFilesUseCase: FilterExistingFilesUseCase = mockk(relaxed = true),
+        syncGenresUseCase: SyncGenresUseCase = mockk(relaxed = true),
         artworkFolderFetcher: ArtworkFolderFetcher = mockk(relaxed = true),
         movieMetadataFetcher: MovieMetadataFetcher = mockk(relaxed = true),
         seasonMetadataFetcher: SeasonMetadataFetcher = mockk(relaxed = true),
@@ -66,6 +68,7 @@ class SyncCatalogUseCaseTest : FunSpec({
         coordinator = coordinator,
         getDeviceFilesUseCase = getDeviceFilesUseCase,
         filterExistingFilesUseCase = filterExistingFilesUseCase,
+        syncGenresUseCase = syncGenresUseCase,
         artworkFolderFetcher = artworkFolderFetcher,
         movieMetadataFetcher = movieMetadataFetcher,
         seasonMetadataFetcher = seasonMetadataFetcher,

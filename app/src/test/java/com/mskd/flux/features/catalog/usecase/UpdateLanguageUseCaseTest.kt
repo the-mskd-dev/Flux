@@ -133,7 +133,7 @@ class UpdateLanguageUseCaseTest : FunSpec({
         coVerify(exactly = 1) {
             database.saveArtworks(match { list ->
                 list.size == 1 && list[0].title == "new title for show" && list[0].description == "new description for show"
-            })
+            }, overrideLastModification = false)
         }
         coVerify(exactly = 1) {
             database.saveSeasons(match { list ->

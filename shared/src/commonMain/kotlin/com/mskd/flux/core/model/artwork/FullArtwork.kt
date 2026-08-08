@@ -1,24 +1,22 @@
 package com.mskd.flux.core.model.artwork
 
 import com.mskd.flux.utils.extensions.firstEpisodeToWatch
+import kotlinx.collections.immutable.ImmutableList
 
-sealed class FullArtwork {
+sealed interface FullArtwork {
+
+    val artwork: Artwork
 
     data class FullMovie(
-        val resume: Artwork,
+        override val artwork: Artwork,
         val movie: Movie
-    ) : FullArtwork()
+    ) : FullArtwork
 
     data class FullShow(
-        val resume: Artwork,
-        val seasons: List<Season>,
-        val episodes: List<Episode>
-    ) : FullArtwork()
-
-    val artwork: Artwork get() = when (this) {
-        is FullMovie -> this.resume
-        is FullShow -> this.resume
-    }
+        override val artwork: Artwork,
+        val seasons: ImmutableList<Season>,
+        val episodes: ImmutableList<Episode>
+    ) : FullArtwork
 
     val imagePath: String get() = when (this) {
         is FullMovie -> this.artwork.imagePath

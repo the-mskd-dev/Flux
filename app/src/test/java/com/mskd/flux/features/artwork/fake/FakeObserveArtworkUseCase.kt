@@ -7,6 +7,7 @@ import com.mskd.flux.core.model.artwork.Movie
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
 import com.mskd.flux.mockups.MediaMockups
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,16 +31,16 @@ class FakeObserveArtworkUseCase() : ObserveArtworkUseCase {
                 ContentType.MOVIE -> {
                     MediaMockups.allMedias.filterIsInstance<Movie>()
                         .find { it.artworkId == artworkId }
-                        ?.let { FullArtwork.FullMovie(resume = artwork, movie = it) }
+                        ?.let { FullArtwork.FullMovie(artwork = artwork, movie = it) }
                 }
 
                 ContentType.SHOW -> {
                     val episodes = MediaMockups.allMedias.filterIsInstance<Episode>()
                         .filter { it.artworkId == artworkId }
                     FullArtwork.FullShow(
-                        resume = artwork,
-                        seasons = MediaMockups.seasons.filter { it.artworkId == artworkId },
-                        episodes = episodes
+                        artwork = artwork,
+                        seasons = MediaMockups.seasons.filter { it.artworkId == artworkId }.toImmutableList(),
+                        episodes = episodes.toImmutableList()
                     )
                 }
 

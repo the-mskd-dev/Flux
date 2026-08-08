@@ -8,6 +8,7 @@ import com.mskd.flux.core.model.artwork.Season
 import com.mskd.flux.core.model.files.FileSource
 import com.mskd.flux.features.sources.domain.extension.findForFile
 import com.mskd.flux.features.sources.domain.model.UserFolder
+import kotlinx.collections.immutable.toImmutableList
 
 internal fun buildFullArtworkMovie(
     artwork: Artwork,
@@ -21,7 +22,7 @@ internal fun buildFullArtworkMovie(
     }
 
     return FullArtwork.FullMovie(
-        resume = artwork,
+        artwork = artwork,
         movie = movie.copy(isAvailable = isAvailable)
     )
 }
@@ -51,8 +52,8 @@ internal fun buildFullArtworkShow(
     }
 
     return FullArtwork.FullShow(
-        resume = artwork,
-        seasons = seasons.filter { s -> neededSeasons.contains(s.season) },
-        episodes = episodesWithAvailability
+        artwork = artwork,
+        seasons = seasons.filter { s -> neededSeasons.contains(s.season) }.toImmutableList(),
+        episodes = episodesWithAvailability.toImmutableList()
     )
 }

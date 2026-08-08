@@ -9,6 +9,7 @@ import com.mskd.flux.core.model.artwork.Season
 import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.core.model.files.FileSource
 import com.mskd.flux.core.model.files.UserFile
+import kotlinx.collections.immutable.toImmutableList
 import kotlin.time.Duration.Companion.minutes
 
 object MediaMockups {
@@ -233,14 +234,14 @@ object MediaMockups {
     val allMedias = movies + episodes + unknowns
 
     val fullMovie = FullArtwork.FullMovie(
-        resume = movieArtwork,
+        artwork = movieArtwork,
         movie = movie
     )
 
     val fullShow = FullArtwork.FullShow(
-        resume = showArtwork,
-        seasons = seasons,
-        episodes = episodes
+        artwork = showArtwork,
+        seasons = seasons.toImmutableList(),
+        episodes = episodes.toImmutableList()
     )
 
 }

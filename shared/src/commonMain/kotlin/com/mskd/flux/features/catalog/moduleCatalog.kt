@@ -26,6 +26,7 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
+import org.koin.plugin.module.dsl.single
 
 val moduleCatalog = module {
 
@@ -79,7 +80,16 @@ val moduleCatalog = module {
     singleOf(::CleanCatalogUseCase)
     singleOf(::SyncCatalogUseCase)
     singleOf(::SyncGenresUseCase)
-    singleOf(::UpdateLanguageUseCase)
+
+    single<UpdateLanguageUseCase> {
+        UpdateLanguageUseCase(
+            api = get(),
+            database = get(),
+            settings = get(),
+            coordinator = get(),
+            syncGenresUseCase = get(),
+        )
+    }
 
     single<CatalogDataStore> {
         CatalogDataStoreImpl(

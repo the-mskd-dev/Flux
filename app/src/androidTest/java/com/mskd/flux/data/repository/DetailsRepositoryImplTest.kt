@@ -6,11 +6,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import app.cash.turbine.test
 import com.mskd.flux.core.database.data.FluxDatabase
-import com.mskd.flux.core.database.data.mappers.toEntity
-import com.mskd.flux.core.database.data.repository.DatabaseRepositoryImpl
 import com.mskd.flux.core.database.data.repository.DetailsRepositoryImpl
 import com.mskd.flux.mockups.DetailsMockup
-import com.mskd.flux.mockups.MediaMockups
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertEquals

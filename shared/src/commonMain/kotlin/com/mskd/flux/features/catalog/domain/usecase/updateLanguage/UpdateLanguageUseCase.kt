@@ -15,8 +15,6 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
-import kotlin.collections.chunked
-import kotlin.collections.map
 
 class UpdateLanguageUseCase(
     private val api: ApiRepository,

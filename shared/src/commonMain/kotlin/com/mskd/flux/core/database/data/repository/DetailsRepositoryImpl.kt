@@ -7,7 +7,6 @@ import com.mskd.flux.core.database.domain.repository.DetailsRepository
 import com.mskd.flux.core.model.artwork.Genre
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlin.collections.map
 
 class DetailsRepositoryImpl(private val dao: DetailsDao) : DetailsRepository {
 

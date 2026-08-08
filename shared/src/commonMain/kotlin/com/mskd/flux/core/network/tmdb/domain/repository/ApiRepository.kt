@@ -3,7 +3,6 @@ package com.mskd.flux.core.network.tmdb.domain.repository
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Genre
-import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.Movie
 import com.mskd.flux.core.model.artwork.Season
 import com.mskd.flux.core.model.files.UserFile

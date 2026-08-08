@@ -108,7 +108,6 @@ class EpisodeResolverImpl(
 
         val language = settings.getDataLanguage()
 
-
         val resolvedEpisodes = supervisorScope {
 
             episodes.map { episode ->
@@ -116,7 +115,7 @@ class EpisodeResolverImpl(
                 async(dispatcher) {
 
                     // Get translation if needed
-                    val translation = if (episode.title.isBlank() || episode.description.isBlank()) {
+                    val translation = if (!episode.isUnknown && (episode.title.isBlank() || episode.description.isBlank())) {
                         api.translate(
                             request = TranslationRequest.Episode(
                                 artworkId = episode.artworkId,

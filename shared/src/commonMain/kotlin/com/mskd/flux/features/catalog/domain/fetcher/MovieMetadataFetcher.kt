@@ -19,7 +19,6 @@ interface MovieMetadataFetcher {
 
 class MovieMetadataFetcherImpl(
     private val api: ApiRepository,
-    private val getFileDurationUseCase: GetFileDurationUseCase,
     private val dispatcher: CoroutineDispatcher
 ) : MovieMetadataFetcher {
 
@@ -32,7 +31,7 @@ class MovieMetadataFetcherImpl(
 
         val movies = supervisorScope {
 
-            artworkFiles.filter { it.artwork.type == ContentType.MOVIE }.map { (artwork, files) ->
+            artworkFiles.filter { it.artwork.type == ContentType.MOVIE && !it.artwork.isUnknown }.map { (artwork, files) ->
 
                 async(dispatcher) {
 
@@ -47,8 +46,7 @@ class MovieMetadataFetcherImpl(
                                 api.getMovie(
                                     artworkId = artwork.id,
                                     file = file,
-                                    fallbackDuration = { getFileDurationUseCase(file = file) }
-                                ) ?: Episode(file = file, duration = getFileDurationUseCase(file = file))
+                                ) ?: Episode(file = file)
 
                             }
                         }

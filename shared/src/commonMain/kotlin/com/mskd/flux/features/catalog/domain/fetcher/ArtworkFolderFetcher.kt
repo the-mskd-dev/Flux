@@ -35,7 +35,7 @@ class ArtworkFolderFetcherImpl(
 
                     try {
 
-                        val artwork = api.getArtwork(file = folder.files.first()) ?: Artwork.UNKNOWN
+                        val artwork = api.getArtwork(file = folder.files.first())
 
                         ArtworkFiles(artwork = artwork, files = folder.files)
 

@@ -7,6 +7,7 @@ import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.Movie
 import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.core.model.catalog.Catalog
+import com.mskd.flux.core.model.catalog.CatalogFolder
 import com.mskd.flux.core.model.core.AppInfo
 import com.mskd.flux.core.model.files.UserFile
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
@@ -15,6 +16,7 @@ import com.mskd.flux.features.catalog.domain.fetcher.MovieMetadataFetcher
 import com.mskd.flux.features.catalog.domain.fetcher.SeasonMetadataFetcher
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.resolver.EpisodeResolver
+import com.mskd.flux.features.catalog.domain.resolver.MediaResolver
 import com.mskd.flux.features.catalog.domain.usecase.syncGenres.SyncGenresUseCase
 import com.mskd.flux.features.files.domain.usecase.FilterExistingFilesUseCase
 import com.mskd.flux.features.files.domain.usecase.GetDeviceFilesUseCase
@@ -37,7 +39,7 @@ class SyncCatalogUseCase(
     private val artworkFolderFetcher: ArtworkFolderFetcher,
     private val movieMetadataFetcher: MovieMetadataFetcher,
     private val seasonMetadataFetcher: SeasonMetadataFetcher,
-    private val episodeResolver: EpisodeResolver,
+    private val mediaResolver: MediaResolver
 ) {
 
     private companion object { const val TAG = "SyncCatalogUseCase" }
@@ -80,7 +82,7 @@ class SyncCatalogUseCase(
 
             /*
                 Count all steps
-                1. Get Artworks
+                1. Get Artworks (folders.size)
                 2. Get all media for files (newFiles.size)
                 3. Clean catalog
                 4. Save artworks
@@ -90,7 +92,7 @@ class SyncCatalogUseCase(
              */
             coordinator.setTotalSteps(folders.size + newFiles.size + 5)
 
-            var catalog = getCatalog(files = newFiles)
+            var catalog = getCatalog(folders = folders)
             catalog = applyCurrentMediaProgress(catalog, dbMedias = dbMedias)
 
             if (onlyNew) database.deleteMediasNotInFiles((deviceFiles + existingFiles).distinct()) else database.deleteAll()
@@ -115,9 +117,7 @@ class SyncCatalogUseCase(
 
     }
 
-    private suspend fun getCatalog(files: List<UserFile>) : Catalog {
-
-        val folders = files.groupInFolders()
+    private suspend fun getCatalog(folders: List<CatalogFolder>) : Catalog {
 
         // Get artworks
         val artworkFiles = artworkFolderFetcher.fetch(
@@ -125,35 +125,37 @@ class SyncCatalogUseCase(
             onProgress = { coordinator.incrementProgress() }
         )
 
-        val (movies, seasonsAndTmdbEpisodes) = supervisorScope {
+        // Get movies, seasons and episodes
+        val (movies, seasonsAndEpisodes) = supervisorScope {
             val moviesDeferred = async {
                 runCatching { movieMetadataFetcher.fetch(artworkFiles = artworkFiles, onProgress = { coordinator.incrementProgress() }) }
                     .onFailure { Trace.error(TAG, "getMovies failed", it) }
                     .getOrElse { emptyList() }
             }
-            val seasonsAndTmdbEpisodesDeferred = async {
+            val seasonsAndEpisodesDeferred = async {
                 runCatching { seasonMetadataFetcher.fetch(artworkFiles = artworkFiles) }
                     .onFailure { Trace.error(TAG, "getSeasons failed", it) }
                     .getOrElse { emptyList() }
             }
 
-            moviesDeferred.await() to seasonsAndTmdbEpisodesDeferred.await()
+            moviesDeferred.await() to seasonsAndEpisodesDeferred.await()
         }
 
-        val seasons = seasonsAndTmdbEpisodes.map { it.first }
-        val tmdbEpisodes = seasonsAndTmdbEpisodes.flatMap { it.second }
+        // Create unknown medias
+        val unknownMedias = artworkFiles.filter { it.artwork.isUnknown }.flatMap {
+            it.files.map { file -> Episode(file) }
+        }
 
-        val episodes = episodeResolver.resolve(
-            artworkFiles = artworkFiles,
-            episodesDto = tmdbEpisodes,
-            onProgress = { coordinator.incrementProgress() }
+        // Resolve translation and duration for medias
+        val medias = mediaResolver.resolve(
+            medias = movies + seasonsAndEpisodes.flatMap { it.second } + unknownMedias
         )
 
         return Catalog(
             artworks = artworkFiles.map { it.artwork },
-            movies = movies.filterIsInstance<Movie>(),
-            seasons = seasons,
-            episodes = episodes + movies.filterIsInstance<Episode>()
+            movies = medias.filterIsInstance<Movie>(),
+            seasons = seasonsAndEpisodes.map { it.first },
+            episodes = medias.filterIsInstance<Episode>()
         )
 
     }

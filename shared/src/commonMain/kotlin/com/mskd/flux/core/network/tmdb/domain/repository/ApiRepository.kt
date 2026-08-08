@@ -13,11 +13,11 @@ import java.util.Locale
 
 interface ApiRepository {
 
-    suspend fun getArtwork(file: UserFile): Artwork?
+    suspend fun getArtwork(file: UserFile): Artwork
 
     suspend fun getGenres() : List<Genre>
 
-    suspend fun getMovie(artworkId: Long, file: UserFile, fallbackDuration: suspend () -> Int): Media?
+    suspend fun getMovie(artworkId: Long, file: UserFile): Media?
 
     suspend fun getSeason(artworkId: Long, season: Int): Pair<Season, List<EpisodeDto>>?
     suspend fun getSeasonAndEpisodes(artworkId: Long, season: Int, files: List<UserFile>): Pair<Season, List<Episode>>?

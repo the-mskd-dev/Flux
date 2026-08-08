@@ -20,11 +20,9 @@ internal class ApiRepositoryImpl(
 
     //region Artwork
 
-    override suspend fun getArtwork(file: UserFile): Artwork? =
-        tmdb.getArtwork(file = file)?.toDomain()
+    override suspend fun getArtwork(file: UserFile): Artwork = tmdb.getArtwork(file = file)?.toDomain() ?: Artwork.UNKNOWN
 
-    override suspend fun getGenres(): List<Genre> =
-        tmdb.getGenres().map { it.toDomain() }
+    override suspend fun getGenres(): List<Genre> = tmdb.getGenres().map { it.toDomain() }
 
     //endregion
 
@@ -33,12 +31,11 @@ internal class ApiRepositoryImpl(
     override suspend fun getMovie(
         artworkId: Long,
         file: UserFile,
-        fallbackDuration: suspend () -> Int
     ): Media? {
         val tmdbMovie = tmdb.getMovie(artworkId = artworkId) ?: return null
         return tmdbMovie.toDomain(
             file = file,
-            duration = tmdbMovie.duration ?: fallbackDuration()
+            duration = tmdbMovie.duration ?: 0
         )
     }
 

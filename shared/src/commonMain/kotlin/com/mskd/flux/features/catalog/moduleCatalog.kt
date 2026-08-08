@@ -13,6 +13,8 @@ import com.mskd.flux.features.catalog.domain.fetcher.SeasonMetadataFetcher
 import com.mskd.flux.features.catalog.domain.fetcher.SeasonMetadataFetcherImpl
 import com.mskd.flux.features.catalog.domain.resolver.EpisodeResolver
 import com.mskd.flux.features.catalog.domain.resolver.EpisodeResolverImpl
+import com.mskd.flux.features.catalog.domain.resolver.MediaResolver
+import com.mskd.flux.features.catalog.domain.resolver.MediaResolverImpl
 import com.mskd.flux.features.catalog.domain.usecase.cleanCatalog.CleanCatalogUseCase
 import com.mskd.flux.features.catalog.domain.usecase.syncGenres.SyncGenresUseCase
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
@@ -41,7 +43,6 @@ val moduleCatalog = module {
     single<MovieMetadataFetcher> {
         MovieMetadataFetcherImpl(
             api = get(),
-            getFileDurationUseCase = get(),
             dispatcher = get(named("catalogSyncDispatcher"))
         )
     }
@@ -55,6 +56,15 @@ val moduleCatalog = module {
 
     single<EpisodeResolver> {
         EpisodeResolverImpl(
+            api = get(),
+            settings = get(),
+            getFileDurationUseCase = get(),
+            dispatcher = get(named("catalogSyncDispatcher"))
+        )
+    }
+
+    single<MediaResolver> {
+        MediaResolverImpl(
             api = get(),
             settings = get(),
             getFileDurationUseCase = get(),

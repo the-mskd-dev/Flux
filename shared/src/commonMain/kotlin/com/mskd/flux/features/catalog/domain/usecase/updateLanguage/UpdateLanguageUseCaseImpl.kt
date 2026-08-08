@@ -7,6 +7,7 @@ import com.mskd.flux.core.model.artwork.Movie
 import com.mskd.flux.core.network.tmdb.domain.model.TranslationRequest
 import com.mskd.flux.core.network.tmdb.domain.repository.ArtworkRemoteRepository
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
+import com.mskd.flux.features.catalog.domain.usecase.syncGenres.SyncGenresUseCase
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -20,6 +21,7 @@ class UpdateLanguageUseCaseImpl(
     private val database: DatabaseRepository,
     private val settings: SettingsDataStore,
     private val coordinator: CatalogSyncCoordinator,
+    private val syncGenresUseCase: SyncGenresUseCase,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(10)
 ) : UpdateLanguageUseCase {
 
@@ -117,6 +119,10 @@ class UpdateLanguageUseCaseImpl(
                     }
                 }
 
+                // Genres
+                launch(dispatcher) {
+                    syncGenresUseCase()
+                }
 
             }
 

@@ -15,6 +15,7 @@ import com.mskd.flux.features.catalog.domain.resolver.EpisodeResolver
 import com.mskd.flux.features.catalog.domain.resolver.EpisodeResolverImpl
 import com.mskd.flux.features.catalog.domain.usecase.cleanCatalog.CleanCatalogUseCase
 import com.mskd.flux.features.catalog.domain.usecase.cleanCatalog.CleanCatalogUseCaseImpl
+import com.mskd.flux.features.catalog.domain.usecase.syncGenres.SyncGenresUseCase
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCaseImpl
 import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCase
@@ -95,7 +96,15 @@ val moduleCatalog = module {
             remoteRepository = get(),
             database = get(),
             settings = get(),
+            syncGenresUseCase = get(),
             coordinator = get()
+        )
+    }
+
+    single<SyncGenresUseCase> {
+        SyncGenresUseCase(
+            remoteRepository = get(),
+            detailsRepository = get()
         )
     }
 

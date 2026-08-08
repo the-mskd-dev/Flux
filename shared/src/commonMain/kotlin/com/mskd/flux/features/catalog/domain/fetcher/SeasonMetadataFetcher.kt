@@ -1,12 +1,10 @@
 package com.mskd.flux.features.catalog.domain.fetcher
 
-import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Season
-import com.mskd.flux.core.network.tmdb.data.dto.show.EpisodeDto
 import com.mskd.flux.core.network.tmdb.domain.repository.ApiRepository
-import com.mskd.flux.features.catalog.domain.model.ArtworkFiles
+import com.mskd.flux.features.catalog.domain.model.ArtworkWithFiles
 import com.mskd.flux.utils.Trace
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.async
@@ -14,7 +12,7 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.supervisorScope
 
 interface SeasonMetadataFetcher {
-    suspend fun fetch(artworkFiles: List<ArtworkFiles>, onProgress: () -> Unit): List<Pair<Season, List<Episode>>>
+    suspend fun fetch(artworkWithFiles: List<ArtworkWithFiles>, onProgress: () -> Unit): List<Pair<Season, List<Episode>>>
 }
 
 class SeasonMetadataFetcherImpl(
@@ -24,9 +22,9 @@ class SeasonMetadataFetcherImpl(
 
     private companion object { const val TAG = "SeasonMetadataFetcher" }
 
-    override suspend fun fetch(artworkFiles: List<ArtworkFiles>, onProgress: () -> Unit): List<Pair<Season, List<Episode>>> {
+    override suspend fun fetch(artworkWithFiles: List<ArtworkWithFiles>, onProgress: () -> Unit): List<Pair<Season, List<Episode>>> {
 
-        val folders = artworkFiles.filter { it.artwork.type == ContentType.SHOW && !it.artwork.isUnknown }
+        val folders = artworkWithFiles.filter { it.artwork.type == ContentType.SHOW && !it.artwork.isUnknown }
 
         return supervisorScope {
 

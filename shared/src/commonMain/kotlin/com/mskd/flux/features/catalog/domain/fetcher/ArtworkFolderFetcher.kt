@@ -3,7 +3,7 @@ package com.mskd.flux.features.catalog.domain.fetcher
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.catalog.CatalogFolder
 import com.mskd.flux.core.network.tmdb.domain.repository.ApiRepository
-import com.mskd.flux.features.catalog.domain.model.ArtworkFiles
+import com.mskd.flux.features.catalog.domain.model.ArtworkWithFiles
 import com.mskd.flux.utils.Trace
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -12,7 +12,7 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.supervisorScope
 
 interface ArtworkFolderFetcher {
-    suspend fun fetch(folders: List<CatalogFolder>, onProgress: () -> Unit): List<ArtworkFiles>
+    suspend fun fetch(folders: List<CatalogFolder>, onProgress: () -> Unit): List<ArtworkWithFiles>
 }
 
 class ArtworkFolderFetcherImpl(
@@ -25,9 +25,9 @@ class ArtworkFolderFetcherImpl(
     override suspend fun fetch(
         folders: List<CatalogFolder>,
         onProgress: () -> Unit
-    ): List<ArtworkFiles> {
+    ): List<ArtworkWithFiles> {
 
-        val artworkFiles = supervisorScope {
+        val artworkWithFiles = supervisorScope {
 
             folders.map { folder ->
 
@@ -37,11 +37,11 @@ class ArtworkFolderFetcherImpl(
 
                         val artwork = api.getArtwork(file = folder.files.first())
 
-                        ArtworkFiles(artwork = artwork, files = folder.files)
+                        ArtworkWithFiles(artwork = artwork, files = folder.files)
 
                     } catch (e: Exception) {
                         Trace.error(TAG, "Fail to get artwork for ${folder.files.first().name}", e)
-                        ArtworkFiles(artwork = Artwork.UNKNOWN, files = folder.files)
+                        ArtworkWithFiles(artwork = Artwork.UNKNOWN, files = folder.files)
                     } finally {
                         onProgress()
                     }
@@ -52,9 +52,9 @@ class ArtworkFolderFetcherImpl(
 
         }
 
-        Trace.info(TAG, "Found ${artworkFiles.size} artwork(s)")
+        Trace.info(TAG, "Found ${artworkWithFiles.size} artwork(s)")
 
-        return artworkFiles
+        return artworkWithFiles
 
     }
 

@@ -11,7 +11,7 @@ import com.mskd.flux.core.model.files.UserFile
 import com.mskd.flux.features.catalog.domain.fetcher.ArtworkFolderFetcher
 import com.mskd.flux.features.catalog.domain.fetcher.MovieMetadataFetcher
 import com.mskd.flux.features.catalog.domain.fetcher.SeasonMetadataFetcher
-import com.mskd.flux.features.catalog.domain.model.ArtworkFiles
+import com.mskd.flux.features.catalog.domain.model.ArtworkWithFiles
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.resolver.EpisodeResolver
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
@@ -180,7 +180,7 @@ class SyncCatalogUseCaseTest : FunSpec({
 
     test("if full sync, delete all database and save data from all files") {
         val newFile = UserFile(name = "movie1.mkv", path = "path/movie1", addedDateTime = 0L, source = FileSource.LOCAL)
-        val artworkFiles = ArtworkFiles(artwork = Artwork(id = 42L), files = listOf(newFile))
+        val artworkWithFiles = ArtworkWithFiles(artwork = Artwork(id = 42L), files = listOf(newFile))
 
         val database = mockk<DatabaseRepository>(relaxed = true)
         coEvery { database.getMedias() } returns emptyList()
@@ -192,16 +192,16 @@ class SyncCatalogUseCaseTest : FunSpec({
         coEvery { filterExistingFilesUseCase(files = any()) } returns emptyList()
 
         val artworkFolderFetcher = mockk<ArtworkFolderFetcher>()
-        coEvery { artworkFolderFetcher.fetch(folders = any(), onProgress = any()) } returns listOf(artworkFiles)
+        coEvery { artworkFolderFetcher.fetch(folders = any(), onProgress = any()) } returns listOf(artworkWithFiles)
 
         val movieMetadataFetcher = mockk<MovieMetadataFetcher>()
-        coEvery { movieMetadataFetcher.fetch(artworkFiles = any(), onProgress = any()) } returns emptyList()
+        coEvery { movieMetadataFetcher.fetch(artworkWithFiles = any(), onProgress = any()) } returns emptyList()
 
         val seasonMetadataFetcher = mockk<SeasonMetadataFetcher>()
-        coEvery { seasonMetadataFetcher.fetch(artworkFiles = any()) } returns emptyList()
+        coEvery { seasonMetadataFetcher.fetch(artworkWithFiles = any()) } returns emptyList()
 
         val episodeResolver = mockk<EpisodeResolver>()
-        coEvery { episodeResolver.resolve(artworkFiles = any(), episodesDto = any(), onProgress = any()) } returns emptyList()
+        coEvery { episodeResolver.resolve(artworkWithFiles = any(), episodesDto = any(), onProgress = any()) } returns emptyList()
 
         val useCase = createUseCase(
             database = database,
@@ -217,7 +217,7 @@ class SyncCatalogUseCaseTest : FunSpec({
         testDispatcher.scheduler.advanceUntilIdle()
 
         coVerify { artworkFolderFetcher.fetch(folders = any(), onProgress = any()) }
-        coVerify { database.saveArtworks(listOf(artworkFiles.artwork)) }
+        coVerify { database.saveArtworks(listOf(artworkWithFiles.artwork)) }
         coVerify { database.deleteAll() }
     }
 

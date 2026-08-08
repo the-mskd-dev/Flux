@@ -2,7 +2,6 @@ package com.mskd.flux.features.catalog.domain.usecase.syncCatalog
 
 import com.mskd.flux.core.database.domain.repository.DatabaseRepository
 import com.mskd.flux.core.datastore.domain.UserDataStore
-import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.Movie
@@ -10,13 +9,11 @@ import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.core.model.catalog.Catalog
 import com.mskd.flux.core.model.catalog.CatalogFolder
 import com.mskd.flux.core.model.core.AppInfo
-import com.mskd.flux.core.model.files.UserFile
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
 import com.mskd.flux.features.catalog.domain.fetcher.ArtworkFolderFetcher
 import com.mskd.flux.features.catalog.domain.fetcher.MovieMetadataFetcher
 import com.mskd.flux.features.catalog.domain.fetcher.SeasonMetadataFetcher
 import com.mskd.flux.features.catalog.domain.model.SyncState
-import com.mskd.flux.features.catalog.domain.resolver.EpisodeResolver
 import com.mskd.flux.features.catalog.domain.resolver.MediaResolver
 import com.mskd.flux.features.catalog.domain.usecase.syncGenres.SyncGenresUseCase
 import com.mskd.flux.features.files.domain.usecase.FilterExistingFilesUseCase
@@ -152,12 +149,12 @@ class SyncCatalogUseCase(
         // Get movies, seasons and episodes
         val (movies, seasonsAndEpisodes) = supervisorScope {
             val moviesDeferred = async {
-                runCatching { movieMetadataFetcher.fetch(artworkFiles = artworkFiles, onProgress = { coordinator.incrementProgress() }) }
+                runCatching { movieMetadataFetcher.fetch(artworkWithFiles = artworkFiles, onProgress = { coordinator.incrementProgress() }) }
                     .onFailure { Trace.error(TAG, "getMovies failed", it) }
                     .getOrElse { emptyList() }
             }
             val seasonsAndEpisodesDeferred = async {
-                runCatching { seasonMetadataFetcher.fetch(artworkFiles = artworkFiles, onProgress = { coordinator.incrementProgress() }) }
+                runCatching { seasonMetadataFetcher.fetch(artworkWithFiles = artworkFiles, onProgress = { coordinator.incrementProgress() }) }
                     .onFailure { Trace.error(TAG, "getSeasons failed", it) }
                     .getOrElse { emptyList() }
             }

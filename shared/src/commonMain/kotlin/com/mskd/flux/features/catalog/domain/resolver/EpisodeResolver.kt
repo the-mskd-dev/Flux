@@ -6,7 +6,7 @@ import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.network.tmdb.data.dto.show.EpisodeDto
 import com.mskd.flux.core.network.tmdb.domain.model.TranslationRequest
 import com.mskd.flux.core.network.tmdb.domain.repository.ApiRepository
-import com.mskd.flux.features.catalog.domain.model.ArtworkFiles
+import com.mskd.flux.features.catalog.domain.model.ArtworkWithFiles
 import com.mskd.flux.features.files.domain.usecase.GetFileDurationUseCase
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.utils.Trace
@@ -17,7 +17,7 @@ import kotlinx.coroutines.supervisorScope
 
 interface EpisodeResolver {
     suspend fun resolve(
-        artworkFiles: List<ArtworkFiles>,
+        artworkWithFiles: List<ArtworkWithFiles>,
         episodesDto: List<EpisodeDto>,
         onProgress: () -> Unit
     ): List<Episode>
@@ -35,7 +35,7 @@ class EpisodeResolverImpl(
     private companion object { const val TAG = "EpisodeResolver" }
 
     override suspend fun resolve(
-        artworkFiles: List<ArtworkFiles>,
+        artworkWithFiles: List<ArtworkWithFiles>,
         episodesDto: List<EpisodeDto>,
         onProgress: () -> Unit
     ): List<Episode> {
@@ -45,7 +45,7 @@ class EpisodeResolverImpl(
 
         val episodes = supervisorScope {
 
-            artworkFiles.filter { it.artwork.type == ContentType.SHOW }.flatMap { (artwork, files) ->
+            artworkWithFiles.filter { it.artwork.type == ContentType.SHOW }.flatMap { (artwork, files) ->
 
                 files.map { file ->
 

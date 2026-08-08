@@ -1,6 +1,6 @@
 package com.mskd.flux.core.network.tmdb.data.service
 
-import com.mskd.flux.core.network.tmdb.data.dto.ArtworksResultDto
+import com.mskd.flux.core.network.tmdb.data.dto.SearchResultsDto
 import com.mskd.flux.core.network.tmdb.data.dto.AuthenticationDto
 import com.mskd.flux.core.network.tmdb.data.dto.show.EpisodeDto
 import com.mskd.flux.core.network.tmdb.data.dto.movie.MovieDto
@@ -25,11 +25,11 @@ class TMDBServiceImpl(private val client: HttpClient) : TMDBService {
 
     //region Movie
 
-    override suspend fun getMovieArtworks(
+    override suspend fun searchMovie(
         title: String,
         year: Int?,
         language: String
-    ): ArtworksResultDto = client
+    ): SearchResultsDto = client
         .get("search/movie") {
             parameter("query", title)
             year?.let { parameter("year", it) }
@@ -58,11 +58,11 @@ class TMDBServiceImpl(private val client: HttpClient) : TMDBService {
 
     //region Show
 
-    override suspend fun getShowArtworks(
+    override suspend fun searchShow(
         title: String,
         year: Int?,
         language: String
-    ): ArtworksResultDto = client
+    ): SearchResultsDto = client
     .get("search/tv") {
         parameter("query", title)
         year?.let { parameter("year", it) }

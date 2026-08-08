@@ -12,8 +12,6 @@ import com.mskd.flux.core.network.tmdb.data.mapper.toDomain
 import com.mskd.flux.core.network.tmdb.domain.model.Translation
 import com.mskd.flux.core.network.tmdb.domain.model.TranslationRequest
 import com.mskd.flux.core.network.tmdb.domain.repository.ArtworkRemoteRepository
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
 import java.util.Locale
 
 internal class ArtworkRemoteRepositoryImpl(
@@ -23,7 +21,7 @@ internal class ArtworkRemoteRepositoryImpl(
     //region Artwork
 
     override suspend fun getArtwork(file: UserFile): Artwork? =
-        tmdb.getTmdbArtwork(file = file)?.toDomain()
+        tmdb.getArtwork(file = file)?.toDomain()
 
     override suspend fun getGenres(): List<Genre> =
         tmdb.getGenres().map { it.toDomain() }
@@ -37,7 +35,7 @@ internal class ArtworkRemoteRepositoryImpl(
         file: UserFile,
         fallbackDuration: suspend () -> Int
     ): Media? {
-        val tmdbMovie = tmdb.getTmdbMovie(artworkId = artworkId) ?: return null
+        val tmdbMovie = tmdb.getMovie(artworkId = artworkId) ?: return null
         return tmdbMovie.toDomain(
             file = file,
             duration = tmdbMovie.duration ?: fallbackDuration()
@@ -49,7 +47,7 @@ internal class ArtworkRemoteRepositoryImpl(
     //region Show
 
     override suspend fun getSeason(artworkId: Long, season: Int): Pair<Season, List<EpisodeDto>>? =
-        tmdb.getTmdbSeason(artworkId = artworkId, season = season)?.let {
+        tmdb.getSeason(artworkId = artworkId, season = season)?.let {
             it.toDomain(artworkId = artworkId) to it.episodes
         }
 
@@ -62,7 +60,7 @@ internal class ArtworkRemoteRepositoryImpl(
     ): Episode {
 
         val resolvedDto = if (episodeDto.title.isBlank() || episodeDto.description.isBlank()) {
-            tmdb.translateTmdbEpisode(artworkId = artworkId, episodeDto = episodeDto, language = language)
+            tmdb.translateEpisode(artworkId = artworkId, episodeDto = episodeDto, language = language)
         } else {
             episodeDto
         }
@@ -80,7 +78,7 @@ internal class ArtworkRemoteRepositoryImpl(
     //region Global
 
     override suspend fun translate(request: TranslationRequest): Translation? {
-        return tmdb.getTmdbTranslation(request = request)
+        return tmdb.getTranslation(request = request)
             ?.let {
                 Translation(
                     title = it.data.name,

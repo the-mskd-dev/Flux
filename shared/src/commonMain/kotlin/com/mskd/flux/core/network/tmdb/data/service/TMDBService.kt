@@ -1,6 +1,6 @@
 package com.mskd.flux.core.network.tmdb.data.service
 
-import com.mskd.flux.core.network.tmdb.data.dto.ArtworksResultDto
+import com.mskd.flux.core.network.tmdb.data.dto.SearchResultsDto
 import com.mskd.flux.core.network.tmdb.data.dto.AuthenticationDto
 import com.mskd.flux.core.network.tmdb.data.dto.show.EpisodeDto
 import com.mskd.flux.core.network.tmdb.data.dto.movie.MovieDto
@@ -20,11 +20,11 @@ interface TMDBService {
 
     //region Movie
 
-    suspend fun getMovieArtworks(
+    suspend fun searchMovie(
         title: String,
         year: Int? = null,
         language: String = Constants.Global.LANGUAGE
-    ) : ArtworksResultDto
+    ) : SearchResultsDto
 
     suspend fun getMovieDetails(
         id: Long,
@@ -41,11 +41,11 @@ interface TMDBService {
 
     //region Show
 
-    suspend fun getShowArtworks(
+    suspend fun searchShow(
         title: String,
         year: Int? = null,
         language: String = Constants.Global.LANGUAGE
-    ) : ArtworksResultDto
+    ) : SearchResultsDto
 
     suspend fun getShowDetails(
         artworkId: Long,

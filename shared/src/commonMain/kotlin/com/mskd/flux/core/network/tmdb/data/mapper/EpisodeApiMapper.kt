@@ -8,7 +8,7 @@ import com.mskd.flux.core.network.tmdb.data.dto.show.EpisodeDto
 fun EpisodeDto.toDomain(
     artworkId: Long,
     file: UserFile,
-    duration: Int
+    duration: Int = this.duration ?: 0
 ) : Episode {
     return Episode(
         id = this.id,

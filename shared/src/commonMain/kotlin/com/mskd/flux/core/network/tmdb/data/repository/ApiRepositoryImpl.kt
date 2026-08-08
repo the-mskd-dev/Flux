@@ -51,6 +51,26 @@ internal class ApiRepositoryImpl(
             it.toDomain(artworkId = artworkId) to it.episodes
         }
 
+    override suspend fun getSeasonAndEpisodes(
+        artworkId: Long,
+        season: Int,
+        files: List<UserFile>
+    ): Pair<Season, List<Episode>>? {
+
+        val seasonDto = tmdb.getSeason(artworkId = artworkId, season = season) ?: return  null
+
+        val season = seasonDto.toDomain(artworkId = artworkId)
+
+        val episodes = files.map { file ->
+            seasonDto.episodes
+                .find { it.season == file.season && it.number == file.episode }
+                ?.toDomain(artworkId = artworkId, file = file)
+                ?: Episode(file = file)
+        }
+
+        return season to episodes
+    }
+
     override suspend fun resolveEpisode(
         artworkId: Long,
         episodeDto: EpisodeDto,

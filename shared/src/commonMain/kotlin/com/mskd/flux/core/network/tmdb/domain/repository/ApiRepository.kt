@@ -20,6 +20,7 @@ interface ApiRepository {
     suspend fun getMovie(artworkId: Long, file: UserFile, fallbackDuration: suspend () -> Int): Media?
 
     suspend fun getSeason(artworkId: Long, season: Int): Pair<Season, List<EpisodeDto>>?
+    suspend fun getSeasonAndEpisodes(artworkId: Long, season: Int, files: List<UserFile>): Pair<Season, List<Episode>>?
 
     suspend fun resolveEpisode(
         artworkId: Long,

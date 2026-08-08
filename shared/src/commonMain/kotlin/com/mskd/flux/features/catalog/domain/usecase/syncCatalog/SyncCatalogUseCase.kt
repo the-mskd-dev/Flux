@@ -15,6 +15,7 @@ import com.mskd.flux.features.catalog.domain.fetcher.MovieMetadataFetcher
 import com.mskd.flux.features.catalog.domain.fetcher.SeasonMetadataFetcher
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.resolver.EpisodeResolver
+import com.mskd.flux.features.catalog.domain.usecase.syncGenres.SyncGenresUseCase
 import com.mskd.flux.features.files.domain.usecase.FilterExistingFilesUseCase
 import com.mskd.flux.features.files.domain.usecase.GetDeviceFilesUseCase
 import com.mskd.flux.features.images.domain.ImagesPrefetchManager
@@ -32,6 +33,7 @@ class SyncCatalogUseCase(
     private val coordinator: CatalogSyncCoordinator,
     private val getDeviceFilesUseCase: GetDeviceFilesUseCase,
     private val filterExistingFilesUseCase: FilterExistingFilesUseCase,
+    private val syncGenresUseCase: SyncGenresUseCase,
     private val artworkFolderFetcher: ArtworkFolderFetcher,
     private val movieMetadataFetcher: MovieMetadataFetcher,
     private val seasonMetadataFetcher: SeasonMetadataFetcher,
@@ -84,8 +86,9 @@ class SyncCatalogUseCase(
                 4. Save artworks
                 5. Save seasons
                 6. Save medias
+                7. Save genres
              */
-            coordinator.setTotalSteps(folders.size + newFiles.size + 4)
+            coordinator.setTotalSteps(folders.size + newFiles.size + 5)
 
             var catalog = getCatalog(files = newFiles)
             catalog = applyCurrentMediaProgress(catalog, dbMedias = dbMedias)
@@ -96,6 +99,9 @@ class SyncCatalogUseCase(
             database.saveArtworks(catalog.artworks); coordinator.incrementProgress()
             database.saveSeasons(catalog.seasons); coordinator.incrementProgress()
             database.saveMedias(catalog.movies + catalog.episodes); coordinator.incrementProgress()
+
+            // Get Genres
+            syncGenresUseCase(); coordinator.incrementProgress()
 
             // TODO: Delete in October 2026
             database.updateRealPaths(files = deviceFiles)

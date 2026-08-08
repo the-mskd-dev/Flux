@@ -5,10 +5,9 @@ import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Movie
 import com.mskd.flux.core.network.tmdb.domain.model.TranslationRequest
-import com.mskd.flux.core.network.tmdb.domain.repository.ArtworkRemoteRepository
+import com.mskd.flux.core.network.tmdb.domain.repository.ApiRepository
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
 import com.mskd.flux.features.catalog.domain.usecase.syncGenres.SyncGenresUseCase
-import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCase
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -20,7 +19,7 @@ import kotlin.collections.chunked
 import kotlin.collections.map
 
 class UpdateLanguageUseCase(
-    private val remoteRepository: ArtworkRemoteRepository,
+    private val api: ApiRepository,
     private val database: DatabaseRepository,
     private val settings: SettingsDataStore,
     private val coordinator: CatalogSyncCoordinator,
@@ -47,7 +46,7 @@ class UpdateLanguageUseCase(
                     movies.chunked(batchSize).forEach { chunk ->
                         val translated = chunk.map { movie ->
                             async {
-                                remoteRepository.translate(
+                                api.translate(
                                     request = TranslationRequest.Movie(artworkId = movie.artworkId, language = language)
                                 )?.let { translation ->
                                     movie.copy(
@@ -67,7 +66,7 @@ class UpdateLanguageUseCase(
                     shows.chunked(batchSize).forEach { chunk ->
                         val translated = chunk.map { show ->
                             async {
-                                remoteRepository.translate(
+                                api.translate(
                                     request = TranslationRequest.Show(artworkId = show.id, language = language)
                                 )?.let { translation ->
                                     show.copy(
@@ -87,7 +86,7 @@ class UpdateLanguageUseCase(
                     seasons.chunked(batchSize).forEach { chunk ->
                         val translated = chunk.map { season ->
                             async {
-                                remoteRepository.translate(
+                                api.translate(
                                     request = TranslationRequest.Season(artworkId = season.artworkId, season = season.season, language = language)
                                 )?.let { translation ->
                                     season.copy(
@@ -107,7 +106,7 @@ class UpdateLanguageUseCase(
                     episodes.chunked(batchSize).forEach { chunk ->
                         val translated = chunk.map { episode ->
                             async {
-                                remoteRepository.translate(
+                                api.translate(
                                     request = TranslationRequest.Episode(artworkId = episode.artworkId, season = episode.season, number = episode.number, language = language)
                                 )?.let { translation ->
                                     episode.copy(

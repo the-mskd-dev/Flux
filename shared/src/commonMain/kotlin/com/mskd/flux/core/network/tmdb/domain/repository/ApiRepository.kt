@@ -11,7 +11,7 @@ import com.mskd.flux.core.network.tmdb.domain.model.Translation
 import com.mskd.flux.core.network.tmdb.domain.model.TranslationRequest
 import java.util.Locale
 
-interface ArtworkRemoteRepository {
+interface ApiRepository {
 
     suspend fun getArtwork(file: UserFile): Artwork?
 

@@ -2,7 +2,7 @@ package com.mskd.flux.features.catalog.domain.fetcher
 
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.catalog.CatalogFolder
-import com.mskd.flux.core.network.tmdb.domain.repository.ArtworkRemoteRepository
+import com.mskd.flux.core.network.tmdb.domain.repository.ApiRepository
 import com.mskd.flux.features.catalog.domain.model.ArtworkFiles
 import com.mskd.flux.utils.Trace
 import kotlinx.coroutines.CoroutineDispatcher
@@ -16,7 +16,7 @@ interface ArtworkFolderFetcher {
 }
 
 class ArtworkFolderFetcherImpl(
-    private val remoteRepository: ArtworkRemoteRepository,
+    private val api: ApiRepository,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(10)
 ) : ArtworkFolderFetcher {
 
@@ -35,7 +35,7 @@ class ArtworkFolderFetcherImpl(
 
                     try {
 
-                        val artwork = remoteRepository.getArtwork(file = folder.files.first()) ?: Artwork.UNKNOWN
+                        val artwork = api.getArtwork(file = folder.files.first()) ?: Artwork.UNKNOWN
 
                         ArtworkFiles(artwork = artwork, files = folder.files)
 

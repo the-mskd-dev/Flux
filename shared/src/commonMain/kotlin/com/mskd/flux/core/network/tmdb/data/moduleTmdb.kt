@@ -2,10 +2,10 @@ package com.mskd.flux.core.network.tmdb.data
 
 import com.mskd.flux.core.network.tmdb.data.datasource.TmdbDataSource
 import com.mskd.flux.core.network.tmdb.data.datasource.TmdbDataSourceImpl
-import com.mskd.flux.core.network.tmdb.data.repository.ArtworkRemoteRepositoryImpl
+import com.mskd.flux.core.network.tmdb.data.repository.ApiRepositoryImpl
 import com.mskd.flux.core.network.tmdb.data.service.TMDBService
 import com.mskd.flux.core.network.tmdb.data.service.TMDBServiceImpl
-import com.mskd.flux.core.network.tmdb.domain.repository.ArtworkRemoteRepository
+import com.mskd.flux.core.network.tmdb.domain.repository.ApiRepository
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
@@ -69,8 +69,8 @@ val moduleTmdb = module {
         )
     }
 
-    single<ArtworkRemoteRepository> {
-        ArtworkRemoteRepositoryImpl(
+    single<ApiRepository> {
+        ApiRepositoryImpl(
             tmdb = get()
         )
     }

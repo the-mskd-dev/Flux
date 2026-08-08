@@ -11,12 +11,12 @@ import com.mskd.flux.core.network.tmdb.data.dto.show.EpisodeDto
 import com.mskd.flux.core.network.tmdb.data.mapper.toDomain
 import com.mskd.flux.core.network.tmdb.domain.model.Translation
 import com.mskd.flux.core.network.tmdb.domain.model.TranslationRequest
-import com.mskd.flux.core.network.tmdb.domain.repository.ArtworkRemoteRepository
+import com.mskd.flux.core.network.tmdb.domain.repository.ApiRepository
 import java.util.Locale
 
-internal class ArtworkRemoteRepositoryImpl(
+internal class ApiRepositoryImpl(
     private val tmdb: TmdbDataSource
-) : ArtworkRemoteRepository {
+) : ApiRepository {
 
     //region Artwork
 

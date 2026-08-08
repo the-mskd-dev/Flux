@@ -4,7 +4,7 @@ import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.network.tmdb.data.dto.show.EpisodeDto
-import com.mskd.flux.core.network.tmdb.domain.repository.ArtworkRemoteRepository
+import com.mskd.flux.core.network.tmdb.domain.repository.ApiRepository
 import com.mskd.flux.features.catalog.domain.model.ArtworkFiles
 import com.mskd.flux.features.files.domain.usecase.GetFileDurationUseCase
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
@@ -23,7 +23,7 @@ interface EpisodeResolver {
 }
 
 class EpisodeResolverImpl(
-    private val remoteRepository: ArtworkRemoteRepository,
+    private val api: ApiRepository,
     private val settings: SettingsDataStore,
     private val getFileDurationUseCase: GetFileDurationUseCase,
     private val dispatcher: CoroutineDispatcher
@@ -65,7 +65,7 @@ class EpisodeResolverImpl(
                                         Episode(file = file, duration = getFileDurationUseCase(file = file))
                                     } else {
 
-                                        remoteRepository.resolveEpisode(
+                                        api.resolveEpisode(
                                             artworkId = artwork.id,
                                             episodeDto = tmdbEpisode,
                                             file = file,

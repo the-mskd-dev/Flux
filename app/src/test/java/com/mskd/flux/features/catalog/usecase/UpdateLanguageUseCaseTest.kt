@@ -9,7 +9,7 @@ import com.mskd.flux.core.model.artwork.Movie
 import com.mskd.flux.core.model.artwork.Season
 import com.mskd.flux.core.network.tmdb.domain.model.Translation
 import com.mskd.flux.core.network.tmdb.domain.model.TranslationRequest
-import com.mskd.flux.core.network.tmdb.domain.repository.ArtworkRemoteRepository
+import com.mskd.flux.core.network.tmdb.domain.repository.ApiRepository
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
 import com.mskd.flux.features.catalog.domain.usecase.syncGenres.SyncGenresUseCase
 import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCase
@@ -29,7 +29,7 @@ class UpdateLanguageUseCaseTest : FunSpec({
 
     fluxExtensions()
 
-    lateinit var remoteRepository: ArtworkRemoteRepository
+    lateinit var api: ApiRepository
     lateinit var database: DatabaseRepository
     lateinit var settings: SettingsDataStore
     lateinit var coordinator: CatalogSyncCoordinator
@@ -83,7 +83,7 @@ class UpdateLanguageUseCaseTest : FunSpec({
     )
 
     beforeTest {
-        remoteRepository = mockk()
+        api = mockk()
         database = mockk(relaxed = true)
         settings = mockk(relaxed = true)
         syncGenresUseCase = mockk(relaxed = true)
@@ -95,7 +95,7 @@ class UpdateLanguageUseCaseTest : FunSpec({
         coEvery { database.getSeasons() } returns listOf(season)
 
         useCase = UpdateLanguageUseCase(
-            remoteRepository = remoteRepository,
+            api = api,
             database = database,
             settings = settings,
             coordinator = coordinator,
@@ -107,19 +107,19 @@ class UpdateLanguageUseCaseTest : FunSpec({
     test("retrieves translations for movie/show/season/episode and saves them") {
 
         coEvery {
-            remoteRepository.translate(match { it is TranslationRequest.Movie && it.artworkId == 1L })
+            api.translate(match { it is TranslationRequest.Movie && it.artworkId == 1L })
         } returns Translation(title = "new title for movie", description = "new description for movie")
 
         coEvery {
-            remoteRepository.translate(match { it is TranslationRequest.Show && it.artworkId == 2L })
+            api.translate(match { it is TranslationRequest.Show && it.artworkId == 2L })
         } returns Translation(title = "new title for show", description = "new description for show")
 
         coEvery {
-            remoteRepository.translate(match { it is TranslationRequest.Season && it.artworkId == 2L && it.season == 1 })
+            api.translate(match { it is TranslationRequest.Season && it.artworkId == 2L && it.season == 1 })
         } returns Translation(title = "new title for season", description = "new description for season")
 
         coEvery {
-            remoteRepository.translate(match { it is TranslationRequest.Episode && it.artworkId == 2L && it.season == 1 && it.number == 1 })
+            api.translate(match { it is TranslationRequest.Episode && it.artworkId == 2L && it.season == 1 && it.number == 1 })
         } returns Translation(title = "new title for episode", description = "new description for episode")
 
         useCase()
@@ -149,7 +149,7 @@ class UpdateLanguageUseCaseTest : FunSpec({
 
     test("if no translation available, no save") {
 
-        coEvery { remoteRepository.translate(any()) } returns null
+        coEvery { api.translate(any()) } returns null
 
         useCase()
         testDispatcher.scheduler.advanceUntilIdle()
@@ -162,7 +162,7 @@ class UpdateLanguageUseCaseTest : FunSpec({
     test("if only the title is translated, keep the current description") {
 
         coEvery {
-            remoteRepository.translate(match { it is TranslationRequest.Movie && it.artworkId == 1L })
+            api.translate(match { it is TranslationRequest.Movie && it.artworkId == 1L })
         } returns Translation(title = "new title", description = null)
 
         useCase()
@@ -178,7 +178,7 @@ class UpdateLanguageUseCaseTest : FunSpec({
     test("if only the description is translated, keep the current title") {
 
         coEvery {
-            remoteRepository.translate(match { it is TranslationRequest.Movie && it.artworkId == 1L })
+            api.translate(match { it is TranslationRequest.Movie && it.artworkId == 1L })
         } returns Translation(title = null, description = "new description")
 
         useCase()

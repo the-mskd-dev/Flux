@@ -8,12 +8,12 @@ import com.mskd.flux.core.model.artwork.Movie
 import com.mskd.flux.core.model.core.AppInfo
 import com.mskd.flux.core.model.files.FileSource
 import com.mskd.flux.core.model.files.UserFile
-import com.mskd.flux.features.catalog.domain.fetcher.ArtworkFolderFetcher
+import com.mskd.flux.features.catalog.domain.fetcher.ArtworkMetadataFetcher
 import com.mskd.flux.features.catalog.domain.fetcher.MovieMetadataFetcher
 import com.mskd.flux.features.catalog.domain.fetcher.SeasonMetadataFetcher
 import com.mskd.flux.features.catalog.domain.model.ArtworkWithFiles
 import com.mskd.flux.features.catalog.domain.model.SyncState
-import com.mskd.flux.features.catalog.domain.resolver.EpisodeResolver
+import com.mskd.flux.features.catalog.domain.resolver.MediaResolver
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.catalog.domain.usecase.syncGenres.SyncGenresUseCase
 import com.mskd.flux.features.catalog.fake.FakeCatalogSyncCoordinator
@@ -56,10 +56,10 @@ class SyncCatalogUseCaseTest : FunSpec({
         },
         filterExistingFilesUseCase: FilterExistingFilesUseCase = mockk(relaxed = true),
         syncGenresUseCase: SyncGenresUseCase = mockk(relaxed = true),
-        artworkFolderFetcher: ArtworkFolderFetcher = mockk(relaxed = true),
+        artworkMetadataFetcher: ArtworkMetadataFetcher = mockk(relaxed = true),
         movieMetadataFetcher: MovieMetadataFetcher = mockk(relaxed = true),
         seasonMetadataFetcher: SeasonMetadataFetcher = mockk(relaxed = true),
-        episodeResolver: EpisodeResolver = mockk(relaxed = true),
+        mediaResolver: MediaResolver = mockk(relaxed = true),
     ) = SyncCatalogUseCase(
         database = database,
         user = user,
@@ -69,10 +69,10 @@ class SyncCatalogUseCaseTest : FunSpec({
         getDeviceFilesUseCase = getDeviceFilesUseCase,
         filterExistingFilesUseCase = filterExistingFilesUseCase,
         syncGenresUseCase = syncGenresUseCase,
-        artworkFolderFetcher = artworkFolderFetcher,
+        artworkMetadataFetcher = artworkMetadataFetcher,
         movieMetadataFetcher = movieMetadataFetcher,
         seasonMetadataFetcher = seasonMetadataFetcher,
-        episodeResolver = episodeResolver,
+        mediaResolver = mediaResolver
     )
 
     test("if full sync is running, nothing to do when a light sync is requested") {
@@ -191,32 +191,32 @@ class SyncCatalogUseCaseTest : FunSpec({
         val filterExistingFilesUseCase = mockk<FilterExistingFilesUseCase>()
         coEvery { filterExistingFilesUseCase(files = any()) } returns emptyList()
 
-        val artworkFolderFetcher = mockk<ArtworkFolderFetcher>()
-        coEvery { artworkFolderFetcher.fetch(folders = any(), onProgress = any()) } returns listOf(artworkWithFiles)
+        val artworkMetadataFetcher = mockk<ArtworkMetadataFetcher>()
+        coEvery { artworkMetadataFetcher.fetch(folders = any(), onProgress = any()) } returns listOf(artworkWithFiles)
 
         val movieMetadataFetcher = mockk<MovieMetadataFetcher>()
         coEvery { movieMetadataFetcher.fetch(artworkWithFiles = any(), onProgress = any()) } returns emptyList()
 
         val seasonMetadataFetcher = mockk<SeasonMetadataFetcher>()
-        coEvery { seasonMetadataFetcher.fetch(artworkWithFiles = any()) } returns emptyList()
+        coEvery { seasonMetadataFetcher.fetch(artworkWithFiles = any(), onProgress = any()) } returns emptyList()
 
-        val episodeResolver = mockk<EpisodeResolver>()
-        coEvery { episodeResolver.resolve(artworkWithFiles = any(), episodesDto = any(), onProgress = any()) } returns emptyList()
+        val mediaResolver = mockk<MediaResolver>()
+        coEvery { mediaResolver.resolve(medias = any(), onProgress = any()) } returns emptyList()
 
         val useCase = createUseCase(
             database = database,
             getDeviceFilesUseCase = getDeviceFilesUseCase,
             filterExistingFilesUseCase = filterExistingFilesUseCase,
-            artworkFolderFetcher = artworkFolderFetcher,
+            artworkMetadataFetcher = artworkMetadataFetcher,
             movieMetadataFetcher = movieMetadataFetcher,
             seasonMetadataFetcher = seasonMetadataFetcher,
-            episodeResolver = episodeResolver
+            mediaResolver = mediaResolver
         )
 
         useCase.invoke(onlyNew = false)
         testDispatcher.scheduler.advanceUntilIdle()
 
-        coVerify { artworkFolderFetcher.fetch(folders = any(), onProgress = any()) }
+        coVerify { artworkMetadataFetcher.fetch(folders = any(), onProgress = any()) }
         coVerify { database.saveArtworks(listOf(artworkWithFiles.artwork)) }
         coVerify { database.deleteAll() }
     }

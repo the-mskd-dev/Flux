@@ -5,14 +5,12 @@ import com.mskd.flux.features.catalog.data.datastore.CatalogDataStoreImpl
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinatorImpl
 import com.mskd.flux.features.catalog.domain.datastore.CatalogDataStore
-import com.mskd.flux.features.catalog.domain.fetcher.ArtworkFolderFetcher
-import com.mskd.flux.features.catalog.domain.fetcher.ArtworkFolderFetcherImpl
+import com.mskd.flux.features.catalog.domain.fetcher.ArtworkMetadataFetcher
+import com.mskd.flux.features.catalog.domain.fetcher.ArtworkMetadataFetcherImpl
 import com.mskd.flux.features.catalog.domain.fetcher.MovieMetadataFetcher
 import com.mskd.flux.features.catalog.domain.fetcher.MovieMetadataFetcherImpl
 import com.mskd.flux.features.catalog.domain.fetcher.SeasonMetadataFetcher
 import com.mskd.flux.features.catalog.domain.fetcher.SeasonMetadataFetcherImpl
-import com.mskd.flux.features.catalog.domain.resolver.EpisodeResolver
-import com.mskd.flux.features.catalog.domain.resolver.EpisodeResolverImpl
 import com.mskd.flux.features.catalog.domain.resolver.MediaResolver
 import com.mskd.flux.features.catalog.domain.resolver.MediaResolverImpl
 import com.mskd.flux.features.catalog.domain.usecase.cleanCatalog.CleanCatalogUseCase
@@ -26,7 +24,6 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
-import org.koin.plugin.module.dsl.single
 
 val moduleCatalog = module {
 
@@ -34,8 +31,8 @@ val moduleCatalog = module {
         Dispatchers.IO.limitedParallelism(10)
     }
 
-    single<ArtworkFolderFetcher> {
-        ArtworkFolderFetcherImpl(
+    single<ArtworkMetadataFetcher> {
+        ArtworkMetadataFetcherImpl(
             api = get(),
             dispatcher = get(named("catalogSyncDispatcher"))
         )
@@ -51,15 +48,6 @@ val moduleCatalog = module {
     single<SeasonMetadataFetcher>{
         SeasonMetadataFetcherImpl(
             api = get(),
-            dispatcher = get(named("catalogSyncDispatcher"))
-        )
-    }
-
-    single<EpisodeResolver> {
-        EpisodeResolverImpl(
-            api = get(),
-            settings = get(),
-            getFileDurationUseCase = get(),
             dispatcher = get(named("catalogSyncDispatcher"))
         )
     }

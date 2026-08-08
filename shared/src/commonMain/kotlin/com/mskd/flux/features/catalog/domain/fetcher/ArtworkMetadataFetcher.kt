@@ -11,14 +11,14 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.supervisorScope
 
-interface ArtworkFolderFetcher {
+interface ArtworkMetadataFetcher {
     suspend fun fetch(folders: List<CatalogFolder>, onProgress: () -> Unit): List<ArtworkWithFiles>
 }
 
-class ArtworkFolderFetcherImpl(
+class ArtworkMetadataFetcherImpl(
     private val api: ApiRepository,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(10)
-) : ArtworkFolderFetcher {
+) : ArtworkMetadataFetcher {
 
     private companion object { const val TAG = "ArtworkFolderResolver" }
 

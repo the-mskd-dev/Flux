@@ -10,7 +10,7 @@ import com.mskd.flux.core.model.catalog.Catalog
 import com.mskd.flux.core.model.catalog.CatalogFolder
 import com.mskd.flux.core.model.core.AppInfo
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
-import com.mskd.flux.features.catalog.domain.fetcher.ArtworkFolderFetcher
+import com.mskd.flux.features.catalog.domain.fetcher.ArtworkMetadataFetcher
 import com.mskd.flux.features.catalog.domain.fetcher.MovieMetadataFetcher
 import com.mskd.flux.features.catalog.domain.fetcher.SeasonMetadataFetcher
 import com.mskd.flux.features.catalog.domain.model.SyncState
@@ -34,7 +34,7 @@ class SyncCatalogUseCase(
     private val getDeviceFilesUseCase: GetDeviceFilesUseCase,
     private val filterExistingFilesUseCase: FilterExistingFilesUseCase,
     private val syncGenresUseCase: SyncGenresUseCase,
-    private val artworkFolderFetcher: ArtworkFolderFetcher,
+    private val artworkMetadataFetcher: ArtworkMetadataFetcher,
     private val movieMetadataFetcher: MovieMetadataFetcher,
     private val seasonMetadataFetcher: SeasonMetadataFetcher,
     private val mediaResolver: MediaResolver
@@ -77,17 +77,6 @@ class SyncCatalogUseCase(
             }
 
             val folders = newFiles.groupInFolders()
-
-            /*
-                Count all steps
-                1. Get Artworks (folders.size)
-                2. Get all media for files (newFiles.size)
-                3. Clean catalog
-                4. Save artworks
-                5. Save seasons
-                6. Save medias
-                7. Save genres
-             */
 
             // Genres
             var steps = 1
@@ -141,7 +130,7 @@ class SyncCatalogUseCase(
     private suspend fun getCatalog(folders: List<CatalogFolder>) : Catalog {
 
         // Get artworks
-        val artworkFiles = artworkFolderFetcher.fetch(
+        val artworkFiles = artworkMetadataFetcher.fetch(
             folders = folders,
             onProgress = { coordinator.incrementProgress() }
         )

@@ -14,15 +14,13 @@ import com.mskd.flux.features.catalog.domain.fetcher.SeasonMetadataFetcherImpl
 import com.mskd.flux.features.catalog.domain.resolver.EpisodeResolver
 import com.mskd.flux.features.catalog.domain.resolver.EpisodeResolverImpl
 import com.mskd.flux.features.catalog.domain.usecase.cleanCatalog.CleanCatalogUseCase
-import com.mskd.flux.features.catalog.domain.usecase.cleanCatalog.CleanCatalogUseCaseImpl
 import com.mskd.flux.features.catalog.domain.usecase.syncGenres.SyncGenresUseCase
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
-import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCaseImpl
 import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCase
-import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCaseImpl
 import com.mskd.flux.features.catalog.presentation.CatalogViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -68,45 +66,10 @@ val moduleCatalog = module {
         CatalogSyncCoordinatorImpl(scope = get(Qualifiers.APPLICATION_SCOPE))
     }
 
-    single<CleanCatalogUseCase> {
-        CleanCatalogUseCaseImpl(
-            getDeviceFilesUseCase = get(),
-            database = get()
-        )
-    }
-
-    single<SyncCatalogUseCase> {
-        SyncCatalogUseCaseImpl(
-            database = get(),
-            user = get(),
-            imagesPrefetchManager = get(),
-            appInfo = get(),
-            coordinator = get(),
-            getDeviceFilesUseCase = get(),
-            filterExistingFilesUseCase = get(),
-            artworkFolderFetcher = get(),
-            movieMetadataFetcher = get(),
-            seasonMetadataFetcher = get(),
-            episodeResolver = get()
-        )
-    }
-
-    single<UpdateLanguageUseCase> {
-        UpdateLanguageUseCaseImpl(
-            remoteRepository = get(),
-            database = get(),
-            settings = get(),
-            syncGenresUseCase = get(),
-            coordinator = get()
-        )
-    }
-
-    single<SyncGenresUseCase> {
-        SyncGenresUseCase(
-            remoteRepository = get(),
-            detailsRepository = get()
-        )
-    }
+    singleOf(::CleanCatalogUseCase)
+    singleOf(::SyncCatalogUseCase)
+    singleOf(::SyncGenresUseCase)
+    singleOf(::UpdateLanguageUseCase)
 
     single<CatalogDataStore> {
         CatalogDataStoreImpl(

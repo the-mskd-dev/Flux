@@ -3,7 +3,7 @@ package com.mskd.flux.features.catalog.usecase
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.core.database.domain.repository.DatabaseRepository
 import com.mskd.flux.core.model.files.UserFile
-import com.mskd.flux.features.catalog.domain.usecase.cleanCatalog.CleanCatalogUseCaseImpl
+import com.mskd.flux.features.catalog.domain.usecase.cleanCatalog.CleanCatalogUseCase
 import com.mskd.flux.features.files.domain.usecase.GetDeviceFilesUseCase
 import io.kotest.core.spec.style.FunSpec
 import io.mockk.coEvery
@@ -16,7 +16,7 @@ class CleanCatalogUseCaseTest : FunSpec({
 
     val getDeviceFilesUseCase = mockk<GetDeviceFilesUseCase>()
     val database = mockk<DatabaseRepository>(relaxed = true)
-    val useCase = CleanCatalogUseCaseImpl(
+    val useCase = CleanCatalogUseCase(
         getDeviceFilesUseCase = getDeviceFilesUseCase,
         database = database
     )

@@ -11,7 +11,8 @@ import com.mskd.flux.core.network.tmdb.domain.model.Translation
 import com.mskd.flux.core.network.tmdb.domain.model.TranslationRequest
 import com.mskd.flux.core.network.tmdb.domain.repository.ArtworkRemoteRepository
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
-import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCaseImpl
+import com.mskd.flux.features.catalog.domain.usecase.syncGenres.SyncGenresUseCase
+import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCase
 import com.mskd.flux.features.catalog.fake.FakeCatalogSyncCoordinator
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import io.kotest.core.spec.style.FunSpec
@@ -32,7 +33,8 @@ class UpdateLanguageUseCaseTest : FunSpec({
     lateinit var database: DatabaseRepository
     lateinit var settings: SettingsDataStore
     lateinit var coordinator: CatalogSyncCoordinator
-    lateinit var useCase: UpdateLanguageUseCaseImpl
+    lateinit var syncGenresUseCase: SyncGenresUseCase
+    lateinit var useCase: UpdateLanguageUseCase
 
     val testDispatcher = StandardTestDispatcher()
     val testScope = TestScope(testDispatcher)
@@ -84,6 +86,7 @@ class UpdateLanguageUseCaseTest : FunSpec({
         remoteRepository = mockk()
         database = mockk(relaxed = true)
         settings = mockk(relaxed = true)
+        syncGenresUseCase = mockk(relaxed = true)
         coordinator = FakeCatalogSyncCoordinator(scope = testScope)
 
         coEvery { settings.getDataLanguage() } returns Locale.FRENCH
@@ -91,11 +94,12 @@ class UpdateLanguageUseCaseTest : FunSpec({
         coEvery { database.getArtworks() } returns listOf(showArtwork)
         coEvery { database.getSeasons() } returns listOf(season)
 
-        useCase = UpdateLanguageUseCaseImpl(
+        useCase = UpdateLanguageUseCase(
             remoteRepository = remoteRepository,
             database = database,
             settings = settings,
             coordinator = coordinator,
+            syncGenresUseCase = syncGenresUseCase,
             dispatcher = testDispatcher
         )
     }

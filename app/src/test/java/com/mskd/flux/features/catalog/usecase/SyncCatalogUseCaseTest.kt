@@ -14,7 +14,7 @@ import com.mskd.flux.features.catalog.domain.fetcher.SeasonMetadataFetcher
 import com.mskd.flux.features.catalog.domain.model.ArtworkFiles
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.resolver.EpisodeResolver
-import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCaseImpl
+import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.catalog.fake.FakeCatalogSyncCoordinator
 import com.mskd.flux.features.files.domain.usecase.FilterExistingFilesUseCase
 import com.mskd.flux.features.files.domain.usecase.GetDeviceFilesUseCase
@@ -33,7 +33,7 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class SyncCatalogUseCaseImplTest : FunSpec({
+class SyncCatalogUseCaseTest : FunSpec({
 
     val testDispatcher = StandardTestDispatcher()
     lateinit var testScope: TestScope
@@ -58,7 +58,7 @@ class SyncCatalogUseCaseImplTest : FunSpec({
         movieMetadataFetcher: MovieMetadataFetcher = mockk(relaxed = true),
         seasonMetadataFetcher: SeasonMetadataFetcher = mockk(relaxed = true),
         episodeResolver: EpisodeResolver = mockk(relaxed = true),
-    ) = SyncCatalogUseCaseImpl(
+    ) = SyncCatalogUseCase(
         database = database,
         user = user,
         imagesPrefetchManager = imagesPrefetchManager,

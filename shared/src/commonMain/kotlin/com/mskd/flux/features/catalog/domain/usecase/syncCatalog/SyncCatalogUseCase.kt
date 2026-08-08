@@ -149,11 +149,6 @@ class SyncCatalogUseCase(
             onProgress = { coordinator.incrementProgress() }
         )
 
-        // Update progress for unknown artworks
-        artworkFiles.filter { it.artwork.isUnknown }.forEach {
-            coordinator.incrementProgress()
-        }
-
         // Get movies, seasons and episodes
         val (movies, seasonsAndEpisodes) = supervisorScope {
             val moviesDeferred = async {

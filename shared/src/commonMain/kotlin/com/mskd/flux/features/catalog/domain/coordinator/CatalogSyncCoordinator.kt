@@ -1,6 +1,7 @@
 package com.mskd.flux.features.catalog.domain.coordinator
 
 import com.mskd.flux.features.catalog.domain.model.SyncState
+import com.mskd.flux.utils.Trace
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.Job
@@ -10,6 +11,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicInteger
+import kotlin.math.roundToInt
 
 interface CatalogSyncCoordinator {
     val state: StateFlow<SyncState>
@@ -22,6 +24,10 @@ interface CatalogSyncCoordinator {
 class CatalogSyncCoordinatorImpl(
     private val scope: CoroutineScope
 ) : CatalogSyncCoordinator {
+
+    private companion object {
+        const val TAG = "CatalogSyncCoordinator"
+    }
 
     private val _state = MutableStateFlow<SyncState>(SyncState.Idle)
     override val state: StateFlow<SyncState> = _state.asStateFlow()
@@ -48,6 +54,8 @@ class CatalogSyncCoordinatorImpl(
 
     override fun setTotalSteps(steps: Int) {
         totalSteps = steps.coerceAtLeast(1)
+
+        Trace.info(tag = TAG, message = "Set up for $steps steps")
     }
 
     override fun incrementProgress() {
@@ -56,6 +64,7 @@ class CatalogSyncCoordinatorImpl(
         _state.update { current ->
             if (current is SyncState.Syncing) current.copy(progress = progress) else current
         }
+        Trace.info(tag = TAG, message = "Progress: ${completed.roundToInt()}/$totalSteps (${progress.times(100).roundToInt()}%)")
     }
 
 }

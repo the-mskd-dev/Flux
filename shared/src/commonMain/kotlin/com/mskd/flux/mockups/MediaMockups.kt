@@ -235,13 +235,15 @@ object MediaMockups {
 
     val fullMovie = FullArtwork.FullMovie(
         artwork = movieArtwork,
-        movie = movie
+        movie = movie,
+        genres = DetailsMockup.movieGenres
     )
 
     val fullShow = FullArtwork.FullShow(
         artwork = showArtwork,
         seasons = seasons.toImmutableList(),
-        episodes = episodes.toImmutableList()
+        episodes = episodes.toImmutableList(),
+        genres = DetailsMockup.movieGenres
     )
 
 }

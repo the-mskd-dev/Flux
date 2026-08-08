@@ -1,10 +1,12 @@
 package com.mskd.flux.mockups
 
 import com.mskd.flux.core.model.artwork.Genre
+import kotlinx.collections.immutable.immutableListOf
+import kotlinx.collections.immutable.persistentListOf
 
 object DetailsMockup {
 
-    val movieGenres = listOf(
+    val movieGenres = persistentListOf(
         Genre(
             id = 28,
             name = "Action"
@@ -83,7 +85,7 @@ object DetailsMockup {
         )
     )
 
-    val showGenres = listOf(
+    val showGenres = persistentListOf(
 
         Genre(
             id = 10759,

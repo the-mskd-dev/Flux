@@ -19,7 +19,7 @@ import kotlinx.coroutines.supervisorScope
 
 interface MediaResolver {
 
-    suspend fun resolve(medias: List<Media>) : List<Media>
+    suspend fun resolve(medias: List<Media>, onProgress: () -> Unit) : List<Media>
 
 }
 
@@ -32,7 +32,7 @@ class MediaResolverImpl(
 
     private companion object { const val TAG = "MediaResolver" }
 
-    override suspend fun resolve(medias: List<Media>): List<Media> {
+    override suspend fun resolve(medias: List<Media>, onProgress: () -> Unit): List<Media> {
 
         val language = settings.getDataLanguage()
 
@@ -75,7 +75,7 @@ class MediaResolverImpl(
                     val newDuration = if (media.duration > 0) media.duration else getFileDurationUseCase(file = media.file)
 
                     // Create resolved media
-                    if (newTitle == media.title && newDescription == media.description && newDuration == media.duration) {
+                    val resolvedMedia = if (newTitle == media.title && newDescription == media.description && newDuration == media.duration) {
                         media
                     } else {
                         when (media) {
@@ -91,6 +91,11 @@ class MediaResolverImpl(
                             )
                         }
                     }
+
+                    onProgress()
+
+                    resolvedMedia
+
                 }
 
             }.awaitAll()

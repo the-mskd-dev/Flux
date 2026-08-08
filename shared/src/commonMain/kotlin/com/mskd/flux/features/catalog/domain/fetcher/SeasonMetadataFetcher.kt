@@ -14,7 +14,7 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.supervisorScope
 
 interface SeasonMetadataFetcher {
-    suspend fun fetch(artworkFiles: List<ArtworkFiles>): List<Pair<Season, List<Episode>>>
+    suspend fun fetch(artworkFiles: List<ArtworkFiles>, onProgress: () -> Unit): List<Pair<Season, List<Episode>>>
 }
 
 class SeasonMetadataFetcherImpl(
@@ -24,7 +24,7 @@ class SeasonMetadataFetcherImpl(
 
     private companion object { const val TAG = "SeasonMetadataFetcher" }
 
-    override suspend fun fetch(artworkFiles: List<ArtworkFiles>): List<Pair<Season, List<Episode>>> {
+    override suspend fun fetch(artworkFiles: List<ArtworkFiles>, onProgress: () -> Unit): List<Pair<Season, List<Episode>>> {
 
         val folders = artworkFiles.filter { it.artwork.type == ContentType.SHOW && !it.artwork.isUnknown }
 
@@ -51,6 +51,8 @@ class SeasonMetadataFetcherImpl(
                             } catch (e: Exception) {
                                 Trace.error(TAG, "Fail to get season for artworkId ${artwork.id} - season $season", e)
                                 null
+                            } finally {
+                                onProgress()
                             }
 
                         }

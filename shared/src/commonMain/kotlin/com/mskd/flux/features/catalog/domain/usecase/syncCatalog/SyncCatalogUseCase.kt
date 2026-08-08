@@ -2,6 +2,7 @@ package com.mskd.flux.features.catalog.domain.usecase.syncCatalog
 
 import com.mskd.flux.core.database.domain.repository.DatabaseRepository
 import com.mskd.flux.core.datastore.domain.UserDataStore
+import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.Movie
@@ -90,24 +91,47 @@ class SyncCatalogUseCase(
                 6. Save medias
                 7. Save genres
              */
-            coordinator.setTotalSteps(folders.size + newFiles.size + 5)
 
-            var catalog = getCatalog(folders = folders)
-            catalog = applyCurrentMediaProgress(catalog, dbMedias = dbMedias)
+            // Genres
+            var steps = 1
 
-            if (onlyNew) database.deleteMediasNotInFiles((deviceFiles + existingFiles).distinct()) else database.deleteAll()
-            coordinator.incrementProgress()
+            // Artworks
+            steps += folders.size
 
-            database.saveArtworks(catalog.artworks); coordinator.incrementProgress()
-            database.saveSeasons(catalog.seasons); coordinator.incrementProgress()
-            database.saveMedias(catalog.movies + catalog.episodes); coordinator.incrementProgress()
+            // Seasons
+            steps += newFiles
+                .filter { it.season != null }
+                .distinctBy { it.nameProperties.title to it.season }
+                .size
+
+            // Medias
+            steps += newFiles.size
+
+            // Save
+            steps += 1
+
+            // Update real paths
+            steps += 1
+
+            coordinator.setTotalSteps(steps)
 
             // Get Genres
             if (!onlyNew) syncGenresUseCase()
             coordinator.incrementProgress()
 
+            var catalog = getCatalog(folders = folders)
+            catalog = applyCurrentMediaProgress(catalog, dbMedias = dbMedias)
+
+            // Save new content
+            if (onlyNew) database.deleteMediasNotInFiles((deviceFiles + existingFiles).distinct()) else database.deleteAll()
+            database.saveArtworks(catalog.artworks)
+            database.saveSeasons(catalog.seasons)
+            database.saveMedias(catalog.movies + catalog.episodes)
+            coordinator.incrementProgress()
+
             // TODO: Delete in October 2026
             database.updateRealPaths(files = deviceFiles)
+            coordinator.incrementProgress()
 
             imagesPrefetchManager.prefetchImages()
             user.setSyncTime(System.currentTimeMillis())
@@ -125,6 +149,11 @@ class SyncCatalogUseCase(
             onProgress = { coordinator.incrementProgress() }
         )
 
+        // Update progress for unknown artworks
+        artworkFiles.filter { it.artwork.isUnknown }.forEach {
+            coordinator.incrementProgress()
+        }
+
         // Get movies, seasons and episodes
         val (movies, seasonsAndEpisodes) = supervisorScope {
             val moviesDeferred = async {
@@ -133,7 +162,7 @@ class SyncCatalogUseCase(
                     .getOrElse { emptyList() }
             }
             val seasonsAndEpisodesDeferred = async {
-                runCatching { seasonMetadataFetcher.fetch(artworkFiles = artworkFiles) }
+                runCatching { seasonMetadataFetcher.fetch(artworkFiles = artworkFiles, onProgress = { coordinator.incrementProgress() }) }
                     .onFailure { Trace.error(TAG, "getSeasons failed", it) }
                     .getOrElse { emptyList() }
             }
@@ -148,7 +177,8 @@ class SyncCatalogUseCase(
 
         // Resolve translation and duration for medias
         val medias = mediaResolver.resolve(
-            medias = movies + seasonsAndEpisodes.flatMap { it.second } + unknownMedias
+            medias = movies + seasonsAndEpisodes.flatMap { it.second } + unknownMedias,
+            onProgress = { coordinator.incrementProgress() }
         )
 
         return Catalog(

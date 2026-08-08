@@ -23,6 +23,7 @@ import org.koin.test.KoinTest
 import org.koin.test.get
 import org.koin.test.inject
 import java.util.Locale
+import kotlin.test.assertTrue
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class TMDBServiceTest : KoinTest {
@@ -241,6 +242,28 @@ class TMDBServiceTest : KoinTest {
         )
 
         println("Result count : ${result.translations.size}")
+
+    }
+
+    @Test
+    fun test_11_get_movie_genres() = runTest {
+
+        // When
+        val result = service.getMovieGenres()
+
+        // Then
+        assertTrue(result.genres.isNotEmpty())
+
+    }
+
+    @Test
+    fun test_11_get_show_genres() = runTest {
+
+        // When
+        val result = service.getShowGenres()
+
+        // Then
+        assertTrue(result.genres.isNotEmpty())
 
     }
 

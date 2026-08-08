@@ -3,6 +3,7 @@ package com.mskd.flux.features.catalog.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.core.database.domain.repository.DatabaseRepository
+import com.mskd.flux.core.database.domain.repository.DetailsRepository
 import com.mskd.flux.core.datastore.domain.UserDataStore
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.ContentType
@@ -38,6 +39,7 @@ import kotlinx.coroutines.launch
 class CatalogViewModel(
     private val syncCatalogUseCase: SyncCatalogUseCase,
     private val database: DatabaseRepository,
+    private val detailsRepository: DetailsRepository,
     private val userDataStore: UserDataStore,
     private val tokenDataStore: TokenDataStore,
     private val catalogDataStore: CatalogDataStore,
@@ -65,13 +67,21 @@ class CatalogViewModel(
         )
     }
 
-    val uiState: StateFlow<CatalogUiState> = combine(
+    private val catalogFlow = combine(
         database.flowArtworks(),
+        detailsRepository.flowGenres()
+    ) { artworks, genres ->
+        val genreIds = artworks.flatMap { it.genreIds }.distinct()
+        artworks to genres.filter { genreIds.contains(it.id) }
+    }
+
+    val uiState: StateFlow<CatalogUiState> = combine(
+        catalogFlow,
         syncCatalogUseCase.state,
         preferencesFlow,
         _showSortingSheet,
         _showViewModeSheet
-    ) { artworks, syncState, preferences, showSortingSheet, showViewModeSheet  ->
+    ) { (artworks, genres), syncState, preferences, showSortingSheet, showViewModeSheet  ->
 
         if (syncState is SyncState.Syncing && (syncState.full || !hasLoadedContent)) {
 
@@ -92,6 +102,7 @@ class CatalogViewModel(
             CatalogUiState(
                 state = CatalogState.Content(
                     artworks = sortedArtworks,
+                    genres = genres,
                     lastWatchedMediaIds = preferences.recentlyWatchedIds,
                     isRefreshing = syncState is SyncState.Syncing,
                     tokenIsMissing = preferences.token.isBlank(),

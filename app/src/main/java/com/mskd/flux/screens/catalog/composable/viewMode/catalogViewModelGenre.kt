@@ -7,12 +7,15 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.ContentType
+import com.mskd.flux.core.model.artwork.Genre
 import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
+import com.mskd.flux.mockups.DetailsMockup
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.screens.catalog.composable.CatalogCategory
 import com.mskd.flux.ui.theme.FluxUI
@@ -23,13 +26,15 @@ import flux.shared.generated.resources.movies
 import flux.shared.generated.resources.shows
 import org.jetbrains.compose.resources.stringResource
 
-fun LazyGridScope.catalogViewModeType(
+fun LazyGridScope.catalogViewModeGenre(
     artworks: List<Artwork>,
+    genres: List<Genre>,
     sortingMode: CatalogSortingMode,
     sendIntent: (CatalogIntent) -> Unit
 ) {
 
     item(span = { GridItemSpan(maxLineSpan) }) {
+
         Column(
             modifier = Modifier
                 .animateItem()
@@ -37,21 +42,23 @@ fun LazyGridScope.catalogViewModeType(
             verticalArrangement = Arrangement.spacedBy(FluxUI.Space.large)
         ) {
 
-            CatalogCategory(
-                name = stringResource(Res.string.shows),
-                category = ContentType.SHOW,
-                artworks = artworks.filter { it.type == ContentType.SHOW && !it.isUnknown },
-                sortingOption = sortingMode,
-                sendIntent = sendIntent
-            )
+            val categories = remember(artworks, genres) {
+            val validArtworks = artworks.filterNot { it.isUnknown }
 
-            CatalogCategory(
-                name = stringResource(Res.string.movies),
-                category = ContentType.MOVIE,
-                artworks = artworks.filter { it.type == ContentType.MOVIE && !it.isUnknown },
-                sortingOption = sortingMode,
-                sendIntent = sendIntent
-            )
+                genres
+                    .map { genre -> genre to validArtworks.filter { it.genreIds.contains(genre.id) } }
+                    .sortedByDescending { (_, genreArtworks) -> genreArtworks.size }
+            }
+
+            categories.forEach { (genre, categoryArtworks) ->
+                CatalogCategory(
+                    name = genre.name,
+                    category = ContentType.SHOW,
+                    artworks = categoryArtworks,
+                    sortingOption = sortingMode,
+                    sendIntent = sendIntent
+                )
+            }
 
         }
     }
@@ -60,13 +67,14 @@ fun LazyGridScope.catalogViewModeType(
 
 @Preview
 @Composable
-fun CatalogViewModeType_Preview() {
+fun CatalogViewModeGenre_Preview() {
     FluxThemePreview {
         LazyVerticalGrid(
             columns = GridCells.Fixed(3)
         ) {
-            catalogViewModeType(
+            catalogViewModeGenre(
                 artworks = MediaMockups.artworks,
+                genres = DetailsMockup.allGenres,
                 sortingMode = CatalogSortingMode.LAST_MODIFICATION,
                 sendIntent = {}
             )

@@ -36,10 +36,10 @@ import com.mskd.flux.utils.rememberScreenDimensions
 @Composable
 fun CatalogCategory(
     name: String? = null,
-    category: ContentType,
     artworks: List<Artwork>,
     sortingOption: CatalogSortingMode,
-    sendIntent: (CatalogIntent) -> Unit
+    onCategoryTap: () -> Unit,
+    sendIntent: (CatalogIntent) -> Unit,
 ) {
 
     if (artworks.isEmpty())
@@ -71,7 +71,7 @@ fun CatalogCategory(
 
         Text.Content.Title(
             modifier = Modifier
-                .clickable { sendIntent(CatalogIntent.OnCategoryTap(category)) }
+                .clickable { onCategoryTap() }
                 .fillMaxWidth()
                 .padding(start = FluxUI.Space.medium),
             text = name,

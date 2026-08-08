@@ -39,17 +39,17 @@ fun LazyGridScope.catalogViewModeType(
 
             CatalogCategory(
                 name = stringResource(Res.string.shows),
-                category = ContentType.SHOW,
                 artworks = artworks.filter { it.type == ContentType.SHOW && !it.isUnknown },
                 sortingOption = sortingMode,
+                onCategoryTap = { sendIntent(CatalogIntent.OnCategoryTap(ContentType.SHOW)) },
                 sendIntent = sendIntent
             )
 
             CatalogCategory(
                 name = stringResource(Res.string.movies),
-                category = ContentType.MOVIE,
                 artworks = artworks.filter { it.type == ContentType.MOVIE && !it.isUnknown },
                 sortingOption = sortingMode,
+                onCategoryTap = { sendIntent(CatalogIntent.OnCategoryTap(ContentType.MOVIE)) },
                 sendIntent = sendIntent
             )
 

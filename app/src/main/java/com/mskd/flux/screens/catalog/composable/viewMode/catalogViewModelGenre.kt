@@ -53,9 +53,9 @@ fun LazyGridScope.catalogViewModeGenre(
             categories.forEach { (genre, categoryArtworks) ->
                 CatalogCategory(
                     name = genre.name,
-                    category = ContentType.SHOW,
                     artworks = categoryArtworks,
                     sortingOption = sortingMode,
+                    onCategoryTap = {},
                     sendIntent = sendIntent
                 )
             }

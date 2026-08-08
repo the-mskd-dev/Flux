@@ -9,6 +9,7 @@ import androidx.room.TypeConverters
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import com.mskd.flux.core.database.data.migrations.MIGRATION_5_6
 import com.mskd.flux.core.database.data.model.ArtworkEntity
+import com.mskd.flux.core.database.data.model.GenreEntity
 import com.mskd.flux.core.database.data.model.MediaEntity
 import com.mskd.flux.core.database.data.model.SeasonEntity
 import com.mskd.flux.features.sources.data.local.SourcesDao
@@ -20,7 +21,8 @@ import kotlinx.coroutines.Dispatchers
         ArtworkEntity::class,
         SeasonEntity::class,
         MediaEntity::class,
-        UserFolderEntity::class
+        UserFolderEntity::class,
+        GenreEntity::class
     ],
     version = 8,
     autoMigrations = [

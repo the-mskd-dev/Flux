@@ -101,7 +101,8 @@ class SyncCatalogUseCase(
             database.saveMedias(catalog.movies + catalog.episodes); coordinator.incrementProgress()
 
             // Get Genres
-            syncGenresUseCase(); coordinator.incrementProgress()
+            if (!onlyNew) syncGenresUseCase()
+            coordinator.incrementProgress()
 
             // TODO: Delete in October 2026
             database.updateRealPaths(files = deviceFiles)

@@ -16,6 +16,7 @@ import com.mskd.flux.features.catalog.domain.fetcher.SeasonMetadataFetcher
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.resolver.MediaResolver
 import com.mskd.flux.features.catalog.domain.usecase.syncGenres.SyncGenresUseCase
+import com.mskd.flux.features.catalog.domain.usecase.syncGenres.UpdateGenreIdsUseCase
 import com.mskd.flux.features.files.domain.usecase.FilterExistingFilesUseCase
 import com.mskd.flux.features.files.domain.usecase.GetDeviceFilesUseCase
 import com.mskd.flux.features.images.domain.ImagesPrefetchManager
@@ -34,6 +35,7 @@ class SyncCatalogUseCase(
     private val getDeviceFilesUseCase: GetDeviceFilesUseCase,
     private val filterExistingFilesUseCase: FilterExistingFilesUseCase,
     private val syncGenresUseCase: SyncGenresUseCase,
+    private val updateGenreIdsUseCase: UpdateGenreIdsUseCase,
     private val artworkMetadataFetcher: ArtworkMetadataFetcher,
     private val movieMetadataFetcher: MovieMetadataFetcher,
     private val seasonMetadataFetcher: SeasonMetadataFetcher,
@@ -64,6 +66,8 @@ class SyncCatalogUseCase(
             val newFiles = if (!onlyNew) deviceFiles else {
                 deviceFiles.filter { file -> existingFiles.none { it.path == file.path } } + unknownFiles
             }
+
+            updateGenreIdsUseCase()
 
             if (newFiles.isEmpty()) {
                 database.deleteMediasNotInFiles(existingFiles)

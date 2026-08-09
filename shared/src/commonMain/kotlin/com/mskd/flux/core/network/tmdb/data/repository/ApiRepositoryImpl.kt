@@ -1,6 +1,7 @@
 package com.mskd.flux.core.network.tmdb.data.repository
 
 import com.mskd.flux.core.model.artwork.Artwork
+import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Genre
 import com.mskd.flux.core.model.artwork.Movie
@@ -73,6 +74,13 @@ internal class ApiRepositoryImpl(
                     description = it.data.overview
                 )
             }
+    }
+
+    override suspend fun getGenreIds(artwork: Artwork): List<Int> {
+        return when (artwork.type) {
+            ContentType.MOVIE -> tmdb.getMovie(artworkId = artwork.id)?.genres
+            ContentType.SHOW -> tmdb.getShow(artworkId = artwork.id)?.genres
+        }?.map { it.id } ?: emptyList()
     }
 
     //endregion

@@ -1,5 +1,6 @@
 package com.mskd.flux.core.network.tmdb.domain.repository
 
+import androidx.compose.ui.autofill.ContentType
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Genre
@@ -20,5 +21,7 @@ interface ApiRepository {
     suspend fun getSeasonAndEpisodes(artworkId: Long, season: Int, files: List<UserFile>): Pair<Season, List<Episode>>?
 
     suspend fun getTranslation(request: TranslationRequest): Translation?
+
+    suspend fun getGenreIds(artwork: Artwork) : List<Int>
 
 }

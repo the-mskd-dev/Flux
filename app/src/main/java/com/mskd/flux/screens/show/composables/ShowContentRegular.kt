@@ -23,6 +23,7 @@ import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.features.show.presentation.ShowIntent
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.screens.artwork.composables.common.ArtworkImageFull
+import com.mskd.flux.screens.artwork.composables.common.GenresTags
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.component.media.OverviewItem
 import com.mskd.flux.ui.theme.FluxTheme
@@ -105,6 +106,7 @@ fun ShowContentRegular(
                 OverviewItem(
                     title = stringResource(Res.string.summary),
                     description = fullShow.artwork.description.ifEmpty { stringResource(Res.string.no_summary) },
+                    topDetails = { GenresTags(genres = fullShow.genres) }
                 )
 
                 Text.Content.Title(

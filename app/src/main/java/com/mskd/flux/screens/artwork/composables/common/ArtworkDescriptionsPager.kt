@@ -78,7 +78,8 @@ fun ArtworkDescriptionsPager(
                     OverviewItem(
                         title = stringResource(Res.string.summary),
                         description = currentMedia.description,
-                        subtitle = { MediaDetailsHorizontal(currentMedia) }
+                        subtitle = { MediaDetailsHorizontal(currentMedia) },
+                        topDetails = { GenresTags(genres = fullArtwork.genres) }
                     )
 
                 }

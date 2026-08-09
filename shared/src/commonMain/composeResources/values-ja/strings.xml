@@ -182,4 +182,5 @@
     <string name="by_genre">ジャンル順</string>
     <string name="add_token">トークンを追加</string>
     <string name="genres">ジャンル</string>
+    <string name="clear">クリア</string>
 </resources>

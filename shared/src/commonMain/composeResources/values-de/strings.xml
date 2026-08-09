@@ -182,4 +182,5 @@
     <string name="by_genre">Nach Genre</string>
     <string name="add_token">Token hinzufügen</string>
     <string name="genres">Genres</string>
+    <string name="clear">Löschen</string>
 </resources>

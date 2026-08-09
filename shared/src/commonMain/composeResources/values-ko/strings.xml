@@ -182,4 +182,5 @@
     <string name="by_genre">장르별</string>
     <string name="add_token">토큰 추가</string>
     <string name="genres">장르</string>
+    <string name="clear">지우기</string>
 </resources>

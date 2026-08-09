@@ -1,5 +1,6 @@
 package com.mskd.flux.screens.search.components
 
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,8 +19,10 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.core.model.artwork.Genre
@@ -34,6 +37,7 @@ import com.mskd.flux.utils.FluxThemePreview
 import com.mskd.flux.utils.extensions.fillMaxWidthWithLimit
 import com.mskd.flux.utils.extensions.resolve
 import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.clear
 import flux.shared.generated.resources.genres
 import flux.shared.generated.resources.view
 import org.jetbrains.compose.resources.stringResource
@@ -45,6 +49,8 @@ fun SearchGenresSheet(
     selectedGenreIds: List<Int>,
     sendIntent: (SearchIntent) -> Unit
 ) {
+
+    val clearButtonAlpha by animateFloatAsState(if (selectedGenreIds.isEmpty()) 0f else 1f)
 
     ModalBottomSheet(
         modifier = Modifier.fillMaxWidthWithLimit(),
@@ -71,9 +77,10 @@ fun SearchGenresSheet(
                 )
 
                 TextButton(
-                    onClick = { sendIntent(SearchIntent.ClearGenres) }
+                    modifier = Modifier.alpha(clearButtonAlpha),
+                    onClick = { if (selectedGenreIds.isNotEmpty()) sendIntent(SearchIntent.ClearGenres) }
                 ) {
-                    Text.Button.Default(text = "Reset")
+                    Text.Button.Default(text = stringResource(Res.string.clear))
                 }
 
             }

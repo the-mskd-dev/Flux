@@ -40,6 +40,8 @@ class SearchViewModel(
         val genresIds = artworks.flatMap { it.genreIds }.distinct()
 
         val filteredArtworks = artworks
+            .asSequence()
+            .filter { !it.isUnknown }
             .filter { actions.selectedType == null || it.type == actions.selectedType }
             .filter { actions.selectedGenres.isEmpty() || actions.selectedGenres.any { id -> id in it.genreIds } }
             .filter { it.title.contains(actions.input, ignoreCase = true) }

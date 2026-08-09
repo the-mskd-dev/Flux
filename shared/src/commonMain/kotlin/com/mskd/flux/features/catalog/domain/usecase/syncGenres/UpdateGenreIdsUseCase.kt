@@ -2,6 +2,7 @@ package com.mskd.flux.features.catalog.domain.usecase.syncGenres
 
 import com.mskd.flux.core.database.domain.repository.DatabaseRepository
 import com.mskd.flux.core.network.tmdb.domain.repository.ApiRepository
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
@@ -21,7 +22,7 @@ class UpdateGenreIdsUseCase(
 
                 async {
 
-                    val genresIds = api.getGenreIds(artwork = artwork)
+                    val genresIds = api.getGenreIds(artwork = artwork).toImmutableList()
                     artwork.copy(genreIds = genresIds)
 
                 }

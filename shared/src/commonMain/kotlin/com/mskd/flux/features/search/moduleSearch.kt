@@ -10,6 +10,7 @@ val moduleSearch = module {
         SearchViewModel(
             contentType = params.getOrNull(),
             database = get(),
+            details = get(),
             settingsDataStore = get()
         )
     }

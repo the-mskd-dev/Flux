@@ -72,7 +72,7 @@ class CatalogViewModelTest : FunSpec({
     ): CatalogViewModel {
         return CatalogViewModel(
             syncCatalogUseCase = syncUseCase,
-            database = database,
+            artworkDb = database,
             userDataStore = userDataStore,
             tokenDataStore = tokenDataStore,
             catalogDataStore = catalogDataStore,

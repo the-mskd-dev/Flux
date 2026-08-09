@@ -26,6 +26,7 @@ import com.mskd.flux.features.catalog.presentation.CatalogEvent.NavigateToUnknow
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.utils.Trace
 import com.mskd.flux.utils.UpdateManager
+import com.mskd.flux.utils.extensions.filterFor
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -38,8 +39,8 @@ import kotlinx.coroutines.launch
 
 class CatalogViewModel(
     private val syncCatalogUseCase: SyncCatalogUseCase,
-    private val database: DatabaseRepository,
-    private val detailsRepository: DetailsRepository,
+    private val artworkDb: DatabaseRepository,
+    private val detailsDb: DetailsRepository,
     private val userDataStore: UserDataStore,
     private val tokenDataStore: TokenDataStore,
     private val catalogDataStore: CatalogDataStore,
@@ -67,16 +68,15 @@ class CatalogViewModel(
         )
     }
 
-    private val catalogFlow = combine(
-        database.flowArtworks(),
-        detailsRepository.flowGenres()
+    private val artworkFlow = combine(
+        artworkDb.flowArtworks(),
+        detailsDb.flowGenres()
     ) { artworks, genres ->
-        val genreIds = artworks.flatMap { it.genreIds }.distinct()
-        artworks to genres.filter { genreIds.contains(it.id) }
+        artworks to genres.filterFor(artworks = artworks)
     }
 
     val uiState: StateFlow<CatalogUiState> = combine(
-        catalogFlow,
+        artworkFlow,
         syncCatalogUseCase.state,
         preferencesFlow,
         _showSortingSheet,

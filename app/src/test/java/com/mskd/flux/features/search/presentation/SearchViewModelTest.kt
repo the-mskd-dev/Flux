@@ -4,15 +4,19 @@ import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.core.FakeDatabaseRepository
 import com.mskd.flux.core.database.domain.repository.DatabaseRepository
+import com.mskd.flux.core.database.domain.repository.DetailsRepository
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
+import com.mskd.flux.mockups.DetailsMockup
 import com.mskd.flux.mockups.MediaMockups
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.inspectors.shouldForAll
+import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContainIgnoringCase
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.flow.MutableStateFlow
 
 class SearchViewModelTest : FunSpec({
@@ -21,6 +25,7 @@ class SearchViewModelTest : FunSpec({
 
     lateinit var viewModel: SearchViewModel
     lateinit var database: DatabaseRepository
+    lateinit var details: DetailsRepository
     lateinit var settingsDataStore: SettingsDataStore
 
 
@@ -30,11 +35,16 @@ class SearchViewModelTest : FunSpec({
             every { flow } returns MutableStateFlow(SettingsDataStore.State())
         }
 
+        details = mockk(relaxed = true) {
+            every { flowGenres() } returns MutableStateFlow(DetailsMockup.allGenres)
+        }
+
         database = FakeDatabaseRepository()
 
         viewModel = SearchViewModel(
             contentType = null,
             database = database,
+            details = details,
             settingsDataStore = settingsDataStore
         )
 
@@ -46,8 +56,10 @@ class SearchViewModelTest : FunSpec({
 
             val initialState = awaitItem()
 
-            initialState.searchWord shouldBe ""
-            initialState.artworks shouldBe MediaMockups.artworks.filter { !it.isUnknown }
+            initialState.actions.input shouldBe ""
+            initialState.actions.selectedGenres shouldBe persistentListOf()
+            initialState.actions.showGenresSelection shouldBe false
+            initialState.artworks.shouldContainExactlyInAnyOrder(MediaMockups.artworks.filter { !it.isUnknown })
 
         }
 
@@ -63,9 +75,9 @@ class SearchViewModelTest : FunSpec({
 
             val state = awaitItem()
 
-            state.searchWord shouldBe "nar"
-            state.filteredArtworks.size shouldBe 1
-            state.filteredArtworks.any { it.title.contains("naruto", ignoreCase = true) } shouldBe true
+            state.actions.input shouldBe "nar"
+            state.artworks.size shouldBe 1
+            state.artworks.any { it.title.contains("naruto", ignoreCase = true) } shouldBe true
 
         }
 
@@ -81,8 +93,8 @@ class SearchViewModelTest : FunSpec({
 
             val state = awaitItem()
 
-            state.searchWord shouldBe "na"
-            state.filteredArtworks.shouldForAll {
+            state.actions.input shouldBe "na"
+            state.artworks.shouldForAll {
                 it.title shouldContainIgnoringCase  "na"
             }
         }
@@ -99,8 +111,8 @@ class SearchViewModelTest : FunSpec({
 
             val state = awaitItem()
 
-            state.searchWord shouldBe "no result"
-            state.filteredArtworks.isEmpty() shouldBe true
+            state.actions.input shouldBe "no result"
+            state.artworks.isEmpty() shouldBe true
 
         }
 
@@ -116,8 +128,8 @@ class SearchViewModelTest : FunSpec({
 
             val state = awaitItem()
 
-            state.contentType shouldBe ContentType.MOVIE
-            state.filteredArtworks.all { it.type == ContentType.MOVIE } shouldBe true
+            state.actions.selectedType shouldBe ContentType.MOVIE
+            state.artworks.all { it.type == ContentType.MOVIE } shouldBe true
 
         }
 
@@ -133,8 +145,8 @@ class SearchViewModelTest : FunSpec({
 
             val state = awaitItem()
 
-            state.contentType shouldBe ContentType.SHOW
-            state.filteredArtworks.all { it.type == ContentType.SHOW } shouldBe true
+            state.actions.selectedType shouldBe ContentType.SHOW
+            state.artworks.all { it.type == ContentType.SHOW } shouldBe true
 
         }
 
@@ -165,12 +177,12 @@ class SearchViewModelTest : FunSpec({
         val customViewModel = SearchViewModel(
             contentType = ContentType.MOVIE,
             database = database,
+            details = details,
             settingsDataStore = settingsDataStore
         )
         customViewModel.uiState.test {
             val state = awaitItem()
-            state.contentType shouldBe ContentType.MOVIE
-            state.autoKeyboard shouldBe false
+            state.actions.selectedType shouldBe ContentType.MOVIE
         }
     }
 
@@ -180,11 +192,11 @@ class SearchViewModelTest : FunSpec({
 
             // Filter on Movie first
             viewModel.handleIntent(SearchIntent.FilterOnType(contentType = ContentType.MOVIE))
-            awaitItem().contentType shouldBe ContentType.MOVIE
+            awaitItem().actions.selectedType shouldBe ContentType.MOVIE
 
             // Filter on Movie again
             viewModel.handleIntent(SearchIntent.FilterOnType(contentType = ContentType.MOVIE))
-            awaitItem().contentType shouldBe null
+            awaitItem().actions.selectedType shouldBe null
         }
     }
 

@@ -33,7 +33,7 @@ fun LazyGridScope.catalogViewModeGenre(
     sendIntent: (CatalogIntent) -> Unit
 ) {
 
-    item(span = { GridItemSpan(maxLineSpan) }) {
+    item(span = { GridItemSpan(maxLineSpan) }, key = "catalog_genre_content") {
 
         Column(
             modifier = Modifier

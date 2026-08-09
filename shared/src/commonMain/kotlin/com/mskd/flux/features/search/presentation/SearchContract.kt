@@ -1,6 +1,5 @@
 package com.mskd.flux.features.search.presentation
 
-import androidx.compose.runtime.Immutable
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.Genre
@@ -11,16 +10,10 @@ data class SearchUIState(
     val artworks: ImmutableList<Artwork> = persistentListOf(),
     val autoKeyboard: Boolean = true,
     val availableGenres: ImmutableList<Genre> = persistentListOf(),
-    val userActions: SearchUserState = SearchUserState()
-) {
+    val actions: SearchUserActions = SearchUserActions()
+)
 
-    val filteredArtworks get() = artworks
-        .filter { if (userActions.selectedType != null) it.type == userActions.selectedType else true }
-        .filter { if (userActions.selectedGenres.isNotEmpty()) userActions.selectedGenres.any { id -> id in it.genreIds } else true }
-        .filter { it.title.contains(userActions.input, true) }
-}
-
-data class SearchUserState(
+data class SearchUserActions(
     val input: String = "",
     val selectedType: ContentType? = null,
     val selectedGenres: ImmutableList<Int> = persistentListOf(),

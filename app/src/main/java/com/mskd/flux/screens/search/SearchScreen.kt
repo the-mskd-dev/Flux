@@ -46,6 +46,7 @@ import com.mskd.flux.features.search.presentation.SearchEvent
 import com.mskd.flux.features.search.presentation.SearchIntent
 import com.mskd.flux.features.search.presentation.SearchUIState
 import com.mskd.flux.features.search.presentation.SearchViewModel
+import com.mskd.flux.mockups.DetailsMockup
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.navigation.domain.Route.Artwork
@@ -62,6 +63,7 @@ import com.mskd.flux.utils.rememberScreenDimensions
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.movies
 import flux.shared.generated.resources.shows
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.collectLatest
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -81,8 +83,8 @@ fun SearchScreen(
         viewModel.event.collect { event ->
             when (event) {
                 SearchEvent.BackToPreviousScreen -> onBack()
-                is SearchEvent.NavigateToMovie -> navigate(Artwork(artworkId = event.artworkId, rgb = event.rgb))
-                is SearchEvent.NavigateToShow -> navigate(Show(artworkId = event.artworkId, rgb = event.rgb))
+                is SearchEvent.NavigateToMovie -> navigate(Route.Artwork(artworkId = event.artworkId, rgb = event.rgb))
+                is SearchEvent.NavigateToShow -> navigate(Route.Show(artworkId = event.artworkId, rgb = event.rgb))
             }
         }
     }
@@ -161,7 +163,7 @@ fun SearchContent(
                     modifier = Modifier
                         .fillMaxWidth()
                         .focusRequester(focusRequester),
-                    value = state.searchWord,
+                    value = state.actions.input,
                     onValueChange = { sendIntent(SearchIntent.DoSearch(it)) },
                 )
 
@@ -170,14 +172,14 @@ fun SearchContent(
             item(span = { GridItemSpan(maxLineSpan) }) {
 
                 SearchTypeFilters(
-                    selectedType = state.contentType,
+                    selectedType = state.actions.selectedType,
                     sendIntent = sendIntent
                 )
 
             }
 
             items(
-                items = state.filteredArtworks,
+                items = state.artworks,
                 key = { it.id }
             ) { artwork ->
 
@@ -204,7 +206,6 @@ fun SearchContent(
 
             item(span = { GridItemSpan(maxLineSpan) }) {
                 Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding() + FluxUI.Space.bottomScreen))
-
             }
 
         }
@@ -271,8 +272,8 @@ fun SearchContent_Preview() {
     FluxThemePreview {
         SearchContent(
             state = SearchUIState(
-                searchWord = "",
-                artworks = MediaMockups.artworks
+                artworks = MediaMockups.artworks.toImmutableList(),
+                availableGenres = DetailsMockup.allGenres.toImmutableList()
             ),
             sendIntent = {}
         )

@@ -7,22 +7,17 @@ import com.mskd.flux.core.database.domain.repository.DetailsRepository
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.Genre
-import com.mskd.flux.features.artwork.presentation.ArtworkUiState
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 class SearchViewModel(
     contentType: ContentType? = null,
@@ -31,7 +26,7 @@ class SearchViewModel(
     private val settingsDataStore: SettingsDataStore
 ) : ViewModel() {
 
-    private val _userActions = MutableStateFlow(SearchUserState(
+    private val _userActions = MutableStateFlow(SearchUserActions(
         selectedType = contentType
     ))
 
@@ -44,11 +39,18 @@ class SearchViewModel(
 
         val genresIds = artworks.flatMap { it.genreIds }.distinct()
 
+        val filteredArtworks = artworks
+            .filter { actions.selectedType == null || it.type == actions.selectedType }
+            .filter { actions.selectedGenres.isEmpty() || actions.selectedGenres.any { id -> id in it.genreIds } }
+            .filter { it.title.contains(actions.input, ignoreCase = true) }
+            .sortedBy { it.title }
+            .toImmutableList()
+
         SearchUIState(
-            artworks = artworks.filter { artworks -> !artworks.isUnknown }.toImmutableList(),
+            artworks = filteredArtworks,
             autoKeyboard = settings.autoKeyboard,
             availableGenres = genres.filter { genresIds.contains(it.id) }.toImmutableList(),
-            userActions = actions
+            actions = actions
         )
 
     }.stateIn(

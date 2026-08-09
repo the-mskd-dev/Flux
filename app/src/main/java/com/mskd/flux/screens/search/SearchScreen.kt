@@ -51,6 +51,7 @@ import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.navigation.domain.Route.Artwork
 import com.mskd.flux.navigation.domain.Route.Show
+import com.mskd.flux.screens.search.components.SearchTypeFilters
 import com.mskd.flux.ui.component.global.FluxScaffold
 import com.mskd.flux.ui.component.global.FluxSearchField
 import com.mskd.flux.ui.component.global.Text
@@ -214,57 +215,7 @@ fun SearchContent(
 
 }
 
-@Composable
-fun SearchTypeFilters(
-    selectedType: ContentType?,
-    sendIntent: (SearchIntent) -> Unit
-) {
 
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
-    ) {
-
-        FilterChip(
-            onClick = { sendIntent(SearchIntent.FilterOnType(ContentType.MOVIE)) },
-            label = {
-                Text.Button.Chip(
-                    text = stringResource(Res.string.movies).uppercase(),
-                )
-            },
-            selected = selectedType == ContentType.MOVIE,
-            leadingIcon = if (selectedType == ContentType.MOVIE) {
-                {
-                    Icon(
-                        imageVector = Icons.Filled.Done,
-                        contentDescription = "Movies selected",
-                        modifier = Modifier.size(FilterChipDefaults.IconSize)
-                    )
-                }
-            } else { null },
-        )
-
-        FilterChip(
-            onClick = { sendIntent(SearchIntent.FilterOnType(ContentType.SHOW)) },
-            label = {
-                Text.Button.Chip(
-                    text = stringResource(Res.string.shows).uppercase(),
-                )
-            },
-            selected = selectedType == ContentType.SHOW,
-            leadingIcon = if (selectedType == ContentType.SHOW) {
-                {
-                    Icon(
-                        imageVector = Icons.Filled.Done,
-                        contentDescription = "Shows selected",
-                        modifier = Modifier.size(FilterChipDefaults.IconSize)
-                    )
-                }
-            } else { null },
-        )
-
-    }
-}
 
 @FluxPreview
 @Composable

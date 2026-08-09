@@ -2,6 +2,7 @@ package com.mskd.flux.core.database.data.mappers
 
 import com.mskd.flux.core.database.data.model.ArtworkEntity
 import com.mskd.flux.core.model.artwork.Artwork
+import kotlinx.collections.immutable.toImmutableList
 import kotlin.time.Clock
 
 fun ArtworkEntity.toDomain() : Artwork {
@@ -12,7 +13,7 @@ fun ArtworkEntity.toDomain() : Artwork {
         imagePath = this.imagePath,
         bannerPath = this.bannerPath,
         type = this.type,
-        genreIds = this.genreIds,
+        genreIds = this.genreIds.toImmutableList(),
         lastModification = this.lastModification,
     )
 }

@@ -3,15 +3,23 @@ package com.mskd.flux.features.search.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.core.database.domain.repository.DatabaseRepository
+import com.mskd.flux.core.database.domain.repository.DetailsRepository
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.ContentType
+import com.mskd.flux.core.model.artwork.Genre
+import com.mskd.flux.features.artwork.presentation.ArtworkUiState
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -19,30 +27,38 @@ import kotlinx.coroutines.runBlocking
 class SearchViewModel(
     contentType: ContentType? = null,
     private val database: DatabaseRepository,
+    private val details: DetailsRepository,
     private val settingsDataStore: SettingsDataStore
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(
+    private val _userActions = MutableStateFlow(SearchUserState(
+        selectedType = contentType
+    ))
+
+    val uiState = combine(
+        database.flowArtworks(),
+        details.flowGenres(),
+        settingsDataStore.flow,
+        _userActions
+    ) { artworks, genres, settings, actions ->
+
+        val genresIds = artworks.flatMap { it.genreIds }.distinct()
+
         SearchUIState(
-            contentType = contentType,
-            autoKeyboard = runBlocking { settingsDataStore.flow.first().autoKeyboard } && contentType == null
+            artworks = artworks.filter { artworks -> !artworks.isUnknown }.toImmutableList(),
+            autoKeyboard = settings.autoKeyboard,
+            availableGenres = genres.filter { genresIds.contains(it.id) }.toImmutableList(),
+            userActions = actions
         )
+
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = SearchUIState()
     )
-    val uiState: StateFlow<SearchUIState> = _uiState.asStateFlow()
 
     private val _event = MutableSharedFlow<SearchEvent>()
     val event = _event.asSharedFlow()
-
-    init {
-
-        viewModelScope.launch {
-            database.flowArtworks().collect { artworks ->
-                _uiState.update {
-                    it.copy(artworks = artworks.filter { artworks -> !artworks.isUnknown },)
-                }
-            }
-        }
-    }
 
     fun handleIntent(intent: SearchIntent) = viewModelScope.launch {
         when (intent) {
@@ -50,6 +66,11 @@ class SearchViewModel(
             is SearchIntent.OnArtworkTap -> onArtworkTap(artwork = intent.artwork, rgb = intent.rgb)
             is SearchIntent.FilterOnType -> filterOnType(type = intent.contentType)
             is SearchIntent.DoSearch -> doSearch(query = intent.query)
+
+            // Genres
+            SearchIntent.ClearGenres -> clearGenres()
+            is SearchIntent.SelectGenre -> selectGenre(genre = intent.genre)
+            is SearchIntent.ShowGenresSelection -> showGenresSelection(show = intent.show)
         }
     }
 
@@ -65,17 +86,39 @@ class SearchViewModel(
     }
 
     private fun doSearch(query: String) {
-        _uiState.update { it.copy(searchWord = query) }
+        _userActions.update { it.copy(input = query) }
     }
 
     private fun filterOnType(type: ContentType) {
-        _uiState.update {
-            if (it.contentType == type)
-                it.copy(contentType = null)
+        _userActions.update {
+            if (it.selectedType == type)
+                it.copy(selectedType = null)
             else
-                it.copy(contentType = type)
-
+                it.copy(selectedType = type)
         }
 
     }
+
+    private fun clearGenres() {
+        _userActions.update { it.copy(selectedGenres = persistentListOf()) }
+    }
+
+    private fun selectGenre(genre: Genre) {
+
+        val id = genre.id
+
+        _userActions.update {
+            val selectedGenres = if (it.selectedGenres.contains(id))
+                it.selectedGenres.minus(id)
+            else
+                it.selectedGenres.plus(id)
+            it.copy(selectedGenres = selectedGenres.toImmutableList())
+        }
+    }
+
+    private fun showGenresSelection(show: Boolean) {
+        _userActions.update { it.copy(showGenresSelection = show) }
+    }
+
+
 }

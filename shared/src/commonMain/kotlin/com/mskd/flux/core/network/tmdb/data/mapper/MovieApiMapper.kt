@@ -26,14 +26,3 @@ fun MovieDto.toDomain(
         isAvailable = true
     )
 }
-
-fun MovieDto.toDomainArtwork() : Artwork {
-    return Artwork(
-        id = this.id,
-        title = this.title,
-        description = this.description,
-        imagePath = this.imagePath.orEmpty(),
-        bannerPath = this.bannerPath.orEmpty(),
-        type = ContentType.MOVIE
-    )
-}

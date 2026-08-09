@@ -1,5 +1,8 @@
 package com.mskd.flux.core.model.artwork
 
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
+
 /**
  * Represents a media, such as a movie or a TV show.
  *
@@ -16,7 +19,7 @@ data class Artwork(
     val imagePath: String = "",
     val bannerPath: String = "",
     val type: ContentType = ContentType.SHOW,
-    val genreIds: List<Int> = emptyList(),
+    val genreIds: ImmutableList<Int> = persistentListOf(),
 
     val lastModification: Long? = null
 ) {

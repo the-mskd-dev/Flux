@@ -43,6 +43,7 @@ import com.mskd.flux.mockups.DetailsMockup
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.screens.search.components.SearchFilters
+import com.mskd.flux.screens.search.components.SearchGenresSheet
 import com.mskd.flux.ui.component.global.FluxScaffold
 import com.mskd.flux.ui.component.global.FluxSearchField
 import com.mskd.flux.ui.component.media.MediaItem
@@ -196,6 +197,14 @@ fun SearchContent(
                 Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding() + FluxUI.Space.bottomScreen))
             }
 
+        }
+
+        if (state.actions.showGenresSelection) {
+            SearchGenresSheet(
+                genres = state.availableGenres,
+                selectedGenreIds = state.actions.selectedGenres,
+                sendIntent = sendIntent
+            )
         }
 
     }

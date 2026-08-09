@@ -1,0 +1,94 @@
+package com.mskd.flux.screens.search.components
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.mskd.flux.core.model.artwork.Genre
+import com.mskd.flux.features.catalog.domain.model.CatalogViewMode
+import com.mskd.flux.features.catalog.presentation.CatalogIntent
+import com.mskd.flux.features.search.presentation.SearchIntent
+import com.mskd.flux.mockups.DetailsMockup
+import com.mskd.flux.ui.component.global.FluxBottomSheetItem
+import com.mskd.flux.ui.component.global.Text
+import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.utils.FluxThemePreview
+import com.mskd.flux.utils.extensions.fillMaxWidthWithLimit
+import com.mskd.flux.utils.extensions.resolve
+import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.genres
+import flux.shared.generated.resources.view
+import org.jetbrains.compose.resources.stringResource
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SearchGenresSheet(
+    genres: List<Genre>,
+    selectedGenreIds: List<Int>,
+    sendIntent: (SearchIntent) -> Unit
+) {
+
+    ModalBottomSheet(
+        modifier = Modifier.fillMaxWidthWithLimit(),
+        onDismissRequest = { sendIntent(SearchIntent.ShowGenresSelection(show = false)) },
+    ) {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
+        ) {
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = FluxUI.Space.medium),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+
+                Text.List.Title(
+                    text = stringResource(Res.string.genres)
+                )
+
+                TextButton(
+                    onClick = { sendIntent(SearchIntent.ClearGenres) }
+                ) {
+                    Text.Button.Default(text = "Reset")
+                }
+            }
+
+            genres.forEach { genre ->
+                FluxBottomSheetItem(
+                    isSelected = selectedGenreIds.contains(genre.id),
+                    text = genre.name,
+                    onClick = { sendIntent(SearchIntent.SelectGenre(genre = genre)) }
+                )
+            }
+        }
+    }
+
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview
+@Composable
+fun CatalogViewModeSheet_Preview() {
+    FluxThemePreview {
+        SearchGenresSheet(
+            genres = DetailsMockup.allGenres.take(8),
+            selectedGenreIds = DetailsMockup.allGenres.take(3).map { it.id },
+            sendIntent = {}
+        )
+    }
+}

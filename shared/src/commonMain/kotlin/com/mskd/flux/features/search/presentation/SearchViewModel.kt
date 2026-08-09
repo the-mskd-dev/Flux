@@ -37,7 +37,7 @@ class SearchViewModel(
         _userActions
     ) { artworks, genres, settings, actions ->
 
-        val genresIds = artworks.flatMap { it.genreIds }.distinct()
+        val allGenresIds = artworks.flatMap { it.genreIds }.distinct()
 
         val filteredArtworks = artworks
             .asSequence()
@@ -51,7 +51,7 @@ class SearchViewModel(
         SearchUIState(
             artworks = filteredArtworks,
             autoKeyboard = settings.autoKeyboard,
-            availableGenres = genres.filter { genresIds.contains(it.id) }.toImmutableList(),
+            availableGenres = genres.filter { allGenresIds.contains(it.id) }.toImmutableList(),
             actions = actions
         )
 

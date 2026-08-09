@@ -6,7 +6,6 @@ import com.mskd.flux.core.network.tmdb.domain.repository.ApiRepository
 import com.mskd.flux.features.catalog.domain.model.ArtworkWithFiles
 import com.mskd.flux.utils.Trace
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.supervisorScope

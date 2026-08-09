@@ -1,7 +1,6 @@
 package com.mskd.flux.features.catalog.domain.usecase.syncGenres
 
 import com.mskd.flux.core.database.domain.repository.DatabaseRepository
-import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.network.tmdb.domain.repository.ApiRepository
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll

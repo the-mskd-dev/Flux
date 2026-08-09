@@ -23,7 +23,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import com.mskd.flux.core.model.artwork.Artwork
-import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.ui.component.global.Text

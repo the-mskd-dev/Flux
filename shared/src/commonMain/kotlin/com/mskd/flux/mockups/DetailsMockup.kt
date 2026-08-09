@@ -1,7 +1,6 @@
 package com.mskd.flux.mockups
 
 import com.mskd.flux.core.model.artwork.Genre
-import kotlinx.collections.immutable.immutableListOf
 import kotlinx.collections.immutable.persistentListOf
 
 object DetailsMockup {

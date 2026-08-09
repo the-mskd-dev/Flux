@@ -17,7 +17,7 @@ interface ArtworkMetadataFetcher {
 
 class ArtworkMetadataFetcherImpl(
     private val api: ApiRepository,
-    private val dispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(10)
+    private val dispatcher: CoroutineDispatcher
 ) : ArtworkMetadataFetcher {
 
     private companion object { const val TAG = "ArtworkFolderResolver" }

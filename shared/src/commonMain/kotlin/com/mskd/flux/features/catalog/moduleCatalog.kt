@@ -7,6 +7,8 @@ import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinatorI
 import com.mskd.flux.features.catalog.domain.datastore.CatalogDataStore
 import com.mskd.flux.features.catalog.domain.fetcher.ArtworkMetadataFetcher
 import com.mskd.flux.features.catalog.domain.fetcher.ArtworkMetadataFetcherImpl
+import com.mskd.flux.features.catalog.domain.fetcher.CatalogContentFetcher
+import com.mskd.flux.features.catalog.domain.fetcher.CatalogContentFetcherImpl
 import com.mskd.flux.features.catalog.domain.fetcher.MovieMetadataFetcher
 import com.mskd.flux.features.catalog.domain.fetcher.MovieMetadataFetcherImpl
 import com.mskd.flux.features.catalog.domain.fetcher.SeasonMetadataFetcher
@@ -59,6 +61,15 @@ val moduleCatalog = module {
             settings = get(),
             getFileDurationUseCase = get(),
             dispatcher = get(named("catalogSyncDispatcher"))
+        )
+    }
+
+    single<CatalogContentFetcher> {
+        CatalogContentFetcherImpl(
+            artworkMetadataFetcher = get(),
+            movieMetadataFetcher = get(),
+            seasonMetadataFetcher = get(),
+            mediaResolver = get()
         )
     }
 

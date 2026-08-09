@@ -17,6 +17,7 @@ import com.mskd.flux.ui.component.global.FluxBottomSheetItem
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxThemePreview
+import com.mskd.flux.utils.extensions.fillMaxWidthWithLimit
 import com.mskd.flux.utils.extensions.resolve
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.view
@@ -30,6 +31,7 @@ fun CatalogViewModeSheet(
 ) {
 
     ModalBottomSheet(
+        modifier = Modifier.fillMaxWidthWithLimit(),
         onDismissRequest = { sendIntent(CatalogIntent.ShowViewModes(show = false)) },
     ) {
         Column(

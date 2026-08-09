@@ -17,6 +17,7 @@ import com.mskd.flux.ui.component.global.FluxBottomSheetItem
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxThemePreview
+import com.mskd.flux.utils.extensions.fillMaxWidthWithLimit
 import com.mskd.flux.utils.extensions.resolve
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.sort_by
@@ -29,7 +30,10 @@ fun CatalogSortingSheet(
     sendIntent: (CatalogIntent) -> Unit
 ) {
 
-    ModalBottomSheet(onDismissRequest = { sendIntent(CatalogIntent.ShowSortingModes(show = false)) },) {
+    ModalBottomSheet(
+        modifier = Modifier.fillMaxWidthWithLimit(),
+        onDismissRequest = { sendIntent(CatalogIntent.ShowSortingModes(show = false)) }
+    ) {
         Column(
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small)

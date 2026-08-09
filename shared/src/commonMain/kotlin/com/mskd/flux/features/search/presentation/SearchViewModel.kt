@@ -51,7 +51,7 @@ class SearchViewModel(
         SearchUIState(
             artworks = filteredArtworks,
             autoKeyboard = settings.autoKeyboard,
-            availableGenres = genres.filter { allGenresIds.contains(it.id) }.toImmutableList(),
+            availableGenres = genres.toImmutableList(),
             actions = actions
         )
 

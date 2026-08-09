@@ -2,10 +2,10 @@ package com.mskd.flux.features.search.presentation
 
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
-import com.mskd.flux.core.FakeDatabaseRepository
 import com.mskd.flux.core.database.domain.repository.DatabaseRepository
 import com.mskd.flux.core.database.domain.repository.DetailsRepository
 import com.mskd.flux.core.model.artwork.ContentType
+import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.mockups.DetailsMockup
 import com.mskd.flux.mockups.MediaMockups
@@ -14,12 +14,19 @@ import io.kotest.inspectors.shouldForAll
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContainIgnoringCase
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.element
+import io.kotest.property.arbitrary.enum
+import io.kotest.property.arbitrary.list
+import io.kotest.property.checkAll
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.flow.MutableStateFlow
 
 class SearchViewModelTest : FunSpec({
+
+    //region Setup
 
     fluxExtensions()
 
@@ -39,7 +46,9 @@ class SearchViewModelTest : FunSpec({
             every { flowGenres() } returns MutableStateFlow(DetailsMockup.allGenres)
         }
 
-        database = FakeDatabaseRepository()
+        database = mockk(relaxed = true) {
+            every { flowArtworks() } returns MutableStateFlow(MediaMockups.artworks.filter { !it.isUnknown })
+        }
 
         viewModel = SearchViewModel(
             contentType = null,
@@ -49,6 +58,10 @@ class SearchViewModelTest : FunSpec({
         )
 
     }
+
+    //endregion
+
+    //region Initial
 
     test("initial state") {
 
@@ -65,58 +78,61 @@ class SearchViewModelTest : FunSpec({
 
     }
 
-    test("search word with one result") {
+    test("initial state a contentType") {
 
-        viewModel.uiState.test {
+        checkAll(
+            Arb.enum<ContentType>()
+        ) { type ->
 
-            awaitItem()
-
-            viewModel.handleIntent(SearchIntent.DoSearch("nar"))
-
-            val state = awaitItem()
-
-            state.actions.input shouldBe "nar"
-            state.artworks.size shouldBe 1
-            state.artworks.any { it.title.contains("naruto", ignoreCase = true) } shouldBe true
-
-        }
-
-    }
-
-    test("search word with multiple results") {
-
-        viewModel.uiState.test {
-
-            awaitItem()
-
-            viewModel.handleIntent(SearchIntent.DoSearch("na"))
-
-            val state = awaitItem()
-
-            state.actions.input shouldBe "na"
-            state.artworks.shouldForAll {
-                it.title shouldContainIgnoringCase  "na"
+            val customViewModel = SearchViewModel(
+                contentType = type,
+                database = database,
+                details = details,
+                settingsDataStore = settingsDataStore
+            )
+            customViewModel.uiState.test {
+                val state = awaitItem()
+                state.actions.selectedType shouldBe type
             }
-        }
-
-    }
-
-    test("search word with no result") {
-
-        viewModel.uiState.test {
-
-            awaitItem()
-
-            viewModel.handleIntent(SearchIntent.DoSearch("no result"))
-
-            val state = awaitItem()
-
-            state.actions.input shouldBe "no result"
-            state.artworks.isEmpty() shouldBe true
 
         }
 
     }
+
+
+    //endregion
+
+    //region DoSearch
+
+    test("DoSearch - user enters input") {
+
+        checkAll(
+            Arb.element(listOf("na", "nar", "no result"))
+        ) { input ->
+
+            // Given
+            val expectedResult = MediaMockups.artworks.filter { !it.isUnknown && it.title.contains(input) }
+
+            viewModel.uiState.test {
+
+                awaitItem()
+
+                // When
+                viewModel.handleIntent(SearchIntent.DoSearch(input))
+
+                // Then
+                val state = awaitItem()
+                state.actions.input shouldBe input
+                state.artworks.size shouldBe expectedResult.size
+                state.artworks.shouldContainExactlyInAnyOrder(expectedResult)
+
+            }
+
+        }
+
+    }
+
+    //endregion
 
     test("filter on movie type") {
 
@@ -170,19 +186,6 @@ class SearchViewModelTest : FunSpec({
         viewModel.event.test {
             viewModel.handleIntent(SearchIntent.OnArtworkTap(artwork = MediaMockups.movieArtwork, rgb = 0xFFFFFF))
             awaitItem() shouldBe SearchEvent.NavigateToMovie(artworkId = MediaMockups.movieArtwork.id, rgb = 0xFFFFFF)
-        }
-    }
-
-    test("initial state with non-null contentType") {
-        val customViewModel = SearchViewModel(
-            contentType = ContentType.MOVIE,
-            database = database,
-            details = details,
-            settingsDataStore = settingsDataStore
-        )
-        customViewModel.uiState.test {
-            val state = awaitItem()
-            state.actions.selectedType shouldBe ContentType.MOVIE
         }
     }
 

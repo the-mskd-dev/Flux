@@ -177,31 +177,24 @@ class SyncCatalogUseCaseTest : FunSpec({
     test("if full sync, delete all database and save data from all files") {
 
         // Given
-        val newFile = UserFile(name = "movie1.mkv", path = "path/movie1", addedDateTime = 0L, source = FileSource.LOCAL)
-        val artworkWithFiles = ArtworkWithFiles(artwork = Artwork(id = 42L), files = listOf(newFile))
-
+        val newCatalog = Catalog(
+            artworks = MediaMockups.artworks,
+            movies = MediaMockups.movies,
+            seasons = MediaMockups.seasons,
+            episodes = MediaMockups.episodes
+        )
         val database = mockk<DatabaseRepository>(relaxed = true)
-        coEvery { database.getMedias() } returns emptyList()
 
         val getDeviceFilesUseCase = mockk<GetDeviceFilesUseCase>()
-        coEvery { getDeviceFilesUseCase() } returns listOf(newFile)
-
-        val filterExistingFilesUseCase = mockk<FilterExistingFilesUseCase>()
-        coEvery { filterExistingFilesUseCase(files = any()) } returns emptyList()
+        coEvery { getDeviceFilesUseCase() } returns newCatalog.movies.map { it.file }
 
         val catalogFetcher = mockk<CatalogContentFetcher>(relaxed = true) {
-            coEvery { fetch(any(), any()) } returns Catalog(
-                artworks = MediaMockups.artworks,
-                movies = MediaMockups.movies,
-                seasons = MediaMockups.seasons,
-                episodes = MediaMockups.episodes
-            )
+            coEvery { fetch(any(), any()) } returns newCatalog
         }
 
         val useCase = createUseCase(
             database = database,
             getDeviceFilesUseCase = getDeviceFilesUseCase,
-            filterExistingFilesUseCase = filterExistingFilesUseCase,
             catalogFetcher = catalogFetcher
         )
 
@@ -211,7 +204,9 @@ class SyncCatalogUseCaseTest : FunSpec({
 
         // Then
         coVerify { catalogFetcher.fetch(folders = any(), onProgress = any()) }
-        coVerify { database.saveArtworks(listOf(artworkWithFiles.artwork)) }
+        coVerify { database.saveArtworks(newCatalog.artworks) }
+        coVerify { database.saveSeasons(newCatalog.seasons) }
+        coVerify { database.saveMedias(newCatalog.movies + newCatalog.episodes) }
         coVerify { database.deleteAll() }
     }
 

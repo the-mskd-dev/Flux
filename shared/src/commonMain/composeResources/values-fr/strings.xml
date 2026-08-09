@@ -177,4 +177,5 @@
     <string name="by_type">Par type</string>
     <string name="by_genre">Par genre</string>
     <string name="add_token">Ajouter un jeton</string>
+    <string name="genres">Genres</string>
 </resources>

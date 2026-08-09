@@ -181,4 +181,5 @@
     <string name="by_type">Nach Typ</string>
     <string name="by_genre">Nach Genre</string>
     <string name="add_token">Token hinzufügen</string>
+    <string name="genres">Genres</string>
 </resources>

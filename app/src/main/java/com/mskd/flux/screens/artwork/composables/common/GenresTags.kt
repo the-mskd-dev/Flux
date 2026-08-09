@@ -33,10 +33,10 @@ fun GenresTags(genres: List<Genre>) {
             Text.Card.Label(
                 modifier = Modifier
                     .clip(RoundedCornerShape(4.dp))
-                    .background(color = MaterialTheme.colorScheme.secondaryContainer)
-                    .padding(all = FluxUI.Space.extraSmall),
+                    .background(color = MaterialTheme.colorScheme.tertiaryContainer)
+                    .padding(vertical = FluxUI.Space.extraSmall, horizontal = FluxUI.Space.small),
                 text = genre.name,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
+                color = MaterialTheme.colorScheme.onTertiaryContainer
             )
         }
     }

@@ -6,6 +6,7 @@ import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Movie
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
+import com.mskd.flux.mockups.DetailsMockup
 import com.mskd.flux.mockups.MediaMockups
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -31,7 +32,7 @@ class FakeObserveArtworkUseCase() : ObserveArtworkUseCase {
                 ContentType.MOVIE -> {
                     MediaMockups.allMedias.filterIsInstance<Movie>()
                         .find { it.artworkId == artworkId }
-                        ?.let { FullArtwork.FullMovie(artwork = artwork, movie = it) }
+                        ?.let { FullArtwork.FullMovie(artwork = artwork, movie = it, genres = DetailsMockup.movieGenres) }
                 }
 
                 ContentType.SHOW -> {
@@ -40,7 +41,8 @@ class FakeObserveArtworkUseCase() : ObserveArtworkUseCase {
                     FullArtwork.FullShow(
                         artwork = artwork,
                         seasons = MediaMockups.seasons.filter { it.artworkId == artworkId }.toImmutableList(),
-                        episodes = episodes.toImmutableList()
+                        episodes = episodes.toImmutableList(),
+                        genres = DetailsMockup.showGenres
                     )
                 }
 

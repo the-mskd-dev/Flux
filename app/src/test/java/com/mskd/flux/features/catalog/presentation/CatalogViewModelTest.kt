@@ -4,6 +4,7 @@ import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.core.FakeDatabaseRepository
 import com.mskd.flux.core.database.domain.repository.DatabaseRepository
+import com.mskd.flux.core.database.domain.repository.DetailsRepository
 import com.mskd.flux.core.datastore.domain.UserDataStore
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.ContentType
@@ -13,6 +14,7 @@ import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
+import com.mskd.flux.mockups.DetailsMockup
 import com.mskd.flux.mockups.MediaMockups
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
@@ -36,7 +38,8 @@ class CatalogViewModelTest : FunSpec({
 
     lateinit var viewModel: CatalogViewModel
     lateinit var syncCatalogUseCase: SyncCatalogUseCase
-    lateinit var database: DatabaseRepository
+    lateinit var artworkDb: DatabaseRepository
+    lateinit var detailsDb: DetailsRepository
     lateinit var userDataStore: UserDataStore
     lateinit var tokenDataStore: TokenDataStore
     lateinit var appInfo: AppInfo
@@ -57,7 +60,11 @@ class CatalogViewModelTest : FunSpec({
         syncCatalogUseCase = mockk(relaxed = true) {
             every { state } returns MutableStateFlow(SyncState.Idle)
         }
-        database = FakeDatabaseRepository()
+        artworkDb = FakeDatabaseRepository()
+
+        detailsDb = mockk(relaxed = true) {
+            every { flowGenres() } returns MutableStateFlow(DetailsMockup.allGenres)
+        }
 
         appInfo = AppInfo(
             versionCode = 0,
@@ -72,7 +79,8 @@ class CatalogViewModelTest : FunSpec({
     ): CatalogViewModel {
         return CatalogViewModel(
             syncCatalogUseCase = syncUseCase,
-            artworkDb = database,
+            artworkDb = artworkDb,
+            detailsDb = detailsDb,
             userDataStore = userDataStore,
             tokenDataStore = tokenDataStore,
             catalogDataStore = catalogDataStore,

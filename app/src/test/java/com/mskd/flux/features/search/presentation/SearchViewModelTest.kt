@@ -111,7 +111,7 @@ class SearchViewModelTest : FunSpec({
         ) { input ->
 
             // Given
-            val expectedResult = MediaMockups.artworks.filter { !it.isUnknown && it.title.contains(input) }
+            val expectedResult = MediaMockups.artworks.filter { !it.isUnknown && it.title.contains(input, ignoreCase = true) }
 
             viewModel.uiState.test {
 
@@ -123,7 +123,6 @@ class SearchViewModelTest : FunSpec({
                 // Then
                 val state = awaitItem()
                 state.actions.input shouldBe input
-                state.artworks.size shouldBe expectedResult.size
                 state.artworks.shouldContainExactlyInAnyOrder(expectedResult)
 
             }

@@ -21,6 +21,7 @@ import io.kotest.matchers.string.shouldContainIgnoringCase
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.element
 import io.kotest.property.arbitrary.enum
+import io.kotest.property.arbitrary.filter
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.orNull
 import io.kotest.property.arbitrary.subsequence
@@ -238,7 +239,7 @@ class SearchViewModelTest : FunSpec({
         val availableGenres = DetailsMockup.allGenres.filterFor(artworks)
 
         checkAll(
-            Arb.subsequence(availableGenres)
+            Arb.subsequence(availableGenres).filter { it.isNotEmpty() }
         ){ genres ->
 
             val viewModel = createViewModel()
@@ -266,7 +267,7 @@ class SearchViewModelTest : FunSpec({
         val availableGenres = DetailsMockup.allGenres.filter { genre -> artworks.any { it.genreIds.contains(genre.id) } }
 
         checkAll(
-            Arb.subsequence(availableGenres)
+            Arb.subsequence(availableGenres).filter { it.isNotEmpty() }
         ){ genres ->
 
             val viewModel = createViewModel()

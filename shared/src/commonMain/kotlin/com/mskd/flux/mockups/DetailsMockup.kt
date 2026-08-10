@@ -152,6 +152,6 @@ object DetailsMockup {
         ),
     )
 
-    val allGenres = movieGenres + showGenres
+    val allGenres = (movieGenres + showGenres).distinctBy { it.id }
 
 }

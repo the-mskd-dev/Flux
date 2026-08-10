@@ -15,7 +15,12 @@ class DetailsRepositoryImpl(private val dao: DetailsDao) : DetailsRepository {
     }
 
     override fun flowGenres(): Flow<List<Genre>> {
-        return dao.flowGenres().map { entities -> entities.map { it.toDomain() }.sortedBy { it.name } }
+        return dao.flowGenres().map { entities ->
+            entities
+                .map { it.toDomain() }
+                .sortedBy { it.name }
+                .distinctBy { it.id }
+        }
     }
 
     override suspend fun getGenres(): List<Genre> {

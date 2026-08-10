@@ -57,5 +57,5 @@ fun List<Episode>.getNextEpisodeFor(episode: Episode) : Episode? {
 
 fun List<Genre>.filterFor(artworks: List<Artwork>) : List<Genre> {
     val genreIds = artworks.flatMap { it.genreIds }.distinct()
-    return this.filter { genreIds.contains(it.id) }
+    return this.filter { genreIds.contains(it.id) }.distinctBy { it.id }
 }

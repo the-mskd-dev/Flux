@@ -35,7 +35,7 @@ class SearchViewModelTest : FunSpec({
 
     //region Setup
 
-    val testDispatcher = fluxExtensions()
+    fluxExtensions()
 
     fun createViewModel(
         contentType: ContentType? = null,
@@ -246,14 +246,10 @@ class SearchViewModelTest : FunSpec({
                 awaitItem()
 
                 // When
-                genres.forEach {
-                    viewModel.handleIntent(SearchIntent.SelectGenre(genre = it))
-                }
-                testDispatcher.scheduler.advanceUntilIdle()
-
+                genres.forEach { viewModel.handleIntent(SearchIntent.SelectGenre(genre = it)) }
 
                 // Then
-                val state = awaitItem()
+                val state = expectMostRecentItem()
                 state.actions.selectedGenres shouldContainExactlyInAnyOrder genres.map { it.id }
                 state.artworks shouldForAll { a -> a.genreIds shouldContainAnyOf genres.map { it.id } }
 
@@ -279,12 +275,10 @@ class SearchViewModelTest : FunSpec({
 
                 // When
                 genres.forEach { viewModel.handleIntent(SearchIntent.SelectGenre(genre = it)) }
-                testDispatcher.scheduler.advanceUntilIdle()
                 viewModel.handleIntent(SearchIntent.ClearGenres)
-                testDispatcher.scheduler.advanceUntilIdle()
 
                 // Then
-                val state = awaitItem()
+                val state = expectMostRecentItem()
                 state.actions.selectedGenres shouldBe persistentListOf()
                 state.artworks shouldContainExactlyInAnyOrder artworks
 

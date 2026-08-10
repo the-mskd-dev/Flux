@@ -165,18 +165,19 @@ class CatalogViewModelTest : FunSpec({
 
     test("should sync when new app version") {
 
+        // Given
         val syncCatalogUseCaseSpy = spyk(syncCatalogUseCase)
-
         val recentTime = System.currentTimeMillis() - 12.hours.inWholeMilliseconds
         coEvery { userDataStore.getSyncTime() } returns recentTime
-
         appInfo = AppInfo(
             versionCode = Int.MAX_VALUE,
             versionName = "VersionTest"
         )
 
+        // When
         viewModel = createViewModel(syncUseCase = syncCatalogUseCaseSpy)
 
+        // Then
         verify(exactly = 1) {
             syncCatalogUseCaseSpy(onlyNew = false)
         }
@@ -187,30 +188,48 @@ class CatalogViewModelTest : FunSpec({
     //region Navigation
 
     test("on artwork show tap") {
-        viewModel = createViewModel()
 
+        // Given
+        viewModel = createViewModel()
         viewModel.event.test {
+
+            // When
             viewModel.handleIntent(CatalogIntent.OnArtworkTap(artwork = MediaMockups.showArtwork, rgb = 0x112233))
+
+            // Then
             awaitItem() shouldBe CatalogEvent.NavigateToShow(artworkId = MediaMockups.showArtwork.id, rgb = 0x112233)
         }
+
     }
 
     test("on artwork movie tap") {
-        viewModel = createViewModel()
 
+        // Given
+        viewModel = createViewModel()
         viewModel.event.test {
+
+            // When
             viewModel.handleIntent(CatalogIntent.OnArtworkTap(artwork = MediaMockups.movieArtwork, rgb = 0x112233))
+
+            // Then
             awaitItem() shouldBe CatalogEvent.NavigateToMovie(artworkId = MediaMockups.movieArtwork.id, rgb = 0x112233)
         }
+
     }
 
     test("on unknown artwork tap") {
-        viewModel = createViewModel()
 
+        // Given
+        viewModel = createViewModel()
         viewModel.event.test {
+
+            // When
             viewModel.handleIntent(CatalogIntent.OnArtworkTap(artwork = Artwork.UNKNOWN, rgb = null))
+
+            // Then
             awaitItem() shouldBe CatalogEvent.NavigateToUnknown
         }
+
     }
 
     test("on category tap") {
@@ -257,31 +276,48 @@ class CatalogViewModelTest : FunSpec({
 
     }
 
-    test("on search tap") {
-        viewModel = createViewModel()
+    test("OnSearchTap - should send NavigateToSearch event") {
 
+        // Given
+        viewModel = createViewModel()
         viewModel.event.test {
+
+            // When
             viewModel.handleIntent(CatalogIntent.OnSearchTap)
+
+            // Then
             awaitItem() shouldBe CatalogEvent.NavigateToSearch()
         }
+
     }
 
-    test("on settings tap") {
-        viewModel = createViewModel()
+    test("OnSettingsTap - should send NavigateToSettings event") {
 
+        // Given
+        viewModel = createViewModel()
         viewModel.event.test {
+
+            // When
             viewModel.handleIntent(CatalogIntent.OnSettingsTap)
+
+            // Then
             awaitItem() shouldBe CatalogEvent.NavigateToSettings
         }
     }
 
-    test("on how to tap") {
-        viewModel = createViewModel()
+    test("OnHowToTap - should send NavigateToHowTo event") {
 
+        // Given
+        viewModel = createViewModel()
         viewModel.event.test {
+
+            // When
             viewModel.handleIntent(CatalogIntent.OnHowToTap)
+
+            // Then
             awaitItem() shouldBe CatalogEvent.NavigateToHowTo
         }
+
     }
 
     //endregion

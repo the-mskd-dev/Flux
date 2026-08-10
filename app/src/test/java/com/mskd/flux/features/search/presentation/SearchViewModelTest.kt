@@ -8,8 +8,11 @@ import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.mockups.DetailsMockup
 import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.utils.extensions.filterFor
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.inspectors.shouldForAll
+import io.kotest.matchers.collections.shouldContain
+import io.kotest.matchers.collections.shouldContainAnyOf
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.collections.shouldMatchEach
 import io.kotest.matchers.shouldBe
@@ -20,17 +23,19 @@ import io.kotest.property.arbitrary.element
 import io.kotest.property.arbitrary.enum
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.orNull
+import io.kotest.property.arbitrary.subsequence
 import io.kotest.property.checkAll
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.test.advanceUntilIdle
 
 class SearchViewModelTest : FunSpec({
 
     //region Setup
 
-    fluxExtensions()
+    val testDispatcher = fluxExtensions()
 
     fun createViewModel(
         contentType: ContentType? = null,
@@ -56,17 +61,20 @@ class SearchViewModelTest : FunSpec({
 
     test("initial state") {
 
+        // Given
+        val expectedArtworks = MediaMockups.artworks.filter { !it.isUnknown }
+        val expectedGenres = DetailsMockup.allGenres.filterFor(expectedArtworks)
         val viewModel = createViewModel()
 
         viewModel.uiState.test {
 
+            // When
             val initialState = awaitItem()
 
-            initialState.actions.input shouldBe ""
-            initialState.actions.selectedGenres shouldBe persistentListOf()
-            initialState.actions.showGenresSelection shouldBe false
-            initialState.artworks.shouldContainExactlyInAnyOrder(MediaMockups.artworks.filter { !it.isUnknown })
-
+            // Then
+            initialState.actions shouldBe SearchUserActions()
+            initialState.artworks.shouldContainExactlyInAnyOrder(expectedArtworks)
+            initialState.availableGenres.shouldContainExactlyInAnyOrder(expectedGenres)
         }
 
     }
@@ -87,7 +95,6 @@ class SearchViewModelTest : FunSpec({
         }
 
     }
-
 
     //endregion
 
@@ -156,18 +163,130 @@ class SearchViewModelTest : FunSpec({
             Arb.enum<ContentType>()
         ) { type ->
 
+            // Given
             val viewModel = createViewModel()
 
             viewModel.uiState.test {
                 awaitItem()
 
-                // Filter on type
-                viewModel.handleIntent(SearchIntent.FilterOnType(contentType = type))
+                // When
+                viewModel.handleIntent(SearchIntent.FilterOnType(contentType = type)) // First selection
                 awaitItem().actions.selectedType shouldBe type
+                viewModel.handleIntent(SearchIntent.FilterOnType(contentType = type)) // Second selection
 
-                // Filter on the same type again
-                viewModel.handleIntent(SearchIntent.FilterOnType(contentType = type))
+                // Then
                 awaitItem().actions.selectedType shouldBe null
+
+            }
+
+        }
+
+    }
+
+    //endregion
+
+    //region Filter genres
+
+    test("ShowGenresSelection - show genres bottom sheet") {
+
+        // Given
+        val viewModel = createViewModel()
+        viewModel.uiState.test {
+            awaitItem()
+
+            // When
+            viewModel.handleIntent(SearchIntent.ShowGenresSelection(show = true))
+
+            // Then
+            awaitItem().actions.showGenresSelection shouldBe true
+        }
+
+    }
+
+    test("SelectGenre - One - returns only matching artworks") {
+
+        // Given
+        val artworks = MediaMockups.artworks.filter { !it.isUnknown }
+        val availableGenres = DetailsMockup.allGenres.filterFor(artworks)
+
+        checkAll(
+            Arb.element(availableGenres)
+        ){ genre ->
+
+            val viewModel = createViewModel()
+            viewModel.uiState.test {
+                awaitItem()
+
+                // When
+                viewModel.handleIntent(SearchIntent.SelectGenre(genre = genre))
+
+                // Then
+                val state = awaitItem()
+                state.actions.selectedGenres shouldContain genre.id
+                state.artworks shouldForAll { it.genreIds shouldContain genre.id }
+
+            }
+
+        }
+
+    }
+
+    test("SelectGenre - Multiple - returns only matching artworks") {
+
+        // Given
+        val artworks = MediaMockups.artworks.filter { !it.isUnknown }
+        val availableGenres = DetailsMockup.allGenres.filterFor(artworks)
+
+        checkAll(
+            Arb.subsequence(availableGenres)
+        ){ genres ->
+
+            val viewModel = createViewModel()
+            viewModel.uiState.test {
+                awaitItem()
+
+                // When
+                genres.forEach {
+                    viewModel.handleIntent(SearchIntent.SelectGenre(genre = it))
+                }
+                testDispatcher.scheduler.advanceUntilIdle()
+
+
+                // Then
+                val state = awaitItem()
+                state.actions.selectedGenres shouldContainExactlyInAnyOrder genres.map { it.id }
+                state.artworks shouldForAll { a -> a.genreIds shouldContainAnyOf genres.map { it.id } }
+
+            }
+
+        }
+
+    }
+
+    test("ClearGenres - clear genres selection") {
+
+        // Given
+        val artworks = MediaMockups.artworks.filter { !it.isUnknown }
+        val availableGenres = DetailsMockup.allGenres.filter { genre -> artworks.any { it.genreIds.contains(genre.id) } }
+
+        checkAll(
+            Arb.subsequence(availableGenres)
+        ){ genres ->
+
+            val viewModel = createViewModel()
+            viewModel.uiState.test {
+                awaitItem()
+
+                // When
+                genres.forEach { viewModel.handleIntent(SearchIntent.SelectGenre(genre = it)) }
+                testDispatcher.scheduler.advanceUntilIdle()
+                viewModel.handleIntent(SearchIntent.ClearGenres)
+
+                // Then
+                val state = awaitItem()
+                state.actions.selectedGenres shouldBe persistentListOf()
+                state.artworks shouldContainExactlyInAnyOrder artworks
+
             }
 
         }

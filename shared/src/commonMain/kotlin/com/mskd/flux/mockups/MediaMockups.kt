@@ -18,6 +18,7 @@ object MediaMockups {
         id = 372058L,
         title = "Your name",
         type = ContentType.MOVIE,
+        genreIds = DetailsMockup.movieGenres.take(4).map { it.id }.toImmutableList(),
         imagePath = "/vfJFJPepRKapMd5G2ro7klIRysq.jpg",
         bannerPath = "/8x9iKH8kWA0zdkgNdpAew7OstYe.jpg"
     )
@@ -26,6 +27,7 @@ object MediaMockups {
         id = 969681L,
         title = "Spider-Man: Brand new day",
         type = ContentType.MOVIE,
+        genreIds = DetailsMockup.movieGenres.takeLast(4).map { it.id }.toImmutableList(),
         imagePath = "/6Q21yptoOCUq4ErwVncesLPVplb.jpg",
         bannerPath = "/kbvNLChuMl2nyAzPZvqkD8hZGZn.jpg"
     )
@@ -74,6 +76,7 @@ object MediaMockups {
         id = 31910L,
         title = "Naruto Shippūden",
         type = ContentType.SHOW,
+        genreIds = DetailsMockup.showGenres.take(4).map { it.id }.toImmutableList(),
         imagePath = "/z0YhJvomqedHF85bplUJEotkN5l.jpg",
         bannerPath = "/71mASgFgSiPl9QUexVH8BubU0lD.jpg"
     )

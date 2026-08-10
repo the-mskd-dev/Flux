@@ -8,7 +8,9 @@ import kotlinx.coroutines.test.UnconfinedTestDispatcher
 @OptIn(ExperimentalCoroutinesApi::class)
 fun Extendable.fluxExtensions(
     testDispatcher: TestDispatcher = UnconfinedTestDispatcher()
-) {
+) : TestDispatcher {
     extension(DispatcherConfig(testDispatcher = testDispatcher))
     //extension(LogConfig())
+
+    return testDispatcher
 }

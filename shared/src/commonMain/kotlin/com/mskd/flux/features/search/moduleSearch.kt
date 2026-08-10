@@ -11,7 +11,7 @@ val moduleSearch = module {
             contentType = params.getOrNull(),
             database = get(),
             details = get(),
-            settingsDataStore = get()
+            settings = get()
         )
     }
 

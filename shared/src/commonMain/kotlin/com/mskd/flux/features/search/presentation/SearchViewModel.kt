@@ -23,7 +23,7 @@ class SearchViewModel(
     contentType: ContentType? = null,
     private val database: DatabaseRepository,
     private val details: DetailsRepository,
-    private val settingsDataStore: SettingsDataStore
+    private val settings: SettingsDataStore
 ) : ViewModel() {
 
     private val _userActions = MutableStateFlow(SearchUserActions(
@@ -33,7 +33,7 @@ class SearchViewModel(
     val uiState = combine(
         database.flowArtworks(),
         details.flowGenres(),
-        settingsDataStore.flow,
+        settings.flow,
         _userActions
     ) { artworks, genres, settings, actions ->
 

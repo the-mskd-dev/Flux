@@ -2,6 +2,7 @@ package com.mskd.flux.navigation.domain
 
 import androidx.navigation3.runtime.NavKey
 import com.mskd.flux.core.model.artwork.ContentType
+import com.mskd.flux.core.model.artwork.Genre
 import kotlinx.serialization.Serializable
 
 sealed class Route : NavKey {
@@ -25,7 +26,10 @@ sealed class Route : NavKey {
     data object UnknownArtworks: Route()
 
     @Serializable
-    data class Search(val withType: ContentType? = null): Route()
+    data class Search(
+        val withType: ContentType? = null,
+        val withGenre: Genre? = null,
+    ): Route()
 
     @Serializable
     data class Player(val mediaId: Long) : Route()

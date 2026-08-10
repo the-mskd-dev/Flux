@@ -5,6 +5,7 @@ import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.core.database.domain.repository.DatabaseRepository
 import com.mskd.flux.core.database.domain.repository.DetailsRepository
 import com.mskd.flux.core.model.artwork.ContentType
+import com.mskd.flux.core.model.artwork.Genre
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.mockups.DetailsMockup
 import com.mskd.flux.mockups.MediaMockups
@@ -13,6 +14,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.inspectors.shouldForAll
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldContainAnyOf
+import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContainIgnoringCase
@@ -36,7 +38,8 @@ class SearchViewModelTest : FunSpec({
     fluxExtensions()
 
     fun createViewModel(
-        contentType: ContentType? = null,
+        withType: ContentType? = null,
+        withGenre: Genre? = null,
         database: DatabaseRepository = mockk(relaxed = true) {
             every { flowArtworks() } returns MutableStateFlow(MediaMockups.artworks.filter { !it.isUnknown })
         },
@@ -47,7 +50,8 @@ class SearchViewModelTest : FunSpec({
             every { flow } returns MutableStateFlow(SettingsDataStore.State())
         }
     ) : SearchViewModel = SearchViewModel(
-        withType = contentType,
+        withType = withType,
+        withGenre = withGenre,
         database = database,
         details = details,
         settings = settings
@@ -83,11 +87,28 @@ class SearchViewModelTest : FunSpec({
             Arb.enum<ContentType>()
         ) { type ->
 
-            val viewModel = createViewModel(contentType = type)
+            val viewModel = createViewModel(withType = type)
 
             viewModel.uiState.test {
                 val state = awaitItem()
                 state.actions.selectedType shouldBe type
+            }
+
+        }
+
+    }
+
+    test("initial state with a genre") {
+
+        checkAll(
+            Arb.element(DetailsMockup.allGenres)
+        ) { genre ->
+
+            val viewModel = createViewModel(withGenre = genre)
+
+            viewModel.uiState.test {
+                val state = awaitItem()
+                state.actions.selectedGenres shouldContainExactly persistentListOf(genre.id)
             }
 
         }

@@ -9,6 +9,7 @@ val moduleSearch = module {
     viewModel { params ->
         SearchViewModel(
             withType = params.getOrNull(),
+            withGenre = params.getOrNull(),
             database = get(),
             details = get(),
             settings = get()

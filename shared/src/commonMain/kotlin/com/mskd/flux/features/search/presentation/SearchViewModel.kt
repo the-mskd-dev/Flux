@@ -21,13 +21,15 @@ import kotlinx.coroutines.launch
 
 class SearchViewModel(
     withType: ContentType? = null,
+    withGenre: Genre? = null,
     private val database: DatabaseRepository,
     private val details: DetailsRepository,
     private val settings: SettingsDataStore
 ) : ViewModel() {
 
     private val _userActions = MutableStateFlow(SearchUserActions(
-        selectedType = withType
+        selectedType = withType,
+        selectedGenres = withGenre?.let { persistentListOf(it.id) } ?: persistentListOf()
     ))
 
     val uiState = combine(

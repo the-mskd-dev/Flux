@@ -3,14 +3,12 @@ package com.mskd.flux.features.catalog.usecase
 import app.cash.turbine.test
 import com.mskd.flux.core.database.domain.repository.DatabaseRepository
 import com.mskd.flux.core.datastore.domain.UserDataStore
-import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.Movie
 import com.mskd.flux.core.model.catalog.Catalog
 import com.mskd.flux.core.model.core.AppInfo
 import com.mskd.flux.core.model.files.FileSource
 import com.mskd.flux.core.model.files.UserFile
 import com.mskd.flux.features.catalog.domain.fetcher.CatalogContentFetcher
-import com.mskd.flux.features.catalog.domain.model.ArtworkWithFiles
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.catalog.domain.usecase.syncGenres.SyncGenresUseCase

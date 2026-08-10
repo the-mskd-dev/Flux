@@ -8,14 +8,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.features.search.presentation.SearchIntent
 import com.mskd.flux.ui.theme.FluxUI
@@ -23,11 +21,8 @@ import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.genres
 import flux.shared.generated.resources.movies
 import flux.shared.generated.resources.shows
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
-import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun SearchFilters(

@@ -135,6 +135,7 @@ class CatalogViewModel(
             is CatalogIntent.SyncCatalog -> syncCatalog()
             is CatalogIntent.OnArtworkTap -> onArtworkTap(artwork = intent.artwork, rgb = intent.rgb)
             is CatalogIntent.OnCategoryTap -> _event.emit(NavigateToCategory(category = intent.category))
+            is CatalogIntent.OnGenreTap -> _event.emit(CatalogEvent.NavigateToGenre(genre = intent.genre))
             CatalogIntent.OnSearchTap -> _event.emit(NavigateToSearch)
             CatalogIntent.OnSettingsTap -> _event.emit(NavigateToSettings)
             CatalogIntent.OnHowToTap -> _event.emit(NavigateToHowTo)

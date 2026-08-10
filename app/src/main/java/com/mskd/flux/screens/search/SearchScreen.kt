@@ -35,6 +35,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.core.model.artwork.ContentType
+import com.mskd.flux.core.model.artwork.Genre
 import com.mskd.flux.features.search.presentation.SearchEvent
 import com.mskd.flux.features.search.presentation.SearchIntent
 import com.mskd.flux.features.search.presentation.SearchUIState
@@ -59,10 +60,11 @@ import org.koin.core.parameter.parametersOf
 
 @Composable
 fun SearchScreen(
-    contentType: ContentType? = null,
+    withType: ContentType? = null,
+    withGenre: Genre? = null,
     navigate: (Route) -> Unit,
     onBack: () -> Unit,
-    viewModel: SearchViewModel = koinViewModel(parameters = { parametersOf(contentType) })
+    viewModel: SearchViewModel = koinViewModel(parameters = { parametersOf(withType, withGenre) })
 ) {
 
     val state by viewModel.uiState.collectAsStateWithLifecycle()

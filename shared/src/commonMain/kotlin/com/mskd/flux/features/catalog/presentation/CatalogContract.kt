@@ -42,6 +42,7 @@ sealed interface CatalogIntent {
 
     // Navigation
     data class OnArtworkTap(val artwork: Artwork, val rgb: Int? = null): CatalogIntent
+    data class OnGenreTap(val genre: Genre): CatalogIntent
     data class OnCategoryTap(val category: ContentType): CatalogIntent
     data object SyncCatalog: CatalogIntent
     data object OnSearchTap: CatalogIntent
@@ -63,6 +64,7 @@ sealed interface CatalogEvent {
     data class NavigateToMovie(val artworkId: Long, val rgb: Int?): CatalogEvent
     data class NavigateToShow(val artworkId: Long, val rgb: Int?): CatalogEvent
     data class NavigateToCategory(val category: ContentType): CatalogEvent
+    data class NavigateToGenre(val genre: Genre): CatalogEvent
     data object NavigateToUnknown: CatalogEvent
     data object NavigateToSearch: CatalogEvent
     data object NavigateToSettings: CatalogEvent

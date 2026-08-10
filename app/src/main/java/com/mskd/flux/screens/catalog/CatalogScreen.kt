@@ -81,6 +81,7 @@ fun CatalogScreen(
         viewModel.event.collect { event ->
             when (event) {
                 is CatalogEvent.NavigateToCategory -> navigate(Route.Search(withType = event.category))
+                is CatalogEvent.NavigateToGenre -> navigate(Route.Search(withGenre = event.genre))
                 is CatalogEvent.NavigateToMovie -> navigate(Route.Artwork(artworkId = event.artworkId, season = null, rgb = event.rgb))
                 is CatalogEvent.NavigateToShow -> navigate(Route.Show(artworkId = event.artworkId, rgb = event.rgb))
                 CatalogEvent.NavigateToUnknown -> navigate(Route.UnknownArtworks)

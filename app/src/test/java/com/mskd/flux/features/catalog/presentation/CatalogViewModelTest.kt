@@ -19,6 +19,7 @@ import com.mskd.flux.mockups.MediaMockups
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
+import io.kotest.property.arbitrary.element
 import io.kotest.property.arbitrary.enum
 import io.kotest.property.checkAll
 import io.mockk.coEvery
@@ -192,12 +193,47 @@ class CatalogViewModelTest : FunSpec({
     }
 
     test("on category tap") {
-        viewModel = createViewModel()
 
-        viewModel.event.test {
-            viewModel.handleIntent(CatalogIntent.OnCategoryTap(category = ContentType.MOVIE))
-            awaitItem() shouldBe CatalogEvent.NavigateToCategory(category = ContentType.MOVIE)
+        checkAll(
+            Arb.enum<ContentType>()
+        ) { type ->
+
+            // Given
+            viewModel = createViewModel()
+
+            viewModel.event.test {
+
+                // When
+                viewModel.handleIntent(CatalogIntent.OnCategoryTap(category = ContentType.MOVIE))
+
+                // Then
+                awaitItem() shouldBe CatalogEvent.NavigateToCategory(category = ContentType.MOVIE)
+            }
+
         }
+
+    }
+
+    test("on genre tap") {
+
+        checkAll(
+            Arb.element(DetailsMockup.allGenres)
+        ) { genre ->
+
+            // Given
+            viewModel = createViewModel()
+
+            viewModel.event.test {
+
+                // When
+                viewModel.handleIntent(CatalogIntent.OnGenreTap(genre = genre))
+
+                // Then
+                awaitItem() shouldBe CatalogEvent.NavigateToGenre(genre = genre)
+            }
+
+        }
+
     }
 
     test("on search tap") {

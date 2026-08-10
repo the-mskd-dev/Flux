@@ -281,6 +281,7 @@ class SearchViewModelTest : FunSpec({
                 genres.forEach { viewModel.handleIntent(SearchIntent.SelectGenre(genre = it)) }
                 testDispatcher.scheduler.advanceUntilIdle()
                 viewModel.handleIntent(SearchIntent.ClearGenres)
+                testDispatcher.scheduler.advanceUntilIdle()
 
                 // Then
                 val state = awaitItem()

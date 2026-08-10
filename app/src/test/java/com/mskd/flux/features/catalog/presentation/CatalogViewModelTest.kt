@@ -232,7 +232,7 @@ class CatalogViewModelTest : FunSpec({
 
     }
 
-    test("on category tap") {
+    test("OnCategoryTap - should send NavigateToSearch event with a given type") {
 
         checkAll(
             Arb.enum<ContentType>()
@@ -254,7 +254,7 @@ class CatalogViewModelTest : FunSpec({
 
     }
 
-    test("on genre tap") {
+    test("OnGenreTap - should send NavigateToSearch event with a given genre") {
 
         checkAll(
             Arb.element(DetailsMockup.allGenres)

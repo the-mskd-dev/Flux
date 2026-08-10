@@ -14,7 +14,6 @@ import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
 import com.mskd.flux.features.catalog.domain.model.CatalogViewMode
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
-import com.mskd.flux.features.catalog.presentation.CatalogEvent.NavigateToCategory
 import com.mskd.flux.features.catalog.presentation.CatalogEvent.NavigateToHowTo
 import com.mskd.flux.features.catalog.presentation.CatalogEvent.NavigateToMovie
 import com.mskd.flux.features.catalog.presentation.CatalogEvent.NavigateToSearch
@@ -134,9 +133,9 @@ class CatalogViewModel(
             // Navigation
             is CatalogIntent.SyncCatalog -> syncCatalog()
             is CatalogIntent.OnArtworkTap -> onArtworkTap(artwork = intent.artwork, rgb = intent.rgb)
-            is CatalogIntent.OnCategoryTap -> _event.emit(NavigateToCategory(category = intent.category))
-            is CatalogIntent.OnGenreTap -> _event.emit(CatalogEvent.NavigateToGenre(genre = intent.genre))
-            CatalogIntent.OnSearchTap -> _event.emit(NavigateToSearch)
+            is CatalogIntent.OnCategoryTap -> _event.emit(NavigateToSearch(category = intent.category))
+            is CatalogIntent.OnGenreTap -> _event.emit(NavigateToSearch(genre = intent.genre))
+            CatalogIntent.OnSearchTap -> _event.emit(NavigateToSearch())
             CatalogIntent.OnSettingsTap -> _event.emit(NavigateToSettings)
             CatalogIntent.OnHowToTap -> _event.emit(NavigateToHowTo)
             CatalogIntent.OnSourcesTap -> _event.emit(NavigateToSources)

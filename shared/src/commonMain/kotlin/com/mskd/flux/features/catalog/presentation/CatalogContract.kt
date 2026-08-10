@@ -63,10 +63,8 @@ sealed interface CatalogIntent {
 sealed interface CatalogEvent {
     data class NavigateToMovie(val artworkId: Long, val rgb: Int?): CatalogEvent
     data class NavigateToShow(val artworkId: Long, val rgb: Int?): CatalogEvent
-    data class NavigateToCategory(val category: ContentType): CatalogEvent
-    data class NavigateToGenre(val genre: Genre): CatalogEvent
     data object NavigateToUnknown: CatalogEvent
-    data object NavigateToSearch: CatalogEvent
+    data class NavigateToSearch(val category: ContentType? = null, val genre: Genre? = null): CatalogEvent
     data object NavigateToSettings: CatalogEvent
     data object NavigateToToken: CatalogEvent
     data object NavigateToHowTo: CatalogEvent

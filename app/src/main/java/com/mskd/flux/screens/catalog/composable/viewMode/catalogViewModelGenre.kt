@@ -50,7 +50,7 @@ fun LazyGridScope.catalogViewModeGenre(
                     name = genre.name,
                     artworks = categoryArtworks,
                     sortingOption = sortingMode,
-                    onCategoryTap = {},
+                    onCategoryTap = { sendIntent(CatalogIntent.OnGenreTap(genre = genre)) },
                     sendIntent = sendIntent
                 )
             }

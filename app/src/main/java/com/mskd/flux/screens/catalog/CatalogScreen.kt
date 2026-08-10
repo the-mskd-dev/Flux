@@ -80,13 +80,11 @@ fun CatalogScreen(
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
             when (event) {
-                is CatalogEvent.NavigateToCategory -> navigate(Route.Search(withType = event.category))
-                is CatalogEvent.NavigateToGenre -> navigate(Route.Search(withGenre = event.genre))
+                is CatalogEvent.NavigateToSearch -> navigate(Route.Search(withGenre = event.genre, withType = event.category))
                 is CatalogEvent.NavigateToMovie -> navigate(Route.Artwork(artworkId = event.artworkId, season = null, rgb = event.rgb))
                 is CatalogEvent.NavigateToShow -> navigate(Route.Show(artworkId = event.artworkId, rgb = event.rgb))
                 CatalogEvent.NavigateToUnknown -> navigate(Route.UnknownArtworks)
                 CatalogEvent.NavigateToHowTo -> navigate(Route.HowTo)
-                CatalogEvent.NavigateToSearch -> navigate(Route.Search())
                 CatalogEvent.NavigateToSettings -> navigate(Route.Settings)
                 CatalogEvent.NavigateToToken -> navigate(Route.Token(fromSetup = false))
                 CatalogEvent.NavigateToSources -> navigate(Route.Sources(fromSetup = false))

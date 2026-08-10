@@ -204,10 +204,10 @@ class CatalogViewModelTest : FunSpec({
             viewModel.event.test {
 
                 // When
-                viewModel.handleIntent(CatalogIntent.OnCategoryTap(category = ContentType.MOVIE))
+                viewModel.handleIntent(CatalogIntent.OnCategoryTap(category = type))
 
                 // Then
-                awaitItem() shouldBe CatalogEvent.NavigateToCategory(category = ContentType.MOVIE)
+                awaitItem() shouldBe CatalogEvent.NavigateToSearch(category = type)
             }
 
         }
@@ -229,7 +229,7 @@ class CatalogViewModelTest : FunSpec({
                 viewModel.handleIntent(CatalogIntent.OnGenreTap(genre = genre))
 
                 // Then
-                awaitItem() shouldBe CatalogEvent.NavigateToGenre(genre = genre)
+                awaitItem() shouldBe CatalogEvent.NavigateToSearch(genre = genre)
             }
 
         }
@@ -241,7 +241,7 @@ class CatalogViewModelTest : FunSpec({
 
         viewModel.event.test {
             viewModel.handleIntent(CatalogIntent.OnSearchTap)
-            awaitItem() shouldBe CatalogEvent.NavigateToSearch
+            awaitItem() shouldBe CatalogEvent.NavigateToSearch()
         }
     }
 

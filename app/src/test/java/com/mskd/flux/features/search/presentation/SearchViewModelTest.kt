@@ -14,9 +14,7 @@ import io.kotest.inspectors.shouldForAll
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldContainAnyOf
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
-import io.kotest.matchers.collections.shouldMatchEach
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldContainIgnoringCase
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.element
@@ -30,7 +28,6 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.test.advanceUntilIdle
 
 class SearchViewModelTest : FunSpec({
 
@@ -50,7 +47,7 @@ class SearchViewModelTest : FunSpec({
             every { flow } returns MutableStateFlow(SettingsDataStore.State())
         }
     ) : SearchViewModel = SearchViewModel(
-        contentType = contentType,
+        withType = contentType,
         database = database,
         details = details,
         settings = settings

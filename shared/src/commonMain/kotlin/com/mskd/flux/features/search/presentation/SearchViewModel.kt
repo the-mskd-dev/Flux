@@ -20,14 +20,14 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class SearchViewModel(
-    contentType: ContentType? = null,
+    withType: ContentType? = null,
     private val database: DatabaseRepository,
     private val details: DetailsRepository,
     private val settings: SettingsDataStore
 ) : ViewModel() {
 
     private val _userActions = MutableStateFlow(SearchUserActions(
-        selectedType = contentType
+        selectedType = withType
     ))
 
     val uiState = combine(

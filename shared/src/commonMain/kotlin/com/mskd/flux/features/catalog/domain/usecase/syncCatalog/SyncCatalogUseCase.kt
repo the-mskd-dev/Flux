@@ -53,11 +53,14 @@ class SyncCatalogUseCase(
                 deviceFiles.filter { file -> existingFiles.none { it.path == file.path } } + unknownFiles
             }
 
-            // TODO: Delete in October 2026
-            updateGenreIdsUseCase()
-
             if (newFiles.isEmpty()) {
                 database.deleteMediasNotInFiles(existingFiles)
+
+                // TODO: Delete in October 2026
+                updateGenreIdsUseCase(
+                    onProgressCount = { coordinator.setTotalSteps(it) },
+                    onProgress = { coordinator.incrementProgress() }
+                )
 
                 // TODO: Delete in October 2026
                 database.updateRealPaths(files = deviceFiles)
@@ -90,7 +93,13 @@ class SyncCatalogUseCase(
             // Update real paths
             steps += 1
 
-            coordinator.setTotalSteps(steps)
+            // TODO: Delete in October 2026 and move setTotalSteps outside
+            updateGenreIdsUseCase(
+                onProgressCount = { coordinator.setTotalSteps(it + steps) },
+                onProgress = { coordinator.incrementProgress() }
+            )
+
+            //coordinator.setTotalSteps(steps)
 
             // Get Genres
             if (!onlyNew) syncGenresUseCase()

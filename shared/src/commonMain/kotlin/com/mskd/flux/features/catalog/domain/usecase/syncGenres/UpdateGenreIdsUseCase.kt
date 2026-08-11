@@ -12,9 +12,11 @@ class UpdateGenreIdsUseCase(
     private val db: DatabaseRepository
 ) {
 
-    suspend operator fun invoke() {
+    suspend operator fun invoke(onProgressCount: (Int) -> Unit, onProgress: () -> Unit) {
 
         val artworks = db.getArtworks().filter { it.genreIds.isEmpty() && !it.isUnknown }
+
+        onProgressCount(artworks.size)
 
         val updatedArtworks = coroutineScope {
 
@@ -23,7 +25,9 @@ class UpdateGenreIdsUseCase(
                 async {
 
                     val genresIds = api.getGenreIds(artwork = artwork).toImmutableList()
-                    artwork.copy(genreIds = genresIds)
+                    artwork.copy(genreIds = genresIds).also {
+                        onProgress()
+                    }
 
                 }
 

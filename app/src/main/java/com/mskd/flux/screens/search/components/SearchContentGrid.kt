@@ -1,12 +1,9 @@
 package com.mskd.flux.screens.search.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
@@ -16,25 +13,18 @@ import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.features.search.presentation.SearchIntent
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.component.media.MediaItem
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxThemePreview
-import com.mskd.flux.utils.itemWidthFor
-import flux.shared.generated.resources.Res
-import flux.shared.generated.resources.empty_catalog
-import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun SearchContentGrid(

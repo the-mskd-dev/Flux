@@ -48,13 +48,13 @@ class SearchViewModelTest : FunSpec({
         },
         settings: SettingsDataStore = mockk(relaxed = true) {
             every { flow } returns MutableStateFlow(SettingsDataStore.State())
-        }
+        },
     ) : SearchViewModel = SearchViewModel(
         withType = withType,
         withGenre = withGenre,
         database = database,
         details = details,
-        settings = settings
+        settings = settings,
     )
 
     //endregion

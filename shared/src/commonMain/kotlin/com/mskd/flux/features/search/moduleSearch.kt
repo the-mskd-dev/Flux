@@ -12,7 +12,7 @@ val moduleSearch = module {
             withGenre = params.getOrNull(),
             database = get(),
             details = get(),
-            settings = get()
+            settings = get(),
         )
     }
 

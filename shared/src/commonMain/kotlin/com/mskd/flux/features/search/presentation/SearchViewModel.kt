@@ -24,7 +24,7 @@ class SearchViewModel(
     withGenre: Genre? = null,
     private val database: DatabaseRepository,
     private val details: DetailsRepository,
-    private val settings: SettingsDataStore
+    private val settings: SettingsDataStore,
 ) : ViewModel() {
 
     private val _userActions = MutableStateFlow(SearchUserActions(

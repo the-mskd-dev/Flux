@@ -1,27 +1,14 @@
 package com.mskd.flux.screens.search
 
-import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.GridItemSpan
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.material3.ContainedLoadingIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -31,7 +18,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -49,26 +35,19 @@ import com.mskd.flux.features.search.presentation.SearchViewModel
 import com.mskd.flux.mockups.DetailsMockup
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.navigation.domain.Route
-import com.mskd.flux.screens.catalog.composable.CatalogEmptyContent
 import com.mskd.flux.screens.search.components.SearchContentGrid
 import com.mskd.flux.screens.search.components.SearchFilters
 import com.mskd.flux.screens.search.components.SearchGenresSheet
 import com.mskd.flux.ui.component.global.FluxScaffold
 import com.mskd.flux.ui.component.global.FluxSearchField
-import com.mskd.flux.ui.component.global.Text
-import com.mskd.flux.ui.component.media.MediaItem
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxThemePreview
 import com.mskd.flux.utils.itemWidthFor
 import com.mskd.flux.utils.rememberScreenDimensions
-import flux.shared.generated.resources.Res
-import flux.shared.generated.resources.empty_catalog
-import io.ktor.client.utils.EmptyContent
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.collectLatest
-import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -170,33 +149,17 @@ fun SearchContent(
                 sendIntent = sendIntent
             )
 
-            Crossfade(
+            SearchContentGrid(
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth(),
-                targetState = state.artworks
-            ) { artworks ->
-
-                if (artworks.isNotEmpty()) {
-                    SearchContentGrid(
-                        modifier = Modifier.fillMaxSize(),
-                        state = lazyGridState,
-                        columns = columns,
-                        artworks = artworks,
-                        bottomPadding = innerPadding.calculateBottomPadding(),
-                        itemWidth = itemWidth,
-                        sendIntent = sendIntent
-                    )
-                } else {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        LoadingIndicator()
-                    }
-                }
-
-            }
+                state = lazyGridState,
+                columns = columns,
+                artworks = state.artworks,
+                bottomPadding = innerPadding.calculateBottomPadding(),
+                itemWidth = itemWidth,
+                sendIntent = sendIntent
+            )
 
         }
 

@@ -1,0 +1,2 @@
+- UI: Nouvel écran d'accueil
+- Feature: Ajout des genres

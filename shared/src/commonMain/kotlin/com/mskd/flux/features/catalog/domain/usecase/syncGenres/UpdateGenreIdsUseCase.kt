@@ -16,9 +16,6 @@ class UpdateGenreIdsUseCase(
 
         val artworks = db.getArtworks().filter { it.genreIds.isEmpty() && !it.isUnknown }
 
-        if (artworks.isEmpty())
-            return
-
         onProgressCount(artworks.size)
 
         val updatedArtworks = coroutineScope {

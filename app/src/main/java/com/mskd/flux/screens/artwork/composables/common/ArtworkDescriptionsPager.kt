@@ -27,6 +27,7 @@ import com.mskd.flux.utils.extensions.clickableWithBounce
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.no_summary
 import flux.shared.generated.resources.summary
+import kotlinx.collections.immutable.toImmutableList
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -77,7 +78,8 @@ fun ArtworkDescriptionsPager(
                     OverviewItem(
                         title = stringResource(Res.string.summary),
                         description = currentMedia.description,
-                        subtitle = { MediaDetailsHorizontal(currentMedia) }
+                        subtitle = { MediaDetailsHorizontal(currentMedia) },
+                        topDetails = { GenresTags(genres = fullArtwork.genres) }
                     )
 
                 }
@@ -132,7 +134,7 @@ fun ArtworkDescriptionsPager_Movie_Preview() {
 fun ArtworkDescriptionsPager_Show_Preview() {
     FluxTheme {
         ArtworkDescriptionsPager(
-            fullArtwork = MediaMockups.fullShow.copy(episodes = MediaMockups.episodesWithStatus),
+            fullArtwork = MediaMockups.fullShow.copy(episodes = MediaMockups.episodesWithStatus.toImmutableList()),
             currentMedia = MediaMockups.episode1.copy(status = Status.IS_WATCHING)
         )
     }

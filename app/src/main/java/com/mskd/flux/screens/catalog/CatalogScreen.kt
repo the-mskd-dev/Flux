@@ -39,12 +39,14 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.mskd.flux.core.model.artwork.Artwork
+import com.mskd.flux.core.model.artwork.Genre
 import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
 import com.mskd.flux.features.catalog.domain.model.CatalogViewMode
 import com.mskd.flux.features.catalog.presentation.CatalogEvent
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.features.catalog.presentation.CatalogState
 import com.mskd.flux.features.catalog.presentation.CatalogViewModel
+import com.mskd.flux.mockups.DetailsMockup
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.screens.catalog.composable.CatalogEmptyContent
@@ -56,6 +58,7 @@ import com.mskd.flux.screens.catalog.composable.sorting.CatalogSortingSheet
 import com.mskd.flux.screens.catalog.composable.viewMode.CatalogViewModeSheet
 import com.mskd.flux.screens.catalog.composable.viewMode.catalogViewModeGenre
 import com.mskd.flux.screens.catalog.composable.viewMode.catalogViewModeGrid
+import com.mskd.flux.screens.catalog.composable.viewMode.catalogViewModeType
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxPreview
@@ -77,12 +80,11 @@ fun CatalogScreen(
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
             when (event) {
-                is CatalogEvent.NavigateToCategory -> navigate(Route.Search(contentType = event.category))
+                is CatalogEvent.NavigateToSearch -> navigate(Route.Search(withGenre = event.genre, withType = event.category))
                 is CatalogEvent.NavigateToMovie -> navigate(Route.Artwork(artworkId = event.artworkId, season = null, rgb = event.rgb))
                 is CatalogEvent.NavigateToShow -> navigate(Route.Show(artworkId = event.artworkId, rgb = event.rgb))
                 CatalogEvent.NavigateToUnknown -> navigate(Route.UnknownArtworks)
                 CatalogEvent.NavigateToHowTo -> navigate(Route.HowTo)
-                CatalogEvent.NavigateToSearch -> navigate(Route.Search())
                 CatalogEvent.NavigateToSettings -> navigate(Route.Settings)
                 CatalogEvent.NavigateToToken -> navigate(Route.Token(fromSetup = false))
                 CatalogEvent.NavigateToSources -> navigate(Route.Sources(fromSetup = false))
@@ -117,6 +119,7 @@ fun CatalogScreen(
 
                 CatalogContent(
                     artworks = state.artworks,
+                    genres = state.genres,
                     lastWatchedIds = state.lastWatchedMediaIds,
                     isRefreshing = state.isRefreshing,
                     tokenIsMissing = state.tokenIsMissing,
@@ -140,6 +143,7 @@ fun CatalogScreen(
 @Composable
 fun CatalogContent(
     artworks: List<Artwork>,
+    genres: List<Genre>,
     lastWatchedIds: List<Long>,
     isRefreshing: Boolean,
     tokenIsMissing: Boolean,
@@ -231,9 +235,17 @@ fun CatalogContent(
                                     sendIntent = sendIntent
                                 )
                             }
-                            CatalogViewMode.BY_TYPE, CatalogViewMode.BY_GENRE -> {
+                            CatalogViewMode.BY_TYPE -> {
+                                catalogViewModeType(
+                                    artworks = artworks,
+                                    sortingMode = sortingMode,
+                                    sendIntent = sendIntent
+                                )
+                            }
+                            CatalogViewMode.BY_GENRE -> {
                                 catalogViewModeGenre(
                                     artworks = artworks,
+                                    genres = genres,
                                     sortingMode = sortingMode,
                                     sendIntent = sendIntent
                                 )
@@ -294,6 +306,7 @@ fun CatalogScreen_Preview() {
         Surface {
             CatalogContent(
                 artworks = MediaMockups.artworks,
+                genres = DetailsMockup.allGenres,
                 lastWatchedIds = MediaMockups.artworks.map { it.id },
                 isRefreshing = false,
                 tokenIsMissing = false,
@@ -314,6 +327,7 @@ fun CatalogScreen_Unknown_Preview() {
         Surface {
             CatalogContent(
                 artworks = listOf(MediaMockups.unknownArtwork),
+                genres = emptyList(),
                 lastWatchedIds = emptyList(),
                 isRefreshing = false,
                 tokenIsMissing = true,
@@ -334,6 +348,7 @@ fun CatalogScreen_Empty_Preview() {
         Surface {
             CatalogContent(
                 artworks = emptyList(),
+                genres = emptyList(),
                 lastWatchedIds = emptyList(),
                 isRefreshing = false,
                 tokenIsMissing = true,

@@ -3,6 +3,7 @@ package com.mskd.flux.features.catalog.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.core.database.domain.repository.DatabaseRepository
+import com.mskd.flux.core.database.domain.repository.DetailsRepository
 import com.mskd.flux.core.datastore.domain.UserDataStore
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.ContentType
@@ -13,7 +14,6 @@ import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
 import com.mskd.flux.features.catalog.domain.model.CatalogViewMode
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
-import com.mskd.flux.features.catalog.presentation.CatalogEvent.NavigateToCategory
 import com.mskd.flux.features.catalog.presentation.CatalogEvent.NavigateToHowTo
 import com.mskd.flux.features.catalog.presentation.CatalogEvent.NavigateToMovie
 import com.mskd.flux.features.catalog.presentation.CatalogEvent.NavigateToSearch
@@ -25,6 +25,7 @@ import com.mskd.flux.features.catalog.presentation.CatalogEvent.NavigateToUnknow
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.utils.Trace
 import com.mskd.flux.utils.UpdateManager
+import com.mskd.flux.utils.extensions.filterFor
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -37,7 +38,8 @@ import kotlinx.coroutines.launch
 
 class CatalogViewModel(
     private val syncCatalogUseCase: SyncCatalogUseCase,
-    private val database: DatabaseRepository,
+    private val artworkDb: DatabaseRepository,
+    private val detailsDb: DetailsRepository,
     private val userDataStore: UserDataStore,
     private val tokenDataStore: TokenDataStore,
     private val catalogDataStore: CatalogDataStore,
@@ -65,13 +67,20 @@ class CatalogViewModel(
         )
     }
 
+    private val artworkFlow = combine(
+        artworkDb.flowArtworks(),
+        detailsDb.flowGenres()
+    ) { artworks, genres ->
+        artworks to genres.filterFor(artworks = artworks)
+    }
+
     val uiState: StateFlow<CatalogUiState> = combine(
-        database.flowArtworks(),
+        artworkFlow,
         syncCatalogUseCase.state,
         preferencesFlow,
         _showSortingSheet,
         _showViewModeSheet
-    ) { artworks, syncState, preferences, showSortingSheet, showViewModeSheet  ->
+    ) { (artworks, genres), syncState, preferences, showSortingSheet, showViewModeSheet  ->
 
         if (syncState is SyncState.Syncing && (syncState.full || !hasLoadedContent)) {
 
@@ -92,6 +101,7 @@ class CatalogViewModel(
             CatalogUiState(
                 state = CatalogState.Content(
                     artworks = sortedArtworks,
+                    genres = genres,
                     lastWatchedMediaIds = preferences.recentlyWatchedIds,
                     isRefreshing = syncState is SyncState.Syncing,
                     tokenIsMissing = preferences.token.isBlank(),
@@ -123,8 +133,9 @@ class CatalogViewModel(
             // Navigation
             is CatalogIntent.SyncCatalog -> syncCatalog()
             is CatalogIntent.OnArtworkTap -> onArtworkTap(artwork = intent.artwork, rgb = intent.rgb)
-            is CatalogIntent.OnCategoryTap -> _event.emit(NavigateToCategory(category = intent.category))
-            CatalogIntent.OnSearchTap -> _event.emit(NavigateToSearch)
+            is CatalogIntent.OnCategoryTap -> _event.emit(NavigateToSearch(category = intent.category))
+            is CatalogIntent.OnGenreTap -> _event.emit(NavigateToSearch(genre = intent.genre))
+            CatalogIntent.OnSearchTap -> _event.emit(NavigateToSearch())
             CatalogIntent.OnSettingsTap -> _event.emit(NavigateToSettings)
             CatalogIntent.OnHowToTap -> _event.emit(NavigateToHowTo)
             CatalogIntent.OnSourcesTap -> _event.emit(NavigateToSources)

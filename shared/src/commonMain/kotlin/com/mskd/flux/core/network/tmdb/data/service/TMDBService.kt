@@ -1,22 +1,30 @@
 package com.mskd.flux.core.network.tmdb.data.service
 
-import com.mskd.flux.core.network.tmdb.data.dto.ArtworksResultDto
 import com.mskd.flux.core.network.tmdb.data.dto.AuthenticationDto
-import com.mskd.flux.core.network.tmdb.data.dto.EpisodeDto
-import com.mskd.flux.core.network.tmdb.data.dto.MovieDto
-import com.mskd.flux.core.network.tmdb.data.dto.SeasonDto
+import com.mskd.flux.core.network.tmdb.data.dto.SearchResultsDto
 import com.mskd.flux.core.network.tmdb.data.dto.TranslationsDto
+import com.mskd.flux.core.network.tmdb.data.dto.genre.GenresResultDto
+import com.mskd.flux.core.network.tmdb.data.dto.movie.MovieDto
+import com.mskd.flux.core.network.tmdb.data.dto.show.EpisodeDto
+import com.mskd.flux.core.network.tmdb.data.dto.show.SeasonDto
+import com.mskd.flux.core.network.tmdb.data.dto.show.ShowDto
 import com.mskd.flux.utils.Constants
 
 interface TMDBService {
 
+    //region Auth
+
     suspend fun authenticate() : AuthenticationDto
 
-    suspend fun getMovie(
+    //endregion
+
+    //region Movie
+
+    suspend fun searchMovie(
         title: String,
         year: Int? = null,
         language: String = Constants.Global.LANGUAGE
-    ) : ArtworksResultDto
+    ) : SearchResultsDto
 
     suspend fun getMovieDetails(
         id: Long,
@@ -27,15 +35,32 @@ interface TMDBService {
         artworkId: Long,
     ) : TranslationsDto
 
-    suspend fun getShow(
+    suspend fun getMovieGenres(language: String = Constants.Global.LANGUAGE) : GenresResultDto
+
+    //endregion
+
+    //region Show
+
+    suspend fun searchShow(
         title: String,
         year: Int? = null,
         language: String = Constants.Global.LANGUAGE
-    ) : ArtworksResultDto
+    ) : SearchResultsDto
+
+    suspend fun getShowDetails(
+        artworkId: Long,
+        language: String = Constants.Global.LANGUAGE
+    ) : ShowDto
 
     suspend fun getShowTranslations(
         artworkId: Long,
     ) : TranslationsDto
+
+    suspend fun getShowGenres(language: String = Constants.Global.LANGUAGE) : GenresResultDto
+
+    //endregion
+
+    //region Episode
 
     suspend fun getEpisode(
         id: Long,
@@ -50,6 +75,10 @@ interface TMDBService {
         number: Int,
     ) : TranslationsDto
 
+    //endregion
+
+    //region Season
+
     suspend fun getSeason(
         id: Long,
         season: Int,
@@ -60,5 +89,7 @@ interface TMDBService {
         artworkId: Long,
         season: Int,
     ) : TranslationsDto
+
+    //endregion
 
 }

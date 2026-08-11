@@ -27,9 +27,12 @@ import org.koin.test.KoinTest
 import org.koin.test.get
 import org.koin.test.inject
 import java.util.Locale
+import kotlin.test.assertTrue
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class TmdbDataSourceImplTest : KoinTest {
+
+    //region Setup
 
     private val tmdbService: TMDBService by inject()
     private lateinit var settingsDataStore: SettingsDataStore
@@ -86,9 +89,13 @@ class TmdbDataSourceImplTest : KoinTest {
         stopKoin()
     }
 
+    //endregion
+
+    //region Movie
+
     @Test
-    fun test_01_get_tmdb_artwork_movie() = runTest {
-        val result = repository.getTmdbArtwork(movieFile)
+    fun test_0_get_movie_artwork() = runTest {
+        val result = repository.getArtwork(movieFile)
 
         assert(result != null)
 
@@ -107,9 +114,9 @@ class TmdbDataSourceImplTest : KoinTest {
     }
 
     @Test
-    fun test_02_get_tmdb_movie() = runTest {
+    fun test_get_movie() = runTest {
 
-        val result = repository.getTmdbMovie(artworkId = movieArtworkId!!)
+        val result = repository.getMovie(artworkId = movieArtworkId!!)
 
         assert(result != null)
 
@@ -124,9 +131,9 @@ class TmdbDataSourceImplTest : KoinTest {
     }
 
     @Test
-    fun test_03_get_tmdb_movie_translations() = runTest {
+    fun test_get_movie_translations() = runTest {
 
-        val result = repository.getTmdbTranslation(
+        val result = repository.getTranslation(
             request = TranslationRequest.Movie(
                 artworkId = movieArtworkId!!,
                 language = dataLanguage
@@ -141,10 +148,17 @@ class TmdbDataSourceImplTest : KoinTest {
         println("country : ${result?.country}")
     }
 
-    @Test
-    fun test_04_get_tmdb_artwork_show() = runTest {
-        val result = repository.getTmdbArtwork(episodeFile)
+    //endregion
 
+    //region Show
+
+    @Test
+    fun test_0_get_show_artwork() = runTest {
+
+        // Given & When
+        val result = repository.getArtwork(episodeFile)
+
+        // Then
         assert(result != null)
 
         showArtworkId = result?.id
@@ -162,9 +176,31 @@ class TmdbDataSourceImplTest : KoinTest {
     }
 
     @Test
-    fun test_05_get_tmdb_show_translations() = runTest {
+    fun test_get_show() = runTest {
 
-        val result = repository.getTmdbTranslation(
+        // Given
+        val artworkId = showArtworkId!!
+
+        // When
+        val result = repository.getShow(artworkId = artworkId)
+
+        // Then
+        assert(result != null)
+
+        println("id : ${result?.id}")
+        println("title : ${result?.title}")
+        println("description : ${result?.description}")
+        println("imagePath : ${result?.imagePath}")
+        println("bannerPath : ${result?.bannerPath}")
+        println("releaseDate : ${result?.releaseDate}")
+        println("voteCount : ${result?.voteCount}")
+        println("voteAverage : ${result?.voteAverage}")
+    }
+
+    @Test
+    fun test_get_show_translations() = runTest {
+
+        val result = repository.getTranslation(
             request = TranslationRequest.Show(
                 artworkId = showArtworkId!!,
                 language = dataLanguage
@@ -179,10 +215,14 @@ class TmdbDataSourceImplTest : KoinTest {
         println("country : ${result?.country}")
     }
 
-    @Test
-    fun test_06_get_tmdb_episode() = runTest {
+    //endregion
 
-        val result = repository.getTmdbEpisode(
+    //region Episode
+
+    @Test
+    fun test_get_episode() = runTest {
+
+        val result = repository.getEpisode(
             artworkId = showArtworkId!!,
             season = episodeFile.nameProperties.season!!,
             number = episodeFile.nameProperties.episode!!
@@ -203,9 +243,9 @@ class TmdbDataSourceImplTest : KoinTest {
     }
 
     @Test
-    fun test_07_get_tmdb_episode_translations() = runTest {
+    fun test_get_episode_translations() = runTest {
 
-        val result = repository.getTmdbTranslation(
+        val result = repository.getTranslation(
             request = TranslationRequest.Episode(
                 artworkId = showArtworkId!!,
                 season = episodeFile.nameProperties.season!!,
@@ -223,10 +263,14 @@ class TmdbDataSourceImplTest : KoinTest {
 
     }
 
-    @Test
-    fun test_08_get_tmdb_season() = runTest {
+    //endregion
 
-        val result = repository.getTmdbSeason(
+    //region Season
+
+    @Test
+    fun test_get_season() = runTest {
+
+        val result = repository.getSeason(
             artworkId = showArtworkId!!,
             season = episodeFile.nameProperties.season!!,
         )
@@ -242,9 +286,9 @@ class TmdbDataSourceImplTest : KoinTest {
     }
 
     @Test
-    fun test_09_get_tmdb_season_translations() = runTest {
+    fun test_get_season_translations() = runTest {
 
-        val result = repository.getTmdbTranslation(
+        val result = repository.getTranslation(
             request = TranslationRequest.Season(
                 artworkId = showArtworkId!!,
                 season = episodeFile.nameProperties.season!!,
@@ -260,5 +304,21 @@ class TmdbDataSourceImplTest : KoinTest {
         println("country : ${result?.country}")
 
     }
+
+    //endregion
+
+    //region Genres
+
+    @Test
+    fun test_get_genres() = runTest {
+
+        // Given & When
+        val result = repository.getGenres()
+
+        // Then
+        assertTrue(result.isNotEmpty())
+    }
+
+    //endregion
 
 }

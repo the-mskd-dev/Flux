@@ -35,7 +35,7 @@ class DatabaseRepositoryImpl(private val dao: DatabaseDao) : DatabaseRepository 
     }
 
     override suspend fun saveArtworks(artworks: List<Artwork>, overrideLastModification: Boolean) {
-        dao.insertArtworks(artworks = artworks.map { it.toEntity() })
+        dao.insertArtworks(artworks = artworks.map { it.toEntity(overrideLastModification = overrideLastModification) })
     }
 
     override suspend fun saveMedias(medias: List<Media>) {

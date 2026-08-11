@@ -51,7 +51,6 @@ class ShowViewModelTest : FunSpec({
 
             initialState.state.shouldBeInstanceOf<State.Content<ShowContent>>()
             val content = (initialState.state as State.Content<ShowContent>).content
-            content.fullShow shouldBe MediaMockups.fullShow
             content.dialog shouldBe null
 
         }

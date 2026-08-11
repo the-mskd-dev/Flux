@@ -1,19 +1,23 @@
-package com.mskd.flux.features.artwork.domain.usecase.observeArtwork
+package com.mskd.flux.features.artwork.usecase
 
 import app.cash.turbine.test
 import com.mskd.flux.core.database.domain.repository.DatabaseRepository
+import com.mskd.flux.core.database.domain.repository.DetailsRepository
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.Season
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.core.model.files.FileSource
+import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCaseImpl
 import com.mskd.flux.features.sources.domain.model.UserFolder
 import com.mskd.flux.features.sources.domain.usecase.FlowSourcesUseCase
+import com.mskd.flux.mockups.DetailsMockup
 import com.mskd.flux.mockups.MediaMockups
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,6 +26,7 @@ import kotlinx.coroutines.test.runTest
 class ObserveArtworkUseCaseTest : FunSpec({
 
     lateinit var database: DatabaseRepository
+    lateinit var detailsRepository: DetailsRepository
     lateinit var sourcesUseCase: FlowSourcesUseCase
     lateinit var useCase: ObserveArtworkUseCaseImpl
 
@@ -41,10 +46,20 @@ class ObserveArtworkUseCaseTest : FunSpec({
         every { database.flowSeasons(any()) } returns seasonsFlow
         every { database.flowMedias(any()) } returns mediasFlow
 
+        detailsRepository = mockk(relaxed = true) {
+            every { flowGenres() } returns MutableStateFlow(DetailsMockup.allGenres)
+            coEvery { getGenresCount() } returns DetailsMockup.allGenres.count()
+        }
+
         sourcesUseCase = mockk()
         every { sourcesUseCase() } returns sourcesFlow
 
-        useCase = ObserveArtworkUseCaseImpl(database, sourcesUseCase)
+        useCase = ObserveArtworkUseCaseImpl(
+            database = database,
+            detailsRepository = detailsRepository,
+            sourcesUseCase = sourcesUseCase
+        )
+
     }
 
     test("if no artwork, no flow") {
@@ -88,7 +103,7 @@ class ObserveArtworkUseCaseTest : FunSpec({
                     .content
                 val fullMovie = content.shouldBeInstanceOf<FullArtwork.FullMovie>()
 
-                fullMovie.resume shouldBe MediaMockups.movieArtwork
+                fullMovie.artwork shouldBe MediaMockups.movieArtwork
                 fullMovie.movie shouldBe MediaMockups.movie.copy(isAvailable = true)
             }
         }
@@ -107,7 +122,7 @@ class ObserveArtworkUseCaseTest : FunSpec({
                     .content
                 val fullShow = content.shouldBeInstanceOf<FullArtwork.FullShow>()
 
-                fullShow.resume shouldBe MediaMockups.showArtwork
+                fullShow.artwork shouldBe MediaMockups.showArtwork
                 // episodes = [S1E1, S1E2, S2E33] -> saisons attendues = season1, season2 (season3 exclue)
                 fullShow.seasons shouldBe listOf(MediaMockups.season1, MediaMockups.season2)
                 fullShow.episodes shouldBe MediaMockups.episodes

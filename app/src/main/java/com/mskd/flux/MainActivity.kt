@@ -182,7 +182,8 @@ class MainActivity : ComponentActivity() {
                                 SearchScreen(
                                     navigate = { route -> navigate(route) },
                                     onBack = { onBack() },
-                                    contentType = entry.contentType
+                                    withType = entry.withType,
+                                    withGenre = entry.withGenre
                                 )
                             }
                             entry<Route.Player> { entry ->

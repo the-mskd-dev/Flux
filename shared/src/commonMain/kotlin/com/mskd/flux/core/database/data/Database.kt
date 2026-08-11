@@ -9,6 +9,7 @@ import androidx.room.TypeConverters
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import com.mskd.flux.core.database.data.migrations.MIGRATION_5_6
 import com.mskd.flux.core.database.data.model.ArtworkEntity
+import com.mskd.flux.core.database.data.model.GenreEntity
 import com.mskd.flux.core.database.data.model.MediaEntity
 import com.mskd.flux.core.database.data.model.SeasonEntity
 import com.mskd.flux.features.sources.data.local.SourcesDao
@@ -20,15 +21,17 @@ import kotlinx.coroutines.Dispatchers
         ArtworkEntity::class,
         SeasonEntity::class,
         MediaEntity::class,
-        UserFolderEntity::class
+        UserFolderEntity::class,
+        GenreEntity::class
     ],
-    version = 7,
+    version = 8,
     autoMigrations = [
         AutoMigration(from = 1, to = 2),
         AutoMigration(from = 2, to = 3),
         AutoMigration(from = 3, to = 4),
         AutoMigration(from = 4, to = 5),
         AutoMigration(from = 6, to = 7),
+        AutoMigration(from = 7, to = 8),
     ]
 )
 @TypeConverters(Converters::class)
@@ -36,6 +39,7 @@ import kotlinx.coroutines.Dispatchers
 abstract class FluxDatabase : RoomDatabase() {
     abstract fun dao(): DatabaseDao
     abstract fun sourcesDao(): SourcesDao
+    abstract fun detailsDao(): DetailsDao
 }
 
 expect object FluxDatabaseConstructor : RoomDatabaseConstructor<FluxDatabase> {

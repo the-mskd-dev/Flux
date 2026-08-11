@@ -3,12 +3,12 @@ package com.mskd.flux.core.network.tmdb.data.mapper
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.core.model.files.UserFile
-import com.mskd.flux.core.network.tmdb.data.dto.EpisodeDto
+import com.mskd.flux.core.network.tmdb.data.dto.show.EpisodeDto
 
 fun EpisodeDto.toDomain(
     artworkId: Long,
     file: UserFile,
-    duration: Int
+    duration: Int = this.duration ?: 0
 ) : Episode {
     return Episode(
         id = this.id,

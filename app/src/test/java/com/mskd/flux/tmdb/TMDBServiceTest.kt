@@ -45,7 +45,7 @@ class TMDBServiceTest : FunSpec({
             .setResponseCode(200)
         apiConfig.mockWebServer.enqueue(mockResponse)
 
-        val tmdbResult = apiConfig.api.getMovie("your name")
+        val tmdbResult = apiConfig.api.searchMovie("your name")
 
         tmdbResult.results.isNotEmpty() shouldBe true
         tmdbResult.resultCount shouldBeGreaterThan 0
@@ -60,7 +60,7 @@ class TMDBServiceTest : FunSpec({
         apiConfig.mockWebServer.enqueue(mockResponse)
 
         shouldThrow<Exception> {
-            apiConfig.api.getMovie("your name")
+            apiConfig.api.searchMovie("your name")
         }
 
     }
@@ -123,7 +123,7 @@ class TMDBServiceTest : FunSpec({
             .setResponseCode(200)
         apiConfig.mockWebServer.enqueue(mockResponse)
 
-        val tmdbResult = apiConfig.api.getShow("naruto")
+        val tmdbResult = apiConfig.api.searchShow("naruto")
 
         tmdbResult.results.isNotEmpty() shouldBe true
         tmdbResult.resultCount shouldBeGreaterThan 0
@@ -138,7 +138,7 @@ class TMDBServiceTest : FunSpec({
         apiConfig.mockWebServer.enqueue(mockResponse)
 
         shouldThrow<Exception> {
-            apiConfig.api.getShow("naruto")
+            apiConfig.api.searchShow("naruto")
         }
 
     }

@@ -1,5 +1,6 @@
-package com.mskd.flux.core.network.tmdb.data.dto
+package com.mskd.flux.core.network.tmdb.data.dto.movie
 
+import com.mskd.flux.core.network.tmdb.data.dto.genre.GenreDto
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -33,5 +34,6 @@ data class MovieDto(
     @SerialName("vote_count")
     val voteCount: Int,
     @SerialName("release_date")
-    val releaseDate: String
+    val releaseDate: String,
+    val genres: List<GenreDto>
 )

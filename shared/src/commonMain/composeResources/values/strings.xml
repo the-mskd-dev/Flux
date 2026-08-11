@@ -204,4 +204,6 @@
     <string name="by_type">By type</string>
     <string name="by_genre">By genre</string>
     <string name="add_token">Add Token</string>
+    <string name="genres">Genres</string>
+    <string name="clear">Clear</string>
 </resources>

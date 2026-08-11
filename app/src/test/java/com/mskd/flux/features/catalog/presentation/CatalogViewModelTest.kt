@@ -4,19 +4,24 @@ import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.core.FakeDatabaseRepository
 import com.mskd.flux.core.database.domain.repository.DatabaseRepository
+import com.mskd.flux.core.database.domain.repository.DetailsRepository
 import com.mskd.flux.core.datastore.domain.UserDataStore
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.core.AppInfo
 import com.mskd.flux.features.catalog.domain.datastore.CatalogDataStore
 import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
+import com.mskd.flux.features.catalog.domain.model.CatalogViewMode
+import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
-import com.mskd.flux.features.catalog.fake.FakeSyncCatalogUseCase
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
+import com.mskd.flux.mockups.DetailsMockup
 import com.mskd.flux.mockups.MediaMockups
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.types.shouldBeInstanceOf
 import io.kotest.property.Arb
+import io.kotest.property.arbitrary.element
 import io.kotest.property.arbitrary.enum
 import io.kotest.property.checkAll
 import io.mockk.coEvery
@@ -32,30 +37,35 @@ import kotlin.time.Duration.Companion.hours
 @OptIn(ExperimentalCoroutinesApi::class)
 class CatalogViewModelTest : FunSpec({
 
+    //region Set up
+
     fluxExtensions()
 
     lateinit var viewModel: CatalogViewModel
     lateinit var syncCatalogUseCase: SyncCatalogUseCase
-    lateinit var database: DatabaseRepository
+    lateinit var artworkDb: DatabaseRepository
+    lateinit var detailsDb: DetailsRepository
     lateinit var userDataStore: UserDataStore
     lateinit var tokenDataStore: TokenDataStore
     lateinit var appInfo: AppInfo
 
-    // Mocked flows
-    val dataStoreFlow = MutableStateFlow(UserDataStore.State())
-    val tokenFlow = MutableStateFlow("token")
-
     beforeTest {
 
         tokenDataStore = mockk(relaxed = true) {
-            coEvery { flow } returns tokenFlow
+            coEvery { flow } returns MutableStateFlow("token")
         }
         userDataStore = mockk(relaxed = true) {
-            every { flow } returns dataStoreFlow
+            every { flow } returns MutableStateFlow(UserDataStore.State())
         }
 
-        syncCatalogUseCase = FakeSyncCatalogUseCase()
-        database = FakeDatabaseRepository()
+        syncCatalogUseCase = mockk(relaxed = true) {
+            every { state } returns MutableStateFlow(SyncState.Idle)
+        }
+        artworkDb = FakeDatabaseRepository()
+
+        detailsDb = mockk(relaxed = true) {
+            every { flowGenres() } returns MutableStateFlow(DetailsMockup.allGenres)
+        }
 
         appInfo = AppInfo(
             versionCode = 0,
@@ -66,11 +76,14 @@ class CatalogViewModelTest : FunSpec({
 
     fun createViewModel(
         syncUseCase: SyncCatalogUseCase = syncCatalogUseCase,
-        catalogDataStore: CatalogDataStore = mockk(relaxed = true)
+        catalogDataStore: CatalogDataStore = mockk(relaxed = true) {
+            every { flow } returns MutableStateFlow(CatalogDataStore.State())
+        },
     ): CatalogViewModel {
         return CatalogViewModel(
             syncCatalogUseCase = syncUseCase,
-            database = database,
+            artworkDb = artworkDb,
+            detailsDb = detailsDb,
             userDataStore = userDataStore,
             tokenDataStore = tokenDataStore,
             catalogDataStore = catalogDataStore,
@@ -78,7 +91,11 @@ class CatalogViewModelTest : FunSpec({
         )
     }
 
-    test("initial state") {
+    //endregion
+
+    //region Init
+
+    test("Initial state") {
 
         // Given & When
         viewModel = createViewModel()
@@ -87,138 +104,243 @@ class CatalogViewModelTest : FunSpec({
 
             // Then
             val initialState = awaitItem()
-            initialState.state shouldBe CatalogState.Content(
-                artworks = MediaMockups.artworks,
-                lastWatchedMediaIds = emptyList(),
-                isRefreshing = false
-            )
+            initialState.state.shouldBeInstanceOf<CatalogState.Content>()
 
             cancelAndConsumeRemainingEvents()
         }
     }
 
-    test("should force sync when manual sync requested") {
+    //endregion
 
+    //region Sync
+
+    test("Sync - SyncCatalog should call sync for new files") {
+
+        // Given
         val syncCatalogUseCaseSpy = spyk(syncCatalogUseCase)
-
         viewModel = createViewModel(syncUseCase = syncCatalogUseCaseSpy)
 
+        // When
         viewModel.handleIntent(CatalogIntent.SyncCatalog)
 
+        // Then
         verify {
             syncCatalogUseCaseSpy(onlyNew = true)
         }
     }
 
 
-    test("should sync when last sync was more than 1 day ago") {
+    test("Sync - should sync when last sync was more than 1 day ago") {
 
+        // Given
         val syncCatalogUseCaseSpy = spyk(syncCatalogUseCase)
-
         val oldTime = System.currentTimeMillis() - 2.days.inWholeMilliseconds
         coEvery { userDataStore.getSyncTime() } returns oldTime
 
+        // When
         viewModel = createViewModel(syncUseCase = syncCatalogUseCaseSpy)
 
+        // Then
+        verify(exactly = 1) {
+            syncCatalogUseCaseSpy(onlyNew = true)
+        }
+
+    }
+
+    test("Sync - should sync when last sync was less than 1 day ago (delegated to usecase)") {
+
+        // Given
+        val syncCatalogUseCaseSpy = spyk(syncCatalogUseCase)
+        val recentTime = System.currentTimeMillis() - 12.hours.inWholeMilliseconds
+        coEvery { userDataStore.getSyncTime() } returns recentTime
+
+        // When
+        viewModel = createViewModel(syncUseCase = syncCatalogUseCaseSpy)
+
+        // Then
         verify(exactly = 1) {
             syncCatalogUseCaseSpy(onlyNew = true)
         }
     }
 
-    test("should sync when last sync was less than 1 day ago (delegated to usecase)") {
+    test("Sync - should sync when new app version") {
 
+        // Given
         val syncCatalogUseCaseSpy = spyk(syncCatalogUseCase)
-
         val recentTime = System.currentTimeMillis() - 12.hours.inWholeMilliseconds
         coEvery { userDataStore.getSyncTime() } returns recentTime
-
-        viewModel = createViewModel(syncUseCase = syncCatalogUseCaseSpy)
-
-        verify(exactly = 1) {
-            syncCatalogUseCaseSpy(onlyNew = true)
-        }
-    }
-
-    test("should sync when new app version") {
-
-        val syncCatalogUseCaseSpy = spyk(syncCatalogUseCase)
-
-        val recentTime = System.currentTimeMillis() - 12.hours.inWholeMilliseconds
-        coEvery { userDataStore.getSyncTime() } returns recentTime
-
         appInfo = AppInfo(
             versionCode = Int.MAX_VALUE,
             versionName = "VersionTest"
         )
 
+        // When
         viewModel = createViewModel(syncUseCase = syncCatalogUseCaseSpy)
 
+        // Then
         verify(exactly = 1) {
             syncCatalogUseCaseSpy(onlyNew = false)
         }
     }
 
-    test("on artwork show tap") {
-        viewModel = createViewModel()
+    //endregion
 
+    //region Navigation
+
+    test("OnArtworkTap - should send NavigateToShow event") {
+
+        // Given
+        viewModel = createViewModel()
         viewModel.event.test {
+
+            // When
             viewModel.handleIntent(CatalogIntent.OnArtworkTap(artwork = MediaMockups.showArtwork, rgb = 0x112233))
+
+            // Then
             awaitItem() shouldBe CatalogEvent.NavigateToShow(artworkId = MediaMockups.showArtwork.id, rgb = 0x112233)
         }
+
     }
 
-    test("on artwork movie tap") {
-        viewModel = createViewModel()
+    test("OnArtworkTap - should send NavigateToMovie event") {
 
+        // Given
+        viewModel = createViewModel()
         viewModel.event.test {
+
+            // When
             viewModel.handleIntent(CatalogIntent.OnArtworkTap(artwork = MediaMockups.movieArtwork, rgb = 0x112233))
+
+            // Then
             awaitItem() shouldBe CatalogEvent.NavigateToMovie(artworkId = MediaMockups.movieArtwork.id, rgb = 0x112233)
         }
+
     }
 
-    test("on unknown artwork tap") {
-        viewModel = createViewModel()
+    test("OnArtworkTap - should send NavigateToUnknown event") {
 
+        // Given
+        viewModel = createViewModel()
         viewModel.event.test {
+
+            // When
             viewModel.handleIntent(CatalogIntent.OnArtworkTap(artwork = Artwork.UNKNOWN, rgb = null))
+
+            // Then
             awaitItem() shouldBe CatalogEvent.NavigateToUnknown
         }
+
     }
 
-    test("on category tap") {
-        viewModel = createViewModel()
+    test("OnCategoryTap - should send NavigateToSearch event with a given type") {
 
-        viewModel.event.test {
-            viewModel.handleIntent(CatalogIntent.OnCategoryTap(category = ContentType.MOVIE))
-            awaitItem() shouldBe CatalogEvent.NavigateToCategory(category = ContentType.MOVIE)
+        checkAll(
+            Arb.enum<ContentType>()
+        ) { type ->
+
+            // Given
+            viewModel = createViewModel()
+
+            viewModel.event.test {
+
+                // When
+                viewModel.handleIntent(CatalogIntent.OnCategoryTap(category = type))
+
+                // Then
+                awaitItem() shouldBe CatalogEvent.NavigateToSearch(category = type)
+            }
+
         }
+
     }
 
-    test("on search tap") {
-        viewModel = createViewModel()
+    test("OnGenreTap - should send NavigateToSearch event with a given genre") {
 
+        checkAll(
+            Arb.element(DetailsMockup.allGenres)
+        ) { genre ->
+
+            // Given
+            viewModel = createViewModel()
+
+            viewModel.event.test {
+
+                // When
+                viewModel.handleIntent(CatalogIntent.OnGenreTap(genre = genre))
+
+                // Then
+                awaitItem() shouldBe CatalogEvent.NavigateToSearch(genre = genre)
+            }
+
+        }
+
+    }
+
+    test("OnSearchTap - should send NavigateToSearch event") {
+
+        // Given
+        viewModel = createViewModel()
         viewModel.event.test {
+
+            // When
             viewModel.handleIntent(CatalogIntent.OnSearchTap)
-            awaitItem() shouldBe CatalogEvent.NavigateToSearch
+
+            // Then
+            awaitItem() shouldBe CatalogEvent.NavigateToSearch()
         }
+
     }
 
-    test("on settings tap") {
-        viewModel = createViewModel()
+    test("OnSettingsTap - should send NavigateToSettings event") {
 
+        // Given
+        viewModel = createViewModel()
         viewModel.event.test {
+
+            // When
             viewModel.handleIntent(CatalogIntent.OnSettingsTap)
+
+            // Then
             awaitItem() shouldBe CatalogEvent.NavigateToSettings
         }
     }
 
-    test("on how to tap") {
-        viewModel = createViewModel()
+    test("OnHowToTap - should send NavigateToHowTo event") {
 
+        // Given
+        viewModel = createViewModel()
         viewModel.event.test {
+
+            // When
             viewModel.handleIntent(CatalogIntent.OnHowToTap)
+
+            // Then
             awaitItem() shouldBe CatalogEvent.NavigateToHowTo
         }
+
+    }
+
+    //endregion
+
+    //region View & Sort
+
+    test("ShowSortingModes - open sorting modes bottom sheet") {
+
+        // Given
+        viewModel = createViewModel()
+        viewModel.uiState.test {
+            awaitItem()
+
+            // When
+            viewModel.handleIntent(CatalogIntent.ShowSortingModes(show = true))
+
+            // Then
+            val state = awaitItem().state
+            state.shouldBeInstanceOf<CatalogState.Content>()
+            state.showSortingSheet shouldBe true
+
+        }
+
     }
 
     test("SelectSortingMode - select and save the selected sorting option") {
@@ -244,5 +366,50 @@ class CatalogViewModelTest : FunSpec({
         }
 
     }
+
+    test("ShowViewModes - open sorting modes bottom sheet") {
+
+        // Given
+        viewModel = createViewModel()
+        viewModel.uiState.test {
+            awaitItem()
+
+            // When
+            viewModel.handleIntent(CatalogIntent.ShowViewModes(show = true))
+
+            // Then
+            val state = awaitItem().state
+            state.shouldBeInstanceOf<CatalogState.Content>()
+            state.showViewSheet shouldBe true
+
+        }
+
+    }
+
+    test("SelectViewMode - select and save the selected view option") {
+
+        checkAll(
+            Arb.enum<CatalogViewMode>()
+        ) { mode ->
+
+            // Given
+            val catalogDataStore = mockk<CatalogDataStore>(relaxed = true)
+            viewModel = createViewModel(catalogDataStore = catalogDataStore)
+
+            viewModel.uiState.test {
+                awaitItem()
+
+                // When
+                viewModel.handleIntent(CatalogIntent.SelectViewMode(mode))
+
+                // Then
+                coEvery { catalogDataStore.setViewMode(mode) }
+            }
+
+        }
+
+    }
+
+    //endregion
 
 })

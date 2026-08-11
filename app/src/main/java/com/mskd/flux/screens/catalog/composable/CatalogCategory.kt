@@ -23,7 +23,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import com.mskd.flux.core.model.artwork.Artwork
-import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.ui.component.global.Text
@@ -36,10 +35,10 @@ import com.mskd.flux.utils.rememberScreenDimensions
 @Composable
 fun CatalogCategory(
     name: String? = null,
-    category: ContentType,
     artworks: List<Artwork>,
     sortingOption: CatalogSortingMode,
-    sendIntent: (CatalogIntent) -> Unit
+    onCategoryTap: () -> Unit,
+    sendIntent: (CatalogIntent) -> Unit,
 ) {
 
     if (artworks.isEmpty())
@@ -71,7 +70,7 @@ fun CatalogCategory(
 
         Text.Content.Title(
             modifier = Modifier
-                .clickable { sendIntent(CatalogIntent.OnCategoryTap(category)) }
+                .clickable { onCategoryTap() }
                 .fillMaxWidth()
                 .padding(start = FluxUI.Space.medium),
             text = name,

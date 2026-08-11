@@ -1,6 +1,8 @@
 package com.mskd.flux.utils.extensions
 
+import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.Episode
+import com.mskd.flux.core.model.artwork.Genre
 import com.mskd.flux.core.model.artwork.Status
 
 fun List<Episode>.sort() : List<Episode> {
@@ -51,4 +53,9 @@ fun List<Episode>.getNextEpisodeFor(episode: Episode) : Episode? {
                 else -> it[index + 1]
             }
     }
+}
+
+fun List<Genre>.filterFor(artworks: List<Artwork>) : List<Genre> {
+    val genreIds = artworks.flatMap { it.genreIds }.distinct()
+    return this.filter { genreIds.contains(it.id) }.distinctBy { it.id }
 }

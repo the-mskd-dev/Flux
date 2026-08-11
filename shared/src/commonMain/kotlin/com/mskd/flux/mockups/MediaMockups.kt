@@ -9,6 +9,7 @@ import com.mskd.flux.core.model.artwork.Season
 import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.core.model.files.FileSource
 import com.mskd.flux.core.model.files.UserFile
+import kotlinx.collections.immutable.toImmutableList
 import kotlin.time.Duration.Companion.minutes
 
 object MediaMockups {
@@ -17,6 +18,7 @@ object MediaMockups {
         id = 372058L,
         title = "Your name",
         type = ContentType.MOVIE,
+        genreIds = DetailsMockup.movieGenres.take(4).map { it.id }.toImmutableList(),
         imagePath = "/vfJFJPepRKapMd5G2ro7klIRysq.jpg",
         bannerPath = "/8x9iKH8kWA0zdkgNdpAew7OstYe.jpg"
     )
@@ -25,6 +27,7 @@ object MediaMockups {
         id = 969681L,
         title = "Spider-Man: Brand new day",
         type = ContentType.MOVIE,
+        genreIds = DetailsMockup.movieGenres.takeLast(4).map { it.id }.toImmutableList(),
         imagePath = "/6Q21yptoOCUq4ErwVncesLPVplb.jpg",
         bannerPath = "/kbvNLChuMl2nyAzPZvqkD8hZGZn.jpg"
     )
@@ -73,6 +76,7 @@ object MediaMockups {
         id = 31910L,
         title = "Naruto Shippūden",
         type = ContentType.SHOW,
+        genreIds = DetailsMockup.showGenres.take(4).map { it.id }.toImmutableList(),
         imagePath = "/z0YhJvomqedHF85bplUJEotkN5l.jpg",
         bannerPath = "/71mASgFgSiPl9QUexVH8BubU0lD.jpg"
     )
@@ -233,14 +237,16 @@ object MediaMockups {
     val allMedias = movies + episodes + unknowns
 
     val fullMovie = FullArtwork.FullMovie(
-        resume = movieArtwork,
-        movie = movie
+        artwork = movieArtwork,
+        movie = movie,
+        genres = DetailsMockup.movieGenres.take(3).toImmutableList()
     )
 
     val fullShow = FullArtwork.FullShow(
-        resume = showArtwork,
-        seasons = seasons,
-        episodes = episodes
+        artwork = showArtwork,
+        seasons = seasons.toImmutableList(),
+        episodes = episodes.toImmutableList(),
+        genres = DetailsMockup.showGenres.take(3).toImmutableList()
     )
 
 }

@@ -1,5 +1,6 @@
-package com.mskd.flux.core.network.tmdb.data.dto
+package com.mskd.flux.core.network.tmdb.data.dto.show
 
+import com.mskd.flux.core.network.tmdb.data.dto.CrewDto
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

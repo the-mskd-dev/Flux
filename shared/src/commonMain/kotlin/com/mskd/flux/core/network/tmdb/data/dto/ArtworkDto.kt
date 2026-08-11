@@ -1,6 +1,5 @@
 package com.mskd.flux.core.network.tmdb.data.dto
 
-import com.mskd.flux.utils.Levenshtein
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -33,7 +32,7 @@ data class ArtworkDto(
     @SerialName("backdrop_path")
     val bannerPath: String?,
     @SerialName("genre_ids")
-    val genres: List<Int>,
+    val genreIds: List<Int>,
     val popularity: Float,
     @JsonNames("release_date", "first_air_date")
     val releaseDate: String?,
@@ -50,35 +49,5 @@ data class ArtworkDto(
     var type: MediaTypeDto?,
 ) {
 
-
-}
-
-/**
- * Represents a paginated list of TMDB medias.
- *
- * @property page Current page of the results.
- * @property results List of medias retrieved for the current page.
- * @property pageCount Total number of pages available.
- * @property resultCount Total number of medias in the result set.
- */
-@Serializable
-data class ArtworksResultDto(
-    val page: Int,
-    val results: List<ArtworkDto>,
-    @SerialName("total_pages")
-    val pageCount: Int,
-    @SerialName("total_results")
-    val resultCount: Int
-) {
-
-    fun artworkFor(fileName: String) : ArtworkDto? {
-        return results.minByOrNull {
-            Levenshtein.minDistance(
-                query = fileName,
-                title = it.title,
-                originalTitle = it.originalTitle
-            )
-        }
-    }
 
 }

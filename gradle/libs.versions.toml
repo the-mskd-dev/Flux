@@ -17,7 +17,10 @@ klint = "14.2.0"
 coreKtx = "1.19.0"
 lifecycle = "2.11.0"
 activityCompose = "1.13.0"
+
+# -- Kotlin --
 kotlinxSerializationCore = "1.11.0"
+kotlinxCollectionsImmutable = "0.5.1"
 
 # -- Compose & UI --
 composeBom = "2026.06.00"
@@ -98,6 +101,7 @@ androidx-constraintlayout-compose = { group = "androidx.constraintlayout", name 
 # -- Kotlin --
 kotlinx-serialization-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version.ref = "kotlinxSerializationCore" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationCore" }
+kotlinx-collections-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable-jvm", version.ref = "kotlinxCollectionsImmutable" }
 kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version = "0.8.0" }
 
 # -- UI --
@@ -201,6 +205,7 @@ klint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "klint" }
 shared-kotlin = [
     "kotlinx-serialization-json",
     "kotlinx-serialization-core",
+    "kotlinx-collections-immutable",
     "kotlinx-datetime"
 ]
 shared-network = [

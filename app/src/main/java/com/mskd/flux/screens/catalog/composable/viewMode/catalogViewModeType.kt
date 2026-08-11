@@ -23,13 +23,13 @@ import flux.shared.generated.resources.movies
 import flux.shared.generated.resources.shows
 import org.jetbrains.compose.resources.stringResource
 
-fun LazyGridScope.catalogViewModeGenre(
+fun LazyGridScope.catalogViewModeType(
     artworks: List<Artwork>,
     sortingMode: CatalogSortingMode,
     sendIntent: (CatalogIntent) -> Unit
 ) {
 
-    item(span = { GridItemSpan(maxLineSpan) }) {
+    item(span = { GridItemSpan(maxLineSpan) }, key = "catalog_type_content") {
         Column(
             modifier = Modifier
                 .animateItem()
@@ -39,17 +39,17 @@ fun LazyGridScope.catalogViewModeGenre(
 
             CatalogCategory(
                 name = stringResource(Res.string.shows),
-                category = ContentType.SHOW,
                 artworks = artworks.filter { it.type == ContentType.SHOW && !it.isUnknown },
                 sortingOption = sortingMode,
+                onCategoryTap = { sendIntent(CatalogIntent.OnCategoryTap(ContentType.SHOW)) },
                 sendIntent = sendIntent
             )
 
             CatalogCategory(
                 name = stringResource(Res.string.movies),
-                category = ContentType.MOVIE,
                 artworks = artworks.filter { it.type == ContentType.MOVIE && !it.isUnknown },
                 sortingOption = sortingMode,
+                onCategoryTap = { sendIntent(CatalogIntent.OnCategoryTap(ContentType.MOVIE)) },
                 sendIntent = sendIntent
             )
 
@@ -60,12 +60,12 @@ fun LazyGridScope.catalogViewModeGenre(
 
 @Preview
 @Composable
-fun CatalogViewModeGenre_Preview() {
+fun CatalogViewModeType_Preview() {
     FluxThemePreview {
         LazyVerticalGrid(
             columns = GridCells.Fixed(3)
         ) {
-            catalogViewModeGenre(
+            catalogViewModeType(
                 artworks = MediaMockups.artworks,
                 sortingMode = CatalogSortingMode.LAST_MODIFICATION,
                 sendIntent = {}

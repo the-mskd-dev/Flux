@@ -2,18 +2,22 @@ package com.mskd.flux.core.network.tmdb.data.datasource
 
 import com.mskd.flux.core.model.files.UserFile
 import com.mskd.flux.core.network.tmdb.data.dto.ArtworkDto
-import com.mskd.flux.core.network.tmdb.data.dto.EpisodeDto
 import com.mskd.flux.core.network.tmdb.data.dto.MediaTypeDto
-import com.mskd.flux.core.network.tmdb.data.dto.MovieDto
-import com.mskd.flux.core.network.tmdb.data.dto.SeasonDto
 import com.mskd.flux.core.network.tmdb.data.dto.TranslationsDto
 import com.mskd.flux.core.network.tmdb.data.dto.findWithLocale
+import com.mskd.flux.core.network.tmdb.data.dto.genre.GenreDto
+import com.mskd.flux.core.network.tmdb.data.dto.movie.MovieDto
+import com.mskd.flux.core.network.tmdb.data.dto.show.EpisodeDto
+import com.mskd.flux.core.network.tmdb.data.dto.show.SeasonDto
+import com.mskd.flux.core.network.tmdb.data.dto.show.ShowDto
 import com.mskd.flux.core.network.tmdb.data.service.TMDBService
 import com.mskd.flux.core.network.tmdb.domain.model.TranslationRequest
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
+import com.mskd.flux.utils.Trace
 import com.mskd.flux.utils.extensions.toTmdbFormat
 import io.github.aakira.napier.Napier
-import java.util.Locale
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 
 class TmdbDataSourceImpl(
     private val tmdbService: TMDBService,
@@ -24,7 +28,7 @@ class TmdbDataSourceImpl(
         const val TAG = "TmdbRepositoryImpl"
     }
 
-    override suspend fun getTmdbArtwork(
+    override suspend fun getArtwork(
         file: UserFile
     ): ArtworkDto? {
 
@@ -32,28 +36,28 @@ class TmdbDataSourceImpl(
 
         return try {
 
-            val tmdbArtworks = if (file.isEpisode) {
-                tmdbService.getShow(
+            val searchResults = if (file.isEpisode) {
+                tmdbService.searchShow(
                     title = file.nameProperties.title,
                     year = file.nameProperties.year,
                     language = language.toTmdbFormat()
                 )
             } else {
-                tmdbService.getMovie(
+                tmdbService.searchMovie(
                     title = file.nameProperties.title,
                     year = file.nameProperties.year,
                     language = language.toTmdbFormat()
                 )
             }
 
-            var tmdbArtwork = tmdbArtworks.artworkFor(fileName = file.nameProperties.title)?.also {
+            var tmdbArtwork = searchResults.artworkFor(fileName = file.nameProperties.title)?.also {
                 it.type = if (file.isEpisode) MediaTypeDto.SHOW else MediaTypeDto.MOVIE
             }
 
             // Get translation for show if needed
             if (tmdbArtwork?.type == MediaTypeDto.SHOW && (tmdbArtwork.description.isBlank() || tmdbArtwork.title.isBlank())) {
 
-                getTmdbTranslation(
+                getTranslation(
                     request = TranslationRequest.Show(
                         artworkId = tmdbArtwork.id,
                         language = language
@@ -76,7 +80,21 @@ class TmdbDataSourceImpl(
 
     }
 
-    override suspend fun getTmdbMovie(
+    override suspend fun getGenres(): List<GenreDto> {
+
+        val language = settings.getDataLanguage()
+
+        return coroutineScope {
+
+            val movieGenresDeferred = async { tmdbService.getMovieGenres(language = language.toTmdbFormat()).genres }
+            val showGenresDeferred = async { tmdbService.getMovieGenres(language = language.toTmdbFormat()).genres }
+
+            movieGenresDeferred.await() + showGenresDeferred.await()
+        }
+
+    }
+
+    override suspend fun getMovie(
         artworkId: Long
     ): MovieDto? {
 
@@ -91,7 +109,7 @@ class TmdbDataSourceImpl(
 
             if (tmdbMovie.description.isBlank() || tmdbMovie.title.isBlank()) {
 
-                getTmdbTranslation(
+                getTranslation(
                     request = TranslationRequest.Movie(
                         artworkId = artworkId,
                         language = language
@@ -114,7 +132,45 @@ class TmdbDataSourceImpl(
 
     }
 
-    override suspend fun getTmdbEpisode(
+    override suspend fun getShow(
+        artworkId: Long
+    ): ShowDto? {
+
+        val language = settings.getDataLanguage()
+
+        return try {
+
+            var tmdbShow = tmdbService.getShowDetails(
+                artworkId = artworkId,
+                language = language.toTmdbFormat()
+            )
+
+            if (tmdbShow.description.isBlank() || tmdbShow.title.isBlank()) {
+
+                getTranslation(
+                    request = TranslationRequest.Show(
+                        artworkId = artworkId,
+                        language = language
+                    ),
+                )?.let {
+                    tmdbShow = tmdbShow.copy(
+                        title = it.data.name ?: tmdbShow.title,
+                        description = it.data.overview ?: tmdbShow.description
+                    )
+                }
+
+            }
+
+            tmdbShow
+
+        } catch (e: Exception) {
+            Trace.error(tag = TAG, message = "getTmdbMovie - Fail to get TMDBShow for artworkId:$artworkId (${language.toTmdbFormat()})", throwable = e)
+            null
+        }
+
+    }
+
+    override suspend fun getEpisode(
         artworkId: Long,
         season: Int,
         number: Int
@@ -133,11 +189,19 @@ class TmdbDataSourceImpl(
 
             if (tmdbEpisode.description.isBlank() || tmdbEpisode.title.isBlank()) {
 
-                tmdbEpisode = translateTmdbEpisode(
-                    artworkId = artworkId,
-                    episodeDto = tmdbEpisode,
-                    language = language
-                )
+                getTranslation(
+                    request = TranslationRequest.Episode(
+                        artworkId = artworkId,
+                        season = season,
+                        number = number,
+                        language = language
+                    ),
+                )?.let {
+                    tmdbEpisode = tmdbEpisode.copy(
+                        title = it.data.name ?: tmdbEpisode.title,
+                        description = it.data.overview ?: tmdbEpisode.description
+                    )
+                }
 
             }
 
@@ -150,7 +214,7 @@ class TmdbDataSourceImpl(
 
     }
 
-    override suspend fun getTmdbSeason(artworkId: Long, season: Int): SeasonDto? {
+    override suspend fun getSeason(artworkId: Long, season: Int): SeasonDto? {
 
         val language = settings.getDataLanguage()
 
@@ -164,7 +228,7 @@ class TmdbDataSourceImpl(
 
             if (tmdbSeason.description.isBlank() || tmdbSeason.title.isBlank()) {
 
-                getTmdbTranslation(
+                getTranslation(
                     request = TranslationRequest.Season(
                         artworkId = artworkId,
                         season = season,
@@ -188,25 +252,7 @@ class TmdbDataSourceImpl(
 
     }
 
-    override suspend fun translateTmdbEpisode(artworkId: Long, episodeDto: EpisodeDto, language: Locale): EpisodeDto {
-
-        return getTmdbTranslation(
-            request = TranslationRequest.Episode(
-                artworkId = artworkId,
-                season = episodeDto.season,
-                number = episodeDto.number,
-                language = language
-            ),
-        )?.let {
-            episodeDto.copy(
-                title = it.data.name ?: episodeDto.title,
-                description = it.data.overview ?: episodeDto.description
-            )
-        } ?: episodeDto
-
-    }
-
-    override suspend fun getTmdbTranslation(request: TranslationRequest): TranslationsDto.Translation? {
+    override suspend fun getTranslation(request: TranslationRequest): TranslationsDto.Translation? {
 
         return try {
 

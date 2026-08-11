@@ -23,9 +23,13 @@ import org.koin.test.KoinTest
 import org.koin.test.get
 import org.koin.test.inject
 import java.util.Locale
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class TMDBServiceTest : KoinTest {
+
+    //region Setup
 
     private val service: TMDBService by inject()
 
@@ -74,8 +78,12 @@ class TMDBServiceTest : KoinTest {
         stopKoin()
     }
 
+    //endregion
+
+    //region Setup
+
     @Test
-    fun test_01_authenticate() = runTest {
+    fun test_0_authenticate() = runTest {
         val result = service.authenticate()
 
         println("Authentication success - ${result.success}")
@@ -83,13 +91,17 @@ class TMDBServiceTest : KoinTest {
         println("Code - ${result.code}")
     }
 
+    //endregion
+
+    //region Movie
+
     @Test
-    fun test_02_get_movie() = runTest {
+    fun test_0_search_movie() = runTest {
 
         val title = movieFile.nameProperties.title
         val year = movieFile.nameProperties.year
 
-        val result = service.getMovie(
+        val result = service.searchMovie(
             title = title,
             year = year,
             language = dataLanguage
@@ -104,10 +116,12 @@ class TMDBServiceTest : KoinTest {
     }
 
     @Test
-    fun test_03_get_movie_details() = runTest {
+    fun test_get_movie_details() = runTest {
 
+        // Given
         val id = movieArtworkId!!
 
+        // When
         val result = service.getMovieDetails(
             id = id,
             language = dataLanguage
@@ -121,10 +135,17 @@ class TMDBServiceTest : KoinTest {
         println("releaseDateString : ${result.releaseDate}")
         println("voteCount : ${result.voteCount}")
         println("voteAverage : ${result.voteAverage}")
+
+        // Then
+        assertTrue(result.title.isNotEmpty())
+        assertTrue(result.description.isNotEmpty())
+        assertEquals(id, result.id)
+        assertTrue(result.releaseDate.isNotEmpty())
+        assertTrue(result.genres.isNotEmpty())
     }
 
     @Test
-    fun test_04_get_movie_translations() = runTest {
+    fun test_get_movie_translations() = runTest {
 
         val id = movieArtworkId!!
 
@@ -135,12 +156,27 @@ class TMDBServiceTest : KoinTest {
     }
 
     @Test
-    fun test_05_get_show() = runTest {
+    fun test_get_movie_genres() = runTest {
+
+        // When
+        val result = service.getMovieGenres()
+
+        // Then
+        assertTrue(result.genres.isNotEmpty())
+
+    }
+
+    //endregion
+
+    //region Show
+
+    @Test
+    fun test_0_search_show() = runTest {
 
         val title = episodeFile.nameProperties.title
         val year = episodeFile.nameProperties.year
 
-        val result = service.getShow(
+        val result = service.searchShow(
             title = title,
             year = year,
             language = dataLanguage
@@ -155,7 +191,36 @@ class TMDBServiceTest : KoinTest {
     }
 
     @Test
-    fun test_06_get_show_translations() = runTest {
+    fun test_get_show_details() = runTest {
+
+        // Given
+        val id = showArtworkId!!
+
+        // When
+        val result = service.getShowDetails(
+            artworkId = id,
+            language = dataLanguage
+        )
+
+        println("id : ${result.id}")
+        println("title : ${result.title}")
+        println("description : ${result.description}")
+        println("imagePath : ${result.imagePath}")
+        println("bannerPath : ${result.bannerPath}")
+        println("releaseDateString : ${result.releaseDate}")
+        println("voteCount : ${result.voteCount}")
+        println("voteAverage : ${result.voteAverage}")
+
+        // Then
+        assertTrue(result.title.isNotEmpty())
+        assertTrue(result.description.isNotEmpty())
+        assertEquals(id, result.id)
+        assertTrue(result.releaseDate.isNotEmpty())
+        assertTrue(result.genres.isNotEmpty())
+    }
+
+    @Test
+    fun test_get_show_translations() = runTest {
 
         val id = showArtworkId!!
 
@@ -166,7 +231,22 @@ class TMDBServiceTest : KoinTest {
     }
 
     @Test
-    fun test_07_get_episode() = runTest {
+    fun test_get_show_genres() = runTest {
+
+        // When
+        val result = service.getShowGenres()
+
+        // Then
+        assertTrue(result.genres.isNotEmpty())
+
+    }
+
+    //endregion
+
+    //region Episode
+
+    @Test
+    fun test_get_episode() = runTest {
 
         val id = showArtworkId!!
         val season = episodeFile.nameProperties.season!!
@@ -193,7 +273,7 @@ class TMDBServiceTest : KoinTest {
     }
 
     @Test
-    fun test_08_get_episode_translations() = runTest {
+    fun test_get_episode_translations() = runTest {
 
         val id = showArtworkId!!
         val season = episodeFile.nameProperties.season!!
@@ -209,8 +289,12 @@ class TMDBServiceTest : KoinTest {
 
     }
 
+    //endregion
+
+    //region Season
+
     @Test
-    fun test_09_get_season() = runTest {
+    fun test_get_season() = runTest {
 
         val id = showArtworkId!!
         val season = episodeFile.nameProperties.season!!
@@ -230,7 +314,7 @@ class TMDBServiceTest : KoinTest {
     }
 
     @Test
-    fun test_10_get_season_translations() = runTest {
+    fun test_get_season_translations() = runTest {
 
         val id = showArtworkId!!
         val season = episodeFile.nameProperties.season!!
@@ -243,5 +327,7 @@ class TMDBServiceTest : KoinTest {
         println("Result count : ${result.translations.size}")
 
     }
+
+    //endregion
 
 }

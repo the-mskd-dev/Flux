@@ -48,7 +48,7 @@ class ObserveArtworkUseCaseTest : FunSpec({
 
         detailsRepository = mockk(relaxed = true) {
             every { flowGenres() } returns MutableStateFlow(DetailsMockup.allGenres)
-            coEvery { getGenres() } returns DetailsMockup.allGenres
+            coEvery { getGenresCount() } returns DetailsMockup.allGenres.count()
         }
 
         sourcesUseCase = mockk()

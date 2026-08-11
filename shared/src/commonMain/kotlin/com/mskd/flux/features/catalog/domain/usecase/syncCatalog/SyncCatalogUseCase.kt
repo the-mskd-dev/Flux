@@ -1,7 +1,6 @@
 package com.mskd.flux.features.catalog.domain.usecase.syncCatalog
 
 import com.mskd.flux.core.database.domain.repository.DatabaseRepository
-import com.mskd.flux.core.database.domain.repository.DetailsRepository
 import com.mskd.flux.core.datastore.domain.UserDataStore
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.core.AppInfo
@@ -10,10 +9,8 @@ import com.mskd.flux.features.catalog.domain.fetcher.CatalogContentFetcher
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.usecase.migration.LegacyGenresMigration
 import com.mskd.flux.features.catalog.domain.usecase.syncGenres.SyncGenresUseCase
-import com.mskd.flux.features.files.domain.usecase.FilterExistingFilesUseCase
 import com.mskd.flux.features.files.domain.usecase.GetDeviceFilesUseCase
 import com.mskd.flux.features.images.domain.ImagesPrefetchManager
-import com.mskd.flux.utils.Trace
 import com.mskd.flux.utils.extensions.groupInFolders
 import kotlinx.coroutines.flow.StateFlow
 

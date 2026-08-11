@@ -14,7 +14,6 @@ import com.mskd.flux.features.catalog.domain.usecase.migration.LegacyGenresMigra
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.catalog.domain.usecase.syncGenres.SyncGenresUseCase
 import com.mskd.flux.features.catalog.fake.FakeCatalogSyncCoordinator
-import com.mskd.flux.features.files.domain.usecase.FilterExistingFilesUseCase
 import com.mskd.flux.features.files.domain.usecase.GetDeviceFilesUseCase
 import com.mskd.flux.features.images.domain.ImagesPrefetchManager
 import com.mskd.flux.mockups.MediaMockups

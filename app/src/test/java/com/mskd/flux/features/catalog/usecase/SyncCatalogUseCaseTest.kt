@@ -10,9 +10,9 @@ import com.mskd.flux.core.model.files.FileSource
 import com.mskd.flux.core.model.files.UserFile
 import com.mskd.flux.features.catalog.domain.fetcher.CatalogContentFetcher
 import com.mskd.flux.features.catalog.domain.model.SyncState
+import com.mskd.flux.features.catalog.domain.usecase.migration.LegacyGenresMigration
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.catalog.domain.usecase.syncGenres.SyncGenresUseCase
-import com.mskd.flux.features.catalog.domain.usecase.syncGenres.UpdateGenreIdsUseCase
 import com.mskd.flux.features.catalog.fake.FakeCatalogSyncCoordinator
 import com.mskd.flux.features.files.domain.usecase.FilterExistingFilesUseCase
 import com.mskd.flux.features.files.domain.usecase.GetDeviceFilesUseCase
@@ -52,9 +52,8 @@ class SyncCatalogUseCaseTest : FunSpec({
         getDeviceFilesUseCase: GetDeviceFilesUseCase = mockk<GetDeviceFilesUseCase>().also {
             coEvery { it() } returns emptyList()
         },
-        filterExistingFilesUseCase: FilterExistingFilesUseCase = mockk(relaxed = true),
         syncGenresUseCase: SyncGenresUseCase = mockk(relaxed = true),
-        updateGenreIdsUseCase: UpdateGenreIdsUseCase = mockk(relaxed = true),
+        legacyGenresMigration: LegacyGenresMigration = mockk(relaxed = true),
         catalogFetcher: CatalogContentFetcher = mockk(relaxed = true),
     ) = SyncCatalogUseCase(
         database = database,
@@ -63,9 +62,8 @@ class SyncCatalogUseCaseTest : FunSpec({
         appInfo = appInfo,
         coordinator = coordinator,
         getDeviceFilesUseCase = getDeviceFilesUseCase,
-        filterExistingFilesUseCase = filterExistingFilesUseCase,
         syncGenresUseCase = syncGenresUseCase,
-        updateGenreIdsUseCase = updateGenreIdsUseCase,
+        legacyGenresMigration = legacyGenresMigration,
         catalogFetcher = catalogFetcher,
     )
 
@@ -153,15 +151,11 @@ class SyncCatalogUseCaseTest : FunSpec({
         val database = mockk<DatabaseRepository>(relaxed = true)
         coEvery { database.getMedias() } returns listOf(existingMovie)
 
-        val filterExistingFilesUseCase = mockk<FilterExistingFilesUseCase>()
-        coEvery { filterExistingFilesUseCase(files = any()) } returns listOf(existingFile)
-
         val getDeviceFilesUseCase = mockk<GetDeviceFilesUseCase>()
         coEvery { getDeviceFilesUseCase() } returns emptyList()
 
         val useCase = createUseCase(
             database = database,
-            filterExistingFilesUseCase = filterExistingFilesUseCase,
             getDeviceFilesUseCase = getDeviceFilesUseCase
         )
 

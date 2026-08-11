@@ -16,9 +16,9 @@ import com.mskd.flux.features.catalog.domain.fetcher.SeasonMetadataFetcherImpl
 import com.mskd.flux.features.catalog.domain.resolver.MediaResolver
 import com.mskd.flux.features.catalog.domain.resolver.MediaResolverImpl
 import com.mskd.flux.features.catalog.domain.usecase.cleanCatalog.CleanCatalogUseCase
+import com.mskd.flux.features.catalog.domain.usecase.migration.LegacyGenresMigration
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.catalog.domain.usecase.syncGenres.SyncGenresUseCase
-import com.mskd.flux.features.catalog.domain.usecase.syncGenres.UpdateGenreIdsUseCase
 import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCase
 import com.mskd.flux.features.catalog.presentation.CatalogViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -80,7 +80,7 @@ val moduleCatalog = module {
     singleOf(::CleanCatalogUseCase)
     singleOf(::SyncCatalogUseCase)
     singleOf(::SyncGenresUseCase)
-    singleOf(::UpdateGenreIdsUseCase)
+    singleOf(::LegacyGenresMigration)
 
     single<UpdateLanguageUseCase> {
         UpdateLanguageUseCase(

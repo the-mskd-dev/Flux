@@ -28,6 +28,7 @@ import org.jetbrains.compose.resources.stringResource
 fun SearchFilters(
     selectedType: ContentType?,
     selectedGenresCount: Int,
+    showGenresFilter: Boolean,
     sendIntent: (SearchIntent) -> Unit
 ) {
 
@@ -67,11 +68,13 @@ fun SearchFilters(
             onClick = { prepareIntent(SearchIntent.FilterOnType(ContentType.SHOW)) },
         )
 
-        SearchFilterChip(
-            text = stringResource(Res.string.genres) + if (selectedGenresCount > 0) " ($selectedGenresCount)" else "",
-            selected = selectedGenresCount > 0,
-            onClick = { prepareIntent(SearchIntent.ShowGenresSelection(show = true)) },
-        )
+        if (showGenresFilter) {
+            SearchFilterChip(
+                text = stringResource(Res.string.genres) + if (selectedGenresCount > 0) " ($selectedGenresCount)" else "",
+                selected = selectedGenresCount > 0,
+                onClick = { prepareIntent(SearchIntent.ShowGenresSelection(show = true)) },
+            )
+        }
 
     }
 

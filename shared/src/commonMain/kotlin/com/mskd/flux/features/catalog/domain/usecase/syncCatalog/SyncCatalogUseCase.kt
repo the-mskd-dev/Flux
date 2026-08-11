@@ -41,7 +41,7 @@ class SyncCatalogUseCase(
 
             val dbMedias = database.getMedias()
             val deviceFiles = getDeviceFilesUseCase()
-            val existingFiles = filterExistingFilesUseCase(files = (dbMedias).map { it.file }) // TODO Delete
+            val existingFiles = filterExistingFilesUseCase(files = (dbMedias).map { it.file })
 
             // TODO: Delete in October 2026
             // Get old unknown files that haven't real path

@@ -1,6 +1,7 @@
 package com.mskd.flux.features.catalog.domain.usecase.syncCatalog
 
 import com.mskd.flux.core.database.domain.repository.DatabaseRepository
+import com.mskd.flux.core.database.domain.repository.DetailsRepository
 import com.mskd.flux.core.datastore.domain.UserDataStore
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.core.AppInfo
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 class SyncCatalogUseCase(
     private val database: DatabaseRepository,
+    private val detailsRepository: DetailsRepository,
     private val user: UserDataStore,
     private val imagesPrefetchManager: ImagesPrefetchManager,
     private val appInfo: AppInfo,
@@ -53,14 +55,21 @@ class SyncCatalogUseCase(
                 deviceFiles.filter { file -> existingFiles.none { it.path == file.path } } + unknownFiles
             }
 
+            // TODO: Delete in October 2026
+            val genreSyncNeeded = detailsRepository.getGenresCount() == 0
+
             if (newFiles.isEmpty()) {
                 database.deleteMediasNotInFiles(existingFiles)
 
                 // TODO: Delete in October 2026
-                updateGenreIdsUseCase(
-                    onProgressCount = { coordinator.setTotalSteps(it) },
-                    onProgress = { coordinator.incrementProgress() }
-                )
+                if (genreSyncNeeded) {
+                    updateGenreIdsUseCase(
+                        onProgressCount = { coordinator.setTotalSteps(it + 1) },
+                        onProgress = { coordinator.incrementProgress() }
+                    )
+                    syncGenresUseCase()
+                    coordinator.incrementProgress()
+                }
 
                 // TODO: Delete in October 2026
                 database.updateRealPaths(files = deviceFiles)
@@ -102,7 +111,7 @@ class SyncCatalogUseCase(
             //coordinator.setTotalSteps(steps)
 
             // Get Genres
-            if (!onlyNew) syncGenresUseCase()
+            if (!onlyNew || genreSyncNeeded) syncGenresUseCase()
             coordinator.incrementProgress()
 
             var catalog = catalogFetcher.fetch(

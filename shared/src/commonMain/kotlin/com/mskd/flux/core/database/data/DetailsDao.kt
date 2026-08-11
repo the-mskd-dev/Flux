@@ -16,7 +16,7 @@ interface DetailsDao {
     @Query("SELECT * FROM genres")
     fun flowGenres() : Flow<List<GenreEntity>>
 
-    @Query("SELECT * FROM genres")
-    suspend fun getGenres() : List<GenreEntity>
+    @Query("SELECT COUNT(*) FROM genres")
+    suspend fun getGenresCount() : Int
     
 }

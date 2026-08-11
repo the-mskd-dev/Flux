@@ -9,7 +9,7 @@ interface DetailsRepository {
 
     suspend fun saveGenres(genres: List<Genre>)
     fun flowGenres() : Flow<List<Genre>>
-    suspend fun getGenres() : List<Genre>
+    suspend fun getGenresCount() : Int
 
     //endregion
 

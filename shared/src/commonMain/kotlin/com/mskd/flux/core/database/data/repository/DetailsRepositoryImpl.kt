@@ -23,8 +23,8 @@ class DetailsRepositoryImpl(private val dao: DetailsDao) : DetailsRepository {
         }
     }
 
-    override suspend fun getGenres(): List<Genre> {
-        return dao.getGenres().map { it.toDomain() }
+    override suspend fun getGenresCount(): Int {
+        return dao.getGenresCount()
     }
 
 }

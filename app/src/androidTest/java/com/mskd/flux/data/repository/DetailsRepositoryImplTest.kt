@@ -62,7 +62,7 @@ class DetailsRepositoryImplTest {
     }
 
     @Test
-    fun getGenres_returns_inserted_genres() = runTest {
+    fun getGenresCount_returns_count_of_inserted_genres() = runTest {
         // Given
         val genres = DetailsMockup.allGenres
 
@@ -70,9 +70,8 @@ class DetailsRepositoryImplTest {
         repository.saveGenres(genres)
 
         // Then
-        val result = repository.getGenres()
-        assertEquals(genres.distinctBy { it.id }.size, result.size)
-        assertTrue(result.containsAll(genres))
+        val result = repository.getGenresCount()
+        assertEquals(genres.size, result)
     }
 
     //endregion

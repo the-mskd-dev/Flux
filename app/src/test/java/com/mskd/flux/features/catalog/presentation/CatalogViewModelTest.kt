@@ -95,7 +95,7 @@ class CatalogViewModelTest : FunSpec({
 
     //region Init
 
-    test("initial state") {
+    test("Initial state") {
 
         // Given & When
         viewModel = createViewModel()
@@ -114,7 +114,7 @@ class CatalogViewModelTest : FunSpec({
 
     //region Sync
 
-    test("should force sync when manual sync requested") {
+    test("Sync - SyncCatalog should call sync for new files") {
 
         // Given
         val syncCatalogUseCaseSpy = spyk(syncCatalogUseCase)
@@ -130,7 +130,7 @@ class CatalogViewModelTest : FunSpec({
     }
 
 
-    test("should sync when last sync was more than 1 day ago") {
+    test("Sync - should sync when last sync was more than 1 day ago") {
 
         // Given
         val syncCatalogUseCaseSpy = spyk(syncCatalogUseCase)
@@ -147,7 +147,7 @@ class CatalogViewModelTest : FunSpec({
 
     }
 
-    test("should sync when last sync was less than 1 day ago (delegated to usecase)") {
+    test("Sync - should sync when last sync was less than 1 day ago (delegated to usecase)") {
 
         // Given
         val syncCatalogUseCaseSpy = spyk(syncCatalogUseCase)
@@ -163,7 +163,7 @@ class CatalogViewModelTest : FunSpec({
         }
     }
 
-    test("should sync when new app version") {
+    test("Sync - should sync when new app version") {
 
         // Given
         val syncCatalogUseCaseSpy = spyk(syncCatalogUseCase)
@@ -187,7 +187,7 @@ class CatalogViewModelTest : FunSpec({
 
     //region Navigation
 
-    test("on artwork show tap") {
+    test("OnArtworkTap - should send NavigateToShow event") {
 
         // Given
         viewModel = createViewModel()
@@ -202,7 +202,7 @@ class CatalogViewModelTest : FunSpec({
 
     }
 
-    test("on artwork movie tap") {
+    test("OnArtworkTap - should send NavigateToMovie event") {
 
         // Given
         viewModel = createViewModel()
@@ -217,7 +217,7 @@ class CatalogViewModelTest : FunSpec({
 
     }
 
-    test("on unknown artwork tap") {
+    test("OnArtworkTap - should send NavigateToUnknown event") {
 
         // Given
         viewModel = createViewModel()

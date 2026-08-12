@@ -124,7 +124,6 @@ fun SettingsContent(
             scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
             titleContentColor = MaterialTheme.colorScheme.onSurface,
         ),
-        onBackTap = { sendIntent(SettingsIntent.OnBackTap) }
     ) { innerPadding ->
 
         Column(

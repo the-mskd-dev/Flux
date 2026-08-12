@@ -36,7 +36,7 @@ import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxThemePreview
 import com.mskd.flux.utils.extensions.grayScale
 import flux.shared.generated.resources.Res
-import flux.shared.generated.resources.episodes
+import flux.shared.generated.resources.episodes_count
 import flux.shared.generated.resources.season
 import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
@@ -125,7 +125,7 @@ fun SeasonItem(
 
             Text.Card.Label(
                 modifier = Modifier.fillMaxWidth(),
-                text = pluralStringResource(Res.plurals.episodes, episodes.size, episodes.size),
+                text = pluralStringResource(Res.plurals.episodes_count, episodes.size, episodes.size),
                 color = MaterialTheme.colorScheme.secondary,
                 textAlign = TextAlign.Center
             )

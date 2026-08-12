@@ -6,6 +6,7 @@ import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.Genre
 import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
 import com.mskd.flux.features.catalog.domain.model.CatalogViewMode
+import com.mskd.flux.features.catalog.domain.model.SyncState
 
 @Immutable
 data class CatalogUiState(
@@ -17,7 +18,7 @@ sealed class CatalogState {
     data object Error: CatalogState()
 
     @Immutable
-    data class Loading(val progress: Float = 0f): CatalogState()
+    data class Loading(val syncState: SyncState.Syncing = SyncState.Syncing(full = true)): CatalogState()
 
     @Immutable
     data class Content(

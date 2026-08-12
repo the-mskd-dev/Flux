@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="give_permission">Concedi permessi</string>
     <string name="downloads">Download</string>
@@ -39,6 +38,10 @@
         <item>Scegli il tuo lettore: puoi usare il lettore integrato o il tuo lettore esterno preferito</item>
         <item>Progettato con Material 3 Expressive e Material You per un look fluido e dinamico che si adatta al tuo dispositivo</item>
     </string-array>
+    <string name="setup_sources_default_title">Predefinito</string>
+    <string name="setup_sources_default_desc">Le cartelle %1$s e %2$s vengono utilizzate come origini file predefinite. Se lo desideri, puoi aggiungere nuove cartelle in un secondo momento.</string>
+    <string name="setup_sources_custom_title">Costume</string>
+    <string name="setup_sources_custom_desc">Scegli direttamente le tue cartelle di origine</string>
     <string name="setup_sources_title">Accedi ai tuoi video</string>
     <string name="setup_sources_desc">Per mostrare e riprodurre i tuoi video, Flux ha bisogno dell'accesso ai file del tuo dispositivo.\nNon preoccuparti, non raccogliamo né condividiamo alcun dato personale.</string>
     <string name="empty_catalog">La tua libreria è vuota</string>
@@ -48,6 +51,8 @@
     <string name="how_to_name_files_desc">Non preoccuparti, è semplicissimo! Per tenere i tuoi video ben organizzati, ecco come nominare i tuoi file:</string>
     <string name="how_to_name_files_movies_desc">Assegna ai tuoi film un nome chiaro, seguito dall'anno se lo desideri. Per esempio:</string>
     <string name="how_to_name_files_show_desc">Per gli episodi delle serie TV, usa un formato che includa il numero della stagione e dell'episodio. L'anno è opzionale. Per esempio:</string>
+    
+    
     <string name="read">riprodotto</string>
     <string name="remaining_time">rimangono %1$s</string>
     <string name="rewatch">Riguarda</string>
@@ -62,8 +67,8 @@
     <string name="which_technologies_desc">Questa app è interamente sviluppata in Kotlin con Jetpack Compose. Utilizzo Room per il database, Ktor per le chiamate di rete e Koin per l'injection delle dipendenze. Utilizzo anche GitHub. Per l'UI/UX uso Material 3 e ho fatto del mio meglio. Niente male, vero?</string>
     <string name="how_to_suggest">Come contattarmi o suggerire miglioramenti?</string>
     <string name="how_to_suggest_desc">Se si tratta di un feedback positivo, puoi contattarmi via %1$s! In caso contrario, fai la stessa cosa o direttamente su %2$s, ma con la stessa gentilezza come se fosse positivo.</string>
-    <string name="mail" translatable="false">mail</string>
-    <string name="github" translatable="false">Github</string>
+    
+    
     <string name="what_is_next">Cosa c'è in programma?</string>
     <string name="what_is_next_desc">L'obiettivo è continuare a migliorare l'app, che si tratti di UI, UX o prestazioni. Ho intenzione di recuperare più dati (genere, cast, ecc.) e pianifico anche di aggiungere nuove fonti dati, non solo i file presenti sul dispositivo.</string>
     <string name="make_a_donation">Sostienimi</string>
@@ -76,7 +81,7 @@
     <string name="close">Chiudi</string>
     <string name="do_not_show_again">Non mostrare più</string>
     <string name="tmdb_api_token">Token API TMDB</string>
-    <string name="tmdb" translatable="false">The Movie Database</string>
+    
     <string name="token_desc_1">Per funzionare, questa applicazione utilizza i servizi di %1$s. Questo sito permette il recupero di varie informazioni (immagini, titoli, trame, ecc.) per i tuoi contenuti multimediali. Per utilizzare questo servizio è richiesto un token API.</string>
     <string name="token_desc_2">Tuttavia, al fine di essere un'applicazione completamente FOSS (Free and Open-Source Software) e garantire un miglior controllo sui tuoi dati, il token per il servizio TMDB non viene fornito di serie.</string>
     <string name="token_desc_3">È possibile continuare senza utilizzare il servizio TMDB; tuttavia, per sfruttare al meglio le funzionalità dell'applicazione, si consiglia di fornire un token API. Per farlo, segui questi passaggi:</string>
@@ -100,12 +105,12 @@
     <string name="more_info">Maggiori informazioni</string>
     <string name="external_player">Player esterno</string>
     <string name="watch_on_external_player">Il tracciamento dei progressi non è compatibile con tutti i player.\nSi raccomanda l'uso delle notifiche.</string>
-    <string name="x" translatable="false">X</string>
+    
     <string name="stay_informed">Rimani informato sullo sviluppo dell'app!</string>
     <string name="about_desc">Informazioni su questa app, su di me, su qualsiasi cosa</string>
     <string name="support_me_desc">Grazie per il tuo supporto!</string>
     <string name="external_player_service_text">Uso di un player esterno</string>
-    <string name="stop" translatable="false">Stop</string>
+    
     <string name="reset_progress">Azzera progressi</string>
     <string name="reset_progress_confirmation">Sei davvero sicuro di voler eliminare tutti i progressi?</string>
     <string name="reset">Azzera</string>
@@ -135,7 +140,7 @@
     <string name="accent_color_desc">Colore globale dell'interfaccia</string>
     <string name="large_artwork_poster">Locandina grande</string>
     <string name="seasons">Stagioni</string>
-    <plurals name="episodes">
+    <plurals name="episodes_count">
         <item quantity="one">%1$d episodio</item>
         <item quantity="other">%1$d episodi</item>
     </plurals>
@@ -184,4 +189,5 @@
     <string name="add_token">Aggiungi token</string>
     <string name="genres">Generi</string>
     <string name="clear">Cancella</string>
+    <string name="loading_your_catalog">Caricamento del tuo catalogo</string>
 </resources>

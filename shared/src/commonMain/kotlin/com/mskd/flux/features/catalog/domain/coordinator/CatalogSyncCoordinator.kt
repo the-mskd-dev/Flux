@@ -1,7 +1,10 @@
 package com.mskd.flux.features.catalog.domain.coordinator
 
+import com.mskd.flux.core.model.core.StringProvider
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.utils.Trace
+import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.sync_in_progress
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.Job
@@ -62,7 +65,14 @@ class CatalogSyncCoordinatorImpl(
         val completed = completedSteps.incrementAndGet().toFloat()
         val progress = (completed / totalSteps).coerceIn(0f, 1f)
         _state.update { current ->
-            if (current is SyncState.Syncing) current.copy(progress = progress) else current
+            if (current is SyncState.Syncing) {
+                current.copy(
+                    progress = progress,
+                    description = StringProvider.Resource(Res.string.sync_in_progress)
+                )
+            } else {
+                current
+            }
         }
         Trace.info(tag = TAG, message = "Progress: ${completed.roundToInt()}/$totalSteps (${progress.times(100).roundToInt()}%)")
     }

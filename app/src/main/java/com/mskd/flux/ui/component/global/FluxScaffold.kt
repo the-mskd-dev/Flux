@@ -27,7 +27,7 @@ import com.mskd.flux.ui.theme.FluxUI
 fun FluxScaffold(
     modifier: Modifier = Modifier,
     title: String?,
-    onBackTap: (() -> Unit)?,
+    onBackTap: (() -> Unit)? = null,
     actions: @Composable (RowScope.() -> Unit) = {},
     snackbarHost: @Composable (() -> Unit) = {},
     floatingActionButton: @Composable (() -> Unit) = {},

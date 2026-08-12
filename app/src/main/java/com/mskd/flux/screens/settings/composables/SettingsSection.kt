@@ -31,6 +31,7 @@ import flux.shared.generated.resources.button_rewind
 import flux.shared.generated.resources.cache_images
 import flux.shared.generated.resources.cache_images_desc
 import flux.shared.generated.resources.caching_images_in_progress
+import flux.shared.generated.resources.catalog_is_syncing
 import flux.shared.generated.resources.customization
 import flux.shared.generated.resources.customization_desc
 import flux.shared.generated.resources.external_player
@@ -270,7 +271,7 @@ fun SettingsSyncSection(
         val syncTextColor by animateColorAsState(if (state.fullSyncInProgress) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onBackground.copy(alpha = .8f))
         SettingsItem(
             text = stringResource(Res.string.sync_library),
-            subText = stringResource(if (state.fullSyncInProgress) Res.string.loading_your_catalog else Res.string.sync_library_desc),
+            subText = stringResource(if (state.fullSyncInProgress) Res.string.catalog_is_syncing else Res.string.sync_library_desc),
             valueColor = syncTextColor,
             painter = painterResource(Res.drawable.ic_sync),
             iconColor = iconColor,

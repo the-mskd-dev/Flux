@@ -179,4 +179,5 @@
     <string name="add_token">Ajouter un jeton</string>
     <string name="genres">Genres</string>
     <string name="clear">Effacer</string>
+    <string name="loading_your_catalog">Chargement de votre catalogue</string>
 </resources>

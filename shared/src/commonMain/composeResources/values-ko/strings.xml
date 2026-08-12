@@ -183,4 +183,5 @@
     <string name="add_token">토큰 추가</string>
     <string name="genres">장르</string>
     <string name="clear">지우기</string>
+    <string name="loading_your_catalog">카탈로그 불러오는 중</string>
 </resources>

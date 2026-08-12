@@ -184,4 +184,5 @@
     <string name="add_token">Aggiungi token</string>
     <string name="genres">Generi</string>
     <string name="clear">Cancella</string>
+    <string name="loading_your_catalog">Caricamento del tuo catalogo</string>
 </resources>

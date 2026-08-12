@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="give_permission">Berechtigungen erteilen</string>
     <string name="downloads">Downloads</string>
@@ -39,6 +38,10 @@
         <item>Wählen Sie Ihren Player: Nutzen Sie den integrierten Player oder Ihren bevorzugten externen Player</item>
         <item>Entwickelt mit Material 3 Expressive und Material You für einen flüssigen, dynamischen Look, der sich an Ihr Gerät anpasst</item>
     </string-array>
+    <string name="setup_sources_default_title">Standard</string>
+    <string name="setup_sources_default_desc">Die Ordner %1$s und %2$s werden als Standarddateiquellen verwendet. Wenn Sie möchten, können Sie später neue Ordner hinzufügen.</string>
+    <string name="setup_sources_custom_title">Brauch</string>
+    <string name="setup_sources_custom_desc">Wählen Sie direkt Ihre Quellordner aus</string>
     <string name="setup_sources_title">Greife auf deine Videos zu</string>
     <string name="setup_sources_desc">Um deine Videos anzuzeigen und abzuspielen, benötigt Flux Zugriff auf die Dateien deines Geräts.\nKeine Sorge, wir erfassen oder teilen keine persönlichen Daten.</string>
     <string name="empty_catalog">Deine Mediathek ist leer</string>
@@ -48,6 +51,8 @@
     <string name="how_to_name_files_desc">Keine Sorge, es ist ganz einfach! Damit deine Videos gut organisiert bleiben, benenne deine Dateien wie folgt:</string>
     <string name="how_to_name_files_movies_desc">Gib deinen Filmen einen eindeutigen Namen, optional gefolgt vom Erscheinungsjahr. Zum Beispiel:</string>
     <string name="how_to_name_files_show_desc">Verwende für Serienfolgen ein Format mit Staffel- und Episodennummer. Das Jahr ist optional. Zum Beispiel:</string>
+    
+    
     <string name="read">gesehen</string>
     <string name="remaining_time">noch %1$s</string>
     <string name="rewatch">Erneut ansehen</string>
@@ -62,8 +67,8 @@
     <string name="which_technologies_desc">Diese App ist vollständig in Kotlin mit Jetpack Compose entwickelt. Ich nutze Room für die Datenbank, Ktor für Netzwerkaufrufe und Koin für Dependency Injection. Ebenfalls nutze ich GitHub. Für das UI/UX kommt Material 3 zum Einsatz. Gar nicht mal so übel, oder?</string>
     <string name="how_to_suggest">Wie kann man mich kontaktieren oder Vorschläge machen?</string>
     <string name="how_to_suggest_desc">Bei positivem Feedback kannst du mich per %1$s erreichen! Ansonsten genauso oder direkt über %2$s, aber bitte genauso freundlich.</string>
-    <string name="mail" translatable="false">mail</string>
-    <string name="github" translatable="false">Github</string>
+    
+    
     <string name="what_is_next">Was kommt als Nächstes?</string>
     <string name="what_is_next_desc">Das Ziel ist es, die App kontinuierlich zu verbessern (UI, UX, Performance). Ich plane, mehr Daten (Genre, Besetzung etc.) abzurufen sowie neue Datenquellen hinzuzufügen – nicht nur lokale Dateien.</string>
     <string name="make_a_donation">Unterstützen</string>
@@ -76,7 +81,7 @@
     <string name="close">Schließen</string>
     <string name="do_not_show_again">Nicht mehr anzeigen</string>
     <string name="tmdb_api_token">TMDB-API-Token</string>
-    <string name="tmdb" translatable="false">The Movie Database</string>
+    
     <string name="token_desc_1">Diese Anwendung nutzt Dienste von %1$s. Diese Plattform ermöglicht den Abruf verschiedener Informationen (Bilder, Titel, Zusammenfassungen etc.) für deine Medien. Zur Nutzung ist ein API-Token erforderlich.</string>
     <string name="token_desc_2">Um eine vollständig freie und quelloffene Software (FOSS) zu bleiben und volle Kontrolle über deine Daten zu garantieren, wird der Token für TMDB nicht mitgeliefert.</string>
     <string name="token_desc_3">Du kannst die App auch ohne TMDB-Dienst nutzen. Um jedoch alle Funktionen voll auszuschöpfen, wird ein API-Token empfohlen. Befolge dazu diese Schritte:</string>
@@ -100,12 +105,12 @@
     <string name="more_info">Weitere Informationen</string>
     <string name="external_player">Externer Player</string>
     <string name="watch_on_external_player">Die Fortschrittsverfolgung ist nicht mit allen Playern kompatibel.\nBenachrichtigungen werden empfohlen.</string>
-    <string name="x" translatable="false">X</string>
+    
     <string name="stay_informed">Bleibe über die Entwicklung der App auf dem Laufenden!</string>
     <string name="about_desc">Über diese App, über mich, über alles Mögliche</string>
     <string name="support_me_desc">Vielen Dank für deine Unterstützung!</string>
     <string name="external_player_service_text">Verwendung eines externen Players</string>
-    <string name="stop" translatable="false">Stop</string>
+    
     <string name="reset_progress">Fortschritt zurücksetzen</string>
     <string name="reset_progress_confirmation">Bist du sicher, dass du den gesamten Fortschritt löschen möchtest?</string>
     <string name="reset">Zurücksetzen</string>
@@ -169,6 +174,7 @@
     <string name="folder_deleted">Ordner gelöscht</string>
     <string name="undo">Rückgängig</string>
     <string name="system_folders">Systemordner</string>
+    <string name="system_folders_toggle_desc">Ermöglicht der App, an den Standardspeicherorten %1$s und %2$s nach Videos zu suchen. (Empfohlen)</string>
     <string name="home">Startseite</string>
     <string name="search">Suchen</string>
     <string name="sort">Sortieren</string>
@@ -184,4 +190,5 @@
     <string name="genres">Genres</string>
     <string name="clear">Löschen</string>
     <string name="loading_your_catalog">Katalog wird geladen</string>
+    <string name="catalog_is_syncing">Synchronisierung läuft</string>
 </resources>

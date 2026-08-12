@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="give_permission">권한 허용</string>
     <string name="downloads">다운로드</string>
@@ -39,6 +38,10 @@
         <item>플레이어 선택: 내장 플레이어 또는 선호하는 외부 플레이어를 사용할 수 있습니다</item>
         <item>Material 3 Expressive 및 Material You로 제작되어 기기에 맞게 적응하는 부드럽고 동적인 디자인을 제공합니다</item>
     </string-array>
+    <string name="setup_sources_default_title">기본</string>
+    <string name="setup_sources_default_desc">%1$s 및 %2$s 폴더가 기본 파일 소스로 사용됩니다. 원하는 경우 나중에 새 폴더를 추가할 수 있습니다.</string>
+    <string name="setup_sources_custom_title">관습</string>
+    <string name="setup_sources_custom_desc">소스 폴더를 직접 선택하세요</string>
     <string name="setup_sources_title">동영상 접근 권한</string>
     <string name="setup_sources_desc">동영상을 표시하고 재생하려면 Flux가 기기의 파일에 접근해야 합니다.\n개인정보는 수집하거나 공유되지 않으니 안심하세요.</string>
     <string name="empty_catalog">라이브러리가 비어 있습니다</string>
@@ -48,6 +51,8 @@
     <string name="how_to_name_files_desc">걱정하지 마세요, 정말 쉽습니다! 동영상을 깔끔하게 정리하려면 다음과 같이 파일 이름을 지정하세요:</string>
     <string name="how_to_name_files_movies_desc">영화에는 명확한 이름을 지정하고, 원하는 경우 개봉 연도를 뒤에 붙이세요. 예시:</string>
     <string name="how_to_name_files_show_desc">TV 시리즈 에피소드의 경우 시즌과 에피소드 번호가 포함된 형식을 사용하세요. 연도는 선택 사항입니다. 예시:</string>
+    
+    
     <string name="read">시청함</string>
     <string name="remaining_time">%1$s 남음</string>
     <string name="rewatch">다시 보기</string>
@@ -62,8 +67,8 @@
     <string name="which_technologies_desc">이 앱은 Jetpack Compose와 Kotlin으로 완전 개발되었습니다. 데이터베이스는 Room, 네트워크 통신은 Ktor, 의존성 주입은 Koin을 사용합니다. GitHub도 활용하고 있습니다. UI/UX는 Material 3를 적용하여 최선을 다했습니다. 제법 괜찮죠?</string>
     <string name="how_to_suggest">문의 및 개선 요청</string>
     <string name="how_to_suggest_desc">긍정적인 피드백이라면 %1$s(으)로 연락해 주세요! 그렇지 않은 경우에도 피드백만큼이나 따뜻한 마음으로 %2$s에 직접 남겨주세요.</string>
-    <string name="mail" translatable="false">mail</string>
-    <string name="github" translatable="false">Github</string>
+    
+    
     <string name="what_is_next">향후 계획</string>
     <string name="what_is_next_desc">목표는 UI, UX, 성능을 지속적으로 개선하는 것입니다. 더 많은 데이터(장르, 출연진 등)를 가져올 예정이며, 기기의 파일뿐만 아니라 새로운 데이터 소스도 추가할 계획입니다.</string>
     <string name="make_a_donation">후원하기</string>
@@ -76,7 +81,7 @@
     <string name="close">닫기</string>
     <string name="do_not_show_again">다시 보지 않기</string>
     <string name="tmdb_api_token">TMDB API 토큰</string>
-    <string name="tmdb" translatable="false">The Movie Database</string>
+    
     <string name="token_desc_1">이 앱은 기능을 수행하기 위해 %1$s 서비스를 사용합니다. 이 사이트를 통해 미디어의 다양한 정보(이미지, 제목, 줄거리 등)를 가져옵니다. 이 서비스를 이용하려면 API 토큰이 필요합니다.</string>
     <string name="token_desc_2">하지만 완전한 FOSS(자유/오픈 소스 소프트웨어) 앱으로서 데이터에 대한 더 나은 제어권을 보장하기 위해 TMDB 서비스용 토큰은 기본 제공되지 않습니다.</string>
     <string name="token_desc_3">TMDB 서비스를 사용하지 않고 계속할 수도 있지만, 앱의 모든 기능을 활용하려면 API 토큰을 입력하는 것을 권장합니다. 토큰을 받으려면 다음 단계를 따르세요:</string>
@@ -100,12 +105,12 @@
     <string name="more_info">자세한 정보</string>
     <string name="external_player">외부 플레이어</string>
     <string name="watch_on_external_player">진행 상황 추적은 모든 플레이어와 호환되지 않을 수 있습니다.\n알림 설정을 권장합니다.</string>
-    <string name="x" translatable="false">X</string>
+    
     <string name="stay_informed">앱 개발 소식을 계속 확인하세요!</string>
     <string name="about_desc">앱 소개, 개발자 소개 등</string>
     <string name="support_me_desc">지원의 손길에 감사드립니다!</string>
     <string name="external_player_service_text">외부 플레이어 사용 중</string>
-    <string name="stop" translatable="false">Stop</string>
+    
     <string name="reset_progress">진행 상황 초기화</string>
     <string name="reset_progress_confirmation">정말로 모든 시청 진행 상황을 삭제하시겠습니까?</string>
     <string name="reset">초기화</string>
@@ -184,4 +189,5 @@
     <string name="genres">장르</string>
     <string name="clear">지우기</string>
     <string name="loading_your_catalog">카탈로그 불러오는 중</string>
+    <string name="catalog_is_syncing">동기화 진행 중</string>
 </resources>

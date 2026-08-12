@@ -54,6 +54,7 @@ import flux.shared.generated.resources.ic_sync
 import flux.shared.generated.resources.ic_version
 import flux.shared.generated.resources.images_cached
 import flux.shared.generated.resources.information_language
+import flux.shared.generated.resources.loading_your_catalog
 import flux.shared.generated.resources.make_a_donation
 import flux.shared.generated.resources.picture_in_picture
 import flux.shared.generated.resources.source_code
@@ -269,7 +270,7 @@ fun SettingsSyncSection(
         val syncTextColor by animateColorAsState(if (state.fullSyncInProgress) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onBackground.copy(alpha = .8f))
         SettingsItem(
             text = stringResource(Res.string.sync_library),
-            subText = stringResource(if (state.fullSyncInProgress) Res.string.sync_in_progress else Res.string.sync_library_desc),
+            subText = stringResource(if (state.fullSyncInProgress) Res.string.loading_your_catalog else Res.string.sync_library_desc),
             valueColor = syncTextColor,
             painter = painterResource(Res.drawable.ic_sync),
             iconColor = iconColor,

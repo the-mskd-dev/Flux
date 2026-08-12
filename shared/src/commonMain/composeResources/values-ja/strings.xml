@@ -115,7 +115,7 @@
     <string name="sync_library_desc">ライブラリのすべてのデータを同期します</string>
     <string name="sync_library_dialog">ライブラリ全体を同期しますか？ 進捗状況は保存されますが、時間がかかる場合があります。</string>
     <string name="information_language">情報の言語</string>
-    <string name="sync_in_progress">同期中…</string>
+    <string name="sync_in_progress">同期中… %1$d%</string>
     <string name="by_default">デフォルト</string>
     <string name="cache_images">HD画像をキャッシュ</string>
     <string name="images_cached">キャッシュ済み画像</string>

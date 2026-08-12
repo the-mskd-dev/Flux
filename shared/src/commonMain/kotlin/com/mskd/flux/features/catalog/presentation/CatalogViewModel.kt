@@ -85,7 +85,7 @@ class CatalogViewModel(
         if (syncState is SyncState.Syncing && (syncState.full || !hasLoadedContent)) {
 
             CatalogUiState(
-                state = CatalogState.Loading(progress = syncState.progress),
+                state = CatalogState.Loading(syncState = syncState),
             )
 
         } else {

@@ -115,7 +115,7 @@
     <string name="sync_library_desc">Alle Mediatheksdaten synchronisieren</string>
     <string name="sync_library_dialog">Möchtest du die gesamte Mediathek synchronisieren? Dein Fortschritt bleibt erhalten, dies kann jedoch etwas Zeit in Anspruch nehmen.</string>
     <string name="information_language">Sprache der Informationen</string>
-    <string name="sync_in_progress">Synchronisierung läuft…</string>
+    <string name="sync_in_progress">Synchronisierung läuft… %1$d%</string>
     <string name="by_default">Standard</string>
     <string name="cache_images">HD-Bilder zwischenspeichern</string>
     <string name="images_cached">Bilder im Cache</string>

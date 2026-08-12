@@ -14,13 +14,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.mskd.flux.core.model.core.StringProvider
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.utils.extensions.resolve
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun LoadingScreen(
-    text: String? = null,
+    text: (() -> StringProvider)? = null,
     progress: (() -> Float)? = null
 ) {
 
@@ -39,7 +41,7 @@ fun LoadingScreen(
             LoadingIndicator(progress = progress)
 
             Text.Content.Body(
-                text = text,
+                text = text?.invoke()?.resolve(),
                 color = MaterialTheme.colorScheme.onSurface
             )
 

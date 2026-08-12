@@ -63,6 +63,7 @@ import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxThemePreview
+import com.mskd.flux.utils.extensions.resolve
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.sync_in_progress
 import org.jetbrains.compose.resources.stringResource
@@ -110,8 +111,8 @@ fun CatalogScreen(
             is CatalogState.Loading -> {
 
                 LoadingScreen(
-                    text = stringResource(Res.string.sync_in_progress),
-                    progress = { state.progress }
+                    text = { state.syncState.description },
+                    progress = { state.syncState.progress }
                 )
             }
 

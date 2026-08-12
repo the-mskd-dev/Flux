@@ -1,5 +1,6 @@
 package com.mskd.flux.features.customization.domain.datastore
 
+import com.mskd.flux.features.customization.domain.model.NavigationStyle
 import com.mskd.flux.utils.UiCommon
 import kotlinx.coroutines.flow.Flow
 
@@ -18,6 +19,7 @@ interface CustomizationDataStore {
     suspend fun setItemsPerRow(count: Int)
     suspend fun setItemsCorners(corners: Int)
     suspend fun setSeasonsPerRow(count: Int)
+    suspend fun setNavigationStyle(style: NavigationStyle)
 
     data class State(
         val uiTheme: UiCommon.THEME = UiCommon.THEME.SYSTEM,
@@ -28,6 +30,7 @@ interface CustomizationDataStore {
         val itemsPerRow: Int = 3,
         val itemsCorners: Int = 12,
         val seasonsPerRow: Int = 3,
+        val navigationStyle: NavigationStyle = NavigationStyle.PILL
     )
 
 }

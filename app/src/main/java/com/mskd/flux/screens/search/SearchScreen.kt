@@ -114,7 +114,6 @@ fun SearchContent(
 
     FluxScaffold(
         title = stringResource(android.R.string.search_go),
-        onBackTap = { sendIntent(SearchIntent.OnBackTap) }
     ) { innerPadding ->
 
         Column(

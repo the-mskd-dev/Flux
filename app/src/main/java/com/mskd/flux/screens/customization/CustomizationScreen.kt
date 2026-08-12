@@ -17,7 +17,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.mskd.flux.features.customization.presentation.CustomizationDialog
+import com.mskd.flux.features.customization.domain.model.CustomizationDialog
 import com.mskd.flux.features.customization.presentation.CustomizationEvent
 import com.mskd.flux.features.customization.presentation.CustomizationIntent
 import com.mskd.flux.features.customization.presentation.CustomizationUiState

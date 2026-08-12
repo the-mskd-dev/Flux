@@ -135,7 +135,7 @@
     <string name="accent_color_desc">Globale Farbe der Benutzeroberfläche</string>
     <string name="large_artwork_poster">Großes Poster-Artwork</string>
     <string name="seasons">Staffeln</string>
-    <plurals name="episodes">
+    <plurals name="episodes_count">
         <item quantity="one">%1$d Episode</item>
         <item quantity="other">%1$d Episoden</item>
     </plurals>

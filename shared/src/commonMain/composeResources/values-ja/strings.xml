@@ -135,7 +135,7 @@
     <string name="accent_color_desc">UI全体のアクセントカラー</string>
     <string name="large_artwork_poster">大型アートワークポスター</string>
     <string name="seasons">シーズン</string>
-    <plurals name="episodes">
+    <plurals name="episodes_count">
     <item quantity="other">%1$d 話</item>
     </plurals>
     <string name="read_more">続きを読む</string>

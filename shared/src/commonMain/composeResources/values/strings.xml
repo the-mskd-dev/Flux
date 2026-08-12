@@ -156,7 +156,7 @@
     <string name="accent_color_desc">Global interface's color</string>
     <string name="large_artwork_poster">Large artwork poster</string>
     <string name="seasons">Seasons</string>
-    <plurals name="episodes">
+    <plurals name="episodes_count">
         <item quantity="one">%1$d episode</item>
         <item quantity="many">%1$d episodes</item>
         <item quantity="other">%1$d episodes</item>

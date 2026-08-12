@@ -135,7 +135,7 @@
     <string name="accent_color_desc">전체 인터페이스 색상</string>
     <string name="large_artwork_poster">대형 포스터 아트워크</string>
     <string name="seasons">시즌</string>
-    <plurals name="episodes">
+    <plurals name="episodes_count">
         <item quantity="other">%1$d개 에피소드</item>
     </plurals>
     <string name="read_more">더 보기</string>

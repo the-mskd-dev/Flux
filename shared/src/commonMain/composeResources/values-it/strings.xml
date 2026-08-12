@@ -135,7 +135,7 @@
     <string name="accent_color_desc">Colore globale dell'interfaccia</string>
     <string name="large_artwork_poster">Locandina grande</string>
     <string name="seasons">Stagioni</string>
-    <plurals name="episodes">
+    <plurals name="episodes_count">
         <item quantity="one">%1$d episodio</item>
         <item quantity="other">%1$d episodi</item>
     </plurals>

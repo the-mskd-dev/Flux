@@ -68,7 +68,7 @@ class CatalogSyncCoordinatorImpl(
             if (current is SyncState.Syncing) {
                 current.copy(
                     progress = progress,
-                    description = StringProvider.ResourceWithArgs(Res.string.sync_in_progress, listOf(progress.times(100).roundToInt()))
+                    description = StringProvider.Resource(Res.string.sync_in_progress)
                 )
             } else {
                 current

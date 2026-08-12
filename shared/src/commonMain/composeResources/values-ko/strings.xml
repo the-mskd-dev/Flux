@@ -120,7 +120,7 @@
     <string name="sync_library_desc">모든 라이브러리 데이터 동기화</string>
     <string name="sync_library_dialog">전체 라이브러리를 동기화하시겠습니까? 진행 상황은 저장되지만 시간이 다소 걸릴 수 있습니다.</string>
     <string name="information_language">정보 언어</string>
-    <string name="sync_in_progress">동기화 진행 중… %1$d%</string>
+    <string name="sync_in_progress">동기화 진행 중…</string>
     <string name="by_default">기본값</string>
     <string name="cache_images">HD 이미지 캐싱</string>
     <string name="images_cached">캐시된 이미지</string>
@@ -189,5 +189,4 @@
     <string name="genres">장르</string>
     <string name="clear">지우기</string>
     <string name="loading_your_catalog">카탈로그 불러오는 중</string>
-    <string name="catalog_is_syncing">동기화 진행 중</string>
 </resources>

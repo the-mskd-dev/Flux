@@ -111,7 +111,7 @@ fun CatalogScreen(
             is CatalogState.Loading -> {
 
                 LoadingScreen(
-                    text = { state.syncState.description },
+                    text = state.syncState.description,
                     progress = { state.syncState.progress }
                 )
             }

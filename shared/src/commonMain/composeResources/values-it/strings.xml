@@ -120,7 +120,7 @@
     <string name="sync_library_desc">Sincronizza tutti i dati della libreria</string>
     <string name="sync_library_dialog">Vuoi sincronizzare l'intera libreria? I tuoi progressi verranno salvati, tuttavia l'operazione potrebbe richiedere del tempo.</string>
     <string name="information_language">Lingua delle informazioni</string>
-    <string name="sync_in_progress">Sincronizzazione in corso… %1$d%</string>
+    <string name="sync_in_progress">Sincronizzazione in corso…</string>
     <string name="by_default">Predefinito</string>
     <string name="cache_images">Salva immagini HD in cache</string>
     <string name="images_cached">Immagini in cache</string>
@@ -190,5 +190,4 @@
     <string name="genres">Generi</string>
     <string name="clear">Cancella</string>
     <string name="loading_your_catalog">Caricamento del tuo catalogo</string>
-    <string name="catalog_is_syncing">Sincronizzazione in corso</string>
 </resources>

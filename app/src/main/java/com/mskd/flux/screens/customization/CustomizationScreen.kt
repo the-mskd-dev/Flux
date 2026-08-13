@@ -108,11 +108,6 @@ fun CustomizationContent(
 
     FluxScaffold(
         title = stringResource(Res.string.customization),
-        topAppBarColors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainer,
-            scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
-            titleContentColor = MaterialTheme.colorScheme.onSurface,
-        ),
         onBackTap = { sendIntent(CustomizationIntent.OnBackTap) }
     ) { innerPadding ->
 

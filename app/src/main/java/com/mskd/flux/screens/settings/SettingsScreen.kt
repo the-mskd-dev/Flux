@@ -121,11 +121,6 @@ fun SettingsContent(
 
     FluxScaffold(
         title = stringResource(Res.string.settings),
-        topAppBarColors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainer,
-            scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
-            titleContentColor = MaterialTheme.colorScheme.onSurface,
-        ),
         onBackTap = { sendIntent(SettingsIntent.OnBackTap) },
         showBackButton = LocalUiGlobal.current.navigationStyle == NavigationStyle.TOP_BAR
     ) { innerPadding ->

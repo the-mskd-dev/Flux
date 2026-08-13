@@ -193,11 +193,6 @@ fun SourcesScreenContent(
 
     FluxScaffold(
         title = stringResource(Res.string.sources),
-        topAppBarColors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainer,
-            scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
-            titleContentColor = MaterialTheme.colorScheme.onSurface,
-        ),
         onBackTap = { sendIntent(SourcesIntent.OnBackTap) },
         showBackButton = !content.fromSetup,
         floatingActionButton = {
@@ -215,7 +210,7 @@ fun SourcesScreenContent(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.surfaceContainer),
+                .background(MaterialTheme.colorScheme.background),
         ) {
 
             item {

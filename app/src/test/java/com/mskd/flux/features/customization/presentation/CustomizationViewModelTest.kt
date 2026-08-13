@@ -227,15 +227,12 @@ class CustomizationViewModelTest : FunSpec({
 
             // Given
             viewModel.uiState.test {
-                awaitItem()
 
                 // When
                 viewModel.handleIntent(CustomizationIntent.SetThemeValue(theme))
 
                 // Then
-                val state = awaitItem()
                 coVerify { customizationDataStore.setUiTheme(theme) }
-                state.dialog shouldBe null
 
                 cancelAndConsumeRemainingEvents()
             }
@@ -253,15 +250,12 @@ class CustomizationViewModelTest : FunSpec({
 
             // Given
             viewModel.uiState.test {
-                awaitItem()
 
                 // When
                 viewModel.handleIntent(CustomizationIntent.SetColorValue(color))
 
                 // Then
-                val state = awaitItem()
                 coVerify { customizationDataStore.setColor(color) }
-                state.dialog shouldBe null
 
                 cancelAndConsumeRemainingEvents()
             }

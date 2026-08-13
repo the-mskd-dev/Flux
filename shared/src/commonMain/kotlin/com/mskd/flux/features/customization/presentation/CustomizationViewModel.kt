@@ -46,6 +46,7 @@ class CustomizationViewModel(
             itemsPerRow = customization.itemsPerRow,
             itemsCorners = customization.itemsCorners,
             seasonsPerRow = customization.seasonsPerRow,
+            navigationStyle = customization.navigationStyle,
             dialog = dialog
         )
     }.stateIn(

@@ -13,14 +13,11 @@ import com.mskd.flux.utils.UiCommon
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.accent_color
 import flux.shared.generated.resources.app_theme
-import flux.shared.generated.resources.bottom_bar
 import flux.shared.generated.resources.items_per_row
 import flux.shared.generated.resources.items_per_row_desc
 import flux.shared.generated.resources.navigation_style
-import flux.shared.generated.resources.pill
 import flux.shared.generated.resources.seasons_per_row
 import flux.shared.generated.resources.seasons_per_row_desc
-import flux.shared.generated.resources.top_bar
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted

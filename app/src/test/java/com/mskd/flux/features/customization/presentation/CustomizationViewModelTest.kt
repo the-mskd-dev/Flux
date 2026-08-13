@@ -1,13 +1,11 @@
 package com.mskd.flux.features.customization.presentation
 
-import androidx.compose.ui.unit.dp
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.core.model.core.FluxOptionsDialogState
 import com.mskd.flux.features.customization.domain.datastore.CustomizationDataStore
 import com.mskd.flux.features.customization.domain.model.CustomizationDialog
 import com.mskd.flux.features.customization.domain.model.NavigationStyle
-import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.UiCommon
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe

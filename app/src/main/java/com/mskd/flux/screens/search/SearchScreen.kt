@@ -33,7 +33,6 @@ import com.mskd.flux.features.search.presentation.SearchEvent
 import com.mskd.flux.features.search.presentation.SearchIntent
 import com.mskd.flux.features.search.presentation.SearchUIState
 import com.mskd.flux.features.search.presentation.SearchViewModel
-import com.mskd.flux.features.settings.presentation.SettingsIntent
 import com.mskd.flux.mockups.DetailsMockup
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.navigation.domain.Route

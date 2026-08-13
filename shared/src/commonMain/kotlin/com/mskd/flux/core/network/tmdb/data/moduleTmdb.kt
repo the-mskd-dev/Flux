@@ -65,7 +65,8 @@ val moduleTmdb = module {
     single<TmdbDataSource> {
         TmdbDataSourceImpl(
             tmdbService = get(),
-            settings = get()
+            settings = get(),
+            tokenDataStore = get()
         )
     }
 

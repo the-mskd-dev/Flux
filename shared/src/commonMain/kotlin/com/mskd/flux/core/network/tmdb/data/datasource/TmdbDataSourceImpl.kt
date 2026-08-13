@@ -13,6 +13,7 @@ import com.mskd.flux.core.network.tmdb.data.dto.show.ShowDto
 import com.mskd.flux.core.network.tmdb.data.service.TMDBService
 import com.mskd.flux.core.network.tmdb.domain.model.TranslationRequest
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
+import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.utils.Trace
 import com.mskd.flux.utils.extensions.toTmdbFormat
 import io.github.aakira.napier.Napier
@@ -21,7 +22,8 @@ import kotlinx.coroutines.coroutineScope
 
 class TmdbDataSourceImpl(
     private val tmdbService: TMDBService,
-    private val settings: SettingsDataStore
+    private val settings: SettingsDataStore,
+    private val tokenDataStore: TokenDataStore
 ) : TmdbDataSource {
 
     private companion object {
@@ -31,6 +33,9 @@ class TmdbDataSourceImpl(
     override suspend fun getArtwork(
         file: UserFile
     ): ArtworkDto? {
+
+        if (!tokenDataStore.tokenIsAvailable())
+            return null
 
         val language = settings.getDataLanguage()
 
@@ -82,12 +87,23 @@ class TmdbDataSourceImpl(
 
     override suspend fun getGenres(): List<GenreDto> {
 
+        if (!tokenDataStore.tokenIsAvailable())
+            return emptyList()
+
         val language = settings.getDataLanguage()
 
         return coroutineScope {
 
-            val movieGenresDeferred = async { tmdbService.getMovieGenres(language = language.toTmdbFormat()).genres }
-            val showGenresDeferred = async { tmdbService.getMovieGenres(language = language.toTmdbFormat()).genres }
+            val movieGenresDeferred = async {
+                runCatching { tmdbService.getMovieGenres(language = language.toTmdbFormat()).genres }
+                    .onFailure { Trace.error(TAG, "getGenres for movies failed", it) }
+                    .getOrElse { emptyList() }
+            }
+            val showGenresDeferred = async {
+                runCatching { tmdbService.getShowGenres(language = language.toTmdbFormat()).genres }
+                    .onFailure { Trace.error(TAG, "getGenres for movies failed", it) }
+                    .getOrElse { emptyList() }
+            }
 
             movieGenresDeferred.await() + showGenresDeferred.await()
         }
@@ -97,6 +113,9 @@ class TmdbDataSourceImpl(
     override suspend fun getMovie(
         artworkId: Long
     ): MovieDto? {
+
+        if (!tokenDataStore.tokenIsAvailable())
+            return null
 
         val language = settings.getDataLanguage()
 
@@ -135,6 +154,9 @@ class TmdbDataSourceImpl(
     override suspend fun getShow(
         artworkId: Long
     ): ShowDto? {
+
+        if (!tokenDataStore.tokenIsAvailable())
+            return null
 
         val language = settings.getDataLanguage()
 
@@ -176,6 +198,9 @@ class TmdbDataSourceImpl(
         number: Int
     ): EpisodeDto? {
 
+        if (!tokenDataStore.tokenIsAvailable())
+            return null
+
         val language = settings.getDataLanguage()
 
         return try {
@@ -216,6 +241,9 @@ class TmdbDataSourceImpl(
 
     override suspend fun getSeason(artworkId: Long, season: Int): SeasonDto? {
 
+        if (!tokenDataStore.tokenIsAvailable())
+            return null
+
         val language = settings.getDataLanguage()
 
         return try {
@@ -253,6 +281,9 @@ class TmdbDataSourceImpl(
     }
 
     override suspend fun getTranslation(request: TranslationRequest): TranslationsDto.Translation? {
+
+        if (!tokenDataStore.tokenIsAvailable())
+            return null
 
         return try {
 

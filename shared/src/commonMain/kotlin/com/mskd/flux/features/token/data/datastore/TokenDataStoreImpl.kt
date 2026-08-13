@@ -27,6 +27,10 @@ class TokenDataStoreImpl(
         .catch { exception -> if (exception is IOException) emit(emptyPreferences()) else throw exception }
         .map { it[TOKEN_KEY] ?: "" }
 
+    override suspend fun tokenIsAvailable(): Boolean {
+        return tokenDataStore.data.map { it[TOKEN_KEY] }.first()?.isNotBlank() ?: false
+    }
+
     override suspend fun getToken(): String {
         return tokenDataStore.data.map { it[TOKEN_KEY] }.first() ?: ""
     }

@@ -6,6 +6,7 @@ interface TokenDataStore {
 
     val flow: Flow<String>
 
+    suspend fun tokenIsAvailable(): Boolean
     suspend fun getToken(): String
     suspend fun saveToken(token: String)
 

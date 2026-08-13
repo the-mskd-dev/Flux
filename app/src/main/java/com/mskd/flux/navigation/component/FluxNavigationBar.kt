@@ -13,16 +13,20 @@ fun FluxNavigationBar(
 
     val navigationStyle = LocalUiGlobal.current.navigationStyle
 
-    if (navigationStyle == NavigationStyle.PILL) {
-        FluxNavigationBarPill(
-            currentTab = currentTab,
-            onTabSelected = onTabSelected
-        )
-    } else {
-        FluxNavigationBarBasic(
-            currentTab = currentTab,
-            onTabSelected = onTabSelected
-        )
+    when (navigationStyle) {
+        NavigationStyle.PILL -> {
+            FluxNavigationBarPill(
+                currentTab = currentTab,
+                onTabSelected = onTabSelected
+            )
+        }
+        NavigationStyle.BOTTOM_BAR -> {
+            FluxNavigationBarBasic(
+                currentTab = currentTab,
+                onTabSelected = onTabSelected
+            )
+        }
+        NavigationStyle.TOP_BAR -> {}
     }
 
 }

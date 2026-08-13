@@ -53,7 +53,8 @@ fun FluxNavigationBarPill(
                 .padding(bottom = FluxUI.Space.medium),
             shadowElevation = FluxUI.Elevation.navigationBar,
             shape = CircleShape,
-            color = MaterialTheme.colorScheme.background
+            color = MaterialTheme.colorScheme.surfaceContainer,
+            tonalElevation = 0.dp
         ) {
 
             Row(

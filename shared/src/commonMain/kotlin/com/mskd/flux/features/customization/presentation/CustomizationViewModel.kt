@@ -150,9 +150,9 @@ class CustomizationViewModel(
             titleResId = Res.string.navigation_style,
             currentValue = currentValue,
             options = listOf(
-                FluxOptionsDialogItem(value = NavigationStyle.PILL, label = StringProvider.Resource(Res.string.pill)),
-                FluxOptionsDialogItem(value = NavigationStyle.BOTTOM_BAR, label = StringProvider.Resource(Res.string.bottom_bar)),
-                FluxOptionsDialogItem(value = NavigationStyle.TOP_BAR, label = StringProvider.Resource(Res.string.top_bar)),
+                FluxOptionsDialogItem(value = NavigationStyle.PILL, label = NavigationStyle.PILL.description),
+                FluxOptionsDialogItem(value = NavigationStyle.BOTTOM_BAR, label = NavigationStyle.BOTTOM_BAR.description),
+                FluxOptionsDialogItem(value = NavigationStyle.TOP_BAR, label = NavigationStyle.TOP_BAR.description),
             ),
             applyValue = { value -> CustomizationIntent.SetNavigationStyle(value) }
         )

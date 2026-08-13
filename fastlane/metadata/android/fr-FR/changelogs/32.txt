@@ -1,0 +1,4 @@
+- Feature: Choisissez votre style de navigation préféré
+- UI: Nouvelles icônes (en vrai c'était déjà dans la version précédente)
+- UI: Fond d'écran AMOLED pour certains écrans
+- Fix: Crashs sur la nouvelle fonctionnalité des Genres

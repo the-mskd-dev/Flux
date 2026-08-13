@@ -1,5 +1,3 @@
-## Version 1.7.1
-
 - Feature: Choose your favorite navigation style
 - UI: New Icons (actually, it was in the previous version)
 - UI: AMOLED background in some screens

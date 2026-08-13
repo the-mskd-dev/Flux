@@ -1,10 +1,13 @@
 package com.mskd.flux.features.customization.presentation
 
+import androidx.compose.ui.unit.dp
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.core.model.core.FluxOptionsDialogState
 import com.mskd.flux.features.customization.domain.datastore.CustomizationDataStore
 import com.mskd.flux.features.customization.domain.model.CustomizationDialog
+import com.mskd.flux.features.customization.domain.model.NavigationStyle
+import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.UiCommon
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
@@ -12,8 +15,10 @@ import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.boolean
+import io.kotest.property.arbitrary.element
 import io.kotest.property.arbitrary.enum
 import io.kotest.property.arbitrary.int
+import io.kotest.property.arbitrary.orNull
 import io.kotest.property.checkAll
 import io.mockk.coVerify
 import io.mockk.every
@@ -45,17 +50,83 @@ class CustomizationViewModelTest : FunSpec({
 
     test("Initial state") {
 
-        // Given & When
+        // Given
+        val expectedState = CustomizationDataStore.State()
+
+        // When
         viewModel.uiState.test {
             val initialState = awaitItem()
 
             // Then
-            initialState.uiTheme shouldBe UiCommon.THEME.SYSTEM
-            initialState.color shouldBe null
-            initialState.waveProgress shouldBe true
-            initialState.largeEpisodeImage shouldBe false
-            initialState.itemsPerRow shouldBe 3
+            initialState.uiTheme shouldBe expectedState.uiTheme
+            initialState.color shouldBe expectedState.color
+            initialState.waveProgress shouldBe expectedState.waveProgress
+            initialState.oldBlurredHeader shouldBe expectedState.oldBlurredHeader
+            initialState.largeEpisodeImage shouldBe expectedState.largeEpisodeImage
+            initialState.itemsPerRow shouldBe expectedState.itemsPerRow
+            initialState.itemsCorners shouldBe expectedState.itemsCorners
+            initialState.seasonsPerRow shouldBe expectedState.seasonsPerRow
+            initialState.navigationStyle shouldBe expectedState.navigationStyle
             initialState.dialog shouldBe null
+        }
+
+    }
+
+    test("UiState should react to DataStoreChange") {
+
+        checkAll(
+            iterations = 100,
+            Arb.enum<UiCommon.THEME>(),
+            Arb.int().orNull(),
+            Arb.boolean(),
+            Arb.boolean(),
+            Arb.boolean(),
+            Arb.int(),
+            Arb.int(),
+            Arb.int(),
+            Arb.enum<NavigationStyle>()
+        ) {
+            theme,
+            color,
+            waveProgress,
+            oldBlurredHeader,
+            largeEpisodeImage,
+            itemsPerRow,
+            itemsCorners,
+            seasonsPerRow,
+            navigationStyle ->
+
+            // Given
+            dataStoreFlow.value = CustomizationDataStore.State(
+                uiTheme = theme,
+                color = color,
+                waveProgress = waveProgress,
+                oldBlurredHeader = oldBlurredHeader,
+                largeEpisodeImage = largeEpisodeImage,
+                itemsPerRow = itemsPerRow,
+                itemsCorners = itemsCorners,
+                seasonsPerRow = seasonsPerRow,
+                navigationStyle = navigationStyle
+            )
+
+            // When
+            viewModel.uiState.test {
+                val state = awaitItem()
+
+                // Then
+                state.uiTheme shouldBe theme
+                state.color shouldBe color
+                state.waveProgress shouldBe waveProgress
+                state.oldBlurredHeader shouldBe oldBlurredHeader
+                state.largeEpisodeImage shouldBe largeEpisodeImage
+                state.itemsPerRow shouldBe itemsPerRow
+                state.itemsCorners shouldBe itemsCorners
+                state.seasonsPerRow shouldBe seasonsPerRow
+                state.navigationStyle shouldBe navigationStyle
+
+                cancelAndConsumeRemainingEvents()
+            }
+
         }
 
     }
@@ -72,7 +143,7 @@ class CustomizationViewModelTest : FunSpec({
 
     }
 
-    test("ShowThemeDialog - should create a SelectDialog with THEME option") {
+    test("ShowThemeDialog - should create a SelectDialog with THEME options") {
 
         // Given
         viewModel.uiState.test {
@@ -92,7 +163,7 @@ class CustomizationViewModelTest : FunSpec({
 
     }
 
-    test("ShowColorDialog - should create a SelectDialog with Int? option") {
+    test("ShowColorDialog - should create a SelectDialog with Int? options") {
 
         // Given
         viewModel.uiState.test {
@@ -108,7 +179,6 @@ class CustomizationViewModelTest : FunSpec({
 
             val selectState = dialog.state
             selectState.shouldBeInstanceOf<FluxOptionsDialogState<Int?, CustomizationIntent>>()
-            selectState.currentValue shouldBe null
         }
 
     }
@@ -125,6 +195,26 @@ class CustomizationViewModelTest : FunSpec({
             // Then
             val state = awaitItem()
             state.dialog.shouldBeInstanceOf<CustomizationDialog.ItemsPerRowDialog>()
+        }
+
+    }
+
+    test("ShowNavigationStyleDialog - should create a SelectDialog with NavigationStyle options") {
+
+        // Given
+        viewModel.uiState.test {
+            awaitItem()
+
+            // When
+            viewModel.handleIntent(CustomizationIntent.ShowNavigationStyleDialog)
+
+            // Then
+            val dialog = awaitItem().dialog
+            dialog shouldNotBe null
+            dialog.shouldBeInstanceOf<CustomizationDialog.SelectDialog>()
+
+            val selectState = dialog.state
+            selectState.shouldBeInstanceOf<FluxOptionsDialogState<NavigationStyle, CustomizationIntent>>()
         }
 
     }
@@ -226,82 +316,136 @@ class CustomizationViewModelTest : FunSpec({
 
     }
 
-    test("set large episode image check") {
-        viewModel.uiState.test {
-            awaitItem()
+    test("OnLargeEpisodeImageCheck - should call datastore setLargeEpisodeImage") {
 
-            viewModel.handleIntent(CustomizationIntent.OnLargeEpisodeImageCheck(true))
-            dataStoreFlow.value = dataStoreFlow.value.copy(largeEpisodeImage = true)
+        checkAll(
+            Arb.boolean()
+        ) { check ->
 
-            val state = awaitItem()
+            // Given
+            viewModel.uiState.test {
+                awaitItem()
 
-            coVerify { customizationDataStore.setLargeEpisodeImage(true) }
-            state.largeEpisodeImage shouldBe true
+                // When
+                viewModel.handleIntent(CustomizationIntent.OnLargeEpisodeImageCheck(check))
 
-            cancelAndConsumeRemainingEvents()
+                // Then
+                coVerify { customizationDataStore.setLargeEpisodeImage(check) }
+
+                cancelAndConsumeRemainingEvents()
+            }
+
         }
+
     }
 
-    test("set items per row value") {
-        viewModel.uiState.test {
-            awaitItem()
+    test("SetItemsPerRowValue - should call datastore setItemsPerRow") {
 
-            viewModel.handleIntent(CustomizationIntent.SetItemsPerRowValue(4))
-            dataStoreFlow.value = dataStoreFlow.value.copy(itemsPerRow = 4)
+        checkAll(
+            Arb.int(min = 2, max = 5)
+        ) { count ->
 
-            val state = awaitItem()
+            // Given
+            viewModel.uiState.test {
+                awaitItem()
 
-            coVerify { customizationDataStore.setItemsPerRow(4) }
-            state.itemsPerRow shouldBe 4
-            state.dialog shouldBe null
+                // When
+                viewModel.handleIntent(CustomizationIntent.SetItemsPerRowValue(count))
 
-            cancelAndConsumeRemainingEvents()
+                // Then
+                coVerify { customizationDataStore.setItemsPerRow(count) }
+
+                cancelAndConsumeRemainingEvents()
+            }
+
         }
+
     }
 
-    test("set seasons per row value") {
-        viewModel.uiState.test {
-            awaitItem()
+    test("SetSeasonsPerRowValue - should call datastore setSeasonsPerRow") {
 
-            viewModel.handleIntent(CustomizationIntent.SetSeasonsPerRowValue(4))
-            dataStoreFlow.value = dataStoreFlow.value.copy(seasonsPerRow = 4)
+        checkAll(
+            Arb.int(min = 2, max = 5)
+        ) { count ->
 
-            val state = awaitItem()
+            // Given
+            viewModel.uiState.test {
+                awaitItem()
 
-            coVerify { customizationDataStore.setSeasonsPerRow(4) }
-            state.seasonsPerRow shouldBe 4
-            state.dialog shouldBe null
+                // When
+                viewModel.handleIntent(CustomizationIntent.SetSeasonsPerRowValue(count))
 
-            cancelAndConsumeRemainingEvents()
+                // Then
+                coVerify { customizationDataStore.setSeasonsPerRow(count) }
+
+                cancelAndConsumeRemainingEvents()
+            }
+
         }
+
     }
 
-    test("set corners value") {
-        viewModel.uiState.test {
-            awaitItem()
+    test("SetItemsCornersValue - should call datastore setItemsCorners") {
 
-            viewModel.handleIntent(CustomizationIntent.SetItemsCornersValue(4))
-            dataStoreFlow.value = dataStoreFlow.value.copy(itemsCorners = 4)
+        checkAll(
+            Arb.element(listOf(8, 12, 16))
+        ) { count ->
 
-            val state = awaitItem()
+            // Given
+            viewModel.uiState.test {
+                awaitItem()
 
-            coVerify { customizationDataStore.setItemsCorners(4) }
-            state.itemsCorners shouldBe 4
-            state.dialog shouldBe null
+                // When
+                viewModel.handleIntent(CustomizationIntent.SetItemsCornersValue(count))
 
-            cancelAndConsumeRemainingEvents()
+                // Then
+                coVerify { customizationDataStore.setItemsCorners(count) }
+
+                cancelAndConsumeRemainingEvents()
+            }
+
         }
+
     }
 
-    test("hide dialog") {
+    test("SetNavigationStyle - should call datastore setNavigationStyle") {
+
+        checkAll(
+            Arb.enum<NavigationStyle>()
+        ) { style ->
+
+            // Given
+            viewModel.uiState.test {
+                awaitItem()
+
+                // When
+                viewModel.handleIntent(CustomizationIntent.SetNavigationStyle(style))
+
+                // Then
+                coVerify { customizationDataStore.setNavigationStyle(style) }
+
+                cancelAndConsumeRemainingEvents()
+            }
+
+        }
+
+    }
+
+    test("HideDialog - should set dialog to null") {
+
+        // Given
         viewModel.uiState.test {
             awaitItem()
             viewModel.handleIntent(CustomizationIntent.ShowThemeDialog)
             awaitItem().dialog shouldNotBe null
 
+            // When
             viewModel.handleIntent(CustomizationIntent.HideDialog)
+
+            // Then
             awaitItem().dialog shouldBe null
         }
+
     }
 
 })

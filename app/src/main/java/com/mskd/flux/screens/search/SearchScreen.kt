@@ -127,7 +127,7 @@ fun SearchContent(
                         )
                     }
                 }
-                .background(MaterialTheme.colorScheme.surfaceContainer)
+                .background(MaterialTheme.colorScheme.background)
                 .padding(horizontal = FluxUI.Space.medium),
             verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
         ) {

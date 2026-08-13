@@ -165,7 +165,7 @@ fun CatalogContent(
     val columns = FluxUI.itemsPerRow.artworks
 
     Scaffold(
-        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+        containerColor = MaterialTheme.colorScheme.background,
     ) { paddingValues ->
 
         Column(modifier = Modifier.fillMaxSize()) {

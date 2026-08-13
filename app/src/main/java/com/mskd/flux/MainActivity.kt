@@ -26,7 +26,7 @@ import androidx.navigation3.ui.NavDisplay
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.mskd.flux.features.connectivity.domain.ConnectivityRepository
-import com.mskd.flux.navigation.component.MainNavigationBar
+import com.mskd.flux.navigation.component.FluxNavigationBar
 import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.navigation.domain.Transition
 import com.mskd.flux.navigation.domain.navigateToTab
@@ -112,7 +112,7 @@ class MainActivity : ComponentActivity() {
                             enter = fadeIn(),
                             exit = fadeOut()
                         ) {
-                            MainNavigationBar(
+                            FluxNavigationBar(
                                 currentTab = currentRoute,
                                 onTabSelected = { target ->
                                     transitions = Transition.Fade to Transition.Fade

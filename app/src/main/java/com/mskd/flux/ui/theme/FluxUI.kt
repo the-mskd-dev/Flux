@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.mskd.flux.features.customization.domain.model.NavigationStyle
 
 object FluxUI {
 
@@ -66,6 +67,7 @@ object FluxUI {
 
     object Elevation {
         val itemShadow = 1.dp
+        val navigationBar = 2.dp
     }
 
     data class Shapes(
@@ -80,6 +82,7 @@ object FluxUI {
 
     data class Global(
         val oldBlurredHeader: Boolean = false,
+        val navigationStyle: NavigationStyle = NavigationStyle.PILL
     )
 
     data class Episodes(

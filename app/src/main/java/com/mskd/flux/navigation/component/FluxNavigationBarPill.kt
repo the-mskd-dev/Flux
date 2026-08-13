@@ -35,7 +35,7 @@ import com.mskd.flux.utils.extensions.resolve
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
-fun MainNavigationBar(
+fun FluxNavigationBarPill(
     currentTab: Route?,
     onTabSelected: (Route) -> Unit,
 ) {
@@ -51,7 +51,7 @@ fun MainNavigationBar(
             modifier = Modifier
                 .navigationBarsPadding()
                 .padding(bottom = FluxUI.Space.medium),
-            shadowElevation = 2.dp,
+            shadowElevation = FluxUI.Elevation.navigationBar,
             shape = CircleShape,
             color = MaterialTheme.colorScheme.background
         ) {
@@ -63,7 +63,7 @@ fun MainNavigationBar(
                 horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
             ) {
                 BottomBarTab.entries.forEach { tab ->
-                    MainNavigationBarItem(
+                    FluxNavigationBarPillItem(
                         selected = currentTab.isSameTabAs(tab.route),
                         onClick = { onTabSelected(tab.route) },
                         icon = painterResource(tab.iconRes),
@@ -78,7 +78,7 @@ fun MainNavigationBar(
 }
 
 @Composable
-fun MainNavigationBarItem(
+fun FluxNavigationBarPillItem(
     selected: Boolean,
     onClick: () -> Unit,
     icon: Painter,
@@ -126,7 +126,7 @@ fun MainNavigationBarItem(
 
 @FluxPreview
 @Composable
-fun MainNavigationBar_Preview() {
+fun FluxNavigationBar_Pill_Preview() {
     FluxThemePreview{
         Box(
             modifier = Modifier
@@ -134,7 +134,7 @@ fun MainNavigationBar_Preview() {
                 .background(MaterialTheme.colorScheme.surfaceContainer),
             contentAlignment = Alignment.BottomCenter
         ) {
-            MainNavigationBar(
+            FluxNavigationBarPill(
                 currentTab = Route.Catalog,
                 onTabSelected = {}
             )

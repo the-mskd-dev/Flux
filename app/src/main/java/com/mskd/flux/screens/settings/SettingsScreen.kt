@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.mskd.flux.features.customization.domain.model.NavigationStyle
 import com.mskd.flux.features.settings.presentation.SettingsEvent
 import com.mskd.flux.features.settings.presentation.SettingsIntent
 import com.mskd.flux.features.settings.presentation.SettingsUiState
@@ -44,6 +45,7 @@ import com.mskd.flux.ui.component.global.FluxScaffold
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.theme.LocalUiGlobal
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.notificationsPermissionState
 import flux.shared.generated.resources.Res
@@ -117,6 +119,11 @@ fun SettingsContent(
     sendIntent: (SettingsIntent) -> Unit
 ) {
 
+    val onBackTap = if (LocalUiGlobal.current.navigationStyle == NavigationStyle.TOP_BAR) {
+        { sendIntent(SettingsIntent.OnBackTap) }
+    }
+    else null
+
     FluxScaffold(
         title = stringResource(Res.string.settings),
         topAppBarColors = TopAppBarDefaults.topAppBarColors(
@@ -124,6 +131,7 @@ fun SettingsContent(
             scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
             titleContentColor = MaterialTheme.colorScheme.onSurface,
         ),
+        onBackTap = onBackTap
     ) { innerPadding ->
 
         Column(

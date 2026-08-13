@@ -172,7 +172,7 @@ fun CatalogContent(
 
             Spacer(modifier = Modifier.height(paddingValues.calculateTopPadding()))
 
-            CatalogHeader()
+            CatalogHeader(sendIntent = sendIntent)
 
             PullToRefreshBox(
                 modifier = Modifier.weight(1f),

@@ -28,10 +28,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.Genre
+import com.mskd.flux.features.customization.domain.model.NavigationStyle
 import com.mskd.flux.features.search.presentation.SearchEvent
 import com.mskd.flux.features.search.presentation.SearchIntent
 import com.mskd.flux.features.search.presentation.SearchUIState
 import com.mskd.flux.features.search.presentation.SearchViewModel
+import com.mskd.flux.features.settings.presentation.SettingsIntent
 import com.mskd.flux.mockups.DetailsMockup
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.navigation.domain.Route
@@ -41,6 +43,7 @@ import com.mskd.flux.screens.search.components.SearchGenresSheet
 import com.mskd.flux.ui.component.global.FluxScaffold
 import com.mskd.flux.ui.component.global.FluxSearchField
 import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.theme.LocalUiGlobal
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxThemePreview
 import com.mskd.flux.utils.itemWidthFor
@@ -86,6 +89,11 @@ fun SearchContent(
     sendIntent: (SearchIntent) -> Unit,
 ) {
 
+    val onBackTap = if (LocalUiGlobal.current.navigationStyle == NavigationStyle.TOP_BAR) {
+        { sendIntent(SearchIntent.OnBackTap) }
+    }
+    else null
+
     val focusRequester = remember { FocusRequester() }
     var focusRequested by rememberSaveable { mutableStateOf(false) }
     val screenDimensions = rememberScreenDimensions()
@@ -114,6 +122,7 @@ fun SearchContent(
 
     FluxScaffold(
         title = stringResource(android.R.string.search_go),
+        onBackTap = onBackTap
     ) { innerPadding ->
 
         Column(

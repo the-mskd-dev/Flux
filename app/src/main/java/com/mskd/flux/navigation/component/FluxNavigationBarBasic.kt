@@ -14,6 +14,8 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.navigation.domain.BottomBarTab
 import com.mskd.flux.navigation.domain.Route
@@ -33,11 +35,7 @@ fun FluxNavigationBarBasic(
     onTabSelected: (Route) -> Unit,
 ) {
 
-    NavigationBar(
-        containerColor = MaterialTheme.colorScheme.surfaceContainer,
-        contentColor = MaterialTheme.colorScheme.onBackground,
-        tonalElevation = 0.dp
-    ) {
+    NavigationBar {
 
         BottomBarTab.entries.forEach { tab ->
             NavigationBarItem(

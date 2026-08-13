@@ -12,8 +12,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.BottomAppBarDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -23,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.navigation.domain.BottomBarTab
 import com.mskd.flux.navigation.domain.Route
@@ -53,8 +56,8 @@ fun FluxNavigationBarPill(
                 .padding(bottom = FluxUI.Space.medium),
             shadowElevation = FluxUI.Elevation.navigationBar,
             shape = CircleShape,
-            color = MaterialTheme.colorScheme.surfaceContainer,
-            tonalElevation = 0.dp
+            color = NavigationBarDefaults.containerColor,
+            tonalElevation = NavigationBarDefaults.Elevation
         ) {
 
             Row(
@@ -84,6 +87,7 @@ fun FluxNavigationBarPillItem(
     onClick: () -> Unit,
     icon: Painter,
     label: String,
+
 ) {
 
     val colors = NavigationBarItemDefaults.colors()

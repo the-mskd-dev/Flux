@@ -27,7 +27,8 @@ import com.mskd.flux.ui.theme.FluxUI
 fun FluxScaffold(
     modifier: Modifier = Modifier,
     title: String?,
-    onBackTap: (() -> Unit)? = null,
+    showBackButton: Boolean = true,
+    onBackTap: (() -> Unit) = { },
     actions: @Composable (RowScope.() -> Unit) = {},
     snackbarHost: @Composable (() -> Unit) = {},
     floatingActionButton: @Composable (() -> Unit) = {},
@@ -55,7 +56,7 @@ fun FluxScaffold(
                 title = title,
                 colors = topAppBarColors,
                 actions = actions,
-                onBackTap = onBackTap,
+                onBackTap = if (showBackButton) onBackTap else null,
                 scrollBehavior = scrollBehavior
             )
 

@@ -119,11 +119,6 @@ fun SettingsContent(
     sendIntent: (SettingsIntent) -> Unit
 ) {
 
-    val onBackTap = if (LocalUiGlobal.current.navigationStyle == NavigationStyle.TOP_BAR) {
-        { sendIntent(SettingsIntent.OnBackTap) }
-    }
-    else null
-
     FluxScaffold(
         title = stringResource(Res.string.settings),
         topAppBarColors = TopAppBarDefaults.topAppBarColors(
@@ -131,7 +126,8 @@ fun SettingsContent(
             scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
             titleContentColor = MaterialTheme.colorScheme.onSurface,
         ),
-        onBackTap = onBackTap
+        onBackTap = { sendIntent(SettingsIntent.OnBackTap) },
+        showBackButton = LocalUiGlobal.current.navigationStyle == NavigationStyle.TOP_BAR
     ) { innerPadding ->
 
         Column(

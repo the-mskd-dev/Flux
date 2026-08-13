@@ -119,7 +119,8 @@ fun TokenScreenContent(
 
     FluxScaffold(
         title = stringResource(Res.string.tmdb_api_token),
-        onBackTap = if (state.showBackButton) { { sendIntent(TokenIntent.OnBackTap) } } else null,
+        onBackTap = { sendIntent(TokenIntent.OnBackTap) },
+        showBackButton = state.showBackButton,
         floatingActionButton = {
 
             AnimatedVisibility(

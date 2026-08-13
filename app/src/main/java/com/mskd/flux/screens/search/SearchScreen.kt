@@ -89,11 +89,6 @@ fun SearchContent(
     sendIntent: (SearchIntent) -> Unit,
 ) {
 
-    val onBackTap = if (LocalUiGlobal.current.navigationStyle == NavigationStyle.TOP_BAR) {
-        { sendIntent(SearchIntent.OnBackTap) }
-    }
-    else null
-
     val focusRequester = remember { FocusRequester() }
     var focusRequested by rememberSaveable { mutableStateOf(false) }
     val screenDimensions = rememberScreenDimensions()
@@ -122,7 +117,8 @@ fun SearchContent(
 
     FluxScaffold(
         title = stringResource(android.R.string.search_go),
-        onBackTap = onBackTap
+        onBackTap = { sendIntent(SearchIntent.OnBackTap) },
+        showBackButton = LocalUiGlobal.current.navigationStyle == NavigationStyle.TOP_BAR
     ) { innerPadding ->
 
         Column(

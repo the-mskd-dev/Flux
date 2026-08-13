@@ -198,9 +198,8 @@ fun SourcesScreenContent(
             scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
             titleContentColor = MaterialTheme.colorScheme.onSurface,
         ),
-        onBackTap = if (content.fromSetup) null else {
-            { sendIntent(SourcesIntent.OnBackTap) }
-        },
+        onBackTap = { sendIntent(SourcesIntent.OnBackTap) },
+        showBackButton = !content.fromSetup,
         floatingActionButton = {
             if (content.fromSetup) {
                 ExtendedFloatingActionButton(

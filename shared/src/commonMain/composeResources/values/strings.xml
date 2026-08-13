@@ -208,4 +208,8 @@
     <string name="clear">Clear</string>
     <string name="loading_your_catalog">Loading your catalog</string>
     <string name="catalog_is_syncing">Sync in progress</string>
+    <string name="navigation_style">Navigation style</string>
+    <string name="pill">Pill</string>
+    <string name="bottom_bar">Bottom bar</string>
+    <string name="top_bar">Top bar</string>
 </resources>

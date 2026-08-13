@@ -190,4 +190,9 @@
     <string name="genres">Genres</string>
     <string name="clear">Löschen</string>
     <string name="loading_your_catalog">Katalog wird geladen</string>
+    <string name="catalog_is_syncing">Synchronisierung läuft</string>
+    <string name="navigation_style">Navigationsstil</string>
+    <string name="pill">Pille</string>
+    <string name="bottom_bar">Untere Leiste</string>
+    <string name="top_bar">Obere Leiste</string>
 </resources>

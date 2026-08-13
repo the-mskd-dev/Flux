@@ -13,10 +13,14 @@ import com.mskd.flux.utils.UiCommon
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.accent_color
 import flux.shared.generated.resources.app_theme
+import flux.shared.generated.resources.bottom_bar
 import flux.shared.generated.resources.items_per_row
 import flux.shared.generated.resources.items_per_row_desc
+import flux.shared.generated.resources.navigation_style
+import flux.shared.generated.resources.pill
 import flux.shared.generated.resources.seasons_per_row
 import flux.shared.generated.resources.seasons_per_row_desc
+import flux.shared.generated.resources.top_bar
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -143,12 +147,12 @@ class CustomizationViewModel(
     private fun showNavigationStyleDialog() {
         val currentValue = uiState.value.navigationStyle
         val dialogState = FluxOptionsDialogState(
-            titleResId = Res.string.app_theme,
+            titleResId = Res.string.navigation_style,
             currentValue = currentValue,
             options = listOf(
-                FluxOptionsDialogItem(value = NavigationStyle.PILL, label = StringProvider.Static("Pill")),
-                FluxOptionsDialogItem(value = NavigationStyle.BOTTOM_BAR, label = StringProvider.Static("Bottom bar")),
-                FluxOptionsDialogItem(value = NavigationStyle.TOP_BAR, label = StringProvider.Static("Top bar")),
+                FluxOptionsDialogItem(value = NavigationStyle.PILL, label = StringProvider.Resource(Res.string.pill)),
+                FluxOptionsDialogItem(value = NavigationStyle.BOTTOM_BAR, label = StringProvider.Resource(Res.string.bottom_bar)),
+                FluxOptionsDialogItem(value = NavigationStyle.TOP_BAR, label = StringProvider.Resource(Res.string.top_bar)),
             ),
             applyValue = { value -> CustomizationIntent.SetNavigationStyle(value) }
         )

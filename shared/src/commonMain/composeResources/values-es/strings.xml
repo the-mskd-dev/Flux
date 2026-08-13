@@ -190,4 +190,9 @@
     <string name="genres">Géneros</string>
     <string name="clear">Limpiar</string>
     <string name="loading_your_catalog">Cargando tu catálogo</string>
+    <string name="catalog_is_syncing">Sincronización en progreso</string>
+    <string name="navigation_style">Estilo de navegación</string>
+    <string name="pill">Píldora</string>
+    <string name="bottom_bar">barra inferior</string>
+    <string name="top_bar">barra superior</string>
 </resources>

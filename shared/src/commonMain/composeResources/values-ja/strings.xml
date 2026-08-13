@@ -189,4 +189,9 @@
     <string name="genres">ジャンル</string>
     <string name="clear">クリア</string>
     <string name="loading_your_catalog">カタログを読み込み中</string>
+    <string name="catalog_is_syncing">同期中です</string>
+    <string name="navigation_style">ナビゲーションスタイル</string>
+    <string name="pill">ピル</string>
+    <string name="bottom_bar">下のバー</string>
+    <string name="top_bar">トップバー</string>
 </resources>

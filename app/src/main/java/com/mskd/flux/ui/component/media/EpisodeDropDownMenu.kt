@@ -2,8 +2,6 @@ package com.mskd.flux.ui.component.media
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
-import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
@@ -14,6 +12,8 @@ import com.mskd.flux.ui.component.global.FluxDropDownMenu
 import com.mskd.flux.ui.component.global.FluxDropDownMenuItem
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_file_explorer
+import flux.shared.generated.resources.ic_play
+import flux.shared.generated.resources.ic_replay
 import flux.shared.generated.resources.ic_visibility
 import flux.shared.generated.resources.mark_as_not_watched
 import flux.shared.generated.resources.mark_as_watched
@@ -51,7 +51,7 @@ fun EpisodeDropDownMenu(
                         onDismissRequest()
                     },
                     leadingIcon = {
-                        Icon(imageVector = if (episode.status == Status.WATCHED) Icons.Default.Refresh else Icons.Default.PlayArrow, contentDescription = null)
+                        Icon(painter = painterResource(if (episode.status == Status.WATCHED) Res.drawable.ic_replay else Res.drawable.ic_play), contentDescription = null)
                     },
                 )
             )

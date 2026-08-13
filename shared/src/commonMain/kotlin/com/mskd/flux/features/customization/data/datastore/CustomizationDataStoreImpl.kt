@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.mskd.flux.features.customization.domain.datastore.CustomizationDataStore
+import com.mskd.flux.features.customization.domain.model.NavigationStyle
 import com.mskd.flux.utils.UiCommon
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -27,6 +28,7 @@ class CustomizationDataStoreImpl(
         val ITEMS_PER_ROW = intPreferencesKey("items_per_row")
         val ITEMS_CORNERS = intPreferencesKey("items_corners")
         val SEASONS_PER_ROW = intPreferencesKey("seasons_per_row")
+        val NAVIGATION_STYLE = intPreferencesKey("navigation_style")
     }
 
     override val flow: Flow<CustomizationDataStore.State> = customizationDataStore.data
@@ -41,6 +43,7 @@ class CustomizationDataStoreImpl(
             val itemsPerRow = preferences[Keys.ITEMS_PER_ROW] ?: 3
             val itemsCorners = preferences[Keys.ITEMS_CORNERS] ?: 12
             val seasonsPerRow = preferences[Keys.SEASONS_PER_ROW] ?: 3
+            val navigationStyle = preferences[Keys.NAVIGATION_STYLE]?.let { NavigationStyle.fromOrdinal(it) } ?: NavigationStyle.PILL
 
             CustomizationDataStore.State(
                 uiTheme = uiTheme,
@@ -50,7 +53,8 @@ class CustomizationDataStoreImpl(
                 largeEpisodeImage = largeEpisodeImage,
                 itemsPerRow = itemsPerRow,
                 itemsCorners = itemsCorners,
-                seasonsPerRow = seasonsPerRow
+                seasonsPerRow = seasonsPerRow,
+                navigationStyle = navigationStyle
             )
         }
 
@@ -102,6 +106,12 @@ class CustomizationDataStoreImpl(
     override suspend fun setSeasonsPerRow(count: Int) {
         customizationDataStore.edit { preferences ->
             preferences[Keys.SEASONS_PER_ROW] = count
+        }
+    }
+
+    override suspend fun setNavigationStyle(style: NavigationStyle) {
+        customizationDataStore.edit { preferences ->
+            preferences[Keys.NAVIGATION_STYLE] = style.ordinal
         }
     }
 

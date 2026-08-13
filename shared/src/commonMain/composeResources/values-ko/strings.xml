@@ -189,4 +189,9 @@
     <string name="genres">장르</string>
     <string name="clear">지우기</string>
     <string name="loading_your_catalog">카탈로그 불러오는 중</string>
+    <string name="catalog_is_syncing">동기화 진행 중</string>
+    <string name="navigation_style">탐색 스타일</string>
+    <string name="pill">알약</string>
+    <string name="bottom_bar">하단 바</string>
+    <string name="top_bar">상단 바</string>
 </resources>

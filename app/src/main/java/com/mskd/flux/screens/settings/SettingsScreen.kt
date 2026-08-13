@@ -14,7 +14,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -26,6 +25,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.mskd.flux.features.customization.domain.model.NavigationStyle
 import com.mskd.flux.features.settings.presentation.SettingsEvent
 import com.mskd.flux.features.settings.presentation.SettingsIntent
 import com.mskd.flux.features.settings.presentation.SettingsUiState
@@ -44,6 +44,7 @@ import com.mskd.flux.ui.component.global.FluxScaffold
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.theme.LocalUiGlobal
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.notificationsPermissionState
 import flux.shared.generated.resources.Res
@@ -119,16 +120,13 @@ fun SettingsContent(
 
     FluxScaffold(
         title = stringResource(Res.string.settings),
-        topAppBarColors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainer,
-            scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
-            titleContentColor = MaterialTheme.colorScheme.onSurface,
-        ),
+        onBackTap = { sendIntent(SettingsIntent.OnBackTap) },
+        showBackButton = LocalUiGlobal.current.navigationStyle == NavigationStyle.TOP_BAR
     ) { innerPadding ->
 
         Column(
             modifier = Modifier
-                .background(MaterialTheme.colorScheme.surfaceContainer)
+                .background(MaterialTheme.colorScheme.background)
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium),

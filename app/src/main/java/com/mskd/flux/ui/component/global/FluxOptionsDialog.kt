@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
@@ -16,6 +17,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.unit.dp
 import com.mskd.flux.core.model.core.FluxOptionsDialogState
 import com.mskd.flux.screens.customization.composables.ColorItem
 import com.mskd.flux.ui.theme.FluxUI
@@ -49,6 +52,7 @@ fun <T, R> FluxOptionsDialog(
 
                     Row(
                         modifier = Modifier
+                            .clip(RoundedCornerShape(4.dp))
                             .clickable { selectedValue = option.value  }
                             .fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,

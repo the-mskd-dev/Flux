@@ -38,7 +38,8 @@ fun FluxTheme(
             corners = RoundedCornerShape(customization.itemsCorners.dp),
         ),
         LocalUiGlobal provides FluxUI.Global(
-            oldBlurredHeader = customization.oldBlurredHeader
+            oldBlurredHeader = customization.oldBlurredHeader,
+            navigationStyle = customization.navigationStyle
         ),
         LocalUiItemsPerRow provides FluxUI.ItemsPerRow(
             artworks = customization.itemsPerRow,

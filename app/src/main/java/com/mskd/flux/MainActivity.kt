@@ -26,7 +26,8 @@ import androidx.navigation3.ui.NavDisplay
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.mskd.flux.features.connectivity.domain.ConnectivityRepository
-import com.mskd.flux.navigation.component.MainNavigationBar
+import com.mskd.flux.features.customization.domain.model.NavigationStyle
+import com.mskd.flux.navigation.component.FluxNavigationBar
 import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.navigation.domain.Transition
 import com.mskd.flux.navigation.domain.navigateToTab
@@ -107,18 +108,21 @@ class MainActivity : ComponentActivity() {
                 Scaffold(
                     containerColor = MaterialTheme.colorScheme.background,
                     bottomBar = {
-                        AnimatedVisibility(
-                            visible = showBottomBar,
-                            enter = fadeIn(),
-                            exit = fadeOut()
-                        ) {
-                            MainNavigationBar(
-                                currentTab = currentRoute,
-                                onTabSelected = { target ->
-                                    transitions = Transition.Fade to Transition.Fade
-                                    navigateToTab(backStack, target)
-                                },
-                            )
+
+                        if (customization.navigationStyle != NavigationStyle.TOP_BAR) {
+                            AnimatedVisibility(
+                                visible = showBottomBar,
+                                enter = fadeIn(),
+                                exit = fadeOut()
+                            ) {
+                                FluxNavigationBar(
+                                    currentTab = currentRoute,
+                                    onTabSelected = { target ->
+                                        transitions = Transition.Fade to Transition.Fade
+                                        navigateToTab(backStack, target)
+                                    },
+                                )
+                            }
                         }
                     }
                 ) { _ ->

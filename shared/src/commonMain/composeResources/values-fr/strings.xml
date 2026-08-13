@@ -191,4 +191,9 @@
     <string name="genres">Genres</string>
     <string name="clear">Effacer</string>
     <string name="loading_your_catalog">Chargement de votre catalogue</string>
+    <string name="catalog_is_syncing">Synchronisation en cours</string>
+    <string name="navigation_style">Style de navigation</string>
+    <string name="pill">Pilule</string>
+    <string name="bottom_bar">Barre inférieure</string>
+    <string name="top_bar">Barre supérieure</string>
 </resources>

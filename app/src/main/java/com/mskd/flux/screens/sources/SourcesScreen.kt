@@ -32,7 +32,6 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Switch
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -193,14 +192,8 @@ fun SourcesScreenContent(
 
     FluxScaffold(
         title = stringResource(Res.string.sources),
-        topAppBarColors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainer,
-            scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
-            titleContentColor = MaterialTheme.colorScheme.onSurface,
-        ),
-        onBackTap = if (content.fromSetup) null else {
-            { sendIntent(SourcesIntent.OnBackTap) }
-        },
+        onBackTap = { sendIntent(SourcesIntent.OnBackTap) },
+        showBackButton = !content.fromSetup,
         floatingActionButton = {
             if (content.fromSetup) {
                 ExtendedFloatingActionButton(
@@ -216,7 +209,7 @@ fun SourcesScreenContent(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.surfaceContainer),
+                .background(MaterialTheme.colorScheme.background),
         ) {
 
             item {

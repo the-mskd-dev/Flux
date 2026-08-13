@@ -54,7 +54,6 @@ import flux.shared.generated.resources.ic_sync
 import flux.shared.generated.resources.ic_version
 import flux.shared.generated.resources.images_cached
 import flux.shared.generated.resources.information_language
-import flux.shared.generated.resources.loading_your_catalog
 import flux.shared.generated.resources.make_a_donation
 import flux.shared.generated.resources.picture_in_picture
 import flux.shared.generated.resources.source_code

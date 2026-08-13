@@ -10,14 +10,13 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.mskd.flux.features.customization.presentation.CustomizationDialog
+import com.mskd.flux.features.customization.domain.model.CustomizationDialog
 import com.mskd.flux.features.customization.presentation.CustomizationEvent
 import com.mskd.flux.features.customization.presentation.CustomizationIntent
 import com.mskd.flux.features.customization.presentation.CustomizationUiState
@@ -108,17 +107,12 @@ fun CustomizationContent(
 
     FluxScaffold(
         title = stringResource(Res.string.customization),
-        topAppBarColors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainer,
-            scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
-            titleContentColor = MaterialTheme.colorScheme.onSurface,
-        ),
         onBackTap = { sendIntent(CustomizationIntent.OnBackTap) }
     ) { innerPadding ->
 
         Column(
             modifier = Modifier
-                .background(MaterialTheme.colorScheme.surfaceContainer)
+                .background(MaterialTheme.colorScheme.background)
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium),

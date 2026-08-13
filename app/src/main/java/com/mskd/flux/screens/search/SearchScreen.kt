@@ -28,6 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.Genre
+import com.mskd.flux.features.customization.domain.model.NavigationStyle
 import com.mskd.flux.features.search.presentation.SearchEvent
 import com.mskd.flux.features.search.presentation.SearchIntent
 import com.mskd.flux.features.search.presentation.SearchUIState
@@ -41,6 +42,7 @@ import com.mskd.flux.screens.search.components.SearchGenresSheet
 import com.mskd.flux.ui.component.global.FluxScaffold
 import com.mskd.flux.ui.component.global.FluxSearchField
 import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.theme.LocalUiGlobal
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxThemePreview
 import com.mskd.flux.utils.itemWidthFor
@@ -114,6 +116,8 @@ fun SearchContent(
 
     FluxScaffold(
         title = stringResource(android.R.string.search_go),
+        onBackTap = { sendIntent(SearchIntent.OnBackTap) },
+        showBackButton = LocalUiGlobal.current.navigationStyle == NavigationStyle.TOP_BAR
     ) { innerPadding ->
 
         Column(
@@ -127,7 +131,7 @@ fun SearchContent(
                         )
                     }
                 }
-                .background(MaterialTheme.colorScheme.surfaceContainer)
+                .background(MaterialTheme.colorScheme.background)
                 .padding(horizontal = FluxUI.Space.medium),
             verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
         ) {

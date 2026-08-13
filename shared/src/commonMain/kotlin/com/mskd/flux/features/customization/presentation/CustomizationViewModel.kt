@@ -7,11 +7,15 @@ import com.mskd.flux.core.model.core.FluxOptionsDialogItem
 import com.mskd.flux.core.model.core.FluxOptionsDialogState
 import com.mskd.flux.core.model.core.StringProvider
 import com.mskd.flux.features.customization.domain.datastore.CustomizationDataStore
+import com.mskd.flux.features.customization.domain.model.CustomizationDialog
+import com.mskd.flux.features.customization.domain.model.NavigationStyle
 import com.mskd.flux.utils.UiCommon
 import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.accent_color
 import flux.shared.generated.resources.app_theme
 import flux.shared.generated.resources.items_per_row
 import flux.shared.generated.resources.items_per_row_desc
+import flux.shared.generated.resources.navigation_style
 import flux.shared.generated.resources.seasons_per_row
 import flux.shared.generated.resources.seasons_per_row_desc
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -43,6 +47,7 @@ class CustomizationViewModel(
             itemsPerRow = customization.itemsPerRow,
             itemsCorners = customization.itemsCorners,
             seasonsPerRow = customization.seasonsPerRow,
+            navigationStyle = customization.navigationStyle,
             dialog = dialog
         )
     }.stateIn(
@@ -71,6 +76,7 @@ class CustomizationViewModel(
             CustomizationIntent.ShowItemsPerRowDialog -> showItemsPerRowDialog()
             CustomizationIntent.ShowItemsCornerDialog -> showItemsCornersDialog()
             CustomizationIntent.ShowSeasonsPerRowDialog -> showSeasonsPerRowDialog()
+            CustomizationIntent.ShowNavigationStyleDialog -> showNavigationStyleDialog()
 
 
             // Setters
@@ -82,7 +88,7 @@ class CustomizationViewModel(
             is CustomizationIntent.OnWaveProgressCheck -> setWaveProgress(waveProgress = intent.checked)
             is CustomizationIntent.OnOldBlurredHeaderCheck -> setOldBlurredHeader(blurred = intent.checked)
             is CustomizationIntent.OnLargeEpisodeImageCheck -> setLargeEpisodeImage(large = intent.checked)
-
+            is CustomizationIntent.SetNavigationStyle -> setNavigationStyle(style = intent.style)
         }
     }
 
@@ -115,10 +121,10 @@ class CustomizationViewModel(
         hideDialog()
     }
 
-    private suspend fun showColorDialog() {
+    private fun showColorDialog() {
         val currentValue = uiState.value.color
         val dialogState = FluxOptionsDialogState(
-            titleResId = Res.string.app_theme,
+            titleResId = Res.string.accent_color,
             currentValue = currentValue,
             options = listOf(
                 UiCommon.AccentColors.System.let { FluxOptionsDialogItem(value = it.color?.toArgb(), label = StringProvider.Resource(it.stringResId), color = it.color) },
@@ -133,6 +139,27 @@ class CustomizationViewModel(
         )
 
         _dialogState.update { CustomizationDialog.SelectDialog(state = dialogState) }
+    }
+
+    private fun showNavigationStyleDialog() {
+        val currentValue = uiState.value.navigationStyle
+        val dialogState = FluxOptionsDialogState(
+            titleResId = Res.string.navigation_style,
+            currentValue = currentValue,
+            options = listOf(
+                FluxOptionsDialogItem(value = NavigationStyle.PILL, label = NavigationStyle.PILL.description),
+                FluxOptionsDialogItem(value = NavigationStyle.BOTTOM_BAR, label = NavigationStyle.BOTTOM_BAR.description),
+                FluxOptionsDialogItem(value = NavigationStyle.TOP_BAR, label = NavigationStyle.TOP_BAR.description),
+            ),
+            applyValue = { value -> CustomizationIntent.SetNavigationStyle(value) }
+        )
+
+        _dialogState.update { CustomizationDialog.SelectDialog(state = dialogState) }
+    }
+
+    private suspend fun setNavigationStyle(style: NavigationStyle) {
+        customizationDataStore.setNavigationStyle(style)
+        hideDialog()
     }
 
     private fun showItemsPerRowDialog() {

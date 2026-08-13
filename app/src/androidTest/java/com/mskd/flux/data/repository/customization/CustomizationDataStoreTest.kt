@@ -8,6 +8,7 @@ import androidx.test.filters.MediumTest
 import app.cash.turbine.test
 import com.mskd.flux.features.customization.data.datastore.CustomizationDataStoreImpl
 import com.mskd.flux.features.customization.domain.datastore.CustomizationDataStore
+import com.mskd.flux.features.customization.domain.model.NavigationStyle
 import com.mskd.flux.utils.UiCommon
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -172,6 +173,22 @@ class CustomizationDataStoreTest {
             customizationDataStore.setItemsPerRow(4)
             state = awaitItem()
             assert(state.itemsPerRow == 4)
+
+            cancelAndConsumeRemainingEvents()
+        }
+
+    }
+
+    @Test
+    fun get_and_set_navigation_style() = runTest {
+
+        customizationDataStore.flow.test {
+            var state = awaitItem()
+            assert(state.navigationStyle == NavigationStyle.PILL)
+
+            customizationDataStore.setNavigationStyle(NavigationStyle.BOTTOM_BAR)
+            state = awaitItem()
+            assert(state.navigationStyle == NavigationStyle.BOTTOM_BAR)
 
             cancelAndConsumeRemainingEvents()
         }

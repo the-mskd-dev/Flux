@@ -15,6 +15,7 @@ import com.mskd.flux.screens.settings.composables.SettingsItem
 import com.mskd.flux.screens.settings.composables.SettingsSection
 import com.mskd.flux.screens.settings.composables.SettingsSwitch
 import com.mskd.flux.utils.UiCommon
+import com.mskd.flux.utils.extensions.resolve
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.accent_color
 import flux.shared.generated.resources.accent_color_desc
@@ -24,6 +25,7 @@ import flux.shared.generated.resources.corners_desc
 import flux.shared.generated.resources.items
 import flux.shared.generated.resources.items_per_row
 import flux.shared.generated.resources.large_episode_image
+import flux.shared.generated.resources.navigation_style
 import flux.shared.generated.resources.old_blurred_header
 import flux.shared.generated.resources.seasons_per_row
 import flux.shared.generated.resources.wave_progress
@@ -77,6 +79,12 @@ fun CustomizationGlobalSection(
             text = stringResource(Res.string.corners),
             subText = stringResource(Res.string.corners_desc),
             onClick = { sendIntent(CustomizationIntent.ShowItemsCornerDialog) }
+        )
+
+        SettingsItem(
+            text = stringResource(Res.string.navigation_style),
+            subText = state.navigationStyle.description.resolve(),
+            onClick = { sendIntent(CustomizationIntent.ShowNavigationStyleDialog) }
         )
 
     }

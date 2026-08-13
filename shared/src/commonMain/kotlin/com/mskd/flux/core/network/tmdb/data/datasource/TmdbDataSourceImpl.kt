@@ -100,7 +100,7 @@ class TmdbDataSourceImpl(
                     .getOrElse { emptyList() }
             }
             val showGenresDeferred = async {
-                runCatching { tmdbService.getMovieGenres(language = language.toTmdbFormat()).genres }
+                runCatching { tmdbService.getShowGenres(language = language.toTmdbFormat()).genres }
                     .onFailure { Trace.error(TAG, "getGenres for movies failed", it) }
                     .getOrElse { emptyList() }
             }

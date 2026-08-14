@@ -146,9 +146,6 @@ dependencies {
     // Accompanist
     implementation(libs.bundles.android.accompanist)
 
-    // ACRA
-    implementation(libs.bundles.android.acra)
-
     // Unit Testing
     testImplementation(libs.bundles.android.unit.test)
 

@@ -11,7 +11,6 @@ ksp = "2.3.9"
 
 # -- KMP Core
 composeMultiplatform = "1.11.1"
-klint = "14.2.0"
 
 # -- Android Core --
 coreKtx = "1.19.0"
@@ -39,16 +38,16 @@ accompanist = "0.37.3"
 
 # -- DI --
 koin = "4.2.2"
-koinPlugin = "1.0.1"
+koinPlugin = "1.1.0"
 
 # -- Data & Network --
 datastore = "1.2.1"
 room = "2.8.4"
-sqlite = "2.7.0-rc01"
-ktor = "3.5.0"
+sqlite = "2.7.0"
+ktor = "3.5.2"
 
 # -- Media --
-media3 = "1.10.1"
+media3 = "1.11.0"
 coil = "3.5.0"
 jellyfinFfmpeg = "1.9.0+1"
 
@@ -60,7 +59,7 @@ acra = "5.13.1"
 
 # -- Testing --
 junit = "4.13.2"
-kotest = "6.2.0"
+kotest = "6.2.4"
 mockwebserver = "5.4.0"
 mockk = "1.14.11"
 turbine = "1.2.1"
@@ -110,7 +109,7 @@ androidx-material3-adaptive = { group = "androidx.compose.material3.adaptive", n
 androidx-palette = { group = "androidx.palette", name = "palette-ktx", version = "1.0.0" }
 
 # -- Color --
-material-kolor = { group = "com.materialkolor", name = "material-kolor", version = "4.1.1" }
+material-kolor = { group = "com.materialkolor", name = "material-kolor", version = "5.0.0" }
 
 # -- Navigation --
 androidx-navigation3-runtime = { group = "androidx.navigation3", name = "navigation3-runtime", version.ref = "nav3Core" }
@@ -197,7 +196,6 @@ kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref 
 android-kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
 koin-compiler = { id = "io.insert-koin.compiler.plugin", version.ref = "koinPlugin" }
 android-lint = { id = "com.android.lint", version.ref = "agp" }
-klint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "klint" }
 
 [bundles]
 

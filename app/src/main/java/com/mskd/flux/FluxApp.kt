@@ -10,7 +10,6 @@ import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.CrashDialogActivity
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
-import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.number
 import kotlinx.datetime.toLocalDateTime
@@ -44,7 +43,6 @@ class FluxApp : Application(), SingletonImageLoader.Factory {
                 ReportField.APP_VERSION_CODE,
                 ReportField.ANDROID_VERSION,
                 ReportField.PHONE_MODEL,
-                ReportField.PACKAGE_NAME,
                 ReportField.CUSTOM_DATA,
                 ReportField.STACK_TRACE,
                 ReportField.USER_CRASH_DATE,

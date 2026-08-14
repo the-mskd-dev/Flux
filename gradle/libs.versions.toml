@@ -23,16 +23,16 @@ kotlinxSerializationCore = "1.11.0"
 kotlinxCollectionsImmutable = "0.5.1"
 
 # -- Compose & UI --
-composeBom = "2026.06.00"
-composeUiText = "1.11.3"
-material3 = "1.5.0-alpha22"
-adaptive = "1.2.0"
-constraintLayout = "1.1.1"
+composeBom = "2026.08.00"
+composeUiText = "1.12.0"
+material3 = "1.5.0-alpha26"
+adaptive = "1.3.0"
+constraintLayout = "1.1.2"
 
 # -- Navigation --
-nav3Core = "1.1.3"
+nav3Core = "1.1.6"
 lifecycleNav3 = "2.11.0"
-material3AdaptiveNav3 = "1.3.0-rc01"
+material3AdaptiveNav3 = "1.3.0"
 
 # -- Accompanist --
 accompanist = "0.37.3"

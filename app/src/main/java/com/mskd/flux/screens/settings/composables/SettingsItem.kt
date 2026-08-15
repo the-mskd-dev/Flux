@@ -31,7 +31,7 @@ fun SettingsItem(
     ListItem(
         onClick = onClick,
         colors = ListItemDefaults.colors(
-            containerColor = MaterialTheme.colorScheme.surfaceBright,
+            containerColor = MaterialTheme.colorScheme.surfaceContainer,
             contentColor = MaterialTheme.colorScheme.onSurface,
         ),
         verticalAlignment = Alignment.CenterVertically,

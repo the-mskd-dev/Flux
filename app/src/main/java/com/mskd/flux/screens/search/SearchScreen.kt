@@ -107,7 +107,7 @@ fun SearchContent(
             }
     }
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(state.autoKeyboard) {
         if (state.autoKeyboard && !focusRequested) {
             focusRequested = true
             focusRequester.requestFocus()

@@ -21,10 +21,11 @@ import org.acra.ktx.initAcra
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
+import org.koin.core.qualifier.named
 import kotlin.time.Clock
 
 class FluxApp : Application(), SingletonImageLoader.Factory {
-    val imageLoader: ImageLoader by inject()
+    val imageLoader: ImageLoader by inject(qualifier = named("uiImageLoader"))
 
     override fun newImageLoader(context: Context): ImageLoader = imageLoader
 

@@ -1,5 +1,3 @@
-## Version 1.7.2
-
 - Core: Update dependencies
 - Core: Improved crash reporting
 - Core: Speed up image loading

@@ -34,8 +34,8 @@ configure<ApplicationExtension> {
         applicationId = "com.mskd.flux"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 32
-        versionName = "1.7.1"
+        versionCode = 33
+        versionName = "1.7.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables { useSupportLibrary = true }
@@ -145,9 +145,6 @@ dependencies {
 
     // Accompanist
     implementation(libs.bundles.android.accompanist)
-
-    // ACRA
-    implementation(libs.bundles.android.acra)
 
     // Unit Testing
     testImplementation(libs.bundles.android.unit.test)

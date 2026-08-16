@@ -15,7 +15,7 @@ object Constants {
 
     object TMDB {
         const val IMAGE_LARGE = "https://image.tmdb.org/t/p/original"
-        const val IMAGE = "https://image.tmdb.org/t/p/w500"
+        const val IMAGE = "https://image.tmdb.org/t/p/w300"
 
         const val LOG_IN = "https://www.themoviedb.org/login?to=read_me&redirect=%2Fdocs%2Fgetting-started"
 

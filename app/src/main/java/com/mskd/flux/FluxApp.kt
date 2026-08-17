@@ -33,6 +33,8 @@ class FluxApp : Application(), SingletonImageLoader.Factory {
         super.onCreate()
 
         val timestamp = currentTimestampParis()
+        val versionName = BuildConfig.VERSION_NAME
+        val versionCode = BuildConfig.VERSION_CODE
 
         initAcra {
             buildConfigClass = BuildConfig::class.java
@@ -51,8 +53,8 @@ class FluxApp : Application(), SingletonImageLoader.Factory {
 
             mailSender {
                 mailTo = Constants.CONTACT.MAIL
-                subject = "Flux - Crash Report - $timestamp"
-                reportFileName = "Flux-Crash-$timestamp.txt"
+                subject = "Flux - Crash Report - $versionName - $versionCode"
+                reportFileName = "Crash Report - $versionCode - $timestamp.txt"
             }
 
             dialog {

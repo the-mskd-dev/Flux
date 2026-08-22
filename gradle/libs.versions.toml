@@ -60,7 +60,7 @@ acra = "5.13.1"
 # -- Testing --
 junit = "4.13.2"
 kotest = "6.2.4"
-mockwebserver = "5.4.0"
+mockwebserver = "5.5.0"
 mockk = "1.14.11"
 turbine = "1.2.1"
 coroutinesTest = "1.11.0"

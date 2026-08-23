@@ -15,7 +15,7 @@ interface HistoryDao {
     fun flow() : Flow<List<HistoryEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(entries: List<HistoryEntity>)
+    suspend fun insert(entry: HistoryEntity)
 
     @Query("DELETE FROM history WHERE artworkId = :artworkId")
     suspend fun delete(artworkId: Long)

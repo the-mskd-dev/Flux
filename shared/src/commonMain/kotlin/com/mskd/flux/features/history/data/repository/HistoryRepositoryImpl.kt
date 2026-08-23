@@ -1,10 +1,10 @@
-package com.mskd.flux.features.history.domain.repository
+package com.mskd.flux.features.history.data.repository
 
 import com.mskd.flux.features.history.data.dao.HistoryDao
 import com.mskd.flux.features.history.data.mapper.toDomain
 import com.mskd.flux.features.history.data.mapper.toEntity
-import com.mskd.flux.features.history.data.repository.HistoryRepository
 import com.mskd.flux.features.history.domain.model.HistoryEntry
+import com.mskd.flux.features.history.domain.repository.HistoryRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 

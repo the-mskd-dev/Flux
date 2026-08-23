@@ -1,4 +1,4 @@
-package com.mskd.flux.features.history.data.repository
+package com.mskd.flux.features.history.domain.repository
 
 import com.mskd.flux.features.history.domain.model.HistoryEntry
 import kotlinx.coroutines.flow.Flow

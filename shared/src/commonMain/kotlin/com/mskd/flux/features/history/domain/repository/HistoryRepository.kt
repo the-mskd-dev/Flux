@@ -9,7 +9,7 @@ interface HistoryRepository {
 
     suspend fun insert(entry: HistoryEntry)
 
-    suspend fun delete(entry: HistoryEntry)
+    suspend fun delete(artworkId: Long)
 
     suspend fun clear()
 

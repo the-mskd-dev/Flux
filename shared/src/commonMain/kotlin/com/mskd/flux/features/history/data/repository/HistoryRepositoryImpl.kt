@@ -18,8 +18,8 @@ class HistoryRepositoryImpl(private val dao: HistoryDao) : HistoryRepository {
         dao.insert(entry = entry.toEntity())
     }
 
-    override suspend fun delete(entry: HistoryEntry) {
-        dao.delete(artworkId = entry.artworkId)
+    override suspend fun delete(artworkId: Long) {
+        dao.delete(artworkId = artworkId)
     }
 
     override suspend fun clear() {

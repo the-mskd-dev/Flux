@@ -12,6 +12,8 @@ import com.mskd.flux.core.database.data.model.ArtworkEntity
 import com.mskd.flux.core.database.data.model.GenreEntity
 import com.mskd.flux.core.database.data.model.MediaEntity
 import com.mskd.flux.core.database.data.model.SeasonEntity
+import com.mskd.flux.features.history.data.dao.HistoryDao
+import com.mskd.flux.features.history.data.model.HistoryEntity
 import com.mskd.flux.features.sources.data.local.SourcesDao
 import com.mskd.flux.features.sources.data.local.UserFolderEntity
 import kotlinx.coroutines.Dispatchers
@@ -22,7 +24,8 @@ import kotlinx.coroutines.Dispatchers
         SeasonEntity::class,
         MediaEntity::class,
         UserFolderEntity::class,
-        GenreEntity::class
+        GenreEntity::class,
+        HistoryEntity::class
     ],
     version = 8,
     autoMigrations = [
@@ -40,6 +43,7 @@ abstract class FluxDatabase : RoomDatabase() {
     abstract fun dao(): DatabaseDao
     abstract fun sourcesDao(): SourcesDao
     abstract fun detailsDao(): DetailsDao
+    abstract fun historyDao(): HistoryDao
 }
 
 expect object FluxDatabaseConstructor : RoomDatabaseConstructor<FluxDatabase> {

@@ -41,17 +41,12 @@ fun List<Episode>.getPreviousEpisodeFor(episode: Episode) : Episode? {
 }
 
 fun List<Episode>.getNextEpisodeFor(episode: Episode) : Episode? {
-    return this
-        .filter { it.season == episode.season }
-        .sortedBy { it.number }
-        .let {
+    val sorted = sortedWith(compareBy(Episode::season, Episode::number))
+    val index = sorted.indexOfFirst { it.id == episode.id }
 
-            val index = it.indexOf(episode)
-
-            when {
-                index < 0 || index == it.lastIndex -> null
-                else -> it[index + 1]
-            }
+    return when {
+        index < 0 || index == sorted.lastIndex -> null
+        else -> sorted.getOrNull(index + 1)
     }
 }
 

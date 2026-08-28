@@ -19,7 +19,7 @@ class SaveProgressUseCase(private val database: DatabaseRepository) {
     suspend operator fun invoke(
         media: Media,
         progress: Long
-    ) {
+    ) : Media {
 
         val newStatus = if (progress >= (media.duration * Constants.PLAYER.PROGRESS_THRESHOLD).minutes.inWholeMilliseconds) Status.WATCHED else Status.IS_WATCHING
         val newTime = if (newStatus == Status.WATCHED) 0L else progress
@@ -33,6 +33,8 @@ class SaveProgressUseCase(private val database: DatabaseRepository) {
         database.saveMedias(listOf(updatedMedia))
 
         Trace.info(TAG, "${updatedMedia.title} saved at ${progress.timeDescription()}")
+
+        return updatedMedia
 
     }
 

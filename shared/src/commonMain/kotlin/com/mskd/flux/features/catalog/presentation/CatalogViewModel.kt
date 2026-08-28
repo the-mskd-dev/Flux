@@ -22,6 +22,7 @@ import com.mskd.flux.features.catalog.presentation.CatalogEvent.NavigateToShow
 import com.mskd.flux.features.catalog.presentation.CatalogEvent.NavigateToSources
 import com.mskd.flux.features.catalog.presentation.CatalogEvent.NavigateToToken
 import com.mskd.flux.features.catalog.presentation.CatalogEvent.NavigateToUnknown
+import com.mskd.flux.features.history.domain.repository.HistoryRepository
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.utils.Trace
 import com.mskd.flux.utils.UpdateManager
@@ -40,6 +41,7 @@ class CatalogViewModel(
     private val syncCatalogUseCase: SyncCatalogUseCase,
     private val artworkDb: DatabaseRepository,
     private val detailsDb: DetailsRepository,
+    private val historyDb: HistoryRepository,
     private val userDataStore: UserDataStore,
     private val tokenDataStore: TokenDataStore,
     private val catalogDataStore: CatalogDataStore,
@@ -55,12 +57,12 @@ class CatalogViewModel(
     private var hasLoadedContent = false
 
     private val preferencesFlow = combine(
-        userDataStore.flow,
+        historyDb.flow,
         catalogDataStore.flow,
         tokenDataStore.flow,
-    ) { user, catalog, token  ->
+    ) { history, catalog, token  ->
         CatalogPreferences(
-            recentlyWatchedIds = user.recentlyWatchedIds,
+            history = history,
             sortingMode = catalog.sortingMode,
             viewMode = catalog.viewMode,
             token = token
@@ -102,7 +104,7 @@ class CatalogViewModel(
                 state = CatalogState.Content(
                     artworks = sortedArtworks,
                     genres = genres,
-                    lastWatchedMediaIds = preferences.recentlyWatchedIds,
+                    history = preferences.history,
                     isRefreshing = syncState is SyncState.Syncing,
                     tokenIsMissing = preferences.token.isBlank(),
                     sortingMode = preferences.sortingMode,

@@ -10,9 +10,8 @@ import kotlinx.coroutines.flow.map
 
 class HistoryRepositoryImpl(private val dao: HistoryDao) : HistoryRepository {
 
-    override suspend fun flow(): Flow<List<HistoryEntry>> {
-        return dao.flow().map { entities -> entities.map { it.toDomain() } }
-    }
+    override val flow: Flow<List<HistoryEntry>> = dao.flow()
+        .map { entities -> entities.map { it.toDomain() } }
 
     override suspend fun insert(entry: HistoryEntry) {
         dao.insert(entry = entry.toEntity())

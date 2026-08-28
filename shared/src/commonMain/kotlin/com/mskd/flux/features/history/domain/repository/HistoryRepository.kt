@@ -1,11 +1,12 @@
 package com.mskd.flux.features.history.domain.repository
 
+import com.mskd.flux.features.catalog.domain.datastore.CatalogDataStore.State
 import com.mskd.flux.features.history.domain.model.HistoryEntry
 import kotlinx.coroutines.flow.Flow
 
 interface HistoryRepository {
 
-    suspend fun flow(): Flow<List<HistoryEntry>>
+    val flow: Flow<List<HistoryEntry>>
 
     suspend fun insert(entry: HistoryEntry)
 

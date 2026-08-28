@@ -7,6 +7,8 @@ import com.mskd.flux.core.model.artwork.Genre
 import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
 import com.mskd.flux.features.catalog.domain.model.CatalogViewMode
 import com.mskd.flux.features.catalog.domain.model.SyncState
+import com.mskd.flux.features.history.data.model.HistoryEntity
+import com.mskd.flux.features.history.domain.model.HistoryEntry
 
 @Immutable
 data class CatalogUiState(
@@ -24,7 +26,7 @@ sealed class CatalogState {
     data class Content(
         val artworks: List<Artwork> = emptyList(),
         val genres: List<Genre> = emptyList(),
-        val lastWatchedMediaIds: List<Long> = emptyList(),
+        val history: List<HistoryEntry> = emptyList(),
         val isRefreshing: Boolean = true,
         val tokenIsMissing: Boolean = false,
 

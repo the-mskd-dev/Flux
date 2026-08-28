@@ -9,6 +9,7 @@ import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
 import com.mskd.flux.features.artwork.presentation.ArtworkEvent.OpenUrlInfo
+import com.mskd.flux.features.history.domain.usecase.SaveToHistoryUseCase
 import com.mskd.flux.features.progress.domain.usecase.ChangeMediaStatusUseCase
 import com.mskd.flux.features.progress.domain.usecase.MarkPreviousAsWatchedUseCase
 import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
@@ -36,6 +37,7 @@ class ArtworkViewModel(
     private val markPreviousAsWatched: MarkPreviousAsWatchedUseCase,
     private val resetProgress: ResetProgressUseCase,
     private val saveProgress: SaveProgressUseCase,
+    private val saveToHistory: SaveToHistoryUseCase
 ) : ViewModel() {
 
     //region Computed properties
@@ -223,7 +225,8 @@ class ArtworkViewModel(
 
     private suspend fun onExternalPlayerResult(progress: Long) {
         artworkContent?.selectedMedia?.let { media ->
-            saveProgress(media = media, progress = progress)
+            val updatedMedia = saveProgress(media = media, progress = progress)
+            saveToHistory(media = updatedMedia)
         }
     }
 

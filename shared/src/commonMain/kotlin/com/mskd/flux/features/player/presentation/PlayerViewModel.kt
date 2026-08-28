@@ -11,6 +11,7 @@ import com.mskd.flux.core.model.player.PlayerTrack
 import com.mskd.flux.core.model.player.PlayerTrack.Type
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
 import com.mskd.flux.features.files.domain.usecase.GetSubtitlesUseCase
+import com.mskd.flux.features.history.domain.usecase.SaveToHistoryUseCase
 import com.mskd.flux.features.player.data.PipIsEnabledUseCase
 import com.mskd.flux.features.player.presentation.PlayerUiContent.AmbientOverlay
 import com.mskd.flux.features.player.presentation.PlayerUiContent.NextButton
@@ -51,6 +52,7 @@ class PlayerViewModel<out T>(
     private val observeArtworkUseCase: ObserveArtworkUseCase,
     private val pipIsEnabledUseCase: PipIsEnabledUseCase,
     private val saveProgressUseCase: SaveProgressUseCase,
+    private val saveToHistoryUseCase: SaveToHistoryUseCase,
     private val getSubtitlesUseCase: GetSubtitlesUseCase
 ) : ViewModel() {
 
@@ -402,10 +404,11 @@ class PlayerViewModel<out T>(
         val media = content?.media ?: return
         val progress = _progress.value
 
-        saveProgressUseCase(
+        val updatedMedia = saveProgressUseCase(
             media = media,
             progress = progress
         )
+        saveToHistoryUseCase(media = updatedMedia)
 
     }
 

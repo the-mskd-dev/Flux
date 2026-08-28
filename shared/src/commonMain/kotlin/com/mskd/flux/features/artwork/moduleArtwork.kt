@@ -25,7 +25,8 @@ val moduleArtwork = module {
             markPreviousAsWatched = get(),
             resetProgress = get(),
             saveProgress = get(),
-            observeArtworkUseCase = get()
+            observeArtworkUseCase = get(),
+            saveToHistory = get()
         )
     }
 

@@ -6,12 +6,13 @@ import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.Movie
 import com.mskd.flux.core.model.artwork.Status
+import com.mskd.flux.features.history.domain.repository.HistoryRepository
 import com.mskd.flux.utils.Trace
 import com.mskd.flux.utils.extensions.lastEpisode
 
 class ChangeMediaStatusUseCase(
     private val database: DatabaseRepository,
-    private val user: UserDataStore
+    private val history: HistoryRepository,
 ) {
 
     companion object {
@@ -40,7 +41,7 @@ class ChangeMediaStatusUseCase(
         )
 
         if (status == Status.WATCHED)
-            user.removeFromRecentlyWatched(movie.artworkId)
+            history.delete(artworkId = movie.artworkId)
 
         database.saveMedias(listOf(movieUpdated)) // Save status in DB
 
@@ -61,7 +62,7 @@ class ChangeMediaStatusUseCase(
 
             val lastEpisode = episodes.lastEpisode
             if (lastEpisode.id == updatedEpisode.id && status == Status.WATCHED)
-                user.removeFromRecentlyWatched(episode.artworkId)
+                history.delete(artworkId = episode.artworkId)
 
             database.saveMedias(listOf(updatedEpisode)) // Save status in DB
 

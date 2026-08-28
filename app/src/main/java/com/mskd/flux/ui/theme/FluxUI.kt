@@ -27,13 +27,11 @@ object FluxUI {
         val itemRatio = 2f/3f
     }
 
-    object Images {
+    object Ratio {
 
-        const val ratio_1_1 = 1f
-        const val ratio_2_3 = 2f/3f
-        const val ratio_6_5 = 6f/5f
-        const val ratio_5_6 = 5f/6f
-        const val ratio_16_9 = 16f/9f
+        const val square = 1f
+        const val rectangle = 6f/5f
+        const val landscape = 16f/9f
 
     }
 

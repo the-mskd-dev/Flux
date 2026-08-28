@@ -117,7 +117,7 @@ fun CatalogScreen(
                 CatalogContent(
                     artworks = state.artworks,
                     genres = state.genres,
-                    lastWatchedIds = state.lastWatchedMediaIds,
+                    lastWatchedIds = emptyList(),
                     isRefreshing = state.isRefreshing,
                     tokenIsMissing = state.tokenIsMissing,
                     sortingMode = state.sortingMode,

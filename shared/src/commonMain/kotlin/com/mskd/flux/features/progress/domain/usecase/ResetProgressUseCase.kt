@@ -5,10 +5,11 @@ import com.mskd.flux.core.datastore.domain.UserDataStore
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.Status
+import com.mskd.flux.features.history.domain.repository.HistoryRepository
 
 class ResetProgressUseCase(
     private val database: DatabaseRepository,
-    private val user: UserDataStore
+    private val history: HistoryRepository
 ) {
 
     companion object {
@@ -39,7 +40,7 @@ class ResetProgressUseCase(
             }
         }
 
-        user.removeFromRecentlyWatched(artworkId = artwork.id)
+        history.delete(artworkId = artwork.id)
 
     }
 }

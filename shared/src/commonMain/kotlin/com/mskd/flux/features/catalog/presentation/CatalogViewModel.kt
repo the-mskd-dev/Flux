@@ -27,6 +27,7 @@ import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.utils.Trace
 import com.mskd.flux.utils.UpdateManager
 import com.mskd.flux.utils.extensions.filterFor
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -62,7 +63,7 @@ class CatalogViewModel(
         tokenDataStore.flow,
     ) { history, catalog, token  ->
         CatalogPreferences(
-            history = history,
+            history = history.toImmutableList(),
             sortingMode = catalog.sortingMode,
             viewMode = catalog.viewMode,
             token = token
@@ -102,8 +103,8 @@ class CatalogViewModel(
 
             CatalogUiState(
                 state = CatalogState.Content(
-                    artworks = sortedArtworks,
-                    genres = genres,
+                    artworks = sortedArtworks.toImmutableList(),
+                    genres = genres.toImmutableList(),
                     history = preferences.history,
                     isRefreshing = syncState is SyncState.Syncing,
                     tokenIsMissing = preferences.token.isBlank(),

@@ -9,6 +9,8 @@ import com.mskd.flux.features.catalog.domain.model.CatalogViewMode
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.history.data.model.HistoryEntity
 import com.mskd.flux.features.history.domain.model.HistoryEntry
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 
 @Immutable
 data class CatalogUiState(
@@ -22,11 +24,10 @@ sealed class CatalogState {
     @Immutable
     data class Loading(val syncState: SyncState.Syncing = SyncState.Syncing(full = true)): CatalogState()
 
-    @Immutable
     data class Content(
-        val artworks: List<Artwork> = emptyList(),
-        val genres: List<Genre> = emptyList(),
-        val history: List<HistoryEntry> = emptyList(),
+        val artworks: ImmutableList<Artwork> = persistentListOf(),
+        val genres: ImmutableList<Genre> = persistentListOf(),
+        val history: ImmutableList<HistoryEntry> = persistentListOf(),
         val isRefreshing: Boolean = true,
         val tokenIsMissing: Boolean = false,
 

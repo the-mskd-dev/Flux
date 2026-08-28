@@ -1,8 +1,13 @@
 package com.mskd.flux.screens.catalog.composable
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
@@ -17,6 +22,7 @@ import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxThemePreview
 import com.mskd.flux.utils.extensions.fillMaxWidthWithLimit
+import org.slf4j.MDC
 
 @Composable
 fun CatalogHistory(
@@ -24,6 +30,22 @@ fun CatalogHistory(
     sendIntent: (CatalogIntent) -> Unit
 ) {
 
+    LazyRow(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
+        contentPadding = PaddingValues(horizontal = FluxUI.Space.medium)
+    ) {
+
+        items(items = entries, key = { it.artworkId }) { entry ->
+
+            CatalogHistoryItem(
+                entry = entry,
+                onClick = {}
+            )
+
+        }
+
+    }
 
 
 }
@@ -51,7 +73,12 @@ fun CatalogHistoryItem(
             modifier = Modifier.fillMaxSize()
         ) {
 
-            FluxImage()
+            FluxImage(
+                modifier = Modifier.fillMaxSize(),
+                historyEntry = entry,
+                contentDescription = entry.title
+            )
+
         }
 
     }
@@ -68,7 +95,9 @@ fun CatalogHistoryItem_Preview() {
                 artworkId = 0L,
                 type = ContentType.SHOW,
                 title = "Test",
-                description = "Test description",
+                season = 1,
+                number = 1,
+                path = "path/to/file",
                 duration = 24,
                 timestamp = 0L,
             )

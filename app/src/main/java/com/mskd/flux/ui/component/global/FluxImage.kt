@@ -24,6 +24,7 @@ import coil3.video.videoFramePercent
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.Status
+import com.mskd.flux.features.history.domain.model.HistoryEntry
 import com.mskd.flux.utils.extensions.tmdbImage
 import com.mskd.flux.utils.extensions.tmdbImageLarge
 
@@ -110,6 +111,28 @@ fun FluxImage(
             contentDescription = contentDescription
         )
     }
+}
+
+@Composable
+fun FluxImage(
+    modifier: Modifier,
+    historyEntry: HistoryEntry,
+    contentScale: ContentScale = ContentScale.Crop,
+    contentDescription: String
+) {
+
+    AsyncImage(
+        modifier = modifier,
+        model = ImageRequest.Builder(LocalContext.current)
+            .data(historyEntry.path)
+            .videoFrameMillis(historyEntry.currentTime)
+            .crossfade(true)
+            .build(),
+        contentScale = contentScale,
+        placeholder = Image.placeholder,
+        error = Image.error,
+        contentDescription = contentDescription
+    )
 }
 
 object Image {

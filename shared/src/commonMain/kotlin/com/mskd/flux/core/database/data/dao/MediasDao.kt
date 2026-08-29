@@ -18,10 +18,10 @@ interface MediasDao {
     //region Insert
 
     @Insert
-    suspend fun insertMedias(medias: List<MediaEntity>)
+    suspend fun insert(medias: List<MediaEntity>)
 
     @Transaction
-    suspend fun upsertMedias(medias: List<MediaEntity>) {
+    suspend fun insertOrUpdate(medias: List<MediaEntity>) {
         val existingByPath = findByPaths(medias.map { it.path }).associateBy { it.path }
 
         val (toUpdate, toInsert) = medias.partition { existingByPath.containsKey(it.path) }
@@ -36,8 +36,8 @@ interface MediasDao {
             )
         }
 
-        if (toInsert.isNotEmpty()) insertMedias(toInsert)
-        if (merged.isNotEmpty()) updateMedias(merged)
+        if (toInsert.isNotEmpty()) insert(toInsert)
+        if (merged.isNotEmpty()) update(merged)
     }
 
     //endregion
@@ -45,7 +45,7 @@ interface MediasDao {
     //region Update
 
     @Update
-    suspend fun updateMedias(medias: List<MediaEntity>)
+    suspend fun update(medias: List<MediaEntity>)
 
     @Transaction
     suspend fun updateRealPaths(files: List<UserFile>) {
@@ -62,17 +62,17 @@ interface MediasDao {
     //region Flow
 
     @Query("SELECT * FROM medias WHERE artworkId = :artworkId")
-    fun flowMedias(artworkId: Long) : Flow<List<MediaEntity>>
+    fun flow(artworkId: Long) : Flow<List<MediaEntity>>
 
     //endregion
 
     //region Select
 
     @Query("SELECT * FROM medias WHERE artworkId = :artworkId")
-    suspend fun getMedias(artworkId: Long) : List<MediaEntity>
+    suspend fun getForArtwork(artworkId: Long) : List<MediaEntity>
 
     @Query("SELECT * FROM medias")
-    suspend fun getMedias() : List<MediaEntity>
+    suspend fun getAll() : List<MediaEntity>
 
     @Query("SELECT * FROM medias WHERE name NOT IN (:fileNames)")
     suspend fun getMediasNotInFiles(fileNames: List<String>) : List<MediaEntity>

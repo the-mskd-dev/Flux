@@ -4,6 +4,7 @@ import com.mskd.flux.core.database.data.dao.DatabaseDao
 import com.mskd.flux.core.database.data.dao.DetailsDao
 import com.mskd.flux.core.database.data.FluxDatabase
 import com.mskd.flux.core.database.data.dao.MediasDao
+import com.mskd.flux.core.database.data.dao.SeasonsDao
 import com.mskd.flux.core.database.data.getRoomDatabase
 import com.mskd.flux.core.database.data.repository.DatabaseRepositoryImpl
 import com.mskd.flux.core.database.data.repository.DetailsRepositoryImpl
@@ -25,6 +26,12 @@ val moduleDatabase = module {
         fluxDatabase.mediasDao()
     }
 
+    single<SeasonsDao> {
+        val fluxDatabase = get<FluxDatabase>()
+        fluxDatabase.seasonsDao()
+    }
+
+
     single<DetailsDao> {
         val fluxDatabase = get<FluxDatabase>()
         fluxDatabase.detailsDao()
@@ -32,7 +39,7 @@ val moduleDatabase = module {
 
     single<DatabaseRepository> {
         DatabaseRepositoryImpl(
-            dao = get(),
+            artworksDao = get(),
             mediasDao = get()
         )
     }

@@ -22,9 +22,6 @@ interface DatabaseDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertArtworks(artworks: List<ArtworkEntity>)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertSeasons(seasons: List<SeasonEntity>)
-
 //endregion
 
 //region Flow
@@ -35,9 +32,6 @@ interface DatabaseDao {
     @Query("SELECT * FROM artworks WHERE id = :artworkId")
     fun flowArtwork(artworkId: Long) : Flow<ArtworkEntity?>
 
-    @Query("SELECT * FROM seasons WHERE artworkId = :artworkId")
-    fun flowSeasons(artworkId: Long) : Flow<List<SeasonEntity>>
-
 //endregion
 
 //region Get
@@ -47,16 +41,6 @@ interface DatabaseDao {
 
     @Query("SELECT * FROM artworks")
     suspend fun getArtworks() : List<ArtworkEntity>
-
-    @Query("SELECT * FROM seasons WHERE artworkId = :artworkId")
-    suspend fun getSeasons(artworkId: Long) : List<SeasonEntity>
-
-    @Query("SELECT * FROM seasons")
-    suspend fun getSeasons() : List<SeasonEntity>
-
-//endregion
-
-//region Update
 
 //endregion
 
@@ -73,28 +57,8 @@ interface DatabaseDao {
     """)
     suspend fun deleteEmptyArtworks()
 
-    @Query("DELETE FROM seasons WHERE artworkId IN (:artworkIds)")
-    suspend fun deleteSeasonsByArtworkIds(artworkIds: List<Long>)
-
-    @Query("""
-    DELETE FROM seasons
-    WHERE NOT EXISTS (
-        SELECT 1 FROM medias
-        WHERE medias.artworkId = seasons.artworkId
-        AND medias.season = seasons.season
-        AND medias.type = :type
-    )
-""")
-    suspend fun deleteEmptySeasons(type: ContentType = ContentType.SHOW)
-
-    @Query("DELETE FROM seasons WHERE artworkId = :artworkId AND season = :season")
-    suspend fun deleteSeason(artworkId: Long, season: Int)
-
     @Query("DELETE FROM artworks")
     suspend fun deleteAllArtworks()
-
-    @Query("DELETE FROM seasons")
-    suspend fun deleteAllSeasons()
 
 //endregion
 
@@ -102,9 +66,6 @@ interface DatabaseDao {
 
     @Query("SELECT imagePath, bannerPath FROM artworks")
     suspend fun getArtworksImages() : List<ArtworkImagesProjection>
-
-    @Query("SELECT imagePath FROM seasons")
-    suspend fun getSeasonsImages() : List<String>
 
 //endregion
 

@@ -31,7 +31,6 @@ val moduleDatabase = module {
         fluxDatabase.seasonsDao()
     }
 
-
     single<DetailsDao> {
         val fluxDatabase = get<FluxDatabase>()
         fluxDatabase.detailsDao()
@@ -40,7 +39,8 @@ val moduleDatabase = module {
     single<DatabaseRepository> {
         DatabaseRepositoryImpl(
             artworksDao = get(),
-            mediasDao = get()
+            mediasDao = get(),
+            seasonsDao = get()
         )
     }
 

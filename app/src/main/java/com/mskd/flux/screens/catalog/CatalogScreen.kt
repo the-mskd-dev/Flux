@@ -34,12 +34,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.Genre
+import com.mskd.flux.features.artwork.presentation.ArtworkEvent
+import com.mskd.flux.features.artwork.presentation.ArtworkIntent
 import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
 import com.mskd.flux.features.catalog.domain.model.CatalogViewMode
 import com.mskd.flux.features.catalog.presentation.CatalogEvent
@@ -51,6 +54,7 @@ import com.mskd.flux.features.history.domain.model.HistoryEntry
 import com.mskd.flux.mockups.DetailsMockup
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.navigation.domain.Route
+import com.mskd.flux.navigation.domain.Route.Player
 import com.mskd.flux.screens.catalog.composable.CatalogEmptyContent
 import com.mskd.flux.screens.catalog.composable.CatalogHeader
 import com.mskd.flux.screens.catalog.composable.CatalogHistory
@@ -63,8 +67,11 @@ import com.mskd.flux.screens.catalog.composable.viewMode.catalogViewModeGrid
 import com.mskd.flux.screens.catalog.composable.viewMode.catalogViewModeType
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.utils.ExternalPlayer
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxThemePreview
+import com.mskd.flux.utils.rememberExternalPlayerAction
+import com.mskd.flux.utils.rememberExternalPlayerLauncher
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -75,6 +82,11 @@ fun CatalogScreen(
 ) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    val launchExternalPlayer = rememberExternalPlayerAction(
+        onProgressResult = { progress -> viewModel.handleIntent(CatalogIntent.OnExternalPlayerResult(progress = progress)) },
+        onFallbackToInternal = { media -> viewModel.handleIntent(CatalogIntent.PlayMedia(media = media, forceInternal = true)) }
+    )
 
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
@@ -87,6 +99,9 @@ fun CatalogScreen(
                 CatalogEvent.NavigateToSettings -> navigate(Route.Settings)
                 CatalogEvent.NavigateToToken -> navigate(Route.Token(fromSetup = false))
                 CatalogEvent.NavigateToSources -> navigate(Route.Sources(fromSetup = false))
+
+                is CatalogEvent.PlayMedia -> navigate(Player(mediaId = event.mediaId))
+                is CatalogEvent.LaunchExternalPlayer -> launchExternalPlayer(event.media)
             }
         }
     }

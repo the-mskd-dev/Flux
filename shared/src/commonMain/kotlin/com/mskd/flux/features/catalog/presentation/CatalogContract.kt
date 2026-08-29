@@ -4,6 +4,9 @@ import androidx.compose.runtime.Immutable
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.Genre
+import com.mskd.flux.core.model.artwork.Media
+import com.mskd.flux.features.artwork.presentation.ArtworkEvent
+import com.mskd.flux.features.artwork.presentation.ArtworkIntent
 import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
 import com.mskd.flux.features.catalog.domain.model.CatalogViewMode
 import com.mskd.flux.features.catalog.domain.model.SyncState
@@ -62,9 +65,15 @@ sealed interface CatalogIntent {
     // View mode
     data class SelectViewMode(val mode: CatalogViewMode): CatalogIntent
     data class ShowViewModes(val show: Boolean): CatalogIntent
+
+    // Player
+    data class PlayMedia(val media: Media, val forceInternal: Boolean = false): CatalogIntent
+    data class OnExternalPlayerResult(val progress: Long) : CatalogIntent
 }
 
 sealed interface CatalogEvent {
+
+    // Navigation
     data class NavigateToMovie(val artworkId: Long, val rgb: Int?): CatalogEvent
     data class NavigateToShow(val artworkId: Long, val rgb: Int?): CatalogEvent
     data object NavigateToUnknown: CatalogEvent
@@ -73,4 +82,8 @@ sealed interface CatalogEvent {
     data object NavigateToToken: CatalogEvent
     data object NavigateToHowTo: CatalogEvent
     data object NavigateToSources: CatalogEvent
+
+    // Player
+    data class PlayMedia(val mediaId: Long) : CatalogEvent
+    data class LaunchExternalPlayer(val media: Media) : CatalogEvent
 }

@@ -22,6 +22,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
+import com.mskd.flux.features.history.data.mapper.toHistoryEntry
 import com.mskd.flux.features.history.domain.model.HistoryEntry
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.ui.component.global.FluxImage
@@ -138,7 +139,7 @@ fun CatalogHistoryItem(
 fun CatalogHistoryItem_Preview() {
     FluxThemePreview {
         CatalogHistory(
-            entries = MediaMockups.episodes.map { HistoryEntry(media = it, timestamp = 0L) }
+            entries = MediaMockups.episodes.map { it.toHistoryEntry() }
         ) { }
     }
 }

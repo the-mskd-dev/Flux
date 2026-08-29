@@ -18,6 +18,7 @@ interface SettingsDataStore {
     suspend fun setAudioLanguage(locale: Locale)
 
     suspend fun setExternalPlayer(useExternalPlayer: Boolean)
+    suspend fun externalPlayerIsEnabled() : Boolean
 
     suspend fun setEnablePip(enable: Boolean)
 

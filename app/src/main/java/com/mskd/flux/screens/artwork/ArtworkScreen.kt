@@ -34,6 +34,7 @@ import com.mskd.flux.features.artwork.presentation.ArtworkDialog
 import com.mskd.flux.features.artwork.presentation.ArtworkEvent
 import com.mskd.flux.features.artwork.presentation.ArtworkIntent
 import com.mskd.flux.features.artwork.presentation.ArtworkViewModel
+import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.navigation.domain.Route.Player
@@ -51,6 +52,7 @@ import com.mskd.flux.utils.ExternalPlayer
 import com.mskd.flux.utils.FileUtils
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.UriUtils
+import com.mskd.flux.utils.rememberExternalPlayerAction
 import com.mskd.flux.utils.rememberExternalPlayerLauncher
 import com.mskd.flux.utils.rememberScreenDimensions
 import flux.shared.generated.resources.Res
@@ -73,11 +75,9 @@ fun ArtworkScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
-    val externalPlayerLauncher = rememberExternalPlayerLauncher(
-        context = context,
-        onProgressResult = { progress ->
-            viewModel.handleIntent(ArtworkIntent.OnExternalPlayerResult(progress = progress))
-        }
+    val launchExternalPlayer = rememberExternalPlayerAction(
+        onProgressResult = { progress -> viewModel.handleIntent(ArtworkIntent.OnExternalPlayerResult(progress = progress)) },
+        onFallbackToInternal = { media -> viewModel.handleIntent(ArtworkIntent.PlayMedia(media = media, forceInternal = true)) }
     )
 
     LaunchedEffect(Unit) {
@@ -86,14 +86,7 @@ fun ArtworkScreen(
                 ArtworkEvent.BackToPreviousScreen -> onBack()
                 is ArtworkEvent.PlayMedia -> navigate(Player(mediaId = event.mediaId))
                 is ArtworkEvent.OpenUrlInfo -> UriUtils.openWebPage(context = context, url = event.url)
-                is ArtworkEvent.LaunchExternalPlayer -> {
-                    ExternalPlayer.launchPlayer(
-                        context = context,
-                        media = event.media,
-                        launcher = externalPlayerLauncher,
-                        onError = { viewModel.handleIntent(ArtworkIntent.PlayMedia(media = event.media, forceInternal = true)) }
-                    )
-                }
+                is ArtworkEvent.LaunchExternalPlayer -> launchExternalPlayer(event.media)
                 is ArtworkEvent.OpenFileExplorer -> FileUtils.openFileExplorer(context = context, file = event.media.file)
             }
         }

@@ -43,7 +43,7 @@ class ArtworkViewModelTest : FunSpec({
         changeMediaStatus = mockk(relaxed = true)
         markPreviousAsWatched = mockk(relaxed = true)
         resetProgress = mockk(relaxed = true)
-        saveProgress = mockk(relaxed = true)
+
 
         viewModel = ArtworkViewModel(
             artworkId = id,

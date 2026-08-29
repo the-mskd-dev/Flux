@@ -24,3 +24,8 @@ fun Media.toHistoryEntity() = HistoryEntity(
     timestamp = Clock.System.now().toEpochMilliseconds()
 )
 
+fun Media.toHistoryEntry() = HistoryEntry(
+    media = this,
+    timestamp = Clock.System.now().toEpochMilliseconds()
+)
+

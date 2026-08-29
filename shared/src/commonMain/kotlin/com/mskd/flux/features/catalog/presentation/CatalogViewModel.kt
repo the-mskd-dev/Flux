@@ -7,7 +7,10 @@ import com.mskd.flux.core.database.domain.repository.DetailsRepository
 import com.mskd.flux.core.datastore.domain.UserDataStore
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.ContentType
+import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.core.AppInfo
+import com.mskd.flux.features.artwork.presentation.ArtworkEvent
+import com.mskd.flux.features.artwork.presentation.ArtworkIntent
 import com.mskd.flux.features.catalog.domain.datastore.CatalogDataStore
 import com.mskd.flux.features.catalog.domain.model.CatalogPreferences
 import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
@@ -23,6 +26,12 @@ import com.mskd.flux.features.catalog.presentation.CatalogEvent.NavigateToSource
 import com.mskd.flux.features.catalog.presentation.CatalogEvent.NavigateToToken
 import com.mskd.flux.features.catalog.presentation.CatalogEvent.NavigateToUnknown
 import com.mskd.flux.features.history.domain.repository.HistoryRepository
+import com.mskd.flux.features.history.domain.usecase.SaveToHistoryUseCase
+import com.mskd.flux.features.player.domain.model.PlaybackAction
+import com.mskd.flux.features.player.domain.usecase.RecordPlaybackResultUseCase
+import com.mskd.flux.features.player.domain.usecase.ResolvePlaybackActionUseCase
+import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
+import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.utils.Trace
 import com.mskd.flux.utils.UpdateManager
@@ -44,9 +53,12 @@ class CatalogViewModel(
     private val detailsDb: DetailsRepository,
     private val historyDb: HistoryRepository,
     private val userDataStore: UserDataStore,
+    private val settings: SettingsDataStore,
     private val tokenDataStore: TokenDataStore,
     private val catalogDataStore: CatalogDataStore,
-    private val appInfo: AppInfo
+    private val appInfo: AppInfo,
+    private val resolvePlaybackAction: ResolvePlaybackActionUseCase,
+    private val recordPlaybackResult: RecordPlaybackResultUseCase
 ): ViewModel() {
 
     private val _event = MutableSharedFlow<CatalogEvent>()
@@ -56,6 +68,8 @@ class CatalogViewModel(
     private val _showViewModeSheet = MutableStateFlow(false)
 
     private var hasLoadedContent = false
+
+    private var currentMedia: Media? = null
 
     private val preferencesFlow = combine(
         historyDb.flow,
@@ -151,6 +165,10 @@ class CatalogViewModel(
             // View mode
             is CatalogIntent.SelectViewMode -> selectViewMode(mode = intent.mode)
             is CatalogIntent.ShowViewModes -> showViewModes(show = intent.show)
+
+            // Player
+            is CatalogIntent.PlayMedia -> playMedia(media = intent.media, forceInternal = intent.forceInternal)
+            is CatalogIntent.OnExternalPlayerResult -> onExternalPlayerResult(intent.progress)
         }
     }
 
@@ -197,6 +215,19 @@ class CatalogViewModel(
 
     private fun showViewModes(show: Boolean) {
         _showViewModeSheet.update { show }
+    }
+
+    private suspend fun playMedia(media: Media, forceInternal: Boolean) {
+        currentMedia = media
+        when (val action = resolvePlaybackAction(media = media, forceInternal = forceInternal)) {
+            is PlaybackAction.OpenExternalPlayer -> _event.emit(CatalogEvent.LaunchExternalPlayer(media = action.media))
+            is PlaybackAction.OpenInternalPlayer -> _event.emit(CatalogEvent.PlayMedia(mediaId = action.mediaId))
+            PlaybackAction.Unavailable -> Unit
+        }
+    }
+
+    private suspend fun onExternalPlayerResult(progress: Long) {
+        currentMedia?.let { recordPlaybackResult(media = it, progress = progress) }
     }
 
 }

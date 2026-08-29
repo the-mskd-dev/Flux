@@ -109,6 +109,10 @@ class SettingsDataStoreImpl(val settingsDataStore: DataStore<Preferences>) : Set
         }
     }
 
+    override suspend fun externalPlayerIsEnabled(): Boolean {
+        return flow.firstOrNull()?.externalPlayer ?: false
+    }
+
     override suspend fun setEnablePip(enable: Boolean) {
         settingsDataStore.edit { preferences ->
             preferences[Keys.PIP_IS_ENABLED] = enable

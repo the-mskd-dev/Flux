@@ -1,8 +1,9 @@
 package com.mskd.flux.core.database
 
-import com.mskd.flux.core.database.data.DatabaseDao
-import com.mskd.flux.core.database.data.DetailsDao
+import com.mskd.flux.core.database.data.dao.DatabaseDao
+import com.mskd.flux.core.database.data.dao.DetailsDao
 import com.mskd.flux.core.database.data.FluxDatabase
+import com.mskd.flux.core.database.data.dao.MediasDao
 import com.mskd.flux.core.database.data.getRoomDatabase
 import com.mskd.flux.core.database.data.repository.DatabaseRepositoryImpl
 import com.mskd.flux.core.database.data.repository.DetailsRepositoryImpl
@@ -14,22 +15,30 @@ val moduleDatabase = module {
 
     single<FluxDatabase> { getRoomDatabase(builder = get()) }
 
-    single<DatabaseRepository> {
-        DatabaseRepositoryImpl(dao = get())
-    }
-
     single<DatabaseDao> {
         val fluxDatabase = get<FluxDatabase>()
         fluxDatabase.dao()
     }
 
-    single<DetailsRepository> {
-        DetailsRepositoryImpl(dao = get())
+    single<MediasDao> {
+        val fluxDatabase = get<FluxDatabase>()
+        fluxDatabase.mediasDao()
     }
 
     single<DetailsDao> {
         val fluxDatabase = get<FluxDatabase>()
         fluxDatabase.detailsDao()
+    }
+
+    single<DatabaseRepository> {
+        DatabaseRepositoryImpl(
+            dao = get(),
+            mediasDao = get()
+        )
+    }
+
+    single<DetailsRepository> {
+        DetailsRepositoryImpl(dao = get())
     }
 
 }

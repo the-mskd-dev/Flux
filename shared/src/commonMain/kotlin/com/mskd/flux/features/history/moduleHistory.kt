@@ -1,9 +1,6 @@
 package com.mskd.flux.features.history
 
-import com.mskd.flux.core.database.data.DatabaseDao
 import com.mskd.flux.core.database.data.FluxDatabase
-import com.mskd.flux.core.database.data.repository.DatabaseRepositoryImpl
-import com.mskd.flux.core.database.domain.repository.DatabaseRepository
 import com.mskd.flux.features.history.data.dao.HistoryDao
 import com.mskd.flux.features.history.data.repository.HistoryRepositoryImpl
 import com.mskd.flux.features.history.domain.repository.HistoryRepository

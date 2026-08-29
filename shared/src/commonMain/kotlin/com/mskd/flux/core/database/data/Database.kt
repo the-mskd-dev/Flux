@@ -7,6 +7,9 @@ import androidx.room.RoomDatabase
 import androidx.room.RoomDatabaseConstructor
 import androidx.room.TypeConverters
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
+import com.mskd.flux.core.database.data.dao.DatabaseDao
+import com.mskd.flux.core.database.data.dao.DetailsDao
+import com.mskd.flux.core.database.data.dao.MediasDao
 import com.mskd.flux.core.database.data.migrations.MIGRATION_5_6
 import com.mskd.flux.core.database.data.model.ArtworkEntity
 import com.mskd.flux.core.database.data.model.GenreEntity
@@ -42,6 +45,7 @@ import kotlinx.coroutines.Dispatchers
 @ConstructedBy(FluxDatabaseConstructor::class)
 abstract class FluxDatabase : RoomDatabase() {
     abstract fun dao(): DatabaseDao
+    abstract fun mediasDao(): MediasDao
     abstract fun sourcesDao(): SourcesDao
     abstract fun detailsDao(): DetailsDao
     abstract fun historyDao(): HistoryDao

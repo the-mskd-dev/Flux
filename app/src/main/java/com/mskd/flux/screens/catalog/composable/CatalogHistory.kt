@@ -32,6 +32,7 @@ import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxThemePreview
+import com.mskd.flux.utils.extensions.bleedHorizontal
 import com.mskd.flux.utils.extensions.fillMaxWidthWithLimit
 import com.mskd.flux.utils.itemWidthFor
 import org.slf4j.MDC
@@ -42,8 +43,13 @@ fun CatalogHistory(
     sendIntent: (CatalogIntent) -> Unit
 ) {
 
+    if (entries.isEmpty())
+        return
+
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .bleedHorizontal()
+            .fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
     ) {
 
@@ -87,7 +93,7 @@ fun CatalogHistoryItem(
         modifier = Modifier
             .fillMaxWidthWithLimit(
                 fraction = .8f,
-                max = 500.dp
+                max = 450.dp
             )
             .aspectRatio(FluxUI.Ratio.landscape),
         onClick = onClick,

@@ -5,7 +5,6 @@ import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.Movie
 import com.mskd.flux.core.model.artwork.Status
-import com.mskd.flux.features.history.data.mapper.toHistoryEntry
 import com.mskd.flux.features.history.domain.repository.HistoryRepository
 import com.mskd.flux.utils.extensions.getNextEpisodeFor
 
@@ -16,18 +15,16 @@ class SaveToHistoryUseCase(
 
     suspend operator fun invoke(media: Media) {
 
-        val entry = media.toHistoryEntry()
-
         when (media) {
             is Episode -> {
 
                 if (media.status == Status.IS_WATCHING) {
-                    history.insert(entry = entry)
+                    history.insert(media = media)
                 } else {
                     val episodes = database.getEpisodes(artworkId = media.artworkId)
                     val nextEpisode = episodes.getNextEpisodeFor(episode = media)
                     if (nextEpisode != null) {
-                        history.insert(nextEpisode.toHistoryEntry())
+                        history.insert(media = nextEpisode)
                     } else {
                         history.delete(artworkId = media.artworkId)
                     }
@@ -37,7 +34,7 @@ class SaveToHistoryUseCase(
             is Movie -> {
 
                 if (media.status == Status.IS_WATCHING)
-                    history.insert(entry = entry)
+                    history.insert(media = media)
                 else
                     history.delete(artworkId = media.artworkId)
 

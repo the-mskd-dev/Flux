@@ -4,18 +4,22 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.mskd.flux.core.database.data.model.GenreEntity
 import com.mskd.flux.features.history.data.model.HistoryEntity
+import com.mskd.flux.features.history.data.model.HistoryProjection
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface HistoryDao {
 
-    @Query("SELECT * FROM history")
-    fun flow() : Flow<List<HistoryEntity>>
+    @Query("""
+        SELECT * FROM history
+        INNER JOIN medias ON history.mediaId = medias.id AND history.artworkId = medias.artworkId
+        ORDER BY history.timestamp DESC
+    """)
+    fun flow() : Flow<List<HistoryProjection>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(entry: HistoryEntity)
+    suspend fun upsert(entry: HistoryEntity)
 
     @Query("DELETE FROM history WHERE artworkId = :artworkId")
     suspend fun delete(artworkId: Long)

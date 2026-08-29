@@ -1,16 +1,8 @@
 package com.mskd.flux.features.history.domain.model
 
-import com.mskd.flux.core.model.artwork.ContentType
+import com.mskd.flux.core.model.artwork.Media
 
 data class HistoryEntry(
-    val id: Long,
-    val artworkId: Long,
-    val type: ContentType,
-    val title: String,
-    val season: Int?,
-    val number: Int?,
-    val path: String,
-    val duration: Int,
-    val currentTime: Long = 0L,
+    val media: Media,
     val timestamp: Long,
 )

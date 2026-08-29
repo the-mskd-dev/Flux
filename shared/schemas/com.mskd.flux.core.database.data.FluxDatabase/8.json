@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 8,
-    "identityHash": "c733b76da6b26a7c7a469b61ab27bf80",
+    "identityHash": "b53f5a8c0f2bc776fac9c09286540e38",
     "entities": [
       {
         "tableName": "artworks",
@@ -323,7 +323,7 @@
       },
       {
         "tableName": "history",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `artworkId` INTEGER NOT NULL, `type` TEXT NOT NULL, `title` TEXT NOT NULL, `description` TEXT NOT NULL, `duration` INTEGER NOT NULL, `currentTime` INTEGER NOT NULL, `timestamp` INTEGER NOT NULL, PRIMARY KEY(`id`, `artworkId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `artworkId` INTEGER NOT NULL, `type` TEXT NOT NULL, `title` TEXT NOT NULL, `season` INTEGER, `number` INTEGER, `path` TEXT NOT NULL, `duration` INTEGER NOT NULL, `currentTime` INTEGER NOT NULL, `timestamp` INTEGER NOT NULL, PRIMARY KEY(`id`, `artworkId`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -350,8 +350,18 @@
             "notNull": true
           },
           {
-            "fieldPath": "description",
-            "columnName": "description",
+            "fieldPath": "season",
+            "columnName": "season",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "number",
+            "columnName": "number",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "path",
+            "columnName": "path",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -385,7 +395,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c733b76da6b26a7c7a469b61ab27bf80')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b53f5a8c0f2bc776fac9c09286540e38')"
     ]
   }
 }

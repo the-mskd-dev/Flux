@@ -82,10 +82,11 @@ fun FluxImage(
     modifier: Modifier,
     media: Media,
     contentScale: ContentScale = ContentScale.Crop,
-    contentDescription: String
+    contentDescription: String,
+    videoFrame: Boolean = false,
 ) {
 
-    if (media is Episode && media.imagePath.isNotBlank()) {
+    if (media is Episode && media.imagePath.isNotBlank() && !videoFrame) {
         FluxImage(
             modifier = modifier,
             path = media.imagePath,
@@ -111,28 +112,6 @@ fun FluxImage(
             contentDescription = contentDescription
         )
     }
-}
-
-@Composable
-fun FluxImage(
-    modifier: Modifier,
-    historyEntry: HistoryEntry,
-    contentScale: ContentScale = ContentScale.Crop,
-    contentDescription: String
-) {
-
-    AsyncImage(
-        modifier = modifier,
-        model = ImageRequest.Builder(LocalContext.current)
-            .data(historyEntry.path)
-            .videoFrameMillis(historyEntry.currentTime)
-            .crossfade(true)
-            .build(),
-        contentScale = contentScale,
-        placeholder = Image.placeholder,
-        error = Image.error,
-        contentDescription = contentDescription
-    )
 }
 
 object Image {

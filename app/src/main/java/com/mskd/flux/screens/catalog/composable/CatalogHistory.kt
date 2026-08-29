@@ -1,7 +1,6 @@
 package com.mskd.flux.screens.catalog.composable
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,12 +18,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.mskd.flux.core.model.artwork.ContentType
+import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
-import com.mskd.flux.features.history.data.mapper.toHistoryEntry
 import com.mskd.flux.features.history.domain.model.HistoryEntry
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.ui.component.global.FluxImage
@@ -34,8 +31,6 @@ import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxThemePreview
 import com.mskd.flux.utils.extensions.bleedHorizontal
 import com.mskd.flux.utils.extensions.fillMaxWidthWithLimit
-import com.mskd.flux.utils.itemWidthFor
-import org.slf4j.MDC
 
 @Composable
 fun CatalogHistory(
@@ -67,10 +62,10 @@ fun CatalogHistory(
             contentPadding = PaddingValues(horizontal = FluxUI.Space.medium)
         ) {
 
-            items(items = entries, key = { it.artworkId to it.id }) { entry ->
+            items(items = entries, key = { it.media.artworkId }) { entry ->
 
                 CatalogHistoryItem(
-                    entry = entry,
+                    media = entry.media,
                     onClick = {}
                 )
 
@@ -85,7 +80,7 @@ fun CatalogHistory(
 
 @Composable
 fun CatalogHistoryItem(
-    entry: HistoryEntry,
+    media: Media,
     onClick: () -> Unit
 ) {
 
@@ -109,8 +104,9 @@ fun CatalogHistoryItem(
 
             FluxImage(
                 modifier = Modifier.fillMaxSize(),
-                historyEntry = entry,
-                contentDescription = entry.title
+                media = media,
+                contentDescription = media.title,
+                videoFrame = true
             )
 
             Column(
@@ -123,7 +119,7 @@ fun CatalogHistoryItem(
 
                 Text.Content.Body(
                     modifier = Modifier.fillMaxWidth(),
-                    text = entry.title,
+                    text = media.title,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1
                 )
@@ -142,7 +138,7 @@ fun CatalogHistoryItem(
 fun CatalogHistoryItem_Preview() {
     FluxThemePreview {
         CatalogHistory(
-            entries = MediaMockups.episodes.map { it.toHistoryEntry() }
+            entries = MediaMockups.episodes.map { HistoryEntry(media = it, timestamp = 0L) }
         ) { }
     }
 }

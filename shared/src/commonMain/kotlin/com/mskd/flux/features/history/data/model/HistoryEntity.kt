@@ -5,7 +5,7 @@ import com.mskd.flux.core.model.artwork.ContentType
 
 @Entity(
     tableName = "history",
-    primaryKeys = ["id", "artworkId"],
+    primaryKeys = ["artworkId"],
 )
 data class HistoryEntity(
     val id: Long,

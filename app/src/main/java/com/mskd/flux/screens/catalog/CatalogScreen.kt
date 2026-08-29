@@ -46,14 +46,16 @@ import com.mskd.flux.features.catalog.presentation.CatalogEvent
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.features.catalog.presentation.CatalogState
 import com.mskd.flux.features.catalog.presentation.CatalogViewModel
+import com.mskd.flux.features.history.data.mapper.toHistoryEntry
+import com.mskd.flux.features.history.domain.model.HistoryEntry
 import com.mskd.flux.mockups.DetailsMockup
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.screens.catalog.composable.CatalogEmptyContent
 import com.mskd.flux.screens.catalog.composable.CatalogHeader
+import com.mskd.flux.screens.catalog.composable.CatalogHistory
 import com.mskd.flux.screens.catalog.composable.CatalogMenu
 import com.mskd.flux.screens.catalog.composable.CatalogViewMenu
-import com.mskd.flux.screens.catalog.composable.LastWatchedCarousel
 import com.mskd.flux.screens.catalog.composable.sorting.CatalogSortingSheet
 import com.mskd.flux.screens.catalog.composable.viewMode.CatalogViewModeSheet
 import com.mskd.flux.screens.catalog.composable.viewMode.catalogViewModeGenre
@@ -117,7 +119,7 @@ fun CatalogScreen(
                 CatalogContent(
                     artworks = state.artworks,
                     genres = state.genres,
-                    lastWatchedIds = emptyList(),
+                    history = state.history,
                     isRefreshing = state.isRefreshing,
                     tokenIsMissing = state.tokenIsMissing,
                     sortingMode = state.sortingMode,
@@ -141,7 +143,7 @@ fun CatalogScreen(
 fun CatalogContent(
     artworks: List<Artwork>,
     genres: List<Genre>,
-    lastWatchedIds: List<Long>,
+    history: List<HistoryEntry>,
     isRefreshing: Boolean,
     tokenIsMissing: Boolean,
     sortingMode: CatalogSortingMode,
@@ -211,8 +213,8 @@ fun CatalogContent(
                                 verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
                             ) {
 
-                                LastWatchedCarousel(
-                                    artworks = lastWatchedIds.mapNotNull { artworks.find { o -> o.id == it } },
+                                CatalogHistory(
+                                    entries = history,
                                     sendIntent = sendIntent
                                 )
 
@@ -304,7 +306,7 @@ fun CatalogScreen_Preview() {
             CatalogContent(
                 artworks = MediaMockups.artworks,
                 genres = DetailsMockup.allGenres,
-                lastWatchedIds = MediaMockups.artworks.map { it.id },
+                history = MediaMockups.allMedias.map { it.toHistoryEntry() },
                 isRefreshing = false,
                 tokenIsMissing = false,
                 sortingMode = CatalogSortingMode.LAST_MODIFICATION,
@@ -325,7 +327,7 @@ fun CatalogScreen_Unknown_Preview() {
             CatalogContent(
                 artworks = listOf(MediaMockups.unknownArtwork),
                 genres = emptyList(),
-                lastWatchedIds = emptyList(),
+                history = emptyList(),
                 isRefreshing = false,
                 tokenIsMissing = true,
                 sortingMode = CatalogSortingMode.LAST_MODIFICATION,
@@ -346,7 +348,7 @@ fun CatalogScreen_Empty_Preview() {
             CatalogContent(
                 artworks = emptyList(),
                 genres = emptyList(),
-                lastWatchedIds = emptyList(),
+                history = emptyList(),
                 isRefreshing = false,
                 tokenIsMissing = true,
                 sortingMode = CatalogSortingMode.LAST_MODIFICATION,

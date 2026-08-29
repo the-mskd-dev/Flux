@@ -27,7 +27,7 @@ import kotlinx.coroutines.Dispatchers
         GenreEntity::class,
         HistoryEntity::class
     ],
-    version = 8,
+    version = 9,
     autoMigrations = [
         AutoMigration(from = 1, to = 2),
         AutoMigration(from = 2, to = 3),
@@ -35,6 +35,7 @@ import kotlinx.coroutines.Dispatchers
         AutoMigration(from = 4, to = 5),
         AutoMigration(from = 6, to = 7),
         AutoMigration(from = 7, to = 8),
+        AutoMigration(from = 8, to = 9),
     ]
 )
 @TypeConverters(Converters::class)

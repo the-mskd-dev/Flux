@@ -43,7 +43,7 @@ class DatabaseRepositoryImpl(
     }
 
     override suspend fun saveMedias(medias: List<Media>) {
-        mediasDao.insertMedias(medias = medias.map { it.toEntity() })
+        mediasDao.upsertMedias(medias = medias.map { it.toEntity() })
     }
 
     override suspend fun saveSeasons(seasons: List<Season>) {

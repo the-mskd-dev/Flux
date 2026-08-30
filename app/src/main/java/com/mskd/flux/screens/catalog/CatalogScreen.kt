@@ -1,6 +1,7 @@
 package com.mskd.flux.screens.catalog
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -32,6 +33,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
@@ -219,6 +221,16 @@ fun CatalogContent(
                         }
                     }
 
+                    item(span = { GridItemSpan(maxLineSpan) }) {
+
+                        CatalogHistory(
+                            modifier = Modifier.animateItem(),
+                            entries = history,
+                            sendIntent = sendIntent
+                        )
+
+                    }
+
                     if (artworks.any { !it.isUnknown }) {
 
                         item(span = { GridItemSpan(maxLineSpan) }) {
@@ -227,11 +239,6 @@ fun CatalogContent(
                                 modifier = Modifier.fillMaxWidth(),
                                 verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
                             ) {
-
-                                CatalogHistory(
-                                    entries = history,
-                                    sendIntent = sendIntent
-                                )
 
                                 CatalogViewMenu(
                                     sortingMode = sortingMode,

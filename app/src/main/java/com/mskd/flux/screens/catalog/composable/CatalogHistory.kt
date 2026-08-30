@@ -55,18 +55,20 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun CatalogHistory(
+    modifier: Modifier = Modifier,
     entries: List<HistoryEntry>,
     sendIntent: (CatalogIntent) -> Unit
 ) {
 
     AnimatedVisibility(
+        modifier = modifier
+            .bleedHorizontal()
+            .fillMaxWidth(),
         visible = entries.isNotEmpty()
     ) {
 
         Column(
-            modifier = Modifier
-                .bleedHorizontal()
-                .fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
         ) {
 
@@ -87,6 +89,7 @@ fun CatalogHistory(
                 items(items = entries, key = { it.media.artworkId }) { entry ->
 
                     CatalogHistoryItem(
+                        modifier = Modifier.animateItem(),
                         entry = entry,
                         sendIntent = sendIntent
                     )
@@ -103,6 +106,7 @@ fun CatalogHistory(
 
 @Composable
 fun CatalogHistoryItem(
+    modifier: Modifier = Modifier,
     entry: HistoryEntry,
     sendIntent: (CatalogIntent) -> Unit
 ) {
@@ -111,7 +115,7 @@ fun CatalogHistoryItem(
     val media = entry.media
 
     Card(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidthWithLimit(
                 fraction = .8f,
                 max = 450.dp

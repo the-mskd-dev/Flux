@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import androidx.room.RoomDatabaseConstructor
 import androidx.room.TypeConverters
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
-import com.mskd.flux.core.database.data.dao.DatabaseDao
+import com.mskd.flux.core.database.data.dao.ArtworkDao
 import com.mskd.flux.core.database.data.dao.DetailsDao
 import com.mskd.flux.core.database.data.dao.MediasDao
 import com.mskd.flux.core.database.data.dao.SeasonsDao
@@ -45,7 +45,7 @@ import kotlinx.coroutines.Dispatchers
 @TypeConverters(Converters::class)
 @ConstructedBy(FluxDatabaseConstructor::class)
 abstract class FluxDatabase : RoomDatabase() {
-    abstract fun dao(): DatabaseDao
+    abstract fun artworkDao(): ArtworkDao
     abstract fun mediasDao(): MediasDao
     abstract fun seasonsDao(): SeasonsDao
     abstract fun sourcesDao(): SourcesDao

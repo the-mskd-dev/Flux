@@ -5,7 +5,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import app.cash.turbine.test
-import com.mskd.flux.core.database.data.dao.DatabaseDao
+import com.mskd.flux.core.database.data.dao.ArtworkDao
 import com.mskd.flux.core.database.data.FluxDatabase
 import com.mskd.flux.core.database.data.mappers.toEntity
 import com.mskd.flux.core.database.data.model.projections.ArtworkImagesProjection
@@ -26,7 +26,7 @@ import org.junit.runner.RunWith
 class DatabaseTest {
 
     private lateinit var database: FluxDatabase
-    private lateinit var dao: DatabaseDao
+    private lateinit var dao: ArtworkDao
 
     @Before
     fun setUpDatabase() {
@@ -38,7 +38,7 @@ class DatabaseTest {
                         .allowMainThreadQueries()
                         .build()
 
-        dao = database.dao()
+        dao = database.artworkDao()
     }
 
     @After

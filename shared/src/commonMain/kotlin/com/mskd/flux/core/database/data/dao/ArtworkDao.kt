@@ -4,18 +4,12 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Transaction
 import com.mskd.flux.core.database.data.model.ArtworkEntity
-import com.mskd.flux.core.database.data.model.MediaEntity
-import com.mskd.flux.core.database.data.model.SeasonEntity
 import com.mskd.flux.core.database.data.model.projections.ArtworkImagesProjection
-import com.mskd.flux.core.model.artwork.Artwork
-import com.mskd.flux.core.model.artwork.ContentType
-import com.mskd.flux.core.model.files.UserFile
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface DatabaseDao {
+interface ArtworkDao {
 
 //region Insert
 

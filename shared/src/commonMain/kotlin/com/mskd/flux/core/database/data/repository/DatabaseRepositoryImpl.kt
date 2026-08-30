@@ -1,6 +1,6 @@
 package com.mskd.flux.core.database.data.repository
 
-import com.mskd.flux.core.database.data.dao.DatabaseDao
+import com.mskd.flux.core.database.data.dao.ArtworkDao
 import com.mskd.flux.core.database.data.dao.MediasDao
 import com.mskd.flux.core.database.data.dao.SeasonsDao
 import com.mskd.flux.core.database.data.mappers.toDomain
@@ -19,7 +19,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 class DatabaseRepositoryImpl(
-    private val artworksDao: DatabaseDao,
+    private val artworksDao: ArtworkDao,
     private val mediasDao: MediasDao,
     private val seasonsDao: SeasonsDao
 ) : DatabaseRepository {

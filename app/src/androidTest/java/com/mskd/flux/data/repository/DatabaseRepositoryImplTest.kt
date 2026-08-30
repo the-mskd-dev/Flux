@@ -40,7 +40,7 @@ class DatabaseRepositoryImplTest {
 
         repository =
             DatabaseRepositoryImpl(
-                database.dao()
+                database.artworkDao()
             )
     }
 
@@ -395,7 +395,7 @@ class DatabaseRepositoryImplTest {
         // Given
         val media1 = MediaMockups.movie.toEntity().copy(path = "path/1", realPath = "")
         val media2 = MediaMockups.movie2.toEntity().copy(path = "path/2", realPath = "/already/set/path")
-        database.dao().insertMedias(listOf(media1, media2))
+        database.artworkDao().insertMedias(listOf(media1, media2))
 
         val file1 = MediaMockups.movie.file.copy(path = "path/1", realPath = "/new/real/path/1")
         val file2 = MediaMockups.movie2.file.copy(path = "path/2", realPath = "/new/real/path/2")
@@ -404,7 +404,7 @@ class DatabaseRepositoryImplTest {
         repository.updateRealPaths(listOf(file1, file2))
 
         // Then
-        val mediasInDb = database.dao().getMedias()
+        val mediasInDb = database.artworkDao().getMedias()
         val dbMedia1 = mediasInDb.find { it.path == "path/1" }
         val dbMedia2 = mediasInDb.find { it.path == "path/2" }
 

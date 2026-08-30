@@ -1,6 +1,6 @@
 package com.mskd.flux.core.database
 
-import com.mskd.flux.core.database.data.dao.DatabaseDao
+import com.mskd.flux.core.database.data.dao.ArtworkDao
 import com.mskd.flux.core.database.data.dao.DetailsDao
 import com.mskd.flux.core.database.data.FluxDatabase
 import com.mskd.flux.core.database.data.dao.MediasDao
@@ -16,9 +16,9 @@ val moduleDatabase = module {
 
     single<FluxDatabase> { getRoomDatabase(builder = get()) }
 
-    single<DatabaseDao> {
+    single<ArtworkDao> {
         val fluxDatabase = get<FluxDatabase>()
-        fluxDatabase.dao()
+        fluxDatabase.artworkDao()
     }
 
     single<MediasDao> {

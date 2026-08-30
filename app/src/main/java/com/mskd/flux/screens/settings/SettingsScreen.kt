@@ -34,7 +34,6 @@ import com.mskd.flux.features.settings.presentation.SettingsViewModel
 import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.navigation.domain.Route.Token
 import com.mskd.flux.screens.settings.composables.SettingsAppInfoSection
-import com.mskd.flux.screens.settings.composables.SettingsClearHistoryDialog
 import com.mskd.flux.screens.settings.composables.SettingsCustomizationSection
 import com.mskd.flux.screens.settings.composables.SettingsDialogs
 import com.mskd.flux.screens.settings.composables.SettingsFullSyncDialog

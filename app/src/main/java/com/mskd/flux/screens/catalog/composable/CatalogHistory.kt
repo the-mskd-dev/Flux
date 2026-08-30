@@ -1,5 +1,6 @@
 package com.mskd.flux.screens.catalog.composable
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
@@ -46,6 +47,7 @@ import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.continue_watching
 import flux.shared.generated.resources.delete
 import flux.shared.generated.resources.ic_arrow_down
+import flux.shared.generated.resources.ic_delete
 import flux.shared.generated.resources.read_less
 import flux.shared.generated.resources.read_more
 import org.jetbrains.compose.resources.painterResource
@@ -57,43 +59,45 @@ fun CatalogHistory(
     sendIntent: (CatalogIntent) -> Unit
 ) {
 
-    if (entries.isEmpty())
-        return
-
-    Column(
-        modifier = Modifier
-            .bleedHorizontal()
-            .fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
+    AnimatedVisibility(
+        visible = entries.isNotEmpty()
     ) {
 
-        Text.Content.Title(
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = FluxUI.Space.medium),
-            text = stringResource(Res.string.continue_watching),
-            color = MaterialTheme.colorScheme.onBackground
-        )
-
-        LazyRow(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
-            contentPadding = PaddingValues(horizontal = FluxUI.Space.medium)
+                .bleedHorizontal()
+                .fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
         ) {
 
-            items(items = entries, key = { it.media.artworkId }) { entry ->
+            Text.Content.Title(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = FluxUI.Space.medium),
+                text = stringResource(Res.string.continue_watching),
+                color = MaterialTheme.colorScheme.onBackground
+            )
 
-                CatalogHistoryItem(
-                    entry = entry,
-                    sendIntent = sendIntent
-                )
+            LazyRow(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
+                contentPadding = PaddingValues(horizontal = FluxUI.Space.medium)
+            ) {
+
+                items(items = entries, key = { it.media.artworkId }) { entry ->
+
+                    CatalogHistoryItem(
+                        entry = entry,
+                        sendIntent = sendIntent
+                    )
+
+                }
 
             }
 
         }
 
     }
-
 
 }
 
@@ -165,7 +169,7 @@ fun CatalogHistoryItem(
                     onClick = { sendIntent(CatalogIntent.DeleteHistoryEntry(entry = entry)) },
                     leadingIcon = {
                         Icon(
-                            painter = painterResource(Res.drawable.ic_arrow_down),
+                            painter = painterResource(Res.drawable.ic_delete),
                             contentDescription = stringResource(Res.string.delete)
                         )
                     },

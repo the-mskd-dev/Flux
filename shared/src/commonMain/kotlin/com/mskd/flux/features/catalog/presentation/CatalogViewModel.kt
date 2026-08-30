@@ -50,7 +50,6 @@ class CatalogViewModel(
     private val detailsDb: DetailsRepository,
     private val historyDb: HistoryRepository,
     private val userDataStore: UserDataStore,
-    private val settings: SettingsDataStore,
     private val tokenDataStore: TokenDataStore,
     private val catalogDataStore: CatalogDataStore,
     private val appInfo: AppInfo,

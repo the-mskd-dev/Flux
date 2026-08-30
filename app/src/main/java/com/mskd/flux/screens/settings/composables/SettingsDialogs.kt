@@ -23,13 +23,7 @@ fun SettingsDialogs(
                 onDismiss = { sendIntent(SettingsIntent.ShowSettingsDialog(dialog = null)) }
             )
         }
-        SettingsDialog.CLEAR_HISTORY -> {
-            SettingsClearHistoryDialog(
-                sendIntent = sendIntent,
-                onDismiss = { sendIntent(SettingsIntent.ShowSettingsDialog(dialog = null)) }
-            )
-        }
-        null -> {}
+        else -> {}
     }
 
 }
@@ -45,23 +39,6 @@ fun SettingsFullSyncDialog(
         title = stringResource(Res.string.sync_library),
         content = {
             Text.Content.Body(text = stringResource(Res.string.sync_library_dialog))
-        }
-    )
-
-}
-
-@Composable
-fun SettingsClearHistoryDialog(
-    sendIntent: (SettingsIntent) -> Unit,
-    onDismiss: () -> Unit
-) {
-
-    FluxDialog(
-        onDismiss = onDismiss,
-        onValidate = { sendIntent(SettingsIntent.ClearHistory) },
-        title = "Clear history?",
-        content = {
-            Text.Content.Body(text = "Voulez vous supprimer l'historique ? Cela n'affecte pas la progression de vos vidéos")
         }
     )
 

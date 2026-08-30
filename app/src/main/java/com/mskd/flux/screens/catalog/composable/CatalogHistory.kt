@@ -1,6 +1,7 @@
 package com.mskd.flux.screens.catalog.composable
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,11 +14,17 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.core.model.artwork.Media
@@ -25,13 +32,24 @@ import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.features.history.data.mapper.toHistoryEntry
 import com.mskd.flux.features.history.domain.model.HistoryEntry
 import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.ui.component.global.FluxDropDownMenu
+import com.mskd.flux.ui.component.global.FluxDropDownMenuItem
 import com.mskd.flux.ui.component.global.FluxImage
 import com.mskd.flux.ui.component.global.Text
+import com.mskd.flux.ui.component.media.EpisodeDropDownMenu
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxThemePreview
 import com.mskd.flux.utils.extensions.bleedHorizontal
 import com.mskd.flux.utils.extensions.fillMaxWidthWithLimit
+import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.continue_watching
+import flux.shared.generated.resources.delete
+import flux.shared.generated.resources.ic_arrow_down
+import flux.shared.generated.resources.read_less
+import flux.shared.generated.resources.read_more
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun CatalogHistory(
@@ -53,7 +71,7 @@ fun CatalogHistory(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = FluxUI.Space.medium),
-            text = "Reprendre",
+            text = stringResource(Res.string.continue_watching),
             color = MaterialTheme.colorScheme.onBackground
         )
 
@@ -85,14 +103,19 @@ fun CatalogHistoryItem(
     onClick: () -> Unit
 ) {
 
+    var showMenu by remember { mutableStateOf(false) }
+
     Card(
         modifier = Modifier
             .fillMaxWidthWithLimit(
                 fraction = .8f,
                 max = 450.dp
             )
-            .aspectRatio(FluxUI.Ratio.landscape),
-        onClick = onClick,
+            .aspectRatio(FluxUI.Ratio.landscape)
+            .combinedClickable(
+                onClick = onClick,
+                onLongClick = { showMenu = true }
+            ),
         colors = CardDefaults.cardColors(
             containerColor = Color.Cyan
         )
@@ -130,6 +153,24 @@ fun CatalogHistoryItem(
 
         }
 
+    }
+
+    if (showMenu) {
+        FluxDropDownMenu(
+            onDismissRequest = { showMenu = false },
+            items = listOf(
+                FluxDropDownMenuItem(
+                    text = stringResource(Res.string.delete),
+                    onClick = {  },
+                    leadingIcon = {
+                        Icon(
+                            painter = painterResource(Res.drawable.ic_arrow_down),
+                            contentDescription = stringResource(Res.string.delete)
+                        )
+                    },
+                )
+            )
+        )
     }
 
 }

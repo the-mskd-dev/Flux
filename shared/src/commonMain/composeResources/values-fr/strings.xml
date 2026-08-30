@@ -196,4 +196,5 @@
     <string name="pill">Pilule</string>
     <string name="bottom_bar">Barre inférieure</string>
     <string name="top_bar">Barre supérieure</string>
+    <string name="continue_watching">Reprendre la lecture</string>
 </resources>

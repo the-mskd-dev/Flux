@@ -18,6 +18,9 @@ class SaveToHistoryUseCase(
         when (media) {
             is Episode -> {
 
+                if (media.isUnknown)
+                    return
+
                 if (media.status == Status.IS_WATCHING) {
                     history.insert(media = media)
                 } else {

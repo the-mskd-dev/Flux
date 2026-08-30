@@ -67,7 +67,7 @@ fun CatalogHistory(
 
                 CatalogHistoryItem(
                     media = entry.media,
-                    onClick = {}
+                    onClick = { sendIntent(CatalogIntent.PlayMedia(media = entry.media)) }
                 )
 
             }

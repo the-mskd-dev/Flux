@@ -26,18 +26,8 @@ interface MediasDao {
 
         val (toUpdate, toInsert) = medias.partition { existingByPath.containsKey(it.path) }
 
-        val merged = toUpdate.map { incoming ->
-            val existing = existingByPath.getValue(incoming.path)
-            incoming.copy(
-                id = existing.id,
-                artworkId = existing.artworkId,
-                currentTime = existing.currentTime,
-                status = existing.status
-            )
-        }
-
         if (toInsert.isNotEmpty()) insert(toInsert)
-        if (merged.isNotEmpty()) update(merged)
+        if (toUpdate.isNotEmpty()) update(toUpdate)
     }
 
     //endregion
@@ -82,6 +72,7 @@ interface MediasDao {
 
     @Query("SELECT * FROM medias WHERE path IN (:paths)")
     suspend fun findByPaths(paths: List<String>): List<MediaEntity>
+
 
     @Query("SELECT imagePath FROM medias WHERE imagePath IS NOT NULL")
     suspend fun getMediasImages() : List<String>

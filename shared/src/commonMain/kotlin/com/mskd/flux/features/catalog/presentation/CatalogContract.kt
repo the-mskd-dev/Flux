@@ -5,12 +5,9 @@ import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.Genre
 import com.mskd.flux.core.model.artwork.Media
-import com.mskd.flux.features.artwork.presentation.ArtworkEvent
-import com.mskd.flux.features.artwork.presentation.ArtworkIntent
 import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
 import com.mskd.flux.features.catalog.domain.model.CatalogViewMode
 import com.mskd.flux.features.catalog.domain.model.SyncState
-import com.mskd.flux.features.history.data.model.HistoryEntity
 import com.mskd.flux.features.history.domain.model.HistoryEntry
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf

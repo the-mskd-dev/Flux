@@ -1,7 +1,6 @@
 package com.mskd.flux.features.history.data.mapper
 
 import com.mskd.flux.core.database.data.mappers.toDomain
-import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.Movie

@@ -34,15 +34,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.Genre
-import com.mskd.flux.features.artwork.presentation.ArtworkEvent
-import com.mskd.flux.features.artwork.presentation.ArtworkIntent
 import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
 import com.mskd.flux.features.catalog.domain.model.CatalogViewMode
 import com.mskd.flux.features.catalog.presentation.CatalogEvent
@@ -68,7 +65,6 @@ import com.mskd.flux.screens.catalog.composable.viewMode.catalogViewModeGrid
 import com.mskd.flux.screens.catalog.composable.viewMode.catalogViewModeType
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.theme.FluxUI
-import com.mskd.flux.utils.ExternalPlayer
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxThemePreview
 import com.mskd.flux.utils.rememberExternalPlayerAction

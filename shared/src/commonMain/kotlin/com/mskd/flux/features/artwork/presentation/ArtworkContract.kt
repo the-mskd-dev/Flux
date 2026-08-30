@@ -5,7 +5,6 @@ import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.core.State
-import com.mskd.flux.features.player.domain.model.PlayerParams
 
 @Immutable
 data class ArtworkDataState(

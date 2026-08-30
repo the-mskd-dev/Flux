@@ -30,7 +30,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.core.State
-import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.features.player.domain.model.PlayerParams
 import com.mskd.flux.features.unknown.presentation.UnknownEvent
 import com.mskd.flux.features.unknown.presentation.UnknownIntent
@@ -47,7 +46,6 @@ import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.component.media.EpisodeItem
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.FluxUI
-import com.mskd.flux.utils.ExternalPlayer
 import com.mskd.flux.utils.FileUtils
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.rememberExternalPlayerAction

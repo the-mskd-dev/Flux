@@ -34,9 +34,7 @@ import com.mskd.flux.features.artwork.presentation.ArtworkDialog
 import com.mskd.flux.features.artwork.presentation.ArtworkEvent
 import com.mskd.flux.features.artwork.presentation.ArtworkIntent
 import com.mskd.flux.features.artwork.presentation.ArtworkViewModel
-import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.features.player.domain.model.PlayerParams
-import com.mskd.flux.features.unknown.presentation.UnknownEvent
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.navigation.domain.Route.Player
@@ -50,7 +48,6 @@ import com.mskd.flux.ui.component.global.FluxScaffold
 import com.mskd.flux.ui.component.global.ResetProgressDialog
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.utils.ExternalPlayer
 import com.mskd.flux.utils.FileUtils
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.UriUtils

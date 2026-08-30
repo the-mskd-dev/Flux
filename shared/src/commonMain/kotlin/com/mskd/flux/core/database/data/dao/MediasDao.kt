@@ -10,7 +10,6 @@ import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.files.UserFile
 import kotlinx.coroutines.flow.Flow
-import kotlin.collections.forEach
 
 @Dao
 interface MediasDao {

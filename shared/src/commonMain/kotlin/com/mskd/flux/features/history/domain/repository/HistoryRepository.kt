@@ -1,7 +1,6 @@
 package com.mskd.flux.features.history.domain.repository
 
 import com.mskd.flux.core.model.artwork.Media
-import com.mskd.flux.features.catalog.domain.datastore.CatalogDataStore.State
 import com.mskd.flux.features.history.domain.model.HistoryEntry
 import kotlinx.coroutines.flow.Flow
 

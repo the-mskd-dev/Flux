@@ -9,8 +9,6 @@ import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.core.AppInfo
-import com.mskd.flux.features.artwork.presentation.ArtworkEvent
-import com.mskd.flux.features.artwork.presentation.ArtworkIntent
 import com.mskd.flux.features.catalog.domain.datastore.CatalogDataStore
 import com.mskd.flux.features.catalog.domain.model.CatalogPreferences
 import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
@@ -26,11 +24,9 @@ import com.mskd.flux.features.catalog.presentation.CatalogEvent.NavigateToSource
 import com.mskd.flux.features.catalog.presentation.CatalogEvent.NavigateToToken
 import com.mskd.flux.features.catalog.presentation.CatalogEvent.NavigateToUnknown
 import com.mskd.flux.features.history.domain.repository.HistoryRepository
-import com.mskd.flux.features.history.domain.usecase.SaveToHistoryUseCase
 import com.mskd.flux.features.player.domain.model.PlaybackAction
 import com.mskd.flux.features.player.domain.usecase.RecordPlaybackResultUseCase
 import com.mskd.flux.features.player.domain.usecase.ResolvePlaybackActionUseCase
-import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.utils.Trace

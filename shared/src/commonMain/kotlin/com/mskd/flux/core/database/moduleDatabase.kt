@@ -1,8 +1,8 @@
 package com.mskd.flux.core.database
 
+import com.mskd.flux.core.database.data.FluxDatabase
 import com.mskd.flux.core.database.data.dao.ArtworkDao
 import com.mskd.flux.core.database.data.dao.DetailsDao
-import com.mskd.flux.core.database.data.FluxDatabase
 import com.mskd.flux.core.database.data.dao.MediasDao
 import com.mskd.flux.core.database.data.dao.SeasonsDao
 import com.mskd.flux.core.database.data.getRoomDatabase

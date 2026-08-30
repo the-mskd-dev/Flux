@@ -5,7 +5,6 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import com.mskd.flux.core.database.data.model.MediaEntity
-import com.mskd.flux.core.model.artwork.ContentType
 
 @Entity(
     tableName = "history",

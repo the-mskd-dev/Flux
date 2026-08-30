@@ -101,7 +101,6 @@ class SettingsViewModel(
             is SettingsIntent.OnExternalPlayerCheck -> onExternalPlayerCheck(value = intent.checked)
             is SettingsIntent.OnEnablePipCheck -> onEnablePipCheck(value = intent.checked)
             is SettingsIntent.OnPrefetchHdImagesCheck -> onPrefetchImagesCheck(value = intent.checked)
-            SettingsIntent.ClearHistory -> clearHistory()
         }
     }
 
@@ -214,10 +213,6 @@ class SettingsViewModel(
 
     private fun showSettingsDialog(dialog: SettingsDialog?) {
         _settingsDialogState.update { dialog }
-    }
-
-    private fun clearHistory() {
-        //TODO
     }
 
 }

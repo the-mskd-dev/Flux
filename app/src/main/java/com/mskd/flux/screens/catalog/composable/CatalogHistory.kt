@@ -125,18 +125,16 @@ fun CatalogHistoryItem(
                 onClick = { sendIntent(CatalogIntent.PlayMedia(media = media)) },
                 onLongClick = { showMenu = true }
             ),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.Cyan
-        )
     ) {
 
-        Box(
+        Column(
             modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.BottomCenter
         ) {
 
             FluxImage(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(.7f),
                 media = media,
                 contentDescription = media.title,
                 videoFrame = true
@@ -145,20 +143,21 @@ fun CatalogHistoryItem(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(color = Color.White)
+                    .weight(.3f)
+                    .background(color = MaterialTheme.colorScheme.surfaceContainer)
                     .padding(all = FluxUI.Space.small),
                 verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
             ) {
 
                 Text.Content.Body(
                     modifier = Modifier.fillMaxWidth(),
+                    color = MaterialTheme.colorScheme.onSurface,
                     text = media.title,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1
                 )
 
             }
-
 
         }
 

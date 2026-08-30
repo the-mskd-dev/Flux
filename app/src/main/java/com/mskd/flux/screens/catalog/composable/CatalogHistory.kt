@@ -28,6 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.features.history.data.mapper.toHistoryEntry
@@ -38,6 +39,7 @@ import com.mskd.flux.ui.component.global.FluxDropDownMenuItem
 import com.mskd.flux.ui.component.global.FluxImage
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.component.media.EpisodeDropDownMenu
+import com.mskd.flux.ui.component.media.EpisodesDetails
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxThemePreview
@@ -120,7 +122,7 @@ fun CatalogHistoryItem(
                 fraction = .8f,
                 max = 450.dp
             )
-            .aspectRatio(FluxUI.Ratio.landscape)
+            .aspectRatio(FluxUI.Ratio.rectangle)
             .combinedClickable(
                 onClick = { sendIntent(CatalogIntent.PlayMedia(media = media)) },
                 onLongClick = { showMenu = true }
@@ -145,8 +147,8 @@ fun CatalogHistoryItem(
                     .fillMaxWidth()
                     .weight(.3f)
                     .background(color = MaterialTheme.colorScheme.surfaceContainer)
-                    .padding(all = FluxUI.Space.small),
-                verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
+                    .padding(vertical = FluxUI.Space.small, horizontal = FluxUI.Space.medium),
+                verticalArrangement = Arrangement.Center
             ) {
 
                 Text.Content.Body(
@@ -156,6 +158,10 @@ fun CatalogHistoryItem(
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1
                 )
+
+                (media as? Episode)?.let {
+                    EpisodesDetails(episode = it)
+                }
 
             }
 

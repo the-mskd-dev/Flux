@@ -51,6 +51,7 @@ import com.mskd.flux.features.catalog.presentation.CatalogState
 import com.mskd.flux.features.catalog.presentation.CatalogViewModel
 import com.mskd.flux.features.history.data.mapper.toHistoryEntry
 import com.mskd.flux.features.history.domain.model.HistoryEntry
+import com.mskd.flux.features.player.domain.model.PlayerParams
 import com.mskd.flux.mockups.DetailsMockup
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.navigation.domain.Route
@@ -99,8 +100,12 @@ fun CatalogScreen(
                 CatalogEvent.NavigateToToken -> navigate(Route.Token(fromSetup = false))
                 CatalogEvent.NavigateToSources -> navigate(Route.Sources(fromSetup = false))
 
-                is CatalogEvent.PlayMedia -> navigate(Player(mediaId = event.mediaId))
-                is CatalogEvent.LaunchExternalPlayer -> launchExternalPlayer(event.media)
+                is CatalogEvent.PlayMedia -> {
+                    if (event.externalPlayer)
+                        launchExternalPlayer(event.media)
+                    else
+                        navigate(Player(params = PlayerParams.fromMedia(event.media)))
+                }
             }
         }
     }

@@ -31,6 +31,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
+import com.mskd.flux.features.player.domain.model.PlayerParams
 import com.mskd.flux.features.unknown.presentation.UnknownEvent
 import com.mskd.flux.features.unknown.presentation.UnknownIntent
 import com.mskd.flux.features.unknown.presentation.UnknownViewModel
@@ -81,8 +82,12 @@ fun UnknownScreen(
             when (event) {
                 UnknownEvent.BackToPreviousScreen -> onBack()
                 UnknownEvent.NavigateToHowToScreen -> navigate(Route.HowTo)
-                is UnknownEvent.PlayMedia -> navigate(Player(mediaId = event.mediaId))
-                is UnknownEvent.LaunchExternalPlayer -> launchExternalPlayer(event.media)
+                is UnknownEvent.PlayMedia -> {
+                    if (event.externalPlayer)
+                        launchExternalPlayer(event.media)
+                    else
+                        navigate(Player(params = PlayerParams.fromMedia(event.media)))
+                }
                 is UnknownEvent.OpenFileExplorer -> FileUtils.openFileExplorer(context = context, file = event.media.file)
             }
         }

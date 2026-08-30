@@ -5,6 +5,7 @@ import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.core.State
+import com.mskd.flux.features.player.domain.model.PlayerParams
 
 @Immutable
 data class ArtworkDataState(
@@ -64,8 +65,7 @@ sealed interface ArtworkIntent {
 
 sealed interface ArtworkEvent {
     object BackToPreviousScreen : ArtworkEvent
-    data class PlayMedia(val mediaId: Long) : ArtworkEvent
-    data class LaunchExternalPlayer(val media: Media) : ArtworkEvent
+    data class PlayMedia(val media: Media, val externalPlayer: Boolean) : ArtworkEvent
     data class OpenUrlInfo(val url: String) : ArtworkEvent
     data class OpenFileExplorer(val media: Media): ArtworkEvent
 }

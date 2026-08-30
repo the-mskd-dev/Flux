@@ -35,6 +35,8 @@ import com.mskd.flux.features.artwork.presentation.ArtworkEvent
 import com.mskd.flux.features.artwork.presentation.ArtworkIntent
 import com.mskd.flux.features.artwork.presentation.ArtworkViewModel
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
+import com.mskd.flux.features.player.domain.model.PlayerParams
+import com.mskd.flux.features.unknown.presentation.UnknownEvent
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.navigation.domain.Route.Player
@@ -83,9 +85,13 @@ fun ArtworkScreen(
         viewModel.event.collect { event ->
             when (event) {
                 ArtworkEvent.BackToPreviousScreen -> onBack()
-                is ArtworkEvent.PlayMedia -> navigate(Player(mediaId = event.mediaId))
+                is ArtworkEvent.PlayMedia -> {
+                    if (event.externalPlayer)
+                        launchExternalPlayer(event.media)
+                    else
+                        navigate(Player(params = PlayerParams.fromMedia(event.media)))
+                }
                 is ArtworkEvent.OpenUrlInfo -> UriUtils.openWebPage(context = context, url = event.url)
-                is ArtworkEvent.LaunchExternalPlayer -> launchExternalPlayer(event.media)
                 is ArtworkEvent.OpenFileExplorer -> FileUtils.openFileExplorer(context = context, file = event.media.file)
             }
         }

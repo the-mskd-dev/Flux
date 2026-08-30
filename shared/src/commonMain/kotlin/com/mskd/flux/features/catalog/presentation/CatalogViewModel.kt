@@ -220,8 +220,10 @@ class CatalogViewModel(
     private suspend fun playMedia(media: Media, forceInternal: Boolean) {
         currentMedia = media
         when (val action = resolvePlaybackAction(media = media, forceInternal = forceInternal)) {
-            is PlaybackAction.OpenExternalPlayer -> _event.emit(CatalogEvent.LaunchExternalPlayer(media = action.media))
-            is PlaybackAction.OpenInternalPlayer -> _event.emit(CatalogEvent.PlayMedia(mediaId = action.mediaId))
+            is PlaybackAction.OpenPlayer -> _event.emit(CatalogEvent.PlayMedia(
+                media = action.media,
+                externalPlayer = action.externalPlayer,
+            ))
             PlaybackAction.Unavailable -> Unit
         }
     }

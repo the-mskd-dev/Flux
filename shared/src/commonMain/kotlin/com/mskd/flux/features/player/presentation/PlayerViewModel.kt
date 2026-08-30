@@ -13,6 +13,7 @@ import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtwo
 import com.mskd.flux.features.files.domain.usecase.GetSubtitlesUseCase
 import com.mskd.flux.features.history.domain.usecase.SaveToHistoryUseCase
 import com.mskd.flux.features.player.data.PipIsEnabledUseCase
+import com.mskd.flux.features.player.domain.model.PlayerParams
 import com.mskd.flux.features.player.presentation.PlayerUiContent.AmbientOverlay
 import com.mskd.flux.features.player.presentation.PlayerUiContent.NextButton
 import com.mskd.flux.features.player.presentation.PlayerUiContent.SeekOverlay
@@ -46,7 +47,7 @@ import kotlin.time.Duration.Companion.seconds
 
 
 class PlayerViewModel<out T>(
-    mediaId: Long,
+    params: PlayerParams,
     private val settingsDataStore: SettingsDataStore,
     private val playerManager: PlayerManager<T>,
     private val observeArtworkUseCase: ObserveArtworkUseCase,
@@ -76,7 +77,7 @@ class PlayerViewModel<out T>(
     private val _event = Channel<PlayerEvent>(Channel.BUFFERED)
     val event = _event.receiveAsFlow()
 
-    private val _userState = MutableStateFlow(PlayerUserState(mediaId = mediaId))
+    private val _userState = MutableStateFlow(PlayerUserState(mediaId = params.mediaId))
 
     private val _subtitles = MutableStateFlow<List<String?>>(emptyList())
     val subtitles: StateFlow<List<String?>> = _subtitles.asStateFlow()
@@ -121,7 +122,7 @@ class PlayerViewModel<out T>(
                     selectedSubtitles = playerState.selectedSubtitles,
                 )
 
-                PlayerUiState<T>(state = mergeStates(dataState, userState))
+                PlayerUiState(state = mergeStates(dataState, userState))
             }
         }
 
@@ -137,6 +138,13 @@ class PlayerViewModel<out T>(
 
     init {
         playerManager.connect(sessionId = sessionId)
+
+        // Observe artwork if needed
+        params.artworkId?.let {
+            viewModelScope.launch {
+                observeArtworkUseCase(artworkId = it)
+            }
+        }
 
         viewModelScope.launch {
 

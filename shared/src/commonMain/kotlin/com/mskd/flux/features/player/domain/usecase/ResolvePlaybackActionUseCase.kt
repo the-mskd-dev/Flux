@@ -10,9 +10,9 @@ class ResolvePlaybackActionUseCase(
     suspend operator fun invoke(media: Media, forceInternal: Boolean): PlaybackAction {
         if (!media.isAvailable) return PlaybackAction.Unavailable
 
-        return if (settings.externalPlayerIsEnabled() && !forceInternal)
-            PlaybackAction.OpenExternalPlayer(media)
-        else
-            PlaybackAction.OpenInternalPlayer(media.mediaId)
+        return PlaybackAction.OpenPlayer(
+            media = media,
+            externalPlayer = settings.externalPlayerIsEnabled() && !forceInternal
+        )
     }
 }

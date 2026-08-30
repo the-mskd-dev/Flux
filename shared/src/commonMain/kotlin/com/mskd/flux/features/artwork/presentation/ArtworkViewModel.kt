@@ -12,6 +12,7 @@ import com.mskd.flux.features.artwork.presentation.ArtworkEvent.OpenUrlInfo
 import com.mskd.flux.features.catalog.presentation.CatalogEvent
 import com.mskd.flux.features.history.domain.usecase.SaveToHistoryUseCase
 import com.mskd.flux.features.player.domain.model.PlaybackAction
+import com.mskd.flux.features.player.domain.model.PlayerParams
 import com.mskd.flux.features.player.domain.usecase.RecordPlaybackResultUseCase
 import com.mskd.flux.features.player.domain.usecase.ResolvePlaybackActionUseCase
 import com.mskd.flux.features.progress.domain.usecase.ChangeMediaStatusUseCase
@@ -19,6 +20,7 @@ import com.mskd.flux.features.progress.domain.usecase.MarkPreviousAsWatchedUseCa
 import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
 import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
+import com.mskd.flux.features.unknown.presentation.UnknownEvent
 import com.mskd.flux.utils.extensions.firstEpisode
 import com.mskd.flux.utils.extensions.firstEpisodeToWatch
 import com.mskd.flux.utils.extensions.getPreviousEpisodesFor
@@ -172,8 +174,10 @@ class ArtworkViewModel(
         _userState.update { it.copy(selectedMedia = media) }
 
         when (val action = resolvePlaybackAction(media = media, forceInternal = forceInternal)) {
-            is PlaybackAction.OpenExternalPlayer -> _event.emit(ArtworkEvent.LaunchExternalPlayer(media = action.media))
-            is PlaybackAction.OpenInternalPlayer -> _event.emit(ArtworkEvent.PlayMedia(mediaId = action.mediaId))
+            is PlaybackAction.OpenPlayer -> _event.emit(ArtworkEvent.PlayMedia(
+                media = action.media,
+                externalPlayer = action.externalPlayer,
+            ))
             PlaybackAction.Unavailable -> Unit
         }
 

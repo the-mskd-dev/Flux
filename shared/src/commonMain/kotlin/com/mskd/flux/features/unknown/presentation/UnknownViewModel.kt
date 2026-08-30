@@ -10,6 +10,7 @@ import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
 import com.mskd.flux.features.catalog.presentation.CatalogEvent
 import com.mskd.flux.features.player.domain.model.PlaybackAction
+import com.mskd.flux.features.player.domain.model.PlayerParams
 import com.mskd.flux.features.player.domain.usecase.RecordPlaybackResultUseCase
 import com.mskd.flux.features.player.domain.usecase.ResolvePlaybackActionUseCase
 import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
@@ -96,8 +97,10 @@ class UnknownViewModel(
         selectedMedia = media
 
         when (val action = resolvePlaybackAction(media = media, forceInternal = forceInternal)) {
-            is PlaybackAction.OpenExternalPlayer -> _event.emit(UnknownEvent.LaunchExternalPlayer(media = action.media))
-            is PlaybackAction.OpenInternalPlayer -> _event.emit(UnknownEvent.PlayMedia(mediaId = action.mediaId))
+            is PlaybackAction.OpenPlayer -> _event.emit(UnknownEvent.PlayMedia(
+                media = action.media,
+                externalPlayer = action.externalPlayer,
+            ))
             PlaybackAction.Unavailable -> Unit
         }
     }

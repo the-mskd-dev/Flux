@@ -84,6 +84,5 @@ sealed interface CatalogEvent {
     data object NavigateToSources: CatalogEvent
 
     // Player
-    data class PlayMedia(val mediaId: Long) : CatalogEvent
-    data class LaunchExternalPlayer(val media: Media) : CatalogEvent
+    data class PlayMedia(val media: Media, val externalPlayer: Boolean) : CatalogEvent
 }

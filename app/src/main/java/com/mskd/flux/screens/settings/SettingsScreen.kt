@@ -92,7 +92,7 @@ fun SettingsScreen(
         sendIntent = viewModel::handleIntent
     )
 
-    state.dialogState?.let { dialogState ->
+    state.optionsDialog?.let { dialogState ->
         FluxOptionsDialog(
             state = dialogState,
             onValidate = { viewModel.handleIntent(it) },

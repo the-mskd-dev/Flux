@@ -10,6 +10,7 @@ import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseC
 import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCase
 import com.mskd.flux.features.images.domain.ImagesPrefetchManager
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
+import com.mskd.flux.features.settings.domain.model.SettingsDialog
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.button_forward
 import flux.shared.generated.resources.button_rewind
@@ -35,16 +36,16 @@ class SettingsViewModel(
 
     //region Variables
 
-    private val _dialogState = MutableStateFlow<FluxOptionsDialogState<*, SettingsIntent>?>(null)
-    private val _showFullSyncDialogState = MutableStateFlow(false)
+    private val _optionsDialogState = MutableStateFlow<FluxOptionsDialogState<*, SettingsIntent>?>(null)
+    private val _settingsDialogState = MutableStateFlow<SettingsDialog?>(null)
 
     val uiState: StateFlow<SettingsUiState> = combine(
         settingsDataStore.flow,
-        _dialogState,
-        _showFullSyncDialogState,
+        _optionsDialogState,
+        _settingsDialogState,
         syncCatalogUseCase.state,
         imagesPrefetchManager.state
-    ) { settings, dialog, showSyncDialog, catalog, images ->
+    ) { settings, dialog, settingsDialog, catalog, images ->
         SettingsUiState(
             languageValue = settings.dataLanguage,
             rewindValue = settings.playerRewindValue,
@@ -52,8 +53,8 @@ class SettingsViewModel(
             useExternalPlayer = settings.externalPlayer,
             pipIsEnabled = settings.pipIsEnabled,
             autoKeyboard = settings.autoKeyboard,
-            dialogState = dialog,
-            showSyncDialog = showSyncDialog,
+            optionsDialog = dialog,
+            settingsDialog = settingsDialog,
             fullSyncInProgress = (catalog as? SyncState.Syncing)?.full == true,
             prefetchHdImages = settings.prefetchHdImages,
             prefetchImagesState = images
@@ -87,7 +88,7 @@ class SettingsViewModel(
             SettingsIntent.ShowLanguageDialog -> showLanguageDialog()
             SettingsIntent.ShowRewindDialog -> showRewindDialog()
             SettingsIntent.ShowForwardDialog -> showForwardDialog()
-            is SettingsIntent.ShowFullSyncDialog -> showFullSyncDialog(show = intent.show)
+            is SettingsIntent.ShowSettingsDialog -> showSettingsDialog(dialog = intent.dialog)
 
             // Setters
             is SettingsIntent.SetLanguageValue -> setLanguageValue(intent.value)
@@ -100,13 +101,14 @@ class SettingsViewModel(
             is SettingsIntent.OnExternalPlayerCheck -> onExternalPlayerCheck(value = intent.checked)
             is SettingsIntent.OnEnablePipCheck -> onEnablePipCheck(value = intent.checked)
             is SettingsIntent.OnPrefetchHdImagesCheck -> onPrefetchImagesCheck(value = intent.checked)
+            SettingsIntent.OnClearHistory -> clearHistory()
         }
     }
 
     //endregion
 
     private fun hideDialog() {
-        _dialogState.update { null }
+        _optionsDialogState.update { null }
     }
 
     private suspend fun showLanguageDialog() {
@@ -128,7 +130,7 @@ class SettingsViewModel(
             applyValue = { value -> SettingsIntent.SetLanguageValue(value) }
         )
 
-        _dialogState.update { dialogState }
+        _optionsDialogState.update { dialogState }
 
     }
 
@@ -151,7 +153,7 @@ class SettingsViewModel(
             applyValue = { value -> SettingsIntent.SetRewindValue(value) }
         )
 
-        _dialogState.update { dialogState }
+        _optionsDialogState.update { dialogState }
     }
 
     private suspend fun setRewindValue(value: Int) {
@@ -172,7 +174,7 @@ class SettingsViewModel(
             applyValue = { value -> SettingsIntent.SetForwardValue(value) }
         )
 
-        _dialogState.update { dialogState }
+        _optionsDialogState.update { dialogState }
     }
 
     private suspend fun setForwardValue(value: Int) {
@@ -197,13 +199,9 @@ class SettingsViewModel(
         settingsDataStore.setAutoKeyboard(value)
     }
 
-    private fun showFullSyncDialog(show: Boolean) {
-        _showFullSyncDialogState.update { show }
-    }
-
     private fun proceedFullSync() {
         syncCatalogUseCase(onlyNew = false)
-        showFullSyncDialog(show = false)
+        showSettingsDialog(null)
     }
 
     private suspend fun onPrefetchImagesCheck(value: Boolean) {
@@ -212,6 +210,14 @@ class SettingsViewModel(
         if (value)
             imagesPrefetchManager.prefetchImages()
 
+    }
+
+    private fun showSettingsDialog(dialog: SettingsDialog?) {
+        _settingsDialogState.update { dialog }
+    }
+
+    private fun clearHistory() {
+        //TODO
     }
 
 }

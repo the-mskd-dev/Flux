@@ -61,7 +61,7 @@ class SettingsViewModelTest : FunSpec({
             val initialState = awaitItem()
             initialState.rewindValue shouldBe 10
             initialState.forwardValue shouldBe 10
-            initialState.dialogState shouldBe null
+            initialState.optionsDialog shouldBe null
             initialState.showSyncDialog shouldBe false
             initialState.fullSyncInProgress shouldBe false
             initialState.prefetchHdImages shouldBe false
@@ -131,10 +131,10 @@ class SettingsViewModelTest : FunSpec({
         viewModel.uiState.test {
             awaitItem()
             viewModel.handleIntent(SettingsIntent.ShowRewindDialog)
-            awaitItem().dialogState shouldNotBe null
+            awaitItem().optionsDialog shouldNotBe null
 
             viewModel.handleIntent(SettingsIntent.HideDialog)
-            awaitItem().dialogState shouldBe null
+            awaitItem().optionsDialog shouldBe null
         }
     }
 
@@ -145,8 +145,8 @@ class SettingsViewModelTest : FunSpec({
             viewModel.handleIntent(SettingsIntent.ShowRewindDialog)
 
             val state = awaitItem()
-            state.dialogState shouldNotBe null
-            val dialogState = state.dialogState
+            state.optionsDialog shouldNotBe null
+            val dialogState = state.optionsDialog
             dialogState.shouldBeInstanceOf<FluxOptionsDialogState<Int, SettingsIntent>>()
             dialogState.currentValue shouldBe 10
 
@@ -160,8 +160,8 @@ class SettingsViewModelTest : FunSpec({
             viewModel.handleIntent(SettingsIntent.ShowForwardDialog)
 
             val state = awaitItem()
-            state.dialogState shouldNotBe null
-            val dialogState = state.dialogState
+            state.optionsDialog shouldNotBe null
+            val dialogState = state.optionsDialog
             dialogState.shouldBeInstanceOf<FluxOptionsDialogState<Int, SettingsIntent>>()
             dialogState.currentValue shouldBe 10
 
@@ -179,7 +179,7 @@ class SettingsViewModelTest : FunSpec({
 
             coVerify { settingsDataStore.setPlayerRewindValue(20) }
             state.rewindValue shouldBe 20
-            state.dialogState shouldBe null
+            state.optionsDialog shouldBe null
 
             cancelAndConsumeRemainingEvents()
 
@@ -197,7 +197,7 @@ class SettingsViewModelTest : FunSpec({
 
             coVerify { settingsDataStore.setPlayerForwardValue(20) }
             state.forwardValue shouldBe 20
-            state.dialogState shouldBe null
+            state.optionsDialog shouldBe null
 
             cancelAndConsumeRemainingEvents()
 
@@ -211,8 +211,8 @@ class SettingsViewModelTest : FunSpec({
             viewModel.handleIntent(SettingsIntent.ShowLanguageDialog)
 
             val state = awaitItem()
-            state.dialogState shouldNotBe null
-            val dialogState = state.dialogState
+            state.optionsDialog shouldNotBe null
+            val dialogState = state.optionsDialog
             dialogState.shouldBeInstanceOf<FluxOptionsDialogState<Locale?, SettingsIntent>>()
             dialogState.currentValue shouldBe null
         }
@@ -229,7 +229,7 @@ class SettingsViewModelTest : FunSpec({
 
             coVerify { settingsDataStore.setDataLanguage(Locale.FRENCH) }
             state.languageValue shouldBe Locale.FRENCH
-            state.dialogState shouldBe null
+            state.optionsDialog shouldBe null
 
             cancelAndConsumeRemainingEvents()
 
@@ -247,7 +247,7 @@ class SettingsViewModelTest : FunSpec({
 
             coVerify { settingsDataStore.setDataLanguage(null) }
             state.languageValue shouldBe null
-            state.dialogState shouldBe null
+            state.optionsDialog shouldBe null
 
             cancelAndConsumeRemainingEvents()
 

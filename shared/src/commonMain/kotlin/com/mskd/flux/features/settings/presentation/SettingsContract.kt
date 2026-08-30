@@ -3,6 +3,7 @@ package com.mskd.flux.features.settings.presentation
 import androidx.compose.runtime.Immutable
 import com.mskd.flux.core.model.core.FluxOptionsDialogState
 import com.mskd.flux.features.images.domain.ImagesPrefetchManager
+import com.mskd.flux.features.settings.domain.model.SettingsDialog
 import java.util.Locale
 
 @Immutable
@@ -13,8 +14,8 @@ data class SettingsUiState(
     val autoKeyboard: Boolean = false,
     val useExternalPlayer: Boolean = false,
     val pipIsEnabled: Boolean = true,
-    val dialogState: FluxOptionsDialogState<*, SettingsIntent>? = null,
-    val showSyncDialog: Boolean = false,
+    val optionsDialog: FluxOptionsDialogState<*, SettingsIntent>? = null,
+    val settingsDialog: SettingsDialog? = null,
     val fullSyncInProgress: Boolean = false,
     val prefetchHdImages: Boolean = false,
     val prefetchImagesState: ImagesPrefetchManager.State = ImagesPrefetchManager.State.Idle
@@ -35,7 +36,7 @@ sealed class SettingsIntent {
     data object ShowLanguageDialog: SettingsIntent()
     data object ShowRewindDialog: SettingsIntent()
     data object ShowForwardDialog: SettingsIntent()
-    data class ShowFullSyncDialog(val show: Boolean): SettingsIntent()
+    data class ShowSettingsDialog(val dialog: SettingsDialog?): SettingsIntent()
 
     // Setters
     data class SetLanguageValue(val value: Locale?): SettingsIntent()
@@ -49,6 +50,7 @@ sealed class SettingsIntent {
     data class OnExternalPlayerCheck(val checked: Boolean): SettingsIntent()
     data class OnEnablePipCheck(val checked: Boolean): SettingsIntent()
     data class OnPrefetchHdImagesCheck(val checked: Boolean): SettingsIntent()
+    data object OnClearHistory: SettingsIntent()
 }
 
 sealed class SettingsEvent {

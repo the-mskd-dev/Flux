@@ -30,6 +30,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.core.State
+import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.features.unknown.presentation.UnknownEvent
 import com.mskd.flux.features.unknown.presentation.UnknownIntent
 import com.mskd.flux.features.unknown.presentation.UnknownViewModel
@@ -48,7 +49,7 @@ import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.ExternalPlayer
 import com.mskd.flux.utils.FileUtils
 import com.mskd.flux.utils.FluxPreview
-import com.mskd.flux.utils.rememberExternalPlayerLauncher
+import com.mskd.flux.utils.rememberExternalPlayerAction
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_help
 import flux.shared.generated.resources.no_item
@@ -70,11 +71,9 @@ fun UnknownScreen(
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    val externalPlayerLauncher = rememberExternalPlayerLauncher(
-        context = context,
-        onProgressResult = { progress ->
-            viewModel.handleIntent(UnknownIntent.OnExternalPlayerResult(progress = progress))
-        }
+    val launchExternalPlayer = rememberExternalPlayerAction(
+        onProgressResult = { progress -> viewModel.handleIntent(UnknownIntent.OnExternalPlayerResult(progress = progress)) },
+        onFallbackToInternal = { media -> viewModel.handleIntent(UnknownIntent.PlayMedia(media = media, forceInternal = true)) }
     )
 
     LaunchedEffect(Unit) {
@@ -83,14 +82,7 @@ fun UnknownScreen(
                 UnknownEvent.BackToPreviousScreen -> onBack()
                 UnknownEvent.NavigateToHowToScreen -> navigate(Route.HowTo)
                 is UnknownEvent.PlayMedia -> navigate(Player(mediaId = event.mediaId))
-                is UnknownEvent.LaunchExternalPlayer -> {
-                    ExternalPlayer.launchPlayer(
-                        context = context,
-                        media = event.media,
-                        launcher = externalPlayerLauncher,
-                        onError = { viewModel.handleIntent(UnknownIntent.PlayMedia(media = event.media, forceInternal = true)) }
-                    )
-                }
+                is UnknownEvent.LaunchExternalPlayer -> launchExternalPlayer(event.media)
                 is UnknownEvent.OpenFileExplorer -> FileUtils.openFileExplorer(context = context, file = event.media.file)
             }
         }

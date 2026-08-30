@@ -53,7 +53,6 @@ import com.mskd.flux.utils.FileUtils
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.UriUtils
 import com.mskd.flux.utils.rememberExternalPlayerAction
-import com.mskd.flux.utils.rememberExternalPlayerLauncher
 import com.mskd.flux.utils.rememberScreenDimensions
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.mark_previous_episodes_as_watched

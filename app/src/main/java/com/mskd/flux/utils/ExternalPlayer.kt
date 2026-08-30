@@ -15,8 +15,14 @@ import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.services.ExternalPlayerService
 
 @Composable
-fun rememberExternalPlayerLauncher(context: Context, onProgressResult: (Long) -> Unit) : ManagedActivityResultLauncher<Intent, ActivityResult> {
-    return rememberLauncherForActivityResult(
+fun rememberExternalPlayerAction(
+    onProgressResult: (Long) -> Unit,
+    onFallbackToInternal: (Media) -> Unit,
+): (Media) -> Unit {
+
+    val context = LocalContext.current
+
+    val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) { result ->
         ExternalPlayerService.stop(context)
@@ -24,18 +30,7 @@ fun rememberExternalPlayerLauncher(context: Context, onProgressResult: (Long) ->
             onProgressResult(it)
         }
     }
-}
 
-@Composable
-fun rememberExternalPlayerAction(
-    onProgressResult: (Long) -> Unit,
-    onFallbackToInternal: (Media) -> Unit,
-): (Media) -> Unit {
-    val context = LocalContext.current
-    val launcher = rememberExternalPlayerLauncher(
-        context = context,
-        onProgressResult = onProgressResult
-    )
     return remember(launcher) {
         { media ->
             ExternalPlayer.launchPlayer(

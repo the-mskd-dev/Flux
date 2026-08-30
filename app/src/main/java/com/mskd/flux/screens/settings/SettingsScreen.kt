@@ -26,6 +26,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.mskd.flux.features.customization.domain.model.NavigationStyle
+import com.mskd.flux.features.settings.domain.model.SettingsDialog
 import com.mskd.flux.features.settings.presentation.SettingsEvent
 import com.mskd.flux.features.settings.presentation.SettingsIntent
 import com.mskd.flux.features.settings.presentation.SettingsUiState
@@ -33,7 +34,10 @@ import com.mskd.flux.features.settings.presentation.SettingsViewModel
 import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.navigation.domain.Route.Token
 import com.mskd.flux.screens.settings.composables.SettingsAppInfoSection
+import com.mskd.flux.screens.settings.composables.SettingsClearHistoryDialog
 import com.mskd.flux.screens.settings.composables.SettingsCustomizationSection
+import com.mskd.flux.screens.settings.composables.SettingsDialogs
+import com.mskd.flux.screens.settings.composables.SettingsFullSyncDialog
 import com.mskd.flux.screens.settings.composables.SettingsOtherSection
 import com.mskd.flux.screens.settings.composables.SettingsPlayerSection
 import com.mskd.flux.screens.settings.composables.SettingsSyncSection
@@ -100,12 +104,10 @@ fun SettingsScreen(
         )
     }
 
-    if (state.showSyncDialog) {
-        SettingsFullSyncDialog(
-            sendIntent = viewModel::handleIntent,
-            onDismiss = { viewModel.handleIntent(SettingsIntent.ShowFullSyncDialog(show = false)) }
-        )
-    }
+    SettingsDialogs(
+        dialog = state.settingsDialog,
+        sendIntent = viewModel::handleIntent
+    )
 
 }
 
@@ -188,23 +190,6 @@ fun SettingIcon(
         painter = painter,
         tint = iconColor,
         contentDescription = contentDescription
-    )
-
-}
-
-@Composable
-fun SettingsFullSyncDialog(
-    sendIntent: (SettingsIntent) -> Unit,
-    onDismiss: () -> Unit
-) {
-
-    FluxDialog(
-        onDismiss = onDismiss,
-        onValidate = { sendIntent(SettingsIntent.ProceedFullSync) },
-        title = stringResource(Res.string.sync_library),
-        content = {
-            Text.Content.Body(text = stringResource(Res.string.sync_library_dialog))
-        }
     )
 
 }

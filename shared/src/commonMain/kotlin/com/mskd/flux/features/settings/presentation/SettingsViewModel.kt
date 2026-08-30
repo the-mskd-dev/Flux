@@ -101,7 +101,7 @@ class SettingsViewModel(
             is SettingsIntent.OnExternalPlayerCheck -> onExternalPlayerCheck(value = intent.checked)
             is SettingsIntent.OnEnablePipCheck -> onEnablePipCheck(value = intent.checked)
             is SettingsIntent.OnPrefetchHdImagesCheck -> onPrefetchImagesCheck(value = intent.checked)
-            SettingsIntent.OnClearHistory -> clearHistory()
+            SettingsIntent.ClearHistory -> clearHistory()
         }
     }
 

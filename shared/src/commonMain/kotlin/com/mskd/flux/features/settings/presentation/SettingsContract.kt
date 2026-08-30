@@ -50,7 +50,7 @@ sealed class SettingsIntent {
     data class OnExternalPlayerCheck(val checked: Boolean): SettingsIntent()
     data class OnEnablePipCheck(val checked: Boolean): SettingsIntent()
     data class OnPrefetchHdImagesCheck(val checked: Boolean): SettingsIntent()
-    data object OnClearHistory: SettingsIntent()
+    data object ClearHistory: SettingsIntent()
 }
 
 sealed class SettingsEvent {

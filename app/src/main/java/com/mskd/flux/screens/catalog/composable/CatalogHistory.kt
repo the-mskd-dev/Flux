@@ -84,8 +84,8 @@ fun CatalogHistory(
             items(items = entries, key = { it.media.artworkId }) { entry ->
 
                 CatalogHistoryItem(
-                    media = entry.media,
-                    onClick = { sendIntent(CatalogIntent.PlayMedia(media = entry.media)) }
+                    entry = entry,
+                    sendIntent = sendIntent
                 )
 
             }
@@ -99,11 +99,12 @@ fun CatalogHistory(
 
 @Composable
 fun CatalogHistoryItem(
-    media: Media,
-    onClick: () -> Unit
+    entry: HistoryEntry,
+    sendIntent: (CatalogIntent) -> Unit
 ) {
 
     var showMenu by remember { mutableStateOf(false) }
+    val media = entry.media
 
     Card(
         modifier = Modifier
@@ -113,7 +114,7 @@ fun CatalogHistoryItem(
             )
             .aspectRatio(FluxUI.Ratio.landscape)
             .combinedClickable(
-                onClick = onClick,
+                onClick = { sendIntent(CatalogIntent.PlayMedia(media = media)) },
                 onLongClick = { showMenu = true }
             ),
         colors = CardDefaults.cardColors(
@@ -161,7 +162,7 @@ fun CatalogHistoryItem(
             items = listOf(
                 FluxDropDownMenuItem(
                     text = stringResource(Res.string.delete),
-                    onClick = {  },
+                    onClick = { sendIntent(CatalogIntent.DeleteHistoryEntry(entry = entry)) },
                     leadingIcon = {
                         Icon(
                             painter = painterResource(Res.drawable.ic_arrow_down),

@@ -63,6 +63,9 @@ sealed interface CatalogIntent {
     data class SelectViewMode(val mode: CatalogViewMode): CatalogIntent
     data class ShowViewModes(val show: Boolean): CatalogIntent
 
+    // History
+    data class DeleteHistoryEntry(val entry: HistoryEntry): CatalogIntent
+
     // Player
     data class PlayMedia(val media: Media, val forceInternal: Boolean = false): CatalogIntent
     data class OnExternalPlayerResult(val progress: Long) : CatalogIntent

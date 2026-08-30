@@ -23,6 +23,7 @@ import com.mskd.flux.features.catalog.presentation.CatalogEvent.NavigateToShow
 import com.mskd.flux.features.catalog.presentation.CatalogEvent.NavigateToSources
 import com.mskd.flux.features.catalog.presentation.CatalogEvent.NavigateToToken
 import com.mskd.flux.features.catalog.presentation.CatalogEvent.NavigateToUnknown
+import com.mskd.flux.features.history.domain.model.HistoryEntry
 import com.mskd.flux.features.history.domain.repository.HistoryRepository
 import com.mskd.flux.features.player.domain.model.PlaybackAction
 import com.mskd.flux.features.player.domain.usecase.RecordPlaybackResultUseCase
@@ -162,6 +163,9 @@ class CatalogViewModel(
             is CatalogIntent.SelectViewMode -> selectViewMode(mode = intent.mode)
             is CatalogIntent.ShowViewModes -> showViewModes(show = intent.show)
 
+            // History
+            is CatalogIntent.DeleteHistoryEntry -> deleteHistoryEntry(entry = intent.entry)
+
             // Player
             is CatalogIntent.PlayMedia -> playMedia(media = intent.media, forceInternal = intent.forceInternal)
             is CatalogIntent.OnExternalPlayerResult -> onExternalPlayerResult(intent.progress)
@@ -211,6 +215,10 @@ class CatalogViewModel(
 
     private fun showViewModes(show: Boolean) {
         _showViewModeSheet.update { show }
+    }
+
+    private suspend fun deleteHistoryEntry(entry: HistoryEntry) {
+        historyDb.delete(artworkId = entry.media.artworkId)
     }
 
     private suspend fun playMedia(media: Media, forceInternal: Boolean) {

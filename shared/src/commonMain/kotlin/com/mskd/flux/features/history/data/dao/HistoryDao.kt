@@ -13,7 +13,7 @@ interface HistoryDao {
 
     @Query("""
         SELECT * FROM history
-        INNER JOIN medias ON history.mediaId = medias.id AND history.artworkId = medias.artworkId
+        INNER JOIN medias ON history.mediaId = medias.id AND history.historyArtworkId = medias.artworkId
         ORDER BY history.timestamp DESC
     """)
     fun flow() : Flow<List<HistoryProjection>>
@@ -21,7 +21,7 @@ interface HistoryDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(entry: HistoryEntity)
 
-    @Query("DELETE FROM history WHERE artworkId = :artworkId")
+    @Query("DELETE FROM history WHERE historyArtworkId = :artworkId")
     suspend fun delete(artworkId: Long)
 
     @Query("DELETE FROM history")

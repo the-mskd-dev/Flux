@@ -1,5 +1,6 @@
 package com.mskd.flux.features.history.data.model
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
@@ -8,18 +9,19 @@ import com.mskd.flux.core.model.artwork.ContentType
 
 @Entity(
     tableName = "history",
-    primaryKeys = ["artworkId"],
+    primaryKeys = ["historyArtworkId"],
     foreignKeys = [
         ForeignKey(
             entity = MediaEntity::class,
             parentColumns = ["id", "artworkId"],
-            childColumns = ["mediaId", "artworkId"],
+            childColumns = ["mediaId", "historyArtworkId"],
             onDelete = ForeignKey.CASCADE
         )
     ],
-    indices = [Index(value = ["mediaId", "artworkId"])]
+    indices = [Index(value = ["mediaId", "historyArtworkId"])]
 )
 data class HistoryEntity(
+    @ColumnInfo(name = "historyArtworkId")
     val artworkId: Long,
     val mediaId: Long,
     val timestamp: Long,

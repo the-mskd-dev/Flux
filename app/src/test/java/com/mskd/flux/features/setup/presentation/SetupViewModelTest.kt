@@ -55,7 +55,7 @@ class SetupViewModelTest : FunSpec( {
         }
     }
 
-    test("onNextButton - SOURCES - if system folders are disabled, navigate to Token") {
+    test("onNextButton - SOURCES - if system folders are disabled, navigate to Sources") {
         // Given : go to SOURCES screen, then change mode to CUSTOM
         viewModel.handleIntent(SetupIntent.OnNextButton)
         viewModel.handleIntent(SetupIntent.EnableSystemFolders(enabled = false))
@@ -66,7 +66,7 @@ class SetupViewModelTest : FunSpec( {
             viewModel.handleIntent(SetupIntent.OnNextButton)
 
             // Then
-            awaitItem() shouldBe SetupEvent.NavigateToToken
+            awaitItem() shouldBe SetupEvent.NavigateToSources
 
         }
     }

@@ -7,12 +7,15 @@ import com.mskd.flux.features.customization.domain.datastore.CustomizationDataSt
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.navigation.domain.Route
+import com.mskd.flux.report.CrashKey
+import com.mskd.flux.report.reportAddCustomData
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import java.util.Locale
 
 class MainViewModel(
     private val settingsDataStore: SettingsDataStore,
@@ -32,12 +35,25 @@ class MainViewModel(
         viewModelScope.launch {
             settingsDataStore.flow.collect { preferences ->
                 _settings.update { preferences }
+
+                // Change report values
+                reportAddCustomData(key = CrashKey.SYSTEM_FOLDERS, value = preferences.systemFoldersEnabled.toString())
+                reportAddCustomData(key = CrashKey.DATA_LANGUAGE, value = (preferences.dataLanguage ?: Locale.getDefault()).toString())
+                reportAddCustomData(key = CrashKey.EXTERNAL_PLAYER, value = preferences.externalPlayer.toString())
+
             }
+
         }
 
         viewModelScope.launch {
             customizationDataStore.flow.collect { preferences ->
                 _customization.update { preferences }
+            }
+        }
+
+        viewModelScope.launch {
+            tokenDataStore.flow.collect { token ->
+                reportAddCustomData(key = CrashKey.HAS_TOKEN, value = token.isNotBlank().toString())
             }
         }
 

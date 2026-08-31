@@ -8,7 +8,7 @@ import kotlinx.collections.immutable.persistentListOf
 
 data class SearchUIState(
     val artworks: ImmutableList<Artwork> = persistentListOf(),
-    val autoKeyboard: Boolean = true,
+    val autoKeyboard: Boolean = false,
     val availableGenres: ImmutableList<Genre> = persistentListOf(),
     val actions: SearchUserActions = SearchUserActions()
 )

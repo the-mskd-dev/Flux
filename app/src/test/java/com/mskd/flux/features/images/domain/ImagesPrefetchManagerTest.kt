@@ -6,6 +6,7 @@ import coil3.request.ImageRequest
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.core.database.domain.repository.DatabaseRepository
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
+import com.mskd.flux.utils.Constants
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
@@ -103,8 +104,8 @@ class ImagesPrefetchManagerTest : FunSpec({
         prefetchManager.prefetchImages()
 
         urls.size shouldBe 2 // both SD and HD urls
-        urls[0] shouldBe "https://image.tmdb.org/t/p/w500path1" // SD
-        urls[1] shouldBe "https://image.tmdb.org/t/p/originalpath1" // HD
+        urls[0] shouldBe "${Constants.TMDB.IMAGE}path1" // SD
+        urls[1] shouldBe "${Constants.TMDB.IMAGE_LARGE}path1" // HD
     }
 
 })

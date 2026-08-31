@@ -86,6 +86,7 @@ kotlin {
                 api(libs.bundles.android.di)
                 api(libs.bundles.android.image)
                 api(libs.bundles.android.player)
+                api(libs.bundles.android.acra)
             }
         }
         

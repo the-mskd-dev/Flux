@@ -16,6 +16,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ToggleButton
 import androidx.compose.material3.ToggleButtonDefaults
+import androidx.compose.material3.ToggleButtonShapes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -85,7 +86,7 @@ fun ArtworkButtons(
                 checkedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
                 checkedContentColor = MaterialTheme.colorScheme.onSurfaceVariant
             ),
-            shapes = ToggleButtonDefaults.shapes(
+            shapes = ToggleButtonShapes(
                 shape = CircleShape,
                 pressedShape = MaterialTheme.shapes.medium,
                 checkedShape = MaterialTheme.shapes.small,

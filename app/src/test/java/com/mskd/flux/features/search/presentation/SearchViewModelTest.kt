@@ -12,6 +12,7 @@ import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.utils.extensions.filterFor
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.inspectors.shouldForAll
+import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldContainAnyOf
 import io.kotest.matchers.collections.shouldContainExactly
@@ -20,7 +21,9 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContainIgnoringCase
 import io.kotest.property.Arb
 import io.kotest.property.Exhaustive
+import io.kotest.property.arbitrary.boolean
 import io.kotest.property.arbitrary.element
+import io.kotest.property.arbitrary.enum
 import io.kotest.property.arbitrary.filter
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.orNull
@@ -63,22 +66,54 @@ class SearchViewModelTest : FunSpec({
 
     //region Initial
 
-    test("initial state") {
+    test("Initial state") {
 
-        // Given
-        val expectedArtworks = MediaMockups.artworks.filter { !it.isUnknown }
-        val expectedGenres = DetailsMockup.allGenres.filterFor(expectedArtworks)
-        val viewModel = createViewModel()
+        checkAll(
+            iterations = 30,
+            Arb.subsequence(MediaMockups.artworks.filter { !it.isUnknown }),
+            Arb.enum<ContentType>().orNull(),
+            Arb.element(DetailsMockup.allGenres).orNull(),
+            Arb.boolean()
+        ) { artworks, type, genre, showKeyboard ->
 
-        viewModel.uiState.test {
+            // Given
+            val viewModel = createViewModel(
+                withType = type,
+                withGenre = genre,
+                database = mockk(relaxed = true) {
+                    every { flowArtworks() } returns MutableStateFlow(artworks)
+                },
+                details = mockk(relaxed = true) {
+                    every { flowGenres() } returns MutableStateFlow(DetailsMockup.allGenres)
+                },
+                settings = mockk(relaxed = true) {
+                    every { flow } returns MutableStateFlow(SettingsDataStore.State(autoKeyboard = showKeyboard))
+                }
+            )
+            val expectedArtworks = artworks
+                .filter { !it.isUnknown }
+                .filter { if (type != null) it.type == type else true }
+                .filter { if (genre != null) it.genreIds.contains(genre.id) else true }
+            val expectedGenres = DetailsMockup.allGenres.filterFor(artworks)
 
-            // When
-            val initialState = awaitItem()
+            viewModel.uiState.test {
 
-            // Then
-            initialState.actions shouldBe SearchUserActions()
-            initialState.artworks.shouldContainExactlyInAnyOrder(expectedArtworks)
-            initialState.availableGenres.shouldContainExactlyInAnyOrder(expectedGenres)
+                // When
+                val initialState = awaitItem()
+
+                // Then
+                initialState.artworks.shouldContainExactlyInAnyOrder(expectedArtworks)
+                initialState.availableGenres.shouldContainExactlyInAnyOrder(expectedGenres)
+                initialState.autoKeyboard shouldBe showKeyboard
+                initialState.actions.selectedType shouldBe type
+                if (genre != null)
+                    initialState.actions.selectedGenres.shouldContain(genre.id)
+                else
+                    initialState.actions.selectedGenres.shouldBeEmpty()
+
+                cancelAndIgnoreRemainingEvents()
+            }
+
         }
 
     }

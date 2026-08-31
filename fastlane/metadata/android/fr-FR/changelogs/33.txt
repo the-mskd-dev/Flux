@@ -1,0 +1,5 @@
+- Core: Mise à jour des dépendances
+- Core: Amélioration des rapports de crash
+- Core: Amélioration du chargement des images
+- Fix: Affichage du clavier dans l'écran de recherche
+- Fix: Correction des couleurs en mode clair

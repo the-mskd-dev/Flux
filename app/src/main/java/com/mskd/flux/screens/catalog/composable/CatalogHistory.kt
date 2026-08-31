@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -48,10 +49,12 @@ import com.mskd.flux.utils.extensions.fillMaxWidthWithLimit
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.continue_watching
 import flux.shared.generated.resources.delete
+import flux.shared.generated.resources.episode
 import flux.shared.generated.resources.ic_arrow_down
 import flux.shared.generated.resources.ic_delete
 import flux.shared.generated.resources.read_less
 import flux.shared.generated.resources.read_more
+import flux.shared.generated.resources.season
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -122,7 +125,7 @@ fun CatalogHistoryItem(
                 fraction = .8f,
                 max = 450.dp
             )
-            .aspectRatio(FluxUI.Ratio.rectangle)
+            .aspectRatio(FluxUI.Ratio.imax)
             .combinedClickable(
                 onClick = { sendIntent(CatalogIntent.PlayMedia(media = media)) },
                 onLongClick = { showMenu = true }
@@ -151,7 +154,7 @@ fun CatalogHistoryItem(
                 verticalArrangement = Arrangement.Center
             ) {
 
-                Text.Content.Body(
+                Text.Card.Body(
                     modifier = Modifier.fillMaxWidth(),
                     color = MaterialTheme.colorScheme.onSurface,
                     text = entry.title,
@@ -160,7 +163,16 @@ fun CatalogHistoryItem(
                 )
 
                 (media as? Episode)?.let {
-                    EpisodesDetails(episode = it)
+                    Row(horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)) {
+                        Text.Card.Label(
+                            text = stringResource(Res.string.season, it.season).uppercase(),
+                            color = MaterialTheme.colorScheme.primary,
+                        )
+                        Text.Card.Label(
+                            text = stringResource(Res.string.episode, it.number).uppercase(),
+                            color = MaterialTheme.colorScheme.secondary
+                        )
+                    }
                 }
 
             }

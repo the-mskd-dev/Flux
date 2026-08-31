@@ -30,6 +30,7 @@ object FluxUI {
     object Ratio {
 
         const val square = 1f
+        const val imax = 1.43f/1f
         const val rectangle = 6f/5f
         const val landscape = 16f/9f
 

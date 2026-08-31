@@ -154,7 +154,7 @@ fun CatalogHistoryItem(
                 Text.Content.Body(
                     modifier = Modifier.fillMaxWidth(),
                     color = MaterialTheme.colorScheme.onSurface,
-                    text = media.title,
+                    text = entry.title,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1
                 )

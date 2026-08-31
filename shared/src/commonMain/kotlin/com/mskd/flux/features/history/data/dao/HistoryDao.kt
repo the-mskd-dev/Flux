@@ -14,6 +14,7 @@ interface HistoryDao {
     @Query("""
         SELECT * FROM history
         INNER JOIN medias ON history.mediaId = medias.id AND history.historyArtworkId = medias.artworkId
+        INNER JOIN artworks ON medias.artworkId = artworks.id
         ORDER BY history.timestamp DESC
     """)
     fun flow() : Flow<List<HistoryProjection>>

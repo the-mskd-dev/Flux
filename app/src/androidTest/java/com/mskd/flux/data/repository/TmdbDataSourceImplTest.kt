@@ -80,7 +80,7 @@ class TmdbDataSourceImplTest : KoinTest {
             coEvery { getDataLanguage() } returns dataLanguage
         }
 
-        repository = TmdbDataSourceImpl(tmdbService, settingsDataStore)
+        repository = TmdbDataSourceImpl(tmdbService, settingsDataStore, tokenDataStore)
 
     }
 

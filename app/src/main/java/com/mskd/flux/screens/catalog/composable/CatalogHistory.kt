@@ -140,22 +140,12 @@ fun CatalogHistoryItem(
         shape = shape
     ) {
 
-        ConstraintLayout(
-            modifier = Modifier.fillMaxSize(),
-        ) {
-
-            val (image, progress, desc) = createRefs()
-            val guideline = createGuidelineFromTop(fraction = 0.75f)
+        Column(modifier = Modifier.fillMaxSize()) {
 
             FluxImage(
-                modifier = Modifier.constrainAs(image) {
-                    top.linkTo(parent.top)
-                    bottom.linkTo(guideline)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                    width = Dimension.fillToConstraints
-                    height = Dimension.fillToConstraints
-                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(.7f),
                 media = media,
                 contentDescription = media.title,
                 videoFrame = true
@@ -163,50 +153,46 @@ fun CatalogHistoryItem(
 
             Column(
                 modifier = Modifier
-                    .constrainAs(desc) {
-                        top.linkTo(guideline)
-                        bottom.linkTo(parent.bottom)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                        width = Dimension.fillToConstraints
-                        height = Dimension.fillToConstraints
-                    }
+                    .fillMaxWidth()
+                    .weight(.3f)
                     .background(color = MaterialTheme.colorScheme.surfaceContainer)
-                    .padding(horizontal = FluxUI.Space.medium),
-                verticalArrangement = Arrangement.Center
+                    .padding(vertical = FluxUI.Space.small, horizontal = FluxUI.Space.medium),
+                verticalArrangement = Arrangement.spacedBy(FluxUI.Space.extraSmall),
             ) {
 
-                Text.Card.Title(
+                ProgressStatusBar(
                     modifier = Modifier.fillMaxWidth(),
-                    color = MaterialTheme.colorScheme.onSurface,
-                    text = entry.title,
-                    overflow = TextOverflow.Ellipsis,
-                    maxLines = 1
+                    isVisible = true,
+                    progress = { media.progressPercent },
                 )
 
-                (media as? Episode)?.let {
-                    Row(horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small)) {
-                        Text.Card.Label(
-                            text = "${stringResource(Res.string.season, it.season)}, ${stringResource(Res.string.episode, it.number)}",
-                            color = MaterialTheme.colorScheme.primary,
-                        )
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f),
+                    verticalArrangement = Arrangement.Center
+                ) {
+
+                    Text.Card.Title(
+                        modifier = Modifier.fillMaxWidth(),
+                        color = MaterialTheme.colorScheme.onSurface,
+                        text = entry.title,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1
+                    )
+
+                    (media as? Episode)?.let {
+                        Row(horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small)) {
+                            Text.Card.Label(
+                                text = "${stringResource(Res.string.season, it.season)}, ${stringResource(Res.string.episode, it.number)}",
+                                color = MaterialTheme.colorScheme.primary,
+                            )
+                        }
                     }
+
                 }
 
             }
-
-            ProgressStatusBar(
-                modifier = Modifier.constrainAs(progress) {
-                    top.linkTo(guideline)
-                    bottom.linkTo(guideline)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                    width = Dimension.fillToConstraints
-                },
-                isVisible = true,
-                strokeCap = StrokeCap.Butt,
-                progress = { media.progressPercent },
-            )
 
         }
 

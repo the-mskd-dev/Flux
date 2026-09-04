@@ -4,7 +4,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -15,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -23,18 +21,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension
 import com.mskd.flux.core.model.artwork.Episode
-import com.mskd.flux.core.model.artwork.Media
-import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.features.history.data.mapper.toHistoryEntry
 import com.mskd.flux.features.history.domain.model.HistoryEntry
@@ -44,8 +34,6 @@ import com.mskd.flux.ui.component.global.FluxDropDownMenuItem
 import com.mskd.flux.ui.component.global.FluxImage
 import com.mskd.flux.ui.component.global.ProgressStatusBar
 import com.mskd.flux.ui.component.global.Text
-import com.mskd.flux.ui.component.media.EpisodeDropDownMenu
-import com.mskd.flux.ui.component.media.EpisodesDetails
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.ui.theme.LocalUiShapes
 import com.mskd.flux.utils.FluxPreview
@@ -56,10 +44,7 @@ import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.continue_watching
 import flux.shared.generated.resources.delete
 import flux.shared.generated.resources.episode
-import flux.shared.generated.resources.ic_arrow_down
 import flux.shared.generated.resources.ic_delete
-import flux.shared.generated.resources.read_less
-import flux.shared.generated.resources.read_more
 import flux.shared.generated.resources.season
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource

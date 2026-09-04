@@ -26,11 +26,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Media
+import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.features.history.data.mapper.toHistoryEntry
 import com.mskd.flux.features.history.domain.model.HistoryEntry
@@ -38,10 +42,12 @@ import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.ui.component.global.FluxDropDownMenu
 import com.mskd.flux.ui.component.global.FluxDropDownMenuItem
 import com.mskd.flux.ui.component.global.FluxImage
+import com.mskd.flux.ui.component.global.ProgressStatusBar
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.component.media.EpisodeDropDownMenu
 import com.mskd.flux.ui.component.media.EpisodesDetails
 import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.theme.LocalUiShapes
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxThemePreview
 import com.mskd.flux.utils.extensions.bleedHorizontal
@@ -118,6 +124,7 @@ fun CatalogHistoryItem(
 
     var showMenu by remember { mutableStateOf(false) }
     val media = entry.media
+    val shape = LocalUiShapes.current.corners
 
     Card(
         modifier = modifier
@@ -130,16 +137,25 @@ fun CatalogHistoryItem(
                 onClick = { sendIntent(CatalogIntent.PlayMedia(media = media)) },
                 onLongClick = { showMenu = true }
             ),
+        shape = shape
     ) {
 
-        Column(
+        ConstraintLayout(
             modifier = Modifier.fillMaxSize(),
         ) {
 
+            val (image, progress, desc) = createRefs()
+            val guideline = createGuidelineFromTop(fraction = 0.75f)
+
             FluxImage(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(.7f),
+                modifier = Modifier.constrainAs(image) {
+                    top.linkTo(parent.top)
+                    bottom.linkTo(guideline)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                    width = Dimension.fillToConstraints
+                    height = Dimension.fillToConstraints
+                },
                 media = media,
                 contentDescription = media.title,
                 videoFrame = true
@@ -147,14 +163,20 @@ fun CatalogHistoryItem(
 
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(.3f)
+                    .constrainAs(desc) {
+                        top.linkTo(guideline)
+                        bottom.linkTo(parent.bottom)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                        width = Dimension.fillToConstraints
+                        height = Dimension.fillToConstraints
+                    }
                     .background(color = MaterialTheme.colorScheme.surfaceContainer)
-                    .padding(vertical = FluxUI.Space.small, horizontal = FluxUI.Space.medium),
+                    .padding(horizontal = FluxUI.Space.medium),
                 verticalArrangement = Arrangement.Center
             ) {
 
-                Text.Card.Body(
+                Text.Card.Title(
                     modifier = Modifier.fillMaxWidth(),
                     color = MaterialTheme.colorScheme.onSurface,
                     text = entry.title,
@@ -163,19 +185,28 @@ fun CatalogHistoryItem(
                 )
 
                 (media as? Episode)?.let {
-                    Row(horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)) {
+                    Row(horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small)) {
                         Text.Card.Label(
-                            text = stringResource(Res.string.season, it.season).uppercase(),
+                            text = "${stringResource(Res.string.season, it.season)}, ${stringResource(Res.string.episode, it.number)}",
                             color = MaterialTheme.colorScheme.primary,
-                        )
-                        Text.Card.Label(
-                            text = stringResource(Res.string.episode, it.number).uppercase(),
-                            color = MaterialTheme.colorScheme.secondary
                         )
                     }
                 }
 
             }
+
+            ProgressStatusBar(
+                modifier = Modifier.constrainAs(progress) {
+                    top.linkTo(guideline)
+                    bottom.linkTo(guideline)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                    width = Dimension.fillToConstraints
+                },
+                isVisible = true,
+                strokeCap = StrokeCap.Butt,
+                progress = { media.progressPercent },
+            )
 
         }
 

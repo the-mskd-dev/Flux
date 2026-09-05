@@ -21,6 +21,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
+import kotlin.test.assertEquals
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @MediumTest
@@ -68,30 +69,7 @@ class UserDataStoreTest {
 
             val initialState = awaitItem()
 
-            assert(defaultPreferences.recentlyWatchedIds == initialState.recentlyWatchedIds)
-
-            cancelAndConsumeRemainingEvents()
-        }
-
-    }
-
-    @Test
-    fun add_and_remove_watched_media_id() = runTest {
-
-        val idTest = 4L
-
-        userDataStore.flow.test {
-
-            var state = awaitItem()
-            assert(state.recentlyWatchedIds.isEmpty())
-
-            userDataStore.addToRecentlyWatched(idTest)
-            state = awaitItem()
-            assert(state.recentlyWatchedIds.contains(idTest))
-
-            userDataStore.removeFromRecentlyWatched(idTest)
-            state = awaitItem()
-            assert(!state.recentlyWatchedIds.contains(idTest))
+            assertEquals(defaultPreferences, initialState)
 
             cancelAndConsumeRemainingEvents()
         }

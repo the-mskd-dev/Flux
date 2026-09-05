@@ -11,8 +11,8 @@ import kotlinx.coroutines.flow.map
 
 class HistoryRepositoryImpl(private val dao: HistoryDao) : HistoryRepository {
 
-    override val flow: Flow<List<HistoryEntry>> = dao.flow()
-        .map { entities -> entities.map { it.toDomain() } }
+    override val flow: Flow<List<HistoryEntry>>
+        get() = dao.flow().map { entities -> entities.map { it.toDomain() } }
 
     override suspend fun insert(media: Media) {
         dao.upsert(entity = media.toHistoryEntity())

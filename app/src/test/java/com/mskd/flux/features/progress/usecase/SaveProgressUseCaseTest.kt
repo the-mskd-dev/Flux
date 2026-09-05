@@ -3,7 +3,6 @@ package com.mskd.flux.features.progress.usecase
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.core.FakeDatabaseRepository
 import com.mskd.flux.core.database.domain.repository.DatabaseRepository
-import com.mskd.flux.core.datastore.domain.UserDataStore
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Movie
 import com.mskd.flux.core.model.artwork.Status
@@ -16,10 +15,7 @@ import com.mskd.flux.utils.extensions.minToMs
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData
 import io.mockk.coVerify
-import io.mockk.every
-import io.mockk.mockk
 import io.mockk.spyk
-import kotlinx.coroutines.flow.MutableStateFlow
 
 class SaveProgressUseCaseTest : FunSpec({
 

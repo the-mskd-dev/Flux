@@ -1,4 +1,4 @@
-package com.mskd.flux.features.history.domain.repository
+package com.mskd.flux.features.history.data.repository
 
 import app.cash.turbine.test
 import com.mskd.flux.core.database.data.mappers.toEntity

@@ -8,7 +8,9 @@ import com.mskd.flux.core.model.player.PlayerTrack
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
 import com.mskd.flux.features.artwork.fake.FakeObserveArtworkUseCase
 import com.mskd.flux.features.files.domain.usecase.GetSubtitlesUseCase
+import com.mskd.flux.features.history.domain.usecase.SaveToHistoryUseCase
 import com.mskd.flux.features.player.data.PipIsEnabledUseCase
+import com.mskd.flux.features.player.domain.model.PlayerParams
 import com.mskd.flux.features.player.fake.PlayerTestCases
 import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
@@ -41,6 +43,7 @@ class PlayerViewModelTest : FunSpec({
     lateinit var player: Player
     lateinit var pipIsEnabledUseCase: PipIsEnabledUseCase
     lateinit var getSubtitlesUseCase: GetSubtitlesUseCase
+    lateinit var saveToHistoryUseCase: SaveToHistoryUseCase
 
     fun updateVm(mediaId: Long = MediaMockups.episode1.mediaId) {
 
@@ -48,15 +51,20 @@ class PlayerViewModelTest : FunSpec({
 
         val media = MediaMockups.allMedias.find { it.mediaId == mediaId }
         media?.let { observeArtworkUseCase(it.artworkId) }
+        val playerParams = PlayerParams(
+            mediaId = mediaId,
+            artworkId = media?.artworkId
+        )
 
         viewModel = PlayerViewModel(
-            mediaId = mediaId,
+            params = playerParams,
             observeArtworkUseCase = observeArtworkUseCase,
             settingsDataStore = settingsDataStore,
             playerManager = playerManager,
             pipIsEnabledUseCase = pipIsEnabledUseCase,
             saveProgressUseCase = saveProgress,
-            getSubtitlesUseCase = getSubtitlesUseCase
+            getSubtitlesUseCase = getSubtitlesUseCase,
+            saveToHistoryUseCase = saveToHistoryUseCase
         )
 
     }
@@ -77,6 +85,7 @@ class PlayerViewModelTest : FunSpec({
 
         pipIsEnabledUseCase = mockk(relaxed = true)
         getSubtitlesUseCase = mockk(relaxed = true)
+        saveToHistoryUseCase = mockk(relaxed = true)
         observeArtworkUseCase = FakeObserveArtworkUseCase()
 
         updateVm()

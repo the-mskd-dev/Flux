@@ -15,7 +15,7 @@ class HistoryRepositoryImpl(private val dao: HistoryDao) : HistoryRepository {
         .map { entities -> entities.map { it.toDomain() } }
 
     override suspend fun insert(media: Media) {
-        dao.upsert(entry = media.toHistoryEntity())
+        dao.upsert(entity = media.toHistoryEntity())
     }
 
     override suspend fun delete(artworkId: Long) {

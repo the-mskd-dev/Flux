@@ -14,6 +14,9 @@ import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
 import com.mskd.flux.features.catalog.domain.model.CatalogViewMode
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
+import com.mskd.flux.features.history.domain.repository.HistoryRepository
+import com.mskd.flux.features.player.domain.usecase.RecordPlaybackResultUseCase
+import com.mskd.flux.features.player.domain.usecase.ResolvePlaybackActionUseCase
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.mockups.DetailsMockup
 import com.mskd.flux.mockups.MediaMockups
@@ -46,9 +49,12 @@ class CatalogViewModelTest : FunSpec({
     lateinit var syncCatalogUseCase: SyncCatalogUseCase
     lateinit var artworkDb: DatabaseRepository
     lateinit var detailsDb: DetailsRepository
+    lateinit var historyDb: HistoryRepository
     lateinit var userDataStore: UserDataStore
     lateinit var tokenDataStore: TokenDataStore
     lateinit var appInfo: AppInfo
+    lateinit var resolvePlaybackAction: ResolvePlaybackActionUseCase
+    lateinit var recordPlaybackResult: RecordPlaybackResultUseCase
 
     beforeTest {
 
@@ -68,6 +74,11 @@ class CatalogViewModelTest : FunSpec({
             every { flowGenres() } returns MutableStateFlow(DetailsMockup.allGenres)
         }
 
+        historyDb = mockk(relaxed = true)
+
+        resolvePlaybackAction = mockk(relaxed = true)
+        recordPlaybackResult = mockk(relaxed = true)
+
         appInfo = AppInfo(
             versionCode = 0,
             versionName = "Version-Test"
@@ -85,10 +96,13 @@ class CatalogViewModelTest : FunSpec({
             syncCatalogUseCase = syncUseCase,
             artworkDb = artworkDb,
             detailsDb = detailsDb,
+            historyDb = historyDb,
             userDataStore = userDataStore,
             tokenDataStore = tokenDataStore,
             catalogDataStore = catalogDataStore,
-            appInfo = appInfo
+            appInfo = appInfo,
+            resolvePlaybackAction = resolvePlaybackAction,
+            recordPlaybackResult = recordPlaybackResult
         )
     }
 

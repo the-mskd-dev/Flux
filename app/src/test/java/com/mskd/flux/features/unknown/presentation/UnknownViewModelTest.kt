@@ -5,9 +5,12 @@ import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
 import com.mskd.flux.features.artwork.fake.FakeObserveArtworkUseCase
+import com.mskd.flux.features.player.domain.usecase.RecordPlaybackResultUseCase
+import com.mskd.flux.features.player.domain.usecase.ResolvePlaybackActionUseCase
 import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.mockups.MediaMockups
+import io.kotest.assertions.any
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
@@ -23,16 +26,19 @@ class UnknownViewModelTest : FunSpec({
     lateinit var viewModel: UnknownViewModel
     lateinit var observeArtworkUseCase: ObserveArtworkUseCase
     lateinit var settingsDataStore: SettingsDataStore
-    lateinit var saveProgress: SaveProgressUseCase
+    lateinit var resolvePlaybackAction: ResolvePlaybackActionUseCase
+    lateinit var recordPlaybackResult: RecordPlaybackResultUseCase
 
     val updateVm: () -> Unit = {
 
-        saveProgress = mockk(relaxed = true)
+        resolvePlaybackAction = mockk(relaxed = true)
+        recordPlaybackResult = mockk(relaxed = true)
 
         viewModel = UnknownViewModel(
             observeArtworkUseCase = observeArtworkUseCase,
             settingsDataStore = settingsDataStore,
-            saveProgress = saveProgress
+            resolvePlaybackAction = resolvePlaybackAction,
+            recordPlaybackResult = recordPlaybackResult
         )
 
     }
@@ -69,7 +75,7 @@ class UnknownViewModelTest : FunSpec({
             viewModel.handleIntent(UnknownIntent.PlayMedia(media = MediaMockups.unknownEpisode))
             val event = awaitItem()
 
-            event shouldBe UnknownEvent.PlayMedia(MediaMockups.unknownEpisode.id)
+            event shouldBe UnknownEvent.PlayMedia(media = MediaMockups.unknownEpisode, externalPlayer = false)
 
         }
     }
@@ -91,7 +97,7 @@ class UnknownViewModelTest : FunSpec({
                 viewModel.handleIntent(UnknownIntent.PlayMedia(media = MediaMockups.unknownEpisode))
                 val event = awaitItem()
 
-                event shouldBe UnknownEvent.LaunchExternalPlayer(MediaMockups.unknownEpisode)
+                event shouldBe UnknownEvent.PlayMedia(media = MediaMockups.unknownEpisode, externalPlayer = true)
 
             }
 
@@ -131,7 +137,7 @@ class UnknownViewModelTest : FunSpec({
                 viewModel.handleIntent(UnknownIntent.PlayMedia(media = MediaMockups.unknownEpisode, forceInternal = true))
                 val event = awaitItem()
 
-                event shouldBe UnknownEvent.PlayMedia(MediaMockups.unknownEpisode.id)
+                event shouldBe UnknownEvent.PlayMedia(media = MediaMockups.unknownEpisode, externalPlayer = false)
             }
         }
     }
@@ -143,7 +149,7 @@ class UnknownViewModelTest : FunSpec({
             viewModel.handleIntent(UnknownIntent.PlayMedia(media = MediaMockups.unknownEpisode))
             viewModel.handleIntent(UnknownIntent.OnExternalPlayerResult(progress = 5000L))
 
-            coVerify { saveProgress(media = MediaMockups.unknownEpisode, progress = 5000L) }
+            coVerify { recordPlaybackResult(media = MediaMockups.unknownEpisode, progress = 5000L) }
         }
     }
 

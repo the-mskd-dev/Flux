@@ -8,6 +8,7 @@ import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseC
 import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCase
 import com.mskd.flux.features.images.domain.ImagesPrefetchManager
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
+import com.mskd.flux.features.settings.domain.model.SettingsDialog
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -62,7 +63,7 @@ class SettingsViewModelTest : FunSpec({
             initialState.rewindValue shouldBe 10
             initialState.forwardValue shouldBe 10
             initialState.optionsDialog shouldBe null
-            initialState.showSyncDialog shouldBe false
+            initialState.settingsDialog shouldBe null
             initialState.fullSyncInProgress shouldBe false
             initialState.prefetchHdImages shouldBe false
         }
@@ -106,22 +107,22 @@ class SettingsViewModelTest : FunSpec({
     test("show full sync dialog") {
         viewModel.uiState.test {
             awaitItem()
-            viewModel.handleIntent(SettingsIntent.ShowFullSyncDialog(true))
-            awaitItem().showSyncDialog shouldBe true
+            viewModel.handleIntent(SettingsIntent.ShowSettingsDialog(dialog = SettingsDialog.SYNC_CATALOG))
+            awaitItem().settingsDialog shouldBe SettingsDialog.SYNC_CATALOG
 
-            viewModel.handleIntent(SettingsIntent.ShowFullSyncDialog(false))
-            awaitItem().showSyncDialog shouldBe false
+            viewModel.handleIntent(SettingsIntent.HideDialog)
+            awaitItem().settingsDialog shouldBe null
         }
     }
 
     test("proceed full sync") {
         viewModel.uiState.test {
             awaitItem()
-            viewModel.handleIntent(SettingsIntent.ShowFullSyncDialog(true))
-            awaitItem().showSyncDialog shouldBe true
+            viewModel.handleIntent(SettingsIntent.ShowSettingsDialog(dialog = SettingsDialog.SYNC_CATALOG))
+            awaitItem().settingsDialog shouldBe true
 
             viewModel.handleIntent(SettingsIntent.ProceedFullSync)
-            awaitItem().showSyncDialog shouldBe false
+            awaitItem().settingsDialog shouldBe null
 
             coVerify { syncCatalogUseCase(onlyNew = false) }
         }

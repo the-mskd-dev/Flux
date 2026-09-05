@@ -26,20 +26,14 @@ class SaveProgressUseCaseTest : FunSpec({
     fluxExtensions()
 
     lateinit var databaseRepository: DatabaseRepository
-    lateinit var userDataStore: UserDataStore
     lateinit var saveProgress: SaveProgressUseCase
 
     beforeTest {
 
         databaseRepository = spyk(FakeDatabaseRepository())
 
-        userDataStore = mockk(relaxed = true) {
-            every { flow } returns MutableStateFlow(UserDataStore.State())
-        }
-
         saveProgress = SaveProgressUseCase(
             database = databaseRepository,
-            user = userDataStore,
         )
 
     }
@@ -52,7 +46,6 @@ class SaveProgressUseCaseTest : FunSpec({
                 artwork = MediaMockups.movieArtwork,
                 media = MediaMockups.movie,
                 progress = MediaMockups.movie.duration.minToMs.times(0.5).toLong(),
-                shouldBeAddedToRecentlyWatched = true,
                 statusExpected = Status.IS_WATCHING
             ),
             ProgressUCTestCases.SaveProgress(
@@ -60,7 +53,6 @@ class SaveProgressUseCaseTest : FunSpec({
                 artwork = MediaMockups.movieArtwork,
                 media = MediaMockups.movie,
                 progress = MediaMockups.movie.duration.minToMs.times(Constants.PLAYER.PROGRESS_THRESHOLD).toLong(),
-                shouldBeAddedToRecentlyWatched = false,
                 statusExpected = Status.WATCHED
             ),
             ProgressUCTestCases.SaveProgress(
@@ -68,7 +60,6 @@ class SaveProgressUseCaseTest : FunSpec({
                 artwork = MediaMockups.showArtwork,
                 media = MediaMockups.episode1,
                 progress = MediaMockups.episode1.duration.minToMs.times(0.5).toLong(),
-                shouldBeAddedToRecentlyWatched = true,
                 statusExpected = Status.IS_WATCHING
             ),
             ProgressUCTestCases.SaveProgress(
@@ -76,7 +67,6 @@ class SaveProgressUseCaseTest : FunSpec({
                 artwork = MediaMockups.showArtwork,
                 media = MediaMockups.episode1,
                 progress = MediaMockups.episode1.duration.minToMs.times(Constants.PLAYER.PROGRESS_THRESHOLD).toLong(),
-                shouldBeAddedToRecentlyWatched = true,
                 statusExpected = Status.WATCHED
             ),
             ProgressUCTestCases.SaveProgress(
@@ -84,7 +74,6 @@ class SaveProgressUseCaseTest : FunSpec({
                 artwork = MediaMockups.showArtwork,
                 media = MediaMockups.episodes.lastEpisode,
                 progress = MediaMockups.episodes.lastEpisode.duration.minToMs.times(0.5).toLong(),
-                shouldBeAddedToRecentlyWatched = true,
                 statusExpected = Status.IS_WATCHING
             ),
             ProgressUCTestCases.SaveProgress(
@@ -92,7 +81,6 @@ class SaveProgressUseCaseTest : FunSpec({
                 artwork = MediaMockups.showArtwork,
                 media = MediaMockups.episodes.lastEpisode,
                 progress = MediaMockups.episodes.lastEpisode.duration.minToMs.times(Constants.PLAYER.PROGRESS_THRESHOLD).toLong(),
-                shouldBeAddedToRecentlyWatched = false,
                 statusExpected = Status.WATCHED
             )
         ) { testCase ->
@@ -100,28 +88,11 @@ class SaveProgressUseCaseTest : FunSpec({
             saveProgress(media = testCase.media, progress = testCase.progress)
 
             when (testCase.media) {
-                is Episode -> coVerify { databaseRepository.saveMedias(any()) }
-                is Movie -> coVerify { databaseRepository.saveMedias(any()) }
-            }
-
-            if (testCase.shouldBeAddedToRecentlyWatched) {
-                coVerify { userDataStore.addToRecentlyWatched(testCase.artwork.id) }
-            } else {
-                coVerify { userDataStore.removeFromRecentlyWatched(testCase.artwork.id) }
+                is Episode -> coVerify { databaseRepository.saveMedias(listOf(testCase.media)) }
+                is Movie -> coVerify { databaseRepository.saveMedias(listOf(testCase.media)) }
             }
 
         }
-    }
-
-    test("saveProgress with unknown episode does not affect recently watched") {
-        saveProgress(media = MediaMockups.unknownEpisode, progress = 1000L)
-
-        // Verify it saves to database
-        coVerify { databaseRepository.saveMedias(match { it.any { e -> (e as Episode).id == MediaMockups.unknownEpisode.id } }) }
-
-        // Verify it does NOT call addToRecentlyWatched or removeFromRecentlyWatched
-        coVerify(exactly = 0) { userDataStore.addToRecentlyWatched(any()) }
-        coVerify(exactly = 0) { userDataStore.removeFromRecentlyWatched(any()) }
     }
 
 })

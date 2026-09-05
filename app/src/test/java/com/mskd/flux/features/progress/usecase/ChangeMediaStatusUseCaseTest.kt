@@ -6,6 +6,7 @@ import com.mskd.flux.core.datastore.domain.UserDataStore
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Movie
 import com.mskd.flux.core.model.artwork.Status
+import com.mskd.flux.features.history.domain.repository.HistoryRepository
 import com.mskd.flux.features.progress.domain.usecase.ChangeMediaStatusUseCase
 import com.mskd.flux.features.progress.fake.ProgressUCTestCases
 import com.mskd.flux.mockups.MediaMockups
@@ -20,20 +21,20 @@ import kotlinx.coroutines.flow.MutableStateFlow
 class ChangeMediaStatusUseCaseTest : FunSpec ({
 
     lateinit var databaseRepository: DatabaseRepository
-    lateinit var userDataStore: UserDataStore
+    lateinit var history: HistoryRepository
     lateinit var changeMediaStatus: ChangeMediaStatusUseCase
 
     beforeTest {
 
         databaseRepository = spyk(FakeDatabaseRepository())
 
-        userDataStore = mockk(relaxed = true) {
-            every { flow } returns MutableStateFlow(UserDataStore.State())
+        history = mockk(relaxed = true) {
+            every { flow } returns MutableStateFlow(emptyList())
         }
 
         changeMediaStatus = ChangeMediaStatusUseCase(
             database = databaseRepository,
-            user = userDataStore,
+            history = history,
         )
 
     }
@@ -88,7 +89,7 @@ class ChangeMediaStatusUseCaseTest : FunSpec ({
             }
 
             if (testCase.expectedRemoveFromRecentlyWatched) {
-                coVerify { userDataStore.removeFromRecentlyWatched(testCase.media.artworkId) }
+                coVerify { history.delete(testCase.media.artworkId) }
             }
 
         }

@@ -21,11 +21,13 @@ import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.mockups.DetailsMockup
 import com.mskd.flux.mockups.MediaMockups
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.datatest.withData
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import io.kotest.property.Arb
 import io.kotest.property.Exhaustive
 import io.kotest.property.arbitrary.element
+import io.kotest.property.arbitrary.long
 import io.kotest.property.checkAll
 import io.kotest.property.exhaustive.enum
 import io.mockk.coEvery
@@ -425,6 +427,39 @@ class CatalogViewModelTest : FunSpec({
                 coEvery { catalogDataStore.setViewMode(mode) }
                 cancelAndIgnoreRemainingEvents()
             }
+
+        }
+
+    }
+
+    //endregion
+
+    //region Player
+
+    test("PlayMedia - ") {
+
+
+        // Given
+
+    }
+
+    test("OnExternalPlayerResult - should call recordPlaybackResult") {
+
+        checkAll(
+            iterations = 20,
+            Arb.element(MediaMockups.allMedias),
+            Arb.long()
+        ) { media, progress ->
+
+            // Given
+            viewModel = createViewModel()
+            viewModel.handleIntent(intent = CatalogIntent.PlayMedia(media = media, forceInternal = true))
+
+            // When
+            viewModel.handleIntent(intent = CatalogIntent.OnExternalPlayerResult(progress = progress))
+
+            // Then
+            coEvery { recordPlaybackResult(media = media, progress = progress) }
 
         }
 

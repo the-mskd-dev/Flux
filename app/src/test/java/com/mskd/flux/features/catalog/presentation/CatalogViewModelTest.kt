@@ -458,7 +458,6 @@ class CatalogViewModelTest : FunSpec({
                 // When
                 viewModel.handleIntent(intent = CatalogIntent.PlayMedia(media = media, forceInternal = forceInternal))
 
-
                 // Then
                 val event = awaitItem()
                 event.shouldBeInstanceOf<CatalogEvent.PlayMedia>()

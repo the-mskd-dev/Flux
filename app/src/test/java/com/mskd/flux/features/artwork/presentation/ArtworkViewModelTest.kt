@@ -145,7 +145,6 @@ class ArtworkViewModelTest : FunSpec({
                 // When
                 viewModel.handleIntent(intent = ArtworkIntent.PlayMedia(media = media, forceInternal = forceInternal))
 
-
                 // Then
                 val event = awaitItem()
                 event.shouldBeInstanceOf<ArtworkEvent.PlayMedia>()

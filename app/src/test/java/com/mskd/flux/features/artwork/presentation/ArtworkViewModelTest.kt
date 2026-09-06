@@ -8,8 +8,6 @@ import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
 import com.mskd.flux.features.artwork.fake.FakeObserveArtworkUseCase
-import com.mskd.flux.features.catalog.presentation.CatalogEvent
-import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.features.player.domain.model.PlaybackAction
 import com.mskd.flux.features.player.domain.usecase.RecordPlaybackResultUseCase
 import com.mskd.flux.features.player.domain.usecase.ResolvePlaybackActionUseCase

@@ -2,14 +2,10 @@ package com.mskd.flux.features.history.data.repository
 
 import app.cash.turbine.test
 import com.mskd.flux.core.database.data.mappers.toEntity
-import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.features.history.data.dao.HistoryDao
-import com.mskd.flux.features.history.data.mapper.toDomain
 import com.mskd.flux.features.history.data.mapper.toHistoryEntity
 import com.mskd.flux.features.history.data.model.HistoryEntity
 import com.mskd.flux.features.history.data.model.HistoryProjection
-import com.mskd.flux.features.history.data.repository.HistoryRepositoryImpl
-import com.mskd.flux.features.history.domain.model.HistoryEntry
 import com.mskd.flux.mockups.MediaMockups
 import io.kotest.core.spec.style.FunSpec
 import io.mockk.coVerify

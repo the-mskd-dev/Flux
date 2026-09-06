@@ -28,7 +28,6 @@ import com.mskd.flux.features.history.domain.repository.HistoryRepository
 import com.mskd.flux.features.player.domain.model.PlaybackAction
 import com.mskd.flux.features.player.domain.usecase.RecordPlaybackResultUseCase
 import com.mskd.flux.features.player.domain.usecase.ResolvePlaybackActionUseCase
-import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.utils.Trace
 import com.mskd.flux.utils.UpdateManager

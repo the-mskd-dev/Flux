@@ -5,8 +5,6 @@ import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
 import com.mskd.flux.features.artwork.fake.FakeObserveArtworkUseCase
-import com.mskd.flux.features.artwork.presentation.ArtworkEvent
-import com.mskd.flux.features.artwork.presentation.ArtworkIntent
 import com.mskd.flux.features.player.domain.model.PlaybackAction
 import com.mskd.flux.features.player.domain.usecase.RecordPlaybackResultUseCase
 import com.mskd.flux.features.player.domain.usecase.ResolvePlaybackActionUseCase

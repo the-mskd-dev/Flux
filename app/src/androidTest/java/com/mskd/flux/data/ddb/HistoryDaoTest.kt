@@ -9,10 +9,8 @@ import com.mskd.flux.core.database.data.FluxDatabase
 import com.mskd.flux.core.database.data.dao.ArtworkDao
 import com.mskd.flux.core.database.data.dao.MediasDao
 import com.mskd.flux.core.database.data.mappers.toEntity
-import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.features.history.data.dao.HistoryDao
 import com.mskd.flux.features.history.data.model.HistoryEntity
-import com.mskd.flux.features.history.domain.model.HistoryEntry
 import com.mskd.flux.mockups.MediaMockups
 import kotlinx.coroutines.test.runTest
 import org.junit.After

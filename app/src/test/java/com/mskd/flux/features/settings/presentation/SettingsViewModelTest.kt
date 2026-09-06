@@ -13,6 +13,9 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.types.shouldBeInstanceOf
+import io.kotest.property.Exhaustive
+import io.kotest.property.checkAll
+import io.kotest.property.exhaustive.enum
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
@@ -104,22 +107,30 @@ class SettingsViewModelTest : FunSpec({
         }
     }
 
-    test("show full sync dialog") {
+    test("ShowSettingsDialog - should show and hide settings dialog") {
+
+        // Given
         viewModel.uiState.test {
             awaitItem()
+
+            // When & Then
             viewModel.handleIntent(SettingsIntent.ShowSettingsDialog(dialog = SettingsDialog.SYNC_CATALOG))
             awaitItem().settingsDialog shouldBe SettingsDialog.SYNC_CATALOG
 
-            viewModel.handleIntent(SettingsIntent.HideDialog)
+            viewModel.handleIntent(SettingsIntent.ShowSettingsDialog(dialog = null))
             awaitItem().settingsDialog shouldBe null
         }
     }
 
-    test("proceed full sync") {
+    test("ShowSettingsDialog & ProceedFullSync - show dialog then proceed full sync") {
+
+        // Given
         viewModel.uiState.test {
             awaitItem()
+
+            // When & Then
             viewModel.handleIntent(SettingsIntent.ShowSettingsDialog(dialog = SettingsDialog.SYNC_CATALOG))
-            awaitItem().settingsDialog shouldBe true
+            awaitItem().settingsDialog shouldBe SettingsDialog.SYNC_CATALOG
 
             viewModel.handleIntent(SettingsIntent.ProceedFullSync)
             awaitItem().settingsDialog shouldBe null

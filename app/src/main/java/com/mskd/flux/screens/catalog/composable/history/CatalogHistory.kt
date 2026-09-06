@@ -1,8 +1,6 @@
-package com.mskd.flux.screens.catalog.composable
+package com.mskd.flux.screens.catalog.composable.history
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.background
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,9 +15,6 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CardElevation
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -55,10 +50,8 @@ import com.mskd.flux.utils.extensions.timeDescription
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.continue_watching
 import flux.shared.generated.resources.delete
-import flux.shared.generated.resources.episode
 import flux.shared.generated.resources.ic_delete
 import flux.shared.generated.resources.remaining_time
-import flux.shared.generated.resources.season
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -212,20 +205,10 @@ fun CatalogHistoryItem(
                         )
 
                         if (showMenu) {
-                            FluxDropDownMenu(
+                            CatalogHistoryMenu(
+                                entry = entry,
                                 onDismissRequest = { showMenu = false },
-                                items = listOf(
-                                    FluxDropDownMenuItem(
-                                        text = stringResource(Res.string.delete),
-                                        onClick = { sendIntent(CatalogIntent.DeleteHistoryEntry(entry = entry)) },
-                                        leadingIcon = {
-                                            Icon(
-                                                painter = painterResource(Res.drawable.ic_delete),
-                                                contentDescription = stringResource(Res.string.delete)
-                                            )
-                                        },
-                                    )
-                                )
+                                sendIntent = sendIntent
                             )
                         }
 

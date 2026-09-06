@@ -55,7 +55,7 @@ import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.navigation.domain.Route.Player
 import com.mskd.flux.screens.catalog.composable.CatalogEmptyContent
 import com.mskd.flux.screens.catalog.composable.CatalogHeader
-import com.mskd.flux.screens.catalog.composable.CatalogHistory
+import com.mskd.flux.screens.catalog.composable.history.CatalogHistory
 import com.mskd.flux.screens.catalog.composable.CatalogMenu
 import com.mskd.flux.screens.catalog.composable.CatalogViewMenu
 import com.mskd.flux.screens.catalog.composable.sorting.CatalogSortingSheet

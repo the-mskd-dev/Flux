@@ -78,7 +78,9 @@ class CatalogViewModelTest : FunSpec({
             every { flowGenres() } returns MutableStateFlow(DetailsMockup.allGenres)
         }
 
-        historyDb = mockk(relaxed = true)
+        historyDb = mockk(relaxed = true) {
+            every { flow } returns MutableStateFlow(emptyList())
+        }
 
         resolvePlaybackAction = mockk(relaxed = true)
         recordPlaybackResult = mockk(relaxed = true)

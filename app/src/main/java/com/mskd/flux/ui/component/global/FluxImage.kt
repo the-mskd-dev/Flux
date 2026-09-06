@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -97,7 +98,11 @@ fun FluxImage(
         )
     } else {
         AsyncImage(
-            modifier = modifier,
+            modifier = modifier.graphicsLayer {
+                scaleX = 1.06f
+                scaleY = 1.06f
+                translationY = -(size.height * 0.03f)
+            },
             model = ImageRequest.Builder(LocalContext.current)
                 .data(media.file.path)
                 .apply {
@@ -106,7 +111,6 @@ fun FluxImage(
                     else
                         videoFramePercent(.05)
                 }
-                .videoFrameOption(MediaMetadataRetriever.OPTION_PREVIOUS_SYNC)
                 .crossfade(true)
                 .build(),
             contentScale = contentScale,

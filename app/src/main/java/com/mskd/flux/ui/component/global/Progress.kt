@@ -28,7 +28,6 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun ProgressStatusBar(
     modifier: Modifier = Modifier,
-    color: Color = MaterialTheme.colorScheme.tertiary,
     isVisible: Boolean,
     strokeCap: StrokeCap = ProgressIndicatorDefaults.LinearStrokeCap,
     progress: () -> Float
@@ -42,7 +41,8 @@ fun ProgressStatusBar(
             modifier = Modifier
                 .height(8.dp)
                 .fillMaxWidth(),
-            color = color,
+            color = MaterialTheme.colorScheme.tertiary,
+            trackColor = MaterialTheme.colorScheme.tertiaryContainer,
             progress = progress,
             gapSize = 0.dp,
             strokeCap = strokeCap,

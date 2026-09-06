@@ -129,7 +129,7 @@ fun CatalogHistoryItem(
         shape = shape,
         onClick = { sendIntent(CatalogIntent.PlayMedia(media = media)) },
         shadowElevation = FluxUI.Elevation.itemShadow,
-        color = MaterialTheme.colorScheme.surfaceContainerLowest
+        color = MaterialTheme.colorScheme.surfaceContainerLow
     ) {
 
         Column(

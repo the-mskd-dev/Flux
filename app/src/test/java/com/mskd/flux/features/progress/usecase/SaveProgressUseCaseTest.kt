@@ -83,10 +83,12 @@ class SaveProgressUseCaseTest : FunSpec({
 
             saveProgress(media = testCase.media, progress = testCase.progress)
 
-            when (testCase.media) {
-                is Episode -> coVerify { databaseRepository.saveMedias(listOf(testCase.media)) }
-                is Movie -> coVerify { databaseRepository.saveMedias(listOf(testCase.media)) }
+            val expectedMedia = when (val media = testCase.media) {
+                is Movie -> media.copy(currentTime = testCase.progress, status = testCase.statusExpected)
+                is Episode -> media.copy(currentTime = testCase.progress, status = testCase.statusExpected)
             }
+
+            coVerify { databaseRepository.saveMedias(listOf(expectedMedia)) }
 
         }
     }

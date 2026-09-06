@@ -81,13 +81,17 @@ class SaveProgressUseCaseTest : FunSpec({
             )
         ) { testCase ->
 
-            saveProgress(media = testCase.media, progress = testCase.progress)
-
+            // Given
+            val expectedProgress = if (testCase.statusExpected == Status.WATCHED) 0L else testCase.progress
             val expectedMedia = when (val media = testCase.media) {
-                is Movie -> media.copy(currentTime = testCase.progress, status = testCase.statusExpected)
-                is Episode -> media.copy(currentTime = testCase.progress, status = testCase.statusExpected)
+                is Movie -> media.copy(currentTime = expectedProgress, status = testCase.statusExpected)
+                is Episode -> media.copy(currentTime = expectedProgress, status = testCase.statusExpected)
             }
 
+            // When
+            saveProgress(media = testCase.media, progress = testCase.progress)
+
+            // Then
             coVerify { databaseRepository.saveMedias(listOf(expectedMedia)) }
 
         }

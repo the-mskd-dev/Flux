@@ -15,6 +15,7 @@ import com.mskd.flux.features.catalog.domain.model.CatalogViewMode
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.history.domain.repository.HistoryRepository
+import com.mskd.flux.features.player.domain.model.PlaybackAction
 import com.mskd.flux.features.player.domain.usecase.RecordPlaybackResultUseCase
 import com.mskd.flux.features.player.domain.usecase.ResolvePlaybackActionUseCase
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
@@ -29,6 +30,7 @@ import io.kotest.property.Exhaustive
 import io.kotest.property.arbitrary.element
 import io.kotest.property.arbitrary.long
 import io.kotest.property.checkAll
+import io.kotest.property.exhaustive.boolean
 import io.kotest.property.exhaustive.enum
 import io.mockk.coEvery
 import io.mockk.every
@@ -436,10 +438,39 @@ class CatalogViewModelTest : FunSpec({
 
     //region Player
 
-    test("PlayMedia - ") {
+    test("PlayMedia - should call resolvePlaybackAction and then launch player event") {
+
+        checkAll(
+            iterations = 20,
+            Arb.element(MediaMockups.allMedias),
+            Exhaustive.boolean(),
+            Exhaustive.boolean(),
+        ) { media, forceInternal, externalPlayerRequested ->
+
+            // Given
+            val externalPlayer = !forceInternal && externalPlayerRequested
+            resolvePlaybackAction = mockk(relaxed = true) {
+                coEvery { invoke(media = media, forceInternal = forceInternal) } returns PlaybackAction.OpenPlayer(media = media, externalPlayer = externalPlayer)
+            }
+            viewModel = createViewModel()
+            viewModel.event.test {
+
+                // When
+                viewModel.handleIntent(intent = CatalogIntent.PlayMedia(media = media, forceInternal = forceInternal))
 
 
-        // Given
+                // Then
+                val event = awaitItem()
+                event.shouldBeInstanceOf<CatalogEvent.PlayMedia>()
+                event.media shouldBe media
+                event.externalPlayer shouldBe externalPlayer
+
+                cancelAndConsumeRemainingEvents()
+
+            }
+
+
+        }
 
     }
 

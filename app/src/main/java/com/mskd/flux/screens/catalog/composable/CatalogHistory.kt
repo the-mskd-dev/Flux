@@ -18,9 +18,12 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CardElevation
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -121,10 +124,12 @@ fun CatalogHistoryItem(
     val media = entry.media
     val shape = LocalUiShapes.current.corners
 
-    Card(
+    Surface(
         modifier = modifier.fillMaxWidthWithLimit(fraction = .8f, max = 450.dp),
         shape = shape,
-        onClick = { sendIntent(CatalogIntent.PlayMedia(media = media)) }
+        onClick = { sendIntent(CatalogIntent.PlayMedia(media = media)) },
+        shadowElevation = FluxUI.Elevation.itemShadow,
+        color = MaterialTheme.colorScheme.surfaceContainerLowest
     ) {
 
         Column(

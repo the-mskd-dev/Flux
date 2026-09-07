@@ -14,6 +14,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.features.images.domain.ImagesPrefetchManager
+import com.mskd.flux.features.settings.domain.model.SettingsDialog
 import com.mskd.flux.features.settings.presentation.SettingsIntent
 import com.mskd.flux.features.settings.presentation.SettingsUiState
 import com.mskd.flux.ui.theme.FluxUI
@@ -274,7 +275,16 @@ fun SettingsSyncSection(
             painter = painterResource(Res.drawable.ic_sync),
             iconColor = iconColor,
             iconBackgroundColor = bgColor,
-            onClick = { sendIntent(SettingsIntent.ShowFullSyncDialog(true)) }
+            onClick = { sendIntent(SettingsIntent.ShowSettingsDialog(dialog = SettingsDialog.SYNC_CATALOG)) }
+        )
+
+        SettingsItem(
+            text = stringResource(Res.string.sources),
+            subText = stringResource(Res.string.sources_short_desc),
+            painter = painterResource(Res.drawable.ic_folder),
+            iconColor = iconColor,
+            iconBackgroundColor = bgColor,
+            onClick = { sendIntent(SettingsIntent.OnSourcesTap) }
         )
 
         val imagesTextColor by animateColorAsState(if (state.prefetchImagesState is ImagesPrefetchManager.State.InProgress) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onBackground.copy(alpha = .8f))
@@ -295,15 +305,6 @@ fun SettingsSyncSection(
             iconColor = iconColor,
             iconBackgroundColor = bgColor,
             subTextColor = imagesTextColor
-        )
-
-        SettingsItem(
-            text = stringResource(Res.string.sources),
-            subText = stringResource(Res.string.sources_short_desc),
-            painter = painterResource(Res.drawable.ic_folder),
-            iconColor = iconColor,
-            iconBackgroundColor = bgColor,
-            onClick = { sendIntent(SettingsIntent.OnSourcesTap) }
         )
 
     }

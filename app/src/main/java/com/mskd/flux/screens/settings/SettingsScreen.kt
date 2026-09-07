@@ -34,14 +34,13 @@ import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.navigation.domain.Route.Token
 import com.mskd.flux.screens.settings.composables.SettingsAppInfoSection
 import com.mskd.flux.screens.settings.composables.SettingsCustomizationSection
+import com.mskd.flux.screens.settings.composables.SettingsDialogs
 import com.mskd.flux.screens.settings.composables.SettingsOtherSection
 import com.mskd.flux.screens.settings.composables.SettingsPlayerSection
 import com.mskd.flux.screens.settings.composables.SettingsSyncSection
 import com.mskd.flux.screens.settings.composables.SettingsTmdbSection
-import com.mskd.flux.ui.component.global.FluxDialog
 import com.mskd.flux.ui.component.global.FluxOptionsDialog
 import com.mskd.flux.ui.component.global.FluxScaffold
-import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.ui.theme.LocalUiGlobal
@@ -49,8 +48,6 @@ import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.notificationsPermissionState
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.settings
-import flux.shared.generated.resources.sync_library
-import flux.shared.generated.resources.sync_library_dialog
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -92,7 +89,7 @@ fun SettingsScreen(
         sendIntent = viewModel::handleIntent
     )
 
-    state.dialogState?.let { dialogState ->
+    state.optionsDialog?.let { dialogState ->
         FluxOptionsDialog(
             state = dialogState,
             onValidate = { viewModel.handleIntent(it) },
@@ -100,12 +97,10 @@ fun SettingsScreen(
         )
     }
 
-    if (state.showSyncDialog) {
-        SettingsFullSyncDialog(
-            sendIntent = viewModel::handleIntent,
-            onDismiss = { viewModel.handleIntent(SettingsIntent.ShowFullSyncDialog(show = false)) }
-        )
-    }
+    SettingsDialogs(
+        dialog = state.settingsDialog,
+        sendIntent = viewModel::handleIntent
+    )
 
 }
 
@@ -188,23 +183,6 @@ fun SettingIcon(
         painter = painter,
         tint = iconColor,
         contentDescription = contentDescription
-    )
-
-}
-
-@Composable
-fun SettingsFullSyncDialog(
-    sendIntent: (SettingsIntent) -> Unit,
-    onDismiss: () -> Unit
-) {
-
-    FluxDialog(
-        onDismiss = onDismiss,
-        onValidate = { sendIntent(SettingsIntent.ProceedFullSync) },
-        title = stringResource(Res.string.sync_library),
-        content = {
-            Text.Content.Body(text = stringResource(Res.string.sync_library_dialog))
-        }
     )
 
 }

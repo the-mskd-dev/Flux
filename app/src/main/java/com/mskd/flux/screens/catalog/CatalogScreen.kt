@@ -46,14 +46,18 @@ import com.mskd.flux.features.catalog.presentation.CatalogEvent
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.features.catalog.presentation.CatalogState
 import com.mskd.flux.features.catalog.presentation.CatalogViewModel
+import com.mskd.flux.features.history.data.mapper.toHistoryEntry
+import com.mskd.flux.features.history.domain.model.HistoryEntry
+import com.mskd.flux.features.player.domain.model.PlayerParams
 import com.mskd.flux.mockups.DetailsMockup
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.navigation.domain.Route
+import com.mskd.flux.navigation.domain.Route.Player
 import com.mskd.flux.screens.catalog.composable.CatalogEmptyContent
 import com.mskd.flux.screens.catalog.composable.CatalogHeader
 import com.mskd.flux.screens.catalog.composable.CatalogMenu
 import com.mskd.flux.screens.catalog.composable.CatalogViewMenu
-import com.mskd.flux.screens.catalog.composable.LastWatchedCarousel
+import com.mskd.flux.screens.catalog.composable.history.CatalogHistory
 import com.mskd.flux.screens.catalog.composable.sorting.CatalogSortingSheet
 import com.mskd.flux.screens.catalog.composable.viewMode.CatalogViewModeSheet
 import com.mskd.flux.screens.catalog.composable.viewMode.catalogViewModeGenre
@@ -63,6 +67,7 @@ import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxThemePreview
+import com.mskd.flux.utils.rememberExternalPlayerAction
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -73,6 +78,11 @@ fun CatalogScreen(
 ) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    val launchExternalPlayer = rememberExternalPlayerAction(
+        onProgressResult = { progress -> viewModel.handleIntent(CatalogIntent.OnExternalPlayerResult(progress = progress)) },
+        onFallbackToInternal = { media -> viewModel.handleIntent(CatalogIntent.PlayMedia(media = media, forceInternal = true)) }
+    )
 
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
@@ -85,6 +95,13 @@ fun CatalogScreen(
                 CatalogEvent.NavigateToSettings -> navigate(Route.Settings)
                 CatalogEvent.NavigateToToken -> navigate(Route.Token(fromSetup = false))
                 CatalogEvent.NavigateToSources -> navigate(Route.Sources(fromSetup = false))
+
+                is CatalogEvent.PlayMedia -> {
+                    if (event.externalPlayer)
+                        launchExternalPlayer(event.media)
+                    else
+                        navigate(Player(params = PlayerParams.fromMedia(event.media)))
+                }
             }
         }
     }
@@ -117,7 +134,7 @@ fun CatalogScreen(
                 CatalogContent(
                     artworks = state.artworks,
                     genres = state.genres,
-                    lastWatchedIds = state.lastWatchedMediaIds,
+                    history = state.history,
                     isRefreshing = state.isRefreshing,
                     tokenIsMissing = state.tokenIsMissing,
                     sortingMode = state.sortingMode,
@@ -141,7 +158,7 @@ fun CatalogScreen(
 fun CatalogContent(
     artworks: List<Artwork>,
     genres: List<Genre>,
-    lastWatchedIds: List<Long>,
+    history: List<HistoryEntry>,
     isRefreshing: Boolean,
     tokenIsMissing: Boolean,
     sortingMode: CatalogSortingMode,
@@ -202,6 +219,16 @@ fun CatalogContent(
                         }
                     }
 
+                    item(span = { GridItemSpan(maxLineSpan) }) {
+
+                        CatalogHistory(
+                            modifier = Modifier.animateItem(),
+                            entries = history,
+                            sendIntent = sendIntent
+                        )
+
+                    }
+
                     if (artworks.any { !it.isUnknown }) {
 
                         item(span = { GridItemSpan(maxLineSpan) }) {
@@ -210,11 +237,6 @@ fun CatalogContent(
                                 modifier = Modifier.fillMaxWidth(),
                                 verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
                             ) {
-
-                                LastWatchedCarousel(
-                                    artworks = lastWatchedIds.mapNotNull { artworks.find { o -> o.id == it } },
-                                    sendIntent = sendIntent
-                                )
 
                                 CatalogViewMenu(
                                     sortingMode = sortingMode,
@@ -304,7 +326,7 @@ fun CatalogScreen_Preview() {
             CatalogContent(
                 artworks = MediaMockups.artworks,
                 genres = DetailsMockup.allGenres,
-                lastWatchedIds = MediaMockups.artworks.map { it.id },
+                history = MediaMockups.allMedias.map { it.toHistoryEntry() },
                 isRefreshing = false,
                 tokenIsMissing = false,
                 sortingMode = CatalogSortingMode.LAST_MODIFICATION,
@@ -325,7 +347,7 @@ fun CatalogScreen_Unknown_Preview() {
             CatalogContent(
                 artworks = listOf(MediaMockups.unknownArtwork),
                 genres = emptyList(),
-                lastWatchedIds = emptyList(),
+                history = emptyList(),
                 isRefreshing = false,
                 tokenIsMissing = true,
                 sortingMode = CatalogSortingMode.LAST_MODIFICATION,
@@ -346,7 +368,7 @@ fun CatalogScreen_Empty_Preview() {
             CatalogContent(
                 artworks = emptyList(),
                 genres = emptyList(),
-                lastWatchedIds = emptyList(),
+                history = emptyList(),
                 isRefreshing = false,
                 tokenIsMissing = true,
                 sortingMode = CatalogSortingMode.LAST_MODIFICATION,

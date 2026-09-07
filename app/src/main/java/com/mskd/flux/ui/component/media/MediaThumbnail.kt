@@ -28,7 +28,7 @@ fun MediaThumbnail(
     }
 
     Box(
-        modifier = modifier.aspectRatio(FluxUI.Images.ratio_16_9),
+        modifier = modifier.aspectRatio(FluxUI.Ratio.landscape),
         contentAlignment = Alignment.BottomCenter,
         content = {
 

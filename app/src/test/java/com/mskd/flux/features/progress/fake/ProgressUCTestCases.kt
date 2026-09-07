@@ -11,7 +11,6 @@ object ProgressUCTestCases {
         val artwork: Artwork,
         val media: Media,
         val progress: Long,
-        val shouldBeAddedToRecentlyWatched: Boolean,
         val statusExpected: Status
     )
 

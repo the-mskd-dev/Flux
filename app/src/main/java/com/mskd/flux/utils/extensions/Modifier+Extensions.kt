@@ -1,5 +1,6 @@
 package com.mskd.flux.utils.extensions
 
+import androidx.annotation.FloatRange
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
@@ -82,10 +83,13 @@ fun Modifier.groupedShape(
 }
 
 @Composable
-fun Modifier.fillMaxWidthWithLimit() : Modifier {
+fun Modifier.fillMaxWidthWithLimit(
+    max: Dp = 500.dp,
+    @FloatRange fraction: Float = 1f
+) : Modifier {
     return this
-        .widthIn(max = 600.dp)
-        .fillMaxWidth()
+        .widthIn(max = max)
+        .fillMaxWidth(fraction = fraction)
 }
 
 fun Modifier.bleedHorizontal(amount: Dp = FluxUI.Space.medium) = layout { measurable, constraints ->

@@ -8,6 +8,7 @@ import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseC
 import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCase
 import com.mskd.flux.features.images.domain.ImagesPrefetchManager
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
+import com.mskd.flux.features.settings.domain.model.SettingsDialog
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -61,8 +62,8 @@ class SettingsViewModelTest : FunSpec({
             val initialState = awaitItem()
             initialState.rewindValue shouldBe 10
             initialState.forwardValue shouldBe 10
-            initialState.dialogState shouldBe null
-            initialState.showSyncDialog shouldBe false
+            initialState.optionsDialog shouldBe null
+            initialState.settingsDialog shouldBe null
             initialState.fullSyncInProgress shouldBe false
             initialState.prefetchHdImages shouldBe false
         }
@@ -103,25 +104,33 @@ class SettingsViewModelTest : FunSpec({
         }
     }
 
-    test("show full sync dialog") {
+    test("ShowSettingsDialog - should show and hide settings dialog") {
+
+        // Given
         viewModel.uiState.test {
             awaitItem()
-            viewModel.handleIntent(SettingsIntent.ShowFullSyncDialog(true))
-            awaitItem().showSyncDialog shouldBe true
 
-            viewModel.handleIntent(SettingsIntent.ShowFullSyncDialog(false))
-            awaitItem().showSyncDialog shouldBe false
+            // When & Then
+            viewModel.handleIntent(SettingsIntent.ShowSettingsDialog(dialog = SettingsDialog.SYNC_CATALOG))
+            awaitItem().settingsDialog shouldBe SettingsDialog.SYNC_CATALOG
+
+            viewModel.handleIntent(SettingsIntent.ShowSettingsDialog(dialog = null))
+            awaitItem().settingsDialog shouldBe null
         }
     }
 
-    test("proceed full sync") {
+    test("ShowSettingsDialog & ProceedFullSync - show dialog then proceed full sync") {
+
+        // Given
         viewModel.uiState.test {
             awaitItem()
-            viewModel.handleIntent(SettingsIntent.ShowFullSyncDialog(true))
-            awaitItem().showSyncDialog shouldBe true
+
+            // When & Then
+            viewModel.handleIntent(SettingsIntent.ShowSettingsDialog(dialog = SettingsDialog.SYNC_CATALOG))
+            awaitItem().settingsDialog shouldBe SettingsDialog.SYNC_CATALOG
 
             viewModel.handleIntent(SettingsIntent.ProceedFullSync)
-            awaitItem().showSyncDialog shouldBe false
+            awaitItem().settingsDialog shouldBe null
 
             coVerify { syncCatalogUseCase(onlyNew = false) }
         }
@@ -131,10 +140,10 @@ class SettingsViewModelTest : FunSpec({
         viewModel.uiState.test {
             awaitItem()
             viewModel.handleIntent(SettingsIntent.ShowRewindDialog)
-            awaitItem().dialogState shouldNotBe null
+            awaitItem().optionsDialog shouldNotBe null
 
             viewModel.handleIntent(SettingsIntent.HideDialog)
-            awaitItem().dialogState shouldBe null
+            awaitItem().optionsDialog shouldBe null
         }
     }
 
@@ -145,8 +154,8 @@ class SettingsViewModelTest : FunSpec({
             viewModel.handleIntent(SettingsIntent.ShowRewindDialog)
 
             val state = awaitItem()
-            state.dialogState shouldNotBe null
-            val dialogState = state.dialogState
+            state.optionsDialog shouldNotBe null
+            val dialogState = state.optionsDialog
             dialogState.shouldBeInstanceOf<FluxOptionsDialogState<Int, SettingsIntent>>()
             dialogState.currentValue shouldBe 10
 
@@ -160,8 +169,8 @@ class SettingsViewModelTest : FunSpec({
             viewModel.handleIntent(SettingsIntent.ShowForwardDialog)
 
             val state = awaitItem()
-            state.dialogState shouldNotBe null
-            val dialogState = state.dialogState
+            state.optionsDialog shouldNotBe null
+            val dialogState = state.optionsDialog
             dialogState.shouldBeInstanceOf<FluxOptionsDialogState<Int, SettingsIntent>>()
             dialogState.currentValue shouldBe 10
 
@@ -179,7 +188,7 @@ class SettingsViewModelTest : FunSpec({
 
             coVerify { settingsDataStore.setPlayerRewindValue(20) }
             state.rewindValue shouldBe 20
-            state.dialogState shouldBe null
+            state.optionsDialog shouldBe null
 
             cancelAndConsumeRemainingEvents()
 
@@ -197,7 +206,7 @@ class SettingsViewModelTest : FunSpec({
 
             coVerify { settingsDataStore.setPlayerForwardValue(20) }
             state.forwardValue shouldBe 20
-            state.dialogState shouldBe null
+            state.optionsDialog shouldBe null
 
             cancelAndConsumeRemainingEvents()
 
@@ -211,8 +220,8 @@ class SettingsViewModelTest : FunSpec({
             viewModel.handleIntent(SettingsIntent.ShowLanguageDialog)
 
             val state = awaitItem()
-            state.dialogState shouldNotBe null
-            val dialogState = state.dialogState
+            state.optionsDialog shouldNotBe null
+            val dialogState = state.optionsDialog
             dialogState.shouldBeInstanceOf<FluxOptionsDialogState<Locale?, SettingsIntent>>()
             dialogState.currentValue shouldBe null
         }
@@ -229,7 +238,7 @@ class SettingsViewModelTest : FunSpec({
 
             coVerify { settingsDataStore.setDataLanguage(Locale.FRENCH) }
             state.languageValue shouldBe Locale.FRENCH
-            state.dialogState shouldBe null
+            state.optionsDialog shouldBe null
 
             cancelAndConsumeRemainingEvents()
 
@@ -247,7 +256,7 @@ class SettingsViewModelTest : FunSpec({
 
             coVerify { settingsDataStore.setDataLanguage(null) }
             state.languageValue shouldBe null
-            state.dialogState shouldBe null
+            state.optionsDialog shouldBe null
 
             cancelAndConsumeRemainingEvents()
 

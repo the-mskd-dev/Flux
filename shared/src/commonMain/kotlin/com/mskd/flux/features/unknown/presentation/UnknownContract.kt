@@ -28,7 +28,6 @@ sealed interface UnknownIntent {
 sealed interface UnknownEvent {
     object BackToPreviousScreen : UnknownEvent
     object NavigateToHowToScreen : UnknownEvent
-    data class PlayMedia(val mediaId: Long) : UnknownEvent
-    data class LaunchExternalPlayer(val media: Media) : UnknownEvent
+    data class PlayMedia(val media: Media, val externalPlayer: Boolean) : UnknownEvent
     data class OpenFileExplorer(val media: Media): UnknownEvent
 }

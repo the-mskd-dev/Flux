@@ -1,30 +1,26 @@
 package com.mskd.flux.features.progress.domain.usecase
 
 import com.mskd.flux.core.database.domain.repository.DatabaseRepository
-import com.mskd.flux.core.datastore.domain.UserDataStore
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.Movie
 import com.mskd.flux.core.model.artwork.Status
+import com.mskd.flux.features.history.domain.usecase.SaveToHistoryUseCase
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.Trace
-import com.mskd.flux.utils.extensions.lastEpisode
 import com.mskd.flux.utils.extensions.timeDescription
 import kotlin.time.Duration.Companion.minutes
 
 class SaveProgressUseCase(
     private val database: DatabaseRepository,
-    private val user: UserDataStore
+    private val saveToHistory: SaveToHistoryUseCase
 ) {
 
-    companion object {
-        const val TAG = "SaveProgressUseCase"
+    private companion object {
+        const val TAG = "RecordProgressUseCase"
     }
 
-    suspend operator fun invoke(
-        media: Media,
-        progress: Long
-    ) {
+    suspend operator fun invoke(media: Media, progress: Long): Media {
 
         val newStatus = if (progress >= (media.duration * Constants.PLAYER.PROGRESS_THRESHOLD).minutes.inWholeMilliseconds) Status.WATCHED else Status.IS_WATCHING
         val newTime = if (newStatus == Status.WATCHED) 0L else progress
@@ -34,35 +30,14 @@ class SaveProgressUseCase(
             is Episode -> media.copy(currentTime = newTime, status = newStatus)
         }
 
-        when (updatedMedia) {
-            is Movie -> {
-
-                // Add/Remove from recently watched
-                if (newStatus == Status.WATCHED) user.removeFromRecentlyWatched(media.artworkId)
-                else user.addToRecentlyWatched(media.artworkId)
-
-                // Save in DB
-                database.saveMedias(listOf(updatedMedia))
-            }
-            is Episode -> {
-
-                // Add/Remove from recently watched
-                if (!updatedMedia.isUnknown) {
-                    val episodes = database.getEpisodes(artworkId = media.artworkId)
-                    val lastEpisode = episodes.lastEpisode
-                    if (lastEpisode.id == updatedMedia.id && newStatus == Status.WATCHED)
-                        user.removeFromRecentlyWatched(updatedMedia.artworkId)
-                    else
-                        user.addToRecentlyWatched(updatedMedia.artworkId)
-                }
-
-                // Save in DB
-                database.saveMedias(listOf(updatedMedia))
-            }
-        }
+        // Save in DB
+        database.saveMedias(listOf(updatedMedia))
 
         Trace.info(TAG, "${updatedMedia.title} saved at ${progress.timeDescription()}")
 
+        saveToHistory(media = updatedMedia)
+
+        return updatedMedia
     }
 
 }

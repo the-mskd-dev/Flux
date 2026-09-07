@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -81,10 +82,11 @@ fun FluxImage(
     modifier: Modifier,
     media: Media,
     contentScale: ContentScale = ContentScale.Crop,
-    contentDescription: String
+    contentDescription: String,
+    videoFrame: Boolean = false,
 ) {
 
-    if (media is Episode && media.imagePath.isNotBlank()) {
+    if (media is Episode && media.imagePath.isNotBlank() && !videoFrame) {
         FluxImage(
             modifier = modifier,
             path = media.imagePath,
@@ -93,7 +95,11 @@ fun FluxImage(
         )
     } else {
         AsyncImage(
-            modifier = modifier,
+            modifier = modifier.graphicsLayer {
+                scaleX = 1.06f
+                scaleY = 1.06f
+                translationY = -(size.height * 0.03f)
+            },
             model = ImageRequest.Builder(LocalContext.current)
                 .data(media.file.path)
                 .apply {

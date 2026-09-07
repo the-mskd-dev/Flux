@@ -4,9 +4,13 @@ import androidx.compose.runtime.Immutable
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.Genre
+import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
 import com.mskd.flux.features.catalog.domain.model.CatalogViewMode
 import com.mskd.flux.features.catalog.domain.model.SyncState
+import com.mskd.flux.features.history.domain.model.HistoryEntry
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 
 @Immutable
 data class CatalogUiState(
@@ -20,11 +24,10 @@ sealed class CatalogState {
     @Immutable
     data class Loading(val syncState: SyncState.Syncing = SyncState.Syncing(full = true)): CatalogState()
 
-    @Immutable
     data class Content(
-        val artworks: List<Artwork> = emptyList(),
-        val genres: List<Genre> = emptyList(),
-        val lastWatchedMediaIds: List<Long> = emptyList(),
+        val artworks: ImmutableList<Artwork> = persistentListOf(),
+        val genres: ImmutableList<Genre> = persistentListOf(),
+        val history: ImmutableList<HistoryEntry> = persistentListOf(),
         val isRefreshing: Boolean = true,
         val tokenIsMissing: Boolean = false,
 
@@ -59,9 +62,18 @@ sealed interface CatalogIntent {
     // View mode
     data class SelectViewMode(val mode: CatalogViewMode): CatalogIntent
     data class ShowViewModes(val show: Boolean): CatalogIntent
+
+    // History
+    data class DeleteHistoryEntry(val entry: HistoryEntry): CatalogIntent
+
+    // Player
+    data class PlayMedia(val media: Media, val forceInternal: Boolean = false): CatalogIntent
+    data class OnExternalPlayerResult(val progress: Long) : CatalogIntent
 }
 
 sealed interface CatalogEvent {
+
+    // Navigation
     data class NavigateToMovie(val artworkId: Long, val rgb: Int?): CatalogEvent
     data class NavigateToShow(val artworkId: Long, val rgb: Int?): CatalogEvent
     data object NavigateToUnknown: CatalogEvent
@@ -70,4 +82,7 @@ sealed interface CatalogEvent {
     data object NavigateToToken: CatalogEvent
     data object NavigateToHowTo: CatalogEvent
     data object NavigateToSources: CatalogEvent
+
+    // Player
+    data class PlayMedia(val media: Media, val externalPlayer: Boolean) : CatalogEvent
 }

@@ -22,7 +22,6 @@ class UserDataStoreImpl(
 ) : UserDataStore {
 
     object Keys {
-        val RECENTLY_WATCHED_IDS = stringPreferencesKey("last_watched_ids")
         val LAST_SYNC_TIME = longPreferencesKey("last_sync_time")
         val CURRENT_VERSION_CODE = intPreferencesKey("version_code")
 
@@ -35,8 +34,6 @@ class UserDataStoreImpl(
         .catch { exception -> if (exception is IOException) emit(emptyPreferences()) else throw exception }
         .map { preferences ->
 
-            val watchedIdsString = preferences[Keys.RECENTLY_WATCHED_IDS] ?: "[]"
-            val watchedIds = json.decodeFromString<List<Long>>(watchedIdsString)
             val syncTime = preferences[Keys.LAST_SYNC_TIME] ?: 0L
             val watchedMessagesIdsString = preferences[Keys.WATCHED_MESSAGES_IDS] ?: "[]"
             val watchedMessagesIds = json.decodeFromString<List<Int>>(watchedMessagesIdsString)
@@ -44,35 +41,12 @@ class UserDataStoreImpl(
             val pipIsEnabled = preferences[Keys.PIP_IS_ENABLED] ?: true
 
             UserDataStore.State(
-                recentlyWatchedIds = watchedIds,
                 syncTime = syncTime,
                 watchedMessagesIds = watchedMessagesIds,
                 versionCode = versionCode,
                 pipIsEnabled = pipIsEnabled,
             )
         }
-
-    override suspend fun addToRecentlyWatched(artworkId: Long) {
-        userDataStore.edit { preferences ->
-            val lastWatchedIds = ArrayList(flow.first().recentlyWatchedIds)
-
-            // Place recently watch in first position
-            lastWatchedIds.remove(artworkId)
-            lastWatchedIds.add(0, artworkId)
-
-            preferences[Keys.RECENTLY_WATCHED_IDS] = json.encodeToString(lastWatchedIds.take(4))
-
-        }
-    }
-
-    override suspend fun removeFromRecentlyWatched(artworkId: Long) {
-        userDataStore.edit { preferences ->
-            val lastWatchedIds = ArrayList(flow.first().recentlyWatchedIds)
-            lastWatchedIds.remove(artworkId)
-            preferences[Keys.RECENTLY_WATCHED_IDS] = json.encodeToString(lastWatchedIds)
-
-        }
-    }
 
     override suspend fun setSyncTime(syncTime: Long) {
         userDataStore.edit { preferences ->

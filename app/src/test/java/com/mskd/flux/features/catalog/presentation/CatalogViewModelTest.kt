@@ -14,6 +14,7 @@ import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
 import com.mskd.flux.features.catalog.domain.model.CatalogViewMode
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
+import com.mskd.flux.features.history.domain.model.HistoryEntry
 import com.mskd.flux.features.history.domain.repository.HistoryRepository
 import com.mskd.flux.features.player.domain.model.PlaybackAction
 import com.mskd.flux.features.player.domain.usecase.ResolvePlaybackActionUseCase
@@ -32,12 +33,14 @@ import io.kotest.property.checkAll
 import io.kotest.property.exhaustive.boolean
 import io.kotest.property.exhaustive.enum
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.spyk
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
 
@@ -111,10 +114,6 @@ class CatalogViewModelTest : FunSpec({
         )
     }
 
-    //endregion
-
-    //region Init
-
     test("Initial state") {
 
         // Given & When
@@ -129,10 +128,6 @@ class CatalogViewModelTest : FunSpec({
             cancelAndConsumeRemainingEvents()
         }
     }
-
-    //endregion
-
-    //region Sync
 
     test("Sync - SyncCatalog should call sync for new files") {
 
@@ -202,10 +197,6 @@ class CatalogViewModelTest : FunSpec({
             syncCatalogUseCaseSpy(onlyNew = false)
         }
     }
-
-    //endregion
-
-    //region Navigation
 
     test("OnArtworkTap - should send NavigateToShow event") {
 
@@ -343,10 +334,6 @@ class CatalogViewModelTest : FunSpec({
 
     }
 
-    //endregion
-
-    //region View & Sort
-
     test("ShowSortingModes - open sorting modes bottom sheet") {
 
         // Given
@@ -435,9 +422,81 @@ class CatalogViewModelTest : FunSpec({
 
     }
 
-    //endregion
+    test("DeleteHistoryEntry - should delete history entry in database") {
 
-    //region Player
+        // Given
+        val entry = HistoryEntry(
+            media = MediaMockups.episode1,
+            timestamp = 0L,
+            title = "Test"
+        )
+        val viewModel = createViewModel()
+
+        // When
+        viewModel.handleIntent(intent = CatalogIntent.DeleteHistoryEntry(entry = entry))
+
+        // Then
+        coVerify { historyDb.delete(entry.media.artworkId) }
+
+    }
+
+    test("ShowDetails - should navigate to artwork details") {
+
+        checkAll(
+            iterations = 20,
+            Arb.element(MediaMockups.allMedias),
+        ) { media ->
+
+            // Given
+            viewModel = createViewModel()
+            val matchingArtwork = artworkDb.flowArtworks().firstOrNull()
+                ?.find { it.id == media.artworkId }
+
+            viewModel.event.test {
+
+                // When
+                viewModel.handleIntent(CatalogIntent.ShowDetails(media = media))
+
+                // Then
+                if (matchingArtwork == null) {
+                    expectNoEvents()
+                } else {
+                    val expectedEvent = when {
+                        matchingArtwork.id == Artwork.UNKNOWN_ID -> CatalogEvent.NavigateToUnknown
+                        matchingArtwork.type == ContentType.SHOW -> CatalogEvent.NavigateToShow(
+                            artworkId = matchingArtwork.id,
+                            rgb = null
+                        )
+                        else -> CatalogEvent.NavigateToMovie(
+                            artworkId = matchingArtwork.id,
+                            rgb = null
+                        )
+                    }
+                    awaitItem() shouldBe expectedEvent
+                }
+
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    }
+
+    test("ShowDetails - should not navigate when artwork is not found") {
+
+        // Given
+        val orphanMedia = MediaMockups.episode1.copy(artworkId = -1L)
+        viewModel = createViewModel()
+
+        viewModel.event.test {
+
+            // When
+            viewModel.handleIntent(CatalogIntent.ShowDetails(media = orphanMedia))
+
+            // Then
+            expectNoEvents()
+        }
+
+    }
 
     test("PlayMedia - should call resolvePlaybackAction and then launch player event") {
 
@@ -495,7 +554,5 @@ class CatalogViewModelTest : FunSpec({
         }
 
     }
-
-    //endregion
 
 })

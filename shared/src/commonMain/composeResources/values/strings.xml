@@ -213,4 +213,5 @@
     <string name="bottom_bar">Bottom bar</string>
     <string name="top_bar">Top bar</string>
     <string name="continue_watching">Continue watching</string>
+    <string name="show_details">Show details</string>
 </resources>

@@ -1,6 +1,5 @@
 package com.mskd.flux.ui.component.global
 
-import android.media.MediaMetadataRetriever
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.Image
@@ -18,12 +17,10 @@ import androidx.compose.ui.platform.LocalContext
 import coil3.compose.AsyncImage
 import coil3.compose.AsyncImagePainter
 import coil3.compose.rememberAsyncImagePainter
-import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import coil3.request.allowHardware
 import coil3.request.crossfade
 import coil3.video.videoFrameMillis
-import coil3.video.videoFrameOption
 import coil3.video.videoFramePercent
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Media

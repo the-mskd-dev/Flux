@@ -9,9 +9,11 @@ import com.mskd.flux.ui.component.global.FluxDropDownMenuItem
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.delete
 import flux.shared.generated.resources.ic_delete
+import flux.shared.generated.resources.ic_info
 import flux.shared.generated.resources.ic_play
 import flux.shared.generated.resources.play
 import flux.shared.generated.resources.resume
+import flux.shared.generated.resources.show_details
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -37,6 +39,21 @@ fun CatalogHistoryMenu(
                     Icon(
                         painter = painterResource(Res.drawable.ic_play),
                         contentDescription = stringResource(Res.string.play)
+                    )
+                },
+            ),
+
+            // Open details
+            FluxDropDownMenuItem(
+                text = stringResource(Res.string.show_details),
+                onClick = {
+                    onDismissRequest()
+                    sendIntent(CatalogIntent.ShowDetails(media = entry.media))
+                },
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(Res.drawable.ic_info),
+                        contentDescription = stringResource(Res.string.show_details)
                     )
                 },
             ),

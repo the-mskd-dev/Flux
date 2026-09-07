@@ -196,4 +196,5 @@
     <string name="bottom_bar">Untere Leiste</string>
     <string name="top_bar">Obere Leiste</string>
     <string name="continue_watching">Weiterschauen</string>
+    <string name="show_details">Details anzeigen</string>
 </resources>

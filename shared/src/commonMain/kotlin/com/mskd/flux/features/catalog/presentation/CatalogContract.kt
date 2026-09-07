@@ -65,6 +65,7 @@ sealed interface CatalogIntent {
 
     // History
     data class DeleteHistoryEntry(val entry: HistoryEntry): CatalogIntent
+    data class ShowDetails(val media: Media): CatalogIntent
 
     // Player
     data class PlayMedia(val media: Media, val forceInternal: Boolean = false): CatalogIntent

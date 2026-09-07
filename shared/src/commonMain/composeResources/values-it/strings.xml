@@ -196,4 +196,5 @@
     <string name="bottom_bar">Barra inferiore</string>
     <string name="top_bar">Barra superiore</string>
     <string name="continue_watching">Continua a guardare</string>
+    <string name="show_details">Mostra dettagli</string>
 </resources>

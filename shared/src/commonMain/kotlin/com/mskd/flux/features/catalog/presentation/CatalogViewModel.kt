@@ -39,6 +39,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -163,6 +164,7 @@ class CatalogViewModel(
 
             // History
             is CatalogIntent.DeleteHistoryEntry -> deleteHistoryEntry(entry = intent.entry)
+            is CatalogIntent.ShowDetails -> showDetails(media = intent.media)
 
             // Player
             is CatalogIntent.PlayMedia -> playMedia(media = intent.media, forceInternal = intent.forceInternal)
@@ -213,6 +215,16 @@ class CatalogViewModel(
 
     private fun showViewModes(show: Boolean) {
         _showViewModeSheet.update { show }
+    }
+
+    private suspend fun showDetails(media: Media) {
+
+        val artwork = artworkFlow.firstOrNull()?.first?.find {
+            it.id == media.artworkId
+        } ?: return
+
+        onArtworkTap(artwork = artwork, rgb = null)
+
     }
 
     private suspend fun deleteHistoryEntry(entry: HistoryEntry) {

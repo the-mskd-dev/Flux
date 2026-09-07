@@ -16,7 +16,7 @@ import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.history.domain.repository.HistoryRepository
 import com.mskd.flux.features.player.domain.model.PlaybackAction
-import com.mskd.flux.features.player.domain.usecase.RecordPlaybackResultUseCase
+import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.features.player.domain.usecase.ResolvePlaybackActionUseCase
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.mockups.DetailsMockup
@@ -57,7 +57,7 @@ class CatalogViewModelTest : FunSpec({
     lateinit var tokenDataStore: TokenDataStore
     lateinit var appInfo: AppInfo
     lateinit var resolvePlaybackAction: ResolvePlaybackActionUseCase
-    lateinit var recordPlaybackResult: RecordPlaybackResultUseCase
+    lateinit var recordPlaybackResult: SaveProgressUseCase
 
     beforeTest {
 

@@ -26,7 +26,7 @@ import com.mskd.flux.features.catalog.presentation.CatalogEvent.NavigateToUnknow
 import com.mskd.flux.features.history.domain.model.HistoryEntry
 import com.mskd.flux.features.history.domain.repository.HistoryRepository
 import com.mskd.flux.features.player.domain.model.PlaybackAction
-import com.mskd.flux.features.player.domain.usecase.RecordPlaybackResultUseCase
+import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.features.player.domain.usecase.ResolvePlaybackActionUseCase
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.utils.Trace
@@ -53,7 +53,7 @@ class CatalogViewModel(
     private val catalogDataStore: CatalogDataStore,
     private val appInfo: AppInfo,
     private val resolvePlaybackAction: ResolvePlaybackActionUseCase,
-    private val recordPlaybackResult: RecordPlaybackResultUseCase
+    private val recordPlaybackResult: SaveProgressUseCase
 ): ViewModel() {
 
     private val _event = MutableSharedFlow<CatalogEvent>()

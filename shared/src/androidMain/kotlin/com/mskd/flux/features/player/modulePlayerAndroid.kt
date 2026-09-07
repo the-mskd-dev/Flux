@@ -66,7 +66,6 @@ val modulePlayerAndroid = module {
             pipIsEnabledUseCase = get(),
             saveProgressUseCase = get(),
             getSubtitlesUseCase = get(),
-            saveToHistoryUseCase = get()
         )
     }
 

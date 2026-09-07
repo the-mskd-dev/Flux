@@ -6,7 +6,6 @@ import com.mskd.flux.core.database.domain.repository.DatabaseRepository
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Movie
 import com.mskd.flux.core.model.artwork.Status
-import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.features.progress.fake.ProgressUCTestCases
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.utils.Constants

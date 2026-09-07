@@ -11,14 +11,13 @@ import com.mskd.flux.core.model.player.PlayerTrack
 import com.mskd.flux.core.model.player.PlayerTrack.Type
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
 import com.mskd.flux.features.files.domain.usecase.GetSubtitlesUseCase
-import com.mskd.flux.features.history.domain.usecase.SaveToHistoryUseCase
 import com.mskd.flux.features.player.data.PipIsEnabledUseCase
 import com.mskd.flux.features.player.domain.model.PlayerParams
+import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.features.player.presentation.PlayerUiContent.AmbientOverlay
 import com.mskd.flux.features.player.presentation.PlayerUiContent.NextButton
 import com.mskd.flux.features.player.presentation.PlayerUiContent.SeekOverlay
 import com.mskd.flux.features.player.presentation.PlayerUiContent.SettingsSheet
-import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.platform.PlayerManager
 import com.mskd.flux.utils.Trace
@@ -53,7 +52,6 @@ class PlayerViewModel<out T>(
     private val observeArtworkUseCase: ObserveArtworkUseCase,
     private val pipIsEnabledUseCase: PipIsEnabledUseCase,
     private val saveProgressUseCase: SaveProgressUseCase,
-    private val saveToHistoryUseCase: SaveToHistoryUseCase,
     private val getSubtitlesUseCase: GetSubtitlesUseCase
 ) : ViewModel() {
 
@@ -412,12 +410,7 @@ class PlayerViewModel<out T>(
         val media = content?.media ?: return
         val progress = _progress.value
 
-        val updatedMedia = saveProgressUseCase(
-            media = media,
-            progress = progress
-        )
-        saveToHistoryUseCase(media = updatedMedia)
-
+        saveProgressUseCase(media = media, progress = progress)
     }
 
     private fun updateSeekOverlay(type: SeekOverlay.Type, value: Int) {

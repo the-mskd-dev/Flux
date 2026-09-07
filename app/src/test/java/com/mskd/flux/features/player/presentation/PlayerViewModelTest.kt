@@ -8,11 +8,10 @@ import com.mskd.flux.core.model.player.PlayerTrack
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
 import com.mskd.flux.features.artwork.fake.FakeObserveArtworkUseCase
 import com.mskd.flux.features.files.domain.usecase.GetSubtitlesUseCase
-import com.mskd.flux.features.history.domain.usecase.SaveToHistoryUseCase
 import com.mskd.flux.features.player.data.PipIsEnabledUseCase
 import com.mskd.flux.features.player.domain.model.PlayerParams
-import com.mskd.flux.features.player.fake.PlayerTestCases
 import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
+import com.mskd.flux.features.player.fake.PlayerTestCases
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.PlayerMockups
@@ -38,16 +37,13 @@ class PlayerViewModelTest : FunSpec({
     lateinit var viewModel: PlayerViewModel<Player>
     lateinit var observeArtworkUseCase: ObserveArtworkUseCase
     lateinit var settingsDataStore: SettingsDataStore
-    lateinit var saveProgress: SaveProgressUseCase
+    lateinit var recordProgress: SaveProgressUseCase
     lateinit var playerManager: PlayerManager<Player>
     lateinit var player: Player
     lateinit var pipIsEnabledUseCase: PipIsEnabledUseCase
     lateinit var getSubtitlesUseCase: GetSubtitlesUseCase
-    lateinit var saveToHistoryUseCase: SaveToHistoryUseCase
 
     fun updateVm(mediaId: Long = MediaMockups.episode1.mediaId) {
-
-        saveProgress = mockk(relaxed = true)
 
         val media = MediaMockups.allMedias.find { it.mediaId == mediaId }
         media?.let { observeArtworkUseCase(it.artworkId) }
@@ -62,9 +58,8 @@ class PlayerViewModelTest : FunSpec({
             settingsDataStore = settingsDataStore,
             playerManager = playerManager,
             pipIsEnabledUseCase = pipIsEnabledUseCase,
-            saveProgressUseCase = saveProgress,
+            saveProgressUseCase = recordProgress,
             getSubtitlesUseCase = getSubtitlesUseCase,
-            saveToHistoryUseCase = saveToHistoryUseCase
         )
 
     }
@@ -85,7 +80,7 @@ class PlayerViewModelTest : FunSpec({
 
         pipIsEnabledUseCase = mockk(relaxed = true)
         getSubtitlesUseCase = mockk(relaxed = true)
-        saveToHistoryUseCase = mockk(relaxed = true)
+        recordProgress = mockk(relaxed = true)
         observeArtworkUseCase = FakeObserveArtworkUseCase()
 
         updateVm()
@@ -212,7 +207,7 @@ class PlayerViewModelTest : FunSpec({
                 viewModel.handleIntent(PlayerIntent.SaveTime)
 
                 // Then
-                coVerify { saveProgress(testCase.media, testCase.time) }
+                coVerify { recordProgress(testCase.media, testCase.time) }
 
             }
 
@@ -433,7 +428,7 @@ class PlayerViewModelTest : FunSpec({
             viewModel.handleIntent(PlayerIntent.GoToBackground)
 
             coVerify { playerManager.pause() }
-            coVerify { saveProgress(any(), 2000L) }
+            coVerify { recordProgress(any(), 2000L) }
         }
     }
 
@@ -457,7 +452,7 @@ class PlayerViewModelTest : FunSpec({
 
             viewModel.handleIntent(PlayerIntent.GoToBackground)
             coVerify { playerManager.pause() }
-            coVerify { saveProgress(any(), 3000L) }
+            coVerify { recordProgress(any(), 3000L) }
 
             viewModel.handleIntent(PlayerIntent.GoToForeground)
             coVerify { playerManager.play() }
@@ -513,7 +508,7 @@ class PlayerViewModelTest : FunSpec({
             viewModel.handleIntent(PlayerIntent.GoToBackground)
 
             coVerify(exactly = 0) { playerManager.pause() }
-            coVerify { saveProgress(any(), 2000L) }
+            coVerify { recordProgress(any(), 2000L) }
         }
     }
 

@@ -6,6 +6,8 @@ import com.mskd.flux.core.database.domain.repository.DatabaseRepository
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Movie
 import com.mskd.flux.core.model.artwork.Status
+import com.mskd.flux.features.history.domain.usecase.SaveToHistoryUseCase
+import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.features.progress.fake.ProgressUCTestCases
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.utils.Constants
@@ -14,6 +16,7 @@ import com.mskd.flux.utils.extensions.minToMs
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData
 import io.mockk.coVerify
+import io.mockk.mockk
 import io.mockk.spyk
 
 class SaveProgressUseCaseTest : FunSpec({
@@ -22,13 +25,16 @@ class SaveProgressUseCaseTest : FunSpec({
 
     lateinit var databaseRepository: DatabaseRepository
     lateinit var saveProgress: SaveProgressUseCase
+    lateinit var saveToHistory: SaveToHistoryUseCase
 
     beforeTest {
 
         databaseRepository = spyk(FakeDatabaseRepository())
+        saveToHistory = mockk(relaxed = true)
 
         saveProgress = SaveProgressUseCase(
             database = databaseRepository,
+            saveToHistory = saveToHistory
         )
 
     }
@@ -92,8 +98,10 @@ class SaveProgressUseCaseTest : FunSpec({
 
             // Then
             coVerify { databaseRepository.saveMedias(listOf(expectedMedia)) }
+            coVerify { saveToHistory(expectedMedia) }
 
         }
+
     }
 
 })

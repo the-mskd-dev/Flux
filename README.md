@@ -17,7 +17,7 @@ This app allows you to organize your local files (movies, shows, anime) in a bea
 **DISCLAIMER**: This app is mainly used for my own personal use, and as a sandbox for Android Development. I currently have no job, so I'm trying to improve my skills to find one more quickly.
 If you ever want to support me, or if you are a philanthropist, I accept all donations!
 
-Don't hesitate to give me feedback!
+If you want some news about the development of the app, follow my X account!
 
 ## Features
 

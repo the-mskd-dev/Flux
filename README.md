@@ -4,7 +4,7 @@
 
 [![F-Droid Version](https://img.shields.io/f-droid/v/com.mskd.flux)](https://f-droid.org/ko/packages/com.mskd.flux/)
 
-![X (formerly Twitter) Follow](https://img.shields.io/twitter/follow/themskddev?style=for-the-badge)
+[![X (formerly Twitter) Follow](https://img.shields.io/twitter/follow/themskddev?style=for-the-badge)](https://x.com/themskddev)
 
 
 
@@ -29,21 +29,21 @@ Don't hesitate to give me feedback!
 
 ## Tech
 
-- Android : A full native Android app
-- Kotlin : Native Android language
-- Jetpack Compose : To build the UI
-- Material 3 Expressive : To get a fresh UI (I did my best)
-- Jetpack Navigation 3 : New Navigation framework from Jetpack library
-- Media3 : Media player
-- TMDB API : To get medias information
-- Koin : Dependencies injection
-- Ktor : HTTP requests
-- Coil : Image management
-- Room : Database
+- Android: A full native Android app
+- Kotlin: Native Android language
+- Jetpack Compose: To build the UI
+- Material 3 Expressive: To get a fresh UI (I did my best)
+- Jetpack Navigation 3: New Navigation framework from Jetpack library
+- Media3/ExoPlayer: Media player
+- TMDB API: To get medias information
+- Koin: Dependencies injection
+- Ktor: HTTP requests
+- Coil: Image management
+- Room: Database
 
 ## How to use
 
-This app use your video files (>5min) and then use TMBD to get information.
+This app use your video files and then use TMBD to get information.
 
 To use TMDB, you need to **pass a TMDB Token**, and your files need to have a **specific formatted name**
 
@@ -54,16 +54,21 @@ Give your movies a clear name, followed by the year if you want. For example:
 - Spider-man (2002).mkv
 - Your name.avi
 - Spider-man-no-way-home-(2021).mp4
+- Spider.man.brand.new.day.mp4
 
 ### Shows
 
-For TV show episodes, use a format that includes the season and episode number. For example:
+For TV show episodes, use a format that includes the season and episode number. You can also use folders to name your files. For example:
 
 - show name_s01e02.mkv
 - show name_s01.e02.mkv
 - show_name_1x02.mkv
 - show_name_se1.ep2.mkv
 - show_name-season1.episode2.mkv
+- show name (1995)_s01e02.mkv
+- show name/s01e02.mkv
+- show name/1/02.mkv
+- show name/season 1/02.mkv
 
 ## Development
 

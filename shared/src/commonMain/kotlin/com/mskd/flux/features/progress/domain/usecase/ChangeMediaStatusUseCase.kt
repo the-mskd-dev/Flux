@@ -7,6 +7,7 @@ import com.mskd.flux.core.model.artwork.Movie
 import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.features.history.domain.repository.HistoryRepository
 import com.mskd.flux.utils.Trace
+import com.mskd.flux.utils.extensions.getNextEpisodeFor
 import com.mskd.flux.utils.extensions.lastEpisode
 
 class ChangeMediaStatusUseCase(
@@ -59,9 +60,15 @@ class ChangeMediaStatusUseCase(
         val episodes = database.getEpisodes(artworkId = episode.artworkId)
         if (episodes.isNotEmpty()) {
 
-            val lastEpisode = episodes.lastEpisode
-            if (lastEpisode.id == updatedEpisode.id && status == Status.WATCHED)
-                history.delete(artworkId = episode.artworkId)
+            val nextEpisode = episodes.getNextEpisodeFor(episode = episode)
+            if (status == Status.WATCHED) {
+
+                if (nextEpisode != null)
+                    history.insert(media = nextEpisode)
+                else
+                    history.delete(artworkId = episode.artworkId)
+
+            }
 
             database.saveMedias(listOf(updatedEpisode)) // Save status in DB
 

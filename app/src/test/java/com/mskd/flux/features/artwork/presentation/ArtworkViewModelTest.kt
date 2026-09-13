@@ -8,6 +8,8 @@ import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
 import com.mskd.flux.features.artwork.fake.FakeObserveArtworkUseCase
+import com.mskd.flux.features.player.domain.model.PlaybackAction
+import com.mskd.flux.features.player.domain.usecase.ResolvePlaybackActionUseCase
 import com.mskd.flux.features.progress.domain.usecase.ChangeMediaStatusUseCase
 import com.mskd.flux.features.progress.domain.usecase.MarkPreviousAsWatchedUseCase
 import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
@@ -18,6 +20,12 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.types.shouldBeInstanceOf
+import io.kotest.property.Arb
+import io.kotest.property.Exhaustive
+import io.kotest.property.arbitrary.element
+import io.kotest.property.checkAll
+import io.kotest.property.exhaustive.boolean
+import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
@@ -35,7 +43,9 @@ class ArtworkViewModelTest : FunSpec({
     lateinit var changeMediaStatus: ChangeMediaStatusUseCase
     lateinit var markPreviousAsWatched: MarkPreviousAsWatchedUseCase
     lateinit var resetProgress: ResetProgressUseCase
-    lateinit var saveProgress: SaveProgressUseCase
+    lateinit var resolvePlaybackAction: ResolvePlaybackActionUseCase
+    lateinit var recordPlaybackResult: SaveProgressUseCase
+
     var currentSeason: Int? = 1
 
     val updateVm: (id: Long) -> Unit = { id ->
@@ -43,7 +53,9 @@ class ArtworkViewModelTest : FunSpec({
         changeMediaStatus = mockk(relaxed = true)
         markPreviousAsWatched = mockk(relaxed = true)
         resetProgress = mockk(relaxed = true)
-        saveProgress = mockk(relaxed = true)
+        resolvePlaybackAction = mockk(relaxed = true)
+        recordPlaybackResult = mockk(relaxed = true)
+
 
         viewModel = ArtworkViewModel(
             artworkId = id,
@@ -53,7 +65,8 @@ class ArtworkViewModelTest : FunSpec({
             changeMediaStatus = changeMediaStatus,
             markPreviousAsWatched = markPreviousAsWatched,
             resetProgress = resetProgress,
-            saveProgress = saveProgress
+            resolvePlaybackAction = resolvePlaybackAction,
+            recordPlaybackResult = recordPlaybackResult
         )
 
     }
@@ -112,53 +125,34 @@ class ArtworkViewModelTest : FunSpec({
 
     }
 
-    test("show player") {
+    test("PlayMedia - should call resolvePlaybackAction and then launch player event") {
 
-        viewModel.uiState.test {
+        checkAll(
+            iterations = 20,
+            Arb.element(MediaMockups.allMedias),
+            Exhaustive.boolean(),
+            Exhaustive.boolean(),
+        ) { media, forceInternal, externalPlayerRequested ->
 
-            val initialState = expectMostRecentItem()
-            val content = (initialState.state as State.Content).content
-            val media = content.selectedMedia
+            // Given
+            val externalPlayer = !forceInternal && externalPlayerRequested
+            coEvery { resolvePlaybackAction(media = media, forceInternal = forceInternal) } returns PlaybackAction.OpenPlayer(media = media, externalPlayer = externalPlayer)
 
             viewModel.event.test {
 
-                viewModel.handleIntent(ArtworkIntent.PlayMedia(media = media))
+                // When
+                viewModel.handleIntent(intent = ArtworkIntent.PlayMedia(media = media, forceInternal = forceInternal))
 
+                // Then
                 val event = awaitItem()
-
                 event.shouldBeInstanceOf<ArtworkEvent.PlayMedia>()
-                event.mediaId shouldBe media.mediaId
-
-            }
-
-        }
-
-    }
-
-    test("show external player") {
-
-        settingsDataStore = mockk(relaxed = true) {
-            every { flow } returns MutableStateFlow(SettingsDataStore.State(externalPlayer = true))
-        }
-
-        updateVm(MediaMockups.showArtwork.id)
-
-        viewModel.uiState.test {
-
-            val initialState = expectMostRecentItem()
-            val content = (initialState.state as State.Content).content
-            val media = content.selectedMedia
-
-            viewModel.event.test {
-
-                viewModel.handleIntent(ArtworkIntent.PlayMedia(media = media))
-
-                val event = awaitItem()
-
-                event.shouldBeInstanceOf<ArtworkEvent.LaunchExternalPlayer>()
                 event.media shouldBe media
+                event.externalPlayer shouldBe externalPlayer
+
+                cancelAndConsumeRemainingEvents()
 
             }
+
 
         }
 
@@ -370,7 +364,7 @@ class ArtworkViewModelTest : FunSpec({
 
             viewModel.handleIntent(ArtworkIntent.PlayMedia(MediaMockups.episode1))
             viewModel.handleIntent(ArtworkIntent.OnExternalPlayerResult(progress = 5000L))
-            coVerify { saveProgress(media = MediaMockups.episode1, progress = 5000L) }
+            coVerify { recordPlaybackResult(media = MediaMockups.episode1, progress = 5000L) }
         }
     }
 

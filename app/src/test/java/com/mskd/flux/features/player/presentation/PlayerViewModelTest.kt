@@ -9,6 +9,7 @@ import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtwo
 import com.mskd.flux.features.artwork.fake.FakeObserveArtworkUseCase
 import com.mskd.flux.features.files.domain.usecase.GetSubtitlesUseCase
 import com.mskd.flux.features.player.data.PipIsEnabledUseCase
+import com.mskd.flux.features.player.domain.model.PlayerParams
 import com.mskd.flux.features.player.fake.PlayerTestCases
 import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
@@ -36,7 +37,7 @@ class PlayerViewModelTest : FunSpec({
     lateinit var viewModel: PlayerViewModel<Player>
     lateinit var observeArtworkUseCase: ObserveArtworkUseCase
     lateinit var settingsDataStore: SettingsDataStore
-    lateinit var saveProgress: SaveProgressUseCase
+    lateinit var recordProgress: SaveProgressUseCase
     lateinit var playerManager: PlayerManager<Player>
     lateinit var player: Player
     lateinit var pipIsEnabledUseCase: PipIsEnabledUseCase
@@ -44,19 +45,21 @@ class PlayerViewModelTest : FunSpec({
 
     fun updateVm(mediaId: Long = MediaMockups.episode1.mediaId) {
 
-        saveProgress = mockk(relaxed = true)
-
         val media = MediaMockups.allMedias.find { it.mediaId == mediaId }
         media?.let { observeArtworkUseCase(it.artworkId) }
+        val playerParams = PlayerParams(
+            mediaId = mediaId,
+            artworkId = media?.artworkId
+        )
 
         viewModel = PlayerViewModel(
-            mediaId = mediaId,
+            params = playerParams,
             observeArtworkUseCase = observeArtworkUseCase,
             settingsDataStore = settingsDataStore,
             playerManager = playerManager,
             pipIsEnabledUseCase = pipIsEnabledUseCase,
-            saveProgressUseCase = saveProgress,
-            getSubtitlesUseCase = getSubtitlesUseCase
+            saveProgressUseCase = recordProgress,
+            getSubtitlesUseCase = getSubtitlesUseCase,
         )
 
     }
@@ -77,6 +80,7 @@ class PlayerViewModelTest : FunSpec({
 
         pipIsEnabledUseCase = mockk(relaxed = true)
         getSubtitlesUseCase = mockk(relaxed = true)
+        recordProgress = mockk(relaxed = true)
         observeArtworkUseCase = FakeObserveArtworkUseCase()
 
         updateVm()
@@ -203,7 +207,7 @@ class PlayerViewModelTest : FunSpec({
                 viewModel.handleIntent(PlayerIntent.SaveTime)
 
                 // Then
-                coVerify { saveProgress(testCase.media, testCase.time) }
+                coVerify { recordProgress(testCase.media, testCase.time) }
 
             }
 
@@ -424,7 +428,7 @@ class PlayerViewModelTest : FunSpec({
             viewModel.handleIntent(PlayerIntent.GoToBackground)
 
             coVerify { playerManager.pause() }
-            coVerify { saveProgress(any(), 2000L) }
+            coVerify { recordProgress(any(), 2000L) }
         }
     }
 
@@ -448,7 +452,7 @@ class PlayerViewModelTest : FunSpec({
 
             viewModel.handleIntent(PlayerIntent.GoToBackground)
             coVerify { playerManager.pause() }
-            coVerify { saveProgress(any(), 3000L) }
+            coVerify { recordProgress(any(), 3000L) }
 
             viewModel.handleIntent(PlayerIntent.GoToForeground)
             coVerify { playerManager.play() }
@@ -504,7 +508,7 @@ class PlayerViewModelTest : FunSpec({
             viewModel.handleIntent(PlayerIntent.GoToBackground)
 
             coVerify(exactly = 0) { playerManager.pause() }
-            coVerify { saveProgress(any(), 2000L) }
+            coVerify { recordProgress(any(), 2000L) }
         }
     }
 

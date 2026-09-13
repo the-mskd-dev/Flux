@@ -195,7 +195,7 @@ class MainActivity : ComponentActivity() {
                             }
                             entry<Route.Player> { entry ->
                                 PlayerScreen(
-                                    mediaId = entry.mediaId,
+                                    params = entry.params,
                                     onBack = { onBack() },
                                 )
                             }

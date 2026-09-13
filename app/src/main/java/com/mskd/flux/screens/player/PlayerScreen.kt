@@ -51,6 +51,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.ui.compose.ContentFrame
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.core.model.enums.Side
+import com.mskd.flux.features.player.domain.model.PlayerParams
 import com.mskd.flux.features.player.presentation.PlayerIntent
 import com.mskd.flux.features.player.presentation.PlayerUiContent
 import com.mskd.flux.features.player.presentation.PlayerViewModel
@@ -77,9 +78,9 @@ import kotlin.time.Duration.Companion.seconds
 @OptIn(UnstableApi::class)
 @Composable
 fun PlayerScreen(
-    mediaId: Long,
+    params: PlayerParams,
     onBack: () -> Unit,
-    viewModel: PlayerViewModel<Player> = koinViewModel(parameters = { parametersOf(mediaId) })
+    viewModel: PlayerViewModel<Player> = koinViewModel(parameters = { parametersOf(params) })
 ) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()

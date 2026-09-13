@@ -3,6 +3,7 @@ package com.mskd.flux.navigation.domain
 import androidx.navigation3.runtime.NavKey
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.Genre
+import com.mskd.flux.features.player.domain.model.PlayerParams
 import kotlinx.serialization.Serializable
 
 sealed class Route : NavKey {
@@ -32,7 +33,7 @@ sealed class Route : NavKey {
     ): Route()
 
     @Serializable
-    data class Player(val mediaId: Long) : Route()
+    data class Player(val params: PlayerParams) : Route()
 
     @Serializable
     data object Settings: Route()

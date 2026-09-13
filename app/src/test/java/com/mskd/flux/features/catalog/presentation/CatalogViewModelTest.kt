@@ -14,6 +14,11 @@ import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
 import com.mskd.flux.features.catalog.domain.model.CatalogViewMode
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
+import com.mskd.flux.features.history.domain.model.HistoryEntry
+import com.mskd.flux.features.history.domain.repository.HistoryRepository
+import com.mskd.flux.features.player.domain.model.PlaybackAction
+import com.mskd.flux.features.player.domain.usecase.ResolvePlaybackActionUseCase
+import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.mockups.DetailsMockup
 import com.mskd.flux.mockups.MediaMockups
@@ -23,15 +28,19 @@ import io.kotest.matchers.types.shouldBeInstanceOf
 import io.kotest.property.Arb
 import io.kotest.property.Exhaustive
 import io.kotest.property.arbitrary.element
+import io.kotest.property.arbitrary.long
 import io.kotest.property.checkAll
+import io.kotest.property.exhaustive.boolean
 import io.kotest.property.exhaustive.enum
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.spyk
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
 
@@ -46,9 +55,12 @@ class CatalogViewModelTest : FunSpec({
     lateinit var syncCatalogUseCase: SyncCatalogUseCase
     lateinit var artworkDb: DatabaseRepository
     lateinit var detailsDb: DetailsRepository
+    lateinit var historyDb: HistoryRepository
     lateinit var userDataStore: UserDataStore
     lateinit var tokenDataStore: TokenDataStore
     lateinit var appInfo: AppInfo
+    lateinit var resolvePlaybackAction: ResolvePlaybackActionUseCase
+    lateinit var recordPlaybackResult: SaveProgressUseCase
 
     beforeTest {
 
@@ -68,6 +80,13 @@ class CatalogViewModelTest : FunSpec({
             every { flowGenres() } returns MutableStateFlow(DetailsMockup.allGenres)
         }
 
+        historyDb = mockk(relaxed = true) {
+            every { flow } returns MutableStateFlow(emptyList())
+        }
+
+        resolvePlaybackAction = mockk(relaxed = true)
+        recordPlaybackResult = mockk(relaxed = true)
+
         appInfo = AppInfo(
             versionCode = 0,
             versionName = "Version-Test"
@@ -85,16 +104,15 @@ class CatalogViewModelTest : FunSpec({
             syncCatalogUseCase = syncUseCase,
             artworkDb = artworkDb,
             detailsDb = detailsDb,
+            historyDb = historyDb,
             userDataStore = userDataStore,
             tokenDataStore = tokenDataStore,
             catalogDataStore = catalogDataStore,
-            appInfo = appInfo
+            appInfo = appInfo,
+            resolvePlaybackAction = resolvePlaybackAction,
+            recordPlaybackResult = recordPlaybackResult
         )
     }
-
-    //endregion
-
-    //region Init
 
     test("Initial state") {
 
@@ -110,10 +128,6 @@ class CatalogViewModelTest : FunSpec({
             cancelAndConsumeRemainingEvents()
         }
     }
-
-    //endregion
-
-    //region Sync
 
     test("Sync - SyncCatalog should call sync for new files") {
 
@@ -183,10 +197,6 @@ class CatalogViewModelTest : FunSpec({
             syncCatalogUseCaseSpy(onlyNew = false)
         }
     }
-
-    //endregion
-
-    //region Navigation
 
     test("OnArtworkTap - should send NavigateToShow event") {
 
@@ -324,10 +334,6 @@ class CatalogViewModelTest : FunSpec({
 
     }
 
-    //endregion
-
-    //region View & Sort
-
     test("ShowSortingModes - open sorting modes bottom sheet") {
 
         // Given
@@ -416,6 +422,137 @@ class CatalogViewModelTest : FunSpec({
 
     }
 
-    //endregion
+    test("DeleteHistoryEntry - should delete history entry in database") {
+
+        // Given
+        val entry = HistoryEntry(
+            media = MediaMockups.episode1,
+            timestamp = 0L,
+            title = "Test"
+        )
+        val viewModel = createViewModel()
+
+        // When
+        viewModel.handleIntent(intent = CatalogIntent.DeleteHistoryEntry(entry = entry))
+
+        // Then
+        coVerify { historyDb.delete(entry.media.artworkId) }
+
+    }
+
+    test("ShowDetails - should navigate to artwork details") {
+
+        checkAll(
+            iterations = 20,
+            Arb.element(MediaMockups.allMedias),
+        ) { media ->
+
+            // Given
+            viewModel = createViewModel()
+            val matchingArtwork = artworkDb.flowArtworks().firstOrNull()
+                ?.find { it.id == media.artworkId }
+
+            viewModel.event.test {
+
+                // When
+                viewModel.handleIntent(CatalogIntent.ShowDetails(media = media))
+
+                // Then
+                if (matchingArtwork == null) {
+                    expectNoEvents()
+                } else {
+                    val expectedEvent = when {
+                        matchingArtwork.id == Artwork.UNKNOWN_ID -> CatalogEvent.NavigateToUnknown
+                        matchingArtwork.type == ContentType.SHOW -> CatalogEvent.NavigateToShow(
+                            artworkId = matchingArtwork.id,
+                            rgb = null
+                        )
+                        else -> CatalogEvent.NavigateToMovie(
+                            artworkId = matchingArtwork.id,
+                            rgb = null
+                        )
+                    }
+                    awaitItem() shouldBe expectedEvent
+                }
+
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    }
+
+    test("ShowDetails - should not navigate when artwork is not found") {
+
+        // Given
+        val orphanMedia = MediaMockups.episode1.copy(artworkId = -1L)
+        viewModel = createViewModel()
+
+        viewModel.event.test {
+
+            // When
+            viewModel.handleIntent(CatalogIntent.ShowDetails(media = orphanMedia))
+
+            // Then
+            expectNoEvents()
+        }
+
+    }
+
+    test("PlayMedia - should call resolvePlaybackAction and then launch player event") {
+
+        checkAll(
+            iterations = 20,
+            Arb.element(MediaMockups.allMedias),
+            Exhaustive.boolean(),
+            Exhaustive.boolean(),
+        ) { media, forceInternal, externalPlayerRequested ->
+
+            // Given
+            val externalPlayer = !forceInternal && externalPlayerRequested
+            resolvePlaybackAction = mockk(relaxed = true) {
+                coEvery { invoke(media = media, forceInternal = forceInternal) } returns PlaybackAction.OpenPlayer(media = media, externalPlayer = externalPlayer)
+            }
+            viewModel = createViewModel()
+            viewModel.event.test {
+
+                // When
+                viewModel.handleIntent(intent = CatalogIntent.PlayMedia(media = media, forceInternal = forceInternal))
+
+                // Then
+                val event = awaitItem()
+                event.shouldBeInstanceOf<CatalogEvent.PlayMedia>()
+                event.media shouldBe media
+                event.externalPlayer shouldBe externalPlayer
+
+                cancelAndConsumeRemainingEvents()
+
+            }
+
+
+        }
+
+    }
+
+    test("OnExternalPlayerResult - should call recordPlaybackResult") {
+
+        checkAll(
+            iterations = 20,
+            Arb.element(MediaMockups.allMedias),
+            Arb.long()
+        ) { media, progress ->
+
+            // Given
+            viewModel = createViewModel()
+            viewModel.handleIntent(intent = CatalogIntent.PlayMedia(media = media, forceInternal = true))
+
+            // When
+            viewModel.handleIntent(intent = CatalogIntent.OnExternalPlayerResult(progress = progress))
+
+            // Then
+            coEvery { recordPlaybackResult(media = media, progress = progress) }
+
+        }
+
+    }
 
 })

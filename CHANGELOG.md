@@ -1,7 +1,3 @@
-## Version 1.7.2
+## Version 1.8.0
 
-- Core: Update dependencies
-- Core: Improved crash reporting
-- Core: Speed up image loading
-- Fix: Auto keyboard in search screen
-- Fix: Fix colors in light mode
+- Feature: New History feature

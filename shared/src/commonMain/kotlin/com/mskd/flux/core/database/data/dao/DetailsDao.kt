@@ -1,4 +1,4 @@
-package com.mskd.flux.core.database.data
+package com.mskd.flux.core.database.data.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
@@ -18,5 +18,5 @@ interface DetailsDao {
 
     @Query("SELECT COUNT(*) FROM genres")
     suspend fun getGenresCount() : Int
-    
+
 }

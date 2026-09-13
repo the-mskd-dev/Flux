@@ -9,6 +9,8 @@ import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
 import com.mskd.flux.features.artwork.presentation.ArtworkEvent.OpenUrlInfo
+import com.mskd.flux.features.player.domain.model.PlaybackAction
+import com.mskd.flux.features.player.domain.usecase.ResolvePlaybackActionUseCase
 import com.mskd.flux.features.progress.domain.usecase.ChangeMediaStatusUseCase
 import com.mskd.flux.features.progress.domain.usecase.MarkPreviousAsWatchedUseCase
 import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
@@ -35,7 +37,8 @@ class ArtworkViewModel(
     private val changeMediaStatus: ChangeMediaStatusUseCase,
     private val markPreviousAsWatched: MarkPreviousAsWatchedUseCase,
     private val resetProgress: ResetProgressUseCase,
-    private val saveProgress: SaveProgressUseCase,
+    private val resolvePlaybackAction: ResolvePlaybackActionUseCase,
+    private val recordPlaybackResult: SaveProgressUseCase
 ) : ViewModel() {
 
     //region Computed properties
@@ -165,10 +168,13 @@ class ArtworkViewModel(
 
         _userState.update { it.copy(selectedMedia = media) }
 
-        if (artworkContent?.useExternalPlayer == true && !forceInternal)
-            _event.emit(ArtworkEvent.LaunchExternalPlayer(media = media))
-        else
-            _event.emit(ArtworkEvent.PlayMedia(mediaId = media.mediaId))
+        when (val action = resolvePlaybackAction(media = media, forceInternal = forceInternal)) {
+            is PlaybackAction.OpenPlayer -> _event.emit(ArtworkEvent.PlayMedia(
+                media = action.media,
+                externalPlayer = action.externalPlayer,
+            ))
+            PlaybackAction.Unavailable -> Unit
+        }
 
     }
 
@@ -222,8 +228,8 @@ class ArtworkViewModel(
     }
 
     private suspend fun onExternalPlayerResult(progress: Long) {
-        artworkContent?.selectedMedia?.let { media ->
-            saveProgress(media = media, progress = progress)
+        artworkContent?.selectedMedia?.let {
+            recordPlaybackResult(media = it, progress = progress)
         }
     }
 

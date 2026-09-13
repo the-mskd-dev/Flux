@@ -71,7 +71,7 @@ fun ShowContentRegular(
                             width = Dimension.fillToConstraints
                         }
                         .fillMaxWidth()
-                        .aspectRatio(FluxUI.Images.ratio_6_5),
+                        .aspectRatio(FluxUI.Ratio.rectangle),
                     fullArtwork = fullShow,
                 )
 

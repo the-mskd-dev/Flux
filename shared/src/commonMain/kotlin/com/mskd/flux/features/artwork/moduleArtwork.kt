@@ -24,8 +24,9 @@ val moduleArtwork = module {
             changeMediaStatus = get(),
             markPreviousAsWatched = get(),
             resetProgress = get(),
-            saveProgress = get(),
-            observeArtworkUseCase = get()
+            observeArtworkUseCase = get(),
+            resolvePlaybackAction = get(),
+            recordPlaybackResult = get()
         )
     }
 

@@ -63,10 +63,11 @@ class ChangeMediaStatusUseCase(
             val nextEpisode = episodes.getNextEpisodeFor(episode = episode)
             if (status == Status.WATCHED) {
 
-                if (nextEpisode != null)
-                    history.insert(media = nextEpisode)
-                else
+                nextEpisode?.let {
+                    history.insert(media = it)
+                } ?: run {
                     history.delete(artworkId = episode.artworkId)
+                }
 
             }
 

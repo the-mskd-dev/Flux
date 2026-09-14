@@ -25,6 +25,7 @@ import com.mskd.flux.features.catalog.presentation.CatalogEvent.NavigateToToken
 import com.mskd.flux.features.catalog.presentation.CatalogEvent.NavigateToUnknown
 import com.mskd.flux.features.history.domain.model.HistoryEntry
 import com.mskd.flux.features.history.domain.repository.HistoryRepository
+import com.mskd.flux.features.history.domain.usecase.GetHistoryUseCase
 import com.mskd.flux.features.player.domain.model.PlaybackAction
 import com.mskd.flux.features.player.domain.usecase.ResolvePlaybackActionUseCase
 import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
@@ -45,13 +46,14 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class CatalogViewModel(
-    private val syncCatalogUseCase: SyncCatalogUseCase,
     private val artworkDb: DatabaseRepository,
     private val detailsDb: DetailsRepository,
     private val historyDb: HistoryRepository,
     private val userDataStore: UserDataStore,
     private val tokenDataStore: TokenDataStore,
     private val catalogDataStore: CatalogDataStore,
+    private val syncCatalogUseCase: SyncCatalogUseCase,
+    private val getHistoryUseCase: GetHistoryUseCase,
     private val appInfo: AppInfo,
     private val resolvePlaybackAction: ResolvePlaybackActionUseCase,
     private val recordPlaybackResult: SaveProgressUseCase
@@ -68,7 +70,7 @@ class CatalogViewModel(
     private var currentMedia: Media? = null
 
     private val preferencesFlow = combine(
-        historyDb.flow,
+        getHistoryUseCase(),
         catalogDataStore.flow,
         tokenDataStore.flow,
     ) { history, catalog, token  ->

@@ -8,7 +8,6 @@ import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.features.history.domain.repository.HistoryRepository
 import com.mskd.flux.utils.Trace
 import com.mskd.flux.utils.extensions.getNextEpisodeFor
-import com.mskd.flux.utils.extensions.lastEpisode
 
 class ChangeMediaStatusUseCase(
     private val database: DatabaseRepository,

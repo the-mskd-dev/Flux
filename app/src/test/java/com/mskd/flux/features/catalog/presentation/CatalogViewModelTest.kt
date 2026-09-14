@@ -16,6 +16,7 @@ import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.history.domain.model.HistoryEntry
 import com.mskd.flux.features.history.domain.repository.HistoryRepository
+import com.mskd.flux.features.history.domain.usecase.GetHistoryUseCase
 import com.mskd.flux.features.player.domain.model.PlaybackAction
 import com.mskd.flux.features.player.domain.usecase.ResolvePlaybackActionUseCase
 import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
@@ -38,6 +39,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.spyk
 import io.mockk.verify
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.firstOrNull
@@ -59,6 +61,7 @@ class CatalogViewModelTest : FunSpec({
     lateinit var userDataStore: UserDataStore
     lateinit var tokenDataStore: TokenDataStore
     lateinit var appInfo: AppInfo
+    lateinit var getHistoryUseCase: GetHistoryUseCase
     lateinit var resolvePlaybackAction: ResolvePlaybackActionUseCase
     lateinit var recordPlaybackResult: SaveProgressUseCase
 
@@ -80,9 +83,10 @@ class CatalogViewModelTest : FunSpec({
             every { flowGenres() } returns MutableStateFlow(DetailsMockup.allGenres)
         }
 
-        historyDb = mockk(relaxed = true) {
-            every { flow } returns MutableStateFlow(emptyList())
-        }
+        historyDb = mockk(relaxed = true)
+
+        getHistoryUseCase = mockk<GetHistoryUseCase>(relaxed = true)
+        every { getHistoryUseCase() } returns MutableStateFlow(persistentListOf())
 
         resolvePlaybackAction = mockk(relaxed = true)
         recordPlaybackResult = mockk(relaxed = true)
@@ -101,7 +105,6 @@ class CatalogViewModelTest : FunSpec({
         },
     ): CatalogViewModel {
         return CatalogViewModel(
-            syncCatalogUseCase = syncUseCase,
             artworkDb = artworkDb,
             detailsDb = detailsDb,
             historyDb = historyDb,
@@ -109,6 +112,8 @@ class CatalogViewModelTest : FunSpec({
             tokenDataStore = tokenDataStore,
             catalogDataStore = catalogDataStore,
             appInfo = appInfo,
+            syncCatalogUseCase = syncUseCase,
+            getHistoryUseCase = getHistoryUseCase,
             resolvePlaybackAction = resolvePlaybackAction,
             recordPlaybackResult = recordPlaybackResult
         )

@@ -24,6 +24,7 @@ class GetHistoryUseCaseTest : FunSpec({
         file = UserFile(
             name = "Media name",
             path = path,
+            source = FileSource.SAF
         )
     )
 
